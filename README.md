@@ -1,2 +1,2 @@
 # pel
-Emacs Pragmatic Environment Library
+PEL -- Pragmatic Environment Library for Emacs
