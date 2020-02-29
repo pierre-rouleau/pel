@@ -1,0 +1,489 @@
+;;; pel-navigate.el --- PEL Navigation Control Facilities
+
+;; Copyright (C) 2020  Pierre Rouleau
+
+;; Author: Pierre Rouleau <prouleau.swd@gmail.com>
+
+;; This file is part of the PEL package
+;; This file is not part of GNU Emacs.
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;; -----------------------------------------------------------------------------
+;;; Commentary:
+;;
+;; This file contains a collection of navigation commands that complement the
+;; standard Emacs navigation commands.
+;;
+;;  - `pel-beginning-of-line' is meant to replace `beginning-of-line' as it does
+;;    the same and extends it.
+;;  - `pel-newline-and-indent-below' is useful as a variant of the return key.
+;;  - `pel-find-thing-at-point' provides a search capability without the need fo
+;;    a tag database but it is limited in what it can find.  It's a poor macn
+;;    cross reference.
+;;  - `pel-home' and `pel-end' implement a quick, multi-hit movement to the
+;;    beginning or end of the current field, line, window and buffer.  These are
+;;    commands similar to the home and end CRiSP/Brief commands.
+;;  - `pel-forward-word-start' moves point to the beginning of next word.
+;;    This complements what's already available in standard Emacs:
+;;    `forward-word' and `backward-word'.
+;;  - `pel-next-visible' and `pel-previous-visible' move point to the next or
+;;    previous visible (non whitespace) character.
+;;
+
+(require 'pel-base)                     ; use: pel--n-funcall-to
+(eval-when-compile
+  (require 'subword)                    ; use: superword-mode
+  (require 'pel-scroll))                ; use: pel-in-scroll-sync
+
+;;; Code:
+
+
+;; -----------------------------------------------------------------------------
+;; Smart Beginning of line
+;; -----------------------
+
+;;-pel-autoload
+(defun pel-beginning-of-line (n)
+  "Move point to beginning of current line N.
+If point is already at the beginning of line, then instead
+move to first non-whitespace (to indentation).
+By default N is 1.  If N is larger move to the beginning of N-1 line forward.
+This combines the functionality of `move-beginning-of-line'
+and `back-to-indentation'."
+  (interactive "^p")
+  (if (or (not (eq n 1)) (not (bolp)))
+      (move-beginning-of-line n)
+    (back-to-indentation)))
+
+;; -----------------------------------------------------------------------------
+;; Insert Lines
+;; ------------
+
+;;-pel-autoload
+(defun pel-newline-and-indent-below ()
+  "Insert and indented line just below current line."
+  (interactive)
+  (move-end-of-line nil)
+  (newline-and-indent))
+
+;; -----------------------------------------------------------------------------
+;; Navigate across code using symbols at point
+
+;;-pel-autoload
+(defun pel-find-thing-at-point (&optional in-other-window)
+  "Find source code of function or variable at point.
+Open in current window unless a \\[universal-argument] prefix is
+supplied as IN-OTHER-WINDOW in which case it opens inside the other window."
+  (interactive "P")
+  (let ((symb (function-called-at-point)))
+    (if symb
+        (if (consp in-other-window)
+            (find-function-other-window symb)
+          (find-function symb))
+      (if (consp in-other-window)
+          (find-variable-other-window symb))
+        (find-variable symb))))
+
+;; -----------------------------------------------------------------------------
+;; Description Utilities
+;; ---------------------
+
+;;-pel-autoload
+(defun pel-show-char-syntax ()
+  "Display a message showing the character syntax of character at point."
+  (interactive)
+  (message "Char syntax of '%c' at point is: '%c'"
+           (char-after)
+           (char-syntax (char-after))))
+
+;; -----------------------------------------------------------------------------
+;; Navigate over tokens: words/symbols and over whitespace.
+;; --------------------------------------------------------
+;; This section provides two main commands:
+;;
+;; - pel-forward-token-start
+;; - pel-backward-token-start
+;;
+;; These move point to the beginning of the next or previous
+;; token. The token is either
+;; - a word (made of word characters or symbol characters)
+;; - a punctuation or symbol following whitespace.
+;;
+;; Both of the functions accept the special arguments N.
+;; A positive N performs the operation N times.
+;; A negative N preforms the reverse operation N times.
+;;
+;; Implementation call tree:
+;;
+;; * pel-forward-token-start
+;; * pel-backward-token-start
+;;   - pel--forward-token-start
+;;   - pel--backward-token-start
+;;     - pel-at-token-start-p
+;;       - pel-at-word-or-symbol-start-p
+;;         - pel-is-word-or-symbol-char
+;;       - pel-at-wspace-end-p
+;;       - pel-at-operator-before-wspace-p
+;;         - pel-char-next
+;;         - pel-is-operator-char
+;;         - pel-is-whitespace-or-newline
+;;
+
+;; --
+(defun pel-is-word-or-symbol-char (ch)
+  "Return non-nil value if CH is a word or symbol char table, nil otherwise.
+The syntax table of the current buffer is used to check.
+.
+The returned non-nil value is a list where the head is
+the syntax type code for `ch'."
+  (memq (char-syntax ch) '(?w ?_)))
+
+(defun pel-at-word-or-symbol-start-p ()
+  "Return t if point is located at symbol boundary character."
+  (and (pel-is-word-or-symbol-char (char-after))
+       (not (pel-is-word-or-symbol-char (char-before)))))
+
+;; --
+(defun pel-at-wspace-end-p ()
+  "Return t if point is located at end of whitespace."
+  (and (= (char-syntax (char-before))  ?\s)
+       (not (= (char-syntax (char-after)) ?\s))))
+
+(defun pel-char-next ()
+  "Return character next after point."
+  (char-after (+ (point) 1)))
+
+(defun pel-is-operator-char (ch)
+  "Return non-nil if CH is an operator character, nil otherwise.
+The syntax table of the current buffer is used to check.
+.
+The returned non-nil value is a list where the head is
+the syntax type code for `ch'."
+  (memq (char-syntax ch) '(?. ?\" ?_)))
+
+;; --
+(defun pel-is-whitespace-or-newline (ch)
+  "Return non-nil if CH is a whitespace or newline character, nil otherwise.
+The syntax table of the current buffer is used to check.
+.
+The returned non-nil value is a list where the head is
+the syntax type code for `ch'."
+  (memq (char-syntax ch) '(?\s ?>)))
+
+(defun pel-at-operator-before-wspace-p ()
+  "Return t if point is located at the end of an operator before whitespace."
+  (and (pel-is-operator-char (char-after))
+       (pel-is-whitespace-or-newline (pel-char-next))))
+
+;; --
+;; Point status predicates
+(defun pel-at-token-start-p ()
+  "Return t if point is located a word/symbol or whitespace boundary."
+  (or
+   (pel-at-word-or-symbol-start-p)
+   (pel-at-wspace-end-p)
+   (pel-at-operator-before-wspace-p)))
+
+;; --
+;; utility functions called by the top level ones
+(defun pel--forward-token-start ()
+  "Move forward to the start of the next token."
+   (while (progn (forward-char) (not (pel-at-token-start-p)))))
+
+(defun pel--backward-token-start ()
+  "Move backward to the start of the previous token."
+  (while (progn (backward-char) (not (pel-at-token-start-p)))))
+
+;; --
+;;-pel-autoload
+(defun pel-forward-token-start (&optional n)
+  "Move forward to the start of the next token.
+.
+A token being identified by:
+- any word (with all characters allowed by syntax table)
+- punctuation
+- first character after whitespace.
+.
+Move over whitespace but stop at comments, operators,
+punctuation.
+.
+Argument N is a numeric argument identifying the number
+of times the operation is done.  If N is negative the
+move is reversed (and goes backward)."
+  (interactive "^P")
+  (pel--n-funcall-to (prefix-numeric-value n)
+   'pel--forward-token-start
+   'pel--backward-token-start))
+
+;;-pel-autoload
+(defun pel-backward-token-start (&optional n)
+  "Move backward to the start of the previous token.
+Argument N is a numeric argument identifying the number
+of times the operation is done.  If N is negative the
+move is reversed (and goes forward).
+.
+See `pel-forward-token-start' for details."
+  (interactive "^P")
+  (pel--n-funcall-to (prefix-numeric-value n)
+   'pel--backward-token-start
+   'pel--forward-token-start))
+
+;; -----------------------------------------------------------------------------
+;; Move to the beginning of next word
+;; -----------------------------------
+;;
+;; The standard forward-word moves point at the end of next word, and
+;; backward-word moves point to the beginning of the previous word. There is no
+;; command that moves point forward to the beginning of next word. That's what
+;; pel-forward-word-start does.  It's behaviour is affected by the current
+;; value of superword-mode.
+
+;; Implementation call tree:
+;; * pel-forward-word-start
+;;   - pel-at-word-boundary-p
+
+(defun pel-at-word-boundary-p ()
+  "Return t if point is located at a word boundary character."
+  (let ((syntax-chrs (if superword-mode
+                         '(?w ?_)
+                       '(?w))))
+    (and (memq (char-syntax (char-after)) syntax-chrs)
+         (not (memq (char-syntax (char-before)) syntax-chrs)))))
+
+;; NOTE: Another possible implementation of the function above.
+;; Has the same behaviour AFAIK.
+;; (defun pel-at-word-boundary-p ()
+;;   "Return t if point is located at a word boundary character."
+;;   ;; The syntax class integer for a word is: 2
+;;   ;; see: info (elisp)Syntax Table internals
+;;   (and (= (syntax-class (syntax-after (point))) 2)
+;;        (not (= (syntax-class (syntax-after (1- (point)))) 2))))
+
+;;-pel-autoload
+(defun pel-forward-word-start ()
+  "Move point forward to beginning of next word.
+Supports command `superword-mode' but not the command `subword-mode'."
+  (interactive "^")
+  (while (progn (forward-char) (not (pel-at-word-boundary-p)))))
+
+;; -----------------------------------------------------------------------------
+;; Navigate to end of whitespace
+;; -----------------------------
+;;
+
+;;-pel-autoload
+(defun pel-forward-wspace-start ()
+  "Forward: stop at end of whitespace."
+  (interactive)
+  (while (progn (forward-char) (not (pel-at-wspace-end-p)))))
+
+;;-pel-autoload
+(defun pel-backward-wspace-start ()
+  "Backward: stop at end of whitespace."
+  (interactive)
+  (while (progn (backward-char) (not (pel-at-wspace-end-p)))))
+
+;; -----------------------------------------------------------------------------
+;; Navigate to change of character syntax
+;; --------------------------------------
+;; The following commands help investigate the syntactic elements of an Emacs
+;; major mode by moving point to the next or previous character syntax change
+;; location.
+
+;; Implementation call tree:
+;;
+;; * pel-forward-syntaxchange-start
+;; * pel-backward-syntaxchange-start
+;;   - pel-at-syntax-change-p
+;;
+
+(defun pel-at-syntax-change-p ()
+  "Return t if point is located at a boundary between 2 character syntax."
+  (not (= (char-syntax (char-after)) (char-syntax (char-before)))))
+
+;;-pel-autoload
+(defun pel-forward-syntaxchange-start ()
+  "Move point forward: stop at beginning of character syntax change."
+  (interactive)
+  (while (progn (forward-char) (not (pel-at-syntax-change-p)))))
+
+;;-pel-autoload
+(defun pel-backward-syntaxchange-start ()
+  "Move point backward: stop at beginning of character syntax change."
+  (interactive)
+  (while (progn (backward-char) (not (pel-at-syntax-change-p)))))
+
+;; -----------------------------------------------------------------------------
+;; Moving to next/previous visible
+;; -------------------------------
+;; Move to previous/next non-whitespace
+;; They handle:
+;;  - the shift-select-mode using the interactive "^",
+;;  - prefix numbers for multiple execution.
+
+;;-pel-autoload
+(defun pel-next-visible (&optional n)
+  "Move point to the next non-whitespace character.
+- N defaults to 1.
+  Use a larger integer value to jump over several whitespace groups.
+- Handles `shift-select-mode' so when the Shift key is pressed, the movement
+  extends the marked region."
+  (interactive "^P")
+  (forward-whitespace (prefix-numeric-value n)))
+
+;;-pel-autoload
+(defun pel-previous-visible (&optional n)
+  "Move point just after the previous non-whitespace character.
+- N defaults to 1.
+  Use a larger integer value to jump over several whitespace groups.
+- Handles `shift-select-mode' so when the Shift key is pressed, the movement
+  extends the marked region."
+  (interactive "^P")
+  (forward-whitespace (- (prefix-numeric-value n))))
+
+;; -----------------------------------------------------------------------------
+;; Navigate to beginning/end of line/window/buffer
+;; -----------------------------------------------
+;; These functions operate according to current position,
+;; In a way that is somewhat similar to how CRiSP manages
+;; home and end keys:
+;;
+;; - home: moves point to the beginning of the field/line/window/buffer
+;;         depending on the current point location.
+;; - end : moves point to the end of field/line/window/buffer
+;;         depending on the current point location.
+
+(defun pel--home ()
+  "Move to the beginning of field/line/window/buffer.
+Return number of lines scrolled."
+  (if (not (bolp))
+      ;; If point not at beginning of line, use (beginning-of-line) that is
+      ;; constrained by fields (such as prompts in interactive buffers like IELM).
+      ;; If point did not move, it's at the beginning of a field, so move
+      ;; to the real beginning of line with (forward-line 0): the forward-line
+      ;; function is not constrained by fields.
+      (let ((p1 (point))
+            p2)
+        (beginning-of-line)
+        (setq p2 (point))
+        (if (= p1 p2)
+            (forward-line 0))
+        0)
+    ;; else - point is already at beginning of line: if point is not at the top of
+    ;; window then move to it. Otherwise move to the top of buffer.
+    (if (/= (point) (window-start))
+        (progn
+          (goto-char (window-start))
+          0)
+      (let ((start-point (point)))
+        (goto-char (point-min))
+        (- (count-lines start-point (point)))))))
+
+;;-pel-autoload
+(defun pel-home (&optional arg)
+  "Move to beginning of field/line/window/buffer.
+Move point according to current point position:
+   - If field exists and point not at its beginning: move to its beginning.
+   - If point not at beginning of line: move it to the beginning of the line.
+   - If point not on first line of window: move to first line/column of window.
+   - If at first line of window: move to first line/column of buffer.
+- If the buffer is narrowed, this command uses the start of the accessible part
+  of the buffer.
+Before moving, push mark at previous position, unless either a
+\\[universal-argument] prefix is supplied as ARG, or Transient Mark mode is
+enabled and the mark is active.
+If `pel-in-scroll-sync' is non-nil, the synced window is scrolled the same
+number of lines.
+
+
+*Warning*: Do NOT use `pel-home' in elisp programs.
+           Use (`goto-char' (`point-min')) instead.
+           `perl-home' is only meant to be used interactively."
+  (interactive "^P")
+  (unless (eq last-repeatable-command 'pel-home)
+    (or (consp arg)
+        (region-active-p)
+        (push-mark)))
+  (let ((excursion-line-count (pel--home)))
+    (if (and (boundp 'pel-in-scroll-sync)
+             pel-in-scroll-sync)
+        (scroll-other-window excursion-line-count))))
+
+;; --
+
+(defun pel--end ()
+  "Move to the end of field/line/window/buffer.
+Return number of lines scrolled."
+  (if (not (eolp))
+      (progn
+        (end-of-line)
+        0)
+    ; cannot get exact value of end of window, check if within 150 chars
+    (if (> (abs (- (point) (window-end))) 150)
+        (progn
+          (move-to-window-line -1)
+          (end-of-line)
+          0)
+      (let ((start-point (point)))
+        (goto-char (point-max))
+        (count-lines start-point (point))))))
+
+;;-pel-autoload
+(defun pel-end (&optional arg)
+  "Move to end of field/line/window/buffer.
+Move point according to current point position:
+   - If field exist and point not at end of field: move to end of field.
+   - If point not at end of line: move to end of line.
+   - If point not on last line of window: move to last line/column of window.
+   - If point not on last line of buffer: move to last line/column of buffer.
+- If the buffer is narrowed, this command uses the end of the accessible part
+  of the buffer.
+Before moving, push mark at previous position, unless either a
+\\[universal-argument] prefix is supplied as ARG, or Transient Mark mode is
+enabled and the mark is active.
+If `pel-in-scroll-sync' is non-nil, the synced window is scrolled the same
+number of lines.
+
+*Warning*: Do NOT use `pel-end' in elisp programs.
+           Use (`goto-char' (`point-min')) instead.
+           `pel-end' is only meant to be used interactively."
+  (interactive "^P")
+  (unless (eq last-repeatable-command 'pel-end)
+    (or (consp arg)
+        (region-active-p)
+        (push-mark)))
+  (let ((excursion-line-count (pel--end)))
+    (if (and (boundp 'pel-in-scroll-sync)
+             pel-in-scroll-sync)
+        (scroll-other-window excursion-line-count))))
+
+;; -----------------------------------------------------------------------------
+;; Navigate across function definitions
+;; ------------------------------------
+
+;;-pel-autoload
+(defun pel-beginning-of-next-defun ()
+  "Move to the beginning of the next function definition.
+This complements `beginning-of-defun' which only reaches the
+same location by moving backwards in the buffer."
+  (interactive)
+  (end-of-defun)
+  (end-of-defun)
+  (beginning-of-defun))
+
+;; -----------------------------------------------------------------------------
+(provide 'pel-navigate)
+
+;;; pel-navigate.el ends here

@@ -1,0 +1,206 @@
+;;; pel-numkpad.el --- PEL Numeric Keypad Key Control - OS Agnostic
+
+;; Copyright (C) 2020  Pierre Rouleau
+
+;; Author: Pierre Rouleau <prouleau.swd@gmail.com>
+
+;; This file is part of the PEL package
+;; This file is not part of GNU Emacs.
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;; -----------------------------------------------------------------------------
+;;; Commentary:
+;;
+;; Dynamic control of the keypad keys to allow both numlocking and non
+;; numlocking use.
+
+;;; Code:
+(require 'pel-base)       ; use pel-toggle
+(eval-when-compile
+  (require 'pel-ccp)      ; use: pel-kill-or-delete-marked-or-whole-line
+                          ;      pel-copy-marked-or-whole-line
+  (require 'pel-scroll))  ; use: pel-scroll-up, pel-scroll-down
+
+
+
+(defvar pel-mac-keypad-numlocked nil
+  "Identify whether macOS numeric keypad is used as numlocked or not.
+If t, macOS keypad is used as the original numlocked keypad,
+otherwise, it's a cursor centric keypad.  By default, the value
+is t to identify the native behaviour: NumLocked.
+
+The following keys are used in each mode:
+
++==============================+==========================+
+|  Not NumLocked               | NumLocked                |
++==============================+==========================+
+|NumLock  =      /      *      |Numlock  =     /    *     |
+|home     up     ScrlUp -      |   7     8     9    -     |
+|right    center right  +      |   4     5     6    +     |
+|End      down   ScrlDn Enter  |   1     2     3   Enter  |
+|---insert----   Del    Enter  |   ---0---     .   Enter  |
++==============================+==========================+
+
+where the keys for '/', '*', '-' and '+' have their natural
+meaning in Numlock mode but have other meanings in Non Numlocked
+mode.
+
+Use `pel-toggle-numlock' to activate/deactivate numlock on
+environments that can't bind the clear key such as macOS
+terminal.
+
+Limitations: In not Numlocked mode the cursor keys cannot
+             be repeated the way the regular cursor keys can.
+             Cause: Emacs will still read these keys as digit
+             when typed as a prefix.")
+
+;;-pel-autoload
+(defun pel-toggle-mac-numlock ()
+  "Toggle mac numlock mode."
+  (interactive)
+  (pel-toggle 'pel-mac-keypad-numlocked)
+  (pel-show-mac-numlock))
+
+;;-pel-autoload
+(defun pel-show-mac-numlock ()
+  "Display state of `pel-mac-keypad-numlocked'."
+  (interactive)
+  (if pel-mac-keypad-numlocked
+      (message "Num-Lock ON")
+    (message "Num-Lock off; cursor mode available")))
+
+;;-pel-autoload
+(defun pel-0 (&optional n)
+  "Keypad 0 key handler, with N as numeric prefix to support repetition."
+  (interactive "*P")
+  (if pel-mac-keypad-numlocked
+      (insert-char ?0 (abs (prefix-numeric-value n)) t)
+    (yank)))
+
+;;-pel-autoload
+(defun pel-1 (&optional n)
+  "Keypad 1 key handler, with N as numeric prefix to support repetition."
+  (interactive "P")
+  (if pel-mac-keypad-numlocked
+      (insert-char ?1 (abs (prefix-numeric-value n)) t)
+    (pel-end)))
+
+;;-pel-autoload
+(defun pel-2 (&optional n)
+  "Keypad 2 key handler, with N as numeric prefix to support repetition."
+  (interactive "P")
+  (let ((n (prefix-numeric-value n)))
+    (if pel-mac-keypad-numlocked
+        (insert-char ?2 (abs n) t)
+      (forward-line n))))
+
+;;-pel-autoload
+(defun pel-3 (&optional n)
+  "Keypad 3 key handler, with N as numeric prefix to support repetition."
+  (interactive "P")
+  (let ((n (prefix-numeric-value n)))
+    (if pel-mac-keypad-numlocked
+        (insert-char ?3 (abs n) t)
+      (if (> 0)
+          (pel-scroll-up  n)
+        (pel-scroll-down (abs n))))))
+
+;;-pel-autoload
+(defun pel-4 (&optional n)
+  "Keypad 5 key handler, with N as numeric prefix to support repetition."
+  (interactive "P")
+  (let ((n (prefix-numeric-value n)))
+    (if pel-mac-keypad-numlocked
+        (insert-char ?4 (abs n) t)
+      (left-char n))))
+
+;;-pel-autoload
+(defun pel-5 (&optional n)
+  "Keypad 6 key handler, with N as numeric prefix to support repetition."
+  (interactive "P")
+  (let ((n (prefix-numeric-value n)))
+    (if pel-mac-keypad-numlocked
+        (insert-char ?5 (abs n) t)
+      (recenter-top-bottom))))
+
+;;-pel-autoload
+(defun pel-6 (&optional n)
+  "Keypad 6 key handler, with N as numeric prefix to support repetition."
+  (interactive "P")
+  (let ((n (prefix-numeric-value n)))
+    (if pel-mac-keypad-numlocked
+        (insert-char ?6 (abs n) t)
+      (right-char n))))
+
+;;-pel-autoload
+(defun pel-7 (&optional n)
+  "Keypad 7 key handler, with N as numeric prefix to support repetition."
+  (interactive "P")
+  (let ((n (prefix-numeric-value n)))
+    (if pel-mac-keypad-numlocked
+        (insert-char ?7 (abs n) t)
+      (pel-home))))
+
+;;-pel-autoload
+(defun pel-8 (&optional n)
+  "Keypad 8 key handler, with N as numeric prefix to support repetition."
+  (interactive "P")
+  (let ((n (prefix-numeric-value n)))
+    (if pel-mac-keypad-numlocked
+        (insert-char ?8 (abs n) t)
+      (forward-line (- n)))))
+
+;;-pel-autoload
+(defun pel-9 (&optional n)
+  "Keypad 9 key handler, with N as numeric prefix to support repetition."
+  (interactive "P")
+  (let ((n (prefix-numeric-value n)))
+    (if pel-mac-keypad-numlocked
+        (insert-char ?9 (abs n) t)
+      (if (> 0)
+          (pel-scroll-down n)
+        (pel-scroll-up (abs n))))))
+
+;;-pel-autoload
+(defun pel-kp-decimal (&optional n)
+  "Keypad '.' key handler, with N as numeric prefix to support repetition."
+  (interactive "P")
+  (let ((n (prefix-numeric-value n)))
+    (if pel-mac-keypad-numlocked
+        (insert-char ?. (abs n) t)
+      (delete-char n))))
+
+;;-pel-autoload
+(defun pel-kp-subtract (&optional n)
+  "Keypad '-' key handler, with N as numeric prefix to support repetition."
+  (interactive "*P")
+  (let ((n (prefix-numeric-value n)))
+    (if pel-mac-keypad-numlocked
+        (insert-char ?- (abs n) t)
+      (pel-kill-or-delete-marked-or-whole-line n))))
+
+;;-pel-autoload
+(defun pel-kp-add (&optional n)
+  "Keypad '+' key handler, with N as numeric prefix to support repetition."
+  (interactive "P")
+  (let ((n (prefix-numeric-value n)))
+    (if pel-mac-keypad-numlocked
+        (insert-char ?+ (abs n) t)
+      (pel-copy-marked-or-whole-line))))
+
+;; -----------------------------------------------------------------------------
+(provide 'pel-numkpad)
+
+;;; pel-numkpad.el ends here

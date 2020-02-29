@@ -1,0 +1,2260 @@
+;;; pel.el --- Pragmatic Environment Library
+
+;; Copyright (C) 2020  Pierre Rouleau
+
+;; Author: Pierre Rouleau <prouleau.swd@gmail.com>
+;; URL: https://github.com/pierre-rouleau/pel
+;; Version: 0.0.1
+;; Package-Requires: ((emacs "24.1") (use-package "2.4"))
+;; Keywords: convenience
+
+;; This file is part of the PEL package
+;; This file is not part of GNU Emacs.
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; Overview
+;; --------
+
+;; `pel.el` provides the following features:
+;;
+;;  - Function key-driven keymap for a large set of commands, which are either
+;;    PEL extensions of existing Emacs commands or commands from external
+;;    packages that may be activated via customization of the "Pel" group
+;;    using the customize command.
+;;  - Configuration code to download, install and load external packages
+;;    selected by PEL customization.  Packages are autoloaded as much as
+;;    possible, providing a quick Emacs init time.
+;;  - Several key mappings that will work in Emacs running in graphics mode
+;;    but also in terminal (TTY) mode.
+;;  - Several enhanced navigation keys similar to what is available to other
+;;    editors in the Brief/CRiSP family such as a flexible home and end key
+;;    that accept single, double, triple, quadruple strokes depending on the
+;;    context.
+;;  - Enhanced letter case conversion key mapping allowing the use of a M-c
+;;    and M-C to perform downcasing and upcasing as well as capitalization.
+;;
+;;  Most PEL key bindings are using function key prefixes.  At the moment these
+;;  are fixed to the F2, F6, F11 and F12 keys and are not (yet) customizable.
+;;
+
+;; PDF Documentation
+;; -----------------
+;;
+;;  PEL key bindings and a very large set of Emacs standard key bindings are
+;;  described in a set of PDF files.  The format of these files is something
+;;  between the Emacs Reference Card and the full manual.  Each PDF file is
+;;  one table on a specific topic with a quick overview of the topic, the list
+;;  of key bindings, references to the Emacs commands, description and hyperlinks
+;;  to lots of material including the online Emacs manuals, discussions and
+;;  other resources.
+;;
+
+;; Usage
+;; -----
+
+;; To activate the PEL keymaps and allow its customization, execute the
+;; following command:
+
+;;    M-x pel-init
+
+;; If you want to activate it on startup, then put the following inside your
+;; Emacs init file:
+
+;;    (require 'pel)
+;;    (pel-init)
+
+;; Emacs customization must be placed before the execution of (pel) since `pel'
+;; uses the `pel-use-...' customization variables to determine what to load
+;; and what keys to bind.  If you place your Emacs customization inside a
+;; file separate from your init.el, then you should have something like the
+;; following inside your init.el file:
+
+;;    (setq custom-file "~/.emacs-custom.el")  ; or any file you like
+;;    (load custom-file)
+;;    (require 'pel)
+;;    (pel)
+
+
+;; -----------------------------------------------------------------------------
+;;; Code:
+
+;; Utilities:
+
+;; To prevent some byte-compiler warnings, the following functions used only
+;; in this file are defined at "file scope".
+
+(defun pel--mode-hook-maybe-call (fct mode hook &optional append)
+  "Use FCT as the MODE HOOK and call it if buffer is currently in that MODE.
+The function FCT is added at the beginning of the hook list unless the
+optional argument APPEND is non-nil, in which case it is added at the end."
+  (add-hook hook fct append)
+  (if (eq major-mode mode)
+      (funcall fct)))
+
+(defun pel-version (&optional insert)
+  "Display and return PEL package version string.
+Optionally insert it at point if INSERT is non-nil."
+  (interactive "P")
+  (let ((version "0.0.1"))
+    (if insert
+        (insert version))
+    (message "PEL version: %s" version)
+    version))
+
+;; --
+;; pel-init - does everything
+
+;;;###autoload
+(defun pel-init ()
+  "Initialize the PEL system, map its keys, autoload its functions.
+
+Only the PEL features activated via the `pel-use-...' customization variables
+from the  \"Pel Package Use\" subgroup of the \"Pel\" group are loaded and the
+respective PEL keys are mapped.  The others are not.
+
+If you need to activate new features, use \\[customize] to customize variables
+inside the \"Pel\" group.  The \"Pel Package Use\" subgroup contains the
+customization variables that control PEL activated features.
+
+You can customize PEL feature only after execution of the `pel-init' command.
+After a customization change its best to restart Emacs, however if your
+modifications simply activate new features, you may be able to simply
+re-execute `pel-init' again to activate them."
+  (interactive)
+
+  ;; Required packages:
+  (require 'pel-options) ; all `pel-use-...' variables identify what to use.
+
+  (unless (fboundp 'pel-build)
+    ;; autoload all PEL functions
+    (require 'pel-autoload)
+	(if (fboundp 'pel--autoload-init)
+	  (pel--autoload-init))
+    ;; once that is executed, there's no need for the file anymore; unload it.
+    (unload-feature 'pel-autoload))
+
+  ;; -----------------------------------------------------------------------------
+  ;; utilities
+  ;; ---------
+
+  (defmacro define-global-prefix (prefix key)
+    "Define a prefix key for the global key map."
+    `(progn
+       (define-prefix-command ,prefix)
+       (global-set-key ,key ,prefix)))
+
+  ;; - Bootstrap `use-package' if needed
+  ;; -----------------------------------
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+
+
+  ;; - Use popup-kill-ring
+  ;; ---------------------
+  ;; View all kill-ring deletions in a pop-up menu, when
+  ;; M-y is typed.
+  ;; Activate the popup-kill-ring in graphic mode only
+  ;; because it does not seem to work in terminal mode.
+  ;; It uses the pos-tip package.
+  ;; If you want to use this mechanism, you must install
+  ;; the 2 packages manually.
+  ;; In any case <f11> y is always available to execute yank-pop manually.
+  (when (and pel-use-popup-kill-ring
+             (display-graphic-p)
+             (require 'pos-tip nil t))   ; TODO: find a way to delay loading of pos-tip
+
+    (use-package popup-kill-ring
+      :defer t
+      :ensure nil
+      :commands popup-kill-ring
+      :config
+      (global-set-key "M-y" 'popup-kill-ring)))
+
+  ;; -----------------------------------------------------------------------------
+  ;; - PEL Modifier keys on different OS
+  ;; -----------------------------------
+  ;;
+  ;; Ideally, mostly used keybindings are available on all platforms and keyboards,
+  ;; with an easy to use layout.   The following is describing the use of modifier
+  ;; keys in the system I have set up so far.
+  ;;
+  ;; ========= ===== ============ ============ ============== =========== ===========
+  ;; Modifier  Repr. Explicit Key Explicit Key 'darwin (gr)   'darwin (t) 'windows-nt
+  ;; ========= ===== ============ ============ ============== =========== ===========
+  ;; Control   C-    Control      Control      Control        Control     Control
+  ;; Meta      M-                              Option         Option      Alt
+  ;; Shift     S-                              Shift          Shift       Shift
+  ;; Hyper     H-    C-x @ h                                  Fn          Menu/App
+  ;; Super     s-    C-x @ s                                  Command⌘
+  ;; Alt       A-    C-x @ a      C-x 8
+  ;; ========= ===== ============ ============ ============== =========== ===========
+
+  ;; Use the macOS Function key (Fn) as emacs Hyper modifier
+  ;;   Note: this does not work on the terminal based emacs,
+  ;;         only on the graphics, Carbon-based emacs.
+  (when (and (eq system-type 'darwin)
+             (display-graphic-p))
+    ;; next defvar prevents compiler warning when compiling in TTY:
+    ;; Defined in "nsterm.m"
+    (defvar ns-function-modifier)
+    (setq ns-function-modifier 'hyper))
+
+  ;; On Windows, the Ctrl-Alt key combination works with letter keys
+  ;; but does not work with the <right>, <left>, <up> and <down> keys.
+  ;; As a work-around, this maps the apps key (between the right Windows
+  ;; and Ctrl keys) to hyper and ensure that we add an extra binding
+  ;; with hyper for the C-M-arrow keys.
+  (when (eq system-type 'windows-nt)
+    ;; The following do not seem to work:
+    ;; - Ref: http://ergoemacs.org/emacs/emacs_hyper_super_keys.html
+    ;; (setq w32-pass-lwindow-to-system nil)
+    ;; (setq w32-lwindow-modifier 'hyper)     ; Left Windows Key  := hyper
+    ;; (setq w32-pass-rwindow-to-system nil)
+    ;; (setq w32-rwindow-modifier 'super)     ; Right Windows key := super
+    ;; but this works:
+    (defvar w32-pass-apps-to-system)
+    (defvar w32-apps-modifier)
+    (setq w32-pass-apps-to-system nil)
+    (setq w32-apps-modifier 'hyper))          ; Menu/App key      := hyper
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Preserve negative-argument with C-- and C-_
+  ;; ---------------------------------------------
+  ;;
+  ;; When running Emacs inside a terminal, the key C-- is not available since
+  ;; there is no "Control -" in ASCII.  On macOS, the terminal shells generate
+  ;; the C-_ key when C-- is typed.  Unfortunately C-_ is mapped to `undo' by
+  ;; default, preventing quick access to the negative argument in a Control key
+  ;; chord.  By mapping C-_ to `negative-argument' we solve the problem.
+  ;; We do it in graphics mode also, for consistency.
+  (global-set-key (kbd "C-_") 'negative-argument)
+
+  ;; Also bind M-_  to `negative-argument' to help accessing it when
+  ;; the Meta key specifiers is used, to maintain typing velocity.
+  (global-set-key (kbd "M-_") 'negative-argument)
+
+  ;; Reserved key::  (kbd "C-M-_")
+  ;;
+  ;; The last possible combination, C-M-_ is *not* bound to the
+  ;; negative-argument function.  Instead it is *reserved* as a special
+  ;; key sequence to use with a "lossless keyboard input" package such as
+  ;; term-key.el to add ability to bind keys that are normally not accessible
+  ;; in terminal mode.
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Font Control
+  ;; --------------
+  ;; On macOS, the keys used by the OS are the same as selected here, both in
+  ;; GUI mode and in terminal (TTY) mode:
+  ;; - In terminal mode: the Terminal.app uses the ⌘ command keys for fond size
+  ;;   control (it's not Emacs that acts on them, its the Terminal.app)
+  ;; - In graphics mode the same keys handled by Emacs: the Super modifier is
+  ;;   assigned to the ⌘ Command key.
+
+  (when (and (eq system-type 'darwin)
+             (display-graphic-p))
+
+    ;; Bind the face-remap commands. The face-remap package
+    ;; is part of Emacs standard distribution.
+    (global-set-key (kbd "s-=")             #'text-scale-adjust)
+    (global-set-key (kbd "s-+")             #'text-scale-adjust)
+    (global-set-key (kbd "s--")             #'text-scale-adjust)
+    (global-set-key (kbd "s-0")             #'text-scale-adjust)
+
+    ;; Load the pel-font package only as needed.
+    ;; Configure the pel-font commands as autoload.
+    (use-package pel-font
+      ;; autoload it when one of the following commands is used.
+      :commands (pel-font-increase-size-all-buffers
+                 pel-font-decrease-size-all-buffers
+                 pel-font-reset-size-all-buffers)
+
+
+      ;; run following command before package is loaded to
+      ;; activate the autoload.
+      :init
+      (global-set-key (kbd "<s-kp-add>")      #'pel-font-increase-size-all-buffers)
+      (global-set-key (kbd "<s-kp-subtract>") #'pel-font-decrease-size-all-buffers)
+      (global-set-key (kbd "<s-kp-0>")        #'pel-font-reset-size-all-buffers)))
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Buffer navigation
+  ;; -------------------
+  ;; Replace `list-buffer' by the nicer, more flexible and more
+  ;; powerful `ibuffer'. Show in current window, not other one.
+  (global-set-key "\C-x\C-b" 'ibuffer)
+
+  ;; dired-narrow
+  ;; ------------
+  ;; When dired-narrow is used, add <f12> prefix keys to dired-narrow specific
+  ;; commands.
+  (when pel-use-dired-narrow
+    (use-package dired-narrow
+      ;; dired-narrow is an external package.
+      ;; Ensure it's installed via MELPA
+      :ensure t
+      :pin melpa
+
+      ;; autoload it when one of the following commands is used.
+      :commands (dired-narrow
+                 dired-narrow-regexp
+                 dired-narrow-fuzzy)
+
+      ;; run following command before package is loaded to
+      ;; activate the autoload.
+      :init
+      (define-prefix-command 'pel:for-dired-narrow)
+      ;;
+      (define-key pel:for-dired-narrow "s" #'dired-narrow)
+      (define-key pel:for-dired-narrow "r" #'dired-narrow-regexp)
+      (define-key pel:for-dired-narrow "f" #'dired-narrow-fuzzy)
+      ;;
+      (pel--mode-hook-maybe-call
+       '(lambda ()
+          (local-set-key (kbd "<f12>") 'pel:for-dired-narrow))
+       'pel--f12-dired-mode 'dired-mode 'dired-mode-hook)))
+
+  ;; -----------------------------------------------------------------------------
+  ;; - PEL: Window Behaviour & operations
+  ;; ------------------------------------
+  ;;
+  ;; Uses: pel-window, which is autoloaded.
+  ;;
+  ;; Use multiple techniques to control creation, killing and  navigation
+  ;; across windows.  Provide CRiSP-like function-key/cursor operations as
+  ;; well as extra operations via 3 packages: windmove, ace-window and
+  ;; winner-mode.  All Emacs default windows operation key bindings are
+  ;; retained (except for 'C-x o' which is remapped to ace-window).
+  ;; The operations are:
+  ;;
+  ;; - CRiSP-like operations (implemented using windmove and PEL code):
+  ;;   - navigation: F11 cursor     (point where to move point to)
+  ;;   - creation  : F11 C-cursor   (point to where to create window)
+  ;;   - kill      : F11 C-S-cursor (point to window to kill)
+  ;;
+  ;;  - ace-window assigned to 'C-x o', replacing other-window, which
+  ;;    provides a single digit window number in the top left corner of each
+  ;;    window when moving windows.
+  ;;
+  ;; - Use winner-mode (assigned to 'F11 w p' and 'F11 w n') to restore previous
+  ;;   or next window layout.
+  ;;
+  ;; - '<f11> w s' based keys to resize windows with following keys:
+  ;;   - V : increase vertical size
+  ;;   - v : decrease vertical size
+  ;;   - H : increase horizontal size
+  ;;   - h : decrease horizontal size
+  ;;
+  ;;   Since the above are long to type, once you type one, use 'C-x z' to
+  ;;   repeat, typing 'z' subsequently to repeat again, or even easier: <f5>.
+  ;;
+  ;; - Original window kill: 'C-x 0' and 'C-x 1'
+  ;; - Original window split and creation: 'C-x 2' and 'C-x 3'
+  ;;
+  ;; - Mode Activation - cursor window movement: windmove and framemove
+  ;; ------------------------------------------------------------------
+  ;; In graphics mode, more keys are accessible and some of them
+  ;; can be used with cursor keys to help navigation across Emacs
+  ;; windows:
+  ;;  - for Windows: H-left, H-right, H-up and H-down
+  ;;  - for macOS : s-left, s-right, s-up and s-down.
+  ;;
+  ;; Also, in graphics mode, if a (modified) version of the
+  ;; framemove.el file is available, then we can allow the
+  ;; window move navigation to expand moving away from the
+  ;; current frame into the others surrounding frames.
+
+  ;; windmove is part of Emacs.  It's loading is controlled by pel-window, where
+  ;; it is used, via autoloading. Here, just identify default keybindings when
+  ;; Emacs is running in graphics mode.  Other keybindings are defined for the
+  ;; pel: keybinding, somewhere else in this file.
+  (when (display-graphic-p)
+    (use-package windmove
+      ;; specify defer: we don't want to require windmove here since it is
+      ;; autoloaded via the pel-window file.  However, when Emacs is running in
+      ;; graphics mode, we need to either set the default bindings (and then we
+      ;; force autoload of windmove) or force users to use something else of
+      ;; windmove to activate its special binding.  None of this is a good
+      ;; solution. So, as a compromise to delay the loading of windmove, just
+      ;; defer it for a specific amount of time, and then schedule the setting of
+      ;; the special binding when it is actually loaded.
+      :defer 5
+      :config
+      (declare-function windmove-default-keybindings "windmove")
+      (windmove-default-keybindings (if (eq system-type 'darwin)
+                                        'super
+                                      'hyper))))
+  (when pel-use-framemove
+    (when (display-graphic-p)
+      (use-package framemove
+        :defer 3
+        :config
+        ;; modified framemove (replaced "remove-if-not" by "cl-remove-if-not")
+        (setq framemove-hook-into-windmove t))))
+
+  ;; Don't move point when splitting windows vertically
+  ;; --------------------------------------------------
+  ;; By default, Emacs moves the cursor of the new window of a vertical split
+  ;; so we see more of the text across the use of the 2 windows.  This is a
+  ;; surprising behaviour for new users. It also prevents keeping track of
+  ;; the original location when the window is split temporary for other work.
+  ;; The following set Emacs to keep the point in the same location.
+  (setq split-window-keep-point t)
+
+
+
+  ;; More powerful indent-rigidly: pel-indent-rigidly
+  ;; ------------------------------------------------
+  ;; the pel-indent-rigidly does the same as the original command
+  ;; but also allow indenting the current line even if nothing is marked.
+  (global-set-key [remap indent-rigidly] 'pel-indent-rigidly)
+
+  ;; Uniquify: meaningful names when multiple buffers have the same name
+  ;; -------------------------------------------------------------------
+  ;; Uniquify provides meaningful names for buffers with the same name.
+  ;; The following code snippet evolved from what's available on
+  ;; https://github.com/bbatsov/prelude.
+  ;; uniquify is now part of Emacs distribution.
+  (when pel-use-uniquify
+    (use-package uniquify
+      :config
+      (setq uniquify-buffer-name-style 'post-forward)
+      ;; rationalize buffer after killing uniquified buffer
+      (setq uniquify-after-kill-buffer-p t)
+      ;; Don't  not uniquify  special buffers
+      (setq uniquify-ignore-buffers-re "^\\*")))
+
+  ;; - Use IDO-mode
+  ;; --------------
+  ;; Provides suggestions at prompts for file names,
+  ;; buffer names, etc...
+  ;; Notes:
+  ;; - When IDO gets in the way, type C-f at IDO prompt to
+  ;;   enter the path and file name without suggestions.
+  ;; - Use C-j when you want to force using what is
+  ;;   and don't want to request a proposed value.
+  ;; IDO is now part of Emacs distribution.
+  (when pel-use-ido-mode
+    (ido-mode 1)
+    (setq ido-everywhere t)
+    (setq ido-enable-flex-matching t)
+    ;; don't require confirmation when creating new buffers
+    ;; with C-x b
+    (setq ido-create-new-buffer 'always))
+
+  ;; - Use Hippie Expand
+  ;; -------------------
+  (when pel-use-hippie-expand
+    (global-set-key [remap dabbrev-expand] 'hippie-expand)
+    ;; I want Hippie Expand to use DAbbrev *first* as this is what most of
+    ;; my search require, then I want to search in the file names.  I don't
+    ;; really need lisp code expansion since I already have that provided by
+    ;; Company mode that will pop-up a menu. I might need straight abbreviations
+    ;; or some dictionary completion, so I may need to add try-expand-all-abbrevs.
+    (setq hippie-expand-try-functions-list
+          (quote
+           (try-expand-dabbrev
+            try-expand-dabbrev-all-buffers
+            try-complete-file-name-partially
+            try-complete-file-name))))
+  ;; Other search rules exist, but I am not using them.
+  ;; They are:
+  ;; - try-expand-all-abbrevs
+  ;; - try-complete-lisp-symbol-partially
+  ;; - try-complete-lisp-symbol
+  ;; - try-expand-list
+  ;; - try-expand-dabbrev-from-kill
+  ;; - try-expand-line
+
+  ;; -----------------------------------------------------------------------------
+  ;; Visible Bookmark (bm.el)
+  ;; ------------------------
+  (when pel-use-bm
+    ;; configure bm package to be loaded only on first use.
+    (use-package bm
+      :ensure t
+
+      :init
+      ;; Ensure that bm restores bookmark when it loads.
+      (setq bm-restore-repository-on-load t)
+
+      :config
+      ;; Allow cross-buffer 'next'
+      (setq bm-cycle-all-buffers t)
+
+      ;; where to store persistent files
+      (setq bm-repository-file "~/.emacs.d/bm-repository")
+
+      ;; save bookmarks
+      (setq-default bm-buffer-persistence t)
+
+      ;; Loading the repository from file when on start up.
+      (add-hook 'after-init-hook 'bm-repository-load)
+
+      ;; prevent byte-compiler warnings
+      (declare-function bm-buffer-save      "bm")
+      (declare-function bm-buffer-save-all  "bm")
+      (declare-function bm-repository-save  "bm")
+      (declare-function bm-buffer-restore   "bm")
+
+      ;; Saving bookmarks
+      (add-hook 'kill-buffer-hook 'bm-buffer-save)
+
+      ;; Saving the repository to file when on exit.
+      ;; kill-buffer-hook is not called when Emacs is killed, so we
+      ;; must save all bookmarks first.
+      (add-hook 'kill-emacs-hook '(lambda nil
+                                    (bm-buffer-save-all)
+                                    (bm-repository-save)))
+
+      ;; The `after-save-hook' is not necessary to use to achieve persistence,
+      ;; but it makes the bookmark data in repository more in sync with the file
+      ;; state.
+      (add-hook 'after-save-hook 'bm-buffer-save)
+
+      ;; Restoring bookmarks
+      (add-hook 'find-file-hooks   'bm-buffer-restore)
+      (add-hook 'after-revert-hook 'bm-buffer-restore)
+
+      ;; The `after-revert-hook' is not necessary to use to achieve persistence,
+      ;; but it makes the bookmark data in repository more in sync with the file
+      ;; state. This hook might cause trouble when using packages
+      ;; that automatically reverts the buffer (like vc after a check-in).
+      ;; This can easily be avoided if the package provides a hook that is
+      ;; called before the buffer is reverted (like `vc-before-checkin-hook').
+      ;; Then new bookmarks can be saved before the buffer is reverted.
+      ;; Make sure bookmarks is saved before check-in (and revert-buffer)
+      (add-hook 'vc-before-checkin-hook 'bm-buffer-save)
+
+      ; TODO?: find a better binding? non conflicting, allowing function key to be used as prefix?
+      (global-set-key (kbd "<f2>")   'bm-next)
+      ))
+
+  ;; -----------------------------------------------------------------------------
+  ;; Markup Language Support
+  ;; --=====================
+
+  ;; --------------------------
+  ;; - Lightweight markup modes
+  ;; --------------------------
+  ;; (use-package markdown-mode)
+
+  ;; -----------------------------
+  ;; - Programming Style: Org-Mode
+  ;; -----------------------------
+  (when pel-use-org-mode
+    ;; Org-Mode activation (as suggested by https://orgmode.org/manual/Activation.html#Activation ):
+    (use-package org
+      :commands (org-mode
+                 org-indent-mode
+                 org-store-link
+                 org-agenda
+                 org-capture
+                 org-switchb)
+      :init
+      (global-set-key "\C-cl" 'org-store-link)
+      (global-set-key "\C-ca" 'org-agenda)
+      (global-set-key "\C-cc" 'org-capture)
+      (global-set-key "\C-cb" 'org-switchb)
+      ;; Activate specialized C-a and C-e in Org-Mode.
+      (setq org-special-ctrl-a/e t)
+      ;; Activate timestamp log for DONE tasks
+      (setq org-log-done 'time)
+      ;; Add the "IN-PROGRESS" in the list of TODO states
+      (setq org-todo-keywords (quote ((sequence "TODO" "IN-PROGRESS" "DONE"))))
+      ;; Use the cleaner outline view mode.
+      (add-hook 'org-mode-hook 'org-indent-mode)))
+
+  ;; -------------------------------------
+  ;; - Programming Style: reStructuredText
+  ;; -------------------------------------
+  (when pel-use-rst-mode
+    ;; - Add .stxt to the accepted file extensions for rst-mode (reStructuredText)
+    ;; ---------------------------------------------------------------------------
+    ;; The conventions for reStructuredText is normally .rst and .rest
+    ;; Adding the .stxt file extension for reStructuredText.
+    (setq auto-mode-alist
+          (append '(("\\.stxt\\'"  . rst-mode)) auto-mode-alist))
+
+    ;; Change the reStructuredText adornments to what is used by CRiSPer.
+    (setq rst-preferred-adornments '((?= over-and-under 0)  ; level 0: title
+                                     (?= simple 0)          ; level  1
+                                     (?- simple 0)          ; level  2
+                                     (?~ simple 0)          ; level  3
+                                     (?^ simple 0)          ; level  4
+                                     (?+ simple 0)          ; level  5
+                                     (?* simple 0)          ; level  6
+                                     (?> simple 0)          ; level  7
+                                     (?< simple 0)          ; level  8
+                                     (?_ simple 0)          ; level  9
+                                     (?# simple 0)          ; level 10
+                                     (?` simple 0)          ; level 11 - not available in CRiSPer.
+                                     (?@ simple 0))))       ; level 12 - not
+                                        ; available in CRiSPer.
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Programming Language Support
+  ;; --============================
+
+  ;; (when (and pel-use-eldoc-box
+  ;;            (display-graphic-p))
+  ;;   (use-package eldoc-box
+  ;;     :require t))
+
+  ;; C-like programming languages: C, C++
+  ;; ------------------------------------
+  (when pel-use-c-eldoc
+    (use-package c-eldoc
+      ;; c-eldoc is an external package.
+      ;; Ensure it's installed via MELPA
+      :ensure t
+      :pin melpa
+
+      ;; autoload it when one of the following commands is used.
+      :commands c-turn-on-eldoc-mode
+
+      ;; run following command before package is loaded to
+      ;; activate the autoload.
+      :init
+      (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)))
+
+  (when pel-use-cc-vars
+    (use-package cc-vars
+      :config
+      ;; Using bsd/allman style but with 3 spaces per tabs.
+      (setq-default c-basic-offset 3)))   ;TODO: it's value is 'set-from-style' ??  Need to investigate.
+
+  ;; - Programming Style: Company Mode
+  ;; ---------------------------------
+
+  (when pel-use-auto-complete
+    (use-package auto-complete
+      :commands auto-complete-mode))
+
+  (when pel-use-company
+    ;; Defer-load company.el via the autoload company-mode minor-mode function.
+    ;; Once loaded:
+
+    (use-package company
+      :commands company-mode
+      :config
+      (setq company-tooltip-align-annotations t)
+      ;; variables affecting automatic completion:
+      ;; - company-idle-delay
+      ;; - company-minimum-prefix-length
+      ;; Start with:     M-x company-mode
+      ;; Complete with:  M-x company-complete -> H-c
+      (global-set-key (kbd "H-c") 'company-complete)
+      ;; use company-mode in all buffers:
+      (add-hook 'after-init-hook 'global-company-mode)
+      ;; show numbers on the pop-up menu
+      (setq company-show-numbers t)))
+
+  ;; ---------------
+  ;; - CMake support
+  ;; ---------------
+  ;; (use-package cmake-mode)
+
+  ;; ---------------------
+  ;; - Common Lisp support
+  ;; ---------------------
+  (when pel-use-common-lisp
+    (use-package slime
+      :ensure t
+      :defer t)
+
+    (pel-cl-init :slime-is-used)
+    ;; I downloaded a copy of the latest version (version 7) of the LispWorks Hyperspec
+    ;; from http://ftp.lispworks.com/pub/software_tools/reference/HyperSpec-7-0.tar.gz
+    ;; as identified by the LispWorks Download page (http://www.lispworks.com/documentation/common-lisp.html).
+    ;; Then I created a symlink inside my ~/docs directory.
+    (setq common-lisp-hyperspec-root
+          (concat "file://"
+                  (expand-file-name "~/docs/HyperSpec/"))))
+
+  ;; -------------------------------
+  ;; - Programming Style: Emacs Lisp
+  ;; -------------------------------
+
+
+  (when pel-use-esup
+    (use-package esup
+      ;; esup is an external package: ensure it's installed from MELPA if not available.
+      :ensure t
+      :pin melpa
+      :commands esup))
+
+  ;; -----------------------------------
+  ;; - Programming Style: Erlang Support
+  ;; -----------------------------------
+  ;; erlang flymake does not seem to work.
+  ;; erlang MAN also does not work.
+  ;; I do not know why.  Need to learn more.
+  (when pel-use-erlang
+    ;; TODO: make the following a customization that either accepts the path or an
+    ;; environment variable to get it from.
+    (setq erlang-root-dir
+          "/Users/roup/Library/Application Support/ErlangInstaller/21.1/erts-10.1")
+    (use-package erlang
+      :defer 3
+      :commands erlang-mode
+      :init
+      (require 'erlang-start)
+      :config
+      (when pel-use-erlang-flymake
+        (require 'erlang-flymake))))
+
+  ;; (when pel-use-edts                  ; TODO: complete this
+  ;;   (use-package edts
+  ;;     :defer t))))
+
+  ;; ------------------------------------
+  ;; - Programming Style: Haskell Support
+  ;; ------------------------------------
+  ;;
+  ;; Using Intero to support Haskell programming language.
+  ;; Installed it via the list-packages.
+                                        ; (add-hook 'haskell-mode-hook 'intero-mode)
+
+  ;; -----------------------------------
+  ;; - Programming Style: Python Support
+  ;; -----------------------------------
+  (when pel-use-python                    ; TODO: complete this
+    (use-package elpy
+      :defer t)
+    ;; Normally, (python-shell-prompt-detect) should evaluate to (">>> " "... " "")
+    ;; for Python shell to work properly.  Under Windows, that is currently not the
+    ;; case for my system (but also others as described by https://github.com/jorgenschaefer/elpy/issues/733)
+    ;; I investigated and a work-around is to set python-shell-unbuffered to nil.
+    ;; So I attempt to do this here to see if that works when launching emacs.
+    ;;
+    ;; There is another, remaining problem: the "native" python completion does
+    ;; not work on Windows because of its lack of proper PTY (pseudo terminal).
+    ;; Therefore, in Windows, "python" should be added to the list bounded to
+    ;; python-shell-completion-native-disabled-interpreters.
+    ;;
+    ;; The code below does both for Windows.
+    (when (eq system-type 'windows-nt)
+      (defvar python-shell-unbuffered)
+      (defvar python-shell-completion-native-disabled-interpreters)
+      (setq python-shell-unbuffered nil)
+      (if (boundp 'python-shell-completion-native-disabled-interpreters)
+          (add-to-list 'python-shell-completion-native-disabled-interpreters "python")
+        (setq python-shell-completion-native-disabled-interpreters '("python")))))
+
+  ;; - Programming Style: Rust & Cargo Support
+  ;; -----------------------------------------
+  (when pel-use-rust                      ; TODO: complete this
+    (use-package racer
+      :defer t)
+    (use-package rust-mode
+      :defer t)
+    (use-package cargo
+      :defer t
+      :config
+      ;; M-x package-install rust-mode
+      ;; M-x package-install cargo
+      ;; M-x package-install racer
+      ;; M-x package-install company
+      (add-hook 'rust-mode-hook  'cargo-minor-mode)
+      (add-hook 'rust-mode-hook  'racer-mode)
+      (add-hook 'racer-mode-hook 'eldoc-mode)
+      (add-hook 'racer-mode-hook 'company-mode)
+      (define-key rust-mode-map (kbd "TAB") 'company-indent-or-complete-common)))
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Extra key bindings
+  ;; --==================
+  ;;
+
+  ;; - Numeric Keypad Keys
+  ;; ---------------------
+
+  ;; - Paste key
+  ;; -----------
+  ;; Paste                   : <kp-insert>
+  (global-set-key [kp-insert] 'cua-paste)
+
+  ;; - Copy/Delete/Kill things at point
+  ;; ----------------------------------
+  ;;
+  ;; The following code controls the following operations:
+  ;; - Copy a `thing` from the buffer to the kill-ring (for later pasting).
+  ;; - Delete a `thing` from the buffer, without storing to the kill-ring.
+  ;; - Kill a `thing` from the buffer: delete it from the buffer and copy
+  ;;   to the kill-ring (for later pasting).
+  ;;
+  ;; The `thing` can be one of the symbols supported by (bounds-of-thing-at-point):
+  ;;  word, symbol, list, sexp, defun, line, sentence, whitespace, page,
+  ;;  filename, url, email.
+  ;;
+  ;; The goal of this is to support quick operations with simple key bindings.
+
+  (global-set-key [C-kp-add] 'pel-copy-word-at-point)
+  (global-set-key [M-kp-add] 'pel-copy-symbol-at-point)
+
+  (global-set-key [C-kp-subtract] 'pel-kill-word-at-point)
+  (global-set-key [M-kp-subtract] 'pel-kill-symbol-at-point)
+
+  ;; - Copy current marked region or whole current line
+  ;; --------------------------------------------------
+  ;; Copy current marked region or line:  <kp-add>
+  (global-set-key [kp-add] 'pel-copy-marked-or-whole-line)
+
+  ;; - Kill beginning of line
+  ;; ------------------------
+  ;; TODO: the following bindings do NOT work in Terminal.
+  ;; Remove them: ensure we have something that works in both modes, as is not a sequence of keys!!
+  (global-set-key [(meta delete)] 'kill-line)
+
+  ;; - Keypad keys rebinding
+  ;; -----------------------
+  ;; use pel-numkpad
+
+  (global-set-key [kp-0] 'pel-0)
+  (global-set-key [kp-1] 'pel-1)
+  (global-set-key [kp-2] 'pel-2)
+  (global-set-key [kp-3] 'pel-3)
+  (global-set-key [kp-4] 'pel-4)
+  (global-set-key [kp-5] 'pel-5)
+  (global-set-key [kp-6] 'pel-6)
+  (global-set-key [kp-7] 'pel-7)
+  (global-set-key [kp-8] 'pel-8)
+  (global-set-key [kp-9] 'pel-9)
+  (global-set-key [kp-decimal] 'pel-kp-decimal)
+  ;; / and * keys have no secondary meaning yet.
+  (global-set-key [kp-subtract] 'pel-kp-subtract)
+  (global-set-key [kp-add] 'pel-kp-add)
+  (global-set-key [clear] 'pel-toggle-mac-numlock) ; does not work in macOS terminal
+
+  ;; - recenter-top-bottom on keypad 5 key
+  ;; -------------------------------------
+  ;; When the keypad keys are not num-locked, the '5' key is <kp-space>.
+  ;; Map that to recenter-top-bottom, the same as C-l.
+  ;; On macOS, there is no num-lock, so the 'clear' key is mapped to recenter-top-bottom.
+  (when (eq system-type 'windows-nt)
+    (global-set-key [kp-space] 'recenter-top-bottom))
+
+  ;; - Scrolling up & down without moving point
+  ;; ------------------------------------------
+  ;; - uses: pel-scroll
+  ;;
+  ;; Cursor-Keys:
+  ;; - Implement a simple/fast single line scrolling that
+  ;;   also support the dual window scroll lock.
+  ;;   Assigned to multiple key-chords to make it easy to use
+  ;;   in multiple situations:
+  ;;   - Meta up/down
+  ;;   - Meta f11/f12 in org-mode, since Meta up/down do something else.
+
+  (global-set-key (kbd "<M-down>")  #'pel-scroll-up)
+  (global-set-key (kbd "<M-f11>")   #'pel-scroll-up)        ; scroll text up: toward small line number
+  (global-set-key (kbd "<M-up>")    #'pel-scroll-down)
+  (global-set-key (kbd "<M-f12>")   #'pel-scroll-down)      ; scroll text down: toward large line number
+  ;; Note: to scroll-sync 2 windows, use: ``M-x pel-toggle-scroll-sync`` ('f11 L')
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Navigation control facilities
+  ;; -------------------------------
+  ;; - uses: pel-navigate
+  ;;
+  ;; Remap standard 'beginning-of-line' to `pel-beginning-of-line'.  The PEL
+  ;; function combines the functionality of `beginning-of-line' and the function
+  ;; `back-to-indentation'.
+  (global-set-key (kbd "C-a") #'pel-beginning-of-line)
+
+  ;; Augment word movement by adding M-n to move to the beginning of a word,
+  ;; something that is not provided by the standard Emacs keys; it only has
+  ;; forward-word  (which moves at the end of word forward) and backward-word
+  ;; (which moves backward to the beginning of the word).  The backward-word
+  ;; command is bound to M-b which is just to the left of the M-n key in QWERTY
+  ;; and AZERTY keyboards.
+  (global-set-key (kbd "M-n")  #'pel-forward-word-start)
+
+  ;; Add indented line below
+  (global-set-key (kbd "<M-RET>") #'pel-newline-and-indent-below)
+
+  ;; Meta left/right to forward/backward-word as this is needed by term shells
+  ;; and python shells from outside Emacs so we leave it to get the same behaviour
+  ;; in these shells inside Emacs. These leave cursor at end of a word.
+  (global-set-key (kbd "<M-right>") #'forward-word)
+  (global-set-key (kbd "<M-left>")  #'backward-word)
+
+  ;; Control left/right to forward/backward-word but leave point to the
+  ;; beginning of the word instead.
+  (global-set-key (kbd "<C-right>") #'pel-forward-token-start)
+  (global-set-key (kbd "<C-left>")  #'pel-backward-token-start)
+
+  ;; - Key mapping to navigate sexp/code nesting
+  ;; -------------------------------------------
+  ;; Cursor-Keys:
+  ;; Use the numeric keypad cursor keys.
+  ;;  On macOS, simulate the numeric keypad using
+  ;;  the number keys on the keypad.
+  (if (eq system-type 'darwin)
+      (progn
+        (global-set-key [C-kp-4]    #'backward-sexp)
+        (global-set-key [C-kp-6]    #'forward-sexp)
+        (global-set-key [C-kp-8]    #'backward-up-list)
+        (global-set-key [C-kp-2]    #'down-list))
+    (global-set-key [C-kp-left]     #'backward-sexp)
+    (global-set-key [C-kp-right]    #'forward-sexp)
+    (global-set-key [C-kp-up]       #'backward-up-list)
+    (global-set-key [C-kp-down]     #'down-list))
+
+  ;; - Navigate to beginning/end of line/window/buffer
+  ;; -------------------------------------------------
+  ;;
+  ;; Replacement for the binding of the <home> and <end>
+  ;; bindings (originally bound respectively to 'beginning-of-buffer
+  ;; and to 'end-of-buffer) with an improved CRiSP-like single/multi
+  ;; home/end key implemented by 'pel-home and 'pel-end.
+  ;;
+  (global-set-key [(home)] #'pel-home)
+  (global-set-key [(end)]  #'pel-end)
+
+  ;; - Delete whitespace between point and next non-whitespace
+  ;; ---------------------------------------------------------
+
+  (global-set-key [(control shift delete)] #'kill-word)
+  (global-set-key [(control delete)]       #'pel-delete-to-next-visible)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Cursor Keys
+  ;; -------------
+
+  ;; ============ ========== ===================== ==============================
+  ;; Cursor key   Modifier   Function              Notes
+  ;; ============ ========== ===================== ==============================
+  ;; Left         Control    left-word
+  ;; Right        Control    right-word
+  ;; Up           Control    backward-paragraph
+  ;; Down         Control    forward-paragraph
+  ;; kp-Left      Control    backward-sexp
+  ;; kp-Right     Control    forward-sexp
+  ;; kp-Up        Control    backward-up-list
+  ;; kp-Down      Control    down-list
+  ;;
+  ;; Left         Meta       backward-word         Move to word left ignores all non-whitespace
+  ;; Right        Meta       forward-word          Move to word right ignore all non-whitespace
+  ;; Up           Meta       ??
+  ;; Down         Meta       ??
+  ;; kp-Left      Meta       digit-argument
+  ;; kp-Right     Meta       digit-argument
+  ;; kp-Up        Meta       digit-argument
+  ;; kp-Down      Meta     digit-argument
+  ;;
+  ;; Left         Hyper      end
+  ;; Right        Hyper      home
+  ;; Up           Hyper      prior
+  ;; Down         Hyper      next
+  ;; kp-Left      Hyper      pel-4
+  ;; kp-Right     Hyper      pel-6
+  ;; kp-Up        Hyper      pel-8
+  ;; kp-Down      Hyper      pel-2
+  ;;
+  ;; Left         Super      windmove-left         Move cursor to window at left
+  ;; Right        Super      windmove-right        Move cursor to window at right
+  ;; Up           Super      windmove-up           Move cursor to window above
+  ;; Down         Super      windmove-down         Move cursor to window below
+  ;; kp-Left      Super      ??
+  ;; kp-Right     Super      ??
+  ;; kp-Up        Super      ??
+  ;; kp-Down      Super      ??
+  ;;
+  ;; Left         Meta-Super pel-previous-visible  Move to word left ignores all non-whitespace
+  ;; Right        Meta-Super pel-next-visible      Move to word right ignore all non-whitespace
+  ;; Up           Meta-Super ??
+  ;; Down         Meta-Super ??
+  ;; kp-Left      Meta-Super ??
+  ;; kp-Right     Meta-Super ??
+  ;; kp-Up        Meta-Super ??
+  ;; kp-Down      Meta-Super ??
+  ;; ============ ========== ===================== ==============================
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys
+  ;; ---------------
+  ;;
+  ;; The first 4 function keys are used by Emacs and do not support combinations
+  ;; with Control, Meta and Shift in macOS terminal (at least I have not found a
+  ;; way to get terminal escape sequences for the first 4 functions keys to work
+  ;; with Emacs running in macOS Terminal.
+  ;; For F5 through F12, the combinations do work and aside from F8 (used by spell
+  ;; and flyspell), these keys are not used by the Emacs packages I use so far.
+  ;; I use F6 as an extra prefix and assign the other keys to various operations
+  ;; as described below.
+
+  ;; <f1>  : Emacs help system
+  ;; <f2>  : prefix
+  ;; <f3>  > pel-kmacro-start-macro-or-insert-counter
+  ;; <f4>  : kmacro-end-or-call-macro
+  ;; <f5>  > repeat
+  ;; <f6>  > pel prefix
+  ;; <f7>  >                        (C)                   (M)
+  ;; <f8>  >                        (C)                   (M)
+  ;; <f9>  >                        (C)                   (M)
+  ;; <f10> > used by menu-bar-open, (C) buffer-menu-open, (M) toggle-frame-maximized
+  ;; <f11> > pel prefix,  <C-f11>: pel-previous-visible,  <M-f11>: pel-scroll-up
+  ;; <f12> > unused,      <C-f12>: pel-next-visible,      <M-f12>: pel-scroll-down
+
+  ;; - PEL: Protected keyboard-macro definitions
+  ;; -------------------------------------------
+  (global-set-key (kbd "<f3>") #'pel-kmacro-start-macro-or-insert-counter)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f5>
+  ;; ----------------------
+  ;; Bind repeat to a single key: <f5> and <S-F5>
+  (global-set-key (kbd "<f5>") 'repeat)
+  ;; <S-f5> is also bound to repeat but also marks.
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f6>
+  ;; ----------------------
+  ;;
+
+  (define-global-prefix 'pel:f6 (kbd "<f6>"))
+  (define-key pel:f6 "l"  #'pel-insert-line)
+  (define-key pel:f6 "F"  #'pel-insert-filename)
+  (when pel-use-lice
+    (define-key pel:f6 "L" 'lice))
+
+
+  ;; Move to the beginning of next function definition (while moving forward)
+  ;;  complements C-M-e and C-M-a
+  (define-key pel:f6 "n"           #'pel-beginning-of-next-defun)
+
+  ;; (kbd "<tab>") does not work in terminal mode, it works only in graphics mode
+  (define-key pel:f6 (kbd "C-i")   #'pel-insert-c-indent)
+  ;;
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11>
+  ;; -----------------------
+
+  ;; --
+  ;; - Function Keys - <f11> top-level prefix keys
+
+  (define-global-prefix 'pel: (kbd "<f11>"))
+  (define-key pel:           "#"             #'pel-toggle-mac-numlock)
+  (define-key pel:           "|"             #'pel-toggle-dual-scroll)
+  (define-key pel:           "y"             #'yank-pop)
+  (define-key pel: (kbd      "<down>")       'windmove-down)
+  (define-key pel: (kbd      "<up>")         'windmove-up)
+  (define-key pel: (kbd      "<left>")       'windmove-left)
+  (define-key pel: (kbd      "<right>")      'windmove-right)
+  (define-key pel: (kbd      "<C-down>")     #'pel-create-window-down)
+  (define-key pel: (kbd      "<C-up>")       #'pel-create-window-up)
+  (define-key pel: (kbd      "<C-left>")     #'pel-create-window-left)
+  (define-key pel: (kbd      "<C-right>")    #'pel-create-window-right)
+  (define-key pel: (kbd      "<C-S-down>")   #'pel-close-window-down)
+  (define-key pel: (kbd      "<C-S-up>")     #'pel-close-window-up)
+  (define-key pel: (kbd      "<C-S-left>")   #'pel-close-window-left)
+  (define-key pel: (kbd      "<C-S-right>")  #'pel-close-window-right)
+  (define-key pel: (kbd      "<M-right>")    #'pel-forward-syntaxchange-start)
+  (define-key pel: (kbd      "<M-left>")     #'pel-backward-syntaxchange-start)
+  (define-key pel: (kbd      "0")            #'hl-line-mode)
+
+  ;; In graphics mode, bindings to go directly to another frame
+  ;; without having to move through all intervening windows in current
+  ;; frame.
+  (when (display-graphic-p)
+    (when pel-use-framemove
+      (define-key pel: (kbd  "<S-down>")     'fm-down-frame)
+      (define-key pel: (kbd  "<S-up>")       'fm-up-frame)
+      (define-key pel: (kbd  "<S-left>")     'fm-left-frame)
+      (define-key pel: (kbd  "<S-right>")    'fm-right-frame))
+    (define-key pel: (kbd    "C-<f10>")      #'menu-bar-mode))
+  ;;
+  (define-key pel: (kbd      "<f11>")        #'pel-toggle-frame-fullscreen)
+  (when (not (display-graphic-p))
+    (define-key pel: (kbd    "<f12>")        #'xterm-mouse-mode)
+    ;; TODO: BUG?: for some reason, on my macOS terminal, the keys '<f11>C-<f10>'
+    ;; register as '<f11><f34>'.  That might be a limitation with the function
+    ;; key encodings or a mistake in my terminal setup, I will have to look
+    ;; this up later.  For now, the work-around is to pass that (invalid)
+    ;; key binding in text terminal mode.
+    (define-key pel: (kbd    "<f34>")        #'menu-bar-mode))
+  ;;
+
+  ;; Bind <f11>/<f12> key-chords as extension of down/up cursors.
+  ;; These are keyboard mnemonics for lower and higher volume
+  ;; respectively, on macOS keyboards.
+  (global-set-key (kbd "<C-f11>") #'pel-previous-visible) ; TODO: probably will remove this now that we have pel-backward-token-start
+  (global-set-key (kbd "<C-f12>") #'pel-next-visible)     ; TODO: probably will remove this now that we have pel-forward-token-start
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Use undo-tree
+  ;; ---------------
+  ;; Use undo-tree which provides undo/redo ability with complete storage and
+  ;; no loss of history even when redo is done.
+  ;; The key bindings use keys similar to Brief & CRiSP keys: M-u, M-U
+  ;; note that the M-u key is normally assigned to upcase-word but M-C
+  ;; (which is bound to pel-upcase-word-or-region) replaces it.
+  ;; Keys:
+  ;; pel-use-undo-tree        nil                   t
+  ;;
+  ;;  - C-x u                 : undo              : undo-tree-undo
+  ;;  - C-/                   : undo              : undo-tree-undo
+  ;;  - M-u                   : undo              : undo-tree-undo
+  ;;  - M-U                                       : undo-tree-redo
+  ;;  - s-z                   : undo              : undo-tree-undo
+  ;;  - s-Z                                       : undo-tree-redo
+  ;;  - <f11> u u             : undo              : undo-tree-undo
+  ;;  - <f11> u r                                 : undo-tree-redo
+  ;;  - <f11> u v                                 : undo-tree-visualize
+  ;;  - <f11> u /                                 : undo-tree-switch-branch
+  ;;  - <f11> u \             : goto-last-change  : goto-last-change
+
+  (define-global-prefix 'pel:undo (kbd "<f11> u"))
+
+  (if pel-use-undo-tree
+      (use-package undo-tree
+        :commands (undo-tree-undo
+                   undo-tree-redo
+                   undo-tree-visualize
+                   undo-tree-switch-branch)
+        :init
+        ;; PEL doesn't call (global-undo-tree-mode) to preserve the
+        ;; binding of C-- and C-_ to negative-argument.  Instead,
+        ;; create explicit bindings to the keys for the undo.
+        (global-set-key (kbd "C-z")  'undo-tree-undo) ; BUG , TODO? : that binding does not stick.
+                                        ; There's a way, I need to change what I use to bind the negative-argument to key.
+                                        ; See https://emacs.stackexchange.com/questions/2530/global-key-binding-overriden-by-undo-tree
+        (when (display-graphic-p)
+          (global-set-key (kbd  "s-z")    #'undo-tree-undo)
+          (global-set-key (kbd  "s-Z")    #'undo-tree-redo))
+        (global-set-key (kbd    "C-x u")  #'undo-tree-undo)
+        (global-set-key (kbd    "C-/")    #'undo-tree-undo)
+        (global-set-key (kbd    "M-u")    #'undo-tree-undo)
+        (global-set-key (kbd    "M-U")    #'undo-tree-redo)
+
+        (define-key pel:undo    "u"       #'undo-tree-undo)
+        (define-key pel:undo    "r"       #'undo-tree-redo)
+        (define-key pel:undo    "v"       #'undo-tree-visualize)
+        (define-key pel:undo    "x"       #'undo-tree-switch-branch))
+
+    ;; When pel-use-undo-tree is not t, then sue standard Emacs undo but
+    ;; map to similar keys (except the ``<f11> u``)
+    (when (display-graphic-p)
+      (global-set-key (kbd  "s-z")    #'undo))
+    (global-set-key (kbd    "C-x u")  #'undo)
+    (global-set-key (kbd    "C-/")    #'undo)
+    (global-set-key (kbd    "M-u")    #'undo)
+    (define-key pel:undo    "u"       #'undo))
+
+  ;; - Use goto-last-change
+  ;; ----------------------
+  (when pel-use-goto-last-change
+    (autoload 'goto-last-change "goto-last-change"
+      "Set point to the position of the last change." t)
+    (define-key pel:undo "\\"  #'goto-last-change))
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> <f10>`` : Menu commands
+  ;; Force load of pel-imenu after load of imenu: pel-imenu-init is identified as
+  ;; an autoload, and it configures the imenu system.
+
+  (eval-after-load 'imenu
+    (pel-imenu-init))
+
+  (define-global-prefix 'pel:menu (kbd "<f11> <f10>"))
+  (define-key pel:menu "B"     #'menu-bar-mode)
+  (define-key pel:menu "I"     #'imenu-add-menubar-index)
+  (define-key pel:menu "i"     #'imenu)
+  (define-key pel:menu "o"     #'pel-toggle-imenu-index-follows-order)
+  (define-key pel:menu "t"     #'tmm-menubar)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : C programming utilities
+
+  (define-global-prefix 'pel:for-C (kbd "<f11> SPC c"))
+  (define-key pel:for-C    "." #'pel-find-thing-at-point)   ; Move point to the definition of function at point
+  (define-key pel:for-C    "(" #'show-paren-mode)           ; toggle showing matching parenthesis
+  (define-key pel:for-C    ")" #'check-parens)              ; Check for unbalanced parens in current buffer
+  (when pel-use-rainbow-delimiters
+    (define-key pel:for-C  "R"  'rainbow-delimiters-mode))  ; toggle colored highlight of nested (),{},[] by their depth.
+  ;;
+  (pel--mode-hook-maybe-call
+   '(lambda ()
+      (local-set-key (kbd "<f12>") 'pel:for-C))
+   'c-mode 'c-mode-hook)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : C++ programming utilities
+
+  (define-global-prefix 'pel:for-C++ (kbd "<f11> SPC C"))
+  (define-key pel:for-C++      "." #'pel-find-thing-at-point)   ; Move point to the definition of function at point
+  (define-key pel:for-C++      "(" #'show-paren-mode)           ; toggle showing matching parenthesis
+  (define-key pel:for-C++      ")" #'check-parens)              ; Check for unbalanced parens in current buffer
+  (when pel-use-rainbow-delimiters
+    (define-key pel:for-C++    "R"  'rainbow-delimiters-mode))  ; toggle colored highlight of nested (),{},[] by their depth.
+  ;;
+  (pel--mode-hook-maybe-call
+   '(lambda ()
+      (local-set-key (kbd "<f12>") 'pel:for-C++))
+   'c++-mode 'c++-mode-hook)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : Erlang programming utilities
+  (when pel-use-erlang
+    (define-global-prefix 'pel:for-erlang (kbd "<f11> SPC e"))
+    ;;
+    (pel--mode-hook-maybe-call
+     '(lambda ()
+        (local-set-key (kbd "<f12>") 'pel:for-erlang))
+     'erlang-mode 'erlang-mode-hook))
+
+  ;; ----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : Emacs Lisp programming utilities
+
+  ;; - Use parinfer
+  ;; --------------
+  (when pel-use-parinfer
+    (use-package parinfer
+      :defer t
+      :ensure t))
+
+  ;; - Use rainbow-delimiters
+  ;; ------------------------
+  (when pel-use-rainbow-delimiters
+    (use-package rainbow-delimiters))
+  ;; rainbow-delimiters-max-face-count 9
+  ;; rainbow-delimiters-max-face-count identifies max depth where colours are cycled;
+  ;; it's default value is 9.  That should be more than enough.
+  ;; The color of the parentheses are identified by the variables
+  ;; rainbow-delimiters-depth-X-face  (where 'X' is a digit between 1 and 9 included.)
+  ;; These variables should be defined inside the init.el file.
+
+  ;; -----------------------------------------------------------------------------
+
+  (define-global-prefix 'pel:elisp (kbd "<f11> SPC l"))
+  ;;
+  (define-key pel:elisp   "." #'pel-find-thing-at-point)        ; Move point to the definition of function at point
+  (define-key pel:elisp   "D" #'toggle-debug-on-error)
+  (when pel-use-parinfer
+    (define-key pel:elisp "i" 'parinfer-auto-fix))
+
+  (define-global-prefix 'pel:elisp-analyze (kbd "<f11> SPC l a"))
+  (define-key pel:elisp-analyze ")" #'check-parens)                   ; Check for unbalanced parens in current buffer
+  (when pel-use-parinfer
+    (define-key pel:elisp-analyze "D"  'parinfer-diff))
+  (define-key pel:elisp-analyze   "b" #'pel-lint-elisp-file)            ; analyze - elint current buffer file
+  (define-key pel:elisp-analyze   "d" #'checkdoc)                       ; doc/string check
+  (define-key pel:elisp-analyze   "f" #'elint-file)                     ; analyze - prompt and elint the requested file.
+
+  (define-global-prefix 'pel:elisp-compile (kbd "<f11> SPC l c"))
+  (define-key pel:elisp-compile "b" #'pel-byte-compile-file-and-load) ; byte compile & load current file. Don't prompt.
+  (define-key pel:elisp-compile "d" #'byte-recompile-directory)
+  (define-key pel:elisp-compile "f" #'byte-compile-file)              ; prompt for file, byte-compile.  Load only when invoked with prefix arg.
+
+  (define-global-prefix 'pel:elisp-debug (kbd "<f11> SPC l d"))
+  (define-key pel:elisp-debug "d" #'debug-on-entry)
+  (define-key pel:elisp-debug "D" #'cancel-debug-on-entry)
+  (define-key pel:elisp-debug "!" #'toggle-debug-on-error)
+  (define-key pel:elisp-debug ")" #'toggle-debug-on-quit)
+  (define-key pel:elisp-debug "e" #'edebug-defun)
+
+  (define-global-prefix 'pel:elisp-eval (kbd "<f11> SPC l e"))
+  (define-key pel:elisp-eval "b" #'eval-buffer)
+  (define-key pel:elisp-eval "f" #'load-file)
+  (define-key pel:elisp-eval "r" #'eval-region)
+
+  (define-global-prefix 'pel:elisp-function (kbd "<f11> SPC l f"))
+  (define-key pel:elisp-function "n" #'pel-search-defun)               ; move cursor to next defun form
+  (define-key pel:elisp-function "p" #'pel-search-defun-backward)
+
+  (define-global-prefix 'pel:elisp-lib (kbd "<f11> SPC l l"))
+  (define-key pel:elisp-lib "L" #'load-library)                   ; Load an elisp file.
+  (define-key pel:elisp-lib "l" #'find-library)                   ; Open the elisp library file
+  (define-key pel:elisp-lib "c" #'locate-library)
+  (define-key pel:elisp-lib "p" #'list-packages)
+
+  (define-global-prefix 'pel:elisp-mode (kbd "<f11> SPC l m"))
+  (define-key pel:elisp-mode      "(" #'show-paren-mode)           ; toggle showing matching parenthesis
+  (define-key pel:elisp-mode      "L" #'pel-toggle-lisp-modes)     ; toggle between emacs-lisp-mode, lisp-interaction-mode
+  (when pel-use-parinfer
+    (define-key pel:elisp-mode    "I"  'parinfer-mode)
+    (define-key pel:elisp-mode    "i"  'parinfer-toggle-mode))
+  (when pel-use-rainbow-delimiters
+    (define-key pel:elisp-mode    "r"  'rainbow-delimiters-mode))  ; toggle colored highlight of nested (),{},[] by their depth.
+  (define-key pel:elisp-mode      "s" #'semantic-mode)             ; toggles the semantic mode (source code parsing)
+
+  (when pel-use-macrostep
+    (use-package macrostep
+      :ensure t
+      :commands macrostep-expand
+      :init
+      (define-key pel:elisp-mode    "m" #'macrostep-expand)))
+
+  ;; Schedule the context sensitive menu
+  (pel--mode-hook-maybe-call
+   '(lambda ()
+      (local-set-key (kbd "<f12>")   'pel:elisp)
+      (local-set-key (kbd "<f12> a") 'pel:elisp-analyze)
+      (local-set-key (kbd "<f12> c") 'pel:elisp-compile)
+      (local-set-key (kbd "<f12> d") 'pel:elisp-debug)
+      (local-set-key (kbd "<f12> e") 'pel:elisp-eval)
+      (local-set-key (kbd "<f12> f") 'pel:elisp-function)
+      (local-set-key (kbd "<f12> l") 'pel:elisp-lib)
+      (local-set-key (kbd "<f12> m") 'pel:elisp-mode))
+   'emacs-lisp-mode 'emacs-lisp-mode-hook :append)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : (Common) Lisp programming
+  (when pel-use-common-lisp
+    (define-global-prefix 'pel:for-lisp (kbd "<f11> SPC L"))
+    (define-key pel:for-lisp    "(" #'show-paren-mode)           ; toggle showing matching parenthesis
+    (define-key pel:for-lisp    ")" #'check-parens)              ; Check for unbalanced parens in current buffer
+    (when pel-use-parinfer
+      (define-key pel:for-lisp  "I"  'parinfer-mode)
+      (define-key pel:for-lisp  "J"  'parinfer-toggle-mode))
+    (define-key pel:for-lisp    "m" #'pel-toggle-lisp-modes)     ; toggle between emacs-lisp-mode, lisp-interaction-mode
+    (when pel-use-rainbow-delimiters
+      (define-key pel:for-lisp  "R"  'rainbow-delimiters-mode))  ; toggle colored highlight of nested (),{},[] by their depth.
+    (define-key pel:for-lisp    "S" #'semantic-mode)             ; toggles the semantic mode (source code parsing)
+    ;;
+    (pel--mode-hook-maybe-call
+     '(lambda ()
+        (local-set-key (kbd "<f12>") 'pel:for-lisp))
+     'lisp-mode 'lisp-mode-hook))
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : Python programming utilities
+  (when pel-use-python
+    (define-global-prefix 'pel:for-python (kbd "<f11> SPC p"))
+    (define-key pel:for-python    "." #'pel-find-thing-at-point)   ; Move point to the definition of function at point
+    (define-key pel:for-python    "(" #'show-paren-mode)           ; toggle showing matching parenthesis
+    (when pel-use-rainbow-delimiters
+      (define-key pel:for-python  "R"  'rainbow-delimiters-mode))  ; toggle colored highlight of nested (),{},[] by their depth.
+    ;;
+    (pel--mode-hook-maybe-call
+     '(lambda ()
+        (local-set-key (kbd "<f12>")  'pel:for-python))
+     'python-mode 'python-mode-hook))
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : reSTucturedText
+  (when pel-use-rst-mode
+    (define-global-prefix 'pel:for-reST (kbd "<f11> SPC r"))
+    (define-key pel:for-reST "." #'pel-rst-makelink)
+    (define-key pel:for-reST "g" #'pel-rst-goto-ref-bookmark)
+    (define-key pel:for-reST "s" #'pel-rst-set-ref-bookmark)
+    ;;
+    (pel--mode-hook-maybe-call
+     '(lambda ()
+        (local-set-key (kbd "<f12>") 'pel:for-reST))
+     'rst-mode 'rst-mode-hook))
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : Graphviz Dot
+  (when pel-use-graphviz-dot
+    (use-package graphviz-dot-mode
+      :ensure t)
+
+    (define-global-prefix 'pel:for-graphviz-dot (kbd "<f11> SPC g"))
+    (define-key pel:for-graphviz-dot "c" 'compile)
+    ;;
+    (pel--mode-hook-maybe-call
+     '(lambda ()
+        (local-set-key (kbd "<f12">) 'pel:for-graphviz-dot))
+     'graphviz-dot-mode 'graphviz-dot-mode-hook))
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> =`` : Copy commands
+
+  (define-global-prefix 'pel:copy (kbd "<f11> ="))
+  (define-key pel:copy " " #'pel-copy-whitespace-at-point)  ; whitespace
+  (define-key pel:copy "(" #'pel-copy-list-at-point)        ;
+  (define-key pel:copy "." #'pel-copy-symbol-at-point)
+  (define-key pel:copy "a" #'pel-copy-line-start)           ; beginning of line and point
+  (define-key pel:copy "b" #'pel-copy-paragraph-start)      ; beginning of paragraph
+  (define-key pel:copy "c" #'pel-copy-char-at-point)
+  (define-key pel:copy "e" #'pel-copy-line-end)             ; end of line and point
+  (define-key pel:copy "F" #'pel-copy-filename-at-point)    ;
+  (define-key pel:copy "f" #'pel-copy-function-at-point)    ; function
+  (define-key pel:copy "H" #'pel-copy-paragraph-at-point)   ; paragraph - entire current paragraph
+  (define-key pel:copy "h" #'pel-copy-paragraph-end)        ; rest (end) of paragraph
+  (define-key pel:copy "l" #'pel-copy-marked-or-whole-line) ; line - complete
+  (define-key pel:copy "s" #'pel-copy-sentence-at-point)    ; sentence
+  (define-key pel:copy "u" #'pel-copy-url-at-point)         ;
+  (define-key pel:copy "w" #'pel-copy-word-at-point)        ; complete word, regardless of point position inside word.
+  (define-key pel:copy "x" #'pel-copy-sexp-at-point)        ; s-expression
+  ;;
+  (global-set-key (kbd "<f11> +") #'pel-copy-marked-or-whole-line)
+  (global-set-key (kbd "M-w")     #'pel-copy-marked-or-whole-line) ; replaces kill-ring-save
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> -`` : Kill commands
+
+  (define-global-prefix 'pel:kill (kbd "<f11> -"))
+  (define-key pel:kill " " #'pel-kill-whitespace-at-point)    ; all whitespace at point
+  (define-key pel:kill "(" #'pel-kill-list-at-point)
+  (define-key pel:kill "*" #'delete-duplicate-lines)
+  (define-key pel:kill "." #'pel-kill-symbol-at-point)
+  (define-key pel:kill "a" #'pel-kill-from-beginning-of-line) ; beginning of line
+  (define-key pel:kill "b" #'backward-kill-paragraph)         ; beginning of paragraph
+  (define-key pel:kill "c" #'pel-kill-char-at-point)          ; character at point
+  (define-key pel:kill "e" #'kill-line)                       ; end of line
+  (define-key pel:kill "F" #'pel-kill-filename-at-point)      ;
+  (define-key pel:kill "f" #'pel-kill-function-at-point)
+  (define-key pel:kill "H" #'pel-kill-paragraph-at-point)     ; paragraph - entire current paragraph
+  (define-key pel:kill "h" #'kill-paragraph)                  ; rest (end) of paragraph
+  (define-key pel:kill "l" #'pel-kill-or-delete-marked-or-whole-line)
+  (define-key pel:kill "s" #'pel-kill-sentence-at-point)      ; kill complete sentence
+  (define-key pel:kill "u" #'pel-kill-url-at-point)           ;
+  (define-key pel:kill "w" #'pel-kill-word-at-point)          ; entire word (regardless of point location inside word)
+  (define-key pel:kill "x" #'pel-kill-sexp-at-point)          ; complete s-expression
+  (define-key pel:kill "]" #'kill-sexp)
+  (define-key pel:kill "[" #'backward-kill-sexp)
+
+  (if (display-graphic-p)
+      (global-set-key (kbd "s-x") #'pel-kill-or-delete-marked-or-whole-line))
+  (global-set-key (kbd "C-w")     #'pel-kill-or-delete-marked-or-whole-line)
+  (global-set-key [kp-subtract]   #'pel-kill-or-delete-marked-or-whole-line)
+  ;; 'pel-kill-marked-or-whole-line)
+  (global-set-key "\C-\\"         #'pel-kill-from-beginning-of-line)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> ,`` : auto-completion
+
+  (define-global-prefix 'pel:auto-completion (kbd "<f11> ,"))
+  (when pel-use-auto-complete
+    (define-key pel:auto-completion "A" #'auto-complete-mode))
+  (when pel-use-company
+    (define-key pel:auto-completion "C"  'company-mode)
+    (define-key pel:auto-completion "c"  'company-complete))
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> .`` : mark commands
+
+  (define-global-prefix 'pel:mark (kbd "<f11> ."))
+  (define-key pel:mark       " "        #'pel-push-mark-no-activate)
+  (define-key pel:mark       "`"        #'pel-jump-to-mark)
+  (define-key pel:mark       "."        #'exchange-point-and-mark)
+  (define-key pel:mark       ","        #'pel-exchange-point-and-mark-no-activate)
+  (define-key pel:mark       "?"        #'pel-mark-ring-stats)
+  (define-key pel:mark (kbd  "DEL")     #'pel-popoff-mark-ring)  ; remove top entry from the mark ring
+  (define-key pel:mark (kbd  "<up>")    #'pel-mark-line-up)
+  (define-key pel:mark (kbd  "<down>")  #'pel-mark-line-down)
+  (define-key pel:mark       "M"        #'transient-mark-mode)
+  (define-key pel:mark       "b"        #'mark-whole-buffer)
+  (define-key pel:mark       "h"        #'mark-paragraph)
+  (define-key pel:mark       "p"        #'mark-page)
+  (define-key pel:mark       "r"        #'pel-cua-rectangle-mark)
+  (define-key pel:mark       "w"        #'mark-word)
+  (define-key pel:mark       "x"        #'mark-sexp)
+  ;;
+  (global-set-key (kbd "M-`")           #'pel-jump-to-mark)
+  (global-set-key (kbd "M-S-<up>")      #'pel-mark-line-up)
+  (global-set-key (kbd "M-S-<down>")    #'pel-mark-line-down)
+
+  (when pel-use-expand-region
+    (use-package expand-region
+      :ensure t
+      :commands er/expand-region
+      :init
+      (define-key pel:mark     "="  'er/expand-region)
+      (global-set-key   (kbd "M-=") 'er/expand-region)))
+
+  ;; -----------------------------------------------------------------------------
+  ;; CUA mode setup
+  ;; Activate the ability to use cua-rectangle-mark-mode without using
+  ;; the CUA re-binding of C_c, C-v, C-x and C-z.
+
+  ;; TODO: Keep this?  Fix the pel-cua-rectangle-mark??
+  (global-set-key (kbd "S-<f11>") #'cua-rectangle-mark-mode)
+  (global-set-key (kbd "<f11> [") #'pel-cua-move-rectangle-left)
+  (global-set-key (kbd "<f11> ]") #'pel-cua-move-rectangle-right)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> ;`` : comment commands
+
+  (define-global-prefix 'pel:comment (kbd "<f11> ;"))
+  ;;
+  (define-key pel:comment "A" #'pel-toggle-comment-auto-fill-only-comments)
+  (define-key pel:comment "B" #'comment-box)
+  (define-key pel:comment "k" #'comment-kill)
+  (define-key pel:comment "l" #'comment-line)
+  (define-key pel:comment "b" #'pel-comment-start)
+  (define-key pel:comment "m" #'pel-comment-middle)
+  (define-key pel:comment "e" #'pel-comment-end)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> ?`` : Help /apropos/info commands
+
+  (define-global-prefix 'pel:help (kbd "<f11> ?"))
+  (define-key pel:help "m"  #'man)
+  (define-key pel:help "M"  #'woman)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> ? a`` : Help Apropos commands
+
+  (define-global-prefix 'pel:apropos (kbd "<f11> ? a"))
+  (define-key pel:apropos "a"  #'apropos)
+  (define-key pel:apropos "c"  #'apropos-command)
+  (define-key pel:apropos "d"  #'apropos-documentation)
+  (define-key pel:apropos "L"  #'apropos-library)
+  (define-key pel:apropos "l"  #'apropos-local-variable)
+  (define-key pel:apropos "o"  #'apropos-user-option)
+  (define-key pel:apropos "u"  #'apropos-value)
+  (define-key pel:apropos "v"  #'apropos-variable)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> ? i`` : Help Info commands
+
+  (define-global-prefix 'pel:info (kbd "<f11> ? i"))
+  (define-key pel:info "a"  #'info-apropos)
+  (define-key pel:info "i"  #'info)
+  (define-key pel:info "m"  #'info-display-manual)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> ? d`` : Describe (provide info about..)
+
+  (define-global-prefix 'pel:describe (kbd "<f11> ? d"))
+  (define-key pel:describe "$" #'pel-spell-show-use)
+  (define-key pel:describe "c" #'list-colors-display)            ; list colors
+  (define-key pel:describe "F" #'list-faces-display)
+  (define-key pel:describe "f" #'pel-show-window-filename-or-buffer-name)
+  (define-key pel:describe "H" #'list-command-history)
+  (define-key pel:describe "i" #'list-input-methods)             ; list text input methods available.
+  (define-key pel:describe "k" #'pel-show-kill-ring)
+  (define-key pel:describe "l" #'what-line)                      ; shows line number in minibuffer.
+  (define-key pel:describe "p" #'what-cursor-position)           ; show info about current point position
+  (define-key pel:describe "s" #'pel-show-char-syntax)           ; show the syntax of the character at point
+  (define-key pel:describe "w" #'pel-show-window-sizes)          ; show height and width of current window.
+
+  (defun pel-show-kill-ring ()
+    "Display content of `kill-ring' in *Help* buffer.
+Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
+    (interactive)
+    (describe-variable 'kill-ring))
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> ? e`` : Emacs info
+
+  (defun pel-emacs-load-stats ()
+    "Display number of loaded files & features."
+    (interactive)
+    (message "\
+# loaded files: %d\n\
+# features    : %d"
+             (length load-history)
+             (length features)))
+
+  (define-global-prefix 'pel:emacs (kbd "<f11> ? e"))
+  (define-key pel:emacs "l" #'pel-emacs-load-stats)
+  (define-key pel:emacs "s" #'list-load-path-shadows)
+  (define-key pel:emacs "t" #'emacs-init-time)
+  (define-key pel:emacs "v" #'emacs-version)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> ? k`` : Info on Keys
+  (when pel-use-free-keys
+    (use-package free-keys
+      :ensure t
+      :commands free-keys))                       ; for <f11> ? k f
+
+  (when pel-use-bind-key
+    (use-package bind-key
+      :ensure t
+      :commands describe-personal-keybindings))   ; for <f11> ? k b
+
+  (when pel-use-which-key
+    (use-package which-key                  ; for <f11> ? k k
+      ;; list key completions: help show the f11 bindings.
+      ;; always available, so load always, but delay loading
+      ;; a little to speed initial loading.
+      ;; Note that "<f11> ? k k" will execute autoloaded
+      ;; command which-key-show-major-mode which will force
+      ;; loading and ensure the key mode.
+      :ensure t
+      :defer 1
+      :config
+      (declare-function which-key-mode "which-key")
+      (which-key-mode)))
+
+
+  (define-global-prefix 'pel:keys (kbd "<f11> ? k"))
+  (define-key pel:keys    "#" #'pel-show-mac-numlock)            ; Show state of the mac numeric keypad operation
+  (when pel-use-bind-key
+    (define-key pel:keys  "b" #'describe-personal-keybindings))  ; list key bindings overlapping Emacs default ones
+  (when pel-use-free-keys
+    (define-key pel:keys  "f" #'free-keys))                      ; list unused key bindings
+  (when pel-use-which-key
+    (define-key pel:keys  "k"  'which-key-show-major-mode))      ; Show the top-level keys available in the current major mode
+  (define-key pel:keys    "l" #'view-lossage)                    ; show history of past keystroke (and corresponding command)
+  (define-key pel:keys    "m" #'describe-mode)                   ; list major and minor modes used in current buffer
+  ;;
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> $`` : Spell Check
+
+  (define-global-prefix 'pel:spell (kbd "<f11> $"))
+  ;;
+  (autoload 'ispell-check-version "ispell")
+
+  (define-key pel:spell "." #'ispell)              ; Spell check buffer or marked region.
+  (define-key pel:spell ";" #'ispell-comments-and-strings)
+  (define-key pel:spell "?" #'pel-spell-show-use)
+  (define-key pel:spell "D" #'ispell-change-dictionary)
+  (define-key pel:spell "F" #'flyspell-mode)       ; toggle use of flyspell mode.
+  (define-key pel:spell "K" #'ispell-kill-ispell)
+  (define-key pel:spell "P" #'flyspell-prog-mode)  ; Turn on flyspell program mode: restricted flyspell inside strings and comments.
+  (define-key pel:spell "b" #'ispell-buffer)
+  (define-key pel:spell "m" #'ispell-message)
+  (define-key pel:spell "r" #'ispell-region)
+  (define-key pel:spell "v" #'ispell-check-version)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> '`` : bookmark commands
+
+  (define-global-prefix 'pel:bookMark (kbd "<f11> '"))
+  (define-key pel:bookMark "b" #'bookmark-jump)
+  (define-key pel:bookMark "B" #'bookmark-jump-other-window)
+  (define-key pel:bookMark "d" #'bookmark-delete)
+  (define-key pel:bookMark "F" #'bookmark-insert)
+  (define-key pel:bookMark "f" #'bookmark-insert-location)
+  (define-key pel:bookMark "L" #'bookmark-load)             ; load bookmarks from file -- not normally needed.
+  (define-key pel:bookMark "l" #'bookmark-bmenu-list)       ; list-bookmarks
+  (define-key pel:bookMark "m" #'bookmark-set)              ;
+  (define-key pel:bookMark "M" #'bookmark-set-no-overwrite) ;
+  (define-key pel:bookMark "r" #'bookmark-rename)           ;
+  (define-key pel:bookMark "s" #'bookmark-save)             ; save to default file (bookmark-default-file)
+  (define-key pel:bookMark "w" #'bookmark-write)            ; Save-As: save to specified file.
+  (when pel-use-bm
+    (define-key pel:bookMark "t"  'bm-toggle) ; toggle visible bookmark
+    (define-key pel:bookMark "n"  'bm-next)
+    (define-key pel:bookMark "p"  'bm-previous))
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> <tab>`` : indentation
+
+  (define-global-prefix 'pel:indent (kbd "<f11> TAB"))
+  (define-key pel:indent "r" #'indent-relative)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> a`` : abbreviations
+
+  (define-global-prefix 'pel:abbrev (kbd "<f11> a"))
+  (define-key pel:abbrev "d" #'pel-define-abbrevs)      ; read abbrevs from current buffer
+  (define-key pel:abbrev "e" #'expand-abbrev)           ;
+  (define-key pel:abbrev "E" #'expand-region-abbrevs)   ;
+  (define-key pel:abbrev "i" #'insert-abbrevs)          ; insert definition code in buffer.
+  (define-key pel:abbrev "l" #'list-abbrevs)            ;
+  (define-key pel:abbrev "m" #'edit-abbrevs)            ; modify abbrevs (via a *Abbrev* buffer)
+  (define-key pel:abbrev "r" #'read-abbrev-file)
+  (define-key pel:abbrev "s" #'write-abbrev-file)
+  (define-key pel:abbrev "u" #'unexpand-abbrev)
+
+  (defun pel-define-abbrevs (&optional arg)
+    "Read abbreviations from current buffer after confirming with user.
+With argument ARG , eliminate all abbrev definitions except
+the ones defined from the buffer now."
+    (interactive "P")
+    (if (yes-or-no-p "Read abbreviations from current buffer? ")
+        (define-abbrevs arg)
+      (message "Nothing done.")))
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> b`` : buffer commands
+
+  (define-global-prefix 'pel:buffer (kbd "<f11> b"))
+  (define-key pel:buffer "-"  #'ruler-mode)                        ; toggle the ruler at the top of each window of this buffer
+  (define-key pel:buffer "c"  #'clone-buffer)
+  (define-key pel:buffer "i"  #'insert-file)                       ; insert content of other file at point
+  (define-key pel:buffer "k"  #'kill-current-buffer)
+  (define-key pel:buffer "l"  #'pel-switch-to-last-used-buffer)    ; switch to last (previous) buffer in current window (no prompt)
+  (define-key pel:buffer "n"  #'next-buffer)                       ; show next buffer in current window
+  (define-key pel:buffer "P"  #'pel-show-window-previous-buffer)   ; show name of buffer previously used in this window
+  (define-key pel:buffer "p"  #'previous-buffer)                   ; show previous buffer in current window
+  (define-key pel:buffer "r"  #'read-only-mode)
+  (define-key pel:buffer "v"  #'view-buffer)
+
+  ;; TODO: investigate the following:
+  ;; The following does not work.  I don't know why yet.
+  ;; (defun pel-toggle-nhexl ()
+  ;;   "Toggle buffer between normal text and nhexl/nibble mode."
+  ;;   (interactive)
+  ;;   (if (and (boundp 'nhexl-mode) nhexl-mode)
+  ;;       (progn
+  ;;         ;; Disabling (commented-out code) does not work.  Why?
+  ;;         ;(nhexl-overwrite-only-mode nil)
+  ;;         ;(nhexl-nibble-edit-mode)
+  ;;         ;(nhexl-mode)
+  ;;         (user-error "To deactivate nhexl modes,\
+  ;;  issue the following 2 commands:\
+  ;; \n M-x nhexl-mode\
+  ;; \n M-x nhexl-nibble-edit-mode"))
+  ;;     (progn
+  ;;       (nhexl-mode t)
+  ;;       (nhexl-nibble-edit-mode t)
+  ;;       (message "Activating nhexl nibble mode"))))
+
+  (when pel-use-nhexl-mode
+    (use-package nhexl-mode
+      :ensure t
+      :commands (nhexl-mode
+                 nhexl-nibble-edit-mode
+                 nhexl-overwrite-only-mode)
+      :init
+      (define-key pel:text   "O"  #'nhexl-overwrite-only-mode)
+
+      (define-key pel:buffer "x"  #'nhexl-mode)                    ; Toggle buffer between normal text and binary
+      (define-key pel:buffer "X"  #'nhexl-nibble-edit-mode)))      ; Toggle nibble editing (mainly useful in nhexl mode,
+                                        ; but can also be used in normal mode to enter character in hexadecimal easily)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> b h`` : buffer highlighting commands
+
+  (defun pel-hi-lock-find-patterns ()
+    "Execute hi-lock-find-patterns when hi-lock-mode is active."
+    (interactive)
+    (declare-function hi-lock-find-patterns "hi-lock")
+    (if (fboundp 'hi-lock-find-patterns)
+        (hi-lock-find-patterns)
+      (user-error "Turn hi-lock-mode on first")))
+
+  (define-global-prefix 'pel:highlight (kbd "<f11> b h"))
+  (define-key pel:highlight "-"  #'hl-line-mode)                      ; enable/disable highlight of current line in buffer
+  (define-key pel:highlight "."  #'highlight-symbol-at-point)
+  (define-key pel:highlight "C"  #'highlight-changes-mode)
+  (define-key pel:highlight "c"  #'pel-set-highlight-color)           ; prompt for color name and use as cursor line highlight.
+  (define-key pel:highlight "F"  #'font-lock-mode)
+  (define-key pel:highlight "f"  #'pel-hi-lock-find-patterns)
+  (define-key pel:highlight "G"  #'global-hi-lock-mode)
+  (define-key pel:highlight "L"  #'hi-lock-mode)
+  (define-key pel:highlight "l"  #'highlight-lines-matching-regexp)
+  (define-key pel:highlight "p"  #'highlight-phrase)
+  (define-key pel:highlight "r"  #'highlight-regexp)
+  (define-key pel:highlight "s"  #'pel-toggle-hl-line-sticky)         ; Toggle `hl-line-sticky-flag' nil/t to control whether line highlighting
+  (define-key pel:highlight "u"  #'unhighlight-regexp)
+  (define-key pel:highlight "w"  #'hi-lock-write-interactive-patterns)
+  ;;
+  (when pel-use-highlight-defined
+    (use-package highlight-defined
+      :ensure t
+      :commands highlight-defined-mode
+      :init
+      (define-key pel:highlight "d" 'highlight-defined-mode)))
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> b I`` : Indirect buffer commands
+
+  (define-global-prefix 'pel:indirect-buffer (kbd "<f11> b I"))
+  (define-key pel:indirect-buffer "c"  #'clone-indirect-buffer)
+  (define-key pel:indirect-buffer "m"  #'make-indirect-buffer)
+  (define-key pel:indirect-buffer "w"  #'clone-indirect-buffer-other-window)
+  ;;
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> c`` : count things
+
+  (define-global-prefix 'pel:count (kbd "<f11> c"))
+  (define-key pel:count "m" #'count-matches)        ; Counts number of regexp patterns that match in a region.
+  (define-key pel:count "p" #'count-lines-page)     ; Display total number of lines in page, and number of lines before/after
+                                        ; point.
+  (define-key pel:count "r" #'count-words-region)   ; Count number of words, lines and chars in the region
+  (define-key pel:count "w" #'count-words)          ; Show number of lines, words & characters in current buffer. Display counts
+                                        ; in minibuffer.
+  ;;
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> C`` : clipboard commands
+
+  (define-global-prefix 'pel:clipboard (kbd "<f11> C"))
+  (define-key pel:clipboard "c" #'clipboard-kill-ring-save)
+  (define-key pel:clipboard "x" #'clipboard-kill-region)
+  (define-key pel:clipboard "v" #'clipboard-yank)
+  ;;
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> d`` : draw commands
+
+  (define-global-prefix 'pel:draw (kbd "<f11> d"))
+  (when (display-graphic-p)
+    (define-key pel:draw "a"  'artist-mode))                ; activate a mode to draw
+  ;; TODO : line/box draw mode
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> f`` : File operations
+
+  (defun pel-auto-revert-set-timer ()
+    "Execute auto-revert-set-timer if auto-revert-mode is active."
+    (interactive)
+    (declare-function auto-revert-set-timer "autorevert") ; prevent warning
+    (defvar auto-revert-interval)                         ; prevent warning
+    (if (fboundp 'auto-revert-set-timer)
+        (progn
+          (auto-revert-set-timer)
+          (message
+           "auto-revert-mode %d second timer set/cancelled"
+           auto-revert-interval))
+      (user-error
+       "Activate auto-revert-mode before attempting to set/cancel its timer")))
+
+  (define-global-prefix 'pel:file (kbd "<f11> f"))
+  (define-key pel:file "A" #'auto-revert-mode)
+  (define-key pel:file " " #'pel-auto-revert-set-timer) ; cancel/restart the timer
+  (define-key pel:file "d" #'find-dired)
+  (define-key pel:file "h" #'find-grep-dired)
+  (define-key pel:file "l" #'find-lisp-find-dired)
+  (define-key pel:file "n" #'find-name-dired)
+  (define-key pel:file "o" #'find-file-other-window)            ; C-x 4 f : visit a file in another window
+  (define-key pel:file "r" #'find-file-read-only-other-window)  ; visit file in other window read-only
+  (define-key pel:file "R" #'revert-buffer)
+  (define-key pel:file "T" #'auto-revert-tail-mode)
+  (define-key pel:file "t" #'time-stamp)
+  ;;
+
+  ;; - Open file at point
+  ;; --------------------
+  (global-set-key (kbd "C-^") 'pel-find-file-at-point-in-window)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> f v`` : File variables
+
+  (define-global-prefix 'pel:filevar (kbd "<f11> f v"))
+  (define-key pel:filevar "="  #'add-file-local-variable-prop-line)
+  (define-key pel:filevar "-"  #'delete-file-local-variable-prop-line)
+  (define-key pel:filevar "c"  #'copy-dir-locals-to-file-locals-prop-line)
+  ;;
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> f v D`` : Directory File variables
+
+  (define-global-prefix 'pel:dirvar (kbd "<f11> f v D"))
+  (define-key pel:dirvar "="  #'add-dir-local-variable)
+  (define-key pel:dirvar "-"  #'delete-dir-local-variable)
+  (define-key pel:dirvar "C"  #'copy-file-locals-to-dir-locals)
+  ;;
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> F`` : Frame operations
+
+  (define-global-prefix 'pel:frame (kbd "<f11> F"))
+  (define-key pel:frame "?"  #'pel-show-frame-count)
+  (define-key pel:frame "0"  #'delete-frame)
+  (define-key pel:frame "1"  #'delete-other-frames)
+  (define-key pel:frame "2"  #'make-frame-command)              ; make a new frame.
+  (define-key pel:frame "b"  #'display-buffer-other-frame)      ; display buffer in other (next) frame
+  (define-key pel:frame "d"  #'dired-other-frame)
+  (define-key pel:frame "f"  #'find-file-other-frame)           ; visit file in other frame
+  (define-key pel:frame "n"  #'pel-next-frame)
+  (define-key pel:frame "o"  #'other-frame)                     ; move cursor to other (next) frame
+  (define-key pel:frame "O"  #'switch-to-buffer-other-frame)    ; switch to buffer inside another frame
+  (define-key pel:frame "p"  #'pel-previous-frame)
+  (define-key pel:frame "r"  #'find-file-read-only-other-frame) ; visit file in other frame read-only
+  ;;
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> g`` : Grep operations
+
+  (define-global-prefix 'pel:grep (kbd "<f11> g"))
+  (declare-function find-grep "grep")
+  (declare-function kill-grep "grep")
+  (define-key pel:file      "f"  #'find-grep)
+  (define-key pel:grep      "g"  #'grep)
+  (define-key pel:grep      "k"  #'kill-grep)
+  (define-key pel:grep      "l"  #'lgrep)
+  (define-key pel:grep      "r"  #'rgrep)  ; execute recursive grep
+  (define-key pel:grep      "z"  #'zrgrep)
+  ;;
+
+  ;; ripgrep - a faster grep easier to use than grep.
+  (when  pel-use-ripgrep
+    (use-package rg
+      :ensure t
+      :commands (rg rg-literal)
+      :init
+      (define-key pel:grep  "I"  'rg-literal)
+      (define-key pel:grep  "i"  'rg)
+      :config
+      (declare-function rg-enable-default-bindings "rg")
+      (rg-enable-default-bindings)))
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> i`` : Insert text operations
+
+  (define-global-prefix 'pel:insert (kbd "<f11> i"))
+  (define-key pel:insert   "C" 'copyright)
+  (define-key pel:insert   "d" #'pel-insert-current-date)             ; Local by default, UTC is C-u prefix used.
+  (define-key pel:insert   "D" #'pel-insert-current-date-time)        ; Local by default, UTC is C-u prefix used.
+  (define-key pel:insert   "F" #'pel-insert-filename)
+  (define-key pel:insert   "l" #'pel-insert-line)
+  (define-key pel:insert   "t" #'pel-insert-iso8601-timestamp)        ; Local by default, UTC is C-u prefix used.
+  (when pel-use-lice
+    (define-key pel:insert "L" 'lice))
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> k`` : Keyboard macro operations
+
+  (define-global-prefix 'pel:kbmacro (kbd "<f11> k"))
+  (define-key pel:kbmacro "k"  #'pel-forget-recorded-keyboard-macro)
+  (define-key pel:kbmacro "i"  #'insert-kbd-macro) ;insert Lisp code of the current KBMacro at point.
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> l`` : Line control commands
+
+  (define-global-prefix 'pel:linectrl (kbd "<f11> l"))
+  (define-key pel:linectrl (kbd "<up>")   #'pel-lc-previous-logical-line)      ; up one logical line (in visual line mode)
+  (define-key pel:linectrl (kbd "<down>") #'pel-lc-next-logical-line)          ; down one logical line (in visual line mode)
+  (define-key pel:linectrl "c"            #'pel-toggle-line-col-modes)         ; toggle display of (line,col) display in modeline
+  (define-key pel:linectrl "l"            (if (version< emacs-version "26.1")
+                                              'linum-mode
+                                            'display-line-numbers-mode))       ; toggle display of line numbers at the left of each line.
+  (define-key pel:linectrl "t"            #'toggle-truncate-lines)             ; toggle truncating/wrapping lines
+  (define-key pel:linectrl "v"            #'visual-line-mode)                  ; toggle visual line mode
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> o`` : ordering (sorting)
+
+  (define-global-prefix 'pel:order (kbd "<f11> o"))
+  (define-key pel:order "l" #'sort-lines)
+  (define-key pel:order "p" #'sort-paragraphs)
+  (define-key pel:order "/" #'sort-pages )
+  (define-key pel:order "," #'sort-fields)
+  (define-key pel:order "n" #'sort-numeric-fields)
+  (define-key pel:order "c" #'sort-columns)
+  (define-key pel:order "x" #'sort-regexp-fields)
+  (define-key pel:order "r" #'reverse-region)
+  (define-key pel:order "F" #'pel-toggle-sort-fold-case)
+
+  (defun pel-toggle-sort-fold-case ()
+    "Toggle the sort case sensitivity."
+    (interactive)
+    (message "Sort is now case %s."
+             (if (pel-toggle 'sort-fold-case)
+                 "insensitive"
+               "sensitive (the default)")))
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> r`` : Register commands
+
+  (define-global-prefix 'pel:register (kbd "<f11> r"))
+  (define-key pel:register "l"    #'list-registers)
+  (define-key pel:register "v"    #'view-register)
+  ;;
+  (define-key pel:register " "    #'pel-point-to-register)
+  (define-key pel:register "+"    #'increment-register)      ; increment taken from argument, otherwise increments by 1
+  (define-key pel:register "F"    #'pel-filename-to-register); stores name of current filename to register
+  (define-key pel:register "f"    #'pel-frameset-to-register)
+  (define-key pel:register "k"    #'pel-kmacro-to-register)
+  (define-key pel:register "n"    #'pel-number-to-register)  ; number taken from argument, otherwise stores 0
+  (define-key pel:register "r"    #'pel-copy-rectangle-to-register)
+  (define-key pel:register "s"    #'pel-copy-to-register)    ; copy region's text into register. With C-u: deletes text from buffer.
+  (define-key pel:register "w"    #'pel-window-configuration-to-register)
+  ;;
+  (define-key pel:register ","    #'prepend-to-register)     ; copy region's text, prepend to register's text. With C-u: deletes from buffer.
+  (define-key pel:register "."    #'append-to-register)      ; copy region's text, append to register's text. With C-u: deletes from buffer.
+  ;;
+  (define-key pel:register "j"    #'jump-to-register)        ; used for: point, window, frameset, filename, kmacro.
+  (define-key pel:register "i"    #'insert-register)         ; used for: text, rectangle, number.
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> s`` : Search/Replace  commands
+
+  (define-global-prefix 'pel:search-replace (kbd "<f11> s"))
+  (define-key pel:search-replace "o" #'multi-occur)
+  (define-key pel:search-replace "O" #'multi-occur-in-matching-buffers)
+  (define-key pel:search-replace "r" #'replace-string)
+
+  (define-prefix-command 'pel:search-lax)
+  (global-set-key (kbd "<f11> s l") 'pel:search-lax)
+  ;;
+  (define-key pel:search-lax "w"  #'word-search-forward-lax)
+  (define-key pel:search-lax "W"  #'word-search-backward-lax)
+
+  (define-prefix-command 'pel:search-mode)
+  (global-set-key (kbd "<f11> s m") 'pel:search-mode)
+  ;;
+  (define-key pel:search-mode "?"  #'pel-show-search-case-state)
+  (define-key pel:search-mode "f"  #'pel-toggle-case-fold-search)
+  (define-key pel:search-mode "u"  #'pel-toggle-search-upper-case)
+  (define-key pel:search-mode "l"  #'isearch-toggle-lax-whitespace)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> s x`` : Search Regexp commands
+
+  (define-global-prefix 'pel:regexp (kbd "<f11> s x"))
+  (define-key pel:regexp      "q"  #'query-replace-regexp)  ; add it here because C-M-% cannot be typed in terminal mode
+  (define-key pel:regexp      "r"  #'replace-regexp)
+  ;;
+
+  ;; Regular expressions: Re-Builder.  Activate the 'string syntax so we only
+  ;; need one backslash instead of the two required by the 'read syntax.
+  ;; To activate Re-Builder, do:  M-x re-builder
+  (when pel-use-re-builder
+    ;; re-builder is part of standard Emacs distribution.
+    (use-package re-builder
+      ;; autoload it when one of the following commands is used.
+      :commands re-builder
+
+      ;; run following command before package is loaded to
+      ;; activate the autoload.
+      :init
+      (define-key pel:regexp    "b"  #'re-builder)           ; Open the regexp builder window to search on current buffer
+      (setq reb-re-syntax 'string)))
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> S`` : Speedbar/SR-Speedbar commands
+
+  (when pel-use-speedbar
+    (define-global-prefix 'pel:speedbar (kbd "<f11> S"))
+    (define-key pel:speedbar "S"  #'pel-open-close-speedbar)     ; Open/close Speedbar or SR-Speedbar.  In Terminal only allow SR-Speedbar. In graphics mode, prompt, but once is selected always use the same.
+    (define-key pel:speedbar "."  #'pel-toggle-to-speedbar)      ; Change focus to/from speedbar-frame/sr-speedbar window
+    (define-key pel:speedbar "R"  #'pel-speedbar-toggle-refresh) ; Toggle refresh of speedbar content
+    (define-key pel:speedbar "r"  #'pel-speedbar-refresh)        ; Refresh the current speedbar display, disposing of any cached data.
+    (define-key pel:speedbar "a"  #'pel-speedbar-toggle-show-all-files) ; show all level-1 hidden files.
+    (define-key pel:speedbar "o"  #'pel-speedbar-toggle-sorting) ; tag sorting. 'o' for Ordering, since 's' would be too close to S
+    ;; (define-key pel:speedbar "e"  #'speedbar-toggle-etags)
+    (when (display-graphic-p)
+      (define-key pel:speedbar "i" 'pel-speedbar-toggle-images)))
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> t`` : Text control commands
+
+  (define-global-prefix 'pel:text (kbd "<f11> t"))
+  (define-key pel:text "c"  #'pel-capitalize-word-or-region) ; capitalize (title case) word or region
+  (define-key pel:text "l"  #'pel-downcase-word-or-region)   ; lowercase word or region
+  (define-key pel:text "u"  #'pel-upcase-word-or-region)     ; uppercase word or region
+  (define-key pel:text "i"  #'toggle-input-method)           ; enable(select)/disable multi-lingual text input for the current buffer
+  (define-key pel:text "I"  #'set-input-method)              ; (re-)select the alternate input method (always prompts)
+  (define-key pel:text "o"  #'overwrite-mode)                ; toggle overwrite-mode (either in a normal text or binary (nhexl) mode)
+  ;; RESERVED          "O"  #'nhexl-overwrite-only-mode)     ; Toggle overwrite only mode for hexl mode.
+  (define-key pel:text "p"  #'picture-mode)                  ; activate a simple mode where cursor can go anywhere: useful to draw pictures
+  ;;
+
+  ;; - Optimized keys for Case Conversion
+  ;; ------------------------------------
+  ;; Take advantage of the Shift key with Meta for these operations,
+  ;; since the original Emacs commands break the visible region anyway
+  ;; so we don't have to worry about stealing the Shift key when we want
+  ;; to use one of the case conversion command.
+  (global-set-key (kbd "M-c")   #'pel-downcase-word-or-region)
+  (global-set-key (kbd "M-C")   #'pel-upcase-word-or-region)
+  (global-set-key (kbd "M-T")   #'pel-capitalize-word-or-region)
+
+  ;; The following does not work and I don;t know why
+  ;; (defun pel-toggle-overwrite ()
+  ;;   "Toggle the overwrite mode.  Support normal and nhexl modes."
+  ;;   (interactive)
+  ;;   (if (and (boundp 'nhexl-mode) nhexl-mode)
+  ;;       (if nhexl-overwrite-only-mode
+  ;;           (nhexl-overwrite-only-mode nil)
+  ;;         (nhexl-overwrite-only-mode t))
+  ;;     (progn
+  ;;       (overwrite-mode)
+  ;;       (message "Toggled overwrite in text mode".))))
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> t a``: Text align
+
+  (define-global-prefix 'pel:align (kbd "<f11> t a"))
+  (define-key pel:align "a" #'align)
+  (define-key pel:align "c" #'align-current)
+  (define-key pel:align "e" #'align-entire)
+  (define-key pel:align "l" #'align-newline-and-indent)
+  (define-key pel:align "r" #'align-regexp)
+
+  ;; - Alias for align-regexp: ar
+  ;; ----------------------------
+  ;; Use M-x ar to align a region with a regular expression.
+  (defalias 'ar #'align-regexp)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> t f``: Text fill
+  ;;
+  (define-global-prefix 'pel:fill (kbd "<f11> t f"))
+  (define-key pel:fill "?"   #'pel-show-fill-columns)
+  (define-key pel:fill "A"   #'auto-fill-mode)               ; toggle auto-fill-mode
+  (define-key pel:fill "C"   #'pel-auto-fill-only-comments)  ; toggle auto fill only in comments
+  (define-key pel:fill "p"   #'fill-paragraph)
+  (define-key pel:fill "r"   #'fill-region)
+  (define-key pel:fill "R"   #'refill-mode)                  ; toggle refill mode where automatic refilling is done always
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> t j``: Text justification
+  ;;
+  (define-global-prefix 'pel:justification (kbd "<f11> t j"))
+  (define-key pel:justification "b" #'set-justification-full) ;'b' for "both-side" : ie. full
+  (define-key pel:justification "c" #'set-justification-center)
+  (define-key pel:justification "l" #'set-justification-left)
+  (define-key pel:justification "n" #'set-justification-none)
+  (define-key pel:justification "r" #'set-justification-right)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> t m``: Text word modes
+  ;;
+  (define-global-prefix 'pel:textmodes (kbd "<f11> t m"))
+  (define-key pel:textmodes "'" #'electric-quote-local-mode) ; toggle the electric quote mode in the current buffer.
+  (define-key pel:textmodes "?" #'pel-show-text-modes)
+  (define-key pel:textmodes "b" #'subword-mode)   ; toggle subword-mode: treat CamelCase as distinct words.
+  (define-key pel:textmodes "d" #'delete-selection-mode) ; toggles the mode.
+  (define-key pel:textmodes "p" #'superword-mode) ; toggle superword-mode: treat the-snake_case as one word.
+  (define-key pel:textmodes "r" #'enriched-mode)  ; toggles the enriched-mode on/off
+  (define-key pel:textmodes "s" #'pel-toggle-sentence-end) ; toggle sentence end between 1 and 2 characters.
+  (define-key pel:textmodes "v" #'visible-mode)
+
+  ;; -----------------------------------------------------------------------------
+  ;; Function Keys - <f11> - Prefix ``<f11> t t``: Text transpose commands
+  ;;
+  (define-global-prefix 'pel:text-transpose (kbd "<f11> t t"))
+  (define-key pel:text-transpose "c"  #'transpose-chars)
+  (define-key pel:text-transpose "w"  #'transpose-words)
+  (define-key pel:text-transpose "l"  #'transpose-lines)
+  (define-key pel:text-transpose "s"  #'transpose-sentences)
+  (define-key pel:text-transpose "p"  #'transpose-paragraphs)
+  (define-key pel:text-transpose "x"  #'transpose-sexps)
+  ;; TODO: pel-transpose-functions, pel-transpose-classes, pel-transpose-statements, pel-transpose-clauses
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> t w`` : Text whitespace commands
+  ;;
+  (define-global-prefix 'pel:text-whitespace (kbd "<f11> t w"))
+  (define-key pel:text-whitespace " " #'cycle-spacing)
+  (define-key pel:text-whitespace "c" #'whitespace-cleanup)
+  (define-key pel:text-whitespace "e" #'pel-toggle-indicate-empty-lines)
+  (define-key pel:text-whitespace "m" #'whitespace-mode)
+  (define-key pel:text-whitespace "o" #'whitespace-toggle-options)
+  (define-key pel:text-whitespace "T" #'pel-toggle-show-trailing-whitespace)
+  (define-key pel:text-whitespace "t" #'delete-trailing-whitespace)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> w`` : Windows operations
+  ;; Use the global local winner-mode, but don't use its key bindings;
+  ;; use some in the '<f11> w' group:
+
+  ;;
+  (define-global-prefix 'pel:window (kbd "<f11> w"))
+  (define-key pel:window    "B"  #'switch-to-buffer-other-window)  ; select buffer in another window
+  (define-key pel:window    "O"  #'pel-other-window-backward)      ; inverse movement than pel-other-window
+  (define-key pel:window    "b"  #'display-buffer)                 ; display buffer name in other window without selecting it
+  (define-key pel:window    "f"  #'follow-mode)                    ; toggle follow mode (start by splitting a window with C-x 3)
+
+  (when pel-use-ace-window
+    (use-package ace-window
+      :ensure t
+      :pin melpa
+
+      :commands (ace-window
+                 ace-swap-window
+                 ace-delete-window
+                 ace-maximize-window)
+
+      :init
+      ;; move cursor to other window - 'C-x o' is normally mapped to
+      ;; this function, but PEL remap it.
+      (define-key pel:window  "o"  #'pel-other-window)
+      (define-key pel:window  "k"   'ace-delete-window)
+      (define-key pel:window  "m"   'ace-maximize-window)
+      (define-key pel:window  "x"  #'pel-swap-window)
+
+      ;; Replace other-window, bound to 'C-x o', to ace-window
+      ;; and make the font larger - in graphics mode.
+      ;; So `C-x o` shows a window number in top left corner, unless
+      ;; there's only 2 windows and if with frames, in terminal mode,
+      ;; the argument does not request it.
+      (global-set-key [remap other-window] 'pel-ace-window)
+
+      :config
+      (custom-set-faces
+       '(aw-leading-char-face
+         ((t (:inherit ace-jump-face-forward :height 3.0)))))))
+
+  ;; TODO: change to use a hook before the function split-window is called and
+  ;;       remove the hook once it is executed if that's possible.
+  ;; The winner package should ideally be loaded just before the first
+  ;; call to any of the window split function is called, which is: when the
+  ;; `split-window' from window.el is called.  To do that, we'd need to use a
+  ;; hook.  For now, we just defer the loading with a timer so it does not get
+  ;; loaded right when Emacs is starting.
+  (use-package winner
+    :defer 2
+    :commands (winner-undo winner-redo)
+
+    :init
+    (define-key pel:window    "n"  'winner-redo)   ; next window arrangement
+    (define-key pel:window    "p"  'winner-undo)   ; previous window arrangement
+
+    :config
+    ;; winner-mode default bindings use the Shift cursor keys,
+    ;; this conflict with org-mode, so use the '<f11> w' bindings
+    ;; instead.
+    (setq winner-dont-bind-my-keys t)
+    ;; turn on the global minor mode
+    (declare-function winner-mode "winner")
+    (winner-mode t))
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> w d`` : Windows dedicated operations
+  ;;
+  (define-global-prefix 'pel:window-dedicated (kbd "<f11> w d"))
+  (define-key pel:window-dedicated "d" #'pel-toggle-window-dedicated)       ; toggle the window dedicated status.
+  (define-key pel:window-dedicated "?" #'pel-show-window-dedicated-status)  ; show if current window is dedicated (info displayed in echo area)
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> w s`` : Window size operations
+  ;;
+  (define-global-prefix 'pel:window-size (kbd "<f11> w s"))
+  (define-key pel:window-size "=" #'balance-windows)                       ; ``C-x +`` : make windows the same size
+  (define-key pel:window-size "-" #'shrink-window-if-larger-than-buffer)   ; ``C-x -`` : shrink window vertically to be as small as possible
+  (define-key pel:window-size "V" #'enlarge-window)                        ; ``C-x ^`` : grow window taller
+  (define-key pel:window-size "v" #'shrink-window)                         ;           : make window smaller vertically
+  (define-key pel:window-size "H" #'enlarge-window-horizontally)           ; ``C-x }`` : grow window wider
+  (define-key pel:window-size "h" #'shrink-window-horizontally)            ; ``C-x {`` : make window narrower
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> w |`` : Windows scroll lock commands
+  ;;
+  (define-global-prefix 'pel:scroll-lock (kbd "<f11> w |"))
+  ;;
+  (define-key pel:scroll-lock "|" #'pel-toggle-dual-scroll)  ; scroll 2 windows in sync
+  (define-key pel:scroll-lock "a" #'scroll-all-mode)         ; scroll all windows
+  (define-key pel:scroll-lock "l" #'scroll-lock-mode)        ; single window scroll
+
+  ;; -----------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> x`` : Process eXecution utilities
+  ;;
+  (define-global-prefix 'pel:eXecute (kbd "<f11> x"))
+
+  (declare-function eshell "eshell")
+
+  (define-key pel:eXecute    "a" #'ansi-term); open the ansi-term shell.
+  (define-key pel:eXecute    "e" #'eshell)   ; open the emacs shell
+  (define-key pel:eXecute    "i" #'ielm)     ; inferior-emacs-lisp-mode : Emacs Lisp REPL
+  (define-key pel:eXecute    "m" #'man)      ; open a man page
+  (when pel-use-python
+    (define-key pel:eXecute  "p" #'run-python))
+  (when pel-use-erlang
+    (define-key pel:eXecute  "r"  'erlang-shell))
+  (define-key pel:eXecute    "s" #'shell)    ; open the shell.  ``C-u <f11> p s`` opens in other window
+  (define-key pel:eXecute    "t" #'term)     ; open the term shell.
+  (define-key pel:eXecute    "w" #'woman))
+                                        ; shell-command (M-!) : run shell command 'cmd' and display the output
+                                        ; shell-command-on-region (M-|) : run the shell command 'cmd' with region content as input; optionally replace region with output
+                                        ; async-shell-command (M-&) : run the
+                                        ; shell command'cmd' asynchronously,
+                                        ; and display the output
+
+;; -----------------------------------------------------------------------------
+(provide 'pel)
+
+;;; pel.el ends here
+
+; LocalWords:  autoload autoloading

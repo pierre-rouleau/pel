@@ -1,0 +1,235 @@
+;;; pel-speedbar.el --- PEL Speedbar/Sr-SPeedbar Management Utilities
+
+;; Copyright (C) 2020  Pierre Rouleau
+
+;; Author: Pierre Rouleau <prouleau.swd@gmail.com>
+
+;; This file is part of the PEL package
+;; This file is not part of GNU Emacs.
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;; -----------------------------------------------------------------------------
+;;; Commentary:
+;;
+;; A set of utilities to help work with the native Emacs speedbar and
+;; sr-speedbar which displays in the same frame, which is useful in
+;; terminal mode.
+;;
+;; In graphics mode, both are equally functional, but in terminal mode
+;; Sr-speedbar is clearly superior since user can see it while operating
+;; one other buffers.
+;;
+;; If sr-speedbar is not available, speedbar is used.
+;;
+;; If sr-speedbar is available, when Emacs runs in graphics mode, then
+;; `pel-open-close-speedbar' prompts the first time it's called to select
+;; which one to use.
+;; When Emacs runs in terminal mode, `pel-open-close-speedbar' prompts
+;; only if `pel-prefer-sr-speedbar-in-terminal' is nil, otherwise it
+;; automatically selects the Sr-Speedbar, which is more convenient.
+;;
+;; The mechanism selected is remembered inside the variable
+;; `pel-speedbar-type-used'.  If you want to prevent the first prompt
+;; set this variable to 'sr-speedbar or 'speedbar.
+
+;;; Code:
+
+
+
+;; The sr-speedbar.el file attempts to access the `helm-alive-p' variable,
+;; but unfortunately does not require helm nor check if that variable is
+;; bounded. One pseudo hack would be here, to (defvar helm-alive-p) but
+;; this hack may cause problem when helm is used, and also does not always
+;; get rid of the warning, so the code does not do it and let the warning
+;; pop-up.  The real solution would be to fix sr-speedbar code to check if
+;; helm-alive-p if bounded.
+(require 'sr-speedbar nil :noerror)
+
+;; PEL: Speedbar/Sr-Speedbar management
+;; ------------------------------------
+;;
+;; variables:
+;; speedbar-frame     : holds frame of speedbar, nil if not opened.
+;; sr-speedbar-window : nil when there is no sr-speedbar, otherwise holds it window.
+
+(defvar pel-window-before-sr-speedbar
+  nil
+  "If non-nil, holds the window to return to from sr-speedbar.")
+
+(defvar pel-prefer-sr-speedbar-in-terminal
+  t
+  "Prefer using Sr-Speedbar in terminal mode (when it's available).")
+
+(defvar pel-speedbar-type-used
+  (if (not (fboundp 'sr-speedbar-toggle))
+      'speedbar
+    (if (display-graphic-p)
+        nil
+      (if pel-prefer-sr-speedbar-in-terminal
+          'sr-speedbar
+        nil)))
+  "Identifies the type of Speedbar component used.
+The values are:
+- nil:          nothing used so far, prompt first time used.
+- 'speedbar:    Speedbar opened in another frame.
+                Available in graphics mode only.
+- 'sr-speedbar: Sr-Speedbar, a speedbar in the same frame.
+
+'sr-speedbar is only allowed if available.
+When available, 'sr-speedbar is preferred in terminal mode,
+unless `pel-prefer-sr-speedbar-in-terminal' is nil.")
+
+(defvar pel--speedbar-active
+  nil
+  "Identifies whether Speedbar was already opened.
+t if Speedbar was opened, nil otherwise.
+Do *not* change its value manually.")
+
+;; --
+
+(defun pel--speedbar-toggle ()
+  "Open/close Speedbar appropriately, remember we're using it."
+  (setq pel-speedbar-type-used 'speedbar)
+  (if (display-graphic-p)
+      (speedbar)
+    (speedbar-get-focus)))
+
+(defun pel--sr-speedbar-toggle ()
+  "Open/close Sr-Speedbar and remember we're using it."
+  (setq pel-speedbar-type-used 'sr-speedbar)
+  (sr-speedbar-toggle))
+
+;;-pel-autoload
+(defun pel-open-close-speedbar ()
+  "Use/close appropriate speedbar: Speedbar or Sr-Speedbar.
+- If Sr-Speedbar is not available, use Speedbar.
+- If Sr-Speedbar is available, then:
+  - In text mode, if `pel-prefer-sr-speedbar-in-terminal'
+    is non-nil use Sr-Speedbar (other window, same frame),
+    otherwise prompt and use what user selects.
+  - In graphics mode, always prompt, and use what user selects.
+Once Speedbar or Sr-Speedbar has been used, keep using the same
+in subsequent calls of the Emacs session."
+  (interactive)
+  (cond ((not pel-speedbar-type-used)
+         (if (yes-or-no-p (if (display-graphic-p)
+                              "Use separate frame? "
+                            "Use the entire terminal frame instead of a dedicated window? "))
+             (pel--speedbar-toggle)
+           (pel--sr-speedbar-toggle)))
+        ((equal pel-speedbar-type-used 'speedbar)
+         (pel--speedbar-toggle))
+        ((equal pel-speedbar-type-used 'sr-speedbar)
+         (pel--sr-speedbar-toggle)))
+  (setq pel--speedbar-active t))
+
+;; --
+
+(defun pel--toggle-to-sr-speedbar-window ()
+  "Move point to/out of sr-speedbar.
+If point is not in sr-speedbar and sr-speedbar exists move to it.
+Otherwise return to previously visited window if it still exists,
+otherwise move to the other window."
+  (interactive)
+  (if pel--speedbar-active
+      (if (sr-speedbar-window-p)
+          (when pel-window-before-sr-speedbar
+            (progn
+              ;; return point back to window that had focus before moving to sr-speedbar
+              ;; if that window is still alive, otherwise move to other window.
+              (if (window-live-p pel-window-before-sr-speedbar)
+                  (select-window pel-window-before-sr-speedbar)
+                (other-window 1))
+              (setq pel-window-before-sr-speedbar nil)))
+        ;; else: remember current window and move to sr-speedbar
+        (progn
+          (setq pel-window-before-sr-speedbar (get-buffer-window))
+          (sr-speedbar-select-window)))
+    (user-error "Open Speedbar first with pel-open-close-speedbar")))
+
+;;-pel-autoload
+(defun pel-toggle-to-speedbar ()
+  "Move point to speedbar frame or sr-speedbar window or back."
+  (interactive)
+  (if (not pel-speedbar-type-used)
+      (pel-open-close-speedbar)
+    (if (equal pel-speedbar-type-used 'sr-speedbar)
+        (pel--toggle-to-sr-speedbar-window)
+        (user-error "The speedbar used is inside a separate frame "))))
+
+;; --
+
+;;-pel-autoload
+(defun pel-speedbar-toggle-refresh ()
+  "Toggle automatic refresh of used Speedbar."
+  (interactive)
+  (if pel--speedbar-active
+      (cond ((equal pel-speedbar-type-used 'speedbar)
+             (speedbar-toggle-updates)
+             (message "Speedbar automatic refresh is now: %s"
+                      (pel-on-off-string speedbar-update-flag)))
+            ((equal pel-speedbar-type-used 'sr-speedbar)
+             (sr-speedbar-refresh-toggle)
+             (message "Sr-Speedbar automatic refresh is now: %s"
+                      (pel-on-off-string sr-speedbar-auto-refresh)))
+            (t
+             (error "Logic error, please report")))
+    (user-error "Open Speedbar first")))
+
+;; --
+
+;;-pel-autoload
+(defun pel-speedbar-refresh ()
+  "Force refresh of Speedbar content."
+  (interactive)
+  (if pel--speedbar-active
+      (cond ((equal pel-speedbar-type-used 'speedbar)
+             (speedbar-refresh t))
+            ((equal pel-speedbar-type-used 'sr-speedbar)
+             (sr-speedbar-refresh))
+            (t
+             (error "Logic error, please report")))
+    (user-error "Open Speedbar first")))
+
+;;-pel-autoload
+(defun pel-speedbar-toggle-show-all-files ()
+  "Execute `speedbar-toggle-show-all-files' if loaded, warn otherwise."
+  (interactive)
+  (if (fboundp 'speedbar-toggle-show-all-files)
+      (speedbar-toggle-show-all-files)
+    (user-error "Open Speedbar first")))
+
+;;-pel-autoload
+(defun pel-speedbar-toggle-sorting ()
+  "Execute `speedbar-toggle-sorting' if loaded, warn otherwise."
+  (interactive)
+  (if (fboundp 'speedbar-toggle-sorting)
+      (speedbar-toggle-sorting)
+    (user-error "Open Speedbar first")))
+
+;;-pel-autoload
+(when (display-graphic-p)
+  (defun pel-speedbar-toggle-images ()
+    "Execute `speedbar-toggle-images' if loaded, warn otherwise."
+    (if (fboundp 'speedbar-toggle-images)
+        (speedbar-toggle-images)
+      (user-error "Open Speedbar first"))))
+
+;; -----------------------------------------------------------------------------
+(provide 'pel-speedbar)
+
+;;; pel-speedbar.el ends here
+
+; LocalWords:  speedbar
