@@ -72,7 +72,7 @@ programming languages into PEL, learn how to use them and document them.
   - `Closing and Suspending`_
   - `Comments`_
   - `Counting`_
-  - `Cut, Copy and Paste`_ (killing and yanking)
+  - `Cut, Delete, Copy and Paste`_ (killing and yanking)
   - `Display Lines`_
   - `Enriched Text`_
   - `Faces and fonts`_
@@ -140,7 +140,7 @@ programming languages into PEL, learn how to use them and document them.
 .. _Closing and Suspending:              doc/pdf/closing-suspending.pdf
 .. _Comments:                            doc/pdf/comments.pdf
 .. _Counting:                            doc/pdf/counting.pdf
-.. _Cut, Copy and Paste:                 doc/pdf/cut-paste.pdf
+.. _Cut, Delete, Copy and Paste:         doc/pdf/cut-paste.pdf
 .. _Display Lines:                       doc/pdf/display-lines.pdf
 .. _Enriched Text:                       doc/pdf/enriched-text.pdf
 .. _Ert:                                 doc/pdf/ert.pdf
