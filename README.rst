@@ -72,7 +72,7 @@ programming languages into PEL, learn how to use them and document them.
   - `Closing and Suspending`_
   - `Comments`_
   - `Counting`_
-  - `Cut Copy and Paste`_ (killing and yanking)
+  - `Cut, Copy and Paste`_ (killing and yanking)
   - `Display Lines`_
   - `Enriched Text`_
   - `Faces and fonts`_
