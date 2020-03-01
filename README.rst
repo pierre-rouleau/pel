@@ -53,7 +53,7 @@ demonstration videos hosted on various platforms.
 After a while, I ended up with a large set of information and needed to quickly
 identify their nature, so I started using special characters showing like icons
 to represent a set of concepts, using colors to identify if a specific command
-is a standard Emacs command, part of PEL or pasr of another package that PEL
+is a standard Emacs command, part of PEL or parts of another package that PEL
 integrates with.  These conventions are evolving and are described in the first
 of the document listed below; the `Document Legend`_.  The other documents are
 mostly listed below by alphabetical order of the topic they describe aside for
