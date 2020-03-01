@@ -63,6 +63,7 @@ programming languages into PEL, learn how to use them and document them.
 
 - `Document Legend`_
 - Emacs base operations
+
   - `Abbreviations`_
   - `Align`_
   - `Bookmarks`_
@@ -103,7 +104,9 @@ programming languages into PEL, learn how to use them and document them.
   - Programming Language Support:
 
     - `Common Lisp`_
+
       - `Emacs Lisp`_
+
         - `Ert`_ (Emacs Regression Testing system)
 
   - `Registers`_
