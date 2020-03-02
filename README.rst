@@ -15,55 +15,49 @@ How to Use
 ==========
 
 
-Documentation
-=============
+Key Binding Documentation
+=========================
 
-PEL comes with a relatively large set of documentation in the form of several
-PDF document tables listing the Emacs commands for a given type of
-activity.
-
-I created those PDF files with a non-free program because I was
-learning Emacs and I needed to be able to document what I was learning and
-creating with a tool that did not have the same level of power Emacs has but
-also did not have as steep a learning curve.  So I decided to create a set of
-tables that are something between a simple quick sheet and a full blown manual,
-just becuase I remember better when I write something about what I'm learning.
-If I learn better ways to create the same documentation using Emacs and I get
-some free time I might convert them.  For now I just included the PDF output
-files.
+PEL comes with a set of tables listing and describing both the standard Emacs
+commands and key bindings for a given type of activity along with the extra
+commands provided by PEL.
+These tables are inside PDF documents.
+See the `PDF Documentation`_ section for more info on why PDF files were used.
+The tables have a format that is something between a quick sheet format and
+a full blown manual.
 
 Each PDF file holds a table that list commands related to a specific topic and
 holds overview above a list of rows on:
 
-  #. the command name with several hyperlinks to the related section of the
-     GNU Emacs manuals or other rappropriate resource
-  #. the key bindings for that command including:
+#. the command name with several hyperlinks to the related section of the
+   GNU Emacs manuals or other rappropriate resource
+#. the key bindings for that command including:
 
-     - the standard Emacs key bindings
-     - the bindings for integrated packages
-     - the bindings specific to PEL
+   - the standard Emacs key bindings
+   - the bindings for integrated packages
+   - the bindings specific to PEL
 
-  #. the Emacs Lisp function form for the command, with the function name in
-     bold and the arguments in Emacs help style
-  #. A description of the command, with lots of the text taken directly from
-     Emacs help for what relates to the interactive use of the function but also
-     with extra notes and references.
+#. the Emacs Lisp function form for the command, with the function name in
+   bold and the arguments in Emacs help style
+#. A description of the command, with lots of the text taken directly from
+   Emacs help for what relates to the interactive use of the function but also
+   with extra notes and references.
 
-Several of these documents also contain a table listing various references on
-the specific topic.  These references include hyperlinks to the relevant GNU
+Several of these documents also a list of reference table listing relevant topics.
+These references include hyperlinks to the relevant GNU
 Emacs manuals but also to several sites devoted to Emacs including several
 demonstration videos hosted on various platforms.
 
-After a while, I ended up with a large set of information and needed to quickly
-identify their nature, so I started using special characters showing like icons
-to represent a set of concepts, using colors to identify if a specific command
-is a standard Emacs command, part of PEL or parts of another package that PEL
-integrates with.  These conventions are evolving and are described in the first
-of the document listed below; the `Document Legend`_.  The other documents are
-mostly listed below by alphabetical order of the topic they describe aside for
-some of the topics that have sub-topics.  The section on programming language
-and VCS will be expanded as I integrate the Emacs packages that support those
-programming languages into PEL, learn how to use them and document them.
+The tables are heavily marked up using colors and icons (actually Unicode
+character symbols) to represent various concepts. For example key bindings that
+do not work when Emacs is running in terminal (TTY) mode are displayed in
+orange, commands that require external Emacs package are show in blue and use a the
+package character (📦), etc...  The full list of conventions are listed in the
+`Document Legend`_ table.  The list of tables follow below.
+This is the very first release of PEL.
+As PEL evolves, it will cover more topics, more
+programming languages, major modes and will integrate with more of the external
+Emacs packages and more tables will describe how to use them.
 
 - `Document Legend`_
 - Emacs base operations
