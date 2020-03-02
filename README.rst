@@ -9,14 +9,194 @@ pel -- Pragmatic Environment Library for Emacs
 Overview
 ========
 
+PEL is a Emacs Lisp package that provides access to a set of features
+implemented in the PEL code but also to features implemented by several other
+great Emacs packages, as long as they are activated via the mechanism described
+in the `PEL Customization`_ section.
+
+In its current form, PEL does not implement any minor or major Emacs mode.
+Instead it provides a set of functions that can be accessed globally, with some
+of them specialized for some modes and other available everywhere.
+
+PEL defines a large set of key bindings which are mostly extensions to what
+is available within standard Emacs.
+As of this version, the PEL key bindings mostly use function prefix keys as
+described in the `PEL Key Bindings`_ section.
+
+PEL also integrates with a set of third party Emacs packages
+(see the list in the `Credits`_ section below).
+In several cases PEL contains the logic to install these other packages, the
+logic to configure them and the logic to load them as lazily as possible to
+reduce the Emacs initialization start time to a minimum.
+
+The use of PEL features and PEL uses of other third party Emacs packages is
+controlled by the `PEL customization`_.  By default, no third party package not
+already included in the standard GNU Emacs distribution is installed or used.
+To get PEL to use them and provide the functionality (along with their published
+key bindings) you must first activate them via the `PEL Customization`_
+mechanism.
+
+The reason for PEL
+------------------
+
+PEL attempts to make Emacs easy to use for new users by providing already made
+configuration that is controlled by Emacs customization system, as opposed to
+writing lots of Emacs Lisp code.
+
+Emacs supports a number of great packages. Some are easy to install, others
+require more knowledge, knowledge that is often not readily available to new
+users and will require a time investment you may not be willing to make.
+
+Instead of having to write Emacs Lisp code inside an Emacs init file for each
+new package you want to use, you'd use PEL, select the features you want
+via `PEL Customization`_ and then execute ``pel-init`` to activate what you want
+to use.  PEL contains the logic for configuring the packages it supports.  In
+some cases it also contains the logic to install the package if it is not
+already installed.
+
+This is an early version of PEL. It will grow over time and will support more
+packages. It essentially came out as a desire to be able to use my Emacs
+configuration on several systems, both in terminal (TTY) mode and in Graphics
+mode while trying to keep  Emacs initialization as fast as possible.
+I started writing it while learning Emacs, Emacs Lisp and the amazing packages
+that have been written for Emacs.
+
+While doing that, I also needed to document
+what I was learning, so I created a set of tables that each list and describe the key
+bindings for a specific Emacs topic, like how to navigate, deal with Emacs
+buffers, windows and frames, how to undo, redo, work with Emacs Lisp, etc...
+See the `Key Binding Documentation`_ section.  The tables list the key bindings
+that are available in plain vanilla GNU Emacs but also the bindings PEL adds and
+the bindings for the packages PEL integrates with.
+
+
+PEL Goals
+---------
+
+- Ease introduction to Emacs.
+- Keep as many standard Emacs key bindings as possible.
+- Provide easy to remember key bindings via a key binding tree, key prefixes and
+  the use of key choice visualization with package such as which-key, especially
+  for commands that are seldom used.
+- Minimize the amount of Emacs Lisp code to write inside Emacs init file to
+  support various external Emacs packages.
+
+  - Provide all logic necessary to install and configure external Emacs packages.
+
+- Minimize Emacs initialization time even when a large number of packages are
+  present on the computer.
+- Document what's available: the key bindings, the special considerations, the
+  documents that should be read to deepen user's understanding.
+- Allow use of PEL even when someone has an extensive Emacs init file.
+
+Essentially, PEL is my first Emacs Lisp project.  I wrote it while learning
+Emacs.  I keep using the documentation whenever I forgot the key bindings
+of one of the many Emacs features.  There are still a lot of things to do to add
+support for external packages and increase the customization. And even more to
+transform the documentation format (see the `PDF Documentation`_ section for
+that.)
+
+..
+   -----------------------------------------------------------------------------
 
 
 How to Use
 ==========
 
+Unfortunately *some* Emacs Lisp code must be written to your
+`Emacs initialization file`_.
+
+**Configure How to Download Packages**
+
+PEL uses
+ELPA_ (GNU Emacs Lisp Package Archive)
+and MELPA_ (Milkypostman's Emacs Lisp Package Archive)
+sites to download and install packages.
+
+To activate their use, place the following code inside your Emacs init file if
+it is not already present:
+
+.. code:: elisp
+
+          (when (>= emacs-major-version 24)
+            (require 'package)
+            (setq package-enable-at-startup nil)
+            (if (version=  emacs-version "26.2")
+                (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
+
+            (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                                (not (gnutls-available-p))))
+                   (proto (if no-ssl "http" "https")))
+              (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+
+              (when (< emacs-major-version 24)
+                ;; For important compatibility libraries like cl-lib
+                (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
+
+            (package-initialize))
+
+**Select the location of Emacs Persistent Customization Data**
+
+By default, Emacs stores its persistent customization data inside your Emacs
+init file.  If you want to store it somewhere else, you to add something like
+the following code, which places it inside the file ``~/.emacs-custom.el``:
+
+.. code:: elisp
+
+          (setq custom-file "~/.emacs-custom.el")
+          (load custom-file)
+
+**To start PEL when Emacs Starts**
+
+If you want PEL to be available right after Emacs starts, write the following
+inside your Emacs init file:
+
+.. code:: elisp
+
+          (require 'pel)
+          (pel-init)
+
+If you do not want PEL to start when Emacs start, then you don't need the above
+code. To use PEL later simply execute the **pel-init** command by typing:
+``M-x pel-init``
+
+
+**To identify the location of your Ispell local dictionary**
+
+With the current version of PEL, when you want to select the spell check
+program used by
+Ispell or Flyspell and the location of your personnal dictionary you need to
+write Emacs Lisp code in your Emacs init file that calls the pel-spell-init
+function.
+
+The following is an example. It selects the ``aspell`` program
+and identifies the path for the personal dictionary.
+
+.. code:: elisp
+
+          (eval-after-load "ispell"
+            '(pel-spell-init “aspell" "~/.emacs.d/.ispell"))
+
+In future versions of PEL, this code will not be necessary; the spell check
+selection, optional path to it and path to the personal dictionary will be
+selected via PEL customization.
+
+..
+   -----------------------------------------------------------------------------
+
+
+PEL Key Bindings
+================
+
+PEL key bindings are mostly use function key prefixes.
+It currently uses the F2, F6, F11 and F12 keys.
+In this version these prefixes are hard-coded; they cannot be user selected via
+customization.  That is something that will be added later.
+
+
 
 Key Binding Documentation
-=========================
+-------------------------
 
 PEL comes with a set of tables listing and describing both the standard Emacs
 commands and key bindings for a given type of activity along with the extra
@@ -126,35 +306,66 @@ Emacs packages and more tables will describe how to use them.
   - `Windows`_
 
 
-Customization
-=============
+PEL Customization
+=================
 
-PEL provides a set of stand alone features that you get when you install it.
-But PEL also integrates several other packages and extend these package by
-providing extra key bindings for these extra packages.  In same cases PEL also
-provides extra commands that extend those packages.  Some of the packages are
-part of the standard Emacs distribution, others are third party Emacs Lisp
-packages that are available from web accessible Emacs package archive sites
-like MELPA_.
+PEL is heavily customizable using the `Emacs customization`_ facility.
 
-By default PEL will not attempt to use or install those other packages. If you
-want to use them you must customize PEL using the ``M-x customize`` command and
-select the **Pel Use Package** customize subgroup of the **Pel** customize
-group.
+To customize PEL:
 
-PEL provides a set of Emacs customize variable with  names that start with
-the ``pel-use-`` prefix to activate the various packages PEL integrates with.
+#. Decide where you want to store the persistent customization information.
 
-You can set the ``pel-use-`` variables that interest you to **t** and then
-re-initialize PEL (by executing ``M-x pel-init``) or by restarting Emacs and
-then execute ``M-x pel-init``.   For some of these variables, PEL will attempt
-to install the required packages if they are not present and then will activate
-the PEL commands that take advantage of the corresponding package.
+   - By default it is stored inside your Emacs init file.
+     If this is good for you, then continue to step 3.
+   - You may want to store it inside a separate file, to decouple it from your
+     Emacs initialization if you use several environments or computers.
+     For example if you want it stored inside ``~/.emacs-custom.el`` then
+     place the following Emacs Lisp code inside your Emacs init file::
 
-Currently PEL uses the `use-package`_ system to perform the installation.
+       (setq custom-file "~/.emacs-custom.el")
+       (load custom-file)
 
-You may not want PEL to install packages for you.  In that case install the
-package you need first and then activate the ``pel-use-`` variable.
+#. Once the location of the customization information is identified and set start
+   Emacs.
+#. Execute the customize command by typing: ``M-x customize``
+#. This will open the ``*Customize Apropos*`` buffer.
+#. Inside that buffer, move point to the search field and
+   search for the Pel group by typing ``Pel$`` inside the search
+   field and hitting the Search button.
+#. Emacs will show the *Pel Group*.
+
+   - Currently, the *Pel group* has the following subgroups:
+
+     - *Pel Identification*
+     - *Pel Kbmacro*
+     - *Pel Package Use*
+     - *Pel Text Insert*
+
+   To select the packages you want PEL to use select the *Pel Package Use*
+   subgroup.
+   This is the root of another set of subgroups, organized by topics.
+   These define a set of customization variables that activate the features either
+   provided by PEL code or provided by other packages which PEL uses.
+   All of these variables have a name that begin with the ``pel-use-`` prefix.
+   The list of these variables is available below in `Pel Use Variables`_.
+
+#. Select the *Pel Package Use* subgroup, then the subgroup that interests you
+   and activate the feature that you want to use by setting the corresponding
+   ``pel-use-`` variable to **t**.
+#. Save and apply you new settings.
+#. Restart PEL by either executing ``M-x pel-init`` or by restarting Emacs and
+   then executing ``M-x pel-init`` (unless it is already executed in you Emacs
+   init file).
+
+
+
+
+
+
+
+
+Pel Use Variables
+-----------------
 
 The following table contains the list of the ``pel-use-`` customize variables
 currently available.
@@ -273,16 +484,23 @@ pel-use-which-key              .
 
 .. References
 
-.. _ace-window package:       https://melpa.org/#/ace-window
-.. _auto-complete package:    https://melpa.org/#/auto-complete
-.. _MELPA:                    https://melpa.org/
-.. _use-package:              https://melpa.org/#/use-package
-.. _bind-key:                 https://melpa.org/#/bind-key
-.. _bm:                       https://melpa.org/#/bm
-.. _c-eldoc:                  https://melpa.org/#/?q=c-eldoc
-.. _SBCL:                     https://en.wikipedia.org/wiki/Steel_Bank_Common_Lisp
-.. _slime:                    https://melpa.org/#/slime
-.. _slime package:            https://melpa.org/#/slime
+.. _ace-window package:        https://melpa.org/#/ace-window
+.. _auto-complete package:     https://melpa.org/#/auto-complete
+.. _MELPA:                     https://melpa.org/
+.. _use-package:               https://melpa.org/#/use-package
+.. _bind-key:                  https://melpa.org/#/bind-key
+.. _bm:                        https://melpa.org/#/bm
+.. _c-eldoc:                   https://melpa.org/#/?q=c-eldoc
+.. _SBCL:                      https://en.wikipedia.org/wiki/Steel_Bank_Common_Lisp
+.. _slime:                     https://melpa.org/#/slime
+.. _slime package:             https://melpa.org/#/slime
+
+.. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Customization.html#Customization
+.. _Emacs initialization file: https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html
+.. _ELPA:                      https://elpa.gnu.org
+
+
+
 
 
 
@@ -376,3 +594,49 @@ I am open to suggestions. And can provide the Numbers file on request.
 .. _Web:                                      doc/pdf/web.pdf
 .. _Whitespaces:                              doc/pdf/whitespaces.pdf
 .. _Windows:                                  doc/pdf/windows.pdf
+
+
+
+Credits
+=======
+
+PEL integrates with several great Emacs Lisp packages.  Some of them are
+required, the others are used if they are present and are activated by the PEL
+customization.
+
+- PEL uses the following libraries distributed with GNU Emacs:
+
+  - bookmark
+  - cc-vars
+  - cua-rect
+  - delsel
+  - elint
+  - ert
+  - flyspell
+  - hl-line
+  - imenu
+  - isearch
+  - ispell
+  - kmacro
+  - paragraphs
+  - simple
+  - subr-x
+  - subword
+  - thingatpt
+
+- PEL has the following dependencies on the following external Emacs packages:
+
+  - `use-package`_ 2.4, by John Wiegley, GPL V3.0.
+
+- Finally PEL can integrate and use the following external Emacs packages, when
+  they are activated by PEL customize variables:
+
+  - ace-window
+  - bind-key
+  - erlang-flymake
+  - erlang-start
+  - popup
+  - pos-tip
+  - sr-speedbar
+
+# -----------------------------------------------------------------------------
