@@ -2,6 +2,10 @@
 pel -- Pragmatic Environment Library for Emacs
 ==============================================
 
+.. contents::
+.. sectnum::
+
+
 Overview
 ========
 
@@ -105,9 +109,9 @@ programming languages into PEL, learn how to use them and document them.
 
     - `Common Lisp`_
 
-      - `Emacs Lisp`_
+    - `Emacs Lisp`_
 
-        - `ERT`_ (Emacs Lisp Regression Testing system)
+      - `ERT`_ (Emacs Lisp Regression Testing system)
 
   - `Registers`_
   - `Scrolling`_
