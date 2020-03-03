@@ -218,8 +218,11 @@ PEL Key Bindings
 
 PEL key bindings are mostly use function key prefixes.
 It currently uses the **F2**, **F6**, **F11** and **F12** keys as prefix keys.
-In this version these prefixes are hard-coded.
-Future version of PEL will allow customization of the prefix keys.
+It also binds **F5** as the repeat key.
+In this version these bindings are hard-coded.
+
+.. note::   Future version of PEL will allow customization of the prefix keys and the
+            ability to control whether **F5** is bound by PEL.
 
 The best way to quickly see the list of PEL prefix key is right inside Emacs.
 Type the prefix key (like **F11**) and then quickly type
@@ -351,7 +354,7 @@ key                             binding
 ``<f11> SPC L``                 pel:for-lisp
 ``<f11> SPC c``                 pel:for-C
 ``<f11> SPC g``                 pel:for-graphviz-dot
-``<f11> SPC l``                 pel:elisp
+``<f11> SPC l``                 pel:for-elisp
 ``<f11> SPC p``                 pel:for-python
 ``<f11> SPC r``                 pel:for-reST
 =============================== ===========================================
