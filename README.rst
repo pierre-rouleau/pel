@@ -193,7 +193,7 @@ code. To use PEL later simply execute the **pel-init** command by typing:
 
 With the current version of PEL, when you want to select the spell check
 program used by
-Ispell or Flyspell and the location of your personnal dictionary you need to
+Ispell or Flyspell and the location of your personal dictionary you need to
 write Emacs Lisp code in your Emacs init file that calls the pel-spell-init
 function.
 
@@ -781,13 +781,31 @@ Building PEL
 
 **Note 2:**
         At this moment, for this early version of PEL, I did not submit PEL
-        package into Emacs Lisp archives like MELPA.  I will do this later,
+        package into Emacs Lisp archives like MELPA_.  I will do this later,
         once I've had time to add support for several programming languages and
         that I have completed the customization.
 
 To control command line build of the PEL distribution package, the byte
-compilation of all PEL Emacs Lisp source files, I wrote a GNU Makefile script
+compilation of all PEL Emacs Lisp source files, I wrote a GNU Makefile_ script
 and also the Emacs Lisp file build-pel.el_
+
+To see what you can do with the Makefile, move to the directory where it is
+located and issue the ``make help`` command which lists the available top-level
+targets and their purpose.
+
+**Current Limitations**:
+
+        #. The current Makefile_ and build-pel.el_ assume that the files are
+           located in a specific location.
+        #. The ``make``, ``make all``  always rebuild everything regardless of
+           the state and dependencies of the files.
+        #. Overall, this makefile is also a bit verbose and could be cleaned up.
+
+        These defects currently don't prevent me from using the
+        Makefile but do bug me, so that's another thing on my todo list.
+
+
+.. _Makefile:             https://github.com/pierre-rouleau/pel/blob/master/Makefile
 
 
 PDF Documentation
