@@ -410,7 +410,7 @@ number of lines.
 
 *Warning*: Do NOT use `pel-home' in elisp programs.
            Use (`goto-char' (`point-min')) instead.
-           `perl-home' is only meant to be used interactively."
+           `pel-home' is only meant to be used interactively."
   (interactive "^P")
   (unless (eq last-repeatable-command 'pel-home)
     (or (consp arg)
