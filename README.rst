@@ -86,7 +86,7 @@ PEL Goals
 - Ease introduction to Emacs.
 - Keep as many standard Emacs key bindings as possible.
 - Provide easy to remember key bindings via a key binding tree, key prefixes and
-  the use of key choice visualization with package such as which-key, especially
+  the use of key choice visualization with package such as which-key_, especially
   for commands that are seldom used.
 - Minimize the amount of Emacs Lisp code to write inside Emacs init file to
   support various external Emacs packages.
@@ -106,12 +106,25 @@ support for external packages and increase the customization. And even more to
 transform the documentation format (see the `PDF Documentation`_ section for
 that.)
 
+
+Using Portions of PEL Manually
+------------------------------
+
+There's another, manual way to use portions of PEL.
+PEL code is split across several files.
+Its keymap and installation logic is located inside the `pel.el`_ file
+exclusively.
+If you only want to use the feature of one or several other files, then simply
+use them and never call ``pel-init``.
+You can then create any key binding that you wish by writing your own
+initialization code.
+
 ..
    -----------------------------------------------------------------------------
 
 
-How to Use
-==========
+How to Setup PEL
+================
 
 Unfortunately *some* Emacs Lisp code must be written to your
 `Emacs initialization file`_.
@@ -202,6 +215,81 @@ PEL key bindings are mostly use function key prefixes.
 It currently uses the **F2**, **F6**, **F11** and **F12** keys as prefix keys.
 In this version these prefixes are hard-coded.
 Future version of PEL will allow customization of the prefix keys.
+
+The best way to quickly see the list of PEL prefix key is right inside Emacs.
+Type the prefix key (like **F11**) and then quickly type
+either **C-h** or **F1**.
+Emacs will open a ``*help*`` buffer that lists all keys available.  You can
+navigate this buffer and follow the links to the described commands. To get the
+list of the keys for a sub-prefix type it and again follow with
+either **C-h** or **F1**.
+
+The following table lists the **F11** keymap as an example.
+As you can see some of the commands are accessible right after the **F11**
+prefix, but there's a large number of sub-prefix following.
+The keymap names were chosen to be as descriptive as possible and use keys that
+mnemonically associate to the related concept if at all possible.
+
+=============================== ===========================================
+key                             binding
+=============================== ===========================================
+``<f11> TAB``                   pel:indent
+``<f11> SPC``                   Prefix Command
+``<f11> #``                     pel-toggle-mac-numlock
+``<f11> $``                     pel:spell
+``<f11> '``                     pel:bookMark
+``<f11> +``                     pel-copy-marked-or-whole-line
+``<f11> ,``                     pel:auto-completion
+``<f11> -``                     pel:kill
+``<f11> .``                     pel:mark
+``<f11> 0``                     hl-line-mode
+``<f11> ;``                     pel:comment
+``<f11> =``                     pel:copy
+``<f11> ?``                     pel:help
+``<f11> C``                     pel:clipboard
+``<f11> F``                     pel:frame
+``<f11> S``                     pel:speedbar
+``<f11> [``                     pel-cua-move-rectangle-left
+``<f11> ]``                     pel-cua-move-rectangle-right
+``<f11> a``                     pel:abbrev
+``<f11> b``                     pel:buffer
+``<f11> c``                     pel:count
+``<f11> d``                     pel:draw
+``<f11> f``                     pel:file
+``<f11> g``                     pel:grep
+``<f11> i``                     pel:insert
+``<f11> k``                     pel:kbmacro
+``<f11> l``                     pel:linectrl
+``<f11> o``                     pel:order
+``<f11> r``                     pel:register
+``<f11> s``                     pel:search-replace
+``<f11> t``                     pel:text
+``<f11> u``                     pel:undo
+``<f11> w``                     pel:window
+``<f11> x``                     pel:eXecute
+``<f11> y``                     yank-pop
+``<f11> |``                     pel-toggle-dual-scroll
+``<f11> <C-S-down>``            pel-close-window-down
+``<f11> <C-S-left>``            pel-close-window-left
+``<f11> <C-S-right>``           pel-close-window-right
+``<f11> <C-S-up>``              pel-close-window-up
+``<f11> <C-down>``              pel-create-window-down
+``<f11> <C-left>``              pel-create-window-left
+``<f11> <C-right>``             pel-create-window-right
+``<f11> <C-up>``                pel-create-window-up
+``<f11> <M-left>``              pel-backward-syntaxchange-start
+``<f11> <M-right>``             pel-forward-syntaxchange-start
+``<f11> <C-f10>``               menu-bar-mode
+``<f11> <down>``                windmove-down
+``<f11> <f10>``                 pel:menu
+``<f11> <f11>``                 pel-toggle-frame-fullscreen
+``<f11> <f12>``                 xterm-mouse-mode
+``<f11> <left>``                windmove-left
+``<f11> <right>``               windmove-right
+``<f11> <up>``                  windmove-up
+=============================== ===========================================
+
+
 
 
 
@@ -509,6 +597,7 @@ pel-use-which-key              .
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Customization.html#Customization
 .. _Emacs initialization file: https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html
 .. _ELPA:                      https://elpa.gnu.org
+.. _which-key:                 https://melpa.org/#/which-key
 
 
 
@@ -556,6 +645,30 @@ autoloading of the PEL functions.  the `pel-autoloads.el`_ and
 .. _pel-autoloads.el:     https://github.com/pierre-rouleau/pel/blob/master/pel-autoloads.el
 .. _shift-key selection:  https://www.gnu.org/software/emacs/manual/html_node/emacs/Shift-Selection.html#Shift-Selection
 .. _mark and region:      https://www.gnu.org/software/emacs/manual/html_node/emacs/Mark.html#Mark
+
+
+Naming Conventions
+------------------
+
+- All PEL "*public*" functions and variables have a name that start with the
+  prefix "pel-".
+
+  - This includes all PEL commands.
+
+- All PEL "*private*" functions and variables have a name that start with the
+  prefix "pel--".
+
+  - Those are  meant to be used from with PEL code exclusively.
+
+- All PEL customization variables that control whether PEL uses or provides a
+  given feature have a name that starts with the prefix "pel-use-".
+
+- Most PEL key-maps have a name.  All of those name start with the prefix "pel:".
+
+  - Using named key-maps help shows the key prefix purpose when using
+    `which-key`_ to display the available key following a prefix or typing
+    ``C-h`` or ``<f1>`` after typing a prefix key to see the list of available
+    keys and their meanings.
 
 
 PDF Documentation
