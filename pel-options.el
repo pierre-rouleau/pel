@@ -351,7 +351,7 @@ References:
 ;; Programming Language Support
 ;; ============================
 (defgroup pel-pkg-for-programming nil
-  "List of external packages that PEL can use to support programming ."
+  "List of external packages that PEL can use to support programming."
   :group 'pel-package-use)
 
 (defcustom pel-use-eldoc-box nil

@@ -488,6 +488,7 @@ re-execute `pel-init' again to activate them."
     ;; configure bm package to be loaded only on first use.
     (use-package bm
       :ensure t
+	  :pin melpa
 
       :init
       ;; Ensure that bm restores bookmark when it loads.
@@ -644,6 +645,8 @@ re-execute `pel-init' again to activate them."
 
   (when pel-use-auto-complete
     (use-package auto-complete
+      :ensure t
+      :pin melpa
       :commands auto-complete-mode))
 
   (when pel-use-company
@@ -805,8 +808,9 @@ re-execute `pel-init' again to activate them."
   ;;
   ;; The goal of this is to support quick operations with simple key bindings.
 
-  (global-set-key [C-kp-add] 'pel-copy-word-at-point)
-  (global-set-key [M-kp-add] 'pel-copy-symbol-at-point)
+  (global-set-key [C-kp-add]  'pel-copy-word-at-point)
+  (global-set-key [M-kp-add]  'pel-copy-symbol-at-point)
+  (global-set-key (kbd "M-+") 'pel-copy-symbol-at-point)
 
   (global-set-key [C-kp-subtract] 'pel-kill-word-at-point)
   (global-set-key [M-kp-subtract] 'pel-kill-symbol-at-point)
@@ -815,6 +819,9 @@ re-execute `pel-init' again to activate them."
   ;; --------------------------------------------------
   ;; Copy current marked region or line:  <kp-add>
   (global-set-key [kp-add] 'pel-copy-marked-or-whole-line)
+  (when (not (display-graphic-p))
+	(global-set-key [kp-separator] 'pel-copy-marked-or-whole-line))
+
 
   ;; - Kill beginning of line
   ;; ------------------------
@@ -1244,12 +1251,12 @@ re-execute `pel-init' again to activate them."
 
   ;; -----------------------------------------------------------------------------
 
-  (define-global-prefix 'pel:elisp (kbd "<f11> SPC l"))
+  (define-global-prefix 'pel:for-elisp (kbd "<f11> SPC l"))
   ;;
-  (define-key pel:elisp   "." #'pel-find-thing-at-point)        ; Move point to the definition of function at point
-  (define-key pel:elisp   "D" #'toggle-debug-on-error)
+  (define-key pel:for-elisp   "." #'pel-find-thing-at-point)        ; Move point to the definition of function at point
+  (define-key pel:for-elisp   "D" #'toggle-debug-on-error)
   (when pel-use-parinfer
-    (define-key pel:elisp "i" 'parinfer-auto-fix))
+    (define-key pel:for-elisp "i" 'parinfer-auto-fix))
 
   (define-global-prefix 'pel:elisp-analyze (kbd "<f11> SPC l a"))
   (define-key pel:elisp-analyze ")" #'check-parens)                   ; Check for unbalanced parens in current buffer
@@ -1293,7 +1300,7 @@ re-execute `pel-init' again to activate them."
     (define-key pel:elisp-mode    "I"  'parinfer-mode)
     (define-key pel:elisp-mode    "i"  'parinfer-toggle-mode))
   (when pel-use-rainbow-delimiters
-    (define-key pel:elisp-mode    "r"  'rainbow-delimiters-mode))  ; toggle colored highlight of nested (),{},[] by their depth.
+    (define-key pel:elisp-mode    "R"  'rainbow-delimiters-mode))  ; toggle colored highlight of nested (),{},[] by their depth.
   (define-key pel:elisp-mode      "s" #'semantic-mode)             ; toggles the semantic mode (source code parsing)
 
   (when pel-use-macrostep
@@ -1303,10 +1310,17 @@ re-execute `pel-init' again to activate them."
       :init
       (define-key pel:elisp-mode    "m" #'macrostep-expand)))
 
+  (when pel-use-highlight-defined
+    (use-package highlight-defined
+      :ensure t
+      :commands highlight-defined-mode
+      :init
+      (define-key pel:elisp-mode  "d" 'highlight-defined-mode)))
+
   ;; Schedule the context sensitive menu
   (pel--mode-hook-maybe-call
    '(lambda ()
-      (local-set-key (kbd "<f12>")   'pel:elisp)
+      (local-set-key (kbd "<f12>")   'pel:for-elisp)
       (local-set-key (kbd "<f12> a") 'pel:elisp-analyze)
       (local-set-key (kbd "<f12> c") 'pel:elisp-compile)
       (local-set-key (kbd "<f12> d") 'pel:elisp-debug)
@@ -1733,26 +1747,24 @@ the ones defined from the buffer now."
 
   (define-global-prefix 'pel:highlight (kbd "<f11> b h"))
   (define-key pel:highlight "-"  #'hl-line-mode)                      ; enable/disable highlight of current line in buffer
-  (define-key pel:highlight "."  #'highlight-symbol-at-point)
-  (define-key pel:highlight "C"  #'highlight-changes-mode)
-  (define-key pel:highlight "c"  #'pel-set-highlight-color)           ; prompt for color name and use as cursor line highlight.
-  (define-key pel:highlight "F"  #'font-lock-mode)
-  (define-key pel:highlight "f"  #'pel-hi-lock-find-patterns)
-  (define-key pel:highlight "G"  #'global-hi-lock-mode)
-  (define-key pel:highlight "L"  #'hi-lock-mode)
-  (define-key pel:highlight "l"  #'highlight-lines-matching-regexp)
-  (define-key pel:highlight "p"  #'highlight-phrase)
-  (define-key pel:highlight "r"  #'highlight-regexp)
-  (define-key pel:highlight "s"  #'pel-toggle-hl-line-sticky)         ; Toggle `hl-line-sticky-flag' nil/t to control whether line highlighting
-  (define-key pel:highlight "u"  #'unhighlight-regexp)
-  (define-key pel:highlight "w"  #'hi-lock-write-interactive-patterns)
+  (define-key pel:highlight "(" #'show-paren-mode)                    ; toggle showing matching parenthesis
+
+  (define-key pel:highlight		 "."  #'highlight-symbol-at-point)
+  (define-key pel:highlight		 "C"  #'highlight-changes-mode)
+  (define-key pel:highlight		 "c"  #'pel-set-highlight-color)           ; prompt for color name and use as cursor line highlight.
+  (define-key pel:highlight		 "F"  #'font-lock-mode)
+  (define-key pel:highlight		 "f"  #'pel-hi-lock-find-patterns)
+  (define-key pel:highlight		 "G"  #'global-hi-lock-mode)
+  (define-key pel:highlight		 "L"  #'hi-lock-mode)
+  (define-key pel:highlight		 "l"  #'highlight-lines-matching-regexp)
+  (define-key pel:highlight		 "p"  #'highlight-phrase)
+  (when pel-use-rainbow-delimiters
+	(define-key pel:highlight	 "R"  'rainbow-delimiters-mode))  ; toggle colored highlight of nested (),{},[] by their depth.
+  (define-key pel:highlight		 "r"  #'highlight-regexp)
+  (define-key pel:highlight		 "s"  #'pel-toggle-hl-line-sticky)         ; Toggle `hl-line-sticky-flag' nil/t to control whether line highlighting
+  (define-key pel:highlight		 "u"  #'unhighlight-regexp)
+  (define-key pel:highlight		 "w"  #'hi-lock-write-interactive-patterns)
   ;;
-  (when pel-use-highlight-defined
-    (use-package highlight-defined
-      :ensure t
-      :commands highlight-defined-mode
-      :init
-      (define-key pel:highlight "d" 'highlight-defined-mode)))
 
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> b I`` : Indirect buffer commands

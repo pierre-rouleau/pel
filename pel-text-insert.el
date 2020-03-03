@@ -95,9 +95,12 @@ absolute path, if negative it omits the path."
             fname)
         (require 'pel-window)
         (save-excursion
-          (pel-move-to-window direction)
-          (setq fname (pel-current-buffer-filename no-path))
-          (select-window original-window))
+		  (if (fboundp 'pel-move-to-window)
+			  (progn
+				(pel-move-to-window direction)
+				(setq fname (pel-current-buffer-filename no-path))
+				(select-window original-window))
+			(error "Internal loading error: failed loading pel-window")))
         (insert fname)))))
 
 ;;-pel-autoload
