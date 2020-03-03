@@ -221,8 +221,9 @@ It currently uses the **F2**, **F6**, **F11** and **F12** keys as prefix keys.
 It also binds **F5** as the repeat key.
 In this version these bindings are hard-coded.
 
-.. note::   Future version of PEL will allow customization of the prefix keys and the
-            ability to control whether **F5** is bound by PEL.
+**Note:**
+         Future version of PEL will allow customization of the prefix keys and the
+         ability to control whether **F5** is bound by PEL.
 
 The best way to quickly see the list of PEL prefix key is right inside Emacs.
 Type the prefix key (like **F11**) and then quickly type
