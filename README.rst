@@ -767,7 +767,7 @@ Emacs Lisp Regression Test
 At this point just a small portion of PEL is covered by
 `ERT based <https://www.gnu.org/software/emacs/manual/html_node/ert/index.html>`_
 testing.  The test code is located inside the `test sub-directory`_.
-As everything in PEL for this early version: more to come here...
+As everything in PEL for this early version: 🚧 more to come here...
 
 .. _test sub-directory:        https://github.com/pierre-rouleau/pel/tree/master/test
 
@@ -797,14 +797,14 @@ targets and their purpose.
 
 **Current Limitations**:
 
-        #. The current Makefile_ and build-pel.el_ assume that the files are
-           located in a specific location.
-        #. The ``make``, ``make all``  always rebuild everything regardless of
-           the state and dependencies of the files.
-        #. Overall, this makefile is also a bit verbose and could be cleaned up.
+#. The current Makefile_ and build-pel.el_ assume that the files are
+   located in a specific location.
+#. The ``make``, ``make all``  always rebuild everything regardless of
+   the state and dependencies of the files.
+#. Overall, this makefile is also a bit verbose and could be cleaned up.
 
-        These defects currently don't prevent me from using the
-        Makefile but do bug me, so that's another thing on my todo list.
+These defects currently don't prevent me from using the
+Makefile but do bug me, so that's another thing on my 🚧 todo list.
 
 
 .. _Makefile:             https://github.com/pierre-rouleau/pel/blob/master/Makefile
