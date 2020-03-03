@@ -98,6 +98,11 @@ PEL Goals
 - Document what's available: the key bindings, the special considerations, the
   documents that should be read to deepen user's understanding.
 - Allow use of PEL even when someone has an extensive Emacs init file.
+- Add support for several programming languages integrating many packages that
+  support these programming languages.  Support for C, C++, Rust, Go,
+  Python, Erlang, Elixir, Haskell, OCaml and several are planned
+  (but... no schedule yet!).
+
 
 Essentially, PEL is my first Emacs Lisp project.  I wrote it while learning
 Emacs.  I keep using the documentation whenever I forgot the key bindings
@@ -225,6 +230,9 @@ list of the keys for a sub-prefix type it and again follow with
 either **C-h** or **F1**.
 
 The following table lists the **F11** keymap as an example.
+As described in the `Naming Conventions`_ section the names in the binding
+column that use the "pel:" prefix are sub key-maps.
+The commands use the prefix "pel-".
 As you can see some of the commands are accessible right after the **F11**
 prefix, but there's a large number of sub-prefix following.
 The keymap names were chosen to be as descriptive as possible and use keys that
@@ -289,10 +297,68 @@ key                             binding
 ``<f11> <up>``                  windmove-up
 =============================== ===========================================
 
+PEL Mode Sensitive Key-maps
+---------------------------
 
+In the above table,
+the ``<f11> SPC`` is a special case. It's the top key-map of all mode sensitive
+key-maps.
+PEL uses the **F12** as the key prefix for a keymap that contains
+commands for the major mode of the current buffer.
 
+For example, when the current buffer is using the rst-mode for editing
+reStructuredText files,
+the **F12** key has the following bindings.
 
+=============================== ===========================================
+key                             binding
+=============================== ===========================================
+``<f12> .``                     pel-rst-makelink
+``<f12> g``                     pel-rst-goto-ref-bookmark
+``<f12> s``                     pel-rst-set-ref-bookmark
+=============================== ===========================================
 
+However, when the current buffer uses Emacs-Lisp mode for working on Emacs Lisp
+code,
+the **F12** key has the following, different bindings.
+
+=============================== ===========================================
+key                             binding
+=============================== ===========================================
+``<f12> .``                     pel-find-thing-at-point
+``<f12> D``                     toggle-debug-on-error
+``<f12> a``                     pel:elisp-analyze
+``<f12> c``                     pel:elisp-compile
+``<f12> d``                     pel:elisp-debug
+``<f12> e``                     pel:elisp-eval
+``<f12> f``                     pel:elisp-function
+``<f12> i``                     parinfer-auto-fix
+``<f12> l``                     pel:elisp-lib
+``<f12> m``                     pel:elisp-mode
+=============================== ===========================================
+
+If you edit a reStructuredText file and want to use one of the commands
+available in the Emacs-Lisp key-map, then you can use the longer PEL key-map
+that uses the ``<f11> SPC`` prefix.
+The following table shows that for Emacs Lisp (abbreviated "elisp") you'd type
+``<f11> SPC l`` to get to the same key-map that ``<f12>`` provides when you're
+already using the Emacs-Lisp major mode.
+
+=============================== ===========================================
+key                             binding
+=============================== ===========================================
+``<f11> SPC C``                 pel:for-C++
+``<f11> SPC L``                 pel:for-lisp
+``<f11> SPC c``                 pel:for-C
+``<f11> SPC g``                 pel:for-graphviz-dot
+``<f11> SPC l``                 pel:elisp
+``<f11> SPC p``                 pel:for-python
+``<f11> SPC r``                 pel:for-reST
+=============================== ===========================================
+
+This is a very early version of PEL.
+Support for programming and markup languages is currently very sparse.
+More to come.
 
 Key Binding Documentation
 -------------------------
