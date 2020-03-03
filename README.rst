@@ -2,6 +2,15 @@
 pel -- Pragmatic Environment Library for Emacs
 ==============================================
 
+PEL gives you access to several packages without having to write Emacs Lisp code, to
+several handy convenient commands, using function key based key-maps and some
+easy to use keys.
+It also comes with several tables on Emacs key bindings tables
+organized by activity topics.  These tables have lots of hyperlinks to relevant
+on-line documentation.
+
+
+
 .. contents::
 .. sectnum::
 
