@@ -16,7 +16,7 @@ in the `PEL Customization`_ section.
 
 In its current form, PEL does not implement any minor or major Emacs mode.
 Instead it provides a set of functions that can be accessed globally, with some
-of them specialized for some modes and other available everywhere.
+of them specialized for some modes and others available everywhere.
 
 PEL defines a large set of key bindings which are mostly extensions to what
 is available with standard GNU Emacs.
@@ -713,6 +713,7 @@ autoloading of the PEL functions.  the `pel-autoloads.el`_ and
 .. _pel-pkg.el:           https://github.com/pierre-rouleau/pel/blob/master/pel-pkg.el
 .. _pel-autoload.el:      https://github.com/pierre-rouleau/pel/blob/master/pel-autoload.el
 .. _pel-autoloads.el:     https://github.com/pierre-rouleau/pel/blob/master/pel-autoloads.el
+.. _build-pel.el:         https://github.com/pierre-rouleau/pel/blob/master/build-pel.el
 .. _shift-key selection:  https://www.gnu.org/software/emacs/manual/html_node/emacs/Shift-Selection.html#Shift-Selection
 .. _mark and region:      https://www.gnu.org/software/emacs/manual/html_node/emacs/Mark.html#Mark
 
@@ -739,6 +740,54 @@ Naming Conventions
     `which-key`_ to display the available key following a prefix or typing
     ``C-h`` or ``<f1>`` after typing a prefix key to see the list of available
     keys and their meanings.
+
+- All Emacs Lisp files that are part of the PEL package have a name that starts
+  with the "pel-" prefix.
+
+- Emacs Lisp test files are stored in the `test sub-directory`_ and have names
+  that have the "pel-" prefix and the "-test" suffix.
+
+- Other Emacs Lisp files are included in this repository,
+  such as build-pel.el_,
+  these files contain code that is not part of PEL but are used to develop PEL.
+  The names of these files do not start with "pel-" but they end with "-pel".
+  That should be enough to prevent clash with other packages.
+  If this is not enough for you, since these files are not required to use PEL,
+  feel free to move or erase those files in your local
+  directory and let me know; I'll try to find a better way.
+  Note that these files, and none of the `build related files <Building PEL>`_,
+  are not part of the PEL package distribution tar file.
+
+
+Emacs Lisp Regression Test
+--------------------------
+
+At this point just a small portion of PEL is covered by
+`ERT <https://www.gnu.org/software/emacs/manual/html_node/ert/index.html>`_
+based testing.  The test code is located inside the `test sub-directory`_.
+As everything in PEL for this early version: more to come here...
+
+.. _test sub-directory:        https://github.com/pierre-rouleau/pel/tree/master/test
+
+
+Building PEL
+------------
+
+**Note:**
+         You do not need to build PEL for using it.
+         Most people will simply want to install and use PEL.
+         If you are interested on how I byte-compile all files and how I prepare
+         PEL to be distributed via an Emacs Lisp archive, then read on.
+
+**Note 2:**
+        At this moment, for this early version of PEL, I did not submit PEL
+        package into Emacs Lisp archives like MELPA.  I will do this later,
+        once I've had time to add support for several programming languages and
+        that I have completed the customization.
+
+To control command line build of the PEL distribution package, the byte
+compilation of all PEL Emacs Lisp source files, I wrote a GNU Makefile script
+and also the Emacs Lisp file build-pel.el_
 
 
 PDF Documentation
