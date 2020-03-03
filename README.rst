@@ -755,7 +755,7 @@ Naming Conventions
   If this is not enough for you, since these files are not required to use PEL,
   feel free to move or erase those files in your local
   directory and let me know; I'll try to find a better way.
-  Note that these files, and none of the `build related files <Building PEL>`_,
+  Note that these files, and none of the `build related files <#building-pel>`_,
   are not part of the PEL package distribution tar file.
 
 
