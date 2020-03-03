@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau.swd@gmail.com>
-# Last Modified Time-stamp: <2020-02-29 15:30:35, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-03-03 12:18:08, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -157,9 +157,6 @@ ELC_FILES := $(subst .el,.elc,$(EL_FILES))
 PEL_TAR_FILE := pel-$(PEL_VERSION).tar
 
 # -----------------------------------------------------------------------------
-.PHONY: help build pel clean_tar clean test pkg check acopy
-
-# -----------------------------------------------------------------------------
 # First rule, allows 'make' command to build everything that needs updating
 
 # first build the .elc files to check for errors
@@ -170,6 +167,8 @@ all: pel test pkg myelpa
 
 # -----------------------------------------------------------------------------
 # Self-desciptive rule: make help prints the info.
+
+.PHONY: help
 
 help:
 	@printf "\nBuild the Emacs PEL package file for distribution.\n"
@@ -206,6 +205,8 @@ help:
 # -----------------------------------------------------------------------------
 # Make Script checking (debugging) facilities
 # Use them to see the expanded values
+
+.PHONY: check
 
 check: check-version check-src-dir check-dest-dir check-dest-test-dir check-doc-pdf check-target check-elc-files
 
@@ -266,6 +267,8 @@ $(DEST_DOC_PDF_DIR)/%.pdf: $(SRC_DIR)/doc/pdf/%.pdf
 				cp $< $@
 
 # rule to copy all files to the target directory if they're not there already.
+.PHONY: a-copy
+
 a-copy: $(DEST_DIR) $(DEST_TEST_DIR) $(DEST_DOC_PDF_DIR) $(TARGET_SOURCE_FILES)
 
 # -----------------------------------------------------------------------------
@@ -296,6 +299,8 @@ pel: $(ELC_FILES)
 #
 # PEL uses the ERT package to run tests.
 
+.PHONY: test
+
 test:
 	@printf "***** Running Integration tests\n"
 	emacs -batch -L . -l ~/.emacs.d/init.el -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
@@ -321,6 +326,8 @@ test:
 #      I selected opton 2, since it is compatible with older versions of macOS tar and is also
 #      likely not going to affect tar running on other OS.
 
+.PHONY: pkg
+
 pkg: 	export COPYFILE_DISABLE=1
 
 pkg: | a-copy
@@ -337,6 +344,8 @@ pkg: | a-copy
 # If you want to replace the package with the same version you have to edit
 # archive-contents file and remove the entry for PEL inside it.
 
+.PHONY: myelpa
+
 myelpa:
 	emacs -batch -L . -l ~/.emacs.d/init.el -l build-pel.el -f upload-pel-to-local-archive
 
@@ -345,7 +354,10 @@ myelpa:
 
 # Remove the tar file from the local Emacs archive, without complaining
 # if it is not present.
-# The -f option preents complain from rm when the file is not present.
+# The -f option prevents complaints from rm when the file is not present.
+
+.PHONY: clean-tar
+
 clean-tar:
 	rm -f $(OUT_DIR)/$(PEL_TAR_FILE)
 
