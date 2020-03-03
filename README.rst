@@ -550,10 +550,10 @@ Pel Use Variables
 The following table contains the list of the ``pel-use-`` customize variables
 currently available.
 
-============================== =============================================================
-Variable                       Purpose
-============================== =============================================================
-pel-use-ace-window             Activate and enable use of the `ace-window package`_ to
+============================== ============================================================= ================
+Variable                       Purpose                                                       Attempts Install
+============================== ============================================================= ================
+pel-use-ace-window             Activate and enable use of the `ace-window package`_ to       Yes, from MELPA
                                be able to navigate across windows easily.
 
                                - This package is not distributed with Emacs.
@@ -565,7 +565,7 @@ pel-use-ace-window             Activate and enable use of the `ace-window packag
 
 
 
-pel-use-auto-complete          Activate and enable use of the `auto-complete package`_
+pel-use-auto-complete          Activate and enable use of the `auto-complete package`_       Yes, from MELPA
                                which provides auto-completion while typing.
 
                                - This package is not distributed with Emacs.
@@ -576,9 +576,9 @@ pel-use-auto-complete          Activate and enable use of the `auto-complete pac
                                  setting this variable to ``t``.
 
 
-pel-use-bind-key               Activate and enable use of the `bind-key`_ package for some
-                               PEL commands that use it.
-
+pel-use-bind-key               Activate and enable use of the `bind-key`_ package for some   No, it's comes
+                               PEL commands that use it.                                     with use-package
+                                                                                             required by PEL.
                                - This package is not distributed with Emacs.
                                - It is, however installed when you install PEL because
                                  PEL depends on `use-package`_ which depends on `bind-key`_.
@@ -660,7 +660,7 @@ pel-use-speedbar               .
 pel-use-undo-tree              .
 pel-use-uniquify               .
 pel-use-which-key              .
-============================== =============================================================
+============================== ============================================================= ================
 
 .. References
 
