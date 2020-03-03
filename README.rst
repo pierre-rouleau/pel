@@ -765,8 +765,8 @@ Emacs Lisp Regression Test
 --------------------------
 
 At this point just a small portion of PEL is covered by
-`ERT <https://www.gnu.org/software/emacs/manual/html_node/ert/index.html>`_
-based testing.  The test code is located inside the `test sub-directory`_.
+`ERT based <https://www.gnu.org/software/emacs/manual/html_node/ert/index.html>`_
+testing.  The test code is located inside the `test sub-directory`_.
 As everything in PEL for this early version: more to come here...
 
 .. _test sub-directory:        https://github.com/pierre-rouleau/pel/tree/master/test
