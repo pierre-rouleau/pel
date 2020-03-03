@@ -489,10 +489,12 @@ To customize PEL:
    - You may want to store it inside a separate file, to decouple it from your
      Emacs initialization if you use several environments or computers.
      For example if you want it stored inside ``~/.emacs-custom.el`` then
-     place the following Emacs Lisp code inside your Emacs init file::
+     place the following Emacs Lisp code inside your Emacs init file:
 
-       (setq custom-file "~/.emacs-custom.el")
-       (load custom-file)
+     .. code:: elisp
+
+               (setq custom-file "~/.emacs-custom.el")
+               (load custom-file)
 
 #. Once the location of the customization information is identified and set start
    Emacs.
