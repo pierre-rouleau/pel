@@ -553,7 +553,7 @@ currently available.
 ============================== ============================================================= ================
 Variable                       Purpose                                                       Attempts Install
 ============================== ============================================================= ================
-pel-use-ace-window             Activate and enable use of the `ace-window package`_ to       Yes, from MELPA
+pel-use-ace-window             Activate and enable use of the `ace-window package`_ to       Yes, from MELPA_
                                be able to navigate across windows easily.
 
                                - This package is not distributed with Emacs.
@@ -565,7 +565,7 @@ pel-use-ace-window             Activate and enable use of the `ace-window packag
 
 
 
-pel-use-auto-complete          Activate and enable use of the `auto-complete package`_       Yes, from MELPA
+pel-use-auto-complete          Activate and enable use of the `auto-complete package`_       Yes, from MELPA_
                                which provides auto-completion while typing.
 
                                - This package is not distributed with Emacs.
@@ -584,7 +584,7 @@ pel-use-bind-key               Activate and enable use of the `bind-key`_ packag
                                  PEL depends on `use-package`_ which depends on `bind-key`_.
 
 
-pel-use-bm                     Activates and enable use of the bm_ package, which provides
+pel-use-bm                     Activates and enable use of the bm_ package, which provides   Yes, from MELPA_
                                visible bookmarks.  When enabled, PEL provides some key
                                bindings for it.
 
@@ -595,7 +595,7 @@ pel-use-bm                     Activates and enable use of the bm_ package, whic
                                - If you prefer to install it yourself, install it before
                                  setting this variable to ``t``.
 
-pel-use-c-eldoc                Activates and enable use of the `c-eldoc`_ package which
+pel-use-c-eldoc                Activates and enable use of the `c-eldoc`_ package which      Yes, from MELPA_
                                provides helpful descriptions of the arguments to C functions
                                when editing a buffer in c-mode.  PEL sets the hook required
                                for this.
@@ -607,21 +607,21 @@ pel-use-c-eldoc                Activates and enable use of the `c-eldoc`_ packag
                                - If you prefer to install it yourself, install it before
                                  setting this variable to ``t``.
 
-pel-use-cc-vars                Activates and enable use of the cc-vars standard Emacs
-                               library for the cc mode.  PEL sets some values for C
-                               development.
+pel-use-cc-vars                Activates and enable use of the cc-vars standard Emacs        No, it is part
+                               library for the cc mode.  PEL sets some values for C          of standard GNU
+                               development.                                                  Emacs.
 
-                               *Note*: support for this is underway.
+                               **Note**: 🚧 support for this is underway.
                                More options to be documented once C development is described
                                in the PEL documentation.
 
-pel-use-common-lisp            Activates and enable use of Common Lisp development within
-                               Emacs using a Common Lisp system such as SBCL_  (Steel Bank
-                               Common Lisp).
-
-                               When activated PEL attempts to install the `slime package`_.
-
-                               - This package is not distributed with Emacs.
+pel-use-common-lisp            Activates and enable use of Common Lisp development within    Yes, it tries to
+                               Emacs using a Common Lisp system such as SBCL_  (Steel Bank   install slime
+                               Common Lisp).                                                 from your site
+                                                                                             preference.
+                               When activated PEL attempts to install the `slime package`_.  It does not
+                                                                                             install
+                               - This package is not distributed with Emacs.                 Common Lisp.
                                - The first time PEL is initialized after this is set,
                                  PEL takes advantage of `use-package`_ and attempts
                                  to install it from MELPA_ if it is not already installed.
@@ -661,6 +661,7 @@ pel-use-undo-tree              .
 pel-use-uniquify               .
 pel-use-which-key              .
 ============================== ============================================================= ================
+
 
 .. References
 
