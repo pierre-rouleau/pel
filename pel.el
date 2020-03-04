@@ -640,34 +640,6 @@ re-execute `pel-init' again to activate them."
       ;; Using bsd/allman style but with 3 spaces per tabs.
       (setq-default c-basic-offset 3)))   ;TODO: it's value is 'set-from-style' ??  Need to investigate.
 
-  ;; - Programming Style: Company Mode
-  ;; ---------------------------------
-
-  (when pel-use-auto-complete
-    (use-package auto-complete
-      :ensure t
-      :pin melpa
-      :commands auto-complete-mode))
-
-  (when pel-use-company
-    ;; Defer-load company.el via the autoload company-mode minor-mode function.
-    ;; Once loaded:
-
-    (use-package company
-      :commands company-mode
-      :config
-      (setq company-tooltip-align-annotations t)
-      ;; variables affecting automatic completion:
-      ;; - company-idle-delay
-      ;; - company-minimum-prefix-length
-      ;; Start with:     M-x company-mode
-      ;; Complete with:  M-x company-complete -> H-c
-      (global-set-key (kbd "H-c") 'company-complete)
-      ;; use company-mode in all buffers:
-      (add-hook 'after-init-hook 'global-company-mode)
-      ;; show numbers on the pop-up menu
-      (setq company-show-numbers t)))
-
   ;; ---------------
   ;; - CMake support
   ;; ---------------
@@ -777,7 +749,8 @@ re-execute `pel-init' again to activate them."
       (add-hook 'rust-mode-hook  'cargo-minor-mode)
       (add-hook 'rust-mode-hook  'racer-mode)
       (add-hook 'racer-mode-hook 'eldoc-mode)
-      (add-hook 'racer-mode-hook 'company-mode)
+	  (when pel-use-company
+		(add-hook 'racer-mode-hook 'company-mode))
       (define-key rust-mode-map (kbd "TAB") 'company-indent-or-complete-common)))
 
   ;; -----------------------------------------------------------------------------
@@ -1447,6 +1420,33 @@ re-execute `pel-init' again to activate them."
 
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> ,`` : auto-completion
+
+  (when pel-use-auto-complete
+    (use-package auto-complete
+      :ensure t
+      :pin melpa
+      :commands auto-complete-mode))
+
+  (when pel-use-company
+    ;; Defer-load company.el via the autoload company-mode minor-mode function.
+    ;; Once loaded:
+
+    (use-package company
+	  :ensure t
+	  :pin melpa
+      :commands company-mode
+      :config
+      (setq company-tooltip-align-annotations t)
+      ;; variables affecting automatic completion:
+      ;; - company-idle-delay
+      ;; - company-minimum-prefix-length
+      ;; Start with:     M-x company-mode
+      ;; Complete with:  M-x company-complete -> H-c
+      (global-set-key (kbd "H-c") 'company-complete)
+      ;; use company-mode in all buffers:
+      (add-hook 'after-init-hook 'global-company-mode)
+      ;; show numbers on the pop-up menu
+      (setq company-show-numbers t)))
 
   (define-global-prefix 'pel:auto-completion (kbd "<f11> ,"))
   (when pel-use-auto-complete
