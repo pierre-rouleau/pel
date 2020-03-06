@@ -313,7 +313,11 @@ References:
 ;; Text and Code Completion and Expansion
 ;; --------------------------------------
 (defgroup pel-pkg-for-expand nil
-  "List of external packages that PEL can use to complete code or expand text."
+  "List of external packages that PEL can use to complete code or expand text.
+
+Note that auto-complete and company can both be activated.
+However, PEL only allow one of them to be used per buffer.
+The Hippie Expand can be used together with any."
   :group 'pel-package-use)
 
 (defcustom pel-use-auto-complete nil

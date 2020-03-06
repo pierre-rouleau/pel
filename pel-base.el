@@ -118,6 +118,17 @@ By default or when they are nil, TRUE_STRING is \"yes\" and FALSE_STRING is \"no
       (or true-string "yes")
     (or false-string "no")))
 
+(defun pel-option-mode-state (option mode)
+  "Return description string for OPTION and its MODE.
+OPTION is the value of the specifed option,
+MODE is the mode symbol."
+  (if option
+	  (if (boundp mode)
+		  (format "available and %s"
+				  (pel-symbol-on-off-string mode))
+		"available but not loaded, use a command to load it")
+	"not available"))
+
 ;; -----------------------------------------------------------------------------
 ;; Basic functions working with values and variables
 ;; -------------------------------------------------

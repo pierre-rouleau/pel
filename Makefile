@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau.swd@gmail.com>
-# Last Modified Time-stamp: <2020-03-03 12:18:08, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-03-04 22:48:02, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -51,7 +51,9 @@ OUT_REPO_DIR := ~/dev/emacs-archive
 
 # The Emacs Lisp files that must be byte-compiled to check their validity
 EL_FILES := pel-base.el \
+			pel-options.el \
 			pel-ace-window.el \
+			pel-autocomplete.el \
 			pel-autoload.el \
 			pel-bookmark.el \
 			pel-ccp.el \
@@ -71,7 +73,6 @@ EL_FILES := pel-base.el \
 			pel-mark.el \
 			pel-navigate.el \
 			pel-numkpad.el \
-			pel-options.el \
 			pel-prompt.el \
 			pel-register.el \
 			pel-rst.el \

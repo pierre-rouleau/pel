@@ -138,12 +138,14 @@ re-execute `pel-init' again to activate them."
 
   ;; Required packages:
   (require 'pel-options) ; all `pel-use-...' variables identify what to use.
+                         ; also defines a set of utility functions to deal with
+                         ; the options: pel-auto-complete-help
 
   (unless (fboundp 'pel-build)
     ;; autoload all PEL functions
     (require 'pel-autoload)
-	(if (fboundp 'pel--autoload-init)
-	  (pel--autoload-init))
+    (if (fboundp 'pel--autoload-init)
+      (pel--autoload-init))
     ;; once that is executed, there's no need for the file anymore; unload it.
     (unload-feature 'pel-autoload))
 
@@ -488,7 +490,7 @@ re-execute `pel-init' again to activate them."
     ;; configure bm package to be loaded only on first use.
     (use-package bm
       :ensure t
-	  :pin melpa
+      :pin melpa
 
       :init
       ;; Ensure that bm restores bookmark when it loads.
@@ -749,8 +751,8 @@ re-execute `pel-init' again to activate them."
       (add-hook 'rust-mode-hook  'cargo-minor-mode)
       (add-hook 'rust-mode-hook  'racer-mode)
       (add-hook 'racer-mode-hook 'eldoc-mode)
-	  (when pel-use-company
-		(add-hook 'racer-mode-hook 'company-mode))
+      (when pel-use-company
+        (add-hook 'racer-mode-hook 'company-mode))
       (define-key rust-mode-map (kbd "TAB") 'company-indent-or-complete-common)))
 
   ;; -----------------------------------------------------------------------------
@@ -793,7 +795,7 @@ re-execute `pel-init' again to activate them."
   ;; Copy current marked region or line:  <kp-add>
   (global-set-key [kp-add] 'pel-copy-marked-or-whole-line)
   (when (not (display-graphic-p))
-	(global-set-key [kp-separator] 'pel-copy-marked-or-whole-line))
+    (global-set-key [kp-separator] 'pel-copy-marked-or-whole-line))
 
 
   ;; - Kill beginning of line
@@ -1422,38 +1424,37 @@ re-execute `pel-init' again to activate them."
   ;; - Function Keys - <f11> - Prefix ``<f11> ,`` : auto-completion
 
   (when pel-use-auto-complete
+    ;; Defer loading of auto-complete using its autoload that will be
+    ;; trigerred when the one of the pel-auto-complete-mode or
+    ;; pel-global-auto-complete-mode is executed.
     (use-package auto-complete
       :ensure t
       :pin melpa
-      :commands auto-complete-mode))
+      :commands (auto-complete-mode global-auto-complete-mode)))
 
   (when pel-use-company
-    ;; Defer-load company.el via the autoload company-mode minor-mode function.
-    ;; Once loaded:
-
+    ;; Defer-load company.el via the autoload company-mode and
+    ;; global-autoload-mode are called by one of the pel functions.
     (use-package company
-	  :ensure t
-	  :pin melpa
-      :commands company-mode
-      :config
-      (setq company-tooltip-align-annotations t)
-      ;; variables affecting automatic completion:
-      ;; - company-idle-delay
-      ;; - company-minimum-prefix-length
-      ;; Start with:     M-x company-mode
-      ;; Complete with:  M-x company-complete -> H-c
-      (global-set-key (kbd "H-c") 'company-complete)
-      ;; use company-mode in all buffers:
-      (add-hook 'after-init-hook 'global-company-mode)
-      ;; show numbers on the pop-up menu
-      (setq company-show-numbers t)))
+      :ensure t
+      :pin melpa
+      :commands (company-mode global-company-mode)))
 
   (define-global-prefix 'pel:auto-completion (kbd "<f11> ,"))
+  (define-key pel:auto-completion   "?"   'pel-completion-help)
   (when pel-use-auto-complete
-    (define-key pel:auto-completion "A" #'auto-complete-mode))
+    (define-key pel:auto-completion "A"  #'pel-global-auto-complete-mode)
+    (define-key pel:auto-completion "a"  #'pel-auto-complete-mode))
   (when pel-use-company
-    (define-key pel:auto-completion "C"  'company-mode)
-    (define-key pel:auto-completion "c"  'company-complete))
+    (define-key pel:auto-completion "C"  #'pel-global-company-mode)
+    (define-key pel:auto-completion "c"  #'pel-company-mode))
+  (when (or pel-use-auto-complete pel-use-company)
+    (define-key pel:auto-completion ","  #'pel-complete)
+    ;; TODO: when no autocompletion is active,
+    ;;       re-install the binding that was present
+    ;;       at the moment it was turned-on.
+    (global-set-key (kbd "M-l") #'pel-complete))
+    ;(add-hook 'after-init-hook 'global-company-mode)
 
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> .`` : mark commands
@@ -1567,7 +1568,7 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
     "Display number of loaded files & features."
     (interactive)
     (message "\
-# loaded files: %d\n\
+# loaded files: %d
 # features    : %d"
              (length load-history)
              (length features)))
@@ -1749,21 +1750,21 @@ the ones defined from the buffer now."
   (define-key pel:highlight "-"  #'hl-line-mode)                      ; enable/disable highlight of current line in buffer
   (define-key pel:highlight "(" #'show-paren-mode)                    ; toggle showing matching parenthesis
 
-  (define-key pel:highlight		 "."  #'highlight-symbol-at-point)
-  (define-key pel:highlight		 "C"  #'highlight-changes-mode)
-  (define-key pel:highlight		 "c"  #'pel-set-highlight-color)           ; prompt for color name and use as cursor line highlight.
-  (define-key pel:highlight		 "F"  #'font-lock-mode)
-  (define-key pel:highlight		 "f"  #'pel-hi-lock-find-patterns)
-  (define-key pel:highlight		 "G"  #'global-hi-lock-mode)
-  (define-key pel:highlight		 "L"  #'hi-lock-mode)
-  (define-key pel:highlight		 "l"  #'highlight-lines-matching-regexp)
-  (define-key pel:highlight		 "p"  #'highlight-phrase)
+  (define-key pel:highlight      "."  #'highlight-symbol-at-point)
+  (define-key pel:highlight      "C"  #'highlight-changes-mode)
+  (define-key pel:highlight      "c"  #'pel-set-highlight-color)           ; prompt for color name and use as cursor line highlight.
+  (define-key pel:highlight      "F"  #'font-lock-mode)
+  (define-key pel:highlight      "f"  #'pel-hi-lock-find-patterns)
+  (define-key pel:highlight      "G"  #'global-hi-lock-mode)
+  (define-key pel:highlight      "L"  #'hi-lock-mode)
+  (define-key pel:highlight      "l"  #'highlight-lines-matching-regexp)
+  (define-key pel:highlight      "p"  #'highlight-phrase)
   (when pel-use-rainbow-delimiters
-	(define-key pel:highlight	 "R"  'rainbow-delimiters-mode))  ; toggle colored highlight of nested (),{},[] by their depth.
-  (define-key pel:highlight		 "r"  #'highlight-regexp)
-  (define-key pel:highlight		 "s"  #'pel-toggle-hl-line-sticky)         ; Toggle `hl-line-sticky-flag' nil/t to control whether line highlighting
-  (define-key pel:highlight		 "u"  #'unhighlight-regexp)
-  (define-key pel:highlight		 "w"  #'hi-lock-write-interactive-patterns)
+    (define-key pel:highlight    "R"  'rainbow-delimiters-mode))  ; toggle colored highlight of nested (),{},[] by their depth.
+  (define-key pel:highlight      "r"  #'highlight-regexp)
+  (define-key pel:highlight      "s"  #'pel-toggle-hl-line-sticky)         ; Toggle `hl-line-sticky-flag' nil/t to control whether line highlighting
+  (define-key pel:highlight      "u"  #'unhighlight-regexp)
+  (define-key pel:highlight      "w"  #'hi-lock-write-interactive-patterns)
   ;;
 
   ;; -----------------------------------------------------------------------------
@@ -2139,13 +2140,15 @@ the ones defined from the buffer now."
   ;; - Function Keys - <f11> - Prefix ``<f11> t w`` : Text whitespace commands
   ;;
   (define-global-prefix 'pel:text-whitespace (kbd "<f11> t w"))
-  (define-key pel:text-whitespace " " #'cycle-spacing)
-  (define-key pel:text-whitespace "c" #'whitespace-cleanup)
-  (define-key pel:text-whitespace "e" #'pel-toggle-indicate-empty-lines)
-  (define-key pel:text-whitespace "m" #'whitespace-mode)
-  (define-key pel:text-whitespace "o" #'whitespace-toggle-options)
-  (define-key pel:text-whitespace "T" #'pel-toggle-show-trailing-whitespace)
-  (define-key pel:text-whitespace "t" #'delete-trailing-whitespace)
+  (define-key pel:text-whitespace " "         #'untabify)
+  (define-key pel:text-whitespace (kbd "TAB") #'tabify)
+  (define-key pel:text-whitespace "."         #'cycle-spacing)
+  (define-key pel:text-whitespace "c"         #'whitespace-cleanup)
+  (define-key pel:text-whitespace "e"         #'pel-toggle-indicate-empty-lines)
+  (define-key pel:text-whitespace "m"         #'whitespace-mode)
+  (define-key pel:text-whitespace "o"         #'whitespace-toggle-options)
+  (define-key pel:text-whitespace "T"         #'pel-toggle-show-trailing-whitespace)
+  (define-key pel:text-whitespace "t"         #'delete-trailing-whitespace)
 
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> w`` : Windows operations

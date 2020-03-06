@@ -42,6 +42,7 @@
   (byte-compile-file "pel-options.el")
   ;;
   (byte-compile-file "pel-ace-window.el")
+  (byte-compile-file "pel-autocomplete.el")
   (byte-compile-file "pel-bookmark.el")
   (byte-compile-file "pel-ccp.el")
   (byte-compile-file "pel-comment.el")
