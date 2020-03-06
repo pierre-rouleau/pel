@@ -171,9 +171,7 @@ The function issue an error if the argument is not a symbol."
 
 (defun pel-val-or-default (val default)
   "Return VAL if not nil otherwise return DEFAULT."
-  (if val
-      val
-    default))
+  (or val default))
 
 ;; -----------------------------------------------------------------------------
 ;; Iteration helpers
