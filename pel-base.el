@@ -106,8 +106,8 @@ If N > 2: use the PLURAL form if specified, otherwise use SINGULAR with a 's' su
 If ON-STRING and OFF-STRING arguments are specified use them as the
 on/off value, otherwise use \"on\" and \"off\"."
   (if boolean
-	  (or on-string "on")
-	(or off-string "off")))
+      (or on-string "on")
+    (or off-string "off")))
 
 (defsubst pel-symbol-on-off-string (symbol &optional on-string off-string)
   "Return representation of symbold value and whether it is bound.
@@ -124,8 +124,8 @@ If symbol is not bound: show \"void\".
 If symbol is set to t: show ON-STRING if defined, \"t\" otherwise.
 If symbol is nil: show OFF-STRING if defined, \"nil\" otherwise."
   (format "%s is now: %s"
-		  symbol
-		  (pel-symbol-on-off-string symbol on-string off-string)))
+          symbol
+          (pel-symbol-on-off-string symbol on-string off-string)))
 
 (defun pel-yes-no-string (test &optional true-string false-string)
   "Return TRUE-STRING when boolean TEST is non-nil, otherwise FALSE_STRING.
@@ -139,11 +139,11 @@ By default or when they are nil, TRUE_STRING is \"yes\" and FALSE_STRING is \"no
 OPTION is the value of the specifed option,
 MODE is the mode symbol."
   (if option
-	  (if (boundp mode)
-		  (format "available and %s"
-				  (pel-symbol-on-off-string mode))
-		"available but not loaded, use a command to load it")
-	"not available"))
+      (if (boundp mode)
+          (format "available and %s"
+                  (pel-symbol-on-off-string mode))
+        "available but not loaded, use a command to load it")
+    "not available"))
 
 ;; -----------------------------------------------------------------------------
 ;; Basic functions working with values and variables

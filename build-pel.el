@@ -83,10 +83,10 @@
   (require 'pel)
   (let  ((package-archive-upload-base
           (expand-file-name "~/mirrors/emacs/elpa-mirror")))
-	(if (fboundp 'package-upload-file)
-		(package-upload-file
-		 (expand-file-name (format "~/dev/elisp/pel/out/pel-%s.tar" (pel-version))))
-	  (error "Unknown function: package-upload-file (should be part of package-x)"))))
+    (if (fboundp 'package-upload-file)
+        (package-upload-file
+         (expand-file-name (format "~/dev/elisp/pel/out/pel-%s.tar" (pel-version))))
+      (error "Unknown function: package-upload-file (should be part of package-x)"))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'build-pel)

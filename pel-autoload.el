@@ -54,11 +54,11 @@
   (autoload #'pel-completion-help             "pel-autocomplete")
   (autoload #'pel-complete                    "pel-autocomplete")
   (when pel-use-auto-complete
-	(autoload #'pel-global-auto-complete-mode "pel-autocomplete")
-	(autoload #'pel-auto-complete-mode        "pel-autocomplete"))
+    (autoload #'pel-global-auto-complete-mode "pel-autocomplete")
+    (autoload #'pel-auto-complete-mode        "pel-autocomplete"))
   (when pel-use-company
-	(autoload #'pel-global-company-mode       "pel-autocomplete")
-	(autoload #'pel-company-mode              "pel-autocomplete"))
+    (autoload #'pel-global-company-mode       "pel-autocomplete")
+    (autoload #'pel-company-mode              "pel-autocomplete"))
 
   ;; pel-bookmark
   (autoload #'pel-bookmark-in-current-file-p "pel-bookmark")

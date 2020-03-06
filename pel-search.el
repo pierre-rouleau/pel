@@ -84,7 +84,7 @@ Depends on 2 Emacs (base system) variables:
   (if case-fold-search
       (cond ((not search-upper-case) "Case insensitive search.")
             ((equal search-upper-case 'not-yanks)
-			 "Case insensitive unless uppercase in search, lowercased yanks in search buffer.")
+             "Case insensitive unless uppercase in search, lowercased yanks in search buffer.")
             (t "Case insensitive unless uppercase in search."))
     "Case sensitive search."))
 

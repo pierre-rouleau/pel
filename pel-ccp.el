@@ -327,19 +327,19 @@ the filtering and `kill-ring' appending capabilities."
         (kill-region (region-beginning) (region-end))
       (if (use-region-p)
           (progn
-			;; lazy load delsel because it's the only function here that uses it.
-			;; delsel is part of standard Emacs distribution.
+            ;; lazy load delsel because it's the only function here that uses it.
+            ;; delsel is part of standard Emacs distribution.
             (require 'delsel)
             (if (fboundp 'delete-active-region)
-				;; when n>0, kill region otherwise delete it
+                ;; when n>0, kill region otherwise delete it
                 (delete-active-region (> n 0))))
         (if (> n 0)
-			;; when nothing is marked
+            ;; when nothing is marked
             (if (= n 1)
                 (pel--kill-line-but-delete-if-empty)
-			  ;; kill n lines when n is 2 or more
+              ;; kill n lines when n is 2 or more
               (kill-whole-line n))
-		  ;; otherwise delete the (abs n) lines
+          ;; otherwise delete the (abs n) lines
           (pel--delete-whole-lines (abs n)))))))
 
 ;; Copy current marked region or whole current line

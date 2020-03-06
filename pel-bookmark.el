@@ -34,10 +34,10 @@
   "Return non-nil if BOOKMARK_NAME exists and points to currently edited file.
 Return nil otherwise."
   (let  ((bookmark_filename (cdr (cadr (bookmark-get-bookmark
-										bookmark_name
-										:noerror)))))
+                                        bookmark_name
+                                        :noerror)))))
     (and bookmark_filename (equal (file-truename bookmark_filename)
-								  (pel-current-buffer-filename)))))
+                                  (pel-current-buffer-filename)))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-bookmark)

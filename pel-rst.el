@@ -45,7 +45,7 @@ Set it to one of: 'CRiSPeR, 'Sphinx-Python, or 'default."
                                           (?` simple 0)
                                           (?# simple 0)
                                           (?@ simple 0)))
-									   ;; ref: http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections
+                                       ;; ref: http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections
                                        ((eq style 'Sphinx-Python)
                                           '((?# over-and-under 0)  ; for parts
                                             (?* over-and-under 0)  ; for chapters

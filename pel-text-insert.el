@@ -61,8 +61,8 @@ The number of dash characters of the line is specified by LINELEN:
   (forward-line -1)
   (if (equal comment-start "-- ")
       ;; When comment-start is "-- " commenting a line that starts with
-	  ;; "--" erases it as it happens in haskell-mode.
-	  ;; In this case prepend it manually.
+      ;; "--" erases it as it happens in haskell-mode.
+      ;; In this case prepend it manually.
       (progn
         (move-beginning-of-line nil)
         (insert comment-start))
@@ -95,12 +95,12 @@ absolute path, if negative it omits the path."
             fname)
         (require 'pel-window)
         (save-excursion
-		  (if (fboundp 'pel-move-to-window)
-			  (progn
-				(pel-move-to-window direction)
-				(setq fname (pel-current-buffer-filename no-path))
-				(select-window original-window))
-			(error "Internal loading error: failed loading pel-window")))
+          (if (fboundp 'pel-move-to-window)
+              (progn
+                (pel-move-to-window direction)
+                (setq fname (pel-current-buffer-filename no-path))
+                (select-window original-window))
+            (error "Internal loading error: failed loading pel-window")))
         (insert fname)))))
 
 ;;-pel-autoload

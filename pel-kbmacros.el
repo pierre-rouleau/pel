@@ -56,7 +56,7 @@ being overwritten by mistake, saving you from having to pop the kmacro ring."
   (unless
       (and (not (or defining-kbd-macro executing-kbd-macro arg))
            pel--keyboard-macro-defined
-		   pel-kbmacro-prompts
+           pel-kbmacro-prompts
            (not (yes-or-no-p "Macro already recorded. Overwrite it? ")))
     (progn
       (setq pel--keyboard-macro-defined t)

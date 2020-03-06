@@ -58,7 +58,7 @@ register is already used."
   (interactive (list
                 (register-read-with-preview
                  "Point to register: ")
-		     current-prefix-arg))
+             current-prefix-arg))
   (when (pel--proceed-with-register register)
     (point-to-register register)))
 

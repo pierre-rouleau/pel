@@ -44,7 +44,7 @@ Toggles the value of `hl-line-sticky-flag' between t and nil."
   (interactive)
   (progn
     (eval-when-compile
-	  (defvar hl-line-mode)) ; prevent warning about ref to free variable.
+      (defvar hl-line-mode)) ; prevent warning about ref to free variable.
     (setq hl-line-sticky-flag (not hl-line-sticky-flag))
     (message "Current line highlighting %s done in %s."
              (if hl-line-mode

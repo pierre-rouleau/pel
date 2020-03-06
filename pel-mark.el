@@ -133,9 +133,9 @@ the prefix argument (but easier to type.)"
   ;; that really describe the operation.  Really nothing gets
   ;; removed from the local mark-ring.
   (message "Jumped to mark%s"
-		   (if mark-ring
-			   " and moved mark to the next position from local buffer's mark ring"
-			 "")))
+           (if mark-ring
+               " and moved mark to the next position from local buffer's mark ring"
+             "")))
 
 ;;-pel-autoload
 (defun pel-exchange-point-and-mark-no-activate ()
