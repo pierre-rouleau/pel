@@ -422,6 +422,7 @@ Emacs packages and more tables will describe how to use them.
 
   - `Abbreviations`_
   - `Align`_
+  - Auto-Completion_
   - `Bookmarks`_
   - `Buffers`_
   - `Case Conversion`_
@@ -627,6 +628,7 @@ pel-use-common-lisp            Activates and enable use of Common Lisp developme
                                  to install it from MELPA_ if it is not already installed.
                                - If you prefer to install it yourself, install it before
                                  setting this variable to ``t``.
+
 pel-use-company                .
 pel-use-dired-narrow           .
 pel-use-edts                   .
@@ -858,6 +860,7 @@ I am open to suggestions. And can provide the Numbers file on request.
 .. _Document Legend:                          doc/pdf/-legend.pdf
 .. _Abbreviations:                            doc/pdf/abbreviations.pdf
 .. _Align:                                    doc/pdf/align.pdf
+.. _Auto-Completion:                          doc/pdf/auto-completion.pdf
 .. _Bookmarks:                                doc/pdf/bookmarks.pdf
 .. _Buffers:                                  doc/pdf/buffers.pdf
 .. _Case Conversion:                          doc/pdf/case-conversion.pdf
