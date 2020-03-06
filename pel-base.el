@@ -101,14 +101,21 @@ If N > 2: use the PLURAL form if specified, otherwise use SINGULAR with a 's' su
 ;;    - pel-on-off-string       (inline)
 ;;  - pel-yes-no-string
 
-(defsubst pel-on-off-string (boolean)
-  "Return \"off\" for nil, \"on\" for non-nil BOOLEAN argument."
-  (if boolean "on" "off"))
+(defsubst pel-on-off-string (boolean &optional on-string off-string)
+  "Return \"off\" for nil, \"on\" for non-nil BOOLEAN argument.
+If ON-STRING and OFF-STRING arguments are specified use them as the
+on/off value, otherwise use \"on\" and \"off\"."
+  (if boolean
+	  (or on-string "on")
+	(or off-string "off")))
 
-(defsubst pel-symbol-on-off-string (symbol)
-  "Return \"void\" when not SYMBOL bound, \"off\" for nil, \"on\" for SYMBOL boolean value."
+(defsubst pel-symbol-on-off-string (symbol &optional on-string off-string)
+  "Return representation of symbold value and whether it is bound.
+Return \"void\" when SYMBOL is not bound,
+the OFF-STRING or \"off\" for nil,
+the ON-STRING or \"on\" for SYMBOL boolean value."
   (if (boundp symbol)
-      (pel-on-off-string (eval symbol))
+      (pel-on-off-string (eval symbol) on-string off-string)
     "void"))
 
 (defun pel-yes-no-string (test &optional true-string false-string)
@@ -150,15 +157,17 @@ The function issue an error if the argument is not a symbol."
       (set symbol (not (eval symbol)))
     (error "Nothing done: pel-toggle expects a symbol as argument")))
 
-(defun pel-toggle-and-show (symbol)
-  "Toggle value of SYMBOL from nil to/from t. And show it's new value as on/off.
+(defun pel-toggle-and-show (symbol &optional on-string off-string)
+  "Toggle value of SYMBOL from nil to/from t, and show it's new value.
+If ON-STRING and OFF-STRING arguments are specified use them as the
+on/off value, otherwise use \"on\" and \"off\".
 For example, to toggle the value of a variable  named isok,
 the caller must pass it quoted.
 The function issue an error if the argument is not a symbol."
   (message "%s is now %s"
            symbol
            (pel-on-off-string
-            (pel-toggle symbol))))
+            (pel-toggle symbol) on-string off-string)))
 
 (defun pel-val-or-default (val default)
   "Return VAL if not nil otherwise return DEFAULT."
