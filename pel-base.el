@@ -118,6 +118,15 @@ the ON-STRING or \"on\" for SYMBOL boolean value."
       (pel-on-off-string (eval symbol) on-string off-string)
     "void"))
 
+(defun pel-symbol-text (symbol &optional on-string off-string)
+  "Return a string with an interpretation of SYMBOL value.
+If symbol is not bound: show \"void\".
+If symbol is set to t: show ON-STRING if defined, \"t\" otherwise.
+If symbol is nil: show OFF-STRING if defined, \"nil\" otherwise."
+  (format "%s is now: %s"
+		  symbol
+		  (pel-symbol-on-off-string symbol on-string off-string)))
+
 (defun pel-yes-no-string (test &optional true-string false-string)
   "Return TRUE-STRING when boolean TEST is non-nil, otherwise FALSE_STRING.
 By default or when they are nil, TRUE_STRING is \"yes\" and FALSE_STRING is \"no\"."

@@ -133,6 +133,7 @@
   (autoload #'pel-toggle-hl-line-sticky            "pel-highlight")
   (autoload #'pel-toggle-show-trailing-whitespace  "pel-highlight")
   (autoload #'pel-toggle-indicate-empty-lines      "pel-highlight")
+  (autoload #'pel-toggle-indent-tabs-mode          "pel-highlight")
 
   ;; pel-imenu
   (autoload #'pel-toggle-imenu-index-follows-order  "pel-imenu")
