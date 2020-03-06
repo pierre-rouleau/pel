@@ -182,7 +182,6 @@ re-execute `pel-init' again to activate them."
       ;; Note: pos-tip, required by popup-kill-ring is installed
       ;;       when popup-kill-ring is installed (and loaded by
       ;;       it too).
-      :defer t
       :ensure t
       :pin melpa
       :commands popup-kill-ring))
@@ -329,7 +328,7 @@ re-execute `pel-init' again to activate them."
       (pel--mode-hook-maybe-call
        '(lambda ()
           (local-set-key (kbd "<f12>") 'pel:for-dired-narrow))
-       'pel--f12-dired-mode 'dired-mode 'dired-mode-hook)))
+       'dired-mode 'dired-mode-hook)))
 
   ;; -----------------------------------------------------------------------------
   ;; - PEL: Window Behaviour & operations
@@ -656,10 +655,13 @@ re-execute `pel-init' again to activate them."
       :defer t)
 
     (pel-cl-init :slime-is-used)
-    ;; I downloaded a copy of the latest version (version 7) of the LispWorks Hyperspec
-    ;; from http://ftp.lispworks.com/pub/software_tools/reference/HyperSpec-7-0.tar.gz
+    ;; TODO: generalize this code, allowing customization
+    ;; also provide ability to install the Hyperspec locally again through
+    ;; customization.
+    ;; A  copy of the latest version (version 7) of the LispWorks Hyperspec
+    ;; ia at:  http://ftp.lispworks.com/pub/software_tools/reference/HyperSpec-7-0.tar.gz
     ;; as identified by the LispWorks Download page (http://www.lispworks.com/documentation/common-lisp.html).
-    ;; Then I created a symlink inside my ~/docs directory.
+    ;; The following code is an example, symlinks can be use to poiunt to the real location.
     (setq common-lisp-hyperspec-root
           (concat "file://"
                   (expand-file-name "~/docs/HyperSpec/"))))
@@ -667,8 +669,6 @@ re-execute `pel-init' again to activate them."
   ;; -------------------------------
   ;; - Programming Style: Emacs Lisp
   ;; -------------------------------
-
-
   (when pel-use-esup
     (use-package esup
       ;; esup is an external package: ensure it's installed from MELPA if not available.
@@ -679,22 +679,22 @@ re-execute `pel-init' again to activate them."
   ;; -----------------------------------
   ;; - Programming Style: Erlang Support
   ;; -----------------------------------
-  ;; erlang flymake does not seem to work.
+  ;; TODO: erlang flymake does not seem to work.
   ;; erlang MAN also does not work.
   ;; I do not know why.  Need to learn more.
-  (when pel-use-erlang
-    ;; TODO: make the following a customization that either accepts the path or an
-    ;; environment variable to get it from.
-    (setq erlang-root-dir
-          "/Users/roup/Library/Application Support/ErlangInstaller/21.1/erts-10.1")
-    (use-package erlang
-      :defer 3
-      :commands erlang-mode
-      :init
-      (require 'erlang-start)
-      :config
-      (when pel-use-erlang-flymake
-        (require 'erlang-flymake))))
+  ;; (when pel-use-erlang
+  ;;   ;; TODO: make the following a customization that either accepts the path or an
+  ;;   ;; environment variable to get it from, and support multiple versions of Erlang.
+  ;;   (setq erlang-root-dir
+  ;;         (expand-file-name "~/Library/Application Support/ErlangInstaller/21.1/erts-10.1"))
+  ;;   (use-package erlang
+  ;;     :defer 3
+  ;;     :commands erlang-mode
+  ;;     :init
+  ;;     (require 'erlang-start)
+  ;;     :config
+  ;;     (when pel-use-erlang-flymake
+  ;;       (require 'erlang-flymake))))
 
   ;; (when pel-use-edts                  ; TODO: complete this
   ;;   (use-package edts
@@ -1146,8 +1146,10 @@ re-execute `pel-init' again to activate them."
   ;; - Use goto-last-change
   ;; ----------------------
   (when pel-use-goto-last-change
-    (autoload 'goto-last-change "goto-last-change"
-      "Set point to the position of the last change." t)
+    (use-package goto-last-change
+      :ensure t
+      :pin melpa
+      :commands goto-last-change)
     (define-key pel:undo "\\"  #'goto-last-change))
 
   ;; -----------------------------------------------------------------------------
@@ -1290,6 +1292,7 @@ re-execute `pel-init' again to activate them."
   (when pel-use-highlight-defined
     (use-package highlight-defined
       :ensure t
+      :pin melpa
       :commands highlight-defined-mode
       :init
       (define-key pel:elisp-mode  "d" 'highlight-defined-mode)))
@@ -1357,7 +1360,9 @@ re-execute `pel-init' again to activate them."
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : Graphviz Dot
   (when pel-use-graphviz-dot
     (use-package graphviz-dot-mode
-      :ensure t)
+      :ensure t
+      :pin melpa
+      :commands graphviz-dot-mode)
 
     (define-global-prefix 'pel:for-graphviz-dot (kbd "<f11> SPC g"))
     (define-key pel:for-graphviz-dot "c" 'compile)
@@ -1486,6 +1491,7 @@ re-execute `pel-init' again to activate them."
   (when pel-use-expand-region
     (use-package expand-region
       :ensure t
+
       :commands er/expand-region
       :init
       (define-key pel:mark     "="  'er/expand-region)
