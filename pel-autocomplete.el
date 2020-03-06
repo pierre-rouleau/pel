@@ -153,7 +153,7 @@ On first call, also configure it according to its customization."
 ;; PEL Auto Complete Commands
 
 ;;-pel-autoload
-(defun pel-global-auto-complete-mode (arg)
+(defun pel-global-auto-complete-mode (&optional arg)
   "Toggle Global Auto Complete mode when ARG is nil.
 If ARG is positive: activate it, otherwise de-activate it.
 Does not allow activation if Company Mode is active."
@@ -174,7 +174,7 @@ Does not allow activation if Company Mode is active."
 		(pel--global-auto-complete-mode-on)))))
 
 ;;-pel-autoload
-(defun pel-auto-complete-mode (arg)
+(defun pel-auto-complete-mode (&optional arg)
   "Toggle buffer's Auto Complete mode when ARG is nil.
 If ARG is positive: activate it, otherwise de-activate it.
 Does not allow activation if Company Mode is active."
@@ -199,7 +199,7 @@ Does not allow activation if Company Mode is active."
 ;; PEL Company Mode Commands
 
 ;;-pel-autoload
-(defun pel-global-company-mode (arg)
+(defun pel-global-company-mode (&optional arg)
   "Toggle Global Company mode when ARG is nil.
 If ARG is positive: activate it, otherwise de-activate it.
 Does not allow activation if Auto Complete Mode is active."
@@ -220,7 +220,7 @@ Does not allow activation if Auto Complete Mode is active."
 		(pel--global-company-mode-on)))))
 
 ;;-pel-autoload
-(defun pel-company-mode (arg)
+(defun pel-company-mode (&optional arg)
   "Toggle buffer's Company Mode when ARG is nil.
 If ARG is positive: activate it, otherwise de-activate it."
   (interactive "P")
