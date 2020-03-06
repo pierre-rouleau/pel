@@ -102,6 +102,8 @@
   (autoload #'pel-comment-middle                          "pel-comment")
   (autoload #'pel-comment-end                             "pel-comment")
   (autoload #'pel-toggle-comment-auto-fill-only-comments  "pel-comment")
+  (autoload #'pel-delete-all-comments                     "pel-comment")
+  (autoload #'pel-kill-all-comments                       "pel-comment")
 
   ;; pel-commonlisp
   (autoload #'pel-cl-init "pel-commonlisp")

@@ -65,6 +65,27 @@ Activate/de-activate automatic filling in source code comments only."
   (interactive)
   (pel-toggle 'comment-auto-fill-only-comments))
 
+;;-pel-autoload
+(defun pel-delete-all-comments ()
+  "Delete all comments in current (possibly narrowed) buffer or marked region."
+  (interactive "*")
+  (let ((kill-ring)
+        (start-point (if (region-active-p) (region-beginning) (point-min)))
+        (end-point   (if (region-active-p) (region-end) (point-max))))
+    (save-excursion
+      (goto-char start-point)
+      (comment-kill (count-lines start-point end-point)))))
+
+;;-pel-autoload
+(defun pel-kill-all-comments ()
+  "Kill all comments in current (possibly narrowed) buffer or marked region.
+Retain them in kill-ring."
+  (interactive "*")
+  (let ((start-point (if (region-active-p) (region-beginning) (point-min)))
+        (end-point   (if (region-active-p) (region-end) (point-max))))
+    (save-excursion
+      (goto-char start-point)
+      (comment-kill (count-lines start-point end-point)))))
 ;; -----------------------------------------------------------------------------
 (provide 'pel-comment)
 

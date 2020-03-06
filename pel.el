@@ -165,7 +165,6 @@ re-execute `pel-init' again to activate them."
     (package-refresh-contents)
     (package-install 'use-package))
 
-
   ;; - Use popup-kill-ring
   ;; ---------------------
   ;; View all kill-ring deletions in a pop-up menu, when
@@ -177,15 +176,16 @@ re-execute `pel-init' again to activate them."
   ;; the 2 packages manually.
   ;; In any case <f11> y is always available to execute yank-pop manually.
   (when (and pel-use-popup-kill-ring
-             (display-graphic-p)
-             (require 'pos-tip nil t))   ; TODO: find a way to delay loading of pos-tip
+             (display-graphic-p))
 
     (use-package popup-kill-ring
+      ;; Note: pos-tip, required by popup-kill-ring is installed
+      ;;       when popup-kill-ring is installed (and loaded by
+      ;;       it too).
       :defer t
-      :ensure nil
-      :commands popup-kill-ring
-      :config
-      (global-set-key "M-y" 'popup-kill-ring)))
+      :ensure t
+      :pin melpa
+      :commands popup-kill-ring))
 
   ;; -----------------------------------------------------------------------------
   ;; - PEL Modifier keys on different OS
@@ -1036,7 +1036,6 @@ re-execute `pel-init' again to activate them."
   (define-global-prefix 'pel: (kbd "<f11>"))
   (define-key pel:           "#"             #'pel-toggle-mac-numlock)
   (define-key pel:           "|"             #'pel-toggle-dual-scroll)
-  (define-key pel:           "y"             #'yank-pop)
   (define-key pel: (kbd      "<down>")       'windmove-down)
   (define-key pel: (kbd      "<up>")         'windmove-up)
   (define-key pel: (kbd      "<left>")       'windmove-left)
@@ -1052,6 +1051,9 @@ re-execute `pel-init' again to activate them."
   (define-key pel: (kbd      "<M-right>")    #'pel-forward-syntaxchange-start)
   (define-key pel: (kbd      "<M-left>")     #'pel-backward-syntaxchange-start)
   (define-key pel: (kbd      "0")            #'hl-line-mode)
+  (when (and pel-use-popup-kill-ring
+             (display-graphic-p))
+    (define-key pel:         "y"             #'popup-kill-ring))
 
   ;; In graphics mode, bindings to go directly to another frame
   ;; without having to move through all intervening windows in current
@@ -1397,6 +1399,7 @@ re-execute `pel-init' again to activate them."
   (define-key pel:kill "(" #'pel-kill-list-at-point)
   (define-key pel:kill "*" #'delete-duplicate-lines)
   (define-key pel:kill "." #'pel-kill-symbol-at-point)
+  (define-key pel:kill ";" #'pel-kill-all-comments)
   (define-key pel:kill "a" #'pel-kill-from-beginning-of-line) ; beginning of line
   (define-key pel:kill "b" #'backward-kill-paragraph)         ; beginning of paragraph
   (define-key pel:kill "c" #'pel-kill-char-at-point)          ; character at point
@@ -1503,13 +1506,14 @@ re-execute `pel-init' again to activate them."
 
   (define-global-prefix 'pel:comment (kbd "<f11> ;"))
   ;;
-  (define-key pel:comment "A" #'pel-toggle-comment-auto-fill-only-comments)
-  (define-key pel:comment "B" #'comment-box)
-  (define-key pel:comment "k" #'comment-kill)
-  (define-key pel:comment "l" #'comment-line)
-  (define-key pel:comment "b" #'pel-comment-start)
-  (define-key pel:comment "m" #'pel-comment-middle)
-  (define-key pel:comment "e" #'pel-comment-end)
+  (define-key pel:comment "A"           #'pel-toggle-comment-auto-fill-only-comments)
+  (define-key pel:comment "B"           #'comment-box)
+  (define-key pel:comment (kbd  "DEL")  #'pel-delete-all-comments)
+  (define-key pel:comment "k"           #'comment-kill)
+  (define-key pel:comment "l"           #'comment-line)
+  (define-key pel:comment "b"           #'pel-comment-start)
+  (define-key pel:comment "m"           #'pel-comment-middle)
+  (define-key pel:comment "e"           #'pel-comment-end)
 
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> ?`` : Help /apropos/info commands
