@@ -497,18 +497,51 @@ To customize PEL:
    - By default it is stored inside your Emacs init file.
      If this is good for you, then continue to step 3.
    - You may want to store it inside a separate file, to decouple it from your
-     Emacs initialization if you use several environments or computers.
-     For example if you want it stored inside ``~/.emacs-custom.el`` then
-     place the following Emacs Lisp code inside your Emacs init file:
+     Emacs initialization if you use several environments or computers and
+     even allow the use of *several* customization files selected by your init.el
+     logic based on some criteria you may have, keeping these configurations
+     isolated from each other.
+
+     For example if your Emacs initialization file is
+     "~/.emacs.d/init.el" you may want to store the customization
+     inside the same directory and place it in
+     ``~/.emacs.d/emacs-customization.el``.
+     To do so add the following Emacs Lisp code inside your
+     init.el file:
 
      .. code:: elisp
 
-               (setq custom-file "~/.emacs-custom.el")
+               (setq custom-file "~/.emacs.d/emacs-customization.el")
                (load custom-file)
 
-#. Once the location of the customization information is identified and set start
-   Emacs.
-#. Execute the customize command by typing: ``M-x customize``
+#. If you want PEL to start automatically when Emacs starts, then add
+   the following code, which must be **after** the code shown in the previous
+   step (if you decided to add it):
+
+     .. code:: elisp
+
+               (require 'pel)
+               (pel-init)
+
+   With this code, PEL will start when Emacs starts.  PEL will activate its
+   main key bindings using the **F2**, **F5**, **F6**, **F11** and **F12**
+   keys but will not download or activate any package.
+   It will only do that if you change PEL's custmization and re-run
+   ``pel-init`` either manually or by restarting Emacs.
+
+#. Once the location of the customization information is identified,
+   that you have decided whether to have PEL started automatically
+   or not, just start Emacs.
+#. Customizing PEL depends on whether ``pel-init`` was run:
+
+   - If you ``pel-init`` was already executed, go to next step.
+   - If you want to play it safe and did not yet run ``pel-init``
+     then you must load pel-options:
+
+     - type the following: ``M-x load-library``.
+     - at the prompt, type: ``pel-options`` and hit the return key.
+
+#. Execute the Emacs customize command by typing: ``M-x customize``
 #. This will open the ``*Customize Apropos*`` buffer.
 #. Inside that buffer, move point to the search field and
    search for the Pel group by typing ``Pel$`` inside the search
