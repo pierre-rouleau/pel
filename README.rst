@@ -677,28 +677,88 @@ pel-use-graphviz-dot           Enables the use of the graphviz-dot-mode_        
                                package to edit Graphviz DOT files and generate
                                graphs from within Emacs.
 
-pel-use-highlight-defined      Enables the use of the highlight-defined_                     Yes, from MELPA_
+pel-use-highlight-defined      Enables the use of the highlight-defined_                     Yes, from MELPA_.
                                package which highlights defined Emacs Lisp
                                symbols that are defined.
 
-pel-use-hippie-expand          .
-pel-use-ido-mode               .
-pel-use-lice                   .
-pel-use-macrostep              .
-pel-use-nhexl-mode             .
-pel-use-org-mode               .
-pel-use-parinfer               .
-pel-use-popup-kill-ring        .
-pel-use-python                 .
-pel-use-rainbow-delimiters     .
-pel-use-re-builder             .
-pel-use-ripgrep                .
-pel-use-rst-mode               .
-pel-use-rust                   .
-pel-use-speedbar               .
-pel-use-undo-tree              .
-pel-use-uniquify               .
-pel-use-which-key              .
+pel-use-hippie-expand          Activates the use of the Emacs built-in                       Nothing to
+                               hippie-expand for abbreviation expansion instead of the       install. It's
+                               default dabbrev-expand.                                       part of Emacs.
+
+pel-use-ido-mode               Activates the use of Emacs built-in IDO-mode.                 Nothing to
+                                                                                             install. It's
+                                                                                             part of Emacs.
+
+pel-use-lice                   Enables the use of the lice_ package to add open              Yes, from MELPA_.
+                               source license text in buffers.
+
+pel-use-macrostep              Enables the use of the macrostep_ package to                  Yes, from MELPA_.
+                               expand Lisp macros right inside Emacs.
+
+pel-use-nhexl-mode             Enables the use of the nhexl-mode_ to edit                    Yes, from ELPA_.
+                               binary files.
+
+pel-use-org-mode               When set, configures Org-Mode and provide key                 Nothing to
+                               binding similar to a subset of what is suggested              install. It's
+                               in the Org Mode manual.                                       part of Emacs.
+                               This is a *thinkering experiment* and is likely
+                               to change in the future.  It's far from having
+                               providing a decent additional feature to
+                               Org-Mode.
+
+pel-use-parinfer               Enables the use of the parinfer_ package that                 Yes, from MELPA_.
+                               infers Lisp parenthesis location.
+
+pel-use-popup-kill-ring        Enables the use of the popup-kill-ring_                       Yes, from MELPA_.
+                               package that provides ability to see the
+                               content of the kill ring in a pop-up menu,
+                               filter by text and see what to select and
+                               insert.
+
+pel-use-python                 Enables use of basic Python support.                          Nothing to
+                               Future versions of PEL will include                           install. It just
+                               more Python support facilities enabled                        uses what's part
+                               with this.                                                    of Eamcs.
+
+pel-use-rainbow-delimiters     Enables the use of rainbow-delimiters_ package                Yes, from MELPA_.
+                               to colorize matching *parens*.
+
+pel-use-re-builder             Enables the loading of the re-builder built-in                Nothing to
+                               library for regular expression builder.                       install.  It's
+                                                                                             part of Emacs.
+
+pel-use-ripgrep                Enables the use of the rg_ package which uses                 Yes, from MELPA_.
+                               ripgrep command line utility to perform                       However, it does
+                               fast grep operations.                                         install ripgrep.
+
+pel-use-rst-mode               Enables the use of the rst built-in library                   Nothing to
+                               to support reStructuredText.                                  install.  It's
+                               The current PEL version sets the                              part of Emacs.
+                               section adornments.  Future versions will
+                               be modified to help using rst customization
+                               and will add more features.
+
+pel-use-rust                   Enables support for Rust programming language                 Yes, all from
+                               via rust-mode_, racer_ and cargo_.                            MELPA_.
+                               If pel-use-company is also set to **t** it activates
+                               company-mode to be used with racer.
+
+pel-use-speedbar               Enables support of the sr-speedbar_ package to provide        Yes, from MELPA_.
+                               Speedbar inside the same frame, useful in terminal (tty)
+                               mode.
+
+pel-use-undo-tree              Enables support of the undo-tree_ package to help manage      Yes, with ELPA_.
+                               the undo buffer.
+
+pel-use-uniquify               Activates the use of the uniquify library (distributed        Nothing to
+                               with standard GNU Emacs) which helps give a unique name to    install.  It's
+                               buffers visiting files or directories with the same names.    part of Emacs.
+
+pel-use-which-key              Enables the use of the which-key_ package.                    Yes, from ELPA_.
+                               This is recommended for new users, as it shows the keys
+                               available after each prefix key.
+                               PEL key binding syste was designed to show nicely when
+                               which-key is used.
 ============================== ============================================================= =================
 
 .. References
@@ -728,6 +788,20 @@ pel-use-which-key              .
 .. _goto-last-change:          https://melpa.org/#/goto-last-change
 .. _graphviz-dot-mode:         https://melpa.org/#/graphviz-dot-mode
 .. _highlight-defined:         https://melpa.org/#/highlight-defined
+.. _lice:                      https://melpa.org/#/lice
+.. _macrostep:                 https://melpa.org/#/macrostep
+.. _nhexl-mode:                https://elpa.gnu.org/packages/nhexl-mode.html
+.. _parinfer:                  https://melpa.org/#/parinfer
+.. _rainbow-delimiters:        https://melpa.org/#/rainbow-delimiters
+.. _popup-kill-ring:           https://melpa.org/#/popup-kill-ring
+.. _rg:                        https://melpa.org/#/rg
+.. _rust-mode:                 https://melpa.org/#/rust-mode
+.. _racer:                     https://melpa.org/#/racer
+.. _cargo:                     https://melpa.org/#/cargo
+.. _sr-speedbar:               https://melpa.org/#/sr-speedbar
+.. _undo-tree:                 https://elpa.gnu.org/packages/undo-tree.html
+.. _which-key:                 https://elpa.gnu.org/packages/which-key.html
+
 
 
 

@@ -172,9 +172,7 @@ re-execute `pel-init' again to activate them."
   ;; Activate the popup-kill-ring in graphic mode only
   ;; because it does not seem to work in terminal mode.
   ;; It uses the pos-tip package.
-  ;; If you want to use this mechanism, you must install
   ;; the 2 packages manually.
-  ;; In any case <f11> y is always available to execute yank-pop manually.
   (when (and pel-use-popup-kill-ring
              (display-graphic-p))
 
@@ -738,11 +736,17 @@ re-execute `pel-init' again to activate them."
   ;; -----------------------------------------
   (when pel-use-rust                      ; TODO: complete this
     (use-package racer
-      :defer t)
+      :ensure t
+      :pin melpa
+      :commands racer-mode)
     (use-package rust-mode
-      :defer t)
+      :ensure t
+      :pin melpa
+      :commands rust-mode)
     (use-package cargo
-      :defer t
+      :ensure t
+      :pin melpa
+      :commands cargo-minor-mode
       :config
       ;; M-x package-install rust-mode
       ;; M-x package-install cargo
@@ -1014,9 +1018,6 @@ re-execute `pel-init' again to activate them."
   (define-global-prefix 'pel:f6 (kbd "<f6>"))
   (define-key pel:f6 "l"  #'pel-insert-line)
   (define-key pel:f6 "F"  #'pel-insert-filename)
-  (when pel-use-lice
-    (define-key pel:f6 "L" 'lice))
-
 
   ;; Move to the beginning of next function definition (while moving forward)
   ;;  complements C-M-e and C-M-a
@@ -1110,6 +1111,8 @@ re-execute `pel-init' again to activate them."
 
   (if pel-use-undo-tree
       (use-package undo-tree
+        :ensure t
+        :pin gnu
         :commands (undo-tree-undo
                    undo-tree-redo
                    undo-tree-visualize
@@ -1214,19 +1217,26 @@ re-execute `pel-init' again to activate them."
   ;; --------------
   (when pel-use-parinfer
     (use-package parinfer
-      :defer t
-      :ensure t))
+      :ensure t
+      :pin melpa
+      :commands (parinfer-mode
+                 parinfer-toggle-mode
+                 parinfer-auto-fix
+                 parinfer-diff)))
 
   ;; - Use rainbow-delimiters
   ;; ------------------------
   (when pel-use-rainbow-delimiters
-    (use-package rainbow-delimiters))
+    (use-package rainbow-delimiters
+      :ensure t
+      :pin melpa
+      :commands rainbow-delimiters-mode))
   ;; rainbow-delimiters-max-face-count 9
   ;; rainbow-delimiters-max-face-count identifies max depth where colours are cycled;
   ;; it's default value is 9.  That should be more than enough.
   ;; The color of the parentheses are identified by the variables
   ;; rainbow-delimiters-depth-X-face  (where 'X' is a digit between 1 and 9 included.)
-  ;; These variables should be defined inside the init.el file.
+  ;; These variables should be defined inside the init.el file or customization data file.
 
   ;; -----------------------------------------------------------------------------
 
@@ -1285,6 +1295,7 @@ re-execute `pel-init' again to activate them."
   (when pel-use-macrostep
     (use-package macrostep
       :ensure t
+      :pin melpa
       :commands macrostep-expand
       :init
       (define-key pel:elisp-mode    "m" #'macrostep-expand)))
@@ -1610,6 +1621,7 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
       ;; command which-key-show-major-mode which will force
       ;; loading and ensure the key mode.
       :ensure t
+      :pin gnu
       :defer 1
       :config
       (declare-function which-key-mode "which-key")
@@ -1735,6 +1747,7 @@ the ones defined from the buffer now."
   (when pel-use-nhexl-mode
     (use-package nhexl-mode
       :ensure t
+      :pin gnu
       :commands (nhexl-mode
                  nhexl-nibble-edit-mode
                  nhexl-overwrite-only-mode)
@@ -1904,6 +1917,7 @@ the ones defined from the buffer now."
   (when  pel-use-ripgrep
     (use-package rg
       :ensure t
+      :pin melpa
       :commands (rg rg-literal)
       :init
       (define-key pel:grep  "I"  'rg-literal)
@@ -1923,7 +1937,14 @@ the ones defined from the buffer now."
   (define-key pel:insert   "l" #'pel-insert-line)
   (define-key pel:insert   "t" #'pel-insert-iso8601-timestamp)        ; Local by default, UTC is C-u prefix used.
   (when pel-use-lice
-    (define-key pel:insert "L" 'lice))
+    (use-package lice
+      :ensure t
+      :pin melpa
+      :commands lice
+      :init
+      (define-key pel:insert "L" 'lice)
+      (define-key pel:f6 "L" 'lice)))
+
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> k`` : Keyboard macro operations
 
@@ -2038,6 +2059,13 @@ the ones defined from the buffer now."
   ;; - Function Keys - <f11> - Prefix ``<f11> S`` : Speedbar/SR-Speedbar commands
 
   (when pel-use-speedbar
+    (use-package sr-speedbar
+      :ensure t
+      :pin melpa
+      :commands (sr-speedbar-toggle
+                 sr-speedbar-window-p))
+
+
     (define-global-prefix 'pel:speedbar (kbd "<f11> S"))
     (define-key pel:speedbar "S"  #'pel-open-close-speedbar)     ; Open/close Speedbar or SR-Speedbar.  In Terminal only allow SR-Speedbar. In graphics mode, prompt, but once is selected always use the same.
     (define-key pel:speedbar "."  #'pel-toggle-to-speedbar)      ; Change focus to/from speedbar-frame/sr-speedbar window
