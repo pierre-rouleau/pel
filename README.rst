@@ -515,19 +515,19 @@ To customize PEL:
                (load custom-file)
 
 #. If you want PEL to start automatically when Emacs starts, then add
-   the following code, which must be **after** the code shown in the previous
-   step (if you decided to add it):
+   the following code, which must be located **after** the code
+   loading the customozation adata (if any):
 
      .. code:: elisp
 
                (require 'pel)
                (pel-init)
 
-   With this code, PEL will start when Emacs starts.  PEL will activate its
-   main key bindings using the **F2**, **F5**, **F6**, **F11** and **F12**
-   keys but will not download or activate any package.
-   It will only do that if you change PEL's custmization and re-run
-   ``pel-init`` either manually or by restarting Emacs.
+   - With this code, PEL will start when Emacs starts.  PEL will activate its
+     main key bindings using the **F2**, **F5**, **F6**, **F11** and **F12**
+     keys but will not download or activate any package.
+     It will only do that if you change PEL's custmization and re-run
+     ``pel-init`` either manually or by restarting Emacs.
 
 #. Once the location of the customization information is identified,
    that you have decided whether to have PEL started automatically
