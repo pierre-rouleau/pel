@@ -527,6 +527,7 @@ To customize PEL:
 
      - It will activate its main key bindings using the **F2**, **F5**, **F6**,
        **F11** and **F12** keys.
+       See the `PEL Key Bindings`_ section for more info.
      - It will **not** download or activate any other package.
 
        - It will only do that if you change PEL's custmization and re-run
