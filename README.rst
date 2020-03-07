@@ -503,9 +503,9 @@ To customize PEL:
      isolated from each other.
 
      For example if your Emacs initialization file is
-     "~/.emacs.d/init.el" you may want to store the customization
+     ``"~/.emacs.d/init.el"`` you may want to store the customization
      inside the same directory and place it in
-     ``~/.emacs.d/emacs-customization.el``.
+     ``"~/.emacs.d/emacs-customization.el"``.
      To do so add the following Emacs Lisp code inside your
      init.el file:
 
@@ -518,12 +518,12 @@ To customize PEL:
    the following code, which must be located **after** the code
    loading the customozation adata (if any):
 
-     .. code:: elisp
+   .. code:: elisp
 
-               (require 'pel)
-               (pel-init)
+             (require 'pel)
+             (pel-init)
 
-   - With this code, PEL will start when Emacs starts.  PEL will activate its
+   - With the above code, PEL will start when Emacs starts.  PEL will activate its
      main key bindings using the **F2**, **F5**, **F6**, **F11** and **F12**
      keys but will not download or activate any package.
      It will only do that if you change PEL's custmization and re-run
