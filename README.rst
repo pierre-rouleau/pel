@@ -777,8 +777,6 @@ pel-use-which-key              Enables the use of the which-key_ package.       
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Customization.html#Customization
 .. _Emacs initialization file: https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html
 .. _ELPA:                      https://elpa.gnu.org
-.. _which-key:                 https://melpa.org/#/which-key
-
 .. _company:                   https://melpa.org/#/company
 .. _dired-narrow:              https://melpa.org/#/dired-narrow
 .. _esup:                      https://melpa.org/#/esup
