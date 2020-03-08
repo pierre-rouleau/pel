@@ -115,6 +115,12 @@ Optionally insert it at point if INSERT is non-nil."
     (message "PEL version: %s" version)
     version))
 
+(defmacro define-pel-global-prefix (prefix key)
+  "Define a prefix key for the global key map."
+  `(progn
+     (define-prefix-command ,prefix)
+     (global-set-key ,key ,prefix)))
+
 ;; --
 ;; pel-init - does everything
 
@@ -152,12 +158,6 @@ re-execute `pel-init' again to activate them."
   ;; -----------------------------------------------------------------------------
   ;; utilities
   ;; ---------
-
-  (defmacro define-global-prefix (prefix key)
-    "Define a prefix key for the global key map."
-    `(progn
-       (define-prefix-command ,prefix)
-       (global-set-key ,key ,prefix)))
 
   ;; - Bootstrap `use-package' if needed
   ;; -----------------------------------
@@ -1015,7 +1015,7 @@ re-execute `pel-init' again to activate them."
   ;; ----------------------
   ;;
 
-  (define-global-prefix 'pel:f6 (kbd "<f6>"))
+  (define-pel-global-prefix 'pel:f6 (kbd "<f6>"))
   (define-key pel:f6 "l"  #'pel-insert-line)
   (define-key pel:f6 "F"  #'pel-insert-filename)
 
@@ -1034,7 +1034,7 @@ re-execute `pel-init' again to activate them."
   ;; --
   ;; - Function Keys - <f11> top-level prefix keys
 
-  (define-global-prefix 'pel: (kbd "<f11>"))
+  (define-pel-global-prefix 'pel: (kbd "<f11>"))
   (define-key pel:           "#"             #'pel-toggle-mac-numlock)
   (define-key pel:           "|"             #'pel-toggle-dual-scroll)
   (define-key pel: (kbd      "<down>")       'windmove-down)
@@ -1107,7 +1107,7 @@ re-execute `pel-init' again to activate them."
   ;;  - <f11> u /                                 : undo-tree-switch-branch
   ;;  - <f11> u \             : goto-last-change  : goto-last-change
 
-  (define-global-prefix 'pel:undo (kbd "<f11> u"))
+  (define-pel-global-prefix 'pel:undo (kbd "<f11> u"))
 
   (if pel-use-undo-tree
       (use-package undo-tree
@@ -1163,7 +1163,7 @@ re-execute `pel-init' again to activate them."
   (eval-after-load 'imenu
     (pel-imenu-init))
 
-  (define-global-prefix 'pel:menu (kbd "<f11> <f10>"))
+  (define-pel-global-prefix 'pel:menu (kbd "<f11> <f10>"))
   (define-key pel:menu "B"     #'menu-bar-mode)
   (define-key pel:menu "I"     #'imenu-add-menubar-index)
   (define-key pel:menu "i"     #'imenu)
@@ -1173,7 +1173,7 @@ re-execute `pel-init' again to activate them."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : C programming utilities
 
-  (define-global-prefix 'pel:for-C (kbd "<f11> SPC c"))
+  (define-pel-global-prefix 'pel:for-C (kbd "<f11> SPC c"))
   (define-key pel:for-C    "." #'pel-find-thing-at-point)   ; Move point to the definition of function at point
   (define-key pel:for-C    "(" #'show-paren-mode)           ; toggle showing matching parenthesis
   (define-key pel:for-C    ")" #'check-parens)              ; Check for unbalanced parens in current buffer
@@ -1188,7 +1188,7 @@ re-execute `pel-init' again to activate them."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : C++ programming utilities
 
-  (define-global-prefix 'pel:for-C++ (kbd "<f11> SPC C"))
+  (define-pel-global-prefix 'pel:for-C++ (kbd "<f11> SPC C"))
   (define-key pel:for-C++      "." #'pel-find-thing-at-point)   ; Move point to the definition of function at point
   (define-key pel:for-C++      "(" #'show-paren-mode)           ; toggle showing matching parenthesis
   (define-key pel:for-C++      ")" #'check-parens)              ; Check for unbalanced parens in current buffer
@@ -1203,7 +1203,7 @@ re-execute `pel-init' again to activate them."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : Erlang programming utilities
   (when pel-use-erlang
-    (define-global-prefix 'pel:for-erlang (kbd "<f11> SPC e"))
+    (define-pel-global-prefix 'pel:for-erlang (kbd "<f11> SPC e"))
     ;;
     (pel--mode-hook-maybe-call
      '(lambda ()
@@ -1240,14 +1240,14 @@ re-execute `pel-init' again to activate them."
 
   ;; -----------------------------------------------------------------------------
 
-  (define-global-prefix 'pel:for-elisp (kbd "<f11> SPC l"))
+  (define-pel-global-prefix 'pel:for-elisp (kbd "<f11> SPC l"))
   ;;
   (define-key pel:for-elisp   "." #'pel-find-thing-at-point)        ; Move point to the definition of function at point
   (define-key pel:for-elisp   "D" #'toggle-debug-on-error)
   (when pel-use-parinfer
     (define-key pel:for-elisp "i" 'parinfer-auto-fix))
 
-  (define-global-prefix 'pel:elisp-analyze (kbd "<f11> SPC l a"))
+  (define-pel-global-prefix 'pel:elisp-analyze (kbd "<f11> SPC l a"))
   (define-key pel:elisp-analyze ")" #'check-parens)                   ; Check for unbalanced parens in current buffer
   (when pel-use-parinfer
     (define-key pel:elisp-analyze "D"  'parinfer-diff))
@@ -1255,34 +1255,34 @@ re-execute `pel-init' again to activate them."
   (define-key pel:elisp-analyze   "d" #'checkdoc)                       ; doc/string check
   (define-key pel:elisp-analyze   "f" #'elint-file)                     ; analyze - prompt and elint the requested file.
 
-  (define-global-prefix 'pel:elisp-compile (kbd "<f11> SPC l c"))
+  (define-pel-global-prefix 'pel:elisp-compile (kbd "<f11> SPC l c"))
   (define-key pel:elisp-compile "b" #'pel-byte-compile-file-and-load) ; byte compile & load current file. Don't prompt.
   (define-key pel:elisp-compile "d" #'byte-recompile-directory)
   (define-key pel:elisp-compile "f" #'byte-compile-file)              ; prompt for file, byte-compile.  Load only when invoked with prefix arg.
 
-  (define-global-prefix 'pel:elisp-debug (kbd "<f11> SPC l d"))
+  (define-pel-global-prefix 'pel:elisp-debug (kbd "<f11> SPC l d"))
   (define-key pel:elisp-debug "d" #'debug-on-entry)
   (define-key pel:elisp-debug "D" #'cancel-debug-on-entry)
   (define-key pel:elisp-debug "!" #'toggle-debug-on-error)
   (define-key pel:elisp-debug ")" #'toggle-debug-on-quit)
   (define-key pel:elisp-debug "e" #'edebug-defun)
 
-  (define-global-prefix 'pel:elisp-eval (kbd "<f11> SPC l e"))
+  (define-pel-global-prefix 'pel:elisp-eval (kbd "<f11> SPC l e"))
   (define-key pel:elisp-eval "b" #'eval-buffer)
   (define-key pel:elisp-eval "f" #'load-file)
   (define-key pel:elisp-eval "r" #'eval-region)
 
-  (define-global-prefix 'pel:elisp-function (kbd "<f11> SPC l f"))
+  (define-pel-global-prefix 'pel:elisp-function (kbd "<f11> SPC l f"))
   (define-key pel:elisp-function "n" #'pel-search-defun)               ; move cursor to next defun form
   (define-key pel:elisp-function "p" #'pel-search-defun-backward)
 
-  (define-global-prefix 'pel:elisp-lib (kbd "<f11> SPC l l"))
+  (define-pel-global-prefix 'pel:elisp-lib (kbd "<f11> SPC l l"))
   (define-key pel:elisp-lib "L" #'load-library)                   ; Load an elisp file.
   (define-key pel:elisp-lib "l" #'find-library)                   ; Open the elisp library file
   (define-key pel:elisp-lib "c" #'locate-library)
   (define-key pel:elisp-lib "p" #'list-packages)
 
-  (define-global-prefix 'pel:elisp-mode (kbd "<f11> SPC l m"))
+  (define-pel-global-prefix 'pel:elisp-mode (kbd "<f11> SPC l m"))
   (define-key pel:elisp-mode      "(" #'show-paren-mode)           ; toggle showing matching parenthesis
   (define-key pel:elisp-mode      "L" #'pel-toggle-lisp-modes)     ; toggle between emacs-lisp-mode, lisp-interaction-mode
   (when pel-use-parinfer
@@ -1324,7 +1324,7 @@ re-execute `pel-init' again to activate them."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : (Common) Lisp programming
   (when pel-use-common-lisp
-    (define-global-prefix 'pel:for-lisp (kbd "<f11> SPC L"))
+    (define-pel-global-prefix 'pel:for-lisp (kbd "<f11> SPC L"))
     (define-key pel:for-lisp    "(" #'show-paren-mode)           ; toggle showing matching parenthesis
     (define-key pel:for-lisp    ")" #'check-parens)              ; Check for unbalanced parens in current buffer
     (when pel-use-parinfer
@@ -1343,7 +1343,7 @@ re-execute `pel-init' again to activate them."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : Python programming utilities
   (when pel-use-python
-    (define-global-prefix 'pel:for-python (kbd "<f11> SPC p"))
+    (define-pel-global-prefix 'pel:for-python (kbd "<f11> SPC p"))
     (define-key pel:for-python    "." #'pel-find-thing-at-point)   ; Move point to the definition of function at point
     (define-key pel:for-python    "(" #'show-paren-mode)           ; toggle showing matching parenthesis
     (when pel-use-rainbow-delimiters
@@ -1357,7 +1357,7 @@ re-execute `pel-init' again to activate them."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : reSTucturedText
   (when pel-use-rst-mode
-    (define-global-prefix 'pel:for-reST (kbd "<f11> SPC r"))
+    (define-pel-global-prefix 'pel:for-reST (kbd "<f11> SPC r"))
     (define-key pel:for-reST "." #'pel-rst-makelink)
     (define-key pel:for-reST "g" #'pel-rst-goto-ref-bookmark)
     (define-key pel:for-reST "s" #'pel-rst-set-ref-bookmark)
@@ -1375,7 +1375,7 @@ re-execute `pel-init' again to activate them."
       :pin melpa
       :commands graphviz-dot-mode)
 
-    (define-global-prefix 'pel:for-graphviz-dot (kbd "<f11> SPC g"))
+    (define-pel-global-prefix 'pel:for-graphviz-dot (kbd "<f11> SPC g"))
     (define-key pel:for-graphviz-dot "c" 'compile)
     ;;
     (pel--mode-hook-maybe-call
@@ -1386,7 +1386,7 @@ re-execute `pel-init' again to activate them."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> =`` : Copy commands
 
-  (define-global-prefix 'pel:copy (kbd "<f11> ="))
+  (define-pel-global-prefix 'pel:copy (kbd "<f11> ="))
   (define-key pel:copy " " #'pel-copy-whitespace-at-point)  ; whitespace
   (define-key pel:copy "(" #'pel-copy-list-at-point)        ;
   (define-key pel:copy "." #'pel-copy-symbol-at-point)
@@ -1410,7 +1410,7 @@ re-execute `pel-init' again to activate them."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> -`` : Kill commands
 
-  (define-global-prefix 'pel:kill (kbd "<f11> -"))
+  (define-pel-global-prefix 'pel:kill (kbd "<f11> -"))
   (define-key pel:kill " " #'pel-kill-whitespace-at-point)    ; all whitespace at point
   (define-key pel:kill "(" #'pel-kill-list-at-point)
   (define-key pel:kill "*" #'delete-duplicate-lines)
@@ -1459,7 +1459,7 @@ re-execute `pel-init' again to activate them."
       :pin melpa
       :commands (company-mode global-company-mode)))
 
-  (define-global-prefix 'pel:auto-completion (kbd "<f11> ,"))
+  (define-pel-global-prefix 'pel:auto-completion (kbd "<f11> ,"))
   (define-key pel:auto-completion   "?"   'pel-completion-help)
   (when pel-use-auto-complete
     (define-key pel:auto-completion "A"  #'pel-global-auto-complete-mode)
@@ -1478,7 +1478,7 @@ re-execute `pel-init' again to activate them."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> .`` : mark commands
 
-  (define-global-prefix 'pel:mark (kbd "<f11> ."))
+  (define-pel-global-prefix 'pel:mark (kbd "<f11> ."))
   (define-key pel:mark       " "        #'pel-push-mark-no-activate)
   (define-key pel:mark       "`"        #'pel-jump-to-mark)
   (define-key pel:mark       "."        #'exchange-point-and-mark)
@@ -1521,7 +1521,7 @@ re-execute `pel-init' again to activate them."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> ;`` : comment commands
 
-  (define-global-prefix 'pel:comment (kbd "<f11> ;"))
+  (define-pel-global-prefix 'pel:comment (kbd "<f11> ;"))
   ;;
   (define-key pel:comment "A"           #'pel-toggle-comment-auto-fill-only-comments)
   (define-key pel:comment "B"           #'comment-box)
@@ -1535,14 +1535,14 @@ re-execute `pel-init' again to activate them."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> ?`` : Help /apropos/info commands
 
-  (define-global-prefix 'pel:help (kbd "<f11> ?"))
+  (define-pel-global-prefix 'pel:help (kbd "<f11> ?"))
   (define-key pel:help "m"  #'man)
   (define-key pel:help "M"  #'woman)
 
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> ? a`` : Help Apropos commands
 
-  (define-global-prefix 'pel:apropos (kbd "<f11> ? a"))
+  (define-pel-global-prefix 'pel:apropos (kbd "<f11> ? a"))
   (define-key pel:apropos "a"  #'apropos)
   (define-key pel:apropos "c"  #'apropos-command)
   (define-key pel:apropos "d"  #'apropos-documentation)
@@ -1555,7 +1555,7 @@ re-execute `pel-init' again to activate them."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> ? i`` : Help Info commands
 
-  (define-global-prefix 'pel:info (kbd "<f11> ? i"))
+  (define-pel-global-prefix 'pel:info (kbd "<f11> ? i"))
   (define-key pel:info "a"  #'info-apropos)
   (define-key pel:info "i"  #'info)
   (define-key pel:info "m"  #'info-display-manual)
@@ -1563,7 +1563,7 @@ re-execute `pel-init' again to activate them."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> ? d`` : Describe (provide info about..)
 
-  (define-global-prefix 'pel:describe (kbd "<f11> ? d"))
+  (define-pel-global-prefix 'pel:describe (kbd "<f11> ? d"))
   (define-key pel:describe "$" #'pel-spell-show-use)
   (define-key pel:describe "c" #'list-colors-display)            ; list colors
   (define-key pel:describe "F" #'list-faces-display)
@@ -1594,7 +1594,7 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
              (length load-history)
              (length features)))
 
-  (define-global-prefix 'pel:emacs (kbd "<f11> ? e"))
+  (define-pel-global-prefix 'pel:emacs (kbd "<f11> ? e"))
   (define-key pel:emacs "l" #'pel-emacs-load-stats)
   (define-key pel:emacs "s" #'list-load-path-shadows)
   (define-key pel:emacs "t" #'emacs-init-time)
@@ -1628,7 +1628,7 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
       (which-key-mode)))
 
 
-  (define-global-prefix 'pel:keys (kbd "<f11> ? k"))
+  (define-pel-global-prefix 'pel:keys (kbd "<f11> ? k"))
   (define-key pel:keys    "#" #'pel-show-mac-numlock)            ; Show state of the mac numeric keypad operation
   (when pel-use-bind-key
     (define-key pel:keys  "b" #'describe-personal-keybindings))  ; list key bindings overlapping Emacs default ones
@@ -1643,7 +1643,7 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> $`` : Spell Check
 
-  (define-global-prefix 'pel:spell (kbd "<f11> $"))
+  (define-pel-global-prefix 'pel:spell (kbd "<f11> $"))
   ;;
   (autoload 'ispell-check-version "ispell")
 
@@ -1662,7 +1662,7 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> '`` : bookmark commands
 
-  (define-global-prefix 'pel:bookMark (kbd "<f11> '"))
+  (define-pel-global-prefix 'pel:bookMark (kbd "<f11> '"))
   (define-key pel:bookMark "b" #'bookmark-jump)
   (define-key pel:bookMark "B" #'bookmark-jump-other-window)
   (define-key pel:bookMark "d" #'bookmark-delete)
@@ -1683,13 +1683,13 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> <tab>`` : indentation
 
-  (define-global-prefix 'pel:indent (kbd "<f11> TAB"))
+  (define-pel-global-prefix 'pel:indent (kbd "<f11> TAB"))
   (define-key pel:indent "r" #'indent-relative)
 
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> a`` : abbreviations
 
-  (define-global-prefix 'pel:abbrev (kbd "<f11> a"))
+  (define-pel-global-prefix 'pel:abbrev (kbd "<f11> a"))
   (define-key pel:abbrev "d" #'pel-define-abbrevs)      ; read abbrevs from current buffer
   (define-key pel:abbrev "e" #'expand-abbrev)           ;
   (define-key pel:abbrev "E" #'expand-region-abbrevs)   ;
@@ -1712,7 +1712,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> b`` : buffer commands
 
-  (define-global-prefix 'pel:buffer (kbd "<f11> b"))
+  (define-pel-global-prefix 'pel:buffer (kbd "<f11> b"))
   (define-key pel:buffer "-"  #'ruler-mode)                        ; toggle the ruler at the top of each window of this buffer
   (define-key pel:buffer "c"  #'clone-buffer)
   (define-key pel:buffer "i"  #'insert-file)                       ; insert content of other file at point
@@ -1769,7 +1769,7 @@ the ones defined from the buffer now."
         (hi-lock-find-patterns)
       (user-error "Turn hi-lock-mode on first")))
 
-  (define-global-prefix 'pel:highlight (kbd "<f11> b h"))
+  (define-pel-global-prefix 'pel:highlight (kbd "<f11> b h"))
   (define-key pel:highlight "-"  #'hl-line-mode)                      ; enable/disable highlight of current line in buffer
   (define-key pel:highlight "(" #'show-paren-mode)                    ; toggle showing matching parenthesis
 
@@ -1793,7 +1793,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> b I`` : Indirect buffer commands
 
-  (define-global-prefix 'pel:indirect-buffer (kbd "<f11> b I"))
+  (define-pel-global-prefix 'pel:indirect-buffer (kbd "<f11> b I"))
   (define-key pel:indirect-buffer "c"  #'clone-indirect-buffer)
   (define-key pel:indirect-buffer "m"  #'make-indirect-buffer)
   (define-key pel:indirect-buffer "w"  #'clone-indirect-buffer-other-window)
@@ -1802,7 +1802,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> c`` : count things
 
-  (define-global-prefix 'pel:count (kbd "<f11> c"))
+  (define-pel-global-prefix 'pel:count (kbd "<f11> c"))
   (define-key pel:count "m" #'count-matches)        ; Counts number of regexp patterns that match in a region.
   (define-key pel:count "p" #'count-lines-page)     ; Display total number of lines in page, and number of lines before/after
                                         ; point.
@@ -1814,7 +1814,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> C`` : clipboard commands
 
-  (define-global-prefix 'pel:clipboard (kbd "<f11> C"))
+  (define-pel-global-prefix 'pel:clipboard (kbd "<f11> C"))
   (define-key pel:clipboard "c" #'clipboard-kill-ring-save)
   (define-key pel:clipboard "x" #'clipboard-kill-region)
   (define-key pel:clipboard "v" #'clipboard-yank)
@@ -1823,7 +1823,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> d`` : draw commands
 
-  (define-global-prefix 'pel:draw (kbd "<f11> d"))
+  (define-pel-global-prefix 'pel:draw (kbd "<f11> d"))
   (when (display-graphic-p)
     (define-key pel:draw "a"  'artist-mode))                ; activate a mode to draw
   ;; TODO : line/box draw mode
@@ -1845,7 +1845,7 @@ the ones defined from the buffer now."
       (user-error
        "Activate auto-revert-mode before attempting to set/cancel its timer")))
 
-  (define-global-prefix 'pel:file (kbd "<f11> f"))
+  (define-pel-global-prefix 'pel:file (kbd "<f11> f"))
   (define-key pel:file "A" #'auto-revert-mode)
   (define-key pel:file " " #'pel-auto-revert-set-timer) ; cancel/restart the timer
   (define-key pel:file "d" #'find-dired)
@@ -1866,7 +1866,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> f v`` : File variables
 
-  (define-global-prefix 'pel:filevar (kbd "<f11> f v"))
+  (define-pel-global-prefix 'pel:filevar (kbd "<f11> f v"))
   (define-key pel:filevar "="  #'add-file-local-variable-prop-line)
   (define-key pel:filevar "-"  #'delete-file-local-variable-prop-line)
   (define-key pel:filevar "c"  #'copy-dir-locals-to-file-locals-prop-line)
@@ -1875,7 +1875,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> f v D`` : Directory File variables
 
-  (define-global-prefix 'pel:dirvar (kbd "<f11> f v D"))
+  (define-pel-global-prefix 'pel:dirvar (kbd "<f11> f v D"))
   (define-key pel:dirvar "="  #'add-dir-local-variable)
   (define-key pel:dirvar "-"  #'delete-dir-local-variable)
   (define-key pel:dirvar "C"  #'copy-file-locals-to-dir-locals)
@@ -1884,7 +1884,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> F`` : Frame operations
 
-  (define-global-prefix 'pel:frame (kbd "<f11> F"))
+  (define-pel-global-prefix 'pel:frame (kbd "<f11> F"))
   (define-key pel:frame "?"  #'pel-show-frame-count)
   (define-key pel:frame "0"  #'delete-frame)
   (define-key pel:frame "1"  #'delete-other-frames)
@@ -1902,7 +1902,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> g`` : Grep operations
 
-  (define-global-prefix 'pel:grep (kbd "<f11> g"))
+  (define-pel-global-prefix 'pel:grep (kbd "<f11> g"))
   (declare-function find-grep "grep")
   (declare-function kill-grep "grep")
   (define-key pel:file      "f"  #'find-grep)
@@ -1929,7 +1929,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> i`` : Insert text operations
 
-  (define-global-prefix 'pel:insert (kbd "<f11> i"))
+  (define-pel-global-prefix 'pel:insert (kbd "<f11> i"))
   (define-key pel:insert   "C" 'copyright)
   (define-key pel:insert   "d" #'pel-insert-current-date)             ; Local by default, UTC is C-u prefix used.
   (define-key pel:insert   "D" #'pel-insert-current-date-time)        ; Local by default, UTC is C-u prefix used.
@@ -1948,14 +1948,14 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> k`` : Keyboard macro operations
 
-  (define-global-prefix 'pel:kbmacro (kbd "<f11> k"))
+  (define-pel-global-prefix 'pel:kbmacro (kbd "<f11> k"))
   (define-key pel:kbmacro "k"  #'pel-forget-recorded-keyboard-macro)
   (define-key pel:kbmacro "i"  #'insert-kbd-macro) ;insert Lisp code of the current KBMacro at point.
 
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> l`` : Line control commands
 
-  (define-global-prefix 'pel:linectrl (kbd "<f11> l"))
+  (define-pel-global-prefix 'pel:linectrl (kbd "<f11> l"))
   (define-key pel:linectrl (kbd "<up>")   #'pel-lc-previous-logical-line)      ; up one logical line (in visual line mode)
   (define-key pel:linectrl (kbd "<down>") #'pel-lc-next-logical-line)          ; down one logical line (in visual line mode)
   (define-key pel:linectrl "c"            #'pel-toggle-line-col-modes)         ; toggle display of (line,col) display in modeline
@@ -1968,7 +1968,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> o`` : ordering (sorting)
 
-  (define-global-prefix 'pel:order (kbd "<f11> o"))
+  (define-pel-global-prefix 'pel:order (kbd "<f11> o"))
   (define-key pel:order "l" #'sort-lines)
   (define-key pel:order "p" #'sort-paragraphs)
   (define-key pel:order "/" #'sort-pages )
@@ -1990,7 +1990,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> r`` : Register commands
 
-  (define-global-prefix 'pel:register (kbd "<f11> r"))
+  (define-pel-global-prefix 'pel:register (kbd "<f11> r"))
   (define-key pel:register "l"    #'list-registers)
   (define-key pel:register "v"    #'view-register)
   ;;
@@ -2013,7 +2013,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> s`` : Search/Replace  commands
 
-  (define-global-prefix 'pel:search-replace (kbd "<f11> s"))
+  (define-pel-global-prefix 'pel:search-replace (kbd "<f11> s"))
   (define-key pel:search-replace "o" #'multi-occur)
   (define-key pel:search-replace "O" #'multi-occur-in-matching-buffers)
   (define-key pel:search-replace "r" #'replace-string)
@@ -2035,7 +2035,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> s x`` : Search Regexp commands
 
-  (define-global-prefix 'pel:regexp (kbd "<f11> s x"))
+  (define-pel-global-prefix 'pel:regexp (kbd "<f11> s x"))
   (define-key pel:regexp      "q"  #'query-replace-regexp)  ; add it here because C-M-% cannot be typed in terminal mode
   (define-key pel:regexp      "r"  #'replace-regexp)
   ;;
@@ -2066,7 +2066,7 @@ the ones defined from the buffer now."
                  sr-speedbar-window-p))
 
 
-    (define-global-prefix 'pel:speedbar (kbd "<f11> S"))
+    (define-pel-global-prefix 'pel:speedbar (kbd "<f11> S"))
     (define-key pel:speedbar "S"  #'pel-open-close-speedbar)     ; Open/close Speedbar or SR-Speedbar.  In Terminal only allow SR-Speedbar. In graphics mode, prompt, but once is selected always use the same.
     (define-key pel:speedbar "."  #'pel-toggle-to-speedbar)      ; Change focus to/from speedbar-frame/sr-speedbar window
     (define-key pel:speedbar "R"  #'pel-speedbar-toggle-refresh) ; Toggle refresh of speedbar content
@@ -2080,7 +2080,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> t`` : Text control commands
 
-  (define-global-prefix 'pel:text (kbd "<f11> t"))
+  (define-pel-global-prefix 'pel:text (kbd "<f11> t"))
   (define-key pel:text "c"  #'pel-capitalize-word-or-region) ; capitalize (title case) word or region
   (define-key pel:text "l"  #'pel-downcase-word-or-region)   ; lowercase word or region
   (define-key pel:text "u"  #'pel-upcase-word-or-region)     ; uppercase word or region
@@ -2116,7 +2116,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> t a``: Text align
 
-  (define-global-prefix 'pel:align (kbd "<f11> t a"))
+  (define-pel-global-prefix 'pel:align (kbd "<f11> t a"))
   (define-key pel:align "a" #'align)
   (define-key pel:align "c" #'align-current)
   (define-key pel:align "e" #'align-entire)
@@ -2131,7 +2131,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> t f``: Text fill
   ;;
-  (define-global-prefix 'pel:fill (kbd "<f11> t f"))
+  (define-pel-global-prefix 'pel:fill (kbd "<f11> t f"))
   (define-key pel:fill "?"   #'pel-show-fill-columns)
   (define-key pel:fill "A"   #'auto-fill-mode)               ; toggle auto-fill-mode
   (define-key pel:fill "C"   #'pel-auto-fill-only-comments)  ; toggle auto fill only in comments
@@ -2142,7 +2142,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> t j``: Text justification
   ;;
-  (define-global-prefix 'pel:justification (kbd "<f11> t j"))
+  (define-pel-global-prefix 'pel:justification (kbd "<f11> t j"))
   (define-key pel:justification "b" #'set-justification-full) ;'b' for "both-side" : ie. full
   (define-key pel:justification "c" #'set-justification-center)
   (define-key pel:justification "l" #'set-justification-left)
@@ -2152,7 +2152,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> t m``: Text word modes
   ;;
-  (define-global-prefix 'pel:textmodes (kbd "<f11> t m"))
+  (define-pel-global-prefix 'pel:textmodes (kbd "<f11> t m"))
   (define-key pel:textmodes "'" #'electric-quote-local-mode) ; toggle the electric quote mode in the current buffer.
   (define-key pel:textmodes "?" #'pel-show-text-modes)
   (define-key pel:textmodes "b" #'subword-mode)   ; toggle subword-mode: treat CamelCase as distinct words.
@@ -2165,7 +2165,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; Function Keys - <f11> - Prefix ``<f11> t t``: Text transpose commands
   ;;
-  (define-global-prefix 'pel:text-transpose (kbd "<f11> t t"))
+  (define-pel-global-prefix 'pel:text-transpose (kbd "<f11> t t"))
   (define-key pel:text-transpose "c"  #'transpose-chars)
   (define-key pel:text-transpose "w"  #'transpose-words)
   (define-key pel:text-transpose "l"  #'transpose-lines)
@@ -2177,7 +2177,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> t w`` : Text whitespace commands
   ;;
-  (define-global-prefix 'pel:text-whitespace (kbd "<f11> t w"))
+  (define-pel-global-prefix 'pel:text-whitespace (kbd "<f11> t w"))
   (define-key pel:text-whitespace " "         #'untabify)
   (define-key pel:text-whitespace (kbd "TAB") #'tabify)
   (define-key pel:text-whitespace "I"         #'pel-toggle-indent-tabs-mode)
@@ -2195,7 +2195,7 @@ the ones defined from the buffer now."
   ;; use some in the '<f11> w' group:
 
   ;;
-  (define-global-prefix 'pel:window (kbd "<f11> w"))
+  (define-pel-global-prefix 'pel:window (kbd "<f11> w"))
   (define-key pel:window    "B"  #'switch-to-buffer-other-window)  ; select buffer in another window
   (define-key pel:window    "O"  #'pel-other-window-backward)      ; inverse movement than pel-other-window
   (define-key pel:window    "b"  #'display-buffer)                 ; display buffer name in other window without selecting it
@@ -2258,14 +2258,14 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> w d`` : Windows dedicated operations
   ;;
-  (define-global-prefix 'pel:window-dedicated (kbd "<f11> w d"))
+  (define-pel-global-prefix 'pel:window-dedicated (kbd "<f11> w d"))
   (define-key pel:window-dedicated "d" #'pel-toggle-window-dedicated)       ; toggle the window dedicated status.
   (define-key pel:window-dedicated "?" #'pel-show-window-dedicated-status)  ; show if current window is dedicated (info displayed in echo area)
 
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> w s`` : Window size operations
   ;;
-  (define-global-prefix 'pel:window-size (kbd "<f11> w s"))
+  (define-pel-global-prefix 'pel:window-size (kbd "<f11> w s"))
   (define-key pel:window-size "=" #'balance-windows)                       ; ``C-x +`` : make windows the same size
   (define-key pel:window-size "-" #'shrink-window-if-larger-than-buffer)   ; ``C-x -`` : shrink window vertically to be as small as possible
   (define-key pel:window-size "V" #'enlarge-window)                        ; ``C-x ^`` : grow window taller
@@ -2276,7 +2276,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> w |`` : Windows scroll lock commands
   ;;
-  (define-global-prefix 'pel:scroll-lock (kbd "<f11> w |"))
+  (define-pel-global-prefix 'pel:scroll-lock (kbd "<f11> w |"))
   ;;
   (define-key pel:scroll-lock "|" #'pel-toggle-dual-scroll)  ; scroll 2 windows in sync
   (define-key pel:scroll-lock "a" #'scroll-all-mode)         ; scroll all windows
@@ -2285,7 +2285,7 @@ the ones defined from the buffer now."
   ;; -----------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> x`` : Process eXecution utilities
   ;;
-  (define-global-prefix 'pel:eXecute (kbd "<f11> x"))
+  (define-pel-global-prefix 'pel:eXecute (kbd "<f11> x"))
 
   (declare-function eshell "eshell")
 
