@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau.swd@gmail.com>
-# Last Modified Time-stamp: <2020-03-04 22:48:02, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-03-08 16:31:39, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -39,7 +39,8 @@ PEL_VERSION := 0.0.1
 # sub-directories where make stores new files
 SRC_DIR          := .
 OUT_DIR          := out
-DEST_DIR         := $(OUT_DIR)/pel-$(PEL_VERSION)
+TMP_DIR          := tmp-copies
+DEST_DIR         := $(TMP_DIR)/pel-$(PEL_VERSION)
 DEST_TEST_DIR    := $(DEST_DIR)/test
 DEST_DOC_PDF_DIR := $(DEST_DIR)/doc/pdf
 
@@ -94,8 +95,8 @@ OTHER_FILES := README
 # Emacs Regression Test files that uses ert, to test and include in tar file.
 TEST_FILES := test/pel-file-test.el
 
-# Documentation PDF files to copy verbatim into the doc/pdf s
-DOC_FILES := doc/pdf/-legend.pdf \
+# Documentation PDF files to copy verbatim into the doc/pdfs
+PDF_FILES := doc/pdf/-legend.pdf \
 			doc/pdf/abbreviations.pdf \
 			doc/pdf/align.pdf \
 			doc/pdf/bookmarks.pdf \
@@ -149,7 +150,9 @@ DOC_FILES := doc/pdf/-legend.pdf \
 			doc/pdf/windows.pdf
 
 
-SRC_FILES := $(OTHER_EL_FILES) $(EL_FILES) $(OTHER_FILES) $(TEST_FILES) $(DOC_FILES)
+SRC_FILES := $(OTHER_EL_FILES) $(EL_FILES) $(OTHER_FILES)
+
+# $(TEST_FILES)
 
 TARGET_SOURCE_FILES := $(patsubst %,$(DEST_DIR)/%,$(SRC_FILES))
 
@@ -235,9 +238,14 @@ check-elc-files:
 # -----------------------------------------------------------------------------
 # Creating the target directories when they don't exist.
 
-all-dirs:	$(OUT_DIR) $(DEST_DIR) $(DEST_DOC_PDF_DIR) $(OUT_REPO_DIR)
+all-dirs:	$(OUT_DIR) $(DEST_DIR)  $(OUT_REPO_DIR)
+
+# $(DEST_DOC_PDF_DIR)
 
 $(OUT_DIR):
+	mkdir -p $@
+
+$(TMP_DIR):
 	mkdir -p $@
 
 $(DEST_DIR):
@@ -270,7 +278,9 @@ $(DEST_DOC_PDF_DIR)/%.pdf: $(SRC_DIR)/doc/pdf/%.pdf
 # rule to copy all files to the target directory if they're not there already.
 .PHONY: a-copy
 
-a-copy: $(DEST_DIR) $(DEST_TEST_DIR) $(DEST_DOC_PDF_DIR) $(TARGET_SOURCE_FILES)
+a-copy: $(OUT_DIR) $(DEST_DIR)  $(TARGET_SOURCE_FILES)
+
+# $(DEST_DOC_PDF_DIR) $(DEST_TEST_DIR)
 
 # -----------------------------------------------------------------------------
 # Rules to byte-compile the Emacs-Lisp source code files
@@ -334,7 +344,7 @@ pkg: 	export COPYFILE_DISABLE=1
 pkg: | a-copy
 	@printf "***** Create the PEL package TAR file\n"
 	rm -f $(OUT_DIR)/$(PEL_TAR_FILE)
-	tar -cvf $(OUT_DIR)/$(PEL_TAR_FILE) $(DEST_DIR)
+	tar -C $(TMP_DIR) -cvf $(OUT_DIR)/$(PEL_TAR_FILE) pel-$(PEL_VERSION)/
 	ls -l $(OUT_DIR)/$(PEL_TAR_FILE)
 
 # -----------------------------------------------------------------------------
@@ -364,6 +374,7 @@ clean-tar:
 
 clean: clean-tar
 	rm *.elc
-	rm -r out
+	rm -r $(OUT_DIR)
+	rm -r $(TMP_DIR)
 
 # -----------------------------------------------------------------------------
