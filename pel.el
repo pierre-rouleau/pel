@@ -120,7 +120,8 @@ re-execute `pel-init' again to activate them."
   (interactive)
   ;; ensure the library name is sorting just before pel.el
   ;; so that package system bu=yte compile it after everything else.
-  (load-library "pel-zkeys"))
+  (load-library "pel-zkeys")
+  (message "PEL loaded, PEL keys binding in effect"))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel)
