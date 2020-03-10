@@ -29,7 +29,7 @@
 ;; Overview
 ;; --------
 
-;; `pel.el` provides the following features:
+;; `pel.el' provides the following features:
 ;;
 ;;  - Function key-driven keymap for a large set of commands, which are either
 ;;    PEL extensions of existing Emacs commands or commands from external

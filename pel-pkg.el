@@ -1,5 +1,8 @@
 ;;; -*- no-byte-compile: t -*-
 (define-package "pel" "0.0.1" "Pragmatic Environment Library"
+  :url "https://github.com/pierre-rouleau/pel"
+  :authors '(("Pierre Rouleau" . "prouleau.swd@gmail.com"))
+
   ;; The handling of Emacs package versions varies widely from package to package.
   ;; Unfortunately, version numbers that appear somewhat *stable* or sometimes
   ;; very misleading.
@@ -39,7 +42,7 @@
     (c-eldoc             "20181109.439")    ; melpa.        Melpa-stable:= nothing
     (cargo               "0.4.1")           ; melpa.        Melpa := 20191224.47
     (company             "0.9.12")          ; melpa-stable. Melpa := 2020228.1919
-    (dired-narrow        "20181114.1723")   ; melpa.        Melpa-stable: nothing
+    (dired-narrow        "20181114.1723")   ; melpa.        Melpa-stable := nothing
     (edts                "0.1.0")           ; melpa-stable. Melpa        := 020200304.1709
     (elisp-lint          "0.3.0")           ; melpa-stable. Melpa        := 20200217.38
     (elpy                "1.32.0")          ; melpa-stable. Melpa        := 20200202.2031
@@ -53,7 +56,7 @@
     (macrostep           "0.9")             ; melpa-stable. Melpa        := 20161120.2106
     (nhexl-mode          "1.4")             ; gnu
     (parinfer            "0.4.10")          ; melpa-stable. Melpa        := 20180904.844
-    (popup-kill-ring     "20131020.1854")   ; melpa.        Melpa-stable:= nothing
+    (popup-kill-ring     "20131020.1854")   ; melpa.        Melpa-stable := nothing
     (racer               "1.2")             ; melpa-stable. Melpa        := 20191001.2344
     (rainbow-delimiters  "2.1.4")           ; melpa-stable. Melpa        := 20191018.1233
     (rg                  "1.8.1")           ; melpa-stable. Melpa        := 20200307.1623
