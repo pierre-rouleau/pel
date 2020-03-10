@@ -43,18 +43,20 @@
 ;; The mechanism selected is remembered inside the variable
 ;; `pel-speedbar-type-used'.  If you want to prevent the first prompt
 ;; set this variable to 'sr-speedbar or 'speedbar.
+;;
+;; Note:
+;;
+;; The 2014 version of the sr-speedbar.el file attempts to access the
+;; `helm-alive-p' variable, but does not require helm nor check if that
+;; variable is bounded, causing byte-compilation warnings in pel.el or
+;; here.
+;; The 2016 version of sr-speedbar fixes this problem.
+;;
+;; If you get this warning while byte compiling any of the PEL code,
+;; make sure to use the 2016 version of sr-speedbar, available at MELPA.
 
 ;;; Code:
 
-
-
-;; The sr-speedbar.el file attempts to access the `helm-alive-p' variable,
-;; but unfortunately does not require helm nor check if that variable is
-;; bounded. One pseudo hack would be here, to (defvar helm-alive-p) but
-;; this hack may cause problem when helm is used, and also does not always
-;; get rid of the warning, so the code does not do it and let the warning
-;; pop-up.  The real solution would be to fix sr-speedbar code to check if
-;; helm-alive-p if bounded.
 (require 'sr-speedbar nil :noerror)
 
 ;; PEL: Speedbar/Sr-Speedbar management

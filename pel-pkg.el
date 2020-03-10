@@ -59,6 +59,7 @@
     (rg                  "1.8.1")           ; melpa-stable. Melpa        := 20200307.1623
     (rust-mode           "0.4.0")           ; melpa-stable. Melpa        := 20200303.932
     (slime               "2.24")            ; melpa-stable. Melpa        := 20200228.1656
+    ;; sr-speedbar of 2014 has a bug that was fixed in the 2016 version.
     (sr-speedbar         "20161025.831")    ; melpa         Melpa-stable := 20140914.2339
     (undo-tree           "0.7.4")           ; gnu
     (which-key           "3.4.0")           ; melpa-stable. Melpa        := 20200216.1350

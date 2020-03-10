@@ -2209,7 +2209,17 @@ the ones defined from the buffer now."
   (define-key pel:window    "b"  #'display-buffer)                 ; display buffer name in other window without selecting it
   (define-key pel:window    "f"  #'follow-mode)                    ; toggle follow mode (start by splitting a window with C-x 3)
 
+
   (when pel-use-ace-window
+
+    (defalias 'pel-maximize-window
+      (if (fboundp 'ace-delete-other-windows)
+          'ace-delete-other-windows
+        (with-no-warnings
+          (if (fboundp 'ace-maximize-window)
+              'ace-maximize-window
+            (user-error "Functino not available. Please upgrade ace-window")))))
+
     (use-package ace-window
       :ensure t
       :pin melpa
@@ -2217,7 +2227,7 @@ the ones defined from the buffer now."
       :commands (ace-window
                  ace-swap-window
                  ace-delete-window
-                 ace-maximize-window)
+                 pel-maximize-window)
 
       :init
       ;; move cursor to other window - 'C-x o' is normally mapped to
@@ -2227,9 +2237,8 @@ the ones defined from the buffer now."
       ;; old version of ace-window use ace-maximize-window
       ;; but newer version obsoleted that and now use ace-delete-other-windows
       ;; use whatever is available.
-      (define-key pel:window  "m"  (if (fboundp 'ace-delete-other-windows)
-                                       'ace-delete-other-windows
-                                     'ace-maximize-window))
+
+      (define-key pel:window  "m"  'pel-maximize-window)
       (define-key pel:window  "x"  'pel-swap-window)
 
       ;; Replace other-window, bound to 'C-x o', to ace-window
