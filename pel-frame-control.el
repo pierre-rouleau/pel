@@ -34,7 +34,7 @@
 ;;       available on it.
 
 ;;; Code:
-(require 'pel-base)                     ; use: pel-count-string
+(require 'pel--base)                    ; use: pel-count-string
 
 ;;-pel-autoload
 (defun pel-toggle-frame-fullscreen ()

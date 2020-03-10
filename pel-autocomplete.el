@@ -248,7 +248,7 @@ If ARG is positive: activate it, otherwise de-activate it."
     "Display information about available auto-completion.
 Shows which one is enabled via customization and their current activation state."
     (interactive)
-    (if (and (require 'pel-base nil :no-error)
+    (if (and (require 'pel--base nil :no-error)
              (fboundp 'pel-option-mode-state)
              (fboundp 'pel-symbol-on-off-string))
         (message "\
@@ -261,7 +261,7 @@ Auto-completion package state:
                  (pel-symbol-on-off-string 'global-auto-complete-mode)
                  (pel-option-mode-state pel-use-company 'company-mode)
                  (pel-symbol-on-off-string 'global-company-mode))
-      (error "pel-base functions not loaded")))
+      (error "pel--base functions not loaded")))
 
 ;;-pel-autoload
 (defun pel-complete ()

@@ -26,7 +26,7 @@
 
 ;;; Code:
 (require 'hl-line)
-(require 'pel-base)
+(require 'pel--base)
 
 ;;-pel-autoload
 (defun pel-set-highlight-color (colorname)

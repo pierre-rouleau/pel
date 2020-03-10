@@ -42,7 +42,7 @@
 (defun pel--autoload-init ()
   "Intialize the PEL system -- prepare automatic loading of all function."
 
-  (require 'pel-options)
+  (require 'pel--options)
 
   ;; pel-ace-window
   (when (and (boundp 'pel-use-ace-window) pel-use-ace-window)

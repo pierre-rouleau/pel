@@ -27,7 +27,7 @@
 ;; numlocking use.
 
 ;;; Code:
-(require 'pel-base)       ; use pel-toggle
+(require 'pel--base)      ; use pel-toggle
 (eval-when-compile
   (require 'pel-scroll))  ; use: pel-scroll-up, pel-scroll-down
 

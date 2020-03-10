@@ -25,7 +25,7 @@
 ;;
 
 ;;; Code:
-(require 'pel-base)                      ; use: pel-toggle
+(require 'pel--base)                     ; use: pel-toggle
 
 ;;-pel-autoload
 (defun pel-comment-start (string)

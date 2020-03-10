@@ -1,4 +1,4 @@
-;;; pel-options.el --- Customization options of the PEL package
+;;; pel--options.el --- Customization options of the PEL package
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
@@ -538,6 +538,6 @@ References:
   :safe #'booleanp)
 
 ;; -----------------------------------------------------------------------------
-(provide 'pel-options)
+(provide 'pel--options)
 
-;;; pel-options.el ends here
+;;; pel--options.el ends here

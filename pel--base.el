@@ -1,4 +1,4 @@
-;;; pel-base.el --- PEL package basic utility functions.
+;;; pel--base.el --- PEL package basic utility functions.
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
@@ -334,6 +334,6 @@ Return nil."
         (move-to-column column))))
 
 ;; -----------------------------------------------------------------------------
-(provide 'pel-base)
+(provide 'pel--base)
 
-;;; pel-base.el ends here
+;;; pel--base.el ends here

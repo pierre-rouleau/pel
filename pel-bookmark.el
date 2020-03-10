@@ -25,7 +25,7 @@
 ;;
 
 (require 'bookmark)                     ; uses: bookmark-get-bookmark
-(require 'pel-base)                     ; uses: pel-current-buffer-filename
+(require 'pel--base)                    ; uses: pel-current-buffer-filename
 
 ;;; Code:
 

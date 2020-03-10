@@ -30,7 +30,7 @@
 
 ;;; Code:
 
-(require 'pel-base)      ; use: pel-current-buffer-filename
+(require 'pel--base)      ; use: pel-current-buffer-filename
 
 ;; The windmove package is required for the following functions.
 ;; Instead of requiring windmove, and force its loading when pel-window is

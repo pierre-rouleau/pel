@@ -50,7 +50,7 @@
 ;; -----------------------------------------------------------------------------
 ;;; Code:
 
-(require 'pel-base)                     ; use: pel-toggle
+(require 'pel--base)                    ; use: pel-toggle
 (eval-when-compile
   (require 'imenu))                     ; use: imenu--rescan-item,
                                         ;      imenu-max-items,

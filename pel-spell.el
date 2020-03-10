@@ -73,7 +73,7 @@
                                ;      ispell-local-dictionary, ispell-dictionary,
                                ;      ispell-program-name, ispell-personal-dictionary
   (require 'popup)             ; use: popup-menu*
-  (require 'pel-base)          ; use: inlined: pel-symbol-on-off-string
+  (require 'pel--base)         ; use: inlined: pel-symbol-on-off-string
   (require 'subr-x))           ; use: inlined: string-trim
 
 ;; --

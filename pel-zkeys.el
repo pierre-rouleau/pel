@@ -46,9 +46,9 @@ Optionally insert it at point if INSERT is non-nil."
 
 ;; -----------------------------------------------------------------------------
 ;; Required packages:
-(require 'pel-options) ; all `pel-use-...' variables identify what to use.
-                                        ; also defines a set of utility functions to deal with
-                                        ; the options: pel-auto-complete-help
+(require 'pel--options) ; all `pel-use-...' variables identify what to use.
+                        ; also defines a set of utility functions to deal with
+                        ; the options: pel-auto-complete-help
 
 (unless (fboundp 'pel-build)
   ;; autoload all PEL functions

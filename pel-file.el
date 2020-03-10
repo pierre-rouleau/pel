@@ -49,7 +49,7 @@
 ;;          `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'.
 
 
-(require 'pel-base)                     ; use: pel-val-or-default,
+(require 'pel--base)                    ; use: pel-val-or-default,
                                         ;      pel-goto-position
 
 (eval-when-compile

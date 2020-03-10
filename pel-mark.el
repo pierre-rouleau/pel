@@ -29,7 +29,7 @@
 ;; See the attribution notice for the code at bottom of the file.
 
 ;;; Code:
-(require 'pel-base)                     ; use: pel-yes-no-string
+(require 'pel--base)                    ; use: pel-yes-no-string
 
 
 ;; --

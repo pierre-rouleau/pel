@@ -42,7 +42,7 @@
 ;;    previous visible (non whitespace) character.
 ;;
 
-(require 'pel-base)                     ; use: pel--n-funcall-to
+(require 'pel--base)                    ; use: pel--n-funcall-to
 (eval-when-compile
   (require 'subword)                    ; use: superword-mode
   (require 'pel-scroll))                ; use: pel-in-scroll-sync

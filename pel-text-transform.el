@@ -29,7 +29,7 @@
 ;; command replacement.
 
 ;;; Code:
-(require 'pel-base)               ; use: pel-at-lowercase-p, pel-at-uppercase-p
+(require 'pel--base)              ; use: pel-at-lowercase-p, pel-at-uppercase-p
 ;;(require 'paragraphs)           ; use: sentence-end-double-space from paragraphs.el
 ;;                                ; however, paragraphs.el has no provide form,
 ;;                                ; probably because it's always part of emacs.

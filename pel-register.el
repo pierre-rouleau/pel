@@ -25,7 +25,7 @@
 ;;
 
 ;;; Code:
-(require 'pel-base)                     ; use: (pel-current-buffer-filename)
+(require 'pel--base)                    ; use: (pel-current-buffer-filename)
 (require 'kmacro)
 
 ;; --

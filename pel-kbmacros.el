@@ -36,7 +36,7 @@
 
 ;; -----------------------------------------------------------------------------
 ;;; Code:
-(require 'pel-options)
+(require 'pel--options)
 
 (defvar pel--keyboard-macro-defined
   nil

@@ -27,7 +27,7 @@
 
 ;;; Code:
 (require 'thingatpt)                    ; uses: bounds-of-thing-at-point
-(require 'pel-base)                     ; uses: pel-whitespace-in-str-p
+(require 'pel--base)                    ; uses: pel-whitespace-in-str-p
 
 ;;-pel-autoload
 (defun pel-rst-set-adornment (style)

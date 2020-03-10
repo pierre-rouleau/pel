@@ -26,7 +26,7 @@
 
 ;;; Code:
 
-(require 'pel-options)                  ; use: pel-linelen
+(require 'pel--options)                 ; use: pel-linelen
 
 ;; -----------------------------------------------------------------------------
 ;; Direction conversion
