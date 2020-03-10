@@ -876,12 +876,12 @@ autoloading of the PEL functions.  the `pel-autoloads.el`_ and
 
 
 
-.. _pel.el:               https://github.com/pierre-rouleau/pel/blob/master/pel.el
-.. _pel-navigate.el:      https://github.com/pierre-rouleau/pel/blob/master/pel-navigate.el
-.. _pel-pkg.el:           https://github.com/pierre-rouleau/pel/blob/master/pel-pkg.el
-.. _pel-autoload.el:      https://github.com/pierre-rouleau/pel/blob/master/pel-autoload.el
-.. _pel-autoloads.el:     https://github.com/pierre-rouleau/pel/blob/master/pel-autoloads.el
-.. _build-pel.el:         https://github.com/pierre-rouleau/pel/blob/master/build-pel.el
+.. _pel.el:               pel.el
+.. _pel-navigate.el:      pel-navigate.el
+.. _pel-pkg.el:           pel-pkg.el
+.. _pel-autoload.el:      pel-autoload.el
+.. _pel-autoloads.el:     pel-autoloads.el
+.. _build-pel.el:         build-pel.el
 .. _shift-key selection:  https://www.gnu.org/software/emacs/manual/html_node/emacs/Shift-Selection.html#Shift-Selection
 .. _mark and region:      https://www.gnu.org/software/emacs/manual/html_node/emacs/Mark.html#Mark
 
@@ -935,7 +935,7 @@ At this point just a small portion of PEL is covered by
 testing.  The test code is located inside the `test sub-directory`_.
 As everything in PEL for this early version: 🚧 more to come here...
 
-.. _test sub-directory:        https://github.com/pierre-rouleau/pel/tree/master/test
+.. _test sub-directory:        test
 
 
 Building PEL
@@ -973,7 +973,7 @@ These defects currently don't prevent me from using the
 Makefile but do bug me, so that's another thing on my 🚧 todo list.
 
 
-.. _Makefile:             https://github.com/pierre-rouleau/pel/blob/master/Makefile
+.. _Makefile:             Makefile
 
 
 PDF Documentation
