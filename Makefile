@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau.swd@gmail.com>
-# Last Modified Time-stamp: <2020-03-10 11:54:35, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-03-10 14:04:08, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -97,61 +97,61 @@ OTHER_EL_FILES := pel-pkg.el pel-autoloads.el
 OTHER_FILES := README
 
 # Emacs Regression Test files that uses ert, to test and include in tar file.
-TEST_FILES := test/pel-file-test.el
+TEST_FILES := pel-file-test.el
 
 # Documentation PDF files to copy verbatim into the doc/pdfs
-PDF_FILES := doc/pdf/-legend.pdf \
-			doc/pdf/abbreviations.pdf \
-			doc/pdf/align.pdf \
-			doc/pdf/bookmarks.pdf \
-			doc/pdf/buffers.pdf \
-			doc/pdf/case-conversion.pdf \
-			doc/pdf/closing-suspending.pdf \
-			doc/pdf/comments.pdf \
-			doc/pdf/counting.pdf \
-			doc/pdf/cut-paste.pdf \
-			doc/pdf/display-lines.pdf \
-			doc/pdf/enriched-text.pdf \
-			doc/pdf/ert.pdf \
-			doc/pdf/faces-fonts.pdf \
-			doc/pdf/file-mngt.pdf \
-			doc/pdf/file-variables.pdf \
-			doc/pdf/filling-justification.pdf \
-			doc/pdf/frames.pdf \
-			doc/pdf/graphviz-dot.pdf \
-			doc/pdf/grep.pdf \
-			doc/pdf/help.pdf \
-			doc/pdf/highlight.pdf \
-			doc/pdf/hooks.pdf \
-			doc/pdf/indentation.pdf \
-			doc/pdf/input-method.pdf \
-			doc/pdf/inserting-text.pdf \
-			doc/pdf/keyboard-macros.pdf \
-			doc/pdf/marking.pdf \
-			doc/pdf/menus.pdf \
-			doc/pdf/mode-dired.pdf \
-			doc/pdf/mode-org-mode.pdf \
-			doc/pdf/mode-rst.pdf \
-			doc/pdf/modifier-keys.pdf \
-			doc/pdf/narrowing.pdf \
-			doc/pdf/navigation.pdf \
-			doc/pdf/packages.pdf \
-			doc/pdf/pl-common-lisp.pdf \
-			doc/pdf/pl-emacs-lisp.pdf \
-			doc/pdf/registers.pdf \
-			doc/pdf/scrolling.pdf \
-			doc/pdf/search-replace.pdf \
-			doc/pdf/shells.pdf \
-			doc/pdf/sorting.pdf \
-			doc/pdf/speedbar.pdf \
-			doc/pdf/spell-checking.pdf \
-			doc/pdf/text-modes.pdf \
-			doc/pdf/transpose.pdf \
-			doc/pdf/undo-redo-repeat.pdf \
-			doc/pdf/vsc-mercurial.pdf \
-			doc/pdf/web.pdf \
-			doc/pdf/whitespaces.pdf \
-			doc/pdf/windows.pdf
+PDF_FILES := -legend.pdf \
+			abbreviations.pdf \
+			align.pdf \
+			bookmarks.pdf \
+			buffers.pdf \
+			case-conversion.pdf \
+			closing-suspending.pdf \
+			comments.pdf \
+			counting.pdf \
+			cut-paste.pdf \
+			display-lines.pdf \
+			enriched-text.pdf \
+			ert.pdf \
+			faces-fonts.pdf \
+			file-mngt.pdf \
+			file-variables.pdf \
+			filling-justification.pdf \
+			frames.pdf \
+			graphviz-dot.pdf \
+			grep.pdf \
+			help.pdf \
+			highlight.pdf \
+			hooks.pdf \
+			indentation.pdf \
+			input-method.pdf \
+			inserting-text.pdf \
+			keyboard-macros.pdf \
+			marking.pdf \
+			menus.pdf \
+			mode-dired.pdf \
+			mode-org-mode.pdf \
+			mode-rst.pdf \
+			modifier-keys.pdf \
+			narrowing.pdf \
+			navigation.pdf \
+			packages.pdf \
+			pl-common-lisp.pdf \
+			pl-emacs-lisp.pdf \
+			registers.pdf \
+			scrolling.pdf \
+			search-replace.pdf \
+			shells.pdf \
+			sorting.pdf \
+			speedbar.pdf \
+			spell-checking.pdf \
+			text-modes.pdf \
+			transpose.pdf \
+			undo-redo-repeat.pdf \
+			vsc-mercurial.pdf \
+			web.pdf \
+			whitespaces.pdf \
+			windows.pdf
 
 
 SRC_FILES := $(OTHER_EL_FILES) $(EL_FILES) $(OTHER_FILES)
@@ -159,6 +159,10 @@ SRC_FILES := $(OTHER_EL_FILES) $(EL_FILES) $(OTHER_FILES)
 # $(TEST_FILES)
 
 TARGET_SOURCE_FILES := $(patsubst %,$(DEST_DIR)/%,$(SRC_FILES))
+
+TARGET_PDF_FILES := $(patsubst %,$(DEST_DOC_PDF_DIR)/%,$(PDF_FILES))
+
+TARGET_TEST_FILES := $(patsubst %,$(DEST_TEST_DIR)/%,$(TEST_FILES))
 
 ELC_FILES := $(subst .el,.elc,$(EL_FILES))
 
@@ -242,9 +246,7 @@ check-elc-files:
 # -----------------------------------------------------------------------------
 # Creating the target directories when they don't exist.
 
-all-dirs:	$(OUT_DIR) $(DEST_DIR)  $(OUT_REPO_DIR)
-
-# $(DEST_DOC_PDF_DIR)
+all-dirs:	$(OUT_DIR) $(DEST_DIR) $(OUT_REPO_DIR) $(DEST_DOC_PDF_DIR) $(DEST_TEST_DIR)
 
 $(OUT_DIR):
 	mkdir -p $@
@@ -279,13 +281,6 @@ $(DEST_TEST_DIR)/%.el:     $(SRC_DIR)/test/%.el
 $(DEST_DOC_PDF_DIR)/%.pdf: $(SRC_DIR)/doc/pdf/%.pdf
 				cp $< $@
 
-# rule to copy all files to the target directory if they're not there already.
-.PHONY: a-copy
-
-a-copy: $(OUT_DIR) $(DEST_DIR)  $(TARGET_SOURCE_FILES)
-
-# $(DEST_DOC_PDF_DIR) $(DEST_TEST_DIR)
-
 # -----------------------------------------------------------------------------
 # Rules to byte-compile the Emacs-Lisp source code files
 
@@ -319,6 +314,20 @@ pel: $(ELC_FILES)
 test:
 	@printf "***** Running Integration tests\n"
 	emacs -batch -L . -l ~/.emacs.d/init.el -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
+
+# -----------------------------------------------------------------------------
+# Dependency rule to create the directory used for creating a Tar file and
+# copy files into proper locations inside that directory tree.
+
+.PHONY: a-copy
+
+a-copy: $(OUT_DIR) \
+		$(DEST_DIR) \
+		$(TARGET_SOURCE_FILES) \
+		$(DEST_TEST_DIR) \
+		$(TARGET_TEST_FILES) \
+		$(DEST_DOC_PDF_DIR)  \
+		$(TARGET_PDF_FILES)
 
 # -----------------------------------------------------------------------------
 # Distribution tar package file creation rule
@@ -377,8 +386,8 @@ clean-tar:
 	rm -f $(OUT_DIR)/$(PEL_TAR_FILE)
 
 clean: clean-tar
-	rm *.elc
-	rm -r $(OUT_DIR)
-	rm -r $(TMP_DIR)
+	-rm *.elc
+	-rm -r $(OUT_DIR)
+	-rm -r $(TMP_DIR)
 
 # -----------------------------------------------------------------------------
