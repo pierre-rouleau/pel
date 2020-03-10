@@ -8,6 +8,46 @@
 ;; Package-Requires: ((emacs "24.1") (use-package "2.4"))
 ;; Keywords: convenience
 
+;;; Commentary:
+
+;; The PEL package provides a mechanism to load a set of pre-configured
+;; Emacs Lisp packages quickly.  This set includes the PEL convenience
+;; packages which aim to simplify several operations.  PEL also comes
+;; with key-bindings mainly using function, cursor and numeric keypad
+;; keys, and mostly leaving Emacs standard key untouched.
+;; In this version PEL uses the F2, F6, F11 and F12 keys as key prefixes.
+
+;; PEL relies on Emacs customization system.  PEL activates third party
+;; packages through customization, by setting a corresponding 'pel-use-...'
+;; variable to t. Once a feature is activated through customization,
+;; PEL also provides extra key bindings and in some cases allow dynamic
+;; activation and de-activation of external packages.
+
+;; This is an early version of PEL.  It will grow with time, incorporating
+;; more Emacs packages to support more editing tasks.
+
+;; However, the goal is to maintain a quick Emacs init time, even as the
+;; number of installed package increases, through the extensive use of
+;; auto-loading.
+
+;; To use PEL, execute the `pel-init' function.
+
+;; Using PEL I'm able to keep my Emacs init time at about 0.4 seconds for
+;; Emacs running in terminal (tty) mode and 0.6 seconds in graphics mode,
+;; with all packages currently supported activated and several others in my
+;; .emasc/elpa directory (it lists over 100 packages) that I plan to also
+;; integare into PEL.
+
+;; PEL also comes with a set of PDF-formatted tables describing Emacs
+;; key bindings, including native Emacs keys, third party package keys and
+;; key bindings provided by PEL.  The tables are organized by editing
+;; concepts and conatain large set of hyperlink to Emacs manual and relevant
+;; documentation available on the net.
+
+;; A more descriptive manual is available in the Github home page.
+
+;;; License
+
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
 
@@ -24,86 +64,11 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; Commentary:
-
-;; Overview
-;; --------
-
-;; `pel.el' provides the following features:
-;;
-;;  - Function key-driven keymap for a large set of commands, which are either
-;;    PEL extensions of existing Emacs commands or commands from external
-;;    packages that may be activated via customization of the "Pel" group
-;;    using the customize command.
-;;  - Configuration code to download, install and load external packages
-;;    selected by PEL customization.  Packages are autoloaded as much as
-;;    possible, providing a quick Emacs init time.
-;;  - Several key mappings that will work in Emacs running in graphics mode
-;;    but also in terminal (TTY) mode.
-;;  - Several enhanced navigation keys similar to what is available to other
-;;    editors in the Brief/CRiSP family such as a flexible home and end key
-;;    that accept single, double, triple, quadruple strokes depending on the
-;;    context.
-;;  - Enhanced letter case conversion key mapping allowing the use of a M-c
-;;    and M-C to perform downcasing and upcasing as well as capitalization.
-;;
-;;  Most PEL key bindings are using function key prefixes.  At the moment these
-;;  are fixed to the F2, F6, F11 and F12 keys and are not (yet) customizable.
-;;
-
-;; PDF Documentation
-;; -----------------
-;;
-;;  PEL key bindings and a very large set of Emacs standard key bindings are
-;;  described in a set of PDF files.  The format of these files is something
-;;  between the Emacs Reference Card and the full manual.  Each PDF file is
-;;  one table on a specific topic with a quick overview of the topic, the list
-;;  of key bindings, references to the Emacs commands, description and hyperlinks
-;;  to lots of material including the online Emacs manuals, discussions and
-;;  other resources.
-;;
-
-;; Usage
-;; -----
-
-;; To activate the PEL keymaps and allow its customization, execute the
-;; following command:
-
-;;    M-x pel-init
-
-;; If you want to activate it on startup, then put the following inside your
-;; Emacs init file:
-
-;;    (require 'pel)
-;;    (pel-init)
-
-;; Emacs customization must be placed before the execution of (pel) since `pel'
-;; uses the `pel-use-...' customization variables to determine what to load
-;; and what keys to bind.  If you place your Emacs customization inside a
-;; file separate from your init.el, then you should have something like the
-;; following inside your init.el file:
-
-;;    (setq custom-file "~/.emacs-custom.el")  ; or any file you like
-;;    (load custom-file)
-;;    (require 'pel)
-;;    (pel)
-
-
-;; -----------------------------------------------------------------------------
 ;;; Code:
-
-;; Utilities:
-
-;; To prevent some byte-compiler warnings, the following functions used only
-;; in this file are defined at "file scope".
-
-
-;; --
-;; pel-init - loads all of PEL
 
 ;;;###autoload
 (defun pel-init ()
-  "Initialize the PEL system, map its keys, autoload its functions.
+  "Initialize PEL, map its keys, autoload its functions.
 
 Only the PEL features activated via the `pel-use-...' customization variables
 from the  \"Pel Package Use\" subgroup of the \"Pel\" group are loaded and the

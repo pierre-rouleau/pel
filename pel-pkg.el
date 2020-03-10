@@ -1,8 +1,5 @@
 ;;; -*- no-byte-compile: t -*-
 (define-package "pel" "0.0.1" "Pragmatic Environment Library"
-  :url "https://github.com/pierre-rouleau/pel"
-  :authors '(("Pierre Rouleau" . "prouleau.swd@gmail.com"))
-
   ;; The handling of Emacs package versions varies widely from package to package.
   ;; Unfortunately, version numbers that appear somewhat *stable* or sometimes
   ;; very misleading.
@@ -65,5 +62,7 @@
     ;; sr-speedbar of 2014 has a bug that was fixed in the 2016 version.
     (sr-speedbar         "20161025.831")    ; melpa         Melpa-stable := 20140914.2339
     (undo-tree           "0.7.4")           ; gnu
-    (which-key           "3.4.0")           ; melpa-stable. Melpa        := 20200216.1350
-    ))
+    (which-key           "3.4.0"))           ; melpa-stable. Melpa        := 20200216.1350
+
+  :url "https://github.com/pierre-rouleau/pel"
+  :authors '(("Pierre Rouleau" . "prouleau.swd@gmail.com")))
