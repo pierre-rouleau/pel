@@ -53,12 +53,7 @@
                                         ;      pel-goto-position
 
 (eval-when-compile
-  (require 'subr-x)           ; use: inlined: string-trim
-
-  ;; all pel files are autoloaded.
-  (require 'pel-prompt)       ; use: pel-y-n-or-e-p
-  (require 'pel-window))      ; use: pel-window-select,
-                              ;      pel-window-valid-for-editing-p
+  (require 'subr-x))           ; use: inlined: string-trim
 
 ;; -----------------------------------------------------------------------------
 ;;; Code:
@@ -199,40 +194,47 @@ if an invalid window selection would have been made
 ie. if there's no window in the specified direction, or it's
 the minibuffer window.  When nil is returned the point was
 not moved."
-  (if (pel-window-valid-for-editing-p direction)
-      (let ((buffer_for_file (find-buffer-visiting filename)))
-        (if buffer_for_file
-            (if (pel-window-select direction)
-                (progn
-                  (pop-to-buffer-same-window buffer_for_file)
-                  (pel-goto-position line column)
-                  (message "Editing Buffer %S @ %S %S" buffer_for_file line column)
-                  (selected-window)))
-          (if (or (file-exists-p filename)
-                  force
-                  (let* ((action (pel-y-n-e-or-l-p
-                                  (format "File「%s」not found. Create it, edit name or find Library file? "
-                                          filename)))
-                         (act (cond
-                               ((equal action 'yes)  t)
-                               ((equal action 'no)  nil)
-                               ((equal action 'edit)
-                                (progn
-                                  (setq filename
-                                        (pel-prompt-for-filename filename))
-                                  t))
-                               ((equal action 'findlib)
-                                (if (fboundp 'find-library-name)
-                                    (progn
-                                      (setq filename (find-library-name (file-name-base filename)))
-                                      t))))))
-                    act))
-              (if (pel-window-select direction)
-                  (progn
-                    (find-file filename)
-                    (pel-goto-position line column)
-                    (message "Editing File %S @ %S %S" filename line column)
-                    (selected-window))))))))
+  (if (and (require 'pel-window nil :no-error)
+           (fboundp 'pel-window-valid-for-editing-p)
+           (fboundp 'pel-window-select))
+      (if (pel-window-valid-for-editing-p direction)
+          (let ((buffer_for_file (find-buffer-visiting filename)))
+            (if buffer_for_file
+                (if (pel-window-select direction)
+                    (progn
+                      (pop-to-buffer-same-window buffer_for_file)
+                      (pel-goto-position line column)
+                      (message "Editing Buffer %S @ %S %S" buffer_for_file line column)
+                      (selected-window)))
+              (if (or (file-exists-p filename)
+                      force
+                      (if (and (require 'pel-prompt nil :no-error)
+                               (fboundp 'pel-y-n-e-or-l-p))
+                        (let* ((action (pel-y-n-e-or-l-p
+                                        (format "File「%s」not found. Create it, edit name or find Library file? "
+                                                filename)))
+                               (act (cond
+                                     ((equal action 'yes)  t)
+                                     ((equal action 'no)  nil)
+                                     ((equal action 'edit)
+                                      (progn
+                                        (setq filename
+                                              (pel-prompt-for-filename filename))
+                                        t))
+                                     ((equal action 'findlib)
+                                      (if (fboundp 'find-library-name)
+                                          (progn
+                                            (setq filename (find-library-name (file-name-base filename)))
+                                            t))))))
+                          act)
+                        (error "pel-prompt fiunction nor loaded")))
+                  (if (pel-window-select direction)
+                      (progn
+                        (find-file filename)
+                        (pel-goto-position line column)
+                        (message "Editing File %S @ %S %S" filename line column)
+                        (selected-window)))))))
+    (error "pel-window functions no loaded")))
 
 (defun pel-find-file-at-point (direction &optional force)
   "Open file of name located at/around point in window identified by DIRECTION.
@@ -367,10 +369,13 @@ the function prints an error message and quits.
                          ((< n 0)  'new)
                          (t default-direction))))
     (unless (pel-find-file-at-point direction nil)
-      (if (pel-window-valid-for-editing-p direction)
-          (message "User cancelled: nothing opened")
-        (user-error
-         "No valid window %s of current one: nothing opened" direction)))))
+      (if (and (require 'pel-window nil :no-error)
+               (fboundp 'pel-window-valid-for-editing-p))
+          (if (pel-window-valid-for-editing-p direction)
+              (message "User cancelled: nothing opened")
+            (user-error
+             "No valid window %s of current one: nothing opened" direction))
+        (error "pel-window function is not loaded")))))
 
 ;; --
 

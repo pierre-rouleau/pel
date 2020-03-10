@@ -29,11 +29,13 @@
 ;;; Code:
 
 (eval-when-compile
-  ;; the following 2 packages are loaded lazily when required:
+  ;; the following 3 packages are loaded lazily when required:
   ;; their autoload is configured by pel.el.
-  ;; Here wwe just need it to verify functions ast compilation.
+  ;; Here we just need it to verify functions and variables at byte-compile time.
   (require 'auto-complete)
-  (require 'company))
+  (require 'company)
+  (defvar pel-use-auto-complete)
+  (defvar pel-use-company))
 
 
 ;; --
@@ -246,17 +248,20 @@ If ARG is positive: activate it, otherwise de-activate it."
     "Display information about available auto-completion.
 Shows which one is enabled via customization and their current activation state."
     (interactive)
-    (require 'pel-base)
-    (message "\
+    (if (and (require 'pel-base nil :no-error)
+             (fboundp 'pel-option-mode-state)
+             (fboundp 'pel-symbol-on-off-string))
+        (message "\
 Auto-completion package state:
 - auto-complete-mode       : %s
 - global-auto-complete-mode: %s
 - company-mode             : %s
 - global-company-mode      : %s"
-             (pel-option-mode-state pel-use-auto-complete 'auto-complete-mode)
-             (pel-symbol-on-off-string 'global-auto-complete-mode)
-             (pel-option-mode-state pel-use-company 'company-mode)
-             (pel-symbol-on-off-string 'global-company-mode)))
+                 (pel-option-mode-state pel-use-auto-complete 'auto-complete-mode)
+                 (pel-symbol-on-off-string 'global-auto-complete-mode)
+                 (pel-option-mode-state pel-use-company 'company-mode)
+                 (pel-symbol-on-off-string 'global-company-mode))
+      (error "pel-base functions not loaded")))
 
 ;;-pel-autoload
 (defun pel-complete ()
@@ -265,7 +270,7 @@ Use the currently active auto-completion system."
   (interactive)
   (cond ((pel--auto-complete-mode-p) (auto-complete))
         ((pel--company-mode-p)       (company-complete))
-        (t (error "No auto completion system active! Please activate one first!"))))
+        (t (user-error "No auto completion system active! Please activate one first!"))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-autocomplete)

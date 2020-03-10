@@ -29,42 +29,40 @@
 (require 'thingatpt)                    ; uses: bounds-of-thing-at-point
 (require 'pel-base)                     ; uses: pel-whitespace-in-str-p
 
-(eval-when-compile
-  (require 'pel-bookmark))              ; uses: pel-bookmark-in-current-file-p
-
 ;;-pel-autoload
 (defun pel-rst-set-adornment (style)
   "Set the reStructuredText adornment STYLE.
 Set it to one of: 'CRiSPeR, 'Sphinx-Python, or 'default."
-  (setq rst-preferred-adornments (cond ((eq style 'default)
-                                        '((?= over-and-under 1)
-                                          (?= simple 0)
-                                          (?- simple 0)
-                                          (?~ simple 0)
-                                          (?+ simple 0)
-                                          (?` simple 0)
-                                          (?# simple 0)
-                                          (?@ simple 0)))
-                                       ;; ref: http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections
-                                       ((eq style 'Sphinx-Python)
+  (when (boundp 'rst-preferred-adornments)
+    (setq rst-preferred-adornments (cond ((eq style 'default)
+                                          '((?= over-and-under 1)
+                                            (?= simple 0)
+                                            (?- simple 0)
+                                            (?~ simple 0)
+                                            (?+ simple 0)
+                                            (?` simple 0)
+                                            (?# simple 0)
+                                            (?@ simple 0)))
+                                         ;; ref: http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections
+                                         ((eq style 'Sphinx-Python)
                                           '((?# over-and-under 0)  ; for parts
                                             (?* over-and-under 0)  ; for chapters
                                             (?= simple 0)          ; for sections
                                             (?- simple 0)          ; for subsections
                                             (?^ simple 0)          ; for subsubsections
                                             (?\" simple 0)))       ; for paragraph
-                                       ((eq style 'CRiSPer)
-                                        '((?= over-and-under 0)    ; level  0 : title
-                                          (?= simple 0)            ; level  1
-                                          (?- simple 0)            ; level  2
-                                          (?~ simple 0)            ; level  3
-                                          (?^ simple 0)            ; level  4
-                                          (?+ simple 0)            ; level  5
-                                          (?* simple 0)            ; level  6
-                                          (?> simple 0)            ; level  7
-                                          (?< simple 0)            ; level  8
-                                          (?_ simple 0)            ; level  9
-                                          (?# simple 0))))))       ; level 10
+                                         ((eq style 'CRiSPer)
+                                          '((?= over-and-under 0)    ; level  0 : title
+                                            (?= simple 0)            ; level  1
+                                            (?- simple 0)            ; level  2
+                                            (?~ simple 0)            ; level  3
+                                            (?^ simple 0)            ; level  4
+                                            (?+ simple 0)            ; level  5
+                                            (?* simple 0)            ; level  6
+                                            (?> simple 0)            ; level  7
+                                            (?< simple 0)            ; level  8
+                                            (?_ simple 0)            ; level  9
+                                            (?# simple 0)))))))      ; level 10
 
 
 ;; -----------------------------------------------------------------------------
@@ -106,7 +104,10 @@ beginning of the first of the 2 lines."
 
 (defun pel--rst-bookmark-exists-p ()
   "Return non-nil if the RST bookmark exists, nil otherwise."
-  (pel-bookmark-in-current-file-p (pel-rst-ref-bookmark-name)))
+  (if (and (require 'pel-bookmark nil :noerror)
+           (fboundp 'pel-bookmark-in-current-file-p))
+      (pel-bookmark-in-current-file-p (pel-rst-ref-bookmark-name))
+    (error "pel-bookmark-in-current-file-p not loaded")))
 
 ;;-pel-autoload
 (defun pel-rst-goto-ref-bookmark ()

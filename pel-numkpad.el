@@ -29,8 +29,6 @@
 ;;; Code:
 (require 'pel-base)       ; use pel-toggle
 (eval-when-compile
-  (require 'pel-ccp)      ; use: pel-kill-or-delete-marked-or-whole-line
-                          ;      pel-copy-marked-or-whole-line
   (require 'pel-scroll))  ; use: pel-scroll-up, pel-scroll-down
 
 
@@ -95,7 +93,10 @@ Limitations: In not Numlocked mode the cursor keys cannot
   (interactive "P")
   (if pel-mac-keypad-numlocked
       (insert-char ?1 (abs (prefix-numeric-value n)) t)
-    (pel-end)))
+      (if (and (require 'pel-navigate nil :no-error)
+               (fboundp 'pel-end))
+          (pel-end)
+        (error "pel-end is not loaded"))))
 
 ;;-pel-autoload
 (defun pel-2 (&optional n)
@@ -151,7 +152,10 @@ Limitations: In not Numlocked mode the cursor keys cannot
   (let ((n (prefix-numeric-value n)))
     (if pel-mac-keypad-numlocked
         (insert-char ?7 (abs n) t)
-      (pel-home))))
+      (if (and (require 'pel-navigate nil :no-error)
+               (fboundp 'pel-home))
+          (pel-home)
+        (error "pel-home is not loaded")))))
 
 ;;-pel-autoload
 (defun pel-8 (&optional n)
@@ -189,7 +193,10 @@ Limitations: In not Numlocked mode the cursor keys cannot
   (let ((n (prefix-numeric-value n)))
     (if pel-mac-keypad-numlocked
         (insert-char ?- (abs n) t)
-      (pel-kill-or-delete-marked-or-whole-line n))))
+      (if (and (require 'pel-ccp nil :no-error)
+               (fboundp 'pel-kill-or-delete-marked-or-whole-line))
+          (pel-kill-or-delete-marked-or-whole-line n)
+        (error "pel-kill-or-delete-marked-or-whole-line not loaded")))))
 
 ;;-pel-autoload
 (defun pel-kp-add (&optional n)
@@ -198,7 +205,9 @@ Limitations: In not Numlocked mode the cursor keys cannot
   (let ((n (prefix-numeric-value n)))
     (if pel-mac-keypad-numlocked
         (insert-char ?+ (abs n) t)
-      (pel-copy-marked-or-whole-line))))
+      (if (and (require 'pel-ccp nil :no-error)
+               (fboundp 'pel-copy-marked-or-whole-line))
+      (pel-copy-marked-or-whole-line)))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-numkpad)

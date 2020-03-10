@@ -26,7 +26,7 @@
 ;; CAUTION: This file is in very early stage of development.
 ;; The goal is to provide a consistent handling of indentation that makes
 ;; sense for all sorts of file types.
-;; To do dat, a need to review the way indentation works for a large
+;; To do that, a need to review the way indentation works for a large
 ;; number of files is required and will take some time.  This meancs that the
 ;; design of this file and the functions it provides is very likely to change
 ;; until this analysis is completed.
@@ -38,9 +38,7 @@
 ;; -----------------------------------------------------------------------------
 ;;; Code:
 (eval-when-compile
-  (require 'cc-vars)                      ; uses: c-basic-offset
-  (require 'pel-mark)                     ; uses: pel-mark-line-up
-  (require 'pel-ccp))                     ; uses: pel-delete-to-next-visible
+  (require 'cc-vars))                      ; uses: c-basic-offset
 
 ;;-pel-autoload
 (defun pel-insert-c-indent (&optional n)
@@ -63,7 +61,10 @@ If a negative number is specified, `pel-unindent' is used."
   (let ((n (prefix-numeric-value n)))
     (when (> (current-column) 0)
       (left-char (min (current-column) (* c-basic-offset n)))
-      (pel-delete-to-next-visible))))
+      (if (and (require 'pel-ccp nil :no-error)
+               (fboundp 'pel-delete-to-next-visible))
+          (pel-delete-to-next-visible)
+        (error "pel-delete-to-next-visible is not loaded")))))
 
 ;;-pel-autoload
 (defun pel-indent-rigidly (&optional n)
@@ -80,9 +81,13 @@ by the numeric argument N (or if not specified N=1):
     (unless (use-region-p)
       (if (= n 0)
           (setq n 1))
-      (if (< n 0)
-          (pel-mark-line-up n)
-        (pel-mark-line-down n)))
+      (if (and (require 'pel-mark nil :no-error)
+               (fboundp 'pel-mark-line-up)
+               (fboundp 'pel-mark-line-down))
+          (if (< n 0)
+              (pel-mark-line-up n)
+            (pel-mark-line-down n))
+        (error "pel-mark functions not loaded")))
     (indent-rigidly (region-beginning) (region-end) nil t)))
 
 ;; -----------------------------------------------------------------------------

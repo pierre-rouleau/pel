@@ -404,9 +404,13 @@ All copy operations are performed by `kill-ring-save'."
 (defun pel-delete-to-next-visible ()
   "Delete all whitespace between point and next non-whitespace character."
   (interactive)
-  (set-mark-command nil)
-  (pel-next-visible 1)
-  (backward-delete-char-untabify 1))
+  (if (and (require 'pel-navigate nil :no-error)
+           (fboundp 'pel-next-visible))
+      (progn
+        (set-mark-command nil)
+        (pel-next-visible 1)
+        (backward-delete-char-untabify 1))
+    (error "pel-next-visible not loaded")))
 
 ;; -----------------------------------------------------------------------------
 
