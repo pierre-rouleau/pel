@@ -97,11 +97,11 @@ If N > 2: use the PLURAL form if specified, otherwise use SINGULAR with a 's' su
 ;; ---------------------------
 ;;
 ;; Call hierarchy:
-;;  - pel-symbol-on-off-string  (inline)
-;;    - pel-on-off-string       (inline)
+;;  - pel-symbol-on-off-string
+;;    - pel-on-off-string
 ;;  - pel-yes-no-string
 
-(defsubst pel-on-off-string (boolean &optional on-string off-string)
+(defun pel-on-off-string (boolean &optional on-string off-string)
   "Return \"off\" for nil, \"on\" for non-nil BOOLEAN argument.
 If ON-STRING and OFF-STRING arguments are specified use them as the
 on/off value, otherwise use \"on\" and \"off\"."
@@ -109,7 +109,7 @@ on/off value, otherwise use \"on\" and \"off\"."
       (or on-string "on")
     (or off-string "off")))
 
-(defsubst pel-symbol-on-off-string (symbol &optional on-string off-string)
+(defun pel-symbol-on-off-string (symbol &optional on-string off-string)
   "Return representation of symbold value and whether it is bound.
 Return \"void\" when SYMBOL is not bound,
 the OFF-STRING or \"off\" for nil,
