@@ -38,8 +38,8 @@
 
   ;; First byte-compile the PEL files that have inlined defined with defsubst.
   (byte-compile-file "build-pel.el")
-  (byte-compile-file "pel-base.el")
-  (byte-compile-file "pel-options.el")
+  (byte-compile-file "pel--base.el")
+  (byte-compile-file "pel--options.el")
   ;;
   (byte-compile-file "pel-ace-window.el")
   (byte-compile-file "pel-autocomplete.el")
