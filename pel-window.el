@@ -196,16 +196,17 @@ Returns the new window."
 
 (defun pel-flip-2-windows-to (orientation)
   "Flip the ORIENTATION of 2 windows: current and next window.
-ORIENTATION must be one of: `horizontal or `vertical"
-  (other-window 1)
-  (let ((otherwin-buf (buffer-name)))
-    (delete-window)
-    (cond ((eq orientation 'horizontal) (split-window-below))
-          ((eq orientation 'vertical)   (split-window-right))
-          (t (error "Invalid orientation: %S" orientation)))
+ORIENTATION must be one of: `horizontal or `vertical."
+  (let ((original-window (selected-window)))
     (other-window 1)
-    (switch-to-buffer otherwin-buf))
-  (other-window 1))
+    (let ((otherwin-buf (buffer-name)))
+      (delete-window)
+      (cond ((eq orientation 'horizontal) (split-window-below))
+            ((eq orientation 'vertical)   (split-window-right))
+            (t (error "Invalid orientation: %S" orientation)))
+      (other-window 1)
+      (switch-to-buffer otherwin-buf))
+  (select-window original-window)))
 
 ;;-pel-autoload
 (defun pel-2-vertical-windows ()
