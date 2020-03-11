@@ -9,9 +9,11 @@ you to continue using your current Emacs configuration.
 It's a compromize between a full blown starter kit or Emacs environment
 and a bare-bone Emacs.
 It keeps most of the Emacs key bindings untouched while providing
-quick access to several other packages, and it provides extended features
-and key binding trees.  Most features are activated via Emacs customization
-system, providing control without requiring lots of Emacs Lisp code.
+quick access to several other packages,  extended features
+and key binding trees.
+Most features are activated via the Emacs customization
+system, providing control without requiring Emacs Lisp code
+(except for 2 lines to require and init PEL).
 
 **Note**:
    This is an early version of PEL, and my first contribution to Emacs.
@@ -51,6 +53,8 @@ The PEL package provides:
       further prefixes (and all prefixes have names to help see what's
       available when using something like the `which-key`_ package.
 
+    - See the `Key Binding Documentation`_ section for more info.
+
 - PEL comes with a set of convenience features that deal with several
   aspects of Emacs like windows, buffer, navigation, opening files
   or web pages from file name or URL at point, numeric keypad handling,
@@ -78,6 +82,19 @@ are used by that.  But they can also be used independently.  So if you
 do not want to use PEL key bindings, you can just use some of the PEL
 modules and provide you own bindings in your own Emacs init file.
 
+PEL  integrates with a set of third party Emacs packages
+(see the list in the `Credits`_ manual below) and provides extra key bindings
+to use the feature of those packages, sometime through extension functions
+provided by PEL code.
+In several cases PEL provides the logic to install these third party Emacs
+packages, the logic to configure them and the logic to load them as lazily
+as possible to reduce the Emacs initialization start time to a minimum.
+
+The use of PEL features and PEL uses of other third party Emacs packages is
+controlled by the `PEL Customization`_.  The default customization leave
+most packages un-activated. To use their features you must
+first activate them via the `PEL Customization`_ mechanism.
+
 To use the PEL auto-loading of packages and key bindings, put the
 following code inside your Emacs ``init.el`` file:
 
@@ -96,11 +113,13 @@ To start or re-start PEL interactively, type::
 
 More information is available in `PEL's Manual`_.
 
-
+.. [ endof: README ]
 
 .. _PEL's Manual: doc/pel-manual.rst
 .. _which-key:    https://elpa.gnu.org/packages/which-key.html
+.. _Key Binding Documentation: doc/pel-manual.rst#pel-key-bindings
+.. _Credits:            doc/pel-manual.rst#credits
+.. _PEL Customization:  doc/pel-manual.rst#pel-customization
 
-
-
-.. [ endof: README ]
+..
+   -----------------------------------------------------------------------------

@@ -72,6 +72,20 @@ are used by that.  But they can also be used independently.  So if you
 do not want to use PEL key bindings, you can just use some of the PEL
 modules and provide you own bindings in your own Emacs init file.
 
+PEL  integrates with a set of third party Emacs packages
+(see the list in the *Credits* manual section) and provides extra key bindings
+to use the feature of those packages, sometime through extension functions
+provided by PEL code.
+In several cases PEL provides the logic to install these third party Emacs
+packages, the logic to configure them and the logic to load them as lazily
+as possible to reduce the Emacs initialization start time to a minimum.
+
+The use of PEL features and PEL uses of other third party Emacs packages is
+controlled by the *PEL Customization*.  The default customization leave
+most packages un-activated. To use their features you must
+first activate them via the *PEL Customization* mechanism.
+
+
 To use the PEL auto-loading of packages and key bindings, put the
 following code inside your Emacs ``init.el`` file:
 

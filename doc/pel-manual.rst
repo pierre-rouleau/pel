@@ -12,14 +12,17 @@ Overview
 ========
 
 
+
 PEL is a package that gets you going with Emacs quickly while allowing
 you to continue using your current Emacs configuration.
 It's a compromize between a full blown starter kit or Emacs environment
 and a bare-bone Emacs.
 It keeps most of the Emacs key bindings untouched while providing
-quick access to several other packages, and it provides extended features
-and key binding trees.  Most features are activated via Emacs customization
-system, providing control without requiring lots of Emacs Lisp code.
+quick access to several other packages,  extended features
+and key binding trees.
+Most features are activated via the Emacs customization
+system, providing control without requiring Emacs Lisp code
+(except for 2 lines to require and init PEL).
 
 **Note**:
    This is an early version of PEL, and my first contribution to Emacs.
@@ -59,6 +62,8 @@ The PEL package provides:
       further prefixes (and all prefixes have names to help see what's
       available when using something like the `which-key`_ package.
 
+  - See the `Key Binding Documentation`_ section for more info.
+
 - PEL comes with a set of convenience features that deal with several
   aspects of Emacs like windows, buffer, navigation, opening files
   or web pages from file name or URL at point, numeric keypad handling,
@@ -86,6 +91,19 @@ are used by that.  But they can also be used independently.  So if you
 do not want to use PEL key bindings, you can just use some of the PEL
 modules and provide you own bindings in your own Emacs init file.
 
+PEL  integrates with a set of third party Emacs packages
+(see the list in the `Credits`_ section below) and provides extra key bindings
+to use the feature of those packages, sometime through extension functions
+provided by PEL code.
+In several cases PEL provides the logic to install these third party Emacs
+packages, the logic to configure them and the logic to load them as lazily
+as possible to reduce the Emacs initialization start time to a minimum.
+
+The use of PEL features and PEL uses of other third party Emacs packages is
+controlled by the `PEL customization`_.  The default customization leave
+most packages un-activated. To use their features you must
+first activate them via the `PEL Customization`_ mechanism.
+
 To use the PEL auto-loading of packages and key bindings, put the
 following code inside your Emacs ``init.el`` file:
 
@@ -100,38 +118,8 @@ complement it.
 
 To start or re-start PEL interactively, type::
 
+  M-x pel-init
 
-..
-   PEL is an Emacs Lisp package that provides access to a set of small convenience
-   features but also provides easy access to features implemented by several other
-   great Emacs packages, as long as they are activated via the mechanism described
-   in the `PEL Customization`_ section.
-
-   In its current form, PEL does not implement any minor or major Emacs mode.
-   Instead it provides a set of functions that can be accessed globally, with some
-   of them specialized for some modes and others available everywhere.
-
-   PEL defines a large set of key bindings which are mostly extensions to what
-   is available with standard GNU Emacs.
-   The PEL key bindings mostly do not conflict with standard GNU Emacs key bindings
-   except for a few exceptions, identified in the `Key Binding Documentation`_ tables.
-   As of this version, the PEL key bindings mostly use function prefix keys as
-   described in the `PEL Key Bindings`_ section.
-
-   PEL  integrates with a set of third party Emacs packages
-   (see the list in the `Credits`_ section below) and provides extra key bindings
-   to use the feature of those packages, sometime through extension functions
-   provided by PEL code.
-   In several cases PEL provides the logic to install these third party Emacs
-   packages, the logic to configure them and the logic to load them as lazily
-   as possible to reduce the Emacs initialization start time to a minimum.
-
-   The use of PEL features and PEL uses of other third party Emacs packages is
-   controlled by the `PEL customization`_.  By default, no third party package not
-   already included in the standard GNU Emacs distribution is installed or used.
-   To get PEL to use them and provide the functionality (along with their published
-   key bindings) you must first activate them via the `PEL Customization`_
-   mechanism.
 
 The reason for PEL
 ------------------
@@ -224,17 +212,42 @@ initialization code.
 How to Setup PEL
 ================
 
-Unfortunately *some* Emacs Lisp code must be written to your
-`Emacs initialization file`_.
+Updates to your Emacs Initialization file
+-----------------------------------------
 
-**Configure How to Download Packages**
+Unfortunately *some* Emacs Lisp code must be written to your
+`Emacs initialization file`_, but that's mainly to setup how to download packages
+that you might already have, and possibly 2 lines to require and initialize PEL.
+
+Tricks to Increase your Emacs init time
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+PEL itself loads quickly.  But you can improve your overall Emacs initialization
+time further by enclosing the entire code of your init.el file inside:
+
+.. code:: elisp
+
+          (let ((file-name-handler-alist nil)
+                (gc-cons-threshold most-positive-fixnum))
+
+            ;; all your initialization code goes here
+
+          )
+
+What the above does is to disable special file association handling and garbage
+collection while Emacs processes your initializaition.
+
+
+Configure How to Download Packages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PEL uses
 ELPA_ (GNU Emacs Lisp Package Archive)
 and MELPA_ (Milkypostman's Emacs Lisp Package Archive)
 sites to download and install packages.
 
-To activate their use, place the following code inside your Emacs init file if
+To activate their use, place the following code inside your Emacs init file
+(ideally with the block shown above) if
 it is not already present:
 
 .. code:: elisp
@@ -256,7 +269,8 @@ it is not already present:
 
             (package-initialize))
 
-**Select the location of Emacs Persistent Customization Data**
+Select the location of Emacs Persistent Customization Data
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 By default, Emacs stores its persistent customization data inside your Emacs
 init file.  If you want to store it somewhere else, you to add something like
@@ -267,7 +281,15 @@ the following code, which places it inside the file ``~/.emacs-custom.el``:
           (setq custom-file "~/.emacs-custom.el")
           (load custom-file)
 
-**To start PEL when Emacs Starts**
+**Note**
+   If you work inside several projects and each project requires different
+   Emacs settings, you could use several customization files and activate them
+   for each project, reducing the load time further.
+   That provides another degree of freedom, along with Emacs directory local
+   and file local variables.
+
+To start PEL when Emacs Starts
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you want PEL to be available right after Emacs starts, write the following
 inside your Emacs init file:
@@ -282,7 +304,8 @@ code. To use PEL later simply execute the **pel-init** command by typing:
 ``M-x pel-init``
 
 
-**To identify the location of your Ispell local dictionary**
+To identify the location of your Ispell local dictionary
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 With the current version of PEL, when you want to select the spell check
 program used by
@@ -296,11 +319,26 @@ and identifies the path for the personal dictionary.
 .. code:: elisp
 
           (eval-after-load "ispell"
-            '(pel-spell-init “aspell" "~/.emacs.d/.ispell"))
+            '(if (fboundp 'pel-spell-init)
+                 (pel-spell-init “aspell" "~/.emacs.d/.ispell")))
 
-In future versions of PEL, this code will not be necessary; the spell check
-selection, optional path to it and path to the personal dictionary will be
-selected via PEL customization.
+In future versions of PEL, this code may not be necessary.
+
+To override or change PEL key bindings
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+As of this release PEL key bindings and key prefixes are hard coded.
+If you want to change a key binding that PEL uses, you can define your own
+key bindings after the execution of ``pel-init``.  You can also change
+PEL prefix keys.
+
+The following code re-assign the F6 key to `undo' and uses the F7 key
+to be used as what PEL normally uses for F6:
+
+.. code:: elisp
+
+          (global-set-key (kbd "<f6>") 'undo)
+          (global-set-key (kbd ("<f7>") pel:f6)
 
 ..
    -----------------------------------------------------------------------------
@@ -567,6 +605,63 @@ Emacs packages and more tables will describe how to use them.
   - `Web`_
   - `Whitespaces`_
   - `Windows`_
+
+
+
+.. _Document Legend:                          pdf/-legend.pdf
+.. _Abbreviations:                            pdf/abbreviations.pdf
+.. _Align:                                    pdf/align.pdf
+.. _Auto-Completion:                          pdf/auto-completion.pdf
+.. _Bookmarks:                                pdf/bookmarks.pdf
+.. _Buffers:                                  pdf/buffers.pdf
+.. _Case Conversion:                          pdf/case-conversion.pdf
+.. _Closing and Suspending:                   pdf/closing-suspending.pdf
+.. _Comments:                                 pdf/comments.pdf
+.. _Counting:                                 pdf/counting.pdf
+.. _Cut, Delete, Copy and Paste:              pdf/cut-paste.pdf
+.. _Display Lines:                            pdf/display-lines.pdf
+.. _Enriched Text:                            pdf/enriched-text.pdf
+.. _ERT:                                      pdf/ert.pdf
+.. _Faces and Fonts:                          pdf/faces-fonts.pdf
+.. _File Management:                          pdf/file-mngt.pdf
+.. _File and Directory Local Variables:       pdf/file-variables.pdf
+.. _Filling and Justification:                pdf/filling-justification.pdf
+.. _Frames:                                   pdf/frames.pdf
+.. _Graphviz Dot:                             pdf/graphviz-dot.pdf
+.. _Grep:                                     pdf/grep.pdf
+.. _Help:                                     pdf/help.pdf
+.. _Highlight:                                pdf/highlight.pdf
+.. _Hooks:                                    pdf/hooks.pdf
+.. _Indentation:                              pdf/indentation.pdf
+.. _Input Method:                             pdf/input-method.pdf
+.. _Inserting Text:                           pdf/inserting-text.pdf
+.. _Keyboard Macros:                          pdf/keyboard-macros.pdf
+.. _Marking:                                  pdf/marking.pdf
+.. _Menus:                                    pdf/menus.pdf
+.. _Dired:                                    pdf/mode-dired.pdf
+.. _Org mode:                                 pdf/mode-org-mode.pdf
+.. _reStructuredText mode:                    pdf/mode-rst.pdf
+.. _Modifier Keys:                            pdf/modifier-keys.pdf
+.. _Narrowing:                                pdf/narrowing.pdf
+.. _Navigation:                               pdf/navigation.pdf
+.. _Packages:                                 pdf/packages.pdf
+.. _Common Lisp:                              pdf/pl-common-lisp.pdf
+.. _Emacs Lisp:                               pdf/pl-emacs-lisp.pdf
+.. _Registers:                                pdf/registers.pdf
+.. _Scrolling:                                pdf/scrolling.pdf
+.. _Search and Replace:                       pdf/search-replace.pdf
+.. _Shells:                                   pdf/shells.pdf
+.. _Sorting:                                  pdf/sorting.pdf
+.. _Speedbar:                                 pdf/speedbar.pdf
+.. _Spell Checking:                           pdf/spell-checking.pdf
+.. _Text-modes:                               pdf/text-modes.pdf
+.. _Transpose:                                pdf/transpose.pdf
+.. _Undo, Redo, Repeat and Prefix Arguments:  pdf/undo-redo-repeat.pdf
+.. _Mercurial:                                pdf/vsc-mercurial.pdf
+.. _Web:                                      pdf/web.pdf
+.. _Whitespaces:                              pdf/whitespaces.pdf
+.. _Windows:                                  pdf/windows.pdf
+
 
 
 PEL Customization
@@ -1093,61 +1188,6 @@ I am open to suggestions. And can provide the Numbers file on request.
 
 ..
    -----------------------------------------------------------------------------
-
-
-.. _Document Legend:                          doc/pdf/-legend.pdf
-.. _Abbreviations:                            doc/pdf/abbreviations.pdf
-.. _Align:                                    doc/pdf/align.pdf
-.. _Auto-Completion:                          doc/pdf/auto-completion.pdf
-.. _Bookmarks:                                doc/pdf/bookmarks.pdf
-.. _Buffers:                                  doc/pdf/buffers.pdf
-.. _Case Conversion:                          doc/pdf/case-conversion.pdf
-.. _Closing and Suspending:                   doc/pdf/closing-suspending.pdf
-.. _Comments:                                 doc/pdf/comments.pdf
-.. _Counting:                                 doc/pdf/counting.pdf
-.. _Cut, Delete, Copy and Paste:              doc/pdf/cut-paste.pdf
-.. _Display Lines:                            doc/pdf/display-lines.pdf
-.. _Enriched Text:                            doc/pdf/enriched-text.pdf
-.. _ERT:                                      doc/pdf/ert.pdf
-.. _Faces and Fonts:                          doc/pdf/faces-fonts.pdf
-.. _File Management:                          doc/pdf/file-mngt.pdf
-.. _File and Directory Local Variables:       doc/pdf/file-variables.pdf
-.. _Filling and Justification:                doc/pdf/filling-justification.pdf
-.. _Frames:                                   doc/pdf/frames.pdf
-.. _Graphviz Dot:                             doc/pdf/graphviz-dot.pdf
-.. _Grep:                                     doc/pdf/grep.pdf
-.. _Help:                                     doc/pdf/help.pdf
-.. _Highlight:                                doc/pdf/highlight.pdf
-.. _Hooks:                                    doc/pdf/hooks.pdf
-.. _Indentation:                              doc/pdf/indentation.pdf
-.. _Input Method:                             doc/pdf/input-method.pdf
-.. _Inserting Text:                           doc/pdf/inserting-text.pdf
-.. _Keyboard Macros:                          doc/pdf/keyboard-macros.pdf
-.. _Marking:                                  doc/pdf/marking.pdf
-.. _Menus:                                    doc/pdf/menus.pdf
-.. _Dired:                                    doc/pdf/mode-dired.pdf
-.. _Org mode:                                 doc/pdf/mode-org-mode.pdf
-.. _reStructuredText mode:                    doc/pdf/mode-rst.pdf
-.. _Modifier Keys:                            doc/pdf/modifier-keys.pdf
-.. _Narrowing:                                doc/pdf/narrowing.pdf
-.. _Navigation:                               doc/pdf/navigation.pdf
-.. _Packages:                                 doc/pdf/packages.pdf
-.. _Common Lisp:                              doc/pdf/pl-common-lisp.pdf
-.. _Emacs Lisp:                               doc/pdf/pl-emacs-lisp.pdf
-.. _Registers:                                doc/pdf/registers.pdf
-.. _Scrolling:                                doc/pdf/scrolling.pdf
-.. _Search and Replace:                       doc/pdf/search-replace.pdf
-.. _Shells:                                   doc/pdf/shells.pdf
-.. _Sorting:                                  doc/pdf/sorting.pdf
-.. _Speedbar:                                 doc/pdf/speedbar.pdf
-.. _Spell Checking:                           doc/pdf/spell-checking.pdf
-.. _Text-modes:                               doc/pdf/text-modes.pdf
-.. _Transpose:                                doc/pdf/transpose.pdf
-.. _Undo, Redo, Repeat and Prefix Arguments:  doc/pdf/undo-redo-repeat.pdf
-.. _Mercurial:                                doc/pdf/vsc-mercurial.pdf
-.. _Web:                                      doc/pdf/web.pdf
-.. _Whitespaces:                              doc/pdf/whitespaces.pdf
-.. _Windows:                                  doc/pdf/windows.pdf
 
 
 
