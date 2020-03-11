@@ -15,20 +15,35 @@ The PEL package provides:
   use of auto-loading and deferred loading is used everywhere.
 - The selection of package and features is done via PEL customization
   variables.
-- Allows dynamic control of several packages with commands.
+- Allows dynamic control of several packages and their commands.
   For example, PEL support both auto-complete and company, providing
   commands to activate one mode in a buffer and another mode inside
   another or all other buffers directly from command execution and
   key strokes.
 - Key bindings using function key prefixes (F2, F6, F11 and F12)
   provide access to many features and help learn what's available.
-- The which-key package is used and activated by default, allowing
-  you to see what's available easily.  F11 is the main prefix key
-  and all prefixes have a meaningful name that starts with the
-  'pel:' prefix.  F2 and F6 are used as global shortcut prefix keys,
-  and F12 as a mode-sensitive shortcut prefix key.
-- Most standard Emacs keys are left untouched.
-- Documentation in the form of PDF file on several Emacs topics.
+
+  - Most standard Emacs keys are left untouched.
+  - The which-key package is used and activated by default, allowing
+    you to see what's available easily.  F11 is the main prefix key
+    and all prefixes have a meaningful name that starts with the
+    'pel:' prefix.  F2 and F6 are used as global shortcut prefix keys,
+    and F12 as a mode-sensitive shortcut prefix key.
+
+    - The key bindings following the F11 key constitutes a tree of
+      key bindings with single keys used as mnemonics for commands or
+      further prefixes (and all prefixes have names to help see what's
+      available when using something like the `which-key`_ package.
+
+- PEL comes with a set of convenience features that deal with several
+  aspects of Emacs like windows, buffer, navigation, opening files
+  or web pages from file name or URL at point, numeric keypad handling,
+  etc...  These files can be used independently as (*mostly*)
+  independent Emacs Lisp *libraries* if you prefer to use the features
+  without the PEL key bindings.
+
+- Extensive documentation in the form of PDF files, one file
+  per Emacs topics.
   Each table provides an overview, command descriptions, related
   key bindings  and links to related on-line documents.  The
   tables have extensive markup with colours for standard Emacs,
@@ -58,13 +73,17 @@ following code inside your Emacs ``init.el`` file:
       (require 'pel)
       (pel-init)
 
-To start PEL interactively, you can also type::
+You can place you own customizations after executing ``pel-init``.
+This allows you to overwrite bindings done by PEL for instance, or
+complement it.
+
+To start or re-start PEL interactively, type::
 
      M-x pel-init
 
 .. [ endof: README ]
 
-.. contents::
+.. contents::  **Table Of Contents**
 .. sectnum::
 
 
