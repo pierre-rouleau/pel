@@ -411,7 +411,7 @@ key                             binding
 ``<f11> w``                     pel:window
 ``<f11> x``                     pel:eXecute
 ``<f11> y``                     yank-pop
-``<f11> |``                     pel-toggle-dual-scroll
+``<f11> |``                     pel:scroll
 ``<f11> <C-S-down>``            pel-close-window-down
 ``<f11> <C-S-left>``            pel-close-window-left
 ``<f11> <C-S-right>``           pel-close-window-right
