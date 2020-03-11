@@ -744,24 +744,6 @@ Optionally insert it at point if INSERT is non-nil."
 (when (eq system-type 'windows-nt)
   (global-set-key [kp-space] 'recenter-top-bottom))
 
-;; - Scrolling up & down without moving point
-;; ------------------------------------------
-;; - uses: pel-scroll
-;;
-;; Cursor-Keys:
-;; - Implement a simple/fast single line scrolling that
-;;   also support the dual window scroll lock.
-;;   Assigned to multiple key-chords to make it easy to use
-;;   in multiple situations:
-;;   - Meta up/down
-;;   - Meta f11/f12 in org-mode, since Meta up/down do something else.
-
-(global-set-key (kbd "<M-down>")  'pel-scroll-up)
-(global-set-key (kbd "<M-f11>")   'pel-scroll-up)        ; scroll text up: toward small line number
-(global-set-key (kbd "<M-up>")    'pel-scroll-down)
-(global-set-key (kbd "<M-f12>")   'pel-scroll-down)      ; scroll text down: toward large line number
-;; Note: to scroll-sync 2 windows, use: ``M-x pel-toggle-dual-scroll`` ('f11 | |')
-
 ;; -----------------------------------------------------------------------------
 ;; - Navigation control facilities
 ;; -------------------------------
@@ -1597,11 +1579,38 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> |`` : Windows scroll lock commands
 ;;
-(define-pel-global-prefix pel:scroll-lock (kbd "<f11> |"))
+;; - Scrolling up & down without moving point
+;; ------------------------------------------
+;; - uses: pel-scroll
 ;;
-(define-key pel:scroll-lock "|"  'pel-toggle-dual-scroll)  ; scroll 2 windows in sync
-(define-key pel:scroll-lock "a" #'scroll-all-mode)         ; scroll all windows
-(define-key pel:scroll-lock "l" #'scroll-lock-mode)        ; single window scroll
+;; Cursor-Keys:
+;; - Implement a simple/fast single line scrolling that
+;;   also support the dual window scroll lock.
+;;   Assigned to multiple key-chords to make it easy to use
+;;   in multiple situations:
+;;   - Meta up/down
+;;   - Meta f11/f12 in org-mode, since Meta up/down do something else.
+
+(global-set-key (kbd "<M-down>")  'pel-scroll-up)
+(global-set-key (kbd "<M-f11>")   'pel-scroll-up)        ; scroll text up: toward small line number
+(global-set-key (kbd "<M-up>")    'pel-scroll-down)
+(global-set-key (kbd "<M-f12>")   'pel-scroll-down)      ; scroll text down: toward large line number
+
+(define-pel-global-prefix pel:scroll (kbd "<f11> |"))
+;;
+(define-key pel:scroll "|"  'pel-toggle-dual-scroll)  ; scroll 2 windows in sync
+(define-key pel:scroll "a" #'scroll-all-mode)         ; scroll all windows
+(define-key pel:scroll "l" #'scroll-lock-mode)        ; single window scroll
+
+(when pel-use-smooth-scrolling
+  (use-package smooth-scrolling
+    :ensure t
+    :pin melpa
+    :defer 2
+    :init
+    (define-key pel:scroll "s" 'smooth-scrolling-mode)
+    :config
+    (smooth-scrolling-mode 1)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> a`` : abbreviations

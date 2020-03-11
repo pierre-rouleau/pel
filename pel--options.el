@@ -130,6 +130,12 @@ References:
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-smooth-scrolling nil
+  "Control whether PEL provides the smooth-scrolling capability."
+  :group 'pel-pkg-for-window
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-framemove nil
   "Control whether PEL uses the framemove package.
 It is similar to windmove and ties with it.
