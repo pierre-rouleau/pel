@@ -2125,6 +2125,9 @@ the ones defined from the buffer now."
 (define-key pel:window    "O"   'pel-other-window-backward)      ; inverse movement than pel-other-window
 (define-key pel:window    "b"  #'display-buffer)                 ; display buffer name in other window without selecting it
 (define-key pel:window    "f"  #'follow-mode)                    ; toggle follow mode (start by splitting a window with C-x 3)
+(define-key pel:window    "v"   'pel-2-vertical-windows)         ; flip 2 horizontal windows to 2 vertical ones
+(define-key pel:window    "h"   'pel-2-horizontal-windows)       ; flip 2 vertical windows into 2 horizontal ones
+;; reserved: k, o, m, n, p, x
 
 
 (when pel-use-ace-window

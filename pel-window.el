@@ -181,6 +181,47 @@ Returns the new window."
         (user-error "%S too small for splitting" (selected-window))))))
 
 ;; -----------------------------------------------------------------------------
+;; Re-orient 2 windows
+;; -------------------
+;;
+;; The commands `pel-2-vertical-windows' and `pel-2-horizontal-windows' flip the
+;; orientation of the current and next window from horizontal to vertical and
+;; vice-versa.
+;;
+;;
+;; Functions:
+;; - pel-2-vertical-windows
+;; - pel-2-horizontal-windows
+;;   - pel-flip-2-windows
+
+(defun pel-flip-2-windows-to (orientation)
+  "Flip the ORIENTATION of 2 windows: current and next window.
+ORIENTATION must be one of: `horizontal or `vertical"
+  (other-window 1)
+  (let ((otherwin-buf (buffer-name)))
+    (delete-window)
+    (cond ((eq orientation 'horizontal) (split-window-below))
+          ((eq orientation 'vertical)   (split-window-right))
+          (t (error "Invalid orientation: %S" orientation)))
+    (other-window 1)
+    (switch-to-buffer otherwin-buf))
+  (other-window 1))
+
+;;-pel-autoload
+(defun pel-2-vertical-windows ()
+  "Convert 2 horizontal windows into 2 vertical windows.
+Flip the orientation of the current window and its next one."
+  (interactive)
+  (pel-flip-2-windows-to 'vertical))
+
+;;-pel-autoload
+(defun pel-2-horizontal-windows ()
+  "Convert 2 vertical windows into 2 horizontal windows.
+Flip the orientation of the current window and its next one."
+  (interactive)
+  (pel-flip-2-windows-to 'horizontal))
+
+;; -----------------------------------------------------------------------------
 ;; Select window by direction and context
 ;; --------------------------------------
 ;;
@@ -215,7 +256,7 @@ Return nil otherwise:
   - it's the minibuffer window,
   - that window is dedicated to a specific buffer."
   (if (eq direction 'new)
-      t                                 ; a new window will be created: so it's ok.
+      t                                 ; a new window will be created: so it's OK.
     (let ((a_window (pel-find-window direction)))
       (and a_window
            (not (window-minibuffer-p a_window))

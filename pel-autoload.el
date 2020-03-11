@@ -279,6 +279,8 @@
                  pel-close-window-left
                  pel-close-window-right
                  pel-split-window-sensibly
+                 pel-2-vertical-windows
+                 pel-2-horizontal-windows
                  pel-window-valid-for-editing-p
                  pel-window-select
                  pel-other-window-backward
