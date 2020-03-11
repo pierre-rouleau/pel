@@ -6,7 +6,7 @@
   ;; For example you can find the following ace-window.el file from these 3 sites:
   ;; - on Melpa-stable : 17415 bytes:   0.9.0, May 12-2015:
   ;; - on GNU Elpa     : 19116 bytes:   0.9.0, June-05-2015
-  ;;  - on Melpa       : 35195 bytes:   20200304.1344 (last commit on March 4, 2020) still labelled 0.9.0
+  ;; - on Melpa        : 35195 bytes:   20200304.1344 (last commit on March 4, 2020) still labelled 0.9.0
   ;;
   ;; So... for this the version number is useless.
   ;; This makes it very hard to obtain stability in dependencies, and check validity, to say the least.
@@ -59,6 +59,7 @@
     (rg                  "1.8.1")           ; melpa-stable. Melpa        := 20200307.1623
     (rust-mode           "0.4.0")           ; melpa-stable. Melpa        := 20200303.932
     (slime               "2.24")            ; melpa-stable. Melpa        := 20200228.1656
+    (smooth-scrolling    "2.0.0")           ; melpa-stable. Melpa        := 20161002.1949
     ;; sr-speedbar of 2014 has a bug that was fixed in the 2016 version.
     (sr-speedbar         "20161025.831")    ; melpa         Melpa-stable := 20140914.2339
     (undo-tree           "0.7.4")           ; gnu
