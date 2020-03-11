@@ -21,7 +21,7 @@ It keeps most of the Emacs key bindings untouched while providing
 quick access to several other packages,  extended features
 and key binding trees.
 Most features are activated via the Emacs customization
-system, providing control without requiring Emacs Lisp code
+system, providing control without requiring extra Emacs Lisp code
 (except for 2 forms to require and init PEL).
 
 **Note**:
@@ -42,30 +42,24 @@ The PEL package provides:
   use of auto-loading and deferred loading is used everywhere.
 - The selection of package and features is done via PEL customization
   variables.
-- Allows dynamic control of several packages and their commands.
-  For example, PEL support both auto-complete and company, providing
-  commands to activate one mode in a buffer and another mode inside
-  another or all other buffers directly from command execution and
-  key strokes.
+- Dynamic control of several packages and their commands.
+  For example, PEL support both auto-complete and company auto-completion
+  pakages, providing commands to activate one mode in a buffer and
+  another mode inside another and while preventing dual use in a buffer.
 - Key bindings using function key prefixes (F2, F6, F11 and F12)
-  provide access to many features and help learn what's available.
+  to provide easy access to many features and help learn what's available.
 
   - Most standard Emacs keys are left untouched.
-  - The which-key package is used and activated by default, allowing
+  - The `which-key`_ package is used and activated by default, allowing
     you to see what's available easily.  F11 is the main prefix key
     and all prefixes have a meaningful name that starts with the
     'pel:' prefix.  F2 and F6 are used as global shortcut prefix keys,
     and F12 as a mode-sensitive shortcut prefix key.
-
-    - The key bindings following the F11 key constitutes a tree of
-      key bindings with single keys used as mnemonics for commands or
-      further prefixes (and all prefixes have names to help see what's
-      available when using something like the `which-key`_ package.
-
   - See the `Key Binding Documentation`_ section for more info.
 
 - PEL comes with a set of convenience features that deal with several
-  aspects of Emacs like windows, buffer, navigation, opening files
+  aspects of Emacs like windows and frame, scrolling control,  buffer,
+  navigation, opening files
   or web pages from file name or URL at point, numeric keypad handling,
   etc...  These files can be used independently as (*mostly*)
   independent Emacs Lisp *libraries* if you prefer to use the features
@@ -126,7 +120,9 @@ The reason for PEL
 
 PEL attempts to make Emacs easier for new users by providing already made
 configuration that is controlled by Emacs customization system.  It reduces the
-need for writing Emacs Lisp configuration code for the packages it supports.
+need for writing Emacs Lisp configuration code for the packages it supports and
+incorporates the knowledge inside files that can be byte-compiled for futher
+speed enhancements.
 
 Emacs supports a number of great packages. Some are easy to install, others
 require more knowledge, knowledge that is often not readily available to new
@@ -165,6 +161,7 @@ PEL Goals
 ---------
 
 - Ease introduction to Emacs.
+- Simplify and speed up Emacs configuration.
 - Keep as many standard Emacs key bindings as possible.
 - Provide easy to remember key bindings via a key binding tree, key prefixes and
   the use of key choice visualization with package such as which-key_, especially
@@ -1028,34 +1025,57 @@ Emacs Lisp Files
 ----------------
 
 PEL code is placed in several Emacs Lisp files.
-The file `pel.el`_ defines all PEL key bindings required by customization and
-the ``pel-init`` function.
-The convenience features PEL provides are implemented in separate files.
-These files are loaded only when their features are used.
 
-For example the file `pel-navigate.el`_ provides extra navigation facilities
-such as the use of multi-hit ``<home>`` and ``<end>`` keys similar to what is
-available by editors in the Brief family (such as CRiSP) but also aware of Emacs
-concepts such as text fields, `shift-key selection`_ and Emacs `mark and region`_.
+- The file `pel.el`_ defines the ``pel-init`` function, the only one
+  autoloaded automatically by Emacs, as identified by the file
+  `pel-autoloads.el`_.
+
+  - When ``pel-init``  is executed it loads the `pel-zkeys.el`_
+    file that contains all PEL key bindings as required by customization.
+
+- All PEL customization variables are defined in the file `pel--options.el`_.
+- Several low level utilities are defined inside the file `pel--base.el`_.
+- The other Emacs Lisp files implement the PEL convenience features.
+  These files are mostly independent from each other, only requiring, for most
+  of them either nothing or `pel--base.el`_ only.
+  PEL tries to load only what is needed, based on the commands that are
+  executed. For that it implements its own auto-loading mechanism inside
+  the file `pel-autoload.el`_, loaded only by ``pel-init``.
+  The ``pel-init`` function calls ``pel--autoload-init`` which set the
+  auto-loading of the PEL functions.
+  This essentially implements a 2-step auto-loading mechanism.
+
+  - As an example of one of the PEL convenience feature file,
+    the file `pel-navigate.el`_ provides extra navigation facilities
+    such as the use of multi-hit ``<home>`` and ``<end>`` keys similar to what is
+    available by editors in the Brief family (such as CRiSP) but also aware of Emacs
+    concepts such as text fields, `shift-key selection`_ and Emacs `mark and region`_.
+
+- The `pel-pkg.el`_ defines the dependencies.  PEL only uses `use-package`_
+  to control the installation of missing package and all other packages are only
+  loaded if their feature is activated via `PEL customization`_.  However,
+  when loading PEL via the standard Emacs package system, dependencies are
+  identified becuase package needs the package to byte compile without
+  generating warnings and errors.  This means that the third party packages will
+  be installed on your disk when you install PEL via an Elpa compatible archive
+  (such as MELPA_).  However:
+
+  #. I did not yet start working on submitting this project on MELPA_, I'll do it
+     once I feel PEL has enough to offer and the quality is good enough.
+  #. You can just clone the project repo inside a directory and place this
+     inside your Emacs load-path.  Running ``pel-init`` will then download the
+     packages required by customization.
 
 It's possible to use part of PEL without using its key bindings.
 Just use the files that contain the features you need and write your own key
 bindings for them inside your Emacs init file.  Just don't call ``pel-init``.
 
-PEL provides autoloading of the ``pel-init`` function using the Emacs standard
-packaging mechanism, written inside the `pel-pkg.el`_ file.
-This is the only function marked with the Emacs magic autoload comment.
-All other functions use a different command used to build another, secondary
-autoload scheduling stored inside the pel-autoload.el
-(as opposed to pel-autoloads.el).
-The ``pel-init`` function calls ``pel--autoload-init`` which set the
-autoloading of the PEL functions.  the `pel-autoloads.el`_ and
-`pel-autoload.el`_ form a 2-step autoloading mechanism for PEL.
 
 
-
-
+.. _pel--options.el:      pel--options.el
+.. _pel--base.el:         pel--base.el
 .. _pel.el:               pel.el
+.. _pel-zkeys.el:         pel-zkeys.el
 .. _pel-navigate.el:      pel-navigate.el
 .. _pel-pkg.el:           pel-pkg.el
 .. _pel-autoload.el:      pel-autoload.el
@@ -1077,6 +1097,9 @@ Naming Conventions
   prefix "pel--".
 
   - Those are  meant to be used from with PEL code exclusively.
+  - The same convention also applies to the Emacs Lisp file
+    names; the `pel--base.el`_ and `pel--options`_ files are used by the other
+    PEL files.
 
 - All PEL customization variables that control whether PEL uses or provides a
   given feature have a name that starts with the prefix "pel-use-".
@@ -1087,6 +1110,9 @@ Naming Conventions
     `which-key`_ to display the available key following a prefix or typing
     ``C-h`` or ``<f1>`` after typing a prefix key to see the list of available
     keys and their meanings.
+  - The only key prefix that does not have a name is the one used for **F12**,
+    the mode sensitive prefix key (I did not find a way to name it, so if you
+    have an idea, let me know! :-)
 
 - All Emacs Lisp files that are part of the PEL package have a name that starts
   with the "pel-" prefix.
@@ -1095,8 +1121,8 @@ Naming Conventions
   that have the "pel-" prefix and the "-test" suffix.
 
 - Other Emacs Lisp files are included in this repository,
-  such as build-pel.el_,
-  these files contain code that is not part of PEL but are used to develop PEL.
+  such as `build-pel.el`_.
+  These files contain code that is not part of PEL but are used to develop PEL.
   The names of these files do not start with "pel-" but they end with "-pel".
   That should be enough to prevent clash with other packages.
   If this is not enough for you, since these files are not required to use PEL,

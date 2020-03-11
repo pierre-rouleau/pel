@@ -12,7 +12,7 @@ It keeps most of the Emacs key bindings untouched while providing
 quick access to several other packages,  extended features
 and key binding trees.
 Most features are activated via the Emacs customization
-system, providing control without requiring Emacs Lisp code
+system, providing control without requiring extra Emacs Lisp code
 (except for 2 forms to require and init PEL).
 
 **Note**:
@@ -33,13 +33,12 @@ The PEL package provides:
   use of auto-loading and deferred loading is used everywhere.
 - The selection of package and features is done via PEL customization
   variables.
-- Allows dynamic control of several packages and their commands.
-  For example, PEL support both auto-complete and company, providing
-  commands to activate one mode in a buffer and another mode inside
-  another or all other buffers directly from command execution and
-  key strokes.
+- Dynamic control of several packages and their commands.
+  For example, PEL support both auto-complete and company auto-completion
+  pakages, providing commands to activate one mode in a buffer and
+  another mode inside another and while preventing dual use in a buffer.
 - Key bindings using function key prefixes (F2, F6, F11 and F12)
-  provide access to many features and help learn what's available.
+  to provide easy access to many features and help learn what's available.
 
   - Most standard Emacs keys are left untouched.
   - The which-key package is used and activated by default, allowing
@@ -47,16 +46,11 @@ The PEL package provides:
     and all prefixes have a meaningful name that starts with the
     'pel:' prefix.  F2 and F6 are used as global shortcut prefix keys,
     and F12 as a mode-sensitive shortcut prefix key.
-
-    - The key bindings following the F11 key constitutes a tree of
-      key bindings with single keys used as mnemonics for commands or
-      further prefixes (and all prefixes have names to help see what's
-      available when using something like the `which-key`_ package.
-
-    - See the `Key Binding Documentation`_ section for more info.
+  - See the `Key Binding Documentation`_ section for more info.
 
 - PEL comes with a set of convenience features that deal with several
-  aspects of Emacs like windows, buffer, navigation, opening files
+  aspects of Emacs like windows and frame, scrolling control,  buffer,
+  navigation, opening files
   or web pages from file name or URL at point, numeric keypad handling,
   etc...  These files can be used independently as (*mostly*)
   independent Emacs Lisp *libraries* if you prefer to use the features
