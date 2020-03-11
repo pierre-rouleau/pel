@@ -13,7 +13,7 @@ quick access to several other packages,  extended features
 and key binding trees.
 Most features are activated via the Emacs customization
 system, providing control without requiring Emacs Lisp code
-(except for 2 lines to require and init PEL).
+(except for 2 forms to require and init PEL).
 
 **Note**:
    This is an early version of PEL, and my first contribution to Emacs.
@@ -83,7 +83,7 @@ do not want to use PEL key bindings, you can just use some of the PEL
 modules and provide you own bindings in your own Emacs init file.
 
 PEL  integrates with a set of third party Emacs packages
-(see the list in the `Credits`_ manual below) and provides extra key bindings
+(see the list in the `Credits`_ section below) and provides extra key bindings
 to use the feature of those packages, sometime through extension functions
 provided by PEL code.
 In several cases PEL provides the logic to install these third party Emacs
@@ -120,6 +120,3 @@ More information is available in `PEL's Manual`_.
 .. _Key Binding Documentation: doc/pel-manual.rst#pel-key-bindings
 .. _Credits:            doc/pel-manual.rst#credits
 .. _PEL Customization:  doc/pel-manual.rst#pel-customization
-
-..
-   -----------------------------------------------------------------------------

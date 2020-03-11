@@ -22,7 +22,7 @@ quick access to several other packages,  extended features
 and key binding trees.
 Most features are activated via the Emacs customization
 system, providing control without requiring Emacs Lisp code
-(except for 2 lines to require and init PEL).
+(except for 2 forms to require and init PEL).
 
 **Note**:
    This is an early version of PEL, and my first contribution to Emacs.
