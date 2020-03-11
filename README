@@ -1,32 +1,57 @@
-PEL is a collection of utility commands along with a set of key-bindings
-similar to one would typically find inside an init.el file. Most key bindings
-are bound to keys that use function keys as prefixes, attempting to leave
-standard Emacs key bindings and the popular prefixes used by other packages
-untouched.  Large portions of PEL are optionally activated via cutomization
-variables, that have names starting with the ``pel-use-`` prefix.
+The PEL package provides:
 
-PEL currently depends and takes advantage of `use-package' to provide
-automated installation of the optional packages when activated by the
-``pel-use-`` customize variables.  When first installed, all external
-dependencies that can be installed via the customization are disabled.  The
-key binding for the corresponding commands are not applied. To activate a
-package use ``M-x -customize``, select "pel$" then "Pel Package Use" group and
-select the feature or package you want to use.
+- Pre-canned configuration of several useful Emacs packages
+  that loads quickly and which is controlled by Emacs customization
+  system.
+  This help getting going with Emacs without having to know
+  the art of writing Emacs init.el file.
+- The configuration is made to load quickly, making extensive
+  use of auto-loading and deferred loading is used everywhere.
+- The selection of package and features is done via PEL customization
+  variables.
+- Allows dynamic control of several packages with commands.
+  For example, PEL support both auto-complete and company, providing
+  commands to activate one mode in a buffer and another mode inside
+  another or all other buffers directly from command execution and
+  key strokes.
+- Key bindings using function key prefixes (F2, F6, F11 and F12)
+  provide access to many features and help learn what's available.
+- The which-key package is used and activated by default, allowing
+  you to see what's available easily.  F11 is the main prefix key
+  and all prefixes have a meaningful name that starts with the
+  'pel:' prefix.  F2 and F6 are used as global shortcut prefix keys,
+  and F12 as a mode-sensitive shortcut prefix key.
+- Most standard Emacs keys are left untouched.
+- Documentation in the form of PDF file on several Emacs topics.
+  Each table provides an overview, command descriptions, related
+  key bindings  and links to related on-line documents.  The
+  tables have extensive markup with colours for standard Emacs,
+  external package, and PEL-provided command and key bindings.
 
-PEL attempts to reduce emacs initial load time, not to load everything at
-start and run as a deamon.  It was initialily written as a replacement and
-evolution of an init.el file, allowing byte-compilation of the code it used
-and providing the ability to integrate various package inside an overall Emacs
-environment that strats quickly and can be customized easily.
+PEL relies on Emacs customization system.  PEL activates third party
+packages through customization, by setting a corresponding ``pel-use-...``
+variable to t. Once a feature is activated through customization,
+PEL also provides extra key bindings and in some cases allow dynamic
+activation and de-activation of external packages.
 
-PEL is currently (2020) in its early development stages.  Be aware that it's
-the first Emacs Lisp package that I have written, so it's evolution might
-include a couple of "revolutions" in short term if I discover better ways to
-do things. And, BTW, don't hesitate to comment.
+PEL code is written in several files.  The pel.el file holds ``pel-init``
+which initializes PEL, controls auto-loading of all supported packages
+and builds the key bindings.  There are several other PEL files that
+are used by that.  But they can also be used independently.  So if you
+do not want to use PEL key bindings, you can just use some of the PEL
+modules and provide you own bindings in your own Emacs init file.
 
-Eventually I hope to integrate the use of sebveral packages for various
-programming languages, including Algol descendents like C, C++, Java but also
-Rust, Erlang, Elixir, Haskell, OCaml, LFE, Clojerl, etc...  My goal is to
-provide the ability to integrate existing tools inside an environment that
-loads quickly and is somewhat consistent and (relatively) easy to pick-up and
-remember.
+This is an early version of PEL.  It will grow with time, incorporating
+more Emacs packages to support more editing tasks.
+
+To use the PEL auto-loading of packages and key bindings, put the
+following code inside your Emacs ``init.el`` file:
+
+.. code:: elisp
+
+      (require 'pel)
+      (pel-init)
+
+To start PEL interactively, you can also type::
+
+     M-x pel-init
