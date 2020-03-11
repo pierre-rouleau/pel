@@ -1421,6 +1421,7 @@ Optionally insert it at point if INSERT is non-nil."
 (define-key pel:comment "b"            'pel-comment-start)
 (define-key pel:comment "m"            'pel-comment-middle)
 (define-key pel:comment "e"            'pel-comment-end)
+(define-key pel:comment "u"            'uncomment-region)
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> ?`` : Help /apropos/info commands
