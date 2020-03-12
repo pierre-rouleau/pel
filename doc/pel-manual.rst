@@ -448,8 +448,8 @@ following commands are used:
 - ``pel-scroll-up`` which scrolls text up,
 - ``pel-scroll-down`` which scrolls text down,
 - ``pel-home`` and ``pel-end``, defined in ``pel-navigation``, which move
-   point the the beginning or end of current field, line, window or buffer.
-   See `PEL Navigation`_.
+  point the the beginning or end of current field, line, window or buffer.
+  See `PEL Navigation`_.
 
 
 PEL Window Management Support
