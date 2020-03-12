@@ -912,6 +912,7 @@ Optionally insert it at point if INSERT is non-nil."
 ;; Move to the beginning of next function definition (while moving forward)
 ;;  complements C-M-e and C-M-a
 (define-key pel:f6 "n"           'pel-beginning-of-next-defun)
+(define-key pel:f6 "p"           'beginning-of-defun)
 
 ;; (kbd "<tab>") does not work in terminal mode, it works only in graphics mode
 (define-key pel:f6 (kbd "C-i")   'pel-insert-c-indent)
@@ -1599,7 +1600,9 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
 
 (define-pel-global-prefix pel:scroll (kbd "<f11> |"))
 ;;
-(define-key pel:scroll "|"  'pel-toggle-dual-scroll)  ; scroll 2 windows in sync
+(define-key pel:scroll "|"  'pel-toggle-scroll-sync)  ; toggle window scroll sync
+(define-key pel:scroll "+"  'pel-add-window-to-scroll-sync)
+(define-key pel:scroll "-"  'pel-remove-window-from-scroll-sync)
 (define-key pel:scroll "a" #'scroll-all-mode)         ; scroll all windows
 (define-key pel:scroll "l" #'scroll-lock-mode)        ; single window scroll
 
@@ -1609,9 +1612,11 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
     :pin melpa
     :defer 2
     :init
-    (define-key pel:scroll "s" 'smooth-scrolling-mode)
+    (if (fboundp 'smooth-scrolling-mode)
+        (define-key pel:scroll "s" 'smooth-scrolling-mode))
     :config
-    (smooth-scrolling-mode 1)))
+    (if (fboundp 'smooth-scrolling-mode)
+        (smooth-scrolling-mode 1))))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> a`` : abbreviations

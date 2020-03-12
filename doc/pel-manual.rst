@@ -5,7 +5,33 @@ pel -- Pragmatic Environment Library for Emacs
 
 
 .. contents::  **Table Of Contents**
-.. sectnum::
+..
+    1  Overview
+      1.1  The reason for PEL
+      1.2  PEL Goals
+      1.3  Using Portions of PEL Manually
+    2  How to Setup PEL
+      2.1  Updates to your Emacs Initialization file
+        2.1.1  Tricks to Increase your Emacs init time
+        2.1.2  Configure How to Download Packages
+        2.1.3  Select the location of Emacs Persistent Customization Data
+        2.1.4  To start PEL when Emacs Starts
+        2.1.5  To identify the location of your Ispell local dictionary
+        2.1.6  To override or change PEL key bindings
+    3  PEL Specific Features
+      3.1  PEL Navigation
+    4  PEL Key Bindings
+      4.1  PEL Mode Sensitive Key-maps
+      4.2  Key Binding Documentation
+    5  PEL Customization
+      5.1  Pel Use Variables
+    6  Implementation Notes
+      6.1  Emacs Lisp Files
+      6.2  Naming Conventions
+      6.3  Emacs Lisp Regression Test
+      6.4  Building PEL
+      6.5  PDF Documentation
+    7  Credits
 
 
 Overview
@@ -46,15 +72,15 @@ The PEL package provides:
   For example, PEL support both auto-complete and company auto-completion
   pakages, providing commands to activate one mode in a buffer and
   another mode inside another and while preventing dual use in a buffer.
-- Key bindings using function key prefixes (F2, F6, F11 and F12)
+- Key bindings using function key prefixes (**F2**, **F6**, **F11** and **F12**)
   to provide easy access to many features and help learn what's available.
 
   - Most standard Emacs keys are left untouched.
   - The `which-key`_ package is used and activated by default, allowing
-    you to see what's available easily.  F11 is the main prefix key
+    you to see what's available easily.  **F11** is the main prefix key
     and all prefixes have a meaningful name that starts with the
-    'pel:' prefix.  F2 and F6 are used as global shortcut prefix keys,
-    and F12 as a mode-sensitive shortcut prefix key.
+    'pel:' prefix.  **F2** and **F6** are used as global shortcut prefix keys,
+    and **F12** as a mode-sensitive shortcut prefix key.
   - See the `Key Binding Documentation`_ section for more info.
 
 - PEL comes with a set of convenience features that deal with several
@@ -336,6 +362,89 @@ to be used as what PEL normally uses for F6:
 
           (global-set-key (kbd "<f6>") 'undo)
           (global-set-key (kbd ("<f7>") pel:f6)
+
+
+
+..
+   -----------------------------------------------------------------------------
+
+PEL Specific Features
+=====================
+
+Navigation
+----------
+
+The pel-navigate file provides a collection of navigation commands that
+complement the standard Emacs navigation commands.
+
+ - ``pel-beginning-of-line`` is meant to replace ``beginning-of-line`` as it does
+   the same and extends it: if point is already at the beginning of the line
+   then it moves it to the first non-whitespace character.
+ - ``pel-newline-and-indent-below`` is useful as a variant of the return key.
+ - ``pel-find-thing-at-point`` provides a search capability without the need fo
+   a tag database but it is limited in what it can find.  It's a poor man
+   cross reference.
+ - ``pel-show-char-syntax`` shows the character syntax of the character at
+   point.
+ - ``pel-forward-token-start`` and ``pel-backward-to-start`` move forward
+   or backward to the beginning of a text semantic token as defined by Emacs
+   character syntax for the current buffer.
+ - ``pel-forward-word-start`` moves point to the beginning of next word.
+   This complements what's already available in standard Emacs:
+   ``forward-word`` and ``backward-word``.
+ - ``pel-forward-syntaxchange-start`` and ``pel-backward-syntaxchange-start``
+   move point forward or backward to the character syntax change character.
+   This can be useful to debug syntax characters for a specific mode.
+ - ``pel-next-visible`` and ``pel-previous-visible`` move point to the next or
+   previous visible (non whitespace) character.
+ - ``pel-home`` and ``pel-end`` implement a quick, multi-hit movement to the
+   beginning or end of the current field, line, window and buffer.
+   These commands are similar to the home and end CRiSP/Brief commands.
+   They also support the multiple window scroll sync provided by the
+   ``pel-scroll`` commands.
+ - ``pel-beginning-of-next-defun`` move point to the beginning of the
+   next function definition. This complements ``beginning-of-defun`` which
+   only reaches the same location by moving backwards.
+
+
+Scrolling
+---------
+
+The ``pel-scroll`` file provides a set of window scrolling facilities.
+
+The following 2 commands are used to scroll the current window, and
+other windows that may be placed inside the PEL window scroll group:
+
+- ``pel-scroll-up`` which scrolls text up,
+- ``pel-scroll-down`` which scrolls text down.
+
+The file also provides the creation and management of a group of
+windows into the *PEL window scroll sync* group, a list stored inside
+the ``pel-in-scroll-sync`` variable identifying windows that will be
+scrolled together.
+
+The following commands are used to activate and manage the
+*PEL window scroll sync* group:
+
+- ``pel-toggle-scroll-sync`` toggles scroll lock on/off.  When turning it on
+  it locks scrolling of the current and the next window.
+- ``pel-add-window-to-scroll-sync`` adds the current window to the already
+  existing group of scroll locked windows.  If there is none it locks
+  scrolling of the current and the next window.
+- ``pel-remove-window-from-scroll-sync`` removes the currenbt window from the
+  group of scroll locked windows.  Removing the last one disables the
+  window scroll sync.  If only one window is left in the group the command
+  informs the user but allows it.  That way another window can be added to
+  the group.
+
+The scrolling of multiple windows is currently only performed when the
+following commands are used:
+
+-  ``pel-scroll-up`` which scrolls text up,
+-  ``pel-scroll-down`` which scrolls text down,
+-  ``pel-home`` and ``pel-end``, defined in ``pel-navigation``, which move
+    point the the beginning or end of current field, line, window or buffer.
+    See `Navigation`_.
 
 ..
    -----------------------------------------------------------------------------

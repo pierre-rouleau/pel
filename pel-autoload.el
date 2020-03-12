@@ -227,9 +227,11 @@
     (autoload 'pel-rst-makelink           "pel-rst"))
 
   ;; pel-scroll
-  (autoload 'pel-toggle-dual-scroll  "pel-scroll")
-  (autoload 'pel-scroll-up           "pel-scroll")
-  (autoload 'pel-scroll-down         "pel-scroll")
+  (autoload 'pel-toggle-scroll-sync              "pel-scroll")
+  (autoload 'pel-add-window-to-scroll-sync       "pel-scroll")
+  (autoload 'pel-remove-window-from-scroll-sync  "pel-scroll")
+  (autoload 'pel-scroll-up                       "pel-scroll")
+  (autoload 'pel-scroll-down                     "pel-scroll")
 
   ;; pel-search
   (autoload 'pel-toggle-case-fold-search   "pel-search")

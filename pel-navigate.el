@@ -4,8 +4,9 @@
 
 ;; Author: Pierre Rouleau <prouleau.swd@gmail.com>
 
-;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
+
+;;; License:
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -20,35 +21,48 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+
 ;;; Commentary:
 ;;
 ;; This file contains a collection of navigation commands that complement the
 ;; standard Emacs navigation commands.
 ;;
 ;;  - `pel-beginning-of-line' is meant to replace `beginning-of-line' as it does
-;;    the same and extends it.
+;;    the same and extends it: if point is already at the beginning of the line
+;;    then it moves it to the first non-whitespace character.
 ;;  - `pel-newline-and-indent-below' is useful as a variant of the return key.
 ;;  - `pel-find-thing-at-point' provides a search capability without the need fo
-;;    a tag database but it is limited in what it can find.  It's a poor macn
+;;    a tag database but it is limited in what it can find.  It's a poor man
 ;;    cross reference.
-;;  - `pel-home' and `pel-end' implement a quick, multi-hit movement to the
-;;    beginning or end of the current field, line, window and buffer.  These are
-;;    commands similar to the home and end CRiSP/Brief commands.
+;;  - `pel-show-char-syntax' shows the character syntax of the character at
+;;    point.
+;;  - `pel-forward-token-start' and `pel-backward-to-start' move forward
+;;    or backward to the beginning of a text semantic token as defined by Emacs
+;;    character syntax for the current buffer.
 ;;  - `pel-forward-word-start' moves point to the beginning of next word.
 ;;    This complements what's already available in standard Emacs:
 ;;    `forward-word' and `backward-word'.
+;;  - `pel-forward-syntaxchange-start' and `pel-backward-syntaxchange-start'
+;;    move point forward or backward to the character syntax change character.
+;;    This can be useful to debug syntax characters for a specific mode.
 ;;  - `pel-next-visible' and `pel-previous-visible' move point to the next or
 ;;    previous visible (non whitespace) character.
-;;
+;;  - `pel-home' and `pel-end' implement a quick, multi-hit movement to the
+;;    beginning or end of the current field, line, window and buffer.
+;;    These commands are similar to the home and end CRiSP/Brief commands.
+;;    They also support the multiple window scroll sync provided by the
+;;    `pel-scroll' commands.
+;;  - `pel-beginning-of-next-defun' move point to the beginning of the
+;;    next function definition. This complements `beginning-of-defun' which
+;;    only reaches the same location by moving backwards.
+
+
+;;; Code:
 
 (require 'pel--base)                    ; use: pel--n-funcall-to
 (eval-when-compile
   (require 'subword)                    ; use: superword-mode
   (require 'pel-scroll))                ; use: pel-in-scroll-sync
-
-;;; Code:
-
 
 ;; -----------------------------------------------------------------------------
 ;; Smart Beginning of line
@@ -80,6 +94,7 @@ and `back-to-indentation'."
 
 ;; -----------------------------------------------------------------------------
 ;; Navigate across code using symbols at point
+;; -------------------------------------------
 
 ;;-pel-autoload
 (defun pel-find-thing-at-point (&optional in-other-window)
@@ -417,9 +432,16 @@ number of lines.
         (region-active-p)
         (push-mark)))
   (let ((excursion-line-count (pel--home)))
-    (if (and (boundp 'pel-in-scroll-sync)
-             pel-in-scroll-sync)
-        (scroll-other-window excursion-line-count))))
+    (when pel-in-scroll-sync
+      ;; pel-scroll not required at file level to prevent
+      ;; loading it if no scroll operation performed: so
+      ;; declare the function to prevent byte-compiler
+      ;; warning.  CAUTION: make sure the function names are OK!
+      (declare-function pel-scroll-down-all-insync "pel-scroll"
+                        (including-current &optional n))
+      (pel-scroll-down-all-insync
+       nil
+       (abs excursion-line-count)))))
 
 ;; --
 
@@ -465,9 +487,16 @@ number of lines.
         (region-active-p)
         (push-mark)))
   (let ((excursion-line-count (pel--end)))
-    (if (and (boundp 'pel-in-scroll-sync)
-             pel-in-scroll-sync)
-        (scroll-other-window excursion-line-count))))
+    (when pel-in-scroll-sync
+      ;; pel-scroll not required at file level to prevent
+      ;; loading it if no scroll operation performed: so
+      ;; declare the function to prevent byte-compiler
+      ;; warning.  CAUTION: make sure the function names are OK!
+      (declare-function pel-scroll-up-all-insync "pel-scroll"
+                        (including-current &optional n))
+      (pel-scroll-up-all-insync
+       nil
+       (abs excursion-line-count)))))
 
 ;; -----------------------------------------------------------------------------
 ;; Navigate across function definitions
@@ -477,7 +506,7 @@ number of lines.
 (defun pel-beginning-of-next-defun ()
   "Move to the beginning of the next function definition.
 This complements `beginning-of-defun' which only reaches the
-same location by moving backwards in the buffer."
+same location by moving backwards."
   (interactive)
   (end-of-defun)
   (end-of-defun)
