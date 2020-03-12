@@ -390,8 +390,8 @@ mechanism to be used for a single buffer.
 
 This version of PEL currently supports the following auto-completion packages:
 
-- Auto Complete
-- Company
+- `Auto Complete`_
+- `Company`_
 
 It provides the following commands:
 
@@ -1305,6 +1305,7 @@ pel-use-which-key              Enables the use of the which-key_ package.       
 .. References
 
 .. _ace-window package:        https://melpa.org/#/ace-window
+.. _Auto Complete:
 .. _auto-complete package:     https://melpa.org/#/auto-complete
 .. _MELPA:                     https://melpa.org/
 .. _use-package:               https://melpa.org/#/use-package
