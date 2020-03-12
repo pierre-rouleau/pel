@@ -5,6 +5,8 @@ pel -- Pragmatic Environment Library for Emacs
 
 
 .. contents::  **Table Of Contents**
+.. sectnum::
+
 ..
     1  Overview
       1.1  The reason for PEL
