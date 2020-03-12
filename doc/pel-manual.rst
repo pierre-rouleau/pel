@@ -499,7 +499,7 @@ text, targetting specific syntax entities or other simpler parts.
 PEL File Management Utilities
 -----------------------------
 
-:PDF Docs: `File Management`_.
+:PDF Docs: `File Management`_, `Dired`_.
 
 The `pel-file.el`_ file provides logic to extra the name of a file or a URL from
 text at point and visit (open) that file inside an Emacs buffer or launch a web
