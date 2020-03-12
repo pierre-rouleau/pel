@@ -5,6 +5,7 @@ pel -- Pragmatic Environment Library for Emacs
 
 
 .. contents::  **Table Of Contents**
+..  sectnum::
 ..
     1  Overview
       1.1  The reason for PEL
@@ -19,7 +20,11 @@ pel -- Pragmatic Environment Library for Emacs
         2.1.5  To identify the location of your Ispell local dictionary
         2.1.6  To override or change PEL key bindings
     3  PEL Specific Features
-      3.1  PEL Navigation
+      3.1  PEL Comments Utilities
+      3.2  PEL Cut, Delete, Kill, Copy, Paste and Yank Utilities
+      3.3  PEL Navigation
+      3.4  PEL Scrolling
+      3.5  PEL Window Management Support
     4  PEL Key Bindings
       4.1  PEL Mode Sensitive Key-maps
       4.2  Key Binding Documentation
