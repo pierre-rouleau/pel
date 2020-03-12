@@ -3,7 +3,7 @@
 ;;; Commentary:
 ;;
 ;; This file holds code that manages the use of various auto-completion
-;; facilities for Emacs.  At this pint it supports the following:
+;; facilities for Emacs.  At this point it supports the following:
 ;;
 ;; - auto-complete-mode
 ;; - company-mode
@@ -24,6 +24,10 @@
 ;;     - pel-use-company
 ;;   - auto-complete variables:
 ;;     - global-auto-complete-mode
+;;     - auto-complete-mode
+;;   - company variables:
+;;     - global-company-mode
+;;     - company-mode
 
 
 ;;; Code:

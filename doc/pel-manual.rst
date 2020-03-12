@@ -376,6 +376,42 @@ to be used as what PEL normally uses for F6:
 PEL Specific Features
 =====================
 
+
+PEL Auto-Completion Support
+---------------------------
+
+:PDF Docs: `Auto-completion`_
+
+The file `pel-autocomplete.el`_ manages the activation and enabling of
+auto-completion systems globally and per buffer so that you can install several
+auto-completion packages and then select one of them either globally or per
+buffer. The slection logic does not allow more than one auto-completion
+mechanism to be used for a single buffer.
+
+This version of PEL currently supports the following auto-completion packages:
+
+- Auto Complete
+- Company
+
+It provides the following commands:
+
+- ``pel-global-auto-complete-mode`` toggles the global Auto Complete mode
+  on/off if it can.  Activation is not allowed when Company Mode is active.
+- ``pel-auto-complete-mode`` toggles the Auto Complete mode for the current
+  buffer if it can.  Activation is not alloewed when Company mode is active
+  for the current buffer.
+- ``pel-global-company-mode`` toggles the global Company mode on/off if it
+  can. Activation is not allowed when Auto Complete mode is active.
+- ``pel-company-mode`` toggles the Company mode on/off for the current buffer if
+  it can.  Activation is not allowed when Auto Complete mode is active for the
+  current buffer.
+- ``pel-completion-help`` shows the state of the auto completion global and
+  buffer specific modes.  It displays if the packages are available and whether
+  they are enabled on not.
+- ``pel-complete`` performs an explicit completion using the competion mode
+  enabled in the current buffer.
+
+
 PEL Comments Utilities
 ----------------------
 
