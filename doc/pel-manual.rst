@@ -396,6 +396,64 @@ comment management.
   operations.  See the `Cut, Delete, Copy and Paste`_ document.
 
 
+PEL Cut, Delete, Kill, Copy, Paste and Yank Utilities
+-----------------------------------------------------
+
+:PDF Docs: `Cut, Delete, Copy and Paste`_, `Marking`_.
+
+The `pel-ccp.el`_ file provides a collecgtion of commands to perform Emacs
+style kill/yank and otherwise copy/cut/paste operations on various parts of the
+text, targetting specific syntax entities or other simpler parts.
+
+- The following commands copy the specified syntax entities at point into the
+  kill ring:
+
+  - ``pel-copy-word-at-point``
+  - ``pel-copy-symbol-at-point``
+  - ``pel-copy-sentence-at-point``
+  - ``pel-copy-function-at-point``
+  - ``pel-copy-sexp-at-point``
+  - ``pel-copy-whitespace-at-point``
+  - ``pel-copy-filename-at-point``
+  - ``pel-copy-url-at-point``
+  - ``pel-copy-list-at-point``
+  - ``pel-copy-paragraph-at-point``
+  - ``pel-copy-paragraph-start``
+  - ``pel-copy-paragraph-end``
+  - ``pel-copy-line-start``
+  - ``pel-copy-line-end``
+  - ``pel-copy-char-at-point``
+  - The command ``pel-copy-marked-or-whole-line`` copy a marked region if any or
+    the entire line (including the line termination) into the kill ring.
+
+- The following commands kill the specified syntax entities at point:
+
+  - ``pel-kill-word-at-point``
+  - ``pel-kill-symbol-at-point``
+  - ``pel-kill-sentence-at-point``
+  - ``pel-kill-function-at-point``
+  - ``pel-kill-sexp-at-point``
+  - ``pel-kill-whitespace-at-point``
+  - ``pel-kill-filename-at-point``
+  - ``pel-kill-url-at-point``
+  - ``pel-kill-list-at-point``
+  - ``pel-kill-paragraph-at-point``
+  - ``pel-kill-char-at-point``
+  - ``pel-kill-from-beginning-of-line``
+  - The command ``pel-kill-or-delete-marked-or-whole-line`` is a flexible command
+    that can kill or delete the current line, multiple lines or the currently marked
+    region.
+
+- The following commands delete text at point and don't store the text in the
+  kill ring:
+
+  - The ``pel-delete-whole-line`` command delete the current line, including the
+    line termination.
+  - The ``pel-delete-to-next-visible`` delete all whitespace charactares between
+    point and the next non-whitespace character.
+
+- The ``pel-mark-whole-line`` marks the complete current line excluding the line
+  termination.
 
 
 PEL Navigation
@@ -770,7 +828,7 @@ Emacs packages and more tables will describe how to use them.
 
   - `Abbreviations`_
   - `Align`_
-  - Auto-Completion_
+  - `Auto-Completion`_
   - `Bookmarks`_
   - `Buffers`_
   - `Case Conversion`_
