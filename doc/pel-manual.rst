@@ -374,9 +374,9 @@ PEL Specific Features
 PEL Comments Utilities
 ----------------------
 
-:PDF Docs: `Comments`_, `Cut, Delete, Copy and Paste`_
+:PDF Docs: `Comments`_, `Cut, Delete, Copy and Paste`_, `Narrowing`_.
 
-The `pel-comment_ file provides a collection of commands to help manage file
+The `pel-comment`_ file provides a collection of commands to help manage file
 comment management.
 
 - The following commands allow you to display the strings used to control comments
@@ -389,7 +389,7 @@ comment management.
 - With ``pel-toggle-comment-auto-fill-only-comments``  you control whether
   automatic filling is done inside source code comments.
 - The ``pel-delete-all-comments`` deletes all comments in current buffer.
-  Use narrowing_ to reduce the area where comments are deleted.
+  Use `narrowing`_ to reduce the area where comments are deleted.
 - The ``pel-kill-all-comments`` kills all comments in current buffer.
   Each killed comment group is retained in the kill ring, as a separate kill
   ring entry.  That allows selective restoration of comments later with yank
@@ -868,7 +868,6 @@ Emacs packages and more tables will describe how to use them.
 .. _Org mode:                                 pdf/mode-org-mode.pdf
 .. _reStructuredText mode:                    pdf/mode-rst.pdf
 .. _Modifier Keys:                            pdf/modifier-keys.pdf
-.. _narrowing:
 .. _Narrowing:                                pdf/narrowing.pdf
 .. _Navigation:                               pdf/navigation.pdf
 .. _Packages:                                 pdf/packages.pdf
