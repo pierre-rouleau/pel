@@ -371,6 +371,7 @@ to be used as what PEL normally uses for F6:
 PEL Specific Features
 =====================
 
+
 PEL Navigation
 --------------
 
@@ -449,6 +450,95 @@ following commands are used:
 - ``pel-home`` and ``pel-end``, defined in ``pel-navigation``, which move
    point the the beginning or end of current field, line, window or buffer.
    See `PEL Navigation`_.
+
+
+PEL Window Management Support
+-----------------------------
+
+:PDF Docs: `Windows`
+
+The file `pel-window.el`_ provides a set of window management utilities.  Some
+of these utility commands use or extend the features provided by the
+``windmove`` library, a library packaged with standard GNU Emacs.
+
+The file provides the following features:
+
+- Buffer management utilities:
+
+  - ``pel-show-window-previous-buffer`` shows the name of the buffer that was
+     previously used in the current window.
+  - ``pel-switch-to-last-used-buffer`` switch the buffer in current window to
+     the buffer that was previously used.
+
+ - Dedicated window management utilities:
+
+   - ``pel-show-window-dedicated-status`` displays the dedicated status of the
+     current window: ie. whether the current window is dedicated or not.
+   - ``pel-toggle-window-dedicated`` toggles the dedicated status of the
+     current window.  Use it to dedicate the current window or turn
+     dedication off.
+
+ - Creating new windows:
+
+   The following 4 commands allow creating cursor bindings to create windows
+   pointed by a cardinal direction:
+
+   - ``pel-create-window-down``
+   - ``pel-create-window-left``
+   - ``pel-create-window-right``
+   - ``pel-create-window-up``
+
+ - Closing windows:
+
+   The following 4 commands allow creating cursor bindings to close windows
+   pointed by a cardinal direction:
+
+   - ``pel-close-window-down``
+   - ``pel-close-window-left``
+   - ``pel-close-window-right``
+   - ``pel-close-window-up``
+
+ - Window splitting:
+
+   - The function ``pel-split-window-sensibly`` attempts to improve window
+     splitting logic by selecting an orienation that takes the frame size
+     into account with a different heuristic than what is normally used by
+     Emacs. The function is used by other PEL commands when windows are
+     created. The logic gives priority to splitting vertically if the
+     available area is wide *enough*.
+
+ - Changing orientation of 2 windows:
+
+   The commands ``pel-2-vertical-windows`` and ``pel-2-horizontal-windows`` flip
+   the orientation of the current and next window from horizontal to vertical
+   and vice-versa.
+
+- Moving to windows by direction or context:
+
+  Two functions provide services to move point to other window by direction
+  or to create a new one.  These functions are used by other PEL commands.
+  The functions are:
+
+  - ``pel-window-valid-for-editing-p`` move point to the identified direction
+    as long as the target window can be used for editing.  This excludes the
+    minibuffer or any dedicated window.
+  - ``pel-window-select`` move to the window specified by a direction argument
+    or to the *other* window (the next one) or create a new window.
+    This is also a utility function used by other PEL commands.
+
+- Moving to other (next) or previous window:
+
+  - The ``pel-other-window`` is just explicitly calling the Emacs
+    ``other-window`` command that might be hidden by the use of ``ace-window``.
+  - The ``pel-other-window-backward`` moves to the previous window.
+
+- Showing information about current window:
+
+  - ``pel-show-window-filename-or-buffer-name`` displays the name of the
+    file or buffer used in the current window.
+  - ``pel-show-window-sizes`` displays the height and width of the current
+    window.
+
 
 ..
    -----------------------------------------------------------------------------
@@ -1174,7 +1264,7 @@ PEL code is placed in several Emacs Lisp files.
   (such as MELPA_).  However:
 
   #. I did not yet start working on submitting this project on MELPA_, I'll do it
-     once I feel PEL has enough to offer and the quality is good enough.
+     once I feel PEL has enough to offer.
   #. You can just clone the project repo inside a directory and place this
      inside your Emacs load-path.  Running ``pel-init`` will then download the
      packages required by customization.
@@ -1183,20 +1273,77 @@ It's possible to use part of PEL without using its key bindings.
 Just use the files that contain the features you need and write your own key
 bindings for them inside your Emacs init file.  Just don't call ``pel-init``.
 
-
+.. _build-pel.el:           ../build-pel.el
+.. _pel.el:                 ../pel.el
+.. _pel--options.el:        ../pel--options.el
+.. _pel--base.el:           ../pel--base.el
+.. _pel-autocomplete:
+.. _pel-autocomplete.el:    ../pel-autocomplete.el
+.. _pel-autoload:
+.. _pel-autoload.el:        ../pel-autoload.el
+.. _pel-autoloads:
+.. _pel-autoloads.el:       ../pel-autoloads.el
+.. _pel-bookmark:
+.. _pel-bookmark.el:        ../pel-bookmark.el
+.. _pel-ccp:
+.. _pel-ccp.el:             ../pel-ccp.el
+.. _pel-comment:
+.. _pel-comment.el:         ../pel-comment.el
+.. _pel-commonlisp:
+.. _pel-commonlisp.el:      ../pel-commonlisp.el
+.. _pel-cua:
+.. _pel-cua.el:             ../pel-cua.el
+.. _pel-file:
+.. _pel-file.el:            ../pel-file.el
+.. _pel-fill:
+.. _pel-fill.el:            ../pel-fill.el
+.. _pel-font:
+.. _pel-font.el:            ../pel-font.el
+.. _pel-frame-control:
+.. _pel-frame-control.el:   ../pel-frame-control.el
+.. _pel-highlight:
+.. _pel-highlight.el:       ../pel-highlight.el
+.. _pel-imenu:
+.. _pel-imenu.el:           ../pel-imenu.el
+.. _pel-indent:
+.. _pel-indent.el:          ../pel-indent.el
+.. _pel-kbmacros:
+.. _pel-kbmacros.el:        ../pel-kbmacros.el
+.. _pel-line-control:
+.. _pel-line-control.el:    ../pel-line-control.el
+.. _pel-lisp:
+.. _pel-lisp.el:            ../pel-lisp.el
+.. _pel-mark:
+.. _pel-mark.el:            ../pel-mark.el
 .. _pel-navigate:
-.. _pel-navigate.el:      ../pel-navigate.el
+.. _pel-navigate.el:        ../pel-navigate.el
+.. _pel-numkpad:
+.. _pel-numkpad.el:         ../pel-numkpad.el
+.. _pel-pkg:
+.. _pel-pkg.el:             ../pel-pkg.el
+.. _pel-prompt:
+.. _pel-prompt.el:          ../pel-prompt.el
+.. _pel-register:
+.. _pel-register.el:        ../pel-register.el
+.. _pel-rst:
+.. _pel-rst.el:             ../pel-rst.el
 .. _pel-scroll:
-.. _pel-scroll.el:        ../pel-scroll.el
-.. _pel--options.el:      ../pel--options.el
-.. _pel--base.el:         ../pel--base.el
-.. _pel.el:               ../pel.el
-.. _pel-zkeys.el:         ../pel-zkeys.el
-.. _pel-navigate.el:      ../pel-navigate.el
-.. _pel-pkg.el:           ../pel-pkg.el
-.. _pel-autoload.el:      ../pel-autoload.el
-.. _pel-autoloads.el:     ../pel-autoloads.el
-.. _build-pel.el:         ../build-pel.el
+.. _pel-scroll.el:          ../pel-scroll.el
+.. _pel-search:
+.. _pel-search.el:          ../pel-search.el
+.. _pel-speedbar:
+.. _pel-speedbar.el:        ../pel-speedbar.el
+.. _pel-spell:
+.. _pel-spell.el:           ../pel-spell.el
+.. _pel-text-insert:
+.. _pel-text-insert.el:     ../pel-text-insert.el
+.. _pel-text-transform:
+.. _pel-text-transform.el:  ../pel-text-transform.el
+.. _pel-window:
+.. _pel-window.el:          ../pel-window.el
+.. _pel-zkeys:
+.. _pel-zkeys.el:           ../pel-zkeys.el
+
 .. _shift-key selection:  https://www.gnu.org/software/emacs/manual/html_node/emacs/Shift-Selection.html#Shift-Selection
 .. _mark and region:      https://www.gnu.org/software/emacs/manual/html_node/emacs/Mark.html#Mark
 

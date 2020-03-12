@@ -2165,14 +2165,14 @@ the ones defined from the buffer now."
     ;; use whatever is available.
 
     (define-key pel:window  "m"  'pel-maximize-window)
-    (define-key pel:window  "x"  'pel-swap-window)
+    (define-key pel:window  "x"  'ace-swap-window)
 
     ;; Replace other-window, bound to 'C-x o', to ace-window
     ;; and make the font larger - in graphics mode.
     ;; So `C-x o` shows a window number in top left corner, unless
     ;; there's only 2 windows and if with frames, in terminal mode,
     ;; the argument does not request it.
-    (global-set-key [remap other-window] 'pel-ace-window)
+    (global-set-key [remap other-window] 'ace-window)
 
     :config
     (custom-set-faces

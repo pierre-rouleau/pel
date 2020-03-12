@@ -20,13 +20,91 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This file contains a set of commands and functions used to create, delete,
-;; query and overall manage Emacs windows in a way that uses the graphical
-;; Cartesian position of the window.  For some of the commands the file uses the
-;; windmove package.
+;; The file `pel-window.el' provides a set of window management utilities.  Some
+;; of these utility commands use or extend the features provided by the
+;; `windmove' library, a library packaged with standard GNU Emacs.
+;;
+;; The file provides the following features:
+;;
+;; - Buffer management utilities:
+;;
+;;   - `pel-show-window-previous-buffer' shows the name of the buffer that was
+;;      previously used in the current window.
+;;   - `pel-switch-to-last-used-buffer' switch the buffer in current window to
+;;      the buffer that was previously used.
+;;
+;;  - Dedicated window management utilities:
+;;
+;;    - `pel-show-window-dedicated-status' displays the dedicated status of the
+;;      current window: ie. whether the current window is dedicated or not.
+;;    - `pel-toggle-window-dedicated' toggles the dedicated status of the
+;;      current window.  Use it to dedicate the current window or turn
+;;      dedication off.
+;;
+;;  - Creating new windows:
+;;
+;;    The following 4 commands allow creating cursor bindings to create windows
+;;    pointed by a cardinal direction:
+;;
+;;    - `pel-create-window-down'
+;;    - `pel-create-window-left'
+;;    - `pel-create-window-right'
+;;    - `pel-create-window-up'
+;;
+;;  - Closing windows:
+;;
+;;    The following 4 commands allow creating cursor bindings to close windows
+;;    pointed by a cardinal direction:
+;;
+;;    - `pel-close-window-down'
+;;    - `pel-close-window-left'
+;;    - `pel-close-window-right'
+;;    - `pel-close-window-up'
+;;
+;;  - Window splitting:
+;;
+;;    - The function `pel-split-window-sensibly' attempts to improve window
+;;      splitting logic by selecting an orienation that takes the frame size
+;;      into account with a different heuristic than what is normally used by
+;;      Emacs. The function is used by other PEL commands when windows are
+;;      created. The logic gives priority to splitting vertically if the
+;;      available area is wide *enough*.
+;;
+;;  - Changing orientation of 2 windows:
+;;
+;;    The commands `pel-2-vertical-windows' and `pel-2-horizontal-windows' flip
+;;    the orientation of the current and next window from horizontal to vertical
+;;    and vice-versa.
+;;
+;; - Moving to windows by direction or context:
+;;
+;;   Two functions provide services to move point to other window by direction
+;;   or to create a new one.  These functions are used by other PEL commands.
+;;   The functions are:
+;;
+;;   - `pel-window-valid-for-editing-p' move point to the identified direction
+;;     as long as the target window can be used for editing.  This excludes the
+;;     minibuffer or any dedicated window.
+;;   - `pel-window-select' move to the window specified by a direction argument
+;;     or to the *other* window (the next one) or create a new window.
+;;     This is also a utility function used by other PEL commands.
+;;
+;; - Moving to other (next) or previous window:
+;;
+;;   - The `pel-other-window' is just explicitly calling the Emacs
+;;     `other-window' command that might be hidden by the use of `ace-window'.
+;;   - The `pel-other-window-backward' moves to the previous window.
+;;
+;; - Showing information about current window:
+;;
+;;   - `pel-show-window-filename-or-buffer-name' displays the name of the
+;;     file or buffer used in the current window.
+;;   - `pel-show-window-sizes' displays the height and width of the current
+;;     window.
+
+
 
 ;;; Code:
 
@@ -285,6 +363,20 @@ Return the selected window, or nil if nothing is valid."
     (if (and a_window
              (not (window-minibuffer-p a_window)))
         (select-window a_window))))
+
+;; -----------------------------------------------------------------------------
+;; Original other-window
+;; ---------------------
+;; The function other-window is replaced by ace-window and the keys
+;; are re-mapped. The following provide access to that function anyway.
+
+;;-pel-autoload
+(defun pel-other-window ()
+  "Execute (other-window 1).
+Useful when `other-window' has been remapped to something like `ace-window'
+and want to see where the next window is."
+  (interactive)
+  (other-window 1))
 
 ;; -----------------------------------------------------------------------------
 ;; Move to previous window

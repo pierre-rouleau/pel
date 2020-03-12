@@ -44,12 +44,6 @@
 
   (require 'pel--options)
 
-  ;; pel-ace-window
-  (when (and (boundp 'pel-use-ace-window) pel-use-ace-window)
-    (autoload 'pel-swap-window  "pel-ace-window")
-    (autoload 'pel-ace-window   "pel-ace-window")
-    (autoload 'pel-other-window "pel-ace-window"))
-
   ;; pel-autocomplete
   (autoload 'pel-completion-help             "pel-autocomplete")
   (autoload 'pel-complete                    "pel-autocomplete")
@@ -287,7 +281,8 @@
                  pel-window-select
                  pel-other-window-backward
                  pel-show-window-filename-or-buffer-name
-                 pel-show-window-sizes))
+                 pel-show-window-sizes
+                 pel-other-window))
     (autoload fct "pel-window")))
 
 ;; -----------------------------------------------------------------------------
