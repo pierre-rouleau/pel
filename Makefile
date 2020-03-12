@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau.swd@gmail.com>
-# Last Modified Time-stamp: <2020-03-10 14:04:08, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-03-12 15:02:29, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -56,7 +56,6 @@ OUT_REPO_DIR := ~/dev/emacs-archive
 #    - The last two must be pel-zkeys followed by pel.
 EL_FILES := pel--base.el \
 			pel--options.el \
-			pel-ace-window.el \
 			pel-autocomplete.el \
 			pel-autoload.el \
 			pel-bookmark.el \
