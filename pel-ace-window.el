@@ -23,6 +23,7 @@
 ;; -----------------------------------------------------------------------------
 ;;; Commentary:
 ;;
+;; This
 ;;  In pel-bindings, the functions of this file are only mapped if the
 ;;  pel-use-ace-window option is t.
 
@@ -81,19 +82,6 @@ If more windows: use `ace-swap-window' to swap with window identified by number.
       (ace-window (prefix-numeric-value arg))
     (other-window 1)))
 
-;; -----------------------------------------------------------------------------
-;; Original other-window
-;; ---------------------
-;; The function other-window is replaced by ace-window and the keys
-;; are re-mapped. The following provide access to that function anyway.
-
-;;-pel-autoload
-(defun pel-other-window ()
-  "Execute (other-window 1).
-Useful when `other-window' has been remapped to something like `ace-window'
-and want to see where the next window is."
-  (interactive)
-  (other-window 1))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-ace-window)
