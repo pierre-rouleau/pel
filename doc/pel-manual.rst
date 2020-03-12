@@ -5,7 +5,6 @@ pel -- Pragmatic Environment Library for Emacs
 
 
 .. contents::  **Table Of Contents**
-..  sectnum::
 ..
     1  Overview
       1.1  The reason for PEL
@@ -20,11 +19,14 @@ pel -- Pragmatic Environment Library for Emacs
         2.1.5  To identify the location of your Ispell local dictionary
         2.1.6  To override or change PEL key bindings
     3  PEL Specific Features
-      3.1  PEL Comments Utilities
-      3.2  PEL Cut, Delete, Kill, Copy, Paste and Yank Utilities
-      3.3  PEL Navigation
-      3.4  PEL Scrolling
-      3.5  PEL Window Management Support
+      3.1  PEL Auto-Completion Support
+      3.2  PEL Comments Utilities
+      3.3  PEL Cut, Delete, Kill, Copy, Paste and Yank Utilities
+      3.4  PEL File Management Utilities
+      3.5  PEL Frame Management Utilities
+      3.6  PEL Navigation
+      3.7  PEL Scrolling
+      3.8  PEL Window Management Support
     4  PEL Key Bindings
       4.1  PEL Mode Sensitive Key-maps
       4.2  Key Binding Documentation
@@ -518,6 +520,33 @@ browser to load the specified URL.
   - ``pel-show-filename-parts-at-point`` which displays the components extracted
     from point. It's mainly used for debugging when unexpected formats are
     encountered.
+
+PEL Frame Management Utilities
+------------------------------
+
+:PDF Docs: `Frames`_.
+
+The file `pel-frame-control.el`_ provides a set of utilities to manage Emacs
+frames.  Emacs supports frames both when it operates in graphics mode and in
+terminal (TTY) mode.  In terminal mode, you can only see one frame at a time;
+all frames of one instance of Emacs running in terminal mode share the same
+terminal OS window (called a frame in Emacs nomenclature).
+
+This PEL file provides the following commands:
+
+- ``pel-toggle-frame-fullscreen`` toggles the frame to and back full screen mode
+  when Emacs is running in graphics mode.  If Emacs is running in terminal mode
+  the command prints a message.  For some environments the message describes
+  what must be done to toggle the terminal window to full-screen and back.
+  At the moment PEL is able to describe what must be done on macOS with the
+  Terminal.app and iTerm.app.
+- ``pel-show-frame-count``  displays the total number of frames used by this
+  instance of Emacs and the number of those frames that are currently visible.
+- The following two commands work when several frames are used by Emacs whether
+  it is running in graphics mode or terminal mode:
+
+  - ``pel-next-frame`` moves point to the next frame.
+  - ``pel-previous-frame`` moves point to the previous frame.
 
 
 PEL Navigation
