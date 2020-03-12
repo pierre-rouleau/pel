@@ -79,7 +79,10 @@ Activate/de-activate automatic filling in source code comments only."
 ;;-pel-autoload
 (defun pel-kill-all-comments ()
   "Kill all comments in current (possibly narrowed) buffer or marked region.
-Retain them in kill-ring."
+Retain them in kill-ring.
+Each killed comment group is retained in the kill ring, as a separate kill
+ring entry.
+"
   (interactive "*")
   (let ((start-point (if (region-active-p) (region-beginning) (point-min)))
         (end-point   (if (region-active-p) (region-end) (point-max))))
