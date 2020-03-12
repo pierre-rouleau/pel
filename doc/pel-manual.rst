@@ -371,10 +371,12 @@ to be used as what PEL normally uses for F6:
 PEL Specific Features
 =====================
 
-Navigation
-----------
+PEL Navigation
+--------------
 
-The pel-navigate file provides a collection of navigation commands that
+:PDF Docs: `Navigation`_
+
+The `pel-navigate`_ file provides a collection of navigation commands that
 complement the standard Emacs navigation commands.
 
 - ``pel-beginning-of-line`` is meant to replace ``beginning-of-line`` as it does
@@ -407,10 +409,12 @@ complement the standard Emacs navigation commands.
   only reaches the same location by moving backwards.
 
 
-Scrolling
----------
+PEL Scrolling
+-------------
 
-The ``pel-scroll`` file provides a set of window scrolling facilities.
+:PDF Docs: `Scrolling`_
+
+The `pel-scroll`_ file provides a set of window scrolling facilities.
 
 The following 2 commands are used to scroll the current window, and
 other windows that may be placed inside the PEL window scroll group:
@@ -440,11 +444,11 @@ The following commands are used to activate and manage the
 The scrolling of multiple windows is currently only performed when the
 following commands are used:
 
--  ``pel-scroll-up`` which scrolls text up,
--  ``pel-scroll-down`` which scrolls text down,
--  ``pel-home`` and ``pel-end``, defined in ``pel-navigation``, which move
-    point the the beginning or end of current field, line, window or buffer.
-    See `Navigation`_.
+- ``pel-scroll-up`` which scrolls text up,
+- ``pel-scroll-down`` which scrolls text down,
+- ``pel-home`` and ``pel-end``, defined in ``pel-navigation``, which move
+   point the the beginning or end of current field, line, window or buffer.
+   See `PEL Navigation`_.
 
 ..
    -----------------------------------------------------------------------------
@@ -1180,16 +1184,19 @@ Just use the files that contain the features you need and write your own key
 bindings for them inside your Emacs init file.  Just don't call ``pel-init``.
 
 
-
-.. _pel--options.el:      pel--options.el
-.. _pel--base.el:         pel--base.el
-.. _pel.el:               pel.el
-.. _pel-zkeys.el:         pel-zkeys.el
-.. _pel-navigate.el:      pel-navigate.el
-.. _pel-pkg.el:           pel-pkg.el
-.. _pel-autoload.el:      pel-autoload.el
-.. _pel-autoloads.el:     pel-autoloads.el
-.. _build-pel.el:         build-pel.el
+.. _pel-navigate:
+.. _pel-navigate.el:      ../pel-navigate.el
+.. _pel-scroll:
+.. _pel-scroll.el:        ../pel-scroll.el
+.. _pel--options.el:      ../pel--options.el
+.. _pel--base.el:         ../pel--base.el
+.. _pel.el:               ../pel.el
+.. _pel-zkeys.el:         ../pel-zkeys.el
+.. _pel-navigate.el:      ../pel-navigate.el
+.. _pel-pkg.el:           ../pel-pkg.el
+.. _pel-autoload.el:      ../pel-autoload.el
+.. _pel-autoloads.el:     ../pel-autoloads.el
+.. _build-pel.el:         ../build-pel.el
 .. _shift-key selection:  https://www.gnu.org/software/emacs/manual/html_node/emacs/Shift-Selection.html#Shift-Selection
 .. _mark and region:      https://www.gnu.org/software/emacs/manual/html_node/emacs/Mark.html#Mark
 
