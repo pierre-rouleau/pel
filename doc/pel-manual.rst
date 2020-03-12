@@ -377,34 +377,34 @@ Navigation
 The pel-navigate file provides a collection of navigation commands that
 complement the standard Emacs navigation commands.
 
- - ``pel-beginning-of-line`` is meant to replace ``beginning-of-line`` as it does
-   the same and extends it: if point is already at the beginning of the line
-   then it moves it to the first non-whitespace character.
- - ``pel-newline-and-indent-below`` is useful as a variant of the return key.
- - ``pel-find-thing-at-point`` provides a search capability without the need fo
-   a tag database but it is limited in what it can find.  It's a poor man
-   cross reference.
- - ``pel-show-char-syntax`` shows the character syntax of the character at
-   point.
- - ``pel-forward-token-start`` and ``pel-backward-to-start`` move forward
-   or backward to the beginning of a text semantic token as defined by Emacs
-   character syntax for the current buffer.
- - ``pel-forward-word-start`` moves point to the beginning of next word.
-   This complements what's already available in standard Emacs:
-   ``forward-word`` and ``backward-word``.
- - ``pel-forward-syntaxchange-start`` and ``pel-backward-syntaxchange-start``
-   move point forward or backward to the character syntax change character.
-   This can be useful to debug syntax characters for a specific mode.
- - ``pel-next-visible`` and ``pel-previous-visible`` move point to the next or
-   previous visible (non whitespace) character.
- - ``pel-home`` and ``pel-end`` implement a quick, multi-hit movement to the
-   beginning or end of the current field, line, window and buffer.
-   These commands are similar to the home and end CRiSP/Brief commands.
-   They also support the multiple window scroll sync provided by the
-   ``pel-scroll`` commands.
- - ``pel-beginning-of-next-defun`` move point to the beginning of the
-   next function definition. This complements ``beginning-of-defun`` which
-   only reaches the same location by moving backwards.
+- ``pel-beginning-of-line`` is meant to replace ``beginning-of-line`` as it does
+  the same and extends it: if point is already at the beginning of the line
+  then it moves it to the first non-whitespace character.
+- ``pel-newline-and-indent-below`` is useful as a variant of the return key.
+- ``pel-find-thing-at-point`` provides a search capability without the need fo
+  a tag database but it is limited in what it can find.  It's a poor man
+  cross reference.
+- ``pel-show-char-syntax`` shows the character syntax of the character at
+  point.
+- ``pel-forward-token-start`` and ``pel-backward-to-start`` move forward
+  or backward to the beginning of a text semantic token as defined by Emacs
+  character syntax for the current buffer.
+- ``pel-forward-word-start`` moves point to the beginning of next word.
+  This complements what's already available in standard Emacs:
+  ``forward-word`` and ``backward-word``.
+- ``pel-forward-syntaxchange-start`` and ``pel-backward-syntaxchange-start``
+  move point forward or backward to the character syntax change character.
+  This can be useful to debug syntax characters for a specific mode.
+- ``pel-next-visible`` and ``pel-previous-visible`` move point to the next or
+  previous visible (non whitespace) character.
+- ``pel-home`` and ``pel-end`` implement a quick, multi-hit movement to the
+  beginning or end of the current field, line, window and buffer.
+  These commands are similar to the home and end CRiSP/Brief commands.
+  They also support the multiple window scroll sync provided by the
+  ``pel-scroll`` commands.
+- ``pel-beginning-of-next-defun`` move point to the beginning of the
+  next function definition. This complements ``beginning-of-defun`` which
+  only reaches the same location by moving backwards.
 
 
 Scrolling
