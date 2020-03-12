@@ -380,7 +380,7 @@ PEL Specific Features
 PEL Auto-Completion Support
 ---------------------------
 
-:PDF Docs: `Auto-completion`_
+:PDF Docs: `Auto-completion`_.
 
 The file `pel-autocomplete.el`_ manages the activation and enabling of
 auto-completion systems globally and per buffer so that you can install several
@@ -496,11 +496,34 @@ text, targetting specific syntax entities or other simpler parts.
 - The ``pel-mark-whole-line`` marks the complete current line excluding the line
   termination.
 
+PEL File Management Utilities
+-----------------------------
+
+:PDF Docs: `File Management`_.
+
+The `pel-file.el`_ file provides logic to extra the name of a file or a URL from
+text at point and visit (open) that file inside an Emacs buffer or launch a web
+browser to load the specified URL.
+
+- The main command is ``pel-find-file-at-point-in-window`` which opens the file
+  or URL. When opening a file, the command accepts a
+  wide range of numeric arguments to specify the window to use.
+  When the file name is followed by a line number the point is moved at that
+  line.  If the line number is followed by a column number point is moved to
+  that column.  The command supports several formats.
+- Two other utility commands are provided:
+
+  - ``pel-show-filename-at-point`` which simply shows the name of the file
+    extracted from point.
+  - ``pel-show-filename-parts-at-point`` which displays the components extracted
+    from point. It's mainly used for debugging when unexpected formats are
+    encountered.
+
 
 PEL Navigation
 --------------
 
-:PDF Docs: `Navigation`_
+:PDF Docs: `Navigation`_.
 
 The `pel-navigate`_ file provides a collection of navigation commands that
 complement the standard Emacs navigation commands.
