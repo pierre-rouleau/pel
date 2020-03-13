@@ -678,6 +678,57 @@ following commands are used:
   See `PEL Navigation`_.
 
 
+PEL Speedbar Management
+-----------------------
+
+:PDF Docs: `Speedbar`_.
+
+The file `pel-speedbar`_ manages the accessibility and use of Emacs speed-bars:
+Emacs native Speedbar and SR-Speedbar provided as an external package.
+PEL manages what type of speed-bar is used.  And that depends on whether Emacs
+is running in graphics mode or in terminnal (TTY) mode and whether SR-Speedbar
+is available.  Note that once one type of speed-bar has been opened inside an
+Emacs session it is currently not possible to use the other type.
+
+In graphics mode, both are equally functional, but in terminal mode
+Sr-speedbar is clearly superior because Speedbar will take over the
+entire frame while SR-Speedbar uses only one of the windows.
+
+- To open a speed-bar, use the ``open-close-speedbar`` command.
+
+  - If SR-speedbar is not available, Speedbar is used.
+  - If SR-speedbar is available, when Emacs runs in graphics mode, then
+    ``pel-open-close-speedbar`` prompts the first time it's called to select
+    which one to use.
+    When Emacs runs in terminal mode, ``pel-open-close-speedbar`` prompts
+    only if the customizable variable ``pel-prefer-sr-speedbar-in-terminal``
+    is nil, otherwise it automatically selects SR-Speedbar, which is more
+    convenient.
+
+- To close the currently opened speedbar, use ``open-close-speedbar``
+  again.
+- When using a speed-bar you can use the ``pel-toggle-to-speedbar`` command to
+  quickly mode point betwwen your current window and the speed-bar window.
+- Force a refresh of the speed-bar contents with the ``pel-speedbar-refresh``
+  command.
+- By default the speed-bar do not show the
+  `Emacs level-1 and level-2 hidden files`_. To toggle the display of the
+  level-1 hidden files, use the ``pel-speedbar-toggle-show-all-files`` command.
+  It will warn if no speed-bar is opened.
+- The speed-bar can display the source code file tags.
+  To toggle sorting of the tags use the ``pel-speedbar-toggle-sorting`` command.
+  It will warn if no speed-bar is opened.
+- When Emacs is running in graphics mode, it can use icons for the speedbar
+  nodes. Toggle between the use of iconns and simple ASCII characters with
+  ``pelspeedbar-toggle-images``.
+    It will warn if no speed-bar is opened.
+
+All the above commands have PEL key bindings shown in the PDF `Speedbar`_ table.
+The default key bindings use the ``<f11> S`` prefix.
+
+.. _Emacs level-1 and level-2 hidden files: https://www.gnu.org/software/emacs/manual/html_node/speedbar/Hidden-Files.html#Hidden-Files
+
+
 PEL Text Insertion Facilities
 -----------------------------
 
