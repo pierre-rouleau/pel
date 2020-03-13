@@ -7,46 +7,9 @@ pel -- Pragmatic Environment Library for Emacs
 .. contents::  **Table Of Contents**
 .. sectnum::
 
-..
-    1  Overview
-      1.1  The reason for PEL
-      1.2  PEL Goals
-      1.3  Using Portions of PEL Manually
-    2  How to Setup PEL
-      2.1  Updates to your Emacs Initialization file
-        2.1.1  Tricks to Increase your Emacs init time
-        2.1.2  Configure How to Download Packages
-        2.1.3  Select the location of Emacs Persistent Customization Data
-        2.1.4  To start PEL when Emacs Starts
-        2.1.5  To identify the location of your Ispell local dictionary
-        2.1.6  To override or change PEL key bindings
-    3  PEL Specific Features
-      3.1  PEL Auto-Completion Support
-      3.2  PEL Comments Utilities
-      3.3  PEL Cut, Delete, Kill, Copy, Paste and Yank Utilities
-      3.4  PEL File Management Utilities
-      3.5  PEL Frame Management Utilities
-      3.6  PEL Navigation
-      3.7  PEL Scrolling
-      3.8  PEL Window Management Support
-    4  PEL Key Bindings
-      4.1  PEL Mode Sensitive Key-maps
-      4.2  Key Binding Documentation
-    5  PEL Customization
-      5.1  Pel Use Variables
-    6  Implementation Notes
-      6.1  Emacs Lisp Files
-      6.2  Naming Conventions
-      6.3  Emacs Lisp Regression Test
-      6.4  Building PEL
-      6.5  PDF Documentation
-    7  Credits
-
 
 Overview
 ========
-
-
 
 PEL is a package that gets you going with Emacs quickly while allowing
 you to continue using your current Emacs configuration.
@@ -617,7 +580,7 @@ complement the standard Emacs navigation commands.
   the same and extends it: if point is already at the beginning of the line
   then it moves it to the first non-whitespace character.
 - ``pel-newline-and-indent-below`` is useful as a variant of the return key.
-- ``pel-find-thing-at-point`` provides a search capability without the need fo
+- ``pel-find-thing-at-point`` provides a search capability without the need for
   a tag database but it is limited in what it can find.  It's a poor man
   cross reference.
 - ``pel-show-char-syntax`` shows the character syntax of the character at
@@ -683,6 +646,33 @@ following commands are used:
 - ``pel-home`` and ``pel-end``, defined in ``pel-navigation``, which move
   point the the beginning or end of current field, line, window or buffer.
   See `PEL Navigation`_.
+
+
+PEL Text Insertion Facilities
+-----------------------------
+
+:PDF Docs: `Inserting Text`_.
+
+The file `pel-text-insert.el`_ provides a few commands to insert some text
+quickly.  PEL does not yet integrate the support of one or several of the great
+templating system that are available for Emacs, for now it just provides the
+following commands:
+
+- ``pel-insert-line`` inserts a (commented) line.  The lenght of the line is
+  controlled by the ``pel-linelen`` customizable variable, whcih defaults to 77.
+- ``pel-insert-filename`` inserts the name of the file in the current or
+  specified window.
+- The following 3 commands insert time/date format for the local or the UTC
+  time:
+
+  - ``pel-insert-current-date-time`` inserts the current date and time at point.
+  - ``pel-insert-current-date`` inserts the current date at point.
+  - ``pel-insert-iso8601-timestamp`` inserts a ISO 8601 conforming date and time
+    string.
+
+The PEL binding include more commands, some are Emcas standard commands, other
+are from other packages.  All are listed in the `Inserting Text`_ PDF
+documentation.
 
 
 PEL Text Transformation Utilities
