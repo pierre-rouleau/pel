@@ -605,11 +605,33 @@ complement the standard Emacs navigation commands.
   next function definition. This complements ``beginning-of-defun`` which
   only reaches the same location by moving backwards.
 
+PEL Search and Replace Support Utilities
+----------------------------------------
+
+:PDF Docs: `Search and Replace`_.
+
+The `pel-search.el`_ file provides 2 commands to change the value of two Emacs
+variables that control the search behaviour: ``case-fold-search`` and
+``search-upper-case``, and 1 command to display and interpret their current
+value:
+
+- ``pel-toggle-case-fold-search`` toggles seach case sensitivity in the current
+  buffer.
+- ``pel-toggle-search-upper-case`` changes the sensitivity behaviour of yank in
+  search prompt between the following:
+
+  - *nil* : upper case don't force case sensitivity,
+  - *t* : upper case force case sensitivity,
+  - *not-yanks* : upper case force case sensitivity, and
+    lower case text when yank in search minibuffer.
+
+- ``pel-show-search-case-state`` displays the search behaviour in the current
+  buffer.
 
 PEL Scrolling
 -------------
 
-:PDF Docs: `Scrolling`_
+:PDF Docs: `Scrolling`_.
 
 The `pel-scroll`_ file provides a set of window scrolling facilities.
 
@@ -703,7 +725,7 @@ PEL Text Transformation Utilities
 PEL Window Management Support
 -----------------------------
 
-:PDF Docs: `Windows`_
+:PDF Docs: `Windows`_.
 
 The file `pel-window.el`_ provides a set of window management utilities.  Some
 of these utility commands use or extend the features provided by the
