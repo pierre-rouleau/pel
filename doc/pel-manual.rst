@@ -555,13 +555,55 @@ PEL Font Management Utilities
 
 :PDF Docs: `Faces and Fonts`_.
 
-The file `pel-font.el`_ provide utilities to control the font size of all
+The file `pel-font.el`_ provides utilities to control the font size of all
 windows when Emacs runs in graphics mode, to complement what already exists in
 standard GNU Emacs.  The available commands are:
 
 - ``pel-increase-font-size-all-buffers``,
 - ``pel-decrease-font-size-all-buffers``,
 - ``pel-reset-font-size-all-buffers``.
+
+PEL Mark Management Utilities
+-----------------------------
+
+:PDF Docs: `Marking`_.
+
+The file `pel-mark.el`_ provides utilities to help manage the mark and the mark
+ring buffer.
+
+- ``pel-mark-ring-stats`` displays information on global and buffer local mark
+  and mark rings.
+- ``pel-popoff-mark-ring`` removes the top  entry from the buffer's mark ring.
+- The following 2 commands allow marking lines quickly and PEL binds these
+  commands to keys that include cursor to make the operation natural.  Being
+  able to mark lines this way helps on various types of operations on regions,
+  like commenting lines, kill, copy, etc...  The following two commands are
+  provided:
+
+  - ``pel-mark-line-up`` mark the current line: it places point at the beginning of
+    the line and the mark at the end.  If the mark is already active, the command
+    extends the region one more line up.  One of the PEL key bindings for this command
+    is ``M-S-<up>``.
+  - ``pel-mark-line-down`` mark the current line: it places the mark at the
+    beginning of the line and point at the end.  If the mark is already active,
+    the command extends the region on more line down.  One of the PEL key
+    bindings for this command is ``M-S-<down>``.
+
+- The following commands correspond to code provided by Mickey Petersen in his
+  great web site in the page
+  `Fixing the mark commands in transient mark mode`_.
+  These are:
+
+  - ``pel-push-mark-no-activate`` pushes point to the buffer's mark-ring without
+    activating the region. PEL binds ``<f11> . SPC`` to this command.
+  - ``pel-jump-to-mark`` jumps to the next mark in the buffer's mark-ring and
+    then rotate the ring.  PEL binds ``<f11> . ``` to this command.
+  - ``pel-exchange-point-and-mark-no-activate`` does the same thing as the
+    Emacs command ``exchange-point-and-mark`` but without activating the region.
+    PEL binds ``<f11> . ,`` to this command.
+
+.. _Fixing the mark commands in transient mark mode: https://www.masteringemacs.org/article/fixing-mark-commands-transient-mark-mode
+
 
 PEL Navigation
 --------------
