@@ -343,6 +343,14 @@ to be used as what PEL normally uses for F6:
 PEL Specific Features
 =====================
 
+PEL implements a set of small utilities that complement what's already available
+in standard GNU Emacs and some other packages. The code is spread into several
+small files.  Each of those file is described in the following subsections.
+PEL comes with a set of PDF files that describe key bindings , including the
+standard GNU Emacs bindings, the bindings of the external packahges integrated
+by PEL and the bindings for PEL commands.  The sections below contain link to
+the relevant PDF files.  The complete list of PDF files is shown in the
+`Key Binding Documentation`_ section.
 
 PEL Auto-Completion Support
 ---------------------------
