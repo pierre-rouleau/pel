@@ -720,8 +720,8 @@ entire frame while SR-Speedbar uses only one of the windows.
   It will warn if no speed-bar is opened.
 - When Emacs is running in graphics mode, it can use icons for the speedbar
   nodes. Toggle between the use of iconns and simple ASCII characters with
-  ``pelspeedbar-toggle-images``.
-    It will warn if no speed-bar is opened.
+  ``pel-speedbar-toggle-images``.
+  It will warn if no speed-bar is opened.
 
 All the above commands have PEL key bindings shown in the PDF `Speedbar`_ table.
 The default key bindings use the ``<f11> S`` prefix.
