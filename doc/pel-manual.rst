@@ -643,6 +643,31 @@ following commands are used:
   See `PEL Navigation`_.
 
 
+PEL Text Transformation Utilities
+---------------------------------
+
+:PDF Docs: `Case Conversion`_, `Text-modes`_.
+
+- The `pel-text-transform.el`_ file provides commands that handle case conversions
+  taking the case of the word into consideration when performing the operation to
+  help reduce the number of key bindings required to perform the tasks.  The
+  provided commands are:
+
+  - ``pel-upcase-word-or-region`` upcases the word(s) unless the first two
+    characters are upper case characters, in which case the command capitalize the
+    word(s).
+  - ``pel-downcase-word-or-region`` downcases the word(s) unless the first
+    two characters are already lower case characters, in which case the command
+    capitalize the word(s).
+  - ``pel-capitalize-word-or-region`` capitalize the word(s).
+
+- Emacs has several text modes.  The ``pel-show-text-modes`` command provides information
+  about them by displaying a description of the modes and their state.
+- The ``pel-toggle-sentence-end`` command toggles the number of spaces that
+  identify the end of a sentence for Emacs between 1 and 2.  It displays the new value.
+
+
+
 PEL Window Management Support
 -----------------------------
 
