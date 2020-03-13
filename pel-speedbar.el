@@ -28,17 +28,18 @@
 ;; terminal mode.
 ;;
 ;; In graphics mode, both are equally functional, but in terminal mode
-;; Sr-speedbar is clearly superior since user can see it while operating
-;; one other buffers.
+;; Sr-speedbar is clearly superior because Speedbar will take over the
+;; entire frame while SR-Speedbar uses only one of the windows.
 ;;
-;; If sr-speedbar is not available, speedbar is used.
+;; If SR-speedbar is not available, Speedbar is used.
 ;;
-;; If sr-speedbar is available, when Emacs runs in graphics mode, then
+;; If SR-speedbar is available, when Emacs runs in graphics mode, then
 ;; `pel-open-close-speedbar' prompts the first time it's called to select
 ;; which one to use.
 ;; When Emacs runs in terminal mode, `pel-open-close-speedbar' prompts
-;; only if `pel-prefer-sr-speedbar-in-terminal' is nil, otherwise it
-;; automatically selects the Sr-Speedbar, which is more convenient.
+;; only if the customizable variable `pel-prefer-sr-speedbar-in-terminal'
+;; is nil, otherwise it automatically selects Sr-Speedbar, which is more
+;; convenient.
 ;;
 ;; The mechanism selected is remembered inside the variable
 ;; `pel-speedbar-type-used'.  If you want to prevent the first prompt
@@ -58,6 +59,7 @@
 ;;; Code:
 
 (require 'sr-speedbar nil :noerror)
+(require 'pel--options)              ; use: pel-prefer-sr-speedbar-in-terminal
 
 ;; PEL: Speedbar/Sr-Speedbar management
 ;; ------------------------------------
@@ -69,10 +71,6 @@
 (defvar pel-window-before-sr-speedbar
   nil
   "If non-nil, holds the window to return to from sr-speedbar.")
-
-(defvar pel-prefer-sr-speedbar-in-terminal
-  t
-  "Prefer using Sr-Speedbar in terminal mode (when it's available).")
 
 (defvar pel-speedbar-type-used
   (if (not (fboundp 'sr-speedbar-toggle))

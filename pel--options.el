@@ -84,6 +84,17 @@
   :safe #'integerp)
 
 ;; -----------------------------------------------------------------------------
+(defgroup pel-speedbar nil
+  "PEL Speedbar management."
+  :group 'pel)
+
+(defcustom pel-prefer-sr-speedbar-in-terminal t
+  "Prefer using Sr-Speedbar in terminal mode (when it's available) over Speedbar."
+  :group 'pel-speedbar
+  :type  'boolean
+  :safe  #'booleanp)
+
+;; -----------------------------------------------------------------------------
 (defgroup pel-package-use nil
   "List of external packages that can be used by PEL."
   :group 'pel)
