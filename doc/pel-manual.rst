@@ -550,6 +550,18 @@ This PEL file provides the following commands:
   - ``pel-next-frame`` moves point to the next frame.
   - ``pel-previous-frame`` moves point to the previous frame.
 
+PEL Font Management Utilities
+-----------------------------
+
+:PDF Docs: `Faces and Fonts`_.
+
+The file `pel-font.el`_ provide utilities to control the font size of all
+windows when Emacs runs in graphics mode, to complement what already exists in
+standard GNU Emacs.  The available commands are:
+
+- ``pel-increase-font-size-all-buffers``,
+- ``pel-decrease-font-size-all-buffers``,
+- ``pel-reset-font-size-all-buffers``.
 
 PEL Navigation
 --------------
