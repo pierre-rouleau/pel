@@ -1582,7 +1582,7 @@ pel-use-company                Enables the use of the company_ package, one     
                                ☝️  See `PEL Auto-Completion Support`_.
 
 
-pel-use-dired-narrow           Enables the use of the dired-narrow_                         Yes, from MELPA_.
+pel-use-dired-narrow           Enables the use of the dired-narrow_                          Yes, from MELPA_.
                                package.  This package provides commands to quickly
                                reduce the number of entries shown in the ``*dired*``
                                buffer.
