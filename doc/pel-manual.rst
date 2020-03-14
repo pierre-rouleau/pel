@@ -362,7 +362,7 @@ PEL Auto-Completion Support
 The file `pel-autocomplete.el`_ manages the activation and enabling of
 auto-completion systems globally and per buffer so that you can install several
 auto-completion packages and then select one of them either globally or per
-buffer. The slection logic does not allow more than one auto-completion
+buffer. The selection logic does not allow more than one auto-completion
 mechanism to be used for a single buffer.
 
 This version of PEL currently supports the following auto-completion packages:
@@ -426,7 +426,7 @@ PEL Cut, Delete, Kill, Copy, Paste and Yank Utilities
                  - **pel:kill** : ``<f11> -``
                  - **pel:text-whitespace** : ``<f11> t w``
 
-The `pel-ccp.el`_ file provides a collecgtion of commands to perform Emacs
+The `pel-ccp.el`_ file provides a collection of commands to perform Emacs
 style kill/yank and otherwise copy/cut/paste operations on various parts of the
 text, targetting specific syntax entities or other simpler parts.
 
@@ -548,6 +548,36 @@ standard GNU Emacs.  The available commands are:
 - ``pel-increase-font-size-all-buffers``,
 - ``pel-decrease-font-size-all-buffers``,
 - ``pel-reset-font-size-all-buffers``.
+
+PEL Highlight and Whitespace Management Support
+-----------------------------------------------
+
+:PDF Docs: `Highlight`_ , `Whitespaces`_.
+:PEL Customization: ``pel-use-rainbow-delimiters``
+:PEL Key Prefix: - **pel-highlight** : ``<f11> b h``
+                 - **pel-whitespace** : ``f11> t w``
+                 - **pel:align** : ``<f11> t a``
+
+The file `pel-highlight.el`_ provides the following simple utility commands.
+
+The following help manage current line background highlighting, useful to
+quickly identify the location of the cursor on a large display:
+
+  - With ``pel-set-highlight-color`` you can select the color of the highlight
+    line by name. Use the ``list-colors-display`` command
+    (bound to ``<f11> ? d c`` in PEL)
+    to list all colours and their names.
+  - The ``pel-toggle-hl-line-sticky`` command toggles line highlighting
+    of only the current window or all windows that hold the current buffer.
+
+- It also provides the following whitespace management commands:
+
+  - ``pel-toggle-show-trailing-whitespace`` toggles the highlight of trailing
+    whitespaces in the current buffer.
+  - ``pel-toggle-indicate-empty-lines`` toggles highlighting of empty lines.
+  - ``pel-toggle-indent-tabs-mode`` toggles the use of hard tabs and whitespace
+    for indentation inside the current buffer (but does *not* tabify or untabify
+    existing content.) It displays what's being used now.
 
 PEL Mark Management Utilities
 -----------------------------
@@ -729,7 +759,7 @@ is available.  Note that once one type of speed-bar has been opened inside an
 Emacs session it is currently not possible to use the other type.
 
 In graphics mode, both are equally functional, but in terminal mode
-Sr-speedbar is clearly superior because Speedbar will take over the
+SR-speedbar is clearly superior because Speedbar will take over the
 entire frame while SR-Speedbar uses only one of the windows.
 
 - To open a speed-bar, use the ``open-close-speedbar`` command.
