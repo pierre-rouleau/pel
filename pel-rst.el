@@ -71,10 +71,10 @@ Set it to one of: 'CRiSPeR, 'Sphinx-Python, or 'default."
 ;;
 ;; Call hierarchy:
 ;;
-;; - pel-rst-set-ref-bookmark
-;; - pel--rst-bookmark-exists-p
-;;   - pel-rst-ref-bookmark-name
-
+;; * pel-rst-set-ref-bookmark
+;; * pel-rst-goto-ref-bookmark
+;;   - pel--rst-bookmark-exists-p
+;;     - pel-rst-ref-bookmark-name
 ;; * pel-rst-makelink
 ;;   - pel-rst-anchor-escaped
 ;;   - pel-goto-next-empty-line

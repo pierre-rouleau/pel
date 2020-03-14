@@ -665,30 +665,63 @@ complement the standard Emacs navigation commands.
   next function definition. This complements ``beginning-of-defun`` which
   only reaches the same location by moving backwards.
 
-PEL Search and Replace Support Utilities
-----------------------------------------
+PEL reStructuredText Support Utilities
+--------------------------------------
 
-:PDF Docs: `Search and Replace`_.
-:PEL Customization: *none*
-:PEL Key Prefix: **pel:search-replace** : ``<f11> s``
+:PDF Docs: `reStructuredText mode`_.
+:PEL Customization: ``pel-use-rst-mode``.
+:PEL Key Prefix: - Globally: **pel:for-reST** : ``<f11> SPC r``
+                 - From a buffer in rst-mode: ``<f12>``
 
-The `pel-search.el`_ file provides 2 commands to change the value of two Emacs
-variables that control the search behaviour: ``case-fold-search`` and
-``search-upper-case``, and 1 command to display and interpret their current
-value:
+The file `pel-rst.el`_ provides features that complement the
+support for reStructuredText_ markup provided by the rst.el, which implements
+the ``rst-mode`` and which is
+distributed with standard GNU Emacs.
 
-- ``pel-toggle-case-fold-search`` toggles seach case sensitivity in the current
-  buffer.
-- ``pel-toggle-search-upper-case`` changes the sensitivity behaviour of yank in
-  search prompt between the following:
+The following 3 commands simplify the creation of reStructuredText hyperlinks
+and where their `external hyperlink targets`_ are located:
 
-  - *nil* : upper case don't force case sensitivity,
-  - *t* : upper case force case sensitivity,
-  - *not-yanks* : upper case force case sensitivity, and
-    lower case text when yank in search minibuffer.
+- First you identify a location inside the file where the next external hyperlink
+  target reference will be written by using the ``pel-rst-set-ref-bookmark`` which puts an
+  actual Emacs bookmark to that location.
+- Then to create a hyperlink inside the text, use the ``pel-rst-makelink``.  It
+  adds the relevant markup around the word(s), move to the location where the
+  explicit hyperlink target references are located (using the location you previously set)
+  enters the first portion of the hyperlink.  You can then enter the required
+  URI to complete the statement.  And then you can use ``pel-jump-to-mark``
+  (normally bounded to ``M-```) to jump back to where you were typing the text.
+- The ``pel-rst-goto-ref-bookmark`` moves point to where the external hyperlink
+  target references are located.
 
-- ``pel-show-search-case-state`` displays the search behaviour in the current
-  buffer.
+Note that ``pel-rst-set-ref-bookmark`` sets an Emacs bookmark to the location,
+so it is retained across sessions like other bookmarks.  The bookmark has a
+special name which uses the "RST-" prefix followed by the filename.  This
+means that only one explicit hyperlink target reference location can be
+remembered per file.  You can set any number of them, but only the last one will
+be retained inside the bookmark across Emacs sessions.
+
+When editing a buffer that uses the rst-mode, PEL sets the mode sensitive
+**F12** prefix to **pel:for-reST** so the above commands can be accessed using
+the following key strokes:
+
+=============================== ===========================================
+key                             binding
+=============================== ===========================================
+``<f12> .``                     ``pel-rst-makelink``
+``<f12> g``                     ``pel-rst-goto-ref-bookmark``
+``<f12> s``                     ``pel-rst-set-ref-bookmark``
+=============================== ===========================================
+
+The longer to type global prefix is always available: ``<f11> SPC r``.
+
+All of the above is activated by ``pel-init`` only when the
+``pel-use-rst-mode`` customize variable is set to **t**.
+
+
+
+.. _reStructuredText: https://en.wikipedia.org/wiki/ReStructuredText
+.. _external hyperlink targets: https://docutils.sourceforge.io/docs/user/rst/quickref.html#hyperlink-targets
+
 
 PEL Scrolling
 -------------
@@ -738,6 +771,32 @@ customize variable is set to **t**, PEL provide a key binding to toggle smooth
 scrolling on and off.  See the `Scrolling`_ PDF table for more info.
 
 .. _smooth scrolling package: https://melpa.org/#/smooth-scrolling
+
+
+PEL Search and Replace Support Utilities
+----------------------------------------
+
+:PDF Docs: `Search and Replace`_.
+:PEL Customization: *none*
+:PEL Key Prefix: **pel:search-replace** : ``<f11> s``
+
+The `pel-search.el`_ file provides 2 commands to change the value of two Emacs
+variables that control the search behaviour: ``case-fold-search`` and
+``search-upper-case``, and 1 command to display and interpret their current
+value:
+
+- ``pel-toggle-case-fold-search`` toggles seach case sensitivity in the current
+  buffer.
+- ``pel-toggle-search-upper-case`` changes the sensitivity behaviour of yank in
+  search prompt between the following:
+
+  - *nil* : upper case don't force case sensitivity,
+  - *t* : upper case force case sensitivity,
+  - *not-yanks* : upper case force case sensitivity, and
+    lower case text when yank in search minibuffer.
+
+- ``pel-show-search-case-state`` displays the search behaviour in the current
+  buffer.
 
 
 
@@ -1103,8 +1162,8 @@ key-maps.
 PEL uses the **F12** as the key prefix for a keymap that contains
 commands for the major mode of the current buffer.
 
-For example, when the current buffer is using the rst-mode for editing
-reStructuredText files,
+For example, when the current buffer is using the ``rst-mode``
+for `editing reStructuredText files`_,
 the **F12** key has the following bindings.
 
 =============================== ===========================================
@@ -1118,6 +1177,7 @@ key                             binding
 However, when the current buffer uses Emacs-Lisp mode for working on Emacs Lisp
 code,
 the **F12** key has the following, different bindings.
+
 
 =============================== ===========================================
 key                             binding
@@ -1156,6 +1216,9 @@ key                             binding
 This is a very early version of PEL.
 Support for programming and markup languages is currently very sparse.
 More to come.
+
+
+.. _editing reStructuredText files: `PEL reStructuredText Support Utilities`_
 
 Key Binding Documentation
 -------------------------
