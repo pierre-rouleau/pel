@@ -391,6 +391,28 @@ It provides the following commands:
 - ``pel-complete`` performs an explicit completion using the competion mode
   enabled in the current buffer.
 
+PEL Bookmark Management Utilities
+---------------------------------
+
+:PDF Docs: `Bookmarks`_.
+:PEL Customization: ``pel-use-bm``.
+:PEL Key Prefix: **pel:bookmark** : ``<f11> '``
+
+The file `pel-bookmark.el`_ does not contain much.  It only provides the
+utility function `pel-bookmark-in-current-file-p`` which checks if a bookmark of
+a given name is present in the currently edited file.  This is used in other
+parts of PEL.
+
+For supporting bookmarks PEL provides the following:
+
+- PEL provides a set of key bindings under the
+  **pel:bookmark** key prefix set to ``<f11> '`` by default.
+- If the ``pel-use-bm`` customize variable is set to **t** PEL add bindings to
+  the visible bookmark commands and binds the **F2** key to ``bm-next`` which
+  moves point to the next visible bookmark. PEL sets it to support bookmarks in
+  several files and moving across files.
+- Also, the project provides the `Bookmarks`_ PDF table which lists several
+  bookmark related functions from various sources and their key bindings.
 
 PEL Comments Utilities
 ----------------------
@@ -1515,7 +1537,7 @@ Variable                       Purpose and link to more info                    
 pel-use-ace-window             Enables use of the `ace-window package`_ to                   Yes, from MELPA_.
                                be able to navigate across windows easily.
 
-                               ☝️ See `PEL Window Management Support`_.
+                               ☝️  See `PEL Window Management Support`_.
 
 pel-use-auto-complete          Enables use of the `auto-complete package`_                   Yes, from MELPA_.
                                which provides auto-completion while typing.
@@ -1544,6 +1566,8 @@ pel-use-bm                     Enables use of the bm_ package, which provides   
                                  to install it from MELPA_ if it is not already installed.
                                - If you prefer to install it yourself, install it before
                                  setting this variable to ``t``.
+
+                               ☝️  See `PEL Bookmark Management Utilities`_.
 
 pel-use-c-eldoc                Enables use of the `c-eldoc`_ package which                   Yes, from MELPA_.
                                provides helpful descriptions of the arguments to C functions
