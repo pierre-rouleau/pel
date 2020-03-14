@@ -508,6 +508,14 @@ browser to load the specified URL.
     from point. It's mainly used for debugging when unexpected formats are
     encountered.
 
+When the ``pel-use-ido-mode`` customize variable is set to **t** ``pel-init``
+activates IDO-mode_ everywhere, enables flex matching and prevents prompt when
+creating new buffers with ``C-x b``.
+
+
+
+.. _IDO-mode: https://www.gnu.org/software/emacs/manual/html_node/ido/index.html
+
 PEL Frame Management Utilities
 ------------------------------
 
@@ -1469,7 +1477,7 @@ To customize PEL:
    These define a set of customization variables that activate the features either
    provided by PEL code or provided by other packages which PEL uses.
    All of these variables have a name that begin with the ``pel-use-`` prefix.
-   The list of these variables is available below in `Pel Use Variables`_.
+   The list of these variables is available below in `PEL Use Variables`_.
 
 #. Select the *Pel Package Use* subgroup, then the subgroup that interests you
    and activate the feature that you want to use by setting the corresponding
@@ -1486,7 +1494,7 @@ To customize PEL:
 
 
 
-Pel Use Variables
+PEL Use Variables
 -----------------
 
 The following table contains the list of the ``pel-use-`` customize variables
@@ -1506,7 +1514,8 @@ Variable                       Purpose and link to more info                    
 ============================== ============================================================= =================
 pel-use-ace-window             Enables use of the `ace-window package`_ to                   Yes, from MELPA_.
                                be able to navigate across windows easily.
-                               See `PEL Window Management Support`_.
+
+                               ☝️ See `PEL Window Management Support`_.
 
 pel-use-auto-complete          Enables use of the `auto-complete package`_                   Yes, from MELPA_.
                                which provides auto-completion while typing.
@@ -1515,7 +1524,7 @@ pel-use-auto-complete          Enables use of the `auto-complete package`_      
                                Better integration for various programming
                                language is planned.
 
-                               See `PEL Auto-Completion Support`_.
+                               ☝️  See `PEL Auto-Completion Support`_.
 
 
 pel-use-bind-key               Enables use of the `bind-key`_ package for some               No, it comes
@@ -1570,7 +1579,10 @@ pel-use-company                Enables the use of the company_ package, one     
                                Better integration for various programming
                                language is planned.
 
-pel-use-dired-narrow           Enabless the use of the dired-narrow_                         Yes, from MELPA_.
+                               ☝️  See `PEL Auto-Completion Support`_.
+
+
+pel-use-dired-narrow           Enables the use of the dired-narrow_                         Yes, from MELPA_.
                                package.  This package provides commands to quickly
                                reduce the number of entries shown in the ``*dired*``
                                buffer.
@@ -1603,13 +1615,18 @@ pel-use-expand-region          Enabless the use of the                          
                                expand-region_ package which provides a powerful
                                text selection mechanism.
 
+                               ☝️  See `PEL PEL Mark Management Utilities`_.
+
+
 pel-use-framemove              Activates and enables the use of the                          Not yet.
                                framemove_ package. This extends the windmove                 This is hosted
                                feature allowing to quickly move point to another             in the EmacsWiki
                                frame using the same mechanism as with windmove.              not in any ELPA
                                                                                              archive.
                                For now, this must be installed manually from
-                               the link listed above.
+                               the framemove_ site.
+
+                               ☝️  See `PEL Frame Management Utilities`_.
 
 
 pel-use-free-keys              Enables the use of of the free-keys_ package                  Yes, from MELPA_.
@@ -1630,9 +1647,9 @@ pel-use-hippie-expand          Activates the use of the Emacs built-in          
                                hippie-expand for abbreviation expansion instead of the       install. It's
                                default dabbrev-expand.                                       part of Emacs.
 
-pel-use-ido-mode               Activates the use of Emacs built-in IDO-mode.                 Nothing to
+pel-use-ido-mode               Activates the use of Emacs built-in ``IDO-mode``.             Nothing to
                                                                                              install. It's
-                                                                                             part of Emacs.
+                               ☝️  See `PEL File Management Utilities`_.                      part of Emacs.
 
 pel-use-lice                   Enables the use of the lice_ package to add open              Yes, from MELPA_.
                                source license text in buffers.
