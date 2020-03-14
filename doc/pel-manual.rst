@@ -557,7 +557,7 @@ PEL Frame Management Utilities
 ------------------------------
 
 :PDF Docs: `Frames`_.
-:PEL Customization:``pel-use-framemove``
+:PEL Customization: ``pel-use-framemove``
 :PEL Key Prefix: **pel:frame** : ``<f11> F``
 
 The file `pel-frame-control.el`_ provides a set of utilities to manage Emacs
