@@ -684,7 +684,7 @@ PEL Speedbar Management
 :PDF Docs: `Speedbar`_.
 
 The file `pel-speedbar.el`_ manages the accessibility and use of Emacs speed-bars:
-Emacs native Speedbar and SR-Speedbar provided as an external package.
+Emacs native Speedbar and the `SR-Speedbar`_ external package.
 PEL manages what type of speed-bar is used.  And that depends on whether Emacs
 is running in graphics mode or in terminnal (TTY) mode and whether SR-Speedbar
 is available.  Note that once one type of speed-bar has been opened inside an
