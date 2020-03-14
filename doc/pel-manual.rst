@@ -686,7 +686,7 @@ PEL Speedbar Management
 The file `pel-speedbar.el`_ manages the accessibility and use of Emacs speed-bars:
 Emacs native Speedbar and the `SR-Speedbar`_ external package.
 PEL manages what type of speed-bar is used.  And that depends on whether Emacs
-is running in graphics mode or in terminnal (TTY) mode and whether SR-Speedbar
+is running in graphics mode or in terminal (TTY) mode and whether SR-Speedbar
 is available.  Note that once one type of speed-bar has been opened inside an
 Emacs session it is currently not possible to use the other type.
 
@@ -719,7 +719,7 @@ entire frame while SR-Speedbar uses only one of the windows.
   To toggle sorting of the tags use the ``pel-speedbar-toggle-sorting`` command.
   It will warn if no speed-bar is opened.
 - When Emacs is running in graphics mode, it can use icons for the speed-bar
-  nodes. Toggle between the use of iconns and simple ASCII characters with
+  nodes. Toggle between the use of icons and simple ASCII characters with
   ``pel-speedbar-toggle-images``.
   It will warn if no speed-bar is opened.
 
