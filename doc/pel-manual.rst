@@ -356,6 +356,8 @@ PEL Auto-Completion Support
 ---------------------------
 
 :PDF Docs: `Auto-completion`_.
+:PEL Customization: ``pel-use-auto-complete``, ``pel-use-company``.
+:PEL Key Prefix: **pel:auto-completion** : ``<f11> ,``
 
 The file `pel-autocomplete.el`_ manages the activation and enabling of
 auto-completion systems globally and per buffer so that you can install several
@@ -391,6 +393,8 @@ PEL Comments Utilities
 ----------------------
 
 :PDF Docs: `Comments`_, `Cut, Delete, Copy and Paste`_, `Narrowing`_.
+:PEL Customization: *none*
+:PEL Key Prefix: **pel:comment** : ``<f11> ;``
 
 The `pel-comment`_ file provides a collection of commands to help manage file
 comment management.
@@ -416,6 +420,10 @@ PEL Cut, Delete, Kill, Copy, Paste and Yank Utilities
 -----------------------------------------------------
 
 :PDF Docs: `Cut, Delete, Copy and Paste`_, `Marking`_.
+:PEL Customization: ``pel-use-popup-kill-ring``.
+:PEL Key Prefix: **pel:kill** : ``<f11> -``, **pel:copy** : ``<f11> =``,
+                 **pel:clipboard** : ``<f11> C``, **pel:text-whitespace** :
+                 ``<f11> t w``
 
 The `pel-ccp.el`_ file provides a collecgtion of commands to perform Emacs
 style kill/yank and otherwise copy/cut/paste operations on various parts of the
@@ -475,6 +483,8 @@ PEL File Management Utilities
 -----------------------------
 
 :PDF Docs: `File Management`_, `Dired`_.
+:PEL Customization: ``pel-use-ido-mode``.
+:PEL Key Prefix: **pel:file** : ``<f11> f``
 
 The `pel-file.el`_ file provides logic to extra the name of a file or a URL from
 text at point and visit (open) that file inside an Emacs buffer or launch a web
@@ -498,6 +508,8 @@ PEL Frame Management Utilities
 ------------------------------
 
 :PDF Docs: `Frames`_.
+:PEL Customization:``pel-use-framemove``
+:PEL Key Prefix: **pel:frame** : ``<f11> F``
 
 The file `pel-frame-control.el`_ provides a set of utilities to manage Emacs
 frames.  Emacs supports frames both when it operates in graphics mode and in
@@ -525,6 +537,8 @@ PEL Font Management Utilities
 -----------------------------
 
 :PDF Docs: `Faces and Fonts`_.
+:PEL Customization: *none*
+:PEL Key Prefix: *none*
 
 The file `pel-font.el`_ provides utilities to control the font size of all
 windows when Emacs runs in graphics mode, to complement what already exists in
@@ -538,6 +552,8 @@ PEL Mark Management Utilities
 -----------------------------
 
 :PDF Docs: `Marking`_.
+:PEL Customization: ``pel-use-expand-region``.
+:PEL Key Prefix: **pel:mark** : ``<f11> ``
 
 The file `pel-mark.el`_ provides utilities to help manage the mark and the mark
 ring buffer.
@@ -580,6 +596,8 @@ PEL Navigation
 --------------
 
 :PDF Docs: `Navigation`_.
+:PEL Customization: *none*
+:PEL Key Prefix: *none*
 
 The `pel-navigate`_ file provides a collection of navigation commands that
 complement the standard Emacs navigation commands.
@@ -617,6 +635,8 @@ PEL Search and Replace Support Utilities
 ----------------------------------------
 
 :PDF Docs: `Search and Replace`_.
+:PEL Customization: *none*
+:PEL Key Prefix: **pel:search-replace** : ``<f11> s``
 
 The `pel-search.el`_ file provides 2 commands to change the value of two Emacs
 variables that control the search behaviour: ``case-fold-search`` and
@@ -640,6 +660,8 @@ PEL Scrolling
 -------------
 
 :PDF Docs: `Scrolling`_.
+:PEL Customization: ``pel-smooth-scrolling``.
+:PEL Key Prefix: **pel:scroll** : ``<f11> |``
 
 The `pel-scroll`_ file provides a set of window scrolling facilities.
 
@@ -677,12 +699,21 @@ following commands are used:
   point the the beginning or end of current field, line, window or buffer.
   See `PEL Navigation`_.
 
+When the `smooth scrolling package`_ is available and ``pel-smooth-scrolling``
+customize variable is set to **t**, PEL provide a key binding to toggle smooth
+scrolling on and off.  See the `Scrolling`_ PDF table for more info.
+
+.. _smooth scrolling package: https://melpa.org/#/smooth-scrolling
+
+
+
 
 PEL Speedbar Management
 -----------------------
 
 :PDF Docs: `Speedbar`_.
-:Customization: ``pel-use-speedbar``, ``pel-prefer-sr-speedbar-in-terminal``.
+:PEL Customization: ``pel-use-speedbar``, ``pel-prefer-sr-speedbar-in-terminal``.
+:PEL Key Prefix: **pel:speedbar** : ``<f11> S``
 
 The file `pel-speedbar.el`_ manages the accessibility and use of Emacs speed-bars:
 both Emacs native Speedbar and the `SR-Speedbar`_ external package.
@@ -737,6 +768,8 @@ PEL Text Insertion Facilities
 -----------------------------
 
 :PDF Docs: `Inserting Text`_.
+:PEL Customization: ``pel-use-lice``.
+:PEL Key Prefix: **pel:insert** : ``<f11> i``
 
 The file `pel-text-insert.el`_ provides a few commands to insert some text
 quickly.  PEL does not yet integrate the support of one or several of the great
@@ -764,6 +797,8 @@ PEL Text Transformation Utilities
 ---------------------------------
 
 :PDF Docs: `Case Conversion`_, `Text-modes`_.
+:PEL Customization: *none*
+:PEL Key Prefix: *none*, standard Emacs keys rebound.
 
 - The `pel-text-transform.el`_ file provides commands that handle case conversions
   taking the case of the word into consideration when performing the operation to
@@ -789,6 +824,8 @@ PEL Window Management Support
 -----------------------------
 
 :PDF Docs: `Windows`_.
+:PEL Customization: ``pel-use-ace-window``.
+:PEL Key Prefix: **pel:window** : ``<f11> w``
 
 The file `pel-window.el`_ provides a set of window management utilities.  Some
 of these utility commands use or extend the features provided by the
@@ -1310,10 +1347,11 @@ currently available.
   Running ``pel-init`` while the variable is ``nil`` will not force installation.
 
 ============================== ============================================================= =================
-Variable                       Purpose                                                       Attempts Install
+Variable                       Purpose and link to more info                                 Attempts Install
 ============================== ============================================================= =================
 pel-use-ace-window             Enables use of the `ace-window package`_ to                   Yes, from MELPA_.
                                be able to navigate across windows easily.
+                               See `PEL Window Management Support`_.
 
 pel-use-auto-complete          Enables use of the `auto-complete package`_                   Yes, from MELPA_.
                                which provides auto-completion while typing.
@@ -1321,6 +1359,9 @@ pel-use-auto-complete          Enables use of the `auto-complete package`_      
                                **Note**: 🚧 only basic support is provided.
                                Better integration for various programming
                                language is planned.
+
+                               See `PEL Auto-Completion Support`_.
+
 
 pel-use-bind-key               Enables use of the `bind-key`_ package for some               No, it comes
                                PEL commands that use it.                                     with use-package
