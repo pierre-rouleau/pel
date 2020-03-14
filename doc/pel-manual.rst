@@ -560,8 +560,8 @@ PEL Highlight and Whitespace Management Support
 
 The file `pel-highlight.el`_ provides the following simple utility commands.
 
-The following help manage current line background highlighting, useful to
-quickly identify the location of the cursor on a large display:
+- The following help manage current line background highlighting, useful to
+  quickly identify the location of the cursor on a large display:
 
   - With ``pel-set-highlight-color`` you can select the color of the highlight
     line by name. Use the ``list-colors-display`` command
