@@ -683,7 +683,7 @@ PEL Speedbar Management
 
 :PDF Docs: `Speedbar`_.
 
-The file `pel-speedbar`_ manages the accessibility and use of Emacs speed-bars:
+The file `pel-speedbar.el`_ manages the accessibility and use of Emacs speed-bars:
 Emacs native Speedbar and SR-Speedbar provided as an external package.
 PEL manages what type of speed-bar is used.  And that depends on whether Emacs
 is running in graphics mode or in terminnal (TTY) mode and whether SR-Speedbar
@@ -705,20 +705,20 @@ entire frame while SR-Speedbar uses only one of the windows.
     is nil, otherwise it automatically selects SR-Speedbar, which is more
     convenient.
 
-- To close the currently opened speedbar, use ``open-close-speedbar``
+- To close the currently opened speed-bar, use ``open-close-speedbar``
   again.
 - When using a speed-bar you can use the ``pel-toggle-to-speedbar`` command to
-  quickly mode point betwwen your current window and the speed-bar window.
+  quickly move point between your current window and the speed-bar window.
 - Force a refresh of the speed-bar contents with the ``pel-speedbar-refresh``
   command.
-- By default the speed-bar do not show the
+- By default the speed-bar does not show the
   `Emacs level-1 and level-2 hidden files`_. To toggle the display of the
   level-1 hidden files, use the ``pel-speedbar-toggle-show-all-files`` command.
   It will warn if no speed-bar is opened.
 - The speed-bar can display the source code file tags.
   To toggle sorting of the tags use the ``pel-speedbar-toggle-sorting`` command.
   It will warn if no speed-bar is opened.
-- When Emacs is running in graphics mode, it can use icons for the speedbar
+- When Emacs is running in graphics mode, it can use icons for the speed-bar
   nodes. Toggle between the use of iconns and simple ASCII characters with
   ``pel-speedbar-toggle-images``.
   It will warn if no speed-bar is opened.
