@@ -932,7 +932,7 @@ PEL Text Insertion Facilities
 
 The file `pel-text-insert.el`_ provides a few commands to insert some text
 quickly.  PEL does not yet integrate the support of one or several of the great
-templating system that are available for Emacs, for now it just provides the
+template systems that are available for Emacs, for now it just provides the
 following commands:
 
 - ``pel-insert-line`` inserts a (commented) line.  The lenght of the line is
@@ -947,7 +947,7 @@ following commands:
   - ``pel-insert-iso8601-timestamp`` inserts a ISO 8601 conforming date and time
     string.
 
-The PEL binding include more commands, some are Emcas standard commands, other
+The PEL binding include more commands, some are Emacs standard commands, other
 are from other packages.  All are listed in the `Inserting Text`_ PDF
 documentation.
 
@@ -1615,7 +1615,7 @@ pel-use-expand-region          Enabless the use of the                          
                                expand-region_ package which provides a powerful
                                text selection mechanism.
 
-                               ☝️  See `PEL PEL Mark Management Utilities`_.
+                               ☝️  See `PEL Mark Management Utilities`_.
 
 
 pel-use-framemove              Activates and enables the use of the                          Not yet.
@@ -1653,6 +1653,8 @@ pel-use-ido-mode               Activates the use of Emacs built-in ``IDO-mode``.
 
 pel-use-lice                   Enables the use of the lice_ package to add open              Yes, from MELPA_.
                                source license text in buffers.
+
+                               ☝️  See `PEL Text Insertion Facilities`_.
 
 pel-use-macrostep              Enables the use of the macrostep_ package to                  Yes, from MELPA_.
                                expand Lisp macros right inside Emacs.
@@ -1700,6 +1702,8 @@ pel-use-rst-mode               Enables the use of the rst built-in library      
                                be modified to help using rst customization
                                and will add more features.
 
+                               ☝️  See `PEL reStructuredText Support Utilities`_.
+
 pel-use-rust                   Enables support for Rust programming language                 Yes, all from
                                via rust-mode_, racer_ and cargo_.                            MELPA_.
                                If pel-use-company is also set to **t** it activates
@@ -1708,7 +1712,8 @@ pel-use-rust                   Enables support for Rust programming language    
 pel-use-speedbar               Enables support of the sr-speedbar_ package to provide        Yes, from MELPA_.
                                Speedbar inside the same frame, useful in terminal (tty)
                                mode.
-                               See `PEL Speedbar Management`_.
+
+                               ☝️  See `PEL Speedbar Management`_.
 
 pel-use-undo-tree              Enables support of the undo-tree_ package to help manage      Yes, with ELPA_.
                                the undo buffer.
@@ -1720,8 +1725,9 @@ pel-use-uniquify               Activates the use of the uniquify library (distri
 pel-use-which-key              Enables the use of the which-key_ package.                    Yes, from ELPA_.
                                This is recommended for new users, as it shows the keys
                                available after each prefix key.
-                               PEL key binding syste was designed to show nicely when
-                               which-key is used.
+                               PEL key binding system was designed to show nicely when
+                               which-key is used, so this variable is set to **t**
+                               by default.
 ============================== ============================================================= =================
 
 .. References
