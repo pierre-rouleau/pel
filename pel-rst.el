@@ -150,8 +150,16 @@ located."
 Reference: see reStructuredText hyperlink format at URL
 `https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#hyperlink-references'"
   (interactive "*P")
-  (let* ((p_begin (if (region-active-p) (region-beginning) (car (bounds-of-thing-at-point 'word))))
-         (p_end   (if (region-active-p) (region-end) (cdr (bounds-of-thing-at-point 'word))))
+  (let* ((p_begin (if (region-active-p)
+                      (region-beginning)
+                    (car (bounds-of-thing-at-point 'word))))
+         (p_end   (if (region-active-p)
+                      (region-end)
+                    (progn
+                      ;; if no region already exists, set the mark to allow quick return
+                      (set-mark-command nil)
+                      ;; then return end of word as the end position
+                      (cdr (bounds-of-thing-at-point 'word)))))
          (anchor (buffer-substring-no-properties p_begin p_end))
          (anchor_isa_single_word (not (pel-whitespace-in-str-p anchor))))
     (deactivate-mark)
