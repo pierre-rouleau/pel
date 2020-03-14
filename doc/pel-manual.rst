@@ -944,9 +944,31 @@ to the main dictionary and your personal dictionary
   Earlier versions of these programs were not tested, YMMV.
 
 
+PEL Text Filling and Justification Utilities
+-------------------------------------------
 
-PEL Text Insertion Facilities
------------------------------
+:PDF Docs: `Filling and Justification`_.
+:PEL Customization: *none*
+:PEL Key Prefix: - **pel:fill** : ``<f11> t f``
+                 - **pel:justification** : ``<f11> t j``
+                 - **pel:textmodes** : ``<f11> t m``
+
+
+The `pel-fill.el`_ provides two simple utilities:
+
+- ``pel-auto-fill-only-comments``
+  activates/de-activates automatic filling in source code comments only.
+- ``pel-show-fill-columns``
+  displays value of relevant fill columns for current buffer.
+
+PEL also provides several key bindings to Emacs text filling and justification
+commands, as shown in the `Filling and Justification`_ PDF table.
+PEL uses the ``<f11> t f``, ``<f11> t j`` and ``<f11> t m`` key prefixes
+to provide access to several relevant commands.
+
+
+PEL Text Insertion Utilities
+----------------------------
 
 :PDF Docs: `Inserting Text`_.
 :PEL Customization: ``pel-use-lice``.
@@ -1678,7 +1700,7 @@ pel-use-ido-mode               Activates the use of Emacs built-in ``IDO-mode``.
 pel-use-lice                   Enables the use of the lice_ package to add open              Yes, from MELPA_.
                                source license text in buffers.
 
-                               ☝️  See `PEL Text Insertion Facilities`_.
+                               ☝️  See `PEL Text Insertion Utilities`_.
 
 pel-use-macrostep              Enables the use of the macrostep_ package to                  Yes, from MELPA_.
                                expand Lisp macros right inside Emacs.
