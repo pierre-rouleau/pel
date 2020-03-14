@@ -682,9 +682,15 @@ PEL Speedbar Management
 -----------------------
 
 :PDF Docs: `Speedbar`_.
+:Customization: ``pel-use-speedbar``, ``pel-prefer-sr-speedbar-in-terminal``.
 
 The file `pel-speedbar.el`_ manages the accessibility and use of Emacs speed-bars:
-Emacs native Speedbar and the `SR-Speedbar`_ external package.
+both Emacs native Speedbar and the `SR-Speedbar`_ external package.
+When the ``pel-use-speedbar`` customize variable is set to **t** PEL provides
+key bindings for activating the speed-bars and provide some management
+facilities. As shown in the PDF `Speedbar`_ table, PEL's
+default key bindings for those use the ``<f11> S`` prefix.
+
 PEL manages what type of speed-bar is used.  And that depends on whether Emacs
 is running in graphics mode or in terminal (TTY) mode and whether SR-Speedbar
 is available.  Note that once one type of speed-bar has been opened inside an
@@ -707,8 +713,8 @@ entire frame while SR-Speedbar uses only one of the windows.
 
 - To close the currently opened speed-bar, use ``open-close-speedbar``
   again.
-- When using a speed-bar you can use the ``pel-toggle-to-speedbar`` command to
-  quickly move point between your current window and the speed-bar window.
+- When using a the SR-Speedbar you can use the ``pel-toggle-to-speedbar`` command to
+  quickly move point between your current window and the SR-Speedbar window.
 - Force a refresh of the speed-bar contents with the ``pel-speedbar-refresh``
   command.
 - By default the speed-bar does not show the
@@ -723,8 +729,6 @@ entire frame while SR-Speedbar uses only one of the windows.
   ``pel-speedbar-toggle-images``.
   It will warn if no speed-bar is opened.
 
-All the above commands have PEL key bindings shown in the PDF `Speedbar`_ table.
-The default key bindings use the ``<f11> S`` prefix.
 
 .. _Emacs level-1 and level-2 hidden files: https://www.gnu.org/software/emacs/manual/html_node/speedbar/Hidden-Files.html#Hidden-Files
 
@@ -1491,6 +1495,7 @@ pel-use-rust                   Enables support for Rust programming language    
 pel-use-speedbar               Enables support of the sr-speedbar_ package to provide        Yes, from MELPA_.
                                Speedbar inside the same frame, useful in terminal (tty)
                                mode.
+                               See `PEL Speedbar Management`_.
 
 pel-use-undo-tree              Enables support of the undo-tree_ package to help manage      Yes, with ELPA_.
                                the undo buffer.
