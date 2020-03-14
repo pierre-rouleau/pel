@@ -38,9 +38,9 @@
 ;;
 ;; Call hierarchy:
 ;;
-;; - pel-increase-font-size-all-buffers
-;; - pel-decrease-font-size-all-buffers
-;; - pel-reset-font-size-all-buffers
+;; - pel-font-increase-size-all-buffers
+;; - pel-font-decrease-size-all-buffers
+;; - pel-font-reset-size-all-buffers
 ;;   - pel-scale-all-buffers
 
 (defun pel-font-scale-all-buffers (inc &optional all)

@@ -549,9 +549,18 @@ The file `pel-font.el`_ provides utilities to control the font size of all
 windows when Emacs runs in graphics mode, to complement what already exists in
 standard GNU Emacs.  The available commands are:
 
-- ``pel-increase-font-size-all-buffers``,
-- ``pel-decrease-font-size-all-buffers``,
-- ``pel-reset-font-size-all-buffers``.
+- ``pel-font-increase-size-all-buffers``, bound to ``<s-kp-add>``.
+  On the macOS keyboard: ``⌘ - +``.
+- ``pel-font-decrease-size-all-buffers``, bound to ``<s-kp-subtract>``
+  On the macOS keyboard: ``⌘ - -``.
+- ``pel-font-reset-size-all-buffers``, bound to ``<s-kp-0>``.
+  On the macOS keyboard: ``⌘ - 0``.
+
+The key binding selected correspond to what is sued on macOS for
+manipulating the font size of the Terminal.app application when the
+*super* modifier key is set to the macOS command (⌘ ) key.
+
+
 
 PEL Frame Management Utilities
 ------------------------------
