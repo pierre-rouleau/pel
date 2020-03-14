@@ -136,32 +136,33 @@ in subsequent calls of the Emacs session."
   (setq pel--speedbar-active t))
 
 ;; --
+;;
+;; * pel-toggle-to-speedbar
+;;   - pel--toggle-to-sr-speedbar-window
 
 (defun pel--toggle-to-sr-speedbar-window ()
   "Move point to/out of sr-speedbar.
 If point is not in sr-speedbar and sr-speedbar exists move to it.
 Otherwise return to previously visited window if it still exists,
 otherwise move to the other window."
-  (interactive)
   (if pel--speedbar-active
       (if (sr-speedbar-window-p)
           (when pel-window-before-sr-speedbar
-            (progn
-              ;; return point back to window that had focus before moving to sr-speedbar
-              ;; if that window is still alive, otherwise move to other window.
-              (if (window-live-p pel-window-before-sr-speedbar)
-                  (select-window pel-window-before-sr-speedbar)
-                (other-window 1))
-              (setq pel-window-before-sr-speedbar nil)))
+            ;; return point back to window that had focus before moving to sr-speedbar
+            ;; if that window is still alive, otherwise move to other window.
+            (if (window-live-p pel-window-before-sr-speedbar)
+                (select-window pel-window-before-sr-speedbar)
+              (other-window 1))
+            (setq pel-window-before-sr-speedbar nil))
         ;; else: remember current window and move to sr-speedbar
-        (progn
-          (setq pel-window-before-sr-speedbar (get-buffer-window))
-          (sr-speedbar-select-window)))
-    (user-error "Open Speedbar first with pel-open-close-speedbar")))
+        (setq pel-window-before-sr-speedbar (selected-window))
+        (sr-speedbar-select-window))
+    (user-error "Open SR-Speedbar first with pel-open-close-speedbar")))
 
 ;;-pel-autoload
 (defun pel-toggle-to-speedbar ()
-  "Move point to speedbar frame or sr-speedbar window or back."
+  "Move point to speedbar frame or sr-speedbar window or back.
+If no speedbar is used, open one."
   (interactive)
   (if (not pel-speedbar-type-used)
       (pel-open-close-speedbar)
@@ -223,6 +224,7 @@ otherwise move to the other window."
 (when (display-graphic-p)
   (defun pel-speedbar-toggle-images ()
     "Execute `speedbar-toggle-images' if loaded, warn otherwise."
+    (interactive)
     (if (fboundp 'speedbar-toggle-images)
         (speedbar-toggle-images)
       (user-error "Open Speedbar first"))))

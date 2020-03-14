@@ -1964,7 +1964,7 @@ the ones defined from the buffer now."
 
   (define-pel-global-prefix pel:speedbar (kbd "<f11> S"))
   (define-key pel:speedbar "S"  'pel-open-close-speedbar)     ; Open/close Speedbar or SR-Speedbar.  In Terminal only allow SR-Speedbar. In graphics mode, prompt, but once is selected always use the same.
-  (define-key pel:speedbar "."  'pel-toggle-to-speedbar)      ; Change focus to/from speedbar-frame/sr-speedbar window
+  (define-key pel:speedbar "."  'pel-toggle-to-speedbar)      ; Change focus to/from sr-speedbar window
   (define-key pel:speedbar "R"  'pel-speedbar-toggle-refresh) ; Toggle refresh of speedbar content
   (define-key pel:speedbar "r"  'pel-speedbar-refresh)        ; Refresh the current speedbar display, disposing of any cached data.
   (define-key pel:speedbar "a"  'pel-speedbar-toggle-show-all-files) ; show all level-1 hidden files.
