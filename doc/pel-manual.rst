@@ -538,6 +538,21 @@ creating new buffers with ``C-x b``.
 
 .. _IDO-mode: https://www.gnu.org/software/emacs/manual/html_node/ido/index.html
 
+PEL Font Management Utilities
+-----------------------------
+
+:PDF Docs: `Faces and Fonts`_.
+:PEL Customization: *none*
+:PEL Key Prefix: *none*
+
+The file `pel-font.el`_ provides utilities to control the font size of all
+windows when Emacs runs in graphics mode, to complement what already exists in
+standard GNU Emacs.  The available commands are:
+
+- ``pel-increase-font-size-all-buffers``,
+- ``pel-decrease-font-size-all-buffers``,
+- ``pel-reset-font-size-all-buffers``.
+
 PEL Frame Management Utilities
 ------------------------------
 
@@ -567,20 +582,6 @@ This PEL file provides the following commands:
   - ``pel-next-frame`` moves point to the next frame.
   - ``pel-previous-frame`` moves point to the previous frame.
 
-PEL Font Management Utilities
------------------------------
-
-:PDF Docs: `Faces and Fonts`_.
-:PEL Customization: *none*
-:PEL Key Prefix: *none*
-
-The file `pel-font.el`_ provides utilities to control the font size of all
-windows when Emacs runs in graphics mode, to complement what already exists in
-standard GNU Emacs.  The available commands are:
-
-- ``pel-increase-font-size-all-buffers``,
-- ``pel-decrease-font-size-all-buffers``,
-- ``pel-reset-font-size-all-buffers``.
 
 PEL Highlight and Whitespace Management Support
 -----------------------------------------------
