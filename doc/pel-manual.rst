@@ -421,9 +421,10 @@ PEL Cut, Delete, Kill, Copy, Paste and Yank Utilities
 
 :PDF Docs: `Cut, Delete, Copy and Paste`_, `Marking`_.
 :PEL Customization: ``pel-use-popup-kill-ring``.
-:PEL Key Prefix: **pel:kill** : ``<f11> -``, **pel:copy** : ``<f11> =``,
-                 **pel:clipboard** : ``<f11> C``, **pel:text-whitespace** :
-                 ``<f11> t w``
+:PEL Key Prefix: - **pel:clipboard** : ``<f11> C``
+                 - **pel:copy** : ``<f11> =``
+                 - **pel:kill** : ``<f11> -``
+                 - **pel:text-whitespace** : ``<f11> t w``
 
 The `pel-ccp.el`_ file provides a collecgtion of commands to perform Emacs
 style kill/yank and otherwise copy/cut/paste operations on various parts of the
@@ -553,7 +554,7 @@ PEL Mark Management Utilities
 
 :PDF Docs: `Marking`_.
 :PEL Customization: ``pel-use-expand-region``.
-:PEL Key Prefix: **pel:mark** : ``<f11> ``
+:PEL Key Prefix: **pel:mark** : ``<f11> .``
 
 The file `pel-mark.el`_ provides utilities to help manage the mark and the mark
 ring buffer.
