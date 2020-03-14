@@ -314,10 +314,13 @@ and identifies the path for the personal dictionary.
 .. code:: elisp
 
           (eval-after-load "ispell"
-            '(if (fboundp 'pel-spell-init)
+            '(when (fboundp 'pel-spell-init)
                  (pel-spell-init “aspell" "~/.emacs.d/.ispell")))
 
 In future versions of PEL, this code may not be necessary.
+
+More information on PEL support of spell checking is available
+in the `PEL Spell Checking Support`_ section.
 
 To override or change PEL key bindings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -793,6 +796,64 @@ entire frame while SR-Speedbar uses only one of the windows.
 
 
 .. _Emacs level-1 and level-2 hidden files: https://www.gnu.org/software/emacs/manual/html_node/speedbar/Hidden-Files.html#Hidden-Files
+
+
+PEL Spell Checking Support
+--------------------------
+
+:PDF Docs: `Spell Checking`_.
+:PEL Customization: *none*
+:PEL Key Prefix: **pel:spell** : ``<f11> $``
+
+The file `pel-spell.el`_ contains
+spell checking utilities that detect and display what spell check mode is
+active, and initialization code that fixes a problem with Flyspell pop-up
+menu when Emacs runs in terminal (TTY) mode.
+
+One of the goal of this file is to avoid loading either Ispell or flyspell
+until they are actually required while providing a function that can
+configure these utilities: ``pel-spell-init``.
+
+To configure Ispell and Flyspell without forcing early loading of the Ispell
+and flyspell libraries you can write something like the following inside your
+init file:
+
+.. code:: elisp
+
+   (eval-after-load "ispell"
+      '(when (fboundp 'pel-spell-init)
+         (pel-spell-init "aspell"
+                         "~/.emacs.d/.ispell")))
+
+This sets up the path to your spell checking dictionary and if Emacs is running
+in terminal (TTY) mode, it allows flyspell pop-up menus to work properly by
+defining and using the function ``pel-spell-flyspell-emacs-popup-textual`` that
+contains the fix.
+
+-  *Credits*:
+
+   Code of pel-spell-flyspell-emacs-popup-textual was taken from
+   https://www.emacswiki.org/emacs/FlySpell.  In PEL it is renamed
+   and defined lazily when running in terminal mode.
+
+
+The file also provides the ``pel-spell-show-use`` command, which displays
+information about the spell checking programs used, their version and the path
+to the main dictionary and your personal dictionary
+
+- *Limitations*:
+
+  Extraction of spell programs version string done by the function
+  ``pel-spell-program-version-string`` works if the version text is
+  printed on the first line only.  That works for the followings:
+
+  - aspell 0.60.6.1
+  - Ispell 3.3.0.2
+  - enchant-2.2.7
+  - hunspell 1.7.0
+
+  Earlier versions of these programs were not tested, YMMV.
+
 
 
 PEL Text Insertion Facilities

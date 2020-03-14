@@ -28,7 +28,7 @@
 ;;  menu when Emacs runs in terminal (TTY) mode.
 ;;
 ;;  One of the goal of this file is to avoid loading either Ispell or flyspell
-;;  until they are actually required while providing an function that can
+;;  until they are actually required while providing a function that can
 ;;  configure these utilities: `pel-spell-init'.  See the Use section below.
 ;;
 ;;  *Credits*:
@@ -54,13 +54,11 @@
 ;; and flyspell libraries you can write something like the following inside your
 ;; init file:
 ;;
-;;   (eval-after-load "ispell"
-;;     '(progn
-;;        (pel-spell-init "aspell"
-;;                        (if (eq system-type 'windows-nt)
-;;                            "c:/pg/aspell/0.50.3-w32/bin/")
-;;                        "~/.emacs.d/.ispell")
-;;
+;;    (eval-after-load "ispell"
+;;       '(when (fboundp 'pel-spell-init)
+;;          (pel-spell-init "aspell"
+;;                          "~/.emacs.d/.ispell")))
+
 
 ;; -----------------------------------------------------------------------------
 ;;; Code:
