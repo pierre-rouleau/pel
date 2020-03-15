@@ -556,7 +556,7 @@ standard GNU Emacs.  The available commands are:
 - ``pel-font-reset-size-all-buffers``, bound to ``<s-kp-0>``.
   On the macOS keyboard: ``⌘-0``.
 
-The key binding selected correspond to what is sued on macOS for
+The key binding selected correspond to what is used on macOS for
 manipulating the font size of the Terminal.app application when the
 *super* modifier key is set to the macOS command (⌘ ) key.
 
@@ -664,6 +664,35 @@ ring buffer.
     PEL binds ``<f11> . ,`` to this command.
 
 .. _Fixing the mark commands in transient mark mode: https://www.masteringemacs.org/article/fixing-mark-commands-transient-mark-mode
+
+PEL Menu Index Utilities
+------------------------
+
+:PDF Docs: `Menus`_.
+:PEL Customization: *none*
+:PEL Key Prefix: **pel:menu** : ``<f11><f10>``
+
+The file `pel-imenu.el`_ provides code that changes the order of entries of the
+MenuBar Index entries so that they are easier to use with source code files and
+markup files.  The entries are ordered in the order of appearance inside the
+file instead of placing all sub-menus at the top the way Emacs normally does it.
+
+When ``pel-init`` is called it calls ``pel-imenu-init`` which installs the
+``pel-imenu-outline--split-menu`` utility function.  That function holds the
+code to change the menu entry order.
+
+  **Credit**:
+       The code of that utility function is based on pdf-tools/pdf-outline
+       code mentioned
+       `here <http://emacs.stackexchange.com/questions/31791/order-of-items-in-imenu?noredirect=1#comment48799_31791>_.
+
+It is possible to restore Emacs original behaviour by executing the
+command ``pel-toggle-imenu-index-follows-order`` **and then forcing a menu entry
+re-scan**.
+
+PEL provides other key bindings to manage the MenuBar but also accessing the
+menu via the minibuffer.  The key prefix for these command bindings is ``<f11><f10>``.
+
 
 
 PEL Navigation

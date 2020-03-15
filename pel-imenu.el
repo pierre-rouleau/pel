@@ -31,6 +31,7 @@
 ;;
 ;; The following code changes this behavior.
 ;;
+;; *Credit*
 ;; Code based on the pdf-tools/pdf-outline code, which I found via the
 ;; following StackExchange discussion:
 ;; http://emacs.stackexchange.com/questions/31791/order-of-items-in-imenu?noredirect=1#comment48799_31791
@@ -70,9 +71,11 @@
   "Change the way the imenu index entries are organized."
   (interactive)
   (pel-toggle 'pel-imenu-index-follows-order-p)
-  (if (fboundp 'imenu--cleanup)
-      (imenu--cleanup)
-    (error "Failed toggling menu: imenu--cleanup not found")))
+  (beep)
+  (message "Rescan the menu to show sub-menus %s."
+           (if pel-imenu-index-follows-order-p
+               "in order of appearance of content in file"
+             "at the top")))
 
 (defun pel-imenu-outline--split-menu (oldfun menulist title)
   "Replacement function for `imenu--split-menu'.
