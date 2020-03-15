@@ -550,11 +550,11 @@ windows when Emacs runs in graphics mode, to complement what already exists in
 standard GNU Emacs.  The available commands are:
 
 - ``pel-font-increase-size-all-buffers``, bound to ``<s-kp-add>``.
-  On the macOS keyboard: ``⌘- +``.
+  On the macOS keyboard: ``<⌘-kp-+>``.
 - ``pel-font-decrease-size-all-buffers``, bound to ``<s-kp-subtract>``
-  On the macOS keyboard: ``⌘- -``.
+  On the macOS keyboard: ``<⌘-kp ->``.
 - ``pel-font-reset-size-all-buffers``, bound to ``<s-kp-0>``.
-  On the macOS keyboard: ``⌘- 0``.
+  On the macOS keyboard: ``<⌘-kp- 0>``.
 
 The key binding selected correspond to what is sued on macOS for
 manipulating the font size of the Terminal.app application when the
