@@ -683,8 +683,7 @@ code to change the menu entry order.
 
 **Credit**:
   The code of that utility function is based on pdf-tools/pdf-outline
-  code mentioned
-  `here <http://emacs.stackexchange.com/questions/31791/order-of-items-in-imenu?noredirect=1#comment48799_31791>_.
+  code mentioned here_.
 
 It is possible to restore Emacs original behaviour by executing the
 command ``pel-toggle-imenu-index-follows-order`` **and then forcing a menu entry
@@ -693,6 +692,7 @@ re-scan**.
 PEL provides other key bindings to manage the MenuBar but also accessing the
 menu via the minibuffer.  The key prefix for these command bindings is ``<f11><f10>``.
 
+.. _here: http://emacs.stackexchange.com/questions/31791/order-of-items-in-imenu?noredirect=1#comment48799_31791
 
 
 PEL Navigation
