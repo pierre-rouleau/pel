@@ -681,10 +681,10 @@ When ``pel-init`` is called it calls ``pel-imenu-init`` which installs the
 ``pel-imenu-outline--split-menu`` utility function.  That function holds the
 code to change the menu entry order.
 
-  **Credit**:
-       The code of that utility function is based on pdf-tools/pdf-outline
-       code mentioned
-       `here <http://emacs.stackexchange.com/questions/31791/order-of-items-in-imenu?noredirect=1#comment48799_31791>_.
+**Credit**:
+  The code of that utility function is based on pdf-tools/pdf-outline
+  code mentioned
+  `here <http://emacs.stackexchange.com/questions/31791/order-of-items-in-imenu?noredirect=1#comment48799_31791>_.
 
 It is possible to restore Emacs original behaviour by executing the
 command ``pel-toggle-imenu-index-follows-order`` **and then forcing a menu entry
