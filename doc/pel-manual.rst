@@ -683,6 +683,7 @@ PEL reStructuredText Support Utilities
                     - ``rst-preferred-adornments``.
 :PEL Key Prefix: - Globally: **pel:for-reST** : ``<f11> SPC r``
                  - For buffers in rst-mode: ``<f12>``
+
                    - Sub-keys: **pel:rst-adorn-style** : ``<f12> A``
 
 The file `pel-rst.el`_ provides features that complement the
