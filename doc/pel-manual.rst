@@ -1538,72 +1538,71 @@ programming languages, major modes and will integrate with more of the external
 Emacs packages and more tables will describe how to use them.
 
 - `Document Legend`_
-- Emacs base operations
 
-  #. `Abbreviations`_
-  #. `Align`_
-  #. `Auto-Completion`_
-  #. `Bookmarks`_
-  #. `Buffers`_
-  #. `Case Conversion`_
-  #. `Closing and Suspending`_
-  #. `Comments`_
-  #. `Counting`_
-  #. `Cut, Delete, Copy and Paste`_ (killing and yanking)
-  #. `Display Lines`_
-  #. `Enriched Text`_
-  #. `Faces and Fonts`_
-  #. `File Management`_
-  #. `File and Directory Local Variables`_
-  #. `Filling and Justification`_
-  #. `Frames`_
-  #. `Grep`_
-  #. `Help`_
-  #. `Highlight`_
-  #. `Hooks`_
-  #. `Indentation`_
-  #. `Input Method`_
-  #. `Inserting Text`_
-  #. `Keyboard Macros`_
-  #. `Marking`_
-  #. `Menus`_
-  #. Modes:
+**Emacs base operations:**
 
-     - `Dired`_
-     - `Graphviz Dot`_
-     - `Org mode`_
-     - `reStructuredText mode`_
+#. `Abbreviations`_
+#. `Align`_
+#. `Auto-Completion`_
+#. `Bookmarks`_
+#. `Buffers`_
+#. `Case Conversion`_
+#. `Closing and Suspending`_
+#. `Comments`_
+#. `Counting`_
+#. `Cut, Delete, Copy and Paste`_ (killing and yanking)
+#. `Display Lines`_
+#. `Enriched Text`_
+#. `Faces and Fonts`_
+#. `File Management`_
+#. `File and Directory Local Variables`_
+#. `Filling and Justification`_
+#. `Frames`_
+#. `Grep`_
+#. `Help`_
+#. `Highlight`_
+#. `Hooks`_
+#. `Indentation`_
+#. `Input Method`_
+#. `Inserting Text`_
+#. `Keyboard Macros`_
+#. `Marking`_
+#. `Menus`_
+#. `Modifier Keys`_
+#. `Narrowing`_
+#. `Navigation`_
+#. `Packages`_
+#. `Registers`_
+#. `Scrolling`_
+#. `Search and Replace`_
+#. `Shells`_
+#. `Sorting`_
+#. `Speedbar`_
+#. `Spell Checking`_
+#. `Text-modes`_
+#. `Transpose`_
+#. `Undo, Redo, Repeat and Prefix Arguments`_
+#. `Web`_
+#. `Whitespaces`_
+#. `Windows`_
 
-  #. `Modifier Keys`_
-  #. `Narrowing`_
-  #. `Navigation`_
-  #. `Packages`_
-  #. Programming Language Support:
+**Modes:**
 
-     - `Common Lisp`_
-     - `Emacs Lisp`_
+#. `Dired`_
+#. `Graphviz Dot`_
+#. `Org mode`_
+#. `reStructuredText mode`_
 
-       - `ERT`_ (Emacs Lisp Regression Testing system)
+**Programming Language Support:**
 
-  #. `Registers`_
-  #. `Scrolling`_
-  #. `Search and Replace`_
-  #. `Shells`_
-  #. `Sorting`_
-  #. `Speedbar`_
-  #. `Spell Checking`_
-  #. `Text-modes`_
-  #. `Transpose`_
-  #. `Undo, Redo, Repeat and Prefix Arguments`_
-  #. Version Control Systems:
+#. `Common Lisp`_
+#. `Emacs Lisp`_
 
-     - `Mercurial`_
+   - `ERT`_ (Emacs Lisp Regression Testing system)
 
-  #. `Web`_
-  #. `Whitespaces`_
-  #. `Windows`_
+**Version Control Systems:**
 
-
+#. `Mercurial`_
 
 .. _Document Legend:                          pdf/-legend.pdf
 .. _Abbreviations:                            pdf/abbreviations.pdf
