@@ -940,6 +940,20 @@ PEL Emacs Lisp Support
                  - From a buffer in elisp-mode: ``<f12>``
 
 
+
+PEL Prompt Utilities
+--------------------
+
+:PDF Docs: *none*
+:PEL Customization: *none*
+:PEL Key Prefix: *none*
+
+The file `pel-prompt.el`_ is a utility file and for now only contains one
+function: ``pel-y-n-e-or-l-p`` which prompts and accepts various types of
+responses.  It is used by the ``pel-find-file-at-point-in-window`` command.
+It's a rather specialized prompting utility with a rather strange name...
+
+
 PEL Scrolling
 -------------
 
@@ -2310,3 +2324,5 @@ customization.
 
 ..
    -----------------------------------------------------------------------------
+:PDF Docs: `Comments`_, `Cut, Delete, Copy and Paste`_, `Narrowing`_
+..  LocalWords:  PEL
