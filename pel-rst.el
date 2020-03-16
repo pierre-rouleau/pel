@@ -76,19 +76,28 @@ Set it to one of: 'CRiSPeR, 'Sphinx-Python, or 'default."
 
 ;;-pel-autoload
 (defun pel-rst-adorn-default ()
-  "Set the default section adornment style."
+  "Set the default section adornment style.
+This is Emacs rst-mode default: a title with 7 levels."
   (interactive)
   (pel-rst-set-adornment 'default))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-Sphinx-Python ()
-  "Set the Sphinx-Python section adornment style."
+  "Set the Sphinx-Python section adornment style.
+This is what Sphinx supports: 6 levels:
+- parts,
+- chapters,
+- sections,
+- subsections,
+- subsubsections,
+- paragraphs."
   (interactive)
   (pel-rst-set-adornment 'Sphinx-Python))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-CRiSPer ()
-  "Set the CRiSPer section adornment style."
+  "Set the CRiSPer section adornment style.
+A title level with another 10 levels."
   (interactive)
   (pel-rst-set-adornment 'CRiSPer))
 

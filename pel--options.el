@@ -97,8 +97,8 @@ Identifies the number of levels supported and their adornment.
   - chapters,
   - sections,
   - subsections,
-  - subsubsections
-  - paragraphs
+  - subsubsections,
+  - paragraphs.
 - `CRiSPer', a 10-level mode I developed in the past for CRiSP."
   :group 'pel-rst
   :type '(choice (const :tag "default" default)
