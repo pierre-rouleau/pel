@@ -210,12 +210,15 @@ Leave the cursor unmoved, on the title line."
 (defun pel--rst-level-for (char)
   "Return the level number for a specific CHAR, nil if not found.
 Ignore the title level."
-  (let ((level-number 1))
+  (let ((level-number 1)
+        (level-detected nil))
     (dolist (adorn-level (cdr rst-preferred-adornments))
-      (let ((adorn-char (car adorn-level)))
-        (if (eq adorn-char char)
-            (cl-return level-number)
-          (setq level-number (1+ level-number)))))))
+      (when (not level-detected)
+        (let ((adorn-char (car adorn-level)))
+          (if (eq adorn-char char)
+              (setq level-detected level-number)
+            (setq level-number (1+ level-number))))))
+    level-detected))
 
 (defun pel--rst-adorn-level-of-previous-section ()
   "Return the adornment level of the previous section in the text."
@@ -271,14 +274,16 @@ Ignore the title level."
 (defun pel--line-adorned-p ()
   "Return t if current line is section-adorned, nil otherwise.
 LIMITATION: only able to detect the first 6 levels."
-  (car (memq
-        (car (get-char-property (point) 'face))
-        '(rst-level-1
-          rst-level-2
-          rst-level-3
-          rst-level-4
-          rst-level-5
-          rst-level-6))))
+  (let ((point-text-face-property (get-text-property (point) 'face)))
+    (if (listp point-text-face-property)
+        (car (memq
+              (car point-text-face-property)
+              '(rst-level-1
+                rst-level-2
+                rst-level-3
+                rst-level-4
+                rst-level-5
+                rst-level-6))))))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-same-level ()
