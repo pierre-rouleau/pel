@@ -670,21 +670,20 @@ PEL Markup Language Support
 ---------------------------
 
 PEL markup language support assigns the **F12** key as the prefix key for
-the markup language.  The prefix key is the same for other markup
+PEL markup-specific commands.  The prefix key is the same for other markup
 languages (or programming languages) but the key bindings after the prefix differ,
-while keeping as similar keys as possible.
-
-
-
+while keeping them as similar as possible.
 
 PEL reStructuredText Support Utilities
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :PDF Docs: `reStructuredText mode`_.
-:PEL Customization: ``pel-use-rst-mode``, ``pel-rst-adornment-style``, ``rst-preferred-adornments``.
+:PEL Customization: - ``pel-use-rst-mode``,
+                    - ``pel-rst-adornment-style``,
+                    - ``rst-preferred-adornments``.
 :PEL Key Prefix: - Globally: **pel:for-reST** : ``<f11> SPC r``
-                 - From a buffer in rst-mode: ``<f12>``
-                 - Sub-keys: **pel:rst-adorn-style** : ``<f12> A``
+                 - For buffers in rst-mode: ``<f12>``
+                   - Sub-keys: **pel:rst-adorn-style** : ``<f12> A``
 
 The file `pel-rst.el`_ provides features that complement the
 support for reStructuredText_ markup provided by the rst.el, which implements
