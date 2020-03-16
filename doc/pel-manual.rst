@@ -904,8 +904,11 @@ variable is set to **t**.
 The ``pel-use-common-lisp`` function sets the indentation rule to the Common
 Lisp indentation style.
 The ``pel-init`` function also set the variable ``common-lisp-hyperspec-root``
-to the directory "~/docs/HyperSpec/".  You can then copy the HyperSpec files
+to the directory "~/docs/HyperSpec/".  You can then copy the HyperSpec_ files
 inside this directory and Emacs can access them locally.
+
+
+.. _HyperSpec: http://www.lispworks.com/documentation/HyperSpec/Front/index.htm
 
 
 PEL Emacs Lisp Support
