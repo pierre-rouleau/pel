@@ -322,14 +322,6 @@ Optionally insert it at point if INSERT is non-nil."
 ;; The following set Emacs to keep the point in the same location.
 (setq split-window-keep-point t)
 
-
-
-;; More powerful indent-rigidly: pel-indent-rigidly
-;; ------------------------------------------------
-;; the pel-indent-rigidly does the same as the original command
-;; but also allow indenting the current line even if nothing is marked.
-(global-set-key [remap indent-rigidly] 'pel-indent-rigidly)
-
 ;; Uniquify: meaningful names when multiple buffers have the same name
 ;; -------------------------------------------------------------------
 ;; Uniquify provides meaningful names for buffers with the same name.
@@ -761,9 +753,6 @@ Optionally insert it at point if INSERT is non-nil."
 ;; command is bound to M-b which is just to the left of the M-n key in QWERTY
 ;; and AZERTY keyboards.
 (global-set-key (kbd "M-n")  'pel-forward-word-start)
-
-;; Add indented line below
-(global-set-key (kbd "<M-RET>") 'pel-newline-and-indent-below)
 
 ;; Meta left/right to forward/backward-word as this is needed by term shells
 ;; and python shells from outside Emacs so we leave it to get the same behaviour
@@ -1599,8 +1588,21 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> <tab>`` : indentation
 
+;; More powerful indent-rigidly: pel-indent-rigidly
+;; ------------------------------------------------
+;; the pel-indent-rigidly does the same as the original command
+;; but also allow indenting the current line even if nothing is marked.
+(global-set-key [remap indent-rigidly] 'pel-indent-rigidly)
+
+;; Add indented line below
+(global-set-key (kbd "<M-RET>") 'pel-newline-and-indent-below)
+
 (define-pel-global-prefix pel:indent (kbd "<f11> TAB"))
-(define-key pel:indent "r" #'indent-relative)
+(define-key pel:indent "r"            #'indent-relative)
+(define-key pel:indent "c"             'pel-insert-c-indent)
+(define-key pel:indent "C"             'pel-unindent)
+(define-key pel:indent (kbd "TAB")     'pel-indent-rigidly)
+(define-key pel:indent (kbd "<RET>")   'pel-newline-and-indent-below)
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> |`` : Windows scroll lock commands

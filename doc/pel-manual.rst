@@ -622,6 +622,26 @@ The file `pel-highlight.el`_ provides the following simple utility commands.
     for indentation inside the current buffer (but does *not* tabify or untabify
     existing content.) It displays what's being used now.
 
+
+PEL Indentation Support Utilities
+---------------------------------
+
+:PDF Docs: `Indentation`_.
+:PEL Customization: *none*
+:PEL Key Prefix: **pel:tab** : ``<f11> <tab>``
+
+The file `pel-indent.el`_ includes some very basic utilities for simple
+indentation control, complementing what is available in Emacs.
+The available commands are:
+
+- ``pel-insert-c-indent`` inserts spaces to indent the current line.
+- ``pel-unindent`` removes spaces to un-indent the current line.
+- ``pel-indent-rigidly`` indents the current line or marked region, this command
+  extends the Emacs indent-rigidly command.
+
+The PEL support for indentation will evolve as support form various types of
+files, programming languages and markup languages evolves.
+
 PEL Mark Management Utilities
 -----------------------------
 

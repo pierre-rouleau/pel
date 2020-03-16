@@ -87,7 +87,7 @@ and `back-to-indentation'."
 
 ;;-pel-autoload
 (defun pel-newline-and-indent-below ()
-  "Insert and indented line just below current line."
+  "Insert an indented line just below current line."
   (interactive)
   (move-end-of-line nil)
   (newline-and-indent))
