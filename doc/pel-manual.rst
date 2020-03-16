@@ -896,6 +896,18 @@ PEL Common Lisp Support
 :PEL Key Prefix: - Globally: **pel:for-lisp** : ``<f11> SPC L``
                  - From a buffer in lisp-mode: ``<f12>``
 
+
+The file `pel-commonlisp.el`_ is in a very early stage.
+It only provides the ``pel-cl-init`` function that is used by ``pel-init`` to
+initialize support for Common Lisp when the ``pel-use-common-lisp`` customize
+variable is set to **t**.
+The ``pel-use-common-lisp`` function sets the indentation rule to the Common
+Lisp indentation style.
+The ``pel-init`` function also set the variable ``common-lisp-hyperspec-root``
+to the directory "~/docs/HyperSpec/".  You can then copy the HyperSpec files
+inside this directory and Emacs can access them locally.
+
+
 PEL Emacs Lisp Support
 ~~~~~~~~~~~~~~~~~~~~~~
 
