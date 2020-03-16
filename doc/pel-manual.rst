@@ -230,7 +230,7 @@ time further by enclosing the entire code of your init.el file inside:
           )
 
 What the above does is to disable special file association handling and garbage
-collection while Emacs processes your initializaition.
+collection while Emacs processes your initialization code.
 
 
 Configure How to Download Packages
