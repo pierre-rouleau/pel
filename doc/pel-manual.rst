@@ -953,6 +953,26 @@ function: ``pel-y-n-e-or-l-p`` which prompts and accepts various types of
 responses.  It is used by the ``pel-find-file-at-point-in-window`` command.
 It's a rather specialized prompting utility with a rather strange name...
 
+PEL Register Management Utilities
+---------------------------------
+
+:PDF Docs: `Register`_
+:PEL Customization: *none*
+:PEL Key Prefix: **pel::register** : ``<f11> r``
+
+The file `pel-register.el`_ provides the following commands to help manage
+registers:
+
+- ``pel-filename-to-register``,
+- ``pel-point-to-register``,
+- ``pel-copy-to-register``,
+- ``pel-copy-rectangle-to-register``,
+- ``pel-window-configuration-to-register``,
+- ``pel-frameset-to-register``,
+- ``pel-number-to-register``,
+- ``pel-kmacro-to-register``.
+
+The `Register`_ PDF document provides more information.
 
 PEL Scrolling
 -------------
