@@ -28,8 +28,12 @@
 ;;; Code:
 (require 'thingatpt)                    ; uses: bounds-of-thing-at-point
 (require 'pel--base)                    ; uses: pel-whitespace-in-str-p
+(require 'rst)                          ; rst-mode code. Use rst-backward-section
 
-;;-pel-autoload
+;; --
+;; Section Adornment Control
+;; -------------------------
+
 (defun pel-rst-set-adornment (style)
   "Set the reStructuredText adornment STYLE.
 Set it to one of: 'CRiSPeR, 'Sphinx-Python, or 'default."
@@ -62,8 +66,245 @@ Set it to one of: 'CRiSPeR, 'Sphinx-Python, or 'default."
                                             (?> simple 0)            ; level  7
                                             (?< simple 0)            ; level  8
                                             (?_ simple 0)            ; level  9
-                                            (?# simple 0)))))))      ; level 10
+                                            (?# simple 0)))          ; level 10
+                                         (t (user-error "Unsupported style %S" style))))
+    (setq pel-rst-adornment-style style)
+    (message "Now using the %s adornment style with %d levels supported."
+             style
+             (length rst-preferred-adornments))))
 
+
+;;-pel-autoload
+(defun pel-rst-adorn-default ()
+  "Set the default section adornment style."
+  (interactive)
+  (pel-rst-set-adornment 'default))
+
+;;-pel-autoload
+(defun pel-rst-adorn-Sphinx-Python ()
+  "Set the Sphinx-Python section adornment style."
+  (interactive)
+  (pel-rst-set-adornment 'Sphinx-Python))
+
+;;-pel-autoload
+(defun pel-rst-adorn-CRiSPer ()
+  "Set the CRiSPer section adornment style."
+  (interactive)
+  (pel-rst-set-adornment 'CRiSPer))
+
+;; --
+
+(defun current-line-length (&optional n)
+  "Return number of characters inside the current line or N-1 lines forward.
+If N is not specified, is nil or 1: return the length of the current line.
+Otherwise return the line N-1 lines forward: so if N is 2 use next line,
+if N is 0 use previous line, etc..."
+  (- (line-end-position n) (line-beginning-position n)))
+
+(defun pel-rst-adorn (&optional level)
+  "Adorn the current line as a reStructuredText section at the specified LEVEL.
+Leave the cursor unmoved, on the title line."
+  (interactive "p")
+  (if (>= level (length rst-preferred-adornments))
+      (user-error
+       "Level %d not available in %s adornment style"
+       level
+       pel-rst-adornment-style))
+  (save-excursion
+    (let* ((linelen (current-line-length))
+           (adorn-level (nth level rst-preferred-adornments))
+           (adorn-char (car adorn-level))
+           (adorn-style (nth 1 adorn-level))
+           (indent-steps (nth 2 adorn-level)))
+      (move-end-of-line nil)
+      (insert (format "\n%s\n"
+                      (make-string linelen adorn-char)))
+      (when (eq adorn-style 'over-and-under)
+        (forward-line -2)
+        (insert (format "\n%s\n"
+                        (make-string linelen adorn-char))))
+      ;; if the style requires indentation, indent the 3 lines
+      (when (> indent-steps 0)
+        (dotimes (i indent-steps)
+          (dolist (rel-line  '(0 2 2))
+            (beginning-of-line rel-line)
+            (insert " ")))))))
+
+;; The following convenience functions defined to ease execution from keys
+
+;;-pel-autoload
+(defun pel-rst-adorn-title ()
+  "Adorn current line with level-0 (title) reStructuredText section adornment."
+  (interactive)
+  (pel-rst-adorn 0))
+
+;;-pel-autoload
+(defun pel-rst-adorn-1 ()
+  "Adorn current line with level-1 reStructuredText section adornment."
+  (interactive)
+  (pel-rst-adorn 1))
+
+;;-pel-autoload
+(defun pel-rst-adorn-2 ()
+  "Adorn current line with level-2 reStructuredText section adornment."
+  (interactive)
+  (pel-rst-adorn 2))
+
+;;-pel-autoload
+(defun pel-rst-adorn-3 ()
+  "Adorn current line with level-3 reStructuredText section adornment."
+  (interactive)
+  (pel-rst-adorn 3))
+
+;;-pel-autoload
+(defun pel-rst-adorn-4 ()
+  "Adorn current line with level-4 reStructuredText section adornment."
+  (interactive)
+  (pel-rst-adorn 4))
+
+;;-pel-autoload
+(defun pel-rst-adorn-5 ()
+  "Adorn current line with level-5 reStructuredText section adornment."
+  (interactive)
+  (pel-rst-adorn 5))
+
+;;-pel-autoload
+(defun pel-rst-adorn-6 ()
+  "Adorn current line with level-6 reStructuredText section adornment."
+  (interactive)
+  (pel-rst-adorn 6))
+
+;;-pel-autoload
+(defun pel-rst-adorn-7 ()
+  "Adorn current line with level-7 reStructuredText section adornment."
+  (interactive)
+  (pel-rst-adorn 7))
+
+;;-pel-autoload
+(defun pel-rst-adorn-8 ()
+  "Adorn current line with level-8 reStructuredText section adornment."
+  (interactive)
+  (pel-rst-adorn 8))
+
+;;-pel-autoload
+(defun pel-rst-adorn-9 ()
+  "Adorn current line with level-9 reStructuredText section adornment."
+  (interactive)
+  (pel-rst-adorn 9))
+
+;;-pel-autoload
+(defun pel-rst-adorn-10 ()
+  "Adorn current line with level-10 reStructuredText section adornment."
+  (interactive)
+  (pel-rst-adorn 10))
+
+(defun pel--rst-level-for (char)
+  "Return the level number for a specific CHAR, nil if not found.
+Ignore the title level."
+  (let ((level-number 1))
+    (dolist (adorn-level (cdr rst-preferred-adornments))
+      (let ((adorn-char (car adorn-level)))
+        (if (eq adorn-char char)
+            (cl-return level-number)
+          (setq level-number (1+ level-number)))))))
+
+(defun pel--rst-adorn-level-of-previous-section ()
+  "Return the adornment level of the previous section in the text."
+  (save-excursion
+    (rst-backward-section 1)
+    (forward-line 1)
+    (pel--rst-level-for (char-after))))
+
+(defun pel--rst-adorn-relative-to-other (level)
+  "Adorn current line with section relative LEVEL.
+- If LEVEL is 0: use same level as previous section.
+- If LEVEL is 1: use a higher level to create a sub-section.
+- If LEVEL is -1: use a lower level to create a parent section."
+  (let ((other-level (pel--rst-adorn-level-of-previous-section)))
+    (if other-level
+        (pel-rst-adorn (+ other-level level))
+      (user-error "Cannot detect section level of previous section"))))
+
+(defun pel--rst-delete-whole-line ()
+  "Local copy of delete-whole-line: delete the current line."
+  (delete-region (line-beginning-position)
+                 (min (point-max) (1+ (line-end-position)))))
+
+(defun pel--rst-adorn-change (step)
+  "Change adornment of current line by STEP level.
+- If STEP is 1: increase level.
+- If STEP is -1: decrease level."
+  (save-excursion
+    (let ((current-level (progn
+                           (forward-line 1)
+                           (pel--rst-level-for (char-after)))))
+      (pel--rst-delete-whole-line)
+      (forward-line -1)
+      (pel-rst-adorn (+ current-level step))
+      ;; prevent adding another line each time the level is changed
+      (end-of-line 2)
+      (delete-char 1 nil))))
+
+
+(defun pel--rst-adorn-same-as-previous  (step)
+  "Adorn current line at the STEP level compared to the previous adornment."
+  (let ((level (pel--rst-adorn-level-of-previous-section)))
+    (if level
+        (pel-rst-adorn (+ level step))
+      (user-error "Cannot detect section level of previous section"))))
+
+;; TODO: update code to be able to detect levels higher than 6
+;; The current code uses the rst-mode face to detect a adorned
+;; line, but rst-mode only support 6 faces.  That will be OK
+;; for most jobs, but will fail support increase/decrease levels
+;; in place for levels higher than that. It will work but the old
+;; underline will be left in the buffer.
+(defun pel--line-adorned-p ()
+  "Return t if current line is section-adorned, nil otherwise.
+LIMITATION: only able to detect the first 6 levels."
+  (car (memq
+        (car (get-char-property (point) 'face))
+        '(rst-level-1
+          rst-level-2
+          rst-level-3
+          rst-level-4
+          rst-level-5
+          rst-level-6))))
+
+;;-pel-autoload
+(defun pel-rst-adorn-same-level ()
+  "Adorn current line with the same level as the previous section.
+If the line is already adorned, update the adornment: adjust to previous section level."
+  ;; TODO: improve code to prevent erase if can't detect previous level
+  (interactive)
+  (if (pel--line-adorned-p)
+      (progn
+        (save-excursion
+          (forward-line 1)
+          (pel--rst-delete-whole-line))
+        (pel--rst-adorn-same-as-previous 0)
+        (save-excursion
+          (forward-line 2)
+          (pel--rst-delete-whole-line)))
+    (pel--rst-adorn-same-as-previous 0)))
+
+;;-pel-autoload
+(defun pel-rst-adorn-increase-level ()
+  "Adorn current line at a higher-level that current if already adorned.
+If the line is not already adorned, adorn it with a level higher than previous section."
+  (interactive)
+  (if (pel--line-adorned-p)
+      (pel--rst-adorn-change 1)
+    (pel--rst-adorn-same-as-previous 1)))
+
+;;-pel-autoload
+(defun pel-rst-adorn-decrease-level ()
+  "Adorn current line at a lower-level than current if already adorned.
+If the line not already adorned, adorn it with a level lower than previous section."
+  (interactive)
+  (if (pel--line-adorned-p)
+      (pel--rst-adorn-change -1)
+    (pel--rst-adorn-same-as-previous -1)))
 
 ;; -----------------------------------------------------------------------------
 ;; reStructuredText reference location bookmark management
@@ -107,7 +348,7 @@ beginning of the first of the 2 lines."
   (if (and (require 'pel-bookmark nil :noerror)
            (fboundp 'pel-bookmark-in-current-file-p))
       (pel-bookmark-in-current-file-p (pel-rst-ref-bookmark-name))
-    (error "pel-bookmark-in-current-file-p not loaded")))
+    (error "Function pel-bookmark-in-current-file-p not loaded")))
 
 ;;-pel-autoload
 (defun pel-rst-goto-ref-bookmark ()

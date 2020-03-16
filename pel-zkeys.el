@@ -1253,6 +1253,30 @@ Optionally insert it at point if INSERT is non-nil."
   (define-key pel:for-reST "g" 'pel-rst-goto-ref-bookmark)
   (define-key pel:for-reST "s" 'pel-rst-set-ref-bookmark)
   ;;
+  (define-key pel:for-reST "t" 'pel-rst-adorn-title)
+  (define-key pel:for-reST "1" 'pel-rst-adorn-1)
+  (define-key pel:for-reST "2" 'pel-rst-adorn-2)
+  (define-key pel:for-reST "3" 'pel-rst-adorn-3)
+  (define-key pel:for-reST "4" 'pel-rst-adorn-4)
+  (define-key pel:for-reST "5" 'pel-rst-adorn-5)
+  (define-key pel:for-reST "6" 'pel-rst-adorn-6)
+  (define-key pel:for-reST "7" 'pel-rst-adorn-7)
+  (define-key pel:for-reST "8" 'pel-rst-adorn-8)
+  (define-key pel:for-reST "9" 'pel-rst-adorn-9)
+  (define-key pel:for-reST "0" 'pel-rst-adorn-10)
+  ;;
+  (define-key pel:for-reST "=" 'pel-rst-adorn-same-level)
+  (define-key pel:for-reST "+" 'pel-rst-adorn-increase-level)
+  (define-key pel:for-reST "-" 'pel-rst-adorn-decrease-level)
+  ;;
+  (define-key pel:for-reST "n" 'rst-forward-section)
+  (define-key pel:for-reST "p" 'rst-backward-section)
+  ;;
+  (define-pel-global-prefix pel:rst-adorn-style (kbd "<f11> SPC r A"))
+  (define-key pel:rst-adorn-style "d" 'pel-rst-adorn-default)
+  (define-key pel:rst-adorn-style "S" 'pel-rst-adorn-Sphinx-Python)
+  (define-key pel:rst-adorn-style "C" 'pel-rst-adorn-CRiSPer)
+  ;;
   (pel--mode-hook-maybe-call
    '(lambda ()
       (local-set-key (kbd "<f12>") 'pel:for-reST))

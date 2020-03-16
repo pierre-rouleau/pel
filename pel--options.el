@@ -84,6 +84,28 @@
   :safe #'integerp)
 
 ;; -----------------------------------------------------------------------------
+(defgroup pel-rst nil
+  "PEL reStructuredText support."
+  :group 'pel)
+
+(defcustom pel-rst-adornment-style 'CRiSPer
+  "Select the section adornment style.
+Identifies the number of levels supported and their adornment.
+- `default' is Emacs rst-mode default. A title and 7 levels.
+- `Sphinx-Python' is what Sphinx uses: 6 levels:
+  - parts,
+  - chapters,
+  - sections,
+  - subsections,
+  - subsubsections
+  - paragraphs
+- `CRiSPer', a 10-level mode I developed in the past for CRiSP."
+  :group 'pel-rst
+  :type '(choice (const :tag "default" default)
+                 (const :tag "Sphinx-Python" Sphinx-Python)
+                 (const :tag "CRiSPer" CRiSPer)))
+
+;; -----------------------------------------------------------------------------
 (defgroup pel-speedbar nil
   "PEL Speedbar management."
   :group 'pel)
@@ -536,7 +558,8 @@ When set to non-nil, 3 packages are used:
   :safe #'booleanp)
 
 (defcustom pel-use-rst-mode nil
-  "Control whether PEL supports {rst-mode} (reStructuredText)."
+  "Control whether PEL supports {rst-mode} (reStructuredText).
+Once you activate this, see the pel-rst group for more options."
   :group 'pel-pkg-for-markup
   :type 'boolean
   :safe #'booleanp)
