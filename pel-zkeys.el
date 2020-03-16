@@ -943,18 +943,11 @@ Optionally insert it at point if INSERT is non-nil."
     (define-key pel: (kbd  "<S-down>")     'fm-down-frame)
     (define-key pel: (kbd  "<S-up>")       'fm-up-frame)
     (define-key pel: (kbd  "<S-left>")     'fm-left-frame)
-    (define-key pel: (kbd  "<S-right>")    'fm-right-frame))
-  (define-key pel: (kbd    "C-<f10>")     #'menu-bar-mode))
+    (define-key pel: (kbd  "<S-right>")    'fm-right-frame)))
 ;;
 (define-key pel: (kbd      "<f11>")        'pel-toggle-frame-fullscreen)
 (when (not (display-graphic-p))
-  (define-key pel: (kbd    "<f12>")       #'xterm-mouse-mode)
-  ;; TODO: BUG?: for some reason, on my macOS terminal, the keys '<f11>C-<f10>'
-  ;; register as '<f11><f34>'.  That might be a limitation with the function
-  ;; key encodings or a mistake in my terminal setup, I will have to look
-  ;; this up later.  For now, the work-around is to pass that (invalid)
-  ;; key binding in text terminal mode.
-  (define-key pel: (kbd    "<f34>")       #'menu-bar-mode))
+  (define-key pel: (kbd    "<f12>")       #'xterm-mouse-mode))
 ;;
 
 ;; Bind <f11>/<f12> key-chords as extension of down/up cursors.
