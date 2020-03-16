@@ -1537,71 +1537,71 @@ As PEL evolves, it will cover more topics, more
 programming languages, major modes and will integrate with more of the external
 Emacs packages and more tables will describe how to use them.
 
-- `Document Legend`_
-- Emacs base operations
+#. `Document Legend`_
+#. Emacs base operations
 
-  - `Abbreviations`_
-  - `Align`_
-  - `Auto-Completion`_
-  - `Bookmarks`_
-  - `Buffers`_
-  - `Case Conversion`_
-  - `Closing and Suspending`_
-  - `Comments`_
-  - `Counting`_
-  - `Cut, Delete, Copy and Paste`_ (killing and yanking)
-  - `Display Lines`_
-  - `Enriched Text`_
-  - `Faces and Fonts`_
-  - `File Management`_
-  - `File and Directory Local Variables`_
-  - `Filling and Justification`_
-  - `Frames`_
-  - `Grep`_
-  - `Help`_
-  - `Highlight`_
-  - `Hooks`_
-  - `Indentation`_
-  - `Input Method`_
-  - `Inserting Text`_
-  - `Keyboard Macros`_
-  - `Marking`_
-  - `Menus`_
-  - Modes:
+  #. `Abbreviations`_
+  #. `Align`_
+  #. `Auto-Completion`_
+  #. `Bookmarks`_
+  #. `Buffers`_
+  #. `Case Conversion`_
+  #. `Closing and Suspending`_
+  #. `Comments`_
+  #. `Counting`_
+  #. `Cut, Delete, Copy and Paste`_ (killing and yanking)
+  #. `Display Lines`_
+  #. `Enriched Text`_
+  #. `Faces and Fonts`_
+  #. `File Management`_
+  #. `File and Directory Local Variables`_
+  #. `Filling and Justification`_
+  #. `Frames`_
+  #. `Grep`_
+  #. `Help`_
+  #. `Highlight`_
+  #. `Hooks`_
+  #. `Indentation`_
+  #. `Input Method`_
+  #. `Inserting Text`_
+  #. `Keyboard Macros`_
+  #. `Marking`_
+  #. `Menus`_
+  #. Modes:
 
-    - `Dired`_
-    - `Graphviz Dot`_
-    - `Org mode`_
-    - `reStructuredText mode`_
+     #. `Dired`_
+     #. `Graphviz Dot`_
+     #. `Org mode`_
+     #. `reStructuredText mode`_
 
-  - `Modifier Keys`_
-  - `Narrowing`_
-  - `Navigation`_
-  - `Packages`_
-  - Programming Language Support:
+  #. `Modifier Keys`_
+  #. `Narrowing`_
+  #. `Navigation`_
+  #. `Packages`_
+  #. Programming Language Support:
 
-    - `Common Lisp`_
-    - `Emacs Lisp`_
+     #. `Common Lisp`_
+     #. `Emacs Lisp`_
 
-      - `ERT`_ (Emacs Lisp Regression Testing system)
+        - `ERT`_ (Emacs Lisp Regression Testing system)
 
-  - `Registers`_
-  - `Scrolling`_
-  - `Search and Replace`_
-  - `Shells`_
-  - `Sorting`_
-  - `Speedbar`_
-  - `Spell Checking`_
-  - `Text-modes`_
-  - `Transpose`_
-  - `Undo, Redo, Repeat and Prefix Arguments`_
-  - Version Control Systems:
+  #. `Registers`_
+  #. `Scrolling`_
+  #. `Search and Replace`_
+  #. `Shells`_
+  #. `Sorting`_
+  #. `Speedbar`_
+  #. `Spell Checking`_
+  #. `Text-modes`_
+  #. `Transpose`_
+  #. `Undo, Redo, Repeat and Prefix Arguments`_
+  #. Version Control Systems:
 
-    - `Mercurial`_
+     - `Mercurial`_
 
-  - `Web`_
-  - `Whitespaces`_
-  - `Windows`_
+  #. `Web`_
+  #. `Whitespaces`_
+  #. `Windows`_
 
 
 
