@@ -698,18 +698,22 @@ and where their `external hyperlink targets`_ are located:
   target reference will be written by using the ``pel-rst-set-ref-bookmark`` which puts an
   actual Emacs bookmark to that location.
 - Then to create a hyperlink inside the text, use the ``pel-rst-makelink``.  It
-  adds the relevant markup around the word(s), move to the location where the
-  explicit hyperlink target references are located (using the location you previously set)
-  enters the first portion of the hyperlink.  You can then enter the required
-  URI to complete the statement.  And then you can use ``pel-jump-to-mark``
+  adds the relevant markup around the word or marked region at
+  point, move point to the location where the
+  explicit hyperlink target references are located
+  (using the location you previously set)
+  and enters the first portion of the hyperlink markup.
+  You can then type or yank/paste the required URI to complete the statement.
+  After that you  can use ``pel-jump-to-mark``
   (normally bounded to ``M-```) to jump back to where you were typing the text.
 - The ``pel-rst-goto-ref-bookmark`` moves point to where the external hyperlink
   target references are located.
 
 Note that ``pel-rst-set-ref-bookmark`` sets an Emacs bookmark to the location,
 so it is retained across sessions like other bookmarks.  The bookmark has a
-special name which uses the "RST-" prefix followed by the filename.  This
-means that only one explicit hyperlink target reference location can be
+special name which uses the "RST-" prefix followed by the name of the current
+file.
+This means that only one explicit hyperlink target reference location can be
 remembered per file.  You can set any number of them, but only the last one will
 be retained inside the bookmark across Emacs sessions.
 
@@ -768,10 +772,11 @@ the following key strokes:
 =============================== ===========================================
 key                             binding
 =============================== ===========================================
+**Hyperlink control**
 ``<f12> .``                     ``pel-rst-makelink``
 ``<f12> g``                     ``pel-rst-goto-ref-bookmark``
 ``<f12> s``                     ``pel-rst-set-ref-bookmark``
-
+**Section Level Adornment**
 ``<f12> t``                     ``pel-rst-adorn-title``
 ``<f12> 1``                     ``pel-rst-adorn-1``
 ``<f12> 2``                     ``pel-rst-adorn-2``
@@ -783,7 +788,7 @@ key                             binding
 ``<f12> 8``                     ``pel-rst-adorn-8``
 ``<f12> 9``                     ``pel-rst-adorn-9``
 ``<f12> 0``                     ``pel-rst-adorn-10``
-
+**Select Adornment Style**
 ``<f12> A d``                   ``pel-rst-adorn-default``
 ``<f12> A S``                   ``pel-rst-adorn-Sphinx-Python``
 ``<f12> A C``                   ``pel-rst-adorn-CRiSPer``
