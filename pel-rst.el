@@ -110,6 +110,20 @@ Otherwise return the line N-1 lines forward: so if N is 2 use next line,
 if N is 0 use previous line, etc..."
   (- (line-end-position n) (line-beginning-position n)))
 
+;; NOTE: The following could be an interactive command but then it should go inside
+;; pel-whitespace.el or pel-ccp.el.  Since it's probably not going to be that
+;; useful as a stand-alone command (because we can set automatic deletion of all
+;; trailing whitespace inside current buffer), I'm leaving it here until it's needed
+;; somewhere else.  Then I'll move it and put all infrastructure to autoload it and
+;; then making it a stand-alone command will be worthwhile: I want to reduce the
+;; dependencies to the maximum to reduce extra loading.
+;;
+(defun pel-delete-trailing-whitespace ()
+  "Delete trailing whitespace on current line."
+  (let ((line-start-pos (progn (forward-line 0) (point)))
+        (line-end-pos   (progn (move-end-of-line nil))))
+    (delete-trailing-whitespace line-start-pos line-end-pos)))
+
 (defun pel-rst-adorn (&optional level)
   "Adorn the current line as a reStructuredText section at the specified LEVEL.
 Leave the cursor unmoved, on the title line."
@@ -120,6 +134,7 @@ Leave the cursor unmoved, on the title line."
        level
        pel-rst-adornment-style))
   (save-excursion
+    (pel-delete-trailing-whitespace)
     (let* ((linelen (current-line-length))
            (adorn-level (nth level rst-preferred-adornments))
            (adorn-char (car adorn-level))
@@ -291,6 +306,7 @@ LIMITATION: only able to detect the first 6 levels."
 If the line is already adorned, update the adornment: adjust to previous section level."
   ;; TODO: improve code to prevent erase if can't detect previous level
   (interactive)
+  (pel-delete-trailing-whitespace)
   (if (pel--line-adorned-p)
       (progn
         (save-excursion
@@ -307,6 +323,7 @@ If the line is already adorned, update the adornment: adjust to previous section
   "Adorn current line at a higher-level that current if already adorned.
 If the line is not already adorned, adorn it with a level higher than previous section."
   (interactive)
+  (pel-delete-trailing-whitespace)
   (if (pel--line-adorned-p)
       (pel--rst-adorn-change 1)
     (pel--rst-adorn-same-as-previous 1)))
@@ -316,6 +333,7 @@ If the line is not already adorned, adorn it with a level higher than previous s
   "Adorn current line at a lower-level than current if already adorned.
 If the line not already adorned, adorn it with a level lower than previous section."
   (interactive)
+  (pel-delete-trailing-whitespace)
   (if (pel--line-adorned-p)
       (pel--rst-adorn-change -1)
     (pel--rst-adorn-same-as-previous -1)))
