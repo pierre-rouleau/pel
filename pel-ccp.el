@@ -42,60 +42,68 @@
 See `bounds-of-thing-at-point' for a list of possible THING symbols."
   (let ((bounds (bounds-of-thing-at-point thing)))
     (if bounds
-        (copy-region-as-kill (car bounds) (cdr bounds))
+        (progn
+          (copy-region-as-kill (car bounds) (cdr bounds))
+          (message "「%s」"
+                   (substring-no-properties (car kill-ring))))
       (error "No %s at point" thing))))
 
 ;;-pel-autoload
 (defun pel-copy-word-at-point ()
-  "Copy word at point."
+  "Copy and show word at point."
   (interactive)
   (pel--copy-thing-at-point 'word))
 
 ;;-pel-autoload
 (defun pel-copy-symbol-at-point ()
-  "Copy symbol at point."
+  "Copy and show symbol at point."
   (interactive)
   (pel--copy-thing-at-point 'symbol))
 
 ;;-pel-autoload
 (defun pel-copy-sentence-at-point ()
-  "Copy sentence at point."
+  "Copy and show sentence at point."
   (interactive)
   (pel--copy-thing-at-point 'sentence))
 
 ;;-pel-autoload
 (defun pel-copy-function-at-point ()
-  "Copy function at point."
+  "Copy and show function at point."
   (interactive)
   (pel--copy-thing-at-point 'defun))
 
 ;;-pel-autoload
 (defun pel-copy-sexp-at-point ()
-  "Copy sexp at point."
+  "Copy and show sexp at point.
+Only copy the list that start or end at point.
+Does not copy when point is *inside* the list.
+To do that use \\[pel-copy-list-at-point]."
   (interactive)
   (pel--copy-thing-at-point 'sexp))
 
 ;;-pel-autoload
 (defun pel-copy-whitespace-at-point ()
-  "Copy whitespace at/around point on current line."
+  "Copy and show whitespace at/around point on current line."
   (interactive)
   (pel--copy-thing-at-point 'whitespace))
 
 ;;-pel-autoload
 (defun pel-copy-filename-at-point ()
-  "Copy filename at point."
+  "Copy and show filename at point."
   (interactive)
   (pel--copy-thing-at-point 'filename))
 
 ;;-pel-autoload
 (defun pel-copy-url-at-point ()
-  "Copy URL at point."
+  "Copy and show URL at point."
   (interactive)
   (pel--copy-thing-at-point 'url))
 
 ;;-pel-autoload
 (defun pel-copy-list-at-point ()
-  "Copy list at point."
+  "Copy and show list at point.
+Includes the outermost list as opposed to \\[pel-copy-sexp-at-point]
+which only includes the list at point."
   (interactive)
   (pel--copy-thing-at-point 'list))
 
