@@ -46,7 +46,8 @@ The PEL package provides:
     and all prefixes have a meaningful name that starts with the
     'pel:' prefix.  F2 and F6 are used as global shortcut prefix keys,
     and F12 as a mode-sensitive shortcut prefix key.
-  - See the `Key Binding Documentation`_ section for more info.
+  - See the `Key Binding Documentation`_ section and the
+    `PDF Document tables`_ for more info.
 
 - PEL comes with a set of convenience features that deal with several
   aspects of Emacs like windows and frame, scrolling control,  buffer,
@@ -112,5 +113,6 @@ More information is available in `PEL's Manual`_.
 .. _PEL's Manual: doc/pel-manual.rst
 .. _which-key:    https://elpa.gnu.org/packages/which-key.html
 .. _Key Binding Documentation: doc/pel-manual.rst#pel-key-bindings
-.. _Credits:            doc/pel-manual.rst#credits
-.. _PEL Customization:  doc/pel-manual.rst#pel-customization
+.. _Credits:             doc/pel-manual.rst#credits
+.. _PEL Customization:   doc/pel-manual.rst#pel-customization
+.. _PDF Document tables: doc/pel-manual.rst#pdf-document-tables
