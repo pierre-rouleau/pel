@@ -54,12 +54,17 @@
   "Insert N times `c-basic-offset' spaces on current or marked line(s).
 A special argument N can specify more than one
 indentation level.  It defaults to 1.
-If a negative number is specified, `pel-unindent' is used."
+If a negative number is specified, `pel-unindent' is used.
+If region was marked, the function does not deactivate it to allow
+repeated execution of the command."
   (interactive "*P")
   (save-excursion
     (if (use-region-p)
         (let ((begin-point (region-beginning))
-              (line-count (count-lines (region-beginning) (region-end))))
+              (line-count (count-lines (region-beginning) (region-end)))
+              ;; by default all insertion commands set the var deactivate-mark
+              ;; to force mark deactivation.  Prevent this by creating a local binding.
+              deactivate-mark)
           (goto-char begin-point)
           (dotimes (i line-count)
             (pel--insert-c-indent-line n)
@@ -85,12 +90,17 @@ Limitation: does not handle hard tabs and may move point."
 (defun pel-unindent (&optional n)
   "Un-indent current line or marked region by N times `c-basic-offset' spaces.
 Works when point is anywhere on the line.
+If region was marked, the function does not deactivate it to allow
+repeated execution of the command.
 Limitation: does not handle hard tabs."
   (interactive "*P")
   (save-excursion
     (if (use-region-p)
         (let ((begin-point (region-beginning))
-              (line-count (count-lines (region-beginning) (region-end))))
+              (line-count (count-lines (region-beginning) (region-end)))
+              ;; by default all insertion commands set the var deactivate-mark
+              ;; to force mark deactivation.  Prevent this by creating a local binding.
+              deactivate-mark)
           (goto-char begin-point)
           (dotimes (i line-count)
             (pel--line-unindent n)
