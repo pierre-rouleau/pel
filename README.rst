@@ -110,9 +110,10 @@ More information is available in `PEL's Manual`_.
 
 .. [ endof: README ]
 
-.. _PEL's Manual: doc/pel-manual.rst
-.. _which-key:    https://elpa.gnu.org/packages/which-key.html
+
+.. _which-key:                 https://elpa.gnu.org/packages/which-key.html
+.. _PEL's Manual:              doc/pel-manual.rst
 .. _Key Binding Documentation: doc/pel-manual.rst#pel-key-bindings
-.. _Credits:             doc/pel-manual.rst#credits
-.. _PEL Customization:   doc/pel-manual.rst#pel-customization
-.. _PDF Document tables: doc/pel-manual.rst#pdf-document-tables
+.. _Credits:                   doc/pel-manual.rst#credits
+.. _PEL Customization:         doc/pel-manual.rst#pel-customization
+.. _PDF Document tables:       doc/pel-manual.rst#pdf-document-tables
