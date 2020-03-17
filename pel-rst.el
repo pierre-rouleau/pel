@@ -77,7 +77,7 @@ Set it to one of: 'CRiSPeR, 'Sphinx-Python, or 'default."
 ;;-pel-autoload
 (defun pel-rst-adorn-default ()
   "Set the default section adornment style.
-This is Emacs rst-mode default: a title with 7 levels."
+This is Emacs `rst-mode' default: a title with 7 levels."
   (interactive)
   (pel-rst-set-adornment 'default))
 
@@ -371,19 +371,42 @@ Useful to see where the bookmark for storing the hyperlink are currently
 located."
   (interactive)
   (if (pel--rst-bookmark-exists-p)
-      (bookmark-jump (pel-rst-ref-bookmark-name))
-    (user-error "The bookmark does not exists yet.  Please create it!")))
+      (progn
+        (push-mark)
+        (bookmark-jump (pel-rst-ref-bookmark-name)))
+    (user-error "The bookmark does not exists yet.  \
+Use pel-set-ref-bookmark to create it!")))
 
-(defun pel-goto-next-empty-line ()
-  "Move point to the beginning of the next empty line."
-  (if (search-forward "\n\n" nil :noerror)
-      (forward-line -1)
-    (user-error "No (next) empty line found")))
+(defun pel-forward-empty-line-p ()
+  "Return position right after next empty line below, nil otherwise."
+    (save-excursion
+      (search-forward "\n\n" nil :noerror)))
+
+(defun pel-goto-next-empty-line (&optional no-error)
+  "Move point to the beginning of the next empty line if there is one.
+If there is no empty line, don't move point and raise an error unless
+NO-ERROR is non-nil."
+  (let ((original-pos (point)))
+    (if (search-forward "\n\n" nil :noerror)
+        (forward-line -1)
+      (goto-char original-pos)
+      (unless no-error
+        (user-error "No (next) empty line found")))))
 
 (defun pel-rst-anchor-escaped (text)
   "Return the TEXT escaped, ready to be used in a reStructuredText anchor.
 - Replaces each colon with a back-slash escaped colon."
   (replace-regexp-in-string ":" "\\:" text nil :literal))
+
+
+(defun pel--space-for-extra-link-p ()
+  "Return t if there is spec for extra link, nil otherwise."
+  (save-excursion
+    (pel-rst-goto-ref-bookmark)
+    (forward-line 1)
+    (if (not (eq (char-after) 10))
+        (pel-forward-empty-line-p)
+      t)))
 
 ;;-pel-autoload
 (defun pel-rst-makelink (&optional arg)
@@ -412,7 +435,7 @@ Reference: see reStructuredText hyperlink format at URL
                       (region-end)
                     (progn
                       ;; if no region already exists, set the mark to allow quick return
-                      (set-mark-command nil)
+                      (push-mark)
                       ;; then return end of word as the end position
                       (cdr (bounds-of-thing-at-point 'word)))))
          (anchor (buffer-substring-no-properties p_begin p_end))
@@ -431,27 +454,31 @@ Reference: see reStructuredText hyperlink format at URL
       ;; For that, require the presence of the bookmark.
       (if (not (pel--rst-bookmark-exists-p))
           (user-error "Please set location of hyperlink bookmark first!"))
-      (if anchor_isa_single_word
+      (if (pel--space-for-extra-link-p)
           (progn
-            (goto-char p_end)
-            (insert "_"))
-        (goto-char p_begin)
-        (insert "`")
-        (goto-char p_end)
-        (right-char 1)
-        (insert "`_"))
-      ;; place references starting at the bookmark, one after the other, with
-      ;; first reference created at the top.  All references are placed after
-      ;; the bookmark so that the bookmark never moves, making it easier to
-      ;; undo editing without damaging the bookmark location.
-      ;; The bookmark must be set to an area in the buffer with 2 empty
-      ;; lines, with the bookmark at the beginning of the first one.
-      (pel-rst-goto-ref-bookmark)
-      (forward-line 1)
-      (if (not (eq (char-after) 10))
-          (pel-goto-next-empty-line))
-      (insert (format ".. _%s: \n" (pel-rst-anchor-escaped anchor)))
-      (move-end-of-line 0))))
+            (if anchor_isa_single_word
+                (progn
+                  (goto-char p_end)
+                  (insert "_"))
+              (goto-char p_begin)
+              (insert "`")
+              (goto-char p_end)
+              (right-char 1)
+              (insert "`_"))
+            ;; place references starting at the bookmark, one after the other, with
+            ;; first reference created at the top.  All references are placed after
+            ;; the bookmark so that the bookmark never moves, making it easier to
+            ;; undo editing without damaging the bookmark location.
+            ;; The bookmark must be set to an area in the buffer with 2 empty
+            ;; lines, with the bookmark at the beginning of the first one.
+            (pel-rst-goto-ref-bookmark)
+            (forward-line 1)
+            (if (not (eq (char-after) 10))
+                (pel-goto-next-empty-line))
+            (insert (format ".. _%s: \n" (pel-rst-anchor-escaped anchor)))
+            (move-end-of-line 0))
+        (user-error "Bookmarked reference link area has no space for new entry!  \
+Move there with pel-rst-goto-ref-bookmark then add lines!")))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-rst)
