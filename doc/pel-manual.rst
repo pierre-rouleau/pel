@@ -1537,6 +1537,9 @@ As PEL evolves, it will cover more topics, more
 programming languages, major modes and will integrate with more of the external
 Emacs packages and more tables will describe how to use them.
 
+PDF Document Tables
+~~~~~~~~~~~~~~~~~~~
+
 - `Document Legend`_
 
 **Emacs base operations:**
@@ -2266,7 +2269,8 @@ Makefile but do bug me, so that's another thing on my 🚧 todo list.
 PDF Documentation
 -----------------
 
-The list of documentation files are currently published as PDF files.
+The list of documentation files are currently published as
+several tables in `PDF files`_.
 Although this is not the best way since this is an output format file as opposed
 to the source of the document, these files were created in PDF format because I
 wanted to be able to pack a lot of information about Emacs as I was learning
@@ -2293,6 +2297,11 @@ publish the source of something that can generate the kind of output that's
 available in those PDF files.
 
 I am open to suggestions. And can provide the Numbers file on request.
+
+
+
+.. _PDF files: `PDF Document Tables`_
+
 
 ..
    -----------------------------------------------------------------------------
