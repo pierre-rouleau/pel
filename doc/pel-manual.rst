@@ -441,6 +441,23 @@ comment management.
   operations.  See the `Cut, Delete, Copy and Paste`_ document.
 
 
+PEL CUA Mode Extension Utilities
+--------------------------------
+
+:PDF Docs: *none*
+:PEL Customization: **none**
+:PEL Key Prefix: **none**
+
+**Note:**
+   🚧  This file is under early development.
+
+I'd like to find ways to easily manage rectangles of text without having to
+activate the CUA mode and
+the file `pel-cua.el`_ holds some experimental and unfinished code for going in
+that direction.  Some of the commands are bound to PEL keys and described in the
+PDF tables. But this work is in very early stage.
+
+
 PEL Cut, Delete, Kill, Copy, Paste and Yank Utilities
 -----------------------------------------------------
 
