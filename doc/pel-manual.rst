@@ -441,8 +441,8 @@ comment management.
   operations.  See the `Cut, Delete, Copy and Paste`_ document.
 
 
-PEL CUA Mode Extension Utilities
---------------------------------
+PEL CUA Mode Extension Utilities - *experimental*
+-------------------------------------------------
 
 :PDF Docs: *none*
 :PEL Customization: **none**
