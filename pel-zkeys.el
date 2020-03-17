@@ -904,7 +904,8 @@ Optionally insert it at point if INSERT is non-nil."
 (define-key pel:f6 "p"           'beginning-of-defun)
 
 ;; (kbd "<tab>") does not work in terminal mode, it works only in graphics mode
-(define-key pel:f6 (kbd "C-i")   'pel-insert-c-indent)
+(define-key pel:f6 (kbd "C-i")       'pel-insert-c-indent)
+(define-key pel:f6 (kbd "<backtab>") 'pel-unindent)
 ;;
 
 ;; -----------------------------------------------------------------------------
@@ -1596,6 +1597,8 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
 (define-key pel:indent "C"             'pel-unindent)
 (define-key pel:indent (kbd "TAB")     'pel-indent-rigidly)
 (define-key pel:indent (kbd "<RET>")   'pel-newline-and-indent-below)
+
+(global-set-key (kbd "<backtab>") 'pel-unindent)
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> |`` : Windows scroll lock commands

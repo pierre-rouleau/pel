@@ -40,31 +40,63 @@
 (eval-when-compile
   (require 'cc-vars))                      ; uses: c-basic-offset
 
+
+;; --
+(defun pel--insert-c-indent-line (&optional n)
+  "Insert N times the `c-basic-offset' space characters on current line."
+  (let ((n (prefix-numeric-value n)))
+    (if (< n 0)
+        (pel-unindent (abs n))
+      (insert (make-string (* c-basic-offset n) ?\s)))))
+
 ;;-pel-autoload
 (defun pel-insert-c-indent (&optional n)
-  "Insert N times the `c-basic-offset` space characters.
-.
+  "Insert N times `c-basic-offset' spaces on current or marked line(s).
 A special argument N can specify more than one
 indentation level.  It defaults to 1.
 If a negative number is specified, `pel-unindent' is used."
   (interactive "*P")
-  (let ((n (prefix-numeric-value n)))
-    (progn
-      (if (< n 0)
-          (pel-unindent (abs n))
-        (insert (make-string (* c-basic-offset n) ?\s))))))
+  (save-excursion
+    (if (use-region-p)
+        (let ((begin-point (region-beginning))
+              (line-count (count-lines (region-beginning) (region-end))))
+          (goto-char begin-point)
+          (dotimes (i line-count)
+            (pel--insert-c-indent-line n)
+            (forward-line 1))
+          (set-mark begin-point))
+      (pel--insert-c-indent-line n))))
 
-;;-pel-autoload
-(defun pel-unindent (&optional n)
-  "Unindent by N times `c-basic-offset' spaces."
-  (interactive "*P")
+;; --
+(defun pel--line-unindent (&optional n)
+  "Un-indent current line by N times `c-basic-offset' spaces.
+Works when point is anywhere on the line.
+Limitation: does not handle hard tabs and may move point."
+  (back-to-indentation)
   (let ((n (prefix-numeric-value n)))
     (when (> (current-column) 0)
       (left-char (min (current-column) (* c-basic-offset n)))
       (if (and (require 'pel-ccp nil :no-error)
                (fboundp 'pel-delete-to-next-visible))
           (pel-delete-to-next-visible)
-        (error "pel-delete-to-next-visible is not loaded")))))
+        (error "Function pel-delete-to-next-visible is not loaded")))))
+
+;;-pel-autoload
+(defun pel-unindent (&optional n)
+  "Un-indent current line or marked region by N times `c-basic-offset' spaces.
+Works when point is anywhere on the line.
+Limitation: does not handle hard tabs."
+  (interactive "*P")
+  (save-excursion
+    (if (use-region-p)
+        (let ((begin-point (region-beginning))
+              (line-count (count-lines (region-beginning) (region-end))))
+          (goto-char begin-point)
+          (dotimes (i line-count)
+            (pel--line-unindent n)
+            (forward-line 1))
+          (set-mark begin-point))
+      (pel--line-unindent n))))
 
 ;;-pel-autoload
 (defun pel-indent-rigidly (&optional n)
@@ -87,7 +119,7 @@ by the numeric argument N (or if not specified N=1):
           (if (< n 0)
               (pel-mark-line-up n)
             (pel-mark-line-down n))
-        (error "pel-mark functions not loaded")))
+        (error "The pel-mark functions are not loaded")))
     (indent-rigidly (region-beginning) (region-end) nil t)))
 
 ;; -----------------------------------------------------------------------------
