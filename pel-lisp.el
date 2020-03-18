@@ -41,7 +41,7 @@
 ;;-pel-autoload
 (defun pel-byte-compile-file-and-load ()
   "Byte compile and load the current elisp file.
-Return non-nil if there were no error, ill if errors."
+Return non-nil if there were no error, nil if errors."
   (interactive)
   (byte-compile-file
    (pel-current-buffer-filename)
