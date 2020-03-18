@@ -684,6 +684,25 @@ the ``rg`` command that uses the fast ripgrep_ executable.
 .. _ripgrep: https://github.com/BurntSushi/ripgrep
 
 
+PEL Help Support
+----------------
+
+:PDF Docs: `Help`_
+:PEL Customization: **none**
+:PEL Key Prefix: - **pel:help** : ``<f11> h``
+
+                   - **pel:apropos** : ``<f11> ? a``
+                   - **pel:describe** : ``<f11> ? d``
+                   - **pel:emacs** : ``<f11> ? e``
+                   - **pel:info** : ``<f11> ? i``
+                   - **pel:keys** : ``<f11> ? k``
+
+PEL provides a set of key bindings to request help information, bound to the
+**pel:help** key prefix (``<f11> ?``) and it sub-prefixes.  Several of these
+commands are accessible via standard Emacs bindings of the ``<f1>`` and the
+``C-h`` keys.  There are also some other, as shown in the `Help`_ PDF table.
+
+
 PEL Highlight and Whitespace Management Support
 -----------------------------------------------
 
