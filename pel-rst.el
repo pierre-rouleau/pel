@@ -278,7 +278,7 @@ Ignore the title level."
   (let ((level (pel--rst-adorn-level-of-previous-section)))
     (if level
         (pel-rst-adorn (+ level step))
-      (user-error "Cannot detect section level of previous section"))))
+      (user-error "Cannot detect section level of previous section!"))))
 
 ;; TODO: update code to be able to detect levels higher than 6
 ;; The current code uses the rst-mode face to detect a adorned
@@ -313,19 +313,17 @@ LIMITATION: only able to detect the first 6 levels."
 (defun pel-rst-adorn-same-level ()
   "Adorn current line with the same level as the previous section.
 If the line is already adorned, update the adornment: adjust to previous section level."
-  ;; TODO: improve code to prevent erase if can't detect previous level
   (interactive)
-  (pel-delete-trailing-whitespace)
-  (if (pel--line-adorned-p)
-      (progn
-        (save-excursion
-          (forward-line 1)
-          (pel--rst-delete-whole-line))
-        (pel--rst-adorn-same-as-previous 0)
-        (save-excursion
-          (forward-line 2)
-          (pel--rst-delete-whole-line)))
-    (pel--rst-adorn-same-as-previous 0)))
+  (let ((previous-level (pel--rst-adorn-level-of-previous-section)))
+    (if previous-level
+        (progn
+          (pel-delete-trailing-whitespace)
+          (when (pel--line-adorned-p)
+            (save-excursion
+              (forward-line 1)
+              (pel--rst-delete-whole-line)))
+          (pel-rst-adorn previous-level))
+      (user-error "Cannot detect section level of previous section!"))))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-increase-level ()
