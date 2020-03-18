@@ -2458,5 +2458,5 @@ customization.
 
 ..
    -----------------------------------------------------------------------------
-:PDF Docs: `Comments`_, `Cut, Delete, Copy and Paste`_, `Narrowing`_
+
 ..  LocalWords:  PEL
