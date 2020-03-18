@@ -18,7 +18,7 @@ and a bare-bone Emacs.
 It keeps most of the Emacs key bindings untouched while providing
 quick access to several other packages,  extended features
 and key binding trees.
-Most features are activated via the Emacs customization
+Most features are activated via the `Emacs customization`_
 system, providing control without requiring extra Emacs Lisp code
 (except for 2 forms to require and init PEL).
 
@@ -2080,49 +2080,6 @@ pel-use-which-key              Enables the use of the which-key_ package.       
                                by default.
 ============================== ============================================================= =================
 
-.. References
-
-.. _ace-window package:        https://melpa.org/#/ace-window
-.. _Auto Complete:
-.. _auto-complete package:     https://melpa.org/#/auto-complete
-.. _MELPA:                     https://melpa.org/
-.. _use-package:               https://melpa.org/#/use-package
-.. _bind-key:                  https://melpa.org/#/bind-key
-.. _bm:                        https://melpa.org/#/bm
-.. _c-eldoc:                   https://melpa.org/#/?q=c-eldoc
-.. _SBCL:                      https://en.wikipedia.org/wiki/Steel_Bank_Common_Lisp
-.. _slime:                     https://melpa.org/#/slime
-.. _slime package:             https://melpa.org/#/slime
-
-.. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Customization.html#Customization
-.. _Emacs initialization file: https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html
-.. _ELPA:                      https://elpa.gnu.org
-.. _company:                   https://melpa.org/#/company
-.. _dired-narrow:              https://melpa.org/#/dired-narrow
-.. _esup:                      https://melpa.org/#/esup
-.. _expand-region:             https://melpa.org/#/expand-region
-.. _framemove:                 https://www.emacswiki.org/emacs/FrameMove
-.. _free-keys:                 https://melpa.org/#/free-keys
-.. _goto-last-change:          https://melpa.org/#/goto-last-change
-.. _graphviz-dot-mode:         https://melpa.org/#/graphviz-dot-mode
-.. _highlight-defined:         https://melpa.org/#/highlight-defined
-.. _lice:                      https://melpa.org/#/lice
-.. _macrostep:                 https://melpa.org/#/macrostep
-.. _nhexl-mode:                https://elpa.gnu.org/packages/nhexl-mode.html
-.. _parinfer:                  https://melpa.org/#/parinfer
-.. _rainbow-delimiters:        https://melpa.org/#/rainbow-delimiters
-.. _popup-kill-ring:           https://melpa.org/#/popup-kill-ring
-.. _rg:                        https://melpa.org/#/rg
-.. _rust-mode:                 https://melpa.org/#/rust-mode
-.. _racer:                     https://melpa.org/#/racer
-.. _cargo:                     https://melpa.org/#/cargo
-.. _sr-speedbar:               https://melpa.org/#/sr-speedbar
-.. _undo-tree:                 https://elpa.gnu.org/packages/undo-tree.html
-.. _which-key:                 https://elpa.gnu.org/packages/which-key.html
-
-
-
-
 
 
 Implementation Notes
@@ -2419,18 +2376,88 @@ customization.
 
 - PEL has the following dependencies on the following external Emacs packages:
 
-  - `use-package`_ 2.4, by John Wiegley, GPL V3.0.
-
-- Finally PEL can integrate and use the following external Emacs packages, when
-  they are activated by PEL customize variables:
-
-  - ace-window
-  - bind-key
-  - erlang-flymake
-  - erlang-start
+  - `use-package`_ 2.4, by John Wiegley, GPL V3.0.  Used to control installation
+    and loading of other packages inside the `pel.el`_ file.
+  - `ace-window`_
+  - `auto-complete`_
+  - `bind-key`_
+  - `bm`_
+  - `c-eldoc`_
+  - `cargo`_
+  - `company`_
+  - `dired-narrow`_
+  - `edts`_
+  - elisp-lint_
+  - elpy_
+  - esup_
+  - expand-region_
+  - free-keys_
+  - goto-last-change_
+  - graphviz-dot-mode_
+  - highlight-defined_
   - popup
   - pos-tip
   - sr-speedbar
+  - smooth-scrolling
+  - lice_
+  - macrostep_
+  - nhexl-mode_
+  - parinfer_
+  - popup-kill-ring_
+  - racer_
+  - rainbow-delimiters_
+  - rg_
+  - rust-mode_
+  - slime_
+  - smooth-scrolling_
+  - sr-speedbar_
+  - undo-tree_
+  - which-key_
+
+.. References
+
+.. _ace-window:
+.. _ace-window package:        https://melpa.org/#/ace-window
+.. _Auto Complete:
+.. _auto-complete package:     https://melpa.org/#/auto-complete
+.. _MELPA:                     https://melpa.org/
+.. _use-package:               https://melpa.org/#/use-package
+.. _bind-key:                  https://melpa.org/#/bind-key
+.. _bm:                        https://melpa.org/#/bm
+.. _cargo:                     https://melpa.org/#/cargo
+.. _company:                   https://melpa.org/#/company
+.. _c-eldoc:                   https://melpa.org/#/?q=c-eldoc
+.. _dired-narrow:              https://melpa.org/#/dired-narrow
+.. _edts:                      https://melpa.org/#/edts
+.. _elisp-lint:                https://melpa.org/#/elisp-lint
+.. _elpy:                      https://melpa.org/#/elpy
+.. _esup:                      https://melpa.org/#/esup
+.. _expand-region:             https://melpa.org/#/expand-region
+.. _free-keys:                 https://melpa.org/#/free-keys
+.. _goto-last-change:          https://melpa.org/#/goto-last-change
+.. _graphviz-dot-mode:         https://melpa.org/#/graphviz-dot-mode
+.. _highlight-defined:         https://melpa.org/#/highlight-defined
+.. _lice:                      https://melpa.org/#/lice
+.. _macrostep:                 https://melpa.org/#/macrostep
+.. _nhexl-mode:                https://elpa.gnu.org/packages/nhexl-mode.html
+.. _parinfer:                  https://melpa.org/#/parinfer
+.. _popup-kill-ring:           https://melpa.org/#/popup-kill-ring
+.. _racer:                     https://melpa.org/#/racer
+.. _rainbow-delimiters:        https://melpa.org/#/rainbow-delimiters
+.. _rg:                        https://melpa.org/#/rg
+.. _rust-mode:                 https://melpa.org/#/rust-mode
+.. _slime:                     https://melpa.org/#/slime
+.. _slime package:             https://melpa.org/#/slime
+.. _smooth-scrolling:          https://melpa.org/#/smooth-scrolling
+.. _sr-speedbar:               https://melpa.org/#/sr-speedbar
+.. _undo-tree:                 https://elpa.gnu.org/packages/undo-tree.html
+.. _which-key:                 https://elpa.gnu.org/packages/which-key.html
+.. _SBCL:                      https://en.wikipedia.org/wiki/Steel_Bank_Common_Lisp
+.. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Customization.html#Customization
+.. _Emacs initialization file: https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html
+.. _ELPA:                      https://elpa.gnu.org
+.. _framemove:                 https://www.emacswiki.org/emacs/FrameMove
+
 
 ..
    -----------------------------------------------------------------------------
