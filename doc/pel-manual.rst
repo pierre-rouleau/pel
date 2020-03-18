@@ -356,8 +356,8 @@ the relevant PDF files.  The complete list of PDF files is shown in the
 `Key Binding Documentation`_ section.
 
 
-PEL Abbreviation Support
-------------------------
+PEL Abbreviation Management Support
+-----------------------------------
 
 :PDF Docs: `Abbreviations`_.
 :PEL Customization: ``pel-use-hippie-expand``.
@@ -365,13 +365,17 @@ PEL Abbreviation Support
 
 PEL provides automatic activation of Hippie expansion when the
 ``pel-use-hippie-expand`` customize variable is set to **t**.  Otherwise
-it defaults to Dabbrev expansion.
+it defaults to Dabbrev_ expansion.
 PEL also provides the **pel:abbrev** key map which provides access to some
 abbreviation related commands.  PEL binds it to ``<f11> a``.
 
 All code provided by PEL about
 abbreviations
 is located inside the file `pel.el`_.
+
+
+.. _Dabbrev: https://www.gnu.org/software/emacs/manual/html_node/emacs/Dynamic-Abbrevs.html#Dynamic-Abbrevs
+
 
 
 
