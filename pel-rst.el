@@ -136,8 +136,9 @@ if N is 0 use previous line, etc..."
         (line-end-pos   (progn (move-end-of-line nil))))
     (delete-trailing-whitespace line-start-pos line-end-pos)))
 
-(defun pel-rst-adorn (&optional level)
+(defun pel-rst-adorn (&optional level update)
   "Adorn the current line as a reStructuredText section at the specified LEVEL.
+When UPDATE is non-nil do not add a new line after the underlining line.
 Leave the cursor unmoved, on the title line."
   (interactive "p")
   (if (>= level (length rst-preferred-adornments))
@@ -153,10 +154,12 @@ Leave the cursor unmoved, on the title line."
            (adorn-style (nth 1 adorn-level))
            (indent-steps (nth 2 adorn-level)))
       (move-end-of-line nil)
-      (insert (format "\n%s\n"
+      (insert (format "\n%s"
                       (make-string linelen adorn-char)))
+      (when (not update)
+          (insert "\n"))
       (when (eq adorn-style 'over-and-under)
-        (forward-line -2)
+        (forward-line (if update -1 -2))
         (insert (format "\n%s\n"
                         (make-string linelen adorn-char))))
       ;; if the style requires indentation, indent the 3 lines
@@ -296,7 +299,7 @@ Ignore the title level."
   "Return t if current line is section-adorned, nil otherwise.
 REQUIREMENT: the line must not have trailing whitespaces."
   (save-excursion
-    ;; the line has no trailing whitespace
+    ;; the line should have no trailing whitespace
     ;; check a character 2 char before end of line to be safe
     ;; since line might be indented (for some styles) and the
     ;; rst-level-x property goes up to end of line (but not on
@@ -336,11 +339,13 @@ If the line is already adorned, update the adornment: adjust to previous section
     (if previous-level
         (progn
           (pel-delete-trailing-whitespace)
-          (when (pel--line-adorned-p)
-            (save-excursion
-              (forward-line 1)
-              (pel--rst-delete-whole-line)))
-          (pel-rst-adorn previous-level))
+          (if (pel--line-adorned-p)
+              (progn
+                (save-excursion
+                  (forward-line 1)
+                  (pel--rst-delete-whole-line))
+                (pel-rst-adorn previous-level :update))
+            (pel-rst-adorn previous-level)))
       (user-error "Cannot detect section level of previous section!"))))
 
 ;;-pel-autoload
