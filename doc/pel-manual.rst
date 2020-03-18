@@ -330,7 +330,7 @@ If you want to change a key binding that PEL uses, you can define your own
 key bindings after the execution of ``pel-init``.  You can also change
 PEL prefix keys.
 
-The following code re-assign the F6 key to `undo' and uses the F7 key
+The following code re-assign the F6 key to `undo` and uses the F7 key
 to be used as what PEL normally uses for F6:
 
 .. code:: elisp
