@@ -99,7 +99,7 @@ Identifies the number of levels supported and their adornment.
   - subsections,
   - subsubsections,
   - paragraphs.
-- `CRiSPer', a 10-level mode I developed in the past for CRiSP."
+- `CRiSPer', a title and 12-level mode previously developed for CRiSP."
   :group 'pel-rst
   :type '(choice (const :tag "default" default)
                  (const :tag "Sphinx-Python" Sphinx-Python)

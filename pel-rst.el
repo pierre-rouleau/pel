@@ -36,7 +36,17 @@
 
 (defun pel-rst-set-adornment (style)
   "Set the reStructuredText adornment STYLE.
-Set it to one of: 'CRiSPeR, 'Sphinx-Python, or 'default."
+Set it to one of: 'CRiSPeR, 'Sphinx-Python, or 'default.
+STYLE identifies the number of levels supported and their adornment.
+- `default' is Emacs rst-mode default. A title and 7 levels.
+- `Sphinx-Python' is what Sphinx uses: 6 levels:
+  - parts,
+  - chapters,
+  - sections,
+  - subsections,
+  - subsubsections,
+  - paragraphs.
+- `CRiSPer', a title and 12-level mode previously developed for CRiSP."
   (when (boundp 'rst-preferred-adornments)
     (setq rst-preferred-adornments (cond ((eq style 'default)
                                           '((?= over-and-under 1)
@@ -56,17 +66,19 @@ Set it to one of: 'CRiSPeR, 'Sphinx-Python, or 'default."
                                             (?^ simple 0)          ; for subsubsections
                                             (?\" simple 0)))       ; for paragraph
                                          ((eq style 'CRiSPer)
-                                          '((?= over-and-under 0)    ; level  0 : title
-                                            (?= simple 0)            ; level  1
-                                            (?- simple 0)            ; level  2
-                                            (?~ simple 0)            ; level  3
-                                            (?^ simple 0)            ; level  4
-                                            (?+ simple 0)            ; level  5
-                                            (?* simple 0)            ; level  6
-                                            (?> simple 0)            ; level  7
-                                            (?< simple 0)            ; level  8
-                                            (?_ simple 0)            ; level  9
-                                            (?# simple 0)))          ; level 10
+                                          '((?= over-and-under 0)  ; level  0 : title
+                                            (?= simple 0)          ; level  1
+                                            (?- simple 0)          ; level  2
+                                            (?~ simple 0)          ; level  3
+                                            (?^ simple 0)          ; level  4
+                                            (?+ simple 0)          ; level  5
+                                            (?* simple 0)          ; level  6
+                                            (?> simple 0)          ; level  7
+                                            (?< simple 0)          ; level  8
+                                            (?_ simple 0)          ; level  9
+                                            (?# simple 0)          ; level 10
+                                            (?` simple 0)          ; level 11
+                                            (?@ simple 0)))        ; level 12
                                          (t (user-error "Unsupported style %S" style))))
     (setq pel-rst-adornment-style style)
     (message "Now using the %s adornment style with %d levels supported."
