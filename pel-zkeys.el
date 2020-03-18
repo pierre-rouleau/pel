@@ -1727,10 +1727,10 @@ the ones defined from the buffer now."
 (define-pel-global-prefix pel:count (kbd "<f11> c"))
 (define-key pel:count "m" #'count-matches)        ; Counts number of regexp patterns that match in a region.
 (define-key pel:count "p" #'count-lines-page)     ; Display total number of lines in page, and number of lines before/after
-                                        ; point.
-(define-key pel:count "r" #'count-words-region)   ; Count number of words, lines and chars in the region
+                                                  ; point.
+(define-key pel:count "W" #'count-words-region)   ; Count number of words, lines and chars in the region
 (define-key pel:count "w" #'count-words)          ; Show number of lines, words & characters in current buffer. Display counts
-                                        ; in minibuffer.
+                                                  ; in minibuffer.
 ;;
 
 ;; -----------------------------------------------------------------------------
