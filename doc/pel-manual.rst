@@ -465,6 +465,18 @@ comment management.
   operations.  See the `Cut, Delete, Copy and Paste`_ document.
 
 
+
+PEL Closing and Suspending Table
+--------------------------------
+
+:PDF Docs: `Closing and Suspending`_
+:PEL Customization: **none**
+:PEL Key Prefix: **none**
+
+PEL provides the `Closing and Suspending`_ PDF table listing the Emacs commands
+to close and suspend.
+
+
 PEL CUA Mode Extension Utilities - *experimental*
 -------------------------------------------------
 
@@ -1257,6 +1269,18 @@ to the main dictionary and your personal dictionary
   - hunspell 1.7.0
 
   Earlier versions of these programs were not tested, YMMV.
+
+
+PEL Text Alignment Support
+--------------------------
+
+:PDF Docs: `Align`_.
+:PEL Customization: *none*
+:PEL Key Prefix: - **pel:align** : ``<f11> t a``
+
+PEL provides the **pel:align** key binding ``<f11> t a`` to Emacs text alignment
+commands.
+
 
 
 PEL Text Filling and Justification Utilities
