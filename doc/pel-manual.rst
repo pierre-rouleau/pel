@@ -1440,42 +1440,44 @@ mnemonically associate to the related concept if at all possible.
 =============================== ===========================================
 key                             binding
 =============================== ===========================================
-``<f11> TAB``                   pel:indent
-``<f11> SPC``                   Prefix Command
+``<f11> SPC``                   Prefix Command to access the
+                                `PEL Mode Sensitive Key-maps`_
+                                from any buffer.
+``<f11> TAB``                   **pel:indent**
 ``<f11> #``                     pel-toggle-mac-numlock
-``<f11> $``                     pel:spell
-``<f11> '``                     pel:bookMark
+``<f11> $``                     **pel:spell**
+``<f11> '``                     **pel:bookMark**
 ``<f11> +``                     pel-copy-marked-or-whole-line
-``<f11> ,``                     pel:auto-completion
-``<f11> -``                     pel:kill
-``<f11> .``                     pel:mark
-``<f11> 0``                     hl-line-mode
-``<f11> ;``                     pel:comment
-``<f11> =``                     pel:copy
-``<f11> ?``                     pel:help
-``<f11> C``                     pel:clipboard
-``<f11> F``                     pel:frame
-``<f11> S``                     pel:speedbar
+``<f11> ,``                     **pel:auto-completion**
+``<f11> -``                     **pel:kill**
+``<f11> .``                     **pel:mark**
+``<f11> 0``                     **hl-line-mode**
+``<f11> ;``                     **pel:comment**
+``<f11> =``                     **pel:copy**
+``<f11> ?``                     **pel:help**
+``<f11> C``                     **pel:clipboard**
+``<f11> F``                     **pel:frame**
+``<f11> S``                     **pel:speedbar**
 ``<f11> [``                     pel-cua-move-rectangle-left
 ``<f11> ]``                     pel-cua-move-rectangle-right
-``<f11> a``                     pel:abbrev
-``<f11> b``                     pel:buffer
-``<f11> c``                     pel:count
-``<f11> d``                     pel:draw
-``<f11> f``                     pel:file
-``<f11> g``                     pel:grep
-``<f11> i``                     pel:insert
-``<f11> k``                     pel:kbmacro
-``<f11> l``                     pel:linectrl
-``<f11> o``                     pel:order
-``<f11> r``                     pel:register
-``<f11> s``                     pel:search-replace
-``<f11> t``                     pel:text
-``<f11> u``                     pel:undo
-``<f11> w``                     pel:window
-``<f11> x``                     pel:eXecute
+``<f11> a``                     **pel:abbrev**
+``<f11> b``                     **pel:buffer**
+``<f11> c``                     **pel:count**
+``<f11> d``                     **pel:draw**
+``<f11> f``                     **pel:file**
+``<f11> g``                     **pel:grep**
+``<f11> i``                     **pel:insert**
+``<f11> k``                     **pel:kbmacro**
+``<f11> l``                     **pel:linectrl**
+``<f11> o``                     **pel:order**
+``<f11> r``                     **pel:register**
+``<f11> s``                     **pel:search-replace**
+``<f11> t``                     **pel:text**
+``<f11> u``                     **pel:undo**
+``<f11> w``                     **pel:window**
+``<f11> x``                     **pel:eXecute**
 ``<f11> y``                     yank-pop
-``<f11> |``                     pel:scroll
+``<f11> |``                     **pel:scroll**
 ``<f11> <C-S-down>``            pel-close-window-down
 ``<f11> <C-S-left>``            pel-close-window-left
 ``<f11> <C-S-right>``           pel-close-window-right
@@ -1488,7 +1490,7 @@ key                             binding
 ``<f11> <M-right>``             pel-forward-syntaxchange-start
 ``<f11> <C-f10>``               menu-bar-mode
 ``<f11> <down>``                windmove-down
-``<f11> <f10>``                 pel:menu
+``<f11> <f10>``                 **pel:menu**
 ``<f11> <f11>``                 pel-toggle-frame-fullscreen
 ``<f11> <f12>``                 xterm-mouse-mode
 ``<f11> <left>``                windmove-left
@@ -1499,13 +1501,36 @@ key                             binding
 PEL Mode Sensitive Key-maps
 ---------------------------
 
-In the above table,
-the ``<f11> SPC`` is a special case. It's the top key-map of all mode sensitive
-key-maps.
-PEL uses the **F12** as the key prefix for a keymap that contains
-commands for the major mode of the current buffer.
+The first element of the table in the previous section lists
+the ``<f11> SPC`` special prefix.
+It's the top key-map of all PEL mode sensitive key-maps.
+It has several sub-maps, once for each of the major mode explicitly supported by
+PEL:
 
-For example, when the current buffer is using the ``rst-mode``
+=============================== ===========================================
+key                             binding
+=============================== ===========================================
+``<f11> SPC C``                 pel:for-C++
+``<f11> SPC L``                 pel:for-lisp
+``<f11> SPC c``                 pel:for-C
+``<f11> SPC g``                 pel:for-graphviz-dot
+``<f11> SPC l``                 pel:for-elisp
+``<f11> SPC p``                 pel:for-python
+``<f11> SPC r``                 pel:for-reST
+=============================== ===========================================
+
+The above list is small.  It will grow as PEL evolves.
+
+If you are editing a buffer in one of the mode explicitly supported by PEL,
+the **F12** key is bound to the mode-specific prefix.
+For example inside a buffer using the *elisp-mode* major mode,
+typing ``<f12>`` is the same
+as typing ``<f11> SPC l``.
+Inside a buffer containing Python source code,
+typing ``<f12>`` is the same
+as typing ``<f11> SPC p``.
+
+When the current buffer is using the ``rst-mode``
 for `editing reStructuredText files`_,
 the **F12** key has the following bindings.
 
@@ -1517,9 +1542,10 @@ key                             binding
 ``<f12> s``                     pel-rst-set-ref-bookmark
 =============================== ===========================================
 
+
 However, when the current buffer uses Emacs-Lisp mode for working on Emacs Lisp
 code,
-the **F12** key has the following, different bindings.
+the **F12** key has the following, different, bindings.
 
 
 =============================== ===========================================
@@ -1539,26 +1565,7 @@ key                             binding
 
 If you edit a reStructuredText file and want to use one of the commands
 available in the Emacs-Lisp key-map, then you can use the longer PEL key-map
-that uses the ``<f11> SPC`` prefix.
-The following table shows that for Emacs Lisp (abbreviated "elisp") you'd type
-``<f11> SPC l`` to get to the same key-map that ``<f12>`` provides when you're
-already using the Emacs-Lisp major mode.
-
-=============================== ===========================================
-key                             binding
-=============================== ===========================================
-``<f11> SPC C``                 pel:for-C++
-``<f11> SPC L``                 pel:for-lisp
-``<f11> SPC c``                 pel:for-C
-``<f11> SPC g``                 pel:for-graphviz-dot
-``<f11> SPC l``                 pel:for-elisp
-``<f11> SPC p``                 pel:for-python
-``<f11> SPC r``                 pel:for-reST
-=============================== ===========================================
-
-This is a very early version of PEL.
-Support for programming and markup languages is currently very sparse.
-More to come.
+that uses the ``<f11> SPC l`` prefix.
 
 
 .. _editing reStructuredText files: `PEL reStructuredText Support Utilities`_
