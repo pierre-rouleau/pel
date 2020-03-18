@@ -1451,7 +1451,7 @@ key                             binding
 ``<f11> ,``                     **pel:auto-completion**
 ``<f11> -``                     **pel:kill**
 ``<f11> .``                     **pel:mark**
-``<f11> 0``                     **hl-line-mode**
+``<f11> 0``                     hl-line-mode
 ``<f11> ;``                     **pel:comment**
 ``<f11> =``                     **pel:copy**
 ``<f11> ?``                     **pel:help**
@@ -1476,8 +1476,10 @@ key                             binding
 ``<f11> u``                     **pel:undo**
 ``<f11> w``                     **pel:window**
 ``<f11> x``                     **pel:eXecute**
-``<f11> y``                     yank-pop
 ``<f11> |``                     **pel:scroll**
+``<f11> <f10>``                 **pel:menu**
+``<f11> <f11>``                 pel-toggle-frame-fullscreen
+``<f11> <f12>``                 xterm-mouse-mode
 ``<f11> <C-S-down>``            pel-close-window-down
 ``<f11> <C-S-left>``            pel-close-window-left
 ``<f11> <C-S-right>``           pel-close-window-right
@@ -1490,9 +1492,6 @@ key                             binding
 ``<f11> <M-right>``             pel-forward-syntaxchange-start
 ``<f11> <C-f10>``               menu-bar-mode
 ``<f11> <down>``                windmove-down
-``<f11> <f10>``                 **pel:menu**
-``<f11> <f11>``                 pel-toggle-frame-fullscreen
-``<f11> <f12>``                 xterm-mouse-mode
 ``<f11> <left>``                windmove-left
 ``<f11> <right>``               windmove-right
 ``<f11> <up>``                  windmove-up
