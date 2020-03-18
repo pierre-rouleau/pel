@@ -1767,10 +1767,12 @@ the ones defined from the buffer now."
     (user-error
      "Activate auto-revert-mode before attempting to set/cancel its timer")))
 
+(declare-function find-grep "grep")
 (define-pel-global-prefix pel:file (kbd "<f11> f"))
 (define-key pel:file "A" #'auto-revert-mode)
 (define-key pel:file " "  'pel-auto-revert-set-timer) ; cancel/restart the timer
 (define-key pel:file "d" #'find-dired)
+(define-key pel:file "g" #'find-grep)
 (define-key pel:file "h" #'find-grep-dired)
 (define-key pel:file "l" #'find-lisp-find-dired)
 (define-key pel:file "n" #'find-name-dired)
@@ -1825,9 +1827,8 @@ the ones defined from the buffer now."
 ;; - Function Keys - <f11> - Prefix ``<f11> g`` : Grep operations
 
 (define-pel-global-prefix pel:grep (kbd "<f11> g"))
-(declare-function find-grep "grep")
 (declare-function kill-grep "grep")
-(define-key pel:file      "f"  #'find-grep)
+(define-key pel:grep      "f"  #'find-grep)
 (define-key pel:grep      "g"  #'grep)
 (define-key pel:grep      "k"  #'kill-grep)
 (define-key pel:grep      "l"  #'lgrep)

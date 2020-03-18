@@ -670,6 +670,20 @@ This PEL file provides the following commands:
   - ``pel-previous-frame`` moves point to the previous frame.
 
 
+PEL Grep Support
+----------------
+
+:PDF Docs: `Grep`_.
+:PEL Customization: ``pel-use-ripgrep``
+:PEL Key Prefix: **pel:grep** : ``<f11> g``
+
+PEL provides the **pel:grep** (``<f11> g``) key map to regroup grep commands.
+If the ``pel-use-ripgrep`` customize variable is **t** that includes access to
+the ``rg`` command that uses the fast ripgrep_ executable.
+
+.. _ripgrep: https://github.com/BurntSushi/ripgrep
+
+
 PEL Highlight and Whitespace Management Support
 -----------------------------------------------
 
