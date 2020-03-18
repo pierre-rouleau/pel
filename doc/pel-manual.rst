@@ -688,7 +688,7 @@ PEL Help Support
 ----------------
 
 :PDF Docs: `Help`_
-:PEL Customization: **none**
+:PEL Customization: ``pel-use-free-keys``, ``pel-use-which-key``.
 :PEL Key Prefix: - **pel:help** : ``<f11> h``
 
                    - **pel:apropos** : ``<f11> ? a``
@@ -701,6 +701,9 @@ PEL provides a set of key bindings to request help information, bound to the
 **pel:help** key prefix (``<f11> ?``) and it sub-prefixes.  Several of these
 commands are accessible via standard Emacs bindings of the ``<f1>`` and the
 ``C-h`` keys.  There are also some other, as shown in the `Help`_ PDF table.
+The customization include the ``pel-use-free-keys`` and ``pel-use-which-key``
+variables.  The latter is enabled by default; it help see the available bindings
+following key prefixes.
 
 
 PEL Highlight and Whitespace Management Support
