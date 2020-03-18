@@ -679,6 +679,30 @@ restore the normal Emacs keyboard macro recording without any protective
 prompting, just set the ``pel-kmacro-prompts`` to *nil*.
 
 
+PEL Line Control Utilities
+--------------------------
+
+:PDF Docs: `Display Lines`_.
+:PEL Customization: *none*
+:PEL Key Prefix: **pel:linectrl** : ``<f11> l``
+
+The file ``pel-line-control.el`_ contains:
+
+- 2 commands that move the cursor to the previous and next logical lines, lines
+  that when wider than the current window, wrap around:
+
+  - ``pel-lc-previous-logical-line`` and
+  - ``pel-lc-next-logical-line``.
+
+- 1 command to toggle the display of the current line and column on the mode
+  line.  In some cases the mode line is too short to display all information,
+  removing the display of point's line and column frees real-estate to allow
+  seeing more of the remainder of the mode line.
+
+PEL provides a set of commands under the **pel:linectrl** key prefix, ``<f11>
+l``, which deal with those commands and other Emacs line control related commands.
+
+
 PEL Mark Management Utilities
 -----------------------------
 
