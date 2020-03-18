@@ -288,17 +288,26 @@ Ignore the title level."
 ;; underline will be left in the buffer.
 (defun pel--line-adorned-p ()
   "Return t if current line is section-adorned, nil otherwise.
+REQUIREMENT: the line must not have trailing whitespaces.
 LIMITATION: only able to detect the first 6 levels."
-  (let ((point-text-face-property (get-text-property (point) 'face)))
-    (if (listp point-text-face-property)
-        (car (memq
-              (car point-text-face-property)
-              '(rst-level-1
-                rst-level-2
-                rst-level-3
-                rst-level-4
-                rst-level-5
-                rst-level-6))))))
+  (save-excursion
+    ;; the line has no trailing whitespace
+    ;; check a character 2 char before end of line to be safe
+    ;; since line might be indented (for some styles) and the
+    ;; rst-level-x property goes up to end of line (but not on
+    ;; the end-of-line character).
+    (move-end-of-line nil)
+    (backward-char 2)
+    (let ((point-text-face-property (get-text-property (point) 'face)))
+      (if (listp point-text-face-property)
+          (car (memq
+                (car point-text-face-property)
+                '(rst-level-1
+                  rst-level-2
+                  rst-level-3
+                  rst-level-4
+                  rst-level-5
+                  rst-level-6)))))))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-same-level ()
