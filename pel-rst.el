@@ -292,16 +292,9 @@ Ignore the title level."
         (pel-rst-adorn (+ level step))
       (user-error "Cannot detect section level of previous section!"))))
 
-;; TODO: update code to be able to detect levels higher than 6
-;; The current code uses the rst-mode face to detect a adorned
-;; line, but rst-mode only support 6 faces.  That will be OK
-;; for most jobs, but will fail support increase/decrease levels
-;; in place for levels higher than that. It will work but the old
-;; underline will be left in the buffer.
 (defun pel--line-adorned-p ()
   "Return t if current line is section-adorned, nil otherwise.
-REQUIREMENT: the line must not have trailing whitespaces.
-LIMITATION: only able to detect the first 6 levels."
+REQUIREMENT: the line must not have trailing whitespaces."
   (save-excursion
     ;; the line has no trailing whitespace
     ;; check a character 2 char before end of line to be safe
@@ -311,7 +304,10 @@ LIMITATION: only able to detect the first 6 levels."
     (move-end-of-line nil)
     (backward-char 2)
     (let ((point-text-face-property (get-text-property (point) 'face)))
-      (if (listp point-text-face-property)
+      (if (and point-text-face-property
+               (listp point-text-face-property))
+          ;; current line is adorned with the style supported by rst-mode
+          ;; so just check the adornment text face property to get the level
           (car (memq
                 (car point-text-face-property)
                 '(rst-level-1
@@ -319,7 +315,17 @@ LIMITATION: only able to detect the first 6 levels."
                   rst-level-3
                   rst-level-4
                   rst-level-5
-                  rst-level-6)))))))
+                  rst-level-6)))
+        ;; The level is not adorned, check character in the underline
+        ;; to detect the level (if there is one). Check that the underline
+        ;; is the same length as the title line and check its last char.
+        ;; It's not foolproof, but probably OK for most cases.
+        (let ((title-line-length (current-line-length))
+              (underline-length (progn (forward-line 1) (current-line-length))))
+          (when (equal title-line-length underline-length)
+            (move-end-of-line nil)
+            (backward-char 2)
+            (pel--rst-level-for (char-after))))))))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-same-level ()
