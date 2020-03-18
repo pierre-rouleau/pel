@@ -355,6 +355,26 @@ by PEL and the bindings for PEL commands.  The sections below contain link to
 the relevant PDF files.  The complete list of PDF files is shown in the
 `Key Binding Documentation`_ section.
 
+
+PEL Abbreviation Support
+------------------------
+
+:PDF Docs: `Abbreviations`_.
+:PEL Customization: ``pel-use-hippie-expand``.
+:PEL Key Prefix: **pel:abbrev** : ``<f11> a``
+
+PEL provides automatic activation of Hippie expansion when the
+``pel-use-hippie-expand`` customize variable is set to **t**.  Otherwise
+it defaults to Dabbrev expansion.
+PEL also provides the **pel:abbrev** key map which provides access to some
+abbreviation related commands.  PEL binds it to ``<f11> a``.
+
+All code provided by PEL about
+abbreviations
+is located inside the file `pel.el`_.
+
+
+
 PEL Auto-Completion Support
 ---------------------------
 
