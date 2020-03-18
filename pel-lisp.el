@@ -54,20 +54,6 @@ Return non-nil if there were no error, nil if errors."
   (require 'elint)
   (elint-file (pel-current-buffer-filename)))
 
-;;-pel-autoload
-(defun pel-search-defun ()
-  "Move cursor to next defun."
-  (interactive)
-  (push-mark (point) t nil)
-  (search-forward-regexp "^\(defun "))
-
-;;-pel-autoload
-(defun pel-search-defun-backward ()
-  "Move cursor to previous defun."
-  (interactive)
-  (push-mark (point) t nil)
-  (search-backward-regexp "^\(defun "))
-
 ;; -----------------------------------------------------------------------------
 (provide 'pel-lisp)
 

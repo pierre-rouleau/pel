@@ -1147,8 +1147,8 @@ Optionally insert it at point if INSERT is non-nil."
 (define-key pel:elisp-eval "r" #'eval-region)
 
 (define-pel-global-prefix pel:elisp-function (kbd "<f11> SPC l f"))
-(define-key pel:elisp-function "n" 'pel-search-defun)               ; move cursor to next defun form
-(define-key pel:elisp-function "p" 'pel-search-defun-backward)
+(define-key pel:elisp-function "n" 'pel-beginning-of-next-defun)
+(define-key pel:elisp-function "p" 'beginning-of-defun)
 
 (define-pel-global-prefix pel:elisp-lib (kbd "<f11> SPC l l"))
 (define-key pel:elisp-lib "L" #'load-library)                   ; Load an elisp file.

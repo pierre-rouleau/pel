@@ -153,8 +153,6 @@
   (autoload 'pel-toggle-lisp-modes           "pel-lisp")
   (autoload 'pel-byte-compile-file-and-load  "pel-lisp")
   (autoload 'pel-lint-elisp-file             "pel-lisp")
-  (autoload 'pel-search-defun                "pel-lisp")
-  (autoload 'pel-search-defun-backward       "pel-lisp")
 
   ;; pel-mark
   (autoload 'pel-mark-ring-stats                      "pel-mark")
