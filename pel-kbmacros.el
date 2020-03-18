@@ -36,7 +36,7 @@
 
 ;; -----------------------------------------------------------------------------
 ;;; Code:
-(require 'pel--options)
+(require 'pel--options)     ; use: pel-kbmacro-prompts
 
 (defvar pel--keyboard-macro-defined
   nil
