@@ -1014,8 +1014,20 @@ menu via the minibuffer.  The key prefix for these command bindings is ``<f11><f
 .. _here: http://emacs.stackexchange.com/questions/31791/order-of-items-in-imenu?noredirect=1#comment48799_31791
 
 
-PEL Navigation
---------------
+PEL Narrowing Documentation
+---------------------------
+
+:PDF Docs: `Narrowing`_.
+:PEL Customization: *none*
+:PEL Key Prefix: *none*
+
+
+PEL provides the  `Narrowing`_ PDF table listing Emacs commands dealing with
+the powerful concept of narrowing.
+
+
+PEL Navigation Support
+----------------------
 
 :PDF Docs: `Navigation`_.
 :PEL Customization: *none*
@@ -1052,6 +1064,18 @@ complement the standard Emacs navigation commands.
 - ``pel-beginning-of-next-defun`` move point to the beginning of the
   next function definition. This complements ``beginning-of-defun`` which
   only reaches the same location by moving backwards.
+
+
+PEL Package Management Documentation
+------------------------------------
+
+:PDF Docs: `Packages`_.
+:PEL Customization: *none*
+:PEL Key Prefix: *none*
+
+
+PEL provides the  `Packages`_ PDF table listing Emacs commands dealing with
+Emacs package management.
 
 PEL Programming Language Support
 --------------------------------
@@ -1182,7 +1206,7 @@ following commands are used:
 - ``pel-scroll-down`` which scrolls text down,
 - ``pel-home`` and ``pel-end``, defined in ``pel-navigation``, which move
   point the the beginning or end of current field, line, window or buffer.
-  See `PEL Navigation`_.
+  See `PEL Navigation Support`_.
 
 When the `smooth scrolling package`_ is available and ``pel-smooth-scrolling``
 customize variable is set to **t**, PEL provide a key binding to toggle smooth
@@ -1217,6 +1241,28 @@ value:
   buffer.
 
 
+PEL Emacs Shell Support
+-----------------------
+
+:PDF Docs: `Shells`_.
+:PEL Customization: ``pel-use-erlang``.
+:PEL Key Prefix: **pel:eXecute** : ``<f11> x``
+
+PEL provides the **pel:eXecute** (``<f11> x``) key binding to provide access to
+various types of shells from within Emacs as described in the `Shells`_ PDF
+table.
+
+PEL Sorting Support
+-------------------
+
+:PDF Docs: `Sorting`_.
+:PEL Customization: *none*
+:PEL Key Prefix: **pel:order** : ``<f11> o``
+
+
+PEL provides the **pel:order88 (``<f11> o``) key binding to provide access to
+Emacs commands you can use to sort (*order*) text in various ways as described
+in the `Sorting`_ PDF table.
 
 
 PEL Speedbar Management
