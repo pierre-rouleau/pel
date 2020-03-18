@@ -659,6 +659,26 @@ The available commands are:
 The PEL support for indentation will evolve as support form various types of
 files, programming languages and markup languages evolves.
 
+
+PEL Keyboard Macro Utilities
+----------------------------
+
+:PDF Docs: `Keyboard Macros`_.
+:PEL Customization: ``pel-kmacro-prompts``.
+:PEL Key Prefix: *none*
+
+The file `pel-kmacros.el`- implements ``pel-kmacro-start-macro-or-insert-counter``
+used to replace the standard ``kmacro-start-macro-or-insert-counter`` to record
+a keyboard macro.  If the customize variable ``pel-kmacro-prompts`` is set to
+**t**, the PEL function checks if the macro is already defined and if it is,
+prompts before allowing to replace the existing keyboard macro with a new one.
+It just offer a little protection.  And this protection can be reset by
+executing the second command: ``pel-forget-recorded-keyboard-macro``.  In some
+case that level of protection might be annoying, to disable it completely and
+restore the normal Emacs keyboard macro recording without any protective
+prompting, just set the ``pel-kmacro-prompts`` to *nil*.
+
+
 PEL Mark Management Utilities
 -----------------------------
 
