@@ -470,19 +470,31 @@ PEL Closing and Suspending Table
 --------------------------------
 
 :PDF Docs: `Closing and Suspending`_
-:PEL Customization: **none**
-:PEL Key Prefix: **none**
+:PEL Customization: *none*
+:PEL Key Prefix: *none*
 
 PEL provides the `Closing and Suspending`_ PDF table listing the Emacs commands
 to close and suspend.
+
+
+PEL Counting Support
+--------------------
+
+:PDF Docs: `Counting`_.
+:PEL Customization: *none*
+:PEL Key Prefix: **pel:count** : ``<f11> c``
+
+PEL provides the **pel:count** key prefix (``<f11> c``) to Emacs commands that
+count text and display results in the echo area.
+
 
 
 PEL CUA Mode Extension Utilities - *experimental*
 -------------------------------------------------
 
 :PDF Docs: *none*
-:PEL Customization: **none**
-:PEL Key Prefix: **none**
+:PEL Customization: *none*
+:PEL Key Prefix: *none*
 
 **Note:**
    🚧  This file is under early development.
