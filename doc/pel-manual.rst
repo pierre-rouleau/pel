@@ -2376,8 +2376,6 @@ customization.
 
 - PEL has the following dependencies on the following external Emacs packages:
 
-  - `use-package`_ 2.4, by John Wiegley, GPL V3.0.  Used to control installation
-    and loading of other packages inside the `pel.el`_ file.
   - `ace-window`_
   - `auto-complete`_
   - `bind-key`_
@@ -2395,10 +2393,7 @@ customization.
   - goto-last-change_
   - graphviz-dot-mode_
   - highlight-defined_
-  - popup
-  - pos-tip
-  - sr-speedbar
-  - smooth-scrolling
+  - popup-kill-ring_
   - lice_
   - macrostep_
   - nhexl-mode_
@@ -2412,12 +2407,14 @@ customization.
   - smooth-scrolling_
   - sr-speedbar_
   - undo-tree_
+  - `use-package`_
   - which-key_
 
 .. References
 
 .. _ace-window:
 .. _ace-window package:        https://melpa.org/#/ace-window
+.. _auto-complete:
 .. _Auto Complete:
 .. _auto-complete package:     https://melpa.org/#/auto-complete
 .. _MELPA:                     https://melpa.org/
