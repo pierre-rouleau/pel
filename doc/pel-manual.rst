@@ -1001,6 +1001,15 @@ PEL Emacs Lisp Support
                  - From a buffer in elisp-mode: ``<f12>``
 
 
+The file `pel-lisp.el`_ contains command utilities that help edit Emacs Lisp
+code.  Some of them can also be used for other types of Lisp as well.
+
+- ``pel-toggle-lisp-modes`` toggles between ``lisp-interaction-mode`` and
+  ``emacs-lisp-mode``.
+- ``pel-byte-compile-file-and-load`` byte compiles the file in the current
+  buffer and then load it.
+- ``pel-lint-elisp-file`` runs Emacs Lisp lint on the current file.
+
 
 PEL Prompt Utilities
 --------------------
