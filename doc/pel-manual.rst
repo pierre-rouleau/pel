@@ -570,6 +570,19 @@ text, targetting specific syntax entities or other simpler parts.
 - The ``pel-mark-whole-line`` marks the complete current line excluding the line
   termination.
 
+
+PEL Enriched Text Support
+-------------------------
+
+:PDF Docs: `Enriched Text`_.
+:PEL Customization: *none*
+:PEL Key Prefix: - **pel:textmodes** : ``<f11> t m``
+
+PEL `Enriched Text`_ PDF table shows the Emacs commands available for
+enriched text.
+
+
+
 PEL File Management Utilities
 -----------------------------
 
@@ -599,9 +612,9 @@ When the ``pel-use-ido-mode`` customize variable is set to **t** ``pel-init``
 activates IDO-mode_ everywhere, enables flex matching and prevents prompt when
 creating new buffers with ``C-x b``.
 
-
-
 .. _IDO-mode: https://www.gnu.org/software/emacs/manual/html_node/ido/index.html
+
+
 
 PEL Font Management Utilities
 -----------------------------
@@ -1674,7 +1687,6 @@ do not work when Emacs is running in terminal (TTY) mode are displayed in
 orange, commands that require external Emacs package are show in blue and use a the
 package character (📦), etc...  The full list of conventions are listed in the
 `Document Legend`_ table.  The list of tables follow below.
-This is the very first release of PEL.
 As PEL evolves, it will cover more topics, more
 programming languages, major modes and will integrate with more of the external
 Emacs packages and more tables will describe how to use them.
