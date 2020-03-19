@@ -26,8 +26,6 @@ PEL is an hybrid package; it is:
 
 .. _Emacs easy customization:
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
-.. _PEL convenience features: `PEL Convenience Features`_
-.. _PEL key bindings:         `PEL Key Bindings`_
 
 
 **Note**:
