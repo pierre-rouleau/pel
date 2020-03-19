@@ -82,7 +82,7 @@ PEL provides:
   and links to related on-line documents.
 
 You can either start PEL during Emacs initialization by including the
-following Emacs Lisp code inside your `Emacs initialization file`_:
+following Emacs Lisp code inside your `Emacs initialization file`_ :
 
 .. code:: elisp
 
