@@ -162,7 +162,7 @@ PEL Goals
   - Keep as many standard Emacs key bindings as possible.
 
 - Document what's available: the key bindings, the special considerations, the
-  documents that should be read to deepen user's understanding.
+  documents to read for further learning.
 - Allow use of PEL even when someone has an extensive Emacs init file.
 - Add support for several programming languages integrating many packages that
   support these programming languages.  Support for C, C++, Rust, Go,
