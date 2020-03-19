@@ -36,7 +36,7 @@ PEL provides:
   with:
 
   - Package activation done through  `Emacs easy customization`_ system,
-    see `PEL customization`. No extra Emacs Lisp code needed.
+    see `PEL customization`_.  No extra Emacs Lisp code needed.
   - Extensive use of auto-loading and deferred loading techniques to speed
     up Emacs initialization time.
 
