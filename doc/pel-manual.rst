@@ -11,7 +11,7 @@ pel -- Pragmatic Environment Library for Emacs
 Overview
 ========
 
-PEL is an hybrid package; it is:
+PEL is an hybrid package. It is:
 
 - an Emacs key binding documentation project
   (see `Key Bindings Documentation`_),
@@ -64,7 +64,7 @@ PEL provides:
 
 - `PEL convenience features`_ include:
 
-  - The key-bindings under **F6**,     **F11** and **F12** function keys.
+  - The key-bindings under **F6**, **F11** and **F12** function keys.
   - A set of small Emacs Lisp files that implement
     PEL's features that deal with several
     aspects of Emacs like windows and frame, scrolling control,  buffer,

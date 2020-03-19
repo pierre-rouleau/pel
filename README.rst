@@ -4,116 +4,118 @@ pel -- Pragmatic Environment Library for Emacs
 
 .. [from:  README ]
 
-PEL is a package that gets you going with Emacs quickly while allowing
-you to continue using your current Emacs configuration.
-It's a compromize between a full blown starter kit or Emacs environment
-and a bare-bone Emacs.
-It keeps most of the Emacs key bindings untouched while providing
-quick access to several other packages,  extended features
-and key binding trees.
-Most features are activated via the Emacs customization
-system, providing control without requiring extra Emacs Lisp code
-(except for 2 forms to require and init PEL).
+PEL is an hybrid package. It is:
 
-**Note**:
-   This is an early version of PEL, and my first contribution to Emacs.
-   It will grow with time, incorporating
-   more Emacs packages to support more editing tasks and
-   programming languages.
+- an Emacs key binding documentation project
+  (see `Key Bindings Documentation`_),
+- an overall configuration and setup system with:
+
+  - the implementation of a function-key based key binding map tree to commands,
+    keeping most Emacs key bindings untouched,
+  - several files that implement `PEL convenience features`_,
+  - `PEL Customization`_ that control the use of the features of several
+    external packages (see `Credits`_),
+    their loading, configuration and key bindings.
+    This conforms to the
+    `Emacs easy customization`_ system and reduces your need
+    to write custom Emacs Lisp code.
+
+.. _Emacs easy customization:
+.. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
 
 
-The PEL package provides:
+PEL provides:
 
-- Pre-canned configuration of several useful Emacs packages
-  that loads quickly and which is controlled by Emacs customization
-  system.
-  This help getting going with Emacs without having to know
-  the art of writing Emacs init.el file.
-- The configuration is made to load quickly, making extensive
-  use of auto-loading and deferred loading is used everywhere.
-- The selection of package and features is done via PEL customization
-  variables.
+- A set of already-written configuration for fast loading of several
+  useful Emacs packages with:
+
+  - Package activation done through  `Emacs easy customization`_ system,
+    see `PEL customization`_.  No extra Emacs Lisp code needed.
+  - Extensive use of auto-loading and deferred loading techniques to speed
+    up Emacs initialization time.
+
 - Dynamic control of several packages and their commands.
-  For example, PEL support both auto-complete and company auto-completion
-  pakages, providing commands to activate one mode in a buffer and
+  For example, PEL support both `auto-complete`_ and `company`_ auto-completion
+  packages, providing commands to activate one mode in a buffer and
   another mode inside another and while preventing dual use in a buffer.
-- Key bindings using function key prefixes (F2, F6, F11 and F12)
-  to provide easy access to many features and help learn what's available.
+- `PEL key bindings`_ avoid modification of most Emacs keys, instead
+  PEL uses function keys:
 
-  - Most standard Emacs keys are left untouched.
-  - The which-key package is used and activated by default, allowing
-    you to see what's available easily.  F11 is the main prefix key
-    and all prefixes have a meaningful name that starts with the
-    'pel:' prefix.  F2 and F6 are used as global shortcut prefix keys,
-    and F12 as a mode-sensitive shortcut prefix key.
-  - See the `Key Binding Documentation`_ section and the
-    `PDF Document tables`_ for more info.
+  - **F2**, bound to ``bm-next`` (from `visible bookmarks`_)
+    to quickly move to next visible bookmark
+    when the ``pel-use-bm`` customize variable is **t**.
+  - **F5**, bound to ``repeat``.
+  - **F6**, the ``pel:f6`` prefix, which provides quick access to some
+    often used commands.
+  - **F11**, the ``pel:`` prefix , is the main prefix key for PEL, providing
+    access to a large set of key bindings and second-level key prefixes.
+  -  **F12** is a mode-sensitive key prefix with quick access bindings for the
+     current major mode.
+  - The `which-key`_ package is used and activated by default (through
+    ``pel-use-which-key`` set to **t**), allowing
+    you to see the available commands after a key prefix easily.
 
-- PEL comes with a set of convenience features that deal with several
-  aspects of Emacs like windows and frame, scrolling control,  buffer,
-  navigation, opening files
-  or web pages from file name or URL at point, numeric keypad handling,
-  etc...  These files can be used independently as (*mostly*)
-  independent Emacs Lisp *libraries* if you prefer to use the features
-  without the PEL key bindings.
+- `PEL convenience features`_ include:
 
-- Extensive documentation in the form of PDF files, one file
-  per Emacs topics.
-  Each table provides an overview, command descriptions, related
-  key bindings  and links to related on-line documents.  The
-  tables have extensive markup with colours for standard Emacs,
-  external package, and PEL-provided command and key bindings.
+  - The key-bindings under **F6**, **F11** and **F12** function keys.
+  - A set of small Emacs Lisp files that implement
+    PEL's features that deal with several
+    aspects of Emacs like windows and frame, scrolling control,  buffer,
+    navigation, opening files
+    or web pages from file name or URL at point, numeric keypad handling,
+    etc...
 
-PEL relies on Emacs customization system.  PEL activates third party
-packages through customization, by setting a corresponding ``pel-use-...``
-variable to t. Once a feature is activated through customization,
-PEL also provides extra key bindings and in some cases allow dynamic
-activation and de-activation of external packages.
+    - Note that these files can be used as *mostly*
+      independent Emacs Lisp *libraries* if you prefer to use a specific
+      PEL features without PEL's key bindings.
 
-PEL code is written in several files.  The pel.el file holds ``pel-init``
-which initializes PEL, controls auto-loading of all supported packages
-and builds the key bindings.  There are several other PEL files that
-are used by that.  But they can also be used independently.  So if you
-do not want to use PEL key bindings, you can just use some of the PEL
-modules and provide you own bindings in your own Emacs init file.
+- Several `PDF Document Tables`_ that describe the key bindings for
+  specific topics.
+  Each table provides an overview, related Emacs,
+  external packages and PEL command descriptions and key bindings
+  and links to related on-line documents.
 
-PEL  integrates with a set of third party Emacs packages
-(see the list in the `Credits`_ section below) and provides extra key bindings
-to use the feature of those packages, sometime through extension functions
-provided by PEL code.
-In several cases PEL provides the logic to install these third party Emacs
-packages, the logic to configure them and the logic to load them as lazily
-as possible to reduce the Emacs initialization start time to a minimum.
-
-The use of PEL features and PEL uses of other third party Emacs packages is
-controlled by the `PEL Customization`_.  The default customization leave
-most packages un-activated. To use their features you must
-first activate them via the `PEL Customization`_ mechanism.
-
-To use the PEL auto-loading of packages and key bindings, put the
-following code inside your Emacs ``init.el`` file:
+You can either start PEL during Emacs initialization by including the
+following Emacs Lisp code inside your `Emacs initialization file`_ :
 
 .. code:: elisp
 
       (require 'pel)
       (pel-init)
 
-You can place you own customizations after executing ``pel-init``.
-This allows you to overwrite bindings done by PEL for instance, or
-complement it.
+You can place you own customization after the call to ``pel-init``.
+This way you can overwrite specific PEL's key bindings if needed.
 
-To start or re-start PEL interactively, type::
+You can also can start or re-start PEL interactively by typing::
 
-     M-x pel-init
+  M-x pel-init
 
-More information is available in `PEL's Manual`_.
+
+.. _Emacs initialization file: https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html#Init-File
+
+
+
+
 
 .. [ endof: README ]
 
+More information is available in `PEL's Manual`_.
 
-.. _which-key:                 https://elpa.gnu.org/packages/which-key.html
+.. links:
+
 .. _PEL's Manual:              doc/pel-manual.rst
 .. _Key Binding Documentation: doc/pel-manual.rst#pel-key-bindings
-.. _Credits:                   doc/pel-manual.rst#credits
+.. _PEL convenience features:  doc/pel-manual.rst#pel-convenience-features
 .. _PEL Customization:         doc/pel-manual.rst#pel-customization
+.. _Credits:                   doc/pel-manual.rst#credits
+.. _PEL key bindings:          doc/pel-manual.rst#pel-key-bindings
 .. _PDF Document tables:       doc/pel-manual.rst#pdf-document-tables
+
+.. _auto-complete:             https://melpa.org/#/auto-complete
+.. _company:                   https://melpa.org/#/company
+.. _visible bookmarks:         https://melpa.org/#/bm
+.. _which-key:                 https://elpa.gnu.org/packages/which-key.html
+
+
+..
+   -----------------------------------------------------------------------------
