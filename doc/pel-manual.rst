@@ -33,8 +33,8 @@ PEL is an hybrid package; it is:
 
 PEL provides:
 
-- Fast loading already-written configuration for several useful Emacs packages
-  with:
+- A set of already-written configuration for fast loading of several
+  useful Emacs packages with:
 
   - Package activation done through  `Emacs easy customization`_ system,
     see `PEL customization`_.  No extra Emacs Lisp code needed.
@@ -58,22 +58,23 @@ PEL provides:
     access to a large set of key bindings and second-level key prefixes.
   -  **F12** is a mode-sensitive key prefix with quick access bindings for the
      current major mode.
-  - The `which-key`_ package is used and activated by default, allowing
-    you to see what's available easily.
+  - The `which-key`_ package is used and activated by default (through
+    ``pel-use-which-key`` set to **t**), allowing
+    you to see the available commands after a key prefix easily.
 
-- `PEL convenience features`_ include the key-bindings under **F6**,
-  **F11** and **F12** function keys.
-  It also includes a set of small Emacs Lisp files
-  that implement
-  a set of convenience features that deal with several
-  aspects of Emacs like windows and frame, scrolling control,  buffer,
-  navigation, opening files
-  or web pages from file name or URL at point, numeric keypad handling,
-  etc...
+- `PEL convenience features`_ include:
 
-  - Note that these files can be used as *mostly*
-    independent Emacs Lisp *libraries* if you prefer to use a specific
-    PEL features without PEL's key bindings.
+  - The key-bindings under **F6**,     **F11** and **F12** function keys.
+  - A set of small Emacs Lisp files that implement
+    PEL's features that deal with several
+    aspects of Emacs like windows and frame, scrolling control,  buffer,
+    navigation, opening files
+    or web pages from file name or URL at point, numeric keypad handling,
+    etc...
+
+    - Note that these files can be used as *mostly*
+      independent Emacs Lisp *libraries* if you prefer to use a specific
+      PEL features without PEL's key bindings.
 
 - Several `PDF Document Tables`_ that describe the key bindings for
   specific topics.
