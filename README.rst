@@ -103,18 +103,18 @@ More information is available in `PEL's Manual`_.
 
 .. links:
 
-.. _PEL's Manual:              doc/pel-manual.rst
-.. _Key Binding Documentation: doc/pel-manual.rst#pel-key-bindings
-.. _PEL convenience features:  doc/pel-manual.rst#pel-convenience-features
-.. _PEL Customization:         doc/pel-manual.rst#pel-customization
-.. _Credits:                   doc/pel-manual.rst#credits
-.. _PEL key bindings:          doc/pel-manual.rst#pel-key-bindings
-.. _PDF Document tables:       doc/pel-manual.rst#pdf-document-tables
+.. _PEL's Manual:               doc/pel-manual.rst
+.. _Key Bindings Documentation: doc/pel-manual.rst#pel-key-bindings
+.. _PEL convenience features:   doc/pel-manual.rst#pel-convenience-features
+.. _PEL Customization:          doc/pel-manual.rst#pel-customization
+.. _Credits:                    doc/pel-manual.rst#credits
+.. _PEL key bindings:           doc/pel-manual.rst#pel-key-bindings
+.. _PDF Document tables:        doc/pel-manual.rst#pdf-document-tables
 
-.. _auto-complete:             https://melpa.org/#/auto-complete
-.. _company:                   https://melpa.org/#/company
-.. _visible bookmarks:         https://melpa.org/#/bm
-.. _which-key:                 https://elpa.gnu.org/packages/which-key.html
+.. _auto-complete:              https://melpa.org/#/auto-complete
+.. _company:                    https://melpa.org/#/company
+.. _visible bookmarks:          https://melpa.org/#/bm
+.. _which-key:                  https://elpa.gnu.org/packages/which-key.html
 
 
 ..
