@@ -20,7 +20,8 @@ PEL is an hybrid package; it is:
   - the implementation of a function-key based key binding map tree to commands,
     keeping most Emacs key bindings untouched,
   - several files that implement `PEL convenience features`_,
-  - `PEL Customization`_ that control the use of external package features,
+  - `PEL Customization`_ that control the use of the features of several
+    external packages (see `Credits`_),
     their loading, configuration and key bindings.
     This conforms to the
     `Emacs easy customization`_ system and reduces your need
@@ -68,9 +69,11 @@ PEL provides:
   aspects of Emacs like windows and frame, scrolling control,  buffer,
   navigation, opening files
   or web pages from file name or URL at point, numeric keypad handling,
-  etc...  These files can be used independently as (*mostly*)
-  independent Emacs Lisp *libraries* if you prefer to use the features
-  without the PEL key bindings.
+  etc...
+
+  - Note that these files can be used as *mostly*
+    independent Emacs Lisp *libraries* if you prefer to use a specific
+    PEL features without PEL's key bindings.
 
 - Several `PDF Document Tables`_ that describe the key bindings for
   specific topics.
@@ -78,47 +81,22 @@ PEL provides:
   external packages and PEL command descriptions and key bindings
   and links to related on-line documents.
 
-PEL relies on Emacs customization system.  PEL activates third party
-packages through `PEL customization`_, by setting a corresponding ``pel-use-...``
-variable to t. Once a feature is activated through customization,
-PEL also provides extra key bindings and in some cases allow dynamic
-activation and deactivation of external packages.
-
-PEL code is written in several files.  The pel.el file holds ``pel-init``
-which initializes PEL, controls auto-loading of all supported packages
-and builds the key bindings.  There are several other PEL files that
-are used by that.  But they can also be used independently.  So if you
-do not want to use PEL key bindings, you can just use some of the PEL
-modules and provide you own bindings in your own Emacs init file.
-
-PEL  integrates with a set of third party Emacs packages
-(see the list in the `Credits`_ section below) and provides extra key bindings
-to use the feature of those packages, sometime through extension functions
-provided by PEL code.
-In several cases PEL provides the logic to install these third party Emacs
-packages, the logic to configure them and the logic to load them as lazily
-as possible to reduce the Emacs initialization start time to a minimum.
-
-The use of PEL features and PEL uses of other third party Emacs packages is
-controlled by the `PEL customization`_.  The default customization leave
-most packages inactivated. To use their features you must
-first activate them via the `PEL Customization`_ mechanism.
-
-To use the PEL auto-loading of packages and key bindings, put the
-following code inside your Emacs ``init.el`` file:
+You can either start PEL during Emacs initialization by including the
+following Emacs Lisp code inside your `Emacs initialization file`_:
 
 .. code:: elisp
 
       (require 'pel)
       (pel-init)
 
-You can place you own customization after executing ``pel-init``.
-This allows you to overwrite bindings done by PEL for instance, or
-complement it.
+You can place you own customization after the call to ``pel-init``.
+This way you can overwrite specific PEL's key bindings if needed.
 
-To start or re-start PEL interactively, type::
+You can also can start or re-start PEL interactively by typing::
 
   M-x pel-init
+
+.. _Emacs initialization file: https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html#Init-File
 
 
 The reason for PEL
@@ -1943,9 +1921,10 @@ PEL Customization
 =================
 
 PEL is customized by using the `Emacs easy customization`_ system.
-PEL controls the activation of external packages via a set of customize
+PEL controls the activation of external packages and their key bindings
+via a set of customize
 variables that have names that start with ``pel-use-``.  They are listed in the
-next section.  Activation of a package also activates the key bindings for that package.
+next section.
 
 To customize PEL:
 
