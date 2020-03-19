@@ -1260,7 +1260,7 @@ PEL Sorting Support
 :PEL Key Prefix: **pel:order** : ``<f11> o``
 
 
-PEL provides the **pel:order88 (``<f11> o``) key binding to provide access to
+PEL provides the **pel:order** (``<f11> o``) key binding to provide access to
 Emacs commands you can use to sort (*order*) text in various ways as described
 in the `Sorting`_ PDF table.
 
@@ -1393,7 +1393,7 @@ commands.
 PEL Text Filling and Justification Utilities
 -------------------------------------------
 
-:PDF Docs: `Filling and Justification`_.
+:PDF Docs: `Filling and Justification`_, `Text-modes`_.
 :PEL Customization: *none*
 :PEL Key Prefix: - **pel:fill** : ``<f11> t f``
                  - **pel:justification** : ``<f11> t j``
@@ -1426,7 +1426,7 @@ template systems that are available for Emacs, for now it just provides the
 following commands:
 
 - ``pel-insert-line`` inserts a (commented) line.  The lenght of the line is
-  controlled by the ``pel-linelen`` customizable variable, whcih defaults to 77.
+  controlled by the ``pel-linelen`` customizable variable, which defaults to 77.
 - ``pel-insert-filename`` inserts the name of the file in the current or
   specified window.
 - The following 3 commands insert time/date format for the local or the UTC
@@ -1467,6 +1467,32 @@ PEL Text Transformation Utilities
 - The ``pel-toggle-sentence-end`` command toggles the number of spaces that
   identify the end of a sentence for Emacs between 1 and 2.  It displays the new value.
 
+
+PEL Text Transpose Support
+--------------------------
+
+:PDF Docs: `Transpose`_.
+:PEL Customization: *none*
+:PEL Key Prefix: **pel:text-transpose** : ``<f11> t t``
+
+
+PEL provides the **pel:text-transpose** key prefix (``<f11 t t``) to a set of Emacs
+commands that transpose text, as shown in the `Transpose`_ PDF table.
+
+
+PEL Undo Support
+----------------
+
+:PDF Docs: `Undo, Redo, Repeat and Prefix Arguments`_.
+:PEL Customization: ``pel-use-undo-tree``, ``pel-use-goto-last-change``.
+:PEL Key Prefix: **pel:undo** : ``<f11> u``
+
+PEL provides the **pel:undo** key prefix (``<f11> u``) to Emacs undo commands.
+If the ``pel-use-undo-tree`` customization variable is set to **t**, it uses the
+undo-tree package to control undo and binds its keys.
+If the ``pel-use-goto-last-change`` customization variable is set to **t** it
+also provides access to the ``goto-last-change`` command and binds it.
+All key binding details are in the `Undo, Redo, Repeat and Prefix Arguments`_ PDF table.
 
 
 PEL Window Management Support
