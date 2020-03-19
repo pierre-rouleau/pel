@@ -104,12 +104,6 @@ You can also can start or re-start PEL interactively by typing::
 The reason for PEL
 ------------------
 
-**Note**:
-   This is the first release of PEL, and my first contribution to Emacs.
-   It will grow with time, incorporating more documentation,
-   support for more Emacs packages related to editing and
-   programming tasks.
-
 PEL attempts to make Emacs easier for new users by providing already made
 configuration that is controlled by Emacs customization system.  It reduces the
 need for writing Emacs Lisp configuration code for the packages it supports and
@@ -121,14 +115,13 @@ require more knowledge, knowledge that is often not readily available to new
 users and will require a time investment you may not be willing to make.
 
 Instead of having to write Emacs Lisp code inside an Emacs init file for each
-new package you want to use, you'd use PEL, select the features you want
-via `PEL Customization`_ and then execute ``pel-init`` to activate what you want
-to use.  PEL contains the logic for configuring the packages it supports.  In
+new package you want to use, you can use PEL, select the features you want
+via `PEL Customization`_ and then execute ``pel-init`` to activate them.
+contains the logic for configuring the packages it supports.  In
 some cases it also contains the logic to install the package if it is not
 already installed.
 
-This is an early version of PEL. It will grow over time and will support more
-packages. PEL essentially came out as a desire to be able to use an Emacs
+PEL essentially came out as a desire to be able to use an Emacs
 configuration on several systems, both in terminal (TTY) mode and in Graphics
 mode while trying to keep  Emacs initialization as fast as possible and reducing
 the repetitive writing of package initialization code.
@@ -153,18 +146,21 @@ PEL Goals
 ---------
 
 - Ease introduction to Emacs.
-- Simplify and speed up Emacs configuration.
-- Keep as many standard Emacs key bindings as possible.
+- Simplify and speed up Emacs initialization and configuration.
+
+  - Minimize Emacs initialization time even when a large number of packages are
+    present on the computer.
+  - Minimize the amount of Emacs Lisp code to write inside Emacs init file to
+    support various external Emacs packages.
+  - Provide all logic necessary to install and configure external Emacs
+    packages.
+
 - Provide easy to remember key bindings via a key binding tree, key prefixes and
   the use of key choice visualization with package such as which-key_, especially
   for commands that are seldom used.
-- Minimize the amount of Emacs Lisp code to write inside Emacs init file to
-  support various external Emacs packages.
 
-  - Provide all logic necessary to install and configure external Emacs packages.
+  - Keep as many standard Emacs key bindings as possible.
 
-- Minimize Emacs initialization time even when a large number of packages are
-  present on the computer.
 - Document what's available: the key bindings, the special considerations, the
   documents that should be read to deepen user's understanding.
 - Allow use of PEL even when someone has an extensive Emacs init file.
@@ -173,26 +169,27 @@ PEL Goals
   Python, Erlang, Elixir, Haskell, OCaml and several are planned
   (but... no schedule yet!).
 
-
-Essentially, PEL is my first Emacs Lisp project.  I wrote it while learning
-Emacs.  I keep using the documentation whenever I forgot the key bindings
-of one of the many Emacs features.  There are still a lot of things to do to add
-support for external packages and increase the customization. And even more to
-transform the documentation format (see the `PDF Documentation`_ section for
-that.)
+**Note**:
+   This is the first release of PEL, and my first contribution to Emacs,
+   written as I learned Emacs.
+   It will grow with time, incorporating more documentation,
+   support for more Emacs packages related to editing and
+   programming tasks.
 
 
 Using Portions of PEL Manually
 ------------------------------
 
-There's another, manual way to use portions of PEL.
-PEL code is split across several files.
-Its key-map and installation logic is located inside the `pel.el`_ file
-exclusively.
-If you only want to use the feature of one or several other files, then simply
-use them and never call ``pel-init``.
-You can then create any key binding that you wish by writing your own
-initialization code.
+If you prefer not using PEL's key bindings you can `override them`_.
+You can also just use the `PEL features`_ you want and create your own key
+bindings. In that case, don't call ``pel-init``, require the respective PEL
+source code file and create your own key bindings.
+The PEL files are listed in each of the corresponding
+`PEL Convenience Features`_ section.
+
+.. _override them: `To override or change PEL key bindings`_
+.. _PEL features:  `PEL Convenience Features`_
+
 
 ..
    -----------------------------------------------------------------------------
