@@ -30,14 +30,7 @@ PEL is an hybrid package; it is:
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
 
 
-**Note**:
-   This is the first release of PEL, and my first contribution to Emacs.
-   It will grow with time, incorporating
-   more documentation, support for more Emacs packages related to editing and
-   programming tasks.
-
-
-The PEL package provides:
+PEL provides:
 
 - Fast loading already-written configuration for several useful Emacs packages
   with:
@@ -129,6 +122,12 @@ To start or re-start PEL interactively, type::
 
 The reason for PEL
 ------------------
+
+**Note**:
+   This is the first release of PEL, and my first contribution to Emacs.
+   It will grow with time, incorporating more documentation,
+   support for more Emacs packages related to editing and
+   programming tasks.
 
 PEL attempts to make Emacs easier for new users by providing already made
 configuration that is controlled by Emacs customization system.  It reduces the
