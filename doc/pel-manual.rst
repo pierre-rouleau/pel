@@ -110,14 +110,14 @@ need for writing Emacs Lisp configuration code for the packages it supports and
 incorporates the knowledge inside files that can be byte-compiled for further
 speed enhancements.
 
-Emacs supports a number of great packages. Some are easy to install, others
+There are several great packages for Emacs. Some are easy to install, others
 require more knowledge, knowledge that is often not readily available to new
 users and will require a time investment you may not be willing to make.
 
 Instead of having to write Emacs Lisp code inside an Emacs init file for each
 new package you want to use, you can use PEL, select the features you want
 via `PEL Customization`_ and then execute ``pel-init`` to activate them.
-contains the logic for configuring the packages it supports.  In
+PEL has the logic for configuring the packages it supports.  In
 some cases it also contains the logic to install the package if it is not
 already installed.
 
@@ -126,20 +126,20 @@ configuration on several systems, both in terminal (TTY) mode and in Graphics
 mode while trying to keep  Emacs initialization as fast as possible and reducing
 the repetitive writing of package initialization code.
 
-I started writing PEL while learning Emacs, Emacs Lisp and the amazing packages
-that have been written for Emacs.  PEL encapsulates the knowledge about various
-tweaks in the use and configuration of several built-in Emacs features and
-several of the third party packages.
+I started writing PEL while learning Emacs, Emacs Lisp and various packages.
+PEL encapsulates some knowledge about various
+tweaks to use and configure several built-in Emacs features and
+third party packages.
 
-While learning Emacs and various packages I created a set of tables
+I also created a set of tables
 that each list and describe a specific topic, the commands and key bindings
 related to that topic.
 There are several topics; Emacs navigation, Emacs
 buffers, windows and frames, how to undo, redo, work with Emacs Lisp, etc...
 See the `Key Bindings Documentation`_ section.
 The commands and key bindings described in those table include what is provided
-by the plain vanilla GNU Emacs but also the bindings PEL adds and
-the bindings provided by the third party packages that PEL integrates.
+by the plain vanilla GNU Emacs, the third party packages PEL integrates and the
+PEL commands.
 
 
 PEL Goals
