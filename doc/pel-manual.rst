@@ -92,11 +92,13 @@ following Emacs Lisp code inside your `Emacs initialization file`_ :
 You can place you own customization after the call to ``pel-init``.
 This way you can overwrite specific PEL's key bindings if needed.
 
+.. _Emacs initialization file: https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html#Init-File
+
 You can also can start or re-start PEL interactively by typing::
 
   M-x pel-init
 
-.. _Emacs initialization file: https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html#Init-File
+
 
 
 The reason for PEL
