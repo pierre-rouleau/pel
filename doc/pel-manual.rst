@@ -47,12 +47,13 @@ PEL provides:
 - `PEL key bindings`_ avoid modification of most Emacs keys, instead
   PEL uses function keys:
 
-  - **F2**, bound to ``bm-next`` to quickly move to next visible bookmark
-    when     the ``pel-use-bm`` is **t**.
+  - **F2**, bound to ``bm-next`` (from `visible bookmarks`_)
+    to quickly move to next visible bookmark
+    when the ``pel-use-bm`` customize variable is **t**.
   - **F5**, bound to ``repeat``.
-  - **F6**, the **pel:f6** prefix, which provides quick access to some
+  - **F6**, the ``pel:f6`` prefix, which provides quick access to some
     often used commands.
-  - **F11**, the **pel:** prefix , is the main prefix key for PEL, providing
+  - **F11**, the ``pel:`` prefix , is the main prefix key for PEL, providing
     access to a large set of key bindings and second-level key prefixes.
   -  **F12** is a mode-sensitive key prefix with quick access bindings for the
      current major mode.
@@ -2616,6 +2617,7 @@ customization.
 .. _MELPA:                     https://melpa.org/
 .. _use-package:               https://melpa.org/#/use-package
 .. _bind-key:                  https://melpa.org/#/bind-key
+.. _visible bookmarks:
 .. _bm:                        https://melpa.org/#/bm
 .. _cargo:                     https://melpa.org/#/cargo
 .. _company:                   https://melpa.org/#/company
