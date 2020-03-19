@@ -20,9 +20,10 @@ PEL is an hybrid package; it is:
   - the implementation of a function-key based key binding map tree to commands,
     keeping most Emacs key bindings untouched,
   - several files that implement `PEL convenience features`_,
-  - feature, configuration and key binding for external package
-    activated  through
-    `Emacs easy customization`_ system to reduce your need
+  - `PEL Customization`_ that control the use of external package features,
+    their loading, configuration and key bindings.
+    This conforms to the
+    `Emacs easy customization`_ system and reduces your need
     to write custom Emacs Lisp code.
 
 .. _Emacs easy customization:
