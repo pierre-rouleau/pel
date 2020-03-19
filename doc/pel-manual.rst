@@ -13,14 +13,14 @@ Overview
 
 PEL is a package that gets you going with Emacs quickly while allowing
 you to continue using your current Emacs configuration.
-It's a compromize between a full blown starter kit or Emacs environment
+It's a compromise between a full blown starter kit or Emacs environment
 and a bare-bone Emacs.
 It keeps most of the Emacs key bindings untouched while providing
 quick access to several other packages,  extended features
 and key binding trees.
 Most features are activated via the `Emacs customization`_
 system, providing control without requiring extra Emacs Lisp code
-(except for 2 forms to require and init PEL).
+(except for 2 forms to require and initialize PEL).
 
 **Note**:
    This is an early version of PEL, and my first contribution to Emacs.
@@ -42,7 +42,7 @@ The PEL package provides:
   variables.
 - Dynamic control of several packages and their commands.
   For example, PEL support both auto-complete and company auto-completion
-  pakages, providing commands to activate one mode in a buffer and
+  packages, providing commands to activate one mode in a buffer and
   another mode inside another and while preventing dual use in a buffer.
 - Key bindings using function key prefixes (**F2**, **F6**, **F11** and **F12**)
   to provide easy access to many features and help learn what's available.
@@ -74,7 +74,7 @@ PEL relies on Emacs customization system.  PEL activates third party
 packages through `PEL customization`_, by setting a corresponding ``pel-use-...``
 variable to t. Once a feature is activated through customization,
 PEL also provides extra key bindings and in some cases allow dynamic
-activation and de-activation of external packages.
+activation and deactivation of external packages.
 
 PEL code is written in several files.  The pel.el file holds ``pel-init``
 which initializes PEL, controls auto-loading of all supported packages
@@ -93,7 +93,7 @@ as possible to reduce the Emacs initialization start time to a minimum.
 
 The use of PEL features and PEL uses of other third party Emacs packages is
 controlled by the `PEL customization`_.  The default customization leave
-most packages un-activated. To use their features you must
+most packages inactivated. To use their features you must
 first activate them via the `PEL Customization`_ mechanism.
 
 To use the PEL auto-loading of packages and key bindings, put the
@@ -104,7 +104,7 @@ following code inside your Emacs ``init.el`` file:
       (require 'pel)
       (pel-init)
 
-You can place you own customizations after executing ``pel-init``.
+You can place you own customization after executing ``pel-init``.
 This allows you to overwrite bindings done by PEL for instance, or
 complement it.
 
@@ -119,7 +119,7 @@ The reason for PEL
 PEL attempts to make Emacs easier for new users by providing already made
 configuration that is controlled by Emacs customization system.  It reduces the
 need for writing Emacs Lisp configuration code for the packages it supports and
-incorporates the knowledge inside files that can be byte-compiled for futher
+incorporates the knowledge inside files that can be byte-compiled for further
 speed enhancements.
 
 Emacs supports a number of great packages. Some are easy to install, others
@@ -193,7 +193,7 @@ Using Portions of PEL Manually
 
 There's another, manual way to use portions of PEL.
 PEL code is split across several files.
-Its keymap and installation logic is located inside the `pel.el`_ file
+Its key-map and installation logic is located inside the `pel.el`_ file
 exclusively.
 If you only want to use the feature of one or several other files, then simply
 use them and never call ``pel-init``.
@@ -350,7 +350,7 @@ PEL implements a set of small utilities that complement what's already available
 in standard GNU Emacs and some other packages. The code is spread into several
 small files.  Each of those file is described in the following subsections.
 PEL comes with a set of PDF files that describe key bindings , including the
-standard GNU Emacs bindings, the bindings of the external packahges integrated
+standard GNU Emacs bindings, the bindings of the external packages integrated
 by PEL and the bindings for PEL commands.  The sections below contain link to
 the relevant PDF files.  The complete list of PDF files is shown in the
 `Key Binding Documentation`_ section.
@@ -402,7 +402,7 @@ It provides the following commands:
 - ``pel-global-auto-complete-mode`` toggles the global Auto Complete mode
   on/off if it can.  Activation is not allowed when Company Mode is active.
 - ``pel-auto-complete-mode`` toggles the Auto Complete mode for the current
-  buffer if it can.  Activation is not alloewed when Company mode is active
+  buffer if it can.  Activation is not allowed when Company mode is active
   for the current buffer.
 - ``pel-global-company-mode`` toggles the global Company mode on/off if it
   can. Activation is not allowed when Auto Complete mode is active.
@@ -412,7 +412,7 @@ It provides the following commands:
 - ``pel-completion-help`` shows the state of the auto completion global and
   buffer specific modes.  It displays if the packages are available and whether
   they are enabled on not.
-- ``pel-complete`` performs an explicit completion using the competion mode
+- ``pel-complete`` performs an explicit completion using the completion mode
   enabled in the current buffer.
 
 PEL Bookmark Management Utilities
@@ -452,7 +452,7 @@ comment management.
   in the current buffer and change them:
 
   - ``pel-comment-start``  display/set the string used to start a comment.
-  - ``pel-comment-middle`` display/set the string used to continuen a comment.
+  - ``pel-comment-middle`` display/set the string used to continue a comment.
   - ``pel-comment-end``    display/set the string used to end a comment.
 
 - With ``pel-toggle-comment-auto-fill-only-comments``  you control whether
@@ -518,7 +518,7 @@ PEL Cut, Delete, Kill, Copy, Paste and Yank Utilities
 
 The `pel-ccp.el`_ file provides a collection of commands to perform Emacs
 style kill/yank and otherwise copy/cut/paste operations on various parts of the
-text, targetting specific syntax entities or other simpler parts.
+text, targeting specific syntax entities or other simpler parts.
 
 - The following commands copy the specified syntax entities at point into the
   kill ring:
@@ -564,7 +564,7 @@ text, targetting specific syntax entities or other simpler parts.
 
   - The ``pel-delete-whole-line`` command delete the current line, including the
     line termination.
-  - The ``pel-delete-to-next-visible`` delete all whitespace charactares between
+  - The ``pel-delete-to-next-visible`` delete all whitespace characters between
     point and the next non-whitespace character.
 
 - The ``pel-mark-whole-line`` marks the complete current line excluding the line
@@ -901,7 +901,7 @@ The default support for line title adornments done by the ``rst-adjust``
 function does not always work and fails when some markup is used.
 PEL provides a set of simple commands that adorn the current line with the
 character supported by the specified level.  The ``pel-rst-adorn`` command takes
-a numeric argument to add the adornment specified by the customizable
+a numeric argument to add the adornment specified by the customization
 list of adornments stored in the ``rst-preferred-adornments`` variable. To make
 life simple PEL also defines 10 commands to adorn the current line with the
 adornment level specified by the command name and binds these commands to easy
@@ -1009,7 +1009,7 @@ command ``pel-toggle-imenu-index-follows-order`` **and then forcing a menu entry
 re-scan**.
 
 PEL provides other key bindings to manage the MenuBar but also accessing the
-menu via the minibuffer.  The key prefix for these command bindings is ``<f11><f10>``.
+menu via the mini-buffer.  The key prefix for these command bindings is ``<f11><f10>``.
 
 .. _here: http://emacs.stackexchange.com/questions/31791/order-of-items-in-imenu?noredirect=1#comment48799_31791
 
@@ -1193,7 +1193,7 @@ The following commands are used to activate and manage the
 - ``pel-add-window-to-scroll-sync`` adds the current window to the already
   existing group of scroll locked windows.  If there is none it locks
   scrolling of the current and the next window.
-- ``pel-remove-window-from-scroll-sync`` removes the currenbt window from the
+- ``pel-remove-window-from-scroll-sync`` removes the current window from the
   group of scroll locked windows.  Removing the last one disables the
   window scroll sync.  If only one window is left in the group the command
   informs the user but allows it.  That way another window can be added to
@@ -1227,7 +1227,7 @@ variables that control the search behaviour: ``case-fold-search`` and
 ``search-upper-case``, and 1 command to display and interpret their current
 value:
 
-- ``pel-toggle-case-fold-search`` toggles seach case sensitivity in the current
+- ``pel-toggle-case-fold-search`` toggles search case sensitivity in the current
   buffer.
 - ``pel-toggle-search-upper-case`` changes the sensitivity behaviour of yank in
   search prompt between the following:
@@ -1235,7 +1235,7 @@ value:
   - *nil* : upper case don't force case sensitivity,
   - *t* : upper case force case sensitivity,
   - *not-yanks* : upper case force case sensitivity, and
-    lower case text when yank in search minibuffer.
+    lower case text when yank in search mini-buffer.
 
 - ``pel-show-search-case-state`` displays the search behaviour in the current
   buffer.
@@ -1276,7 +1276,7 @@ The file `pel-speedbar.el`_ manages the accessibility and use of Emacs speed-bar
 both Emacs native Speedbar and the `SR-Speedbar`_ external package.
 When the ``pel-use-speedbar`` customize variable is set to **t** PEL provides
 key bindings for activating the speed-bars and provide some management
-facilities. As shown in the PDF `Speedbar`_ table, PEL's
+facilities. As shown in the PDF `Speedbar`_ table, Plus
 default key bindings for those use the ``<f11> S`` prefix.
 
 PEL manages what type of speed-bar is used.  And that depends on whether Emacs
@@ -1295,7 +1295,7 @@ entire frame while SR-Speedbar uses only one of the windows.
     ``pel-open-close-speedbar`` prompts the first time it's called to select
     which one to use.
     When Emacs runs in terminal mode, ``pel-open-close-speedbar`` prompts
-    only if the customizable variable ``pel-prefer-sr-speedbar-in-terminal``
+    only if the customization variable ``pel-prefer-sr-speedbar-in-terminal``
     is nil, otherwise it automatically selects SR-Speedbar, which is more
     convenient.
 
@@ -1333,12 +1333,12 @@ spell checking utilities that detect and display what spell check mode is
 active, and initialization code that fixes a problem with Flyspell pop-up
 menu when Emacs runs in terminal (TTY) mode.
 
-One of the goal of this file is to avoid loading either Ispell or flyspell
+One of the goal of this file is to avoid loading either Ispell or Flyspell
 until they are actually required while providing a function that can
 configure these utilities: ``pel-spell-init``.
 
 To configure Ispell and Flyspell without forcing early loading of the Ispell
-and flyspell libraries you can write something like the following inside your
+and Flyspell libraries you can write something like the following inside your
 init file:
 
 .. code:: elisp
@@ -1425,8 +1425,8 @@ quickly.  PEL does not yet integrate the support of one or several of the great
 template systems that are available for Emacs, for now it just provides the
 following commands:
 
-- ``pel-insert-line`` inserts a (commented) line.  The lenght of the line is
-  controlled by the ``pel-linelen`` customizable variable, which defaults to 77.
+- ``pel-insert-line`` inserts a (commented) line.  The length of the line is
+  controlled by the ``pel-linelen`` customization variable, which defaults to 77.
 - ``pel-insert-filename`` inserts the name of the file in the current or
   specified window.
 - The following 3 commands insert time/date format for the local or the UTC
@@ -1546,7 +1546,7 @@ The file provides the following features:
 - Window splitting:
 
   - The function ``pel-split-window-sensibly`` attempts to improve window
-    splitting logic by selecting an orienation that takes the frame size
+    splitting logic by selecting an orientation that takes the frame size
     into account with a different heuristic than what is normally used by
     Emacs. The function is used by other PEL commands when windows are
     created. The logic gives priority to splitting vertically if the
@@ -1566,7 +1566,7 @@ The file provides the following features:
 
   - ``pel-window-valid-for-editing-p`` move point to the identified direction
     as long as the target window can be used for editing.  This excludes the
-    minibuffer or any dedicated window.
+    mini-buffer or any dedicated window.
   - ``pel-window-select`` move to the window specified by a direction argument
     or to the *other* window (the next one) or create a new window.
     This is also a utility function used by other PEL commands.
@@ -1602,7 +1602,7 @@ In this version these bindings are hard-coded.
          override PEL's binding by placing your own binding statements in your
          Emacs init file **after** the call to ``pel-init``.
          You can also use
-         PEL's keymaps but change the prefix keys.
+         PEL's key-maps but change the prefix keys.
          See the section titled `To override or change PEL key bindings`_ for
          more info.
 
@@ -1615,13 +1615,13 @@ navigate this buffer and follow the links to the described commands. To get the
 list of the keys for a sub-prefix type it and again follow with
 either **C-h** or **F1**.
 
-The following table lists the **F11** keymap as an example.
+The following table lists the **F11** key map as an example.
 As described in the `Naming Conventions`_ section the names in the binding
 column that use the "pel:" prefix are sub key-maps.
 The commands use the prefix "pel-".
 As you can see some of the commands are accessible right after the **F11**
 prefix, but there's a large number of sub-prefix following.
-The keymap names were chosen to be as descriptive as possible and use keys that
+The key-map names were chosen to be as descriptive as possible and use keys that
 mnemonically associate to the related concept if at all possible.
 
 =============================== ===========================================
@@ -1771,7 +1771,7 @@ Each PDF file holds a table that list commands related to a specific topic and
 holds overview above a list of rows on:
 
 #. the command name with several hyperlinks to the related section of the
-   GNU Emacs manuals or other rappropriate resource
+   GNU Emacs manuals or other appropriate resource
 #. the key bindings for that command including:
 
    - the standard Emacs key bindings
@@ -1970,7 +1970,7 @@ To customize PEL:
        See the `PEL Key Bindings`_ section for more info.
      - It will **not** download or activate any other package.
 
-       - It will only do that if you change PEL's custmization and re-run
+       - It will only do that if you change PEL's customization and re-run
          ``pel-init`` either manually or by restarting Emacs.
 
 #. Once the location of the customization information is identified,
@@ -2138,10 +2138,10 @@ pel-use-erlang-flymake         *Future*.  Reserved to control use of Erlang     
 pel-use-erlang-start           *Future*.  Reserved to control use of Erlang                  Not for this
                                support.                                                      version.
 
-pel-use-esup                   Enabless the use of the esup_                                 Yes, from MELPA_.
+pel-use-esup                   Enables the use of the esup_                                  Yes, from MELPA_.
                                package, the Emacs StartUp Profiler.
 
-pel-use-expand-region          Enabless the use of the                                       Yes, from MELPA_.
+pel-use-expand-region          Enables  the use of the                                       Yes, from MELPA_.
                                expand-region_ package which provides a powerful
                                text selection mechanism.
 
