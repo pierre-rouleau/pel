@@ -41,7 +41,7 @@ PEL provides:
     up Emacs initialization time.
 
 - Dynamic control of several packages and their commands.
-  For example, PEL support both auto-complete and company auto-completion
+  For example, PEL support both `auto-complete`_ and `company`_ auto-completion
   packages, providing commands to activate one mode in a buffer and
   another mode inside another and while preventing dual use in a buffer.
 - `PEL key bindings`_ avoid modification of most Emacs keys, instead
