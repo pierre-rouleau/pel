@@ -37,6 +37,11 @@
 ;; Copy Commands.
 ;; --------------
 
+(defun pel--show-kill-ring-top ()
+  "Display top of kill ring on echo area."
+  (message "「%s」"
+           (substring-no-properties (car kill-ring))))
+
 (defun pel--copy-thing-at-point (thing)
   "Copy the `thing-at-point' for the specified kind of THING.
 See `bounds-of-thing-at-point' for a list of possible THING symbols."
@@ -44,8 +49,7 @@ See `bounds-of-thing-at-point' for a list of possible THING symbols."
     (if bounds
         (progn
           (copy-region-as-kill (car bounds) (cdr bounds))
-          (message "「%s」"
-                   (substring-no-properties (car kill-ring))))
+          (pel--show-kill-ring-top))
       (error "No %s at point" thing))))
 
 ;;-pel-autoload
@@ -111,7 +115,7 @@ which only includes the list at point."
 
 ;;-pel-autoload
 (defun pel-copy-paragraph-at-point (&optional n)
-  "Copy complete paragraph at point.
+  "Copy and show complete paragraph at point.
 With argument N, copy N consecutive paragraphs;
 a negative N copies the current one and N-1 previous paragraphs."
   (interactive "P")
@@ -123,49 +127,58 @@ a negative N copies the current one and N-1 previous paragraphs."
       (copy-region-as-kill (point)
                            (progn
                              (forward-paragraph n)
-                             (point))))))
+                             (point))))
+    (pel--show-kill-ring-top)))
+
 
 ;;-pel-autoload
 (defun pel-copy-paragraph-start ()
-  "Copy text between beginning of paragraph and point."
+  "Copy and show text between beginning of paragraph and point."
   (interactive)
   (save-excursion
     (copy-region-as-kill (point)
-                         (progn (backward-paragraph) (point)))))
+                         (progn (backward-paragraph) (point)))
+    (pel--show-kill-ring-top)))
+
 
 ;;-pel-autoload
 (defun pel-copy-paragraph-end ()
-  "Copy text between point and en of paragraph."
+  "Copy and show text between point and en of paragraph."
   (interactive)
   (save-excursion
     (copy-region-as-kill (point)
                          (progn
                            (forward-paragraph)
-                           (point)))))
+                           (point)))
+    (pel--show-kill-ring-top)))
+
 
 ;;-pel-autoload
 (defun pel-copy-line-start ()
-  "Copy text between beginning of line and point."
+  "Copy and show text between beginning of line and point."
   (interactive)
   (save-excursion
     (copy-region-as-kill (point)
                          (progn
                            (move-beginning-of-line nil)
-                           (point)))))
+                           (point)))
+    (pel--show-kill-ring-top)))
 
 ;;-pel-autoload
 (defun pel-copy-line-end ()
-  "Copy text between point and en of line."
+  "Copy and show text between point and end of line."
   (interactive)
   (save-excursion
     (copy-region-as-kill (point)
                          (progn
                            (move-end-of-line nil)
-                           (point)))))
+                           (point)))
+    (pel--show-kill-ring-top)))
+
 
 ;;-pel-autoload
 (defun pel-copy-char-at-point (&optional n)
-  "Copy single character at point.
+  "Copy and show single character at point.
 With argument N, copy N consecutive characters;
 a negative N copies the character backwards (before point)."
   (interactive "P")
@@ -173,7 +186,9 @@ a negative N copies the character backwards (before point)."
     (copy-region-as-kill (point)
                          (progn
                            (forward-char (prefix-numeric-value n))
-                           (point)))))
+                           (point)))
+    (pel--show-kill-ring-top)))
+
 
 ;; -----------------------------------------------------------------------------
 ;; Kill Commands.
