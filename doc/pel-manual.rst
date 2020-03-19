@@ -11,51 +11,66 @@ pel -- Pragmatic Environment Library for Emacs
 Overview
 ========
 
-PEL is a package that gets you going with Emacs quickly while allowing
-you to continue using your current Emacs configuration.
-It's a compromise between a full blown starter kit or Emacs environment
-and a bare-bone Emacs.
-It keeps most of the Emacs key bindings untouched while providing
-quick access to several other packages,  extended features
-and key binding trees.
-Most features are activated via the `Emacs customization`_
-system, providing control without requiring extra Emacs Lisp code
-(except for 2 forms to require and initialize PEL).
+PEL is an hybrid package; it is:
+
+- an Emacs key binding documentation project
+  (see `Key Bindings Documentation`_),
+- an overall configuration and setup system with:
+
+  - the implementation of a function-key based key binding map tree to commands,
+    keeping most Emacs key bindings untouched,
+  - several files that implement `PEL convenience features`_,
+  - with feature and external package activation through
+    `Emacs easy customization`_ system to reduce the need
+    of Emacs Lisp code to configure the supported external packages.
+
+.. _Emacs easy customization:
+.. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
+.. _PEL convenience features: `PEL Convenience Features`_
+.. _PEL key bindings:         `PEL Key Bindings`_
+
 
 **Note**:
-   This is an early version of PEL, and my first contribution to Emacs.
+   This is the first release of PEL, and my first contribution to Emacs.
    It will grow with time, incorporating
-   more Emacs packages to support more editing tasks and
-   programming languages.
+   more documentation, support for more Emacs packages related to editing and
+   programming tasks.
 
 
 The PEL package provides:
 
-- Pre-canned configuration of several useful Emacs packages
-  that loads quickly and which is controlled by Emacs customization
-  system.
-  This help getting going with Emacs without having to know
-  the art of writing Emacs init.el file.
-- The configuration is made to load quickly, making extensive
-  use of auto-loading and deferred loading is used everywhere.
-- The selection of package and features is done via PEL customization
-  variables.
+- Fast loading already-written configuration for several useful Emacs packages
+  with:
+
+  - Package activation done through  `Emacs easy customization`_ system,
+    see `PEL customization`. No extra Emacs Lisp code needed.
+  - Extensive use of auto-loading and deferred loading techniques to speed
+    up Emacs initialization time.
+
 - Dynamic control of several packages and their commands.
   For example, PEL support both auto-complete and company auto-completion
   packages, providing commands to activate one mode in a buffer and
   another mode inside another and while preventing dual use in a buffer.
-- Key bindings using function key prefixes (**F2**, **F6**, **F11** and **F12**)
-  to provide easy access to many features and help learn what's available.
+- `PEL key bindings`_ avoid modification of most Emacs keys, instead
+  PEL uses function keys:
 
-  - Most standard Emacs keys are left untouched.
+  - **F2**, bound to ``bm-next`` to quickly move to next visible bookmark
+    when     the ``pel-use-bm`` is **t**.
+  - **F5**, bound to ``repeat``.
+  - **F6**, the **pel:f6** prefix, which provides quick access to some
+    often used commands.
+  - **F11**, the **pel:** prefix , is the main prefix key for PEL, providing
+    access to a large set of key bindings and second-level key prefixes.
+  -  **F12** is a mode-sensitive key prefix with quick access bindings for the
+     current major mode.
   - The `which-key`_ package is used and activated by default, allowing
-    you to see what's available easily.  **F11** is the main prefix key
-    and all prefixes have a meaningful name that starts with the
-    'pel:' prefix.  **F2** and **F6** are used as global shortcut prefix keys,
-    and **F12** as a mode-sensitive shortcut prefix key.
-  - See the `Key Binding Documentation`_ section for more info.
+    you to see what's available easily.
 
-- PEL comes with a set of convenience features that deal with several
+- `PEL convenience features`_ include the key-bindings under **F6**,
+  **F11** and **F12** function keys.
+  It also includes a set of small Emacs Lisp files
+  that implement
+  a set of convenience features that deal with several
   aspects of Emacs like windows and frame, scrolling control,  buffer,
   navigation, opening files
   or web pages from file name or URL at point, numeric keypad handling,
@@ -63,12 +78,11 @@ The PEL package provides:
   independent Emacs Lisp *libraries* if you prefer to use the features
   without the PEL key bindings.
 
-- Extensive documentation in the form of PDF files, one file
-  per Emacs topics.
-  Each table provides an overview, command descriptions, related
-  key bindings  and links to related on-line documents.  The
-  tables have extensive markup with colours for standard Emacs,
-  external package, and PEL-provided command and key bindings.
+- Several `PDF Document Tables`_ that describe the key bindings for
+  specific topics.
+  Each table provides an overview, related Emacs,
+  external packages and PEL command descriptions and key bindings
+  and links to related on-line documents.
 
 PEL relies on Emacs customization system.  PEL activates third party
 packages through `PEL customization`_, by setting a corresponding ``pel-use-...``
@@ -149,7 +163,7 @@ that each list and describe a specific topic, the commands and key bindings
 related to that topic.
 There are several topics; Emacs navigation, Emacs
 buffers, windows and frames, how to undo, redo, work with Emacs Lisp, etc...
-See the `Key Binding Documentation`_ section.
+See the `Key Bindings Documentation`_ section.
 The commands and key bindings described in those table include what is provided
 by the plain vanilla GNU Emacs but also the bindings PEL adds and
 the bindings provided by the third party packages that PEL integrates.
@@ -343,8 +357,8 @@ to be used as what PEL normally uses for F6:
 ..
    -----------------------------------------------------------------------------
 
-PEL Specific Features
-=====================
+PEL Convenience Features
+========================
 
 PEL implements a set of small utilities that complement what's already available
 in standard GNU Emacs and some other packages. The code is spread into several
@@ -353,7 +367,7 @@ PEL comes with a set of PDF files that describe key bindings , including the
 standard GNU Emacs bindings, the bindings of the external packages integrated
 by PEL and the bindings for PEL commands.  The sections below contain link to
 the relevant PDF files.  The complete list of PDF files is shown in the
-`Key Binding Documentation`_ section.
+`Key Bindings Documentation`_ section.
 
 
 PEL Abbreviation Management Support
@@ -1756,8 +1770,8 @@ that uses the ``<f11> SPC l`` prefix.
 
 .. _editing reStructuredText files: `PEL reStructuredText Support Utilities`_
 
-Key Binding Documentation
--------------------------
+Key Bindings Documentation
+--------------------------
 
 PEL comes with a set of tables listing and describing both the standard Emacs
 commands and key bindings for a given type of activity along with the extra
@@ -1928,7 +1942,10 @@ PDF Document Tables
 PEL Customization
 =================
 
-PEL is heavily customizable using the `Emacs customization`_ facility.
+PEL is customized by using the `Emacs easy customization`_ system.
+PEL controls the activation of external packages via a set of customize
+variables that have names that start with ``pel-use-``.  They are listed in the
+next section.  Activation of a package also activates the key bindings for that package.
 
 To customize PEL:
 
@@ -2141,7 +2158,7 @@ pel-use-erlang-start           *Future*.  Reserved to control use of Erlang     
 pel-use-esup                   Enables the use of the esup_                                  Yes, from MELPA_.
                                package, the Emacs StartUp Profiler.
 
-pel-use-expand-region          Enables  the use of the                                       Yes, from MELPA_.
+pel-use-expand-region          Enables the use of the                                        Yes, from MELPA_.
                                expand-region_ package which provides a powerful
                                text selection mechanism.
 
@@ -2630,7 +2647,6 @@ customization.
 .. _undo-tree:                 https://elpa.gnu.org/packages/undo-tree.html
 .. _which-key:                 https://elpa.gnu.org/packages/which-key.html
 .. _SBCL:                      https://en.wikipedia.org/wiki/Steel_Bank_Common_Lisp
-.. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Customization.html#Customization
 .. _Emacs initialization file: https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html
 .. _ELPA:                      https://elpa.gnu.org
 .. _framemove:                 https://www.emacswiki.org/emacs/FrameMove
