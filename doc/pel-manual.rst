@@ -1795,7 +1795,11 @@ PDF Document Tables
 
 - `Document Legend`_
 
-**Emacs base operations:**
+**Emacs Concepts**
+#. `File and Directory Local Variables`_
+#. `Modifier Keys`_
+
+**Emacs Operations:**
 
 #. `Abbreviations`_
 #. `Align`_
@@ -1811,7 +1815,6 @@ PDF Document Tables
 #. `Enriched Text`_
 #. `Faces and Fonts`_
 #. `File Management`_
-#. `File and Directory Local Variables`_
 #. `Filling and Justification`_
 #. `Frames`_
 #. `Grep`_
@@ -1824,7 +1827,6 @@ PDF Document Tables
 #. `Keyboard Macros`_
 #. `Marking`_
 #. `Menus`_
-#. `Modifier Keys`_
 #. `Narrowing`_
 #. `Navigation`_
 #. `Packages`_
@@ -1860,6 +1862,9 @@ PDF Document Tables
 
 #. `Mercurial`_
 
+**Miscellaneous**
+#. `Function Keys`_
+
 .. _Document Legend:                          pdf/-legend.pdf
 .. _Abbreviations:                            pdf/abbreviations.pdf
 .. _Align:                                    pdf/align.pdf
@@ -1879,6 +1884,7 @@ PDF Document Tables
 .. _File and Directory Local Variables:       pdf/file-variables.pdf
 .. _Filling and Justification:                pdf/filling-justification.pdf
 .. _Frames:                                   pdf/frames.pdf
+.. _Function Keys:                            pdf/keys-fn.pdf
 .. _Graphviz Dot:                             pdf/graphviz-dot.pdf
 .. _Grep:                                     pdf/grep.pdf
 .. _Help:                                     pdf/help.pdf
