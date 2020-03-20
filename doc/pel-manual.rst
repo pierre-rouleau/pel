@@ -1882,6 +1882,7 @@ PDF Document Tables
 
 #. `Function Keys`_
 #. `F11 Keys`_
+#. `macOS Terminal settings`_
 
 .. _Document Legend:                          pdf/-legend.pdf
 .. _Abbreviations:                            pdf/abbreviations.pdf
@@ -1938,6 +1939,7 @@ PDF Document Tables
 .. _Web:                                      pdf/web.pdf
 .. _Whitespaces:                              pdf/whitespaces.pdf
 .. _Windows:                                  pdf/windows.pdf
+.. _macOS Terminal settings:                  pdf/macOS-terminal-settings.pdf
 
 
 
