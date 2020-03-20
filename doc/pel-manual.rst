@@ -1796,6 +1796,7 @@ PDF Document Tables
 - `Document Legend`_
 
 **Emacs Concepts**
+
 #. `File and Directory Local Variables`_
 #. `Modifier Keys`_
 
@@ -1863,6 +1864,7 @@ PDF Document Tables
 #. `Mercurial`_
 
 **Miscellaneous**
+
 #. `Function Keys`_
 
 .. _Document Legend:                          pdf/-legend.pdf
