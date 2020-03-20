@@ -26,6 +26,14 @@
 ;; Dynamic control of the keypad keys to allow both numlocking and non
 ;; numlocking use.
 
+;; BUG:  this work fine in graphics mode, and *sometimes* it works fine
+;; in the macOS Terminal.app, but not always.  It seems to be affected
+;; by other processes.  I still have not been able to identify the trigger
+;; and the fix for this to be able to use useful bindings to the keypad
+;; when running Emacs in terminal mode reliably. It seems that Emacs looses
+;; access to low-level information to distinguish the keypad keys from normal
+;; keyboard keys.
+
 ;;; Code:
 (require 'pel--base)      ; use pel-toggle
 (eval-when-compile
@@ -64,12 +72,6 @@ Limitations: In not Numlocked mode the cursor keys cannot
              Cause: Emacs will still read these keys as digit
              when typed as a prefix.")
 
-;;-pel-autoload
-(defun pel-toggle-mac-numlock ()
-  "Toggle mac numlock mode."
-  (interactive)
-  (pel-toggle 'pel-mac-keypad-numlocked)
-  (pel-show-mac-numlock))
 
 ;;-pel-autoload
 (defun pel-show-mac-numlock ()
@@ -78,6 +80,13 @@ Limitations: In not Numlocked mode the cursor keys cannot
   (if pel-mac-keypad-numlocked
       (message "Num-Lock ON")
     (message "Num-Lock off; cursor mode available")))
+
+;;-pel-autoload
+(defun pel-toggle-mac-numlock ()
+  "Toggle mac numlock mode."
+  (interactive)
+  (pel-toggle 'pel-mac-keypad-numlocked)
+  (pel-show-mac-numlock))
 
 ;;-pel-autoload
 (defun pel-0 (&optional n)
@@ -120,7 +129,7 @@ Limitations: In not Numlocked mode the cursor keys cannot
 
 ;;-pel-autoload
 (defun pel-4 (&optional n)
-  "Keypad 5 key handler, with N as numeric prefix to support repetition."
+  "Keypad 4 key handler, with N as numeric prefix to support repetition."
   (interactive "P")
   (let ((n (prefix-numeric-value n)))
     (if pel-mac-keypad-numlocked
@@ -129,7 +138,7 @@ Limitations: In not Numlocked mode the cursor keys cannot
 
 ;;-pel-autoload
 (defun pel-5 (&optional n)
-  "Keypad 6 key handler, with N as numeric prefix to support repetition."
+  "Keypad 5 key handler, with N as numeric prefix to support repetition."
   (interactive "P")
   (let ((n (prefix-numeric-value n)))
     (if pel-mac-keypad-numlocked
