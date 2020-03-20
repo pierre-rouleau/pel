@@ -1636,58 +1636,58 @@ key                             binding
 ``<f11> SPC``                   Prefix Command to access the
                                 `PEL Mode Sensitive Key-maps`_
                                 from any buffer.
-``<f11> TAB``                   **pel:indent**
-``<f11> #``                     pel-toggle-mac-numlock
-``<f11> $``                     **pel:spell**
-``<f11> '``                     **pel:bookMark**
-``<f11> +``                     pel-copy-marked-or-whole-line
-``<f11> ,``                     **pel:auto-completion**
-``<f11> -``                     **pel:kill**
-``<f11> .``                     **pel:mark**
-``<f11> 0``                     hl-line-mode
-``<f11> ;``                     **pel:comment**
-``<f11> =``                     **pel:copy**
-``<f11> ?``                     **pel:help**
-``<f11> C``                     **pel:clipboard**
-``<f11> F``                     **pel:frame**
-``<f11> S``                     **pel:speedbar**
-``<f11> [``                     pel-cua-move-rectangle-left
-``<f11> ]``                     pel-cua-move-rectangle-right
-``<f11> a``                     **pel:abbrev**
-``<f11> b``                     **pel:buffer**
-``<f11> c``                     **pel:count**
-``<f11> d``                     **pel:draw**
-``<f11> f``                     **pel:file**
-``<f11> g``                     **pel:grep**
-``<f11> i``                     **pel:insert**
-``<f11> k``                     **pel:kbmacro**
-``<f11> l``                     **pel:linectrl**
-``<f11> o``                     **pel:order**
-``<f11> r``                     **pel:register**
-``<f11> s``                     **pel:search-replace**
-``<f11> t``                     **pel:text**
-``<f11> u``                     **pel:undo**
-``<f11> w``                     **pel:window**
-``<f11> x``                     **pel:eXecute**
-``<f11> |``                     **pel:scroll**
-``<f11> <f10>``                 **pel:menu**
-``<f11> <f11>``                 pel-toggle-frame-fullscreen
-``<f11> <f12>``                 xterm-mouse-mode
-``<f11> <C-S-down>``            pel-close-window-down
-``<f11> <C-S-left>``            pel-close-window-left
-``<f11> <C-S-right>``           pel-close-window-right
-``<f11> <C-S-up>``              pel-close-window-up
-``<f11> <C-down>``              pel-create-window-down
-``<f11> <C-left>``              pel-create-window-left
-``<f11> <C-right>``             pel-create-window-right
-``<f11> <C-up>``                pel-create-window-up
-``<f11> <M-left>``              pel-backward-syntaxchange-start
-``<f11> <M-right>``             pel-forward-syntaxchange-start
-``<f11> <C-f10>``               menu-bar-mode
-``<f11> <down>``                windmove-down
-``<f11> <left>``                windmove-left
-``<f11> <right>``               windmove-right
-``<f11> <up>``                  windmove-up
+``<f11> TAB``                   pel:indent
+``<f11> #``                     **pel-toggle-mac-numlock**
+``<f11> $``                     pel:spell
+``<f11> '``                     pel:bookMark
+``<f11> +``                     **pel-copy-marked-or-whole-line**
+``<f11> ,``                     pel:auto-completion
+``<f11> -``                     pel:kill
+``<f11> .``                     pel:mark
+``<f11> 0``                     **hl-line-mode**
+``<f11> ;``                     pel:comment
+``<f11> =``                     pel:copy
+``<f11> ?``                     pel:help
+``<f11> C``                     pel:clipboard
+``<f11> F``                     pel:frame
+``<f11> S``                     pel:speedbar
+``<f11> [``                     **pel-cua-move-rectangle-left**
+``<f11> ]``                     **pel-cua-move-rectangle-right**
+``<f11> a``                     pel:abbrev
+``<f11> b``                     pel:buffer
+``<f11> c``                     pel:count
+``<f11> d``                     pel:draw
+``<f11> f``                     pel:file
+``<f11> g``                     pel:grep
+``<f11> i``                     pel:insert
+``<f11> k``                     pel:kbmacro
+``<f11> l``                     pel:linectrl
+``<f11> o``                     pel:order
+``<f11> r``                     pel:register
+``<f11> s``                     pel:search-replace
+``<f11> t``                     pel:text
+``<f11> u``                     pel:undo
+``<f11> w``                     pel:window
+``<f11> x``                     pel:eXecute
+``<f11> |``                     pel:scroll
+``<f11> <f10>``                 pel:menu
+``<f11> <f11>``                 **pel-toggle-frame-fullscreen**
+``<f11> <f12>``                 **xterm-mouse-mode**
+``<f11> <C-S-down>``            **pel-close-window-down**
+``<f11> <C-S-left>``            **pel-close-window-left**
+``<f11> <C-S-right>``           **pel-close-window-right**
+``<f11> <C-S-up>``              **pel-close-window-up**
+``<f11> <C-down>``              **pel-create-window-down**
+``<f11> <C-left>``              **pel-create-window-left**
+``<f11> <C-right>``             **pel-create-window-right**
+``<f11> <C-up>``                **pel-create-window-up**
+``<f11> <M-left>``              **pel-backward-syntaxchange-start**
+``<f11> <M-right>``             **pel-forward-syntaxchange-start**
+``<f11> <C-f10>``               **menu-bar-mode**
+``<f11> <down>``                **windmove-down**
+``<f11> <left>``                **windmove-left**
+``<f11> <right>``               **windmove-right**
+``<f11> <up>``                  **windmove-up**
 =============================== ===========================================
 
 PEL Mode Sensitive Key-maps
@@ -1729,9 +1729,9 @@ the **F12** key has the following bindings.
 =============================== ===========================================
 key                             binding
 =============================== ===========================================
-``<f12> .``                     pel-rst-makelink
-``<f12> g``                     pel-rst-goto-ref-bookmark
-``<f12> s``                     pel-rst-set-ref-bookmark
+``<f12> .``                     **pel-rst-makelink**
+``<f12> g``                     **pel-rst-goto-ref-bookmark**
+``<f12> s``                     **pel-rst-set-ref-bookmark**
 =============================== ===========================================
 
 
@@ -1743,14 +1743,14 @@ the **F12** key has the following, different, bindings.
 =============================== ===========================================
 key                             binding
 =============================== ===========================================
-``<f12> .``                     pel-find-thing-at-point
-``<f12> D``                     toggle-debug-on-error
+``<f12> .``                     **pel-find-thing-at-point**
+``<f12> D``                     **toggle-debug-on-error**
 ``<f12> a``                     pel:elisp-analyze
 ``<f12> c``                     pel:elisp-compile
 ``<f12> d``                     pel:elisp-debug
 ``<f12> e``                     pel:elisp-eval
 ``<f12> f``                     pel:elisp-function
-``<f12> i``                     parinfer-auto-fix
+``<f12> i``                     **parinfer-auto-fix**
 ``<f12> l``                     pel:elisp-lib
 ``<f12> m``                     pel:elisp-mode
 =============================== ===========================================
