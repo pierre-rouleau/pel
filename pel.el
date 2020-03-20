@@ -102,7 +102,7 @@ modifications simply activate new features, you may be able to simply
 re-execute `pel-init' again to activate them."
   (interactive)
   ;; ensure the library name is sorting just before pel.el
-  ;; so that package system bu=yte compile it after everything else.
+  ;; so that package system byte compile it after everything else.
   (load-library "pel-zkeys")
   (message "PEL loaded, PEL keys binding in effect"))
 
