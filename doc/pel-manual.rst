@@ -763,6 +763,23 @@ The PEL support for indentation will evolve as support form various types of
 files, programming languages and markup languages evolves.
 
 
+PEL Input Method Control
+------------------------
+
+:PDF Docs: `Input Method`_.
+:PEL Customization: *none*
+:PEL Key Prefix: **pel:text** : ``<f11> t``
+
+PEL rebinds the ``C-\`` prime key, normally bound to ``toggle-input-method``,
+used to select another `Emacs input method`_, to ``pel-kill-from-beginning-of-line``.
+PEL binds ``toggle-input-method`` to ``<f11> t i`` instead.  And to change the
+alternate input method, it binds ``set-input-method`` to ``<f11> t I``.
+To lists all input methods, PEL provides ``<f11> ? d i`` bound to ``list-input-methods``.
+
+
+.. _Emacs input method: https://www.gnu.org/software/emacs/manual/html_node/emacs/Input-Methods.html#Input-Methods
+
+
 PEL Keyboard Macro Utilities
 ----------------------------
 
