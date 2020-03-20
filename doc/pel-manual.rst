@@ -650,7 +650,7 @@ This PEL file provides the following commands:
 PEL Function Keys Bindings
 --------------------------
 
-:PDF Docs: `Function Keys`_.
+:PDF Docs: `Function Keys`_, `F11 Keys`_.
 :PEL Customization: *none*
 :PEL Key Prefix: *N/A*
 
@@ -1881,6 +1881,7 @@ PDF Document Tables
 **Miscellaneous**
 
 #. `Function Keys`_
+#. `F11 Keys`_
 
 .. _Document Legend:                          pdf/-legend.pdf
 .. _Abbreviations:                            pdf/abbreviations.pdf
@@ -1902,6 +1903,7 @@ PDF Document Tables
 .. _Filling and Justification:                pdf/filling-justification.pdf
 .. _Frames:                                   pdf/frames.pdf
 .. _Function Keys:                            pdf/keys-fn.pdf
+.. _F11 Keys:                                 pdf/keys-f11.pdf
 .. _Graphviz Dot:                             pdf/graphviz-dot.pdf
 .. _Grep:                                     pdf/grep.pdf
 .. _Help:                                     pdf/help.pdf

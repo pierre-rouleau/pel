@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau.swd@gmail.com>
-# Last Modified Time-stamp: <2020-03-20 12:16:32, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-03-20 16:14:43, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -126,6 +126,7 @@ PDF_FILES := -legend.pdf \
 			input-method.pdf \
 			inserting-text.pdf \
 			keyboard-macros.pdf \
+			keys-f11.pdf \
 			keys-fn.pdf \
 			marking.pdf \
 			menus.pdf \
