@@ -46,22 +46,8 @@ PEL provides:
   packages, providing commands to activate one mode in a buffer and
   another mode inside another and while preventing dual use in a buffer.
 - `PEL key bindings`_ avoid modification of most Emacs keys, instead
-  PEL uses function keys:
-
-  - **F2**, bound to ``bm-next`` (from `visible bookmarks`_)
-    to quickly move to next visible bookmark
-    when the ``pel-use-bm`` customize variable is **t**.
-  - **F5**, bound to ``repeat``.
-  - **F6**, the ``pel:f6`` prefix, which provides quick access to some
-    often used commands.
-  - **F11**, the ``pel:`` prefix , is the main prefix key for PEL, providing
-    access to a large set of key bindings and second-level key prefixes.
-  -  **F12** is a mode-sensitive key prefix with quick access bindings for the
-     current major mode.
-  - The `which-key`_ package is used and activated by default (through
-    ``pel-use-which-key`` set to **t**), allowing
-    you to see the available commands after a key prefix easily.
-
+  PEL uses several function keys (**F2**, **F5**, **F6**, **F11** and **F12**)
+  as described in the section titled `PEL Function Keys Bindings`_.
 - `PEL convenience features`_ include:
 
   - The key-bindings under **F6**, **F11** and **F12** function keys.
@@ -659,6 +645,35 @@ This PEL file provides the following commands:
 
   - ``pel-next-frame`` moves point to the next frame.
   - ``pel-previous-frame`` moves point to the previous frame.
+
+
+PEL Function Keys Bindings
+--------------------------
+
+:PDF Docs: `Function Keys`_.
+:PEL Customization: *none*
+:PEL Key Prefix: *N/A*
+
+PEL avoids remapping most standard GNU Emacs key bindings.
+Instead PEL uses the following function keys:
+
+- **F2**, bound to ``bm-next`` (from `visible bookmarks`_)
+  to quickly move to next visible bookmark
+  when the ``pel-use-bm`` customize variable is **t**.
+- **F5**, bound to ``repeat``.
+- **F6**, the ``pel:f6`` prefix, which provides quick access to some
+  often used commands.
+- **F11**, the ``pel:`` prefix , is the main prefix key for PEL, providing
+  access to a large set of key bindings and second-level key prefixes.
+-  **F12** is a mode-sensitive key prefix with quick access bindings for the
+   current major mode.
+- The `which-key`_ package is used and activated by default (through
+  ``pel-use-which-key`` set to **t**), allowing
+  you to see the available commands after a key prefix easily.
+
+The **F11** acts as a the main prefix for PEL: the prefix ``pel:``.
+Several sub-prefixes are available after ``<f11>`` but also some command
+bindings using other keys, like cursor keys with or without modifiers.
 
 
 PEL Grep Support

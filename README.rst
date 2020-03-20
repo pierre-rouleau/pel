@@ -39,22 +39,8 @@ PEL provides:
   packages, providing commands to activate one mode in a buffer and
   another mode inside another and while preventing dual use in a buffer.
 - `PEL key bindings`_ avoid modification of most Emacs keys, instead
-  PEL uses function keys:
-
-  - **F2**, bound to ``bm-next`` (from `visible bookmarks`_)
-    to quickly move to next visible bookmark
-    when the ``pel-use-bm`` customize variable is **t**.
-  - **F5**, bound to ``repeat``.
-  - **F6**, the ``pel:f6`` prefix, which provides quick access to some
-    often used commands.
-  - **F11**, the ``pel:`` prefix , is the main prefix key for PEL, providing
-    access to a large set of key bindings and second-level key prefixes.
-  -  **F12** is a mode-sensitive key prefix with quick access bindings for the
-     current major mode.
-  - The `which-key`_ package is used and activated by default (through
-    ``pel-use-which-key`` set to **t**), allowing
-    you to see the available commands after a key prefix easily.
-
+  PEL uses several function keys (**F2**, **F5**, **F6**, **F11** and **F12**)
+  as described in the section titled `PEL Function Keys Bindings`_.
 - `PEL convenience features`_ include:
 
   - The key-bindings under **F6**, **F11** and **F12** function keys.
@@ -110,6 +96,7 @@ More information is available in `PEL's Manual`_.
 .. _Credits:                    doc/pel-manual.rst#credits
 .. _PEL key bindings:           doc/pel-manual.rst#pel-key-bindings
 .. _PDF Document tables:        doc/pel-manual.rst#pdf-document-tables
+.. _PEL Function Keys Bindings: doc/pel-manual.rst#pel-function-keys-bindings
 
 .. _auto-complete:              https://melpa.org/#/auto-complete
 .. _company:                    https://melpa.org/#/company
