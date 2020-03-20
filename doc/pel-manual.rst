@@ -2190,7 +2190,7 @@ pel-use-nhexl-mode             Enables the use of the nhexl-mode_ to edit       
 pel-use-org-mode               When set, configures Org-Mode and provide key                 Nothing to
                                binding similar to a subset of what is suggested              install. It's
                                in the Org Mode manual.                                       part of Emacs.
-                               This is a *thinkering experiment* and is likely
+                               This is a *tinkering experiment* and is likely
                                to change in the future.  It's far from having
                                providing a decent additional feature to
                                Org-Mode.
@@ -2207,7 +2207,7 @@ pel-use-popup-kill-ring        Enables the use of the popup-kill-ring_          
 pel-use-python                 Enables use of basic Python support.                          Nothing to
                                Future versions of PEL will include                           install. It just
                                more Python support facilities enabled                        uses what's part
-                               with this.                                                    of Eamcs.
+                               with this.                                                    of Emacs.
 
 pel-use-rainbow-delimiters     Enables the use of rainbow-delimiters_ package                Yes, from MELPA_.
                                to colorize matching *parens*.
@@ -2235,7 +2235,7 @@ pel-use-rust                   Enables support for Rust programming language    
                                company-mode to be used with racer.
 
 pel-use-speedbar               Enables support of the sr-speedbar_ package to provide        Yes, from MELPA_.
-                               Speedbar inside the same frame, useful in terminal (tty)
+                               Speedbar inside the same frame, useful in terminal (TTY)
                                mode.
 
                                ☝️  See `PEL Speedbar Management`_.
@@ -2294,7 +2294,7 @@ PEL code is placed in several Emacs Lisp files.
   to control the installation of missing package and all other packages are only
   loaded if their feature is activated via `PEL customization`_.  However,
   when loading PEL via the standard Emacs package system, dependencies are
-  identified becuase package needs the package to byte compile without
+  identified because package needs the package to byte compile without
   generating warnings and errors.  This means that the third party packages will
   be installed on your disk when you install PEL via an Elpa compatible archive
   (such as MELPA_).  However:
