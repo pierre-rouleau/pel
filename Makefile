@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau.swd@gmail.com>
-# Last Modified Time-stamp: <2020-03-20 16:30:12, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-03-21 14:43:28, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -201,6 +201,7 @@ help:
 	@printf "Usage:\n"
 	@printf " * make           - builds everything as needed.\n"
 	@printf " * make all       - builds everything as needed.\n"
+	@printf " * make pel       - byte compile all files. Nothing else done.\n"
 	@printf " * make clean     - remove all output files including $(PEL_TAR_FILE)\n"
 	@printf " * make clean_tar - remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
 	@printf " * make test      - Run the regressin tests.\n"

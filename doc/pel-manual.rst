@@ -263,7 +263,9 @@ I have not yet submitted PEL to MELPA_.  That's on my to-do list.
 For now clone the PEL Git repository  and perform manual installation.
 
 
-**Create an Emacs utility directory**
+Create an Emacs utility directory
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 Create a directory to hold Emacs Lisp files that will be in Emacs ``load-path``.
 For example, to store your utilities inside "~/.emacs.d/utils",  write the
@@ -274,7 +276,9 @@ following code inside your Emacs initialization file:
           (add-to-list 'load-path (expand-file-name "~/.emacs.d/utils"))
 
 
-**Clone the project from the Github page**
+Clone the project from the Github page
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 Clone the `PEL's Github repo`_ into the root of your utility directory,
 that would be "~/.emacs.d/utils" if you used what is proposed above.
@@ -284,7 +288,24 @@ located inside "~/.emacs.d/utils".
 
 .. _PEL's Github repo: https://github.com/pierre-rouleau/pel
 
-**Run pel-init**
+Byte-compile PEL files
+~~~~~~~~~~~~~~~~~~~~~~
+
+Open a shell.
+Change directory to the location where they are stored, "~/emacs.d/utils" if you
+stored them there.  The directory contains a ``Makefile``.
+
+To get a description of how to use the makefile, type::
+
+  make help
+
+Byte-compile all Emacs Lisp files in the directory by executing::
+
+  make pel
+
+
+Run pel-init
+~~~~~~~~~~~~
 
 - Open Emacs.
 - Load pel.el by typing: ``M-x load-library RET pel RET``
@@ -308,7 +329,8 @@ At this point you can use PEL with IDO, windmove and winner, which are all part
 of the default customization.  To see if the PEL binding and `which-key`_ work,
 just type the **F11** key to see the list o available commands and further key prefixes.
 
-**Customize PEL**
+Customize PEL
+~~~~~~~~~~~~~
 
 If you want to add more features, change the value of the ``pel-use-...``
 variable that correspond to the feature you want to activate.  Activating some

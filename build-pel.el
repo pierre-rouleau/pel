@@ -72,6 +72,7 @@
   (byte-compile-file "pel-window.el")
   ;;
   (byte-compile-file "pel-autoload.el")
+  (byte-compile-file "pel-zkeys.el")
   (byte-compile-file "pel.el"))
 
 
