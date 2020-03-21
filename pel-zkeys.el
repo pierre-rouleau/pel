@@ -1542,6 +1542,15 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> $`` : Spell Check
 
+;; popup is used in Terminal mode for spell check menu,
+;; and must be available when pel-spell-init is called.
+(when (not (display-graphic-p))
+  (use-package popup
+    :ensure t
+    :pin melpa-stable
+    :commands pel-spell-init))
+
+
 (define-pel-global-prefix pel:spell (kbd "<f11> $"))
 ;;
 (autoload 'ispell-check-version "ispell")

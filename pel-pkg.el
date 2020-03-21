@@ -53,6 +53,7 @@
     (macrostep           "0.9")             ; melpa-stable. Melpa        := 20161120.2106
     (nhexl-mode          "1.4")             ; gnu
     (parinfer            "0.4.10")          ; melpa-stable. Melpa        := 20180904.844
+    (popup               "0.5.3")           ; melpa-stable. Melpa        := 20160709.1429
     (popup-kill-ring     "20131020.1854")   ; melpa.        Melpa-stable := nothing
     (racer               "1.2")             ; melpa-stable. Melpa        := 20191001.2344
     (rainbow-delimiters  "2.1.4")           ; melpa-stable. Melpa        := 20191018.1233
