@@ -184,34 +184,24 @@ The PEL files are listed in each of the corresponding
 How to Setup PEL
 ================
 
+
+
+Prepare Emacs Before Installing PEL
+-----------------------------------
+
+Before installing PEL it's best to make sure that you already have some
+configuration inside your `Emacs initialization file`_ described in the
+following sub-sections.
+
 Updates to your Emacs Initialization file
------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Unfortunately *some* Emacs Lisp code must be written to your
 `Emacs initialization file`_, but that's mainly to setup how to download packages
 that you might already have, and possibly 2 lines to require and initialize PEL.
 
-Tricks to Increase your Emacs init time
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-PEL itself loads quickly.  But you can improve your overall Emacs initialization
-time further by enclosing the entire code of your init.el file inside:
-
-.. code:: elisp
-
-          (let ((file-name-handler-alist nil)
-                (gc-cons-threshold most-positive-fixnum))
-
-            ;; all your initialization code goes here
-
-          )
-
-What the above does is to disable special file association handling and garbage
-collection while Emacs processes your initialization code.
-
-
 Configure How to Download Packages
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 PEL uses
 ELPA_ (GNU Emacs Lisp Package Archive)
@@ -242,11 +232,15 @@ it is not already present:
             (package-initialize))
 
 Select the location of Emacs Persistent Customization Data
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-By default, Emacs stores its persistent customization data inside your Emacs
-init file.  If you want to store it somewhere else, you to add something like
-the following code, which places it inside the file ``~/.emacs-custom.el``:
+By default, Emacs stores its persistent customization data inside your
+`Emacs initialization file`_.
+If you want to store it somewhere else, and I recommend you do,
+you have to tell Emacs where to read and write
+the customization data.
+Something like the following code
+, which places it inside the file ``~/.emacs-custom.el``:
 
 .. code:: elisp
 
@@ -260,6 +254,82 @@ the following code, which places it inside the file ``~/.emacs-custom.el``:
    That provides another degree of freedom, along with Emacs directory local
    and file local variables.
 
+To Install PEL
+--------------
+
+I have not yet submitted PEL to MELPA_.  That's on my to-do list.
+For now clone the PEL Git repository  and perform manual installation.
+
+
+**Create an Emacs utility directory**
+
+Create a directory to hold Emacs Lisp files that will be in Emacs ``load-path``.
+For example, to store your utilities inside "~/.emacs.d/utils",  write the
+following code inside your Emacs initialization file:
+
+.. code:: elisp
+
+          (add-to-list 'load-path (expand-file-name "~/.emacs.d/utils"))
+
+
+**Clone the project from the Github page**
+
+Clone the `PEL's Github repo`_ into the root of your utility directory,
+that would be "~/.emacs.d/utils" if you used what is proposed above.
+
+You should have the pel.el, pel-zkeys.el and all PEL's other .el files
+located inside "~/.emacs.d/utils".
+
+.. _PEL's Github repo: https://github.com/pierre-rouleau/pel
+
+**Run pel-init**
+
+- Open Emacs.
+- Load pel.el by typing: ``M-x load-library RET pel RET``
+- Run PEL initialization by typing: ``M-x pel-init RET``
+
+This command will initialize PEL using the PEL's default customization.  If
+these packages are not already installed on your system
+``pel-init`` will download the following packages from MELPA_ and ELPA_
+and store them inside the "~/.emacs.d/elpa" directory:
+
+- `use-package`_
+- `bind-key`_
+- `which-key`_
+
+PEL initialization should complete with PEL printing the following message on
+the echo area::
+
+  PEL loaded, PEL keys binding in effect
+
+At this point you can use PEL with IDO, windmove and winner, which are all part
+of the default customization.  To see if the PEL binding and `which-key`_ work,
+just type the **F11** key to see the list o available commands and further key prefixes.
+
+**Customize PEL**
+
+If you want to add more features, change the value of the ``pel-use-...``
+variable that correspond to the feature you want to activate.  Activating some
+of them will force their installation when you next run ``pel-init``.  But not
+all, because some o the features require files that are not part of an ELPA-style
+library archive .   For those, you will have to copy their files inside a
+directory in Emacs ``load-path`` like "~/.emacs.d/utils".
+See `PEL Use Variables`_ for the list of variables and those that you may have
+to install yourself.  For the ones that are automatically installed from ELPA_
+or MELPA_ just set the corresponding variable and run ``pel-init``.
+
+You can repeat the operation several times.  You can also exit Emacs between
+them.  Just reload ``pel.el`` to be able to execute ``pel-init``.  You can run
+``pel-init`` several times per Emacs session if you need to.
+
+
+
+Complete PEL's Configuration
+----------------------------
+
+Once PEL code is installed, there's a couple more steps to follow.
+They are described in the following sub-sections.
+
 To start PEL when Emacs Starts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -271,9 +341,12 @@ inside your Emacs init file:
           (require 'pel)
           (pel-init)
 
-If you do not want PEL to start when Emacs start, then you don't need the above
-code. To use PEL later simply execute the **pel-init** command by typing:
-``M-x pel-init``
+If you do not want PEL to start when Emacs start,
+then you can keep the first line but don't call ``pel-init``.
+To use PEL later simply execute the **pel-init** command by
+typing::
+
+       M-x pel-init
 
 
 To identify the location of your Ispell local dictionary
@@ -282,7 +355,7 @@ To identify the location of your Ispell local dictionary
 With the current version of PEL, when you want to select the spell check
 program used by
 Ispell or Flyspell and the location of your personal dictionary you need to
-write Emacs Lisp code in your Emacs init file that calls the pel-spell-init
+write Emacs Lisp code in your Emacs init file that calls the ``pel-spell-init``
 function.
 
 The following is an example. It selects the ``aspell`` program
@@ -315,6 +388,31 @@ to be used as what PEL normally uses for F6:
           (global-set-key (kbd "<f6>") 'undo)
           (global-set-key (kbd ("<f7>") pel:f6)
 
+
+Generic Optimizations
+---------------------
+
+The following sections describe optimizations you can use anywhere, with or
+without PEL.
+
+Tricks to Increase your Emacs init time
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+PEL itself loads quickly.  But you can improve your overall Emacs initialization
+time further by enclosing the entire code of your init.el file inside:
+
+.. code:: elisp
+
+          (let ((file-name-handler-alist nil)
+                (gc-cons-threshold most-positive-fixnum))
+
+            ;; all your initialization code goes here
+
+          )
+
+What the above does is to disable special file association handling and garbage
+collection while Emacs processes your initialization code.  This has nothing to
+do with PEL though.
 
 
 ..
