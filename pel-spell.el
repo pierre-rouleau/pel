@@ -65,14 +65,22 @@
 
 (eval-when-compile
   ;; both flyspell and ispell are loaded lazily if required, but their symbols
-  ;; are needed at compilation.   Same for popup.
+  ;; are needed at compilation. Same for popup.
+  ;; The following are part of Emacs
   (require 'flyspell)          ; use: flyspell-sort-corrections, flyspell-emacs-popup
   (require 'ispell)            ; use: ispell-call-process, ispell-check-version
                                ;      ispell-local-dictionary, ispell-dictionary,
                                ;      ispell-program-name, ispell-personal-dictionary
-  (require 'popup)             ; use: popup-menu*
+  (require 'subr-x)            ; use: inlined: string-trim
+
+  ;; The next is part of PEL, so it's available.
   (require 'pel--base)         ; use: inlined: pel-symbol-on-off-string
-  (require 'subr-x))           ; use: inlined: string-trim
+
+  ;; The last is an external package.
+  ;; It might not be present on user's system: allow
+  ;; compilation anyhow to provide ability to activate lazily.
+  (require 'popup nil :no-error)  ; use: popup-menu*
+  )
 
 ;; --
 
@@ -108,13 +116,15 @@ to allow the flyspell pop-up menu to work in terminal mode."
   (add-hook 'prog-mode-hook 'flyspell-prog-mode)
   ;;
   ;; In Terminal mode, Flyspell pop-up menu does not work.
-  ;; The following code make it work.
-  ;;
+  ;; The following code make it work, but only if the popup
+  ;; package is installed.  Code in pel-zkeys.el schedule
+  ;; the installation of popup if pel-spell-init is used
+  ;; when emacs is used in terminal mode.
   (when (not (display-graphic-p))
     (declare-function 'popup-menu* "popup")
     (defun pel-spell-flyspell-emacs-popup-textual (event poss word)
       "A textual flyspell popup menu."
-      (require 'popup)
+      (require 'popup nil :no-error)
       (require 'flyspell)
       (let* ((corrects (if flyspell-sort-corrections
                            (sort (car (cdr (cdr poss))) 'string<)

@@ -31,18 +31,21 @@
 
 
 ;;; Code:
+(require 'pel--options)
 
 (eval-when-compile
-  ;; the following 3 packages are loaded lazily when required:
+  ;; The following 2 packages are loaded lazily when required:
   ;; their autoload is configured by pel.el.
-  ;; Here we just need it to verify functions and variables at byte-compile time.
-  (require 'auto-complete)
-  (require 'company)
-  (defvar pel-use-auto-complete)
-  (defvar pel-use-company))
+  ;; Here we just need it to verify functions and variables
+  ;; at byte-compile time.  However, allow user to byte compile\
+  ;; the file even if the packages are not installed.
+  (require 'auto-complete nil :noerror)
+  (require 'company nil :noerror))
 
-
-;; --
+;; -----------------------------------------------------------------------------
+;; Auto-Complete Support
+;; =====================
+;;
 ;; Auto-Complete Initialization
 ;; ----------------------------
 ;;
@@ -57,21 +60,6 @@
   "Initialize `auto-complete'."
   ;; Write extra support here
   (ac-config-default))
-
-;; --
-;; Company Mode Intialization
-;; --------------------------
-;; TODO: update for finer control once PEL has explicit support for various
-;;       programming languages.
-(defun pel--setup-company ()
-  "Initialize Company Mode."
-  ;; Write extra support here
-  ;; variables affecting automatic completion:
-  ;; - company-idle-delay
-  ;; - company-minimum-prefix-length
-  (setq company-tooltip-align-annotations t)
-  (setq company-show-numbers t))
-
 
 ;; --
 ;; Utilities: return state of auto-complete variables that may be unbound
@@ -114,8 +102,25 @@ On first call, also configure it according to its customization."
             ;; otherwise ensure it's off
             (global-auto-complete-mode -1))))))
 
+;; -----------------------------------------------------------------------------
+;; Company Mode Support
+;; ====================
+;;
+;; Company Mode Intialization
+;; --------------------------
+;; TODO: update for finer control once PEL has explicit support for various
+;;       programming languages.
+(defun pel--setup-company ()
+  "Initialize Company Mode."
+  ;; Write extra support here
+  ;; variables affecting automatic completion:
+  ;; - company-idle-delay
+  ;; - company-minimum-prefix-length
+  (setq company-tooltip-align-annotations t)
+  (setq company-show-numbers t))
+
 ;; --
-;; Utlities: return state of company-mode variables that may be unbound
+;; Utilities: return state of company-mode variables that may be unbound
 
 (defun pel--company-mode-p ()
   "Return t if variable `company-mode' is loaded and on, nil otherwise."
