@@ -796,7 +796,7 @@ Instead PEL uses the following function keys:
 The **F11** acts as a the main prefix for PEL: the prefix ``pel:``.
 Several sub-prefixes are available after ``<f11>`` but also some command
 bindings using other keys, like cursor keys with or without modifiers.
-here's what it looks like:
+Here's what it looks like:
 
 .. image:: res/pel-which-key.png
 
