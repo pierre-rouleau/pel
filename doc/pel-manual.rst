@@ -395,7 +395,7 @@ Generic Optimizations
 The following sections describe optimizations you can use anywhere, with or
 without PEL.
 
-Tricks to Increase your Emacs init time
+Tricks to Speed-up your Emacs init time
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PEL itself loads quickly.  But you can improve your overall Emacs initialization
