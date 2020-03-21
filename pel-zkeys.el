@@ -2165,15 +2165,6 @@ the ones defined from the buffer now."
 
 
 (when pel-use-ace-window
-
-  (defalias 'pel-maximize-window
-    (if (fboundp 'ace-delete-other-windows)
-        'ace-delete-other-windows
-      (with-no-warnings
-        (if (fboundp 'ace-maximize-window)
-            'ace-maximize-window
-          (user-error "Function not available: pPlease upgrade ace-window")))))
-
   (use-package ace-window
     :ensure t
     :pin melpa
@@ -2181,18 +2172,18 @@ the ones defined from the buffer now."
     :commands (ace-window
                ace-swap-window
                ace-delete-window
-               pel-maximize-window)
+               ace-delete-other-windows)
 
     :init
     ;; move cursor to other window - 'C-x o' is normally mapped to
     ;; this function, but PEL remap it.
     (define-key pel:window  "o"  'pel-other-window)
     (define-key pel:window  "k"  'ace-delete-window)
-    ;; old version of ace-window use ace-maximize-window
+    ;; old version of ace-window had ace-maximize-window
     ;; but newer version obsoleted that and now use ace-delete-other-windows
-    ;; use whatever is available.
+    ;; If you do not have it, upgrade ace-window.
 
-    (define-key pel:window  "m"  'pel-maximize-window)
+    (define-key pel:window  "m"  'ace-delete-other-windows)
     (define-key pel:window  "x"  'ace-swap-window)
 
     ;; Replace other-window, bound to 'C-x o', to ace-window
