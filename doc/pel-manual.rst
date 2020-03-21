@@ -268,12 +268,15 @@ Create an Emacs utility directory
 
 
 Create a directory to hold Emacs Lisp files that will be in Emacs ``load-path``.
-For example, to store your utilities inside "~/.emacs.d/utils",  write the
+For example, to store your utilities inside "~/.emacs.d/libs",  where you can
+store single file utilities as well as packages with complete directory trees
+(like pel) write the
 following code inside your Emacs initialization file:
 
 .. code:: elisp
 
-          (add-to-list 'load-path (expand-file-name "~/.emacs.d/utils"))
+          (add-to-list 'load-path (expand-file-name "~/.emacs.d/libs/pel"))
+          (add-to-list 'load-path (expand-file-name "~/.emacs.d/libs"))
 
 
 Clone the project from the Github page
@@ -281,18 +284,26 @@ Clone the project from the Github page
 
 
 Clone the `PEL's Github repo`_ into the root of your utility directory,
-that would be "~/.emacs.d/utils" if you used what is proposed above.
+("~/.emacs.d/libs" in this example) by doing the following inside a command
+shell:
 
-You should have the pel.el, pel-zkeys.el and all PEL's other .el files
-located inside "~/.emacs.d/utils".
+
+.. code:: shell
+
+          cd ~/.emacs.d
+          mkdir libs
+          cd libs
+          git clone https://github.com/pierre-rouleau/pel.git
+
+This will create the "~/.emacs.d/libs/pel" directory with all the files inside it.
 
 .. _PEL's Github repo: https://github.com/pierre-rouleau/pel
 
 Byte-compile PEL files
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Open a shell.
-Change directory to the location where they are stored, "~/emacs.d/utils" if you
+Inside the shell,
+change directory to the location where they are stored, "~/emacs.d/libs/pel" if you
 stored them there.  The directory contains a ``Makefile``.
 
 To get a description of how to use the makefile, type::
@@ -337,7 +348,7 @@ variable that correspond to the feature you want to activate.  Activating some
 of them will force their installation when you next run ``pel-init``.  But not
 all, because some o the features require files that are not part of an ELPA-style
 library archive .   For those, you will have to copy their files inside a
-directory in Emacs ``load-path`` like "~/.emacs.d/utils".
+directory in Emacs ``load-path`` like "~/.emacs.d/libs".
 See `PEL Use Variables`_ for the list of variables and those that you may have
 to install yourself.  For the ones that are automatically installed from ELPA_
 or MELPA_ just set the corresponding variable and run ``pel-init``.
