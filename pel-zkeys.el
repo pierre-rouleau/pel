@@ -1522,6 +1522,7 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
     :ensure t
     :pin gnu
     :defer 1
+    :commands whick-key-mode
     :config
     (declare-function which-key-mode "which-key")
     (which-key-mode)))

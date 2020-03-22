@@ -800,16 +800,24 @@ Instead PEL uses the following function keys:
   access to a large set of key bindings and second-level key prefixes.
 -  **F12** is a mode-sensitive key prefix with quick access bindings for the
    current major mode.
-- The `which-key`_ package is used and activated by default (through
-  ``pel-use-which-key`` set to **t**), allowing
-  you to see the available commands after a key prefix easily.
+
 
 The **F11** acts as a the main prefix for PEL: the prefix ``pel:``.
 Several sub-prefixes are available after ``<f11>`` but also some command
 bindings using other keys, like cursor keys with or without modifiers.
-Here's what it looks like:
+
+To easily see what's available it's best to activate the
+`which-key`_ package to show the available keys following a prefix key, like the
+**F11** key.  Here's what the echo area looks like after pressing the **F11**
+key when `which-key`_ is installed and activated:
 
 .. image:: res/pel-which-key.png
+
+To install and activate it, you must set the ``pel-use-which-key`` customize
+variable to **t**.  Use the ``M-x customize`` command and search
+for ``pel-use-which-key``.  Set it to **t**.  The restart PEL by using
+``M-x pel-init``.  PEL will download and install the `which-key`_ package
+and will activate it.
 
 PEL Grep Support
 ----------------
@@ -2430,8 +2438,7 @@ pel-use-which-key              Enables the use of the which-key_ package.       
                                This is recommended for new users, as it shows the keys
                                available after each prefix key.
                                PEL key binding system was designed to show nicely when
-                               which-key is used, so this variable is set to **t**
-                               by default.
+                               which-key is used. It default to nil.
 ============================== ============================================================= =================
 
 
