@@ -27,16 +27,6 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   (if (eq major-mode mode)
       (funcall fct)))
 
-(defun pel-version (&optional insert)
-  "Display and return PEL package version string.
-Optionally insert it at point if INSERT is non-nil."
-  (interactive "P")
-  (let ((version "0.0.1"))
-    (if insert
-        (insert version))
-    (message "PEL version: %s" version)
-    version))
-
 (defmacro define-pel-global-prefix (prefix key)
   "Define a PREFIX KEY for the global key map."
   `(progn
