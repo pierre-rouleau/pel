@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau.swd@gmail.com>
-# Last Modified Time-stamp: <2020-03-23 11:19:12, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-03-23 19:44:25, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -305,34 +305,59 @@ $(DEST_DOC_PDF_DIR)/%.pdf: $(SRC_DIR)/doc/pdf/%.pdf
 				cp $< $@
 
 # -----------------------------------------------------------------------------
+# Emacs Lisp file dependencies
+# ----------------------------
+#
+# The dependencies are not required to identify what file to byte-compile
+# from scratch: the file in order is sufficient.  The dependencies are required
+# to identify minimal byte-compilations when files are modified after their first
+# byte-compilation but also on the very first compilation: it alters the order of
+# byte-compilation for the pel- files.
+
+
+pel-autocomplete.elc:   pel--base.elc pel--macros.elc pel--options.elc
+pel-autoload.elc:       pel--options.elc
+pel-bookmark.elc:       pel--base.elc
+pel-ccp.elc:            pel-navigate.elc
+pel-comment.elc:        pel--base.elc
+pel-file.elc:           pel--base.elc pel-prompt.elc pel-window.elc
+pel-fill.elc:           pel--base.elc
+pel-frame-control.elc:  pel--base.elc
+pel-highlight.elc:      pel--base.elc
+pel-imenu.elc:          pel--base.elc
+pel-indent.elc:         pel-ccp.elc pel-mark.elc
+pel-kbmacros.elc:       pel--options.elc
+pel-lisp.elc:           pel--base.elc
+pel-mark.elc:           pel--base.elc
+pel-navigate.elc:       pel--base.elc pel-scroll.elc
+pel-numkpad.elc:        pel--base.elc pel-ccp.elc pel-navigate.elc pel-scroll.elc
+pel-register.elc:       pel--base.elc
+pel-rst.elc:            pel--base.elc pel--macros.elc pel--options.elc pel-bookmark.elc
+pel-speedbar.elc:       pel--base.elc pel--macros.elc pel--options.elc
+pel-spell.elc:          pel--macros.elc pel--base.elc
+pel-text-insert.elc:    pel--options.elc pel--base.elc pel-window.elc
+pel-text-transform.elc: pel--base.elc
+pel-window.elc:         pel--base.elc
+
+# -----------------------------------------------------------------------------
 # Rules to byte-compile the Emacs-Lisp source code files
 
-# The .el files that are part of the PEL package are all byte-compiled
-# together by the build-pel elisp command which knows the dependencies between
-# files and which one must be built before the others.  They are all always
-# built since there's a small number and they are only built to check for
-# errors, and because the process is also relatively fast.
-#
-# The rule for byte-compiling only one .el file is included since it can help
-# in some situations.
-
-.SUFFIXES: .el .elc
+# Byte-compile all PEL files in a bare-bones Emacs (emacs -Q), one file at
+# a time.  Byte-compile all files except pel_keys.el, which is the key
+# bindings with use-package forms.
+# Compiling pel_keys.el would cause installation of external packages.
 
 # Single .el file byte-compile to .elc rule
+.SUFFIXES: .el .elc
 .el.elc:
-	$(EMACS) -Q  -batch -L . -f batch-byte-compile $<
+	$(EMACS) -Q  --batch -L . -f batch-byte-compile $<
 
 
-# Target to byte-compile all Emacs Lisp files inside one Emacs Session,
-# allowing the compilation of pel_keys.el.
+# Target to byte-compile all Emacs Lisp files inside one Emacs Session.
+# Compile all files except pel_keys.el.
 compile: pel
 
 pel: $(ELC_FILES)
-	@printf "\n***** After byte-compiling each pel- file independently"
-	@printf "\n***** to check their independence, then perform next step:"
-	@printf "\n***** - Compile all files again inside 1 Emacs session:"
-    @printf "\n*****   this allows byte-compiling pel_keys.el.\n"
-	$(EMACS) -batch -L . -l ~/.emacs.d/init.el -l build-pel.el -f build-pel
 
 # -----------------------------------------------------------------------------
 # Integration test rules
@@ -343,8 +368,9 @@ pel: $(ELC_FILES)
 
 test:
 	@printf "***** Running Integration tests\n"
-	$(EMACS) -batch -L . -l ~/.emacs.d/init.el -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
+	$(EMACS) --batch -L . -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
 
+#	$(EMACS) --batch -L . -l ~/.emacs.d/init.el -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
 # -----------------------------------------------------------------------------
 # Dependency rule to create the directory used for creating a Tar file and
 # copy files into proper locations inside that directory tree.
@@ -401,7 +427,7 @@ pkg: | a-copy
 .PHONY: myelpa
 
 myelpa:
-	$(EMACS) -batch -L . -l ~/.emacs.d/init.el -l build-pel.el -f upload-pel-to-local-archive
+	$(EMACS) --batch -L . -l ~/.emacs.d/init.el -l build-pel.el -f upload-pel-to-local-archive
 
 # -----------------------------------------------------------------------------
 # Cleanup rules

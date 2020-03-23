@@ -73,21 +73,12 @@
   (byte-compile-file "pel-window.el")
   ;;
   (byte-compile-file "pel-autoload.el")
-  (byte-compile-file "pel_keys.el")
+
+  ;; do no byte-compile pel_keys.el as it would
+  ;; force installation of several missing packages
+  ;; and would have several warnings.
+  ;; (byte-compile-file "pel_keys.el")
   (byte-compile-file "pel.el"))
-
-
-(defun upload-pel-to-local-archive ()
-  "Upload the distributable PEL package tar file to the local elpa mirror package."
-  (interactive)
-  (require 'package-x)
-  (require 'pel)
-  (let  ((package-archive-upload-base
-          (expand-file-name "~/mirrors/emacs/elpa-mirror")))
-    (if (fboundp 'package-upload-file)
-        (package-upload-file
-         (expand-file-name (format "~/dev/elisp/pel/out/pel-%s.tar" (pel-version))))
-      (error "Unknown function: package-upload-file (should be part of package-x)"))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'build-pel)
