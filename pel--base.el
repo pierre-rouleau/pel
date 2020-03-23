@@ -29,16 +29,6 @@
 
 ;;; Code:
 
-;; Utility macros
-;; --------------
-
-(defmacro while-n (count cond &rest body)
-  "Bounded while: execute BODY a maximum of COUNT times, while COND is true."
-  (let ((tmpvar (make-symbol "i")))
-    `(let ((,tmpvar ,count))
-       (while (and (> ,tmpvar 0) ,cond)
-         ,@body
-         (decf ,tmpvar)))))
 
 ;; -----------------------------------------------------------------------------
 ;; Environment Querying function
