@@ -183,9 +183,21 @@ The PEL files are listed in each of the corresponding
    -----------------------------------------------------------------------------
 
 
-How to Setup PEL
-================
+How to Install PEL
+===================
 
+PEL is not yet available on a distribution repository like MELPA_
+(Milkypostman's Emacs Lisp Package Archive).
+Will it be?  I don't know yet.  I wonder if the nature of PEL's
+project corresponds to what is accepted on MELPA.
+PEL synthesizes information from various sources and integrates
+several packages.
+I will provide a MELPA recipe later and will see if the project gets accepted.
+
+In the mean time, the easiest way to install PEL on one or several computers
+is to create your own local Elpa-compatible package archive, include PEL inside that
+and use this repository to install PEL and its dependencies. The following
+sections describe how to that.
 
 
 Prepare Emacs Before Installing PEL
@@ -193,7 +205,13 @@ Prepare Emacs Before Installing PEL
 
 Before installing PEL it's best to make sure that you already have some
 configuration inside your `Emacs initialization file`_ described in the
-following sub-sections.
+following sub-sections.  In this document I assume that you have all your Emacs
+files inside the "~/.emacs.d" directory, that your Emacs initialization file is
+the file "~/.emacs.d/init.el".
+
+Create a local package archive
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 Updates to your Emacs Initialization file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -201,6 +219,8 @@ Updates to your Emacs Initialization file
 Unfortunately *some* Emacs Lisp code must be written to your
 `Emacs initialization file`_, but that's mainly to setup how to download packages
 that you might already have, and possibly 2 lines to require and initialize PEL.
+
+
 
 Configure How to Download Packages
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2455,7 +2475,7 @@ PEL code is placed in several Emacs Lisp files.
   autoloaded automatically by Emacs, as identified by the file
   `pel-autoloads.el`_.
 
-  - When ``pel-init``  is executed it loads the `pel-zkeys.el`_
+  - When ``pel-init``  is executed it loads the `pel_keys.el`_
     file that contains all PEL key bindings as required by customization.
 
 - All PEL customization variables are defined in the file `pel--options.el`_.
@@ -2563,8 +2583,8 @@ bindings for them inside your Emacs init file.  Just don't call ``pel-init``.
 .. _pel-text-transform.el:  ../pel-text-transform.el
 .. _pel-window:
 .. _pel-window.el:          ../pel-window.el
-.. _pel-zkeys:
-.. _pel-zkeys.el:           ../pel-zkeys.el
+.. _pel_keys:
+.. _pel_keys.el:            ../pel_keys.el
 
 .. _shift-key selection:  https://www.gnu.org/software/emacs/manual/html_node/emacs/Shift-Selection.html#Shift-Selection
 .. _mark and region:      https://www.gnu.org/software/emacs/manual/html_node/emacs/Mark.html#Mark
