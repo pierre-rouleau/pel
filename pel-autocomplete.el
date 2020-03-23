@@ -32,8 +32,10 @@
 
 ;;; Code:
 (require 'pel--options)
+(require 'pel--macros)     ; use: pel-when-bound, pel-when-fbound
 
 (eval-when-compile
+  ;; need macros from pel--base
   ;; The following 2 packages are loaded lazily when required:
   ;; their autoload is configured by pel.el.
   ;; Here we just need it to verify functions and variables
@@ -59,7 +61,9 @@
 (defun pel--setup-auto-complete ()
   "Initialize `auto-complete'."
   ;; Write extra support here
-  (ac-config-default))
+  (pel-when-fbound
+   'ac-config-default
+   (ac-config-default)))
 
 ;; --
 ;; Utilities: return state of auto-complete variables that may be unbound
@@ -82,7 +86,9 @@
 On first call, also configure it."
   (if (not (featurep 'auto-complete))
       (pel--setup-auto-complete))
-  (global-auto-complete-mode t))
+  (pel-when-fbound
+   'global-auto-complete-mode
+   (global-auto-complete-mode t)))
 
 (defun pel--auto-complete-mode-on ()
   "Turn option `auto-complete-mode' ON.
@@ -91,16 +97,20 @@ On first call, also configure it according to its customization."
         ;; remember the way global autocomplete mode was
         ;; before calling its setup (in case it sets global mode on)
         (global-ac   (pel--global-auto-complete-mode-p)))
-    (auto-complete-mode 1)
+    (pel-when-fbound
+     'auto-complete-mode
+     (auto-complete-mode 1))
     (if is-first-call
         (progn
           (pel--setup-auto-complete)
           ;; When the customization variable is requires global
           ;; activation, turn global activation on.
-          (if global-ac
-              (global-auto-complete-mode t)
-            ;; otherwise ensure it's off
-            (global-auto-complete-mode -1))))))
+          (pel-when-fbound
+           'global-auto-complete-mode
+           (if global-ac
+               (global-auto-complete-mode t)
+             ;; otherwise ensure it's off
+             (global-auto-complete-mode -1)))))))
 
 ;; -----------------------------------------------------------------------------
 ;; Company Mode Support
@@ -116,8 +126,12 @@ On first call, also configure it according to its customization."
   ;; variables affecting automatic completion:
   ;; - company-idle-delay
   ;; - company-minimum-prefix-length
-  (setq company-tooltip-align-annotations t)
-  (setq company-show-numbers t))
+  (if (and (boundp 'company-tooltip-align-annotations)
+           (boundp 'company-show-numbers))
+      (progn
+        (setq company-tooltip-align-annotations t)
+        (setq company-show-numbers t))
+    (user-error "Package company not loaded")))
 
 ;; --
 ;; Utilities: return state of company-mode variables that may be unbound
@@ -140,7 +154,9 @@ On first call, also configure it according to its customization."
 On first call, also configure it."
   (if (not (featurep 'company))
       (pel--setup-company))
-  (global-company-mode t))
+  (pel-when-fbound
+   'global-company-mode
+   (global-company-mode t)))
 
 (defun pel--company-mode-on ()
   "Turn option `company-mode' ON.
@@ -149,16 +165,20 @@ On first call, also configure it according to its customization."
         ;; remember the way global company mode was
         ;; before calling its setup (in case it sets global mode on)
         (global-cm   (pel--global-company-mode-p)))
-    (company-mode 1)
+    (pel-when-fbound
+     'company-mode
+     (company-mode 1))
     (if is-first-call
         (progn
           (pel--setup-company)
           ;; When the customization variable is requires global
           ;; activation, turn global activation on.
-          (if global-cm
-              (global-company-mode t)
-            ;; otherwise it's off
-            (global-company-mode -1))))))
+          (pel-when-fbound
+           'global-company-mode
+           (if global-cm
+               (global-company-mode t)
+             ;; otherwise it's off
+             (global-company-mode -1)))))))
 
 ;; --
 ;; PEL Auto Complete Commands
@@ -169,20 +189,21 @@ On first call, also configure it according to its customization."
 If ARG is positive: activate it, otherwise de-activate it.
 Does not allow activation if Company Mode is active."
   (interactive "P")
-  (if (null arg)
-      ;; toggle mode
-      (if (pel--global-auto-complete-mode-p)
-          (progn
-            (global-auto-complete-mode 0))
-        (if (pel--company-mode-p)
-            (user-error "First turn company-mode off!")
-          (pel--global-auto-complete-mode-on)))
-    ;; activate/deactivate according to arg value.
-    (if (< (prefix-numeric-value arg) 0)
-        (global-auto-complete-mode 0)
-      (if (pel--company-mode-p)
-          (user-error "First turn company-mode off!")
-        (pel--global-auto-complete-mode-on)))))
+  (pel-when-fbound
+   'global-auto-complete-mode
+   (if (null arg)
+       ;; toggle mode
+       (if (pel--global-auto-complete-mode-p)
+            (global-auto-complete-mode 0)
+         (if (pel--company-mode-p)
+             (user-error "First turn company-mode off!")
+           (pel--global-auto-complete-mode-on)))
+     ;; activate/deactivate according to arg value.
+     (if (< (prefix-numeric-value arg) 0)
+         (global-auto-complete-mode 0)
+       (if (pel--company-mode-p)
+           (user-error "First turn company-mode off!")
+         (pel--global-auto-complete-mode-on))))))
 
 ;;-pel-autoload
 (defun pel-auto-complete-mode (&optional arg)
@@ -190,20 +211,22 @@ Does not allow activation if Company Mode is active."
 If ARG is positive: activate it, otherwise de-activate it.
 Does not allow activation if Company Mode is active."
   (interactive "P")
-  (if (null arg)
-      ;; toggle mode
-      (if (pel--auto-complete-mode-p)
-          (progn
-            (auto-complete-mode 0))
-        (if (pel--company-mode-p)
-            (user-error "First turn company-mode off!")
-          (pel--auto-complete-mode-on)))
-    ;; activate/deactivate according to arg value.
-    (if (< (prefix-numeric-value arg) 0)
-        (auto-complete-mode 0)
-      (if (pel--company-mode-p)
-          (user-error "First turn company-mode off!")
-        (pel--auto-complete-mode-on)))))
+  (pel-when-fbound
+   'auto-complete-mode
+   (if (null arg)
+       ;; toggle mode
+       (if (pel--auto-complete-mode-p)
+           (progn
+             (auto-complete-mode 0))
+         (if (pel--company-mode-p)
+             (user-error "First turn company-mode off!")
+           (pel--auto-complete-mode-on)))
+     ;; activate/deactivate according to arg value.
+     (if (< (prefix-numeric-value arg) 0)
+         (auto-complete-mode 0)
+       (if (pel--company-mode-p)
+           (user-error "First turn company-mode off!")
+         (pel--auto-complete-mode-on))))))
 
 
 ;; --
@@ -215,39 +238,42 @@ Does not allow activation if Company Mode is active."
 If ARG is positive: activate it, otherwise de-activate it.
 Does not allow activation if Auto Complete Mode is active."
   (interactive "P")
-  (if (null arg)
-      ;; toggle mode
-      (if (pel--global-company-mode-p)
-          (progn
-            (global-company-mode 0))
-        (if (pel--auto-complete-mode-p)
-            (user-error "First turn auto-complete-mode off!")
-          (pel--global-company-mode-on)))
-    ;; activate/deactivate according to arg value.
-    (if (< (prefix-numeric-value arg) 0)
-        (global-company-mode 0)
-      (if (pel--auto-complete-mode-p)
-          (user-error "First turn auto-complete-mode off!")
-        (pel--global-company-mode-on)))))
+  (pel-when-fbound
+   'global-company-mode
+   (if (null arg)
+       ;; toggle mode
+       (if (pel--global-company-mode-p)
+           (global-company-mode 0)
+         (if (pel--auto-complete-mode-p)
+             (user-error "First turn auto-complete-mode off!")
+           (pel--global-company-mode-on)))
+     ;; activate/deactivate according to arg value.
+     (if (< (prefix-numeric-value arg) 0)
+         (global-company-mode 0)
+       (if (pel--auto-complete-mode-p)
+           (user-error "First turn auto-complete-mode off!")
+         (pel--global-company-mode-on))))))
 
 ;;-pel-autoload
 (defun pel-company-mode (&optional arg)
   "Toggle buffer's Company Mode when ARG is nil.
 If ARG is positive: activate it, otherwise de-activate it."
   (interactive "P")
-  (if (null arg)
-      ;; toggle mode
-      (if (pel--company-mode-p)
-          (company-mode 0)
-        (if (pel--auto-complete-mode-p)
-            (user-error "First turn auto-complete-mode off!")
-          (company-mode 1)))
-    ;; activate/deactivate according to arg value.
-    (if (< (prefix-numeric-value arg) 0)
-        (company-mode 0)
-      (if (pel--auto-complete-mode-p)
-          (user-error "First turn auto-complete-mode off!")
-        (company-mode 1)))))
+  (pel-when-fbound
+   'company-mode
+   (if (null arg)
+       ;; toggle mode
+       (if (pel--company-mode-p)
+           (company-mode 0)
+         (if (pel--auto-complete-mode-p)
+             (user-error "First turn auto-complete-mode off!")
+           (company-mode 1)))
+     ;; activate/deactivate according to arg value.
+     (if (< (prefix-numeric-value arg) 0)
+         (company-mode 0)
+       (if (pel--auto-complete-mode-p)
+           (user-error "First turn auto-complete-mode off!")
+         (company-mode 1))))))
 
 ;; --
 ;; PEL Generic Automatic Completion Commands
@@ -270,15 +296,19 @@ Auto-completion package state:
                  (pel-symbol-on-off-string 'global-auto-complete-mode)
                  (pel-option-mode-state pel-use-company 'company-mode)
                  (pel-symbol-on-off-string 'global-company-mode))
-      (error "pel--base functions not loaded")))
+      (user-error "File pel--base not loaded")))
 
 ;;-pel-autoload
 (defun pel-complete ()
   "Start auto-completion for text at point.
 Use the currently active auto-completion system."
   (interactive)
-  (cond ((pel--auto-complete-mode-p) (auto-complete))
-        ((pel--company-mode-p)       (company-complete))
+  (cond ((pel--auto-complete-mode-p) (pel-when-fbound
+                                      'auto-complete
+                                      (auto-complete)))
+        ((pel--company-mode-p)       (pel-when-fbound
+                                      'company-complete
+                                      (company-complete)))
         (t (user-error "No auto completion system active! Please activate one first!"))))
 
 ;; -----------------------------------------------------------------------------

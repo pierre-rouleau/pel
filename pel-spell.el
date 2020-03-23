@@ -63,6 +63,7 @@
 ;; -----------------------------------------------------------------------------
 ;;; Code:
 
+(require 'pel--macros)
 (eval-when-compile
   ;; both flyspell and ispell are loaded lazily if required, but their symbols
   ;; are needed at compilation. Same for popup.
@@ -72,9 +73,6 @@
                                ;      ispell-local-dictionary, ispell-dictionary,
                                ;      ispell-program-name, ispell-personal-dictionary
   (require 'subr-x)            ; use: inlined: string-trim
-
-  ;; The next is part of PEL, so it's available.
-  (require 'pel--base)         ; use: inlined: pel-symbol-on-off-string
 
   ;; The last is an external package.
   ;; It might not be present on user's system: allow
@@ -171,58 +169,60 @@ to allow the flyspell pop-up menu to work in terminal mode."
           (string-trim (buffer-substring-no-properties (point-min) (point))))
       (error "Unable to detect Ispell version"))))
 
-(defun pel-spell--str-for (fct)
-  "If Ispell loaded run FCT function and return its value.
-otherwise return \"?: ispell not loaded!\"."
-  (if (featurep 'ispell)
-      (funcall fct)
-    "?: ispell is not loaded!"))
+;; --
 
 (defun pel-ispell-program-name ()
   "Return string describing the Ispell program name if Ispell is loaded.
 Return \"ispell not loaded\" instead."
-  (pel-spell--str-for
-   (lambda ()
+  (if (and (boundp 'ispell-program-name)
+           (fboundp 'ispell-check-version))
       (format "%s (using: %s)"
-           ispell-program-name
-           (or (ispell-check-version nil)
-               (pel-spell-program-version-string)
-               "?")))))
+              ispell-program-name
+              (or (ispell-check-version nil)
+                  (pel-spell-program-version-string)
+                  "?"))
+    "ispell is not loaded!"))
 
 (defun pel-ispell-main-dictionary ()
   "Return string describing Ispell main dictionary if Ispell is loaded.
 Return \"ispell not loaded\" instead."
-  (pel-spell--str-for
-   (lambda ()
+  (if (and (boundp 'ispell-local-dictionary)
+           (boundp 'ispell-dictionary)
+           (boundp 'ispell-program-name))
       (or ispell-local-dictionary
           ispell-dictionary
           (format "%s default dictionary. (using LANG: %s)"
                   ispell-program-name
-                  (getenv "LANG"))))))
+                  (getenv "LANG")))
+    "?"))
 
 (defun pel-ispell-personal-dictionary ()
   "Return string describing Ispell personal dictionary if Ispell is loaded.
 Return \"ispell is not loaded\" instead."
-  (pel-spell--str-for
-   (lambda ()
+  (if (and (boundp 'ispell-personal-dictionary)
+           (boundp 'ispell-program-name))
       (or ispell-personal-dictionary
-          (format "%s default personal dictionary" ispell-program-name)))))
+          (format "%s default personal dictionary" ispell-program-name))
+    "?"))
 
 ;;-pel-autoload
 (defun pel-spell-show-use ()
   "Display what spell checking program is being used."
   (interactive)
-  (message "\
+  (require 'pel--base nil :no-error)         ; use: pel-symbol-on-off-string
+  (pel-when-fbound
+   'pel-symbol-on-off-string
+   (message "\
 ispell: %s, flyspell: %s.\n\
 Spell program used       : %s\n\
 Spell main dictionary    : %s\n\
 Spell personal dictionary: %s"
-           (pel-symbol-on-off-string 'ispell-minor-mode)
-           (pel-symbol-on-off-string 'flyspell-mode)
-           (pel-ispell-program-name)
-           (pel-ispell-main-dictionary)
-           (pel-ispell-personal-dictionary)
-           ))
+            (pel-symbol-on-off-string 'ispell-minor-mode)
+            (pel-symbol-on-off-string 'flyspell-mode)
+            (pel-ispell-program-name)
+            (pel-ispell-main-dictionary)
+            (pel-ispell-personal-dictionary)
+            )))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-spell)

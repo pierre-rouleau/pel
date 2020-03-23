@@ -101,9 +101,9 @@ After a customization change its best to restart Emacs, however if your
 modifications simply activate new features, you may be able to simply
 re-execute `pel-init' again to activate them."
   (interactive)
-  ;; ensure the library name is sorting just before pel.el
-  ;; so that package system byte compile it after everything else.
-  (load-library "pel-zkeys")
+  ;; Note that pel-keys.el has a file name that ensures that packages controlled
+  ;; byte-compilation compiles it *before* compiling pel.el
+  (load-library "pel_keys")
   (message "PEL loaded, PEL keys binding in effect"))
 
 ;; -----------------------------------------------------------------------------

@@ -27,6 +27,7 @@
 ;;; Code:
 
 (require 'pel--options)                 ; use: pel-linelen
+(require 'pel--base)                    ; use: pel-current-buffer-filename
 
 ;; -----------------------------------------------------------------------------
 ;; Direction conversion

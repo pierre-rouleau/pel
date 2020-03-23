@@ -58,8 +58,15 @@
 
 ;;; Code:
 
-(require 'sr-speedbar nil :noerror)
+;; require the libraries that either come with Emacs or are part of PEL
+(require 'speedbar)
+(require 'pel--base)
+(require 'pel--macros)
 (require 'pel--options)              ; use: pel-prefer-sr-speedbar-in-terminal
+;; sr-speedbar may not be installed.
+;; Allow compilation if it's not installed:
+;; later code checks if its symbols are bound
+(require 'sr-speedbar nil :noerror)
 
 ;; PEL: Speedbar/Sr-Speedbar management
 ;; ------------------------------------
@@ -108,8 +115,10 @@ Do *not* change its value manually.")
 
 (defun pel--sr-speedbar-toggle ()
   "Open/close Sr-Speedbar and remember we're using it."
-  (setq pel-speedbar-type-used 'sr-speedbar)
-  (sr-speedbar-toggle))
+  (pel-when-fbound
+   'sr-speedbar-toggle
+   (setq pel-speedbar-type-used 'sr-speedbar)
+   (sr-speedbar-toggle)))
 
 ;;-pel-autoload
 (defun pel-open-close-speedbar ()
@@ -145,19 +154,23 @@ in subsequent calls of the Emacs session."
 If point is not in sr-speedbar and sr-speedbar exists move to it.
 Otherwise return to previously visited window if it still exists,
 otherwise move to the other window."
-  (if pel--speedbar-active
-      (if (sr-speedbar-window-p)
-          (when pel-window-before-sr-speedbar
-            ;; return point back to window that had focus before moving to sr-speedbar
-            ;; if that window is still alive, otherwise move to other window.
-            (if (window-live-p pel-window-before-sr-speedbar)
-                (select-window pel-window-before-sr-speedbar)
-              (other-window 1))
-            (setq pel-window-before-sr-speedbar nil))
-        ;; else: remember current window and move to sr-speedbar
-        (setq pel-window-before-sr-speedbar (selected-window))
-        (sr-speedbar-select-window))
-    (user-error "Open SR-Speedbar first with pel-open-close-speedbar")))
+  (pel-when-fbound
+   'sr-speedbar-window-p
+   (pel-when-fbound
+    'sr-speedbar-select-window
+    (if pel--speedbar-active
+        (if (sr-speedbar-window-p)
+            (when pel-window-before-sr-speedbar
+              ;; return point back to window that had focus before moving to sr-speedbar
+              ;; if that window is still alive, otherwise move to other window.
+              (if (window-live-p pel-window-before-sr-speedbar)
+                  (select-window pel-window-before-sr-speedbar)
+                (other-window 1))
+              (setq pel-window-before-sr-speedbar nil))
+          ;; else: remember current window and move to sr-speedbar
+          (setq pel-window-before-sr-speedbar (selected-window))
+          (sr-speedbar-select-window))
+      (user-error "Open SR-Speedbar first with pel-open-close-speedbar")))))
 
 ;;-pel-autoload
 (defun pel-toggle-to-speedbar ()
@@ -180,11 +193,13 @@ If no speedbar is used, open one."
       (cond ((equal pel-speedbar-type-used 'speedbar)
              (speedbar-toggle-updates)
              (message "Speedbar automatic refresh is now: %s"
-                      (pel-on-off-string speedbar-update-flag)))
+                      (pel-symbol-on-off-string 'speedbar-update-flag)))
             ((equal pel-speedbar-type-used 'sr-speedbar)
-             (sr-speedbar-refresh-toggle)
-             (message "Sr-Speedbar automatic refresh is now: %s"
-                      (pel-on-off-string sr-speedbar-auto-refresh)))
+             (pel-when-fbound
+              'sr-speedbar-refresh-toggle
+              (sr-speedbar-refresh-toggle)
+              (message "Sr-Speedbar automatic refresh is now: %s"
+                       (pel-symbol-on-off-string 'sr-speedbar-auto-refresh))))
             (t
              (error "Logic error, please report")))
     (user-error "Open Speedbar first")))
@@ -199,7 +214,9 @@ If no speedbar is used, open one."
       (cond ((equal pel-speedbar-type-used 'speedbar)
              (speedbar-refresh t))
             ((equal pel-speedbar-type-used 'sr-speedbar)
-             (sr-speedbar-refresh))
+             (pel-when-fbound
+              'sr-speedbar-refresh
+              (sr-speedbar-refresh)))
             (t
              (error "Logic error, please report")))
     (user-error "Open Speedbar first")))

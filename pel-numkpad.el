@@ -36,6 +36,8 @@
 
 ;;; Code:
 (require 'pel--base)      ; use pel-toggle
+;; pel-scroll functions are only needed if the pel-3 or pel-9 commands
+;; are used.  Avoid loading pel-scroll until those commands are used.
 (eval-when-compile
   (require 'pel-scroll))  ; use: pel-scroll-up, pel-scroll-down
 
@@ -123,9 +125,13 @@ Limitations: In not Numlocked mode the cursor keys cannot
   (let ((n (prefix-numeric-value n)))
     (if pel-mac-keypad-numlocked
         (insert-char ?3 (abs n) t)
-      (if (> 0)
-          (pel-scroll-up  n)
-        (pel-scroll-down (abs n))))))
+      (if (require 'pel-scroll nil :no-error)
+          (if (> 0)
+              (when (fboundp 'pel-scroll-up)
+                (pel-scroll-up  n))
+            (when (fboundp 'pel-scroll-down)
+              (pel-scroll-down (abs n))))
+        (user-error "File not loaded: pel-scroll")))))
 
 ;;-pel-autoload
 (defun pel-4 (&optional n)
@@ -182,9 +188,13 @@ Limitations: In not Numlocked mode the cursor keys cannot
   (let ((n (prefix-numeric-value n)))
     (if pel-mac-keypad-numlocked
         (insert-char ?9 (abs n) t)
-      (if (> 0)
-          (pel-scroll-down n)
-        (pel-scroll-up (abs n))))))
+      (if (require 'pel-scroll nil :no-error)
+          (if (> 0)
+              (when (fboundp 'pel-scroll-down)
+                (pel-scroll-down n))
+            (when (fboundp 'pel-scroll-up)
+              (pel-scroll-up (abs n))))
+        (user-error "File not loaded: pel-scroll")))))
 
 ;;-pel-autoload
 (defun pel-kp-decimal (&optional n)
