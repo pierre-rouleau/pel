@@ -1,4 +1,4 @@
-;;; pel-zkeys.el --- PEL key binding definitions
+;;; pel_keys.el --- PEL key binding definitions
 
 ;;; Commentary:
 
@@ -7,10 +7,12 @@
 ;; This way the time is only spent when pel-init is executed, not when
 ;; Emacs starts.
 ;;
-;; Note: the file and feature name start with the letter 'z' so the file name
+;; Note: the file and feature name has been selected so that the file name
 ;;       sorts after all other pel files but before pel.el to help ensure
 ;;       a byte-compilation order when the package system byte-compiles them
-;;       during installation.
+;;       during installation.  The use of an underscore in the file name is
+;;       a little unusual in the Emacs Lisp world but provides a simple way
+;;       to provide proper file name ordering.
 
 
 ;;; Code:
@@ -2270,6 +2272,6 @@ the ones defined from the buffer now."
 (define-key pel:eXecute    "w" #'woman)
 
 ;; -----------------------------------------------------------------------------
-(provide 'pel-zkeys)
+(provide 'pel_keys)
 
-;;; pel-zkeys.el ends here
+;;; pel_keys.el ends here

@@ -31,7 +31,7 @@
 (defun build-pel ()
   "Byte-compile all PEL files."
   (interactive)
-  ;; Add the directory where PEL files aer stored to the load path
+  ;; Add the directory where PEL files are stored to the load path
   ;; assuming that the current directory is where the PEL source code files are
   ;; stored.
   (add-to-list 'load-path (expand-file-name "."))
@@ -39,6 +39,7 @@
   ;; First byte-compile the PEL files that have inlined defined with defsubst.
   (byte-compile-file "build-pel.el")
   (byte-compile-file "pel--base.el")
+  (byte-compile-file "pel--macros.el")
   (byte-compile-file "pel--options.el")
   ;;
   (byte-compile-file "pel-autocomplete.el")
@@ -72,7 +73,7 @@
   (byte-compile-file "pel-window.el")
   ;;
   (byte-compile-file "pel-autoload.el")
-  (byte-compile-file "pel-zkeys.el")
+  (byte-compile-file "pel_keys.el")
   (byte-compile-file "pel.el"))
 
 

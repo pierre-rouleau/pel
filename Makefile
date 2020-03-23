@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau.swd@gmail.com>
-# Last Modified Time-stamp: <2020-03-21 14:43:28, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-03-23 11:19:12, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -25,10 +25,26 @@
 # -----------------------------------------------------------------------------
 # Description:
 #
-# To get a description on how to use this makefile, execute "male help".
+# To get a description on how to use this makefile, execute "make help".
 #
 # - Tested with macOS GNU Make version 3.81
 
+# -----------------------------------------------------------------------------
+# Portable makefile
+.POSIX:
+
+# -----------------------------------------------------------------------------
+# allow overriding the Emacs binary at the command line
+EMACS = emacs
+
+# Note: the above macro allows the following use of make with
+# other Emacs binaries:
+#
+#    make clean
+#    make EMACS=emacs-26.1 pel test
+#    make clean
+#    make EMACS=emacs-24.3 pel test
+#
 # -----------------------------------------------------------------------------
 # PEL Package Version - increase this number on each release
 PEL_VERSION := 0.0.1
@@ -52,9 +68,13 @@ OUT_REPO_DIR := ~/dev/emacs-archive
 
 # The Emacs Lisp files that must be byte-compiled to check their validity.
 # IMPORTANT:
-#    - The first two must be pel--base, followed by pel--options.
-#    - The last two must be pel-zkeys followed by pel.
+#    - The first files the pel--base, pel--macros and pel--options,
+#    - then the pel- files which use the pel-- files,
+#    - The last two must be pel_keys followed by pel.
+#    - The file names are selected to impose that order when files
+#      are byte compiled by a process that select files alphabetically.
 EL_FILES := pel--base.el \
+			pel--macros.el \
 			pel--options.el \
 			pel-autocomplete.el \
 			pel-autoload.el \
@@ -86,13 +106,12 @@ EL_FILES := pel--base.el \
 			pel-text-insert.el \
 			pel-text-transform.el \
 			pel-window.el \
-			pel-zkeys.el \
 			pel.el
 
-# Files not byte compiled but still included in the package tar file
-OTHER_EL_FILES := pel-pkg.el pel-autoloads.el
+# Files not byte compiled alone but still included in the package tar file
+OTHER_EL_FILES := pel_keys.el pel-pkg.el pel-autoloads.el
 
-# Miscellaneous files to take verbatim inisde the tar file
+# Miscellaneous files to take verbatim inside the package tar file
 OTHER_FILES := README
 
 # Emacs Regression Test files that uses ert, to test and include in tar file.
@@ -202,6 +221,7 @@ help:
 	@printf " * make           - builds everything as needed.\n"
 	@printf " * make all       - builds everything as needed.\n"
 	@printf " * make pel       - byte compile all files. Nothing else done.\n"
+	@printf " * make compile   - byte compile all files. Nothing else done.\n"
 	@printf " * make clean     - remove all output files including $(PEL_TAR_FILE)\n"
 	@printf " * make clean_tar - remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
 	@printf " * make test      - Run the regressin tests.\n"
@@ -298,14 +318,21 @@ $(DEST_DOC_PDF_DIR)/%.pdf: $(SRC_DIR)/doc/pdf/%.pdf
 
 .SUFFIXES: .el .elc
 
-# From .el to .elc
+# Single .el file byte-compile to .elc rule
 .el.elc:
-	emacs -batch -L . -l ~/.emacs.d/init.el -f batch-byte-compile $<
+	$(EMACS) -Q  -batch -L . -f batch-byte-compile $<
 
-# For the moment always perform the build.  It's quick anyway.
+
+# Target to byte-compile all Emacs Lisp files inside one Emacs Session,
+# allowing the compilation of pel_keys.el.
+compile: pel
+
 pel: $(ELC_FILES)
-	@printf "***** Byte Compiling all PEL files in specified order.\n"
-	emacs -batch -L . -l ~/.emacs.d/init.el -l build-pel.el -f build-pel
+	@printf "\n***** After byte-compiling each pel- file independently"
+	@printf "\n***** to check their independence, then perform next step:"
+	@printf "\n***** - Compile all files again inside 1 Emacs session:"
+    @printf "\n*****   this allows byte-compiling pel_keys.el.\n"
+	$(EMACS) -batch -L . -l ~/.emacs.d/init.el -l build-pel.el -f build-pel
 
 # -----------------------------------------------------------------------------
 # Integration test rules
@@ -316,7 +343,7 @@ pel: $(ELC_FILES)
 
 test:
 	@printf "***** Running Integration tests\n"
-	emacs -batch -L . -l ~/.emacs.d/init.el -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
+	$(EMACS) -batch -L . -l ~/.emacs.d/init.el -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
 
 # -----------------------------------------------------------------------------
 # Dependency rule to create the directory used for creating a Tar file and
@@ -374,7 +401,7 @@ pkg: | a-copy
 .PHONY: myelpa
 
 myelpa:
-	emacs -batch -L . -l ~/.emacs.d/init.el -l build-pel.el -f upload-pel-to-local-archive
+	$(EMACS) -batch -L . -l ~/.emacs.d/init.el -l build-pel.el -f upload-pel-to-local-archive
 
 # -----------------------------------------------------------------------------
 # Cleanup rules
