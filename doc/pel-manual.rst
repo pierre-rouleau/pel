@@ -2477,7 +2477,7 @@ The file names have been selected with the following constraints:
 
    - `pel-pkg.el`_ that identified the project name, URL, author,
      version and dependencies.
-   - `pel-autoloads.el`_ identifies the command `pel-init`_ as the
+   - `pel-autoloads.el`_ identifies the command ``pel-init`` as the
      only auto-loaded command.
 
 #. Control byte-compilation under several scenarios, including the
@@ -2578,7 +2578,7 @@ PEL uses the following strategy.
 - At first the only PEL symbol defined is ``pel-init``: it is activated
   by `pel-autoloads.el`_ which schedule the auto-loading of `pel.el`_ when the
   ``pel-init`` command is issued (or when called by your Emacs initialization file.)
-- The `pel-init`_ itself loads `pel_keys.el`_ explicitly.
+- The ``pel-init`` command loads `pel_keys.el`_ explicitly.
 - The `pel_keys.el`_ does not define any unction or command, but its code
   loads `pel-autoload.el`_ and then calls ``pel--autoload-init``.
   That function defines the auto-loading of all ``pel-``
