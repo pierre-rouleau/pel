@@ -2572,9 +2572,7 @@ The PEL Emacs Lisp files types are the following:
      Git depot.
 
 PEL loads only what is needed based on commands executed.
-It implements a 2-step auto-loading mechanism to spread PEL's features loading:
-it loads the file or a feature only when that feature is used.
-PEL uses the following strategy.
+It implements a 2-step auto-loading mechanism described here:
 
 - At first the only PEL symbol defined is ``pel-init``: it is activated
   by `pel-autoloads.el`_ which schedule the auto-loading of `pel.el`_ when the
