@@ -47,8 +47,6 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   (require 'pel-autoload)
   (if (fboundp 'pel--autoload-init)
       (pel--autoload-init)))
-  ;; once that is executed, there's no need for the file anymore; unload it.
-  ;;(unload-feature 'pel-autoload))  ;ROUP
 
 ;; -----------------------------------------------------------------------------
 ;; utilities
@@ -1628,6 +1626,7 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
 (define-key pel:scroll "+"  'pel-add-window-to-scroll-sync)
 (define-key pel:scroll "-"  'pel-remove-window-from-scroll-sync)
 (define-key pel:scroll "a" #'scroll-all-mode)         ; scroll all windows
+(define-key pel:scroll "f" #'follow-mode)             ; toggle follow mode (start by splitting a window with C-x 3)
 (define-key pel:scroll "l" #'scroll-lock-mode)        ; single window scroll
 
 (when pel-use-smooth-scrolling
