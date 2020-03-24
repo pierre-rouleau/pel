@@ -2486,7 +2486,7 @@ The file names have been selected with the following constraints:
    - Installation with `Emacs package-install`_ where all files are byte-compiled
      in order of their file names (in alphabetical order).
    - *Manual* installation by cloning the PEL Git Depot and then using
-     the PEL Makefile_ to create a local package archive,and compile all files
+     the PEL Makefile_ to create a local package archive, and compile all files
      locally.
 
 The PEL Emacs Lisp files types are the following:
@@ -2512,8 +2512,9 @@ The PEL Emacs Lisp files types are the following:
      Some are independent from external packages, others provide a logic
      layer on top of external packages and a dynamically control access
      to the external package features enabled via the PEL option
-     ``pel-use-`` configuration variables.
-   - PEL features implemented by these files are described inside some of the
+     ``pel-use-`` configuration variables as described in the `PEL Customization`_
+     section.
+   - The PEL features implemented by these files are described inside some of the
      sub-sections of `PEL Convenience Features`_.
 
      - As an example of one of the PEL convenience feature file,
