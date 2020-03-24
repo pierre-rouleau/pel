@@ -2578,7 +2578,7 @@ It implements a 2-step auto-loading mechanism described here:
   by `pel-autoloads.el`_ which schedule the auto-loading of `pel.el`_ when the
   ``pel-init`` command is issued (or when called by your Emacs initialization file.)
 - The ``pel-init`` command loads `pel_keys.el`_ explicitly.
-- The `pel_keys.el`_ does not define any unction or command, but its code
+- The `pel_keys.el`_ code
   loads `pel-autoload.el`_ and then calls ``pel--autoload-init``.
   That function defines the auto-loading of all ``pel-``
   files, the PEL feature which are mostly independent from each other.
