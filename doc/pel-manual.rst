@@ -324,7 +324,7 @@ Byte-compile PEL files
 
 Inside the shell,
 change directory to the location where they are stored, "~/emacs.d/libs/pel" if you
-stored them there.  The directory contains a ``Makefile``.
+stored them there.  The directory contains a Makefile_.
 
 To get a description of how to use the makefile, type::
 
@@ -2463,59 +2463,143 @@ pel-use-which-key              Enables the use of the which-key_ package.       
 
 
 
-Implementation Notes
-====================
+PEL Implementation
+==================
 
 Emacs Lisp Files
 ----------------
 
 PEL code is placed in several Emacs Lisp files.
+The file names have been selected with the following constraints:
 
-- The file `pel.el`_ defines the ``pel-init`` function, the only one
-  autoloaded automatically by Emacs, as identified by the file
-  `pel-autoloads.el`_.
+#. Conform to the `Emacs Lisp Packaging rules`_ and includes the
+   following files:
 
-  - When ``pel-init``  is executed it loads the `pel_keys.el`_
-    file that contains all PEL key bindings as required by customization.
+   - `pel-pkg.el`_ that identified the project name, URL, author,
+     version and dependencies.
+   - `pel-autoloads.el`_ identifies the command `pel-init`_ as the
+     only autoloaded command.
 
-- All PEL customization variables are defined in the file `pel--options.el`_.
-- Several low level utilities are defined inside the file `pel--base.el`_.
-- The other Emacs Lisp files implement the PEL convenience features.
-  These files are mostly independent from each other, only requiring, for most
-  of them either nothing or `pel--base.el`_ only.
-  PEL tries to load only what is needed, based on the commands that are
-  executed. For that it implements its own auto-loading mechanism inside
-  the file `pel-autoload.el`_, loaded only by ``pel-init``.
-  The ``pel-init`` function calls ``pel--autoload-init`` which set the
-  auto-loading of the PEL functions.
-  This essentially implements a 2-step auto-loading mechanism.
+#. Control byte-compilation under several scenarios, including the
+   following:
 
-  - As an example of one of the PEL convenience feature file,
-    the file `pel-navigate.el`_ provides extra navigation facilities
-    such as the use of multi-hit ``<home>`` and ``<end>`` keys similar to what is
-    available by editors in the Brief family (such as CRiSP) but also aware of Emacs
-    concepts such as text fields, `shift-key selection`_ and Emacs `mark and region`_.
+   - Installation with `Emacs package-install`_ where all files are byte-compiled
+     in order of their file names (in alphabetical order).
+   - *Manual* installation by cloning the PEL Git Depot and then using
+     the PEL Makefile_ to create a local package archive,and compile all files
+     locally.
 
-- The `pel-pkg.el`_ defines the dependencies.  PEL only uses `use-package`_
-  to control the installation of missing package and all other packages are only
-  loaded if their feature is activated via `PEL customization`_.  However,
-  when loading PEL via the standard Emacs package system, dependencies are
-  identified because package needs the package to byte compile without
-  generating warnings and errors.  This means that the third party packages will
-  be installed on your disk when you install PEL via an Elpa compatible archive
-  (such as MELPA_).  However:
+The PEL Emacs Lisp files are the following:
 
-  #. I did not yet start working on submitting this project on MELPA_, I'll do it
-     once I feel PEL has enough to offer.
-  #. You can just clone the project repo inside a directory and place this
-     inside your Emacs load-path.  Running ``pel-init`` will then download the
-     packages required by customization.
+#. Local files, used by all other PEL files.
 
-It's possible to use part of PEL without using its key bindings.
-Just use the files that contain the features you need and write your own key
-bindings for them inside your Emacs init file.  Just don't call ``pel-init``.
+   - These files have a name that
+     starts with ``pel--`` and sort before all other files.
+   - These files can be byte-compiled independently within an ``emacs -Q``
+     session and will not generate any warning.
+   - These include:
+
+     - `pel--options.el`_: defines all PEL customization variables.
+     - `pel--macros.el`_: defines macros used by other files.
+     - `pel--base.el`_: defines low level utilities.
+
+#. PEL feature files.
+
+   - These files have a name that starts with ``pel-``.
+   - These files can be byte-compiled independently within an ``emacs -Q``
+     session and will not generate any warning.
+   - These files implement PEL specific convenience features.
+     Some are independent from external packages, others provide a logic
+     layer on top of external packages and a dynamically control access
+     to the external package features enabled via the PEL option
+     ``pel-use-`` configuration variables.
+   - PEL features implemented by these files are described inside some of the
+     sub-sections of `PEL Convenience Features`_.
+
+     - As an example of one of the PEL convenience feature file,
+       the file `pel-navigate.el`_ provides extra navigation facilities
+       such as the use of multi-hit ``<home>`` and ``<end>`` keys similar to what is
+       available by editors in the Brief family (such as CRiSP) but also aware of Emacs
+       concepts such as text fields, `shift-key selection`_ and Emacs `mark and
+       region`_. This is detailed in `PEL Navigation Support`_.
+
+   - These files are mostly independent from each other.
+   - Several of these files can be used as stand-alone *libraries*
+     when someone does not want to use the entire PEL system.
+   - It is possible to use one or several of these PEL features
+     without using the PEL key bindings.
+     To do that, just use the files that contain the features you need and write
+     your own key bindings for them inside your Emacs init file.  Just don't
+     call ``pel-init``.
+
+#. PEL key binding file: `pel_keys.el`_.
+
+   - This file has a name that starts with ``pel_``, using the unusual
+     underscore for Emacs Lisp files.  The underscore is used as a simple way to
+     ensure that this file has a name that sorts after the files of the other
+     two types above.
+   - This file is **only** loaded and used by the file `pel.el`_.
+   - This file defines all PEL key bindings.
+     It also contains the logic to install external packages lazily when
+     the corresponding PEL option activates it.
+   - This file cannot be byte-compiled alone by an ``emacs -Q`` session
+     without warnings because it uses `use-package`_ logic to control
+     the installation and use of external packages that are most likely
+     not present on a new installation.  It also has logic to use other
+     packages that are not available from MELPA_ or ELPA_.
+     All of these packages are only used conditionally when a ``pel-use-``
+     customize variable corresponding to the needed package activates its
+     use. That allows the code to run without any issue when the activated
+     package is present and when absent packages are not activated.
+   - The file `pel_keys.el`_ loads the file `pel-autoload.el`_ to define the
+     auto-loading of all PEL features.
+
+#. PEL top level file: `pel.el`_.
+
+   - This file holds the ``pel-init`` command.  That loads the `pel_keys.el`_
+     file, in a similar manner that a init.el file would be loaded.
+   - This is the only file auto-loaded by the standard package auto-load
+     control file: `pel-autoloads.el`_.
+
+#. The other Emacs Lisp files are not part of the PEL package itself.
+   They are tools used to help automate installation of PEL:
+
+   - The file `build-pel.el`_ controls byte compilation of files in a specific
+     order.
+   - The file `install-pel`_ controls the creation of a local Emacs package
+     archive which is then used to install PEL on local computers from a cloned
+     Git depot.
+
+PEL tries to load only what is needed based on commands executed.
+It implements a 2-step auto-loading mechanism to spread PEL's features loading
+just when the features are used:
+
+- Activated by `pel-autoloads.el`_, PEL installation auto-loads `pel.el`_
+  when ``pel-init`` is invoked.
+- The `pel-init`_ itself loads `pel_keys.el`_ which loads `pel-autoload.el`_
+  and calls ``pel--autoload-init`` to define the auto-loading of all ``pel-``
+  files, the PEL feature which are mostly independent from each other.
+
+Currently, PEL only uses `use-package`_
+to control the installation of missing package if the corresponding feature
+is activated via `PEL customization`_ ``pel-use-`` customization variable.
+However, when using `Emacs package-install`_ to install PEL, then all
+dependencies identified by the `pel-pkg.el`_ file will be installed as well.
+They will be located inside your Emacs load-path but will only be loaded if the
+corresponding ``pel-use-`` customize variable is set to **t**.
+
+But this mechanism only works for external packages that are available from an
+Elpa compatible Emacs package archive site (ELPA_, MELPA_, a local Elpa archive,
+etc...)
+Some of the packages PEL uses are not hosted on these sites (yet) but on site
+like EmacsWiki_.  For the moment those packages must be installed manually.
+The list of external packages used by PEL is shown in the `Credits`_ section.
+
+
+
 
 .. _build-pel.el:           ../build-pel.el
+.. _install-pel.el          ../install-pel.el
 .. _pel.el:                 ../pel.el
 .. _pel--options.el:        ../pel--options.el
 .. _pel--base.el:           ../pel--base.el
@@ -2585,9 +2669,12 @@ bindings for them inside your Emacs init file.  Just don't call ``pel-init``.
 .. _pel-window.el:          ../pel-window.el
 .. _pel_keys:
 .. _pel_keys.el:            ../pel_keys.el
-
-.. _shift-key selection:  https://www.gnu.org/software/emacs/manual/html_node/emacs/Shift-Selection.html#Shift-Selection
-.. _mark and region:      https://www.gnu.org/software/emacs/manual/html_node/emacs/Mark.html#Mark
+.. _Emacs Lisp Packaging rules: https://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging.html#Packaging
+.. _shift-key selection:        https://www.gnu.org/software/emacs/manual/html_node/emacs/Shift-Selection.html#Shift-Selection
+.. _mark and region:            https://www.gnu.org/software/emacs/manual/html_node/emacs/Mark.html#Mark
+.. _Emacs package-install:
+.. _package-install:            https://www.gnu.org/software/emacs/manual/html_node/emacs/Package-Installation.html
+.. _EmacsWiki:                  https://www.emacswiki.org/
 
 
 Naming Conventions
