@@ -2469,16 +2469,16 @@ PEL Implementation
 Emacs Lisp Files
 ----------------
 
-PEL code is placed in several Emacs Lisp files.
+PEL code is spread across several Emacs Lisp files.
 The file names have been selected with the following constraints:
 
-#. Conform to the `Emacs Lisp Packaging rules`_ and includes the
+#. Conform to the `Emacs Lisp Packaging rules`_ and include the
    following files:
 
    - `pel-pkg.el`_ that identified the project name, URL, author,
      version and dependencies.
    - `pel-autoloads.el`_ identifies the command `pel-init`_ as the
-     only autoloaded command.
+     only auto-loaded command.
 
 #. Control byte-compilation under several scenarios, including the
    following:
@@ -2489,7 +2489,7 @@ The file names have been selected with the following constraints:
      the PEL Makefile_ to create a local package archive,and compile all files
      locally.
 
-The PEL Emacs Lisp files are the following:
+The PEL Emacs Lisp files types are the following:
 
 #. Local files, used by all other PEL files.
 
@@ -2566,18 +2566,22 @@ The PEL Emacs Lisp files are the following:
 
    - The file `build-pel.el`_ controls byte compilation of files in a specific
      order.
-   - The file `install-pel`_ controls the creation of a local Emacs package
+   - The file `install-pel.el`_ controls the creation of a local Emacs package
      archive which is then used to install PEL on local computers from a cloned
      Git depot.
 
-PEL tries to load only what is needed based on commands executed.
-It implements a 2-step auto-loading mechanism to spread PEL's features loading
-just when the features are used:
+PEL loads only what is needed based on commands executed.
+It implements a 2-step auto-loading mechanism to spread PEL's features loading:
+it loads the file or a feature only when that feature is used.
+PEL uses the following strategy.
 
-- Activated by `pel-autoloads.el`_, PEL installation auto-loads `pel.el`_
-  when ``pel-init`` is invoked.
-- The `pel-init`_ itself loads `pel_keys.el`_ which loads `pel-autoload.el`_
-  and calls ``pel--autoload-init`` to define the auto-loading of all ``pel-``
+- At first the only PEL symbol defined is ``pel-init``: it is activated
+  by `pel-autoloads.el`_ which schedule the auto-loading of `pel.el`_ when the
+  ``pel-init`` command is issued (or when called by your Emacs initialization file.)
+- The `pel-init`_ itself loads `pel_keys.el`_ explicitly.
+- The `pel_keys.el`_ does not define any unction or command, but its code
+  loads `pel-autoload.el`_ and then calls ``pel--autoload-init``.
+  That function defines the auto-loading of all ``pel-``
   files, the PEL feature which are mostly independent from each other.
 
 Currently, PEL only uses `use-package`_
@@ -2588,7 +2592,7 @@ dependencies identified by the `pel-pkg.el`_ file will be installed as well.
 They will be located inside your Emacs load-path but will only be loaded if the
 corresponding ``pel-use-`` customize variable is set to **t**.
 
-But this mechanism only works for external packages that are available from an
+Note that this mechanism only works for external packages that are available from an
 Elpa compatible Emacs package archive site (ELPA_, MELPA_, a local Elpa archive,
 etc...)
 Some of the packages PEL uses are not hosted on these sites (yet) but on site
@@ -2599,10 +2603,11 @@ The list of external packages used by PEL is shown in the `Credits`_ section.
 
 
 .. _build-pel.el:           ../build-pel.el
-.. _install-pel.el          ../install-pel.el
+.. _install-pel.el:         ../install-pel.el
 .. _pel.el:                 ../pel.el
 .. _pel--options.el:        ../pel--options.el
 .. _pel--base.el:           ../pel--base.el
+.. _pel--macros.el:         ../pel--macros.el
 .. _pel-autocomplete:
 .. _pel-autocomplete.el:    ../pel-autocomplete.el
 .. _pel-autoload:
