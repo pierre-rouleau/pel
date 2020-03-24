@@ -1114,6 +1114,8 @@ line:
 - ``pel-rst-adorn-decrease-level`` adorn the line with a level lower than the
   previous section level (creating a sub-section) if the line has no section
   underlining adornment.  If it has one, it decreases the level.
+- ``pel-rst-adorn-refresh`` refreshes the adornment length of the current
+  line. This is useful when changing the text of the line.
 
 PEL supports 3 types of section adornment styles:
 

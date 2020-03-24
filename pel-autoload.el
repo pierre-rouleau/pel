@@ -231,6 +231,7 @@
     (autoload 'pel-rst-adorn-8              "pel-rst")
     (autoload 'pel-rst-adorn-9              "pel-rst")
     (autoload 'pel-rst-adorn-10             "pel-rst")
+    (autoload 'pel-rst-adorn-refresh        "pel-rst")
     (autoload 'pel-rst-adorn-same-level     "pel-rst")
     (autoload 'pel-rst-adorn-increase-level "pel-rst")
     (autoload 'pel-rst-adorn-decrease-level "pel-rst"))

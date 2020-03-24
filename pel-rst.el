@@ -353,6 +353,23 @@ If the line is already adorned, update the adornment: adjust to previous section
       (user-error "Cannot detect section level of previous section!"))))
 
 ;;-pel-autoload
+(defun pel-rst-adorn-refresh ()
+  "Refresh the adornment of the current line.
+This helps when the length of the line changes."
+  (interactive)
+  (let ((current-level (save-excursion
+                         (forward-line 1)
+                         (pel--rst-level-for (char-after)))))
+    (if current-level
+        (progn
+          (pel-delete-trailing-whitespace)
+          (save-excursion
+            (forward-line 1)
+            (pel--rst-delete-whole-line))
+          (pel-rst-adorn current-level :update))
+      (user-error "Cannot detect section level!"))))
+
+;;-pel-autoload
 (defun pel-rst-adorn-increase-level ()
   "Adorn current line at a higher-level that current if already adorned.
 If the line is not already adorned, adorn it with a level higher than previous section."

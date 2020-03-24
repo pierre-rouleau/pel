@@ -1241,6 +1241,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   (define-key pel:for-reST "=" 'pel-rst-adorn-same-level)
   (define-key pel:for-reST "+" 'pel-rst-adorn-increase-level)
   (define-key pel:for-reST "-" 'pel-rst-adorn-decrease-level)
+  (define-key pel:for-reST "r" 'pel-rst-adorn-refresh)
   ;;
   (define-key pel:for-reST "n" 'rst-forward-section)
   (define-key pel:for-reST "p" 'rst-backward-section)
