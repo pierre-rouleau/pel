@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau.swd@gmail.com>
-# Last Modified Time-stamp: <2020-03-23 19:44:25, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-03-25 15:20:30, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -45,6 +45,14 @@ EMACS = emacs
 #    make clean
 #    make EMACS=emacs-24.3 pel test
 #
+
+# -----------------------------------------------------------------------------
+# Define the location of the normal Emacs initialization file.
+# This is required for elisp-lint so that it can find the elisp-lint
+# and its dependencies.  This can be changed on the command line.
+
+EMACS_INIT = "~/.emacs.d/init.el"
+
 # -----------------------------------------------------------------------------
 # PEL Package Version - increase this number on each release
 PEL_VERSION := 0.0.1
@@ -222,6 +230,7 @@ help:
 	@printf " * make all       - builds everything as needed.\n"
 	@printf " * make pel       - byte compile all files. Nothing else done.\n"
 	@printf " * make compile   - byte compile all files. Nothing else done.\n"
+	@printf " * make lint      - check .el files with several tools via elisp-lint.\n"
 	@printf " * make clean     - remove all output files including $(PEL_TAR_FILE)\n"
 	@printf " * make clean_tar - remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
 	@printf " * make test      - Run the regressin tests.\n"
@@ -358,6 +367,16 @@ pel-window.elc:         pel--base.elc
 compile: pel
 
 pel: $(ELC_FILES)
+
+# Target to control file linting with the elisp-lint package.
+# This requires access to a load-path that can find elisp-lint as well
+# as all the tools it uses.  So the Emacs init file is included.
+.PHONY: lint
+lint:
+	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -l elisp-lint.el -f elisp-lint-files-batch \
+			 --no-package-format $(EL_FILES)
+	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -l elisp-lint.el -f elisp-lint-files-batch \
+			pel.el
 
 # -----------------------------------------------------------------------------
 # Integration test rules
