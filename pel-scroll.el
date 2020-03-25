@@ -79,8 +79,8 @@ Tie the current window and next window in the scroll."
         (select-window window1)
         (message
          "Window scroll sync enabled between %s and %s"
-           window1
-           window2))
+         window1
+         window2))
     (setq pel-in-scroll-sync nil)
     (message "Window scroll sync disabled.")))
 
@@ -95,7 +95,7 @@ If scroll sync is currently disabled, adds this window and the next."
       (if (member current-window pel-in-scroll-sync)
           (user-error
            "Window %s is already inside the scroll sync group"
-            current-window)
+           current-window)
         (setq pel-in-scroll-sync (cons current-window pel-in-scroll-sync))
         (message "Window scroll sync of %s" pel-in-scroll-sync)))))
 
@@ -120,7 +120,8 @@ If scroll sync is currently disabled, adds this window and the next."
                     (t (message
                         "Window removed from scroll sync list %s."
                         pel-in-scroll-sync)))))
-        (user-error "Current window is not part of the window scroll sync group")))))
+        (user-error
+         "Current window is not part of the window scroll sync group")))))
 
 ;; --
 
