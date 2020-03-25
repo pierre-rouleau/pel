@@ -29,8 +29,8 @@
 
 
 (require 'isearch)   ; use: search-upper-case.
-                     ; isearch is part of standard Emacs distribution and is
-                     ; loaded even by emacs -Q (in emacs 26).
+;;                   ; isearch is part of standard Emacs distribution and is
+;;                   ; loaded even by emacs -Q (in emacs 26).
 
 ;;; Code:
 

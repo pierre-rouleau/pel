@@ -121,11 +121,22 @@ but *only* when the complete string is enclosed in double quotes
       ;;                        maybe nil.
       ;; The numbers are extracted with string-to-number which return 0
       ;; if it's text.
-      ;; Note: next lines are long to help document the expression.
+      ;; Note: The regexp is split to fit in 80 columns: the G-g identify
+      ;;       the beginning and end of a group in the expression that spans
+      ;;       3 lines.
       (if (string-match
-           ;;     G1              G2          G3 G4 G5            G6              G7 G8            G9
-           ;;     (-----------)   (--------)   (  (  (----------)  (---------)  )  (  (----------)  (---------------------)  )  )
-           "^\\`\\([a-zA-Z]:\\)?\\([^:@]+?\\)\\(\\(\\( *[:@] *\\)\\([0-9]+?\\)\\)\\(\\( *[:@] *\\)\\([[:alnum:] ,:;\\.]+\\)\\)\\)?\\'"
+           ;;
+           ;;
+           (concat
+            ;;     G1         g1    G2     g2   G3 G4 G5        g5
+            ;;     (-----------)   (--------)   (  (  (----------)
+            "^\\`\\([a-zA-Z]:\\)?\\([^:@]+?\\)\\(\\(\\( *[:@] *\\)"
+            ;; G6       g6 g4  G7 G8
+            ;; (---------)  )  (  (----------)
+            "\\([0-9]+?\\)\\)\\(\\( *[:@] *\\)"
+            ;; G9                      g7 g3
+            ;; (---------------------)  )  )
+            "\\([[:alnum:] ,:;\\.]+\\)\\)\\)?\\'")
            str)
           (let* (
                  (ddrv_str  (match-string 1 str))
@@ -156,7 +167,8 @@ but *only* when the complete string is enclosed in double quotes
                                                  (match-string 4 str) "")))
                    ;; but change line 0 to line 1
                    (line_num  (if (equal line_num 0) 1 line_num)))
-              (list (if ddrv_str 'fname-w-ddrv 'fname) fpath_str line_num 0)))))))
+              (list
+               (if ddrv_str 'fname-w-ddrv 'fname) fpath_str line_num 0)))))))
 
 (defun pel-prompt-for-filename (default-filename)
   "Prompt for a file name, with DEFAULT-FILENAME shown and editable.
