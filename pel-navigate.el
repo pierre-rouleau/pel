@@ -53,7 +53,7 @@
 ;;    They also support the multiple window scroll sync provided by the
 ;;    `pel-scroll' commands.
 ;;  - `pel-beginning-of-next-defun' move point to the beginning of the
-;;    next function definition. This complements `beginning-of-defun' which
+;;    next function definition.  This complements `beginning-of-defun' which
 ;;    only reaches the same location by moving backwards.
 
 
@@ -109,7 +109,7 @@ supplied as IN-OTHER-WINDOW in which case it opens inside the other window."
           (find-function symb))
       (if (consp in-other-window)
           (find-variable-other-window symb))
-        (find-variable symb))))
+      (find-variable symb))))
 
 ;; -----------------------------------------------------------------------------
 ;; Description Utilities
@@ -215,7 +215,7 @@ the syntax type code for `ch'."
 ;; utility functions called by the top level ones
 (defun pel--forward-token-start ()
   "Move forward to the start of the next token."
-   (while (progn (forward-char) (not (pel-at-token-start-p)))))
+  (while (progn (forward-char) (not (pel-at-token-start-p)))))
 
 (defun pel--backward-token-start ()
   "Move backward to the start of the previous token."
@@ -239,8 +239,8 @@ of times the operation is done.  If N is negative the
 move is reversed (and goes backward)."
   (interactive "^P")
   (pel--n-funcall-to (prefix-numeric-value n)
-   'pel--forward-token-start
-   'pel--backward-token-start))
+                     'pel--forward-token-start
+                     'pel--backward-token-start))
 
 ;;-pel-autoload
 (defun pel-backward-token-start (&optional n)
@@ -252,8 +252,8 @@ move is reversed (and goes forward).
 See `pel-forward-token-start' for details."
   (interactive "^P")
   (pel--n-funcall-to (prefix-numeric-value n)
-   'pel--backward-token-start
-   'pel--forward-token-start))
+                     'pel--backward-token-start
+                     'pel--forward-token-start))
 
 ;; -----------------------------------------------------------------------------
 ;; Move to the beginning of next word
@@ -385,7 +385,8 @@ Supports command `superword-mode' but not the command `subword-mode'."
 Return number of lines scrolled."
   (if (not (bolp))
       ;; If point not at beginning of line, use (beginning-of-line) that is
-      ;; constrained by fields (such as prompts in interactive buffers like IELM).
+      ;; constrained by fields (such as prompts in interactive buffers like
+      ;; IELM).
       ;; If point did not move, it's at the beginning of a field, so move
       ;; to the real beginning of line with (forward-line 0): the forward-line
       ;; function is not constrained by fields.
@@ -396,8 +397,8 @@ Return number of lines scrolled."
         (if (= p1 p2)
             (forward-line 0))
         0)
-    ;; else - point is already at beginning of line: if point is not at the top of
-    ;; window then move to it. Otherwise move to the top of buffer.
+    ;; else - point is already at beginning of line: if point is not at the
+    ;; top of window then move to it. Otherwise move to the top of buffer.
     (if (/= (point) (window-start))
         (progn
           (goto-char (window-start))
@@ -452,7 +453,7 @@ Return number of lines scrolled."
       (progn
         (end-of-line)
         0)
-    ; cannot get exact value of end of window, check if within 150 chars
+    ;; cannot get exact value of end of window, check if within 150 chars
     (if (> (abs (- (point) (window-end))) 150)
         (progn
           (move-to-window-line -1)
