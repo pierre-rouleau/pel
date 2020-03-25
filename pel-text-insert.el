@@ -56,8 +56,8 @@ The number of dash characters of the line is specified by LINELEN:
   (let ((linelen (if linelen
                      (abs (prefix-numeric-value linelen))
                    pel-linelen)))
-  (move-beginning-of-line nil)
-  (insert-char ?- linelen))
+    (move-beginning-of-line nil)
+    (insert-char ?- linelen))
   (insert "\n")
   (forward-line -1)
   (if (equal comment-start "-- ")
