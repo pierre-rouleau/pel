@@ -30,8 +30,8 @@
 
 ;; simple is part of Emacs and is loaded even with emacs -Q: no need to try to
 ;; load faster, just leave for compiler.
-(require 'simple)                       ; use: visual-line-mode, next-logical-line,
-                                        ;      previous-logical-line
+(require 'simple)            ; use: visual-line-mode, next-logical-line,
+                             ;      previous-logical-line
 
 ;;-pel-autoload
 (defun pel-lc-previous-logical-line ()
