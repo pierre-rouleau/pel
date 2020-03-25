@@ -1,5 +1,9 @@
 ;;; pel-autoloads.el --- automatically extracted autoloads
 ;;
+;;; Commentary:
+;;
+;;  File for package system
+
 ;;; Code:
 
 (add-to-list 'load-path (directory-file-name
@@ -11,7 +15,8 @@
 
 (autoload 'pel-init "pel" "Install the PEL system" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel" '("pel-")))
+(if (fboundp 'register-definition-prefixes)
+    (register-definition-prefixes "pel" '("pel-")))
 
 ;;;***
 
