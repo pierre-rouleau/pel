@@ -68,11 +68,12 @@
   ;; both flyspell and ispell are loaded lazily if required, but their symbols
   ;; are needed at compilation. Same for popup.
   ;; The following are part of Emacs
-  (require 'flyspell)          ; use: flyspell-sort-corrections, flyspell-emacs-popup
-  (require 'ispell)            ; use: ispell-call-process, ispell-check-version
-                               ;      ispell-local-dictionary, ispell-dictionary,
-                               ;      ispell-program-name, ispell-personal-dictionary
-  (require 'subr-x)            ; use: inlined: string-trim
+  (require 'flyspell)   ; use: flyspell-sort-corrections, flyspell-emacs-popup
+  ;;               ispell use: ispell-call-process, ispell-check-version
+  ;;                           ispell-local-dictionary, ispell-dictionary,
+  ;;                           ispell-program-name, ispell-personal-dictionary
+  (require 'ispell)
+  (require 'subr-x)     ; use: inlined: string-trim
 
   ;; The last is an external package.
   ;; It might not be present on user's system: allow
@@ -136,8 +137,9 @@ to allow the flyspell pop-up menu to work in terminal mode."
              show-affix-info
              (base-menu  (let ((save (if (and (consp affix) show-affix-info)
                                          (list
-                                          (list (concat "Save affix: " (car affix))
-                                                'save)
+                                          (list
+                                           (concat "Save affix: " (car affix))
+                                           'save)
                                           '("Accept (session)" session)
                                           '("Accept (buffer)" buffer))
                                        '(("Save word" save)
@@ -154,7 +156,8 @@ to allow the flyspell pop-up menu to work in terminal mode."
             (cadr (assoc (popup-menu* menu :scroll-bar t) base-menu)))))
     (eval-after-load "flyspell"
       '(progn
-         (fset 'flyspell-emacs-popup 'pel-spell-flyspell-emacs-popup-textual)))))
+         (fset 'flyspell-emacs-popup
+               'pel-spell-flyspell-emacs-popup-textual)))))
 
 ;; --
 
