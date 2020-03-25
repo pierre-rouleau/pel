@@ -74,7 +74,8 @@
        auto-complete-mode))
 
 (defun pel--global-auto-complete-mode-p ()
-  "Return t if variable `global-auto-complete-mode' is loaded and on, nil otherwise."
+  "Return t if variable `global-auto-complete-mode' is loaded and on.
+Return nil otherwise."
   (and (boundp 'global-auto-complete-mode)
        global-auto-complete-mode))
 
@@ -194,7 +195,7 @@ Does not allow activation if Company Mode is active."
    (if (null arg)
        ;; toggle mode
        (if (pel--global-auto-complete-mode-p)
-            (global-auto-complete-mode 0)
+           (global-auto-complete-mode 0)
          (if (pel--company-mode-p)
              (user-error "First turn company-mode off!")
            (pel--global-auto-complete-mode-on)))
@@ -280,23 +281,24 @@ If ARG is positive: activate it, otherwise de-activate it."
 
 ;;-pel-autoload
 (defun pel-completion-help ()
-    "Display information about available auto-completion.
-Shows which one is enabled via customization and their current activation state."
-    (interactive)
-    (if (and (require 'pel--base nil :no-error)
-             (fboundp 'pel-option-mode-state)
-             (fboundp 'pel-symbol-on-off-string))
-        (message "\
+  "Display information about available auto-completion.
+Show which one is enabled via customization,
+and show current activation state."
+  (interactive)
+  (if (and (require 'pel--base nil :no-error)
+           (fboundp 'pel-option-mode-state)
+           (fboundp 'pel-symbol-on-off-string))
+      (message "\
 Auto-completion package state:
 - auto-complete-mode       : %s
 - global-auto-complete-mode: %s
 - company-mode             : %s
 - global-company-mode      : %s"
-                 (pel-option-mode-state pel-use-auto-complete 'auto-complete-mode)
-                 (pel-symbol-on-off-string 'global-auto-complete-mode)
-                 (pel-option-mode-state pel-use-company 'company-mode)
-                 (pel-symbol-on-off-string 'global-company-mode))
-      (user-error "File pel--base not loaded")))
+               (pel-option-mode-state pel-use-auto-complete 'auto-complete-mode)
+               (pel-symbol-on-off-string 'global-auto-complete-mode)
+               (pel-option-mode-state pel-use-company 'company-mode)
+               (pel-symbol-on-off-string 'global-company-mode))
+    (user-error "File pel--base not loaded")))
 
 ;;-pel-autoload
 (defun pel-complete ()
@@ -309,7 +311,8 @@ Use the currently active auto-completion system."
         ((pel--company-mode-p)       (pel-when-fbound
                                       'company-complete
                                       (company-complete)))
-        (t (user-error "No auto completion system active! Please activate one first!"))))
+        (t (user-error "No auto completion system active!\
+  Please activate one first!"))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-autocomplete)
