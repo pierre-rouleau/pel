@@ -25,7 +25,7 @@
 ;;
 ;; Loose collection of commands and functions that deal with text fill.
 
-(require 'pel--base)                     ; use: pel-used-major-mode-of, pel-toggle
+(require 'pel--base)                 ; use: pel-used-major-mode-of, pel-toggle
 ;;; Code:
 
 ;; The following 2 declarations of global variables from other files
