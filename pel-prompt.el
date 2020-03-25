@@ -76,13 +76,15 @@ is nil and `use-dialog-box' is non-nil."
   ;; within read-key, apparently).  I had to kill it.
   (let ((answer 'first-answer)
         (clarification
-         "Please answer one of these letters: y/Y (yes), n/N (no), e/E (edit), l/L (library).\n")
+         "Please answer one of these letters: \
+y/Y (yes), n/N (no), e/E (edit), l/L (library).\n")
         ;; set padded lambda to pad prompt.
         (padded (lambda (prompt &optional dialog)
                   (let ((l (length prompt)))
                     (concat prompt
                             (if (or
-                                 (zerop l) (eq ?\s (aref prompt (1- l))))
+                                 (zerop l)
+                                 (eq ?\s (aref prompt (1- l))))
                                 "" " ")
                             (if dialog "" "(y, n, e or l) "))))))
     (cond
