@@ -37,9 +37,8 @@
 
 ;; -----------------------------------------------------------------------------
 ;;; Code:
-(eval-when-compile
-  (require 'cc-vars))                      ; uses: c-basic-offset
-
+(require 'cc-vars)                      ; uses: c-basic-offset
+(defvar c-basic-offset) ; declare it locally to prevent lint warning
 
 ;; --
 (defun pel--insert-c-indent-line (&optional n)
@@ -63,7 +62,8 @@ repeated execution of the command."
         (let ((begin-point (region-beginning))
               (line-count (count-lines (region-beginning) (region-end)))
               ;; by default all insertion commands set the var deactivate-mark
-              ;; to force mark deactivation.  Prevent this by creating a local binding.
+              ;; to force mark deactivation.
+              ;; Prevent this by creating a local binding.
               deactivate-mark)
           (goto-char begin-point)
           (dotimes (i line-count)
@@ -99,7 +99,8 @@ Limitation: does not handle hard tabs."
         (let ((begin-point (region-beginning))
               (line-count (count-lines (region-beginning) (region-end)))
               ;; by default all insertion commands set the var deactivate-mark
-              ;; to force mark deactivation.  Prevent this by creating a local binding.
+              ;; to force mark deactivation.
+              ;; Prevent this by creating a local binding.
               deactivate-mark)
           (goto-char begin-point)
           (dotimes (i line-count)
