@@ -73,7 +73,8 @@
 ;;
 ;; variables:
 ;; speedbar-frame     : holds frame of speedbar, nil if not opened.
-;; sr-speedbar-window : nil when there is no sr-speedbar, otherwise holds it window.
+;; sr-speedbar-window : nil when there is no sr-speedbar,
+;;                      otherwise holds it window.
 
 (defvar pel-window-before-sr-speedbar
   nil
@@ -133,9 +134,10 @@ Once Speedbar or Sr-Speedbar has been used, keep using the same
 in subsequent calls of the Emacs session."
   (interactive)
   (cond ((not pel-speedbar-type-used)
-         (if (yes-or-no-p (if (display-graphic-p)
-                              "Use separate frame? "
-                            "Use the entire terminal frame instead of a dedicated window? "))
+         (if (yes-or-no-p
+              (if (display-graphic-p)
+                  "Use separate frame? "
+                "Use entire terminal frame instead of a dedicated window? "))
              (pel--speedbar-toggle)
            (pel--sr-speedbar-toggle)))
         ((equal pel-speedbar-type-used 'speedbar)
@@ -161,8 +163,9 @@ otherwise move to the other window."
     (if pel--speedbar-active
         (if (sr-speedbar-window-p)
             (when pel-window-before-sr-speedbar
-              ;; return point back to window that had focus before moving to sr-speedbar
-              ;; if that window is still alive, otherwise move to other window.
+              ;; Return point back to window that had focus
+              ;; before moving to sr-speedbar
+              ;; If that window is still alive, otherwise move to other window.
               (if (window-live-p pel-window-before-sr-speedbar)
                   (select-window pel-window-before-sr-speedbar)
                 (other-window 1))
@@ -181,7 +184,7 @@ If no speedbar is used, open one."
       (pel-open-close-speedbar)
     (if (equal pel-speedbar-type-used 'sr-speedbar)
         (pel--toggle-to-sr-speedbar-window)
-        (user-error "The speedbar used is inside a separate frame "))))
+      (user-error "The speedbar used is inside a separate frame "))))
 
 ;; --
 
@@ -251,4 +254,4 @@ If no speedbar is used, open one."
 
 ;;; pel-speedbar.el ends here
 
-; LocalWords:  speedbar
+;; LocalWords:  speedbar
