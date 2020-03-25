@@ -47,7 +47,7 @@ Prompts if the register is already used."
                 (register-read-with-preview
                  "Current filename to register: ")))
   (when (pel--proceed-with-register register)
-      (set-register register (cons 'file (pel-current-buffer-filename)))))
+    (set-register register (cons 'file (pel-current-buffer-filename)))))
 
 ;;-pel-autoload
 (defun pel-point-to-register (register &optional arg)
@@ -58,7 +58,7 @@ register is already used."
   (interactive (list
                 (register-read-with-preview
                  "Point to register: ")
-             current-prefix-arg))
+                current-prefix-arg))
   (when (pel--proceed-with-register register)
     (point-to-register register)))
 
