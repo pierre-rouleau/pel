@@ -68,8 +68,8 @@
 ;;    - The function `pel-split-window-sensibly' attempts to improve window
 ;;      splitting logic by selecting an orienation that takes the frame size
 ;;      into account with a different heuristic than what is normally used by
-;;      Emacs. The function is used by other PEL commands when windows are
-;;      created. The logic gives priority to splitting vertically if the
+;;      Emacs.  The function is used by other PEL commands when windows are
+;;      created.  The logic gives priority to splitting vertically if the
 ;;      available area is wide *enough*.
 ;;
 ;;  - Changing orientation of 2 windows:
@@ -284,7 +284,7 @@ ORIENTATION must be one of: `horizontal or `vertical."
             (t (error "Invalid orientation: %S" orientation)))
       (other-window 1)
       (switch-to-buffer otherwin-buf))
-  (select-window original-window)))
+    (select-window original-window)))
 
 ;;-pel-autoload
 (defun pel-2-vertical-windows ()
@@ -316,7 +316,8 @@ The value 'new is not accepted and raises an error.
 See `pel-find-file-at-point' for a description of these values."
   (cond ((eq direction 'current) (selected-window))
         ((eq direction 'other)   (next-window nil 'no-minibuf))
-        ((eq direction 'new)     (error "Invalid code: 'new not accepted by `pel-find-window'"))
+        ((eq direction 'new)
+         (error "Invalid code: 'new not accepted by `pel-find-window'"))
         (t (windmove-find-other-window direction))))
 
 ;;-pel-autoload
@@ -335,7 +336,8 @@ Return nil otherwise:
   - it's the minibuffer window,
   - that window is dedicated to a specific buffer."
   (if (eq direction 'new)
-      t                                 ; a new window will be created: so it's OK.
+      ;; a new window will be created: so it's OK.
+      t
     (let ((a_window (pel-find-window direction)))
       (and a_window
            (not (window-minibuffer-p a_window))
