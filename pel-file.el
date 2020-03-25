@@ -94,7 +94,8 @@ It accepts ':' and '@' as separators between the elements.
 Spaces are accepted within the file name and between the separators
 but *only* when the complete string is enclosed in double quotes
 *and* when point is located at the first quote."
-  (let ((str (replace-regexp-in-string "^file:////?/?" "/" (pel-filename-at-point))))
+  (let ((str (replace-regexp-in-string "^file:////?/?" "/"
+                                       (pel-filename-at-point))))
     ;; first check for web URIs and return them.
     (if (string-match-p "\\`https?://" str)
         (list 'http str)
@@ -106,8 +107,9 @@ but *only* when the complete string is enclosed in double quotes
       ;;
       ;; Prior to processing the string, the potential file URI prefix
       ;; is removed:
-      ;;  "file:////?/?" optional prefix is removed. The standard allows 3 slashes
-      ;;                 but some people use 4 or 5, so they are removed too.
+      ;;  "file:////?/?" optional prefix is removed.
+      ;;                 The standard allows 3 slashes but some people use
+      ;;                 4 or 5, so they are removed too.
       ;;
       ;; The overall structure of the regexp identifies the following groups:
       ;; G1?G2((G5 G6)(G8 G9)?)?
@@ -115,8 +117,11 @@ but *only* when the complete string is enclosed in double quotes
       ;; - G1 := MS-DOS/Windows disk-drive letter and colon. nil if absent.
       ;; - G2 := filename
       ;; - G6 := line number string (only digits), if it exists (it can be nil)
-      ;; - G9 := column field.  It may be any text, may start with number, me be nil.
-      ;; The numbers are extracted with string-to-number which return 0 if it's text.
+      ;; - G9 := column field.  It may be any text, may start with number,
+      ;;                        maybe nil.
+      ;; The numbers are extracted with string-to-number which return 0
+      ;; if it's text.
+      ;; Note: next lines are long to help document the expression.
       (if (string-match
            ;;     G1              G2          G3 G4 G5            G6              G7 G8            G9
            ;;     (-----------)   (--------)   (  (  (----------)  (---------)  )  (  (----------)  (---------------------)  )  )
@@ -125,12 +130,19 @@ but *only* when the complete string is enclosed in double quotes
           (let* (
                  (ddrv_str  (match-string 1 str))
                  (fpath_str (concat ddrv_str (match-string 2 str)))
-                 (line_num  (string-to-number (pel-val-or-default (match-string 6 str) "")))  ; line to 0 if no line in str.
-                 (line_num  (if (equal line_num 0) 1 line_num))                               ; but change line 0 to line 1
-                 (col_num   (string-to-number (pel-val-or-default (match-string 9 str) "")))) ; column to 0 if no column in str.
-            (list (if ddrv_str 'fname-w-ddrv 'fname) fpath_str line_num col_num))
-        ;; For reasons I don't yet understand, the above regexp does not work if only one separator
-        ;; with line number follows the file name.  So, I try again, with a different regexp, not looking
+                 ;; line to 0 if no line in str.
+                 (line_num  (string-to-number
+                             (pel-val-or-default (match-string 6 str) "")))
+                 ;; but change line 0 to line 1
+                 (line_num  (if (equal line_num 0) 1 line_num))
+                 ;; column to 0 if no column in str.
+                 (col_num   (string-to-number
+                             (pel-val-or-default (match-string 9 str) ""))))
+            (list (if ddrv_str 'fname-w-ddrv 'fname)
+                  fpath_str line_num col_num))
+        ;; For reasons I don't yet understand, the above regexp does not work
+        ;; if only one separator; with line number follows the file name.
+        ;; So, I try again, with a different regexp, not looking
         ;; for a column.
         (if (string-match
              ;;     G1              G2           G3     G4
@@ -139,8 +151,11 @@ but *only* when the complete string is enclosed in double quotes
              str)
             (let* ((ddrv_str  (match-string 1 str))
                    (fpath_str (concat ddrv_str (match-string 2 str)))
-                   (line_num  (string-to-number (pel-val-or-default (match-string 4 str) "")))  ; line to 0 if no line in str.
-                   (line_num  (if (equal line_num 0) 1 line_num)))                              ; but change line 0 to line 1
+                   ;; line to 0 if no line in str.
+                   (line_num  (string-to-number (pel-val-or-default
+                                                 (match-string 4 str) "")))
+                   ;; but change line 0 to line 1
+                   (line_num  (if (equal line_num 0) 1 line_num)))
               (list (if ddrv_str 'fname-w-ddrv 'fname) fpath_str line_num 0)))))))
 
 (defun pel-prompt-for-filename (default-filename)
@@ -204,7 +219,8 @@ not moved."
                     (progn
                       (pop-to-buffer-same-window buffer_for_file)
                       (pel-goto-position line column)
-                      (message "Editing Buffer %S @ %S %S" buffer_for_file line column)
+                      (message "Editing Buffer %S @ %S %S"
+                               buffer_for_file line column)
                       (selected-window)))
               (if (or (file-exists-p filename)
                       force
@@ -220,12 +236,15 @@ not moved."
                                        ((equal action 'edit)
                                         (progn
                                           (setq filename
-                                                (pel-prompt-for-filename filename))
+                                                (pel-prompt-for-filename
+                                                 filename))
                                           t))
                                        ((equal action 'findlib)
                                         (if (fboundp 'find-library-name)
                                             (progn
-                                              (setq filename (find-library-name (file-name-base filename)))
+                                              (setq filename
+                                                    (find-library-name
+                                                     (file-name-base filename)))
                                               t))))))
                             act)
                         (error "Function pel-prompt not loaded")))
@@ -419,8 +438,9 @@ last character or the filename are accepted but removed."
       (buffer-substring-no-properties (region-beginning) (region-end))
     (save-excursion
       (let* ((point_isat_quote (eq (char-after) 34))
-             (pathstop "\t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。")
-                                        ; if char at cursor is a double quote, allow spaces in file name.
+             (pathstop
+              "\t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。")
+             ;; if char at cursor is a double quote, allow spaces in file name.
              (pathstop (concat "^" (if point_isat_quote
                                        (prog1 pathstop
                                          (forward-char))
