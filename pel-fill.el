@@ -28,6 +28,10 @@
 (require 'pel--base)                     ; use: pel-used-major-mode-of, pel-toggle
 ;;; Code:
 
+;; The following 2 declarations of global variables from other files
+;; that are distributed with GNU Emacs prevent lint warnings.
+(defvar comment-fill-column)               ; from newcomment.el
+(defvar emacs-lisp-docstring-fill-column)  ; from lisp-mode.el
 
 ;;-pel-autoload
 (defun pel-auto-fill-only-comments ()
@@ -47,14 +51,14 @@ Activate/de-activate automatic filling in source code comments only."
 - comment  : %S
 - docstring: %S
 - code     : %S"
-               comment-fill-column
+               (or comment-fill-column fill-column)
                emacs-lisp-docstring-fill-column
                (current-fill-column))
     (message "Fill column:
 - comment  : %S
 - text     : %S"
-               comment-fill-column
-               (current-fill-column))))
+             (or comment-fill-column fill-column)
+             (current-fill-column))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-fill)
