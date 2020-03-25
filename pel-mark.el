@@ -37,9 +37,9 @@
 (defun pel-global-mark-buffer-positions ()
   "Return a list of (buffer position) cons cells of the `global-mark-ring'."
   (mapcar #'(lambda (m)
-             (cons (buffer-name
-                    (marker-buffer m))
-                   (marker-position m)))
+              (cons (buffer-name
+                     (marker-buffer m))
+                    (marker-position m)))
           global-mark-ring))
 
 (defun pel-mark-ring-positions ()
@@ -134,7 +134,8 @@ the prefix argument (but easier to type.)"
   ;; removed from the local mark-ring.
   (message "Jumped to mark%s"
            (if mark-ring
-               " and moved mark to the next position from local buffer's mark ring"
+               " and moved mark to the next position from \
+local buffer's mark ring"
              "")))
 
 ;;-pel-autoload
