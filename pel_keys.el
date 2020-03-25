@@ -539,6 +539,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 (when pel-use-common-lisp
   (use-package slime
     :ensure t
+    :pin melpa
     :defer t)
 
   (when (fboundp 'pel-cl-init)
@@ -549,7 +550,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   ;; A  copy of the latest version (version 7) of the LispWorks Hyperspec
   ;; ia at:  http://ftp.lispworks.com/pub/software_tools/reference/HyperSpec-7-0.tar.gz
   ;; as identified by the LispWorks Download page (http://www.lispworks.com/documentation/common-lisp.html).
-  ;; The following code is an example, symlinks can be use to poiunt to the real location.
+  ;; The following code is an example, symlinks can be use to point to the real location.
   (setq common-lisp-hyperspec-root
         (concat "file://"
                 (expand-file-name "~/docs/HyperSpec/"))))
@@ -812,7 +813,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; kp-Left      Meta       digit-argument
 ;; kp-Right     Meta       digit-argument
 ;; kp-Up        Meta       digit-argument
-;; kp-Down      Meta     digit-argument
+;; kp-Down      Meta       digit-argument
 ;;
 ;; Left         Hyper      end
 ;; Right        Hyper      home
@@ -1000,7 +1001,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
       (define-key pel:undo    "v"       #'undo-tree-visualize)
       (define-key pel:undo    "x"       #'undo-tree-switch-branch))
 
-  ;; When pel-use-undo-tree is not t, then sue standard Emacs undo but
+  ;; When pel-use-undo-tree is not t, then use standard Emacs undo but
   ;; map to similar keys (except the ``<f11> u``)
   (when (display-graphic-p)
     (global-set-key (kbd  "s-z")    #'undo))
@@ -1391,7 +1392,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 (when pel-use-expand-region
   (use-package expand-region
     :ensure t
-
+    :pin melpa
     :commands er/expand-region
     :init
     (define-key pel:mark     "="  'er/expand-region)
@@ -1495,25 +1496,26 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
 (when pel-use-free-keys
   (use-package free-keys
     :ensure t
+    :pin melpa
     :commands free-keys))                       ; for <f11> ? k f
 
 (when pel-use-bind-key
   (use-package bind-key
     :ensure t
+    :pin melpa
     :commands describe-personal-keybindings))   ; for <f11> ? k b
 
 (when pel-use-which-key
   (use-package which-key                  ; for <f11> ? k k
-    ;; list key completions: help show the f11 bindings.
-    ;; always available, so load always, but delay loading
-    ;; a little to speed initial loading.
+    ;; List key completions: help show the f11 bindings.
+    ;; When requested, delay a little to speed init time.
     ;; Note that "<f11> ? k k" will execute autoloaded
     ;; command which-key-show-major-mode which will force
-    ;; loading and ensure the key mode.
+    ;; loading and ensure the key mode if it's not already loaded.
     :ensure t
-    :pin gnu
+    :pin melpa
     :defer 1
-    :commands whick-key-mode
+    :commands which-key-mode
     :config
     (declare-function which-key-mode "which-key")
     (which-key-mode)))
@@ -1748,9 +1750,8 @@ the ones defined from the buffer now."
 ;; - Function Keys - <f11> - Prefix ``<f11> d`` : draw commands
 
 (define-pel-global-prefix pel:draw (kbd "<f11> d"))
-(when (display-graphic-p)
-  (define-key pel:draw "a"  'artist-mode))                ; activate a mode to draw
-;; TODO : line/box draw mode
+(define-key pel:draw "a"  'artist-mode)       ; toggle artist-mode
+(define-key pel:draw "p"  'picture-mode)      ; activate picture-mode
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> f`` : File operations
