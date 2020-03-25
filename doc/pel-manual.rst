@@ -1947,12 +1947,13 @@ that uses the ``<f11> SPC l`` prefix.
 Key Bindings Documentation
 --------------------------
 
-PEL comes with a set of tables listing and describing both the standard Emacs
+PEL comes with a set of tables listing and describing both the
+**standard GNU Emacs**
 commands and key bindings for a given type of activity along with the extra
 commands provided by PEL.
 These tables are inside PDF documents.
-See the `PDF Documentation`_ section for more info on why PDF files were used.
-The tables have a format that is something between a quick sheet format and
+See the `PDF Documentation`_ section for more info on why these are PDF files.
+The format of these files makes them something between a set of quick-sheets and
 a full blown manual.
 
 Each PDF file holds a table that list commands related to a specific topic and
@@ -1980,12 +1981,18 @@ demonstration videos hosted on various platforms.
 The tables are heavily marked up using colors and icons (actually Unicode
 character symbols) to represent various concepts. For example key bindings that
 do not work when Emacs is running in terminal (TTY) mode are displayed in
-orange, commands that require external Emacs package are show in blue and use a the
+orange, commands that require external Emacs package are shown in blue and use the
 package character (📦), etc...  The full list of conventions are listed in the
-`Document Legend`_ table.  The list of tables follow below.
+`Document Legend`_ table.
+
+The list of tables follow below.
 As PEL evolves, it will cover more topics, more
 programming languages, major modes and will integrate with more of the external
 Emacs packages and more tables will describe how to use them.
+
+Note:
+  The hyperlinks are not active when viewed through Github rendering.
+  They are active when rendered directly by a browser or a PDF viewer.
 
 PDF Document Tables
 ~~~~~~~~~~~~~~~~~~~
