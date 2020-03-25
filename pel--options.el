@@ -49,7 +49,7 @@
   :type 'string)
 
 (defun pel-abbrev-valid-p (str)
-  "Return t if STR is a valid abbreviation, nil otherwise"
+  "Return t if STR is a valid abbreviation, nil otherwise."
   (= (length str) 4))
 
 (defcustom pel-author-abbrev nil
@@ -91,7 +91,7 @@
 (defcustom pel-rst-adornment-style 'CRiSPer
   "Select the section adornment style.
 Identifies the number of levels supported and their adornment.
-- `default' is Emacs rst-mode default. A title and 7 levels.
+- `default' is Emacs `rst-mode' default.  A title and 7 levels.
 - `Sphinx-Python' is what Sphinx uses: 6 levels:
   - parts,
   - chapters,
@@ -111,7 +111,7 @@ Identifies the number of levels supported and their adornment.
   :group 'pel)
 
 (defcustom pel-prefer-sr-speedbar-in-terminal t
-  "Prefer using Sr-Speedbar in terminal mode (when it's available) over Speedbar."
+  "Prefer using Sr-Speedbar in terminal mode (when available) over Speedbar."
   :group 'pel-speedbar
   :type  'boolean
   :safe  #'booleanp)
@@ -123,7 +123,7 @@ Identifies the number of levels supported and their adornment.
 
 ;; -----------------------------------------------------------------------------
 (defgroup pel-pkg-for-grep nil
-  "List of external packages that PEL can use to help search files and in files."
+  "List of external packages that PEL can use for grep operations."
   :group 'pel-package-use)
 
 (defcustom pel-use-ripgrep nil
@@ -152,7 +152,7 @@ References:
 ;;       - winner
 
 (defcustom pel-use-ace-window  nil
-  "Control whether PEL uses the ace-window packages."
+  "Control whether PEL uses the `ace-window' packages."
   :group 'pel-pkg-for-window
   :type 'boolean
   :safe #'booleanp)
@@ -208,13 +208,13 @@ References:
   :safe #'booleanp)
 
 (defcustom pel-use-dired-narrow nil
-  "Control whether PEL uses the dired-narrow package."
+  "Control whether PEL uses the `dired-narrow' package."
   :group 'pel-pkg-for-buffer
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-nhexl-mode nil
-  "Control whether PEL uses the nhexl-mode and nhexl-nibble-edit-mode package."
+  "Control whether PEL uses the packacge and function `nhexl-mode'."
   :group 'pel-pkg-for-buffer
   :type 'boolean
   :safe #'booleanp)
@@ -497,7 +497,7 @@ eglot is a client for Language Server Protocol (LSP) servers."
   :safe #'booleanp)
 
 (defcustom pel-use-erlang-start nil
-  "Control whether PEL uses the erlang-start package when `pel-use-erlang' is t."
+  "Control whether PEL uses erlang-start package when `pel-use-erlang' is t."
   :group 'pel-pkg-for-erlang
   :type 'boolean
   :safe #'booleanp)
@@ -509,7 +509,8 @@ eglot is a client for Language Server Protocol (LSP) servers."
   :safe #'booleanp)
 
 (defcustom pel-use-edts nil
-  "Control whether PEL uses EDTS (Erlang Development Tool Suite) when `pel-use-erlang' is t."
+  "Control whether PEL uses EDTS when `pel-use-erlang' is t.
+EDTS := Erlang Development Tool Suite."
   :group 'pel-pkg-for-erlang
   :type 'boolean
   :safe #'booleanp)
