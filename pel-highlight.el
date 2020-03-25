@@ -75,15 +75,15 @@ Beep on each change to warn user of the change and display new value."
   (beep :dont-break-macro)
   (let ((on-string  "t: using hard TABs for indentation in current buffer")
         (off-string "nil: using SPACEs only for indentation in current buffer"))
-  (if (null arg)
-      ;; toggle
-      (pel-toggle-and-show 'indent-tabs-mode on-string off-string)
-    ;; set value according to arg
-    (if (< (prefix-numeric-value arg) 0)
-        ;; negative; use space -> set to nil
-        (setq indent-tabs-mode nil)
-      (setq indent-tabs-mode t))
-    (message "%s" (pel-symbol-text indent-tabs-mode on-string off-string)))))
+    (if (null arg)
+        ;; toggle
+        (pel-toggle-and-show 'indent-tabs-mode on-string off-string)
+      ;; set value according to arg
+      (if (< (prefix-numeric-value arg) 0)
+          ;; negative; use space -> set to nil
+          (setq indent-tabs-mode nil)
+        (setq indent-tabs-mode t))
+      (message "%s" (pel-symbol-text indent-tabs-mode on-string off-string)))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-highlight)
