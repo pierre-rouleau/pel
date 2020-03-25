@@ -34,7 +34,8 @@
 ;; *Credit*
 ;; Code based on the pdf-tools/pdf-outline code, which I found via the
 ;; following StackExchange discussion:
-;; http://emacs.stackexchange.com/questions/31791/order-of-items-in-imenu?noredirect=1#comment48799_31791
+;; http://emacs.stackexchange.com\
+;; /questions/31791/order-of-items-in-imenu?noredirect=1#comment48799_31791
 ;;
 ;;
 ;; The new behaviour is activated at startup.

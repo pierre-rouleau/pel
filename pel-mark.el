@@ -112,7 +112,8 @@ When mark is already active extend the region one more line down."
 ;; -----------------------------------------------------------------------------
 ;; Attribution Notice for the code below:
 ;; Code taken from the Mickey Petersen's great website at
-;; https://www.masteringemacs.org/article/fixing-mark-commands-transient-mark-mode
+;; https://www.masteringemacs.org\
+;; /article/fixing-mark-commands-transient-mark-mode
 
 ;;-pel-autoload
 (defun pel-push-mark-no-activate ()
