@@ -1,4 +1,4 @@
-;;; pel-mark.el --- PEL Mark Management Utilities
+;;; pel-mark.el --- PEL Mark Management Utilities -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
@@ -31,15 +31,19 @@
 ;;; Code:
 (require 'pel--base)                    ; use: pel-yes-no-string
 
+;; From simple.el (which is loaded even by emacs -Q)
+;; The following is to prevent lint warnings.
+(defvar global-mark-ring-max)
+(defvar mark-ring-max)
 
 ;; --
 
 (defun pel-global-mark-buffer-positions ()
   "Return a list of (buffer position) cons cells of the `global-mark-ring'."
-  (mapcar #'(lambda (m)
-              (cons (buffer-name
-                     (marker-buffer m))
-                    (marker-position m)))
+  (mapcar (lambda (m)
+            (cons (buffer-name
+                   (marker-buffer m))
+                  (marker-position m)))
           global-mark-ring))
 
 (defun pel-mark-ring-positions ()
