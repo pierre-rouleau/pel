@@ -2737,6 +2737,36 @@ Naming Conventions
   are not part of the PEL package distribution tar file.
 
 
+Code Guidelines
+---------------
+
+The Emacs Lisp code is written to comply with the `standard GNU Emacs code
+guidelines`_.  PEL code follows most of the points promoted by
+`bbatsov/emacs-lisp-style-guide`_ except in some few places.
+PEL code also follows several ideas outlined in
+`Jari Aalto Emacs Lisp Guideline`_, an older but still valid guideline.
+
+To ensure conformance, the code is checked with the following tools:
+
+- GNU Emacs elint-file.
+- The external package `elisp-lint`_ which uses the following other tools:
+
+  - Emacs Lisp byte-compiler,
+  - `Emacs Lisp checkdoc`_,
+  - indent (to confirm indentation inside a file).
+
+The file `pel.el`_ is also checked with `package-lint`_ to verify
+the presence of package version.
+
+The license information is stored in each .el file.
+
+
+
+.. _standard GNU Emacs code guidelines:
+.. _Emacs Lisp checkdoc:               https://www.gnu.org/software/emacs/manual/html_node/elisp/Tips.html
+.. _bbatsov/emacs-lisp-style-guide:    https://github.com/bbatsov/emacs-lisp-style-guide
+.. _Jari Aalto Emacs Lisp Guideline:   http://www.nongnu.org/emacs-tiny-tools/elisp-coding/index-body.html
+
 Emacs Lisp Regression Test
 --------------------------
 
