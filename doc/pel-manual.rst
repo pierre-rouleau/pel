@@ -1959,16 +1959,16 @@ a full blown manual.
 Each PDF file holds a table that list commands related to a specific topic and
 holds overview above a list of rows on:
 
-#. the command name with several hyperlinks to the related section of the
-   GNU Emacs manuals or other appropriate resource
-#. the key bindings for that command including:
+#. The command name with several hyperlinks to the related section of the
+   GNU Emacs manuals or other appropriate resource.
+#. The key bindings for that command including:
 
-   - the standard Emacs key bindings
-   - the bindings for integrated packages
-   - the bindings specific to PEL
+   - the standard Emacs key bindings,
+   - the bindings for integrated packages,
+   - the bindings specific to PEL.
 
-#. the Emacs Lisp function form for the command, with the function name in
-   bold and the arguments in Emacs help style
+#. The Emacs Lisp function form for the command, with the function name in
+   bold and the arguments in Emacs help style.
 #. A description of the command, with lots of the text taken directly from
    Emacs help for what relates to the interactive use of the function but also
    with extra notes and references.
