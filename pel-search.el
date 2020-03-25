@@ -56,14 +56,15 @@ Rotates the value of `search-upper-case' to:
     (progn
       (setq search-upper-case t)
       (message "Uppercase in search forces case sensitivity.")))
-    ((equal search-upper-case 'not-yanks) ; search-upper-case = not-yanks -> nil
-     (progn
-       (setq search-upper-case nil)
-       (message "Uppercase in search have no impact.")))
-    (t                                  ; search-upper-case = t  -> not-yanks
-     (progn
-       (setq search-upper-case 'not-yanks)
-       (message "Uppercase in search force case sensitivity, lowercased yanks in search minibuffer.")))))
+   ((equal search-upper-case 'not-yanks) ; search-upper-case = not-yanks -> nil
+    (progn
+      (setq search-upper-case nil)
+      (message "Uppercase in search have no impact.")))
+   (t                                  ; search-upper-case = t  -> not-yanks
+    (progn
+      (setq search-upper-case 'not-yanks)
+      (message "Uppercase in search force case sensitivity,\
+ lowercased yanks in search minibuffer.")))))
 
 ;; --
 
@@ -84,7 +85,8 @@ Depends on 2 Emacs (base system) variables:
   (if case-fold-search
       (cond ((not search-upper-case) "Case insensitive search.")
             ((equal search-upper-case 'not-yanks)
-             "Case insensitive unless uppercase in search, lowercased yanks in search buffer.")
+             "Case insensitive unless uppercase in search,\
+ lowercased yanks in search buffer.")
             (t "Case insensitive unless uppercase in search."))
     "Case sensitive search."))
 
