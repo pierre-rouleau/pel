@@ -1,4 +1,4 @@
-;;; pel-ccp.el --- PEL collection of copy, kill and delete functions and commands.
+;;; pel-ccp.el --- PEL collection of copy, kill and delete commands.
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
@@ -39,7 +39,7 @@
 
 (defun pel--show-kill-ring-top ()
   "Display top of kill ring on echo area."
-  (message "「%s」"
+  (message "Copy:「%s」"
            (substring-no-properties (car kill-ring))))
 
 (defun pel--copy-thing-at-point (thing)
@@ -350,7 +350,7 @@ the filtering and `kill-ring' appending capabilities."
         (kill-region (region-beginning) (region-end))
       (if (use-region-p)
           (progn
-            ;; lazy load delsel because it's the only function here that uses it.
+            ;; lazy load delsel because it's the only used here.
             ;; delsel is part of standard Emacs distribution.
             (require 'delsel)
             (if (fboundp 'delete-active-region)
@@ -406,7 +406,7 @@ All copy operations are performed by `kill-ring-save'."
                             (progn
                               (forward-line n)
                               (beginning-of-line)
-                           (point)))))))))
+                              (point)))))))))
 
 
 ;; Kill beginning of line
@@ -433,7 +433,7 @@ All copy operations are performed by `kill-ring-save'."
         (set-mark-command nil)
         (pel-next-visible 1)
         (backward-delete-char-untabify 1))
-    (error "pel-next-visible not loaded")))
+    (error "Function pel-next-visible not loaded")))
 
 ;; -----------------------------------------------------------------------------
 
