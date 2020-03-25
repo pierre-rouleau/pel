@@ -26,21 +26,25 @@
 
 
 ;;; Code:
-(require 'thingatpt)                    ; uses: bounds-of-thing-at-point
-(require 'pel--base)                    ; uses: pel-whitespace-in-str-p
+(require 'thingatpt)        ; uses: bounds-of-thing-at-point
+(require 'pel--base)        ; uses: pel-whitespace-in-str-p
 (require 'pel--options)
 (require 'pel--macros)
-(require 'rst)                          ; rst-mode code. Use rst-backward-section
+(require 'rst)              ; rst-mode code. Use rst-backward-section
 
 ;; --
 ;; Section Adornment Control
 ;; -------------------------
 
+;; Sphinx-Python style ref:
+;; www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections
+
+
 (defun pel-rst-set-adornment (style)
   "Set the reStructuredText adornment STYLE.
 Set it to one of: 'CRiSPeR, 'Sphinx-Python, or 'default.
 STYLE identifies the number of levels supported and their adornment.
-- `default' is Emacs rst-mode default. A title and 7 levels.
+- `default' is Emacs `rst-mode' default.  A title and 7 levels.
 - `Sphinx-Python' is what Sphinx uses: 6 levels:
   - parts,
   - chapters,
@@ -51,38 +55,39 @@ STYLE identifies the number of levels supported and their adornment.
 - `CRiSPer', a title and 12-level mode previously developed for CRiSP."
   (pel-when-bound
    'rst-preferred-adornments
-   (setq rst-preferred-adornments (cond ((eq style 'default)
-                                         '((?= over-and-under 1)
-                                           (?= simple 0)
-                                           (?- simple 0)
-                                           (?~ simple 0)
-                                           (?+ simple 0)
-                                           (?` simple 0)
-                                           (?# simple 0)
-                                           (?@ simple 0)))
-                                        ;; ref: http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections
-                                        ((eq style 'Sphinx-Python)
-                                         '((?# over-and-under 0)  ; for parts
-                                           (?* over-and-under 0)  ; for chapters
-                                           (?= simple 0)          ; for sections
-                                           (?- simple 0)          ; for subsections
-                                           (?^ simple 0)          ; for subsubsections
-                                           (?\" simple 0)))       ; for paragraph
-                                        ((eq style 'CRiSPer)
-                                         '((?= over-and-under 0)  ; level  0 : title
-                                           (?= simple 0)          ; level  1
-                                           (?- simple 0)          ; level  2
-                                           (?~ simple 0)          ; level  3
-                                           (?^ simple 0)          ; level  4
-                                           (?+ simple 0)          ; level  5
-                                           (?* simple 0)          ; level  6
-                                           (?> simple 0)          ; level  7
-                                           (?< simple 0)          ; level  8
-                                           (?_ simple 0)          ; level  9
-                                           (?# simple 0)          ; level 10
-                                           (?` simple 0)          ; level 11
-                                           (?@ simple 0)))        ; level 12
-                                        (t (user-error "Unsupported style %S" style))))
+   (setq
+    rst-preferred-adornments
+    (cond ((eq style 'default)
+           '((?= over-and-under 1)
+             (?= simple 0)
+             (?- simple 0)
+             (?~ simple 0)
+             (?+ simple 0)
+             (?` simple 0)
+             (?# simple 0)
+             (?@ simple 0)))
+          ((eq style 'Sphinx-Python)
+           '((?# over-and-under 0)  ; for parts
+             (?* over-and-under 0)  ; for chapters
+             (?= simple 0)          ; for sections
+             (?- simple 0)          ; for subsections
+             (?^ simple 0)          ; for subsubsections
+             (?\" simple 0)))       ; for paragraph
+          ((eq style 'CRiSPer)
+           '((?= over-and-under 0)  ; level  0 : title
+             (?= simple 0)          ; level  1
+             (?- simple 0)          ; level  2
+             (?~ simple 0)          ; level  3
+             (?^ simple 0)          ; level  4
+             (?+ simple 0)          ; level  5
+             (?* simple 0)          ; level  6
+             (?> simple 0)          ; level  7
+             (?< simple 0)          ; level  8
+             (?_ simple 0)          ; level  9
+             (?# simple 0)          ; level 10
+             (?` simple 0)          ; level 11
+             (?@ simple 0)))        ; level 12
+          (t (user-error "Unsupported style %S" style))))
    (setq pel-rst-adornment-style style)
    (message "Now using the %s adornment style with %d levels supported."
             style
@@ -125,13 +130,14 @@ Otherwise return the line N-1 lines forward: so if N is 2 use next line,
 if N is 0 use previous line, etc..."
   (- (line-end-position n) (line-beginning-position n)))
 
-;; NOTE: The following could be an interactive command but then it should go inside
-;; pel-whitespace.el or pel-ccp.el.  Since it's probably not going to be that
-;; useful as a stand-alone command (because we can set automatic deletion of all
-;; trailing whitespace inside current buffer), I'm leaving it here until it's needed
-;; somewhere else.  Then I'll move it and put all infrastructure to autoload it and
-;; then making it a stand-alone command will be worthwhile: I want to reduce the
-;; dependencies to the maximum to reduce extra loading.
+;; NOTE: The following could be an interactive command but then it should go
+;; inside pel-whitespace.el or pel-ccp.el.  Since it's probably not going to
+;; be that useful as a stand-alone command (because we can set automatic
+;; deletion of all trailing whitespace inside current buffer), I'm leaving
+;; it here until it's needed somewhere else.
+;; Then I'll move it and put all infrastructure to autoload it and
+;; then making it a stand-alone command will be worthwhile:
+;; I want to reduce the dependencies to the maximum to reduce extra loading.
 ;;
 (defun pel-delete-trailing-whitespace ()
   "Delete trailing whitespace on current line."
@@ -161,7 +167,7 @@ but when UPDATE is nil, it adds a new line after the underlining.
       (insert (format "\n%s"
                       (make-string linelen adorn-char)))
       (when (not update)
-          (insert "\n"))
+        (insert "\n"))
       (when (eq adorn-style 'over-and-under)
         (forward-line (if update -1 -2))
         (insert (format "\n%s\n"
@@ -328,7 +334,9 @@ REQUIREMENT: the line must not have trailing whitespaces."
         ;; is the same length as the title line and check its last char.
         ;; It's not foolproof, but probably OK for most cases.
         (let ((title-line-length (current-line-length))
-              (underline-length (progn (forward-line 1) (current-line-length))))
+              (underline-length (progn
+                                  (forward-line 1)
+                                  (current-line-length))))
           (when (equal title-line-length underline-length)
             (move-end-of-line nil)
             (backward-char 2)
@@ -337,7 +345,8 @@ REQUIREMENT: the line must not have trailing whitespaces."
 ;;-pel-autoload
 (defun pel-rst-adorn-same-level ()
   "Adorn current line with the same level as the previous section.
-If the line is already adorned, update the adornment: adjust to previous section level."
+If the line is already adorned, update the adornment:
+adjust to previous section level."
   (interactive)
   (let ((previous-level (pel--rst-adorn-level-of-previous-section)))
     (if previous-level
@@ -372,7 +381,8 @@ This helps when the length of the line changes."
 ;;-pel-autoload
 (defun pel-rst-adorn-increase-level ()
   "Adorn current line at a higher-level that current if already adorned.
-If the line is not already adorned, adorn it with a level higher than previous section."
+If the line is not already adorned, adorn it with a level higher than
+previous section."
   (interactive)
   (pel-delete-trailing-whitespace)
   (if (pel--line-adorned-p)
@@ -382,7 +392,8 @@ If the line is not already adorned, adorn it with a level higher than previous s
 ;;-pel-autoload
 (defun pel-rst-adorn-decrease-level ()
   "Adorn current line at a lower-level than current if already adorned.
-If the line not already adorned, adorn it with a level lower than previous section."
+If the line not already adorned, adorn it with a level lower than
+previous section."
   (interactive)
   (pel-delete-trailing-whitespace)
   (if (pel--line-adorned-p)
@@ -448,8 +459,8 @@ Use pel-set-ref-bookmark to create it!")))
 
 (defun pel-forward-empty-line-p ()
   "Return position right after next empty line below, nil otherwise."
-    (save-excursion
-      (search-forward "\n\n" nil :noerror)))
+  (save-excursion
+    (search-forward "\n\n" nil :noerror)))
 
 (defun pel-goto-next-empty-line (&optional no-error)
   "Move point to the beginning of the next empty line if there is one.
@@ -495,7 +506,8 @@ NO-ERROR is non-nil."
 - You can return to the location of the link by typing \\[pel-jump-to-mark].
 
 Reference: see reStructuredText hyperlink format at URL
-`https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#hyperlink-references'"
+`https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html\
+#hyperlink-references'"
   (interactive "*P")
   (let* ((p_begin (if (region-active-p)
                       (region-beginning)
@@ -503,7 +515,8 @@ Reference: see reStructuredText hyperlink format at URL
          (p_end   (if (region-active-p)
                       (region-end)
                     (progn
-                      ;; if no region already exists, set the mark to allow quick return
+                      ;; if no region already exists,
+                      ;; set the mark to allow quick return
                       (push-mark)
                       ;; then return end of word as the end position
                       (cdr (bounds-of-thing-at-point 'word)))))
@@ -534,10 +547,11 @@ Reference: see reStructuredText hyperlink format at URL
               (goto-char p_end)
               (right-char 1)
               (insert "`_"))
-            ;; place references starting at the bookmark, one after the other, with
-            ;; first reference created at the top.  All references are placed after
-            ;; the bookmark so that the bookmark never moves, making it easier to
-            ;; undo editing without damaging the bookmark location.
+            ;; place references starting at the bookmark, one after the other,
+            ;; with first reference created at the top.  All references are
+            ;; placed after the bookmark so that the bookmark never moves,
+            ;; making it easier to undo editing without damaging the bookmark
+            ;; location.
             ;; The bookmark must be set to an area in the buffer with 2 empty
             ;; lines, with the bookmark at the beginning of the first one.
             (pel-rst-goto-ref-bookmark)
@@ -546,8 +560,8 @@ Reference: see reStructuredText hyperlink format at URL
                 (pel-goto-next-empty-line))
             (insert (format ".. _%s: \n" (pel-rst-anchor-escaped anchor)))
             (move-end-of-line 0))
-        (user-error "Bookmarked reference link area has no space for new entry!  \
-Move there with pel-rst-goto-ref-bookmark then add lines!")))))
+        (user-error "Bookmarked reference link area has no space for new entry!\
+  Move there with pel-rst-goto-ref-bookmark then add lines!")))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-rst)
