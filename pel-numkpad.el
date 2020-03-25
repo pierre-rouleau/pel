@@ -30,7 +30,7 @@
 ;; in the macOS Terminal.app, but not always.  It seems to be affected
 ;; by other processes.  I still have not been able to identify the trigger
 ;; and the fix for this to be able to use useful bindings to the keypad
-;; when running Emacs in terminal mode reliably. It seems that Emacs looses
+;; when running Emacs in terminal mode reliably.  It seems that Emacs looses
 ;; access to low-level information to distinguish the keypad keys from normal
 ;; keyboard keys.
 
@@ -104,10 +104,10 @@ Limitations: In not Numlocked mode the cursor keys cannot
   (interactive "P")
   (if pel-mac-keypad-numlocked
       (insert-char ?1 (abs (prefix-numeric-value n)) t)
-      (if (and (require 'pel-navigate nil :no-error)
-               (fboundp 'pel-end))
-          (pel-end)
-        (error "pel-end is not loaded"))))
+    (if (and (require 'pel-navigate nil :no-error)
+             (fboundp 'pel-end))
+        (pel-end)
+      (error "Function pel-end is not loaded"))))
 
 ;;-pel-autoload
 (defun pel-2 (&optional n)
@@ -170,7 +170,7 @@ Limitations: In not Numlocked mode the cursor keys cannot
       (if (and (require 'pel-navigate nil :no-error)
                (fboundp 'pel-home))
           (pel-home)
-        (error "pel-home is not loaded")))))
+        (error "Function pel-home is not loaded")))))
 
 ;;-pel-autoload
 (defun pel-8 (&optional n)
@@ -215,7 +215,8 @@ Limitations: In not Numlocked mode the cursor keys cannot
       (if (and (require 'pel-ccp nil :no-error)
                (fboundp 'pel-kill-or-delete-marked-or-whole-line))
           (pel-kill-or-delete-marked-or-whole-line n)
-        (error "pel-kill-or-delete-marked-or-whole-line not loaded")))))
+        (error
+         "Function pel-kill-or-delete-marked-or-whole-line not loaded")))))
 
 ;;-pel-autoload
 (defun pel-kp-add (&optional n)
@@ -226,7 +227,7 @@ Limitations: In not Numlocked mode the cursor keys cannot
         (insert-char ?+ (abs n) t)
       (if (and (require 'pel-ccp nil :no-error)
                (fboundp 'pel-copy-marked-or-whole-line))
-      (pel-copy-marked-or-whole-line)))))
+          (pel-copy-marked-or-whole-line)))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-numkpad)
