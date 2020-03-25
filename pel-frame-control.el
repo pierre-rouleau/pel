@@ -46,17 +46,18 @@ to toggle the fullscreen mode."
   (if (display-graphic-p)
       (toggle-frame-fullscreen)
     (if (eq system-type 'darwin)
-      (let* ((terminal_name (pel-val-or-default
-                             (getenv "TERM_PROGRAM") "this unknown terminal"))
-             (keys (cond ((string= terminal_name "Apple_Terminal")
-                          "use 'Control-Command f'")
-                         ((string= terminal_name "iTerm.app")
-                          "use 'Command RET'")
-                         (t "consult the manual"))))
-        (error
-         "When using Emacs inside %s, %s to toggle fullscreen mode"
-         terminal_name keys))
-      (error "When using Emacs in Terminal mode, use your OS supported command to toggle fullscreen mode"))))
+        (let* ((terminal_name (pel-val-or-default
+                               (getenv "TERM_PROGRAM") "this unknown terminal"))
+               (keys (cond ((string= terminal_name "Apple_Terminal")
+                            "use 'Control-Command f'")
+                           ((string= terminal_name "iTerm.app")
+                            "use 'Command RET'")
+                           (t "consult the manual"))))
+          (error
+           "When using Emacs inside %s, %s to toggle fullscreen mode"
+           terminal_name keys))
+      (error "When using Emacs in Terminal mode, \
+use your OS supported command to toggle fullscreen mode"))))
 
 ;;-pel-autoload
 (defun pel-show-frame-count ()
