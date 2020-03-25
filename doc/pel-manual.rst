@@ -2843,32 +2843,32 @@ distributed with GNU Emacs.
 
 PEL uses the following libraries distributed with GNU Emacs:
 
-  - bookmark
-  - cc-vars
-  - cua-rect
-  - delsel
-  - elint
-  - ert
-  - flyspell
-  - hippie-exp
-  - hl-line
-  - ido
-  - imenu
-  - isearch
-  - ispell
-  - kmacro
-  - lisp-mode
-  - newcomment
-  - org
-  - paragraphs
-  - re-builder
-  - rst
-  - simple
-  - subr-x
-  - subword
-  - thingatpt
-  - uniquify
-  - winner
+- bookmark
+- cc-vars
+- cua-rect
+- delsel
+- elint
+- ert
+- flyspell
+- hippie-exp
+- hl-line
+- ido
+- imenu
+- isearch
+- ispell
+- kmacro
+- lisp-mode
+- newcomment
+- org
+- paragraphs
+- re-builder
+- rst
+- simple
+- subr-x
+- subword
+- thingatpt
+- uniquify
+- winner
 
 PEL has the following dependencies on the following external Emacs packages:
 
