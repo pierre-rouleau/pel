@@ -29,10 +29,15 @@
 ;; command replacement.
 
 ;;; Code:
-(require 'pel--base)              ; use: pel-at-lowercase-p, pel-at-uppercase-p
-;;(require 'paragraphs)           ; use: sentence-end-double-space from paragraphs.el
-;;                                ; however, paragraphs.el has no provide form,
-;;                                ; probably because it's always part of emacs.
+(require 'pel--base)     ; use: pel-at-lowercase-p, pel-at-uppercase-p
+;;(require 'paragraphs)  ; use: sentence-end-double-space, paragraph-start
+;;                       ;      and paragraph-separate.
+;;                       ; However, paragraphs.el has no provide form,
+;;                       ; probably because it's always part of emacs.
+;; *declare* its variables to prevent lint warnings.
+(defvar sentence-end-double-space)
+(defvar paragraph-start)
+(defvar paragraph-separate)
 
 ;; PEL: Text Changing Case
 ;; -----------------------
@@ -63,7 +68,8 @@ The OPERATION argument must be a symbol, one of upcase, downcase or capitalize."
              ((eq 'downcase operation)   (if (pel-at-lowercase-p nil nil p1)
                                              (capitalize-region p1 p2)
                                            (downcase-region p1 p2)))
-             (t                          (error "Unsupported region operation!")))))
+             (t
+              (error "Unsupported region operation!")))))
       ;; No active region visible
       (if (eq n 0)
           ;; when n is 0: affect current word at its beginning
@@ -79,7 +85,8 @@ The OPERATION argument must be a symbol, one of upcase, downcase or capitalize."
        ((eq 'downcase operation)   (if (pel-at-lowercase-p nil backward nil)
                                        (capitalize-word n)
                                      (downcase-word n)))
-       (t                          (error "Unsupported word operation!"))))))
+       (t
+        (error "Unsupported word operation!"))))))
 
 
 ;;-pel-autoload
@@ -173,7 +180,7 @@ The OPERATION argument must be a symbol, one of upcase, downcase or capitalize."
   (progn
     (setq sentence-end-double-space (not sentence-end-double-space))
     (message "Sentence now ends with %s."
-            (pel--sentence-end-description))))
+             (pel--sentence-end-description))))
 
 ;; -----------------------------------------------------------------------------
 ;; Display information about active text modes
