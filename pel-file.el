@@ -210,31 +210,32 @@ not moved."
                       force
                       (if (and (require 'pel-prompt nil :no-error)
                                (fboundp 'pel-y-n-e-or-l-p))
-                        (let* ((action (pel-y-n-e-or-l-p
-                                        (format "File「%s」not found. Create it, edit name or find Library file? "
-                                                filename)))
-                               (act (cond
-                                     ((equal action 'yes)  t)
-                                     ((equal action 'no)  nil)
-                                     ((equal action 'edit)
-                                      (progn
-                                        (setq filename
-                                              (pel-prompt-for-filename filename))
-                                        t))
-                                     ((equal action 'findlib)
-                                      (if (fboundp 'find-library-name)
-                                          (progn
-                                            (setq filename (find-library-name (file-name-base filename)))
-                                            t))))))
-                          act)
-                        (error "pel-prompt fiunction nor loaded")))
+                          (let* ((action (pel-y-n-e-or-l-p
+                                          (format "File「%s」not found.\
+  Create it, edit name or find Library file? "
+                                                  filename)))
+                                 (act (cond
+                                       ((equal action 'yes)  t)
+                                       ((equal action 'no)  nil)
+                                       ((equal action 'edit)
+                                        (progn
+                                          (setq filename
+                                                (pel-prompt-for-filename filename))
+                                          t))
+                                       ((equal action 'findlib)
+                                        (if (fboundp 'find-library-name)
+                                            (progn
+                                              (setq filename (find-library-name (file-name-base filename)))
+                                              t))))))
+                            act)
+                        (error "Function pel-prompt not loaded")))
                   (if (pel-window-select direction)
                       (progn
                         (find-file filename)
                         (pel-goto-position line column)
                         (message "Editing File %S @ %S %S" filename line column)
                         (selected-window)))))))
-    (error "pel-window functions no loaded")))
+    (error "File pel-window no loaded")))
 
 (defun pel-find-file-at-point (direction &optional force)
   "Open file of name located at/around point in window identified by DIRECTION.
@@ -264,13 +265,15 @@ Return one of:
               (browse-url (car fileparts))
             (if (and (eq kind 'fname-w-ddrv)
                      (not (pel-running-under-windows-p)))
-                (user-error "Invalid Windows-type filename 「%s」; Aborted" (car fileparts))
+                (user-error "Invalid Windows-type filename 「%s」; Aborted"
+                            (car fileparts))
               (let* ((filename (car fileparts))
                      (line    (cadr fileparts))
                      (column (caddr fileparts)))
                 (if (not (string= filename ""))
                     (pel-find-file-in-window
-                     (expand-file-name filename) ; expand relative paths: use current-directory of point's buffer
+                     ;; expand relative paths: use current-directory of buffer
+                     (expand-file-name filename)
                      direction
                      line
                      column
@@ -360,14 +363,14 @@ the function prints an error message and quits.
          (default-direction (cond ((eq nwindows 2) 'other)
                                   ((eq nwindows 1) 'new)
                                   (t 'down)))
-        (direction (cond;((eq 2 n) 'down)
-                         ((eq 8 n) 'up)
-                         ((eq 4 n) 'left)
-                         ((eq 6 n) 'right)
-                         ((eq 5 n) 'current)
-                         ((eq 0 n) 'other)
-                         ((< n 0)  'new)
-                         (t default-direction))))
+         (direction (cond;((eq 2 n) 'down)
+                     ((eq 8 n) 'up)
+                     ((eq 4 n) 'left)
+                     ((eq 6 n) 'right)
+                     ((eq 5 n) 'current)
+                     ((eq 0 n) 'other)
+                     ((< n 0)  'new)
+                     (t default-direction))))
     (unless (pel-find-file-at-point direction nil)
       (if (and (require 'pel-window nil :no-error)
                (fboundp 'pel-window-valid-for-editing-p))
@@ -375,7 +378,7 @@ the function prints an error message and quits.
               (message "User cancelled: nothing opened")
             (user-error
              "No valid window %s of current one: nothing opened" direction))
-        (error "pel-window function is not loaded")))))
+        (error "File pel-window is not loaded")))))
 
 ;; --
 
@@ -397,13 +400,13 @@ FORWARD_ONLY set to non-nil.  To extract file names with no
 embedded spaces, with ability to position the point anywhere in
 the file name, set FORWARD-ONLY to nil."
   (save-excursion
-  (let (p1 p2)
-    (if (not forward_only)
-        (skip-chars-backward delimiter))
-    (setq p1 (point))
-    (skip-chars-forward delimiter)
-    (setq p2 (point))
-    (buffer-substring-no-properties p1 p2))))
+    (let (p1 p2)
+      (if (not forward_only)
+          (skip-chars-backward delimiter))
+      (setq p1 (point))
+      (skip-chars-forward delimiter)
+      (setq p2 (point))
+      (buffer-substring-no-properties p1 p2))))
 
 (defun pel-filename-at-point ()
   "Return the file name at point (or marked region).
@@ -417,7 +420,7 @@ last character or the filename are accepted but removed."
     (save-excursion
       (let* ((point_isat_quote (eq (char-after) 34))
              (pathstop "\t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。")
-             ; if char at cursor is a double quote, allow spaces in file name.
+                                        ; if char at cursor is a double quote, allow spaces in file name.
              (pathstop (concat "^" (if point_isat_quote
                                        (prog1 pathstop
                                          (forward-char))
