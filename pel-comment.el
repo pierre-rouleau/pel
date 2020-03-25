@@ -31,9 +31,10 @@
 (defun pel-comment-start (string)
   "Show and set comment start STRING for current mode."
   (interactive
-   (let ((string (read-string
-               (format "Comment start string 「%s」: " comment-start)
-               comment-start)))
+   (let ((string
+          (read-string
+           (format "Comment start string 「%s」: " comment-start)
+           comment-start)))
      (list string)))
   (setq comment-start string))
 
@@ -41,9 +42,10 @@
 (defun pel-comment-middle (string)
   "Show and set comment continue/middle STRING for current mode."
   (interactive
-   (let ((string (read-string
-               (format "Comment middle/continue string 「%s」: " comment-continue)
-               comment-continue)))
+   (let ((string
+          (read-string
+           (format "Comment middle/continue string 「%s」: " comment-continue)
+           comment-continue)))
      (list string)))
   (setq comment-continue string))
 
@@ -51,9 +53,10 @@
 (defun pel-comment-end (string)
   "Show and set comment end STRING for current mode."
   (interactive
-   (let ((string (read-string
-               (format "Comment end string 「%s」: " comment-end)
-               comment-end)))
+   (let ((string
+          (read-string
+           (format "Comment end string 「%s」: " comment-end)
+           comment-end)))
      (list string)))
   (setq comment-end string))
 
@@ -79,10 +82,9 @@ Activate/de-activate automatic filling in source code comments only."
 ;;-pel-autoload
 (defun pel-kill-all-comments ()
   "Kill all comments in current (possibly narrowed) buffer or marked region.
-Retain them in kill-ring.
+Retain them in the variable `kill-ring'.
 Each killed comment group is retained in the kill ring, as a separate kill
-ring entry.
-"
+ring entry."
   (interactive "*")
   (let ((start-point (if (region-active-p) (region-beginning) (point-min)))
         (end-point   (if (region-active-p) (region-end) (point-max))))
