@@ -2819,16 +2819,22 @@ I am open to suggestions. And can provide the Numbers file on request.
 ..
    -----------------------------------------------------------------------------
 
+Security Aspects
+================
+
+To be written...
 
 
 Credits
 =======
 
 PEL integrates with several great Emacs Lisp packages.  Some of them are
-required, the others are used if they are present and are activated by the PEL
-customization.
+required, the others are used only if they are present and are activated by the PEL
+customization.  PEL's code is written to operate despite the absence of external
+packages that have not been activated but it expects presence of packages that are
+distributed with GNU Emacs.
 
-- PEL uses the following libraries distributed with GNU Emacs:
+PEL uses the following libraries distributed with GNU Emacs:
 
   - bookmark
   - cc-vars
@@ -2837,52 +2843,78 @@ customization.
   - elint
   - ert
   - flyspell
+  - hippie-exp
   - hl-line
+  - ido
   - imenu
   - isearch
   - ispell
   - kmacro
+  - lisp-mode
+  - newcomment
+  - org
   - paragraphs
+  - re-builder
+  - rst
   - simple
   - subr-x
   - subword
   - thingatpt
+  - uniquify
+  - winner
 
-- PEL has the following dependencies on the following external Emacs packages:
+PEL has the following dependencies on the following external Emacs packages:
 
-  - `ace-window`_
-  - `auto-complete`_
-  - `bind-key`_
-  - `bm`_
-  - `c-eldoc`_
-  - `cargo`_
-  - `company`_
-  - `dired-narrow`_
-  - `edts`_
-  - elisp-lint_
-  - elpy_
-  - esup_
-  - expand-region_
-  - free-keys_
-  - goto-last-change_
-  - graphviz-dot-mode_
-  - highlight-defined_
-  - popup-kill-ring_
-  - lice_
-  - macrostep_
-  - nhexl-mode_
-  - parinfer_
-  - popup-kill-ring_
-  - racer_
-  - rainbow-delimiters_
-  - rg_
-  - rust-mode_
-  - slime_
-  - smooth-scrolling_
-  - sr-speedbar_
-  - undo-tree_
-  - `use-package`_
-  - which-key_
+============================= ==========================
+Package Name & Archive link   Archive Site
+============================= ==========================
+`ace-window`_                 MELPA_
+`auto-complete`_              MELPA_
+`bind-key`_                   MELPA_
+`bm`_                         MELPA_
+`c-eldoc`_                    MELPA_
+`cargo`_                      MELPA_
+`company`_                    MELPA_
+`dired-narrow`_               MELPA_
+`edts`_                       MELPA_
+elpy_                         MELPA_
+esup_                         MELPA_
+expand-region_                MELPA_
+framemove_                    EmacsWiki_
+free-keys_                    MELPA_
+goto-last-change_             MELPA_
+graphviz-dot-mode_            MELPA_
+highlight-defined_            MELPA_
+popup-kill-ring_              MELPA_
+lice_                         MELPA_
+macrostep_                    MELPA_
+nhexl-mode_                   ELPA_
+parinfer_                     MELPA_
+popup_                        MELPA-STABLE_
+popup-kill-ring_              MELPA_
+racer_                        MELPA_
+rainbow-delimiters_           MELPA_
+rg_                           MELPA_
+rust-mode_                    MELPA_
+slime_                        MELPA_
+smooth-scrolling_             MELPA_
+sr-speedbar_                  MELPA_
+undo-tree_                    ELPA_
+`use-package`_                MELPA_
+which-key_                    MELPA_
+============================= ==========================
+
+
+For developing PEL, the following extra packages are used.
+
+============================= ==========================
+Package Name & Archive link   Archive Site
+============================= ==========================
+elisp-lint_                   MELPA_
+package-lint_                 MELPA_
+============================= ==========================
+
+
 
 .. References
 
@@ -2892,6 +2924,7 @@ customization.
 .. _Auto Complete:
 .. _auto-complete package:     https://melpa.org/#/auto-complete
 .. _MELPA:                     https://melpa.org/
+.. _MELPA-STABLE:              https://stable.melpa.org/
 .. _use-package:               https://melpa.org/#/use-package
 .. _bind-key:                  https://melpa.org/#/bind-key
 .. _visible bookmarks:
@@ -2912,7 +2945,9 @@ customization.
 .. _lice:                      https://melpa.org/#/lice
 .. _macrostep:                 https://melpa.org/#/macrostep
 .. _nhexl-mode:                https://elpa.gnu.org/packages/nhexl-mode.html
+.. _package-lint:              https://melpa.org/#/package-lint
 .. _parinfer:                  https://melpa.org/#/parinfer
+.. _popup:                     https://stable.melpa.org/#/popup
 .. _popup-kill-ring:           https://melpa.org/#/popup-kill-ring
 .. _racer:                     https://melpa.org/#/racer
 .. _rainbow-delimiters:        https://melpa.org/#/rainbow-delimiters
