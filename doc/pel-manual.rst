@@ -1973,14 +1973,14 @@ holds overview above a list of rows on:
    Emacs help for what relates to the interactive use of the function but also
    with extra notes and references.
 
-Several of these documents also a list of reference table listing relevant topics.
+Several of these documents also a list of reference table with relevant topics.
 These references include hyperlinks to the relevant GNU
 Emacs manuals but also to several sites devoted to Emacs including several
 demonstration videos hosted on various platforms.
 
 The tables are heavily marked up using colors and icons (actually Unicode
-character symbols) to represent various concepts. For example key bindings that
-do not work when Emacs is running in terminal (TTY) mode are displayed in
+character symbols) to highlight various concepts. For example key bindings that
+do not work when Emacs is running in terminal (TTY) mode are shown in
 orange, commands that require external Emacs package are shown in blue and use the
 package character (📦), etc...  The full list of conventions are listed in the
 `Document Legend`_ table.
