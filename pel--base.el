@@ -90,7 +90,8 @@ The index of the first whitespace character is returned when one is present."
 (defun pel-count-string (n singular &optional plural)
   "Return a formatted string for N in SINGULAR or PLURAL.
 If N is 0 or 1, use the singular form.
-If N > 2: use the PLURAL form if specified, otherwise use SINGULAR with a 's' suffix."
+If N > 2: use the PLURAL form if specified,
+          otherwise use SINGULAR with a 's' suffix."
   (if (> n 1)
       (format "%d %s" n
               (or plural
@@ -134,7 +135,9 @@ If symbol is nil: show OFF-STRING if defined, \"nil\" otherwise."
 
 (defun pel-yes-no-string (test &optional true-string false-string)
   "Return TRUE-STRING when boolean TEST is non-nil, otherwise FALSE_STRING.
-By default or when they are nil, TRUE_STRING is \"yes\" and FALSE_STRING is \"no\"."
+By default or when these arguments are nil:
+- TRUE_STRING is \"yes\" and
+- FALSE_STRING is \"no\"."
   (if test
       (or true-string "yes")
     (or false-string "no")))
