@@ -23,7 +23,7 @@
 ;; -----------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; The functions in this file change the font scaling of the windows of all buffers.
+;; The functions in this file change the font scaling of all buffers.
 ;; This can be quite useful, since font scaling is normally done only in the
 ;; current buffer, even if the current buffer is the minibuffer.  Resetting the
 ;; font of all buffers is useful when font have been changed in the past and you
