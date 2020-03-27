@@ -81,20 +81,22 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; - PEL Modifier keys on different OS
 ;; -----------------------------------
 ;;
-;; Ideally, mostly used keybindings are available on all platforms and keyboards,
-;; with an easy to use layout.   The following is describing the use of modifier
-;; keys in the system I have set up so far.
+;; Ideally, mostly used keybindings are available on all platforms and
+;; keyboards, with an easy to use layout.
+;; The following is describing the use of modifier keys in the PEL system
+;; so far.
 ;;
-;; ========= ===== ============ ============ ============== =========== ===========
-;; Modifier  Repr. Explicit Key Explicit Key 'darwin (gr)   'darwin (t) 'windows-nt
-;; ========= ===== ============ ============ ============== =========== ===========
-;; Control   C-    Control      Control      Control        Control     Control
-;; Meta      M-                              Option         Option      Alt
-;; Shift     S-                              Shift          Shift       Shift
-;; Hyper     H-    C-x @ h                                  Fn          Menu/App
-;; Super     s-    C-x @ s                                  Command⌘
-;; Alt       A-    C-x @ a      C-x 8
-;; ========= ===== ============ ============ ============== =========== ===========
+;; ======== ==== ======== ======== ============== =========== ===========
+;; Modifier Symb Explicit Explicit 'darwin (gr)   'darwin (t) 'windows-nt
+;;               Key      Key
+;; ======== ==== ======== ======== ============== =========== ===========
+;; Control  C-   Control  Control  Control        Control     Control
+;; Meta     M-                     Option         Option      Alt
+;; Shift    S-                     Shift          Shift       Shift
+;; Hyper    H-   C-x @ h                          Fn          Menu/App
+;; Super    s-   C-x @ s                          Command⌘
+;; Alt      A-   C-x @ a  C-x 8
+;; ======== ==== ======== ======== ============== =========== ===========
 
 ;; Use the macOS Function key (Fn) as emacs Hyper modifier
 ;;   Note: this does not work on the terminal based emacs,
@@ -182,8 +184,10 @@ optional argument APPEND is non-nil, in which case it is added at the end."
     ;; run following command before package is loaded to
     ;; activate the autoload.
     :init
-    (global-set-key (kbd "<s-kp-add>")      #'pel-font-increase-size-all-buffers)
-    (global-set-key (kbd "<s-kp-subtract>") #'pel-font-decrease-size-all-buffers)
+    (global-set-key (kbd "<s-kp-add>")
+                    #'pel-font-increase-size-all-buffers)
+    (global-set-key (kbd "<s-kp-subtract>")
+                    #'pel-font-decrease-size-all-buffers)
     (global-set-key (kbd "<s-kp-0>")        #'pel-font-reset-size-all-buffers)))
 
 ;; -----------------------------------------------------------------------------
@@ -299,7 +303,8 @@ optional argument APPEND is non-nil, in which case it is added at the end."
     (use-package framemove
       :defer 3
       :config
-      ;; Note: modified framemove (replaced "remove-if-not" by "cl-remove-if-not")
+      ;; Note: modified framemove:
+      ;;  (replaced "remove-if-not" by "cl-remove-if-not")
       (when (boundp 'framemove-hook-into-windmove)
         (setq framemove-hook-into-windmove t)))))
 
@@ -430,7 +435,8 @@ optional argument APPEND is non-nil, in which case it is added at the end."
     ;; Make sure bookmarks is saved before check-in (and revert-buffer)
     (add-hook 'vc-before-checkin-hook 'bm-buffer-save)
 
-                                        ; TODO?: find a better binding? non conflicting, allowing function key to be used as prefix?
+    ;; TODO?: find a better binding?
+    ;; A non conflicting, allowing function key to be used as prefix?
     (global-set-key (kbd "<f2>")   'bm-next)
     ))
 
@@ -447,7 +453,8 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; - Programming Style: Org-Mode
 ;; -----------------------------
 (when pel-use-org-mode
-  ;; Org-Mode activation (as suggested by https://orgmode.org/manual/Activation.html#Activation ):
+  ;; Org-Mode activation (as suggested by
+  ;; https://orgmode.org/manual/Activation.html#Activation ):
   (use-package org
     :commands (org-mode
                org-indent-mode
@@ -526,7 +533,8 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   (use-package cc-vars
     :config
     ;; Using bsd/allman style but with 3 spaces per tabs.
-    (setq-default c-basic-offset 3)))   ;TODO: it's value is 'set-from-style' ??  Need to investigate.
+    ;; TODO: it's value is 'set-from-style' ??  Need to investigate.
+    (setq-default c-basic-offset 3)))
 
 ;; ---------------
 ;; - CMake support
@@ -548,9 +556,12 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   ;; also provide ability to install the Hyperspec locally again through
   ;; customization.
   ;; A  copy of the latest version (version 7) of the LispWorks Hyperspec
-  ;; ia at:  http://ftp.lispworks.com/pub/software_tools/reference/HyperSpec-7-0.tar.gz
-  ;; as identified by the LispWorks Download page (http://www.lispworks.com/documentation/common-lisp.html).
-  ;; The following code is an example, symlinks can be use to point to the real location.
+  ;; is at:
+  ;; http://ftp.lispworks.com/pub/software_tools/reference/HyperSpec-7-0.tar.gz
+  ;; as identified by the LispWorks Download page
+  ;; (http://www.lispworks.com/documentation/common-lisp.html).
+  ;; The following code is the default,
+  ;; symlinks can be use to point to the real location.
   (setq common-lisp-hyperspec-root
         (concat "file://"
                 (expand-file-name "~/docs/HyperSpec/"))))
@@ -560,7 +571,8 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; -------------------------------
 (when pel-use-esup
   (use-package esup
-    ;; esup is an external package: ensure it's installed from MELPA if not available.
+    ;; esup is an external package:
+    ;; ensure it's installed from MELPA if not available.
     :ensure t
     :pin melpa
     :commands esup))
@@ -572,10 +584,13 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; erlang MAN also does not work.
 ;; I do not know why.  Need to learn more.
 ;; (when pel-use-erlang
-;;   ;; TODO: make the following a customization that either accepts the path or an
-;;   ;; environment variable to get it from, and support multiple versions of Erlang.
+;;   ;; TODO: make the following a customization
+;;   ;; that either accepts the path or an
+;;   ;; environment variable to get it from,
+;;   ;; and support multiple versions of Erlang.
 ;;   (setq erlang-root-dir
-;;         (expand-file-name "~/Library/Application Support/ErlangInstaller/21.1/erts-10.1"))
+;;         (expand-file-name
+;;           "~/Library/Application Support/ErlangInstaller/21.1/erts-10.1"))
 ;;   (use-package erlang
 ;;     :defer 3
 ;;     :commands erlang-mode
@@ -585,7 +600,8 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;;     (when pel-use-erlang-flymake
 ;;       (require 'erlang-flymake))))
 
-;; (when pel-use-edts                  ; TODO: complete this
+;; ; TODO: complete this
+;; (when pel-use-edts
 ;;   (use-package edts
 ;;     :defer t))))
 
@@ -595,7 +611,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;;
 ;; Using Intero to support Haskell programming language.
 ;; Installed it via the list-packages.
-                                        ; (add-hook 'haskell-mode-hook 'intero-mode)
+;; ; (add-hook 'haskell-mode-hook 'intero-mode)
 
 ;; -----------------------------------
 ;; - Programming Style: Python Support
@@ -603,9 +619,12 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 (when pel-use-python                    ; TODO: complete this
   (use-package elpy
     :defer t)
-  ;; Normally, (python-shell-prompt-detect) should evaluate to (">>> " "... " "")
-  ;; for Python shell to work properly.  Under Windows, that is currently not the
-  ;; case for my system (but also others as described by https://github.com/jorgenschaefer/elpy/issues/733)
+  ;; Normally, (python-shell-prompt-detect) should
+  ;; evaluate to (">>> " "... " "")
+  ;; for Python shell to work properly.
+  ;; Under Windows, that is currently not the
+  ;; case for my system (but also others as described by
+  ;;  https://github.com/jorgenschaefer/elpy/issues/733)
   ;; I investigated and a work-around is to set python-shell-unbuffered to nil.
   ;; So I attempt to do this here to see if that works when launching emacs.
   ;;
@@ -620,7 +639,8 @@ optional argument APPEND is non-nil, in which case it is added at the end."
     (defvar python-shell-completion-native-disabled-interpreters)
     (setq python-shell-unbuffered nil)
     (if (boundp 'python-shell-completion-native-disabled-interpreters)
-        (add-to-list 'python-shell-completion-native-disabled-interpreters "python")
+        (add-to-list
+         'python-shell-completion-native-disabled-interpreters "python")
       (setq python-shell-completion-native-disabled-interpreters '("python")))))
 
 ;; - Programming Style: Rust & Cargo Support
@@ -657,14 +677,105 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 
 ;; - Numeric Keypad Keys
 ;; ---------------------
+;;
+;; The nummeric keypad has 18 keys. They are shown here:
+;;
+;;     +==========================+
+;;     |Numlock  =     /    *     |
+;;     |   7     8     9    -     |
+;;     |   4     5     6    +     |
+;;     |   1     2     3   Enter  |
+;;     |   ---0---     .   Enter  |
+;;     +==========================+
+;;
+;; The numeric keypad keys behave differently when Emacs is running in graphics
+;; mode and when it is running in Terminal mode.  Another difference is between
+;; the PC-keyaboard and the macOS keyboards.  The PC-keyboard has a numlock key,
+;; but the macOS keyboards do not: the Numlock is a clear key.
+;;
+;; PEL attempts to provide the exact same behaviour for these keys in both modes
+;; for all environments despite the difference.
+;;
 
-;; - Paste key
-;; -----------
-;; Paste                   : <kp-insert>
-(global-set-key [kp-insert] 'cua-paste)
+;; -- Numlock/Clear
+;;
+;; For macOS, the top-left key, labelled as "NumLock" above, is detected only in
+;; graphics mode and is the [clear] key.  The Terminal mode does not detect that
+;; key. So 2 key bindings are done:
+;; - [clear] is mapped to pel-toggle-mac-numlock
+;; - <f11> # is also mapped to pel-toggle-mac-numlock (see later)
 
-;; - Copy/Delete/Kill things at point
-;; ----------------------------------
+(global-set-key [clear] 'pel-toggle-mac-numlock)
+
+;; -- The keys +, / and *
+;;
+;; The "=", "/" and "*" keys are untouched, left to self-insert in all cases.
+;;
+
+;; -- The numeric keys: 0 to 9
+;;
+;; The numeric keys are mapped to pel-0 to pel-9 commands.  These commands
+;; check the satet of num-locking managed by the pel-numkpad.el to determine
+;; how they should behave: in num-lock they just self insert the corresponding
+;; digit. When not num-locked, the keys implement other operations: cursor
+;; movement, etc...
+;;
+;; On graphics mode Emacs is able to generate M-<kp-8> when the Meta key is
+;; pressed while the keypad 8 is pressed.  That does not work in Terminal mode.
+
+(global-set-key [kp-0] 'pel-0)
+(global-set-key [kp-1] 'pel-1)
+(global-set-key [kp-2] 'pel-2)
+(global-set-key [kp-3] 'pel-3)
+(global-set-key [kp-4] 'pel-4)
+(global-set-key [kp-5] 'pel-5)
+(global-set-key [kp-6] 'pel-6)
+(global-set-key [kp-7] 'pel-7)
+(global-set-key [kp-8] 'pel-8)
+(global-set-key [kp-9] 'pel-9)
+
+;; On some keyboards, when in non-numlock the key 0 acts as [kp-insert].
+;; This is not available on macOS but it is under Windows keyboards.
+;; Also under Windows the key '5' when not num-locked is [kp-space].
+;; Therefore PEL configures these keys for Windows only,
+;; on macOS it does not, instead it relies on the binding of [kp-0] to pel-0
+;; and of [kp-5] to pel-5 to handle it.
+
+(when (eq system-type 'windows-nt)
+  (global-set-key [kp-insert] 'yank)
+  (global-set-key [kp-space] 'recenter-top-bottom))
+
+;; -- The . ([kp-decimal]) key
+;;
+;; In terminal (TTY) mode, the keypad "." is not recognized
+;; as [kp-decimal] but as "M-O n" so adjust the binding accordingly.
+;; In both cases, bind the key to pel-kp-decimal which behaves according
+;; to the state of num-locking controlled by pel-numkpad.el
+
+(if (display-graphic-p)
+    (global-set-key [kp-decimal] 'pel-kp-decimal)
+  (global-set-key (kbd "M-O n") 'pel-kp-decimal))
+
+;; -- The + key on the numerical keypad
+;;
+;; That key registers as [kp-add] when Emacs runs in graphics mode, but
+;; registers as [kp-separator] when Emacs runs in terminal mode.
+;; So PEL binds the appropriate key to pel-kp-add which selects the action
+;; according to the state of num-locking controlled by pel-numkpad.el
+
+(if (display-graphic-p)
+    (global-set-key [kp-add] 'pel-kp-add)
+  (global-set-key [kp-separator] 'pel-kp-add))
+
+;; -- The - key on the numeric keypad
+;;
+;; That key alwyas registers as [kp-subtract], so bind it to the
+;; pel-kp-subtract which selects the action according to the state
+;; of num-locking controlled by pel-numkpad.el
+
+(global-set-key [kp-subtract] 'pel-kp-subtract)
+
+;; -- Numerical Keypad keys with modifier keys : Copy/Delete/Kill at point
 ;;
 ;; The following code controls the following operations:
 ;; - Copy a `thing` from the buffer to the kill-ring (for later pasting).
@@ -672,7 +783,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; - Kill a `thing` from the buffer: delete it from the buffer and copy
 ;;   to the kill-ring (for later pasting).
 ;;
-;; The `thing` can be one of the symbols supported by (bounds-of-thing-at-point):
+;; The `thing` can be one of the symbols supported by bounds-of-thing-at-point:
 ;;  word, symbol, list, sexp, defun, line, sentence, whitespace, page,
 ;;  filename, url, email.
 ;;
@@ -685,52 +796,21 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 (global-set-key [C-kp-subtract] 'pel-kill-word-at-point)
 (global-set-key [M-kp-subtract] 'pel-kill-symbol-at-point)
 
-;; - Copy current marked region or whole current line
-;; --------------------------------------------------
-;; Copy current marked region or line:  <kp-add>
-(global-set-key [kp-add] 'pel-copy-marked-or-whole-line)
-(unless (display-graphic-p)
-  (global-set-key [kp-separator] 'pel-copy-marked-or-whole-line))
-
-
-;; - Kill beginning of line
-;; ------------------------
-;; TODO: the following binding does NOT work in Terminal.
-;; Remove them: ensure we have something that works in both modes, as is not a sequence of keys!!
-(global-set-key [(meta delete)] 'kill-line)
-
-;; - Keypad keys rebinding
-;; -----------------------
-;; use pel-numkpad
-
-(global-set-key [kp-0] 'pel-0)
-(global-set-key [kp-1] 'pel-1)
-(global-set-key [kp-2] 'pel-2)
-(global-set-key [kp-3] 'pel-3)
-(global-set-key [kp-4] 'pel-4)
-(global-set-key [kp-5] 'pel-5)
-(global-set-key [kp-6] 'pel-6)
-(global-set-key [kp-7] 'pel-7)
-(global-set-key [kp-8] 'pel-8)
-(global-set-key [kp-9] 'pel-9)
-;; In terminal (TTY) mode, the keypad "." is not recognized
-;; as [kp-decimal] but as "M-O n" so adjust the binding accordingly.
-(if (display-graphic-p)
-    (global-set-key [kp-decimal] 'pel-kp-decimal)
-  (global-set-key (kbd "M-O n") 'pel-kp-decimal))
-
-;; / and * keys have no secondary meaning yet.
-(global-set-key [kp-subtract] 'pel-kp-subtract)
-(global-set-key [kp-add] 'pel-kp-add)
-(global-set-key [clear] 'pel-toggle-mac-numlock) ; does not work in macOS terminal
-
-;; - recenter-top-bottom on keypad 5 key
-;; -------------------------------------
-;; When the keypad keys are not num-locked, the '5' key is <kp-space>.
-;; Map that to recenter-top-bottom, the same as C-l.
-;; On macOS, there is no num-lock, so the 'clear' key is mapped to recenter-top-bottom.
-(when (eq system-type 'windows-nt)
-  (global-set-key [kp-space] 'recenter-top-bottom))
+;; -- Numerical Keypad keys with modifier keys : navigate sexp/code nesting
+;; Cursor-Keys:
+;; Use the numeric keypad cursor keys.
+;;  On macOS, simulate the numeric keypad using the number keys
+;;  on the keypad.
+(if (eq system-type 'darwin)
+    (progn
+      (global-set-key [C-kp-4]    #'backward-sexp)
+      (global-set-key [C-kp-6]    #'forward-sexp)
+      (global-set-key [C-kp-8]    #'backward-up-list)
+      (global-set-key [C-kp-2]    #'down-list))
+  (global-set-key [C-kp-left]     #'backward-sexp)
+  (global-set-key [C-kp-right]    #'forward-sexp)
+  (global-set-key [C-kp-up]       #'backward-up-list)
+  (global-set-key [C-kp-down]     #'down-list))
 
 ;; -----------------------------------------------------------------------------
 ;; - Navigation control facilities
@@ -761,22 +841,6 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 (global-set-key (kbd "<C-right>") 'pel-forward-token-start)
 (global-set-key (kbd "<C-left>")  'pel-backward-token-start)
 
-;; - Key mapping to navigate sexp/code nesting
-;; -------------------------------------------
-;; Cursor-Keys:
-;; Use the numeric keypad cursor keys.
-;;  On macOS, simulate the numeric keypad using
-;;  the number keys on the keypad.
-(if (eq system-type 'darwin)
-    (progn
-      (global-set-key [C-kp-4]    #'backward-sexp)
-      (global-set-key [C-kp-6]    #'forward-sexp)
-      (global-set-key [C-kp-8]    #'backward-up-list)
-      (global-set-key [C-kp-2]    #'down-list))
-  (global-set-key [C-kp-left]     #'backward-sexp)
-  (global-set-key [C-kp-right]    #'forward-sexp)
-  (global-set-key [C-kp-up]       #'backward-up-list)
-  (global-set-key [C-kp-down]     #'down-list))
 
 ;; - Navigate to beginning/end of line/window/buffer
 ;; -------------------------------------------------
@@ -788,12 +852,6 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;;
 (global-set-key [(home)] 'pel-home)
 (global-set-key [(end)]  'pel-end)
-
-;; - Delete whitespace between point and next non-whitespace
-;; ---------------------------------------------------------
-
-(global-set-key [(control shift delete)] #'kill-word)
-(global-set-key [(control delete)]        'pel-delete-to-next-visible)
 
 ;; -----------------------------------------------------------------------------
 ;; - Cursor Keys
@@ -811,8 +869,10 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; kp-Up        Control    backward-up-list
 ;; kp-Down      Control    down-list
 ;;
-;; Left         Meta       backward-word         Move to word left ignores all non-whitespace
-;; Right        Meta       forward-word          Move to word right ignore all non-whitespace
+;; Left         Meta       backward-word         Move to word left
+;;                                               ignores all non-whitespace
+;; Right        Meta       forward-word          Move to word right
+;;                                               ignore all non-whitespace
 ;; Up           Meta       ??
 ;; Down         Meta       ??
 ;; kp-Left      Meta       digit-argument
@@ -838,8 +898,10 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; kp-Up        Super      ??
 ;; kp-Down      Super      ??
 ;;
-;; Left         Meta-Super pel-previous-visible  Move to word left ignores all non-whitespace
-;; Right        Meta-Super pel-next-visible      Move to word right ignore all non-whitespace
+;; Left         Meta-Super pel-previous-visible  Move to word left
+;;                                               ignores all non-whitespace
+;; Right        Meta-Super pel-next-visible      Move to word right
+;;                                               ignore all non-whitespace
 ;; Up           Meta-Super ??
 ;; Down         Meta-Super ??
 ;; kp-Left      Meta-Super ??
@@ -870,7 +932,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; <f7>  >                        (C)                   (M)
 ;; <f8>  >                        (C)                   (M)
 ;; <f9>  >                        (C)                   (M)
-;; <f10> > used by menu-bar-open, (C) buffer-menu-open, (M) toggle-frame-maximized
+;; <f10> > menu-bar-open,       (C) buffer-menu-open, (M) toggle-frame-maximized
 ;; <f11> > pel prefix,  <C-f11>: pel-previous-visible,  <M-f11>: pel-scroll-up
 ;; <f12> > unused,      <C-f12>: pel-next-visible,      <M-f12>: pel-scroll-down
 
@@ -950,8 +1012,11 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; Bind <f11>/<f12> key-chords as extension of down/up cursors.
 ;; These are keyboard mnemonics for lower and higher volume
 ;; respectively, on macOS keyboards.
-(global-set-key (kbd "<C-f11>") 'pel-previous-visible) ; TODO: probably will remove this now that we have pel-backward-token-start
-(global-set-key (kbd "<C-f12>") 'pel-next-visible)     ; TODO: probably will remove this now that we have pel-forward-token-start
+;; TODO: keep or remove the following now that we have the identified
+;;       corresponding:  pel-backward-token-start and
+;;                    :  pel-forward-token-start
+(global-set-key (kbd "<C-f11>") 'pel-previous-visible) ;
+(global-set-key (kbd "<C-f12>") 'pel-next-visible)
 
 ;; -----------------------------------------------------------------------------
 ;; - Use undo-tree
@@ -1330,9 +1395,19 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 (if (display-graphic-p)
     (global-set-key (kbd "s-x") 'pel-kill-or-delete-marked-or-whole-line))
 (global-set-key (kbd "C-w")     'pel-kill-or-delete-marked-or-whole-line)
-(global-set-key [kp-subtract]   'pel-kill-or-delete-marked-or-whole-line)
-;; 'pel-kill-marked-or-whole-line)
+;; Note: also assigned via pel-kp-subtact
+
 (global-set-key "\C-\\"         'pel-kill-from-beginning-of-line)
+
+;; - Kill beginning of line
+;; ------------------------
+;; Note: the following binding does NOT work in Terminal.
+(global-set-key [(meta delete)] 'kill-line)
+
+;; - Delete whitespace between point and next non-whitespace
+;; ---------------------------------------------------------
+(global-set-key [(control shift delete)] #'kill-word)
+(global-set-key [(control delete)]        'pel-delete-to-next-visible)
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> ,`` : auto-completion
