@@ -1,4 +1,4 @@
-;;; pel-file-test.el --- pel-file Emacs Regression Test
+;;; pel-file-test.el --- pel-file Emacs Regression Test -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
