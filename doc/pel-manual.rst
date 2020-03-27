@@ -706,7 +706,7 @@ PEL Drawing Support
 
 :PDF Docs: `Drawing`_.
 :PEL Customization: *none*
-:PEL Key Prefix: - **pel:draw** : ``<f11> d``
+:PEL Key Prefix: **pel:draw** : ``<f11> d``
 
 PEL provides key bindings to enter the Emacs text drawing modes:
 
@@ -723,7 +723,7 @@ PEL Enriched Text Support
 
 :PDF Docs: `Enriched Text`_.
 :PEL Customization: *none*
-:PEL Key Prefix: - **pel:textmodes** : ``<f11> t m``
+:PEL Key Prefix: **pel:textmodes** : ``<f11> t m``
 
 PEL `Enriched Text`_ PDF table shows the Emacs commands available for
 enriched text.
