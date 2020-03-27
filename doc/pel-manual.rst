@@ -2769,7 +2769,7 @@ Each of these file sets the ``lexical-binding`` local variable to **t**.
 
 For more information on why this is done, read
 Chris Wellons' article titled
-`Some Performance Advantages of Lexical Scope`_
+"`Some Performance Advantages of Lexical Scope`_"
 written in December 2016.
 
 Aside from the advantages outlined by the article, linting Emacs Lisp code finds
