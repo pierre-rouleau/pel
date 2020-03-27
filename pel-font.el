@@ -1,4 +1,4 @@
-;;; pel-font.el --- PEL Font Management Utilities
+;;; pel-font.el --- PEL Font Management -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

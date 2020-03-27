@@ -1,4 +1,4 @@
-;;; pel-imenu.el --- PEL imenu extensions.
+;;; pel-imenu.el --- PEL imenu extensions. -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

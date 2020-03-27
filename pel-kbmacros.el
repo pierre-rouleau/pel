@@ -1,4 +1,4 @@
-;;; pel-kbmacros.el --- PEL Keyboard Macro Utilities.
+;;; pel-kbmacros.el --- PEL Keyboard Macro Utilities. -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

@@ -1,4 +1,4 @@
-;;; pel-register.el --- PEL Register Management Utilities
+;;; pel-register.el --- PEL Register Support -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
@@ -50,9 +50,9 @@ Prompts if the register is already used."
     (set-register register (cons 'file (pel-current-buffer-filename)))))
 
 ;;-pel-autoload
-(defun pel-point-to-register (register &optional arg)
+(defun pel-point-to-register (register &optional _arg)
   "Store current point to specified REGISTER safely.
-With the prefix argument (ARG), store current frame configuration.
+With the prefix argument (_ARG), store current frame configuration.
 Calls `point-to-register' but only after prompting if the specified
 register is already used."
   (interactive (list

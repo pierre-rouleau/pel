@@ -1,4 +1,4 @@
-;;; pel-search.el --- PEL Search Utilities
+;;; pel-search.el --- PEL Search Utilities -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

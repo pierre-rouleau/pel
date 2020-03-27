@@ -1,4 +1,4 @@
-;;; pel-prompt.el --- PEL Prompt Utilities
+;;; pel-prompt.el --- PEL Prompt Utilities -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

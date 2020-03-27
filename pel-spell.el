@@ -1,4 +1,4 @@
-;;; pel-spell.el --- PEL Spelling Utilities
+;;; pel-spell.el --- PEL Spelling Utilities -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
@@ -121,7 +121,7 @@ to allow the flyspell pop-up menu to work in terminal mode."
   ;; when emacs is used in terminal mode.
   (when (not (display-graphic-p))
     (declare-function 'popup-menu* "popup")
-    (defun pel-spell-flyspell-emacs-popup-textual (event poss word)
+    (defun pel-spell-flyspell-emacs-popup-textual (_event poss _word)
       "A textual flyspell popup menu."
       (require 'popup nil :no-error)
       (require 'flyspell)

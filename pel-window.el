@@ -1,4 +1,4 @@
-;;; pel-window.el --- PEL Window Management Utilities
+;;; pel-window.el --- PEL Window Management Utilities -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

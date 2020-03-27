@@ -1,4 +1,4 @@
-;;; pel-text-insert.el --- PEL Text Insertion Utilities
+;;; pel-text-insert.el --- PEL Text Insertion Utilities -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

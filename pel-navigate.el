@@ -1,4 +1,4 @@
-;;; pel-navigate.el --- PEL Navigation Control Facilities
+;;; pel-navigate.el --- PEL Navigation Support -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

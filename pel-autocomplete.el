@@ -1,4 +1,4 @@
-;;; pel-autocomplete.el --- PEL autocomplete packages support
+;;; pel-autocomplete.el --- PEL auto-completion support -*-lexical-binding: t-*-
 
 ;;; Commentary:
 ;;

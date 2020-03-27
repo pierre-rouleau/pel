@@ -1,4 +1,4 @@
-;;; pel-indent.el --- PEL Indentation utilities
+;;; pel-indent.el --- PEL Indentation utilities -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
@@ -66,7 +66,7 @@ repeated execution of the command."
               ;; Prevent this by creating a local binding.
               deactivate-mark)
           (goto-char begin-point)
-          (dotimes (i line-count)
+          (dotimes (_i line-count)
             (pel--insert-c-indent-line n)
             (forward-line 1))
           (set-mark begin-point))
@@ -103,7 +103,7 @@ Limitation: does not handle hard tabs."
               ;; Prevent this by creating a local binding.
               deactivate-mark)
           (goto-char begin-point)
-          (dotimes (i line-count)
+          (dotimes (_i line-count)
             (pel--line-unindent n)
             (forward-line 1))
           (set-mark begin-point))

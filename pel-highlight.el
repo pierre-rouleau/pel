@@ -1,4 +1,4 @@
-;;; pel-highlight.el --- PEL highlight management utilities.
+;;; pel-highlight.el --- PEL highlight support. -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

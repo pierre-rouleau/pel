@@ -1,4 +1,4 @@
-;;; pel-file.el --- File Management utility: open file/URL at/around point.
+;;; pel-file.el --- File Management utilities -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
@@ -55,11 +55,8 @@
 (eval-when-compile
   (require 'subr-x))           ; use: inlined: string-trim
 
-;; -----------------------------------------------------------------------------
 ;;; Code:
 
-
-;; -----------------------------------------------------------------------------
 ;; Implementation call hierarchy
 ;; -----------------------------
 ;;

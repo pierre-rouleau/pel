@@ -1,4 +1,4 @@
-;;; pel_keys.el --- PEL key binding definitions
+;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t-*-
 
 ;;; Commentary:
 

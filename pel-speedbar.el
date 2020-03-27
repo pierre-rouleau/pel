@@ -1,4 +1,4 @@
-;;; pel-speedbar.el --- PEL Speedbar/Sr-SPeedbar Management Utilities
+;;; pel-speedbar.el --- PEL (Sr-)Speedbar support -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

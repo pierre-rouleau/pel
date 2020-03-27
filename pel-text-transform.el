@@ -1,4 +1,4 @@
-;;; pel-text-transform.el --- PEL Text Transformation Utilities
+;;; pel-text-transform.el --- PEL Text Transformation -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
@@ -55,7 +55,7 @@
 The OPERATION argument must be a symbol, one of upcase, downcase or capitalize."
   (let ((backward (< n 0)))
     (if (use-region-p)
-        (let (p1 p2 region-border)
+        (let (p1 p2)
           (progn
             (setq p1 (region-beginning) p2 (region-end))
             (cond

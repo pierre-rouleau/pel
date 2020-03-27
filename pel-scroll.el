@@ -1,4 +1,4 @@
-;;; pel-scroll.el --- PEL Window Scrolling Utilities
+;;; pel-scroll.el --- PEL Window Scrolling Utilities -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

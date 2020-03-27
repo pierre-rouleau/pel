@@ -1,4 +1,4 @@
-;;; pel--macros.el --- PEL utility macros
+;;; pel--macros.el --- PEL utility macros -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

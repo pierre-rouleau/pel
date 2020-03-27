@@ -2740,6 +2740,8 @@ Naming Conventions
 Code Guidelines
 ---------------
 
+**General Guidelines**
+
 The Emacs Lisp code is written to comply with the `standard GNU Emacs code
 guidelines`_.  PEL code follows most of the points promoted by
 `bbatsov/emacs-lisp-style-guide`_ except in some few places.
@@ -2758,14 +2760,89 @@ To ensure conformance, the code is checked with the following tools:
 The file `pel.el`_ is also checked with `package-lint`_ to verify
 the presence of package version.
 
+**Variable Scoping**
+
+PEL code uses lexical scope in all Emacs Lisp files.
+Each of these file sets the ``lexical-binding`` local variable to **t**.
+
+For more information on why this is done, read
+Chris Wellons' article titled
+`Some Performance Advantages of Lexical Scope`_
+written in December 2016.
+
+Aside from the advantages outlined by the article, linting Emacs Lisp code finds
+more issues when lexical scope is in effect.
+
+**Licensing**
+
 The license information is stored in each .el file.
 
+
+**Checking PEL Code**
+
+The included `Makefile`_ provide rules to byte-compile and lint all files and
+then run the regression tests.
+The following commands are used to test the code, issued from PEL root directory:
+
+.. code:: shell
+
+          make clean
+          make compile
+          make lint
+          make test
+
+Then I create a local Elpa Emacs Archive and run the following command to build
+PEL archive and place it inside the local archive:
+
+.. code:: shell
+
+          make myelpa
+
+Once this is done, I use the switch-emacs script (see below) to switch
+the ``.emacs.d`` directory to
+something with minimal configuration, with enough to set the ``load-path`` and
+access to ELPA_, MELPA_ and MELPA-STABLE_ and the local archive where ``pel``
+was stored.
+
+I also wipe out the directory "~/.emacs.d/elpa" directory to remove all the
+packages from it.
+
+Using this minimal Emacs configuration I then execute Emacs.  That instance of
+Emacs does not have access to PEL (yet).  So then I use ``M-x list-packages``
+and install ``pel`` from that, using ``package-install``.
+The ``pel`` package comes from the local archive
+but everything else comes from the real sites.
+The ``package-install`` command downloads all PEL pre-requisites and byte-compile
+PEL files.  I make sure no warning is issued from the PEL files.
+
+
+**switch-emacs: Switching .emacs.d**
+
+.. code:: shell
+
+          #!/bin/sh
+          # Exchange ~/.emacs.d -> ~/real-emacs
+          #          ~/new-emacs -> ~/.emacs.d
+          # or vice versa: exchange real emacs for a new emacs directory.
+
+          cd
+          if [[ -d "new-emacs" ]]; then
+              echo "---> new-emacs exists. Activating the new-emacs."
+              mv .emacs.d real-emacs
+              mv new-emacs .emacs.d
+
+          elif [[ -d "real-emacs" ]]; then
+              echo "---> real-emacs exists.  Activating the real-emacs."
+              mv .emacs.d new-emacs
+              mv real-emacs .emacs.d
+          fi
 
 
 .. _standard GNU Emacs code guidelines:
 .. _Emacs Lisp checkdoc:               https://www.gnu.org/software/emacs/manual/html_node/elisp/Tips.html
 .. _bbatsov/emacs-lisp-style-guide:    https://github.com/bbatsov/emacs-lisp-style-guide
 .. _Jari Aalto Emacs Lisp Guideline:   http://www.nongnu.org/emacs-tiny-tools/elisp-coding/index-body.html
+.. _Some Performance Advantages of Lexical Scope: https://nullprogram.com/blog/2016/12/22/
 
 Emacs Lisp Regression Test
 --------------------------

@@ -1,4 +1,4 @@
-;;; pel-commonlisp.el --- PEL Common Lisp Support
+;;; pel-commonlisp.el --- PEL Common Lisp Support -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

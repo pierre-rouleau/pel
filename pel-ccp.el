@@ -1,4 +1,4 @@
-;;; pel-ccp.el --- PEL collection of copy, kill and delete commands.
+;;; pel-ccp.el --- PEL cut & paste, etc... -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
@@ -315,7 +315,8 @@ a negative N kills characters backwards."
 
 (defun pel--delete-whole-lines (n)
   "Delete N forward lines, don't remember in kill ring."
-  (dotimes (i n) (pel-delete-whole-line)))
+  (dotimes (_i n)
+    (pel-delete-whole-line)))
 
 ;;-pel-autoload
 (defun pel-kill-or-delete-marked-or-whole-line (&optional n)

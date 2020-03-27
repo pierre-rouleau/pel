@@ -1,4 +1,4 @@
-;;; pel-fill.el --- PEL Source code management utilities.
+;;; pel-fill.el --- PEL Source code management -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

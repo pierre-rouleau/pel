@@ -1,4 +1,4 @@
-;; build-pel.el --- Byte compile the PEL system
+;; build-pel.el --- Byte compile the PEL system -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

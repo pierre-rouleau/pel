@@ -1,4 +1,4 @@
-;;; pel-comment.el --- PEL Comments Utilities
+;;; pel-comment.el --- PEL Comments Utilities -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

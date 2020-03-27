@@ -1,4 +1,4 @@
-;;; pel-numkpad.el --- PEL Numeric Keypad Key Control - OS Agnostic
+;;; pel-numkpad.el --- PEL Numeric Keypad Key Control -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

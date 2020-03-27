@@ -1,4 +1,4 @@
-;;; pel-autoload.el --- Autoloads PEL
+;;; pel-autoload.el --- Autoloads PEL -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

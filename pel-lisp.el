@@ -1,4 +1,4 @@
-;;; pel-lisp.el --- PEL Lisp Editing Utilities
+;;; pel-lisp.el --- PEL Lisp Editing Utilities -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

@@ -1,4 +1,4 @@
-;;; pel--base.el --- PEL package basic utility functions.
+;;; pel--base.el --- PEL base utilities. -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
@@ -313,9 +313,9 @@ If N >= 0: call POS-FCT N times.
 If N <  0: call NEG-FCT (abs N) times.
 Return nil."
   (if (>= n 0)
-      (dotimes (i n)
+      (dotimes (_i n)
         (funcall pos-fct))
-    (dotimes (i (abs n))
+    (dotimes (_i (abs n))
       (funcall neg-fct))))
 
 ;; -----------------------------------------------------------------------------

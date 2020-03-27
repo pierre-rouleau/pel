@@ -1,4 +1,4 @@
-;;; pel-frame-control.el --- PEL terminal/graphic mode Emacs support utilities
+;;; pel-frame-control.el --- PEL process frame support -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

@@ -1,4 +1,4 @@
-;;; pel-rst.el --- PEL reStructuredText support
+;;; pel-rst.el --- PEL reStructuredText support -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
@@ -174,7 +174,7 @@ but when UPDATE is nil, it adds a new line after the underlining.
                         (make-string linelen adorn-char))))
       ;; if the style requires indentation, indent the 3 lines
       (when (> indent-steps 0)
-        (dotimes (i indent-steps)
+        (dotimes (_i indent-steps)
           (dolist (rel-line  '(0 2 2))
             (beginning-of-line rel-line)
             (insert " ")))))))

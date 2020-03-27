@@ -1,4 +1,4 @@
-;;; pel-line-control.el --- PEL Line Control Utilities
+;;; pel-line-control.el --- PEL Line Control Utilities -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

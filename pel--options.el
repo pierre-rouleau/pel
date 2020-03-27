@@ -1,4 +1,4 @@
-;;; pel--options.el --- Customization options of the PEL package
+;;; pel--options.el --- PEL Customization Options -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

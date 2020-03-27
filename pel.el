@@ -1,4 +1,4 @@
-;;; pel.el --- Pragmatic Environment Library
+;;; pel.el --- Pragmatic Environment Library -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
