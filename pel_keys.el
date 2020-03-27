@@ -689,13 +689,13 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; --------------------------------------------------
 ;; Copy current marked region or line:  <kp-add>
 (global-set-key [kp-add] 'pel-copy-marked-or-whole-line)
-(when (not (display-graphic-p))
+(unless (display-graphic-p)
   (global-set-key [kp-separator] 'pel-copy-marked-or-whole-line))
 
 
 ;; - Kill beginning of line
 ;; ------------------------
-;; TODO: the following bindings do NOT work in Terminal.
+;; TODO: the following binding does NOT work in Terminal.
 ;; Remove them: ensure we have something that works in both modes, as is not a sequence of keys!!
 (global-set-key [(meta delete)] 'kill-line)
 
@@ -713,7 +713,12 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 (global-set-key [kp-7] 'pel-7)
 (global-set-key [kp-8] 'pel-8)
 (global-set-key [kp-9] 'pel-9)
-(global-set-key [kp-decimal] 'pel-kp-decimal)
+;; In terminal (TTY) mode, the keypad "." is not recognized
+;; as [kp-decimal] but as "M-O n" so adjust the binding accordingly.
+(if (display-graphic-p)
+    (global-set-key [kp-decimal] 'pel-kp-decimal)
+  (global-set-key (kbd "M-O n") 'pel-kp-decimal))
+
 ;; / and * keys have no secondary meaning yet.
 (global-set-key [kp-subtract] 'pel-kp-subtract)
 (global-set-key [kp-add] 'pel-kp-add)
@@ -938,7 +943,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
     (define-key pel: (kbd  "<S-right>")    'fm-right-frame)))
 ;;
 (define-key pel: (kbd      "<f11>")        'pel-toggle-frame-fullscreen)
-(when (not (display-graphic-p))
+(unless (display-graphic-p)
   (define-key pel: (kbd    "<f12>")       #'xterm-mouse-mode))
 ;;
 
@@ -1538,7 +1543,7 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
 
 ;; popup is used in Terminal mode for spell check menu,
 ;; and must be available when pel-spell-init is called.
-(when (not (display-graphic-p))
+(unless (display-graphic-p)
   (use-package popup
     :ensure t
     :pin melpa-stable
