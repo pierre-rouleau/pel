@@ -166,7 +166,7 @@ but when UPDATE is nil, it adds a new line after the underlining.
       (move-end-of-line nil)
       (insert (format "\n%s"
                       (make-string linelen adorn-char)))
-      (when (not update)
+      (unless update
         (insert "\n"))
       (when (eq adorn-style 'over-and-under)
         (forward-line (if update -1 -2))
@@ -253,7 +253,7 @@ Ignore the title level."
   (let ((level-number 1)
         (level-detected nil))
     (dolist (adorn-level (cdr rst-preferred-adornments))
-      (when (not level-detected)
+      (unless level-detected
         (let ((adorn-char (car adorn-level)))
           (if (eq adorn-char char)
               (setq level-detected level-number)
