@@ -2468,6 +2468,11 @@ pel-use-which-key              Enables the use of the which-key_ package.       
                                available after each prefix key.
                                PEL key binding system was designed to show nicely when
                                which-key is used. It default to nil.
+
+pel-use-winner                 Enables the use and the PEL key-bindings of winner-mode.      Nothing to
+                                                                                             install. The
+                                                                                             winner package
+                                                                                             is part of Emacs.
 ============================== ============================================================= =================
 
 

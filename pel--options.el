@@ -152,7 +152,13 @@ References:
 ;;       - winner
 
 (defcustom pel-use-ace-window  nil
-  "Control whether PEL uses the `ace-window' packages."
+  "Control whether PEL uses the `ace-window' package."
+  :group 'pel-pkg-for-window
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-winner nil
+  "Control whether PEL uses the `winner' package."
   :group 'pel-pkg-for-window
   :type 'boolean
   :safe #'booleanp)

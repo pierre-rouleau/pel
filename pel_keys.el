@@ -2208,22 +2208,23 @@ the ones defined from the buffer now."
 ;; `split-window' from window.el is called.  To do that, we'd need to use a
 ;; hook.  For now, we just defer the loading with a timer so it does not get
 ;; loaded right when Emacs is starting.
-(use-package winner
-  :defer 2
-  :commands (winner-undo winner-redo)
+(when pel-use-winner
+  (use-package winner
+    :defer 2
+    :commands (winner-undo winner-redo)
 
-  :init
-  (define-key pel:window    "n"  'winner-redo)   ; next window arrangement
-  (define-key pel:window    "p"  'winner-undo)   ; previous window arrangement
+    :init
+    (define-key pel:window    "n"  'winner-redo)   ; next window arrangement
+    (define-key pel:window    "p"  'winner-undo)   ; previous window arrangement
 
-  :config
-  ;; winner-mode default bindings use the Shift cursor keys,
-  ;; this conflict with org-mode, so use the '<f11> w' bindings
-  ;; instead.
-  (setq winner-dont-bind-my-keys t)
-  ;; turn on the global minor mode
-  (declare-function winner-mode "winner")
-  (winner-mode t))
+    :config
+    ;; winner-mode default bindings use the Shift cursor keys,
+    ;; this conflict with org-mode, so use the '<f11> w' bindings
+    ;; instead.
+    (setq winner-dont-bind-my-keys t)
+    ;; turn on the global minor mode
+    (declare-function winner-mode "winner")
+    (winner-mode t)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> w d`` : Windows dedicated operations
