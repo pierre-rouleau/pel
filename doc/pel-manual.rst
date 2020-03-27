@@ -2740,7 +2740,8 @@ Naming Conventions
 Code Guidelines
 ---------------
 
-**General Guidelines**
+General Guidelines
+~~~~~~~~~~~~~~~~~~
 
 The Emacs Lisp code is written to comply with the `standard GNU Emacs code
 guidelines`_.  PEL code follows most of the points promoted by
@@ -2750,7 +2751,7 @@ PEL code also follows several ideas outlined in
 
 To ensure conformance, the code is checked with the following tools:
 
-- GNU Emacs elint-file.
+- GNU Emacs ``elint-file`` command from Standard GNU Emacs elint.el_.
 - The external package `elisp-lint`_ which uses the following other tools:
 
   - Emacs Lisp byte-compiler,
@@ -2760,7 +2761,8 @@ To ensure conformance, the code is checked with the following tools:
 The file `pel.el`_ is also checked with `package-lint`_ to verify
 the presence of package version.
 
-**Variable Scoping**
+Variable Scoping
+~~~~~~~~~~~~~~~~
 
 PEL code uses lexical scope in all Emacs Lisp files.
 Each of these file sets the ``lexical-binding`` local variable to **t**.
@@ -2773,12 +2775,14 @@ written in December 2016.
 Aside from the advantages outlined by the article, linting Emacs Lisp code finds
 more issues when lexical scope is in effect.
 
-**Licensing**
+Licensing
+~~~~~~~~~
 
 The license information is stored in each .el file.
 
 
-**Checking PEL Code**
+Checking PEL Code
+~~~~~~~~~~~~~~~~~
 
 The included `Makefile`_ provide rules to byte-compile and lint all files and
 then run the regression tests.
@@ -2798,9 +2802,10 @@ PEL archive and place it inside the local archive:
 
           make myelpa
 
-Once this is done, I use the switch-emacs script (see below) to switch
+Once this is done, I use the switch-emacs script (`see below`_) to switch
 the ``.emacs.d`` directory to
-something with minimal configuration, with enough to set the ``load-path`` and
+something with minimal configuration, (normally called "~/min-emacs")
+with enough to set the ``load-path`` and
 access to ELPA_, MELPA_ and MELPA-STABLE_ and the local archive where ``pel``
 was stored.
 
@@ -2815,29 +2820,41 @@ but everything else comes from the real sites.
 The ``package-install`` command downloads all PEL pre-requisites and byte-compile
 PEL files.  I make sure no warning is issued from the PEL files.
 
+.. _see below:                         `The switch-emacs script`_
 
-**switch-emacs: Switching .emacs.d**
+
+The switch-emacs script
+~~~~~~~~~~~~~~~~~~~~~~~
+
+The following ``switch-emacs`` script renames "~/.emacs.d" to either
+"~/real-emacs" or "~/min-emacs" depending which one exists.
+The "~/real-emacs" is a temporary name for the *real* Emacs configuration directory,
+while "~/min-emacs" is a minimal Emacs configuration to allow testing Emacs with
+a minimal configuration. To use the script you must first create "~/min-emacs"
+and a ~/min-emacs/init.el" file that provides enough code to set the ``load-path``
+and access to the external and local Emcas archive repositiories.
 
 .. code:: shell
 
           #!/bin/sh
           # Exchange ~/.emacs.d -> ~/real-emacs
-          #          ~/new-emacs -> ~/.emacs.d
-          # or vice versa: exchange real emacs for a new emacs directory.
+          #          ~/min-emacs -> ~/.emacs.d
+          # or vice versa: exchange min emacs for a new emacs directory.
 
           cd
-          if [[ -d "new-emacs" ]]; then
-              echo "---> new-emacs exists. Activating the new-emacs."
+          if [[ -d "min-emacs" ]]; then
+              echo "---> min-emacs exists. Activating the min-emacs."
               mv .emacs.d real-emacs
-              mv new-emacs .emacs.d
+              mv min-emacs .emacs.d
 
           elif [[ -d "real-emacs" ]]; then
               echo "---> real-emacs exists.  Activating the real-emacs."
-              mv .emacs.d new-emacs
+              mv .emacs.d min-emacs
               mv real-emacs .emacs.d
           fi
 
 
+.. _elint.el:                          https://github.com/emacs-mirror/emacs/blob/master/lisp/emacs-lisp/elint.el
 .. _standard GNU Emacs code guidelines:
 .. _Emacs Lisp checkdoc:               https://www.gnu.org/software/emacs/manual/html_node/elisp/Tips.html
 .. _bbatsov/emacs-lisp-style-guide:    https://github.com/bbatsov/emacs-lisp-style-guide
