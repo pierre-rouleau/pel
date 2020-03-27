@@ -2839,7 +2839,10 @@ and access to the external and local Emcas archive repositiories.
           #!/bin/sh
           # Exchange ~/.emacs.d -> ~/real-emacs
           #          ~/min-emacs -> ~/.emacs.d
-          # or vice versa: exchange min emacs for a new emacs directory.
+          # or vice versa: exchange real emacs for a new emacs directory.
+          #
+          # ~/min-emacs  : a minimal Emacs configuration to perform package-install PEL tests.
+          # ~/real-emacs : a temporary storage for the *real* emacs configuration directory.
 
           cd
           if [[ -d "min-emacs" ]]; then
@@ -2851,6 +2854,13 @@ and access to the external and local Emcas archive repositiories.
               echo "---> real-emacs exists.  Activating the real-emacs."
               mv .emacs.d min-emacs
               mv real-emacs .emacs.d
+          else
+              echo "First create a ~/min-emacs directory with minimal init.el"
+              echo "The ~/min-emacs/init.el should:"
+              echo " - set load-path to find utilities not compig from elpa-compatible archive,"
+              echo " - set package-archives list to include melpa, melpa-stable, gnu elpa,"
+              echo "   and your local myelpa."
+              echo "It should not load PEL nor execute pel-init."
           fi
 
 
