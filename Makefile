@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau.swd@gmail.com>
-# Last Modified Time-stamp: <2020-03-25 15:20:30, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-03-26 13:33:13, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -446,7 +446,7 @@ pkg: | a-copy
 .PHONY: myelpa
 
 myelpa:
-	$(EMACS) --batch -L . -l ~/.emacs.d/init.el -l build-pel.el -f upload-pel-to-local-archive
+	$(EMACS) --batch -L . -l ~/.emacs.d/init.el -l install-pel.el -f upload-pel-to-local-archive
 
 # -----------------------------------------------------------------------------
 # Cleanup rules
