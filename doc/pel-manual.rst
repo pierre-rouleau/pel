@@ -701,6 +701,23 @@ text, targeting specific syntax entities or other simpler parts.
   termination.
 
 
+PEL Drawing Support
+-------------------
+
+:PDF Docs: `Drawing`_.
+:PEL Customization: *none*
+:PEL Key Prefix: - **pel:draw** : ``<f11> d``
+
+PEL provides key bindings to enter the Emacs text drawing modes:
+
+- ``<f11> d a``: toggle artist mode.
+- ``<f11> d p``: enter picture-mode.
+
+☝️  The picture-mode can be quite useful to edit tabular data as well as editing
+tables for markup languages like reStructuredText or even for lining text
+vertically in any other type of file; for example lining up text vertically.
+
+
 PEL Enriched Text Support
 -------------------------
 
@@ -2085,6 +2102,7 @@ PDF Document Tables
 .. _Counting:                                 pdf/counting.pdf
 .. _Cut, Delete, Copy and Paste:              pdf/cut-paste.pdf
 .. _Display Lines:                            pdf/display-lines.pdf
+.. _Drawing:                                  pdf/drawing.pdf
 .. _Enriched Text:                            pdf/enriched-text.pdf
 .. _ERT:                                      pdf/ert.pdf
 .. _Faces and Fonts:                          pdf/faces-fonts.pdf
