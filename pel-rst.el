@@ -39,6 +39,8 @@
 ;; Sphinx-Python style ref:
 ;; www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections
 
+(defvar pel--rst-used-adornment-style nil
+  "Remember last adornment style value set by `pel-rst-set-adornment'")
 
 (defun pel-rst-set-adornment (style)
   "Set the reStructuredText adornment STYLE.
@@ -53,46 +55,60 @@ STYLE identifies the number of levels supported and their adornment.
   - subsubsections,
   - paragraphs.
 - `CRiSPer', a title and 12-level mode previously developed for CRiSP."
-  (pel-when-bound
-   'rst-preferred-adornments
-   (setq
-    rst-preferred-adornments
-    (cond ((eq style 'default)
-           '((?= over-and-under 1)
-             (?= simple 0)
-             (?- simple 0)
-             (?~ simple 0)
-             (?+ simple 0)
-             (?` simple 0)
-             (?# simple 0)
-             (?@ simple 0)))
-          ((eq style 'Sphinx-Python)
-           '((?# over-and-under 0)  ; for parts
-             (?* over-and-under 0)  ; for chapters
-             (?= simple 0)          ; for sections
-             (?- simple 0)          ; for subsections
-             (?^ simple 0)          ; for subsubsections
-             (?\" simple 0)))       ; for paragraph
-          ((eq style 'CRiSPer)
-           '((?= over-and-under 0)  ; level  0 : title
-             (?= simple 0)          ; level  1
-             (?- simple 0)          ; level  2
-             (?~ simple 0)          ; level  3
-             (?^ simple 0)          ; level  4
-             (?+ simple 0)          ; level  5
-             (?* simple 0)          ; level  6
-             (?> simple 0)          ; level  7
-             (?< simple 0)          ; level  8
-             (?_ simple 0)          ; level  9
-             (?# simple 0)          ; level 10
-             (?` simple 0)          ; level 11
-             (?@ simple 0)))        ; level 12
-          (t (user-error "Unsupported style %S" style))))
-   (setq pel-rst-adornment-style style)
-   (message "Now using the %s adornment style with %d levels supported."
-            style
-            (length rst-preferred-adornments))))
+  (when
+      (or
+       (not pel--rst-used-adornment-style)
+       (not (eq pel--rst-used-adornment-style style)))
+    (pel-when-bound
+     'rst-preferred-adornments
+     (setq
+      rst-preferred-adornments
+      (cond ((eq style 'default)
+             '((?= over-and-under 1)
+               (?= simple 0)
+               (?- simple 0)
+               (?~ simple 0)
+               (?+ simple 0)
+               (?` simple 0)
+               (?# simple 0)
+               (?@ simple 0)))
+            ((eq style 'Sphinx-Python)
+             '((?# over-and-under 0)  ; for parts
+               (?* over-and-under 0)  ; for chapters
+               (?= simple 0)          ; for sections
+               (?- simple 0)          ; for subsections
+               (?^ simple 0)          ; for subsubsections
+               (?\" simple 0)))       ; for paragraph
+            ((eq style 'CRiSPer)
+             '((?= over-and-under 0)  ; level  0 : title
+               (?= simple 0)          ; level  1
+               (?- simple 0)          ; level  2
+               (?~ simple 0)          ; level  3
+               (?^ simple 0)          ; level  4
+               (?+ simple 0)          ; level  5
+               (?* simple 0)          ; level  6
+               (?> simple 0)          ; level  7
+               (?< simple 0)          ; level  8
+               (?_ simple 0)          ; level  9
+               (?# simple 0)          ; level 10
+               (?` simple 0)          ; level 11
+               (?@ simple 0)))        ; level 12
+            (t (user-error "Unsupported style %S" style))))
+     ;; re-set the value in case it was called from user explictly.
+     (setq pel-rst-adornment-style style)
+     ;; and remember last set value independently to reduce the number
+     ;; of times it is set to only when it changes, which happens when
+     ;; the function is called explicitly or when pel-rst-adornment-style
+     ;; is set via file local variable assignment.
+     (setq pel--rst-used-adornment-style style)
+     (message "Now using the %s adornment style with %d levels supported."
+              style
+              (length rst-preferred-adornments)))))
 
+(defun pel--rst-activate-adornment-style ()
+  "Activate the adornment style selected by `pel-rst-adornment-style'."
+  (interactive)
+  (pel-rst-set-adornment pel-rst-adornment-style))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-default ()
@@ -151,6 +167,7 @@ When UPDATE is non-nil do not add a new line after the underlining line,
 but when UPDATE is nil, it adds a new line after the underlining.
 `pel-rst-adorn' leaves the cursor unmoved, on the title line."
   (interactive "p")
+  (pel--rst-activate-adornment-style)
   (if (>= level (length rst-preferred-adornments))
       (user-error
        "Level %d not available in %s adornment style"
@@ -348,6 +365,7 @@ REQUIREMENT: the line must not have trailing whitespaces."
 If the line is already adorned, update the adornment:
 adjust to previous section level."
   (interactive)
+  (pel--rst-activate-adornment-style)
   (let ((previous-level (pel--rst-adorn-level-of-previous-section)))
     (if previous-level
         (progn
@@ -366,6 +384,7 @@ adjust to previous section level."
   "Refresh the adornment of the current line.
 This helps when the length of the line changes."
   (interactive)
+  (pel--rst-activate-adornment-style)
   (let ((current-level (save-excursion
                          (forward-line 1)
                          (pel--rst-level-for (char-after)))))
@@ -384,6 +403,7 @@ This helps when the length of the line changes."
 If the line is not already adorned, adorn it with a level higher than
 previous section."
   (interactive)
+  (pel--rst-activate-adornment-style)
   (pel-delete-trailing-whitespace)
   (if (pel--line-adorned-p)
       (pel--rst-adorn-change 1)
@@ -395,6 +415,7 @@ previous section."
 If the line not already adorned, adorn it with a level lower than
 previous section."
   (interactive)
+  (pel--rst-activate-adornment-style)
   (pel-delete-trailing-whitespace)
   (if (pel--line-adorned-p)
       (pel--rst-adorn-change -1)
