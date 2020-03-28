@@ -485,23 +485,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   ;; The conventions for reStructuredText is normally .rst and .rest
   ;; Adding the .stxt file extension for reStructuredText.
   (setq auto-mode-alist
-        (append '(("\\.stxt\\'"  . rst-mode)) auto-mode-alist))
-
-  ;; Change the reStructuredText adornments to what is used by CRiSPer.
-  (when (boundp 'rst-preferred-adornments)
-    (setq rst-preferred-adornments '((?= over-and-under 0)  ; level 0: title
-                                     (?= simple 0)          ; level  1
-                                     (?- simple 0)          ; level  2
-                                     (?~ simple 0)          ; level  3
-                                     (?^ simple 0)          ; level  4
-                                     (?+ simple 0)          ; level  5
-                                     (?* simple 0)          ; level  6
-                                     (?> simple 0)          ; level  7
-                                     (?< simple 0)          ; level  8
-                                     (?_ simple 0)          ; level  9
-                                     (?# simple 0)          ; level 10
-                                     (?` simple 0)          ; level 11 - not available in CRiSPer.
-                                     (?@ simple 0)))))      ; level 12 - not available in CRiSPer.
+        (append '(("\\.stxt\\'"  . rst-mode)) auto-mode-alist)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Programming Language Support
