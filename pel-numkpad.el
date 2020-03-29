@@ -77,7 +77,7 @@ Limitations: In not Numlocked mode the cursor keys cannot
 
 ;;-pel-autoload
 (defun pel-show-mac-numlock ()
-  "Display state of `pel-mac-keypad-numlocked'."
+  "Display state of PEL Keypad num-lock mode."
   (interactive)
   (if pel-mac-keypad-numlocked
       (message "Num-Lock ON")
@@ -85,7 +85,7 @@ Limitations: In not Numlocked mode the cursor keys cannot
 
 ;;-pel-autoload
 (defun pel-toggle-mac-numlock ()
-  "Toggle mac numlock mode."
+  "Toggle PEL numlock mode."
   (interactive)
   (pel-toggle 'pel-mac-keypad-numlocked)
   (pel-show-mac-numlock))
