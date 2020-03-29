@@ -40,7 +40,7 @@
 ;; www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections
 
 (defvar pel--rst-used-adornment-style nil
-  "Remember last adornment style value set by `pel-rst-set-adornment'")
+  "Remember last adornment style value set by `pel-rst-set-adornment'.")
 
 (defun pel-rst-set-adornment (style)
   "Set the reStructuredText adornment STYLE.
