@@ -1271,6 +1271,24 @@ complement the standard Emacs navigation commands.
   only reaches the same location by moving backwards.
 
 
+PEL Number Keypad Support
+-------------------------
+
+:PDF Docs: `Number Keypad`_.
+:PEL Customization: *none*
+:PEL Key Prefix: *none*
+
+The number keypad available on various keyboard differ in behaviour.
+Some keyboard have a NumLock key, others, like Apple keyboards do not have it.
+PEL support different keyboards thta have a number keypad, and provides its own
+management of the Numlock, with the ``<f11> #`` key mapped to
+``pel-toggle-mac-numlock`` to provide two set of commands: one when in Numlock
+mode and another when Numlock mode is off.  In that latter mode, the commands
+normally associated to cursor keys are provided, but also the ``pel-home`` and
+``pel-end`` as well as several copy and kill commands.
+
+Refer to the `Number Keypad`_ PDF document for more information.
+
 PEL Package Management Documentation
 ------------------------------------
 
@@ -2051,6 +2069,7 @@ PDF Document Tables
 #. `Menus`_
 #. `Narrowing`_
 #. `Navigation`_
+#. `Number Keypad`_
 #. `Packages`_
 #. `Registers`_
 #. `Scrolling`_
@@ -2129,6 +2148,7 @@ PDF Document Tables
 .. _Modifier Keys:                            pdf/modifier-keys.pdf
 .. _Narrowing:                                pdf/narrowing.pdf
 .. _Navigation:                               pdf/navigation.pdf
+.. _Number Keypad:                            pdf/numkeypad.pdf
 .. _Packages:                                 pdf/packages.pdf
 .. _Common Lisp:                              pdf/pl-common-lisp.pdf
 .. _Emacs Lisp:                               pdf/pl-emacs-lisp.pdf
