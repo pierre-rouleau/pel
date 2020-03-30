@@ -3063,32 +3063,32 @@ distributed with GNU Emacs.
 PEL uses the following libraries distributed with GNU Emacs:
 
 - `bookmark <https://github.com/emacs-mirror/emacs/blob/master/lisp/bookmark.el>`_
-- cc-vars
-- cua-rect
-- delsel
-- elint
-- ert
-- flyspell
-- hippie-exp
-- hl-line
-- ido
-- imenu
-- isearch
-- ispell
-- kmacro
-- lisp-mode
-- newcomment
-- org
-- paragraphs
-- re-builder
-- rect
-- rst
-- simple
-- subr-x
-- subword
-- thingatpt
-- uniquify
-- winner
+- `cc-vars <https://github.com/emacs-mirror/emacs/blob/master/lisp/cc-vars.el>`_
+- `cua-rect <https://github.com/emacs-mirror/emacs/blob/master/lisp/cua-rect.el>`_
+- `delsel <https://github.com/emacs-mirror/emacs/blob/master/lisp/delsel.el>`_
+- `elint <https://github.com/emacs-mirror/emacs/blob/master/lisp/elint.el>`_
+- `ert <https://github.com/emacs-mirror/emacs/blob/master/lisp/ert.el>`_
+- `flyspell <https://github.com/emacs-mirror/emacs/blob/master/lisp/flyspell.el>`_
+- `hippie-exp <https://github.com/emacs-mirror/emacs/blob/master/lisp/hippie-exp.el>`_
+- `hl-line <https://github.com/emacs-mirror/emacs/blob/master/lisp/hl-line.el>`_
+- `ido <https://github.com/emacs-mirror/emacs/blob/master/lisp/ido.el>`_
+- `imenu <https://github.com/emacs-mirror/emacs/blob/master/lisp/imenu.el>`_
+- `isearch <https://github.com/emacs-mirror/emacs/blob/master/lisp/isearch.el>`_
+- `ispell <https://github.com/emacs-mirror/emacs/blob/master/lisp/ispell.el>`_
+- `kmacro <https://github.com/emacs-mirror/emacs/blob/master/lisp/kmacro.el>`_
+- `lisp-mode <https://github.com/emacs-mirror/emacs/blob/master/lisp/lisp-mode.el>`_
+- `newcomment <https://github.com/emacs-mirror/emacs/blob/master/lisp/newcomment.el>`_
+- `org <https://github.com/emacs-mirror/emacs/blob/master/lisp/org.el>`_
+- `paragraphs <https://github.com/emacs-mirror/emacs/blob/master/lisp/paragraphs.el>`_
+- `re-builder <https://github.com/emacs-mirror/emacs/blob/master/lisp/re-builder.el>`_
+- `rect <https://github.com/emacs-mirror/emacs/blob/master/lisp/rect.el>`_
+- `rst <https://github.com/emacs-mirror/emacs/blob/master/lisp/rst.el>`_
+- `simple <https://github.com/emacs-mirror/emacs/blob/master/lisp/simple.el>`_
+- `subr-x <https://github.com/emacs-mirror/emacs/blob/master/lisp/subr-x.el>`_
+- `subword <https://github.com/emacs-mirror/emacs/blob/master/lisp/subword.el>`_
+- `thingatpt <https://github.com/emacs-mirror/emacs/blob/master/lisp/thingatpt.el>`_
+- `uniquify <https://github.com/emacs-mirror/emacs/blob/master/lisp/uniquify.el>`_
+- `winner <https://github.com/emacs-mirror/emacs/blob/master/lisp/winner.el>`_
 
 
 
