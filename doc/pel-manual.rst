@@ -3062,33 +3062,33 @@ distributed with GNU Emacs.
 
 PEL uses the following libraries distributed with GNU Emacs:
 
-- `bookmark    <https://github.com/emacs-mirror/emacs/blob/master/lisp/bookmark.el>`_
-- `cc-vars     <https://github.com/emacs-mirror/emacs/blob/master/lisp/progmodes/cc-vars.el>`_
-- `cua-rect    <https://github.com/emacs-mirror/emacs/blob/master/lisp/emulation/cua-rect.el>`_
-- `delsel      <https://github.com/emacs-mirror/emacs/blob/master/lisp/delsel.el>`_
-- `elint       <https://github.com/emacs-mirror/emacs/blob/master/lisp/emacs-lisp/elint.el>`_
-- `ert         <https://github.com/emacs-mirror/emacs/blob/master/lisp/emacs-lisp/ert.el>`_
-- `flyspell    <https://github.com/emacs-mirror/emacs/blob/master/lisp/textmodes/flyspell.el>`_
-- `hippie-exp  <https://github.com/emacs-mirror/emacs/blob/master/lisp/hippie-exp.el>`_
-- `hl-line     <https://github.com/emacs-mirror/emacs/blob/master/lisp/hl-line.el>`_
-- `ido         <https://github.com/emacs-mirror/emacs/blob/master/lisp/ido.el>`_
-- `imenu       <https://github.com/emacs-mirror/emacs/blob/master/lisp/imenu.el>`_
-- `isearch     <https://github.com/emacs-mirror/emacs/blob/master/lisp/isearch.el>`_
-- `ispell      <https://github.com/emacs-mirror/emacs/blob/master/lisp/textmodes/ispell.el>`_
-- `kmacro      <https://github.com/emacs-mirror/emacs/blob/master/lisp/kmacro.el>`_
-- `lisp-mode   <https://github.com/emacs-mirror/emacs/blob/master/lisp/emacs-lisp/lisp-mode.el>`_
-- `newcomment  <https://github.com/emacs-mirror/emacs/blob/master/lisp/newcomment.el>`_
-- `org         <https://github.com/emacs-mirror/emacs/blob/master/lisp/org/org.el>`_
-- `paragraphs  <https://github.com/emacs-mirror/emacs/blob/master/lisp/textmodes/paragraphs.el>`_
-- `re-builder  <https://github.com/emacs-mirror/emacs/blob/master/lisp/emacs-lisp/re-builder.el>`_
-- `rect        <https://github.com/emacs-mirror/emacs/blob/master/lisp/rect.el>`_
-- `rst         <https://github.com/emacs-mirror/emacs/blob/master/lisp/textmodes/rst.el>`_
-- `simple      <https://github.com/emacs-mirror/emacs/blob/master/lisp/simple.el>`_
-- `subr-x      <https://github.com/emacs-mirror/emacs/blob/master/lisp/emacs-lisp/subr-x.el>`_
-- `subword     <https://github.com/emacs-mirror/emacs/blob/master/lisp/progmodes/subword.el>`_
-- `thingatpt   <https://github.com/emacs-mirror/emacs/blob/master/lisp/thingatpt.el>`_
-- `uniquify    <https://github.com/emacs-mirror/emacs/blob/master/lisp/uniquify.el>`_
-- `winner      <https://github.com/emacs-mirror/emacs/blob/master/lisp/winner.el>`_
+#. `bookmark    <https://github.com/emacs-mirror/emacs/blob/master/lisp/bookmark.el>`_
+#. `cc-vars     <https://github.com/emacs-mirror/emacs/blob/master/lisp/progmodes/cc-vars.el>`_
+#. `cua-rect    <https://github.com/emacs-mirror/emacs/blob/master/lisp/emulation/cua-rect.el>`_
+#. `delsel      <https://github.com/emacs-mirror/emacs/blob/master/lisp/delsel.el>`_
+#. `elint       <https://github.com/emacs-mirror/emacs/blob/master/lisp/emacs-lisp/elint.el>`_
+#. `ert         <https://github.com/emacs-mirror/emacs/blob/master/lisp/emacs-lisp/ert.el>`_
+#. `flyspell    <https://github.com/emacs-mirror/emacs/blob/master/lisp/textmodes/flyspell.el>`_
+#. `hippie-exp  <https://github.com/emacs-mirror/emacs/blob/master/lisp/hippie-exp.el>`_
+#. `hl-line     <https://github.com/emacs-mirror/emacs/blob/master/lisp/hl-line.el>`_
+#. `ido         <https://github.com/emacs-mirror/emacs/blob/master/lisp/ido.el>`_
+#. `imenu       <https://github.com/emacs-mirror/emacs/blob/master/lisp/imenu.el>`_
+#. `isearch     <https://github.com/emacs-mirror/emacs/blob/master/lisp/isearch.el>`_
+#. `ispell      <https://github.com/emacs-mirror/emacs/blob/master/lisp/textmodes/ispell.el>`_
+#. `kmacro      <https://github.com/emacs-mirror/emacs/blob/master/lisp/kmacro.el>`_
+#. `lisp-mode   <https://github.com/emacs-mirror/emacs/blob/master/lisp/emacs-lisp/lisp-mode.el>`_
+#. `newcomment  <https://github.com/emacs-mirror/emacs/blob/master/lisp/newcomment.el>`_
+#. `org         <https://github.com/emacs-mirror/emacs/blob/master/lisp/org/org.el>`_
+#. `paragraphs  <https://github.com/emacs-mirror/emacs/blob/master/lisp/textmodes/paragraphs.el>`_
+#. `re-builder  <https://github.com/emacs-mirror/emacs/blob/master/lisp/emacs-lisp/re-builder.el>`_
+#. `rect        <https://github.com/emacs-mirror/emacs/blob/master/lisp/rect.el>`_
+#. `rst         <https://github.com/emacs-mirror/emacs/blob/master/lisp/textmodes/rst.el>`_
+#. `simple      <https://github.com/emacs-mirror/emacs/blob/master/lisp/simple.el>`_
+#. `subr-x      <https://github.com/emacs-mirror/emacs/blob/master/lisp/emacs-lisp/subr-x.el>`_
+#. `subword     <https://github.com/emacs-mirror/emacs/blob/master/lisp/progmodes/subword.el>`_
+#. `thingatpt   <https://github.com/emacs-mirror/emacs/blob/master/lisp/thingatpt.el>`_
+#. `uniquify    <https://github.com/emacs-mirror/emacs/blob/master/lisp/uniquify.el>`_
+#. `winner      <https://github.com/emacs-mirror/emacs/blob/master/lisp/winner.el>`_
 
 
 
