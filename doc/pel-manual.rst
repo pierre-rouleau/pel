@@ -3062,7 +3062,7 @@ distributed with GNU Emacs.
 
 PEL uses the following libraries distributed with GNU Emacs:
 
-- bookmark
+- `bookmark <https://github.com/emacs-mirror/emacs/blob/master/lisp/bookmark.el>`_
 - cc-vars
 - cua-rect
 - delsel
@@ -3089,6 +3089,9 @@ PEL uses the following libraries distributed with GNU Emacs:
 - thingatpt
 - uniquify
 - winner
+
+
+
 
 PEL has the following dependencies on the following external Emacs packages:
 
