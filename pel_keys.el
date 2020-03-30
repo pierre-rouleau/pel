@@ -36,6 +36,23 @@ optional argument APPEND is non-nil, in which case it is added at the end."
      (define-prefix-command (quote ,prefix))
      (global-set-key ,key (quote ,prefix))))
 
+(defmacro pel-setq  (sym val)
+  "Set a symbol SYM to specified value VAL and prevent warning."
+  `(progn
+     ;; declare the symbol to prevent lint warning
+     (defvar ,sym)
+     ;; now set the symbol to the specified value
+     (setq ,sym ,val)))
+
+
+(defmacro pel-setq-default  (sym val)
+  "Set a symbol SYM to specified default value VAL and prevent warning."
+  `(progn
+    ;; declare the symbol to prevent lint warning
+    (defvar ,sym)
+    ;; now set the symbol to the specified value
+    (setq-default ,sym ,val)))
+
 ;; -----------------------------------------------------------------------------
 ;; Required packages:
 (require 'pel--options) ; all `pel-use-...' variables identify what to use.
@@ -103,10 +120,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;;         only on the graphics, Carbon-based emacs.
 (when (and (eq system-type 'darwin)
            (display-graphic-p))
-  ;; next defvar prevents compiler warning when compiling in TTY:
-  ;; Defined in "nsterm.m"
-  (defvar ns-function-modifier)
-  (setq ns-function-modifier 'hyper))
+  (pel-setq ns-function-modifier 'hyper))
 
 ;; On Windows, the Ctrl-Alt key combination works with letter keys
 ;; but does not work with the <right>, <left>, <up> and <down> keys.
@@ -121,10 +135,8 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   ;; (setq w32-pass-rwindow-to-system nil)
   ;; (setq w32-rwindow-modifier 'super)     ; Right Windows key := super
   ;; but this works:
-  (defvar w32-pass-apps-to-system)
-  (defvar w32-apps-modifier)
-  (setq w32-pass-apps-to-system nil)
-  (setq w32-apps-modifier 'hyper))          ; Menu/App key      := hyper
+  (pel-setq w32-pass-apps-to-system nil)
+  (pel-setq w32-apps-modifier 'hyper))      ; Menu/App key      := hyper
 
 ;; -----------------------------------------------------------------------------
 ;; - Preserve negative-argument with C-- and C-_
@@ -317,11 +329,11 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 (when pel-use-uniquify
   (use-package uniquify
     :config
-    (setq uniquify-buffer-name-style 'post-forward)
+    (pel-setq uniquify-buffer-name-style 'post-forward)
     ;; rationalize buffer after killing uniquified buffer
-    (setq uniquify-after-kill-buffer-p t)
+    (pel-setq uniquify-after-kill-buffer-p t)
     ;; Don't  not uniquify  special buffers
-    (setq uniquify-ignore-buffers-re "^\\*")))
+    (pel-setq uniquify-ignore-buffers-re "^\\*")))
 
 ;; - Use IDO-mode
 ;; --------------
@@ -335,11 +347,11 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; IDO is now part of Emacs distribution.
 (when pel-use-ido-mode
   (ido-mode 1)
-  (setq ido-everywhere t)
-  (setq ido-enable-flex-matching t)
+  (pel-setq ido-everywhere t)
+  (pel-setq ido-enable-flex-matching t)
   ;; don't require confirmation when creating new buffers
   ;; with C-x b
-  (setq ido-create-new-buffer 'always))
+  (pel-setq ido-create-new-buffer 'always))
 
 ;; - Use Hippie Expand
 ;; -------------------
@@ -375,18 +387,21 @@ optional argument APPEND is non-nil, in which case it is added at the end."
     :pin melpa
 
     :init
+    ;;  Prevent lint warnings using empty defvar
+    (defvar bm-restore-repository-on-load)
     ;; Ensure that bm restores bookmark when it loads.
     (setq bm-restore-repository-on-load t)
 
     :config
+    ;;  Prevent lint warnings using empty defvar
     ;; Allow cross-buffer 'next'
-    (setq bm-cycle-all-buffers t)
+    (pel-setq bm-cycle-all-buffers t)
 
     ;; where to store persistent files
-    (setq bm-repository-file "~/.emacs.d/bm-repository")
+    (pel-setq bm-repository-file "~/.emacs.d/bm-repository")
 
     ;; save bookmarks
-    (setq-default bm-buffer-persistence t)
+    (pel-setq-default bm-buffer-persistence t)
 
     ;; Loading the repository from file when on start up.
     (add-hook 'after-init-hook 'bm-repository-load)
@@ -459,11 +474,12 @@ optional argument APPEND is non-nil, in which case it is added at the end."
     (global-set-key "\C-cc" 'org-capture)
     (global-set-key "\C-cb" 'org-switchb)
     ;; Activate specialized C-a and C-e in Org-Mode.
-    (setq org-special-ctrl-a/e t)
+    (pel-setq org-special-ctrl-a/e t)
     ;; Activate timestamp log for DONE tasks
-    (setq org-log-done 'time)
+    (pel-setq org-log-done 'time)
     ;; Add the "IN-PROGRESS" in the list of TODO states
-    (setq org-todo-keywords (quote ((sequence "TODO" "IN-PROGRESS" "DONE"))))
+    (pel-setq org-todo-keywords
+              (quote ((sequence "TODO" "IN-PROGRESS" "DONE"))))
     ;; Use the cleaner outline view mode.
     (add-hook 'org-mode-hook 'org-indent-mode)))
 
@@ -509,7 +525,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
     :config
     ;; Using bsd/allman style but with 3 spaces per tabs.
     ;; TODO: it's value is 'set-from-style' ??  Need to investigate.
-    (setq-default c-basic-offset 3)))
+    (pel-setq-default c-basic-offset 3)))
 
 ;; ---------------
 ;; - CMake support
@@ -537,7 +553,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   ;; (http://www.lispworks.com/documentation/common-lisp.html).
   ;; The following code is the default,
   ;; symlinks can be use to point to the real location.
-  (setq common-lisp-hyperspec-root
+  (pel-setq common-lisp-hyperspec-root
         (concat "file://"
                 (expand-file-name "~/docs/HyperSpec/"))))
 
@@ -2032,7 +2048,7 @@ the ones defined from the buffer now."
     ;; activate the autoload.
     :init
     (define-key pel:regexp    "b"  #'re-builder)           ; Open the regexp builder window to search on current buffer
-    (setq reb-re-syntax 'string)))
+    (pel-setq reb-re-syntax 'string)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> S`` : Speedbar/SR-Speedbar commands
