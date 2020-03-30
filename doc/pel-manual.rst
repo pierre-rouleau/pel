@@ -986,7 +986,7 @@ PEL Line Control Utilities
 :PEL Customization: *none*
 :PEL Key Prefix: **pel:linectrl** : ``<f11> l``
 
-The file ``pel-line-control.el`_ contains:
+The file `pel-line-control.el`_ contains:
 
 - 2 commands that move the cursor to the previous and next logical lines, lines
   that when wider than the current window, wrap around:
@@ -1400,7 +1400,7 @@ registers:
 - ``pel-number-to-register``,
 - ``pel-kmacro-to-register``.
 
-The `Register`_ PDF document provides more information.
+The `Registers`_ PDF document provides more information.
 
 PEL Scrolling
 -------------
@@ -2762,8 +2762,8 @@ Naming Conventions
 
   - Those are  meant to be used from with PEL code exclusively.
   - The same convention also applies to the Emacs Lisp file
-    names; the `pel--base.el`_ and `pel--options`_ files are used by the other
-    PEL files.
+    names; the files `pel--base.el`_, `pel--macros.el`_ and
+    `pel--options.el`_ are used by the other PEL files.
 
 - All PEL customization variables that control whether PEL uses or provides a
   given feature have a name that starts with the prefix "pel-use-".
@@ -2960,7 +2960,7 @@ Emacs Lisp Regression Test
 --------------------------
 
 At this point just a small portion of PEL is covered by
-`ERT based <https://www.gnu.org/software/emacs/manual/html_node/ert/index.html>`_
+`ERT-based <https://www.gnu.org/software/emacs/manual/html_node/ert/index.html>`_
 testing.  The test code is located inside the `test sub-directory`_.
 As everything in PEL for this early version: 🚧 more to come here...
 
