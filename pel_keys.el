@@ -308,15 +308,6 @@ optional argument APPEND is non-nil, in which case it is added at the end."
       (when (boundp 'framemove-hook-into-windmove)
         (setq framemove-hook-into-windmove t)))))
 
-;; Don't move point when splitting windows vertically
-;; --------------------------------------------------
-;; By default, Emacs moves the cursor of the new window of a vertical split
-;; so we see more of the text across the use of the 2 windows.  This is a
-;; surprising behaviour for new users. It also prevents keeping track of
-;; the original location when the window is split temporary for other work.
-;; The following set Emacs to keep the point in the same location.
-(setq split-window-keep-point t)
-
 ;; Uniquify: meaningful names when multiple buffers have the same name
 ;; -------------------------------------------------------------------
 ;; Uniquify provides meaningful names for buffers with the same name.
