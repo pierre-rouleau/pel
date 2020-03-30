@@ -1341,7 +1341,7 @@ inside this directory and Emacs can access them locally.
 PEL Emacs Lisp Support
 ~~~~~~~~~~~~~~~~~~~~~~
 
-:PDF Docs: `Emacs Lisp`_, `ERT`_.
+:PDF Docs: `Emacs Lisp`_, `ERT`_ .
 :PEL Customization: ``pel-use-rst-mode``.
 :PEL Key Prefix: - Globally: **pel:for-elisp** : ``<f11> SPC l``
                  - From a buffer in elisp-mode: ``<f12>``
