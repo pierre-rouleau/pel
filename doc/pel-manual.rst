@@ -1341,7 +1341,7 @@ inside this directory and Emacs can access them locally.
 PEL Emacs Lisp Support
 ~~~~~~~~~~~~~~~~~~~~~~
 
-:PDF Docs: `Emacs Lisp`_, `ERT`_ .
+:PDF Docs: `Emacs Lisp`_, `ERT <pdf/ert.pdf>`_ .
 :PEL Customization: ``pel-use-rst-mode``.
 :PEL Key Prefix: - Globally: **pel:for-elisp** : ``<f11> SPC l``
                  - From a buffer in elisp-mode: ``<f12>``
@@ -2112,7 +2112,7 @@ PDF Document Tables
 #. `Common Lisp`_
 #. `Emacs Lisp`_
 
-   - `ERT`_ (Emacs Lisp Regression Testing system)
+   - `ERT <pdf/ert.pdf>`_ (Emacs Lisp Regression Testing system)
 
 **Version Control Systems:**
 
@@ -2138,7 +2138,6 @@ PDF Document Tables
 .. _Display Lines:                            pdf/display-lines.pdf
 .. _Drawing:                                  pdf/drawing.pdf
 .. _Enriched Text:                            pdf/enriched-text.pdf
-.. _ERT:                                      pdf/ert.pdf
 .. _Faces and Fonts:                          pdf/faces-fonts.pdf
 .. _File Management:                          pdf/file-mngt.pdf
 .. _File and Directory Local Variables:       pdf/file-variables.pdf
