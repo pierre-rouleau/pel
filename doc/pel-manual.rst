@@ -2802,11 +2802,35 @@ Code Guidelines
 General Guidelines
 ~~~~~~~~~~~~~~~~~~
 
+**Overview**
+
 The Emacs Lisp code is written to comply with the `standard GNU Emacs code
 guidelines`_.  PEL code follows most of the points promoted by
 `bbatsov/emacs-lisp-style-guide`_ except in some few places.
 PEL code also follows several ideas outlined in
 `Jari Aalto Emacs Lisp Guideline`_, an older but still valid guideline.
+
+**Line Length**
+
+The maximum line length is 80.
+
+**Use of tabs**
+
+PEL source code does not use hard tabs.  All indentation uses space characters.
+
+
+**Settings enforced by directory local variables**
+
+The file `.dir-locals.el`_ imposes the line length and the use of spaces for
+indentation.
+See the `GNU Emacs Manual Per-Directory Local Variables`_ for more information
+about this file.
+
+.. _.dir-locals.el: ../.dir-locals.el
+.. _GNU Emacs Manual Per-Directory Local Variables: https://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Variables.html#Directory-Variables
+
+
+**Used Tools**
 
 To ensure conformance, the code is checked with the following tools:
 
@@ -2819,6 +2843,8 @@ To ensure conformance, the code is checked with the following tools:
 
 The file `pel.el`_ is also checked with `package-lint`_ to verify
 the presence of package version.
+
+
 
 Variable Scoping
 ~~~~~~~~~~~~~~~~
@@ -2976,7 +3002,7 @@ These defects currently don't prevent me from using the
 Makefile but do bug me, so that's another thing on my 🚧 todo list.
 
 
-.. _Makefile:             Makefile
+.. _Makefile:             ../Makefile
 
 
 PDF Documentation
