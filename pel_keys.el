@@ -1331,22 +1331,23 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; - Function Keys - <f11> - Prefix ``<f11> =`` : Copy commands
 
 (define-pel-global-prefix pel:copy (kbd "<f11> ="))
-(define-key pel:copy " " 'pel-copy-whitespace-at-point)  ; whitespace
-(define-key pel:copy "(" 'pel-copy-list-at-point)        ;
-(define-key pel:copy "." 'pel-copy-symbol-at-point)
-(define-key pel:copy "a" 'pel-copy-line-start)           ; beginning of line and point
-(define-key pel:copy "b" 'pel-copy-paragraph-start)      ; beginning of paragraph
-(define-key pel:copy "c" 'pel-copy-char-at-point)
-(define-key pel:copy "e" 'pel-copy-line-end)             ; end of line and point
-(define-key pel:copy "F" 'pel-copy-filename-at-point)    ;
-(define-key pel:copy "f" 'pel-copy-function-at-point)    ; function
-(define-key pel:copy "H" 'pel-copy-paragraph-at-point)   ; paragraph - entire current paragraph
-(define-key pel:copy "h" 'pel-copy-paragraph-end)        ; rest (end) of paragraph
-(define-key pel:copy "l" 'pel-copy-marked-or-whole-line) ; line - complete
-(define-key pel:copy "s" 'pel-copy-sentence-at-point)    ; sentence
-(define-key pel:copy "u" 'pel-copy-url-at-point)         ;
-(define-key pel:copy "w" 'pel-copy-word-at-point)        ; complete word, regardless of point position inside word.
-(define-key pel:copy "x" 'pel-copy-sexp-at-point)        ; s-expression
+(define-key pel:copy " "  'pel-copy-whitespace-at-point)  ; whitespace
+(define-key pel:copy "("  'pel-copy-list-at-point)        ;
+(define-key pel:copy "."  'pel-copy-symbol-at-point)
+(define-key pel:copy "a"  'pel-copy-line-start)           ; beginning of line and point
+(define-key pel:copy "b"  'pel-copy-paragraph-start)      ; beginning of paragraph
+(define-key pel:copy "c"  'pel-copy-char-at-point)
+(define-key pel:copy "e"  'pel-copy-line-end)             ; end of line and point
+(define-key pel:copy "F"  'pel-copy-filename-at-point)    ;
+(define-key pel:copy "f"  'pel-copy-function-at-point)    ; function
+(define-key pel:copy "H"  'pel-copy-paragraph-at-point)   ; paragraph - entire current paragraph
+(define-key pel:copy "h"  'pel-copy-paragraph-end)        ; rest (end) of paragraph
+(define-key pel:copy "l"  'pel-copy-marked-or-whole-line) ; line - complete
+(define-key pel:copy "r" #'copy-rectangle-as-kill)
+(define-key pel:copy "s"  'pel-copy-sentence-at-point)    ; sentence
+(define-key pel:copy "u"  'pel-copy-url-at-point)         ;
+(define-key pel:copy "w"  'pel-copy-word-at-point)        ; complete word, regardless of point position inside word.
+(define-key pel:copy "x"  'pel-copy-sexp-at-point)        ; s-expression
 ;;
 (global-set-key (kbd "<f11> +") 'pel-copy-marked-or-whole-line)
 (global-set-key (kbd "M-w")     'pel-copy-marked-or-whole-line) ; replaces kill-ring-save
@@ -1369,6 +1370,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 (define-key pel:kill "H"  'pel-kill-paragraph-at-point)     ; paragraph - entire current paragraph
 (define-key pel:kill "h" #'kill-paragraph)                  ; rest (end) of paragraph
 (define-key pel:kill "l"  'pel-kill-or-delete-marked-or-whole-line)
+(define-key pel:kill "r" #'kill-rectangle)
 (define-key pel:kill "s"  'pel-kill-sentence-at-point)      ; kill complete sentence
 (define-key pel:kill "u"  'pel-kill-url-at-point)           ;
 (define-key pel:kill "w"  'pel-kill-word-at-point)          ; entire word (regardless of point location inside word)
