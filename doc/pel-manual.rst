@@ -1372,7 +1372,7 @@ It's a rather specialized prompting utility with a rather strange name...
 PEL Rectangle Support
 ---------------------
 
-:PDF Docs: `Rectangles`_
+:PDF Docs: `Rectangles`_.
 :PEL Customization: *none*
 :PEL Key Prefix: *none*
 
@@ -1384,7 +1384,7 @@ More information about Emacs rectangle area editing is available in the
 PEL Register Management Utilities
 ---------------------------------
 
-:PDF Docs: `Registers`_
+:PDF Docs: `Registers`_.
 :PEL Customization: *none*
 :PEL Key Prefix: **pel::register** : ``<f11> r``
 
