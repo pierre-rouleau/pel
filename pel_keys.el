@@ -48,10 +48,10 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 (defmacro pel-setq-default  (sym val)
   "Set a symbol SYM to specified default value VAL and prevent warning."
   `(progn
-    ;; declare the symbol to prevent lint warning
-    (defvar ,sym)
-    ;; now set the symbol to the specified value
-    (setq-default ,sym ,val)))
+     ;; declare the symbol to prevent lint warning
+     (defvar ,sym)
+     ;; now set the symbol to the specified value
+     (setq-default ,sym ,val)))
 
 ;; -----------------------------------------------------------------------------
 ;; Required packages:
@@ -554,8 +554,8 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   ;; The following code is the default,
   ;; symlinks can be use to point to the real location.
   (pel-setq common-lisp-hyperspec-root
-        (concat "file://"
-                (expand-file-name "~/docs/HyperSpec/"))))
+            (concat "file://"
+                    (expand-file-name "~/docs/HyperSpec/"))))
 
 ;; -------------------------------
 ;; - Programming Style: Emacs Lisp
