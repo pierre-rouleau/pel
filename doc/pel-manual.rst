@@ -1278,6 +1278,8 @@ PEL Number Keypad Support
 :PEL Customization: *none*
 :PEL Key Prefix: *none*
 
+The file `pel-numkpad.el`_ implements the PEL number keypad support.
+
 The number keypad available on various keyboard differ in behaviour.
 Some keyboard have a NumLock key, others, like Apple keyboards do not have it.
 PEL support different keyboards thta have a number keypad, and provides its own
@@ -1366,6 +1368,18 @@ The file `pel-prompt.el`_ is a utility file and for now only contains one
 function: ``pel-y-n-e-or-l-p`` which prompts and accepts various types of
 responses.  It is used by the ``pel-find-file-at-point-in-window`` command.
 It's a rather specialized prompting utility with a rather strange name...
+
+PEL Rectangle Support
+---------------------
+
+:PDF Docs: `Rectangles`_
+:PEL Customization: *none*
+:PEL Key Prefix: *none*
+
+PEL adds a couple of key bindings to support the rectangle area editing.
+More information about Emacs rectangle area editing is available in the
+`Rectangles`_ PDF document.
+
 
 PEL Register Management Utilities
 ---------------------------------
@@ -2071,6 +2085,7 @@ PDF Document Tables
 #. `Navigation`_
 #. `Number Keypad`_
 #. `Packages`_
+#. `Rectangles`_
 #. `Registers`_
 #. `Scrolling`_
 #. `Search and Replace`_
@@ -2152,6 +2167,7 @@ PDF Document Tables
 .. _Packages:                                 pdf/packages.pdf
 .. _Common Lisp:                              pdf/pl-common-lisp.pdf
 .. _Emacs Lisp:                               pdf/pl-emacs-lisp.pdf
+.. _Rectangles:                               pdf/rectangles.pdf
 .. _Registers:                                pdf/registers.pdf
 .. _Scrolling:                                pdf/scrolling.pdf
 .. _Search and Replace:                       pdf/search-replace.pdf
@@ -3039,6 +3055,7 @@ PEL uses the following libraries distributed with GNU Emacs:
 - org
 - paragraphs
 - re-builder
+- rect
 - rst
 - simple
 - subr-x
