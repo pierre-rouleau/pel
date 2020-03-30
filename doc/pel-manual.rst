@@ -1384,7 +1384,7 @@ More information about Emacs rectangle area editing is available in the
 PEL Register Management Utilities
 ---------------------------------
 
-:PDF Docs: `Register`_
+:PDF Docs: `Registers`_
 :PEL Customization: *none*
 :PEL Key Prefix: **pel::register** : ``<f11> r``
 
