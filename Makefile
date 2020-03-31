@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau.swd@gmail.com>
-# Last Modified Time-stamp: <2020-03-30 17:31:20, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-03-31 13:31:09, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -50,7 +50,6 @@ EMACS = emacs
 # Define the location of the normal Emacs initialization file.
 # This is required for elisp-lint so that it can find the elisp-lint
 # and its dependencies.  This can be changed on the command line.
-
 EMACS_INIT = "~/.emacs.d/init.el"
 
 # -----------------------------------------------------------------------------
@@ -58,18 +57,40 @@ EMACS_INIT = "~/.emacs.d/init.el"
 PEL_VERSION := 0.0.1
 
 # -----------------------------------------------------------------------------
-# Define the directories involved
+# Directory Used in this build
 
-# sub-directories where make stores new files
-SRC_DIR          := .
-OUT_DIR          := out
-TMP_DIR          := tmp-copies
-DEST_DIR         := $(TMP_DIR)/pel-$(PEL_VERSION)
+# SRC_DIR   : where all PEL .el file are stored
+SRC_DIR := .
+
+# OUT_DIR   : where the pel archive tar file is stored
+OUT_DIR := out
+
+# PELPA_DIR : the local Elpa-compliant Emacs Package Archive directory
+#             where PEL package tar file is installed and then used
+#             to install PEL in user's Emacs.
+PELPA_DIR := pelpa
+
+# TMP_DIR   : where the directory holding files to create the PEL package tar
+#             are stored
+TMP_DIR := tmp-copies
+
+# DEST_DIR  : where the PEL source code files are stored to create the tar file.
+#             This directory has a name that includes PEL's version to comply
+#             with Emacs management system.
+DEST_DIR := $(TMP_DIR)/pel-$(PEL_VERSION)
+
+# DEST_TEST_DIR : the directory where PEL test source code files located for
+#                 the creation of PEL tar file, when it is created to include
+#                 the PEL test files.
+#                 Note that while PEL is distributed via its Git repository,
+#                 these files do not need to be included in the PEL tar file.
 DEST_TEST_DIR    := $(DEST_DIR)/test
-DEST_DOC_PDF_DIR := $(DEST_DIR)/doc/pdf
 
-# Directory where to store the built package.
-OUT_REPO_DIR := ~/dev/emacs-archive
+# DEST_DOC_PDF_DIR : the directory where the PDF files that are included in
+#                 PEL package tar file when these files are included.
+#                 Note that while PEL is distributed via its Git repository,
+#                 these files do not need to be included in the PEL tar file.
+DEST_DOC_PDF_DIR := $(DEST_DIR)/doc/pdf
 
 # -----------------------------------------------------------------------------
 # Identify the files used in the package.
@@ -137,6 +158,7 @@ PDF_FILES := -legend.pdf \
 			counting.pdf \
 			cut-paste.pdf \
 			display-lines.pdf \
+			drawing.pdf \
 			enriched-text.pdf \
 			ert.pdf \
 			faces-fonts.pdf \
@@ -167,6 +189,7 @@ PDF_FILES := -legend.pdf \
 			packages.pdf \
 			pl-common-lisp.pdf \
 			pl-emacs-lisp.pdf \
+			rectangles.pdf \
 			registers.pdf \
 			scrolling.pdf \
 			search-replace.pdf \
@@ -183,34 +206,54 @@ PDF_FILES := -legend.pdf \
 			windows.pdf
 
 
+# SRC_FILES include *all* Emacs Lisp source files that are part of PEL,
+#           as well as the miscellaneous files that must be distributed
+#           inside the PEL package tar file.
+#           This excludes the test files, the Emacs Lisp files used to
+#           build and install PEL (used by this Makefile) and the PDF
+#           document files.
 SRC_FILES := $(OTHER_EL_FILES) $(EL_FILES) $(OTHER_FILES)
 
-# $(TEST_FILES)
-
+# TARGET_SOURCE_FILES lists all Emacs Lisp source files that are part
+#           of PEL as well as the miscellaneous files that must be
+#           distributed inside the PEL package tar file.
+#           The list of files are set to have the path where to store
+#           the files to create the tar file.
 TARGET_SOURCE_FILES := $(patsubst %,$(DEST_DIR)/%,$(SRC_FILES))
 
-TARGET_PDF_FILES := $(patsubst %,$(DEST_DOC_PDF_DIR)/%,$(PDF_FILES))
+# TARGET_PDF_FILES lists the PDF doc files with a path identifying
+#           where they should be stored when those files are included
+#           in the PEL tar file.
+#           Note: at the moment this is not used.
+# TARGET_PDF_FILES := $(patsubst %,$(DEST_DOC_PDF_DIR)/%,$(PDF_FILES))
 
-TARGET_TEST_FILES := $(patsubst %,$(DEST_TEST_DIR)/%,$(TEST_FILES))
+# TARGET_TEST_FILES lists the test files with a path identifying
+#           where they should be stored when those files are included
+#           in the PEL tar file.
+#           Note: at the moment this is not used.
+# TARGET_TEST_FILES := $(patsubst %,$(DEST_TEST_DIR)/%,$(TEST_FILES))
 
+# ELC_FILES list the PEL .elc files
 ELC_FILES := $(subst .el,.elc,$(EL_FILES))
 
+# PEL_TAR_FILE makes the name of the PEL tar file name (with PEL version)
 PEL_TAR_FILE := pel-$(PEL_VERSION).tar
 
 # -----------------------------------------------------------------------------
 # First rule, allows 'make' command to build everything that needs updating
 
-# first build the .elc files to check for errors
-# then run the integration tests
-# if all is OK, complete by packaging the files into a Emacs package tar file.
+# 1: First build the .elc files to check for errors.
+# 2: Then run the integration tests.
+# 3: If all is OK, create the PEL Emacs package tar file
+# 4: Install that tar file into the local Elpa-compliant directory,
+#    ready to be used by Emacs.
 
-all: pel test pkg myelpa
+all: pel test pkg mypelpa
 
 # -----------------------------------------------------------------------------
 # Self-desciptive rule: make help prints the info.
 
 .PHONY: help
-
 help:
 	@printf "\nBuild the Emacs PEL package file for distribution.\n"
 	@printf "\n"
@@ -233,17 +276,16 @@ help:
 	@printf " * make lint      - check .el files with several tools via elisp-lint.\n"
 	@printf " * make clean     - remove all output files including $(PEL_TAR_FILE)\n"
 	@printf " * make clean_tar - remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
-	@printf " * make test      - Run the regressin tests.\n"
+	@printf " * make test      - Run the regression tests.\n"
 	@printf " * make pkg       - Build the tar file inside the $(OUT_DIR) directory.\n"
-	@printf " * make myelpa    - Copy the tar file into a local package archive.\n"
+	@printf " * make mypelpa   - Copy the tar file into a local package archive.\n"
 	@printf "\n"
-	@printf "BUGS - Byte-compilation is always done, regardless of the\n"
-	@printf "       state of the .el and .elc files.\n"
-	@printf "     - The package version number must be updated inside several\n"
-	@printf "       files:\n"
-	@printf "       - Makefile\n"
-	@printf "       - pel.el\n"
-	@printf "       - pel-pkg.el\n"
+	@printf "LIMITATIONS:\n"
+    @printf "  - The package version number must be updated inside several\n"
+	@printf "    files:\n"
+	@printf "    - Makefile\n"
+	@printf "    - pel.el\n"
+	@printf "    - pel-pkg.el\n"
 	@printf "\n"
 
 # -----------------------------------------------------------------------------
@@ -251,8 +293,13 @@ help:
 # Use them to see the expanded values
 
 .PHONY: check
-
-check: check-version check-src-dir check-dest-dir check-dest-test-dir check-doc-pdf check-target check-elc-files
+check: 	check-version \
+		check-src-dir \
+		check-dest-dir \
+		check-dest-test-dir \
+		check-doc-pdf \
+		check-target \
+		check-elc-files
 
 check-version:
 	@echo PEL_VERSION = $(PEL_VERSION)
@@ -278,10 +325,19 @@ check-elc-files:
 # -----------------------------------------------------------------------------
 # Creating the target directories when they don't exist.
 
-all-dirs:	$(OUT_DIR) $(DEST_DIR) $(OUT_REPO_DIR) $(DEST_DOC_PDF_DIR) $(DEST_TEST_DIR)
+all-dirs:	$(OUT_DIR) \
+			$(PELPA-DIR) \
+			$(TMP_DIR) \
+			$(DEST_DIR) \
+			$(DEST_TEST_DIR) \
+			$(DEST_DOC_PDF_DIR)
 
 $(OUT_DIR):
 	mkdir -p $@
+
+$(PELPA_DIR):
+	mkdir -p $@
+	@echo "(1)" > $@/archive-contents
 
 $(TMP_DIR):
 	mkdir -p $@
@@ -295,9 +351,6 @@ $(DEST_TEST_DIR):
 $(DEST_DOC_PDF_DIR):
 	mkdir -p $@
 
-$(OUT_REPO_DIR):
-	mkdir -p $@
-
 # -----------------------------------------------------------------------------
 # Rules to copy files to DEST_DIR directory to build the Emacs package tar file
 
@@ -307,11 +360,17 @@ $(DEST_DIR)/%.el: $(SRC_DIR)/%.el
 $(DEST_DIR)/README: $(SRC_DIR)/README
 				cp $< $@
 
-$(DEST_TEST_DIR)/%.el:     $(SRC_DIR)/test/%.el
-				cp $< $@
-
-$(DEST_DOC_PDF_DIR)/%.pdf: $(SRC_DIR)/doc/pdf/%.pdf
-				cp $< $@
+# While PEL is distributed through its Git repo, there's no need to store the
+# test files and the PDF documentation files inside PEL's package tar file.
+# If PEL gets distributed through MELPA, then it's possible that we'd like
+# these files to be stored inside the tar file.  If so, then un-comment the
+# following lines.
+#
+# $(DEST_TEST_DIR)/%.el:     $(SRC_DIR)/test/%.el
+# 				cp $< $@
+#
+# $(DEST_DOC_PDF_DIR)/%.pdf: $(SRC_DIR)/doc/pdf/%.pdf
+# 				cp $< $@
 
 # -----------------------------------------------------------------------------
 # Emacs Lisp file dependencies
@@ -390,7 +449,6 @@ lint:
 # PEL uses the ERT package to run tests.
 
 .PHONY: test
-
 test:
 	@printf "***** Running Integration tests\n"
 	$(EMACS) --batch -L . -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
@@ -400,14 +458,15 @@ test:
 # copy files into proper locations inside that directory tree.
 
 .PHONY: a-copy
-
 a-copy: $(OUT_DIR) \
 		$(DEST_DIR) \
-		$(TARGET_SOURCE_FILES) \
-		$(DEST_TEST_DIR) \
-		$(TARGET_TEST_FILES) \
-		$(DEST_DOC_PDF_DIR)  \
-		$(TARGET_PDF_FILES)
+		$(TARGET_SOURCE_FILES)
+
+
+#		$(DEST_TEST_DIR) \
+#		$(TARGET_TEST_FILES) \
+#		$(DEST_DOC_PDF_DIR)  \
+#		$(TARGET_PDF_FILES)
 
 # -----------------------------------------------------------------------------
 # Distribution tar package file creation rule
@@ -431,7 +490,6 @@ a-copy: $(OUT_DIR) \
 #      likely not going to affect tar running on other OS.
 
 .PHONY: pkg
-
 pkg: 	export COPYFILE_DISABLE=1
 
 pkg: | a-copy
@@ -448,10 +506,9 @@ pkg: | a-copy
 # If you want to replace the package with the same version you have to edit
 # archive-contents file and remove the entry for PEL inside it.
 
-.PHONY: myelpa
-
-myelpa:
-	$(EMACS) --batch -L . -l ~/.emacs.d/init.el -l install-pel.el -f upload-pel-to-local-archive
+.PHONY: mypelpa
+mypelpa:
+	$(EMACS) --batch -L . -l $(EMACS_INIT) -l install-pel.el -f upload-pel-to-local-archive
 
 # -----------------------------------------------------------------------------
 # Cleanup rules
