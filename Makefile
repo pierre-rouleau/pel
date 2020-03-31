@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau.swd@gmail.com>
-# Last Modified Time-stamp: <2020-03-31 13:31:09, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-03-31 13:51:32, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -471,23 +471,23 @@ a-copy: $(OUT_DIR) \
 # -----------------------------------------------------------------------------
 # Distribution tar package file creation rule
 
-# Create the outpkg directory if it does not exist
-# The pipe tests that the outpkg pre-requisite is order only,
+# Create the out directory if it does not exist.
+# The pipe tests that the out pre-requisite is order only,
 # not depending on time stamp of directory or its files.
 # * Implementation Note:
 #   * on macOS: tar may include several files that have names that start with "./._".
 #
-#      According to https://unix.stackexchange.com/questions/282055/a-lot-of-files-inside-a-tar
-#      and https://unix.stackexchange.com/questions/9665/create-tar-archive-of-a-directory-except-for-hidden-files
-#      there is two ways to prevent inclusion of these hidden files in macOS:
-#      - 1) use the --disable-copyfile tar option, available in later versions of macOS tar
-#      - 2) set the environment variable COPYFILE_DISABLE=1 for when tar is run (via a target export)
-#      Apparently it's also possible to build the tar file while no Finder is opened for the
-#      directories that contain the files that tar includes.  I find this last method dangerous
-#      since I don't know how to easily detect if Finder is opened on the particular directories.
-#      So I tested method 1 and 2 while Finder was opened on the directory.  And it worked.
-#      I selected opton 2, since it is compatible with older versions of macOS tar and is also
-#      likely not going to affect tar running on other OS.
+#    According to https://unix.stackexchange.com/questions/282055/a-lot-of-files-inside-a-tar
+#    and https://unix.stackexchange.com/questions/9665/create-tar-archive-of-a-directory-except-for-hidden-files
+#    there is two ways to prevent inclusion of these hidden files in macOS:
+#    - 1) use the --disable-copyfile tar option, available in later versions of macOS tar
+#    - 2) set the environment variable COPYFILE_DISABLE=1 for when tar is run (via a target export)
+#    Apparently it's also possible to build the tar file while no Finder is opened for the
+#    directories that contain the files that tar includes.  I find this last method dangerous
+#    since I don't know how to easily detect if Finder is opened on the particular directories.
+#    So I tested method 1 and 2 while Finder was opened on the directory.  And it worked.
+#    I selected option 2, since it is compatible with older versions of macOS tar and is also
+#    likely not going to affect tar running on other OS.
 
 .PHONY: pkg
 pkg: 	export COPYFILE_DISABLE=1
