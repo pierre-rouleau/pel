@@ -482,7 +482,9 @@ activate your selection.
 You can repeat the operation several times.  You can also exit Emacs between
 them.
 
-Now you are done! The followings sections are optional, depending on what PEL
+Now you are done! 😀
+
+The followings sections are optional, depending on what PEL
 features you use.
 
 
