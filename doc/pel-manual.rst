@@ -187,96 +187,157 @@ The PEL files are listed in each of the corresponding
 
 
 How to Install PEL
-===================
+==================
 
 PEL is not yet available through MELPA_ (Milkypostman's Emacs Lisp Package
 Archive) or any Elpa-compatible Emacs package archive. It might be on day,
-although the nature of the PEL project might not be compatible with neither
-MELPA_ not ELPA_.
+although the nature of the PEL project might not be compatible with
+MELPA_ or ELPA_.
 
 Therefore semi-automated installation instruction are detailed in the
 following sections.
 
 Essentially you need to:
-- clone the PEL Git depot on your computer,
-add some basic information to your Emacs initialization file
-and then use
-the provided Makefile_ to
 
-In the mean time, the easiest way to install PEL on one or several computers
-is to create your own local Elpa-compatible package archive, include PEL inside that
-and use this repository to install PEL and its dependencies. The following
-sections describe how to that.
+#. Use Emacs 24 or later. Ideally use the latest released: Emacs 26.3.
+#. Clone the PEL Git depot on your computer to get PEL
+#. Create *utils* directory for storing single file Emacs libraries.
+#. Prepare your `Emacs initialization file`_ to:
+
+   - support loading Emacs Lisp files from a (*utils*) directory where single
+     file external libraries will be stored,
+   - support `Emacs Lisp Packages`_ archive sites: ELPA_, MELPA_ and
+     MELPA-STABLE_,
+   - support a local Elpa-compliant Emacs package archive directory that will be
+     use to store PEL Emacs package archive tar file,
+   - support for storing Emacs customization forms inside a file separate from
+     your Emacs initialization file but loaded from it.
+
+#. Download some Emacs packages not supported by Elpa-compliant archives into
+   your *utils* directory,
+#. Use make on the command line to:
+
+   - create a Emacs package archive tar file for PEL
+   - create a local Elpa-compliant Emacs package archive directory and store
+     PEL's Emacs package archive tar file inside it.
+
+#. Use Emacs package-install command to PEL, install all PEL's dependencies that
+   are retrieved from ELPA_, MELPA_ or MELPA-STABLE_ and then byte-compile PEL
+   source code files.
+#. Decide whether you want to have PEL start automatically when Emacs starts or
+   just start it when you need it and then modify your init file if you want PEL
+   to start automatically.
+
+Detailed instructions for the above steps are written in the following sections.
+
+.. _Emacs Lisp Packages: https://www.gnu.org/software/emacs/manual/html_node/emacs/Packages.html#Packages
+
+Clone PEL repository on your drive
+----------------------------------
+
+Clone the `PEL's Github repo`_ somewhere in your home directory but outside your
+"~/.emacs.d" directory.  This instruction assumes that you store it inside
+"~/projects" to create "~/projects/pel" by executing the following commands in a
+shell:
+
+.. code:: shell
+
+          cd
+          mkdir projects
+          cd projects
+          git clone https://github.com/pierre-rouleau/pel.git
+
+This will create the "~/projects/pel" directory with all the files inside it.
+
+.. _PEL's Github repo: https://github.com/pierre-rouleau/pel
 
 
-Prepare Emacs Before Installing PEL
------------------------------------
+Prepare Emacs Initialization file
+---------------------------------
 
-Before installing PEL it's best to make sure that you already have some
-configuration inside your `Emacs initialization file`_ described in the
-following sub-sections.  In this document I assume that you have all your Emacs
-files inside the "~/.emacs.d" directory, that your `Emacs initialization file`_ is
-the file "~/.emacs.d/init.el".
+There are several ways to set up `Emacs initialization file`_, however, since
+you will have to store several Emacs-related files in your system, (PEL itself,
+Emacs init file, Emacs customization file, Emacs bookmarks file, Emacs
+abbreviation files, external libraries downloaded from Elpa-compliant sites like
+ELPA_, MELPA_ or MELPA-STABLE_ as well as single Emacs libraries into a *utils*
+directory, etc...) it's best to create the "~/.emacs.d" directory and store
+Emacs configuration file inside "~/.emacs.d/init.el".
 
-Create a local package archive
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-Updates to your Emacs Initialization file
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Unfortunately *some* Emacs Lisp code must be written to your
-`Emacs initialization file`_, but that's mainly to setup how to download packages
-that you might already have, and possibly 2 lines to require and initialize PEL.
+The following instructions assume that your Emacs initialization file is
+"~/.emacs.d/init.el".
 
 
+Windows users:
+  Under Windows, your ".emacs.d" directory should be stored inside your HOME
+  directory. See `Emacs Windows init location FAQ`_ for more information.
 
-Configure How to Download Packages
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. _Emacs Windows init location FAQ: https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html
 
-PEL uses
-ELPA_ (GNU Emacs Lisp Package Archive)
-and MELPA_ (Milkypostman's Emacs Lisp Package Archive)
-sites to download and install packages.
+Create a "~/.emacs.d/utils" directory
+-------------------------------------
 
-To activate their use, place the following code inside your Emacs init file
-(ideally with the block shown above) if
-it is not already present:
+The name of the directory could be anything, *utils* is what this example uses.
+Create the "~/.emacs.d/utils"  directory.  This is where you need to store the
+single file external packages that PEL uses and which are not supported by the
+Elpa-compliant sites.
+
+An easy way to do this from a shell is:
+
+.. code:: shell
+
+          mkdir -p ~/.emacs.p/utils
+
+
+Update your Emacs Initialization file
+-------------------------------------
+
+Add the following code inside your "~/.emacs.d/init.el" file:
 
 .. code:: elisp
 
+          ;; 1: Setup package sources: MELPA, MELPA-STABLE and a local mypelpa
           (when (>= emacs-major-version 24)
             (require 'package)
             (setq package-enable-at-startup nil)
             (if (version=  emacs-version "26.2")
                 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
-
             (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
                                 (not (gnutls-available-p))))
                    (proto (if no-ssl "http" "https")))
               (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-
-              (when (< emacs-major-version 24)
-                ;; For important compatibility libraries like cl-lib
-                (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
-
+              (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+              (add-to-list 'package-archives (cons "mypelpa"      (expand-file-name "~/projects/pel/pelpa/")) t))
             (package-initialize))
 
-Select the location of Emacs Persistent Customization Data
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          ;; 2: Add utils to Emacs load-path
+          (add-to-list 'load-path (expand-file-name "~/.emacs.d/utils"))
 
-By default, Emacs stores its persistent customization data inside your
-`Emacs initialization file`_.
-If you want to store it somewhere else, and I recommend you do,
-you have to tell Emacs where to read and write
-the customization data.
-Something like the following code
-, which places it inside the file ``~/.emacs-custom.el``:
-
-.. code:: elisp
-
-          (setq custom-file "~/.emacs-custom.el")
+          ;; 3: Store Emacs customization inside a separate file
+          ;;    If you already have a (custom-set-variables ...) form
+          ;;    in your init.el, move it into this new file.
+          (setq custom-file "~/.emacs.d/emacs-customization.el")
           (load custom-file)
+
+
+- Section 1 of the code adds the following URLS of Elpa-compliant Emacs package
+  archives:
+
+  - MELPA_
+  - MELPA-STABLE_
+  - "~/projects/pel/pelpa"
+
+  The last one is the location of the "pelpa" directory inside the pel project, in
+  the location you selected when you `cloned PEL`_
+
+- Section 2 adds the location of the *utils* directory to Emacs ``load-path`` to
+  allow Emacs to find the single file Emacs libraries PEL uses.
+- Section 3 tells Emacs to store its customization form inside a file called
+  "~./emacs.d/emacs-customization.el".  If you already have Emacs customization
+  inside your current init.el file, copy it inside that new file.
+  Emacs customization is the full content of the ``(custom-set-variables ...) form.
+
+
+.. _cloned PEL: `Clone PEL repository on your drive`_
 
 **Note**
    If you work inside several projects and each project requires different
@@ -285,136 +346,153 @@ Something like the following code
    That provides another degree of freedom, along with Emacs directory local
    and file local variables.
 
-To Install PEL
---------------
 
 
+Download Non-Elpa compliant files used by PEL
+---------------------------------------------
+
+Most packages used by PEL are supported by MELPA_, MELPA-STABLE_ or ELPA_.  But
+not all.  Some very useful packages have not been ported yet to Elpa-compliant
+sites. To use them they need to be copied locally.  Copy them inside the
+"~/.emacs.d/utils" directory.
+
+This version of PEL uses the following:
+
+- framemove_ : copy it from `here <https://www.emacswiki.org/emacs/download/framemove.el>`_.
 
 
+Create And Install the PEL Emacs Package Archive tar file into pelpa
+--------------------------------------------------------------------
 
-Create an Emacs utility directory
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The Makefile_ in the PEL repository has all the logic to create PEL's
+Elpa-compliant package archive tar file and store it into your
+"~/project/pel/pelpa" directory.
 
-
-Create a directory to hold Emacs Lisp files that will be in Emacs ``load-path``.
-For example, to store your utilities inside "~/.emacs.d/libs",  where you can
-store single file utilities as well as packages with complete directory trees
-(like pel) write the
-following code inside your Emacs initialization file:
-
-.. code:: elisp
-
-          (add-to-list 'load-path (expand-file-name "~/.emacs.d/libs/pel"))
-          (add-to-list 'load-path (expand-file-name "~/.emacs.d/libs"))
-
-
-Clone the project from the Github page
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-Clone the `PEL's Github repo`_ into the root of your utility directory,
-("~/.emacs.d/libs" in this example) by doing the following inside a command
-shell:
-
+All you have to do is open a shell and execute the following commands:
 
 .. code:: shell
 
-          cd ~/.emacs.d
-          mkdir libs
-          cd libs
-          git clone https://github.com/pierre-rouleau/pel.git
+          cd ~/projects/pel
+          make clean
+          make
 
-This will create the "~/.emacs.d/libs/pel" directory with all the files inside it.
+This will create the required directory, byte-compile all PEL source code to
+check if all is OK, then run the regression test, create the tar file and create
+a Elpa-compliant Emacs package archive that Emacs ``package`` can use inside
+your local "~/project/pel/pelpa" directory.
 
-.. _PEL's Github repo: https://github.com/pierre-rouleau/pel
-
-Byte-compile PEL files
-~~~~~~~~~~~~~~~~~~~~~~
-
-Inside the shell,
-change directory to the location where they are stored, "~/emacs.d/libs/pel" if you
-stored them there.  The directory contains a Makefile_.
-
-To get a description of how to use the makefile, type::
-
-  make help
-
-Byte-compile all Emacs Lisp files in the directory by executing::
-
-  make pel
+At this point you have everything ready to go to the next step to install PEL
+inside your Emacs system.
 
 
-Run pel-init
-~~~~~~~~~~~~
+Install PEL package and its dependencies
+----------------------------------------
 
-- Open Emacs.
-- Load pel.el by typing: ``M-x load-library RET pel RET``
-- Run PEL initialization by typing: ``M-x pel-init RET``
+With all previous steps completed, open Emacs then type::
 
-This command will initialize PEL using the PEL's default customization.  If
-these packages are not already installed on your system
-``pel-init`` will download the following packages from MELPA_ and ELPA_
-and store them inside the "~/.emacs.d/elpa" directory:
+  M-x list-packages
 
-- `use-package`_
-- `bind-key`_
-- `which-key`_
+Hit return and wait for Emacs to communicate with MELPA_, MELPA-STABLE_ and GNU
+ELPA_ to download their list of packages.  Once the download is completed Emacs
+display a message in the echo area.  At this point you should be able to find
+one entry for PEL: search for "  pel"  (with 2 leading spaces) or "Pragmatic"
+with ``C-s`` and you should find it.  Select it and hit the Install button.
 
-PEL initialization should complete with PEL printing the following message on
-the echo area::
+Emacs will download all PEL's dependencies and will install them inside the
+"~/.emacs.d/elpa" directory.  Depending of the speed of your interface and the
+speed of the sites this may take several seconds or even minutes.  I have seen
+GNU ELPA_ failing to respond causing the process to terminate without
+completing the entire operation.  If this happens just restart it by pressing
+the Install button again.
 
-  PEL loaded, PEL keys binding in effect
+When all packages are downloaded Emacs then byte-compile all of these packages
+and byte-compiles PEL last. The results are shown inside Emacs ``*Compile Log*``
+buffer.  PEL should byte-compile clean with no error or warnings.
 
-At this point you can use PEL with IDO, windmove and winner, which are all part
-of the default customization.  To see if the PEL binding and `which-key`_ work,
-just type the **F11** key to see the list o available commands and further key prefixes.
+When all of this is done, PEL should be installed, loaded in this Emacs session
+and ready to be used (in this Emacs session).  To check if this is the case,
+type::
 
-Customize PEL
-~~~~~~~~~~~~~
+  M-x pel-
 
-If you want to add more features, change the value of the ``pel-use-...``
-variable that correspond to the feature you want to activate.  Activating some
-of them will force their installation when you next run ``pel-init``.  But not
-all, because some o the features require files that are not part of an ELPA-style
-library archive .   For those, you will have to copy their files inside a
-directory in Emacs ``load-path`` like "~/.emacs.d/libs".
-See `PEL Use Variables`_ for the list of variables and those that you may have
-to install yourself.  For the ones that are automatically installed from ELPA_
-or MELPA_ just set the corresponding variable and run ``pel-init``.
+then hit the **tab** key. You should see a relatively small set of PEL commands
+in Emacs ``*Completions*`` buffer.  The ``pel-init`` command should be
+there. To start using PEL right away, just type::
 
-You can repeat the operation several times.  You can also exit Emacs between
-them.  Just reload ``pel.el`` to be able to execute ``pel-init``.  You can run
-``pel-init`` several times per Emacs session if you need to.
+  M-x pel-init
 
+and hit the **return** key.
+
+Emacs should display ``"PEL loaded, PEL keys binding in effect."`` inside the
+echo area.  To confirm the version of PEL issue the ``pel-version`` command the
+same way.
 
 
-Complete PEL's Configuration
-----------------------------
+You're almost done 😅!
 
-Once PEL code is installed, there's a couple more steps to follow.
-They are described in the following sub-sections.
 
-To start PEL when Emacs Starts
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Activate PEL when Emacs Start
+-----------------------------
 
 If you want PEL to be available right after Emacs starts, write the following
-inside your Emacs init file:
+inside your "~/.emacs.d/init.el" Emacs Initialization file:
 
 .. code:: elisp
 
           (require 'pel)
           (pel-init)
 
-If you do not want PEL to start when Emacs start,
-then you can keep the first line but don't call ``pel-init``.
-To use PEL later simply execute the **pel-init** command by
-typing::
+**Note**:
+
+    The first line is not strictly necessary, as ``pel-init`` was installed as
+    an auto-loaded command by``package-install``.  It will just prevent Emacs
+    byte-compiler from complaining if you place this code in a file that you
+    byte-compile.  But if you leave it inside your init.el file, then it's not
+    needed.  The only line that *is* needed is the ``(pel-init)`` line.
+
+If you do not want PEL to start when Emacs start, then each time you want to use
+PEL you will have to explicitly execute the ``pel-init`` command by typing::
 
        M-x pel-init
 
 
-To identify the location of your Ispell local dictionary
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+You can see PEL's use of the **F11* function key by hitting in sequence the
+**F11** key quickly followed by the **F1** key.  Emacs will list PEL's **F11*
+key bindings inside the ``*Help*`` buffer.
+
+
+
+Activate PEL Features - Customize PEL
+-------------------------------------
+
+To use several of PEL's features you must activate them via Emacs customization.
+Features not enabled via customization are not loaded and not available.
+This allows PEL to provide conflicting features to help testing what you like
+and also to speed up further Emacs initialization.
+
+PEL's features and the related customization variables for the feature (if any)
+are listed in the `PEL Convenience Features`_ section.
+
+To activate one or more of those PEL features (and the corresponding external
+packages PEL uses for those features) you need to use the ``M-x customize``
+command, search for the respective ``pel-use-...`` variable and set it to **t**.
+The list of these variables is also available in the `PEL Use Variables`_
+section.  Once you're done, save the settings and re-execute ``M-x pel-init`` to
+activate your selection.
+
+You can repeat the operation several times.  You can also exit Emacs between
+them.
+
+Now you are done! The followings sections are optional, depending on what PEL
+features you use.
+
+
+Further PEL Customization
+-------------------------
+
+
+Identify the location of your Ispell local dictionary
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 With the current version of PEL, when you want to select the spell check
 program used by
@@ -2913,7 +2991,7 @@ PEL archive and place it inside the local archive:
 
 .. code:: shell
 
-          make myelpa
+          make mypelpa
 
 Once this is done, I use the switch-emacs script (`see below`_) to switch
 the ``.emacs.d`` directory to
@@ -2933,7 +3011,7 @@ but everything else comes from the real sites.
 The ``package-install`` command downloads all PEL pre-requisites and byte-compile
 PEL files.  I make sure no warning is issued from the PEL files.
 
-.. _see below:                         `The switch-emacs script`_
+.. _see below:    `The switch-emacs script`_
 
 
 The switch-emacs script
@@ -2972,7 +3050,7 @@ and access to the external and local Emcas archive repositiories.
               echo "The ~/min-emacs/init.el should:"
               echo " - set load-path to find utilities not compig from elpa-compatible archive,"
               echo " - set package-archives list to include melpa, melpa-stable, gnu elpa,"
-              echo "   and your local myelpa."
+              echo "   and your local mypelpa."
               echo "It should not load PEL nor execute pel-init."
           fi
 
