@@ -442,8 +442,7 @@ inside your "~/.emacs.d/init.el" Emacs Initialization file:
           (require 'pel)
           (pel-init)
 
-**Note**:
-
+**Note**
     The first line is not strictly necessary, as ``pel-init`` was installed as
     an auto-loaded command by``package-install``.  It will just prevent Emacs
     byte-compiler from complaining if you place this code in a file that you
@@ -456,8 +455,8 @@ PEL you will have to explicitly execute the ``pel-init`` command by typing::
        M-x pel-init
 
 
-You can see PEL's use of the **F11* function key by hitting in sequence the
-**F11** key quickly followed by the **F1** key.  Emacs will list PEL's **F11*
+You can see PEL's use of the **F11** function key by hitting in sequence the
+**F11** key quickly followed by the **F1** key.  Emacs will list PEL's **F11**
 key bindings inside the ``*Help*`` buffer.
 
 
