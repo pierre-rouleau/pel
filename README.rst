@@ -2,23 +2,24 @@
 pel -- Pragmatic Environment Library for Emacs
 ==============================================
 
-.. [from:  README ]
-
 PEL is an hybrid package. It is:
 
 - an Emacs key binding documentation project
   (see `Key Bindings Documentation`_),
-- an overall configuration and setup system with:
+- a collection of `PEL convenience features`_ which:
 
-  - the implementation of a function-key based key binding map tree to commands,
-    keeping most Emacs key bindings untouched,
-  - several files that implement `PEL convenience features`_,
-  - `PEL Customization`_ that control the use of the features of several
-    external packages (see `Credits`_),
-    their loading, configuration and key bindings.
-    This conforms to the
-    `Emacs easy customization`_ system and reduces your need
-    to write custom Emacs Lisp code.
+  - are implemented in several mostly independent files,
+  - have key bindings mostly using the function keys to provide
+    key map trees that do not interfere with standard Emacs key bindings,
+  - provide access to several other external Emacs packages
+    (see `Credits`_)
+    but via
+    `PEL Customization`_ to selectively configure, enable and activate
+    these features.
+
+    - This conforms to the
+      `Emacs easy customization`_ system and reduces your need
+      to write custom Emacs Lisp configuration code.
 
 .. _Emacs easy customization:
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
@@ -82,8 +83,6 @@ You can also can start or re-start PEL interactively by typing::
 
 
 
-
-.. [ endof: README ]
 
 More information is available in `PEL's Manual`_.
 

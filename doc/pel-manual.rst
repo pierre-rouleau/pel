@@ -17,17 +17,20 @@ PEL is an hybrid package. It is:
 
 - an Emacs key binding documentation project
   (see `Key Bindings Documentation`_),
-- an overall configuration and setup system with:
+- a collection of `PEL convenience features`_ which:
 
-  - the implementation of a function-key based key binding map tree to commands,
-    keeping most Emacs key bindings untouched,
-  - several files that implement `PEL convenience features`_,
-  - `PEL Customization`_ that control the use of the features of several
-    external packages (see `Credits`_),
-    their loading, configuration and key bindings.
-    This conforms to the
-    `Emacs easy customization`_ system and reduces your need
-    to write custom Emacs Lisp code.
+  - are implemented in several mostly independent files,
+  - have key bindings mostly using the function keys to provide
+    key map trees that do not interfere with standard Emacs key bindings,
+  - provide access to several other external Emacs packages
+    (see `Credits`_)
+    but via
+    `PEL Customization`_ to selectively configure, enable and activate
+    these features.
+
+    - This conforms to the
+      `Emacs easy customization`_ system and reduces your need
+      to write custom Emacs Lisp configuration code.
 
 .. _Emacs easy customization:
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
@@ -186,13 +189,19 @@ The PEL files are listed in each of the corresponding
 How to Install PEL
 ===================
 
-PEL is not yet available on a distribution repository like MELPA_
-(Milkypostman's Emacs Lisp Package Archive).
-Will it be?  I don't know yet.  I wonder if the nature of PEL's
-project corresponds to what is accepted on MELPA.
-PEL synthesizes information from various sources and integrates
-several packages.
-I will provide a MELPA recipe later and will see if the project gets accepted.
+PEL is not yet available through MELPA_ (Milkypostman's Emacs Lisp Package
+Archive) or any Elpa-compatible Emacs package archive. It might be on day,
+although the nature of the PEL project might not be compatible with neither
+MELPA_ not ELPA_.
+
+Therefore semi-automated installation instruction are detailed in the
+following sections.
+
+Essentially you need to:
+- clone the PEL Git depot on your computer,
+add some basic information to your Emacs initialization file
+and then use
+the provided Makefile_ to
 
 In the mean time, the easiest way to install PEL on one or several computers
 is to create your own local Elpa-compatible package archive, include PEL inside that
@@ -206,7 +215,7 @@ Prepare Emacs Before Installing PEL
 Before installing PEL it's best to make sure that you already have some
 configuration inside your `Emacs initialization file`_ described in the
 following sub-sections.  In this document I assume that you have all your Emacs
-files inside the "~/.emacs.d" directory, that your Emacs initialization file is
+files inside the "~/.emacs.d" directory, that your `Emacs initialization file`_ is
 the file "~/.emacs.d/init.el".
 
 Create a local package archive
@@ -279,8 +288,8 @@ Something like the following code
 To Install PEL
 --------------
 
-I have not yet submitted PEL to MELPA_.  That's on my to-do list.
-For now clone the PEL Git repository  and perform manual installation.
+
+
 
 
 Create an Emacs utility directory
