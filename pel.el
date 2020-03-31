@@ -104,7 +104,7 @@ re-execute `pel-init' again to activate them."
   ;; Note that pel-keys.el has a file name that ensures that packages controlled
   ;; byte-compilation compiles it *before* compiling pel.el
   (load-library "pel_keys")
-  (message "PEL loaded, PEL keys binding in effect"))
+  (message "PEL loaded, PEL keys binding in effect."))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel)
