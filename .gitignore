@@ -1,4 +1,6 @@
-# Compiled
+# Identifies files to be ignored by Git.
+
+# Byte-Compiled Emacs Lisp files
 *.elc
 
 # Packaging
@@ -7,5 +9,26 @@
 # Backup files
 *~
 
+# Emacs temporary files
+.#*
+*#
+
+# (C)Tags files
+TAGS
+
 # Undo-tree save-files
 *.~undo-tree
+
+# Build output
+out/*
+
+# Local Elpa-compliant Emacs package archive
+pelpa/*
+
+# macOS fork files
+.DS_Store
+
+# Mercurial DVCS files (when double repository is used)
+.hg*
+
+# -----------------------------------------------------------------------------
