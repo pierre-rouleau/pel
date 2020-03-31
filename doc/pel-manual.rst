@@ -334,7 +334,7 @@ Add the following code inside your "~/.emacs.d/init.el" file:
 - Section 3 tells Emacs to store its customization form inside a file called
   "~./emacs.d/emacs-customization.el".  If you already have Emacs customization
   inside your current init.el file, copy it inside that new file.
-  Emacs customization is the full content of the ``(custom-set-variables ...) form.
+  Emacs customization is the full content of the ``(custom-set-variables ...)`` form.
 
 
 .. _cloned PEL: `Clone PEL repository on your drive`_
@@ -444,7 +444,7 @@ inside your "~/.emacs.d/init.el" Emacs Initialization file:
 
 **Note**
     The first line is not strictly necessary, as ``pel-init`` was installed as
-    an auto-loaded command by``package-install``.  It will just prevent Emacs
+    an auto-loaded command by ``package-install``.  It will just prevent Emacs
     byte-compiler from complaining if you place this code in a file that you
     byte-compile.  But if you leave it inside your init.el file, then it's not
     needed.  The only line that *is* needed is the ``(pel-init)`` line.
@@ -1203,7 +1203,7 @@ For all styles:
 
 - level 0 is created with the key ``<f12> t``,
 - level 1 to level 9 use ``<f12> 1`` to ``<f12> 9``,
-- level 10 is using the <f12> 0`` key.
+- level 10 is using the ``<f12> 0`` key.
 
 The following commands allow creating line adornments for sections at levels
 relative to the previous section or change the section level of the current
