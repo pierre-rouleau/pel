@@ -30,4 +30,4 @@ This file uses Org mode. Some useful (default) key-bindings:
     automate the compilation and a large part of the installation of PEL and its
     dependencies.
   - PEL is not yet distributed via sites like MELPA but
-    [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#to-install-pel][PEL's installation instructions]] should alleviate this problem.
+    [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#how-to-install-pel][PEL's installation instructions]] should alleviate this problem.
