@@ -1,0 +1,33 @@
+PEL Library NEWS         -*- org -*-
+
+This file uses Org mode. Some useful (default) key-bindings:
+ - Use "C-c C-n"/"C-c C-p" to jump to next/prev heading
+ - Use "<tab>" to expand/collapse nodes
+ - Use "<backtab>" to cycle visibility of all nodes
+ - Use "C-c C-o" to open links
+
+* First Version: 0.0.1
+- This is the very first version of PEL, the Pragmatic Environment Library.
+
+  - As described in [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#overview][PEL manual overview]] PEL is an hybrid package.
+    It is:
+    - a [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#pdf-document-tables][collection of PDF]] files that document Emacs key bindings that covers
+      standard Emacs key-bindings but also the key bindings provided by PEL and
+      the external packages PEL uses.
+    - an Emacs key binding documentation project
+      (see [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#pel-key-bindings][Key Bindings Documentation]]),
+    - a collection of [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#id26][PEL convenience features]]  which:
+
+      - are implemented in several mostly independent files,
+      - have key bindings mostly using the function keys to provide
+        key map trees that do not interfere with standard Emacs key bindings,
+      - provide access to several other external Emacs packages (see [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#credits][Credits]])
+        but via [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#pel-customization][PEL Customization]] to selectively configure, enable and activate
+        these features.
+        - This conforms to the [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#pel-customization][Emacs easy customization]] system and reduces your
+          need to write custom Emacs Lisp configuration code.
+  - PEL is distributed via the [[https://github.com/pierre-rouleau/pel][PEL Github repository]] and provides a Makefile to
+    automate the compilation and a large part of the installation of PEL and its
+    dependencies.
+  - PEL is not yet distributed via sites like MELPA but
+    [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#to-install-pel][PEL's installation instructions]] should alleviate this problem.
