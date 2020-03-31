@@ -13,9 +13,20 @@
 ;;       during installation.  The use of an underscore in the file name is
 ;;       a little unusual in the Emacs Lisp world but provides a simple way
 ;;       to provide proper file name ordering.
+;;
+;;       This file is similar to what would be located inside a init.el file.
+;;       It is, however, byte-compiled and linted to check for error.
+;;       All use-package forms would generate warnings normally.
+;;       To prevent that the code uses a cl-eval-when 'compile form
+;;       to require external packages *only* when compiling, not at load time.
+;;       During execution the external packages are only loaded lazily,
+;;       when they are required, not before.
 
 
 ;;; Code:
+
+(eval-when-compile
+  (require 'cl-lib))                       ; use: cl-eval-when
 
 ;; Utilities
 
@@ -86,6 +97,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 (when (and pel-use-popup-kill-ring
            (display-graphic-p))
 
+  (cl-eval-when 'compile (require 'popup-kill-ring))
   (use-package popup-kill-ring
     ;; Note: pos-tip, required by popup-kill-ring is installed
     ;;       when popup-kill-ring is installed (and loaded by
@@ -186,6 +198,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   ;; Configure the pel-font commands as autoload.
   ;; although ther is no such package, use the macro to set up
   ;; the delayed autoloads and key bindings.
+  (cl-eval-when 'compile (require 'pel-font))
   (use-package pel-font
     ;; autoload it when one of the following commands is used.
     :commands (pel-font-increase-size-all-buffers
@@ -213,7 +226,9 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; ------------
 ;; When dired-narrow is used, add <f12> prefix keys to dired-narrow specific
 ;; commands.
+
 (when pel-use-dired-narrow
+  (cl-eval-when 'compile (require 'dired-narrow))
   (use-package dired-narrow
     ;; dired-narrow is an external package.
     ;; Ensure it's installed via MELPA
@@ -295,6 +310,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; Emacs is running in graphics mode.  Other keybindings are defined for the
 ;; pel: keybinding, somewhere else in this file.
 (when (display-graphic-p)
+  (cl-eval-when 'compile (require 'windmove))
   (use-package windmove
     ;; specify defer: we don't want to require windmove here since it is
     ;; autoloaded via the pel-window file.  However, when Emacs is running in
@@ -311,6 +327,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
                                       'super
                                     'hyper))))
 (when pel-use-framemove
+  (cl-eval-when 'compile (require 'framemove))
   (when (display-graphic-p)
     (use-package framemove
       :defer 3
@@ -327,6 +344,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; https://github.com/bbatsov/prelude.
 ;; uniquify is now part of Emacs distribution.
 (when pel-use-uniquify
+  (cl-eval-when 'compile (require 'uniquify))
   (use-package uniquify
     :config
     (pel-setq uniquify-buffer-name-style 'post-forward)
@@ -382,6 +400,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; ------------------------
 (when pel-use-bm
   ;; configure bm package to be loaded only on first use.
+  (cl-eval-when 'compile (require 'bm))
   (use-package bm
     :ensure t
     :pin melpa
@@ -461,6 +480,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 (when pel-use-org-mode
   ;; Org-Mode activation (as suggested by
   ;; https://orgmode.org/manual/Activation.html#Activation ):
+  (cl-eval-when 'compile (require 'org))
   (use-package org
     :commands (org-mode
                org-indent-mode
@@ -506,6 +526,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; C-like programming languages: C, C++
 ;; ------------------------------------
 (when pel-use-c-eldoc
+  (cl-eval-when 'compile (require 'c-eldoc))
   (use-package c-eldoc
     ;; c-eldoc is an external package.
     ;; Ensure it's installed via MELPA
@@ -521,6 +542,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
     (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)))
 
 (when pel-use-cc-vars
+  (cl-eval-when 'compile (require 'cc-vars))
   (use-package cc-vars
     :config
     ;; Using bsd/allman style but with 3 spaces per tabs.
@@ -536,6 +558,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; - Common Lisp support
 ;; ---------------------
 (when pel-use-common-lisp
+  (cl-eval-when 'compile (require 'slime))
   (use-package slime
     :ensure t
     :pin melpa
@@ -561,6 +584,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; - Programming Style: Emacs Lisp
 ;; -------------------------------
 (when pel-use-esup
+  (cl-eval-when 'compile (require 'esup))
   (use-package esup
     ;; esup is an external package:
     ;; ensure it's installed from MELPA if not available.
@@ -608,6 +632,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; - Programming Style: Python Support
 ;; -----------------------------------
 (when pel-use-python                    ; TODO: complete this
+  (cl-eval-when 'compile (require 'elpy))
   (use-package elpy
     :defer t)
   ;; Normally, (python-shell-prompt-detect) should
@@ -637,14 +662,19 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; - Programming Style: Rust & Cargo Support
 ;; -----------------------------------------
 (when pel-use-rust                      ; TODO: complete this
+  (cl-eval-when 'compile (require 'racer))
   (use-package racer
     :ensure t
     :pin melpa
     :commands racer-mode)
+
+  (cl-eval-when 'compile (require 'rust-mode))
   (use-package rust-mode
     :ensure t
     :pin melpa
     :commands rust-mode)
+
+  (cl-eval-when 'compile (require 'cargo))
   (use-package cargo
     :ensure t
     :pin melpa
@@ -1035,30 +1065,32 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 (define-pel-global-prefix pel:undo (kbd "<f11> u"))
 
 (if pel-use-undo-tree
-    (use-package undo-tree
-      :ensure t
-      :pin gnu
-      :commands (undo-tree-undo
-                 undo-tree-redo
-                 undo-tree-visualize
-                 undo-tree-switch-branch)
-      :init
-      ;; PEL doesn't call (global-undo-tree-mode) to preserve the
-      ;; binding of C-- and C-_ to negative-argument.  Instead,
-      ;; create explicit bindings to the keys for the undo.
-      (global-set-key (kbd "C-z")  'undo-tree-undo)
-      (when (display-graphic-p)
-        (global-set-key (kbd  "s-z")    #'undo-tree-undo)
-        (global-set-key (kbd  "s-Z")    #'undo-tree-redo))
-      (global-set-key (kbd    "C-x u")  #'undo-tree-undo)
-      (global-set-key (kbd    "C-/")    #'undo-tree-undo)
-      (global-set-key (kbd    "M-u")    #'undo-tree-undo)
-      (global-set-key (kbd    "M-U")    #'undo-tree-redo)
+    (progn
+      (cl-eval-when 'compile (require 'undo-tree))
+      (use-package undo-tree
+        :ensure t
+        :pin gnu
+        :commands (undo-tree-undo
+                   undo-tree-redo
+                   undo-tree-visualize
+                   undo-tree-switch-branch)
+        :init
+        ;; PEL doesn't call (global-undo-tree-mode) to preserve the
+        ;; binding of C-- and C-_ to negative-argument.  Instead,
+        ;; create explicit bindings to the keys for the undo.
+        (global-set-key (kbd "C-z")  'undo-tree-undo)
+        (when (display-graphic-p)
+          (global-set-key (kbd  "s-z")    #'undo-tree-undo)
+          (global-set-key (kbd  "s-Z")    #'undo-tree-redo))
+        (global-set-key (kbd    "C-x u")  #'undo-tree-undo)
+        (global-set-key (kbd    "C-/")    #'undo-tree-undo)
+        (global-set-key (kbd    "M-u")    #'undo-tree-undo)
+        (global-set-key (kbd    "M-U")    #'undo-tree-redo)
 
-      (define-key pel:undo    "u"       #'undo-tree-undo)
-      (define-key pel:undo    "r"       #'undo-tree-redo)
-      (define-key pel:undo    "v"       #'undo-tree-visualize)
-      (define-key pel:undo    "x"       #'undo-tree-switch-branch))
+        (define-key pel:undo    "u"       #'undo-tree-undo)
+        (define-key pel:undo    "r"       #'undo-tree-redo)
+        (define-key pel:undo    "v"       #'undo-tree-visualize)
+        (define-key pel:undo    "x"       #'undo-tree-switch-branch)))
 
   ;; When pel-use-undo-tree is not t, then use standard Emacs undo but
   ;; map to similar keys (except the ``<f11> u``)
@@ -1072,6 +1104,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; - Use goto-last-change
 ;; ----------------------
 (when pel-use-goto-last-change
+  (cl-eval-when 'compile (require 'goto-last-change))
   (use-package goto-last-change
     :ensure t
     :pin melpa
@@ -1140,6 +1173,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; - Use parinfer
 ;; --------------
 (when pel-use-parinfer
+  (cl-eval-when 'compile (require 'parinfer))
   (use-package parinfer
     :ensure t
     :pin melpa
@@ -1151,6 +1185,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; - Use rainbow-delimiters
 ;; ------------------------
 (when pel-use-rainbow-delimiters
+  (cl-eval-when 'compile (require 'rainbow-delimiters))
   (use-package rainbow-delimiters
     :ensure t
     :pin melpa
@@ -1220,6 +1255,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 (define-key pel:elisp-mode      "s" #'semantic-mode)
 
 (when pel-use-macrostep
+  (cl-eval-when 'compile (require 'macrostep))
   (use-package macrostep
     :ensure t
     :pin melpa
@@ -1228,6 +1264,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
     (define-key pel:elisp-mode    "m" #'macrostep-expand)))
 
 (when pel-use-highlight-defined
+  (cl-eval-when 'compile (require 'highlight-defined))
   (use-package highlight-defined
     :ensure t
     :pin melpa
@@ -1322,6 +1359,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : Graphviz Dot
 (when pel-use-graphviz-dot
+  (cl-eval-when 'compile (require 'graphviz-dot-mode))
   (use-package graphviz-dot-mode
     :ensure t
     :pin melpa
@@ -1411,6 +1449,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   ;; Defer loading of auto-complete using its autoload that will be
   ;; trigerred when the one of the pel-auto-complete-mode or
   ;; pel-global-auto-complete-mode is executed.
+  (cl-eval-when 'compile (require 'auto-complete))
   (use-package auto-complete
     :ensure t
     :pin melpa
@@ -1419,6 +1458,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 (when pel-use-company
   ;; Defer-load company.el via the autoload company-mode and
   ;; global-autoload-mode are called by one of the pel functions.
+  (cl-eval-when 'compile (require 'company))
   (use-package company
     :ensure t
     :pin melpa
@@ -1465,6 +1505,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 (global-set-key (kbd "M-S-<down>")     'pel-mark-line-down)
 
 (when pel-use-expand-region
+  (cl-eval-when 'compile (require 'expand-region))
   (use-package expand-region
     :ensure t
     :pin melpa
@@ -1569,18 +1610,21 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> ? k`` : Info on Keys
 (when pel-use-free-keys
+  (cl-eval-when 'compile (require 'free-keys))
   (use-package free-keys
     :ensure t
     :pin melpa
     :commands free-keys))                       ; for <f11> ? k f
 
 (when pel-use-bind-key
+  (cl-eval-when 'compile (require 'bind-key))
   (use-package bind-key
     :ensure t
     :pin melpa
     :commands describe-personal-keybindings))   ; for <f11> ? k b
 
 (when pel-use-which-key
+  (cl-eval-when 'compile (require 'which-key))
   (use-package which-key                  ; for <f11> ? k k
     ;; List key completions: help show the f11 bindings.
     ;; When requested, delay a little to speed init time.
@@ -1614,6 +1658,7 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
 ;; popup is used in Terminal mode for spell check menu,
 ;; and must be available when pel-spell-init is called.
 (unless (display-graphic-p)
+  (cl-eval-when 'compile (require 'popup))
   (use-package popup
     :ensure t
     :pin melpa-stable
@@ -1710,6 +1755,7 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
 (define-key pel:scroll "l" #'scroll-lock-mode)
 
 (when pel-use-smooth-scrolling
+  (cl-eval-when 'compile (require 'smooth-scrolling))
   (use-package smooth-scrolling
     :ensure t
     :pin melpa
@@ -1916,6 +1962,7 @@ the ones defined from the buffer now."
 
 ;; ripgrep - a faster grep easier to use than grep.
 (when  pel-use-ripgrep
+  (cl-eval-when 'compile (require 'rg))
   (use-package rg
     :ensure t
     :pin melpa
@@ -1938,6 +1985,7 @@ the ones defined from the buffer now."
 (define-key pel:insert   "l" 'pel-insert-line)
 (define-key pel:insert   "t" 'pel-insert-iso8601-timestamp)
 (when pel-use-lice
+  (cl-eval-when 'compile (require 'lice))
   (use-package lice
     :ensure t
     :pin melpa
@@ -2043,6 +2091,7 @@ the ones defined from the buffer now."
 ;; To activate Re-Builder, do:  M-x re-builder
 (when pel-use-re-builder
   ;; re-builder is part of standard Emacs distribution.
+  (cl-eval-when 'compile (require 're-builder))
   (use-package re-builder
     ;; autoload it when one of the following commands is used.
     :commands re-builder
@@ -2057,6 +2106,7 @@ the ones defined from the buffer now."
 ;; - Function Keys - <f11> - Prefix ``<f11> S`` : Speedbar/SR-Speedbar commands
 
 (when pel-use-speedbar
+  (cl-eval-when 'compile (require 'sr-speedbar))
   (use-package sr-speedbar
     :ensure t
     :pin melpa
@@ -2110,6 +2160,7 @@ the ones defined from the buffer now."
 ;;       (message "Activating nhexl nibble mode"))))
 
 (when pel-use-nhexl-mode
+  (cl-eval-when 'compile (require 'nhexl-mode))
   (use-package nhexl-mode
     :ensure t
     :pin gnu
@@ -2247,6 +2298,7 @@ the ones defined from the buffer now."
 
 
 (when pel-use-ace-window
+  (cl-eval-when 'compile (require 'ace-window))
   (use-package ace-window
     :ensure t
     :pin melpa
@@ -2288,6 +2340,7 @@ the ones defined from the buffer now."
 ;; hook.  For now, we just defer the loading with a timer so it does not get
 ;; loaded right when Emacs is starting.
 (when pel-use-winner
+  (cl-eval-when 'compile (require 'winner))
   (use-package winner
     :defer 2
     :commands (winner-undo winner-redo)

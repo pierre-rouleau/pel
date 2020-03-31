@@ -2610,15 +2610,35 @@ The PEL Emacs Lisp files types are the following:
    - This file defines all PEL key bindings.
      It also contains the logic to install external packages lazily when
      the corresponding PEL option activates it.
-   - This file cannot be byte-compiled alone by an ``emacs -Q`` session
-     without warnings because it uses `use-package`_ logic to control
-     the installation and use of external packages that are most likely
-     not present on a new installation.  It also has logic to use other
-     packages that are not available from MELPA_ or ELPA_.
-     All of these packages are only used conditionally when a ``pel-use-``
-     customize variable corresponding to the needed package activates its
-     use. That allows the code to run without any issue when the activated
-     package is present and when absent packages are not activated.
+   - This file holds content similar to what users would put inside their Emacs
+     init.el file.
+
+     - This file is, however, byte-compiled.
+       But it is byte-compiled *after* every other PEL file has been
+       byte-compiled and also with all external packages available and loadable.
+
+       - The byte-compilation line for this file inside the Makefile_  loads the
+         user's init.el file.  The Makefile_ identifies it with the ``EMACS_INIT``
+         macro, and it is defined by default to be located inside
+         ``"~/.emacs.d/init.el"``.
+       - The external packages are loaded during byte-compilation of
+         `pel_keys.el`_ but **not** when it is loaded, at run-time.
+
+         - This is done using  ``cl-eval-when 'compile`` forms for each
+           package loaded via the `use-package`_ logic.
+
+       - The two above techniques allows byte-compilation of this file. The
+         byte-compilation provides a little extra speed and also provides an
+         extra validation of the file content.
+       - All external packages that originate from ELPA_, MELPA_ and
+         MELPA-STABLE_ will be automatically downloaded when PEL is installed
+         via the ``package-install`` command.
+       - 🚧 ⚠️  Some of the external packages are, however, **not** from the
+         Elpa-type archives (see the table in `Credits`_).  There is currently
+         no logic provided to install them automatically, you must install them
+         manually (which amounts to copy the respective files into a directory
+         that is identified in Emacs ``load-path``).
+
    - The file `pel_keys.el`_ loads the file `pel-autoload.el`_ to define the
      auto-loading of all PEL features.
 

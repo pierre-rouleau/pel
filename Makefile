@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau.swd@gmail.com>
-# Last Modified Time-stamp: <2020-03-30 15:05:22, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-03-30 17:31:20, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -363,14 +363,20 @@ pel-window.elc:         pel--base.elc
 
 
 # Target to byte-compile all Emacs Lisp files inside one Emacs Session.
-# Compile all files except pel_keys.el.
+# Compile all without any init configuration.
+# Compile pel_keys.el last, *with* init.el so it can find the external packages.
+# Note that pel_keys.el is a *canned* init.el that is byte-compiled to increase
+# its speed as much as possible and also checking as much as possible.
 compile: pel
 
 pel: $(ELC_FILES)
+	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -f batch-byte-compile pel_keys.el
+
 
 # Target to control file linting with the elisp-lint package.
 # This requires access to a load-path that can find elisp-lint as well
-# as all the tools it uses.  So the Emacs init file is included.
+# as all the tools it uses and all packages used by PEL.
+# This is why the Emacs init file is loaded.
 .PHONY: lint
 lint:
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -l elisp-lint.el -f elisp-lint-files-batch \
@@ -389,7 +395,6 @@ test:
 	@printf "***** Running Integration tests\n"
 	$(EMACS) --batch -L . -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
 
-#	$(EMACS) --batch -L . -l ~/.emacs.d/init.el -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
 # -----------------------------------------------------------------------------
 # Dependency rule to create the directory used for creating a Tar file and
 # copy files into proper locations inside that directory tree.
