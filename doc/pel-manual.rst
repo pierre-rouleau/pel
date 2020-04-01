@@ -358,7 +358,7 @@ sites. To use them they need to be copied locally.  Copy them inside the
 
 This version of PEL uses the following:
 
-- framemove_ : copy it from `here <https://www.emacswiki.org/emacs/download/framemove.el>`_.
+- framemove_ : copy it from its `Git Emacsmirror page here <https://github.com/emacsmirror/emacswiki.org/blob/master/framemove.el>>`_.
 
 
 Create And Install the PEL Emacs Package Archive tar file into pelpa
