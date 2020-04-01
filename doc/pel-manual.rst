@@ -358,7 +358,9 @@ sites. To use them they need to be copied locally.  Copy them inside the
 
 This version of PEL uses the following:
 
-- framemove_ : copy it from its `Git Emacsmirror page here <https://github.com/emacsmirror/emacswiki.org/blob/master/framemove.el>`_.
+- framemove_ : copy it from its `Git Emacsmirror page here
+  <https://github.com/emacsmirror/emacswiki.org/blob/master/framemove.el>
+  `_.
 
 
 Create And Install the PEL Emacs Package Archive tar file into pelpa
@@ -2389,9 +2391,9 @@ currently available.
   ``pel-use-`` variable and running the ``pel-init`` command.
   Running ``pel-init`` while the variable is ``nil`` will not force installation.
 
-============================== ============================================================= =================
+============================== ============================================================= =====================
 Variable                       Purpose and link to more info                                 Attempts Install
-============================== ============================================================= =================
+============================== ============================================================= =====================
 pel-use-ace-window             Enables use of the `ace-window package`_ to                   Yes, from MELPA_.
                                be able to navigate across windows easily.
 
@@ -2502,7 +2504,7 @@ pel-use-expand-region          Enables the use of the                           
 
 pel-use-framemove              Activates and enables the use of the                          Not yet.
                                framemove_ package. This extends the windmove                 This is hosted
-                               feature allowing to quickly move point to another             in the EmacsWiki
+                               feature allowing to quickly move point to another             in the Emacsmirror_
                                frame using the same mechanism as with windmove.              not in any ELPA
                                                                                              archive.
                                For now, this must be installed manually from
@@ -2614,7 +2616,7 @@ pel-use-winner                 Enables the use and the PEL key-bindings of winne
                                                                                              install. The
                                                                                              winner package
                                                                                              is part of Emacs.
-============================== ============================================================= =================
+============================== ============================================================= =====================
 
 
 
@@ -2770,7 +2772,9 @@ Note that this mechanism only works for external packages that are available fro
 Elpa compatible Emacs package archive site (ELPA_, MELPA_, a local Elpa archive,
 etc...)
 Some of the packages PEL uses are not hosted on these sites (yet) but on site
-like EmacsWiki_.  For the moment those packages must be installed manually.
+like EmacsWiki_ and Emacsmirror_.
+For the moment those packages must be installed manually.
+Sites hat are accessible securely are preferred.
 The list of external packages used by PEL is shown in the `Credits`_ section.
 
 
@@ -3217,7 +3221,7 @@ Package Name & Archive link   Archive Site
 elpy_                         MELPA_
 esup_                         MELPA_
 expand-region_                MELPA_
-framemove_                    EmacsWiki_
+framemove_                    Emacsmirror_
 free-keys_                    MELPA_
 goto-last-change_             MELPA_
 graphviz-dot-mode_            MELPA_
@@ -3299,6 +3303,7 @@ package-lint_                 MELPA_
 .. _SBCL:                      https://en.wikipedia.org/wiki/Steel_Bank_Common_Lisp
 .. _ELPA:                      https://elpa.gnu.org
 .. _framemove:                 https://www.emacswiki.org/emacs/FrameMove
+.. _Emacsmirror:               https://github.com/emacsmirror
 
 -----------------------------------------------------------------------------
 
