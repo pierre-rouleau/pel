@@ -371,9 +371,14 @@ sites. To use them they need to be copied locally.  Copy them inside the
 
 This version of PEL uses the following:
 
-- framemove_ : copy it from its `Git Emacsmirror page here
-  <https://github.com/emacsmirror/emacswiki.org/blob/master/framemove.el>
-  `_.
+- framemove_ : copy it from the `framemove Git Emacsmirror page`_.
+- vline_  : copy it from the `vline Git Emacsmirror page`_.
+
+
+
+.. _framemove Git Emacsmirror page: https://github.com/emacsmirror/framemove
+.. _vline Git Emacsmirror page:     https://github.com/emacsmirror/vline
+
 
 
 Create And Install the PEL Emacs Package Archive tar file into pelpa
@@ -1000,9 +1005,9 @@ PEL Highlight and Whitespace Management Support
 -----------------------------------------------
 
 :PDF Docs: `Highlight`_ , `Whitespaces`_.
-:PEL Customization: ``pel-use-rainbow-delimiters``
-:PEL Key Prefix: - **pel-highlight** : ``<f11> b h``
-                 - **pel-whitespace** : ``f11> t w``
+:PEL Customization: ``pel-use-rainbow-delimiters``, ``pel-use-vline``.
+:PEL Key Prefix: - **pel:highlight** : ``<f11> b h``
+                 - **pel:whitespace** : ``f11> t w``
                  - **pel:align** : ``<f11> t a``
 
 The file `pel-highlight.el`_ provides the following simple utility commands.
@@ -1025,6 +1030,12 @@ The file `pel-highlight.el`_ provides the following simple utility commands.
   - ``pel-toggle-indent-tabs-mode`` toggles the use of hard tabs and whitespace
     for indentation inside the current buffer (but does *not* tabify or untabify
     existing content.) It displays what's being used now.
+
+- When ``pel-use-vline`` user option is **t** the ``<f11> b h v`` key is bound
+  to vline-mode_ which toggles a vertical bar across the current window at
+  the cursor location.
+
+.. _vline-mode: https://www.emacswiki.org/emacs/VlineMode
 
 
 PEL Indentation Support Utilities
@@ -2516,11 +2527,11 @@ pel-use-expand-region          Enables the use of the                           
                                ☝️  See `PEL Mark Management Utilities`_.
 
 
-pel-use-framemove              Activates and enables the use of the                          Not yet.
-                               framemove_ package. This extends the windmove                 This is hosted
-                               feature allowing to quickly move point to another             in the Emacsmirror_
-                               frame using the same mechanism as with windmove.              not in any ELPA
-                                                                                             archive.
+pel-use-framemove              Activates and enables the use of the                          No. Must be
+                               framemove_ package. This extends the windmove                 installed manually
+                               feature allowing to quickly move point to another             from Emacsmirror_
+                               frame using the same mechanism as with windmove.
+
                                For now, this must be installed manually from
                                the framemove_ site.
 
@@ -2625,6 +2636,11 @@ pel-use-which-key              Enables the use of the which-key_ package.       
                                available after each prefix key.
                                PEL key binding system was designed to show nicely when
                                which-key is used. It default to nil.
+
+pel-use-vline                  Enables the use of vline-mode.                                Must be installed
+                               ☝️  See `PEL Highlight and Whitespace Management Support`_     manually from
+                                                                                             Emacsmirror_ .
+
 
 pel-use-winner                 Enables the use and the PEL key-bindings of winner-mode.      Nothing to
                                                                                              install. The
@@ -3256,6 +3272,7 @@ smooth-scrolling_             MELPA_
 sr-speedbar_                  MELPA_
 undo-tree_                    ELPA_
 `use-package`_                MELPA_
+vline_                        Emacsmirror_
 which-key_                    MELPA_
 ============================= ==========================
 
@@ -3317,6 +3334,7 @@ package-lint_                 MELPA_
 .. _SBCL:                      https://en.wikipedia.org/wiki/Steel_Bank_Common_Lisp
 .. _ELPA:                      https://elpa.gnu.org
 .. _framemove:                 https://www.emacswiki.org/emacs/FrameMove
+.. _vline:                     https://www.emacswiki.org/emacs/VlineMode
 .. _Emacsmirror:               https://github.com/emacsmirror
 
 -----------------------------------------------------------------------------

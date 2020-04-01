@@ -225,6 +225,12 @@ References:
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-vline nil
+  "Control whether PEL uses the `vline' package."
+  :group 'pel-pkg-for-buffer
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; -----------------------------------------------------------------------------
 ;; Text Insertion / Templates
 ;; --------------------------

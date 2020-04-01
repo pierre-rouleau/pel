@@ -1836,6 +1836,8 @@ the ones defined from the buffer now."
 (define-key pel:highlight      "r"  #'highlight-regexp)
 (define-key pel:highlight      "s"   'pel-toggle-hl-line-sticky)
 (define-key pel:highlight      "u"  #'unhighlight-regexp)
+(when pel-use-vline
+  (define-key pel:highlight    "v"  'vline-mode))
 (define-key pel:highlight      "w"  #'hi-lock-write-interactive-patterns)
 ;;
 
