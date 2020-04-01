@@ -597,7 +597,7 @@ PEL Abbreviation Management Support
 :PEL Key Prefix: **pel:abbrev** : ``<f11> a``
 
 PEL provides automatic activation of Hippie expansion when the
-``pel-use-hippie-expand`` customize variable is set to **t**.  Otherwise
+``pel-use-hippie-expand`` `user option`_ is set to **t**.  Otherwise
 it defaults to Dabbrev_ expansion.
 PEL also provides the **pel:abbrev** key map which provides access to some
 abbreviation related commands.  PEL binds it to ``<f11> a``.
@@ -607,7 +607,8 @@ abbreviations
 is located inside the file `pel.el`_.
 
 
-.. _Dabbrev: https://www.gnu.org/software/emacs/manual/html_node/emacs/Dynamic-Abbrevs.html#Dynamic-Abbrevs
+.. _user option: https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html
+.. _Dabbrev:     https://www.gnu.org/software/emacs/manual/html_node/emacs/Dynamic-Abbrevs.html#Dynamic-Abbrevs
 
 
 
@@ -664,7 +665,7 @@ For supporting bookmarks PEL provides the following:
 
 - PEL provides a set of key bindings under the
   **pel:bookmark** key prefix set to ``<f11> '`` by default.
-- If the ``pel-use-bm`` customize variable is set to **t** PEL add bindings to
+- If the ``pel-use-bm`` user option is set to **t** PEL add bindings to
   the visible bookmark commands and binds the **F2** key to ``bm-next`` which
   moves point to the next visible bookmark. PEL sets it to support bookmarks in
   several files and moving across files.
@@ -858,7 +859,7 @@ browser to load the specified URL.
     from point. It's mainly used for debugging when unexpected formats are
     encountered.
 
-When the ``pel-use-ido-mode`` customize variable is set to **t** ``pel-init``
+When the ``pel-use-ido-mode`` user option is set to **t** ``pel-init``
 activates IDO-mode_ everywhere, enables flex matching and prevents prompt when
 creating new buffers with ``C-x b``.
 
@@ -932,7 +933,7 @@ Instead PEL uses the following function keys:
 
 - **F2**, bound to ``bm-next`` (from `visible bookmarks`_)
   to quickly move to next visible bookmark
-  when the ``pel-use-bm`` customize variable is **t**.
+  when the ``pel-use-bm`` user option is **t**.
 - **F5**, bound to ``repeat``.
 - **F6**, the ``pel:f6`` prefix, which provides quick access to some
   often used commands.
@@ -967,7 +968,7 @@ PEL Grep Support
 :PEL Key Prefix: **pel:grep** : ``<f11> g``
 
 PEL provides the **pel:grep** (``<f11> g``) key map to regroup grep commands.
-If the ``pel-use-ripgrep`` customize variable is **t** that includes access to
+If the ``pel-use-ripgrep`` user option is **t** that includes access to
 the ``rg`` command that uses the fast ripgrep_ executable.
 
 .. _ripgrep: https://github.com/BurntSushi/ripgrep
@@ -1072,7 +1073,7 @@ PEL Keyboard Macro Utilities
 
 The file `pel-kmacros.el`- implements ``pel-kmacro-start-macro-or-insert-counter``
 used to replace the standard ``kmacro-start-macro-or-insert-counter`` to record
-a keyboard macro.  If the customize variable ``pel-kmacro-prompts`` is set to
+a keyboard macro.  If the user option ``pel-kmacro-prompts`` is set to
 **t**, the PEL function checks if the macro is already defined and if it is,
 prompts before allowing to replace the existing keyboard macro with a new one.
 It just offer a little protection.  And this protection can be reset by
@@ -1243,7 +1244,7 @@ PEL supports 3 types of section adornment styles:
 - Sphinx-Python style, a style with 6 levels supported by Sphinx.
 - CRiSPer style, a style with a title level (level 0) and 10 other levels.
 
-The default style is selected by the ``pel-rst-adornment-style`` customize variable.
+The default style is selected by the ``pel-rst-adornment-style`` user option.
 It can be changed for the current buffer using the following commands:
 
 - ``pel-rst-adorn-default`` selects the default style,
@@ -1283,7 +1284,7 @@ key                             binding
 The longer to type global prefix is always available: ``<f11> SPC r``.
 
 All of the above is activated by ``pel-init`` only when the
-``pel-use-rst-mode`` customize variable is set to **t**.
+``pel-use-rst-mode`` user option is set to **t**.
 
 
 
@@ -1549,7 +1550,7 @@ following commands are used:
   See `PEL Navigation Support`_.
 
 When the `smooth scrolling package`_ is available and ``pel-smooth-scrolling``
-customize variable is set to **t**, PEL provide a key binding to toggle smooth
+user option is set to **t**, PEL provide a key binding to toggle smooth
 scrolling on and off.  See the `Scrolling`_ PDF table for more info.
 
 .. _smooth scrolling package: https://melpa.org/#/smooth-scrolling
@@ -1614,7 +1615,7 @@ PEL Speedbar Management
 
 The file `pel-speedbar.el`_ manages the accessibility and use of Emacs speed-bars:
 both Emacs native Speedbar and the `SR-Speedbar`_ external package.
-When the ``pel-use-speedbar`` customize variable is set to **t** PEL provides
+When the ``pel-use-speedbar`` user option is set to **t** PEL provides
 key bindings for activating the speed-bars and provide some management
 facilities. As shown in the PDF `Speedbar`_ table, Plus
 default key bindings for those use the ``<f11> S`` prefix.
@@ -2392,7 +2393,7 @@ To customize PEL:
 PEL Use Variables
 -----------------
 
-The following table contains the list of the ``pel-use-`` customize variables
+The following table contains the list of the ``pel-use-`` user options
 currently available.
 
 **Note**:
@@ -2779,7 +2780,7 @@ is activated via `PEL customization`_ ``pel-use-`` customization variable.
 However, when using `Emacs package-install`_ to install PEL, then all
 dependencies identified by the `pel-pkg.el`_ file will be installed as well.
 They will be located inside your Emacs load-path but will only be loaded if the
-corresponding ``pel-use-`` customize variable is set to **t**.
+corresponding ``pel-use-`` user option is set to **t**.
 
 Note that this mechanism only works for external packages that are available from an
 Elpa compatible Emacs package archive site (ELPA_, MELPA_, a local Elpa archive,
