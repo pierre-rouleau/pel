@@ -1,7 +1,20 @@
 ==============================================
-pel -- Pragmatic Environment Library for Emacs
+PEL -- Pragmatic Environment Library for Emacs
 ==============================================
 
+This manual is for PEL version 0.0.1.
+
+    Copyright (c) 2020 Pierre Rouleau <prouleau.swd@gmail.com>
+
+
+    You can redistribute this document and/or modify it under the terms of the GNU
+    General Public License as published by the Free Software Foundation, either
+    version 3 of the License, or (at your option) any later version.
+
+
+    This document is distributed in the hope that it will be useful, but WITHOUT ANY
+    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+    PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 
 .. contents::  **Table Of Contents**
