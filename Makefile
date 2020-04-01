@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau.swd@gmail.com>
-# Last Modified Time-stamp: <2020-03-31 13:51:32, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-04-01 18:19:15, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -274,14 +274,16 @@ help:
 	@printf " * make pel       - byte compile all files. Nothing else done.\n"
 	@printf " * make compile   - byte compile all files. Nothing else done.\n"
 	@printf " * make lint      - check .el files with several tools via elisp-lint.\n"
-	@printf " * make clean     - remove all output files including $(PEL_TAR_FILE)\n"
+	@printf " * make all-dirs  - create all output and temporary directories.\n"
+	@printf " * make clean     - remove $(PELPA_DIR) and all output files including $(PEL_TAR_FILE)\n"
 	@printf " * make clean_tar - remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
+	@printf " * make clean_mypelpa - remove the directory $(PELPA_DIR)\n"
 	@printf " * make test      - Run the regression tests.\n"
 	@printf " * make pkg       - Build the tar file inside the $(OUT_DIR) directory.\n"
 	@printf " * make mypelpa   - Copy the tar file into a local package archive.\n"
 	@printf "\n"
 	@printf "LIMITATIONS:\n"
-    @printf "  - The package version number must be updated inside several\n"
+	@printf "  - The package version number must be updated inside several\n"
 	@printf "    files:\n"
 	@printf "    - Makefile\n"
 	@printf "    - pel.el\n"
@@ -506,8 +508,7 @@ pkg: | a-copy
 # If you want to replace the package with the same version you have to edit
 # archive-contents file and remove the entry for PEL inside it.
 
-.PHONY: mypelpa
-mypelpa:
+mypelpa: $(PELPA_DIR)
 	$(EMACS) --batch -L . -l $(EMACS_INIT) -l install-pel.el -f upload-pel-to-local-archive
 
 # -----------------------------------------------------------------------------
@@ -520,11 +521,14 @@ mypelpa:
 .PHONY: clean-tar
 
 clean-tar:
-	rm -f $(OUT_DIR)/$(PEL_TAR_FILE)
+	-rm -f $(OUT_DIR)/$(PEL_TAR_FILE)
 
-clean: clean-tar
+clean-mypelpa:
+	-rm -rf $(PELPA_DIR)
+
+clean: clean-tar clean-mypelpa
 	-rm *.elc
-	-rm -r $(OUT_DIR)
-	-rm -r $(TMP_DIR)
+	-rm -rf $(OUT_DIR)
+	-rm -rf $(TMP_DIR)
 
 # -----------------------------------------------------------------------------
