@@ -3195,6 +3195,10 @@ customization.  PEL's code is written to operate despite the absence of external
 packages that have not been activated but it expects presence of packages that are
 distributed with GNU Emacs.
 
+First PEL would not exists without `GNU Emacs`_.
+Most of the text in the PDF documentation comes from Emacs own documentation,
+both from the code docstrings and from the Emacs manuals.
+
 PEL uses the following libraries distributed with GNU Emacs:
 
 #. `bookmark    <https://github.com/emacs-mirror/emacs/blob/master/lisp/bookmark.el>`_
@@ -3226,6 +3230,7 @@ PEL uses the following libraries distributed with GNU Emacs:
 #. `winner      <https://github.com/emacs-mirror/emacs/blob/master/lisp/winner.el>`_
 
 
+.. _GNU Emacs: https://www.gnu.org/software/emacs/
 
 
 PEL has the following dependencies on the following external Emacs packages:
@@ -3280,6 +3285,8 @@ elisp-lint_                   MELPA_
 package-lint_                 MELPA_
 ============================= ==========================
 
+Thanks to everyone that has worked in the software listed above.
+Hopefully some people will find PEL useful to them.
 
 
 .. References
