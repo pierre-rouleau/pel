@@ -6,7 +6,7 @@ This file uses Org mode. Some useful (default) key-bindings:
  - Use "<backtab>" to cycle visibility of all nodes
  - Use "C-c C-o" to open links
 
-* First Version: 0.0.1
+* First Version: 0.1.0
 - This is the very first version of PEL, the Pragmatic Environment Library.
 
   - As described in [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#overview][PEL manual overview]] PEL is an hybrid package.
