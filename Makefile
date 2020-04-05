@@ -2,8 +2,8 @@
 #
 # Copyright (C) 2020 by Pierre Rouleau
 
-# Author: Pierre Rouleau <prouleau.swd@gmail.com>
-# Last Modified Time-stamp: <2020-04-02 11:20:54, updated by Pierre Rouleau>
+# Author: Pierre Rouleau <prouleau001@gmail.com>
+# Last Modified Time-stamp: <2020-04-05 16:31:02, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package

@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
-;; Author: Pierre Rouleau <prouleau.swd@gmail.com>
+;; Author: Pierre Rouleau <prouleau001@gmail.com>
 ;; URL: https://github.com/pierre-rouleau/pel
 ;; Version: 0.1.0
 ;; Package-Requires: ((emacs "24.1") (use-package "2.4"))

@@ -57,7 +57,7 @@
     (which-key           "20200216.1350")); melpa. Melpa-table : 3.4.0
 
   :url "https://github.com/pierre-rouleau/pel"
-  :authors '(("Pierre Rouleau" . "prouleau.swd@gmail.com")))
+  :authors '(("Pierre Rouleau" . "prouleau001@gmail.com")))
 
 ;; The following packages are useful for development but not
 ;; required to use PEL

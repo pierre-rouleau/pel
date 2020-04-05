@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
-;; Author: Pierre Rouleau <prouleau.swd@gmail.com>
+;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.

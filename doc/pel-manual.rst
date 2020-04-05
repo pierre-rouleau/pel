@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 This manual is for PEL version 0.1.0.
 
-    Copyright (c) 2020 Pierre Rouleau <prouleau.swd@gmail.com>
+    Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
 
     You can redistribute this document and/or modify it under the terms of the GNU
