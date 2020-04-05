@@ -2,7 +2,7 @@
 pel -- Pragmatic Environment Library for Emacs
 ==============================================
 
-PEL is an hybrid package. It is:
+PEL is a hybrid package. It is:
 
 - an Emacs key binding documentation project
   (see `Key Bindings Documentation`_),
