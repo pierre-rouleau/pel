@@ -60,9 +60,8 @@
 ;;; Code:
 
 (require 'pel--base)                    ; use: pel--n-funcall-to
-(eval-when-compile
-  (require 'subword)                    ; use: superword-mode
-  (require 'pel-scroll))                ; use: pel-in-scroll-sync
+(require 'pel-scroll)                   ; use: pel-in-scroll-sync
+(require 'subword)                      ; use: superword-mode
 
 ;; -----------------------------------------------------------------------------
 ;; Smart Beginning of line
