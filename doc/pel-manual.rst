@@ -1313,7 +1313,7 @@ key            Emphasis
 ``<f12> b``    Bold
 ``<f12> i``    Italic
 ``<f12> l``    Literal
-``<f12> ` ``   Interpreted text
+``<f12> ```    Interpreted text
 ============== ====================
 
 
