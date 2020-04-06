@@ -166,7 +166,7 @@ if N is 0 use previous line, etc..."
 When UPDATE is non-nil do not add a new line after the underlining line,
 but when UPDATE is nil, it adds a new line after the underlining.
 `pel-rst-adorn' leaves the cursor unmoved, on the title line."
-  (interactive "p")
+  (interactive "p*")
   (pel--rst-activate-adornment-style)
   (if (>= level (length rst-preferred-adornments))
       (user-error
@@ -201,67 +201,67 @@ but when UPDATE is nil, it adds a new line after the underlining.
 ;;-pel-autoload
 (defun pel-rst-adorn-title ()
   "Adorn current line with level-0 (title) reStructuredText section adornment."
-  (interactive)
+  (interactive "*")
   (pel-rst-adorn 0))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-1 ()
   "Adorn current line with level-1 reStructuredText section adornment."
-  (interactive)
+  (interactive "*")
   (pel-rst-adorn 1))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-2 ()
   "Adorn current line with level-2 reStructuredText section adornment."
-  (interactive)
+  (interactive "*")
   (pel-rst-adorn 2))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-3 ()
   "Adorn current line with level-3 reStructuredText section adornment."
-  (interactive)
+  (interactive "*")
   (pel-rst-adorn 3))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-4 ()
   "Adorn current line with level-4 reStructuredText section adornment."
-  (interactive)
+  (interactive "*")
   (pel-rst-adorn 4))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-5 ()
   "Adorn current line with level-5 reStructuredText section adornment."
-  (interactive)
+  (interactive "*")
   (pel-rst-adorn 5))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-6 ()
   "Adorn current line with level-6 reStructuredText section adornment."
-  (interactive)
+  (interactive "*")
   (pel-rst-adorn 6))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-7 ()
   "Adorn current line with level-7 reStructuredText section adornment."
-  (interactive)
+  (interactive "*")
   (pel-rst-adorn 7))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-8 ()
   "Adorn current line with level-8 reStructuredText section adornment."
-  (interactive)
+  (interactive "*")
   (pel-rst-adorn 8))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-9 ()
   "Adorn current line with level-9 reStructuredText section adornment."
-  (interactive)
+  (interactive "*")
   (pel-rst-adorn 9))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-10 ()
   "Adorn current line with level-10 reStructuredText section adornment."
-  (interactive)
+  (interactive "*")
   (pel-rst-adorn 10))
 
 (defun pel--rst-level-for (char)
@@ -364,7 +364,7 @@ REQUIREMENT: the line must not have trailing whitespaces."
   "Adorn current line with the same level as the previous section.
 If the line is already adorned, update the adornment:
 adjust to previous section level."
-  (interactive)
+  (interactive "*")
   (pel--rst-activate-adornment-style)
   (let ((previous-level (pel--rst-adorn-level-of-previous-section)))
     (if previous-level
@@ -383,7 +383,7 @@ adjust to previous section level."
 (defun pel-rst-adorn-refresh ()
   "Refresh the adornment of the current line.
 This helps when the length of the line changes."
-  (interactive)
+  (interactive "*")
   (pel--rst-activate-adornment-style)
   (let ((current-level (save-excursion
                          (forward-line 1)
@@ -587,10 +587,9 @@ Reference: see reStructuredText hyperlink format at URL
 
 ;; --
 
-(defun pel-rst-bold ()
-  "Mark current word or marked region bold.
-Leave point after to the next character."
-  (interactive)
+(defun pel--rst-emphasize-with (str)
+  "Emphasize the current word or marked area using STR.
+Leave point right after the emphasized text."
   (let* ((p-begin (if (region-active-p)
                       (region-beginning)
                     (car (bounds-of-thing-at-point 'word))))
@@ -599,30 +598,36 @@ Leave point after to the next character."
                   (cdr (bounds-of-thing-at-point 'word)))))
     (deactivate-mark)
     (goto-char p-end)
-    (insert "**")
+    (insert str)
     (goto-char p-begin)
-    (insert "**")
+    (insert str)
     (goto-char p-end)
-    (forward-char 4)))
+    (forward-char (* 2 (length str)))))
 
+
+(defun pel-rst-bold ()
+  "Mark current word or marked region bold.
+Leave point after to the next character."
+  (interactive "*")
+  (pel--rst-emphasize-with "**"))
 
 (defun pel-rst-italic ()
   "Mark current word or marked region italic.
 Leave point after to the next character."
-  (interactive)
-  (let* ((p-begin (if (region-active-p)
-                      (region-beginning)
-                    (car (bounds-of-thing-at-point 'word))))
-         (p-end (if (region-active-p)
-                    (region-end)
-                  (cdr (bounds-of-thing-at-point 'word)))))
-    (deactivate-mark)
-    (goto-char p-end)
-    (insert "*")
-    (goto-char p-begin)
-    (insert "*")
-    (goto-char p-end)
-    (forward-char 2)))
+  (interactive "*")
+  (pel--rst-emphasize-with "*"))
+
+(defun pel-rst-literal ()
+    "Mark current word or marked region literal.
+Leave point after to the next character."
+  (interactive "*")
+  (pel--rst-emphasize-with "``"))
+
+(defun pel-rst-interpreted ()
+    "Mark current word or marked region interpreted.
+Leave point after to the next character."
+  (interactive "*")
+  (pel--rst-emphasize-with "`"))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-rst)

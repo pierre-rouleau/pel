@@ -1213,7 +1213,8 @@ This means that only one explicit hyperlink target reference location can be
 remembered per file.  You can set any number of them, but only the last one will
 be retained inside the bookmark across Emacs sessions.
 
-**Section Adornment Support**
+Section Adornment Support
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The default support for line title adornments done by the ``rst-adjust``
 function does not always work and fails when some markup is used.
@@ -1297,10 +1298,23 @@ The longer to type global prefix is always available: ``<f11> SPC r``.
 All of the above is activated by ``pel-init`` only when the
 ``pel-use-rst-mode`` user option is set to **t**.
 
-
-
 .. _reStructuredText: https://en.wikipedia.org/wiki/ReStructuredText
 .. _external hyperlink targets: https://docutils.sourceforge.io/docs/user/rst/quickref.html#hyperlink-targets
+
+Text Emphasis
+^^^^^^^^^^^^^
+
+PEL provides four commands to put emphasis markup aound the current word or
+marked area. The following commands are available for reStructuredText:
+
+============== ====================
+key            Emphasis
+============== ====================
+``<f12> b``    Bold
+``<f12> i``    Italic
+``<f12> l``    Literal
+``<f12> ` ``   Interpreted text
+============== ====================
 
 
 

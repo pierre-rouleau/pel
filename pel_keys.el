@@ -1348,6 +1348,8 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   ;;
   (define-key pel:for-reST "b" 'pel-rst-bold)
   (define-key pel:for-reST "i" 'pel-rst-italic)
+  (define-key pel:for-reST "l" 'pel-rst-literal)
+  (define-key pel:for-reST "`" 'pel-rst-interpreted)
   ;;
   (define-pel-global-prefix pel:rst-adorn-style (kbd "<f11> SPC r A"))
   (define-key pel:rst-adorn-style "d" 'pel-rst-adorn-default)
