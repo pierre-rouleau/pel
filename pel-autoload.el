@@ -213,28 +213,33 @@
 
   ;; pel-rst
   (when (and (boundp 'pel-use-rst-mode) pel-use-rst-mode)
-    (autoload 'pel-rst-set-ref-bookmark         "pel-rst")
-    (autoload 'pel-rst-goto-ref-bookmark        "pel-rst")
-    (autoload 'pel-rst-makelink                 "pel-rst")
-    (autoload 'pel-rst-set-adornment            "pel-rst")
-    (autoload 'pel-rst-adorn-default            "pel-rst")
-    (autoload 'pel-rst-adorn-Sphinx-Python      "pel-rst")
-    (autoload 'pel-rst-adorn-CRiSPer            "pel-rst")
-    (autoload 'pel-rst-adorn-title              "pel-rst")
-    (autoload 'pel-rst-adorn-1                  "pel-rst")
-    (autoload 'pel-rst-adorn-2                  "pel-rst")
-    (autoload 'pel-rst-adorn-3                  "pel-rst")
-    (autoload 'pel-rst-adorn-4                  "pel-rst")
-    (autoload 'pel-rst-adorn-5                  "pel-rst")
-    (autoload 'pel-rst-adorn-6                  "pel-rst")
-    (autoload 'pel-rst-adorn-7                  "pel-rst")
-    (autoload 'pel-rst-adorn-8                  "pel-rst")
-    (autoload 'pel-rst-adorn-9                  "pel-rst")
-    (autoload 'pel-rst-adorn-10                 "pel-rst")
-    (autoload 'pel-rst-adorn-refresh            "pel-rst")
-    (autoload 'pel-rst-adorn-same-level         "pel-rst")
-    (autoload 'pel-rst-adorn-increase-level     "pel-rst")
-    (autoload 'pel-rst-adorn-decrease-level     "pel-rst"))
+    (dolist (fct '(pel-rst-set-ref-bookmark
+                   pel-rst-goto-ref-bookmark
+                   pel-rst-makelink
+                   pel-rst-set-adornment
+                   pel-rst-adorn-default
+                   pel-rst-adorn-Sphinx-Python
+                   pel-rst-adorn-CRiSPer
+                   pel-rst-adorn-title
+                   pel-rst-adorn-1
+                   pel-rst-adorn-2
+                   pel-rst-adorn-3
+                   pel-rst-adorn-4
+                   pel-rst-adorn-5
+                   pel-rst-adorn-6
+                   pel-rst-adorn-7
+                   pel-rst-adorn-8
+                   pel-rst-adorn-9
+                   pel-rst-adorn-10
+                   pel-rst-adorn-refresh
+                   pel-rst-adorn-same-level
+                   pel-rst-adorn-increase-level
+                   pel-rst-adorn-decrease-level
+                   pel-rst-bold
+                   pel-rst-italic
+                   pel-rst-literal
+                   pel-rst-interpreted))
+      (autoload fct "pel-rst")))
 
   ;; pel-scroll
   (autoload 'pel-toggle-scroll-sync              "pel-scroll")
