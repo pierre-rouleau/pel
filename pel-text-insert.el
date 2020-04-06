@@ -94,7 +94,7 @@ absolute path, if negative it omits the path."
         (insert (pel-current-buffer-filename no-path))
       (let ((original-window (selected-window))
             fname)
-        (require 'pel-window)
+        (require 'pel-window nil :no-error)
         (save-excursion
           (if (fboundp 'pel-move-to-window)
               (progn

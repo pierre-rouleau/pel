@@ -353,7 +353,7 @@ the filtering and `kill-ring' appending capabilities."
           (progn
             ;; lazy load delsel because it's the only used here.
             ;; delsel is part of standard Emacs distribution.
-            (require 'delsel)
+            (require 'delsel nil :no-error)
             (if (fboundp 'delete-active-region)
                 ;; when n>0, kill region otherwise delete it
                 (delete-active-region (> n 0))))
