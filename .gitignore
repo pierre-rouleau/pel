@@ -27,6 +27,7 @@ TAGS
 
 # Build output
 out/*
+tmp-copies/*
 
 # Local Elpa-compliant Emacs package archive
 pelpa/*
