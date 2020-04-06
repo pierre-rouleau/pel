@@ -1,5 +1,11 @@
 # Identifies files to be ignored by Git.
 
+# Temporary holding directories
+tmp/*
+old/*
+# Directory holding potentially future files
+other/*
+
 # Byte-Compiled Emacs Lisp files
 *.elc
 
