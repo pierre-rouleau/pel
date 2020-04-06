@@ -1346,6 +1346,9 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   (define-key pel:for-reST "n" 'rst-forward-section)
   (define-key pel:for-reST "p" 'rst-backward-section)
   ;;
+  (define-key pel:for-reST "b" 'pel-rst-bold)
+  (define-key pel:for-reST "i" 'pel-rst-italic)
+  ;;
   (define-pel-global-prefix pel:rst-adorn-style (kbd "<f11> SPC r A"))
   (define-key pel:rst-adorn-style "d" 'pel-rst-adorn-default)
   (define-key pel:rst-adorn-style "S" 'pel-rst-adorn-Sphinx-Python)

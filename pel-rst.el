@@ -584,6 +584,46 @@ Reference: see reStructuredText hyperlink format at URL
         (user-error "Bookmarked reference link area has no space for new entry!\
   Move there with pel-rst-goto-ref-bookmark then add lines!")))))
 
+
+;; --
+
+(defun pel-rst-bold ()
+  "Mark current word or marked region bold.
+Leave point after to the next character."
+  (interactive)
+  (let* ((p-begin (if (region-active-p)
+                      (region-beginning)
+                    (car (bounds-of-thing-at-point 'word))))
+         (p-end (if (region-active-p)
+                    (region-end)
+                  (cdr (bounds-of-thing-at-point 'word)))))
+    (deactivate-mark)
+    (goto-char p-end)
+    (insert "**")
+    (goto-char p-begin)
+    (insert "**")
+    (goto-char p-end)
+    (forward-char 4)))
+
+
+(defun pel-rst-italic ()
+  "Mark current word or marked region italic.
+Leave point after to the next character."
+  (interactive)
+  (let* ((p-begin (if (region-active-p)
+                      (region-beginning)
+                    (car (bounds-of-thing-at-point 'word))))
+         (p-end (if (region-active-p)
+                    (region-end)
+                  (cdr (bounds-of-thing-at-point 'word)))))
+    (deactivate-mark)
+    (goto-char p-end)
+    (insert "*")
+    (goto-char p-begin)
+    (insert "*")
+    (goto-char p-end)
+    (forward-char 2)))
+
 ;; -----------------------------------------------------------------------------
 (provide 'pel-rst)
 
