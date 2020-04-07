@@ -3217,6 +3217,32 @@ I am open to suggestions. And can provide the Numbers file on request.
 .. _PDF files: `PDF Document Tables`_
 
 
+Limitations & Bugs
+------------------
+
+#. **Dual-stage autoloading limitation**.
+   PEL dual-stage autoloading currently will not show the PEL commands that are
+   part of currently not loaded PEL files when trying to execute them with the
+   ``M-x`` key or when attempting tab completion.  The command will be visible
+   via ``<f1> o`` and ``<f1> f`` (or their ``C-h`` equivalent) but you'll see
+   that their doc-strings are not loaded.  However, the PEL key-binding for the
+   command will work, that will load the corresponding PEL file and then the
+   ``M-x`` command and tab completion will work from then on.  Also before
+   loading the file,if `which-key`_ is activated the commands will all show
+   regardless of their load status.
+
+
+Planning and Future
+-------------------
+
+At this point there's no formal planning for this project.
+
+I have mainly been writing this as a way for me to learn and remember Emacs as a
+tool and Emacs Lisp as a programming language.  But I am planning to use it for
+most of my upcoming work and will continue to document what I learn and what I
+use when developping in various programming languages and doing various tasks.
+
+
 ..
    -----------------------------------------------------------------------------
 
