@@ -1880,9 +1880,9 @@ the ones defined from the buffer now."
 ;;
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> d`` : draw commands
+;; - Function Keys - <f11> - Prefix ``<f11> D`` : draw commands
 
-(define-pel-global-prefix pel:draw (kbd "<f11> d"))
+(define-pel-global-prefix pel:draw (kbd "<f11> D"))
 (define-key pel:draw "a"  'artist-mode)       ; toggle artist-mode
 (define-key pel:draw "p"  'picture-mode)      ; activate picture-mode
 

@@ -815,12 +815,12 @@ PEL Drawing Support
 
 :PDF Docs: `Drawing`_.
 :PEL Customization: *none*
-:PEL Key Prefix: **pel:draw** : ``<f11> d``
+:PEL Key Prefix: **pel:draw** : ``<f11> D``
 
 PEL provides key bindings to enter the Emacs text drawing modes:
 
-- ``<f11> d a``: toggle artist mode.
-- ``<f11> d p``: enter picture-mode.
+- ``<f11> D a``: toggle artist mode.
+- ``<f11> D p``: enter picture-mode.
 
 ☝️  The picture-mode can be quite useful to edit tabular data as well as editing
 tables for markup languages like reStructuredText or even for lining text
@@ -2009,6 +2009,7 @@ key                             binding
 ``<f11> =``                     pel:copy
 ``<f11> ?``                     pel:help
 ``<f11> C``                     pel:clipboard
+``<f11> D``                     pel:draw
 ``<f11> F``                     pel:frame
 ``<f11> S``                     pel:speedbar
 ``<f11> [``                     **pel-cua-move-rectangle-left**
@@ -2016,7 +2017,6 @@ key                             binding
 ``<f11> a``                     pel:abbrev
 ``<f11> b``                     pel:buffer
 ``<f11> c``                     pel:count
-``<f11> d``                     pel:draw
 ``<f11> f``                     pel:file
 ``<f11> g``                     pel:grep
 ``<f11> i``                     pel:insert
