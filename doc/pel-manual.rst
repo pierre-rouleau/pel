@@ -3228,7 +3228,7 @@ Limitations & Bugs
    that their doc-strings are not loaded.  However, the PEL key-binding for the
    command will work, that will load the corresponding PEL file and then the
    ``M-x`` command and tab completion will work from then on.  Also before
-   loading the file,if `which-key`_ is activated the commands will all show
+   loading the file, if `which-key`_ is activated the commands will all show
    regardless of their load status.
 
 
