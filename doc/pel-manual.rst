@@ -810,6 +810,23 @@ text, targeting specific syntax entities or other simpler parts.
   termination.
 
 
+PEL Diff and Merge
+------------------
+
+:PDF Docs: `Diff and Merge`_.
+:PEL Customization: *none*
+:PEL Key Prefix: - **pel:diff** : ``<f11> d``
+                 - **pel:ediff** : ``<f11> e``
+
+                   - **pel:ediff-buffer**  : ``<f11> e b``
+                   - **pel:ediff-dirs**    : ``<f11> e d``
+                   - **pel:ediff-files**   : ``<f11> e f``
+                   - **pel:ediff-merge**   : ``<f11> e m``
+                   - **pel:ediff-patch**   : ``<f11> e p``
+                   - **pel:ediff-regions** : ``<f11> e r``
+
+PEL provides key bindings to Emacs diff end ediff commands.
+
 PEL Drawing Support
 -------------------
 
@@ -2017,6 +2034,8 @@ key                             binding
 ``<f11> a``                     pel:abbrev
 ``<f11> b``                     pel:buffer
 ``<f11> c``                     pel:count
+``<f11> d``                     pel:diff
+``<f11> e``                     pel:ediff
 ``<f11> f``                     pel:file
 ``<f11> g``                     pel:grep
 ``<f11> i``                     pel:insert
@@ -2264,6 +2283,7 @@ PDF Document Tables
 .. _Comments:                                 pdf/comments.pdf
 .. _Counting:                                 pdf/counting.pdf
 .. _Cut, Delete, Copy and Paste:              pdf/cut-paste.pdf
+.. _Diff and Merge:                           pdf/diff-merge.pdf
 .. _Display Lines:                            pdf/display-lines.pdf
 .. _Drawing:                                  pdf/drawing.pdf
 .. _Enriched Text:                            pdf/enriched-text.pdf
