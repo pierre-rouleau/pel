@@ -654,6 +654,16 @@ It provides the following commands:
 - ``pel-complete`` performs an explicit completion using the completion mode
   enabled in the current buffer.
 
+PEL Autosvae & Backup Documentation
+-----------------------------------
+
+:PDF Docs: `Autosave & Backups`_.
+:PEL Customization: *none*
+:PEL Key Prefix: *none*
+
+PEL provides a table describing the autosave and backup commands in the
+`Autosave & Backups`_ PDF file.
+
 PEL Bookmark Management Utilities
 ---------------------------------
 
@@ -2209,6 +2219,7 @@ PDF Document Tables
 #. `Abbreviations`_
 #. `Align`_
 #. `Auto-Completion`_
+#. `Autosave & Backups`_
 #. `Bookmarks`_
 #. `Buffers`_
 #. `Case Conversion`_
@@ -2280,6 +2291,7 @@ PDF Document Tables
 .. _Abbreviations:                            pdf/abbreviations.pdf
 .. _Align:                                    pdf/align.pdf
 .. _Auto-Completion:                          pdf/auto-completion.pdf
+.. _Autosave & Backups:                       pdf/autosave-backup.pdf
 .. _Bookmarks:                                pdf/bookmarks.pdf
 .. _Buffers:                                  pdf/buffers.pdf
 .. _Case Conversion:                          pdf/case-conversion.pdf
