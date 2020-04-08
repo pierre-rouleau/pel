@@ -2201,7 +2201,7 @@ PDF Document Tables
 #. `File and Directory Local Variables`_
 #. `Modifier Keys`_
 
-**Emacs Operations:**
+**Basic Emacs Operations:**
 
 #. `Abbreviations`_
 #. `Align`_
@@ -2213,6 +2213,7 @@ PDF Document Tables
 #. `Comments`_
 #. `Counting`_
 #. `Cut, Delete, Copy and Paste`_ (killing and yanking)
+#. `Diff and Merge`_
 #. `Display Lines`_
 #. `Enriched Text`_
 #. `Faces and Fonts`_
