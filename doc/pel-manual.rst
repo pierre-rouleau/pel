@@ -861,7 +861,10 @@ PEL File Management Utilities
 
 :PDF Docs: `File Management`_, `Dired`_.
 :PEL Customization: ``pel-use-ido-mode``.
-:PEL Key Prefix: **pel:file** : ``<f11> f``
+:PEL Key Prefix: - **pel:file** : ``<f11> f``
+
+                   - **pel:file-revert** : ``<f11> f r``
+                   - **pel:filevar** :     ``<f11> f v``
 
 The `pel-file.el`_ file provides logic to extra the name of a file or a URL from
 text at point and visit (open) that file inside an Emacs buffer or launch a web

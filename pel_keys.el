@@ -1801,7 +1801,6 @@ the ones defined from the buffer now."
 (define-pel-global-prefix pel:buffer (kbd "<f11> b"))
 (define-key pel:buffer "-"  #'ruler-mode)
 (define-key pel:buffer "c"  #'clone-buffer)
-(define-key pel:buffer "i"  #'insert-file)
 (define-key pel:buffer "k"  #'kill-current-buffer)
 (define-key pel:buffer "l"   'pel-switch-to-last-used-buffer)
 (define-key pel:buffer "n"  #'next-buffer)
@@ -1959,18 +1958,24 @@ the ones defined from the buffer now."
 
 (declare-function find-grep "grep")
 (define-pel-global-prefix pel:file (kbd "<f11> f"))
-(define-key pel:file "A" #'auto-revert-mode)
-(define-key pel:file " "  'pel-auto-revert-set-timer) ; cancel/restart the timer
+(define-key pel:file "I" #'insert-file-literally)
+(define-key pel:file "O" #'find-file-read-only-other-window)
+(define-key pel:file "W" #'append-to-file)
 (define-key pel:file "d" #'find-dired)
 (define-key pel:file "g" #'find-grep)
 (define-key pel:file "h" #'find-grep-dired)
+(define-key pel:file "i" #'insert-file)
 (define-key pel:file "l" #'find-lisp-find-dired)
 (define-key pel:file "n" #'find-name-dired)
 (define-key pel:file "o" #'find-file-other-window)
-(define-key pel:file "r" #'find-file-read-only-other-window)
-(define-key pel:file "R" #'revert-buffer)
-(define-key pel:file "T" #'auto-revert-tail-mode)
 (define-key pel:file "t" #'time-stamp)
+(define-key pel:file "w" #'write-region)
+
+(define-pel-global-prefix pel:file-revert (kbd "<f11> f r"))
+(define-key pel:file-revert "a" #'auto-revert-mode)
+(define-key pel:file-revert " "  'pel-auto-revert-set-timer) ; cancel/restart the timer
+(define-key pel:file-revert "f" #'revert-buffer)
+(define-key pel:file-revert "t" #'auto-revert-tail-mode)
 ;;
 
 ;; - Open file at point
