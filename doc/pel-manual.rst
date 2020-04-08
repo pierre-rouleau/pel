@@ -1102,7 +1102,7 @@ PEL Keyboard Macro Utilities
 :PEL Customization: ``pel-kmacro-prompts``.
 :PEL Key Prefix: *none*
 
-The file `pel-kmacros.el`- implements ``pel-kmacro-start-macro-or-insert-counter``
+The file `pel-kmacros.el`_ implements ``pel-kmacro-start-macro-or-insert-counter``
 used to replace the standard ``kmacro-start-macro-or-insert-counter`` to record
 a keyboard macro.  If the user option ``pel-kmacro-prompts`` is set to
 **t**, the PEL function checks if the macro is already defined and if it is,
