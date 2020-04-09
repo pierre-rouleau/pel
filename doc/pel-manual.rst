@@ -977,6 +977,11 @@ Instead PEL uses the following function keys:
 -  **F12** is a mode-sensitive key prefix with quick access bindings for the
    current major mode.
 
+The use of function keys and Emacs modifier keys is shown in the `Function
+Keys`_ PDF table, reproduced here:
+
+.. image:: res/fn-keys.png
+
 
 The **F11** acts as a the main prefix for PEL: the prefix ``pel:``.
 Several sub-prefixes are available after ``<f11>`` but also some command
