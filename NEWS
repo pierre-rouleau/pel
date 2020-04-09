@@ -6,6 +6,17 @@ This file uses Org mode. Some useful (default) key-bindings:
  - Use "<backtab>" to cycle visibility of all nodes
  - Use "C-c C-o" to open links
 
+* Version: 0.1.1
+- new features:
+  - rst support: added commands for text emphasis (bold, italic, literal, interpreted).
+  - modified keymap: draw is now ``<f11> D``.
+  - added support and documentation for diff/ediff (with keymaps ``<f11> d`` and ``<f11> e``.
+  - Added support for Magit and Monky and ``<f11> v`` keymap for (D)VCS.
+  - Added ``pel-end-of-line`` which helps move before trailing spaces.
+  - Documentation: documented autoave & backup
+  - Documentation: described limitations in the dual-stage autoloading.
+- fixes:
+  - navigation: fixed autoloading
 * First Version: 0.1.0
 - This is the very first version of PEL, the Pragmatic Environment Library.
 

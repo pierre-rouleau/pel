@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2020-04-05 16:31:02, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-04-09 12:27:37, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -54,7 +54,7 @@ EMACS_INIT = "~/.emacs.d/init.el"
 
 # -----------------------------------------------------------------------------
 # PEL Package Version - increase this number on each release
-PEL_VERSION := 0.1.0
+PEL_VERSION := 0.1.1
 
 # NOTE: Also update the version numbers in the following files:
 # - NEWS

@@ -165,6 +165,7 @@
 
   ;; pel-navigate
   (autoload 'pel-beginning-of-line            "pel-navigate")
+  (autoload 'pel-end-of-line                  "pel-navigate")
   (autoload 'pel-newline-and-indent-below     "pel-navigate")
   (autoload 'pel-find-thing-at-point          "pel-navigate")
   (autoload 'pel-show-char-syntax             "pel-navigate")

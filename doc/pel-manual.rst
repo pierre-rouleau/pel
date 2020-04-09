@@ -2,7 +2,7 @@
 PEL -- Pragmatic Environment Library for Emacs
 ==============================================
 
-This manual is for PEL version 0.1.0.
+This manual is for PEL version 0.1.1.
 
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1403,6 +1403,9 @@ complement the standard Emacs navigation commands.
 - ``pel-beginning-of-line`` is meant to replace ``beginning-of-line`` as it does
   the same and extends it: if point is already at the beginning of the line
   then it moves it to the first non-whitespace character.
+- ``pel-end-of-line`` is also replacing ``end-of-line``. If the point is
+  already at the end of the line, then point moves to beginning of trailing
+  whitespace if there is any (otherwise point does not move).
 - ``pel-newline-and-indent-below`` is useful as a variant of the return key.
 - ``pel-find-thing-at-point`` provides a search capability without the need for
   a tag database but it is limited in what it can find.  It's a poor man
@@ -1456,7 +1459,6 @@ PEL Package Management Documentation
 :PDF Docs: `Packages`_.
 :PEL Customization: *none*
 :PEL Key Prefix: *none*
-
 
 PEL provides the  `Packages`_ PDF table listing Emacs commands dealing with
 Emacs package management.
@@ -1890,6 +1892,25 @@ If the ``pel-use-goto-last-change`` customization variable is set to **t** it
 also provides access to the ``goto-last-change`` command and binds it.
 All key binding details are in the `Undo, Redo, Repeat and Prefix Arguments`_ PDF table.
 
+PEL (D)VCS Support
+------------------
+
+:PDF Docs: `Mercurial`_.
+:PEL Customization: ``pel-use-magit``, ``pel-use-monky``.
+:PEL Key Prefix: **pel:vcs** : ``<f11> v``
+
+PEL documents the use of Emacs Version Control support in the `Mercurial`_
+document, one of several documents that will be written on VCS support (a
+document for Git will also be written in the future).
+PEL provides the **pel:vcs** key-map that gives access to
+Emacs standard `VC (Version Control)`_ directory command but also to Magit_ for
+Git_ and Monky_ for Mercurial_.
+
+.. _Git:                  https://en.wikipedia.org/wiki/Git
+.. _Mercurial:            https://en.wikipedia.org/wiki/Mercurial
+.. _Monky:                https://github.com/ananthakumaran/monky
+.. _Magit:                https://magit.vc
+.. _VC (Version Control): https://www.gnu.org/software/emacs/manual/html_node/emacs/Version-Control.html
 
 PEL Window Management Support
 -----------------------------

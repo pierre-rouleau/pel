@@ -1,5 +1,5 @@
 ;;; -*- no-byte-compile: t -*-
-(define-package "pel" "0.1.0" "Pragmatic Environment Library"
+(define-package "pel" "0.1.1" "Pragmatic Environment Library"
   ;; The handling of Emacs package versions varies widely from package
   ;; to package.  Unfortunately, version numbers that appear somewhat
   ;; *stable* or sometimes very misleading.
@@ -40,6 +40,8 @@
     (highlight-defined   "20181106.1718") ; melpa. Melpa-stable: 0.1.5
     (lice                "20191011.631")  ; melpa. Melpa-stable: 0.2
     (macrostep           "20161120.2106") ; melpa. Melpa-stable: 0.9
+    (magit               "20200408.2341") ; melpa. Melpa-stable: 2.90.1
+    (monky               "20190619.1637") ; melpa. Melpa-stable: 0.1 (old)
     (nhexl-mode          "1.4")           ; gnu
     (parinfer            "20180904.844")  ; melpa. Melpa-stable: 0.4.10
     (popup               "0.5.3")         ; melpa-stable. Melpa: 20160709.1429

@@ -838,10 +838,16 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; -------------------------------
 ;; - uses: pel-navigate
 ;;
-;; Remap standard 'beginning-of-line' to `pel-beginning-of-line'.  The PEL
+;; Remap standard `beginning-of-line' to `pel-beginning-of-line'.  The PEL
 ;; function combines the functionality of `beginning-of-line' and the function
-;; `back-to-indentation'.
+;; `back-to-indentation' so that the cursor moves to the beginning of line and
+;; then moves to the indentation.
 (global-set-key (kbd "C-a") 'pel-beginning-of-line)
+
+;; Remap standard `end-of-line' to `pel-end-of-line' for the similar reason:
+;; move to the end of line and then to the last non-whitespace in case there is
+;; trailing whitespace.
+(global-set-key (kbd "C-e") 'pel-end-of-line)
 
 ;; Augment word movement by adding M-n to move to the beginning of a word,
 ;; something that is not provided by the standard Emacs keys; it only has
@@ -1943,7 +1949,7 @@ the ones defined from the buffer now."
 ;; - Function Keys - <f11> - Prefix ``<f11> f`` : File operations
 
 (defun pel-auto-revert-set-timer ()
-  "Execute auto-revert-set-timer if `auto-revert-mode' is active."
+  "Execute `auto-revert-set-timer' if the auto-revert  mode is active."
   (interactive)
   (declare-function auto-revert-set-timer "autorevert") ; prevent warning
   (defvar auto-revert-interval)                         ; prevent warning
@@ -2184,7 +2190,6 @@ the ones defined from the buffer now."
     :commands (sr-speedbar-toggle
                sr-speedbar-window-p))
 
-
   (define-pel-global-prefix pel:speedbar (kbd "<f11> S"))
   (define-key pel:speedbar "S"  'pel-open-close-speedbar)
   (define-key pel:speedbar "."  'pel-toggle-to-speedbar)
@@ -2351,6 +2356,30 @@ the ones defined from the buffer now."
 (define-key pel:text-whitespace "o"         #'whitespace-toggle-options)
 (define-key pel:text-whitespace "T"        'pel-toggle-show-trailing-whitespace)
 (define-key pel:text-whitespace "t"         #'delete-trailing-whitespace)
+
+;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> v`` : VCS operations
+;;
+(define-pel-global-prefix pel:vcs (kbd "<f11> v"))
+(define-key pel:vcs "v"  'vc-dir)
+
+(when pel-use-magit
+  (use-package magit
+    :ensure t
+    :pin melpa
+    :commands (magit
+               magit-status)
+    :init
+    (define-key pel:vcs "g"  'magit-status))) ;Git
+
+(when pel-use-monky
+  (use-package monky
+    :ensure t
+    :pin melpa
+
+    :commands monky-status
+    :init
+    (define-key pel:vcs "m"  'monky-status))) ; Mercurial
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> w`` : Windows operations

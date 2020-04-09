@@ -69,7 +69,7 @@
 
 ;;-pel-autoload
 (defun pel-beginning-of-line (n)
-  "Move point to beginning of current line N.
+  "Move point to beginning of current line or N lines away.
 If point is already at the beginning of line, then instead
 move to first non-whitespace (to indentation).
 By default N is 1.  If N is larger move to the beginning of N-1 line forward.
@@ -79,6 +79,22 @@ and `back-to-indentation'."
   (if (or (not (eq n 1)) (not (bolp)))
       (move-beginning-of-line n)
     (back-to-indentation)))
+
+
+;; Smart end of line
+;; -----------------
+
+;;-pel-autoload
+(defun pel-end-of-line (n)
+  "Move point to end of current line or N lines away.
+If point is already at the end of the line, then instead
+move the last non-whitespace character if any (otherwise don't move).
+By default N is 1.  If N is larger move to the beginning of N-1 line forward."
+  (interactive "^p")
+  (if (or (not (eq n 1)) (not (eolp)))
+      (move-end-of-line n)
+    (re-search-backward "[^ \t\r\n]" nil t)
+    (right-char)))
 
 ;; -----------------------------------------------------------------------------
 ;; Insert Lines

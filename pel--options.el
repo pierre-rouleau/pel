@@ -36,7 +36,7 @@
   :group 'convenience
   :link `(file-link :tag "Directory of PDF table files"
                     ,(expand-file-name "./docs/pdf/"))
-  :package-version '(pel . "0.1"))
+  :package-version '(pel . "0.1.1"))
 
 
 ;; -----------------------------------------------------------------------------
@@ -399,6 +399,25 @@ The Hippie Expand can be used together with any."
 (defcustom pel-use-bm nil
   "Control whether PEL uses the bm (Visible Bookmarks) package."
   :group 'pel-pkg-for-bookmark
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; Version Control System Support
+;; ------------------------------
+(defgroup pel-pkg-for-vcs nil
+  "List of external packages that PEL can use to support use of (D)VCS."
+  :group 'pel-package-use)
+
+(defcustom pel-use-magit nil
+  "Control whether PEL provides access to the Magit package."
+  :group 'pel-pgk-for-vcs
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-monky nil
+  "Control whether PEL provides access to the Monky package."
+  :group 'pel-pgk-for-vcs
   :type 'boolean
   :safe #'booleanp)
 
