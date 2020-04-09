@@ -3355,6 +3355,8 @@ highlight-defined_            MELPA_
 popup-kill-ring_              MELPA_
 lice_                         MELPA_
 macrostep_                    MELPA_
+Magit_                        MELPA_
+Monky_                        MELPA_
 nhexl-mode_                   ELPA_
 parinfer_                     MELPA_
 popup_                        MELPA-STABLE_
