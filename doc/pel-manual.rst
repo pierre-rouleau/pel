@@ -1904,10 +1904,10 @@ document, one of several documents that will be written on VCS support (a
 document for Git will also be written in the future).
 PEL provides the **pel:vcs** key-map that gives access to
 Emacs standard `VC (Version Control)`_ directory command but also to Magit_ for
-Git_ and Monky_ for Mercurial_.
+Git_ and Monky_ for `Mercurial Software`_.
 
 .. _Git:                  https://en.wikipedia.org/wiki/Git
-.. _Mercurial:            https://en.wikipedia.org/wiki/Mercurial
+.. _Mercurial Software:   https://en.wikipedia.org/wiki/Mercurial
 .. _Monky:                https://github.com/ananthakumaran/monky
 .. _Magit:                https://magit.vc
 .. _VC (Version Control): https://www.gnu.org/software/emacs/manual/html_node/emacs/Version-Control.html
