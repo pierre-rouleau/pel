@@ -222,6 +222,22 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; powerful `ibuffer'. Show in current window, not other one.
 (global-set-key "\C-x\C-b" 'ibuffer)
 
+
+;; Open files with OS-registered applications from Dired
+;; -----------------------------------------------------
+(when (eq system-type 'darwin)
+  ;; Currently only supports macOS, but could use Windows
+  ;; by launching Windows Explorer for directories.
+  (defun pel-dired-open ()
+    "Open file with OS-registered application from Dired.
+For example, applied to a directory name, macOS Finder is used."
+    (interactive)
+    (let ((filename (dired-get-file-for-visit)))
+      (start-process "default-app" nil "open" filename)))
+
+  (eval-after-load "dired"
+    '(define-key dired-mode-map (kbd "z") 'pel-dired-open)))
+
 ;; dired-narrow
 ;; ------------
 ;; When dired-narrow is used, add <f12> prefix keys to dired-narrow specific

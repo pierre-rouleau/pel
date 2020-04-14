@@ -900,6 +900,16 @@ creating new buffers with ``C-x b``.
 
 .. _IDO-mode: https://www.gnu.org/software/emacs/manual/html_node/ido/index.html
 
+In Dired mode, for macOS only (in the current implementation), the normally
+unassigned 'z'  key is mapped to the ``pel-dired-open`` function.  It opens the
+file or directory at point with the OS-registered application.  The macOS
+implementation uses the `macOS open`_ application which does the application
+launching.
+
+Thanks to Jason Blevins for the idea taken from `his blog <https://jblevins.org/log/dired-open>`_.
+
+
+.. _macOS open: https://ss64.com/osx/open.html
 
 
 PEL Font Management Utilities
@@ -3441,6 +3451,17 @@ Hopefully some people will find PEL useful to them.
 .. _framemove:                 https://www.emacswiki.org/emacs/FrameMove
 .. _vline:                     https://www.emacswiki.org/emacs/VlineMode
 .. _Emacsmirror:               https://github.com/emacsmirror
+
+Also, note that several ideas came from various blogs and discussion on the web.
+There are references the these pages inside the PDF tables in the reference
+sections, or also inside this manual.  This includes the following (non
+exhaustive list):
+
+- Jason Blevins blog: `Integrating OS X and Emacs Dired`_ .
+
+
+.. _Integrating OS X and Emacs Dired: https://jblevins.org/log/dired-open
+
 
 -----------------------------------------------------------------------------
 
