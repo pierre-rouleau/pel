@@ -115,8 +115,8 @@
   (autoload 'pel-auto-fill-only-comments  "pel-fill")
   (autoload 'pel-show-fill-columns        "pel-fill")
 
-  ;; pel-font is only needed in some cases.
-  ;; It's loading is directly controlled by pel-init
+  ;; pel-font loading is directly controlled by pel-init
+  ;; by the logic inside pel_keys.el
 
   ;; pel-frame-control
   (autoload 'pel-toggle-frame-fullscreen  "pel-frame-control")
@@ -282,6 +282,9 @@
   (autoload 'pel-downcase-word-or-region    "pel-text-transform")
   (autoload 'pel-toggle-sentence-end        "pel-text-transform")
   (autoload 'pel-show-text-modes            "pel-text-transform")
+
+  ;; pel-undo loading is directly controlled by pel-init
+  ;; by the logic inside pel_keys.el
 
   ;; pel-window
   (dolist (fct '(pel-show-window-previous-buffer

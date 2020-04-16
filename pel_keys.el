@@ -160,19 +160,27 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; default, preventing quick access to the negative argument in a Control key
 ;; chord.  By mapping C-_ to `negative-argument' we solve the problem.
 ;; We do it in graphics mode also, for consistency.
-(global-set-key (kbd "C-_") 'negative-argument)
-
-;; Also bind M-_  to `negative-argument' to help accessing it when
+;;
+;; PEL also bind M-_  to `negative-argument' to help accessing it when
 ;; the Meta key specifiers is used, to maintain typing velocity.
-(global-set-key (kbd "M-_") 'negative-argument)
-
-;; Reserved key::  (kbd "C-M-_")
+;;
+;; PEL reserved key::  (kbd "C-M-_")
 ;;
 ;; The last possible combination, C-M-_ is *not* bound to the
 ;; negative-argument function.  Instead it is *reserved* as a special
 ;; key sequence to use with a "lossless keyboard input" package such as
 ;; term-key.el to add ability to bind keys that are normally not accessible
 ;; in terminal mode.
+
+(defun pel-bind-negative-argument ()
+  "Bind 'C-_' and 'M-_' to `negative-argument'.
+Done in this function to allow advising libraries that remap these keys."
+  (global-set-key (kbd "C-_") 'negative-argument)
+  (global-set-key (kbd "M-_") 'negative-argument))
+
+;; apply the binding - the function can be used also later - if needed
+;; to advise functions in other libraries.
+(pel-bind-negative-argument)
 
 ;; -----------------------------------------------------------------------------
 ;; - Font Control
@@ -226,15 +234,21 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; Open files with OS-registered applications from Dired
 ;; -----------------------------------------------------
 (when (eq system-type 'darwin)
-  ;; Currently only supports macOS, but could use Windows
-  ;; by launching Windows Explorer for directories.
+  ;; Currently only supports macOS.
+  ;; In future, could add support for Windows
+  ;; by launching Windows Explorer for directories for example.
+  ;; Or other OS by using a launcher application for the OS.
+
   (defun pel-dired-open ()
     "Open file with OS-registered application from Dired.
 For example, applied to a directory name, macOS Finder is used."
     (interactive)
-    (let ((filename (dired-get-file-for-visit)))
-      (start-process "default-app" nil "open" filename)))
+    (if (fboundp 'dired-get-file-for-visit)
+        (let ((filename (dired-get-file-for-visit)))
+          (start-process "default-app" nil "open" filename))
+      (error "Function dired-get-file-for-visit not loaded")))
 
+  (defvar dired-mode-map)
   (eval-after-load "dired"
     '(define-key dired-mode-map (kbd "z") 'pel-dired-open)))
 
@@ -1089,33 +1103,62 @@ For example, applied to a directory name, macOS Finder is used."
 (if pel-use-undo-tree
     (progn
       (cl-eval-when 'compile (require 'undo-tree))
+
+      (use-package pel-undo
+        ;; autoload pel-undo if one of the following commands
+        ;; are executed - in the case where pel-use-undo-tree is t.
+        :commands (pel-undo
+                   pel-redo)
+        :init
+        (global-set-key (kbd "C-z")  'pel-undo)
+        (when (display-graphic-p)
+          (global-set-key (kbd  "s-z")    #'pel-undo)
+          (global-set-key (kbd  "s-Z")    #'pel-redo))
+        (global-set-key (kbd    "C-x u")  #'pel-undo)
+        (global-set-key (kbd    "C-/")    #'pel-undo)
+        (global-set-key (kbd    "M-u")    #'pel-undo)
+        (global-set-key (kbd    "M-U")    #'pel-redo)
+
+        (define-key pel:undo    "u"       #'pel-undo)
+        (define-key pel:undo    "r"       #'pel-redo))
+
+      ;; The pel-undo functions will use the undo-tree functions
+      ;; when the undo-tree mode is active, so schedule the
+      ;; auto-loading of the undo-tree file via its functions.
       (use-package undo-tree
         :ensure t
         :pin gnu
-        :commands (undo-tree-undo
+        :commands (undo-tree-mode
+                   global-undo-tree-mode
+                   undo-tree-undo
                    undo-tree-redo
                    undo-tree-visualize
                    undo-tree-switch-branch)
         :init
-        ;; PEL doesn't call (global-undo-tree-mode) to preserve the
-        ;; binding of C-- and C-_ to negative-argument.  Instead,
-        ;; create explicit bindings to the keys for the undo.
-        (global-set-key (kbd "C-z")  'undo-tree-undo)
-        (when (display-graphic-p)
-          (global-set-key (kbd  "s-z")    #'undo-tree-undo)
-          (global-set-key (kbd  "s-Z")    #'undo-tree-redo))
-        (global-set-key (kbd    "C-x u")  #'undo-tree-undo)
-        (global-set-key (kbd    "C-/")    #'undo-tree-undo)
-        (global-set-key (kbd    "M-u")    #'undo-tree-undo)
-        (global-set-key (kbd    "M-U")    #'undo-tree-redo)
-
-        (define-key pel:undo    "u"       #'undo-tree-undo)
-        (define-key pel:undo    "r"       #'undo-tree-redo)
         (define-key pel:undo    "v"       #'undo-tree-visualize)
-        (define-key pel:undo    "x"       #'undo-tree-switch-branch)))
+        (define-key pel:undo    "x"       #'undo-tree-switch-branch)
+
+        :config
+        ;; The file undo-tree sets the undo-tree-map key-map which
+        ;; sets the binding of M-_ and C-_ to `undo-tree-undo' and
+        ;; `undo-tree-redo' and therefore changes the setting that PEL
+        ;; is promoting when pel-use-undo-tree is set:
+        ;; the binding of M-_ and C-_ to `negative-argument'.
+        ;; To correct that, we modify the undo-tree-map and install
+        ;; the `negative-argument' function after activating undo tree
+        ;; globally.
+        ;; Also reduce lenght of undo-tree-mode-lighter
+        (setq undo-tree-mode-lighter (if (and
+                                          (eq system-type 'darwin)
+                                          (not (display-graphic-p)))
+                                         " U🌲"
+                                       " UndoTree"))
+        (global-undo-tree-mode)
+        (define-key undo-tree-map  (kbd "C-_") 'negative-argument)
+        (define-key undo-tree-map  (kbd "M-_") 'negative-argument)))
 
   ;; When pel-use-undo-tree is not t, then use standard Emacs undo but
-  ;; map to similar keys (except the ``<f11> u``)
+  ;; map to similar keys (except the redo keys: ``<f11> u r`` and ``M-U``)
   (when (display-graphic-p)
     (global-set-key (kbd  "s-z")    #'undo))
   (global-set-key (kbd    "C-x u")  #'undo)
@@ -1150,7 +1193,7 @@ For example, applied to a directory name, macOS Finder is used."
 (define-key pel:menu "t"     #'tmm-menubar)
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : C programming utilities
+;; - Function Keys - <f11> - Prefix ``<f11> SPC c`` : C programming utilities
 
 (define-pel-global-prefix pel:for-C (kbd "<f11> SPC c"))
 (define-key pel:for-C    "." 'pel-find-thing-at-point)
@@ -1165,7 +1208,7 @@ For example, applied to a directory name, macOS Finder is used."
  'c-mode 'c-mode-hook)
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : C++ programming utilities
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C`` : C++ programming utilities
 
 (define-pel-global-prefix pel:for-C++ (kbd "<f11> SPC C"))
 (define-key pel:for-C++      "."  'pel-find-thing-at-point)
@@ -1180,7 +1223,7 @@ For example, applied to a directory name, macOS Finder is used."
  'c++-mode 'c++-mode-hook)
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : Erlang programming utilities
+;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` : Erlang programming utilities
 (when pel-use-erlang
   (define-pel-global-prefix pel:for-erlang (kbd "<f11> SPC e"))
   ;;
