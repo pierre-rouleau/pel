@@ -1028,7 +1028,7 @@ PEL Help Support
 ----------------
 
 :PDF Docs: `Help`_
-:PEL Customization: ``pel-use-free-keys``, ``pel-use-which-key``.
+:PEL Customization: ``pel-use-ascii-table``, ``pel-use-free-keys``, ``pel-use-which-key``.
 :PEL Key Prefix: - **pel:help** : ``<f11> ?``
 
                    - **pel:apropos** : ``<f11> ? a``
