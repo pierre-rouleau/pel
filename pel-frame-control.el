@@ -35,6 +35,7 @@
 
 ;;; Code:
 (require 'pel--base)                    ; use: pel-count-string
+                                        ;      pel-system-is-macos-p
 
 ;;-pel-autoload
 (defun pel-toggle-frame-fullscreen ()
@@ -45,7 +46,7 @@ to toggle the fullscreen mode."
   (interactive)
   (if (display-graphic-p)
       (toggle-frame-fullscreen)
-    (if (eq system-type 'darwin)
+    (if pel-system-is-macos-p
         (let* ((terminal_name (pel-val-or-default
                                (getenv "TERM_PROGRAM") "this unknown terminal"))
                (keys (cond ((string= terminal_name "Apple_Terminal")
