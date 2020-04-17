@@ -1627,6 +1627,13 @@ For example, applied to a directory name, macOS Finder is used."
 (define-pel-global-prefix pel:help (kbd "<f11> ?"))
 (define-key pel:help "m"  #'man)
 (define-key pel:help "M"  #'woman)
+(when pel-use-ascii-table
+  (use-package ascii-table
+    :ensure t
+    :pin melpa
+    :commands ascii-table
+    :init
+    (define-key pel:help "A" 'ascii-table)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> ? a`` : Help Apropos commands

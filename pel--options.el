@@ -220,13 +220,19 @@ References:
   :safe #'booleanp)
 
 (defcustom pel-use-nhexl-mode nil
-  "Control whether PEL uses the packacge and function `nhexl-mode'."
+  "Control whether PEL uses the package and function `nhexl-mode'."
   :group 'pel-pkg-for-buffer
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-vline nil
   "Control whether PEL uses the `vline' package."
+  :group 'pel-pkg-for-buffer
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-ascii-table nil
+  "Control whether the ascii-table package is available."
   :group 'pel-pkg-for-buffer
   :type 'boolean
   :safe #'booleanp)
@@ -517,32 +523,58 @@ eglot is a client for Language Server Protocol (LSP) servers."
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Erlang Support
 ;; --------------
-(defgroup pel-pkg-for-erlang nil
+;; Note: Erlang, is a BEAM VM programming language.
+(defgroup pel-pkg-for-beam-vm nil
   "Erlang development packages PEL can use."
   :group 'pel-pkg-for-programming)
 
 (defcustom pel-use-erlang nil
   "Control whether PEL supports Erlang development."
-  :group 'pel-pkg-for-erlang
+  :group 'pel-pkg-for-beam-vm
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-erlang-start nil
   "Control whether PEL uses erlang-start package when `pel-use-erlang' is t."
-  :group 'pel-pkg-for-erlang
+  :group 'pel-pkg-for-beam-vm
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-erlang-flymake nil
   "Control whether PEL uses erlang-flymake when `pel-use-erlang' is t."
-  :group 'pel-pkg-for-erlang
+  :group 'pel-pkg-for-beam-vm
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-edts nil
   "Control whether PEL uses EDTS when `pel-use-erlang' is t.
 EDTS := Erlang Development Tool Suite."
-  :group 'pel-pkg-for-erlang
+  :group 'pel-pkg-for-beam-vm
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Elixir Support
+;; --------------
+;; Note: Elixir, is a BEAM VM programming language.
+
+(defcustom pel-use-elixir nil
+  "Control whether PEL supports Elixir development."
+  :group 'pel-pkg-for-beam-vm
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-elixir-exunit nil
+  "Control whether PEL supports Elixir Unit Test development."
+  :group 'pel-pkg-for-beam-vm
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-elixir-lsp nil
+  "Control whether PEL supports Lsp-Elixir package: Language Server Protocol.
+This activates the use of the lsp-elixir package, and the lsp-mode
+package which provides the client/library for LSP."
+  :group 'pel-pkg-for-beam-vm
   :type 'boolean
   :safe #'booleanp)
 
