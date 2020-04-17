@@ -1029,7 +1029,7 @@ PEL Help Support
 
 :PDF Docs: `Help`_
 :PEL Customization: ``pel-use-free-keys``, ``pel-use-which-key``.
-:PEL Key Prefix: - **pel:help** : ``<f11> h``
+:PEL Key Prefix: - **pel:help** : ``<f11> ?``
 
                    - **pel:apropos** : ``<f11> ? a``
                    - **pel:describe** : ``<f11> ? d``
