@@ -25,9 +25,15 @@
 
 ;;; Code:
 
+;; Required packages:
 (eval-when-compile
-  (require 'cl-lib))                       ; use: cl-eval-when
-(require 'pel--base)
+  (require 'cl-lib))    ; use: cl-eval-when
+(require 'pel--base)    ; use pel-system-is-macos-p
+;;                      ;     pel-system-is-windows-p
+(require 'pel--options) ; all `pel-use-...' variables identify what to use.
+;;                      ; also defines a set of utility functions to deal with
+;;                      ; the options: pel-auto-complete-help
+
 
 ;; Utilities
 
@@ -66,10 +72,6 @@ optional argument APPEND is non-nil, in which case it is added at the end."
      (setq-default ,sym ,val)))
 
 ;; -----------------------------------------------------------------------------
-;; Required packages:
-(require 'pel--options) ; all `pel-use-...' variables identify what to use.
-;;                      ; also defines a set of utility functions to deal with
-;;                      ; the options: pel-auto-complete-help
 
 (unless (fboundp 'pel-build)
   ;; autoload all PEL functions
@@ -78,9 +80,6 @@ optional argument APPEND is non-nil, in which case it is added at the end."
       (pel--autoload-init)))
 
 ;; -----------------------------------------------------------------------------
-;; utilities
-;; ---------
-
 ;; - Bootstrap `use-package' if needed
 ;; -----------------------------------
 (unless (package-installed-p 'use-package)
@@ -2103,10 +2102,12 @@ the ones defined from the buffer now."
   (use-package rg
     :ensure t
     :pin melpa
-    :commands (rg rg-literal)
+    :commands (rg rg-literal rg-menu)
     :init
-    (define-key pel:grep  "I"  'rg-literal)
-    (define-key pel:grep  "i"  'rg)
+    (define-key pel:grep  "I"     'rg-literal)
+    (define-key pel:grep  "i"     'rg)
+    (define-key pel:grep  "m"     'rg-menu)
+    (global-set-key (kbd "C-c s") 'rg-menu)
     :config
     (declare-function rg-enable-default-bindings "rg")
     (rg-enable-default-bindings)))
