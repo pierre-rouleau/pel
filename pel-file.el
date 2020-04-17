@@ -50,7 +50,8 @@
 
 
 (require 'pel--base)                    ; use: pel-val-or-default,
-                                        ;      pel-goto-position
+                                        ;      pel-goto-position,
+                                        ;      pel-system-is-windows-p
 
 (eval-when-compile
   (require 'subr-x))           ; use: inlined: string-trim
@@ -292,7 +293,7 @@ Return one of:
           (if (eq kind 'http)
               (browse-url (car fileparts))
             (if (and (eq kind 'fname-w-ddrv)
-                     (not (pel-running-under-windows-p)))
+                     (not pel-system-is-windows-p))
                 (user-error "Invalid Windows-type filename 「%s」; Aborted"
                             (car fileparts))
               (let* ((filename (car fileparts))

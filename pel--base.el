@@ -30,6 +30,22 @@
 ;;; Code:
 
 
+;; -----------------------------------------------------------------------------
+;; Constants
+;; ---------
+;;
+;; Note: The following symbols have nothing to do with PEL and could
+;;       have a name that starts with 'system' but I'm not doing it
+;;       to provide name space isolation in case Emacs declares these
+;;       in the future.
+
+(defconst pel-system-is-macos-p
+  (eq system-type 'darwin)
+  "Predicate: t if running under a macOS Operating System, nil otherwise.")
+
+(defconst pel-system-is-windows-p
+  (memq system-type '(windows-nt ms-dos))
+  "Predicate: t if running under a Windows Operating System, nil otherwise.")
 
 ;; -----------------------------------------------------------------------------
 ;; PEL version
@@ -50,10 +66,6 @@ Optionally insert it at point if INSERT is non-nil."
 ;; -----------------------------
 ;;
 ;; The following functions provide information about the Emacs environment.
-
-(defun pel-running-under-windows-p ()
-  "Return non-nil if running under DOS or Windows, nil otherwise."
-  (memq system-type '(windows-nt ms-dos)))
 
 (defun pel-used-major-mode-of (&optional buffer-or-name)
   "Return the major mode symbol of the specified BUFFER-OR-NAME.
