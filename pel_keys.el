@@ -27,6 +27,7 @@
 
 (eval-when-compile
   (require 'cl-lib))                       ; use: cl-eval-when
+(require 'pel--base)
 
 ;; Utilities
 
@@ -130,7 +131,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; Use the macOS Function key (Fn) as emacs Hyper modifier
 ;;   Note: this does not work on the terminal based emacs,
 ;;         only on the graphics, Carbon-based emacs.
-(when (and (eq system-type 'darwin)
+(when (and pel-system-is-macos-p
            (display-graphic-p))
   (pel-setq ns-function-modifier 'hyper))
 
@@ -139,7 +140,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 ;; As a work-around, this maps the apps key (between the right Windows
 ;; and Ctrl keys) to hyper and ensure that we add an extra binding
 ;; with hyper for the C-M-arrow keys.
-(when (eq system-type 'windows-nt)
+(when pel-system-is-windows-p
   ;; The following do not seem to work:
   ;; - Ref: http://ergoemacs.org/emacs/emacs_hyper_super_keys.html
   ;; (setq w32-pass-lwindow-to-system nil)
@@ -192,7 +193,7 @@ Done in this function to allow advising libraries that remap these keys."
 ;; - In graphics mode the same keys handled by Emacs: the Super modifier is
 ;;   assigned to the ⌘ Command key.
 
-(when (and (eq system-type 'darwin)
+(when (and pel-system-is-macos-p
            (display-graphic-p))
 
   ;; Bind the face-remap commands. The face-remap package
@@ -233,7 +234,7 @@ Done in this function to allow advising libraries that remap these keys."
 
 ;; Open files with OS-registered applications from Dired
 ;; -----------------------------------------------------
-(when (eq system-type 'darwin)
+(when pel-system-is-macos-p
   ;; Currently only supports macOS.
   ;; In future, could add support for Windows
   ;; by launching Windows Explorer for directories for example.
@@ -353,7 +354,7 @@ For example, applied to a directory name, macOS Finder is used."
     :defer 5
     :config
     (declare-function windmove-default-keybindings "windmove")
-    (windmove-default-keybindings (if (eq system-type 'darwin)
+    (windmove-default-keybindings (if pel-system-is-macos-p
                                       'super
                                     'hyper))))
 (when pel-use-framemove
@@ -680,7 +681,7 @@ For example, applied to a directory name, macOS Finder is used."
   ;; python-shell-completion-native-disabled-interpreters.
   ;;
   ;; The code below does both for Windows.
-  (when (eq system-type 'windows-nt)
+  (when pel-system-is-windows-p
     (defvar python-shell-unbuffered)
     (defvar python-shell-completion-native-disabled-interpreters)
     (setq python-shell-unbuffered nil)
@@ -792,7 +793,7 @@ For example, applied to a directory name, macOS Finder is used."
 ;; on macOS it does not, instead it relies on the binding of [kp-0] to pel-0
 ;; and of [kp-5] to pel-5 to handle it.
 
-(when (eq system-type 'windows-nt)
+(when pel-system-is-windows-p
   (global-set-key [kp-insert] 'yank)
   (global-set-key [kp-space] 'recenter-top-bottom))
 
@@ -852,7 +853,7 @@ For example, applied to a directory name, macOS Finder is used."
 ;; Use the numeric keypad cursor keys.
 ;;  On macOS, simulate the numeric keypad using the number keys
 ;;  on the keypad.
-(if (eq system-type 'darwin)
+(if pel-system-is-macos-p
     (progn
       (global-set-key [C-kp-4]    #'backward-sexp)
       (global-set-key [C-kp-6]    #'forward-sexp)
@@ -1149,7 +1150,7 @@ For example, applied to a directory name, macOS Finder is used."
         ;; globally.
         ;; Also reduce lenght of undo-tree-mode-lighter
         (setq undo-tree-mode-lighter (if (and
-                                          (eq system-type 'darwin)
+                                          pel-system-is-macos-p
                                           (not (display-graphic-p)))
                                          " U🌲"
                                        " UndoTree"))
