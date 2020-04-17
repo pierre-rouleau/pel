@@ -25,6 +25,21 @@
 
 ;;; Code:
 
+;; -----------------------------------------------------------------------------
+;; - Bootstrap `use-package' if needed
+;; -----------------------------------
+;;
+;; The following code initialize the use-package if it has not been done
+;; already.  You may want to copy that code inside your init.el file to
+;; perform thta initialization earlier.  You would want to do this if you
+;; want to benchmark the Emacs initalization time with something like
+;; benchmark-init.
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+;; -----------------------------------------------------------------------------
 ;; Required packages:
 (eval-when-compile
   (require 'cl-lib))    ; use: cl-eval-when
@@ -34,8 +49,19 @@
 ;;                      ; also defines a set of utility functions to deal with
 ;;                      ; the options: pel-auto-complete-help
 
+;; -----------------------------------------------------------------------------
+;; Configure PEL-level autoloading
+;; -------------------------------
 
+(unless (fboundp 'pel-build)
+  ;; autoload all PEL functions
+  (require 'pel-autoload)
+  (if (fboundp 'pel--autoload-init)
+      (pel--autoload-init)))
+
+;; -----------------------------------------------------------------------------
 ;; Utilities
+;; ---------
 
 (defun pel--mode-hook-maybe-call (fct mode hook &optional append)
   "Use FCT as the MODE HOOK and call it if buffer is currently in that MODE.
@@ -72,20 +98,6 @@ optional argument APPEND is non-nil, in which case it is added at the end."
      (setq-default ,sym ,val)))
 
 ;; -----------------------------------------------------------------------------
-
-(unless (fboundp 'pel-build)
-  ;; autoload all PEL functions
-  (require 'pel-autoload)
-  (if (fboundp 'pel--autoload-init)
-      (pel--autoload-init)))
-
-;; -----------------------------------------------------------------------------
-;; - Bootstrap `use-package' if needed
-;; -----------------------------------
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
 ;; - Use popup-kill-ring
 ;; ---------------------
 ;; View all kill-ring deletions in a pop-up menu, when
