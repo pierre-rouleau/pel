@@ -84,9 +84,20 @@
 
 ;;; Code:
 
+(defvar pel--cached-abbrev-file-name nil
+  "Cache for abbrev-file-name value.
+If non-nil must be a string: it will then be
+used by pel_keys to reload silently the abbreviation file.")
+
 ;;;###autoload
-(defun pel-init ()
+(defun pel-init (&optional cached-abbrev-file-name)
   "Initialize PEL, map its keys, autoload its functions.
+
+If CACHED-ABBREV-FILE-NAME is non-nil it should hold a the value
+the name of the abbreviation file, the name that the variable
+`abbrev-file-name' had before it was changed in the init file.
+This is done to delay the loading of the abbreviation file, speeding
+up Emacs initialization time when the file is big.
 
 Only the PEL features activated via the `pel-use-...' customization variables
 from the  \"Pel Package Use\" subgroup of the \"Pel\" group are loaded and the
@@ -101,6 +112,7 @@ After a customization change its best to restart Emacs, however if your
 modifications simply activate new features, you may be able to simply
 re-execute `pel-init' again to activate them."
   (interactive)
+  (setq pel--cached-abbrev-file-name  cached-abbrev-file-name)
   ;; Note that pel-keys.el has a file name that ensures that packages controlled
   ;; byte-compilation compiles it *before* compiling pel.el
   (load-library "pel_keys")

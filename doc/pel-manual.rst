@@ -511,6 +511,40 @@ features you use.
 Further PEL Customization
 -------------------------
 
+The following sections describe optional optimizations or modifications.
+
+
+Delay Loading of Abbreviation Definition File
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Emacs automatic abbreviation control provided by the ``abbrev-mode`` described
+in `PEL Abbreviation Management Support`_ store all abbreviations in a file
+identified by the ``abbrev-file-name`` user option variable.  By default
+its value is "~/.emacs.d/abbrev_defs``.  Emacs load the content of this file
+during its initialization time.  When the file contains a large number of
+abbreviations, the loading time can become annoyingly significant.
+
+PEL provides a mechanism to delay the loading to speed up the Emacs
+initialization time.  A change in the init.el file is required: read and cache
+the content of ``abbrev-file-name`` user option variable and rest it to the name
+of an non-existing file as early as possible in your init.el file.  Then pass
+the cached value to ``pel-init`` optional argument.  By doing this you prevent
+Emacs from reading the abbreviation file and let PEL load it later silently when
+there is some idle time.
+
+Write code similar to the following early at the beginning of your init.el file:
+
+.. code:: elisp
+
+    (setq pel--abbrev-file-name abbrev-file-name)
+    (setq abbrev-file-name "~/abbrev_defs-invalid") ; use a non-existing file name
+
+Then pass the information when you call ``pel-init``:
+
+.. code:: elisp
+
+    (pel-init pel--abbrev-file-name)
+
 
 Identify the location of your Ispell local dictionary
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

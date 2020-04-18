@@ -417,19 +417,18 @@ For example, applied to a directory name, macOS Finder is used."
 ;; -------------------
 (when pel-use-hippie-expand
   (global-set-key [remap dabbrev-expand] 'hippie-expand)
-  ;; I want Hippie Expand to use DAbbrev *first* as this is what most of
-  ;; my search require, then I want to search in the file names.  I don't
-  ;; really need lisp code expansion since I already have that provided by
-  ;; Company mode that will pop-up a menu. I might need straight abbreviations
-  ;; or some dictionary completion, so I may need to add try-expand-all-abbrevs.
+  ;; Default PEL setup for Hippie Expand is to use DAbbrev *first*
+  ;; as this is what most search need, then search in other buffers
+  ;; and file names.
+  ;; Don't do source code expansion: that will be handled by the
+  ;; completion facilities (like completion-at-point, Company mode, etc...)
   (setq hippie-expand-try-functions-list
         (quote
          (try-expand-dabbrev
           try-expand-dabbrev-all-buffers
           try-complete-file-name-partially
           try-complete-file-name))))
-;; Other search rules exist, but I am not using them.
-;; They are:
+;; Other search rules exist, they are:
 ;; - try-expand-all-abbrevs
 ;; - try-complete-lisp-symbol-partially
 ;; - try-complete-lisp-symbol
@@ -1869,6 +1868,18 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
 (define-key pel:abbrev "r" #'read-abbrev-file)
 (define-key pel:abbrev "s" #'write-abbrev-file)
 (define-key pel:abbrev "u" #'unexpand-abbrev)
+
+(if pel--cached-abbrev-file-name
+    ;; If PEL is informed to delay load the abbreviation file
+    ;; do it silently 2 seconds of idle later.
+    (run-at-time "2 sec" nil
+                 (lambda ()
+                   (progn
+                     (define-key pel:abbrev "a" #'abbrev-mode)
+                     (setq abbrev-file-name pel--cached-abbrev-file-name)
+                     (quietly-read-abbrev-file nil))))
+  (define-key pel:abbrev "a" #'abbrev-mode))
+
 
 (defun pel-define-abbrevs (&optional arg)
   "Read abbreviations from current buffer after confirming with user.
