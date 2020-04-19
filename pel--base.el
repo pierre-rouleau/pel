@@ -264,23 +264,28 @@ Return nil if symbol N value is CEILING or larger."
 Letters include all characters considered as letters by [[:alpha:]]"
   (looking-at-p "[[:alpha:]]"))
 
-(defun pel-at-lowercase-p (&optional exact backward pos)
+(defun pel-at-lowercase-p (&optional exact pos byword backward)
   "Return non-nil if point is located at lowercase letter, nil otherwise.
 By default, the function checks the case of the first letter found,
-looking at point and then forward until one letter character is found.
-However, if EXACT is non-nil, the function only checks the exact current
-point position.
-The function checks the characters to the right of point unless
-the BACKWARD argument is non-nil.
-By default, `pel-at-lowercase-p' checks the case of the characters
-starting from point.  if POS is non-nil, it starts from that position
-instead."
+starting to look at point and then forward until one letter character
+is found.  However,
+- if EXACT is non-nil, the function only checks the exact current
+  point position,
+- if POS is non-nil, it starts checking from that position instead,
+- if BYWORD is non-nil, ignore BACKWARD and check the case of the first
+  letter of the word offset by the number BYWORD: back BYWORD word(s)
+  if BYWORD is negative, forward BYWORD word(s) if BYWORD is positive.
+  If BYWORD is 0, do not move point.
+- if BACKWARD is non-nil, it checks moving by character backward instead."
   (let ((case-fold-search nil)
         (step (if backward -1 1)))
     (save-excursion
       (unless exact
-        (if pos
-            (goto-char pos))
+        (when pos
+          (goto-char pos))
+        (when byword
+          (setq step 1)
+          (forward-word byword))
         (while (not (pel-at-letter-p))
           (right-char step)))
       (looking-at-p "[[:lower:]]"))))

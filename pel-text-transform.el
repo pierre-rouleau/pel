@@ -52,8 +52,10 @@
 
 (defun pel-casechg-word-or-region (operation n)
   "Detect marked region and perform case convert OPERATION N times.
+When N is 0, perform the operation once on the beginning of the current word.
 The OPERATION argument must be a symbol, one of upcase, downcase or capitalize."
-  (let ((backward (< n 0)))
+  (let ((backward (< n 0))
+        (byword n))
     (if (use-region-p)
         (let (p1 p2)
           (progn
@@ -65,24 +67,28 @@ The OPERATION argument must be a symbol, one of upcase, downcase or capitalize."
              ((eq 'upcase operation)     (if (pel-at-uppercase-p 2 nil nil p1)
                                              (capitalize-region p1 p2)
                                            (upcase-region p1 p2)))
-             ((eq 'downcase operation)   (if (pel-at-lowercase-p nil nil p1)
+             ((eq 'downcase operation)   (if (pel-at-lowercase-p nil p1)
                                              (capitalize-region p1 p2)
                                            (downcase-region p1 p2)))
              (t
               (error "Unsupported region operation!")))))
       ;; No active region visible
-      (if (eq n 0)
-          ;; when n is 0: affect current word at its beginning
-          (progn
-            (forward-word)
-            (backward-word)
-            (setq n 1)))
+      (cond
+       ((eq n 0)
+        (progn
+          ;; when n is 0: affect current word, from its first
+          ;; letter: so move to the beginning of the word.
+          (forward-word)
+          (backward-word)
+          (setq n 1)))
+        ((eq n 1)
+         (setq byword 0)))
       (cond
        ((eq 'capitalize operation) (capitalize-word n))
        ((eq 'upcase operation)     (if (pel-at-uppercase-p 2 nil backward nil)
                                        (capitalize-word n)
                                      (upcase-word n)))
-       ((eq 'downcase operation)   (if (pel-at-lowercase-p nil backward nil)
+       ((eq 'downcase operation)   (if (pel-at-lowercase-p nil nil byword)
                                        (capitalize-word n)
                                      (downcase-word n)))
        (t
