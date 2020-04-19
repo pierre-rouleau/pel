@@ -52,7 +52,33 @@
 
 (defun pel-casechg-word-or-region (operation n)
   "Detect marked region and perform case convert OPERATION N times.
+When N is 0 check the case of current character to determine the case
+change operation.
+When N is positive check the case of the current char (or the next letter
+char) to determine the case change operation.
+When N is negative, check the case of the first letter of the previous
+word to determine the case change operation.
+The case change operation is determined according to the requested OPERATION
+and the case of the checked letter, as described below:
+
+----------------------------------------------------
+Requested OPERATION  letter case Performed operation
+-------------------  ----------- -------------------
+upcase               lower case  up-cased
+upcase               upper case  capitalized
+downcase             lower case  capitalized
+downcase             upper case  down-cased
+capitalize           lower case
+capitalize           upper case
+----------------------------------------------------
+
+For all cases except when N is -1, check the case of character at point
+(or next/previous letter character depending of the sign of N) to check
+the current case and identify the case change action.
+When N is -1, check the case of the first letter of the previous word
+to determine the case change action.
 When N is 0, perform the operation once on the beginning of the current word.
+
 The OPERATION argument must be a symbol, one of upcase, downcase or capitalize."
   (let ((backward (< n 0))
         (byword n))
@@ -73,16 +99,17 @@ The OPERATION argument must be a symbol, one of upcase, downcase or capitalize."
              (t
               (error "Unsupported region operation!")))))
       ;; No active region visible
-      (cond
-       ((eq n 0)
-        (progn
-          ;; when n is 0: affect current word, from its first
-          ;; letter: so move to the beginning of the word.
-          (forward-word)
-          (backward-word)
-          (setq n 1)))
-        ((eq n 1)
-         (setq byword 0)))
+      (when (eq n 0)
+        ;; when n is 0: affect current word, from its first
+        ;; letter: so move to the beginning of the word.
+        (forward-word)
+        (backward-word)
+        (setq n 1))
+      (if (< n 0)
+          ;; when going backward, use the case of the previous word
+          (setq byword -1)
+        ;; otherwise we use the case of the current word.
+        (setq byword 0))
       (cond
        ((eq 'capitalize operation) (capitalize-word n))
        ((eq 'upcase operation)     (if (pel-at-uppercase-p 2 nil backward nil)
