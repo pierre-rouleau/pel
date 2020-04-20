@@ -153,6 +153,96 @@
        (goto-char 31)
        (pel-downcase-word-or-region -2)))))
 
+(defconst pel--tt-test4
+  '(;; initial string
+    "one two three four five six seven eight nine ten"
+    ;;
+    ;;.
+    ("ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN"
+     (lambda ()
+       (goto-char 1)
+       (dotimes (_i 10)
+         (pel-upcase-word-or-region))))
+    ;;.
+    ("ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN"
+     (lambda ()
+       (goto-char 1)
+       (pel-upcase-word-or-region 10)))
+    ;;             .
+    ("one two THREE four five six seven eight nine ten"
+     (lambda ()
+       (goto-char 14)
+       (pel-upcase-word-or-region -1)))
+    ;;                              .
+    ("one two three four five six seVEN eight nine ten"
+     (lambda ()
+       (goto-char 31)
+       (pel-upcase-word-or-region)))
+    ;;                              .
+    ("one two three four five six SEVEN eight nine ten"
+     (lambda ()
+       (goto-char 31)
+       (pel-upcase-word-or-region 0)))
+    ;;                              .
+    ("one two three four five six seVEN EIGHT nine ten"
+     (lambda ()
+       (goto-char 31)
+       (pel-upcase-word-or-region 2)))))
+
+(defconst pel--tt-test5
+  '(;; initial string
+    "One Two Three Four Five Six Seven Eight Nine Ten"
+    ;;
+    ("ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN"
+     (lambda ()
+       (goto-char 1)
+       (dotimes (_i 10)
+         (pel-upcase-word-or-region))))
+    ("ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN"
+     (lambda ()
+       (goto-char 1)
+       (pel-upcase-word-or-region 10)))))
+
+(defconst pel--tt-test6
+  '(;; initial string
+    "ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN"
+    ;;.
+    ("One Two Three Four Five Six Seven Eight Nine Ten"
+     (lambda ()
+       (goto-char 1)
+       (dotimes (_i 10)
+         (pel-upcase-word-or-region))))
+    ;;.
+    ("One Two Three Four Five Six Seven Eight Nine Ten"
+     (lambda ()
+       (goto-char 1)
+       (pel-upcase-word-or-region 10)))
+    ;;             .
+    ("ONE TWO Three FOUR FIVE SIX SEVEN EIGHT NINE TEN"
+     (lambda ()
+       (goto-char 14)
+       (pel-upcase-word-or-region -1)))
+    ;;                              .
+    ("ONE TWO THREE FOUR FIVE SIX SEVen EIGHT NINE TEN"
+     (lambda ()
+       (goto-char 31)
+       (pel-upcase-word-or-region)))
+    ;;                              .
+    ("ONE TWO THREE FOUR FIVE SIX SEven EIGHT NINE TEN"
+     (lambda ()
+       (goto-char 31)
+       (pel-downcase-word-or-region)))
+    ;;                              .
+    ("ONE TWO THREE FOUR FIVE SIX SEVen Eight Nine TEN"
+     (lambda ()
+       (goto-char 31)
+       (pel-upcase-word-or-region 3)))
+    ;;                              .
+    ("ONE TWO THREE FOUR FIVE SIX SEven eight nine TEN"
+     (lambda ()
+       (goto-char 31)
+       (pel-downcase-word-or-region 3)))))
+
 
 (defun pel--tt-test (test-data)
   "Run the test defined by TEST-DATA.
@@ -176,7 +266,10 @@ A list of 2 elements:
 (ert-deftest er-test-text-transform-tests ()
   (pel--tt-test pel--tt-test1)
   (pel--tt-test pel--tt-test2)
-  (pel--tt-test pel--tt-test3))
+  (pel--tt-test pel--tt-test3)
+  (pel--tt-test pel--tt-test4)
+  (pel--tt-test pel--tt-test5)
+  (pel--tt-test pel--tt-test6))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-text-transform-test)
