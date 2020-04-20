@@ -1043,6 +1043,7 @@ For example, applied to a directory name, macOS Finder is used."
 
 (define-pel-global-prefix pel: (kbd "<f11>"))
 (define-key pel:           "#"             'pel-toggle-mac-numlock)
+(define-key pel:           "`"            #'overwrite-mode)
 (define-key pel: (kbd      "<down>")       'windmove-down)
 (define-key pel: (kbd      "<up>")         'windmove-up)
 (define-key pel: (kbd      "<left>")       'windmove-left)
