@@ -1859,12 +1859,14 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
 ;; - Function Keys - <f11> - Prefix ``<f11> a`` : abbreviations
 
 (define-pel-global-prefix pel:abbrev (kbd "<f11> a"))
-(define-key pel:abbrev "d"  'pel-define-abbrevs)
+(define-key pel:abbrev "D"  'pel-define-abbrevs)
 (define-key pel:abbrev "e" #'expand-abbrev)
 (define-key pel:abbrev "E" #'expand-region-abbrevs)
+(define-key pel:abbrev "g" #'add-global-abbrev)
 (define-key pel:abbrev "i" #'insert-abbrevs)
-(define-key pel:abbrev "l" #'list-abbrevs)
-(define-key pel:abbrev "m" #'edit-abbrevs)
+(define-key pel:abbrev "l" #'add-mode-abbrev)
+(define-key pel:abbrev "L" #'list-abbrevs)
+(define-key pel:abbrev "M" #'edit-abbrevs)
 (define-key pel:abbrev "r" #'read-abbrev-file)
 (define-key pel:abbrev "s" #'write-abbrev-file)
 (define-key pel:abbrev "u" #'unexpand-abbrev)
