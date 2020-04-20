@@ -9,6 +9,20 @@
 
 ;;; Code:
 
+;; -----------------------------------------------------------------------------
+;; Test with no region: one or several words at a time
+;; ---------------------------------------------------
+;;
+;; It is possible to only use the
+;; `pel-downcase-word-or-region' and
+;; `pel-upcase-word-or-region' functions
+;; to convert  one or several words from lowercase,
+;; uppercase and capitalized.  At the most 2 commands are used
+;; and since the commands are both mapped to M-c with out without
+;; the Shift key it would be possible to free the key (M-T) currently
+;; used for capitalization, but PEL leaves it for convenience.
+;;
+
 (defconst pel--tt-test1
   '( ;; Start string for each test
     "one two three four five six seven eight nine ten"
@@ -244,7 +258,7 @@
        (pel-downcase-word-or-region 3)))))
 
 
-(defun pel--tt-test (test-data)
+(defun pel--tt-word-test (test-data)
   "Run the test defined by TEST-DATA.
 A list of 2 elements:
 - the original string for each test
@@ -262,14 +276,221 @@ A list of 2 elements:
           (goto-char (point-min))
           (should (string= (buffer-string) expected-string)))))))
 
-
 (ert-deftest er-test-text-transform-tests ()
-  (pel--tt-test pel--tt-test1)
-  (pel--tt-test pel--tt-test2)
-  (pel--tt-test pel--tt-test3)
-  (pel--tt-test pel--tt-test4)
-  (pel--tt-test pel--tt-test5)
-  (pel--tt-test pel--tt-test6))
+  "Perform word conversion tests."
+  (pel--tt-word-test pel--tt-test1)
+  (pel--tt-word-test pel--tt-test2)
+  (pel--tt-word-test pel--tt-test3)
+  (pel--tt-word-test pel--tt-test4)
+  (pel--tt-word-test pel--tt-test5)
+  (pel--tt-word-test pel--tt-test6))
+
+;; -----------------------------------------------------------------------------
+;; Test with region
+;; ----------------
+;;
+;; It is possible to only use the
+;; `pel-downcase-word-or-region' and
+;; `pel-upcase-word-or-region' functions
+;; to convert all words in a region from all lowercase,
+;; uppercase and capitalized.  At the most 2 commands are used
+;; and since the commands are both mapped to M-c with out without
+;; the Shift key it would be possible to free the key (M-T) currently
+;; used for capitalization, but PEL leaves it for convenience.
+;;
+
+(defconst pel--tt-downcase-with-regions
+  ;; list of before-string, after-string
+  '(("one two three four five six seven eight nine ten"
+     "One Two Three Four Five Six Seven Eight Nine Ten")
+    ;;
+    ("One Two Three Four Five Six Seven Eight Nine Ten"
+     "one two three four five six seven eight nine ten")
+    ;;
+    ("one two THREE four five SIX seven eight nine ten"
+     "One Two Three Four Five Six Seven Eight Nine Ten")
+    ;;
+    ("ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN"
+     "one two three four five six seven eight nine ten")
+    ;;
+    ("ONE TWO THREE FOUR Five SIX seven EIght Nine TEN"
+     "one two three four five six seven eight nine ten")
+    ("oNE tWO tHREE fOUR fIVE sIX sEVEN eIGHT nINE tEN"
+     "One Two Three Four Five Six Seven Eight Nine Ten")
+    ;;
+    ("oNE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN"
+     "One Two Three Four Five Six Seven Eight Nine Ten")
+    ;;
+    ("One Two Three Four Five Six Seven Eight Nine Ten"
+     "one two three four five six seven eight nine ten")
+    ;;
+    ("OnE TwO ThREE FOUr FivE SIx SEveN Eight Nine Ten"
+     "one two three four five six seven eight nine ten")
+    ;;
+    ("ONe TwO ThREE FOUr FivE SIx SEveN Eight Nine Ten"
+     "one two three four five six seven eight nine ten")
+    ;; same thing with leading spaces
+    ("  one two three four five six seven eight nine ten"
+     "  One Two Three Four Five Six Seven Eight Nine Ten")
+    ;;
+    ("  One Two Three Four Five Six Seven Eight Nine Ten"
+     "  one two three four five six seven eight nine ten")
+    ;;
+    ("  one two THREE four five SIX seven eight nine ten"
+     "  One Two Three Four Five Six Seven Eight Nine Ten")
+    ;;
+    ("  ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN"
+     "  one two three four five six seven eight nine ten")
+    ;;
+    ("  ONE TWO THREE FOUR Five SIX seven EIght Nine TEN"
+     "  one two three four five six seven eight nine ten")
+    ("  oNE tWO tHREE fOUR fIVE sIX sEVEN eIGHT nINE tEN"
+     "  One Two Three Four Five Six Seven Eight Nine Ten")
+    ;;
+    ("  oNE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN"
+     "  One Two Three Four Five Six Seven Eight Nine Ten")
+    ;;
+    ("  One Two Three Four Five Six Seven Eight Nine Ten"
+     "  one two three four five six seven eight nine ten")
+    ;;
+    ("  OnE TwO ThREE FOUr FivE SIx SEveN Eight Nine Ten"
+     "  one two three four five six seven eight nine ten")
+    ;;
+    ("  ONe TwO ThREE FOUr FivE SIx SEveN Eight Nine Ten"
+     "  one two three four five six seven eight nine ten"))
+  ;;
+  "The function `pel-downcase-word-or-region' checks the letters
+of the first word in the region to determine what action to perform.
+If the first word is:
+- all uppercase: it converts to lowercase.
+- first uppercase then some lowercase: it converts to lowercase
+- first lowercase then some uppercase: it capitalizes all words
+- all lowercase: it capitalizes all words.")
+
+(defconst pel--tt-upcase-with-regions
+  ;; list of before-string, after-string
+  '(("one two three four five six seven eight nine ten"
+     "ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN")
+    ;;
+    ("One Two Three Four Five Six Seven Eight Nine Ten"
+     "ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN")
+    ;;
+    ("one two THREE four five SIX seven eight nine ten"
+     "ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN")
+    ;;
+    ("ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN"
+     "One Two Three Four Five Six Seven Eight Nine Ten")
+    ;;
+    ("ONE TWO THREE FOUR Five SIX seven EIght Nine TEN"
+     "One Two Three Four Five Six Seven Eight Nine Ten")
+    ;;
+    ("oNE tWO tHREE fOUR fIVE sIX sEVEN eIGHT nINE tEN"
+     "ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN")
+    ;;
+    ("oNE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN"
+     "ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN")
+    ;;
+    ("One Two Three Four Five Six Seven Eight Nine Ten"
+     "ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN")
+    ;;
+    ("OnE TwO ThREE FOUr FivE SIx SEveN Eight Nine Ten"
+     "ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN")
+    ;; same thing with leading spaces
+    ("  one two three four five six seven eight nine ten"
+     "  ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN")
+    ;;
+    ("  One Two Three Four Five Six Seven Eight Nine Ten"
+     "  ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN")
+    ;;
+    ("  one two THREE four five SIX seven eight nine ten"
+     "  ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN")
+    ;;
+    ("  ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN"
+     "  One Two Three Four Five Six Seven Eight Nine Ten")
+    ;;
+    ("  ONE TWO THREE FOUR Five SIX seven EIght Nine TEN"
+     "  One Two Three Four Five Six Seven Eight Nine Ten")
+    ;;
+    ("  oNE tWO tHREE fOUR fIVE sIX sEVEN eIGHT nINE tEN"
+     "  ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN")
+    ;;
+    ("  oNE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN"
+     "  ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN")
+    ;;
+    ("  One Two Three Four Five Six Seven Eight Nine Ten"
+     "  ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN")
+    ;;
+    ("  OnE TwO ThREE FOUr FivE SIx SEveN Eight Nine Ten"
+     "  ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN"))
+  ;;
+  "The function `pel-upcase-word-or-region' checks the letters
+of the first word in the region to determine what action to perform.
+If the first word is:
+- all lowercase: it converts all to upper-case
+- first lowercase: it converts all to upper-case
+- first uppercase then some lowercase: it converts all to upper-case
+- all uppercase: it capitalizes all words. ")
+
+(defconst pel--tt-capitalize-with-regions
+  ;; list of before-string, after-string
+  '(("one two three four five six seven eight nine ten"
+     "One Two Three Four Five Six Seven Eight Nine Ten")
+    ;;
+    ("One Two Three Four Five Six Seven Eight Nine Ten"
+     "One Two Three Four Five Six Seven Eight Nine Ten")
+    ;;
+    ("one two THREE four five SIX seven eight nine ten"
+     "One Two Three Four Five Six Seven Eight Nine Ten")
+    ;;
+    ("ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN"
+     "One Two Three Four Five Six Seven Eight Nine Ten")
+    ;;
+    ("ONE TWO THREE FOUR Five SIX seven EIght Nine TEN"
+     "One Two Three Four Five Six Seven Eight Nine Ten")
+    ;; same thing with leading spaces
+    ("  one two three four five six seven eight nine ten"
+     "  One Two Three Four Five Six Seven Eight Nine Ten")
+    ;;
+    ("  One Two Three Four Five Six Seven Eight Nine Ten"
+     "  One Two Three Four Five Six Seven Eight Nine Ten")
+    ;;
+    ("  one two THREE four five SIX seven eight nine ten"
+     "  One Two Three Four Five Six Seven Eight Nine Ten")
+    ;;
+    ("  ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN"
+     "  One Two Three Four Five Six Seven Eight Nine Ten")
+    ;;
+    ("  ONE TWO THREE FOUR Five SIX seven EIght Nine TEN"
+     "  One Two Three Four Five Six Seven Eight Nine Ten"))
+  ;;
+  "The function `pel-capitalize-word-or-region' always
+capitalizes all words in the region.")
+
+
+
+(defun pel--tt-region-test (fct test-data-list)
+  "Apply FCT on TEST-DATA-LIST to test region text transformation.
+The TEST-DATA is a list of list of list of two strings:
+- the original string
+- the string with expected result after the first string is
+  transformed with the specified FCT applied to the complete string
+  as a region."
+  (dolist (test-data test-data-list)
+    (let ((original-string (car test-data))
+          (expected-string (cadr test-data)))
+      (with-temp-buffer
+        (insert original-string)
+        (goto-char (point-min))
+        (set-mark-command nil)
+        (end-of-line)
+        (funcall fct)
+        (should (string= (buffer-string) expected-string))))))
+
+(ert-deftest er-test-region-transform-tests ()
+  "Perform word conversion tests."
+  (pel--tt-region-test 'pel-downcase-word-or-region   pel--tt-downcase-with-regions)
+  (pel--tt-region-test 'pel-upcase-word-or-region     pel--tt-upcase-with-regions)
+  (pel--tt-region-test 'pel-capitalize-word-or-region pel--tt-capitalize-with-regions))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-text-transform-test)
