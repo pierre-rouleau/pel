@@ -3379,11 +3379,14 @@ PEL uses the following libraries distributed with GNU Emacs:
 .. _GNU Emacs: https://www.gnu.org/software/emacs/
 
 
-PEL has the following dependencies on the following external Emacs packages:
+PEL code uses the `use-package`_ library.
+It also provides access to the features of the libraries listed in the
+following table when the corresponding PEL user option is set to **t**:
 
 ============================= ==========================
 Package Name & Archive link   Archive Site
 ============================= ==========================
+`ascii-table`_                MELPA_
 `ace-window`_                 MELPA_
 `auto-complete`_              MELPA_
 `bind-key`_                   MELPA_
@@ -3439,6 +3442,7 @@ Hopefully some people will find PEL useful to them.
 
 .. References
 
+.. _ascii-table:               https://melpa.org/#/ascii-table
 .. _ace-window:
 .. _ace-window package:        https://melpa.org/#/ace-window
 .. _auto-complete:
