@@ -58,7 +58,8 @@ When N is positive check the case of the current char (or the next letter
 char) to determine the case change operation.
 When N is negative, check the case of the first letter of the previous
 word to determine the case change operation.
-The case change operation is determined according to the requested OPERATION
+The case change operation is determined according to the requested
+OPERATION (a symbol that must be one of upcase, downcase or capitalize)
 and the case of the checked letter, as described below:
 
 ----------------------------------------------------
@@ -68,8 +69,8 @@ upcase               lower case  up-cased
 upcase               upper case  capitalized
 downcase             lower case  capitalized
 downcase             upper case  down-cased
-capitalize           lower case
-capitalize           upper case
+capitalize           lower case  capitalized
+capitalize           upper case  capitalized
 ----------------------------------------------------
 
 For all cases except when N is -1, check the case of character at point
@@ -77,9 +78,7 @@ For all cases except when N is -1, check the case of character at point
 the current case and identify the case change action.
 When N is -1, check the case of the first letter of the previous word
 to determine the case change action.
-When N is 0, perform the operation once on the beginning of the current word.
-
-The OPERATION argument must be a symbol, one of upcase, downcase or capitalize."
+When N is 0, perform the operation once on the beginning of the current word."
   (let ((backward (< n 0))
         (byword n))
     (if (use-region-p)

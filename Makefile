@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2020-04-16 16:54:31, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-04-19 22:04:59, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -152,7 +152,7 @@ OTHER_EL_FILES := pel_keys.el pel-pkg.el pel-autoloads.el
 OTHER_FILES := README
 
 # Emacs Regression Test files that uses ert, to test and include in tar file.
-TEST_FILES := pel-file-test.el
+TEST_FILES := pel-file-test.el pel-text-transform-test.el
 
 # Documentation PDF files to copy verbatim into the doc/pdfs
 PDF_FILES := -legend.pdf \
