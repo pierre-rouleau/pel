@@ -2590,6 +2590,15 @@ the ones defined from the buffer now."
 (define-key pel:eXecute    "t" #'term)
 (define-key pel:eXecute    "w" #'woman)
 
+;; support for the extremely fast/nice libvterm-based vterm shell.
+(when pel-use-vterm
+  (use-package vterm
+    :ensure t
+    :pin melpa
+    :commands vterm
+    :init
+    (define-key pel:eXecute "v" 'vterm)))
+
 ;; -----------------------------------------------------------------------------
 (provide 'pel_keys)
 

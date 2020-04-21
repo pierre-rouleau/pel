@@ -409,6 +409,21 @@ The Hippie Expand can be used together with any."
   :safe #'booleanp)
 
 ;; -----------------------------------------------------------------------------
+;; Shell & Terminal Support
+;; ------------------------
+(defgroup pel-pkg-for-shells nil
+  "List of external packages that PEL can use to support shells and terminals."
+  :group 'pel-package-use)
+
+(defcustom pel-use-vterm nil
+  "Control whether the vterm shell is available.
+The vterm package used the libvterm library to provide a very fast
+and usable shell for Emacs."
+  :group 'pel-pkg-for-shells
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
 ;; Version Control System Support
 ;; ------------------------------
 (defgroup pel-pkg-for-vcs nil
