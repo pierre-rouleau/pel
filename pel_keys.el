@@ -1986,40 +1986,40 @@ the ones defined from the buffer now."
 (define-key pel:diff "w"  'compare-windows)
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> d`` : ediff commands
-(define-pel-global-prefix pel:ediff (kbd "<f11> e"))
+;; - Function Keys - <f11> - Prefix ``<f11> d e`` : ediff commands
+(define-pel-global-prefix pel:ediff (kbd "<f11> d e"))
 (define-key pel:ediff "?"  'ediff-documentation)
 (define-key pel:ediff "R"  'eregistry)
 
-(define-pel-global-prefix pel:ediff-buffer (kbd "<f11> e b"))
+(define-pel-global-prefix pel:ediff-buffer (kbd "<f11> d e b"))
 (define-key pel:ediff-buffer "f"  'ediff-current-file)
 (define-key pel:ediff-buffer "b"  'ediff-buffers)
 (define-key pel:ediff-buffer "3"  'ediff-buffers3)
 
-(define-pel-global-prefix pel:ediff-files (kbd "<f11> e f"))
+(define-pel-global-prefix pel:ediff-files (kbd "<f11> d e f"))
 (define-key pel:ediff-files "k"  'ediff-backup)
 (define-key pel:ediff-files "f"  'ediff-files)
 (define-key pel:ediff-files "3"  'ediff-files3)
 (define-key pel:ediff-files "r"  'ediff-revision)
 
-(define-pel-global-prefix pel:ediff-dirs (kbd "<f11> e d"))
+(define-pel-global-prefix pel:ediff-dirs (kbd "<f11> d e d"))
 (define-key pel:ediff-dirs "d"  'edirs)
 (define-key pel:ediff-dirs "3"  'edirs3)
 (define-key pel:ediff-dirs "r"  'edir-revisions)
 
-(define-pel-global-prefix pel:ediff-windows (kbd "<f11> e w"))
+(define-pel-global-prefix pel:ediff-windows (kbd "<f11> d e w"))
 (define-key pel:ediff-windows "w"  'ediff-windows-wordwise)
 (define-key pel:ediff-windows "l"  'ediff-windows-linewise)
 
-(define-pel-global-prefix pel:ediff-regions (kbd "<f11> e r"))
+(define-pel-global-prefix pel:ediff-regions (kbd "<f11> d e r"))
 (define-key pel:ediff-regions "w"  'ediff-regions-wordwise)
 (define-key pel:ediff-regions "l"  'ediff-regions-linewise)
 
-(define-pel-global-prefix pel:ediff-patch (kbd "<f11> e p"))
+(define-pel-global-prefix pel:ediff-patch (kbd "<f11> d e p"))
 (define-key pel:ediff-patch "f"  'epatch)
 (define-key pel:ediff-patch "b"  'epatch-buffer)
 
-(define-pel-global-prefix pel:ediff-merge (kbd "<f11> e m"))
+(define-pel-global-prefix pel:ediff-merge (kbd "<f11> d e m"))
 (define-key pel:ediff-merge "f"  'ediff-merge)
 (define-key pel:ediff-merge "F"  'ediff-merge-with-ancestor)
 (define-key pel:ediff-merge "b"  'ediff-merge-buffers)
