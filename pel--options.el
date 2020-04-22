@@ -540,48 +540,81 @@ eglot is a client for Language Server Protocol (LSP) servers."
 ;; --------------
 ;; Note: Erlang, is a BEAM VM programming language.
 (defgroup pel-pkg-for-beam-vm nil
-  "Erlang development packages PEL can use."
+  "BEAM Virtual Machine development packages PEL can use."
   :group 'pel-pkg-for-programming)
+
+(defgroup pel-pkg-for-erlang nil
+  "Erlang development packages PEL can use."
+  :group 'pel-pkg-for-beam-vm)
 
 (defcustom pel-use-erlang nil
   "Control whether PEL supports Erlang development."
-  :group 'pel-pkg-for-beam-vm
+  :group 'pel-pkg-for-erlang
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-erlang-start nil
   "Control whether PEL uses erlang-start package when `pel-use-erlang' is t."
-  :group 'pel-pkg-for-beam-vm
+  :group 'pel-pkg-for-erlang
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-erlang-flymake nil
   "Control whether PEL uses erlang-flymake when `pel-use-erlang' is t."
-  :group 'pel-pkg-for-beam-vm
+  :group 'pel-pkg-for-erlang
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-edts nil
   "Control whether PEL uses EDTS when `pel-use-erlang' is t.
 EDTS := Erlang Development Tool Suite."
-  :group 'pel-pkg-for-beam-vm
+  :group 'pel-pkg-for-erlang
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; LFE - Lisp Flavoured Erlang - Support
+;; -------------------------------------
+;; Note: LFE is a BEAM VM programming language.
+
+(defgroup pel-pkg-for-lfe nil
+  "LFE (Lisp Flavoured Erlang) development packages PEL can use."
+  :group 'pel-pkg-for-beam-vm)
+
+(defcustom pel-use-lfe nil
+  "Control whether PEL supports Elixir development."
+  :group 'pel-pkg-for-lfe
   :type 'boolean
   :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Elixir Support
 ;; --------------
-;; Note: Elixir, is a BEAM VM programming language.
+;; Note: Elixir is a BEAM VM programming language.
+
+(defgroup pel-pkg-for-elixir nil
+  "Elixir development packages PEL can use."
+  :group 'pel-pkg-for-beam-vm)
 
 (defcustom pel-use-elixir nil
   "Control whether PEL supports Elixir development."
-  :group 'pel-pkg-for-beam-vm
+  :group 'pel-pkg-for-elixir
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-alchemist nil
+  "Control whether PEL supports Elixir Alchemist package.
+IMPORTANT:
+  To use this feature you must also activate `pel-use-elixir'."
+  :group 'pel-pkg-for-elixir
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-elixir-exunit nil
-  "Control whether PEL supports Elixir Unit Test development."
-  :group 'pel-pkg-for-beam-vm
+  "Control whether PEL supports Elixir Unit Test development.
+IMPORTANT:
+  To use this feature you must also activate `pel-use-elixir'."
+  :group 'pel-pkg-for-elixir
   :type 'boolean
   :safe #'booleanp)
 
@@ -589,7 +622,24 @@ EDTS := Erlang Development Tool Suite."
   "Control whether PEL supports Lsp-Elixir package: Language Server Protocol.
 This activates the use of the lsp-elixir package, and the lsp-mode
 package which provides the client/library for LSP."
-  :group 'pel-pkg-for-beam-vm
+  :group 'pel-pkg-for-elixir
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Julia Support
+;; --------------
+(defgroup pel-pkg-for-julia nil
+  "Julia development packages PEL can use."
+  :group 'pel-pkg-for-programming)
+
+(defcustom pel-use-julia  nil
+  "Control whether PEL supports Julia development.
+IMPORTANT:
+  You *must* also activate `pel-use-vterm' to be able to use Julia
+  development as this uses the julia-snail package which includes both the
+  julia-mode but also a fast Julia REPL that uses the vterm."
+  :group 'pel-pkg-for-julia
   :type 'boolean
   :safe #'booleanp)
 

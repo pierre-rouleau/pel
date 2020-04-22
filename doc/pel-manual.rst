@@ -3386,6 +3386,7 @@ following table when the corresponding PEL user option is set to **t**:
 ============================= ==========================
 Package Name & Archive link   Archive Site
 ============================= ==========================
+alchemist_                    MELPA_
 `ascii-table`_                MELPA_
 `ace-window`_                 MELPA_
 `auto-complete`_              MELPA_
@@ -3396,6 +3397,7 @@ Package Name & Archive link   Archive Site
 `company`_                    MELPA_
 `dired-narrow`_               MELPA_
 `edts`_                       MELPA_
+elixir-mode_                  MELPA_
 elpy_                         MELPA_
 esup_                         MELPA_
 expand-region_                MELPA_
@@ -3404,7 +3406,8 @@ free-keys_                    MELPA_
 goto-last-change_             MELPA_
 graphviz-dot-mode_            MELPA_
 highlight-defined_            MELPA_
-popup-kill-ring_              MELPA_
+julia-snail_                  MELPA_
+lfe-mode_                     MELPA_
 lice_                         MELPA_
 macrostep_                    MELPA_
 Magit_                        MELPA_
@@ -3443,6 +3446,7 @@ Hopefully some people will find PEL useful to them.
 
 .. References
 
+.. _alchemist:                 https://melpa.org/#/alchemist
 .. _ascii-table:               https://melpa.org/#/ascii-table
 .. _ace-window:
 .. _ace-window package:        https://melpa.org/#/ace-window
@@ -3461,6 +3465,7 @@ Hopefully some people will find PEL useful to them.
 .. _dired-narrow:              https://melpa.org/#/dired-narrow
 .. _edts:                      https://melpa.org/#/edts
 .. _elisp-lint:                https://melpa.org/#/elisp-lint
+.. _elixir-mode:               https://melpa.org/#/elixir-mode
 .. _elpy:                      https://melpa.org/#/elpy
 .. _esup:                      https://melpa.org/#/esup
 .. _expand-region:             https://melpa.org/#/expand-region
@@ -3468,6 +3473,8 @@ Hopefully some people will find PEL useful to them.
 .. _goto-last-change:          https://melpa.org/#/goto-last-change
 .. _graphviz-dot-mode:         https://melpa.org/#/graphviz-dot-mode
 .. _highlight-defined:         https://melpa.org/#/highlight-defined
+.. _julia-snail:               https://melpa.org/#/julia-snail
+.. _lfe-mode:                  https://melpa.org/#/lfe-mode
 .. _lice:                      https://melpa.org/#/lice
 .. _macrostep:                 https://melpa.org/#/macrostep
 .. _nhexl-mode:                https://elpa.gnu.org/packages/nhexl-mode.html

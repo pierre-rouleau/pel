@@ -31,7 +31,7 @@
 ;;
 ;; The following code initialize the use-package if it has not been done
 ;; already.  You may want to copy that code inside your init.el file to
-;; perform thta initialization earlier.  You would want to do this if you
+;; perform that initialization earlier.  You would want to do this if you
 ;; want to benchmark the Emacs initalization time with something like
 ;; benchmark-init.
 
@@ -1245,8 +1245,88 @@ For example, applied to a directory name, macOS Finder is used."
       (local-set-key (kbd "<f12>") 'pel:for-erlang))
    'erlang-mode 'erlang-mode-hook))
 
+;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` : LFE programming utilities
+;; LFE := Lisp Flavoured Erlang
+
+;; Note: the pel:eXecute has the run-lfe (in the code below.)
+(when pel-use-lfe
+  (use-package lfe-mode
+    :ensure t
+    :pin melpa
+    :commands (lfe-mode
+               inferior-lfe
+               run-lfe)))
+
+;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC x`` : Elixir programming utilities
+(when pel-use-elixir
+  (use-package elixir-mode
+    :ensure t
+    :pin melpa
+    :commands elixir-mode
+    :init
+    (define-pel-global-prefix pel:for-elixir (kbd "<f11> SPC x"))
+    ;;
+    (pel--mode-hook-maybe-call
+     '(lambda ()
+        (local-set-key (kbd "<f12>") 'pel:for-elixir))
+     'elixir-mode 'elixir-mode-hook))
+
+  (when pel-use-alchemist
+    (use-package alchemist
+      :ensure t
+      :pin melpa
+      :commands (alchemist-iex-mode
+                 alchemist-iex-run)
+
+    ))
+  (when pel-use-elixir-exunit
+    (use-package exunit
+      :ensure t
+      :pin melpa
+      :commands (exunit-mode
+                 exunit-rerun
+                 exunit-verify-all
+                 exunit-verify-all-in-umbrella
+                 exunit-verify-single
+                 exunit-verify
+                 exunit-toggle-file-and-test
+                 exunit-toggle-file-and-test-other-window))))
+
+;; (when pel-use-elixir-lsp
+;;   (use-package lsp-elixir
+;;     :ensure t
+;;     :pin melpa
+;;     :commands elixir-mode
+;;     :init
+;;     (add-hook ‘elixir-mode-hook ’lsp)))
+
+
+;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC j`` : Julia programming
+(when (and pel-use-julia pel-use-vterm)
+  ;; 🚧 Experimental: not yet completed.
+  ;; For Julia, the julia-snail package uses julia-mode and
+  ;; other required package.
+  ;; Note that it also requires the vterm package.
+  (use-package julia-snail
+    :ensure t
+    :pin melpa
+    :commands (julia-mode
+               julia-snail
+               julia-snail-mode)
+    :init
+    (define-pel-global-prefix pel:for-julia (kbd "<f11> SPC j"))
+    ;;
+    (pel--mode-hook-maybe-call
+     '(lambda ()
+        (local-set-key (kbd "<f12>") 'pel:for-julia))
+     'julia-mode 'julia-mode-hook)
+    (add-hook 'julia-mode-hook 'julia-snail-mode)))
+
 ;; ----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : Emacs Lisp programming
+;; - Function Keys - <f11> - Prefix ``<f11> SPC l`` : Emacs Lisp programming
 
 ;; - Use parinfer
 ;; --------------
@@ -1268,17 +1348,13 @@ For example, applied to a directory name, macOS Finder is used."
     :ensure t
     :pin melpa
     :commands rainbow-delimiters-mode))
-;; rainbow-delimiters-max-face-count 9
-;;  rainbow-delimiters-max-face-count identifies max depth where colours
-;; are cycled;
-;; it's default value is 9.  That should be more than enough.
-;; The color of the parentheses are identified by the variables
-;; rainbow-delimiters-depth-X-face  (where 'X' is a digit between 1 and
-;; 9 included.)
-;; These variables should be defined inside the init.el file or
-;; customization data file.
 
-;; -----------------------------------------------------------------------------
+;; rainbow-delimiters-max-face-count identifies max depth where colours
+;; are cycled.  Its default value is 9.  That should be more than enough.
+;; The color of the parentheses are identified by the user option variables
+;; rainbow-delimiters-depth-X-face  (where 'X' is a digit between 1 and
+;; 9 included.) Customize these user option variables.
+
 
 (define-pel-global-prefix pel:for-elisp (kbd "<f11> SPC l"))
 ;;
@@ -2580,12 +2656,18 @@ the ones defined from the buffer now."
 
 (define-key pel:eXecute    "a" #'ansi-term)
 (define-key pel:eXecute    "e" #'eshell)
+(when pel-use-julia
+  (define-key pel:eXecute  "j"  'julia-snail))
 (define-key pel:eXecute    "i" #'ielm)
+(when pel-use-lfe
+  (define-key pel:eXecute  "l"  'run-lfe))
 (define-key pel:eXecute    "m" #'man)
 (when pel-use-python
   (define-key pel:eXecute  "p" #'run-python))
 (when pel-use-erlang
   (define-key pel:eXecute  "r"  'erlang-shell))
+(when (and pel-use-elixir pel-use-alchemist)
+  (define-key pel:eXecute  "x"  'alchemist-iex-run))
 (define-key pel:eXecute    "s" #'shell)
 (define-key pel:eXecute    "t" #'term)
 (define-key pel:eXecute    "w" #'woman)
