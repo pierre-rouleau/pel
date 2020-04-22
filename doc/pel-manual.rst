@@ -2544,6 +2544,11 @@ pel-use-ace-window             Enables use of the `ace-window package`_ to      
 
                                ☝️  See `PEL Window Management Support`_.
 
+pel-use-alchemist              Enables the use of alchemist_ package, a package              Yes, from MELPA_
+                               that supports the `Elixir programming language`_.
+                               The ``pel-support-elixir`` user option must also
+                               be activated.
+
 pel-use-auto-complete          Enables use of the `auto-complete package`_                   Yes, from MELPA_.
                                which provides auto-completion while typing.
 
@@ -2680,13 +2685,30 @@ pel-use-ido-mode               Activates the use of Emacs built-in ``IDO-mode``.
                                                                                              install. It's
                                ☝️  See `PEL File Management Utilities`_.                      part of Emacs.
 
+pel-use-julia                  Activates the support of the `Julia Programming language`_    Yes, from MELPA_.
+                               and the julia-snail_ package.
+                               For this, however, the ``pel-use-vterm`` user option
+                               must also be activated.
+
+pel-use-lfe                    Enables the use of the                                        Yes, from MELPA_.
+                               `LFE (Lisp Flavored Erlang) programming language`_
+                               via the lfe-mode_ package.
+
 pel-use-lice                   Enables the use of the lice_ package to add open              Yes, from MELPA_.
                                source license text in buffers.
 
                                ☝️  See `PEL Text Insertion Utilities`_.
 
+
 pel-use-macrostep              Enables the use of the macrostep_ package to                  Yes, from MELPA_.
                                expand Lisp macros right inside Emacs.
+
+pel-use-magit                  Enables the use of the Magit_ package, a powerful             Yes, from MELPA_.
+                               package for using the Git DVCS from withing Emacs.
+
+pel-use-monky                  Enables the use of the Monky_ package which has               Yes, from MELPA_.
+                               has a Magit-like interface for managing a Mercurial
+                               repository.
 
 pel-use-nhexl-mode             Enables the use of the nhexl-mode_ to edit                    Yes, from ELPA_.
                                binary files.
@@ -2738,6 +2760,9 @@ pel-use-rust                   Enables support for Rust programming language    
                                If pel-use-company is also set to **t** it activates
                                company-mode to be used with racer.
 
+pel-use-smooth-scrolling       Enables the use of smooth-scrolling capability provided       Yes, from MELPA_.
+                               by the smooth-scrolling_ package.
+
 pel-use-speedbar               Enables support of the sr-speedbar_ package to provide        Yes, from MELPA_.
                                Speedbar inside the same frame, useful in terminal (TTY)
                                mode.
@@ -2751,15 +2776,18 @@ pel-use-uniquify               Activates the use of the uniquify library (distri
                                with standard GNU Emacs) which helps give a unique name to    install.  It's
                                buffers visiting files or directories with the same names.    part of Emacs.
 
+pel-use-vline                  Enables the use of vline-mode.                                Must be installed
+                               ☝️  See `PEL Highlight and Whitespace Management Support`_     manually from
+                                                                                             Emacsmirror_ .
+
+pel-use-vterm                  Enables the use of the excellent `Emacs-libvterm vterm`_      Yes, from MELPA_.
+                               terminal emulator.
+
 pel-use-which-key              Enables the use of the which-key_ package.                    Yes, from ELPA_.
                                This is recommended for new users, as it shows the keys
                                available after each prefix key.
                                PEL key binding system was designed to show nicely when
                                which-key is used. It default to nil.
-
-pel-use-vline                  Enables the use of vline-mode.                                Must be installed
-                               ☝️  See `PEL Highlight and Whitespace Management Support`_     manually from
-                                                                                             Emacsmirror_ .
 
 
 pel-use-winner                 Enables the use and the PEL key-bindings of winner-mode.      Nothing to
@@ -2767,6 +2795,13 @@ pel-use-winner                 Enables the use and the PEL key-bindings of winne
                                                                                              winner package
                                                                                              is part of Emacs.
 ============================== ============================================================= =====================
+
+
+
+.. _Elixir programming language: https://en.wikipedia.org/wiki/Elixir_(programming_language)
+.. _Julia Programming language:  https://en.wikipedia.org/wiki/Julia_(programming_language)
+.. _LFE (Lisp Flavored Erlang) programming language: https://en.wikipedia.org/wiki/LFE_(programming_language)
+.. _Emacs-libvterm vterm: https://github.com/akermu/emacs-libvterm
 
 
 
