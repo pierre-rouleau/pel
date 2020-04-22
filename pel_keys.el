@@ -2311,13 +2311,18 @@ the ones defined from the buffer now."
 ;; - Function Keys - <f11> - Prefix ``<f11> s`` : Search/Replace  commands
 
 (define-pel-global-prefix pel:search-replace (kbd "<f11> s"))
+(define-key pel:search-replace "b" #'search-backward)
+(define-key pel:search-replace "f" #'search-forward)
 (define-key pel:search-replace "o" #'multi-occur)
 (define-key pel:search-replace "O" #'multi-occur-in-matching-buffers)
 (define-key pel:search-replace "r" #'replace-string)
 
-(define-pel-global-prefix pel:search-lax (kbd "<f11> s l"))
-(define-key pel:search-lax "w"  #'word-search-forward-lax)
-(define-key pel:search-lax "W"  #'word-search-backward-lax)
+(define-pel-global-prefix pel:search-word (kbd "<f11> s w"))
+(define-key pel:search-word "f"  #'word-search-forward)
+(define-key pel:search-word "F"  #'word-search-forward-lax)
+(define-key pel:search-word "b"  #'word-search-backward)
+(define-key pel:search-word "B"  #'word-search-backward-lax)
+(define-key pel:search-word "i"  #'isearch-forward-word)
 
 (define-pel-global-prefix pel:search-mode (kbd "<f11> s m"))
 (define-key pel:search-mode "?"   'pel-show-search-case-state)
@@ -2325,30 +2330,21 @@ the ones defined from the buffer now."
 (define-key pel:search-mode "u"   'pel-toggle-search-upper-case)
 (define-key pel:search-mode "l"  #'isearch-toggle-lax-whitespace)
 
-;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> s x`` : Search Regexp commands
+(defun pel-reb-re-syntax ()
+  "Customize reb-re-syntax."
+  (interactive)
+  (customize-option 'reb-re-syntax))
 
 (define-pel-global-prefix pel:regexp (kbd "<f11> s x"))
 ;; add it here because C-M-% cannot be typed in terminal mode
+(define-key pel:regexp      "b"  #'re-search-backward)
+(define-key pel:regexp      "f"  #'re-search-forward)
 (define-key pel:regexp      "q"  #'query-replace-regexp)
 (define-key pel:regexp      "r"  #'replace-regexp)
+(define-key pel:regexp      "B"  #'re-builder)
+(define-key pel:regexp      "?"  'pel-reb-re-syntax)
 ;;
 
-;; Regular expressions: Re-Builder.  Activate the 'string syntax so we only
-;; need one backslash instead of the two required by the 'read syntax.
-;; To activate Re-Builder, do:  M-x re-builder
-(when pel-use-re-builder
-  ;; re-builder is part of standard Emacs distribution.
-  (cl-eval-when 'compile (require 're-builder))
-  (use-package re-builder
-    ;; autoload it when one of the following commands is used.
-    :commands re-builder
-
-    ;; run following command before package is loaded to
-    ;; activate the autoload.
-    :init
-    (define-key pel:regexp    "b"  #'re-builder)
-    (pel-setq reb-re-syntax 'string)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> S`` : Speedbar/SR-Speedbar commands
