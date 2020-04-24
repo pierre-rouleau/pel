@@ -181,6 +181,7 @@ MODE is the mode symbol."
   "Toggle value of SYMBOL from nil to/from t. Return SYMBOL's new value.
 For example, to toggle the value of a variable  named isok,
 the caller must pass it quoted.
+Return the new SYMBOL value.
 The function issue an error if the argument is not a symbol."
   (if (symbolp symbol)
       (set symbol (not (eval symbol)))
