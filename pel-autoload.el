@@ -124,6 +124,19 @@
   (autoload 'pel-next-frame               "pel-frame-control")
   (autoload 'pel-previous-frame           "pel-frame-control")
 
+  ;; pel-hideshow.el
+  (dolist (fct '(pel-toggle-hide-all
+                 pel-toggle-hide-block
+                 pel-hide-block
+                 pel-show-block
+                 pel-hide-all
+                 pel-show-all
+                 pel-hide-level-1
+                 pel-hide-level-2
+                 pel-hide-level-3
+                 pel-hide-level-4))
+    (autoload fct "pel-hideshow"))
+
   ;; pel-highlight
   (autoload 'pel-set-highlight-color              "pel-highlight")
   (autoload 'pel-toggle-hl-line-sticky            "pel-highlight")

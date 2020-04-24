@@ -544,17 +544,6 @@ For example, applied to a directory name, macOS Finder is used."
     ;; Use the cleaner outline view mode.
     (add-hook 'org-mode-hook 'org-indent-mode)))
 
-;; -------------------------------------
-;; - Programming Style: reStructuredText
-;; -------------------------------------
-(when pel-use-rst-mode
-  ;; - Add .stxt to the accepted file extensions for rst-mode (reStructuredText)
-  ;; ---------------------------------------------------------------------------
-  ;; The conventions for reStructuredText is normally .rst and .rest
-  ;; Adding the .stxt file extension for reStructuredText.
-  (setq auto-mode-alist
-        (append '(("\\.stxt\\'"  . rst-mode)) auto-mode-alist)))
-
 ;; -----------------------------------------------------------------------------
 ;; - Programming Language Support
 ;; --============================
@@ -582,13 +571,13 @@ For example, applied to a directory name, macOS Finder is used."
     :init
     (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)))
 
-(when pel-use-cc-vars
-  (cl-eval-when 'compile (require 'cc-vars))
-  (use-package cc-vars
-    :config
-    ;; Using bsd/allman style but with 3 spaces per tabs.
-    ;; TODO: it's value is 'set-from-style' ??  Need to investigate.
-    (pel-setq-default c-basic-offset 3)))
+;; (when pel-use-cc-vars
+;;   (cl-eval-when 'compile (require 'cc-vars))
+;;   (use-package cc-vars
+;;     :config
+;;     ;; Using bsd/allman style but with 3 spaces per tabs.
+;;     ;; TODO: it's value is 'set-from-style' ??  Need to investigate.
+;;     (pel-setq-default c-basic-offset 3)))
 
 ;; ---------------
 ;; - CMake support
@@ -1041,10 +1030,17 @@ For example, applied to a directory name, macOS Finder is used."
 ;; --
 ;; - Function Keys - <f11> top-level prefix keys
 
+(use-package cc-cmds
+  ;; autoload cc-cmds for the c-hungry-delete commands
+  :commands (c-hungry-delete-backwards
+             c-hungry-delete-forward))
+
 (define-pel-global-prefix pel: (kbd "<f11>"))
 (define-key pel:           "#"             'pel-toggle-mac-numlock)
 (define-key pel:           "`"            #'overwrite-mode)
 (define-key pel: (kbd      "RET")         #'auto-fill-mode)
+(define-key pel: (kbd      "DEL")          'c-hungry-delete-backwards)
+(define-key pel: (kbd      "<deletechar>") 'c-hungry-delete-forward)
 (define-key pel: (kbd      "<down>")       'windmove-down)
 (define-key pel: (kbd      "<up>")         'windmove-up)
 (define-key pel: (kbd      "<left>")       'windmove-left)
@@ -1161,11 +1157,7 @@ For example, applied to a directory name, macOS Finder is used."
         ;; the `negative-argument' function after activating undo tree
         ;; globally.
         ;; Also reduce lenght of undo-tree-mode-lighter
-        (setq undo-tree-mode-lighter (if (and
-                                          pel-system-is-macos-p
-                                          (not (display-graphic-p)))
-                                         " U🌲"
-                                       " UndoTree"))
+        (setq undo-tree-mode-lighter " uTr")
         (global-undo-tree-mode)
         (define-key undo-tree-map  (kbd "C-_") 'negative-argument)
         (define-key undo-tree-map  (kbd "M-_") 'negative-argument)))
@@ -1234,6 +1226,44 @@ For example, applied to a directory name, macOS Finder is used."
  '(lambda ()
     (local-set-key (kbd "<f12>") 'pel:for-C++))
  'c++-mode 'c++-mode-hook)
+
+;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC D`` : D programming utilities
+(when pel-use-d
+  (use-package d-mode
+    :ensure t
+    :pin melpa
+
+    ;; Load only when the d-mode command is used.
+    :commands d-mode
+
+    ;; When opening a D source code file, load the d-mode feature.
+    :init
+    (add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
+
+    ;; Configure commands avalable on the D key-map.
+    (define-pel-global-prefix pel:for-D (kbd "<f11> SPC D"))
+    (define-key pel:for-D "H"           'c-toggle-hungry-delete)
+    (define-key pel:for-D "f"           'c-fill-paragraph)
+    (define-key pel:for-D "a"           'c-toggle-auto-newline)
+    (define-key pel:for-D (kbd "<RET>") 'c-context-open-line)
+    (define-key pel:for-D "M-b"        #'subword-mode)
+
+    ;; When a D file is edited, set up the CC Mode behaviour for D
+    :config
+    ;; 1) Use the bracket style for D identified by the pel-d-bracket-style
+    ;;    user option. It defaults to "bsd", the BSD/Allman style promoted
+    ;;    by the D/Phobos library guideline, see the following document:
+    ;;    URL https://dlang.org/dstyle.html#phobos_brackets .
+    (add-to-list 'c-default-style (cons 'd-mode pel-d-bracket-style))
+    ;; 2) Activate the indentation, using the PEL user option
+    (pel-setq-default c-basic-offset pel-d-basic-offset)
+
+    ;; Activate the F12 mode sensitive keymap for D while editing a D file.
+    (pel--mode-hook-maybe-call
+     '(lambda ()
+        (local-set-key (kbd "<f12>") 'pel:for-D))
+     'd-mode 'd-mode-hook)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` : Erlang programming utilities
@@ -1475,6 +1505,11 @@ For example, applied to a directory name, macOS Finder is used."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : reSTucturedText
 (when pel-use-rst-mode
+
+  ;; Add .stxt to the accepted file extensions for rst-mode
+  ;; to the ones that are normally used: .rst and .rest
+  (add-to-list 'auto-mode-alist '("\\.stxt\\'"  . rst-mode))
+
   (define-pel-global-prefix pel:for-reST (kbd "<f11> SPC r"))
   (define-key pel:for-reST "." 'pel-rst-makelink)
   (define-key pel:for-reST "g" 'pel-rst-goto-ref-bookmark)
@@ -1531,6 +1566,23 @@ For example, applied to a directory name, macOS Finder is used."
    '(lambda ()
       (local-set-key (kbd "<f12">) 'pel:for-graphviz-dot))
    'graphviz-dot-mode 'graphviz-dot-mode-hook))
+
+;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> /`` : Hide/Show  commands
+
+(define-pel-global-prefix pel:hideShow (kbd "<f11> /"))
+(define-key pel:hideShow "/"  'hs-minor-mode)
+(define-key pel:hideShow "a"  'pel-toggle-hide-all)
+(define-key pel:hideShow "b"  'pel-toggle-hide-block)
+(define-key pel:hideShow "h"  'pel-hide-block)
+(define-key pel:hideShow "s"  'pel-show-block)
+(define-key pel:hideShow "H"  'pel-hide-all)
+(define-key pel:hideShow "S"  'pel-show-all)
+(define-key pel:hideShow "1"  'pel-hide-level-1)
+(define-key pel:hideShow "2"  'pel-hide-level-2)
+(define-key pel:hideShow "3"  'pel-hide-level-3)
+(define-key pel:hideShow "4"  'pel-hide-level-4)
+;;
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> =`` : Copy commands

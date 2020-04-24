@@ -31,6 +31,7 @@
 
 ;;; Code:
 
+
 (defgroup pel nil
   "Pragmatic Environment Library."
   :group 'convenience
@@ -490,6 +491,67 @@ eglot is a client for Language Server Protocol (LSP) servers."
   :group 'pel-pkg-for-cc
   :type 'boolean
   :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; D Language Support
+;; ------------------
+;; Note: support is for D 2.x (as opposed to the older, different and now
+;; obsolete first implementation of D called D 1).
+
+(defgroup pel-pkg-for-d nil
+  "D programming language support development packages PEL can use."
+  :group 'pel-pkg-for-programming)
+
+(defcustom pel-use-d nil
+  "Control whether PEL supports the D programming language.
+- Activates the use of: Emacs D Mode
+- Required to activate the use of:
+ - Auto-Complete for D
+ - Company mode for D
+"
+  :group 'pel-pkg-for-d
+  :type 'boolean
+  :safe #'booleanp)
+
+
+;--
+
+(defun pel-indent-valid-p (n)
+  "Return t if N is a valid indentation integer, nil otherwise."
+  (and (integerp n) (< n 9) (> n 1)))
+
+(defcustom pel-d-basic-offset 4
+  "Number of columns for D source code indentation.
+PEL stores this value in `c-basic-offset' user option when
+editing D source code.
+The D community recommends using 4 spaces for indentation
+therefore that's PEL's default.
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-d
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+;--
+
+(defun pel-c-style-valid-p (style)
+  "Return non-nil if STYLE is one of the valid CC Mode styles, nil otherwise."
+  (require 'cc-vars nil :noerror)
+  (if (boundp 'c-style-alist)
+      (member style (mapcar 'car c-style-alist))
+    (error "The file cc-vars should have been loaded and it's not!")))
+
+(defcustom pel-d-bracket-style "bsd"
+  "Set the bracket style for the D programming language.
+PEL stores this value associated with the `d-mode' into the
+`c-default-style' user option variable.
+The BSD style (also called Allman style) is recommended by the
+D community, see URL https://dlang.org/dstyle.html#phobos_brackets .
+If you want to use something else, please select one of the
+CC Mode Built-in Styles."
+  :group 'pel-pkg-for-d
+  :type 'string
+  :safe 'pel-c-style-valid-p)
+
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Emacs Lisp Support

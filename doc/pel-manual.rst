@@ -1090,6 +1090,25 @@ The customization include the ``pel-use-free-keys`` and ``pel-use-which-key``
 variables.  The latter is enabled by default; it help see the available bindings
 following key prefixes.
 
+PEL Hide/Show Code Block Support
+--------------------------------
+
+:PDF Docs: `Hide/Show Code Block`_
+:PEL Customization: *none*
+:PEL Key Prefix: **pel:hideShow** : ``<f11> /``
+
+Emacs provides the `Hide/Show minor mode`_ to collapse and expand blocks of
+source code.  To use its commands it you have to activate the minor mode first.
+PEL provides commands that automatically activates the Hide/Show minor mode and
+provides easy to use key-bindings provided by the **pel:hideShow** ``<f11> /``
+key-map.  The `Hide/Show Code Block`_ PDF document describes the keys and
+commands provided by PEL as well as the standard Emacs commands and key bindings.
+
+
+
+.. _Hide/Show minor mode: https://www.gnu.org/software/emacs/manual/html_node/emacs/Hideshow.html#Hideshow
+
+
 
 PEL Highlight and Whitespace Management Support
 -----------------------------------------------
@@ -2318,6 +2337,7 @@ PDF Document Tables
 #. `Frames`_
 #. `Grep`_
 #. `Help`_
+#. `Hide/Show Code Block`_
 #. `Highlight`_
 #. `Hooks`_
 #. `Indentation`_
@@ -2395,6 +2415,7 @@ PDF Document Tables
 .. _Graphviz Dot:                             pdf/graphviz-dot.pdf
 .. _Grep:                                     pdf/grep.pdf
 .. _Help:                                     pdf/help.pdf
+.. _Hide/Show Code Block:                     pdf/hide-show-code.pdf
 .. _Highlight:                                pdf/highlight.pdf
 .. _Hooks:                                    pdf/hooks.pdf
 .. _Indentation:                              pdf/indentation.pdf
