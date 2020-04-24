@@ -969,6 +969,17 @@ manipulating the font size of the Terminal.app application when the
 *super* modifier key is set to the macOS command (⌘ ) key.
 
 
+PEL File and Directory Local Variable Control Support
+-----------------------------------------------------
+
+:PDF Docs: `File and Directory Local Variables`_
+:PEL Customization: *none*
+:PEL Key Prefix: - **pel:filevar** : ``<f11> f v``
+                 - **pel:dirvar**  : ``<f11> f v d``
+
+PEL provides a set of key bindings to manage local file variables and local
+directory variables.  See the `File and Directory Local Variables`_ PDF table.
+
 
 PEL Frame Management Utilities
 ------------------------------
@@ -2302,6 +2313,7 @@ PDF Document Tables
 #. `Enriched Text`_
 #. `Faces and Fonts`_
 #. `File Management`_
+#. `File and Directory Local Variables`_
 #. `Filling and Justification`_
 #. `Frames`_
 #. `Grep`_
