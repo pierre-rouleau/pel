@@ -460,6 +460,17 @@ Note: eldoc-box only works in graphics mode, not in terminal (tty)
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-hide-comnt nil
+  "Control whether PEL activates Drew Adams' hide-cmnt package.
+This package provides the ability to hide comments.
+IMPORTANT:
+ If you activate this you must install the package manually!
+ Download it either from the EmacsWiki or EmacsMirror page
+ and store it in a directory that is in your Emacs load path."
+  :group 'pel-pkg-for-programming
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Language Server Protocol (LSP) Support
 ;; --------------------------------------

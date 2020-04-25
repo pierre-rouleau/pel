@@ -367,17 +367,18 @@ Download Non-Elpa compliant files used by PEL
 Most packages used by PEL are supported by MELPA_, MELPA-STABLE_ or ELPA_.  But
 not all.  Some very useful packages have not been ported yet to Elpa-compliant
 sites. To use them they need to be copied locally.  Copy them inside the
-"~/.emacs.d/utils" directory.
+"~/.emacs.d/utils" directory if you want to use them.
 
 This version of PEL uses the following:
 
 - framemove_ : copy it from the `framemove Git Emacsmirror page`_.
 - vline_  : copy it from the `vline Git Emacsmirror page`_.
+- `hide-comnt.el`_ : copy it from the `hide-comnt Git Emacsmirror page`_.
 
 
-
-.. _framemove Git Emacsmirror page: https://github.com/emacsmirror/framemove
-.. _vline Git Emacsmirror page:     https://github.com/emacsmirror/vline
+.. _framemove Git Emacsmirror page:  https://github.com/emacsmirror/framemove
+.. _vline Git Emacsmirror page:      https://github.com/emacsmirror/vline
+.. _hide-comnt Git Emacsmirror page: https://github.com/emacsmirror/hide-comnt
 
 
 
@@ -725,7 +726,7 @@ PEL Comments Utilities
 ----------------------
 
 :PDF Docs: `Comments`_, `Cut, Delete, Copy and Paste`_, `Narrowing`_.
-:PEL Customization: *none*
+:PEL Customization: ``pel-use-hide-comnt``
 :PEL Key Prefix: **pel:comment** : ``<f11> ;``
 
 The `pel-comment`_ file provides a collection of commands to help manage file
@@ -746,6 +747,13 @@ comment management.
   Each killed comment group is retained in the kill ring, as a separate kill
   ring entry.  That allows selective restoration of comments later with yank
   operations.  See the `Cut, Delete, Copy and Paste`_ document.
+- When ``pel-use-hide-cmnt`` user option is **t** the `hide-comnt.el`_ file,
+  written by `Drew Adams`_ is used and provides 2 commands to hide the comments
+  in the buffer or just in a marked region.
+
+
+.. _Drew Adams:    https://www.emacswiki.org/emacs/DrewAdams
+.. _hide-comnt.el: https://github.com/emacsmirror/hide-comnt
 
 
 
@@ -3473,6 +3481,7 @@ framemove_                    Emacsmirror_
 free-keys_                    MELPA_
 goto-last-change_             MELPA_
 graphviz-dot-mode_            MELPA_
+`hide-comnt.el`_              Emacsmirror_
 highlight-defined_            MELPA_
 julia-snail_                  MELPA_
 lfe-mode_                     MELPA_

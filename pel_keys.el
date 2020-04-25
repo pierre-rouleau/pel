@@ -1204,7 +1204,7 @@ For example, applied to a directory name, macOS Finder is used."
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC c`` : C programming utilities
 
 (define-pel-global-prefix pel:for-C (kbd "<f11> SPC c"))
-(define-key pel:for-C++ (kbd "M-DEL") 'c-toggle-hungry-state) ; CC Mode
+(define-key pel:for-C (kbd "M-DEL") 'c-toggle-hungry-state) ; CC Mode
 (define-key pel:for-C    "." 'pel-find-thing-at-point)
 (define-key pel:for-C    "(" #'show-paren-mode)
 (define-key pel:for-C    ")" #'check-parens)
@@ -1754,6 +1754,22 @@ For example, applied to a directory name, macOS Finder is used."
 (define-key pel:comment "m"            'pel-comment-middle)
 (define-key pel:comment "e"            'pel-comment-end)
 (define-key pel:comment "u"            'uncomment-region)
+
+(when pel-use-hide-comnt
+  ;; IMPORTANT: hide-comnt must be installed manually.
+  ;; Download it from the EmacsWiki or EmacsMirror page and copy
+  ;; the hide-comnt.el file inside a directory located in your Emacs load path.
+  ;; The 2 sites are:
+  ;; - https://www.emacswiki.org/emacs/download/hide-comnt.el
+  ;; - https://github.com/emacsmirror/hide-comnt
+  ;; Credit: Drew Adams ( https://www.emacswiki.org/emacs/DrewAdams ).
+  (use-package hide-comnt
+    ;; autoload hide-comnt.el based on its 2 commands
+    :commands (hide/show-comments
+               hide/show-comments-toggle)
+    :init
+    (define-key pel:comment "~" 'hide/show-comments-toggle)
+    (define-key pel:comment "h" 'hide/show-comments)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> ?`` : Help /apropos/info commands
