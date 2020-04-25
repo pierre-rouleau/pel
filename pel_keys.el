@@ -1031,9 +1031,12 @@ For example, applied to a directory name, macOS Finder is used."
 ;; - Function Keys - <f11> top-level prefix keys
 
 (use-package cc-cmds
-  ;; autoload cc-cmds for the c-hungry-delete commands
+  ;; Autoload cc-cmds for the c-hungry-delete commands.
+  ;; Also autoload c-toggle-hungry-state becuase it is is used for
+  ;; CC Mode compliant modes (see later sections of code, below).
   :commands (c-hungry-delete-backwards
-             c-hungry-delete-forward))
+             c-hungry-delete-forward
+             c-toggle-hungry-state))
 
 (define-pel-global-prefix pel: (kbd "<f11>"))
 (define-key pel:           "#"             'pel-toggle-mac-numlock)
@@ -1201,6 +1204,7 @@ For example, applied to a directory name, macOS Finder is used."
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC c`` : C programming utilities
 
 (define-pel-global-prefix pel:for-C (kbd "<f11> SPC c"))
+(define-key pel:for-C++ (kbd "M-DEL") 'c-toggle-hungry-state) ; CC Mode
 (define-key pel:for-C    "." 'pel-find-thing-at-point)
 (define-key pel:for-C    "(" #'show-paren-mode)
 (define-key pel:for-C    ")" #'check-parens)
@@ -1216,6 +1220,7 @@ For example, applied to a directory name, macOS Finder is used."
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C`` : C++ programming utilities
 
 (define-pel-global-prefix pel:for-C++ (kbd "<f11> SPC C"))
+(define-key pel:for-C++ (kbd "M-DEL") 'c-toggle-hungry-state) ; CC Mode
 (define-key pel:for-C++      "."  'pel-find-thing-at-point)
 (define-key pel:for-C++      "(" #'show-paren-mode)
 (define-key pel:for-C++      ")" #'check-parens)
@@ -1243,7 +1248,7 @@ For example, applied to a directory name, macOS Finder is used."
 
     ;; Configure commands avalable on the D key-map.
     (define-pel-global-prefix pel:for-D (kbd "<f11> SPC D"))
-    (define-key pel:for-D "H"           'c-toggle-hungry-delete)
+    (define-key pel:for-D (kbd "M-DEL") 'c-toggle-hungry-state) ; CC Mode
     (define-key pel:for-D "f"           'c-fill-paragraph)
     (define-key pel:for-D "a"           'c-toggle-auto-newline)
     (define-key pel:for-D (kbd "<RET>") 'c-context-open-line)
