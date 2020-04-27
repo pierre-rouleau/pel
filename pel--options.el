@@ -556,10 +556,10 @@ Values in the [2, 8] range are accepted."
   :type 'integer
   :safe 'pel-indent-valid-p)
 
-(defcustom pel-c-indent-tabs-mode nil
+(defcustom pel-c-use-tabs nil
   "Value of `indent-tabs-mode' for editing C source code.
-- If set to nil: spaces are used for indentation.
-- If set to t: hard tabs are used."
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
   :group 'pel-pkg-for-c
   :type 'boolean
   :safe #'booleanp)
@@ -602,10 +602,10 @@ Values in the [2, 8] range are accepted."
   :type 'integer
   :safe 'pel-indent-valid-p)
 
-(defcustom pel-c++-indent-tabs-mode nil
+(defcustom pel-c++-use-tabs nil
   "Value of `indent-tabs-mode' for editing C++ source code.
-- If set to nil: spaces are used for indentation.
-- If set to t: hard tabs are used."
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
   :group 'pel-pkg-for-c++
   :type 'boolean
   :safe #'booleanp)
@@ -663,10 +663,10 @@ It is often the same value as `pel-d-indentation'."
   :type 'integer
   :safe 'pel-indent-valid-p)
 
-(defcustom pel-d-indent-tabs-mode nil
+(defcustom pel-d-use-tabs nil
   "Value of `indent-tabs-mode' for editing D source code.
-- If set to nil: spaces are used for indentation.
-- If set to t: hard tabs are used."
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
   :group 'pel-pkg-for-d
   :type 'boolean
   :safe #'booleanp)

@@ -1309,7 +1309,7 @@ MODE must be a symbol."
   "Set the environment for editing C files."
   ;; Set variables always available in Emacs
   (setq tab-width          pel-c-tab-width
-        indent-tabs-mode   pel-c-indent-tabs-mode)
+        indent-tabs-mode   pel-c-use-tabs)
   ;; Set CC Mode variables
   ;; (and therefore not known at compilation when CC Mode not loaded).
   (pel-setq c-basic-offset pel-c-indentation)
@@ -1338,7 +1338,7 @@ MODE must be a symbol."
   "Set the environment for editing C++ files."
   ;; Set variables always available in Emacs
   (setq tab-width          pel-c++-tab-width
-        indent-tabs-mode   pel-c++-indent-tabs-mode)
+        indent-tabs-mode   pel-c++-use-tabs)
   ;; Set CC Mode variables
   ;; (and therefore not known at compilation when CC Mode not loaded).
   (pel-setq c-basic-offset pel-c++-indentation)
@@ -1365,7 +1365,7 @@ MODE must be a symbol."
 This is meant to be used in the d-mode hook lambda."
     ;; Set variables always available in Emacs
     (setq tab-width          pel-d-tab-width
-          indent-tabs-mode   pel-d-indent-tabs-mode)
+          indent-tabs-mode   pel-d-use-tabs)
     ;; Set CC Mode variables
     ;; (and therefore not known at compilation when CC Mode not loaded).
     (pel-setq c-basic-offset pel-d-indentation)
