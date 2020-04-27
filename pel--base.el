@@ -127,14 +127,15 @@ on/off value, otherwise use \"on\" and \"off\"."
       (or on-string "on")
     (or off-string "off")))
 
-(defun pel-symbol-on-off-string (symbol &optional on-string off-string)
+(defun pel-symbol-on-off-string (symbol &optional on-string off-string void-string)
   "Return representation of symbold value and whether it is bound.
-Return \"void\" when SYMBOL is not bound,
-the OFF-STRING or \"off\" for nil,
-the ON-STRING or \"on\" for SYMBOL boolean value."
+When SYMBOL is not bound: return VOID-STRING or \"void\" if it's nil,
+When it is bound, return:
+- the OFF-STRING or \"off\" for nil,
+- the ON-STRING or \"on\" for SYMBOL boolean value."
   (if (boundp symbol)
       (pel-on-off-string (eval symbol) on-string off-string)
-    "void"))
+    (or void-string "void")))
 
 (defun pel-symbol-text (symbol &optional on-string off-string)
   "Return a string with an interpretation of SYMBOL value.
@@ -164,6 +165,20 @@ MODE is the mode symbol."
                   (pel-symbol-on-off-string mode))
         "available but not loaded, use a command to load it")
     "not available"))
+
+;; -----------------------------------------------------------------------------
+;; Operations on sequences
+;; -----------------------
+
+(defun pel-concat-strings-in-list (list)
+  "Return the concatenation of all strings in the LIST of strings."
+  (let ((acc "")
+        elem)
+    (while list
+      (setq elem (car list))
+      (setq list (cdr list))
+      (setq acc (concat acc elem)))
+    acc))
 
 ;; -----------------------------------------------------------------------------
 ;; Basic functions working with values and variables
@@ -202,6 +217,17 @@ The function issue an error if the argument is not a symbol."
 (defun pel-val-or-default (val default)
   "Return VAL if not nil otherwise return DEFAULT."
   (or val default))
+
+;; -----------------------------------------------------------------------------
+;; Argument converter
+;; ------------------
+
+(defun pel-multiplier (positive)
+  "Return a positive value 1 if POSITIVE is non-nill, -1 otherwise."
+  (if positive 1 -1))
+
+(defalias 'pel-mode-toggle-arg 'pel-multiplier
+  "Convert a boolean value to the value required by mode toggling functions.")
 
 ;; -----------------------------------------------------------------------------
 ;; Iteration helpers
