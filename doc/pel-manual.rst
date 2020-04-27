@@ -1611,7 +1611,7 @@ PEL Support for Curly-Bracket Programming Languages
 PEL Support For D
 ^^^^^^^^^^^^^^^^^
 
-:PDF Docs: `D <pdf/pl_d.pdf>`_
+:PDF Docs: `D <pdf/pl-d.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-d``
 
                       - Activation: ``pel-use-d``
@@ -2430,7 +2430,7 @@ PDF Document Tables
 
    #. C
    #. C++
-   #. `D <pdf/pl_d.pdf>`_
+   #. `D <pdf/pl-d.pdf>`_
 
 **Version Control Systems:**
 
