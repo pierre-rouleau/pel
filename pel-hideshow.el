@@ -1,0 +1,146 @@
+;;; pel-hideshow.el --- PEL Hide/Show -*- lexical-binding: t -*-
+
+;; Copyright (C) 2020  Pierre Rouleau
+
+;; Author: Pierre Rouleau <prouleau001@gmail.com>
+
+;; This file is part of the PEL package
+;; This file is not part of GNU Emacs.
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Credits:
+;;   Several ideas came from the source of hideshow.el.
+;;   I wanted to use a single key to toggle hiding/showing all blocks
+;;   and that was already proposed by Joseph Eydelnant who has the idea
+;;   a little more than 19 years before (I wish I had been using Emacs then).
+;;   Unfortunately his code is not yet in hideshow.el and I don't want to
+;;   modify that code, so I implemented something similar here.
+;;
+
+;;; Commentary:
+;;
+;; This is just a simple collection of functions that complement the hideshow
+;; functionality.  Several of these functions activate the minor mode if it is
+;; not active.
+
+;;; Code:
+(require 'hideshow)
+(require 'pel--base)                    ; uses: pel-toggle
+
+
+(defvar pel--hs-all-hidden nil
+  "Current state of hiding all blocks.
+Value is t when hiding all blocks, nil otherwise.
+LIMITATION:
+- No attempt is made by pel-hideshow.el to ensure that
+  this variable is set to nil when function `hs-minor-mode' is called.
+  The impact is negligible: in the worst case the value becomes out of sync with
+  the real state and it will take 2 toggle commands to change the state of
+  hiding.")
+
+(defun pel--activate-hideshow-mode ()
+  "Activate the Hide/Show minor mode if it is not already active."
+  (unless hs-minor-mode
+    (setq pel--hs-all-hidden nil)
+    (hs-minor-mode)))
+
+;;-pel-autoload
+(defun pel-toggle-hide-all ()
+  "Toggle hiding of all blocks.
+Activate Hide/Show minor mode if not already active."
+  (interactive)
+  (pel--activate-hideshow-mode)
+  (if (pel-toggle 'pel--hs-all-hidden)
+      (hs-hide-all)
+    (hs-show-all)))
+
+;;-pel-autoload
+(defun pel-toggle-hide-block ()
+  "Toggle hiding of current block.
+Activate Hide/Show minor mode if not already active."
+  (interactive)
+  (pel--activate-hideshow-mode)
+  (hs-toggle-hiding))
+
+;;-pel-autoload
+(defun pel-hide-block (&optional end)
+  "Select a block and hide it.
+With prefix arg, reposition to END.
+Activate Hide/Show minor mode if not already active."
+  (interactive "P")
+  (pel--activate-hideshow-mode)
+  (hs-hide-block end))
+
+;;-pel-autoload
+(defun pel-show-block (&optional end)
+  "Select a block and show it.
+With prefix arg, reposition to END.
+Activate Hide/Show minor mode if not already active."
+  (interactive "P")
+  (pel--activate-hideshow-mode)
+  (hs-show-block end))
+
+;;-pel-autoload
+(defun pel-hide-all ()
+  "Hide all top level blocks, displaying only first and last lines.
+Activate Hide/Show minor mode if not already active."
+  (interactive)
+  (pel--activate-hideshow-mode)
+  (hs-hide-all))
+
+;;-pel-autoload
+(defun pel-show-all ()
+  "Show all blocks.
+Activate Hide/Show minor mode if not already active."
+  (interactive)
+  (pel--activate-hideshow-mode)
+  (hs-show-all))
+
+;;-pel-autoload
+(defun pel-hide-level-1 ()
+  "Hide all blocks 1 level below the current block.
+Activate Hide/Show minor mode if not already active."
+  (interactive)
+  (pel--activate-hideshow-mode)
+  (hs-hide-level 1))
+
+;;-pel-autoload
+(defun pel-hide-level-2 ()
+  "Hide all blocks 2 levels below the current block.
+Activate Hide/Show minor mode if not already active."
+  (interactive)
+  (pel--activate-hideshow-mode)
+  (hs-hide-level 2))
+
+;;-pel-autoload
+(defun pel-hide-level-3 ()
+  "Hide all blocks 3 levels below the current block.
+Activate Hide/Show minor mode if not already active."
+  (interactive)
+  (pel--activate-hideshow-mode)
+  (hs-hide-level 3))
+
+;;-pel-autoload
+(defun pel-hide-level-4 ()
+  "Hide all blocks 4 levels below the current block.
+Activate Hide/Show minor mode if not already active."
+  (interactive)
+  (pel--activate-hideshow-mode)
+  (hs-hide-level 4))
+
+;; -----------------------------------------------------------------------------
+(provide 'pel-hideshow)
+
+;;; pel-hideshow.el ends here
