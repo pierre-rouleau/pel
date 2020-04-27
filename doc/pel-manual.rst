@@ -1563,6 +1563,7 @@ Note:
   version of PEL.
   It will be enhanced with upcoming versions.
 
+
 PEL Common Lisp Support
 ~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1603,6 +1604,42 @@ code.  Some of them can also be used for other types of Lisp as well.
 - ``pel-byte-compile-file-and-load`` byte compiles the file in the current
   buffer and then load it.
 - ``pel-lint-elisp-file`` runs Emacs Lisp lint on the current file.
+
+PEL Support for Curly-Bracket Programming Languages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+PEL Support For D
+^^^^^^^^^^^^^^^^^
+
+:PDF Docs: `D <pdf/pl_d.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-d``
+
+                      - Activation: ``pel-use-d``
+                      - Configuration:
+
+                        - ``pel-d-indentation``
+                        - ``pel-d-tab-width``
+                        - ``pel-d-use-tabs``
+                        - ``pel-d-bracket-style``
+
+:PEL Key Prefix: - Globally: **pel:for-d** : ``<f11> SPC D``
+                 - From a buffer in d--mode: ``<f12>``
+
+
+PEL provides support for the `D Programming Language`_ via the `Emacs D-mode`_ and
+related external packages that it activates when the **pel-use-d** user option
+is set to **t**.  The selection of important editor behaviour such as the
+indentation/bracket style and the indentation is completely controlled by user
+options.  The defaults are adapted to what is proposed by the `D Style code
+guideline`_ and can easily be changed using Emacs customize system.
+More information is available in the `PEL PDF document for D`_ .
+
+
+
+.. _D Programming Language: https://en.wikipedia.org/wiki/D_(programming_language)
+.. _Emacs D-mode: https://github.com/Emacs-D-Mode-Maintainers/Emacs-D-Mode
+.. _D Style code guideline: https://dlang.org/dstyle.html
+.. _PEL PDF document for D: pdf/pl_d.pdf
 
 
 PEL Prompt Utilities
@@ -2382,10 +2419,18 @@ PDF Document Tables
 
 **Programming Language Support:**
 
-#. `Common Lisp`_
-#. `Emacs Lisp`_
+#. Lisp Languages
 
-   - `ERT <pdf/ert.pdf>`_ (Emacs Lisp Regression Testing system)
+   #. `Common Lisp`_
+   #. `Emacs Lisp`_
+
+      - `ERT <pdf/ert.pdf>`_ (Emacs Lisp Regression Testing system)
+
+#. Curly-bracket Languages
+
+   #. C
+   #. C++
+   #. `D <pdf/pl_d.pdf>`_
 
 **Version Control Systems:**
 
@@ -2624,14 +2669,6 @@ pel-use-c-eldoc                Enables use of the `c-eldoc`_ package which      
                                provides helpful descriptions of the arguments to C functions
                                when editing a buffer in c-mode.  PEL sets the hook required
                                for this.
-
-pel-use-cc-vars                Enables use of the cc-vars standard Emacs                     No, it is part
-                               library for the cc mode.  PEL sets some values for C          of standard GNU
-                               development.                                                  Emacs.
-
-                               **Note**: 🚧 support for this is underway.
-                               More options to be documented once C development is described
-                               in the PEL documentation.
 
 pel-use-common-lisp            Enables use of Common Lisp development within                 Yes, it tries to
                                Emacs using a Common Lisp system such as SBCL_  (Steel Bank   install slime
@@ -3471,6 +3508,7 @@ alchemist_                    MELPA_
 `c-eldoc`_                    MELPA_
 `cargo`_                      MELPA_
 `company`_                    MELPA_
+d-mode_                       MELPA_
 `dired-narrow`_               MELPA_
 `edts`_                       MELPA_
 elixir-mode_                  MELPA_
@@ -3539,6 +3577,7 @@ Hopefully some people will find PEL useful to them.
 .. _cargo:                     https://melpa.org/#/cargo
 .. _company:                   https://melpa.org/#/company
 .. _c-eldoc:                   https://melpa.org/#/?q=c-eldoc
+.. _d-mode:                    https://melpa.org/#/?q=d-mode
 .. _dired-narrow:              https://melpa.org/#/dired-narrow
 .. _edts:                      https://melpa.org/#/edts
 .. _elisp-lint:                https://melpa.org/#/elisp-lint
