@@ -32,6 +32,25 @@
 ;;; Code:
 
 
+;; -----------------------------------------------------------------------------
+;; Validation Utilities
+;; --------------------
+
+(defun pel-indent-valid-p (n)
+  "Return t if N is a valid indentation integer, nil otherwise."
+  (and (integerp n) (< n 9) (> n 1)))
+
+(defun pel-c-style-valid-p (style)
+  "Return non-nil if STYLE is one of the valid CC Mode styles, nil otherwise."
+  (require 'cc-vars nil :noerror)
+  (if (boundp 'c-style-alist)
+      (member style (mapcar 'car c-style-alist))
+    (error "The file cc-vars should have been loaded and it's not!")))
+
+;; -----------------------------------------------------------------------------
+;; User Option Data Definition
+;; ---------------------------
+
 (defgroup pel nil
   "Pragmatic Environment Library."
   :group 'convenience
@@ -233,7 +252,7 @@ References:
   :safe #'booleanp)
 
 (defcustom pel-use-ascii-table nil
-  "Control whether the ascii-table package is available."
+  "Control whether the `ascii-table' package is available."
   :group 'pel-pkg-for-buffer
   :type 'boolean
   :safe #'booleanp)
@@ -447,7 +466,7 @@ and usable shell for Emacs."
 ;; Programming Language Support
 ;; ============================
 (defgroup pel-pkg-for-programming nil
-  "List of external packages that PEL can use to support programming."
+  "PEL customization for programming languages."
   :group 'pel-package-use)
 
 (defcustom pel-use-eldoc-box nil
@@ -485,23 +504,121 @@ eglot is a client for Language Server Protocol (LSP) servers."
   :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; C-like Language support
-;; -----------------------
+;; CC Mode Language support
+;; ------------------------
 (defgroup pel-pkg-for-cc nil
-  "C/C-like development packages PEL can use."
+  "PEL customization for curly-bracket programming languages."
   :group 'pel-pkg-for-programming)
-
-(defcustom pel-use-cc-vars nil
-  "Control whether PEL supports the cc-vars package."
-  :group 'pel-pkg-for-cc
-  :type 'boolean
-  :safe #'booleanp)
 
 (defcustom pel-use-c-eldoc nil
   "Control whether PEL supports the c-eldoc package."
   :group 'pel-pkg-for-cc
   :type 'boolean
   :safe #'booleanp)
+
+(defcustom pel-cc-auto-newline t
+  "Set the default state of CC Mode electric auto-newline for all CC Modes.
+This includes modes for C, C++, D.
+If set to nil: disables auto-newline
+If set to t:   activates auto-newline
+PEL calls `c-toggle-auto-newline' to set to requested default state
+for buffers in `d-mode'.  The command can be used to change the state
+of auto-newline while editing."
+  :group 'pel-pkg-for-cc
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; C Language Support
+;; ------------------
+
+(defgroup pel-pkg-for-c nil
+  "PEL customization for C."
+  :group 'pel-pkg-for-cc)
+
+(defcustom pel-c-indentation 3
+  "Number of columns for C source code indentation.
+PEL stores this in `c-basic-offset' when editing buffers with C code.
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-c
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-c-tab-width 3
+  "Distance between tab stop for C source code.
+PEL stores this in `tab-width' when editing buffer with C source.
+This does *NOT* control the indentation in C source code, it is used
+only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB characters.
+It is often the same value as `pel-c-indentation'.
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-c
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-c-indent-tabs-mode nil
+  "Value of `indent-tabs-mode' for editing C source code.
+- If set to nil: spaces are used for indentation.
+- If set to t: hard tabs are used."
+  :group 'pel-pkg-for-c
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-c-bracket-style "linux"
+  "Set the bracket style for the C programming language.
+PEL stores this value associated with the `c-mode' into the
+`c-default-style' user option variable.
+If you want to use something else, please select one of the
+CC Mode Built-in Styles."
+  :group 'pel-pkg-for-c
+  :type 'string
+  :safe 'pel-c-style-valid-p)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; C++ Language Support
+;; --------------------
+
+(defgroup pel-pkg-for-c++ nil
+  "PEL customization for C++."
+  :group 'pel-pkg-for-cc)
+
+(defcustom pel-c++-indentation 3
+  "Number of columns for C++ source code indentation.
+PEL stores this in `c-basic-offset' when editing buffers with C++ source.
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-c++
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-c++-tab-width 3
+  "Distance between tab stop for C++ source code.
+PEL stores this in `tab-width' when editing buffer with C++ source.
+This does *NOT* control the indentation in C++ source code, it is used
+only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB characters.
+It is often the same value as `pel-c++-indentation'.
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-c++
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-c++-indent-tabs-mode nil
+  "Value of `indent-tabs-mode' for editing C++ source code.
+- If set to nil: spaces are used for indentation.
+- If set to t: hard tabs are used."
+  :group 'pel-pkg-for-c++
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-c++-bracket-style "stroustrup"
+  "Set the bracket style for the C++ programming language.
+PEL stores this value associated with the `c-mode' into the
+`c-default-style' user option variable.
+If you want to use something else, please select one of the
+CC Mode Built-in Styles."
+  :group 'pel-pkg-for-c++
+  :type 'string
+  :safe 'pel-c-style-valid-p)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; D Language Support
@@ -510,31 +627,24 @@ eglot is a client for Language Server Protocol (LSP) servers."
 ;; obsolete first implementation of D called D 1).
 
 (defgroup pel-pkg-for-d nil
-  "D programming language support development packages PEL can use."
-  :group 'pel-pkg-for-programming)
+  "PEL customization for D."
+  :group 'pel-pkg-for-cc)
 
 (defcustom pel-use-d nil
   "Control whether PEL supports the D programming language.
 - Activates the use of: Emacs D Mode
 - Required to activate the use of:
  - Auto-Complete for D
- - Company mode for D
-"
+ - Company mode for D"
   :group 'pel-pkg-for-d
   :type 'boolean
   :safe #'booleanp)
 
-
 ;--
 
-(defun pel-indent-valid-p (n)
-  "Return t if N is a valid indentation integer, nil otherwise."
-  (and (integerp n) (< n 9) (> n 1)))
-
-(defcustom pel-d-basic-offset 4
+(defcustom pel-d-indentation 4
   "Number of columns for D source code indentation.
-PEL stores this value in `c-basic-offset' user option when
-editing D source code.
+PEL stores this in `c-basic-offset' when editing buffers in `d-mode'.
 The D community recommends using 4 spaces for indentation
 therefore that's PEL's default.
 Values in the [2, 8] range are accepted."
@@ -542,14 +652,24 @@ Values in the [2, 8] range are accepted."
   :type 'integer
   :safe 'pel-indent-valid-p)
 
-;--
+(defcustom pel-d-tab-width 4
+  "Distance between tab stop for D source code.
+PEL stores this in `tab-width' when editing buffer in `d-mode'.
+This does *NOT* control the indentation in D source code, it is used
+only for commands that mode point to tab stop positions and the
+display of hard TAB characters.
+It is often the same value as `pel-d-indentation'."
+  :group 'pel-pkg-for-d
+  :type 'integer
+  :safe 'pel-indent-valid-p)
 
-(defun pel-c-style-valid-p (style)
-  "Return non-nil if STYLE is one of the valid CC Mode styles, nil otherwise."
-  (require 'cc-vars nil :noerror)
-  (if (boundp 'c-style-alist)
-      (member style (mapcar 'car c-style-alist))
-    (error "The file cc-vars should have been loaded and it's not!")))
+(defcustom pel-d-indent-tabs-mode nil
+  "Value of `indent-tabs-mode' for editing D source code.
+- If set to nil: spaces are used for indentation.
+- If set to t: hard tabs are used."
+  :group 'pel-pkg-for-d
+  :type 'boolean
+  :safe #'booleanp)
 
 (defcustom pel-d-bracket-style "bsd"
   "Set the bracket style for the D programming language.
@@ -563,12 +683,11 @@ CC Mode Built-in Styles."
   :type 'string
   :safe 'pel-c-style-valid-p)
 
-
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Emacs Lisp Support
 ;; ------------------
 (defgroup pel-pkg-for-elisp nil
-  "Emacs Lisp development packages PEL can use."
+  "PEL customizaton for Emacs Lisp."
   :group 'pel-pkg-for-programming)
 
 (defcustom pel-use-macrostep nil
@@ -599,7 +718,7 @@ CC Mode Built-in Styles."
 ;; Common Lisp Support
 ;; -------------------
 (defgroup pel-pkg-for-clisp nil
-  "Common Lisp development packages PEL can use."
+  "PEL customization for Common Lisp."
   :group 'pel-pkg-for-programming)
 
 (defcustom pel-use-common-lisp nil
@@ -613,11 +732,11 @@ CC Mode Built-in Styles."
 ;; --------------
 ;; Note: Erlang, is a BEAM VM programming language.
 (defgroup pel-pkg-for-beam-vm nil
-  "BEAM Virtual Machine development packages PEL can use."
+  "PEL customization for BEAM Virtual Machine programming languages."
   :group 'pel-pkg-for-programming)
 
 (defgroup pel-pkg-for-erlang nil
-  "Erlang development packages PEL can use."
+  "PEL customization for Erlang."
   :group 'pel-pkg-for-beam-vm)
 
 (defcustom pel-use-erlang nil
@@ -651,7 +770,7 @@ EDTS := Erlang Development Tool Suite."
 ;; Note: LFE is a BEAM VM programming language.
 
 (defgroup pel-pkg-for-lfe nil
-  "LFE (Lisp Flavoured Erlang) development packages PEL can use."
+  "PEL customization for LFE (Lisp Flavoured Erlang)."
   :group 'pel-pkg-for-beam-vm)
 
 (defcustom pel-use-lfe nil
@@ -666,7 +785,7 @@ EDTS := Erlang Development Tool Suite."
 ;; Note: Elixir is a BEAM VM programming language.
 
 (defgroup pel-pkg-for-elixir nil
-  "Elixir development packages PEL can use."
+  "PEL customization for Elixir."
   :group 'pel-pkg-for-beam-vm)
 
 (defcustom pel-use-elixir nil
@@ -703,15 +822,15 @@ package which provides the client/library for LSP."
 ;; Julia Support
 ;; --------------
 (defgroup pel-pkg-for-julia nil
-  "Julia development packages PEL can use."
+  "PEL customization for Julia."
   :group 'pel-pkg-for-programming)
 
 (defcustom pel-use-julia  nil
   "Control whether PEL supports Julia development.
 IMPORTANT:
   You *must* also activate `pel-use-vterm' to be able to use Julia
-  development as this uses the julia-snail package which includes both the
-  julia-mode but also a fast Julia REPL that uses the vterm."
+  development as this uses the `julia-snail' package which includes both the
+  `julia-mode' but also a fast Julia REPL that uses the vterm."
   :group 'pel-pkg-for-julia
   :type 'boolean
   :safe #'booleanp)
@@ -720,7 +839,7 @@ IMPORTANT:
 ;; Python Support
 ;; --------------
 (defgroup pel-pkg-for-python nil
-  "Python development packages PEL can use."
+  "PEL customization for Python."
   :group 'pel-pkg-for-programming)
 
 (defcustom pel-use-python  nil
@@ -733,7 +852,7 @@ IMPORTANT:
 ;; Rust Support
 ;; ------------
 (defgroup pel-pkg-for-rust nil
-  "Rust development packages PEL can use."
+  "PEL customization for Rust."
   :group 'pel-pkg-for-programming)
 
 (defcustom pel-use-rust  nil

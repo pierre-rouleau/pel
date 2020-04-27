@@ -45,6 +45,7 @@
   (require 'cl-lib))    ; use: cl-eval-when
 (require 'pel--base)    ; use pel-system-is-macos-p
 ;;                      ;     pel-system-is-windows-p
+;;                      ;     pel-mode-toggle-arg
 (require 'pel--options) ; all `pel-use-...' variables identify what to use.
 ;;                      ; also defines a set of utility functions to deal with
 ;;                      ; the options: pel-auto-complete-help
@@ -445,6 +446,9 @@ For example, applied to a directory name, macOS Finder is used."
   (use-package bm
     :ensure t
     :pin melpa
+    ;; bm must be started right away, otherwise F2 will be used for the 2-column
+    ;; mode and Emacs will not restore the bookmarks.  Just defer it.
+    :defer 1
 
     :init
     ;;  Prevent lint warnings using empty defvar
@@ -570,14 +574,6 @@ For example, applied to a directory name, macOS Finder is used."
     ;; activate the autoload.
     :init
     (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)))
-
-;; (when pel-use-cc-vars
-;;   (cl-eval-when 'compile (require 'cc-vars))
-;;   (use-package cc-vars
-;;     :config
-;;     ;; Using bsd/allman style but with 3 spaces per tabs.
-;;     ;; TODO: it's value is 'set-from-style' ??  Need to investigate.
-;;     (pel-setq-default c-basic-offset 3)))
 
 ;; ---------------
 ;; - CMake support
@@ -1034,9 +1030,15 @@ For example, applied to a directory name, macOS Finder is used."
   ;; Autoload cc-cmds for the c-hungry-delete commands.
   ;; Also autoload c-toggle-hungry-state becuase it is is used for
   ;; CC Mode compliant modes (see later sections of code, below).
-  :commands (c-hungry-delete-backwards
+  :commands (c-context-open-line
+             c-fill-paragraph
+             c-hungry-delete-backwards
              c-hungry-delete-forward
-             c-toggle-hungry-state))
+             c-toggle-auto-newline
+             c-toggle-comment-style
+             c-toggle-electric-state
+             c-toggle-hungry-state
+             c-toggle-syntactic-indentation))
 
 (define-pel-global-prefix pel: (kbd "<f11>"))
 (define-key pel:           "#"             'pel-toggle-mac-numlock)
@@ -1201,40 +1203,175 @@ For example, applied to a directory name, macOS Finder is used."
 (define-key pel:menu "t"     #'tmm-menubar)
 
 ;; -----------------------------------------------------------------------------
+;; Utility function for mapping CC Mode keys
+
+(defun pel-key-electric-p (key)
+  "Return non-nil if KEY is electric, nil otherwise."
+  ;; Work only with keys that may be electric.
+  (local-key-binding key))
+
+(defun pel-filter-electric-key (char)
+  "Return CHAR if it is electric, space otherwise."
+  (if (pel-key-electric-p (kbd char))
+      char
+    nil))
+
+(defun pel-electric-keys ()
+  "Return a string with the electric keys."
+  (seq-filter 'pel-filter-electric-key
+          (mapcar 'string "#*/<>(){}:;,")))
+
+(defun pel-cc-mode-info ()
+  "Display information about current CC mode derivative."
+  (interactive)
+  (let ((not-avail-msg "not available for this mode"))
+    (message "%s state:
+- Indent width     : %s
+- Tab width        : %s
+- Indenting with   : %s
+- Bracket style    : %s
+- Comment style    : %s
+- Electric chars   : %s
+- Auto newline     : %s
+- Syntactic indent : %s
+- Hungry delete    : %s"
+             major-mode
+             c-basic-offset
+             tab-width
+             (pel-on-off-string indent-tabs-mode
+                                "hard-tabs and spaces"
+                                "spaces only")
+             (alist-get major-mode c-default-style)
+             (if (and (boundp 'c-block-comment-flag)
+                      (boundp 'c-block-comment-starter)
+                      (boundp 'c-block-comment-ender)
+                      (boundp 'c-block-comment-prefix))
+                 (if c-block-comment-flag
+                     (format
+                      "Block comments: %s %s , continued line start with %s"
+                             c-block-comment-starter
+                             c-block-comment-ender
+                             c-block-comment-prefix)
+                   (format "Line comments: %s" c-line-comment-starter))
+               not-avail-msg)
+             (pel-symbol-on-off-string 'c-electric-flag
+                                       (format "active: %s"
+                                               (pel-concat-strings-in-list
+                                                (pel-electric-keys)))
+                                       "inactive"
+                                       not-avail-msg)
+             (pel-symbol-on-off-string 'c-auto-newline nil nil not-avail-msg)
+             (pel-symbol-on-off-string
+              'c-syntactic-indentation nil nil not-avail-msg)
+             (pel-symbol-on-off-string 'c-hungry-delete-key
+                                       nil
+                                       "off, but the \
+F11-⌦  and F11-⌫  keys are available."
+                                       not-avail-msg))))
+
+(defun pel--map-cc-for (prefix)
+  "Map in the PEL keys for CC Mode in the keymap specified by PREFIX.
+If a key must be assigned to something different for the programming language
+just bind it again after this call."
+  ;; electric mode control
+  (define-key prefix (kbd "M-?")   'pel-cc-mode-info)
+  (define-key prefix (kbd "M-s")   'c-set-style)   ; interactively select style
+  (define-key prefix (kbd "M-;")   'c-toggle-comment-style)
+  (define-key prefix (kbd "M-e")   'c-toggle-electric-state)
+  (define-key prefix (kbd "M-RET") 'c-toggle-auto-newline)
+  (define-key prefix (kbd "M-DEL") 'c-toggle-hungry-state)
+  (define-key prefix (kbd "M-b")  #'subword-mode)
+  (define-key prefix (kbd "M-i")   'c-toggle-syntactic-indentation)
+  (define-key prefix (kbd "RET")   'c-context-open-line)
+  (define-key prefix      "f"      'c-fill-paragraph)
+  ;;
+  (define-key prefix (kbd "M-9")  #'show-paren-mode)
+  (define-key prefix      "."      'pel-find-thing-at-point)
+  (define-key prefix      ")"      #'check-parens)
+  (when pel-use-rainbow-delimiters
+    (define-key prefix (kbd "M-r")  'rainbow-delimiters-mode)))
+
+(defun pel--set-cc-style (mode bracket-style)
+  "Set the MODE BRACKET-STYLE and TAB-SIZE for the current mode.
+MODE must be a symbol."
+  (add-to-list 'c-default-style (cons mode bracket-style)))
+
+
+;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC c`` : C programming utilities
 
-(define-pel-global-prefix pel:for-C (kbd "<f11> SPC c"))
-(define-key pel:for-C (kbd "M-DEL") 'c-toggle-hungry-state) ; CC Mode
-(define-key pel:for-C    "." 'pel-find-thing-at-point)
-(define-key pel:for-C    "(" #'show-paren-mode)
-(define-key pel:for-C    ")" #'check-parens)
-(when pel-use-rainbow-delimiters
-  (define-key pel:for-C  "R"  'rainbow-delimiters-mode))
-;;
+;; Note: C editing is always available in Emacs via the CC Mode and the c-mode
+;; that is part of Emacs.  All autoloading is already set by Emacs.  The only
+;; extra code needed is to add the specialized menu and then activate it, along
+;; with the specialized CC Mode minor modes via the c-mode-hook.
+
+(defun pel--setenv-for-c ()
+  "Set the environment for editing C files."
+  ;; Set variables always available in Emacs
+  (setq tab-width          pel-c-tab-width
+        indent-tabs-mode   pel-c-indent-tabs-mode)
+  ;; Set CC Mode variables
+  ;; (and therefore not known at compilation when CC Mode not loaded).
+  (pel-setq c-basic-offset pel-c-indentation)
+  ;; Configure some of the special CC minor modes
+  (pel--set-cc-style 'c-mode pel-c-bracket-style)
+  (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline)))
+
+(define-pel-global-prefix pel:for-c (kbd "<f11> SPC c"))
+(pel--map-cc-for pel:for-c)
+
 (pel--mode-hook-maybe-call
  '(lambda ()
-    (local-set-key (kbd "<f12>") 'pel:for-C))
+    (pel--setenv-for-c)
+    (local-set-key (kbd "<f12>") 'pel:for-c))
  'c-mode 'c-mode-hook)
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C`` : C++ programming utilities
 
-(define-pel-global-prefix pel:for-C++ (kbd "<f11> SPC C"))
-(define-key pel:for-C++ (kbd "M-DEL") 'c-toggle-hungry-state) ; CC Mode
-(define-key pel:for-C++      "."  'pel-find-thing-at-point)
-(define-key pel:for-C++      "(" #'show-paren-mode)
-(define-key pel:for-C++      ")" #'check-parens)
-(when pel-use-rainbow-delimiters
-  (define-key pel:for-C++    "R"  'rainbow-delimiters-mode))
-;;
+;; Note: C++ editing is always available in Emacs via the CC Mode and the
+;; c++-mode that is part of Emacs.  All autoloading is already set by Emacs.
+;; The only extra code needed is to add the specialized menu and then activate
+;; it, along with the specialized CC Mode minor modes via the c++-mode-hook.
+
+(defun pel--setenv-for-c++ ()
+  "Set the environment for editing C++ files."
+  ;; Set variables always available in Emacs
+  (setq tab-width          pel-c++-tab-width
+        indent-tabs-mode   pel-c++-indent-tabs-mode)
+  ;; Set CC Mode variables
+  ;; (and therefore not known at compilation when CC Mode not loaded).
+  (pel-setq c-basic-offset pel-c++-indentation)
+  ;; Configure some of the special CC minor modes
+  (pel--set-cc-style 'c++-mode pel-c++-bracket-style)
+  (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline)))
+
+(define-pel-global-prefix pel:for-c++ (kbd "<f11> SPC C"))
+(pel--map-cc-for pel:for-c++)
+
 (pel--mode-hook-maybe-call
  '(lambda ()
-    (local-set-key (kbd "<f12>") 'pel:for-C++))
+    (pel--setenv-for-c++)
+    (local-set-key (kbd "<f12>") 'pel:for-c++))
  'c++-mode 'c++-mode-hook)
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC D`` : D programming utilities
+
 (when pel-use-d
+
+  (defun pel--setenv-for-d ()
+    "Set the environment for editing D files.
+This is meant to be used in the d-mode hook lambda."
+    ;; Set variables always available in Emacs
+    (setq tab-width          pel-d-tab-width
+          indent-tabs-mode   pel-d-indent-tabs-mode)
+    ;; Set CC Mode variables
+    ;; (and therefore not known at compilation when CC Mode not loaded).
+    (pel-setq c-basic-offset pel-d-indentation)
+    ;; Configure some of the special CC minor modes
+    (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline)))
+
   (use-package d-mode
     :ensure t
     :pin melpa
@@ -1247,12 +1384,8 @@ For example, applied to a directory name, macOS Finder is used."
     (add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
 
     ;; Configure commands avalable on the D key-map.
-    (define-pel-global-prefix pel:for-D (kbd "<f11> SPC D"))
-    (define-key pel:for-D (kbd "M-DEL") 'c-toggle-hungry-state) ; CC Mode
-    (define-key pel:for-D "f"           'c-fill-paragraph)
-    (define-key pel:for-D "a"           'c-toggle-auto-newline)
-    (define-key pel:for-D (kbd "<RET>") 'c-context-open-line)
-    (define-key pel:for-D "M-b"        #'subword-mode)
+    (define-pel-global-prefix pel:for-d (kbd "<f11> SPC D"))
+    (pel--map-cc-for pel:for-d)
 
     ;; When a D file is edited, set up the CC Mode behaviour for D
     :config
@@ -1260,14 +1393,14 @@ For example, applied to a directory name, macOS Finder is used."
     ;;    user option. It defaults to "bsd", the BSD/Allman style promoted
     ;;    by the D/Phobos library guideline, see the following document:
     ;;    URL https://dlang.org/dstyle.html#phobos_brackets .
-    (add-to-list 'c-default-style (cons 'd-mode pel-d-bracket-style))
-    ;; 2) Activate the indentation, using the PEL user option
-    (pel-setq-default c-basic-offset pel-d-basic-offset)
+    ;; 2) Activate the indentation, using the PEL user option via a hook
+    (pel--set-cc-style 'd-mode pel-d-bracket-style)
 
     ;; Activate the F12 mode sensitive keymap for D while editing a D file.
     (pel--mode-hook-maybe-call
      '(lambda ()
-        (local-set-key (kbd "<f12>") 'pel:for-D))
+        (pel--setenv-for-d)
+        (local-set-key (kbd "<f12>") 'pel:for-d))
      'd-mode 'd-mode-hook)))
 
 ;; -----------------------------------------------------------------------------
