@@ -1608,6 +1608,66 @@ code.  Some of them can also be used for other types of Lisp as well.
 PEL Support for Curly-Bracket Programming Languages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+PEL Support For C
+^^^^^^^^^^^^^^^^^
+
+:PDF Docs: `C <pdf/pl-c.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-c``
+
+                      - Activation: *none*
+                      - Configuration:
+
+                        - ``pel-c-indentation``
+                        - ``pel-c-tab-width``
+                        - ``pel-c-use-tabs``
+                        - ``pel-c-bracket-style``
+
+:PEL Key Prefix: - Globally: **pel:for-c** : ``<f11> SPC c``
+                 - From a buffer in c-mode: ``<f12>``
+
+
+PEL provides support for the `C Programming Language`_ via Emacs built-in
+c-mode.  No activation is necessary since the c-mode is built-in Emacs.
+However, configuration  of important editor behaviour such as the
+indentation/bracket style and the indentation is completely controlled by user
+options listed above and can easily be changed using Emacs customize system.
+PEL also provides easy access to commands that can change the CC Mode behaviour
+on which the c-mode is based via the **pel:for-c** key-map, bounded to the
+**F12** key for each buffer in c-mode.
+
+.. _C Programming Language: https://en.wikipedia.org/wiki/C%2B%2B
+
+
+PEL Support For C++
+^^^^^^^^^^^^^^^^^^^
+
+:PDF Docs: `C++ <pdf/pl-c++.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-c++``
+
+                      - Activation: *none*
+                      - Configuration:
+
+                        - ``pel-c++-indentation``
+                        - ``pel-c++-tab-width``
+                        - ``pel-c++-use-tabs``
+                        - ``pel-c++-bracket-style``
+
+:PEL Key Prefix: - Globally: **pel:for-c++** : ``<f11> SPC C``
+                 - From a buffer in c-mode: ``<f12>``
+
+
+PEL provides support for the `C++ Programming Language`_ via Emacs built-in
+c++-mode.  No activation is necessary since the c-mode is built-in Emacs.
+However, configuration  of important editor behaviour such as the
+indentation/bracket style and the indentation is completely controlled by user
+options listed above and can easily be changed using Emacs customize system.
+PEL also provides easy access to commands that can change the CC Mode behaviour
+on which the c++-mode is based via the **pel:for-c++** key-map, bounded to the
+**F12** key for each buffer in c++-mode.
+
+
+.. _C++ Programming Language: https://en.wikipedia.org/wiki/C%2B%2B
+
 PEL Support For D
 ^^^^^^^^^^^^^^^^^
 
@@ -1623,7 +1683,7 @@ PEL Support For D
                         - ``pel-d-bracket-style``
 
 :PEL Key Prefix: - Globally: **pel:for-d** : ``<f11> SPC D``
-                 - From a buffer in d--mode: ``<f12>``
+                 - From a buffer in d-mode: ``<f12>``
 
 
 PEL provides support for the `D Programming Language`_ via the `Emacs D-mode`_ and
@@ -1633,6 +1693,9 @@ indentation/bracket style and the indentation is completely controlled by user
 options.  The defaults are adapted to what is proposed by the `D Style code
 guideline`_ and can easily be changed using Emacs customize system.
 More information is available in the `PEL PDF document for D`_ .
+PEL also provides easy access to commands that can change the CC Mode behaviour
+on which the d-mode is based via the **pel:for-d** key-map, bounded to the
+**F12** key for each buffer in d-mode.
 
 
 
@@ -2421,16 +2484,16 @@ PDF Document Tables
 
 #. Lisp Languages
 
-   #. `Common Lisp`_
-   #. `Emacs Lisp`_
+   - `Common Lisp`_
+   - `Emacs Lisp`_
 
-      - `ERT <pdf/ert.pdf>`_ (Emacs Lisp Regression Testing system)
+     - `ERT <pdf/ert.pdf>`_ (Emacs Lisp Regression Testing system)
 
 #. Curly-bracket Languages
 
-   #. C
-   #. C++
-   #. `D <pdf/pl-d.pdf>`_
+   - `C <pdf/pl-c.pdf>`_
+   - `C++ <pdf/pl-c++.pdf>`_
+   - `D <pdf/pl-d.pdf>`_
 
 **Version Control Systems:**
 
