@@ -1580,7 +1580,7 @@ PEL provides explicit support for the following
 PEL Common Lisp Support
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-:PDF Docs: `Common Lisp`_.
+:PDF Docs: `Common Lisp <pdf/pl-common-lisp.pdf>`_.
 :PEL Customization: - Group: ``pel-pkg-for-clisp``
 
                       - Activation:    ``pel-use-common-lisp``.
@@ -1606,7 +1606,7 @@ inside this directory and Emacs can access them locally.
 PEL Emacs Lisp Support
 ^^^^^^^^^^^^^^^^^^^^^^
 
-:PDF Docs: `Emacs Lisp`_, `ERT <pdf/ert.pdf>`_ .
+:PDF Docs: `Emacs Lisp <pdf/pl-emacs-lisp.pdf>`_, `ERT <pdf/ert.pdf>`_ .
 :PEL Customization: - Group: ``pel-pkg-for-elisp``
 
                       - Activation: (*none* to use Emacs Lisp), but there are
@@ -2518,8 +2518,8 @@ PDF Document Tables
 
 #. Lisp Languages
 
-   - `Common Lisp`_
-   - `Emacs Lisp`_
+   - `Common Lisp <pdf/pl-common-lisp.pdf>`_
+   - `Emacs Lisp <pdf/pl-emacs-lisp.pdf>`_
 
      - `ERT <pdf/ert.pdf>`_ (Emacs Lisp Regression Testing system)
 
