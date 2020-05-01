@@ -1586,7 +1586,7 @@ PEL Common Lisp Support
                       - Activation:    ``pel-use-common-lisp``.
 
 :PEL Key Prefix: - Globally: **pel:for-lisp** : ``<f11> SPC L``
-                 - From a buffer in lisp-mode: ``<f12>``
+                 - From a buffer in lisp-mode: ``<f12>`` and ``<M-f12>``
 
 
 The file `pel-commonlisp.el`_ is in a very early stage.
@@ -1657,7 +1657,7 @@ PEL Support For C
                         - ``pel-c-bracket-style``
 
 :PEL Key Prefix: - Globally: **pel:for-c** : ``<f11> SPC c``
-                 - From a buffer in c-mode: ``<f12>``
+                 - From a buffer in c-mode: ``<f12>`` and ``<M-f12>``
 
 
 PEL provides support for the `C Programming Language`_ via Emacs built-in
@@ -1687,7 +1687,7 @@ PEL Support For C++
                         - ``pel-c++-bracket-style``
 
 :PEL Key Prefix: - Globally: **pel:for-c++** : ``<f11> SPC C``
-                 - From a buffer in c-mode: ``<f12>``
+                 - From a buffer in c++-mode: ``<f12>`` and ``<M-f12>``
 
 
 PEL provides support for the `C++ Programming Language`_ via Emacs built-in
@@ -1717,7 +1717,7 @@ PEL Support For D
                         - ``pel-d-bracket-style``
 
 :PEL Key Prefix: - Globally: **pel:for-d** : ``<f11> SPC D``
-                 - From a buffer in d-mode: ``<f12>``
+                 - From a buffer in d-mode: ``<f12>`` and ``<M-f12>``
 
 
 PEL provides support for the `D Programming Language`_ via the `Emacs D-mode`_ and
