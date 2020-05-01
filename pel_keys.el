@@ -98,6 +98,21 @@ optional argument APPEND is non-nil, in which case it is added at the end."
      ;; now set the symbol to the specified value
      (setq-default ,sym ,val)))
 
+(defun pel-local-set-f12 (prefix &optional key)
+  "Assign the <f12> or <f12> KEY to PREFIX."
+  (if key
+      (local-set-key (kbd (format "<f12> %s" key))   prefix)
+    (local-set-key (kbd "<f12>")   prefix)))
+
+(defun pel-local-set-f12-M-f12 (prefix &optional key)
+  "Assign the <f12>/<M-f12> or <f12>/<M-f12> KEY to PREFIX."
+  (if key
+      (progn
+          (local-set-key (kbd (format "<f12> %s" key))   prefix)
+          (local-set-key (kbd (format "<M-f12> %s" key)) prefix))
+    (local-set-key (kbd "<f12>")   prefix)
+    (local-set-key (kbd "<M-f12>") prefix)))
+
 ;; -----------------------------------------------------------------------------
 ;; - Use popup-kill-ring
 ;; ---------------------
@@ -295,7 +310,7 @@ For example, applied to a directory name, macOS Finder is used."
     ;;
     (pel--mode-hook-maybe-call
      '(lambda ()
-        (local-set-key (kbd "<f12>") 'pel:for-dired-narrow))
+        (pel-local-set-f12 'pel:for-dired-narrow))
      'dired-mode 'dired-mode-hook)))
 
 ;; -----------------------------------------------------------------------------
@@ -982,12 +997,12 @@ For example, applied to a directory name, macOS Finder is used."
 ;; <f4>  : kmacro-end-or-call-macro
 ;; <f5>  > repeat
 ;; <f6>  > pel prefix
-;; <f7>  >                        (C)                   (M)
-;; <f8>  >                        (C)                   (M)
-;; <f9>  >                        (C)                   (M)
-;; <f10> > menu-bar-open,       (C) buffer-menu-open, (M) toggle-frame-maximized
-;; <f11> > pel prefix,  <C-f11>: pel-previous-visible,  <M-f11>: pel-scroll-up
-;; <f12> > unused,      <C-f12>: pel-next-visible,      <M-f12>: pel-scroll-down
+;; <f7>  >                  (C)                           (M)
+;; <f8>  >                  (C)                           (M)
+;; <f9>  >                  (C)                           (M)
+;; <f10> > menu-bar-open,   (C) buffer-menu-open,         (M) toggle-frame-maximized
+;; <f11> > pel prefix,      <C-f11>: pel-previous-visible,  <M-f11>:
+;; <f12> > mode-sensitive,  <C-f12>: pel-next-visible,      <M-f12>: mode-sensitive
 
 ;; - PEL: Protected keyboard-macro definitions
 ;; -------------------------------------------
@@ -1080,7 +1095,7 @@ For example, applied to a directory name, macOS Finder is used."
   (define-key pel: (kbd    "<f12>")       #'xterm-mouse-mode))
 ;;
 
-;; Bind <f11>/<f12> key-chords as extension of down/up cursors.
+;; Bind C- <f11>/<f12> key-chords as extension of down/up cursors.
 ;; These are keyboard mnemonics for lower and higher volume
 ;; respectively, on macOS keyboards.
 ;; TODO: keep or remove the following now that we have the identified
@@ -1269,8 +1284,10 @@ For example, applied to a directory name, macOS Finder is used."
 F11-⌦  and F11-⌫  keys are available."
                                        not-avail-msg))))
 
-(defun pel--map-cc-for (prefix)
+(defun pel--map-cc-for (prefix &optional c-preproc-prefix)
   "Map in the PEL keys for CC Mode in the keymap specified by PREFIX.
+If C-PREPROC-PREFIX also bind the keys for C preprocessor related commands and
+sub-keys inside that prefix.
 If a key must be assigned to something different for the programming language
 just bind it again after this call."
   ;; electric mode control
@@ -1283,13 +1300,29 @@ just bind it again after this call."
   (define-key prefix (kbd "M-b")  #'subword-mode)
   (define-key prefix (kbd "M-i")   'c-toggle-syntactic-indentation)
   (define-key prefix (kbd "RET")   'c-context-open-line)
-  (define-key prefix      "f"      'c-fill-paragraph)
+  (define-key prefix      "F"      'c-fill-paragraph)
+  (define-key prefix      "f"      'c-display-defun-name)
   ;;
   (define-key prefix (kbd "M-9")  #'show-paren-mode)
-  (define-key prefix      "."      'pel-find-thing-at-point)
+  ;; reserve "." for a command that find the thing at point in C (via CTags?)
   (define-key prefix      ")"      #'check-parens)
   (when pel-use-rainbow-delimiters
-    (define-key prefix (kbd "M-r")  'rainbow-delimiters-mode)))
+    (define-key prefix (kbd "M-r")  'rainbow-delimiters-mode))
+  (when c-preproc-prefix
+    (define-key prefix (kbd "M-#")  'hide-ifdef-mode)
+    (define-key c-preproc-prefix "#" 'c-macro-expand)
+    (define-key c-preproc-prefix "H" 'hide-ifdefs)
+    (define-key c-preproc-prefix "S" 'show-ifdefs)
+    (define-key c-preproc-prefix "h" 'hide-ifdef-block)
+    (define-key c-preproc-prefix "s" 'show-ifdef-block)
+    (define-key c-preproc-prefix "d" 'hide-ifdef-define)
+    (define-key c-preproc-prefix "u" 'hide-ifdef-undef)
+    (define-key c-preproc-prefix "D" 'hide-ifdef-set-define-alist)
+    (define-key c-preproc-prefix "U" 'hide-ifdef-use-define-alist)
+    (define-key c-preproc-prefix "r" 'hide-ifdef-toggle-read-only)
+    (define-key c-preproc-prefix "w" 'hide-ifdef-toggle-shadowing)
+    (define-key c-preproc-prefix "C" 'hif-clear-all-ifdef-defined)
+    (define-key c-preproc-prefix "e" 'hif-evaluate-macro)))
 
 (defun pel--set-cc-style (mode bracket-style)
   "Set the MODE BRACKET-STYLE and TAB-SIZE for the current mode.
@@ -1317,13 +1350,15 @@ MODE must be a symbol."
   (pel--set-cc-style 'c-mode pel-c-bracket-style)
   (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline)))
 
-(define-pel-global-prefix pel:for-c (kbd "<f11> SPC c"))
-(pel--map-cc-for pel:for-c)
+(define-pel-global-prefix pel:for-c         (kbd "<f11> SPC c"))
+(define-pel-global-prefix pel:for-c-preproc (kbd "<f11> SPC c #"))
+(pel--map-cc-for pel:for-c pel:for-c-preproc)
 
 (pel--mode-hook-maybe-call
  '(lambda ()
     (pel--setenv-for-c)
-    (local-set-key (kbd "<f12>") 'pel:for-c))
+    (pel-local-set-f12-M-f12 'pel:for-c)
+    (pel-local-set-f12-M-f12 'pel:for-c-preproc "#"))
  'c-mode 'c-mode-hook)
 
 ;; -----------------------------------------------------------------------------
@@ -1346,13 +1381,15 @@ MODE must be a symbol."
   (pel--set-cc-style 'c++-mode pel-c++-bracket-style)
   (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline)))
 
-(define-pel-global-prefix pel:for-c++ (kbd "<f11> SPC C"))
-(pel--map-cc-for pel:for-c++)
+(define-pel-global-prefix pel:for-c++         (kbd "<f11> SPC C"))
+(define-pel-global-prefix pel:for-c++-preproc (kbd "<f11> SPC C #"))
+(pel--map-cc-for pel:for-c++ pel:for-c++-preproc)
 
 (pel--mode-hook-maybe-call
  '(lambda ()
     (pel--setenv-for-c++)
-    (local-set-key (kbd "<f12>") 'pel:for-c++))
+    (pel-local-set-f12-M-f12 'pel:for-c++)
+    (pel-local-set-f12-M-f12 'pel:for-c++-preproc "#"))
  'c++-mode 'c++-mode-hook)
 
 ;; -----------------------------------------------------------------------------
@@ -1400,7 +1437,7 @@ This is meant to be used in the d-mode hook lambda."
     (pel--mode-hook-maybe-call
      '(lambda ()
         (pel--setenv-for-d)
-        (local-set-key (kbd "<f12>") 'pel:for-d))
+        (pel-local-set-f12-M-f12 'pel:for-d))
      'd-mode 'd-mode-hook)))
 
 ;; -----------------------------------------------------------------------------
@@ -1410,7 +1447,7 @@ This is meant to be used in the d-mode hook lambda."
   ;;
   (pel--mode-hook-maybe-call
    '(lambda ()
-      (local-set-key (kbd "<f12>") 'pel:for-erlang))
+    (pel-local-set-f12 'pel:for-erlang))
    'erlang-mode 'erlang-mode-hook))
 
 ;; -----------------------------------------------------------------------------
@@ -1438,7 +1475,7 @@ This is meant to be used in the d-mode hook lambda."
     ;;
     (pel--mode-hook-maybe-call
      '(lambda ()
-        (local-set-key (kbd "<f12>") 'pel:for-elixir))
+        (pel-local-set-f12 'pel:for-elixir))
      'elixir-mode 'elixir-mode-hook))
 
   (when pel-use-alchemist
@@ -1489,9 +1526,24 @@ This is meant to be used in the d-mode hook lambda."
     ;;
     (pel--mode-hook-maybe-call
      '(lambda ()
-        (local-set-key (kbd "<f12>") 'pel:for-julia))
+        (pel-local-set-f12 'pel:for-julia))
      'julia-mode 'julia-mode-hook)
     (add-hook 'julia-mode-hook 'julia-snail-mode)))
+
+;; -----------------------------------------------------------------------------
+;; Lisp-style programming Languages
+;; --------------------------------
+
+(defun pel--lispy-map-for (prefix)
+  "Map in the PEL keys for Lisp-like mode in the keymap for PREFIX."
+  (define-key prefix   (kbd "M-9")  #'show-paren-mode)
+  (define-key prefix   (kbd "M-l")  'pel-toggle-lisp-modes)
+  (when pel-use-parinfer
+    (define-key prefix (kbd "M-i")  'parinfer-mode)
+    (define-key prefix (kbd "M-I")  'parinfer-toggle-mode))
+  (when pel-use-rainbow-delimiters
+    (define-key prefix (kbd "M-r")  'rainbow-delimiters-mode))
+  (define-key prefix   (kbd "M-s")  #'semantic-mode))
 
 ;; ----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC l`` : Emacs Lisp programming
@@ -1525,9 +1577,10 @@ This is meant to be used in the d-mode hook lambda."
 
 
 (define-pel-global-prefix pel:for-elisp (kbd "<f11> SPC l"))
+(pel--lispy-map-for pel:for-elisp)
 ;;
+(define-key pel:for-elisp   ")" #'check-parens)
 (define-key pel:for-elisp   "."  'pel-find-thing-at-point)
-(define-key pel:for-elisp   "D" #'toggle-debug-on-error)
 (when pel-use-parinfer
   (define-key pel:for-elisp "i" 'parinfer-auto-fix))
 
@@ -1566,16 +1619,6 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:elisp-lib "c" #'locate-library)
 (define-key pel:elisp-lib "p" #'list-packages)
 
-(define-pel-global-prefix pel:elisp-mode (kbd "<f11> SPC l m"))
-(define-key pel:elisp-mode      "(" #'show-paren-mode)
-(define-key pel:elisp-mode      "L"  'pel-toggle-lisp-modes)
-(when pel-use-parinfer
-  (define-key pel:elisp-mode    "I"  'parinfer-mode)
-  (define-key pel:elisp-mode    "i"  'parinfer-toggle-mode))
-(when pel-use-rainbow-delimiters
-  (define-key pel:elisp-mode    "R"  'rainbow-delimiters-mode))
-(define-key pel:elisp-mode      "s" #'semantic-mode)
-
 (when pel-use-macrostep
   (cl-eval-when 'compile (require 'macrostep))
   (use-package macrostep
@@ -1583,7 +1626,7 @@ This is meant to be used in the d-mode hook lambda."
     :pin melpa
     :commands macrostep-expand
     :init
-    (define-key pel:elisp-mode    "m" #'macrostep-expand)))
+    (define-key pel:for-elisp  (kbd "M-m") #'macrostep-expand)))
 
 (when pel-use-highlight-defined
   (cl-eval-when 'compile (require 'highlight-defined))
@@ -1592,38 +1635,31 @@ This is meant to be used in the d-mode hook lambda."
     :pin melpa
     :commands highlight-defined-mode
     :init
-    (define-key pel:elisp-mode  "d" 'highlight-defined-mode)))
+    (define-key pel:for-elisp  (kbd "M-d") 'highlight-defined-mode)))
 
 ;; Schedule the context sensitive menu
 (pel--mode-hook-maybe-call
  '(lambda ()
-    (local-set-key (kbd "<f12>")   'pel:for-elisp)
-    (local-set-key (kbd "<f12> a") 'pel:elisp-analyze)
-    (local-set-key (kbd "<f12> c") 'pel:elisp-compile)
-    (local-set-key (kbd "<f12> d") 'pel:elisp-debug)
-    (local-set-key (kbd "<f12> e") 'pel:elisp-eval)
-    (local-set-key (kbd "<f12> f") 'pel:elisp-function)
-    (local-set-key (kbd "<f12> l") 'pel:elisp-lib)
-    (local-set-key (kbd "<f12> m") 'pel:elisp-mode))
+    (pel-local-set-f12-M-f12 'pel:for-elisp)
+    (pel-local-set-f12-M-f12 'pel:elisp-analyze  "a")
+    (pel-local-set-f12-M-f12 'pel:elisp-compile  "c")
+    (pel-local-set-f12-M-f12 'pel:elisp-debug    "d")
+    (pel-local-set-f12-M-f12 'pel:elisp-eval     "e")
+    (pel-local-set-f12-M-f12 'pel:elisp-function "f")
+    (pel-local-set-f12-M-f12 'pel:elisp-lib      "l"))
  'emacs-lisp-mode 'emacs-lisp-mode-hook :append)
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : (Common) Lisp programming
 (when pel-use-common-lisp
   (define-pel-global-prefix pel:for-lisp (kbd "<f11> SPC L"))
-  (define-key pel:for-lisp    "(" #'show-paren-mode)
+  (pel--lispy-map-for pel:for-lisp)
+  ;;
   (define-key pel:for-lisp    ")" #'check-parens)
-  (when pel-use-parinfer
-    (define-key pel:for-lisp  "I"  'parinfer-mode)
-    (define-key pel:for-lisp  "J"  'parinfer-toggle-mode))
-  (define-key pel:for-lisp    "m"  'pel-toggle-lisp-modes)
-  (when pel-use-rainbow-delimiters
-    (define-key pel:for-lisp  "R"  'rainbow-delimiters-mode))
-  (define-key pel:for-lisp    "S" #'semantic-mode)
   ;;
   (pel--mode-hook-maybe-call
    '(lambda ()
-      (local-set-key (kbd "<f12>") 'pel:for-lisp))
+      (pel-local-set-f12-M-f12 'pel:for-lisp))
    'lisp-mode 'lisp-mode-hook))
 
 ;; -----------------------------------------------------------------------------
@@ -1637,7 +1673,7 @@ This is meant to be used in the d-mode hook lambda."
   ;;
   (pel--mode-hook-maybe-call
    '(lambda ()
-      (local-set-key (kbd "<f12>")  'pel:for-python))
+      (pel-local-set-f12 'pel:for-python))
    'python-mode 'python-mode-hook))
 
 ;; -----------------------------------------------------------------------------
@@ -1685,7 +1721,7 @@ This is meant to be used in the d-mode hook lambda."
   ;;
   (pel--mode-hook-maybe-call
    '(lambda ()
-      (local-set-key (kbd "<f12>") 'pel:for-reST))
+      (pel-local-set-f12 'pel:for-reST))
    'rst-mode 'rst-mode-hook))
 
 ;; -----------------------------------------------------------------------------
@@ -1702,7 +1738,7 @@ This is meant to be used in the d-mode hook lambda."
   ;;
   (pel--mode-hook-maybe-call
    '(lambda ()
-      (local-set-key (kbd "<f12">) 'pel:for-graphviz-dot))
+      (pel-local-set-f12 'pel:for-graphviz-dot))
    'graphviz-dot-mode 'graphviz-dot-mode-hook))
 
 ;; -----------------------------------------------------------------------------
@@ -2108,14 +2144,14 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
 ;;   Assigned to multiple key-chords to make it easy to use
 ;;   in multiple situations:
 ;;   - Meta up/down
-;;   - Meta f11/f12 in org-mode, since Meta up/down do something else.
+;;   - Meta f5/f62 in org-mode, since Meta up/down do something else.
 
 ;; scroll text up: toward small line number
 (global-set-key (kbd "<M-down>")  'pel-scroll-up)
-(global-set-key (kbd "<M-f11>")   'pel-scroll-up)
+(global-set-key (kbd "<M-f5>")    'pel-scroll-up)
 ;; scroll text down: toward large line number
 (global-set-key (kbd "<M-up>")    'pel-scroll-down)
-(global-set-key (kbd "<M-f12>")   'pel-scroll-down)
+(global-set-key (kbd "<M-f6>")    'pel-scroll-down)
 
 (define-pel-global-prefix pel:scroll (kbd "<f11> |"))
 ;;
