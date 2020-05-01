@@ -1564,11 +1564,27 @@ Note:
   It will be enhanced with upcoming versions.
 
 
+PEL Support For LISP-based Languages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+PEL provides explicit support for the following
+`LISP-based programming languages`_:
+
+- `Common Lisp <https://en.wikipedia.org/wiki/Common_Lisp>`_
+- `Emacs Lisp <https://en.wikipedia.org/wiki/Emacs_Lisp>`_
+
+.. _LISP-based programming languages: https://en.wikipedia.org/wiki/Lisp_(programming_language)
+
+
+
 PEL Common Lisp Support
-~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^
 
 :PDF Docs: `Common Lisp`_.
-:PEL Customization: ``pel-use-rst-mode``.
+:PEL Customization: - Group: ``pel-pkg-for-clisp``
+
+                      - Activation:    ``pel-use-common-lisp``.
+
 :PEL Key Prefix: - Globally: **pel:for-lisp** : ``<f11> SPC L``
                  - From a buffer in lisp-mode: ``<f12>``
 
@@ -1588,12 +1604,21 @@ inside this directory and Emacs can access them locally.
 
 
 PEL Emacs Lisp Support
-~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^
 
 :PDF Docs: `Emacs Lisp`_, `ERT <pdf/ert.pdf>`_ .
-:PEL Customization: ``pel-use-rst-mode``.
+:PEL Customization: - Group: ``pel-pkg-for-elisp``
+
+                      - Activation: (*none* to use Emacs Lisp), but there are
+                        for other packages:
+
+                        - ``pel-use-macrostep``
+                        - ``pel-use-esup``
+                        - ``pel-use-re-builder``
+                        - ``pel-use-highlight-defined``
+
 :PEL Key Prefix: - Globally: **pel:for-elisp** : ``<f11> SPC l``
-                 - From a buffer in elisp-mode: ``<f12>``
+                 - From a buffer in elisp-mode: ``<f12>`` and ``<M-f12>``
 
 
 The file `pel-lisp.el`_ contains command utilities that help edit Emacs Lisp
@@ -1607,6 +1632,15 @@ code.  Some of them can also be used for other types of Lisp as well.
 
 PEL Support for Curly-Bracket Programming Languages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+PEL provides explicit support for the following
+`curly-bracket programming languages`_:
+
+- `C <https://en.wikipedia.org/wiki/C_(programming_language)>`_
+- `C++ <https://en.wikipedia.org/wiki/C%2B%2B>`_
+- `D <https://en.wikipedia.org/wiki/D_(programming_language)>`_
+
+.. _curly-bracket programming languages: https://en.wikipedia.org/wiki/List_of_programming_languages_by_type#Curly-bracket_languages
 
 PEL Support For C
 ^^^^^^^^^^^^^^^^^
