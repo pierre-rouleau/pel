@@ -2895,7 +2895,7 @@ the ones defined from the buffer now."
 (define-key pel:window-size "h" #'shrink-window-horizontally)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> w S`` : Window Session operations
+;; - Function Keys - <f11> - Prefix ``<f11> <f3>`` : Window Session operations
 ;;
 ;; desktop can be used alone or used with either desktop-registry or desktop+
 ;; The following code control the auto-loading of the 3 modules and creation of
@@ -2903,7 +2903,7 @@ the ones defined from the buffer now."
 ;; package is used and loaded.
 
 (when pel-use-desktop
-  (define-pel-global-prefix pel:window-session (kbd "<f11> w S"))
+  (define-pel-global-prefix pel:session (kbd "<f11> <f3>"))
   ;;
   (use-package desktop
     :commands (desktop-save
@@ -2913,11 +2913,11 @@ the ones defined from the buffer now."
                desktop-clear)
     :init
     (unless (eq pel-use-desktop 'with-desktop+)
-      (define-key pel:window-session (kbd "M-s") 'desktop-save-mode)
-      (define-key pel:window-session "S"         'desktop-save)
-      (define-key pel:window-session "C"         'desktop-clear)
-      (define-key pel:window-session "D"         'desktop-change-dir)
-      (define-key pel:window-session "R"         'desktop-revert))
+      (define-key pel:session (kbd "M-s") 'desktop-save-mode)
+      (define-key pel:session "S"         'desktop-save)
+      (define-key pel:session "C"         'desktop-clear)
+      (define-key pel:session "D"         'desktop-change-dir)
+      (define-key pel:session "R"         'desktop-revert))
     ;;
     ;; When Emacs runs in Terminal (TTY) mode, desktop does not restore the
     ;; window layout, because desktop-restoring-frameset-p returns nil in
@@ -2964,11 +2964,11 @@ the ones defined from the buffer now."
                       desktop-registry-add-directory
                       desktop-registry-add-current-desktop)
            :init
-           (define-key pel:window-session "o" 'desktop-registry-change-desktop)
-           (define-key pel:window-session "c" 'desktop-registry-remove-desktop)
-           (define-key pel:window-session "r" 'desktop-registry-rename-desktop)
-           (define-key pel:window-session "." 'desktop-registry-add-directory)
-           (define-key pel:window-session "=" 'desktop-registry-add-current-desktop)))
+           (define-key pel:session "o" 'desktop-registry-change-desktop)
+           (define-key pel:session "c" 'desktop-registry-remove-desktop)
+           (define-key pel:session "r" 'desktop-registry-rename-desktop)
+           (define-key pel:session "." 'desktop-registry-add-directory)
+           (define-key pel:session "=" 'desktop-registry-add-current-desktop)))
         ;;
         ((eq pel-use-desktop 'with-desktop+)
          (use-package desktop+
@@ -2979,10 +2979,10 @@ the ones defined from the buffer now."
                       desktop+-create-auto
                       desktop+-load-auto))
          :init
-         (define-key pel:window-session "=" 'desktop+-create)
-         (define-key pel:window-session "l" 'desktop+-load)
-         (define-key pel:window-session "+" 'desktop+-create-auto)
-         (define-key pel:window-session "L" 'desktop+-load-auto))))
+         (define-key pel:session "=" 'desktop+-create)
+         (define-key pel:session "l" 'desktop+-load)
+         (define-key pel:session "+" 'desktop+-create-auto)
+         (define-key pel:session "L" 'desktop+-load-auto))))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> x`` : Process eXecution utilities
