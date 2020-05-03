@@ -1888,7 +1888,11 @@ PEL Speedbar Management
 -----------------------
 
 :PDF Docs: `Speedbar`_.
-:PEL Customization: ``pel-use-speedbar``, ``pel-prefer-sr-speedbar-in-terminal``.
+:PEL Customization: - Group: ``pel-pkg-for-speedbar``
+
+                      - Activation: ``pel-use-speedbar``
+                      - Configuration: ``pel-prefer-sr-speedbar-in-terminal``
+
 :PEL Key Prefix: **pel:speedbar** : ``<f11> S``
 
 The file `pel-speedbar.el`_ manages the accessibility and use of Emacs speed-bars:
@@ -2337,6 +2341,7 @@ PEL:
 key                             binding
 =============================== ===========================================
 ``<f11> SPC C``                 pel:for-C++
+``<f11> SPC D``                 pel:for-D
 ``<f11> SPC L``                 pel:for-lisp
 ``<f11> SPC c``                 pel:for-C
 ``<f11> SPC g``                 pel:for-graphviz-dot
