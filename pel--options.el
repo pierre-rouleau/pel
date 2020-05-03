@@ -28,6 +28,45 @@
 ;; be used by PEL.  It is used when the option is set to `t' and not used when
 ;; set to `nil'.  This way, the user can choose what is provided by PEL simply
 ;; by customizing PEL.
+;;
+;; The pel group customization tree, inside emacs/convenience, contains the
+;; following group hierarchy:
+;;
+;; - pel
+;;   - pel-identification
+;;   - pel-kbmacro
+;;   - pel-text-insert
+;;   - pel-rst
+;;   - pel-package-use
+;;     - pel-pkg-for-grep
+;;     - pel-pkg-for-window
+;;       - pel-pkg-for-speedbar
+;;       - pel-pkg-for-session
+;;     - pel-pkg-for-buffer
+;;     - pel-pkg-for-insertions
+;;     - pel-pkg-for-undo
+;;     - pel-pkg-for-parens
+;;     - pel-pkg-for-region
+;;     - pel-pkg-for-keys
+;;     - pel-pkg-for-expand
+;;     - pel-pkg-for-bookmarks
+;;     - pel-pkg-for-shells
+;;     - pel-pkg-for-vcs
+;;     - pel-pkg-for-programming
+;;       - pel-pkg-for-cc
+;;         - pel-pkg-for-c
+;;         - pel-pkg-for-c++
+;;         - pel-pkg-for-d
+;;       - pel-pkg-for-elisp
+;;       - pel-pkg-for-clisp
+;;       - pel-pkg-for-beam-vm
+;;         - pel-pkg-for-erlang
+;;         - pel-pkg-for-lfe
+;;         - pel-pkg-for-elixir
+;;       - pel-pkg-for-julia
+;;       - pel-pkg-for-python
+;;       - pel-pkg-for-rust
+;;     - pel-pkg-for-markup
 
 ;;; Code:
 
@@ -126,17 +165,6 @@ Identifies the number of levels supported and their adornment.
                  (const :tag "CRiSPer" CRiSPer)))
 
 ;; -----------------------------------------------------------------------------
-(defgroup pel-speedbar nil
-  "PEL Speedbar management."
-  :group 'pel)
-
-(defcustom pel-prefer-sr-speedbar-in-terminal t
-  "Prefer using Sr-Speedbar in terminal mode (when available) over Speedbar."
-  :group 'pel-speedbar
-  :type  'boolean
-  :safe  #'booleanp)
-
-;; -----------------------------------------------------------------------------
 (defgroup pel-package-use nil
   "List of external packages that can be used by PEL."
   :group 'pel)
@@ -183,12 +211,6 @@ References:
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-use-speedbar nil
-  "Control whether PEL uses the Speedbar and SR-Speedbar packages."
-  :group 'pel-pkg-for-window
-  :type 'boolean
-  :safe #'booleanp)
-
 (defcustom pel-use-smooth-scrolling nil
   "Control whether PEL provides the smooth-scrolling capability."
   :group 'pel-pkg-for-window
@@ -219,6 +241,62 @@ References:
   :group 'pel-pkg-for-window
   :type 'boolean
   :safe #'booleanp)
+
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defgroup pel-pkg-for-speedbar nil
+  "PEL Speedbar management."
+  :group 'pel-pkg-for-window)
+
+(defcustom pel-use-speedbar nil
+  "Control whether PEL uses the Speedbar and SR-Speedbar packages."
+  :group 'pel-pkg-for-speedbar
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-prefer-sr-speedbar-in-terminal t
+  "Prefer using Sr-Speedbar in terminal mode (when available) over Speedbar."
+  :group 'pel-pkg-for-speedbar
+  :type  'boolean
+  :safe  #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defgroup pel-pkg-for-session nil
+  "PEL window session management."
+  :group 'pel-pkg-for-window)
+
+(defcustom pel-use-desktop nil
+  "Control whether desktop feature is used for session management.
+
+When session management controlled by desktop feature, then
+identify whether the built-in desktop.el is used alone or whether
+one of the desktop-registry or desktop+ is also used.
+
+- If nil : nothing is used.
+- If t: use built-in desktop but don't activate desktop-save-mode.
+- if `desktop-save-mode': use built-in desktop *and* activate desktop-save-mode.
+- If `with-desktop-registry' : use desktop and the desktop-registry external package.
+- If `with-desktop+' : use desktop and the desktop+ external package."
+  :group 'pel-pkg-for-session
+  :type '(choice
+          (const :tag "Not used" nil)
+          (const :tag "Use built-in desktop - don't activate desktop-save-mode" t)
+          (const :tag "Use built-in desktop and activate desktop-save-mode" desktop-save-mode)
+          (const :tag "Use desktop with desktop-registry" with-desktop-registry)
+          (const :tag "Use desktop with desktop+" with-desktop+)))
+
+;; desktop  user options:
+;; - desktop-save-mode
+;; - desktop-restore-frames
+;; - desktop-files-not-to-save
+;; - frameset-filter-alist
+;; - desktop-path
+;; - desktop-restore-eager
+;; - desktop-globals-to-clear
+;; - desktop-clear-preserve-buffers-regexp
+;; - desktop-auto-save-timeout
+;; - desktop-load-locked-desktop
+
 
 ;; -----------------------------------------------------------------------------
 ;; Buffer Management

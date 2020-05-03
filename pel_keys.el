@@ -2587,7 +2587,6 @@ the ones defined from the buffer now."
 (define-key pel:regexp      "?"  'pel-reb-re-syntax)
 ;;
 
-
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> S`` : Speedbar/SR-Speedbar commands
 
@@ -2803,9 +2802,18 @@ the ones defined from the buffer now."
 (define-key pel:window    "f"  #'follow-mode)
 (define-key pel:window    "v"   'pel-2-vertical-windows)
 (define-key pel:window    "h"   'pel-2-horizontal-windows)
-;; reserved: k, o, m, n, p, x
+;; reserved:
+;; - S: session
+;; - d: dedicated windows
+;; - k: ace-window
+;; - o: ace-window
+;; - m: ace-window
+;; - x: ace-window
+;; - n: winner
+;; - p: winner
+;; - s: window size operations
 
-
+;; --
 (when pel-use-ace-window
   (cl-eval-when 'compile (require 'ace-window))
   (use-package ace-window
@@ -2841,6 +2849,7 @@ the ones defined from the buffer now."
      '(aw-leading-char-face
        ((t (:inherit ace-jump-face-forward :height 3.0)))))))
 
+;; --
 ;; TODO: change to use a hook before the function split-window is called and
 ;;       remove the hook once it is executed if that's possible.
 ;; The winner package should ideally be loaded just before the first
@@ -2867,14 +2876,14 @@ the ones defined from the buffer now."
     (declare-function winner-mode "winner")
     (winner-mode t)))
 
-;; -----------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> w d`` : Windows dedicated operations
 ;;
 (define-pel-global-prefix pel:window-dedicated (kbd "<f11> w d"))
 (define-key pel:window-dedicated "d" 'pel-toggle-window-dedicated)
 (define-key pel:window-dedicated "?" 'pel-show-window-dedicated-status)
 
-;; -----------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> w s`` : Window size operations
 ;;
 (define-pel-global-prefix pel:window-size (kbd "<f11> w s"))
@@ -2884,6 +2893,96 @@ the ones defined from the buffer now."
 (define-key pel:window-size "v" #'shrink-window)
 (define-key pel:window-size "H" #'enlarge-window-horizontally)
 (define-key pel:window-size "h" #'shrink-window-horizontally)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - Function Keys - <f11> - Prefix ``<f11> w S`` : Window Session operations
+;;
+;; desktop can be used alone or used with either desktop-registry or desktop+
+;; The following code control the auto-loading of the 3 modules and creation of
+;; key bindings for these 3 packages: the key bindings are set according to what
+;; package is used and loaded.
+
+(when pel-use-desktop
+  (define-pel-global-prefix pel:window-session (kbd "<f11> w S"))
+  ;;
+  (use-package desktop
+    :commands (desktop-save
+               desktop-save-mode
+               desktop-change-dir
+               desktop-revert
+               desktop-clear)
+    :init
+    (unless (eq pel-use-desktop 'with-desktop+)
+      (define-key pel:window-session (kbd "M-s") 'desktop-save-mode)
+      (define-key pel:window-session "S"         'desktop-save)
+      (define-key pel:window-session "C"         'desktop-clear)
+      (define-key pel:window-session "D"         'desktop-change-dir)
+      (define-key pel:window-session "R"         'desktop-revert))
+    ;;
+    ;; When Emacs runs in Terminal (TTY) mode, desktop does not restore the
+    ;; window layout, because desktop-restoring-frameset-p returns nil in
+    ;; terminal mode.  One way to add the functionality would be to advice that
+    ;; function or to explicitly restore the frameset data via a hook.
+    ;; That's what we do.
+    (unless (eq pel-use-desktop t)
+      (unless (display-graphic-p)
+        (add-hook
+         'desktop-after-read-hook
+         (lambda ()
+           (frameset-restore
+            desktop-saved-frameset
+            :reuse-frames (eq desktop-restore-reuses-frames t)
+            :cleanup-frames (not (eq desktop-restore-reuses-frames 'keep))
+            :force-display desktop-restore-in-current-display
+            :force-onscreen nil)))))
+
+    (unless (eq pel-use-desktop 'with-desktop+)
+      ;; desktop+ autoloaded logic advices of the desktop functions.
+      ;; Since that autoloading might already be done if desktop+ is installed
+      ;; these advices are already done even if the user does not want to use
+      ;; desktop+ and they will prevent proper operation of desktop alone.
+      ;; Remove these advices to allow proper access of the desktop.el
+      ;; functions.
+      ;; Compatible with feature+ version 0.1.1, package-version: 20170107.2132
+      (when (fboundp 'desktop+--advice--desktop-save)
+        (advice-remove 'desktop-save
+                       #'desktop+--advice--desktop-save))
+      (when (fboundp 'desktop+--advice--desktop-restore-frameset)
+        (advice-remove 'desktop-restore-frameset
+                       #'desktop+--advice--desktop-restore-frameset))))
+  ;;
+  (cond ((eq pel-use-desktop 'desktop-save-mode)
+         (desktop-save-mode 1))
+        ;;
+        ((eq pel-use-desktop 'with-desktop-registry)
+         (use-package desktop-registry
+           :ensure t
+           :pin melpa
+           :commands (desktop-registry-change-desktop
+                      desktop-registry-remove-desktop
+                      desktop-registry-rename-desktop
+                      desktop-registry-add-directory
+                      desktop-registry-add-current-desktop)
+           :init
+           (define-key pel:window-session "o" 'desktop-registry-change-desktop)
+           (define-key pel:window-session "c" 'desktop-registry-remove-desktop)
+           (define-key pel:window-session "r" 'desktop-registry-rename-desktop)
+           (define-key pel:window-session "." 'desktop-registry-add-directory)
+           (define-key pel:window-session "=" 'desktop-registry-add-current-desktop)))
+        ;;
+        ((eq pel-use-desktop 'with-desktop+)
+         (use-package desktop+
+           :ensure t
+           :pin melpa
+           :commands (desktop+-create
+                      desktop+-load
+                      desktop+-create-auto
+                      desktop+-load-auto))
+         :init
+         (define-key pel:window-session "=" 'desktop+-create)
+         (define-key pel:window-session "l" 'desktop+-load)
+         (define-key pel:window-session "+" 'desktop+-create-auto)
+         (define-key pel:window-session "L" 'desktop+-load-auto))))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> x`` : Process eXecution utilities
