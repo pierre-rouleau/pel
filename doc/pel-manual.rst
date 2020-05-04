@@ -1435,6 +1435,25 @@ key            Emphasis
 
 
 
+PEL Mouse Support
+-----------------
+
+:PDF Docs: `Mouse`_.
+:PEL Customization: *none*
+:PEL Key Prefix: *none*
+
+When Emacs runs in graphcsi mode it supports the mouse seemlessly.
+When Emacs runs in Terminal (TTY) mode, however, the mouse events are normally
+used by the terminal emulator, not Emacs.
+The mouse support is available by activating the **xterm-mouse-mode**.
+The PEL system
+binds the ``<f11><f12>`` key sequence for this command and also activates
+mouse-driven scrolling.  Turn the xterm-mouse-mode off if you want to copy and
+paste text in or out of the terminal/Emacs session from/to another process.
+
+See the `Mouse`_ PDF document for more information.
+
+
 PEL Menu Index Utilities
 ------------------------
 
@@ -2510,6 +2529,7 @@ PDF Document Tables
 #. `Keyboard Macros`_
 #. `Marking`_
 #. `Menus`_
+#. `Mouse`_
 #. `Narrowing`_
 #. `Navigation`_
 #. `Number Keypad`_
@@ -2597,6 +2617,7 @@ PDF Document Tables
 .. _Keyboard Macros:                          pdf/keyboard-macros.pdf
 .. _Marking:                                  pdf/marking.pdf
 .. _Menus:                                    pdf/menus.pdf
+.. _Mouse:                                    pdf/mouse.pdf
 .. _Dired:                                    pdf/mode-dired.pdf
 .. _Org mode:                                 pdf/mode-org-mode.pdf
 .. _reStructuredText mode:                    pdf/mode-rst.pdf
