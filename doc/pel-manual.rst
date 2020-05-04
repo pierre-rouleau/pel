@@ -1859,17 +1859,30 @@ value:
 - ``pel-show-search-case-state`` displays the search behaviour in the current
   buffer.
 
+PEL Session Support
+-------------------
 
-PEL Emacs Shell Support
------------------------
+:PDF Docs: `Sessions`_.
+:PEL Customization: ``pel-use-desktop``.
+:PEL Key Prefix: **pel:session** : ``<f11> S``
+
+PEL can activate several packages that manage sessions (also called desktops): a
+set of buffer and windows setting that can be stiored and restored later.  All
+activation is done by the ``pel-use-desktop`` user option variable.
+See the `Sessions`_ PDF document for more information and the key bindings: they
+all use the **pel:session** key prefix, which PEL binds to ``<f11> S``.
+
+
+PEL  Shell Support
+------------------
 
 :PDF Docs: `Shells`_.
 :PEL Customization: ``pel-use-erlang``.
 :PEL Key Prefix: **pel:eXecute** : ``<f11> x``
 
 PEL provides the **pel:eXecute** (``<f11> x``) key binding to provide access to
-various types of shells from within Emacs as described in the `Shells`_ PDF
-table.
+various types of shells, terminals and REPL buffers from within Emacs as
+described in the `Shells`_ PDF table.
 
 PEL Sorting Support
 -------------------
@@ -1893,14 +1906,14 @@ PEL Speedbar Management
                       - Activation: ``pel-use-speedbar``
                       - Configuration: ``pel-prefer-sr-speedbar-in-terminal``
 
-:PEL Key Prefix: **pel:speedbar** : ``<f11> S``
+:PEL Key Prefix: **pel:speedbar** : ``<f11> M-s``
 
 The file `pel-speedbar.el`_ manages the accessibility and use of Emacs speed-bars:
 both Emacs native Speedbar and the `SR-Speedbar`_ external package.
 When the ``pel-use-speedbar`` user option is set to **t** PEL provides
 key bindings for activating the speed-bars and provide some management
 facilities. As shown in the PDF `Speedbar`_ table, Plus
-default key bindings for those use the ``<f11> S`` prefix.
+default key bindings for those use the ``<f11> M-s`` prefix.
 
 PEL manages what type of speed-bar is used.  And that depends on whether Emacs
 is running in graphics mode or in terminal (TTY) mode and whether SR-Speedbar
@@ -2269,6 +2282,7 @@ mnemonically associate to the related concept if at all possible.
 =============================== ===========================================
 key                             binding
 =============================== ===========================================
+``<f11> RET``                   **auto-fill-mode**
 ``<f11> SPC``                   Prefix Command to access the
                                 `PEL Mode Sensitive Key-maps`_
                                 from any buffer.
@@ -2280,6 +2294,7 @@ key                             binding
 ``<f11> ,``                     pel:auto-completion
 ``<f11> -``                     pel:kill
 ``<f11> .``                     pel:mark
+``<f11> /``                     pel:hideShow
 ``<f11> 0``                     **hl-line-mode**
 ``<f11> ;``                     pel:comment
 ``<f11> =``                     pel:copy
@@ -2287,14 +2302,14 @@ key                             binding
 ``<f11> C``                     pel:clipboard
 ``<f11> D``                     pel:draw
 ``<f11> F``                     pel:frame
-``<f11> S``                     pel:speedbar
+``<f11> S``                     pel:session
 ``<f11> [``                     **pel-cua-move-rectangle-left**
 ``<f11> ]``                     **pel-cua-move-rectangle-right**
+``<f11> ```                    **overwrite-mode**
 ``<f11> a``                     pel:abbrev
 ``<f11> b``                     pel:buffer
 ``<f11> c``                     pel:count
 ``<f11> d``                     pel:diff
-``<f11> e``                     pel:ediff
 ``<f11> f``                     pel:file
 ``<f11> g``                     pel:grep
 ``<f11> i``                     pel:insert
@@ -2305,12 +2320,14 @@ key                             binding
 ``<f11> s``                     pel:search-replace
 ``<f11> t``                     pel:text
 ``<f11> u``                     pel:undo
+``<f11> v``                     pel:vcs
 ``<f11> w``                     pel:window
 ``<f11> x``                     pel:eXecute
 ``<f11> |``                     pel:scroll
 ``<f11> <f10>``                 pel:menu
 ``<f11> <f11>``                 **pel-toggle-frame-fullscreen**
 ``<f11> <f12>``                 **xterm-mouse-mode**
+``<f11> M-s`                    pel:speedbar
 ``<f11> <C-S-down>``            **pel-close-window-down**
 ``<f11> <C-S-left>``            **pel-close-window-left**
 ``<f11> <C-S-right>``           **pel-close-window-right**
@@ -2363,7 +2380,7 @@ as typing ``<f11> SPC p``.
 
 When the current buffer is using the ``rst-mode``
 for `editing reStructuredText files`_,
-the **F12** key has the following bindings.
+the **F12** key has the following bindings and more.
 
 =============================== ===========================================
 key                             binding
@@ -2501,6 +2518,7 @@ PDF Document Tables
 #. `Registers`_
 #. `Scrolling`_
 #. `Search and Replace`_
+#. `Sessions`_
 #. `Shells`_
 #. `Sorting`_
 #. `Speedbar`_
@@ -2592,6 +2610,7 @@ PDF Document Tables
 .. _Rectangles:                               pdf/rectangles.pdf
 .. _Registers:                                pdf/registers.pdf
 .. _Scrolling:                                pdf/scrolling.pdf
+.. _Sessions:                                 pdf/sessions.pdf
 .. _Search and Replace:                       pdf/search-replace.pdf
 .. _Shells:                                   pdf/shells.pdf
 .. _Sorting:                                  pdf/sorting.pdf
