@@ -180,6 +180,10 @@ MODE is the mode symbol."
       (setq acc (concat acc elem)))
     acc))
 
+;; Note: - another way would be:  (mapconcat 'identity list "")
+;;       - the advantage would be to be able to perform transformation if the
+;;       - elements of the list are not string, and to inject a separator.
+
 ;; -----------------------------------------------------------------------------
 ;; Basic functions working with values and variables
 ;; -------------------------------------------------
