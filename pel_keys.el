@@ -114,6 +114,14 @@ optional argument APPEND is non-nil, in which case it is added at the end."
     (local-set-key (kbd "<M-f12>") prefix)))
 
 ;; -----------------------------------------------------------------------------
+;; Configure mouse in terminal mode
+;; --------------------------------
+(unless (display-graphic-p)
+  ;; activate mouse-based scrolling
+  (global-set-key (kbd "<mouse-4>") 'pel-scroll-up)
+  (global-set-key (kbd "<mouse-5>") 'pel-scroll-down))
+
+;; -----------------------------------------------------------------------------
 ;; - Use popup-kill-ring
 ;; ---------------------
 ;; View all kill-ring deletions in a pop-up menu, when
@@ -2588,7 +2596,7 @@ the ones defined from the buffer now."
 ;;
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> S`` : Speedbar/SR-Speedbar commands
+;; - Function Keys - <f11> - Prefix ``<f11> M-s`` : Speedbar/SR-Speedbar commands
 
 (when pel-use-speedbar
   (cl-eval-when 'compile (require 'sr-speedbar))
@@ -2598,8 +2606,8 @@ the ones defined from the buffer now."
     :commands (sr-speedbar-toggle
                sr-speedbar-window-p))
 
-  (define-pel-global-prefix pel:speedbar (kbd "<f11> S"))
-  (define-key pel:speedbar "S"  'pel-open-close-speedbar)
+  (define-pel-global-prefix pel:speedbar (kbd "<f11> M-s"))
+  (define-key pel:speedbar (kbd "M-s")  'pel-open-close-speedbar)
   (define-key pel:speedbar "."  'pel-toggle-to-speedbar)
   (define-key pel:speedbar "R"  'pel-speedbar-toggle-refresh)
   (define-key pel:speedbar "r"  'pel-speedbar-refresh)
@@ -2894,8 +2902,8 @@ the ones defined from the buffer now."
 (define-key pel:window-size "H" #'enlarge-window-horizontally)
 (define-key pel:window-size "h" #'shrink-window-horizontally)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> <f3>`` : Window Session operations
+;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> S`` : Session operations
 ;;
 ;; desktop can be used alone or used with either desktop-registry or desktop+
 ;; The following code control the auto-loading of the 3 modules and creation of
@@ -2903,10 +2911,11 @@ the ones defined from the buffer now."
 ;; package is used and loaded.
 
 (when pel-use-desktop
-  (define-pel-global-prefix pel:session (kbd "<f11> <f3>"))
+  (define-pel-global-prefix pel:session (kbd "<f11> S"))
   ;;
   (use-package desktop
     :commands (desktop-save
+               desktop-read
                desktop-save-mode
                desktop-change-dir
                desktop-revert
@@ -2915,26 +2924,26 @@ the ones defined from the buffer now."
     (unless (eq pel-use-desktop 'with-desktop+)
       (define-key pel:session (kbd "M-s") 'desktop-save-mode)
       (define-key pel:session "S"         'desktop-save)
-      (define-key pel:session "C"         'desktop-clear)
-      (define-key pel:session "D"         'desktop-change-dir)
-      (define-key pel:session "R"         'desktop-revert))
+      (define-key pel:session "L"         'desktop-read)
+      (define-key pel:session "c"         'desktop-clear)
+      (define-key pel:session "d"         'desktop-change-dir)
+      (define-key pel:session "r"         'desktop-revert))
     ;;
     ;; When Emacs runs in Terminal (TTY) mode, desktop does not restore the
     ;; window layout, because desktop-restoring-frameset-p returns nil in
     ;; terminal mode.  One way to add the functionality would be to advice that
     ;; function or to explicitly restore the frameset data via a hook.
     ;; That's what we do.
-    (unless (eq pel-use-desktop t)
-      (unless (display-graphic-p)
-        (add-hook
-         'desktop-after-read-hook
-         (lambda ()
-           (frameset-restore
-            desktop-saved-frameset
-            :reuse-frames (eq desktop-restore-reuses-frames t)
-            :cleanup-frames (not (eq desktop-restore-reuses-frames 'keep))
-            :force-display desktop-restore-in-current-display
-            :force-onscreen nil)))))
+    (unless (display-graphic-p)
+      (add-hook
+       'desktop-after-read-hook
+       (lambda ()
+         (frameset-restore
+          desktop-saved-frameset
+          :reuse-frames (eq desktop-restore-reuses-frames t)
+          :cleanup-frames (not (eq desktop-restore-reuses-frames 'keep))
+          :force-display desktop-restore-in-current-display
+          :force-onscreen nil))));)
 
     (unless (eq pel-use-desktop 'with-desktop+)
       ;; desktop+ autoloaded logic advices of the desktop functions.
@@ -2951,10 +2960,18 @@ the ones defined from the buffer now."
         (advice-remove 'desktop-restore-frameset
                        #'desktop+--advice--desktop-restore-frameset))))
   ;;
-  (cond ((eq pel-use-desktop 'desktop-save-mode)
+  ;;    ;; -- Using with-desktop-auto-save-mode
+  (cond ((eq pel-use-desktop 'with-desktop-automatic)
          (desktop-save-mode 1))
         ;;
-        ((eq pel-use-desktop 'with-desktop-registry)
+        ;; -- Using desktop-registry
+        ((memq pel-use-desktop '(with-desktop-registry
+                                 with-desktop-registry-automatic))
+         ;;
+         (when (eq pel-use-desktop 'with-desktop-registry-automatic)
+           (desktop-save-mode 1))
+         ;;
+         (define-pel-global-prefix pel:session-registry (kbd "<f11> S R"))
          (use-package desktop-registry
            :ensure t
            :pin melpa
@@ -2962,14 +2979,17 @@ the ones defined from the buffer now."
                       desktop-registry-remove-desktop
                       desktop-registry-rename-desktop
                       desktop-registry-add-directory
-                      desktop-registry-add-current-desktop)
+                      desktop-registry-add-current-desktop
+                      desktop-registry-list-desktops)
            :init
-           (define-key pel:session "o" 'desktop-registry-change-desktop)
-           (define-key pel:session "c" 'desktop-registry-remove-desktop)
-           (define-key pel:session "r" 'desktop-registry-rename-desktop)
-           (define-key pel:session "." 'desktop-registry-add-directory)
-           (define-key pel:session "=" 'desktop-registry-add-current-desktop)))
+           (define-key pel:session-registry "l" 'desktop-registry-list-desktops)
+           (define-key pel:session-registry "o" 'desktop-registry-change-desktop)
+           (define-key pel:session-registry "d" 'desktop-registry-remove-desktop)
+           (define-key pel:session-registry "R" 'desktop-registry-rename-desktop)
+           (define-key pel:session-registry "a" 'desktop-registry-add-directory)
+           (define-key pel:session-registry "A" 'desktop-registry-add-current-desktop)))
         ;;
+        ;; -- Using desktop+
         ((eq pel-use-desktop 'with-desktop+)
          (use-package desktop+
            :ensure t
@@ -2979,9 +2999,9 @@ the ones defined from the buffer now."
                       desktop+-create-auto
                       desktop+-load-auto))
          :init
-         (define-key pel:session "=" 'desktop+-create)
+         (define-key pel:session "s" 'desktop+-create)
          (define-key pel:session "l" 'desktop+-load)
-         (define-key pel:session "+" 'desktop+-create-auto)
+         (define-key pel:session "S" 'desktop+-create-auto)
          (define-key pel:session "L" 'desktop+-load-auto))))
 
 ;; -----------------------------------------------------------------------------

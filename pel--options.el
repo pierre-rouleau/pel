@@ -272,17 +272,33 @@ When session management controlled by desktop feature, then
 identify whether the built-in desktop.el is used alone or whether
 one of the desktop-registry or desktop+ is also used.
 
-- If nil : nothing is used.
-- If t: use built-in desktop but don't activate desktop-save-mode.
-- if `desktop-save-mode': use built-in desktop *and* activate desktop-save-mode.
-- If `with-desktop-registry' : use desktop and the desktop-registry external package.
-- If `with-desktop+' : use desktop and the desktop+ external package."
+The value can be:
+
+- nil : nothing is used.
+
+- t:                             use built-in desktop but do NOT
+                                 activate desktop-save-mode.
+
+- `with-desktop-automatic':      use built-in desktop and
+                                 activate desktop-save-mode.
+
+- `with-desktop-registry':       use desktop and the desktop-registry
+                                 external package.
+
+- `with-desktop-registry-automatic': use desktop, the desktop-registry
+                                     and activate desktop auto-save mode.
+
+- `with-desktop+':               use desktop and the desktop+ external package."
   :group 'pel-pkg-for-session
   :type '(choice
           (const :tag "Not used" nil)
-          (const :tag "Use built-in desktop - don't activate desktop-save-mode" t)
-          (const :tag "Use built-in desktop and activate desktop-save-mode" desktop-save-mode)
-          (const :tag "Use desktop with desktop-registry" with-desktop-registry)
+          (const :tag "Use built-in desktop - do NOT activate desktop-save-mode" t)
+          (const :tag "Use built-in desktop and ACTIVATE desktop-save-mode"
+                 with-desktop-automatic)
+          (const :tag "Use desktop with desktop-registry \
+- do NOT activate desktop-save-mode " with-desktop-registry)
+          (const :tag "Use desktop with desktop-registry \
+and ACTIVATE desktop-save-mode" with-desktop-registry-automatic)
           (const :tag "Use desktop with desktop+" with-desktop+)))
 
 ;; desktop  user options:
