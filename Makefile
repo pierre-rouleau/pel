@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2020-04-29 13:43:02, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-05-05 17:39:39, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -112,6 +112,7 @@ DEST_DOC_PDF_DIR := $(DEST_DIR)/doc/pdf
 EL_FILES := pel--base.el \
 			pel--macros.el \
 			pel--options.el \
+			pel-applescript.el \
 			pel-autocomplete.el \
 			pel-autoload.el \
 			pel-bookmark.el \
@@ -134,6 +135,7 @@ EL_FILES := pel--base.el \
 			pel-navigate.el \
 			pel-numkpad.el \
 			pel-prompt.el \
+			pel-read.el \
 			pel-register.el \
 			pel-rst.el \
 			pel-scroll.el \
@@ -160,6 +162,8 @@ TEST_FILES := pel-file-test.el pel-text-transform-test.el
 PDF_FILES := -legend.pdf \
 			abbreviations.pdf \
 			align.pdf \
+			auto-completion.pdf \
+			autosave-backup.pdf \
 			bookmarks.pdf \
 			buffers.pdf \
 			case-conversion.pdf \
@@ -167,6 +171,7 @@ PDF_FILES := -legend.pdf \
 			comments.pdf \
 			counting.pdf \
 			cut-paste.pdf \
+			diff-merge.pdf \
 			display-lines.pdf \
 			drawing.pdf \
 			enriched-text.pdf \
@@ -179,6 +184,7 @@ PDF_FILES := -legend.pdf \
 			graphviz-dot.pdf \
 			grep.pdf \
 			help.pdf \
+			hide-show-code.pdf \
 			highlight.pdf \
 			hooks.pdf \
 			indentation.pdf \
@@ -194,15 +200,22 @@ PDF_FILES := -legend.pdf \
 			mode-org-mode.pdf \
 			mode-rst.pdf \
 			modifier-keys.pdf \
+			mouse.pdf \
 			narrowing.pdf \
 			navigation.pdf \
+			numkeypad.pdf \
 			packages.pdf \
+			pl-applescript.pdf \
+			pl-c++.pdf \
+			pl-c.pdf \
 			pl-common-lisp.pdf \
+			pl-d.pdf \
 			pl-emacs-lisp.pdf \
 			rectangles.pdf \
 			registers.pdf \
 			scrolling.pdf \
 			search-replace.pdf \
+			sessions.pdf \
 			shells.pdf \
 			sorting.pdf \
 			speedbar.pdf \
@@ -395,6 +408,7 @@ $(DEST_DIR)/README: $(SRC_DIR)/README
 # byte-compilation for the pel- files.
 
 
+pel-applescript.elc:    pel-read.elc
 pel-autocomplete.elc:   pel--base.elc pel--macros.elc pel--options.elc
 pel-autoload.elc:       pel--options.elc
 pel-bookmark.elc:       pel--base.elc
@@ -411,6 +425,7 @@ pel-lisp.elc:           pel--base.elc
 pel-mark.elc:           pel--base.elc
 pel-navigate.elc:       pel--base.elc pel-scroll.elc
 pel-numkpad.elc:        pel--base.elc pel-ccp.elc pel-navigate.elc pel-scroll.elc
+pel-read.elc:			pel-navigate.elc
 pel-register.elc:       pel--base.elc
 pel-rst.elc:            pel--base.elc pel--macros.elc pel--options.elc pel-bookmark.elc
 pel-speedbar.elc:       pel--base.elc pel--macros.elc pel--options.elc

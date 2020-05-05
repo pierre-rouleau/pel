@@ -23,6 +23,8 @@
   '((emacs "26.1")
     (use-package         "20191126.2034") ; melpa  Melpa-stable: 2.4
     (ace-window          "20200304.1344") ; melpa  Melpa-stable: 0.9.0
+    (alchemist           "20180312.1304")
+    (apples-mode         "20110121.418")
     (ascii-table         "20200329.1744") ; melpa
     (auto-complete       "20170125.245")  ; melpa  Melpa-stable: 1.5.1
     (bind-key            "20191110.416")  ; melpa  Melpa-stable: 2.4
@@ -30,8 +32,10 @@
     (c-eldoc             "20181109.439")  ; melpa. Melpa-stable: N/A
     (cargo               "20191224.47")   ; melpa. Melpa-stable: 0.4.1
     (company             "2020228.1919")  ; melpa. Melpa-stable: 0.9.12
+    (d-mode              "20191009.903")
     (dired-narrow        "20181114.1723") ; melpa. Melpa-stable: N/A
     (edts                "020200304.1709"); melpa. Melpa-stable: 0.1.0
+    (elixir-mode         "20200121.623")
     (elpy                "20200202.2031") ; melpa. Melpa-stable: 1.32.0
     (esup                "20200130.2034") ; melpa. Melpa-stable: 0.7.1
     (expand-region       "20200304.1839") ; melpa. Melpa-stable: 0.11.0
@@ -39,6 +43,9 @@
     (goto-last-change    "20150109.1823") ; melpa. Melpa-stable: 1.2.1
     (graphviz-dot-mode   "20200304.432")  ; melpa. Melpa-stable: 0.4.2
     (highlight-defined   "20181106.1718") ; melpa. Melpa-stable: 0.1.5
+    (hydra               "20200306.913")
+    (julia-snail         "20200420.221")
+    (lfe-mode            "20170121.1254")
     (lice                "20191011.631")  ; melpa. Melpa-stable: 0.2
     (macrostep           "20161120.2106") ; melpa. Melpa-stable: 0.9
     (magit               "20200408.2341") ; melpa. Melpa-stable: 2.90.1
@@ -57,6 +64,7 @@
     ;; in the 2016 version.
     (sr-speedbar         "20161025.831")  ; melpa. Melpa-stable: 20140914.2339
     (undo-tree           "0.7.4")         ; gnu
+    (vterm               "20200418.1610")
     (which-key           "20200216.1350")); melpa. Melpa-table : 3.4.0
 
   :url "https://github.com/pierre-rouleau/pel"

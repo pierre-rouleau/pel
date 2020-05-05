@@ -105,6 +105,7 @@
 
 (defcustom pel-author-name nil
   "Name of the source code author name to use."
+  :group 'pel-identification
   :type 'string)
 
 (defun pel-abbrev-valid-p (str)
@@ -113,6 +114,7 @@
 
 (defcustom pel-author-abbrev nil
   "4 character abbreviation of author name."
+  :group 'pel-identification
   :type 'string
   :safe #'pel-abbrev-valid-p)
 
@@ -459,6 +461,12 @@ References:
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-hydra nil
+  "Control whether PEL uses the hydra package."
+  :group 'pel-pkg-for-keys
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-which-key nil
   "Control whether PEL uses the which-key package."
   :group 'pel-pkg-for-keys
@@ -596,6 +604,29 @@ eglot is a client for Language Server Protocol (LSP) servers."
   :group 'pel-pkg-for-programming
   :type 'boolean
   :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; AppleScript support
+;; -------------------
+(defgroup pel-pkg-for-applescript nil
+  "PEL customization for AppleScript."
+  :group 'pel-pkg-for-programming)
+
+(defcustom pel-use-applescript nil
+  "Control whether PEL support the AppleScript mode."
+  :group 'pel-pkg-for-applescript
+  :type 'boolean
+  :safe #'booleanp)
+
+(when (eq system-type 'darwin)
+  (defcustom  pel-mac-voice-name nil
+    "Name of the macOS voice used for narration.
+- If the string is empty: use the System's selected voice.
+- A name with 2 characters or less identifies the System's selected voice.
+- To specify another name the string must have 3 or more characters."
+    :group 'pel-pkg-for-applescript
+    :type 'string))
+
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; CC Mode Language support

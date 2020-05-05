@@ -44,6 +44,18 @@
 
   (require 'pel--options)
 
+  ;; pel-applescript
+  (when (eq system-type 'darwin)
+    (dolist (fct '(pel-pel-say-word
+                   pel-say-sentence
+                   pel-say-paragraph
+                   pel-say-region
+                   pel-say
+                   pel-say-words
+                   pel-run-applescript))
+    (autoload fct "pel-applescript")))
+
+
   ;; pel-autocomplete
   (autoload 'pel-completion-help             "pel-autocomplete")
   (autoload 'pel-complete                    "pel-autocomplete")
@@ -224,6 +236,12 @@
   (autoload 'pel-frameset-to-register              "pel-register")
   (autoload 'pel-number-to-register                "pel-register")
   (autoload 'pel-kmacro-to-register                "pel-register")
+
+    ;; pel-read
+  (dolist (fct '(pel-word-at-point
+                 pel-sentence-at-point
+                 pel-paragraph-at-point))
+    (autoload fct "pel-read"))
 
   ;; pel-rst
   (when (and (boundp 'pel-use-rst-mode) pel-use-rst-mode)

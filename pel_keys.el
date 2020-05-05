@@ -1226,6 +1226,56 @@ For example, applied to a directory name, macOS Finder is used."
 (define-key pel:menu "t"     #'tmm-menubar)
 
 ;; -----------------------------------------------------------------------------
+;; - AppleScript support
+(when pel-use-applescript
+  (use-package apples-mode
+    :ensure t
+    :pin melpa
+    :commands (apples-mode
+               apples-open-scratch)
+    :init
+    (add-to-list 'auto-mode-alist '("\\.\\(applescript\\|scpt\\)\\'" . apples-mode))
+
+    (define-pel-global-prefix pel:for-applescript (kbd "<f11> SPC a"))
+    (define-key pel:for-applescript "s" 'apples-open-scratch)
+    ;;
+    (pel--mode-hook-maybe-call
+     '(lambda ()
+        (pel-local-set-f12 'pel:for-applescript))
+     'apples-mode 'apples-mode-hook))
+
+
+  ;; Text narration on macOS
+  ;; -----------------------
+  (when pel-system-is-macos-p
+    (when pel-use-hydra
+      (require 'hydra))
+
+    (use-package pel-applescript
+      :commands (pel-say
+                 pel-say-word
+                 pel-say-sentence
+                 pel-say-paragraph
+                 pel-say-region)
+      :init
+      (define-pel-global-prefix pel:narrate (kbd "<f8>"))
+      (define-key pel:narrate "t" 'pel-say)
+      (define-key pel:narrate "r" 'pel-say-region)
+
+      (when pel-use-hydra
+        (defhydra pel-hydra-narrate (global-map "<f8> .")
+          "narrate"
+          ("w" pel-say-word               "say word, next one")
+          ("b" backward-word              "to previous word")
+          ("n" pel-forward-word-start     "to next word")
+          ("s" pel-say-sentence           "say sentence, next one")
+          ("p" pel-say-paragraph          "say paragraph, next one")
+          ("q" nil "cancel")))
+      (define-key pel:narrate "w" 'pel-say-word)
+      (define-key pel:narrate "s" 'pel-say-sentence)
+      (define-key pel:narrate "p" 'pel-say-paragraph))))
+
+;; -----------------------------------------------------------------------------
 ;; Utility function for mapping CC Mode keys
 
 (defun pel-key-electric-p (key)

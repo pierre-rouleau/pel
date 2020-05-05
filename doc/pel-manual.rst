@@ -178,7 +178,8 @@ PEL Goals
    written as I learned Emacs.
    It will grow with time, incorporating more documentation,
    support for more Emacs packages related to editing and
-   programming tasks.
+   programming tasks.  Don't hesitate to report problems and
+   recommend better ways!
 
 
 Using Portions of PEL Manually
@@ -1582,6 +1583,40 @@ Note:
   version of PEL.
   It will be enhanced with upcoming versions.
 
+PEL Apple-Script and Audio Narration Support
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:PDF Docs: `Apple-Script`_.
+:PEL Customization: - Group: ``pel-pkg-for-programming``
+
+                      - Activation:
+
+                        - ``pel-use-applescript``
+                        - ``pel-use-hydra``
+
+                      - Configuration:
+
+                        - ``pel-mac-voice-name``
+
+:PEL Key Prefix: **pel:narrate** : ``<f8>``
+
+PEL provides basic Apple-Script support via the apples-mode_ external package:
+that does basic syntax colouring and provides a scratch-pad to write some
+Apple-Script code to copy somewhere else.
+
+If your Emacs is running a=on a macOS computer PEL also provides a set of
+commands that read text from a buffer and uses the Apples system voice synthesis
+to say the text out-loud.  Essentially providing a text-to-speech system.
+By default the code uses the voice that is selected by default on the system but
+you can also change it by setting the ``pel-mac-voice-name`` user option
+variable.  Normally this would only work on the Cocoa-based (Graphics mode)
+Emacs, but PEL also implements basic support for Emacs running in Terminal (TTY)
+mode.
+
+A couple of other functions are provided to issue Apple-Script commands from Emacs.
+
+More information is available in the `Apple-Script`_ PDF table.
+
 
 PEL Support For LISP-based Languages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1593,8 +1628,6 @@ PEL provides explicit support for the following
 - `Emacs Lisp <https://en.wikipedia.org/wiki/Emacs_Lisp>`_
 
 .. _LISP-based programming languages: https://en.wikipedia.org/wiki/Lisp_(programming_language)
-
-
 
 PEL Common Lisp Support
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -2559,6 +2592,7 @@ PDF Document Tables
 
 **Programming Language Support:**
 
+#. `Apple-Script`_
 #. Lisp Languages
 
    - `Common Lisp <pdf/pl-common-lisp.pdf>`_
@@ -2585,6 +2619,7 @@ PDF Document Tables
 .. _Document Legend:                          pdf/-legend.pdf
 .. _Abbreviations:                            pdf/abbreviations.pdf
 .. _Align:                                    pdf/align.pdf
+.. _Apple-Script:                             pdf/pl-applescript.pdf
 .. _Auto-Completion:                          pdf/auto-completion.pdf
 .. _Autosave & Backups:                       pdf/autosave-backup.pdf
 .. _Bookmarks:                                pdf/bookmarks.pdf
@@ -3191,6 +3226,7 @@ The list of external packages used by PEL is shown in the `Credits`_ section.
 .. _pel--options.el:        ../pel--options.el
 .. _pel--base.el:           ../pel--base.el
 .. _pel--macros.el:         ../pel--macros.el
+.. _pel-applescript.el      ../pel-applescript.el
 .. _pel-autocomplete:
 .. _pel-autocomplete.el:    ../pel-autocomplete.el
 .. _pel-autoload:
@@ -3237,6 +3273,8 @@ The list of external packages used by PEL is shown in the `Credits`_ section.
 .. _pel-pkg.el:             ../pel-pkg.el
 .. _pel-prompt:
 .. _pel-prompt.el:          ../pel-prompt.el
+.. _pel-read:
+.. _pel-read.el:            ../pel-read.el
 .. _pel-register:
 .. _pel-register.el:        ../pel-register.el
 .. _pel-rst:
@@ -3644,6 +3682,7 @@ Package Name & Archive link   Archive Site
 alchemist_                    MELPA_
 `ascii-table`_                MELPA_
 `ace-window`_                 MELPA_
+apples-mode_                  MELPA_
 `auto-complete`_              MELPA_
 `bind-key`_                   MELPA_
 `bm`_                         MELPA_
@@ -3663,6 +3702,7 @@ goto-last-change_             MELPA_
 graphviz-dot-mode_            MELPA_
 `hide-comnt.el`_              Emacsmirror_
 highlight-defined_            MELPA_
+hydra_                        MELPA_
 julia-snail_                  MELPA_
 lfe-mode_                     MELPA_
 lice_                         MELPA_
@@ -3707,6 +3747,7 @@ Hopefully some people will find PEL useful to them.
 .. _ascii-table:               https://melpa.org/#/ascii-table
 .. _ace-window:
 .. _ace-window package:        https://melpa.org/#/ace-window
+.. _apples-mode:               https://melpa.org/#/apples-mode
 .. _auto-complete:
 .. _Auto Complete:
 .. _auto-complete package:     https://melpa.org/#/auto-complete
@@ -3731,6 +3772,7 @@ Hopefully some people will find PEL useful to them.
 .. _goto-last-change:          https://melpa.org/#/goto-last-change
 .. _graphviz-dot-mode:         https://melpa.org/#/graphviz-dot-mode
 .. _highlight-defined:         https://melpa.org/#/highlight-defined
+.. _hydra:                     https://melpa.org/#/hydra
 .. _julia-snail:               https://melpa.org/#/julia-snail
 .. _lfe-mode:                  https://melpa.org/#/lfe-mode
 .. _lice:                      https://melpa.org/#/lice
