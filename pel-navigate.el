@@ -288,9 +288,11 @@ See `pel-forward-token-start' for details."
   "Return t if point is located at a word boundary character."
   (let ((syntax-chrs (if superword-mode
                          '(?w ?_)
-                       '(?w))))
-    (and (memq (char-syntax (char-after)) syntax-chrs)
-         (not (memq (char-syntax (char-before)) syntax-chrs)))))
+                       '(?w)))
+        (c-after (char-after)))
+    (or (not c-after)
+        (and (memq (char-syntax c-after) syntax-chrs)
+             (not (memq (char-syntax (char-before)) syntax-chrs))))))
 
 ;; NOTE: Another possible implementation of the function above.
 ;; Has the same behaviour AFAIK.
