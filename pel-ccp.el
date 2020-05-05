@@ -33,6 +33,7 @@
 
 ;;; Code:
 
+(require 'thingatpt)
 
 ;; Copy Commands.
 ;; --------------
