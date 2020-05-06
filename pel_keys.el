@@ -1265,11 +1265,18 @@ For example, applied to a directory name, macOS Finder is used."
       (when pel-use-hydra
         (defhydra pel-hydra-narrate (global-map "<f8> .")
           "narrate"
-          ("w" pel-say-word               "say word, next one")
-          ("b" backward-word              "to previous word")
-          ("n" pel-forward-word-start     "to next word")
-          ("s" pel-say-sentence           "say sentence, next one")
-          ("p" pel-say-paragraph          "say paragraph, next one")
+          ("w" pel-say-word                "say word")
+          ("b" backward-word               "move to previous word")
+          ("n" pel-forward-word-start      "move to next word")
+          ("s" pel-say-sentence            "say sentence")
+          ("B" backward-sentence           "move to previous sentence")
+          ("N" (progn
+                 (forward-sentence)
+                 (pel-forward-word-start)) "move to next sentence")
+          ("p" pel-say-paragraph           "say paragraph")
+          ("r" (progn
+                 (backward-word)
+                 (pel-say-word))          "repeat last word")
           ("q" nil "cancel")))
       (define-key pel:narrate "w" 'pel-say-word)
       (define-key pel:narrate "s" 'pel-say-sentence)
@@ -1478,6 +1485,13 @@ This is meant to be used in the d-mode hook lambda."
     :init
     (add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
 
+    ;; Activate the F12 mode sensitive keymap for D while editing a D file.
+    (pel--mode-hook-maybe-call
+     '(lambda ()
+        (pel--setenv-for-d)
+        (pel-local-set-f12-M-f12 'pel:for-d))
+     'd-mode 'd-mode-hook)
+
     ;; Configure commands avalable on the D key-map.
     (define-pel-global-prefix pel:for-d (kbd "<f11> SPC D"))
     (pel--map-cc-for pel:for-d)
@@ -1489,24 +1503,38 @@ This is meant to be used in the d-mode hook lambda."
     ;;    by the D/Phobos library guideline, see the following document:
     ;;    URL https://dlang.org/dstyle.html#phobos_brackets .
     ;; 2) Activate the indentation, using the PEL user option via a hook
-    (pel--set-cc-style 'd-mode pel-d-bracket-style)
-
-    ;; Activate the F12 mode sensitive keymap for D while editing a D file.
-    (pel--mode-hook-maybe-call
-     '(lambda ()
-        (pel--setenv-for-d)
-        (pel-local-set-f12-M-f12 'pel:for-d))
-     'd-mode 'd-mode-hook)))
+    (pel--set-cc-style 'd-mode pel-d-bracket-style)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` : Erlang programming utilities
 (when pel-use-erlang
   (define-pel-global-prefix pel:for-erlang (kbd "<f11> SPC e"))
   ;;
-  (pel--mode-hook-maybe-call
-   '(lambda ()
-    (pel-local-set-f12 'pel:for-erlang))
-   'erlang-mode 'erlang-mode-hook))
+  (use-package erlang
+    :ensure t
+    :pin melpa
+    :commands erlang-mode
+
+    :init
+    (pel--mode-hook-maybe-call
+     '(lambda ()
+        (pel-local-set-f12 'pel:for-erlang))
+     'erlang-mode 'erlang-mode-hook)
+    :config
+    (setq erlang-root-dir (expand-file-name pel-erlang-rootdir))
+    (setq exec-path (cons pel-erlang-exec-path exec-path))
+    ;;
+    (require 'erlang-start)
+    ;;
+    (when pel-use-edts
+      (use-package edts
+        :ensure t
+        :pin melpa)
+      (require 'edts-start))
+    ;;
+    (when pel-use-erlang-flymake
+      ;; TODO: complete this
+        )))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` : LFE programming utilities

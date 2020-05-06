@@ -852,13 +852,17 @@ CC Mode Built-in Styles."
   :type 'boolean
   :safe #'booleanp)
 
+;; -----------------------------------------------------------------------------
+;; BEAM Programming Languages
+;; --------------------------
+(defgroup pel-pkg-for-beam-vm nil
+  "PEL customization for BEAM Virtual Machine programming languages."
+  :group 'pel-pkg-for-programming)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Erlang Support
 ;; --------------
 ;; Note: Erlang, is a BEAM VM programming language.
-(defgroup pel-pkg-for-beam-vm nil
-  "PEL customization for BEAM Virtual Machine programming languages."
-  :group 'pel-pkg-for-programming)
 
 (defgroup pel-pkg-for-erlang nil
   "PEL customization for Erlang."
@@ -869,6 +873,18 @@ CC Mode Built-in Styles."
   :group 'pel-pkg-for-erlang
   :type 'boolean
   :safe #'booleanp)
+
+;; TODO: find a way to indicate either a path or the name of an environment variable
+(defcustom pel-erlang-rootdir "/usr/local/otp"
+  "Root directory of Erlang OTP."
+  :group 'pel-pkg-for-erlang
+  :type 'string)
+
+;; TODO: find a way to indicate either a path or the name of an environment variable
+(defcustom pel-erlang-exec-path "/usr/local/otp/bin"
+  "Directory where Erlang binaries are located."
+  :group 'pel-pkg-for-erlang
+  :type 'string)
 
 (defcustom pel-use-erlang-start nil
   "Control whether PEL uses erlang-start package when `pel-use-erlang' is t."

@@ -57,7 +57,7 @@
 (require 'pel--options)                 ; uses: pel-mac-voice-name
 (require 'pel--base)
 
-(defconst pel-narration-filter-regexp "[-_(){}`*=~\\%<>;/!^]"
+(defconst pel-narration-filter-regexp "[_(){}`*~\\<>;/^]"
   "Regular expression used to exclude a set of characters from narration.")
 
 
