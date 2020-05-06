@@ -55,21 +55,24 @@ See `bounds-of-thing-at-point' for a list of possible THING symbols."
 (defun pel-word-at-point ()
   "Read and return word at point, moving to next word."
   (let ((text (pel-thing-at-point 'word)))
-    (pel-forward-word-start)
+    (ignore-errors
+      (pel-forward-word-start))
     text))
 
 ;;-pel-autoload
 (defun pel-sentence-at-point ()
   "Read and return sentence at point, moving to next sentence."
   (let ((text (pel-thing-at-point 'sentence)))
-    (pel-forward-word-start)
+    (ignore-errors
+      (pel-forward-word-start))
     text))
 
 ;;-pel-autoload
 (defun pel-paragraph-at-point ()
   "Read and return paragraph at point, moving to next paragraph."
   (let ((text (pel-thing-at-point 'paragraph)))
-    (pel-forward-word-start)
+    (ignore-errors
+      (pel-forward-word-start))
     text))
 
 ;; -----------------------------------------------------------------------------

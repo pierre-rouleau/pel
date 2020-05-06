@@ -306,7 +306,8 @@ See `pel-forward-token-start' for details."
 ;;-pel-autoload
 (defun pel-forward-word-start ()
   "Move point forward to beginning of next word.
-Supports command `superword-mode' but not the command `subword-mode'."
+Supports command `superword-mode' but not the command `subword-mode'.
+On reaching end of buffer, stop and signal error."
   (interactive "^")
   (while (progn (forward-char) (not (pel-at-word-boundary-p)))))
 
