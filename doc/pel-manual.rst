@@ -3690,12 +3690,16 @@ apples-mode_                  MELPA_
 `cargo`_                      MELPA_
 `company`_                    MELPA_
 d-mode_                       MELPA_
+`desktop+`_                   MELPA_
+`desktop-registry`_           MELPA_
 `dired-narrow`_               MELPA_
 `edts`_                       MELPA_
 elixir-mode_                  MELPA_
 elpy_                         MELPA_
+erlang_                       MELPA_
 esup_                         MELPA_
 expand-region_                MELPA_
+exunit_                       MELPA_
 framemove_                    Emacsmirror_
 free-keys_                    MELPA_
 goto-last-change_             MELPA_
@@ -3761,12 +3765,16 @@ Hopefully some people will find PEL useful to them.
 .. _company:                   https://melpa.org/#/company
 .. _c-eldoc:                   https://melpa.org/#/?q=c-eldoc
 .. _d-mode:                    https://melpa.org/#/?q=d-mode
+.. _desktop+:                  https://melpa.org/#/?q=desktop+
+.. _desktop-registry:          https://melpa.org/#/?q=desktop-registry
 .. _dired-narrow:              https://melpa.org/#/dired-narrow
 .. _edts:                      https://melpa.org/#/edts
 .. _elisp-lint:                https://melpa.org/#/elisp-lint
 .. _elixir-mode:               https://melpa.org/#/elixir-mode
 .. _elpy:                      https://melpa.org/#/elpy
+.. _erlang:                    https://melpa.org/#/erlang
 .. _esup:                      https://melpa.org/#/esup
+.. _exunit:                    https://melpa.org/#/exunit
 .. _expand-region:             https://melpa.org/#/expand-region
 .. _free-keys:                 https://melpa.org/#/free-keys
 .. _goto-last-change:          https://melpa.org/#/goto-last-change
