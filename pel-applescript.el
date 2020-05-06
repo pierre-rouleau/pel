@@ -90,7 +90,7 @@ Return t if the text was said, nil otherwise."
   (when filter-chars-regexp
     (setq text
           (replace-regexp-in-string "\"" ""
-                                    (replace-regexp-in-string filter-chars-regexp "" text))))
+                                    (replace-regexp-in-string filter-chars-regexp " " text))))
   (unless (string-match-p "\"" text)
     (if (fboundp 'do-applescript)
         (do-applescript
