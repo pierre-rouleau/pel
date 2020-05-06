@@ -33,12 +33,16 @@
     (cargo               "20191224.47")   ; melpa. Melpa-stable: 0.4.1
     (company             "2020228.1919")  ; melpa. Melpa-stable: 0.9.12
     (d-mode              "20191009.903")
+    (desktop+            "20170107.2132")
+    (desktop-registry    "20140119.2143")
     (dired-narrow        "20181114.1723") ; melpa. Melpa-stable: N/A
     (edts                "020200304.1709"); melpa. Melpa-stable: 0.1.0
     (elixir-mode         "20200121.623")
     (elpy                "20200202.2031") ; melpa. Melpa-stable: 1.32.0
+    (erlang              "20200313.1030")
     (esup                "20200130.2034") ; melpa. Melpa-stable: 0.7.1
     (expand-region       "20200304.1839") ; melpa. Melpa-stable: 0.11.0
+    (exunit              "20190919.1238")
     (free-keys           "20160726.2050") ; melpa. Melpa-stable: 1.0.0
     (goto-last-change    "20150109.1823") ; melpa. Melpa-stable: 1.2.1
     (graphviz-dot-mode   "20200304.432")  ; melpa. Melpa-stable: 0.4.2
