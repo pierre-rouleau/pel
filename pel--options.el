@@ -36,7 +36,6 @@
 ;;   - pel-identification
 ;;   - pel-kbmacro
 ;;   - pel-text-insert
-;;   - pel-rst
 ;;   - pel-package-use
 ;;     - pel-pkg-for-grep
 ;;     - pel-pkg-for-window
@@ -53,6 +52,7 @@
 ;;     - pel-pkg-for-shells
 ;;     - pel-pkg-for-vcs
 ;;     - pel-pkg-for-programming
+;;       - pel-pkg-for-applescript
 ;;       - pel-pkg-for-cc
 ;;         - pel-pkg-for-c
 ;;         - pel-pkg-for-c++
@@ -67,6 +67,8 @@
 ;;       - pel-pkg-for-python
 ;;       - pel-pkg-for-rust
 ;;     - pel-pkg-for-markup
+;;       - pel-pkg-for-reST
+;;       - pel-pkg-for-graphviz-dot
 
 ;;; Code:
 
@@ -143,28 +145,6 @@
   :group 'pel-text-insert
   :type 'integer
   :safe #'integerp)
-
-;; -----------------------------------------------------------------------------
-(defgroup pel-rst nil
-  "PEL reStructuredText support."
-  :group 'pel)
-
-(defcustom pel-rst-adornment-style 'CRiSPer
-  "Select the section adornment style.
-Identifies the number of levels supported and their adornment.
-- `default' is Emacs `rst-mode' default.  A title and 7 levels.
-- `Sphinx-Python' is what Sphinx uses: 6 levels:
-  - parts,
-  - chapters,
-  - sections,
-  - subsections,
-  - subsubsections,
-  - paragraphs.
-- `CRiSPer', a title and 12-level mode previously developed for CRiSP."
-  :group 'pel-rst
-  :type '(choice (const :tag "default" default)
-                 (const :tag "Sphinx-Python" Sphinx-Python)
-                 (const :tag "CRiSPer" CRiSPer)))
 
 ;; -----------------------------------------------------------------------------
 (defgroup pel-package-use nil
@@ -1019,12 +999,43 @@ When set to non-nil, 3 packages are used:
   :type 'boolean
   :safe #'booleanp)
 
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; reStructuredText support
+;; ------------------------
+(defgroup pel-pkg-for-reST nil
+  "PEL reStructuredText support."
+  :group 'pel-pkg-for-markup)
+
 (defcustom pel-use-rst-mode nil
-  "Control whether PEL supports {rst-mode} (reStructuredText).
-Once you activate this, see the pel-rst group for more options."
-  :group 'pel-pkg-for-markup
+  "Control whether PEL supports {rst-mode} (reStructuredText)."
+  :group 'pel-pkg-for-reST
   :type 'boolean
   :safe #'booleanp)
+
+(defcustom pel-rst-adornment-style 'CRiSPer
+  "Select the section adornment style.
+Identifies the number of levels supported and their adornment.
+- `default' is Emacs `rst-mode' default.  A title and 7 levels.
+- `Sphinx-Python' is what Sphinx uses: 6 levels:
+  - parts,
+  - chapters,
+  - sections,
+  - subsections,
+  - subsubsections,
+  - paragraphs.
+- `CRiSPer', a title and 12-level mode previously developed for CRiSP."
+  :group 'pel-pkg-for-reST
+  :type '(choice (const :tag "default" default)
+                 (const :tag "Sphinx-Python" Sphinx-Python)
+                 (const :tag "CRiSPer" CRiSPer)))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; GraphViz-Dot Support
+;; --------------------
+(defgroup pel-pkg-for-graphviz-dot nil
+  "PEL Graphviz-DOT support."
+  :group 'pel-pkg-for-markup)
 
 (defcustom pel-use-graphviz-dot nil
   "Control whether PEL uses the Graphviz Dot tool and its associated package.
@@ -1035,7 +1046,7 @@ References:
 - Graphviz: URL `https://www.graphviz.org'
 - DOT Language URL `https://www.graphviz.org/doc/info/lang.html'
 - `graphviz-dot-mode' MELPA URL `https://melpa.org/#/graphviz-dot-mode'"
-  :group 'pel-pkg-for-markup
+  :group 'pel-pkg-for-graphviz-dot
   :type 'boolean
   :safe #'booleanp)
 

@@ -81,7 +81,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
      (define-prefix-command (quote ,prefix))
      (global-set-key ,key (quote ,prefix))))
 
-(defmacro pel-setq  (sym val)
+(defmacro pel-setq (sym val)
   "Set a symbol SYM to specified value VAL and prevent warning."
   `(progn
      ;; declare the symbol to prevent lint warning
@@ -90,13 +90,15 @@ optional argument APPEND is non-nil, in which case it is added at the end."
      (setq ,sym ,val)))
 
 
-(defmacro pel-setq-default  (sym val)
+(defmacro pel-setq-default (sym val)
   "Set a symbol SYM to specified default value VAL and prevent warning."
   `(progn
      ;; declare the symbol to prevent lint warning
      (defvar ,sym)
      ;; now set the symbol to the specified value
      (setq-default ,sym ,val)))
+
+;; --
 
 (defun pel-local-set-f12 (prefix &optional key)
   "Assign the <f12> or <f12> KEY to PREFIX."
@@ -3115,6 +3117,86 @@ the ones defined from the buffer now."
     :commands vterm
     :init
     (define-key pel:eXecute "v" 'vterm)))
+
+;; -----------------------------------------------------------------------------
+;; - Function Keys <M-f11> - Customization
+;;
+
+;; -- Macros
+;; To have a name show up in which-key 'menu', a named function is required,
+;; otherwise all we see is 'prefix' which is not meaningful.
+;; The macros help simplify/reduce the lines of code used to create the
+;; key bindings for PEL configuration.
+;;
+
+(defun pel-prefixed (str &optional prefix)
+  "Return the STR string prefixed with PREFIX (or space) if not empty.
+Pass empty string unchanged."
+  (if (string= str "")
+      ""
+    (format "%s%s"
+            (or prefix " ")
+            str)))
+
+(defmacro pel--cfg (pel-group prefix key)
+  "Define a function FCT to customize specified GROUP mapped to PREFIX KEY."
+  (let ((fct (intern (format "pel-cfg%s" (pel-prefixed pel-group "-"))))
+        (group (intern (format "pel%s" (pel-prefixed pel-group "-"))))
+        (docstring (format "Customize PEL%s support.\n\
+If OTHER-WINDOW argument open in other window." (pel-prefixed
+                                                 (capitalize pel-group)))))
+    `(progn
+       ;; first declare the function
+       (defun ,fct (&optional other-window)
+         ,docstring
+         (interactive "P")
+         (customize-group (quote ,group) other-window))
+       ;; then define the global key
+       (define-key ,prefix ,key (quote ,fct)))))
+
+(defmacro pel--cfg-pkg (pel-group prefix key)
+  "Define a function FCT to customize specified GROUP mapped to PREFIX KEY."
+  (let ((fct (intern (format "pel-cfg-pkg-%s" pel-group)))
+        (group (intern (format "pel-pkg-for-%s" pel-group)))
+        (docstring (format "Customize PEL %s support.\n\
+If OTHER-WINDOW is non-nil (use \\[universal-argument]), display in other window." (capitalize pel-group))))
+    `(progn
+       ;; first declare the function
+       (defun ,fct (&optional other-window)
+         ,docstring
+         (interactive "P")
+         (customize-group (quote ,group) other-window))
+       ;; then define the global key
+       (define-key ,prefix ,key (quote ,fct)))))
+
+;; Set up the key prefixes.
+(define-pel-global-prefix pel:cfg (kbd "<M-f11>"))
+(define-key pel:cfg "E"     'customize)
+(define-key pel:cfg "G"     'customize-group)
+(define-key pel:cfg "O"     'customize-option)
+;;
+(pel--cfg ""  pel:cfg "!")
+(pel--cfg "identification"  pel:cfg "i")
+(pel--cfg-pkg "grep"        pel:cfg "g")
+(pel--cfg-pkg "window"      pel:cfg "w")
+(pel--cfg-pkg "session"     pel:cfg "s")
+(pel--cfg-pkg "speedbar"    pel:cfg "S")
+
+
+(define-pel-global-prefix pel:cfg-pl (kbd "<M-f11> SPC"))
+;;
+(pel--cfg-pkg "applescript"  pel:cfg-pl "a")
+(pel--cfg-pkg "c"            pel:cfg-pl "c")
+(pel--cfg-pkg "c++"          pel:cfg-pl "C")
+(pel--cfg-pkg "d"            pel:cfg-pl "D")
+(pel--cfg-pkg "elisp"        pel:cfg-pl "l")
+(pel--cfg-pkg "elixir"       pel:cfg-pl "x")
+(pel--cfg-pkg "erlang"       pel:cfg-pl "e")
+(pel--cfg-pkg "graphviz-dot" pel:cfg-pl "g")
+(pel--cfg-pkg "julia"        pel:cfg-pl "j")
+(pel--cfg-pkg "lisp"         pel:cfg-pl "L")
+(pel--cfg-pkg "python"       pel:cfg-pl "p")
+(pel--cfg-pkg "reST"         pel:cfg-pl "r")
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel_keys)
