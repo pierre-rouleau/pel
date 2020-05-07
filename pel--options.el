@@ -745,7 +745,7 @@ CC Mode Built-in Styles."
   :type 'boolean
   :safe #'booleanp)
 
-;--
+;-- D Style
 
 (defcustom pel-d-indentation 4
   "Number of columns for D source code indentation.
@@ -787,6 +787,40 @@ CC Mode Built-in Styles."
   :group 'pel-pkg-for-d
   :type 'string
   :safe 'pel-c-style-valid-p)
+
+;;-- Tools for D
+
+(defcustom pel-use-d-ac-dcd nil
+  "Control whether AutoComplete/DCD based code completion is used for D.
+
+When set to t:
+- the ac-dcd package is used for code completion,
+  - it uses flycheck-dmd-dub package, which uses the D package
+    registry called DUB to retreive all D dependencies information.
+    - which uses DCD (the D Completion Daemon) written in D
+      which must be installed separately.
+
+An alternative to AutoComplete/DCD is the Company/DCD, controlled
+by the pel-use-d-company-dcd."
+  :group 'pel-pkg-for-d
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-d-company-dcd nil
+  "Control whether Company/DCD based code completion is used for D.
+
+When set to t:
+- the company-dcd package is used for code completion,
+  - it uses flycheck-dmd-dub package, which uses the D package
+    registry called DUB to retreive all D dependencies information.
+    - which uses DCD (the D Completion Daemon) written in D
+      which must be installed separately.
+
+An alternative to AutoComplete/DCD is the Company/DCD, controlled
+by the pel-use-d-ac-dcd."
+  :group 'pel-pkg-for-d
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Emacs Lisp Support

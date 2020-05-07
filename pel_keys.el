@@ -1498,6 +1498,30 @@ This is meant to be used in the d-mode hook lambda."
     (define-pel-global-prefix pel:for-d (kbd "<f11> SPC D"))
     (pel--map-cc-for pel:for-d)
 
+    ;; Configure auto-completion based on selection
+    ;; There are 2 possibilities
+    ;; TODO:  complete logic once this is all tested/documented
+    ;; -->for now assume only one is configure in...
+    (when pel-use-d-ac-dcd
+      (use-package ac-dcd
+        :ensure t
+        :pin melpa
+        :commands ac-dcd-setup
+        :init
+        (add-to-list 'ac-modes 'd-mode)
+        (add-hook 'd-mode-hook #'ac-dcd-setup)))
+
+    ;; --> ... so the code does not prevent both to be activated
+    ;;         together (will do some experiment and will decide later
+    ;;         what the final code should be).
+    (when pel-use-d-company-dcd
+      (use-package company-dcd
+        :ensure t
+        :pin melpa
+        :commands company-dcd-mode
+        :init
+        (add-hook 'd-mode-hook 'company-dcd-mode)))
+
     ;; When a D file is edited, set up the CC Mode behaviour for D
     :config
     ;; 1) Use the bracket style for D identified by the pel-d-bracket-style
