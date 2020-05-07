@@ -3139,12 +3139,13 @@ Pass empty string unchanged."
             str)))
 
 (defmacro pel--cfg (pel-group prefix key)
-  "Define a function FCT to customize specified GROUP mapped to PREFIX KEY."
+  "Define a function and key binding to customize specified PEL-GROUP mapped to PREFIX KEY."
   (let ((fct (intern (format "pel-cfg%s" (pel-prefixed pel-group "-"))))
         (group (intern (format "pel%s" (pel-prefixed pel-group "-"))))
         (docstring (format "Customize PEL%s support.\n\
-If OTHER-WINDOW argument open in other window." (pel-prefixed
-                                                 (capitalize pel-group)))))
+If OTHER-WINDOW is non-nil (use \\[universal-argument]), \
+display in other window." (pel-prefixed
+                           (capitalize pel-group)))))
     `(progn
        ;; first declare the function
        (defun ,fct (&optional other-window)
@@ -3155,11 +3156,13 @@ If OTHER-WINDOW argument open in other window." (pel-prefixed
        (define-key ,prefix ,key (quote ,fct)))))
 
 (defmacro pel--cfg-pkg (pel-group prefix key)
-  "Define a function FCT to customize specified GROUP mapped to PREFIX KEY."
+  "Define a function and key binding to customize specified PEL-GROUP mapped to PREFIX KEY."
   (let ((fct (intern (format "pel-cfg-pkg-%s" pel-group)))
         (group (intern (format "pel-pkg-for-%s" pel-group)))
         (docstring (format "Customize PEL %s support.\n\
-If OTHER-WINDOW is non-nil (use \\[universal-argument]), display in other window." (capitalize pel-group))))
+If OTHER-WINDOW is non-nil (use \\[universal-argument]), \
+display in other window."
+                           (capitalize pel-group))))
     `(progn
        ;; first declare the function
        (defun ,fct (&optional other-window)
@@ -3169,6 +3172,7 @@ If OTHER-WINDOW is non-nil (use \\[universal-argument]), display in other window
        ;; then define the global key
        (define-key ,prefix ,key (quote ,fct)))))
 
+;; -- Key bindings
 ;; Set up the key prefixes.
 (define-pel-global-prefix pel:cfg (kbd "<M-f11>"))
 (define-key pel:cfg "E"     'customize)
