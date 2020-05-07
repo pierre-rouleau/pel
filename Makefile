@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2020-05-05 17:39:39, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-05-06 21:49:44, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -170,6 +170,7 @@ PDF_FILES := -legend.pdf \
 			closing-suspending.pdf \
 			comments.pdf \
 			counting.pdf \
+			customize.pdf \
 			cut-paste.pdf \
 			diff-merge.pdf \
 			display-lines.pdf \
