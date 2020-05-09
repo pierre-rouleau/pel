@@ -3143,6 +3143,34 @@ the ones defined from the buffer now."
     (define-key pel:eXecute "v" 'vterm)))
 
 ;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> _`` : Underlining commands
+
+(use-package pel-comment-adorn
+  ;; autoload it when keys are using commands
+  :commands (pel-commented-adorn-1
+             pel-commented-adorn-2
+             pel-commented-adorn-3
+             pel-commented-adorn-4
+             pel-commented-adorn-5
+             pel-commented-adorn-6
+             pel-commented-adorn-7
+             pel-commented-adorn-8
+             pel-commented-adorn-9
+             pel-commented-adorn-10))
+
+(define-pel-global-prefix pel:underline (kbd "<f11> _"))
+(define-key pel:underline "1" 'pel-commented-adorn-1)
+(define-key pel:underline "2" 'pel-commented-adorn-2)
+(define-key pel:underline "3" 'pel-commented-adorn-3)
+(define-key pel:underline "4" 'pel-commented-adorn-4)
+(define-key pel:underline "5" 'pel-commented-adorn-5)
+(define-key pel:underline "6" 'pel-commented-adorn-6)
+(define-key pel:underline "7" 'pel-commented-adorn-7)
+(define-key pel:underline "8" 'pel-commented-adorn-8)
+(define-key pel:underline "9" 'pel-commented-adorn-9)
+(define-key pel:underline "0" 'pel-commented-adorn-10)
+
+;; -----------------------------------------------------------------------------
 ;; - Function Keys <M-f11> - Customization
 ;;
 

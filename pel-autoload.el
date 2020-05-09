@@ -111,6 +111,10 @@
   (autoload 'pel-delete-all-comments                     "pel-comment")
   (autoload 'pel-kill-all-comments                       "pel-comment")
 
+  ;; pel-comment-adorn
+  ;; Nothing specified here: the control is inside pel_keys.el
+  ;; only.
+
   ;; pel-commonlisp
   (autoload 'pel-cl-init "pel-commonlisp")
 
