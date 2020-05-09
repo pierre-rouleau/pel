@@ -1,4 +1,4 @@
-;;; pel-read.el --- Read text from buffer
+;;; pel-read.el --- Read text from buffer -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 

@@ -1,4 +1,4 @@
-;;; pel-applescript.el --- PEL AppleScript support
+;;; pel-applescript.el --- PEL AppleScript support -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
@@ -74,7 +74,7 @@ To say something, use:  (do-applescript \"say \\\"Hello\\\"\")"
          (format
           "osascript -e \"%s\""
           (replace-regexp-in-string "\"" "\\\\\"" command)))))
-  (defun do-applescript (command)
+  (defun do-applescript (_command)
     "No COMMAND executed, error raised: this requires macOS."
     (error "The do-applescript is only available on macOS systems!")))
 
