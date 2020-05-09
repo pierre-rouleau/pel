@@ -23,10 +23,28 @@
 ;; -----------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This file holds a collection of functions used to manipulate and inspect the
-;; mark.
+;; This file holds a collection of functions used to inspect, manipulate and set
+;; the mark for various uses.  The file holds the following commands (the ones
+;; with a * in the list below) and functions.
 ;;
-;; See the attribution notice for the code at bottom of the file.
+;;
+;; * pel-mark-ring-stats
+;;   - pel-global-mark-buffer-positions
+;;   - pel-mark-ring-positions
+;;
+;; * pel-popoff-mark-ring
+;; * pel-mark-line-up
+;; * pel-mark-line-down
+;;
+;; * pel-push-mark-no-activate
+;; * pel-jump-to-mark
+;; * pel-exchange-point-and-mark-no-activate
+
+;;
+;; The last 3 functions are copies/adaptation of code written by Mickey
+;; Petersen.  See the complete attribution note below, just above the code of
+;; these 3 functions.
+
 
 ;;; Code:
 (require 'pel--base)                    ; use: pel-yes-no-string
@@ -115,9 +133,9 @@ When mark is already active extend the region one more line down."
 
 ;; -----------------------------------------------------------------------------
 ;; Attribution Notice for the code below:
-;; Code taken from the Mickey Petersen's great website at
-;; https://www.masteringemacs.org\
-;; /article/fixing-mark-commands-transient-mark-mode
+;;   Code taken from the Mickey Petersen's great website at
+;;   https://www.masteringemacs.org\
+;;   /article/fixing-mark-commands-transient-mark-mode
 
 ;;-pel-autoload
 (defun pel-push-mark-no-activate ()

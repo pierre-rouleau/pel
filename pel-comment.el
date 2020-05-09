@@ -23,8 +23,22 @@
 ;; -----------------------------------------------------------------------------
 ;;; Commentary:
 ;;
+;; This file holds a collection of functions used to manipulate and insert
+;; comments in the current buffer.
+;;
+;; The file holds the following commands:
+
+;; * pel-comment-start
+;; * pel-comment-middle
+;; * pel-comment-end
+;; * pel-toggle-comment-auto-fill-only-comments
+;; * pel-delete-all-comments
+;; * pel-kill-all-comments
+
+
 
 ;;; Code:
+
 (require 'pel--base)                     ; use: pel-toggle
 
 ;;-pel-autoload
