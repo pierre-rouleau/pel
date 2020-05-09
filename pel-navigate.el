@@ -526,7 +526,7 @@ number of lines.
   "Move to the beginning of the next function definition.
 This complements `beginning-of-defun' which only reaches the
 same location by moving backwards."
-  (interactive)
+  (interactive "^")
   (let ((starting-point (point)))
     ;; if point is outside of a function/defun definition block
     ;; moving forward to the end of next function/defun and then backward
