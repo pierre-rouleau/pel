@@ -527,9 +527,20 @@ number of lines.
 This complements `beginning-of-defun' which only reaches the
 same location by moving backwards."
   (interactive)
-  (end-of-defun)
-  (end-of-defun)
-  (beginning-of-defun))
+  (let ((starting-point (point)))
+    ;; if point is outside of a function/defun definition block
+    ;; moving forward to the end of next function/defun and then backward
+    ;; to the beginning should move point to the beginning of next
+    ;; function/defun.
+    (end-of-defun)
+    (beginning-of-defun)
+    ;; However, if point was already at the beginning or inside the body of the
+    ;; function/defun, then do it again: move twice to the end of the
+    ;; function/defun and then back to its beginning.
+    (when (<= (point) starting-point)
+      (end-of-defun)
+      (end-of-defun)
+      (beginning-of-defun))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-navigate)
