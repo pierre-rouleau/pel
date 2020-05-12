@@ -644,7 +644,7 @@ your graphics copy of Emacs from a shell.  There are several advantages:
 On my system I have 2 small scripts that launch emacs:
 
 - ``e`` which launches a Termcap (TTY) character-only version of Emacs, and
-- ``ge``which launches the GUI version of Emacs.
+- ``ge`` which launches the GUI version of Emacs.
 
 On my system ``e`` is just a symlink to the Termcap Emacs version I am currently
 using.  I use this short symlink for its size also because I never use the `1970s E
@@ -666,12 +666,12 @@ Here's a copy of my ``ge`` script:
           #     directory) and if you specify files that are not in that directory they
           #     will not be opened, another file file open which will most likely be
           #     in an empty buffer (if the file does not exists in the home directory).
-          #   - all script command line arguments
+          #   - All script command line arguments.
           #
-          # Note: the current Emacs for macOS graphical dumps an error when it starts.
-          #       this is annoying; it's noise on the shell.
+          # Note: The current Emacs for macOS graphical dumps an error when it starts.
+          #       This is annoying; it's noise on the shell.
           #       Just mask it by dumping it in the bit bucket.
-
+          #
           /Applications/Emacs.app/Contents/MacOS/Emacs --chdir=$(pwd) "$@" 2>/dev/null &
 
 
