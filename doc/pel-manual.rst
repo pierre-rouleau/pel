@@ -641,18 +641,17 @@ your graphics copy of Emacs from a shell.  There are several advantages:
   programming languages related yo your project.
 
 
-On my system I have 2 small scripts that launch emacs:
+On my system I have 2 commands that launch Emacs:
 
 - ``e`` which launches a Termcap (TTY) character-only version of Emacs, and
 - ``ge`` which launches the GUI version of Emacs.
 
-On my system ``e`` is just a symlink to the Termcap Emacs version I am currently
+The ``e`` command is just a symlink to the Termcap Emacs version I am currently
 using.  I use this short symlink for its size also because I never use the `1970s E
 editor`_.
 
-And I have a ``ge`` script to launch the graphical Emacs.
-
-Here's a copy of my ``ge`` script:
+And ``ge`` is a script to launch the graphical Emacs, providing access to the
+current directory and the complete environment:
 
 .. code:: shell
 
