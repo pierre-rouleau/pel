@@ -614,6 +614,75 @@ collection while Emacs processes your initialization code.  This has nothing to
 do with PEL though.
 
 
+Generic Tips
+------------
+
+The following sections contain information related to Emacs and the OS environment.
+
+Running Emacs Graphics Mode
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Under Unix-like Operating Systems like Linux and macOS when you run Emacs in
+graphics mode, Emacs may not get the complete environment variables that you get
+in your shell.  That happens quite often in macOS as explained by
+`Steve Purcel in the readme file of his exec-path-from-shell`_ package.
+His package provides a way to fix the problem.
+
+Currently PEL does not integrate that package.
+
+To avoid the problem, I recommend using a small script that allows you to start
+your graphics copy of Emacs from a shell.  There are several advantages:
+
+- the graphical Emacs inherits the complete environment of the shell from which
+  it is launched, without having to add the package written by Steve Purcell,
+- you can launch several instances of graphics Emacs, from the same or different
+  shells, where different shells may have different values for important
+  environment variables, and that might include different versions of important
+  programming languages related yo your project.
+
+
+On my system I have 2 small scripts that launch emacs:
+
+- ``e`` which launches a Termcap (TTY) character-only version of Emacs, and
+- ``ge``which launches the GUI version of Emacs.
+
+On my system ``e`` is just a symlink to the Termcap Emacs version I am currently
+using.  I use this short symlink for its size also because I never use the `1970s E
+editor`_.
+
+And I have a ``ge`` script to launch the graphical Emacs.
+
+Here's a copy of my ``ge`` script:
+
+.. code:: shell
+
+          #!/bin/sh
+          # Abstract: open Cocoa-based GUI Emacs in the background
+          #           (so we can continue using the shell).
+          # Pass to emacs:
+          #   - --chdir to the current working directory so we open the same files
+          #     as what is specified on the command line. If we don't do that the GUI
+          #     based Emacs might use a different directory (I saw that it uses the home
+          #     directory) and if you specify files that are not in that directory they
+          #     will not be opened, another file file open which will most likely be
+          #     in an empty buffer (if the file does not exists in the home directory).
+          #   - all script command line arguments
+          #
+          # Note: the current Emacs for macOS graphical dumps an error when it starts.
+          #       this is annoying; it's noise on the shell.
+          #       Just mask it by dumping it in the bit bucket.
+
+          /Applications/Emacs.app/Contents/MacOS/Emacs --chdir=$(pwd) "$@" 2>/dev/null &
+
+
+
+
+
+.. _Steve Purcel in the readme file of his exec-path-from-shell: https://github.com/purcell/exec-path-from-shell#setting-up-your-shell-startup-files-correctly
+.. _1970s E editor: https://en.wikipedia.org/wiki/E_(1970s_text_editor)
+
+
+
 ..
    -----------------------------------------------------------------------------
 
