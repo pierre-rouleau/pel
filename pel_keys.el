@@ -2356,8 +2356,8 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
 ;; and with the mouse in terminal mode
 (unless (display-graphic-p)
   ;; activate mouse-based scrolling
-  (global-set-key (kbd "<mouse-4>") 'pel-scroll-up)
-  (global-set-key (kbd "<mouse-5>") 'pel-scroll-down))
+  (global-set-key (kbd "<mouse-4>") 'pel-scroll-down)
+  (global-set-key (kbd "<mouse-5>") 'pel-scroll-up))
 
 (define-pel-global-prefix pel:scroll (kbd "<f11> |"))
 ;;
