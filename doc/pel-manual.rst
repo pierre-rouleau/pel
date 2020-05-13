@@ -841,11 +841,13 @@ PEL Configuration/Customization Support
 ---------------------------------------
 
 :PDF Docs: `Customization <pdf/customize.pdf>`_.
-:PEL Key Prefix: **pel:cfg** : ``<M-f11>``
+:PEL Key Prefix: - **pel:cfg** : ``<f11> <f1>``
+                 - **pel:cfg-pl** : ``<f11> <f1> SPC``
+
 
 PEL is designed to help you control Emacs through Emacs Easy Customization
 system instead of explicit Emacs Lisp code.  You can always write more Emacs
-Lisp code to specialize it further but it might not even be necessary.
+Lisp code to specialize it further but in most cases it might not even be necessary.
 PEL controls what package is activated and how the features are configured
 through the Emacs Customization interface.  The information is stored in a file
 and if you followed the instructions inside the section `How to Install PEL`_,
@@ -853,13 +855,29 @@ your selections will be stored inside the file
 "~/.emacs.d/emacs-customization.el".  You can even copy that file and keep
 multiple revision around.
 
-Since customizaiton is central to PEL, PEL also provides a set of key bindings
-that you can use to quickly open a group to customize.  These key bindings use
-the **pel:cfg** prefix, which by default is bound to the ``<M-f11>`` key.
+Since customization is central to PEL, PEL also provides a set of key bindings
+that you can use to quickly open a buffer to customize a specific user option or
+a group or all of Emacs.  These key bindings use
+the **pel:cfg** prefix, which by default is bound to the ``<f11> <f1>`` key sequence.
 
+PEL customization user options are organized in Emacs customization groups with
+several general groups but also groups for each programming language and markup
+languages supported by PEL.  When point is inside the buffer editing a file in
+one of the programming or markup language mode supported by PEL you can quickly
+open the customization buffer for the group of that language by using the
+``<f12> <f1>`` key.
+
+You can also use the global prefix **pel:cfg-pl** bound to
+``<f11> <f1> SPC`` followed by the character identifying the language to open
+the customization group for a specific language.
 For example, if you want to change the indentation style and width for your C++
-files, use the command associated to the ``<M-f11> SPC C`` key sequence.  This
-will open the PEL customization group for configuring C++ editing.
+files, use the command associated to the ``<f11> <f1> SPC C`` key sequence.  This
+will open the PEL customization group for configuring C++ editing.  If point is
+already inside a buffer in C++ mode, then ``<f12> <f1>`` does the same.
+
+After customizing something, you can type the ``q`` key to close  the
+customization buffer and come back where you were.  And to activate your changes
+then run ``pel-init`` by issuing the ``M-x pel-init`` command.
 
 See the `Customization <pdf/customize.pdf>`_ PDF document for more details.
 
