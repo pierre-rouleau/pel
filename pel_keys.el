@@ -116,14 +116,6 @@ optional argument APPEND is non-nil, in which case it is added at the end."
     (local-set-key (kbd "<M-f12>") prefix)))
 
 ;; -----------------------------------------------------------------------------
-;; Configure mouse in terminal mode
-;; --------------------------------
-(unless (display-graphic-p)
-  ;; activate mouse-based scrolling
-  (global-set-key (kbd "<mouse-4>") 'pel-scroll-up)
-  (global-set-key (kbd "<mouse-5>") 'pel-scroll-down))
-
-;; -----------------------------------------------------------------------------
 ;; - Use popup-kill-ring
 ;; ---------------------
 ;; View all kill-ring deletions in a pop-up menu, when
@@ -642,34 +634,6 @@ For example, applied to a directory name, macOS Finder is used."
     :ensure t
     :pin melpa
     :commands esup))
-
-;; -----------------------------------
-;; - Programming Style: Erlang Support
-;; -----------------------------------
-;; TODO: erlang flymake does not seem to work.
-;; erlang MAN also does not work.
-;; I do not know why.  Need to learn more.
-;; (when pel-use-erlang
-;;   ;; TODO: make the following a customization
-;;   ;; that either accepts the path or an
-;;   ;; environment variable to get it from,
-;;   ;; and support multiple versions of Erlang.
-;;   (setq erlang-root-dir
-;;         (expand-file-name
-;;           "~/Library/Application Support/ErlangInstaller/21.1/erts-10.1"))
-;;   (use-package erlang
-;;     :defer 3
-;;     :commands erlang-mode
-;;     :init
-;;     (require 'erlang-start)
-;;     :config
-;;     (when pel-use-erlang-flymake
-;;       (require 'erlang-flymake))))
-
-;; ; TODO: complete this
-;; (when pel-use-edts
-;;   (use-package edts
-;;     :defer t))))
 
 ;; ------------------------------------
 ;; - Programming Style: Haskell Support
@@ -1227,6 +1191,92 @@ For example, applied to a directory name, macOS Finder is used."
 (define-key pel:menu "o"      'pel-toggle-imenu-index-follows-order)
 (define-key pel:menu "t"     #'tmm-menubar)
 
+
+
+;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> <f1>`` : Customization
+;;
+
+;; -- Macros
+;; To have a name show up in which-key 'menu', a named function is required,
+;; otherwise all we see is 'prefix' which is not meaningful.
+;; The macros help simplify/reduce the lines of code used to create the
+;; key bindings for PEL configuration.
+;;
+
+(defun pel-prefixed (str &optional prefix)
+  "Return the STR string prefixed with PREFIX (or space) if not empty.
+Pass empty string unchanged."
+  (if (string= str "")
+      ""
+    (format "%s%s"
+            (or prefix " ")
+            str)))
+
+(defmacro pel--cfg (pel-group prefix key)
+  "Define a function and key binding to customize specified PEL-GROUP mapped to PREFIX KEY."
+  (let ((fct (intern (format "pel-cfg%s" (pel-prefixed pel-group "-"))))
+        (group (intern (format "pel%s" (pel-prefixed pel-group "-"))))
+        (docstring (format "Customize PEL%s support.\n\
+If OTHER-WINDOW is non-nil (use \\[universal-argument]), \
+display in other window." (pel-prefixed
+                           (capitalize pel-group)))))
+    `(progn
+       ;; first declare the function
+       (defun ,fct (&optional other-window)
+         ,docstring
+         (interactive "P")
+         (customize-group (quote ,group) other-window))
+       ;; then define the global key
+       (define-key ,prefix ,key (quote ,fct)))))
+
+(defmacro pel--cfg-pkg (pel-group prefix key)
+  "Define a function and key binding to customize specified PEL-GROUP mapped to PREFIX KEY."
+  (let ((fct (intern (format "pel-cfg-pkg-%s" pel-group)))
+        (group (intern (format "pel-pkg-for-%s" pel-group)))
+        (docstring (format "Customize PEL %s support.\n\
+If OTHER-WINDOW is non-nil (use \\[universal-argument]), \
+display in other window."
+                           (capitalize pel-group))))
+    `(progn
+       ;; first declare the function
+       (defun ,fct (&optional other-window)
+         ,docstring
+         (interactive "P")
+         (customize-group (quote ,group) other-window))
+       ;; then define the global key
+       (define-key ,prefix ,key (quote ,fct)))))
+
+;; -- Key bindings
+;; Set up the key prefixes.
+(define-pel-global-prefix pel:cfg  (kbd "<f11> <f1>"))
+(define-key pel:cfg "E"     'customize)
+(define-key pel:cfg "G"     'customize-group)
+(define-key pel:cfg "O"     'customize-option)
+;;
+(pel--cfg ""  pel:cfg "!")
+(pel--cfg "identification"  pel:cfg "i")
+(pel--cfg-pkg "grep"        pel:cfg "g")
+(pel--cfg-pkg "window"      pel:cfg "w")
+(pel--cfg-pkg "session"     pel:cfg "s")
+(pel--cfg-pkg "speedbar"    pel:cfg "S")
+
+
+(define-pel-global-prefix pel:cfg-pl (kbd "<f11> <f1> SPC"))
+;;
+(pel--cfg-pkg "applescript"  pel:cfg-pl "a")
+(pel--cfg-pkg "c"            pel:cfg-pl "c")
+(pel--cfg-pkg "c++"          pel:cfg-pl "C")
+(pel--cfg-pkg "d"            pel:cfg-pl "D")
+(pel--cfg-pkg "elisp"        pel:cfg-pl "l")
+(pel--cfg-pkg "elixir"       pel:cfg-pl "x")
+(pel--cfg-pkg "erlang"       pel:cfg-pl "e")
+(pel--cfg-pkg "graphviz-dot" pel:cfg-pl "g")
+(pel--cfg-pkg "julia"        pel:cfg-pl "j")
+(pel--cfg-pkg "lisp"         pel:cfg-pl "L")
+(pel--cfg-pkg "python"       pel:cfg-pl "p")
+(pel--cfg-pkg "reST"         pel:cfg-pl "r")
+
 ;; -----------------------------------------------------------------------------
 ;; - AppleScript support
 (when pel-use-applescript
@@ -1261,6 +1311,7 @@ For example, applied to a directory name, macOS Finder is used."
                  pel-say-region)
       :init
       (define-pel-global-prefix pel:narrate (kbd "<f8>"))
+      (define-key pel:narrate (kbd "<f1>") 'pel-cfg-pkg-applescript)
       (define-key pel:narrate "t" 'pel-say)
       (define-key pel:narrate "r" 'pel-say-region)
 
@@ -1396,8 +1447,7 @@ just bind it again after this call."
 MODE must be a symbol."
   (add-to-list 'c-default-style (cons mode bracket-style)))
 
-
-;; -----------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC c`` : C programming utilities
 
 ;; Note: C editing is always available in Emacs via the CC Mode and the c-mode
@@ -1419,6 +1469,7 @@ MODE must be a symbol."
 
 (define-pel-global-prefix pel:for-c         (kbd "<f11> SPC c"))
 (define-pel-global-prefix pel:for-c-preproc (kbd "<f11> SPC c #"))
+(define-key               pel:for-c         (kbd "<f1>") 'pel-cfg-pkg-c)
 (pel--map-cc-for pel:for-c pel:for-c-preproc)
 
 (pel--mode-hook-maybe-call
@@ -1450,6 +1501,7 @@ MODE must be a symbol."
 
 (define-pel-global-prefix pel:for-c++         (kbd "<f11> SPC C"))
 (define-pel-global-prefix pel:for-c++-preproc (kbd "<f11> SPC C #"))
+(define-key               pel:for-c++         (kbd "<f1>") 'pel-cfg-pkg-c++)
 (pel--map-cc-for pel:for-c++ pel:for-c++-preproc)
 
 (pel--mode-hook-maybe-call
@@ -1496,6 +1548,7 @@ This is meant to be used in the d-mode hook lambda."
 
     ;; Configure commands avalable on the D key-map.
     (define-pel-global-prefix pel:for-d (kbd "<f11> SPC D"))
+    (define-key               pel:for-d (kbd "<f1>") 'pel-cfg-pkg-d)
     (pel--map-cc-for pel:for-d)
 
     ;; Configure auto-completion based on selection
@@ -1546,6 +1599,9 @@ This is meant to be used in the d-mode hook lambda."
      '(lambda ()
         (pel-local-set-f12 'pel:for-erlang))
      'erlang-mode 'erlang-mode-hook)
+
+    (define-key pel:for-erlang  (kbd "<f1>") 'pel-cfg-pkg-erlang)
+
     :config
     (setq erlang-root-dir (expand-file-name pel-erlang-rootdir))
     (setq exec-path (cons pel-erlang-exec-path exec-path))
@@ -1558,9 +1614,34 @@ This is meant to be used in the d-mode hook lambda."
         :pin melpa)
       (require 'edts-start))
     ;;
+    ;; TODO :  do not allow both flymake and flycheck for Emacs.
+    ;;         but put logic after some experimentation and tests.
     (when pel-use-erlang-flymake
-      ;; TODO: complete this
-        )))
+      ;; TODO: make it lazy
+      (require 'erlang-flymake)
+      (define-key pel:for-erlang   "F"         'flymake-mode)
+      (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
+      (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error))
+
+    (when pel-use-erlang-flycheck
+      (use-package flycheck
+        :ensure t
+        :pin melpa
+        :commands flycheck-mode
+        :init
+        (flycheck-define-checker erlang-otp
+          "An Erlang syntax checker using the Erlang interpreter."
+          :command ("erlc" "-o" temporary-directory "-Wall"
+                    "-I" "../include" "-I" "../../include"
+                    "-I" "../../../include" source)
+          :error-patterns
+          ((warning line-start (file-name) ":" line ": Warning:" (message) line-end)
+           (error line-start (file-name) ":" line ": " (message) line-end)))
+
+        (add-hook 'erlang-mode-hook
+                  (lambda ()
+                    (flycheck-select-checker 'erlang-otp)
+                    (flycheck-mode)))))))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` : LFE programming utilities
@@ -1584,6 +1665,7 @@ This is meant to be used in the d-mode hook lambda."
     :commands elixir-mode
     :init
     (define-pel-global-prefix pel:for-elixir (kbd "<f11> SPC x"))
+    (define-key               pel:for-elixir (kbd "<f1>") 'pel-cfg-pkg-elixir)
     ;;
     (pel--mode-hook-maybe-call
      '(lambda ()
@@ -1635,6 +1717,7 @@ This is meant to be used in the d-mode hook lambda."
                julia-snail-mode)
     :init
     (define-pel-global-prefix pel:for-julia (kbd "<f11> SPC j"))
+    (define-key               pel:for-julia (kbd "<f1>") 'pel-cfg-pkg-julia)
     ;;
     (pel--mode-hook-maybe-call
      '(lambda ()
@@ -1689,6 +1772,7 @@ This is meant to be used in the d-mode hook lambda."
 
 
 (define-pel-global-prefix pel:for-elisp (kbd "<f11> SPC l"))
+(define-key               pel:for-elisp (kbd "<f1>") 'pel-cfg-pkg-elisp)
 (pel--lispy-map-for pel:for-elisp)
 ;;
 (define-key pel:for-elisp   ")" #'check-parens)
@@ -1765,6 +1849,7 @@ This is meant to be used in the d-mode hook lambda."
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : (Common) Lisp programming
 (when pel-use-common-lisp
   (define-pel-global-prefix pel:for-lisp (kbd "<f11> SPC L"))
+  (define-key               pel:for-lisp (kbd "<f1>") 'pel-cfg-pkg-lisp)
   (pel--lispy-map-for pel:for-lisp)
   ;;
   (define-key pel:for-lisp    ")" #'check-parens)
@@ -1778,10 +1863,11 @@ This is meant to be used in the d-mode hook lambda."
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : Python programming utilities
 (when pel-use-python
   (define-pel-global-prefix pel:for-python (kbd "<f11> SPC p"))
-  (define-key pel:for-python    "."  'pel-find-thing-at-point)
-  (define-key pel:for-python    "(" #'show-paren-mode)
+  (define-key pel:for-python (kbd "<f1>") 'pel-cfg-pkg-python)
+  (define-key pel:for-python    "."       'pel-find-thing-at-point)
+  (define-key pel:for-python    "("      #'show-paren-mode)
   (when pel-use-rainbow-delimiters
-    (define-key pel:for-python  "R"  'rainbow-delimiters-mode))
+    (define-key pel:for-python  "R"       'rainbow-delimiters-mode))
   ;;
   (pel--mode-hook-maybe-call
    '(lambda ()
@@ -1797,6 +1883,7 @@ This is meant to be used in the d-mode hook lambda."
   (add-to-list 'auto-mode-alist '("\\.stxt\\'"  . rst-mode))
 
   (define-pel-global-prefix pel:for-reST (kbd "<f11> SPC r"))
+  (define-key pel:for-reST (kbd "<f1>") 'pel-cfg-pkg-reST)
   (define-key pel:for-reST "." 'pel-rst-makelink)
   (define-key pel:for-reST "g" 'pel-rst-goto-ref-bookmark)
   (define-key pel:for-reST "s" 'pel-rst-set-ref-bookmark)
@@ -2259,11 +2346,18 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
 ;;   - Meta f5/f62 in org-mode, since Meta up/down do something else.
 
 ;; scroll text up: toward small line number
-(global-set-key (kbd "<M-down>")  'pel-scroll-up)
-(global-set-key (kbd "<M-f5>")    'pel-scroll-up)
+(global-set-key (kbd "<M-down>")   'pel-scroll-up)
+(global-set-key (kbd "<M-f5>")     'pel-scroll-up)
+(global-set-key (kbd "<M-S-f5>")   'pel-scroll-up-other)
 ;; scroll text down: toward large line number
 (global-set-key (kbd "<M-up>")    'pel-scroll-down)
 (global-set-key (kbd "<M-f6>")    'pel-scroll-down)
+(global-set-key (kbd "<M-S-f6>")  'pel-scroll-down-other)
+;; and with the mouse in terminal mode
+(unless (display-graphic-p)
+  ;; activate mouse-based scrolling
+  (global-set-key (kbd "<mouse-4>") 'pel-scroll-up)
+  (global-set-key (kbd "<mouse-5>") 'pel-scroll-down))
 
 (define-pel-global-prefix pel:scroll (kbd "<f11> |"))
 ;;
@@ -3169,90 +3263,6 @@ the ones defined from the buffer now."
 (define-key pel:underline "8" 'pel-commented-adorn-8)
 (define-key pel:underline "9" 'pel-commented-adorn-9)
 (define-key pel:underline "0" 'pel-commented-adorn-10)
-
-;; -----------------------------------------------------------------------------
-;; - Function Keys <M-f11> - Customization
-;;
-
-;; -- Macros
-;; To have a name show up in which-key 'menu', a named function is required,
-;; otherwise all we see is 'prefix' which is not meaningful.
-;; The macros help simplify/reduce the lines of code used to create the
-;; key bindings for PEL configuration.
-;;
-
-(defun pel-prefixed (str &optional prefix)
-  "Return the STR string prefixed with PREFIX (or space) if not empty.
-Pass empty string unchanged."
-  (if (string= str "")
-      ""
-    (format "%s%s"
-            (or prefix " ")
-            str)))
-
-(defmacro pel--cfg (pel-group prefix key)
-  "Define a function and key binding to customize specified PEL-GROUP mapped to PREFIX KEY."
-  (let ((fct (intern (format "pel-cfg%s" (pel-prefixed pel-group "-"))))
-        (group (intern (format "pel%s" (pel-prefixed pel-group "-"))))
-        (docstring (format "Customize PEL%s support.\n\
-If OTHER-WINDOW is non-nil (use \\[universal-argument]), \
-display in other window." (pel-prefixed
-                           (capitalize pel-group)))))
-    `(progn
-       ;; first declare the function
-       (defun ,fct (&optional other-window)
-         ,docstring
-         (interactive "P")
-         (customize-group (quote ,group) other-window))
-       ;; then define the global key
-       (define-key ,prefix ,key (quote ,fct)))))
-
-(defmacro pel--cfg-pkg (pel-group prefix key)
-  "Define a function and key binding to customize specified PEL-GROUP mapped to PREFIX KEY."
-  (let ((fct (intern (format "pel-cfg-pkg-%s" pel-group)))
-        (group (intern (format "pel-pkg-for-%s" pel-group)))
-        (docstring (format "Customize PEL %s support.\n\
-If OTHER-WINDOW is non-nil (use \\[universal-argument]), \
-display in other window."
-                           (capitalize pel-group))))
-    `(progn
-       ;; first declare the function
-       (defun ,fct (&optional other-window)
-         ,docstring
-         (interactive "P")
-         (customize-group (quote ,group) other-window))
-       ;; then define the global key
-       (define-key ,prefix ,key (quote ,fct)))))
-
-;; -- Key bindings
-;; Set up the key prefixes.
-(define-pel-global-prefix pel:cfg (kbd "<M-f11>"))
-(define-key pel:cfg "E"     'customize)
-(define-key pel:cfg "G"     'customize-group)
-(define-key pel:cfg "O"     'customize-option)
-;;
-(pel--cfg ""  pel:cfg "!")
-(pel--cfg "identification"  pel:cfg "i")
-(pel--cfg-pkg "grep"        pel:cfg "g")
-(pel--cfg-pkg "window"      pel:cfg "w")
-(pel--cfg-pkg "session"     pel:cfg "s")
-(pel--cfg-pkg "speedbar"    pel:cfg "S")
-
-
-(define-pel-global-prefix pel:cfg-pl (kbd "<M-f11> SPC"))
-;;
-(pel--cfg-pkg "applescript"  pel:cfg-pl "a")
-(pel--cfg-pkg "c"            pel:cfg-pl "c")
-(pel--cfg-pkg "c++"          pel:cfg-pl "C")
-(pel--cfg-pkg "d"            pel:cfg-pl "D")
-(pel--cfg-pkg "elisp"        pel:cfg-pl "l")
-(pel--cfg-pkg "elixir"       pel:cfg-pl "x")
-(pel--cfg-pkg "erlang"       pel:cfg-pl "e")
-(pel--cfg-pkg "graphviz-dot" pel:cfg-pl "g")
-(pel--cfg-pkg "julia"        pel:cfg-pl "j")
-(pel--cfg-pkg "lisp"         pel:cfg-pl "L")
-(pel--cfg-pkg "python"       pel:cfg-pl "p")
-(pel--cfg-pkg "reST"         pel:cfg-pl "r")
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel_keys)

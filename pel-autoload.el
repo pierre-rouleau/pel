@@ -278,11 +278,14 @@
       (autoload fct "pel-rst")))
 
   ;; pel-scroll
-  (autoload 'pel-toggle-scroll-sync              "pel-scroll")
-  (autoload 'pel-add-window-to-scroll-sync       "pel-scroll")
-  (autoload 'pel-remove-window-from-scroll-sync  "pel-scroll")
-  (autoload 'pel-scroll-up                       "pel-scroll")
-  (autoload 'pel-scroll-down                     "pel-scroll")
+  (dolist (fct '(pel-toggle-scroll-sync
+                 pel-add-window-to-scroll-sync
+                 pel-remove-window-from-scroll-sync
+                 pel-scroll-up
+                 pel-scroll-down
+                 pel-scroll-down-other
+                 pel-scroll-up-other))
+    (autoload fct "pel-scroll"))
 
   ;; pel-search
   (autoload 'pel-toggle-case-fold-search   "pel-search")

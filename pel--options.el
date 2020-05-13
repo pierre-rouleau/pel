@@ -912,6 +912,15 @@ by the pel-use-d-ac-dcd."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-erlang-flycheck nil
+  "Control whether PEL uses flycheck for Erlang when `pel-use-erlang' is t.
+If pel-use-erlang-flymake is t, pel-use-erlang-flycheck is ignored:
+ie. priority is given to flymake because it is part of Emacs."
+  :group 'pel-pkg-for-erlang
+  :type 'boolean
+  :safe #'booleanp)
+
+
 (defcustom pel-use-edts nil
   "Control whether PEL uses EDTS when `pel-use-erlang' is t.
 EDTS := Erlang Development Tool Suite."

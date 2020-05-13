@@ -32,6 +32,12 @@
 ;; - `pel-scroll-up' which scrolls text up,
 ;; - `pel-scroll-down' which scrolls text down.
 ;;
+;; The following commands scrool the 'other' window by one line (but do not
+;; support the PEL window scroll group):
+;;
+;;  - `pel-scroll-up-other'
+;;  - `pel-scroll-down-other'
+;;
 ;; The file also provides the creation and management of a group of
 ;; windows into the *PEL window scroll sync* group, a list stored inside
 ;; the `pel-in-scroll-sync' variable identifying windows that will be
@@ -62,6 +68,10 @@
 
 
 ;;; Code:
+
+;; Uses scroll-other-window and scroll-other-window-down from window.el, which is
+;; part of Emacs but taht file does not 'provide' itself, so the code does not
+;; 'require' it.
 
 (defvar pel-in-scroll-sync nil  "If non-nil, hold a list of windows to scroll.")
 
@@ -157,6 +167,32 @@ If N is negative it means the other direction."
            (and pel-in-scroll-sync
                 (pel-scroll-up-all-insync :all n)))
           (scroll-up n)))))
+
+;; --
+
+;;-pel-autoload
+(defun pel-scroll-down-other (&optional n)
+  "Scroll the other window 1 line: move text down (same direction as backward).
+Scrolling down is bringing text below into view.
+If N is specified it identifies a repetition count.
+If N is negative it means the other direction."
+  (interactive "p")
+  ;; flip the meaning of n and call scroll-other-window-down with it:
+  ;; nil -> 1
+  ;; x   -> x
+  (scroll-other-window-down (or n 1)))
+
+;;-pel-autoload
+(defun pel-scroll-up-other (&optional n)
+  "Scroll the other window 1 line: move text up (same direction as forward).
+Scrolling up is bringing text ahead into view.
+If N is specified it identifies a repetition count.
+If N is negative it means the other direction."
+  (interactive "p")
+  ;; flip the meaning of n and call scroll-other-window with it:
+  ;; nil -> 1
+  ;; x   -> x
+  (scroll-other-window (or n 1)))
 
 ;; --
 
