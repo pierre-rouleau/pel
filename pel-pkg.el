@@ -69,7 +69,8 @@
     (sr-speedbar         "20161025.831")  ; melpa. Melpa-stable: 20140914.2339
     (undo-tree           "0.7.4")         ; gnu
     (vterm               "20200418.1610")
-    (which-key           "20200216.1350")); melpa. Melpa-table : 3.4.0
+    (which-key           "20200216.1350") ; melpa. Melpa-table : 3.4.0
+    (ztree               "20191108.2234")); melpa.
 
   :url "https://github.com/pierre-rouleau/pel"
   :authors '(("Pierre Rouleau" . "prouleau001@gmail.com")))

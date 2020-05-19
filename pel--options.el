@@ -37,6 +37,8 @@
 ;;   - pel-kbmacro
 ;;   - pel-text-insert
 ;;   - pel-package-use
+;;     - pel-pkg-for-filemng
+;;       - pel-pkg-for-ztree
 ;;     - pel-pkg-for-grep
 ;;     - pel-pkg-for-window
 ;;       - pel-pkg-for-speedbar
@@ -150,6 +152,46 @@
 (defgroup pel-package-use nil
   "List of external packages that can be used by PEL."
   :group 'pel)
+
+;; -----------------------------------------------------------------------------
+(defgroup pel-pkg-for-filemng nil
+  "List of external packages that can be used to manage file/directory."
+  :group 'pel-package-use)
+
+(defgroup pel-pkg-for-ztree nil
+  "PEL extra configuration for ztree packages."
+    :group 'pel-pkg-for-filemng)
+
+(defcustom pel-use-ztree nil
+  "Control whether the ztree package is used."
+  :group 'pel-pkg-for-ztree
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-ztree-dir-move-focus nil
+  "Defines if move focus to opened window on hard-action command on a file.
+Hard actions like RETURN.
+PEL set ztree-dir-move-focus with this value."
+  :group 'pel-pkg-for-ztree
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-ztree-dir-filter-list nil
+  "List of regexp file names to filter out.
+
+For example, if you want to ignore the pyc files, and the elc files use the
+following list of regexp: (\"^.*\\.pyc\" \"^.*\\.elc\").
+
+This list is prepended to the ztree-dir-filter-list,
+a non-customizable variable."
+  :group 'pel-pkg-for-ztree
+  :type '(repeat string))
+
+(defcustom pel-ztree-dir-show-filtered-files nil
+  "Show or not files from the filtered list."
+  :group 'pel-pkg-for-ztree
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; -----------------------------------------------------------------------------
 (defgroup pel-pkg-for-grep nil

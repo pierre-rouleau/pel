@@ -1256,6 +1256,7 @@ display in other window."
 ;;
 (pel--cfg ""  pel:cfg "!")
 (pel--cfg "identification"  pel:cfg "i")
+(pel--cfg-pkg "filemng"     pel:cfg "f")
 (pel--cfg-pkg "grep"        pel:cfg "g")
 (pel--cfg-pkg "window"      pel:cfg "w")
 (pel--cfg-pkg "session"     pel:cfg "s")
@@ -1593,6 +1594,17 @@ This is meant to be used in the d-mode hook lambda."
     :ensure t
     :pin melpa
     :commands erlang-mode
+    :mode (("\\.erl?$"             . erlang-mode)
+           ("\\.hrl?$"             . erlang-mode)
+           ("rebar\\.config$"      . erlang-mode)
+           ("relx\\.config$"       . erlang-mode)
+           ("sys\\.config\\.src$"  . erlang-mode)
+           ("sys\\.config$"        . erlang-mode)
+           ("\\.config\\.src?$"    . erlang-mode)
+           ("\\.config\\.script?$" . erlang-mode)
+           ("\\.app?$"             . erlang-mode)
+           ("\\.app.src?$"         . erlang-mode)
+           ("\\Emakefile"          . erlang-mode))
 
     :init
     (pel--mode-hook-maybe-call
@@ -2509,6 +2521,33 @@ the ones defined from the buffer now."
 (define-key pel:diff "k"  'diff-backup)
 (define-key pel:diff "w"  'compare-windows)
 
+(when pel-use-ztree
+  ;; The ztree package does nothing but requiring ztree-dir and ztree-diff
+  ;; It's the loading of those 2 that we need to trigger on to set the PEL
+  ;; customization into the corresponding ztree variables.
+  (use-package ztree-dir
+    :ensure ztree
+    :pin melpa
+    :commands ztree-dir
+    :init
+    (define-key pel:     "T" 'ztree-dir)
+    :config
+    (setq roup-was-here 22)
+    (setq ztree-dir-move-focus pel-ztree-dir-move-focus)
+    (when pel-ztree-dir-filter-list
+      (setq-default ztree-dir-filter-list
+                    (append pel-ztree-dir-filter-list ztree-dir-filter-list)))
+      (setq-default ztree-dir-show-filtered-files
+                    pel-ztree-dir-show-filtered-files))
+  ;;
+  (use-package ztree-diff
+    :ensure ztree
+    :pin melpa
+    :commands ztree-diff
+    :init
+    (setq roup-was-there 33)
+    (define-key pel:diff "t" 'ztree-diff)))
+
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> d e`` : ediff commands
 (define-pel-global-prefix pel:ediff (kbd "<f11> d e"))
@@ -2814,6 +2853,11 @@ the ones defined from the buffer now."
   ;; (define-key pel:speedbar "e"  #'speedbar-toggle-etags)
   (when (display-graphic-p)
     (define-key pel:speedbar "i" 'pel-speedbar-toggle-images)))
+
+;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> -        ``<f11> T`` : Directory Tree
+;; The <f11> T key is assigned to ztree-dir when pel-use-ztree is t.
+;; See the code above.
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> t`` : Text control commands

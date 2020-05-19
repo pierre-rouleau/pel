@@ -3849,6 +3849,7 @@ undo-tree_                    ELPA_
 vline_                        Emacsmirror_
 vterm_                        MELPA_
 which-key_                    MELPA_
+ztree_                        MELPA_
 ============================= ==========================
 
 
@@ -3925,6 +3926,7 @@ Hopefully some people will find PEL useful to them.
 .. _framemove:                 https://www.emacswiki.org/emacs/FrameMove
 .. _vline:                     https://www.emacswiki.org/emacs/VlineMode
 .. _vterm:                     https://melpa.org/#/vterm
+.. _ztree:                     https://melpa.org/#/ztree
 .. _Emacsmirror:               https://github.com/emacsmirror
 
 Also, note that several ideas came from various blogs and discussion on the web.
