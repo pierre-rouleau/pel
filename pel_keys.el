@@ -1259,8 +1259,9 @@ display in other window."
 (pel--cfg-pkg "filemng"     pel:cfg "f")
 (pel--cfg-pkg "grep"        pel:cfg "g")
 (pel--cfg-pkg "window"      pel:cfg "w")
-(pel--cfg-pkg "session"     pel:cfg "s")
-(pel--cfg-pkg "speedbar"    pel:cfg "S")
+(pel--cfg-pkg "search"      pel:cfg "s")
+(pel--cfg-pkg "session"     pel:cfg "S")
+(pel--cfg-pkg "speedbar"    pel:cfg (kbd "M-s"))
 
 
 (define-pel-global-prefix pel:cfg-pl (kbd "<f11> <f1> SPC"))
@@ -2521,6 +2522,14 @@ the ones defined from the buffer now."
 (define-key pel:diff "k"  'diff-backup)
 (define-key pel:diff "w"  'compare-windows)
 
+(when pel-use-neotree
+  (use-package neotree
+    :ensure t
+    :pin melpa
+    :commands neotree-toggle
+    :init
+    (define-key pel:  "N" 'neotree-toggle)))
+
 (when pel-use-ztree
   ;; The ztree package does nothing but requiring ztree-dir and ztree-diff
   ;; It's the loading of those 2 that we need to trigger on to set the PEL
@@ -2530,9 +2539,8 @@ the ones defined from the buffer now."
     :pin melpa
     :commands ztree-dir
     :init
-    (define-key pel:     "T" 'ztree-dir)
+    (define-key pel:     "Z" 'ztree-dir)
     :config
-    (setq roup-was-here 22)
     (setq ztree-dir-move-focus pel-ztree-dir-move-focus)
     (when pel-ztree-dir-filter-list
       (setq-default ztree-dir-filter-list
@@ -2545,8 +2553,7 @@ the ones defined from the buffer now."
     :pin melpa
     :commands ztree-diff
     :init
-    (setq roup-was-there 33)
-    (define-key pel:diff "t" 'ztree-diff)))
+    (define-key pel:diff "z" 'ztree-diff)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> d e`` : ediff commands
@@ -2804,6 +2811,14 @@ the ones defined from the buffer now."
 (define-key pel:search-replace "O" #'multi-occur-in-matching-buffers)
 (define-key pel:search-replace "r" #'replace-string)
 
+(when pel-use-swiper
+  (use-package swiper
+    :ensure t
+    :pin melpa
+    :commands swiper
+    :init
+    (define-key pel:search-replace "s" 'swiper)))
+
 (define-pel-global-prefix pel:search-word (kbd "<f11> s w"))
 (define-key pel:search-word "f"  #'word-search-forward)
 (define-key pel:search-word "F"  #'word-search-forward-lax)
@@ -2933,7 +2948,7 @@ the ones defined from the buffer now."
 ;;       (overwrite-mode)
 ;;       (message "Toggled overwrite in text mode".))))
 
-;; -----------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> t a``: Text align
 
 (define-pel-global-prefix pel:align (kbd "<f11> t a"))
@@ -2948,7 +2963,7 @@ the ones defined from the buffer now."
 ;; Use M-x ar to align a region with a regular expression.
 (defalias 'ar #'align-regexp)
 
-;; -----------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> t f``: Text fill
 ;;
 (define-pel-global-prefix pel:fill (kbd "<f11> t f"))
@@ -2964,7 +2979,7 @@ the ones defined from the buffer now."
 (define-key pel:fill "r"   #'fill-region)
 (define-key pel:fill "R"   #'fill-region-as-paragraph)
 
-;; -----------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> t j``: Text justification
 ;;
 (define-pel-global-prefix pel:justification (kbd "<f11> t j"))
@@ -2974,7 +2989,7 @@ the ones defined from the buffer now."
 (define-key pel:justification "n" #'set-justification-none)
 (define-key pel:justification "r" #'set-justification-right)
 
-;; -----------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> t m``: Text word modes
 ;;
 (define-pel-global-prefix pel:textmodes (kbd "<f11> t m"))
@@ -2987,7 +3002,7 @@ the ones defined from the buffer now."
 (define-key pel:textmodes "s"  'pel-toggle-sentence-end)
 (define-key pel:textmodes "v" #'visible-mode)
 
-;; -----------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Function Keys - <f11> - Prefix ``<f11> t t``: Text transpose commands
 ;;
 (define-pel-global-prefix pel:text-transpose (kbd "<f11> t t"))
@@ -3000,7 +3015,7 @@ the ones defined from the buffer now."
 ;; TODO: pel-transpose-functions, pel-transpose-classes,
 ;;       pel-transpose-statements, pel-transpose-clauses
 
-;; -----------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> t w`` : Text whitespace commands
 ;;
 (define-pel-global-prefix pel:text-whitespace (kbd "<f11> t w"))

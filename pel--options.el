@@ -40,6 +40,7 @@
 ;;     - pel-pkg-for-filemng
 ;;       - pel-pkg-for-ztree
 ;;     - pel-pkg-for-grep
+;;     - pel-pkg-for-search
 ;;     - pel-pkg-for-window
 ;;       - pel-pkg-for-speedbar
 ;;       - pel-pkg-for-session
@@ -158,6 +159,13 @@
   "List of external packages that can be used to manage file/directory."
   :group 'pel-package-use)
 
+(defcustom pel-use-neotree nil
+  "Control whether PEL uses the Emacs NeoTree search package.
+See: https://github.com/jaypei/emacs-neotree"
+  :group 'pel-pkg-for-filemng
+  :type 'boolean
+  :safe #'booleanp)
+
 (defgroup pel-pkg-for-ztree nil
   "PEL extra configuration for ztree packages."
     :group 'pel-pkg-for-filemng)
@@ -207,6 +215,18 @@ References:
 - ripgrep: URL `https://github.com/BurntSushi/ripgrep'
 - ripgrep support package: rg: URL `https://melpa.org/#/rg'"
   :group 'pel-pkg-for-grep
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+(defgroup pel-pkg-for-search nil
+  "List of external packages that PEL can use for searching text."
+  :group 'pel-package-use)
+
+(defcustom pel-use-swiper nil
+  "Control whether PEL uses the Swiper search package.
+See: https://github.com/abo-abo/swiper#swiper"
+  :group 'pel-pkg-for-search
   :type 'boolean
   :safe #'booleanp)
 
