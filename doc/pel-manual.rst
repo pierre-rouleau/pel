@@ -3833,6 +3833,7 @@ lice_                         MELPA_
 macrostep_                    MELPA_
 Magit_                        MELPA_
 Monky_                        MELPA_
+neotree_                      MELPA_
 nhexl-mode_                   ELPA_
 parinfer_                     MELPA_
 popup_                        MELPA-STABLE_
@@ -3844,6 +3845,7 @@ rust-mode_                    MELPA_
 slime_                        MELPA_
 smooth-scrolling_             MELPA_
 sr-speedbar_                  MELPA_
+swiper_                       MELPA_
 undo-tree_                    ELPA_
 `use-package`_                MELPA_
 vline_                        Emacsmirror_
@@ -3906,6 +3908,7 @@ Hopefully some people will find PEL useful to them.
 .. _lfe-mode:                  https://melpa.org/#/lfe-mode
 .. _lice:                      https://melpa.org/#/lice
 .. _macrostep:                 https://melpa.org/#/macrostep
+.. _neotree:                   https://melpa.org/#/neotree
 .. _nhexl-mode:                https://elpa.gnu.org/packages/nhexl-mode.html
 .. _package-lint:              https://melpa.org/#/package-lint
 .. _parinfer:                  https://melpa.org/#/parinfer
@@ -3919,6 +3922,7 @@ Hopefully some people will find PEL useful to them.
 .. _slime package:             https://melpa.org/#/slime
 .. _smooth-scrolling:          https://melpa.org/#/smooth-scrolling
 .. _sr-speedbar:               https://melpa.org/#/sr-speedbar
+.. _swiper:                    https://melpa.org/#/swiper
 .. _undo-tree:                 https://elpa.gnu.org/packages/undo-tree.html
 .. _which-key:                 https://elpa.gnu.org/packages/which-key.html
 .. _SBCL:                      https://en.wikipedia.org/wiki/Steel_Bank_Common_Lisp

@@ -230,6 +230,12 @@ See: https://github.com/abo-abo/swiper#swiper"
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-search-with-swiper nil
+  "C-s searches with swiper if set to t, otherwise use isearch-forward."
+  :group 'pel-pkg-for-search
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; -----------------------------------------------------------------------------
 ;; Windows Management
 ;; ------------------

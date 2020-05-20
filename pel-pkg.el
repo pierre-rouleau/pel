@@ -54,6 +54,7 @@
     (macrostep           "20161120.2106") ; melpa. Melpa-stable: 0.9
     (magit               "20200408.2341") ; melpa. Melpa-stable: 2.90.1
     (monky               "20190619.1637") ; melpa. Melpa-stable: 0.1 (old)
+    (neotree             "20200324.1946") ; melpa.
     (nhexl-mode          "1.4")           ; gnu
     (parinfer            "20180904.844")  ; melpa. Melpa-stable: 0.4.10
     (popup               "0.5.3")         ; melpa-stable. Melpa: 20160709.1429
@@ -67,6 +68,7 @@
     ;; sr-speedbar of 2014 has a bug that was fixed
     ;; in the 2016 version.
     (sr-speedbar         "20161025.831")  ; melpa. Melpa-stable: 20140914.2339
+    (swiper              "20200503.1102") ; melpa.
     (undo-tree           "0.7.4")         ; gnu
     (vterm               "20200418.1610")
     (which-key           "20200216.1350") ; melpa. Melpa-table : 3.4.0

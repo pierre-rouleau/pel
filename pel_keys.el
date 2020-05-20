@@ -45,6 +45,7 @@
   (require 'cl-lib))    ; use: cl-eval-when
 (require 'pel--base)    ; use pel-system-is-macos-p
 ;;                      ;     pel-system-is-windows-p
+;;                      ;     pel-toggle
 ;;                      ;     pel-mode-toggle-arg
 (require 'pel--options) ; all `pel-use-...' variables identify what to use.
 ;;                      ; also defines a set of utility functions to deal with
@@ -2811,13 +2812,7 @@ the ones defined from the buffer now."
 (define-key pel:search-replace "O" #'multi-occur-in-matching-buffers)
 (define-key pel:search-replace "r" #'replace-string)
 
-(when pel-use-swiper
-  (use-package swiper
-    :ensure t
-    :pin melpa
-    :commands swiper
-    :init
-    (define-key pel:search-replace "s" 'swiper)))
+
 
 (define-pel-global-prefix pel:search-word (kbd "<f11> s w"))
 (define-key pel:search-word "f"  #'word-search-forward)
@@ -2831,6 +2826,40 @@ the ones defined from the buffer now."
 (define-key pel:search-mode "f"   'pel-toggle-case-fold-search)
 (define-key pel:search-mode "u"   'pel-toggle-search-upper-case)
 (define-key pel:search-mode "l"  #'isearch-toggle-lax-whitespace)
+
+(defvar pel--search-with-swiper nil
+  "Search with swiper if t, with isearch-forward otherwise.")
+
+(when pel-use-swiper
+  ;; When Swiper is available, ``<f11> s s`` key maps to pel-switch-search-cmd
+  ;; It allows the user to toggle from using isearch-forward to swiper with C-s.
+  ;; The default mapping depends on pel-serach-with-swiper user option.
+  (use-package swiper
+    :ensure t
+    :pin melpa
+    :commands swiper
+    :init
+    (defun pel--search-with (use-swiper)
+      "Set swiper as the search if USE-SWIPER is t, otherwise set isearch-forward."
+      (if use-swiper
+          (global-set-key "\C-s" 'swiper)
+        (global-set-key "\C-s" 'isearch-forward)))
+
+    (defun pel-switch-search-cmd ()
+      "Switch search functions assigned to C-s.
+By default C-s is mapped to `isearch-forward' unless
+the user options pel-use-swiper and pel-search-with-swiper are both t,
+in which cases C-s is mapped to `swiper'."
+      (interactive)
+      (pel--search-with (pel-toggle 'pel--search-with-swiper))
+      (message "C-s now search with %s" (if pel--search-with-swiper
+                                            "swiper"
+                                          "isearch-forward")))
+    ;;
+    (define-key pel:search-replace "s" 'pel-switch-search-cmd)
+    (pel--search-with (setq pel--search-with-swiper
+                            pel-search-with-swiper))))
+
 
 (defun pel-reb-re-syntax ()
   "Customize reb-re-syntax."
