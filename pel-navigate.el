@@ -542,6 +542,23 @@ same location by moving backwards."
       (end-of-defun)
       (beginning-of-defun))))
 
+;;-pel-autoload
+(defun pel-end-of-previous-defun ()
+  "Move backwards to the end of the previous function definition."
+  (interactive "^")
+  (let ((starting-point (point)))
+    ;; if point is outside of a function/defun definition block
+    ;; moving backward to the beginning and then forward to the end
+    ;; goes to a location that is before current point and it's OK.
+    (beginning-of-defun)
+    (end-of-defun)
+    ;; However, if point was inside one function, we end up after the
+    ;; location of the original point and must go back twice and then to the end.
+    (when (>= (point) starting-point)
+      (beginning-of-defun)
+      (beginning-of-defun)
+      (end-of-defun))))
+
 ;; -----------------------------------------------------------------------------
 (provide 'pel-navigate)
 

@@ -193,23 +193,25 @@
   (autoload 'pel-exchange-point-and-mark-no-activate  "pel-mark")
 
   ;; pel-navigate
-  (autoload 'pel-beginning-of-line            "pel-navigate")
-  (autoload 'pel-end-of-line                  "pel-navigate")
-  (autoload 'pel-newline-and-indent-below     "pel-navigate")
-  (autoload 'pel-find-thing-at-point          "pel-navigate")
-  (autoload 'pel-show-char-syntax             "pel-navigate")
-  (autoload 'pel-forward-token-start          "pel-navigate")
-  (autoload 'pel-backward-token-start         "pel-navigate")
-  (autoload 'pel-forward-word-start           "pel-navigate")
-  (autoload 'pel-forward-wspace-start         "pel-navigate")
-  (autoload 'pel-backward-wspace-start        "pel-navigate")
-  (autoload 'pel-forward-syntaxchange-start   "pel-navigate")
-  (autoload 'pel-backward-syntaxchange-start  "pel-navigate")
-  (autoload 'pel-next-visible                 "pel-navigate")
-  (autoload 'pel-previous-visible             "pel-navigate")
-  (autoload 'pel-home                         "pel-navigate")
-  (autoload 'pel-end                          "pel-navigate")
-  (autoload 'pel-beginning-of-next-defun      "pel-navigate")
+  (dolist (fct '(pel-beginning-of-line
+                 pel-end-of-line
+                 pel-newline-and-indent-below
+                 pel-find-thing-at-point
+                 pel-show-char-syntax
+                 pel-forward-token-start
+                 pel-backward-token-start
+                 pel-forward-word-start
+                 pel-forward-wspace-start
+                 pel-backward-wspace-start
+                 pel-forward-syntaxchange-start
+                 pel-backward-syntaxchange-start
+                 pel-next-visible
+                 pel-previous-visible
+                 pel-home
+                 pel-end
+                 pel-beginning-of-next-defun
+                 pel-end-of-previous-defun))
+    (autoload fct "pel-navigate"))
 
   ;; pel-numkpad
   (autoload 'pel-toggle-mac-numlock  "pel-numkpad")

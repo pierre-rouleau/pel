@@ -1001,8 +1001,12 @@ For example, applied to a directory name, macOS Finder is used."
 
 ;; Move to the beginning of next function definition (while moving forward)
 ;;  complements C-M-e and C-M-a
-(define-key pel:f6 "n"           'pel-beginning-of-next-defun)
-(define-key pel:f6 "p"           'beginning-of-defun)
+(define-key pel:f6 "n"            'pel-beginning-of-next-defun)
+(define-key pel:f6 (kbd "<down>") 'pel-beginning-of-next-defun)
+(define-key pel:f6 "p"            'beginning-of-defun)
+(define-key pel:f6 (kbd "<up>")   'beginning-of-defun)
+(define-key pel:f6 (kbd "<left>") 'pel-end-of-previous-defun)
+(define-key pel:f6 (kbd "<right>")'end-of-defun)
 
 ;; (kbd "<tab>") does not work in terminal mode, it works only in graphics mode
 (define-key pel:f6 (kbd "C-i")       'pel-insert-c-indent)
