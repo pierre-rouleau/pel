@@ -155,6 +155,47 @@ Used twice returns to the same buffer."
   (set-window-dedicated-p (selected-window) (not (window-dedicated-p)))
   (pel-show-window-dedicated-status))
 
+(defun pel-count-non-dedicated-windows ()
+  "Count and return the number of non-dedicated windows in the current frame.
+Exclude the minibuffer."
+  (length (delq t (mapcar #'window-dedicated-p
+                          (window-list nil :exclude-minibuf)))))
+
+;; -----------------------------------------------------------------------------
+;; Window Direction Argument processing Utility
+;; --------------------------------------------
+
+(defun pel-window-direction-for (n)
+  "Return the direction of the target window indentified by N.
+Window selection:
+- If N is negative:    : return 'new
+- If N is 0:           : return 'other
+- If N is nil or 1 select the window according to the number of non-dedicated
+  and non-minibuffer windows in the current frame:
+   - 1 window  in frame: return 'new
+   - 2 windows in frame: return 'other
+   - 3 or more windows : return 'down
+- If N in [2,8] range, return the direction corresponding to the
+  cursor in a numeric keypad:
+  -             8 := 'up
+  - 4 := 'left  5 := 'current  6 := 'right
+  -             2 := 'down
+- If N is 9 or larger, return: 'down"
+  (let* ((nwindows (pel-count-non-dedicated-windows))
+         (default-direction (cond ((eq nwindows 2) 'other)
+                                  ((eq nwindows 1) 'new)
+                                  (t 'down)))
+         (direction (cond
+                     ;; ((eq 2 n) 'down)
+                     ((eq 8 n) 'up)
+                     ((eq 4 n) 'left)
+                     ((eq 6 n) 'right)
+                     ((eq 5 n) 'current)
+                     ((eq 0 n) 'other)
+                     ((< n 0)  'new)
+                     (t default-direction))))
+    direction))
+
 ;; -----------------------------------------------------------------------------
 ;; Create new Window
 ;; -----------------

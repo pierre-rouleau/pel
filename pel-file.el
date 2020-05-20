@@ -52,6 +52,7 @@
 (require 'pel--base)                    ; use: pel-val-or-default,
                                         ;      pel-goto-position,
                                         ;      pel-system-is-windows-p
+(require 'pel-window)                   ; use pel-window-direction-for
 
 (eval-when-compile
   (require 'subr-x))           ; use: inlined: string-trim
@@ -327,8 +328,8 @@ Return one of:
   -             2 := 'down
   - 0 := 'other
   - negative:= 'new
-- Selecting the minibuffer window or a non-existing window is
-  considered an error, identified by a user error.
+- Explicitly selecting the minibuffer window, a dedicated window
+  or a non-existing window is considered an error, identified by a user error.
 .
 *File/URL selection at point:*
 If the string starts with `http:/' or `https:/' it is
@@ -387,27 +388,13 @@ the function prints an error message and quits.
   ;; - if there is only 1 window:  use 'current
   ;; - if there is only 2 windows: use 'other
   ;; - otherwise: use 'down
-  (let* ((n (prefix-numeric-value n))
-         (nwindows (count-windows))
-         (default-direction (cond ((eq nwindows 2) 'other)
-                                  ((eq nwindows 1) 'new)
-                                  (t 'down)))
-         (direction (cond;((eq 2 n) 'down)
-                     ((eq 8 n) 'up)
-                     ((eq 4 n) 'left)
-                     ((eq 6 n) 'right)
-                     ((eq 5 n) 'current)
-                     ((eq 0 n) 'other)
-                     ((< n 0)  'new)
-                     (t default-direction))))
+  (let ((direction (pel-window-direction-for (prefix-numeric-value n))))
     (unless (pel-find-file-at-point direction nil)
-      (if (and (require 'pel-window nil :no-error)
-               (fboundp 'pel-window-valid-for-editing-p))
-          (if (pel-window-valid-for-editing-p direction)
-              (message "User cancelled: nothing opened")
-            (user-error
-             "No valid window %s of current one: nothing opened" direction))
-        (error "File pel-window is not loaded")))))
+      (if (pel-window-valid-for-editing-p direction)
+          (message "User cancelled: nothing opened")
+        (user-error
+         "No valid window identofied by direction %s: nothing opened" direction))
+      (error "File pel-window is not loaded"))))
 
 ;; --
 

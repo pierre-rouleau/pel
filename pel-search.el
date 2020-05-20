@@ -31,6 +31,8 @@
 (require 'isearch)   ; use: search-upper-case.
 ;;                   ; isearch is part of standard Emacs distribution and is
 ;;                   ; loaded even by emacs -Q (in emacs 26).
+(require 'pel-read)  ; use: pel-word-at-point
+(require 'pel-window); use pel-window-direction-for
 
 ;;; Code:
 
@@ -95,6 +97,49 @@ Depends on 2 Emacs (base system) variables:
   "Describe the search case handling behaviour in the mini-buffer."
   (interactive)
   (message (pel-search-case-state)))
+
+;; --
+
+;;-pel-autoload
+(defun pel-search-word-from-top (&optional n)
+  "Search word at point from the top of buffer in window identified by N.
+
+- If N is negative:    : search in current window
+- If N is 0:           : search in other window
+- If N is nil or 1 select the window according to the number of non-dedicated
+  and non-minibuffer windows in the current frame:
+   - 1 window  in frame: search in current window
+   - 2 windows in frame: search in other window
+   - 3 or more windows : search in window below
+- If N in [2,8] range, search in window identified by the direction
+  corresponding to the cursor in a numeric keypad:
+  -             8 := 'up
+  - 4 := 'left  5 := 'current  6 := 'right
+  -             2 := 'down
+- If N is 9 or larger: search in window below.
+
+Explicitly selecting the minibuffer window, or a non-existing window is not
+allowed, and search is done in current window.
+
+Searched word is remembered and can be used again to repeat an interactive
+search with \\[isearch-forward] or \\[isearch-backward].
+Position before searched word is pushed on the mark ring.
+"
+  (interactive "P")
+  ;; select direction from numerical argument.
+  ;; If there are no argument, select the direction like this:
+  ;; - if there is only 1 window:  use 'current
+  ;; - if there is only 2 windows: use 'other
+  ;; - otherwise: use 'down
+  (push-mark)
+  (let ((direction (pel-window-direction-for (prefix-numeric-value n)))
+        (searched-word (pel-word-at-point)))
+    (when (eq direction 'new)
+      (setq direction 'current))
+    (pel-window-select direction)
+    (goto-char (point-min))
+    (isearch-forward nil :no-recursive-edit)
+    (isearch-yank-string searched-word)))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-search)

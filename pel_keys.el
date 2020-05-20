@@ -2644,6 +2644,7 @@ the ones defined from the buffer now."
 (define-key pel:file "o" #'find-file-other-window)
 (define-key pel:file "t" #'time-stamp)
 (define-key pel:file "w" #'write-region)
+(define-key pel:file "."  'pel-find-file-at-point-in-window)
 
 (define-pel-global-prefix pel:file-revert (kbd "<f11> f r"))
 (define-key pel:file-revert "a" #'auto-revert-mode)
@@ -2810,6 +2811,7 @@ the ones defined from the buffer now."
 ;; - Function Keys - <f11> - Prefix ``<f11> s`` : Search/Replace  commands
 
 (define-pel-global-prefix pel:search-replace (kbd "<f11> s"))
+(define-key pel:search-replace "."  'pel-search-word-from-top)
 (define-key pel:search-replace "b" #'search-backward)
 (define-key pel:search-replace "f" #'search-forward)
 (define-key pel:search-replace "o" #'multi-occur)
