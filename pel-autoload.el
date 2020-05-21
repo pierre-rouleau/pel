@@ -293,6 +293,7 @@
   (autoload 'pel-toggle-case-fold-search   "pel-search")
   (autoload 'pel-toggle-search-upper-case  "pel-search")
   (autoload 'pel-show-search-case-state    "pel-search")
+  (autoload 'pel-search-word-from-top      "pel-search")
 
   ;; pel-speedbar
   (when (and (boundp 'pel-use-speedbar) pel-use-speedbar)
