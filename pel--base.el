@@ -61,6 +61,28 @@ Optionally insert it at point if INSERT is non-nil."
     (message "PEL version: %s" version)
     version))
 
+
+;; -----------------------------------------------------------------------------
+;; Warning Preventing Macros
+;; -------------------------
+
+(defmacro pel-setq (sym val)
+  "Set a symbol SYM to specified value VAL and prevent warning."
+  `(progn
+     ;; declare the symbol to prevent lint warning
+     (defvar ,sym)
+     ;; now set the symbol to the specified value
+     (setq ,sym ,val)))
+
+
+(defmacro pel-setq-default (sym val)
+  "Set a symbol SYM to specified default value VAL and prevent warning."
+  `(progn
+     ;; declare the symbol to prevent lint warning
+     (defvar ,sym)
+     ;; now set the symbol to the specified value
+     (setq-default ,sym ,val)))
+
 ;; -----------------------------------------------------------------------------
 ;; Environment Querying function
 ;; -----------------------------
@@ -85,6 +107,26 @@ Return nil if current buffer does not visit a file."
             (file-name-nondirectory fn)
           fn))
     (user-error "No file in buffer %s" (buffer-name))))
+
+;; -----------------------------------------------------------------------------
+;; Check for Zero
+;; --------------
+;; In Lisp, nil is the only 'false' value.  Even 0 is an equivalent to 'true'.
+;; The following inline help checking for a zero-value result.
+;; If I find something similar native in Emacs I'll use and remove this one.
+(defsubst pel-!0 (v)
+  "Return nil if 0, t otherwise."
+  (not (equal v 0)))
+
+;; -----------------------------------------------------------------------------
+;; Bitwise Operations
+;; ------------------
+(defun pel-all-bitset-p (value &rest bits)
+  "Return t when all and only those BITS are set in VALUE, nil otherwise."
+  (let ((bitmask 0))
+    (dolist (bit bits bitmask)
+      (setq bitmask (logior bitmask bit)))
+    (equal 0 (logxor value bitmask))))
 
 ;; -----------------------------------------------------------------------------
 ;; String checks
@@ -245,13 +287,13 @@ The function issue an error if the argument is not a symbol."
 ;; line 1 to line 10:
 ;;
 ;; (let ((cnt 0))
-;;   (while (pel-bounded++ 'cnt 10)
+;;   (while (pel-inc 'cnt 10)
 ;;     (insert (format "\nLine %d" cnt))))
 ;;
 ;; Note that these functions take a symbol, allowing in place increment or
 ;; decrement.
 
-(defun pel-bounded-- (n &optional floor)
+(defun pel-decrement (n &optional floor)
   "Decrement symbol N down to FLOOR (0 by default).
 Return N when it's larger than FLOOR.
 Return nil if symbol N value is FLOOR or smaller."
@@ -259,12 +301,12 @@ Return nil if symbol N value is FLOOR or smaller."
     (if (> oldvalue (or floor 0))
         (set n (1- oldvalue)))))
 
-(defun pel-bounded++ (n ceiling)
+(defun pel-increment (n &optional ceiling)
   "Increment symbol N up to CEILING.
 Return N when it's smaller than CEILING.
 Return nil if symbol N value is CEILING or larger."
   (let ((oldvalue (eval n)))
-    (if (< oldvalue ceiling)
+    (if (< oldvalue (or ceiling most-positive-fixnum))
         (set n (1+ oldvalue)))))
 
 ;; -----------------------------------------------------------------------------

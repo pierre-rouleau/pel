@@ -836,6 +836,30 @@ PEL Closing and Suspending Table
 PEL provides the `Closing and Suspending`_ PDF table listing the Emacs commands
 to close and suspend.
 
+PEL Completion Mode Control
+---------------------------
+
+:PDF Docs: `Customization <pdf/customize.pdf>`_.
+:PEL Key Prefix: - **pel:select-completion** : ``<f11> <f2> c``
+
+Emacs has one native completion mechanism that kicks into action whenever you
+use a command that prompts for something like a file name, a buffer name, a
+command name, etc...  Several other completion modes exist.  The IDO completion
+mode is shipped with Emacs.  The Ivy, Counsel and Helm are other popular
+completion modes.  They can be installed via PEL and activated by PEL
+customization and the mode that should be used when Emacs starts is identified
+by the ``pel-initial-completion-mode`` user option.
+
+Once more than one completion mechanism is activated, PEL provides a command
+to select another completion mode: ``pel-select-completion-mode``.  PEL maps this to
+``<f11> <f2> c SPC`` under the **pel:select-completion** key prefix.
+
+With this you can start with Ido mode, then quickly switch to using Ivy mode for
+a while and return to Ido mode when you're done. Or use whatever you want at the
+moment you want without having to change and reload your Emacs initialization code.
+
+The management of completion mode is provided by the `pel-completion`_ file.
+
 
 PEL Configuration/Customization Support
 ---------------------------------------
@@ -880,8 +904,6 @@ customization buffer and come back where you were.  And to activate your changes
 then run ``pel-init`` by issuing the ``M-x pel-init`` command.
 
 See the `Customization <pdf/customize.pdf>`_ PDF document for more details.
-
-
 
 PEL Counting Support
 --------------------
@@ -3361,6 +3383,8 @@ The list of external packages used by PEL is shown in the `Credits`_ section.
 .. _pel-comment.el:         ../pel-comment.el
 .. _pel-commonlisp:
 .. _pel-commonlisp.el:      ../pel-commonlisp.el
+.. _pel-completion:
+.. _pel-completion.el:      ../pel-completion.el
 .. _pel-cua:
 .. _pel-cua.el:             ../pel-cua.el
 .. _pel-file:
@@ -3809,6 +3833,7 @@ apples-mode_                  MELPA_
 `c-eldoc`_                    MELPA_
 `cargo`_                      MELPA_
 `company`_                    MELPA_
+counsel_                      MELPA_
 d-mode_                       MELPA_
 `desktop+`_                   MELPA_
 `desktop-registry`_           MELPA_
@@ -3827,6 +3852,7 @@ graphviz-dot-mode_            MELPA_
 `hide-comnt.el`_              Emacsmirror_
 highlight-defined_            MELPA_
 hydra_                        MELPA_
+ivy_                          MELPA_
 julia-snail_                  MELPA_
 lfe-mode_                     MELPA_
 lice_                         MELPA_
@@ -3886,6 +3912,7 @@ Hopefully some people will find PEL useful to them.
 .. _bm:                        https://melpa.org/#/bm
 .. _cargo:                     https://melpa.org/#/cargo
 .. _company:                   https://melpa.org/#/company
+.. _counsel:                   https://melpa.org/#/counsel
 .. _c-eldoc:                   https://melpa.org/#/?q=c-eldoc
 .. _d-mode:                    https://melpa.org/#/?q=d-mode
 .. _desktop+:                  https://melpa.org/#/?q=desktop+
@@ -3904,6 +3931,7 @@ Hopefully some people will find PEL useful to them.
 .. _graphviz-dot-mode:         https://melpa.org/#/graphviz-dot-mode
 .. _highlight-defined:         https://melpa.org/#/highlight-defined
 .. _hydra:                     https://melpa.org/#/hydra
+.. _ivy:                       https://melpa.org/#/ivy
 .. _julia-snail:               https://melpa.org/#/julia-snail
 .. _lfe-mode:                  https://melpa.org/#/lfe-mode
 .. _lice:                      https://melpa.org/#/lice

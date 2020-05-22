@@ -32,6 +32,7 @@
     (c-eldoc             "20181109.439")  ; melpa. Melpa-stable: N/A
     (cargo               "20191224.47")   ; melpa. Melpa-stable: 0.4.1
     (company             "2020228.1919")  ; melpa. Melpa-stable: 0.9.12
+    (counsel             "20200520.1809") ; melpa.
     (d-mode              "20191009.903")
     (desktop+            "20170107.2132")
     (desktop-registry    "20140119.2143")
@@ -48,6 +49,7 @@
     (graphviz-dot-mode   "20200304.432")  ; melpa. Melpa-stable: 0.4.2
     (highlight-defined   "20181106.1718") ; melpa. Melpa-stable: 0.1.5
     (hydra               "20200306.913")
+    (ivy                 "20200520.1809") ; melpa.
     (julia-snail         "20200420.221")
     (lfe-mode            "20170121.1254")
     (lice                "20191011.631")  ; melpa. Melpa-stable: 0.2

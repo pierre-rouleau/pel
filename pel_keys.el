@@ -1,5 +1,26 @@
 ;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t-*-
 
+;; Copyright (C) 2020  Pierre Rouleau
+
+;; Author: Pierre Rouleau <prouleau001@gmail.com>
+
+;; This file is part of the PEL package
+;; This file is not part of GNU Emacs.
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;; -----------------------------------------------------------------------------
 ;;; Commentary:
 
 ;; This file contains *all* PEL key bindings.
@@ -21,7 +42,6 @@
 ;;       to require external packages *only* when compiling, not at load time.
 ;;       During execution the external packages are only loaded lazily,
 ;;       when they are required, not before.
-
 
 ;;; Code:
 
@@ -81,23 +101,6 @@ optional argument APPEND is non-nil, in which case it is added at the end."
      ;; define the prefix key as a global prefix
      (define-prefix-command (quote ,prefix))
      (global-set-key ,key (quote ,prefix))))
-
-(defmacro pel-setq (sym val)
-  "Set a symbol SYM to specified value VAL and prevent warning."
-  `(progn
-     ;; declare the symbol to prevent lint warning
-     (defvar ,sym)
-     ;; now set the symbol to the specified value
-     (setq ,sym ,val)))
-
-
-(defmacro pel-setq-default (sym val)
-  "Set a symbol SYM to specified default value VAL and prevent warning."
-  `(progn
-     ;; declare the symbol to prevent lint warning
-     (defvar ,sym)
-     ;; now set the symbol to the specified value
-     (setq-default ,sym ,val)))
 
 ;; --
 
@@ -413,24 +416,6 @@ For example, applied to a directory name, macOS Finder is used."
     (pel-setq uniquify-after-kill-buffer-p t)
     ;; Don't  not uniquify  special buffers
     (pel-setq uniquify-ignore-buffers-re "^\\*")))
-
-;; - Use IDO-mode
-;; --------------
-;; Provides suggestions at prompts for file names,
-;; buffer names, etc...
-;; Notes:
-;; - When IDO gets in the way, type C-f at IDO prompt to
-;;   enter the path and file name without suggestions.
-;; - Use C-j when you want to force using what is
-;;   and don't want to request a proposed value.
-;; IDO is now part of Emacs distribution.
-(when pel-use-ido-mode
-  (ido-mode 1)
-  (pel-setq ido-everywhere t)
-  (pel-setq ido-enable-flex-matching t)
-  ;; don't require confirmation when creating new buffers
-  ;; with C-x b
-  (pel-setq ido-create-new-buffer 'always))
 
 ;; - Use Hippie Expand
 ;; -------------------
@@ -1196,8 +1181,6 @@ For example, applied to a directory name, macOS Finder is used."
 (define-key pel:menu "o"      'pel-toggle-imenu-index-follows-order)
 (define-key pel:menu "t"     #'tmm-menubar)
 
-
-
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> <f1>`` : Customization
 ;;
@@ -1261,13 +1244,13 @@ display in other window."
 ;;
 (pel--cfg ""  pel:cfg "!")
 (pel--cfg "identification"  pel:cfg "i")
+(pel--cfg-pkg "completion"  pel:cfg "c")
 (pel--cfg-pkg "filemng"     pel:cfg "f")
 (pel--cfg-pkg "grep"        pel:cfg "g")
 (pel--cfg-pkg "window"      pel:cfg "w")
 (pel--cfg-pkg "search"      pel:cfg "s")
 (pel--cfg-pkg "session"     pel:cfg "S")
 (pel--cfg-pkg "speedbar"    pel:cfg (kbd "M-s"))
-
 
 (define-pel-global-prefix pel:cfg-pl (kbd "<f11> <f1> SPC"))
 ;;
@@ -1283,6 +1266,71 @@ display in other window."
 (pel--cfg-pkg "lisp"         pel:cfg-pl "L")
 (pel--cfg-pkg "python"       pel:cfg-pl "p")
 (pel--cfg-pkg "reST"         pel:cfg-pl "r")
+
+;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> <f2>`` : Mode Selections
+
+(define-pel-global-prefix pel:modesel  (kbd "<f11> <f2>"))
+
+;; -----------------------------------------------------------------------------
+;; Completion Framework activation
+;; -------------------------------
+;;
+;; Activate the mode(s) available, activate the initial mode and provide keys
+;; to show current mode and to select a different one. The code supports the
+;; following completion modes:
+;; - Emacs default (tab completion)
+;; - Ido mode
+;; - Ivy mode
+;; - Ivy mode with Counsel
+
+(defun pel-count-of-available-modes ()
+  "Return number of available modes."
+  (let ((count 1))
+    (dolist (option '(pel-use-ido
+                      pel-use-ivy
+                      pel-use-counsel))
+      (when (eval option)
+        (setq count (1+ count))))
+    count))
+
+(when (> (pel-count-of-available-modes) 1)
+  (define-pel-global-prefix pel:select-completion (kbd "<f11> <f2> c")))
+
+(when pel-use-ido
+  (use-package ido
+    :commands ido-mode))
+
+(when pel-use-ivy
+  (use-package ivy
+    :ensure t
+    :pin melpa
+    :commands ivy-mode
+    :config
+    (setq ivy-use-virtual-buffers t
+          ivy-count-format "%d/%d "))
+  ;;
+  (when pel-use-counsel
+    (use-package counsel
+      :ensure t
+      :pin melpa
+      :defer 1)
+    ;;
+    (when (and pel-system-is-macos-p pel-use-counsel-osx-app)
+      (use-package counsel-osx-app
+        :ensure t
+        :pin melpa
+        :commands counsel-osx-app
+        :init
+        (define-key pel: "A" 'counsel-osx-app)))))
+
+;; If more than 1 completion mode is available activate the one selected by
+;; customization and install the selection command.
+(when (> (pel-count-of-available-modes) 1)
+  (require 'pel-completion)
+  (define-key pel:select-completion " " 'pel-select-completion-mode)
+  (define-key pel:select-completion "?" 'pel-show-active-completion-mode)
+  (pel-set-completion-mode pel-initial-completion-mode))
 
 ;; -----------------------------------------------------------------------------
 ;; - AppleScript support

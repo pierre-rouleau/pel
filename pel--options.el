@@ -45,6 +45,7 @@
 ;;       - pel-pkg-for-speedbar
 ;;       - pel-pkg-for-session
 ;;     - pel-pkg-for-buffer
+;;     - pel-pkg-for-completion
 ;;     - pel-pkg-for-insertions
 ;;     - pel-pkg-for-undo
 ;;     - pel-pkg-for-parens
@@ -179,7 +180,7 @@ See: https://github.com/jaypei/emacs-neotree"
 (defcustom pel-ztree-dir-move-focus nil
   "Defines if move focus to opened window on hard-action command on a file.
 Hard actions like RETURN.
-PEL set ztree-dir-move-focus with this value."
+PEL set `ztree-dir-move-focus' with this value."
   :group 'pel-pkg-for-ztree
   :type 'boolean
   :safe #'booleanp)
@@ -231,7 +232,7 @@ See: https://github.com/abo-abo/swiper#swiper"
   :safe #'booleanp)
 
 (defcustom pel-search-with-swiper nil
-  "C-s searches with swiper if set to t, otherwise use isearch-forward."
+  "Search with swiper if set to t, otherwise use function `isearch-forward'."
   :group 'pel-pkg-for-search
   :type 'boolean
   :safe #'booleanp)
@@ -327,10 +328,10 @@ The value can be:
 - nil : nothing is used.
 
 - t:                             use built-in desktop but do NOT
-                                 activate desktop-save-mode.
+                                 activate the desktop save mode.
 
 - `with-desktop-automatic':      use built-in desktop and
-                                 activate desktop-save-mode.
+                                 activate desktop save mode.
 
 - `with-desktop-registry':       use desktop and the desktop-registry
                                  external package.
@@ -400,6 +401,60 @@ and ACTIVATE desktop-save-mode" with-desktop-registry-automatic)
   :group 'pel-pkg-for-buffer
   :type 'boolean
   :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; Completion Support
+;; ------------------
+(defgroup pel-pkg-for-completion nil
+  "List of external packages that PEL can use to manage completion."
+  :group 'pel-package-use)
+
+(defcustom pel-use-ido nil
+  "Control whether PEL uses the ido package."
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-ivy nil
+  "Control whether PEL uses the ivy package."
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-counsel nil
+  "Control whether Counsel is used when ivy is used."
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-counsel-osx-app nil
+  "Control whether `counsel-osx-app' is used when counsel is used on macOS."
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+
+(defconst pel-USE-IDO     1 "Bitmask identifying IDO.      DON'T CHANGE!")
+(defconst pel-USE-IVY     2 "Bitmask identifying Ivy.      DON'T CHANGE!")
+(defconst pel-USE-COUNSEL 4 "Bitmask identifying Counsel.  DON'T CHANGE!")
+
+(defcustom pel-initial-completion-mode nil
+  "Select the main text completion mode used when Emacs starts.
+
+PEL supports several completion engines.
+This option selects which engine used when Emacs starts.
+The available options are:
+- nil   : use Emacs default
+- `ido' : use IDO (when pel-use-ido is t)
+- `ivy' : Use Ivy (when pel-use-ivy is t)
+- `ivy/counsel' : Use Ivy with Counsel (when pel-use-ivy and pel-use-counsel are
+                  both t)."
+  :group 'pel-pkg-for-completion
+  :type '(choice
+          (const :tag "Emacs default" nil)
+          (const :tag "Use IDO (requires pel-use-ido to be t)" ido)
+          (const :tag "Use Ivy (requires pel-use-ivy to be t)" ivy)
+          (const :tag "use Ivy & Counsel (requires both pel-use-ivy and \
+pel-use-counsel to be t" ivy/counsel)))
 
 ;; -----------------------------------------------------------------------------
 ;; Text Insertion / Templates
@@ -502,12 +557,6 @@ References:
 (defgroup pel-pkg-for-keys nil
   "List of external packages that PEL can use to help deal keys and prompts."
   :group 'pel-package-use)
-
-(defcustom pel-use-ido-mode nil
-  "Control whether PEL uses the {ido-mode} package."
-  :group 'pel-pkg-for-keys
-  :type 'boolean
-  :safe #'booleanp)
 
 (defcustom pel-use-hydra nil
   "Control whether PEL uses the hydra package."
@@ -869,7 +918,7 @@ When set to t:
       which must be installed separately.
 
 An alternative to AutoComplete/DCD is the Company/DCD, controlled
-by the pel-use-d-company-dcd."
+by the `pel-use-d-company-dcd'."
   :group 'pel-pkg-for-d
   :type 'boolean
   :safe #'booleanp)
@@ -878,14 +927,14 @@ by the pel-use-d-company-dcd."
   "Control whether Company/DCD based code completion is used for D.
 
 When set to t:
-- the company-dcd package is used for code completion,
+- the `company-dcd' package is used for code completion,
   - it uses flycheck-dmd-dub package, which uses the D package
     registry called DUB to retreive all D dependencies information.
     - which uses DCD (the D Completion Daemon) written in D
       which must be installed separately.
 
 An alternative to AutoComplete/DCD is the Company/DCD, controlled
-by the pel-use-d-ac-dcd."
+by the `pel-use-d-ac-dcd'."
   :group 'pel-pkg-for-d
   :type 'boolean
   :safe #'booleanp)
@@ -982,7 +1031,7 @@ by the pel-use-d-ac-dcd."
 
 (defcustom pel-use-erlang-flycheck nil
   "Control whether PEL uses flycheck for Erlang when `pel-use-erlang' is t.
-If pel-use-erlang-flymake is t, pel-use-erlang-flycheck is ignored:
+If `pel-use-erlang-flymake' is t, `pel-use-erlang-flycheck' is ignored:
 ie. priority is given to flymake because it is part of Emacs."
   :group 'pel-pkg-for-erlang
   :type 'boolean
