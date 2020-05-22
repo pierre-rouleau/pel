@@ -67,6 +67,7 @@
 ;;                      ;     pel-system-is-windows-p
 ;;                      ;     pel-toggle
 ;;                      ;     pel-mode-toggle-arg
+(require 'pel--macros)  ; use: pel-setq, pel-seq-default
 (require 'pel--options) ; all `pel-use-...' variables identify what to use.
 ;;                      ; also defines a set of utility functions to deal with
 ;;                      ; the options: pel-auto-complete-help
@@ -2921,17 +2922,17 @@ in which cases C-s is mapped to `swiper'."
 
 
 (defun pel-reb-re-syntax ()
-  "Customize reb-re-syntax."
+  "Customize reb-re-syntax: Regular Expression Builder syntax."
   (interactive)
   (customize-option 'reb-re-syntax))
 
 (define-pel-global-prefix pel:regexp (kbd "<f11> s x"))
-;; add it here because C-M-% cannot be typed in terminal mode
 (define-key pel:regexp      "b"  #'re-search-backward)
 (define-key pel:regexp      "f"  #'re-search-forward)
 (define-key pel:regexp      "q"  #'query-replace-regexp)
 (define-key pel:regexp      "r"  #'replace-regexp)
 (define-key pel:regexp      "B"  #'re-builder)
+;; add it here because C-M-% cannot be typed in terminal mode
 (define-key pel:regexp      "?"  'pel-reb-re-syntax)
 ;;
 

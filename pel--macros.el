@@ -51,6 +51,26 @@
      (user-error "Variable not bound: %s" ,var)))
 
 ;; -----------------------------------------------------------------------------
+;; Warning Preventing Macros
+;; -------------------------
+
+(defmacro pel-setq (sym val)
+  "Set a symbol SYM to specified value VAL and prevent warning."
+  `(progn
+     ;; declare the symbol to prevent lint warning
+     (defvar ,sym)
+     ;; now set the symbol to the specified value
+     (setq ,sym ,val)))
+
+(defmacro pel-setq-default (sym val)
+  "Set a symbol SYM to specified default value VAL and prevent warning."
+  `(progn
+     ;; declare the symbol to prevent lint warning
+     (defvar ,sym)
+     ;; now set the symbol to the specified value
+     (setq-default ,sym ,val)))
+
+;; -----------------------------------------------------------------------------
 (provide 'pel--macros)
 
 ;;; pel--macros.el ends here

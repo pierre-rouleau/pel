@@ -29,6 +29,7 @@
 ;;
 ;;; Code:
 (require 'pel--base)
+(require 'pel--macros)
 (require 'pel--options)
 
 

@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2020-05-21 18:14:37, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-05-22 09:49:54, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -418,7 +418,7 @@ pel-bookmark.elc:       pel--base.elc
 pel-ccp.elc:            pel-navigate.elc
 pel-comment.elc:        pel--base.elc
 pel-comment-adorn.elc:  pel-rst.elc pel-comment.elc pel-mark.elc
-pel-completion.elc:     pel--base.elc pel--options.elc
+pel-completion.elc:     pel--base.elc pel--macros.elc pel--options.elc
 pel-file.elc:           pel--base.elc pel-prompt.elc pel-window.elc
 pel-fill.elc:           pel--base.elc
 pel-frame-control.elc:  pel--base.elc
@@ -439,6 +439,7 @@ pel-spell.elc:          pel--macros.elc pel--base.elc
 pel-text-insert.elc:    pel--options.elc pel--base.elc pel-window.elc
 pel-text-transform.elc: pel--base.elc
 pel-window.elc:         pel--base.elc
+pel_keys.elc:           pel--base.elc pel--macros.elc pel--options.elc
 
 # -----------------------------------------------------------------------------
 # Rules to byte-compile the Emacs-Lisp source code files
