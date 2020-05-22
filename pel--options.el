@@ -410,19 +410,19 @@ and ACTIVATE desktop-save-mode" with-desktop-registry-automatic)
   :group 'pel-package-use)
 
 (defcustom pel-use-ido nil
-  "Control whether PEL uses the ido package."
+  "Control whether PEL uses the Ido package."
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-ivy nil
-  "Control whether PEL uses the ivy package."
+  "Control whether PEL uses the Ivy package."
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-counsel nil
-  "Control whether Counsel is used when ivy is used."
+  "Control whether Counsel is used when Ivy is used."
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
@@ -433,9 +433,16 @@ and ACTIVATE desktop-save-mode" with-desktop-registry-automatic)
   :type 'boolean
   :safe #'booleanp)
 
-(defconst pel-USE-IDO     1 "Bitmask identifying IDO.      DON'T CHANGE!")
-(defconst pel-USE-IVY     2 "Bitmask identifying Ivy.      DON'T CHANGE!")
-(defconst pel-USE-COUNSEL 4 "Bitmask identifying Counsel.  DON'T CHANGE!")
+(defcustom pel-use-helm nil
+  "Control whether PEL uses the Helm package."
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+
+(defconst pel-USE-IDO     1 "Bitmask identifying Ido.     DON'T CHANGE!")
+(defconst pel-USE-IVY     2 "Bitmask identifying Ivy.     DON'T CHANGE!")
+(defconst pel-USE-COUNSEL 4 "Bitmask identifying Counsel. DON'T CHANGE!")
+(defconst pel-USE-HELM    8 "Bitmask identifying Helm.    DON'T CHANGE!")
 
 (defcustom pel-initial-completion-mode nil
   "Select the main text completion mode used when Emacs starts.
@@ -444,14 +451,16 @@ PEL supports several completion engines.
 This option selects which engine used when Emacs starts.
 The available options are:
 - nil   : use Emacs default
-- `ido' : use IDO (when pel-use-ido is t)
+- `helm': use Helm (when pel-use-helm is t).
+- `ido' : use Ido (when pel-use-ido is t)
 - `ivy' : Use Ivy (when pel-use-ivy is t)
 - `ivy/counsel' : Use Ivy with Counsel (when pel-use-ivy and pel-use-counsel are
                   both t)."
   :group 'pel-pkg-for-completion
   :type '(choice
           (const :tag "Emacs default" nil)
-          (const :tag "Use IDO (requires pel-use-ido to be t)" ido)
+          (const :tag "Use Helm (requitres pel-use-helm to be t)" helm)
+          (const :tag "Use Ido (requires pel-use-ido to be t)" ido)
           (const :tag "Use Ivy (requires pel-use-ivy to be t)" ivy)
           (const :tag "use Ivy & Counsel (requires both pel-use-ivy and \
 pel-use-counsel to be t" ivy/counsel)))

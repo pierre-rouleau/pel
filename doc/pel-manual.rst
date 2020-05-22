@@ -3849,6 +3849,7 @@ framemove_                    Emacsmirror_
 free-keys_                    MELPA_
 goto-last-change_             MELPA_
 graphviz-dot-mode_            MELPA_
+helm_                         MELPA_
 `hide-comnt.el`_              Emacsmirror_
 highlight-defined_            MELPA_
 hydra_                        MELPA_
@@ -3930,6 +3931,7 @@ Hopefully some people will find PEL useful to them.
 .. _goto-last-change:          https://melpa.org/#/goto-last-change
 .. _graphviz-dot-mode:         https://melpa.org/#/graphviz-dot-mode
 .. _highlight-defined:         https://melpa.org/#/highlight-defined
+.. _helm:                      https://melpa.org/#/helm-core
 .. _hydra:                     https://melpa.org/#/hydra
 .. _ivy:                       https://melpa.org/#/ivy
 .. _julia-snail:               https://melpa.org/#/julia-snail

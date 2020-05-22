@@ -1280,6 +1280,7 @@ display in other window."
 ;; to show current mode and to select a different one. The code supports the
 ;; following completion modes:
 ;; - Emacs default (tab completion)
+;; - Helm mode
 ;; - Ido mode
 ;; - Ivy mode
 ;; - Ivy mode with Counsel
@@ -1296,6 +1297,10 @@ display in other window."
 
 (when (> (pel-count-of-available-modes) 1)
   (define-pel-global-prefix pel:select-completion (kbd "<f11> <f2> c")))
+
+(when pel-use-helm
+  (use-package helm
+    :commands helm-mode))
 
 (when pel-use-ido
   (use-package ido

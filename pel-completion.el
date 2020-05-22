@@ -36,22 +36,25 @@
 
 (defun pel--activated-completion-mode ()
   "Return Completion engine currently used.
-Return one of:  nil | 'ido | 'ivy | 'ivy/counsel"
+Return one of:  nil | 'ido | 'ivy | 'ivy/counsel | 'helm"
   (if (and (boundp 'counsel-mode) counsel-mode)
       'ivy/counsel
     (if (and (boundp 'ivy-mode) ivy-mode)
         'ivy
       (if (and (boundp 'ido-mode) ido-mode)
           'ido
-        nil))))
+        (if (and (boundp 'helm-mode) helm-mode)
+            'helm
+          nil)))))
 
 (defun pel--available-completion-mode-mask ()
   "Return bit mask corresponding to the encoding of completion modes available.
 The completion modes available is taken from the following user options:
+- `pel-use-helm'
 - `pel-use-ido'
 - `pel-use-ivy'
 - `pel-use-counsel'
-The bit layout corresponds to the values of pel-USE-{IDO|IVY|COUNSEL}."
+The bit layout corresponds to the values of pel-USE-{IDO|IVY|COUNSEL|HELM}."
   (let ((mask 0))
     (when pel-use-ido
       (setq mask pel-USE-IDO))
@@ -59,14 +62,17 @@ The bit layout corresponds to the values of pel-USE-{IDO|IVY|COUNSEL}."
       (setq mask (logior mask pel-USE-IVY)))
     (when pel-use-counsel
       (setq mask (logior mask pel-USE-COUNSEL)))
+    (when pel-use-helm
+      (setq mask (logior mask pel-USE-HELM)))
     mask))
 
 (defun pel--completion-mode-symbol-for-mask (mask)
   "Return the symbol corresponding to the bit MASK.
-It can return nil | 'ido | 'ivy | 'ivy/counsel"
+It can return nil | 'ido | 'ivy | 'ivy/counsel | 'helm"
   (cond ((pel-all-bitset-p mask pel-USE-IDO) 'ido)
         ((pel-all-bitset-p mask pel-USE-IVY pel-USE-COUNSEL) 'ivy/counsel)
         ((pel-all-bitset-p mask pel-USE-IVY) 'ivy)
+        ((pel-all-bitset-p mask pel-USE-HELM) 'helm)
         (t nil)))
 
 (defun pel-ido-mode (&optional activate)
@@ -96,7 +102,7 @@ Otherwise, de-activate the IDO mode."
 
 (defun pel--activate-completion-mode (mode newstate)
   "Activate/deactivate specified completion MODE to a NEWSTATE.
-- MODE must be one of: nil | 'ido | 'ivy | 'ivy/counsel
+- MODE must be one of: nil | 'ido | 'ivy | 'ivy/counsel | 'helm
   If nil, nothing is done.
 - NEWSTATE is either one of: t | nil. t:= activate, nil:= deactivate."
   (let* ((activate newstate)
@@ -106,7 +112,8 @@ Otherwise, de-activate the IDO mode."
           ((eq mode 'ivy)
            (if (fboundp 'ivy-mode)
                (ivy-mode action)
-             (error "The ivy-mode command not bound.  Please report problem")))
+             (error "The ivy-mode command is not bound. \
+Please report problem")))
           ;;
           ;; activate ivy then counsel, deactivate counsel then ivy.
           ((eq mode 'ivy/counsel)
@@ -119,6 +126,12 @@ Otherwise, de-activate the IDO mode."
                  (counsel-mode action)
                  (ivy-mode action))
              (error "The ivy-mode or counsel-mode command is not bound. \
+Please report this problem")))
+          ;;
+          ((eq mode 'helm)
+           (if (fboundp 'helm-mode)
+               (helm-mode action)
+             (error "The helm-mode command is not bound. \
 Please report this problem")))
           ;;
           ;; mode:= nil - do nothing
@@ -144,6 +157,7 @@ Display a message describing what mode was actually activated."
                                ((eq requested 'ivy/counsel) (logior
                                                              pel-USE-IVY
                                                              pel-USE-COUNSEL))
+                               ((eq requested 'helm) pel-USE-HELM)
                                ((not requested) 0)))
          (allowed-mask (logand requested-mask
                                (pel--available-completion-mode-mask)))
@@ -158,12 +172,14 @@ Display a message describing what mode was actually activated."
 (defun pel--completion-mode-selection ()
   "Return a list of (char prompt symbol) of available completion choices."
   (let ((selection '((?e "Emacs Default" nil))))
+    (when pel-use-helm    (push '(?h "Helm" helm)
+                                selection))
     (when pel-use-ido     (push '(?d "Ido" ido)
                                  selection))
     (when pel-use-ivy     (push '(?v "Ivy" ivy)
                                  selection))
     (when pel-use-counsel (push '(?c "Ivy/Counsel" ivy/counsel)
-                                 selection))
+                                selection))
     (reverse selection)))
 
 (defun pel--prompt-for (selection)

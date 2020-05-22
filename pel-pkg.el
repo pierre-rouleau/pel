@@ -47,6 +47,7 @@
     (free-keys           "20160726.2050") ; melpa. Melpa-stable: 1.0.0
     (goto-last-change    "20150109.1823") ; melpa. Melpa-stable: 1.2.1
     (graphviz-dot-mode   "20200304.432")  ; melpa. Melpa-stable: 0.4.2
+    (helm-core           "20200517.1510") ; melpa.
     (highlight-defined   "20181106.1718") ; melpa. Melpa-stable: 0.1.5
     (hydra               "20200306.913")
     (ivy                 "20200520.1809") ; melpa.
