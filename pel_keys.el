@@ -2889,6 +2889,28 @@ the ones defined from the buffer now."
 (define-key pel:search-mode "u"   'pel-toggle-search-upper-case)
 (define-key pel:search-mode "l"  #'isearch-toggle-lax-whitespace)
 
+;; --
+;; Search Tool Control
+
+(when pel-use-anzu
+  (use-package anzu
+    :ensure t
+    :pin melpa
+    :commands global-anzu-mode
+    :init
+    (when (eq pel-initial-search-tool 'anzu)
+      (global-anzu-mode +1))))
+
+(when pel-use-swiper
+  (use-package swiper
+    :ensure t
+    :pin melpa
+    :commands swiper
+    :init
+    (when (eq pel-initial-search-tool 'swiper)
+      (global-set-key "\C-s" 'swiper))))
+
+
 (defun pel-number-of-available-search-tools ()
   "Return the number of available search tools."
   (let ((count 1))
@@ -2898,29 +2920,16 @@ the ones defined from the buffer now."
         (setq count (1+ count))))
     count))
 
-
-(when pel-use-anzu
-  (use-package anzu
-    :ensure t
-    :pin melpa
-    :commands global-anzu-mode))
-
-(when pel-use-swiper
-  (use-package swiper
-    :ensure t
-    :pin melpa
-    :commands swiper))
-
-;; When either Anzu and/or Swiper is available, map:
-;; - ``<f11> s s``  to `pel-select-search-tool'
-;; -  ``<f11> ? s`` to `pel-show-active-search-tool'
 (when (> (pel-number-of-available-search-tools) 1)
-  (require 'pel-search)
-  (define-key pel:search-replace "s" 'pel-select-search-tool)
-  (define-key pel:help           "s" 'pel-show-active-search-tool)
-  ;; and select the initial search tool from user option.
-  (pel-set-search-tool pel-initial-search-tool))
+  (use-package pel-search
+    :commands (pel-select-search-tool
+               pel-show-active-search-tool)
+    :init
+    (define-key pel:search-replace "s" 'pel-select-search-tool)
+    (define-key pel:help           "s" 'pel-show-active-search-tool)))
 
+;; --
+;; Regular Expression Builder
 
 (defun pel-reb-re-syntax ()
   "Customize reb-re-syntax: Regular Expression Builder syntax."

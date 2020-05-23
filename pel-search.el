@@ -42,22 +42,24 @@
 ;;
 ;; Search Tool Management:
 ;;
+;; * `pel-show-active-search-tool'
+;;   - `pel--active-search-tool'
 ;; * `pel-select-search-tool'
 ;;   - `pel--search-tools-selection'
 ;;   - `pel--activated-search-tool'
 ;;   - `pel-set-search-tool'
 ;;     - `pel--disable-search-tool'
 ;;     - `pel--activate-search-tool'
-;; * `pel-show-active-search-tool'
-;;   - `pel--active-search-tool'
+
 ;;
 
 ;;; Code:
 
-(require 'isearch)   ; use: search-upper-case.
-;;                   ; isearch is part of standard Emacs distribution and is
-;;                   ; loaded even by emacs -Q (in emacs 26).
-(require 'pel--options)
+(require 'isearch)       ; use: search-upper-case.
+;;                       ; isearch is part of standard Emacs distribution and is
+;;                       ; loaded even by emacs -Q (in emacs 26).
+(require 'pel--options)  ; use: pel-use-ansu, pel-use-swiper,
+;;                       ;      pel-initial-search-tool
 (require 'pel--macros)
 (require 'pel-prompt)
 (require 'pel-read)  ; use: pel-word-at-point
@@ -177,25 +179,15 @@ Position before searched word is pushed on the mark ring."
 ;; PEL Search Tool Control
 ;; -----------------------
 
+(defvar pel--search-initialized nil
+  "Set to t when search tool management is initialized.
+Modified by pel-search code ONLY.")
+
 (defvar pel--active-search-tool nil
   "Search tool currently used.  One of: nil | anzu | swiper.
 A nil value means that Emacs standard search is used.")
 
-(defun pel--active-search-tool ()
-  "Return a string describing the currently used search tool."
-  (if (not pel--active-search-tool)
-      "default ISearch"
-    (if (eq pel--active-search-tool 'anzu)
-        "ISearch and Anzu"
-      (if (eq pel--active-search-tool 'swiper)
-          "Swiper"
-        "??"))))
-
-;;-pel-autoload
-(defun pel-show-active-search-tool ()
-  "Display the currently used search tool."
-  (interactive)
-  (message "Searching with %s" (pel--active-search-tool)))
+;; --
 
 (defun pel--activate-search-tool (tool)
   "Activate the specified search TOOL.
@@ -248,11 +240,38 @@ The nil value means that Emacs default is used."
 (defun pel-select-search-tool ()
   "Prompt user for search tool to use."
   (interactive)
+  (unless pel--search-initialized
+      ;; select the initial search tool from user option.
+    (pel-set-search-tool pel-initial-search-tool)
+    (setq pel--search-initialized 1))
+  ;;
   (pel-select-from "Search tool"
                    (pel--search-tools-selection)
                    (pel--activated-search-tool)
                    #'pel-set-search-tool))
 
+;; --
+
+(defun pel--active-search-tool ()
+  "Return a string describing the currently used search tool."
+  (if (not pel--active-search-tool)
+      "default ISearch"
+    (if (eq pel--active-search-tool 'anzu)
+        "ISearch and Anzu"
+      (if (eq pel--active-search-tool 'swiper)
+          "Swiper"
+        "??"))))
+
+;;-pel-autoload
+(defun pel-show-active-search-tool ()
+  "Display the currently used search tool."
+  (interactive)
+  (unless pel--search-initialized
+    ;; select the initial search tool from user option.
+    (pel-set-search-tool pel-initial-search-tool)
+    (setq pel--search-initialized 1))
+  ;;
+  (message "Searching with %s" (pel--active-search-tool)))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-search)
