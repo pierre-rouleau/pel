@@ -24,6 +24,7 @@
     (use-package         "20191126.2034") ; melpa  Melpa-stable: 2.4
     (ace-window          "20200304.1344") ; melpa  Melpa-stable: 0.9.0
     (alchemist           "20180312.1304")
+    (anzu                "20200514.1801") ; melpa
     (apples-mode         "20110121.418")
     (ascii-table         "20200329.1744") ; melpa
     (auto-complete       "20170125.245")  ; melpa  Melpa-stable: 1.5.1

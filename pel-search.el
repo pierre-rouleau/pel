@@ -23,18 +23,49 @@
 ;; -----------------------------------------------------------------------------
 ;;; Commentary:
 ;;
+;; This file holds a set of search utilities and function that manages the
+;; search tools available to PEL.
+;;
+;; The following is a list of available commands (*) and functions (-) listed in
+;; hierarchical calling order.
+;;
+;; Search behaviour control functions
+;;
+;; * `pel-toggle-case-fold-search'
+;; * `pel-toggle-search-upper-case'
+;; * `pel-show-search-case-state'
+;;   - `pel-search-case-state'
+;;
+;; Search utility
+;;
+;; * `pel-search-word-from-top'
+;;
+;; Search Tool Management:
+;;
+;; * `pel-select-search-tool'
+;;   - `pel--search-tools-selection'
+;;   - `pel--activated-search-tool'
+;;   - `pel-set-search-tool'
+;;     - `pel--disable-search-tool'
+;;     - `pel--activate-search-tool'
+;; * `pel-show-active-search-tool'
+;;   - `pel--active-search-tool'
+;;
 
-;; PEL: Search behaviour control functions
-;; ---------------------------------------
-
+;;; Code:
 
 (require 'isearch)   ; use: search-upper-case.
 ;;                   ; isearch is part of standard Emacs distribution and is
 ;;                   ; loaded even by emacs -Q (in emacs 26).
+(require 'pel--options)
+(require 'pel--macros)
+(require 'pel-prompt)
 (require 'pel-read)  ; use: pel-word-at-point
 (require 'pel-window); use pel-window-direction-for
 
-;;; Code:
+;; -----------------------------------------------------------------------------
+;; Search behaviour control functions
+;; ----------------------------------
 
 ;;-pel-autoload
 (defun pel-toggle-case-fold-search ()
@@ -98,7 +129,9 @@ Depends on 2 Emacs (base system) variables:
   (interactive)
   (message (pel-search-case-state)))
 
-;; --
+;; -----------------------------------------------------------------------------
+;; Search Utilities
+;; ----------------
 
 ;;-pel-autoload
 (defun pel-search-word-from-top (&optional n)
@@ -123,8 +156,7 @@ allowed, and search is done in current window.
 
 Searched word is remembered and can be used again to repeat an interactive
 search with \\[isearch-forward] or \\[isearch-backward].
-Position before searched word is pushed on the mark ring.
-"
+Position before searched word is pushed on the mark ring."
   (interactive "P")
   ;; select direction from numerical argument.
   ;; If there are no argument, select the direction like this:
@@ -140,6 +172,87 @@ Position before searched word is pushed on the mark ring.
     (goto-char (point-min))
     (isearch-forward nil :no-recursive-edit)
     (isearch-yank-string searched-word)))
+
+;; -----------------------------------------------------------------------------
+;; PEL Search Tool Control
+;; -----------------------
+
+(defvar pel--active-search-tool nil
+  "Search tool currently used.  One of: nil | anzu | swiper.
+A nil value means that Emacs standard search is used.")
+
+(defun pel--active-search-tool ()
+  "Return a string describing the currently used search tool."
+  (if (not pel--active-search-tool)
+      "default ISearch"
+    (if (eq pel--active-search-tool 'anzu)
+        "ISearch and Anzu"
+      (if (eq pel--active-search-tool 'swiper)
+          "Swiper"
+        "??"))))
+
+;;-pel-autoload
+(defun pel-show-active-search-tool ()
+  "Display the currently used search tool."
+  (interactive)
+  (message "Searching with %s" (pel--active-search-tool)))
+
+(defun pel--activate-search-tool (tool)
+  "Activate the specified search TOOL.
+The TOOL argument can be any of nil | anzu | swiper."
+  (cond ((eq tool nil)
+         (global-set-key "\C-s" 'isearch-forward))
+        ;;
+        ((and (eq tool 'anzu) (fboundp 'global-anzu-mode))
+         (global-anzu-mode +1))
+        ;;
+        ((eq tool 'swiper)
+         (global-set-key "\C-s" 'swiper)))
+  (setq pel--active-search-tool tool)
+  (message "Now searching with %s" (pel--active-search-tool)))
+
+(defun pel--disable-search-tool (tool)
+  "Disable currently specified search TOOL.
+The TOOL argument can be any of nil | anzu | swiper.
+If TOOL is nil, do nothing."
+  (cond ((and (eq tool 'anzu) (fboundp 'global-anzu-mode))
+         (global-anzu-mode -1))
+        ((eq tool 'swiper)
+         (global-set-key "\C-s" 'isearch-forward)))
+  (setq pel--active-search-tool nil))
+
+;;-pel-autoload
+(defun pel-set-search-tool (tool)
+  "Activate the specified search TOOL.
+The TOOL argument can be any of nil | anzu | swiper.
+A nil value corresponds to Emacs default."
+  ;; Disable the currently used tool (if any)
+  (pel--disable-search-tool (pel--activated-search-tool))
+  ;; Activate the requested one
+  (pel--activate-search-tool tool))
+
+(defun pel--activated-search-tool()
+  "Return search tool currently used.
+Return one of: nil | 'anzu | 'swiper
+The nil value means that Emacs default is used."
+  pel--active-search-tool)
+
+(defun pel--search-tools-selection ()
+  "Return a list of (char prompt symbol) of available search tool choices."
+  (let ((selection '((?e "Emacs Default" nil))))
+    (when pel-use-anzu   (push '(?a "Anzu" anzu) selection))
+    (when pel-use-swiper (push '(?s "Swiper" swiper) selection))
+    (reverse selection)))
+
+;;-pel-autoload
+(defun pel-select-search-tool ()
+  "Prompt user for search tool to use."
+  (interactive)
+  (pel-select-from "Search tool"
+                   (pel--search-tools-selection)
+                   (pel--activated-search-tool)
+                   #'pel-set-search-tool))
+
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-search)

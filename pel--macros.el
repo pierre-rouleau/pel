@@ -25,8 +25,8 @@
 
 ;;; Code:
 
-;; Utility macros
-;; --------------
+;; Loop Control Macro
+;; ------------------
 
 (defmacro while-n (count cond &rest body)
   "Bounded while: execute BODY a maximum of COUNT times, while COND is true."
@@ -35,6 +35,10 @@
        (while (and (> ,tmpvar 0) ,cond)
          ,@body
          (decf ,tmpvar)))))
+
+;; -----------------------------------------------------------------------------
+;; Symbol Bound Checks
+;; -------------------
 
 (defmacro pel-when-fbound (fct &rest body)
   "Eval the BODY if FCT is a bound function, otherwise raise a user error."

@@ -1002,6 +1002,11 @@ For example, applied to a directory name, macOS Finder is used."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11>
 ;; -----------------------
+;;
+;; <f11> Global key prefixes used for multiple packages:
+(define-pel-global-prefix pel:     (kbd "<f11>"))
+(define-pel-global-prefix pel:help (kbd "<f11> ?"))
+
 
 ;; --
 ;; - Function Keys - <f11> top-level prefix keys
@@ -1020,7 +1025,6 @@ For example, applied to a directory name, macOS Finder is used."
              c-toggle-hungry-state
              c-toggle-syntactic-indentation))
 
-(define-pel-global-prefix pel: (kbd "<f11>"))
 (define-key pel:           "#"             'pel-toggle-mac-numlock)
 (define-key pel:           "`"            #'overwrite-mode)
 (define-key pel: (kbd      "RET")         #'auto-fill-mode)
@@ -1286,7 +1290,7 @@ display in other window."
 ;; - Ivy mode
 ;; - Ivy mode with Counsel
 
-(defun pel-count-of-available-modes ()
+(defun pel-number-of-available-modes ()
   "Return number of available modes."
   (let ((count 1))
     (dolist (option '(pel-use-ido
@@ -1295,9 +1299,6 @@ display in other window."
       (when (eval option)
         (setq count (1+ count))))
     count))
-
-(when (> (pel-count-of-available-modes) 1)
-  (define-pel-global-prefix pel:select-completion (kbd "<f11> <f2> c")))
 
 (when pel-use-helm
   (use-package helm
@@ -1332,10 +1333,10 @@ display in other window."
 
 ;; If more than 1 completion mode is available activate the one selected by
 ;; customization and install the selection command.
-(when (> (pel-count-of-available-modes) 1)
+(when (> (pel-number-of-available-modes) 1)
   (require 'pel-completion)
-  (define-key pel:select-completion " " 'pel-select-completion-mode)
-  (define-key pel:select-completion "?" 'pel-show-active-completion-mode)
+  (define-key pel:      (kbd "M-c ") 'pel-select-completion-mode)
+  (define-key pel:help  "c" 'pel-show-active-completion-mode)
   (pel-set-completion-mode pel-initial-completion-mode))
 
 ;; -----------------------------------------------------------------------------
@@ -2214,7 +2215,10 @@ This is meant to be used in the d-mode hook lambda."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> ?`` : Help /apropos/info commands
 
-(define-pel-global-prefix pel:help (kbd "<f11> ?"))
+;; pel:help defined at the beginning of the <f11> section to allow insertion of
+;; other commands by other packages.
+;; Used keys:
+;; A a c e i k M m
 (define-key pel:help "m"  #'man)
 (define-key pel:help "M"  #'woman)
 (when pel-use-ascii-table
@@ -2225,7 +2229,7 @@ This is meant to be used in the d-mode hook lambda."
     :init
     (define-key pel:help "A" 'ascii-table)))
 
-;; -----------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? a`` : Help Apropos commands
 
 (define-pel-global-prefix pel:apropos (kbd "<f11> ? a"))
@@ -2238,7 +2242,7 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:apropos "u"  #'apropos-value)
 (define-key pel:apropos "v"  #'apropos-variable)
 
-;; -----------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? i`` : Help Info commands
 
 (define-pel-global-prefix pel:info (kbd "<f11> ? i"))
@@ -2246,7 +2250,7 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:info "i"  #'info)
 (define-key pel:info "m"  #'info-display-manual)
 
-;; -----------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? d`` : Describe
 
 (define-pel-global-prefix pel:describe (kbd "<f11> ? d"))
@@ -2268,7 +2272,7 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
   (interactive)
   (describe-variable 'kill-ring))
 
-;; -----------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? e`` : Emacs info
 
 (defun pel-emacs-load-stats ()
@@ -2286,7 +2290,7 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
 (define-key pel:emacs "t" #'emacs-init-time)
 (define-key pel:emacs "v" #'emacs-version)
 
-;; -----------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? k`` : Info on Keys
 (when pel-use-free-keys
   (cl-eval-when 'compile (require 'free-keys))
@@ -2872,8 +2876,6 @@ the ones defined from the buffer now."
 (define-key pel:search-replace "O" #'multi-occur-in-matching-buffers)
 (define-key pel:search-replace "r" #'replace-string)
 
-
-
 (define-pel-global-prefix pel:search-word (kbd "<f11> s w"))
 (define-key pel:search-word "f"  #'word-search-forward)
 (define-key pel:search-word "F"  #'word-search-forward-lax)
@@ -2887,38 +2889,37 @@ the ones defined from the buffer now."
 (define-key pel:search-mode "u"   'pel-toggle-search-upper-case)
 (define-key pel:search-mode "l"  #'isearch-toggle-lax-whitespace)
 
-(defvar pel--search-with-swiper nil
-  "Search with swiper if t, with isearch-forward otherwise.")
+(defun pel-number-of-available-search-tools ()
+  "Return the number of available search tools."
+  (let ((count 1))
+    (dolist (option '(pel-use-anzu
+                      pel-use-swiper))
+      (when (eval option)
+        (setq count (1+ count))))
+    count))
+
+
+(when pel-use-anzu
+  (use-package anzu
+    :ensure t
+    :pin melpa
+    :commands global-anzu-mode))
 
 (when pel-use-swiper
-  ;; When Swiper is available, ``<f11> s s`` key maps to pel-switch-search-cmd
-  ;; It allows the user to toggle from using isearch-forward to swiper with C-s.
-  ;; The default mapping depends on pel-serach-with-swiper user option.
   (use-package swiper
     :ensure t
     :pin melpa
-    :commands swiper
-    :init
-    (defun pel--search-with (use-swiper)
-      "Set swiper as the search if USE-SWIPER is t, otherwise set isearch-forward."
-      (if use-swiper
-          (global-set-key "\C-s" 'swiper)
-        (global-set-key "\C-s" 'isearch-forward)))
+    :commands swiper))
 
-    (defun pel-switch-search-cmd ()
-      "Switch search functions assigned to C-s.
-By default C-s is mapped to `isearch-forward' unless
-the user options pel-use-swiper and pel-search-with-swiper are both t,
-in which cases C-s is mapped to `swiper'."
-      (interactive)
-      (pel--search-with (pel-toggle 'pel--search-with-swiper))
-      (message "C-s now search with %s" (if pel--search-with-swiper
-                                            "swiper"
-                                          "isearch-forward")))
-    ;;
-    (define-key pel:search-replace "s" 'pel-switch-search-cmd)
-    (pel--search-with (setq pel--search-with-swiper
-                            pel-search-with-swiper))))
+;; When either Anzu and/or Swiper is available, map:
+;; - ``<f11> s s``  to `pel-select-search-tool'
+;; -  ``<f11> ? s`` to `pel-show-active-search-tool'
+(when (> (pel-number-of-available-search-tools) 1)
+  (require 'pel-search)
+  (define-key pel:search-replace "s" 'pel-select-search-tool)
+  (define-key pel:help           "s" 'pel-show-active-search-tool)
+  ;; and select the initial search tool from user option.
+  (pel-set-search-tool pel-initial-search-tool))
 
 
 (defun pel-reb-re-syntax ()

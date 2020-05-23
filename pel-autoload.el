@@ -118,6 +118,13 @@
   ;; pel-commonlisp
   (autoload 'pel-cl-init "pel-commonlisp")
 
+  ;; pel-completion
+  (dolist (fct '(pel-select-completion-mode
+                 pel-set-completion-mode
+                 pel-show-active-completion-mode
+                 pel-ido-mode))
+    (autoload fct "pel-completion"))
+
   ;; pel-cua
   (autoload 'pel-cua-rectangle-mark        "pel-cua")
   (autoload 'pel-cua-move-rectangle-left   "pel-cua")
@@ -232,6 +239,7 @@
 
   ;; pel-prompt
   (autoload 'pel-y-n-e-or-l-p "pel-prompt")
+  (autoload 'pel-select-from  "pel-prompt")
 
   ;; pel-register
   (autoload 'pel-filename-to-register              "pel-register")
@@ -290,10 +298,17 @@
     (autoload fct "pel-scroll"))
 
   ;; pel-search
-  (autoload 'pel-toggle-case-fold-search   "pel-search")
-  (autoload 'pel-toggle-search-upper-case  "pel-search")
-  (autoload 'pel-show-search-case-state    "pel-search")
-  (autoload 'pel-search-word-from-top      "pel-search")
+  (dolist (fct '(pel-toggle-case-fold-search
+                 pel-toggle-search-upper-case
+                 pel-show-search-case-state
+                 pel-search-word-from-top
+                 pel-show-active-search-tool
+                 pel-set-search-tool
+                 pel-select-search-tool))
+    (autoload fct "pel-search"))
+
+  ;; pel-seq
+  (autoload 'pel-all-fboundp    "pel-seq")
 
   ;; pel-speedbar
   (when (and (boundp 'pel-use-speedbar) pel-use-speedbar)

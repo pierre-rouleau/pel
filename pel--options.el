@@ -224,6 +224,13 @@ References:
   "List of external packages that PEL can use for searching text."
   :group 'pel-package-use)
 
+(defcustom pel-use-anzu nil
+  "Control whether PEL uses the Anzu.
+See: https://melpa.org/#/anzu"
+  :group 'pel-pkg-for-search
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-swiper nil
   "Control whether PEL uses the Swiper search package.
 See: https://github.com/abo-abo/swiper#swiper"
@@ -231,11 +238,19 @@ See: https://github.com/abo-abo/swiper#swiper"
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-search-with-swiper nil
-  "Search with swiper if set to t, otherwise use function `isearch-forward'."
+(defcustom pel-initial-search-tool nil
+  "Select the search tool used when Emacs starts.
+
+PEL supports the following tools:
+- nil      : use Emacs default
+- `anzu'   : use Anzu globally to display search match counts in modeline.
+- `swiper' : use Swiper to display search mathes list in minibuffer."
   :group 'pel-pkg-for-search
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "Use Emacs default" nil)
+          (const :tag "Use Anzu" anzu)
+          (const :tag "Use Swiper" swiper)))
+
 
 ;; -----------------------------------------------------------------------------
 ;; Windows Management
@@ -450,20 +465,23 @@ and ACTIVATE desktop-save-mode" with-desktop-registry-automatic)
 PEL supports several completion engines.
 This option selects which engine used when Emacs starts.
 The available options are:
-- nil   : use Emacs default
-- `helm': use Helm (when pel-use-helm is t).
-- `ido' : use Ido (when pel-use-ido is t)
-- `ivy' : Use Ivy (when pel-use-ivy is t)
-- `ivy/counsel' : Use Ivy with Counsel (when pel-use-ivy and pel-use-counsel are
-                  both t)."
+- nil           : Use Emacs default.
+- `helm'        : Use Helm, when pel-use-helm is t.
+- `ido'         : Use Ido, when pel-use-ido is t.
+- `ido/helm'    : Use Ido with Helm, if both pel-use-ido and pel-use-help are t.
+- `ivy'         : Use Ivy, when pel-use-ivy is t.
+- `ivy/counsel' : Use Ivy with Counsel, when pel-use-ivy and pel-use-counsel are
+                  both t."
   :group 'pel-pkg-for-completion
   :type '(choice
-          (const :tag "Emacs default" nil)
-          (const :tag "Use Helm (requitres pel-use-helm to be t)" helm)
-          (const :tag "Use Ido (requires pel-use-ido to be t)" ido)
-          (const :tag "Use Ivy (requires pel-use-ivy to be t)" ivy)
-          (const :tag "use Ivy & Counsel (requires both pel-use-ivy and \
-pel-use-counsel to be t" ivy/counsel)))
+          (const :tag "Use Emacs default" emacs-default)
+          (const :tag "Use Helm. Requires pel-use-helm." helm)
+          (const :tag "Use Ido.  Requires pel-use-ido." ido)
+          (const :tag "Use Ido with Helm. Requires pel-use-ido & pel-use-helm."
+                 ido/helm)
+          (const :tag "Use Ivy. Requires pel-use-ivy." ivy)
+          (const :tag "Use Ivy & Counsel. Requires both pel-use-ivy and \
+pel-use-counsel." ivy/counsel)))
 
 ;; -----------------------------------------------------------------------------
 ;; Text Insertion / Templates

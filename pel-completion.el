@@ -25,57 +25,31 @@
 ;;
 ;;  At any time you can use `pel-show-active-completion-mode' to display which
 ;;  mode is currently used.
-
+;;
+;; The following is a list of available commands (*) and functions (-) listed in
+;; hierarchical calling order.
+;;
+;; * `pel-select-completion-mode'
+;;   - `pel--completion-mode-selection'
+;;   - `pel-set-completion-mode'
+;;     - `pel--activate-completion-mode'
+;;       - `pel--start/stop'
+;;     * `pel-show-active-completion-mode'
+;;       - `pel--activated-completion-mode'
+;;     - `pel--completion-mode-symbol-for-mask'
+;;     - `pel--available-completion-mode-mask'
+;; * `pel-ido-mode'
 ;;
 ;;; Code:
 (require 'pel--base)
 (require 'pel--macros)
 (require 'pel--options)
-
+(require 'pel-prompt)
+(require 'pel-seq)
 
 ;; --
 
-(defun pel--activated-completion-mode ()
-  "Return Completion engine currently used.
-Return one of:  nil | 'ido | 'ivy | 'ivy/counsel | 'helm"
-  (if (and (boundp 'counsel-mode) counsel-mode)
-      'ivy/counsel
-    (if (and (boundp 'ivy-mode) ivy-mode)
-        'ivy
-      (if (and (boundp 'ido-mode) ido-mode)
-          'ido
-        (if (and (boundp 'helm-mode) helm-mode)
-            'helm
-          nil)))))
-
-(defun pel--available-completion-mode-mask ()
-  "Return bit mask corresponding to the encoding of completion modes available.
-The completion modes available is taken from the following user options:
-- `pel-use-helm'
-- `pel-use-ido'
-- `pel-use-ivy'
-- `pel-use-counsel'
-The bit layout corresponds to the values of pel-USE-{IDO|IVY|COUNSEL|HELM}."
-  (let ((mask 0))
-    (when pel-use-ido
-      (setq mask pel-USE-IDO))
-    (when pel-use-ivy
-      (setq mask (logior mask pel-USE-IVY)))
-    (when pel-use-counsel
-      (setq mask (logior mask pel-USE-COUNSEL)))
-    (when pel-use-helm
-      (setq mask (logior mask pel-USE-HELM)))
-    mask))
-
-(defun pel--completion-mode-symbol-for-mask (mask)
-  "Return the symbol corresponding to the bit MASK.
-It can return nil | 'ido | 'ivy | 'ivy/counsel | 'helm"
-  (cond ((pel-all-bitset-p mask pel-USE-IDO) 'ido)
-        ((pel-all-bitset-p mask pel-USE-IVY pel-USE-COUNSEL) 'ivy/counsel)
-        ((pel-all-bitset-p mask pel-USE-IVY) 'ivy)
-        ((pel-all-bitset-p mask pel-USE-HELM) 'helm)
-        (t nil)))
-
+;;-pel-autoload
 (defun pel-ido-mode (&optional activate)
   "ACTIVATE/deactivate/toggle use of the IDO mode.
 If ACTIVATE is absent or nil toggle the IDO mode.
@@ -101,59 +75,116 @@ Otherwise, de-activate the IDO mode."
                (setq ido-enable-flex-matching nil))))
     (user-error "IDO mode is not available! Please install it first")))
 
-(defun pel--activate-completion-mode (mode newstate)
-  "Activate/deactivate specified completion MODE to a NEWSTATE.
-- MODE must be one of: nil | 'ido | 'ivy | 'ivy/counsel | 'helm
-  If nil, nothing is done.
-- NEWSTATE is either one of: t | nil. t:= activate, nil:= deactivate."
-  (let* ((activate newstate)
-         (action (if newstate 1 -1)))
-    (cond ((eq mode 'ido) (pel-ido-mode action))
-          ;;
-          ((eq mode 'ivy)
-           (if (fboundp 'ivy-mode)
-               (ivy-mode action)
-             (error "The ivy-mode command is not bound. \
-Please report problem")))
-          ;;
-          ;; activate ivy then counsel, deactivate counsel then ivy.
-          ((eq mode 'ivy/counsel)
-           (if (and (fboundp 'ivy-mode)
-                    (fboundp 'counsel-mode))
-               (if activate
-                   (progn
-                     (ivy-mode action)
-                     (counsel-mode action))
-                 (counsel-mode action)
-                 (ivy-mode action))
-             (error "The ivy-mode or counsel-mode command is not bound. \
-Please report this problem")))
-          ;;
-          ((eq mode 'helm)
-           (if (fboundp 'helm-mode)
-               (helm-mode action)
-             (error "The helm-mode command is not bound. \
-Please report this problem")))
-          ;;
-          ;; mode:= nil - do nothing
-          ((not mode) t)
-          ;;
-          ;; otherwise mode is invalid
-          (t (user-error "Invalid mode: %s" mode)))))
+(defun pel--available-completion-mode-mask ()
+  "Return bit mask corresponding to the encoding of completion modes available.
+The completion modes available is taken from the following user options:
+- `pel-use-helm'
+- `pel-use-ido'
+- `pel-use-ivy'
+- `pel-use-counsel'
+The bit layout corresponds to the values of pel-USE-{IDO|IVY|COUNSEL|HELM}."
+  (let ((mask 0))
+    (when pel-use-ido
+      (setq mask pel-USE-IDO))
+    (when pel-use-ivy
+      (setq mask (logior mask pel-USE-IVY)))
+    (when pel-use-counsel
+      (setq mask (logior mask pel-USE-COUNSEL)))
+    (when pel-use-helm
+      (setq mask (logior mask pel-USE-HELM)))
+    mask))
 
+(defun pel--completion-mode-symbol-for-mask (mask)
+  "Return the symbol corresponding to the bit MASK.
+It can return nil | 'ido | 'ido/helm | 'ivy | 'ivy/counsel | 'helm"
+  (cond ((pel-all-bitset-p mask pel-USE-IDO) 'ido)
+        ((pel-all-bitset-p mask pel-USE-IDO pel-USE-HELM) 'ido/helm)
+        ((pel-all-bitset-p mask pel-USE-IVY pel-USE-COUNSEL) 'ivy/counsel)
+        ((pel-all-bitset-p mask pel-USE-IVY) 'ivy)
+        ((pel-all-bitset-p mask pel-USE-HELM) 'helm)
+        (t nil)))
+
+;; --
+
+(defun pel--activated-completion-mode ()
+  "Return input completion engine currently used.
+Return one of:  nil | 'ido | 'ido/helm | 'ivy | 'ivy/counsel | 'helm
+The nil value means that Emacs default is used."
+  (if (bound-and-true-p counsel-mode)
+      'ivy/counsel
+    (if (bound-and-true-p ivy-mode)
+        'ivy
+      (if (bound-and-true-p ido-mode)
+          (if (bound-and-true-p helm-mode)
+              'ido/helm
+            'ido)
+        (if (bound-and-true-p helm-mode)
+            'helm
+          nil)))))
+
+;;-pel-autoload
 (defun pel-show-active-completion-mode ()
   "Display the completion mode currently used."
   (interactive)
   (message "Now using %s completion mode."
            (or (pel--activated-completion-mode) "Emacs' default")))
 
+(defun pel--start/stop (start &rest mode-funs)
+  "START or stop all modes by calling their MODE-FUNS.
+To start set START to t.  To stop: set it nil.
+When starting, start the modes in order of functions in the argument list.
+When stopping, use the reverse order."
+  (let ((mode-arg (if start 1 -1))
+        (funs     (if start mode-funs (reverse mode-funs))))
+    (mapcar
+     (lambda (fct) (funcall fct mode-arg))
+     funs)))
+
+(defun pel--activate-completion-mode (mode start)
+  "START or stop specified completion MODE to a NEWSTATE.
+- MODE must be one of: nil | 'ido | 'ido/helm | 'ivy | 'ivy/counsel | 'helm
+  If nil, nothing is done.
+- START is non-nil to activate , nil to de-activate."
+  (cond ((eq mode 'ido) (pel--start/stop start 'ido-mode))
+        ;;
+        ((eq mode 'ido/helm)
+         (if (fboundp 'helm-mode)
+             (pel--start/stop start 'ido-mode 'helm-mode)
+           (error "The helm-mode command is not bound!")))
+        ;;
+        ((eq mode 'ivy)
+         (if (fboundp 'ivy-mode)
+             (pel--start/stop start 'ivy-mode)
+           (error "The ivy-mode command is not bound!")))
+        ;;
+        ((eq mode 'ivy/counsel)
+         (if (pel-all-fboundp 'ivy-mode 'counsel-mode)
+             (pel--start/stop start 'ivy-mode 'counsel-mode)
+           (error "The ivy-mode or counsel-mode command is not bound!")))
+        ;;
+        ((eq mode 'helm)
+         (if (fboundp 'helm-mode)
+             (pel--start/stop start 'helm-mode)
+           (error "The helm-mode command is not bound!")))
+        ;;
+        ;; mode:= nil - do nothing
+        ((not mode) t)
+        ;;
+        ;; otherwise mode is invalid
+        (t (user-error "Invalid mode: %s" mode))))
+
+;;-pel-autoload
 (defun pel-set-completion-mode (requested)
   "Activate the requested completion mode (if allowed by configuration).
 The REQUESTED is nil or one of: 'ido, 'ivy or 'ivy/counsel.
+A nil value for REQUESTED corresponds to Emacs default.
 If the REQUESTED mode is currently not supported by the pel-use-..
 option variable then the request is ignored.
 Display a message describing what mode was actually activated."
   (let* ((requested-mask (cond ((eq requested 'ido) pel-USE-IDO)
+                               ((eq requested 'ido/helm) (logior
+                                                          pel-USE-IDO
+                                                          pel-USE-HELM))
                                ((eq requested 'ivy) pel-USE-IVY)
                                ((eq requested 'ivy/counsel) (logior
                                                              pel-USE-IVY
@@ -176,32 +207,25 @@ Display a message describing what mode was actually activated."
     (when pel-use-helm    (push '(?h "Helm" helm)
                                 selection))
     (when pel-use-ido     (push '(?d "Ido" ido)
-                                 selection))
+                                selection))
+    (when (and pel-use-helm
+               pel-use-ido) (push '(?H "Ido/Helm" ido/helm)
+                                  selection))
     (when pel-use-ivy     (push '(?v "Ivy" ivy)
                                  selection))
     (when pel-use-counsel (push '(?c "Ivy/Counsel" ivy/counsel)
                                 selection))
     (reverse selection)))
 
-(defun pel--prompt-for (selection)
-  "Return a prompt string for the available completion mode SELECTION.
-SELECTION is a list of (char prompt completion-symbol)"
-  (format "Completion mode: %s."
-          (mapconcat (lambda (elt)
-                       (format "%c: %s"
-                               (car elt) (cadr elt)))
-                     selection
-                     ", ")))
 
+;;-pel-autoload
 (defun pel-select-completion-mode ()
   "Prompt user for completion mode to activate."
   (interactive)
-  (let* ((selection (pel--completion-mode-selection))
-         (prompt    (pel--prompt-for selection))
-         (chars     (mapcar #'car selection))
-         (choice    (read-char-choice prompt chars))
-         (requested-mode (nth 2 (assoc choice selection))))
-    (pel-set-completion-mode requested-mode)))
+  (pel-select-from "Completion mode"
+                   (pel--completion-mode-selection)
+                   (pel--activated-completion-mode)
+                   #'pel-set-completion-mode))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-completion)

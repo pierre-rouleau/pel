@@ -147,6 +147,54 @@ y/Y (yes), n/N (no), e/E (edit), l/L (library).\n")
       (car retl))))
 
 ;; -----------------------------------------------------------------------------
+;; Prompt for choices from a list for choices
+;; ------------------------------------------
+;;
+;; * pel-select-from
+;;   - pel--prompt-for
+;;
+
+(defun pel--prompt-for (title selection &optional current)
+  "Return a prompt string with TITLE for  SELECTION.
+SELECTION is a list of (char prompt value).
+CURRENT optionally identifies the currently used value."
+  (format "%s%s. Select: %s."
+          title
+          (let ((text "?"))
+            (format
+             " [%s]"
+             (dolist (choice selection text)
+               (when (equal (nth 2 choice) current)
+                 (setq text (nth 1 choice))))))
+          (mapconcat (lambda (elt)
+                       (format "%c: %s"
+                               (car elt) (cadr elt)))
+                     selection
+                     ", ")))
+
+(defun pel-select-from (title selection &optional current-value action)
+  "Prompt user with a TITLE for a SELECTION of choices.
+It optionally displays the CURRENT-VALUE in the prompt and
+also optionally calls the ACTION function passing selected value.
+The prompt list the choices in the order of SELECTION list.
+The SELECTION argument is a list of choices.
+Each choice is a list of 3 elements:
+  - A character, presented to the user to select the corresponding choice.
+  - A string, describing the choice
+  - A value, returned or used for the choice.
+If ACTION is nil or if the choice is the same as CURRENT-VALUE,
+`pel-select-from' returns the selected value, otherwise it
+returns the value returned by (ACTION selected-value) evaluation."
+  (let* ((prompt    (pel--prompt-for title selection current-value))
+         (chars     (mapcar #'car selection))
+         (choice    (read-char-choice prompt chars))
+         (requested-value (nth 2 (assoc choice selection))))
+    (if (and action
+             (not (equal requested-value current-value)))
+        (funcall action requested-value)
+      requested-value)))
+
+;; -----------------------------------------------------------------------------
 (provide 'pel-prompt)
 
 ;;; pel-prompt.el ends here

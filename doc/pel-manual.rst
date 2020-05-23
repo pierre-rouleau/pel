@@ -836,13 +836,13 @@ PEL Closing and Suspending Table
 PEL provides the `Closing and Suspending`_ PDF table listing the Emacs commands
 to close and suspend.
 
-PEL Completion Mode Control
----------------------------
+PEL (Input) Completion Mode Control
+-----------------------------------
 
 :PDF Docs: `Customization <pdf/customize.pdf>`_.
-:PEL Key Prefix: - **pel:select-completion** : ``<f11> <f2> c``
+:PEL Key Prefix: *none*
 
-Emacs has one native completion mechanism that kicks into action whenever you
+Emacs has one native input completion mechanism that kicks into action whenever you
 use a command that prompts for something like a file name, a buffer name, a
 command name, etc...  Several other completion modes exist.  The IDO completion
 mode is shipped with Emacs.  The Ivy, Counsel and Helm are other popular
@@ -852,13 +852,15 @@ by the ``pel-initial-completion-mode`` user option.
 
 Once more than one completion mechanism is activated, PEL provides a command
 to select another completion mode: ``pel-select-completion-mode``.  PEL maps this to
-``<f11> <f2> c SPC`` under the **pel:select-completion** key prefix.
+``<f11> M-c``.  To see which input completion is currently active use ``<f11> ? c``.
 
 With this you can start with Ido mode, then quickly switch to using Ivy mode for
 a while and return to Ido mode when you're done. Or use whatever you want at the
 moment you want without having to change and reload your Emacs initialization code.
 
 The management of completion mode is provided by the `pel-completion`_ file.
+
+See the `Customization <pdf/customize.pdf>`_ PDF file for more information.
 
 
 PEL Configuration/Customization Support
@@ -3827,6 +3829,7 @@ alchemist_                    MELPA_
 `ascii-table`_                MELPA_
 `ace-window`_                 MELPA_
 apples-mode_                  MELPA_
+anzu_                         MELPA_
 `auto-complete`_              MELPA_
 `bind-key`_                   MELPA_
 `bm`_                         MELPA_
@@ -3902,6 +3905,7 @@ Hopefully some people will find PEL useful to them.
 .. _ace-window:
 .. _ace-window package:        https://melpa.org/#/ace-window
 .. _apples-mode:               https://melpa.org/#/apples-mode
+.. _anzu:                      https://melpa.org/#/anzu
 .. _auto-complete:
 .. _Auto Complete:
 .. _auto-complete package:     https://melpa.org/#/auto-complete
