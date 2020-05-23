@@ -145,33 +145,40 @@ When stopping, use the reverse order."
 - MODE must be one of: nil | 'ido | 'ido/helm | 'ivy | 'ivy/counsel | 'helm
   If nil, nothing is done.
 - START is non-nil to activate , nil to de-activate."
-  (cond ((eq mode 'ido) (pel--start/stop start 'ido-mode))
-        ;;
-        ((eq mode 'ido/helm)
-         (if (fboundp 'helm-mode)
-             (pel--start/stop start 'ido-mode 'helm-mode)
-           (error "The helm-mode command is not bound!")))
-        ;;
-        ((eq mode 'ivy)
-         (if (fboundp 'ivy-mode)
-             (pel--start/stop start 'ivy-mode)
-           (error "The ivy-mode command is not bound!")))
-        ;;
-        ((eq mode 'ivy/counsel)
-         (if (pel-all-fboundp 'ivy-mode 'counsel-mode)
-             (pel--start/stop start 'ivy-mode 'counsel-mode)
-           (error "The ivy-mode or counsel-mode command is not bound!")))
-        ;;
-        ((eq mode 'helm)
-         (if (fboundp 'helm-mode)
-             (pel--start/stop start 'helm-mode)
-           (error "The helm-mode command is not bound!")))
-        ;;
-        ;; mode:= nil - do nothing
-        ((not mode) t)
-        ;;
-        ;; otherwise mode is invalid
-        (t (user-error "Invalid mode: %s" mode))))
+  (let (chg-helm)
+    (cond ((eq mode 'ido) (pel--start/stop start 'ido-mode))
+          ;;
+          ((eq mode 'ido/helm)
+           (setq chg-helm t)
+           (if (fboundp 'helm-mode)
+               (pel--start/stop start 'ido-mode 'helm-mode)
+             (error "The helm-mode command is not bound!")))
+          ;;
+          ((eq mode 'ivy)
+           (if (fboundp 'ivy-mode)
+               (pel--start/stop start 'ivy-mode)
+             (error "The ivy-mode command is not bound!")))
+          ;;
+          ((eq mode 'ivy/counsel)
+           (if (pel-all-fboundp 'ivy-mode 'counsel-mode)
+               (pel--start/stop start 'ivy-mode 'counsel-mode)
+             (error "The ivy-mode or counsel-mode command is not bound!")))
+          ;;
+          ((eq mode 'helm)
+           (setq chg-helm t)
+           (if (fboundp 'helm-mode)
+               (pel--start/stop start 'helm-mode)
+             (error "The helm-mode command is not bound!")))
+          ;;
+          ;; mode:= nil - do nothing
+          ((not mode) t)
+          ;;
+          ;; otherwise mode is invalid
+          (t (user-error "Invalid mode: %s" mode)))
+    (when chg-helm
+      (global-set-key (kbd "M-x") (if start
+                                      'helm-M-x
+                                    'execute-extended-command)))))
 
 ;;-pel-autoload
 (defun pel-set-completion-mode (requested)
