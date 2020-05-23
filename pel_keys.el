@@ -1362,9 +1362,6 @@ display in other window."
   ;; Text narration on macOS
   ;; -----------------------
   (when pel-system-is-macos-p
-    (when pel-use-hydra
-      (require 'hydra))
-
     (use-package pel-applescript
       :commands (pel-say
                  pel-say-word
@@ -1376,26 +1373,31 @@ display in other window."
       (define-key pel:narrate (kbd "<f1>") 'pel-cfg-pkg-applescript)
       (define-key pel:narrate "t" 'pel-say)
       (define-key pel:narrate "r" 'pel-say-region)
-
-      (when pel-use-hydra
-        (defhydra pel-hydra-narrate (global-map "<f8> .")
-          "narrate"
-          ("w" pel-say-word                "say word")
-          ("b" backward-word               "move to previous word")
-          ("n" pel-forward-word-start      "move to next word")
-          ("s" pel-say-sentence            "say sentence")
-          ("B" backward-sentence           "move to previous sentence")
-          ("N" (progn
-                 (forward-sentence)
-                 (pel-forward-word-start)) "move to next sentence")
-          ("p" pel-say-paragraph           "say paragraph")
-          ("r" (progn
-                 (backward-word)
-                 (pel-say-word))          "repeat last word")
-          ("q" nil "cancel")))
       (define-key pel:narrate "w" 'pel-say-word)
       (define-key pel:narrate "s" 'pel-say-sentence)
-      (define-key pel:narrate "p" 'pel-say-paragraph))))
+      (define-key pel:narrate "p" 'pel-say-paragraph)
+
+      (when pel-use-hydra
+        (use-package hydra
+          :ensure t
+          :pin melpa
+          :defer 2
+          :config
+          (defhydra pel-hydra-narrate (global-map "<f8> .")
+            "narrate"
+            ("w" pel-say-word                "say word")
+            ("b" backward-word               "move to previous word")
+            ("n" pel-forward-word-start      "move to next word")
+            ("s" pel-say-sentence            "say sentence")
+            ("B" backward-sentence           "move to previous sentence")
+            ("N" (progn
+                   (forward-sentence)
+                   (pel-forward-word-start)) "move to next sentence")
+            ("p" pel-say-paragraph           "say paragraph")
+            ("r" (progn
+                   (backward-word)
+                   (pel-say-word))          "repeat last word")
+            ("q" nil "cancel")))))))
 
 ;; -----------------------------------------------------------------------------
 ;; Utility function for mapping CC Mode keys
