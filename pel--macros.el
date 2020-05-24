@@ -30,6 +30,7 @@
 
 (defmacro while-n (count cond &rest body)
   "Bounded while: execute BODY a maximum of COUNT times, while COND is true."
+  (declare (indent 1))
   (let ((tmpvar (make-symbol "i")))
     `(let ((,tmpvar ,count))
        (while (and (> ,tmpvar 0) ,cond)
@@ -42,6 +43,7 @@
 
 (defmacro pel-when-fbound (fct &rest body)
   "Eval the BODY if FCT is a bound function, otherwise raise a user error."
+  (declare (indent 1))
   `(if (fboundp ,fct)
        (progn
          ,@body)
@@ -49,6 +51,7 @@
 
 (defmacro pel-when-bound (var &rest body)
   "Eval the BODY if VAR is a bound variable, otherwise raise a user error."
+  (declare (indent 1))
   `(if (boundp ,var)
        (progn
          ,@body)
