@@ -1342,10 +1342,15 @@ display in other window."
 ;; If more than 1 completion mode is available activate the one selected by
 ;; customization and install the selection command.
 (when (> (pel-number-of-available-modes) 1)
-  (require 'pel-completion)
-  (define-key pel:      (kbd "M-c ") 'pel-select-completion-mode)
-  (define-key pel:help  "c"          'pel-show-active-completion-mode)
-  (pel-set-completion-mode pel-initial-completion-mode))
+  (use-package pel-completion
+    ;; Of all input-completion packages, Helm takes the longuest time to load.
+    ;; Defer its loading a little and allow switching ony once it's loaded.
+    :defer 1
+
+    :config
+    (define-key pel:      (kbd "M-c ") 'pel-select-completion-mode)
+    (define-key pel:help  "c"          'pel-show-active-completion-mode)
+    (pel-set-completion-mode pel-initial-completion-mode)))
 
 ;; -----------------------------------------------------------------------------
 ;; - AppleScript support
