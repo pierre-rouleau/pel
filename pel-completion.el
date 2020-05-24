@@ -140,6 +140,10 @@ When stopping, use the reverse order."
      (lambda (fct) (funcall fct mode-arg))
      funs)))
 
+(defmacro pel-map-helm (key start-helm helm-cmd other-cmd)
+  "Map KEY to HELM-CMD when START-HELM otherwise to OTHER-CMD."
+  `(global-set-key ,key (if ,start-helm ,helm-cmd ,other-cmd)))
+
 (defun pel--activate-completion-mode (mode start)
   "START or stop specified completion MODE to a NEWSTATE.
 - MODE must be one of: nil | 'ido | 'ido/helm | 'ivy | 'ivy/counsel | 'helm
@@ -175,10 +179,34 @@ When stopping, use the reverse order."
           ;;
           ;; otherwise mode is invalid
           (t (user-error "Invalid mode: %s" mode)))
+    ;; When entering or leaving Helm mode, configure extra keys
+    ;; to the Helm mode.  For Ido/Helm leave the ones Ido configure to the Ido
+    ;; binding and use Heml on the other.
+    ;; When leaving Helm, re-establish vanilla Emacs bindings, the mode to
+    ;; activate other modes will change them if they need to change.
     (when chg-helm
-      (global-set-key (kbd "M-x") (if start
-                                      'helm-M-x
-                                    'execute-extended-command)))))
+      ;; for helm and ido/helm modes:
+      ;;
+      ;; Set the helm prefix to "C-c h" instead of the default "C-x c" because
+      ;; it is too close to "C-x C-c", which quits Emacs.
+      ;; It must be set globally, because `helm-command-prefix-key' cannot be
+      ;; changed once `helm-config' is loaded.  It is delayed required in
+      ;; pel_keys. Remove that prefix when exiting helm mode.
+      (if start
+          (progn
+            (global-unset-key (kbd "C-x c"))
+            (global-set-key (kbd "C-c h") 'helm-command-prefix))
+        (global-unset-key (kbd "C-c h")))
+      ;; Add/remove extra bindings
+      (pel-map-helm (kbd "M-x") start 'helm-M-x 'execute-extended-command)
+
+      ;; for helm mode only (not ido/helm)
+      (when (eq mode 'helm)
+        (pel-map-helm (kbd "C-x C-f") start 'helm-find-files 'find-file)
+        (pel-map-helm (kbd "C-x b")   start 'helm-mini 'switch-to-buffer)
+        ))))
+
+
 
 ;;-pel-autoload
 (defun pel-set-completion-mode (requested)

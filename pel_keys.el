@@ -1278,8 +1278,8 @@ display in other window."
 (define-pel-global-prefix pel:modesel  (kbd "<f11> <f2>"))
 
 ;; -----------------------------------------------------------------------------
-;; Completion Framework activation
-;; -------------------------------
+;; Input Completion Framework activation
+;; -------------------------------------
 ;;
 ;; Activate the mode(s) available, activate the initial mode and provide keys
 ;; to show current mode and to select a different one. The code supports the
@@ -1302,9 +1302,17 @@ display in other window."
 
 (when pel-use-helm
   (use-package helm
-    :commands helm-mode))
+    :ensure t
+    :pin melpa
+    :commands helm-mode
+    :config
+    (require 'helm-config)
+    ;; <tab> or C-i are mapped to helm-select-action.  Use M-C-i to run
+    ;; persistent action.
+    (define-key helm-map (kbd "M-C-i") 'helm-execute-persistent-action)))
 
 (when pel-use-ido
+  ;; IDO is distributed with Emacs.
   (use-package ido
     :commands ido-mode))
 
@@ -1336,7 +1344,7 @@ display in other window."
 (when (> (pel-number-of-available-modes) 1)
   (require 'pel-completion)
   (define-key pel:      (kbd "M-c ") 'pel-select-completion-mode)
-  (define-key pel:help  "c" 'pel-show-active-completion-mode)
+  (define-key pel:help  "c"          'pel-show-active-completion-mode)
   (pel-set-completion-mode pel-initial-completion-mode))
 
 ;; -----------------------------------------------------------------------------
