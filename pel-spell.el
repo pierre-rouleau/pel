@@ -213,19 +213,18 @@ Return \"ispell is not loaded\" instead."
   "Display what spell checking program is being used."
   (interactive)
   (require 'pel--base nil :no-error)         ; use: pel-symbol-on-off-string
-  (pel-when-fbound
-   'pel-symbol-on-off-string
-   (message "\
+  (pel-when-fbound 'pel-symbol-on-off-string
+    (message "\
 ispell: %s, flyspell: %s.\n\
 Spell program used       : %s\n\
 Spell main dictionary    : %s\n\
 Spell personal dictionary: %s"
-            (pel-symbol-on-off-string 'ispell-minor-mode)
-            (pel-symbol-on-off-string 'flyspell-mode)
-            (pel-ispell-program-name)
-            (pel-ispell-main-dictionary)
-            (pel-ispell-personal-dictionary)
-            )))
+             (pel-symbol-on-off-string 'ispell-minor-mode)
+             (pel-symbol-on-off-string 'flyspell-mode)
+             (pel-ispell-program-name)
+             (pel-ispell-main-dictionary)
+             (pel-ispell-personal-dictionary)
+             )))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-spell)
