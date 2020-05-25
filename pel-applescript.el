@@ -57,8 +57,15 @@
 (require 'pel--options)                 ; uses: pel-mac-voice-name
 (require 'pel--base)
 
-(defconst pel-narration-filter-regexp "[_(){}`*~\\<>;/^]"
-  "Regular expression used to exclude a set of characters from narration.")
+(defconst pel-narration-translations
+  '(("[_(){}`*~\\<>/^•]" . " ")
+    ("\"" .  "")
+    (";" . ".  ")        ; pause longer on semicolon
+    ("#"  . " pound ")) ; only supporting English (todo: support more)
+
+  "List of (`input regexp` . `output text`).
+Used by `pel-say' to help translate input text to help smooth the narration.
+The translation identified in the first list element is done first.")
 
 
 ;; --
@@ -88,9 +95,12 @@ to exclude text from the narration.
 Return t if the text was said, nil otherwise."
   (interactive "MSay: ")
   (when filter-chars-regexp
-    (setq text
-          (replace-regexp-in-string "\"" ""
-                                    (replace-regexp-in-string filter-chars-regexp " " text))))
+    (dolist (rule pel-narration-translations text)
+      (setq text
+            (replace-regexp-in-string
+             (car rule)
+             (cdr rule)
+             text))))
   (unless (string-match-p "\"" text)
     (if (fboundp 'do-applescript)
         (do-applescript
