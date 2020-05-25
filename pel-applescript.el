@@ -86,16 +86,18 @@ To say something, use:  (do-applescript \"say \\\"Hello\\\"\")"
     (error "The do-applescript is only available on macOS systems!")))
 
 ;;-pel-autoload
-(defun pel-say (text &optional filter-chars-regexp)
+(defun pel-say (text &optional translations)
   "Say TEXT out-loud.
 Use the Apple osascript to say the text.
 Quotes are not allowed inside the text.
-Furthermore the optional FILTER-CHARS-REGEXP can be used
+Furthermore the optional TRANSLATIONS can be used
 to exclude text from the narration.
+This is a list of (`input regexp` . `output text`)
+used to transform the text prior to narration.
 Return t if the text was said, nil otherwise."
   (interactive "MSay: ")
-  (when filter-chars-regexp
-    (dolist (rule pel-narration-translations text)
+  (when translations
+    (dolist (rule translations text)
       (setq text
             (replace-regexp-in-string
              (car rule)
@@ -117,19 +119,19 @@ Return t if the text was said, nil otherwise."
 (defun pel-say-word ()
   "Say word at point out-loud and move to next word."
   (interactive)
-  (pel-say (pel-word-at-point) pel-narration-filter-regexp))
+  (pel-say (pel-word-at-point) pel-narration-translations))
 
 ;;-pel-autoload
 (defun pel-say-sentence ()
   "Say sentence at point out-loud and move to next sentence."
   (interactive)
-  (pel-say (pel-sentence-at-point) pel-narration-filter-regexp))
+  (pel-say (pel-sentence-at-point) pel-narration-translations))
 
 ;;-pel-autoload
 (defun pel-say-paragraph ()
   "Say paragraph at point out-loud and move to next paragraph."
   (interactive)
-  (pel-say (pel-paragraph-at-point) pel-narration-filter-regexp))
+  (pel-say (pel-paragraph-at-point) pel-narration-translations))
 
 ;;-pel-autoload
 (defun pel-say-region (start end)
@@ -137,7 +139,7 @@ Return t if the text was said, nil otherwise."
   (interactive "r")
   (when (use-region-p)
     (let ((text (buffer-substring start end)))
-      (pel-say text pel-narration-filter-regexp))))
+      (pel-say text pel-narration-translations))))
 
 ;; --
 
