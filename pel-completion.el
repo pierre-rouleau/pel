@@ -27,7 +27,9 @@
 ;;  mode is currently used.
 ;;
 ;; The following is a list of available commands (*) and functions (-) listed in
-;; hierarchical calling order.
+;; hierarchical calling order.  All function/commands with a name that start
+;; with 'pel-' are 'public'.  The functions with a name staring with 'pel--' are
+;;'private' and should not be called from outside this file.
 ;;
 ;; * `pel-select-completion-mode'
 ;;   - `pel--completion-mode-selection'
@@ -35,7 +37,8 @@
 ;;     - `pel--activate-completion-mode'
 ;;       - `pel--start/stop'
 ;;     * `pel-show-active-completion-mode'
-;;       - `pel--activated-completion-mode'
+;;       - `pel-activated-completion-mode-name'
+;;         - `pel-activated-completion-mode'
 ;;     - `pel--completion-mode-symbol-for-mask'
 ;;     - `pel--available-completion-mode-mask'
 ;; * `pel-ido-mode'
@@ -46,7 +49,8 @@
 (require 'pel--options)
 (require 'pel-prompt)
 (require 'pel-seq)
-
+(eval-when-compile
+  (require 'cl-macs))                   ; use: cl-case.
 ;; --
 
 ;;-pel-autoload
@@ -106,7 +110,8 @@ It can return nil | 'ido | 'ido/helm | 'ivy | 'ivy/counsel | 'helm"
 
 ;; --
 
-(defun pel--activated-completion-mode ()
+;;-pel-autoload
+(defun pel-activated-completion-mode ()
   "Return input completion engine currently used.
 Return one of:  nil | 'ido | 'ido/helm | 'ivy | 'ivy/counsel | 'helm
 The nil value means that Emacs default is used."
@@ -122,12 +127,29 @@ The nil value means that Emacs default is used."
             'helm
           nil)))))
 
+
 ;;-pel-autoload
-(defun pel-show-active-completion-mode ()
-  "Display the completion mode currently used."
+(defun pel-activated-completion-mode-name ()
+  "Return string with name of currently used completion MODE."
+  (cl-case (pel-activated-completion-mode)
+    (nil "Emacs default")
+    (ido "Ido")
+    (ido/helm "Ido/Helm")
+    (ivy "Ivy")
+    (ivy/counsel "Ivy/Counsel")
+    (helm "Helm")
+    (t "??")))
+
+;;-pel-autoload
+(defun pel-show-active-completion-mode (&optional now)
+  "Display the completion mode currently used.
+If NOW is non-nil message starts with \"Now\"
+otherwise it starts with \"Currently\"."
   (interactive)
-  (message "Now using %s completion mode."
-           (or (pel--activated-completion-mode) "Emacs' default")))
+  (message "%s using %s completion mode."
+           (if now "Now" "Currently")
+           (pel-activated-completion-mode-name)))
+
 
 (defun pel--start/stop (start &rest mode-funs)
   "START or stop all modes by calling their MODE-FUNS.
@@ -230,11 +252,11 @@ Display a message describing what mode was actually activated."
                                (pel--available-completion-mode-mask)))
          (new-mode (pel--completion-mode-symbol-for-mask allowed-mask)))
     ;; perform the operation: turn off active mode (if any)
-    (pel--activate-completion-mode (pel--activated-completion-mode) nil)
+    (pel--activate-completion-mode (pel-activated-completion-mode) nil)
     ;; then activate new one (if any)
     (pel--activate-completion-mode new-mode t)
     ;; and display the new state of completion mode
-    (pel-show-active-completion-mode)))
+    (pel-show-active-completion-mode :now)))
 
 (defun pel--completion-mode-selection ()
   "Return a list of (char prompt symbol) of available completion choices."
@@ -259,7 +281,7 @@ Display a message describing what mode was actually activated."
   (interactive)
   (pel-select-from "Completion mode"
                    (pel--completion-mode-selection)
-                   (pel--activated-completion-mode)
+                   (pel-activated-completion-mode)
                    #'pel-set-completion-mode))
 
 ;; -----------------------------------------------------------------------------

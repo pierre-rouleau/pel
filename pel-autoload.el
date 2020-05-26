@@ -121,6 +121,8 @@
   ;; pel-completion
   (dolist (fct '(pel-select-completion-mode
                  pel-set-completion-mode
+                 pel-activated-completion-mode
+                 pel-activated-completion-mode-name
                  pel-show-active-completion-mode
                  pel-ido-mode))
     (autoload fct "pel-completion"))
