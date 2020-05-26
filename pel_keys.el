@@ -958,7 +958,7 @@ For example, applied to a directory name, macOS Finder is used."
 ;; <f4>  : kmacro-end-or-call-macro
 ;; <f5>  > repeat
 ;; <f6>  > pel prefix
-;; <f7>  >                  (C)                           (M)
+;; <f7>  > pel-hydra-window (C)                           (M)
 ;; <f8>  >                  (C)                           (M)
 ;; <f9>  >                  (C)                           (M)
 ;; <f10> > menu-bar-open,   (C) buffer-menu-open,         (M) toggle-frame-maximized
@@ -1388,29 +1388,9 @@ display in other window."
       (define-key pel:narrate "r" 'pel-say-region)
       (define-key pel:narrate "w" 'pel-say-word)
       (define-key pel:narrate "s" 'pel-say-sentence)
-      (define-key pel:narrate "p" 'pel-say-paragraph)
+      (define-key pel:narrate "p" 'pel-say-paragraph))))
 
-      (when pel-use-hydra
-        (use-package hydra
-          :ensure t
-          :pin melpa
-          :defer 2
-          :config
-          (defhydra pel-hydra-narrate (global-map "<f8> .")
-            "narrate"
-            ("w" pel-say-word                "say word")
-            ("b" backward-word               "move to previous word")
-            ("n" pel-forward-word-start      "move to next word")
-            ("s" pel-say-sentence            "say sentence")
-            ("B" backward-sentence           "move to previous sentence")
-            ("N" (progn
-                   (forward-sentence)
-                   (pel-forward-word-start)) "move to next sentence")
-            ("p" pel-say-paragraph           "say paragraph")
-            ("r" (progn
-                   (backward-word)
-                   (pel-say-word))          "repeat last word")
-            ("q" nil "cancel")))))))
+;; HYDRA: the pel-hydra-narrate is at the bottom of this file.
 
 ;; -----------------------------------------------------------------------------
 ;; Utility function for mapping CC Mode keys
@@ -3436,6 +3416,72 @@ the ones defined from the buffer now."
 (define-key pel:underline "8" 'pel-commented-adorn-8)
 (define-key pel:underline "9" 'pel-commented-adorn-9)
 (define-key pel:underline "0" 'pel-commented-adorn-10)
+
+;; -----------------------------------------------------------------------------
+;; Hydra Definitions
+;; =================
+
+(when pel-use-hydra
+  (use-package hydra
+    :ensure t
+    :pin melpa
+    :defer 2
+
+    :config
+    ;; HYDRA:
+    (when (and pel-use-applescript pel-system-is-macos-p)
+      (defhydra pel-∑-narrate (global-map "<f8> .")
+        "Narrate"
+        ("w" pel-say-word                "say word")
+        ("b" backward-word               "move to previous word")
+        ("n" pel-forward-word-start      "move to next word")
+        ("s" pel-say-sentence            "say sentence")
+        ("B" backward-sentence           "move to previous sentence")
+        ("N" (progn
+               (forward-sentence)
+               (pel-forward-word-start)) "move to next sentence")
+        ("p" pel-say-paragraph           "say paragraph")
+        ("r" (progn
+               (backward-word)
+               (pel-say-word))          "repeat last word")
+        ("q" nil "cancel")))
+
+    ;; HYDRA:
+    ;; The hydra includes functions that may not be available
+    ;; provide dummy stubs.
+    (when (not pel-use-winner)
+      (defun winner-redo ()
+        "Warning stub"
+        (message "Unavailable - set pel-use-winner to t to activate!"))
+      (defun winner-undo ()
+        "Warning stub"
+        (message "Unavailable - set pel-use-winner to t to activate!")))
+
+    (when (not pel-use-ace-window)
+      (defun ace-swap-window ()
+        "Warning stub"
+        (message "Unavailable - set pel-ace-window to t to activate!")))
+
+    (defhydra pel-∑-window (global-map "<f7>")
+      "Window"
+      ("<down>"  windmove-down               "down")
+      ("<up>"    windmove-up                 "up")
+      ("<left>"  windmove-left               "left")
+      ("<right>" windmove-right              "right")
+      ("="       balance-windows             "balance")
+      ("V"       enlarge-window              "taller")
+      ("v"       shrink-window               "shorter")
+      ("H"       enlarge-window-horizontally "wider")
+      ("h"       shrink-window-horizontally  "narrower")
+      ("|"       split-window-right          "split |")
+      ("_"       split-window-below          "split --")
+      ("d"       delete-window               "delete")
+      ("K"       kill-buffer-and-window      "kill buffer & window")
+      ("."       delete-other-windows        "only this")
+      ("n"       winner-redo                 "next layout")
+      ("p"       winner-undo                 "last layout")
+      ("x"       ace-swap-window             "swap")
+      ("q"       nil                         "cancel"))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel_keys)
