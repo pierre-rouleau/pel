@@ -137,21 +137,23 @@ Depends on 2 Emacs (base system) variables:
 
 ;;-pel-autoload
 (defun pel-search-word-from-top (&optional n)
-  "Search word at point from the top of buffer in window identified by N.
+  "Search word at point from top/bottom of buffer in window identified by N.
 
-- If N is negative:    : search in current window
-- If N is 0:           : search in other window
-- If N is nil or 1 select the window according to the number of non-dedicated
-  and non-minibuffer windows in the current frame:
-   - 1 window  in frame: search in current window
-   - 2 windows in frame: search in other window
-   - 3 or more windows : search in window below
-- If N in [2,8] range, search in window identified by the direction
-  corresponding to the cursor in a numeric keypad:
-  -             8 := 'up
-  - 4 := 'left  5 := 'current  6 := 'right
-  -             2 := 'down
-- If N is 9 or larger: search in window below.
+Grab the word at point from the current window.
+Search in the window identified by N:
+- If N is negative, search backward from the bottom of the window
+  identified by (abs N).  Otherwise search forward from the top
+  of the the window identified by N.
+- If N is not specified, nil or 1: search in the current window.
+- If N is 0:                     : search in other window
+- If N in [2,8] range:           : search in window identified by the direction
+                                   corresponding to the cursor in a numeric
+                                   keypad:
+                                   -             8 := 'up
+                                   - 4 := 'left  5 := 'current  6 := 'right
+                                   -             2 := 'down
+- If N is 9 or larger            : search in window below.
+
 
 Explicitly selecting the minibuffer window, or a non-existing window is not
 allowed, and search is done in current window.
@@ -160,19 +162,25 @@ Searched word is remembered and can be used again to repeat an interactive
 search with \\[isearch-forward] or \\[isearch-backward].
 Position before searched word is pushed on the mark ring."
   (interactive "P")
-  ;; select direction from numerical argument.
-  ;; If there are no argument, select the direction like this:
-  ;; - if there is only 1 window:  use 'current
-  ;; - if there is only 2 windows: use 'other
-  ;; - otherwise: use 'down
+  ;; Use current window if n is not specified.
+  ;; Otherwise select direction from numerical argument.
   (push-mark)
-  (let ((direction (pel-window-direction-for (prefix-numeric-value n)))
-        (searched-word (pel-word-at-point)))
+  (let* ((n-value (prefix-numeric-value n))
+         (do-forward-search (>= n-value 0))
+         (direction (pel-window-direction-for
+                     (abs n-value) :prefer-current))
+         (searched-word (pel-word-at-point)))
     (when (eq direction 'new)
       (setq direction 'current))
     (pel-window-select direction)
-    (goto-char (point-min))
-    (isearch-forward nil :no-recursive-edit)
+    (if do-forward-search
+        ;; forward search
+        (progn
+          (goto-char (point-min))
+          (isearch-forward nil :no-recursive-edit))
+      ;; backward search
+      (goto-char (point-max))
+      (isearch-backward nil :no-recursive-edit))
     (isearch-yank-string searched-word)))
 
 ;; -----------------------------------------------------------------------------

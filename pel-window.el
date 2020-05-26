@@ -165,16 +165,18 @@ Exclude the minibuffer."
 ;; Window Direction Argument processing Utility
 ;; --------------------------------------------
 
-(defun pel-window-direction-for (n)
-  "Return the direction of the target window indentified by N.
+(defun pel-window-direction-for (n &optional prefer-current)
+  "Return direction of the target window indentified by N and PREFER-CURRENT.
 Window selection:
 - If N is negative:    : return 'new
 - If N is 0:           : return 'other
-- If N is nil or 1 select the window according to the number of non-dedicated
-  and non-minibuffer windows in the current frame:
-   - 1 window  in frame: return 'new
-   - 2 windows in frame: return 'other
-   - 3 or more windows : return 'down
+- If N is nil or 1     : the selection depends on PREFER-CURRENT:
+  - If PREFER-CURRENT is non-nil: use current window.
+  - If PREFER-CURRENT is nil, then select the window according to the number
+    of non-dedicated and non-minibuffer windows in the current frame:
+    - 1 window  in frame: return 'new
+    - 2 windows in frame: return 'other
+    - 3 or more windows : return 'down
 - If N in [2,8] range, return the direction corresponding to the
   cursor in a numeric keypad:
   -             8 := 'up
@@ -182,9 +184,11 @@ Window selection:
   -             2 := 'down
 - If N is 9 or larger, return: 'down"
   (let* ((nwindows (pel-count-non-dedicated-windows))
-         (default-direction (cond ((eq nwindows 2) 'other)
-                                  ((eq nwindows 1) 'new)
-                                  (t 'down)))
+         (default-direction (if prefer-current
+                                'current
+                              (cond ((eq nwindows 2) 'other)
+                                    ((eq nwindows 1) 'new)
+                                    (t 'down))))
          (direction (cond
                      ;; ((eq 2 n) 'down)
                      ((eq 8 n) 'up)
