@@ -1382,13 +1382,14 @@ display in other window."
                  pel-say-paragraph
                  pel-say-region)
       :init
-      (define-pel-global-prefix pel:narrate (kbd "<f8>"))
-      (define-key pel:narrate (kbd "<f1>") 'pel-cfg-pkg-applescript)
-      (define-key pel:narrate "t" 'pel-say)
-      (define-key pel:narrate "r" 'pel-say-region)
-      (define-key pel:narrate "w" 'pel-say-word)
-      (define-key pel:narrate "s" 'pel-say-sentence)
-      (define-key pel:narrate "p" 'pel-say-paragraph))))
+      (when (not pel-use-hydra)
+        (define-pel-global-prefix pel:narrate (kbd "<f7> <f8>"))
+        (define-key pel:narrate (kbd "<f1>") 'pel-cfg-pkg-applescript)
+        (define-key pel:narrate "t" 'pel-say)
+        (define-key pel:narrate "R" 'pel-say-region)
+        (define-key pel:narrate "w" 'pel-say-word)
+        (define-key pel:narrate "s" 'pel-say-sentence)
+        (define-key pel:narrate "p" 'pel-say-paragraph)))))
 
 ;; HYDRA: the pel-hydra-narrate is at the bottom of this file.
 
@@ -3432,23 +3433,27 @@ the ones defined from the buffer now."
     :config
     ;; PEL HYDRA: Narrate
     (when (and pel-use-applescript pel-system-is-macos-p)
-      (defhydra pel-∑narrate (global-map "<f8> .")
+      (defhydra pel-∑narrate (global-map "<f7> <f8>" :foreign-keys run)
         ""
-        ("w" pel-say-word                "word"                  :column "Read")
-        ("b" backward-word               "previous word"         :column "Move to")
-        ("n" pel-forward-word-start      "next word"             :column "Move to")
-        ("s" pel-say-sentence            "sentence"              :column "Read")
-        ("B" backward-sentence           "previous sentence"     :column "Move to")
-        ("N" (progn
-               (forward-sentence)
-               (pel-forward-word-start)) "next sentence"         :column "Move to")
-        ("p" pel-say-paragraph           "paragraph"             :column "Read")
+        ("<f1>"  pel-cfg-pkg-applescript  "customize"         :column "Config")
+        ("w"     pel-say-word             "word"              :column "Read")
+        ("s"     pel-say-sentence         "sentence"          :column "Read")
+        ("p"     pel-say-paragraph        "paragraph"         :column "Read")
+        ("R"     pel-say-region           "region"            :column "Read")
         ("r" (progn
                (backward-word)
-               (pel-say-word))          "last word"              :column "Repeat")
-        ("q" nil                        "cancel"                 :column "End")))
+               (pel-say-word))            "last word"         :column "Repeat")
+        ("t"     pel-say                  "at prompt"         :column "Type")
+        ("b"     backward-word            "previous word"     :column "Move to")
+        ("n"     pel-forward-word-start   "next word"         :column "Move to")
+        ("B"     backward-sentence        "previous sentence" :column "Move to")
+        ("N" (progn
+               (forward-sentence)
+               (pel-forward-word-start))  "next sentence"     :column "Move to")
+        ("<f7>" nil                       "cancel"            :column "End")
+        ("q"    nil                       "cancel"            :column "End")))
 
-    ;; PEL HYDRA: Window Management
+    ;;PEL HYDRA: Window Management
     ;; The hydra includes functions that may not be available
     ;; provide dummy stubs for them if necessary.
     (when (not pel-use-winner)

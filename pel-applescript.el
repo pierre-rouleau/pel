@@ -59,9 +59,11 @@
 
 (defconst pel-narration-translations
   '(("[_(){}`*~\\<>/^•]" . " ")
-    ("\"" .  "")
-    (";" . ".  ")        ; pause longer on semicolon
-    ("#"  . " pound ")) ; only supporting English (todo: support more)
+    ("\""  .  "")
+    (";"   . ".  ")        ; pause longer on semicolon
+    ("--+" . "")           ; remove  underlining
+    ("==+" . "")           ; remove underlining
+    ("#"   . " pound ")) ; only supporting English (todo: support more)
 
   "List of (`input regexp` . `output text`).
 Used by `pel-say' to help translate input text to help smooth the narration.
@@ -96,6 +98,13 @@ This is a list of (`input regexp` . `output text`)
 used to transform the text prior to narration.
 Return t if the text was said, nil otherwise."
   (interactive "MSay: ")
+  ;; Filter comments of text in current mode.
+  (dolist (string (list comment-start
+                        comment-end
+                        comment-continue) text)
+    (when string
+      (setq text (replace-regexp-in-string string "" text))))
+  ;; Filter using requested translations.
   (when translations
     (dolist (rule translations text)
       (setq text
@@ -103,6 +112,7 @@ Return t if the text was said, nil otherwise."
              (car rule)
              (cdr rule)
              text))))
+  ;;
   (unless (string-match-p "\"" text)
     (if (fboundp 'do-applescript)
         (do-applescript
