@@ -3425,63 +3425,81 @@ the ones defined from the buffer now."
   (use-package hydra
     :ensure t
     :pin melpa
+
+    ;; Defer creation of Hydra key mappings to help speed startup.
     :defer 2
 
     :config
-    ;; HYDRA:
+    ;; PEL HYDRA: Narrate
     (when (and pel-use-applescript pel-system-is-macos-p)
-      (defhydra pel-∑-narrate (global-map "<f8> .")
-        "Narrate"
-        ("w" pel-say-word                "say word")
-        ("b" backward-word               "move to previous word")
-        ("n" pel-forward-word-start      "move to next word")
-        ("s" pel-say-sentence            "say sentence")
-        ("B" backward-sentence           "move to previous sentence")
+      (defhydra pel-∑narrate (global-map "<f8> .")
+        ""
+        ("w" pel-say-word                "word"                  :column "Read")
+        ("b" backward-word               "previous word"         :column "Move to")
+        ("n" pel-forward-word-start      "next word"             :column "Move to")
+        ("s" pel-say-sentence            "sentence"              :column "Read")
+        ("B" backward-sentence           "previous sentence"     :column "Move to")
         ("N" (progn
                (forward-sentence)
-               (pel-forward-word-start)) "move to next sentence")
-        ("p" pel-say-paragraph           "say paragraph")
+               (pel-forward-word-start)) "next sentence"         :column "Move to")
+        ("p" pel-say-paragraph           "paragraph"             :column "Read")
         ("r" (progn
                (backward-word)
-               (pel-say-word))          "repeat last word")
-        ("q" nil "cancel")))
+               (pel-say-word))          "last word"              :column "Repeat")
+        ("q" nil                        "cancel"                 :column "End")))
 
-    ;; HYDRA:
+    ;; PEL HYDRA: Window Management
     ;; The hydra includes functions that may not be available
-    ;; provide dummy stubs.
+    ;; provide dummy stubs for them if necessary.
     (when (not pel-use-winner)
       (defun winner-redo ()
         "Warning stub"
-        (message "Unavailable - set pel-use-winner to t to activate!"))
+        (user-error "Unavailable - set pel-use-winner to t to activate!"))
       (defun winner-undo ()
         "Warning stub"
-        (message "Unavailable - set pel-use-winner to t to activate!")))
+        (user-error "Unavailable - set pel-use-winner to t to activate!")))
 
     (when (not pel-use-ace-window)
       (defun ace-swap-window ()
         "Warning stub"
-        (message "Unavailable - set pel-ace-window to t to activate!")))
+        (user-error "Unavailable - set pel-ace-window to t to activate!")))
 
-    (defhydra pel-∑-window (global-map "<f7>")
-      "Window"
-      ("<down>"  windmove-down               "down")
-      ("<up>"    windmove-up                 "up")
-      ("<left>"  windmove-left               "left")
-      ("<right>" windmove-right              "right")
-      ("="       balance-windows             "balance")
-      ("V"       enlarge-window              "taller")
-      ("v"       shrink-window               "shorter")
-      ("H"       enlarge-window-horizontally "wider")
-      ("h"       shrink-window-horizontally  "narrower")
-      ("|"       split-window-right          "split |")
-      ("_"       split-window-below          "split --")
-      ("d"       delete-window               "delete")
-      ("K"       kill-buffer-and-window      "kill buffer & window")
-      ("."       delete-other-windows        "only this")
-      ("n"       winner-redo                 "next layout")
-      ("p"       winner-undo                 "last layout")
-      ("x"       ace-swap-window             "swap")
-      ("q"       nil                         "cancel"))))
+    (defhydra pel-∑wnd (global-map "<f7>")
+      ""
+
+      ("<up>"        windmove-up                 "up"            :column "Move")
+      ("<down>"      windmove-down               "down"          :column "Move")
+      ("<left>"      windmove-left               "left"          :column "Move")
+      ("<right>"     windmove-right              "right"         :column "Move")
+      ("="           balance-windows             "balance"       :column "Resize")
+      ("V"           enlarge-window              "taller"        :column "Resize")
+      ("v"           shrink-window               "shorter"       :column "Resize")
+      ("H"           enlarge-window-horizontally "wider"         :column "Resize")
+      ("h"           shrink-window-horizontally  "narrower"      :column "Resize")
+      ("|"           split-window-right          "vertically"    :column "Split")
+      ("3"           split-window-right          "vertically"    :column "Split")
+      ("_"           split-window-below          "horizontally"  :column "Split")
+      ("2"           split-window-below          "horizontally"  :column "Split")
+      ("C-<up>"      pel-create-window-up        "above"         :column "Split to")
+      ("C-<down>"    pel-create-window-down      "below"         :column "Split to")
+      ("C-<left>"    pel-create-window-left      "left"          :column "Split to")
+      ("C-<right>"   pel-create-window-right     "right"         :column "Split to")
+      ("n"           winner-redo                 "next layout"   :column "Layout")
+      ("p"           winner-undo                 "last layout"   :column "Layout")
+      ("x"           ace-swap-window             "swap with.."   :column "Layout")
+      ("M-v"         pel-2-vertical-windows      "flip vert."    :column "Layout")
+      ("M-h"         pel-2-horizontal-windows    "flip horiz."   :column "Layout")
+      ("d"           delete-window               "this window"   :column "Close")
+      ("0"           delete-window               "this window"   :column "Close")
+      ("K"           kill-buffer-and-window      "&kill buffer"  :column "Close")
+      ("."           delete-other-windows        "all others"    :column "Close")
+      ("1"           delete-other-windows        "all others"    :column "Close")
+      ("C-S-<up>"    pel-close-window-up         "above"         :column "Close 1")
+      ("C-S-<down>"  pel-close-window-down       "below"         :column "Close 1")
+      ("C-S-<left>"  pel-close-window-left       "left"          :column "Close 1")
+      ("C-S-<right>" pel-close-window-right      "right"         :column "Close 1")
+      ("q"           nil                         "cancel"        :column "End")
+      ("<f7>"        nil                         "cancel"        :column "End"))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel_keys)
