@@ -327,6 +327,9 @@
   (autoload 'pel-spell-init      "pel-spell")
   (autoload 'pel-spell-show-use  "pel-spell")
 
+  ;; pel-tags
+  (autoload 'pel-show-etags-mode-status    "pel-tags")
+
   ;; pel-text-insert
   (autoload 'pel-insert-line               "pel-text-insert")
   (autoload 'pel-insert-filename           "pel-text-insert")

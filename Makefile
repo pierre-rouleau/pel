@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2020-05-22 17:18:16, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-05-27 19:08:57, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -145,6 +145,7 @@ EL_FILES := pel--base.el \
 			pel-seq.el \
 			pel-speedbar.el \
 			pel-spell.el \
+			pel-tags.el \
 			pel-text-insert.el \
 			pel-text-transform.el \
 			pel-undo.el \
@@ -172,6 +173,7 @@ PDF_FILES := -legend.pdf \
 			case-conversion.pdf \
 			closing-suspending.pdf \
 			comments.pdf \
+			completion-input.pdf \
 			counting.pdf \
 			customize.pdf \
 			cut-paste.pdf \
@@ -215,6 +217,7 @@ PDF_FILES := -legend.pdf \
 			pl-common-lisp.pdf \
 			pl-d.pdf \
 			pl-emacs-lisp.pdf \
+			pl-erlang.pdf \
 			rectangles.pdf \
 			registers.pdf \
 			scrolling.pdf \
@@ -225,6 +228,7 @@ PDF_FILES := -legend.pdf \
 			speedbar.pdf \
 			spell-checking.pdf \
 			text-modes.pdf \
+			tags.pdf \
 			transpose.pdf \
 			undo-redo-repeat.pdf \
 			vsc-mercurial.pdf \
@@ -437,6 +441,7 @@ pel-rst.elc:            pel--base.elc pel--macros.elc pel--options.elc pel-bookm
 pel-search:             pel--options.elc pel--macros.elc pel-prompt.elc pel-read.elc pel-window.elc
 pel-speedbar.elc:       pel--base.elc pel--macros.elc pel--options.elc
 pel-spell.elc:          pel--macros.elc pel--base.elc
+pel-tags.elc:           pel--base.elc
 pel-text-insert.elc:    pel--options.elc pel--base.elc pel-window.elc
 pel-text-transform.elc: pel--base.elc
 pel-window.elc:         pel--base.elc

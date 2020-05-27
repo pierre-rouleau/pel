@@ -3391,6 +3391,15 @@ the ones defined from the buffer now."
     (define-key pel:eXecute "v" 'vterm)))
 
 ;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> X`` : Xref utilities
+;;
+(define-pel-global-prefix pel:xref    (kbd "<f11> X"))
+(define-key pel:xref "." #'xref-find-apropos)
+(define-key pel:xref "X" #'xref-etags-mode)
+(define-key pel:xref "?" #'pel-show-etags-mode-status)
+(define-key pel:help "X" #'pel-show-etags-mode-status)
+
+;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> _`` : Underlining commands
 
 (use-package pel-comment-adorn
