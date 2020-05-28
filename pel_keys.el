@@ -1274,8 +1274,8 @@ display in other window."
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> <f2>`` : Mode Selections
-
-(define-pel-global-prefix pel:modesel  (kbd "<f11> <f2>"))
+;; TODO: future: select various major/minor modes??
+;; (define-pel-global-prefix pel:modesel  (kbd "<f11> <f2>"))
 
 ;; -----------------------------------------------------------------------------
 ;; Input Completion Framework activation
