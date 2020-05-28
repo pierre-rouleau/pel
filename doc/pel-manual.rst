@@ -839,7 +839,8 @@ to close and suspend.
 PEL (Input) Completion Mode Control
 -----------------------------------
 
-:PDF Docs: `Customization <pdf/customize.pdf>`_.
+:PDF Docs: - `Input Completion`_
+           - `User Option Customization`_.
 :PEL Key Prefix: *none*
 
 Emacs has one native input completion mechanism that kicks into action whenever you
@@ -866,7 +867,7 @@ See the `Customization <pdf/customize.pdf>`_ PDF file for more information.
 PEL Configuration/Customization Support
 ---------------------------------------
 
-:PDF Docs: `Customization <pdf/customize.pdf>`_.
+:PDF Docs: `User Option Customization`_.
 :PEL Key Prefix: - **pel:cfg** : ``<f11> <f1>``
                  - **pel:cfg-pl** : ``<f11> <f1> SPC``
 
@@ -905,7 +906,7 @@ After customizing something, you can type the ``q`` key to close  the
 customization buffer and come back where you were.  And to activate your changes
 then run ``pel-init`` by issuing the ``M-x pel-init`` command.
 
-See the `Customization <pdf/customize.pdf>`_ PDF document for more details.
+See the `User Option Customization`_ PDF document for more details.
 
 PEL Counting Support
 --------------------
@@ -917,6 +918,18 @@ PEL Counting Support
 PEL provides the **pel:count** key prefix (``<f11> c``) to Emacs commands that
 count text and display results in the echo area.
 
+
+PEL Cross Reference Support
+---------------------------
+
+:PDF Docs: `Etags-Based Cross-Reference`_
+:PEL Customization: *none*
+:PEL Key Prefix: **pel:xref**
+
+**Note:**
+   🚧  This file is under early development.
+
+The file `pel-tags.el`_ holds utilities related to Etags based cross-reference support.
 
 
 PEL CUA Mode Extension Utilities - *experimental*
@@ -1820,6 +1833,26 @@ code.  Some of them can also be used for other types of Lisp as well.
   buffer and then load it.
 - ``pel-lint-elisp-file`` runs Emacs Lisp lint on the current file.
 
+
+PEL Support for BEAM-VM Programming Languages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Note:**
+   🚧  This file is under early development.
+
+PEL will support several BEAM programming languages, starting with:
+
+- Erlang
+- Elixir
+- LFE (Lisp Flavoured Erlang)
+
+For the moment support is not yet completed even though some commands that
+support these programming languages are already in PEL.
+
+
+See the early version of the `Erlang <pdf/pl-erlang.pdf>`_ PDF document.
+
+
 PEL Support for Curly-Bracket Programming Languages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1920,8 +1953,6 @@ More information is available in the `PEL PDF document for D`_ .
 PEL also provides easy access to commands that can change the CC Mode behaviour
 on which the d-mode is based via the **pel:for-d** key-map, bounded to the
 **F12** key for each buffer in d-mode.
-
-
 
 .. _D Programming Language: https://en.wikipedia.org/wiki/D_(programming_language)
 .. _Emacs D-mode: https://github.com/Emacs-D-Mode-Maintainers/Emacs-D-Mode
@@ -2472,6 +2503,7 @@ mnemonically associate to the related concept if at all possible.
 =============================== ===========================================
 key                             binding
 =============================== ===========================================
+``<f11> DEL``                   **c-hungry-delete-backwards**
 ``<f11> RET``                   **auto-fill-mode**
 ``<f11> SPC``                   Prefix Command to access the
                                 `PEL Mode Sensitive Key-maps`_
@@ -2489,13 +2521,18 @@ key                             binding
 ``<f11> ;``                     pel:comment
 ``<f11> =``                     pel:copy
 ``<f11> ?``                     pel:help
+``<f11> A``                     **counsel-osx-app**
 ``<f11> C``                     pel:clipboard
 ``<f11> D``                     pel:draw
 ``<f11> F``                     pel:frame
+``<f11> N``                     **neotree-toggle**
+``<f11> R``                     **cua-rectangle-mark-mode**
 ``<f11> S``                     pel:session
+``<f11> X``                     pel:xref
 ``<f11> [``                     **pel-cua-move-rectangle-left**
 ``<f11> ]``                     **pel-cua-move-rectangle-right**
-``<f11> ```                    **overwrite-mode**
+``<f11> _``                     pel:underline
+``<f11> ```                     **overwrite-mode**
 ``<f11> a``                     pel:abbrev
 ``<f11> b``                     pel:buffer
 ``<f11> c``                     pel:count
@@ -2514,10 +2551,12 @@ key                             binding
 ``<f11> w``                     pel:window
 ``<f11> x``                     pel:eXecute
 ``<f11> |``                     pel:scroll
+``<f11> <f1>``                  pel:config
 ``<f11> <f10>``                 pel:menu
 ``<f11> <f11>``                 **pel-toggle-frame-fullscreen**
 ``<f11> <f12>``                 **xterm-mouse-mode**
-``<f11> M-s`                    pel:speedbar
+``<f11> M-c``                   **pel-select-completion-mode**
+``<f11> M-s``                   pel:speedbar
 ``<f11> <C-S-down>``            **pel-close-window-down**
 ``<f11> <C-S-left>``            **pel-close-window-left**
 ``<f11> <C-S-right>``           **pel-close-window-right**
@@ -2679,11 +2718,14 @@ PDF Document Tables
 #. `Case Conversion`_
 #. `Closing and Suspending`_
 #. `Comments`_
+#. Completion: `Input Completion`_
 #. `Customization <pdf/customize.pdf>`_.
 #. `Counting`_
+#. Cross-Referencing: `Etags-based Cross-Reference`_
 #. `Cut, Delete, Copy and Paste`_ (killing and yanking)
 #. `Diff and Merge`_
 #. `Display Lines`_
+#. `Drawing`_
 #. `Enriched Text`_
 #. `Faces and Fonts`_
 #. `File Management`_
@@ -2732,18 +2774,24 @@ PDF Document Tables
 **Programming Language Support:**
 
 #. `Apple-Script`_
+#. Curly-bracket Languages
+
+   - `C <pdf/pl-c.pdf>`_
+   - `C++ <pdf/pl-c++.pdf>`_
+   - `D <pdf/pl-d.pdf>`_
+
+#. BEAM-VM Languages
+
+   - `Erlang <pdf/pl-erlang.pdf>`_ (🚧 under development)
+   - Elixir (🚧 under development)
+   - LFE (🚧 under development)
+
 #. Lisp Languages
 
    - `Common Lisp <pdf/pl-common-lisp.pdf>`_
    - `Emacs Lisp <pdf/pl-emacs-lisp.pdf>`_
 
      - `ERT <pdf/ert.pdf>`_ (Emacs Lisp Regression Testing system)
-
-#. Curly-bracket Languages
-
-   - `C <pdf/pl-c.pdf>`_
-   - `C++ <pdf/pl-c++.pdf>`_
-   - `D <pdf/pl-d.pdf>`_
 
 **Version Control Systems:**
 
@@ -2755,10 +2803,10 @@ PDF Document Tables
 #. `F11 Keys`_
 #. `macOS Terminal settings`_
 
+
 .. _Document Legend:                          pdf/-legend.pdf
 .. _Abbreviations:                            pdf/abbreviations.pdf
 .. _Align:                                    pdf/align.pdf
-.. _Apple-Script:                             pdf/pl-applescript.pdf
 .. _Auto-Completion:                          pdf/auto-completion.pdf
 .. _Autosave & Backups:                       pdf/autosave-backup.pdf
 .. _Bookmarks:                                pdf/bookmarks.pdf
@@ -2766,19 +2814,20 @@ PDF Document Tables
 .. _Case Conversion:                          pdf/case-conversion.pdf
 .. _Closing and Suspending:                   pdf/closing-suspending.pdf
 .. _Comments:                                 pdf/comments.pdf
+.. _Input Completion:                         pdf/completion-input.pdf
 .. _Counting:                                 pdf/counting.pdf
+.. _User Option Customization:                pdf/customize.pdf
 .. _Cut, Delete, Copy and Paste:              pdf/cut-paste.pdf
 .. _Diff and Merge:                           pdf/diff-merge.pdf
 .. _Display Lines:                            pdf/display-lines.pdf
 .. _Drawing:                                  pdf/drawing.pdf
 .. _Enriched Text:                            pdf/enriched-text.pdf
+..  ert
 .. _Faces and Fonts:                          pdf/faces-fonts.pdf
 .. _File Management:                          pdf/file-mngt.pdf
 .. _File and Directory Local Variables:       pdf/file-variables.pdf
 .. _Filling and Justification:                pdf/filling-justification.pdf
 .. _Frames:                                   pdf/frames.pdf
-.. _Function Keys:                            pdf/keys-fn.pdf
-.. _F11 Keys:                                 pdf/keys-f11.pdf
 .. _Graphviz Dot:                             pdf/graphviz-dot.pdf
 .. _Grep:                                     pdf/grep.pdf
 .. _Help:                                     pdf/help.pdf
@@ -2789,28 +2838,37 @@ PDF Document Tables
 .. _Input Method:                             pdf/input-method.pdf
 .. _Inserting Text:                           pdf/inserting-text.pdf
 .. _Keyboard Macros:                          pdf/keyboard-macros.pdf
+.. _F11 Keys:                                 pdf/keys-f11.pdf
+.. _Function Keys:                            pdf/keys-fn.pdf
+.. _macOS Terminal settings:                  pdf/macOS-terminal-settings.pdf
 .. _Marking:                                  pdf/marking.pdf
 .. _Menus:                                    pdf/menus.pdf
-.. _Mouse:                                    pdf/mouse.pdf
 .. _Dired:                                    pdf/mode-dired.pdf
 .. _Org mode:                                 pdf/mode-org-mode.pdf
 .. _reStructuredText mode:                    pdf/mode-rst.pdf
 .. _Modifier Keys:                            pdf/modifier-keys.pdf
+.. _Mouse:                                    pdf/mouse.pdf
 .. _Narrowing:                                pdf/narrowing.pdf
 .. _Navigation:                               pdf/navigation.pdf
 .. _Number Keypad:                            pdf/numkeypad.pdf
 .. _Packages:                                 pdf/packages.pdf
+.. _Apple-Script:                             pdf/pl-applescript.pdf
+..  C++
+..  C
 .. _Common Lisp:                              pdf/pl-common-lisp.pdf
+..  D
 .. _Emacs Lisp:                               pdf/pl-emacs-lisp.pdf
+..  Erlang
 .. _Rectangles:                               pdf/rectangles.pdf
 .. _Registers:                                pdf/registers.pdf
 .. _Scrolling:                                pdf/scrolling.pdf
-.. _Sessions:                                 pdf/sessions.pdf
 .. _Search and Replace:                       pdf/search-replace.pdf
+.. _Sessions:                                 pdf/sessions.pdf
 .. _Shells:                                   pdf/shells.pdf
 .. _Sorting:                                  pdf/sorting.pdf
 .. _Speedbar:                                 pdf/speedbar.pdf
 .. _Spell Checking:                           pdf/spell-checking.pdf
+.. _Etags-based Cross-Reference:              pdf/tags.pdf
 .. _Text-modes:                               pdf/text-modes.pdf
 .. _Transpose:                                pdf/transpose.pdf
 .. _Undo, Redo, Repeat and Prefix Arguments:  pdf/undo-redo-repeat.pdf
@@ -2818,8 +2876,6 @@ PDF Document Tables
 .. _Web:                                      pdf/web.pdf
 .. _Whitespaces:                              pdf/whitespaces.pdf
 .. _Windows:                                  pdf/windows.pdf
-.. _macOS Terminal settings:                  pdf/macOS-terminal-settings.pdf
-
 
 
 PEL Customization
@@ -2867,7 +2923,7 @@ To customize PEL:
    - With the above code, PEL will start when Emacs starts and do the following:
 
      - It will activate its main key bindings using the **F2**, **F5**, **F6**,
-       **F11** and **F12** keys.
+       **F7** (if ``pel-use-hydra`` is set to **t**), **F11** and **F12** keys.
        See the `PEL Key Bindings`_ section for more info.
      - It will **not** download or activate any other package.
 
@@ -3434,6 +3490,8 @@ The list of external packages used by PEL is shown in the `Credits`_ section.
 .. _pel-spell:
 .. _pel-spell.el:           ../pel-spell.el
 .. _pel-text-insert:
+.. _pel-tags:
+.. _pel-tags.el:            ../pel-tags.el
 .. _pel-text-insert.el:     ../pel-text-insert.el
 .. _pel-text-transform:
 .. _pel-text-transform.el:  ../pel-text-transform.el
