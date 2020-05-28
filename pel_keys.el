@@ -2170,10 +2170,11 @@ This is meant to be used in the d-mode hook lambda."
 ;; -----------------------------------------------------------------------------
 ;; CUA mode setup
 ;; Activate the ability to use cua-rectangle-mark-mode without using
-;; the CUA re-binding of C_c, C-v, C-x and C-z.
+;; the CUA re-binding of C-c, C-v, C-x and C-z.
 
-;; TODO: Keep this?  Fix the pel-cua-rectangle-mark??
-(global-set-key (kbd "S-<f11>") #'cua-rectangle-mark-mode)
+;; TODO: Keep this? Create a (persistent?) Hydra for this?
+;;       Fix the pel-cua-rectangle-mark??
+(global-set-key (kbd "<f11> R") #'cua-rectangle-mark-mode)
 (global-set-key (kbd "<f11> [")  'pel-cua-move-rectangle-left)
 (global-set-key (kbd "<f11> ]")  'pel-cua-move-rectangle-right)
 
@@ -3397,7 +3398,16 @@ the ones defined from the buffer now."
 (define-key pel:xref "." #'xref-find-apropos)
 (define-key pel:xref "X" #'xref-etags-mode)
 (define-key pel:xref "?" #'pel-show-etags-mode-status)
-(define-key pel:help "X" #'pel-show-etags-mode-status)
+(define-key pel:help "X" #'pel-show-etags-mode-status) ; pel:help key
+(define-key pel:xref "T"  'visit-tags-table)
+(define-key pel:xref "S"  'tags-search)
+(define-key pel:xref "R"  'tags-query-replace)
+(define-key pel:xref "N"  'tags-loop-continue)
+(define-key pel:xref "L"  'list-tags)
+(define-key pel:xref "F"  'next-file)
+(define-key pel:xref "."  'xref-find-apropos)
+(define-key pel:xref "r"  'xref-query-replace-in-results)
+(define-key pel:xref "1"  'first-error)
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> _`` : Underlining commands
@@ -3430,6 +3440,10 @@ the ones defined from the buffer now."
 ;; -----------------------------------------------------------------------------
 ;; Hydra Definitions
 ;; =================
+;;
+;; TODO: might want to place the different hydras inside their own files and
+;;       allow users to map them to some other bindings by using map references
+;;       instead of having them hard coded like they are now.
 
 (when pel-use-hydra
   (use-package hydra

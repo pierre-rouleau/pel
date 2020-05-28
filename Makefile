@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2020-05-27 19:08:57, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-05-28 09:52:50, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -532,10 +532,15 @@ a-copy: $(OUT_DIR) \
 .PHONY: pkg
 pkg: 	export COPYFILE_DISABLE=1
 
+
+# Note: Removing the TMP_DIR tree after creating the tarball file,
+#       it's no longer needed.  If we leave it there Emacs will include
+#       these files in a ELisp cross reference search.
 pkg: | a-copy
 	@printf "***** Create the PEL package TAR file\n"
 	rm -f $(OUT_DIR)/$(PEL_TAR_FILE)
 	tar -C $(TMP_DIR) -cvf $(OUT_DIR)/$(PEL_TAR_FILE) pel-$(PEL_VERSION)/
+	rm -rf $(TMP_DIR)
 	ls -l $(OUT_DIR)/$(PEL_TAR_FILE)
 
 # -----------------------------------------------------------------------------
