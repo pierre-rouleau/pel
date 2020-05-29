@@ -35,7 +35,13 @@
 (defun pel-show-etags-mode-status ()
   "Show the status of the Xref Etags mode in current buffer."
   (interactive)
-  (message "Xref Etags mode is %s" (pel-on-off-string xref-etags-mode)))
+  (message
+   "- Xref Etags mode: %s
+- tags-file-name : %s
+- tags-table-list: %S"
+   (pel-on-off-string xref-etags-mode)
+   tags-file-name
+   tags-table-list))
 
 
 
