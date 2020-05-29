@@ -393,7 +393,7 @@ the function prints an error message and quits.
       (if (pel-window-valid-for-editing-p direction)
           (message "User cancelled: nothing opened")
         (user-error
-         "No valid window identofied by direction %s: nothing opened" direction))
+         "No valid window identified by direction %s: nothing opened" direction))
       (error "File pel-window is not loaded"))))
 
 ;; --
