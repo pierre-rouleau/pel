@@ -2206,7 +2206,7 @@ This is meant to be used in the d-mode hook lambda."
     :commands (hide/show-comments
                hide/show-comments-toggle)
     :init
-    (define-key pel:comment "~" 'hide/show-comments-toggle)
+    (define-key pel:comment ";" 'hide/show-comments-toggle)
     (define-key pel:comment "h" 'hide/show-comments)))
 
 ;; -----------------------------------------------------------------------------
