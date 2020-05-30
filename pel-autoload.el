@@ -239,6 +239,9 @@
   (autoload 'pel-kp-subtract         "pel-numkpad")
   (autoload 'pel-kp-add              "pel-numkpad")
 
+  ;; pel-pathmng
+  (autoload 'pel-emacs-load-path     "pel-pathmng")
+
   ;; pel-prompt
   (autoload 'pel-y-n-e-or-l-p "pel-prompt")
   (autoload 'pel-select-from  "pel-prompt")

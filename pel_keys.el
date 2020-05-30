@@ -2212,10 +2212,15 @@ This is meant to be used in the d-mode hook lambda."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> ?`` : Help /apropos/info commands
 
-;; pel:help defined at the beginning of the <f11> section to allow insertion of
-;; other commands by other packages.
-;; Used keys:
-;; A a c e i k M m
+;; pel:help prefix is defined at the beginning of the <f11> section to allow
+;; insertion of help under that prefix, later when logic dictates that
+;; appropriate functionality is available.
+;;
+;; To help keep track what keay are used, the list of key under the pel:help
+;; prefix are shown below.
+;;
+;;   Used `pel:help' keys:  A a c d e i k M m s X
+
 (define-key pel:help "m"  #'man)
 (define-key pel:help "M"  #'woman)
 (when pel-use-ascii-table
@@ -2250,6 +2255,12 @@ This is meant to be used in the d-mode hook lambda."
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? d`` : Describe
 
+(defun pel-show-kill-ring ()
+  "Display content of `kill-ring' in *Help* buffer.
+Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
+  (interactive)
+  (describe-variable 'kill-ring))
+
 (define-pel-global-prefix pel:describe (kbd "<f11> ? d"))
 (define-key pel:describe "$"  'pel-spell-show-use)
 (define-key pel:describe "c" #'list-colors-display)
@@ -2262,12 +2273,6 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:describe "p" #'what-cursor-position)
 (define-key pel:describe "s"  'pel-show-char-syntax)
 (define-key pel:describe "w"  'pel-show-window-sizes)
-
-(defun pel-show-kill-ring ()
-  "Display content of `kill-ring' in *Help* buffer.
-Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
-  (interactive)
-  (describe-variable 'kill-ring))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? e`` : Emacs info
@@ -2286,6 +2291,11 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
 (define-key pel:emacs "s" #'list-load-path-shadows)
 (define-key pel:emacs "t" #'emacs-init-time)
 (define-key pel:emacs "v" #'emacs-version)
+
+(use-package pel-pathmng
+  :commands pel-show-load-path
+  :init
+  (define-key pel:emacs "p" 'pel-emacs-load-path))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? k`` : Info on Keys

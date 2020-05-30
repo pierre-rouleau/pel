@@ -168,7 +168,7 @@ Position before searched word is pushed on the mark ring."
   (let* ((n-value (prefix-numeric-value n))
          (do-forward-search (>= n-value 0))
          (direction (pel-window-direction-for
-                     (abs n-value) :prefer-current))
+                     (abs n-value) 'current))
          (searched-word (pel-word-at-point)))
     (when (eq direction 'new)
       (setq direction 'current))
