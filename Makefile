@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2020-05-29 22:33:02, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-06-01 12:03:44, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -436,7 +436,7 @@ pel-lisp.elc:           pel--base.elc
 pel-mark.elc:           pel--base.elc
 pel-navigate.elc:       pel--base.elc pel-scroll.elc
 pel-numkpad.elc:        pel--base.elc pel-ccp.elc pel-navigate.elc pel-scroll.elc
-pel-pathmng.elc:        pel--window.elc
+pel-pathmng.elc:        pel-window.elc
 pel-read.elc:           pel-navigate.elc
 pel-register.elc:       pel--base.elc
 pel-rst.elc:            pel--base.elc pel--macros.elc pel--options.elc pel-bookmark.elc
