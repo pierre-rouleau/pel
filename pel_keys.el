@@ -2024,6 +2024,8 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:hideShow "2"  'pel-hide-level-2)
 (define-key pel:hideShow "3"  'pel-hide-level-3)
 (define-key pel:hideShow "4"  'pel-hide-level-4)
+(define-key pel:hideShow (kbd "<down>") 'pel-hs-hide-below-block-inc)
+(define-key pel:hideShow (kbd "<up>")   'pel-hs-hide-below-block-dec)
 ;;
 
 ;; -----------------------------------------------------------------------------
@@ -3541,6 +3543,25 @@ the ones defined from the buffer now."
       ("<f7>"        nil                         "cancel"       :column "End"))
 
     ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    ;; PEL HYDRA: Hide/Show indent level
+
+    (defhydra pel-⅀hideshow (global-map "<f7> /" :foreign-keys run)
+      "Hide/Show levels"
+      ("/"  pel-show-block        "all"    :column "Show")
+      ("h"  pel-hide-block        "block"  :column "Hide")
+      ("s"  pel-show-block        "block"  :column "Show")
+      ("H"  pel-hide-all          "all"    :column "Hide")
+      ("S"  pel-show-all          "all"    :column "Show")
+      ("1"  pel-hide-level-1      "1 & +"  :column "Hide Blocks")
+      ("2"  pel-hide-level-2      "2 & +"  :column "Hide Blocks")
+      ("3"  pel-hide-level-3      "3 & +"  :column "Hide Blocks")
+      ("4"  pel-hide-level-4      "4 & +"  :column "Hide Blocks")
+      ("<C-up>"   pel-hs-hide-block-below-inc "+1" :column "Hide Blocks below current level")
+      ("<C-down>" pel-hs-hide-block-below-dec "-1" :column "Hide Blocks below current level")
+      ("q"         nil            "cancel" :column "End")
+      ("<f7>"      nil            "cancel" :column "End"))
+
+    ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     ;; PEL HYDRA: Selective Display
     ;; Hide text based on indentation by column or indentation level.
 
@@ -3571,9 +3592,7 @@ the ones defined from the buffer now."
       ("S-<left>"
        pel-selective-display-indent-dec        "-indent" :column "By Indent")
       ("|"      pel--maybe-vline-mode "rightmost visible limit" :column "Show")
-      ("<f7>"      nil                              "cancel":column "End"))))
-
-
+      ("<f7>"      nil                           "cancel"      :column "End"))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel_keys)

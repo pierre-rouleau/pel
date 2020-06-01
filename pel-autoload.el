@@ -160,6 +160,8 @@
                  pel-hide-level-2
                  pel-hide-level-3
                  pel-hide-level-4
+                 pel-hs-hide-below-block_inc
+                 pel-hs-hide-below-block_dec
                  pel-selective-display-column-inc
                  pel-selective-display-column-dec
                  pel-selective-display-indent-inc

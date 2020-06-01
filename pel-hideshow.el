@@ -50,8 +50,18 @@ LIMITATION:
   the real state and it will take 2 toggle commands to change the state of
   hiding.")
 
-(defun pel--activate-hideshow-mode ()
+(make-variable-buffer-local 'pel--hs-all-hidden)
+
+(defvar pel--hs-hide-relative-block nil
+  "Number of blocks to hide below current block level.")
+
+(make-variable-buffer-local 'pel--hs-hide-relative-block)
+
+
+(defun pel--activate-hideshow-mode (&optional use-relative-block)
   "Activate the Hide/Show minor mode if it is not already active."
+  (unless use-relative-block
+    (setq pel--hs-hide-relative-block nil))
   (unless hs-minor-mode
     (setq pel--hs-all-hidden nil)
     (hs-minor-mode)))
@@ -140,6 +150,33 @@ Activate Hide/Show minor mode if not already active."
   (pel--activate-hideshow-mode)
   (hs-hide-level 4))
 
+;;-pel-autoload
+(defun pel-hs-hide-block-below-inc ()
+  "Hide one more block level below this block."
+  (interactive)
+  (pel--activate-hideshow-mode :use-relative-block)
+  (unless pel--hs-hide-relative-block
+    (setq pel--hs-hide-relative-block 1))
+  (if (pel-inc 'pel--hs-hide-relative-block 10)
+      (progn
+        (hs-hide-level pel--hs-hide-relative-block)
+        (message "Hiding level %d below current level" pel--hs-hide-relative-block))
+    (message "Nested block limit of 10 reached")
+    (beep)))
+
+;;-pel-autoload
+(defun pel-hs-hide-block-below-dec ()
+  "Hide one less block level below this block."
+  (interactive)
+  (pel--activate-hideshow-mode :use-relative-block)
+  (if pel--hs-hide-relative-block
+    (if (pel-dec 'pel--hs-hide-relative-block 1 1)
+        (progn
+          (hs-hide-level pel--hs-hide-relative-block)
+          (message "Hiding level %d below current level" pel--hs-hide-relative-block))
+      (setq pel--hs-hide-relative-block nil))
+    (message "All blocks below current are shown")
+    (beep)))
 
 ;; -----------------------------------------------------------------------------
 ;; Column-based Selective display
