@@ -159,7 +159,11 @@
                  pel-hide-level-1
                  pel-hide-level-2
                  pel-hide-level-3
-                 pel-hide-level-4))
+                 pel-hide-level-4
+                 pel-selective-display-column-inc
+                 pel-selective-display-column-dec
+                 pel-selective-display-indent-inc
+                 pel-selective-display-indent-dec))
     (autoload fct "pel-hideshow"))
 
   ;; pel-highlight

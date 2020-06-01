@@ -37,7 +37,7 @@
 
 ;;; Code:
 (require 'hideshow)
-(require 'pel--base)                    ; uses: pel-toggle
+(require 'pel--base)                    ; uses: pel-toggle, pel-dec
 
 
 (defvar pel--hs-all-hidden nil
@@ -139,6 +139,78 @@ Activate Hide/Show minor mode if not already active."
   (interactive)
   (pel--activate-hideshow-mode)
   (hs-hide-level 4))
+
+
+;; -----------------------------------------------------------------------------
+;; Column-based Selective display
+;; ------------------------------
+
+(defun pel--set-vline (column)
+  "Set the vertical line position when vline-mode is available."
+  (when (bound-and-true-p vline-mode)
+    (move-to-column (max 0 (- column 1)))))
+
+;;-pel-autoload
+(defun pel-selective-display-column-inc (n)
+  "Increment variable `selective-display' by N (defaults to 1).
+This hides text indented by that many columns."
+  (interactive "p")
+    (let ((sd-value (or selective-display 1)))
+      (setq sd-value (+ sd-value (or n 1)))
+      (set-selective-display sd-value)
+      (pel--set-vline sd-value)))
+
+;;-pel-autoload
+(defun pel-selective-display-column-dec (n)
+  "Decrement variable `selective-display' by N (defaults to 1).
+This hides text indented by that many columns."
+  (interactive "p")
+  (let ((sd-value selective-display))
+    (when sd-value
+      (setq sd-value (pel-dec sd-value (or n 1) 0)))
+    (set-selective-display sd-value)
+    (pel--set-vline sd-value)))
+
+
+(defun pel--indent-size ()
+  "Return the indentation size used by the current buffer if any, 1 otherwise."
+  ;; for bracket-type programming languages: use c-basic-offset
+  (if (boundp 'c-basic-offset)
+      c-basic-offset
+    1))
+
+;;-pel-autoload
+(defun pel-selective-display-indent-inc (n)
+  "Increment variable `selective-display' by N indentation levels.
+N defaults to 1.  If indentation level is not known, use N columns.
+This hides text indented a the new value of variable `selective-display'."
+  (interactive "p")
+  (let ((indent-columns (pel--indent-size))
+        (sd-value       (or selective-display 1)))
+    (setq sd-value (+ sd-value (* (or n 1) indent-columns)))
+    (set-selective-display sd-value)
+    (pel--set-vline sd-value)))
+
+;;-pel-autoload
+(defun pel-selective-display-indent-dec (n)
+    "Decrement variable `selective-display' by N indentation levels.
+N defaults to 1.  If indentation level is not known, use N columns.
+This hides text indented a the new value of variable `selective-display'."
+  (interactive "p")
+  (let ((indent-columns (pel--indent-size))
+        (sd-value       (or selective-display 0)))
+    (when sd-value
+      (setq sd-value (pel-dec sd-value (* (or n 1) indent-columns) 0))
+      (set-selective-display sd-value)
+      (pel--set-vline sd-value))))
+
+;; -----------------------------------------------------------------------------
+;; Hide/Show Code Docstrings
+;; -------------------------
+
+;; TODO
+
+
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-hideshow)

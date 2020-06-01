@@ -2546,15 +2546,14 @@ the ones defined from the buffer now."
 (define-key pel:highlight      "r"  #'highlight-regexp)
 (define-key pel:highlight      "s"   'pel-toggle-hl-line-sticky)
 (define-key pel:highlight      "u"  #'unhighlight-regexp)
-;;                             "v" 'vline-mode
+;;                             "|" 'vline-mode
 (define-key pel:highlight      "w"  #'hi-lock-write-interactive-patterns)
 ;;
-
 (when pel-use-vline
   (use-package vline
     :commands vline-mode
     :init
-    (define-key pel:highlight    "v"  'vline-mode)))
+    (define-key pel:highlight    "|"  'vline-mode)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> b I`` : Indirect buffer commands
@@ -3464,6 +3463,7 @@ the ones defined from the buffer now."
     :defer 2
 
     :config
+    ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     ;; PEL HYDRA: Narrate
     (when (and pel-use-applescript pel-system-is-macos-p)
       (defhydra pel-∑narrate (global-map "<f7> <f8>" :foreign-keys run)
@@ -3486,7 +3486,8 @@ the ones defined from the buffer now."
         ("<f7>" nil                       "cancel"            :column "End")
         ("q"    nil                       "cancel"            :column "End")))
 
-    ;;PEL HYDRA: Window Management
+    ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    ;; PEL HYDRA: Window Management
     ;; The hydra includes functions that may not be available
     ;; provide dummy stubs for them if necessary.
     (when (not pel-use-winner)
@@ -3505,39 +3506,74 @@ the ones defined from the buffer now."
     (defhydra pel-∑wnd (global-map "<f7>")
       ""
 
-      ("<up>"        windmove-up                 "up"            :column "Move")
-      ("<down>"      windmove-down               "down"          :column "Move")
-      ("<left>"      windmove-left               "left"          :column "Move")
-      ("<right>"     windmove-right              "right"         :column "Move")
-      ("="           balance-windows             "balance"       :column "Resize")
-      ("V"           enlarge-window              "taller"        :column "Resize")
-      ("v"           shrink-window               "shorter"       :column "Resize")
-      ("H"           enlarge-window-horizontally "wider"         :column "Resize")
-      ("h"           shrink-window-horizontally  "narrower"      :column "Resize")
-      ("|"           split-window-right          "vertically"    :column "Split")
-      ("3"           split-window-right          "vertically"    :column "Split")
-      ("_"           split-window-below          "horizontally"  :column "Split")
-      ("2"           split-window-below          "horizontally"  :column "Split")
-      ("C-<up>"      pel-create-window-up        "above"         :column "Split to")
-      ("C-<down>"    pel-create-window-down      "below"         :column "Split to")
-      ("C-<left>"    pel-create-window-left      "left"          :column "Split to")
-      ("C-<right>"   pel-create-window-right     "right"         :column "Split to")
-      ("n"           winner-redo                 "next layout"   :column "Layout")
-      ("p"           winner-undo                 "last layout"   :column "Layout")
-      ("x"           ace-swap-window             "swap with.."   :column "Layout")
-      ("M-v"         pel-2-vertical-windows      "flip vert."    :column "Layout")
-      ("M-h"         pel-2-horizontal-windows    "flip horiz."   :column "Layout")
-      ("d"           delete-window               "this window"   :column "Close")
-      ("0"           delete-window               "this window"   :column "Close")
-      ("K"           kill-buffer-and-window      "&kill buffer"  :column "Close")
-      ("."           delete-other-windows        "all others"    :column "Close")
-      ("1"           delete-other-windows        "all others"    :column "Close")
-      ("C-S-<up>"    pel-close-window-up         "above"         :column "Close 1")
-      ("C-S-<down>"  pel-close-window-down       "below"         :column "Close 1")
-      ("C-S-<left>"  pel-close-window-left       "left"          :column "Close 1")
-      ("C-S-<right>" pel-close-window-right      "right"         :column "Close 1")
-      ("q"           nil                         "cancel"        :column "End")
-      ("<f7>"        nil                         "cancel"        :column "End"))))
+      ("<up>"        windmove-up                 "up"           :column "Move")
+      ("<down>"      windmove-down               "down"         :column "Move")
+      ("<left>"      windmove-left               "left"         :column "Move")
+      ("<right>"     windmove-right              "right"        :column "Move")
+      ("="           balance-windows             "balance"     :column "Resize")
+      ("V"           enlarge-window              "taller"      :column "Resize")
+      ("v"           shrink-window               "shorter"     :column "Resize")
+      ("H"           enlarge-window-horizontally "wider"       :column "Resize")
+      ("h"           shrink-window-horizontally  "narrower"    :column "Resize")
+      ("|"           split-window-right          "vertically"   :column "Split")
+      ("3"           split-window-right          "vertically"   :column "Split")
+      ("_"           split-window-below          "horizontally" :column "Split")
+      ("2"           split-window-below          "horizontally" :column "Split")
+      ("C-<up>"      pel-create-window-up        "above"     :column "Split to")
+      ("C-<down>"    pel-create-window-down      "below"     :column "Split to")
+      ("C-<left>"    pel-create-window-left      "left"      :column "Split to")
+      ("C-<right>"   pel-create-window-right     "right"     :column "Split to")
+      ("n"           winner-redo                 "next layout" :column "Layout")
+      ("p"           winner-undo                 "last layout" :column "Layout")
+      ("x"           ace-swap-window             "swap with.." :column "Layout")
+      ("M-v"         pel-2-vertical-windows      "flip vert."  :column "Layout")
+      ("M-h"         pel-2-horizontal-windows    "flip horiz." :column "Layout")
+      ("d"           delete-window               "this window"  :column "Close")
+      ("0"           delete-window               "this window"  :column "Close")
+      ("K"           kill-buffer-and-window      "&kill buffer" :column "Close")
+      ("."           delete-other-windows        "all others"   :column "Close")
+      ("1"           delete-other-windows        "all others"   :column "Close")
+      ("C-S-<up>"    pel-close-window-up         "above"      :column "Close 1")
+      ("C-S-<down>"  pel-close-window-down       "below"      :column "Close 1")
+      ("C-S-<left>"  pel-close-window-left       "left"       :column "Close 1")
+      ("C-S-<right>" pel-close-window-right      "right"      :column "Close 1")
+      ("q"           nil                         "cancel"       :column "End")
+      ("<f7>"        nil                         "cancel"       :column "End"))
+
+    ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    ;; PEL HYDRA: Selective Display
+    ;; Hide text based on indentation by column or indentation level.
+
+    (defun pel--maybe-vline-mode ()
+      "Use vline-mode when available."
+      (interactive)
+      (if (and pel-use-vline (require 'vline nil :noerror))
+          (progn
+            (vline-mode (if vline-mode -1 +1))
+            (move-to-column (if selective-display
+                                (max 0 (- selective-display 1))
+                              0)))
+        (user-error "vline-mode not available.  Set pel-use-vline to t!")))
+
+    (defhydra pel-⅀hide-indent (global-map "<f7> C-x $" :foreign-keys run)
+      "Selective Display"
+      ("<right>"   pel-selective-display-column-inc  "+1"   :column "By Column")
+      ("<left>"    pel-selective-display-column-dec  "-1"   :column "By Column")
+      ("0"         (lambda ()
+                     (interactive)
+                     (set-selective-display nil))  "unhide" :column "By Column")
+      ("1"         (lambda ()
+                     (interactive)
+                     (set-selective-display 1)) "hide at 1" :column "By Column")
+
+      ("S-<right>"
+       pel-selective-display-indent-inc        "+indent" :column "By Indent")
+      ("S-<left>"
+       pel-selective-display-indent-dec        "-indent" :column "By Indent")
+      ("|"      pel--maybe-vline-mode "rightmost visible limit" :column "Show")
+      ("<f7>"      nil                              "cancel":column "End"))))
+
+
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel_keys)
