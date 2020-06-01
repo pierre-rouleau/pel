@@ -271,15 +271,29 @@ The function issue an error if the argument is not a symbol."
 ;; Note that these functions take a symbol, allowing in place increment or
 ;; decrement.
 
-(defun pel-decrement (n &optional floor)
-  "Decrement symbol N down to FLOOR (0 by default).
-Return N when it's larger than FLOOR.
-Return nil if symbol N value is FLOOR or smaller."
-  (let ((oldvalue (eval n)))
-    (if (> oldvalue (or floor 0))
-        (set n (1- oldvalue)))))
+(defun pel-dec (n &optional step floor)
+  "Decrement symbol N by STEP (defaults to 1) down to FLOOR if specified.
+N can be a symbol.  In that case it's value is updated.
+If FLOOR is specified that's the smallest allowed value for N.
+If N is a symbol, return nil if it cannot be decremented, otherwise
+return the new value.
+If N is a value, always return the new N value, even if it cannot be
+decremented and then returns the same value N."
+  (let* ((is-symbol  (symbolp n))
+         (n-val      (if is-symbol (eval n) n))
+         (step       (or step 1))
+         (too-small  (and floor (< n-val (+ floor step))))
+         (new-val    (if too-small n-val
+                       (- n-val step)))
+         (retval     (if (and too-small is-symbol)
+                         nil
+                       new-val)))
+    (if is-symbol
+        (set n new-val))
+    retval))
 
-(defun pel-increment (n &optional ceiling)
+
+(defun pel-inc (n &optional ceiling)
   "Increment symbol N up to CEILING.
 Return N when it's smaller than CEILING.
 Return nil if symbol N value is CEILING or larger."
