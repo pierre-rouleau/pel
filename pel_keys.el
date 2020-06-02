@@ -2279,20 +2279,17 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? e`` : Emacs info
 
-(defun pel-emacs-load-stats ()
-  "Display number of loaded files & features."
-  (interactive)
-  (message "\
-# loaded files: %d
-# features    : %d"
-           (length load-history)
-           (length features)))
-
 (define-pel-global-prefix pel:emacs (kbd "<f11> ? e"))
-(define-key pel:emacs "l"  'pel-emacs-load-stats)
 (define-key pel:emacs "s" #'list-load-path-shadows)
 (define-key pel:emacs "t" #'emacs-init-time)
 (define-key pel:emacs "v" #'emacs-version)
+
+(use-package pel-emacs
+  :commands (pel-emacs-load-stats
+             pel-emacs-mem-stats)
+  :init
+  (define-key pel:emacs "l"  'pel-emacs-load-stats)
+  (define-key pel:emacs "m"  'pel-emacs-mem-stats))
 
 (use-package pel-pathmng
   :commands pel-show-load-path
@@ -3574,7 +3571,7 @@ the ones defined from the buffer now."
             (move-to-column (if selective-display
                                 (max 0 (- selective-display 1))
                               0)))
-        (user-error "vline-mode not available.  Set pel-use-vline to t!")))
+        (user-error "Command vline-mode is not available.  Set pel-use-vline to t!")))
 
     (defhydra pel-⅀hide-indent (global-map "<f7> C-x $" :foreign-keys run)
       "Selective Display"

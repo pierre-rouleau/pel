@@ -132,6 +132,10 @@
   (autoload 'pel-cua-move-rectangle-left   "pel-cua")
   (autoload 'pel-cua-move-rectangle-right  "pel-cua")
 
+  ;; pel-emacs
+  (autoload 'pel-emacs-load-stats  "pel-emacs")
+  (autoload 'pel-emacs-mem-stats  "pel-emacs")
+
   ;; pel-file
   (autoload 'pel-find-file-at-point-in-window  "pel-file")
   (autoload 'pel-show-filename-at-point        "pel-file")
