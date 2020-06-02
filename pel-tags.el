@@ -36,10 +36,11 @@
   "Show the status of the Xref Etags mode in current buffer."
   (interactive)
   (message
-   "- Xref Etags mode: %s
+   "\
+- Xref Etags mode: %s
 - tags-file-name : %s
 - tags-table-list: %S"
-   (pel-on-off-string xref-etags-mode)
+   (pel-symbol-on-off-string 'xref-etags-mode)
    tags-file-name
    tags-table-list))
 
