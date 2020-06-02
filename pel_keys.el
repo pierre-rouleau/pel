@@ -2010,25 +2010,6 @@ This is meant to be used in the d-mode hook lambda."
    'graphviz-dot-mode 'graphviz-dot-mode-hook))
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> /`` : Hide/Show  commands
-
-(define-pel-global-prefix pel:hideShow (kbd "<f11> /"))
-(define-key pel:hideShow "/"  'hs-minor-mode)
-(define-key pel:hideShow "a"  'pel-toggle-hide-all)
-(define-key pel:hideShow "b"  'pel-toggle-hide-block)
-(define-key pel:hideShow "h"  'pel-hide-block)
-(define-key pel:hideShow "s"  'pel-show-block)
-(define-key pel:hideShow "H"  'pel-hide-all)
-(define-key pel:hideShow "S"  'pel-show-all)
-(define-key pel:hideShow "1"  'pel-hide-level-1)
-(define-key pel:hideShow "2"  'pel-hide-level-2)
-(define-key pel:hideShow "3"  'pel-hide-level-3)
-(define-key pel:hideShow "4"  'pel-hide-level-4)
-(define-key pel:hideShow (kbd "<down>") 'pel-hs-hide-below-block-inc)
-(define-key pel:hideShow (kbd "<up>")   'pel-hs-hide-below-block-dec)
-;;
-
-;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> =`` : Copy commands
 
 (define-pel-global-prefix pel:copy (kbd "<f11> ="))
@@ -3540,23 +3521,44 @@ the ones defined from the buffer now."
       ("<f7>"        nil                         "cancel"       :column "End"))
 
     ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    ;; PEL HYDRA: Hide/Show indent level
+    ;; PEL HYDRA: Hide/Show
 
-    (defhydra pel-⅀hideshow (global-map "<f7> /" :foreign-keys run)
-      "Hide/Show levels"
-      ("/"  pel-show-block        "all"    :column "Show")
-      ("h"  pel-hide-block        "block"  :column "Hide")
-      ("s"  pel-show-block        "block"  :column "Show")
-      ("H"  pel-hide-all          "all"    :column "Hide")
-      ("S"  pel-show-all          "all"    :column "Show")
-      ("1"  pel-hide-level-1      "1 & +"  :column "Hide Blocks")
-      ("2"  pel-hide-level-2      "2 & +"  :column "Hide Blocks")
-      ("3"  pel-hide-level-3      "3 & +"  :column "Hide Blocks")
-      ("4"  pel-hide-level-4      "4 & +"  :column "Hide Blocks")
-      ("<C-up>"   pel-hs-hide-block-below-inc "+1" :column "Hide Blocks below current level")
-      ("<C-down>" pel-hs-hide-block-below-dec "-1" :column "Hide Blocks below current level")
-      ("q"         nil            "cancel" :column "End")
-      ("<f7>"      nil            "cancel" :column "End"))
+    (use-package hideshow
+      :commands hs-minor-mode)
+    (use-package pel-hideshow
+      :commands (pel-show-hide-state
+                 pel-toggle-hide-all
+                 pel-toggle-hide-block
+                 pel-hide-all
+                 pel-hide-block
+                 pel-show-all
+                 pel-show-block
+                 pel-hide-level-1
+                 pel-hide-level-2
+                 pel-hide-level-3
+                 pel-hide-level-4
+                 pel-hs-hide-block-below-inc
+                 pel-hs-hide-block-below-dec))
+
+    (defhydra pel-⅀hideshow (global-map "<f7> /"
+                                        :foreign-keys run)
+      "Hide/Show:"
+      ("/" hs-minor-mode               "Toggle hs mode" :column "State")
+      ("?" pel-show-hide-state         "info")
+      ("a" pel-toggle-hide-all         "all"    :column "Hide/Show")
+      ("b" pel-toggle-hide-block       "block")
+      ("H" pel-hide-all                "all"    :column "Hide")
+      ("h" pel-hide-block              "block")
+      ("S" pel-show-all                "all"    :column "Show")
+      ("s" pel-show-block              "block")
+      ("1" pel-hide-level-1            ">= 1"  :column "Hide levels")
+      ("2" pel-hide-level-2            ">= 2")
+      ("3" pel-hide-level-3            ">= 3")
+      ("4" pel-hide-level-4            ">= 4")
+      (">" pel-hs-hide-block-below-inc "+1" :column "Hide levels:")
+      ("<" pel-hs-hide-block-below-dec "-1")
+      ("q" nil                         "cancel" :column "End")
+      ("<f7>" nil                      "cancel" :column "End"))
 
     ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     ;; PEL HYDRA: Selective Display

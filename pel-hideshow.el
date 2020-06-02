@@ -37,7 +37,7 @@
 
 ;;; Code:
 (require 'hideshow)
-(require 'pel--base)                    ; uses: pel-toggle, pel-dec
+(require 'pel--base)                    ; uses: pel-toggle, pel-dec, pel-inc
 
 
 (defvar pel--hs-all-hidden nil
@@ -56,6 +56,18 @@ LIMITATION:
   "Number of blocks to hide below current block level.")
 
 (make-variable-buffer-local 'pel--hs-hide-relative-block)
+
+
+;;-pel-autoload
+(defun pel-show-hide-state ()
+  "Display state of pel-hideshow in current buffer."
+  (interactive)
+  (message "All blocks: %s.%s"
+           (if pel--hs-all-hidden "hidden" "shown")
+           (if pel--hs-hide-relative-block
+               (format " Hide blocks %d level deeper than current."
+                       pel--hs-hide-relative-block)
+             "")))
 
 
 (defun pel--activate-hideshow-mode (&optional use-relative-block)
@@ -108,7 +120,8 @@ Activate Hide/Show minor mode if not already active."
 Activate Hide/Show minor mode if not already active."
   (interactive)
   (pel--activate-hideshow-mode)
-  (hs-hide-all))
+  (hs-hide-all)
+  (setq pel--hs-all-hidden t))
 
 ;;-pel-autoload
 (defun pel-show-all ()
@@ -116,7 +129,8 @@ Activate Hide/Show minor mode if not already active."
 Activate Hide/Show minor mode if not already active."
   (interactive)
   (pel--activate-hideshow-mode)
-  (hs-show-all))
+  (hs-show-all)
+  (setq pel--hs-all-hidden nil))
 
 ;;-pel-autoload
 (defun pel-hide-level-1 ()

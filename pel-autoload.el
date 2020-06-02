@@ -154,7 +154,8 @@
   (autoload 'pel-previous-frame           "pel-frame-control")
 
   ;; pel-hideshow.el
-  (dolist (fct '(pel-toggle-hide-all
+  (dolist (fct '(pel-show-hide-state
+                 pel-toggle-hide-all
                  pel-toggle-hide-block
                  pel-hide-block
                  pel-show-block
@@ -164,8 +165,8 @@
                  pel-hide-level-2
                  pel-hide-level-3
                  pel-hide-level-4
-                 pel-hs-hide-below-block_inc
-                 pel-hs-hide-below-block_dec
+                 pel-hs-hide-block-below-inc
+                 pel-hs-hide-block-below-dec
                  pel-selective-display-column-inc
                  pel-selective-display-column-dec
                  pel-selective-display-indent-inc
