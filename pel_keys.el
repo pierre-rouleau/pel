@@ -1,3 +1,4 @@
+
 ;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
@@ -3435,6 +3436,29 @@ the ones defined from the buffer now."
 ;;       instead of having them hard coded like they are now.
 
 (when pel-use-hydra
+
+  (setq pel--cache-for-hydra-is-helpful nil)
+  (setq pel--cache-for-hydra-is-helpful-filled nil)
+
+  (defun pel--cache-hydra-is-helpful ()
+    "Store hydra-is-helpful user option."
+    (unless pel--cache-for-hydra-is-helpful-filled
+      (setq pel--cache-for-hydra-is-helpful hydra-is-helpful)
+      (setq pel--cache-for-hydra-is-helpful-filled t)))
+
+  (defun pel--restore-hydra-is-helpful ()
+    "Restore the value of hydra-is-helpful user option."
+    (when pel--cache-for-hydra-is-helpful-filled
+      (setq hydra-is-helpful pel--cache-for-hydra-is-helpful)
+      (setq pel--cache-for-hydra-is-helpful-filled nil)))
+
+  (defun pel-toggle-hydra-hint ()
+    "Toggle display of the current hydra hint."
+    (interactive)
+    (message (if (pel-toggle 'hydra-is-helpful)
+                 "Showing Hydra Hint"
+               "Hiding Hint")))
+
   (use-package hydra
     :ensure t
     :pin melpa
@@ -3483,7 +3507,9 @@ the ones defined from the buffer now."
         "Warning stub"
         (user-error "Unavailable - set pel-ace-window to t to activate!")))
 
-    (defhydra pel-∑wnd (global-map "<f7>")
+    (defhydra pel-∑wnd (global-map "<f7>"
+                                   :pre  (pel--cache-hydra-is-helpful)
+                                   :post (pel--restore-hydra-is-helpful))
       ""
 
       ("<up>"        windmove-up                 "up"           :column "Move")
@@ -3517,6 +3543,7 @@ the ones defined from the buffer now."
       ("C-S-<down>"  pel-close-window-down       "below"      :column "Close 1")
       ("C-S-<left>"  pel-close-window-left       "left"       :column "Close 1")
       ("C-S-<right>" pel-close-window-right      "right"      :column "Close 1")
+      ("?"           pel-toggle-hydra-hint       "hint"         :column "End")
       ("q"           nil                         "cancel"       :column "End")
       ("<f7>"        nil                         "cancel"       :column "End"))
 
