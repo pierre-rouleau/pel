@@ -624,7 +624,11 @@ KNOWN LIMITATIONS:
 - If location is not found:
   - don't move point,
   - beep unless SILENT is non-nil,
-  - return nil."
+  - return nil.
+
+KNOWN LIMITATIONS:
+- Does not always handle nested functions/methods properly where it
+  stays in the current location."
   (interactive "^")
   (let* ((start-pos (point))
          (final-pos start-pos)
