@@ -521,26 +521,88 @@ number of lines.
 ;; Navigate across function definitions
 ;; ------------------------------------
 
+;; Debugging helpers
+(defun pel-n() (interactive) (end-of-defun))
+(defun pel-p() (interactive) (beginning-of-defun))
+
+
+(defun pel--maybe-to-first-defun-after (start-pos)
+  "Maybe move point to first defun definition located after START_POS.
+Return point location. If found it is larger than START-POS."
+  (let (current-pos
+        tentative-final-pos)
+    (while
+        (progn
+          (setq tentative-final-pos (point))
+          (beginning-of-defun)
+          (setq current-pos (point))
+          (and (> current-pos start-pos)
+               (/= current-pos tentative-final-pos))))
+    (goto-char tentative-final-pos)
+    tentative-final-pos))
+
+
 ;;-pel-autoload
-(defun pel-beginning-of-next-defun ()
-  "Move to the beginning of the next function definition.
-This complements `beginning-of-defun' which only reaches the
-same location by moving backwards."
-  (interactive "^")
-  (let ((starting-point (point)))
-    ;; if point is outside of a function/defun definition block
-    ;; moving forward to the end of next function/defun and then backward
-    ;; to the beginning should move point to the beginning of next
-    ;; function/defun.
+(defun pel-beginning-of-next-defun (&optional silent)
+  "Move forward to the beginning of the next function/method/class definition.
+If not found, don't move point.
+If not SILENT, beep when not found.
+Return non-nil if found, nil if not found.
+The actiual value returned when found provides information of the context; when
+the location was found the function returns one of:
+- 'was-outside        : when point was outside any function before call,
+- 'was-inside         : when point was inside prior function before call,
+- 'was-outside-class  : when point was outside but moved to new class or
+                        to its first method.
+LIMITATIONS:
+- Move to statements after last function definition in file.
+- Problem detecting C++ template functions.
+"
+  (interactive)
+  (let ((start-pos (point)))
     (end-of-defun)
     (beginning-of-defun)
-    ;; However, if point was already at the beginning or inside the body of the
-    ;; function/defun, then do it again: move twice to the end of the
-    ;; function/defun and then back to its beginning.
-    (when (<= (point) starting-point)
-      (end-of-defun)
-      (end-of-defun)
-      (beginning-of-defun))))
+
+    (let ((current-pos (point))
+          tentative-final-pos)
+      (if (> current-pos start-pos)
+          ;; Here check if we moved into the beginning of the last method of
+          ;; the next class by checking if we can go to the beginning of a
+          ;; defun that is befoer point but after start-pos
+          (let ((potential-final-pos (pel--maybe-to-first-defun-after start-pos)))
+            (if (= potential-final-pos current-pos)
+                (progn
+                  (goto-char current-pos)
+                  ;; (message "Found, was outside")
+                  'was-outside)                    ; found right away
+              ;; (message "Found new class or its method, was outside")
+              'was-outside-method))
+
+        ;; If start-point was already inside a defun/function/method body then
+        ;; point will move back to the beginning of the current defun. If that's
+        ;; the case we have to try again by going to end defun twice and then go
+        ;; back up to the beginning of the defun.
+        ;; It's also possible that end-of-defun moves point to the end of the
+        ;; last method of a class so we have to go back several times to go back
+        ;; to the beginning of the very first method or class definition that is
+        ;; after where we started from.
+        (end-of-defun)
+        (end-of-defun)
+        (setq tentative-final-pos (pel--maybe-to-first-defun-after start-pos))
+        (if (and (/= tentative-final-pos start-pos)
+                 (not (eobp)))
+            (progn
+              ;; (message "Found, was inside")
+              'was-inside)                    ; found
+          ;; not found
+          (goto-char start-pos)
+          ;; (message "tentative-final-pos:%s, start-pos:%s"
+          ;;         tentative-final-pos start-pos)
+          (when (not silent)
+            (beep))
+          nil)))))
+
+
 
 ;;-pel-autoload
 (defun pel-end-of-previous-defun ()
