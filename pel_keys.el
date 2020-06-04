@@ -1250,12 +1250,14 @@ display in other window."
 ;;
 (pel--cfg ""  pel:cfg "!")
 (pel--cfg "identification"  pel:cfg "i")
+(pel--cfg-pkg "cursor"      pel:cfg "_")
 (pel--cfg-pkg "completion"  pel:cfg "c")
 (pel--cfg-pkg "filemng"     pel:cfg "f")
 (pel--cfg-pkg "grep"        pel:cfg "g")
-(pel--cfg-pkg "window"      pel:cfg "w")
+(pel--cfg-pkg "regexp"      pel:cfg "r")
 (pel--cfg-pkg "search"      pel:cfg "s")
 (pel--cfg-pkg "session"     pel:cfg "S")
+(pel--cfg-pkg "window"      pel:cfg "w")
 (pel--cfg-pkg "speedbar"    pel:cfg (kbd "M-s"))
 
 (define-pel-global-prefix pel:cfg-pl (kbd "<f11> <f1> SPC"))
@@ -2808,6 +2810,19 @@ the ones defined from the buffer now."
 (define-key pel:linectrl "v"            #'visual-line-mode)
 
 ;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> m`` : Multiple Cursors
+
+(when pel-use-multiple-cursors
+  (define-pel-global-prefix pel:mcursors (kbd "<f11> m"))
+
+  (use-package multiple-cursors
+    :ensure t
+    :pin melpa
+    :commands mc/edit-lines
+    :init
+    (define-key pel:mcursors "m" 'mc/edit-lines)))
+
+;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> o`` : ordering (sorting)
 
 (define-pel-global-prefix pel:order (kbd "<f11> o"))
@@ -2932,6 +2947,69 @@ the ones defined from the buffer now."
 ;; add it here because C-M-% cannot be typed in terminal mode
 (define-key pel:regexp  (kbd "<f1>")  'pel-reb-re-syntax)
 ;;
+
+;; --
+;; Other Regular Expression support
+
+(when pel-use-regex-tool
+  (use-package regex-tool
+    :ensure t
+    :pin melpa
+    :commands regex-tool
+    :init
+    (define-key pel:regexp "T" 'regex-tool)))
+
+(when pel-use-pcre2el
+  (use-package pcre2el
+    :ensure t
+    :pin melpa
+    :commands  rxt-mode
+    :init
+    (define-key pel:regexp "p" 'rxt-mode)))
+
+(when pel-use-visual-regexp
+  (use-package visual-regexp
+    :ensure t
+    :pin melpa
+    :commands  (vr/replace
+                vr/query-replace
+                vr/mc-mark)
+    :init
+    (define-key pel:regexp "R" 'vr/replace)
+    (define-key pel:regexp "Q" 'vr/query-replace)
+    (when pel-use-multiple-cursors
+      (define-key pel:regexp "M" 'vr/mc-mark))))
+
+
+(when pel-use-visual-regexp-steroids
+  (use-package visual-regexp-steroids
+    :ensure t
+    :pin melpa
+    :commands  (vr/select-replace
+                vr/select-query-replace
+                vr/select-mc-mark
+                vr/isearch-forward
+                vr/isearch-backward)
+
+    :init                               ; TODO: preliminary bindings: will change
+    (define-key pel:regexp (kbd "M-s") 'vr/select-replace)
+    (define-key pel:regexp (kbd "M-t") 'vr/select-query-replace)
+    (define-key pel:regexp (kbd "M-m") 'vr/select-mc-mark)
+    (define-key pel:regexp (kbd "M-n") 'vr/isearch-forward)
+    (define-key pel:regexp (kbd "M-p") 'vr/isearch-backward)))
+
+(defun pel-xr-at-point ()
+  "Lint regexp string at point and print its expansion in *xr* buffer."
+  (interactive)
+  (user-error "TODO: Not implemented yet. Coming soon"))
+
+(when pel-use-xr
+  (use-package xr
+    :ensure t
+    :pin gnu
+    :commands  pel-xr-at-point
+    :init
+    (define-key pel:regexp "x" 'pel-xr-at-point)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> M-s`` : Speedbar/SR-Speedbar commands

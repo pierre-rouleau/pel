@@ -37,10 +37,13 @@
 ;;   - pel-kbmacro
 ;;   - pel-text-insert
 ;;   - pel-package-use
+;;     - pel-pkg-for-cursor
 ;;     - pel-pkg-for-filemng
 ;;       - pel-pkg-for-ztree
 ;;     - pel-pkg-for-grep
+;;     - pel-pkg-for-regexp
 ;;     - pel-pkg-for-search
+;;     - pel-pkg-for-tags
 ;;     - pel-pkg-for-window
 ;;       - pel-pkg-for-speedbar
 ;;       - pel-pkg-for-session
@@ -156,6 +159,22 @@
   :group 'pel)
 
 ;; -----------------------------------------------------------------------------
+;; pel-pkg-for-cursor
+;; ------------------
+(defgroup pel-pkg-for-cursor nil
+  "List of external packages for cursor management that may be used with PEL."
+  :group 'pel-package-use)
+
+(defcustom pel-use-multiple-cursors nil
+  "Control whether PEL uses the multiple cursors package.
+See URL `https://github.com/magnars/multiple-cursors.el'."
+  :group 'pel-pkg-for-cursor
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; pel-pkg-for-filemng
+;; -------------------
 (defgroup pel-pkg-for-filemng nil
   "List of external packages that can be used to manage file/directory."
   :group 'pel-package-use)
@@ -203,6 +222,8 @@ a non-customizable variable."
   :safe #'booleanp)
 
 ;; -----------------------------------------------------------------------------
+;; pel-pkg-for-grep
+;; ----------------
 (defgroup pel-pkg-for-grep nil
   "List of external packages that PEL can use for grep operations."
   :group 'pel-package-use)
@@ -220,20 +241,64 @@ References:
   :safe #'booleanp)
 
 ;; -----------------------------------------------------------------------------
+;; pel-pkg-for-regexp
+;; ------------------
+(defgroup pel-pkg-for-regexp nil
+  "List of external packages that PEL can use for regular expressions."
+  :group 'pel-package-use)
+
+(defcustom pel-use-regex-tool nil
+  "Control whether PEL uses the external regex-tool library.
+See URL `https://github.com/jwiegley/regex-tool'."
+  :group 'pel-pkg-for-regexp
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-pcre2el nil
+  "Control whether PEL uses the external pcre2el library.
+See URL `https://github.com/joddie/pcre2el'."
+  :group 'pel-pkg-for-regexp
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-visual-regexp nil
+  "Control whether PEL uses the external visual-regexp library.
+See URL `https://github.com/benma/visual-regexp.el'."
+  :group 'pel-pkg-for-regexp
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-visual-regexp-steroids nil
+  "Control whether PEL uses the external visual-regexp-steroids library.
+See URL `https://github.com/benma/visual-regexp-steroids.el'."
+  :group 'pel-pkg-for-regexp
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-xr nil
+  "Control whether PEL uses the external xr library.
+See URL `https://elpa.gnu.org/packages/xr.html'."
+  :group 'pel-pkg-for-regexp
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; pel-pkg-for-search
+;; ------------------
 (defgroup pel-pkg-for-search nil
   "List of external packages that PEL can use for searching text."
   :group 'pel-package-use)
 
 (defcustom pel-use-anzu nil
   "Control whether PEL uses the Anzu.
-See: https://melpa.org/#/anzu"
+See: URL `https://melpa.org/#/anzu'"
   :group 'pel-pkg-for-search
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-swiper nil
   "Control whether PEL uses the Swiper search package.
-See: https://github.com/abo-abo/swiper#swiper"
+See: URL `https://github.com/abo-abo/swiper#swiper'"
   :group 'pel-pkg-for-search
   :type 'boolean
   :safe #'booleanp)
@@ -250,7 +315,6 @@ PEL supports the following tools:
           (const :tag "Use Emacs default" nil)
           (const :tag "Use Anzu" anzu)
           (const :tag "Use Swiper" swiper)))
-
 
 ;; -----------------------------------------------------------------------------
 ;; Windows Management
@@ -310,6 +374,8 @@ References:
 
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; pel-pkg-for-speedbar
+;; --------------------
 (defgroup pel-pkg-for-speedbar nil
   "PEL Speedbar management."
   :group 'pel-pkg-for-window)
@@ -327,6 +393,8 @@ References:
   :safe  #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; pel-pkg-for-session
+;; -------------------
 (defgroup pel-pkg-for-session nil
   "PEL window session management."
   :group 'pel-pkg-for-window)
