@@ -522,21 +522,38 @@ number of lines.
 ;; ------------------------------------
 
 ;; Debugging helpers
-(defun pel-n() (interactive) (end-of-defun))
-(defun pel-p() (interactive) (beginning-of-defun))
-(defun pel-b() (interactive) (message "%s" (pel-beginning-of-next-defun)))
+;; (defun pel-n() (interactive) (pel--end-of-defun))
+;; (defun pel-p() (interactive) (pel--beginning-of-defun))
+;; (defun pel-b() (interactive) (message "%s" (pel-beginning-of-next-defun)))
+
+;; --
+;; Mode aware navigation functions
+
+(defun pel--beginning-of-defun (&optional arg)
+  "Call major mode specific function to move to beginning of defun, with ARG.
+Supports:  `c-beginning-of-defun' and `beginning-of-defun, with ARG."
+  (if (memq major-mode '(c-mode c++-mode))
+      (c-beginning-of-defun arg)
+    (beginning-of-defun arg)))
+
+(defun pel--end-of-defun (&optional arg)
+  "Call major mode specid function to move to end of defun, with ARG.
+Supports: `c-end-of-defun' and `end-of-defun'."
+  (if (memq major-mode '(c-mode c++-mode))
+      (c-end-of-defun arg)
+    (end-of-defun arg)))
 
 ;; --
 
 (defun pel--maybe-to-first-defun-after (start-pos)
   "Maybe move point to first defun definition located after START_POS.
-Return point location. If found it is larger than START-POS."
+Return point location; if found it is larger than START-POS."
   (let (current-pos
         tentative-final-pos)
     (while
         (progn
           (setq tentative-final-pos (point))
-          (beginning-of-defun)
+          (pel--beginning-of-defun)
           (setq current-pos (point))
           (and (> current-pos start-pos)
                (/= current-pos tentative-final-pos))))
@@ -568,8 +585,8 @@ KNOWN LIMITATIONS:
         (save-excursion
           ;; Try simple case: move to end then back to beginning
           ;; that works when point is before a function definition.
-          (end-of-defun)
-          (beginning-of-defun)
+          (pel--end-of-defun)
+          (pel--beginning-of-defun)
           ;; Now check if that was the case
           (let ((current-pos (point))
                 tentative-final-pos)
@@ -593,7 +610,7 @@ KNOWN LIMITATIONS:
               ;; last method of a class so we have to go back several times to go back
               ;; to the beginning of the very first method or class definition that is
               ;; after where we started from.
-              (end-of-defun)
+              (pel--end-of-defun)
               (end-of-defun)
               (setq tentative-final-pos (pel--maybe-to-first-defun-after start-pos))
               (if (and (/= tentative-final-pos start-pos)
