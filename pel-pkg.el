@@ -58,13 +58,16 @@
     (macrostep           "20161120.2106") ; melpa. Melpa-stable: 0.9
     (magit               "20200408.2341") ; melpa. Melpa-stable: 2.90.1
     (monky               "20190619.1637") ; melpa. Melpa-stable: 0.1 (old)
+    (multiple-cursors    "20191210.1759") ; melpa
     (neotree             "20200324.1946") ; melpa.
     (nhexl-mode          "1.4")           ; gnu
     (parinfer            "20180904.844")  ; melpa. Melpa-stable: 0.4.10
+    (pcre2el             "20161120.2103") ; melpa
     (popup               "0.5.3")         ; melpa-stable. Melpa: 20160709.1429
     (popup-kill-ring     "20131020.1854") ; melpa. Melpa-stable: N/A
     (racer               "20191001.2344") ; melpa. Melpa-stable: 1.2
     (rainbow-delimiters  "20191018.1233") ; melpa. Melpa-stable: 2.1.4
+    (regex-tool          "20170104.1918") ; melpa
     (rg                  "20200307.1623") ; melpa. Melpa-stable: 1.8.1
     (rust-mode           "20200303.932")  ; melpa. Melpa-stable: 0.4.0
     (slime               "20200228.1656") ; melpa. Melpa-stable: 2.24
@@ -74,8 +77,11 @@
     (sr-speedbar         "20161025.831")  ; melpa. Melpa-stable: 20140914.2339
     (swiper              "20200503.1102") ; melpa.
     (undo-tree           "0.7.4")         ; gnu
+    (visual-regexp       "20190414.814")  ; melpa
+    (visual-regexp-steroids "20190414.814") ; melpa
     (vterm               "20200418.1610")
     (which-key           "20200216.1350") ; melpa. Melpa-table : 3.4.0
+    (xr                  "1.19")          ; gnu
     (ztree               "20191108.2234")); melpa.
 
   :url "https://github.com/pierre-rouleau/pel"

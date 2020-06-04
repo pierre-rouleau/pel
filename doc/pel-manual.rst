@@ -3919,16 +3919,19 @@ julia-snail_                  MELPA_
 lfe-mode_                     MELPA_
 lice_                         MELPA_
 macrostep_                    MELPA_
+multiple-cursors_             MELPA_
 Magit_                        MELPA_
 Monky_                        MELPA_
 neotree_                      MELPA_
 nhexl-mode_                   ELPA_
 parinfer_                     MELPA_
+pcre2el_                      MELPA_
 popup_                        MELPA-STABLE_
 popup-kill-ring_              MELPA_
 racer_                        MELPA_
 rainbow-delimiters_           MELPA_
-rg_                           MELPA_
+regex-tool_                   MELPA_
+`rg`_                         MELPA_
 rust-mode_                    MELPA_
 slime_                        MELPA_
 smooth-scrolling_             MELPA_
@@ -3936,9 +3939,12 @@ sr-speedbar_                  MELPA_
 swiper_                       MELPA_
 undo-tree_                    ELPA_
 `use-package`_                MELPA_
+visual-regexp_                MELPA_
+visual-regexp-steroids_       MELPA_
 vline_                        Emacsmirror_
 vterm_                        MELPA_
 which-key_                    MELPA_
+`xr`_                         ELPA_
 ztree_                        MELPA_
 ============================= ==========================
 
@@ -4000,14 +4006,17 @@ Hopefully some people will find PEL useful to them.
 .. _lfe-mode:                  https://melpa.org/#/lfe-mode
 .. _lice:                      https://melpa.org/#/lice
 .. _macrostep:                 https://melpa.org/#/macrostep
+.. _multiple-cursors:          https://melpa.org/#/multiple-cursors
 .. _neotree:                   https://melpa.org/#/neotree
 .. _nhexl-mode:                https://elpa.gnu.org/packages/nhexl-mode.html
 .. _package-lint:              https://melpa.org/#/package-lint
 .. _parinfer:                  https://melpa.org/#/parinfer
+.. _pcre2el:                   https://melpa.org/#/pcre2el
 .. _popup:                     https://stable.melpa.org/#/popup
 .. _popup-kill-ring:           https://melpa.org/#/popup-kill-ring
 .. _racer:                     https://melpa.org/#/racer
 .. _rainbow-delimiters:        https://melpa.org/#/rainbow-delimiters
+.. _regex-tool:                https://melpa.org/#/regex-tool
 .. _rg:                        https://melpa.org/#/rg
 .. _rust-mode:                 https://melpa.org/#/rust-mode
 .. _slime:                     https://melpa.org/#/slime
@@ -4020,8 +4029,11 @@ Hopefully some people will find PEL useful to them.
 .. _SBCL:                      https://en.wikipedia.org/wiki/Steel_Bank_Common_Lisp
 .. _ELPA:                      https://elpa.gnu.org
 .. _framemove:                 https://www.emacswiki.org/emacs/FrameMove
+.. _visual-regexp:             https://melpa.org/#/visual-regexp
+.. _visual-regexp-steroids:    https://melpa.org/#/visual-regexp-steroids
 .. _vline:                     https://www.emacswiki.org/emacs/VlineMode
 .. _vterm:                     https://melpa.org/#/vterm
+.. _xr:                        https://elpa.gnu.org/packages/xr.html
 .. _ztree:                     https://melpa.org/#/ztree
 .. _Emacsmirror:               https://github.com/emacsmirror
 
