@@ -2930,7 +2930,7 @@ the ones defined from the buffer now."
 (define-key pel:regexp      "r"  #'replace-regexp)
 (define-key pel:regexp      "B"  #'re-builder)
 ;; add it here because C-M-% cannot be typed in terminal mode
-(define-key pel:regexp      "?"  'pel-reb-re-syntax)
+(define-key pel:regexp  (kbd "<f1>")  'pel-reb-re-syntax)
 ;;
 
 ;; -----------------------------------------------------------------------------
