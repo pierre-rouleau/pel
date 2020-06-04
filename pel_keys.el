@@ -2207,6 +2207,12 @@ This is meant to be used in the d-mode hook lambda."
 
 (define-key pel:help "m"  #'man)
 (define-key pel:help "M"  #'woman)
+(define-key pel:help "?"  'pel-show-major-mode)
+
+(use-package pel-help
+  :commands (pel-show-kill-ring
+             pel-show-major-mode))
+
 (when pel-use-ascii-table
   (use-package ascii-table
     :ensure t
@@ -2238,12 +2244,6 @@ This is meant to be used in the d-mode hook lambda."
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? d`` : Describe
-
-(defun pel-show-kill-ring ()
-  "Display content of `kill-ring' in *Help* buffer.
-Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
-  (interactive)
-  (describe-variable 'kill-ring))
 
 (define-pel-global-prefix pel:describe (kbd "<f11> ? d"))
 (define-key pel:describe "$"  'pel-spell-show-use)
