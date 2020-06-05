@@ -271,6 +271,16 @@ Done in this function to allow advising libraries that remap these keys."
 ;; Dired Extensions
 ;; ----------------
 
+(defun pel--install-undo-in-dired ()
+  "Ensure that dired-undo is available in Dired buffer."
+  (when (boundp 'dired-mode-map)
+    (define-key dired-mode-map (kbd "M-u")   'dired-undo)
+    (define-key dired-mode-map (kbd "C-x u") 'dired-undo)
+    (define-key dired-mode-map (kbd "C-/")   'dired-undo)))
+
+(when pel-use-undo-tree
+    (eval-after-load "dired"
+      '(pel--install-undo-in-dired)))
 
 ;; Open files with OS-registered applications from Dired
 ;; -----------------------------------------------------
