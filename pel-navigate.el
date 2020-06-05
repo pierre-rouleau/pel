@@ -532,14 +532,18 @@ number of lines.
 (defun pel--beginning-of-defun (&optional arg)
   "Call major mode specific function to move to beginning of defun, with ARG.
 Supports:  `c-beginning-of-defun' and `beginning-of-defun, with ARG."
-  (if (memq major-mode '(c-mode c++-mode))
+  (if (and (memq major-mode '(c-mode c++-mode))
+           (require 'cc-cmds nil :noerror)
+           (fboundp 'c-beginning-of-defun))
       (c-beginning-of-defun arg)
     (beginning-of-defun arg)))
 
 (defun pel--end-of-defun (&optional arg)
   "Call major mode specid function to move to end of defun, with ARG.
 Supports: `c-end-of-defun' and `end-of-defun'."
-  (if (memq major-mode '(c-mode c++-mode))
+  (if (and (memq major-mode '(c-mode c++-mode))
+           (require 'cc-cmds nil :noerror)
+           (fboundp 'c-end-of-defun))
       (c-end-of-defun arg)
     (end-of-defun arg)))
 
