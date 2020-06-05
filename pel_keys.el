@@ -267,6 +267,11 @@ Done in this function to allow advising libraries that remap these keys."
 (global-set-key "\C-x\C-b" 'ibuffer)
 
 
+;; -----------------------------------------------------------------------------
+;; Dired Extensions
+;; ----------------
+
+
 ;; Open files with OS-registered applications from Dired
 ;; -----------------------------------------------------
 (when pel-system-is-macos-p
@@ -274,6 +279,8 @@ Done in this function to allow advising libraries that remap these keys."
   ;; In future, could add support for Windows
   ;; by launching Windows Explorer for directories for example.
   ;; Or other OS by using a launcher application for the OS.
+
+  (defvar dired-mode-map) ; forward declare - dired is loaded early in Emacs
 
   (defun pel-dired-open ()
     "Open file with OS-registered application from Dired.
@@ -284,9 +291,8 @@ For example, applied to a directory name, macOS Finder is used."
           (start-process "default-app" nil "open" filename))
       (error "Function dired-get-file-for-visit not loaded")))
 
-  (defvar dired-mode-map)
   (eval-after-load "dired"
-    '(define-key dired-mode-map (kbd "z") 'pel-dired-open)))
+    '(define-key dired-mode-map "z" 'pel-dired-open)))
 
 ;; dired-narrow
 ;; ------------
