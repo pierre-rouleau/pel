@@ -1,4 +1,3 @@
-
 ;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
@@ -277,6 +276,9 @@ Done in this function to allow advising libraries that remap these keys."
     (define-key dired-mode-map (kbd "M-u")   'dired-undo)
     (define-key dired-mode-map (kbd "C-x u") 'dired-undo)
     (define-key dired-mode-map (kbd "C-/")   'dired-undo)))
+(add-hook 'dired-load-hook
+          (lambda ()
+            (load "dired-x" :noerror)))
 
 (when pel-use-undo-tree
     (eval-after-load "dired"
