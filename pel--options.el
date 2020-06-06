@@ -38,6 +38,7 @@
 ;;   - pel-text-insert
 ;;   - pel-package-use
 ;;     - pel-pkg-for-cursor
+;;     - pel-pkg-for-dired
 ;;     - pel-pkg-for-filemng
 ;;       - pel-pkg-for-ztree
 ;;     - pel-pkg-for-grep
@@ -169,6 +170,19 @@
   "Control whether PEL uses the multiple cursors package.
 See URL `https://github.com/magnars/multiple-cursors.el'."
   :group 'pel-pkg-for-cursor
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; pel-pkg-for-dired
+;; -----------------
+(defgroup pel-pkg-for-dired nil
+  "List of packages activated for Dired support that may be used with PEL."
+    :group 'pel-package-use)
+
+(defcustom pel-use-dired-x nil
+  "Control whether PEL activates the Dired-X features in dired-mode."
+  :group 'pel-pkg-for-dired
   :type 'boolean
   :safe #'booleanp)
 

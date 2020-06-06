@@ -265,7 +265,6 @@ Done in this function to allow advising libraries that remap these keys."
 ;; powerful `ibuffer'. Show in current window, not other one.
 (global-set-key "\C-x\C-b" 'ibuffer)
 
-
 ;; -----------------------------------------------------------------------------
 ;; Dired Extensions
 ;; ----------------
@@ -276,13 +275,16 @@ Done in this function to allow advising libraries that remap these keys."
     (define-key dired-mode-map (kbd "M-u")   'dired-undo)
     (define-key dired-mode-map (kbd "C-x u") 'dired-undo)
     (define-key dired-mode-map (kbd "C-/")   'dired-undo)))
-(add-hook 'dired-load-hook
-          (lambda ()
-            (load "dired-x" :noerror)))
 
 (when pel-use-undo-tree
     (eval-after-load "dired"
       '(pel--install-undo-in-dired)))
+
+;; Activate extra Dired-x features when requested.
+(when pel-use-dired-x
+  (add-hook 'dired-load-hook
+            (lambda ()
+              (load "dired-x" :noerror))))
 
 ;; Open files with OS-registered applications from Dired
 ;; -----------------------------------------------------
@@ -1270,6 +1272,7 @@ display in other window."
 (pel--cfg "identification"  pel:cfg "i")
 (pel--cfg-pkg "cursor"      pel:cfg "_")
 (pel--cfg-pkg "completion"  pel:cfg "c")
+(pel--cfg-pkg "dired"       pel:cfg "d")
 (pel--cfg-pkg "filemng"     pel:cfg "f")
 (pel--cfg-pkg "grep"        pel:cfg "g")
 (pel--cfg-pkg "regexp"      pel:cfg "r")
