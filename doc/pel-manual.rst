@@ -3959,7 +3959,7 @@ package-lint_                 MELPA_
 ============================= ==========================
 
 Thanks to everyone that has worked in the software listed above.
-Hopefully some people will find PEL useful to them.
+Hopefully you will find PEL useful for using these packages.
 
 
 .. References

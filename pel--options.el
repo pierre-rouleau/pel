@@ -261,6 +261,41 @@ References:
   "List of external packages that PEL can use for regular expressions."
   :group 'pel-package-use)
 
+(defcustom pel-bind-keys-for-regexp nil
+  "If set to t, PEL binds several keys in the C-c prefix.
+It binds:
+- 'C-c r' : to replace-regexp or pel-replace-regexp
+- 'C-c q' : to query-replace-regexp or pel-query-replace-regexp"
+  :group 'pel-pkg-for-regexp
+  :type 'boolean
+  :safe #'booleanp)
+
+
+(defcustom pel-initial-regexp-engine 'emacs
+  "Select the search/replace regexp engine used when Emacs starts.
+Select one that is available according to the package installed.
+The possible choices are:
+- 'emacs             : plain emacs
+- 'pel-vr            : visual-regexp
+- 'pel-vr/emacs      : visual-regexp-steroids emacs
+- 'pel-vr/emacs-plain: visual-regexp-steroids emacs-plain
+- 'pel-vr/pcre2el    : visual-regexp-steroids pcre2el
+- 'pel-vr/python     : visual-regexp-steroids python
+- 'pel-vr/custom     : visual-regexp-steroids custom
+
+The first choice is the default.  The other choices
+can be made only if pel-use-visual-regexp is t (for the second)
+or pel-use-regexp-steroids is t (for the others)."
+  :group 'pel-pkg-for-regexp
+  :type '(choice
+          (const :tag "Use Emacs default" emacs)
+          (const :tag "Use visual-regexp." vr)
+          (const :tag "Use visual-regexp-steroids emacs.      " vr/emacs)
+          (const :tag "Use visual-regexp-steroids emacs-plain." vr/emacs-plain)
+          (const :tag "Use visual-regexp-steroids pcre2el.    " vr/pcre2el)
+          (const :tag "Use visual-regexp-steroids python.     " vr/python)
+          (const :tag "Use visual-regexp-steroids custom.     " vr/custom)))
+
 (defcustom pel-use-regex-tool nil
   "Control whether PEL uses the external regex-tool library.
 See URL `https://github.com/jwiegley/regex-tool'."

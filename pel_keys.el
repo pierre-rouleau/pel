@@ -1498,6 +1498,7 @@ just bind it again after this call."
   (define-key prefix (kbd "M-RET") 'c-toggle-auto-newline)
   (define-key prefix (kbd "M-DEL") 'c-toggle-hungry-state)
   (define-key prefix (kbd "M-b")  #'subword-mode)
+  (define-key prefix (kbd "M-p")  #'superword-mode)
   (define-key prefix (kbd "M-i")   'c-toggle-syntactic-indentation)
   (define-key prefix (kbd "RET")   'c-context-open-line)
   (define-key prefix      "F"      'c-fill-paragraph)
@@ -1694,6 +1695,7 @@ This is meant to be used in the d-mode hook lambda."
      'erlang-mode 'erlang-mode-hook)
 
     (define-key pel:for-erlang  (kbd "<f1>") 'pel-cfg-pkg-erlang)
+    (define-key pel:for-erlang (kbd "M-p")  #'superword-mode)
 
     :config
     (setq erlang-root-dir (expand-file-name pel-erlang-rootdir))
@@ -1733,8 +1735,9 @@ This is meant to be used in the d-mode hook lambda."
 
         (add-hook 'erlang-mode-hook
                   (lambda ()
-                    (flycheck-select-checker 'erlang-otp)
-                    (flycheck-mode)))))))
+                    (when (fboundp 'flycheck-select-checker)
+                      (flycheck-select-checker 'erlang-otp)
+                      (flycheck-mode))))))))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` : LFE programming utilities
@@ -1764,6 +1767,8 @@ This is meant to be used in the d-mode hook lambda."
      '(lambda ()
         (pel-local-set-f12 'pel:for-elixir))
      'elixir-mode 'elixir-mode-hook))
+
+  (define-key pel:for-elixir  (kbd "M-p")  #'superword-mode)
 
   (when pel-use-alchemist
     (use-package alchemist
@@ -1865,7 +1870,8 @@ This is meant to be used in the d-mode hook lambda."
 
 
 (define-pel-global-prefix pel:for-elisp (kbd "<f11> SPC l"))
-(define-key               pel:for-elisp (kbd "<f1>") 'pel-cfg-pkg-elisp)
+(define-key pel:for-elisp (kbd "M-p")  #'superword-mode)
+(define-key pel:for-elisp (kbd "<f1>") 'pel-cfg-pkg-elisp)
 (pel--lispy-map-for pel:for-elisp)
 ;;
 (define-key pel:for-elisp   ")" #'check-parens)
@@ -1945,7 +1951,8 @@ This is meant to be used in the d-mode hook lambda."
   (define-key               pel:for-lisp (kbd "<f1>") 'pel-cfg-pkg-lisp)
   (pel--lispy-map-for pel:for-lisp)
   ;;
-  (define-key pel:for-lisp    ")" #'check-parens)
+  (define-key pel:for-lisp      ")"     #'check-parens)
+  (define-key pel:for-lisp (kbd "M-p")  #'superword-mode)
   ;;
   (pel--mode-hook-maybe-call
    '(lambda ()
@@ -2226,7 +2233,7 @@ This is meant to be used in the d-mode hook lambda."
 ;; To help keep track what keay are used, the list of key under the pel:help
 ;; prefix are shown below.
 ;;
-;;   Used `pel:help' keys:  A a c d e i k M m s X
+;;   Used `pel:help' keys:  A a c d e i k M m s S X
 
 (define-key pel:help "m"  #'man)
 (define-key pel:help "M"  #'woman)
@@ -2898,6 +2905,7 @@ the ones defined from the buffer now."
 (define-key pel:search-replace "o" #'multi-occur)
 (define-key pel:search-replace "O" #'multi-occur-in-matching-buffers)
 (define-key pel:search-replace "r" #'replace-string)
+;; "S" reserved
 
 (define-pel-global-prefix pel:search-word (kbd "<f11> s w"))
 (define-key pel:search-word "f"  #'word-search-forward)
@@ -2962,11 +2970,15 @@ the ones defined from the buffer now."
 (define-pel-global-prefix pel:regexp (kbd "<f11> s x"))
 (define-key pel:regexp      "b"  #'re-search-backward)
 (define-key pel:regexp      "f"  #'re-search-forward)
-(define-key pel:regexp      "q"  #'query-replace-regexp)
-(define-key pel:regexp      "r"  #'replace-regexp)
+(define-key pel:regexp      "q"  #'query-replace-regexp) ; maybe replaced below
+(define-key pel:regexp      "r"  #'replace-regexp)       ; maybe replaced below
 (define-key pel:regexp      "B"  #'re-builder)
 ;; add it here because C-M-% cannot be typed in terminal mode
 (define-key pel:regexp  (kbd "<f1>")  'pel-reb-re-syntax)
+(when pel-bind-keys-for-regexp
+  ; both maybe replaced below
+  (define-key global-map (kbd "C-c r") 'replace-regexp)
+  (define-key global-map (kbd "C-c q") 'query-replace-regexp))
 ;;
 
 ;; --
@@ -3012,17 +3024,49 @@ the ones defined from the buffer now."
                 vr/isearch-forward
                 vr/isearch-backward)
 
-    :init                               ; TODO: preliminary bindings: will change
-    (define-key pel:regexp (kbd "M-s") 'vr/select-replace)
-    (define-key pel:regexp (kbd "M-t") 'vr/select-query-replace)
+    :init                               ; TODO: preliminary bindings: might change
+    (define-key pel:regexp (kbd "M-r") 'vr/select-replace)
+    (define-key pel:regexp (kbd "M-q") 'vr/select-query-replace)
     (define-key pel:regexp (kbd "M-m") 'vr/select-mc-mark)
-    (define-key pel:regexp (kbd "M-n") 'vr/isearch-forward)
-    (define-key pel:regexp (kbd "M-p") 'vr/isearch-backward)))
+    (define-key pel:regexp (kbd "C-s") 'vr/isearch-forward)
+    (define-key pel:regexp (kbd "C-r") 'vr/isearch-backward)))
+
+(when (or pel-use-visual-regexp pel-use-visual-regexp-steroids)
+  (use-package pel-search-regexp
+    :commands (pel-select-search-regexp-engine
+               pel-show-active-search-regexp-engine
+               pel-replace-regexp
+               pel-query-replace-regexp))
+
+  (define-key pel:search-replace "S" 'pel-select-search-regexp-engine)
+  (define-key pel:help   "S" 'pel-show-active-search-regexp-engine)
+  ;; replace some already bound keys
+  (define-key pel:regexp "r" 'pel-replace-regexp)
+  (define-key pel:regexp "q" 'pel-query-replace-regexp)
+  (when pel-bind-keys-for-regexp
+    (define-key global-map (kbd "C-c r") 'pel-replace-regexp)
+    (define-key global-map (kbd "C-c q") 'pel-query-replace-regexp)
+    (when pel-use-multiple-cursors
+      (define-key global-map (kbd "C-c m") 'vr/mc-mark))))
+
+;; -----------------------------------------------------------------------------
+;; Choices:
+;; - Standard Emacs Search/Replace
+;; - Visual Regexp
+;; - Visual Regexp - emacs plain
+;; - Visual Regexp - emacs
+;; - Visual Regexp - pcre2el
+;; - Visual Regexp - python
+
 
 (defun pel-xr-at-point ()
   "Lint regexp string at point and print its expansion in *xr* buffer."
   (interactive)
   (user-error "TODO: Not implemented yet. Coming soon"))
+
+;; xr-lint
+;; xr-pp
+;; xr
 
 (when pel-use-xr
   (use-package xr
