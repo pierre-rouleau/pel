@@ -58,6 +58,7 @@
 (require 'isearch)       ; use: search-upper-case.
 ;;                       ; isearch is part of standard Emacs distribution and is
 ;;                       ; loaded even by emacs -Q (in emacs 26).
+(require 'pel--base)     ; use: pel-symbol-on-off-string
 (require 'pel--options)  ; use: pel-use-ansu, pel-use-swiper,
 ;;                       ;      pel-initial-search-tool
 (require 'pel--macros)
@@ -118,18 +119,29 @@ Depends on 2 Emacs (base system) variables:
 |                  |                       upper in search forces sensitivity,
 |                  |                       lowercased yanks in search buffer"
   (if case-fold-search
-      (cond ((not search-upper-case) "Case insensitive search.")
+      (cond ((not search-upper-case) "case insensitive search.")
             ((equal search-upper-case 'not-yanks)
-             "Case insensitive unless uppercase in search,\
+             "case insensitive unless uppercase in search,\
  lowercased yanks in search buffer.")
-            (t "Case insensitive unless uppercase in search."))
-    "Case sensitive search."))
+            (t "case insensitive unless uppercase in search."))
+    "case sensitive search."))
 
 ;;-pel-autoload
 (defun pel-show-search-case-state ()
   "Describe the search case handling behaviour in the mini-buffer."
   (interactive)
-  (message (pel-search-case-state)))
+  (message "\
+- Search               : %s
+- Case-fold            : %s
+- Lax-whitespace       : %s
+- Regexp lax-whitespace: %s
+- Subword %s, Superword %s"
+           (pel-search-case-state)
+           (pel-symbol-on-off-string 'case-fold-search)
+           (pel-symbol-on-off-string 'isearch-lax-whitespace)
+           (pel-symbol-on-off-string 'isearch-regexp-lax-whitespace)
+           (pel-symbol-on-off-string 'subword-mode)
+           (pel-symbol-on-off-string 'superword-mode)))
 
 ;; -----------------------------------------------------------------------------
 ;; Search Utilities
