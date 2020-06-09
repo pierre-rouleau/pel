@@ -166,6 +166,30 @@
   "List of external packages for cursor management that may be used with PEL."
   :group 'pel-package-use)
 
+(defface pel-cursor-overwrite-mode-color
+  '((((background light)) :background "black")
+    (((background dark))  :background "white"))
+  "Cursor face of cursor in overwrite-mode.
+Takes effects only when Emacs runs in graphics mode."
+  :group 'pel-pkg-for-cursor
+  :group 'cursor)
+
+(defcustom pel-cursor-type-when-mark nil
+  "Cursor type used when the mark is active.
+If nil, the cursor type does not change when mark is active.
+Otherwise the choices are:
+ - bar
+ - box
+ - hollow
+These only take effect when Emacs is running in graphics mode."
+  :group 'pel-pkg-for-cursor
+  :group 'cursor
+  :type '(choice
+          (const :tag "No change - use default cursor type" nil)
+          (const :tag "bar" bar)
+          (const :tag "box" box)
+          (const :tag "hollow" hollow)))
+
 (defcustom pel-use-multiple-cursors nil
   "Control whether PEL uses the multiple cursors package.
 See URL `https://github.com/magnars/multiple-cursors.el'."

@@ -1070,10 +1070,17 @@ For example, applied to a directory name, macOS Finder is used."
            (display-graphic-p))
   (define-key pel:         "y"            #'popup-kill-ring))
 
-;; In graphics mode, bindings to go directly to another frame
-;; without having to move through all intervening windows in current
-;; frame.
+
 (when (display-graphic-p)
+  ;; In graphics mode provide control over cursor color and type (shape): the
+  ;; logic is in the pel-cursor.el file.
+  ;; Don't delay loading: it's small enough.
+  (require 'pel-cursor)
+  (define-key pel: (kbd  "C-c")     'pel-set-cursor-color)
+
+  ;; In graphics mode, bindings to go directly to another frame
+  ;; without having to move through all intervening windows in current
+  ;; frame.
   (when pel-use-framemove
     (define-key pel: (kbd  "<S-down>")     'fm-down-frame)
     (define-key pel: (kbd  "<S-up>")       'fm-up-frame)

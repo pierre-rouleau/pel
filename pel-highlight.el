@@ -28,6 +28,10 @@
 (require 'hl-line)
 (require 'pel--base)
 
+;; -----------------------------------------------------------------------------
+;; highlight control
+;; -----------------
+
 ;;-pel-autoload
 (defun pel-set-highlight-color (colorname)
   "Select (or prompt) for COLOR and use it as new line highlight.
@@ -62,6 +66,10 @@ Toggles the value of `hl-line-sticky-flag' between t and nil."
                  "all windows showing current buffer"
                "current buffer only"))))
 
+;; -----------------------------------------------------------------------------
+;; Whitespace and empty lines
+;; --------------------------
+
 ;;-pel-autoload
 (defun pel-toggle-show-trailing-whitespace ()
   "Toggle highlight of the trailing whitespaces in current buffer."
@@ -73,6 +81,10 @@ Toggles the value of `hl-line-sticky-flag' between t and nil."
   "Toggle highlight of empty lines."
   (interactive)
   (pel-toggle-and-show 'indicate-empty-lines))
+
+;; -----------------------------------------------------------------------------
+;; Hard tabs
+;; ---------
 
 ;;-pel-autoload
 (defun pel-toggle-indent-tabs-mode (&optional arg)

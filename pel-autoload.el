@@ -132,6 +132,8 @@
   (autoload 'pel-cua-move-rectangle-left   "pel-cua")
   (autoload 'pel-cua-move-rectangle-right  "pel-cua")
 
+  ;; pel-cursor: loaded by pel-init. No need for autoloading.
+
   ;; pel-emacs
   (autoload 'pel-emacs-load-stats  "pel-emacs")
   (autoload 'pel-emacs-mem-stats  "pel-emacs")
