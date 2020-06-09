@@ -949,6 +949,38 @@ that direction.  Some of the commands are bound to PEL keys and described in the
 PDF tables. But this work is in very early stage.
 
 
+PEL Cursor Management Support
+-----------------------------
+
+:PDF Docs: `Cursor`_
+:PEL Customization: - ``pel-cursor-overwrite-mode-color``
+                    - ``pel-cursor-type-when-mark``
+                    - ``pel-use-multiple-cursors``
+                    - ``pel-use-visual-regexp-steroids``
+                    - ``pel-use-visual-regexp``
+
+:PEL Key Prefix: *none*
+
+The `pel-cursor.el`_ file the logic required to control the cursor color and
+type when Emacs is running in graphical mode.
+
+- With the ``pel-cursor-overwrite-mode-color``user option, you can select a color
+  different than what is normally used by the cursor to change cursor color when
+  the overwrite-mode is active.
+- With ``pel-cursor-type-when-mark`` you can set a different cursor type
+  (shape) used when the mark is active.
+
+When ``pel-use-multiple-cursors`` is set to **t** the popular
+`multiple-cursors`_ mode is made available and PEL provides a set of key
+bindings for this.  The ``pel-use-visual-regexp`` and
+``pel-use-visual-regexp-steroids`` activate the ability to perform a search
+which yields to multiple cursors activated at the match locations.
+
+See the PDF `Cursors`_ document for more information.
+
+
+
+
 PEL Cut, Delete, Kill, Copy, Paste and Yank Utilities
 -----------------------------------------------------
 
@@ -2059,7 +2091,17 @@ PEL Search and Replace Support Utilities
 ----------------------------------------
 
 :PDF Docs: `Search and Replace`_.
-:PEL Customization: *none*
+:PEL Customization: - ``pel-initial-regexp-engine``
+                    - ``pel-initial-search-tool``
+                    - ``pel-use-anzu``
+                    - ``pel-use-pcre2el``
+                    - ``pel-use-regex-tool``
+                    - ``pel-use-swiper``
+                    - ``pel-use-visual-regexp-steroids``
+                    - ``pel-use-visual-regexp``
+                    - ``pel-use-xr``
+
+
 :PEL Key Prefix: **pel:search-replace** : ``<f11> s``
 
 The `pel-search.el`_ file provides 2 commands to change the value of two Emacs
@@ -2079,6 +2121,13 @@ value:
 
 - ``pel-show-search-case-state`` displays the search behaviour in the current
   buffer.
+
+PEL also integrates several search enhancement packages when their corresponding
+user option variable are set to **t**. See the above ``Customization`` list.
+With those you can set the regular expression engine and the search tool you
+want to use by default and you can change them dynamically during editing.
+
+See the PDF `Search and Replace`_ document for more information.
 
 PEL Session Support
 -------------------
@@ -2719,6 +2768,7 @@ PDF Document Tables
 #. `Closing and Suspending`_
 #. `Comments`_
 #. Completion: `Input Completion`_
+#. `Cursor`_
 #. `Customization <pdf/customize.pdf>`_.
 #. `Counting`_
 #. Cross-Referencing: `Etags-based Cross-Reference`_
@@ -2817,6 +2867,7 @@ PDF Document Tables
 .. _Input Completion:                         pdf/completion-input.pdf
 .. _Counting:                                 pdf/counting.pdf
 .. _User Option Customization:                pdf/customize.pdf
+.. _Cursor:                                   pdf/cursor.pdf
 .. _Cut, Delete, Copy and Paste:              pdf/cut-paste.pdf
 .. _Diff and Merge:                           pdf/diff-merge.pdf
 .. _Display Lines:                            pdf/display-lines.pdf
@@ -3426,7 +3477,7 @@ The list of external packages used by PEL is shown in the `Credits`_ section.
 .. _pel--options.el:        ../pel--options.el
 .. _pel--base.el:           ../pel--base.el
 .. _pel--macros.el:         ../pel--macros.el
-.. _pel-applescript.el      ../pel-applescript.el
+.. _pel-applescript.el:     ../pel-applescript.el
 .. _pel-autocomplete:
 .. _pel-autocomplete.el:    ../pel-autocomplete.el
 .. _pel-autoload:
@@ -3445,6 +3496,8 @@ The list of external packages used by PEL is shown in the `Credits`_ section.
 .. _pel-completion.el:      ../pel-completion.el
 .. _pel-cua:
 .. _pel-cua.el:             ../pel-cua.el
+.. _pel-cursor:
+.. _pel-cursor.el:          ../pel-cursor.el
 .. _pel-file:
 .. _pel-file.el:            ../pel-file.el
 .. _pel-fill:

@@ -31,7 +31,7 @@
 ;; the `pel-pkg-for-cursor' group:
 ;;
 ;; - `pel-cursor-overwrite-mode-color' : cursor color when in overwrite-mode
-;; - `pel-cursort-type-when-mark'      : cursor type when marking.
+;; - `pel-cursor-type-when-mark'       : cursor type when marking.
 ;;
 ;; The following is a list of provided commands (*), functions (-) and
 ;; (old style, self-activated) advice (@):
@@ -57,7 +57,7 @@
 
 
 (require 'pel--options) ; use: pel-cursor-overwrite-mode-color
-;;                      ;      pel-cursort-type-when-mark
+;;                      ;      pel-cursor-type-when-mark
 
 
 ;; -----------------------------------------------------------------------------
