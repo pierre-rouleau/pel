@@ -964,7 +964,7 @@ PEL Cursor Management Support
 The `pel-cursor.el`_ file the logic required to control the cursor color and
 type when Emacs is running in graphical mode.
 
-- With the ``pel-cursor-overwrite-mode-color``user option, you can select a color
+- With the ``pel-cursor-overwrite-mode-color`` user option, you can select a color
   different than what is normally used by the cursor to change cursor color when
   the overwrite-mode is active.
 - With ``pel-cursor-type-when-mark`` you can set a different cursor type
@@ -976,7 +976,7 @@ bindings for this.  The ``pel-use-visual-regexp`` and
 ``pel-use-visual-regexp-steroids`` activate the ability to perform a search
 which yields to multiple cursors activated at the match locations.
 
-See the PDF `Cursors`_ document for more information.
+See the PDF `Cursor`_ document for more information.
 
 
 
