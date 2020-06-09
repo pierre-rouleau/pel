@@ -2985,12 +2985,22 @@ the ones defined from the buffer now."
 ;; Other Regular Expression support
 
 (when pel-use-regex-tool
+
+  (defun pel-select-regex-tool-backend ()
+    "Select regexp-tool backend via customization."
+    (interactive)
+    (customize-option 'regex-tool-backend))
+
   (use-package regex-tool
     :ensure t
     :pin melpa
     :commands regex-tool
     :init
-    (define-key pel:regexp "T" 'regex-tool)))
+    (define-key pel:regexp "T" 'regex-tool)
+    :config
+    (when (boundp 'regex-tool-mode-map)
+      (define-key
+        regex-tool-mode-map (kbd "C-c <f1>") 'pel-select-regex-tool-backend))))
 
 (when pel-use-pcre2el
   (use-package pcre2el
