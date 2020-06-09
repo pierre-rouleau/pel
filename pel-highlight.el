@@ -30,12 +30,20 @@
 
 ;;-pel-autoload
 (defun pel-set-highlight-color (colorname)
-  "Select (or prompt) for COLORNAME and use it as current line highlight."
-  (interactive "sEnter color name: ")
+  "Select (or prompt) for COLOR and use it as new line highlight.
+With <tab> provides completion of the colors and their names."
+  (interactive (list (read-color (format "Color name [%s]: "
+                                         (face-attribute 'highlight :background)))))
   (progn
     (set-face-background 'highlight colorname)
     (set-face-foreground 'highlight nil)
     (set-face-underline 'highlight nil)))
+
+;;-pel-autoload
+(defun pel-customize-highlight ()
+  "Open the customize buffer to change the `highlight' color and attributes."
+  (interactive)
+  (customize-face 'highlight))
 
 ;;-pel-autoload
 (defun pel-toggle-hl-line-sticky ()

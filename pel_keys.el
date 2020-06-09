@@ -2545,7 +2545,8 @@ the ones defined from the buffer now."
 
 (define-key pel:highlight      "."  #'highlight-symbol-at-point)
 (define-key pel:highlight      "C"  #'highlight-changes-mode)
-(define-key pel:highlight      "c"   'pel-set-highlight-color)
+(define-key pel:highlight      "h"   'pel-set-highlight-color)
+(define-key pel:highlight      "H"   'pel-customize-highlight)
 (define-key pel:highlight      "F"  #'font-lock-mode)
 (define-key pel:highlight      "f"   'pel-hi-lock-find-patterns)
 (define-key pel:highlight      "G"  #'global-hi-lock-mode)

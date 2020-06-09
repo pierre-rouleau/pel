@@ -174,11 +174,13 @@
     (autoload fct "pel-hideshow"))
 
   ;; pel-highlight
-  (autoload 'pel-set-highlight-color              "pel-highlight")
-  (autoload 'pel-toggle-hl-line-sticky            "pel-highlight")
-  (autoload 'pel-toggle-show-trailing-whitespace  "pel-highlight")
-  (autoload 'pel-toggle-indicate-empty-lines      "pel-highlight")
-  (autoload 'pel-toggle-indent-tabs-mode          "pel-highlight")
+  (dolist (fct '(pel-set-highlight-color
+                 pel-customize-highlight
+                 pel-toggle-hl-line-sticky
+                 pel-toggle-show-trailing-whitespace
+                 pel-toggle-indicate-empty-lines
+                 pel-toggle-indent-tabs-mode))
+    (autoload fct "pel-highlight"))
 
   ;; pel-imenu
   (autoload 'pel-toggle-imenu-index-follows-order  "pel-imenu")
