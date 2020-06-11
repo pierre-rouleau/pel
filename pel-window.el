@@ -178,12 +178,12 @@ Window selection:
     - 1 window  in frame: return 'new
     - 2 windows in frame: return 'other
     - 3 or more windows : return 'down
-- If N in [2,8] range, return the direction corresponding to the
+- If N is 3, 7, 9 or larger, return: PREFER value.
+- If N in remaining [2,8] range, return the direction corresponding to the
   cursor in a numeric keypad:
   -             8 := 'up
   - 4 := 'left  5 := 'current  6 := 'right
-  -             2 := 'down
-- If N is 9 or larger, return: 'down"
+  -             2 := 'down"
   (let* ((nwindows (pel-count-non-dedicated-windows))
          (default-direction (or prefer
                                 (cond ((eq nwindows 2) 'other)

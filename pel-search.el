@@ -50,7 +50,6 @@
 ;;   - `pel-set-search-tool'
 ;;     - `pel--disable-search-tool'
 ;;     - `pel--activate-search-tool'
-
 ;;
 
 ;;; Code:
@@ -158,14 +157,17 @@ Search in the window identified by N:
   of the the window identified by N.
 - If N is not specified, nil or 1: search in the current window.
 - If N is 0:                     : search in other window
-- If N in [2,8] range:           : search in window identified by the direction
+- If N is 3                      : search in current window
+- If N in remaining [2,8] range  : search in window identified by the direction
                                    corresponding to the cursor in a numeric
                                    keypad:
                                    -             8 := 'up
                                    - 4 := 'left  5 := 'current  6 := 'right
                                    -             2 := 'down
-- If N is 9 or larger            : search in window below.
-
+- If N is 7:                     : toggle subword-mode for this search in
+                                   current window.
+- If N is 9 or larger            : toggle superword mode for this search
+                                   in current window.
 
 Explicitly selecting the minibuffer window, or a non-existing window is not
 allowed, and search is done in current window.
@@ -177,14 +179,27 @@ Position before searched word is pushed on the mark ring."
   ;; Use current window if n is not specified.
   ;; Otherwise select direction from numerical argument.
   (push-mark)
-  (let* ((n-value (prefix-numeric-value n))
+  (let* ((n-value           (prefix-numeric-value n))
          (do-forward-search (>= n-value 0))
-         (direction (pel-window-direction-for
-                     (abs n-value) 'current))
-         (searched-word (pel-word-at-point)))
+         (n-abs             (abs n-value))
+         (mode-to-toggle    (cond ((= n-abs 7) 'subword-mode)
+                                  ((= n-abs 9) 'superword-mode)
+                                  (t nil)))
+         (direction         (pel-window-direction-for n-abs 'current))
+         searched-word)
+    ;; grab word at point, optionally alterning the meaning of word
+    ;; while grabbing it.
+    (ignore-errors
+      (when mode-to-toggle
+        (pel-toggle-mode mode-to-toggle))
+      (setq searched-word (pel-word-at-point))
+      (when mode-to-toggle
+        (pel-toggle-mode mode-to-toggle)))
+    ;; Move to the destination window
     (when (eq direction 'new)
       (setq direction 'current))
     (pel-window-select direction)
+    ;; then search from the specified buffer end point
     (if do-forward-search
         ;; forward search
         (progn
