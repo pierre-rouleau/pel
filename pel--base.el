@@ -216,6 +216,14 @@ MODE is the mode symbol."
 ;;
 ;; Notice the required quoting.
 
+(defun pel-toggle-mode (mode)
+  "Toggle the specified MODE (a symbol).
+Return the new state of the mode: t if active, nil otherwise."
+  (unless (symbolp mode)
+    (error "Nothing done: pel-toggle-mode expects a symbol as argument"))
+  (funcall (symbol-function mode) (if ((symbol-value mode) -1 1)))
+
+
 (defun pel-toggle (symbol)
   "Toggle value of SYMBOL from nil to/from t. Return SYMBOL's new value.
 For example, to toggle the value of a variable  named isok,
