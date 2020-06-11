@@ -64,10 +64,12 @@
 ;; Quick access to customization
 ;; -----------------------------
 
-(defun pel-customize-cursor ()
-  "Open the customize buffer to change the `cursor' color."
-  (interactive)
-  (customize-face 'cursor))
+(defun pel-customize-cursor (&optional other-window)
+  "Open the customize buffer to change the `cursor' color.
+
+If OTHER-WINDOW is non-nil, display in another window."
+  (interactive "P")
+  (customize-face 'cursor other-window))
 
 ;; -----------------------------------------------------------------------------
 ;; Control cursor color for overwrite-mode

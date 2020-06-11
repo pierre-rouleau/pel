@@ -1274,6 +1274,7 @@ display in other window."
 (define-key pel:cfg "E"     'customize)
 (define-key pel:cfg "G"     'customize-group)
 (define-key pel:cfg "O"     'customize-option)
+(define-key pel:cfg (kbd "M-c") 'pel-customize-cursor)
 ;;
 (pel--cfg ""  pel:cfg "!")
 (pel--cfg "identification"  pel:cfg "i")
