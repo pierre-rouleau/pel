@@ -26,9 +26,67 @@
 ;; A loosely coupled collection of simple utilities used by other PEL
 ;; which exist simply to simplify the PEL code.
 ;;
+;; The following is a list of available commands (*) and functions (-) listed in
+;; hierarchical calling order.
+;;
+;; PEL version:
+;; * `pel-version'
+;;
+;; Environment Querying functions:
+;;  - `pel-used-major-mode-of'
+;;  - `pel-current-buffer-filename'
+;;
+;; Check for Zero:
+;;  - `pel-!0'
+;;
+;; Bitwise Operations:
+;;  - `pel-all-bitset-p'
+;;
+;; String checks:
+;;  - `pel-whitespace-in-str-p'
+;;
+;; Pluralizer:
+;;  - `pel-count-string'
+;;
+;; String generation utilities:
+;;  - `pel-option-mode-state'
+;;  - `pel-symbol-text'
+;;    - `pel-symbol-on-off-string'
+;;      - `pel-on-off-string'
+;;  - `pel-yes-no-string'
+;;
+;; Operations on sequences:
+;;  - `pel-concat-strings-in-list'
+;;
+;; Toggle a local mode:
+;;  - `pel-toggle-mode'
+;;
+;; Basic functions working with values and variables:
+;;  - `pel-toggle-and-show'
+;;    - `pel-toggle'
+;;  - `pel-val-or-default'
+;;
+;; Argument converter:
+;;  - `pel-multiplier'
+;;
+;; Iteration helpers:
+;;  - `pel-dec'
+;;  - `pel-inc'
+;;
+;; Text at point:
+;;  - `pel-at-lowercase-p'
+;;  - `pel-at-uppercase-p'
+;;    - `pel-at-letter-p'
+;;  - `pel-chars-at-point'
+;;
+;; Calling functions:
+;; - `pel--n-funcall-to'
+;;
+;;  Moving Point:
+;;  - `pel-goto-position'
+;;  - `pel-goto-line'
 
 ;;; Code:
-
 
 ;; -----------------------------------------------------------------------------
 ;; Constants
@@ -62,8 +120,8 @@ Optionally insert it at point if INSERT is non-nil."
     version))
 
 ;; -----------------------------------------------------------------------------
-;; Environment Querying function
-;; -----------------------------
+;; Environment Querying functions:
+;; ------------------------------
 ;;
 ;; The following functions provide information about the Emacs environment.
 
@@ -135,9 +193,11 @@ If N > 2: use the PLURAL form if specified,
 ;; ---------------------------
 ;;
 ;; Call hierarchy:
-;;  - pel-symbol-on-off-string
-;;    - pel-on-off-string
-;;  - pel-yes-no-string
+;;  - `pel-option-mode-state'
+;;  - `pel-symbol-text'
+;;    - `pel-symbol-on-off-string'
+;;      - `pel-on-off-string'
+;;  - `pel-yes-no-string'
 
 (defun pel-on-off-string (boolean &optional on-string off-string)
   "Return \"off\" for nil, \"on\" for non-nil BOOLEAN argument.
@@ -205,6 +265,17 @@ MODE is the mode symbol."
 ;;       - elements of the list are not string, and to inject a separator.
 
 ;; -----------------------------------------------------------------------------
+;; Toggle a local mode
+;; -------------------
+
+(defun pel-toggle-mode (mode)
+  "Toggle the specified MODE (a symbol).
+Return the new state of the mode: t if active, nil otherwise."
+  (unless (symbolp mode)
+    (error "Nothing done: pel-toggle-mode expects a symbol as argument"))
+  (funcall (symbol-function mode) (if (symbol-value mode) -1 1)))
+
+;; -----------------------------------------------------------------------------
 ;; Basic functions working with values and variables
 ;; -------------------------------------------------
 ;;
@@ -215,14 +286,6 @@ MODE is the mode symbol."
 ;;                     (pel-toggle-and-show 'is-acceptable)
 ;;
 ;; Notice the required quoting.
-
-(defun pel-toggle-mode (mode)
-  "Toggle the specified MODE (a symbol).
-Return the new state of the mode: t if active, nil otherwise."
-  (unless (symbolp mode)
-    (error "Nothing done: pel-toggle-mode expects a symbol as argument"))
-  (funcall (symbol-function mode) (if ((symbol-value mode) -1 1)))
-
 
 (defun pel-toggle (symbol)
   "Toggle value of SYMBOL from nil to/from t. Return SYMBOL's new value.
@@ -316,10 +379,10 @@ Return nil if symbol N value is CEILING or larger."
 ;; The following functions extract string information from the text at point.
 ;; The hierarchy of these function is show here:
 ;;
-;; - pel-at-lowercase-p
-;; - pel-at-uppercase-p
-;;   - pel-at-letter-p
-;; - pel-chars-at-point
+;; - `pel-at-lowercase-p'
+;; - `pel-at-uppercase-p'
+;;   - `pel-at-letter-p'
+;; - `pel-chars-at-point'
 ;;
 
 (defun pel-chars-at-point (n)
@@ -412,8 +475,8 @@ Return nil."
 ;; Moving Point
 ;; ------------
 ;;
-;; - pel-goto-position
-;;   - pel-goto-line
+;; - `pel-goto-position'
+;;   - `pel-goto-line'
 ;;
 
 (defun pel-goto-line (line)
