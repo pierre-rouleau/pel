@@ -253,9 +253,9 @@ Argument N is a numeric argument identifying the number
 of times the operation is done.  If N is negative the
 move is reversed (and goes backward)."
   (interactive "^P")
-  (pel--n-funcall-to (prefix-numeric-value n)
-                     'pel--forward-token-start
-                     'pel--backward-token-start))
+  (pel-n-funcall-to (prefix-numeric-value n)
+                    'pel--forward-token-start
+                    'pel--backward-token-start))
 
 ;;-pel-autoload
 (defun pel-backward-token-start (&optional n)
@@ -266,9 +266,9 @@ move is reversed (and goes forward).
 .
 See `pel-forward-token-start' for details."
   (interactive "^P")
-  (pel--n-funcall-to (prefix-numeric-value n)
-                     'pel--backward-token-start
-                     'pel--forward-token-start))
+  (pel-n-funcall-to (prefix-numeric-value n)
+                    'pel--backward-token-start
+                    'pel--forward-token-start))
 
 ;; -----------------------------------------------------------------------------
 ;; Move to the beginning of next word

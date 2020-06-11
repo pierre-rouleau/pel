@@ -80,7 +80,7 @@
 ;;  - `pel-chars-at-point'
 ;;
 ;; Calling functions:
-;; - `pel--n-funcall-to'
+;; - `pel-n-funcall-to'
 ;;
 ;;  Moving Point:
 ;;  - `pel-goto-position'
@@ -460,7 +460,7 @@ instead."
 ;; Calling functions
 ;; -----------------
 
-(defun pel--n-funcall-to (n pos-fct neg-fct)
+(defun pel-n-funcall-to (n pos-fct neg-fct)
   "Call one of arity-0 functions (abs N) times.
 If N >= 0: call POS-FCT N times.
 If N <  0: call NEG-FCT (abs N) times.
