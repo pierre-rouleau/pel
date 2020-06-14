@@ -1034,7 +1034,7 @@ For example, applied to a directory name, macOS Finder is used."
 
 (use-package cc-cmds
   ;; Autoload cc-cmds for the c-hungry-delete commands.
-  ;; Also autoload c-toggle-hungry-state becuase it is is used for
+  ;; Also autoload c-toggle-hungry-state because it is is used for
   ;; CC Mode compliant modes (see later sections of code, below).
   :commands (c-context-open-line
              c-fill-paragraph
@@ -1092,9 +1092,6 @@ For example, applied to a directory name, macOS Finder is used."
   (define-key pel: (kbd    "<f12>")       #'xterm-mouse-mode))
 ;;
 
-;; Bind C- <f11>/<f12> key-chords as extension of down/up cursors.
-;; These are keyboard mnemonics for lower and higher volume
-;; respectively, on macOS keyboards.
 ;; TODO: keep or remove the following now that we have the identified
 ;;       corresponding:  pel-backward-token-start and
 ;;                    :  pel-forward-token-start
@@ -1275,6 +1272,7 @@ display in other window."
 (define-key pel:cfg "G"     'customize-group)
 (define-key pel:cfg "O"     'customize-option)
 (define-key pel:cfg (kbd "M-c") 'pel-customize-cursor)
+
 ;;
 (pel--cfg ""  pel:cfg "!")
 (pel--cfg "identification"  pel:cfg "i")
@@ -1283,6 +1281,7 @@ display in other window."
 (pel--cfg-pkg "dired"       pel:cfg "d")
 (pel--cfg-pkg "filemng"     pel:cfg "f")
 (pel--cfg-pkg "grep"        pel:cfg "g")
+(pel--cfg-pkg "key-chord"   pel:cfg "K")
 (pel--cfg-pkg "regexp"      pel:cfg "r")
 (pel--cfg-pkg "search"      pel:cfg "s")
 (pel--cfg-pkg "session"     pel:cfg "S")
@@ -3588,6 +3587,19 @@ the ones defined from the buffer now."
 (define-key pel:underline "8" 'pel-commented-adorn-8)
 (define-key pel:underline "9" 'pel-commented-adorn-9)
 (define-key pel:underline "0" 'pel-commented-adorn-10)
+
+;; -----------------------------------------------------------------------------
+;; Key-Chord Mode
+;; ==============
+(when pel-use-key-chord
+  (use-package key-chord
+    :commands key-chord-mode
+    :init
+    (define-key pel: (kbd "M-K")     'key-chord-mode)
+    :config
+    (when (and (require 'pel-key-chord nil :noerror)
+               (fboundp 'pel-activate-all-key-chords))
+      (pel-activate-all-key-chords))))
 
 ;; -----------------------------------------------------------------------------
 ;; Hydra Definitions

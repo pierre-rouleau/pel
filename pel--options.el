@@ -42,6 +42,7 @@
 ;;     - pel-pkg-for-filemng
 ;;       - pel-pkg-for-ztree
 ;;     - pel-pkg-for-grep
+;;     - pel-pkg-for-key-chord
 ;;     - pel-pkg-for-regexp
 ;;     - pel-pkg-for-search
 ;;     - pel-pkg-for-tags
@@ -277,6 +278,183 @@ References:
   :group 'pel-pkg-for-grep
   :type 'boolean
   :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; pel-pkg-for-key-chord
+;; ---------------------
+(defgroup pel-pkg-for-key-chord nil
+  "PEL support for key-chords."
+  :group 'pel-package-use)
+
+(defcustom pel-use-key-chord nil
+  "Control whether PEL uses the key-chord external package.
+With it, it's possible to activate binding actions to two keys
+pressed simultaneously or a single key quicly pressed twice.
+See URL https://github.com/emacsorphanage/key-chord/blob/master/key-chord.el"
+  :group 'pel-pkg-for-key-chord
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-key-chord-two-keys-delay 0.1	; 0.05 or 0.1
+  "Max time delay between two key press to be considered a key chord."
+  :group 'pel-pkg-for-key-chord
+  :type 'float
+  :safe #'floatp)
+
+(defcustom pel-key-chord-one-key-delay 0.2	; 0.2 or 0.3 to avoid first autorepeat
+  "Max time delay between 2 press of the same key to be considered a key chord.
+This should normally be a little longer than `key-chord-two-keys-delay'."
+  :group 'pel-pkg-for-key-chord
+  :type 'float
+  :safe #'floatp)
+
+(defcustom pel-key-chord-in-macros t
+  "If nil, don't expand key chords when executing keyboard macros.
+If non-nil, expand chord sequenses in macros, but only if a similar chord was
+entered during the last interactive macro recording.  (This carries a bit of
+guesswork.  We can't know for sure when executing whether two keys were
+typed quickly or slowly when recorded.)"
+  :group 'pel-pkg-for-key-chord
+  :type 'boolean
+  :safe #'booleanp)
+
+;; (defmacro def-key-chord-lambda (key-chord mode feature &rest body)
+;;   "Declare a KEY-CHORD for MODE using specified FEATURE running BODY.
+;; With:
+;; - key-chord: a string of length 2
+;; - mode:      a symbol (unquoted) for the mode.  Use global for creating
+;;              a global key-chord.
+;; - feature:   a symbol (unquoted) identifying the required feature. nil
+;;              if no feature is required.
+;; - body:      the form of code that must be evaluated when the key-chord
+;;              is typed."
+;;   `(,mode
+;;     ,key-chord
+;;     (lambda ()
+;;       (interactive)
+;;       (if (require (quote ,feature) nil :noerror)
+;;           (progn
+;;             ,@body)
+;;         (insert ,key-chord)))))
+
+
+(defcustom pel-key-chords
+  '((global             "<>"  "<>\C-b")
+    (global             "[]"  "[]\C-b")
+    (c-mode             "{}"  "{\n\n}\C-p")
+    (c++-mode           "{}"  "{\n\n}\C-p")
+
+    (global             "yu" (lambda ()
+                               (interactive)
+                               (if (require 'windmove nil :noerror)
+                                   (windmove-up)
+                                 (insert "yu"))))
+
+    (global             "bn" (lambda ()
+                               (interactive)
+                               (if (require 'windmove nil :noerror)
+                                   (windmove-down)
+                                 (insert "bn"))))
+
+    (global             "fg" (lambda ()
+                               (interactive)
+                               (if (require 'windmove nil :noerror)
+                                   (windmove-left)
+                                 (insert "fg"))))
+
+    (global             "jk" (lambda ()
+                               (interactive)
+                               (if (require 'windmove nil :noerror)
+                                   (windmove-right)
+                                 (insert "jk"))))
+
+    (flyspell-mode      "4r" (lambda ()
+                               (interactive)
+                               (if (require 'flyspell nil :noerror)
+                                   (flyspell-correct-word-before-point)
+                                 (insert "4r"))))
+
+    (flyspell-prog-mode "4r" (lambda ()
+                               (interactive)
+                               (if (require 'flyspell nil :noerror)
+                                   (flyspell-correct-word-before-point)
+                                 (insert "4r"))))
+
+    (global             "6y"  (lambda ()
+                                (interactive)
+                                (if (require 'pel-file nil :noerror)
+                                    (pel-find-file-at-point-in-window)
+                                  (insert "6y"))))
+
+    (global             ".;"  (lambda ()
+                                (interactive)
+                                (if (require 'pel-search nil :noerror)
+                                    (pel-search-word-from-top)
+                                  (insert ".;")))))
+  "List of key-chords activated when the key-chord-mode is turned on.
+PEL provides a set of defaults.  You can replace, delete or add new
+key-chord definitions to this default.
+
+You can define *global* key-chords and mode-specific key-chords.
+- Global key-chords are stored in the global key-map.
+- Mode-specific key-chords are stored in the mode key-map of
+  the specified mode when the mode is entered.
+
+The `pel-key-chords' value is a list of objects.
+- Each object is a list of 3 items.
+  - The first item is either:
+    - global   : this key-chord is global
+    - A major mode name that identifies the major mode
+      where the key-chord must be activated.
+      For example:  c++-mode
+  - The second item is the 2 characters used for the key-chord.
+    Do not quote the characters.
+    You can specify control characters to identify special keys:
+    - for <tab>, type: C-q C-i
+    - for RET,   type: C-q C-m
+    - It's not possible to identify the function keys here.
+  - The third item describes the action for the key-chord.
+    It can be expressed using one of 3 ways, selected by the
+    Value Menu:
+    - 0: expansion keys:
+         Type the keys you want as replacement. You can
+         place several keys on a line, or spread them on several
+         lines.  You can identify control keys by entering the
+         kbd-style like C-b (by typing 'C', '-', then 'b')
+         or by placing the control code by typing C-q C-b.
+         Unfortunately it is currently not possible to identify
+         a keystroke involving other modifiers or combination of
+         modifiers; the PEL code is not able to properly recognize it
+         to pass it to the key-chord function.
+         Use the lambda form instead.
+         BTW, if you know how to fix that please don't hesitate
+         to either let me know or submit a pull-request.
+    - 1: command:
+         Type the name of the Emacs interactive function you want
+         to execute when the key-chord is hit.
+         IMPORTANT: use only functions that you know are *always*
+         bound.  If you try to edit the customization while one
+         of the symbol used is not bound, the customize UI will
+         fail, declare a mismatch and will not allow editing the
+         `pel-key-chords' user option.
+         If you need to use a function that may no be bound
+         then use a lambda form and write code that requires the
+         feature providing the function.
+         See the default for \"4r\" in the default above as an example.
+    - 2: lambda:
+         This is the most flexible way.  Here you write any elisp
+         code you need inside a lambda expression that take no
+         argument.   You can call any elisp function in here."
+  :group 'pel-pkg-for-key-chord
+  :type
+  '(repeat
+    (list
+     (symbol   :tag "mode" :value global)
+     (string   :tag "2-keys")
+     (choice (string   :tag "expansion")
+             (function :tag "function")
+             (function :tag "lambda" :value (lambda () (interactive) <YOUR CODE HERE>))))))
+
 
 ;; -----------------------------------------------------------------------------
 ;; pel-pkg-for-regexp

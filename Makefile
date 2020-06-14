@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2020-06-09 15:35:39, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-06-11 19:18:50, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -133,6 +133,7 @@ EL_FILES := pel--base.el \
 			pel-highlight.el \
 			pel-imenu.el \
 			pel-indent.el \
+			pel-key-chord.el \
 			pel-kbmacros.el \
 			pel-line-control.el \
 			pel-lisp.el \
@@ -437,6 +438,7 @@ pel-highlight.elc:      pel--base.elc
 pel-imenu.elc:          pel--base.elc
 pel-indent.elc:         pel-ccp.elc pel-mark.elc
 pel-kbmacros.elc:       pel--options.elc
+pel-key-chord.elc:      pel--base.elc pel--options.elc
 pel-lisp.elc:           pel--base.elc
 pel-mark.elc:           pel--base.elc
 pel-navigate.elc:       pel--base.elc pel-scroll.elc

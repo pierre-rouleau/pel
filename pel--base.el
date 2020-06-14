@@ -61,6 +61,10 @@
 ;; Toggle a local mode:
 ;;  - `pel-toggle-mode'
 ;;
+;; Symbol processing
+;;  - `pel-hook-symbol-for'
+;;  - `pel-map-symbol-for'
+;;
 ;; Basic functions working with values and variables:
 ;;  - `pel-toggle-and-show'
 ;;    - `pel-toggle'
@@ -264,6 +268,81 @@ MODE is the mode symbol."
 ;;       - the advantage would be to be able to perform transformation if the
 ;;       - elements of the list are not string, and to inject a separator.
 
+(defun pel-cons-alist-at (alist key val)
+  "Prepend VAL to ALIST of list members at KEY.
+If ALIST has no KEY, create an entry for KEY with (VAL) as KEY value.
+REQUIREMENT:  ALIST must be a non-empty list.
+SIDE EFFECT:  ALIST is modified destructively.
+Return new value of ALIST.
+
+Usage Example:
+
+ELISP> (setq al '((one (\"..\" \"[..]\"))))
+((one
+  (\"..\" \"[..]\")))
+
+ELISP> al
+((one
+  (\"..\" \"[..]\")))
+
+ELISP> (pel-cons-alist-at al 'two '(\"aa\" \"[aa]\"))
+((one
+  (\"..\" \"[..]\"))
+ (two
+  (\"aa\" \"[aa]\")))
+
+ELISP> al
+((one
+  (\"..\" \"[..]\"))
+ (two
+  (\"aa\" \"[aa]\")))
+
+ELISP> (pel-cons-alist-at al 'tree '(\"AA\" \"[AA]\"))
+((one
+  (\"..\" \"[..]\"))
+ (two
+  (\"aa\" \"[aa]\"))
+ (tree
+  (\"AA\" \"[AA]\")))
+
+ELISP> (pel-cons-alist-at al 'one '(\",,\" \"[,,]\"))
+((one
+  (\",,\" \"[,,]\")
+  (\"..\" \"[..]\"))
+ (two
+  (\"aa\" \"[aa]\"))
+ (tree
+  (\"AA\" \"[AA]\")))
+
+ELISP> (pel-cons-alist-at al 'tree '(\"BB\" \"[BB]\" and-something-else))
+((one
+  (\",,\" \"[,,]\")
+  (\"..\" \"[..]\"))
+ (two
+  (\"aa\" \"[aa]\"))
+ (tree
+  (\"BB\" \"[BB]\" and-something-else)
+  (\"AA\" \"[AA]\")))
+
+ELISP> al
+((one
+  (\",,\" \"[,,]\")
+  (\"..\" \"[..]\"))
+ (two
+  (\"aa\" \"[aa]\"))
+ (tree
+  (\"BB\" \"[BB]\" and-something-else)
+  (\"AA\" \"[AA]\")))"
+  (if (length alist)
+      (let* ((value (assq key alist))
+             (new-value (cons val (cdr value))))
+        (if value
+            (progn
+              (setcdr (assq key alist) new-value)
+              alist)
+          (nconc alist (list (list key val)))))
+    (error "pel-cons-alist-at given an empty ALIST argument!")))
+
 ;; -----------------------------------------------------------------------------
 ;; Toggle a local mode
 ;; -------------------
@@ -274,6 +353,19 @@ Return the new state of the mode: t if active, nil otherwise."
   (unless (symbolp mode)
     (error "Nothing done: pel-toggle-mode expects a symbol as argument"))
   (funcall (symbol-function mode) (if (symbol-value mode) -1 1)))
+
+;; -----------------------------------------------------------------------------
+;; Symbol processing
+;; -----------------
+
+(defun pel-hook-symbol-for (mode)
+  "Return the hook symbol for the specified MODE symbol."
+  (intern (format "%s-hook" (symbol-name mode))))
+
+
+(defun pel-map-symbol-for (mode)
+  "Return the map symbol for the specified MODE symbol."
+    (intern (format "%s-map" (symbol-name mode))))
 
 ;; -----------------------------------------------------------------------------
 ;; Basic functions working with values and variables
