@@ -1375,6 +1375,42 @@ To lists all input methods, PEL provides ``<f11> ? d i`` bound to ``list-input-m
 
 .. _Emacs input method: https://www.gnu.org/software/emacs/manual/html_node/emacs/Input-Methods.html#Input-Methods
 
+PEL Key Chords Support
+----------------------
+
+:PDF Docs: `Key Chords`_
+:PEL Customization: **pel-pkg-for-key-chord**:
+                    - ``pel-use-key-chord``
+                    - ``pel-key-chords``
+                    - ``pel-key-chord-two-keys-delay``
+                    - ``pel-key-chord-one-key-delay``
+                    - ``pel-key-chord-in-macros``
+
+:PEL Key Prefix: *none*
+
+PEL provides access to the key-chord library when the ``pel-use-key-chord`` user option
+is set to either **t** or to **use-from-start**.  PEL provides a set of key-chords by default
+which you can modify via the Emacs customize buffer for the
+**pel-pkg-for-key-chord** customize group.
+PEL provides the ``<f11> <f1> K`` key binding to quickly access this customize
+group and the ``<f11> M-K`` binding to toggle the key-chord-mode on and off.
+
+PEL defines several default key-chords that use Emacs Lisp lambda form. This is
+the most flexible way to define a key-chord. It allows you to perform anything
+with you command, just as if you were writing Emacs Lisp code in your
+initialization file.  Be careful with this if you do not know Emacs Lisp: if you
+change a setting that refer to a symbol that is not known when you open Emacs's
+customize UI, Emacs customize UI will report a mismatch error and you will not
+be able to make any modification.  If this happens to you, edit your
+customization file and delete the entry for ``pel-key-chords`` from the file,
+save the file back and restart Emacs.  If you followed the instructions in
+section titled `Create a "~/.emacs.d/utils" directory`_, this name of this file
+is "~/.emacs.d/emacs-customization.el".
+
+The logic for this is stored in the file `pel-key-chord.el`.
+
+For more information see the `Key Chords`_ PDF Documentation.
+
 
 PEL Keyboard Macro Utilities
 ----------------------------
@@ -2790,6 +2826,7 @@ PDF Document Tables
 #. `Indentation`_
 #. `Input Method`_
 #. `Inserting Text`_
+#. `Key Chords`_
 #. `Keyboard Macros`_
 #. `Marking`_
 #. `Menus`_
@@ -2888,6 +2925,7 @@ PDF Document Tables
 .. _Indentation:                              pdf/indentation.pdf
 .. _Input Method:                             pdf/input-method.pdf
 .. _Inserting Text:                           pdf/inserting-text.pdf
+.. _Key Chords:                               pdf/key-chords.pdf
 .. _Keyboard Macros:                          pdf/keyboard-macros.pdf
 .. _F11 Keys:                                 pdf/keys-f11.pdf
 .. _Function Keys:                            pdf/keys-fn.pdf
@@ -3514,6 +3552,8 @@ The list of external packages used by PEL is shown in the `Credits`_ section.
 .. _pel-indent.el:          ../pel-indent.el
 .. _pel-kbmacros:
 .. _pel-kbmacros.el:        ../pel-kbmacros.el
+.. _pel-key-chord:
+.. _pel-key-chord.el:       ../pel-key-chord.el
 .. _pel-line-control:
 .. _pel-line-control.el:    ../pel-line-control.el
 .. _pel-lisp:
@@ -3969,6 +4009,7 @@ highlight-defined_            MELPA_
 hydra_                        MELPA_
 ivy_                          MELPA_
 julia-snail_                  MELPA_
+key-chord_                    MELPA_
 lfe-mode_                     MELPA_
 lice_                         MELPA_
 macrostep_                    MELPA_
@@ -4056,6 +4097,7 @@ Hopefully you will find PEL useful for using these packages.
 .. _hydra:                     https://melpa.org/#/hydra
 .. _ivy:                       https://melpa.org/#/ivy
 .. _julia-snail:               https://melpa.org/#/julia-snail
+.. _key-chord:                 https://melpa.org/#/key-chord
 .. _lfe-mode:                  https://melpa.org/#/lfe-mode
 .. _lice:                      https://melpa.org/#/lice
 .. _macrostep:                 https://melpa.org/#/macrostep
