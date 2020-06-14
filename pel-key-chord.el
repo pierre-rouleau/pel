@@ -1,4 +1,4 @@
-;;; pel-key-chord.el --- PEL Key-Chord Support
+;;; pel-key-chord.el --- PEL Key-Chord Support. -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
@@ -35,7 +35,7 @@
 (defun pel-activate-key-chord-from-spec (key-chord-spec)
   "Activate the KEY-CHORD-SPEC.
 The KEY-CHORD-SPEC must be a list of 4 elements:
-- a symbol: either 'global or the name of a major-mode
+- a symbol: either 'global or the name of a `major-mode'
 - a file name to load.  May be an empty string.  Ignore for 'global mode.
 - a string of 2 characters key-chord
 - what to do for the key-chord, one of:
@@ -44,10 +44,10 @@ The KEY-CHORD-SPEC must be a list of 4 elements:
 
 Return one of:
 - nil if the specification is in error: it was ignored,
-- t if a global or major-mode key-chord was passed and was OK:
+- t if a global or `major-mode' key-chord was passed and was OK:
   it was defined,
 - a 4 element list: (mode-symbol fname-string key-string action-string|function)
-  for a major mode key-chord: the key-chord-define for it must be scheduled
+  for a major mode key-chord: the `key-chord-define' for it must be scheduled
   via a hook because the major mode symbol is currently not bound."
   (if (and (require 'key-chord nil :noerror)
            (fboundp 'key-chord-define-global)
@@ -83,8 +83,7 @@ Return an alist of (mode . fname) for which the activation must be deferred."
         ;;                       action-string|function)
         (unless (eq activation-result t)
           (let ((mode    (car activation-result))
-                (fname   (cadr activation-result))
-                (keyspec (cddr activation-result)))
+                (fname   (cadr activation-result)))
             (unless (assoc mode deferred-modes)
               (setq deferred-modes (cons (cons mode fname) deferred-modes)))))))
     deferred-modes))
@@ -95,7 +94,7 @@ Return an alist of (mode . fname) for which the activation must be deferred."
   (pel-activate-key-chords-in pel-key-chords))
 
 (defun pel-activate-all-key-chords ()
-  "Activate all key-chords defined in pel-key-chords."
+  "Activate all key-chords defined in `pel-key-chords'."
   (let ((deferred-modes-alist (pel-activate-key-chords-in pel-key-chords)))
     (dolist (mode-fname deferred-modes-alist)
       (let ((mode  (car mode-fname))
