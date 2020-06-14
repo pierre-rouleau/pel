@@ -1380,6 +1380,7 @@ PEL Key Chords Support
 
 :PDF Docs: `Key Chords`_
 :PEL Customization: **pel-pkg-for-key-chord**:
+
                     - ``pel-use-key-chord``
                     - ``pel-key-chords``
                     - ``pel-key-chord-two-keys-delay``
