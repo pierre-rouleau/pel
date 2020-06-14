@@ -290,10 +290,18 @@ References:
   "Control whether PEL uses the key-chord external package.
 With it, it's possible to activate binding actions to two keys
 pressed simultaneously or a single key quicly pressed twice.
-See URL https://github.com/emacsorphanage/key-chord/blob/master/key-chord.el"
+See URL https://github.com/emacsorphanage/key-chord/blob/master/key-chord.el
+This can be set to:
+- 0: nil: Do not use.  key-chord is not required nor loaded.
+- 1: t: Use, activate by command. key-chord loaded when the key-chord-mode
+        command is executed.  Not before.
+- 2: use-from-start:  Use, load and activate  1 second after Emacs starts.
+"
   :group 'pel-pkg-for-key-chord
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "Do not use" nil)
+          (const :tag "Use, activate later by command"  t)
+          (const :tag "Use, activate when Emacs starts" use-from-start)))
 
 (defcustom pel-key-chord-two-keys-delay 0.1	; 0.05 or 0.1
   "Max time delay between two key press to be considered a key chord."
@@ -339,54 +347,61 @@ typed quickly or slowly when recorded.)"
 
 
 (defcustom pel-key-chords
-  '((global             "<>"  "<>\C-b")
-    (global             "[]"  "[]\C-b")
-    (c-mode             "{}"  "{\n\n}\C-p")
-    (c++-mode           "{}"  "{\n\n}\C-p")
+  '((global    ""         "<>"  "<>\C-b")
+    (global    ""         "[]"  "[]\C-b")
+    (c-mode    "cc-mode"  "{}"  "{\n\n}\C-p\C-p")
+    (c++-mode  "cc-mode"  "{}"  "{\n\n}\C-p\C-p")
+    (global    ""
+               "yu" (lambda ()
+                      (interactive)
+                      (if (require 'windmove nil :noerror)
+                          (windmove-up)
+                        (insert "yu"))))
 
-    (global             "yu" (lambda ()
-                               (interactive)
-                               (if (require 'windmove nil :noerror)
-                                   (windmove-up)
-                                 (insert "yu"))))
+    (global    ""
+               "bn" (lambda ()
+                      (interactive)
+                      (if (require 'windmove nil :noerror)
+                          (windmove-down)
+                        (insert "bn"))))
 
-    (global             "bn" (lambda ()
-                               (interactive)
-                               (if (require 'windmove nil :noerror)
-                                   (windmove-down)
-                                 (insert "bn"))))
+    (global    ""
+               "fg" (lambda ()
+                      (interactive)
+                      (if (require 'windmove nil :noerror)
+                          (windmove-left)
+                        (insert "fg"))))
 
-    (global             "fg" (lambda ()
-                               (interactive)
-                               (if (require 'windmove nil :noerror)
-                                   (windmove-left)
-                                 (insert "fg"))))
+    (global    ""
+               "jk" (lambda ()
+                      (interactive)
+                      (if (require 'windmove nil :noerror)
+                          (windmove-right)
+                        (insert "jk"))))
 
-    (global             "jk" (lambda ()
-                               (interactive)
-                               (if (require 'windmove nil :noerror)
-                                   (windmove-right)
-                                 (insert "jk"))))
+    (flyspell-mode "flyspell"
+                   "4r" (lambda ()
+                          (interactive)
+                          (if (require 'flyspell nil :noerror)
+                              (flyspell-correct-word-before-point)
+                            (insert "4r"))))
 
-    (flyspell-mode      "4r" (lambda ()
+    (flyspell-prog-mode "flyspell"
+                        "4r" (lambda ()
                                (interactive)
                                (if (require 'flyspell nil :noerror)
                                    (flyspell-correct-word-before-point)
                                  (insert "4r"))))
 
-    (flyspell-prog-mode "4r" (lambda ()
-                               (interactive)
-                               (if (require 'flyspell nil :noerror)
-                                   (flyspell-correct-word-before-point)
-                                 (insert "4r"))))
-
-    (global             "6y"  (lambda ()
+    (global             ""
+                        "6y"  (lambda ()
                                 (interactive)
                                 (if (require 'pel-file nil :noerror)
                                     (pel-find-file-at-point-in-window)
                                   (insert "6y"))))
 
-    (global             ".;"  (lambda ()
+    (global             ""
+                        ".;"  (lambda ()
                                 (interactive)
                                 (if (require 'pel-search nil :noerror)
                                     (pel-search-word-from-top)
@@ -401,19 +416,28 @@ You can define *global* key-chords and mode-specific key-chords.
   the specified mode when the mode is entered.
 
 The `pel-key-chords' value is a list of objects.
-- Each object is a list of 3 items.
+- Each object is a list of 4 items.
   - The first item is either:
     - global   : this key-chord is global
     - A major mode name that identifies the major mode
       where the key-chord must be activated.
       For example:  c++-mode
-  - The second item is the 2 characters used for the key-chord.
+  - The second is a string identifying the Emacs Lisp file
+    that provides the major mode identified in the first item.
+    This is empty when the first item is set to global.
+    It is required when the first item identifies a major mode.
+    Identify a name that (load FILE) will be able to load, ie
+    the name of a Emacs Lisp file accessible in Emacs load path.
+    Do not identify a file extension.  For most files, the file
+    base name is sufficient and more portable.
+    SO, for flyspell-mode use \"flyspell\" in this field.
+  - The third item is the 2 characters used for the key-chord.
     Do not quote the characters.
     You can specify control characters to identify special keys:
     - for <tab>, type: C-q C-i
     - for RET,   type: C-q C-m
     - It's not possible to identify the function keys here.
-  - The third item describes the action for the key-chord.
+  - The fourth item describes the action for the key-chord.
     It can be expressed using one of 3 ways, selected by the
     Value Menu:
     - 0: expansion keys:
@@ -449,12 +473,12 @@ The `pel-key-chords' value is a list of objects.
   :type
   '(repeat
     (list
-     (symbol   :tag "mode" :value global)
+     (symbol   :tag "mode  " :value global)
+     (string   :tag "file  " :value "")
      (string   :tag "2-keys")
      (choice (string   :tag "expansion")
              (function :tag "function")
              (function :tag "lambda" :value (lambda () (interactive) <YOUR CODE HERE>))))))
-
 
 ;; -----------------------------------------------------------------------------
 ;; pel-pkg-for-regexp

@@ -3591,15 +3591,25 @@ the ones defined from the buffer now."
 ;; -----------------------------------------------------------------------------
 ;; Key-Chord Mode
 ;; ==============
+
+
+(defun pel--start-key-chord-mode ()
+  "Activate key-chord mode if it can be loaded."
+  (when (require 'key-chord nil :noerror)
+    (key-chord-mode 1)))
+
 (when pel-use-key-chord
+  (define-key pel: (kbd "M-K")     'key-chord-mode)
+
   (use-package key-chord
     :commands key-chord-mode
-    :init
-    (define-key pel: (kbd "M-K")     'key-chord-mode)
     :config
     (when (and (require 'pel-key-chord nil :noerror)
                (fboundp 'pel-activate-all-key-chords))
-      (pel-activate-all-key-chords))))
+      (pel-activate-all-key-chords)))
+
+  (when (eq pel-use-key-chord 'use-from-start)
+    (run-with-idle-timer 1 nil (function pel--start-key-chord-mode))))
 
 ;; -----------------------------------------------------------------------------
 ;; Hydra Definitions
