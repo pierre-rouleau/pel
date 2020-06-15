@@ -1409,7 +1409,7 @@ section titled `Update your Emacs Initialization file`_, this name of this file
 is "~/.emacs.d/emacs-customization.el".
 
 The logic for managing key-chord definitions stored in customization user option
-is stored in the file `pel-key-chord.el`.  The default values for the
+is stored in the file `pel-key-chord.el`_.  The default values for the
 ``pel-key-chords`` user option is in the `pel--options.el`_ file.
 
 For more information see the `Key Chords`_ PDF Documentation.
