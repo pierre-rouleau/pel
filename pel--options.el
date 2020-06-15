@@ -379,6 +379,13 @@ typed quickly or slowly when recorded.)"
                           (windmove-right)
                         (insert "jk"))))
 
+    (global ""
+            "	q" (lambda ()
+                     (interactive)
+                     (if (require 'pel-indent nil :noerror)
+                         (pel-indent-rigidly)
+                       (insert "	q"))))
+
     (flyspell-mode "flyspell"
                    "4r" (lambda ()
                           (interactive)
