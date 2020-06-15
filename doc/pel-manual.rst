@@ -1433,7 +1433,13 @@ group and the ``<f11> M-K`` binding to toggle the key-chord-mode on and off.
 PEL defines several default key-chords that use Emacs Lisp lambda form. This is
 the most flexible way to define a key-chord. It allows you to perform anything
 with you command, just as if you were writing Emacs Lisp code in your
-initialization file.  Be careful with this if you do not know Emacs Lisp: if you
+initialization file.  It also allows the use of keyboard prefix argument keys,
+just like any other Emacs command.  With this you can prevent the execution of
+code associated with a key-chord in read-only buffer, or pass numeric arguments
+that modify the behaviour of the code.  You have the full flexibility of Emacs
+Lisp at your disposal.
+
+Be careful with this if you do not know Emacs Lisp: if you
 change a setting that refer to a symbol that is not known when you open Emacs's
 customize UI, Emacs customize UI will report a mismatch error and you will not
 be able to make any modification.  If this happens to you, edit your
