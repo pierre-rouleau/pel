@@ -391,10 +391,10 @@ typed quickly or slowly when recorded.)"
                         (insert "jk"))))
 
     (global ""            key-chord
-            "	q" (lambda ()
-                     (interactive)
+            "	q" (lambda (&optional n)
+                     (interactive "*P")
                      (if (require 'pel-indent nil :noerror)
-                         (pel-indent-rigidly)
+                         (pel-indent-rigidly n)
                        (insert "	q"))))
 
     (flyspell-mode "flyspell" key-chord
@@ -412,17 +412,17 @@ typed quickly or slowly when recorded.)"
                                  (insert "4r"))))
 
     (global    ""         key-chord
-               "6y"  (lambda ()
-                       (interactive)
+               "6y"  (lambda (&optional n)
+                       (interactive "P")
                        (if (require 'pel-file nil :noerror)
-                           (pel-find-file-at-point-in-window)
+                           (pel-find-file-at-point-in-window n)
                          (insert "6y"))))
 
     (global    ""         key-chord
-               ".;"  (lambda ()
-                       (interactive)
+               ".;"  (lambda (&optional n)
+                       (interactive "P")
                        (if (require 'pel-search nil :noerror)
-                           (pel-search-word-from-top)
+                           (pel-search-word-from-top n)
                          (insert ".;")))))
   "List of key-chords activated when the key-chord-mode is turned on.
 PEL provides a set of defaults.  You can replace, delete or add new
@@ -497,7 +497,11 @@ The `pel-key-chords' value is a list of objects.
     - 2: lambda:
          This is the most flexible way.  Here you write any elisp
          code you need inside a lambda expression that take no
-         argument.   You can call any elisp function in here."
+         argument.   You can call any elisp function in here.
+         With lambda you can also allow arguments to be passed to the
+         key-chord invoked code.  This way you can use numeric arguments
+         and you can also prevent the key-chord to modify a read-only buffer.
+         See the default as examples."
   :group 'pel-pkg-for-key-chord
   :type
   '(repeat

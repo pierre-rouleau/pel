@@ -155,6 +155,7 @@ Used twice returns to the same buffer."
   (set-window-dedicated-p (selected-window) (not (window-dedicated-p)))
   (pel-show-window-dedicated-status))
 
+;;-pel-autoload
 (defun pel-count-non-dedicated-windows ()
   "Count and return the number of non-dedicated windows in the current frame.
 Exclude the minibuffer."
@@ -165,6 +166,7 @@ Exclude the minibuffer."
 ;; Window Direction Argument processing Utility
 ;; --------------------------------------------
 
+;;-pel-autoload
 (defun pel-window-direction-for (n &optional prefer)
   "Return direction of the target window identified by N and PREFER.
 Window selection:
@@ -177,28 +179,27 @@ Window selection:
     of non-dedicated and non-minibuffer windows in the current frame:
     - 1 window  in frame: return 'new
     - 2 windows in frame: return 'other
-    - 3 or more windows : return 'down
-- If N is 3, 7, 9 or larger, return: PREFER value.
+    - 3 or more windows : return 'current
+- If N is 3, 7, 9 or larger, with PREFER not nil, return: PREFER value.
+  If PREFER is nil return as described above.
 - If N in remaining [2,8] range, return the direction corresponding to the
   cursor in a numeric keypad:
   -             8 := 'up
   - 4 := 'left  5 := 'current  6 := 'right
   -             2 := 'down"
-  (let* ((nwindows (pel-count-non-dedicated-windows))
-         (default-direction (or prefer
-                                (cond ((eq nwindows 2) 'other)
-                                      ((eq nwindows 1) 'new)
-                                      (t 'down))))
-         (direction (cond
-                     ((eq 2 n) 'down)
-                     ((eq 8 n) 'up)
-                     ((eq 4 n) 'left)
-                     ((eq 6 n) 'right)
-                     ((eq 5 n) 'current)
-                     ((eq 0 n) 'other)
-                     ((< n 0)  'new)
-                     (t default-direction))))
-    direction))
+  (cond
+   ((eq n 2) 'down)
+   ((eq n 8) 'up)
+   ((eq n 4) 'left)
+   ((eq n 6) 'right)
+   ((eq n 5) 'current)
+   ((eq n 0) 'other)
+   ((< n 0)  'new)
+   (t (or prefer
+          (let ((nwindows (pel-count-non-dedicated-windows)))
+            (cond ((eq nwindows 2) 'other)
+                  ((eq nwindows 1) 'new)
+                  (t               'current)))))))
 
 ;; -----------------------------------------------------------------------------
 ;; Create new Window
@@ -231,9 +232,10 @@ Window selection:
   (split-window-right))
 
 ;; -----------------------------------------------------------------------------
-;; Window close by direction
-;; -------------------------
+;; Move to specified window
+;; ------------------------
 
+;;-pel-autoload
 (defun pel-move-to-window (direction)
   "Move point to the window identified by DIRECTION.
 DIRECTION may be: 'up, 'down, 'left or 'right.
@@ -243,6 +245,10 @@ Raise an error if the DIRECTION is invalid."
         ((eq direction 'left)  (windmove-left))
         ((eq direction 'right) (windmove-right))
         (t (error "Invalid direction %S" direction))))
+
+;; -----------------------------------------------------------------------------
+;; Window close by direction
+;; -------------------------
 
 (defun pel--close-window (direction)
   "Close the window identified by DIRECTION ('up, 'down, 'right or 'left).
@@ -317,6 +323,7 @@ Returns the new window."
 ;; - pel-2-horizontal-windows
 ;;   - pel-flip-2-windows
 
+;;-pel-autoload
 (defun pel-flip-2-windows-to (orientation)
   "Flip the ORIENTATION of 2 windows: current and next window.
 ORIENTATION must be one of: `horizontal or `vertical."
@@ -354,6 +361,7 @@ Flip the orientation of the current window and its next one."
 ;; - pel-window-select
 ;;   - pel-find-window
 
+;;-pel-autoload
 (defun pel-find-window (direction)
   "Return the window for the specified DIRECTION.
 The DIRECTION can be 'up, 'down, 'right, 'left, 'current, or 'other.

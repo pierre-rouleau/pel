@@ -49,10 +49,11 @@
 ;;          `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'.
 
 
-(require 'pel--base)                    ; use: pel-val-or-default,
-                                        ;      pel-goto-position,
-                                        ;      pel-system-is-windows-p
-(require 'pel-window)                   ; use pel-window-direction-for
+(require 'pel--base)     ; use: pel-val-or-default,
+                         ;      pel-goto-position,
+                         ;      pel-system-is-windows-p
+(require 'pel-window)    ; use pel-window-direction-for
+;;                       ;     pel-window-valid-for-editing-p
 
 (eval-when-compile
   (require 'subr-x))           ; use: inlined: string-trim
@@ -185,6 +186,45 @@ Returns the filename string."
                     default-filename)
                   'file-exists-p))
 
+;; -----------------------------------------------------------------------------
+
+(defun pel--lib-filename (filename)
+  "Infer or prompt for library filename using incomplete FILENAME.
+Return (filename . action), where:
+- action is: 'create | 'edit | reason-for-nil-filename
+- filename is the file to create or open, or nil if no file to handle.
+
+nil if user gave up, otherwise return the file name to open."
+  (if (and (require 'pel-prompt nil :no-error)
+           (fboundp 'pel-y-n-e-or-l-p))
+      (let ((action
+             (pel-y-n-e-or-l-p
+              (format "\
+File「%s」not found.   Create it, edit name or find Library file? "
+                      filename))))
+        (cond
+         ((equal action 'yes)
+          (cons filename 'create))
+         ;;
+         ((equal action 'no)
+          (cons nil   "Cancelled."))
+         ;;
+         ((equal action 'edit)
+          (let ((filename (pel-prompt-for-filename filename)))
+            (cons filename (if (file-exists-p filename)
+                               'edit
+                             'create))))
+         ;;
+         ((equal action 'findlib)
+          (when (and (require 'find-func)
+                     (fboundp 'find-library-name))
+            (let ((filename (find-library-name (file-name-base filename))))
+              (cons filename (if (file-exists-p filename)
+                                 'edit
+                               'create)))))))
+    (error "Function pel-prompt not loaded")))
+
+;; -----------------------------------------------------------------------------
 
 (defun pel-find-file-in-window
     (filename direction &optional line column force)
@@ -220,52 +260,44 @@ if an invalid window selection would have been made
 ie. if there's no window in the specified direction, or it's
 the minibuffer window.  When nil is returned the point was
 not moved."
-  (if (and (require 'pel-window nil :no-error)
-           (fboundp 'pel-window-valid-for-editing-p)
-           (fboundp 'pel-window-select))
-      (if (pel-window-valid-for-editing-p direction)
-          (let ((buffer_for_file (find-buffer-visiting filename)))
-            (if buffer_for_file
-                (if (pel-window-select direction)
-                    (progn
-                      (pop-to-buffer-same-window buffer_for_file)
-                      (pel-goto-position line column)
-                      (message "Editing Buffer %S @ %S %S"
-                               buffer_for_file line column)
-                      (selected-window)))
-              (if (or (file-exists-p filename)
-                      force
-                      (if (and (require 'pel-prompt nil :no-error)
-                               (fboundp 'pel-y-n-e-or-l-p))
-                          (let* ((action (pel-y-n-e-or-l-p
-                                          (format "File「%s」not found.\
-  Create it, edit name or find Library file? "
-                                                  filename)))
-                                 (act (cond
-                                       ((equal action 'yes)  t)
-                                       ((equal action 'no)  nil)
-                                       ((equal action 'edit)
-                                        (progn
-                                          (setq filename
-                                                (pel-prompt-for-filename
-                                                 filename))
-                                          t))
-                                       ((equal action 'findlib)
-                                        (if (fboundp 'find-library-name)
-                                            (progn
-                                              (setq filename
-                                                    (find-library-name
-                                                     (file-name-base filename)))
-                                              t))))))
-                            act)
-                        (error "Function pel-prompt not loaded")))
-                  (if (pel-window-select direction)
-                      (progn
-                        (find-file filename)
-                        (pel-goto-position line column)
-                        (message "Editing File %S @ %S %S" filename line column)
-                        (selected-window)))))))
-    (error "File pel-window no loaded")))
+  (if (pel-window-valid-for-editing-p direction)
+      ;; check if a buffer already contains this file
+      (let ((buffer-for-file (find-buffer-visiting filename)))
+        (if buffer-for-file
+            (if (pel-window-select direction)
+                (progn
+                  (pop-to-buffer-same-window buffer-for-file)
+                  (pel-goto-position line column)
+                  (message "Editing Buffer %S @ %S %S"
+                           buffer-for-file line column)
+                  (selected-window))
+              (user-error "File is already opened in buffer %s,\
+ but direction %S is invalid!"
+                       buffer-for-file direction))
+          ;; no buffer already contains the requested file
+          (let ((action
+                 (cond ((file-exists-p filename) 'edit)
+                       (force                    'create)
+                       (t (let* ((filename-action   (pel--lib-filename filename))
+                                 (selected-filename  (car filename-action))
+                                 (selected-action    (cdr filename-action)))
+                            (when selected-filename
+                              (setq filename selected-filename))
+                            (if (stringp selected-action)
+                                (message "%s" selected-action)
+                              selected-action))))))
+            ;; At this point, filename is the final file name, and
+            ;; action is one of: 'create | 'edit | nil
+            ;; where nil means that no edit/create required and a message was
+            ;; already shown above.
+            (when (and action
+                       (pel-window-select direction))
+              (find-file filename)
+              (pel-goto-position line column)
+              (message "%S file %S @ %S %S" action filename line column)
+              (selected-window)))))
+    ;; Invalid direction
+    (user-error "Invalid window in direction %S" direction)))
 
 (defun pel-find-file-at-point (direction &optional force)
   "Open file of name located at/around point in window identified by DIRECTION.
@@ -320,7 +352,7 @@ Return one of:
    according to the number of windows in the current frame:
    - 2 windows in frame: open in *other* window
    - 1 window  in frame: split window sensibly and open in that window.
-   - otherwise, open in window below (if there is one, otherwise: error)
+   - otherwise, open in current window
 - If a prefix numeric argument N is supplied, it identifies the location
   of the target window, mimicking the layout of a numeric keypad:
   -             8 := 'up
@@ -388,13 +420,13 @@ the function prints an error message and quits.
   ;; - if there is only 1 window:  use 'current
   ;; - if there is only 2 windows: use 'other
   ;; - otherwise: use 'down
-  (let ((direction (pel-window-direction-for (prefix-numeric-value n))))
-    (unless (pel-find-file-at-point direction nil)
+  (let* ((direction (pel-window-direction-for (prefix-numeric-value n)))
+         (found     (pel-find-file-at-point direction nil)))
+    (unless found
       (if (pel-window-valid-for-editing-p direction)
-          (message "User cancelled: nothing opened")
-        (user-error
-         "No valid window identified by direction %s: nothing opened" direction))
-      (error "File pel-window is not loaded"))))
+          (message "User cancelled: nothing opened.")
+        (message "No valid window identified by direction %s: nothing opened."
+                 direction)))))
 
 ;; --
 

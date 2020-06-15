@@ -370,23 +370,28 @@
                  pel-switch-to-last-used-buffer
                  pel-show-window-dedicated-status
                  pel-toggle-window-dedicated
+                 pel-count-non-dedicated-windows
+                 pel-window-direction-for
                  pel-create-window-down
                  pel-create-window-right
                  pel-create-window-up
                  pel-create-window-left
+                 pel-move-to-window
                  pel-close-window-down
                  pel-close-window-up
                  pel-close-window-left
                  pel-close-window-right
                  pel-split-window-sensibly
+                 pel-flip-2-windows-to
                  pel-2-vertical-windows
                  pel-2-horizontal-windows
+                 pel-find-window
                  pel-window-valid-for-editing-p
                  pel-window-select
+                 pel-other-window
                  pel-other-window-backward
                  pel-show-window-filename-or-buffer-name
-                 pel-show-window-sizes
-                 pel-other-window))
+                 pel-show-window-sizes))
     (autoload fct "pel-window")))
 
 ;; -----------------------------------------------------------------------------
