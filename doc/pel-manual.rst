@@ -1382,6 +1382,7 @@ PEL Key Chords Support
 :PEL Customization: **pel-pkg-for-key-chord**:
 
                     - ``pel-use-key-chord``
+                    - ``pel-use-key-seq``
                     - ``pel-key-chords``
                     - ``pel-key-chord-two-keys-delay``
                     - ``pel-key-chord-one-key-delay``
@@ -1389,10 +1390,43 @@ PEL Key Chords Support
 
 :PEL Key Prefix: *none*
 
-PEL provides access to the key-chord library when the ``pel-use-key-chord`` user option
-is set to either **t** or to **use-from-start**.  PEL provides a set of key-chords by default
-which you can modify via the Emacs customize buffer for the
-**pel-pkg-for-key-chord** customize group.
+PEL provides access to the `key-chord`_ external library when the
+``pel-use-key-chord`` user option is set to either **t** (to activate key-chords
+when the key-chord-mode is ttuned on) or to **use-from-start** (to activate the
+key-chord mode and all defined global key-chords when Emacs starts).
+
+If you set the ``pel-use-key-seq`` suer option to **t**, PEL also
+provides access to the `key-seq`_ external library and allow you to identify
+your *key-chord* to be a *key-seq* instead.
+
+A *key-chord* is two characters typed simultaneously quickly or the same key
+typed twice quickly that trigger a specified action.  The action may be
+inserting some other text, moving the piint, executing a specified function or
+executing a specified Emacs command expressed as an Emacs Lisp lambda
+expression.  The *key-chord* can be made of any ASCII printable characters and
+ASCII control characters.  These keys nmust be type quickly; the order into
+which they are typed does not matter.
+
+For some fast typist using two keys that might be inside normal words in one
+order but not the other, it might be interesting to be able to specify the key
+order for a special action.  This is what `key-seq`_ does: it imposes an oorder
+for the 2 characters tyoped quickly.  Different order is not triggerring the
+special action.  Note that *key-seq* only accepts ASCII printable characters
+(ie. in the range decimal 32 to 26 inclusive.)
+
+Both *key-chord* and *key-seq* can be global, where they are always accessible
+in Emacs, and mode-specific.  A mode specific *key-chord* or *key-seq* is only
+available in buffers where the specific mode is active. For mode-specific
+*key-chord* or *key-seq*, PEL schedule the loading of the definitions when the
+file identifying the mode is loaded in Emacs.
+
+With PEL, you define the *key-chord* and *key-seq* via customization.
+They are stored inside the ``pel-key-chords`` user option.
+
+PEL provides a set of key-chords by default which you can modify via the Emacs
+customize buffer for the **pel-pkg-for-key-chord** customize group.  These also
+provide examples of how to specify your own key-chords or key-seqs.
+
 PEL provides the ``<f11> <f1> K`` key binding to quickly access this customize
 group and the ``<f11> M-K`` binding to toggle the key-chord-mode on and off.
 
@@ -4013,6 +4047,7 @@ hydra_                        MELPA_
 ivy_                          MELPA_
 julia-snail_                  MELPA_
 key-chord_                    MELPA_
+key-seq_                      MELPA_
 lfe-mode_                     MELPA_
 lice_                         MELPA_
 macrostep_                    MELPA_
@@ -4101,6 +4136,7 @@ Hopefully you will find PEL useful for using these packages.
 .. _ivy:                       https://melpa.org/#/ivy
 .. _julia-snail:               https://melpa.org/#/julia-snail
 .. _key-chord:                 https://melpa.org/#/key-chord
+.. _key-seq:                   https://melpa.org/#/key-seq
 .. _lfe-mode:                  https://melpa.org/#/lfe-mode
 .. _lice:                      https://melpa.org/#/lice
 .. _macrostep:                 https://melpa.org/#/macrostep

@@ -303,6 +303,17 @@ This can be set to:
           (const :tag "Use, activate later by command"  t)
           (const :tag "Use, activate when Emacs starts" use-from-start)))
 
+(defcustom pel-use-key-seq nil
+  "Control whether PEL key-chord is also using key-seq.
+If t, the boolean field 'key-seq' key-chords definitions in
+`pel-key-chords' is honoured: instead of declaring hem a
+key-chord PEL declares them key-seq, making the order of the keys
+relevant.
+To use key-seq you must also activate key-chords via `pel-use-key-chord'."
+  :group 'pel-pkg-for-key-chord
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-key-chord-two-keys-delay 0.1	; 0.05 or 0.1
   "Max time delay between two key press to be considered a key chord."
   :group 'pel-pkg-for-key-chord
@@ -318,7 +329,7 @@ This should normally be a little longer than `key-chord-two-keys-delay'."
 
 (defcustom pel-key-chord-in-macros t
   "If nil, don't expand key chords when executing keyboard macros.
-If non-nil, expand chord sequenses in macros, but only if a similar chord was
+If non-nil, expand chord sequences in macros, but only if a similar chord was
 entered during the last interactive macro recording.  (This carries a bit of
 guesswork.  We can't know for sure when executing whether two keys were
 typed quickly or slowly when recorded.)"
@@ -347,72 +358,72 @@ typed quickly or slowly when recorded.)"
 
 
 (defcustom pel-key-chords
-  '((global    ""         "<>"  "<>\C-b")
-    (global    ""         "[]"  "[]\C-b")
-    (c-mode    "cc-mode"  "{}"  "{\n\n}\C-p\C-p")
-    (c++-mode  "cc-mode"  "{}"  "{\n\n}\C-p\C-p")
-    (global    ""
+  '((global    ""         key-chord      "<>"  "<>\C-b")
+    (global    ""         key-chord      "[]"  "[]\C-b")
+    (c-mode    "cc-mode"  key-chord      "{}"  "{\n\n}\C-p\C-p")
+    (c++-mode  "cc-mode"  key-chord      "{}"  "{\n\n}\C-p\C-p")
+    (global    ""         key-chord
                "yu" (lambda ()
                       (interactive)
                       (if (require 'windmove nil :noerror)
                           (windmove-up)
                         (insert "yu"))))
 
-    (global    ""
+    (global    ""         key-chord
                "bn" (lambda ()
                       (interactive)
                       (if (require 'windmove nil :noerror)
                           (windmove-down)
                         (insert "bn"))))
 
-    (global    ""
+    (global    ""         key-chord
                "fg" (lambda ()
                       (interactive)
                       (if (require 'windmove nil :noerror)
                           (windmove-left)
                         (insert "fg"))))
 
-    (global    ""
+    (global    ""         key-chord
                "jk" (lambda ()
                       (interactive)
                       (if (require 'windmove nil :noerror)
                           (windmove-right)
                         (insert "jk"))))
 
-    (global ""
+    (global ""            key-chord
             "	q" (lambda ()
                      (interactive)
                      (if (require 'pel-indent nil :noerror)
                          (pel-indent-rigidly)
                        (insert "	q"))))
 
-    (flyspell-mode "flyspell"
+    (flyspell-mode "flyspell" key-chord
                    "4r" (lambda ()
                           (interactive)
                           (if (require 'flyspell nil :noerror)
                               (flyspell-correct-word-before-point)
                             (insert "4r"))))
 
-    (flyspell-prog-mode "flyspell"
+    (flyspell-prog-mode "flyspell" key-chord
                         "4r" (lambda ()
                                (interactive)
                                (if (require 'flyspell nil :noerror)
                                    (flyspell-correct-word-before-point)
                                  (insert "4r"))))
 
-    (global             ""
-                        "6y"  (lambda ()
-                                (interactive)
-                                (if (require 'pel-file nil :noerror)
-                                    (pel-find-file-at-point-in-window)
-                                  (insert "6y"))))
+    (global    ""         key-chord
+               "6y"  (lambda ()
+                       (interactive)
+                       (if (require 'pel-file nil :noerror)
+                           (pel-find-file-at-point-in-window)
+                         (insert "6y"))))
 
-    (global             ""
-                        ".;"  (lambda ()
-                                (interactive)
-                                (if (require 'pel-search nil :noerror)
-                                    (pel-search-word-from-top)
-                                  (insert ".;")))))
+    (global    ""         key-chord
+               ".;"  (lambda ()
+                       (interactive)
+                       (if (require 'pel-search nil :noerror)
+                           (pel-search-word-from-top)
+                         (insert ".;")))))
   "List of key-chords activated when the key-chord-mode is turned on.
 PEL provides a set of defaults.  You can replace, delete or add new
 key-chord definitions to this default.
@@ -423,7 +434,7 @@ You can define *global* key-chords and mode-specific key-chords.
   the specified mode when the mode is entered.
 
 The `pel-key-chords' value is a list of objects.
-- Each object is a list of 4 items.
+- Each object is a list of 5 items.
   - The first item is either:
     - global   : this key-chord is global
     - A major mode name that identifies the major mode
@@ -437,16 +448,27 @@ The `pel-key-chords' value is a list of objects.
     the name of a Emacs Lisp file accessible in Emacs load path.
     Do not identify a file extension.  For most files, the file
     base name is sufficient and more portable.
-    SO, for flyspell-mode use \"flyspell\" in this field.
-  - The third item is the 2 characters used for the key-chord.
-    Do not quote the characters.
-    You can specify control characters to identify special keys:
+    So, for flyspell-mode use \"flyspell\" in this field.
+  - The third item identifies if the key sequence must be treated
+    as a normal key-chord or as a key-seq.  The default is
+    key-chord but you can also use key-seq to impose an order
+    in the way the keys are recognized.  If the value is key-seq
+    but the key-seq package is not loaded, key-chord is used
+    instead.
+  - The fourth item is the 2 characters used for the key-chord
+    or key-seq. Do not quote the characters.
+    For key-chord you can identify control characters in this
+    way:
     - for <tab>, type: C-q C-i
     - for RET,   type: C-q C-m
-    - It's not possible to identify the function keys here.
-  - The fourth item describes the action for the key-chord.
-    It can be expressed using one of 3 ways, selected by the
-    Value Menu:
+    For key-seq you can only use printable ASCII characters
+    in the decimal range 32 to 126 inclusive (ie, you cannot
+    identify control characters for key-seq).
+    - It's not possible to identify the function keys or
+      the cursor keys in a portable way here.
+  - The fifth item describes the action for the key-chord
+    or key-seq.  The action can be expressed using one of 3 ways,
+    selected by its Value Menu:
     - 0: expansion keys:
          Type the keys you want as replacement. You can
          place several keys on a line, or spread them on several
@@ -482,6 +504,8 @@ The `pel-key-chords' value is a list of objects.
     (list
      (symbol   :tag "mode  " :value global)
      (string   :tag "file  " :value "")
+     (choice   (const :tag "key-chord" key-chord)
+               (const :tag "key-seq"   key-seq))
      (string   :tag "2-keys")
      (choice (string   :tag "expansion")
              (function :tag "function")
