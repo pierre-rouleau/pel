@@ -1405,10 +1405,12 @@ customize UI, Emacs customize UI will report a mismatch error and you will not
 be able to make any modification.  If this happens to you, edit your
 customization file and delete the entry for ``pel-key-chords`` from the file,
 save the file back and restart Emacs.  If you followed the instructions in
-section titled `Create a "~/.emacs.d/utils" directory`_, this name of this file
+section titled `Update your Emacs Initialization file`_, this name of this file
 is "~/.emacs.d/emacs-customization.el".
 
-The logic for this is stored in the file `pel-key-chord.el`.
+The logic for managing key-chord definitions stored in customization user option
+is stored in the file `pel-key-chord.el`.  The default values for the
+``pel-key-chords`` user option is in the `pel--options.el`_ file.
 
 For more information see the `Key Chords`_ PDF Documentation.
 
