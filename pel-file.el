@@ -23,10 +23,9 @@
 ;; -----------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This file is part of the PEL package.  It holds the logic to
-;; extract a file name or URL from the point location, and then open
-;; the file inside a specified Emacs window or the URL inside an
-;; external process frame.
+;; This file holds the logic to extract a file name or URL from the point
+;; location, and then open the file inside a specified Emacs window or the URL
+;; inside an external process frame.
 ;;
 ;; The point can be located anywhere inside the file or URL in all
 ;; cases except when the file name includes embedded spaces.  To
@@ -34,14 +33,11 @@
 ;; enclosed with double quotes and the point must be located on the
 ;; opening quote.  Line and column numbers are also supported.
 ;;
-;; The file is opened inside a specified window.  The window must be
-;; an existing window, and must not be the minibuffer window.  It can
-;; be the current window or one of the adjacent windows at one of its
-;; four borders (up, down, right and left).  The top-level interactive
-;; function (`pel-find-file-at-point-in-window') accepts an numerical
-;; argument that identifies those, but the other internal functions
-;; use the following tokens instead: 'up, 'down, 'right, 'left and
-;; 'current.
+;; The file is opened inside a specific window if it is specified by numeric
+;; argument.  If a window already contains the file and no argument specify
+;; where to open the file, just move point to that window.  The numeric argument
+;; identify a cardinal direction to the target window.  If the pointed window is
+;; the minibuffer or a dedicated window the command fails.
 ;;
 ;; Credits: The pathstop string with Unicode block characters
 ;;          originally borrowed from Xah Lee's xah-open-file-at-cursor
@@ -63,31 +59,38 @@
 ;; Implementation call hierarchy
 ;; -----------------------------
 ;;
-;; * pel-show-filename-parts-at-point
-;; * pel-find-file-at-point-in-window
-;;   - pel-find-file-at-point
-;;     - pel-find-file-in-window
-;;       - pel-prompt-for-filename
-;;     - pel-filename-parts-at-point
-;;
-;; * pel-show-filename-at-point
+;; * pel-show-filename-at-point  (A)
 ;;     - pel-filename-at-point
 ;;       - pel-string-at-point
 ;;
+;;
+;; * pel-show-filename-parts-at-point    (A)
+;; * pel-find-file-at-point-in-window    (A)
+;;   - pel-filename-parts-at-point
+;;   - pel--complete-filename-for
+;;     - pel--lib-filename
+;;       - pel-prompt-for-filename
+;;  - pel--show-edit-action
+;;
+
+;; -----------------------------------------------------------------------------
+;; pel-find-file-at-point-in-window
+;; --------------------------------
 
 (defun pel-filename-parts-at-point ()
   "Extract and return (filename line column) from string at point.
 .
 Return:
 - nil if no valid file name found at point.
+- a ('http . url-string) cons where url-string is the URL.
 - a list of (name-type filename line column) if a file name  is present.
   where:
-  - name-type := symbol : fname | fname-w-ddrv
+  - name-type := symbol : fname | fname-w-ddrv | http
                  : 'fname := normal file name, with/without Unix-style path
                  : 'fname-w-ddrv := filename with disk drive letter
-  - filename : filename string
-  - line     : integer.  1 for missing number.
-  - column   : integer.  0 for missing number.
+  - filename : filename string.
+  - line     : integer, or nil for missing number.  Starts at 1.
+  - column   : integer, or nil for missing number.  Starts at 0.
 
 The function accepts Unix and Windows style file names and path.
 It accepts ':' and '@' as separators between the elements.
@@ -98,7 +101,7 @@ but *only* when the complete string is enclosed in double quotes
                                        (pel-filename-at-point))))
     ;; first check for web URIs and return them.
     (if (string-match-p "\\`https?://" str)
-        (list 'http str)
+        (cons 'http str)
       ;; - Regexp provides ability to match with and without line and columns
       ;; - If line is present it's a number between 2 separators, with each
       ;;   each separator being either ':' or '@' with optional spaces.
@@ -138,17 +141,17 @@ but *only* when the complete string is enclosed in double quotes
             ;; (---------------------)  )  )
             "\\([[:alnum:] ,:;\\.]+\\)\\)\\)?\\'")
            str)
-          (let* (
-                 (ddrv_str  (match-string 1 str))
+          (let* ((ddrv_str  (match-string 1 str))
                  (fpath_str (concat ddrv_str (match-string 2 str)))
                  ;; line to 0 if no line in str.
-                 (line_num  (string-to-number
-                             (pel-val-or-default (match-string 6 str) "")))
-                 ;; but change line 0 to line 1
+                 (match6    (match-string 6 str))
+                 (line_num  (if match6 (string-to-number match6)))
+                 ;; change line 0 to line 1
                  (line_num  (if (equal line_num 0) 1 line_num))
-                 ;; column to 0 if no column in str.
-                 (col_num   (string-to-number
-                             (pel-val-or-default (match-string 9 str) ""))))
+                 ;; column to nil if no line or column in str.
+                 (match9   (match-string 9 str))
+                 (col_num   (when (and match6 match9)
+                              (string-to-number match9))))
             (list (if ddrv_str 'fname-w-ddrv 'fname)
                   fpath_str line_num col_num))
         ;; For reasons I don't yet understand, the above regexp does not work
@@ -168,31 +171,35 @@ but *only* when the complete string is enclosed in double quotes
                    ;; but change line 0 to line 1
                    (line_num  (if (equal line_num 0) 1 line_num)))
               (list
-               (if ddrv_str 'fname-w-ddrv 'fname) fpath_str line_num 0)))))))
+               (if ddrv_str 'fname-w-ddrv 'fname) fpath_str line_num nil)))))))
 
 (defun pel-prompt-for-filename (default-filename)
-  "Prompt for a file name, with DEFAULT-FILENAME shown and editable.
+  "Prompt for a file name, with DEFAULT-FILENAME shown.
+The DEFAULT-FILENAME must be a string or nil.
 User can either accept the filename or modify it.
 If the file does not already exist, a confirmation is requested.
 Returns the filename string."
-  (read-file-name "Open? (C-g to quit): "
-                  (if (file-name-absolute-p default-filename)
-                      default-filename
-                    nil)
-                  nil
-                  'confirm
-                  (if (file-name-absolute-p default-filename)
-                      nil
-                    default-filename)
-                  'file-exists-p))
-
-;; -----------------------------------------------------------------------------
+  (unless default-filename
+    (setq default-filename ""))
+  (read-file-name
+   ;; PROMPT
+   "Open? (C-g to quit): "
+   ;; DIR
+   (file-name-directory default-filename)
+   ;; DEFAULT_FILENAME
+   (file-name-nondirectory default-filename)
+   ;; MUSTMATCH
+   'confirm
+   ;; INITIAL
+   default-filename
+   ;; PREDICATE
+   'file-exists-p))
 
 (defun pel--lib-filename (filename)
   "Infer or prompt for library filename using incomplete FILENAME.
 Return (filename . action), where:
-- action is: 'create | 'edit | reason-for-nil-filename
 - filename is the file to create or open, or nil if no file to handle.
+- action is: 'create | 'edit | reason-for-nil-filename
 
 nil if user gave up, otherwise return the file name to open."
   (if (and (require 'pel-prompt nil :no-error)
@@ -224,123 +231,39 @@ File「%s」not found.   Create it, edit name or find Library file? "
                                'create)))))))
     (error "Function pel-prompt not loaded")))
 
-;; -----------------------------------------------------------------------------
 
-(defun pel-find-file-in-window
-    (filename direction &optional line column force)
-  "Open FILENAME in a window identified by its relative position.
-.
-The window to used identified by DIRECTION, which must be one
-of: 'up, 'down, 'right, 'left, 'current, 'other or 'new.
-See `pel-find-file-at-point' for a description of these values.
-.
-If the LINE is specified, point is moved to specified line
-number.
-.
-If the COLUMN is specified, point is moved to the specified
-column number otherwise point goes to the beginning of the line.
-If no window is present at specified DIRECTION, signal an
-error and abort operation.
-.
-If a buffer for non-committed file with same name as FILENAME
-exists, open that buffer in the window.  Otherwise look for a
-file with FILENAME.  If FORCE is non-nil and the file does not
-exist, force creation of that FILENAME.  When FORCE is nil
-and the FILENAME does not correspond to an exiting file,
-prompt the user to create that file.  Allow selection of
-Yes, No or Edit action.  If Edit is selected, ask the user to
-modify the FILENAME and then use that file to open or create.
-If No is selected, prompt to open the Emacs Lisp library file
-with the specified name.  That name does not need an file name
-extension; the function attempts to find any Emacs Lisp or C
-file (even compressed ones).
-.
-Return the selected window where the file is edited, or nil
-if an invalid window selection would have been made
-ie. if there's no window in the specified direction, or it's
-the minibuffer window.  When nil is returned the point was
-not moved."
-  (if (pel-window-valid-for-editing-p direction)
-      ;; check if a buffer already contains this file
-      (let ((buffer-for-file (find-buffer-visiting filename)))
-        (if buffer-for-file
-            (if (pel-window-select direction)
-                (progn
-                  (pop-to-buffer-same-window buffer-for-file)
-                  (pel-goto-position line column)
-                  (message "Editing Buffer %S @ %S %S"
-                           buffer-for-file line column)
-                  (selected-window))
-              (user-error "File is already opened in buffer %s,\
- but direction %S is invalid!"
-                       buffer-for-file direction))
-          ;; no buffer already contains the requested file
-          (let ((action
-                 (cond ((file-exists-p filename) 'edit)
-                       (force                    'create)
-                       (t (let* ((filename-action   (pel--lib-filename filename))
-                                 (selected-filename  (car filename-action))
-                                 (selected-action    (cdr filename-action)))
-                            (when selected-filename
-                              (setq filename selected-filename))
-                            (if (stringp selected-action)
-                                (message "%s" selected-action)
-                              selected-action))))))
-            ;; At this point, filename is the final file name, and
-            ;; action is one of: 'create | 'edit | nil
-            ;; where nil means that no edit/create required and a message was
-            ;; already shown above.
-            (when (and action
-                       (pel-window-select direction))
-              (find-file filename)
-              (pel-goto-position line column)
-              (message "%S file %S @ %S %S" action filename line column)
-              (selected-window)))))
-    ;; Invalid direction
-    (user-error "Invalid window in direction %S" direction)))
 
-(defun pel-find-file-at-point (direction &optional force)
-  "Open file of name located at/around point in window identified by DIRECTION.
-.
-DIRECTION identifies the direction from the current window.
-It must be one of:  'up, 'down, 'right, 'left, 'current,
-'other or 'new.  The value 'other selects the windows
-identified by `next-window' while 'new selects the window
-identified by `pel-split-window-sensibly'.
-.
-If file or buffer for extracted file name does not exist, the
-function prompts to create new buffer for the name unless the
-optional argument FORCE is non-nil.
-.
-Don't call `pel-find-file-at-point' interactively.
-Use `pel-find-file-at-point-in-window' for interactive calls.
-.
-Return one of:
-- nil    : if nothing opened,
-- window : the window the file in which a file was opened/edited
-- process: the process of the browser launched to browse the URL."
-  (let ((fileparts (pel-filename-parts-at-point)))
-    (if fileparts
-        (let* ((kind (car fileparts))
-               (fileparts (cdr fileparts)))
-          (if (eq kind 'http)
-              (browse-url (car fileparts))
-            (if (and (eq kind 'fname-w-ddrv)
-                     (not pel-system-is-windows-p))
-                (user-error "Invalid Windows-type filename 「%s」; Aborted"
-                            (car fileparts))
-              (let* ((filename (car fileparts))
-                     (line    (cadr fileparts))
-                     (column (caddr fileparts)))
-                (if (not (string= filename ""))
-                    (pel-find-file-in-window
-                     ;; expand relative paths: use current-directory of buffer
-                     (expand-file-name filename)
-                     direction
-                     line
-                     column
-                     force))))))
-      (user-error "Nothing valid found at point"))))
+(defun pel--complete-filename-for (filename)
+  "Identify the complete file name for a potentially incomplete FILENAME.
+Prompt the user if necessary.  In some case the user may want to create a
+new file with a specified filename.
+Return: (filename . action)
+where: - filename:= string or nil: the  filename to act upon if not nil.
+       - action  := 'edit | 'create | message-string
+         where the message string is returned with nil to describe why
+         we do not edit or create the file."
+  (let (action)
+    (if (file-exists-p filename)
+        (setq action 'edit)
+      (let* ((filename-action    (pel--lib-filename filename))
+             (selected-filename  (car filename-action))
+             (selected-action    (cdr filename-action)))
+        (when selected-filename
+          (setq filename selected-filename))
+        (setq action selected-action)))
+    (cons filename action)))
+
+
+(defun pel--show-edit-action (action filename &optional line column)
+    "Display message showing ACTION done on FILENAME at LINE and COLUMN.
+ACTION   := symbol | string
+FILENAME := string
+LINE     := integer | nil
+COLUMN   := integer | nil"
+    (message "%s %s%s%s%s" action filename
+             (if (or line column) " at " "")
+             (if line   (format "line:%d" line) "")
+             (if column (format "col:%d" column) "")))
 
 ;;-pel-autoload
 (defun pel-find-file-at-point-in-window (&optional n)
@@ -348,20 +271,34 @@ Return one of:
 .
 *Window selection:*
 - Only effective for opening file.  Ignored when opening a URL.
-- If no argument is provided, open the file in the the window selected
-   according to the number of windows in the current frame:
+- If no argument is provided,
+  - If file is already open in an existing window, select that window
+  - If file is not already opened in a window, select the window
+    according to the number number of windows in the current frame:
    - 2 windows in frame: open in *other* window
-   - 1 window  in frame: split window sensibly and open in that window.
+   - 1 window  in frame: split window sensibly and open in new  window.
    - otherwise, open in current window
 - If a prefix numeric argument N is supplied, it identifies the location
-  of the target window, mimicking the layout of a numeric keypad:
-  -             8 := 'up
-  - 4 := 'left  5 := 'current  6 := 'right
-  -             2 := 'down
-  - 0 := 'other
-  - negative:= 'new
+  of the target window:
+  - N < 0 := 'new
+  - N = 0 := 'other
+  - N = 1 := same as below
+  - N = 3 := same as below
+  - N = 7 := same as below
+  - N >= 9:= select the window according to the number number of windows
+             in the current frame:
+             - 2 windows in frame: open in *other* window
+             - 1 window  in frame: split window sensibly and open in new
+                                   window.
+             - otherwise, open in current window.
+  - For N= 2, 4, 5, 6 or 8, select window pointed by what is pointed
+    by cursor positionned at the layout of numeric keypad:
+    -             8 := 'up
+    - 4 := 'left  5 := 'current  6 := 'right
+    -             2 := 'down
 - Explicitly selecting the minibuffer window, a dedicated window
-  or a non-existing window is considered an error, identified by a user error.
+  or a non-existing window is not allowed.  Instead the command creates
+  a new window for the file.
 .
 *File/URL selection at point:*
 If the string starts with `http:/' or `https:/' it is
@@ -408,34 +345,81 @@ stating that nothing was opened.  Otherwise it proceeds.
 If the selection was to find a library file and nothing is found
 the function prints an error message and quits.
 .
-*Design Details*:
-- The file name, line and column numbers are extracted by
-  `pel-filename-parts-at-point'.
-- `pel-find-file-at-point-in-window' is meant to be called
-  interactively only.  From Lisp code, call `pel-find-file-at-point'
-  instead."
+When an action is taken the action and the URL or (potentially expanded)
+filename is displayed in the echo area, showing line and column number if they
+were specified."
   (interactive "P")
-  ;; select direction from numerical argument.
-  ;; If there are no argument, select the direction like this:
-  ;; - if there is only 1 window:  use 'current
-  ;; - if there is only 2 windows: use 'other
-  ;; - otherwise: use 'down
-  (let* ((direction (pel-window-direction-for (prefix-numeric-value n)))
-         (found     (pel-find-file-at-point direction nil)))
-    (unless found
-      (if (pel-window-valid-for-editing-p direction)
-          (message "User cancelled: nothing opened.")
-        (message "No valid window identified by direction %s: nothing opened."
-                 direction)))))
+  ;; - grab file name/URL at point
+  ;; - if point is a URL, launch the system browser for it.
+  ;; - otherwise, check if this filename is already in a buffer in a window
+  ;; - select window:
+  ;;   - if N is nil and a buffer holds the file, check if a window is currently
+  ;;     displaying the buffer that holds the file.  If so, use that window.
+  ;;     Otherwise, search for a window the normal way.
+  (let* ((fileparts (pel-filename-parts-at-point))
+        (file-kind (car fileparts)))
+    (cond ((eq file-kind 'http)
+           (browse-url (cdr fileparts))
+           (pel--show-edit-action "browse" (cdr fileparts)))
+          ;; nothing found
+          ((not file-kind)
+           (user-error "No valid filename/URL at point!"))
+          ;; some filename string found at point. The file name
+          ;; might be incomplete.  Complete it, prompting user if
+          ;; necessary.
+          ;; Then check if filename is currently opened in a buffer
+          ;; and if that buffer is in a window already.
+          ;; At this point:  fileparts := (kind filename line column)
+          (t
+           (let* ((filename (cadr fileparts))
+                  (fn-action (pel--complete-filename-for filename))
+                  (filename  (car fn-action))
+                  (action    (cdr fn-action))
+                  (buffer   (find-buffer-visiting filename))
+                  (window   (when buffer (get-buffer-window buffer)))
+                  (line     (caddr fileparts))
+                  (column   (cadddr fileparts)))
+             (if (and window (null n))
+                 ;; file is already in a buffer and window and position
+                 ;; is not imposed by argument n: use that existing
+                 ;; window and move point to where specified if any.
+                 (progn
+                   (select-window window)
+                   (pel-goto-position line column)
+                   (pel--show-edit-action "show" filename line column))
+               ;; the file is not inside a existing window,
+               ;; but a buffer may hold the file.
+               ;; Since find-file will open that buffer then
+               ;; what is needed now is to determine what window to use
+               ;; and open the file inside that window.
+               ;; The filename might be absolute, relative, incomplete.
+               (let ((direction (pel-window-direction-for
+                             (prefix-numeric-value n) nil :for-editing)))
+                 (cond ((eq action 'edit) (progn  ; progn just to indent
+                                            (pel-window-select direction)
+                                            (find-file filename)
+                                            (pel-goto-position line column)
+                                            (pel--show-edit-action action
+                                                                   filename line column)))
+                       ((eq action 'create) (progn
+                                              (pel-window-select direction)
+                                              (find-file filename)
+                                              (pel--show-edit-action action
+                                                                   filename line column)))
+                       ((stringp action)   (message "%s" action))
+                       (t (error "Internal error condition detected!"))))))))))
 
 ;; --
 
+;;-pel-autoload
 (defun pel-show-filename-parts-at-point ()
   "Display file parts extracted from point.  Testing utility."
   (interactive)
   (message "%S" (pel-filename-parts-at-point)))
 
-;; --
+;; -----------------------------------------------------------------------------
+;; Show filename at point
+;; ----------------------
 
 (defun pel-string-at-point (delimiter forward_only)
   "Return the string at point delimited by DELIMITER string.

@@ -139,8 +139,10 @@
   (autoload 'pel-emacs-mem-stats  "pel-emacs")
 
   ;; pel-file
-  (autoload 'pel-find-file-at-point-in-window  "pel-file")
-  (autoload 'pel-show-filename-at-point        "pel-file")
+  (dolist (fct '(pel-show-filename-at-point
+                 pel-show-filename-parts-at-point
+                 pel-find-file-at-point-in-window))
+    (autoload fct  "pel-file"))
 
   ;; pel-fill
   (autoload 'pel-auto-fill-only-comments  "pel-fill")
@@ -371,7 +373,6 @@
                  pel-show-window-dedicated-status
                  pel-toggle-window-dedicated
                  pel-count-non-dedicated-windows
-                 pel-window-direction-for
                  pel-create-window-down
                  pel-create-window-right
                  pel-create-window-up
@@ -388,6 +389,7 @@
                  pel-find-window
                  pel-window-valid-for-editing-p
                  pel-window-select
+                 pel-window-direction-for
                  pel-other-window
                  pel-other-window-backward
                  pel-show-window-filename-or-buffer-name

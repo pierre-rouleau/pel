@@ -42,6 +42,8 @@
 ;;    - `pel-toggle-window-dedicated' toggles the dedicated status of the
 ;;      current window.  Use it to dedicate the current window or turn
 ;;      dedication off.
+;;    - `pel-count-non-dedicated-windows' returns the number of dedicated
+;;      windows.
 ;;
 ;;  - Creating new windows:
 ;;
@@ -52,6 +54,11 @@
 ;;    - `pel-create-window-left'
 ;;    - `pel-create-window-right'
 ;;    - `pel-create-window-up'
+;;
+;;  - Move point to window specified by direction
+;;
+;;    - `pel-move-to-window' move point to a window up, down, left or right of
+;;      the current window.
 ;;
 ;;  - Closing windows:
 ;;
@@ -84,12 +91,18 @@
 ;;   or to create a new one.  These functions are used by other PEL commands.
 ;;   The functions are:
 ;;
-;;   - `pel-window-valid-for-editing-p' move point to the identified direction
-;;     as long as the target window can be used for editing.  This excludes the
-;;     minibuffer or any dedicated window.
-;;   - `pel-window-select' move to the window specified by a direction argument
-;;     or to the *other* window (the next one) or create a new window.
-;;     This is also a utility function used by other PEL commands.
+;;   - `pel-window-valid-for-editing-p' return t is the window pointed by
+;;     direction is valid for editing, nil otherwise.
+;;     This excludes the minibuffer or any dedicated window.
+;;   - `pel-find-window' return the window identified by a specified direction.
+;;   - `pel-window-select' move point to the window specified by a direction
+;;      argument which may also identify the *other* window (the next one) or
+;;      create a new window.
+;;
+;; - Process numeric arguemtn to identify a direction
+;;
+;;   - `pel-window-direction-for' converts a numeric value to a window
+;;     direction or action symbol used in other PEL windows processing.
 ;;
 ;; - Moving to other (next) or previous window:
 ;;
@@ -161,45 +174,6 @@ Used twice returns to the same buffer."
 Exclude the minibuffer."
   (length (delq t (mapcar #'window-dedicated-p
                           (window-list nil :exclude-minibuf)))))
-
-;; -----------------------------------------------------------------------------
-;; Window Direction Argument processing Utility
-;; --------------------------------------------
-
-;;-pel-autoload
-(defun pel-window-direction-for (n &optional prefer)
-  "Return direction of the target window identified by N and PREFER.
-Window selection:
-- If N is negative:    : return 'new
-- If N is 0:           : return 'other
-- If N is nil or 1     : the selection depends on PREFER:
-  - If PREFER is non-nil then it should be set to one of the possible valid
-    returned values because it is returned unchanged.
-  - If PREFER-CURRENT is nil, then select the window according to the number
-    of non-dedicated and non-minibuffer windows in the current frame:
-    - 1 window  in frame: return 'new
-    - 2 windows in frame: return 'other
-    - 3 or more windows : return 'current
-- If N is 3, 7, 9 or larger, with PREFER not nil, return: PREFER value.
-  If PREFER is nil return as described above.
-- If N in remaining [2,8] range, return the direction corresponding to the
-  cursor in a numeric keypad:
-  -             8 := 'up
-  - 4 := 'left  5 := 'current  6 := 'right
-  -             2 := 'down"
-  (cond
-   ((eq n 2) 'down)
-   ((eq n 8) 'up)
-   ((eq n 4) 'left)
-   ((eq n 6) 'right)
-   ((eq n 5) 'current)
-   ((eq n 0) 'other)
-   ((< n 0)  'new)
-   (t (or prefer
-          (let ((nwindows (pel-count-non-dedicated-windows)))
-            (cond ((eq nwindows 2) 'other)
-                  ((eq nwindows 1) 'new)
-                  (t               'current)))))))
 
 ;; -----------------------------------------------------------------------------
 ;; Create new Window
@@ -370,7 +344,7 @@ See `pel-find-file-at-point' for a description of these values."
   (cond ((eq direction 'current) (selected-window))
         ((eq direction 'other)   (next-window nil 'no-minibuf))
         ((eq direction 'new)
-         (error "Invalid code: 'new not accepted by `pel-find-window'"))
+         (error "The direction new is not accepted by `pel-find-window'"))
         (t (windmove-find-other-window direction))))
 
 ;;-pel-autoload
@@ -418,6 +392,57 @@ Return the selected window, or nil if nothing is valid."
     (if (and a_window
              (not (window-minibuffer-p a_window)))
         (select-window a_window))))
+
+;; -----------------------------------------------------------------------------
+;; Window direction argument processing utility
+;; --------------------------------------------
+
+;;-pel-autoload
+(defun pel-window-direction-for (n &optional prefer for-editing)
+  "Return direction of the target window identified by N and PREFER.
+.
+If FOR-EDITING is non-nil, only return direction of editable window:
+if N identifies a non-editable window, return what is identified
+by PREFER (if this is also OK) otherwise return 'new.
+.
+Window selection:
+- If N is negative:    : return 'new
+- If N is 0:           : return 'other
+- If N is nil or 1     : the selection depends on PREFER:
+  - If PREFER is non-nil then it should be set to one of the possible valid
+    returned values because it is returned unchanged.
+  - If PREFER-CURRENT is nil, then select the window according to the number
+    of non-dedicated and non-minibuffer windows in the current frame:
+    - 1 window  in frame: return 'new
+    - 2 windows in frame: return 'other
+    - 3 or more windows : return 'current
+- If N is 3, 7, 9 or larger, with PREFER not nil, return: PREFER value.
+  If PREFER is nil return as described above.
+- If N in remaining [2,8] range, return the direction corresponding to the
+  cursor in a numeric keypad:
+  -             8 := 'up
+  - 4 := 'left  5 := 'current  6 := 'right
+  -             2 := 'down"
+  (let ((direction (cond
+                    ((eq n 2) 'down)
+                    ((eq n 8) 'up)
+                    ((eq n 4) 'left)
+                    ((eq n 6) 'right)
+                    ((eq n 5) 'current)
+                    ((eq n 0) 'other)
+                    ((< n 0)  'new)
+                    (t (or prefer
+                           (let ((nwindows (pel-count-non-dedicated-windows)))
+                             (cond ((eq nwindows 2) 'other)
+                                   ((eq nwindows 1) 'new)
+                                   (t               'current))))))))
+    (if for-editing
+        (if (pel-window-valid-for-editing-p direction)
+            direction
+          (if (and prefer (pel-window-valid-for-editing-p prefer))
+              prefer
+            'new))
+      direction)))
 
 ;; -----------------------------------------------------------------------------
 ;; Original other-window

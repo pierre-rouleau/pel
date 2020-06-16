@@ -1404,7 +1404,7 @@ typed twice quickly that trigger a specified action.  The action may be
 inserting some other text, moving the piint, executing a specified function or
 executing a specified Emacs command expressed as an Emacs Lisp lambda
 expression.  The *key-chord* can be made of any ASCII printable characters and
-ASCII control characters.  These keys nmust be type quickly; the order into
+ASCII control characters.  These keys must be type quickly; the order into
 which they are typed does not matter.
 
 For some fast typist using two keys that might be inside normal words in one
