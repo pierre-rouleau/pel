@@ -181,19 +181,25 @@ If the file does not already exist, a confirmation is requested.
 Returns the filename string."
   (unless default-filename
     (setq default-filename ""))
-  (read-file-name
-   ;; PROMPT
-   "Open? (C-g to quit): "
-   ;; DIR
-   (file-name-directory default-filename)
-   ;; DEFAULT_FILENAME
-   (file-name-nondirectory default-filename)
-   ;; MUSTMATCH
-   'confirm
-   ;; INITIAL
-   default-filename
-   ;; PREDICATE
-   'file-exists-p))
+  ;; read-file-name is flexible but I find it non-obvious. To get it to show
+  ;; the filename, it seems to have to be placed in the DIR argument.
+  ;; With it a single word (no path) will be interpreted as a file in the local
+  ;; directory (which is what I want).
+  ;; MUSTMATCH and PREDICATE are set to ensure the file exists.  If it does not
+  ;; the user must confirm and then the caller can create it.
+  (expand-file-name (read-file-name
+                     ;; PROMPT
+                     "Open? (C-g to quit): "
+                     ;; DIR
+                     default-filename
+                     ;; DEFAULT_FILENAME
+                     nil
+                     ;; MUSTMATCH
+                     'confirm
+                     ;; INITIAL
+                     nil
+                     ;; PREDICATE
+                     'file-exists-p)))
 
 (defun pel--lib-filename (filename)
   "Infer or prompt for library filename using incomplete FILENAME.
