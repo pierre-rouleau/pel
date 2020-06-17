@@ -2717,6 +2717,7 @@ the ones defined from the buffer now."
 (define-pel-global-prefix pel:file (kbd "<f11> f"))
 (define-key pel:file "I" #'insert-file-literally)
 (define-key pel:file "O" #'find-file-read-only-other-window)
+(define-key pel:file "L" #'locate)
 (define-key pel:file "W" #'append-to-file)
 (define-key pel:file "d" #'find-dired)
 (define-key pel:file "g" #'find-grep)
@@ -2765,8 +2766,8 @@ the ones defined from the buffer now."
 
     :init
     (define-pel-global-prefix pel:ffap (kbd "<f11> f a"))
-    (define-key pel:ffap  "."     #'ffap) ; find-file-at-point
-    (define-key pel:ffap  "r"     #'ffap-read-only)
+    (define-key pel:ffap  "p"     #'ffap) ; find-file-at-point
+    (define-key pel:ffap  "P"     #'ffap-read-only)
     (define-key pel:ffap  "v"     #'ffap-alternate-file)
     (define-key pel:ffap  "w"     #'ffap-other-window)
     (define-key pel:ffap  "f"     #'ffap-other-frame)
@@ -2774,9 +2775,9 @@ the ones defined from the buffer now."
     (define-key pel:ffap  "F"     #'ffap-read-only-other-frame)
     (define-key pel:ffap  "d"     #'dired-at-point)
     (define-key pel:ffap  "D"     #'ffap-dired-other-window)
-    (define-key pel:ffap  "E"     #'ffap-dired-other-frame)
+    (define-key pel:ffap  (kbd "M-d") #'ffap-dired-other-frame)
     (define-key pel:ffap  "l"     #'ffap-list-directory)
-    (define-key pel:ffap  " "     #'ffap-menu))
+    (define-key pel:ffap  "m"     #'ffap-menu))
 
   (when (eq pel-use-ffap 'ffap-bindings)
     (run-with-idle-timer 1 nil (function pel--activate-ffap-bindings))))
