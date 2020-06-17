@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2020-06-17 16:40:42, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-06-17 17:52:06, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -157,6 +157,7 @@ EL_FILES := pel--base.el \
 			pel-undo.el \
 			pel-uuid.el \
 			pel-window.el \
+			pel-xr.el \
 			pel.el
 
 # Files not byte compiled alone but still included in the package tar file
@@ -203,6 +204,7 @@ PDF_FILES := -legend.pdf \
 			input-method.pdf \
 			inserting-text.pdf \
 			keyboard-macros.pdf \
+			key-chords.pdf \
 			keys-f11.pdf \
 			keys-fn.pdf \
 			macOS-terminal-settings.pdf \
@@ -454,6 +456,7 @@ pel-tags.elc:           pel--base.elc
 pel-text-insert.elc:    pel--options.elc pel--base.elc pel-window.elc
 pel-text-transform.elc: pel--base.elc
 pel-window.elc:         pel--base.elc
+pel-xr.elc:             pel-read.elc
 pel_keys.elc:           pel--base.elc pel--macros.elc pel--options.elc pel-completion.elc pel-search.elc
 
 # -----------------------------------------------------------------------------

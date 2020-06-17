@@ -81,7 +81,7 @@ See `bounds-of-thing-at-point' for a list of possible THING symbols."
 ;; --------------------
 
 
-(defun pel-string-at-point (delimiters &optional always-allow-space)
+(defun pel-string-at-point (delimiters &optional allow-space)
   "Return the string at point delimited by DELIMITERS string.
 
 The DELIMITERS string must NOT include a space:
@@ -90,14 +90,14 @@ The DELIMITERS string must NOT include a space:
 - When point is located at a delimiter, space is not added as a delimiter
   to allow space to be included in the extracted string.
 
-If ALWAYS-ALLOW-SPACE is non-nil, then the space character is never included
+If ALLOW-SPACE is non-nil, then the space character is never included
 in the delimiters so it becomes possible to capture a delimited string with
 spaces even when point is located between the delimiters."
   (save-excursion
     (let* (p1
            p2
            (at-delimiter (string-match-p (regexp-quote (string (char-after))) delimiters))
-           (delimiters (if (or at-delimiter always-allow-space)
+           (delimiters (if (or at-delimiter allow-space)
                            delimiters
                          (concat " " delimiters)))
            (delimiters (concat "^" delimiters))) ; skip all BUT those delimiters

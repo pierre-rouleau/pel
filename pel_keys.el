@@ -3119,11 +3119,6 @@ the ones defined from the buffer now."
 ;; - Visual Regexp - python
 
 
-(defun pel-xr-at-point ()
-  "Lint regexp string at point and print its expansion in *xr* buffer."
-  (interactive)
-  (user-error "TODO: Not implemented yet. Coming soon"))
-
 ;; xr-lint
 ;; xr-pp
 ;; xr
@@ -3132,9 +3127,12 @@ the ones defined from the buffer now."
   (use-package xr
     :ensure t
     :pin gnu
-    :commands  pel-xr-at-point
+    :commands  (pel-xr-at-point
+                pel-xr-regxp)
+
     :init
-    (define-key pel:regexp "x" 'pel-xr-at-point)))
+    (define-key pel:regexp "x" 'pel-xr-at-point)
+    (define-key pel:regexp "X" 'pel-xr-regxp)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> M-s`` : Speedbar/SR-Speedbar commands

@@ -394,7 +394,11 @@
                  pel-other-window-backward
                  pel-show-window-filename-or-buffer-name
                  pel-show-window-sizes))
-    (autoload fct "pel-window")))
+    (autoload fct "pel-window"))
+
+  (dolist (fct '(pel-xr-regxp
+                 pel-xr-at-point))
+    (autoload fct "pel-xr")))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-autoload)
