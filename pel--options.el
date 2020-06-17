@@ -218,6 +218,22 @@ See URL `https://github.com/magnars/multiple-cursors.el'."
   "List of external packages that can be used to manage file/directory."
   :group 'pel-package-use)
 
+(defcustom pel-use-ffap    nil
+  "Control whether PEL activates ffap bindings.
+3 available choices:
+- 1:  nil :=  ffap is not used.
+- 2:  t   :=  use pel:fap bindings, keeping default Emacs bindings for
+              C-x C-f and other intact.
+- 3:  ffap-bindings := Use the bindings documented by ffap.el by executing
+      (ffap-bindings).  This replaces the bindings several file finding
+      commands and cannot be undone until this is changed and Emacs is
+      re-started."
+  :group 'pel-pkg-for-filemng
+  :type '(choice
+          (const :tag "Do not use" nil)
+          (const :tag "Use pel:ffap bindings" t)
+          (const :tag "Activate standard ffap bindings" ffap-bindings)))
+
 (defcustom pel-use-neotree nil
   "Control whether PEL uses the Emacs NeoTree search package.
 See: https://github.com/jaypei/emacs-neotree"

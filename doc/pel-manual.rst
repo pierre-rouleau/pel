@@ -1096,11 +1096,28 @@ PEL File Management Utilities
 -----------------------------
 
 :PDF Docs: `File Management`_, `Dired`_.
-:PEL Customization: ``pel-use-ido-mode``.
+:PEL Customization: - **pel-pkg-for-completion**:
+
+                      - ``pel-use-ido-mode``.
+
+                    - **pel-pkg-for-filemng**:
+
+                      - ``pel-use-ffap``
+                      - ``pel-use-neotree``
+                      - **pel-pkg-for-ztree**:
+
+                        - ``pel-use-ztree``
+                        - ``pel-ztree-dir-move-focus``
+                        - ``pel-ztree-dir-filter-list``
+                        - ``pel-ztree-dir-show-filtered-files``
+
 :PEL Key Prefix: - **pel:file** : ``<f11> f``
 
+                   - **pel:ffap**:         ``<f11> f a``
                    - **pel:file-revert** : ``<f11> f r``
                    - **pel:filevar** :     ``<f11> f v``
+
+
 
 The `pel-file.el`_ file provides logic to extra the name of a file or a URL from
 text at point and visit (open) that file inside an Emacs buffer or launch a web
@@ -1120,6 +1137,13 @@ browser to load the specified URL.
     from point. It's mainly used for debugging when unexpected formats are
     encountered.
 
+PEL also provides the ability to use the ffap (find file at
+point) standard library which complements the PEL command that can also open a file or
+URL at point (but can also specify a window by coordinates and handle line and
+column numbers). PEL activates the special ``pel:ffap`` binding when
+``pel-use-ffap`` user option is set to **t**. If you prefer the standard ffap binding, then
+set ``pel-use-ffap`` user option to **ffap-bindings**.
+
 When the ``pel-use-ido-mode`` user option is set to **t** ``pel-init``
 activates IDO-mode_ everywhere, enables flex matching and prevents prompt when
 creating new buffers with ``C-x b``.
@@ -1133,6 +1157,15 @@ implementation uses the `macOS open`_ application which does the application
 launching.
 
 Thanks to Jason Blevins for the idea taken from `his blog <https://jblevins.org/log/dired-open>`_.
+
+To see a textual representation of a directory tree, PEL provides access to the
+neotree and z-tree packages.  They are activated by the ``pel-use-neotree`` and
+``pel-use-ztree`` user option respectively.
+
+PEL provides the ``<f11> <1> f`` key binding to quickly access the
+**pel-pkg-for-filemng** customization group editing buffer to modify the
+relevant user options.
+
 
 
 .. _macOS open: https://ss64.com/osx/open.html
@@ -1170,7 +1203,9 @@ PEL File and Directory Local Variable Control Support
                  - **pel:dirvar**  : ``<f11> f v d``
 
 PEL provides a set of key bindings to manage local file variables and local
-directory variables.  See the `File and Directory Local Variables`_ PDF table.
+directory variables.
+
+See the `File and Directory Local Variables`_ PDF table.
 
 
 PEL Frame Management Utilities
@@ -3986,6 +4021,7 @@ PEL uses the following libraries distributed with GNU Emacs:
 #. `delsel      <https://github.com/emacs-mirror/emacs/blob/master/lisp/delsel.el>`_
 #. `elint       <https://github.com/emacs-mirror/emacs/blob/master/lisp/emacs-lisp/elint.el>`_
 #. `ert         <https://github.com/emacs-mirror/emacs/blob/master/lisp/emacs-lisp/ert.el>`_
+#. `ffap        <https://github.com/emacs-mirror/emacs/blob/master/lisp/ffap.el>`_
 #. `flyspell    <https://github.com/emacs-mirror/emacs/blob/master/lisp/textmodes/flyspell.el>`_
 #. `hippie-exp  <https://github.com/emacs-mirror/emacs/blob/master/lisp/hippie-exp.el>`_
 #. `hl-line     <https://github.com/emacs-mirror/emacs/blob/master/lisp/hl-line.el>`_

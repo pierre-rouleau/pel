@@ -2740,7 +2740,48 @@ the ones defined from the buffer now."
 ;; --------------------
 (global-set-key (kbd "C-^") 'pel-find-file-at-point-in-window)
 
-;; -----------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - Function Keys - <f11> - Prefix ``<f11> f a`` : Finf File At Point (ffap)
+
+(defun pel--activate-ffap-bindings ()
+  "Activate ffap standard key bindings."
+  (ffap-bindings))
+
+(when pel-use-ffap
+  (use-package ffap
+    :commands (ffap
+               ffap-read-only
+               ffap-alternate-file
+               ffap-other-window
+               ffap-other-frame
+               ffap-read-only-other-window
+               ffap-read-only-other-frame
+               dired-at-point
+               ffap-dired-other-window
+               ffap-dired-other-frame
+               ffap-list-directory
+               ffap-menu
+               ffap-bindings)
+
+    :init
+    (define-pel-global-prefix pel:ffap (kbd "<f11> f a"))
+    (define-key pel:ffap  "."     #'ffap) ; find-file-at-point
+    (define-key pel:ffap  "r"     #'ffap-read-only)
+    (define-key pel:ffap  "v"     #'ffap-alternate-file)
+    (define-key pel:ffap  "w"     #'ffap-other-window)
+    (define-key pel:ffap  "f"     #'ffap-other-frame)
+    (define-key pel:ffap  "W"     #'ffap-read-only-other-window)
+    (define-key pel:ffap  "F"     #'ffap-read-only-other-frame)
+    (define-key pel:ffap  "d"     #'dired-at-point)
+    (define-key pel:ffap  "D"     #'ffap-dired-other-window)
+    (define-key pel:ffap  "E"     #'ffap-dired-other-frame)
+    (define-key pel:ffap  "l"     #'ffap-list-directory)
+    (define-key pel:ffap  " "     #'ffap-menu))
+
+  (when (eq pel-use-ffap 'ffap-bindings)
+    (run-with-idle-timer 1 nil (function pel--activate-ffap-bindings))))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> f v`` : File variables
 
 (define-pel-global-prefix pel:filevar (kbd "<f11> f v"))
@@ -2749,7 +2790,7 @@ the ones defined from the buffer now."
 (define-key pel:filevar "c"  #'copy-dir-locals-to-file-locals-prop-line)
 ;;
 
-;; -----------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> f v D`` : Directory File variables
 
 (define-pel-global-prefix pel:dirvar (kbd "<f11> f v D"))
