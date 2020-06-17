@@ -48,6 +48,7 @@
 (require 'pel--base)     ; use: pel-val-or-default,
                          ;      pel-goto-position,
                          ;      pel-system-is-windows-p
+(require 'pel-read)      ; use: pel-string-at-point
 (require 'pel-window)    ; use pel-window-direction-for
 ;;                       ;     pel-window-valid-for-editing-p
 
@@ -427,25 +428,6 @@ were specified."
 ;; Show filename at point
 ;; ----------------------
 
-(defun pel-string-at-point (delimiter forward_only)
-  "Return the string at point delimited by DELIMITER string.
-When FORWARD_ONLY is non-nil search is done at and after the
-current point, otherwise it also checks before point.  This is
-used to handle space characters inside a file name.  To extract
-such a file name, it must be enclosed in double quotes and the
-extraction must be done with point at the first double quote with
-FORWARD_ONLY set to non-nil.  To extract file names with no
-embedded spaces, with ability to position the point anywhere in
-the file name, set FORWARD-ONLY to nil."
-  (save-excursion
-    (let (p1 p2)
-      (if (not forward_only)
-          (skip-chars-backward delimiter))
-      (setq p1 (point))
-      (skip-chars-forward delimiter)
-      (setq p2 (point))
-      (buffer-substring-no-properties p1 p2))))
-
 (defun pel-filename-at-point ()
   "Return the file name at point (or marked region).
 .
@@ -456,15 +438,9 @@ last character or the filename are accepted but removed."
   (if (use-region-p)
       (buffer-substring-no-properties (region-beginning) (region-end))
     (save-excursion
-      (let* ((point_isat_quote (eq (char-after) 34))
-             (pathstop
-              "\t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。")
-             ;; if char at cursor is a double quote, allow spaces in file name.
-             (pathstop (concat "^" (if point_isat_quote
-                                       (prog1 pathstop
-                                         (forward-char))
-                                     (concat " \"" pathstop)))))
-        (string-trim (pel-string-at-point pathstop point_isat_quote))))))
+      (let ((delimiters
+             "\t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。"))
+        (string-trim (pel-string-at-point delimiters))))))
 
 ;;-pel-autoload
 (defun pel-show-filename-at-point ()

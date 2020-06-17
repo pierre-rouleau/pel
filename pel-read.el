@@ -26,16 +26,17 @@
 ;;
 ;; Utility functions that read text from current buffer at point.
 ;;
-;;  - pel-word-at-point
-;;  - pel-sentence-at-point
-;;  - pel-paragraph-at-point
-;;    - pel-thing-at-point
+;;  - `pel-word-at-point'
+;;  - `pel-sentence-at-point'
+;;  - `pel-paragraph-at-point'
+;;    - `pel-thing-at-point'
+;;  - `pel-string-at-point'
 ;;
 
 ;;; Code:
 
-(require 'thingatpt)
-(require 'pel-navigate)
+(require 'thingatpt)      ; use: bounds-of-thing-at-point
+(require 'pel-navigate)   ; use: pel-forward-word-start
 
 (defun pel-thing-at-point (thing)
   "Read and return the string of THING at point.
@@ -74,6 +75,42 @@ See `bounds-of-thing-at-point' for a list of possible THING symbols."
     (ignore-errors
       (pel-forward-word-start))
     text))
+
+;; -----------------------------------------------------------------------------
+;; Read string at point
+;; --------------------
+
+
+(defun pel-string-at-point (delimiters &optional always-allow-space)
+  "Return the string at point delimited by DELIMITERS string.
+
+The DELIMITERS string must NOT include a space:
+- If point is currently NOT located at one of the DELIMITERS characters
+  then the space character is automatically added to the DELIMITERS.
+- When point is located at a delimiter, space is not added as a delimiter
+  to allow space to be included in the extracted string.
+
+If ALWAYS-ALLOW-SPACE is non-nil, then the space character is never included
+in the delimiters so it becomes possible to capture a delimited string with
+spaces even when point is located between the delimiters."
+  (save-excursion
+    (let* (p1
+           p2
+           (at-delimiter (string-match-p (regexp-quote (string (char-after))) delimiters))
+           (delimiters (if (or at-delimiter always-allow-space)
+                           delimiters
+                         (concat " " delimiters)))
+           (delimiters (concat "^" delimiters))) ; skip all BUT those delimiters
+      (if at-delimiter
+          ;; when at first delimiter move in the string.
+          (forward-char)
+        ;; otherwise search backward for the first delimiter
+        (skip-chars-backward delimiters))
+      (setq p1 (point))
+      ;; move to the second delimiter
+      (skip-chars-forward delimiters)
+      (setq p2 (point))
+      (buffer-substring-no-properties p1 p2))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-read)
