@@ -3057,8 +3057,10 @@ the ones defined from the buffer now."
   (use-package pcre2el
     :ensure t
     :pin melpa
-    :commands  rxt-mode
+    :commands  (rxt-mode
+                pcre-mode)
     :init
+    (define-key pel:regexp "P" 'pcre-mode)
     (define-key pel:regexp "p" 'rxt-mode)))
 
 (when pel-use-visual-regexp
