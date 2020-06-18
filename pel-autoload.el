@@ -397,7 +397,9 @@
     (autoload fct "pel-window"))
 
   (dolist (fct '(pel-xr-regxp
-                 pel-xr-at-point))
+                 pel-xr-at-point
+                 pel-xr-lint
+                 pel-xr-lint-at-point))
     (autoload fct "pel-xr")))
 
 ;; -----------------------------------------------------------------------------

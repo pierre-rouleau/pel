@@ -109,6 +109,11 @@
   (memq system-type '(windows-nt ms-dos))
   "Predicate: t if running under a Windows Operating System, nil otherwise.")
 
+(defconst pel-can-display-special-chars-p
+  (and (eq system-type 'darwin)
+       (not (display-graphic-p)))
+  "Predicate: t if Emacs can properly show Unicode characters like 👍 or 👎.")
+
 ;; -----------------------------------------------------------------------------
 ;; PEL version
 ;; ===========

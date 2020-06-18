@@ -3118,7 +3118,6 @@ the ones defined from the buffer now."
 ;; - Visual Regexp - pcre2el
 ;; - Visual Regexp - python
 
-
 ;; xr-lint
 ;; xr-pp
 ;; xr
@@ -3128,11 +3127,15 @@ the ones defined from the buffer now."
     :ensure t
     :pin gnu
     :commands  (pel-xr-at-point
-                pel-xr-regxp)
+                pel-xr-regxp
+                pel-xr-lint
+                pel-xr-lint-at-point)
 
     :init
     (define-key pel:regexp "x" 'pel-xr-at-point)
-    (define-key pel:regexp "X" 'pel-xr-regxp)))
+    (define-key pel:regexp "X" 'pel-xr-regxp)
+    (define-key pel:regexp "l" 'pel-xr-lint-at-point)
+    (define-key pel:regexp "L" 'pel-xr-lint)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> M-s`` : Speedbar/SR-Speedbar commands

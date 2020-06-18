@@ -26,13 +26,17 @@
 ;;
 ;; Utilities to interpret regular expressions.
 ;;
-;;  * `pel-xr'
+;;  * `pel-xr-lint'
+;;  * `pel-xr-lint-at-point'
+;;    - `pel--xr-lint-expand'
+;;  * `pel-xr-regexp'
 ;;  * `pel-xr-at-point'
-;;    - pel-interpret-regexp
+;;    - `pel-interpret-regexp'
 
 ;;; Code:
 
 ;;(require 'xr)
+(require 'pel--base)
 (require 'pel-read)                     ; use: pel-string-at-point
 
 ;; -----------------------------------------------------------------------------
@@ -40,7 +44,7 @@
 ;; ----------------------------
 
 (defun pel-interpret-regexp (regexp &optional dialect)
-  "Print interpretation of REGEXP string in *Regexp Eval Log* buffer.
+  "Print interpretation of REGEXP string in *regexp-eval* buffer.
 See `xr' for a description of DIALECT."
   (let ((bufname (get-buffer-create "*regexp-eval*")))
     (with-current-buffer bufname
@@ -62,7 +66,7 @@ To get 4 use \\[universal-argument],
 and to get 16 type \\[universal-argument] \\[universal-argument].
 
 LIMITATION:
- does not support double quote inside a regexp taken at point
+ Does not support double quote inside a regexp taken at point
  even if it is quoted.  To grab it mark the region, excluding the
  delimiting quotes."
   (interactive "p")
@@ -81,6 +85,58 @@ LIMITATION:
   (interactive)
   (let ((regexp (read-string "Regexp: ")))
     (pel-interpret-regexp regexp)))
+
+;; -----------------------------------------------------------------------------
+;; Linting
+;; -------
+
+(defun pel--xr-lint-expand (regexp for-file-match)
+  "Lint the REGEXP that might be FOR-FILE_MATCH.
+Print evaluation in the *regexp-eval* buffer."
+  (let ((bufname (get-buffer-create "*regexp-eval*"))
+        warnings)
+    (with-current-buffer bufname
+      (goto-char (point-max))
+      (insert (format "\n- Lint of%s: \"%s\":\n"
+                      (if for-file-match " (file match)" "")
+                      regexp))
+      (setq warnings
+            (xr-lint regexp (when for-file-match 'file)))
+      (if warnings
+          (dolist (offset.comment warnings)
+            (insert (format "  - @%2d: %s\n"
+                            (car offset.comment)
+                            (cdr offset.comment))))
+        (insert (if pel-can-display-special-chars-p
+                    "️  👍\n"
+                  "  OK\n")))
+      (display-buffer bufname))))
+
+;;-pel-autoload
+(defun pel-xr-lint (&optional for-file-match)
+  "Prompt for a regexp, lint it and display results.
+If FOR-FILE-MATCH argument is non-nil, perform additional checkings to see if
+the regexp is OK for matching file name."
+  (interactive "P")
+  (let ((regexp (read-string "Regexp: ")))
+    (pel--xr-lint-expand regexp (when for-file-match 'file))))
+
+;;-pel-autoload
+(defun pel-xr-lint-at-point (&optional for-file-match)
+  "Lint the regexp at point or inside region if region is marked.
+
+If FOR-FILE-MATCH argument is non-nil, perform additional checkings to see if
+the regexp is OK for matching file name.
+
+LIMITATION:
+ Does not support double quote inside a regexp taken at point
+ even if it is quoted.  To grab it mark the region, excluding the
+ delimiting quotes."
+  (interactive "P")
+  (let ((regexp (if (use-region-p)
+                   (buffer-substring-no-properties (region-beginning) (region-end))
+                 (pel-string-at-point "\"" :allow-space))))
+    (pel--xr-lint-expand regexp (when for-file-match 'file))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-xr)
