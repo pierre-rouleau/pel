@@ -273,11 +273,14 @@
   (autoload 'pel-number-to-register                "pel-register")
   (autoload 'pel-kmacro-to-register                "pel-register")
 
-    ;; pel-read
+  ;; pel-read
   (dolist (fct '(pel-word-at-point
                  pel-sentence-at-point
                  pel-paragraph-at-point))
     (autoload fct "pel-read"))
+
+  ;; pel-regexp
+  (autoload 'pel-insert-regexp  "pel-regexp")
 
   ;; pel-rst
   (when (and (boundp 'pel-use-rst-mode) pel-use-rst-mode)

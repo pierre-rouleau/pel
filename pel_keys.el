@@ -3018,6 +3018,7 @@ the ones defined from the buffer now."
   (customize-option 'reb-re-syntax))
 
 (define-pel-global-prefix pel:regexp (kbd "<f11> s x"))
+(define-key pel:regexp      " "   'pel-insert-regexp)
 (define-key pel:regexp      "b"  #'re-search-backward)
 (define-key pel:regexp      "f"  #'re-search-forward)
 (define-key pel:regexp      "q"  #'query-replace-regexp) ; maybe replaced below
