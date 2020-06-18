@@ -35,7 +35,6 @@
 
 ;;; Code:
 
-;;(require 'xr)
 (require 'pel--base)
 (require 'pel-read)                     ; use: pel-string-at-point
 
@@ -46,16 +45,21 @@
 (defun pel-interpret-regexp (regexp &optional dialect)
   "Print interpretation of REGEXP string in *regexp-eval* buffer.
 See `xr' for a description of DIALECT."
-  (let ((bufname (get-buffer-create "*regexp-eval*")))
-    (with-current-buffer bufname
-      (goto-char (point-max))
-      (insert (format "\n- Interpretation of: \"%s\":\n" regexp))
-      (xr-pp regexp dialect))
-    (display-buffer bufname)))
+  (if (and (require 'xr nil :noerror)
+           (fboundp 'xr-pp))
+      (let ((bufname (get-buffer-create "*regexp-eval*")))
+        (with-current-buffer bufname
+          (goto-char (point-max))
+          (insert (format "\n- Interpretation of: \"%s\":\n" regexp))
+          (xr-pp regexp dialect))
+        (display-buffer bufname))
+    (user-error "Command xr-pp is not available!")))
 
 ;;-pel-autoload
 (defun pel-xr-at-point (&optional dialect)
-  "Grab regexp at point and print its interpretation in *regexp-eval* buffer.
+  "Grab regexp at point and print its rx interpretation in *regexp-eval* buffer.
+Uses `xr-pp' to expand regexp in rx notation.
+
 If region is marked, grab content of region instead.
 DIALECT is selected by numeric argument:
 - nil, 1 := medium verbose
@@ -81,7 +85,8 @@ LIMITATION:
 
 ;;-pel-autoload
 (defun pel-xr-regxp ()
-  "Prompt for regexp and print its interpretation in *regexp-eval* buffer."
+  "Prompt for regexp and print its rx  interpretation in *regexp-eval* buffer.
+Uses `xr-pp' to expand regexp in rx notation."
   (interactive)
   (let ((regexp (read-string "Regexp: ")))
     (pel-interpret-regexp regexp)))
@@ -91,26 +96,29 @@ LIMITATION:
 ;; -------
 
 (defun pel--xr-lint-expand (regexp for-file-match)
-  "Lint the REGEXP that might be FOR-FILE_MATCH.
+  "Lint the REGEXP that might be FOR-FILE-MATCH.
 Print evaluation in the *regexp-eval* buffer."
-  (let ((bufname (get-buffer-create "*regexp-eval*"))
-        warnings)
-    (with-current-buffer bufname
-      (goto-char (point-max))
-      (insert (format "\n- Lint of%s: \"%s\":\n"
-                      (if for-file-match " (file match)" "")
-                      regexp))
-      (setq warnings
-            (xr-lint regexp (when for-file-match 'file)))
-      (if warnings
-          (dolist (offset.comment warnings)
-            (insert (format "  - @%2d: %s\n"
-                            (car offset.comment)
-                            (cdr offset.comment))))
-        (insert (if pel-can-display-special-chars-p
-                    "️  👍\n"
-                  "  OK\n")))
-      (display-buffer bufname))))
+  (if (and (require 'xr nil :noerror)
+           (fboundp 'xr-lint))
+      (let ((bufname (get-buffer-create "*regexp-eval*"))
+            warnings)
+        (with-current-buffer bufname
+          (goto-char (point-max))
+          (insert (format "\n- Lint of%s: \"%s\":\n"
+                          (if for-file-match " (file match)" "")
+                          regexp))
+          (setq warnings
+                (xr-lint regexp (when for-file-match 'file)))
+          (if warnings
+              (dolist (offset.comment warnings)
+                (insert (format "  - @%2d: %s\n"
+                                (car offset.comment)
+                                (cdr offset.comment))))
+            (insert (if pel-can-display-special-chars-p
+                        "️  👍\n"
+                      "  OK\n")))
+          (display-buffer bufname)))
+    (user-error "Command xr-lint is not available!")))
 
 ;;-pel-autoload
 (defun pel-xr-lint (&optional for-file-match)

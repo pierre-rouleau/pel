@@ -3126,10 +3126,14 @@ the ones defined from the buffer now."
   (use-package xr
     :ensure t
     :pin gnu
-    :commands  (pel-xr-at-point
-                pel-xr-regxp
-                pel-xr-lint
-                pel-xr-lint-at-point)
+    :commands (xr-pp
+               xr-lint))
+
+  (use-package pel-xr
+    :commands (pel-xr-at-point
+               pel-xr-regxp
+               pel-xr-lint
+               pel-xr-lint-at-point)
 
     :init
     (define-key pel:regexp "x" 'pel-xr-at-point)
