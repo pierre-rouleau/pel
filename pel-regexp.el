@@ -31,43 +31,59 @@
 ;;; Code:
 
 ;; * `pel-insert-regexp'
+;;   - `pel-insert-in-quotes'
 
 ;; -----------------------------------------------------------------------------
 ;; Inserting a regexp from literal typed at prompt
 ;; -----------------------------------------------
 
+(defun pel-insert-in-quotes (text)
+  "Insert the text string between double quotes."
+  (insert "\"")
+  (insert text)
+  (insert "\""))
+
 ;;-pel-autoload
-(defun pel-insert-regexp ()
+(defun pel-insert-regexp (&optional insert-both)
   "Prompt for a regexp literal, insert corresponding quoted regexp at point.
 
 This converts what Emacs calls the 'string syntax' into the Emacs 'read syntax'.
+
+When INSERT-BOTH argument is non-nil, insert both strings.
+If INSERT-BOTH is a string, it is inserted between both strings,
+otherwise the string-syntax regexp  is inserted, followed by \" --> \"
+followed by the read-syntax regexp.
 
 At the prompt enter the literal regexp string, ie. a string with
 double quote, capturing group parentheses and the alternative bar
 escaped with a single backslash.
 
 Example 1:
-- when typing something like:  \\(foo\\\\|bar\\)
-- this string is inserted:   \"\\\\(foo\\\\|bar\\\\)\"
+- when typing:                 \\(foo\\\\|bar\\)
+- this text is inserted:   \"\\\\(foo\\\\|bar\\\\)\"
 
 Example 2:
-or example:
-- when typing something like:  \\(foo\\|bar--\\\"--\\)
-- this string is inserted:   \"\\\\(foo\\\\|bar--\\\\\\\"--\\\\)\"
+- when typing:                     \\(foo\\|bar--\\\"--\\)
+- this text is inserted:     \"\\\\(foo\\\\|bar--\\\\\\\"--\\\\)\"
+
+Example 3, using a \\[universal-argument]:
+- When typing:              abc\\S\"gh
+- This text is inserted:  \"abc\\S\"gh\" --> \"abc\\\\S\\\"gh\"
 
 Notice that you must not type the surrounding double quotes."
-  (interactive)
-  (let ((regexp (read-string "regexp: ")))
-    (insert "\"")
-    (insert
+  (interactive "P")
+  (let ((string-syntax-regexp (read-string "regexp: ")))
+    (when insert-both
+      (pel-insert-in-quotes string-syntax-regexp)
+      (insert (if (stringp insert-both) insert-both " --> ")))
+    (pel-insert-in-quotes
      (replace-regexp-in-string
       "\""
-      "\\\\\\\\\""
+      "\\\\\""
       (replace-regexp-in-string
-       "\\\\\\([^\"]\\)"
-       "\\\\\\\\\\1"
-       regexp)))
-     (insert "\"")))
+       "\\\\"
+       "\\\\\\\\"
+       string-syntax-regexp)))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-regexp)
