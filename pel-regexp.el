@@ -40,24 +40,20 @@
 (defun pel-insert-regexp ()
   "Prompt for a regexp literal, insert corresponding quoted regexp at point.
 
-At the prompt enter the literal regexp string, ie. a string with double quote
-escaped with a single backslash, the capturing group parentheses used with a
-single backslash.
+This converts what Emacs calls the 'string syntax' into the Emacs 'read syntax'.
 
-For example:
+At the prompt enter the literal regexp string, ie. a string with
+double quote, capturing group parentheses and the alternative bar
+escaped with a single backslash.
+
+Example 1:
 - when typing something like:  \\(foo\\\\|bar\\)
 - this string is inserted:   \"\\\\(foo\\\\|bar\\\\)\"
 
-The syntax you have to type corresponds to the documented (literal)
-regexp syntax.  If that syntax requires a backslash for escaping a
-group parenthesis like \\(, type it like that.
-If you want to include a double quote in your expression, do not
-escape that double quote in what you type, it will be properly
-escaped in the inserted string.
-
-For example:
-- when typing something like:  \\(foo\\|bar--\"--\\)
-- this string is inserted:   \"\\\\(foo\\\\|bar--\\\"--\\\\)\"
+Example 2:
+or example:
+- when typing something like:  \\(foo\\|bar--\\\"--\\)
+- this string is inserted:   \"\\\\(foo\\\\|bar--\\\\\\\"--\\\\)\"
 
 Notice that you must not type the surrounding double quotes."
   (interactive)
@@ -66,7 +62,7 @@ Notice that you must not type the surrounding double quotes."
     (insert
      (replace-regexp-in-string
       "\""
-      "\\\\\""
+      "\\\\\\\\\""
       (replace-regexp-in-string
        "\\\\\\([^\"]\\)"
        "\\\\\\\\\\1"
