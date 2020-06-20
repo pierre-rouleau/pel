@@ -2213,6 +2213,9 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:comment "m"            'pel-comment-middle)
 (define-key pel:comment "e"            'pel-comment-end)
 (define-key pel:comment "u"            'uncomment-region)
+(define-key pel:comment "'"            'pel-hide/show-docstring-toggle)
+(define-key pel:comment "\""           'pel-hide/show-docstring)
+
 
 (when pel-use-hide-comnt
   ;; IMPORTANT: hide-comnt must be installed manually.
@@ -2228,7 +2231,7 @@ This is meant to be used in the d-mode hook lambda."
                hide/show-comments-toggle)
     :init
     (define-key pel:comment ";" 'hide/show-comments-toggle)
-    (define-key pel:comment "h" 'hide/show-comments)))
+    (define-key pel:comment ":" 'hide/show-comments)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> ?`` : Help /apropos/info commands

@@ -177,6 +177,10 @@
                  pel-selective-display-indent-dec))
     (autoload fct "pel-hideshow"))
 
+  ;; pel-hide-docstring.el
+  (autoload 'pel-hide/show-docstring        "pel-hide-docstring")
+  (autoload 'pel-hide/show-docstring-toggle "pel-hide-docstring")
+
   ;; pel-highlight
   (dolist (fct '(pel-set-highlight-color
                  pel-customize-highlight
