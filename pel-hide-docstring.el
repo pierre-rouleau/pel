@@ -29,15 +29,15 @@
 ;; as well as the first 4 characters.  It does not hide docstrings with less
 ;; than 5 characters.
 ;;
-;;  LIMITATIONS:  work in progress, naïve implementation, enhancements required.
-;;     - Only partially supports Emacs Lisp code.
-;;     - Does not always recognize the true docstring if another string is found
-;;       before the docstring.  Will have to check if face is 'font-lock-doc-face.
+;;  LIMITATIONS:  work in progress, could be enhanced.
+;;     - Python support is partial: not able to hide module docstring.
 ;;     - Only supports handling one definition, not a region or entire buffer.
 ;;     - No visual feedback or prevention of hidden docstring modification.
-;;     - Does not properly handle multiple hidings followed with a sub-set of
-;;       those shown back in presence of other hiding mechanisms (like hiding
-;;       comments).
+;;     - Does not properly handle the ability to hide several docstrings, then
+;;       show back some of them.  That will work as long as you do not use
+;;       another command that uses the visible property, such as comment hiding.
+;;       Docstring and comment hiding co-exists without problem when only hiding
+;;       one docstring at a time.
 ;;
 ;;  Despite those current limitations, it is useful.  Be careful when using it.
 ;;  I am planning to submit enhancements soon to handle most of the points
@@ -47,6 +47,23 @@
 ;;; Code:
 ;;
 (require 'pel-navigate)
+(require 'pel-face-ut)
+
+(defconst pel-regexp-python-beg
+  "^ +\\(\\([uU]\\)?\\|\\([rRfF]\\)?\\|\\([rRfF][rRfF]\\)?\\)['\\\"]\\{3\\}"
+  "Regexp to detect the beginning of a Python docstring.
+
+Python string literals
+- ref: URL https://docs.python.org/3/reference/lexical_analysis.html#literals
+
+Match with optional string prefix
+and when 3 single or double quotes are used.
+stringprefix::=  'r' | 'u' | 'R' | 'U' | 'f' | 'F'
+                     | 'fr' | 'Fr' | 'fR' | 'FR' | 'rf' | 'rF' | 'Rf' | 'RF'
+
+Note that regexp match group 0 ends with the 3 quote characters
+that must end the Python docstring.")
+
 
 (defun pel--docstring-char-invisible-p (pos)
   "Return t if character at POS is an invisible docstring, nil otherwise.
@@ -75,17 +92,35 @@ Optional LIMIT is maximum end position, not specified end of buffer
 is used instead.
 Does not move point.
 Return cons cell of (start . end) positions if found, nil otherwise."
+  (let ((regexp-beg (if (eq major-mode 'python-mode)
+                        pel-regexp-python-beg
+                      "^ +\\\"")))
   (save-excursion
     (when (if next
               (pel-beginning-of-next-defun :silent :dont-push-mark)
             (beginning-of-defun 1))
       (let (beg-pos end-pos)
-        ;; saerch for entry quote : must start at beginning of line
-        (setq beg-pos (re-search-forward "^ +\\\"" (or limit (point-max)) :noerror 1))
+        ;; search for entry quote : must start at beginning of line
+        (setq beg-pos (re-search-forward regexp-beg (or limit (point-max)) :noerror 1))
         (when beg-pos
+          ;; Found candidate.  Check the face in case this is a string inside the
+          ;; argument list. If it is not the font-lock-doc-face search for it.
+          (unless (pel-face-at-pos-is beg-pos 'font-lock-doc-face)
+            (let ((new-pos (pel-pos-of-first-char-with-face-in
+                            'font-lock-doc-face beg-pos limit)))
+              (when new-pos
+                (setq beg-pos (1+ new-pos)) ; since we report the position past the quote.
+                (goto-char new-pos))))
           ;; search next quote that is not escaped
-          (setq end-pos (re-search-forward "[^\\\"]\\\""
-                                           (or limit (point-max)) :noerror 1))
+          (let ((regexp-end (if (eq major-mode 'python-mode)
+                                (if (string= "'''"  (substring
+                                                     (match-string-no-properties 0)
+                                                     -3 nil))
+                                    "'''"
+                                  "[^\\]\\\"\\\"\\\"")
+                              "[^\\\"]\\\"")))
+            (setq end-pos (re-search-forward regexp-end
+                                             (or limit (point-max)) :noerror 1))))
           (when end-pos (cons beg-pos end-pos)))))))
 
 
