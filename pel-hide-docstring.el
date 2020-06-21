@@ -30,7 +30,6 @@
 ;; than 5 characters.
 ;;
 ;;  LIMITATIONS:  work in progress, could be enhanced.
-;;     - Python support is partial: not able to hide module docstring.
 ;;     - Only supports handling one definition, not a region or entire buffer.
 ;;     - No visual feedback or prevention of hidden docstring modification.
 ;;     - Does not properly handle the ability to hide several docstrings, then
