@@ -138,6 +138,9 @@
   (autoload 'pel-emacs-load-stats  "pel-emacs")
   (autoload 'pel-emacs-mem-stats  "pel-emacs")
 
+  ;; pel-face-ut
+  (autoload 'pel-show-face-at-point "pel-face-ut")
+
   ;; pel-file
   (dolist (fct '(pel-show-filename-at-point
                  pel-show-filename-parts-at-point

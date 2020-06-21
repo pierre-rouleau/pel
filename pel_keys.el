@@ -2287,6 +2287,7 @@ This is meant to be used in the d-mode hook lambda."
 
 (define-pel-global-prefix pel:describe (kbd "<f11> ? d"))
 (define-key pel:describe "$"  'pel-spell-show-use)
+(define-key pel:describe "a"  'pel-show-face-at-point)
 (define-key pel:describe "c" #'list-colors-display)
 (define-key pel:describe "F" #'list-faces-display)
 (define-key pel:describe "f"  'pel-show-window-filename-or-buffer-name)
