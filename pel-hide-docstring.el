@@ -64,6 +64,10 @@ stringprefix::=  'r' | 'u' | 'R' | 'U' | 'f' | 'F'
 Note that regexp match group 0 ends with the 3 quote characters
 that must end the Python docstring.")
 
+(defconst pel-regexp-python-module-beg
+  "^\\(\\([uU]\\)?\\|\\([rRfF]\\)?\\|\\([rRfF][rRfF]\\)?\\)['\\\"]\\{3\\}"
+  "Regexp for Python module docstring: starts on first character of line.")
+
 
 (defun pel--docstring-char-invisible-p (pos)
   "Return t if character at POS is an invisible docstring, nil otherwise.
@@ -92,13 +96,25 @@ Optional LIMIT is maximum end position, not specified end of buffer
 is used instead.
 Does not move point.
 Return cons cell of (start . end) positions if found, nil otherwise."
-  (let ((regexp-beg (if (eq major-mode 'python-mode)
+  (let (searchfor-docstring
+        (regexp-beg (if (eq major-mode 'python-mode)
                         pel-regexp-python-beg
                       "^ +\\\"")))
   (save-excursion
-    (when (if next
-              (pel-beginning-of-next-defun :silent :dont-push-mark)
-            (beginning-of-defun 1))
+    (unless (condition-case nil
+                (setq searchfor-docstring
+                      (if next
+                          (pel-beginning-of-next-defun :silent :dont-push-mark)
+                        (beginning-of-defun 1)))
+              (error nil))
+      (progn
+        ;; For Python on detection of definition, try module
+        ;; docstring
+        (when (eq major-mode 'python-mode)
+          (setq searchfor-docstring t)
+          (goto-char (point-min))
+          (setq regexp-beg pel-regexp-python-module-beg))))
+    (when searchfor-docstring
       (let (beg-pos end-pos)
         ;; search for entry quote : must start at beginning of line
         (setq beg-pos (re-search-forward regexp-beg (or limit (point-max)) :noerror 1))
@@ -207,7 +223,9 @@ Hide the docstring by default.  If SHOW is non-nil show it instead."
 By default it affects the current or previous definition,
 but if the NEXT argument is non-nil it affects the next definition."
   (interactive "P")
-  (pel-hide/show-docstring (if (pel--docstring-visible-p next) nil t)))
+  (condition-case nil
+      (pel-hide/show-docstring (if (pel--docstring-visible-p next) nil t))
+    (error (user-error "No docstring detected around point!"))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-hide-docstring)
