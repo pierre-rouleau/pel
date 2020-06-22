@@ -271,11 +271,11 @@ The visibility of docstring is affected, but the buffer content is unchanged."
     (restore-buffer-modified-p nil)
     (save-excursion
       (let ((docstring-count 0))
-        (goto-char (point-max))
+        (goto-char (point-min))
         (while (progn
                  (when (pel-hide/show-docstring show :silent)
                    (setq docstring-count (1+ docstring-count)))
-                 (beginning-of-defun 1)))
+                 (pel-beginning-of-next-defun :silent :dont-push-mark)))
         (if (> docstring-count 0)
             (message "%s now %s."
                      (pel-count-string docstring-count "docstring")
@@ -294,11 +294,11 @@ The visibility of docstring is affected, but the buffer content is unchanged."
     (restore-buffer-modified-p nil)
     (save-excursion
       (let ((docstring-count 0))
-        (goto-char (point-max))
+        (goto-char (point-min))
         (while (progn
                  (when (pel-toggle-docstring nil :silent)
                    (setq docstring-count (1+ docstring-count)))
-                 (beginning-of-defun 1)))
+                 (pel-beginning-of-next-defun :silent :dont-push-mark)))
         (if (> docstring-count 0)
             (message "Toggled visibility of %s."
                      (pel-count-string docstring-count"docstring"))
