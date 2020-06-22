@@ -181,8 +181,11 @@
     (autoload fct "pel-hideshow"))
 
   ;; pel-hide-docstring.el
-  (autoload 'pel-hide/show-docstring        "pel-hide-docstring")
-  (autoload 'pel-hide/show-docstring-toggle "pel-hide-docstring")
+  (dolist (fct '(pel-hide/show-docstring
+                 pel-toggle-docstring
+                 pel-hide/show-all-docstrings
+                 pel-toggle-all-docstrings))
+    (autoload fct "pel-hide-docstring"))
 
   ;; pel-highlight
   (dolist (fct '(pel-set-highlight-color

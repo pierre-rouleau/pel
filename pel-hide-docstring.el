@@ -30,7 +30,6 @@
 ;; than 5 characters.
 ;;
 ;;  LIMITATIONS:  work in progress, could be enhanced.
-;;     - Only supports handling one definition, not a region or entire buffer.
 ;;     - No visual feedback or prevention of hidden docstring modification.
 ;;     - Does not properly handle the ability to hide several docstrings, then
 ;;       show back some of them.  That will work as long as you do not use
@@ -41,6 +40,20 @@
 ;;  Despite those current limitations, it is useful.  Be careful when using it.
 ;;  I am planning to submit enhancements soon to handle most of the points
 ;;  described in the limitations.
+;;
+
+;; The file defines the following commands (*) and functions (-):
+;;
+;; * pel-toggle-all-docstrings
+;; * pel-hide/show-all-docstrings
+;;   * pel-toggle-docstring
+;;     - pel--docstring-visible-p
+;;       - pel--docstring-char-invisible-p
+;;   * pel-hide/show-docstring
+;;     - pel--hs-docstring
+;;       - pel--hs-docstring-chars
+;; * pel-show-docstring-positions
+;;   - pel--docstring-positions
 ;;
 
 ;;; Code:
@@ -67,22 +80,7 @@ that must end the Python docstring.")
   "^\\(\\([uU]\\)?\\|\\([rRfF]\\)?\\|\\([rRfF][rRfF]\\)?\\)['\\\"]\\{3\\}"
   "Regexp for Python module docstring: starts on first character of line.")
 
-
-(defun pel--docstring-char-invisible-p (pos)
-  "Return t if character at POS is an invisible docstring, nil otherwise.
-Therefore nil might be because the character does not have the invisible
-attribute or because it has the invisible attribute but its value is not
-'hide-docstring."
-  (eq (get-text-property pos 'invisible) 'hide-docstring))
-
-(defsubst pel--hide/show-docstring-chars (start-pos end-pos show)
-  "Hide or show docstring characters from START-POS to END-POS inclusively.
-Hide when SHOW is nil.
-Show when SHOW is non-nil."
-  (put-text-property start-pos end-pos
-                     'invisible
-                     (if show nil 'hide-docstring)))
-
+;; --
 
 (defun pel--docstring-positions (next &optional limit)
   "Identify the start and end position of definition's docstring.
@@ -151,21 +149,17 @@ next definition instead."
              (car beg.end)
              (cdr beg.end))))
 
-(defun pel--docstring-visible-p (&optional next)
-  "Return t if docstring is visible, nil otherwise.
-Check the docstring of the current/previous definition by default, but if
-the NEXT argument is non-nil then check the docstring of the next definition."
-  (let* ((beg.end (pel--docstring-positions next))
-         (beg (car beg.end))
-         (end (cdr beg.end))
-         (hide-count 0))
-    (while (< beg end)
-      (when (pel--docstring-char-invisible-p beg)
-        (setq hide-count (1+ hide-count)))
-      (setq beg (1+ beg)))
-    (= hide-count 0)))
+;; --
 
-(defun pel--hide/show-docstring (show next &optional limit)
+(defsubst pel--hs-docstring-chars (start-pos end-pos show)
+  "Hide or show docstring characters from START-POS to END-POS inclusively.
+Hide when SHOW is nil.
+Show when SHOW is non-nil."
+  (put-text-property start-pos end-pos
+                     'invisible
+                     (if show nil 'hide-docstring)))
+
+(defun pel--hs-docstring (show next &optional limit)
   "Hide or show the next or previous docstring.
 
 Hide the docstring by default.  If SHOW is non-nil show it instead.
@@ -190,14 +184,14 @@ Return cons cell of (start . end) positions if found, nil otherwise."
             (end (cdr beg.end)))
         (if show
             ;; show the complete doc-string
-            (pel--hide/show-docstring-chars beg end show)
+            (pel--hs-docstring-chars beg end show)
           ;; request to hide docstring
           (if (> (- end beg) 5)
               (progn
                 (setq beg (+ beg 4))
                 (setq end (1- end))
                 ;; hide docstring, leave the quotes and 4 characters visible
-                (pel--hide/show-docstring-chars beg end nil))
+                (pel--hs-docstring-chars beg end nil))
             (user-error "The docstring at %d,%d is too small (%s), kept visible"
                         beg
                         end
@@ -205,26 +199,110 @@ Return cons cell of (start . end) positions if found, nil otherwise."
       beg.end))))
 
 ;;-pel-autoload
-(defun pel-hide/show-docstring (&optional show)
-  "Hide or show the docstring.
-Hide the docstring by default.  If SHOW is non-nil show it instead."
+(defun pel-hide/show-docstring (&optional show silent)
+  "Hide or show the docstring of current or previous definition.
+Hide the docstring by default.  If SHOW is non-nil show it instead.
+Return (beg.end) on success.  If no docstring detected issue a user-error by default.
+But if SILENT is non-nil, instead of issuing an error return nil instead."
   (interactive "P")
   ;; (let ((start-point (if (region-active-p) (region-beginning) (point-min)))
   ;;       (end-point   (if (region-active-p) (region-end) (point-max))))
   ;; Hiding/showing docstrings is not a buffer modification.
   (with-silent-modifications
-    (restore-buffer-modified-p nil)
-    (pel--hide/show-docstring show nil nil)))
+    (condition-case nil
+        (progn
+          (restore-buffer-modified-p nil)
+          (pel--hs-docstring show nil nil))
+      (error (if silent
+                 nil
+               (user-error "No docstring detected around point!"))))))
+
+;; --
+
+(defun pel--docstring-char-invisible-p (pos)
+  "Return t if character at POS is an invisible docstring, nil otherwise.
+Therefore nil might be because the character does not have the invisible
+attribute or because it has the invisible attribute but its value is not
+'hide-docstring."
+  (eq (get-text-property pos 'invisible) 'hide-docstring))
+
+(defun pel--docstring-visible-p (&optional next)
+  "Return t if docstring is visible, nil otherwise.
+Check the docstring of the current/previous definition by default, but if
+the NEXT argument is non-nil then check the docstring of the next definition."
+  (let* ((beg.end (pel--docstring-positions next))
+         (beg (car beg.end))
+         (end (cdr beg.end))
+         (hide-count 0))
+    (while (< beg end)
+      (when (pel--docstring-char-invisible-p beg)
+        (setq hide-count (1+ hide-count)))
+      (setq beg (1+ beg)))
+    (= hide-count 0)))
 
 ;;-pel-autoload
-(defun pel-hide/show-docstring-toggle (&optional next)
+(defun pel-toggle-docstring (&optional next silent)
   "Toggle the visibility of the docstring.
+
 By default it affects the current or previous definition,
-but if the NEXT argument is non-nil it affects the next definition."
+but if the NEXT argument is non-nil it affects the next definition.
+
+Return t on success.  If no docstring detected issue a user-error by default.
+But if SILENT is non-nil, instead of issuing an error return nil instead."
   (interactive "P")
   (condition-case nil
-      (pel-hide/show-docstring (if (pel--docstring-visible-p next) nil t))
-    (error (user-error "No docstring detected around point!"))))
+      (pel-hide/show-docstring
+       (if (pel--docstring-visible-p next) nil t)
+       silent)
+    (error (if silent
+               nil
+             (user-error "No docstring detected around point!")))))
+
+;; --
+
+;;-pel-autoload
+(defun pel-hide/show-all-docstrings (&optional show)
+  "Hide all docstrings in buffer.
+With optional SHOW argument, show them all instead.
+Display the number of docstrings affected.
+The visibility of docstring is affected, but the buffer content is unchanged."
+  (interactive "P")
+  (with-silent-modifications
+    (restore-buffer-modified-p nil)
+    (save-excursion
+      (let ((docstring-count 0))
+        (goto-char (point-max))
+        (while (progn
+                 (when (pel-hide/show-docstring show :silent)
+                   (setq docstring-count (1+ docstring-count)))
+                 (beginning-of-defun 1)))
+        (if (> docstring-count 0)
+            (message "%s now %s."
+                     (pel-count-string docstring-count "docstring")
+                     (if show "displayed" "hidden"))
+          (user-error "No docstring found in buffer."))))))
+
+;; --
+
+;;-pel-autoload
+(defun pel-toggle-all-docstrings ()
+  "Toggle visibility of all docstrings in buffer.
+Display the number of docstrings affected.
+The visibility of docstring is affected, but the buffer content is unchanged."
+  (interactive)
+  (with-silent-modifications
+    (restore-buffer-modified-p nil)
+    (save-excursion
+      (let ((docstring-count 0))
+        (goto-char (point-max))
+        (while (progn
+                 (when (pel-toggle-docstring nil :silent)
+                   (setq docstring-count (1+ docstring-count)))
+                 (beginning-of-defun 1)))
+        (if (> docstring-count 0)
+            (message "Toggled visibility of %s."
+                     (pel-count-string docstring-count"docstring"))
+          (user-error "No docstring found in buffer."))))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-hide-docstring)

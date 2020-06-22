@@ -2213,7 +2213,9 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:comment "m"            'pel-comment-middle)
 (define-key pel:comment "e"            'pel-comment-end)
 (define-key pel:comment "u"            'uncomment-region)
-(define-key pel:comment "'"            'pel-hide/show-docstring-toggle)
+(define-key pel:comment "d"            'pel-toggle-all-docstrings)
+(define-key pel:comment "D"            'pel-hide/show-all-docstrings)
+(define-key pel:comment "'"            'pel-toggle-docstring)
 (define-key pel:comment "\""           'pel-hide/show-docstring)
 
 
