@@ -1703,6 +1703,8 @@ This is meant to be used in the d-mode hook lambda."
 
     (define-key pel:for-erlang  (kbd "<f1>") 'pel-cfg-pkg-erlang)
     (define-key pel:for-erlang (kbd "M-p")  #'superword-mode)
+    (define-key pel:for-erlang "a"           'erlang-beginning-of-clause)
+    (define-key pel:for-erlang "e"           'erlang-end-of-clause)
 
     :config
     (setq erlang-root-dir (expand-file-name pel-erlang-rootdir))
