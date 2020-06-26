@@ -1679,6 +1679,10 @@ This is meant to be used in the d-mode hook lambda."
 (when pel-use-erlang
   (define-pel-global-prefix pel:for-erlang (kbd "<f11> SPC e"))
   ;;
+  (when pel-erlang-shell-prevent-echo
+      ;; Prevent erlang shell to echo back commands.
+    (add-hook 'erlang-shell-mode-hook 'pel-erlang-shell-mode-init))
+
   (use-package erlang
     :ensure t
     :pin melpa

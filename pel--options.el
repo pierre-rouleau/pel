@@ -1426,6 +1426,13 @@ by the `pel-use-d-ac-dcd'."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-erlang-shell-prevent-echo nil
+  "Set to t if the erlang-shell-mode shell echoes back commands.
+When set to t PEL activtaes code that prevent echo of the typed commands."
+  :group 'pel-pkg-for-erlang
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; TODO: find a way to indicate either a path or the name of an environment variable
 (defcustom pel-erlang-rootdir "/usr/local/otp"
   "Root directory of Erlang OTP."

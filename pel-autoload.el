@@ -138,6 +138,9 @@
   (autoload 'pel-emacs-load-stats  "pel-emacs")
   (autoload 'pel-emacs-mem-stats  "pel-emacs")
 
+  ;; pel-erlang
+  (autoload 'pel-erlang-shell-mode-init "pel-erlang")
+
   ;; pel-face-ut
   (autoload 'pel-show-face-at-point "pel-face-ut")
 
