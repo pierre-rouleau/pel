@@ -1391,25 +1391,15 @@ display in other window."
     :pin melpa
     :commands projectile-mode
 
+    ;; projectile uses both ripgrep and ag.  These are controlled independently
+    ;; but ensure that the commands used by projectile are identified as the autoloading
+    ;; commands.  See both of these in the Grep operation section below.
+
     :init
     (define-key pel: (kbd "<f8>")  'projectile-mode)
 
     :config
-    (define-key projectile-mode-map (kbd "<f8>")  'projectile-command-map))
-
-  ;; If ripgrep support is required, ensure that the ripgrep package is installed
-  ;; (in addition to rg) because projectile use ripgrep and not rg.
-  ;; No need to schedule its loading, it will be loaded when projectile requires it,
-  ;; just make sure it is present on the system.
-  (when pel-use-ripgrep
-    (use-package ripgrep
-      :ensure t
-      :pin melpa))
-  ;; Same with ag.
-  (when pel-use-ag
-    (use-package ag
-      :ensure t
-      :pin melpa)))
+    (define-key projectile-mode-map (kbd "<f8>")  'projectile-command-map)))
 
 (defun pel--start-projectile ()
   "Activate projectile-mode."
@@ -2881,6 +2871,11 @@ the ones defined from the buffer now."
 
 ;; ripgrep - a faster grep easier to use than grep.
 (when  pel-use-ripgrep
+  ;; 2 packages support ripgrep: rg.el and ripgrep.el
+  ;; Install rg.el and install ripgrep.el if projectile
+  ;; is used.
+
+  ;; rg.el
   (cl-eval-when 'compile (require 'rg))
   (use-package rg
     :ensure t
@@ -2893,7 +2888,14 @@ the ones defined from the buffer now."
     (global-set-key (kbd "C-c s") 'rg-menu)
     :config
     (declare-function rg-enable-default-bindings "rg")
-    (rg-enable-default-bindings)))
+    (rg-enable-default-bindings))
+
+  ;; ripgrep.el
+  (when pel-use-projectile
+    (use-package ripgrep
+      :ensure t
+      :pin melpa
+      :commands ripgrep-regexp)))
 
 (when pel-use-ag
   (use-package ag
