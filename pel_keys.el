@@ -7,7 +7,6 @@
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
 
-;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
@@ -1382,6 +1381,43 @@ display in other window."
     (define-key pel:      (kbd "M-c ") 'pel-select-completion-mode)
     (define-key pel:help  "c"          'pel-show-active-completion-mode)
     (pel-set-completion-mode pel-initial-completion-mode)))
+
+;; -----------------------------------------------------------------------------
+;; - Project Management - Projectile
+
+(when pel-use-projectile
+  (use-package projectile
+    :ensure t
+    :pin melpa
+    :commands projectile-mode
+
+    :init
+    (define-key pel: (kbd "<f8>")  'projectile-mode)
+
+    :config
+    (define-key projectile-mode-map (kbd "<f8>")  'projectile-command-map))
+
+  ;; If ripgrep support is required, ensure that the ripgrep package is installed
+  ;; (in addition to rg) because projectile use ripgrep and not rg.
+  ;; No need to schedule its loading, it will be loaded when projectile requires it,
+  ;; just make sure it is present on the system.
+  (when pel-use-ripgrep
+    (use-package ripgrep
+      :ensure t
+      :pin melpa))
+  ;; Same with ag.
+  (when pel-use-ag
+    (use-package ag
+      :ensure t
+      :pin melpa)))
+
+(defun pel--start-projectile ()
+  "Activate projectile-mode."
+  (when (require 'projectile nil :noerror)
+    (projectile-mode +1)))
+
+(when (eq pel-use-projectile 'use-from-start)
+  (run-with-idle-timer 1 nil (function pel--start-projectile)))
 
 ;; -----------------------------------------------------------------------------
 ;; - AppleScript support
@@ -2858,6 +2894,25 @@ the ones defined from the buffer now."
     :config
     (declare-function rg-enable-default-bindings "rg")
     (rg-enable-default-bindings)))
+
+(when pel-use-ag
+  (use-package ag
+    :ensure t
+    :pin melpa
+    :commands (ag
+               ag-dired
+               ag-dired-regexp
+               ag-files
+               ag-mode
+               ag-project
+               ag-project-dired
+               ag-project-dired-regexp
+               ag-project-files
+               ag-project-regexp
+               ag-regexp)
+    :init
+    (define-key pel:grep  "a"     'ag)
+    (define-key pel:grep  "A"     'ag-dired)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> i`` : Insert text operations

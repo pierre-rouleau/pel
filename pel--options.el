@@ -60,6 +60,7 @@
 ;;     - pel-pkg-for-bookmarks
 ;;     - pel-pkg-for-shells
 ;;     - pel-pkg-for-vcs
+;;     - pel-pkg-for-project-mng
 ;;     - pel-pkg-for-programming
 ;;       - pel-pkg-for-applescript
 ;;       - pel-pkg-for-cc
@@ -283,14 +284,29 @@ a non-customizable variable."
   "List of external packages that PEL can use for grep operations."
   :group 'pel-package-use)
 
+(defcustom pel-use-ag nil
+  "Control whether PEL uses the ag tool."
+  :group 'pel-pkg-for-grep
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-ripgrep nil
-  "Control whether PEL uses the ripgrep tool and its associated package.
-Ripgrep is a very fast grep utility, and the rg package fully supports
-the Emacs grep interface to use it.
+  "Control whether PEL uses the ripgrep tool and its associated packages.
+Ripgrep is a very fast grep utility, and two packages support ripgrep:
+
+- the rg package,
+- the ripgrep package.
+
+Setting pel-use-ripgrep to t indicates that you want to use ripgrep, so
+it identifies the installation of the `rg` package.  If you also set
+`pel-use-projectile' to non-nil, then the installation of the `ripgrep`
+package is also required becuase `projectile` uses the `ripgrep` package,
+it does not uses `rg`.
 
 References:
 - ripgrep: URL `https://github.com/BurntSushi/ripgrep'
-- ripgrep support package: rg: URL `https://melpa.org/#/rg'"
+- Emacs rg  package: URL `https://melpa.org/#/rg'
+- Emacs ripgrep package: https://github.com/nlamirault/ripgrep.el"
   :group 'pel-pkg-for-grep
   :type 'boolean
   :safe #'booleanp)
@@ -1081,6 +1097,21 @@ and usable shell for Emacs."
   :group 'pel-pgk-for-vcs
   :type 'boolean
   :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; Project Manager Support
+;; =======================
+(defgroup pel-pkg-for-project-mng nil
+  "PEL customization for project managers."
+    :group 'pel-package-use)
+
+(defcustom pel-use-projectile nil
+  "Control whether PEL supports the projectile project manager."
+  :group 'pel-pkg-for-project-mng
+  :type '(choice
+          (const :tag "Do not use" nil)
+          (const :tag "Use, activate later by command"  t)
+          (const :tag "Use, activate when Emacs starts" use-from-start)))
 
 ;; -----------------------------------------------------------------------------
 ;; Programming Language Support
