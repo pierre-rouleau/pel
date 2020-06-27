@@ -43,6 +43,7 @@
 ;;       - pel-pkg-for-ztree
 ;;     - pel-pkg-for-grep
 ;;     - pel-pkg-for-key-chord
+;;     - pel-pkg-for-modeline
 ;;     - pel-pkg-for-regexp
 ;;     - pel-pkg-for-search
 ;;     - pel-pkg-for-tags
@@ -546,6 +547,20 @@ The `pel-key-chords' value is a list of objects.
      (choice (string   :tag "expansion")
              (function :tag "function")
              (function :tag "lambda" :value (lambda () (interactive) <YOUR CODE HERE>))))))
+
+;; -----------------------------------------------------------------------------
+;; pel-pkg-for-modeline
+;; --------------------
+(defgroup pel-pkg-for-modeline nil
+  "List of external packages that PEL can use to modify the modeline."
+  :group 'pel-package-use)
+
+(defcustom pel-use-keycast nil
+  "Control whether the keycast package is made available.
+For more info, see URL https://github.com/tarsius/keycast"
+  :group 'pel-pkg-for-modeline
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; -----------------------------------------------------------------------------
 ;; pel-pkg-for-regexp

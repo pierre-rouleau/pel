@@ -2355,19 +2355,29 @@ This is meant to be used in the d-mode hook lambda."
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? k`` : Info on Keys
+
+(define-pel-global-prefix pel:keys (kbd "<f11> ? k"))
+(define-key pel:keys    "#"  'pel-show-mac-numlock)
+(define-key pel:keys    "l" #'view-lossage)
+(define-key pel:keys    "m" #'describe-mode)
+
 (when pel-use-free-keys
   (cl-eval-when 'compile (require 'free-keys))
   (use-package free-keys
     :ensure t
     :pin melpa
-    :commands free-keys))                       ; for <f11> ? k f
+    :commands free-keys
+    :init
+    (define-key pel:keys  "f" #'free-keys)))
 
 (when pel-use-bind-key
   (cl-eval-when 'compile (require 'bind-key))
   (use-package bind-key
     :ensure t
     :pin melpa
-    :commands describe-personal-keybindings))   ; for <f11> ? k b
+    :commands describe-personal-keybindings
+    :init
+    (define-key pel:keys  "b" #'describe-personal-keybindings)))
 
 (when pel-use-which-key
   (cl-eval-when 'compile (require 'which-key))
@@ -2380,23 +2390,22 @@ This is meant to be used in the d-mode hook lambda."
     :ensure t
     :pin melpa
     :defer 1
-    :commands which-key-mode
+    :commands (which-key-mode
+               which-key-show-major-mode)
+    :init
+    (define-key pel:keys  "K"  'which-key-mode)
+    (define-key pel:keys  "k"  'which-key-show-major-mode)
     :config
     (declare-function which-key-mode "which-key")
     (which-key-mode)))
 
-
-(define-pel-global-prefix pel:keys (kbd "<f11> ? k"))
-(define-key pel:keys    "#"  'pel-show-mac-numlock)
-(when pel-use-bind-key
-  (define-key pel:keys  "b" #'describe-personal-keybindings))
-(when pel-use-free-keys
-  (define-key pel:keys  "f" #'free-keys))
-(when pel-use-which-key
-  (define-key pel:keys  "k"  'which-key-show-major-mode))
-(define-key pel:keys    "l" #'view-lossage)
-(define-key pel:keys    "m" #'describe-mode)
-;;
+(when pel-use-keycast
+  (use-package keycast
+    :ensure t
+    :pin melpa
+    :commands keycast-mode
+    :init
+    (define-key pel:keys  "c"  'keycast-mode)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> $`` : Spell Check
