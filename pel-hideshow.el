@@ -255,13 +255,6 @@ This hides text indented a the new value of variable `selective-display'."
       (set-selective-display sd-value)
       (pel--set-vline sd-value))))
 
-;; -----------------------------------------------------------------------------
-;; Hide/Show Code Docstrings
-;; -------------------------
-
-;; TODO
-
-
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-hideshow)
