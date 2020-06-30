@@ -23,6 +23,63 @@
 ;; -----------------------------------------------------------------------------
 ;;; Commentary:
 ;;
+;; This file contains defintions to extend the support of reStructuredText
+;; files.
+;;
+;;
+;; - Section Adornment Control
+;;
+;;  * pel-rst-adorn-decrease-level
+;;  * pel-rst-adorn-increase-level
+;;  * pel-rst-adorn-refresh
+;;  * pel-rst-adorn-same-level
+;;    - pel--line-adorned-p
+;;    - pel--rst-adorn-same-as-previous
+;;      - pel--rst-adorn-level-of-previous-section
+;;    - pel--rst-adorn-change
+;;      - pel--rst-delete-whole-line
+;;        - pel--rst-level-for
+;;  * pel-rst-adorn-10
+;;  * pel-rst-adorn-9
+;;  * pel-rst-adorn-8
+;;  * pel-rst-adorn-7
+;;  * pel-rst-adorn-6
+;;  * pel-rst-adorn-5
+;;  * pel-rst-adorn-4
+;;  * pel-rst-adorn-3
+;;  * pel-rst-adorn-2
+;;  * pel-rst-adorn-1
+;;  * pel-rst-adorn-title
+;;    * pel-rst-adorn
+;;  - pel-delete-trailing-whitespace
+;;      - current-line-length
+;;  * pel-rst-adorn-CRiSPer
+;;  * pel-rst-adorn-Sphinx-Python
+;;  * pel-rst-adorn-default
+;;    - pel--rst-activate-adornment-style
+;;      - pel-rst-set-adornment
+;;
+;;
+;; - Link/reference location bookmark management:
+;;
+;;   * pel-rst-set-ref-bookmark
+;;   * pel-rst-goto-ref-bookmark
+;;     - pel--rst-bookmark-exists-p
+;;       - pel-rst-ref-bookmark-name
+;;   * pel-rst-makelink
+;;     - pel-rst-anchor-escaped
+;;     - pel-goto-next-empty-line
+;;     - pel-rst-goto-ref-bookmark
+;;     - pel--rst-bookmark-exists-p
+;;
+;;
+;; - Emphasis markup support:
+;;
+;;   * pel-rst-interpreted
+;;   * pel-rst-literal
+;;   * pel-rst-italic
+;;   * pel-rst-bold
+;;     - pel--rst-emphasize-with
 
 
 ;;; Code:
@@ -33,7 +90,7 @@
 (require 'pel--macros)
 (require 'rst)              ; rst-mode code. Use rst-backward-section
 
-;; --
+;; -----------------------------------------------------------------------------
 ;; Section Adornment Control
 ;; -------------------------
 
@@ -108,7 +165,6 @@ STYLE identifies the number of levels supported and their adornment.
 
 (defun pel--rst-activate-adornment-style ()
   "Activate the adornment style selected by `pel-rst-adornment-style'."
-  (interactive)
   (pel-rst-set-adornment pel-rst-adornment-style))
 
 ;;-pel-autoload
@@ -278,23 +334,6 @@ Ignore the title level."
             (setq level-number (1+ level-number))))))
     level-detected))
 
-(defun pel--rst-adorn-level-of-previous-section ()
-  "Return the adornment level of the previous section in the text."
-  (save-excursion
-    (rst-backward-section 1)
-    (forward-line 1)
-    (pel--rst-level-for (char-after))))
-
-(defun pel--rst-adorn-relative-to-other (level)
-  "Adorn current line with section relative LEVEL.
-- If LEVEL is 0: use same level as previous section.
-- If LEVEL is 1: use a higher level to create a sub-section.
-- If LEVEL is -1: use a lower level to create a parent section."
-  (let ((other-level (pel--rst-adorn-level-of-previous-section)))
-    (if other-level
-        (pel-rst-adorn (+ other-level level))
-      (user-error "Cannot detect section level of previous section"))))
-
 (defun pel--rst-delete-whole-line ()
   "Local copy of delete-whole-line: delete the current line."
   (delete-region (line-beginning-position)
@@ -315,6 +354,12 @@ Ignore the title level."
       (end-of-line 2)
       (delete-char 1 nil))))
 
+(defun pel--rst-adorn-level-of-previous-section ()
+  "Return the adornment level of the previous section in the text."
+  (save-excursion
+    (rst-backward-section 1)
+    (forward-line 1)
+    (pel--rst-level-for (char-after))))
 
 (defun pel--rst-adorn-same-as-previous  (step)
   "Adorn current line at the STEP level compared to the previous adornment."
@@ -423,8 +468,8 @@ previous section."
     (pel--rst-adorn-same-as-previous -1)))
 
 ;; -----------------------------------------------------------------------------
-;; reStructuredText reference location bookmark management
-;; -------------------------------------------------------
+;; Link/reference location bookmark management
+;; -------------------------------------------
 ;;
 ;; Call hierarchy:
 ;;
@@ -499,7 +544,6 @@ NO-ERROR is non-nil."
   "Return the TEXT escaped, ready to be used in a reStructuredText anchor.
 - Replaces each colon with a back-slash escaped colon."
   (replace-regexp-in-string ":" "\\:" text nil :literal))
-
 
 (defun pel--space-for-extra-link-p ()
   "Return t if there is spec for extra link, nil otherwise."
@@ -588,7 +632,9 @@ Reference: see reStructuredText hyperlink format at URL
     (error (user-error "No text for hyperlink!"))))
 
 
-;; --
+;; -----------------------------------------------------------------------------
+;; Emphasis markup support
+;; -----------------------
 
 (defun pel--rst-emphasize-with (str)
   "Emphasize the current word or marked area using STR.
