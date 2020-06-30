@@ -679,6 +679,62 @@ Leave point after to the next character."
   (pel--rst-emphasize-with "`"))
 
 ;; -----------------------------------------------------------------------------
+;; Open Link
+;; ---------
+
+(defun pel-at-rst-reference-p (&optional pos)
+  "Return t if POS (or point) is at a rst-reference character, nil otherwise."
+  (setq pos (or pos (point)))
+  (eq (get-text-property pos 'face) 'rst-reference))
+
+
+(defun pel--rst-reference-target (&optional pos noerror)
+  "Return the target string of the current reference if any.
+If there is no reference issue a user-error unless NOERROR is non-nil,
+in that case return nil instead."
+  (setq pos (or pos (point)))
+  (if (pel-at-rst-reference-p pos)
+      ;; find boundaries of this reference, go back to first char then to the
+      ;; end
+      (let ((beg pos)
+            (end (1+ pos)))
+        (while (pel-at-rst-reference-p (1- beg))
+          (setq beg (1- beg)))
+        (when (equal (char-after beg) ?`)
+          (setq beg (1+ beg)))
+        (while (pel-at-rst-reference-p (1+ end))
+          (setq end (1+ end)))
+        (when (equal (char-before end) ?`)
+          (setq end (1- end)))
+        (buffer-substring-no-properties beg end))
+    (unless noerror
+      (user-error "Point is not located over a rst-reference!"))))
+
+(defun pel--move-to-rst-target (target)
+  "Move point to the rst definition link for TARGET."
+  (goto-char (point-min))
+  (re-search-forward (format "^\\.\\. _%s: +"
+                             (pel-rst-anchor-escaped target))
+                     nil
+                     :noerror))
+
+(defun pel-rst-open-target (&optional n noerror)
+  "Open the target of rst-reference at point.
+If there is no target issue a user-error unless NOERROR is non-nil.
+In that case just return nil.
+Optionally identify a window to open a file reference with the argument N.
+See `pel-find-file-at-point-in-window' for more information. "
+  (interactive "P")
+  (save-excursion
+    (if (pel--move-to-rst-target (pel--rst-reference-target))
+        (if (and (require 'pel-file nil :noerror)
+                 (fboundp 'pel-find-file-at-point-in-window))
+            (pel-find-file-at-point-in-window n)
+          (user-error "Cannot load pel-file!"))
+      (unless noerror
+        (user-error "No reference target found!")))))
+
+;; -----------------------------------------------------------------------------
 (provide 'pel-rst)
 
 ;;; pel-rst.el ends here

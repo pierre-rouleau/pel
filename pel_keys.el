@@ -1399,7 +1399,14 @@ display in other window."
     (define-key pel: (kbd "<f8>")  'projectile-mode)
 
     :config
-    (define-key projectile-mode-map (kbd "<f8>")  'projectile-command-map)))
+    (define-key projectile-mode-map (kbd "<f8>")    'projectile-command-map)
+    (define-key projectile-command-map "~"          'projectile-toggle-project-read-only)
+    (define-key projectile-command-map (kbd "<f1>") 'pel-customize-projectile)))
+
+(defun pel-customize-projectile ()
+  "Customize projectile."
+  (interactive)
+  (customize-group "projectile"))
 
 (defun pel--start-projectile ()
   "Activate projectile-mode."
@@ -2786,7 +2793,8 @@ the ones defined from the buffer now."
 
 ;; - Open file at point
 ;; --------------------
-(global-set-key (kbd "C-^") 'pel-find-file-at-point-in-window)
+
+(global-set-key (kbd "C-^") 'pel-open-at-point)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> f a`` : Finf File At Point (ffap)

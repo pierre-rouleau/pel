@@ -269,6 +269,9 @@
   (autoload 'pel-kp-subtract         "pel-numkpad")
   (autoload 'pel-kp-add              "pel-numkpad")
 
+  ;; pel-open
+  (autoload 'pel-open-at-point       "pel-open")
+
   ;; pel-pathmng
   (autoload 'pel-emacs-load-path     "pel-pathmng")
 

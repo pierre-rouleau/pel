@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2020-06-25 20:20:08, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-06-30 16:11:55, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -143,6 +143,7 @@ EL_FILES := pel--base.el \
 			pel-mark.el \
 			pel-navigate.el \
 			pel-numkpad.el \
+			pel-open.el \
 			pel-pathmng.el \
 			pel-prompt.el \
 			pel-read.el \
@@ -450,11 +451,12 @@ pel-lisp.elc:           pel--base.elc
 pel-mark.elc:           pel--base.elc
 pel-navigate.elc:       pel--base.elc pel-scroll.elc
 pel-numkpad.elc:        pel--base.elc pel-ccp.elc pel-navigate.elc pel-scroll.elc
+pel-open.elc:           pel-file.elc pel-rst.elc
 pel-pathmng.elc:        pel-window.elc
 pel-read.elc:           pel-navigate.elc
 pel-register.elc:       pel--base.elc
 pel-regexp.elc:         pel--base.elc
-pel-rst.elc:            pel--base.elc pel--macros.elc pel--options.elc pel-bookmark.elc
+pel-rst.elc:            pel--base.elc pel--macros.elc pel--options.elc pel-bookmark.elc pel-file.elc
 pel-search:             pel--options.elc pel--macros.elc pel-prompt.elc pel-read.elc pel-window.elc
 pel-speedbar.elc:       pel--base.elc pel--macros.elc pel--options.elc
 pel-spell.elc:          pel--macros.elc pel--base.elc

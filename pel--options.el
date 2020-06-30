@@ -447,8 +447,8 @@ typed quickly or slowly when recorded.)"
     (global    ""         key-chord
                "6y"  (lambda (&optional n)
                        (interactive "P")
-                       (if (require 'pel-file nil :noerror)
-                           (pel-find-file-at-point-in-window n)
+                       (if (require 'pel-open nil :noerror)
+                           (pel-open-at-point n)
                          (insert "6y"))))
 
     (global    ""         key-chord
@@ -672,6 +672,20 @@ PEL supports the following tools:
           (const :tag "Use Emacs default" nil)
           (const :tag "Use Anzu" anzu)
           (const :tag "Use Swiper" swiper)))
+
+;; -----------------------------------------------------------------------------
+;; pel-pkg-for-tags
+;; ----------------
+(defgroup pel-pkg-for-tags nil
+  "List of external packages that PEL can use to manage Tags cross-references."
+  :group 'pel-pkg-for-tags)
+
+(defcustom pel-use-ggtags nil
+  "Control whether PEL uses the ggtags package.
+See URL https://github.com/leoliu/ggtags"
+  :group 'pel-pkg-for-tags
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; -----------------------------------------------------------------------------
 ;; Windows Management
