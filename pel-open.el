@@ -27,6 +27,11 @@ See `pel-find-file-at-point-in-window' for more information. "
       (unless noerror
         (user-error "Cannot load pel-file!")))))
 
+;;-pel-autoload
+(defun pel-browse-filename-at-point ()
+  "Open the filename at point in the system's browser."
+  (pel-open-at-point 9))   ; n:=9 to force using a browser
+
 ;; -----------------------------------------------------------------------------
 (provide 'pel-open)
 

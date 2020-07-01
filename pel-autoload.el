@@ -270,7 +270,8 @@
   (autoload 'pel-kp-add              "pel-numkpad")
 
   ;; pel-open
-  (autoload 'pel-open-at-point       "pel-open")
+  (autoload 'pel-open-at-point            "pel-open")
+  (autoload 'pel-browse-filename-at-point "pel-open")
 
   ;; pel-pathmng
   (autoload 'pel-emacs-load-path     "pel-pathmng")

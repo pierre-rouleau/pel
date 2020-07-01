@@ -78,7 +78,7 @@
 ;; pel-find-file-at-point-in-window
 ;; --------------------------------
 
-(defun pel-filename-parts-at-point ()
+(defun pel-filename-parts-at-point (&optional keep-file-url)
   "Extract and return (filename line column) from string at point.
 .
 Return:
@@ -98,81 +98,85 @@ It accepts ':' and '@' as separators between the elements.
 Spaces are accepted within the file name and between the separators
 but *only* when the complete string is enclosed in double quotes
 *and* when point is located at the first quote."
-  (let ((str (replace-regexp-in-string "^file:////?/?" "/"
-                                       (pel-filename-at-point))))
+  (let ((str (pel-filename-at-point)))
+    (unless keep-file-url
+      (setq str (replace-regexp-in-string "^file:////?/?" "/" str)))
     ;; first check for web URIs and return them.
     (if (string-match-p "\\`https?://" str)
         (cons 'http str)
-      ;; - Regexp provides ability to match with and without line and columns
-      ;; - If line is present it's a number between 2 separators, with each
-      ;;   each separator being either ':' or '@' with optional spaces.
-      ;; - If column is present it follows the second separator. The column
-      ;;   group can hold any alphanumeric and some punctuation characters.
-      ;;
-      ;; Prior to processing the string, the potential file URI prefix
-      ;; is removed:
-      ;;  "file:////?/?" optional prefix is removed.
-      ;;                 The standard allows 3 slashes but some people use
-      ;;                 4 or 5, so they are removed too.
-      ;;
-      ;; The overall structure of the regexp identifies the following groups:
-      ;; G1?G2((G5 G6)(G8 G9)?)?
-      ;; where:
-      ;; - G1 := MS-DOS/Windows disk-drive letter and colon. nil if absent.
-      ;; - G2 := filename
-      ;; - G6 := line number string (only digits), if it exists (it can be nil)
-      ;; - G9 := column field.  It may be any text, may start with number,
-      ;;                        maybe nil.
-      ;; The numbers are extracted with string-to-number which return 0
-      ;; if it's text.
-      ;; Note: The regexp is split to fit in 80 columns: the G-g identify
-      ;;       the beginning and end of a group in the expression that spans
-      ;;       3 lines.
-      (if (string-match
-           ;;
-           ;;
-           (concat
-            ;;     G1         g1    G2     g2   G3 G4 G5        g5
-            ;;     (-----------)   (--------)   (  (  (----------)
-            "^\\`\\([a-zA-Z]:\\)?\\([^:@]+?\\)\\(\\(\\( *[:@] *\\)"
-            ;; G6       g6 g4  G7 G8
-            ;; (---------)  )  (  (----------)
-            "\\([0-9]+?\\)\\)\\(\\( *[:@] *\\)"
-            ;; G9                      g7 g3
-            ;; (---------------------)  )  )
-            "\\([[:alnum:] ,:;\\.]+\\)\\)\\)?\\'")
-           str)
-          (let* ((ddrv_str  (match-string 1 str))
-                 (fpath_str (concat ddrv_str (match-string 2 str)))
-                 ;; line to 0 if no line in str.
-                 (match6    (match-string 6 str))
-                 (line_num  (if match6 (string-to-number match6)))
-                 ;; change line 0 to line 1
-                 (line_num  (if (equal line_num 0) 1 line_num))
-                 ;; column to nil if no line or column in str.
-                 (match9   (match-string 9 str))
-                 (col_num   (when (and match6 match9)
-                              (string-to-number match9))))
-            (list (if ddrv_str 'fname-w-ddrv 'fname)
-                  fpath_str line_num col_num))
-        ;; For reasons I don't yet understand, the above regexp does not work
-        ;; if only one separator; with line number follows the file name.
-        ;; So, I try again, with a different regexp, not looking
-        ;; for a column.
+      (if (string-match-p "\\`file://" str)
+          (cons 'http str)
+
+        ;; - Regexp provides ability to match with and without line and columns
+        ;; - If line is present it's a number between 2 separators, with each
+        ;;   each separator being either ':' or '@' with optional spaces.
+        ;; - If column is present it follows the second separator. The column
+        ;;   group can hold any alphanumeric and some punctuation characters.
+        ;;
+        ;; Prior to processing the string, the potential file URI prefix
+        ;; is removed:
+        ;;  "file:////?/?" optional prefix is removed.
+        ;;                 The standard allows 3 slashes but some people use
+        ;;                 4 or 5, so they are removed too.
+        ;;
+        ;; The overall structure of the regexp identifies the following groups:
+        ;; G1?G2((G5 G6)(G8 G9)?)?
+        ;; where:
+        ;; - G1 := MS-DOS/Windows disk-drive letter and colon. nil if absent.
+        ;; - G2 := filename
+        ;; - G6 := line number string (only digits), if it exists (it can be nil)
+        ;; - G9 := column field.  It may be any text, may start with number,
+        ;;                        maybe nil.
+        ;; The numbers are extracted with string-to-number which return 0
+        ;; if it's text.
+        ;; Note: The regexp is split to fit in 80 columns: the G-g identify
+        ;;       the beginning and end of a group in the expression that spans
+        ;;       3 lines.
         (if (string-match
-             ;;     G1              G2           G3     G4
-             ;;     (-----------)   (---------)  (   )  (---------)
-             "^\\`\\([a-zA-Z]:\\)?\\([^:@]+?\\)\\(:\\)\\([0-9]+?\\)\\'"
+             ;;
+             ;;
+             (concat
+              ;;     G1         g1    G2     g2   G3 G4 G5        g5
+              ;;     (-----------)   (--------)   (  (  (----------)
+              "^\\`\\([a-zA-Z]:\\)?\\([^:@]+?\\)\\(\\(\\( *[:@] *\\)"
+              ;; G6       g6 g4  G7 G8
+              ;; (---------)  )  (  (----------)
+              "\\([0-9]+?\\)\\)\\(\\( *[:@] *\\)"
+              ;; G9                      g7 g3
+              ;; (---------------------)  )  )
+              "\\([[:alnum:] ,:;\\.]+\\)\\)\\)?\\'")
              str)
             (let* ((ddrv_str  (match-string 1 str))
                    (fpath_str (concat ddrv_str (match-string 2 str)))
                    ;; line to 0 if no line in str.
-                   (line_num  (string-to-number (pel-val-or-default
-                                                 (match-string 4 str) "")))
-                   ;; but change line 0 to line 1
-                   (line_num  (if (equal line_num 0) 1 line_num)))
-              (list
-               (if ddrv_str 'fname-w-ddrv 'fname) fpath_str line_num nil)))))))
+                   (match6    (match-string 6 str))
+                   (line_num  (if match6 (string-to-number match6)))
+                   ;; change line 0 to line 1
+                   (line_num  (if (equal line_num 0) 1 line_num))
+                   ;; column to nil if no line or column in str.
+                   (match9   (match-string 9 str))
+                   (col_num   (when (and match6 match9)
+                                (string-to-number match9))))
+              (list (if ddrv_str 'fname-w-ddrv 'fname)
+                    fpath_str line_num col_num))
+          ;; For reasons I don't yet understand, the above regexp does not work
+          ;; if only one separator; with line number follows the file name.
+          ;; So, I try again, with a different regexp, not looking
+          ;; for a column.
+          (if (string-match
+               ;;     G1              G2           G3     G4
+               ;;     (-----------)   (---------)  (   )  (---------)
+               "^\\`\\([a-zA-Z]:\\)?\\([^:@]+?\\)\\(:\\)\\([0-9]+?\\)\\'"
+               str)
+              (let* ((ddrv_str  (match-string 1 str))
+                     (fpath_str (concat ddrv_str (match-string 2 str)))
+                     ;; line to 0 if no line in str.
+                     (line_num  (string-to-number (pel-val-or-default
+                                                   (match-string 4 str) "")))
+                     ;; but change line 0 to line 1
+                     (line_num  (if (equal line_num 0) 1 line_num)))
+                (list
+                 (if ddrv_str 'fname-w-ddrv 'fname) fpath_str line_num nil))))))))
 
 (defun pel-prompt-for-filename (default-filename)
   "Prompt for a file name, with DEFAULT-FILENAME shown.
@@ -289,10 +293,7 @@ COLUMN   := integer | nil"
   of the target window:
   - N < 0 := 'new
   - N = 0 := 'other
-  - N = 1 := same as below
-  - N = 3 := same as below
-  - N = 7 := same as below
-  - N >= 9:= select the window according to the number number of windows
+  - N = 1,3 or 7:= select the window according to the number number of windows
              in the current frame:
              - 2 windows in frame: open in *other* window
              - 1 window  in frame: split window sensibly and open in new
@@ -303,6 +304,7 @@ COLUMN   := integer | nil"
     -             8 := 'up
     - 4 := 'left  5 := 'current  6 := 'right
     -             2 := 'down
+  - For N=9 := open the file in the system's browser.
 - Explicitly selecting the minibuffer window, a dedicated window
   or a non-existing window is not allowed.  Instead the command creates
   a new window for the file.
@@ -310,7 +312,7 @@ COLUMN   := integer | nil"
 *File/URL selection at point:*
 If the string starts with `http:/' or `https:/' it is
 identified as a URL.  In that case a browser process is
-launched to open the URL.
+launched to open the URL.  If N is 9, open the file in a browser.
 Otherwise the string is used as a file name.
 - The file string can have line and column integer numbers
   using the following sections: {filename}{sep}{line}{sep}{column}
@@ -363,17 +365,24 @@ were specified."
   ;;   - if N is nil and a buffer holds the file, check if a window is currently
   ;;     displaying the buffer that holds the file.  If so, use that window.
   ;;     Otherwise, search for a window the normal way.
-  (let* ((fileparts (pel-filename-parts-at-point))
-        (file-kind (car fileparts)))
+  (let* ((use-browser (eq 9 (prefix-numeric-value n)))
+         (fileparts (pel-filename-parts-at-point use-browser))
+         (file-kind (car fileparts)))
     (cond ((eq file-kind 'http)
            (browse-url (cdr fileparts))
            (pel--show-edit-action "browse" (cdr fileparts)))
+
+          ;; It's a file, not a URL but forced to use a browser.
+          (use-browser
+           (browse-url (format "file:///%s" (expand-file-name (cadr fileparts))))
+           (pel--show-edit-action "browse" (cdr fileparts)))
+
           ;; nothing found
           ((not file-kind)
            (user-error "No valid filename/URL at point!"))
-          ;; some filename string found at point. The file name
-          ;; might be incomplete.  Complete it, prompting user if
-          ;; necessary.
+
+          ;; A filename string found at point. It might be incomplete.
+          ;; If incomplete: complete it, prompt user if necessary.
           ;; Then check if filename is currently opened in a buffer
           ;; and if that buffer is in a window already.
           ;; At this point:  fileparts := (kind filename line column)
@@ -419,10 +428,10 @@ were specified."
 ;; --
 
 ;;-pel-autoload
-(defun pel-show-filename-parts-at-point ()
+(defun pel-show-filename-parts-at-point (&optional keep-file-url)
   "Display file parts extracted from point.  Testing utility."
-  (interactive)
-  (message "%S" (pel-filename-parts-at-point)))
+  (interactive "P")
+  (message "%S" (pel-filename-parts-at-point keep-file-url)))
 
 ;; -----------------------------------------------------------------------------
 ;; Show filename at point

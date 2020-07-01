@@ -2782,7 +2782,11 @@ the ones defined from the buffer now."
 (define-key pel:file "o" #'find-file-other-window)
 (define-key pel:file "t" #'time-stamp)
 (define-key pel:file "w" #'write-region)
-(define-key pel:file "."  'pel-find-file-at-point-in-window)
+;; - Open file at point
+;; --------------------
+(define-key pel:file "."    'pel-open-at-point)
+(define-key pel:file "/"    'pel-browse-filename-at-point)
+(global-set-key (kbd "C-^") 'pel-open-at-point)
 
 (define-pel-global-prefix pel:file-revert (kbd "<f11> f r"))
 (define-key pel:file-revert "a" #'auto-revert-mode)
@@ -2791,10 +2795,8 @@ the ones defined from the buffer now."
 (define-key pel:file-revert "t" #'auto-revert-tail-mode)
 ;;
 
-;; - Open file at point
-;; --------------------
 
-(global-set-key (kbd "C-^") 'pel-open-at-point)
+
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> f a`` : Finf File At Point (ffap)

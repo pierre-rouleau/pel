@@ -452,6 +452,13 @@ typed quickly or slowly when recorded.)"
                          (insert "6y"))))
 
     (global    ""         key-chord
+               "6u"  (lambda ()
+                       (interactive)
+                       (if (require 'pel-open nil :noerror)
+                           (pel-browse-filename-at-point)
+                         (insert "6u"))))
+
+    (global    ""         key-chord
                ".;"  (lambda (&optional n)
                        (interactive "P")
                        (if (require 'pel-search nil :noerror)
