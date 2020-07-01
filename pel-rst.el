@@ -546,7 +546,7 @@ NO-ERROR is non-nil."
   (replace-regexp-in-string ":" "\\:" text nil :literal))
 
 (defun pel--space-for-extra-link-p ()
-  "Return t if there is spec for extra link, nil otherwise."
+  "Return t if there is space for an extra link, nil otherwise."
   (save-excursion
     (pel-rst-goto-ref-bookmark)
     (forward-line 1)
@@ -575,19 +575,16 @@ Reference: see reStructuredText hyperlink format at URL
 `https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html\
 #hyperlink-references'"
   (interactive "*P")
-  (condition-case nil
-      (let* ((p_begin (if (region-active-p)
-                          (region-beginning)
-                        (car (bounds-of-thing-at-point 'word))))
-             (p_end   (if (region-active-p)
-                          (region-end)
-                        (progn
-                          ;; if no region already exists,
-                          ;; set the mark to allow quick return
-                          (push-mark)
-                          ;; then return end of word as the end position
-                          (cdr (bounds-of-thing-at-point 'word)))))
-             (anchor (buffer-substring-no-properties p_begin p_end))
+  (let (p_begin p_end)
+    (if (region-active-p)
+        (progn
+          (setq p_begin (region-beginning))
+          (setq p_end   (region-end)))
+      (setq p_begin (car (bounds-of-thing-at-point 'word)))
+      (setq p_end   (cdr (bounds-of-thing-at-point 'word))))
+    (if (and (not p_begin) (not p_end))
+        (user-error "Please select an anchor word or a region!")
+      (let* ((anchor (buffer-substring-no-properties p_begin p_end))
              (anchor_isa_single_word (not (pel-whitespace-in-str-p anchor))))
         (deactivate-mark)
         (if arg
@@ -602,35 +599,35 @@ Reference: see reStructuredText hyperlink format at URL
           ;; Use the separate reference format.
           ;; For that, require the presence of the bookmark.
           (if (not (pel--rst-bookmark-exists-p))
-              (user-error "Please set location of hyperlink bookmark first!"))
-          (if (pel--space-for-extra-link-p)
-              (progn
-                (if anchor_isa_single_word
-                    (progn
-                      (goto-char p_end)
-                      (insert "_"))
-                  (goto-char p_begin)
-                  (insert "`")
-                  (goto-char p_end)
-                  (right-char 1)
-                  (insert "`_"))
-                ;; place references starting at the bookmark, one after the other,
-                ;; with first reference created at the top.  All references are
-                ;; placed after the bookmark so that the bookmark never moves,
-                ;; making it easier to undo editing without damaging the bookmark
-                ;; location.
-                ;; The bookmark must be set to an area in the buffer with 2 empty
-                ;; lines, with the bookmark at the beginning of the first one.
-                (pel-rst-goto-ref-bookmark)
-                (forward-line 1)
-                (if (not (eq (char-after) 10))
-                    (pel-goto-next-empty-line))
-                (insert (format ".. _%s: \n" (pel-rst-anchor-escaped anchor)))
-                (move-end-of-line 0))
-            (user-error "Bookmarked reference link area has no space for new entry!\
-  Move there with pel-rst-goto-ref-bookmark then add lines!"))))
-    (error (user-error "No text for hyperlink!"))))
-
+              (user-error "Please set location of hyperlink bookmark first \
+with pel-rst-set-ref-bookmark!")
+            (if (pel--space-for-extra-link-p)
+                (progn
+                  (if anchor_isa_single_word
+                      (progn
+                        (goto-char p_end)
+                        (insert "_"))
+                    (goto-char p_begin)
+                    (insert "`")
+                    (goto-char p_end)
+                    (right-char 1)
+                    (insert "`_"))
+                  ;; place references starting at the bookmark, one after the
+                  ;; other, with first reference created at the top.  All
+                  ;; references are placed after the bookmark so that the
+                  ;; bookmark never moves, making it easier to undo editing
+                  ;; without damaging the bookmark location.  The bookmark must
+                  ;; be set to an area in the buffer with 2 empty lines, with
+                  ;; the bookmark at the beginning of the first one.
+                  (pel-rst-goto-ref-bookmark)
+                  (forward-line 1)
+                  (if (not (eq (char-after) 10))
+                      (pel-goto-next-empty-line))
+                  (insert (format ".. _%s: \n" (pel-rst-anchor-escaped anchor)))
+                  (move-end-of-line 0))
+              (user-error "Bookmarked reference link area has no \
+space for new entry!
+Move there with pel-rst-goto-ref-bookmark then add lines!"))))))))
 
 ;; -----------------------------------------------------------------------------
 ;; Emphasis markup support
