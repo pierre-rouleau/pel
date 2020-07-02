@@ -443,7 +443,10 @@ were specified."
 Spaces inside the filename are accepted *only* when point
 is located before a double quote to the left of the filename.
 Spaces between the quote and the first character and
-last character or the filename are accepted but removed."
+last character or the filename are accepted but removed.
+When executed from with a buffer in sh-mode, the shell variables
+found in the string are expanded and the delimiters include the
+'=' and ':' characters.  This helps extracting file names in shell scripts."
   (if (use-region-p)
       (buffer-substring-no-properties (region-beginning) (region-end))
     (save-excursion
@@ -453,7 +456,11 @@ last character or the filename are accepted but removed."
         ;; and equal sign used in various statements.
         (when (eq major-mode 'sh-mode)
           (setq delimiters (concat "=:" delimiters)))
-        (string-trim (pel-string-at-point delimiters))))))
+        (let ((fname (string-trim (pel-string-at-point delimiters))))
+          (when (eq major-mode 'sh-mode)
+            (require 'env nil :noerror)
+            (setq fname (substitute-env-vars fname)))
+          fname)))))
 
 ;;-pel-autoload
 (defun pel-show-filename-at-point ()
