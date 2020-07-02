@@ -449,6 +449,10 @@ last character or the filename are accepted but removed."
     (save-excursion
       (let ((delimiters
              "\t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。"))
+        ;; In shell modes, allow delimiting the filenames by path separators
+        ;; and equal sign used in various statements.
+        (when (eq major-mode 'sh-mode)
+          (setq delimiters (concat "=:" delimiters)))
         (string-trim (pel-string-at-point delimiters))))))
 
 ;;-pel-autoload
