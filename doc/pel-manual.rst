@@ -1285,22 +1285,40 @@ and will activate it.
 PEL Grep Support
 ----------------
 
-:PDF Docs: `Grep`_.
-:PEL Customization: ``pel-use-ripgrep``
+:PDF Docs: `Grep`_, `Projectile Project Interaction Manager`_.
+:PEL Customization: - ``pel-use-ripgrep``
+                    - ``pel-use-ag``
+                    - ``pel-use-projectile``
+
 :PEL Key Prefix: **pel:grep** : ``<f11> g``
 
 PEL provides the **pel:grep** (``<f11> g``) key map to regroup grep commands.
 If the ``pel-use-ripgrep`` user option is **t** that includes access to
 the ``rg`` command that uses the fast ripgrep_ executable.
 
+When ``pel-use-projectile`` is set to **t**, the `ripgrep.el`_ package is also
+used because `projectile`_ uses `ripgrep.el`_ instead of the `rg`_ package.
+Both provide access to the ripgrep_ executable.
+
+When ``pel-use-ag`` is set to **t**, the `ag`_ (`ag, the silver searcher`_)  is also
+available.  This is another fast grep alternative that requires the ag command
+line.
+
+You must install the ripgrep and ag command line utilities separately.
+
+
 .. _ripgrep: https://github.com/BurntSushi/ripgrep
+.. _ag, the silver searcher: https://github.com/ggreer/the_silver_searcher
 
 
 PEL Help Support
 ----------------
 
 :PDF Docs: `Help`_
-:PEL Customization: ``pel-use-ascii-table``, ``pel-use-free-keys``, ``pel-use-which-key``.
+:PEL Customization: - ``pel-use-ascii-table``
+                    - ``pel-use-free-keys``
+                    - ``pel-use-which-key``
+
 :PEL Key Prefix: - **pel:help** : ``<f11> ?``
 
                    - **pel:apropos** : ``<f11> ? a``
@@ -2118,6 +2136,30 @@ function: ``pel-y-n-e-or-l-p`` which prompts and accepts various types of
 responses.  It is used by the ``pel-find-file-at-point-in-window`` command.
 It's a rather specialized prompting utility with a rather strange name...
 
+PEL Project Management Utilities
+--------------------------------
+
+:PDF Docs: `Projectile Project Interaction Manager`_.
+:PEL Customization: ``pel-use-projectile``
+:PEL Key Prefix: **projectile-command-map** : ``<f8>``
+
+PEL supports the `projectile`_ external package when the ``pel-use-projectile``
+user option is set to either **t** or **use-from-start**.  If you set it to
+**t** it makes it available but does not activate it when Emacs starts.  If you
+set it to **use-from-start** it activates it when Emacs starts.
+
+PEL uses the ``<f8>`` key as the projectile prefix and adds some key bindings
+into it.
+You can toggle the activation of this prefix key via the ``<f11> <f8>`` key sequence.
+
+The use of projectile activates more grep facilities, as described in the
+`PEL Grep Support`_ section.
+
+More information is available inside the `Projectile Project Interaction
+Manager`_ PDF documentation.
+
+
+
 PEL Rectangle Support
 ---------------------
 
@@ -2913,6 +2955,7 @@ PDF Document Tables
 #. `Navigation`_
 #. `Number Keypad`_
 #. `Packages`_
+#. `Projectile Project Interaction Manager`_
 #. `Rectangles`_
 #. `Registers`_
 #. `Scrolling`_
@@ -3019,6 +3062,7 @@ PDF Document Tables
 .. _Navigation:                               pdf/navigation.pdf
 .. _Number Keypad:                            pdf/numkeypad.pdf
 .. _Packages:                                 pdf/packages.pdf
+.. _Projectile Project Interaction Manager:   pdf/projectile.pdf
 .. _Apple-Script:                             pdf/pl-applescript.pdf
 ..  C++
 ..  C
@@ -4055,6 +4099,7 @@ following table when the corresponding PEL user option is set to **t**:
 ============================= ==========================
 Package Name & Archive link   Archive Site
 ============================= ==========================
+`ag`_                         MELPA_
 alchemist_                    MELPA_
 `ascii-table`_                MELPA_
 `ace-window`_                 MELPA_
@@ -4088,6 +4133,7 @@ highlight-defined_            MELPA_
 hydra_                        MELPA_
 ivy_                          MELPA_
 julia-snail_                  MELPA_
+keycast_                      MELPA_
 key-chord_                    MELPA_
 key-seq_                      MELPA_
 lfe-mode_                     MELPA_
@@ -4102,9 +4148,11 @@ parinfer_                     MELPA_
 pcre2el_                      MELPA_
 popup_                        MELPA-STABLE_
 popup-kill-ring_              MELPA_
+projectile_                   MELPA_
 racer_                        MELPA_
 rainbow-delimiters_           MELPA_
 regex-tool_                   MELPA_
+`ripgrep.el`_                 MELPA_
 `rg`_                         MELPA_
 rust-mode_                    MELPA_
 slime_                        MELPA_
@@ -4138,10 +4186,12 @@ Hopefully you will find PEL useful for using these packages.
 
 .. References
 
-.. _alchemist:                 https://melpa.org/#/alchemist
-.. _ascii-table:               https://melpa.org/#/ascii-table
+
 .. _ace-window:
 .. _ace-window package:        https://melpa.org/#/ace-window
+.. _ag:                        https://melpa.org/#/ag
+.. _alchemist:                 https://melpa.org/#/alchemist
+.. _ascii-table:               https://melpa.org/#/ascii-table
 .. _apples-mode:               https://melpa.org/#/apples-mode
 .. _anzu:                      https://melpa.org/#/anzu
 .. _auto-complete:
@@ -4177,6 +4227,7 @@ Hopefully you will find PEL useful for using these packages.
 .. _hydra:                     https://melpa.org/#/hydra
 .. _ivy:                       https://melpa.org/#/ivy
 .. _julia-snail:               https://melpa.org/#/julia-snail
+.. _keycast:                   https://melpa.org/#/keycast
 .. _key-chord:                 https://melpa.org/#/key-chord
 .. _key-seq:                   https://melpa.org/#/key-seq
 .. _lfe-mode:                  https://melpa.org/#/lfe-mode
@@ -4190,10 +4241,12 @@ Hopefully you will find PEL useful for using these packages.
 .. _pcre2el:                   https://melpa.org/#/pcre2el
 .. _popup:                     https://stable.melpa.org/#/popup
 .. _popup-kill-ring:           https://melpa.org/#/popup-kill-ring
+.. _projectile:                https://melpa.org/#/projectile
 .. _racer:                     https://melpa.org/#/racer
 .. _rainbow-delimiters:        https://melpa.org/#/rainbow-delimiters
 .. _regex-tool:                https://melpa.org/#/regex-tool
 .. _rg:                        https://melpa.org/#/rg
+.. _ripgrep.el:                https://melpa.org/#/ripgrep
 .. _rust-mode:                 https://melpa.org/#/rust-mode
 .. _slime:                     https://melpa.org/#/slime
 .. _slime package:             https://melpa.org/#/slime

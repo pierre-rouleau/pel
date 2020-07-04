@@ -23,6 +23,7 @@
   '((emacs "26.1")
     (use-package         "20191126.2034") ; melpa  Melpa-stable: 2.4
     (ace-window          "20200304.1344") ; melpa  Melpa-stable: 0.9.0
+    (ag                  "20190726.9")    ; melpa
     (alchemist           "20180312.1304")
     (anzu                "20200514.1801") ; melpa
     (apples-mode         "20110121.418")
@@ -53,6 +54,9 @@
     (hydra               "20200306.913")
     (ivy                 "20200520.1809") ; melpa.
     (julia-snail         "20200420.221")
+    (keycast             "20200612.2247") ; melpa
+    (key-seq             "20150907.756")  ; melpa
+    (key-chord           "20160227.1238") ; melpa
     (lfe-mode            "20170121.1254")
     (lice                "20191011.631")  ; melpa. Melpa-stable: 0.2
     (macrostep           "20161120.2106") ; melpa. Melpa-stable: 0.9
@@ -65,9 +69,11 @@
     (pcre2el             "20161120.2103") ; melpa
     (popup               "0.5.3")         ; melpa-stable. Melpa: 20160709.1429
     (popup-kill-ring     "20131020.1854") ; melpa. Melpa-stable: N/A
+    (projectile          "20200616.1659") ; melpa.
     (racer               "20191001.2344") ; melpa. Melpa-stable: 1.2
     (rainbow-delimiters  "20191018.1233") ; melpa. Melpa-stable: 2.1.4
     (regex-tool          "20170104.1918") ; melpa
+    (ripgrep             "20190215.841")  ; melpa
     (rg                  "20200307.1623") ; melpa. Melpa-stable: 1.8.1
     (rust-mode           "20200303.932")  ; melpa. Melpa-stable: 0.4.0
     (slime               "20200228.1656") ; melpa. Melpa-stable: 2.24
