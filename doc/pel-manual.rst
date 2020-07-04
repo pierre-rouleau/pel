@@ -4,8 +4,8 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-07-04 12:44:18, updated by Pierre Rouleau>
-
+:Last Modified Time-stamp: <2020-07-04 12:48:18, updated by Pierre Rouleau>
+:License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
 
