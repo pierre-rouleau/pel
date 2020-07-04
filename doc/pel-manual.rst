@@ -2,7 +2,9 @@
 PEL -- Pragmatic Environment Library for Emacs
 ==============================================
 
-This manual is for PEL version 0.1.1.
+:URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
+:Project:  `PEL Project home page`_
+:Last Modified Time-stamp: <2020-07-04 12:44:18, updated by Pierre Rouleau>
 
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -15,6 +17,10 @@ This manual is for PEL version 0.1.1.
     This document is distributed in the hope that it will be useful, but WITHOUT ANY
     WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
     PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+
+
+.. _PEL Project home page:  https://github.com/pierre-rouleau/pel
 
 
 .. contents::  **Table Of Contents**
