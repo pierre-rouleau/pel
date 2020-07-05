@@ -19,8 +19,12 @@ other/*
 .#*
 *#
 
+# Emacs desktop file
+.emacs.desktop
+
 # (C)Tags files
 TAGS
+TAGS.*
 
 # Undo-tree save-files
 *.~undo-tree
