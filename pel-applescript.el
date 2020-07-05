@@ -103,7 +103,7 @@ Return t if the text was said, nil otherwise."
                         comment-end
                         comment-continue) text)
     (when string
-      (setq text (replace-regexp-in-string string "" text))))
+      (setq text (replace-regexp-in-string (regexp-quote string) "" text))))
   ;; Filter using requested translations.
   (when translations
     (dolist (rule translations text)
