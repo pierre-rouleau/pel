@@ -46,6 +46,8 @@
     (esup                "20200130.2034") ; melpa. Melpa-stable: 0.7.1
     (expand-region       "20200304.1839") ; melpa. Melpa-stable: 0.11.0
     (exunit              "20190919.1238")
+    (flycheck            "20200516.1719") ; melpa
+    (flycheck-plantuml   "20171018.111")  ; melpa
     (free-keys           "20160726.2050") ; melpa. Melpa-stable: 1.0.0
     (goto-last-change    "20150109.1823") ; melpa. Melpa-stable: 1.2.1
     (graphviz-dot-mode   "20200304.432")  ; melpa. Melpa-stable: 0.4.2
@@ -67,6 +69,7 @@
     (nhexl-mode          "1.4")           ; gnu
     (parinfer            "20180904.844")  ; melpa. Melpa-stable: 0.4.10
     (pcre2el             "20161120.2103") ; melpa
+    (plantuml-mode       "20191102.2056") ; melpa
     (popup               "0.5.3")         ; melpa-stable. Melpa: 20160709.1429
     (popup-kill-ring     "20131020.1854") ; melpa. Melpa-stable: N/A
     (projectile          "20200616.1659") ; melpa.

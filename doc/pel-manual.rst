@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-07-04 12:48:18, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-07-05 23:13:55, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1072,9 +1072,11 @@ PEL provides key bindings to Emacs diff end ediff commands.
 PEL Drawing Support
 -------------------
 
-:PDF Docs: `Drawing`_.
-:PEL Customization: *none*
-:PEL Key Prefix: **pel:draw** : ``<f11> D``
+:PDF Docs: `Drawing`_, `PlantUML-Mode`_.
+:PEL Customization: - ``pel-use-plantuml``,
+                    - ``pel-use-flycheck-plantuml``.
+:PEL Key Prefix: - **pel:draw** : ``<f11> D``
+                 - **pel:plantuml**: ``<f11> D u``
 
 PEL provides key bindings to enter the Emacs text drawing modes:
 
@@ -1084,6 +1086,25 @@ PEL provides key bindings to enter the Emacs text drawing modes:
 ☝️  The picture-mode can be quite useful to edit tabular data as well as editing
 tables for markup languages like reStructuredText or even for lining text
 vertically in any other type of file; for example lining up text vertically.
+
+Drawing with PlantUML
+~~~~~~~~~~~~~~~~~~~~~
+
+If you need to draw UML diagram, you can use the plantuml-mode to write the
+diagram in PLantUML syntax and then generate the diagram.  If Emacs is running
+in graphics mode, the preview shown is an image. If Emacs is running in text
+mode the preview is a text-based drawing that can easily be inserted inside a
+source code file.  PEL defines the **pel:plantuml** key prefix (``<f11> D u``)
+for the PlantUML-mode commands.  See the `PlantUML-Mode`_ PDF document for more
+information.
+
+PEL activates support for PlantUML with the plantuml-mode when the
+``pel-use-plantuml`` user options is either set to **t** or to **server**.
+When set to **t** you use a local instance of the PlantUML Java application.
+You need to install PlantUML.  If set to **server** Emacs communicates with a
+remote PlantUML server to crete the image.  Your data is sent to that external
+server, so make sure you set this to what you need and do not sent proprietary
+information across the Internet by mistake!
 
 
 PEL Enriched Text Support
@@ -2961,6 +2982,7 @@ PDF Document Tables
 #. `Navigation`_
 #. `Number Keypad`_
 #. `Packages`_
+#. `PlantUML-Mode`_
 #. `Projectile Project Interaction Manager`_
 #. `Rectangles`_
 #. `Registers`_
@@ -3067,6 +3089,7 @@ PDF Document Tables
 .. _Narrowing:                                pdf/narrowing.pdf
 .. _Navigation:                               pdf/navigation.pdf
 .. _Number Keypad:                            pdf/numkeypad.pdf
+.. _PlantUML-Mode:                            pdf/plantuml.pdf
 .. _Packages:                                 pdf/packages.pdf
 .. _Projectile Project Interaction Manager:   pdf/projectile.pdf
 .. _Apple-Script:                             pdf/pl-applescript.pdf
@@ -4128,6 +4151,8 @@ elpy_                         MELPA_
 erlang_                       MELPA_
 esup_                         MELPA_
 expand-region_                MELPA_
+flycheck_                     MELPA_
+flycheck-plantuml_            MELPA_
 exunit_                       MELPA_
 framemove_                    Emacsmirror_
 free-keys_                    MELPA_
@@ -4152,6 +4177,7 @@ neotree_                      MELPA_
 nhexl-mode_                   ELPA_
 parinfer_                     MELPA_
 pcre2el_                      MELPA_
+plantuml-mode_                MELPA_
 popup_                        MELPA-STABLE_
 popup-kill-ring_              MELPA_
 projectile_                   MELPA_
@@ -4225,6 +4251,8 @@ Hopefully you will find PEL useful for using these packages.
 .. _esup:                      https://melpa.org/#/esup
 .. _exunit:                    https://melpa.org/#/exunit
 .. _expand-region:             https://melpa.org/#/expand-region
+.. _flycheck:                  https://melpa.org/#/flycheck
+.. _flycheck-plantuml:         https://melpa.org/#/flycheck-plantuml
 .. _free-keys:                 https://melpa.org/#/free-keys
 .. _goto-last-change:          https://melpa.org/#/goto-last-change
 .. _graphviz-dot-mode:         https://melpa.org/#/graphviz-dot-mode
@@ -4245,6 +4273,7 @@ Hopefully you will find PEL useful for using these packages.
 .. _package-lint:              https://melpa.org/#/package-lint
 .. _parinfer:                  https://melpa.org/#/parinfer
 .. _pcre2el:                   https://melpa.org/#/pcre2el
+.. _plantuml-mode:             https://melpa.org/#/plantuml-mode
 .. _popup:                     https://stable.melpa.org/#/popup
 .. _popup-kill-ring:           https://melpa.org/#/popup-kill-ring
 .. _projectile:                https://melpa.org/#/projectile

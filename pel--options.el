@@ -38,6 +38,7 @@
 ;;   - pel-text-insert
 ;;   - pel-package-use
 ;;     - pel-pkg-for-cursor
+;;     - pel-pkg-for-draw
 ;;     - pel-pkg-for-dired
 ;;     - pel-pkg-for-filemng
 ;;       - pel-pkg-for-ztree
@@ -200,6 +201,43 @@ See URL `https://github.com/magnars/multiple-cursors.el'."
   :type 'boolean
   :safe #'booleanp)
 
+
+;; -----------------------------------------------------------------------------
+;; pel-pkg-for-draw
+;; ----------------
+(defgroup pel-pkg-for-draw nil
+  "List of packages activated to support drawing and diagramming to use wiyth PEL."
+  :group 'pel-package-use)
+
+(defcustom pel-use-plantuml nil
+  "Control whether PEL activates support for PlantUML to draw UML diagrams.
+This uses the `plantuml-mode' package.
+See URL https://github.com/skuro/plantuml-mode.
+
+The `plantuml-mode' can be used locally, using a local PlantUML
+Java application (plantuml.jar).  You can also use PlantUML web
+server and if you do not mind sending your information across the
+internet.
+
+To use PlantUML locally you must have Java installed on your
+system and have the PlantUML Java application installed and
+its plantuml.jar file must be accessible.
+
+See URL https://plantuml.com
+Also see general info at URL https://en.wikipedia.org/wiki/PlantUML"
+  :group 'pel-pkg-for-draw
+  :type '(choice
+          (const :tag "Not used" nil)
+          (const :tag "Use local plantuml.jar application" t)
+          (const :tag "Use the remote PlantUML server" server)))
+
+(defcustom pel-use-flycheck-plantuml nil
+  "Control the flycheck-plantuml PlantUML checker package is used with PEL.
+See info at URL https://github.com/alexmurray/flycheck-plantuml"
+  :group 'pel-pkg-for-draw
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; -----------------------------------------------------------------------------
 ;; pel-pkg-for-dired
 ;; -----------------
@@ -208,7 +246,7 @@ See URL `https://github.com/magnars/multiple-cursors.el'."
     :group 'pel-package-use)
 
 (defcustom pel-use-dired-x nil
-  "Control whether PEL activates the Dired-X features in dired-mode."
+  "Control whether PEL activates the Dired-X features in `dired-mode'."
   :group 'pel-pkg-for-dired
   :type 'boolean
   :safe #'booleanp)
@@ -224,7 +262,7 @@ See URL `https://github.com/magnars/multiple-cursors.el'."
   "Control whether PEL activates ffap bindings.
 3 available choices:
 - 1:  nil :=  ffap is not used.
-- 2:  t   :=  use pel:fap bindings, keeping default Emacs bindings for
+- 2:  t   :=  use pel:ffap bindings, keeping default Emacs bindings for
               C-x C-f and other intact.
 - 3:  ffap-bindings := Use the bindings documented by ffap.el by executing
       (ffap-bindings).  This replaces the bindings several file finding
@@ -298,7 +336,7 @@ Ripgrep is a very fast grep utility, and two packages support ripgrep:
 - the rg package,
 - the ripgrep package.
 
-Setting pel-use-ripgrep to t indicates that you want to use ripgrep, so
+Setting `pel-use-ripgrep' to t indicates that you want to use ripgrep, so
 it identifies the installation of the `rg` package.  If you also set
 `pel-use-projectile' to non-nil, then the installation of the `ripgrep`
 package is also required becuase `projectile` uses the `ripgrep` package,
@@ -326,10 +364,9 @@ pressed simultaneously or a single key quicly pressed twice.
 See URL https://github.com/emacsorphanage/key-chord/blob/master/key-chord.el
 This can be set to:
 - 0: nil: Do not use.  key-chord is not required nor loaded.
-- 1: t: Use, activate by command. key-chord loaded when the key-chord-mode
-        command is executed.  Not before.
-- 2: use-from-start:  Use, load and activate  1 second after Emacs starts.
-"
+- 1: t: Use, activate by command.  key-chord loaded when the function
+        `key-chord-mode' is executed.  Not before.
+- 2: use-from-start:  Use, load and activate  1 second after Emacs starts."
   :group 'pel-pkg-for-key-chord
   :type '(choice
           (const :tag "Do not use" nil)
@@ -599,7 +636,7 @@ The possible choices are:
 - 'pel-vr/custom     : visual-regexp-steroids custom
 
 The first choice is the default.  The other choices
-can be made only if pel-use-visual-regexp is t (for the second)
+can be made only if `pel-use-visual-regexp' is t (for the second)
 or pel-use-regexp-steroids is t (for the others)."
   :group 'pel-pkg-for-regexp
   :type '(choice
@@ -612,7 +649,7 @@ or pel-use-regexp-steroids is t (for the others)."
           (const :tag "Use visual-regexp-steroids custom.     " vr/custom)))
 
 (defcustom pel-use-regex-tool nil
-  "Control whether PEL uses the external regex-tool library.
+  "Control whether PEL uses the external `regex-tool' library.
 See URL `https://github.com/jwiegley/regex-tool'."
   :group 'pel-pkg-for-regexp
   :type 'boolean
@@ -900,10 +937,10 @@ and ACTIVATE desktop-save-mode" with-desktop-registry-automatic)
   :type 'boolean
   :safe #'booleanp)
 
-(defconst pel-USE-IDO     1 "Bitmask identifying Ido.     DON'T CHANGE!")
-(defconst pel-USE-IVY     2 "Bitmask identifying Ivy.     DON'T CHANGE!")
-(defconst pel-USE-COUNSEL 4 "Bitmask identifying Counsel. DON'T CHANGE!")
-(defconst pel-USE-HELM    8 "Bitmask identifying Helm.    DON'T CHANGE!")
+(defconst pel-USE-IDO     1 "Bitmask identifying Ido.      DON'T CHANGE!")
+(defconst pel-USE-IVY     2 "Bitmask identifying Ivy.      DON'T CHANGE!")
+(defconst pel-USE-COUNSEL 4 "Bitmask identifying Counsel.  DON'T CHANGE!")
+(defconst pel-USE-HELM    8 "Bitmask identifying Helm.     DON'T CHANGE!")
 
 (defcustom pel-initial-completion-mode nil
   "Select the main text completion mode used when Emacs starts.
@@ -912,22 +949,23 @@ PEL supports several completion engines.
 This option selects which engine used when Emacs starts.
 The available options are:
 - nil           : Use Emacs default.
-- `helm'        : Use Helm, when pel-use-helm is t.
-- `ido'         : Use Ido, when pel-use-ido is t.
-- `ido/helm'    : Use Ido with Helm, if both pel-use-ido and pel-use-help are t.
-- `ivy'         : Use Ivy, when pel-use-ivy is t.
-- `ivy/counsel' : Use Ivy with Counsel, when pel-use-ivy and pel-use-counsel are
-                  both t."
+- `helm'        : Use Helm, when `pel-use-helm' is t.
+- `ido'         : Use Ido, when `pel-use-ido' is t.
+- `ido/helm'    : Use Ido with Helm, if both `pel-use-ido' and `pel-use-help'
+                  are t.
+- `ivy'         : Use Ivy, when `pel-use-ivy' is t.
+- `ivy/counsel' : Use Ivy with Counsel, when `pel-use-ivy' and `pel-use-counsel'
+                  are both t."
   :group 'pel-pkg-for-completion
   :type '(choice
           (const :tag "Use Emacs default" emacs-default)
-          (const :tag "Use Helm. Requires pel-use-helm." helm)
-          (const :tag "Use Ido.  Requires pel-use-ido." ido)
-          (const :tag "Use Ido with Helm. Requires pel-use-ido & pel-use-helm."
+          (const :tag "Use Helm. Requires `pel-use-helm'." helm)
+          (const :tag "Use Ido.  Requires `pel-use-ido'." ido)
+          (const :tag "Use Ido with Helm. Needs `pel-use-ido' & `pel-use-helm'"
                  ido/helm)
           (const :tag "Use Ivy. Requires pel-use-ivy." ivy)
-          (const :tag "Use Ivy & Counsel. Requires both pel-use-ivy and \
-pel-use-counsel." ivy/counsel)))
+          (const :tag "Use Ivy & Counsel. Needs both `pel-use-ivy' and \
+`pel-use-counsel'." ivy/counsel)))
 
 ;; -----------------------------------------------------------------------------
 ;; Text Insertion / Templates

@@ -2750,6 +2750,47 @@ the ones defined from the buffer now."
 (define-key pel:draw "a"  'artist-mode)       ; toggle artist-mode
 (define-key pel:draw "p"  'picture-mode)      ; activate picture-mode
 
+(when pel-use-plantuml
+  (use-package plantuml-mode
+    :ensure t
+    :pin melpa
+    :commands (plantuml-mode
+               plantuml-download-jar
+               plantuml-set-exec-mode
+               plantuml-enable-debug
+               plantuml-disable-debug
+               plantuml-set-output-type
+               plantuml-preview-buffer
+               plantuml-preview-region
+               plantuml-preview-current-block
+               plantuml-preview
+               plantuml-complete-symbol
+               plantuml-indent-line)
+    :init
+    (define-pel-global-prefix pel:plantuml (kbd "<f11> D u"))
+    (define-key pel:plantuml "u"         'plantuml-mode)
+    (define-key pel:plantuml (kbd "M-d") 'plantuml-download-jar)
+    (define-key pel:plantuml (kbd "M-x") 'plantuml-set-exec-mode)
+    (define-key pel:plantuml "d"         'plantuml-enable-debug)
+    (define-key pel:plantuml "D"         'plantuml-disable-debug)
+    (define-key pel:plantuml "o"         'plantuml-set-output-type)
+    (define-key pel:plantuml "b"         'plantuml-preview-buffer)
+    (define-key pel:plantuml "r"         'plantuml-preview-region)
+    (define-key pel:plantuml "c"         'plantuml-preview-current-block)
+    (define-key pel:plantuml "p"         'plantuml-preview)
+    (define-key pel:plantuml "s"         'plantuml-complete-symbol)
+    (define-key pel:plantuml (kbd "TAB") 'plantuml-indent-line))
+
+  (when pel-use-flycheck-plantuml
+    (use-package flycheck-plantuml
+      :ensure t
+      :pin melpa
+      :defer 1
+      :config
+      (with-eval-after-load 'flycheck
+        (require 'flycheck-plantuml)
+        (flycheck-plantuml-setup)))))
+
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> f`` : File operations
 
