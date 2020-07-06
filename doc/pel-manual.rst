@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-07-05 23:13:55, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-07-05 23:40:11, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4177,7 +4177,7 @@ neotree_                      MELPA_
 nhexl-mode_                   ELPA_
 parinfer_                     MELPA_
 pcre2el_                      MELPA_
-plantuml-mode_                MELPA_
+`plantuml-mode.el`_           MELPA_
 popup_                        MELPA-STABLE_
 popup-kill-ring_              MELPA_
 projectile_                   MELPA_
@@ -4273,7 +4273,7 @@ Hopefully you will find PEL useful for using these packages.
 .. _package-lint:              https://melpa.org/#/package-lint
 .. _parinfer:                  https://melpa.org/#/parinfer
 .. _pcre2el:                   https://melpa.org/#/pcre2el
-.. _plantuml-mode:             https://melpa.org/#/plantuml-mode
+.. _plantuml-mode.el:          https://melpa.org/#/plantuml-mode
 .. _popup:                     https://stable.melpa.org/#/popup
 .. _popup-kill-ring:           https://melpa.org/#/popup-kill-ring
 .. _projectile:                https://melpa.org/#/projectile
