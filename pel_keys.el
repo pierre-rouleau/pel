@@ -335,6 +335,7 @@ For example, applied to a directory name, macOS Finder is used."
     (define-key pel:for-dired-narrow "r" #'dired-narrow-regexp)
     (define-key pel:for-dired-narrow "f" #'dired-narrow-fuzzy)
     ;;
+    ;; activate the <f12> key binding for dired-narrow-mode
     (pel--mode-hook-maybe-call
      '(lambda ()
         (pel-local-set-f12 'pel:for-dired-narrow))
@@ -1431,6 +1432,7 @@ display in other window."
     (define-pel-global-prefix pel:for-applescript (kbd "<f11> SPC a"))
     (define-key pel:for-applescript "s" 'apples-open-scratch)
     ;;
+    ;; activate the <f12> key binding for apples-mode
     (pel--mode-hook-maybe-call
      '(lambda ()
         (pel-local-set-f12 'pel:for-applescript))
@@ -1596,6 +1598,8 @@ MODE must be a symbol."
 (define-key               pel:for-c         (kbd "<f1>") 'pel-cfg-pkg-c)
 (pel--map-cc-for pel:for-c pel:for-c-preproc)
 
+;;
+;; activate the <f12> key binding for c-mode
 (pel--mode-hook-maybe-call
  '(lambda ()
     (pel--setenv-for-c)
@@ -1628,6 +1632,8 @@ MODE must be a symbol."
 (define-key               pel:for-c++         (kbd "<f1>") 'pel-cfg-pkg-c++)
 (pel--map-cc-for pel:for-c++ pel:for-c++-preproc)
 
+;;
+;; activate the <f12> key binding for c++-mode
 (pel--mode-hook-maybe-call
  '(lambda ()
     (pel--setenv-for-c++)
@@ -1662,8 +1668,8 @@ This is meant to be used in the d-mode hook lambda."
     ;; When opening a D source code file, load the d-mode feature.
     :init
     (add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
-
-    ;; Activate the F12 mode sensitive keymap for D while editing a D file.
+    ;;
+    ;; activate the <f12> key binding for d-mode
     (pel--mode-hook-maybe-call
      '(lambda ()
         (pel--setenv-for-d)
@@ -1864,6 +1870,7 @@ This is meant to be used in the d-mode hook lambda."
     (define-pel-global-prefix pel:for-julia (kbd "<f11> SPC j"))
     (define-key               pel:for-julia (kbd "<f1>") 'pel-cfg-pkg-julia)
     ;;
+    ;; activate the <f12> key binding for julia-mode
     (pel--mode-hook-maybe-call
      '(lambda ()
         (pel-local-set-f12 'pel:for-julia))
@@ -1979,7 +1986,8 @@ This is meant to be used in the d-mode hook lambda."
     :init
     (define-key pel:for-elisp  (kbd "M-d") 'highlight-defined-mode)))
 
-;; Schedule the context sensitive menu
+;;
+;; activate the <f12> key binding for elisp-mode
 (pel--mode-hook-maybe-call
  '(lambda ()
     (pel-local-set-f12-M-f12 'pel:for-elisp)
@@ -2001,6 +2009,7 @@ This is meant to be used in the d-mode hook lambda."
   (define-key pel:for-lisp      ")"     #'check-parens)
   (define-key pel:for-lisp (kbd "M-p")  #'superword-mode)
   ;;
+  ;; activate the <f12> key binding for lisp-mode
   (pel--mode-hook-maybe-call
    '(lambda ()
       (pel-local-set-f12-M-f12 'pel:for-lisp))
@@ -2016,6 +2025,7 @@ This is meant to be used in the d-mode hook lambda."
   (when pel-use-rainbow-delimiters
     (define-key pel:for-python  "R"       'rainbow-delimiters-mode))
   ;;
+  ;; activate the <f12> key binding for python-mode
   (pel--mode-hook-maybe-call
    '(lambda ()
       (pel-local-set-f12 'pel:for-python))
@@ -2065,6 +2075,7 @@ This is meant to be used in the d-mode hook lambda."
   (define-key pel:rst-adorn-style "S" 'pel-rst-adorn-Sphinx-Python)
   (define-key pel:rst-adorn-style "C" 'pel-rst-adorn-CRiSPer)
   ;;
+  ;; activate the <f12> key binding for rst-mode
   (pel--mode-hook-maybe-call
    '(lambda ()
       (pel-local-set-f12 'pel:for-reST))
@@ -2082,10 +2093,32 @@ This is meant to be used in the d-mode hook lambda."
   (define-pel-global-prefix pel:for-graphviz-dot (kbd "<f11> SPC g"))
   (define-key pel:for-graphviz-dot "c" 'compile)
   ;;
+  ;; activate the <f12> key binding for graphviz-dot-mode
   (pel--mode-hook-maybe-call
    '(lambda ()
       (pel-local-set-f12 'pel:for-graphviz-dot))
    'graphviz-dot-mode 'graphviz-dot-mode-hook))
+
+;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : PlantUML
+(when pel-use-plantuml
+  (define-pel-global-prefix pel:for-plantuml (kbd "<f11> SPC u"))
+  (define-key pel:for-plantuml (kbd "<f1>") 'pel-cfg-pkg-plantuml)
+  (define-key pel:for-plantuml (kbd "M-d")  'plantuml-enable-debug)
+  (define-key pel:for-plantuml (kbd "M-D")  'plantuml-disable-debug)
+  (define-key pel:for-plantuml "o"          'plantuml-set-output-type)
+  (define-key pel:for-plantuml "b"          'plantuml-preview-buffer)
+  (define-key pel:for-plantuml "r"          'plantuml-preview-region)
+  (define-key pel:for-plantuml "c"          'plantuml-preview-current-block)
+  (define-key pel:for-plantuml "p"          'plantuml-preview)
+  (define-key pel:for-plantuml "/"          'plantuml-complete-symbol)
+  (define-key pel:for-plantuml (kbd "TAB")  'plantuml-indent-line)
+  ;;
+  ;; activate the <f12> key binding for plantuml-mode
+  (pel--mode-hook-maybe-call
+   '(lambda ()
+      (pel-local-set-f12 'pel:for-plantuml))
+   'plantuml-mode 'plantuml-mode-hook))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> =`` : Copy commands
@@ -2757,30 +2790,12 @@ the ones defined from the buffer now."
     :pin melpa
     :commands (plantuml-mode
                plantuml-download-jar
-               plantuml-set-exec-mode
-               plantuml-enable-debug
-               plantuml-disable-debug
-               plantuml-set-output-type
-               plantuml-preview-buffer
-               plantuml-preview-region
-               plantuml-preview-current-block
-               plantuml-preview
-               plantuml-complete-symbol
-               plantuml-indent-line)
+               plantuml-set-exec-mode)
     :init
     (define-pel-global-prefix pel:plantuml (kbd "<f11> D u"))
     (define-key pel:plantuml "u"         'plantuml-mode)
     (define-key pel:plantuml (kbd "M-d") 'plantuml-download-jar)
-    (define-key pel:plantuml (kbd "M-x") 'plantuml-set-exec-mode)
-    (define-key pel:plantuml "d"         'plantuml-enable-debug)
-    (define-key pel:plantuml "D"         'plantuml-disable-debug)
-    (define-key pel:plantuml "o"         'plantuml-set-output-type)
-    (define-key pel:plantuml "b"         'plantuml-preview-buffer)
-    (define-key pel:plantuml "r"         'plantuml-preview-region)
-    (define-key pel:plantuml "c"         'plantuml-preview-current-block)
-    (define-key pel:plantuml "p"         'plantuml-preview)
-    (define-key pel:plantuml "s"         'plantuml-complete-symbol)
-    (define-key pel:plantuml (kbd "TAB") 'plantuml-indent-line))
+    (define-key pel:plantuml (kbd "M-x") 'plantuml-set-exec-mode))
   ;; Configure plantuml default execution mode according to PEL's selection.
   (setq plantuml-default-exec-mode (if (eq pel-use-plantuml 'server) 'server 'jar))
 
