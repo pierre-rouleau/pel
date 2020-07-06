@@ -1301,6 +1301,7 @@ display in other window."
 (pel--cfg-pkg "lisp"         pel:cfg-pl "L")
 (pel--cfg-pkg "python"       pel:cfg-pl "p")
 (pel--cfg-pkg "reST"         pel:cfg-pl "r")
+(pel--cfg-pkg "plantuml"     pel:cfg-pl "u")
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> <f2>`` : Mode Selections
@@ -2780,6 +2781,8 @@ the ones defined from the buffer now."
     (define-key pel:plantuml "p"         'plantuml-preview)
     (define-key pel:plantuml "s"         'plantuml-complete-symbol)
     (define-key pel:plantuml (kbd "TAB") 'plantuml-indent-line))
+  ;; Configure plantuml default execution mode according to PEL's selection.
+  (setq plantuml-default-exec-mode (if (eq pel-use-plantuml 'server) 'server 'jar))
 
   (when pel-use-flycheck-plantuml
     (use-package flycheck-plantuml

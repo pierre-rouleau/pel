@@ -38,7 +38,6 @@
 ;;   - pel-text-insert
 ;;   - pel-package-use
 ;;     - pel-pkg-for-cursor
-;;     - pel-pkg-for-draw
 ;;     - pel-pkg-for-dired
 ;;     - pel-pkg-for-filemng
 ;;       - pel-pkg-for-ztree
@@ -80,7 +79,9 @@
 ;;       - pel-pkg-for-rust
 ;;     - pel-pkg-for-markup
 ;;       - pel-pkg-for-reST
-;;       - pel-pkg-for-graphviz-dot
+;;       - pel-pkg-for-drawing-markup
+;;         - pel-pkg-for-plantuml
+;;         - pel-pkg-for-graphviz-dot
 
 ;;; Code:
 
@@ -198,43 +199,6 @@ These only take effect when Emacs is running in graphics mode."
   "Control whether PEL uses the multiple cursors package.
 See URL `https://github.com/magnars/multiple-cursors.el'."
   :group 'pel-pkg-for-cursor
-  :type 'boolean
-  :safe #'booleanp)
-
-
-;; -----------------------------------------------------------------------------
-;; pel-pkg-for-draw
-;; ----------------
-(defgroup pel-pkg-for-draw nil
-  "List of packages activated to support drawing and diagramming to use wiyth PEL."
-  :group 'pel-package-use)
-
-(defcustom pel-use-plantuml nil
-  "Control whether PEL activates support for PlantUML to draw UML diagrams.
-This uses the `plantuml-mode' package.
-See URL https://github.com/skuro/plantuml-mode.
-
-The `plantuml-mode' can be used locally, using a local PlantUML
-Java application (plantuml.jar).  You can also use PlantUML web
-server and if you do not mind sending your information across the
-internet.
-
-To use PlantUML locally you must have Java installed on your
-system and have the PlantUML Java application installed and
-its plantuml.jar file must be accessible.
-
-See URL https://plantuml.com
-Also see general info at URL https://en.wikipedia.org/wiki/PlantUML"
-  :group 'pel-pkg-for-draw
-  :type '(choice
-          (const :tag "Not used" nil)
-          (const :tag "Use local plantuml.jar application" t)
-          (const :tag "Use the remote PlantUML server" server)))
-
-(defcustom pel-use-flycheck-plantuml nil
-  "Control the flycheck-plantuml PlantUML checker package is used with PEL.
-See info at URL https://github.com/alexmurray/flycheck-plantuml"
-  :group 'pel-pkg-for-draw
   :type 'boolean
   :safe #'booleanp)
 
@@ -1723,12 +1687,55 @@ Identifies the number of levels supported and their adornment.
                  (const :tag "Sphinx-Python" Sphinx-Python)
                  (const :tag "CRiSPer" CRiSPer)))
 
+;; -----------------------------------------------------------------------------
+;; pel-pkg-for-draw-markup
+;; -----------------------
+(defgroup pel-pkg-for-drawing-markup nil
+  "PEL drawing markup support."
+  :group 'pel-package-for-markup)
+
+(defgroup pel-pkg-for-plantuml nil
+  "PEL UML support."
+  :group 'pel-pkg-for-drawing-markup)
+
+(defcustom pel-use-plantuml nil
+  "Control whether PEL activates support for PlantUML to draw UML diagrams.
+This uses the `plantuml-mode' package.
+See URL https://github.com/skuro/plantuml-mode.
+
+The `plantuml-mode' can be used locally, using a local PlantUML
+Java application (plantuml.jar).  You can also use PlantUML web
+server and if you do not mind sending your information across the
+internet.
+
+To use PlantUML locally you must have Java installed on your
+system and have the PlantUML Java application installed and
+its plantuml.jar file must be accessible.
+
+See URL https://plantuml.com
+Also see general info at URL https://en.wikipedia.org/wiki/PlantUML
+
+Note that this value overrides the value selected by the
+`plantuml-default-exec-mode' user option."
+  :group 'pel-pkg-for-plantuml
+  :type '(choice
+          (const :tag "Not used" nil)
+          (const :tag "Use local plantuml.jar application" t)
+          (const :tag "Use the remote PlantUML server" server)))
+
+(defcustom pel-use-flycheck-plantuml nil
+  "Control the flycheck-plantuml PlantUML checker package is used with PEL.
+See info at URL https://github.com/alexmurray/flycheck-plantuml"
+  :group 'pel-pkg-for-plantuml
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; GraphViz-Dot Support
 ;; --------------------
 (defgroup pel-pkg-for-graphviz-dot nil
   "PEL Graphviz-DOT support."
-  :group 'pel-pkg-for-markup)
+  :group 'pel-pkg-for-drawing-markup)
 
 (defcustom pel-use-graphviz-dot nil
   "Control whether PEL uses the Graphviz Dot tool and its associated package.
