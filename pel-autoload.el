@@ -276,6 +276,10 @@
   ;; pel-pathmng
   (autoload 'pel-emacs-load-path     "pel-pathmng")
 
+  ;; pel-plantuml
+
+  (autoload 'pel-render-commented-plantuml "pel-plantuml")
+
   ;; pel-prompt
   (autoload 'pel-y-n-e-or-l-p "pel-prompt")
   (autoload 'pel-select-from  "pel-prompt")

@@ -2795,7 +2795,9 @@ the ones defined from the buffer now."
     (define-pel-global-prefix pel:plantuml (kbd "<f11> D u"))
     (define-key pel:plantuml "u"         'plantuml-mode)
     (define-key pel:plantuml (kbd "M-d") 'plantuml-download-jar)
-    (define-key pel:plantuml (kbd "M-x") 'plantuml-set-exec-mode))
+    (define-key pel:plantuml (kbd "M-x") 'plantuml-set-exec-mode)
+    (define-key pel:plantuml "p"         'pel-render-commented-plantuml))
+
   ;; Configure plantuml default execution mode according to PEL's selection.
   (setq plantuml-default-exec-mode (if (eq pel-use-plantuml 'server) 'server 'jar))
 
