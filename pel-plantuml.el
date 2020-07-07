@@ -73,7 +73,7 @@ Use region if identified otherwise use PlantUML block."
             (setq beg (car beg.end))
             (setq end (cdr beg.end))))
         (setq text (buffer-substring-no-properties beg end))
-        (let ((temp-buffer (generate-new-buffer "*roup*")))
+        (let ((temp-buffer (generate-new-buffer " *temp-plantuml*")))
           (with-current-buffer temp-buffer
             (unwind-protect
                 (progn
