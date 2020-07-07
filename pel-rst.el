@@ -80,7 +80,13 @@
 ;;   * pel-rst-italic
 ;;   * pel-rst-bold
 ;;     - pel--rst-emphasize-with
-
+;;
+;; - Open link URL:
+;;
+;;   * pel-rst-open-target
+;;     - pel--move-to-rst-target
+;;     - pel--rst-reference-target
+;;       - pel-at-rst-reference-p
 
 ;;; Code:
 (require 'thingatpt)        ; uses: bounds-of-thing-at-point
@@ -676,8 +682,12 @@ Leave point after to the next character."
   (pel--rst-emphasize-with "`"))
 
 ;; -----------------------------------------------------------------------------
-;; Open Link
-;; ---------
+;; Open Link URL
+;; -------------
+;;
+;; Open the URL identified by the reStucturedText link.
+;; This way, user does not have to move point to the URL: the URL can be opened
+;; right from the link.
 
 (defun pel-at-rst-reference-p (&optional pos)
   "Return t if POS (or point) is at a rst-reference character, nil otherwise."
@@ -687,7 +697,8 @@ Leave point after to the next character."
 
 (defun pel--rst-reference-target (&optional pos noerror)
   "Return the target string of the current reference if any.
-If there is no reference issue a user-error unless NOERROR is non-nil,
+Search at specified POS or at current point location.
+If there is no reference issue a `user-error' unless NOERROR is non-nil,
 in that case return nil instead."
   (setq pos (or pos (point)))
   (if (pel-at-rst-reference-p pos)
@@ -717,10 +728,10 @@ in that case return nil instead."
 
 (defun pel-rst-open-target (&optional n noerror)
   "Open the target of rst-reference at point.
-If there is no target issue a user-error unless NOERROR is non-nil.
+If there is no target issue a `user-error' unless NOERROR is non-nil.
 In that case just return nil.
 Optionally identify a window to open a file reference with the argument N.
-See `pel-find-file-at-point-in-window' for more information. "
+See `pel-find-file-at-point-in-window' for more information."
   (interactive "P")
   (save-excursion
     (if (pel--move-to-rst-target (pel--rst-reference-target))
