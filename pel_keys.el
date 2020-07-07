@@ -1596,6 +1596,9 @@ MODE must be a symbol."
 (define-pel-global-prefix pel:for-c         (kbd "<f11> SPC c"))
 (define-pel-global-prefix pel:for-c-preproc (kbd "<f11> SPC c #"))
 (define-key               pel:for-c         (kbd "<f1>") 'pel-cfg-pkg-c)
+(when pel-use-plantuml
+  (define-key             pel:for-c  "u" 'pel-render-commented-plantuml))
+
 (pel--map-cc-for pel:for-c pel:for-c-preproc)
 
 ;;
@@ -1630,6 +1633,8 @@ MODE must be a symbol."
 (define-pel-global-prefix pel:for-c++         (kbd "<f11> SPC C"))
 (define-pel-global-prefix pel:for-c++-preproc (kbd "<f11> SPC C #"))
 (define-key               pel:for-c++         (kbd "<f1>") 'pel-cfg-pkg-c++)
+(when pel-use-plantuml
+  (define-key             pel:for-c++    "u" 'pel-render-commented-plantuml))
 (pel--map-cc-for pel:for-c++ pel:for-c++-preproc)
 
 ;;
@@ -1679,6 +1684,8 @@ This is meant to be used in the d-mode hook lambda."
     ;; Configure commands avalable on the D key-map.
     (define-pel-global-prefix pel:for-d (kbd "<f11> SPC D"))
     (define-key               pel:for-d (kbd "<f1>") 'pel-cfg-pkg-d)
+    (when pel-use-plantuml
+      (define-key      pel:for-d "u"      'pel-render-commented-plantuml))
     (pel--map-cc-for pel:for-d)
 
     ;; Configure auto-completion based on selection
@@ -1716,7 +1723,14 @@ This is meant to be used in the d-mode hook lambda."
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` : Erlang programming utilities
+
+(defun pel--setup-erlang ()
+  "Activate Erlang setup."
+  (pel-local-set-f12 'pel:for-erlang))
+
+
 (when pel-use-erlang
+
   (define-pel-global-prefix pel:for-erlang (kbd "<f11> SPC e"))
   ;;
   (when pel-erlang-shell-prevent-echo
@@ -1740,15 +1754,17 @@ This is meant to be used in the d-mode hook lambda."
            ("\\Emakefile"          . erlang-mode))
 
     :init
+    ;; activate the <f12> key binding for erlang-mode
     (pel--mode-hook-maybe-call
-     '(lambda ()
-        (pel-local-set-f12 'pel:for-erlang))
+     'pel--setup-erlang
      'erlang-mode 'erlang-mode-hook)
 
     (define-key pel:for-erlang  (kbd "<f1>") 'pel-cfg-pkg-erlang)
     (define-key pel:for-erlang (kbd "M-p")  #'superword-mode)
     (define-key pel:for-erlang "a"           'erlang-beginning-of-clause)
     (define-key pel:for-erlang "e"           'erlang-end-of-clause)
+    (when pel-use-plantuml
+      (define-key pel:for-erlang "u" 'pel-render-commented-plantuml))
 
     :config
     (setq erlang-root-dir (expand-file-name pel-erlang-rootdir))
@@ -1815,6 +1831,9 @@ This is meant to be used in the d-mode hook lambda."
     :init
     (define-pel-global-prefix pel:for-elixir (kbd "<f11> SPC x"))
     (define-key               pel:for-elixir (kbd "<f1>") 'pel-cfg-pkg-elixir)
+    (when pel-use-plantuml
+      (define-key    pel:for-elixir "u"    'pel-render-commented-plantuml))
+
     ;;
     (pel--mode-hook-maybe-call
      '(lambda ()
@@ -1930,6 +1949,8 @@ This is meant to be used in the d-mode hook lambda."
 ;;
 (define-key pel:for-elisp   ")" #'check-parens)
 (define-key pel:for-elisp   "."  'pel-find-thing-at-point)
+(when pel-use-plantuml
+  (define-key pel:for-elisp   "u"  'pel-render-commented-plantuml))
 (when pel-use-parinfer
   (define-key pel:for-elisp "i" 'parinfer-auto-fix))
 
@@ -2004,6 +2025,8 @@ This is meant to be used in the d-mode hook lambda."
 (when pel-use-common-lisp
   (define-pel-global-prefix pel:for-lisp (kbd "<f11> SPC L"))
   (define-key               pel:for-lisp (kbd "<f1>") 'pel-cfg-pkg-lisp)
+  (when pel-use-plantuml
+    (define-key               pel:for-lisp "u" 'pel-render-commented-plantuml))
   (pel--lispy-map-for pel:for-lisp)
   ;;
   (define-key pel:for-lisp      ")"     #'check-parens)
@@ -2022,6 +2045,8 @@ This is meant to be used in the d-mode hook lambda."
   (define-key pel:for-python (kbd "<f1>") 'pel-cfg-pkg-python)
   (define-key pel:for-python    "."       'pel-find-thing-at-point)
   (define-key pel:for-python    "("      #'show-paren-mode)
+  (when pel-use-plantuml
+    (define-key pel:for-python    "u"       'pel-render-commented-plantuml))
   (when pel-use-rainbow-delimiters
     (define-key pel:for-python  "R"       'rainbow-delimiters-mode))
   ;;
@@ -2069,6 +2094,9 @@ This is meant to be used in the d-mode hook lambda."
   (define-key pel:for-reST "i" 'pel-rst-italic)
   (define-key pel:for-reST "l" 'pel-rst-literal)
   (define-key pel:for-reST "`" 'pel-rst-interpreted)
+  ;;
+  (when pel-use-plantuml
+    (define-key pel:for-reST  "u" 'pel-render-commented-plantuml))
   ;;
   (define-pel-global-prefix pel:rst-adorn-style (kbd "<f11> SPC r A"))
   (define-key pel:rst-adorn-style "d" 'pel-rst-adorn-default)
