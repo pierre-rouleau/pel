@@ -52,10 +52,14 @@ Return a (start . end) cons cell if found, otherwise return nil."
           (cons beg end))))))
 
 ;;-pel-autoload
-(defun pel-render-commented-plantuml (&optional pos)
+(defun pel-render-commented-plantuml (prefix &optional pos)
   "Render the PlantUML markup embedded in current mode comment.
-Use region if identified otherwise use PlantUML block."
-  (interactive)
+Use region if identified otherwise use PlantUML block.
+Uses prefix (as PREFIX) to choose where to display it:
+- 4  (when prefixing the command with C-u) -> new window
+- 16 (when prefixing the command with C-u C-u) -> new frame.
+- else -> new buffer."
+  (interactive "p")
   (if (and (require 'plantuml-mode nil :noerror)
            (fboundp 'plantuml-mode)
            (fboundp 'plantuml-preview-current-block))
@@ -88,7 +92,7 @@ Use region if identified otherwise use PlantUML block."
                   (plantuml-mode)
                   (goto-char (point-min))
                   (forward-line 2)
-                  (plantuml-preview-current-block 4))
+                  (plantuml-preview-current-block prefix))
               (and
                (buffer-name temp-buffer)
                (kill-buffer temp-buffer))))))
