@@ -1726,7 +1726,7 @@ This is meant to be used in the d-mode hook lambda."
 
 (defun pel--setup-erlang ()
   "Activate Erlang setup."
-  (pel-local-set-f12 'pel:for-erlang))
+  (pel-local-set-f12-M-f12 'pel:for-erlang))
 
 
 (when pel-use-erlang
@@ -1763,6 +1763,9 @@ This is meant to be used in the d-mode hook lambda."
     (define-key pel:for-erlang (kbd "M-p")  #'superword-mode)
     (define-key pel:for-erlang "a"           'erlang-beginning-of-clause)
     (define-key pel:for-erlang "e"           'erlang-end-of-clause)
+    (define-key pel:for-erlang (kbd "M-9")  #'show-paren-mode)
+    (when pel-use-rainbow-delimiters
+      (define-key pel:for-erlang (kbd "M-r")  'rainbow-delimiters-mode))
     (when pel-use-plantuml
       (define-key pel:for-erlang "u" 'pel-render-commented-plantuml))
 
@@ -2044,7 +2047,7 @@ This is meant to be used in the d-mode hook lambda."
   (define-pel-global-prefix pel:for-python (kbd "<f11> SPC p"))
   (define-key pel:for-python (kbd "<f1>") 'pel-cfg-pkg-python)
   (define-key pel:for-python    "."       'pel-find-thing-at-point)
-  (define-key pel:for-python    "("      #'show-paren-mode)
+  (define-key pel:for-python (kbd "M-9")  #'show-paren-mode)
   (when pel-use-plantuml
     (define-key pel:for-python    "u"       'pel-render-commented-plantuml))
   (when pel-use-rainbow-delimiters
