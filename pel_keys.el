@@ -2651,10 +2651,19 @@ the ones defined from the buffer now."
 (define-key pel:buffer "p"  #'previous-buffer)
 (define-key pel:buffer "r"  #'read-only-mode)
 (define-key pel:buffer "v"  #'view-buffer)
+(define-key pel:buffer "R"  #'rename-buffer)
+(define-key pel:buffer "U"  #'rename-uniquely)
+(define-key pel:buffer (kbd "M-a")  #'append-to-buffer)
+(define-key pel:buffer (kbd "M-p")  #'prepend-to-buffer)
+(define-key pel:buffer (kbd "C-c")  #'copy-to-buffer)
+(define-key pel:buffer "i"  #'insert-buffer)
+(define-key pel:buffer "f"  #'append-to-file)
+;; Reserved            "h"  highlight prefix
+;; Reserved            "I"  indirect buffer prefix
 ;; Reserved            "x"   (see declarations below with pel-use-nhexl-mode)
 ;; Reserved            "X"
 
-;; -----------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> b h`` : buffer highlighting commands
 
 (defun pel-hi-lock-find-patterns ()
@@ -2693,7 +2702,7 @@ the ones defined from the buffer now."
     :init
     (define-key pel:highlight    "|"  'vline-mode)))
 
-;; -----------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> b I`` : Indirect buffer commands
 
 (define-pel-global-prefix pel:indirect-buffer (kbd "<f11> b I"))
