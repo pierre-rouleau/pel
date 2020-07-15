@@ -34,27 +34,21 @@
 ;; -----------------------------------------------------------------------------
 
 ;;; Code:
+(require 'pel--base)
+
 
 (defun pel--plantuml-region (&optional pos)
-  "Return the position of the beginning and end PlantUML code block.
+  "Return the position of the beginning & end of PlantUML code block.
 Search at POS if specified, otherwise search around point.
 Include whole lines.
 Return a (start . end) cons cell if found, otherwise return nil."
-  (setq pos (or pos (point)))
-  (save-excursion
-    (let (beg end)
-      (when (search-backward "@startuml" nil :noerror)
-        (beginning-of-line 1)
-        (setq beg (point))
-        (when (search-forward "@enduml" nil :noerror)
-          (end-of-line 1)
-          (setq end (point))
-          (cons beg end))))))
+  (pel-region-for "@startuml" "@enduml" pos))
 
 ;;-pel-autoload
 (defun pel-render-commented-plantuml (prefix &optional pos)
   "Render the PlantUML markup embedded in current mode comment.
 Use region if identified otherwise use PlantUML block.
+Search at POS if specified, otherwise search around point.
 Uses prefix (as PREFIX) to choose where to display it:
 - 4  (when prefixing the command with C-u) -> new window
 - 16 (when prefixing the command with C-u C-u) -> new frame.
@@ -76,26 +70,30 @@ Uses prefix (as PREFIX) to choose where to display it:
           (let ((beg.end (pel--plantuml-region pos)))
             (setq beg (car beg.end))
             (setq end (cdr beg.end))))
-        (setq text (buffer-substring-no-properties beg end))
-        (let ((temp-buffer (generate-new-buffer " *temp-plantuml*")))
-          (with-current-buffer temp-buffer
-            (unwind-protect
-                (progn
-                  (insert text)
-                  ;; Remove comments : TODO: won't work for comments like C
-                  ;; if the beginning and end of the comment is not in buffer.
-                  (setq comment-start f-comment-start)
-                  (setq comment-end   f-comment-end)
-                  (setq comment-continue f-comment-continue)
-                  (uncomment-region (point-min) (point-max))
-                  ;; activate PlantUML mode and render the diagram in other window
-                  (plantuml-mode)
-                  (goto-char (point-min))
-                  (forward-line 2)
-                  (plantuml-preview-current-block prefix))
-              (and
-               (buffer-name temp-buffer)
-               (kill-buffer temp-buffer))))))
+        (if (and beg end)
+            (progn
+              (setq text (buffer-substring-no-properties beg end))
+              (let ((temp-buffer (generate-new-buffer " *temp-plantuml*")))
+                (with-current-buffer temp-buffer
+                  (unwind-protect
+                      (progn
+                        (insert text)
+                        ;; Remove comments : TODO: won't work for comments like C
+                        ;; if the beginning and end of the comment is not in buffer.
+                        (setq comment-start f-comment-start)
+                        (setq comment-end   f-comment-end)
+                        (setq comment-continue f-comment-continue)
+                        (uncomment-region (point-min) (point-max))
+                        ;; activate PlantUML mode and render the diagram in other
+                        ;; window
+                        (plantuml-mode)
+                        (goto-char (point-min))
+                        (forward-line 2)
+                        (plantuml-preview-current-block prefix))
+                    (and
+                     (buffer-name temp-buffer)
+                     (kill-buffer temp-buffer))))))
+              (user-error "Missing `@startuml' & `@endulm' markers!")))
     (user-error "Requires missing plantuml-mode!")))
 
 ;; -----------------------------------------------------------------------------

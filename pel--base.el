@@ -89,6 +89,10 @@
 ;;  Moving Point:
 ;;  - `pel-goto-position'
 ;;  - `pel-goto-line'
+;;
+;; Identifying region:
+;; - `pel-region-for'
+;;
 
 ;;; Code:
 
@@ -590,6 +594,29 @@ Return nil."
         (pel-goto-line line))
     (if column
         (move-to-column column))))
+
+;; -----------------------------------------------------------------------------
+;; Identifying region:
+;; - `pel-region-for'
+;;
+
+(defun pel-region-for (start-str end-str &optional pos)
+  "Return the position of the beginning of delimited region.
+The delimiters are START-STR and END-STR.
+Search at POS if specified, otherwise search around point.
+Include whole lines.
+Return a (start . end) cons cell if found, otherwise return nil."
+  (setq pos (or pos (point)))
+  (save-excursion
+    (let (beg end)
+      (when (search-backward start-str nil :noerror)
+        (beginning-of-line 1)
+        (setq beg (point))
+        (when (search-forward end-str nil :noerror)
+          (end-of-line 1)
+          (setq end (point))
+          (cons beg end))))))
+
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel--base)

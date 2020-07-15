@@ -1248,20 +1248,38 @@ display in other window." (pel-prefixed
        ;; then define the global key
        (define-key ,prefix ,key (quote ,fct)))))
 
-(defmacro pel--cfg-pkg (pel-group prefix key)
+(defun pel--isa-custom-group-p (group-name)
+  "Return t if GROUP-NAME string is the name of an existing customize group."
+  (let (custom-groups)
+    (mapatoms (lambda (symbol)
+                (when (or (and (get symbol 'custom-loads)
+                               (not (get symbol 'custom-autoload)))
+                          (get symbol 'custom-group))
+                  (push (symbol-name symbol) custom-groups))))
+    (not (null (member group-name custom-groups)))))
+
+(defun pel--customize-groups (group-list)
+  "Utility: customize all groups named in the GROUP-LIST if they exist."
+  (dolist (grp group-list)
+    (when (pel--isa-custom-group-p grp)
+      (customize-group grp t))))
+
+(defmacro pel--cfg-pkg (pel-group prefix key &rest other-groups)
   "Define a function and key binding to customize specified PEL-GROUP mapped to PREFIX KEY."
   (let ((fct (intern (format "pel-cfg-pkg-%s" pel-group)))
         (group (intern (format "pel-pkg-for-%s" pel-group)))
         (docstring (format "Customize PEL %s support.\n\
 If OTHER-WINDOW is non-nil (use \\[universal-argument]), \
-display in other window."
+display in other window and open the related group(s) that exist."
                            (capitalize pel-group))))
     `(progn
        ;; first declare the function
        (defun ,fct (&optional other-window)
          ,docstring
          (interactive "P")
-         (customize-group (quote ,group) other-window))
+         (customize-group (quote ,group) other-window)
+         (when (and other-window (quote ,other-groups))
+           (pel--customize-groups (quote ,other-groups))))
        ;; then define the global key
        (define-key ,prefix ,key (quote ,fct)))))
 
@@ -1278,31 +1296,31 @@ display in other window."
 (pel--cfg "identification"  pel:cfg "i")
 (pel--cfg-pkg "cursor"      pel:cfg "_")
 (pel--cfg-pkg "completion"  pel:cfg "c")
-(pel--cfg-pkg "dired"       pel:cfg "d")
-(pel--cfg-pkg "filemng"     pel:cfg "f")
-(pel--cfg-pkg "grep"        pel:cfg "g")
+(pel--cfg-pkg "dired"       pel:cfg "d" "dired")
+(pel--cfg-pkg "filemng"     pel:cfg "f" "files")
+(pel--cfg-pkg "grep"        pel:cfg "g" "grep" "rg" "ripgrep")
 (pel--cfg-pkg "key-chord"   pel:cfg "K")
 (pel--cfg-pkg "regexp"      pel:cfg "r")
-(pel--cfg-pkg "search"      pel:cfg "s")
-(pel--cfg-pkg "session"     pel:cfg "S")
-(pel--cfg-pkg "window"      pel:cfg "w")
+(pel--cfg-pkg "search"      pel:cfg "s" "anzu" "swiper")
+(pel--cfg-pkg "session"     pel:cfg "S" "speedbar" "speedbar-faces" "speedbar-vc")
+(pel--cfg-pkg "window"      pel:cfg "w" "ace-window" "ace-window-display")
 (pel--cfg-pkg "speedbar"    pel:cfg (kbd "M-s"))
 
 (define-pel-global-prefix pel:cfg-pl (kbd "<f11> <f1> SPC"))
 ;;
 (pel--cfg-pkg "applescript"  pel:cfg-pl "a")
-(pel--cfg-pkg "c"            pel:cfg-pl "c")
-(pel--cfg-pkg "c++"          pel:cfg-pl "C")
-(pel--cfg-pkg "d"            pel:cfg-pl "D")
-(pel--cfg-pkg "elisp"        pel:cfg-pl "l")
-(pel--cfg-pkg "elixir"       pel:cfg-pl "x")
-(pel--cfg-pkg "erlang"       pel:cfg-pl "e")
-(pel--cfg-pkg "graphviz-dot" pel:cfg-pl "g")
-(pel--cfg-pkg "julia"        pel:cfg-pl "j")
-(pel--cfg-pkg "lisp"         pel:cfg-pl "L")
-(pel--cfg-pkg "python"       pel:cfg-pl "p")
-(pel--cfg-pkg "reST"         pel:cfg-pl "r")
-(pel--cfg-pkg "plantuml"     pel:cfg-pl "u")
+(pel--cfg-pkg "c"            pel:cfg-pl "c" "c")
+(pel--cfg-pkg "c++"          pel:cfg-pl "C" "cpp")
+(pel--cfg-pkg "d"            pel:cfg-pl "D" "d-mode")
+(pel--cfg-pkg "elisp"        pel:cfg-pl "l" "lisp" "elint" "eldoc")
+(pel--cfg-pkg "elixir"       pel:cfg-pl "x" "alchemist" "alchemist-iex")
+(pel--cfg-pkg "erlang"       pel:cfg-pl "e" "erlang" "erldoc" "edts")
+(pel--cfg-pkg "graphviz-dot" pel:cfg-pl "g" "graphviz")
+(pel--cfg-pkg "julia"        pel:cfg-pl "j" "julia" "julia-mode" "julia-snail")
+(pel--cfg-pkg "lisp"         pel:cfg-pl "L" "lisp")
+(pel--cfg-pkg "python"       pel:cfg-pl "p" "python" "python-flymake")
+(pel--cfg-pkg "reST"         pel:cfg-pl "r" "rst")
+(pel--cfg-pkg "plantuml"     pel:cfg-pl "u" "plantuml-mode")
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> <f2>`` : Mode Selections
@@ -1598,6 +1616,8 @@ MODE must be a symbol."
 (define-key               pel:for-c         (kbd "<f1>") 'pel-cfg-pkg-c)
 (when pel-use-plantuml
   (define-key             pel:for-c  "u" 'pel-render-commented-plantuml))
+(when pel-use-graphviz-dot
+  (define-key pel:for-c "G" 'pel-render-commented-graphviz-dot))
 
 (pel--map-cc-for pel:for-c pel:for-c-preproc)
 
@@ -1635,6 +1655,8 @@ MODE must be a symbol."
 (define-key               pel:for-c++         (kbd "<f1>") 'pel-cfg-pkg-c++)
 (when pel-use-plantuml
   (define-key             pel:for-c++    "u" 'pel-render-commented-plantuml))
+(when pel-use-graphviz-dot
+  (define-key pel:for-c++ "G" 'pel-render-commented-graphviz-dot))
 (pel--map-cc-for pel:for-c++ pel:for-c++-preproc)
 
 ;;
@@ -1686,6 +1708,8 @@ This is meant to be used in the d-mode hook lambda."
     (define-key               pel:for-d (kbd "<f1>") 'pel-cfg-pkg-d)
     (when pel-use-plantuml
       (define-key      pel:for-d "u"      'pel-render-commented-plantuml))
+    (when pel-use-graphviz-dot
+      (define-key pel:for-d "G" 'pel-render-commented-graphviz-dot))
     (pel--map-cc-for pel:for-d)
 
     ;; Configure auto-completion based on selection
@@ -1768,6 +1792,9 @@ This is meant to be used in the d-mode hook lambda."
       (define-key pel:for-erlang (kbd "M-r")  'rainbow-delimiters-mode))
     (when pel-use-plantuml
       (define-key pel:for-erlang "u" 'pel-render-commented-plantuml))
+    (when pel-use-graphviz-dot
+      (define-key pel:for-erlang "G" 'pel-render-commented-graphviz-dot))
+
 
     :config
     (setq erlang-root-dir (expand-file-name pel-erlang-rootdir))
@@ -1836,6 +1863,8 @@ This is meant to be used in the d-mode hook lambda."
     (define-key               pel:for-elixir (kbd "<f1>") 'pel-cfg-pkg-elixir)
     (when pel-use-plantuml
       (define-key    pel:for-elixir "u"    'pel-render-commented-plantuml))
+    (when pel-use-graphviz-dot
+      (define-key pel:for-elixir "G" 'pel-render-commented-graphviz-dot))
 
     ;;
     (pel--mode-hook-maybe-call
@@ -1954,6 +1983,8 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:for-elisp   "."  'pel-find-thing-at-point)
 (when pel-use-plantuml
   (define-key pel:for-elisp   "u"  'pel-render-commented-plantuml))
+(when pel-use-graphviz-dot
+  (define-key pel:for-elisp "G" 'pel-render-commented-graphviz-dot))
 (when pel-use-parinfer
   (define-key pel:for-elisp "i" 'parinfer-auto-fix))
 
@@ -2024,12 +2055,14 @@ This is meant to be used in the d-mode hook lambda."
  'emacs-lisp-mode 'emacs-lisp-mode-hook :append)
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : (Common) Lisp programming
+;; - Function Keys - <f11> - Prefix ``<f11> SPC L`` : (Common) Lisp programming
 (when pel-use-common-lisp
   (define-pel-global-prefix pel:for-lisp (kbd "<f11> SPC L"))
   (define-key               pel:for-lisp (kbd "<f1>") 'pel-cfg-pkg-lisp)
   (when pel-use-plantuml
     (define-key               pel:for-lisp "u" 'pel-render-commented-plantuml))
+  (when pel-use-graphviz-dot
+    (define-key pel:for-lisp "G" 'pel-render-commented-graphviz-dot))
   (pel--lispy-map-for pel:for-lisp)
   ;;
   (define-key pel:for-lisp      ")"     #'check-parens)
@@ -2042,7 +2075,7 @@ This is meant to be used in the d-mode hook lambda."
    'lisp-mode 'lisp-mode-hook))
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : Python programming utilities
+;; - Function Keys - <f11> - Prefix ``<f11> SPC p`` : Python programming utilities
 (when pel-use-python
   (define-pel-global-prefix pel:for-python (kbd "<f11> SPC p"))
   (define-key pel:for-python (kbd "<f1>") 'pel-cfg-pkg-python)
@@ -2050,6 +2083,8 @@ This is meant to be used in the d-mode hook lambda."
   (define-key pel:for-python (kbd "M-9")  #'show-paren-mode)
   (when pel-use-plantuml
     (define-key pel:for-python    "u"       'pel-render-commented-plantuml))
+  (when pel-use-graphviz-dot
+    (define-key pel:for-python "G" 'pel-render-commented-graphviz-dot))
   (when pel-use-rainbow-delimiters
     (define-key pel:for-python  "R"       'rainbow-delimiters-mode))
   ;;
@@ -2060,7 +2095,7 @@ This is meant to be used in the d-mode hook lambda."
    'python-mode 'python-mode-hook))
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : reSTucturedText
+;; - Function Keys - <f11> - Prefix ``<f11> SPC r`` : reSTucturedText
 (when pel-use-rst-mode
 
   ;; Add .stxt to the accepted file extensions for rst-mode
@@ -2100,6 +2135,8 @@ This is meant to be used in the d-mode hook lambda."
   ;;
   (when pel-use-plantuml
     (define-key pel:for-reST  "u" 'pel-render-commented-plantuml))
+  (when pel-use-graphviz-dot
+    (define-key pel:for-reST "G" 'pel-render-commented-graphviz-dot))
   ;;
   (define-pel-global-prefix pel:rst-adorn-style (kbd "<f11> SPC r A"))
   (define-key pel:rst-adorn-style "d" 'pel-rst-adorn-default)
@@ -2113,7 +2150,7 @@ This is meant to be used in the d-mode hook lambda."
    'rst-mode 'rst-mode-hook))
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : Graphviz Dot
+;; - Function Keys - <f11> - Prefix ``<f11> SPC g`` : Graphviz Dot
 (when pel-use-graphviz-dot
   (cl-eval-when 'compile (require 'graphviz-dot-mode))
   (use-package graphviz-dot-mode
@@ -2122,7 +2159,10 @@ This is meant to be used in the d-mode hook lambda."
     :commands graphviz-dot-mode)
 
   (define-pel-global-prefix pel:for-graphviz-dot (kbd "<f11> SPC g"))
+  (define-key pel: (kbd "M-g")         'graphviz-dot-mode)
   (define-key pel:for-graphviz-dot "c" 'compile)
+  (define-key pel:for-graphviz-dot "p" 'graphviz-dot-preview)
+  (define-key pel:for-graphviz-dot (kbd "TAB") 'graphviz-dot-indent-graph)
   ;;
   ;; activate the <f12> key binding for graphviz-dot-mode
   (pel--mode-hook-maybe-call
@@ -2131,7 +2171,7 @@ This is meant to be used in the d-mode hook lambda."
    'graphviz-dot-mode 'graphviz-dot-mode-hook))
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC`` : PlantUML
+;; - Function Keys - <f11> - Prefix ``<f11> SPC u`` : PlantUML
 (when pel-use-plantuml
   (define-pel-global-prefix pel:for-plantuml (kbd "<f11> SPC u"))
   (define-key pel:for-plantuml (kbd "<f1>") 'pel-cfg-pkg-plantuml)

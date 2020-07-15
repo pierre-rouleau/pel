@@ -190,6 +190,9 @@
                  pel-toggle-all-docstrings))
     (autoload fct "pel-hide-docstring"))
 
+  ;; pel-graphviz-dot
+  (autoload 'pel-render-commented-graphviz-dot "pel-graphviz-dot")
+
   ;; pel-highlight
   (dolist (fct '(pel-set-highlight-color
                  pel-customize-highlight
