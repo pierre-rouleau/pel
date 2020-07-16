@@ -2389,10 +2389,10 @@ This is meant to be used in the d-mode hook lambda."
 ;; To help keep track what keay are used, the list of key under the pel:help
 ;; prefix are shown below.
 ;;
-;;   Used `pel:help' keys:  A a c d e i k M m s S X
+;;   Used `pel:help' keys:  A a c d e i k m s S w X
 
 (define-key pel:help "m"  #'man)
-(define-key pel:help "M"  #'woman)
+(define-key pel:help "w"  #'woman)
 (define-key pel:help "?"  'pel-show-major-mode)
 
 (use-package pel-help
@@ -3801,7 +3801,6 @@ the ones defined from the buffer now."
 (define-key pel:eXecute    "i" #'ielm)
 (when pel-use-lfe
   (define-key pel:eXecute  "l"  'run-lfe))
-(define-key pel:eXecute    "m" #'man)
 (when pel-use-python
   (define-key pel:eXecute  "p" #'run-python))
 (when pel-use-erlang
@@ -3810,7 +3809,6 @@ the ones defined from the buffer now."
   (define-key pel:eXecute  "x"  'alchemist-iex-run))
 (define-key pel:eXecute    "s" #'shell)
 (define-key pel:eXecute    "t" #'term)
-(define-key pel:eXecute    "w" #'woman)
 
 ;; support for the extremely fast/nice libvterm-based vterm shell.
 (when pel-use-vterm
