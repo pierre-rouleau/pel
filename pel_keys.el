@@ -1322,6 +1322,29 @@ display in other window and open the related group(s) that exist."
 (pel--cfg-pkg "reST"         pel:cfg-pl "r" "rst")
 (pel--cfg-pkg "plantuml"     pel:cfg-pl "u" "plantuml-mode")
 
+
+
+;; --
+
+(defmacro pel--cfg-emacs (key group)
+  "Define a function and a KEY mapping to configure Emacs GROUP."
+  (let ((fct (intern (format "pel-cfge-%s" group)))
+        (docstring   (format "Customize Emacs %s group." group)))
+    `(progn
+       ;; declare the function
+       (defun ,fct (&optional other-window)
+         ,docstring
+         (interactive "P")
+         (customize-group (quote ,group) other-window))
+       ;; define the global key mapping
+       (define-key pel:cfg-emacs ,key (quote ,fct)))))
+
+(define-pel-global-prefix pel:cfg-emacs  (kbd "<f11> <f1> M-g"))
+(pel--cfg-emacs "m" "man")
+(pel--cfg-emacs "l" "locate")
+(pel--cfg-emacs "u" "browse-url")
+(pel--cfg-emacs "w" "webjump")
+
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> <f2>`` : Mode Selections
 ;; TODO: future: select various major/minor modes??
