@@ -1341,9 +1341,10 @@ display in other window and open the related group(s) that exist."
 
 (define-pel-global-prefix pel:cfg-emacs  (kbd "<f11> <f1> M-g"))
 (pel--cfg-emacs "m" "man")
+(pel--cfg-emacs "j" "webjump")
 (pel--cfg-emacs "l" "locate")
 (pel--cfg-emacs "u" "browse-url")
-(pel--cfg-emacs "w" "webjump")
+(pel--cfg-emacs "w" "woman")
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> <f2>`` : Mode Selections
@@ -2952,6 +2953,8 @@ the ones defined from the buffer now."
 (define-key pel:file "."    'pel-open-at-point)
 (define-key pel:file "/"    'pel-browse-filename-at-point)
 (define-key pel:file (kbd "M-/") 'browse-url-at-point)
+(global-set-key "\C-cj"    'webjump)
+(define-key pel:file "j"   'webjump)
 
 (define-pel-global-prefix pel:file-revert (kbd "<f11> f r"))
 (define-key pel:file-revert "a" #'auto-revert-mode)

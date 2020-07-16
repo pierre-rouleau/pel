@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-07-05 23:40:11, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-07-16 18:29:18, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2603,6 +2603,19 @@ Git_ and Monky_ for `Mercurial Software`_.
 .. _Magit:                https://magit.vc
 .. _VC (Version Control): https://www.gnu.org/software/emacs/manual/html_node/emacs/Version-Control.html
 
+PEL Web Browsing Support
+------------------------
+
+:PDF Docs: `Web`_.
+:PEL Customization: *none*
+:PEL Key Prefix: **pel:file** : ``<f11> f``
+
+Emacs provides several commands that launch a web browser.
+PEL provides a set of bindings to commands provided by Emacs and some extra
+commands implemented by PEL code to open a URL or file at point in a browser.
+The list of these commands and the corresponding Emacs customization groups are
+described in the `Web`_ PDF table.
+
 PEL Window Management Support
 -----------------------------
 
@@ -4115,6 +4128,7 @@ PEL uses the following libraries distributed with GNU Emacs:
 #. `subword     <https://github.com/emacs-mirror/emacs/blob/master/lisp/progmodes/subword.el>`_
 #. `thingatpt   <https://github.com/emacs-mirror/emacs/blob/master/lisp/thingatpt.el>`_
 #. `uniquify    <https://github.com/emacs-mirror/emacs/blob/master/lisp/uniquify.el>`_
+#. `webjump     <https://github.com/emacs-mirror/emacs/blob/master/lisp/net/webjump.el>`_
 #. `winner      <https://github.com/emacs-mirror/emacs/blob/master/lisp/winner.el>`_
 
 
