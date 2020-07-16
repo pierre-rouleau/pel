@@ -460,6 +460,13 @@ typed quickly or slowly when recorded.)"
                          (insert "6u"))))
 
     (global    ""         key-chord
+               "7u"  (lambda ()
+                       (interactive)
+                       (if (require 'browse-url :noerror)
+                           (browse-url-at-point)
+                         (insert "7u"))))
+
+    (global    ""         key-chord
                ".;"  (lambda (&optional n)
                        (interactive "P")
                        (if (require 'pel-search nil :noerror)

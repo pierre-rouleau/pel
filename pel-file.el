@@ -304,7 +304,7 @@ COLUMN   := integer | nil"
     -             8 := 'up
     - 4 := 'left  5 := 'current  6 := 'right
     -             2 := 'down
-  - For N=9 := open the file in the system's browser.
+  - For N=9  := open the file in the system's browser.
 - Explicitly selecting the minibuffer window, a dedicated window
   or a non-existing window is not allowed.  Instead the command creates
   a new window for the file.
