@@ -462,7 +462,7 @@ typed quickly or slowly when recorded.)"
     (global    ""         key-chord
                "7u"  (lambda ()
                        (interactive)
-                       (if (require 'browse-url :noerror)
+                       (if (require 'browse-url nil :noerror)
                            (browse-url-at-point)
                          (insert "7u"))))
 
