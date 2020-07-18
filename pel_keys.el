@@ -1324,9 +1324,11 @@ display in other window and open the related group(s) that exist."
 (pel--cfg-pkg "plantuml"     pel:cfg-pl "u" "plantuml-mode")
 
 (dolist (mode pel-modes-activating-flyspell-mode)
-  (add-hook (pel-hook-symbol-for mode) (lambda () (flyspell-mode 1))))
+  (when mode
+    (add-hook (pel-hook-symbol-for mode) (lambda () (flyspell-mode 1)))))
 (dolist (mode pel-modes-activating-flyspell-prog-mode)
-  (add-hook (pel-hook-symbol-for mode) (lambda () (flyspell-prog-mode))))
+  (when mode
+    (add-hook (pel-hook-symbol-for mode) (lambda () (flyspell-prog-mode)))))
 
 ;; --
 
