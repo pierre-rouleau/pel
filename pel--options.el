@@ -1766,10 +1766,13 @@ References:
   :group 'pel-package-use)
 
 (defcustom pel-modes-activating-flyspell-mode
-  '(org-mode
+  '(log-edit-mode
+    markdown-mode
+    org-mode
     rst-mode
-    markdown-mode)
-  "List of major modes that automatically activate flyspell-mode."
+    vc-git-log-edit-mode)
+  "List of major modes that automatically activate flyspell-mode.
+To activate the changes for this you must 'Apply and Save' and restart Emacs."
   :group 'pel-pkg-for-spelling
   :type
   '(repeat symbol))
@@ -1788,7 +1791,8 @@ References:
     plantuml-mode
     python-mode
     shell-script-mode)
-  "List of major modes that automatically activate flyspell-prog-mode."
+  "List of major modes that automatically activate flyspell-prog-mode.
+To activate the changes for this you must 'Apply and Save' and restart Emacs."
   :group 'pel-pkg-for-spelling
   :type
   '(repeat symbol))
