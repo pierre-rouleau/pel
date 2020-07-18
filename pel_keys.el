@@ -3524,16 +3524,17 @@ the ones defined from the buffer now."
 ;;
 (define-pel-global-prefix pel:fill (kbd "<f11> t f"))
 (define-key pel:fill "?"    'pel-show-fill-columns)
-(define-key pel:fill ";"   #'fill-comment-paragraph)
+(define-key pel:fill "c"   #'set-fill-column)
+(define-key pel:fill "."   #'set-fill-prefix)
 (define-key pel:fill "a"   #'auto-fill-mode)
-(define-key pel:fill "C"    'pel-auto-fill-only-comments)
+(define-key pel:fill ";"    'pel-auto-fill-only-comments)
 (define-key pel:fill "f"   #'refill-mode)
-(define-key pel:fill "L"   #'lisp-fill-paragraph)
+(define-key pel:fill "l"   #'lisp-fill-paragraph)
 (define-key pel:fill "i"   #'fill-individual-paragraphs)
 (define-key pel:fill "n"   #'fill-nonuniform-paragraphs)
 (define-key pel:fill "p"   #'fill-paragraph)
 (define-key pel:fill "r"   #'fill-region)
-(define-key pel:fill "R"   #'fill-region-as-paragraph)
+(define-key pel:fill "q"   #'fill-region-as-paragraph)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> t j``: Text justification
