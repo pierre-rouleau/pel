@@ -1305,7 +1305,7 @@ display in other window and open the related group(s) that exist."
 (pel--cfg-pkg "session"     pel:cfg "S" "speedbar" "speedbar-faces" "speedbar-vc")
 (pel--cfg-pkg "window"      pel:cfg "w" "ace-window" "ace-window-display")
 (pel--cfg-pkg "speedbar"    pel:cfg (kbd "M-s"))
-(pel--cfg-pkg "spelling"    pel:cfg "$" "flyspell")
+(pel--cfg-pkg "spelling"    pel:cfg "$" "ispell" "flyspell")
 
 (define-pel-global-prefix pel:cfg-pl (kbd "<f11> <f1> SPC"))
 ;;
