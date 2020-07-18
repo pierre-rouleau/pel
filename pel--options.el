@@ -82,7 +82,8 @@
 ;;       - pel-pkg-for-drawing-markup
 ;;         - pel-pkg-for-plantuml
 ;;         - pel-pkg-for-graphviz-dot
-
+;;     - pel-pkg-for-spelling
+;;
 ;;; Code:
 
 
@@ -1756,6 +1757,41 @@ References:
   :group 'pel-pkg-for-graphviz-dot
   :type 'boolean
   :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; Spelling Support
+;; ----------------
+(defgroup pel-pkg-for-spelling nil
+  "PEL Spelling Support."
+  :group 'pel-package-use)
+
+(defcustom pel-modes-activating-flyspell-mode
+  '(org-mode
+    rst-mode
+    markdown-mode)
+  "List of major modes that automatically activate flyspell-mode."
+  :group 'pel-pkg-for-spelling
+  :type
+  '(repeat symbol))
+
+(defcustom pel-modes-activating-flyspell-prog-mode
+  '(c-mode
+    c++-mode
+    d-mode
+    emacs-lisp-mode
+    elixir-mode
+    erlang-mode
+    graphviz-dot-mode
+    julia-mode
+    lfe-mode
+    lisp-mode
+    plantuml-mode
+    python-mode
+    shell-script-mode)
+  "List of major modes that automatically activate flyspell-prog-mode."
+  :group 'pel-pkg-for-spelling
+  :type
+  '(repeat symbol))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel--options)

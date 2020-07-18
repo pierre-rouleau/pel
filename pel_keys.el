@@ -1305,6 +1305,7 @@ display in other window and open the related group(s) that exist."
 (pel--cfg-pkg "session"     pel:cfg "S" "speedbar" "speedbar-faces" "speedbar-vc")
 (pel--cfg-pkg "window"      pel:cfg "w" "ace-window" "ace-window-display")
 (pel--cfg-pkg "speedbar"    pel:cfg (kbd "M-s"))
+(pel--cfg-pkg "spelling"    pel:cfg "$" "flyspell")
 
 (define-pel-global-prefix pel:cfg-pl (kbd "<f11> <f1> SPC"))
 ;;
@@ -1322,7 +1323,10 @@ display in other window and open the related group(s) that exist."
 (pel--cfg-pkg "reST"         pel:cfg-pl "r" "rst")
 (pel--cfg-pkg "plantuml"     pel:cfg-pl "u" "plantuml-mode")
 
-
+(dolist (mode pel-modes-activating-flyspell-mode)
+  (add-hook (pel-hook-symbol-for mode) (lambda () (flyspell-mode 1))))
+(dolist (mode pel-modes-activating-flyspell-prog-mode)
+  (add-hook (pel-hook-symbol-for mode) (lambda () (flyspell-prog-mode))))
 
 ;; --
 
