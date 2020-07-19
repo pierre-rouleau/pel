@@ -139,7 +139,10 @@
   (autoload 'pel-emacs-mem-stats  "pel-emacs")
 
   ;; pel-erlang
-  (autoload 'pel-erlang-shell-mode-init "pel-erlang")
+  (dolist (fct '(pel-erlang-shell-mode-init
+                 pel-end-of-previous-clause
+                 pel-beginning-of-next-clause))
+    (autoload fct "pel-erlang"))
 
   ;; pel-face-ut
   (autoload 'pel-show-face-at-point "pel-face-ut")

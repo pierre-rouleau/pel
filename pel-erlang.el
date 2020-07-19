@@ -31,11 +31,36 @@
 (require 'comint)
 
 
+;;-pel-autoload
 (defun pel-erlang-shell-mode-init ()
   "Initialize the Erlang shell mode."
   ;; Prevent Erlang shell mode echo
   (setq comint-process-echoes t))
 
+
+;;-pel-autoload
+(defun pel-end-of-previous-clause ()
+  "Move point backward to the end of the previous clause."
+  (interactive "^")
+  (if (and (require 'erlang nil :noerror)
+           (fboundp 'erlang-beginning-of-clause)
+           (fboundp 'erlang-end-of-clause))
+      (progn
+        (erlang-beginning-of-clause 2)
+        (erlang-end-of-clause 1))
+    (user-error "Erlang support not loaded!")))
+
+;;-pel-autoload
+(defun pel-beginning-of-next-clause ()
+  "Move point forward to the beginning of next clause."
+  (interactive "^")
+  (if (and (require 'erlang nil :noerror)
+           (fboundp 'erlang-beginning-of-clause)
+           (fboundp 'erlang-end-of-clause))
+      (progn
+        (erlang-end-of-clause 2)
+        (erlang-beginning-of-clause 1))
+    (user-error "Erlang support not loaded!")))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-erlang)

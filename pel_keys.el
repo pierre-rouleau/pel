@@ -1786,6 +1786,8 @@ This is meant to be used in the d-mode hook lambda."
 (when pel-use-erlang
 
   (define-pel-global-prefix pel:for-erlang (kbd "<f11> SPC e"))
+  (define-pel-global-prefix pel:erlang-function (kbd "<f11> SPC e f"))
+  (define-pel-global-prefix pel:erlang-clause   (kbd "<f11> SPC e c"))
   ;;
   (when pel-erlang-shell-prevent-echo
       ;; Prevent erlang shell to echo back commands.
@@ -1813,11 +1815,21 @@ This is meant to be used in the d-mode hook lambda."
      'pel--setup-erlang
      'erlang-mode 'erlang-mode-hook)
 
-    (define-key pel:for-erlang  (kbd "<f1>") 'pel-cfg-pkg-erlang)
-    (define-key pel:for-erlang (kbd "M-p")  #'superword-mode)
-    (define-key pel:for-erlang "a"           'erlang-beginning-of-clause)
-    (define-key pel:for-erlang "e"           'erlang-end-of-clause)
-    (define-key pel:for-erlang (kbd "M-9")  #'show-paren-mode)
+    (define-key pel:erlang-function "n" 'pel-beginning-of-next-defun)
+    (define-key pel:erlang-function "p" 'beginning-of-defun)
+
+    (define-key pel:erlang-clause   "a"             'erlang-beginning-of-clause)
+    (define-key pel:for-erlang      (kbd "<up>")    'erlang-beginning-of-clause)
+    (define-key pel:erlang-clause   "p"             'pel-end-of-previous-clause)
+    (define-key pel:for-erlang      (kbd "<left>")  'pel-end-of-previous-clause)
+    (define-key pel:erlang-clause   "n"             'pel-beginning-of-next-clause)
+    (define-key pel:for-erlang      (kbd "<down>")  'pel-beginning-of-next-clause)
+    (define-key pel:erlang-clause   "e"             'erlang-end-of-clause)
+    (define-key pel:for-erlang      (kbd "<right>") 'erlang-end-of-clause)
+
+    (define-key pel:for-erlang      (kbd "<f1>")    'pel-cfg-pkg-erlang)
+    (define-key pel:for-erlang      (kbd "M-p")    #'superword-mode)
+    (define-key pel:for-erlang      (kbd "M-9")    #'show-paren-mode)
     (when pel-use-rainbow-delimiters
       (define-key pel:for-erlang (kbd "M-r")  'rainbow-delimiters-mode))
     (when pel-use-plantuml
