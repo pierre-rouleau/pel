@@ -1818,6 +1818,8 @@ This is meant to be used in the d-mode hook lambda."
     (define-key pel:erlang-function "n" 'pel-beginning-of-next-defun)
     (define-key pel:erlang-function "p" 'beginning-of-defun)
 
+    (define-key pel:for-erlang      "?"             'erlang-version)
+
     (define-key pel:erlang-clause   "a"             'erlang-beginning-of-clause)
     (define-key pel:for-erlang      (kbd "<up>")    'erlang-beginning-of-clause)
     (define-key pel:erlang-clause   "p"             'pel-end-of-previous-clause)
@@ -1826,6 +1828,8 @@ This is meant to be used in the d-mode hook lambda."
     (define-key pel:for-erlang      (kbd "<down>")  'pel-beginning-of-next-clause)
     (define-key pel:erlang-clause   "e"             'erlang-end-of-clause)
     (define-key pel:for-erlang      (kbd "<right>") 'erlang-end-of-clause)
+    (define-key pel:erlang-function "m"             'erlang-mark-function)
+    (define-key pel:erlang-clause   "m"             'erlang-mark-clause)
 
     (define-key pel:for-erlang      (kbd "<f1>")    'pel-cfg-pkg-erlang)
     (define-key pel:for-erlang      (kbd "M-p")    #'superword-mode)
