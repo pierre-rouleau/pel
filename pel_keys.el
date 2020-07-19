@@ -2692,6 +2692,7 @@ This is meant to be used in the d-mode hook lambda."
 
 (define-pel-global-prefix pel:abbrev (kbd "<f11> a"))
 (define-key pel:abbrev "D"  'pel-define-abbrevs)
+(define-key pel:       "/" #'expand-abbrev)
 (define-key pel:abbrev "e" #'expand-abbrev)
 (define-key pel:abbrev "E" #'expand-region-abbrevs)
 (define-key pel:abbrev "g" #'add-global-abbrev)
