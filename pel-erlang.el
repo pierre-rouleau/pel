@@ -63,6 +63,66 @@
     (user-error "Erlang support not loaded!")))
 
 ;; -----------------------------------------------------------------------------
+;; Install Erlang Skeletons as key-bound commands
+;; ----------------------------------------------
+
+(defvar pel--erl-skel-key '(("if"                      . "i")
+                            ("case"                    . "c")
+                            ("receive"                 . "r")
+                            ("after"                   . "a")
+                            ("loop"                    . "l")
+                            ("module"                  . "m")
+                            ("function"                . "f")
+                            ("author"                  . "`")
+                            ("spec"                    . "s")
+                            ("small-header"            . "M-h")
+                            ("normal-header"           . "M-H")
+                            ("large-header"            . "C-h")
+                            ("small-server"            . "M-s")
+                            ("application"             . "M-a")
+                            ("supervisor"              . "M-u")
+                            ("supervisor-bridge"       . "M-b")
+                            ("generic-server"          . "M-g")
+                            ("gen-event"               . "M-e")
+                            ("gen-fsm"                 . "M-f")
+                            ("gen-statem-StateName"    . "M-S")
+                            ("gen-statem-handle-event" . "M-E")
+                            ("wx-object"               . "M-w")
+                            ("gen-lib"                 . "M-l")
+                            ("gen-corba-cb"            . "M-c")
+                            ("ct-test-suite-s"         . "M-1")
+                            ("ct-test-suite-l"         . "M-2")
+                            ("ts-test-suite"           . "M-3")))
+
+;; Added more?:
+;;   erlang-skel-export
+;;   erlang-skel-import
+
+;;-pel-autoload
+(defun pel--install-erlang-skel (prefix)
+  "Create PEL functions and key bindings in PREFIX for Erlang skeletons.
+This function is meant to be called by pel-init() only."
+  (if (and (require 'erlang nil :noerror)
+           (boundp 'erlang-skel))
+      (dolist (skel erlang-skel)
+        (when skel
+          (let* ((s-name (cadr skel))
+                 (s-tempo-name (format "tempo-template-erlang-%s" s-name))
+                 (s-pel-name   (format "pel-erl-%s" s-name))
+                 (docstring    (format "Insert '%s' Erlang skeleton (also available through Erlang/Skeleton menu)." s-name))
+                 (key          (cdr (assoc s-name pel--erl-skel-key))))
+            (defalias (intern s-pel-name)
+              (lambda ()
+                (interactive)
+                (funcall (intern s-tempo-name)))
+              docstring)
+            (when key
+              (if (> (length key) 1)
+                  (define-key prefix (kbd key) (intern s-pel-name))
+                (define-key prefix key (intern s-pel-name)))))))
+    (user-error "The erlang.el package is not loaded!")))
+
+;; -----------------------------------------------------------------------------
 (provide 'pel-erlang)
 
 ;;; pel-erlang.el ends here

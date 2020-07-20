@@ -1778,9 +1778,7 @@ This is meant to be used in the d-mode hook lambda."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` : Erlang programming utilities
 
-(defun pel--setup-erlang ()
-  "Activate Erlang setup."
-  (pel-local-set-f12-M-f12 'pel:for-erlang))
+
 
 
 (when pel-use-erlang
@@ -1788,6 +1786,13 @@ This is meant to be used in the d-mode hook lambda."
   (define-pel-global-prefix pel:for-erlang (kbd "<f11> SPC e"))
   (define-pel-global-prefix pel:erlang-function (kbd "<f11> SPC e f"))
   (define-pel-global-prefix pel:erlang-clause   (kbd "<f11> SPC e c"))
+  (define-pel-global-prefix pel:erlang-skel     (kbd "<f11> SPC e <f12>"))
+
+  (defun pel--setup-erlang ()
+    "Activate Erlang setup."
+    (pel-local-set-f12-M-f12 'pel:for-erlang)
+    (pel--install-erlang-skel pel:erlang-skel))
+
   ;;
   (when pel-erlang-shell-prevent-echo
       ;; Prevent erlang shell to echo back commands.

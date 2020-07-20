@@ -141,7 +141,8 @@
   ;; pel-erlang
   (dolist (fct '(pel-erlang-shell-mode-init
                  pel-end-of-previous-clause
-                 pel-beginning-of-next-clause))
+                 pel-beginning-of-next-clause
+                 pel--install-erlang-skel))
     (autoload fct "pel-erlang"))
 
   ;; pel-face-ut
