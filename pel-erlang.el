@@ -40,27 +40,66 @@
 
 ;;-pel-autoload
 (defun pel-end-of-previous-clause ()
-  "Move point backward to the end of the previous clause."
+  "Move point backward to the end of the previous clause.
+Push current position on the mark ring."
   (interactive "^")
   (if (and (require 'erlang nil :noerror)
            (fboundp 'erlang-beginning-of-clause)
            (fboundp 'erlang-end-of-clause))
       (progn
+        (push-mark)
         (erlang-beginning-of-clause 2)
         (erlang-end-of-clause 1))
     (user-error "Erlang support not loaded!")))
 
 ;;-pel-autoload
 (defun pel-beginning-of-next-clause ()
-  "Move point forward to the beginning of next clause."
+  "Move point forward to the beginning of next clause.
+Push current position on the mark ring."
   (interactive "^")
   (if (and (require 'erlang nil :noerror)
            (fboundp 'erlang-beginning-of-clause)
            (fboundp 'erlang-end-of-clause))
       (progn
+        (push-mark)
         (erlang-end-of-clause 2)
         (erlang-beginning-of-clause 1))
     (user-error "Erlang support not loaded!")))
+
+
+;; --
+
+(defun pel--moveto-function (forward n)
+  "Move to the beginning of function identified by FORWARD and N."
+  (if (and (require 'erlang nil :noerror)
+           (fboundp 'erlang-beginning-of-function)
+           (fboundp 'erlang-get-function-name))
+      (let ((direction (if forward -1 nil)))
+        (push-mark)
+        (while (> n 0)
+          (setq n (1- n))
+          (erlang-beginning-of-function direction)
+          ;; erlang-beginning-of-function stops on directive but
+          ;; erlang-get-function-name returns nil for them.
+          (while (not (erlang-get-function-name))
+            (erlang-beginning-of-function direction))))
+    (user-error "Erlang support not loaded!")))
+
+;;-pel-autoload
+(defun pel-previous-erl-function (&optional n)
+  "Move point to beginning of previous Erlang function. Repeat N times.
+Push current position on the mark ring.
+Skip over all compiler directives."
+  (interactive "^p")
+  (pel--moveto-function nil (or n 1)))
+
+;;-pel-autoload
+(defun pel-next-erl-function (&optional n)
+  "Move point to beginning of next Erlang function. Repeat N times.
+Push current position on the mark ring.
+Skip over all compiler directives."
+  (interactive "^p")
+  (pel--moveto-function t (or n 1)))
 
 ;; -----------------------------------------------------------------------------
 ;; Install Erlang Skeletons as key-bound commands

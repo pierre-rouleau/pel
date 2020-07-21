@@ -142,6 +142,8 @@
   (dolist (fct '(pel-erlang-shell-mode-init
                  pel-end-of-previous-clause
                  pel-beginning-of-next-clause
+                 pel-previous-erl-function
+                 pel-next-erl-function
                  pel--install-erlang-skel))
     (autoload fct "pel-erlang"))
 

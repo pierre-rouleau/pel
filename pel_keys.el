@@ -1778,9 +1778,6 @@ This is meant to be used in the d-mode hook lambda."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` : Erlang programming utilities
 
-
-
-
 (when pel-use-erlang
 
   (define-pel-global-prefix pel:for-erlang (kbd "<f11> SPC e"))
@@ -1820,21 +1817,28 @@ This is meant to be used in the d-mode hook lambda."
      'pel--setup-erlang
      'erlang-mode 'erlang-mode-hook)
 
-    (define-key pel:erlang-function "n" 'pel-beginning-of-next-defun)
-    (define-key pel:erlang-function "p" 'beginning-of-defun)
-
     (define-key pel:for-erlang      "?"             'erlang-version)
 
+    (define-key pel:erlang-function "N"            'pel-beginning-of-next-defun)
+    (define-key pel:erlang-function "P"            'beginning-of-defun)
+    (define-key pel:erlang-function "n"            'pel-next-erl-function)
+    (define-key pel:for-erlang      (kbd "<down>") 'pel-next-erl-function)
+    (define-key pel:erlang-function "p"            'pel-previous-erl-function)
+    (define-key pel:for-erlang      (kbd "<up>")   'pel-previous-erl-function)
+
+
     (define-key pel:erlang-clause   "a"             'erlang-beginning-of-clause)
-    (define-key pel:for-erlang      (kbd "<up>")    'erlang-beginning-of-clause)
+    (define-key pel:for-erlang      (kbd "<M-up>")  'erlang-beginning-of-clause)
     (define-key pel:erlang-clause   "p"             'pel-end-of-previous-clause)
-    (define-key pel:for-erlang      (kbd "<left>")  'pel-end-of-previous-clause)
-    (define-key pel:erlang-clause   "n"             'pel-beginning-of-next-clause)
-    (define-key pel:for-erlang      (kbd "<down>")  'pel-beginning-of-next-clause)
-    (define-key pel:erlang-clause   "e"             'erlang-end-of-clause)
-    (define-key pel:for-erlang      (kbd "<right>") 'erlang-end-of-clause)
-    (define-key pel:erlang-function "m"             'erlang-mark-function)
-    (define-key pel:erlang-clause   "m"             'erlang-mark-clause)
+    (define-key pel:for-erlang      (kbd "<M-left>")
+                                                    'pel-end-of-previous-clause)
+    (define-key pel:erlang-clause   "n"           'pel-beginning-of-next-clause)
+    (define-key pel:for-erlang      (kbd "<M-down>")
+                                                  'pel-beginning-of-next-clause)
+    (define-key pel:erlang-clause   "e"               'erlang-end-of-clause)
+    (define-key pel:for-erlang      (kbd "<M-right>") 'erlang-end-of-clause)
+    (define-key pel:erlang-function "m"               'erlang-mark-function)
+    (define-key pel:erlang-clause   "m"               'erlang-mark-clause)
 
     (define-key pel:for-erlang      (kbd "<f1>")    'pel-cfg-pkg-erlang)
     (define-key pel:for-erlang      (kbd "M-p")    #'superword-mode)
