@@ -1783,6 +1783,9 @@ This is meant to be used in the d-mode hook lambda."
   (define-pel-global-prefix pel:for-erlang (kbd "<f11> SPC e"))
   (define-pel-global-prefix pel:erlang-function (kbd "<f11> SPC e f"))
   (define-pel-global-prefix pel:erlang-clause   (kbd "<f11> SPC e c"))
+  (define-pel-global-prefix pel:erlang-analysis (kbd "<f11> SPC e a"))
+  (define-pel-global-prefix pel:erlang-debug    (kbd "<f11> SPC e d"))
+
   (define-pel-global-prefix pel:erlang-skel     (kbd "<f11> SPC e <f12>"))
 
   (defun pel--setup-erlang ()
@@ -1850,7 +1853,35 @@ This is meant to be used in the d-mode hook lambda."
     (when pel-use-graphviz-dot
       (define-key pel:for-erlang "G" 'pel-render-commented-graphviz-dot))
 
-    ;; added mapping for the ahs (automatic highlight symbol)  features
+    ;; EDTS keys
+    ;;  edts cross reference command keys
+    (define-key pel:for-erlang      "w"             'edts-xref-who-calls)
+    (define-key pel:for-erlang      "W"             'edts-xref-last-who-calls)
+    ;;  edts cross reference
+    (define-key pel:for-erlang      (kbd "M-f")     'edts-find-local-function)
+    (define-key pel:for-erlang      (kbd "M-g")     'edts-find-global-function)
+    ;; edts refactoring
+    (define-key pel:for-erlang      "r"             'edts-refactor-extract-function)
+    ;; edts man page use
+    (define-key pel:for-erlang      "`"             'edts-man-setup)
+    (define-key pel:for-erlang      "h"             'edts-show-doc-under-point)
+    (define-key pel:for-erlang      "H"             'edts-find-doc)
+    ;; edts code analysis
+    (define-key pel:erlang-analysis "a"             'edts-dialyzer-analyze)
+    (define-key pel:erlang-analysis "t"             'edts-code-eunit)
+    (define-key pel:erlang-analysis "c"             'edts-code-compile-and-display)
+    ;; edts debug
+    (define-key pel:erlang-debug    "b"             'edts-debug-toggle-breakpoint)
+    (define-key pel:erlang-debug    "B"             'edts-debug-list-breakpoints)
+    (define-key pel:erlang-debug    "p"             'edts-debug-list-processes)
+    (define-key pel:erlang-debug    "i"             'edts-debug-toggle-interpreted)
+    (define-key pel:erlang-debug    "I"             'edts-debug-list-interpreted)
+    ;; edts node
+    (define-key pel:for-erlang      "N"             'edts-buffer-node-name)
+    (define-key pel:for-erlang      "x"             'edts-shell)
+    (define-key pel:for-erlang      "X"             'edts-api-start-server)
+
+    ;; EDTS/(automatic highlight symbol)  features
     (define-key pel:for-erlang      "e"             'edts-ahs-edit-current-function)
     (define-key pel:for-erlang      "E"             'edts-ahs-edit-buffer)
     (define-key pel:for-erlang      "n"             'ahs-forward)
