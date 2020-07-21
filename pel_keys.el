@@ -1315,7 +1315,7 @@ display in other window and open the related group(s) that exist."
 (pel--cfg-pkg "d"            pel:cfg-pl "D" "d-mode")
 (pel--cfg-pkg "elisp"        pel:cfg-pl "l" "lisp" "elint" "eldoc")
 (pel--cfg-pkg "elixir"       pel:cfg-pl "x" "alchemist" "alchemist-iex")
-(pel--cfg-pkg "erlang"       pel:cfg-pl "e" "erlang" "erldoc" "edts")
+(pel--cfg-pkg "erlang"       pel:cfg-pl "e" "erlang" "erldoc" "edts" "auto-highlight-symbol")
 (pel--cfg-pkg "graphviz-dot" pel:cfg-pl "g" "graphviz")
 (pel--cfg-pkg "julia"        pel:cfg-pl "j" "julia" "julia-mode" "julia-snail")
 (pel--cfg-pkg "lisp"         pel:cfg-pl "L" "lisp")
@@ -1850,6 +1850,15 @@ This is meant to be used in the d-mode hook lambda."
     (when pel-use-graphviz-dot
       (define-key pel:for-erlang "G" 'pel-render-commented-graphviz-dot))
 
+    ;; added mapping for the ahs (automatic highlight symbol)  features
+    (define-key pel:for-erlang      "e"             'edts-ahs-edit-current-function)
+    (define-key pel:for-erlang      "E"             'edts-ahs-edit-buffer)
+    (define-key pel:for-erlang      "n"             'ahs-forward)
+    (define-key pel:for-erlang      "p"             'ahs-backward)
+    (define-key pel:for-erlang      "."             'ahs-back-to-start)
+    ;; The following do not seem to do anything special in Erlang.
+    ;; (define-key pel:for-erlang      ">"             'ahs-forward-definition)
+    ;; (define-key pel:for-erlang      "<"             'ahs-backward-definition)
 
     :config
     (setq erlang-root-dir (expand-file-name pel-erlang-rootdir))
