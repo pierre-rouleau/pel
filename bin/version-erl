@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+# Name:     version-erl
+# Abstract: Print version of currently available Erlang on stdout.
+# Requires: Accessible Erlang binaries: uses erl.
+# Used by : PEL Emacs support for Erlang to auto-detect available Erlang version.
+# Last Modified Time-stamp: <2020-07-22 17:08:27, updated by Pierre Rouleau>
+# -----------------------------------------------------------------------------
+erl -eval '{ok, Version} = file:read_file(filename:join([code:root_dir(), "releases", erlang:system_info(otp_release), "OTP_VERSION"])), io:fwrite(Version), halt().' -noshell
+# -----------------------------------------------------------------------------
