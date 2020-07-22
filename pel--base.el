@@ -93,6 +93,8 @@
 ;; Identifying region:
 ;; - `pel-region-for'
 ;;
+;; Calling external processes
+;; - `pel-exec-cmd'
 
 ;;; Code:
 
@@ -164,7 +166,7 @@ Return nil if current buffer does not visit a file."
 ;; The following inline help checking for a zero-value result.
 ;; If I find something similar native in Emacs I'll use and remove this one.
 (defsubst pel-!0 (v)
-  "Return nil if 0, t otherwise."
+  "Return nil if V is 0, t otherwise."
   (not (equal v 0)))
 
 ;; -----------------------------------------------------------------------------
@@ -286,62 +288,62 @@ Return new value of ALIST.
 
 Usage Example:
 
-ELISP> (setq al '((one (\"..\" \"[..]\"))))
-((one
-  (\"..\" \"[..]\")))
+ ELISP> (setq al '((one (\"..\" \"[..]\"))))
+ ((one
+   (\"..\" \"[..]\")))
 
-ELISP> al
-((one
-  (\"..\" \"[..]\")))
+ ELISP> al
+ ((one
+   (\"..\" \"[..]\")))
 
-ELISP> (pel-cons-alist-at al 'two '(\"aa\" \"[aa]\"))
-((one
-  (\"..\" \"[..]\"))
- (two
-  (\"aa\" \"[aa]\")))
+ ELISP> (pel-cons-alist-at al 'two '(\"aa\" \"[aa]\"))
+ ((one
+   (\"..\" \"[..]\"))
+  (two
+   (\"aa\" \"[aa]\")))
 
-ELISP> al
-((one
-  (\"..\" \"[..]\"))
- (two
-  (\"aa\" \"[aa]\")))
+ ELISP> al
+ ((one
+   (\"..\" \"[..]\"))
+  (two
+   (\"aa\" \"[aa]\")))
 
-ELISP> (pel-cons-alist-at al 'tree '(\"AA\" \"[AA]\"))
-((one
-  (\"..\" \"[..]\"))
- (two
-  (\"aa\" \"[aa]\"))
- (tree
-  (\"AA\" \"[AA]\")))
+ ELISP> (pel-cons-alist-at al 'tree '(\"AA\" \"[AA]\"))
+ ((one
+   (\"..\" \"[..]\"))
+  (two
+   (\"aa\" \"[aa]\"))
+  (tree
+   (\"AA\" \"[AA]\")))
 
-ELISP> (pel-cons-alist-at al 'one '(\",,\" \"[,,]\"))
-((one
-  (\",,\" \"[,,]\")
-  (\"..\" \"[..]\"))
- (two
-  (\"aa\" \"[aa]\"))
- (tree
-  (\"AA\" \"[AA]\")))
+ ELISP> (pel-cons-alist-at al 'one '(\",,\" \"[,,]\"))
+ ((one
+   (\",,\" \"[,,]\")
+   (\"..\" \"[..]\"))
+  (two
+   (\"aa\" \"[aa]\"))
+  (tree
+   (\"AA\" \"[AA]\")))
 
-ELISP> (pel-cons-alist-at al 'tree '(\"BB\" \"[BB]\" and-something-else))
-((one
-  (\",,\" \"[,,]\")
-  (\"..\" \"[..]\"))
- (two
-  (\"aa\" \"[aa]\"))
- (tree
-  (\"BB\" \"[BB]\" and-something-else)
-  (\"AA\" \"[AA]\")))
+ ELISP> (pel-cons-alist-at al 'tree '(\"BB\" \"[BB]\" and-something-else))
+ ((one
+   (\",,\" \"[,,]\")
+   (\"..\" \"[..]\"))
+  (two
+   (\"aa\" \"[aa]\"))
+  (tree
+   (\"BB\" \"[BB]\" and-something-else)
+   (\"AA\" \"[AA]\")))
 
-ELISP> al
-((one
-  (\",,\" \"[,,]\")
-  (\"..\" \"[..]\"))
- (two
-  (\"aa\" \"[aa]\"))
- (tree
-  (\"BB\" \"[BB]\" and-something-else)
-  (\"AA\" \"[AA]\")))"
+ ELISP> al
+ ((one
+   (\",,\" \"[,,]\")
+   (\"..\" \"[..]\"))
+  (two
+   (\"aa\" \"[aa]\"))
+  (tree
+   (\"BB\" \"[BB]\" and-something-else)
+   (\"AA\" \"[AA]\")))"
   (if (length alist)
       (let* ((value (assq key alist))
              (new-value (cons val (cdr value))))
@@ -350,7 +352,7 @@ ELISP> al
               (setcdr (assq key alist) new-value)
               alist)
           (nconc alist (list (list key val)))))
-    (error "pel-cons-alist-at given an empty ALIST argument!")))
+    (error "Call to pel-cons-alist-at given an empty ALIST argument!")))
 
 ;; -----------------------------------------------------------------------------
 ;; Toggle a local mode
@@ -617,6 +619,18 @@ Return a (start . end) cons cell if found, otherwise return nil."
           (setq end (point))
           (cons beg end))))))
 
+
+;; -----------------------------------------------------------------------------
+;; Calling external processes
+;; --------------------------
+
+(defun pel-exec-cmd (cmd &rest args)
+  "Execute synchronous process CMD with ARGS.
+Return a cons cell with (exit-code . stdout-string).
+The stdout-string trailing newline is removed if present."
+  (with-temp-buffer
+    (cons (apply 'call-process cmd nil (current-buffer) nil args)
+          (replace-regexp-in-string "\n\\'" "" (buffer-string)))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel--base)
