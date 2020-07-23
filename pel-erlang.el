@@ -29,7 +29,8 @@
 
 ;;; Code:
 (require 'comint)
-
+(require 'pel--options)         ; use: pel-erlang-version-detection-method
+(require 'pel-fs)               ; use: pel-exec-pel-bin
 
 ;;-pel-autoload
 (defun pel-erlang-shell-mode-init ()
@@ -160,6 +161,26 @@ This function is meant to be called by pel-init() only."
                   (define-key prefix (kbd key) (intern s-pel-name))
                 (define-key prefix key (intern s-pel-name)))))))
     (user-error "The erlang.el package is not loaded!")))
+
+
+;; -----------------------------------------------------------------------------
+;; Detecting Erlang Versions and Controlling Erlang Man Pages to Use
+;; -----------------------------------------------------------------
+
+(defun pel-erlang-version ()
+  "Return the version of Erlang to use, according to PEL's customization."
+  (cond ((eq pel-erlang-version-detection-method 'auto-detect)
+         (let* ((exit-code.version (pel-exec-pel-bin "version-erl"))
+                (exit-code (car exit-code.version)))
+           (if (eq exit-code 0)
+               (cdr exit-code.version)
+             (user-error "Cannot detect Erlang version automatically!"))))
+        ;;
+        ((eq pel-erlang-version-detection-method 'specified)
+         pel-erlang-version)
+        ;;
+        ((eq pel-erlang-version-detection-method 'by-envvar)
+         (getenv pel-erlang-version-envvar))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-erlang)

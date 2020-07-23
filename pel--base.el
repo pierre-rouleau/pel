@@ -93,8 +93,6 @@
 ;; Identifying region:
 ;; - `pel-region-for'
 ;;
-;; Calling external processes
-;; - `pel-exec-cmd'
 
 ;;; Code:
 
@@ -618,19 +616,6 @@ Return a (start . end) cons cell if found, otherwise return nil."
           (end-of-line 1)
           (setq end (point))
           (cons beg end))))))
-
-
-;; -----------------------------------------------------------------------------
-;; Calling external processes
-;; --------------------------
-
-(defun pel-exec-cmd (cmd &rest args)
-  "Execute synchronous process CMD with ARGS.
-Return a cons cell with (exit-code . stdout-string).
-The stdout-string trailing newline is removed if present."
-  (with-temp-buffer
-    (cons (apply 'call-process cmd nil (current-buffer) nil args)
-          (replace-regexp-in-string "\n\\'" "" (buffer-string)))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel--base)
