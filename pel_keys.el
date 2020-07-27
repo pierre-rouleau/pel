@@ -1071,6 +1071,15 @@ For example, applied to a directory name, macOS Finder is used."
   (define-key pel:         "y"            #'popup-kill-ring))
 
 
+(when pel-use-smart-dash
+  (use-package smart-dash
+    :ensure t
+    :pin melpa
+    :commands smart-dash-mode
+    :init
+    (define-key pel: (kbd "M--") 'smart-dash-mode)))
+
+
 (when (display-graphic-p)
   ;; In graphics mode provide control over cursor color and type (shape): the
   ;; logic is in the pel-cursor.el file.

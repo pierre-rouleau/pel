@@ -952,6 +952,15 @@ The available options are:
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-smart-dash nil
+  "Control whether PEL activates the smart-dash package.
+This helps inserting underscore characters by typing the dash key without
+having to hit the Shift key.
+See the author site at URL http://malsyned.net/smart-dash.html"
+  :group 'pel-pkg-for-insertions
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; -----------------------------------------------------------------------------
 ;; Undo Mechanism Management
 ;; -------------------------

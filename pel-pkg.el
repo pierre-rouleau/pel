@@ -80,6 +80,7 @@
     (rg                  "20200307.1623") ; melpa. Melpa-stable: 1.8.1
     (rust-mode           "20200303.932")  ; melpa. Melpa-stable: 0.4.0
     (slime               "20200228.1656") ; melpa. Melpa-stable: 2.24
+    (smart-dash          "20200104.1620") ; melpa.
     (smooth-scrolling    "20161002.1949") ; melpa. Melpa-stable: 2.0.0
     ;; sr-speedbar of 2014 has a bug that was fixed
     ;; in the 2016 version.

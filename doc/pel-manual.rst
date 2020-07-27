@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-07-16 18:29:18, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-07-27 10:55:40, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2526,6 +2526,13 @@ following commands:
   - ``pel-insert-iso8601-timestamp`` inserts a ISO 8601 conforming date and time
     string.
 
+Another **very useful** feature is the use of the ``smart-dash-mode`` provided
+by the smart-dash_ external package.  PEL provides the ``<f11> M--`` binding to
+toggle this useful mode on and off. When the ``smart-dash-mode`` is activated,
+you can insert underscore characters by hitting the dash (``'-'``) key without
+having to press the Shift key.   And for programming languages identified by the
+``smart-dash-c-modes`` user option you can insert ``--`` and ``->`` normally.
+
 The PEL binding include more commands, some are Emacs standard commands, other
 are from other packages.  All are listed in the `Inserting Text`_ PDF
 documentation.
@@ -4202,6 +4209,7 @@ regex-tool_                   MELPA_
 `rg`_                         MELPA_
 rust-mode_                    MELPA_
 slime_                        MELPA_
+smart-dash_                   MELPA_
 smooth-scrolling_             MELPA_
 sr-speedbar_                  MELPA_
 swiper_                       MELPA_
@@ -4299,6 +4307,7 @@ Hopefully you will find PEL useful for using these packages.
 .. _rust-mode:                 https://melpa.org/#/rust-mode
 .. _slime:                     https://melpa.org/#/slime
 .. _slime package:             https://melpa.org/#/slime
+.. _smart-dash:                https://melpa.org/#/smart-dash
 .. _smooth-scrolling:          https://melpa.org/#/smooth-scrolling
 .. _sr-speedbar:               https://melpa.org/#/sr-speedbar
 .. _swiper:                    https://melpa.org/#/swiper
