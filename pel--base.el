@@ -93,6 +93,9 @@
 ;; Identifying region:
 ;; - `pel-region-for'
 ;;
+;; Insert or overwrite text
+;; - `pel-insert-or-overwrite'
+;;
 
 ;;; Code:
 
@@ -616,6 +619,21 @@ Return a (start . end) cons cell if found, otherwise return nil."
           (end-of-line 1)
           (setq end (point))
           (cons beg end))))))
+
+;; -----------------------------------------------------------------------------
+;; Insert or overwrite text
+;; - `pel-insert-or-overwrite'
+;;
+
+(defun pel-insert-or-overwrite (text)
+  "Insert or overwrite TEXT depending of overwrite-mode status.
+TEST can be a single character or a string.
+Multi-byte characters are handled properly."
+  (when overwrite-mode
+    (if (stringp text)
+        (delete-char (length text))
+      (delete-char 1)))
+  (insert text))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel--base)
