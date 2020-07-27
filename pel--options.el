@@ -961,6 +961,20 @@ See the author site at URL http://malsyned.net/smart-dash.html"
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-modes-activating-smart-dash-mode
+  '(c-mode
+    c++-mode
+    d-mode
+    elixir-mode
+    erlang-mode
+    python-mode
+    shell-script-mode)
+  "List of major modes that automatically activate smart-dash-mode.
+Used when `pel-use-smart-dash' user option is t.
+To activate the changes for this you must 'Apply and Save' and restart Emacs."
+  :group 'pel-pkg-for-spelling
+  :type
+  '(repeat symbol))
 ;; -----------------------------------------------------------------------------
 ;; Undo Mechanism Management
 ;; -------------------------

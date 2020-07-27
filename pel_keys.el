@@ -1077,8 +1077,12 @@ For example, applied to a directory name, macOS Finder is used."
     :pin melpa
     :commands smart-dash-mode
     :init
-    (define-key pel: (kbd "M--") 'smart-dash-mode)))
+    (define-key pel: (kbd "M--") 'smart-dash-mode)
 
+    (dolist (mode pel-modes-activating-smart-dash-mode)
+      (when mode
+        (add-hook (pel-hook-symbol-for mode) (lambda ()
+                                               (smart-dash-mode 1)))))))
 
 (when (display-graphic-p)
   ;; In graphics mode provide control over cursor color and type (shape): the
@@ -1308,6 +1312,7 @@ display in other window and open the related group(s) that exist."
 (pel--cfg-pkg "dired"       pel:cfg "d" "dired")
 (pel--cfg-pkg "filemng"     pel:cfg "f" "files")
 (pel--cfg-pkg "grep"        pel:cfg "g" "grep" "rg" "ripgrep")
+(pel--cfg-pkg "insertions"  pel:cfg "I" "lice" "smart-dash")
 (pel--cfg-pkg "key-chord"   pel:cfg "K")
 (pel--cfg-pkg "regexp"      pel:cfg "r")
 (pel--cfg-pkg "search"      pel:cfg "s" "anzu" "swiper")
