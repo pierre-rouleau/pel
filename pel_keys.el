@@ -1653,7 +1653,9 @@ MODE must be a symbol."
   (pel-setq c-basic-offset pel-c-indentation)
   ;; Configure some of the special CC minor modes
   (pel--set-cc-style 'c-mode pel-c-bracket-style)
-  (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline)))
+  (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+  ;; Configure M-( to put parentheses after a function name.
+  (set (make-local-variable 'parens-require-spaces) nil))
 
 (define-pel-global-prefix pel:for-c         (kbd "<f11> SPC c"))
 (define-pel-global-prefix pel:for-c-preproc (kbd "<f11> SPC c #"))
@@ -1692,7 +1694,9 @@ MODE must be a symbol."
   (pel-setq c-basic-offset pel-c++-indentation)
   ;; Configure some of the special CC minor modes
   (pel--set-cc-style 'c++-mode pel-c++-bracket-style)
-  (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline)))
+  (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+  ;; Configure M-( to put parentheses after a function name.
+  (set (make-local-variable 'parens-require-spaces) nil))
 
 (define-pel-global-prefix pel:for-c++         (kbd "<f11> SPC C"))
 (define-pel-global-prefix pel:for-c++-preproc (kbd "<f11> SPC C #"))
@@ -1727,7 +1731,9 @@ This is meant to be used in the d-mode hook lambda."
     ;; (and therefore not known at compilation when CC Mode not loaded).
     (pel-setq c-basic-offset pel-d-indentation)
     ;; Configure some of the special CC minor modes
-    (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline)))
+    (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+    ;; Configure M-( to put parentheses after a function name.
+    (set (make-local-variable 'parens-require-spaces) nil))
 
   (use-package d-mode
     :ensure t
@@ -1805,7 +1811,9 @@ This is meant to be used in the d-mode hook lambda."
   (defun pel--setup-erlang ()
     "Activate Erlang setup."
     (pel-local-set-f12-M-f12 'pel:for-erlang)
-    (pel--install-erlang-skel pel:erlang-skel))
+    (pel--install-erlang-skel pel:erlang-skel)
+    ;; Configure M-( to put parentheses after a function name.
+    (set (make-local-variable 'parens-require-spaces) nil))
 
   ;;
   (when pel-erlang-shell-prevent-echo
