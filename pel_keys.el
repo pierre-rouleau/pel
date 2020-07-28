@@ -2429,9 +2429,11 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:mark (kbd  "<down>")   'pel-mark-line-down)
 (define-key pel:mark       "M"        #'transient-mark-mode)
 (define-key pel:mark       "b"        #'mark-whole-buffer)
+(define-key pel:mark       "g"        #'pop-global-mark)
 (define-key pel:mark       "h"        #'mark-paragraph)
 (define-key pel:mark       "p"        #'mark-page)
 (define-key pel:mark       "r"         'pel-cua-rectangle-mark)
+(define-key pel:mark       "s"        #'set-mark-command)
 (define-key pel:mark       "w"        #'mark-word)
 (define-key pel:mark       "x"        #'mark-sexp)
 ;;
@@ -2506,8 +2508,9 @@ This is meant to be used in the d-mode hook lambda."
 ;; To help keep track what keay are used, the list of key under the pel:help
 ;; prefix are shown below.
 ;;
-;;   Used `pel:help' keys:  A a c d e i k m s S w X
+;;   Used `pel:help' keys:  . ? A a c d e i k m s S w X
 
+(define-key pel:help "." 'pel-mark-ring-stats)
 (define-key pel:help "m"  #'man)
 (define-key pel:help "w"  #'woman)
 (define-key pel:help "?"  'pel-show-major-mode)
