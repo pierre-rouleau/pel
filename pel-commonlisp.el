@@ -41,7 +41,7 @@ Should be called by the init.el file."
   (unless use-slime
     (add-hook 'lisp-mode-hook
               (lambda ()
-                (set (make-local-variable lisp-indent-function)
+                (set (make-local-variable 'lisp-indent-function)
                      'common-lisp-indent-function)))))
 
 ;; -----------------------------------------------------------------------------
