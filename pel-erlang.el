@@ -107,6 +107,10 @@ Skip over all compiler directives."
 ;; -----------------------------------------------------------------------------
 ;; Install Erlang Skeletons as key-bound commands
 ;; ----------------------------------------------
+;;
+;; Add extra tempo skeletons for Erlang to complement what erlang.el already
+;; have, add key bindings to allow inserting the template text with a keystroke
+;; and provide a minor mode to help navigating inside the template.
 
 
 (defvar pel--erl-skel-key '(("if"                      . "i")
@@ -151,47 +155,45 @@ Skip over all compiler directives."
   nil)
 
 (defvar pel-erlang-skel-export
-  '((pel--erlang-skel-skip-blank) o >
-    "-export([" n>
-    p n>
-    "])." p )
+  '(& "-export([" p "/"  n> "])." > n )
   "*The skeleton of a `export' declaration.
 Please see the function `tempo-define-template'.")
 
 (defvar pel-erlang-skel-import
   '((pel--erlang-skel-skip-blank) o >
-    "-import(" p ", [" n>
-    p n>
-    "])." p )
+    "-import(" (P "module: ") p ", [" p "/" n>
+    "])." > n )
   "*The skeleton of a `import' declaration.
 Please see the function `tempo-define-template'.")
 
 (defvar pel-erlang-skel-try
   '((pel--erlang-skel-skip-blank) o >
     "try "  n>
-    p  n>
-    p "catch" n>
-    p "oops         -> got_throw_oops;"      n>
-    p "throw:Other  -> {got_throw, Other};"  n>
-    p "exit:Reason  -> {got_exit, Reason};"  n>
-    p "error:Reason -> {got_error, Reason}"  n>
-    "end." > p)
+    p   n>
+    "catch" > n>
+    p "oops         -> got_throw_oops;"     > n>
+    p "throw:Other  -> {got_throw, Other};" > n>
+    p "exit:Reason  -> {got_exit, Reason};" > n>
+    p "error:Reason -> {got_error, Reason}" > n>
+    "end." > n)
   "*The skeleton of a `try' expression.
 Please see the function `tempo-define-template'.")
 
 (defvar pel-erlang-skel-try-of
   '((pel--erlang-skel-skip-blank) o >
-    "try " p " of" n>
-    " when " p " ->"  n>
-    p " ;" n>
-    " when " p " ->"  n>
+    "try "n>
+    p n>
+    " of" > n>
+    > p " when " p " ->" >  n>
     p  n>
-    "catch" n>
-    p "oops         when " p "  -> got_throw_oops;"      n>
-    p "throw:Other  when " p "  -> {got_throw, Other};"  n>
-    p "exit:Reason  when " p "  -> {got_exit, Reason};"  n>
-    p "error:Reason when " p "  -> {got_error, Reason}"  n>
-    "end." > p)
+    "catch" > n>
+    p "oops         when " p "  -> got_throw_oops;"     > n>
+    p "throw:Other  when " p "  -> {got_throw, Other};" > n>
+    p "exit:Reason  when " p "  -> {got_exit, Reason};" > n>
+    p "error:Reason when " p "  -> {got_error, Reason}" > n>
+    "after" > n>
+    p  n>
+    "end." > n)
   "*The skeleton of a `try' expression.
 Please see the function `tempo-define-template'.")
 
