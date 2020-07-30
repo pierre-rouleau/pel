@@ -144,6 +144,7 @@
                  pel-beginning-of-next-clause
                  pel-previous-erl-function
                  pel-next-erl-function
+                 pel--erlang-mode-setup
                  pel--install-erlang-skel))
     (autoload fct "pel-erlang"))
 

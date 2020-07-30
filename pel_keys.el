@@ -1805,13 +1805,13 @@ This is meant to be used in the d-mode hook lambda."
   (define-pel-global-prefix pel:erlang-clause   (kbd "<f11> SPC e c"))
   (define-pel-global-prefix pel:erlang-analysis (kbd "<f11> SPC e a"))
   (define-pel-global-prefix pel:erlang-debug    (kbd "<f11> SPC e d"))
-
   (define-pel-global-prefix pel:erlang-skel     (kbd "<f11> SPC e <f12>"))
 
   (defun pel--setup-erlang ()
     "Activate Erlang setup."
     (pel-local-set-f12-M-f12 'pel:for-erlang)
     (pel--install-erlang-skel pel:erlang-skel)
+    (define-key pel:erlang-skel (kbd "<f12>") 'tempo-complete-tag)
     ;; Configure M-( to put parentheses after a function name.
     (set (make-local-variable 'parens-require-spaces) nil))
 
@@ -1837,10 +1837,21 @@ This is meant to be used in the d-mode hook lambda."
            ("\\Emakefile"          . erlang-mode))
 
     :init
+    ;; Augment the skeletons defined inside erlang.el.
+    ;; Do this once - right after erlang.el file is loaded and
+    ;; before the erlang-mode executes.
+    (advice-add 'erlang-mode :before #'pel--erlang-mode-setup)
+
+    (use-package pel-tempo
+      :commands pel-tempo-mode
+      :init
+      (define-key pel:erlang-skel " " 'pel-tempo-mode))
+
     ;; activate the <f12> key binding for erlang-mode
     (pel--mode-hook-maybe-call
      'pel--setup-erlang
      'erlang-mode 'erlang-mode-hook)
+
 
     (define-key pel:for-erlang      "?"             'erlang-version)
 
