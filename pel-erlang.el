@@ -32,7 +32,8 @@
 (require 'pel--options)         ; use: pel-erlang-version-detection-method
 (require 'pel-fs)               ; use: pel-exec-pel-bin
 (require 'pel-list)             ; use: pel-insert-list-in-list
-(require 'pel-tempo)            ; use: pel-tempo-mode
+(require 'pel-tempo)            ; use: pel-tempo-mode,
+;;                              ;      pel-tempo-install-pel-skel
 
 ;;-pel-autoload
 (defun pel-erlang-shell-mode-init ()
@@ -216,40 +217,26 @@ Please see the function `tempo-define-template'.")
       ;; the list erlang-skel
       (setq erlang-skel (pel-insert-list-in-list
                          pel--more-erlang-skel 2 erlang-skel))))
-(defun pel--install-erlang-skel (prefix)
-  "Create PEL functions and key bindings in PREFIX for Erlang skeletons.
-This function is meant to be called by pel-init() only."
-  (if (and (require 'erlang nil :noerror)
-           (boundp 'erlang-skel))
-      (dolist (skel erlang-skel)
-        (when skel
-          (let* ((s-name (cadr skel))
-                 (s-tempo-name (format "tempo-template-erlang-%s" s-name))
-                 (s-pel-name   (format "pel-erl-%s" s-name))
-                 (docstring    (format "\
-Insert '%s' Erlang skeleton (also available through Erlang/Skeleton menu)."
-                                       s-name))
-                 (key          (cdr (assoc s-name pel--erl-skel-key))))
-            (defalias (intern s-pel-name)
-              (lambda ()
-                (interactive)
-                (funcall (intern s-tempo-name))
-                (pel-tempo-mode 1))
-              docstring)
-            (when key
-              (if (> (length key) 1)
-                  (define-key prefix (kbd key) (intern s-pel-name))
-                (define-key prefix key (intern s-pel-name)))))))
-    (user-error "The erlang.el package is not loaded!")))
-
 
 ;;-pel-autoload
-(defun pel--erlang-mode-setup ()
-  "A replacement function for the erlang-mode.
-It adds extra tempo templates to the Erlang mode.
+(defun pel-erlang-mode-setup ()
+  "Provide extra functionality to the Erlang mode.
+Add extra tempo templates.
 This function is meant to be used as an `advice-add'
 to execute *before* `erlang-mode'."
   (pel--update-erlang-skel))
+
+;; --
+
+;;-pel-autoload
+(defun pel--install-erlang-skel (key-map)
+  "Create PEL Erlang skeleton functions and bind them in the KEY-MAP specified.
+This function is meant to be called by pel-init() only."
+  (if (and (require 'erlang nil :noerror)
+               (boundp 'erlang-skel))
+      (pel-tempo-install-pel-skel
+       "erlang" erlang-skel key-map pel--erl-skel-key "erl")
+    (user-error "The erlang.el package is not loaded!")))
 
 ;; -----------------------------------------------------------------------------
 ;; Detecting Erlang Versions and Controlling Erlang Man Pages to Use

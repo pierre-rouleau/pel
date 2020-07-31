@@ -1840,7 +1840,7 @@ This is meant to be used in the d-mode hook lambda."
     ;; Augment the skeletons defined inside erlang.el.
     ;; Do this once - right after erlang.el file is loaded and
     ;; before the erlang-mode executes.
-    (advice-add 'erlang-mode :before #'pel--erlang-mode-setup)
+    (advice-add 'erlang-mode :before #'pel-erlang-mode-setup)
 
     (use-package pel-tempo
       :commands pel-tempo-mode

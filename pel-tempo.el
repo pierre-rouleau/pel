@@ -21,21 +21,59 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;; -----------------------------------------------------------------------------
+;;; Attribution:
+;;
+;; The ideas that triggered writing this code came from version 2.4.8 of the
+;; erlang.el and its associate erlang-skel.el file, available at GitHub at
+;; URL https://github.com/erlang/otp/blob/master/lib/tools/emacs/erlang.el
+;;
+;; The functions `pel-tempo-create' and `pel-tempo-include' draw from ideas
+;; in code written in erlang.el and erlang-skel.el; generalizing the ideas
+;; to allow support of other programming languages while retaining the
+;; ability to be used to support Erlang.
+
+;; -----------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This file defines the very simple pel-tempo-mode, a mode that does only one
-;; thing: it activates a key-map to ease execution of the `tempo-forward-mark'
-;; and `tempo-backward-mark' commands.  These commands move point to the next or
-;; previous template "hot-spot" (officially called tempo marks): the location
-;; where extra text of the template must be filled in by the user.
+;; This file defines logic to create interactive functions that insert text
+;; generated with the tempo skeleton mechanism.
+;;
+;; It also defines the very simple pel-tempo-mode, a mode that does only one
+;; thing: it activates a key-map to ease execution of the
+;; `tempo-forward-mark' and `tempo-backward-mark' commands.  These commands
+;; move point to the next or previous template "hot-spot" (officially called
+;; tempo marks): the location where extra text of the template must be
+;; filled in by the user.
 ;;
 ;; While active the pel-tempo-mode displays its short lighter: " ‡".
+;;
+;;
+;; Tempo template creation utilities:
+;;
+;;   A set of functions used to simplify the creation of commands that insert
+;;   tempo skeletons along with the ability to create a menu of those skeletons.
+;;
+;;   - Create tempo-template interactive functions:
+;;
+;;     - pel-tempo-create
+;;       - pel-tempo-include
+;;
+;;   - Create the PEL tempo-template interactive functions with bindings
+;;
+;;     - pel-tempo-install-pel-skel
+;;
+;; Pel Tempo minor mode:
+;;
+;; - pel-tempo-mode
 
 ;; -----------------------------------------------------------------------------
 ;;; Code:
 
-(defvar pel-tempo-mode nil
-  "Non-nil when `pel-tempo-mode' is active, nil otherwise.")
+;; pel-tempo-mode
+;; --------------
+;;
+;; Defines the pel-tempo-mode, a minor mode that provides access to key bindings
+;; to navigate inside the tempo template.
 
 (defvar pel-tempo-minor-mode-map
   (let ((map (make-sparse-keymap)))
@@ -63,6 +101,123 @@ Key1 bindings:
   :lighter " ‡"
   :keymap pel-tempo-minor-mode-map
   )
+
+;; -----------------------------------------------------------------------------
+;; Tempo template creation utilities
+;; =================================
+;;
+;; A set of functions used to simplify the creation of commands that insert
+;; tempo skeletons along with the ability to create a menu of those skeletons.
+;;
+;; - Create tempo-template interactive functions:
+;;
+;;   - pel-tempo-create
+;;     - pel-tempo-include
+;;
+;; - Create the PEL tempo-template interactive functions with bindings
+;;
+;;   - pel-tempo-install-pel-skel
+
+;; Create tempo-template interactive functions
+;; -------------------------------------------
+
+
+(defun pel-tempo-include (&rest args)
+  "Return a tempo include list of the elements in ARGS.
+The first element of the returned list is the 'l symbol and then
+each other elements are the elements of each ARG, where ARG is one of the ARGS
+and is itself a list.
+
+This is used to inserts several elements inside a tempo template."
+  (let (elements)
+    (dolist (arg args)
+      (dolist (elem arg)
+        (setq elements (cons elem elements))))
+    (cons 'l (nreverse elements))))
+
+(defun pel-tempo-create (mode skeletons  &optional menu-item-creator-function)
+  "Create commands that insert MODE code templates using provided SKELETONS.
+- MODE: string: the name of a programming language or markup language
+        for which the SKELETONS are provided.
+        The name of created interactive function is 'tempo-template-MODE-NAME'
+        where MODE is taken from the argument and NAME is taken from the second
+        element of the SKELETONS list entry.
+- SKELETONS: a list of skel-elem: (menu-tag: string, name: string, code: list)
+         Each entry defines one skeleton.  The menu-tag is the text to display
+         inside the menu. The name is used in the function name. The code is the
+         tempo skeleton elements.  The can be other elements inside the
+         skel-elem list, these will be ignored but are passed to the
+         MENU-ITEM-CREATOR-FUNCTION.
+- MENU-ITEM-CREATOR-FUNCTION: symbol (or nil).  The function used it to create a
+         skeleton menu entry. Takes one element: the skel-elem list.
+         If MENU-ITEM-CREATOR-FUNCTION is nil, no menu is created.
+Return the created skeleton menu list (or nil if no MENU-ITEM-CREATOR-FUNCTION)."
+  (if (and (require 'tempo nil :noerror)
+           (fboundp 'tempo-define-template))
+      (let (menu
+            (menu-create (or menu-item-creator-function 'ignore)))
+        (dolist (skel-elem skeletons)
+          (let ((menu-tag  (car skel-elem))
+                (name      (nth 1 skel-elem))
+                (skel-code (nth 2 skel-elem)))
+            (if (null menu-tag)
+                ;; menu separator
+                (setq menu (cons nil menu))
+              ;; skeleton entry
+              ;; - call tempo-define-template with its arguments
+              (funcall 'tempo-define-template
+                       (concat mode "-" name)
+                       (list (list 'pel-tempo-include skel-code))
+                       name)
+              ;; - insert a menu item for the skeleton
+              (setq menu (cons (funcall menu-create skel-elem)
+                               menu)))))
+        ;; return accumulated menu - nil if none
+        (if menu-item-creator-function menu nil))
+    (error "Failed loading tempo!")))
+
+
+
+;; Create the PEL tempo-template interactive functions with bindings
+;; -----------------------------------------------------------------
+
+
+(defun pel-tempo-install-pel-skel (mode skeletons key-map keys-alist
+  &optional mode-abbrev)
+  "Create commands to insert MODE specific SKELETONS.
+These commands are bound to keys defined in the
+KEYS-ALIST, a alist of (skel-name . key) bound inside the KEY-MAP.
+The skel-name must correspond to one of the names in the SKELETONS: the
+  second element of a SKELETONS entry.
+The commands created have names that are like 'pel-ABBREV-NAME' where
+ABBREV is MODE-ABBREV if specified (or MODE otherwise), and NAME corresponds
+to the second element of the SKELETONS entry."
+  (setq mode-abbrev (or mode-abbrev mode))
+  (let ((cap-mode     (capitalize mode)))
+    (dolist (skel skeletons)
+      (when skel
+        (let* ((s-name        (nth 1 skel))
+               (s-tempo-fname (format "tempo-template-%s-%s" mode s-name))
+               (s-pel-fname   (format "pel-%s-%s" mode-abbrev s-name))
+               (s-docstring   (format "\
+Insert '%s' %s skeleton's text (also available through %s/Skeleton menu)."
+                                      s-name cap-mode cap-mode))
+               (key           (cdr (assoc s-name keys-alist))))
+          ;; Define the PEL command that inserts the text
+          ;; for the specific template. It uses the tempo function
+          ;; and activates the pel-tempo-mode minor mode.
+          (defalias (intern s-pel-fname)
+            (lambda ()
+              (interactive)
+              (funcall (intern s-tempo-fname))
+              (pel-tempo-mode 1))
+            s-docstring)
+          ;; Bind the function to the identified keystroke.
+          (when key
+            (define-key
+              key-map
+              (if (> (length key) 1) (kbd key) key)
+              (intern s-pel-fname))))))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-tempo)
