@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-07-27 10:55:40, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-07-31 19:44:50, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4133,6 +4133,9 @@ PEL uses the following libraries distributed with GNU Emacs:
 #. `simple      <https://github.com/emacs-mirror/emacs/blob/master/lisp/simple.el>`_
 #. `subr-x      <https://github.com/emacs-mirror/emacs/blob/master/lisp/emacs-lisp/subr-x.el>`_
 #. `subword     <https://github.com/emacs-mirror/emacs/blob/master/lisp/progmodes/subword.el>`_
+#. `skeleton    <https://github.com/emacs-mirror/emacs/blob/master/lisp/skeleton.el>`_
+#. `time-stamp  <https://github.com/emacs-mirror/emacs/blob/master/lisp/time-stamp.el>`_
+#. `tempo       <https://github.com/emacs-mirror/emacs/blob/master/lisp/tempo.el>`_
 #. `thingatpt   <https://github.com/emacs-mirror/emacs/blob/master/lisp/thingatpt.el>`_
 #. `uniquify    <https://github.com/emacs-mirror/emacs/blob/master/lisp/uniquify.el>`_
 #. `webjump     <https://github.com/emacs-mirror/emacs/blob/master/lisp/net/webjump.el>`_
