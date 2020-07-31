@@ -33,6 +33,7 @@
 ;; following group hierarchy:
 ;;
 ;; - pel
+;;   - pel-file-management
 ;;   - pel-identification
 ;;   - pel-kbmacro
 ;;   - pel-text-insert
@@ -113,6 +114,41 @@
                     ,(expand-file-name "./docs/pdf/"))
   :package-version '(pel . "0.1.1"))
 
+
+;; -----------------------------------------------------------------------------
+(defgroup pel-file-management nil
+  "PEL File Management Configurations."
+  :group 'pel)
+
+(defcustom pel-delete-trailing-whitespace t
+  "Controls whether whitespaces are automatically deleted when file is saved.
+Deleted automatically when non-nil, don't otherwise."
+  :group 'pel-file-management
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-update-time-stamp t
+  "Controls whether file timestamp is updated automatically on file save.
+Update timestamp automatically when non-nil, don't otherwise.
+See the time stamp format and location constraints in the Emacs manual
+by executing:  M-: (info \"(emacs) Time Stamps\")."
+  :group 'pel-file-management
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-update-copyright t
+  "Controls whether copyright notice is updated automatically on file save.
+Update copyright notice automatically when non-nil, don't otherwise."
+  :group 'pel-file-management
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-make-script-executable t
+  "Controls whether script files are automatically made executable when saved.
+make script files executable on save when non-nil, don't otherwise."
+  :group 'pel-file-management
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; -----------------------------------------------------------------------------
 (defgroup pel-identification nil
@@ -1682,6 +1718,31 @@ ie. priority is given to flymake because it is part of Emacs."
   "Control whether PEL uses EDTS when `pel-use-erlang' is t.
 EDTS := Erlang Development Tool Suite."
   :group 'pel-pkg-for-erlang
+  :type 'boolean
+  :safe #'booleanp)
+
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defgroup pel-erlang-code-style nil
+  "Erlang Source Code Style options."
+  :group 'pel-pkg-for-erlang)
+
+(defcustom pel-erlang-skel-use-separators t
+  "Specifies whether Erlang code block include line separators.
+If nil no line separator comment is used, otherwise line separator
+comments of length controlled by variable `fill-column' are inserted."
+  :group 'pel-erlang-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-erlang-skel-use-end-separators t
+  "Specifies whether Erlang code block include line separators trailers.
+If nil, several comment blocks like the function declaration comment blocks
+do not include a trailing line separator comment even when the
+variable `pel-erlang-skel-use-separators' is t.
+If t, a comment block that starts with a line separator also ends
+with a line separator of length controlled by variable `fill-column'."
+  :group 'pel-erlang-code-style
   :type 'boolean
   :safe #'booleanp)
 

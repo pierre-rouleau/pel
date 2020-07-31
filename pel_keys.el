@@ -82,6 +82,28 @@
       (pel--autoload-init)))
 
 ;; -----------------------------------------------------------------------------
+;; Actions on File Save
+;; --------------------
+;; As controlled by PEL customized user options.
+
+(when pel-delete-trailing-whitespace
+  ;; - Remove trailing whitespaces on file save
+  (add-hook 'before-save-hook 'delete-trailing-whitespace))
+
+(when pel-update-time-stamp
+  ;; - Update file timestamp on file same (if any)
+  (add-hook 'before-save-hook 'time-stamp))
+
+(when pel-update-copyright
+  ;; Update the copyright notice present in a file
+  (add-hook 'before-save-hook 'copyright-update))
+
+(when pel-make-script-executable
+  ;; - Make script file executable on file save
+  (add-hook 'after-save-hook
+            'executable-make-buffer-file-executable-if-script-p))
+
+;; -----------------------------------------------------------------------------
 ;; Utilities
 ;; ---------
 
