@@ -1381,7 +1381,7 @@ display in other window and open the related group(s) that exist."
 (pel--cfg-pkg "dired"       pel:cfg "d" "dired")
 (pel--cfg-pkg "filemng"     pel:cfg "f" "files")
 (pel--cfg-pkg "grep"        pel:cfg "g" "grep" "rg" "ripgrep")
-(pel--cfg-pkg "insertions"  pel:cfg "I" "lice" "smart-dash")
+(pel--cfg-pkg "insertions"  pel:cfg "I" "lice" "smart-dash" "time-stamp")
 (pel--cfg-pkg "key-chord"   pel:cfg "K")
 (pel--cfg-pkg "navigation"  pel:cfg "n" "avy")
 (pel--cfg-pkg "regexp"      pel:cfg "r")
