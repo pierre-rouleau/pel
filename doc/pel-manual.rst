@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-07-31 19:44:50, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-01 12:15:37, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1843,7 +1843,11 @@ PEL Navigation Support
 ----------------------
 
 :PDF Docs: `Navigation`_.
-:PEL Customization: *none*
+:PEL Customization: - Group: ``pel-pkg-for-navigation`` (``<f11> <f1> n``):
+
+                      - ``pel-use-any``
+                      - ``pel-use-ace-link``
+
 :PEL Key Prefix: *none*
 
 The `pel-navigate`_ file provides a collection of navigation commands that
@@ -1881,6 +1885,11 @@ complement the standard Emacs navigation commands.
   next function definition. This complements ``beginning-of-defun`` which
   only reaches the same location by moving backwards.
 
+PEL also provides ability to use the `avy`_ and `ace-link`_ external packages to
+provide super efficient navigation inside windows and *across* windows using the
+keyboard home row!
+
+The details are available in the `Navigation`_ PDF table.
 
 PEL Number Keypad Support
 -------------------------
@@ -4116,6 +4125,7 @@ PEL uses the following libraries distributed with GNU Emacs:
 #. `ert         <https://github.com/emacs-mirror/emacs/blob/master/lisp/emacs-lisp/ert.el>`_
 #. `ffap        <https://github.com/emacs-mirror/emacs/blob/master/lisp/ffap.el>`_
 #. `flyspell    <https://github.com/emacs-mirror/emacs/blob/master/lisp/textmodes/flyspell.el>`_
+#. `goto-addr   <https://github.com/emacs-mirror/emacs/blob/master/lisp/net/goto-addr.el>`_
 #. `hippie-exp  <https://github.com/emacs-mirror/emacs/blob/master/lisp/hippie-exp.el>`_
 #. `hl-line     <https://github.com/emacs-mirror/emacs/blob/master/lisp/hl-line.el>`_
 #. `ido         <https://github.com/emacs-mirror/emacs/blob/master/lisp/ido.el>`_
@@ -4152,13 +4162,15 @@ following table when the corresponding PEL user option is set to **t**:
 ============================= ==========================
 Package Name & Archive link   Archive Site
 ============================= ==========================
+ace-link_                     MELPA_
+ace-window_                   MELPA_
 `ag`_                         MELPA_
 alchemist_                    MELPA_
-`ascii-table`_                MELPA_
-`ace-window`_                 MELPA_
-apples-mode_                  MELPA_
 anzu_                         MELPA_
-`auto-complete`_              MELPA_
+apples-mode_                  MELPA_
+ascii-table_                  MELPA_
+auto-complete_                MELPA_
+`avy`_                        MELPA_
 `bind-key`_                   MELPA_
 `bm`_                         MELPA_
 `c-eldoc`_                    MELPA_
@@ -4243,7 +4255,7 @@ Hopefully you will find PEL useful for using these packages.
 
 .. References
 
-
+.. _ace-link:                  https://melpa.org/#/ace-link
 .. _ace-window:
 .. _ace-window package:        https://melpa.org/#/ace-window
 .. _ag:                        https://melpa.org/#/ag
@@ -4254,6 +4266,7 @@ Hopefully you will find PEL useful for using these packages.
 .. _auto-complete:
 .. _Auto Complete:
 .. _auto-complete package:     https://melpa.org/#/auto-complete
+.. _avy:                       https://melpa.org/#/avy
 .. _MELPA:                     https://melpa.org/
 .. _MELPA-STABLE:              https://stable.melpa.org/
 .. _use-package:               https://melpa.org/#/use-package

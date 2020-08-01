@@ -287,6 +287,53 @@ Done in this function to allow advising libraries that remap these keys."
 (global-set-key "\C-x\C-b" 'ibuffer)
 
 ;; -----------------------------------------------------------------------------
+;; ace-link
+;; --------
+;;
+;; ace-link provides quick navigation in info-mode, help-mode, woman-mode,
+;; eww-mode, compilation-mode, Custom mode and several other.
+;; In these modes, the 'o' key puts a letter to identify the target links.
+;; See URL https://github.com/abo-abo/ace-link
+(when pel-use-ace-link
+  (use-package ace-link
+    :ensure t
+    :pin melpa
+    :defer 1.5
+    :config
+    (ace-link-setup-default)))
+
+;; -----------------------------------------------------------------------------
+;; avy: fast tree movement
+;; -----------------------
+;;
+;; The avy package provides quick navigation inside any buffer and across
+;; windows. See URL https://github.com/abo-abo/avy
+(when pel-use-avy
+  (use-package avy
+    :ensure t
+    :pin melpa
+    :commands (avy-goto-char
+               avy-goto-char-2
+               avy-goto-char-timer
+               avy-goto-line
+               avy-goto-word-1
+               avy-goto-word-0)
+    :init
+    ;; since avy uses home row keys for targets, the bindings also use
+    ;; keys that are on the home row (at least for the the single key bindings).
+    ;; This helps speed the typing.  The meta key is used with some extra
+    ;; bindings using the control key in graphics mode (since these keys are not
+    ;; available in terminal mode).
+    (when (display-graphic-p)
+      (global-set-key (kbd "C-:") 'avy-goto-char)
+      (global-set-key (kbd "C-'") 'avy-goto-char-2))
+    (global-set-key  (kbd "M-G")  'avy-goto-char)
+    (global-set-key  (kbd "M-H")  'avy-goto-char-2)
+    (global-set-key (kbd "M-g f") 'avy-goto-line)
+    (global-set-key (kbd "M-g w") 'avy-goto-word-1)
+    (global-set-key (kbd "M-g e") 'avy-goto-word-0)))
+
+;; -----------------------------------------------------------------------------
 ;; Dired Extensions
 ;; ----------------
 
@@ -987,7 +1034,7 @@ For example, applied to a directory name, macOS Finder is used."
 ;; ---------------
 ;;
 ;; The first 4 function keys are used by Emacs and do not support combinations
-;; with Control, Meta and Shift in macOS terminal (at least I have not found a
+;; with Control, Meta and Shift in macOS terminal:  I have not found a
 ;; way to get terminal escape sequences for the first 4 functions keys to work
 ;; with Emacs running in macOS Terminal.
 ;; For F5 through F12, the combinations do work and aside from F8 (used by spell
@@ -999,8 +1046,8 @@ For example, applied to a directory name, macOS Finder is used."
 ;; <f2>  : prefix
 ;; <f3>  > pel-kmacro-start-macro-or-insert-counter
 ;; <f4>  : kmacro-end-or-call-macro
-;; <f5>  > repeat
-;; <f6>  > pel prefix
+;; <f5>  > repeat           (C)                           (M) pel-scroll-up
+;; <f6>  > pel prefix       (C)                           (M) pel-scroll-down
 ;; <f7>  > pel-hydra-window (C)                           (M)
 ;; <f8>  >                  (C)                           (M)
 ;; <f9>  >                  (C)                           (M)
@@ -1336,6 +1383,7 @@ display in other window and open the related group(s) that exist."
 (pel--cfg-pkg "grep"        pel:cfg "g" "grep" "rg" "ripgrep")
 (pel--cfg-pkg "insertions"  pel:cfg "I" "lice" "smart-dash")
 (pel--cfg-pkg "key-chord"   pel:cfg "K")
+(pel--cfg-pkg "navigation"  pel:cfg "n" "avy")
 (pel--cfg-pkg "regexp"      pel:cfg "r")
 (pel--cfg-pkg "search"      pel:cfg "s" "anzu" "swiper")
 (pel--cfg-pkg "session"     pel:cfg "S" "speedbar" "speedbar-faces" "speedbar-vc")
@@ -2514,7 +2562,6 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:comment "'"            'pel-toggle-docstring)
 (define-key pel:comment "\""           'pel-hide/show-docstring)
 
-
 (when pel-use-hide-comnt
   ;; IMPORTANT: hide-comnt must be installed manually.
   ;; Download it from the EmacsWiki or EmacsMirror page and copy
@@ -3092,6 +3139,14 @@ the ones defined from the buffer now."
 (define-key pel:file-revert "f" #'revert-buffer)
 (define-key pel:file-revert "t" #'auto-revert-tail-mode)
 ;;
+
+;; Navigating URL: goto-address-mode
+;; ---------------------------------
+;; PEL provides the ability to open URL with several commands listed above.
+;; Emacs also provides the goto-address-mode, which is also included in the
+;; binding PEL activates.
+(define-key pel:file "u" 'goto-addess-mode)
+(define-key pel:file "U" 'goto-addess-prog-mode)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> f a`` : Finf File At Point (ffap)

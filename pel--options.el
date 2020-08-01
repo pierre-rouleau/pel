@@ -45,6 +45,7 @@
 ;;     - pel-pkg-for-grep
 ;;     - pel-pkg-for-key-chord
 ;;     - pel-pkg-for-modeline
+;;     - pel-pkg-for-navigation
 ;;     - pel-pkg-for-regexp
 ;;     - pel-pkg-for-search
 ;;     - pel-pkg-for-tags
@@ -611,6 +612,27 @@ The `pel-key-chords' value is a list of objects.
   "Control whether the keycast package is made available.
 For more info, see URL https://github.com/tarsius/keycast"
   :group 'pel-pkg-for-modeline
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; pel-pkg-for-navigation
+;; ----------------------
+(defgroup pel-pkg-for-navigation nil
+  "List of external packages that PEL can use to help navigation."
+  :group 'pel-package-use)
+
+(defcustom pel-use-ace-link nil
+  "Control activation of the ace-link package.
+See URL https://github.com/abo-abo/ace-link for more info."
+  :group 'pel-pkg-for-navigation
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-avy nil
+  "Control activation of the avy package.
+See URL https://github.com/abo-abo/avy for more info."
+  :group 'pel-pkg-for-navigation
   :type 'boolean
   :safe #'booleanp)
 
