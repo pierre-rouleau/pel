@@ -144,9 +144,13 @@
                  pel-beginning-of-next-clause
                  pel-previous-erl-function
                  pel-next-erl-function
-                 pel-erlang-mode-setup
-                 pel--install-erlang-skel))
+                 ))
     (autoload fct "pel-erlang"))
+
+  ;; pel-erlang-skels
+  (dolist (fct '(pel--erlang-mode-setup
+                 pel--install-erlang-skel))
+    (autoload fct "pel-erlang-skels"))
 
   ;; pel-face-ut
   (autoload 'pel-show-face-at-point "pel-face-ut")

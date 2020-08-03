@@ -197,21 +197,36 @@ to the second element of the SKELETONS entry."
     (dolist (skel skeletons)
       (when skel
         (let* ((s-name        (nth 1 skel))
-               (s-tempo-fname (format "tempo-template-%s-%s" mode s-name))
+               (s-tempo-fun   (intern (format "tempo-template-%s-%s" mode s-name)))
                (s-pel-fname   (format "pel-%s-%s" mode-abbrev s-name))
                (s-docstring   (format "\
 Insert '%s' %s skeleton's text (also available through %s/Skeleton menu)."
                                       s-name cap-mode cap-mode))
-               (key           (cdr (assoc s-name keys-alist))))
+               (assoc-value   (cdr (assoc s-name keys-alist)))
+               (key           (if (listp assoc-value)
+                                  (car assoc-value)
+                                assoc-value))
+               (prep-func     (when (listp assoc-value)
+                                (car (cdr assoc-value)))))
           ;; Define the PEL command that inserts the text
           ;; for the specific template. It uses the tempo function
           ;; and activates the pel-tempo-mode minor mode.
-          (defalias (intern s-pel-fname)
-            (lambda ()
-              (interactive)
-              (funcall (intern s-tempo-fname))
-              (pel-tempo-mode 1))
-            s-docstring)
+          ;; If a preparation function is required, the command
+          ;; calls it, passing the tempo function instead of calling
+          ;; the tempo function directly.
+          (if prep-func
+              (defalias (intern s-pel-fname)
+                (lambda ()
+                  (interactive)
+                  (funcall  prep-func s-tempo-fun)
+                  (pel-tempo-mode 1))
+                s-docstring)
+            (defalias (intern s-pel-fname)
+              (lambda ()
+                (interactive)
+                (funcall s-tempo-fun)
+                (pel-tempo-mode 1))
+              s-docstring))
           ;; Bind the function to the identified keystroke.
           (when key
             (define-key

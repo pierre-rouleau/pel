@@ -31,9 +31,10 @@
 (require 'comint)
 (require 'pel--options)         ; use: pel-erlang-version-detection-method
 (require 'pel-fs)               ; use: pel-exec-pel-bin
-(require 'pel-list)             ; use: pel-insert-list-in-list
-(require 'pel-tempo)            ; use: pel-tempo-mode,
-;;                              ;      pel-tempo-install-pel-skel
+
+
+;; -------
+;; Erlang Shell Control
 
 ;;-pel-autoload
 (defun pel-erlang-shell-mode-init ()
@@ -41,6 +42,8 @@
   ;; Prevent Erlang shell mode echo
   (setq comint-process-echoes t))
 
+;; -------
+;; Navigation in Erlang source code
 
 ;;-pel-autoload
 (defun pel-end-of-previous-clause ()
@@ -69,7 +72,6 @@ Push current position on the mark ring."
         (erlang-end-of-clause 2)
         (erlang-beginning-of-clause 1))
     (user-error "Erlang support not loaded!")))
-
 
 ;; --
 
@@ -104,139 +106,6 @@ Push current position on the mark ring.
 Skip over all compiler directives."
   (interactive "^p")
   (pel--moveto-function t (or n 1)))
-
-;; -----------------------------------------------------------------------------
-;; Install Erlang Skeletons as key-bound commands
-;; ----------------------------------------------
-;;
-;; Add extra tempo skeletons for Erlang to complement what erlang.el already
-;; have, add key bindings to allow inserting the template text with a keystroke
-;; and provide a minor mode to help navigating inside the template.
-
-
-(defvar pel--erl-skel-key '(("if"                      . "i")
-                            ("case"                    . "c")
-                            ("export"                  . "x")
-                            ("import"                  . "I")
-                            ("try"                     . "t")
-                            ("try-of"                  . "T")
-                            ("receive"                 . "r")
-                            ("after"                   . "a")
-                            ("loop"                    . "l")
-                            ("module"                  . "m")
-                            ("function"                . "f")
-                            ("author"                  . "`")
-                            ("spec"                    . "s")
-                            ("small-header"            . "M-h")
-                            ("normal-header"           . "M-H")
-                            ("large-header"            . "C-h")
-                            ("small-server"            . "M-s")
-                            ("application"             . "M-a")
-                            ("supervisor"              . "M-u")
-                            ("supervisor-bridge"       . "M-b")
-                            ("generic-server"          . "M-g")
-                            ("gen-event"               . "M-e")
-                            ("gen-fsm"                 . "M-f")
-                            ("gen-statem-StateName"    . "M-S")
-                            ("gen-statem-handle-event" . "M-E")
-                            ("wx-object"               . "M-w")
-                            ("gen-lib"                 . "M-l")
-                            ("gen-corba-cb"            . "M-c")
-                            ("ct-test-suite-s"         . "M-1")
-                            ("ct-test-suite-l"         . "M-2")
-                            ("ts-test-suite"           . "M-3"))
-  "Key mapping for skeletons defined in erlang-skel.el")
-
-;; The standard Erlang mode support does not define skeleton for all statements.
-;; Add more skeletons using the tempo package here to complement the official ones.
-
-;; Functions used inside the skeleton descriptions below.
-(defun pel--erlang-skel-skip-blank ()
-  (skip-chars-backward " \t")
-  nil)
-
-(defvar pel-erlang-skel-export
-  '(& "-export([" p "/"  n> "])." > n )
-  "*The skeleton of a `export' declaration.
-Please see the function `tempo-define-template'.")
-
-(defvar pel-erlang-skel-import
-  '((pel--erlang-skel-skip-blank) o >
-    "-import(" (P "module: ") p ", [" p "/" n>
-    "])." > n )
-  "*The skeleton of a `import' declaration.
-Please see the function `tempo-define-template'.")
-
-(defvar pel-erlang-skel-try
-  '((pel--erlang-skel-skip-blank) o >
-    "try "  n>
-    p   n>
-    "catch" > n>
-    p "oops         -> got_throw_oops;"     > n>
-    p "throw:Other  -> {got_throw, Other};" > n>
-    p "exit:Reason  -> {got_exit, Reason};" > n>
-    p "error:Reason -> {got_error, Reason}" > n>
-    "end." > n)
-  "*The skeleton of a `try' expression.
-Please see the function `tempo-define-template'.")
-
-(defvar pel-erlang-skel-try-of
-  '((pel--erlang-skel-skip-blank) o >
-    "try "n>
-    p n>
-    " of" > n>
-    > p " when " p " ->" >  n>
-    p  n>
-    "catch" > n>
-    p "oops         when " p "  -> got_throw_oops;"     > n>
-    p "throw:Other  when " p "  -> {got_throw, Other};" > n>
-    p "exit:Reason  when " p "  -> {got_exit, Reason};" > n>
-    p "error:Reason when " p "  -> {got_error, Reason}" > n>
-    "after" > n>
-    p  n>
-    "end." > n)
-  "*The skeleton of a `try' expression.
-Please see the function `tempo-define-template'.")
-
-
-(defvar pel--more-erlang-skel
-  '(("Export"    "export"    pel-erlang-skel-export)
-    ("Import"    "import"    pel-erlang-skel-import)
-    ("Try"       "try"       pel-erlang-skel-try)
-    ("Try-of"    "try-of"    pel-erlang-skel-try-of))
-  "Extra template entries to inserted by PEL inside `erlang-skel'.")
-
-;;-pel-autoload
-(defun pel--update-erlang-skel ()
-  "Update the list of Erlang skeletons."
-    (if (and (require 'erlang nil :noerror)
-           (boundp 'erlang-skel-file)
-           (load erlang-skel-file :noerror)
-           (boundp 'erlang-skel))
-      ;; Install the extra skeletons inside the erlang.el list of skeletons:
-      ;; the list erlang-skel
-      (setq erlang-skel (pel-insert-list-in-list
-                         pel--more-erlang-skel 2 erlang-skel))))
-
-;;-pel-autoload
-(defun pel-erlang-mode-setup ()
-  "Provide extra functionality to the Erlang mode.
-Add extra tempo templates.
-This function is meant to be used as an `advice-add'
-to execute *before* `erlang-mode'."
-  (pel--update-erlang-skel))
-
-;; --
-
-;;-pel-autoload
-(defun pel--install-erlang-skel (key-map)
-  "Create PEL Erlang skeleton functions and bind them in the KEY-MAP specified.
-This function is meant to be called by pel-init() only."
-  (if (and (require 'erlang nil :noerror)
-               (boundp 'erlang-skel))
-      (pel-tempo-install-pel-skel
-       "erlang" erlang-skel key-map pel--erl-skel-key "erl")
-    (user-error "The erlang.el package is not loaded!")))
 
 ;; -----------------------------------------------------------------------------
 ;; Detecting Erlang Versions and Controlling Erlang Man Pages to Use
