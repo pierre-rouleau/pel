@@ -24,12 +24,13 @@
 ;;; Commentary:
 ;;
 
+(require 'pel--base)          ; use: pel-current-buffer-filename
 (require 'pel--options)       ; use: pel-erlang-skel-use-separators
-;;                            ;      pel-erlang-skel-use-end-separators
+;;                            ;      pel-erlang-skel-use-secondary-separators
 (require 'pel--macros)
-(require 'pel-list)             ; use: pel-insert-list-in-list
-(require 'pel-tempo)            ; use: pel-tempo-mode,
-;;                              ;      pel-tempo-install-pel-skel
+(require 'pel-list)           ; use: pel-insert-list-in-list
+(require 'pel-tempo)          ; use: pel-tempo-mode,
+;;                            ;      pel-tempo-install-pel-skel
 (require 'pel-skels)
 
 
@@ -44,12 +45,24 @@
 (defun pel-erlang-skel-separator (&optional percent char)
   "Return a comment separator line of `fill-column' length.
 The comment uses PERCENT number of '%'.
-The line is made with '-' unless another CHAR is specified."
+The line is made with '-' unless another CHAR is specified.
+Note: the smallest allowed `fill-column' value is 70."
   (let ((percent (or percent 3))
         (char    (or ?- char)))
     (concat (make-string percent ?%)
             (make-string (- (max fill-column 70) percent) char)
             "\n")))
+
+(defun pel-erlang-skel-optional-separator (&optional percent char)
+  "Return a comment line separator if the end separators are used.
+Return the same as `pel-erlang-skel-separator' if the
+`pel-erlang-skel-use-secondary-separators' is non-nil otherwise return an empty
+string.
+Use this to create optional separator lines used by people that like them.
+For those that prefer a lighter style these lines are not inserted."
+  (if pel-erlang-skel-use-secondary-separators
+      (pel-erlang-skel-separator percent char)
+    ""))
 
 (defun pel-erlang-skel-separator-start (&optional percent char)
   "Return a comment separator line if required by customized style.
@@ -61,10 +74,11 @@ The line is made with '-' unless another CHAR is specified."
 
 (defun pel-erlang-skel-separator-end (&optional percent char)
   "Return a comment end separator line if required by customized style.
+The line length is set by `fill-column' with 70 being the smallest allowed.
 The comment uses PERCENT number of '%'.
 The line is made with '-' unless another CHAR is specified."
   (if (and pel-erlang-skel-use-separators
-           pel-erlang-skel-use-end-separators)
+           pel-erlang-skel-use-secondary-separators)
       (concat "%% @end\n" (pel-erlang-skel-separator percent char))
     ""))
 
@@ -149,12 +163,47 @@ Please see the function `tempo-define-template'.")
     "*The template of a function skeleton.
 Please see the function `tempo-define-template'.")
 
-
 (defvar pel-erlang-skel-spec
   '("-spec "
     (erlang-skel-get-function-name) "(" (erlang-skel-get-function-args)
     ") -> " p "undefined." n)
     "*The template of a -spec for the function following point.
+Please see the function `tempo-define-template'.")
+
+(defvar pel-skel-file-created
+  '(& "%%% Created: " (pel-date) " by "
+      (user-full-name) " <" erlang-skel-mail-address ">" n)
+  "*The template for the \"Created:\" comment line.")
+
+(defun pel--filename ()
+  "Insert name of current file."
+  (concat "%%% File: "
+          (pel-current-buffer-filename :sans-directory)
+          "\n"))
+
+(defun pel--maybe-timestamp (event)
+  "Insert time stamp if required."
+  (when pel-erlang-skel-insert-file-timestamp
+    (concat "%%% "
+            (pel-time-stamp event "by ")
+            "\n")))
+
+(defvar pel-skel-large-header
+  '(o (pel-erlang-skel-optional-separator)
+      (pel--filename)
+      "%%%" n
+      (erlang-skel-include erlang-skel-author-comment)
+      (erlang-skel-include erlang-skel-copyright-comment)
+      "%%%" n
+      (erlang-skel-include erlang-skel-created-comment)
+      (pel--maybe-timestamp "last modified") ; this must be in the first 8 lines!
+      "%%%" n
+      "%%% @doc " p n
+      "%%%      " p n
+      "%%% @end" n
+      (pel-erlang-skel-separator)
+      (erlang-skel-include erlang-skel-small-header) )
+  "*The template of a large header.
 Please see the function `tempo-define-template'.")
 
 ;; -----------------------------------------------------------------------------
@@ -238,11 +287,25 @@ the beginning of the buffer instead of at point, the default.")
            (boundp 'erlang-skel-file)
            (load erlang-skel-file :noerror)
            (boundp 'erlang-skel)
-           (boundp 'erlang-skel-function))
-
+           (boundp 'erlang-skel-function)
+           (boundp 'erlang-skel-created-comment)
+           (boundp 'erlang-skel-large-header)
+           (fboundp 'erlang-skel-separator))
       ;; Update some Erlang skeletons with more flexible ones
-      (setq erlang-skel-function pel-erlang-skel-function)
-
+      ;; - separator line length controlled by `fill-column'
+      (fset 'erlang-skel-separator      'pel-erlang-skel-separator)
+      ;; - function skel: second separator line is optional
+      (setq erlang-skel-function        pel-erlang-skel-function)
+      ;; time uses a YYYY-MM-DD format
+      (setq erlang-skel-created-comment pel-skel-file-created)
+      ;; large header:
+      ;; The separator on the first line is optional.
+      ;; The second line shows the file name.
+      ;; Writes all date/time at the top, with an optional
+      ;; auto-updated timestamp (must be in the first 8 lines)
+      ;; Edoc text at the end of block, has marks and is indented.
+      ;; It also expects the first @doc line to be a self-contained abstract.
+      (setq erlang-skel-large-header    pel-skel-large-header)
       ;; Install the extra skeletons inside the erlang.el list of skeletons:
       ;; the list erlang-skel
       (setq erlang-skel (pel-insert-list-in-list

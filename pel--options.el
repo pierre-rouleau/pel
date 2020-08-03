@@ -109,10 +109,18 @@
 ;; ---------------------------
 
 (defgroup pel nil
-  "Pragmatic Environment Library."
+  "Pragmatic Environment Library.
+A collection of facilities designed to integrate and complement a large
+set of Emacs libraries while providing key bindings that mainly use function
+keys as key prefixes, leaving the standard Emacs keys untouched.
+PEL comes with a manual and a large set of PDF files, each documenting the
+commands and key bindings of a specific aspect of Emacs.  The PDF files document
+the standard Emacs key bindings as well as PEL's specific key bindings."
   :group 'convenience
   :link `(file-link :tag "Directory of PDF table files"
-                    ,(expand-file-name "./docs/pdf/"))
+                     ,(expand-file-name
+                       (format "%s/doc/pdf/"
+                               (file-name-directory (locate-library "pel")))))
   :package-version '(pel . "0.1.1"))
 
 
@@ -1750,20 +1758,29 @@ EDTS := Erlang Development Tool Suite."
   :group 'pel-pkg-for-erlang)
 
 (defcustom pel-erlang-skel-use-separators t
-  "Specifies whether Erlang code block include line separators.
-If nil no line separator comment is used, otherwise line separator
+  "Specifies whether Erlang code block include separators line.
+If nil no separator line comment is used, otherwise separator line
 comments of length controlled by variable `fill-column' are inserted."
   :group 'pel-erlang-code-style
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-erlang-skel-use-end-separators t
-  "Specifies whether Erlang code block include line separators trailers.
-If nil, several comment blocks like the function declaration comment blocks
-do not include a trailing line separator comment even when the
-variable `pel-erlang-skel-use-separators' is t.
-If t, a comment block that starts with a line separator also ends
-with a line separator of length controlled by variable `fill-column'."
+(defcustom pel-erlang-skel-use-secondary-separators t
+  "Specifies whether Erlang code block include secondary separators line.
+
+Secondary separator lines are:
+- the first line of a header block,
+- the second separator used inside a comment block such as function comment
+  blocks.
+
+If non-nil, the secondary line separators are included, otherwise they are not
+included, reducing the comments overhead in files."
+  :group 'pel-erlang-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-erlang-skel-insert-file-timestamp nil
+  "Specifies whether a timestamp is inserted inside Erlang file header block."
   :group 'pel-erlang-code-style
   :type 'boolean
   :safe #'booleanp)

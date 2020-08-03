@@ -370,6 +370,11 @@
   ;; pel-seq
   (autoload 'pel-all-fboundp    "pel-seq")
 
+  ;; pel-skels
+  (dolist (fct '(pel-date
+                 pel-time-stamp))
+    (autoload fct "pel-skels"))
+
   ;; pel-speedbar
   (when (and (boundp 'pel-use-speedbar) pel-use-speedbar)
     (autoload 'pel-open-close-speedbar             "pel-speedbar")

@@ -62,6 +62,7 @@ This returns what tempo expects: a list form with the symbol
 ;; --
 ;; Date and time
 
+;;-pel-autoload
 (defun pel-date (&optional utc)
   "Return a YYYY-MM-DD (ISO 8601 conforming) date.
 Return a UTC Date Time if UTC is non-nil."
@@ -69,10 +70,13 @@ Return a UTC Date Time if UTC is non-nil."
        (format-time-string "%F %T (UTC)" nil t)
      (format-time-string "%F")))
 
+;;-pel-autoload
 (defun pel-time-stamp (event &optional user-text utc)
   "Return a YYYY-MM-DD HH:MM:SS Emacs compliant time-stamp.
 The EVENT is a string placed before the time stamp.
 Use UTC format when UTC is non-nil.
+Set USER-TEXT to the a descriptive string like \"by \") to
+add that text followed by the full user name.
 This time stamp will be updated automatically by Emacs on file save
 when `pel-update-time-stamp' is non-nil."
   (format "%s Time-stamp: <%s%s>"
@@ -81,7 +85,7 @@ when `pel-update-time-stamp' is non-nil."
               (format-time-string "%F %T (UTC)" nil t)
             (format-time-string "%F %T"))
           (if user-text
-              (format ", %s by %s"
+              (format ", %s%s"
                       user-text
                       (user-full-name))
             "")))
