@@ -1751,6 +1751,16 @@ EDTS := Erlang Development Tool Suite."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-activate-edts-automatically nil
+  "Control whether EDTS is activated automatically for Erlang files.
+Activates EDTS automatically on Erlang files if set to t, otherwise
+you must activate it manually with \\[edts-mode].
+Starting EDTS takes some time and will slow down opening Erlang files
+if configured to activate automatically."
+  :group 'pel-pkg-for-erlang
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-erlang-code-style nil
   "Erlang Source Code Style options."

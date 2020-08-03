@@ -1926,76 +1926,38 @@ This is meant to be used in the d-mode hook lambda."
      'erlang-mode 'erlang-mode-hook)
 
 
-    (define-key pel:for-erlang      "?"             'erlang-version)
+    (define-key pel:for-erlang      "?"               'erlang-version)
 
-    (define-key pel:erlang-function "N"            'pel-beginning-of-next-defun)
-    (define-key pel:erlang-function "P"            'beginning-of-defun)
-    (define-key pel:erlang-function "n"            'pel-next-erl-function)
-    (define-key pel:for-erlang      (kbd "<down>") 'pel-next-erl-function)
-    (define-key pel:erlang-function "p"            'pel-previous-erl-function)
-    (define-key pel:for-erlang      (kbd "<up>")   'pel-previous-erl-function)
+    (define-key pel:erlang-function "N"               'pel-beginning-of-next-defun)
+    (define-key pel:erlang-function "P"               'beginning-of-defun)
+    (define-key pel:erlang-function "n"               'pel-next-erl-function)
+    (define-key pel:for-erlang      (kbd "<down>")    'pel-next-erl-function)
+    (define-key pel:erlang-function "p"               'pel-previous-erl-function)
+    (define-key pel:for-erlang      (kbd "<up>")      'pel-previous-erl-function)
 
 
-    (define-key pel:erlang-clause   "a"             'erlang-beginning-of-clause)
-    (define-key pel:for-erlang      (kbd "<M-up>")  'erlang-beginning-of-clause)
-    (define-key pel:erlang-clause   "p"             'pel-end-of-previous-clause)
+    (define-key pel:erlang-clause   "a"               'erlang-beginning-of-clause)
+    (define-key pel:for-erlang      (kbd "<M-up>")    'erlang-beginning-of-clause)
+    (define-key pel:erlang-clause   "p"               'pel-end-of-previous-clause)
     (define-key pel:for-erlang      (kbd "<M-left>")
-                                                    'pel-end-of-previous-clause)
-    (define-key pel:erlang-clause   "n"           'pel-beginning-of-next-clause)
+                                                      'pel-end-of-previous-clause)
+    (define-key pel:erlang-clause   "n"               'pel-beginning-of-next-clause)
     (define-key pel:for-erlang      (kbd "<M-down>")
-                                                  'pel-beginning-of-next-clause)
+                                                      'pel-beginning-of-next-clause)
     (define-key pel:erlang-clause   "e"               'erlang-end-of-clause)
     (define-key pel:for-erlang      (kbd "<M-right>") 'erlang-end-of-clause)
     (define-key pel:erlang-function "m"               'erlang-mark-function)
     (define-key pel:erlang-clause   "m"               'erlang-mark-clause)
 
-    (define-key pel:for-erlang      (kbd "<f1>")    'pel-cfg-pkg-erlang)
-    (define-key pel:for-erlang      (kbd "M-p")    #'superword-mode)
-    (define-key pel:for-erlang      (kbd "M-9")    #'show-paren-mode)
+    (define-key pel:for-erlang      (kbd "<f1>")      'pel-cfg-pkg-erlang)
+    (define-key pel:for-erlang      (kbd "M-p")      #'superword-mode)
+    (define-key pel:for-erlang      (kbd "M-9")      #'show-paren-mode)
     (when pel-use-rainbow-delimiters
-      (define-key pel:for-erlang (kbd "M-r")  'rainbow-delimiters-mode))
+      (define-key pel:for-erlang (kbd "M-r")          'rainbow-delimiters-mode))
     (when pel-use-plantuml
-      (define-key pel:for-erlang "u" 'pel-render-commented-plantuml))
+      (define-key pel:for-erlang "u"                  'pel-render-commented-plantuml))
     (when pel-use-graphviz-dot
-      (define-key pel:for-erlang "G" 'pel-render-commented-graphviz-dot))
-
-    ;; EDTS keys
-    ;;  edts cross reference command keys
-    (define-key pel:for-erlang      "w"             'edts-xref-who-calls)
-    (define-key pel:for-erlang      "W"             'edts-xref-last-who-calls)
-    ;;  edts cross reference
-    (define-key pel:for-erlang      (kbd "M-f")     'edts-find-local-function)
-    (define-key pel:for-erlang      (kbd "M-g")     'edts-find-global-function)
-    ;; edts refactoring
-    (define-key pel:for-erlang      "r"             'edts-refactor-extract-function)
-    ;; edts man page use
-    (define-key pel:for-erlang      "`"             'edts-man-setup)
-    (define-key pel:for-erlang      "h"             'edts-show-doc-under-point)
-    (define-key pel:for-erlang      "H"             'edts-find-doc)
-    ;; edts code analysis
-    (define-key pel:erlang-analysis "a"             'edts-dialyzer-analyze)
-    (define-key pel:erlang-analysis "t"             'edts-code-eunit)
-    (define-key pel:erlang-analysis "c"             'edts-code-compile-and-display)
-    ;; edts debug
-    (define-key pel:erlang-debug    "b"             'edts-debug-toggle-breakpoint)
-    (define-key pel:erlang-debug    "B"             'edts-debug-list-breakpoints)
-    (define-key pel:erlang-debug    "p"             'edts-debug-list-processes)
-    (define-key pel:erlang-debug    "i"             'edts-debug-toggle-interpreted)
-    (define-key pel:erlang-debug    "I"             'edts-debug-list-interpreted)
-    ;; edts node
-    (define-key pel:for-erlang      "N"             'edts-buffer-node-name)
-    (define-key pel:for-erlang      "x"             'edts-shell)
-    (define-key pel:for-erlang      "X"             'edts-api-start-server)
-
-    ;; EDTS/(automatic highlight symbol)  features
-    (define-key pel:for-erlang      "e"             'edts-ahs-edit-current-function)
-    (define-key pel:for-erlang      "E"             'edts-ahs-edit-buffer)
-    (define-key pel:for-erlang      "n"             'ahs-forward)
-    (define-key pel:for-erlang      "p"             'ahs-backward)
-    (define-key pel:for-erlang      "."             'ahs-back-to-start)
-    ;; The following do not seem to do anything special in Erlang.
-    ;; (define-key pel:for-erlang      ">"             'ahs-forward-definition)
-    ;; (define-key pel:for-erlang      "<"             'ahs-backward-definition)
+      (define-key pel:for-erlang "G"                  'pel-render-commented-graphviz-dot))
 
     :config
     (setq erlang-root-dir (expand-file-name pel-erlang-rootdir))
@@ -2006,8 +1968,54 @@ This is meant to be used in the d-mode hook lambda."
     (when pel-use-edts
       (use-package edts
         :ensure t
-        :pin melpa)
-      (require 'edts-start))
+        :pin melpa
+        :commands edts-mode
+        :init
+        ;; Key to start EDTS
+        (define-key pel:for-erlang      (kbd "M-SPC")   'edts-mode)
+        (when pel-activate-edts-automatically
+          (require 'edts-start))
+
+        :config
+        ;; EDTS keys
+        ;;  edts cross reference command keys
+        (define-key pel:for-erlang      "w"             'edts-xref-who-calls)
+        (define-key pel:for-erlang      "W"             'edts-xref-last-who-calls)
+        ;;  edts cross reference
+        (define-key pel:for-erlang      (kbd "M-f")     'edts-find-local-function)
+        (define-key pel:for-erlang      (kbd "M-g")     'edts-find-global-function)
+        ;; edts refactoring
+        (define-key pel:for-erlang      "r"             'edts-refactor-extract-function)
+        ;; edts man page use
+        (define-key pel:for-erlang      "`"             'edts-man-setup)
+        (define-key pel:for-erlang      "h"             'edts-show-doc-under-point)
+        (define-key pel:for-erlang      "H"             'edts-find-doc)
+        ;; edts code analysis
+        (define-key pel:erlang-analysis "a"             'edts-dialyzer-analyze)
+        (define-key pel:erlang-analysis "t"             'edts-code-eunit)
+        (define-key pel:erlang-analysis "c"             'edts-code-compile-and-display)
+        ;; edts debug
+        (define-key pel:erlang-debug    "b"             'edts-debug-toggle-breakpoint)
+        (define-key pel:erlang-debug    "B"             'edts-debug-list-breakpoints)
+        (define-key pel:erlang-debug    "p"             'edts-debug-list-processes)
+        (define-key pel:erlang-debug    "i"             'edts-debug-toggle-interpreted)
+        (define-key pel:erlang-debug    "I"             'edts-debug-list-interpreted)
+        ;; edts node
+        (define-key pel:for-erlang      "N"             'edts-buffer-node-name)
+        (define-key pel:for-erlang      "x"             'edts-shell)
+        (define-key pel:for-erlang      "X"             'edts-api-start-server)
+
+        ;; EDTS/(automatic highlight symbol)  features
+        (define-key pel:for-erlang      "e"             'edts-ahs-edit-current-function)
+        (define-key pel:for-erlang      "E"             'edts-ahs-edit-buffer)
+        (define-key pel:for-erlang      "n"             'ahs-forward)
+        (define-key pel:for-erlang      "p"             'ahs-backward)
+        (define-key pel:for-erlang      "."             'ahs-back-to-start)
+        ;; The following do not seem to do anything special in Erlang.
+        ;; (define-key pel:for-erlang      ">"             'ahs-forward-definition)
+        ;; (define-key pel:for-erlang      "<"             'ahs-backward-definition)
+        (unless pel-activate-edts-automatically
+          (require 'edts-start))))
     ;;
     ;; TODO :  do not allow both flymake and flycheck for Emacs.
     ;;         but put logic after some experimentation and tests.
