@@ -102,7 +102,7 @@
   (require 'cc-vars nil :noerror)
   (if (boundp 'c-style-alist)
       (member style (mapcar 'car c-style-alist))
-    (error "The file cc-vars should have been loaded and it's not!")))
+    (error "Failed loading cc-vars!")))
 
 ;; -----------------------------------------------------------------------------
 ;; User Option Data Definition
@@ -1751,11 +1751,20 @@ EDTS := Erlang Development Tool Suite."
   :type 'boolean
   :safe #'booleanp)
 
-
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-erlang-code-style nil
   "Erlang Source Code Style options."
   :group 'pel-pkg-for-erlang)
+
+(defcustom pel-erlang-fill-column 100
+  "Column beyond which automatic line-wrapping should happen in Erlang code.
+This value is stored in `fill-column' for Erlang source code files.
+The default is 100, a value recommended by the Inaka's  Erlang Coding
+Standards & Guidelines."
+  :group 'pel-erlang-code-style
+  :type 'integer
+  :safe #'integerp
+  :link '(url-link "https://github.com/inaka/erlang_guidelines#100-column-per-line"))
 
 (defcustom pel-erlang-skel-use-separators t
   "Specifies whether Erlang code block include separators line.

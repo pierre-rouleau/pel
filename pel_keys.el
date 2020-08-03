@@ -1879,6 +1879,9 @@ This is meant to be used in the d-mode hook lambda."
 
   (defun pel--setup-erlang ()
     "Activate Erlang setup."
+    ;; set fill-column to Erlang's default.
+    (setq fill-column pel-erlang-fill-column)
+    ;; setup the Erlang-specific key bindings
     (pel-local-set-f12-M-f12 'pel:for-erlang)
     (pel--install-erlang-skel pel:erlang-skel)
     (define-key pel:erlang-skel (kbd "<f12>") 'tempo-complete-tag)
