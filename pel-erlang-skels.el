@@ -53,16 +53,21 @@ Note: the smallest allowed `fill-column' value is 70."
             (make-string (- (max fill-column 70) percent) char)
             "\n")))
 
-(defun pel-erlang-skel-optional-separator (&optional percent char)
+(defun pel-erlang-skel-optional-separator (&optional percent char with-end)
   "Return a comment line separator if the end separators are used.
+The comment uses PERCENT number of '%'.
+The line is made with '-' unless another CHAR is specified.
+If WITH-END is non-nil, return a Edoc @end statement before the separator
+line (and even if no separator line is returned).
 Return the same as `pel-erlang-skel-separator' if the
 `pel-erlang-skel-use-secondary-separators' is non-nil otherwise return an empty
 string.
 Use this to create optional separator lines used by people that like them.
 For those that prefer a lighter style these lines are not inserted."
-  (if pel-erlang-skel-use-secondary-separators
-      (pel-erlang-skel-separator percent char)
-    ""))
+  (concat (if with-end "%% @end\n" "")
+          (if pel-erlang-skel-use-secondary-separators
+              (pel-erlang-skel-separator percent char)
+            "")))
 
 (defun pel-erlang-skel-separator-start (&optional percent char)
   "Return a comment separator line if required by customized style.
@@ -110,6 +115,9 @@ The line is made with '-' unless another CHAR is specified."
 ;; -----------------------------------------------------------------------------
 ;; Erlang Tempo Skeletons
 ;; ----------------------
+;;
+;; The tempo skeletons below are heavily based on the Erlang skeletons
+;; provided by erlang-skels.el
 
 (defvar pel-erlang-skel-export
   '(& "-export([" p "/"  n> "])." > n )
@@ -204,6 +212,97 @@ Please see the function `tempo-define-template'.")
       (pel-erlang-skel-separator)
       (erlang-skel-include erlang-skel-small-header) )
   "*The template of a large header.
+Please see the function `tempo-define-template'.")
+
+
+
+;; Behaviour templates.
+(defvar pel-erlang-skel-application
+  '((erlang-skel-include erlang-skel-large-header)
+    "-behaviour(application)." n n
+    "%% Application callbacks" n
+    "-export([start/2, start_phase/3, stop/1, prep_stop/1," n>
+    "config_change/3])." n n
+    (pel-erlang-skel-separator-start 3 ?=)
+    "%%% Application callbacks" n
+    (pel-erlang-skel-optional-separator 3 ?=) n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Start application." n
+    "%%       Called when an application is started using application:start/[1,2]," n
+    "%%       and application processes should be started." n
+    "%%       If the application is structured according to the OTP design" n
+    "%%       principles as a supervision tree, this means starting the" n
+    "%%       top supervisor of the tree." n
+    (pel-erlang-skel-optional-separator 2 ?- :with-end) n
+    "-spec start(StartType :: normal |" n>
+    "{takeover, Node :: node()} |" n>
+    "{failover, Node :: node()}," n>
+    "StartArgs :: term()) ->" n>
+    "{ok, Pid :: pid()} |" n>
+    "{ok, Pid :: pid(), State :: term()} |" n>
+    "{error, Reason :: term()}." n
+    "start(_StartType, _StartArgs) ->" n>
+    "case 'TopSupervisor':start_link() of" n>
+    "{ok, Pid} ->" n>
+    "{ok, Pid};" n>
+    "Error ->" n>
+    "Error" n
+    "end." > n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Top supervisor of the tree." n
+    "%%       Starts an application with included applications, when" n
+    "%%       synchronization is needed between processes in the different" n
+    "%%       applications during startup." n
+    (pel-erlang-skel-optional-separator 2 ?- :with-end) n
+    "-spec start_phase(Phase :: atom()," n>
+    "StartType :: normal |" n>
+    "{takeover, Node :: node()} |" n>
+    "{failover, Node :: node()}," n>
+    "PhaseArgs :: term()) -> ok | {error, Reason :: term()}." n
+    "start_phase(_Phase, _StartType, _PhaseArgs) ->" n>
+    "ok."n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Handle application stop request." n
+    "%%       Called whenever an application has stopped." n
+    "%%       It is intended to be the opposite of Module:start/2 and should do" n
+    "%%       any necessary cleaning up. The return value is ignored." n
+    (pel-erlang-skel-optional-separator 2 ?- :with-end) n
+    "-spec stop(State :: term()) -> any()." n
+    "stop(_State) ->" n>
+    "ok." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Handle preparation of application stop." n
+    "%%       Called when an application is about to be stopped," n
+    "%%       before shutting down the processes of the application." n
+    (pel-erlang-skel-optional-separator 2 ?- :with-end) n
+    "-spec prep_stop(State :: term()) -> NewState :: term()." n
+    "prep_stop(State) ->" n>
+    "State." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Handle code replacement configuration." n
+    "%%       Called by an application after a code replacement," n
+    "%%       if the configuration parameters have changed." n
+    (pel-erlang-skel-optional-separator 2 ?- :with-end) n
+    "-spec config_change(Changed :: [{Par :: atom(), Val :: term()}]," n>
+    "New :: [{Par :: atom(), Val :: term()}]," n>
+    "Removed :: [Par :: atom()]) -> ok." n
+    "config_change(_Changed, _New, _Removed) ->" n>
+    "ok." n
+    n
+    (pel-erlang-skel-separator-start 3 ?=)
+    "%%% Internal functions" n
+    (pel-erlang-skel-optional-separator 3 ?=) n
+    )
+  "*The template of an application behaviour.
 Please see the function `tempo-define-template'.")
 
 
@@ -302,7 +401,7 @@ Please see the function `tempo-define-template'.")
     "%%       Does the opposite of Module:init/1 and do any necessary" n
     "%%       cleaning up. When it returns, the gen_server terminates" n
     "%%       with Reason. The return value is ignored." n
-    (pel-erlang-skel-optional-separator 2) n
+    (pel-erlang-skel-optional-separator 2 ?- :with-end) n
     "-spec terminate(Reason :: normal | shutdown | {shutdown, term()} | term()," n>
     "State :: term()) -> any()." n
     "terminate(_Reason, _State) ->" n>
@@ -325,7 +424,7 @@ Please see the function `tempo-define-template'.")
     "%%       Called for changing the form and appearance of gen_server" n
     "%%       server status when it is returned from sys:get_status/1,2" n
     "%%       or when it appears in termination error logs." n
-    (pel-erlang-skel-optional-separator 2) n
+    (pel-erlang-skel-optional-separator 2 ?- :with-end) n
     "-spec format_status(Opt :: normal | terminate," n>
     "Status :: list()) -> Status :: term()." n
     "format_status(_Opt, Status) ->" n>
@@ -422,6 +521,7 @@ the beginning of the buffer instead of at point, the default.")
            (boundp 'erlang-skel-function)
            (boundp 'erlang-skel-created-comment)
            (boundp 'erlang-skel-large-header)
+           (boundp 'erlang-skel-application)
            (boundp 'erlang-skel-generic-server)
            (fboundp 'erlang-skel-separator))
       ;; Update some Erlang skeletons with more flexible ones
@@ -439,8 +539,13 @@ the beginning of the buffer instead of at point, the default.")
       ;; Edoc text at the end of block, has marks and is indented.
       ;; It also expects the first @doc line to be a self-contained abstract.
       (setq erlang-skel-large-header    pel-skel-large-header)
+      ;; application
+      ;; second separator lines are optional.
+      ;; doc descriptions have a header line that's a full sentence.
+      (setq erlang-skel-application pel-erlang-skel-application)
       ;; generic server:
       ;; second separator lines are optional.
+      ;; doc descriptions have a header line that's a full sentence.
       (setq erlang-skel-generic-server pel-erlang-skel-generic-server)
       ;; Install the extra skeletons inside the erlang.el list of skeletons:
       ;; the list erlang-skel
