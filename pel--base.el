@@ -44,6 +44,8 @@
 ;;
 ;; String checks:
 ;;  - `pel-whitespace-in-str-p'
+;;  - `pel-ends-with-space-p'
+;;  - `pel-starts-with-space-p'
 ;;
 ;; Pluralizer:
 ;;  - `pel-count-string'
@@ -188,6 +190,17 @@ Return nil if current buffer does not visit a file."
   "Return non-nil if any whitespace character is inside TEXT, nil otherwise.
 The index of the first whitespace character is returned when one is present."
   (string-match "[ \t\n\r]" text))
+
+(defun pel-ends-with-space-p (text)
+  "Return t if text ends with a space character, nil otherwise."
+  (let ((len (length text)))
+    (when (> len 0)
+      (string= (substring text (- len 1) len) " "))))
+
+(defun pel-starts-with-space-p (text)
+  "Return t if text starts with a space character, nil otherwise."
+  (when (> (length text) 0)
+    (string= (substring text 0 1) " ")))
 
 ;; -----------------------------------------------------------------------------
 ;; - Pluralizer

@@ -195,17 +195,6 @@ make script files executable on save when non-nil, don't otherwise."
   :safe #'booleanp)
 
 ;; -----------------------------------------------------------------------------
-(defgroup pel-text-insert nil
-  "PEL Text insertion utilities."
-  :group 'pel)
-
-(defcustom pel-linelen 77
-  "Length of line inserted by `pel-insert-line'."
-  :group 'pel-text-insert
-  :type 'integer
-  :safe #'integerp)
-
-;; -----------------------------------------------------------------------------
 (defgroup pel-package-use nil
   "List of external packages that can be used by PEL."
   :group 'pel)

@@ -26,8 +26,8 @@
 
 ;;; Code:
 
-(require 'pel--options)                 ; use: pel-linelen
-(require 'pel--base)                    ; use: pel-current-buffer-filename
+(require 'pel--base)       ; use: pel-current-buffer-filename
+;;                         ;      pel-ends-with-space-p
 
 ;; -----------------------------------------------------------------------------
 ;; Direction conversion
@@ -42,7 +42,6 @@ Look at the location of keypad numbers to see the direction relationship."
         ((eq n 6) 'right)
         (t        'current)))
 
-
 ;;-pel-autoload
 (defun pel-insert-line (&optional linelen)
   "Insert a (commented) line before/at current line.
@@ -50,26 +49,35 @@ Look at the location of keypad numbers to see the direction relationship."
 - If point is in the middle of a line, move point at beginning of line
   before inserting it.
 The number of dash characters of the line is specified by LINELEN:
-- If LINELEN is not specified the default (`pel-linelen' := 77) is used,
-- otherwise the argument value is used."
+If LINELEN is not specified the buffer's `fill-column' value is used."
   (interactive "*P")
-  (let ((linelen (if linelen
-                     (abs (prefix-numeric-value linelen))
-                   pel-linelen)))
+  (let* ((linelen (if linelen
+                      (abs (prefix-numeric-value linelen))
+                    fill-column))
+         ;; adjust the comment start to required style: programming languages
+         ;; that use single chars like Lisp and Erlang double up these characters
+         ;; for comments tart start at the beginning of the line. Other, like
+         ;; Python or shells scripting, who use '#' don't.
+         (len-comment-start (length comment-start))
+         (line-comment-start (if (and (= len-comment-start 1)
+                                      (member comment-start '(";" "%")))
+                                 (concat comment-start comment-start)
+                               comment-start))
+         (len-comment-start (length line-comment-start))
+         (len-comment-end (length comment-end))
+         (has-comment-end (> len-comment-end 1))
+         (comment-start-ends-with-space (pel-ends-with-space-p comment-start)))
     (move-beginning-of-line nil)
-    (insert-char ?- linelen))
-  (insert "\n")
-  (forward-line -1)
-  (if (equal comment-start "-- ")
-      ;; When comment-start is "-- " commenting a line that starts with
-      ;; "--" erases it as it happens in haskell-mode.
-      ;; In this case prepend it manually.
-      (progn
-        (move-beginning-of-line nil)
-        (insert comment-start))
-    (progn
-      (move-end-of-line nil)
-      (comment-line nil))))
+    (insert line-comment-start)
+    (unless comment-start-ends-with-space
+      (insert " "))
+    (insert-char ?-
+                 (- linelen
+                    len-comment-start len-comment-end
+                    (if comment-start-ends-with-space 0 1)))
+    (when has-comment-end
+        (insert comment-end))
+    (insert "\n")))
 
 ;;-pel-autoload
 (defun pel-insert-filename (&optional n)
