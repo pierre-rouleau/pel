@@ -48,7 +48,7 @@ The comment uses PERCENT number of '%'.
 The line is made with '-' unless another CHAR is specified.
 Note: the smallest allowed `fill-column' value is 70."
   (let ((percent (or percent 3))
-        (char    (or ?- char)))
+        (char    (or char ?-)))
     (concat (make-string percent ?%)
             (make-string (- (max fill-column 70) percent) char)
             "\n")))
@@ -206,6 +206,138 @@ Please see the function `tempo-define-template'.")
   "*The template of a large header.
 Please see the function `tempo-define-template'.")
 
+
+(defvar pel-erlang-skel-generic-server
+  '((erlang-skel-include erlang-skel-large-header)
+    "-behaviour(gen_server)." n n
+
+    "%% API" n
+    "-export([start_link/0])." n n
+
+    "%% gen_server callbacks" n
+    "-export([init/1, handle_call/3, handle_cast/2, handle_info/2," n>
+    "terminate/2, code_change/3, format_status/2])." n n
+
+    "-define(SERVER, ?MODULE)." n n
+
+    "-record(state, {})." n n
+
+    (pel-erlang-skel-separator-start 3 ?=)
+    "%%% API" n
+    (pel-erlang-skel-optional-separator 3 ?=) n n
+
+    (pel-erlang-skel-separator-start 2)
+    "%% @doc  Start the server." n
+    (pel-erlang-skel-optional-separator 2) n
+
+    "-spec start_link() -> {ok, Pid :: pid()} |" n>
+    "{error, Error :: {already_started, pid()}} |" n>
+    "{error, Error :: term()} |" n>
+    "ignore." n
+    "start_link() ->" n>
+    "gen_server:start_link({local, ?SERVER}, ?MODULE, [], [])." n
+    n
+    (pel-erlang-skel-separator-start 3 ?=)
+    "%%% gen_server callbacks" n
+    (pel-erlang-skel-optional-separator 3 ?=) n
+
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Initialize the server." n
+    (pel-erlang-skel-optional-separator 2) n
+    "-spec init(Args :: term()) -> {ok, State :: term()} |" n>
+    "{ok, State :: term(), Timeout :: timeout()} |" n>
+    "{ok, State :: term(), hibernate} |" n>
+    "{stop, Reason :: term()} |" n>
+    "ignore." n
+    "init([]) ->" n>
+    "process_flag(trap_exit, true)," n>
+    "{ok, #state{}}." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Handle call messages." n
+    (pel-erlang-skel-optional-separator 2) n
+    "-spec handle_call(Request :: term(), From :: {pid(), term()}, State :: term()) ->" n>
+    "{reply, Reply :: term(), NewState :: term()} |" n>
+    "{reply, Reply :: term(), NewState :: term(), Timeout :: timeout()} |" n>
+    "{reply, Reply :: term(), NewState :: term(), hibernate} |" n>
+    "{noreply, NewState :: term()} |" n>
+    "{noreply, NewState :: term(), Timeout :: timeout()} |" n>
+    "{noreply, NewState :: term(), hibernate} |" n>
+    "{stop, Reason :: term(), Reply :: term(), NewState :: term()} |" n>
+    "{stop, Reason :: term(), NewState :: term()}." n
+    "handle_call(_Request, _From, State) ->" n>
+    "Reply = ok," n>
+    "{reply, Reply, State}." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Handle cast messages." n
+    (pel-erlang-skel-optional-separator 2) n
+    "-spec handle_cast(Request :: term(), State :: term()) ->" n>
+    "{noreply, NewState :: term()} |" n>
+    "{noreply, NewState :: term(), Timeout :: timeout()} |" n>
+    "{noreply, NewState :: term(), hibernate} |" n>
+    "{stop, Reason :: term(), NewState :: term()}." n
+    "handle_cast(_Request, State) ->" n>
+    "{noreply, State}." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Handle all non call/cast messages." n
+    (pel-erlang-skel-optional-separator 2) n
+    "-spec handle_info(Info :: timeout() | term(), State :: term()) ->" n>
+    "{noreply, NewState :: term()} |" n>
+    "{noreply, NewState :: term(), Timeout :: timeout()} |" n>
+    "{noreply, NewState :: term(), hibernate} |" n>
+    "{stop, Reason :: normal | term(), NewState :: term()}." n
+    "handle_info(_Info, State) ->" n>
+    "{noreply, State}." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Terminate." n
+    "%%       Called by a gen_server when it is about to terminate." n
+    "%%       Does the opposite of Module:init/1 and do any necessary" n
+    "%%       cleaning up. When it returns, the gen_server terminates" n
+    "%%       with Reason. The return value is ignored." n
+    (pel-erlang-skel-optional-separator 2) n
+    "-spec terminate(Reason :: normal | shutdown | {shutdown, term()} | term()," n>
+    "State :: term()) -> any()." n
+    "terminate(_Reason, _State) ->" n>
+    "ok." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Convert process state when code is changed." n
+    (pel-erlang-skel-optional-separator 2) n
+    "-spec code_change(OldVsn :: term() | {down, term()}," n>
+    "State :: term()," n>
+    "Extra :: term()) -> {ok, NewState :: term()} |" n>
+    "{error, Reason :: term()}." n
+    "code_change(_OldVsn, State, _Extra) ->" n>
+    "{ok, State}." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Handle status change request." n
+    "%%       Called for changing the form and appearance of gen_server" n
+    "%%       server status when it is returned from sys:get_status/1,2" n
+    "%%       or when it appears in termination error logs." n
+    (pel-erlang-skel-optional-separator 2) n
+    "-spec format_status(Opt :: normal | terminate," n>
+    "Status :: list()) -> Status :: term()." n
+    "format_status(_Opt, Status) ->" n>
+    "Status." n
+    n
+    (pel-erlang-skel-separator-start 3 ?=)
+    "%%% Internal functions" n
+    (pel-erlang-skel-optional-separator 3 ?=) n
+    )
+  "*The template of a generic server.
+Please see the function `tempo-define-template'.")
+
 ;; -----------------------------------------------------------------------------
 ;; Installation of Erlang Tempo Skeletons
 ;; --------------------------------------
@@ -290,6 +422,7 @@ the beginning of the buffer instead of at point, the default.")
            (boundp 'erlang-skel-function)
            (boundp 'erlang-skel-created-comment)
            (boundp 'erlang-skel-large-header)
+           (boundp 'erlang-skel-generic-server)
            (fboundp 'erlang-skel-separator))
       ;; Update some Erlang skeletons with more flexible ones
       ;; - separator line length controlled by `fill-column'
@@ -306,6 +439,9 @@ the beginning of the buffer instead of at point, the default.")
       ;; Edoc text at the end of block, has marks and is indented.
       ;; It also expects the first @doc line to be a self-contained abstract.
       (setq erlang-skel-large-header    pel-skel-large-header)
+      ;; generic server:
+      ;; second separator lines are optional.
+      (setq erlang-skel-generic-server pel-erlang-skel-generic-server)
       ;; Install the extra skeletons inside the erlang.el list of skeletons:
       ;; the list erlang-skel
       (setq erlang-skel (pel-insert-list-in-list
