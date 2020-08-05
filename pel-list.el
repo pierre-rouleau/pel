@@ -49,6 +49,25 @@ Performance: O(n) - of LIST size."
    seq
    (nthcdr n list)))
 
+(defun pel-join (elems sep &optional max-per-line prefix)
+  "Return a string joining each string in ELEMS.
+Use SEP as separator.
+Allow up to MAX-PER-LINE elements per line.
+For second and following lines, put leading PREFIX string."
+  (let ((text  "")
+        (rem-count (length elems))
+        (done-count 0))
+    (dolist (elem elems text)
+      (setq rem-count (1- rem-count))
+      (setq done-count (1+ done-count))
+      (setq text (concat text
+                         elem
+                         (if (> rem-count 0)
+                             (if (and max-per-line
+                                      (eq (% done-count max-per-line) 0))
+                                 (concat sep "\n" prefix)
+                               sep)
+                           ""))))))
 
 ;; -----------------------------------------------------------------------------
 ;;
