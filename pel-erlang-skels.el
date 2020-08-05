@@ -23,12 +23,20 @@
 ;; -----------------------------------------------------------------------------
 ;;; Commentary:
 ;;
+;; This file contains Erlang tempo skeletons, new ones and updates to the ones
+;; available in erlang-skels.el which are not flexible enough for the
+;; formatting.  I would like to make them even more flexible, being able to
+;; adjust them dynamically against the version of Erlang, but I have to build a
+;; better infrastructure first.  I started with some formatting and will add
+;; more later.  For now the code goes and updates the standard Erlang
+;; templates.
+
 
 (require 'pel--base)          ; use: pel-current-buffer-filename
 (require 'pel--options)       ; use: pel-erlang-skel-use-separators
 ;;                            ;      pel-erlang-skel-use-secondary-separators
 (require 'pel--macros)
-(require 'pel-list)           ; use: pel-insert-list-in-list
+(require 'pel-list)           ; use: pel-insert-list-in-list, pel-join
 (require 'pel-tempo)          ; use: pel-tempo-mode,
 ;;                            ;      pel-tempo-install-pel-skel
 (require 'pel-skels)
@@ -200,25 +208,54 @@ Please see the function `tempo-define-template'.")
   '(o (pel-erlang-skel-optional-separator)
       (pel--filename)
       "%%%" n
-      (erlang-skel-include erlang-skel-author-comment)
-      (erlang-skel-include erlang-skel-copyright-comment)
+      (pel-skel-include erlang-skel-author-comment)
+      (pel-skel-include erlang-skel-copyright-comment)
       "%%%" n
-      (erlang-skel-include erlang-skel-created-comment)
+      (pel-skel-include erlang-skel-created-comment)
       (pel--maybe-timestamp "last modified") ; this must be in the first 8 lines!
       "%%%" n
       "%%% @doc " p n
       "%%%      " p n
       "%%% @end" n
       (pel-erlang-skel-separator)
-      (erlang-skel-include erlang-skel-small-header) )
+      (pel-skel-include erlang-skel-small-header) )
   "*The template of a large header.
 Please see the function `tempo-define-template'.")
 
 
+;; Parts of behaviour templates.
+(defvar pel-erlang-skel-internal-functions
+  '((pel-erlang-skel-separator-start 3 ?=)
+    "%%% Internal functions" n
+    (pel-erlang-skel-optional-separator 3 ?=) n p n
+    (pel-insert-line)))
+
+(defun pel-erlang-skel-behaviour (behaviour api-funs callback-funs)
+  "Return a BEHAVIOUR description string with API-FUNS and CALLBACK-FUNS."
+  (concat
+   (format "-behaviour(%s).\n\n" behaviour)
+   (format "%%%% %s API\n"
+           (pel-current-buffer-filename :sans-directory :sans-extension))
+   (format "-export([%s]).\n\n" (pel-join api-funs
+                                          ", "
+                                          4 "         "))
+   (format "%%%% %s callbacks\n" behaviour)
+   (format "-export([%s]).\n\n" (pel-join callback-funs
+                                          ", "
+                                          4 "         "))
+   "-define(SERVER, ?MODULE).\n\n"))
+
+(defun pel-erlang-api (&optional suffix)
+  "Return a API string with the name of the module."
+  (format "%%%%%% %s API%s\n"
+          (pel-current-buffer-filename :sans-directory :sans-extension)
+          (if suffix
+              (concat " "  suffix)
+            "")))
 
 ;; Behaviour templates.
 (defvar pel-erlang-skel-application
-  '((erlang-skel-include erlang-skel-large-header)
+  '((pel-skel-include erlang-skel-large-header)
     "-behaviour(application)." n n
     "%% Application callbacks" n
     "-export([start/2, start_phase/3, stop/1, prep_stop/1," n>
@@ -298,31 +335,26 @@ Please see the function `tempo-define-template'.")
     "config_change(_Changed, _New, _Removed) ->" n>
     "ok." n
     n
-    (pel-erlang-skel-separator-start 3 ?=)
-    "%%% Internal functions" n
-    (pel-erlang-skel-optional-separator 3 ?=) n
+    (pel-skel-include pel-erlang-skel-internal-functions)
     )
   "*The template of an application behaviour.
 Please see the function `tempo-define-template'.")
 
-
 (defvar pel-erlang-skel-generic-server
-  '((erlang-skel-include erlang-skel-large-header)
-    "-behaviour(gen_server)." n n
-
-    "%% API" n
-    "-export([start_link/0])." n n
-
-    "%% gen_server callbacks" n
-    "-export([init/1, handle_call/3, handle_cast/2, handle_info/2," n>
-    "terminate/2, code_change/3, format_status/2])." n n
-
-    "-define(SERVER, ?MODULE)." n n
-
+  '((pel-skel-include erlang-skel-large-header)
+    (pel-erlang-skel-behaviour "gen_server"
+                               '("start_link/0")
+                               '("init/1"
+                                 "handle_call/3"
+                                 "handle_cast/2"
+                                 "handle_info/2"
+                                 "terminate/2"
+                                 "code_change/3"
+                                 "format_status/2"))
     "-record(state, {})." n n
 
     (pel-erlang-skel-separator-start 3 ?=)
-    "%%% API" n
+    (pel-erlang-api)
     (pel-erlang-skel-optional-separator 3 ?=) n n
 
     (pel-erlang-skel-separator-start 2)
@@ -398,9 +430,10 @@ Please see the function `tempo-define-template'.")
     "%% @private" n
     "%% @doc  Terminate." n
     "%%       Called by a gen_server when it is about to terminate." n
-    "%%       Does the opposite of Module:init/1 and do any necessary" n
-    "%%       cleaning up. When it returns, the gen_server terminates" n
-    "%%       with Reason. The return value is ignored." n
+    "%%       It should be the opposite of Module:init/1 and do any" n
+    "%%       necessary cleaning up." n
+    "%%       When it returns, the gen_server terminates with Reason." n
+    "%%       The return value is ignored." n
     (pel-erlang-skel-optional-separator 2 ?- :with-end) n
     "-spec terminate(Reason :: normal | shutdown | {shutdown, term()} | term()," n>
     "State :: term()) -> any()." n
@@ -430,11 +463,431 @@ Please see the function `tempo-define-template'.")
     "format_status(_Opt, Status) ->" n>
     "Status." n
     n
-    (pel-erlang-skel-separator-start 3 ?=)
-    "%%% Internal functions" n
-    (pel-erlang-skel-optional-separator 3 ?=) n
+    (pel-skel-include pel-erlang-skel-internal-functions)
     )
   "*The template of a generic server.
+Please see the function `tempo-define-template'.")
+
+(defvar pel-erlang-skel-supervisor
+  '((pel-skel-include erlang-skel-large-header)
+    (pel-erlang-skel-behaviour "supervisor"
+                               '("start_link/0")
+                               '("init/1"))
+
+    (pel-erlang-skel-separator-start 3 ?=)
+    (pel-erlang-api "functions")
+    (pel-erlang-skel-optional-separator 3 ?=) n
+    (pel-erlang-skel-separator-start 2)
+    "%% @doc  Start the supervisor." n
+    (pel-erlang-skel-optional-separator 2) n
+    "-spec start_link() -> {ok, Pid :: pid()} |" n>
+    "{error, {already_started, Pid :: pid()}} |" n>
+    "{error, {shutdown, term()}} |" n>
+    "{error, term()} |" n>
+    "ignore." n
+    "start_link() ->" n>
+    "supervisor:start_link({local, ?SERVER}, ?MODULE, [])." n
+    n
+    (pel-erlang-skel-separator-start 3 ?=)
+    "%%% Supervisor callbacks" n
+    (pel-erlang-skel-optional-separator 3 ?=) n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Initialize the server." n
+    "%%       Called by the new process when a supervisor is started" n
+    "%%       using supervisor:start_link/[2,3] to find out about" n
+    "%%       restart strategy, maximum restart intensity, and child" n
+    "%%       specifications." n
+    (pel-erlang-skel-optional-separator 2 ?- :with-end) n
+    "-spec init(Args :: term()) ->" n>
+    "{ok, {SupFlags :: supervisor:sup_flags()," n>
+    "[ChildSpec :: supervisor:child_spec()]}} |" n>
+    "ignore." n
+    "init([]) ->" n
+    "" n>
+    "SupFlags = #{strategy => one_for_one," n>
+    "intensity => 1," n>
+    "period => 5}," n
+    "" n>
+    "AChild = #{id => 'AName'," n>
+    "start => {'AModule', start_link, []}," n>
+    "restart => permanent," n>
+    "shutdown => 5000," n>
+    "type => worker," n>
+    "modules => ['AModule']}," n
+    "" n>
+    "{ok, {SupFlags, [AChild]}}." n
+    n
+    (pel-skel-include pel-erlang-skel-internal-functions)
+    )
+  "*The template of a supervisor behaviour.
+Please see the function `tempo-define-template'.")
+
+(defvar pel-erlang-skel-supervisor-bridge
+  '((pel-skel-include erlang-skel-large-header)
+    (pel-erlang-skel-behaviour "supervisor_bridge"
+                               '("start_link/0")
+                               '("init/1" "terminate/2"))
+    "-record(state, {})." n n
+
+    (pel-erlang-skel-separator-start 3 ?=)
+    (pel-erlang-api)
+    (pel-erlang-skel-optional-separator 3 ?=) n
+    (pel-erlang-skel-separator-start 2)
+    "%% @doc  Start the supervisor bridge." n
+    (pel-erlang-skel-optional-separator 2) n
+    "-spec start_link() -> {ok, Pid :: pid()} |" n>
+    "{error, {already_started, Pid :: pid()}} |" n>
+    "{error, term()} |" n>
+    "ignore." n
+    "start_link() ->" n>
+    "supervisor_bridge:start_link({local, ?SERVER}, ?MODULE, [])." n
+    n
+    (pel-erlang-skel-separator-start 3 ?=)
+    "%%% supervisor_bridge callbacks" n
+    (pel-erlang-skel-optional-separator 3 ?=) n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Initialize the supervisor bridge." n
+    "%%       Create a supervisor_bridge process, linked to the calling process," n
+    "%%       which calls Module:init/1 to start the subsystem. To ensure a" n
+    "%%       synchronized start-up procedure, this function does not return" n
+    "%%       until Module:init/1 has returned." n
+    (pel-erlang-skel-optional-separator 2) n
+    "-spec init(Args :: term()) -> {ok, Pid :: pid(), State :: term()} |" n>
+    "{error, Error :: term()} |" n>
+    "ignore." n
+    "init([]) ->" n>
+    "case 'AModule':start_link() of" n>
+    "{ok, Pid} ->" n>
+    "{ok, Pid, #state{}};" n>
+    "Error ->" n>
+    "Error" n
+    "end." > n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Terminate." n
+    "%%       Called by the supervisor_bridge when it is about to terminate." n
+    "%%       It should be the opposite of Module:init/1 and stop" n
+    "%%       the subsystem and do any necessary cleaning up." n
+    "%%       The return value is ignored." n
+    (pel-erlang-skel-optional-separator 2) n
+    "-spec terminate(Reason :: shutdown | term(), State :: term()) -> any()." n
+    "terminate(_Reason, _State) ->" n>
+    "'AModule':stop()," n>
+    "ok." n
+    n
+    (pel-skel-include pel-erlang-skel-internal-functions)
+    )
+  "*The template of a supervisor_bridge behaviour.
+Please see the function `tempo-define-template'.")
+
+(defvar pel-erlang-skel-gen-event
+  '((pel-skel-include erlang-skel-large-header)
+    (pel-erlang-skel-behaviour "gen_event"
+                               '("start_link/0"
+                                 "add_handler/0")
+                               '("init/1"
+                                 "handle_event/2"
+                                 "handle_call/2"
+                                 "handle_info/2"
+                                 "terminate/2"
+                                 "code_change/3"
+                                 "format_status/2"))
+    "-record(state, {})." n n
+
+    (pel-erlang-skel-separator-start 3 ?=)
+    (pel-erlang-api)
+    (pel-erlang-skel-optional-separator 3 ?=) n
+    (pel-erlang-skel-separator-start 2)
+    "%% @doc  Create an event manager." n
+    (pel-erlang-skel-optional-separator 2) n
+    "-spec start_link() -> {ok, Pid :: pid()} |" n>
+    "{error, Error :: {already_started, pid()} | term()}." n
+    "start_link() ->" n>
+    "gen_event:start_link({local, ?SERVER})." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @doc  Add an event handler." n
+    (pel-erlang-skel-optional-separator 2) n
+    "-spec add_handler() -> ok | {'EXIT', Reason :: term()} | term()." n
+    "add_handler() ->" n>
+    "gen_event:add_handler(?SERVER, ?MODULE, [])." n
+    n
+    (pel-erlang-skel-separator-start 3 ?=)
+    "%%% gen_event callbacks" n
+    (pel-erlang-skel-optional-separator 3 ?=) n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Initialize the event handler." n
+    "%%       Whenever a new event handler is added to an event manager," n
+    "%%       this function is called to initialize the event handler." n
+    (pel-erlang-skel-optional-separator 2 ?- :with-end) n
+    "-spec init(Args :: term() | {Args :: term(), Term :: term()}) ->" n>
+    "{ok, State :: term()} |" n>
+    "{ok, State :: term(), hibernate} |" n>
+    "{error, Reason :: term()}." n
+    "init([]) ->" n>
+    "{ok, #state{}}." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Handle event." n
+    "%%       Called whenever an event manager receives an event sent using" n
+    "%%       gen_event:notify/2 or gen_event:sync_notify/2, it is" n
+    "%%       called for each installed event handler to handle the event." n
+    (pel-erlang-skel-optional-separator 2 ?- :with-end) n
+    "-spec handle_event(Event :: term(), State :: term()) ->" n>
+    "{ok, NewState :: term()} |" n>
+    "{ok, NewState :: term(), hibernate} |" n>
+    "remove_handler |" n>
+    "{swap_handler, Args1 :: term(), NewState :: term()," n>
+    "Handler2 :: atom() | {atom(), term()} , Args2 :: term()}." n>
+    "handle_event(_Event, State) ->" n>
+    "{ok, State}." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Handle request." n
+    "%%       Called when an event manager receives a request sent using" n
+    "%%       gen_event:call/3,4. It's called  for the specified" n
+    "%%       event handler to handle the request." n
+    (pel-erlang-skel-optional-separator 2 ?- :with-end) n
+    "-spec handle_call(Request :: term(), State :: term()) ->" n>
+    "{ok, Reply :: term(), NewState :: term()} |" n>
+    "{ok, Reply :: term(), NewState :: term(), hibernate} |" n>
+    "{remove_handler, Reply :: term()} |" n>
+    "{swap_handler, Reply :: term(), Args1 :: term(), NewState :: term()," n>
+    "Handler2 :: atom() | {atom(), term()}, Args2 :: term()}." n
+    "handle_call(_Request, State) ->" n>
+    "Reply = ok," n>
+    "{ok, Reply, State}." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Handle info." n
+    "%%       Called for each installed event handler when" n
+    "%%       an event manager receives any other message than an event or a" n
+    "%%       synchronous request (or a system message)." n
+    (pel-erlang-skel-optional-separator 2 ?- :with-end) n
+    "-spec handle_info(Info :: term(), State :: term()) ->" n>
+    "{ok, NewState :: term()} |" n>
+    "{ok, NewState :: term(), hibernate} |" n>
+    "remove_handler |" n>
+    "{swap_handler, Args1 :: term(), NewState :: term()," n>
+    "Handler2 :: atom() | {atom(), term()}, Args2 :: term()}." n
+    "handle_info(_Info, State) ->" n>
+    "{ok, State}." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Terminate." n
+    "%%       Called when an event handler is deleted from an event manager." n
+    "%%       It should be the opposite of Module:init/1 and" n
+    "%%       do any necessary cleaning up." n
+    (pel-erlang-skel-optional-separator 2 ?- :with-end) n
+    "-spec terminate(Arg :: {stop, Reason :: term()} |" n>
+    "stop |" n>
+    "remove_handler |" n>
+    "{error, {'EXIT', Reason :: term()}} |" n>
+    "{error, Term :: term()} |" n>
+    "term()," n>
+    "State :: term()) -> any()." n
+    "terminate(_Arg, _State) ->" n>
+    "ok." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Convert process state when code is changed." n
+    (pel-erlang-skel-optional-separator 2) n
+    "-spec code_change(OldVsn :: term() | {down, term()}," n>
+    "State :: term()," n>
+    "Extra :: term()) -> {ok, NewState :: term()}." n
+    "code_change(_OldVsn, State, _Extra) ->" n>
+    "{ok, State}." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Handle status change request." n
+    "%%       Called for changing the form and appearance" n
+    "%%       of gen_event status when it is returned from sys:get_status/1,2" n
+    "%%       or when it appears in termination error logs." n
+    (pel-erlang-skel-optional-separator 2 ?- :with-end) n
+    "-spec format_status(Opt :: normal | terminate," n>
+    "Status :: list()) -> Status :: term()." n
+    "format_status(_Opt, Status) ->" n>
+    "Status." n
+    n
+    (pel-skel-include pel-erlang-skel-internal-functions)
+    )
+  "*The template of a gen_event.
+Please see the function `tempo-define-template'.")
+
+;; TODO: replace @spec with -spec declarations.
+(defvar pel-erlang-skel-gen-fsm
+  '((erlang-skel-include erlang-skel-large-header)
+    (pel-erlang-skel-behaviour "gen_fsm"
+                               '("start_link/0")
+                               '("init/1"
+                                 "state_name/2"
+                                 "state_name/3"
+                                 "handle_event/3"
+                                 "handle_sync_event/4"
+                                 "handle_info/3"
+                                 "terminate/3"
+                                 "code_change/4"))
+    "-record(state, {})." n n
+
+    (pel-erlang-skel-separator-start 3 ?=)
+    (pel-erlang-api)
+    (pel-erlang-skel-optional-separator 3 ?=) n
+    (pel-erlang-skel-separator-start 2)
+    "%% @doc  Start and link." n
+    "%%       Create a gen_fsm process which calls Module:init/1 to" n
+    "%%       initialize. To ensure a synchronized start-up procedure, this" n
+    "%%       function does not return until Module:init/1 has returned." n
+    "%%" n
+    "%% @spec start_link() -> {ok, Pid} | ignore | {error, Error}" n
+    (pel-erlang-skel-optional-separator 2) n
+    "start_link() ->" n>
+    "gen_fsm:start_link({local, ?SERVER}, ?MODULE, [], [])." n
+    n
+    (pel-erlang-skel-separator-start 3 ?=)
+    "%%% gen_fsm callbacks" n
+    (pel-erlang-skel-optional-separator 3 ?=) n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Initialize." n
+    "%%       Whenever a gen_fsm is started using gen_fsm:start/[3,4] or" n
+    "%%       gen_fsm:start_link/[3,4], this function is called by the new" n
+    "%%       process to initialize." n
+    "%%" n
+    "%% @spec init(Args) -> {ok, StateName, State} |" n
+    "%%                     {ok, StateName, State, Timeout} |" n
+    "%%                     ignore |" n
+    "%%                     {stop, StopReason}" n
+    (pel-erlang-skel-optional-separator 2) n
+    "init([]) ->" n>
+    "process_flag(trap_exit, true)," n>
+    "{ok, state_name, #state{}}." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Handle event at state." n
+    "%%       There should be one instance of this function for each possible" n
+    "%%       state name." n
+    "%%       Whenever a gen_fsm receives an event sent using" n
+    "%%       gen_fsm:send_event/2, the instance of this function with the same" n
+    "%%       name as the current state name StateName is called to handle" n
+    "%%       the event. It is also called if a timeout occurs." n
+    "%%" n
+    "%% @spec state_name(Event, State) ->" n
+    "%%                   {next_state, NextStateName, NextState} |" n
+    "%%                   {next_state, NextStateName, NextState, Timeout} |" n
+    "%%                   {stop, Reason, NewState}" n
+    (pel-erlang-skel-optional-separator 2) n
+    "state_name(_Event, State) ->" n>
+    "{next_state, state_name, State}." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Handle event at state." n
+    "%%       There should be one instance of this function for each possible" n
+    "%%       state name." n
+    "%%       Whenever a gen_fsm receives an event sent using" n
+    "%%       gen_fsm:sync_send_event/[2,3], the instance of this function with" n
+    "%%       the same name as the current state name StateName is called to" n
+    "%%       handle the event." n
+    "%%" n
+    "%% @spec state_name(Event, From, State) ->" n
+    "%%                   {next_state, NextStateName, NextState} |"n
+    "%%                   {next_state, NextStateName, NextState, Timeout} |" n
+    "%%                   {reply, Reply, NextStateName, NextState} |" n
+    "%%                   {reply, Reply, NextStateName, NextState, Timeout} |" n
+    "%%                   {stop, Reason, NewState} |" n
+    "%%                   {stop, Reason, Reply, NewState}" n
+    (pel-erlang-skel-optional-separator 2) n
+    "state_name(_Event, _From, State) ->" n>
+    "Reply = ok," n>
+    "{reply, Reply, state_name, State}." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc Handle event." n
+    "%%      Whenever a gen_fsm receives an event sent using" n
+    "%%      gen_fsm:send_all_state_event/2, this function is called to handle" n
+    "%%      the event." n
+    "%%" n
+    "%% @spec handle_event(Event, StateName, State) ->" n
+    "%%                   {next_state, NextStateName, NextState} |" n
+    "%%                   {next_state, NextStateName, NextState, Timeout} |" n
+    "%%                   {stop, Reason, NewState}" n
+    (pel-erlang-skel-optional-separator 2) n
+    "handle_event(_Event, StateName, State) ->" n>
+    "{next_state, StateName, State}." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Handle synchronous event." n
+    "%%       Whenever a gen_fsm receives an event sent using" n
+    "%%       gen_fsm:sync_send_all_state_event/[2,3], this function is called" n
+    "%%       to handle the event." n
+    "%%" n
+    "%% @spec handle_sync_event(Event, From, StateName, State) ->" n
+    "%%                   {next_state, NextStateName, NextState} |" n
+    "%%                   {next_state, NextStateName, NextState, Timeout} |" n
+    "%%                   {reply, Reply, NextStateName, NextState} |" n
+    "%%                   {reply, Reply, NextStateName, NextState, Timeout} |" n
+    "%%                   {stop, Reason, NewState} |" n
+    "%%                   {stop, Reason, Reply, NewState}" n
+    (pel-erlang-skel-optional-separator 2) n
+    "handle_sync_event(_Event, _From, StateName, State) ->" n>
+    "Reply = ok," n>
+    "{reply, Reply, StateName, State}." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Handle info." n
+    "%%       This function is called by a gen_fsm when it receives any" n
+    "%%       message other than a synchronous or asynchronous event" n
+    "%%       (or a system message)." n
+    "%%" n
+    "%% @spec handle_info(Info,StateName,State)->" n
+    "%%                   {next_state, NextStateName, NextState} |" n
+    "%%                   {next_state, NextStateName, NextState, Timeout} |" n
+    "%%                   {stop, Reason, NewState}" n
+    (pel-erlang-skel-optional-separator 2) n
+    "handle_info(_Info, StateName, State) ->" n>
+    "{next_state, StateName, State}." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc Terminate." n
+    "%%      This function is called by a gen_fsm when it is about to" n
+    "%%      terminate. It should be the opposite of Module:init/1 and do any" n
+    "%%      necessary cleaning up. When it returns, the gen_fsm terminates with" n
+    "%%      Reason. The return value is ignored." n
+    "%%" n
+    "%% @spec terminate(Reason, StateName, State) -> void()" n
+    (pel-erlang-skel-optional-separator 2) n
+    "terminate(_Reason, _StateName, _State) ->" n>
+    "ok." n
+    n
+    (pel-erlang-skel-separator-start 2)
+    "%% @private" n
+    "%% @doc  Handle code change." n
+    "%%       Convert process state when code is changed" n
+    "%%" n
+    "%% @spec code_change(OldVsn, StateName, State, Extra) ->" n
+    "%%                   {ok, StateName, NewState}" n
+    (pel-erlang-skel-optional-separator 2) n
+    "code_change(_OldVsn, StateName, State, _Extra) ->" n>
+    "{ok, StateName, State}." n
+    n
+    (pel-skel-include pel-erlang-skel-internal-functions)
+    )
+  "*The template of a gen_fsm.
 Please see the function `tempo-define-template'.")
 
 ;; -----------------------------------------------------------------------------
@@ -523,6 +976,11 @@ the beginning of the buffer instead of at point, the default.")
            (boundp 'erlang-skel-large-header)
            (boundp 'erlang-skel-application)
            (boundp 'erlang-skel-generic-server)
+           (boundp 'erlang-skel-supervisor)
+           (boundp 'erlang-skel-supervisor-bridge)
+           (boundp 'erlang-skel-generic-server)
+           (boundp 'erlang-skel-gen-event)
+           (boundp 'erlang-skel-gen-fsm)
            (fboundp 'erlang-skel-separator))
       ;; Update some Erlang skeletons with more flexible ones
       ;; - separator line length controlled by `fill-column'
@@ -539,14 +997,17 @@ the beginning of the buffer instead of at point, the default.")
       ;; Edoc text at the end of block, has marks and is indented.
       ;; It also expects the first @doc line to be a self-contained abstract.
       (setq erlang-skel-large-header    pel-skel-large-header)
-      ;; application
-      ;; second separator lines are optional.
-      ;; doc descriptions have a header line that's a full sentence.
-      (setq erlang-skel-application pel-erlang-skel-application)
-      ;; generic server:
-      ;; second separator lines are optional.
-      ;; doc descriptions have a header line that's a full sentence.
-      (setq erlang-skel-generic-server pel-erlang-skel-generic-server)
+      ;; Behaviours:
+      ;; - second separator lines are optional.
+      ;; - name of module is shown before API
+      ;; - doc descriptions have a header line that's a full sentence.
+      (setq erlang-skel-application       pel-erlang-skel-application)
+      (setq erlang-skel-generic-server    pel-erlang-skel-generic-server)
+      (setq erlang-skel-supervisor        pel-erlang-skel-supervisor)
+      (setq erlang-skel-supervisor-bridge pel-erlang-skel-supervisor-bridge)
+      (setq erlang-skel-generic-server    pel-erlang-skel-generic-server)
+      (setq erlang-skel-gen-event         pel-erlang-skel-gen-event)
+      (setq erlang-skel-gen-fsm           pel-erlang-skel-gen-fsm)
       ;; Install the extra skeletons inside the erlang.el list of skeletons:
       ;; the list erlang-skel
       (setq erlang-skel (pel-insert-list-in-list
