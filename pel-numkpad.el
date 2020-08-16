@@ -65,7 +65,7 @@ where the keys for '/', '*', '-' and '+' have their natural
 meaning in Numlock mode but have other meanings in Non Numlocked
 mode.
 
-Use `pel-toggle-numlock' to activate/deactivate numlock on
+Use `pel-toggle-mac-numlock' to activate/deactivate numlock on
 environments that can't bind the clear key such as macOS
 terminal.
 
