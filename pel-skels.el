@@ -27,6 +27,8 @@
 ;; skeletons that may be used for several programming and markup languages.
 ;; These are used in other pel-skel files.
 
+
+(require 'pel--base)         ; use:  pel-line-only-whitespace-p
 ;; --
 ;; Basic formatting
 
@@ -59,6 +61,23 @@ This returns what tempo expects: a list form with the symbol
         (setq result (cons elem result))))
     (cons 'l (nreverse result))))
 
+(defun pel-skel-include-when (option &rest forms)
+  "Include a tempo template inside another one.
+Used like this:
+  (defvar fct-skel '(\"%%% Important function:\"
+                     (pel-skel-include-when option
+                                          pel-skel-erlang-func)))
+
+This returns what tempo expects: a list form with the symbol
+'l as the first element and the FORMS specified expanded.
+if OPTION is non-nil otherwise it return nil."
+  (when option
+    (let (result)
+      (dolist (form forms)
+        (dolist (elem form)
+          (setq result (cons elem result))))
+      (cons 'l (nreverse result)))))
+
 ;; --
 ;; Date and time
 
@@ -71,16 +90,16 @@ Return a UTC Date Time if UTC is non-nil."
      (format-time-string "%F")))
 
 ;;-pel-autoload
-(defun pel-time-stamp (event &optional user-text utc)
+(defun pel-time-stamp (&optional event user-text utc)
   "Return a YYYY-MM-DD HH:MM:SS Emacs compliant time-stamp.
-The EVENT is a string placed before the time stamp.
+The EVENT (if any) is capitalized and placed before the time stamp.
 Use UTC format when UTC is non-nil.
 Set USER-TEXT to the a descriptive string like \"by \") to
 add that text followed by the full user name.
 This time stamp will be updated automatically by Emacs on file save
 when `pel-update-time-stamp' is non-nil."
-  (format "%s Time-stamp: <%s%s>"
-          (capitalize event)
+  (format "%sTime-stamp: <%s%s>"
+          (if event (capitalize event) "")
           (if utc
               (format-time-string "%F %T (UTC)" nil t)
             (format-time-string "%F %T"))
@@ -89,6 +108,111 @@ when `pel-update-time-stamp' is non-nil."
                       user-text
                       (user-full-name))
             "")))
+
+
+;; --
+;; Author
+
+(defconst pel-skel-email-address
+  (if (or (not user-mail-address) (string-match "(" user-mail-address))
+      (concat (user-login-name) "@"
+              (or (and (boundp 'mail-host-address)
+                       mail-host-address)
+                  (system-name)))
+    user-mail-address)
+  "Mail address of the user.")
+
+;;-pel-autoload
+(defun pel-skel-author-comment (&optional comment-prefix author-word)
+  "Return a commented line providing the file's author name.
+The string \"Author    :\" is used unless AUTHOR-WORD is specified, in which
+case that is used. This can be useful for documentation systems such as
+Erlang's Edoc, where \"@author\" can be specified.
+The author's name follows along with it's email address."
+  (let ((auth-word (or author-word "Author    :"))
+        (auth-comment (or comment-prefix comment-start)))
+    (format "%s%s %s %s <%s>\n"
+            (if (pel-line-only-whitespace-p) "" "\n")
+            auth-comment
+            auth-word
+            (user-full-name)
+            pel-skel-email-address)))
+
+;; --
+;; Created
+
+;;-pel-autoload
+(defun pel-skel-created-comment (&optional comment-prefix)
+  "Return a Created timestamp line."
+  (format "%s%s Created   : %s\n"
+          (if (pel-line-only-whitespace-p) "" "\n")
+          (or comment-prefix comment-start)
+          (format-time-string "%A, %B %e %Y.")))
+
+
+;; --
+;; License
+
+(defun pel-license-text (&optional comment-prefix)
+  "Return the license text identified by the function `lice'."
+  (if (and (require 'lice)
+             (fboundp 'lice))
+    (let ((the-comment-start (or comment-prefix comment-start)))
+      (with-temp-buffer
+        (let ((comment-start the-comment-start))
+          (call-interactively 'lice)
+          (buffer-string))))
+    ""))
+
+;;-pel-autoload
+(defun pel-skel-insert-license-when (condition &optional comment-prefix)
+  ""
+  (if condition (pel-license-text comment-prefix) "" ))
+
+;; --
+;; Copyright
+
+;;-pel-autoload
+(defun pel-skel-copyright-comment (&optional comment-prefix copyright-word with-license)
+  "Return a commented copyright adapted to the organization or user.
+The copyright is assigned to `*copyright-organization*' if it is bound,
+otherwise it is assigned to the value returned by function  `user-full-name'.
+The line starts with `comment-start' unless COMMENT-PREFIX is specified,
+in which case that is used.
+The word 'Copyright' is used unless COPYRIGHT-WORD is specified, in which
+case that is used. It can be useful for documentation systems such as
+Erlang Edoc, where \"@copyright\" can be specified.
+If WITH-LICENSE is non-nil, license text, controlled by function `lice' is
+inserted."
+  (let ((cpr-word (or copyright-word "Copyright"))
+        (cpr-owner (if (boundp '*copyright-organization*)
+                       *copyright-organization*
+                     (user-full-name)))
+        (cpr-comment (or comment-prefix comment-start)))
+    (if with-license
+        (format "\n%s\n"
+                (pel-license-text cpr-comment))
+      (format "%s%s %s (C) %s, %s\n"
+              (if (pel-line-only-whitespace-p) "" "\n")
+              cpr-comment
+              cpr-word
+              (format-time-string "%Y")
+              cpr-owner))))
+
+;; --
+;; Documentation
+
+;; (defun pel-skel-file-doc (&optional comment-prefix doc-start doc-end)
+;;   "Insert a file documentation block.
+;; The line starts with `comment-start' unless COMMENT-PREFIX is specified,
+;; in which case that is used.
+;; The documentation block can be enclosed between a line that has
+;; DOC-START and a line that has DOC-END strings if these are specified."
+;;   (let ((cpr-comment (or comment-prefix comment-start))
+;;         (block-start (if doc-start (concat " " doc-start) ""))
+;;         (block-end   (if doc-end   (concat " " doc-end) "")))
+;;     (format "%s%s
+
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-skels)

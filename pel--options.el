@@ -1793,6 +1793,35 @@ included, reducing the comments overhead in files."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-erlang-skel-with-edoc t
+  "Control whether Edoc comments are placed inside generated Erlang code."
+  :group 'pel-erlang-code-style
+  :type '(choice
+          (const :tag "Do not insert Edoc comment." nil)
+          (const :tag "Insert Edoc comments everywhere." t)
+          (const :tag "Insert Edoc comments only in functions, not in file header." in-function-only)))
+
+(defcustom pel-erlang-skel-with-license nil
+  "Control whether a license text is inserted in file header comment block.
+
+When t, the licence inserted is controlled by the function `lice' taken
+from the external library with the same name.
+If t this activates `pel-use-lice' if it is not activated already.
+
+The text of the inserted license is selected by the `lice:default-license'
+user option, normally configured inside the directory's '.dir-locals.el'
+file written inside the global setting like this:
+
+   ((nil   .      ((fill-column . 80)
+                   (lice:default-license  . \"gpl-3.0\")
+                   (lice:copyright-holder . \"Your Name\")))
+
+Replace the gpl-3.0 with the license you want and write your name inside
+the copyright holder value."
+  :group 'pel-erlang-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; LFE - Lisp Flavoured Erlang - Support
 ;; -------------------------------------

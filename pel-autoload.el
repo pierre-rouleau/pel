@@ -372,7 +372,11 @@
 
   ;; pel-skels
   (dolist (fct '(pel-date
-                 pel-time-stamp))
+                 pel-time-stamp
+                 pel-skel-author-comment
+                 pel-skel-created-comment
+                 pel-skel-copyright-comment
+                 pel-skel-insert-license-when))
     (autoload fct "pel-skels"))
 
   ;; pel-speedbar

@@ -58,7 +58,8 @@ Note: the smallest allowed `fill-column' value is 70."
   (let ((percent (or percent 3))
         (char    (or char ?-)))
     (concat (make-string percent ?%)
-            (make-string (- (max fill-column 70) percent) char)
+            " "
+            (make-string (- (max fill-column 70) percent 1) char)
             "\n")))
 
 (defun pel-erlang-skel-optional-separator (&optional percent char with-end)
@@ -191,33 +192,51 @@ Please see the function `tempo-define-template'.")
       (user-full-name) " <" erlang-skel-mail-address ">" n)
   "*The template for the \"Created:\" comment line.")
 
-(defun pel--filename ()
+(defun pel-erlang-skel-filename ()
   "Insert name of current file."
-  (concat "%%% File: "
+  (concat "%%% File      : "
           (pel-current-buffer-filename :sans-directory)
           "\n"))
 
-(defun pel--maybe-timestamp (event)
+(defun pel-erlang-skel-maybe-timestamp (&optional event)
   "Insert time stamp if required."
   (when pel-erlang-skel-insert-file-timestamp
     (concat "%%% "
             (pel-time-stamp event "by ")
             "\n")))
 
-(defvar pel-skel-large-header
-  '(o (pel-erlang-skel-optional-separator)
-      (pel--filename)
-      "%%%" n
-      (pel-skel-include erlang-skel-author-comment)
-      (pel-skel-include erlang-skel-copyright-comment)
-      "%%%" n
-      (pel-skel-include erlang-skel-created-comment)
-      (pel--maybe-timestamp "last modified") ; this must be in the first 8 lines!
-      "%%%" n
-      "%%% @doc " p n
+(defvar pel-erlang-skel-file-doc-edoc
+  '(& "%%% @doc " p n
       "%%%      " p n
       "%%% @end" n
+      (pel-erlang-skel-separator)))
+
+(defvar pel-erlang-skel-file-doc
+  '(& "%%% Module Description:" n
+      "%%% " n
+      "%%% " p n
+      "%%% " n
+      (pel-erlang-skel-separator)))
+
+(defun pel-erlang-skel-edoc-in-header-p ()
+  "Return t if edoc must be used in header, nil otherwise."
+  (eq pel-erlang-skel-with-edoc t))
+
+(defvar pel-skel-large-header
+  '(o (pel-erlang-skel-optional-separator)
+      (pel-erlang-skel-filename)
+      "%%% Purpose   : " p n
+      (pel-skel-created-comment   "%%%")
+      (pel-skel-author-comment    "%%%" (when (pel-erlang-skel-edoc-in-header-p) "@author"))
+      (pel-erlang-skel-maybe-timestamp) ; this must be in the first 8 lines!
+      (pel-skel-copyright-comment "%%%"
+                                  (when (pel-erlang-skel-edoc-in-header-p) "@copyright")
+                                  pel-erlang-skel-with-license)
       (pel-erlang-skel-separator)
+      ;; TODO: find a way to provide a pel-skel-include-if with 2 groups of
+      ;;       skel forms. For now two mutually exclusive inclusions are used.
+      (pel-skel-include-when (pel-erlang-skel-edoc-in-header-p) pel-erlang-skel-file-doc-edoc)
+      (pel-skel-include-when (not (pel-erlang-skel-edoc-in-header-p)) pel-erlang-skel-file-doc)
       (pel-skel-include erlang-skel-small-header) )
   "*The template of a large header.
 Please see the function `tempo-define-template'.")
