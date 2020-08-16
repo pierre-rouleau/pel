@@ -98,6 +98,11 @@
 ;; Insert or overwrite text
 ;; - `pel-insert-or-overwrite'
 ;;
+;; Extract text from buffer
+;; - `pel-text-from-beginning-of-line'
+;;
+;; Check text from buffer
+;; - `pel-line-has-only-whitespace-p'
 
 ;;; Code:
 
@@ -650,6 +655,37 @@ Multi-byte characters are handled properly."
         (delete-char (length text))
       (delete-char 1)))
   (insert text))
+
+;; -----------------------------------------------------------------------------
+;; Extract text from buffer
+;; - `pel-text-from-beginning-of-line'
+
+(defun pel-text-from-beginning-of-line (&optional with-properties)
+  "Return text string between beginning of line and point.
+If WITH-PROPERTIES is non-nil the returned value includes the text properties,
+otherwise it does not."
+  (let ((begin (line-beginning-position))
+        (end   (point)))
+    (if with-properties
+        (buffer-substring begin end)
+      (buffer-substring-no-properties begin end))))
+
+
+;; -----------------------------------------------------------------------------
+;; Check text from buffer
+;; - `pel-line-has-only-whitespace-p'
+
+(defun pel-line-only-whitespace-p (&optional pos)
+  "Return non-nil if current line (or line at POS) contains only whitespace.
+Return nil otherwise.
+Whitespace characters are specified by the syntax table of the current major mode."
+  (save-excursion
+    (goto-char (or pos (point)))
+    (beginning-of-line)
+    (= (progn
+         (skip-syntax-forward " ")
+         (point))
+       (point-at-eol))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel--base)
