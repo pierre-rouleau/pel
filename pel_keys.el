@@ -1150,8 +1150,12 @@ For example, applied to a directory name, macOS Finder is used."
 
     (dolist (mode pel-modes-activating-smart-dash-mode)
       (when mode
-        (add-hook (pel-hook-symbol-for mode) (lambda ()
-                                               (smart-dash-mode 1)))))))
+        (add-hook (pel-hook-symbol-for mode)
+                  (lambda ()
+                    (smart-dash-mode 1)
+                    ;; ensure that the keypad dash is used as pel-kp-subtract
+                    ;; which either cuts current line or inserts a normal dash.
+                    (fset 'smart-dash-insert-dash 'pel-kp-subtract)))))))
 
 (when (display-graphic-p)
   ;; In graphics mode provide control over cursor color and type (shape): the
