@@ -23,12 +23,24 @@
 ;; -----------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; The pel-y-n-e-or-l-p function is a minor modification of the Emacs'
+;; This file defines functions that prompt the user.
+;;
+;; The file defines the following functions:
+;;
+;; - `pel-y-n-e-or-l-p'
+;; - `pel-select-from'
+;;   - `pel--prompt-for'
+;;
+;;
+;; The `pel-y-n-e-or-l-p' function is a minor modification of the Emacs'
 ;; y-or-n-p.  It has the ability to type "e" or "E" as an answer to
 ;; identify an edit-replacement action and "l" or "L" to request searching
-;; a library file.
-;; Also modified the return so it can return one of 4 outcomes:
-;; yes, no, edit or findlib.
+;; a library file. It also modified the return type so it can return one of
+;; 4 outcomes: yes, no, edit or findlib.
+;;
+;; The `pel-select-from' function provides a selection of choices to select from,
+;; providing a quick interactive selection of choices.
+
 
 ;;; Code:
 
@@ -150,8 +162,8 @@ y/Y (yes), n/N (no), e/E (edit), l/L (library).\n")
 ;; Prompt for choices from a list for choices
 ;; ------------------------------------------
 ;;
-;; * pel-select-from
-;;   - pel--prompt-for
+;; - `pel-select-from'
+;;   - `pel--prompt-for'
 ;;
 
 (defun pel--prompt-for (title selection &optional current)
