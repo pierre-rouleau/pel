@@ -46,6 +46,10 @@
 ;;   - `pel-with-required'
 ;;     - `pel-make-apply-to-elems'
 ;;
+;;  The following macro append elements to a named list variable.
+;;
+;;  - `pel-append-to-list'
+;;
 ;;  The following 2 macros are used to prevent lint warnings:
 ;;
 ;;   - `pel-setq'
@@ -119,6 +123,15 @@ VARIABLES := list of variable symbol(s) or nil
          (progn
            ,@body)
        (error "Failed loading required resources!")))))
+
+
+;; -----------------------------------------------------------------------------
+;; Appending to a list
+;; -------------------
+
+(defmacro pel-append-to (listvar elem)
+  "Append ELEM to LISTVAR."
+  `(setq ,listvar (append ,listvar ,elem)))
 
 ;; -----------------------------------------------------------------------------
 ;; Warning Preventing Macros
