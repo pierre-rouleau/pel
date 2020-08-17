@@ -222,16 +222,24 @@ Please see the function `tempo-define-template'.")
   "Return t if edoc must be used in header, nil otherwise."
   (eq pel-erlang-skel-with-edoc t))
 
+(defun pel-erlang-skel-prompt-for-file-purpose ()
+  "Return t if must prompt for file purpose, nil otherwise."
+  (memq pel-erlang-skel-prompt-for-purpose '(t in-file-only)))
+
 (defvar pel-skel-large-header
   '(o (pel-erlang-skel-optional-separator)
       (pel-erlang-skel-filename)
-      "%%% Purpose   : " p n
-      (pel-skel-created-comment   "%%%")
-      (pel-skel-author-comment    "%%%" (when (pel-erlang-skel-edoc-in-header-p) "@author"))
+      (pel-skel-purpose-for (pel-erlang-skel-prompt-for-file-purpose)
+                            "File" "%%%" "Purpose   :")
+      (pel-skel-created-comment    "%%%")
+      (pel-skel-author-comment     "%%%"
+                                   (when (pel-erlang-skel-edoc-in-header-p)
+                                     "@author"))
       (pel-erlang-skel-maybe-timestamp) ; this must be in the first 8 lines!
-      (pel-skel-copyright-comment "%%%"
-                                  (when (pel-erlang-skel-edoc-in-header-p) "@copyright")
-                                  pel-erlang-skel-with-license)
+      (pel-skel-copyright-comment  "%%%"
+                                   (when (pel-erlang-skel-edoc-in-header-p)
+                                     "@copyright")
+                                   pel-erlang-skel-with-license)
       (pel-erlang-skel-separator)
       ;; TODO: find a way to provide a pel-skel-include-if with 2 groups of
       ;;       skel forms. For now two mutually exclusive inclusions are used.

@@ -1801,6 +1801,15 @@ included, reducing the comments overhead in files."
           (const :tag "Insert Edoc comments everywhere." t)
           (const :tag "Insert Edoc comments only in functions, not in file header." in-function-only)))
 
+(defcustom pel-erlang-skel-prompt-for-purpose t
+  "Control whether skeleton insertions prompt for required  purpose strings."
+  :group 'pel-erlang-code-style
+  :type '(choice
+          (const :tag "Never prompt for purpose." nil)
+          (const :tag "Always prompt for purpose." t)
+          (const :tag "Only prompt for file purpose." in-file-only)
+          (const :tag "Only prompt for function purpose." in-function-only)))
+
 (defcustom pel-erlang-skel-with-license nil
   "Control whether a license text is inserted in file header comment block.
 

@@ -29,6 +29,8 @@
 
 
 (require 'pel--base)         ; use:  pel-line-only-whitespace-p
+(eval-when-compile (require 'subr-x))
+
 ;; --
 ;; Basic formatting
 
@@ -109,6 +111,35 @@ when `pel-update-time-stamp' is non-nil."
                       (user-full-name))
             "")))
 
+
+;; --
+;; Purpose
+
+(defun pel-skel-purpose-for (get-text item &optional comment-prefix title)
+  "Return a tempo skel list describing the purpose of the entry.
+Prompt for the purpose when GET-TEXT is non-nil.
+ITEM is a string describing the thing whose purpose is described.
+This prompts the user for the purpose and inserts the typed string if any,
+otherwise it leaves a tempo marker at its place.
+The line starts with `comment-start' unless COMMENT-PREFIX is specified,
+in which case that is used.
+The tag uses TITLE if specified otherwise it uses ITEM capitalized."
+  (let* ((purpose     (if get-text
+                          (end-text-with-period
+                           (capitalize-first-letter
+                            (string-trim
+                             (read-from-minibuffer
+                              (format "Purpose for %s: " item)))))
+                        ""))
+         (comment-str (or comment-prefix comment-start))
+         (text        (format "%s %s %s"
+                              comment-str
+                              (or title (capitalize item))
+                              purpose)))
+    (if (string= purpose "")
+        ;; when user did not specify a purpose leave a tempo marker in place.
+        (cons 'l (cons text (cons 'p (cons 'n nil))))
+      (cons 'l (cons text (cons 'n nil ))))))
 
 ;; --
 ;; Author
@@ -198,21 +229,6 @@ inserted."
               cpr-word
               (format-time-string "%Y")
               cpr-owner))))
-
-;; --
-;; Documentation
-
-;; (defun pel-skel-file-doc (&optional comment-prefix doc-start doc-end)
-;;   "Insert a file documentation block.
-;; The line starts with `comment-start' unless COMMENT-PREFIX is specified,
-;; in which case that is used.
-;; The documentation block can be enclosed between a line that has
-;; DOC-START and a line that has DOC-END strings if these are specified."
-;;   (let ((cpr-comment (or comment-prefix comment-start))
-;;         (block-start (if doc-start (concat " " doc-start) ""))
-;;         (block-end   (if doc-end   (concat " " doc-end) "")))
-;;     (format "%s%s
-
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-skels)
