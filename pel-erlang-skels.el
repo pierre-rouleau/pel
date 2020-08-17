@@ -210,9 +210,10 @@ Please see the function `tempo-define-template'.")
   (eq pel-erlang-skel-with-edoc t))
 
 (defun pel-erlang-skel-file-doc ()
-  "Return an insertable tempo skel for documentation.
-Use EDoc style if EDoc must be used.
-Insert purpose as the single line description if it was identified."
+  "Return tempo skel for documentation ready for insertion.
+The returned skel list uses EDoc style if EDoc must be used,
+and inserts the last specified purpose string as the single
+line description if it was identified."
   (if (pel-erlang-skel-edoc-in-header-p)
       ;; with Edoc
       (if (string= pel--skel-last-purpose "")
