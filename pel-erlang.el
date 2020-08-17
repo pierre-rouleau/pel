@@ -87,7 +87,9 @@ Push current position on the mark ring."
           (erlang-beginning-of-function direction)
           ;; erlang-beginning-of-function stops on directive but
           ;; erlang-get-function-name returns nil for them.
-          (while (not (erlang-get-function-name))
+          (while (and (not (erlang-get-function-name))
+                      (not (= (point)
+                              (if forward (point-max) (point-min)))))
             (erlang-beginning-of-function direction))))
     (user-error "Erlang support not loaded!")))
 
@@ -95,7 +97,8 @@ Push current position on the mark ring."
 (defun pel-previous-erl-function (&optional n)
   "Move point to beginning of previous Erlang function.  Repeat N times.
 Push current position on the mark ring.
-Skip over all compiler directives."
+Skip over all compiler directives.
+Stop at top of buffer."
   (interactive "^p")
   (pel--moveto-function nil (or n 1)))
 
@@ -103,7 +106,8 @@ Skip over all compiler directives."
 (defun pel-next-erl-function (&optional n)
   "Move point to beginning of next Erlang function.  Repeat N times.
 Push current position on the mark ring.
-Skip over all compiler directives."
+Skip over all compiler directives.
+Stop at end of buffer."
   (interactive "^p")
   (pel--moveto-function t (or n 1)))
 
