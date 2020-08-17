@@ -3310,7 +3310,7 @@ the ones defined from the buffer now."
 (define-key pel:insert   "F" 'pel-insert-filename)
 (define-key pel:insert   "l" 'pel-insert-line)
 (define-key pel:insert   "t" 'pel-insert-iso8601-timestamp)
-(when (or pel-use-lice pel-erlang-skel-with-licence)
+(when (or pel-use-lice pel-erlang-skel-with-license)
   (cl-eval-when 'compile (require 'lice))
   (use-package lice
     :ensure t

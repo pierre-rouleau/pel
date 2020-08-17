@@ -134,7 +134,7 @@ The tag uses TITLE if specified otherwise it uses ITEM capitalized."
                            (capitalize-first-letter
                             (string-trim
                              (read-from-minibuffer
-                              (format "Purpose for %s: " item)))))
+                              (format "%s purpose: " item)))))
                         ""))
          (comment-str (or comment-prefix comment-start))
          (text        (format "%s %s %s"
