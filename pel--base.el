@@ -59,6 +59,7 @@
 ;;
 ;; String transformation utilities:
 ;; - `capitalize-first-letter'
+;; - `end-text-with-period'
 ;;
 ;; Operations on sequences:
 ;;  - `pel-concat-strings-in-list'
@@ -289,11 +290,19 @@ MODE is the mode symbol."
 ;; -----------------------------------------------------------------------------
 ;; String transformation utilities:
 ;; - `capitalize-first-letter'
+;; - `end-text-with-period'
 
 (defun capitalize-first-letter (text)
   "Return text with first character up-cased, all other unchanged."
   (when (> (length text) 0)
     (concat (upcase (substring text 0 1)) (substring text 1))))
+
+(defun end-text-with-period (text)
+  "Append a period character to text if none is present."
+  (when (> (length text) 0)
+    (if (string= (substring text -1) ".")
+        text
+      (concat text "."))))
 
 ;; -----------------------------------------------------------------------------
 ;; Operations on sequences
