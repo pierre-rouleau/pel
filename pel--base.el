@@ -57,6 +57,9 @@
 ;;      - `pel-on-off-string'
 ;;  - `pel-yes-no-string'
 ;;
+;; String transformation utilities:
+;; - `capitalize-first-letter'
+;;
 ;; Operations on sequences:
 ;;  - `pel-concat-strings-in-list'
 ;;
@@ -282,6 +285,15 @@ MODE is the mode symbol."
                   (pel-symbol-on-off-string mode))
         "available but not loaded, use a command to load it")
     "not available"))
+
+;; -----------------------------------------------------------------------------
+;; String transformation utilities:
+;; - `capitalize-first-letter'
+
+(defun capitalize-first-letter (text)
+  "Return text with first character up-cased, all other unchanged."
+  (when (> (length text) 0)
+    (concat (upcase (substring text 0 1)) (substring text 1))))
 
 ;; -----------------------------------------------------------------------------
 ;; Operations on sequences
