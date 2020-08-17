@@ -115,6 +115,11 @@ when `pel-update-time-stamp' is non-nil."
 ;; --
 ;; Purpose
 
+(defvar pel--skel-last-purpose ""
+  "Holds last purpose entered by user. Short lived, used by skel functions.
+Set by function `pel-skel-purpose-for' and read by skel sub-functions.
+Do NOT modify the value anywhere else!")
+
 (defun pel-skel-purpose-for (get-text item &optional comment-prefix title)
   "Return a tempo skel list describing the purpose of the entry.
 Prompt for the purpose when GET-TEXT is non-nil.
@@ -136,10 +141,12 @@ The tag uses TITLE if specified otherwise it uses ITEM capitalized."
                               comment-str
                               (or title (capitalize item))
                               purpose)))
+    ;; store entered purpose to allow re-use later inside a tempo skel
+    (setq pel--skel-last-purpose purpose)
     (if (string= purpose "")
         ;; when user did not specify a purpose leave a tempo marker in place.
-        (cons 'l (cons text (cons 'p (cons 'n nil))))
-      (cons 'l (cons text (cons 'n nil ))))))
+        (list 'l text 'p 'n)
+      (list 'l text 'n))))
 
 ;; --
 ;; Author

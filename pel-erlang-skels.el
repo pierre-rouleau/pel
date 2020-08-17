@@ -205,22 +205,41 @@ Please see the function `tempo-define-template'.")
             (pel-time-stamp event "by ")
             "\n")))
 
-(defvar pel-erlang-skel-file-doc-edoc
-  '(& "%%% @doc " p n
-      "%%%      " p n
-      "%%% @end" n
-      (pel-erlang-skel-separator)))
-
-(defvar pel-erlang-skel-file-doc
-  '(& "%%% Module Description:" n
-      "%%% " n
-      "%%% " p n
-      "%%% " n
-      (pel-erlang-skel-separator)))
-
 (defun pel-erlang-skel-edoc-in-header-p ()
   "Return t if edoc must be used in header, nil otherwise."
   (eq pel-erlang-skel-with-edoc t))
+
+(defun pel-erlang-skel-file-doc ()
+  "Return an insertable tempo skel for documentation.
+Use EDoc style if EDoc must be used.
+Insert purpose as the single line description if it was identified."
+  (if (pel-erlang-skel-edoc-in-header-p)
+      ;; with Edoc
+      (if (string= pel--skel-last-purpose "")
+          (cons 'l
+                '(& "%%% @doc " p n
+                    "%%%      " p n
+                    "%%% @end" n
+                    (pel-erlang-skel-separator)))
+        (cons 'l
+              '(& (concat "%%% @doc " pel--skel-last-purpose) n
+                  "%%%      " p n
+                  "%%% @end" n
+                  (pel-erlang-skel-separator))))
+    ;; Without Edoc
+    (if (string= pel--skel-last-purpose "")
+        (cons 'l
+              '(& "%%% Module Description:" n
+                  "%%% " n
+                  "%%% " p n
+                  "%%% " n
+                  (pel-erlang-skel-separator)))
+      (cons 'l
+            '(& "%%% Module Description:" n
+                "%%% " n
+                (concat "%%% " pel--skel-last-purpose) n
+                "%%% " n
+                (pel-erlang-skel-separator))))))
 
 (defun pel-erlang-skel-prompt-for-file-purpose ()
   "Return t if must prompt for file purpose, nil otherwise."
@@ -241,10 +260,7 @@ Please see the function `tempo-define-template'.")
                                      "@copyright")
                                    pel-erlang-skel-with-license)
       (pel-erlang-skel-separator)
-      ;; TODO: find a way to provide a pel-skel-include-if with 2 groups of
-      ;;       skel forms. For now two mutually exclusive inclusions are used.
-      (pel-skel-include-when (pel-erlang-skel-edoc-in-header-p) pel-erlang-skel-file-doc-edoc)
-      (pel-skel-include-when (not (pel-erlang-skel-edoc-in-header-p)) pel-erlang-skel-file-doc)
+      (pel-erlang-skel-file-doc)
       (pel-skel-include erlang-skel-small-header) )
   "*The template of a large header.
 Please see the function `tempo-define-template'.")
