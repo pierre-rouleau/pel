@@ -30,9 +30,66 @@
 ;; better infrastructure first.  I started with some formatting and will add
 ;; more later.  For now the code goes and updates the standard Erlang
 ;; templates.
+;;
 
+;; Line separators:
+;;     - pel-erlang-skel-separator
+;;     - pel-erlang-skel-optional-separator
+;;     - pel-erlang-skel-separator-start
+;;     - pel-erlang-skel-separator-end
+
+;; Extract Erlang function name & arguments:
+;;     - pel-erlang-skel-get-function-name
+;;     - pel-erlang-skel-get-function-args
+
+;; Erlang Tempo Skeletons:
+;;   > pel-erlang-skel-export
+;;   > pel-erlang-skel-import
+;;   > pel-erlang-skel-try
+;;   > pel-erlang-skel-try-of
+;;   > pel-erlang-skel-function
+;;     - pel--erlang-skel-function
+;;       - pel-prompt-erlang-function
+;;   > pel-erlang-skel-spec
+;;   > pel-skel-file-created
+
+;; Formatting functions and predicates, based on user options:
+;;     - pel-erlang-skel-maybe-timestamp
+;;     - pel-erlang-skel-edoc-in-header-p
+;;     - pel-erlang-skel-edoc-in-function-p
+;;     - pel-erlang-skel-prompt-for-file-purpose-p
+;;     - pel-erlang-skel-prompt-for-function-purpose-p
+;;     - pel-erlang-skel-prompt-for-function-name-p
+
+;; Tempo skeleton for large file header:
+;;   > pel-skel-large-header
+;;     - pel-erlang-skel-filename
+;;     - pel-erlang-skel-file-doc
+
+;; Tempo skeletons for OTP behaviours:
+;;   > pel-erlang-skel-application
+;;   > pel-erlang-skel-generic-server
+;;   > pel-erlang-skel-supervisor
+;;   > pel-erlang-skel-supervisor-bridge
+;;   > pel-erlang-skel-gen-event
+;;   > pel-erlang-skel-gen-fsm
+;;     - pel-erlang-skel-behaviour
+;;     - pel-erlang-api
+;;     - pel-erlang-skel-function-doc
+;;     > pel-erlang-skel-internal-functions
+
+;; Installation of Erlang Tempo Skeletons:
+;;   > pel--erl-skel-key
+;;   > pel--more-erlang-skel
+;;   - pel--update-erlang-skel
+;;   - pel--erlang-mode-setup
+;;   - pel--install-erlang-skel
+
+;; -----------------------------------------------------------------------------
+;;; Dependencies:
 
 (require 'pel--base)          ; use: pel-current-buffer-filename
+;;                            ;      pel-hastext
 (require 'pel--options)       ; use: pel-erlang-skel-use-separators
 ;;                            ;      pel-erlang-skel-use-secondary-separators
 (require 'pel--macros)
@@ -40,7 +97,6 @@
 (require 'pel-tempo)          ; use: pel-tempo-mode,
 ;;                            ;      pel-tempo-install-pel-skel
 (require 'pel-skels)
-
 
 ;; -----------------------------------------------------------------------------
 ;; Functions used in Erlang tempo skeletons
@@ -93,7 +149,10 @@ The comment uses PERCENT number of '%'.
 The line is made with '-' unless another CHAR is specified."
   (if (and pel-erlang-skel-use-separators
            pel-erlang-skel-use-secondary-separators)
-      (concat "%% @end\n" (pel-erlang-skel-separator percent char))
+      (concat (if pel-erlang-skel-with-edoc
+                  "%% @end\n"
+                "")
+              (pel-erlang-skel-separator percent char))
     ""))
 
 ;; --
@@ -171,18 +230,69 @@ Please see the function `tempo-define-template'.")
   "*The skeleton of a `try' expression.
 Please see the function `tempo-define-template'.")
 
+;; --
+;; Insert an Erlang function
+
+(defun pel--erlang-transform (text)
+  "Transform function name and argument names passed in TEXT.
+Replaces dash by underscore."
+  (replace-regexp-in-string "-" "_" text))
+
+(defun pel-prompt-erlang-function ()
+  "Prompt for an Erlang function.
+Replace dash by underscore in typed name.
+Maintain and prompt history."
+  (pel-prompt-function (function pel--erlang-transform)))
+
+(defun pel-prompt-erlang-args ()
+  "Prompt for Erlang function arguments.
+Expect comma-separated arguments.
+Replace dash by underscore in typed name.
+Maintain and prompt history."
+  (pel-prompt-args (function pel--erlang-transform)))
+
+(defun pel--erlang-skel-function ()
+  "Return a skeleton list for Erlang function.
+Prompt for function name and purpose if specified by customization.
+Insert Edoc markup if specified by customization."
+  (let* ((sk (list 'l))
+         (fname       (if pel-erlang-skel-prompt-for-function-name
+                          (pel-prompt-erlang-function)
+                        ""))
+         (args        (if pel-erlang-skel-prompt-for-function-arguments
+                          (pel-prompt-erlang-args)
+                        ""))
+         (purpose     (if (pel-erlang-skel-prompt-for-function-purpose-p)
+                          (pel-prompt-purpose-for "Function")
+                        ""))
+         (fname-val   (if (pel-hastext fname) fname 'p))
+         (purpose-val (if (pel-hastext purpose) purpose 'p)))
+    (pel-append-to sk (list (pel-erlang-skel-separator-start 2)))
+    ;; description
+    (if (pel-erlang-skel-edoc-in-function-p)
+        ;; with Edoc
+        (if (string= purpose "")
+            (pel-append-to sk (list "%% @doc " 'p 'n))
+          (pel-append-to sk (list (concat "%% @doc " purpose) 'n)))
+      ;; without Edoc
+      (pel-append-to sk (list "%% " fname-val " : " purpose-val 'n)))
+    (pel-append-to sk (list (pel-erlang-skel-optional-separator
+                             2
+                             ?-
+                             (pel-erlang-skel-edoc-in-function-p))))
+    (pel-append-to sk (list
+                       'n
+                       "-spec " fname-val "(" args ") -> " 'p "." 'n 'n
+                       fname-val "(" args ") -> " 'n> 'p "." 'n))))
+
 (defvar pel-erlang-skel-function
-  '((pel-erlang-skel-separator-start 2)
-    "%% @doc " p n
-    (pel-erlang-skel-separator-end 2)
-    p "() " p "->"  n>
-    p "." > n )
-    "*The template of a function skeleton.
-Please see the function `tempo-define-template'.")
+  '((pel--erlang-skel-function))
+    "The template of a function skeleton.")
+;; --
 
 (defvar pel-erlang-skel-spec
   '("-spec "
-    (erlang-skel-get-function-name) "(" (erlang-skel-get-function-args)
+    (pel-erlang-skel-get-function-name) "(" (pel-erlang-skel-get-function-args)
     ") -> " p "undefined." n)
     "*The template of a -spec for the function following point.
 Please see the function `tempo-define-template'.")
@@ -192,14 +302,11 @@ Please see the function `tempo-define-template'.")
       (user-full-name) " <" erlang-skel-mail-address ">" n)
   "*The template for the \"Created:\" comment line.")
 
-(defun pel-erlang-skel-filename ()
-  "Insert name of current file."
-  (concat "%%% File      : "
-          (pel-current-buffer-filename :sans-directory)
-          "\n"))
+;; -----------------------------------------------------------------------------
+;; Formatting predicates, based on user options.
 
 (defun pel-erlang-skel-maybe-timestamp (&optional event)
-  "Insert time stamp if required."
+  "Insert time stamp foe EVENT if required."
   (when pel-erlang-skel-insert-file-timestamp
     (concat "%%% "
             (pel-time-stamp event "by ")
@@ -212,6 +319,21 @@ Please see the function `tempo-define-template'.")
 (defun pel-erlang-skel-edoc-in-function-p ()
   "Return t if edoc must be used in header, nil otherwise."
   (memq pel-erlang-skel-with-edoc '(t in-function-only)))
+
+(defun pel-erlang-skel-prompt-for-file-purpose-p ()
+  "Return t if must prompt for file purpose, nil otherwise."
+  (memq pel-erlang-skel-prompt-for-purpose '(t in-file-only)))
+
+(defun pel-erlang-skel-prompt-for-function-purpose-p ()
+  "Return t if must prompt for file purpose, nil otherwise."
+  (memq pel-erlang-skel-prompt-for-purpose '(t in-function-only)))
+
+(defalias 'pel-erlang-skel-prompt-for-function-name-p
+  'pel-erlang-skel-prompt-for-function-purpose-p
+  "Return t if must prompt for file name, nil otherwise.")
+
+;; -----------------------------------------------------------------------------
+;; Tempo skeleton for large file header
 
 (defun pel-erlang-skel-file-doc ()
   "Return tempo skel for documentation ready for insertion.
@@ -245,14 +367,16 @@ line description if it was identified."
                 "%%% " p n
                 (pel-erlang-skel-separator))))))
 
-(defun pel-erlang-skel-prompt-for-file-purpose ()
-  "Return t if must prompt for file purpose, nil otherwise."
-  (memq pel-erlang-skel-prompt-for-purpose '(t in-file-only)))
+(defun pel-erlang-skel-filename ()
+  "Insert name of current file."
+  (concat "%%% File      : "
+          (pel-current-buffer-filename :sans-directory)
+          "\n"))
 
 (defvar pel-skel-large-header
   '(o (pel-erlang-skel-optional-separator)
       (pel-erlang-skel-filename)
-      (pel-skel-purpose-for (pel-erlang-skel-prompt-for-file-purpose)
+      (pel-skel-purpose-for (pel-erlang-skel-prompt-for-file-purpose-p)
                             "File" "%%%" "Purpose   :")
       (pel-skel-created-comment    "%%%")
       (pel-skel-author-comment     "%%%"
@@ -269,8 +393,9 @@ line description if it was identified."
   "*The template of a large header.
 Please see the function `tempo-define-template'.")
 
+;; -----------------------------------------------------------------------------
+;; Tempo skeletons for OTP behaviours
 
-;; Parts of behaviour templates.
 (defvar pel-erlang-skel-internal-functions
   '((pel-erlang-skel-separator-start 3 ?=)
     "%%% Internal functions" n
@@ -293,7 +418,7 @@ Please see the function `tempo-define-template'.")
    "-define(SERVER, ?MODULE).\n\n"))
 
 (defun pel-erlang-api (&optional suffix)
-  "Return a API string with the name of the module."
+  "Return an API string with the name of the module and optional SUFFIX."
   (format "%%%%%% %s API%s\n"
           (pel-current-buffer-filename :sans-directory :sans-extension)
           (if suffix
@@ -326,7 +451,6 @@ This puts Edoc annotations if Edoc is required by customization."
           (pel-append-to sk (list (concat "%% " line) 'n)))))
     (pel-append-to sk (list (pel-erlang-skel-optional-separator 2) 'n))
     sk))
-
 
 ;; Behaviour templates.
 (defvar pel-erlang-skel-application
@@ -922,7 +1046,6 @@ Please see the function `tempo-define-template'.")
 ;; Ideally this code would be incorporated inside the official erlang.el library.
 ;; I might try to do that once this code stabilizes.
 
-
 ;; -------
 ;; Install Erlang Skeletons as key-bound commands
 ;;
@@ -961,13 +1084,13 @@ Please see the function `tempo-define-template'.")
                             ("ct-test-suite-s"           "M-1" pel-skel-header)
                             ("ct-test-suite-l"           "M-2" pel-skel-header)
                             ("ts-test-suite"             "M-3" pel-skel-header))
-  "Key mapping for skeletons defined in erlang-skel.el
+  "Key mapping for skeletons defined in erlang-skel.el.
 Each element of the list has one of the 2 following forms:
 - a 2 element (name . key) cons cell,
 - a 3 element (name key preliminary-function) list.
 The first element is always the template name.
 The second element is always a key sequence string.
-The third element is optional. If present, it is the
+The third element is optional.  If present, it is the
 symbol of a preparation function to call with the tempo skeleton code.
 That's often the `pel-skel-header' used to insert the skeleton at
 the beginning of the buffer instead of at point, the default.")

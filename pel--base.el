@@ -58,8 +58,9 @@
 ;;  - `pel-yes-no-string'
 ;;
 ;; String transformation utilities:
-;; - `capitalize-first-letter'
-;; - `end-text-with-period'
+;; - `pel-capitalize-first-letter'
+;; - `pel-end-text-with-period'
+;; - `pel-hastext'
 ;;
 ;; Operations on sequences:
 ;;  - `pel-concat-strings-in-list'
@@ -204,13 +205,13 @@ The index of the first whitespace character is returned when one is present."
   (string-match "[ \t\n\r]" text))
 
 (defun pel-ends-with-space-p (text)
-  "Return t if text ends with a space character, nil otherwise."
+  "Return t if TEXT ends with a space character, nil otherwise."
   (let ((len (length text)))
     (when (> len 0)
       (string= (substring text (- len 1) len) " "))))
 
 (defun pel-starts-with-space-p (text)
-  "Return t if text starts with a space character, nil otherwise."
+  "Return t if TEXT starts with a space character, nil otherwise."
   (when (> (length text) 0)
     (string= (substring text 0 1) " ")))
 
@@ -289,17 +290,18 @@ MODE is the mode symbol."
 
 ;; -----------------------------------------------------------------------------
 ;; String transformation utilities:
-;; - `capitalize-first-letter'
-;; - `end-text-with-period'
+;; - `pel-capitalize-first-letter'
+;; - `pel-end-text-with-period'
+;; - `pel-hastext'
 
-(defun capitalize-first-letter (text)
+(defun pel-capitalize-first-letter (text)
   "Return TEXT with first character up-cased, all other unchanged.
 Return empty string if no input string."
   (if (> (length text) 0)
       (concat (upcase (substring text 0 1)) (substring text 1))
     ""))
 
-(defun end-text-with-period (text)
+(defun pel-end-text-with-period (text)
   "Append a period character to TEXT if none is present.
 Return empty string if TEXT is the empty string."
   (if (> (length text) 0)
@@ -307,6 +309,10 @@ Return empty string if TEXT is the empty string."
         text
       (concat text "."))
     ""))
+
+(defun pel-hastext (string)
+  "Return t if STRING hold text, nil otherwise."
+  (not (string= string "")))
 
 ;; -----------------------------------------------------------------------------
 ;; Operations on sequences
@@ -672,7 +678,7 @@ Return a (start . end) cons cell if found, otherwise return nil."
 ;;
 
 (defun pel-insert-or-overwrite (text)
-  "Insert or overwrite TEXT depending of overwrite-mode status.
+  "Insert or overwrite TEXT depending of variable `overwrite-mode' status.
 TEST can be a single character or a string.
 Multi-byte characters are handled properly."
   (when overwrite-mode

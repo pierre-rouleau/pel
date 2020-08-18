@@ -30,17 +30,32 @@
 ;; - `pel-y-n-e-or-l-p'
 ;; - `pel-select-from'
 ;;   - `pel--prompt-for'
-;;
+;; - `pel-prompt-purpose-for'
+;; - `pel-prompt-function'
+;; - `pel-prompt-args'
 ;;
 ;; The `pel-y-n-e-or-l-p' function is a minor modification of the Emacs'
 ;; y-or-n-p.  It has the ability to type "e" or "E" as an answer to
 ;; identify an edit-replacement action and "l" or "L" to request searching
-;; a library file. It also modified the return type so it can return one of
+;; a library file.  It also modified the return type so it can return one of
 ;; 4 outcomes: yes, no, edit or findlib.
 ;;
 ;; The `pel-select-from' function provides a selection of choices to select from,
 ;; providing a quick interactive selection of choices.
+;;
+;; The `pel-prompt-purpose-for' function prompts for the purpose of a specific
+;; item (file or function) and maintains a prompt history for each item.
+;; The `pel-prompt-function' prompts for a function name.  It also maintains a
+;; prompt history for the functions created in each major mode.
+;; The `pel-prompt-args' prompts for function arguments.  It maintains a prompt
+;; history for the function arguments created in each major mode.
+;; These prompt histories do not persist when Emacs is stopped.
 
+
+;;; Dependencies
+(require 'pel--base)                  ; use: pel-capitalize-first-letter
+;;                                    ;      pel-end-text-with-period
+(eval-when-compile (require 'subr-x)) ; use: string-trim
 
 ;;; Code:
 
@@ -64,7 +79,6 @@ The \"bindings\" in this map are not commands; they are answers.
 The valid answers include `yes', `no', `edit' and `findlib'.
 
 This keymap is used by `pel-y-n-e-or-l-p'")
-
 
 ;;-pel-autoload
 (defun pel-y-n-e-or-l-p (prompt)
@@ -205,6 +219,60 @@ returns the value returned by (ACTION selected-value) evaluation."
              (not (equal requested-value current-value)))
         (funcall action requested-value)
       requested-value)))
+
+;; -----------------------------------------------------------------------------
+;; Prompt for purpose and function names
+
+(defun pel-prompt-purpose-for (item)
+  "Prompt for ITEM purpose and return adjusted user input string.
+The returned string is trimmed, its first letter is capitalized
+and is terminated by a period.
+Holds an independent prompt history for each ITEM."
+  (let ((history-symbol (intern
+                         (format
+                          "pel-prompt-history-for-purpose-%s" item)))
+        (prompt-text    (format "%s purpose: " item)))
+  (pel-end-text-with-period
+   (pel-capitalize-first-letter
+    (string-trim
+     (read-from-minibuffer prompt-text nil nil nil history-symbol))))))
+
+(defun pel-prompt-function (&optional transform-function)
+  "Prompt for function and return potentially transformed input string.
+If TRANSFORM-FUNCTION is non-nil it must be a function that accepts
+the function name string and return it transformed or nil if the function
+name is not acceptable.
+Holds an independent function prompt history for each major mode."
+  (let ((history-symbol (intern
+                         (format
+                          "pel-prompt-history-for-function-%s" major-mode)))
+        (fname          nil))
+    (while (not fname)
+      (setq fname
+            (string-trim
+             (read-from-minibuffer "Function name: " nil nil nil history-symbol)))
+      (when transform-function
+        (setq fname (funcall transform-function fname))))
+    fname))
+
+(defun pel-prompt-args (&optional transform-function)
+  "Prompt for argument(s) and return potentially transformed input string.
+If TRANSFORM-FUNCTION is non-nil it must be a function that accepts
+the function name string and return it transformed or nil if the function
+name is not acceptable.
+Holds an independent function prompt history for each major mode."
+  (let ((history-symbol (intern
+                         (format
+                          "pel-prompt-history-for-args-%s" major-mode)))
+        (args          nil))
+    (while (not args)
+      (setq args
+            (string-trim
+             (read-from-minibuffer "Function arg(s): " nil nil nil history-symbol)))
+      (when transform-function
+        (setq args (funcall transform-function args))))
+    args))
+
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-prompt)
