@@ -263,9 +263,19 @@ but when UPDATE is nil, it adds a new line after the underlining.
 
 ;;-pel-autoload
 (defun pel-rst-adorn-title ()
-  "Adorn current line with level-0 (title) reStructuredText section adornment."
+  "Adorn current line with level-0 (title) reStructuredText section adornment.
+If point is at the top of the file, the top adorn line is placed on the first
+line of the file.
+In all cases point is placed at the end of the title text line."
   (interactive "*")
-  (pel-rst-adorn 0))
+  (let ((orig-line (line-number-at-pos)))
+    (pel-rst-adorn 0)
+    (when (< orig-line 2)
+    ;; delete the empty line this creates when done at the top of the file
+      (forward-line -2)
+      (delete-char 1))
+    (forward-line 1)
+    (end-of-line)))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-1 ()
