@@ -1380,7 +1380,10 @@ display in other window and open the related group(s) that exist."
 ;;
 (pel--cfg ""  pel:cfg "!")
 (pel--cfg "identification"  pel:cfg "i")
-(pel--cfg-pkg "buffer"      pel:cfg "b")
+
+(if (version< emacs-version "27.1")
+    (pel--cfg-pkg "buffer"  pel:cfg "b" "rainbow-delimiters" "vline" "nhexl" "fill-column-indicator")
+  (pel--cfg-pkg "buffer"    pel:cfg "b" "rainbow-delimiters" "vline" "nhexl"))
 (pel--cfg-pkg "cursor"      pel:cfg "_")
 (pel--cfg-pkg "completion"  pel:cfg "c")
 (pel--cfg-pkg "dired"       pel:cfg "d" "dired")
