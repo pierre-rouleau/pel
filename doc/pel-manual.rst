@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-01 12:15:37, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-19 21:13:23, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4190,6 +4190,7 @@ expand-region_                MELPA_
 flycheck_                     MELPA_
 flycheck-plantuml_            MELPA_
 exunit_                       MELPA_
+fill-column-indicator_        MELPA_
 framemove_                    Emacsmirror_
 free-keys_                    MELPA_
 goto-last-change_             MELPA_
@@ -4252,6 +4253,9 @@ package-lint_                 MELPA_
 Thanks to everyone that has worked in the software listed above.
 Hopefully you will find PEL useful for using these packages.
 
+*Note*: the fill-column-indicator_ package is not required
+when running Emacs 27.1 and later versions.
+
 
 .. References
 
@@ -4289,6 +4293,7 @@ Hopefully you will find PEL useful for using these packages.
 .. _esup:                      https://melpa.org/#/esup
 .. _exunit:                    https://melpa.org/#/exunit
 .. _expand-region:             https://melpa.org/#/expand-region
+.. _fill-column-indicator:     https://melpa.org/#/fill-column-indicator
 .. _flycheck:                  https://melpa.org/#/flycheck
 .. _flycheck-plantuml:         https://melpa.org/#/flycheck-plantuml
 .. _free-keys:                 https://melpa.org/#/free-keys

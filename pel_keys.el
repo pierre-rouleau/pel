@@ -1380,6 +1380,7 @@ display in other window and open the related group(s) that exist."
 ;;
 (pel--cfg ""  pel:cfg "!")
 (pel--cfg "identification"  pel:cfg "i")
+(pel--cfg-pkg "buffer"      pel:cfg "b")
 (pel--cfg-pkg "cursor"      pel:cfg "_")
 (pel--cfg-pkg "completion"  pel:cfg "c")
 (pel--cfg-pkg "dired"       pel:cfg "d" "dired")
@@ -2950,13 +2951,31 @@ the ones defined from the buffer now."
 (define-key pel:highlight      "s"   'pel-toggle-hl-line-sticky)
 (define-key pel:highlight      "u"  #'unhighlight-regexp)
 ;;                             "|" 'vline-mode
+;;                           "M-\" 'display-fill-column-indicator-mode | fci-mode
 (define-key pel:highlight      "w"  #'hi-lock-write-interactive-patterns)
 ;;
 (when pel-use-vline
   (use-package vline
     :commands vline-mode
     :init
-    (define-key pel:highlight    "|"  'vline-mode)))
+    (define-key pel:highlight    "|"  'vline-mode)
+    (define-key pel:             "9"  'vline-mode)))
+
+(when (and (version< emacs-version "27.1")
+           pel-use-fill-column-indicator)
+  (use-package fill-column-indicator
+    :ensure t
+    :pin melpa
+    :commands fci-mode
+    :init
+    (define-key pel:highlight (kbd "M-\\") 'fci-mode)
+    (define-key pel:          "8"          'fci-mode)
+
+    ))
+;; For Emacs 27.1 and later use the built-in display-fill-column-indicator-mode.
+(unless (version< emacs-version "27.1")
+  (define-key pel:highlight (kbd "M-\\") 'display-fill-column-indicator-mode)
+  (define-key pel:               "8"     'display-fill-column-indicator-mode))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> b I`` : Indirect buffer commands

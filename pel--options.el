@@ -921,6 +921,13 @@ and ACTIVATE desktop-save-mode" with-desktop-registry-automatic)
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-fill-column-indicator nil
+  "Control whether PEL uses fill-column-indicator package.
+Not used nor needed for Emacs 27.1 or later."
+  :group 'pel-pkg-for-buffer
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-ascii-table nil
   "Control whether the `ascii-table' package is available."
   :group 'pel-pkg-for-buffer

@@ -48,6 +48,7 @@
     (esup                "20200130.2034") ; melpa. Melpa-stable: 0.7.1
     (expand-region       "20200304.1839") ; melpa. Melpa-stable: 0.11.0
     (exunit              "20190919.1238")
+    (fill-column-indicator "20200806.2239") ; melpa Not needed for Emacs 27.1 and later
     (flycheck            "20200516.1719") ; melpa
     (flycheck-plantuml   "20171018.111")  ; melpa
     (free-keys           "20160726.2050") ; melpa. Melpa-stable: 1.0.0
