@@ -29,66 +29,68 @@
 ;;
 ;; - Section Adornment Control
 ;;
-;;  * pel-rst-adorn-decrease-level
-;;  * pel-rst-adorn-increase-level
-;;  * pel-rst-adorn-refresh
-;;  * pel-rst-adorn-same-level
-;;    - pel--line-adorned-p
-;;    - pel--rst-adorn-same-as-previous
-;;      - pel--rst-adorn-level-of-previous-section
-;;    - pel--rst-adorn-change
-;;      - pel--rst-delete-whole-line
-;;        - pel--rst-level-for
-;;  * pel-rst-adorn-10
-;;  * pel-rst-adorn-9
-;;  * pel-rst-adorn-8
-;;  * pel-rst-adorn-7
-;;  * pel-rst-adorn-6
-;;  * pel-rst-adorn-5
-;;  * pel-rst-adorn-4
-;;  * pel-rst-adorn-3
-;;  * pel-rst-adorn-2
-;;  * pel-rst-adorn-1
-;;  * pel-rst-adorn-title
-;;    * pel-rst-adorn
-;;  - pel-delete-trailing-whitespace
-;;      - current-line-length
-;;  * pel-rst-adorn-CRiSPer
-;;  * pel-rst-adorn-Sphinx-Python
-;;  * pel-rst-adorn-default
-;;    - pel--rst-activate-adornment-style
-;;      - pel-rst-set-adornment
+;;  * `pel-rst-adorn-decrease-level'
+;;  * `pel-rst-adorn-increase-level'
+;;  * `pel-rst-adorn-refresh'
+;;  * `pel-rst-adorn-same-level'
+;;    - `pel--line-adorned-p'
+;;    - `pel--rst-adorn-same-as-previous'
+;;      - `pel--rst-adorn-level-of-previous-section'
+;;    - `pel--rst-adorn-change'
+;;      - `pel--rst-delete-whole-line'
+;;        - `pel--rst-level-for'
+;;  * `pel-rst-adorn-10'
+;;  * `pel-rst-adorn-9'
+;;  * `pel-rst-adorn-8'
+;;  * `pel-rst-adorn-7'
+;;  * `pel-rst-adorn-6'
+;;  * `pel-rst-adorn-5'
+;;  * `pel-rst-adorn-4'
+;;  * `pel-rst-adorn-3'
+;;  * `pel-rst-adorn-2'
+;;  * `pel-rst-adorn-1'
+;;  * `pel-rst-adorn-title'
+;;    * `pel-rst-adorn'
+;;  - `pel-delete-trailing-whitespace'
+;;      - `pel-current-line-length'
+;;  * `pel-rst-adorn-CRiSPer'
+;;  * `pel-rst-adorn-Sphinx-Python'
+;;  * `pel-rst-adorn-default'
+;;    - `pel--rst-activate-adornment-style'
+;;      - `pel-rst-set-adornment'
 ;;
 ;;
 ;; - Link/reference location bookmark management:
 ;;
-;;   * pel-rst-set-ref-bookmark
-;;   * pel-rst-goto-ref-bookmark
-;;     - pel--rst-bookmark-exists-p
-;;       - pel-rst-ref-bookmark-name
-;;   * pel-rst-makelink
-;;     - pel-rst-anchor-escaped
-;;     - pel-goto-next-empty-line
-;;     - pel-rst-goto-ref-bookmark
-;;     - pel--rst-bookmark-exists-p
+;;   * `pel-rst-set-ref-bookmark'
+;;   * `pel-rst-goto-ref-bookmark'
+;;     - `pel--rst-bookmark-exists-p'
+;;       - `pel-rst-ref-bookmark-name'
+;;   * `pel-rst-makelink'
+;;     - `pel-rst-anchor-escaped'
+;;     - `pel-goto-next-empty-line'
+;;     - `pel-rst-goto-ref-bookmark'
+;;     - `pel--rst-bookmark-exists-p'
 ;;
 ;;
 ;; - Emphasis markup support:
 ;;
-;;   * pel-rst-interpreted
-;;   * pel-rst-literal
-;;   * pel-rst-italic
-;;   * pel-rst-bold
-;;     - pel--rst-emphasize-with
+;;   * `pel-rst-interpreted'
+;;   * `pel-rst-literal'
+;;   * `pel-rst-italic'
+;;   * `pel-rst-bold'
+;;     - `pel--rst-emphasize-with'
 ;;
 ;; - Open link URL:
 ;;
-;;   * pel-rst-open-target
-;;     - pel--move-to-rst-target
-;;     - pel--rst-reference-target
-;;       - pel-at-rst-reference-p
+;;   * `pel-rst-open-target'
+;;     - `pel--move-to-rst-target'
+;;     - `pel--rst-reference-target'
+;;       - `pel-at-rst-reference-p'
 
-;;; Code:
+;; -----------------------------------------------------------------------------
+;;; Dependencies:
+
 (require 'thingatpt)        ; uses: bounds-of-thing-at-point
 (require 'pel--base)        ; uses: pel-whitespace-in-str-p
 ;;                          ;       pel-chars-at-point
@@ -97,6 +99,8 @@
 (require 'rst)              ; rst-mode code. Use rst-backward-section
 
 ;; -----------------------------------------------------------------------------
+;;; Code:
+
 ;; Section Adornment Control
 ;; -------------------------
 
@@ -202,7 +206,7 @@ A title level with another 10 levels."
 
 ;; --
 
-(defun current-line-length (&optional n)
+(defun pel-current-line-length (&optional n)
   "Return number of characters inside the current line or N-1 lines forward.
 If N is not specified, is nil or 1: return the length of the current line.
 Otherwise return the line N-1 lines forward: so if N is 2 use next line,
@@ -238,7 +242,7 @@ but when UPDATE is nil, it adds a new line after the underlining.
        pel-rst-adornment-style))
   (save-excursion
     (pel-delete-trailing-whitespace)
-    (let* ((linelen (current-line-length))
+    (let* ((linelen (pel-current-line-length))
            (adorn-level (nth level rst-preferred-adornments))
            (adorn-char (car adorn-level))
            (adorn-style (nth 1 adorn-level))
@@ -412,10 +416,10 @@ REQUIREMENT: the line must not have trailing whitespaces."
         ;; to detect the level (if there is one). Check that the underline
         ;; is the same length as the title line and check its last char.
         ;; It's not foolproof, but probably OK for most cases.
-        (let ((title-line-length (current-line-length))
+        (let ((title-line-length (pel-current-line-length))
               (underline-length (progn
                                   (forward-line 1)
-                                  (current-line-length))))
+                                  (pel-current-line-length))))
           (when (equal title-line-length underline-length)
             (move-end-of-line nil)
             (backward-char 2)
