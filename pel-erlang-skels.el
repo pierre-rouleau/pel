@@ -31,6 +31,7 @@
 ;; more later.  For now the code goes and updates the standard Erlang
 ;; templates.
 ;;
+;; Functions ('-') and variables ('>') used in Erlang tempo skeletons:
 
 ;; Line separators:
 ;;     - pel-erlang-skel-separator
@@ -100,12 +101,11 @@
 (require 'pel-skels)
 
 ;; -----------------------------------------------------------------------------
-;; Functions used in Erlang tempo skeletons
+;;; Code:
 
 ;; --
 ;; Line separators
 
-;;; Code:
 
 (defun pel-erlang-skel-separator (&optional percent char)
   "Return a comment separator line of `fill-column' length.
