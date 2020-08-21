@@ -23,34 +23,38 @@
 ;; -----------------------------------------------------------------------------
 ;;; Commentary:
 ;;
+;; This file holds a set of functions that insert generic text inside file
+;; buffers.
+;;
+;; The commands ('*') and functions ('-') provided are the following:
+;;
+;; * `pel-insert-line'
+;;   - `pel-separator-line'
+;; * `pel-insert-filename'
+;;   - `pel--direction-for'
+;; * `pel-insert-current-date-time'
+;; * `pel-insert-current-date'
 
-;;; Code:
+;; -----------------------------------------------------------------------------
+;;; Dependencies:
 
 (require 'pel--base)       ; use: pel-current-buffer-filename
 ;;                         ;      pel-ends-with-space-p
+(require 'pel--macros)     ; use: pel-concat-to
 
 ;; -----------------------------------------------------------------------------
-;; Direction conversion
-;; --------------------
+;;; Code:
 
-(defun pel--direction-for (n)
-  "Return a symbol indicating direction corresponding to integer N.
-Look at the location of keypad numbers to see the direction relationship."
-  (cond ((eq n 2) 'down)
-        ((eq n 8) 'up)
-        ((eq n 4) 'left)
-        ((eq n 6) 'right)
-        (t        'current)))
+;; Separator line
 
 ;;-pel-autoload
-(defun pel-insert-line (&optional linelen)
-  "Insert a (commented) line before/at current line.
-- If point is at the beginning of the line insert it there.
-- If point is in the middle of a line, move point at beginning of line
-  before inserting it.
-The number of dash characters of the line is specified by LINELEN:
-If LINELEN is not specified the buffer's `fill-column' value is used."
-  (interactive "*P")
+(defun pel-separator-line (&optional linelen char)
+  "Return a (commented) line string.
+The number of characters is identified by LINELEN.
+If LINELEN is not specified the buffer's `fill-column' value is used.
+The character used is identified by CHAR, otherwise '-' is used.
+The string starts (and ends if applicable) with the comment character(s).
+The string does not end with a newline."
   (let* ((linelen (if linelen
                       (abs (prefix-numeric-value linelen))
                     fill-column))
@@ -66,18 +70,47 @@ If LINELEN is not specified the buffer's `fill-column' value is used."
          (len-comment-start (length line-comment-start))
          (len-comment-end (length comment-end))
          (has-comment-end (> len-comment-end 1))
-         (comment-start-ends-with-space (pel-ends-with-space-p comment-start)))
-    (move-beginning-of-line nil)
-    (insert line-comment-start)
+         (comment-start-ends-with-space (pel-ends-with-space-p comment-start))
+         (line line-comment-start))
     (unless comment-start-ends-with-space
-      (insert " "))
-    (insert-char ?-
-                 (- linelen
-                    len-comment-start len-comment-end
-                    (if comment-start-ends-with-space 0 1)))
+      (pel-concat-to line " "))
+    (pel-concat-to line (make-string (- linelen
+                                        len-comment-start len-comment-end
+                                        (if comment-start-ends-with-space 0 1))
+                                     (or char ?-)))
     (when has-comment-end
-        (insert comment-end))
-    (insert "\n")))
+      (pel-concat-to line comment-end))
+    line))
+
+
+;;-pel-autoload
+(defun pel-insert-line (&optional linelen char)
+  "Insert a (commented) line before/at current line.
+- If point is at the beginning of the line insert it there.
+- If point is in the middle of a line, move point at beginning of line
+  before inserting it.
+The number of dash characters of the line is specified by LINELEN:
+If LINELEN is not specified the buffer's `fill-column' value is used.
+The character used is identified by CHAR, otherwise '-' is used."
+  (interactive "*P")
+  (move-beginning-of-line nil)
+  (insert (pel-separator-line linelen char))
+  (insert "\n"))
+
+;; -----------------------------------------------------------------------------
+;; Inserting a filename
+;; --------------------
+
+;; -- Direction conversion
+
+(defun pel--direction-for (n)
+  "Return a symbol indicating direction corresponding to integer N.
+Look at the location of keypad numbers to see the direction relationship."
+  (cond ((eq n 2) 'down)
+        ((eq n 8) 'up)
+        ((eq n 4) 'left)
+        ((eq n 6) 'right)
+        (t        'current)))
 
 ;;-pel-autoload
 (defun pel-insert-filename (&optional n)

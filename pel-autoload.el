@@ -398,11 +398,13 @@
   (autoload 'pel-show-etags-mode-status    "pel-tags")
 
   ;; pel-text-insert
-  (autoload 'pel-insert-line               "pel-text-insert")
-  (autoload 'pel-insert-filename           "pel-text-insert")
-  (autoload 'pel-insert-current-date-time  "pel-text-insert")
-  (autoload 'pel-insert-current-date       "pel-text-insert")
-  (autoload 'pel-insert-iso8601-timestamp  "pel-text-insert")
+  (dolist (fct '(pel-separator-line
+                 pel-insert-line
+                 pel-insert-filename
+                 pel-insert-current-date-time
+                 pel-insert-current-date
+                 pel-insert-iso8601-timestamp))
+    (autoload fct "pel-text-insert"))
 
   ;; pel-text-transform
   (autoload 'pel-capitalize-word-or-region  "pel-text-transform")
