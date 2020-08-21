@@ -1,5 +1,26 @@
-;;; pel-open.el --- Open file dispatcher
+;;; pel-open.el --- Open file dispatcher  -*- lexical-binding: t; -*-
 
+;; Copyright (C) 2020  Pierre Rouleau
+
+;; Author: Pierre Rouleau <prouleau001@gmail.com>
+
+;; This file is part of the PEL package
+;; This file is not part of GNU Emacs.
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;; -----------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; This file defines functions that perform operations that depend on the buffer
@@ -8,12 +29,14 @@
 ;; incorporate more functionality in various modes, allowing a multi-purpose
 ;; function to be bound globally to a single key sequence or key-chord.
 
+;;; Code:
+
 (defun pel-open-at-point (&optional n noerror)
   "Open the file or mode-specific reference at point.
-If there is no target issue a user-error unless NOERROR is non-nil.
+If there is no target issue a `user-error' unless NOERROR is non-nil.
 In that case just return nil.
 Optionally identify a window to open a file reference with the argument N.
-See `pel-find-file-at-point-in-window' for more information. "
+See `pel-find-file-at-point-in-window' for more information."
   (interactive "P")
   (if (and (eq major-mode 'rst-mode)
            (require 'pel-rst nil :noerror)
