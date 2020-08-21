@@ -258,7 +258,7 @@ inserted."
     (if with-license
         (format "\n%s\n"
                 (pel-license-text cpr-comment))
-      (format "%s%s %s (C) %s, %s\n"
+      (format "%s%s %s © %s, %s\n"
               (if (pel-line-only-whitespace-p) "" "\n")
               cpr-comment
               cpr-word
