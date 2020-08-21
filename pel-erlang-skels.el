@@ -34,58 +34,58 @@
 ;; Functions ('-') and variables ('>') used in Erlang tempo skeletons:
 
 ;; Line separators:
-;;     - pel-erlang-skel-separator
-;;     - pel-erlang-skel-optional-separator
-;;     - pel-erlang-skel-separator-start
-;;     - pel-erlang-skel-separator-end
+;;     - `pel-erlang-skel-separator'
+;;     - `pel-erlang-skel-optional-separator'
+;;     - `pel-erlang-skel-separator-start'
+;;     - `pel-erlang-skel-separator-end'
 
 ;; Extract Erlang function name & arguments:
-;;     - pel-erlang-skel-get-function-name
-;;     - pel-erlang-skel-get-function-args
+;;     - `pel-erlang-skel-get-function-name'
+;;     - `pel-erlang-skel-get-function-args'
 
 ;; Erlang Tempo Skeletons:
-;;   > pel-erlang-skel-export
-;;   > pel-erlang-skel-import
-;;   > pel-erlang-skel-try
-;;   > pel-erlang-skel-try-of
-;;   > pel-erlang-skel-function
-;;     - pel--erlang-skel-function
-;;       - pel-prompt-erlang-function
-;;   > pel-erlang-skel-spec
-;;   > pel-skel-file-created
+;;   > `pel-erlang-skel-export'
+;;   > `pel-erlang-skel-import'
+;;   > `pel-erlang-skel-try'
+;;   > `pel-erlang-skel-try-of'
+;;   > `pel-erlang-skel-function'
+;;     - `pel--erlang-skel-function'
+;;       - `pel-prompt-erlang-function'
+;;   > `pel-erlang-skel-spec'
+;;   > `pel-skel-file-created'
 
 ;; Formatting functions and predicates, based on user options:
-;;     - pel-erlang-skel-maybe-timestamp
-;;     - pel-erlang-skel-edoc-in-header-p
-;;     - pel-erlang-skel-edoc-in-function-p
-;;     - pel-erlang-skel-prompt-for-file-purpose-p
-;;     - pel-erlang-skel-prompt-for-function-purpose-p
-;;     - pel-erlang-skel-prompt-for-function-name-p
+;;     - `pel-erlang-skel-maybe-timestamp'
+;;     - `pel-erlang-skel-edoc-in-header-p'
+;;     - `pel-erlang-skel-edoc-in-function-p'
+;;     - `pel-erlang-skel-prompt-for-file-purpose-p'
+;;     - `pel-erlang-skel-prompt-for-function-purpose-p'
+;;     - `pel-erlang-skel-prompt-for-function-name-p'
 
 ;; Tempo skeleton for large file header:
-;;   > pel-skel-large-header
-;;     - pel-erlang-skel-filename
-;;     - pel-erlang-skel-file-doc
+;;   > `pel-skel-large-header'
+;;     - `pel-erlang-skel-filename'
+;;     - `pel-erlang-skel-file-doc'
 
 ;; Tempo skeletons for OTP behaviours:
-;;   > pel-erlang-skel-application
-;;   > pel-erlang-skel-generic-server
-;;   > pel-erlang-skel-supervisor
-;;   > pel-erlang-skel-supervisor-bridge
-;;   > pel-erlang-skel-gen-event
-;;   > pel-erlang-skel-gen-fsm
-;;   > pel-erlang-skel-gen-statem-StateName
-;;   > pel-erlang-skel-gen-statem-handle-event
-;;     - pel-erlang-skel-behaviour
-;;     - pel-erlang-skel-api-block
-;;     - pel-erlang-skel-function-doc
+;;   > `pel-erlang-skel-application'
+;;   > `pel-erlang-skel-generic-server'
+;;   > `pel-erlang-skel-supervisor'
+;;   > `pel-erlang-skel-supervisor-bridge'
+;;   > `pel-erlang-skel-gen-event'
+;;   > `pel-erlang-skel-gen-fsm'
+;;   > `pel-erlang-skel-gen-statem-StateName'
+;;   > `pel-erlang-skel-gen-statem-handle-event'
+;;     - `pel-erlang-skel-behaviour'
+;;     - `pel-erlang-skel-api-block'
+;;     - `pel-erlang-skel-function-doc'
 
 ;; Installation of Erlang Tempo Skeletons:
-;;   > pel--erl-skel-key
-;;   > pel--more-erlang-skel
-;;   - pel--update-erlang-skel
-;;   - pel--erlang-mode-setup
-;;   - pel--install-erlang-skel
+;;   > `pel--erl-skel-key'
+;;   > `pel--more-erlang-skel'
+;;   - `pel--update-erlang-skel'
+;;   - `pel--erlang-mode-setup'
+;;   - `pel--install-erlang-skel'
 
 ;; -----------------------------------------------------------------------------
 ;;; Dependencies:
