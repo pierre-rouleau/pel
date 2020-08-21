@@ -48,7 +48,11 @@
 ;;
 ;;  The following macro append elements to a named list variable.
 ;;
-;;  - `pel-append-to-list'
+;;  - `pel-append-to'
+;;
+;;  And this one appends text to a string variable.
+;;
+;;  - `pel-concat-to'
 ;;
 ;;  The following 2 macros are used to prevent lint warnings:
 ;;
@@ -124,7 +128,6 @@ VARIABLES := list of variable symbol(s) or nil
            ,@body)
        (error "Failed loading required resources!")))))
 
-
 ;; -----------------------------------------------------------------------------
 ;; Appending to a list
 ;; -------------------
@@ -132,6 +135,13 @@ VARIABLES := list of variable symbol(s) or nil
 (defmacro pel-append-to (listvar elem)
   "Append ELEM to LISTVAR."
   `(setq ,listvar (append ,listvar ,elem)))
+
+;; -----------------------------------------------------------------------------
+;; Appending to a string
+
+(defmacro pel-concat-to  (stringvar text)
+  "Append TEXT to STRINGVAR."
+  `(setq ,stringvar (concat ,stringvar ,text)))
 
 ;; -----------------------------------------------------------------------------
 ;; Warning Preventing Macros
