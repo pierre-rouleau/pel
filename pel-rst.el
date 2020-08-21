@@ -731,10 +731,14 @@ in that case return nil instead."
 (defun pel--move-to-rst-target (target)
   "Move point to the rst definition link for TARGET."
   (goto-char (point-min))
-  (re-search-forward (format "^\\.\\. _%s: +"
-                             (pel-rst-anchor-escaped target))
-                     nil
-                     :noerror))
+  (let ((regexp (format "^\\.\\. _%s:" (pel-rst-anchor-escaped target))))
+    ;; search for a complete reference (target and URL on the same line) first
+    (unless (re-search-forward (concat regexp " +") nil :noerror)
+      ;; if that fails search for a line that only has the target)
+      (goto-char (point-min))
+      (when (re-search-forward regexp nil :noerror)
+        ;; if that's found move to the first complete reference line
+        (re-search-forward ": +https??://" nil :noerror)))))
 
 (defun pel-rst-open-target (&optional n noerror)
   "Open the target of rst-reference at point.
