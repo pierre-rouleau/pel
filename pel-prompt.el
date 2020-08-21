@@ -33,6 +33,7 @@
 ;; - `pel-prompt-purpose-for'
 ;; - `pel-prompt-function'
 ;; - `pel-prompt-args'
+;; - `pel-prompt-title'
 ;;
 ;; The `pel-y-n-e-or-l-p' function is a minor modification of the Emacs'
 ;; y-or-n-p.  It has the ability to type "e" or "E" as an answer to
@@ -273,6 +274,15 @@ Holds an independent function prompt history for each major mode."
         (setq args (funcall transform-function args))))
     args))
 
+(defun pel-prompt-title ()
+  "Prompt for a title"
+  (let ((history-symbol (intern
+                         (format
+                          "pel-prompt-title-%s" major-mode))))
+  (pel-end-text-with-period
+   (pel-capitalize-first-letter
+    (string-trim
+     (read-from-minibuffer "Title :" nil nil nil history-symbol))))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-prompt)
