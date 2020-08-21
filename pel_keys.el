@@ -2343,7 +2343,9 @@ This is meant to be used in the d-mode hook lambda."
   (define-key pel:for-reST "r" 'pel-rst-adorn-refresh)
   ;;
   (define-key pel:for-reST "n" 'rst-forward-section)
+  (define-key pel:for-reST (kbd "<down>") 'rst-forward-section)
   (define-key pel:for-reST "p" 'rst-backward-section)
+  (define-key pel:for-reST (kbd "<up>") 'rst-backward-section)
   ;;
   (define-key pel:for-reST "b" 'pel-rst-bold)
   (define-key pel:for-reST "i" 'pel-rst-italic)
