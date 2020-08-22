@@ -83,7 +83,7 @@ The string does not end with a newline."
     line))
 
 
-;;-pel-autoload
+;;-pel-auto load
 (defun pel-insert-line (&optional linelen char)
   "Insert a (commented) line before/at current line.
 - If point is at the beginning of the line insert it there.

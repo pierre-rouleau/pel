@@ -379,6 +379,9 @@
                  pel-skel-insert-license-when))
     (autoload fct "pel-skels"))
 
+  ;; pel-skels-rst
+  (autoload 'pel--install-rst-skel "pel-skels-rst")
+
   ;; pel-speedbar
   (when (and (boundp 'pel-use-speedbar) pel-use-speedbar)
     (autoload 'pel-open-close-speedbar             "pel-speedbar")

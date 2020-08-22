@@ -1559,6 +1559,16 @@ display in other window and open the related group(s) that exist."
   (run-with-idle-timer 1 nil (function pel--start-projectile)))
 
 ;; -----------------------------------------------------------------------------
+;; Load pel-tempo when programming languages using it are used.
+;; See the use of skeletons in the following sections.
+
+(when (or pel-use-erlang
+          pel-use-rst-mode)
+  (use-package pel-tempo
+    ;; autoload pel-tempo when the following command is used
+    :commands pel-tempo-mode))
+
+;; -----------------------------------------------------------------------------
 ;; - AppleScript support
 (when pel-use-applescript
   (use-package apples-mode
@@ -1923,17 +1933,15 @@ This is meant to be used in the d-mode hook lambda."
     ;; before the erlang-mode executes.
     (advice-add 'erlang-mode :before #'pel--erlang-mode-setup)
 
-    (use-package pel-tempo
-      :commands pel-tempo-mode
-      :init
-      (define-key pel:erlang-skel " " 'pel-tempo-mode))
-
     ;; activate the <f12> key binding for erlang-mode
     (pel--mode-hook-maybe-call
      'pel--setup-erlang
      'erlang-mode 'erlang-mode-hook)
 
+    ;; bind non skeleton keys to the pel:rst-skel
+    (define-key pel:erlang-skel " " 'pel-tempo-mode)
 
+    ;; bind other erlang keys
     (define-key pel:for-erlang      "?"               'erlang-version)
 
     (define-key pel:erlang-function "N"               'pel-beginning-of-next-defun)
@@ -2315,11 +2323,21 @@ This is meant to be used in the d-mode hook lambda."
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC r`` : reSTucturedText
 (when pel-use-rst-mode
 
+  (define-pel-global-prefix pel:for-reST (kbd "<f11> SPC r"))
+  (define-pel-global-prefix pel:rst-skel (kbd "<f11> SPC r <f12>"))
+
+  (defun pel--setup-rst ()
+    "Activate the reStructuredText (rst) mode."
+    (pel-local-set-f12 'pel:for-reST)
+    (pel--install-rst-skel pel:rst-skel))
+
+  ;; bind non skeleton keys to the pel:rst-skel
+  (define-key pel:rst-skel " " 'pel-tempo-mode)
+
   ;; Add .stxt to the accepted file extensions for rst-mode
   ;; to the ones that are normally used: .rst and .rest
   (add-to-list 'auto-mode-alist '("\\.stxt\\'"  . rst-mode))
 
-  (define-pel-global-prefix pel:for-reST (kbd "<f11> SPC r"))
   (define-key pel:for-reST (kbd "<f1>") 'pel-cfg-pkg-reST)
   (define-key pel:for-reST "." 'pel-rst-makelink)
   (define-key pel:for-reST "g" 'pel-rst-goto-ref-bookmark)
@@ -2364,8 +2382,7 @@ This is meant to be used in the d-mode hook lambda."
   ;;
   ;; activate the <f12> key binding for rst-mode
   (pel--mode-hook-maybe-call
-   '(lambda ()
-      (pel-local-set-f12 'pel:for-reST))
+   (function pel--setup-rst)
    'rst-mode 'rst-mode-hook))
 
 ;; -----------------------------------------------------------------------------
