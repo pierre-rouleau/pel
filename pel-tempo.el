@@ -121,6 +121,8 @@ Key1 bindings:
 ;; Create tempo-template interactive functions
 ;; -------------------------------------------
 
+;; --
+;; Tempo-compliant skeleton inclusion
 
 (defun pel-tempo-include (&rest args)
   "Return a tempo include list of the elements in ARGS.
@@ -134,6 +136,25 @@ This is used to inserts several elements inside a tempo template."
       (dolist (elem arg)
         (setq elements (cons elem elements))))
     (cons 'l (nreverse elements))))
+
+(defun pel-tempo-include-when (option &rest forms)
+  "Include a tempo template inside another one.
+Used like this:
+  (defvar fct-skel '(\"%%% Important function:\"
+                     (pel-tempo-include-when option
+                                             pel-skel-erlang-func)))
+
+This returns what tempo expects: a list form with the symbol
+'l as the first element and the FORMS specified expanded.
+if OPTION is non-nil otherwise it return nil."
+  (when option
+    (let (result)
+      (dolist (form forms)
+        (dolist (elem form)
+          (setq result (cons elem result))))
+      (cons 'l (nreverse result)))))
+
+;; --
 
 (defun pel-tempo-create (mode skeletons  &optional menu-item-creator-function)
   "Create commands that insert MODE code templates using provided SKELETONS.
@@ -178,36 +199,51 @@ Return the created skeleton menu list (or nil if no MENU-ITEM-CREATOR-FUNCTION).
 
 
 
-;; Create the PEL tempo-template interactive functions with bindings
-;; -----------------------------------------------------------------
-
+;; Install already created tempo skeleton functions to specified bindings.
+;; -----------------------------------------------------------------------
+;;
 
 (defun pel-tempo-install-pel-skel (mode skeletons key-map keys-alist
-  &optional mode-abbrev)
-  "Create commands to insert MODE specific SKELETONS.
+  &optional mode-abbrev use-existing-tempo-function)
+  "Create commands to insert MODE specific SKELETONS functions.
 These commands are bound to keys defined in the
 KEYS-ALIST, a alist of (skel-name . key) bound inside the KEY-MAP.
 The skel-name must correspond to one of the names in the SKELETONS: the
   second element of a SKELETONS entry.
 The commands created have names that are like 'pel-ABBREV-NAME' where
 ABBREV is MODE-ABBREV if specified (or MODE otherwise), and NAME corresponds
-to the second element of the SKELETONS entry."
+to the second element of the SKELETONS entry.
+Creates the tempo skeleton function with `tempo-define-template' unless
+USE-EXISTING-TEMPO-FUNCTION is non-nil, in which case it assumes it is already
+defined."
   (setq mode-abbrev (or mode-abbrev mode))
   (let ((cap-mode     (capitalize mode)))
     (dolist (skel skeletons)
       (when skel
-        (let* ((s-name        (nth 1 skel))
-               (s-tempo-fun   (intern (format "tempo-template-%s-%s" mode s-name)))
-               (s-pel-fname   (format "pel-%s-%s" mode-abbrev s-name))
-               (s-docstring   (format "\
+        (let ((s-name  (nth 1 skel)))
+          (unless use-existing-tempo-function
+            (if (and
+                 (require 'tempo nil :noerror)
+                 (fboundp 'tempo-define-template))
+                ;; create the tempo-template-NAME file where NAME
+                ;; is made of mode and skeleton name
+                (tempo-define-template
+                 (format "%s-%s" mode s-name)
+                 (list (list 'pel-tempo-include (nth 2 skel))))
+              (user-error "Failed loading tempo!")))
+          (let* ((s-tempo-fname (format "tempo-template-%s-%s"
+                                        mode s-name))
+                 (s-tempo-fun   (intern s-tempo-fname))
+                 (s-pel-fname   (format "pel-%s-%s" mode-abbrev s-name))
+                 (s-docstring   (format "\
 Insert '%s' %s skeleton's text (also available through %s/Skeleton menu)."
-                                      s-name cap-mode cap-mode))
-               (assoc-value   (cdr (assoc s-name keys-alist)))
-               (key           (if (listp assoc-value)
-                                  (car assoc-value)
-                                assoc-value))
-               (prep-func     (when (listp assoc-value)
-                                (car (cdr assoc-value)))))
+                                        s-name cap-mode cap-mode))
+                 (assoc-value   (cdr (assoc s-name keys-alist)))
+                 (key           (if (listp assoc-value)
+                                    (car assoc-value)
+                                  assoc-value))
+                 (prep-func     (when (listp assoc-value)
+                                  (car (cdr assoc-value)))))
           ;; Define the PEL command that inserts the text
           ;; for the specific template. It uses the tempo function
           ;; and activates the pel-tempo-mode minor mode.
@@ -232,7 +268,7 @@ Insert '%s' %s skeleton's text (also available through %s/Skeleton menu)."
             (define-key
               key-map
               (if (> (length key) 1) (kbd key) key)
-              (intern s-pel-fname))))))))
+              (intern s-pel-fname)))))))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-tempo)

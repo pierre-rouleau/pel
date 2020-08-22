@@ -31,8 +31,6 @@
 ;;
 ;; - `pel-skel-header'
 ;; - `pel-skel-skip-blank'
-;; - `pel-skel-include'
-;; - `pel-skel-include-when'
 ;; - `pel-date'
 ;; - `pel-time-stamp'
 ;; - `pel-skel-purpose-for'
@@ -68,40 +66,6 @@
   "Move back, skip all whitespace, insert nothing."
   (skip-chars-backward " \t")
   nil)
-
-;; --
-;; Tempo-compliant skeleton inclusion
-
-(defun pel-skel-include (&rest forms)
-  "Include a tempo template inside another one.
-Used like this:
-  (defvar fct-skel '(\"%%% Important function:\"
-                     (pel-skel-include pel-skel-erlang-func)))
-
-This returns what tempo expects: a list form with the symbol
-'l as the first element and the FORMS specified expanded."
-  (let (result)
-    (dolist (form forms)
-      (dolist (elem form)
-        (setq result (cons elem result))))
-    (cons 'l (nreverse result))))
-
-(defun pel-skel-include-when (option &rest forms)
-  "Include a tempo template inside another one.
-Used like this:
-  (defvar fct-skel '(\"%%% Important function:\"
-                     (pel-skel-include-when option
-                                          pel-skel-erlang-func)))
-
-This returns what tempo expects: a list form with the symbol
-'l as the first element and the FORMS specified expanded.
-if OPTION is non-nil otherwise it return nil."
-  (when option
-    (let (result)
-      (dolist (form forms)
-        (dolist (elem form)
-          (setq result (cons elem result))))
-      (cons 'l (nreverse result)))))
 
 ;; --
 ;; Date and time
