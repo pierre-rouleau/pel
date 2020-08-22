@@ -274,15 +274,20 @@ Holds an independent function prompt history for each major mode."
         (setq args (funcall transform-function args))))
     args))
 
-(defun pel-prompt-title ()
-  "Prompt for a title"
-  (let ((history-symbol (intern
+(defun pel-prompt-title (&optional with-full-stop)
+  "Prompt and return a title string.
+Returned string has the first letter capitalized.
+If WITH-FULL-STOP is non-nil a period is added if user did not enter one."
+  (let* ((history-symbol (intern
                          (format
-                          "pel-prompt-title-%s" major-mode))))
-  (pel-end-text-with-period
-   (pel-capitalize-first-letter
-    (string-trim
-     (read-from-minibuffer "Title :" nil nil nil history-symbol))))))
+                          "pel-prompt-title-%s" major-mode)))
+         (title  (pel-capitalize-first-letter
+                  (string-trim
+                   (read-from-minibuffer "Title: "
+                                         nil nil nil history-symbol)))))
+    (if with-full-stop
+        (pel-end-text-with-period title)
+      title)))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-prompt)
