@@ -96,8 +96,9 @@
 ;;                            ;      pel-erlang-skel-use-secondary-separators
 (require 'pel--macros)
 (require 'pel-list)           ; use: pel-insert-list-in-list, pel-join
-(require 'pel-tempo)          ; use: pel-tempo-mode,
-;;                            ;      pel-tempo-install-pel-skel
+(require 'pel-tempo)          ; use: pel-tempo-install-pel-skel
+;;                            ;      pel-tempo-include
+;;                            ;      pel-tempo-include-when
 (require 'pel-skels)
 
 ;; -----------------------------------------------------------------------------
@@ -357,7 +358,7 @@ line description if it was identified."
     ;; without Edoc
     (if (string= pel--skel-last-purpose "")
         (cons 'l
-              '(& "%%% Module Description:" n p
+              '(& "%%% Module Description: " p n
                   "%%% " n
                   "%%% " p n
                   "%%% " n
@@ -390,7 +391,7 @@ line description if it was identified."
                                    pel-erlang-skel-with-license)
       (pel-erlang-skel-separator)
       (pel-erlang-skel-file-doc)
-      (pel-skel-include erlang-skel-small-header) )
+      (pel-tempo-include erlang-skel-small-header) )
   "*The template of a large header.
 Please see the function `tempo-define-template'.")
 
@@ -399,8 +400,8 @@ Please see the function `tempo-define-template'.")
 
 (defun pel-erlang-skel-behaviour (behaviour api-funs callback-funs &optional exmpl-callback-funs)
   "Return a BEHAVIOUR description string with API-FUNS and CALLBACK-FUNS.
-If EXMP-CALLBACK-FUNS is declared, its a list of function names that
-act as exemples for names the user must create. "
+If EXMPL-CALLBACK-FUNS is declared, its a list of function names that
+act as exemples for names the user must create."
   (concat
    (format "-behaviour(%s).\n\n" behaviour)
    (format "%%%% %s API\n"
@@ -423,7 +424,7 @@ act as exemples for names the user must create. "
 (defun pel-erlang-skel-major-block (text &optional with-modname with-end-line)
   "Return a list of items to insert TEXT for the behaviour API block.
 If WITH-MODNAME is non-nil the name of module is shown, prefixed to TEXT.
-If WITH-END_LINE is non-nil, a terminating separator line is used."
+If WITH-END-LINE is non-nil, a terminating separator line is used."
   (let ((complete-text (format "%s%s"
                                (if with-modname
                                    (concat
@@ -473,7 +474,7 @@ This puts Edoc annotations if Edoc is required by customization."
 
 ;; Behaviour templates.
 (defvar pel-erlang-skel-application
-  '((pel-skel-include pel-skel-large-header)
+  '((pel-tempo-include pel-skel-large-header)
     "-behaviour(application)." n n
     "%% Application callbacks" n
     "-export([start/2, start_phase/3, stop/1, prep_stop/1," n>
@@ -551,7 +552,7 @@ This puts Edoc annotations if Edoc is required by customization."
 Please see the function `tempo-define-template'.")
 
 (defvar pel-erlang-skel-generic-server
-  '((pel-skel-include pel-skel-large-header)
+  '((pel-tempo-include pel-skel-large-header)
     (pel-erlang-skel-behaviour "gen_server"
                                '("start_link/0")
                                '("init/1"
@@ -652,7 +653,7 @@ Please see the function `tempo-define-template'.")
 Please see the function `tempo-define-template'.")
 
 (defvar pel-erlang-skel-supervisor
-  '((pel-skel-include pel-skel-large-header)
+  '((pel-tempo-include pel-skel-large-header)
     (pel-erlang-skel-behaviour "supervisor"
                                '("start_link/0")
                                '("init/1"))
@@ -697,7 +698,7 @@ Please see the function `tempo-define-template'.")
 Please see the function `tempo-define-template'.")
 
 (defvar pel-erlang-skel-supervisor-bridge
-  '((pel-skel-include pel-skel-large-header)
+  '((pel-tempo-include pel-skel-large-header)
     (pel-erlang-skel-behaviour "supervisor_bridge"
                                '("start_link/0")
                                '("init/1" "terminate/2"))
@@ -747,7 +748,7 @@ Please see the function `tempo-define-template'.")
 Please see the function `tempo-define-template'.")
 
 (defvar pel-erlang-skel-gen-event
-  '((pel-skel-include pel-skel-large-header)
+  '((pel-tempo-include pel-skel-large-header)
     (pel-erlang-skel-behaviour "gen_event"
                                '("start_link/0"
                                  "add_handler/0")
@@ -1338,11 +1339,11 @@ to execute *before* `erlang-mode'."
 ;;-pel-autoload
 (defun pel--install-erlang-skel (key-map)
   "Create PEL Erlang skeleton functions and bind them in the KEY-MAP specified.
-This function is meant to be called by pel-init() only."
+This function is meant to be called by the function `pel-init' only."
   (if (and (require 'erlang nil :noerror)
                (boundp 'erlang-skel))
       (pel-tempo-install-pel-skel
-       "erlang" erlang-skel key-map pel--erl-skel-key "erl")
+       "erlang" erlang-skel key-map pel--erl-skel-key "erl" :use-existing)
     (user-error "The erlang.el package is not loaded!")))
 
 ;; -----------------------------------------------------------------------------
