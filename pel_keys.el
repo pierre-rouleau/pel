@@ -1389,7 +1389,7 @@ display in other window and open the related group(s) that exist."
 (pel--cfg-pkg "dired"       pel:cfg "d" "dired")
 (pel--cfg-pkg "filemng"     pel:cfg "f" "files")
 (pel--cfg-pkg "grep"        pel:cfg "g" "grep" "rg" "ripgrep")
-(pel--cfg-pkg "insertions"  pel:cfg "I" "lice" "smart-dash" "time-stamp")
+(pel--cfg-pkg "insertions"  pel:cfg "I" "lice" "smart-dash" "time-stamp" "tempo" "yasnippet")
 (pel--cfg-pkg "key-chord"   pel:cfg "K")
 (pel--cfg-pkg "navigation"  pel:cfg "n" "avy")
 (pel--cfg-pkg "regexp"      pel:cfg "r")
@@ -1559,6 +1559,7 @@ display in other window and open the related group(s) that exist."
   (run-with-idle-timer 1 nil (function pel--start-projectile)))
 
 ;; -----------------------------------------------------------------------------
+;; Tempo skeleton - a powerful lisp-style templating system
 ;; Load pel-tempo when programming languages using it are used.
 ;; See the use of skeletons in the following sections.
 
@@ -1567,6 +1568,60 @@ display in other window and open the related group(s) that exist."
   (use-package pel-tempo
     ;; autoload pel-tempo when the following command is used
     :commands pel-tempo-mode))
+
+;; -----------------------------------------------------------------------------
+;; yasnippet - a Texmate-like templating system
+
+(when pel-use-yasnippet
+
+  (defun pel-customize-yasnippet ()
+    "Open the yasnippet customization buffer."
+    (interactive)
+    (customize-group "yasnippet"))
+
+  (defun pel--start-yasnippet ()
+    "Activate yasnippet globally."
+    (when (and (require 'yasnippet nil :noerror)
+               (fboundp 'yas-global-mode))
+      (yas-global-mode 1)))
+
+  (defun pel--start-yasnippet-snippets ()
+    "Activate yasnippet and the yasnippet-snippets globally."
+    (load-library "yasnippet-snippets")
+    (when (fboundp 'pel--start-yasnippet)
+      (pel--start-yasnippet)))
+
+  (define-pel-global-prefix pel:yasnippet (kbd "<f11> y"))
+  (define-key pel:yasnippet "Y"          'yas-global-mode)
+  (define-key pel:yasnippet "y"          'yas-minor-mode)
+  (define-key pel:yasnippet "?"          'yas-about)
+  (define-key pel:yasnippet "t"          'yas-describe-tables)
+  (define-key pel:yasnippet "s"          'yas-insert-snippet)
+  (define-key pel:yasnippet "n"          'yas-new-snippet)
+  (define-key pel:yasnippet "v"          'yas-visit-snippet-file)
+  (define-key pel:yasnippet (kbd "<f1>") 'pel-customize-yasnippet)
+
+  (if pel-use-yasnippet-snippets
+    (use-package yasnippet-snippets
+      :ensure t
+      :pin melpa
+      :commands (yas-global-mode
+                 yas-minor-mode)
+      :init
+      (when (and (eq pel-use-yasnippet 'use-from-start)
+                 (fboundp 'pel--start-yasnippet-snippets))
+        (run-with-idle-timer 4 nil (function pel--start-yasnippet-snippets))))
+
+    (use-package yasnippet
+    :ensure t
+    :pin melpa
+    :commands (yas-global-mode
+               yas-minor-mode)
+    :init
+    (when (and (not pel-use-yasnippet-snippets)
+               (eq pel-use-yasnippet 'use-from-start)
+               (fboundp 'pel--start-yasnippet))
+      (run-with-idle-timer 4 nil (function pel--start-yasnippet))))))
 
 ;; -----------------------------------------------------------------------------
 ;; - AppleScript support

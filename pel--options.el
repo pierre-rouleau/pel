@@ -36,7 +36,6 @@
 ;;   - pel-file-management
 ;;   - pel-identification
 ;;   - pel-kbmacro
-;;   - pel-text-insert
 ;;   - pel-package-use
 ;;     - pel-pkg-for-cursor
 ;;     - pel-pkg-for-dired
@@ -1037,6 +1036,23 @@ To activate the changes for this you must 'Apply and Save' and restart Emacs."
   :group 'pel-pkg-for-spelling
   :type
   '(repeat symbol))
+
+(defcustom pel-use-yasnippet nil
+  "Control whether PEL uses yasnippet package."
+  :group 'pel-pkg-for-insertions
+  :type '(choice
+          (const :tag "Do not use" nil)
+          (const :tag "Use, activate later by command"  t)
+          (const :tag "Use, activate globally when Emacs starts" use-from-start)))
+
+(defcustom pel-use-yasnippet-snippets nil
+  "Control whether PEL uses the yasnippet-snippets package.
+That package loads a set of snippets for yasnippet.
+PEL activates it only if variable `pel-use-yasnippet' is non-nil."
+  :group 'pel-pkg-for-insertions
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; -----------------------------------------------------------------------------
 ;; Undo Mechanism Management
 ;; -------------------------
