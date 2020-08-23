@@ -342,38 +342,54 @@ Please see the function `tempo-define-template'.")
 The returned skel list uses EDoc style if EDoc must be used,
 and inserts the last specified purpose string as the single
 line description if it was identified."
-  (if (pel-erlang-skel-edoc-in-header-p)
-      ;; with Edoc
-      (if (string= pel--skel-last-purpose "")
-          (cons 'l
-                '(& "%%% @doc " p n
-                    "%%%      " p n
-                    "%%% @end" n
-                    (pel-erlang-skel-separator 3 ?=)))
-        (cons 'l
-              '(& (concat "%%% @doc " pel--skel-last-purpose) n
-                  "%%%      " p n
-                  "%%% @end" n
-                  (pel-erlang-skel-separator 3 ?=))))
-    ;; without Edoc
-    (if (string= pel--skel-last-purpose "")
-        (cons 'l
-              '(& "%%% Module Description: " p n
-                  "%%% " n
-                  "%%% " p n
-                  "%%% " n
+  (if (pel-erlang-file-is-module)
+      (if (pel-erlang-skel-edoc-in-header-p)
+          ;; with Edoc
+          (if (string= pel--skel-last-purpose "")
+              (list 'l
+                    '&
+                    "%%% @doc " 'p 'n
+                    "%%%      " 'p 'n
+                    "%%% @end" 'n
+                    (pel-erlang-skel-separator 3 ?=))
+            (list 'l
+                  '&
+                  (concat "%%% @doc " pel--skel-last-purpose) 'n
+                  "%%%      " 'p 'n
+                  "%%% @end" 'n
                   (pel-erlang-skel-separator 3 ?=)))
-      (cons 'l
-            '(& (concat "%%% Module Description: " pel--skel-last-purpose) n
-                "%%% " n
-                "%%% " p n
-                (pel-erlang-skel-separator 3 ?=))))))
+        ;; without Edoc
+        (if (string= pel--skel-last-purpose "")
+            (list 'l
+                  '&
+                  "%%% Module Description: " 'p 'n
+                  "%%% " 'n
+                  "%%% " 'p 'n
+                  "%%% " 'n
+                  (pel-erlang-skel-separator 3 ?=))
+          (list 'l
+                '&
+                (concat "%%% Module Description: " pel--skel-last-purpose) 'n
+                "%%% " 'n
+                "%%% " 'p 'n
+                (pel-erlang-skel-separator 3 ?=))))
+    ;; header file - no Edoc
+    (list 'l
+          '&
+          (concat "%%% Header Description: " pel--skel-last-purpose) 'n
+          "%%% " 'n
+          "%%% " 'p 'n
+          (pel-erlang-skel-separator 3 ?=))))
 
 (defun pel-erlang-skel-filename ()
   "Insert name of current file."
   (concat "%%% File      : "
           (pel-current-buffer-filename :sans-directory)
           "\n"))
+
+(defun pel-erlang-file-is-module ()
+  "Return t when current Erlang file is a module, nil if it's a header file."
+  (string= (pel-current-buffer-file-extension) "erl"))
 
 (defvar pel-skel-large-header
   '(o (pel-erlang-skel-optional-separator)
@@ -391,7 +407,8 @@ line description if it was identified."
                                    pel-erlang-skel-with-license)
       (pel-erlang-skel-separator)
       (pel-erlang-skel-file-doc)
-      (pel-tempo-include erlang-skel-small-header) )
+      (pel-tempo-include-when (pel-erlang-file-is-module)
+                              erlang-skel-small-header))
   "*The template of a large header.
 Please see the function `tempo-define-template'.")
 
