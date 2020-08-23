@@ -35,6 +35,7 @@
 ;; Environment Querying functions:
 ;;  - `pel-used-major-mode-of'
 ;;  - `pel-current-buffer-filename'
+;;  - `pel-current-buffer-file-extension'
 ;;
 ;; Check for Zero:
 ;;  - `pel-!0'
@@ -165,7 +166,7 @@ If not specified (or nil) return the major mode of the current buffer."
   "Return current buffer's filename string.
 Return a filename with full path unless SANS-DIRECTORY is non-nil.
 If SANS-EXTENSION is non-nil exclude the extension, otherwise include it.
-Return nil if current buffer does not visit a file."
+Issue a user error if current buffer does not visit a file."
   (if buffer-file-truename
       (let ((fn (expand-file-name buffer-file-truename)))
         (when sans-extension
@@ -173,6 +174,19 @@ Return nil if current buffer does not visit a file."
         (if sans-directory
             (file-name-nondirectory fn)
           fn))
+    (user-error "No file in buffer %s" (buffer-name))))
+
+(defun pel-current-buffer-file-extension (&optional with-period)
+  "Return the extension of the current buffer's file.
+By default, the returned value excludes the period that starts the extension,
+but if the optional argument WITH-PERIOD is non-nil, the period is included in
+the value and in that case, if FILENAME has no extension the returned value is
+\"\".
+See the function `file-name-extension' for details on how this treats files with
+no extension or file names that ends with a period.
+Issue a user error if current buffer does not visit a file."
+  (if buffer-file-truename
+      (file-name-extension buffer-file-truename with-period)
     (user-error "No file in buffer %s" (buffer-name))))
 
 ;; -----------------------------------------------------------------------------
