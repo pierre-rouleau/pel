@@ -308,11 +308,10 @@ Please see the function `tempo-define-template'.")
 ;; Formatting predicates, based on user options.
 
 (defun pel-erlang-skel-maybe-timestamp (&optional event)
-  "Insert time stamp foe EVENT if required."
-  (when pel-erlang-skel-insert-file-timestamp
-    (concat "%%% "
-            (pel-time-stamp event "by ")
-            "\n")))
+  "Return a commented time stamp string for EVENT if required."
+  (pel-skel-time-stamp pel-erlang-skel-insert-file-timestamp
+                       "%%%"
+                       event))
 
 (defun pel-erlang-skel-edoc-in-header-p ()
   "Return t if edoc must be used in header, nil otherwise."
