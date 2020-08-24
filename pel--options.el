@@ -1570,6 +1570,64 @@ by the `pel-use-d-ac-dcd'."
   :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defgroup pel-elisp-code-style nil
+  "Emacs Lisp Source Code Style options."
+  :group 'pel-pkg-for-elisp)
+
+(defcustom pel-elisp-fill-column 80
+  "Column beyond which automatic line-wrapping should happen in Elisp code."
+  :group 'pel-elisp-code-style
+  :type 'integer
+  :safe #'integerp)
+
+(defcustom pel-elisp-skel-package-name 'extract-from-file-name
+  "Specifies whether a package name ownership note is inserted.
+If you want to insert one, it can either be extracted from the file name (in
+this case it's the first word of the file name, fully up-cased) or can be
+specified as a string."
+  :group 'pel-elisp-code-style
+  :type '(choice
+          (const :tag "No, don't add package ownership note." nil)
+          (const :tag "Add package ownership note extracted from file name."
+                 extract-from-file-name)
+          (string :tag "Use this specified string.")))
+
+(defcustom pel-elisp-skel-use-separators t
+  "Specifies whether Elisp code block include separators line.
+If nil no separator line comment is used, otherwise separator line
+comments of length controlled by variable `fill-column' are inserted."
+  :group 'pel-elisp-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-elisp-skel-insert-file-timestamp nil
+  "Specifies whether a timestamp is inserted inside Elisp file header block."
+  :group 'pel-elisp-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-elisp-skel-with-license nil
+  "Control whether a license text is inserted in Elisp file header.
+
+When t, the licence inserted is controlled by the function `lice' taken
+from the external library with the same name.
+If t this activates `pel-use-lice' if it is not activated already.
+
+The text of the inserted license is selected by the `lice:default-license'
+user option, normally configured inside the directory's '.dir-locals.el'
+file written inside the global setting like this:
+
+   ((nil   .      ((fill-column . 80)
+                   (lice:default-license  . \"gpl-3.0\")
+                   (lice:copyright-holder . \"Your Name\")))
+
+Replace the gpl-3.0 with the license you want and write your name inside
+the copyright holder value."
+  :group 'pel-elisp-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Common Lisp Support
 ;; -------------------
 (defgroup pel-pkg-for-clisp nil

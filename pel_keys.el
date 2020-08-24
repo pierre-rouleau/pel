@@ -1993,7 +1993,7 @@ This is meant to be used in the d-mode hook lambda."
      'pel--setup-erlang
      'erlang-mode 'erlang-mode-hook)
 
-    ;; bind non skeleton keys to the pel:rst-skel
+    ;; bind non skeleton keys to the pel:erlang-skel
     (define-key pel:erlang-skel " " 'pel-tempo-mode)
 
     ;; bind other erlang keys
@@ -2254,7 +2254,12 @@ This is meant to be used in the d-mode hook lambda."
 ;; 9 included.) Customize these user option variables.
 
 
-(define-pel-global-prefix pel:for-elisp (kbd "<f11> SPC l"))
+(define-pel-global-prefix pel:for-elisp  (kbd "<f11> SPC l"))
+(define-pel-global-prefix pel:elisp-skel (kbd "<f11> SPC l <f12>"))
+
+;; bind non skeleton keys to the pel:elisp-skel
+(define-key pel:elisp-skel " " 'pel-tempo-mode)
+
 (define-key pel:for-elisp (kbd "M-p")  #'superword-mode)
 (define-key pel:for-elisp (kbd "<f1>") 'pel-cfg-pkg-elisp)
 (pel--lispy-map-for pel:for-elisp)
@@ -2331,7 +2336,8 @@ This is meant to be used in the d-mode hook lambda."
     (pel-local-set-f12-M-f12 'pel:elisp-debug    "d")
     (pel-local-set-f12-M-f12 'pel:elisp-eval     "e")
     (pel-local-set-f12-M-f12 'pel:elisp-function "f")
-    (pel-local-set-f12-M-f12 'pel:elisp-lib      "l"))
+    (pel-local-set-f12-M-f12 'pel:elisp-lib      "l")
+    (pel--install-elisp-skel pel:elisp-skel))
  'emacs-lisp-mode 'emacs-lisp-mode-hook :append)
 
 ;; -----------------------------------------------------------------------------
@@ -3406,7 +3412,9 @@ the ones defined from the buffer now."
 (define-key pel:insert   "F" 'pel-insert-filename)
 (define-key pel:insert   "l" 'pel-insert-line)
 (define-key pel:insert   "t" 'pel-insert-iso8601-timestamp)
-(when (or pel-use-lice pel-erlang-skel-with-license)
+(when (or pel-use-lice
+          pel-elisp-skel-with-license
+          pel-erlang-skel-with-license)
   (cl-eval-when 'compile (require 'lice))
   (use-package lice
     :ensure t
