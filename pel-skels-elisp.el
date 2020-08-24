@@ -1,9 +1,11 @@
 ;;; pel-skels-elisp.el --- Tempo skeleton for Emacs Lisp.  -*- lexical-binding: t; -*-
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-08-24 12:59:01, updated by Pierre Rouleau>
+;; Time-stamp: <2020-08-24 18:33:32, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
+;; This file is not part of GNU Emacs.
+;;
 ;; Copyright (C) 2020  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
@@ -88,7 +90,7 @@ Otherwise return a string that ends with a newline."
 
 (defun pel-skels-elisp-file-header-block ()
   "Return a tempo list for a Emacs Lisp file header block."
-  (let ((purpose (pel-prompt-purpose-for "file"))
+  (let ((purpose (pel-prompt-purpose-for "File"))
         (fname   (pel-current-buffer-filename :sans-directory))
         (libname (pel-current-buffer-filename :sans-directory :sans-extension)))
     (list
@@ -98,20 +100,21 @@ Otherwise return a string that ends with a newline."
      (pel-skel-author-comment  ";;")
      (pel-skel-time-stamp pel-elisp-skel-insert-file-timestamp ";;") 'n
      (pel-skel-elisp-package-name-line)
+     ";; This file is not part of GNU Emacs.\n\n" ; if that's not the case, let me know!
      (when pel-elisp-skel-with-license
        (list 'l
              (pel-license-text ";;") 'n))
      (pel-separator-line nil nil ";;;") 'n
      ";;; Commentary:" 'n
-     ";;" 'n
+     ";;\n"
      ";; " 'p 'n 'n
      (pel-skel-elisp-separator-line)
      ";;; Dependencies:" 'n
-     ";;" 'n
+     ";;\n"
      ";; " 'p 'n 'n
      (pel-skel-elisp-separator-line)
      ";;; Code:" 'n
-     ";;" 'n
+     ";;\n"
      'p 'n 'n
      (pel-separator-line nil nil ";;;") 'n
      "(provide '" libname ")" 'n 'n
