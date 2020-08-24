@@ -111,8 +111,12 @@ Key1 bindings:
 ;;
 ;; - Create tempo-template interactive functions:
 ;;
-;;   - pel-tempo-create
-;;     - pel-tempo-include
+;;   - `pel-tempo-create'
+;;
+;; - Tempo list inclusion:
+;;
+;;   - `pel-tempo-include'
+;;     `pel-tempo-include-when'
 ;;
 ;; - Create the PEL tempo-template interactive functions with bindings
 ;;
