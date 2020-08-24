@@ -1574,12 +1574,6 @@ by the `pel-use-d-ac-dcd'."
   "Emacs Lisp Source Code Style options."
   :group 'pel-pkg-for-elisp)
 
-(defcustom pel-elisp-fill-column 80
-  "Column beyond which automatic line-wrapping should happen in Elisp code."
-  :group 'pel-elisp-code-style
-  :type 'integer
-  :safe #'integerp)
-
 (defcustom pel-elisp-skel-package-name 'extract-from-file-name
   "Specifies whether a package name ownership note is inserted.
 If you want to insert one, it can either be extracted from the file name (in
