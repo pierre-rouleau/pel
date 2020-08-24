@@ -48,23 +48,25 @@
 ;; While active the pel-tempo-mode displays its short lighter: " ‡".
 ;;
 ;;
-;; Tempo template creation utilities:
+;; - PEL Tempo minor mode:
+;;
+;;   - `pel-tempo-mode'
+;;     > `pel-tempo-minor-mode-map'
+;;
+;; - Tempo template creation utilities:
 ;;
 ;;   A set of functions used to simplify the creation of commands that insert
 ;;   tempo skeletons along with the ability to create a menu of those skeletons.
 ;;
 ;;   - Create tempo-template interactive functions:
 ;;
-;;     - pel-tempo-create
-;;       - pel-tempo-include
+;;     - `pel-tempo-create'
+;;       - `pel-tempo-include'
 ;;
 ;;   - Create the PEL tempo-template interactive functions with bindings
 ;;
-;;     - pel-tempo-install-pel-skel
+;;     - `pel-tempo-install-pel-skel'
 ;;
-;; Pel Tempo minor mode:
-;;
-;; - pel-tempo-mode
 
 ;; -----------------------------------------------------------------------------
 ;;; Code:
@@ -107,25 +109,6 @@ Key1 bindings:
 ;; -----------------------------------------------------------------------------
 ;; Tempo template creation utilities
 ;; =================================
-;;
-;; A set of functions used to simplify the creation of commands that insert
-;; tempo skeletons along with the ability to create a menu of those skeletons.
-;;
-;; - Create tempo-template interactive functions:
-;;
-;;   - `pel-tempo-create'
-;;
-;; - Tempo list inclusion:
-;;
-;;   - `pel-tempo-include'
-;;     `pel-tempo-include-when'
-;;
-;; - Create the PEL tempo-template interactive functions with bindings
-;;
-;;   - pel-tempo-install-pel-skel
-
-;; Create tempo-template interactive functions
-;; -------------------------------------------
 
 ;; --
 ;; Tempo-compliant skeleton inclusion
@@ -221,7 +204,13 @@ ABBREV is MODE-ABBREV if specified (or MODE otherwise), and NAME corresponds
 to the second element of the SKELETONS entry.
 Creates the tempo skeleton function with `tempo-define-template' unless
 USE-EXISTING-TEMPO-FUNCTION is non-nil, in which case it assumes it is already
-defined."
+defined.
+The function also binds the functions `tempo-complete-tag` and
+the function `pel-tempo-mode` to <f12> and <space> respectively
+inside the specified KEY_MAP."
+  ;; bind non skeleton keys in the key map
+  (define-key key-map (kbd "<f12>") 'tempo-complete-tag)
+  (define-key key-map " " 'pel-tempo-mode)
   (setq mode-abbrev (or mode-abbrev mode))
   (let ((cap-mode     (capitalize mode)))
     (dolist (skel skeletons)

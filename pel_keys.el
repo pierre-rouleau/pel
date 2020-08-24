@@ -1957,7 +1957,6 @@ This is meant to be used in the d-mode hook lambda."
     ;; setup the Erlang-specific key bindings
     (pel-local-set-f12-M-f12 'pel:for-erlang)
     (pel--install-erlang-skel pel:erlang-skel)
-    (define-key pel:erlang-skel (kbd "<f12>") 'tempo-complete-tag)
     ;; Configure M-( to put parentheses after a function name.
     (set (make-local-variable 'parens-require-spaces) nil))
 
@@ -1992,9 +1991,6 @@ This is meant to be used in the d-mode hook lambda."
     (pel--mode-hook-maybe-call
      'pel--setup-erlang
      'erlang-mode 'erlang-mode-hook)
-
-    ;; bind non skeleton keys to the pel:erlang-skel
-    (define-key pel:erlang-skel " " 'pel-tempo-mode)
 
     ;; bind other erlang keys
     (define-key pel:for-erlang      "?"               'erlang-version)
@@ -2257,9 +2253,6 @@ This is meant to be used in the d-mode hook lambda."
 (define-pel-global-prefix pel:for-elisp  (kbd "<f11> SPC l"))
 (define-pel-global-prefix pel:elisp-skel (kbd "<f11> SPC l <f12>"))
 
-;; bind non skeleton keys to the pel:elisp-skel
-(define-key pel:elisp-skel " " 'pel-tempo-mode)
-
 (define-key pel:for-elisp (kbd "M-p")  #'superword-mode)
 (define-key pel:for-elisp (kbd "<f1>") 'pel-cfg-pkg-elisp)
 (pel--lispy-map-for pel:for-elisp)
@@ -2391,9 +2384,6 @@ This is meant to be used in the d-mode hook lambda."
     "Activate the reStructuredText (rst) mode."
     (pel-local-set-f12 'pel:for-reST)
     (pel--install-rst-skel pel:rst-skel))
-
-  ;; bind non skeleton keys to the pel:rst-skel
-  (define-key pel:rst-skel " " 'pel-tempo-mode)
 
   ;; Add .stxt to the accepted file extensions for rst-mode
   ;; to the ones that are normally used: .rst and .rest
