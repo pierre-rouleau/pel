@@ -78,8 +78,10 @@
 (defvar pel-tempo-minor-mode-map
   (let ((map (make-sparse-keymap)))
     ;; Use the standard go next/previous keys
-    (define-key map "\C-c."    'tempo-forward-mark)
-    (define-key map "\C-c,"    'tempo-backward-mark)
+    (define-key map (kbd "C-c M-f") 'tempo-forward-mark)
+    (define-key map "\C-c."         'tempo-forward-mark)
+    (define-key map (kbd "C-c M-b") 'tempo-backward-mark)
+    (define-key map "\C-c,"         'tempo-backward-mark)
     (when (display-graphic-p)
       (define-key map (kbd "C-c C-.") 'tempo-forward-mark)
       (define-key map (kbd "C-c C-,") 'tempo-backward-mark))
