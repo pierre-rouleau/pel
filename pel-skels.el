@@ -32,7 +32,8 @@
 ;; - `pel-skel-header'
 ;; - `pel-skel-skip-blank'
 ;; - `pel-date'
-;; - `pel-time-stamp'
+;; - `pel-skel-time-stamp'
+;;   - `pel-time-stamp'
 ;; - `pel-skel-purpose-for'
 ;;   >  `pel--skel-last-purpose'
 ;; - `pel-skel-author-comment'
@@ -98,6 +99,14 @@ when `pel-update-time-stamp' is non-nil."
                       (user-full-name))
             "")))
 
+(defun pel-skel-time-stamp (condition &optional comment-prefix event)
+  "Return a time stamp string if CONDITION is non-nil.
+The string starts with `comment-start' unless COMMENT-PREFIX is specified,
+in which case that is used."
+  (when condition
+    (format "%s %s\n"
+            (or comment-prefix comment-start)
+            (pel-time-stamp event "by "))))
 
 ;; --
 ;; Purpose
@@ -152,7 +161,8 @@ in which case that is used.
 The string \"Author    :\" is used unless AUTHOR-WORD is specified, in which
 case that is used.  This can be useful for documentation systems such as
 Erlang's Edoc, where \"@author\" can be specified.
-The author's name follows along with it's email address."
+The author's name follows along with it's email address.
+The returned string ends with a newline."
   (let ((auth-word (or author-word "Author    :"))
         (auth-comment (or comment-prefix comment-start)))
     (format "%s%s %s %s <%s>\n"
@@ -167,9 +177,10 @@ The author's name follows along with it's email address."
 
 ;;-pel-autoload
 (defun pel-skel-created-comment (&optional comment-prefix)
-  "Return a \"Created timestamp\" line.
+  "Return a \"Created timestamp\" line string.
 The line starts with `comment-start' unless COMMENT-PREFIX is specified,
-in which case that is used."
+in which case that is used.
+The returned string ends with a newline."
   (format "%s%s Created   : %s\n"
           (if (pel-line-only-whitespace-p) "" "\n")
           (or comment-prefix comment-start)
