@@ -40,7 +40,7 @@
 
 ;;-pel-autoload
 (defun pel-skels-rst-title-header ()
-  "Insert a reStructuredText file header."
+  "Return a reStructuredText file header tempo list."
   (let ((title (pel-prompt-title))
         (title-entry nil))
     (if (string= title "")
