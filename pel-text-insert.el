@@ -47,13 +47,15 @@
 
 ;; Separator line
 
-;;-pel-autoload
-(defun pel-separator-line (&optional linelen char)
+;;-pel-auto load
+(defun pel-separator-line (&optional linelen char comment-prefix)
   "Return a (commented) line string.
 The number of characters is identified by LINELEN.
 If LINELEN is not specified the buffer's `fill-column' value is used.
 The character used is identified by CHAR, otherwise '-' is used.
-The string starts (and ends if applicable) with the comment character(s).
+The string starts with `comment-start' unless COMMENT-PREFIX is specified,
+in which case that is used.
+The string ends (if applicable) with the comment character(s).
 The string does not end with a newline."
   (let* ((linelen (if linelen
                       (abs (prefix-numeric-value linelen))
@@ -62,15 +64,16 @@ The string does not end with a newline."
          ;; that use single chars like Lisp and Erlang double up these characters
          ;; for comments tart start at the beginning of the line. Other, like
          ;; Python or shells scripting, who use '#' don't.
-         (len-comment-start (length comment-start))
+         (cmt-start (or comment-prefix comment-start))
+         (len-comment-start (length cmt-start))
          (line-comment-start (if (and (= len-comment-start 1)
-                                      (member comment-start '(";" "%")))
-                                 (concat comment-start comment-start)
-                               comment-start))
+                                      (member cmt-start '(";" "%")))
+                                 (concat cmt-start cmt-start)
+                               cmt-start))
          (len-comment-start (length line-comment-start))
          (len-comment-end (length comment-end))
          (has-comment-end (> len-comment-end 1))
-         (comment-start-ends-with-space (pel-ends-with-space-p comment-start))
+         (comment-start-ends-with-space (pel-ends-with-space-p cmt-start))
          (line line-comment-start))
     (unless comment-start-ends-with-space
       (pel-concat-to line " "))
