@@ -1395,6 +1395,58 @@ CC Mode Built-in Styles."
   :type 'string
   :safe 'pel-c-style-valid-p)
 
+;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+(defgroup pel-c-code-style nil
+  "Emacs Lisp Source Code Style options."
+  :group 'pel-pkg-for-c)
+
+(defcustom pel-c-skel-use-separators t
+  "Specifies whether C code block include separators line.
+If nil no separator line comment is used, otherwise separator line
+comments of length controlled by variable `fill-column' are inserted."
+  :group 'pel-c-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-c-skel-insert-file-timestamp t
+  "Specifies whether a timestamp is inserted inside C file header block."
+  :group 'pel-c-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-c-skel-insert-sections t
+  "Specifies whether code sections are inserted inside C file header block."
+  :group 'pel-c-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-c-skel-use-uuid-include-guards t
+  "Specifies whether UUID-based include guards are inserted inside C header file."
+  :group 'pel-c-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-c-skel-with-license nil
+  "Control whether a license text is inserted in C file header.
+
+When t, the licence inserted is controlled by the function `lice' taken
+from the external library with the same name.
+If t this activates `pel-use-lice' if it is not activated already.
+
+The text of the inserted license is selected by the `lice:default-license'
+user option, normally configured inside the directory's '.dir-locals.el'
+file written inside the global setting like this:
+
+   ((nil   .      ((fill-column . 80)
+                   (lice:default-license  . \"gpl-3.0\")
+                   (lice:copyright-holder . \"Your Name\")))
+
+Replace the gpl-3.0 with the license you want and write your name inside
+the copyright holder value."
+  :group 'pel-c-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; C++ Language Support
 ;; --------------------

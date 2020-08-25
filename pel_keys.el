@@ -1802,6 +1802,9 @@ MODE must be a symbol."
 
 (define-pel-global-prefix pel:for-c         (kbd "<f11> SPC c"))
 (define-pel-global-prefix pel:for-c-preproc (kbd "<f11> SPC c #"))
+(define-pel-global-prefix pel:c-skel        (kbd "<f11> SPC c <f12>"))
+
+
 (define-key               pel:for-c         (kbd "<f1>") 'pel-cfg-pkg-c)
 (when pel-use-plantuml
   (define-key             pel:for-c  "u" 'pel-render-commented-plantuml))
@@ -1816,7 +1819,8 @@ MODE must be a symbol."
  '(lambda ()
     (pel--setenv-for-c)
     (pel-local-set-f12-M-f12 'pel:for-c)
-    (pel-local-set-f12-M-f12 'pel:for-c-preproc "#"))
+    (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
+    (pel--install-c-skel      pel:c-skel))
  'c-mode 'c-mode-hook)
 
 ;; -----------------------------------------------------------------------------
@@ -3403,6 +3407,7 @@ the ones defined from the buffer now."
 (define-key pel:insert   "l" 'pel-insert-line)
 (define-key pel:insert   "t" 'pel-insert-iso8601-timestamp)
 (when (or pel-use-lice
+          pel-c-skel-with-license
           pel-elisp-skel-with-license
           pel-erlang-skel-with-license)
   (cl-eval-when 'compile (require 'lice))
