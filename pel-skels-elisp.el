@@ -1,7 +1,7 @@
 ;;; pel-skels-elisp.el --- Tempo skeleton for Emacs Lisp.  -*- lexical-binding: t; -*-
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-08-24 18:33:32, updated by Pierre Rouleau>
+;; Time-stamp: <2020-08-24 22:08:43, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -95,7 +95,7 @@ Otherwise return a string that ends with a newline."
         (libname (pel-current-buffer-filename :sans-directory :sans-extension)))
     (list
      'l
-     ";;; " fname " --- " purpose "  -*- lexical-binding: t; -*-" 'n
+     ";;; " fname " --- " purpose "  -*- lexical-binding: t; -*-" 'n 'n
      (pel-skel-created-comment ";;")
      (pel-skel-author-comment  ";;")
      (pel-skel-time-stamp pel-elisp-skel-insert-file-timestamp ";;") 'n
