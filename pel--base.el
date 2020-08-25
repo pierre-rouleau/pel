@@ -63,6 +63,9 @@
 ;; - `pel-end-text-with-period'
 ;; - `pel-hastext'
 ;;
+;; Value check:
+;; - `pel-use-or'
+;;
 ;; Operations on sequences:
 ;;  - `pel-concat-strings-in-list'
 ;;
@@ -327,6 +330,24 @@ Return empty string if TEXT is the empty string."
 (defun pel-hastext (string)
   "Return t if STRING hold text, nil otherwise."
   (not (string= string "")))
+
+;; -----------------------------------------------------------------------------
+;; Value check
+;; -----------
+
+(defun pel-use-or (value check-function alternative)
+  "Return VALUE if (CHECK-FUNCTION VALUE) is non-nil, else return ALTERNATIVE.
+
+Example:
+
+    ELISP> (pel-use-or \"abc\" (function pel-hastext) 9)
+    \"abc\"
+    ELISP> (pel-use-or \"\" (function pel-hastext) 9)
+    9 (#o11, #x9, ?\C-i)
+    ELISP> "
+  (if (funcall check-function value)
+      value
+    alternative))
 
 ;; -----------------------------------------------------------------------------
 ;; Operations on sequences
