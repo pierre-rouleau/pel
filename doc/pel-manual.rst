@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-19 21:13:23, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-25 08:08:17, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2515,8 +2515,17 @@ PEL Text Insertion Utilities
 ----------------------------
 
 :PDF Docs: `Inserting Text`_.
-:PEL Customization: ``pel-use-lice``.
+:PEL Customization: - ``pel-use-lice``.
+                    - ``pel-use-smart-dash``
+                    - ``pel-use-yasnippet``
+                    - ``pel-use-yasnippet-snippets``
+                    - **pel-c-code-style-group**
+                    - **pel-elisp-code-style-group**
+                    - **pel-erlang-code-style-group**
+
 :PEL Key Prefix: **pel:insert** : ``<f11> i``
+                 **pel:yasnippet** : ``<f11> y``
+
 
 The file `pel-text-insert.el`_ provides a few commands to insert some text
 quickly.  PEL does not yet integrate the support of one or several of the great
@@ -2545,6 +2554,67 @@ having to press the Shift key.   And for programming languages identified by the
 The PEL binding include more commands, some are Emacs standard commands, other
 are from other packages.  All are listed in the `Inserting Text`_ PDF
 documentation.
+
+Template Text Insertion
+~~~~~~~~~~~~~~~~~~~~~~~
+
+PEL supports two different template mechanisms: the Emacs built-in tempo skeleton
+system and the popular yasnippet_ external library.
+
+Using Tempo Skeleton
+^^^^^^^^^^^^^^^^^^^^
+
+PEL implements tempo skeletons for several major modes:
+
+- c,
+- erlang,
+- emacs lisp,
+- reStructuredText.
+
+The PEL tempo skeletons implement relatively large templates like file header
+blocks that insert the boiler plate code for a given type of file.  The format
+of most of these templates are controlled by PEL user options that control
+things like:
+
+- Prompt of file and function purpose
+- Insertion of comment documentation formatting like Edoc and Doxygen
+- Insertion of code block separator lines
+- Insertion of automatically updated file timestamp
+- Insertion of open source code license
+- Use and generation of unique C file header include guard (with UUIDs)
+
+PEL binds keys to the commands that insert and expand tempo skeletons: they are
+bound to major mode specific ``<f12> <f12>`` key sequence, trying to use the
+same sequence for a concept in all supported modes.  For example the key
+sequence ``<f12> <f12> C-h`` inserts a file header in the supported modes but
+does it differently for each mode.
+
+Since user options are used to control the format of the tempo skeleton
+templates, you can set the format globally using customization (use the ``<f12>
+<1>`` key sequence to quickly gain access to customization of the current mode).
+You can also control the format of all files in a directory tree by storing the
+relevant user options inside a ``.dir-locals.el`` file or control a single file
+by setting the user options as Emacs file variable.
+
+The tempo skeletons commands for each supported mode are described in the PDF
+document of the relevant mode.
+
+
+Using YASnippet
+^^^^^^^^^^^^^^^
+
+PEL also supports the popular yasnippet_ templating system and the official
+yasnippet-snippets_ templates when the ``pel-use-yasnippet`` and
+``pel-use-yasnippet-snippets`` user options are set to **t**.  If you want
+yasnippet_ activated when Emacs starts set the ``pel-use-yasnippet`` user option
+to **use-from-start** otherwise you can activate (and de-activate) the YASnippet
+minor mode by using the ``<f11> y y`` key sequence.
+
+Aside from keys to manage snippets, bound inside the **pel:yasnippet** key
+prefix (``<f11> y``) PEL does not provide any special binding to YASnippet: just
+type the snippet name abbreviation (called the Yasnippet *key*) and hit the tab
+key to expand.
+
 
 
 PEL Text Transformation Utilities
@@ -4237,6 +4307,8 @@ vline_                        Emacsmirror_
 vterm_                        MELPA_
 which-key_                    MELPA_
 `xr`_                         ELPA_
+yasnippet_                    MELPA_
+yasnippet-snippets_           MELPA_
 ztree_                        MELPA_
 ============================= ==========================
 
@@ -4342,6 +4414,8 @@ when running Emacs 27.1 and later versions.
 .. _vline:                     https://www.emacswiki.org/emacs/VlineMode
 .. _vterm:                     https://melpa.org/#/vterm
 .. _xr:                        https://elpa.gnu.org/packages/xr.html
+.. _yasnippet:                 https://melpa.org/#/yasnippet
+.. _yasnippet-snippets:        https://melpa.org/#/yasnippet-snippets
 .. _ztree:                     https://melpa.org/#/ztree
 .. _Emacsmirror:               https://github.com/emacsmirror
 
