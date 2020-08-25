@@ -95,6 +95,8 @@
     (vterm               "20200418.1610")
     (which-key           "20200216.1350") ; melpa. Melpa-table : 3.4.0
     (xr                  "1.19")          ; gnu
+    (yasnippet           "20200604.246")  ; melpa
+    (yasnippet-snippets  "20200802.1658") ; melpa
     (ztree               "20191108.2234")); melpa.
 
   :url "https://github.com/pierre-rouleau/pel"
