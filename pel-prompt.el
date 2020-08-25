@@ -224,19 +224,25 @@ returns the value returned by (ACTION selected-value) evaluation."
 ;; -----------------------------------------------------------------------------
 ;; Prompt for purpose and function names
 
-(defun pel-prompt-purpose-for (item)
+(defun pel-prompt-purpose-for (item &optional default)
   "Prompt for ITEM purpose and return adjusted user input string.
 The returned string is trimmed, its first letter is capitalized
 and is terminated by a period.
-Holds an independent prompt history for each ITEM."
+Holds an independent prompt history for each ITEM.
+If the user hit returns and does not enter anything at the prompt
+the function returns an empty string if DEFAULT is nil, otherwise it
+returns DEFAULT"
   (let ((history-symbol (intern
                          (format
                           "pel-prompt-history-for-purpose-%s" item)))
         (prompt-text    (format "%s purpose: " item)))
-  (pel-end-text-with-period
-   (pel-capitalize-first-letter
-    (string-trim
-     (read-from-minibuffer prompt-text nil nil nil history-symbol))))))
+    (pel-use-or
+     (string-trim
+      (read-from-minibuffer prompt-text nil nil nil history-symbol))
+     (function pel-hastext)
+     default
+     (function pel-capitalize-first-letter)
+     (function pel-end-text-with-period))))
 
 (defun pel-prompt-function (&optional transform-function)
   "Prompt for function and return potentially transformed input string.
