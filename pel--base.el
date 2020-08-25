@@ -335,8 +335,14 @@ Return empty string if TEXT is the empty string."
 ;; Value check
 ;; -----------
 
-(defun pel-use-or (value check-function alternative)
+(defun pel-use-or (value check-function alternative &rest transform-functions)
   "Return VALUE if (CHECK-FUNCTION VALUE) is non-nil, else return ALTERNATIVE.
+If there are any TRANSFORM-FUNCTIONS return a transformed VALUE by calling the
+first function with VALUE as argument and then the second, etc...
+For example, if t1, t2 and t3 are specified , the returned value is the result
+of the following call sequence:
+
+(t1 (t2 (t3 VALUE))
 
 Example:
 
@@ -344,9 +350,22 @@ Example:
     \"abc\"
     ELISP> (pel-use-or \"\" (function pel-hastext) 9)
     9 (#o11, #x9, ?\C-i)
+    ELISP>
+
+And with transformation functions:
+
+    ELISP> (pel-use-or \"abc\" (function pel-hastext) 0
+                       (function pel-capitalize-first-letter)
+                       (function pel-end-text-with-period))
+    \"Abc.\"
+    ELISP> (pel-use-or \"\" (function pel-hastext) 0
+                       (function pel-capitalize-first-letter)
+                       (function pel-end-text-with-period))
+    0 (#o0, #x0, ?\C-@)
     ELISP> "
   (if (funcall check-function value)
-      value
+      (dolist (transform-fun transform-functions value)
+        (setq value (funcall transform-fun value)))
     alternative))
 
 ;; -----------------------------------------------------------------------------
