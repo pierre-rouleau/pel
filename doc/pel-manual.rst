@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-26 15:34:35, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-26 15:39:14, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -867,7 +867,7 @@ moment you want without having to change and reload your Emacs initialization co
 
 The management of completion mode is provided by the `pel-completion`_ file.
 
-See the `Customization <pdf/customize.pdf>`_ PDF file for more information.
+See the `Customization <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf>`_ PDF file for more information.
 
 
 PEL Configuration/Customization Support
@@ -1983,7 +1983,7 @@ PEL provides explicit support for the following
 PEL Common Lisp Support
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-:PDF Docs: `Common Lisp <pdf/pl-common-lisp.pdf>`_.
+:PDF Docs: `Common Lisp <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-common-lisp.pdf>`_.
 :PEL Customization: - Group: ``pel-pkg-for-clisp``
 
                       - Activation:    ``pel-use-common-lisp``.
@@ -2009,7 +2009,7 @@ inside this directory and Emacs can access them locally.
 PEL Emacs Lisp Support
 ^^^^^^^^^^^^^^^^^^^^^^
 
-:PDF Docs: `Emacs Lisp <pdf/pl-emacs-lisp.pdf>`_, `ERT <pdf/ert.pdf>`_ .
+:PDF Docs: `Emacs Lisp <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-emacs-lisp.pdf>`_, `ERT <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/ert.pdf>`_ .
 :PEL Customization: - Group: ``pel-pkg-for-elisp``
 
                       - Activation: (*none* to use Emacs Lisp), but there are
@@ -3077,7 +3077,7 @@ PDF Document Tables
 #. `Comments`_
 #. Completion: `Input Completion`_
 #. `Cursor`_
-#. `Customization <pdf/customize.pdf>`_.
+#. `Customization <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf>`_.
 #. `Counting`_
 #. Cross-Referencing: `Etags-based Cross-Reference`_
 #. `Cut, Delete, Copy and Paste`_ (killing and yanking)
@@ -3137,22 +3137,22 @@ PDF Document Tables
 #. `Apple-Script`_
 #. Curly-bracket Languages
 
-   - `C <pdf/pl-c.pdf>`_
-   - `C++ <pdf/pl-c++.pdf>`_
-   - `D <pdf/pl-d.pdf>`_
+   - `C <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c.pdf>`_
+   - `C++ <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c++.pdf>`_
+   - `D <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-d.pdf>`_
 
 #. BEAM-VM Languages
 
-   - `Erlang <pdf/pl-erlang.pdf>`_ (🚧 under development)
+   - `Erlang <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf>`_ (🚧 under development)
    - Elixir (🚧 under development)
    - LFE (🚧 under development)
 
 #. Lisp Languages
 
-   - `Common Lisp <pdf/pl-common-lisp.pdf>`_
-   - `Emacs Lisp <pdf/pl-emacs-lisp.pdf>`_
+   - `Common Lisp <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-common-lisp.pdf>`_
+   - `Emacs Lisp <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-emacs-lisp.pdf>`_
 
-     - `ERT <pdf/ert.pdf>`_ (Emacs Lisp Regression Testing system)
+     - `ERT <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/ert.pdf>`_ (Emacs Lisp Regression Testing system)
 
 **Version Control Systems:**
 
