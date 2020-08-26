@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-26 15:29:32, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-26 15:34:35, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2053,7 +2053,7 @@ required..  Support for the others is minimal for the moment.
 PEL Support for Erlang
 ^^^^^^^^^^^^^^^^^^^^^^
 
-:PDF Docs: `Erlang <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pdf/pl-erlang.pdf>`_
+:PDF Docs: `Erlang <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-erlang``.  Use ``<f21> <f1>`` from and erlang mode buffer.
 
                       - Activation:
@@ -2077,7 +2077,7 @@ buffer in erlang major mode to quickly gain access to the buffer to see and/or
 change those variables).
 Refer to the `PEL Erlang PDF`_ document for more information.
 
-.. _PEL Erlang PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pdf/pl-erlang.pdf
+.. _PEL Erlang PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf
 
 PEL Support for Curly-Bracket Programming Languages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2094,7 +2094,7 @@ PEL provides explicit support for the following
 PEL Support For C
 ^^^^^^^^^^^^^^^^^
 
-:PDF Docs: `C <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pdf/pl-c.pdf>`_
+:PDF Docs: `C <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-c``
 
                       - Activation: *none*
@@ -2124,7 +2124,7 @@ on which the c-mode is based via the **pel:for-c** key-map, bounded to the
 PEL Support For C++
 ^^^^^^^^^^^^^^^^^^^
 
-:PDF Docs: `C++ <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pdf/pl-c++.pdf>`_
+:PDF Docs: `C++ <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c++.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-c++``
 
                       - Activation: *none*
@@ -2154,7 +2154,7 @@ on which the c++-mode is based via the **pel:for-c++** key-map, bounded to the
 PEL Support For D
 ^^^^^^^^^^^^^^^^^
 
-:PDF Docs: `D <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pdf/pl-d.pdf>`_
+:PDF Docs: `D <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-d.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-d``
 
                       - Activation: ``pel-use-d``
