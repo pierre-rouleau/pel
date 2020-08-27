@@ -51,6 +51,9 @@
 ;;   > `pel-erlang-skel-function'
 ;;     - `pel--erlang-skel-function'
 ;;       - `pel-prompt-erlang-function'
+;;         - `pel-erlang-valid-function-name'
+;;       - `pel-prompt-erlang-args'
+;;         - `pel--erlang-args-transform'
 ;;   > `pel-erlang-skel-spec'
 ;;   > `pel-skel-file-created'
 
@@ -235,23 +238,40 @@ Please see the function `tempo-define-template'.")
 ;; --
 ;; Insert an Erlang function
 
-(defun pel--erlang-transform (text)
-  "Transform function name and argument names passed in TEXT.
-Replaces dash by underscore."
-  (replace-regexp-in-string "-" "_" text))
+(defun pel-erlang-valid-function-name (text)
+  "Validate Erlang function name passed in TEXT.
+Return nil if TEXT is not a valid Erlang function name,
+return TEXT (potentially modified) if it is.
+Accepts names that have the syntax of Erlang atoms.
+Whitespace is trimmed off the beginning and end of TEXT.
+If TEXT is not enclosed withing single quotes, the dash characters are
+replaced by underscores to help typing."
+  (let ((text (string-trim text)))
+    (if (and (string= (substring text 0 1) "'")
+             (string= (substring text -1)  "'"))
+        text
+      (let ((text (replace-regexp-in-string "-" "_" text)))
+        (when (string-match "\\`[a-z][a-zA-Z0-9_@]*\\'" text)
+          text)))))
 
 (defun pel-prompt-erlang-function ()
   "Prompt for an Erlang function.
 Replace dash by underscore in typed name.
 Maintain and prompt history."
-  (pel-prompt-function (function pel--erlang-transform)))
+  (pel-prompt-function (function pel-erlang-valid-function-name)))
+
+(defun pel--erlang-args-transform (text)
+  "Transform argument TEXT string.
+Return TEXT trimmed off whitespace at the beginning and end,
+and replace dash with underscores."
+  (string-trim (replace-regexp-in-string "-" "_" text)))
 
 (defun pel-prompt-erlang-args ()
   "Prompt for Erlang function arguments.
 Expect comma-separated arguments.
 Replace dash by underscore in typed name.
 Maintain and prompt history."
-  (pel-prompt-args (function pel--erlang-transform)))
+  (pel-prompt-args (function pel--erlang-args-transform)))
 
 (defun pel--erlang-skel-function ()
   "Return a skeleton list for Erlang function.
@@ -265,7 +285,7 @@ Insert Edoc markup if specified by customization."
                           (pel-prompt-erlang-args)
                         ""))
          (purpose     (if (pel-erlang-skel-prompt-for-function-purpose-p)
-                          (pel-prompt-purpose-for "Function")
+                          (pel-prompt-purpose-for "Function" 'p)
                         ""))
          (fname-val   (if (pel-hastext fname) fname 'p))
          (purpose-val (if (pel-hastext purpose) purpose 'p)))
