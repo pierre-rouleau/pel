@@ -1390,7 +1390,21 @@ Values in the [2, 8] range are accepted."
 PEL stores this value associated with the `c-mode' into the
 `c-default-style' user option variable.
 If you want to use something else, please select one of the
-CC Mode Built-in Styles."
+CC Mode Built-in Styles, which include the following:
+- gnu
+- k&r
+- bsd
+- whitesmith
+- stroustrup
+- ellemtel
+- linux
+- python
+- java
+- awk
+- user
+
+See URL https://www.gnu.org/software/emacs/manual/html_node/ccmode/Built_002din-Styles.html#Built_002din-Styles
+for more details."
   :group 'pel-pkg-for-c
   :type 'string
   :safe 'pel-c-style-valid-p)
@@ -1414,11 +1428,60 @@ comments of length controlled by variable `fill-column' are inserted."
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-c-skel-insert-sections t
-  "Specifies whether code sections are inserted inside C file header block."
+(defcustom pel-c-skel-use-uuid-include-guards t
+  "Specifies whether UUID-based include guards are inserted inside C header file."
   :group 'pel-c-code-style
   :type 'boolean
   :safe #'booleanp)
+
+(defcustom pel-c-skel-insert-module-sections t
+  "Specifies whether code sections are inserted inside C file comment block.
+This includes the \"Module Description\" section and sections
+with titles identified by the variable `pel-c-skel-module-section-titles'."
+  :group 'pel-c-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-c-skel-module-section-titles '("Header Inclusion"
+                                              "Local Types"
+                                              "Local Variables"
+                                              "Code")
+  "List of section titles to add in the module comment block.
+These section names are added when the variable `pel-c-skel-insert-module-sections'
+is t, after the \"Module Description\" section. The sections are placed inside the
+module documentation block in the order of appearance in the list
+with the string as it appears in the list.
+The default is to add the following sections:
+
+- Header Inclusion,
+- Local Types,
+- Local Variables,
+- Code.
+
+Empty strings can be used to specify section with a tempo marker with no text."
+  :group 'pel-c-code-style
+  :type '(repeat string))
+
+
+(defcustom pel-c-skel-insert-function-sections t
+  "Specifies whether code sections are inserted inside C function comment block.
+This includes the DESCRIPTION section and sections with titles identified by
+the variable `pel-c-skel-function-section-titles'."
+  :group 'pel-c-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-c-skel-function-section-titles '("DIAGNOSTIC"
+                                                "SEE ALSO")
+  "List of section titles to add in the function comment block.
+These section names are added when the variable `pel-c-skel-insert-function-sections'
+is t, after the DESCRIPTION section. The sections are placed inside the
+function documentation block in the order of appearance in the list
+with the string as it appears in the list.
+The default is to add the sections DIAGNOSTIC and SEE ALSO.
+Empty strings can be used to specify section with a tempo marker with no text."
+  :group 'pel-c-code-style
+  :type '(repeat string))
 
 (defcustom pel-c-skel-use-uuid-include-guards t
   "Specifies whether UUID-based include guards are inserted inside C header file."
@@ -1443,6 +1506,47 @@ file written inside the global setting like this:
 
 Replace the gpl-3.0 with the license you want and write your name inside
 the copyright holder value."
+  :group 'pel-c-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-c-function-define-style nil
+  "Specifies the style of C function definition comment blocks.
+Several styles are provided with ability to load a style from
+a separately provided skeleton file."
+  :group 'pel-c-code-style
+  :type '(choice
+          (const :tag "No documentation block created." nil)
+          (const :tag "Basic documentation block above function definition." basic-style)
+          (const :tag "Man-style documentation block above function definition." man-style)
+          (const :tag "Documentation block with Doxygen markup." doxygen-style)
+          (string :tag "Use your own! The pel-custom-c-function-block defun located in specified .el file:")))
+
+(defcustom pel-c-function-name-on-first-column nil
+  "Set whether defined function name is on the beginning of the line.
+If non-nil, the return type of a function definition is located
+on a line by itself, above the function name that starts at the
+beginning of next line.  When nil, the return type of the
+function definition is located on the same line as the function
+name.
+
+For example, if t, the style is:
+
+int*
+some_function(int some_arg)
+{
+   some_code();
+}
+
+If the value is nil, the style is this instead:
+
+int* some_function(int some_arg)
+{
+   some_code();
+}
+
+This affects all styles specified by variable `pel-c-function-define-style'
+potentially except the user defined ones, which could use that variable too."
   :group 'pel-c-code-style
   :type 'boolean
   :safe #'booleanp)
@@ -2083,7 +2187,6 @@ When set to non-nil, 3 packages are used:
   :group 'pel-pkg-for-markup
   :type 'boolean
   :safe #'booleanp)
-
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; reStructuredText support
