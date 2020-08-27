@@ -2,92 +2,47 @@
 pel -- Pragmatic Environment Library for Emacs
 ==============================================
 
-PEL is a hybrid package. It is:
+- Tired of writing Emacs configuration code? 🤯
+- Ever declared .emacs bankruptcy? 😰
+- Don't want to spend your time writing Emacs Lisp code? 😳
+- Want to learn Emacs? 😇
 
-- an Emacs key binding documentation project
-  (see `Key Bindings Documentation`_),
-- a collection of `PEL convenience features`_ which:
+PEL might be for you!
 
-  - are implemented in several mostly independent files,
-  - have key bindings mostly using the function keys to provide
-    key map trees that do not interfere with standard Emacs key bindings,
-  - provide access to several other external Emacs packages
-    (see `Credits`_)
-    but via
-    `PEL Customization`_ to selectively configure, enable and activate
-    these features.
+PEL is an Emacs configuration system that allows you to pick and choose what you
+want to use via `Emacs easy customization`_ system.
 
-    - This conforms to the
-      `Emacs easy customization`_ system and reduces your need
-      to write custom Emacs Lisp configuration code.
+It integrates a large and growing set of built-in and external Emacs packages,
+and adds a large number of key bindings that do not interfere with the standard
+Emacs key bindings.
+
+You select the packages you want to use via the `PEL Customization`_ and PEL's
+code controls the loading of the required packages, with an emphasis of reducing
+the Emacs initialization time to a minimum.
+
+PEL also implements its own `PEL convenience features`_ sometimes extending or
+integrating existing packages.
+
+And PEL comes with lots of documentation:
+
+- `PEL's Manual`_,
+- `Key Bindings Documentation`_, a large set of PDF *semi-quick sheets*, each
+  one is about a specific editing topic or Emacs mode or package, describing all
+  related Emacs, package, and PEL specific key bindings and the related Emacs
+  command, with lots of hyperlinks to Emacs manual documentation, external
+  packages and articles.
+
+PEL would not exist without the great software available for Emacs listed in the
+`Credits`_ section of the manual_.
+
+
+.. links
 
 .. _Emacs easy customization:
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
-
-
-PEL provides:
-
-- A set of already-written configuration for fast loading of several
-  useful Emacs packages with:
-
-  - Package activation done through  `Emacs easy customization`_ system,
-    see `PEL customization`_.  No extra Emacs Lisp code needed.
-  - Extensive use of auto-loading and deferred loading techniques to speed
-    up Emacs initialization time.
-
-- Dynamic control of several packages and their commands.
-  For example, PEL support both `auto-complete`_ and `company`_ auto-completion
-  packages, providing commands to activate one mode in a buffer and
-  another mode inside another and while preventing dual use in a buffer.
-- `PEL key bindings`_ avoid modification of most Emacs keys, instead
-  PEL uses several function keys (**F2**, **F5**, **F6**, **F11** and **F12**)
-  as described in the section titled `PEL Function Keys Bindings`_.
-- `PEL convenience features`_ include:
-
-  - The key-bindings under **F6**, **F11** and **F12** function keys.
-  - A set of small Emacs Lisp files that implement
-    PEL's features that deal with several
-    aspects of Emacs like windows and frame, scrolling control,  buffer,
-    navigation, opening files
-    or web pages from file name or URL at point, numeric keypad handling,
-    etc...
-
-    - Note that these files can be used as *mostly*
-      independent Emacs Lisp *libraries* if you prefer to use a specific
-      PEL features without PEL's key bindings.
-
-- Several `PDF Document Tables`_ that describe the key bindings for
-  specific topics.
-  Each table provides an overview, related Emacs,
-  external packages and PEL command descriptions and key bindings
-  and links to related on-line documents.
-
-You can either start PEL during Emacs initialization by including the
-following Emacs Lisp code inside your `Emacs initialization file`_ :
-
-.. code:: elisp
-
-      (require 'pel)
-      (pel-init)
-
-You can place you own customization after the call to ``pel-init``.
-This way you can overwrite specific PEL's key bindings if needed.
-
-You can also can start or re-start PEL interactively by typing::
-
-  M-x pel-init
-
-
 .. _Emacs initialization file: https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html#Init-File
 
-
-
-
-
-More information is available in `PEL's Manual`_.
-
-.. links:
-
+.. _manual:
 .. _PEL's Manual:               doc/pel-manual.rst
 .. _Key Bindings Documentation: doc/pel-manual.rst#key-bindings-documentation
 .. _PEL convenience features:   doc/pel-manual.rst#pel-convenience-features
