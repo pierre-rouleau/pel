@@ -62,6 +62,8 @@
 ;; - `pel-capitalize-first-letter'
 ;; - `pel-end-text-with-period'
 ;; - `pel-hastext'
+;; - `pel-when-text-in'
+;; - `pel-string-spread'
 ;;
 ;; Value check:
 ;; - `pel-use-or'
@@ -113,6 +115,11 @@
 ;; Check text from buffer
 ;; - `pel-line-has-only-whitespace-p'
 
+;; -----------------------------------------------------------------------------
+;;; Dependencies:
+(eval-when-compile (require 'subr-x))   ; use: split-string
+
+;; -----------------------------------------------------------------------------
 ;;; Code:
 
 ;; -----------------------------------------------------------------------------
@@ -310,6 +317,8 @@ MODE is the mode symbol."
 ;; - `pel-capitalize-first-letter'
 ;; - `pel-end-text-with-period'
 ;; - `pel-hastext'
+;; - `pel-when-text-in'
+;; - `pel-string-spread'
 
 (defun pel-capitalize-first-letter (text)
   "Return TEXT with first character up-cased, all other unchanged.
@@ -330,6 +339,34 @@ Return empty string if TEXT is the empty string."
 (defun pel-hastext (string)
   "Return t if STRING hold text, nil otherwise."
   (not (string= string "")))
+
+(defun pel-when-text-in (string value)
+  "Return VALUE if STRING is a non-empty string.
+Otherwise return nil."
+  (unless (string= string "")
+    value))
+
+(defun pel-string-or-nil (string)
+  "Return a non-empty string unchanged, nil if string is empty."
+  (if (string= string "")
+      nil
+    string))
+
+(defun pel-string-spread (string &optional separator)
+  "Return STRING with characters separated by SEPARATOR.
+SEPARATOR is a string and defaults to a single space.
+
+Example:
+
+    ELISP> (pel-string-spread \"abcdef\")
+    \"a b c d e f\"
+    ELISP> (pel-string-spread \"abcdef\" \".\")
+    \"a.b.c.d.e.f\"
+    ELISP> (pel-string-spread \"abcdef\" \"--\")
+    \"a--b--c--d--e--f\"
+    ELISP> "
+  (string-join (cdr (butlast (split-string string "")))
+               (or separator " ")))
 
 ;; -----------------------------------------------------------------------------
 ;; Value check
