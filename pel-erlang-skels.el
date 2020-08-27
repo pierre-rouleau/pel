@@ -103,6 +103,7 @@
 ;;                            ;      pel-tempo-include
 ;;                            ;      pel-tempo-include-when
 (require 'pel-skels)
+(eval-when-compile (require 'subr-x)) ; use: string-trim
 
 ;; -----------------------------------------------------------------------------
 ;;; Code:
