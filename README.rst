@@ -3,7 +3,7 @@ pel -- Pragmatic Environment Library for Emacs
 ==============================================
 
 - Tired of writing Emacs configuration code? 🤯
-- Ever declared .emacs bankruptcy? 😰
+- Ever declared `.emacs bankruptcy`_? 😰
 - Don't want to spend your time writing Emacs Lisp code? 😳
 - Want to learn Emacs? 😇
 
@@ -35,13 +35,15 @@ And PEL comes with lots of documentation:
 PEL would not exist without the great software available for Emacs listed in the
 `Credits`_ section of the manual_.
 
+PEL is still evolving, with new packages being integrated, new documentation
+created and new features developed.  Comments, criticism (constructive of
+course) suggestions are always welcome.  Drop me a note in the wiki_!
 
 .. links
 
 .. _Emacs easy customization:
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
 .. _Emacs initialization file: https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html#Init-File
-
 .. _manual:
 .. _PEL's Manual:               doc/pel-manual.rst
 .. _Key Bindings Documentation: doc/pel-manual.rst#key-bindings-documentation
@@ -51,11 +53,12 @@ PEL would not exist without the great software available for Emacs listed in the
 .. _PEL key bindings:           doc/pel-manual.rst#pel-key-bindings
 .. _PDF Document tables:        doc/pel-manual.rst#pdf-document-tables
 .. _PEL Function Keys Bindings: doc/pel-manual.rst#pel-function-keys-bindings
-
 .. _auto-complete:              https://melpa.org/#/auto-complete
 .. _company:                    https://melpa.org/#/company
 .. _visible bookmarks:          https://melpa.org/#/bm
 .. _which-key:                  https://elpa.gnu.org/packages/which-key.html
+.. _.emacs bankruptcy:          https://www.emacswiki.org/emacs/DotEmacsBankruptcy
+.. _wiki:                       https://github.com/pierre-rouleau/pel/wiki
 
 
 ..
