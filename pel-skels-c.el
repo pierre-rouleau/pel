@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-08-27 17:15:18, updated by Pierre Rouleau>
+;; Time-stamp: <2020-08-27 18:11:56, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -185,7 +185,7 @@ names using underscores."
 This begins with an optional separator line, the name of the function spread
 and underlined with its purpose on the same line.
 This style is selected when the user option variable
-`pel-c-function-define-style' is set to the value man-style.
+`pel-c-skel-function-define-style' is set to the value man-style.
 The comment style is controlled by the CC mode variable `c-block-comment-flag'."
   (let* ((fct-name        (pel-prompt-function (function pel-valid-c-function-name)))
          (purpose         (pel-prompt-purpose-for "Function" 'p))
@@ -214,7 +214,7 @@ The comment style is controlled by the CC mode variable `c-block-comment-flag'."
                               cc " " 'p 'n
                               cc 'n)))
          (pel-append-to sk (list ce 'n 'n))))
-     (if pel-c-function-name-on-first-column
+     (if pel-c-skel-function-name-on-first-column
          (list 'l
                'p "void" 'n
                fct-name)
@@ -236,16 +236,16 @@ The comment style is controlled by the CC mode variable `c-block-comment-flag'."
 (defun pel-skels-c-function-definition ()
   "Insert a tempo skeleton for the insertion of a C function definition.
 Insert the skeleton selected by the user option variable
-`pel-c-function-define-style'."
-  (cond ((not pel-c-function-define-style)
+`pel-c-skel-function-define-style'."
+  (cond ((not pel-c-skel-function-define-style)
          (list 'l 'p))
-        ((eq pel-c-function-define-style 'basic-style)
+        ((eq pel-c-skel-function-define-style 'basic-style)
          (pel--skels-c-function-def-basic))
-        ((eq pel-c-function-define-style 'man-style)
+        ((eq pel-c-skel-function-define-style 'man-style)
          (pel--skels-c-function-def-man))
-        ((eq pel-c-function-define-style 'doxygen-style)
+        ((eq pel-c-skel-function-define-style 'doxygen-style)
          (pel--skels-c-function-def-doxygen))
-        (t (if (and (load pel-c-function-define-style :noerror)
+        (t (if (and (load pel-c-skel-function-define-style :noerror)
                     (fboundp 'pel-custom-c-function-block))
                (pel-custom-c-function-block)
              (user-error

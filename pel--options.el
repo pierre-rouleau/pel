@@ -1510,7 +1510,7 @@ the copyright holder value."
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-c-function-define-style nil
+(defcustom pel-c-skel-function-define-style nil
   "Specifies the style of C function definition comment blocks.
 Several styles are provided with ability to load a style from
 a separately provided skeleton file."
@@ -1522,7 +1522,7 @@ a separately provided skeleton file."
           (const :tag "Documentation block with Doxygen markup." doxygen-style)
           (string :tag "Use your own! The pel-custom-c-function-block defun located in specified .el file:")))
 
-(defcustom pel-c-function-name-on-first-column nil
+(defcustom pel-c-skel-function-name-on-first-column nil
   "Set whether defined function name is on the beginning of the line.
 If non-nil, the return type of a function definition is located
 on a line by itself, above the function name that starts at the
@@ -1545,7 +1545,7 @@ int* some_function(int some_arg)
    some_code();
 }
 
-This affects all styles specified by variable `pel-c-function-define-style'
+This affects all styles specified by variable `pel-c-skel-function-define-style'
 potentially except the user defined ones, which could use that variable too."
   :group 'pel-c-code-style
   :type 'boolean
