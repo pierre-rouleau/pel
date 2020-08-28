@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-28 10:49:03, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-28 11:10:53, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2129,6 +2129,10 @@ templating system but requires Emacs Lisp knowledge.  PEL provides a set of
 tempo skeleton templates inside the file `pel-c-skels.el`_ that are made
 available by the commands accessed via the ``pel:c-skel`` key prefix which is
 mapped to the ``<f12> <f12>`` key sequence in any c-mode buffer.
+
+See the
+`C PDF<https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c.pdf>`_
+and related tables for more information on the various key sequences available.
 
 C file header/module block template
 ***********************************
