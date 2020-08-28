@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-26 15:39:14, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-27 23:06:51, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2120,6 +2120,164 @@ on which the c-mode is based via the **pel:for-c** key-map, bounded to the
 
 .. _C Programming Language: https://en.wikipedia.org/wiki/C%2B%2B
 
+C Code Templates
+++++++++++++++++
+
+PEL supports yasnippet_ for your basic templating needs.
+It also supports the built-in tempo skeleton system which provides a powerful
+templating system but requires Emacs Lisp knowledge.  PEL provides a set of
+tempo skeleton templates inside the file `pel-c-skels.el`_ that are made
+available by the commands accessed via the ``pel:c-skel`` key prefix which is
+mapped to the ``<f12> <f12>`` key sequence in any c-mode buffer.
+
+C File header/module block template
+***********************************
+
+Insert a C file header block with the ``<f12> <f12> C-h`` key sequence.
+It will prompt for the [purpose of the file.  Then insert the comment block at
+the beginning of the C file according to the user options that are part of the
+``pel-c-code-style`` customization group.
+
+In a .c C file
+>>>>>>>>>>>>>>
+
+For example, with block style comments, with the default values for everything
+and ``pel-c-skel-with-license`` set to **t** and the ``lice:default-license``
+set to ``"gpl-3.0"`` executing this command at the top of the ``monitor.c``
+file, the command prompts for the file purpose and assuming you type
+``process monitoring facilities`` the command inserts the following code
+(but with your email address as identified by your Emacs settings)
+in the buffer:
+
+.. code:: c
+
+          /* C MODULE: monitor.c
+          **
+          ** Purpose   : Process monitoring facilities.
+          ** Created   : Thursday, August 27 2020.
+          ** Author    : Pierre Rouleau <your-email@here.yougo>
+          ** Time-stamp: <2020-08-27 22:28:12, by Pierre Rouleau>
+          **
+          ** Copyright (C) 2020  Pierre Rouleau
+          **
+          ** This program is free software: you can redistribute it and/or modify
+          ** it under the terms of the GNU General Public License as published by
+          ** the Free Software Foundation, either version 3 of the License, or
+          ** (at your option) any later version.
+          **
+          ** This program is distributed in the hope that it will be useful,
+          ** but WITHOUT ANY WARRANTY; without even the implied warranty of
+          ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+          ** GNU General Public License for more details.
+          **
+          ** You should have received a copy of the GNU General Public License
+          ** along with this program.  If not, see <http://www.gnu.org/licenses/>.
+          **
+          */
+          /* ------------------------------------------------------------------------ */
+          /* Module Description
+          ** ------------------
+          **
+          ** Ⓜ
+          **
+          */
+
+          /* ------------------------------------------------------------------------ */
+          /* Header Inclusion
+          /* ----------------
+          */
+
+          Ⓜ
+
+          /* ------------------------------------------------------------------------ */
+          /* Local Types
+          /* -----------
+          */
+
+          Ⓜ
+
+          /* ------------------------------------------------------------------------ */
+          /* Local Variables
+          /* ---------------
+          */
+
+          Ⓜ
+
+          /* ------------------------------------------------------------------------ */
+          /* Code
+          /* ----
+          */
+
+          Ⓜ
+
+          /* ------------------------------------------------------------------------ */
+
+Your name is written instead of mine, and your email address is used.
+Your email address is taken from the ``user-mail-address`` Emacs user option if
+it is set otherwise it attempts to compute it through other Emacs user option
+variables.  See `Emacs User Identification`_ documentation for more information.
+
+The Ⓜ  in the code above identify the tempo marker locations.
+Use ``C-c .`` to move point to the next one and ``C-c ,`` to move point to the
+previous one.
+
+.. _Emacs User Identification: https://www.gnu.org/software/emacs/manual/html_node/elisp/User-Identification.html
+
+
+In a C header file
+>>>>>>>>>>>>>>>>>>
+
+If you use the exact same command inside a C header (``.h``) file,
+but with ``pel-c-skel-with-license`` set to nil to prevent the inclusion
+of license text, and with the ``pel-c-skel-use-uuid-include-guards`` the command
+will also prompt for the file purpose (and you can get the previous entry by
+typing ``M-p`` or the ``<up>`` cursor key), then you get the following code
+instead:
+
+.. code:: c
+
+            /* C HEADER: monitor.h
+            **
+            ** Purpose   : Process monitoring facilities.
+            ** Created   : Thursday, August 27 2020.
+            ** Author    : Pierre Rouleau <your-email@here.yougo>
+            ** Time-stamp: <2020-08-27 22:49:17, by Pierre Rouleau>
+            */
+            /* ------------------------------------------------------------------------ */
+            #ifndef MONITOR__H_H0Z79D0F_DB8F_46BJ_FBBC_855167H0439Z
+            #define MONITOR__H_H0Z79D0F_DB8F_46BJ_FBBC_855167H0439Z /* include guard */
+            /* ------------------------------------------------------------------------ */
+            Ⓜ
+            /* ------------------------------------------------------------------------ */
+            #endif
+
+If you want to use C99 compatible line comment style instead, type ``<f12> M-;``
+to toggle the comment style and then type the same command (``<f12> <f12> C-h``)
+and you'll get something like the following:
+
+.. code:: c
+
+            // C HEADER: monitor.h
+            //
+            // Purpose   : Process monitoring facilities.
+            // Created   : Thursday, August 27 2020.
+            // Author    : Pierre Rouleau <your-email@here.yougo>
+            // Time-stamp: <2020-08-27 22:57:51, by Pierre Rouleau>
+            // ---------------------------------------------------------------------------
+            #ifndef MONITOR__H_H0Z79D0F_DB8F_46BJ_IFBC_8551670H439Z
+            #define MONITOR__H_H0Z79D0F_DB8F_46BJ_IFBC_8551670H439Z /* include guard */
+            // ---------------------------------------------------------------------------
+            Ⓜ
+            // ---------------------------------------------------------------------------
+            #endif
+
+
+Again, Ⓜ  is shown where the tempo markers are placed.
+
+C function template
+*******************
+
+
 
 PEL Support For C++
 ^^^^^^^^^^^^^^^^^^^
@@ -3804,6 +3962,8 @@ The list of external packages used by PEL is shown in the `Credits`_ section.
 .. _pel-ccp.el:             ../pel-ccp.el
 .. _pel-comment:
 .. _pel-comment.el:         ../pel-comment.el
+.. _pel-c-skels:
+.. _pel-c-skels.el:         ../pel-c-skels.el
 .. _pel-commonlisp:
 .. _pel-commonlisp.el:      ../pel-commonlisp.el
 .. _pel-completion:
