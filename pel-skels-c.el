@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-08-27 18:11:56, updated by Pierre Rouleau>
+;; Time-stamp: <2020-08-28 09:50:07, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -238,7 +238,10 @@ The comment style is controlled by the CC mode variable `c-block-comment-flag'."
 Insert the skeleton selected by the user option variable
 `pel-c-skel-function-define-style'."
   (cond ((not pel-c-skel-function-define-style)
-         (list 'l 'p))
+         (user-error "Please select a style: customize `pel-c-skel-function-define-style'!\n\
+Type '<f12> <f1>' to access the customization group,\n\
+or type '<f11> <f1> O' and `pel-c-skel-function-define-style',\n\
+or type 'M-x customize-option' and the same name to change that user option."))
         ((eq pel-c-skel-function-define-style 'basic-style)
          (pel--skels-c-function-def-basic))
         ((eq pel-c-skel-function-define-style 'man-style)
