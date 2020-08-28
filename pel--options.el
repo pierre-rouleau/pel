@@ -1414,6 +1414,19 @@ for more details."
   "Emacs Lisp Source Code Style options."
   :group 'pel-pkg-for-c)
 
+(defcustom pel-c-fill-column 80
+  "Column beyond which automatic line-wrapping should happen in C code.
+Can either be nil or an integer value.
+When set to nil, Emacs user option variable `fill-column' value
+is used for c-mode buffers, otherwise the integer value specified by
+`pel-c-fill-column' is stored in the variable `fill-column' for
+c-mode buffers.  The default is 80."
+  :group 'pel-c-code-style
+  :type '(choice
+          (const   :tag "Use the default fill-column value." nil)
+          (integer :tag "Use a value specific for c-mode buffers:")))
+
+
 (defcustom pel-c-skel-use-separators t
   "Specifies whether C code block include separators line.
 If nil no separator line comment is used, otherwise separator line
@@ -1995,12 +2008,16 @@ if configured to activate automatically."
 
 (defcustom pel-erlang-fill-column 100
   "Column beyond which automatic line-wrapping should happen in Erlang code.
-This value is stored in `fill-column' for Erlang source code files.
-The default is 100, a value recommended by the Inaka's  Erlang Coding
+Can either be nil or an integer value.
+When set to nil, Emacs user option variable `fill-column' value
+is used for erlang-mode buffers, otherwise the integer value specified by
+this value is stored in `fill-column' for Erlang source code files.
+The default is 100, a value recommended by the Inaka's Erlang Coding
 Standards & Guidelines."
   :group 'pel-erlang-code-style
-  :type 'integer
-  :safe #'integerp
+  :type '(choice
+          (const   :tag "Use the default fill-column value." nil)
+          (integer :tag "Use a specific value for erlang-mode buffers:"))
   :link '(url-link "https://github.com/inaka/erlang_guidelines#100-column-per-line"))
 
 (defcustom pel-erlang-skel-use-separators t

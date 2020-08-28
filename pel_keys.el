@@ -1791,6 +1791,10 @@ MODE must be a symbol."
   ;; Set variables always available in Emacs
   (setq tab-width          pel-c-tab-width
         indent-tabs-mode   pel-c-use-tabs)
+  ;; set fill-column to C's default if specified
+ (when pel-c-fill-column
+    (setq fill-column pel-c-fill-column))
+
   ;; Set CC Mode variables
   ;; (and therefore not known at compilation when CC Mode not loaded).
   (pel-setq c-basic-offset pel-c-indentation)
@@ -1798,7 +1802,11 @@ MODE must be a symbol."
   (pel--set-cc-style 'c-mode pel-c-bracket-style)
   (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
   ;; Configure M-( to put parentheses after a function name.
-  (set (make-local-variable 'parens-require-spaces) nil))
+  (set (make-local-variable 'parens-require-spaces) nil)
+  ;; activate the mode specific prefixes
+  (pel-local-set-f12-M-f12 'pel:for-c)
+  (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
+  (pel--install-c-skel      pel:c-skel))
 
 (define-pel-global-prefix pel:for-c         (kbd "<f11> SPC c"))
 (define-pel-global-prefix pel:for-c-preproc (kbd "<f11> SPC c #"))
@@ -1816,11 +1824,7 @@ MODE must be a symbol."
 ;;
 ;; activate the <f12> key binding for c-mode
 (pel--mode-hook-maybe-call
- '(lambda ()
-    (pel--setenv-for-c)
-    (pel-local-set-f12-M-f12 'pel:for-c)
-    (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
-    (pel--install-c-skel      pel:c-skel))
+ (function pel--setenv-for-c)
  'c-mode 'c-mode-hook)
 
 ;; -----------------------------------------------------------------------------
@@ -1956,8 +1960,9 @@ This is meant to be used in the d-mode hook lambda."
 
   (defun pel--setup-erlang ()
     "Activate Erlang setup."
-    ;; set fill-column to Erlang's default.
-    (setq fill-column pel-erlang-fill-column)
+    ;; set fill-column to Erlang's default if specified
+    (when pel-erlang-fill-column
+      (setq fill-column pel-erlang-fill-column))
     ;; setup the Erlang-specific key bindings
     (pel-local-set-f12-M-f12 'pel:for-erlang)
     (pel--install-erlang-skel pel:erlang-skel)
@@ -1993,7 +1998,7 @@ This is meant to be used in the d-mode hook lambda."
 
     ;; activate the <f12> key binding for erlang-mode
     (pel--mode-hook-maybe-call
-     'pel--setup-erlang
+     (function pel--setup-erlang)
      'erlang-mode 'erlang-mode-hook)
 
     ;; bind other erlang keys
