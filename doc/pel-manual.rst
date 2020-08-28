@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-28 10:33:47, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-28 10:39:52, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2178,7 +2178,7 @@ in the buffer:
           /* Module Description
           ** ------------------
           **
-          ** Ⓜ
+          ** Ⓜ️
           **
           */
 
@@ -2187,28 +2187,28 @@ in the buffer:
           /* ----------------
           */
 
-          Ⓜ
+          Ⓜ️
 
           /* ------------------------------------------------------------------------ */
           /* Local Types
           /* -----------
           */
 
-          Ⓜ
+          Ⓜ️
 
           /* ------------------------------------------------------------------------ */
           /* Local Variables
           /* ---------------
           */
 
-          Ⓜ
+          Ⓜ️
 
           /* ------------------------------------------------------------------------ */
           /* Code
           /* ----
           */
 
-          Ⓜ
+          Ⓜ️
 
           /* ------------------------------------------------------------------------ */
 
@@ -2217,7 +2217,7 @@ Your email address is taken from the ``user-mail-address`` Emacs user option if
 it is set otherwise it attempts to compute it through other Emacs user option
 variables.  See `Emacs User Identification`_ documentation for more information.
 
-The Ⓜ  in the code above identify the tempo marker locations.
+The Ⓜ️  in the code above identify the tempo marker locations.
 Use ``C-c .`` to move point to the next one and ``C-c ,`` to move point to the
 previous one.
 
@@ -2254,7 +2254,7 @@ instead:
             #ifndef MONITOR__H_H0Z79D0F_DB8F_46BJ_FBBC_855167H0439Z
             #define MONITOR__H_H0Z79D0F_DB8F_46BJ_FBBC_855167H0439Z /* include guard */
             /* ------------------------------------------------------------------------ */
-            Ⓜ
+            Ⓜ️
             /* ------------------------------------------------------------------------ */
             #endif
 
@@ -2274,12 +2274,12 @@ and you'll get something like the following:
             #ifndef MONITOR__H_H0Z79D0F_DB8F_46BJ_IFBC_8551670H439Z
             #define MONITOR__H_H0Z79D0F_DB8F_46BJ_IFBC_8551670H439Z /* include guard */
             // ---------------------------------------------------------------------------
-            Ⓜ
+            Ⓜ️
             // ---------------------------------------------------------------------------
             #endif
 
 
-Again, Ⓜ  is shown where the tempo markers are placed.
+Again, Ⓜ️  is shown where the tempo markers are placed.
 
 The UUID-based include guards eliminate the probability of include guard clashes
 when using your code with other's libraries in case the same C header file name
@@ -2385,7 +2385,7 @@ one is not already present.
             **
             */
 
-            Ⓜ️ void register_process(Ⓜ️ )
+            Ⓜ️void register_process(Ⓜ️)
             {
                 Ⓜ️
             }
@@ -2421,8 +2421,8 @@ With C++ style comments and ``pel-c-skel-function-name-on-first-column`` set to
             //
 
 
-            Ⓜ️ void
-            register_process(Ⓜ️ )
+            Ⓜ️void
+            register_process(Ⓜ️)
             {
                Ⓜ️
             }
