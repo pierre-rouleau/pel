@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-28 16:57:56, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-28 18:45:22, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2134,6 +2134,22 @@ See the
 `C PDF<https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c.pdf>`_
 and related tables for more information on the various key sequences available.
 
+PEL Tempo Skeleton Templates Flexibility
+****************************************
+
+Most PEL tempo skeleton based templates use formats that are controlled by Emacs
+user option variables.
+
+Emacs user options are just specially identified Emacs variables.
+
+Since Emacs can read variables from information on a file and from the
+special ``.dir-locals.el`` file (which affects all files in the directory tree)
+it becomes possible to have a complete control of the various style elements for
+C files and you can have different ones inside different directory trees, have
+special settings for some files.
+
+This is extremely flexible.
+
 C file header/module block template
 ***********************************
 
@@ -2395,7 +2411,7 @@ function name and inserts something like this:
 
 .. code:: c
 
-            /* ------------------------------------------------------------------------ */
+            /* -------------------------------------------------------------------------- */
             Ⓜ️void
             register_process(Ⓜ️)
             {
@@ -2409,7 +2425,7 @@ or:
 
 .. code:: c
 
-            /* ------------------------------------------------------------------------ */
+            /* -------------------------------------------------------------------------- */
             Ⓜ️void register_process(Ⓜ️)
             {
                Ⓜ️
@@ -2421,7 +2437,7 @@ or:
 
 .. code:: c
 
-            // ---------------------------------------------------------------------------
+            // -----------------------------------------------------------------------------
             Ⓜ️void
             register_process(Ⓜ️)
             {
@@ -2435,7 +2451,7 @@ or:
 
 .. code:: c
 
-            // ---------------------------------------------------------------------------
+            // -----------------------------------------------------------------------------
             Ⓜ️void register_process(Ⓜ️)
             {
                Ⓜ️
@@ -2453,7 +2469,10 @@ sequence.
 
 The presence of horizontal separator lines is controlled by the
 ``pel-c-skel-use-separators`` user option.  It is on by default.
-
+The length of the line is controlled by the ``pel-c-fill-column`` user option of
+it is set to an integer value, otherwise it is controlled by the Emacs global
+``fill-column`` user option.  You can changed the user option but you can also
+change the value for the current buffer with the ``C-x f`` command.
 
 C function definition with basic comment block
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -2464,7 +2483,7 @@ function name and the function purpose and inserts something like this:
 
 .. code:: c
 
-            // ---------------------------------------------------------------------------
+            // -----------------------------------------------------------------------------
             // register_process() -- Register a process ID to the monitored list.
 
             Ⓜ️void
@@ -2496,7 +2515,7 @@ one is not already present.
 
 .. code:: c
 
-            /* ------------------------------------------------------------------------ */
+            /* -------------------------------------------------------------------------- */
             /* r e g i s t e r _ p r o c e s s ( )     -- Register a process ID in the list of monitored process.
             ** ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
             **
@@ -2522,7 +2541,7 @@ one is not already present.
 
             Ⓜ️
 
-            /* ------------------------------------------------------------------------ */
+            /* -------------------------------------------------------------------------- */
 
 It leaves tempo markers at the locations identified by Ⓜ️ .
 The indentation is controlled by the ``pel-c-indentation`` user option.
@@ -2533,7 +2552,7 @@ With C++ style comments and ``pel-c-skel-function-name-on-first-column`` set to
 
 .. code:: c
 
-            // ---------------------------------------------------------------------------
+            // -----------------------------------------------------------------------------
             // r e g i s t e r _ p r o c e s s ( )     -- Register a process ID in the list of monitored process.
             // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
             //
