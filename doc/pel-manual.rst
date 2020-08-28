@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-28 10:39:52, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-28 10:49:03, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2350,8 +2350,8 @@ stored in a file that you identify in the user option.
 
 The following sections provide examples of the supported styles.
 
-Function comment block with Man-page style
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+C function comment block with Man-page style
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 With C-style comments, ``pel-c-skel-function-name-on-first-column`` set to nil
 (the default), ``pel-c-skel-function-section-titles`` identifying the list
@@ -2396,6 +2396,7 @@ one is not already present.
 
 It leaves tempo markers at the locations identified by Ⓜ️ .
 The indentation is controlled by the ``pel-c-indentation`` user option.
+Use ``C-c .`` to move point to the next tempo marker and ``C-c ,`` to the previous one.
 
 With C++ style comments and ``pel-c-skel-function-name-on-first-column`` set to
 **t**, the code inserted is the following instead:
