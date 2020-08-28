@@ -1517,10 +1517,17 @@ a separately provided skeleton file."
   :group 'pel-c-code-style
   :type '(choice
           (const :tag "No documentation block created." nil)
+          (const :tag "Just code, no comment block." no-comment-style)
           (const :tag "Basic documentation block above function definition." basic-style)
           (const :tag "Man-style documentation block above function definition." man-style)
-          (const :tag "Documentation block with Doxygen markup." doxygen-style)
           (string :tag "Use your own! The pel-custom-c-function-block defun located in specified .el file:")))
+
+(defcustom pel-c-skel-doc-markup nil
+  "Specifies the documentation markup system used for C source code."
+    :group 'pel-c-code-style
+  :type '(choice
+          (const :tag "No documentation markup inserted in templates." nil)
+          (const :tag "Insert Doxygen markup in templates." doxygen)))
 
 (defcustom pel-c-skel-function-name-on-first-column nil
   "Set whether defined function name is on the beginning of the line.

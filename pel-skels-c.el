@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-08-28 09:50:07, updated by Pierre Rouleau>
+;; Time-stamp: <2020-08-28 16:52:23, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -167,18 +167,51 @@ the C code file and the C header file."
 ;; C function definitions
 
 
-(defun pel--skels-c-function-def-basic ()
-  ""
-  )
-
 (defun pel-valid-c-function-name (text)
   "Return the string if it is a valid C function name, nil otherwise.
 Replace dash characters with underscores, to simplify typing function
 names using underscores."
   (let ((text (replace-regexp-in-string "-" "_" (string-trim text))))
-    ;; TODO?  add user options to impose length limits?
     (when (string-match "\\`[a-zA-Z_][a-zA-Z0-9_]*\\'" text)
       text)))
+
+(defun pel--skels-c-function-def (&optional name)
+  "Insert just the function definition code.
+The function NAME can be passed via arguments,
+prompt user otherwise.
+When NAME is specified the optional separator line is *not* inserted:
+it's assumed that another function has already done it.
+"
+  (let* ((fct-name   (or name (pel-prompt-function (function pel-valid-c-function-name))))
+         (sk         (list 'l (unless name (pel-skel-c-separator-line)))))
+    (if pel-c-skel-function-name-on-first-column
+        (pel-append-to sk (list
+                           'p "void" 'n
+                           fct-name))
+      (pel-append-to sk (list
+                         'p "void " fct-name)))
+    (pel-append-to sk (list
+                       "(" 'p ")\n"
+                       "{" 'n>
+                       'p 'n
+                       "}\n\n"
+                       'p))))
+
+(defun pel--skels-c-function-def-basic (&optional name purpose)
+  "Insert a basic function code template with simple comment block.
+The function NAME and PURPOSE can be passed via arguments,
+prompt user otherwise."
+  (let* ((fct-name   (or name (pel-prompt-function (function pel-valid-c-function-name))))
+         (purpose    (or purpose (pel-prompt-purpose-for "Function" 'p)))
+         (c-style    (pel-c-style-comments-strings))
+         (cb         (nth 0 c-style))
+         (ce         (nth 2 c-style)))
+    (list
+     'l
+     (pel-skel-c-separator-line)
+     cb " " fct-name "() -- " purpose 'n
+     ce 'n (pel-when-text-in ce 'n)
+     (pel--skels-c-function-def fct-name))))
 
 (defun pel--skels-c-function-def-man ()
   "Insert a MAN-style C function definition command block.
@@ -213,25 +246,8 @@ The comment style is controlled by the CC mode variable `c-block-comment-flag'."
                               cc 'n
                               cc " " 'p 'n
                               cc 'n)))
-         (pel-append-to sk (list ce 'n 'n))))
-     (if pel-c-skel-function-name-on-first-column
-         (list 'l
-               'p "void" 'n
-               fct-name)
-       (list 'l
-             'p "void " fct-name))
-     "(" 'p ")\n"
-     "{" 'n>
-     'p 'n
-     "}\n\n"
-     'p
-     )))
-
-
-
-(defun pel--skels-c-function-def-doxygen ()
-  ""
-  )
+         (pel-append-to sk (list ce 'n (pel-when-text-in ce 'n)))))
+     (pel--skels-c-function-def fct-name))))
 
 (defun pel-skels-c-function-definition ()
   "Insert a tempo skeleton for the insertion of a C function definition.
@@ -242,18 +258,18 @@ Insert the skeleton selected by the user option variable
 Type '<f12> <f1>' to access the customization group,\n\
 or type '<f11> <f1> O' and `pel-c-skel-function-define-style',\n\
 or type 'M-x customize-option' and the same name to change that user option."))
+        ((eq pel-c-skel-function-define-style 'no-comment-style)
+         (pel--skels-c-function-def))
         ((eq pel-c-skel-function-define-style 'basic-style)
          (pel--skels-c-function-def-basic))
         ((eq pel-c-skel-function-define-style 'man-style)
          (pel--skels-c-function-def-man))
-        ((eq pel-c-skel-function-define-style 'doxygen-style)
-         (pel--skels-c-function-def-doxygen))
         (t (if (and (load pel-c-skel-function-define-style :noerror)
                     (fboundp 'pel-custom-c-function-block))
                (pel-custom-c-function-block)
              (user-error
-              (format
-               "Invalid pel-custom-c-function-block defun in file: s!"))))))
+              "Invalid pel-custom-c-function-block in file: %s"
+              pel-c-skel-function-define-style)))))
 
 ;; -----------------------------------------------------------------------------
 ;; Install Emacs Lisp skeletons
