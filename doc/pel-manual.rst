@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-28 11:10:53, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-28 16:57:56, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2331,6 +2331,11 @@ selected.  Customize that variable first.  You can use the ``<f12> <f1>`` key
 sequence from a buffer in c-mode to open the PEL customization buffer for C,
 select the ``pel-c-code-style`` customization group and change the value of
 ``pel-c-skel-function-define-style``.
+The following function template styles are available:
+
+- `C function definition with no comment block`_
+- `C function definition with basic comment block`_
+- `C function definition with Man-page style comment block`_
 
 The default comment style is the C-style ``/* */`` style (also called block
 style).  But you can switch to the C++ ``//`` style (also called line style)
@@ -2354,8 +2359,129 @@ stored in a file that you identify in the user option.
 
 The following sections provide examples of the supported styles.
 
-C function comment block with Man-page style
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Function name and purpose prompts
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+All function definition template commands prompt for the function name and the
+purpose of the function.  The prompt maintain an history of the accepted values
+which you can inspect with the following key sequences:
+
+- to see previous entry, use ``M-p`` or the ``<up>`` cursor,
+- to see the next entry, use ``M-n`` or the ``<down>`` cursor.
+
+The function prompt transforms your entry a little:
+
+- it strips any leading or trailing whitespace from the entered string, and
+- replace all dash (``'-'``) characters by underscores (``'-'``) to help
+  speed up entry.
+
+It accepts only syntactically valid C function names, rejecting the others by
+erasing the string from the mini buffer prompt area.  You can recall it using
+the previous entry history key.
+
+The commands also prompt for a quick single sentence describing the purpose of
+the function.  Before inserting that text the command strips whitespace off the
+front and end of the text, converts the first character to uppercase and ends
+the text with a period if it is not already present.
+
+You can cancel any prompt with the usual ``C-g`` key.
+
+C function definition with no comment block
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+This is the simplest style.
+The ``<f12> <f12> f`` command prompts for the
+function name and inserts something like this:
+
+.. code:: c
+
+            /* ------------------------------------------------------------------------ */
+            Ⓜ️void
+            register_process(Ⓜ️)
+            {
+               Ⓜ️
+            }
+
+            Ⓜ️
+
+
+or:
+
+.. code:: c
+
+            /* ------------------------------------------------------------------------ */
+            Ⓜ️void register_process(Ⓜ️)
+            {
+               Ⓜ️
+            }
+
+            Ⓜ️
+
+or:
+
+.. code:: c
+
+            // ---------------------------------------------------------------------------
+            Ⓜ️void
+            register_process(Ⓜ️)
+            {
+               Ⓜ️
+            }
+
+            Ⓜ️
+
+
+or:
+
+.. code:: c
+
+            // ---------------------------------------------------------------------------
+            Ⓜ️void register_process(Ⓜ️)
+            {
+               Ⓜ️
+            }
+
+            Ⓜ️
+
+
+It puts the type ``void`` and places a tempo marker (identified by Ⓜ️ ) just
+before to let you modify it if necessary (use ``M-d`` to delete it).   It places
+the function name on the same or next line depending of the value of the
+``pel-c-skel-function-name-on-first-column`` user option and inserts a C-style
+comment by default but you can switch to C++ style using the ``<f12> M-;`` key
+sequence.
+
+The presence of horizontal separator lines is controlled by the
+``pel-c-skel-use-separators`` user option.  It is on by default.
+
+
+C function definition with basic comment block
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+This styles adds a comment block with the function purpose.
+The ``<f12> <f12> f`` command prompts for the
+function name and the function purpose and inserts something like this:
+
+.. code:: c
+
+            // ---------------------------------------------------------------------------
+            // register_process() -- Register a process ID to the monitored list.
+
+            Ⓜ️void
+            register_process(Ⓜ️)
+            {
+               Ⓜ️
+            }
+
+            Ⓜ️
+
+As for all function definition blocks the user options in the
+``pel-c-code-style`` group control whether the separator line is inserted, and
+whether the return type is placed on the same line as the function name or just
+above.
+
+C function definition with Man-page style comment block
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 With C-style comments, ``pel-c-skel-function-name-on-first-column`` set to nil
 (the default), ``pel-c-skel-function-section-titles`` identifying the list
@@ -2394,7 +2520,7 @@ one is not already present.
                 Ⓜ️
             }
 
-
+            Ⓜ️
 
             /* ------------------------------------------------------------------------ */
 
@@ -2425,14 +2551,13 @@ With C++ style comments and ``pel-c-skel-function-name-on-first-column`` set to
             // Ⓜ️
             //
 
-
             Ⓜ️void
             register_process(Ⓜ️)
             {
                Ⓜ️
             }
 
-
+            Ⓜ️
 
 
 PEL Support For C++
