@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-08-28 16:52:23, updated by Pierre Rouleau>
+;; Time-stamp: <2020-08-28 19:04:49, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -155,7 +155,7 @@ the C code file and the C header file."
                                 (list
                                  (pel-skel-c-separator-line)
                                  cb " " mtitle 'n
-                                 cb " " (make-string (length mtitle) ?-) 'n
+                                 cc " " (make-string (length mtitle) ?-) 'n
                                  ce 'n (pel-when-text-in ce 'n)
                                  'p 'n 'n))))
            (pel-append-to sk (list
