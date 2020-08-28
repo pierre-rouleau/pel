@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-27 23:25:30, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-28 10:33:47, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2130,7 +2130,7 @@ tempo skeleton templates inside the file `pel-c-skels.el`_ that are made
 available by the commands accessed via the ``pel:c-skel`` key prefix which is
 mapped to the ``<f12> <f12>`` key sequence in any c-mode buffer.
 
-C File header/module block template
+C file header/module block template
 ***********************************
 
 Insert a C file header block with the ``<f12> <f12> C-h`` key sequence.
@@ -2220,6 +2220,13 @@ variables.  See `Emacs User Identification`_ documentation for more information.
 The Ⓜ  in the code above identify the tempo marker locations.
 Use ``C-c .`` to move point to the next one and ``C-c ,`` to move point to the
 previous one.
+
+The comment block contains sections because the user option
+``pel-c-skel-insert-module-sections`` is set to **t**.  This always includes the
+section with the "Module Description" title.  The following section names
+("Header Inclusion", "Local Types",  etc..) are identified by the user option
+``pel-c-skel-module-section-titles``.
+
 
 .. _Emacs User Identification: https://www.gnu.org/software/emacs/manual/html_node/elisp/User-Identification.html
 
@@ -2311,6 +2318,115 @@ or:
 
 C function template
 *******************
+
+Insert a C function definition block with the ``<f12> <f12> f`` key sequence.
+
+The function definition block style is selected by the
+``pel-c-skel-function-define-style`` user option.  By default no style is
+selected.  Customize that variable first.  You can use the ``<f12> <f1>`` key
+sequence from a buffer in c-mode to open the PEL customization buffer for C,
+select the ``pel-c-code-style`` customization group and change the value of
+``pel-c-skel-function-define-style``.
+
+The default comment style is the C-style ``/* */`` style (also called block
+style).  But you can switch to the C++ ``//`` style (also called line style)
+using the ``<f12> M-;`` key sequence.
+
+The ``pel-c-skel-function-name-on-first-column`` user option is set to **t** the
+function return type is written on the line above the function name.  By default
+this is set to nil and the return type precedes the function name on the same
+line. The skeleton inserts ``void`` as the type but leaves a tempo marker on the
+first letter.  You can quickly delete it with ``M-d`` and type the proper type.
+
+The style selected by ``pel-c-skel-function-define-style`` identifies the style
+of the function comment block placed above the function definition code (if
+any).
+
+The title of the sections included in the function comment block are identified
+by the ``pel-c-skel-function-section-titles`` user option.
+
+Several styles are supported.  You can also define your own with Emacs Lisp code
+stored in a file that you identify in the user option.
+
+The following sections provide examples of the supported styles.
+
+Function comment block with Man-page style
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+With C-style comments, ``pel-c-skel-function-name-on-first-column`` set to nil
+(the default), ``pel-c-skel-function-section-titles`` identifying the list
+``("DIAGNOSTIC" "SEE ALSO")`` (the default) typing ``<f12> <f12> f`` inside a
+buffer in c-mode will insert text following text after prompting for the
+function name and purpose.
+For this example, I typed ``register-process`` (with a dash) and then
+``register a process ID in the list of monitored processes`` at the prompt. The
+command replace the dash in the function name with underscore and also converts
+the purpose text by capitalizing the first letter and ending it with a period if
+one is not already present.
+
+.. code:: c
+
+            /* ------------------------------------------------------------------------ */
+            /* r e g i s t e r _ p r o c e s s ( )     -- Register a process ID in the list of monitored process.
+            ** ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            **
+            ** DESCRIPTION
+            **
+            ** register_process() Ⓜ️
+            **
+            **
+            ** DIAGNOSTIC
+            **
+            ** Ⓜ️
+            **
+            ** SEE ALSO
+            **
+            ** Ⓜ️
+            **
+            */
+
+            Ⓜ️ void register_process(Ⓜ️ )
+            {
+                Ⓜ️
+            }
+
+
+
+            /* ------------------------------------------------------------------------ */
+
+It leaves tempo markers at the locations identified by Ⓜ️ .
+The indentation is controlled by the ``pel-c-indentation`` user option.
+
+With C++ style comments and ``pel-c-skel-function-name-on-first-column`` set to
+**t**, the code inserted is the following instead:
+
+.. code:: c
+
+            // ---------------------------------------------------------------------------
+            // r e g i s t e r _ p r o c e s s ( )     -- Register a process ID in the list of monitored process.
+            // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            //
+            // DESCRIPTION
+            //
+            // register_process() Ⓜ️
+            //
+            //
+            // DIAGNOSTIC
+            //
+            // Ⓜ️
+            //
+            // SEE ALSO
+            //
+            // Ⓜ️
+            //
+
+
+            Ⓜ️ void
+            register_process(Ⓜ️ )
+            {
+               Ⓜ️
+            }
+
 
 
 
