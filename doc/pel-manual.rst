@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-27 23:06:51, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-27 23:25:30, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2273,6 +2273,41 @@ and you'll get something like the following:
 
 
 Again, Ⓜ  is shown where the tempo markers are placed.
+
+The UUID-based include guards eliminate the probability of include guard clashes
+when using your code with other's libraries in case the same C header file name
+is used somewhere. This technique is more portable than the ``#pragma once``
+technique also used.  Also note that even if you use ``//`` style comments, the
+code uses a C-style (block comment) following a C pre-processor include
+statement, again to increase code compatibility over compilers since the
+original C-style comment is always supported by C pre-processors.
+
+If you have ``pel-c-skel-use-uuid-include-guards`` set to nil, the include guard
+code is not included, and you'll get something like this instead:
+
+.. code:: c
+
+            /* C HEADER: monitor.h
+            **
+            ** Purpose   : Process monitoring facilities.
+            ** Created   : Thursday, August 27 2020.
+            ** Author    : Pierre Rouleau <your-email@here.yougo>
+            ** Time-stamp: <2020-08-27 22:49:17, by Pierre Rouleau>
+            */
+            /* ------------------------------------------------------------------------ */
+
+or:
+
+.. code:: c
+
+            // C HEADER: monitor.h
+            //
+            // Purpose   : Process monitoring facilities.
+            // Created   : Thursday, August 27 2020.
+            // Author    : Pierre Rouleau <your-email@here.yougo>
+            // Time-stamp: <2020-08-27 22:57:51, by Pierre Rouleau>
+            // ---------------------------------------------------------------------------
+
 
 C function template
 *******************
