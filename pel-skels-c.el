@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-08-29 10:19:19, updated by Pierre Rouleau>
+;; Time-stamp: <2020-08-29 11:29:50, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -80,9 +80,8 @@
   "Return a section separator line for C if required.
 If prohibited (by customization) returns nil.
 Otherwise return a string that ends with a newline."
-  (when pel-elisp-skel-use-separators
+  (when pel-c-skel-use-separators
     (concat (pel-separator-line) "\n")))
-
 
 (defun pel-c-style-comments-strings ()
   "Return a list of 3 strings describing C-style comments.
