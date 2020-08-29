@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-29 11:22:06, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-29 11:29:46, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2642,6 +2642,27 @@ Using a C++ style comment (via ``<f12> M-;``) and setting
         Ⓜ️
 
 .. _custom/skeleton/custom-c-skel.el: ../custom/skeletons/custom-c-skel.el
+
+And then if you set ``pel-c-skel-use-separators`` to nil, the command does not
+insert the separator line, so you get the following instead:
+
+.. code:: c
+
+
+        // ================
+        // register_process
+        // ================
+        //
+        // Register a process ID in the list of monitored process.
+        //
+
+        Ⓜ️void register_process(Ⓜ️)
+        {
+           Ⓜ️
+        }
+
+        Ⓜ️
+
 
 PEL Support For C++
 ^^^^^^^^^^^^^^^^^^^
