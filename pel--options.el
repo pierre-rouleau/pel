@@ -1526,14 +1526,29 @@ the copyright holder value."
 (defcustom pel-c-skel-function-define-style nil
   "Specifies the style of C function definition comment blocks.
 Several styles are provided with ability to load a style from
-a separately provided skeleton file."
+a separately provided skeleton file.
+
+The choices are:
+
+- No documentation comment inserted.
+- Basic documentation comment just above the function definition.
+  This includes a function purpose.
+- Man-page style documentation above the function definition with
+  a DESCRIPTION section and other sections as defined by the value of
+  the variable `pel-c-skel-function-section-titles'.
+- A user defined skeleton.  For this you need to write Emacs lisp code.
+  You have to write a function `pel-skels-c-function-def/custom'
+  inside a file and store the name of that file inside the box that
+  appear when you select this option.  You can start by using the
+  example that is stored inside the file 'custom/skeleton/custom-c-skel.el'.
+  The file name can be an absolute file name but it can also be a relative
+  file name. On Unix systems you can use '~' to identify your home directory."
   :group 'pel-c-code-style
   :type '(choice
-          (const :tag "No documentation block created." nil)
-          (const :tag "Just code, no comment block." no-comment-style)
+          (const :tag "Just code, no comment block." nil)
           (const :tag "Basic documentation block above function definition." basic-style)
-          (const :tag "Man-style documentation block above function definition." man-style)
-          (string :tag "Use your own! The pel-custom-c-function-block defun located in specified .el file:")))
+          (const :tag "Man-page style documentation block above function definition." man-style)
+          (string :tag "Use your own, defined in file:")))
 
 (defcustom pel-c-skel-doc-markup nil
   "Specifies the documentation markup system used for C source code."

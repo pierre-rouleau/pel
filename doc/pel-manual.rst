@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-28 22:10:39, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-29 10:24:41, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2578,6 +2578,50 @@ With C++ style comments and ``pel-c-skel-function-name-on-first-column`` set to
 
             Ⓜ️
 
+
+User selected template for C function definition
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+The above choices, with all provided flexibility may not correspond with your
+needs. In that can you can store the name of a file with you own code
+inside the ``pel-c-skel-function-define-style`` user option variable.
+
+The file `custom/skeleton/custom-c-skel.el`_ is an example of a user defined
+skeleton. As you'll see you will need to write Emacs Lisp code for this.
+You'll need to learn more than what you need to learn to write yasnippet_
+templates, but you can then take advantage of all Emacs Lisp power and use the
+PEL functions to prompt for function and purpose, check for function name
+validity, transform the function name and have the whole action already bound to
+a key sequence.
+
+The example generates code like the following, controlled by various PEL user
+options that identify whether the horizontal separator line is inserted, whether
+the C function return type is on a separate line (as in the example below) or on
+the same line as the function name, and you can also switch to C++ style
+comments. The indentation is also controlled by customization.
+
+.. code:: c
+
+        /* -------------------------------------------------------------------------- */
+        /* =========================
+         * list_registered_processes
+         * =========================
+         *
+         * Print or display the list of registered process on the specified device.
+         *
+        */
+
+        Ⓜ️void
+        list_registered_processes(Ⓜ️)
+        {
+           Ⓜ️
+        }
+
+        Ⓜ️
+
+
+
+.. _custom/skeleton/custom-c-skel.el: ../custom/skeleton/custom-c-skel.el
 
 PEL Support For C++
 ^^^^^^^^^^^^^^^^^^^

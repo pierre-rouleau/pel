@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-08-28 19:04:49, updated by Pierre Rouleau>
+;; Time-stamp: <2020-08-29 10:19:19, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -175,7 +175,7 @@ names using underscores."
     (when (string-match "\\`[a-zA-Z_][a-zA-Z0-9_]*\\'" text)
       text)))
 
-(defun pel--skels-c-function-def (&optional name)
+(defun pel-skels-c-function-def (&optional name)
   "Insert just the function definition code.
 The function NAME can be passed via arguments,
 prompt user otherwise.
@@ -197,7 +197,7 @@ it's assumed that another function has already done it.
                        "}\n\n"
                        'p))))
 
-(defun pel--skels-c-function-def-basic (&optional name purpose)
+(defun pel-skels-c-function-def-basic (&optional name purpose)
   "Insert a basic function code template with simple comment block.
 The function NAME and PURPOSE can be passed via arguments,
 prompt user otherwise."
@@ -211,9 +211,9 @@ prompt user otherwise."
      (pel-skel-c-separator-line)
      cb " " fct-name "() -- " purpose 'n
      ce 'n (pel-when-text-in ce 'n)
-     (pel--skels-c-function-def fct-name))))
+     (pel-skels-c-function-def fct-name))))
 
-(defun pel--skels-c-function-def-man ()
+(defun pel-skels-c-function-def-man ()
   "Insert a MAN-style C function definition command block.
 This begins with an optional separator line, the name of the function spread
 and underlined with its purpose on the same line.
@@ -247,29 +247,28 @@ The comment style is controlled by the CC mode variable `c-block-comment-flag'."
                               cc " " 'p 'n
                               cc 'n)))
          (pel-append-to sk (list ce 'n (pel-when-text-in ce 'n)))))
-     (pel--skels-c-function-def fct-name))))
+     (pel-skels-c-function-def fct-name))))
 
 (defun pel-skels-c-function-definition ()
   "Insert a tempo skeleton for the insertion of a C function definition.
 Insert the skeleton selected by the user option variable
 `pel-c-skel-function-define-style'."
   (cond ((not pel-c-skel-function-define-style)
-         (user-error "Please select a style: customize `pel-c-skel-function-define-style'!\n\
-Type '<f12> <f1>' to access the customization group,\n\
-or type '<f11> <f1> O' and `pel-c-skel-function-define-style',\n\
-or type 'M-x customize-option' and the same name to change that user option."))
-        ((eq pel-c-skel-function-define-style 'no-comment-style)
-         (pel--skels-c-function-def))
+         (pel-skels-c-function-def))
         ((eq pel-c-skel-function-define-style 'basic-style)
-         (pel--skels-c-function-def-basic))
+         (pel-skels-c-function-def-basic))
         ((eq pel-c-skel-function-define-style 'man-style)
-         (pel--skels-c-function-def-man))
-        (t (if (and (load pel-c-skel-function-define-style :noerror)
-                    (fboundp 'pel-custom-c-function-block))
-               (pel-custom-c-function-block)
-             (user-error
-              "Invalid pel-custom-c-function-block in file: %s"
-              pel-c-skel-function-define-style)))))
+         (pel-skels-c-function-def-man))
+        (t (if (not (file-exists-p pel-c-skel-function-define-style))
+               (user-error
+                "File %s specified in pel-c-skel-function-define-style does not exist!"
+                pel-c-skel-function-define-style)
+             (if (and (load pel-c-skel-function-define-style :noerror)
+                      (fboundp 'pel-skels-c-function-def/custom))
+                 (pel-skels-c-function-def/custom)
+               (user-error
+                "Invalid pel-custom-c-function-block in file: %s"
+                pel-c-skel-function-define-style))))))
 
 ;; -----------------------------------------------------------------------------
 ;; Install Emacs Lisp skeletons
