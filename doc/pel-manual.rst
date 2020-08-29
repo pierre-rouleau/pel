@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-28 22:07:30, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-28 22:10:39, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2118,7 +2118,7 @@ PEL also provides easy access to commands that can change the CC Mode behaviour
 on which the c-mode is based via the **pel:for-c** key-map, bounded to the
 **F12** key for each buffer in c-mode.
 
-.. _C Programming Language: https://en.wikipedia.org/wiki/C%2B%2B
+.. _C Programming Language: https://en.wikipedia.org/wiki/C_(programming_language)
 
 C Code Templates
 ++++++++++++++++
