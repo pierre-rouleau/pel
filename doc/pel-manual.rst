@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-29 11:53:36, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-29 14:26:00, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2126,7 +2126,7 @@ C Code Templates
 PEL supports yasnippet_ for your basic templating needs.
 It also supports the built-in tempo skeleton system which provides a powerful
 templating system but requires Emacs Lisp knowledge.  PEL provides a set of
-tempo skeleton templates inside the file `pel-c-skels.el`_ that are made
+tempo skeleton templates inside the file `pel-skels-c.el`_ that are made
 available by the commands accessed via the ``pel:c-skel`` key prefix which is
 mapped to the ``<f12> <f12>`` key sequence in any c-mode buffer.
 
@@ -4385,8 +4385,6 @@ The list of external packages used by PEL is shown in the `Credits`_ section.
 .. _pel-ccp.el:             ../pel-ccp.el
 .. _pel-comment:
 .. _pel-comment.el:         ../pel-comment.el
-.. _pel-c-skels:
-.. _pel-c-skels.el:         ../pel-c-skels.el
 .. _pel-commonlisp:
 .. _pel-commonlisp.el:      ../pel-commonlisp.el
 .. _pel-completion:
@@ -4437,6 +4435,10 @@ The list of external packages used by PEL is shown in the `Credits`_ section.
 .. _pel-scroll.el:          ../pel-scroll.el
 .. _pel-search:
 .. _pel-search.el:          ../pel-search.el
+.. _pel-skels:
+.. _pel-skels.el:           ../pel-skels.el
+.. _pel-skels-c:
+.. _pel-skels-c.el:         ../pel-skels-c.el
 .. _pel-speedbar:
 .. _pel-speedbar.el:        ../pel-speedbar.el
 .. _pel-spell:
