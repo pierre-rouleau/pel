@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-29 10:24:41, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-29 10:36:11, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2621,7 +2621,7 @@ comments. The indentation is also controlled by customization.
 
 
 
-.. _custom/skeleton/custom-c-skel.el: ../custom/skeleton/custom-c-skel.el
+.. _custom/skeleton/custom-c-skel.el: ../custom/skeletons/custom-c-skel.el
 
 PEL Support For C++
 ^^^^^^^^^^^^^^^^^^^
