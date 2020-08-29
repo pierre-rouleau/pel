@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-29 11:39:21, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-29 11:53:36, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2238,8 +2238,14 @@ it is set otherwise it attempts to compute it through other Emacs user option
 variables.  See `Emacs User Identification`_ documentation for more information.
 
 The Ⓜ️  in the code above identify the tempo marker locations.
-Use ``C-c .`` to move point to the next one and ``C-c ,`` to move point to the
-previous one.
+Once you use a PEL command to insert a PEL tempo
+skeleton template you also automatically activate the **pel-tempo-mode**, a minor
+mode where you can use ``C-c .`` to move to the next tempo marker and ``C-c ,``
+to move point to the previous tempo marker.  When the **pel-tempo-mode** is
+active the **‡** lighter shows in the buffer's `mode line`_.
+You can toggle the **pel-tempo-mode** minor mode with the ``<f12> <f12>
+<space>`` key sequence.
+
 
 The comment block contains sections because the user option
 ``pel-c-skel-insert-module-sections`` is set to **t**.  This always includes the
@@ -2664,8 +2670,8 @@ insert the separator line, so you get the following instead:
         Ⓜ️
 
 Finally, if you type return at the prompt for the function purpose, the purpose
-text is not inserted, instead a tempo marker (Ⓜ️) is placed and point is left
-there:
+text is not inserted, instead a tempo marker (represented as Ⓜ️  in the generated
+code) is placed and point is left there:
 
 .. code:: c
 
@@ -2683,6 +2689,17 @@ there:
         }
 
         Ⓜ️
+
+As in the other styles, once you use a PEL command to insert a PEL tempo
+skeleton template you also automatically activate the **pel-tempo-mode**, a minor
+mode where you can use ``C-c .`` to move to the next tempo marker and ``C-c ,``
+to move point to the previous tempo marker.  When the **pel-tempo-mode** is
+active the **‡** lighter shows in the buffer's `mode line`_.
+You can toggle the **pel-tempo-mode** minor mode with the ``<f12> <f12>
+<space>`` key sequence.
+
+.. _mode line: https://www.gnu.org/software/emacs/manual/html_node/emacs/Mode-Line.html#Mode-Line
+
 
 
 PEL Support For C++
