@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-29 10:36:11, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-29 11:22:06, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2602,24 +2602,44 @@ comments. The indentation is also controlled by customization.
 
 .. code:: c
 
-        /* -------------------------------------------------------------------------- */
-        /* =========================
-         * list_registered_processes
-         * =========================
-         *
-         * Print or display the list of registered process on the specified device.
-         *
-        */
+            /* -------------------------------------------------------------------------- */
+            /* ================
+             * register_process
+             * ================
+             *
+             * Register a process ID in the list of monitored process.
+             *
+            */
 
-        Ⓜ️void
-        list_registered_processes(Ⓜ️)
+            Ⓜ️void
+            register_process(Ⓜ️)
+            {
+               Ⓜ️
+            }
+
+            Ⓜ️
+
+
+Using a C++ style comment (via ``<f12> M-;``) and setting
+``pel-c-skel-function-name-on-first-column`` set to nil the code generated becomes:
+
+.. code:: c
+
+
+        // -----------------------------------------------------------------------------
+        // ================
+        // register_process
+        // ================
+        //
+        // Register a process ID in the list of monitored process.
+        //
+
+        Ⓜ️void register_process(Ⓜ️)
         {
            Ⓜ️
         }
 
         Ⓜ️
-
-
 
 .. _custom/skeleton/custom-c-skel.el: ../custom/skeletons/custom-c-skel.el
 
