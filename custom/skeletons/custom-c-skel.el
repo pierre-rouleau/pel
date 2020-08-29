@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, August 28 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-08-29 10:23:48, updated by Pierre Rouleau>
+;; Time-stamp: <2020-08-29 17:46:13, updated by Pierre Rouleau>
 
 ;;; ----------------------------------------------------------------------------
 ;;; Commentary:
@@ -31,7 +31,7 @@
 ;;       code is written (look for require forms that pass the :noerror argument).
 
 ;; The example below create code that looks like this:
-
+;;
 ;;      /* -------------------------------------------------------------------------- */
 ;;      /* =========================
 ;;       * list_registered_processes
@@ -39,7 +39,7 @@
 ;;       *
 ;;       * Print or display the list of registered process on the specified device.
 ;;       *
-;;      */
+;;       */
 ;;
 ;;      void
 ;;      list_registered_processes()
@@ -57,6 +57,32 @@
 ;;; Code:
 ;;
 
+(defun pel-skels-c-header-module-block/custom (fname is-a-header cmt-style)
+  "Example of a custom skeleton for the top of a C file.
+The arguments are:
+- FNAME := string.  the name of the current file without path.
+- IS-A-HEADER := boolean. non-nil if the file is a C header file, nil otherwise.
+- CMT-STYLE := a list of 3 strings: (cb cc ce)
+            - cb : comment begin string
+            - cc : comment continuation string
+            - ce : comment end string."
+  (let* ((purpose  (pel-prompt-purpose-for "File" 'p))
+         (cb       (nth 0 cmt-style))
+         (cc       (nth 1 cmt-style))
+         (ce       (nth 2 cmt-style)))
+    (list
+     'l
+     cb " " fname " : " purpose  'n
+     cc 'n
+     cc (format-time-string
+      " U-FooBar restricted an and confidential. Copyright © U-FooBar %Y.\n")
+     (pel-skel-created-comment cc)
+     (pel-skel-author-comment  cc)
+     (pel-skel-time-stamp pel-c-skel-insert-file-timestamp cc)
+     ce (pel-when-text-in ce 'n)
+     (pel-separator-line) 'n)))
+
+
 (defun pel-skels-c-function-def/custom ()
   "Example of a custom skeleton function that defines a C function definition."
   ;; this let form creates and initializes the local variables
@@ -64,12 +90,9 @@
          (purpose         (pel-prompt-purpose-for "Function" 'p))
          (c-style         (pel-c-style-comments-strings))
          (cb              (nth 0 c-style))   ; comment begin: "/*" or "//"
-         (cc              (nth 1 c-style))   ; comment continue: "**" or "//"
-         (ce              (nth 2 c-style))  ; comment end: "*/" or ""
+         (cc              (nth 1 c-style))   ; comment continue: "**", " *" or "//"
+         (ce              (nth 2 c-style))  ; comment end: "*/", " */",  or ""
          (line            (make-string (length fct-name) ?=)))
-    ;; use " *" instead of "**" to continue C-style comments
-    (when (string= cc "**")
-      (setq cc " *"))
     ;; create and return a tempo skeleton inclusion list that creates the C code
     (list
      'l

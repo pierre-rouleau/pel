@@ -1426,6 +1426,19 @@ c-mode buffers.  The default is 80."
           (const   :tag "Use the default fill-column value." nil)
           (integer :tag "Use a value specific for c-mode buffers:")))
 
+(defcustom pel-c-skel-comment-with-2stars t
+  "Specifies whether multi-line C comments continuation use 2 stars.
+If set to t (the default), C comments in generated code
+use the following style comment format:   /*
+                                          **
+                                          */
+
+If set to nil, the comment style is:      /*
+                                           *
+                                           */"
+  :group 'pel-c-code-style
+  :type 'boolean
+  :safe #'booleanp)
 
 (defcustom pel-c-skel-use-separators t
   "Specifies whether C code block include separators line.
@@ -1446,6 +1459,39 @@ comments of length controlled by variable `fill-column' are inserted."
   :group 'pel-c-code-style
   :type 'boolean
   :safe #'booleanp)
+
+(defcustom pel-c-skel-module-header-block-style nil
+  "Specifies the style of the C file module header block.
+You can use one of the following:
+
+- The default, controlled by PEL's code.
+- A user-specified one.  For this you have to write Emacs Lisp code.
+  You have to write a function `pel-skels-c-header-module-block/custom'
+  inside a file and store the name of that file inside the box that
+  appear when you select this option.   The function must accept
+  3 arguments:
+  - arg 1: string : the file name (without path)
+  - arg 2: boolean: is non-nil when the file is a C header file,
+                    and nil when it is a .c file.
+  - arg 3: a list of 3 strings: (cb cc ce)
+            - cb : comment begin string
+            - cc : comment continuation string
+            - ce : comment end string.
+
+  The function can use or ignore these arguments.
+  See the code of function `pel-skels-c-header-module-block'
+  for an example of how these arguments are used to create the standard
+  header-module block skeleton.
+
+  You can start by using the example that is stored inside the file
+  'custom/skeleton/custom-c-skel.el'.
+  The file name can be an absolute file name but it can also be a relative
+  file name. On Unix systems you can use '~' to identify your home directory."
+  :group 'pel-c-code-style
+  :type '(choice
+          (const  :tag "Default, controlled by PEL." nil)
+          (string :tag "Use your own, defined in file:")))
+
 
 (defcustom pel-c-skel-insert-module-sections t
   "Specifies whether code sections are inserted inside C file comment block.
@@ -1474,7 +1520,6 @@ The default is to add the following sections:
 Empty strings can be used to specify section with a tempo marker with no text."
   :group 'pel-c-code-style
   :type '(repeat string))
-
 
 (defcustom pel-c-skel-insert-function-sections t
   "Specifies whether code sections are inserted inside C function comment block.

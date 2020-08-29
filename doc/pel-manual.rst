@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-29 14:26:00, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-29 18:16:56, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2257,6 +2257,8 @@ section with the "Module Description" title.  The following section names
 .. _Emacs User Identification: https://www.gnu.org/software/emacs/manual/html_node/elisp/User-Identification.html
 
 
+
+
 In a C header file
 >>>>>>>>>>>>>>>>>>
 
@@ -2340,6 +2342,41 @@ or:
             // Author    : Pierre Rouleau <your-email@here.yougo>
             // Time-stamp: <2020-08-27 22:57:51, by Pierre Rouleau>
             // ---------------------------------------------------------------------------
+
+
+Using user-specified skeleton
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+The default skeleton with all the user options PEL provides might still not
+generate exactly what you need. In that case you can write your own tempo
+skeleton code in a function named ``pel-skels-c-header-module-block/custom``
+in a file that you identify in the ``pel-c-skel-module-header-block-style`` user
+option.
+
+See the provided example inside the file
+`custom/skeleton/custom-c-skel.el`_.
+
+With:
+
+- ``pel-c-skel-insert-module-section`` set to nil,
+- ``pel-c-skel-comment-with-2stars`` set to nil,
+- ``pel-c-skel-module-header-block-style`` set to the name of a file that
+  contains the same code as in `custom/skeleton/custom-c-skel.el`_
+
+and assuming your name is ``Same One`` and you work for ``U-FooBar``, typing the
+``<f12> <f12> C-h`` in the file ``ufoobar.c``, something like the following
+comment would be inserted in the buffer:
+
+
+.. code:: c
+
+            /* ufoobar.c : Process monitoring facilities.
+             *
+             * U-FooBar restricted an and confidential. Copyright © U-FooBar 2020.
+             * Created   : Saturday, August 29 2020.
+             * Author    : Same One  <sameone@ufoobar.there>
+             * Time-stamp: <2020-08-29 17:47:38, updated by Same One>
+             */
 
 
 C function template

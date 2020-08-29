@@ -42,6 +42,7 @@
 ;; - `pel-skel-insert-license-when'
 ;;   - `pel-license-text'
 ;; - `pel-skel-copyright-comment'
+;; - `pel-skel-call'
 
 ;; -----------------------------------------------------------------------------
 ;;; Dependencies:
@@ -239,6 +240,35 @@ inserted."
               cpr-word
               (format-time-string "%Y")
               cpr-owner))))
+
+;; --
+;; Calling skel function specified by user file
+
+(defun pel-skel-call (user-option skel-function &rest args)
+  "Return tempo list skeleton taken from user supplied file and function.
+- USER-OPTION := symbol of the user option variable that identifies the
+                 name of the file to load.
+- SKEL-FUNCTION := symbol of the function to execute.
+Issue a user-error with explicit message on any error.
+The any extra ARGS are arguments passed to SKEL-FUNCTION."
+  (let ((fname            (symbol-value user-option))
+        (user-option-name (symbol-name user-option)))
+    (if (not (file-exists-p fname))
+        (user-error "File %s specified in %s does not exist!"
+                    fname
+                    user-option-name)
+      (if (not (load fname :noerror))
+          (user-error "Can't load file %s specified in %s!"
+                      fname
+                      user-option-name)
+        (if (not (fboundp skel-function))
+            (user-error "Invalid %s function in file %s specified by %s!"
+                        (symbol-name skel-function)
+                        fname
+                        user-option-name)
+          ;; all is OK: call the skel-function and pass it his arguments
+          ;; if there are any
+          (apply skel-function args))))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-skels)

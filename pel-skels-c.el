@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-08-29 11:29:50, updated by Pierre Rouleau>
+;; Time-stamp: <2020-08-29 17:36:24, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -54,8 +54,30 @@
 ;; build robust C and self-documented code. I would also like to provide the
 ;; ability to insert other type of information to increase the flexibility of
 ;; this skeleton, but I'll do this later when I spend more time coding in C or
-;; if I get requests.
+;; if I get requests for that.
 ;;
+
+;; The function ('-') and variable ('>') hierarchy in this file is the
+;; following:
+;;
+;; - `pel--install-c-skel'
+;;   > `pel--c-skels'
+;;     > `pel-skels-c-large-header-skel'
+;;       - `pel-skels-c-file-header-block'
+;;     > `pel-skels-c-function-definition-skel'
+;;       - `pel-skels-c-function-definition'
+;;         - `pel-skels-c-function-def-man'
+;;         - `pel-skels-c-function-def-basic'
+;;           - `pel-skels-c-function-def'
+;;             - `pel-valid-c-function-name'
+;;             - `pel-c-style-comments-strings'
+;;             - `pel-skel-c-separator-line'
+;;   > `pel--c-skels-keys'
+;;
+;;
+;; The function `pel--install-c-skel' is only called by `pel-init' when
+;; it loads pel_keys.el.
+
 
 ;;; ----------------------------------------------------------------------------
 ;;; Dependencies:
@@ -68,6 +90,7 @@
 (require 'pel-skels)       ; use: pel-skel-create-comment
 ;;                         ;      pel-skel-author-comment
 ;;                         ;      pel-skel-time-stamp
+;;                         ;      pel-skel-call
 (require 'pel-tempo)       ; use: pel-tempo-install-pel-skel
 (require 'pel-text-insert) ; use: pel-separator-line
 (require 'pel-uuid)        ; use: pel-c-include-guard
@@ -75,6 +98,9 @@
 ;;; ----------------------------------------------------------------------------
 ;;; Code:
 ;;
+
+;; --
+;; Utility functions
 
 (defun pel-skel-c-separator-line ()
   "Return a section separator line for C if required.
@@ -88,31 +114,42 @@ Otherwise return a string that ends with a newline."
 These 3 strings are:
 1- The comment start block.  Something like \"/*\" or \"//\".
    It does *not* end with a space.
-2- The intermediate comment block.  Something like \"**\", \"//\",
-   or \" *\".
-3- The closing comment block.  Something like \"*\" or \"\".
+2- The intermediate comment block.  Something like \"**\", \" *\",
+   or  \"//\".
+3- The closing comment block.  Something like \"*\", \" */\" or \"\".
 The string returned is selected by the currently active C-style.
-The following variables are used:
-- variable `c-block-comment-flag'."
+The following variables are used for the decision:
+- variable `c-block-comment-flag'
+- variable `pel-c-skel-comment-with-2stars'."
   (let* ((c-style         (and (boundp 'c-block-comment-flag)
                                c-block-comment-flag))
          (cb              (if c-style "/*" "//"))
          (cc              (if c-style "**"  "//"))
          (ce              (if c-style "*/"  "")))
+    (unless pel-c-skel-comment-with-2stars
+      ;; use " *" instead of "**" to continue C-style comments
+      (when (string= cc "**")
+        (setq cc " *"))
+      (when (string= ce "*/")
+        (setq ce " */")))
     (list cb cc ce)))
 
-(defun pel-skels-c-file-header-block ()
-  "Return a tempo list for a C file header block.
-The format of the file header block is adjusted for the supported file types:
-the C code file and the C header file."
-  (let* ((purpose      (pel-prompt-purpose-for "File" 'p))
-         (fname        (pel-current-buffer-filename :sans-directory))
-         (fn-extension (file-name-extension fname))
-         (is-a-header  (string= fn-extension "h"))
-         (c-style         (pel-c-style-comments-strings))
-         (cb              (nth 0 c-style))
-         (cc              (nth 1 c-style))
-         (ce              (nth 2 c-style)))
+;; -----------------------------------------------------------------------------
+;; File/Module header block
+
+(defun pel-skels-c-header-module-block (fname is-a-header cmt-style)
+  "Return a tempo list for the comment block inserted at the top of the C file.
+The arguments are:
+- FNAME := string.  the name of the current file without path.
+- IS-A-HEADER := boolean. non-nil if the file is a C header file, nil otherwise.
+- CMT-STYLE := a list of 3 strings: (cb cc ce)
+            - cb : comment begin string
+            - cc : comment continuation string
+            - ce : comment end string."
+  (let* ((purpose  (pel-prompt-purpose-for "File" 'p))
+         (cb       (nth 0 cmt-style))
+         (cc       (nth 1 cmt-style))
+         (ce       (nth 2 cmt-style)))
     (list
      'l
      cb " C " (if is-a-header "HEADER" "MODULE") ": "  fname 'n
@@ -127,7 +164,31 @@ the C code file and the C header file."
              (pel-license-text cc)
              cc 'n))
      ce (pel-when-text-in ce 'n)
-     (pel-separator-line) 'n
+     (pel-separator-line) 'n)))
+
+(defun pel-skels-c-file-header-block ()
+  "Return a tempo list for a C file header block.
+The format of the file header block is adjusted for the supported file types:
+the C code file and the C header file.
+The file header portion is controlled by the style selected by the
+variable `pel-c-skel-module-header-block-style'."
+  (let* ((fname        (pel-current-buffer-filename :sans-directory))
+         (is-a-header  (string= (file-name-extension fname) "h"))
+         (cmt-style    (pel-c-style-comments-strings))
+         (cb           (nth 0 cmt-style))
+         (cc           (nth 1 cmt-style))
+         (ce           (nth 2 cmt-style)))
+    (list
+     'l
+     ;; insert the top level comment block for the top of the file
+     ;; Select the style from `pel-c-skel-module-header-block-style'
+     (if pel-c-skel-module-header-block-style
+         (pel-skel-call 'pel-c-skel-module-header-block-style
+                        'pel-skels-c-header-module-block/custom
+                        fname is-a-header
+                        cmt-style)
+       (pel-skels-c-header-module-block fname is-a-header cmt-style))
+     ;; then add the remainder for either a header file or code file
      (if is-a-header
          (when pel-c-skel-use-uuid-include-guards
            (list
@@ -162,9 +223,8 @@ the C code file and the C header file."
                               'p 'n 'n)))
          (pel-append-to sk (list (pel-skel-c-separator-line))))))))
 
-;; --
+;; -----------------------------------------------------------------------------
 ;; C function definitions
-
 
 (defun pel-valid-c-function-name (text)
   "Return the string if it is a valid C function name, nil otherwise.
@@ -202,9 +262,9 @@ The function NAME and PURPOSE can be passed via arguments,
 prompt user otherwise."
   (let* ((fct-name   (or name (pel-prompt-function (function pel-valid-c-function-name))))
          (purpose    (or purpose (pel-prompt-purpose-for "Function" 'p)))
-         (c-style    (pel-c-style-comments-strings))
-         (cb         (nth 0 c-style))
-         (ce         (nth 2 c-style)))
+         (cmt-style  (pel-c-style-comments-strings))
+         (cb         (nth 0 cmt-style))
+         (ce         (nth 2 cmt-style)))
     (list
      'l
      (pel-skel-c-separator-line)
@@ -221,10 +281,10 @@ This style is selected when the user option variable
 The comment style is controlled by the CC mode variable `c-block-comment-flag'."
   (let* ((fct-name        (pel-prompt-function (function pel-valid-c-function-name)))
          (purpose         (pel-prompt-purpose-for "Function" 'p))
-         (c-style         (pel-c-style-comments-strings))
-         (cb              (nth 0 c-style))
-         (cc              (nth 1 c-style))
-         (ce              (nth 2 c-style))
+         (cmt-style       (pel-c-style-comments-strings))
+         (cb              (nth 0 cmt-style))
+         (cc              (nth 1 cmt-style))
+         (ce              (nth 2 cmt-style))
          (spread-fct-name (pel-string-spread fct-name)))
     (list
      'l
@@ -258,16 +318,8 @@ Insert the skeleton selected by the user option variable
          (pel-skels-c-function-def-basic))
         ((eq pel-c-skel-function-define-style 'man-style)
          (pel-skels-c-function-def-man))
-        (t (if (not (file-exists-p pel-c-skel-function-define-style))
-               (user-error
-                "File %s specified in pel-c-skel-function-define-style does not exist!"
-                pel-c-skel-function-define-style)
-             (if (and (load pel-c-skel-function-define-style :noerror)
-                      (fboundp 'pel-skels-c-function-def/custom))
-                 (pel-skels-c-function-def/custom)
-               (user-error
-                "Invalid pel-custom-c-function-block in file: %s"
-                pel-c-skel-function-define-style))))))
+        (t (pel-skel-call 'pel-c-skel-function-define-style
+                          'pel-skels-c-function-def/custom))))
 
 ;; -----------------------------------------------------------------------------
 ;; Install Emacs Lisp skeletons
@@ -281,7 +333,6 @@ Insert the skeleton selected by the user option variable
   '(o
     (pel-skels-c-function-definition))
   "The skeleton of a C function definition block.")
-
 
 (defvar pel--c-skels
   '(("File Header" "file-header" pel-skels-c-large-header-skel)
