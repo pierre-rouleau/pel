@@ -1410,6 +1410,7 @@ display in other window and open the related group(s) that exist."
 (pel--cfg-pkg "elisp"        pel:cfg-pl "l" "lisp" "elint" "eldoc")
 (pel--cfg-pkg "elixir"       pel:cfg-pl "x" "alchemist" "alchemist-iex")
 (pel--cfg-pkg "erlang"       pel:cfg-pl "e" "erlang" "erldoc" "edts" "auto-highlight-symbol")
+(pel--cfg-pkg "forth"        pel:cfg-pl "f")
 (pel--cfg-pkg "graphviz-dot" pel:cfg-pl "g" "graphviz")
 (pel--cfg-pkg "julia"        pel:cfg-pl "j" "julia" "julia-mode" "julia-snail")
 (pel--cfg-pkg "lisp"         pel:cfg-pl "L" "lisp")
@@ -2190,6 +2191,29 @@ This is meant to be used in the d-mode hook lambda."
 ;;     :init
 ;;     (add-hook ‘elixir-mode-hook ’lsp)))
 
+;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` : Forth programming
+(when pel-use-forth
+  (use-package forth-mode
+    :ensure t
+    :pin melpa
+    :commands (forth-mode
+               forth-block-mode
+               forth-interaction-mode)
+    :init
+    (define-pel-global-prefix pel:for-forth (kbd "<f11> SPC f"))
+    (define-key               pel:for-forth (kbd "<f1>") 'pel-cfg-pkg-forth)
+    ;;
+    ;;
+    ;; activate the <f12> key binding for forth-mode
+    (pel--mode-hook-maybe-call
+     '(lambda ()
+        (pel-local-set-f12 'pel:for-forth))
+     'forth-mode 'forth-mode-hook)))
+
+;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC F`` : FORTRAN programming
+;; reserved but not implemented.
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC j`` : Julia programming

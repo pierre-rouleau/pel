@@ -2322,6 +2322,19 @@ package which provides the client/library for LSP."
   :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Forth support
+;; -------------
+(defgroup pel-pkg-for-forth nil
+  "PEL customization for Forth."
+  :group 'pel-pkg-for-programming)
+
+(defcustom pel-use-forth nil
+  "Control whether PEL supports Forth development."
+  :group 'pel-pkg-for-forth
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Julia Support
 ;; --------------
 (defgroup pel-pkg-for-julia nil

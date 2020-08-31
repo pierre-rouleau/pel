@@ -52,6 +52,7 @@
     (flycheck            "20200516.1719") ; melpa
     (flycheck-plantuml   "20171018.111")  ; melpa
     (free-keys           "20160726.2050") ; melpa. Melpa-stable: 1.0.0
+    (forth-mode          "20170527.1930") ; melpa
     (goto-last-change    "20150109.1823") ; melpa. Melpa-stable: 1.2.1
     (graphviz-dot-mode   "20200304.432")  ; melpa. Melpa-stable: 0.4.2
     (helm                "20200517.509")  ; melpa.

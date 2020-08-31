@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-30 22:20:19, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-31 08:35:21, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2803,6 +2803,23 @@ on which the d-mode is based via the **pel:for-d** key-map, bounded to the
 .. _D Style code guideline: https://dlang.org/dstyle.html
 .. _PEL PDF document for D: pdf/pl_d.pdf
 
+PEL Support for Forth
+^^^^^^^^^^^^^^^^^^^^^
+
+:PDF Docs: `Forth <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-forth``
+
+                      - Activation: ``pel-use-forth``
+
+:PEL Key Prefix: - Globally: **pel:for-forth** : ``<f11> SPC f``
+                 - From a buffer in d-mode: ``<f12>`` and ``<M-f12>``
+
+PEL provides basic support for the `Forth programming language`_ via the
+forth-mode_ package.  With it the file extensions ``.f``, ``.fs``, ``.fth``, and
+``.4th`` are automatically recognized as being Forth files.
+
+.. _Forth programming language: https://en.wikipedia.org/wiki/Forth_(programming_language)
+
 
 PEL Prompt Utilities
 --------------------
@@ -3771,6 +3788,10 @@ PDF Document Tables
    - `Emacs Lisp <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-emacs-lisp.pdf>`_
 
      - `ERT <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/ert.pdf>`_ (Emacs Lisp Regression Testing system)
+
+#. `Forth <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth.pdf>`_
+#. `Python <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-python.pdf>`_
+
 
 **Version Control Systems:**
 
@@ -4909,6 +4930,7 @@ flycheck_                     MELPA_
 flycheck-plantuml_            MELPA_
 exunit_                       MELPA_
 fill-column-indicator_        MELPA_
+forth-mode_                   MELPA_
 framemove_                    Emacsmirror_
 free-keys_                    MELPA_
 goto-last-change_             MELPA_
@@ -5016,6 +5038,7 @@ when running Emacs 27.1 and later versions.
 .. _fill-column-indicator:     https://melpa.org/#/fill-column-indicator
 .. _flycheck:                  https://melpa.org/#/flycheck
 .. _flycheck-plantuml:         https://melpa.org/#/flycheck-plantuml
+.. _forth-mode:                https://melpa.org/#/forth-mode
 .. _free-keys:                 https://melpa.org/#/free-keys
 .. _goto-last-change:          https://melpa.org/#/goto-last-change
 .. _graphviz-dot-mode:         https://melpa.org/#/graphviz-dot-mode
