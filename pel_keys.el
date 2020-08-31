@@ -485,16 +485,20 @@ For example, applied to a directory name, macOS Finder is used."
                                       'super
                                     'hyper))))
 
-(when (and pel-use-framemove (display-graphic-p))
-  (use-package framemove
-    :init
+(when pel-use-framemove
+  ;; download and byte-compile framemove if not already present.
+  ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
+  (cl-eval-when 'load
     (pel-install-file
      "https://raw.githubusercontent.com/emacsmirror/framemove/master/framemove.el"
-     "framemove.el")
-    :config
-    (cl-eval-when 'compile (require 'framemove nil :noerror))
-    (when (boundp 'framemove-hook-into-windmove)
-      (setq framemove-hook-into-windmove t))))
+     "framemove.el"))
+
+  (when (display-graphic-p)
+    (use-package framemove
+      :config
+      (cl-eval-when 'compile (require 'framemove nil :noerror))
+      (when (boundp 'framemove-hook-into-windmove)
+        (setq framemove-hook-into-windmove t)))))
 
 ;; Uniquify: meaningful names when multiple buffers have the same name
 ;; -------------------------------------------------------------------
@@ -2426,16 +2430,17 @@ This is meant to be used in the d-mode hook lambda."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC R`` : REXX programming
 (when pel-use-rexx
-  (use-package rexx-mode
-    :commands rexx-mode
-
-    :init
-    ;; Install the single file in .emacs.d/utils sub-directory if it is
-    ;; not already present.  Download from Emacs Attics.
-    ;; See home page: https://github.com/emacsattic/rexx-mode
+  ;; Download and byte-compile rexx-mode if not already present.
+  ;; See home page: https://github.com/emacsattic/rexx-mode
+  ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
+  (cl-eval-when 'load
     (pel-install-file
      "https://raw.githubusercontent.com/emacsattic/rexx-mode/master/rexx-mode.el"
-     "rexx-mode.el")
+     "rexx-mode.el"))
+
+  (use-package rexx-mode
+    :commands rexx-mode
+    :init
     ;; set the file extensions
     (add-to-list 'auto-mode-alist '("\\.\\(rexx\\|elx\\|ncomm\\|cpr\\)\\'"
                                     . rexx-mode))
@@ -2731,15 +2736,18 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:comment "\""           'pel-hide/show-docstring)
 
 (when pel-use-hide-comnt
+  ;; Download and byte-compile hide-comnt.el if its not present
+  ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
+  (cl-eval-when 'load
+    (pel-install-file
+     "https://raw.githubusercontent.com/emacsmirror/hide-comnt/master/hide-comnt.el"
+     "hide-comnt.el"))
+
   (use-package hide-comnt
     ;; autoload hide-comnt.el based on its 2 commands
     :commands (hide/show-comments
                hide/show-comments-toggle)
     :init
-    ;; Download and byte-compile hide-comnt.el if its not present
-    (pel-install-file
-     "https://raw.githubusercontent.com/emacsmirror/hide-comnt/master/hide-comnt.el"
-     "hide-comnt.el")
     ;; Bind commands to keys
     (define-key pel:comment ";" 'hide/show-comments-toggle)
     (define-key pel:comment ":" 'hide/show-comments)))
@@ -3106,13 +3114,16 @@ the ones defined from the buffer now."
 (define-key pel:highlight      "w"  #'hi-lock-write-interactive-patterns)
 ;;
 (when pel-use-vline
+  ;; download and byte-compile vline if not already present
+  ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
+  (cl-eval-when 'load
+    (pel-install-file
+     "https://raw.githubusercontent.com/emacsmirror/vline/master/vline.el"
+     "vline.el"))
+
   (use-package vline
     :commands vline-mode
     :init
-    ;; download and byte-compile vline if not already present
-    (pel-install-file
-     "https://raw.githubusercontent.com/emacsmirror/vline/master/vline.el"
-     "vline.el")
     ;; Bind the commands to keys
     (define-key pel:highlight    "|"  'vline-mode)
     (define-key pel:             "9"  'vline-mode)))
