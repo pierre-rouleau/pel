@@ -48,8 +48,8 @@
 ;;; Dependencies:
 
 (require 'pel--base)                  ; use: pel-line-only-whitespace-p
+(require 'pel--options)               ; use: pel-c-skel-comment-with-2stars
 (require 'pel-prompt)                 ; use: pel-prompt-purpose-for
-
 ;; -----------------------------------------------------------------------------
 ;;; Code:
 
@@ -269,6 +269,40 @@ The any extra ARGS are arguments passed to SKEL-FUNCTION."
           ;; all is OK: call the skel-function and pass it his arguments
           ;; if there are any
           (apply skel-function args))))))
+
+
+(defun pel-skel-comments-strings ()
+  "Return a list of 3 strings describing C-style comments.
+These 3 strings are:
+1- The comment begin string:        comment-start
+2- The comment continuation string: comment-continue
+3- The comment closing string:      comment-end
+
+The function supports generically all types of files,
+but also gives special considerations to the
+C programming language, where the 3 strings are:
+
+1- The comment start block.  Something like \"/*\" or \"//\".
+   It does *not* end with a space.
+2- The intermediate comment block.  Something like \"**\", \" *\",
+   or  \"//\".
+3- The closing comment block.  Something like \"*\", \" */\" or \"\".
+The string returned is selected by the currently active C-style.
+The following variables are used for the decision:
+- variable `c-block-comment-flag'
+- variable `pel-c-skel-comment-with-2stars'."
+  (let* ((c-style   (and (boundp 'c-block-comment-flag)
+                         c-block-comment-flag))
+         (cb        (if c-style "/*"  comment-start))
+         (cc        (if c-style "**"  (or comment-continue comment-start)))
+         (ce        (if c-style "*/"  comment-end)))
+    (unless pel-c-skel-comment-with-2stars
+      ;; use " *" instead of "**" to continue C-style comments
+      (when (string= cc "**")
+        (setq cc " *"))
+      (when (string= ce "*/")
+        (setq ce " */")))
+    (list cb cc ce)))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-skels)

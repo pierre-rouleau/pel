@@ -64,6 +64,7 @@
 ;;     - pel-pkg-for-vcs
 ;;     - pel-pkg-for-project-mng
 ;;     - pel-pkg-for-programming
+;;       - pel-pkg-for-all
 ;;       - pel-pkg-for-applescript
 ;;       - pel-pkg-for-cc
 ;;         - pel-pkg-for-c
@@ -1300,6 +1301,114 @@ eglot is a client for Language Server Protocol (LSP) servers."
   :group 'pel-pkg-for-programming
   :type 'boolean
   :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Generic Programming Support
+;; ---------------------------
+(defgroup pel-pkg-for-all nil
+  "PEL Generic Programming support."
+  :group 'pel-pkg-for-programming)
+
+;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+(defgroup pel-pkg-generic-code-style nil
+  "PEL Generic code style configuration."
+  :group 'pel-pkg-for-all)
+
+(defcustom pel-generic-skel-use-separators t
+  "Specifies whether generic code block include separators line.
+If nil no separator line comment is used, otherwise separator line
+comments of length controlled by variable `fill-column' are inserted."
+  :group 'pel-generic-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-generic-skel-insert-file-timestamp t
+  "Specifies whether a timestamp is inserted inside file module header block."
+  :group 'pel-generic-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-generic-skel-with-license nil
+  "Control whether a license text is inserted in code file module header block.
+
+When t, the licence inserted is controlled by the function `lice' taken
+from the external library with the same name.
+If t this activates `pel-use-lice' if it is not activated already.
+
+The text of the inserted license is selected by the `lice:default-license'
+user option, normally configured inside the directory's '.dir-locals.el'
+file written inside the global setting like this:
+
+   ((nil   .      ((fill-column . 80)
+                   (lice:default-license  . \"gpl-3.0\")
+                   (lice:copyright-holder . \"Your Name\")))
+
+Replace the gpl-3.0 with the license you want and write your name inside
+the copyright holder value."
+  :group 'pel-generic-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-generic-skel-module-header-block-style nil
+  "Specifies the style of the code file module header block.
+You can use one of the following:
+
+- The default, controlled by PEL's code.
+- A user-specified one.  For this you have to write Emacs Lisp code.
+  You have to write a function `pel-skels-generic-header-module-block/custom'
+  inside a file and store the name of that file inside the box that
+  appear when you select this option.   The function must accept
+  3 arguments:
+  - arg 1: string : the file name (without path)
+  - arg 2: boolean: is non-nil when the file is a C header file,
+                    and nil when it is a .c file.
+  - arg 3: a list of 3 strings: (cb cc ce)
+            - cb : comment begin string
+            - cc : comment continuation string
+            - ce : comment end string.
+
+  The function can use or ignore these arguments.
+  See the code of function `pel-skels-generic-header-module-block'
+  for an example of how these arguments are used to create the standard
+  header-module block skeleton.
+
+  You can start by using the example that is stored inside the file
+  'custom/skeleton/custom-c-skel.el'.
+  The file name can be an absolute file name but it can also be a relative
+  file name. On Unix systems you can use '~' to identify your home directory."
+  :group 'pel-generic-code-style
+  :type '(choice
+          (const  :tag "Default, controlled by PEL." nil)
+          (string :tag "Use your own, defined in file:")))
+
+
+(defcustom pel-generic-skel-insert-module-sections t
+  "Specifies whether code sections are inserted inside code file comment block.
+This includes the \"Module Description\" section and sections
+with titles identified by the variable
+`pel-generic-skel-module-section-titles'."
+  :group 'pel-generic-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-generic-skel-module-section-titles '("Dependencies"
+                                                    "Code")
+  "List of section titles to add in the module comment block.
+These section names are added when the variable
+`pel-generic-skel-insert-module-sections' is t, after the
+\"Module Description\" section. The sections are placed inside
+the module documentation block in the order of appearance in the
+list with the string as it appears in the list.  The default is
+to add the following sections:
+
+- Header Inclusion,
+- Local Types,
+- Local Variables,
+- Code.
+
+Empty strings can be used to specify section with a tempo marker with no text."
+  :group 'pel-generic-code-style
+  :type '(repeat string))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; AppleScript support

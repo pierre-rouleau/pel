@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-08-29 17:36:24, updated by Pierre Rouleau>
+;; Time-stamp: <2020-08-30 16:41:08, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -70,7 +70,6 @@
 ;;         - `pel-skels-c-function-def-basic'
 ;;           - `pel-skels-c-function-def'
 ;;             - `pel-valid-c-function-name'
-;;             - `pel-c-style-comments-strings'
 ;;             - `pel-skel-c-separator-line'
 ;;   > `pel--c-skels-keys'
 ;;
@@ -108,31 +107,6 @@ If prohibited (by customization) returns nil.
 Otherwise return a string that ends with a newline."
   (when pel-c-skel-use-separators
     (concat (pel-separator-line) "\n")))
-
-(defun pel-c-style-comments-strings ()
-  "Return a list of 3 strings describing C-style comments.
-These 3 strings are:
-1- The comment start block.  Something like \"/*\" or \"//\".
-   It does *not* end with a space.
-2- The intermediate comment block.  Something like \"**\", \" *\",
-   or  \"//\".
-3- The closing comment block.  Something like \"*\", \" */\" or \"\".
-The string returned is selected by the currently active C-style.
-The following variables are used for the decision:
-- variable `c-block-comment-flag'
-- variable `pel-c-skel-comment-with-2stars'."
-  (let* ((c-style         (and (boundp 'c-block-comment-flag)
-                               c-block-comment-flag))
-         (cb              (if c-style "/*" "//"))
-         (cc              (if c-style "**"  "//"))
-         (ce              (if c-style "*/"  "")))
-    (unless pel-c-skel-comment-with-2stars
-      ;; use " *" instead of "**" to continue C-style comments
-      (when (string= cc "**")
-        (setq cc " *"))
-      (when (string= ce "*/")
-        (setq ce " */")))
-    (list cb cc ce)))
 
 ;; -----------------------------------------------------------------------------
 ;; File/Module header block
@@ -174,10 +148,11 @@ The file header portion is controlled by the style selected by the
 variable `pel-c-skel-module-header-block-style'."
   (let* ((fname        (pel-current-buffer-filename :sans-directory))
          (is-a-header  (string= (file-name-extension fname) "h"))
-         (cmt-style    (pel-c-style-comments-strings))
+         (cmt-style    (pel-skel-comments-strings))
          (cb           (nth 0 cmt-style))
          (cc           (nth 1 cmt-style))
          (ce           (nth 2 cmt-style)))
+    (goto-char (point-min)) ; TODO: del this but mod skels to force entry at top.
     (list
      'l
      ;; insert the top level comment block for the top of the file
@@ -262,7 +237,7 @@ The function NAME and PURPOSE can be passed via arguments,
 prompt user otherwise."
   (let* ((fct-name   (or name (pel-prompt-function (function pel-valid-c-function-name))))
          (purpose    (or purpose (pel-prompt-purpose-for "Function" 'p)))
-         (cmt-style  (pel-c-style-comments-strings))
+         (cmt-style  (pel-skel-comments-strings))
          (cb         (nth 0 cmt-style))
          (ce         (nth 2 cmt-style)))
     (list
@@ -281,7 +256,7 @@ This style is selected when the user option variable
 The comment style is controlled by the CC mode variable `c-block-comment-flag'."
   (let* ((fct-name        (pel-prompt-function (function pel-valid-c-function-name)))
          (purpose         (pel-prompt-purpose-for "Function" 'p))
-         (cmt-style       (pel-c-style-comments-strings))
+         (cmt-style       (pel-skel-comments-strings))
          (cb              (nth 0 cmt-style))
          (cc              (nth 1 cmt-style))
          (ce              (nth 2 cmt-style))
@@ -339,13 +314,13 @@ Insert the skeleton selected by the user option variable
     ("Function"    "function"    pel-skels-c-function-definition-skel))
   "List of Emacs Lisp tempo skeletons.")
 
-(defvar pel--c-skels-keys '(("file-header" . "C-h")
+(defvar pel--c-skels-keys '(("file-header" . "h")
                             ("function"    . "f"))
-  "Key mapping for Emacs Lisp skeletons.")
+  "Key mapping for C skeletons.")
 
 ;;-pel-autoload
 (defun pel--install-c-skel (key-map)
-  "Create the Emacs Lisp skeletons and bind them in the KEY-MAP specified.
+  "Create the C skeletons and bind them in the KEY-MAP specified.
 This function is meant to be called by the function `pel-init' only."
   (pel-tempo-install-pel-skel
    "c"

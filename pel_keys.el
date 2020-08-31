@@ -1088,6 +1088,8 @@ For example, applied to a directory name, macOS Finder is used."
 (define-key pel:f6 (kbd "C-i")       'pel-insert-c-indent)
 (define-key pel:f6 (kbd "<backtab>") 'pel-unindent)
 ;;
+;; Install the generic skeletons
+(pel--install-generic-skel pel:f6)
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11>

@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2020-08-27 17:27:21, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-08-30 15:55:44, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -160,6 +160,7 @@ EL_FILES := pel--base.el \
 			pel-search-regexp.el \
 			pel-seq.el \
 			pel-skels.el \
+			pel-skels-generic.el \
 			pel-skels-c.el \
 			pel-skels-elisp.el \
 			pel-skels-rst.el \
@@ -473,7 +474,8 @@ pel-register.elc:       pel--base.elc
 pel-regexp.elc:         pel--base.elc
 pel-rst.elc:            pel--base.elc pel--macros.elc pel--options.elc pel-bookmark.elc pel-file.elc
 pel-search:             pel--options.elc pel--macros.elc pel-prompt.elc pel-read.elc pel-window.elc
-pel-skels.elc:          pel--base.elc pel-prompt.elc
+pel-skels.elc:          pel--base.elc pel--options.elc pel-prompt.elc
+pel-skels-generic.elc:  pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc
 pel-skels-c.elc:        pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc pel-uuid.elc
 pel-skels-elisp.elc:    pel--base.elc pel--options.elc pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc
 pel-skels-rst.elc:      pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc

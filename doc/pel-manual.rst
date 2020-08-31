@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-29 18:16:56, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-30 22:20:19, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2153,7 +2153,7 @@ This is extremely flexible.
 C file header/module block template
 ***********************************
 
-Insert a C file header block with the ``<f12> <f12> C-h`` key sequence.
+Insert a C file header block with the ``<f12> <f12> h`` key sequence.
 It will prompt for the [purpose of the file.  Then insert the comment block at
 the beginning of the C file according to the user options that are part of the
 ``pel-c-code-style`` customization group.
@@ -2287,7 +2287,7 @@ instead:
             #endif
 
 If you want to use C99 compatible line comment style instead, type ``<f12> M-;``
-to toggle the comment style and then type the same command (``<f12> <f12> C-h``)
+to toggle the comment style and then type the same command (``<f12> <f12> h``)
 and you'll get something like the following:
 
 .. code:: c
@@ -2364,7 +2364,7 @@ With:
   contains the same code as in `custom/skeleton/custom-c-skel.el`_
 
 and assuming your name is ``Same One`` and you work for ``U-FooBar``, typing the
-``<f12> <f12> C-h`` in the file ``ufoobar.c``, something like the following
+``<f12> <f12> h`` in the file ``ufoobar.c``, something like the following
 comment would be inserted in the buffer:
 
 
@@ -3230,7 +3230,7 @@ things like:
 PEL binds keys to the commands that insert and expand tempo skeletons: they are
 bound to major mode specific ``<f12> <f12>`` key sequence, trying to use the
 same sequence for a concept in all supported modes.  For example the key
-sequence ``<f12> <f12> C-h`` inserts a file header in the supported modes but
+sequence ``<f12> <f12> h`` inserts a file header in the supported modes but
 does it differently for each mode.
 
 Since user options are used to control the format of the tempo skeleton

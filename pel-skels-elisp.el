@@ -1,7 +1,7 @@
 ;;; pel-skels-elisp.el --- Tempo skeleton for Emacs Lisp.  -*- lexical-binding: t; -*-
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-08-25 09:20:17, updated by Pierre Rouleau>
+;; Time-stamp: <2020-08-30 16:41:27, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -93,6 +93,7 @@ Otherwise return a string that ends with a newline."
   (let ((purpose (pel-prompt-purpose-for "File" 'p))
         (fname   (pel-current-buffer-filename :sans-directory))
         (libname (pel-current-buffer-filename :sans-directory :sans-extension)))
+    (goto-char (point-min)) ; TODO: del this but mod skels to force entry at top.
     (list
      'l
      ";;; " fname " --- " purpose
@@ -134,7 +135,7 @@ Please see the function `tempo-define-template'.")
   '(("File Header" "file-header" pel-skels-elisp-large-header-skel))
   "List of Emacs Lisp tempo skeletons.")
 
-(defvar pel--elisp-skels-keys '(("file-header" . "C-h"))
+(defvar pel--elisp-skels-keys '(("file-header" . "h"))
   "Key mapping for Emacs Lisp skeletons.")
 
 ;;-pel-autoload

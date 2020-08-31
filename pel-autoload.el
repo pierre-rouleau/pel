@@ -379,6 +379,9 @@
                  pel-skel-insert-license-when))
     (autoload fct "pel-skels"))
 
+  ;; pel-skels-generic
+  (autoload 'pel--install-generic-skel "pel-skels-generic")
+
   ;; pel-skels-c
   (autoload 'pel--install-c-skel "pel-skels-c")
 
