@@ -266,6 +266,9 @@
                  pel-end-of-previous-defun))
     (autoload fct "pel-navigate"))
 
+  ;; pel-net
+  (autoload 'pel-install-file        "pel-net")
+
   ;; pel-numkpad
   (autoload 'pel-toggle-mac-numlock  "pel-numkpad")
   (autoload 'pel-show-mac-numlock    "pel-numkpad")
