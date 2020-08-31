@@ -487,7 +487,6 @@ For example, applied to a directory name, macOS Finder is used."
 
 (when (and pel-use-framemove (display-graphic-p))
   (use-package framemove
-    :defer 3
     :init
     (pel-install-file
      "https://raw.githubusercontent.com/emacsmirror/framemove/master/framemove.el"
