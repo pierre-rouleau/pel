@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-31 13:13:44, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-31 13:19:46, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4981,6 +4981,7 @@ For developing PEL, the following extra packages are used.
 ============================= ==========================
 Package Name & Archive link   Archive Site
 ============================= ==========================
+benchmark-init_               MELPA_
 elisp-lint_                   MELPA_
 package-lint_                 MELPA_
 ============================= ==========================
@@ -5010,6 +5011,7 @@ when running Emacs 27.1 and later versions.
 .. _MELPA-STABLE:              https://stable.melpa.org/
 .. _use-package:               https://melpa.org/#/use-package
 .. _bind-key:                  https://melpa.org/#/bind-key
+.. _benchmark-init:            https://melpa.org/#/benchmark-init
 .. _visible bookmarks:
 .. _bm:                        https://melpa.org/#/bm
 .. _cargo:                     https://melpa.org/#/cargo
