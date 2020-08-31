@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, August 31 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-08-31 11:22:04, updated by Pierre Rouleau>
+;; Time-stamp: <2020-08-31 13:02:17, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -43,6 +43,7 @@
 ;;-pel-autoload
 (defun pel-install-file (url fname &optional refresh)
   "Download and install a file into the PEL's utility directory.
+Also byte compile that file.
 This is the 'utils' sub-directory of the directory identified by
 the Emacs variable `user-emacs-directory'.
 If this directory does not exitts, the function creates it.
@@ -56,7 +57,8 @@ downloaded, nil otherwise.  Permission errors are raised."
       (make-directory utils-dirname :make-parents-if-needed))
     (let ((target-fname (expand-file-name fname utils-dirname)))
       (when (or (not (file-exists-p target-fname)) refresh)
-        (url-copy-file url target-fname refresh)))))
+        (when (url-copy-file url target-fname refresh)
+          (byte-compile-file target-fname))))))
 
 ;;; ----------------------------------------------------------------------------
 (provide 'pel-net)
