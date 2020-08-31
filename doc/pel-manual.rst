@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-31 13:53:36, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-31 18:23:42, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -250,6 +250,41 @@ Detailed instructions for the above steps are written in the following sections.
 
 .. _Emacs Lisp Packages: https://www.gnu.org/software/emacs/manual/html_node/emacs/Packages.html#Packages
 
+Install Emacs 26.1 or later
+----------------------------
+
+Install a version of Emacs you can run from the command line.
+It will be used to build PEL later.
+
+To check if you have Emacs on your system, open a shell and execute the
+following commands:
+
+- ``which emacs`` to see if Emcas is available.
+
+  - On macOS, if this is ``/usr/bin/emacs``, you most probably have
+    the old version of Emacs that Apple installed.
+
+- Check the version of Emacs you have with the following command line:
+
+  ``emacs --version``
+
+Make sure you have Emacs version 26.1 or later.  If not, install
+Emacs 26.3 or later.
+
+For macOS
+~~~~~~~~~
+
+You can use Homebrew_, a command line utility, to install Emacs.
+
+- See Homebrew_ home page for how to install Homebrew.
+- Once homebrew is installed, you can use the following commands:
+
+  - ``brew search emacs`` to list Homebrew package names that include "emacs".
+  - ``brew info emacs`` to see what version of emacs is available.
+  - ``brew install emacs`` to download and install Emacs.
+
+.. _Homebrew: https://brew.sh/
+
 Clone PEL repository on your drive
 ----------------------------------
 
@@ -327,10 +362,14 @@ Add the following code inside your "~/.emacs.d/init.el" file:
               (add-to-list 'package-archives (cons "mypelpa"      (expand-file-name "~/projects/pel/pelpa/")) t))
             (package-initialize))
 
-          ;; 2: Add utils to Emacs load-path
+          ;; 2: Add pel and utils to Emacs load-path
+          ;;    Identify the directory where you stored pel.
+          (add-to-list 'load-path (expand-file-name "~/projects/pel"))
+
+          ;; 3: Add pel to Emacs load-path
           (add-to-list 'load-path (expand-file-name "~/.emacs.d/utils"))
 
-          ;; 3: Store Emacs customization inside a separate file
+          ;; 4: Store Emacs customization inside a separate file
           ;;    If you already have a (custom-set-variables ...) form
           ;;    in your init.el, move it into this new file.
           (setq custom-file "~/.emacs.d/emacs-customization.el")
@@ -578,8 +617,13 @@ without PEL.
 Tricks to Speed-up your Emacs init time
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-PEL itself loads quickly.  But you can improve your overall Emacs initialization
-time further by enclosing the entire code of your init.el file inside:
+PEL itself loads quickly. You can use the following tricks to speed it up further.
+
+Holding Garbage Collection during startup
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Use the following code to postpone Emacs Lisp garbage collection during Emacs startup.
+Enclose the entire code of your init.el file inside the following let form:
 
 .. code:: elisp
 
@@ -593,6 +637,46 @@ time further by enclosing the entire code of your init.el file inside:
 What the above does is to disable special file association handling and garbage
 collection while Emacs processes your initialization code.  This has nothing to
 do with PEL though.
+
+Disable Emacs Startup splash screen and echo area message
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+By default Emacs displays its splash screen on startup and displays a message on
+the echo area telling you about Emacs in general and the concept of free
+software. Once you have read this information, you can disable them with the
+following code:
+
+.. code:: elisp
+
+  ;; Do not display the splash screen.  Same as emacs -Q
+  (setq inhibit-startup-screen t)
+  ;; Don't display the start help in minibuffer, at least for me.
+  (setq inhibit-startup-echo-area-message "YOUR-USER_NAME_HERE")
+
+Replace "YOUR_USER_NAME_HERE" by a string containing your user name.
+Emacs was written to allow multiple users from having access to the same
+configuration, and this identifies the user that will not be reminded of Emacs
+concepts and principles every time Emacs starts.  So, to take advantage of that
+small speed up make sure you put your user name there.
+
+
+Convenience Tricks
+~~~~~~~~~~~~~~~~~~
+
+Simpler Prompts
+^^^^^^^^^^^^^^^
+
+Emacs prompts that require you to type ``yes`` or ``no`` might be annoying.  If
+you would prefer being able to just type ``y`` or ``n`` instead add the
+following to your init.el file:
+
+.. code:: elisp
+
+  ;; Use 'y'/'n' or SPC/DEL instead of 'yes'/'no'
+  (fset 'yes-or-no-p 'y-or-n-p)
+  ;; Don't request [confirm] on non-existing file by C-x C-f or C-x b.
+  (setq confirm-nonexistent-file-or-buffer nil)
+
 
 
 Generic Tips
