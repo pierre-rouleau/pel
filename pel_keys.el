@@ -1,4 +1,4 @@
-;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t-*-
+;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
@@ -263,7 +263,6 @@ Done in this function to allow advising libraries that remap these keys."
   ;; Configure the pel-font commands as autoload.
   ;; although ther is no such package, use the macro to set up
   ;; the delayed autoloads and key bindings.
-  (cl-eval-when 'compile (require 'pel-font))
   (use-package pel-font
     ;; autoload it when one of the following commands is used.
     :commands (pel-font-increase-size-all-buffers
@@ -274,6 +273,7 @@ Done in this function to allow advising libraries that remap these keys."
     ;; run following command before package is loaded to
     ;; activate the autoload.
     :init
+    (cl-eval-when 'compile (require 'pel-font))
     (global-set-key (kbd "<s-kp-add>")
                     #'pel-font-increase-size-all-buffers)
     (global-set-key (kbd "<s-kp-subtract>")
@@ -468,7 +468,6 @@ For example, applied to a directory name, macOS Finder is used."
 ;; Emacs is running in graphics mode.  Other keybindings are defined for the
 ;; pel: keybinding, somewhere else in this file.
 (when (display-graphic-p)
-  (cl-eval-when 'compile (require 'windmove))
   (use-package windmove
     ;; specify defer: we don't want to require windmove here since it is
     ;; autoloaded via the pel-window file.  However, when Emacs is running in
@@ -480,6 +479,7 @@ For example, applied to a directory name, macOS Finder is used."
     ;; the special binding when it is actually loaded.
     :defer 5
     :config
+    (cl-eval-when 'compile (require 'windmove))
     (declare-function windmove-default-keybindings "windmove")
     (windmove-default-keybindings (if pel-system-is-macos-p
                                       'super
@@ -503,9 +503,9 @@ For example, applied to a directory name, macOS Finder is used."
 ;; https://github.com/bbatsov/prelude.
 ;; uniquify is now part of Emacs distribution.
 (when pel-use-uniquify
-  (cl-eval-when 'compile (require 'uniquify))
   (use-package uniquify
     :config
+    (cl-eval-when 'compile (require 'uniquify))
     (pel-setq uniquify-buffer-name-style 'post-forward)
     ;; rationalize buffer after killing uniquified buffer
     (pel-setq uniquify-after-kill-buffer-p t)
@@ -540,7 +540,6 @@ For example, applied to a directory name, macOS Finder is used."
 ;; ------------------------
 (when pel-use-bm
   ;; configure bm package to be loaded only on first use.
-  (cl-eval-when 'compile (require 'bm))
   (use-package bm
     :ensure t
     :pin melpa
@@ -555,6 +554,7 @@ For example, applied to a directory name, macOS Finder is used."
     (setq bm-restore-repository-on-load t)
 
     :config
+    (cl-eval-when 'compile (require 'bm))
     ;;  Prevent lint warnings using empty defvar
     ;; Allow cross-buffer 'next'
     (pel-setq bm-cycle-all-buffers t)
@@ -623,7 +623,6 @@ For example, applied to a directory name, macOS Finder is used."
 (when pel-use-org-mode
   ;; Org-Mode activation (as suggested by
   ;; https://orgmode.org/manual/Activation.html#Activation ):
-  (cl-eval-when 'compile (require 'org))
   (use-package org
     :commands (org-mode
                org-indent-mode
@@ -632,6 +631,7 @@ For example, applied to a directory name, macOS Finder is used."
                org-capture
                org-switchb)
     :init
+    (cl-eval-when 'compile (require 'org))
     (global-set-key "\C-cl" 'org-store-link)
     (global-set-key "\C-ca" 'org-agenda)
     (global-set-key "\C-cc" 'org-capture)
@@ -658,7 +658,6 @@ For example, applied to a directory name, macOS Finder is used."
 ;; C-like programming languages: C, C++
 ;; ------------------------------------
 (when pel-use-c-eldoc
-  (cl-eval-when 'compile (require 'c-eldoc))
   (use-package c-eldoc
     ;; c-eldoc is an external package.
     ;; Ensure it's installed via MELPA
@@ -671,6 +670,7 @@ For example, applied to a directory name, macOS Finder is used."
     ;; run following command before package is loaded to
     ;; activate the autoload.
     :init
+    (cl-eval-when 'compile (require 'c-eldoc))
     (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)))
 
 ;; ---------------
@@ -682,11 +682,12 @@ For example, applied to a directory name, macOS Finder is used."
 ;; - Common Lisp support
 ;; ---------------------
 (when pel-use-common-lisp
-  (cl-eval-when 'compile (require 'slime))
   (use-package slime
     :ensure t
     :pin melpa
-    :defer t)
+    :defer t
+    :init
+    (cl-eval-when 'compile (require 'slime)))
 
   (when (fboundp 'pel-cl-init)
     (pel-cl-init :slime-is-used))
@@ -708,13 +709,14 @@ For example, applied to a directory name, macOS Finder is used."
 ;; - Programming Style: Emacs Lisp
 ;; -------------------------------
 (when pel-use-esup
-  (cl-eval-when 'compile (require 'esup))
   (use-package esup
     ;; esup is an external package:
     ;; ensure it's installed from MELPA if not available.
     :ensure t
     :pin melpa
-    :commands esup))
+    :commands esup
+    :init
+    (cl-eval-when 'compile (require 'esup))))
 
 ;; ------------------------------------
 ;; - Programming Style: Haskell Support
@@ -728,9 +730,10 @@ For example, applied to a directory name, macOS Finder is used."
 ;; - Programming Style: Python Support
 ;; -----------------------------------
 (when pel-use-python                    ; TODO: complete this
-  (cl-eval-when 'compile (require 'elpy))
   (use-package elpy
-    :defer t)
+    :defer t
+    :init
+      (cl-eval-when 'compile (require 'elpy)))
   ;; Normally, (python-shell-prompt-detect) should
   ;; evaluate to (">>> " "... " "")
   ;; for Python shell to work properly.
@@ -758,24 +761,26 @@ For example, applied to a directory name, macOS Finder is used."
 ;; - Programming Style: Rust & Cargo Support
 ;; -----------------------------------------
 (when pel-use-rust                      ; TODO: complete this
-  (cl-eval-when 'compile (require 'racer))
   (use-package racer
     :ensure t
     :pin melpa
-    :commands racer-mode)
+    :commands racer-mode
+    :init
+      (cl-eval-when 'compile (require 'racer)))
 
-  (cl-eval-when 'compile (require 'rust-mode))
   (use-package rust-mode
     :ensure t
     :pin melpa
-    :commands rust-mode)
+    :commands rust-mode
+    :init
+      (cl-eval-when 'compile (require 'rust-mode)))
 
-  (cl-eval-when 'compile (require 'cargo))
   (use-package cargo
     :ensure t
     :pin melpa
     :commands cargo-minor-mode
     :config
+    (cl-eval-when 'compile (require 'cargo))
     ;; M-x package-install rust-mode
     ;; M-x package-install cargo
     ;; M-x package-install racer
@@ -1218,7 +1223,6 @@ For example, applied to a directory name, macOS Finder is used."
 
 (if pel-use-undo-tree
     (progn
-      (cl-eval-when 'compile (require 'undo-tree))
 
       (use-package pel-undo
         ;; autoload pel-undo if one of the following commands
@@ -1251,6 +1255,7 @@ For example, applied to a directory name, macOS Finder is used."
                    undo-tree-visualize
                    undo-tree-switch-branch)
         :init
+        (cl-eval-when 'compile (require 'undo-tree))
         (define-key pel:undo    "v"       #'undo-tree-visualize)
         (define-key pel:undo    "x"       #'undo-tree-switch-branch)
 
@@ -1281,11 +1286,12 @@ For example, applied to a directory name, macOS Finder is used."
 ;; - Use goto-last-change
 ;; ----------------------
 (when pel-use-goto-last-change
-  (cl-eval-when 'compile (require 'goto-last-change))
   (use-package goto-last-change
     :ensure t
     :pin melpa
-    :commands goto-last-change)
+    :commands goto-last-change
+    :init
+      (cl-eval-when 'compile (require 'goto-last-change)))
   (define-key pel:undo "\\"  #'goto-last-change))
 
 ;; -----------------------------------------------------------------------------
@@ -2265,23 +2271,25 @@ This is meant to be used in the d-mode hook lambda."
 ;; - Use parinfer
 ;; --------------
 (when pel-use-parinfer
-  (cl-eval-when 'compile (require 'parinfer))
   (use-package parinfer
     :ensure t
     :pin melpa
     :commands (parinfer-mode
                parinfer-toggle-mode
                parinfer-auto-fix
-               parinfer-diff)))
+               parinfer-diff)
+    :init
+      (cl-eval-when 'compile (require 'parinfer))))
 
 ;; - Use rainbow-delimiters
 ;; ------------------------
 (when pel-use-rainbow-delimiters
-  (cl-eval-when 'compile (require 'rainbow-delimiters))
   (use-package rainbow-delimiters
     :ensure t
     :pin melpa
-    :commands rainbow-delimiters-mode))
+    :commands rainbow-delimiters-mode
+    :init
+      (cl-eval-when 'compile (require 'rainbow-delimiters))))
 
 ;; rainbow-delimiters-max-face-count identifies max depth where colours
 ;; are cycled.  Its default value is 9.  That should be more than enough.
@@ -2342,21 +2350,21 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:elisp-lib "p" #'list-packages)
 
 (when pel-use-macrostep
-  (cl-eval-when 'compile (require 'macrostep))
   (use-package macrostep
     :ensure t
     :pin melpa
     :commands macrostep-expand
     :init
+    (cl-eval-when 'compile (require 'macrostep))
     (define-key pel:for-elisp  (kbd "M-m") #'macrostep-expand)))
 
 (when pel-use-highlight-defined
-  (cl-eval-when 'compile (require 'highlight-defined))
   (use-package highlight-defined
     :ensure t
     :pin melpa
     :commands highlight-defined-mode
     :init
+    (cl-eval-when 'compile (require 'highlight-defined))
     (define-key pel:for-elisp  (kbd "M-d") 'highlight-defined-mode)))
 
 ;;
@@ -2506,11 +2514,12 @@ This is meant to be used in the d-mode hook lambda."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC g`` : Graphviz Dot
 (when pel-use-graphviz-dot
-  (cl-eval-when 'compile (require 'graphviz-dot-mode))
   (use-package graphviz-dot-mode
     :ensure t
     :pin melpa
-    :commands graphviz-dot-mode)
+    :commands graphviz-dot-mode
+    :init
+      (cl-eval-when 'compile (require 'graphviz-dot-mode)))
 
   (define-pel-global-prefix pel:for-graphviz-dot (kbd "<f11> SPC g"))
   (define-key pel: (kbd "M-g")         'graphviz-dot-mode)
@@ -2621,20 +2630,21 @@ This is meant to be used in the d-mode hook lambda."
   ;; Defer loading of auto-complete using its autoload that will be
   ;; trigerred when the one of the pel-auto-complete-mode or
   ;; pel-global-auto-complete-mode is executed.
-  (cl-eval-when 'compile (require 'auto-complete))
   (use-package auto-complete
     :ensure t
     :pin melpa
-    :commands (auto-complete-mode global-auto-complete-mode)))
+    :commands (auto-complete-mode global-auto-complete-mode)
+    :init   (cl-eval-when 'compile (require 'auto-complete))))
 
 (when pel-use-company
   ;; Defer-load company.el via the autoload company-mode and
   ;; global-autoload-mode are called by one of the pel functions.
-  (cl-eval-when 'compile (require 'company))
   (use-package company
     :ensure t
     :pin melpa
-    :commands (company-mode global-company-mode)))
+    :commands (company-mode global-company-mode)
+    :init
+    (cl-eval-when 'compile (require 'company))))
 
 (define-pel-global-prefix pel:auto-completion (kbd "<f11> ,"))
 (define-key pel:auto-completion   "?"   'pel-completion-help)
@@ -2679,12 +2689,12 @@ This is meant to be used in the d-mode hook lambda."
 (global-set-key (kbd "M-S-<down>")     'pel-mark-line-down)
 
 (when pel-use-expand-region
-  (cl-eval-when 'compile (require 'expand-region))
   (use-package expand-region
     :ensure t
     :pin melpa
     :commands er/expand-region
     :init
+    (cl-eval-when 'compile (require 'expand-region))
     (define-key pel:mark     "="  'er/expand-region)
     (global-set-key   (kbd "M-=") 'er/expand-region)))
 
@@ -2828,25 +2838,24 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:keys    "m" #'describe-mode)
 
 (when pel-use-free-keys
-  (cl-eval-when 'compile (require 'free-keys))
   (use-package free-keys
     :ensure t
     :pin melpa
     :commands free-keys
     :init
+    (cl-eval-when 'compile (require 'free-keys))
     (define-key pel:keys  "f" #'free-keys)))
 
 (when pel-use-bind-key
-  (cl-eval-when 'compile (require 'bind-key))
   (use-package bind-key
     :ensure t
     :pin melpa
     :commands describe-personal-keybindings
     :init
+    (cl-eval-when 'compile (require 'bind-key))
     (define-key pel:keys  "b" #'describe-personal-keybindings)))
 
 (when pel-use-which-key
-  (cl-eval-when 'compile (require 'which-key))
   (use-package which-key                  ; for <f11> ? k k
     ;; List key completions: help show the f11 bindings.
     ;; When requested, delay a little to speed init time.
@@ -2859,6 +2868,7 @@ This is meant to be used in the d-mode hook lambda."
     :commands (which-key-mode
                which-key-show-major-mode)
     :init
+    (cl-eval-when 'compile (require 'which-key))
     (define-key pel:keys  "K"  'which-key-mode)
     (define-key pel:keys  "k"  'which-key-show-major-mode)
     :config
@@ -2879,11 +2889,12 @@ This is meant to be used in the d-mode hook lambda."
 ;; popup is used in Terminal mode for spell check menu,
 ;; and must be available when pel-spell-init is called.
 (unless (display-graphic-p)
-  (cl-eval-when 'compile (require 'popup))
   (use-package popup
     :ensure t
     :pin melpa-stable
-    :commands pel-spell-init))
+    :commands pel-spell-init
+    :init
+    (cl-eval-when 'compile (require 'popup))))
 
 
 (define-pel-global-prefix pel:spell (kbd "<f11> $"))
@@ -2983,12 +2994,12 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:scroll "l" #'scroll-lock-mode)
 
 (when pel-use-smooth-scrolling
-  (cl-eval-when 'compile (require 'smooth-scrolling))
   (use-package smooth-scrolling
     :ensure t
     :pin melpa
     :defer 2
     :init
+    (cl-eval-when 'compile (require 'smooth-scrolling))
     (if (fboundp 'smooth-scrolling-mode)
         (define-key pel:scroll "s" 'smooth-scrolling-mode))
     :config
@@ -3422,12 +3433,12 @@ the ones defined from the buffer now."
   ;; is used.
 
   ;; rg.el
-  (cl-eval-when 'compile (require 'rg))
   (use-package rg
     :ensure t
     :pin melpa
     :commands (rg rg-literal rg-menu)
     :init
+    (cl-eval-when 'compile (require 'rg))
     (define-key pel:grep  "I"     'rg-literal)
     (define-key pel:grep  "i"     'rg)
     (define-key pel:grep  "m"     'rg-menu)
@@ -3476,12 +3487,12 @@ the ones defined from the buffer now."
           pel-c-skel-with-license
           pel-elisp-skel-with-license
           pel-erlang-skel-with-license)
-  (cl-eval-when 'compile (require 'lice))
   (use-package lice
     :ensure t
     :pin melpa
     :commands lice
     :init
+    (cl-eval-when 'compile (require 'lice))
     (define-key pel:insert "L" 'lice)
     (define-key pel:f6 "L" 'lice)))
 
@@ -3766,23 +3777,23 @@ the ones defined from the buffer now."
 ;; - Function Keys - <f11> - Prefix ``<f11> M-s`` : Speedbar/SR-Speedbar commands
 
 (when pel-use-speedbar
-  (cl-eval-when 'compile (require 'sr-speedbar))
   (use-package sr-speedbar
     :ensure t
     :pin melpa
     :commands (sr-speedbar-toggle
-               sr-speedbar-window-p))
-
-  (define-pel-global-prefix pel:speedbar (kbd "<f11> M-s"))
-  (define-key pel:speedbar (kbd "M-s")  'pel-open-close-speedbar)
-  (define-key pel:speedbar "."  'pel-toggle-to-speedbar)
-  (define-key pel:speedbar "R"  'pel-speedbar-toggle-refresh)
-  (define-key pel:speedbar "r"  'pel-speedbar-refresh)
-  (define-key pel:speedbar "a"  'pel-speedbar-toggle-show-all-files)
-  (define-key pel:speedbar "o"  'pel-speedbar-toggle-sorting)
-  ;; (define-key pel:speedbar "e"  #'speedbar-toggle-etags)
-  (when (display-graphic-p)
-    (define-key pel:speedbar "i" 'pel-speedbar-toggle-images)))
+               sr-speedbar-window-p)
+    :init
+    (cl-eval-when 'compile (require 'sr-speedbar))
+    (define-pel-global-prefix pel:speedbar (kbd "<f11> M-s"))
+    (define-key pel:speedbar (kbd "M-s")  'pel-open-close-speedbar)
+    (define-key pel:speedbar "."  'pel-toggle-to-speedbar)
+    (define-key pel:speedbar "R"  'pel-speedbar-toggle-refresh)
+    (define-key pel:speedbar "r"  'pel-speedbar-refresh)
+    (define-key pel:speedbar "a"  'pel-speedbar-toggle-show-all-files)
+    (define-key pel:speedbar "o"  'pel-speedbar-toggle-sorting)
+    ;; (define-key pel:speedbar "e"  #'speedbar-toggle-etags)
+    (when (display-graphic-p)
+      (define-key pel:speedbar "i" 'pel-speedbar-toggle-images))))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> -        ``<f11> T`` : Directory Tree
@@ -3824,7 +3835,6 @@ the ones defined from the buffer now."
 ;;       (message "Activating nhexl nibble mode"))))
 
 (when pel-use-nhexl-mode
-  (cl-eval-when 'compile (require 'nhexl-mode))
   (use-package nhexl-mode
     :ensure t
     :pin gnu
@@ -3832,6 +3842,7 @@ the ones defined from the buffer now."
                nhexl-nibble-edit-mode
                nhexl-overwrite-only-mode)
     :init
+    (cl-eval-when 'compile (require 'nhexl-mode))
     (define-key pel:text   "O"  #'nhexl-overwrite-only-mode)
 
     (define-key pel:buffer "x"  #'nhexl-mode)
