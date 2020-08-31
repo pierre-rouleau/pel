@@ -1150,7 +1150,7 @@ References:
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-use-which-key nil
+(defcustom pel-use-which-key t
   "Control whether PEL uses the which-key package."
   :group 'pel-pkg-for-keys
   :type 'boolean
