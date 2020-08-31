@@ -153,14 +153,15 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 (when (and pel-use-popup-kill-ring
            (display-graphic-p))
 
-  (cl-eval-when 'compile (require 'popup-kill-ring))
   (use-package popup-kill-ring
     ;; Note: pos-tip, required by popup-kill-ring is installed
     ;;       when popup-kill-ring is installed (and loaded by
     ;;       it too).
     :ensure t
     :pin melpa
-    :commands popup-kill-ring))
+    :commands popup-kill-ring
+    :init
+      (cl-eval-when 'compile (require 'popup-kill-ring))))
 
 ;; -----------------------------------------------------------------------------
 ;; - PEL Modifier keys on different OS
@@ -1142,7 +1143,7 @@ For example, applied to a directory name, macOS Finder is used."
 (define-key pel: (kbd      "0")           #'hl-line-mode)
 (when (and pel-use-popup-kill-ring
            (display-graphic-p))
-  (define-key pel:         "y"            #'popup-kill-ring))
+  (define-key pel:         "y"             'popup-kill-ring))
 
 
 (when pel-use-smart-dash
