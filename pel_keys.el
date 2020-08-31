@@ -383,7 +383,7 @@ For example, applied to a directory name, macOS Finder is used."
 ;; commands.
 
 (when pel-use-dired-narrow
-  (cl-eval-when 'compile (require 'dired-narrow))
+
   (use-package dired-narrow
     ;; dired-narrow is an external package.
     ;; Ensure it's installed via MELPA
@@ -398,12 +398,14 @@ For example, applied to a directory name, macOS Finder is used."
     ;; run following command before package is loaded to
     ;; activate the autoload.
     :init
+    (cl-eval-when 'compile (require 'dired-narrow))
+
     (defvar pel:for-dired-narrow)
     (define-prefix-command 'pel:for-dired-narrow)
     ;;
-    (define-key pel:for-dired-narrow "s" #'dired-narrow)
-    (define-key pel:for-dired-narrow "r" #'dired-narrow-regexp)
-    (define-key pel:for-dired-narrow "f" #'dired-narrow-fuzzy)
+    (define-key pel:for-dired-narrow "s" 'dired-narrow)
+    (define-key pel:for-dired-narrow "r" 'dired-narrow-regexp)
+    (define-key pel:for-dired-narrow "f" 'dired-narrow-fuzzy)
     ;;
     ;; activate the <f12> key binding for dired-narrow-mode
     (pel--mode-hook-maybe-call
