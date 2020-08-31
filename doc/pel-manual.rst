@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-31 12:01:51, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-31 13:13:44, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -233,9 +233,7 @@ Essentially you need to:
    - support for storing Emacs customization forms inside a file separate from
      your Emacs initialization file but loaded from it.
 
-#. Download some Emacs packages not supported by Elpa-compliant archives into
-   your *utils* directory,
-#. Use make on the command line to:
+#. Run ``make`` on the command line to:
 
    - create a Emacs package archive tar file for PEL
    - create a local Elpa-compliant Emacs package archive directory and store
@@ -365,29 +363,6 @@ Add the following code inside your "~/.emacs.d/init.el" file:
    for each project, reducing the load time further.
    That provides another degree of freedom, along with Emacs directory local
    and file local variables.
-
-
-
-Download Non-Elpa compliant files used by PEL
----------------------------------------------
-
-Most packages used by PEL are supported by MELPA_, MELPA-STABLE_ or ELPA_.  But
-not all.  Some very useful packages have not been ported yet to Elpa-compliant
-sites. To use them they need to be copied locally.  Copy them inside the
-"~/.emacs.d/utils" directory if you want to use them.
-
-This version of PEL uses the following:
-
-- framemove_ : copy it from the `framemove Git Emacsmirror page`_.
-- vline_  : copy it from the `vline Git Emacsmirror page`_.
-- `hide-comnt.el`_ : copy it from the `hide-comnt Git Emacsmirror page`_.
-
-
-.. _framemove Git Emacsmirror page:  https://github.com/emacsmirror/framemove
-.. _vline Git Emacsmirror page:      https://github.com/emacsmirror/vline
-.. _hide-comnt Git Emacsmirror page: https://github.com/emacsmirror/hide-comnt
-
-
 
 Create And Install the PEL Emacs Package Archive tar file into pelpa
 --------------------------------------------------------------------

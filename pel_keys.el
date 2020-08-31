@@ -481,16 +481,18 @@ For example, applied to a directory name, macOS Finder is used."
     (windmove-default-keybindings (if pel-system-is-macos-p
                                       'super
                                     'hyper))))
-(when pel-use-framemove
-  (cl-eval-when 'compile (require 'framemove))
-  (when (display-graphic-p)
-    (use-package framemove
-      :defer 3
-      :config
-      ;; Note: modified framemove:
-      ;;  (replaced "remove-if-not" by "cl-remove-if-not")
-      (when (boundp 'framemove-hook-into-windmove)
-        (setq framemove-hook-into-windmove t)))))
+
+(when (and pel-use-framemove (display-graphic-p))
+  (use-package framemove
+    :defer 3
+    :init
+    (pel-install-file
+     "https://raw.githubusercontent.com/emacsmirror/framemove/master/framemove.el"
+     "framemove.el")
+    :config
+    (cl-eval-when 'compile (require 'framemove))
+    (when (boundp 'framemove-hook-into-windmove)
+      (setq framemove-hook-into-windmove t))))
 
 ;; Uniquify: meaningful names when multiple buffers have the same name
 ;; -------------------------------------------------------------------
@@ -2714,18 +2716,16 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:comment "\""           'pel-hide/show-docstring)
 
 (when pel-use-hide-comnt
-  ;; IMPORTANT: hide-comnt must be installed manually.
-  ;; Download it from the EmacsWiki or EmacsMirror page and copy
-  ;; the hide-comnt.el file inside a directory located in your Emacs load path.
-  ;; The 2 sites are:
-  ;; - https://www.emacswiki.org/emacs/download/hide-comnt.el
-  ;; - https://github.com/emacsmirror/hide-comnt
-  ;; Credit: Drew Adams ( https://www.emacswiki.org/emacs/DrewAdams ).
   (use-package hide-comnt
     ;; autoload hide-comnt.el based on its 2 commands
     :commands (hide/show-comments
                hide/show-comments-toggle)
     :init
+    ;; Download and byte-compile hide-comnt.el if its not present
+    (pel-install-file
+     "https://raw.githubusercontent.com/emacsmirror/hide-comnt/master/hide-comnt.el"
+     "hide-comnt.el")
+    ;; Bind commands to keys
     (define-key pel:comment ";" 'hide/show-comments-toggle)
     (define-key pel:comment ":" 'hide/show-comments)))
 
@@ -3093,6 +3093,11 @@ the ones defined from the buffer now."
   (use-package vline
     :commands vline-mode
     :init
+    ;; download and byte-compile vline if not already present
+    (pel-install-file
+     "https://raw.githubusercontent.com/emacsmirror/vline/master/vline.el"
+     "vline.el")
+    ;; Bind the commands to keys
     (define-key pel:highlight    "|"  'vline-mode)
     (define-key pel:             "9"  'vline-mode)))
 
