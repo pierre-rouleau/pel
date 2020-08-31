@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-31 13:19:46, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-31 13:53:36, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1955,8 +1955,8 @@ PEL provides explicit support for the following
 
 .. _LISP-based programming languages: https://en.wikipedia.org/wiki/Lisp_(programming_language)
 
-PEL Common Lisp Support
-^^^^^^^^^^^^^^^^^^^^^^^
+PEL Support for Common Lisp
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 :PDF Docs: `Common Lisp <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-common-lisp.pdf>`_.
 :PEL Customization: - Group: ``pel-pkg-for-clisp``
@@ -1981,8 +1981,8 @@ inside this directory and Emacs can access them locally.
 .. _HyperSpec: http://www.lispworks.com/documentation/HyperSpec/Front/index.htm
 
 
-PEL Emacs Lisp Support
-^^^^^^^^^^^^^^^^^^^^^^
+PEL Support for Emacs Lisp
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 :PDF Docs: `Emacs Lisp <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-emacs-lisp.pdf>`_, `ERT <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/ert.pdf>`_ .
 :PEL Customization: - Group: ``pel-pkg-for-elisp``
@@ -2053,6 +2053,23 @@ change those variables).
 Refer to the `PEL Erlang PDF`_ document for more information.
 
 .. _PEL Erlang PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf
+
+PEL Support for Elixir
+^^^^^^^^^^^^^^^^^^^^^
+
+:PDF Docs: `Elixir <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-elixir.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-elixir``
+
+                      - Activation: ``pel-use-elixir``
+
+:PEL Key Prefix: - Globally: **pel:for-elixir** : ``<f11> SPC x``
+                 - From a buffer in elixir-mode: ``<f12>`` and ``<M-f12>``
+
+PEL provides basic support for the `Elixir programming language`_ via the
+elixir-mode_ package.  With it the file extensions ``.exs``, ``.ex``, and
+``.elixir`` are automatically recognized as being Elixir files.
+
+.. _Elixir programming language: https://en.wikipedia.org/wiki/Elixir_(programming_language)
 
 PEL Support for Curly-Bracket Programming Languages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2779,7 +2796,7 @@ on which the d-mode is based via the **pel:for-d** key-map, bounded to the
 .. _PEL PDF document for D: pdf/pl_d.pdf
 
 PEL Support for Forth
-^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~
 
 :PDF Docs: `Forth <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-forth``
@@ -2795,8 +2812,43 @@ forth-mode_ package.  With it the file extensions ``.f``, ``.fs``, ``.fth``, and
 
 .. _Forth programming language: https://en.wikipedia.org/wiki/Forth_(programming_language)
 
+PEL Support for Julia
+~~~~~~~~~~~~~~~~~~~~~
+
+:PDF Docs: `Julia <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-julia.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-julia``
+
+                      - Activation: ``pel-use-julia``
+
+:PEL Key Prefix: - Globally: **pel:for-julia** : ``<f11> SPC j``
+                 - From a buffer in julia-mode: ``<f12>`` and ``<M-f12>``
+
+PEL provides basic support for the `Julia programming language`_ via the
+julia-mode_ package.  With it the file extensions ``.jl``
+are automatically recognized as being Julia files.
+
+.. Julia programming language: https://en.wikipedia.org/wiki/Julia_(programming_language)
+
+PEL Support for Python
+~~~~~~~~~~~~~~~~~~~~~~
+
+:PDF Docs: `Python <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-python.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-python``
+
+                      - Activation: ``pel-use-python``
+
+:PEL Key Prefix: - Globally: **pel:for-python** : ``<f11> SPC p``
+                 - From a buffer in python-mode: ``<f12>`` and ``<M-f12>``
+
+PEL provides basic support for the `Python programming language`_ via the
+python-mode_ package.  With it the file extensions ``.py``, ``.pyi`` and ``.pyw``
+are automatically recognized as being Python files.
+
+.. _Python programming language: https://en.wikipedia.org/wiki/Python_(programming_language)
+
+
 PEL Support for REXX
-^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~
 
 :PDF Docs: `REXX <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rexx.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-rexx``
@@ -3770,8 +3822,8 @@ PDF Document Tables
 
 #. BEAM-VM Languages
 
-   - `Erlang <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf>`_ (🚧 under development)
-   - Elixir (🚧 under development)
+   - `Erlang <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf>`_
+   - `Elixir <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-elixir.pdf>`_
    - LFE (🚧 under development)
 
 #. Lisp Languages
@@ -3782,7 +3834,9 @@ PDF Document Tables
      - `ERT <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/ert.pdf>`_ (Emacs Lisp Regression Testing system)
 
 #. `Forth <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth.pdf>`_
+#. `Julia <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-julia.pdf>`_
 #. `Python <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-python.pdf>`_
+#. `REXX <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rexx.pdf>`_
 
 
 **Version Control Systems:**
