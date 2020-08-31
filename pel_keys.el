@@ -2409,6 +2409,33 @@ This is meant to be used in the d-mode hook lambda."
    'python-mode 'python-mode-hook))
 
 ;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC R`` : REXX programming
+(when pel-use-rexx
+  (use-package rexx-mode
+    :commands rexx-mode
+
+    :init
+    ;; Install the single file in .emacs.d/utils sub-directory if it is
+    ;; not already present.  Download from Emacs Attics.
+    ;; See home page: https://github.com/emacsattic/rexx-mode
+    (pel-install-file
+     "https://raw.githubusercontent.com/emacsattic/rexx-mode/master/rexx-mode.el"
+     "rexx-mode.el")
+    ;; set the file extensions
+    (add-to-list 'auto-mode-alist '("\\.\\(rexx\\|elx\\|ncomm\\|cpr\\)\\'"
+                                    . rexx-mode))
+    ;; Set the mode specific key prefix
+    (define-pel-global-prefix pel:for-rexx (kbd "<f11> SPC f"))
+    (define-key               pel:for-rexx (kbd "<f1>") 'pel-cfg-pkg-rexx)
+    ;;
+    ;;
+    ;; activate the <f12> key binding for rexx-mode
+    (pel--mode-hook-maybe-call
+     '(lambda ()
+        (pel-local-set-f12 'pel:for-rexx))
+     'rexx-mode 'rexx-mode-hook)))
+
+;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC r`` : reSTucturedText
 (when pel-use-rst-mode
 

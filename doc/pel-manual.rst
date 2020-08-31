@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-31 08:35:21, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-31 12:01:51, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2812,13 +2812,30 @@ PEL Support for Forth
                       - Activation: ``pel-use-forth``
 
 :PEL Key Prefix: - Globally: **pel:for-forth** : ``<f11> SPC f``
-                 - From a buffer in d-mode: ``<f12>`` and ``<M-f12>``
+                 - From a buffer in forth-mode: ``<f12>`` and ``<M-f12>``
 
 PEL provides basic support for the `Forth programming language`_ via the
 forth-mode_ package.  With it the file extensions ``.f``, ``.fs``, ``.fth``, and
 ``.4th`` are automatically recognized as being Forth files.
 
 .. _Forth programming language: https://en.wikipedia.org/wiki/Forth_(programming_language)
+
+PEL Support for REXX
+^^^^^^^^^^^^^^^^^^^^^
+
+:PDF Docs: `REXX <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rexx.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-rexx``
+
+                      - Activation: ``pel-use-rexx``
+
+:PEL Key Prefix: - Globally: **pel:for-forth** : ``<f11> SPC R``
+                 - From a buffer in rexx-mode: ``<f12>`` and ``<M-f12>``
+
+PEL provides basic support for the `REXX programming language`_ via the
+forth-mode_ package.  With it the file extensions ``.rexx``, ``.elx``, ``.ncomm``, and
+``.cpr`` are automatically recognized as being REXX files.
+
+.. _REXX programming language: https://en.wikipedia.org/wiki/Rexx
 
 
 PEL Prompt Utilities
@@ -4961,6 +4978,7 @@ projectile_                   MELPA_
 racer_                        MELPA_
 rainbow-delimiters_           MELPA_
 regex-tool_                   MELPA_
+rexx-mode_                    `EmacsAttics`_
 `ripgrep.el`_                 MELPA_
 `rg`_                         MELPA_
 rust-mode_                    MELPA_
@@ -5066,6 +5084,7 @@ when running Emacs 27.1 and later versions.
 .. _racer:                     https://melpa.org/#/racer
 .. _rainbow-delimiters:        https://melpa.org/#/rainbow-delimiters
 .. _regex-tool:                https://melpa.org/#/regex-tool
+.. _rexx-mode:                 https://github.com/emacsattic/rexx-mode
 .. _rg:                        https://melpa.org/#/rg
 .. _ripgrep.el:                https://melpa.org/#/ripgrep
 .. _rust-mode:                 https://melpa.org/#/rust-mode
@@ -5089,6 +5108,7 @@ when running Emacs 27.1 and later versions.
 .. _yasnippet-snippets:        https://melpa.org/#/yasnippet-snippets
 .. _ztree:                     https://melpa.org/#/ztree
 .. _Emacsmirror:               https://github.com/emacsmirror
+.. _EmacsAttics:               https://github.com/emacsattic
 
 Also, note that several ideas came from various blogs and discussion on the web.
 There are references the these pages inside the PDF tables in the reference

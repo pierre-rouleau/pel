@@ -78,6 +78,7 @@
 ;;         - pel-pkg-for-elixir
 ;;       - pel-pkg-for-julia
 ;;       - pel-pkg-for-python
+;;       - pel-pkg-for-rexx
 ;;       - pel-pkg-for-rust
 ;;     - pel-pkg-for-markup
 ;;       - pel-pkg-for-reST
@@ -2361,6 +2362,19 @@ IMPORTANT:
 (defcustom pel-use-python  nil
   "Control whether PEL supports Python development."
   :group 'pel-pkg-for-python
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; REXX Support
+;; ------------
+(defgroup pel-pkg-for-rexx nil
+  "PEL customization for REXX Programming language."
+    :group 'pel-pkg-for-programming)
+
+(defcustom pel-use-rexx nil
+  "Control whether PEL support REXX development."
+  :group 'pel-pkg-for-rexx
   :type 'boolean
   :safe #'booleanp)
 
