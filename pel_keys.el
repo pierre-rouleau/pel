@@ -731,6 +731,8 @@ For example, applied to a directory name, macOS Finder is used."
 ;; -----------------------------------
 (when pel-use-python                    ; TODO: complete this
   (use-package elpy
+    :ensure t
+    :pin melpa
     :defer t
     :init
       (cl-eval-when 'compile (require 'elpy)))
