@@ -4009,7 +4009,6 @@ the ones defined from the buffer now."
 
 ;; --
 (when pel-use-ace-window
-  (cl-eval-when 'compile (require 'ace-window))
   (use-package ace-window
     :ensure t
     :pin melpa
@@ -4020,6 +4019,7 @@ the ones defined from the buffer now."
                ace-delete-other-windows)
 
     :init
+    (cl-eval-when 'compile (require 'ace-window))
     ;; move cursor to other window - 'C-x o' is normally mapped to
     ;; this function, but PEL remap it.
     (define-key pel:window  "o"  'pel-other-window)
@@ -4052,12 +4052,12 @@ the ones defined from the buffer now."
 ;; hook.  For now, we just defer the loading with a timer so it does not get
 ;; loaded right when Emacs is starting.
 (when pel-use-winner
-  (cl-eval-when 'compile (require 'winner))
   (use-package winner
     :defer 2
     :commands (winner-undo winner-redo)
 
     :init
+    (cl-eval-when 'compile (require 'winner))
     (define-key pel:window    "n"  'winner-redo)   ; next window arrangement
     (define-key pel:window    "p"  'winner-undo)   ; previous window arrangement
 
