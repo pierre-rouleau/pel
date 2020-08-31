@@ -492,7 +492,7 @@ For example, applied to a directory name, macOS Finder is used."
      "https://raw.githubusercontent.com/emacsmirror/framemove/master/framemove.el"
      "framemove.el")
     :config
-    (cl-eval-when 'compile (require 'framemove))
+    (cl-eval-when 'compile (require 'framemove nil :noerror))
     (when (boundp 'framemove-hook-into-windmove)
       (setq framemove-hook-into-windmove t))))
 
