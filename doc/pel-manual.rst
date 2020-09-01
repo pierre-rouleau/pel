@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 10:55:24, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 10:59:13, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -750,13 +750,17 @@ to be used as what PEL normally uses for F6:
 .. code:: elisp
 
           (global-set-key (kbd "<f6>") 'undo)
-          (global-set-key (kbd ("<f8>") pel:f6)
+          (global-set-key (kbd ("<f9>") pel:f6)
+
+The `Function Keys Mappings PDF table`_ provides and overview of the way PEL uses
+the function keys.
 
 Since PEL is using more keys over time, it might be difficult to change the
 bindings without affecting PEL's bindings.  If you have a specific request,
 please describe your request on the `PEL wiki`_, I'll take a look and see what I can do.
 
-.. _PEL wiki: https://github.com/pierre-rouleau/pel/wiki
+.. _PEL wiki:                         https://github.com/pierre-rouleau/pel/wiki
+.. _Function Keys Mappings PDF table: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/keys-fn.pdf
 
 .. -----------------------------------------------------------------------------
 
