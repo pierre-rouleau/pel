@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-31 18:23:42, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-31 20:12:20, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -362,11 +362,11 @@ Add the following code inside your "~/.emacs.d/init.el" file:
               (add-to-list 'package-archives (cons "mypelpa"      (expand-file-name "~/projects/pel/pelpa/")) t))
             (package-initialize))
 
-          ;; 2: Add pel and utils to Emacs load-path
+          ;; 2: Add pel to Emacs load-path
           ;;    Identify the directory where you stored pel.
           (add-to-list 'load-path (expand-file-name "~/projects/pel"))
 
-          ;; 3: Add pel to Emacs load-path
+          ;; 3: Add utils to Emacs load-path
           (add-to-list 'load-path (expand-file-name "~/.emacs.d/utils"))
 
           ;; 4: Store Emacs customization inside a separate file
@@ -386,9 +386,12 @@ Add the following code inside your "~/.emacs.d/init.el" file:
   The last one is the location of the "pelpa" directory inside the pel project, in
   the location you selected when you `cloned PEL`_
 
-- Section 2 adds the location of the *utils* directory to Emacs ``load-path`` to
+- Section 2 adds the location of the *pel* directory to Emacs ``load-path``
+  to allow Emacs to find all PEL Emacs Lisp files.  This should be the
+  directory where you downloaded pEL.
+- Section 3 adds the location of the *utils* directory to Emacs ``load-path`` to
   allow Emacs to find the single file Emacs libraries PEL uses.
-- Section 3 tells Emacs to store its customization form inside a file called
+- Section 4 tells Emacs to store its customization form inside a file called
   "~./emacs.d/emacs-customization.el".  If you already have Emacs customization
   inside your current init.el file, copy it inside that new file.
   Emacs customization is the full content of the ``(custom-set-variables ...)`` form.
@@ -557,9 +560,9 @@ there is some idle time.
 Write code similar to the following early at the beginning of your init.el file:
 
 .. code:: elisp
-
     (setq pel--abbrev-file-name abbrev-file-name)
-    (setq abbrev-file-name "~/abbrev_defs-invalid") ; use a non-existing file name
+
+   (setq abbrev-file-name "~/abbrev_defs-invalid") ; use a non-existing file name
 
 Then pass the information when you call ``pel-init``:
 
