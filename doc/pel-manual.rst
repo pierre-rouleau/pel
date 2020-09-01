@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 08:56:46, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 08:59:15, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -397,6 +397,8 @@ Add the following code inside your "``~/.emacs.d/init.el``" file:
           ;; (require 'pel)
           ;; (pel-init)
 
+
+
 - Section 1 of the code adds the following URLS of Elpa-compliant Emacs package
   archives:
 
@@ -423,11 +425,12 @@ Add the following code inside your "``~/.emacs.d/init.el``" file:
 .. _cloned PEL: `Clone PEL repository on your drive`_
 
 **Note**
-   If you work inside several projects and each project requires different
-   Emacs settings, you could use several customization files and activate them
-   for each project, reducing the load time further.
-   That provides another degree of freedom, along with Emacs directory local
-   and file local variables.
+
+If you work inside several projects and each project requires different
+Emacs settings, you could use several customization files and activate them
+for each project, reducing the load time further.
+That provides another degree of freedom, along with Emacs directory local
+and file local variables.
 
 Build PEL using make
 --------------------
