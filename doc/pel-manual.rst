@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 00:35:24, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 08:53:25, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -219,39 +219,37 @@ following sections.
 
 Essentially you need to:
 
-#. Use Emacs 24 or later. Ideally use the latest released: Emacs 26.3.
-#. Clone the PEL Git depot on your computer to get PEL
-#. Create *utils* directory for storing single file Emacs libraries.
-#. Prepare your `Emacs initialization file`_ to:
+#. `Install Emacs 26.1 or later`_. Ideally use the latest stable release: Emacs 26.3.
+#. `Clone the PEL Git repository`_ on your computer.
+#. `Prepare Emacs Initialization directory`_ where lots of Emacs files will go.
+#. `Create a "~/.emacs.d/utils" directory`_ for files from the EmacsAttics_ and
+   EmacsMirror_ that PEL uses.
+#. `Create or Update your Emacs Initialization file`_.
+#. `Build PEL using make`_ to byte-compile Emacs Lisp files, download and
+   install the required external libraries.
+#. `Activate PEL in your init.el file`_.
+#. `Activate PEL Features - Customize PEL`_.
 
-   - support loading Emacs Lisp files from a (*utils*) directory where single
-     file external libraries will be stored,
-   - support `Emacs Lisp Packages`_ archive sites: ELPA_, MELPA_ and
-     MELPA-STABLE_,
-   - support a local Elpa-compliant Emacs package archive directory that will be
-     use to store PEL Emacs package archive tar file,
-   - support for storing Emacs customization forms inside a file separate from
-     your Emacs initialization file but loaded from it.
 
-#. Run ``make`` on the command line to:
+If you wish you can also customize PEL and Emacs further.  See the following
+sections:
 
-   - create a Emacs package archive tar file for PEL
-   - create a local Elpa-compliant Emacs package archive directory and store
-     PEL's Emacs package archive tar file inside it.
+- `Further PEL Customization`_
+- `Emacs and PEL Optimizations`_
+- `Generic Tricks`_, specially `Running Emacs Graphics Mode`_.
 
-#. Use Emacs package-install command to PEL, install all PEL's dependencies that
-   are retrieved from ELPA_, MELPA_ or MELPA-STABLE_ and then byte-compile PEL
-   source code files.
-#. Decide whether you want to have PEL start automatically when Emacs starts or
-   just start it when you need it and then modify your init file if you want PEL
-   to start automatically.
+..
+
+   #. Use Emacs package-install command to PEL, install all PEL's dependencies that
+      are retrieved from ELPA_, MELPA_ or MELPA-STABLE_ and then byte-compile PEL
+      source code files.
 
 Detailed instructions for the above steps are written in the following sections.
 
 .. _Emacs Lisp Packages: https://www.gnu.org/software/emacs/manual/html_node/emacs/Packages.html#Packages
 
 Install Emacs 26.1 or later
-----------------------------
+---------------------------
 
 Install a version of Emacs you can run from the command line.
 It will be used to build PEL later.
@@ -288,8 +286,8 @@ version of Emacs.
 
 .. _Homebrew: https://brew.sh/
 
-Clone PEL repository on your drive
-----------------------------------
+Clone the PEL Git repository
+----------------------------
 
 Clone the `PEL's Github repo`_ somewhere in your home directory but outside your
 "~/.emacs.d" directory.  This instruction assumes that you store it inside
@@ -303,21 +301,36 @@ shell:
           cd projects
           git clone https://github.com/pierre-rouleau/pel.git
 
-This will create the "~/projects/pel" directory with all the files inside it.
+This will create the "``~/projects/pel``" directory tree with all
+PEL's files inside it, including all `PDF document tables`_
+that document the key bindings of Emacs and the libraries you can activate with
+PEL.
+
 
 .. _PEL's Github repo: https://github.com/pierre-rouleau/pel
 
 
-Prepare Emacs Initialization file
----------------------------------
+Prepare Emacs Initialization directory
+--------------------------------------
 
-There are several ways to set up `Emacs initialization file`_, however, since
-you will have to store several Emacs-related files in your system, (PEL itself,
-Emacs init file, Emacs customization file, Emacs bookmarks file, Emacs
-abbreviation files, external libraries downloaded from Elpa-compliant sites like
-ELPA_, MELPA_ or MELPA-STABLE_ as well as single Emacs libraries into a *utils*
-directory, etc...) it's best to create the "~/.emacs.d" directory and store
-Emacs configuration file inside "~/.emacs.d/init.el".
+There are several ways to set up `Emacs initialization file`_.
+
+You will have to store several Emacs-related files in your system:
+
+- PEL itself,
+- Emacs init file,
+- Emacs customization file,
+- Emacs bookmarks file,
+- Emacs abbreviation files,
+- External Emacs Lisp libraries downloaded from Elpa-compliant sites like
+  ELPA_, MELPA_ or MELPA-STABLE_,
+- External Emacs Lisp libraries from the EmacsAttics_ or EmacsMirror_ that are
+  not Elpa-protocol compliant and must be stored into a *utils* directory,
+- etc...
+
+
+It is best to  create the "``~/.emacs.d``" directory and store
+Emacs configuration file inside "``~/.emacs.d/init.el``".
 
 The following instructions assume that your Emacs initialization file is
 "~/.emacs.d/init.el".
@@ -344,10 +357,10 @@ An easy way to do this from a shell is:
           mkdir -p ~/.emacs.p/utils
 
 
-Update your Emacs Initialization file
--------------------------------------
+Create or Update your Emacs Initialization file
+-----------------------------------------------
 
-Add the following code inside your "~/.emacs.d/init.el" file:
+Add the following code inside your "``~/.emacs.d/init.el``" file:
 
 .. code:: elisp
 
@@ -378,6 +391,11 @@ Add the following code inside your "~/.emacs.d/init.el" file:
           (setq custom-file "~/.emacs.d/emacs-customization.el")
           (load custom-file)
 
+          ;; 5: Start PEL
+          ;; - At first leave this commented out.
+          ;; - Activate the code Once you have successfully built PEL once
+          ;; (require 'pel)
+          ;; (pel-init)
 
 - Section 1 of the code adds the following URLS of Elpa-compliant Emacs package
   archives:
@@ -391,14 +409,16 @@ Add the following code inside your "~/.emacs.d/init.el" file:
 
 - Section 2 adds the location of the *pel* directory to Emacs ``load-path``
   to allow Emacs to find all PEL Emacs Lisp files.  This should be the
-  directory where you downloaded pEL.
+  directory where you downloaded PEL.
 - Section 3 adds the location of the *utils* directory to Emacs ``load-path`` to
   allow Emacs to find the single file Emacs libraries PEL uses.
 - Section 4 tells Emacs to store its customization form inside a file called
   "~./emacs.d/emacs-customization.el".  If you already have Emacs customization
   inside your current init.el file, copy it inside that new file.
   Emacs customization is the full content of the ``(custom-set-variables ...)`` form.
-
+- Section 5 load and initializes PEL.  The code is commented out.
+  Do not activate the code until later in the installation steps, after
+  your first successful build of PEL.
 
 .. _cloned PEL: `Clone PEL repository on your drive`_
 
@@ -409,12 +429,16 @@ Add the following code inside your "~/.emacs.d/init.el" file:
    That provides another degree of freedom, along with Emacs directory local
    and file local variables.
 
-Create And Install the PEL Emacs Package Archive tar file into pelpa
---------------------------------------------------------------------
+Build PEL using make
+--------------------
 
-The Makefile_ in the PEL repository has all the logic to create PEL's
-Elpa-compliant package archive tar file and store it into your
-"~/project/pel/pelpa" directory.
+The Makefile_ in the PEL repository byte-compile all PEL's Emacs Lisp files.  By
+doing so it will download and install a large number of external Emacs Lisp
+libraries and run some regression tests.
+It will also create a PEL Elpa-compliant Elpa-compliant package
+archive tar file and store it into your "``~/project/pel/pelpa``" directory.
+
+This makefile uses a terminal version of Emacs 26.1 or later.
 
 All you have to do is open a shell and execute the following commands:
 
@@ -424,116 +448,143 @@ All you have to do is open a shell and execute the following commands:
           make clean
           make
 
-This will create the required directory, byte-compile all PEL source code to
-check if all is OK, then run the regression test, create the tar file and create
-a Elpa-compliant Emacs package archive that Emacs ``package`` can use inside
-your local "~/project/pel/pelpa" directory.
-
-At this point you have everything ready to go to the next step to install PEL
-inside your Emacs system.
 
 
-Install PEL package and its dependencies
-----------------------------------------
 
-With all previous steps completed, open Emacs then type::
+..
+   Install PEL package and its dependencies
+   ----------------------------------------
 
-  M-x list-packages
+   With all previous steps completed, open Emacs then type::
 
-Hit return and wait for Emacs to communicate with MELPA_, MELPA-STABLE_ and GNU
-ELPA_ to download their list of packages.  Once the download is completed Emacs
-display a message in the echo area.  At this point you should be able to find
-one entry for PEL: search for "  pel"  (with 2 leading spaces) or "Pragmatic"
-with ``C-s`` and you should find it.  Select it and hit the Install button.
+     M-x list-packages
 
-Emacs will download all PEL's dependencies and will install them inside the
-"~/.emacs.d/elpa" directory.  Depending of the speed of your interface and the
-speed of the sites this may take several seconds or even minutes.  I have seen
-GNU ELPA_ failing to respond causing the process to terminate without
-completing the entire operation.  If this happens just restart it by pressing
-the Install button again.
+   Hit return and wait for Emacs to communicate with MELPA_, MELPA-STABLE_ and GNU
+   ELPA_ to download their list of packages.  Once the download is completed Emacs
+   display a message in the echo area.  At this point you should be able to find
+   one entry for PEL: search for "  pel"  (with 2 leading spaces) or "Pragmatic"
+   with ``C-s`` and you should find it.  Select it and hit the Install button.
 
-When all packages are downloaded Emacs then byte-compile all of these packages
-and byte-compiles PEL last. The results are shown inside Emacs ``*Compile Log*``
-buffer.  PEL should byte-compile clean with no error or warnings.
+   Emacs will download all PEL's dependencies and will install them inside the
+   "~/.emacs.d/elpa" directory.  Depending of the speed of your interface and the
+   speed of the sites this may take several seconds or even minutes.  I have seen
+   GNU ELPA_ failing to respond causing the process to terminate without
+   completing the entire operation.  If this happens just restart it by pressing
+   the Install button again.
 
-When all of this is done, PEL should be installed, loaded in this Emacs session
-and ready to be used (in this Emacs session).  To check if this is the case,
-type::
+   When all packages are downloaded Emacs then byte-compile all of these packages
+   and byte-compiles PEL last. The results are shown inside Emacs ``*Compile Log*``
+   buffer.  PEL should byte-compile clean with no error or warnings.
 
-  M-x pel-
+   When all of this is done, PEL should be installed, loaded in this Emacs session
+   and ready to be used (in this Emacs session).  To check if this is the case,
+   type::
 
-then hit the **tab** key. You should see a relatively small set of PEL commands
-in Emacs ``*Completions*`` buffer.  The ``pel-init`` command should be
-there. To start using PEL right away, just type::
+     M-x pel-
 
-  M-x pel-init
+   then hit the **tab** key. You should see a relatively small set of PEL commands
+   in Emacs ``*Completions*`` buffer.  The ``pel-init`` command should be
+   there. To start using PEL right away, just type::
 
-and hit the **return** key.
+     M-x pel-init
 
-Emacs should display ``"PEL loaded, PEL keys binding in effect."`` inside the
-echo area.  To confirm the version of PEL issue the ``pel-version`` command the
-same way.
+   and hit the **return** key.
+
+   Emacs should display ``"PEL loaded, PEL keys binding in effect."`` inside the
+   echo area.  To confirm the version of PEL issue the ``pel-version`` command the
+   same way.
 
 
-You're almost done 😅!
 
 
-Activate PEL when Emacs Start
------------------------------
+Activate PEL in your init.el file
+---------------------------------
 
-If you want PEL to be available right after Emacs starts, write the following
-inside your "~/.emacs.d/init.el" Emacs Initialization file:
+To activate PEL when Emacs starts, un-comment the 2 lines of Emacs Lisp code (identified as
+*section 5* in the init.el file example) in your "``~/.emacs.d/init.el``" file,
+remove the leading semi-colons from the last 2 lines:
 
 .. code:: elisp
 
           (require 'pel)
           (pel-init)
 
-**Note**
-    The first line is not strictly necessary, as ``pel-init`` was installed as
-    an auto-loaded command by ``package-install``.  It will just prevent Emacs
-    byte-compiler from complaining if you place this code in a file that you
-    byte-compile.  But if you leave it inside your init.el file, then it's not
-    needed.  The only line that *is* needed is the ``(pel-init)`` line.
+Save the file and restart Emacs.
 
-If you do not want PEL to start when Emacs start, then each time you want to use
-PEL you will have to explicitly execute the ``pel-init`` command by typing::
+You're done installing PEL 😅!
 
-       M-x pel-init
+The next steps is to use Emacs customization system to activate the features you
+want.
 
 
-You can see PEL's use of the **F11** function key by hitting in sequence the
-**F11** key quickly followed by the **F1** key.  Emacs will list PEL's **F11**
-key bindings inside the ``*Help*`` buffer.
+..
+   **Note**
+       The first line is not strictly necessary, as ``pel-init`` was installed as
+       an auto-loaded command by ``package-install``.  It will just prevent Emacs
+       byte-compiler from complaining if you place this code in a file that you
+       byte-compile.  But if you leave it inside your init.el file, then it's not
+       needed.  The only line that *is* needed is the ``(pel-init)`` line.
 
+   If you do not want PEL to start when Emacs start, then each time you want to use
+   PEL you will have to explicitly execute the ``pel-init`` command by typing::
 
+          M-x pel-init
 
 Activate PEL Features - Customize PEL
 -------------------------------------
 
-To use several of PEL's features you must activate them via Emacs customization.
-Features not enabled via customization are not loaded and not available.
-This allows PEL to provide conflicting features to help testing what you like
-and also to speed up further Emacs initialization.
+Once PEL is built, you can run Emacs and select the packages you want to use by
+customizing Emacs and setting the PEL user options to activate the packages you
+want to use.
 
-PEL's features and the related customization variables for the feature (if any)
-are listed in the `PEL Convenience Features`_ section.
+One way to quickly gain access to PEL customization group inside Emacs is to
+execute the ``pel-cfg`` command by typing the ``<f11> <f1> !`` key sequence.
+When running Emacs in graphics mode, you'll see something like this:
 
-To activate one or more of those PEL features (and the corresponding external
-packages PEL uses for those features) you need to use the ``M-x customize``
-command, search for the respective ``pel-use-...`` variable and set it to **t**.
-The list of these variables is also available in the `PEL Use Variables`_
-section.  Once you're done, save the settings and re-execute ``M-x pel-init`` to
-activate your selection.
 
-You can repeat the operation several times.  You can also exit Emacs between
-them.
+.. image:: res/pel-cfg.png
+
+Emacs opens a buffer in ``Custom-mode`` and shows the top level of PEL
+configuration.  PEL has a large tree of customization groups, each holding
+several customization user options variables.
+
+All PEL package control user options have a name that starts with ``pel-use-``
+and they are part of the ``pel-package-use`` customization group.  If you select
+that group Emacs will open it and you will see something like this:
+
+.. image:: res/pel-cfg-package.png
+
+It shows the top level group for different types of packages, grouped by
+functionality type.
+
+If you want to see all ``pel-use-`` variables, you can also type ``pel-use-`` in
+the field to the right of the **Search** button and press that button.  Emacs
+will list all ``pel-use-`` user option variables by alphabetical order, as shown
+below.  Set the ones you want to activate.  Then save your configuration and
+restart Emacs.
+
+The following show a lot of options **on**.  Most of them are turned
+off by default when you first get PEL.  Turned them on, save the customization
+and restart Emacs to activate them.  When you restart Emacs, some more packages
+might be automatically downloaded when required.
+
+Note:  In Emacs Lisp the value **t**, is the symbol for truth and **nil** is
+used for the empty list and represent falsehood.
+
+.. image:: res/pel-cfg-all-use.png
 
 Now you are done! 😀
 
-The followings sections are optional, depending on what PEL
-features you use.
+You can repeat the operation several times.  If you saved the customization, you
+can exit Emacs: the new features will be available the next time you start it.
+
+You can also see the following sections for some extra customization and
+optimizations.
+
+See `Key Binding Help`_ for a quick trick to see what's available at the
+keyboard.
+
+
 
 
 Further PEL Customization
@@ -598,51 +649,11 @@ More information on PEL support of spell checking is available
 in the `PEL Spell Checking Support`_ section.
 
 
-Configure PEL
--------------
-
-Once PEL is built, you can run Emacs and select the packages you want to use by
-customizing Emacs and setting the PEL user options to activate the packages you
-want to use.
-
-One way to quickly gain access to PEL customization group inside Emacs is to
-execute the ``pel-cfg`` command by typing the ``<f11> <f1> !`` key sequence.
-When running Emacs in graphics mode, you'll see something like this:
-
-
-.. image:: res/pel-cfg.png
-
-Emacs opens a buffer in ``Custom-mode`` and shows the top level of PEL
-configuration.  PEL has a large tree of customization groups, each holding
-several customization user options variables.
-
-All PEL package control user options have a name that starts with ``pel-use-``
-and they are part of the ``pel-package-use`` customization group.  If you select
-that group Emacs will open it and you will see something like this:
-
-.. image:: res/pel-cfg-package.png
-
-It shows the top level group for different types of packages, grouped by
-functionality type.
-
-If you want to see all ``pel-use-`` variables, you can also type ``pel-use-`` in
-the field to the right of the **Search** button and press that button.  Emacs
-will list all ``pel-use-`` user option variables by alphabetical order, as shown
-below.  Set the ones you want to activate.  Then save your configuration and
-restart Emacs.
-
-The following show a lot of options **on** (activated).  Most of them are turned
-off by default when you first get PEL.  Turned them on, save the customization
-and restart Emacs to activate them.  When you restart Emacs, some more packages
-might be automatically downloaded when required.
-
-.. image:: res/pel-cfg-all-use.png
 
 
 
-
-Generic Optimizations
----------------------
+Emacs and PEL Optimizations
+---------------------------
 
 The following sections describe optimizations you can use anywhere, with or
 without PEL.
@@ -796,6 +807,23 @@ to be used as what PEL normally uses for F6:
           (global-set-key (kbd ("<f7>") pel:f6)
 
 
+.. -----------------------------------------------------------------------------
+
+
+Key Binding Help
+================
+
+
+By default, PEL configuration activates the which-key_ external package so that
+when you hit a key prefix, like **F11** the list of comments and their key
+bindings will show up at the bottom of the Emacs screen, in what is called the
+echo area.  This, like everything PEL uses, can be turned off by customization
+(in this case it's the user option called ``pel-use-which-key``.
+
+You can also see the list of commands without it. For example,
+you can see PEL's use of the **F11** function key by hitting in sequence the
+**F11** key quickly followed by the **F1** key.  Emacs will list PEL's **F11**
+key bindings inside the ``*Help*`` buffer.
 ..
    -----------------------------------------------------------------------------
 
@@ -5290,4 +5318,4 @@ exhaustive list):
 ..
    -----------------------------------------------------------------------------
 
-..  LocalWords:  PEL
+..  LocalWords:  PEL EmacsAttics EmacsMirror Elpa
