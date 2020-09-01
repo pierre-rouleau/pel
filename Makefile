@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2020-09-01 12:48:45, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-09-01 12:53:26, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -308,7 +308,8 @@ PEL_TAR_FILE := pel-$(PEL_VERSION).tar
 all: pel test pkg mypelpa
 
 # ------------------------------------------------------------------------------
-# Build all normal PEL files, except pel_keys for the very first build
+# Build all normal PEL files, except pel_keys for the very first build.
+#
 # If Emacs is started and pel-init is run, that will download the external
 # libraries (use-package and its dependencies) which will allow Emacs to
 # automatically download the rest on the normal ``make all``.
