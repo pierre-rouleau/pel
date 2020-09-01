@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2020-09-01 12:53:26, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-09-01 12:59:06, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -336,18 +336,20 @@ help:
 	@printf "      is located.\n"
 	@printf "\n"
 	@printf "Usage:\n"
-	@printf " * make           - builds everything as needed.\n"
-	@printf " * make all       - builds everything as needed.\n"
-	@printf " * make pel       - byte compile all files. Nothing else done.\n"
-	@printf " * make compile   - byte compile all files. Nothing else done.\n"
-	@printf " * make lint      - check .el files with several tools via elisp-lint.\n"
-	@printf " * make all-dirs  - create all output and temporary directories.\n"
-	@printf " * make clean     - remove $(PELPA_DIR) and all output files including $(PEL_TAR_FILE)\n"
-	@printf " * make clean_tar - remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
+	@printf " * make             - build everything as needed.\n"
+	@printf " * make first-build - first build done on a virgin system.\n"
+	@printf " * make all         - build everything as needed.\n"
+	@printf " * make pel         - byte compile all files. Nothing else done.\n"
+	@printf " * make compile     - byte compile all files. Nothing else done.\n"
+	@printf " * make lint        - check .el files with elisp-lint.\n"
+	@printf " * make all-dirs    - create all output and temporary directories.\n"
+	@printf " * make clean       - remove $(PELPA_DIR) and all output files\n"
+	@printf "                      including $(PEL_TAR_FILE)\n"
+	@printf " * make clean_tar   - remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
 	@printf " * make clean_mypelpa - remove the directory $(PELPA_DIR)\n"
-	@printf " * make test      - Run the regression tests.\n"
-	@printf " * make pkg       - Build the tar file inside the $(OUT_DIR) directory.\n"
-	@printf " * make mypelpa   - Copy the tar file into a local package archive.\n"
+	@printf " * make test        - Run the regression tests.\n"
+	@printf " * make pkg         - Build the tar file inside $(OUT_DIR).\n"
+	@printf " * make mypelpa     - Copy the tar file into a local package archive.\n"
 	@printf "\n"
 	@printf "LIMITATIONS:\n"
 	@printf "  - The package version number must be updated inside several\n"
