@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 14:32:40, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 14:36:00, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -212,14 +212,12 @@ How to Install PEL
 ==================
 
 PEL is not yet available through MELPA_ (Milkypostman's Emacs Lisp Package
-Archive) or any Elpa-compatible Emacs package archive. It might be on day,
+Archive) or any Elpa-compatible Emacs package archive. It might be one day,
 although the nature of the PEL project might not be compatible with
 MELPA_ or ELPA_.
 
 Therefore semi-automated installation instruction are detailed in the
 following sections.
-
-
 
 Essentially you need to:
 
@@ -246,9 +244,6 @@ sections:
 - `Further PEL Customization`_
 - `Emacs and PEL Optimizations`_
 - `Generic Tips`_, specially `Running Emacs Graphics Mode`_.
-
-
-
 
 .. _Emacs Lisp Packages: https://www.gnu.org/software/emacs/manual/html_node/emacs/Packages.html#Packages
 
