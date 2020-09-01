@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 09:59:36, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 10:01:44, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -261,7 +261,8 @@ following commands:
 - ``which emacs`` to see if Emacs is available.
 
   - On macOS, if this is ``/usr/bin/emacs``, you most probably have
-    the old version of Emacs that Apple installed.
+    the old version of Emacs that Apple installed, and that is most
+    probably not version 26.1 or later.
 
 - Check the version of Emacs you have with the following command line:
 
