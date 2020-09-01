@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 09:09:43, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 09:11:46, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -238,7 +238,7 @@ sections:
 
 - `Further PEL Customization`_
 - `Emacs and PEL Optimizations`_
-- `Generic Tricks`_, specially `Running Emacs Graphics Mode`_.
+- `Generic Tips`_, specially `Running Emacs Graphics Mode`_.
 
 ..
 
