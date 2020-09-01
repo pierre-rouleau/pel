@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 09:01:51, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 09:08:34, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -238,6 +238,7 @@ You can also see the list of commands without it. For example,
 you can see PEL's use of the **F11** function key by hitting in sequence the
 **F11** key quickly followed by the **F1** key.  Emacs will list PEL's **F11**
 key bindings inside the ``*Help*`` buffer.
+
 ..
    -----------------------------------------------------------------------------
 
@@ -4728,8 +4729,3 @@ exhaustive list):
 
 
 -----------------------------------------------------------------------------
-
-..
-   -----------------------------------------------------------------------------
-
-..  LocalWords:  PEL EmacsAttics EmacsMirror Elpa
