@@ -26,6 +26,9 @@ integrating existing packages.
 And PEL comes with lots of documentation:
 
 - `PEL's Manual`_,
+
+  - Read the section on `How to install PEL`_.
+
 - `Key Bindings Documentation`_, a large set of PDF *semi-quick sheets*, each
   one is about a specific editing topic or Emacs mode or package, describing all
   related Emacs, package, and PEL specific key bindings and the related Emacs
@@ -59,6 +62,7 @@ course) suggestions are always welcome.  Drop me a note in the wiki_!
 .. _which-key:                  https://elpa.gnu.org/packages/which-key.html
 .. _.emacs bankruptcy:          https://www.emacswiki.org/emacs/DotEmacsBankruptcy
 .. _wiki:                       https://github.com/pierre-rouleau/pel/wiki
+.. _How to install PEL:         doc/pel-manual.rst#how-to-install-pel
 
 
 ..
