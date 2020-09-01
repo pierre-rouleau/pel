@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 10:47:38, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 10:55:24, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -744,15 +744,19 @@ If you want to change a key binding that PEL uses, you can define your own
 key bindings after the execution of ``pel-init``.  You can also change
 PEL prefix keys.
 
-The following code re-assign the F6 key to ``undo`` and uses the F7 key
+The following code re-assign the F6 key to ``undo`` and uses the F8 key
 to be used as what PEL normally uses for F6:
 
 .. code:: elisp
 
           (global-set-key (kbd "<f6>") 'undo)
-          (global-set-key (kbd ("<f7>") pel:f6)
+          (global-set-key (kbd ("<f8>") pel:f6)
 
+Since PEL is using more keys over time, it might be difficult to change the
+bindings without affecting PEL's bindings.  If you have a specific request,
+please describe your request on the `PEL wiki`_, I'll take a look and see what I can do.
 
+.. _PEL wiki: https://github.com/pierre-rouleau/pel/wiki
 
 .. -----------------------------------------------------------------------------
 
@@ -772,8 +776,7 @@ you can see PEL's use of the **F11** function key by hitting in sequence the
 **F11** key quickly followed by the **F1** key.  Emacs will list PEL's **F11**
 key bindings inside the ``*Help*`` buffer.
 
-..
-   -----------------------------------------------------------------------------
+.. -----------------------------------------------------------------------------
 
 PEL Convenience Features
 ========================
