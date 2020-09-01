@@ -34,7 +34,6 @@
 ;;
 ;; - pel
 ;;   - pel-file-management
-;;   - pel-identification
 ;;   - pel-kbmacro
 ;;   - pel-package-use
 ;;     - pel-pkg-for-cursor
@@ -159,30 +158,6 @@ make script files executable on save when non-nil, don't otherwise."
   :group 'pel-file-management
   :type 'boolean
   :safe #'booleanp)
-
-;; -----------------------------------------------------------------------------
-(defgroup pel-identification nil
-  "PEL author (the Emacs user) identification values."
-  :group 'pel)
-
-(defcustom pel-author-name nil
-  "Name of the source code author name to use."
-  :group 'pel-identification
-  :type 'string)
-
-(defun pel-abbrev-valid-p (str)
-  "Return t if STR is a valid abbreviation, nil otherwise."
-  (= (length str) 4))
-
-(defcustom pel-author-abbrev nil
-  "4 character abbreviation of author name."
-  :group 'pel-identification
-  :type 'string
-  :safe #'pel-abbrev-valid-p)
-
-(defcustom pel-author-email nil
-  "Email address of the author to report in files."
-  :type 'string)
 
 ;; -----------------------------------------------------------------------------
 (defgroup pel-kbmacro nil
