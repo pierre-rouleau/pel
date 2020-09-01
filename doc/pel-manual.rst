@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-31 23:44:09, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 00:29:10, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -597,21 +597,43 @@ In future versions of PEL, this code may not be necessary.
 More information on PEL support of spell checking is available
 in the `PEL Spell Checking Support`_ section.
 
-To override or change PEL key bindings
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-As of this release PEL key bindings and key prefixes are hard coded.
-If you want to change a key binding that PEL uses, you can define your own
-key bindings after the execution of ``pel-init``.  You can also change
-PEL prefix keys.
+Configure PEL
+-------------
 
-The following code re-assign the F6 key to ``undo`` and uses the F7 key
-to be used as what PEL normally uses for F6:
+Once PEL is built, you can run Emacs and select the packages you want to use by
+customizing Emacs and setting the PEL user options to activate the packages you
+want to use.
 
-.. code:: elisp
+One way to quickly gain access to PEL customization group inside Emacs is to
+execute the ``pel-cfg`` command by typing the ``<f11> <f1> !`` key sequence.
+When running Emacs in graphics mode, you'll see something like this:
 
-          (global-set-key (kbd "<f6>") 'undo)
-          (global-set-key (kbd ("<f7>") pel:f6)
+
+.. image:: res/pel-cfg.png
+
+Emacs opens a buffer in ``Custom-mode`` and shows the top level of PEL
+configuration.  PEL has a large tree of customization groups, each holding
+several customization user options variables.
+
+All PEL package control user options have a name that starts with ``pel-use-``
+and they are part of the ``pel-package-use`` customization group.  If you select
+that group Emacs will open it and you will see something like this:
+
+.. image:: res/pel-cfg-package.png
+
+It shows the top level group for different types of packages, grouped by
+functionality type.
+
+If you want to see all ``pel-use-`` variables, you can also type ``pel-use-`` in
+the field to the right of the **Search** button and press that button.  Emacs
+will list all ``pel-use-`` user option variables by alphabetical order, as shown
+below.  Set the ones you want to activate.  Then save your configuration and
+restart Emacs.
+
+.. image:: res/pel-cfg-all-use.png
+
+
 
 
 Generic Optimizations
@@ -751,6 +773,22 @@ current directory and the complete environment:
 .. _Steve Purcel in the readme file of his exec-path-from-shell: https://github.com/purcell/exec-path-from-shell#setting-up-your-shell-startup-files-correctly
 .. _1970s E editor: https://en.wikipedia.org/wiki/E_(1970s_text_editor)
 
+
+To override or change PEL key bindings
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+As of this release PEL key bindings and key prefixes are hard coded.
+If you want to change a key binding that PEL uses, you can define your own
+key bindings after the execution of ``pel-init``.  You can also change
+PEL prefix keys.
+
+The following code re-assign the F6 key to ``undo`` and uses the F7 key
+to be used as what PEL normally uses for F6:
+
+.. code:: elisp
+
+          (global-set-key (kbd "<f6>") 'undo)
+          (global-set-key (kbd ("<f7>") pel:f6)
 
 
 ..
