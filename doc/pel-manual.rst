@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 10:03:35, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 10:10:05, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -334,7 +334,7 @@ It is best to  create the "``~/.emacs.d``" directory and store
 Emacs configuration file inside "``~/.emacs.d/init.el``".
 
 The following instructions assume that your Emacs initialization file is
-"~/.emacs.d/init.el".
+"``~/.emacs.d/init.el``".
 
 
 Windows users:
@@ -405,10 +405,12 @@ Add the following code inside your "``~/.emacs.d/init.el``" file:
 
   - MELPA_
   - MELPA-STABLE_
-  - "~/projects/pel/pelpa"
+  - "``~/projects/pel/pelpa``"
 
-  The last one is the location of the "pelpa" directory inside the pel project, in
-  the location you selected when you `cloned PEL`_ to your drive.
+  The last one is the location of the "pelpa" directory inside the PEL project
+  directory, the location you selected when you `cloned PEL`_ to your drive.
+  Later, you would be able to use that PEL archive file to install PEL into
+  other computers.  This, however is not needed for this installation.
 
 - Section 2 adds the location of the *pel* directory to Emacs ``load-path``
   to allow Emacs to find all PEL Emacs Lisp files.  This should be the
