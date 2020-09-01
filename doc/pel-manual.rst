@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 10:14:54, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 10:47:38, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -447,13 +447,18 @@ archive tar file and store it into your "``~/project/pel/pelpa``" directory.
 
 This makefile uses a terminal version of Emacs 26.1 or later.
 
-All you have to do is open a shell and execute the following commands:
+All you have to do is open a terminal shell and execute the following commands:
 
 .. code:: shell
 
           cd ~/projects/pel
           make clean
           make
+
+That will take some time as it downloads several external packages from MELPA_,
+ELPA_, EmacsAttics_ and EmacsMirror_.  It might also prompt you, so keep an eye
+on it.
+
 
 Activate PEL in your init.el file
 ---------------------------------
