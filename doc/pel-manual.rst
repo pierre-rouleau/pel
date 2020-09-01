@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 10:59:13, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 11:07:56, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -753,7 +753,7 @@ to be used as what PEL normally uses for F6:
           (global-set-key (kbd ("<f9>") pel:f6)
 
 The `Function Keys Mappings PDF table`_ provides and overview of the way PEL uses
-the function keys.
+the function keys.  See also the section titled `PEL Function Keys Bindings`_.
 
 Since PEL is using more keys over time, it might be difficult to change the
 bindings without affecting PEL's bindings.  If you have a specific request,
@@ -1371,11 +1371,17 @@ Instead PEL uses the following function keys:
   when the ``pel-use-bm`` user option is **t**.
 - **F5**, bound to ``repeat``.
 - **F6**, the ``pel:f6`` prefix, which provides quick access to some
-  often used commands.
+  often used commands, and generic template insertion commands that work
+  in all major modes.
+- **F7** is used for Hydra_ key sequences when ``pel-use-hydra`` is **t**.
 - **F11**, the ``pel:`` prefix , is the main prefix key for PEL, providing
   access to a large set of key bindings and second-level key prefixes.
 -  **F12** is a mode-sensitive key prefix with quick access bindings for the
-   current major mode.
+   current major mode.  The **F12 F12** key sequence (normally referred to as
+   ``<f12> <f12>`` in this document and PDF tables) provides access to
+   specialized text template insertion in the major modes of several programming
+   and markup languages.
+
 
 The use of function keys and Emacs modifier keys is shown in the `Function
 Keys`_ PDF table, reproduced here:
@@ -1399,6 +1405,10 @@ variable to **t**.  Use the ``M-x customize`` command and search
 for ``pel-use-which-key``.  Set it to **t**.  The restart PEL by using
 ``M-x pel-init``.  PEL will download and install the `which-key`_ package
 and will activate it.
+
+
+
+.. _Hydra: https://github.com/abo-abo/hydra
 
 PEL Grep Support
 ----------------
