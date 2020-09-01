@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 08:53:25, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 08:56:46, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -448,55 +448,6 @@ All you have to do is open a shell and execute the following commands:
           make clean
           make
 
-
-
-
-..
-   Install PEL package and its dependencies
-   ----------------------------------------
-
-   With all previous steps completed, open Emacs then type::
-
-     M-x list-packages
-
-   Hit return and wait for Emacs to communicate with MELPA_, MELPA-STABLE_ and GNU
-   ELPA_ to download their list of packages.  Once the download is completed Emacs
-   display a message in the echo area.  At this point you should be able to find
-   one entry for PEL: search for "  pel"  (with 2 leading spaces) or "Pragmatic"
-   with ``C-s`` and you should find it.  Select it and hit the Install button.
-
-   Emacs will download all PEL's dependencies and will install them inside the
-   "~/.emacs.d/elpa" directory.  Depending of the speed of your interface and the
-   speed of the sites this may take several seconds or even minutes.  I have seen
-   GNU ELPA_ failing to respond causing the process to terminate without
-   completing the entire operation.  If this happens just restart it by pressing
-   the Install button again.
-
-   When all packages are downloaded Emacs then byte-compile all of these packages
-   and byte-compiles PEL last. The results are shown inside Emacs ``*Compile Log*``
-   buffer.  PEL should byte-compile clean with no error or warnings.
-
-   When all of this is done, PEL should be installed, loaded in this Emacs session
-   and ready to be used (in this Emacs session).  To check if this is the case,
-   type::
-
-     M-x pel-
-
-   then hit the **tab** key. You should see a relatively small set of PEL commands
-   in Emacs ``*Completions*`` buffer.  The ``pel-init`` command should be
-   there. To start using PEL right away, just type::
-
-     M-x pel-init
-
-   and hit the **return** key.
-
-   Emacs should display ``"PEL loaded, PEL keys binding in effect."`` inside the
-   echo area.  To confirm the version of PEL issue the ``pel-version`` command the
-   same way.
-
-
-
-
 Activate PEL in your init.el file
 ---------------------------------
 
@@ -515,20 +466,6 @@ You're done installing PEL 😅!
 
 The next steps is to use Emacs customization system to activate the features you
 want.
-
-
-..
-   **Note**
-       The first line is not strictly necessary, as ``pel-init`` was installed as
-       an auto-loaded command by ``package-install``.  It will just prevent Emacs
-       byte-compiler from complaining if you place this code in a file that you
-       byte-compile.  But if you leave it inside your init.el file, then it's not
-       needed.  The only line that *is* needed is the ``(pel-init)`` line.
-
-   If you do not want PEL to start when Emacs start, then each time you want to use
-   PEL you will have to explicitly execute the ``pel-init`` command by typing::
-
-          M-x pel-init
 
 Activate PEL Features - Customize PEL
 -------------------------------------
@@ -583,9 +520,6 @@ optimizations.
 
 See `Key Binding Help`_ for a quick trick to see what's available at the
 keyboard.
-
-
-
 
 Further PEL Customization
 -------------------------
