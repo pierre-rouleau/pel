@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 10:10:05, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 10:14:54, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -398,6 +398,7 @@ Add the following code inside your "``~/.emacs.d/init.el``" file:
           ;; (require 'pel)
           ;; (pel-init)
 
+          ;; ---- end of init.el ---
 
 
 - Section 1 of the code adds the following URLS of Elpa-compliant Emacs package
