@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 10:01:44, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 10:03:35, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -278,7 +278,8 @@ You can use Homebrew_, a command line utility, to install a command line
 version of Emacs.
 
 - See Homebrew_ home page for how to install Homebrew.
-- Once homebrew is installed, you can use the following commands:
+- Once homebrew is installed, you can use the following commands inside a
+  terminal shell:
 
   - ``brew search emacs`` to list Homebrew package names that include "emacs".
   - ``brew info emacs`` to see what version of emacs is available.
