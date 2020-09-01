@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2020-08-31 10:03:07, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-09-01 10:28:53, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -110,6 +110,7 @@ DEST_DOC_PDF_DIR := $(DEST_DIR)/doc/pdf
 #    - The file names are selected to impose that order when files
 #      are byte compiled by a process that select files alphabetically.
 EL_FILES := pel--base.el \
+			pel--keys-macros.el \
 			pel--macros.el \
 			pel--options.el \
 			pel-applescript.el \

@@ -67,6 +67,7 @@
 ;;                      ;     pel-toggle
 ;;                      ;     pel-mode-toggle-arg
 (require 'pel--macros)  ; use: pel-setq, pel-seq-default
+(require 'pel--keys-macros)
 (require 'pel--options) ; all `pel-use-...' variables identify what to use.
 ;;                      ; also defines a set of utility functions to deal with
 ;;                      ; the options: pel-auto-complete-help
@@ -1319,74 +1320,6 @@ For example, applied to a directory name, macOS Finder is used."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> <f1>`` : Customization
 ;;
-
-;; -- Macros
-;; To have a name show up in which-key 'menu', a named function is required,
-;; otherwise all we see is 'prefix' which is not meaningful.
-;; The macros help simplify/reduce the lines of code used to create the
-;; key bindings for PEL configuration.
-;;
-
-(defun pel-prefixed (str &optional prefix)
-  "Return the STR string prefixed with PREFIX (or space) if not empty.
-Pass empty string unchanged."
-  (if (string= str "")
-      ""
-    (format "%s%s"
-            (or prefix " ")
-            str)))
-
-(defmacro pel--cfg (pel-group prefix key)
-  "Define a function and key binding to customize specified PEL-GROUP mapped to PREFIX KEY."
-  (let ((fct (intern (format "pel-cfg%s" (pel-prefixed pel-group "-"))))
-        (group (intern (format "pel%s" (pel-prefixed pel-group "-"))))
-        (docstring (format "Customize PEL%s support.\n\
-If OTHER-WINDOW is non-nil (use \\[universal-argument]), \
-display in other window." (pel-prefixed
-                           (capitalize pel-group)))))
-    `(progn
-       ;; first declare the function
-       (defun ,fct (&optional other-window)
-         ,docstring
-         (interactive "P")
-         (customize-group (quote ,group) other-window))
-       ;; then define the global key
-       (define-key ,prefix ,key (quote ,fct)))))
-
-(defun pel--isa-custom-group-p (group-name)
-  "Return t if GROUP-NAME string is the name of an existing customize group."
-  (let (custom-groups)
-    (mapatoms (lambda (symbol)
-                (when (or (and (get symbol 'custom-loads)
-                               (not (get symbol 'custom-autoload)))
-                          (get symbol 'custom-group))
-                  (push (symbol-name symbol) custom-groups))))
-    (not (null (member group-name custom-groups)))))
-
-(defun pel--customize-groups (group-list)
-  "Utility: customize all groups named in the GROUP-LIST if they exist."
-  (dolist (grp group-list)
-    (when (pel--isa-custom-group-p grp)
-      (customize-group grp t))))
-
-(defmacro pel--cfg-pkg (pel-group prefix key &rest other-groups)
-  "Define a function and key binding to customize specified PEL-GROUP mapped to PREFIX KEY."
-  (let ((fct (intern (format "pel-cfg-pkg-%s" pel-group)))
-        (group (intern (format "pel-pkg-for-%s" pel-group)))
-        (docstring (format "Customize PEL %s support.\n\
-If OTHER-WINDOW is non-nil (use \\[universal-argument]), \
-display in other window and open the related group(s) that exist."
-                           (capitalize pel-group))))
-    `(progn
-       ;; first declare the function
-       (defun ,fct (&optional other-window)
-         ,docstring
-         (interactive "P")
-         (customize-group (quote ,group) other-window)
-         (when (and other-window (quote ,other-groups))
-           (pel--customize-groups (quote ,other-groups))))
-       ;; then define the global key
-       (define-key ,prefix ,key (quote ,fct)))))
 
 ;; -- Key bindings
 ;; Set up the key prefixes.
