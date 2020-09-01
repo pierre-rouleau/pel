@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 12:23:03, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 12:25:52, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -227,7 +227,7 @@ Essentially you need to:
 #. `Create a "~/.emacs.d/utils" directory`_ for files from the EmacsAttics_ and
    EmacsMirror_ that PEL uses.
 #. `Create or Update your Emacs Initialization file`_.
-#. `Create the Emacs customization file`_.
+#. `Create the emacs-customization.el file`_.
 #. `Build PEL using make`_ to byte-compile Emacs Lisp files, download and
    install the required external libraries.
 #. `Activate PEL in your init.el file`_.
@@ -437,8 +437,8 @@ for each project, reducing the load time further.
 That provides another degree of freedom, along with Emacs directory local
 and file local variables.
 
-Create the Emacs customization file
------------------------------------
+Create the emacs-customization.el file
+--------------------------------------
 
 Emacs stores customization information inside your ``init.el`` file by default.
 It is best to store it somewhere else, as written in section 4 of the
@@ -455,7 +455,7 @@ Before the next step you must therefore create an empty
 "``~./emacs.d/emacs-customization.el``" file.  This can be done from a terminal
 shell:
 
-..code:: shell
+.. code:: shell
 
          touch ~./emacs.d/emacs-customization.el
 
