@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2020-09-01 12:59:06, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-09-01 13:48:59, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -105,7 +105,7 @@ DEST_DOC_PDF_DIR := $(DEST_DIR)/doc/pdf
 # The Emacs Lisp files that must be byte-compiled to check their validity.
 # IMPORTANT:
 #    - The first files the pel--base, pel--macros and pel--options,
-#    - then the pel- files which use the pel-- files,
+#    - This must exclude the file pel.el and pel_keys.el
 #    - The last two must be pel_keys followed by pel.
 #    - The file names are selected to impose that order when files
 #      are byte compiled by a process that select files alphabetically.
@@ -175,8 +175,9 @@ EL_FILES := pel--base.el \
 			pel-undo.el \
 			pel-uuid.el \
 			pel-window.el \
-			pel-xr.el \
-			pel.el
+			pel-xr.el
+
+EL_FILES2 := pel.el
 
 # Files not byte compiled alone but still included in the package tar file
 OTHER_EL_FILES := pel_keys.el pel-pkg.el pel-autoloads.el
@@ -293,6 +294,9 @@ TARGET_SOURCE_FILES := $(patsubst %,$(DEST_DIR)/%,$(SRC_FILES))
 # ELC_FILES list the PEL .elc files
 ELC_FILES := $(subst .el,.elc,$(EL_FILES))
 
+# Same for ELC_FILES2
+ELC_FILES2 := $(subst .el,.elc,$(EL_FILES2))
+
 # PEL_TAR_FILE makes the name of the PEL tar file name (with PEL version)
 PEL_TAR_FILE := pel-$(PEL_VERSION).tar
 
@@ -305,7 +309,7 @@ PEL_TAR_FILE := pel-$(PEL_VERSION).tar
 # 4: Install that tar file into the local Elpa-compliant directory,
 #    ready to be used by Emacs.
 
-all: pel test pkg mypelpa
+all: pel pel2 test pkg mypelpa
 
 # ------------------------------------------------------------------------------
 # Build all normal PEL files, except pel_keys for the very first build.
@@ -524,6 +528,9 @@ pel_keys.elc:           pel--base.elc pel--macros.elc pel--options.elc pel-compl
 compile: pel
 
 pel: $(ELC_FILES)
+
+
+pel2: $(ELC_FILES2)
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -f batch-byte-compile pel_keys.el
 
 
