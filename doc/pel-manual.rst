@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 09:12:39, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 09:16:25, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -406,7 +406,7 @@ Add the following code inside your "``~/.emacs.d/init.el``" file:
   - "~/projects/pel/pelpa"
 
   The last one is the location of the "pelpa" directory inside the pel project, in
-  the location you selected when you `cloned PEL`_
+  the location you selected when you `cloned PEL`_ to your drive.
 
 - Section 2 adds the location of the *pel* directory to Emacs ``load-path``
   to allow Emacs to find all PEL Emacs Lisp files.  This should be the
@@ -421,7 +421,7 @@ Add the following code inside your "``~/.emacs.d/init.el``" file:
   Do not activate the code until later in the installation steps, after
   your first successful build of PEL.
 
-.. _cloned PEL: `Clone PEL repository on your drive`_
+.. _cloned PEL: `Clone the PEL Git repository`_
 
 **Note**
 
