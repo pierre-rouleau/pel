@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 14:36:00, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 15:18:50, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -555,7 +555,16 @@ This tar file can be used later to install PEL in other computers.
 
 The build might prompt you, so keep an eye on it.
 
-At the end, if all goes right, you should have a working version of PEL with all
+At the end, if all goes right, you should see something like this::
+
+    Loading pel_keys...
+    PEL loaded, PEL keys binding in effect.
+    PEL version: 0.1.1
+    Parsing tar file...
+    Parsing tar file...done
+
+
+You should have a working version of PEL with all
 files byte-compiled for efficiency 😅!
 
 The *only* thing left  is to use Emacs customization system to activate the features you
