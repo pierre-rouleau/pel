@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 11:07:56, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 11:08:54, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -744,8 +744,8 @@ If you want to change a key binding that PEL uses, you can define your own
 key bindings after the execution of ``pel-init``.  You can also change
 PEL prefix keys.
 
-The following code re-assign the F6 key to ``undo`` and uses the F8 key
-to be used as what PEL normally uses for F6:
+The following code re-assign the **F6** key to ``undo`` and uses the **F9** key
+to be used as what PEL normally uses for **F6**:
 
 .. code:: elisp
 
