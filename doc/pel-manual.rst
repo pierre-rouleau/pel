@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-08-31 20:12:20, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-08-31 23:44:09, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -255,11 +255,13 @@ Install Emacs 26.1 or later
 
 Install a version of Emacs you can run from the command line.
 It will be used to build PEL later.
+Once PEL is built on your system you can use either a terminal based (tercap)
+version of Emacs or a graphical version of Emacs with PEL.
 
 To check if you have Emacs on your system, open a shell and execute the
 following commands:
 
-- ``which emacs`` to see if Emcas is available.
+- ``which emacs`` to see if Emacs is available.
 
   - On macOS, if this is ``/usr/bin/emacs``, you most probably have
     the old version of Emacs that Apple installed.
@@ -274,7 +276,8 @@ Emacs 26.3 or later.
 For macOS
 ~~~~~~~~~
 
-You can use Homebrew_, a command line utility, to install Emacs.
+You can use Homebrew_, a command line utility, to install a command line
+version of Emacs.
 
 - See Homebrew_ home page for how to install Homebrew.
 - Once homebrew is installed, you can use the following commands:
