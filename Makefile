@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2020-09-02 11:43:15, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-09-02 13:23:13, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -272,7 +272,7 @@ PDF_FILES := -legend.pdf \
 #           This excludes the test files, the Emacs Lisp files used to
 #           build and install PEL (used by this Makefile) and the PDF
 #           document files.
-SRC_FILES := $(OTHER_EL_FILES) $(EL_FILES) $(OTHER_FILES)
+SRC_FILES := $(OTHER_EL_FILES) $(EL_FILES) $(EL_FILES2) $(OTHER_FILES)
 
 # TARGET_SOURCE_FILES lists all Emacs Lisp source files that are part
 #           of PEL as well as the miscellaneous files that must be
