@@ -1062,11 +1062,12 @@ For example, applied to a directory name, macOS Finder is used."
 ;; <f2>  : prefix
 ;; <f3>  > pel-kmacro-start-macro-or-insert-counter
 ;; <f4>  : kmacro-end-or-call-macro
-;; <f5>  > repeat           (C)                           (M) pel-scroll-up
-;; <f6>  > pel prefix       (C)                           (M) pel-scroll-down
-;; <f7>  > pel-hydra-window (C)                           (M)
-;; <f8>  >                  (C)                           (M)
-;; <f9>  >                  (C)                           (M)
+;; <f5>  > repeat           (C)                (M) pel-scroll-up
+;; <f6>  > pel prefix       (C)                (M) pel-scroll-down
+;; <f7>  > pel-hydra-window (C)                (M)
+;; <f8>  >                  (C)                (M)
+;; <f9>  >                  (C)                (M)
+;;                                             (M-S) pel-show-init-time
 ;; <f10> > menu-bar-open,   (C) buffer-menu-open,         (M) toggle-frame-maximized
 ;; <f11> > pel prefix,      <C-f11>: pel-previous-visible,  <M-f11>:
 ;; <f12> > mode-sensitive,  <C-f12>: pel-next-visible,      <M-f12>: mode-sensitive
@@ -2757,8 +2758,10 @@ This is meant to be used in the d-mode hook lambda."
 
 (define-pel-global-prefix pel:emacs (kbd "<f11> ? e"))
 (define-key pel:emacs "s" #'list-load-path-shadows)
-(define-key pel:emacs "t" #'emacs-init-time)
+(define-key pel:emacs "t"  'pel-show-init-time)
 (define-key pel:emacs "v" #'emacs-version)
+
+(global-set-key (kbd "<M-S-f9>")  'pel-show-init-time)
 
 (use-package pel-emacs
   :commands (pel-emacs-load-stats

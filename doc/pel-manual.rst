@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 15:18:50, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 21:29:36, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -853,6 +853,37 @@ please describe your request on the `PEL wiki`_, I'll take a look and see what I
 .. _PEL wiki:                         https://github.com/pierre-rouleau/pel/wiki
 .. _Function Keys Mappings PDF table: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/keys-fn.pdf
 
+
+Optional Installations
+----------------------
+
+Using benchmark-init
+~~~~~~~~~~~~~~~~~~~~
+
+If you want to know the time each loaded file takes during Emacs initialization
+time you can use the benchmark-init_ package. This is not controlled by PEL
+because it must be launched as as early as possible inside your init.el file.
+
+To install it type ``M-x list-packages`` then hit the return key to get a list
+of all elpa-compliant packages. Search for ``benchmark-init``, select it and
+install it.
+
+Then add the following code as close as possible to the top of your init.el file:
+
+.. code:: elisp
+
+  (require 'benchmark-init
+           (expand-file-name
+            "~/.emacs.d/elpa/benchmark-init-20150905.938/benchmark-init"))
+  (add-hook 'after-init-hook 'benchmark-init/deactivate)
+
+With the above code in your init.el file, you can then execute the PEL command
+``pel-show-init-time`` (or using the`` <M-S-f9>`` keystroke for it) Emacs will
+open 2 buffers and will show something like this:
+
+.. image:: res/pel-benchmark.png
+
+
 .. -----------------------------------------------------------------------------
 
 
@@ -870,6 +901,7 @@ You can also see the list of commands without it. For example,
 you can see PEL's use of the **F11** function key by hitting in sequence the
 **F11** key quickly followed by the **F1** key.  Emacs will list PEL's **F11**
 key bindings inside the ``*Help*`` buffer.
+
 
 .. -----------------------------------------------------------------------------
 
