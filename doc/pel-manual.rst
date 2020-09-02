@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-02 13:31:21, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-02 14:27:47, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -641,7 +641,7 @@ abbreviations, the loading time can become annoyingly significant.
 
 PEL provides a mechanism to delay the loading to speed up the Emacs
 initialization time.  A change in the init.el file is required: read and cache
-the content of ``abbrev-file-name`` user option variable and rest it to the name
+the content of ``abbrev-file-name`` user option variable and then set it to the name
 of an non-existing file as early as possible in your init.el file.  Then pass
 the cached value to ``pel-init`` optional argument.  By doing this you prevent
 Emacs from reading the abbreviation file and let PEL load it later silently when
@@ -650,9 +650,9 @@ there is some idle time.
 Write code similar to the following early at the beginning of your init.el file:
 
 .. code:: elisp
-    (setq pel--abbrev-file-name abbrev-file-name)
 
-   (setq abbrev-file-name "~/abbrev_defs-invalid") ; use a non-existing file name
+    (setq pel--abbrev-file-name abbrev-file-name)
+    (setq abbrev-file-name "~/abbrev_defs-invalid") ; use a non-existing file name
 
 Then pass the information when you call ``pel-init``:
 
