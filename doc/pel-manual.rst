@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-02 10:13:20, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-02 13:12:46, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1393,13 +1393,23 @@ creating new buffers with ``C-x b``.
 
 .. _IDO-mode: https://www.gnu.org/software/emacs/manual/html_node/ido/index.html
 
-In Dired mode, for macOS only (in the current implementation), the normally
-unassigned 'z'  key is mapped to the ``pel-dired-open`` function.  It opens the
-file or directory at point with the OS-registered application.  The macOS
-implementation uses the `macOS open`_ application which does the application
-launching.
+In Dired mode, the normally
+unassigned 'z'  key is mapped to the command ``pel-open-in-os-app``.
+It opens the
+file or directory at point with the OS-registered application.
+The ``<f11> f f`` key sequence is also mapped to that command.
+The current implementation (in `pel-filex.el`_) only supports Linux, macOS and Windows.
 
-Thanks to Jason Blevins for the idea taken from `his blog <https://jblevins.org/log/dired-open>`_.
+- On Linux, the command uses xdg-open_.
+- On macOS it uses `macOS open`_.
+- On Windows, it uses the Explorer open command via `Emacs Windows subprocess support`_.
+
+*Credits:*
+
+  Thanks to Jason Blevins for the idea taken from `his blog
+  <https://jblevins.org/log/dired-open>`_ and to
+  Xah Lee for ideas from
+  his `Open File in External App`_ page.
 
 To see a textual representation of a directory tree, PEL provides access to the
 neotree and z-tree packages.  They are activated by the ``pel-use-neotree`` and
@@ -1411,7 +1421,26 @@ relevant user options.
 
 
 
+
 .. _macOS open: https://ss64.com/osx/open.html
+.. _Emacs Windows subprocess support: https://www.gnu.org/software/emacs/manual/html_node/emacs/Windows-Processes.html
+.. _xdg-open: https://ss64.com/bash/xdg-open.html
+.. _Open File in External App: http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html
+
+
+
+PEL File and Directory Local Variable Control Support
+-----------------------------------------------------
+
+:PDF Docs: `File and Directory Local Variables`_
+:PEL Customization: *none*
+:PEL Key Prefix: - **pel:filevar** : ``<f11> f v``
+                 - **pel:dirvar**  : ``<f11> f v d``
+
+PEL provides a set of key bindings to manage local file variables and local
+directory variables.
+
+See the `File and Directory Local Variables`_ PDF table.
 
 
 PEL Font Management Utilities
@@ -1435,20 +1464,6 @@ standard GNU Emacs.  The available commands are:
 The key binding selected correspond to what is used on macOS for
 manipulating the font size of the Terminal.app application when the
 *super* modifier key is set to the macOS command (⌘ ) key.
-
-
-PEL File and Directory Local Variable Control Support
------------------------------------------------------
-
-:PDF Docs: `File and Directory Local Variables`_
-:PEL Customization: *none*
-:PEL Key Prefix: - **pel:filevar** : ``<f11> f v``
-                 - **pel:dirvar**  : ``<f11> f v d``
-
-PEL provides a set of key bindings to manage local file variables and local
-directory variables.
-
-See the `File and Directory Local Variables`_ PDF table.
 
 
 PEL Frame Management Utilities
