@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-02 10:10:26, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-02 10:13:20, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -138,8 +138,6 @@ the repetitive writing of package initialization code.
 
 I started writing PEL while learning Emacs, Emacs Lisp and various packages.
 PEL encapsulates some knowledge about various
-#. `Open Emacs to install use-package`_.
-#. `Build second part of PEL`_.
 tweaks to use and configure several built-in Emacs features and
 third party packages.
 
