@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-02 14:27:47, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-02 14:29:59, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -635,7 +635,7 @@ Delay Loading of Abbreviation Definition File
 Emacs automatic abbreviation control provided by the ``abbrev-mode`` described
 in `PEL Abbreviation Management Support`_ store all abbreviations in a file
 identified by the ``abbrev-file-name`` user option variable.  By default
-its value is "~/.emacs.d/abbrev_defs``.  Emacs load the content of this file
+its value is ``~/.emacs.d/abbrev_defs``.  Emacs load the content of this file
 during its initialization time.  When the file contains a large number of
 abbreviations, the loading time can become annoyingly significant.
 
