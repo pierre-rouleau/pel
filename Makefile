@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2020-09-01 18:02:48, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-09-02 11:43:15, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -130,6 +130,7 @@ EL_FILES := pel--base.el \
 			pel-erlang-skels.el \
 			pel-face-ut.el \
 			pel-file.el \
+			pel-filex.el \
 			pel-fill.el \
 			pel-font.el \
 			pel-frame-control.el \

@@ -365,25 +365,9 @@ Done in this function to allow advising libraries that remap these keys."
 
 ;; Open files with OS-registered applications from Dired
 ;; -----------------------------------------------------
-(when pel-system-is-macos-p
-  ;; Currently only supports macOS.
-  ;; In future, could add support for Windows
-  ;; by launching Windows Explorer for directories for example.
-  ;; Or other OS by using a launcher application for the OS.
-
-  (defvar dired-mode-map) ; forward declare - dired is loaded early in Emacs
-
-  (defun pel-dired-open ()
-    "Open file with OS-registered application from Dired.
-For example, applied to a directory name, macOS Finder is used."
-    (interactive)
-    (if (fboundp 'dired-get-file-for-visit)
-        (let ((filename (dired-get-file-for-visit)))
-          (start-process "default-app" nil "open" filename))
-      (error "Function dired-get-file-for-visit not loaded")))
-
-  (eval-after-load "dired"
-    '(define-key dired-mode-map "z" 'pel-dired-open)))
+(defvar dired-mode-map) ; forward declare - dired is loaded early in Emacs
+(eval-after-load "dired"
+  '(define-key dired-mode-map "z" 'pel-open-in-os-app))
 
 ;; dired-narrow
 ;; ------------
@@ -3260,6 +3244,7 @@ the ones defined from the buffer now."
 (define-key pel:file "L" #'locate)
 (define-key pel:file "W" #'append-to-file)
 (define-key pel:file "d" #'find-dired)
+(define-key pel:file "f"  'pel-open-in-os-app)
 (define-key pel:file "g" #'find-grep)
 (define-key pel:file "h" #'find-grep-dired)
 (define-key pel:file "i" #'insert-file)

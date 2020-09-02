@@ -33,6 +33,7 @@
 ;; following group hierarchy:
 ;;
 ;; - pel
+;;   - pel-base-emacs
 ;;   - pel-file-management
 ;;   - pel-kbmacro
 ;;   - pel-package-use

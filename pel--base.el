@@ -184,7 +184,7 @@ Issue a user error if current buffer does not visit a file."
         (if sans-directory
             (file-name-nondirectory fn)
           fn))
-    (user-error "No file in buffer %s" (buffer-name))))
+    (user-error "Buffer %s is not visiting a file!" (buffer-name))))
 
 (defun pel-current-buffer-file-extension (&optional with-period)
   "Return the extension of the current buffer's file.

@@ -164,6 +164,9 @@
                  pel-find-file-at-point-in-window))
     (autoload fct  "pel-file"))
 
+  ;; pel-filex
+  (autoload 'pel-open-in-os-app     "pel-filex")
+
   ;; pel-fill
   (autoload 'pel-auto-fill-only-comments  "pel-fill")
   (autoload 'pel-show-fill-columns        "pel-fill")
