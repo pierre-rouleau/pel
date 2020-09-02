@@ -123,6 +123,16 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
                                (file-name-directory (locate-library "pel")))))
   :package-version '(pel . "0.1.1"))
 
+;; -----------------------------------------------------------------------------
+(defgroup pel-base-emacs nil
+  "PEL Emacs basic configuration."
+  :group 'pel)
+
+(defcustom pel-prompt-accept-y-n nil
+  "Accept 'y' or 'n' instead of 'yes' or 'no' as answers to prompts."
+  :group 'pel-base-emacs
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; -----------------------------------------------------------------------------
 (defgroup pel-file-management nil

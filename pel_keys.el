@@ -105,6 +105,13 @@
             'executable-make-buffer-file-executable-if-script-p))
 
 ;; -----------------------------------------------------------------------------
+;; Control Emacs prompting
+;; -----------------------
+(when pel-prompt-accept-y-n
+  ;; Use 'y'/'n' or SPC/DEL instead of 'yes'/'no'
+  (fset 'yes-or-no-p 'y-or-n-p))
+
+;; -----------------------------------------------------------------------------
 ;; Utilities
 ;; ---------
 
