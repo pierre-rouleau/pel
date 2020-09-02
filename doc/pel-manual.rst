@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-02 09:58:41, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-02 10:10:26, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -621,8 +621,9 @@ can exit Emacs: the new features will be available the next time you start it.
 You can also see the following sections for some extra customization and
 optimizations.
 
-See `Key Binding Help`_ for a quick trick to see what's available at the
-keyboard.
+See section `PEL Use Variables`_ for more info on quickly listing all
+``pel-use`` user option variables and `Key Binding Help`_ for a quick trick to
+see what's available at the keyboard.
 
 Further PEL Customization
 -------------------------
@@ -4301,7 +4302,7 @@ variables grows as PEL evolves.
 
 To get the list of these user options, use Emacs completion when executing the
 ``describe-symbol`` command: type ``<f1> o`` followed by ``pel-use-`` and the
-return key.  Emacs will show the available list of user options that have a name
+tab key.  Emacs will show the available list of user options that have a name
 that starts with ``pel-use-``.  It will look like this:
 
 The following table contains the list of the ``pel-use-`` user options
@@ -4314,7 +4315,7 @@ corresponding user options in alphabetical order.
 
 .. image:: res/pel-use-cfg.png
 
-
+Also see the `Activate PEL Features - Customize PEL`_ section.
 
 
 .. _Elixir programming language: https://en.wikipedia.org/wiki/Elixir_(programming_language)
