@@ -66,6 +66,9 @@
     (autoload 'pel-global-company-mode       "pel-autocomplete")
     (autoload 'pel-company-mode              "pel-autocomplete"))
 
+  ;; pel-benchmark
+  (autoload 'pel-show-init-time             "pel-benchmark")
+
   ;; pel-bookmark
   (autoload 'pel-bookmark-in-current-file-p "pel-bookmark")
 
