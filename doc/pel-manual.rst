@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 21:29:36, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-01 21:41:38, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -878,7 +878,7 @@ Then add the following code as close as possible to the top of your init.el file
   (add-hook 'after-init-hook 'benchmark-init/deactivate)
 
 With the above code in your init.el file, you can then execute the PEL command
-``pel-show-init-time`` (or using the`` <M-S-f9>`` keystroke for it) Emacs will
+``pel-show-init-time`` (or using the ``<M-S-f9>`` keystroke for it) Emacs will
 open 2 buffers and will show something like this:
 
 .. image:: res/pel-benchmark.png
