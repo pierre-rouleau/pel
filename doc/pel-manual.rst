@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-02 14:29:59, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-02 14:44:30, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -377,14 +377,24 @@ Add the following code inside your "``~/.emacs.d/init.el``" file:
               (add-to-list 'package-archives (cons "mypelpa"      (expand-file-name "~/projects/pel/pelpa/")) t))
             (package-initialize))
 
-          ;; 2: Add pel to Emacs load-path
+          ;; 2: Delay loading of abbreviation definitions
+          ;;     Disable loading the abbreviation file during Emacs initialization.
+          ;;     To do this: save and replace the content of the variable that holds
+          ;;     the file name of the abbreviation list with the name of a file
+          ;;     that does not exists.
+          ;;     Pass the original name to pel-init later to initialize properly.
+          ;;
+          (setq pel--abbrev-file-name abbrev-file-name)
+          (setq abbrev-file-name "~/abbrev_defs-invalid") ; use a non-existing file name
+
+          ;; 3: Add pel to Emacs load-path
           ;;    Identify the directory where you stored pel.
           (add-to-list 'load-path (expand-file-name "~/projects/pel"))
 
-          ;; 3: Add utils to Emacs load-path
+          ;; 4: Add utils to Emacs load-path
           (add-to-list 'load-path (expand-file-name "~/.emacs.d/utils"))
 
-          ;; 4: Store Emacs customization inside a separate file
+          ;; 5: Store Emacs customization inside a separate file
           ;;    If you already have a (custom-set-variables ...) form
           ;;    in your init.el, move it into this new file.
           (setq custom-file "~/.emacs.d/emacs-customization.el")
@@ -394,7 +404,7 @@ Add the following code inside your "``~/.emacs.d/init.el``" file:
           ;; - At first leave this commented out.
           ;; - Activate the code Once you have successfully built PEL once
           ;; (require 'pel)
-          ;; (pel-init)
+          ;; (pel-init pel--abbrev-file-name)
 
           ;; ---- end of init.el ---
 
@@ -411,16 +421,19 @@ Add the following code inside your "``~/.emacs.d/init.el``" file:
   Later, you would be able to use that PEL archive file to install PEL into
   other computers.  This, however is not needed for this installation.
 
-- Section 2 adds the location of the *pel* directory to Emacs ``load-path``
+- Section 2 delays the loading of the abbreviation lists to after PEL is
+  loaded.  This mechanism is described in the section titled
+  `Delay Loading of Abbreviation Definition File`_.
+- Section 3 adds the location of the *pel* directory to Emacs ``load-path``
   to allow Emacs to find all PEL Emacs Lisp files.  This should be the
   directory where you downloaded PEL.
-- Section 3 adds the location of the *utils* directory to Emacs ``load-path`` to
+- Section 4 adds the location of the *utils* directory to Emacs ``load-path`` to
   allow Emacs to find the single file Emacs libraries PEL uses.
-- Section 4 tells Emacs to store its customization form inside a file called
+- Section 5 tells Emacs to store its customization form inside a file called
   "``~./emacs.d/emacs-customization.el``".  If you already have Emacs customization
   inside your current init.el file, copy it inside that new file.
   Emacs customization is the full content of the ``(custom-set-variables ...)`` form.
-- Section 5 load and initializes PEL.  The code is commented out.
+- Section 6 load and initializes PEL.  The code is commented out.
   Do not activate the code until later in the installation steps, after
   your first successful build of PEL.
 
@@ -647,6 +660,7 @@ the cached value to ``pel-init`` optional argument.  By doing this you prevent
 Emacs from reading the abbreviation file and let PEL load it later silently when
 there is some idle time.
 
+
 Write code similar to the following early at the beginning of your init.el file:
 
 .. code:: elisp
@@ -659,6 +673,9 @@ Then pass the information when you call ``pel-init``:
 .. code:: elisp
 
     (pel-init pel--abbrev-file-name)
+
+This code is included in the init.el sample described in the PEL
+installation section titled `Create or Update your Emacs Initialization file`_.
 
 
 Identify the location of your Ispell local dictionary
