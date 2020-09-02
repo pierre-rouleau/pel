@@ -412,8 +412,9 @@
       (autoload 'pel-speedbar-toggle-images        "pel-speedbar")))
 
   ;; pel-spell
-  (autoload 'pel-spell-init      "pel-spell")
-  (autoload 'pel-spell-show-use  "pel-spell")
+  (autoload 'pel-spell-init                     "pel-spell")
+  (autoload 'pel-spell-init-from-user-option    "pel-spell")
+  (autoload 'pel-spell-show-use                 "pel-spell")
 
   ;; pel-tags
   (autoload 'pel-show-etags-mode-status    "pel-tags")

@@ -61,9 +61,12 @@
 
 
 ;; -----------------------------------------------------------------------------
-;;; Code:
+;;; Dependencies:
 
+(require 'pel--base)
 (require 'pel--macros)
+(require 'pel--options)
+
 (eval-when-compile
   ;; both flyspell and ispell are loaded lazily if required, but their symbols
   ;; are needed at compilation. Same for popup.
@@ -81,7 +84,9 @@
   (require 'popup nil :no-error)  ; use: popup-menu*
   )
 
-;; --
+;; -----------------------------------------------------------------------------
+;;; Code:
+
 
 ;;-pel-autoload
 (defun pel-spell-init (spell-program-name
@@ -158,6 +163,19 @@ to allow the flyspell pop-up menu to work in terminal mode."
       '(progn
          (fset 'flyspell-emacs-popup
                'pel-spell-flyspell-emacs-popup-textual)))))
+
+
+;;-pel-autoload
+(defun pel-spell-init-from-user-option ()
+  "Initialize Spell checking.
+Use the values taken from user option variable
+`pel-spell-check-tools'."
+  (dolist (spec pel-spell-check-tools)
+    (when (eq system-type (car spec))
+      (let* ((program-name (nth 1 spec))
+             (path (file-name-directory program-name))
+             (personal-dict  (pel-string-or-nil (nth 2 spec))))
+        (pel-spell-init program-name path personal-dict)))))
 
 ;; --
 

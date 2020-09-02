@@ -106,6 +106,25 @@
     (error "Failed loading cc-vars!")))
 
 ;; -----------------------------------------------------------------------------
+;; File Path build utility
+;; -----------------------
+
+(defun pel-pdf-directory ()
+  "Return the full path of the directory where PDF files are stored.
+Last character is a forward slash."
+  (expand-file-name
+   (format "%s/doc/pdf/"
+           (file-name-directory (locate-library "pel")))))
+
+(defun pel-pdf-file-url (topic)
+  "Return the full path of a pdf table for TOPIC.
+TOPIC is the file name body (no path, no extension)."
+  (format "file:%s"
+          (expand-file-name
+           (format "%s.pdf" topic)
+           (pel-pdf-directory))))
+
+;; -----------------------------------------------------------------------------
 ;; User Option Data Definition
 ;; ---------------------------
 
@@ -118,10 +137,7 @@ PEL comes with a manual and a large set of PDF files, each documenting the
 commands and key bindings of a specific aspect of Emacs.  The PDF files document
 the standard Emacs key bindings as well as PEL's specific key bindings."
   :group 'convenience
-  :link `(file-link :tag "Directory of PDF table files"
-                     ,(expand-file-name
-                       (format "%s/doc/pdf/"
-                               (file-name-directory (locate-library "pel")))))
+  :link `(file-link :tag "Directory of PDF table files" ,(pel-pdf-directory))
   :package-version '(pel . "0.1.1"))
 
 ;; -----------------------------------------------------------------------------
@@ -138,7 +154,8 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
 ;; -----------------------------------------------------------------------------
 (defgroup pel-file-management nil
   "PEL File Management Configurations."
-  :group 'pel)
+  :group 'pel
+  :link `(url-link :tag "File Management PDF" ,(pel-pdf-file-url "file-mngt")))
 
 (defcustom pel-delete-trailing-whitespace t
   "Controls whether whitespaces are automatically deleted when file is saved.
@@ -173,7 +190,9 @@ make script files executable on save when non-nil, don't otherwise."
 ;; -----------------------------------------------------------------------------
 (defgroup pel-kbmacro nil
   "PEL keboard macro management utilities."
-  :group 'pel)
+  :group 'pel
+  :link `(url-link :tag "Keyboard Macros PDF" ,(pel-pdf-file-url "keyboard-macros")))
+
 
 (defcustom pel-kbmacro-prompts t
   "Prompt before overriding existing keyboard macro?"
@@ -191,7 +210,9 @@ make script files executable on save when non-nil, don't otherwise."
 ;; ------------------
 (defgroup pel-pkg-for-cursor nil
   "List of external packages for cursor management that may be used with PEL."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Cursor PDF" ,(pel-pdf-file-url "cursor")))
+
 
 (defface pel-cursor-overwrite-mode-color
   '((((background light)) :background "black")
@@ -229,7 +250,8 @@ See URL `https://github.com/magnars/multiple-cursors.el'."
 ;; -----------------
 (defgroup pel-pkg-for-dired nil
   "List of packages activated for Dired support that may be used with PEL."
-    :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Dired PDF" ,(pel-pdf-file-url "mode-dired")))
 
 (defcustom pel-use-dired-x nil
   "Control whether PEL activates the Dired-X features in `dired-mode'."
@@ -242,7 +264,8 @@ See URL `https://github.com/magnars/multiple-cursors.el'."
 ;; -------------------
 (defgroup pel-pkg-for-filemng nil
   "List of external packages that can be used to manage file/directory."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "File Management PDF" ,(pel-pdf-file-url "file-mngt")))
 
 (defcustom pel-use-ffap    nil
   "Control whether PEL activates ffap bindings.
@@ -307,7 +330,8 @@ a non-customizable variable."
 ;; ----------------
 (defgroup pel-pkg-for-grep nil
   "List of external packages that PEL can use for grep operations."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Grep PDF" ,(pel-pdf-file-url "grep")))
 
 (defcustom pel-use-ag nil
   "Control whether PEL uses the ag tool."
@@ -341,7 +365,8 @@ References:
 ;; ---------------------
 (defgroup pel-pkg-for-key-chord nil
   "PEL support for key-chords."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Key-chords PDF" ,(pel-pdf-file-url "key-chords")))
 
 (defcustom pel-use-key-chord nil
   "Control whether PEL uses the key-chord external package.
@@ -592,6 +617,8 @@ The `pel-key-chords' value is a list of objects.
   "List of external packages that PEL can use to modify the modeline."
   :group 'pel-package-use)
 
+;; TODO: change the group to screen recording??
+
 (defcustom pel-use-keycast nil
   "Control whether the keycast package is made available.
 For more info, see URL https://github.com/tarsius/keycast"
@@ -604,7 +631,8 @@ For more info, see URL https://github.com/tarsius/keycast"
 ;; ----------------------
 (defgroup pel-pkg-for-navigation nil
   "List of external packages that PEL can use to help navigation."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Navigation PDF" ,(pel-pdf-file-url "navigation")))
 
 (defcustom pel-use-ace-link nil
   "Control activation of the ace-link package.
@@ -625,7 +653,8 @@ See URL https://github.com/abo-abo/avy for more info."
 ;; ------------------
 (defgroup pel-pkg-for-regexp nil
   "List of external packages that PEL can use for regular expressions."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Search/Replace PDF" ,(pel-pdf-file-url "search-replace")))
 
 (defcustom pel-bind-keys-for-regexp nil
   "If set to t, PEL binds several keys in the C-c prefix.
@@ -702,7 +731,8 @@ See URL `https://elpa.gnu.org/packages/xr.html'."
 ;; ------------------
 (defgroup pel-pkg-for-search nil
   "List of external packages that PEL can use for searching text."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Search/Replace PDF" ,(pel-pdf-file-url "search-replace")))
 
 (defcustom pel-use-anzu nil
   "Control whether PEL uses the Anzu.
@@ -736,7 +766,9 @@ PEL supports the following tools:
 ;; ----------------
 (defgroup pel-pkg-for-tags nil
   "List of external packages that PEL can use to manage Tags cross-references."
-  :group 'pel-pkg-for-tags)
+  :group 'pel-pkg-for-tags
+  :link `(url-link :tag "Tags/CTags PDF" ,(pel-pdf-file-url "tags")))
+
 
 (defcustom pel-use-ggtags nil
   "Control whether PEL uses the ggtags package.
@@ -750,7 +782,8 @@ See URL https://github.com/leoliu/ggtags"
 ;; ------------------
 (defgroup pel-pkg-for-window nil
   "List of external packages that PEL can use to manage windows."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Windows PDF" ,(pel-pdf-file-url "windows")))
 
 ;; Note: some other windows modules are used by PEL and are loaded
 ;;       regardless of the options since they are relatively small
@@ -807,7 +840,8 @@ References:
 ;; --------------------
 (defgroup pel-pkg-for-speedbar nil
   "PEL Speedbar management."
-  :group 'pel-pkg-for-window)
+  :group 'pel-pkg-for-window
+  :link `(url-link :tag "Speedbar PDF" ,(pel-pdf-file-url "speedbar")))
 
 (defcustom pel-use-speedbar nil
   "Control whether PEL uses the Speedbar and SR-Speedbar packages."
@@ -826,7 +860,8 @@ References:
 ;; -------------------
 (defgroup pel-pkg-for-session nil
   "PEL window session management."
-  :group 'pel-pkg-for-window)
+  :group 'pel-pkg-for-window
+  :link `(url-link :tag "Sessions PDF" ,(pel-pdf-file-url "sessions")))
 
 (defcustom pel-use-desktop nil
   "Control whether desktop feature is used for session management.
@@ -882,7 +917,8 @@ and ACTIVATE desktop-save-mode" with-desktop-registry-automatic)
 ;; -----------------
 (defgroup pel-pkg-for-buffer nil
   "List of external packages that PEL can use to manage buffers."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Buffers PDF" ,(pel-pdf-file-url "buffers")))
 
 (defcustom pel-use-uniquify nil
   "Control whether PEL uses the uniquify package."
@@ -926,7 +962,8 @@ Not used nor needed for Emacs 27.1 or later."
 ;; ------------------
 (defgroup pel-pkg-for-completion nil
   "List of external packages that PEL can use to manage completion."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Input Completion PDF" ,(pel-pdf-file-url "completion-input")))
 
 (defcustom pel-use-ido nil
   "Control whether PEL uses the Ido package."
@@ -993,7 +1030,8 @@ The available options are:
 ;; --------------------------
 (defgroup pel-pkg-for-insertions nil
   "List of external packages that PEL can use to provide easy text insertion."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Inserting Tex PDF" ,(pel-pdf-file-url "inserting-text")))
 
 (defcustom pel-use-lice nil
   "Control whether PEL uses the lice package to insert software license text."
@@ -1046,7 +1084,8 @@ PEL activates it only if variable `pel-use-yasnippet' is non-nil."
 ;; -------------------------
 (defgroup pel-pkg-for-undo nil
   "List of external packages that PEL can use to control the undo mechanisms."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Undo/Redo/Repeat PDF" ,(pel-pdf-file-url "undo-redo-repeat")))
 
 (defcustom pel-use-popup-kill-ring nil
   "Control whether PEL uses the `popup-kill-ring' package.
@@ -1096,7 +1135,10 @@ References:
 ;;
 (defgroup pel-pkg-for-parens nil
   "List of external packages that PEL can use to help deal with parens."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp"))
+  :link `(url-link :tag "Common Lisp PDF" ,(pel-pdf-file-url "pl-common-lisp"))
+  :link `(url-link :tag "Diff & Merge PDF" ,(pel-pdf-file-url "diff-merge")))
 
 (defcustom pel-use-parinfer nil
   "Control whether PEL uses the parinfer package."
@@ -1115,7 +1157,10 @@ References:
 ;; -----------------------------
 (defgroup pel-pkg-for-region nil
   "List of external packages that PEL can use to help deal with regions."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Marking PDF" ,(pel-pdf-file-url "marking"))
+  :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp"))
+  :link `(url-link :tag "Common Lisp PDF" ,(pel-pdf-file-url "pl-common-lisp")))
 
 (defcustom pel-use-expand-region nil
   "Control whether PEL uses the expand-region package."
@@ -1128,7 +1173,11 @@ References:
 ;; --------------
 (defgroup pel-pkg-for-keys nil
   "List of external packages that PEL can use to help deal keys and prompts."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "AppleScript PDF" ,(pel-pdf-file-url "pl-applescript"))
+  :link `(url-link :tag "Function Keys PDF" ,(pel-pdf-file-url "keys-fn"))
+  :link `(url-link :tag "Hide/Show PDF" ,(pel-pdf-file-url "hide-show-code"))
+  :link `(url-link :tag "Windows PDF" ,(pel-pdf-file-url "windows")))
 
 (defcustom pel-use-hydra nil
   "Control whether PEL uses the hydra package."
@@ -1166,7 +1215,8 @@ References:
 Note that auto-complete and company can both be activated.
 However, PEL only allow one of them to be used per buffer.
 The Hippie Expand can be used together with any."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Auto-Completion PDF" ,(pel-pdf-file-url "auto-completion")))
 
 (defcustom pel-use-auto-complete nil
   "Control whether PEL supports the {auto-complete} package."
@@ -1191,7 +1241,8 @@ The Hippie Expand can be used together with any."
 ;; ----------------
 (defgroup pel-pkg-for-bookmark nil
   "List of external packages that PEL can use to manage bookmarks."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Bookmarks PDF" ,(pel-pdf-file-url "bookmarks")))
 
 (defcustom pel-use-bm nil
   "Control whether PEL uses the bm (Visible Bookmarks) package."
@@ -1204,7 +1255,8 @@ The Hippie Expand can be used together with any."
 ;; ------------------------
 (defgroup pel-pkg-for-shells nil
   "List of external packages that PEL can use to support shells and terminals."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Shells PDF" ,(pel-pdf-file-url "shells")))
 
 (defcustom pel-use-vterm nil
   "Control whether the vterm shell is available.
@@ -1219,7 +1271,8 @@ and usable shell for Emacs."
 ;; ------------------------------
 (defgroup pel-pkg-for-vcs nil
   "List of external packages that PEL can use to support use of (D)VCS."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Mercurial PDF" ,(pel-pdf-file-url "vcs-mercurial")))
 
 (defcustom pel-use-magit nil
   "Control whether PEL provides access to the Magit package."
@@ -1238,7 +1291,9 @@ and usable shell for Emacs."
 ;; =======================
 (defgroup pel-pkg-for-project-mng nil
   "PEL customization for project managers."
-    :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Projectile PDF" ,(pel-pdf-file-url "projectile")))
+
 
 (defcustom pel-use-projectile nil
   "Control whether PEL supports the projectile project manager."
@@ -1253,7 +1308,8 @@ and usable shell for Emacs."
 ;; ============================
 (defgroup pel-pkg-for-programming nil
   "PEL customization for programming languages."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Comments PDF" ,(pel-pdf-file-url "comments")))
 
 (defcustom pel-use-eldoc-box nil
   "Control whether PEL supports the eldoc-box package.
@@ -1294,12 +1350,15 @@ eglot is a client for Language Server Protocol (LSP) servers."
 ;; ---------------------------
 (defgroup pel-pkg-for-all nil
   "PEL Generic Programming support."
-  :group 'pel-pkg-for-programming)
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "Comments PDF" ,(pel-pdf-file-url "comments"))
+  :link `(url-link :tag "Inserting Text PDF" ,(pel-pdf-file-url "inserting-text")))
 
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-pkg-generic-code-style nil
   "PEL Generic code style configuration."
-  :group 'pel-pkg-for-all)
+  :group 'pel-pkg-for-all
+  :link `(url-link :tag "Inserting Text PDF" ,(pel-pdf-file-url "inserting-text")))
 
 (defcustom pel-generic-skel-use-separators t
   "Specifies whether generic code block include separators line.
@@ -1402,7 +1461,8 @@ Empty strings can be used to specify section with a tempo marker with no text."
 ;; -------------------
 (defgroup pel-pkg-for-applescript nil
   "PEL customization for AppleScript."
-  :group 'pel-pkg-for-programming)
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "AppleScript PDF" ,(pel-pdf-file-url "pl-applescript")))
 
 (defcustom pel-use-applescript nil
   "Control whether PEL support the AppleScript mode."
@@ -1451,7 +1511,8 @@ of auto-newline while editing."
 
 (defgroup pel-pkg-for-c nil
   "PEL customization for C."
-  :group 'pel-pkg-for-cc)
+  :group 'pel-pkg-for-cc
+  :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
 
 (defcustom pel-c-indentation 3
   "Number of columns for C source code indentation.
@@ -1508,7 +1569,9 @@ for more details."
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-c-code-style nil
   "Emacs Lisp Source Code Style options."
-  :group 'pel-pkg-for-c)
+  :group 'pel-pkg-for-c
+  :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
+
 
 (defcustom pel-c-fill-column 80
   "Column beyond which automatic line-wrapping should happen in C code.
@@ -1733,7 +1796,8 @@ potentially except the user defined ones, which could use that variable too."
 
 (defgroup pel-pkg-for-c++ nil
   "PEL customization for C++."
-  :group 'pel-pkg-for-cc)
+  :group 'pel-pkg-for-cc
+  :link `(url-link :tag "C++ PDF" ,(pel-pdf-file-url "pl-c++")))
 
 (defcustom pel-c++-indentation 3
   "Number of columns for C++ source code indentation.
@@ -1781,7 +1845,8 @@ CC Mode Built-in Styles."
 
 (defgroup pel-pkg-for-d nil
   "PEL customization for D."
-  :group 'pel-pkg-for-cc)
+  :group 'pel-pkg-for-cc
+  :link `(url-link :tag "D PDF" ,(pel-pdf-file-url "pl-d")))
 
 (defcustom pel-use-d nil
   "Control whether PEL supports the D programming language.
@@ -1874,8 +1939,9 @@ by the `pel-use-d-ac-dcd'."
 ;; Emacs Lisp Support
 ;; ------------------
 (defgroup pel-pkg-for-elisp nil
-  "PEL customizaton for Emacs Lisp."
-  :group 'pel-pkg-for-programming)
+  "PEL customization for Emacs Lisp."
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp")))
 
 (defcustom pel-use-macrostep nil
   "Control whether PEL uses the macrostep package."
@@ -1904,7 +1970,8 @@ by the `pel-use-d-ac-dcd'."
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-elisp-code-style nil
   "Emacs Lisp Source Code Style options."
-  :group 'pel-pkg-for-elisp)
+  :group 'pel-pkg-for-elisp
+  :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp")))
 
 (defcustom pel-elisp-skel-package-name 'extract-from-file-name
   "Specifies whether a package name ownership note is inserted.
@@ -1958,7 +2025,8 @@ the copyright holder value."
 ;; -------------------
 (defgroup pel-pkg-for-clisp nil
   "PEL customization for Common Lisp."
-  :group 'pel-pkg-for-programming)
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "Common Lisp PDF" ,(pel-pdf-file-url "pl-common-lisp")))
 
 (defcustom pel-use-common-lisp nil
   "Control whether PEL supports Common Lisp development."
@@ -2050,7 +2118,8 @@ the copyright holder value."
 
 (defgroup pel-pkg-for-erlang nil
   "PEL customization for Erlang."
-  :group 'pel-pkg-for-beam-vm)
+  :group 'pel-pkg-for-beam-vm
+  :link `(url-link :tag "Erlang PDF" ,(pel-pdf-file-url "pl-erlang")))
 
 (defcustom pel-use-erlang nil
   "Control whether PEL supports Erlang development."
@@ -2160,7 +2229,8 @@ if configured to activate automatically."
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-erlang-code-style nil
   "Erlang Source Code Style options."
-  :group 'pel-pkg-for-erlang)
+  :group 'pel-pkg-for-erlang
+  :link `(url-link :tag "Erlang PDF" ,(pel-pdf-file-url "pl-erlang")))
 
 (defcustom pel-erlang-fill-column 100
   "Column beyond which automatic line-wrapping should happen in Erlang code.
@@ -2276,7 +2346,8 @@ the copyright holder value."
 
 (defgroup pel-pkg-for-elixir nil
   "PEL customization for Elixir."
-  :group 'pel-pkg-for-beam-vm)
+  :group 'pel-pkg-for-beam-vm
+  :link `(url-link :tag "Elixir PDF" ,(pel-pdf-file-url "pl-elixir")))
 
 (defcustom pel-use-elixir nil
   "Control whether PEL supports Elixir development."
@@ -2313,7 +2384,8 @@ package which provides the client/library for LSP."
 ;; -------------
 (defgroup pel-pkg-for-forth nil
   "PEL customization for Forth."
-  :group 'pel-pkg-for-programming)
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "Forth PDF" ,(pel-pdf-file-url "pl-forth")))
 
 (defcustom pel-use-forth nil
   "Control whether PEL supports Forth development."
@@ -2326,7 +2398,8 @@ package which provides the client/library for LSP."
 ;; --------------
 (defgroup pel-pkg-for-julia nil
   "PEL customization for Julia."
-  :group 'pel-pkg-for-programming)
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "Julia PDF" ,(pel-pdf-file-url "pl-julia")))
 
 (defcustom pel-use-julia  nil
   "Control whether PEL supports Julia development.
@@ -2343,7 +2416,8 @@ IMPORTANT:
 ;; --------------
 (defgroup pel-pkg-for-python nil
   "PEL customization for Python."
-  :group 'pel-pkg-for-programming)
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "Python PDF" ,(pel-pdf-file-url "pl-python")))
 
 (defcustom pel-use-python  nil
   "Control whether PEL supports Python development."
@@ -2356,7 +2430,8 @@ IMPORTANT:
 ;; ------------
 (defgroup pel-pkg-for-rexx nil
   "PEL customization for REXX Programming language."
-    :group 'pel-pkg-for-programming)
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "REXX PDF" ,(pel-pdf-file-url "pl-rexx")))
 
 (defcustom pel-use-rexx nil
   "Control whether PEL support REXX development."
@@ -2399,7 +2474,8 @@ When set to non-nil, 3 packages are used:
 ;; ------------------------
 (defgroup pel-pkg-for-reST nil
   "PEL reStructuredText support."
-  :group 'pel-pkg-for-markup)
+  :group 'pel-pkg-for-markup
+  :link `(url-link :tag "reStructuredText PDF" ,(pel-pdf-file-url "mode-rst")))
 
 (defcustom pel-use-rst-mode nil
   "Control whether PEL supports {rst-mode} (reStructuredText)."
@@ -2429,11 +2505,13 @@ Identifies the number of levels supported and their adornment.
 ;; -----------------------
 (defgroup pel-pkg-for-drawing-markup nil
   "PEL drawing markup support."
-  :group 'pel-package-for-markup)
+  :group 'pel-package-for-markup
+  :link `(url-link :tag "Drawing PDF" ,(pel-pdf-file-url "drawing")))
 
 (defgroup pel-pkg-for-plantuml nil
   "PEL UML support."
-  :group 'pel-pkg-for-drawing-markup)
+  :group 'pel-pkg-for-drawing-markup
+  :link `(url-link :tag "PlantUML PDF" ,(pel-pdf-file-url "plantuml")))
 
 (defcustom pel-use-plantuml nil
   "Control whether PEL activates support for PlantUML to draw UML diagrams.
@@ -2472,7 +2550,8 @@ See info at URL https://github.com/alexmurray/flycheck-plantuml"
 ;; --------------------
 (defgroup pel-pkg-for-graphviz-dot nil
   "PEL Graphviz-DOT support."
-  :group 'pel-pkg-for-drawing-markup)
+  :group 'pel-pkg-for-drawing-markup
+  :link `(url-link :tag "Graphviz Dot PDF" ,(pel-pdf-file-url "graphviz-dot")))
 
 (defcustom pel-use-graphviz-dot nil
   "Control whether PEL uses the Graphviz Dot tool and its associated package.
@@ -2492,7 +2571,45 @@ References:
 ;; ----------------
 (defgroup pel-pkg-for-spelling nil
   "PEL Spelling Support."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :link `(url-link :tag "Spell Checking PDF" ,(pel-pdf-file-url "spell-checking")))
+
+(defcustom pel-spell-check-tools
+  '((gnu         "aspell"  "~/.emacs.d/.ispell")
+    (gnu/linux   "aspell"  "~/.emacs.d/.ispell")
+    (darwin      "aspell"  "~/.emacs.d/.ispell")
+    (windows-nt  "c:/pg/aspell/0.50.3-w32/bin/aspell.exe" ""))
+  "Spell checking tools used for supported Operating Systems.
+
+The value is a list of 3 elements, allowing the configuration for
+several Operating Systems.  This way the same customization data
+can be used on multiple Operating Systems.
+
+The first element of the list must be one of the valid symbols for
+the variable `system-type', including the following symbols:
+
+- gnu
+- gnu/linux
+- gnu/kfreebsd
+- darwin
+- ms-dos
+- windows-nt
+- cygwin
+
+The second element is a string representing the name of the spell check
+executable to use.  It can be a complete executable path or just the name
+if it is on your system path.
+
+The thirds element is optional.  If present, it's the full path to the
+personal dictionary file."
+  :group 'pel-pkg-for-spelling
+  :type
+  '(repeat
+    (list
+     (symbol :tag "system-type        ")
+     (string :tag "spell checker      ")
+     (string :tag "personal dictionary")
+     )))
 
 (defcustom pel-modes-activating-flyspell-mode
   '(log-edit-mode

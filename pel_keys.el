@@ -50,9 +50,7 @@
 ;;
 ;; The following code initialize the use-package if it has not been done
 ;; already.  You may want to copy that code inside your init.el file to
-;; perform that initialization earlier.  You would want to do this if you
-;; want to benchmark the Emacs initalization time with something like
-;; benchmark-init.
+;; use use-package there but is is not required.
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -1982,7 +1980,8 @@ This is meant to be used in the d-mode hook lambda."
 
     :config
     (setq erlang-root-dir (expand-file-name pel-erlang-rootdir))
-    (setq exec-path (cons pel-erlang-exec-path exec-path))
+    (when (file-exists-p pel-erlang-exec-path)
+      (add-to-list 'exec-path pel-erlang-exec-path) )
     ;;
     (require 'erlang-start)
     ;;
@@ -2837,6 +2836,8 @@ This is meant to be used in the d-mode hook lambda."
 (define-pel-global-prefix pel:spell (kbd "<f11> $"))
 ;;
 (autoload 'ispell-check-version "ispell")
+(eval-after-load "ispell" '(pel-spell-init-from-user-option))
+
 
 (define-key pel:spell "." #'ispell)
 (define-key pel:spell ";" #'ispell-comments-and-strings)

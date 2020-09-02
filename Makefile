@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2020-09-02 13:23:13, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-09-02 18:33:37, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -44,7 +44,6 @@ EMACS = emacs
 #    make EMACS=emacs-26.1 pel test
 #    make clean
 #    make EMACS=emacs-24.3 pel test
-#
 
 # -----------------------------------------------------------------------------
 # Define the location of the normal Emacs initialization file.
@@ -500,7 +499,7 @@ pel-skels-c.elc:        pel--base.elc pel--options.elc pel--macros.elc pel-promp
 pel-skels-elisp.elc:    pel--base.elc pel--options.elc pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc
 pel-skels-rst.elc:      pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc
 pel-speedbar.elc:       pel--base.elc pel--macros.elc pel--options.elc
-pel-spell.elc:          pel--macros.elc pel--base.elc
+pel-spell.elc:          pel--base.elc pel--macros.elc pel--options.elc
 pel-tags.elc:           pel--base.elc
 pel-text-insert.elc:    pel--base.elc pel--macros.elc pel-window.elc
 pel-text-transform.elc: pel--base.elc
