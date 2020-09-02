@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-01 21:41:38, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-02 08:13:53, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -883,6 +883,9 @@ open 2 buffers and will show something like this:
 
 .. image:: res/pel-benchmark.png
 
+This is a snapshot taken on GNU Emacs running in terminal mode on a 2014 macOS
+computer with PEL running with 96 packages selected by customization giving 156
+lines inside the benchmark-init buffers.
 
 .. -----------------------------------------------------------------------------
 
