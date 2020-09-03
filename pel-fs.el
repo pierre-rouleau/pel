@@ -75,7 +75,7 @@ otherwise return PEL's bin directory name only (with a trailing slash)."
 
 (defun pel-check-pel-bin-cmd (pel-bin-command)
   "Verify presence, validity and access of PEL-BIN-COMMAND.
-The PEL-BIN-COMMAND must be a path-less filename that  must be in the PEL's
+The PEL-BIN-COMMAND must be a path-less filename that must be in the PEL's
 bin directory.
 Check if the file content corresponds to its original content
 by checking the MD5 of its content against the on stored in `pel-bin-md5-alist'.
