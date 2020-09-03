@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-03 10:07:30, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-03 11:31:35, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1133,7 +1133,7 @@ through the Emacs Customization interface.  The information is stored in a file
 and if you followed the instructions inside the section `How to Install PEL`_,
 your selections will be stored inside the file
 "``~/.emacs.d/emacs-customization.el``".  You can even copy that file and keep
-multiple revisions around.
+multiple revision around.
 
 Since customization is central to PEL, PEL also provides a set of key bindings
 that you can use to quickly open a buffer to customize a specific user option or
@@ -1546,7 +1546,8 @@ Instead PEL uses the following function keys:
 - **F6**, the ``pel:f6`` prefix, which provides quick access to some
   often used commands, and generic template insertion commands that work
   in all major modes.
-- **F7** is used for Hydra_ key sequences when ``pel-use-hydra`` is **t**.
+- **F7** is used for `Hydra <https://github.com/abo-abo/hydra>`_
+  key sequences when ``pel-use-hydra`` is **t**.
 - **F11**, the ``pel:`` prefix , is the main prefix key for PEL, providing
   access to a large set of key bindings and second-level key prefixes.
 -  **F12** is a mode-sensitive key prefix with quick access bindings for the
@@ -1581,7 +1582,6 @@ and will activate it.
 
 
 
-.. _Hydra: https://github.com/abo-abo/hydra
 
 PEL Grep Support
 ----------------
