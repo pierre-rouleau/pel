@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-03 11:40:35, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-03 11:44:40, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5028,7 +5028,7 @@ d-mode_                       MELPA_
 `edts`_                       MELPA_
 elixir-mode_                  MELPA_
 elpy_                         MELPA_
-`erlang`_                     MELPA_
+erlang.el_                    MELPA_
 esup_                         MELPA_
 expand-region_                MELPA_
 flycheck_                     MELPA_
@@ -5139,7 +5139,7 @@ when running Emacs 27.1 and later versions.
 .. _elisp-lint:                https://melpa.org/#/elisp-lint
 .. _elixir-mode:               https://melpa.org/#/elixir-mode
 .. _elpy:                      https://melpa.org/#/elpy
-.. _erlang:                    https://melpa.org/#/erlang
+.. _erlang.el:                 https://melpa.org/#/erlang
 .. _esup:                      https://melpa.org/#/esup
 .. _exunit:                    https://melpa.org/#/exunit
 .. _expand-region:             https://melpa.org/#/expand-region
