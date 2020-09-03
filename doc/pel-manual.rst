@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-03 11:50:09, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-03 13:27:50, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -224,7 +224,7 @@ Essentially you need to:
 #. `Prepare Emacs Initialization directory`_ where lots of Emacs files will go.
 #. `Create a "~/.emacs.d/utils" directory`_ for files from the EmacsAttics_ and
    EmacsMirror_ that PEL uses.
-#. `Create or Update your Emacs Initialization file`_.
+#. `Create or Update your Emacs init.el file`_.
 #. `Create the emacs-customization.el file`_.
 #. `Build first part of PEL`_ to byte-compile all files but two of them.
 #. `Activate PEL in your init.el file`_.
@@ -356,8 +356,8 @@ An easy way to do this from a shell is:
           mkdir -p ~/.emacs.p/utils
 
 
-Create or Update your Emacs Initialization file
------------------------------------------------
+Create or Update your Emacs init.el file
+----------------------------------------
 
 Add the following code inside your "``~/.emacs.d/init.el``" file:
 
@@ -384,8 +384,8 @@ Add the following code inside your "``~/.emacs.d/init.el``" file:
           ;;     that does not exists.
           ;;     Pass the original name to pel-init later to initialize properly.
           ;;
-          (setq pel--abbrev-file-name abbrev-file-name)
-          (setq abbrev-file-name "~/abbrev_defs-invalid") ; use a non-existing file name
+          ;; (setq pel--abbrev-file-name abbrev-file-name)
+          ;; (setq abbrev-file-name "~/abbrev_defs-invalid") ; use a non-existing file name
 
           ;; 3: Add pel to Emacs load-path
           ;;    Identify the directory where you stored pel.
@@ -404,7 +404,7 @@ Add the following code inside your "``~/.emacs.d/init.el``" file:
           ;; - At first leave this commented out.
           ;; - Activate the code Once you have successfully built PEL once
           ;; (require 'pel)
-          ;; (pel-init pel--abbrev-file-name)
+          ;; (pel-init)  ; or later->; (pel-init pel--abbrev-file-name)
 
           ;; ---- end of init.el ---
 
@@ -452,7 +452,7 @@ Create the emacs-customization.el file
 
 Emacs stores customization information inside your ``init.el`` file by default.
 It is best to store it somewhere else, as written in section 4 of the
-section `Create or Update your Emacs Initialization file`_.
+section `Create or Update your Emacs init.el file`_.
 
 By storing it inside "``~./emacs.d/emacs-customization.el``" you can control
 your Emacs customization independently from your Emacs initialization and you
@@ -646,7 +646,8 @@ the button to the right of the "*See also*" note as shown here:
 Further PEL Customization
 -------------------------
 
-The following sections describe optional optimizations or modifications.
+The following sections describe optional optimizations or modifications
+that can be done after the first complete and successful installation of PEL.
 
 
 Delay Loading of Abbreviation Definition File
@@ -681,8 +682,9 @@ Then pass the information when you call ``pel-init``:
 
     (pel-init pel--abbrev-file-name)
 
-This code is included in the init.el sample described in the PEL
-installation section titled `Create or Update your Emacs Initialization file`_.
+This code is included but commented-out in the init.el sample described in the
+PEL installation section titled `Create or Update your Emacs init.el file`_.
+Edit your init.el file to activate the code.
 
 
 Configure Spell Checking
