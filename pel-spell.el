@@ -68,6 +68,9 @@
 (require 'pel--options)
 
 (eval-when-compile
+
+  (require 'cl-lib)    ; use: cl-dolist and cl-return
+
   ;; both flyspell and ispell are loaded lazily if required, but their symbols
   ;; are needed at compilation. Same for popup.
   ;; The following are part of Emacs
@@ -170,12 +173,17 @@ to allow the flyspell pop-up menu to work in terminal mode."
   "Initialize Spell checking.
 Use the values taken from user option variable
 `pel-spell-check-tools'."
-  (dolist (spec pel-spell-check-tools)
+  (cl-dolist (spec pel-spell-check-tools)
     (when (eq system-type (car spec))
       (let* ((program-name (nth 1 spec))
              (path (file-name-directory program-name))
              (personal-dict  (pel-string-or-nil (nth 2 spec))))
-        (pel-spell-init program-name path personal-dict)))))
+        (if (and (not path)
+                 (not (executable-find program-name)))
+            (user-error "pel-use-spell-check-tools for %s is invalid!\n\
+Spell check program %s not found in your PATH!" system-type program-name)
+          (pel-spell-init program-name path personal-dict))
+      (cl-return)))))
 
 ;; --
 
