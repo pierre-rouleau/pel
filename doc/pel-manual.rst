@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-03 09:21:11, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-03 09:25:33, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -510,7 +510,7 @@ remove the leading semi-colons from the last 2 lines:
 .. code:: elisp
 
           (require 'pel)
-          (pel-init)
+          (pel-init pel--abbrev-file-name)
 
 Then:
 
