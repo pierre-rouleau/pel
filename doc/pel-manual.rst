@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-03 11:44:40, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-03 11:50:09, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5045,6 +5045,7 @@ helm_                         MELPA_
 highlight-defined_            MELPA_
 `hydra`_                      MELPA_
 ivy_                          MELPA_
+julia-mode_                   MELPA_
 julia-snail_                  MELPA_
 keycast_                      MELPA_
 key-chord_                    MELPA_
@@ -5063,6 +5064,7 @@ pcre2el_                      MELPA_
 popup_                        MELPA-STABLE_
 popup-kill-ring_              MELPA_
 projectile_                   MELPA_
+python-mode_                  MELPA_
 racer_                        MELPA_
 rainbow-delimiters_           MELPA_
 regex-tool_                   MELPA_
@@ -5154,6 +5156,7 @@ when running Emacs 27.1 and later versions.
 .. _helm:                      https://melpa.org/#/helm-core
 .. _hydra:                     https://melpa.org/#/hydra
 .. _ivy:                       https://melpa.org/#/ivy
+.. _julia-mode:                https://melpa.org/#/julia-mode
 .. _julia-snail:               https://melpa.org/#/julia-snail
 .. _keycast:                   https://melpa.org/#/keycast
 .. _key-chord:                 https://melpa.org/#/key-chord
@@ -5171,6 +5174,7 @@ when running Emacs 27.1 and later versions.
 .. _popup:                     https://stable.melpa.org/#/popup
 .. _popup-kill-ring:           https://melpa.org/#/popup-kill-ring
 .. _projectile:                https://melpa.org/#/projectile
+.. _python-mode:               https://melpa.org/#/python-mode
 .. _racer:                     https://melpa.org/#/racer
 .. _rainbow-delimiters:        https://melpa.org/#/rainbow-delimiters
 .. _regex-tool:                https://melpa.org/#/regex-tool
