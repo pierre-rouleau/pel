@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-02 14:44:30, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-03 09:21:11, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -678,32 +678,37 @@ This code is included in the init.el sample described in the PEL
 installation section titled `Create or Update your Emacs Initialization file`_.
 
 
-Identify the location of your Ispell local dictionary
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Configure Spell Checking
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-With the current version of PEL, when you want to select the spell check
-program used by
-Ispell or Flyspell and the location of your personal dictionary you need to
-write Emacs Lisp code in your Emacs init file that calls the ``pel-spell-init``
-function.
+To use spell checking features in Emacs, you must use a spell
+checking program available from the command line.  Emacs Ispell and Flyspell can
+use a Ispell-compatible program like:
 
-The following is an example. It selects the ``aspell`` program
-and identifies the path for the personal dictionary.
+- ispell_,
+- aspell_,
+- hunspell_, or
+- enchant_.
 
-.. code:: elisp
 
-          (eval-after-load "ispell"
-            '(when (fboundp 'pel-spell-init)
-                 (pel-spell-init “aspell" "~/.emacs.d/.ispell")))
+.. _ispell:    https://en.wikipedia.org/wiki/Ispell
+.. _aspell:    https://en.wikipedia.org/wiki/GNU_Aspell
+.. _hunspell:  https://en.wikipedia.org/wiki/Hunspell
+.. _enchant:   https://en.wikipedia.org/wiki/Enchant_(software)
 
-In future versions of PEL, this code may not be necessary.
+If none is available on your system you will have to install it manually.
+
+Identify the program to use in PEL customization user option variable
+``pel-spell-check-tools``. This user option allow you to define one program per
+Operating System.  You can also identify the location of your personal
+dictionary file.
+
+For the changes to take effect, save the changes and execute pel-init
+(with ``M-x pel-init``) or restart Emacs.
+
 
 More information on PEL support of spell checking is available
-in the `PEL Spell Checking Support`_ section.
-
-
-
-
+in the `PEL Spell Checking Support`_ section and the `Spell Checking`_ PDF sheet.
 
 Emacs and PEL Optimizations
 ---------------------------
@@ -940,7 +945,7 @@ the relevant PDF files.  The complete list of PDF files is shown in the
 PEL Abbreviation Management Support
 -----------------------------------
 
-:PDF Docs: `Abbreviations`_.
+:PDF Sheet: `Abbreviations`_.
 :PEL Customization: ``pel-use-hippie-expand``.
 :PEL Key Prefix: **pel:abbrev** : ``<f11> a``
 
@@ -964,7 +969,7 @@ is located inside the file `pel.el`_.
 PEL Auto-Completion Support
 ---------------------------
 
-:PDF Docs: `Auto-completion`_.
+:PDF Sheet: `Auto-completion`_.
 :PEL Customization: ``pel-use-auto-complete``, ``pel-use-company``.
 :PEL Key Prefix: **pel:auto-completion** : ``<f11> ,``
 
@@ -1000,7 +1005,7 @@ It provides the following commands:
 PEL Autosave & Backup Documentation
 -----------------------------------
 
-:PDF Docs: `Autosave & Backups`_.
+:PDF Sheet: `Autosave & Backups`_.
 :PEL Customization: *none*
 :PEL Key Prefix: *none*
 
@@ -1010,7 +1015,7 @@ PEL provides a table describing the autosave and backup commands in the
 PEL Bookmark Management Utilities
 ---------------------------------
 
-:PDF Docs: `Bookmarks`_.
+:PDF Sheet: `Bookmarks`_.
 :PEL Customization: ``pel-use-bm``.
 :PEL Key Prefix: **pel:bookmark** : ``<f11> '``
 
@@ -1033,7 +1038,7 @@ For supporting bookmarks PEL provides the following:
 PEL Comments Utilities
 ----------------------
 
-:PDF Docs: `Comments`_, `Cut, Delete, Copy and Paste`_, `Narrowing`_.
+:PDF Sheet: `Comments`_, `Cut, Delete, Copy and Paste`_, `Narrowing`_.
 :PEL Customization: ``pel-use-hide-comnt``
 :PEL Key Prefix: **pel:comment** : ``<f11> ;``
 
@@ -1068,7 +1073,7 @@ comment management.
 PEL Closing and Suspending Table
 --------------------------------
 
-:PDF Docs: `Closing and Suspending`_
+:PDF Sheet: `Closing and Suspending`_
 :PEL Customization: *none*
 :PEL Key Prefix: *none*
 
@@ -1078,7 +1083,7 @@ to close and suspend.
 PEL (Input) Completion Mode Control
 -----------------------------------
 
-:PDF Docs: - `Input Completion`_
+:PDF Sheet: - `Input Completion`_
            - `User Option Customization`_.
 :PEL Key Prefix: *none*
 
@@ -1106,7 +1111,7 @@ See the `Customization <https://raw.githubusercontent.com/pierre-rouleau/pel/mas
 PEL Configuration/Customization Support
 ---------------------------------------
 
-:PDF Docs: `User Option Customization`_.
+:PDF Sheet: `User Option Customization`_.
 :PEL Key Prefix: - **pel:cfg** : ``<f11> <f1>``
                  - **pel:cfg-pl** : ``<f11> <f1> SPC``
 
@@ -1150,7 +1155,7 @@ See the `User Option Customization`_ PDF document for more details.
 PEL Counting Support
 --------------------
 
-:PDF Docs: `Counting`_.
+:PDF Sheet: `Counting`_.
 :PEL Customization: *none*
 :PEL Key Prefix: **pel:count** : ``<f11> c``
 
@@ -1161,7 +1166,7 @@ count text and display results in the echo area.
 PEL Cross Reference Support
 ---------------------------
 
-:PDF Docs: `Etags-Based Cross-Reference`_
+:PDF Sheet: `Etags-Based Cross-Reference`_
 :PEL Customization: *none*
 :PEL Key Prefix: **pel:xref**
 
@@ -1174,7 +1179,7 @@ The file `pel-tags.el`_ holds utilities related to Etags based cross-reference s
 PEL CUA Mode Extension Utilities - *experimental*
 -------------------------------------------------
 
-:PDF Docs: *none*
+:PDF Sheet: *none*
 :PEL Customization: *none*
 :PEL Key Prefix: *none*
 
@@ -1191,7 +1196,7 @@ PDF tables. But this work is in very early stage.
 PEL Cursor Management Support
 -----------------------------
 
-:PDF Docs: `Cursor`_
+:PDF Sheet: `Cursor`_
 :PEL Customization: - ``pel-cursor-overwrite-mode-color``
                     - ``pel-cursor-type-when-mark``
                     - ``pel-use-multiple-cursors``
@@ -1223,7 +1228,7 @@ See the PDF `Cursor`_ document for more information.
 PEL Cut, Delete, Kill, Copy, Paste and Yank Utilities
 -----------------------------------------------------
 
-:PDF Docs: `Cut, Delete, Copy and Paste`_, `Marking`_.
+:PDF Sheet: `Cut, Delete, Copy and Paste`_, `Marking`_.
 :PEL Customization: ``pel-use-popup-kill-ring``.
 :PEL Key Prefix: - **pel:clipboard** : ``<f11> C``
                  - **pel:copy** : ``<f11> =``
@@ -1288,7 +1293,7 @@ text, targeting specific syntax entities or other simpler parts.
 PEL Diff and Merge
 ------------------
 
-:PDF Docs: `Diff and Merge`_.
+:PDF Sheet: `Diff and Merge`_.
 :PEL Customization: *none*
 :PEL Key Prefix: - **pel:diff** : ``<f11> d``
                  - **pel:ediff** : ``<f11> e``
@@ -1305,7 +1310,7 @@ PEL provides key bindings to Emacs diff end ediff commands.
 PEL Drawing Support
 -------------------
 
-:PDF Docs: `Drawing`_, `PlantUML-Mode`_.
+:PDF Sheet: `Drawing`_, `PlantUML-Mode`_.
 :PEL Customization: - ``pel-use-plantuml``,
                     - ``pel-use-flycheck-plantuml``.
 :PEL Key Prefix: - **pel:draw** : ``<f11> D``
@@ -1343,7 +1348,7 @@ information across the Internet by mistake!
 PEL Enriched Text Support
 -------------------------
 
-:PDF Docs: `Enriched Text`_.
+:PDF Sheet: `Enriched Text`_.
 :PEL Customization: *none*
 :PEL Key Prefix: **pel:textmodes** : ``<f11> t m``
 
@@ -1355,7 +1360,7 @@ enriched text.
 PEL File Management Utilities
 -----------------------------
 
-:PDF Docs: `File Management`_, `Dired`_.
+:PDF Sheet: `File Management`_, `Dired`_.
 :PEL Customization: - **pel-pkg-for-completion**:
 
                       - ``pel-use-ido-mode``.
@@ -1449,7 +1454,7 @@ relevant user options.
 PEL File and Directory Local Variable Control Support
 -----------------------------------------------------
 
-:PDF Docs: `File and Directory Local Variables`_
+:PDF Sheet: `File and Directory Local Variables`_
 :PEL Customization: *none*
 :PEL Key Prefix: - **pel:filevar** : ``<f11> f v``
                  - **pel:dirvar**  : ``<f11> f v d``
@@ -1463,7 +1468,7 @@ See the `File and Directory Local Variables`_ PDF table.
 PEL Font Management Utilities
 -----------------------------
 
-:PDF Docs: `Faces and Fonts`_.
+:PDF Sheet: `Faces and Fonts`_.
 :PEL Customization: *none*
 :PEL Key Prefix: *none*
 
@@ -1486,7 +1491,7 @@ manipulating the font size of the Terminal.app application when the
 PEL Frame Management Utilities
 ------------------------------
 
-:PDF Docs: `Frames`_.
+:PDF Sheet: `Frames`_.
 :PEL Customization: ``pel-use-framemove``
 :PEL Key Prefix: **pel:frame** : ``<f11> F``
 
@@ -1516,7 +1521,7 @@ This PEL file provides the following commands:
 PEL Function Keys Bindings
 --------------------------
 
-:PDF Docs: `Function Keys`_, `F11 Keys`_.
+:PDF Sheet: `Function Keys`_, `F11 Keys`_.
 :PEL Customization: *none*
 :PEL Key Prefix: *N/A*
 
@@ -1570,7 +1575,7 @@ and will activate it.
 PEL Grep Support
 ----------------
 
-:PDF Docs: `Grep`_, `Projectile Project Interaction Manager`_.
+:PDF Sheet: `Grep`_, `Projectile Project Interaction Manager`_.
 :PEL Customization: - ``pel-use-ripgrep``
                     - ``pel-use-ag``
                     - ``pel-use-projectile``
@@ -1599,7 +1604,7 @@ You must install the ripgrep and ag command line utilities separately.
 PEL Help Support
 ----------------
 
-:PDF Docs: `Help`_
+:PDF Sheet: `Help`_
 :PEL Customization: - ``pel-use-ascii-table``
                     - ``pel-use-free-keys``
                     - ``pel-use-which-key``
@@ -1623,7 +1628,7 @@ following key prefixes.
 PEL Hide/Show Code Block Support
 --------------------------------
 
-:PDF Docs: `Hide/Show Code Block`_
+:PDF Sheet: `Hide/Show Code Block`_
 :PEL Customization: *none*
 :PEL Key Prefix: **pel:hideShow** : ``<f11> /``
 
@@ -1643,7 +1648,7 @@ commands provided by PEL as well as the standard Emacs commands and key bindings
 PEL Highlight and Whitespace Management Support
 -----------------------------------------------
 
-:PDF Docs: `Highlight`_ , `Whitespaces`_.
+:PDF Sheet: `Highlight`_ , `Whitespaces`_.
 :PEL Customization: ``pel-use-rainbow-delimiters``, ``pel-use-vline``.
 :PEL Key Prefix: - **pel:highlight** : ``<f11> b h``
                  - **pel:whitespace** : ``f11> t w``
@@ -1680,7 +1685,7 @@ The file `pel-highlight.el`_ provides the following simple utility commands.
 PEL Indentation Support Utilities
 ---------------------------------
 
-:PDF Docs: `Indentation`_.
+:PDF Sheet: `Indentation`_.
 :PEL Customization: *none*
 :PEL Key Prefix: **pel:tab** : ``<f11> <tab>``
 
@@ -1700,7 +1705,7 @@ files, programming languages and markup languages evolves.
 PEL Input Method Control
 ------------------------
 
-:PDF Docs: `Input Method`_.
+:PDF Sheet: `Input Method`_.
 :PEL Customization: *none*
 :PEL Key Prefix: **pel:text** : ``<f11> t``
 
@@ -1716,7 +1721,7 @@ To lists all input methods, PEL provides ``<f11> ? d i`` bound to ``list-input-m
 PEL Key Chords Support
 ----------------------
 
-:PDF Docs: `Key Chords`_
+:PDF Sheet: `Key Chords`_
 :PEL Customization: **pel-pkg-for-key-chord**:
 
                     - ``pel-use-key-chord``
@@ -1796,7 +1801,7 @@ For more information see the `Key Chords`_ PDF Documentation.
 PEL Keyboard Macro Utilities
 ----------------------------
 
-:PDF Docs: `Keyboard Macros`_.
+:PDF Sheet: `Keyboard Macros`_.
 :PEL Customization: ``pel-kmacro-prompts``.
 :PEL Key Prefix: *none*
 
@@ -1815,7 +1820,7 @@ prompting, just set the ``pel-kmacro-prompts`` to *nil*.
 PEL Line Control Utilities
 --------------------------
 
-:PDF Docs: `Display Lines`_.
+:PDF Sheet: `Display Lines`_.
 :PEL Customization: *none*
 :PEL Key Prefix: **pel:linectrl** : ``<f11> l``
 
@@ -1839,7 +1844,7 @@ l``, which deal with those commands and other Emacs line control related command
 PEL Mark Management Utilities
 -----------------------------
 
-:PDF Docs: `Marking`_.
+:PDF Sheet: `Marking`_.
 :PEL Customization: ``pel-use-expand-region``.
 :PEL Key Prefix: **pel:mark** : ``<f11> .``
 
@@ -1891,7 +1896,7 @@ while keeping them as similar as possible.
 PEL reStructuredText Support Utilities
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-:PDF Docs: `reStructuredText mode`_.
+:PDF Sheet: `reStructuredText mode`_.
 :PEL Customization: - ``pel-use-rst-mode``,
                     - ``pel-rst-adornment-style``,
                     - ``rst-preferred-adornments``.
@@ -2039,7 +2044,7 @@ key            Emphasis
 PEL Mouse Support
 -----------------
 
-:PDF Docs: `Mouse`_.
+:PDF Sheet: `Mouse`_.
 :PEL Customization: *none*
 :PEL Key Prefix: *none*
 
@@ -2058,7 +2063,7 @@ See the `Mouse`_ PDF document for more information.
 PEL Menu Index Utilities
 ------------------------
 
-:PDF Docs: `Menus`_.
+:PDF Sheet: `Menus`_.
 :PEL Customization: *none*
 :PEL Key Prefix: **pel:menu** : ``<f11><f10>``
 
@@ -2088,7 +2093,7 @@ menu via the mini-buffer.  The key prefix for these command bindings is ``<f11><
 PEL Narrowing Documentation
 ---------------------------
 
-:PDF Docs: `Narrowing`_.
+:PDF Sheet: `Narrowing`_.
 :PEL Customization: *none*
 :PEL Key Prefix: *none*
 
@@ -2100,7 +2105,7 @@ the powerful concept of narrowing.
 PEL Navigation Support
 ----------------------
 
-:PDF Docs: `Navigation`_.
+:PDF Sheet: `Navigation`_.
 :PEL Customization: - Group: ``pel-pkg-for-navigation`` (``<f11> <f1> n``):
 
                       - ``pel-use-any``
@@ -2152,7 +2157,7 @@ The details are available in the `Navigation`_ PDF table.
 PEL Number Keypad Support
 -------------------------
 
-:PDF Docs: `Number Keypad`_.
+:PDF Sheet: `Number Keypad`_.
 :PEL Customization: *none*
 :PEL Key Prefix: *none*
 
@@ -2172,7 +2177,7 @@ Refer to the `Number Keypad`_ PDF document for more information.
 PEL Package Management Documentation
 ------------------------------------
 
-:PDF Docs: `Packages`_.
+:PDF Sheet: `Packages`_.
 :PEL Customization: *none*
 :PEL Key Prefix: *none*
 
@@ -2195,7 +2200,7 @@ Note:
 PEL Apple-Script and Audio Narration Support
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-:PDF Docs: `Apple-Script`_.
+:PDF Sheet: `Apple-Script`_.
 :PEL Customization: - Group: ``pel-pkg-for-programming``
 
                       - Activation:
@@ -2241,7 +2246,7 @@ PEL provides explicit support for the following
 PEL Support for Common Lisp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-:PDF Docs: `Common Lisp <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-common-lisp.pdf>`_.
+:PDF Sheet: `Common Lisp <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-common-lisp.pdf>`_.
 :PEL Customization: - Group: ``pel-pkg-for-clisp``
 
                       - Activation:    ``pel-use-common-lisp``.
@@ -2267,7 +2272,7 @@ inside this directory and Emacs can access them locally.
 PEL Support for Emacs Lisp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-:PDF Docs: `Emacs Lisp <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-emacs-lisp.pdf>`_, `ERT <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/ert.pdf>`_ .
+:PDF Sheet: `Emacs Lisp <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-emacs-lisp.pdf>`_, `ERT <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/ert.pdf>`_ .
 :PEL Customization: - Group: ``pel-pkg-for-elisp``
 
                       - Activation: (*none* to use Emacs Lisp), but there are
@@ -2311,7 +2316,7 @@ required..  Support for the others is minimal for the moment.
 PEL Support for Erlang
 ^^^^^^^^^^^^^^^^^^^^^^
 
-:PDF Docs: `Erlang <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf>`_
+:PDF Sheet: `Erlang <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-erlang``.  Use ``<f21> <f1>`` from and erlang mode buffer.
 
                       - Activation:
@@ -2340,7 +2345,7 @@ Refer to the `PEL Erlang PDF`_ document for more information.
 PEL Support for Elixir
 ^^^^^^^^^^^^^^^^^^^^^
 
-:PDF Docs: `Elixir <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-elixir.pdf>`_
+:PDF Sheet: `Elixir <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-elixir.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-elixir``
 
                       - Activation: ``pel-use-elixir``
@@ -2369,7 +2374,7 @@ PEL provides explicit support for the following
 PEL Support For C
 ^^^^^^^^^^^^^^^^^
 
-:PDF Docs: `C <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c.pdf>`_
+:PDF Sheet: `C <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-c``
 
                       - Activation: *none*
@@ -3017,7 +3022,7 @@ You can toggle the **pel-tempo-mode** minor mode with the ``<f12> <f12>
 PEL Support For C++
 ^^^^^^^^^^^^^^^^^^^
 
-:PDF Docs: `C++ <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c++.pdf>`_
+:PDF Sheet: `C++ <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c++.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-c++``
 
                       - Activation: *none*
@@ -3047,7 +3052,7 @@ on which the c++-mode is based via the **pel:for-c++** key-map, bounded to the
 PEL Support For D
 ^^^^^^^^^^^^^^^^^
 
-:PDF Docs: `D <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-d.pdf>`_
+:PDF Sheet: `D <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-d.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-d``
 
                       - Activation: ``pel-use-d``
@@ -3081,7 +3086,7 @@ on which the d-mode is based via the **pel:for-d** key-map, bounded to the
 PEL Support for Forth
 ~~~~~~~~~~~~~~~~~~~~~
 
-:PDF Docs: `Forth <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth.pdf>`_
+:PDF Sheet: `Forth <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-forth``
 
                       - Activation: ``pel-use-forth``
@@ -3098,7 +3103,7 @@ forth-mode_ package.  With it the file extensions ``.f``, ``.fs``, ``.fth``, and
 PEL Support for Julia
 ~~~~~~~~~~~~~~~~~~~~~
 
-:PDF Docs: `Julia <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-julia.pdf>`_
+:PDF Sheet: `Julia <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-julia.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-julia``
 
                       - Activation: ``pel-use-julia``
@@ -3115,7 +3120,7 @@ are automatically recognized as being Julia files.
 PEL Support for Python
 ~~~~~~~~~~~~~~~~~~~~~~
 
-:PDF Docs: `Python <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-python.pdf>`_
+:PDF Sheet: `Python <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-python.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-python``
 
                       - Activation: ``pel-use-python``
@@ -3133,7 +3138,7 @@ are automatically recognized as being Python files.
 PEL Support for REXX
 ~~~~~~~~~~~~~~~~~~~~
 
-:PDF Docs: `REXX <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rexx.pdf>`_
+:PDF Sheet: `REXX <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rexx.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-rexx``
 
                       - Activation: ``pel-use-rexx``
@@ -3151,7 +3156,7 @@ forth-mode_ package.  With it the file extensions ``.rexx``, ``.elx``, ``.ncomm`
 PEL Prompt Utilities
 --------------------
 
-:PDF Docs: *none*
+:PDF Sheet: *none*
 :PEL Customization: *none*
 :PEL Key Prefix: *none*
 
@@ -3163,7 +3168,7 @@ It's a rather specialized prompting utility with a rather strange name...
 PEL Project Management Utilities
 --------------------------------
 
-:PDF Docs: `Projectile Project Interaction Manager`_.
+:PDF Sheet: `Projectile Project Interaction Manager`_.
 :PEL Customization: ``pel-use-projectile``
 :PEL Key Prefix: **projectile-command-map** : ``<f8>``
 
@@ -3187,7 +3192,7 @@ Manager`_ PDF documentation.
 PEL Rectangle Support
 ---------------------
 
-:PDF Docs: `Rectangles`_.
+:PDF Sheet: `Rectangles`_.
 :PEL Customization: *none*
 :PEL Key Prefix: *none*
 
@@ -3199,7 +3204,7 @@ More information about Emacs rectangle area editing is available in the
 PEL Register Management Utilities
 ---------------------------------
 
-:PDF Docs: `Registers`_.
+:PDF Sheet: `Registers`_.
 :PEL Customization: *none*
 :PEL Key Prefix: **pel::register** : ``<f11> r``
 
@@ -3220,7 +3225,7 @@ The `Registers`_ PDF document provides more information.
 PEL Scrolling
 -------------
 
-:PDF Docs: `Scrolling`_.
+:PDF Sheet: `Scrolling`_.
 :PEL Customization: ``pel-smooth-scrolling``.
 :PEL Key Prefix: **pel:scroll** : ``<f11> |``
 
@@ -3270,7 +3275,7 @@ scrolling on and off.  See the `Scrolling`_ PDF table for more info.
 PEL Search and Replace Support Utilities
 ----------------------------------------
 
-:PDF Docs: `Search and Replace`_.
+:PDF Sheet: `Search and Replace`_.
 :PEL Customization: - ``pel-initial-regexp-engine``
                     - ``pel-initial-search-tool``
                     - ``pel-use-anzu``
@@ -3312,7 +3317,7 @@ See the PDF `Search and Replace`_ document for more information.
 PEL Session Support
 -------------------
 
-:PDF Docs: `Sessions`_.
+:PDF Sheet: `Sessions`_.
 :PEL Customization: ``pel-use-desktop``.
 :PEL Key Prefix: **pel:session** : ``<f11> S``
 
@@ -3326,7 +3331,7 @@ all use the **pel:session** key prefix, which PEL binds to ``<f11> S``.
 PEL  Shell Support
 ------------------
 
-:PDF Docs: `Shells`_.
+:PDF Sheet: `Shells`_.
 :PEL Customization: ``pel-use-erlang``.
 :PEL Key Prefix: **pel:eXecute** : ``<f11> x``
 
@@ -3337,7 +3342,7 @@ described in the `Shells`_ PDF table.
 PEL Sorting Support
 -------------------
 
-:PDF Docs: `Sorting`_.
+:PDF Sheet: `Sorting`_.
 :PEL Customization: *none*
 :PEL Key Prefix: **pel:order** : ``<f11> o``
 
@@ -3350,7 +3355,7 @@ in the `Sorting`_ PDF table.
 PEL Speedbar Management
 -----------------------
 
-:PDF Docs: `Speedbar`_.
+:PDF Sheet: `Speedbar`_.
 :PEL Customization: - Group: ``pel-pkg-for-speedbar``
 
                       - Activation: ``pel-use-speedbar``
@@ -3410,9 +3415,12 @@ entire frame while SR-Speedbar uses only one of the windows.
 PEL Spell Checking Support
 --------------------------
 
-:PDF Docs: `Spell Checking`_.
-:PEL Customization: *none*
+:PDF Sheet: `Spell Checking`_.
+:PEL Customization: ``pel-spell-check-tools``
 :PEL Key Prefix: **pel:spell** : ``<f11> $``
+
+To use spell checking in Emacs, you must first configure it.
+See the section titled `Configure Spell Checking`_.
 
 The file `pel-spell.el`_ contains
 spell checking utilities that detect and display what spell check mode is
@@ -3421,18 +3429,9 @@ menu when Emacs runs in terminal (TTY) mode.
 
 One of the goal of this file is to avoid loading either Ispell or Flyspell
 until they are actually required while providing a function that can
-configure these utilities: ``pel-spell-init``.
-
-To configure Ispell and Flyspell without forcing early loading of the Ispell
-and Flyspell libraries you can write something like the following inside your
-init file:
-
-.. code:: elisp
-
-   (eval-after-load "ispell"
-      '(when (fboundp 'pel-spell-init)
-         (pel-spell-init "aspell"
-                         "~/.emacs.d/.ispell")))
+configure these utilities with the information stored inside the
+``pel-spell-check-tools`` user option variable: the function
+``pel-spell-init-from-user-option``.
 
 This sets up the path to your spell checking dictionary and if Emacs is running
 in terminal (TTY) mode, it allows flyspell pop-up menus to work properly by
@@ -3456,10 +3455,10 @@ to the main dictionary and your personal dictionary
   ``pel-spell-program-version-string`` works if the version text is
   printed on the first line only.  That works for the followings:
 
-  - aspell 0.60.6.1
-  - Ispell 3.3.0.2
-  - enchant-2.2.7
-  - hunspell 1.7.0
+  - aspell_ 0.60.6.1
+  - ispell_ 3.3.0.2
+  - enchant_ 2.2.7
+  - hunspell_ 1.7.0
 
   Earlier versions of these programs were not tested, YMMV.
 
@@ -3467,7 +3466,7 @@ to the main dictionary and your personal dictionary
 PEL Text Alignment Support
 --------------------------
 
-:PDF Docs: `Align`_.
+:PDF Sheet: `Align`_.
 :PEL Customization: *none*
 :PEL Key Prefix: - **pel:align** : ``<f11> t a``
 
@@ -3479,7 +3478,7 @@ commands.
 PEL Text Filling and Justification Utilities
 -------------------------------------------
 
-:PDF Docs: `Filling and Justification`_, `Text-modes`_.
+:PDF Sheet: `Filling and Justification`_, `Text-modes`_.
 :PEL Customization: *none*
 :PEL Key Prefix: - **pel:fill** : ``<f11> t f``
                  - **pel:justification** : ``<f11> t j``
@@ -3502,7 +3501,7 @@ to provide access to several relevant commands.
 PEL Text Insertion Utilities
 ----------------------------
 
-:PDF Docs: `Inserting Text`_.
+:PDF Sheet: `Inserting Text`_.
 :PEL Customization: - ``pel-use-lice``.
                     - ``pel-use-smart-dash``
                     - ``pel-use-yasnippet``
@@ -3608,7 +3607,7 @@ key to expand.
 PEL Text Transformation Utilities
 ---------------------------------
 
-:PDF Docs: `Case Conversion`_, `Text-modes`_.
+:PDF Sheet: `Case Conversion`_, `Text-modes`_.
 :PEL Customization: *none*
 :PEL Key Prefix: *none*, standard Emacs keys rebound.
 
@@ -3634,7 +3633,7 @@ PEL Text Transformation Utilities
 PEL Text Transpose Support
 --------------------------
 
-:PDF Docs: `Transpose`_.
+:PDF Sheet: `Transpose`_.
 :PEL Customization: *none*
 :PEL Key Prefix: **pel:text-transpose** : ``<f11> t t``
 
@@ -3646,7 +3645,7 @@ commands that transpose text, as shown in the `Transpose`_ PDF table.
 PEL Undo Support
 ----------------
 
-:PDF Docs: `Undo, Redo, Repeat and Prefix Arguments`_.
+:PDF Sheet: `Undo, Redo, Repeat and Prefix Arguments`_.
 :PEL Customization: ``pel-use-undo-tree``, ``pel-use-goto-last-change``.
 :PEL Key Prefix: **pel:undo** : ``<f11> u``
 
@@ -3660,7 +3659,7 @@ All key binding details are in the `Undo, Redo, Repeat and Prefix Arguments`_ PD
 PEL (D)VCS Support
 ------------------
 
-:PDF Docs: `Mercurial`_.
+:PDF Sheet: `Mercurial`_.
 :PEL Customization: ``pel-use-magit``, ``pel-use-monky``.
 :PEL Key Prefix: **pel:vcs** : ``<f11> v``
 
@@ -3680,7 +3679,7 @@ Git_ and Monky_ for `Mercurial Software`_.
 PEL Web Browsing Support
 ------------------------
 
-:PDF Docs: `Web`_.
+:PDF Sheet: `Web`_.
 :PEL Customization: *none*
 :PEL Key Prefix: **pel:file** : ``<f11> f``
 
@@ -3693,7 +3692,7 @@ described in the `Web`_ PDF table.
 PEL Window Management Support
 -----------------------------
 
-:PDF Docs: `Windows`_.
+:PDF Sheet: `Windows`_.
 :PEL Customization: ``pel-use-ace-window``.
 :PEL Key Prefix: **pel:window** : ``<f11> w``
 
@@ -4018,6 +4017,9 @@ Note:
 
 PDF Document Tables
 ~~~~~~~~~~~~~~~~~~~
+
+The following *semi-quick* PDF sheets describe Emacs commands and key bindings
+as well as PEL extensions.
 
 - `Document Legend`_
 
