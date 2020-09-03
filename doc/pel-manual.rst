@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-03 13:46:51, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-03 14:10:11, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -934,6 +934,26 @@ lines inside the benchmark-init buffers.
 
 .. -----------------------------------------------------------------------------
 
+Updating PEL
+============
+
+After your first successful build of PEL, you can easily update PEL by pulling
+from the Git depot and running make.  PEL uses byte-compiled code.
+
+Execute the following commands inside the pel directory.
+
+.. code:: elisp
+
+     git pull
+     make
+
+Then to use a new feature, set the PEL activation user variable through
+the relevant Emacs customization buffer, save the new customization data and run
+pel-init by using ``M-x pel-init`` or restart Emacs.  If new packages are
+identified by your new configuration it will be downloaded, installed and
+byte-compiled automatically.
+
+.. -----------------------------------------------------------------------------
 
 Key Binding Help
 ================
