@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-03 09:30:12, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-03 09:34:02, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -702,9 +702,12 @@ Identify the program to use in PEL customization user option variable
 Operating System.  You can also identify the location of your personal
 dictionary file.
 
+To quickly gain access to the customization buffer for the
+``pel-pkg-for-spelling`` group where that user option is located type
+the ``<f11> <f1> $`` key sequence.
+
 For the changes to take effect, save the changes and execute pel-init
 (with ``M-x pel-init``) or restart Emacs.
-
 
 More information on PEL support of spell checking is available
 in the `PEL Spell Checking Support`_ section and the `Spell Checking`_ PDF sheet.
