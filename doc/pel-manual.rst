@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-03 13:44:39, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-03 13:46:51, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -450,7 +450,7 @@ If you have cloned PEL inside ``~/projects/pel`` you are ready to go.
 Otherwise you **must update** the init.el to identify the location of the
 ``pel`` directory as shown below.
 
-.. image:: res/update-init.el
+.. image:: res/update-init.png
 
 **Note**
 
