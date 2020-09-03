@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-03 09:25:33, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-03 09:30:12, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -685,13 +685,12 @@ To use spell checking features in Emacs, you must use a spell
 checking program available from the command line.  Emacs Ispell and Flyspell can
 use a Ispell-compatible program like:
 
-- ispell_,
+- `ispell <https://en.wikipedia.org/wiki/Ispell>`_,
 - aspell_,
 - hunspell_, or
 - enchant_.
 
 
-.. _ispell:    https://en.wikipedia.org/wiki/Ispell
 .. _aspell:    https://en.wikipedia.org/wiki/GNU_Aspell
 .. _hunspell:  https://en.wikipedia.org/wiki/Hunspell
 .. _enchant:   https://en.wikipedia.org/wiki/Enchant_(software)
@@ -3456,7 +3455,7 @@ to the main dictionary and your personal dictionary
   printed on the first line only.  That works for the followings:
 
   - aspell_ 0.60.6.1
-  - ispell_ 3.3.0.2
+  - `ispell <https://en.wikipedia.org/wiki/Ispell>`_ 3.3.0.2
   - enchant_ 2.2.7
   - hunspell_ 1.7.0
 
