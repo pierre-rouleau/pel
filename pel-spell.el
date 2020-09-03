@@ -181,7 +181,8 @@ Use the values taken from user option variable
         (if (and (not path)
                  (not (executable-find program-name)))
             (user-error "pel-use-spell-check-tools for %s is invalid!\n\
-Spell check program %s not found in your PATH!" system-type program-name)
+Spell check program %s not found in your PATH!\n\
+See the spell-checking.pdf file for more info" system-type program-name)
           (pel-spell-init program-name path personal-dict))
       (cl-return)))))
 
