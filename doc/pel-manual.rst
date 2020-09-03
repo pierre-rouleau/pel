@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-03 13:27:50, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-03 13:44:39, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -363,6 +363,8 @@ Add the following code inside your "``~/.emacs.d/init.el``" file:
 
 .. code:: elisp
 
+          ;;; ---init.el file -----------------------------------------------------------
+          ;;
           ;; 1: Setup package sources: MELPA, MELPA-STABLE and a local mypelpa
           (when (>= emacs-major-version 24)
             (require 'package)
@@ -372,9 +374,14 @@ Add the following code inside your "``~/.emacs.d/init.el``" file:
             (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
                                 (not (gnutls-available-p))))
                    (proto (if no-ssl "http" "https")))
-              (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-              (add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-              (add-to-list 'package-archives (cons "mypelpa"      (expand-file-name "~/projects/pel/pelpa/")) t))
+              (add-to-list 'package-archives
+                           (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+              (add-to-list 'package-archives
+                           (cons "melpa-stable"
+                                 (concat proto "://stable.melpa.org/packages/")) t)
+              (add-to-list 'package-archives
+                           (cons "mypelpa"
+                                 (expand-file-name "~/projects/pel/pelpa/")) t))
             (package-initialize))
 
           ;; 2: Delay loading of abbreviation definitions
@@ -385,7 +392,7 @@ Add the following code inside your "``~/.emacs.d/init.el``" file:
           ;;     Pass the original name to pel-init later to initialize properly.
           ;;
           ;; (setq pel--abbrev-file-name abbrev-file-name)
-          ;; (setq abbrev-file-name "~/abbrev_defs-invalid") ; use a non-existing file name
+          ;; (setq abbrev-file-name "~/abbrev_defs-invalid") ; use non-existing file name
 
           ;; 3: Add pel to Emacs load-path
           ;;    Identify the directory where you stored pel.
@@ -406,7 +413,7 @@ Add the following code inside your "``~/.emacs.d/init.el``" file:
           ;; (require 'pel)
           ;; (pel-init)  ; or later->; (pel-init pel--abbrev-file-name)
 
-          ;; ---- end of init.el ---
+          ;;; ---- end of init.el ---
 
 
 - Section 1 of the code adds the following URLS of Elpa-compliant Emacs package
@@ -438,6 +445,12 @@ Add the following code inside your "``~/.emacs.d/init.el``" file:
   your first successful build of PEL.
 
 .. _cloned PEL: `Clone the PEL Git repository`_
+
+If you have cloned PEL inside ``~/projects/pel`` you are ready to go.
+Otherwise you **must update** the init.el to identify the location of the
+``pel`` directory as shown below.
+
+.. image:: res/update-init.el
 
 **Note**
 
