@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-03 11:36:19, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-03 11:38:32, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1546,7 +1546,7 @@ Instead PEL uses the following function keys:
 - **F6**, the ``pel:f6`` prefix, which provides quick access to some
   often used commands, and generic template insertion commands that work
   in all major modes.
-- **F7** is used for `Hydra <https://github.com/abo-abo/hydra>`_
+- **F7** is used for `Hydra keys`_
   key sequences when ``pel-use-hydra`` is **t**.
 - **F11**, the ``pel:`` prefix , is the main prefix key for PEL, providing
   access to a large set of key bindings and second-level key prefixes.
@@ -1580,7 +1580,7 @@ for ``pel-use-which-key``.  Set it to **t**.  The restart PEL by using
 ``M-x pel-init``.  PEL will download and install the `which-key`_ package
 and will activate it.
 
-
+.. _Hydra keys: https://github.com/abo-abo/hydra
 
 
 PEL Grep Support
