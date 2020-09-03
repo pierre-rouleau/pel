@@ -42,3 +42,32 @@ This file uses Org mode. Some useful (default) key-bindings:
     dependencies.
   - PEL is not yet distributed via sites like MELPA but
     [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#how-to-install-pel][PEL's installation instructions]] should alleviate this problem.
+* Version 0.2.0
+- Lots of updates since version 0.1.0, too many to describe here.
+  PEL is still in what I consider an early development phase.
+  Although most base features are stable, there's still several rough edges,
+  lots of packages and programming languages I want to support are not
+  properly supported.
+
+  - I changed the instructions for installations on a new computer.
+  - Added lots of cross-reference links between the PDF sheets.
+  - Implemented a tempo skeleton generic file header block generation, and
+    specialized ones for C, Erlang and reStructuredText files.
+  - Support for Erlang and C is mostly complete, but there are several packages
+    not supported yet.
+  - Added support for sessions, projectile, hiding comments, hiding docstrings.
+  - Added ability to automatically download and install packages from some
+    non-Elpa compliant web sites (but path of Github) like EmacsAttic and
+    EmacsMirror.
+  - Support for generation of images using PlantUML and Graphviz Dot directly
+    from within Emacs.
+  - Support for several ways to deals with keys: Hydras, key-chord and key-seq,
+    avy and ace-link.
+  - Support for voice dictation under macOS and AppleScript.
+  - Support for auto-completion using either auto-complete or company.
+  - Support for input completion with Help, Ivy, Ivy/Counsel as well as Ido.
+  - Support for bookmark management with bm.
+  - Support for virtual-regexp
+  - Key bindings to quickly access the customization buffer of several
+    customization groups.
+  - and more...

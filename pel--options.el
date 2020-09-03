@@ -138,7 +138,7 @@ commands and key bindings of a specific aspect of Emacs.  The PDF files document
 the standard Emacs key bindings as well as PEL's specific key bindings."
   :group 'convenience
   :link `(file-link :tag "Directory of PDF table files" ,(pel-pdf-directory))
-  :package-version '(pel . "0.1.1"))
+  :package-version '(pel . "0.2.0"))
 
 ;; -----------------------------------------------------------------------------
 (defgroup pel-base-emacs nil
