@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-03 11:31:35, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-03 11:36:19, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5029,7 +5029,7 @@ d-mode_                       MELPA_
 `edts`_                       MELPA_
 elixir-mode_                  MELPA_
 elpy_                         MELPA_
-erlang_                       MELPA_
+`erlang`_                     MELPA_
 esup_                         MELPA_
 expand-region_                MELPA_
 flycheck_                     MELPA_
@@ -5044,7 +5044,7 @@ graphviz-dot-mode_            MELPA_
 helm_                         MELPA_
 `hide-comnt.el`_              Emacsmirror_
 highlight-defined_            MELPA_
-hydra_                        MELPA_
+`hydra`_                      MELPA_
 ivy_                          MELPA_
 julia-snail_                  MELPA_
 keycast_                      MELPA_
