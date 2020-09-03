@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-03 09:43:47, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-03 10:07:30, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1123,7 +1123,7 @@ PEL Configuration/Customization Support
 :PDF Sheet: `User Option Customization`_.
 :PEL Key Prefix: - **pel:cfg** : ``<f11> <f1>``
                  - **pel:cfg-pl** : ``<f11> <f1> SPC``
-
+:See Also: `Activate PEL Features - Customize PEL`_
 
 PEL is designed to help you control Emacs through Emacs Easy Customization
 system instead of explicit Emacs Lisp code.  You can always write more Emacs
@@ -1133,7 +1133,7 @@ through the Emacs Customization interface.  The information is stored in a file
 and if you followed the instructions inside the section `How to Install PEL`_,
 your selections will be stored inside the file
 "``~/.emacs.d/emacs-customization.el``".  You can even copy that file and keep
-multiple revision around.
+multiple revisions around.
 
 Since customization is central to PEL, PEL also provides a set of key bindings
 that you can use to quickly open a buffer to customize a specific user option or
@@ -1159,7 +1159,9 @@ After customizing something, you can type the ``q`` key to close  the
 customization buffer and come back where you were.  And to activate your changes
 then run ``pel-init`` by issuing the ``M-x pel-init`` command.
 
-See the `User Option Customization`_ PDF document for more details.
+See the `User Option Customization`_ *semi-quick* sheet for key bindings and the
+section titled `Activate PEL Features - Customize PEL`_ for relevant information.
+
 
 PEL Counting Support
 --------------------
