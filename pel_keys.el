@@ -1323,6 +1323,8 @@ Done in this function to allow advising libraries that remap these keys."
 (pel--cfg ""  pel:cfg "!")
 (pel--cfg "identification"  pel:cfg "i")
 
+;; Key bindings to access PEL customization groups quickly,
+;; and optionally other related groups
 (if (version< emacs-version "27.1")
     (pel--cfg-pkg "buffer"  pel:cfg "b" "rainbow-delimiters" "vline" "nhexl" "fill-column-indicator")
   (pel--cfg-pkg "buffer"    pel:cfg "b" "rainbow-delimiters" "vline" "nhexl"))
@@ -1332,6 +1334,7 @@ Done in this function to allow advising libraries that remap these keys."
 (pel--cfg-pkg "filemng"     pel:cfg "f" "files")
 (pel--cfg-pkg "grep"        pel:cfg "g" "grep" "rg" "ripgrep")
 (pel--cfg-pkg "insertions"  pel:cfg "I" "lice" "smart-dash" "time-stamp" "tempo" "yasnippet")
+(pel--cfg-pkg "kbmacro"     pel:cfg "k")
 (pel--cfg-pkg "key-chord"   pel:cfg "K")
 (pel--cfg-pkg "navigation"  pel:cfg "n" "avy")
 (pel--cfg-pkg "regexp"      pel:cfg "r")

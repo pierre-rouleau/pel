@@ -194,8 +194,11 @@ make script files executable on save when non-nil, don't otherwise."
   :link `(url-link :tag "Keyboard Macros PDF" ,(pel-pdf-file-url "keyboard-macros")))
 
 
-(defcustom pel-kbmacro-prompts t
-  "Prompt before overriding existing keyboard macro?"
+(defcustom pel-kbmacro-prompts nil
+  "Prompt before overriding existing keyboard macro?
+By default it does not prompt.
+If on (t) the keyboard macro recording will prompt before overriding the
+  previously recorded keyboard macro."
   :group 'pel-kbmacro
   :type 'boolean
   :safe #'booleanp)
