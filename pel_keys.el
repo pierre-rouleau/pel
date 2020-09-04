@@ -1321,7 +1321,8 @@ Done in this function to allow advising libraries that remap these keys."
 
 ;;
 (pel--cfg ""  pel:cfg "!")
-(pel--cfg "identification"  pel:cfg "i")
+(pel--cfg "file-management" pel:cfg "f")
+(pel--cfg "kbmacro"         pel:cfg "k")
 
 ;; Key bindings to access PEL customization groups quickly,
 ;; and optionally other related groups
@@ -1331,10 +1332,9 @@ Done in this function to allow advising libraries that remap these keys."
 (pel--cfg-pkg "cursor"      pel:cfg "_")
 (pel--cfg-pkg "completion"  pel:cfg "c")
 (pel--cfg-pkg "dired"       pel:cfg "d" "dired")
-(pel--cfg-pkg "filemng"     pel:cfg "f" "files")
+(pel--cfg-pkg "filemng"     pel:cfg "F" "files")
 (pel--cfg-pkg "grep"        pel:cfg "g" "grep" "rg" "ripgrep")
 (pel--cfg-pkg "insertions"  pel:cfg "I" "lice" "smart-dash" "time-stamp" "tempo" "yasnippet")
-(pel--cfg-pkg "kbmacro"     pel:cfg "k")
 (pel--cfg-pkg "key-chord"   pel:cfg "K")
 (pel--cfg-pkg "navigation"  pel:cfg "n" "avy")
 (pel--cfg-pkg "regexp"      pel:cfg "r")

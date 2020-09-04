@@ -193,7 +193,6 @@ make script files executable on save when non-nil, don't otherwise."
   :group 'pel
   :link `(url-link :tag "Keyboard Macros PDF" ,(pel-pdf-file-url "keyboard-macros")))
 
-
 (defcustom pel-kbmacro-prompts nil
   "Prompt before overriding existing keyboard macro?
 By default it does not prompt.
@@ -267,6 +266,7 @@ See URL `https://github.com/magnars/multiple-cursors.el'."
 ;; -------------------
 (defgroup pel-pkg-for-filemng nil
   "List of external packages that can be used to manage file/directory."
+  :group 'pel-file-management
   :group 'pel-package-use
   :link `(url-link :tag "File Management PDF" ,(pel-pdf-file-url "file-mngt")))
 
