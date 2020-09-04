@@ -3876,6 +3876,7 @@ the ones defined from the buffer now."
 (define-key pel:textmodes "r" #'enriched-mode)
 (define-key pel:textmodes "s"  'pel-toggle-sentence-end)
 (define-key pel:textmodes "v" #'visible-mode)
+(define-key pel:textmodes "w" #'whitespace-mode)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Function Keys - <f11> - Prefix ``<f11> t t``: Text transpose commands

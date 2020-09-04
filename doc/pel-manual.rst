@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-03 14:13:53, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-04 14:21:14, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -3675,6 +3675,26 @@ PEL Text Transformation Utilities
 - The ``pel-toggle-sentence-end`` command toggles the number of spaces that
   identify the end of a sentence for Emacs between 1 and 2.  It displays the new value.
 
+
+PEL Text Modes Support
+----------------------
+
+:PDF Sheet: `Text-modes`_.
+:PEL Customization: *none*
+:PEL Key Prefix: **pel:textmodes** : ``<f11> t m``
+
+PEL provides a set of bindings to commands that activate various text modes
+under the **pel:textmodes** key prefix, bound to ``<f11> t m``. This includes
+the following:
+
+- text overwrite mode,
+- subword-mode,
+- superword-mode,
+- whitespace-mode,
+- picture-mode,
+- artist-mode.
+
+See the `Text-modes`_ PDF sheet.
 
 PEL Text Transpose Support
 --------------------------
