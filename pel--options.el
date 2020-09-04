@@ -2492,13 +2492,23 @@ Identifies the number of levels supported and their adornment.
   - chapters,
   - sections,
   - subsections,
-  - subsubsections,
+  - sub-subsections,
   - paragraphs.
 - `CRiSPer', a title and 12-level mode previously developed for CRiSP."
   :group 'pel-pkg-for-reST
   :type '(choice (const :tag "default" default)
                  (const :tag "Sphinx-Python" Sphinx-Python)
                  (const :tag "CRiSPer" CRiSPer)))
+
+(defcustom pel-rst-tab-width 2
+  "Distance between tab stop for reStructuredText buffers.
+PEL stores this in `tab-width' when reStructuredText buffers.
+This does *NOT* control the indentation in reStructuredText files,
+only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB characters."
+  :group 'pel-pkg-for-reST
+  :type 'integer
+  :safe 'pel-indent-valid-p)
 
 ;; -----------------------------------------------------------------------------
 ;; pel-pkg-for-draw-markup

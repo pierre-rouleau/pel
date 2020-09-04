@@ -2386,8 +2386,9 @@ This is meant to be used in the d-mode hook lambda."
   (define-pel-global-prefix pel:for-reST (kbd "<f11> SPC r"))
   (define-pel-global-prefix pel:rst-skel (kbd "<f11> SPC r <f12>"))
 
-  (defun pel--setup-rst ()
+  (defun pel--setup-for-rst ()
     "Activate the reStructuredText (rst) mode."
+    (setq tab-width    pel-rst-tab-width)
     (pel-local-set-f12 'pel:for-reST)
     (pel--install-rst-skel pel:rst-skel))
 
@@ -2439,7 +2440,7 @@ This is meant to be used in the d-mode hook lambda."
   ;;
   ;; activate the <f12> key binding for rst-mode
   (pel--mode-hook-maybe-call
-   (function pel--setup-rst)
+   (function pel--setup-for-rst)
    'rst-mode 'rst-mode-hook))
 
 ;; -----------------------------------------------------------------------------
