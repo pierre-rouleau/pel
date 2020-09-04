@@ -77,7 +77,7 @@ Please see the function `tempo-define-template'.")
   '(("File Header"  "file-header" pel-skels-rst-large-header-skel))
   "List of reStructuredText tempo skeletons.")
 
-(defvar pel--rst-skels-keys '(("file-header" . "C-h"))
+(defvar pel--rst-skels-keys '(("file-header" . "h"))
   "Key mapping for reStructuredText skeletons.")
 
 ;;-pel-autoload
