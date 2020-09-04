@@ -2334,21 +2334,26 @@ This is meant to be used in the d-mode hook lambda."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC p`` : Python programming utilities
 (when pel-use-python
+
+  (defun pel--setup-for-python ()
+    "Activate the python mode."
+    (setq tab-width    pel-python-tab-width)
+    (pel-local-set-f12 'pel:for-python))
+
   (define-pel-global-prefix pel:for-python (kbd "<f11> SPC p"))
-  (define-key pel:for-python (kbd "<f1>") 'pel-cfg-pkg-python)
-  (define-key pel:for-python    "."       'pel-find-thing-at-point)
+  (define-key pel:for-python (kbd "<f1>")  'pel-cfg-pkg-python)
+  (define-key pel:for-python    "."        'pel-find-thing-at-point)
   (define-key pel:for-python (kbd "M-9")  #'show-paren-mode)
   (when pel-use-plantuml
-    (define-key pel:for-python    "u"       'pel-render-commented-plantuml))
+    (define-key pel:for-python    "u"      'pel-render-commented-plantuml))
   (when pel-use-graphviz-dot
-    (define-key pel:for-python "G" 'pel-render-commented-graphviz-dot))
+    (define-key pel:for-python "G"         'pel-render-commented-graphviz-dot))
   (when pel-use-rainbow-delimiters
-    (define-key pel:for-python  "R"       'rainbow-delimiters-mode))
+    (define-key pel:for-python  "R"        'rainbow-delimiters-mode))
   ;;
   ;; activate the <f12> key binding for python-mode
   (pel--mode-hook-maybe-call
-   '(lambda ()
-      (pel-local-set-f12 'pel:for-python))
+   (function pel--setup-for-python)
    'python-mode 'python-mode-hook))
 
 ;; -----------------------------------------------------------------------------

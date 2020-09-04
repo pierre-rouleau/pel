@@ -2425,6 +2425,16 @@ IMPORTANT:
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-python-tab-width 4
+  "Distance between tab stop for buffers in python-mode.
+PEL stores this in `tab-width' when opening Python buffers.
+This does *NOT* control the indentation in Python files,
+only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB characters."
+  :group 'pel-pkg-for-python
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; REXX Support
 ;; ------------
@@ -2502,7 +2512,7 @@ Identifies the number of levels supported and their adornment.
 
 (defcustom pel-rst-tab-width 2
   "Distance between tab stop for reStructuredText buffers.
-PEL stores this in `tab-width' when reStructuredText buffers.
+PEL stores this in `tab-width' when opening reStructuredText buffers.
 This does *NOT* control the indentation in reStructuredText files,
 only for commands that mode point to tab stop positions
 such as `tab-to-tab-stop', and the display of hard TAB characters."
