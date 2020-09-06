@@ -4390,7 +4390,7 @@ the ones defined from the buffer now."
       ("M-h"         pel-2-horizontal-windows    "flip horiz." :column "Layout")
       ("d"           delete-window               "this window"  :column "Close")
       ("0"           delete-window               "this window"  :column "Close")
-      ("K"           kill-buffer-and-window      "&kill buffer" :column "Close")
+      ("k"           kill-buffer-and-window      "&kill buffer" :column "Close")
       ("."           delete-other-windows        "all others"   :column "Close")
       ("1"           delete-other-windows        "all others"   :column "Close")
       ("C-S-<up>"    pel-close-window-up         "above"      :column "Close 1")
