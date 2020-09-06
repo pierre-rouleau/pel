@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-04 14:51:40, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-06 10:36:28, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5073,6 +5073,7 @@ auto-complete_                MELPA_
 `bm`_                         MELPA_
 `c-eldoc`_                    MELPA_
 `cargo`_                      MELPA_
+centimacro_                   MELPA_ (see [1]_)
 `company`_                    MELPA_
 counsel_                      MELPA_
 d-mode_                       MELPA_
@@ -5081,6 +5082,7 @@ d-mode_                       MELPA_
 `dired-narrow`_               MELPA_
 `edts`_                       MELPA_
 elixir-mode_                  MELPA_
+elmacro_                      MELPA_
 elpy_                         MELPA_
 erlang.el_                    MELPA_
 esup_                         MELPA_
@@ -5184,6 +5186,7 @@ when running Emacs 27.1 and later versions.
 .. _visible bookmarks:
 .. _bm:                        https://melpa.org/#/bm
 .. _cargo:                     https://melpa.org/#/cargo
+.. _centimacro:                https://melpa.org/#/centimacro
 .. _company:                   https://melpa.org/#/company
 .. _counsel:                   https://melpa.org/#/counsel
 .. _c-eldoc:                   https://melpa.org/#/?q=c-eldoc
@@ -5194,6 +5197,7 @@ when running Emacs 27.1 and later versions.
 .. _edts:                      https://melpa.org/#/edts
 .. _elisp-lint:                https://melpa.org/#/elisp-lint
 .. _elixir-mode:               https://melpa.org/#/elixir-mode
+.. _elmacro:                   https://melpa.org/#/elmacro
 .. _elpy:                      https://melpa.org/#/elpy
 .. _erlang.el:                 https://melpa.org/#/erlang
 .. _esup:                      https://melpa.org/#/esup
@@ -5267,6 +5271,13 @@ exhaustive list):
 
 
 .. _Integrating OS X and Emacs Dired: https://jblevins.org/log/dired-open
+
+.. [1] Currently using `my fork of centimacro`_ until a bug fix I submitted
+       gets integrated.
+
+
+.. _my fork of centimacro: https://github.com/pierre-rouleau/centimacro
+
 
 
 -----------------------------------------------------------------------------

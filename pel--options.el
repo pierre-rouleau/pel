@@ -646,6 +646,13 @@ For more information see the  function key usage PDF."
   :group 'pel-pkg-for-kbmacro
   :type  'string)
 
+(defcustom pel-use-elmacro nil
+  "Whether PEL use the elmacro package.
+Repository: https://github.com/Silex/elmacro"
+  :group 'pel-pkg-for-kbmacro
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; -----------------------------------------------------------------------------
 ;; pel-pkg-for-modeline
 ;; --------------------

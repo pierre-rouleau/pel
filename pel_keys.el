@@ -1335,7 +1335,7 @@ Done in this function to allow advising libraries that remap these keys."
 (pel--cfg-pkg "filemng"     pel:cfg "F" "files")
 (pel--cfg-pkg "grep"        pel:cfg "g" "grep" "rg" "ripgrep")
 (pel--cfg-pkg "insertions"  pel:cfg "I" "lice" "smart-dash" "time-stamp" "tempo" "yasnippet")
-(pel--cfg-pkg "kbmacro"     pel:cfg (kbd "M-k") "centimacro")
+(pel--cfg-pkg "kbmacro"     pel:cfg (kbd "M-k") "centimacro" "elmacro")
 (pel--cfg-pkg "key-chord"   pel:cfg "K")
 (pel--cfg-pkg "navigation"  pel:cfg "n" "avy")
 (pel--cfg-pkg "regexp"      pel:cfg "r")
@@ -3479,6 +3479,20 @@ the ones defined from the buffer now."
     ;; <f5
     (global-set-key (kbd "<f5>") 'repeat)
     (global-set-key (kbd pel-centi-assign-key) 'centi-assign)))
+
+(when pel-use-elmacro
+  (define-pel-global-prefix pel:elmacro (kbd "<f11> k l"))
+  (use-package elmacro
+    :ensure t
+    :pin melpa
+    :commands elmacro-mode
+    :init
+    (define-key pel:elmacro "l"          'elmacro-mode)
+    :config
+    (define-key pel:elmacro "m"          'elmacro-show-last-macro)
+    (define-key pel:elmacro "c"          'elmacro-show-last-commands)
+    (define-key pel:elmacro (kbd "DEL")  'elmacro-clear-command-history)))
+
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> l`` : Line control commands
