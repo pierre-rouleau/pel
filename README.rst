@@ -12,7 +12,7 @@ PEL might be for you!
 PEL is an Emacs configuration system that allows you to pick and choose what you
 want to use via `Emacs easy customization`_ system.
 
-It integrates a large and growing set of built-in and external Emacs packages,
+It integrates a large and growing set of `built-in and external Emacs packages`_,
 and adds a large number of key bindings that do not interfere with the standard
 Emacs key bindings.
 
@@ -52,6 +52,7 @@ course) suggestions are always welcome.  Drop me a note in the wiki_!
 .. _Key Bindings Documentation: doc/pel-manual.rst#key-bindings-documentation
 .. _PEL convenience features:   doc/pel-manual.rst#pel-convenience-features
 .. _PEL Customization:          doc/pel-manual.rst#pel-customization
+.. _built-in and external Emacs packages:
 .. _Credits:                    doc/pel-manual.rst#credits
 .. _PEL key bindings:           doc/pel-manual.rst#pel-key-bindings
 .. _PDF Document tables:        doc/pel-manual.rst#pdf-document-tables
