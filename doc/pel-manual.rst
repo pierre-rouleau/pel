@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-06 10:36:28, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-06 12:33:46, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1055,6 +1055,18 @@ PEL Autosave & Backup Documentation
 
 PEL provides a table describing the autosave and backup commands in the
 `Autosave & Backups`_ PDF file.
+
+PEL Buffer Management Support
+-----------------------------
+
+:PDF Sheet: `Buffers`_.
+:PEL Customization: *none*.
+:PEL Key Prefix: **pel:buffer** : ``<f11> b``
+
+PEL provides extra key bindings to Emacs commands that manage Emacs buffers: the
+keys are bound under the **pel:buffer** key prefix (``<f11> b``).
+
+See the `Buffers`_ PDF sheet for more information.
 
 PEL Bookmark Management Utilities
 ---------------------------------
