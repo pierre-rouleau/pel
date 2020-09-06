@@ -1329,6 +1329,7 @@ Done in this function to allow advising libraries that remap these keys."
 (if (version< emacs-version "27.1")
     (pel--cfg-pkg "buffer"  pel:cfg "b" "rainbow-delimiters" "vline" "nhexl" "fill-column-indicator")
   (pel--cfg-pkg "buffer"    pel:cfg "b" "rainbow-delimiters" "vline" "nhexl"))
+(pel--cfg-pkg "bookmark"    pel:cfg "'")
 (pel--cfg-pkg "cursor"      pel:cfg "_")
 (pel--cfg-pkg "completion"  pel:cfg "c")
 (pel--cfg-pkg "dired"       pel:cfg "d" "dired")

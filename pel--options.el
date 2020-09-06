@@ -156,6 +156,7 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
 (defgroup pel-file-management nil
   "PEL File Management Configurations."
   :group 'pel
+  :group 'files
   :link `(url-link :tag "File Management PDF" ,(pel-pdf-file-url "file-mngt")))
 
 (defcustom pel-delete-trailing-whitespace t
@@ -190,8 +191,9 @@ make script files executable on save when non-nil, don't otherwise."
 
 ;; -----------------------------------------------------------------------------
 (defgroup pel-kbmacro nil
-  "PEL keboard macro management utilities."
+  "PEL keyboard macro management utilities."
   :group 'pel
+  :group 'kmacro
   :link `(url-link :tag "Keyboard Macros PDF" ,(pel-pdf-file-url "keyboard-macros")))
 
 (defcustom pel-kbmacro-prompts nil
@@ -214,6 +216,7 @@ If on (t) the keyboard macro recording will prompt before overriding the
 (defgroup pel-pkg-for-cursor nil
   "List of external packages for cursor management that may be used with PEL."
   :group 'pel-package-use
+  :group 'cursor
   :link `(url-link :tag "Cursor PDF" ,(pel-pdf-file-url "cursor")))
 
 
@@ -254,6 +257,7 @@ See URL `https://github.com/magnars/multiple-cursors.el'."
 (defgroup pel-pkg-for-dired nil
   "List of packages activated for Dired support that may be used with PEL."
   :group 'pel-package-use
+  :group 'dired
   :link `(url-link :tag "Dired PDF" ,(pel-pdf-file-url "mode-dired")))
 
 (defcustom pel-use-dired-x nil
@@ -269,6 +273,7 @@ See URL `https://github.com/magnars/multiple-cursors.el'."
   "List of external packages that can be used to manage file/directory."
   :group 'pel-file-management
   :group 'pel-package-use
+  :group 'files
   :link `(url-link :tag "File Management PDF" ,(pel-pdf-file-url "file-mngt")))
 
 (defcustom pel-use-ffap    nil
@@ -335,6 +340,7 @@ a non-customizable variable."
 (defgroup pel-pkg-for-grep nil
   "List of external packages that PEL can use for grep operations."
   :group 'pel-package-use
+  :group 'grep
   :link `(url-link :tag "Grep PDF" ,(pel-pdf-file-url "grep")))
 
 (defcustom pel-use-ag nil
@@ -370,6 +376,7 @@ References:
 (defgroup pel-pkg-for-key-chord nil
   "PEL support for key-chords."
   :group 'pel-package-use
+  :group 'keyboard
   :link `(url-link :tag "Key-chords PDF" ,(pel-pdf-file-url "key-chords")))
 
 (defcustom pel-use-key-chord nil
@@ -621,6 +628,7 @@ The `pel-key-chords' value is a list of objects.
   "List of external packages that PEL can use to handle keyboard macros."
   :group 'pel-kbmacro
   :group 'pel-package-use
+  :group 'kmacro
   :link `(url-link :tag "Keyboard Macros PDF" ,(pel-pdf-file-url "keyboard-macros"))
   :link `(url-link :tag "Function Keys Usage PDF" ,(pel-pdf-file-url "keys-fn")))
 
@@ -658,7 +666,8 @@ Repository: https://github.com/Silex/elmacro"
 ;; --------------------
 (defgroup pel-pkg-for-modeline nil
   "List of external packages that PEL can use to modify the modeline."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :group 'mode-line)
 
 ;; TODO: change the group to screen recording??
 
@@ -826,6 +835,7 @@ See URL https://github.com/leoliu/ggtags"
 (defgroup pel-pkg-for-window nil
   "List of external packages that PEL can use to manage windows."
   :group 'pel-package-use
+  :group 'windows
   :link `(url-link :tag "Windows PDF" ,(pel-pdf-file-url "windows")))
 
 ;; Note: some other windows modules are used by PEL and are loaded
