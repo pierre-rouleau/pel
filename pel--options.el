@@ -43,6 +43,7 @@
 ;;       - pel-pkg-for-ztree
 ;;     - pel-pkg-for-grep
 ;;     - pel-pkg-for-key-chord
+;;     - pel-pkg-for-kbmacro
 ;;     - pel-pkg-for-modeline
 ;;     - pel-pkg-for-navigation
 ;;     - pel-pkg-for-regexp
@@ -612,6 +613,38 @@ The `pel-key-chords' value is a list of objects.
      (choice (string   :tag "expansion")
              (function :tag "function")
              (function :tag "lambda" :value (lambda () (interactive) <YOUR CODE HERE>))))))
+
+;; -----------------------------------------------------------------------------
+;; pel-pkg-for-kbmacro
+;; -------------------
+(defgroup pel-pkg-for-kbmacro nil
+  "List of external packages that PEL can use to handle keyboard macros."
+  :group 'pel-kbmacro
+  :group 'pel-package-use
+  :link `(url-link :tag "Keyboard Macros PDF" ,(pel-pdf-file-url "keyboard-macros"))
+  :link `(url-link :tag "Function Keys Usage PDF" ,(pel-pdf-file-url "keys-fn")))
+
+(defcustom pel-use-centimacro nil
+  "Whether PEL use the centimacro package.
+See repository at URL https://github.com/abo-abo/centimacro"
+  :group 'pel-pkg-for-kbmacro
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-centi-assign-key "<C-f5>"
+  "Default key binding for function `centi-assign'.
+Its value is stored in `centi-assign-key' when PEL starts
+centimacro.  The <C-f5> binding is used by default to prevent
+overriding the f5 key used by PEL to repeat.
+
+Do NOT use a function key that is already used by PEL.
+So, do NOT use f1,f2,f3,f4,f5,f6,f7,f8,f10,f11 or f12.
+That leaves f9 and some function keys with qualifiers.
+Make sure your selection works in terminal mode if you plan
+to use Emacs in terminal mode.
+For more information see the  function key usage PDF."
+  :group 'pel-pkg-for-kbmacro
+  :type  'string)
 
 ;; -----------------------------------------------------------------------------
 ;; pel-pkg-for-modeline

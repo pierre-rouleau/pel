@@ -1335,6 +1335,7 @@ Done in this function to allow advising libraries that remap these keys."
 (pel--cfg-pkg "filemng"     pel:cfg "F" "files")
 (pel--cfg-pkg "grep"        pel:cfg "g" "grep" "rg" "ripgrep")
 (pel--cfg-pkg "insertions"  pel:cfg "I" "lice" "smart-dash" "time-stamp" "tempo" "yasnippet")
+(pel--cfg-pkg "kbmacro"     pel:cfg (kbd "M-k") "centimacro")
 (pel--cfg-pkg "key-chord"   pel:cfg "K")
 (pel--cfg-pkg "navigation"  pel:cfg "n" "avy")
 (pel--cfg-pkg "regexp"      pel:cfg "r")
@@ -3453,6 +3454,31 @@ the ones defined from the buffer now."
 (define-pel-global-prefix pel:kbmacro (kbd "<f11> k"))
 (define-key pel:kbmacro "k"   'pel-forget-recorded-keyboard-macro)
 (define-key pel:kbmacro "i"  #'insert-kbd-macro)
+
+(when pel-use-centimacro
+  ;; Until abo-abo integrates my pull-request that fixes the bugs
+  ;; I'll support this package via my copy of the file from my fork
+  ;; of the original project at https://github.com/abo-abo/centimacro
+  (cl-eval-when 'load
+    (pel-install-file
+     "https://raw.githubusercontent.com/pierre-rouleau/centimacro/master/centimacro.el"
+     "centimacro.el"))
+  (use-package centimacro
+    :commands (centi-assign
+               centi-summary
+               centi-restore-all)
+    :init
+    (define-key pel:kbmacro "="          'centi-assign)
+    (define-key pel:kbmacro "?"          'centi-summary)
+    (define-key pel:kbmacro (kbd "DEL")  'centi-restore-all)
+
+    :config
+    ;; Restore PEL's binding of <f5> to `repeat' despite centimacro's default
+    ;; customization which binds <f5> to centi-assign.
+    ;; PEL provides the `pel-centi-assign-key' which
+    ;; <f5
+    (global-set-key (kbd "<f5>") 'repeat)
+    (global-set-key (kbd pel-centi-assign-key) 'centi-assign)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> l`` : Line control commands
