@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-01 10:27:21, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-08 14:29:13, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -80,11 +80,42 @@ display in other window." (pel-prefixed
                   (push (symbol-name symbol) custom-groups))))
     (not (null (member group-name custom-groups)))))
 
+(defun pel--group-isin-libfile (group)
+  "Return non-nil if customize GROUP is defined in an accessible Emacs Lisp file.
+Return the path to the source file containing the group.
+GROUP must be a string.
+Return nil otherwise."
+  (let ((file-path (locate-library group)))
+    (when file-path
+      ;; get the source code file, not the byte-compiled version
+      (let ((file-path  (concat (file-name-sans-extension file-path) ".el")))
+        (when (file-exists-p file-path)
+          (with-temp-buffer
+            (insert-file-contents file-path)
+            (goto-char (point-min))
+            (when (re-search-forward (concat
+                                      "^ *?(defgroup +?"
+                                      group
+                                      " ")
+                                     nil
+                                     :noerror)
+              file-path)))))))
+
 (defun pel--customize-groups (group-list)
   "Utility: customize all groups named in the GROUP-LIST if they exist."
   (dolist (grp group-list)
-    (when (pel--isa-custom-group-p grp)
-      (customize-group grp t))))
+    (if (pel--isa-custom-group-p grp)
+        (customize-group grp t)
+      (let ((file-path (pel--group-isin-libfile grp)))
+        (when file-path
+          (let ((library-name (file-name-base file-path)))
+            (when (y-or-n-p
+                   (format
+                    "Group %s is from a non loaded %s. Load it first? "
+                    grp
+                    library-name))
+              (when (load-library library-name)
+                (customize-group grp t)))))))))
 
 (defmacro pel--cfg-pkg (pel-group prefix key &rest other-groups)
   "Define a function and key binding to customize specified PEL-GROUP.
