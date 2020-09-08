@@ -180,6 +180,13 @@
   (autoload 'pel-next-frame               "pel-frame-control")
   (autoload 'pel-previous-frame           "pel-frame-control")
 
+  ;; pel-help
+  (dolist (fct '(pel-show-kill-ring
+                 pel-show-major-mode
+                 pel-help-pdf
+                 pel-help-pdfs-dir))
+    (autoload fct "pel-help"))
+
   ;; pel-hideshow.el
   (dolist (fct '(pel-show-hide-state
                  pel-toggle-hide-all

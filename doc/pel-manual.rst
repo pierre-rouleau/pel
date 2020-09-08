@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-06 12:33:46, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-08 07:22:30, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1234,15 +1234,16 @@ PEL Cross Reference Support
 The file `pel-tags.el`_ holds utilities related to Etags based cross-reference support.
 
 
-PEL CUA Mode Extension Utilities - *experimental*
--------------------------------------------------
+PEL CUA Mode Extension Utilities
+--------------------------------
 
-:PDF Sheet: *none*
+:PDF Sheet: `CUA <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/cua.pdf>`_
 :PEL Customization: *none*
 :PEL Key Prefix: *none*
+:Status: Experimental
 
 **Note:**
-   🚧  This file is under early development.
+   🚧  While CUA Mode itself is a stable Emacs feature, PEL's additions are experimental.
 
 I'd like to find ways to easily manage rectangles of text without having to
 activate the CUA mode and
@@ -4121,6 +4122,7 @@ as well as PEL extensions.
 #. `Customization <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf>`_.
 #. `Counting`_
 #. Cross-Referencing: `Etags-based Cross-Reference`_
+#. `CUA Mode <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/cua.pdf>`_
 #. `Cut, Delete, Copy and Paste`_ (killing and yanking)
 #. `Diff and Merge`_
 #. `Display Lines`_

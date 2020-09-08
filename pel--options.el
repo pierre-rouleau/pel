@@ -34,8 +34,6 @@
 ;;
 ;; - pel
 ;;   - pel-base-emacs
-;;   - pel-file-management
-;;   - pel-kbmacro
 ;;   - pel-package-use
 ;;     - pel-pkg-for-cursor
 ;;     - pel-pkg-for-dired
@@ -43,6 +41,7 @@
 ;;       - pel-pkg-for-ztree
 ;;     - pel-pkg-for-grep
 ;;     - pel-pkg-for-key-chord
+;;   - pel-kbmacro
 ;;     - pel-pkg-for-kbmacro
 ;;     - pel-pkg-for-modeline
 ;;     - pel-pkg-for-navigation
@@ -153,59 +152,6 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
   :safe #'booleanp)
 
 ;; -----------------------------------------------------------------------------
-(defgroup pel-file-management nil
-  "PEL File Management Configurations."
-  :group 'pel
-  :group 'files
-  :link `(url-link :tag "File Management PDF" ,(pel-pdf-file-url "file-mngt")))
-
-(defcustom pel-delete-trailing-whitespace t
-  "Controls whether whitespaces are automatically deleted when file is saved.
-Deleted automatically when non-nil, don't otherwise."
-  :group 'pel-file-management
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-update-time-stamp t
-  "Controls whether file timestamp is updated automatically on file save.
-Update timestamp automatically when non-nil, don't otherwise.
-See the time stamp format and location constraints in the Emacs manual
-by executing:  M-: (info \"(emacs) Time Stamps\")."
-  :group 'pel-file-management
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-update-copyright t
-  "Controls whether copyright notice is updated automatically on file save.
-Update copyright notice automatically when non-nil, don't otherwise."
-  :group 'pel-file-management
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-make-script-executable t
-  "Controls whether script files are automatically made executable when saved.
-make script files executable on save when non-nil, don't otherwise."
-  :group 'pel-file-management
-  :type 'boolean
-  :safe #'booleanp)
-
-;; -----------------------------------------------------------------------------
-(defgroup pel-kbmacro nil
-  "PEL keyboard macro management utilities."
-  :group 'pel
-  :group 'kmacro
-  :link `(url-link :tag "Keyboard Macros PDF" ,(pel-pdf-file-url "keyboard-macros")))
-
-(defcustom pel-kbmacro-prompts nil
-  "Prompt before overriding existing keyboard macro?
-By default it does not prompt.
-If on (t) the keyboard macro recording will prompt before overriding the
-  previously recorded keyboard macro."
-  :group 'pel-kbmacro
-  :type 'boolean
-  :safe #'booleanp)
-
-;; -----------------------------------------------------------------------------
 (defgroup pel-package-use nil
   "List of external packages that can be used by PEL."
   :group 'pel)
@@ -271,10 +217,40 @@ See URL `https://github.com/magnars/multiple-cursors.el'."
 ;; -------------------
 (defgroup pel-pkg-for-filemng nil
   "List of external packages that can be used to manage file/directory."
-  :group 'pel-file-management
   :group 'pel-package-use
   :group 'files
   :link `(url-link :tag "File Management PDF" ,(pel-pdf-file-url "file-mngt")))
+
+
+(defcustom pel-delete-trailing-whitespace t
+  "Controls whether whitespaces are automatically deleted when file is saved.
+Deleted automatically when non-nil, don't otherwise."
+  :group 'pel-pkg-for-filemng
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-update-time-stamp t
+  "Controls whether file timestamp is updated automatically on file save.
+Update timestamp automatically when non-nil, don't otherwise.
+See the time stamp format and location constraints in the Emacs manual
+by executing:  M-: (info \"(emacs) Time Stamps\")."
+  :group 'pel-pkg-for-filemng
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-update-copyright t
+  "Controls whether copyright notice is updated automatically on file save.
+Update copyright notice automatically when non-nil, don't otherwise."
+  :group 'pel-pkg-for-filemng
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-make-script-executable t
+  "Controls whether script files are automatically made executable when saved.
+make script files executable on save when non-nil, don't otherwise."
+  :group 'pel-pkg-for-filemng
+  :type 'boolean
+  :safe #'booleanp)
 
 (defcustom pel-use-ffap    nil
   "Control whether PEL activates ffap bindings.
@@ -626,11 +602,19 @@ The `pel-key-chords' value is a list of objects.
 ;; -------------------
 (defgroup pel-pkg-for-kbmacro nil
   "List of external packages that PEL can use to handle keyboard macros."
-  :group 'pel-kbmacro
   :group 'pel-package-use
   :group 'kmacro
   :link `(url-link :tag "Keyboard Macros PDF" ,(pel-pdf-file-url "keyboard-macros"))
   :link `(url-link :tag "Function Keys Usage PDF" ,(pel-pdf-file-url "keys-fn")))
+
+(defcustom pel-kbmacro-prompts nil
+  "Prompt before overriding existing keyboard macro?
+By default it does not prompt.
+If on (t) the keyboard macro recording will prompt before overriding the
+  previously recorded keyboard macro."
+  :group 'pel-pkg-for-kbmacro
+  :type 'boolean
+  :safe #'booleanp)
 
 (defcustom pel-use-centimacro nil
   "Whether PEL use the centimacro package.
