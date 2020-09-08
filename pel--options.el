@@ -645,6 +645,12 @@ Repository: https://github.com/Silex/elmacro"
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-emacros nil
+  "Whether PEL use the emacro package."
+  :group 'pel-pkg-for-kbmacro
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; -----------------------------------------------------------------------------
 ;; pel-pkg-for-modeline
 ;; --------------------

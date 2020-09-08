@@ -1339,7 +1339,7 @@ Done in this function to allow advising libraries that remap these keys."
 (pel--cfg-pkg "filemng"     pel:cfg "f" "files")
 (pel--cfg-pkg "grep"        pel:cfg "g" "grep" "rg" "ripgrep")
 (pel--cfg-pkg "insertions"  pel:cfg "I" "lice" "smart-dash" "time-stamp" "tempo" "yasnippet")
-(pel--cfg-pkg "kbmacro"     pel:cfg "k"  "centimacro" "elmacro")
+(pel--cfg-pkg "kbmacro"     pel:cfg "k"  "centimacro" "elmacro" "emacros")
 (pel--cfg-pkg "key-chord"   pel:cfg "K")
 (pel--cfg-pkg "navigation"  pel:cfg "n" "avy")
 (pel--cfg-pkg "regexp"      pel:cfg "r")
@@ -3540,6 +3540,23 @@ the ones defined from the buffer now."
     (define-key pel:elmacro "c"          'elmacro-show-last-commands)
     (define-key pel:elmacro (kbd "DEL")  'elmacro-clear-command-history)))
 
+(when pel-use-emacros
+  (define-pel-global-prefix pel:emacros (kbd "<f11> k e"))
+  (cl-eval-when 'load
+    (pel-install-file
+     "https://raw.githubusercontent.com/pierre-rouleau/emacros/master/emacros.el"
+     "emacros.el"))
+  (use-package emacros
+    :commands (emacros-name-last-kbd-macro-add
+               emacros-execute-named-macro)
+    :init
+    (define-key pel:emacros "="         'emacros-name-last-kbd-macro-add)
+    (define-key pel:emacros "e"         'emacros-execute-named-macro)
+    :config
+    (define-key pel:emacros "r"         'emacros-refresh-macros)
+    (define-key pel:emacros "n"         'emacros-rename-macro)
+    (define-key pel:emacros "m"         'emacros-move-macro)
+    (define-key pel:emacros (kbd "DEL") 'emacros-remove-macro)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> l`` : Line control commands
