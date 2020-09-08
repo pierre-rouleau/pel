@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-08 07:22:30, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-08 07:54:00, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -602,7 +602,7 @@ customizing Emacs and setting the PEL user options to activate the packages you
 want to use.
 
 One way to quickly gain access to PEL customization group inside Emacs is to
-execute the ``pel-cfg`` command by typing the ``<f11> <f1> !`` key sequence.
+execute the ``pel-cfg`` command by typing the ``<f11> <f2> !`` key sequence.
 When running Emacs in graphics mode, you'll see something like this:
 
 
@@ -726,7 +726,7 @@ dictionary file.
 
 To quickly gain access to the customization buffer for the
 ``pel-pkg-for-spelling`` group where that user option is located type
-the ``<f11> <f1> $`` key sequence.
+the ``<f11> <f2> $`` key sequence.
 
 For the changes to take effect, save the changes and execute pel-init
 (with ``M-x pel-init``) or restart Emacs.
@@ -970,6 +970,14 @@ you can see PEL's use of the **F11** function key by hitting in sequence the
 **F11** key quickly followed by the **F1** key.  Emacs will list PEL's **F11**
 key bindings inside the ``*Help*`` buffer.
 
+You can also open the local copy of the  PDF *semi-quick* sheet file that
+describes the commands and key bindings accessible through a given key prefix by
+using the **F1** key inside that key prefix.
+For example, as described in section `PEL Help Support`_, the PEL key prefix
+for help and information commands is **pel:help** bound to the ``<f11> ?`` key
+sequence.  To open the `HELP`_ PDF file, type ``<f11> ? <f1>``.
+Not all PEL key prefixes have this key, but most have.
+
 
 .. -----------------------------------------------------------------------------
 
@@ -1168,8 +1176,8 @@ PEL Configuration/Customization Support
 ---------------------------------------
 
 :PDF Sheet: `User Option Customization`_.
-:PEL Key Prefix: - **pel:cfg** : ``<f11> <f1>``
-                 - **pel:cfg-pl** : ``<f11> <f1> SPC``
+:PEL Key Prefix: - **pel:cfg** : ``<f11> <f2>``
+                 - **pel:cfg-pl** : ``<f11> <f2> SPC``
 :See Also: `Activate PEL Features - Customize PEL`_
 
 PEL is designed to help you control Emacs through Emacs Easy Customization
@@ -1185,22 +1193,22 @@ multiple revision around.
 Since customization is central to PEL, PEL also provides a set of key bindings
 that you can use to quickly open a buffer to customize a specific user option or
 a group or all of Emacs.  These key bindings use
-the **pel:cfg** prefix, which by default is bound to the ``<f11> <f1>`` key sequence.
+the **pel:cfg** prefix, which by default is bound to the ``<f11> <f2>`` key sequence.
 
 PEL customization user options are organized in Emacs customization groups with
 several general groups but also groups for each programming language and markup
 languages supported by PEL.  When point is inside the buffer editing a file in
 one of the programming or markup language mode supported by PEL you can quickly
 open the customization buffer for the group of that language by using the
-``<f12> <f1>`` key.
+``<f12> <f2>`` key.
 
 You can also use the global prefix **pel:cfg-pl** bound to
-``<f11> <f1> SPC`` followed by the character identifying the language to open
+``<f11> <f2> SPC`` followed by the character identifying the language to open
 the customization group for a specific language.
 For example, if you want to change the indentation style and width for your C++
-files, use the command associated to the ``<f11> <f1> SPC C`` key sequence.  This
+files, use the command associated to the ``<f11> <f2> SPC C`` key sequence.  This
 will open the PEL customization group for configuring C++ editing.  If point is
-already inside a buffer in C++ mode, then ``<f12> <f1>`` does the same.
+already inside a buffer in C++ mode, then ``<f12> <f2>`` does the same.
 
 After customizing something, you can type the ``q`` key to close  the
 customization buffer and come back where you were.  And to activate your changes
@@ -1684,6 +1692,14 @@ The customization include the ``pel-use-free-keys`` and ``pel-use-which-key``
 variables.  The latter is enabled by default; it help see the available bindings
 following key prefixes.
 
+You can also open the local copy of the  PDF *semi-quick* sheet file that
+describes the commands and key bindings accessible through a given key prefix by
+using the **F1** key inside that key prefix.
+For example, the PEL key prefix
+for help and information commands is **pel:help** bound to the ``<f11> ?`` key
+sequence.  To open the `HELP`_ PDF file, type ``<f11> ? <f1>``.
+Not all PEL key prefixes have this key, but most have.
+
 PEL Hide/Show Code Block Support
 --------------------------------
 
@@ -1829,7 +1845,7 @@ PEL provides a set of key-chords by default which you can modify via the Emacs
 customize buffer for the **pel-pkg-for-key-chord** customize group.  These also
 provide examples of how to specify your own key-chords or key-seqs.
 
-PEL provides the ``<f11> <f1> K`` key binding to quickly access this customize
+PEL provides the ``<f11> <f2> K`` key binding to quickly access this customize
 group and the ``<f11> M-K`` binding to toggle the key-chord-mode on and off.
 
 PEL defines several default key-chords that use Emacs Lisp lambda form. This is
@@ -2165,7 +2181,7 @@ PEL Navigation Support
 ----------------------
 
 :PDF Sheet: `Navigation`_.
-:PEL Customization: - Group: ``pel-pkg-for-navigation`` (``<f11> <f1> n``):
+:PEL Customization: - Group: ``pel-pkg-for-navigation`` (``<f11> <f2> n``):
 
                       - ``pel-use-any``
                       - ``pel-use-ace-link``
@@ -2394,7 +2410,7 @@ Emacs support, the integration of several Emacs library supporting Erlang and
 some PEL code.  PEL provides access to the Tempo skeleton and yasnippet_
 template text insertion systems.  PEL adds functionality to several of the
 Erlang skeletons, provides the ability to select several commenting styles via
-user option variables that can be customized (use the ``<f12> <f1>`` key from a
+user option variables that can be customized (use the ``<f12> <f2>`` key from a
 buffer in erlang major mode to quickly gain access to the buffer to see and/or
 change those variables).
 Refer to the `PEL Erlang PDF`_ document for more information.
@@ -2725,7 +2741,7 @@ Insert a C function definition block with the ``<f12> <f12> f`` key sequence.
 
 The function definition block style is selected by the
 ``pel-c-skel-function-define-style`` user option.  By default no style is
-selected.  Customize that variable first.  You can use the ``<f12> <f1>`` key
+selected.  Customize that variable first.  You can use the ``<f12> <f2>`` key
 sequence from a buffer in c-mode to open the PEL customization buffer for C,
 select the ``pel-c-code-style`` customization group and change the value of
 ``pel-c-skel-function-define-style``.
@@ -3947,7 +3963,7 @@ key                             binding
 ``<f11> w``                     pel:window
 ``<f11> x``                     pel:eXecute
 ``<f11> |``                     pel:scroll
-``<f11> <f1>``                  pel:config
+``<f11> <f2>``                  pel:config
 ``<f11> <f10>``                 pel:menu
 ``<f11> <f11>``                 **pel-toggle-frame-fullscreen**
 ``<f11> <f12>``                 **xterm-mouse-mode**
