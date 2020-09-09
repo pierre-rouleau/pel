@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, August 28 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-08-29 17:46:13, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-09 07:56:01, updated by Pierre Rouleau>
 
 ;;; ----------------------------------------------------------------------------
 ;;; Commentary:
@@ -24,13 +24,62 @@
 
 ;; Note: if you code depends on functions inside pel-skels-c.el or what it uses
 ;;       you won't need to write require forms to load them.  This is the case
-;;       in the example below.  You will need to add them if you get an error
-;;       when attempting to insert a function definition with your code. Put
-;;       those statements inside the Dependencies section below or use lazy
+;;       in the example below, however, it's a good idea to do it anyway to
+;;       document your dependencies.
+;;       For other PEL files or other libraries you need to write a require
+;;       statement for them.
+;;       Put those statements inside the Dependencies section below or use lazy
 ;;       require techniques written inside functions in a way similar to how PEL
 ;;       code is written (look for require forms that pass the :noerror argument).
 
-;; The example below create code that looks like this:
+;; The header block skeleton below creates code that looks like this:
+
+;;      /* test-custom.c : Testing the skeleton.
+;;      **
+;;      ** U-FooBar restricted an and confidential. Copyright © U-FooBar 2020.
+;;      ** Created   : Wednesday, September  9 2020.
+;;      ** Author    : Pierre Rouleau <prouleau001@gmail.com>
+;;      ** Time-stamp: <2020-09-09 07:48:55, updated by Pierre Rouleau>
+;;      */
+;;      /* -------------------------------------------------------------------------- */
+;;      /* Module Description
+;;      ** ------------------
+;;      **
+;;      **
+;;      **
+;;      */
+;;
+;;      /* -------------------------------------------------------------------------- */
+;;      /* Header Inclusion
+;;      ** ----------------
+;;      */
+;;
+;;
+;;
+;;      /* -------------------------------------------------------------------------- */
+;;      /* Local Types
+;;      ** -----------
+;;      */
+;;
+;;
+;;
+;;      /* -------------------------------------------------------------------------- */
+;;      /* Local Variables
+;;      ** ---------------
+;;      */
+;;
+;;
+;;
+;;      /* -------------------------------------------------------------------------- */
+;;      /* Code
+;;      ** ----
+;;      */
+;;
+;;
+;;
+;;      /* -------------------------------------------------------------------------- */
+
+;; The function skeleton example below create code that looks like this:
 ;;
 ;;      /* -------------------------------------------------------------------------- */
 ;;      /* =========================
@@ -52,7 +101,11 @@
 ;;; Dependencies:
 ;;
 ;;
-
+(require 'pel--base)                    ; use: pel-when-text-in
+(require 'pel-skels)                    ; use: pel-skel-....
+(require 'pel-text-insert)              ; use: pel-separator-line
+(require 'pel-prompt)                   ; use: pel-prompt-...
+(require 'pel-skels-c)                  ; use: pel-skels-c-function-def
 ;;; ----------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -88,7 +141,7 @@ The arguments are:
   ;; this let form creates and initializes the local variables
   (let* ((fct-name        (pel-prompt-function (function pel-valid-c-function-name)))
          (purpose         (pel-prompt-purpose-for "Function" 'p))
-         (c-style         (pel-c-style-comments-strings))
+         (c-style         (pel-skel-comments-strings))
          (cb              (nth 0 c-style))   ; comment begin: "/*" or "//"
          (cc              (nth 1 c-style))   ; comment continue: "**", " *" or "//"
          (ce              (nth 2 c-style))  ; comment end: "*/", " */",  or ""
