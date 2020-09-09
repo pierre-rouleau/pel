@@ -1468,7 +1468,7 @@ You can use one of the following:
   :group 'pel-generic-code-style
   :type '(choice
           (const  :tag "Default, controlled by PEL." nil)
-          (string :tag "Use your own, defined in file:")))
+          (string :tag "Use your own custom definition\n inside file")))
 
 
 (defcustom pel-generic-skel-insert-module-sections t
@@ -1692,7 +1692,7 @@ You can use one of the following:
   :group 'pel-c-code-style
   :type '(choice
           (const  :tag "Default, controlled by PEL." nil)
-          (string :tag "Use your own, defined in file:")))
+          (string :tag "Use your own custom definition\n inside file")))
 
 
 (defcustom pel-c-skel-insert-module-sections t
@@ -1795,7 +1795,7 @@ The choices are:
           (const :tag "Just code, no comment block." nil)
           (const :tag "Basic documentation block above function definition." basic-style)
           (const :tag "Man-page style documentation block above function definition." man-style)
-          (string :tag "Use your own, defined in file:")))
+          (string :tag "Use your own custom definition\n inside file")))
 
 (defcustom pel-c-skel-doc-markup nil
   "Specifies the documentation markup system used for C source code."
