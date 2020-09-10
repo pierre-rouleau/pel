@@ -2911,7 +2911,7 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:bookMark "s" #'bookmark-save)
 (define-key pel:bookMark "w" #'bookmark-write)
 (when pel-use-bm
-  (define-key pel:bookMark "t"  'bm-toggle) ; toggle visible bookmark
+  (define-key pel:bookMark "'"  'bm-toggle) ; toggle visible bookmark
   (define-key pel:bookMark "n"  'bm-next)
   (define-key pel:bookMark "p"  'bm-previous))
 
@@ -3547,12 +3547,14 @@ the ones defined from the buffer now."
      "https://raw.githubusercontent.com/pierre-rouleau/emacros/master/emacros.el"
      "emacros.el"))
   (use-package emacros
-    :commands (emacros-name-last-kbd-macro-add
-               emacros-execute-named-macro)
+    :commands emacros-load-macros
     :init
+    (add-hook 'find-file-hook 'emacros-load-macros)
+
     (define-key pel:emacros "="         'emacros-name-last-kbd-macro-add)
-    (define-key pel:emacros "e"         'emacros-execute-named-macro)
-    :config
+    (define-key pel:emacros "e"          'emacros-execute-named-macro)
+    (define-key pel:        (kbd "<f4>") 'emacros-execute-named-macro)
+    (define-key pel:emacros "?"         'emacros-show-macros)
     (define-key pel:emacros "r"         'emacros-refresh-macros)
     (define-key pel:emacros "n"         'emacros-rename-macro)
     (define-key pel:emacros "m"         'emacros-move-macro)
