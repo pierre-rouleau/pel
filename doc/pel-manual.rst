@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-08 07:54:00, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-10 22:41:31, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4105,15 +4105,19 @@ As PEL evolves, it will cover more topics, more
 programming languages, major modes and will integrate with more of the external
 Emacs packages and more tables will describe how to use them.
 
-Note:
-  The hyperlinks are not active when viewed through Github rendering.
-  They are active when rendered directly by a browser or a PDF viewer.
-
 PDF Document Tables
 ~~~~~~~~~~~~~~~~~~~
 
 The following *semi-quick* PDF sheets describe Emacs commands and key bindings
 as well as PEL extensions.
+
+Note:
+  Each PDF files has several hyperlinks. These hyperlinks are active
+  when the files are viewed through an OS-based or browser-based PDF viewer.
+  Firefox has one built-in.  One can be installed on Google Chrome.
+  The hyperlinks are not active when the files are viewed through the
+  Github PDF file rendering (for example, the `Github rendering of the Buffers PDF`_).
+
 
 - `Document Legend`_
 
@@ -4236,6 +4240,7 @@ as well as PEL extensions.
 .. _Auto-Completion:                          https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/auto-completion.pdf
 .. _Autosave & Backups:                       https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/autosave-backup.pdf
 .. _Bookmarks:                                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/bookmarks.pdf
+.. _Github rendering of the Buffers PDF:      pdf/buffers.pdf
 .. _Buffers:                                  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/buffers.pdf
 .. _Case Conversion:                          https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/case-conversion.pdf
 .. _Closing and Suspending:                   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/closing-suspending.pdf
