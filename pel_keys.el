@@ -1124,6 +1124,11 @@ Done in this function to allow advising libraries that remap these keys."
              c-toggle-hungry-state
              c-toggle-syntactic-indentation))
 
+(global-set-key (kbd "ESC <up>")    'windmove-up)
+(global-set-key (kbd "ESC <down>")  'windmove-down)
+(global-set-key (kbd "ESC <right>") 'windmove-right)
+(global-set-key (kbd "ESC <left>")  'windmove-left)
+
 (define-key pel: (kbd      "<f1>")         'pel-help-pdfs-dir)
 (define-key pel:           "#"             'pel-toggle-mac-numlock)
 (define-key pel:           "`"            #'overwrite-mode)
@@ -1178,6 +1183,10 @@ Done in this function to allow advising libraries that remap these keys."
   ;; without having to move through all intervening windows in current
   ;; frame.
   (when pel-use-framemove
+    (global-set-key  (kbd "ESC <S-up>")    'fm-up-frame)
+    (global-set-key  (kbd "ESC <S-down>")  'fm-down-frame)
+    (global-set-key  (kbd "ESC <S-right>") 'fm-right-frame)
+    (global-set-key  (kbd "ESC <S-left>")  'fm-left-frame)
     (define-key pel: (kbd  "<S-down>")     'fm-down-frame)
     (define-key pel: (kbd  "<S-up>")       'fm-up-frame)
     (define-key pel: (kbd  "<S-left>")     'fm-left-frame)
