@@ -1632,7 +1632,7 @@ Done in this function to allow advising libraries that remap these keys."
         (define-key pel:narrate "s" 'pel-say-sentence)
         (define-key pel:narrate "p" 'pel-say-paragraph)))))
 
-;; HYDRA: the pel-hydra-narrate is at the bottom of this file.
+;; HYDRA: pel-∑narrate is at the bottom of this file with all other PEL hydras.
 
 ;; -----------------------------------------------------------------------------
 ;; Utility function for mapping CC Mode keys
@@ -4435,8 +4435,7 @@ the ones defined from the buffer now."
         ("N" (progn
                (forward-sentence)
                (pel-forward-word-start))  "next sentence"     :column "Move to")
-        ("<f7>" nil                       "cancel"            :column "End")
-        ("q"    nil                       "cancel"            :column "End")))
+        ("<f7>" nil                       "cancel"            :column "End")))
 
     ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     ;; PEL HYDRA: Window Management
@@ -4492,7 +4491,6 @@ the ones defined from the buffer now."
       ("C-S-<left>"  pel-close-window-left       "left"       :column "Close 1")
       ("C-S-<right>" pel-close-window-right      "right"      :column "Close 1")
       ("?"           pel-toggle-hydra-hint       "hint"         :column "End")
-      ("q"           nil                         "cancel"       :column "End")
       ("<f7>"        nil                         "cancel"       :column "End"))
 
     ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -4532,7 +4530,6 @@ the ones defined from the buffer now."
       ("4" pel-hide-level-4            ">= 4")
       (">" pel-hs-hide-block-below-inc "+1" :column "Hide levels:")
       ("<" pel-hs-hide-block-below-dec "-1")
-      ("q" nil                         "cancel" :column "End")
       ("<f7>" nil                      "cancel" :column "End"))
 
     ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
