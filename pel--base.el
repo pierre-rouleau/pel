@@ -117,7 +117,7 @@
 
 ;; -----------------------------------------------------------------------------
 ;;; Dependencies:
-(eval-when-compile (require 'subr-x))   ; use: split-string
+(eval-when-compile (require 'subr-x))   ; use: split-string, string-join
 
 ;; -----------------------------------------------------------------------------
 ;;; Code:
