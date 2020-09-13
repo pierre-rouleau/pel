@@ -467,7 +467,7 @@ Done in this function to allow advising libraries that remap these keys."
     ;; solution. So, as a compromise to delay the loading of windmove, just
     ;; defer it for a specific amount of time, and then schedule the setting of
     ;; the special binding when it is actually loaded.
-    :defer 5
+    :defer 1
     :config
     (cl-eval-when 'compile (require 'windmove nil :no-error))
     (declare-function windmove-default-keybindings "windmove")
@@ -3278,7 +3278,7 @@ the ones defined from the buffer now."
     (use-package flycheck-plantuml
       :ensure t
       :pin melpa
-      :defer 1
+      :defer 2
       :config
       (with-eval-after-load 'flycheck
         (require 'flycheck-plantuml)
@@ -4136,7 +4136,6 @@ the ones defined from the buffer now."
 ;; loaded right when Emacs is starting.
 (when pel-use-winner
   (use-package winner
-    :defer 2
     :commands (winner-undo winner-redo)
 
     :init
