@@ -530,79 +530,6 @@ Done in this function to allow advising libraries that remap these keys."
 ;; - try-expand-line
 
 ;; -----------------------------------------------------------------------------
-;; Visible Bookmark (bm.el)
-;; ------------------------
-(when pel-use-bm
-  ;; configure bm package to be loaded only on first use.
-  (use-package bm
-    :ensure t
-    :pin melpa
-    ;; bm must be started right away, otherwise F2 will be used for the 2-column
-    ;; mode and Emacs will not restore the bookmarks.  Just defer it.
-    :defer 1
-
-    :init
-    ;;  Prevent lint warnings using empty defvar
-    (defvar bm-restore-repository-on-load)
-    ;; Ensure that bm restores bookmark when it loads.
-    (setq bm-restore-repository-on-load t)
-
-    :config
-    (cl-eval-when 'compile (require 'bm nil :no-error))
-    ;;  Prevent lint warnings using empty defvar
-    ;; Allow cross-buffer 'next'
-    (pel-setq bm-cycle-all-buffers t)
-
-    ;; where to store persistent files
-    (pel-setq bm-repository-file "~/.emacs.d/bm-repository")
-
-    ;; save bookmarks
-    (pel-setq-default bm-buffer-persistence t)
-
-    ;; Loading the repository from file when on start up.
-    (add-hook 'after-init-hook 'bm-repository-load)
-
-    ;; prevent byte-compiler warnings
-    (declare-function bm-buffer-save      "bm")
-    (declare-function bm-buffer-save-all  "bm")
-    (declare-function bm-repository-save  "bm")
-    (declare-function bm-buffer-restore   "bm")
-
-    ;; Saving bookmarks
-    (add-hook 'kill-buffer-hook 'bm-buffer-save)
-
-    ;; Saving the repository to file when on exit.
-    ;; kill-buffer-hook is not called when Emacs is killed, so we
-    ;; must save all bookmarks first.
-    (add-hook 'kill-emacs-hook '(lambda nil
-                                  (bm-buffer-save-all)
-                                  (bm-repository-save)))
-
-    ;; The `after-save-hook' is not necessary to use to achieve persistence,
-    ;; but it makes the bookmark data in repository more in sync with the file
-    ;; state.
-    (add-hook 'after-save-hook 'bm-buffer-save)
-
-    ;; Restoring bookmarks
-    (add-hook 'find-file-hooks   'bm-buffer-restore)
-    (add-hook 'after-revert-hook 'bm-buffer-restore)
-
-    ;; The `after-revert-hook' is not necessary to use to achieve persistence,
-    ;; but it makes the bookmark data in repository more in sync with the file
-    ;; state. This hook might cause trouble when using packages
-    ;; that automatically reverts the buffer (like vc after a check-in).
-    ;; This can easily be avoided if the package provides a hook that is
-    ;; called before the buffer is reverted (like `vc-before-checkin-hook').
-    ;; Then new bookmarks can be saved before the buffer is reverted.
-    ;; Make sure bookmarks is saved before check-in (and revert-buffer)
-    (add-hook 'vc-before-checkin-hook 'bm-buffer-save)
-
-    ;; TODO?: find a better binding?
-    ;; A non conflicting, allowing function key to be used as prefix?
-    (global-set-key (kbd "<f2>")   'bm-next)
-    ))
-
-;; -----------------------------------------------------------------------------
 ;; Markup Language Support
 ;; --=====================
 
@@ -2919,10 +2846,86 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:bookMark "r" #'bookmark-rename)
 (define-key pel:bookMark "s" #'bookmark-save)
 (define-key pel:bookMark "w" #'bookmark-write)
+
+
+;; Visible Bookmark (bm.el)
+;; ------------------------
 (when pel-use-bm
-  (define-key pel:bookMark "'"  'bm-toggle) ; toggle visible bookmark
-  (define-key pel:bookMark "n"  'bm-next)
-  (define-key pel:bookMark "p"  'bm-previous))
+
+  ;; configure bm package to be loaded only on first use.
+  (use-package bm
+    :ensure t
+    :pin melpa
+    :commands (bm-next
+               bm-previous
+               bm-toggle)
+
+    :init
+    ;; TODO?: find a better binding?
+    ;; A non conflicting, allowing function key to be used as prefix?
+    (global-set-key (kbd "<f2>")   'bm-next)
+
+    (define-key pel:bookMark "'"  'bm-toggle) ; toggle visible bookmark
+    (define-key pel:bookMark "n"  'bm-next)
+    (define-key pel:bookMark "p"  'bm-previous)
+
+    ;;  Prevent lint warnings using empty defvar
+    (defvar bm-restore-repository-on-load)
+    ;; Ensure that bm restores bookmark when it loads.
+    (setq bm-restore-repository-on-load t)
+
+    :config
+    (cl-eval-when 'compile (require 'bm nil :no-error))
+    ;;  Prevent lint warnings using empty defvar
+    ;; Allow cross-buffer 'next'
+    (pel-setq bm-cycle-all-buffers t)
+
+    ;; where to store persistent files
+    (pel-setq bm-repository-file "~/.emacs.d/bm-repository")
+
+    ;; save bookmarks
+    (pel-setq-default bm-buffer-persistence t)
+
+    ;; Loading the repository from file when on start up.
+    (add-hook 'after-init-hook 'bm-repository-load)
+
+    ;; prevent byte-compiler warnings
+    (declare-function bm-buffer-save      "bm")
+    (declare-function bm-buffer-save-all  "bm")
+    (declare-function bm-repository-save  "bm")
+    (declare-function bm-buffer-restore   "bm")
+
+    ;; Saving bookmarks
+    (add-hook 'kill-buffer-hook 'bm-buffer-save)
+
+    ;; Saving the repository to file when on exit.
+    ;; kill-buffer-hook is not called when Emacs is killed, so we
+    ;; must save all bookmarks first.
+    (add-hook 'kill-emacs-hook '(lambda nil
+                                  (bm-buffer-save-all)
+                                  (bm-repository-save)))
+
+    ;; The `after-save-hook' is not necessary to use to achieve persistence,
+    ;; but it makes the bookmark data in repository more in sync with the file
+    ;; state.
+    (add-hook 'after-save-hook 'bm-buffer-save)
+
+    ;; Restoring bookmarks
+    (add-hook 'find-file-hooks   'bm-buffer-restore)
+    (add-hook 'after-revert-hook 'bm-buffer-restore)
+
+    ;; The `after-revert-hook' is not necessary to use to achieve persistence,
+    ;; but it makes the bookmark data in repository more in sync with the file
+    ;; state. This hook might cause trouble when using packages
+    ;; that automatically reverts the buffer (like vc after a check-in).
+    ;; This can easily be avoided if the package provides a hook that is
+    ;; called before the buffer is reverted (like `vc-before-checkin-hook').
+    ;; Then new bookmarks can be saved before the buffer is reverted.
+    ;; Make sure bookmarks is saved before check-in (and revert-buffer)
+    (add-hook 'vc-before-checkin-hook 'bm-buffer-save)
+
+
+    ))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> <tab>`` : indentation
