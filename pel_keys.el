@@ -4379,6 +4379,20 @@ the ones defined from the buffer now."
 ;; Hydra Definitions
 ;; =================
 ;;
+;; All PEL Hydras are invoked via the key <f7>.  The key typed right after f7
+;; determines what Hydra will be used. Therefore try to limit using the same
+;; keys inside the various PEL Hydras otherwise there won't be many keys to
+;; identify the exact Hydra to use.  For the moment most top left keys are used
+;; by the Window Hydra (pel-∑wnd), the other PEL Hydras use a secondary prefix
+;; key.
+;;
+;; Hydra auto-loading is controlled by the <f7> key. At first that key is mapped
+;; to execute `pel--load-hydra'. That function breaks this binding, load the
+;; hydra library, triggering the configuration of all PEL Hydras via the
+;; ```use-package hydra`` call.  Then it simulates a second <f7> key event to
+;; get the effect the user expects and then removes itself from Emacs.
+;;
+
 ;; TODO: might want to place the different hydras inside their own files and
 ;;       allow users to map them to some other bindings by using map references
 ;;       instead of having them hard coded like they are now.
@@ -4407,12 +4421,25 @@ the ones defined from the buffer now."
                  "Showing Hydra Hint"
                "Hiding Hint")))
 
+  (defun pel--load-hydra ()
+    "Load Hydra. Available once: destroys itself."
+    (interactive)
+    ;; remove the temporary global binding to f7
+    (global-unset-key (kbd "<f7>"))
+    (load-library "hydra")
+    ;; simulate f7 again so the user sees what he expects
+    (setq unread-command-events (listify-key-sequence (kbd "<f7>")))
+    ;; then get rid of this function.
+    (fmakunbound 'pel--load-hydra))
+
+  ;; temporary global binding that will be removed after
+  ;; being used once.
+  (global-set-key (kbd "<f7>") 'pel--load-hydra)
+
   (use-package hydra
     :ensure t
     :pin melpa
-
-    ;; Defer creation of Hydra key mappings to help speed startup.
-    :defer 2
+    :commands pel--load-hydra
 
     :config
     ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
