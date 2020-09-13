@@ -4397,6 +4397,17 @@ the ones defined from the buffer now."
 ;;       allow users to map them to some other bindings by using map references
 ;;       instead of having them hard coded like they are now.
 
+(defun pel--maybe-vline-mode ()
+      "Use vline-mode when available."
+      (interactive)
+      (if (and pel-use-vline (require 'vline nil :noerror))
+          (progn
+            (vline-mode (if vline-mode -1 +1))
+            (move-to-column (if selective-display
+                                (max 0 (- selective-display 1))
+                              0)))
+        (user-error "Command vline-mode is not available.  Customize pel-use-vline to t!")))
+
 (when pel-use-hydra
 
   (setq pel--cache-for-hydra-is-helpful nil)
@@ -4421,6 +4432,9 @@ the ones defined from the buffer now."
                  "Showing Hydra Hint"
                "Hiding Hint")))
 
+  ;; NOTE: pel--load-hydra is first globally bound to f7: see
+  ;;       the global-set-key statements below *after* the
+  ;;       use-package call.
   (defun pel--load-hydra ()
     "Load Hydra. Available once: destroys itself."
     (interactive)
@@ -4432,9 +4446,6 @@ the ones defined from the buffer now."
     ;; then get rid of this function.
     (fmakunbound 'pel--load-hydra))
 
-  ;; temporary global binding that will be removed after
-  ;; being used once.
-  (global-set-key (kbd "<f7>") 'pel--load-hydra)
 
   (use-package hydra
     :ensure t
@@ -4562,17 +4573,6 @@ the ones defined from the buffer now."
     ;; PEL HYDRA: Selective Display
     ;; Hide text based on indentation by column or indentation level.
 
-    (defun pel--maybe-vline-mode ()
-      "Use vline-mode when available."
-      (interactive)
-      (if (and pel-use-vline (require 'vline nil :noerror))
-          (progn
-            (vline-mode (if vline-mode -1 +1))
-            (move-to-column (if selective-display
-                                (max 0 (- selective-display 1))
-                              0)))
-        (user-error "Command vline-mode is not available.  Set pel-use-vline to t!")))
-
     (defhydra pel-⅀hide-indent (global-map "<f7> C-x $" :foreign-keys run)
       "Selective Display"
       ("<right>"   pel-selective-display-column-inc  "+1"   :column "By Column")
@@ -4589,7 +4589,17 @@ the ones defined from the buffer now."
       ("S-<left>"
        pel-selective-display-indent-dec        "-indent" :column "By Indent")
       ("|"      pel--maybe-vline-mode "rightmost visible limit" :column "Show")
-      ("<f7>"      nil                           "cancel"      :column "End"))))
+      ("<f7>"      nil                           "cancel"      :column "End")))
+
+  ;; Temporary global binding that will be removed after
+  ;; being used once.  If located above the use-package
+  ;; statements this global-set-key statement provokes use-package
+  ;; errors stating that f7 is not a prefix key, but by the
+  ;; time the defhydra statements are executed, f7 is no longer
+  ;; mapped to anything and can be used as a prefix.
+  ;; So the statement is located after, preventing the compiler from seeing
+  ;; it and preventing the invalid use-package error reporting.
+  (global-set-key (kbd "<f7>") 'pel--load-hydra))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel_keys)
