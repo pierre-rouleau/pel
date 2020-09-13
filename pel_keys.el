@@ -359,7 +359,7 @@ Done in this function to allow advising libraries that remap these keys."
 (when pel-use-dired-x
   (add-hook 'dired-load-hook
             (lambda ()
-              (load "dired-x" :noerror))))
+              (load "dired-x" :noerror :nomessage))))
 
 ;; Open files with OS-registered applications from Dired
 ;; -----------------------------------------------------
