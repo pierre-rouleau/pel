@@ -2152,7 +2152,18 @@ This is meant to be used in the d-mode hook lambda."
     (define-key prefix (kbd "M-I")  'parinfer-toggle-mode))
   (when pel-use-rainbow-delimiters
     (define-key prefix (kbd "M-r")  'rainbow-delimiters-mode))
-  (define-key prefix   (kbd "M-s")  #'semantic-mode))
+  (define-key prefix   (kbd "M-s")  #'semantic-mode)
+  (when pel-use-lispy
+    (define-key pel:for-elisp (kbd "M-L") 'lispy-mode)))
+
+(when pel-use-lispy
+  (use-package lispy
+    :ensure t
+    :pin melpa
+    :commands lispy-mode
+
+    :init
+    (cl-eval-when 'compile (require 'lispy nil :no-error))))
 
 ;; ----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC l`` : Emacs Lisp programming

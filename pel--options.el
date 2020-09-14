@@ -87,10 +87,18 @@
 ;;         - pel-pkg-for-graphviz-dot
 ;;     - pel-pkg-for-spelling
 ;;
-;;; Code:
+
+;; Naming conventions:
+;;
+;; - pel-pkg-for-<package-name or topic>
+;; - pel-use-<package name>
+;; - pel-modes-activating-<package name>
 
 
 ;; -----------------------------------------------------------------------------
+;;; Code:
+
+
 ;; Validation Utilities
 ;; --------------------
 
@@ -1518,7 +1526,6 @@ Empty strings can be used to specify section with a tempo marker with no text."
     :group 'pel-pkg-for-applescript
     :type 'string))
 
-
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; CC Mode Language support
 ;; ------------------------
@@ -1689,7 +1696,6 @@ You can use one of the following:
   :type '(choice
           (const  :tag "Default, controlled by PEL." nil)
           (string :tag "Use your own custom definition\n inside file")))
-
 
 (defcustom pel-c-skel-insert-module-sections t
   "Specifies whether code sections are inserted inside C file comment block.
@@ -1973,6 +1979,30 @@ by the `pel-use-d-ac-dcd'."
   :group 'pel-pkg-for-d
   :type 'boolean
   :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Lisp-like language support
+;; --------------------------
+;;
+;; The group pel-pkg-for-lisp has settings for tools that can be used for
+;; several Lisp-like programming languages like Eamcs-Lisp. Common-Lisp,
+;; Clojure, Scheme, LFE, etc...
+
+(defgroup pel-pkg-for-lisp nil
+  "PEL customization for tools supporting LISP-like programming languages."
+  :group 'pel-pkg-for-programming)
+
+(defcustom pel-use-lispy nil
+  "Control whether PEL uses the lispy package."
+  :type 'boolean
+  :safe #'booleanp
+  :link `(url-link :tag "abo-abo lispy" "https://github.com/abo-abo/lispy"))
+
+(defcustom pel-modes-activating-lispy  nil
+  "List of major modes that automatically activate lispy-mode."
+  :group 'pel-pkg-for-lisp
+    :type
+  '(repeat symbol))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Emacs Lisp Support
