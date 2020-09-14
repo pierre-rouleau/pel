@@ -4605,7 +4605,8 @@ the ones defined from the buffer now."
   ;; mapped to anything and can be used as a prefix.
   ;; So the statement is located after, preventing the compiler from seeing
   ;; it and preventing the invalid use-package error reporting.
-  (global-set-key (kbd "<f7>") 'pel--load-hydra))
+  (when (fboundp 'pel--load-hydra)
+    (global-set-key (kbd "<f7>") 'pel--load-hydra)))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel_keys)
