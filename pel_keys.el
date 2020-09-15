@@ -142,8 +142,8 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   "Assign the <f12>/<M-f12> or <f12>/<M-f12> KEY to PREFIX."
   (if key
       (progn
-          (local-set-key (kbd (format "<f12> %s" key))   prefix)
-          (local-set-key (kbd (format "<M-f12> %s" key)) prefix))
+        (local-set-key (kbd (format "<f12> %s" key))   prefix)
+        (local-set-key (kbd (format "<M-f12> %s" key)) prefix))
     (local-set-key (kbd "<f12>")   prefix)
     (local-set-key (kbd "<M-f12>") prefix)))
 
@@ -167,7 +167,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
     :pin melpa
     :commands popup-kill-ring
     :init
-      (cl-eval-when 'compile (require 'popup-kill-ring nil :no-error))))
+    (cl-eval-when 'compile (require 'popup-kill-ring nil :no-error))))
 
 ;; -----------------------------------------------------------------------------
 ;; - PEL Modifier keys on different OS
@@ -2154,16 +2154,32 @@ This is meant to be used in the d-mode hook lambda."
     (define-key prefix (kbd "M-r")  'rainbow-delimiters-mode))
   (define-key prefix   (kbd "M-s")  #'semantic-mode)
   (when pel-use-lispy
-    (define-key pel:for-elisp (kbd "M-L") 'lispy-mode)))
+    (define-key prefix (kbd "M-L") 'lispy-mode)
+    (define-key prefix "1"         'lispy-describe-inline)
+    (define-key prefix "2"         'lispy-arglist-inline)
+    (define-key prefix "3"         'lispy-right)
+    (define-key prefix "4"         'lispy-x)
+    (define-key prefix "7"         'lispy-cursor-down)
+    (define-key prefix "8"         'lispy-parens-down)
+    (define-key prefix "9"         'lispy-out-forward-newline)))
 
 (when pel-use-lispy
-  (use-package lispy
-    :ensure t
-    :pin melpa
-    :commands lispy-mode
+  (use-package pel-lispy
+    ;; :ensure t
+    ;; :pin melpa
+    :commands (lispy-mode
+               lispy-describe-inline
+               lispy-arglist-inline
+               lispy-right
+               lispy-x
+               lispy-cursor-down
+               lispy-parens-down
+               lispy-out-forward-newline)
+    ;; TODO: restrict the number of commands here and inside pel--lispy-map-for
+
 
     :init
-    (cl-eval-when 'compile (require 'lispy nil :no-error))))
+    (cl-eval-when 'compile (require 'pel-lispy nil :no-error))))
 
 ;; ----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC l`` : Emacs Lisp programming
@@ -4452,14 +4468,16 @@ the ones defined from the buffer now."
   ;; NOTE: pel--load-hydra is first globally bound to f7: see
   ;;       the global-set-key statements below *after* the
   ;;       use-package call.
-  (defun pel--load-hydra ()
-    "Load Hydra. Available once: destroys itself."
+  (defun pel--load-hydra (&optional dont-simulate)
+    "Load Hydra. Available once: destroys itself.
+Simulate a F7 prefix key unless DONT-SIMULATE is non-nil."
     (interactive)
     ;; remove the temporary global binding to f7
     (global-unset-key (kbd "<f7>"))
     (load-library "hydra")
-    ;; simulate f7 again so the user sees what he expects
-    (setq unread-command-events (listify-key-sequence (kbd "<f7>")))
+    (unless dont-simulate
+      ;; simulate f7 again so the user sees what he expects
+      (setq unread-command-events (listify-key-sequence (kbd "<f7>"))))
     ;; then get rid of this function.
     (fmakunbound 'pel--load-hydra))
 
