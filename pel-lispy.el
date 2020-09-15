@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, September 14 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-15 00:11:19, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-15 09:23:40, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -39,13 +39,16 @@
 ;;
 ;; This pel-lispy module exists solely to handle this problem since lispy loads
 ;; hydra. All it does is run `pel--load-hydra' if it is still available and then
-;; load lispy.
+;; load lispy. This prevents the generation of a warning that would have shown
+;; up otherwise.
 
-
-;;; ----------------------------------------------------------------------------
+;; -----------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-;;
+;; The function `pel--load-hydra' is defined in pel_keys.el, which has been
+;; loaded by the time pel-lispy is loaded.  Since we need to check if
+;; `pel--load-hydra' still exists to call it, the `fboundp' check does what is
+;; needed.
 
 ;;; ----------------------------------------------------------------------------
 ;;; Code:

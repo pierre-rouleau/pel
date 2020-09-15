@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-10 22:41:31, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-15 14:58:10, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5135,6 +5135,7 @@ helm_                         MELPA_
 `hide-comnt.el`_              Emacsmirror_
 highlight-defined_            MELPA_
 `hydra`_                      MELPA_
+iedit_                        MELPA_
 ivy_                          MELPA_
 julia-mode_                   MELPA_
 julia-snail_                  MELPA_
@@ -5143,6 +5144,7 @@ key-chord_                    MELPA_
 key-seq_                      MELPA_
 lfe-mode_                     MELPA_
 lice_                         MELPA_
+lispy_                        MELPA_
 macrostep_                    MELPA_
 multiple-cursors_             MELPA_
 Magit_                        MELPA_
@@ -5248,6 +5250,7 @@ when running Emacs 27.1 and later versions.
 .. _highlight-defined:         https://melpa.org/#/highlight-defined
 .. _helm:                      https://melpa.org/#/helm-core
 .. _hydra:                     https://melpa.org/#/hydra
+.. _iedit:                     https://melpa.org/#/iedit
 .. _ivy:                       https://melpa.org/#/ivy
 .. _julia-mode:                https://melpa.org/#/julia-mode
 .. _julia-snail:               https://melpa.org/#/julia-snail
@@ -5256,6 +5259,7 @@ when running Emacs 27.1 and later versions.
 .. _key-seq:                   https://melpa.org/#/key-seq
 .. _lfe-mode:                  https://melpa.org/#/lfe-mode
 .. _lice:                      https://melpa.org/#/lice
+.. _lispy:                     https://melpa.org/#/lispy
 .. _macrostep:                 https://melpa.org/#/macrostep
 .. _multiple-cursors:          https://melpa.org/#/multiple-cursors
 .. _neotree:                   https://melpa.org/#/neotree

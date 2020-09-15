@@ -905,6 +905,47 @@ Done in this function to allow advising libraries that remap these keys."
 (global-set-key [(end)]  'pel-end)
 
 ;; -----------------------------------------------------------------------------
+;; Conflict Checking
+;; -----------------
+
+;; - Flyspell and iedit
+;;   -----------------
+;;
+;; flyspell binds the key identified by the user option
+;; `flyspell-auto-correct-binding' to the command
+;; `flyspell-auto-correct-previous-word' .
+;; By default the key is (kbd "C-;").
+;; There's 2 problems:
+;; 1) that key is not available in terminal mode for such a useful command,
+;; 2) iedit-mode default key is also (kbd "C-;") as identified by its user option
+;;    `iedit-toggle-key-default'.  iedit-mode checks if something else is mapping it
+;;    but flyspell is activated lazily per mode, so iedit check never detects
+;;    the conflicting binding.
+;; There's no easy automatic solution for this, aside from checking for the
+;; conflict here and changing one of the user options.  Remember that user option
+;; variables are only available when their relative feature (file) has been
+;; loaded, which means that the check must be done when flyspell-mode is
+;; activated.  The code below perform the check when the modes are activated.
+
+(defun pel--check-flyspell-iedit-conflict ()
+  "Check for key binding conflict between flyspell and iedit.
+Warn user if necessary."
+  (when (and (boundp 'iedit-toggle-key-default)
+             (boundp 'flyspell-auto-correct-binding)
+             (string= (key-description iedit-toggle-key-default)
+                      (key-description flyspell-auto-correct-binding)))
+    (display-warning
+     :warning
+     (format "Both iedit and flyspell bind functions to \"%s\"!\n\
+To use this key, change the key selected in one of the following \n\
+user options:\n\
+- `iedit-toggle-key-default'
+- `flyspell-auto-correct-binding'
+
+Then save your changes."
+             (key-description flyspell-auto-correct-binding)))))
+
+;; -----------------------------------------------------------------------------
 ;; - Cursor Keys
 ;; -------------
 
@@ -1077,10 +1118,20 @@ Done in this function to allow advising libraries that remap these keys."
 (define-key pel: (kbd      "<M-right>")    'pel-forward-syntaxchange-start)
 (define-key pel: (kbd      "<M-left>")     'pel-backward-syntaxchange-start)
 (define-key pel: (kbd      "0")           #'hl-line-mode)
+
+(when (or pel-use-iedit pel-use-lispy)
+  (use-package iedit
+    :ensure t
+    :pin melpa
+    :commands iedit-mode
+    :init
+    (define-key pel: "e" 'iedit-mode)
+    :config
+    (pel--check-flyspell-iedit-conflict)))
+
 (when (and pel-use-popup-kill-ring
            (display-graphic-p))
   (define-key pel:         "y"             'popup-kill-ring))
-
 
 (when pel-use-smart-dash
   (use-package smart-dash
@@ -1269,7 +1320,7 @@ Done in this function to allow advising libraries that remap these keys."
     (pel--cfg-pkg "buffer"  pel:cfg "b" "rainbow-delimiters" "vline" "nhexl" "fill-column-indicator")
   (pel--cfg-pkg "buffer"    pel:cfg "b" "rainbow-delimiters" "vline" "nhexl"))
 (pel--cfg-pkg "bookmark"    pel:cfg "'")
-(pel--cfg-pkg "cursor"      pel:cfg "_")
+(pel--cfg-pkg "cursor"      pel:cfg "_" "iedit" "multiple-cursors")
 (pel--cfg-pkg "completion"  pel:cfg "c")
 (pel--cfg-pkg "dired"       pel:cfg "d" "dired")
 (pel--cfg-pkg "filemng"     pel:cfg "f" "files")
@@ -1302,12 +1353,6 @@ Done in this function to allow advising libraries that remap these keys."
 (pel--cfg-pkg "reST"         pel:cfg-pl "r" "rst")
 (pel--cfg-pkg "plantuml"     pel:cfg-pl "u" "plantuml-mode")
 
-(dolist (mode pel-modes-activating-flyspell-mode)
-  (when mode
-    (add-hook (pel-hook-symbol-for mode) (lambda () (flyspell-mode 1)))))
-(dolist (mode pel-modes-activating-flyspell-prog-mode)
-  (when mode
-    (add-hook (pel-hook-symbol-for mode) (lambda () (flyspell-prog-mode)))))
 
 ;; --
 
@@ -2249,7 +2294,7 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:elisp-debug "D" #'cancel-debug-on-entry)
 (define-key pel:elisp-debug "!" #'toggle-debug-on-error)
 (define-key pel:elisp-debug ")" #'toggle-debug-on-quit)
-(define-key pel:elisp-debug "e" #'edebug-defun)
+(define-key pel:elisp-debug "e"  'edebug-defun)
 
 (define-pel-global-prefix pel:elisp-eval (kbd "<f11> SPC l e"))
 (define-key pel:elisp-eval "b" #'eval-buffer)
@@ -2837,7 +2882,6 @@ This is meant to be used in the d-mode hook lambda."
     :init
     (cl-eval-when 'compile (require 'popup nil :no-error))))
 
-
 (define-pel-global-prefix pel:spell (kbd "<f11> $"))
 ;;
 (autoload 'ispell-check-version "ispell")
@@ -2855,6 +2899,32 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:spell "m" #'ispell-message)
 (define-key pel:spell "r" #'ispell-region)
 (define-key pel:spell "v" #'ispell-check-version)
+
+(defun pel-flyspell-auto-correct-previous-word (position)
+  "Flyspell previous word if flyspell mode is active.
+See `flyspell-auto-correct-previous-word' for more info."
+  (interactive "d")
+  (if (and (fboundp 'flyspell-auto-correct-previous-word)
+           (or (and (boundp 'flyspell-mode) flyspell-mode)
+               (and (boundp 'flyspell-prog-mode) flyspell-prog-mode)))
+      (flyspell-auto-correct-previous-word position)
+    (user-error "Activate flyspell first!")))
+(define-key pel: "\\"  'pel-flyspell-auto-correct-previous-word)
+
+;;Activate Flyspell for modes identified by PEL customization
+;;
+(dolist (mode pel-modes-activating-flyspell-mode)
+  (when mode
+    (add-hook (pel-hook-symbol-for mode)
+              (lambda ()
+                (flyspell-mode 1)
+                (pel--check-flyspell-iedit-conflict)))))
+(dolist (mode pel-modes-activating-flyspell-prog-mode)
+  (when mode
+    (add-hook (pel-hook-symbol-for mode)
+              (lambda ()
+                (flyspell-prog-mode)
+                (pel--check-flyspell-iedit-conflict)))))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> '`` : bookmark commands
@@ -3620,16 +3690,18 @@ the ones defined from the buffer now."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> m`` : Multiple Cursors
 
-(when pel-use-multiple-cursors
+(when (or pel-use-multiple-cursors pel-use-iedit pel-use-lispy)
   (define-pel-global-prefix pel:mcursors (kbd "<f11> m"))
   (define-key pel:mcursors (kbd "<f1>") 'pel-help-pdf)
-
-  (use-package multiple-cursors
-    :ensure t
-    :pin melpa
-    :commands mc/edit-lines
-    :init
-    (define-key pel:mcursors "m" 'mc/edit-lines)))
+  (when pel-use-multiple-cursors
+    (use-package multiple-cursors
+      :ensure t
+      :pin melpa
+      :commands mc/edit-lines
+      :init
+      (define-key pel:mcursors "m" 'mc/edit-lines)))
+  (when (or pel-use-iedit pel-use-lispy)
+    (define-key pel:mcursors "i" 'iedit-mode)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> o`` : ordering (sorting)
@@ -4343,7 +4415,7 @@ the ones defined from the buffer now."
 (define-pel-global-prefix pel:xref    (kbd "<f11> X"))
 (define-key pel:xref (kbd "<f1>") 'pel-help-pdf)
 (define-key pel:xref "." #'xref-find-apropos)
-(define-key pel:xref "X" #'xref-etags-mode)
+(define-key pel:xref "X"  'xref-etags-mode)
 (define-key pel:xref "?" #'pel-show-etags-mode-status)
 (define-key pel:help "X" #'pel-show-etags-mode-status) ; pel:help key
 (define-key pel:xref "T"  'visit-tags-table)

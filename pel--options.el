@@ -199,11 +199,20 @@ These only take effect when Emacs is running in graphics mode."
           (const :tag "hollow" hollow)))
 
 (defcustom pel-use-multiple-cursors nil
-  "Control whether PEL uses the multiple cursors package.
-See URL `https://github.com/magnars/multiple-cursors.el'."
+  "Control whether PEL uses the multiple cursors package."
   :group 'pel-pkg-for-cursor
   :type 'boolean
-  :safe #'booleanp)
+  :safe #'booleanp
+  :link `(url-link :tag "multiple-cursors @ github"
+                   "https://github.com/magnars/multiple-cursors.el"))
+
+(defcustom pel-use-iedit nil
+  "Control whether PEL uses the iedit package."
+  :group 'pel-pkg-for-cursor
+  :type 'boolean
+  :safe #'booleanp
+  :link `(url-link :tag "iedit @ github"
+                   "https://github.com/victorhge/iedit"))
 
 ;; -----------------------------------------------------------------------------
 ;; pel-pkg-for-dired
