@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, September 14 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-16 00:15:20, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-16 17:51:24, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -84,6 +84,33 @@ This PEL function acts as a proxy to the real function
              (boundp  'lispy-mode))
         (lispy-mode (if lispy-mode -1 1))
       (error "Failed to load lispy!"))))
+
+(defun pel-lpy-mode ()
+  "Activate (then toggle) lpy mode.
+This PEL function acts as a proxy to the real function
+`lpy-mode' to ensure that the PEL setup is taken into account."
+  (interactive)
+  ;; If Hydra setup was not completed, complete it and then load lpy
+  (if (fboundp 'pel--load-hydra)
+      (progn
+        ;; Set up PEL Hydra, removing the global F7 key.
+        (pel--load-hydra :no-request)
+        ;; then install lpy if it is not already installed
+        (when (fboundp 'package-installed-p)
+          (unless (package-installed-p 'lpy)
+            (package-refresh-contents)
+            (package-install 'lpy)))
+        ;; load lpy
+        (load "lpy")
+        ;; and activate the lpy-mode
+        (if (fboundp 'lpy-mode)
+            (lpy-mode 1)
+          (error "Failed to load lpy!")))
+    ;; All other times, just toggle the lpy-mode
+    (if (and (fboundp 'lpy-mode)
+             (boundp  'lpy-mode))
+        (lpy-mode (if lpy-mode -1 1))
+      (error "Failed to load lpy!"))))
 
 ;;; ----------------------------------------------------------------------------
 (provide 'pel-lispy)

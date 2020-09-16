@@ -2513,6 +2513,16 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
   :type 'integer
   :safe 'pel-indent-valid-p)
 
+(defcustom pel-use-lpy nil
+  "Control whether PEL supports lpy package.
+The lpy package provides lispy-style modal editing for Python.
+Note: `pel-use-python' must be t for this to be effective."
+  :group 'pel-pkg-for-python
+  :type 'boolean
+  :safe #'booleanp
+  :link `(url-link :tag "lpy @ github"
+                   "https://github.com/abo-abo/lpy"))
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; REXX Support
 ;; ------------

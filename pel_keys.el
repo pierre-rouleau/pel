@@ -2376,7 +2376,16 @@ This is meant to be used in the d-mode hook lambda."
   ;; activate the <f12> key binding for python-mode
   (pel--mode-hook-maybe-call
    (function pel--setup-for-python)
-   'python-mode 'python-mode-hook))
+   'python-mode 'python-mode-hook)
+
+  ;; lpy-mode: modal editing for Python.
+  (when pel-use-lpy
+    (use-package pel-lispy
+      :commands pel-lpy-mode
+      :init
+      (define-key pel:for-python (kbd "M-L") 'pel-lpy-mode)
+      (define-key pel:for-python "1"         'lispy-describe-inline)
+      (define-key pel:for-python "2"         'lispy-arglist-inline))))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC R`` : REXX programming
