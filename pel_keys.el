@@ -1344,17 +1344,16 @@ Then save your changes."
 (pel--cfg-pkg "c"            pel:cfg-pl "c" "c")
 (pel--cfg-pkg "c++"          pel:cfg-pl "C" "cpp")
 (pel--cfg-pkg "d"            pel:cfg-pl "D" "d-mode")
-(pel--cfg-pkg "elisp"        pel:cfg-pl "l" "lisp" "elint" "eldoc")
+(pel--cfg-pkg "elisp"        pel:cfg-pl "l" "lisp" "elint" "eldoc" "lispy")
 (pel--cfg-pkg "elixir"       pel:cfg-pl "x" "alchemist" "alchemist-iex")
 (pel--cfg-pkg "erlang"       pel:cfg-pl "e" "erlang" "erldoc" "edts" "auto-highlight-symbol")
 (pel--cfg-pkg "forth"        pel:cfg-pl "f")
 (pel--cfg-pkg "graphviz-dot" pel:cfg-pl "g" "graphviz")
 (pel--cfg-pkg "julia"        pel:cfg-pl "j" "julia" "julia-mode" "julia-snail")
-(pel--cfg-pkg "lisp"         pel:cfg-pl "L" "lisp")
+(pel--cfg-pkg "lisp"         pel:cfg-pl "L" "lisp" "lispy")
 (pel--cfg-pkg "python"       pel:cfg-pl "p" "python" "python-flymake")
 (pel--cfg-pkg "reST"         pel:cfg-pl "r" "rst")
 (pel--cfg-pkg "plantuml"     pel:cfg-pl "u" "plantuml-mode")
-
 
 ;; --
 
