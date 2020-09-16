@@ -892,7 +892,6 @@ Done in this function to allow advising libraries that remap these keys."
 (global-set-key (kbd "<C-right>") 'pel-forward-token-start)
 (global-set-key (kbd "<C-left>")  'pel-backward-token-start)
 
-
 ;; - Navigate to beginning/end of line/window/buffer
 ;; -------------------------------------------------
 ;;
@@ -903,6 +902,9 @@ Done in this function to allow advising libraries that remap these keys."
 ;;
 (global-set-key [(home)] 'pel-home)
 (global-set-key [(end)]  'pel-end)
+
+;; Navigating through Sexp/blocks (not normally bound by Emacs)
+(global-set-key (kbd "C-M-]") 'up-list)
 
 ;; -----------------------------------------------------------------------------
 ;; Conflict Checking
@@ -2199,7 +2201,7 @@ This is meant to be used in the d-mode hook lambda."
     (define-key prefix (kbd "M-r")  'rainbow-delimiters-mode))
   (define-key prefix   (kbd "M-s")  #'semantic-mode)
   (when pel-use-lispy
-    (define-key prefix (kbd "M-L") 'lispy-mode)
+    (define-key prefix (kbd "M-L") 'pel-lispy-mode)
     (define-key prefix "1"         'lispy-describe-inline)
     (define-key prefix "2"         'lispy-arglist-inline)
     (define-key prefix "3"         'lispy-right)
@@ -2210,19 +2212,9 @@ This is meant to be used in the d-mode hook lambda."
 
 (when pel-use-lispy
   (use-package pel-lispy
-    ;; :ensure t
-    ;; :pin melpa
-    :commands (lispy-mode
+    :commands (pel-lispy-mode
                lispy-describe-inline
-               lispy-arglist-inline
-               lispy-right
-               lispy-x
-               lispy-cursor-down
-               lispy-parens-down
-               lispy-out-forward-newline)
-    ;; TODO: restrict the number of commands here and inside pel--lispy-map-for
-
-
+               lispy-arglist-inline)
     :init
     (cl-eval-when 'compile (require 'pel-lispy nil :no-error))))
 

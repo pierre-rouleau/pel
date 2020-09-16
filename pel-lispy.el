@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, September 14 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-15 09:23:40, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-16 00:15:20, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -55,12 +55,35 @@
 ;;
 
 (when (fboundp 'pel--load-hydra)
-  (pel--load-hydra :no-request))
+  (pel--load-hydra :no-request)
+  (require 'lispy nil :noerror))
 
-;; During the build's byte-compilation, require will fail because the build
-;; is done without any init.el.  That is OK, though: all that really matters
-;; is that the require loads lispy when Emacs is using PEL.
-(require 'lispy nil :noerror)
+(defun pel-lispy-mode ()
+  "Activate (then toggle) lispy mode.
+This PEL function acts as a proxy to the real function
+`lispy-mode' to ensure that the PEL setup is taken into account."
+  (interactive)
+  ;; If Hydra setup was not completed, complete it and then load lispy
+  (if (fboundp 'pel--load-hydra)
+      (progn
+        ;; Set up PEL Hydra, removing the global F7 key.
+        (pel--load-hydra :no-request)
+        ;; then install lispy if it is not already installed
+        (when (fboundp 'package-installed-p)
+          (unless (package-installed-p 'lispy)
+            (package-refresh-contents)
+            (package-install 'lispy)))
+        ;; load lispy
+        (load "lispy")
+        ;; and activate the lispy-mode
+        (if (fboundp 'lispy-mode)
+            (lispy-mode 1)
+          (error "Failed to load lispy!")))
+    ;; All other times, just toggle the lispy-mode
+    (if (and (fboundp 'lispy-mode)
+             (boundp  'lispy-mode))
+        (lispy-mode (if lispy-mode -1 1))
+      (error "Failed to load lispy!"))))
 
 ;;; ----------------------------------------------------------------------------
 (provide 'pel-lispy)
