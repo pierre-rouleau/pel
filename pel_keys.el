@@ -650,36 +650,7 @@ Done in this function to allow advising libraries that remap these keys."
 ;; -----------------------------------
 ;; - Programming Style: Python Support
 ;; -----------------------------------
-(when pel-use-python                    ; TODO: complete this
-  (use-package elpy
-    :ensure t
-    :pin melpa
-    :defer t
-    :init
-      (cl-eval-when 'compile (require 'elpy nil :no-error)))
-  ;; Normally, (python-shell-prompt-detect) should
-  ;; evaluate to (">>> " "... " "")
-  ;; for Python shell to work properly.
-  ;; Under Windows, that is currently not the
-  ;; case for my system (but also others as described by
-  ;;  https://github.com/jorgenschaefer/elpy/issues/733)
-  ;; I investigated and a work-around is to set python-shell-unbuffered to nil.
-  ;; So I attempt to do this here to see if that works when launching emacs.
-  ;;
-  ;; There is another, remaining problem: the "native" python completion does
-  ;; not work on Windows because of its lack of proper PTY (pseudo terminal).
-  ;; Therefore, in Windows, "python" should be added to the list bounded to
-  ;; python-shell-completion-native-disabled-interpreters.
-  ;;
-  ;; The code below does both for Windows.
-  (when pel-system-is-windows-p
-    (defvar python-shell-unbuffered)
-    (defvar python-shell-completion-native-disabled-interpreters)
-    (setq python-shell-unbuffered nil)
-    (if (boundp 'python-shell-completion-native-disabled-interpreters)
-        (add-to-list
-         'python-shell-completion-native-disabled-interpreters "python")
-      (setq python-shell-completion-native-disabled-interpreters '("python")))))
+
 
 ;; - Programming Style: Rust & Cargo Support
 ;; -----------------------------------------
@@ -2358,6 +2329,37 @@ This is meant to be used in the d-mode hook lambda."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC p`` : Python programming utilities
 (when pel-use-python
+
+  (use-package elpy
+    :ensure t
+    :pin melpa
+    :defer t
+    :init
+    (cl-eval-when 'compile (require 'elpy nil :no-error)))
+
+  ;; Normally, (python-shell-prompt-detect) should evaluate to
+  ;; (">>> " "... " "") for Python shell to work properly.
+  ;; Under Windows, that is currently not the
+  ;; case for my system (but also others as described by
+  ;;  https://github.com/jorgenschaefer/elpy/issues/733)
+  ;; I investigated and a work-around is to set python-shell-unbuffered to nil.
+  ;; So I attempt to do this here to see if that works when launching emacs.
+  ;;
+  ;; There is another, remaining problem: the "native" python completion does
+  ;; not work on Windows because of its lack of proper PTY (pseudo terminal).
+  ;; Therefore, in Windows, "python" should be added to the list bounded to
+  ;; python-shell-completion-native-disabled-interpreters.
+  ;;
+  ;; The code below does both for Windows.
+  (when pel-system-is-windows-p
+    (defvar python-shell-unbuffered)
+    (defvar python-shell-completion-native-disabled-interpreters)
+    (setq python-shell-unbuffered nil)
+    (if (boundp 'python-shell-completion-native-disabled-interpreters)
+        (add-to-list
+         'python-shell-completion-native-disabled-interpreters "python")
+      (setq python-shell-completion-native-disabled-interpreters '("python"))))
+
 
   (defun pel--setup-for-python ()
     "Activate the python mode."
