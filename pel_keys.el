@@ -1318,6 +1318,7 @@ Then save your changes."
 (pel--cfg-pkg "julia"        pel:cfg-pl "j" "julia" "julia-mode" "julia-snail")
 (pel--cfg-pkg "lisp"         pel:cfg-pl "L" "lisp" "lispy")
 (pel--cfg-pkg "python"       pel:cfg-pl "p" "python" "python-flymake")
+(pel--cfg-pkg "rexx"         pel:cfg-pl "R")
 (pel--cfg-pkg "reST"         pel:cfg-pl "r" "rst")
 (pel--cfg-pkg "plantuml"     pel:cfg-pl "u" "plantuml-mode")
 
