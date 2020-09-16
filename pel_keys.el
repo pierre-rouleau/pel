@@ -647,11 +647,6 @@ Done in this function to allow advising libraries that remap these keys."
 ;; Installed it via the list-packages.
 ;; ; (add-hook 'haskell-mode-hook 'intero-mode)
 
-;; -----------------------------------
-;; - Programming Style: Python Support
-;; -----------------------------------
-
-
 ;; - Programming Style: Rust & Cargo Support
 ;; -----------------------------------------
 (when pel-use-rust                      ; TODO: complete this
