@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-15 14:58:10, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-16 23:14:35, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1213,6 +1213,13 @@ already inside a buffer in C++ mode, then ``<f12> <f2>`` does the same.
 After customizing something, you can type the ``q`` key to close  the
 customization buffer and come back where you were.  And to activate your changes
 then run ``pel-init`` by issuing the ``M-x pel-init`` command.
+
+Use Emacs customize data browser to see the customize data in a tree form.
+Type ``<f11> <f2> M-1`` to browse PEL's customize data tree.  Here's a snapshot
+of a portion of PEL's data tree:
+
+.. image:: res/pel-custom-tree.png
+
 
 See the `User Option Customization`_ *semi-quick* sheet for key bindings and the
 section titled `Activate PEL Features - Customize PEL`_ for relevant information.
