@@ -35,33 +35,26 @@
 ;; - pel
 ;;   - pel-base-emacs
 ;;   - pel-package-use
+;;     - pel-pkg-for-bookmarks
+;;     - pel-pkg-for-buffer
+;;     - pel-pkg-for-completion
 ;;     - pel-pkg-for-cursor
 ;;     - pel-pkg-for-dired
+;;     - pel-pkg-for-expand
 ;;     - pel-pkg-for-filemng
 ;;       - pel-pkg-for-ztree
 ;;     - pel-pkg-for-grep
-;;     - pel-pkg-for-key-chord
-;;   - pel-kbmacro
-;;     - pel-pkg-for-kbmacro
-;;     - pel-pkg-for-navigation
-;;     - pel-pkg-for-regexp
-;;     - pel-pkg-for-search
-;;     - pel-pkg-for-tags
-;;     - pel-pkg-for-window
-;;       - pel-pkg-for-speedbar
-;;       - pel-pkg-for-session
-;;     - pel-pkg-for-buffer
-;;     - pel-pkg-for-completion
 ;;     - pel-pkg-for-insertions
-;;     - pel-pkg-for-undo
-;;     - pel-pkg-for-parens
-;;     - pel-pkg-for-region
+;;     - pel-pkg-for-kbmacro
+;;     - pel-pkg-for-key-chord
 ;;     - pel-pkg-for-keys
-;;     - pel-pkg-for-expand
-;;     - pel-pkg-for-bookmarks
-;;     - pel-pkg-for-shells
-;;     - pel-pkg-for-vcs
-;;     - pel-pkg-for-project-mng
+;;     - pel-pkg-for-markup
+;;       - pel-pkg-for-drawing-markup
+;;         - pel-pkg-for-graphviz-dot
+;;         - pel-pkg-for-plantuml
+;;       - pel-pkg-for-reST
+;;     - pel-pkg-for-navigation
+;;     - pel-pkg-for-parens
 ;;     - pel-pkg-for-programming
 ;;       - pel-pkg-for-all
 ;;       - pel-pkg-for-applescript
@@ -73,19 +66,25 @@
 ;;         - pel-pkg-for-elisp
 ;;         - pel-pkg-for-clisp
 ;;       - pel-pkg-for-beam-vm
+;;         - pel-pkg-for-elixir
 ;;         - pel-pkg-for-erlang
 ;;         - pel-pkg-for-lfe
-;;         - pel-pkg-for-elixir
 ;;       - pel-pkg-for-julia
 ;;       - pel-pkg-for-python
 ;;       - pel-pkg-for-rexx
 ;;       - pel-pkg-for-rust
-;;     - pel-pkg-for-markup
-;;       - pel-pkg-for-reST
-;;       - pel-pkg-for-drawing-markup
-;;         - pel-pkg-for-plantuml
-;;         - pel-pkg-for-graphviz-dot
+;;     - pel-pkg-for-project-mng
+;;     - pel-pkg-for-regexp
+;;     - pel-pkg-for-region
+;;     - pel-pkg-for-search
+;;     - pel-pkg-for-shells
 ;;     - pel-pkg-for-spelling
+;;     - pel-pkg-for-tags
+;;     - pel-pkg-for-undo
+;;     - pel-pkg-for-vcs
+;;     - pel-pkg-for-window
+;;       - pel-pkg-for-session
+;;       - pel-pkg-for-speedbar
 ;;
 
 ;; Naming conventions:
@@ -165,6 +164,133 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
   :group 'pel)
 
 ;; -----------------------------------------------------------------------------
+;; Bookmark Support
+;; ----------------
+(defgroup pel-pkg-for-bookmark nil
+  "List of external packages that PEL can use to manage bookmarks."
+  :group 'pel-package-use
+  :link `(url-link :tag "Bookmarks PDF" ,(pel-pdf-file-url "bookmarks")))
+
+(defcustom pel-use-bm nil
+  "Control whether PEL uses the bm (Visible Bookmarks) package."
+  :group 'pel-pkg-for-bookmark
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; Buffer Management
+;; -----------------
+(defgroup pel-pkg-for-buffer nil
+  "List of external packages that PEL can use to manage buffers."
+  :group 'pel-package-use
+  :link `(url-link :tag "Buffers PDF" ,(pel-pdf-file-url "buffers")))
+
+(defcustom pel-use-uniquify nil
+  "Control whether PEL uses the uniquify package."
+  :group 'pel-pkg-for-buffer
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-dired-narrow nil
+  "Control whether PEL uses the `dired-narrow' package."
+  :group 'pel-pkg-for-buffer
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-nhexl-mode nil
+  "Control whether PEL uses the package and function `nhexl-mode'."
+  :group 'pel-pkg-for-buffer
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-vline nil
+  "Control whether PEL uses the `vline' package."
+  :group 'pel-pkg-for-buffer
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-fill-column-indicator nil
+  "Control whether PEL uses fill-column-indicator package.
+Not used nor needed for Emacs 27.1 or later."
+  :group 'pel-pkg-for-buffer
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-ascii-table nil
+  "Control whether the `ascii-table' package is available."
+  :group 'pel-pkg-for-buffer
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; Completion Support
+;; ------------------
+(defgroup pel-pkg-for-completion nil
+  "List of external packages that PEL can use to manage completion."
+  :group 'pel-package-use
+  :link `(url-link :tag "Input Completion PDF" ,(pel-pdf-file-url "completion-input")))
+
+(defcustom pel-use-ido nil
+  "Control whether PEL uses the Ido package."
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-ivy nil
+  "Control whether PEL uses the Ivy package."
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-counsel nil
+  "Control whether Counsel is used when Ivy is used."
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-counsel-osx-app nil
+  "Control whether `counsel-osx-app' is used when counsel is used on macOS."
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-helm nil
+  "Control whether PEL uses the Helm package."
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+
+(defconst pel-USE-IDO     1 "Bitmask identifying Ido.      DON'T CHANGE!")
+(defconst pel-USE-IVY     2 "Bitmask identifying Ivy.      DON'T CHANGE!")
+(defconst pel-USE-COUNSEL 4 "Bitmask identifying Counsel.  DON'T CHANGE!")
+(defconst pel-USE-HELM    8 "Bitmask identifying Helm.     DON'T CHANGE!")
+
+(defcustom pel-initial-completion-mode nil
+  "Select the main text completion mode used when Emacs starts.
+
+PEL supports several completion engines.
+This option selects which engine used when Emacs starts.
+The available options are:
+- nil           : Use Emacs default.
+- `helm'        : Use Helm, when `pel-use-helm' is t.
+- `ido'         : Use Ido, when `pel-use-ido' is t.
+- `ido/helm'    : Use Ido with Helm, if both `pel-use-ido' and `pel-use-help'
+                  are t.
+- `ivy'         : Use Ivy, when `pel-use-ivy' is t.
+- `ivy/counsel' : Use Ivy with Counsel, when `pel-use-ivy' and `pel-use-counsel'
+                  are both t."
+  :group 'pel-pkg-for-completion
+  :type '(choice
+          (const :tag "Use Emacs default" emacs-default)
+          (const :tag "Use Helm. Requires `pel-use-helm'." helm)
+          (const :tag "Use Ido.  Requires `pel-use-ido'." ido)
+          (const :tag "Use Ido with Helm. Needs `pel-use-ido' & `pel-use-helm'"
+                 ido/helm)
+          (const :tag "Use Ivy. Requires pel-use-ivy." ivy)
+          (const :tag "Use Ivy & Counsel. Needs both `pel-use-ivy' and \
+`pel-use-counsel'." ivy/counsel)))
+
+;; -----------------------------------------------------------------------------
 ;; pel-pkg-for-cursor
 ;; ------------------
 (defgroup pel-pkg-for-cursor nil
@@ -226,6 +352,36 @@ These only take effect when Emacs is running in graphics mode."
 (defcustom pel-use-dired-x nil
   "Control whether PEL activates the Dired-X features in `dired-mode'."
   :group 'pel-pkg-for-dired
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; Text and Code Completion and Expansion
+;; --------------------------------------
+(defgroup pel-pkg-for-expand nil
+  "List of external packages that PEL can use to complete code or expand text.
+
+Note that auto-complete and company can both be activated.
+However, PEL only allow one of them to be used per buffer.
+The Hippie Expand can be used together with any."
+  :group 'pel-package-use
+  :link `(url-link :tag "Auto-Completion PDF" ,(pel-pdf-file-url "auto-completion")))
+
+(defcustom pel-use-auto-complete nil
+  "Control whether PEL supports the {auto-complete} package."
+  :group 'pel-pkg-for-expand
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-company nil
+  "Control whether PEL supports the company package."
+  :group 'pel-pkg-for-expand
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-hippie-expand nil
+  "Control whether PEL uses the {hippie-expand} package."
+  :group 'pel-pkg-for-expand
   :type 'boolean
   :safe #'booleanp)
 
@@ -360,6 +516,114 @@ References:
 - Emacs rg  package: URL `https://melpa.org/#/rg'
 - Emacs ripgrep package: https://github.com/nlamirault/ripgrep.el"
   :group 'pel-pkg-for-grep
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; Insertion of Text & Templates
+;; -----------------------------
+(defgroup pel-pkg-for-insertions nil
+  "List of external packages that PEL can use to provide easy text insertion."
+  :group 'pel-package-use
+  :link `(url-link :tag "Inserting Tex PDF" ,(pel-pdf-file-url "inserting-text")))
+
+(defcustom pel-use-lice nil
+  "Control whether PEL uses the lice package to insert software license text."
+  :group 'pel-pkg-for-insertions
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-smart-dash nil
+  "Control whether PEL activates the smart-dash package.
+This helps inserting underscore characters by typing the dash key without
+having to hit the Shift key.
+See the author site at URL http://malsyned.net/smart-dash.html"
+  :group 'pel-pkg-for-insertions
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-modes-activating-smart-dash-mode
+  '(c-mode
+    c++-mode
+    d-mode
+    elixir-mode
+    erlang-mode
+    python-mode
+    shell-script-mode)
+  "List of major modes that automatically activate smart-dash-mode.
+Used when `pel-use-smart-dash' user option is t.
+To activate the changes for this you must 'Apply and Save' and restart Emacs."
+  :group 'pel-pkg-for-spelling
+  :type
+  '(repeat symbol))
+
+(defcustom pel-use-yasnippet nil
+  "Control whether PEL uses yasnippet package."
+  :group 'pel-pkg-for-insertions
+  :type '(choice
+          (const :tag "Do not use" nil)
+          (const :tag "Use, activate later by command"  t)
+          (const :tag "Use, activate globally when Emacs starts" use-from-start)))
+
+(defcustom pel-use-yasnippet-snippets nil
+  "Control whether PEL uses the yasnippet-snippets package.
+That package loads a set of snippets for yasnippet.
+PEL activates it only if variable `pel-use-yasnippet' is non-nil."
+  :group 'pel-pkg-for-insertions
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; pel-pkg-for-kbmacro
+;; -------------------
+(defgroup pel-pkg-for-kbmacro nil
+  "List of external packages that PEL can use to handle keyboard macros."
+  :group 'pel-package-use
+  :group 'kmacro
+  :link `(url-link :tag "Keyboard Macros PDF" ,(pel-pdf-file-url "keyboard-macros"))
+  :link `(url-link :tag "Function Keys Usage PDF" ,(pel-pdf-file-url "keys-fn")))
+
+(defcustom pel-kbmacro-prompts nil
+  "Prompt before overriding existing keyboard macro?
+By default it does not prompt.
+If on (t) the keyboard macro recording will prompt before overriding the
+  previously recorded keyboard macro."
+  :group 'pel-pkg-for-kbmacro
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-centimacro nil
+  "Whether PEL use the centimacro package.
+See repository at URL https://github.com/abo-abo/centimacro"
+  :group 'pel-pkg-for-kbmacro
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-centi-assign-key "<C-f5>"
+  "Default key binding for function `centi-assign'.
+Its value is stored in `centi-assign-key' when PEL starts
+centimacro.  The <C-f5> binding is used by default to prevent
+overriding the f5 key used by PEL to repeat.
+
+Do NOT use a function key that is already used by PEL.
+So, do NOT use f1,f2,f3,f4,f5,f6,f7,f8,f10,f11 or f12.
+That leaves f9 and some function keys with qualifiers.
+Make sure your selection works in terminal mode if you plan
+to use Emacs in terminal mode.
+For more information see the  function key usage PDF."
+  :group 'pel-pkg-for-kbmacro
+  :type  'string)
+
+(defcustom pel-use-elmacro nil
+  "Whether PEL use the elmacro package.
+Repository: https://github.com/Silex/elmacro"
+  :group 'pel-pkg-for-kbmacro
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-emacros nil
+  "Whether PEL use the emacro package."
+  :group 'pel-pkg-for-kbmacro
   :type 'boolean
   :safe #'booleanp)
 
@@ -615,603 +879,6 @@ The `pel-key-chords' value is a list of objects.
              (function :tag "lambda" :value (lambda () (interactive) <YOUR CODE HERE>))))))
 
 ;; -----------------------------------------------------------------------------
-;; pel-pkg-for-kbmacro
-;; -------------------
-(defgroup pel-pkg-for-kbmacro nil
-  "List of external packages that PEL can use to handle keyboard macros."
-  :group 'pel-package-use
-  :group 'kmacro
-  :link `(url-link :tag "Keyboard Macros PDF" ,(pel-pdf-file-url "keyboard-macros"))
-  :link `(url-link :tag "Function Keys Usage PDF" ,(pel-pdf-file-url "keys-fn")))
-
-(defcustom pel-kbmacro-prompts nil
-  "Prompt before overriding existing keyboard macro?
-By default it does not prompt.
-If on (t) the keyboard macro recording will prompt before overriding the
-  previously recorded keyboard macro."
-  :group 'pel-pkg-for-kbmacro
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-centimacro nil
-  "Whether PEL use the centimacro package.
-See repository at URL https://github.com/abo-abo/centimacro"
-  :group 'pel-pkg-for-kbmacro
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-centi-assign-key "<C-f5>"
-  "Default key binding for function `centi-assign'.
-Its value is stored in `centi-assign-key' when PEL starts
-centimacro.  The <C-f5> binding is used by default to prevent
-overriding the f5 key used by PEL to repeat.
-
-Do NOT use a function key that is already used by PEL.
-So, do NOT use f1,f2,f3,f4,f5,f6,f7,f8,f10,f11 or f12.
-That leaves f9 and some function keys with qualifiers.
-Make sure your selection works in terminal mode if you plan
-to use Emacs in terminal mode.
-For more information see the  function key usage PDF."
-  :group 'pel-pkg-for-kbmacro
-  :type  'string)
-
-(defcustom pel-use-elmacro nil
-  "Whether PEL use the elmacro package.
-Repository: https://github.com/Silex/elmacro"
-  :group 'pel-pkg-for-kbmacro
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-emacros nil
-  "Whether PEL use the emacro package."
-  :group 'pel-pkg-for-kbmacro
-  :type 'boolean
-  :safe #'booleanp)
-
-;; -----------------------------------------------------------------------------
-;; pel-pkg-for-navigation
-;; ----------------------
-(defgroup pel-pkg-for-navigation nil
-  "List of external packages that PEL can use to help navigation."
-  :group 'pel-package-use
-  :link `(url-link :tag "Navigation PDF" ,(pel-pdf-file-url "navigation")))
-
-(defcustom pel-use-ace-link nil
-  "Control activation of the ace-link package.
-See URL https://github.com/abo-abo/ace-link for more info."
-  :group 'pel-pkg-for-navigation
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-avy nil
-  "Control activation of the avy package.
-See URL https://github.com/abo-abo/avy for more info."
-  :group 'pel-pkg-for-navigation
-  :type 'boolean
-  :safe #'booleanp)
-
-;; -----------------------------------------------------------------------------
-;; pel-pkg-for-regexp
-;; ------------------
-(defgroup pel-pkg-for-regexp nil
-  "List of external packages that PEL can use for regular expressions."
-  :group 'pel-package-use
-  :link `(url-link :tag "Search/Replace PDF" ,(pel-pdf-file-url "search-replace")))
-
-(defcustom pel-bind-keys-for-regexp nil
-  "If set to t, PEL binds several keys in the C-c prefix.
-It binds:
-- 'C-c r' : to replace-regexp or pel-replace-regexp
-- 'C-c q' : to query-replace-regexp or pel-query-replace-regexp"
-  :group 'pel-pkg-for-regexp
-  :type 'boolean
-  :safe #'booleanp)
-
-
-(defcustom pel-initial-regexp-engine 'emacs
-  "Select the search/replace regexp engine used when Emacs starts.
-Select one that is available according to the package installed.
-The possible choices are:
-- 'emacs             : plain emacs
-- 'pel-vr            : visual-regexp
-- 'pel-vr/emacs      : visual-regexp-steroids emacs
-- 'pel-vr/emacs-plain: visual-regexp-steroids emacs-plain
-- 'pel-vr/pcre2el    : visual-regexp-steroids pcre2el
-- 'pel-vr/python     : visual-regexp-steroids python
-- 'pel-vr/custom     : visual-regexp-steroids custom
-
-The first choice is the default.  The other choices
-can be made only if `pel-use-visual-regexp' is t (for the second)
-or pel-use-regexp-steroids is t (for the others)."
-  :group 'pel-pkg-for-regexp
-  :type '(choice
-          (const :tag "Use Emacs default" emacs)
-          (const :tag "Use visual-regexp." vr)
-          (const :tag "Use visual-regexp-steroids emacs.      " vr/emacs)
-          (const :tag "Use visual-regexp-steroids emacs-plain." vr/emacs-plain)
-          (const :tag "Use visual-regexp-steroids pcre2el.    " vr/pcre2el)
-          (const :tag "Use visual-regexp-steroids python.     " vr/python)
-          (const :tag "Use visual-regexp-steroids custom.     " vr/custom)))
-
-(defcustom pel-use-regex-tool nil
-  "Control whether PEL uses the external `regex-tool' library.
-See URL `https://github.com/jwiegley/regex-tool'."
-  :group 'pel-pkg-for-regexp
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-pcre2el nil
-  "Control whether PEL uses the external pcre2el library.
-See URL `https://github.com/joddie/pcre2el'."
-  :group 'pel-pkg-for-regexp
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-visual-regexp nil
-  "Control whether PEL uses the external visual-regexp library.
-See URL `https://github.com/benma/visual-regexp.el'."
-  :group 'pel-pkg-for-regexp
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-visual-regexp-steroids nil
-  "Control whether PEL uses the external visual-regexp-steroids library.
-See URL `https://github.com/benma/visual-regexp-steroids.el'."
-  :group 'pel-pkg-for-regexp
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-xr nil
-  "Control whether PEL uses the external xr library.
-See URL `https://elpa.gnu.org/packages/xr.html'."
-  :group 'pel-pkg-for-regexp
-  :type 'boolean
-  :safe #'booleanp)
-
-;; -----------------------------------------------------------------------------
-;; pel-pkg-for-search
-;; ------------------
-(defgroup pel-pkg-for-search nil
-  "List of external packages that PEL can use for searching text."
-  :group 'pel-package-use
-  :link `(url-link :tag "Search/Replace PDF" ,(pel-pdf-file-url "search-replace")))
-
-(defcustom pel-use-anzu nil
-  "Control whether PEL uses the Anzu.
-See: URL `https://melpa.org/#/anzu'"
-  :group 'pel-pkg-for-search
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-swiper nil
-  "Control whether PEL uses the Swiper search package.
-See: URL `https://github.com/abo-abo/swiper#swiper'"
-  :group 'pel-pkg-for-search
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-initial-search-tool nil
-  "Select the search tool used when Emacs starts.
-
-PEL supports the following tools:
-- nil      : use Emacs default
-- `anzu'   : use Anzu globally to display search match counts in modeline.
-- `swiper' : use Swiper to display search mathes list in minibuffer."
-  :group 'pel-pkg-for-search
-  :type '(choice
-          (const :tag "Use Emacs default" nil)
-          (const :tag "Use Anzu" anzu)
-          (const :tag "Use Swiper" swiper)))
-
-;; -----------------------------------------------------------------------------
-;; pel-pkg-for-tags
-;; ----------------
-(defgroup pel-pkg-for-tags nil
-  "List of external packages that PEL can use to manage Tags cross-references."
-  :group 'pel-pkg-for-tags
-  :link `(url-link :tag "Tags/CTags PDF" ,(pel-pdf-file-url "tags")))
-
-
-(defcustom pel-use-ggtags nil
-  "Control whether PEL uses the ggtags package.
-See URL https://github.com/leoliu/ggtags"
-  :group 'pel-pkg-for-tags
-  :type 'boolean
-  :safe #'booleanp)
-
-;; -----------------------------------------------------------------------------
-;; Windows Management
-;; ------------------
-(defgroup pel-pkg-for-window nil
-  "List of external packages that PEL can use to manage windows."
-  :group 'pel-package-use
-  :group 'windows
-  :link `(url-link :tag "Windows PDF" ,(pel-pdf-file-url "windows")))
-
-;; Note: some other windows modules are used by PEL and are loaded
-;;       regardless of the options since they are relatively small
-;;       and inexpensive:
-;;       - windmove
-;;       - winner
-
-(defcustom pel-use-ace-window  nil
-  "Control whether PEL uses the `ace-window' package."
-  :group 'pel-pkg-for-window
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-winner nil
-  "Control whether PEL uses the `winner' package."
-  :group 'pel-pkg-for-window
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-smooth-scrolling nil
-  "Control whether PEL provides the smooth-scrolling capability."
-  :group 'pel-pkg-for-window
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-framemove nil
-  "Control whether PEL uses the framemove package.
-It is similar to windmove and ties with it.
-
-Notes:
-- With PEL, if framemove is used windmove must also be used
-  (see `pel-use-windmove').
-- This package work with Emacs in graphics mode.  Multiple
-  frames *can* be used in terminal (TTY) mode but only one can
-  be displayed at a time in the terminal window.
-- This file is not available MELPA (yet, as of Jan 2020).
-- The version 0.10 is available via the relevant EmacsWiki page
-  URL `https://www.emacswiki.org/emacs/framemove.el'
-- Older version 0.9 used an obsolete function, that was fixed in version 0.10.
-
-References:
-- Author's site: Emacs Tip# 35: framemove:
-  URL `http://trey-jackson.blogspot.com/2010/02/emacs-tip-35-framemove.html'.
-- EmacsWiki framemove page: URL `https://www.emacswiki.org/emacs/FrameMove'.
-- Youtube video on windmove and framemove: URL
-  `https://www.youtube.com/watch?v=f3th2jyv35c'."
-  :group 'pel-pkg-for-window
-  :type 'boolean
-  :safe #'booleanp)
-
-
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; pel-pkg-for-speedbar
-;; --------------------
-(defgroup pel-pkg-for-speedbar nil
-  "PEL Speedbar management."
-  :group 'pel-pkg-for-window
-  :link `(url-link :tag "Speedbar PDF" ,(pel-pdf-file-url "speedbar")))
-
-(defcustom pel-use-speedbar nil
-  "Control whether PEL uses the Speedbar and SR-Speedbar packages."
-  :group 'pel-pkg-for-speedbar
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-prefer-sr-speedbar-in-terminal t
-  "Prefer using Sr-Speedbar in terminal mode (when available) over Speedbar."
-  :group 'pel-pkg-for-speedbar
-  :type  'boolean
-  :safe  #'booleanp)
-
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; pel-pkg-for-session
-;; -------------------
-(defgroup pel-pkg-for-session nil
-  "PEL window session management."
-  :group 'pel-pkg-for-window
-  :link `(url-link :tag "Sessions PDF" ,(pel-pdf-file-url "sessions")))
-
-(defcustom pel-use-desktop nil
-  "Control whether desktop feature is used for session management.
-
-When session management controlled by desktop feature, then
-identify whether the built-in desktop.el is used alone or whether
-one of the desktop-registry or desktop+ is also used.
-
-The value can be:
-
-- nil : nothing is used.
-
-- t:                             use built-in desktop but do NOT
-                                 activate the desktop save mode.
-
-- `with-desktop-automatic':      use built-in desktop and
-                                 activate desktop save mode.
-
-- `with-desktop-registry':       use desktop and the desktop-registry
-                                 external package.
-
-- `with-desktop-registry-automatic': use desktop, the desktop-registry
-                                     and activate desktop auto-save mode.
-
-- `with-desktop+':               use desktop and the desktop+ external package."
-  :group 'pel-pkg-for-session
-  :type '(choice
-          (const :tag "Not used" nil)
-          (const :tag "Use built-in desktop - do NOT activate desktop-save-mode" t)
-          (const :tag "Use built-in desktop and ACTIVATE desktop-save-mode"
-                 with-desktop-automatic)
-          (const :tag "Use desktop with desktop-registry \
-- do NOT activate desktop-save-mode " with-desktop-registry)
-          (const :tag "Use desktop with desktop-registry \
-and ACTIVATE desktop-save-mode" with-desktop-registry-automatic)
-          (const :tag "Use desktop with desktop+" with-desktop+)))
-
-;; desktop  user options:
-;; - desktop-save-mode
-;; - desktop-restore-frames
-;; - desktop-files-not-to-save
-;; - frameset-filter-alist
-;; - desktop-path
-;; - desktop-restore-eager
-;; - desktop-globals-to-clear
-;; - desktop-clear-preserve-buffers-regexp
-;; - desktop-auto-save-timeout
-;; - desktop-load-locked-desktop
-
-
-;; -----------------------------------------------------------------------------
-;; Buffer Management
-;; -----------------
-(defgroup pel-pkg-for-buffer nil
-  "List of external packages that PEL can use to manage buffers."
-  :group 'pel-package-use
-  :link `(url-link :tag "Buffers PDF" ,(pel-pdf-file-url "buffers")))
-
-(defcustom pel-use-uniquify nil
-  "Control whether PEL uses the uniquify package."
-  :group 'pel-pkg-for-buffer
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-dired-narrow nil
-  "Control whether PEL uses the `dired-narrow' package."
-  :group 'pel-pkg-for-buffer
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-nhexl-mode nil
-  "Control whether PEL uses the package and function `nhexl-mode'."
-  :group 'pel-pkg-for-buffer
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-vline nil
-  "Control whether PEL uses the `vline' package."
-  :group 'pel-pkg-for-buffer
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-fill-column-indicator nil
-  "Control whether PEL uses fill-column-indicator package.
-Not used nor needed for Emacs 27.1 or later."
-  :group 'pel-pkg-for-buffer
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-ascii-table nil
-  "Control whether the `ascii-table' package is available."
-  :group 'pel-pkg-for-buffer
-  :type 'boolean
-  :safe #'booleanp)
-
-;; -----------------------------------------------------------------------------
-;; Completion Support
-;; ------------------
-(defgroup pel-pkg-for-completion nil
-  "List of external packages that PEL can use to manage completion."
-  :group 'pel-package-use
-  :link `(url-link :tag "Input Completion PDF" ,(pel-pdf-file-url "completion-input")))
-
-(defcustom pel-use-ido nil
-  "Control whether PEL uses the Ido package."
-  :group 'pel-pkg-for-completion
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-ivy nil
-  "Control whether PEL uses the Ivy package."
-  :group 'pel-pkg-for-completion
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-counsel nil
-  "Control whether Counsel is used when Ivy is used."
-  :group 'pel-pkg-for-completion
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-counsel-osx-app nil
-  "Control whether `counsel-osx-app' is used when counsel is used on macOS."
-  :group 'pel-pkg-for-completion
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-helm nil
-  "Control whether PEL uses the Helm package."
-  :group 'pel-pkg-for-completion
-  :type 'boolean
-  :safe #'booleanp)
-
-(defconst pel-USE-IDO     1 "Bitmask identifying Ido.      DON'T CHANGE!")
-(defconst pel-USE-IVY     2 "Bitmask identifying Ivy.      DON'T CHANGE!")
-(defconst pel-USE-COUNSEL 4 "Bitmask identifying Counsel.  DON'T CHANGE!")
-(defconst pel-USE-HELM    8 "Bitmask identifying Helm.     DON'T CHANGE!")
-
-(defcustom pel-initial-completion-mode nil
-  "Select the main text completion mode used when Emacs starts.
-
-PEL supports several completion engines.
-This option selects which engine used when Emacs starts.
-The available options are:
-- nil           : Use Emacs default.
-- `helm'        : Use Helm, when `pel-use-helm' is t.
-- `ido'         : Use Ido, when `pel-use-ido' is t.
-- `ido/helm'    : Use Ido with Helm, if both `pel-use-ido' and `pel-use-help'
-                  are t.
-- `ivy'         : Use Ivy, when `pel-use-ivy' is t.
-- `ivy/counsel' : Use Ivy with Counsel, when `pel-use-ivy' and `pel-use-counsel'
-                  are both t."
-  :group 'pel-pkg-for-completion
-  :type '(choice
-          (const :tag "Use Emacs default" emacs-default)
-          (const :tag "Use Helm. Requires `pel-use-helm'." helm)
-          (const :tag "Use Ido.  Requires `pel-use-ido'." ido)
-          (const :tag "Use Ido with Helm. Needs `pel-use-ido' & `pel-use-helm'"
-                 ido/helm)
-          (const :tag "Use Ivy. Requires pel-use-ivy." ivy)
-          (const :tag "Use Ivy & Counsel. Needs both `pel-use-ivy' and \
-`pel-use-counsel'." ivy/counsel)))
-
-;; -----------------------------------------------------------------------------
-;; Text Insertion / Templates
-;; --------------------------
-(defgroup pel-pkg-for-insertions nil
-  "List of external packages that PEL can use to provide easy text insertion."
-  :group 'pel-package-use
-  :link `(url-link :tag "Inserting Tex PDF" ,(pel-pdf-file-url "inserting-text")))
-
-(defcustom pel-use-lice nil
-  "Control whether PEL uses the lice package to insert software license text."
-  :group 'pel-pkg-for-insertions
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-smart-dash nil
-  "Control whether PEL activates the smart-dash package.
-This helps inserting underscore characters by typing the dash key without
-having to hit the Shift key.
-See the author site at URL http://malsyned.net/smart-dash.html"
-  :group 'pel-pkg-for-insertions
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-modes-activating-smart-dash-mode
-  '(c-mode
-    c++-mode
-    d-mode
-    elixir-mode
-    erlang-mode
-    python-mode
-    shell-script-mode)
-  "List of major modes that automatically activate smart-dash-mode.
-Used when `pel-use-smart-dash' user option is t.
-To activate the changes for this you must 'Apply and Save' and restart Emacs."
-  :group 'pel-pkg-for-spelling
-  :type
-  '(repeat symbol))
-
-(defcustom pel-use-yasnippet nil
-  "Control whether PEL uses yasnippet package."
-  :group 'pel-pkg-for-insertions
-  :type '(choice
-          (const :tag "Do not use" nil)
-          (const :tag "Use, activate later by command"  t)
-          (const :tag "Use, activate globally when Emacs starts" use-from-start)))
-
-(defcustom pel-use-yasnippet-snippets nil
-  "Control whether PEL uses the yasnippet-snippets package.
-That package loads a set of snippets for yasnippet.
-PEL activates it only if variable `pel-use-yasnippet' is non-nil."
-  :group 'pel-pkg-for-insertions
-  :type 'boolean
-  :safe #'booleanp)
-
-;; -----------------------------------------------------------------------------
-;; Undo Mechanism Management
-;; -------------------------
-(defgroup pel-pkg-for-undo nil
-  "List of external packages that PEL can use to control the undo mechanisms."
-  :group 'pel-package-use
-  :link `(url-link :tag "Undo/Redo/Repeat PDF" ,(pel-pdf-file-url "undo-redo-repeat")))
-
-(defcustom pel-use-popup-kill-ring nil
-  "Control whether PEL uses the `popup-kill-ring' package.
-With this package selective yanking can be done with the
-the Meta-y key which pops-up a menu listing the kill ring entries.
-
-Notes:
-- Unfortunately it does not work reliably in terminal (TTY) mode, so PEL
-  only activates it in graphics mode.
-- The version of this package on MELPA is version 0.2.8 and obsolete.
-- The author maintains its latest version (0.2.11) in the EmacsWiki.
-- PEL uses the EmacsWiki version.
-
-References:
-- `popup-kill-ring' source @ EmacsWiki: URL
-  `https://www.emacswiki.org/emacs/popup-kill-ring.el'
-- Uncle Dave's YouTube video on it: URL
-  `https://www.youtube.com/watch?v=LFXA089Tx38'"
-  :group 'pel-pkg-for-undo
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-undo-tree nil
-  "Control whether PEL uses the undo-tree package."
-  :group 'pel-pkg-for-undo
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-goto-last-change nil
-  "Control whether PEL uses the {goto-last-change} package."
-  :group 'pel-pkg-for-undo
-  :type 'boolean
-  :safe #'booleanp)
-
-;; -----------------------------------------------------------------------------
-;; Parens block management
-;; -----------------------
-;;
-;; Parens, a generic term to describe the following grouping characters:
-;; - parenthesis:     '(' and ')',
-;; - braces:          '{' and '}'
-;; - square brackets: '[' and ']'
-;; - angle brackets:  '<' and '>'
-;; also potentially the quote characters:
-;; - single quote:    '
-;; - double quote:    "
-;;
-(defgroup pel-pkg-for-parens nil
-  "List of external packages that PEL can use to help deal with parens."
-  :group 'pel-package-use
-  :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp"))
-  :link `(url-link :tag "Common Lisp PDF" ,(pel-pdf-file-url "pl-common-lisp"))
-  :link `(url-link :tag "Diff & Merge PDF" ,(pel-pdf-file-url "diff-merge")))
-
-(defcustom pel-use-parinfer nil
-  "Control whether PEL uses the parinfer package."
-  :group 'pel-pkg-for-parens
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-rainbow-delimiters  nil
-  "Control whether PEL uses the rainbow-delimiters package."
-  :group 'pel-pkg-for-parens
-  :type 'boolean
-  :safe #'booleanp)
-
-;; -----------------------------------------------------------------------------
-;; Region / Selection Management
-;; -----------------------------
-(defgroup pel-pkg-for-region nil
-  "List of external packages that PEL can use to help deal with regions."
-  :group 'pel-package-use
-  :link `(url-link :tag "Marking PDF" ,(pel-pdf-file-url "marking"))
-  :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp"))
-  :link `(url-link :tag "Common Lisp PDF" ,(pel-pdf-file-url "pl-common-lisp")))
-
-(defcustom pel-use-expand-region nil
-  "Control whether PEL uses the expand-region package."
-  :group 'pel-pkg-for-region
-  :type 'boolean
-  :safe #'booleanp)
-
-;; -----------------------------------------------------------------------------
 ;; Keys & Prompts
 ;; --------------
 (defgroup pel-pkg-for-keys nil
@@ -1258,101 +925,182 @@ References:
                    "https://github.com/tarsius/keycast"))
 
 ;; -----------------------------------------------------------------------------
-;; Text and Code Completion and Expansion
-;; --------------------------------------
-(defgroup pel-pkg-for-expand nil
-  "List of external packages that PEL can use to complete code or expand text.
+;; Markup Language Support
+;; -----------------------
+(defgroup pel-pkg-for-markup nil
+  "Markup Language editing packages PEL can use."
+  :group 'pel-package-use)
 
-Note that auto-complete and company can both be activated.
-However, PEL only allow one of them to be used per buffer.
-The Hippie Expand can be used together with any."
-  :group 'pel-package-use
-  :link `(url-link :tag "Auto-Completion PDF" ,(pel-pdf-file-url "auto-completion")))
-
-(defcustom pel-use-auto-complete nil
-  "Control whether PEL supports the {auto-complete} package."
-  :group 'pel-pkg-for-expand
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-company nil
-  "Control whether PEL supports the company package."
-  :group 'pel-pkg-for-expand
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-hippie-expand nil
-  "Control whether PEL uses the {hippie-expand} package."
-  :group 'pel-pkg-for-expand
+(defcustom pel-use-org-mode nil
+  "Control whether PEL supports Org-Mode."
+  :group 'pel-pkg-for-markup
   :type 'boolean
   :safe #'booleanp)
 
 ;; -----------------------------------------------------------------------------
-;; Bookmark Support
+;; pel-pkg-for-draw-markup
+;; -----------------------
+(defgroup pel-pkg-for-drawing-markup nil
+  "PEL drawing markup support."
+  :group 'pel-pkg-for-markup
+  :link `(url-link :tag "Drawing PDF" ,(pel-pdf-file-url "drawing")))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; GraphViz-Dot Support
+;; --------------------
+(defgroup pel-pkg-for-graphviz-dot nil
+  "PEL Graphviz-DOT support."
+  :group 'pel-pkg-for-drawing-markup
+  :link `(url-link :tag "Graphviz Dot PDF" ,(pel-pdf-file-url "graphviz-dot")))
+
+(defcustom pel-use-graphviz-dot nil
+  "Control whether PEL uses the Graphviz Dot tool and its associated package.
+It supports the Graphviz Dot file format and the ability to create graphics
+images from their Graphviz Dot files.
+
+References:
+- Graphviz: URL `https://www.graphviz.org'
+- DOT Language URL `https://www.graphviz.org/doc/info/lang.html'
+- `graphviz-dot-mode' MELPA URL `https://melpa.org/#/graphviz-dot-mode'"
+  :group 'pel-pkg-for-graphviz-dot
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; PlantUML Support
 ;; ----------------
-(defgroup pel-pkg-for-bookmark nil
-  "List of external packages that PEL can use to manage bookmarks."
-  :group 'pel-package-use
-  :link `(url-link :tag "Bookmarks PDF" ,(pel-pdf-file-url "bookmarks")))
 
-(defcustom pel-use-bm nil
-  "Control whether PEL uses the bm (Visible Bookmarks) package."
-  :group 'pel-pkg-for-bookmark
-  :type 'boolean
-  :safe #'booleanp)
+(defgroup pel-pkg-for-plantuml nil
+  "PEL UML support."
+  :group 'pel-pkg-for-drawing-markup
+  :link `(url-link :tag "PlantUML PDF" ,(pel-pdf-file-url "plantuml")))
 
-;; -----------------------------------------------------------------------------
-;; Shell & Terminal Support
-;; ------------------------
-(defgroup pel-pkg-for-shells nil
-  "List of external packages that PEL can use to support shells and terminals."
-  :group 'pel-package-use
-  :link `(url-link :tag "Shells PDF" ,(pel-pdf-file-url "shells")))
+(defcustom pel-use-plantuml nil
+  "Control whether PEL activates support for PlantUML to draw UML diagrams.
+This uses the `plantuml-mode' package.
+See URL https://github.com/skuro/plantuml-mode.
 
-(defcustom pel-use-vterm nil
-  "Control whether the vterm shell is available.
-The vterm package used the libvterm library to provide a very fast
-and usable shell for Emacs."
-  :group 'pel-pkg-for-shells
-  :type 'boolean
-  :safe #'booleanp)
+The `plantuml-mode' can be used locally, using a local PlantUML
+Java application (plantuml.jar).  You can also use PlantUML web
+server and if you do not mind sending your information across the
+internet.
 
-;; -----------------------------------------------------------------------------
-;; Version Control System Support
-;; ------------------------------
-(defgroup pel-pkg-for-vcs nil
-  "List of external packages that PEL can use to support use of (D)VCS."
-  :group 'pel-package-use
-  :link `(url-link :tag "Mercurial PDF" ,(pel-pdf-file-url "vcs-mercurial")))
+To use PlantUML locally you must have Java installed on your
+system and have the PlantUML Java application installed and
+its plantuml.jar file must be accessible.
 
-(defcustom pel-use-magit nil
-  "Control whether PEL provides access to the Magit package."
-  :group 'pel-pgk-for-vcs
-  :type 'boolean
-  :safe #'booleanp)
+See URL https://plantuml.com
+Also see general info at URL https://en.wikipedia.org/wiki/PlantUML
 
-(defcustom pel-use-monky nil
-  "Control whether PEL provides access to the Monky package."
-  :group 'pel-pgk-for-vcs
-  :type 'boolean
-  :safe #'booleanp)
-
-;; -----------------------------------------------------------------------------
-;; Project Manager Support
-;; =======================
-(defgroup pel-pkg-for-project-mng nil
-  "PEL customization for project managers."
-  :group 'pel-package-use
-  :link `(url-link :tag "Projectile PDF" ,(pel-pdf-file-url "projectile")))
-
-
-(defcustom pel-use-projectile nil
-  "Control whether PEL supports the projectile project manager."
-  :group 'pel-pkg-for-project-mng
+Note that this value overrides the value selected by the
+`plantuml-default-exec-mode' user option."
+  :group 'pel-pkg-for-plantuml
   :type '(choice
-          (const :tag "Do not use" nil)
-          (const :tag "Use, activate later by command"  t)
-          (const :tag "Use, activate when Emacs starts" use-from-start)))
+          (const :tag "Not used" nil)
+          (const :tag "Use local plantuml.jar application" t)
+          (const :tag "Use the remote PlantUML server" server)))
+
+(defcustom pel-use-flycheck-plantuml nil
+  "Control the flycheck-plantuml PlantUML checker package is used with PEL.
+See info at URL https://github.com/alexmurray/flycheck-plantuml"
+  :group 'pel-pkg-for-plantuml
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; reStructuredText support
+;; ------------------------
+(defgroup pel-pkg-for-reST nil
+  "PEL reStructuredText support."
+  :group 'pel-pkg-for-markup
+  :link `(url-link :tag "reStructuredText PDF" ,(pel-pdf-file-url "mode-rst")))
+
+(defcustom pel-use-rst-mode nil
+  "Control whether PEL supports {rst-mode} (reStructuredText)."
+  :group 'pel-pkg-for-reST
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-rst-adornment-style 'CRiSPer
+  "Select the section adornment style.
+Identifies the number of levels supported and their adornment.
+- `default' is Emacs `rst-mode' default.  A title and 7 levels.
+- `Sphinx-Python' is what Sphinx uses: 6 levels:
+  - parts,
+  - chapters,
+  - sections,
+  - subsections,
+  - sub-subsections,
+  - paragraphs.
+- `CRiSPer', a title and 12-level mode previously developed for CRiSP."
+  :group 'pel-pkg-for-reST
+  :type '(choice (const :tag "default" default)
+                 (const :tag "Sphinx-Python" Sphinx-Python)
+                 (const :tag "CRiSPer" CRiSPer)))
+
+(defcustom pel-rst-tab-width 2
+  "Distance between tab stop for reStructuredText buffers.
+PEL stores this in `tab-width' when opening reStructuredText buffers.
+This does *NOT* control the indentation in reStructuredText files,
+only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB characters."
+  :group 'pel-pkg-for-reST
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+;; -----------------------------------------------------------------------------
+;; pel-pkg-for-navigation
+;; ----------------------
+(defgroup pel-pkg-for-navigation nil
+  "List of external packages that PEL can use to help navigation."
+  :group 'pel-package-use
+  :link `(url-link :tag "Navigation PDF" ,(pel-pdf-file-url "navigation")))
+
+(defcustom pel-use-ace-link nil
+  "Control activation of the ace-link package.
+See URL https://github.com/abo-abo/ace-link for more info."
+  :group 'pel-pkg-for-navigation
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-avy nil
+  "Control activation of the avy package.
+See URL https://github.com/abo-abo/avy for more info."
+  :group 'pel-pkg-for-navigation
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; Parens block management
+;; -----------------------
+;;
+;; Parens, a generic term to describe the following grouping characters:
+;; - parenthesis:     '(' and ')',
+;; - braces:          '{' and '}'
+;; - square brackets: '[' and ']'
+;; - angle brackets:  '<' and '>'
+;; also potentially the quote characters:
+;; - single quote:    '
+;; - double quote:    "
+;;
+(defgroup pel-pkg-for-parens nil
+  "List of external packages that PEL can use to help deal with parens."
+  :group 'pel-package-use
+  :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp"))
+  :link `(url-link :tag "Common Lisp PDF" ,(pel-pdf-file-url "pl-common-lisp"))
+  :link `(url-link :tag "Diff & Merge PDF" ,(pel-pdf-file-url "diff-merge")))
+
+(defcustom pel-use-parinfer nil
+  "Control whether PEL uses the parinfer package."
+  :group 'pel-pkg-for-parens
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-rainbow-delimiters  nil
+  "Control whether PEL uses the rainbow-delimiters package."
+  :group 'pel-pkg-for-parens
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; -----------------------------------------------------------------------------
 ;; Programming Language Support
@@ -2111,6 +1859,46 @@ the copyright holder value."
   :group 'pel-pkg-for-programming)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Elixir Support
+;; --------------
+;; Note: Elixir is a BEAM VM programming language.
+
+(defgroup pel-pkg-for-elixir nil
+  "PEL customization for Elixir."
+  :group 'pel-pkg-for-beam-vm
+  :link `(url-link :tag "Elixir PDF" ,(pel-pdf-file-url "pl-elixir")))
+
+(defcustom pel-use-elixir nil
+  "Control whether PEL supports Elixir development."
+  :group 'pel-pkg-for-elixir
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-alchemist nil
+  "Control whether PEL supports Elixir Alchemist package.
+IMPORTANT:
+  To use this feature you must also activate `pel-use-elixir'."
+  :group 'pel-pkg-for-elixir
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-elixir-exunit nil
+  "Control whether PEL supports Elixir Unit Test development.
+IMPORTANT:
+  To use this feature you must also activate `pel-use-elixir'."
+  :group 'pel-pkg-for-elixir
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-elixir-lsp nil
+  "Control whether PEL supports Lsp-Elixir package: Language Server Protocol.
+This activates the use of the lsp-elixir package, and the lsp-mode
+package which provides the client/library for LSP."
+  :group 'pel-pkg-for-elixir
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Erlang Support
 ;; --------------
 ;; Note: Erlang, is a BEAM VM programming language.
@@ -2183,7 +1971,6 @@ the copyright holder value."
 ;;  1 or 2 symlinks.
 ;;
 ;;
-
 
 (defgroup pel-pkg-for-erlang nil
   "PEL customization for Erlang."
@@ -2410,46 +2197,6 @@ the copyright holder value."
   :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; Elixir Support
-;; --------------
-;; Note: Elixir is a BEAM VM programming language.
-
-(defgroup pel-pkg-for-elixir nil
-  "PEL customization for Elixir."
-  :group 'pel-pkg-for-beam-vm
-  :link `(url-link :tag "Elixir PDF" ,(pel-pdf-file-url "pl-elixir")))
-
-(defcustom pel-use-elixir nil
-  "Control whether PEL supports Elixir development."
-  :group 'pel-pkg-for-elixir
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-alchemist nil
-  "Control whether PEL supports Elixir Alchemist package.
-IMPORTANT:
-  To use this feature you must also activate `pel-use-elixir'."
-  :group 'pel-pkg-for-elixir
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-elixir-exunit nil
-  "Control whether PEL supports Elixir Unit Test development.
-IMPORTANT:
-  To use this feature you must also activate `pel-use-elixir'."
-  :group 'pel-pkg-for-elixir
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-elixir-lsp nil
-  "Control whether PEL supports Lsp-Elixir package: Language Server Protocol.
-This activates the use of the lsp-elixir package, and the lsp-mode
-package which provides the client/library for LSP."
-  :group 'pel-pkg-for-elixir
-  :type 'boolean
-  :safe #'booleanp)
-
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Forth support
 ;; -------------
 (defgroup pel-pkg-for-forth nil
@@ -2546,123 +2293,166 @@ When set to non-nil, 3 packages are used:
   :type 'boolean
   :safe #'booleanp)
 
-;; -----------------------------------------------------------------------------
-;; Markup Language Support
-;; -----------------------
-(defgroup pel-pkg-for-markup nil
-  "Markup Language editing packages PEL can use."
-  :group 'pel-package-use)
-
-(defcustom pel-use-org-mode nil
-  "Control whether PEL supports Org-Mode."
-  :group 'pel-pkg-for-markup
-  :type 'boolean
-  :safe #'booleanp)
-
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; reStructuredText support
-;; ------------------------
-(defgroup pel-pkg-for-reST nil
-  "PEL reStructuredText support."
-  :group 'pel-pkg-for-markup
-  :link `(url-link :tag "reStructuredText PDF" ,(pel-pdf-file-url "mode-rst")))
-
-(defcustom pel-use-rst-mode nil
-  "Control whether PEL supports {rst-mode} (reStructuredText)."
-  :group 'pel-pkg-for-reST
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-rst-adornment-style 'CRiSPer
-  "Select the section adornment style.
-Identifies the number of levels supported and their adornment.
-- `default' is Emacs `rst-mode' default.  A title and 7 levels.
-- `Sphinx-Python' is what Sphinx uses: 6 levels:
-  - parts,
-  - chapters,
-  - sections,
-  - subsections,
-  - sub-subsections,
-  - paragraphs.
-- `CRiSPer', a title and 12-level mode previously developed for CRiSP."
-  :group 'pel-pkg-for-reST
-  :type '(choice (const :tag "default" default)
-                 (const :tag "Sphinx-Python" Sphinx-Python)
-                 (const :tag "CRiSPer" CRiSPer)))
-
-(defcustom pel-rst-tab-width 2
-  "Distance between tab stop for reStructuredText buffers.
-PEL stores this in `tab-width' when opening reStructuredText buffers.
-This does *NOT* control the indentation in reStructuredText files,
-only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB characters."
-  :group 'pel-pkg-for-reST
-  :type 'integer
-  :safe 'pel-indent-valid-p)
 
 ;; -----------------------------------------------------------------------------
-;; pel-pkg-for-draw-markup
-;; -----------------------
-(defgroup pel-pkg-for-drawing-markup nil
-  "PEL drawing markup support."
-  :group 'pel-package-for-markup
-  :link `(url-link :tag "Drawing PDF" ,(pel-pdf-file-url "drawing")))
+;; Project Manager Support
+;; =======================
+(defgroup pel-pkg-for-project-mng nil
+  "PEL customization for project managers."
+  :group 'pel-package-use
+  :link `(url-link :tag "Projectile PDF" ,(pel-pdf-file-url "projectile")))
 
-(defgroup pel-pkg-for-plantuml nil
-  "PEL UML support."
-  :group 'pel-pkg-for-drawing-markup
-  :link `(url-link :tag "PlantUML PDF" ,(pel-pdf-file-url "plantuml")))
 
-(defcustom pel-use-plantuml nil
-  "Control whether PEL activates support for PlantUML to draw UML diagrams.
-This uses the `plantuml-mode' package.
-See URL https://github.com/skuro/plantuml-mode.
-
-The `plantuml-mode' can be used locally, using a local PlantUML
-Java application (plantuml.jar).  You can also use PlantUML web
-server and if you do not mind sending your information across the
-internet.
-
-To use PlantUML locally you must have Java installed on your
-system and have the PlantUML Java application installed and
-its plantuml.jar file must be accessible.
-
-See URL https://plantuml.com
-Also see general info at URL https://en.wikipedia.org/wiki/PlantUML
-
-Note that this value overrides the value selected by the
-`plantuml-default-exec-mode' user option."
-  :group 'pel-pkg-for-plantuml
+(defcustom pel-use-projectile nil
+  "Control whether PEL supports the projectile project manager."
+  :group 'pel-pkg-for-project-mng
   :type '(choice
-          (const :tag "Not used" nil)
-          (const :tag "Use local plantuml.jar application" t)
-          (const :tag "Use the remote PlantUML server" server)))
+          (const :tag "Do not use" nil)
+          (const :tag "Use, activate later by command"  t)
+          (const :tag "Use, activate when Emacs starts" use-from-start)))
 
-(defcustom pel-use-flycheck-plantuml nil
-  "Control the flycheck-plantuml PlantUML checker package is used with PEL.
-See info at URL https://github.com/alexmurray/flycheck-plantuml"
-  :group 'pel-pkg-for-plantuml
+;; -----------------------------------------------------------------------------
+;; pel-pkg-for-regexp
+;; ------------------
+(defgroup pel-pkg-for-regexp nil
+  "List of external packages that PEL can use for regular expressions."
+  :group 'pel-package-use
+  :link `(url-link :tag "Search/Replace PDF" ,(pel-pdf-file-url "search-replace")))
+
+(defcustom pel-bind-keys-for-regexp nil
+  "If set to t, PEL binds several keys in the C-c prefix.
+It binds:
+- 'C-c r' : to replace-regexp or pel-replace-regexp
+- 'C-c q' : to query-replace-regexp or pel-query-replace-regexp"
+  :group 'pel-pkg-for-regexp
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; GraphViz-Dot Support
-;; --------------------
-(defgroup pel-pkg-for-graphviz-dot nil
-  "PEL Graphviz-DOT support."
-  :group 'pel-pkg-for-drawing-markup
-  :link `(url-link :tag "Graphviz Dot PDF" ,(pel-pdf-file-url "graphviz-dot")))
 
-(defcustom pel-use-graphviz-dot nil
-  "Control whether PEL uses the Graphviz Dot tool and its associated package.
-It supports the Graphviz Dot file format and the ability to create graphics
-images from their Graphviz Dot files.
+(defcustom pel-initial-regexp-engine 'emacs
+  "Select the search/replace regexp engine used when Emacs starts.
+Select one that is available according to the package installed.
+The possible choices are:
+- 'emacs             : plain emacs
+- 'pel-vr            : visual-regexp
+- 'pel-vr/emacs      : visual-regexp-steroids emacs
+- 'pel-vr/emacs-plain: visual-regexp-steroids emacs-plain
+- 'pel-vr/pcre2el    : visual-regexp-steroids pcre2el
+- 'pel-vr/python     : visual-regexp-steroids python
+- 'pel-vr/custom     : visual-regexp-steroids custom
 
-References:
-- Graphviz: URL `https://www.graphviz.org'
-- DOT Language URL `https://www.graphviz.org/doc/info/lang.html'
-- `graphviz-dot-mode' MELPA URL `https://melpa.org/#/graphviz-dot-mode'"
-  :group 'pel-pkg-for-graphviz-dot
+The first choice is the default.  The other choices
+can be made only if `pel-use-visual-regexp' is t (for the second)
+or pel-use-regexp-steroids is t (for the others)."
+  :group 'pel-pkg-for-regexp
+  :type '(choice
+          (const :tag "Use Emacs default" emacs)
+          (const :tag "Use visual-regexp." vr)
+          (const :tag "Use visual-regexp-steroids emacs.      " vr/emacs)
+          (const :tag "Use visual-regexp-steroids emacs-plain." vr/emacs-plain)
+          (const :tag "Use visual-regexp-steroids pcre2el.    " vr/pcre2el)
+          (const :tag "Use visual-regexp-steroids python.     " vr/python)
+          (const :tag "Use visual-regexp-steroids custom.     " vr/custom)))
+
+(defcustom pel-use-regex-tool nil
+  "Control whether PEL uses the external `regex-tool' library.
+See URL `https://github.com/jwiegley/regex-tool'."
+  :group 'pel-pkg-for-regexp
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-pcre2el nil
+  "Control whether PEL uses the external pcre2el library.
+See URL `https://github.com/joddie/pcre2el'."
+  :group 'pel-pkg-for-regexp
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-visual-regexp nil
+  "Control whether PEL uses the external visual-regexp library.
+See URL `https://github.com/benma/visual-regexp.el'."
+  :group 'pel-pkg-for-regexp
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-visual-regexp-steroids nil
+  "Control whether PEL uses the external visual-regexp-steroids library.
+See URL `https://github.com/benma/visual-regexp-steroids.el'."
+  :group 'pel-pkg-for-regexp
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-xr nil
+  "Control whether PEL uses the external xr library.
+See URL `https://elpa.gnu.org/packages/xr.html'."
+  :group 'pel-pkg-for-regexp
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; Region / Selection Management
+;; -----------------------------
+(defgroup pel-pkg-for-region nil
+  "List of external packages that PEL can use to help deal with regions."
+  :group 'pel-package-use
+  :link `(url-link :tag "Marking PDF" ,(pel-pdf-file-url "marking"))
+  :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp"))
+  :link `(url-link :tag "Common Lisp PDF" ,(pel-pdf-file-url "pl-common-lisp")))
+
+(defcustom pel-use-expand-region nil
+  "Control whether PEL uses the expand-region package."
+  :group 'pel-pkg-for-region
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; pel-pkg-for-search
+;; ------------------
+(defgroup pel-pkg-for-search nil
+  "List of external packages that PEL can use for searching text."
+  :group 'pel-package-use
+  :link `(url-link :tag "Search/Replace PDF" ,(pel-pdf-file-url "search-replace")))
+
+(defcustom pel-use-anzu nil
+  "Control whether PEL uses the Anzu.
+See: URL `https://melpa.org/#/anzu'"
+  :group 'pel-pkg-for-search
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-swiper nil
+  "Control whether PEL uses the Swiper search package.
+See: URL `https://github.com/abo-abo/swiper#swiper'"
+  :group 'pel-pkg-for-search
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-initial-search-tool nil
+  "Select the search tool used when Emacs starts.
+
+PEL supports the following tools:
+- nil      : use Emacs default
+- `anzu'   : use Anzu globally to display search match counts in modeline.
+- `swiper' : use Swiper to display search mathes list in minibuffer."
+  :group 'pel-pkg-for-search
+  :type '(choice
+          (const :tag "Use Emacs default" nil)
+          (const :tag "Use Anzu" anzu)
+          (const :tag "Use Swiper" swiper)))
+
+;; -----------------------------------------------------------------------------
+;; Shell & Terminal Support
+;; ------------------------
+(defgroup pel-pkg-for-shells nil
+  "List of external packages that PEL can use to support shells and terminals."
+  :group 'pel-package-use
+  :link `(url-link :tag "Shells PDF" ,(pel-pdf-file-url "shells")))
+
+(defcustom pel-use-vterm nil
+  "Control whether the vterm shell is available.
+The vterm package used the libvterm library to provide a very fast
+and usable shell for Emacs."
+  :group 'pel-pkg-for-shells
   :type 'boolean
   :safe #'booleanp)
 
@@ -2742,6 +2532,217 @@ To activate the changes for this you must 'Apply and Save' and restart Emacs."
   :group 'pel-pkg-for-spelling
   :type
   '(repeat symbol))
+
+;; -----------------------------------------------------------------------------
+;; pel-pkg-for-tags
+;; ----------------
+(defgroup pel-pkg-for-tags nil
+  "List of external packages that PEL can use to manage Tags cross-references."
+  :group 'pel-pkg-for-tags
+  :link `(url-link :tag "Tags/CTags PDF" ,(pel-pdf-file-url "tags")))
+
+
+(defcustom pel-use-ggtags nil
+  "Control whether PEL uses the ggtags package.
+See URL https://github.com/leoliu/ggtags"
+  :group 'pel-pkg-for-tags
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; Undo Mechanism Management
+;; -------------------------
+(defgroup pel-pkg-for-undo nil
+  "List of external packages that PEL can use to control the undo mechanisms."
+  :group 'pel-package-use
+  :link `(url-link :tag "Undo/Redo/Repeat PDF" ,(pel-pdf-file-url "undo-redo-repeat")))
+
+(defcustom pel-use-popup-kill-ring nil
+  "Control whether PEL uses the `popup-kill-ring' package.
+With this package selective yanking can be done with the
+the Meta-y key which pops-up a menu listing the kill ring entries.
+
+Notes:
+- Unfortunately it does not work reliably in terminal (TTY) mode, so PEL
+  only activates it in graphics mode.
+- The version of this package on MELPA is version 0.2.8 and obsolete.
+- The author maintains its latest version (0.2.11) in the EmacsWiki.
+- PEL uses the EmacsWiki version.
+
+References:
+- `popup-kill-ring' source @ EmacsWiki: URL
+  `https://www.emacswiki.org/emacs/popup-kill-ring.el'
+- Uncle Dave's YouTube video on it: URL
+  `https://www.youtube.com/watch?v=LFXA089Tx38'"
+  :group 'pel-pkg-for-undo
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-undo-tree nil
+  "Control whether PEL uses the undo-tree package."
+  :group 'pel-pkg-for-undo
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-goto-last-change nil
+  "Control whether PEL uses the {goto-last-change} package."
+  :group 'pel-pkg-for-undo
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; Version Control System Support
+;; ------------------------------
+(defgroup pel-pkg-for-vcs nil
+  "List of external packages that PEL can use to support use of (D)VCS."
+  :group 'pel-package-use
+  :link `(url-link :tag "Mercurial PDF" ,(pel-pdf-file-url "vcs-mercurial")))
+
+(defcustom pel-use-magit nil
+  "Control whether PEL provides access to the Magit package."
+  :group 'pel-pkg-for-vcs
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-monky nil
+  "Control whether PEL provides access to the Monky package."
+  :group 'pel-pkg-for-vcs
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; Windows Management
+;; ------------------
+(defgroup pel-pkg-for-window nil
+  "List of external packages that PEL can use to manage windows."
+  :group 'pel-package-use
+  :group 'windows
+  :link `(url-link :tag "Windows PDF" ,(pel-pdf-file-url "windows")))
+
+;; Note: some other windows modules are used by PEL and are loaded
+;;       regardless of the options since they are relatively small
+;;       and inexpensive:
+;;       - windmove
+;;       - winner
+
+(defcustom pel-use-ace-window  nil
+  "Control whether PEL uses the `ace-window' package."
+  :group 'pel-pkg-for-window
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-winner nil
+  "Control whether PEL uses the `winner' package."
+  :group 'pel-pkg-for-window
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-smooth-scrolling nil
+  "Control whether PEL provides the smooth-scrolling capability."
+  :group 'pel-pkg-for-window
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-framemove nil
+  "Control whether PEL uses the framemove package.
+It is similar to windmove and ties with it.
+
+Notes:
+- With PEL, if framemove is used windmove must also be used
+  (see `pel-use-windmove').
+- This package work with Emacs in graphics mode.  Multiple
+  frames *can* be used in terminal (TTY) mode but only one can
+  be displayed at a time in the terminal window.
+- This file is not available MELPA (yet, as of Jan 2020).
+- The version 0.10 is available via the relevant EmacsWiki page
+  URL `https://www.emacswiki.org/emacs/framemove.el'
+- Older version 0.9 used an obsolete function, that was fixed in version 0.10.
+
+References:
+- Author's site: Emacs Tip# 35: framemove:
+  URL `http://trey-jackson.blogspot.com/2010/02/emacs-tip-35-framemove.html'.
+- EmacsWiki framemove page: URL `https://www.emacswiki.org/emacs/FrameMove'.
+- Youtube video on windmove and framemove: URL
+  `https://www.youtube.com/watch?v=f3th2jyv35c'."
+  :group 'pel-pkg-for-window
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; pel-pkg-for-session
+;; -------------------
+(defgroup pel-pkg-for-session nil
+  "PEL window session management."
+  :group 'pel-pkg-for-window
+  :link `(url-link :tag "Sessions PDF" ,(pel-pdf-file-url "sessions")))
+
+(defcustom pel-use-desktop nil
+  "Control whether desktop feature is used for session management.
+
+When session management controlled by desktop feature, then
+identify whether the built-in desktop.el is used alone or whether
+one of the desktop-registry or desktop+ is also used.
+
+The value can be:
+
+- nil : nothing is used.
+
+- t:                             use built-in desktop but do NOT
+                                 activate the desktop save mode.
+
+- `with-desktop-automatic':      use built-in desktop and
+                                 activate desktop save mode.
+
+- `with-desktop-registry':       use desktop and the desktop-registry
+                                 external package.
+
+- `with-desktop-registry-automatic': use desktop, the desktop-registry
+                                     and activate desktop auto-save mode.
+
+- `with-desktop+':               use desktop and the desktop+ external package."
+  :group 'pel-pkg-for-session
+  :type '(choice
+          (const :tag "Not used" nil)
+          (const :tag "Use built-in desktop - do NOT activate desktop-save-mode" t)
+          (const :tag "Use built-in desktop and ACTIVATE desktop-save-mode"
+                 with-desktop-automatic)
+          (const :tag "Use desktop with desktop-registry \
+- do NOT activate desktop-save-mode " with-desktop-registry)
+          (const :tag "Use desktop with desktop-registry \
+and ACTIVATE desktop-save-mode" with-desktop-registry-automatic)
+          (const :tag "Use desktop with desktop+" with-desktop+)))
+
+;; desktop  user options:
+;; - desktop-save-mode
+;; - desktop-restore-frames
+;; - desktop-files-not-to-save
+;; - frameset-filter-alist
+;; - desktop-path
+;; - desktop-restore-eager
+;; - desktop-globals-to-clear
+;; - desktop-clear-preserve-buffers-regexp
+;; - desktop-auto-save-timeout
+;; - desktop-load-locked-desktop
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; pel-pkg-for-speedbar
+;; --------------------
+(defgroup pel-pkg-for-speedbar nil
+  "PEL Speedbar management."
+  :group 'pel-pkg-for-window
+  :link `(url-link :tag "Speedbar PDF" ,(pel-pdf-file-url "speedbar")))
+
+(defcustom pel-use-speedbar nil
+  "Control whether PEL uses the Speedbar and SR-Speedbar packages."
+  :group 'pel-pkg-for-speedbar
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-prefer-sr-speedbar-in-terminal t
+  "Prefer using Sr-Speedbar in terminal mode (when available) over Speedbar."
+  :group 'pel-pkg-for-speedbar
+  :type  'boolean
+  :safe  #'booleanp)
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel--options)
