@@ -1270,6 +1270,11 @@ Then save your changes."
 ;; - Function Keys - <f11> - Prefix ``<f11> <f2>`` : Customization
 ;;
 
+(defun pel-customize-browse ()
+  "Browse the PEL customization group"
+  (interactive)
+  (customize-browse 'pel))
+
 ;; -- Key bindings
 ;; Set up the key prefixes.
 (define-pel-global-prefix pel:cfg  (kbd "<f11> <f2>"))
@@ -1278,8 +1283,10 @@ Then save your changes."
 (define-key pel:cfg "G"     'customize-group)
 (define-key pel:cfg "O"     'customize-option)
 (define-key pel:cfg (kbd "M-c") 'pel-customize-cursor)
-
+(define-key pel:cfg (kbd "M-`") 'customize-browse)
+(define-key pel:cfg (kbd "M-1") 'pel-customize-browse)
 ;;
+
 (pel--cfg ""  pel:cfg "!")
 
 ;; Key bindings to access PEL customization groups quickly,
@@ -1316,7 +1323,8 @@ Then save your changes."
 (pel--cfg-pkg "forth"        pel:cfg-pl "f")
 (pel--cfg-pkg "graphviz-dot" pel:cfg-pl "g" "graphviz")
 (pel--cfg-pkg "julia"        pel:cfg-pl "j" "julia" "julia-mode" "julia-snail")
-(pel--cfg-pkg "lisp"         pel:cfg-pl "L" "lisp" "lispy")
+(pel--cfg-pkg "lisp"         pel:cfg-pl (kbd "M-L") "lispy") ; all Lisps
+(pel--cfg-pkg "clisp"        pel:cfg-pl "L" "lisp" "lispy") ; common lisp
 (pel--cfg-pkg "python"       pel:cfg-pl "p" "python" "python-flymake")
 (pel--cfg-pkg "rexx"         pel:cfg-pl "R")
 (pel--cfg-pkg "reST"         pel:cfg-pl "r" "rst")
@@ -2409,7 +2417,6 @@ This is meant to be used in the d-mode hook lambda."
     (define-pel-global-prefix pel:for-rexx (kbd "<f11> SPC R"))
     (define-key pel:for-rexx (kbd "<f1>") 'pel-help-pdf)
     (define-key pel:for-rexx (kbd "<f2>") 'pel-cfg-pkg-rexx)
-    ;;
     ;;
     ;; activate the <f12> key binding for rexx-mode
     (pel--mode-hook-maybe-call

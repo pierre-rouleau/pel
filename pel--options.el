@@ -70,8 +70,9 @@
 ;;         - pel-pkg-for-c
 ;;         - pel-pkg-for-c++
 ;;         - pel-pkg-for-d
-;;       - pel-pkg-for-elisp
-;;       - pel-pkg-for-clisp
+;;       - pel-pkg-for-lisp
+;;         - pel-pkg-for-elisp
+;;         - pel-pkg-for-clisp
 ;;       - pel-pkg-for-beam-vm
 ;;         - pel-pkg-for-erlang
 ;;         - pel-pkg-for-lfe
@@ -2018,7 +2019,7 @@ by the `pel-use-d-ac-dcd'."
 ;; ------------------
 (defgroup pel-pkg-for-elisp nil
   "PEL customization for Emacs Lisp."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-lisp
   :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp")))
 
 (defcustom pel-use-macrostep nil
@@ -2103,7 +2104,7 @@ the copyright holder value."
 ;; -------------------
 (defgroup pel-pkg-for-clisp nil
   "PEL customization for Common Lisp."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-lisp
   :link `(url-link :tag "Common Lisp PDF" ,(pel-pdf-file-url "pl-common-lisp")))
 
 (defcustom pel-use-common-lisp nil
