@@ -2190,7 +2190,12 @@ This is meant to be used in the d-mode hook lambda."
                lispy-describe-inline
                lispy-arglist-inline)
     :init
-    (cl-eval-when 'compile (require 'pel-lispy nil :no-error))))
+    (cl-eval-when 'compile (require 'pel-lispy nil :no-error))
+    (dolist (mode pel-modes-activating-lispy)
+      (when mode
+        (add-hook (pel-hook-symbol-for mode)
+                  (lambda ()
+                    (pel-lispy-mode)))))))
 
 ;; ----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC l`` : Emacs Lisp programming
