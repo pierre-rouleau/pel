@@ -43,7 +43,6 @@
 ;;     - pel-pkg-for-key-chord
 ;;   - pel-kbmacro
 ;;     - pel-pkg-for-kbmacro
-;;     - pel-pkg-for-modeline
 ;;     - pel-pkg-for-navigation
 ;;     - pel-pkg-for-regexp
 ;;     - pel-pkg-for-search
@@ -670,23 +669,6 @@ Repository: https://github.com/Silex/elmacro"
   :safe #'booleanp)
 
 ;; -----------------------------------------------------------------------------
-;; pel-pkg-for-modeline
-;; --------------------
-(defgroup pel-pkg-for-modeline nil
-  "List of external packages that PEL can use to modify the modeline."
-  :group 'pel-package-use
-  :group 'mode-line)
-
-;; TODO: change the group to screen recording??
-
-(defcustom pel-use-keycast nil
-  "Control whether the keycast package is made available.
-For more info, see URL https://github.com/tarsius/keycast"
-  :group 'pel-pkg-for-modeline
-  :type 'boolean
-  :safe #'booleanp)
-
-;; -----------------------------------------------------------------------------
 ;; pel-pkg-for-navigation
 ;; ----------------------
 (defgroup pel-pkg-for-navigation nil
@@ -1266,6 +1248,14 @@ References:
   :group 'pel-pkg-for-keys
   :type 'boolean
   :safe #'booleanp)
+
+(defcustom pel-use-keycast nil
+  "Control whether the keycast package is made available."
+  :group 'pel-pkg-for-keys
+  :type 'boolean
+  :safe #'booleanp
+  :link '(url-link :tag "keycast @ github"
+                   "https://github.com/tarsius/keycast"))
 
 ;; -----------------------------------------------------------------------------
 ;; Text and Code Completion and Expansion
@@ -2323,7 +2313,8 @@ Standards & Guidelines."
   :type '(choice
           (const   :tag "Use the default fill-column value." nil)
           (integer :tag "Use a specific value for erlang-mode buffers:"))
-  :link '(url-link "https://github.com/inaka/erlang_guidelines#100-column-per-line"))
+  :link '(url-link :tag "Inka Erlang Guideline"
+                   "https://github.com/inaka/erlang_guidelines#100-column-per-line"))
 
 (defcustom pel-erlang-skel-use-separators t
   "Specifies whether Erlang code block include separators line.
