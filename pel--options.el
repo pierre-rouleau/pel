@@ -63,8 +63,8 @@
 ;;         - pel-pkg-for-c++
 ;;         - pel-pkg-for-d
 ;;       - pel-pkg-for-lisp
-;;         - pel-pkg-for-elisp
 ;;         - pel-pkg-for-clisp
+;;         - pel-pkg-for-elisp
 ;;       - pel-pkg-for-beam-vm
 ;;         - pel-pkg-for-elixir
 ;;         - pel-pkg-for-erlang
@@ -1753,6 +1753,20 @@ by the `pel-use-d-ac-dcd'."
   '(repeat symbol))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Common Lisp Support
+;; -------------------
+(defgroup pel-pkg-for-clisp nil
+  "PEL customization for Common Lisp."
+  :group 'pel-pkg-for-lisp
+  :link `(url-link :tag "Common Lisp PDF" ,(pel-pdf-file-url "pl-common-lisp")))
+
+(defcustom pel-use-common-lisp nil
+  "Control whether PEL supports Common Lisp development."
+  :group 'pel-pkg-for-clisp
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Emacs Lisp Support
 ;; ------------------
 (defgroup pel-pkg-for-elisp nil
@@ -1834,20 +1848,6 @@ file written inside the global setting like this:
 Replace the gpl-3.0 with the license you want and write your name inside
 the copyright holder value."
   :group 'pel-elisp-code-style
-  :type 'boolean
-  :safe #'booleanp)
-
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; Common Lisp Support
-;; -------------------
-(defgroup pel-pkg-for-clisp nil
-  "PEL customization for Common Lisp."
-  :group 'pel-pkg-for-lisp
-  :link `(url-link :tag "Common Lisp PDF" ,(pel-pdf-file-url "pl-common-lisp")))
-
-(defcustom pel-use-common-lisp nil
-  "Control whether PEL supports Common Lisp development."
-  :group 'pel-pkg-for-clisp
   :type 'boolean
   :safe #'booleanp)
 
