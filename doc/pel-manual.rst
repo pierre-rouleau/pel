@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-16 23:14:35, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-16 23:16:47, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5152,6 +5152,7 @@ key-seq_                      MELPA_
 lfe-mode_                     MELPA_
 lice_                         MELPA_
 lispy_                        MELPA_
+lpy_                          MELPA_
 macrostep_                    MELPA_
 multiple-cursors_             MELPA_
 Magit_                        MELPA_
@@ -5267,6 +5268,7 @@ when running Emacs 27.1 and later versions.
 .. _lfe-mode:                  https://melpa.org/#/lfe-mode
 .. _lice:                      https://melpa.org/#/lice
 .. _lispy:                     https://melpa.org/#/lispy
+.. _lpy:                       https://melpa.org/#/lpy
 .. _macrostep:                 https://melpa.org/#/macrostep
 .. _multiple-cursors:          https://melpa.org/#/multiple-cursors
 .. _neotree:                   https://melpa.org/#/neotree
