@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-08 14:29:13, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-17 22:14:30, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -26,7 +26,17 @@
 ;;; Commentary:
 ;;
 ;; The functions and macros defined in this file are used by pel_keys.el to
-;; create specialized key bindings.
+;; create specialized key bindings and to manipulate customization groups.
+
+;; The following lists the functions ('-'), and macros ('@') provided
+;; and their calling hierarchy:
+;;
+;; @ `pel--cfg'
+;;    - `pel-prefixed'
+;; @ `pel--cfg-pkg'
+;;    - `pel--customize-groups'
+;;       - `pel--group-isin-libfile'
+;;       - `pel--isa-custom-group-p'
 
 ;;; ----------------------------------------------------------------------------
 ;;; Dependencies:
@@ -69,6 +79,8 @@ display in other window." (pel-prefixed
          (customize-group (quote ,group) other-window))
        ;; then define the global key
        (define-key ,prefix ,key (quote ,fct)))))
+
+;; --
 
 (defun pel--isa-custom-group-p (group-name)
   "Return t if GROUP-NAME string is the name of an existing customize group."
@@ -138,7 +150,6 @@ display in other window and open the related group(s) that exist."
            (pel--customize-groups (quote ,other-groups))))
        ;; then define the global key
        (define-key ,prefix ,key (quote ,fct)))))
-
 
 ;;; ----------------------------------------------------------------------------
 (provide 'pel--keys-macros)
