@@ -468,8 +468,18 @@ number of lines.
   "Move to the end of field/line/window/buffer.
 Return number of lines scrolled."
   (if (not (eolp))
-      (progn
+      ;; not at end of line, could be inside a field.
+      (let ((p1 (point))
+            p2)
+        ;; try moving to end of line
         (end-of-line)
+        (setq p2 (point))
+        (when (= p1 p2)
+          ;; point did not move: it's at the end of a field
+          ;; force moving right (unconstrained by field) and check again
+          (right-char)
+          (unless (eolp)
+            (end-of-line)))
         0)
     ;; cannot get exact value of end of window, check if within 150 chars
     (if (> (abs (- (point) (window-end))) 150)
