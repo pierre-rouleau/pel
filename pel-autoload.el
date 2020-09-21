@@ -262,6 +262,8 @@
   (dolist (fct '(pel-beginning-of-line
                  pel-end-of-line
                  pel-newline-and-indent-below
+                 pel-show-if-newline-aligns
+                 pel-toggle-newline-indent-align
                  pel-find-thing-at-point
                  pel-show-char-syntax
                  pel-forward-token-start
