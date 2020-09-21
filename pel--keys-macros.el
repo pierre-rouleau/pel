@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-21 14:26:58, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-21 14:59:16, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -75,7 +75,8 @@
     ;; ([f11 f2 32]      nil                      pel-pkg-for-programming)
     ([f11 f8]         "projectile"             pel-pkg-for-project-mng projectile)
     ([f11 ?$]         "spell-checking"         pel-pkg-for-spelling)
-    ([f11 ?']         "bookmarks"              pel-pkg-for-bookmark)
+    ([f11 ?']         "bookmarks"              pel-pkg-for-bookmark    (bookmark
+                                                                        bm))
     ([f11 ?,]         "auto-completion"        pel-pkg-for-expand      (auto-complete
                                                                         company
                                                                         hippie-expand)) ; helm, ivy, ??? no prefix for those
