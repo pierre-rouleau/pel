@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-21 10:16:08, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-21 14:26:58, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -221,7 +221,7 @@ stored inside the doc/pdf directory.")
 
 (defconst pel--mode-letter-alist
   '(("dired"           [dired])
-    ("applescript"     [f11 32 ?a])
+    ("apples"          [f11 32 ?a])
     ("c++"             [f11 32 ?C])
     ("c"               [f11 32 ?c])
     ("common-lisp"     [f11 32 ?L])
