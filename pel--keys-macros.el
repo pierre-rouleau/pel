@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-21 14:59:16, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-21 17:31:01, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -63,7 +63,7 @@
 (defconst pel--prefix-to-topic-alist
   ;; key sequence     F1: Help PDF fname       F2: PEL custom group    F3: lib custom group
   ;; ------------     ------------------       --------------------    -------------------
-  '(
+  `(
     ([f6]             "inserting-text"         pel-pkg-for-insertions)
     ([f7 f8]          "pl-applescript"         pel-pkg-for-applescript)
     ([f8]             "projectile"             pel-pkg-for-project-mng projectile)
@@ -118,13 +118,21 @@
     ([f11 ?X]         "tags"                   pel-pkg-for-tags        etags)
     ([f11 ?_]         "inserting-text"         pel-pkg-for-insertions)
     ([f11 ?a]         "abbreviations"          pel-pkg-for-expand      abbrev)
-    ([f11 ?b]         "buffers"                pel-pkg-for-buffer      (ibuffer
+
+    ([f11 ?b]         "buffers"                pel-pkg-for-buffer      (Buffer-menu
+                                                                        ibuffer
                                                                         minibuffer
-                                                                        buffer-menu))
+                                                                        nhexl))
     ;;  ([f11 ?b ?I]
-    ([f11 ?b ?h]      "highlight"              pel-pkg-for-parens      (auto-highlight
-                                                                        iedit
-                                                                        rainbow-delimiters ))
+    ([f11 ?b ?h]      "highlight"              pel-pkg-for-parens       ,(let ((items
+                                                                                (list
+                                                                                 'auto-highlight
+                                                                                 'iedit
+                                                                                 'rainbow-delimiters
+                                                                                 'vline)))
+                                                                           (if (version< emacs-version "27.1")
+                                                                               (append items (list 'fill-column-indicator))
+                                                                             items)))
     ([f11 ?c]         "counting"               nil)
     ([f11 ?d]         "diff-merge"             pel-pkg-for-ztree       ztree-diff)
     ([f11 ?d ?e]      "diff-merge"             pel-pkg-for-ztree       ediff)
@@ -333,6 +341,14 @@ There should be no key binding!" keyseq))
                   (push (symbol-name symbol) custom-groups))))
     (not (null (member group-name custom-groups)))))
 
+
+(defun pel--found (regxp)
+  "Search for regular expression from the top of buffer.
+Return non-nil if found, nil otherwise."
+  (goto-char (point-min))
+  (re-search-forward regxp nil :noerror))
+
+
 (defun pel--group-isin-libfile (group)
   "Return non-nil if customize GROUP is defined in an accessible Emacs Lisp file.
 Return the path to the source file containing the group.
@@ -345,13 +361,9 @@ Return nil otherwise."
         (when (file-exists-p file-path)
           (with-temp-buffer
             (insert-file-contents file-path)
-            (goto-char (point-min))
-            (when (re-search-forward (concat
-                                      "^ *?(defgroup +?"
-                                      group
-                                      " ")
-                                     nil
-                                     :noerror)
+            (when
+                (or (pel--found (format "^ *?(defgroup +?%s " group))
+                    (pel--found (format "^ +?:group +?'%s)?$" group)))
               file-path)))))))
 
 (defun pel--customize-group (group &optional other-window)
@@ -376,7 +388,9 @@ If OTHER-WINDOW is non-nil display in other window."
                   library-name))
             (when (load-library library-name)
               (customize-group group other-window))))
-        (error "Customization group '%s' is unknown" group)))))
+        (user-error "Customization group '%s' currently unknown.\n\
+PEL cannot locate a file that defines this group.\n\
+You will have to manually load the library where this group is defined." group)))))
 
 ;;-pel-autoload
 (defun pel-customize-pel (&optional other-window)

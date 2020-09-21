@@ -1249,10 +1249,7 @@ Then save your changes."
 (pel--cfg     ""            pel:cfg-pel "!")  ; all of PEL
 ;; Key bindings to access PEL customization groups quickly,
 ;; and optionally other related groups
-(if (version< emacs-version "27.1")
-    (pel--cfg-pkg "buffer"  pel:cfg-pel "b" "rainbow-delimiters" "vline" "nhexl" "fill-column-indicator")
-  (pel--cfg-pkg "buffer"    pel:cfg-pel "b" "rainbow-delimiters" "vline" "nhexl"))
-(pel--cfg-pkg "bookmark"    pel:cfg-pel "'")
+
 (pel--cfg-pkg "cursor"      pel:cfg-pel "_" "iedit" "multiple-cursors")
 (pel--cfg-pkg "completion"  pel:cfg-pel "c")
 (pel--cfg-pkg "dired"       pel:cfg-pel "d" "dired")
@@ -1291,8 +1288,6 @@ Then save your changes."
 
 ;; --
 
-(pel--cfg-emacs pel:cfg-emacs "a" "abbrev")
-(pel--cfg-emacs pel:cfg-emacs "b" "Buffer-menu")
 (pel--cfg-emacs pel:cfg-emacs "m" "man")
 (pel--cfg-emacs pel:cfg-emacs "j" "webjump")
 (pel--cfg-emacs pel:cfg-emacs "l" "locate")
