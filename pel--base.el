@@ -78,6 +78,10 @@
 ;;  - `pel-hook-symbol-for'
 ;;  - `pel-map-symbol-for'
 ;;
+;; Hook control
+;;
+;;  - `pel-add-hook-for'
+;;
 ;; Basic functions working with values and variables:
 ;;  - `pel-toggle-and-show'
 ;;    - `pel-toggle'
@@ -521,6 +525,25 @@ Return the new state of the mode: t if active, nil otherwise."
 (defun pel-map-symbol-for (mode)
   "Return the map symbol for the specified MODE symbol."
     (intern (format "%s-map" (symbol-name mode))))
+
+;; -----------------------------------------------------------------------------
+;; Hook control
+;; ------------
+
+(defun pel-add-hook-for (modes-list-symbol func)
+  "Add the FUNC hook to all modes listed in the MODE-LIST_SYMBOL."
+    (dolist (mode (eval modes-list-symbol))
+      (if (and mode              ; make sure the mode is a valid symbol
+               (symbolp mode))   ; TODO: find better ways to detect major mode
+          (add-hook (pel-hook-symbol-for mode)
+                    func)
+        (display-warning
+         :error
+         (format "Invalid mode %s in the list %s.\n\
+Change its customized value with ``M-x customize %s``"
+                 mode
+                 modes-list-symbol
+                 modes-list-symbol)))))
 
 ;; -----------------------------------------------------------------------------
 ;; Basic functions working with values and variables

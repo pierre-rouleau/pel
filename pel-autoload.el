@@ -182,10 +182,16 @@
 
   ;; pel-help
   (dolist (fct '(pel-show-kill-ring
-                 pel-show-major-mode
-                 pel-help-pdf
-                 pel-help-pdfs-dir))
+                 pel-show-major-mode))
     (autoload fct "pel-help"))
+
+
+  ;; pel--keys-macros
+  (dolist (fct '(pel-help-pdf
+                 pel-customize-pel
+                 pel-customize-library
+                 pel-help-pdfs-dir))
+    (autoload fct "pel--keys-macros"))
 
   ;; pel-hideshow.el
   (dolist (fct '(pel-show-hide-state

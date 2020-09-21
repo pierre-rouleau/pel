@@ -182,7 +182,7 @@ y/Y (yes), n/N (no), e/E (edit), l/L (library).\n")
 ;;
 
 (defun pel--prompt-for (title selection &optional current)
-  "Return a prompt string with TITLE for  SELECTION.
+  "Return a prompt string with TITLE for SELECTION.
 SELECTION is a list of (char prompt value).
 CURRENT optionally identifies the currently used value."
   (format "%s%s. Select: %s."

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-17 22:14:30, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-21 10:16:08, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -28,57 +28,297 @@
 ;; The functions and macros defined in this file are used by pel_keys.el to
 ;; create specialized key bindings and to manipulate customization groups.
 
+;; To have a name show up in which-key 'menu', a named function is required,
+;; otherwise all we see is 'prefix' which is not meaningful.
+;; The macros in this file help simplify/reduce the lines of code used to
+;; create the key bindings for functions that open the customization groups
+;; PEL configuration and for Emacs groups..
+;;
 ;; The following lists the functions ('-'), and macros ('@') provided
 ;; and their calling hierarchy:
 ;;
+;; @ `pel--cfg-emacs'
+;; @ `pel--cfg-ext-pkg'
 ;; @ `pel--cfg'
 ;;    - `pel-prefixed'
 ;; @ `pel--cfg-pkg'
 ;;    - `pel--customize-groups'
-;;       - `pel--group-isin-libfile'
-;;       - `pel--isa-custom-group-p'
+;;       - `pel--customize-group'
+;;         - `pel--group-isin-libfile'
+;;         - `pel--isa-custom-group-p'
 
 ;;; ----------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 ;;
-
-;;; ----------------------------------------------------------------------------
+(require 'pel--options)
+;;; -----------------------------------------------------------------------------
 ;;; Code:
 ;;
 
-;; -- Macros
-;; To have a name show up in which-key 'menu', a named function is required,
-;; otherwise all we see is 'prefix' which is not meaningful.
-;; The macros help simplify/reduce the lines of code used to create the
-;; key bindings for PEL configuration.
-;;
+;; -----------------------------------------------------------------------------
+;; PEL Key Sequences Prefix and their F1, F2 and F3 topics
+;; -------------------------------------------------------
 
-(defun pel-prefixed (str &optional prefix)
-  "Return the STR string prefixed with PREFIX (or space) if not empty.
-Pass empty string unchanged."
-  (if (string= str "")
-      ""
-    (format "%s%s"
-            (or prefix " ")
-            str)))
+(defconst pel--prefix-to-topic-alist
+  ;; key sequence     F1: Help PDF fname       F2: PEL custom group    F3: lib custom group
+  ;; ------------     ------------------       --------------------    -------------------
+  '(
+    ([f6]             "inserting-text"         pel-pkg-for-insertions)
+    ([f7 f8]          "pl-applescript"         pel-pkg-for-applescript)
+    ([f8]             "projectile"             pel-pkg-for-project-mng projectile)
+    ([f11]            "-pel-key-maps"          nil)
+    ([f11 f10]        "menus"                  nil                     menu)
+    ([f11 f2]         "customize"              nil                     customize)
+    ;; ([f11 f2 ?E]      nil                      nil)
+    ;; ([f11 f2 ?P]      nil                      nil)
+    ;; ([f11 f2 32]      nil                      pel-pkg-for-programming)
+    ([f11 f8]         "projectile"             pel-pkg-for-project-mng projectile)
+    ([f11 ?$]         "spell-checking"         pel-pkg-for-spelling)
+    ([f11 ?']         "bookmarks"              pel-pkg-for-bookmark)
+    ([f11 ?,]         "auto-completion"        pel-pkg-for-expand      (auto-complete
+                                                                        company
+                                                                        hippie-expand)) ; helm, ivy, ??? no prefix for those
+    ([f11 ?-]         "cut-paste"              nil                     (killing
+                                                                        popup-kill-ring))
+    ([f11 ?.]         "marking"                nil)
+    ([f11 ?=]         "cut-paste"              nil)
+    ([f11 59]         ("comments"
+                       "hide-show-code")        nil                    comment hideshow)
+    ([f11 ??]         "help"                   )
+    ([f11 9]          "indentation"            nil                     indent)
+    ([f11 134217843]  "speedbar"               pel-pkg-for-speedbar    speedbar) ; 2 different possible key sequences.
+    ([f11 27 ?s]      "speedbar"               pel-pkg-for-speedbar    speedbar)
+    ([f11 32 ?C]      "pl-c++"                 pel-pkg-for-c++         (cpp
+                                                                        c-macro))
+    ([f11 32 ?C ?#]   "pl-c++"                 pel-pkg-for-c++         hide-ifdef)
+    ([f11 32 ?D]      "pl-d"                   pel-pkg-for-d)
+    ([f11 32 ?L]      "pl-common-lisp"         pel-pkg-for-clisp       lisp)
+    ([f11 32 ?R]      "pl-rexx"                pel-pkg-for-rexx)
+    ([f11 32 ?a]      "pl-applescript"         pel-pkg-for-applescript apples)
+    ([f11 32 ?c]      "pl-c"                   pel-pkg-for-c           (c
+                                                                        c-macro))
+    ([f11 32 ?c ?#]   "pl-c"                   pel-pkg-for-c           hide-ifdef)
+    ([f11 32 ?e]      "pl-erlang"              pel-pkg-for-erlang      erlang)
+    ([f11 32 ?f]      "pl-forth"               pel-pkg-for-forth)
+    ([f11 32 ?g]      "graphviz-dot"           pel-pkg-for-graphviz-dot graphviz)
+    ([f11 32 ?j]      "pl-julia"               pel-pkg-for-julia       julia)
+    ([f11 32 ?l]      "pl-emacs-lisp"          pel-pkg-for-elisp       lisp)
+    ([f11 32 ?p]      "pl-python"              pel-pkg-for-python      python)
+    ([f11 32 ?r]      "mode-rst"               pel-pkg-for-reST        rst)
+    ([f11 32 ?u]      "plantuml"               pel-pkg-for-plantuml    plantuml-mode)
+    ([f11 32 ?x]      "pl-elixir"              pel-pkg-for-elixir      elixir)
+    ;; ([f11 ?C]
+    ([f11 ?D]         "drawing"                pel-pkg-for-drawing-markup)
+    ([f11 ?D ?u]      "plantuml"               pel-pkg-for-plantuml    plantuml-mode)
+    ([f11 ?F]         "frames"                 pel-pkg-for-windows     frames)
+    ([f11 ?S]         "sessions"               pel-pkg-for-sessions    desktop)
+    ;;  ([f11 ?S ?R]
+    ([f11 ?X]         "tags"                   pel-pkg-for-tags        etags)
+    ([f11 ?_]         "inserting-text"         pel-pkg-for-insertions)
+    ([f11 ?a]         "abbreviations"          pel-pkg-for-expand      abbrev)
+    ([f11 ?b]         "buffers"                pel-pkg-for-buffer      (ibuffer
+                                                                        minibuffer
+                                                                        buffer-menu))
+    ;;  ([f11 ?b ?I]
+    ([f11 ?b ?h]      "highlight"              pel-pkg-for-parens      (auto-highlight
+                                                                        iedit
+                                                                        rainbow-delimiters ))
+    ([f11 ?c]         "counting"               nil)
+    ([f11 ?d]         "diff-merge"             pel-pkg-for-ztree       ztree-diff)
+    ([f11 ?d ?e]      "diff-merge"             pel-pkg-for-ztree       ediff)
+    ;;  ([f11 ?d ?e ?b]
+    ;;  ([f11 ?d ?e ?d]
+    ;;  ([f11 ?d ?e ?f]
+    ;;  ([f11 ?d ?e ?m]
+    ;;  ([f11 ?d ?e ?p]
+    ;;  ([f11 ?d ?e ?r]
+    ([f11 ?f ?v]      "file-variables"         nil)
+    ([dired]          "mode-dired"             pel-pkg-for-dired       dired)
 
-(defmacro pel--cfg (pel-group prefix key)
-  "Define a function and key binding to customize specified PEL-GROUP mapped to PREFIX KEY."
-  (let ((fct (intern (format "pel-cfg%s" (pel-prefixed pel-group "-"))))
-        (group (intern (format "pel%s" (pel-prefixed pel-group "-"))))
-        (docstring (format "Customize PEL%s support.\n\
-If OTHER-WINDOW is non-nil (use \\[universal-argument]), \
-display in other window." (pel-prefixed
-                           (capitalize pel-group)))))
-    `(progn
-       ;; first declare the function
-       (defun ,fct (&optional other-window)
-         ,docstring
-         (interactive "P")
-         (customize-group (quote ,group) other-window))
-       ;; then define the global key
-       (define-key ,prefix ,key (quote ,fct)))))
+    ([f11 ?f]         ("file-mngt"
+                       "web")                 pel-pkg-for-filemng      (files
+                                                                        neotree
+                                                                        ztree))
+    ([f11 ?f ?a]      "file-mngt"              pel-pkg-for-filemng    ffap)
+    ([f11 ?f ?r]      "file-mngt"              pel-pkg-for-filemng     auto-revert)
+    ([f11 ?f ?v]      "file-variables"         pel-pkg-for-filemng     )
+    ([f11 ?f ?v ?D]   "file-variables"         pel-pkg-for-filemng     )
+    ([f11 ?g]         "grep"                   pel-pkg-for-grep        (grep
+                                                                        ripgrep
+                                                                        wgrep))
+    ([f11 ?i]         "inserting-text"         pel-pkg-for-insertions  (lice
+                                                                        smart-dash
+                                                                        yanippet))
+    ([f11 ?k]         "keyboard-macros"        pel-pkg-for-kbmacro     (kmacro
+                                                                        centimacro))
+    ([f11 ?k ?e]      "keyboard-macros"        pel-pkg-for-kbmacro     emacros)
+    ([f11 ?k ?l]      "keyboard-macros"        pel-pkg-for-kbmacro     elmacro)
+    ([f11 ?l]         "display-lines"          nil                     visual-line)
+    ([f11 ?m]         "cursor"                 pel-pkg-for-cursor      (cursor
+                                                                        multiple-cursor)) ; vcursor??
+    ([f11 ?o]         "sorting"                nil)
+    ([f11 ?r]         "registers"              nil)
+    ([f11 ?s]         "search-replace"         pel-pkg-for-search      (isearch
+                                                                        anzu
+                                                                        swiper
+                                                                        pcre
+                                                                        visual-regexp
+                                                                        iedit))
+    ([f11 ?s ?m]      "search-replace"         nil)
+    ([f11 ?s ?w]      "search-replace"         nil)
+    ([f11 ?s ?x]      "search-replace"         nil)  ; explicit def of F2 to pel-reb-re-syntax
+    ([f11 ?t]         ("case-conversion"
+                       "input-method"
+                       "text-modes")           nil)
+    ([f11 ?t ?a]      "align"                  pel-pkg-for-align       align)
+    ([f11 ?t ?f]      "filling-justification"  nil                     fill)
+    ([f11 ?t ?j]      "filling-justification"  nil                     fill)
+    ([f11 ?t ?m]      ("enriched-text"
+                       "text-modes")           nil                     enriched)
+    ([f11 ?t ?t]      "transpose"              nil)
+    ([f11 ?t ?w]      "whitespaces"            nil                     whitespace)
+    ([f11 ?u]         "undo-redo-repeat"       pel-pkg-for-undo        undo-tree)
+    ([f11 ?v]         "vsc-mercurial"          pel-pkg-for-vcs         (vc-git
+                                                                        magit))
+    ([f11 ?w]         "windows"                pel-pkg-for-windows     (windows
+                                                                        ace-window
+                                                                        winner
+                                                                        windmove))
+    ([f11 ?w ?d]      "windows"                pel-pkg-for-windows)
+    ([f11 ?w ?s]      "windows"                pel-pkg-for-windows)
+    ([f11 ?x]         "shells"                 pel-pkg-for-shells      )
+    ([f11 ?y]         "inserting-text"         pel-pkg-for-insertions  yasnippet)
+    ([f11 ?|]         "scrolling"              pel-pkg-for-windows     (follow
+                                                                        smooth-scrolling))
+    )
+  "Map from key prefix array to topic string.
+The topic string correspond to the base name of the PDF file
+stored inside the doc/pdf directory.")
+
+;; PDF files not identified by the key sequences above
+;;   "autosave-backup"
+;;   "closing-suspending"
+;;   "completion-input"
+;;   "cua"
+;;   "ert"
+;;   "faces-fonts"
+;;   "hooks"
+;;   "key-chords"
+;;   "keys-f11"
+;;   "keys-fn"
+;;   "macOS-terminal-settings"
+;;   "mode-org-mode"
+;;   "modifier-keys"
+;;   "mouse"
+;;   "narrowing"
+;;   "navigation"
+;;   "numkeypad"
+;;   "packages"
+;;   "rectangles"
+
+;; --
+
+(defconst pel--mode-letter-alist
+  '(("dired"           [dired])
+    ("applescript"     [f11 32 ?a])
+    ("c++"             [f11 32 ?C])
+    ("c"               [f11 32 ?c])
+    ("common-lisp"     [f11 32 ?L])
+    ("d"               [f11 32 ?D])
+    ("elixir"          [f11 32 ?x])
+    ("emacs-lisp"      [f11 32 ?l])
+    ("erlang"          [f11 32 ?e])
+    ("forth"           [f11 32 ?f])
+    ("julia"           [f11 32 ?j])
+    ("python"          [f11 32 ?p])
+    ("rexx"            [f11 32 ?R])
+    ("rst"             [f11 32 ?r])
+    ("graphviz-dot"    [f11 32 ?g])
+    ("plantuml"        [f11 32 ?u]))
+  "Maps the name of a major mode (without the -mode suffix)
+to a symbol or key sequence array to use as map key inside
+`pel--prefix-to-topic-alist' table.")
+
+(defun pel--major-mode-keyseq (keyseq)
+  "Return global mode index for major mode KEYSEQ.
+The KEYSEQ is a sequence that starts with f12, used as a
+short cut in a major mode.
+It may have only one or several keys.
+Its meaning depend on the currently active major mode.
+Return the corresponding global key sequence that means the same
+thing so it can be used as an index inside variable
+`pel--prefix-to-topic-alist'."
+  (unless (eq (elt keyseq 0) 'f12)
+    (error "Logic error!! keyseq should start with f12.  It is %s" keyseq))
+  (let* ((mode-str (substring (symbol-name major-mode) 0 -5))
+         (keyidx (cadr (assoc mode-str pel--mode-letter-alist))))
+    (if keyidx
+        (seq-concatenate 'vector keyidx (seq-drop keyseq 1))
+      (error "Missing entry for % in pel--mode-letter-alist" mode-str))))
+
+(defun pel--kte-for (keyseq)
+  "Return the table entry for the specified KEYSEQ.
+The KEYSEQ should start with either f11 or f12.
+The f11 is a full key sequence.
+The f12 key sequence is a mode-specific key sequence,
+where f12 abbreviates the full f11 key sequence for the
+current major mode.
+Check the key sequences.  Expand the f12 key sequence into
+the full f11 key sequence. Report invalid key sequence."
+  (let ((prefix-key (elt keyseq 0)))
+    (unless (memq prefix-key '(f6 f7 f8 f11 f12 M-f12))
+      (user-error "This command can only be invoked via F6, F7, F8, F11, F12 or M-F12 prefix.\n\
+ Not %s in %s" prefix-key keyseq))
+    ;; Replace M-f12 by f12: all other logic has no knowledge of M-f12 bindings.
+    (when (eq prefix-key 'M-f12)
+      (setq prefix-key 'f12)
+      (aset keyseq 0 'f12))
+    (assoc (if (eq prefix-key 'f12)
+               (pel--major-mode-keyseq keyseq)
+             keyseq)
+           pel--prefix-to-topic-alist)))
+
+
+(defun pel--kte-pdfs (table-entry)
+  "Return a list of strings, the partial names of PDF files for the TABLE_ENTRY or nil if none."
+  (let ((elem (nth 1 table-entry)))
+    (if (stringp elem)
+        (list elem)
+      elem)))
+
+(defun pel--kte-pel-groups (table-entry)
+  "Return a list of symbols of PEL group for the TABLE-ENTRY, or nil if none."
+  (let ((elem (nth 2 table-entry)))
+    (if (and (symbolp elem) elem)
+        (list elem)
+      elem)))
+
+(defun pel--kte-lib-groups (table-entry)
+  "Return the library customization group (or list of groups) for the TABLE-ENTRY.
+Return nil if there are none."
+  (nth 3 table-entry))
+
+(defun pel--keyseq ()
+  "Return the key sequence that invoked the command.
+Drop the last key: it's either f1, f2 or f3, because a binding
+allowed the command to be invoked."
+  (seq-subseq (this-command-keys) 0 -1))
+
+;;-pel-autoload
+(defun pel-help-pdf ()
+  "Open the PEL PDF file(s) for the current context.
+The context is determined by the key sequence typed.
+This command should be bound to a PEL key sequence that ends with f1."
+  (interactive)
+  (let* ((keyseq (pel--keyseq))
+         (kte    (pel--kte-for keyseq)) ; pel--prefix-to-topic-alist entry
+         (pdfs   (pel--kte-pdfs kte)))
+    (unless pdfs
+      (error "No PDF entry in pel--prefix-to-topic-alist for %s.\n\
+There should be no key binding!" keyseq))
+    (dolist (topic pdfs)
+      (browse-url (pel-pdf-file-url topic)))))
 
 ;; --
 
@@ -113,21 +353,89 @@ Return nil otherwise."
                                      :noerror)
               file-path)))))))
 
+(defun pel--customize-group (group &optional other-window)
+  "Customize a specified GROUP.
+GROUP can be a string or a symbol.
+If the GROUP is unknown, check if it is defined in
+a library file with the same name and if so prompt the
+user to load it before customizing it.
+If OTHER-WINDOW is non-nil display in other window."
+  (when (symbolp group)
+    (setq group (symbol-name group)))
+
+  (if (pel--isa-custom-group-p group)
+      (customize-group group other-window)
+    (let ((file-path (pel--group-isin-libfile group)))
+      (if file-path
+        (let ((library-name (file-name-base file-path)))
+          (when (y-or-n-p
+                 (format
+                  "Group %s is from a non loaded %s. Load it first? "
+                  group
+                  library-name))
+            (when (load-library library-name)
+              (customize-group group other-window))))
+        (error "Customization group '%s' is unknown" group)))))
+
+;;-pel-autoload
+(defun pel-customize-pel (&optional other-window)
+  "Open the PEL customize group(s) for the current context.
+The context is determined by the key sequence typed.
+This command should be bound to a PEL key sequence that ends with f2."
+  (interactive "P")
+  (let* ((keyseq (pel--keyseq))
+         (kte    (pel--kte-for keyseq)) ; pel--prefix-to-topic-alist entry
+         (groups (pel--kte-pel-groups kte)))
+    (unless groups
+      (error "No PEL customization group entry in pel--prefix-to-topic-alist for %s\n\
+There should be no key binding!" keyseq))
+    (dolist (group groups)
+      (pel--customize-group group other-window))))
+
+
+;;-pel-autoload
+(defun pel-customize-library (&optional other-window)
+  "Open the customize group of a library related to the current context.
+The context is determined by the key sequence typed.
+This command should be bound to a PEL key sequence that ends with f3."
+  (interactive "P")
+  (let* ((keyseq (pel--keyseq))
+         (kte    (pel--kte-for keyseq)) ; pel--prefix-to-topic-alist entry
+         (groups (pel--kte-lib-groups kte)))
+    (unless groups
+      (error "No library customization group entry in pel--prefix-to-topic-alist for %s\n\
+There should be no key binding!" keyseq))
+    (if (symbolp groups)
+        (pel--customize-group groups other-window)
+      ;; There are several groups.  Prompt for one and open it.
+      ;; First build a choice list with numbers as the choice selector.
+      (require 'pel-prompt nil :noerror)
+     (if (fboundp 'pel-select-from)
+          (let ((choices '())
+                (idx     ?1))
+            (pel--customize-group
+             (pel-select-from
+              "Select group: "
+              (dolist (group groups (reverse choices))
+                (push (list                ; each list entry must have:
+                       idx                 ; a selector character
+                       (symbol-name group) ; a descriptive string
+                       group)              ; the value to return
+                      choices)
+                (setq idx (1+ idx))))
+             other-window))
+       (error "Failed loading pel-prompt!")))))
+
+;; -----------------------------------------------------------------------------
+
 (defun pel--customize-groups (group-list)
-  "Utility: customize all groups named in the GROUP-LIST if they exist."
-  (dolist (grp group-list)
-    (if (pel--isa-custom-group-p grp)
-        (customize-group grp t)
-      (let ((file-path (pel--group-isin-libfile grp)))
-        (when file-path
-          (let ((library-name (file-name-base file-path)))
-            (when (y-or-n-p
-                   (format
-                    "Group %s is from a non loaded %s. Load it first? "
-                    grp
-                    library-name))
-              (when (load-library library-name)
-                (customize-group grp t)))))))))
+  "Customize all groups named in the GROUP-LIST.
+If a group is unknown, check if the group is defined in
+a library file with the same name and if so prompt the
+user to load it before customizing the group."
+  (dolist (group group-list)
+    (pel--customize-group group t)))
+
 
 (defmacro pel--cfg-pkg (pel-group prefix key &rest other-groups)
   "Define a function and key binding to customize specified PEL-GROUP.
@@ -150,6 +458,146 @@ display in other window and open the related group(s) that exist."
            (pel--customize-groups (quote ,other-groups))))
        ;; then define the global key
        (define-key ,prefix ,key (quote ,fct)))))
+
+;; --
+
+(defun pel-prefixed (str &optional prefix)
+  "Return the STR string prefixed with PREFIX (or space) if not empty.
+Pass empty string unchanged."
+  (if (string= str "")
+      ""
+    (format "%s%s"
+            (or prefix " ")
+            str)))
+
+(defmacro pel--cfg (pel-group prefix key)
+  "Define a function and key binding to customize specified PEL-GROUP mapped to PREFIX KEY."
+  (let ((fct (intern (format "pel-cfg%s" (pel-prefixed pel-group "-"))))
+        (group (intern (format "pel%s" (pel-prefixed pel-group "-"))))
+        (docstring (format "Customize PEL%s support.\n\
+If OTHER-WINDOW is non-nil (use \\[universal-argument]), \
+display in other window." (pel-prefixed
+                           (capitalize pel-group)))))
+    `(progn
+       ;; first declare the function
+       (defun ,fct (&optional other-window)
+         ,docstring
+         (interactive "P")
+         (customize-group (quote ,group) other-window))
+       ;; then define the global key
+       (define-key ,prefix ,key (quote ,fct)))))
+
+;; --
+
+(defmacro pel--cfg-ext-pkg (prefix key group)
+  "Define a function and a KEY mapping to configure an external package GROUP."
+  (let ((fct (intern (format "pel-cfge-%s" group)))
+        (docstring   (format "Customize external package %s group.\n\
+If OTHER-WINDOW is non-nil (use \\[universal-argument]), \
+display in other window." group)))
+    `(progn
+       ;; declare the function
+       (defun ,fct (&optional other-window)
+         ,docstring
+         (interactive "P")
+         (pel--customize-group (quote ,group) other-window))
+       ;; define the global key mapping
+       (define-key ,prefix ,key (quote ,fct)))))
+
+;; --
+
+(defmacro pel--cfg-emacs (prefix key group)
+  "Define a function and a KEY mapping to configure Emacs GROUP."
+  (let ((fct (intern (format "pel-cfge-%s" group)))
+        (docstring   (format "Customize Emacs %s group.\n\
+If OTHER-WINDOW is non-nil (use \\[universal-argument]), \
+display in other window." group)))
+    `(progn
+       ;; declare the function
+       (defun ,fct (&optional other-window)
+         ,docstring
+         (interactive "P")
+         (customize-group (quote ,group) other-window))
+       ;; define the global key mapping
+       (define-key ,prefix ,key (quote ,fct)))))
+
+;; --
+
+(defmacro define-pel-global-prefix (prefix key)
+  "Define a PREFIX key name for KEY sequence on the global key map.
+If the variable `pel--prefix-to-topic-alist' identifies the
+KEY sequence then create function bindings under the PREFIX
+ corresponding to what is specified in the table entry:
+- Bind f1 to function `pel-help-pdf' if there is help pdf identified.
+- Bind f2 to function `pel-customize-pel' if there is PEL customization
+  group identified in the entry.
+- Bind f3 to the function `pel-customize-library' if there are library
+  customization group(s) in the entry."
+  (let* ((keyseq   (eval key))  ; key is a kbd expression.
+         (kte      (assoc keyseq pel--prefix-to-topic-alist))
+         (with-f1  (pel--kte-pdfs kte))
+         (with-f2  (pel--kte-pel-groups kte))
+         (with-f3  (pel--kte-lib-groups kte))
+         (code
+          `(progn
+             ;; declare the prefix variable to avoid compiler warnings.
+             (defvar ,prefix)
+             ;; define the prefix key as a global prefix
+             (define-prefix-command (quote ,prefix))
+             (global-set-key ,key (quote ,prefix)))))
+    (when with-f1
+      (setq code
+            (append code
+                    (list
+                     `(define-key ,prefix (kbd "<f1>") 'pel-help-pdf)))))
+    (when with-f2
+      (setq code
+            (append code
+                    (list
+                     `(define-key ,prefix (kbd "<f2>") 'pel-customize-pel)))))
+    (if with-f3
+        (append code
+                (list
+                 `(define-key ,prefix (kbd "<f3>") 'pel-customize-library)))
+      code)))
+
+;; --
+
+(defun pel--mode-hook-maybe-call (fct mode hook &optional append)
+  "Use FCT as the MODE HOOK and call it if buffer is currently in that MODE.
+The function FCT is added at the beginning of the hook list unless the
+optional argument APPEND is non-nil, in which case it is added at the end."
+  (add-hook hook fct append)
+  (if (eq major-mode mode)
+      (funcall fct)))
+
+;; --
+
+(defun pel-local-set-f12 (prefix &optional key)
+  "Assign the <f12> or <f12> KEY to PREFIX."
+  (if key
+      (local-set-key (kbd (format "<f12> %s" key))   prefix)
+    (local-set-key (kbd "<f12>")   prefix)))
+
+(defun pel-local-set-f12-M-f12 (prefix &optional key)
+  "Assign the <f12>/<M-f12> or <f12>/<M-f12> KEY to PREFIX."
+  (if key
+      (progn
+        (local-set-key (kbd (format "<f12> %s" key))   prefix)
+        (local-set-key (kbd (format "<M-f12> %s" key)) prefix))
+    (local-set-key (kbd "<f12>")   prefix)
+    (local-set-key (kbd "<M-f12>") prefix)))
+
+;; --
+
+;;-pel-autoload
+(defun pel-help-pdfs-dir ()
+  "Open a Dired buffer on the PEL PDF directory."
+  (interactive)
+  ;; TODO: if the buffer is already opened, move point to that buffer and
+  ;; make that buffer visible, don't open a new buffer or
+  ;; don't use the current window
+  (find-file (pel-pdf-directory)))
 
 ;;; ----------------------------------------------------------------------------
 (provide 'pel--keys-macros)

@@ -35,7 +35,8 @@
 ;; - pel
 ;;   - pel-base-emacs
 ;;   - pel-package-use
-;;     - pel-pkg-for-bookmarks
+;;     - pel-pkg-for-align
+;;     - pel-pkg-for-bookmark
 ;;     - pel-pkg-for-buffer
 ;;     - pel-pkg-for-completion
 ;;     - pel-pkg-for-cursor
@@ -162,6 +163,34 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
 (defgroup pel-package-use nil
   "List of external packages that can be used by PEL."
   :group 'pel)
+
+;; -----------------------------------------------------------------------------
+;; Alignment Support
+;; -----------------
+(defgroup pel-pkg-for-align nil
+  "Customization of PEL alignment support."
+  :group 'pel-package-use
+    :link `(url-link :tag "Align PDF" ,(pel-pdf-file-url "align")))
+
+(defcustom pel-modes-activating-align-on-M-RET nil
+  "List of major modes that automatically activate alignment on M-RET.
+For these modes the buffer local variable `pel-newline-does-align' is
+automatically set to t.  This activates the automatic alignment of contiguous
+lines when the function `pel-newline-and-indent-below' executes.
+The alignment is controlled by a set of regular-expression based rules
+stored in the variable `align-rules-list'.
+
+These rules support the alignment of C and Python assignment
+statements, where the alignment is done on the equal sign
+character. Also for C++ \"//\" style comments.
+See `align-rules-list'.
+
+By default PEL does not activate it on any mode.  To activate a mode,
+add the mode name in the list.
+For example, to activate it for C, add the c-mode symbol to the list."
+  :group 'pel-pkg-for-align
+  :type
+  '(repeat symbol))
 
 ;; -----------------------------------------------------------------------------
 ;; Bookmark Support
@@ -1159,13 +1188,13 @@ eglot is a client for Language Server Protocol (LSP) servers."
   "Specifies whether generic code block include separators line.
 If nil no separator line comment is used, otherwise separator line
 comments of length controlled by variable `fill-column' are inserted."
-  :group 'pel-generic-code-style
+  :group 'pel-pkg-generic-code-style
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-generic-skel-insert-file-timestamp t
   "Specifies whether a timestamp is inserted inside file module header block."
-  :group 'pel-generic-code-style
+  :group 'pel-pkg-generic-code-style
   :type 'boolean
   :safe #'booleanp)
 
@@ -1186,7 +1215,7 @@ file written inside the global setting like this:
 
 Replace the gpl-3.0 with the license you want and write your name inside
 the copyright holder value."
-  :group 'pel-generic-code-style
+  :group 'pel-pkg-generic-code-style
   :type 'boolean
   :safe #'booleanp)
 
@@ -1217,7 +1246,7 @@ You can use one of the following:
   'custom/skeleton/custom-c-skel.el'.
   The file name can be an absolute file name but it can also be a relative
   file name. On Unix systems you can use '~' to identify your home directory."
-  :group 'pel-generic-code-style
+  :group 'pel-pkg-generic-code-style
   :type '(choice
           (const  :tag "Default, controlled by PEL." nil)
           (string :tag "Use your own custom definition\n inside file")))
@@ -1228,7 +1257,7 @@ You can use one of the following:
 This includes the \"Module Description\" section and sections
 with titles identified by the variable
 `pel-generic-skel-module-section-titles'."
-  :group 'pel-generic-code-style
+  :group 'pel-pkg-generic-code-style
   :type 'boolean
   :safe #'booleanp)
 
@@ -1248,7 +1277,7 @@ to add the following sections:
 - Code.
 
 Empty strings can be used to specify section with a tempo marker with no text."
-  :group 'pel-generic-code-style
+  :group 'pel-pkg-generic-code-style
   :type '(repeat string))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1257,6 +1286,7 @@ Empty strings can be used to specify section with a tempo marker with no text."
 (defgroup pel-pkg-for-applescript nil
   "PEL customization for AppleScript."
   :group 'pel-pkg-for-programming
+  :group 'apples
   :link `(url-link :tag "AppleScript PDF" ,(pel-pdf-file-url "pl-applescript")))
 
 (defcustom pel-use-applescript nil
