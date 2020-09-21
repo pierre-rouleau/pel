@@ -551,10 +551,8 @@ on/off value, otherwise use \"on\" and \"off\".
 For example, to toggle the value of a variable  named isok,
 the caller must pass it quoted.
 The function issue an error if the argument is not a symbol."
-  (message "%s is now %s"
-           symbol
-           (pel-on-off-string
-            (pel-toggle symbol) on-string off-string)))
+  (pel-toggle symbol)
+  (message (pel-symbol-text symbol on-string off-string)))
 
 (defun pel-val-or-default (val default)
   "Return VAL if not nil otherwise return DEFAULT."
