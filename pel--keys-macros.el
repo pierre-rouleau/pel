@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-22 07:31:58, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-22 09:00:33, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -70,9 +70,6 @@
     ([f11]            "-pel-key-maps"          nil)
     ([f11 f10]        "menus"                  nil                     menu)
     ([f11 f2]         "customize"              nil                     customize)
-    ;; ([f11 f2 ?E]      nil                      nil)
-    ;; ([f11 f2 ?P]      nil                      nil)
-    ;; ([f11 f2 32]      nil                      pel-pkg-for-programming)
     ([f11 f8]         "projectile"             pel-pkg-for-project-mng projectile)
     ([f11 ?$]         "spell-checking"         pel-pkg-for-spelling)
     ([f11 ?']         "bookmarks"              pel-pkg-for-bookmark    (bookmark
@@ -85,7 +82,8 @@
     ([f11 ?.]         "marking"                nil)
     ([f11 ?=]         "cut-paste"              nil)
     ([f11 59]         ("comments"
-                       "hide-show-code")        nil                    comment hideshow)
+                       "hide-show-code")       nil                     (comment
+                                                                        hideshow))
     ([f11 ??]         "help"                   )
     ([f11 9]          "indentation"            nil                     indent)
     ([f11 134217843]  "speedbar"               pel-pkg-for-speedbar    speedbar) ; 2 different possible key sequences.
@@ -118,7 +116,6 @@
     ([f11 ?X]         "tags"                   pel-pkg-for-tags        etags)
     ([f11 ?_]         "inserting-text"         pel-pkg-for-insertions)
     ([f11 ?a]         "abbreviations"          pel-pkg-for-expand      abbrev)
-
     ([f11 ?b]         "buffers"                pel-pkg-for-buffer      (Buffer-menu
                                                                         ibuffer
                                                                         minibuffer
@@ -144,15 +141,14 @@
     ;;  ([f11 ?d ?e ?r]
     ([f11 ?f ?v]      "file-variables"         nil)
     ([dired]          "mode-dired"             pel-pkg-for-dired       dired)
-
     ([f11 ?f]         ("file-mngt"
                        "web")                 pel-pkg-for-filemng      (files
                                                                         neotree
                                                                         ztree))
-    ([f11 ?f ?a]      "file-mngt"              pel-pkg-for-filemng    ffap)
+    ([f11 ?f ?a]      "file-mngt"              pel-pkg-for-filemng     ffap)
     ([f11 ?f ?r]      "file-mngt"              pel-pkg-for-filemng     auto-revert)
-    ([f11 ?f ?v]      "file-variables"         pel-pkg-for-filemng     )
-    ([f11 ?f ?v ?D]   "file-variables"         pel-pkg-for-filemng     )
+    ([f11 ?f ?v]      "file-variables"         pel-pkg-for-filemng)
+    ([f11 ?f ?v ?D]   "file-variables"         pel-pkg-for-filemng)
     ([f11 ?g]         "grep"                   pel-pkg-for-grep        (grep
                                                                         ripgrep
                                                                         wgrep))
@@ -196,7 +192,7 @@
                                                                         windmove))
     ([f11 ?w ?d]      "windows"                pel-pkg-for-windows)
     ([f11 ?w ?s]      "windows"                pel-pkg-for-windows)
-    ([f11 ?x]         "shells"                 pel-pkg-for-shells      )
+    ([f11 ?x]         "shells"                 pel-pkg-for-shells)
     ([f11 ?y]         "inserting-text"         pel-pkg-for-insertions  yasnippet)
     ([f11 ?|]         "scrolling"              pel-pkg-for-windows     (follow
                                                                         smooth-scrolling))
