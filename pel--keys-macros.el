@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-21 22:59:55, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-22 07:31:58, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,7 +32,7 @@
 ;; otherwise all we see is 'prefix' which is not meaningful.
 ;; The macros in this file help simplify/reduce the lines of code used to
 ;; create the key bindings for functions that open the customization groups
-;; PEL configuration and for Emacs groups..
+;; PEL configuration and for Emacs groups.
 ;;
 ;; The following lists the functions ('-'), and macros ('@') provided
 ;; and their calling hierarchy:
@@ -317,7 +317,7 @@ allowed the command to be invoked."
 (defun pel--kte-select-topic (prompt strings)
   "PROMPT the user for one of the STRINGS and return the selected one."
   (if (< (length strings) 2)
-      strings
+      (car strings)
     (require 'pel-prompt nil :noerror)
     (if (fboundp 'pel-select-string-from)
         (pel-select-string-from prompt strings)
