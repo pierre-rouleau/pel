@@ -221,6 +221,44 @@ returns the value returned by (ACTION selected-value) evaluation."
         (funcall action requested-value)
       requested-value)))
 
+(defun pel-select-symbol-from (title symbols &optional first-idx)
+  "Prompt with a TITLE to select from a set of SYMBOLS.
+The list of choices use index characters starting at 1 unless
+FIRST-IDX is provided: a character.
+Return the selected symbol.
+TITLE   := a prompt string. It should end with a space.
+SYMBOLS := a list of symbols."
+  (let ((choices '())
+        (idx     (or first-idx ?1)))
+    (pel-select-from
+     title
+     (dolist (symbol symbols (reverse choices))
+       (push (list                 ; each list entry must have:
+              idx                  ; a selector character
+              (symbol-name symbol) ; a descriptive string
+              symbol)              ; the value to return
+             choices)
+       (setq idx (1+ idx))))))
+
+(defun pel-select-string-from (title strings &optional first-idx)
+  "Prompt with a TITLE to select from a set of STRINGS.
+The list of choices use index characters starting at 1 unless
+FIRST-IDX is provided: a character.
+Return the selected symbol.
+TITLE   := a prompt string. It should end with a space.
+STRINGS := a list of strings."
+  (let ((choices '())
+        (idx     (or first-idx ?1)))
+    (pel-select-from
+     title
+     (dolist (string strings (reverse choices))
+       (push (list                 ; each list entry must have:
+              idx                  ; a selector character
+              string               ; a descriptive string
+              string)              ; the value to return
+             choices)
+       (setq idx (1+ idx))))))
+
 ;; -----------------------------------------------------------------------------
 ;; Prompt for purpose and function names
 

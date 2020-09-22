@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-21 17:31:01, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-21 22:59:55, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -314,6 +314,15 @@ Drop the last key: it's either f1, f2 or f3, because a binding
 allowed the command to be invoked."
   (seq-subseq (this-command-keys) 0 -1))
 
+(defun pel--kte-select-topic (prompt strings)
+  "PROMPT the user for one of the STRINGS and return the selected one."
+  (if (< (length strings) 2)
+      strings
+    (require 'pel-prompt nil :noerror)
+    (if (fboundp 'pel-select-string-from)
+        (pel-select-string-from prompt strings)
+      (error "Cannot load pel-prompt!"))))
+
 ;;-pel-autoload
 (defun pel-help-pdf ()
   "Open the PEL PDF file(s) for the current context.
@@ -326,8 +335,8 @@ This command should be bound to a PEL key sequence that ends with f1."
     (unless pdfs
       (error "No PDF entry in pel--prefix-to-topic-alist for %s.\n\
 There should be no key binding!" keyseq))
-    (dolist (topic pdfs)
-      (browse-url (pel-pdf-file-url topic)))))
+    (browse-url (pel-pdf-file-url
+                 (pel--kte-select-topic "Open the PDF file: " pdfs)))))
 
 ;; --
 
@@ -404,9 +413,9 @@ This command should be bound to a PEL key sequence that ends with f2."
     (unless groups
       (error "No PEL customization group entry in pel--prefix-to-topic-alist for %s\n\
 There should be no key binding!" keyseq))
-    (dolist (group groups)
-      (pel--customize-group group other-window))))
-
+    (pel--customize-group
+     (pel--kte-select-topic "Customize group: " groups)
+     other-window)))
 
 ;;-pel-autoload
 (defun pel-customize-library (&optional other-window)
@@ -425,20 +434,10 @@ There should be no key binding!" keyseq))
       ;; There are several groups.  Prompt for one and open it.
       ;; First build a choice list with numbers as the choice selector.
       (require 'pel-prompt nil :noerror)
-     (if (fboundp 'pel-select-from)
-          (let ((choices '())
-                (idx     ?1))
-            (pel--customize-group
-             (pel-select-from
-              "Select group: "
-              (dolist (group groups (reverse choices))
-                (push (list                ; each list entry must have:
-                       idx                 ; a selector character
-                       (symbol-name group) ; a descriptive string
-                       group)              ; the value to return
-                      choices)
-                (setq idx (1+ idx))))
-             other-window))
+      (if (fboundp 'pel-select-symbol-from)
+          (pel--customize-group
+           (pel-select-symbol-from "Select group: " groups)
+           other-window)
        (error "Failed loading pel-prompt!")))))
 
 ;; -----------------------------------------------------------------------------
