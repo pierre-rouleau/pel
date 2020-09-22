@@ -1263,13 +1263,6 @@ Then save your changes."
 (pel--cfg-pkg "key-chord"   pel:cfg-pel "K")
 (pel--cfg-pkg "navigation"  pel:cfg-pel "n" avy)
 (pel--cfg-pkg "project-mng" pel:cfg-pel (kbd "<f8>") projectile etags)
-(pel--cfg-pkg "regexp"      pel:cfg-pel "r")
-(pel--cfg-pkg "search"      pel:cfg-pel "s" anzu swiper)
-(pel--cfg-pkg "session"     pel:cfg-pel "S" speedbar speedbar-faces speedbar-vc)
-(pel--cfg-pkg "window"      pel:cfg-pel "w" ace-window ace-window-display)
-(pel--cfg-pkg "speedbar"    pel:cfg-pel (kbd "M-s"))
-(pel--cfg-pkg "spelling"    pel:cfg-pel "$" ispell flyspell)
-(pel--cfg-pkg "undo"        pel:cfg-pel "u" undo undo-tree)
 
 ;;
 (pel--cfg-pkg "applescript"  pel:cfg-pel-lang "a")
@@ -4126,9 +4119,13 @@ the ones defined from the buffer now."
 ;; `split-window' from window.el is called.  To do that, we'd need to use a
 ;; hook.  For now, we just defer the loading with a timer so it does not get
 ;; loaded right when Emacs is starting.
+;; I tried using advice to solve the problem but it failed.
+;; I need a better understanding of the advice mechanism.
+
 (when pel-use-winner
   (use-package winner
-    :commands (winner-undo winner-redo)
+    :defer 1
+    ;; :commands (winner-undo winner-redo)
 
     :init
     (cl-eval-when 'compile (require 'winner nil :no-error))
