@@ -3059,6 +3059,7 @@ the ones defined from the buffer now."
 (define-key pel:buffer (kbd "C-c")  #'copy-to-buffer)
 (define-key pel:buffer "i"  #'insert-buffer)
 (define-key pel:buffer "f"  #'append-to-file)
+(define-key pel:buffer (kbd "M-x") 'hexl-mode)
 ;; Reserved            "h"  highlight prefix
 ;; Reserved            "I"  indirect buffer prefix
 ;; Reserved            "x"   (see declarations below with pel-use-nhexl-mode)
@@ -3311,6 +3312,7 @@ the ones defined from the buffer now."
 (define-key pel:file "o" #'find-file-other-window)
 (define-key pel:file "t" #'time-stamp)
 (define-key pel:file "w" #'write-region)
+(define-key pel:file (kbd "M-x") 'hexl-find-file)
 ;; - Open file at point
 ;; --------------------
 (global-set-key (kbd "C-^") 'pel-open-at-point)
