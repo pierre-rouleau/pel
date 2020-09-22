@@ -228,17 +228,20 @@ FIRST-IDX is provided: a character.
 Return the selected symbol.
 TITLE   := a prompt string. It should end with a space.
 SYMBOLS := a list of symbols."
-  (let ((choices '())
-        (idx     (or first-idx ?1)))
-    (pel-select-from
-     title
-     (dolist (symbol symbols (reverse choices))
-       (push (list                 ; each list entry must have:
-              idx                  ; a selector character
-              (symbol-name symbol) ; a descriptive string
-              symbol)              ; the value to return
-             choices)
-       (setq idx (1+ idx))))))
+  (let* ((choices '())
+         (idx     (or first-idx ?1))
+         (choice (pel-select-from
+                  title
+                  (dolist (symbol symbols (reverse choices))
+                    (push (list                 ; each list entry must have:
+                           idx                  ; a selector character
+                           (symbol-name symbol) ; a descriptive string
+                           symbol)              ; the value to return
+                          choices)
+                    (setq idx (1+ idx))))))
+    ;; clear echo area and return choice
+    (message nil)
+    choice))
 
 (defun pel-select-string-from (title strings &optional first-idx)
   "Prompt with a TITLE to select from a set of STRINGS.
@@ -247,17 +250,20 @@ FIRST-IDX is provided: a character.
 Return the selected symbol.
 TITLE   := a prompt string. It should end with a space.
 STRINGS := a list of strings."
-  (let ((choices '())
-        (idx     (or first-idx ?1)))
-    (pel-select-from
-     title
-     (dolist (string strings (reverse choices))
-       (push (list                 ; each list entry must have:
-              idx                  ; a selector character
-              string               ; a descriptive string
-              string)              ; the value to return
-             choices)
-       (setq idx (1+ idx))))))
+  (let* ((choices '())
+         (idx     (or first-idx ?1))
+         (choice  (pel-select-from
+                   title
+                   (dolist (string strings (reverse choices))
+                     (push (list                 ; each list entry must have:
+                            idx                  ; a selector character
+                            string               ; a descriptive string
+                            string)              ; the value to return
+                           choices)
+                     (setq idx (1+ idx))))))
+    ;; clear echo area and return choice
+    (message nil)
+    choice))
 
 ;; -----------------------------------------------------------------------------
 ;; Prompt for purpose and function names
