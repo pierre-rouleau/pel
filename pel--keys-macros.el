@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-22 09:00:33, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-22 09:45:31, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -82,7 +82,7 @@
     ([f11 ?.]         "marking"                nil)
     ([f11 ?=]         "cut-paste"              nil)
     ([f11 59]         ("comments"
-                       "hide-show-code")       nil                     (comment
+                       "hide-show-code")       pel-pkg-for-programming (comment
                                                                         hideshow))
     ([f11 ??]         "help"                   )
     ([f11 9]          "indentation"            nil                     indent)
