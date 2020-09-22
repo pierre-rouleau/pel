@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-22 10:32:39, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-22 13:45:21, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -71,7 +71,8 @@
     ([f11 f10]        "menus"                  nil                     menu)
     ([f11 f2]         "customize"              nil                     customize)
     ([f11 f8]         "projectile"             pel-pkg-for-project-mng projectile)
-    ([f11 ?$]         "spell-checking"         pel-pkg-for-spelling)
+    ([f11 ?$]         "spell-checking"         pel-pkg-for-spelling    (ispell
+                                                                        flyspell))
     ([f11 ?']         "bookmarks"              pel-pkg-for-bookmark    (bookmark
                                                                         bm))
     ([f11 ?,]         "auto-completion"        pel-pkg-for-expand      (auto-complete
@@ -177,12 +178,12 @@
     ([f11 ?s]         "search-replace"         pel-pkg-for-search      (isearch
                                                                         anzu
                                                                         swiper
-                                                                        pcre
-                                                                        visual-regexp
                                                                         iedit))
     ([f11 ?s ?m]      "search-replace"         nil)
     ([f11 ?s ?w]      "search-replace"         nil)
-    ([f11 ?s ?x]      "search-replace"         nil)  ; explicit def of F2 to pel-reb-re-syntax
+    ([f11 ?s ?x]      "search-replace"         pel-pkg-for-regexp      (pcre
+                                                                        re-builder
+                                                                        visual-regexp))
     ([f11 ?t]         ("case-conversion"
                        "input-method"
                        "text-modes")           nil)
@@ -193,11 +194,13 @@
                        "text-modes")           nil                     enriched)
     ([f11 ?t ?t]      "transpose"              nil)
     ([f11 ?t ?w]      "whitespaces"            nil                     whitespace)
-    ([f11 ?u]         "undo-redo-repeat"       pel-pkg-for-undo        undo-tree)
+    ([f11 ?u]         "undo-redo-repeat"       pel-pkg-for-undo        (undo
+                                                                        undo-tree))
     ([f11 ?v]         "vsc-mercurial"          pel-pkg-for-vcs         (vc-git
                                                                         magit))
     ([f11 ?w]         "windows"                pel-pkg-for-windows     (windows
                                                                         ace-window
+                                                                        ace-window-display
                                                                         winner
                                                                         windmove))
     ([f11 ?w ?d]      "windows"                pel-pkg-for-windows)

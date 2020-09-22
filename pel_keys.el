@@ -1250,8 +1250,11 @@ Then save your changes."
 ;; Key bindings to access PEL customization groups quickly,
 ;; and optionally other related groups
 
+(when (display-graphic-p)
+  (define-key pel:cfg-emacs (kbd "C-c") 'pel-customize-cursor))
+
 (pel--cfg-pkg "cursor"      pel:cfg-pel "_" iedit multiple-cursors)
-(pel--cfg-pkg "completion"  pel:cfg-pel (kbd "M-c") helm ido ivy counsel)
+(pel--cfg-pkg "completion"  pel:cfg-pel (kbd "M-c")pel helm ido ivy counsel)
 (pel--cfg-pkg "dired"       pel:cfg-pel "d" dired)
 (pel--cfg-pkg "filemng"     pel:cfg-pel "f" files)
 (pel--cfg-pkg "grep"        pel:cfg-pel "g" grep rg ripgrep)
