@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-22 09:45:31, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-22 10:32:39, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -91,19 +91,29 @@
     ([f11 32 ?C]      "pl-c++"                 pel-pkg-for-c++         (cpp
                                                                         c-macro))
     ([f11 32 ?C ?#]   "pl-c++"                 pel-pkg-for-c++         hide-ifdef)
-    ([f11 32 ?D]      "pl-d"                   pel-pkg-for-d)
-    ([f11 32 ?L]      "pl-common-lisp"         pel-pkg-for-clisp       lisp)
+    ([f11 32 ?D]      "pl-d"                   pel-pkg-for-d           d-mode)
+    ([f11 32 ?L]      "pl-common-lisp"         pel-pkg-for-clisp       (lisp
+                                                                        lispy))
     ([f11 32 ?R]      "pl-rexx"                pel-pkg-for-rexx)
     ([f11 32 ?a]      "pl-applescript"         pel-pkg-for-applescript apples)
     ([f11 32 ?c]      "pl-c"                   pel-pkg-for-c           (c
                                                                         c-macro))
     ([f11 32 ?c ?#]   "pl-c"                   pel-pkg-for-c           hide-ifdef)
-    ([f11 32 ?e]      "pl-erlang"              pel-pkg-for-erlang      erlang)
+    ([f11 32 ?e]      "pl-erlang"              pel-pkg-for-erlang      (erlang
+                                                                        erldoc
+                                                                        edts
+                                                                        auto-highlight-symbol))
     ([f11 32 ?f]      "pl-forth"               pel-pkg-for-forth)
     ([f11 32 ?g]      "graphviz-dot"           pel-pkg-for-graphviz-dot graphviz)
-    ([f11 32 ?j]      "pl-julia"               pel-pkg-for-julia       julia)
-    ([f11 32 ?l]      "pl-emacs-lisp"          pel-pkg-for-elisp       lisp)
-    ([f11 32 ?p]      "pl-python"              pel-pkg-for-python      python)
+    ([f11 32 ?j]      "pl-julia"               pel-pkg-for-julia       (julia
+                                                                        julia-mode
+                                                                        julia-snail))
+    ([f11 32 ?l]      "pl-emacs-lisp"          pel-pkg-for-elisp       (lisp
+                                                                        elint
+                                                                        eldoc
+                                                                        lispy))
+    ([f11 32 ?p]      "pl-python"              pel-pkg-for-python      (python
+                                                                        python-flymake))
     ([f11 32 ?r]      "mode-rst"               pel-pkg-for-reST        rst)
     ([f11 32 ?u]      "plantuml"               pel-pkg-for-plantuml    plantuml-mode)
     ([f11 32 ?x]      "pl-elixir"              pel-pkg-for-elixir      elixir)
@@ -386,13 +396,15 @@ If OTHER-WINDOW is non-nil display in other window."
     (let ((file-path (pel--group-isin-libfile group)))
       (if file-path
         (let ((library-name (file-name-base file-path)))
-          (when (y-or-n-p
-                 (format
-                  "Group %s is from a non loaded %s. Load it first? "
-                  group
-                  library-name))
+          (if (y-or-n-p
+               (format
+                "Group %s is from a non loaded %s. Load it first? "
+                group
+                library-name))
             (when (load-library library-name)
-              (customize-group group other-window))))
+              (customize-group group other-window))
+            ;; user entered no: clear the message area
+            (message nil)))
         (user-error "Customization group '%s' currently unknown.\n\
 PEL cannot locate a file that defines this group.\n\
 You will have to manually load the library where this group is defined." group)))))
@@ -438,14 +450,17 @@ There should be no key binding!" keyseq))
 
 ;; -----------------------------------------------------------------------------
 
-(defun pel--customize-groups (group-list)
-  "Customize all groups named in the GROUP-LIST.
+(defun pel--customize-groups (pel-group group-list other-window)
+  "Customize one of the group in PEL-GROUP or groups named in the GROUP-LIST.
+If OTHER-WINDOW is non-nil (use \\[universal-argument]), \
+display in other window and open the related group(s) that exist.
 If a group is unknown, check if the group is defined in
 a library file with the same name and if so prompt the
 user to load it before customizing the group."
-  (dolist (group group-list)
-    (pel--customize-group group t)))
-
+  (pel--customize-group
+   (pel--kte-select-topic "Customize group: "
+                          (cons pel-group group-list))
+   other-window))
 
 (defmacro pel--cfg-pkg (pel-group prefix key &rest other-groups)
   "Define a function and key binding to customize specified PEL-GROUP.
@@ -463,9 +478,10 @@ display in other window and open the related group(s) that exist."
        (defun ,fct (&optional other-window)
          ,docstring
          (interactive "P")
-         (customize-group (quote ,group) other-window)
-         (when (and other-window (quote ,other-groups))
-           (pel--customize-groups (quote ,other-groups))))
+         (pel--customize-groups
+          (quote ,group)
+          (quote ,other-groups)
+          other-window))
        ;; then define the global key
        (define-key ,prefix ,key (quote ,fct)))))
 

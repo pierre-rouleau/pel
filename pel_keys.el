@@ -1250,41 +1250,41 @@ Then save your changes."
 ;; Key bindings to access PEL customization groups quickly,
 ;; and optionally other related groups
 
-(pel--cfg-pkg "cursor"      pel:cfg-pel "_" "iedit" "multiple-cursors")
-(pel--cfg-pkg "completion"  pel:cfg-pel "c")
-(pel--cfg-pkg "dired"       pel:cfg-pel "d" "dired")
-(pel--cfg-pkg "filemng"     pel:cfg-pel "f" "files")
-(pel--cfg-pkg "grep"        pel:cfg-pel "g" "grep" "rg" "ripgrep")
-(pel--cfg-pkg "insertions"  pel:cfg-pel "I" "lice" "smart-dash" "time-stamp" "tempo" "yasnippet")
-(pel--cfg-pkg "kbmacro"     pel:cfg-pel "k"  "centimacro" "elmacro" "emacros")
+(pel--cfg-pkg "cursor"      pel:cfg-pel "_" iedit multiple-cursors)
+(pel--cfg-pkg "completion"  pel:cfg-pel (kbd "M-c") helm ido ivy counsel)
+(pel--cfg-pkg "dired"       pel:cfg-pel "d" dired)
+(pel--cfg-pkg "filemng"     pel:cfg-pel "f" files)
+(pel--cfg-pkg "grep"        pel:cfg-pel "g" grep rg ripgrep)
+(pel--cfg-pkg "insertions"  pel:cfg-pel "I" lice smart-dash time-stamp tempo yasnippet)
+(pel--cfg-pkg "kbmacro"     pel:cfg-pel "k" centimacro elmacro emacros)
 (pel--cfg-pkg "key-chord"   pel:cfg-pel "K")
-(pel--cfg-pkg "navigation"  pel:cfg-pel "n" "avy")
-(pel--cfg-pkg "project-mng" pel:cfg-pel (kbd "<f8>") "projectile" "etags")
+(pel--cfg-pkg "navigation"  pel:cfg-pel "n" avy)
+(pel--cfg-pkg "project-mng" pel:cfg-pel (kbd "<f8>") projectile etags)
 (pel--cfg-pkg "regexp"      pel:cfg-pel "r")
-(pel--cfg-pkg "search"      pel:cfg-pel "s" "anzu" "swiper")
-(pel--cfg-pkg "session"     pel:cfg-pel "S" "speedbar" "speedbar-faces" "speedbar-vc")
-(pel--cfg-pkg "window"      pel:cfg-pel "w" "ace-window" "ace-window-display")
+(pel--cfg-pkg "search"      pel:cfg-pel "s" anzu swiper)
+(pel--cfg-pkg "session"     pel:cfg-pel "S" speedbar speedbar-faces speedbar-vc)
+(pel--cfg-pkg "window"      pel:cfg-pel "w" ace-window ace-window-display)
 (pel--cfg-pkg "speedbar"    pel:cfg-pel (kbd "M-s"))
-(pel--cfg-pkg "spelling"    pel:cfg-pel "$" "ispell" "flyspell")
-(pel--cfg-pkg "undo"        pel:cfg-pel "u" "undo" "undo-tree")
+(pel--cfg-pkg "spelling"    pel:cfg-pel "$" ispell flyspell)
+(pel--cfg-pkg "undo"        pel:cfg-pel "u" undo undo-tree)
 
 ;;
 (pel--cfg-pkg "applescript"  pel:cfg-pel-lang "a")
-(pel--cfg-pkg "c"            pel:cfg-pel-lang "c" "c" "hide-ifdef")
-(pel--cfg-pkg "c++"          pel:cfg-pel-lang "C" "cpp")
-(pel--cfg-pkg "d"            pel:cfg-pel-lang "D" "d-mode")
-(pel--cfg-pkg "elisp"        pel:cfg-pel-lang "l" "lisp" "elint" "eldoc" "lispy")
-(pel--cfg-pkg "elixir"       pel:cfg-pel-lang "x" "alchemist" "alchemist-iex")
-(pel--cfg-pkg "erlang"       pel:cfg-pel-lang "e" "erlang" "erldoc" "edts" "auto-highlight-symbol")
+(pel--cfg-pkg "c"            pel:cfg-pel-lang "c" c hide-ifdef)
+(pel--cfg-pkg "c++"          pel:cfg-pel-lang "C" cpp)
+(pel--cfg-pkg "d"            pel:cfg-pel-lang "D" d-mode)
+(pel--cfg-pkg "elisp"        pel:cfg-pel-lang "l" lisp elint eldoc lispy)
+(pel--cfg-pkg "elixir"       pel:cfg-pel-lang "x" alchemist alchemist-iex)
+(pel--cfg-pkg "erlang"       pel:cfg-pel-lang "e" erlang erldoc edts auto-highlight-symbol)
 (pel--cfg-pkg "forth"        pel:cfg-pel-lang "f")
-(pel--cfg-pkg "graphviz-dot" pel:cfg-pel-lang "g" "graphviz")
-(pel--cfg-pkg "julia"        pel:cfg-pel-lang "j" "julia" "julia-mode" "julia-snail")
-(pel--cfg-pkg "lisp"         pel:cfg-pel-lang (kbd "M-L") "lispy") ; all Lisps
-(pel--cfg-pkg "clisp"        pel:cfg-pel-lang "L" "lisp" "lispy") ; common lisp
-(pel--cfg-pkg "python"       pel:cfg-pel-lang "p" "python" "python-flymake")
+(pel--cfg-pkg "graphviz-dot" pel:cfg-pel-lang "g" graphviz)
+(pel--cfg-pkg "julia"        pel:cfg-pel-lang "j" julia julia-mode julia-snail)
+(pel--cfg-pkg "lisp"         pel:cfg-pel-lang (kbd "M-L") lispy) ; all Lisps
+(pel--cfg-pkg "clisp"        pel:cfg-pel-lang "L" lisp lispy) ; common lisp
+(pel--cfg-pkg "python"       pel:cfg-pel-lang "p" python python-flymake)
 (pel--cfg-pkg "rexx"         pel:cfg-pel-lang "R")
-(pel--cfg-pkg "reST"         pel:cfg-pel-lang "r" "rst")
-(pel--cfg-pkg "plantuml"     pel:cfg-pel-lang "u" "plantuml-mode")
+(pel--cfg-pkg "reST"         pel:cfg-pel-lang "r" rst)
+(pel--cfg-pkg "plantuml"     pel:cfg-pel-lang "u" plantuml-mode)
 
 ;; --
 
