@@ -3959,6 +3959,12 @@ the ones defined from the buffer now."
    (setq pel-newline-does-align t)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - Function Keys - <f11> - Prefix ``<f11> t e``: Enriched Text
+(define-pel-global-prefix pel:enriched-text (kbd "<f11> t e"))
+
+(define-key pel:enriched-text "e" #'enriched-mode)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> t f``: Text fill
 ;;
 (define-pel-global-prefix pel:fill (kbd "<f11> t f"))
@@ -3994,7 +4000,6 @@ the ones defined from the buffer now."
 (define-key pel:textmodes "b" #'subword-mode)
 (define-key pel:textmodes "d" #'delete-selection-mode)
 (define-key pel:textmodes "p" #'superword-mode)
-(define-key pel:textmodes "r" #'enriched-mode)
 (define-key pel:textmodes "s"  'pel-toggle-sentence-end)
 (define-key pel:textmodes "v" #'visible-mode)
 (define-key pel:textmodes "w" #'whitespace-mode)

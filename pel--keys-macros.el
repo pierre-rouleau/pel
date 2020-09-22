@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-22 13:45:21, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-22 17:32:34, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -52,6 +52,9 @@
 ;;
 ;;
 (require 'pel--options)
+(eval-when-compile
+  (require 'cl-lib))    ; use: cl-dolist and cl-return
+
 ;;; -----------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -121,7 +124,7 @@
     ;; ([f11 ?C]
     ([f11 ?D]         "drawing"                pel-pkg-for-drawing-markup)
     ([f11 ?D ?u]      "plantuml"               pel-pkg-for-plantuml    plantuml-mode)
-    ([f11 ?F]         "frames"                 pel-pkg-for-windows     frames)
+    ([f11 ?F]         "frames"                 pel-pkg-for-window      frames)
     ([f11 ?S]         "sessions"               pel-pkg-for-sessions    desktop)
     ;;  ([f11 ?S ?R]
     ([f11 ?X]         "tags"                   pel-pkg-for-tags        etags)
@@ -188,26 +191,33 @@
                        "input-method"
                        "text-modes")           nil)
     ([f11 ?t ?a]      "align"                  pel-pkg-for-align       align)
+    ([f11 ?t ?e]      "enriched-text"          nil                     enriched)
     ([f11 ?t ?f]      "filling-justification"  nil                     fill)
     ([f11 ?t ?j]      "filling-justification"  nil                     fill)
-    ([f11 ?t ?m]      ("enriched-text"
-                       "text-modes")           nil                     enriched)
+    ([f11 ?t ?m]      "text-modes")
     ([f11 ?t ?t]      "transpose"              nil)
     ([f11 ?t ?w]      "whitespaces"            nil                     whitespace)
     ([f11 ?u]         "undo-redo-repeat"       pel-pkg-for-undo        (undo
                                                                         undo-tree))
-    ([f11 ?v]         "vsc-mercurial"          pel-pkg-for-vcs         (vc-git
-                                                                        magit))
-    ([f11 ?w]         "windows"                pel-pkg-for-windows     (windows
+    ([f11 ?v]         "vcs-mercurial"          pel-pkg-for-vcs         (vc
+                                                                        vc-hg
+                                                                        vc-git
+                                                                        magit
+                                                                        monky))
+    ([f11 ?w]         "windows"                pel-pkg-for-window      (windows
                                                                         ace-window
                                                                         ace-window-display
                                                                         winner
                                                                         windmove))
-    ([f11 ?w ?d]      "windows"                pel-pkg-for-windows)
-    ([f11 ?w ?s]      "windows"                pel-pkg-for-windows)
-    ([f11 ?x]         "shells"                 pel-pkg-for-shells)
-    ([f11 ?y]         "inserting-text"         pel-pkg-for-insertions  yasnippet)
-    ([f11 ?|]         "scrolling"              pel-pkg-for-windows     (follow
+    ([f11 ?w ?d]      "windows"                pel-pkg-for-window)
+    ([f11 ?w ?s]      "windows"                pel-pkg-for-window)
+    ([f11 ?x]         "shells"                 pel-pkg-for-shells      (term
+                                                                        terminals
+                                                                        vterm))
+    ([f11 ?y]         "inserting-text"         pel-pkg-for-insertions  (yasnippet
+                                                                        yasnippet-snippets
+                                                                        yas-minor))
+    ([f11 ?|]         "scrolling"              pel-pkg-for-window      (follow
                                                                         smooth-scrolling))
     )
   "Map from key prefix array to topic string.
@@ -366,6 +376,15 @@ Return non-nil if found, nil otherwise."
   (goto-char (point-min))
   (re-search-forward regxp nil :noerror))
 
+(defun pel--which-el-file (file-path)
+  "Return the Emacs Lisp source file that corresponds to the given FILE-PATH.
+FILE-PATH is a complete file name with a .elc extension.
+Return the name of the .el or .gz.el file that is present.
+Return nil if nothing found."
+  (cl-dolist (ext '(".el" ".el.gz"))
+    (let ((file-path  (concat (file-name-sans-extension file-path) ext)))
+      (when (file-exists-p file-path)
+        (cl-return file-path)))))
 
 (defun pel--group-isin-libfile (group)
   "Return non-nil if customize GROUP is defined in an accessible Emacs Lisp file.
@@ -374,9 +393,12 @@ GROUP must be a string.
 Return nil otherwise."
   (let ((file-path (locate-library group)))
     (when file-path
-      ;; get the source code file, not the byte-compiled version
-      (let ((file-path  (concat (file-name-sans-extension file-path) ".el")))
-        (when (file-exists-p file-path)
+      ;; The code could either be inside a .el or .el.gz file.
+      ;; Find which one is on the file-system.
+      ;;
+      ;; that match a .el.gz file
+      (let ((file-path (pel--which-el-file file-path)))
+        (when file-path
           (with-temp-buffer
             (insert-file-contents file-path)
             (when
@@ -410,7 +432,8 @@ If OTHER-WINDOW is non-nil display in other window."
             (message nil)))
         (user-error "Customization group '%s' currently unknown.\n\
 PEL cannot locate a file that defines this group.\n\
-You will have to manually load the library where this group is defined." group)))))
+Is it installed? If not set PEL user option to activate it.\n\
+To customize it manually load the library where this group is defined." group)))))
 
 ;;-pel-autoload
 (defun pel-customize-pel (&optional other-window)
