@@ -1253,13 +1253,7 @@ Then save your changes."
 (when (display-graphic-p)
   (define-key pel:cfg-emacs (kbd "C-c") 'pel-customize-cursor))
 
-(pel--cfg-pkg "cursor"      pel:cfg-pel "_" iedit multiple-cursors)
 (pel--cfg-pkg "completion"  pel:cfg-pel (kbd "M-c")pel helm ido ivy counsel)
-(pel--cfg-pkg "dired"       pel:cfg-pel "d" dired)
-(pel--cfg-pkg "filemng"     pel:cfg-pel "f" files)
-(pel--cfg-pkg "grep"        pel:cfg-pel "g" grep rg ripgrep)
-(pel--cfg-pkg "insertions"  pel:cfg-pel "I" lice smart-dash time-stamp tempo yasnippet)
-(pel--cfg-pkg "kbmacro"     pel:cfg-pel "k" centimacro elmacro emacros)
 (pel--cfg-pkg "key-chord"   pel:cfg-pel "K")
 (pel--cfg-pkg "navigation"  pel:cfg-pel "n" avy)
 (pel--cfg-pkg "project-mng" pel:cfg-pel (kbd "<f8>") projectile etags)

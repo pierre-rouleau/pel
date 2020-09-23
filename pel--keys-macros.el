@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-22 21:10:30, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-22 23:27:42, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -128,16 +128,17 @@
     ([f11 ?S]         "sessions"               pel-pkg-for-sessions    desktop)
     ;;  ([f11 ?S ?R]
     ([f11 ?X]         "tags"                   pel-pkg-for-tags        etags)
-    ([f11 ?_]         "inserting-text"         pel-pkg-for-insertions)
+    ([f11 ?_]         "inserting-text")
     ([f11 ?a]         "abbreviations"          pel-pkg-for-expand      abbrev)
     ([f11 ?b]         "buffers"                pel-pkg-for-buffer      (Buffer-menu
                                                                         ibuffer
                                                                         minibuffer
+                                                                        hexl
                                                                         nhexl))
     ;;  ([f11 ?b ?I]
     ([f11 ?b ?h]      "highlight"              pel-pkg-for-parens       ,(let ((items
                                                                                 (list
-                                                                                 'auto-highlight
+                                                                                 'auto-highlight-symbol
                                                                                  'iedit
                                                                                  'rainbow-delimiters
                                                                                  'vline)))
@@ -145,8 +146,8 @@
                                                                                (append items (list 'fill-column-indicator))
                                                                              items)))
     ([f11 ?c]         "counting"               nil)
-    ([f11 ?d]         "diff-merge"             pel-pkg-for-ztree       ztree-diff)
-    ([f11 ?d ?e]      "diff-merge"             pel-pkg-for-ztree       ediff)
+    ([f11 ?d]         "diff-merge"             pel-pkg-for-ztree)
+    ([f11 ?d ?e]      "diff-merge"             nil                     ediff)
     ;;  ([f11 ?d ?e ?b]
     ;;  ([f11 ?d ?e ?d]
     ;;  ([f11 ?d ?e ?f]
@@ -156,18 +157,25 @@
     ([f11 ?f ?v]      "file-variables"         nil)
     ([dired]          "mode-dired"             pel-pkg-for-dired       dired)
     ([f11 ?f]         ("file-mngt"
-                       "web")                 pel-pkg-for-filemng      (files
+                       "mode-dired"
+                       "web")                 (pel-pkg-for-filemng
+                                               pel-kg-for-dired)       (files
+                                                                        dired
                                                                         neotree
-                                                                        ztree))
-    ([f11 ?f ?a]      "file-mngt"              pel-pkg-for-filemng     ffap)
-    ([f11 ?f ?r]      "file-mngt"              pel-pkg-for-filemng     auto-revert)
-    ([f11 ?f ?v]      "file-variables"         pel-pkg-for-filemng)
-    ([f11 ?f ?v ?D]   "file-variables"         pel-pkg-for-filemng)
+                                                                        Ztree))
+    ([f11 ?f ?a]      "file-mngt"              nil                     ffap)
+    ([f11 ?f ?r]      "file-mngt"              nil                     auto-revert)
+    ([f11 ?f ?v]      "file-variables")
+    ([f11 ?f ?v ?D]   "file-variables")
     ([f11 ?g]         "grep"                   pel-pkg-for-grep        (grep
+                                                                        ag
+                                                                        rg
                                                                         ripgrep
                                                                         wgrep))
     ([f11 ?i]         "inserting-text"         pel-pkg-for-insertions  (lice
                                                                         smart-dash
+                                                                        tempo
+                                                                        time-stamp
                                                                         yanippet))
     ([f11 ?k]         "keyboard-macros"        pel-pkg-for-kbmacro     (kmacro
                                                                         centimacro))
@@ -175,7 +183,7 @@
     ([f11 ?k ?l]      "keyboard-macros"        pel-pkg-for-kbmacro     elmacro)
     ([f11 ?l]         "display-lines"          nil                     visual-line)
     ([f11 ?m]         "cursor"                 pel-pkg-for-cursor      (cursor
-                                                                        multiple-cursor)) ; vcursor??
+                                                                        multiple-cursors)) ; vcursor??
     ([f11 ?o]         "sorting"                nil)
     ([f11 ?r]         "registers"              nil)
     ([f11 ?s]         "search-replace"         pel-pkg-for-search      (isearch
