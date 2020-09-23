@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-22 23:27:42, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-23 07:57:09, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -71,14 +71,14 @@
     ([f7 f8]          "pl-applescript"         pel-pkg-for-applescript)
     ([f8]             "projectile"             pel-pkg-for-project-mng projectile)
     ([f11]            "-pel-key-maps"          nil)
-    ([f11 f10]        "menus"                  nil                     menu)
-    ([f11 f2]         "customize"              nil                     customize)
+    ([f11 f10]        "menus"                  nil                     menu)       ;f3
+    ([f11 f2]         "customize"              nil                     customize)  ;f3
     ([f11 f8]         "projectile"             pel-pkg-for-project-mng projectile)
-    ([f11 ?$]         "spell-checking"         pel-pkg-for-spelling    (ispell
+    ([f11 ?$]         "spell-checking"         pel-pkg-for-spelling    (ispell     ;f3
                                                                         flyspell))
-    ([f11 ?']         "bookmarks"              pel-pkg-for-bookmark    (bookmark
+    ([f11 ?']         "bookmarks"              pel-pkg-for-bookmark    (bookmark   ;f3
                                                                         bm))
-    ([f11 ?,]         "auto-completion"        pel-pkg-for-expand      (auto-complete
+    ([f11 ?,]         "auto-completion"        pel-pkg-for-expand      (auto-complete ; f2 f3
                                                                         company
                                                                         hippie-expand)) ; helm, ivy, ??? no prefix for those
     ([f11 ?-]         "cut-paste"              nil                     (killing
@@ -86,10 +86,10 @@
     ([f11 ?.]         "marking"                nil)
     ([f11 ?=]         "cut-paste"              nil)
     ([f11 59]         ("comments"
-                       "hide-show-code")       pel-pkg-for-programming (comment
+                       "hide-show-code")       pel-pkg-for-programming (comment      ; f2 f3
                                                                         hideshow))
-    ([f11 ??]         "help"                   )
-    ([f11 9]          "indentation"            nil                     indent)
+    ([f11 ??]         "help")
+    ([f11 9]          "indentation"            nil                     indent) ;f3
     ([f11 134217843]  "speedbar"               pel-pkg-for-speedbar    speedbar) ; 2 different possible key sequences.
     ([f11 27 ?s]      "speedbar"               pel-pkg-for-speedbar    speedbar)
     ([f11 32 ?C]      "pl-c++"                 pel-pkg-for-c++         (cpp
@@ -148,12 +148,6 @@
     ([f11 ?c]         "counting"               nil)
     ([f11 ?d]         "diff-merge"             pel-pkg-for-ztree)
     ([f11 ?d ?e]      "diff-merge"             nil                     ediff)
-    ;;  ([f11 ?d ?e ?b]
-    ;;  ([f11 ?d ?e ?d]
-    ;;  ([f11 ?d ?e ?f]
-    ;;  ([f11 ?d ?e ?m]
-    ;;  ([f11 ?d ?e ?p]
-    ;;  ([f11 ?d ?e ?r]
     ([f11 ?f ?v]      "file-variables"         nil)
     ([dired]          "mode-dired"             pel-pkg-for-dired       dired)
     ([f11 ?f]         ("file-mngt"
