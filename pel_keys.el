@@ -1343,7 +1343,7 @@ Then save your changes."
 
     :config
     (define-key pel:      (kbd "M-c ") 'pel-select-completion-mode)
-    (define-key pel:help  "c"          'pel-show-active-completion-mode)
+    (define-key pel:help  (kbd "M-c")  'pel-show-active-completion-mode)
     (pel-set-completion-mode pel-initial-completion-mode)))
 
 ;; -----------------------------------------------------------------------------
