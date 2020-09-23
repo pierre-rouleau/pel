@@ -3715,7 +3715,7 @@ the ones defined from the buffer now."
 (define-key pel:regexp      "r"  #'replace-regexp)       ; maybe replaced below
 (define-key pel:regexp      "B"  #'re-builder)
 ;; add it here because C-M-% cannot be typed in terminal mode
-(define-key pel:regexp  (kbd "<f2>")  'pel-reb-re-syntax)
+(define-key pel:regexp  (kbd "M-B")  'pel-reb-re-syntax)
 (when pel-bind-keys-for-regexp
   ; both maybe replaced below
   (define-key global-map (kbd "C-c r") 'replace-regexp)

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-22 17:32:34, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-22 21:10:30, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -184,7 +184,7 @@
                                                                         iedit))
     ([f11 ?s ?m]      "search-replace"         nil)
     ([f11 ?s ?w]      "search-replace"         nil)
-    ([f11 ?s ?x]      "search-replace"         pel-pkg-for-regexp      (pcre
+    ([f11 ?s ?x]      "search-replace"         pel-pkg-for-regexp      (rxt  ; for pcre
                                                                         re-builder
                                                                         visual-regexp))
     ([f11 ?t]         ("case-conversion"
@@ -386,12 +386,32 @@ Return nil if nothing found."
       (when (file-exists-p file-path)
         (cl-return file-path)))))
 
+(defconst pel--group-library-names
+  '(("rxt"  . "pcre2el"))
+  "Maps a group name for the library that defines it.
+This is only required for the libraries that cannot be found
+with the existing code.")
+
+(defun pel--locate-library-for (group)
+  "Attempts to locate a library for the specified GROUP.
+Return the file-path of the library if found, nil otherwise.
+Attempts to find a library that has the same name as the group,
+if that fails, it tires to see if this library is in the list
+of `pel--group-library-names' associated list and tries with that
+instead."
+  (let ((file-path (locate-library group)))
+    (if file-path
+        file-path
+      (let ((libname (cdr (assoc group pel--group-library-names))))
+        (when libname
+          (locate-library libname))))))
+
 (defun pel--group-isin-libfile (group)
   "Return non-nil if customize GROUP is defined in an accessible Emacs Lisp file.
 Return the path to the source file containing the group.
 GROUP must be a string.
 Return nil otherwise."
-  (let ((file-path (locate-library group)))
+  (let ((file-path (pel--locate-library-for group)))
     (when file-path
       ;; The code could either be inside a .el or .el.gz file.
       ;; Find which one is on the file-system.
