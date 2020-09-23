@@ -1259,19 +1259,7 @@ Then save your changes."
 (pel--cfg-pkg "project-mng" pel:cfg-pel (kbd "<f8>") projectile etags)
 
 ;;
-(pel--cfg-pkg "applescript"  pel:cfg-pel-lang "a")
-(pel--cfg-pkg "c"            pel:cfg-pel-lang "c" c hide-ifdef)
-(pel--cfg-pkg "c++"          pel:cfg-pel-lang "C" cpp)
-(pel--cfg-pkg "d"            pel:cfg-pel-lang "D" d-mode)
-(pel--cfg-pkg "elisp"        pel:cfg-pel-lang "l" lisp elint eldoc lispy)
-(pel--cfg-pkg "graphviz-dot" pel:cfg-pel-lang "g" graphviz)
-(pel--cfg-pkg "julia"        pel:cfg-pel-lang "j" julia julia-mode julia-snail)
 (pel--cfg-pkg "lisp"         pel:cfg-pel-lang (kbd "M-L") lispy) ; all Lisps
-(pel--cfg-pkg "clisp"        pel:cfg-pel-lang "L" lisp lispy) ; common lisp
-(pel--cfg-pkg "python"       pel:cfg-pel-lang "p" python python-flymake)
-(pel--cfg-pkg "rexx"         pel:cfg-pel-lang "R")
-(pel--cfg-pkg "reST"         pel:cfg-pel-lang "r" rst)
-(pel--cfg-pkg "plantuml"     pel:cfg-pel-lang "u" plantuml-mode)
 
 ;; --
 
