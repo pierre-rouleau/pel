@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-24 15:18:46, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-24 15:21:24, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4003,6 +4003,7 @@ PEL comes with a set of tables listing and describing:
 These tables are inside PDF documents.  They are listed in the `PDF Document
 Tables`_ below.
 
+Open PDF files quickly from Emacs:
    PEL provides a set of key bindings that open you local copy of
    the file (or the Github-hosted copy) inside most key prefixes.  For example to
    open your local copy of the `Search and Replace`_ PDF file that describes
