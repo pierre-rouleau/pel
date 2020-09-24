@@ -1256,7 +1256,7 @@ Then save your changes."
 (pel--cfg-pkg "completion"  pel:cfg-pel (kbd "M-c") helm ido ivy counsel)
 (pel--cfg-pkg "key-chord"   pel:cfg-pel "K")
 (pel--cfg-pkg "navigation"  pel:cfg-pel "n" avy)
-(pel--cfg-pkg "project-mng" pel:cfg-pel (kbd "<f8>") projectile etags)
+(pel--cfg-pkg "project-mng" pel:cfg-pel (kbd "<f8>"))
 
 ;;
 (pel--cfg-pkg "lisp"         pel:cfg-pel-lang (kbd "M-L") lispy) ; all Lisps
@@ -1268,8 +1268,6 @@ Then save your changes."
 (pel--cfg-emacs pel:cfg-emacs "l" "locate")
 (pel--cfg-emacs pel:cfg-emacs "u" "browse-url")
 (pel--cfg-emacs pel:cfg-emacs "w" "woman")
-(when pel-use-projectile
-  (pel--cfg-ext-pkg pel:cfg-emacs (kbd "<f8>") "projectile"))
 
 ;; -----------------------------------------------------------------------------
 ;; Input Completion Framework activation
