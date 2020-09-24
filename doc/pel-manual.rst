@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-24 18:51:09, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-24 18:52:06, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -437,7 +437,7 @@ Add the following code inside your "``~/.emacs.d/init.el``" file:
 - Section 4 adds the location of the *utils* directory to Emacs ``load-path`` to
   allow Emacs to find the single file Emacs libraries PEL uses.
 - Section 5 tells Emacs to store its customization form inside a file called
-  "``~./emacs.d/emacs-customization.el``".  If you already have Emacs customization
+  "``~/.emacs.d/emacs-customization.el``".  If you already have Emacs customization
   inside your current init.el file, copy it inside that new file.
   Emacs customization is the full content of the ``(custom-set-variables ...)`` form.
 - Section 6 load and initializes PEL.  The code is commented out.
@@ -467,7 +467,7 @@ Emacs stores customization information inside your ``init.el`` file by default.
 It is best to store it somewhere else, as written in section 4 of the
 section `Create or Update your Emacs init.el file`_.
 
-By storing it inside "``~./emacs.d/emacs-customization.el``" you can control
+By storing it inside "``~/.emacs.d/emacs-customization.el``" you can control
 your Emacs customization independently from your Emacs initialization and you
 can also copy and distribute the customization file across several computers to
 use the same tools the same way.  Since PEL controls activation and download of
@@ -475,15 +475,15 @@ the external Emacs Lisp libraries by the PEL user options (with ``pel-use-``
 names), the customization will also control the external libraries installed.
 
 Before the next step you must therefore create an empty
-"``~./emacs.d/emacs-customization.el``" file.  This can be done from a terminal
+"``~/.emacs.d/emacs-customization.el``" file.  This can be done from a terminal
 shell:
 
 .. code:: shell
 
-         touch ~./emacs.d/emacs-customization.el
+         touch ~/.emacs.d/emacs-customization.el
 
 If you already had a ``custom-set-variables`` form inside your init.el file,
-move it inside the "``~./emacs.d/emacs-customization.el``" file, otherwise the
+move it inside the "``~/.emacs.d/emacs-customization.el``" file, otherwise the
 file can stay empty.  It will be filled by Emacs in the next step.
 
 
