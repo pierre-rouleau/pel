@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-23 07:57:09, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-24 11:28:59, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -345,11 +345,13 @@ allowed the command to be invoked."
       (error "Cannot load pel-prompt!"))))
 
 ;;-pel-autoload
-(defun pel-help-pdf ()
+(defun pel-help-pdf (&optional open-web-page)
   "Open the PEL PDF file(s) for the current context.
-The context is determined by the key sequence typed.
+By default it opens the local PDF file, but if the OPEN-WEB-PAGE argument
+is non-nil it opens the web-based PDF copy hosted on Github.
+The topic is determined by the key sequence typed.
 This command should be bound to a PEL key sequence that ends with f1."
-  (interactive)
+  (interactive "P")
   (let* ((keyseq (pel--keyseq))
          (kte    (pel--kte-for keyseq)) ; pel--prefix-to-topic-alist entry
          (pdfs   (pel--kte-pdfs kte)))
@@ -357,7 +359,58 @@ This command should be bound to a PEL key sequence that ends with f1."
       (error "No PDF entry in pel--prefix-to-topic-alist for %s.\n\
 There should be no key binding!" keyseq))
     (browse-url (pel-pdf-file-url
-                 (pel--kte-select-topic "Open the PDF file: " pdfs)))))
+                 (pel--kte-select-topic "Open the PDF file: " pdfs)
+                 open-web-page))))
+
+(defconst pel--topic-alias
+  '(("input-completion" . "completion-input")
+    ("lines"            . "display-lines")
+    ("applescript"      . "pl-applescript")
+    ("c++"              . "pl-c++")
+    ("c"                . "pl-c")
+    ("common-lisp"      . "pl-common-lisp")
+    ("d"                . "pl-d")
+    ("elixir"           . "pl-elixir")
+    ("emacs-lisp"       . "pl-emacs-lisp")
+    ("erlang"           . "pl-erlang")
+    ("forth"            . "pl-forth")
+    ("julia"            . "pl-julia")
+    ("python"           . "pl-python")
+    ("rexx"             . "pl-rexx")
+    ("mercurial"        . "vcs-mercurial")
+    ("lispy"            . "plm-lispy"))
+  "List of alias for PEL PDF file names.")
+
+;;-pel-autoload
+(defun pel-help-pdf-select (&optional open-web-page)
+  "Prompt for a PEL PDF and open it.
+By default it opens the local PDF file, but if the OPEN-WEB-PAGE argument
+is non-nil it opens the web-based PDF copy hosted on Github.
+Supports completion and history.  The presented list includes
+some aliases to the file names.
+If enter is typed with no entry it defaults to the PEL key maps pdf."
+  (interactive "P")
+  (let* ((topics (mapcar
+                  (lambda (fn)
+                    (substring fn 0 -4))
+                  (directory-files (pel-pdf-directory) nil  "\\.pdf\\'")))
+         (topic  (completing-read
+                  "PEL topic: " ; prompt
+                  (sort         ; collection including aliases
+                   (append topics
+                           (mapcar (function car) pel--topic-alias))
+                   (function string<))
+
+
+                  nil           ; predicate
+                  t             ; require-match
+                  nil           ; initial
+                  'pel-prompt-history-for-help-pdf ; history
+                  '("-pel-key-maps")))             ; default
+         ;; since aliases are included in the list presented to user,
+         ;; translate a selected alias back to its real file name
+         (topic (alist-get topic pel--topic-alias topic nil (function equal))))
+    (browse-url (pel-pdf-file-url topic open-web-page))))
 
 ;; --
 

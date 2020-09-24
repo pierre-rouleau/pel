@@ -2616,13 +2616,14 @@ This is meant to be used in the d-mode hook lambda."
 ;; To help keep track what keay are used, the list of key under the pel:help
 ;; prefix are shown below.
 ;;
-;;   Used `pel:help' keys:  . ? A a c d e i k m p s S w X
+;;   Used `pel:help' keys:  . ? A a c d e i k m p P s S w X
 
 (define-key pel:help "." 'pel-mark-ring-stats)
 (define-key pel:help "m"  #'man)
 (define-key pel:help "w"  #'woman)
 (define-key pel:help "?"  'pel-show-major-mode)
-(define-key pel:help "p"  'pel-help-pdfs-dir)
+(define-key pel:help "p"  'pel-help-pdf-select)
+(define-key pel:help "P"  'pel-help-pdfs-dir)
 
 (use-package pel-help
   :commands (pel-show-kill-ring
@@ -4419,7 +4420,6 @@ Simulate a F7 prefix key unless DONT-SIMULATE is non-nil."
     ;; then get rid of this function.
     (fmakunbound 'pel--load-hydra))
 
-
   (use-package hydra
     :ensure t
     :pin melpa
@@ -4431,7 +4431,6 @@ Simulate a F7 prefix key unless DONT-SIMULATE is non-nil."
     (when (and pel-use-applescript pel-system-is-macos-p)
       (defhydra pel-∑narrate (global-map "<f7> <f8>" :foreign-keys run)
         ""
-        ("<f2>"  pel-cfg-pkg-applescript  "customize"         :column "Config")
         ("w"     pel-say-word             "word"              :column "Read")
         ("s"     pel-say-sentence         "sentence"          :column "Read")
         ("p"     pel-say-paragraph        "paragraph"         :column "Read")

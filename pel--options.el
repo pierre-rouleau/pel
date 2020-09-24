@@ -124,13 +124,18 @@ Last character is a forward slash."
    (format "%s/doc/pdf/"
            (file-name-directory (locate-library "pel")))))
 
-(defun pel-pdf-file-url (topic)
+(defun pel-pdf-file-url (topic &optional web-url)
   "Return the full path of a pdf table for TOPIC.
-TOPIC is the file name body (no path, no extension)."
-  (format "file:%s"
-          (expand-file-name
-           (format "%s.pdf" topic)
-           (pel-pdf-directory))))
+TOPIC is the file name body (no path, no extension).
+By default return the local file url.
+If web-url is non-nil return the web URL for the file hosted in Github."
+  (if web-url
+      (format "https://raw.githubusercontent.com/pierre-rouleau/pel/\
+master/doc/pdf/%s.pdf" topic)
+    (format "file:%s"
+            (expand-file-name
+             (format "%s.pdf" topic)
+             (pel-pdf-directory)))))
 
 ;; -----------------------------------------------------------------------------
 ;; User Option Data Definition

@@ -188,6 +188,7 @@
 
   ;; pel--keys-macros
   (dolist (fct '(pel-help-pdf
+                 pel-help-pdf-select
                  pel-customize-pel
                  pel-customize-library
                  pel-help-pdfs-dir))
