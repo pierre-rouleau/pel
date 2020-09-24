@@ -2309,6 +2309,18 @@ This is meant to be used in the d-mode hook lambda."
      'rexx-mode 'rexx-mode-hook)))
 
 ;; -----------------------------------------------------------------------------
+;; AsciiDoc support
+;; ----------------
+
+(when pel-use-asciidoc
+  (use-package adoc-mode
+    :ensure t
+    :pin melpa
+    :commands adoc-mode
+    :init
+    (add-to-list 'auto-mode-alist '("\\.adoc\\'"  . adoc-mode))))
+
+;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC r`` : reSTucturedText
 (when pel-use-rst-mode
 

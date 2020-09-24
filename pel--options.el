@@ -50,6 +50,7 @@
 ;;     - pel-pkg-for-key-chord
 ;;     - pel-pkg-for-keys
 ;;     - pel-pkg-for-markup
+;;       - pel-pkg-for-asciidoc
 ;;       - pel-pkg-for-drawing-markup
 ;;         - pel-pkg-for-graphviz-dot
 ;;         - pel-pkg-for-plantuml
@@ -971,7 +972,21 @@ The `pel-key-chords' value is a list of objects.
   :type 'boolean
   :safe #'booleanp)
 
-;; -----------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; AsciiDoc Support
+;; ----------------
+(defgroup pel-pkg-for-asciidoc nil
+  "PEL AsciiDoc support."
+  :group 'pel-pkg-for-markup
+  :link `(url-link :tag "AsciiDoc PDF" ,(pel-pdf-file-url "asciidoc")))
+
+(defcustom pel-use-asciidoc nil
+  "Control whether PEL activates support for Asciidoc with adoc-mode."
+  :group 'pel-pkg-for-asciidoc
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; pel-pkg-for-draw-markup
 ;; -----------------------
 (defgroup pel-pkg-for-drawing-markup nil
