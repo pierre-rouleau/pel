@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-24 16:23:36, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-24 18:51:09, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1974,6 +1974,17 @@ PEL markup language support assigns the **F12** key as the prefix key for
 PEL markup-specific commands.  The prefix key is the same for other markup
 languages (or programming languages) but the key bindings after the prefix differ,
 while keeping them as similar as possible.
+
+PEL AsciiDoc Support
+--------------------
+
+:PDF Sheet: `AsciiDoc support`_.
+:PEL Customization: ``pel-use-asciidoc``
+:PEL Key Prefix: *none*
+
+When ``pel-use-asciidoc`` is set to **t**, PEL activates the adoc-mode for files
+with the ``.adoc`` file extension.
+
 
 PEL reStructuredText Support Utilities
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -4121,7 +4132,6 @@ Note:
 #. `Navigation`_
 #. `Number Keypad`_
 #. `Packages`_
-#. `PlantUML-Mode`_
 #. `Projectile Project Interaction Manager`_
 #. `Rectangles`_
 #. `Registers`_
@@ -4139,11 +4149,17 @@ Note:
 #. `Whitespaces`_
 #. `Windows`_
 
-**Modes:**
+**Special Modes:**
 
 #. `Dired`_
+#. `Lispy mode support`_
+
+**Text Markup Support:**
+
+#. `AsciiDoc <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/asciidoc.pdf>`_
 #. `Graphviz Dot`_
 #. `Org mode`_
+#. `PlantUML-Mode`_
 #. `reStructuredText mode`_
 
 **Programming Language Support:**
@@ -4168,8 +4184,6 @@ Note:
 
      - `ERT <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/ert.pdf>`_ (Emacs Lisp Regression Testing system)
 
-   - `Lispy mode support`_
-
 #. `Forth <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth.pdf>`_
 #. `Julia <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-julia.pdf>`_
 #. `Python <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-python.pdf>`_
@@ -4191,6 +4205,7 @@ Note:
 .. _PEL Key Maps:                             https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-pel-key-maps.pdf
 .. _Abbreviations:                            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/abbreviations.pdf
 .. _Align:                                    https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/align.pdf
+.. _AsciiDoc support:                         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/asciidoc.pdf
 .. _Auto-Completion:                          https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/auto-completion.pdf
 .. _Autosave & Backups:                       https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/autosave-backup.pdf
 .. _Bookmarks:                                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/bookmarks.pdf
