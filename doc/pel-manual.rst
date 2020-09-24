@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-24 16:22:15, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-24 16:23:36, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4011,7 +4011,8 @@ Open PEL PDF files quickly from Emacs:
      that describes the search and replace features available under Emacs type
      ``<f11> s <f1>``.  To open the same file but from the Github site prefix
      these keys with ``C-u``.
-   - For topics such as `Narrowing`_ and `Navigation`_, type ``<f11> ? p``
+   - For topics such as `Narrowing`_ and `Navigation`_, that do not have a
+     specific PEL key map prefix, type ``<f11> ? p``
      followed by the topic name or a portion of the name followed by tab to
      activate Emacs completion, then hit return once you selected the topic.
 
