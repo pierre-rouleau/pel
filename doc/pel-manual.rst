@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-24 14:53:14, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-24 15:18:46, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -3992,11 +3992,23 @@ that uses the ``<f11> SPC l`` prefix.
 Key Bindings Documentation
 --------------------------
 
-PEL comes with a set of tables listing and describing both the
-**standard GNU Emacs**
-commands and key bindings for a given type of activity along with the extra
-commands provided by PEL.
-These tables are inside PDF documents.
+PEL comes with a set of tables listing and describing:
+
+- the **standard GNU Emacs** commands and key bindings for a given
+  type of activity,
+- the commands and key bindings provided by PEL for the same type of activity,
+- the commands and key bindings for commands provided by external packages that
+  PEL supports and can download and install.
+
+These tables are inside PDF documents.  They are listed in the `PDF Document
+Tables`_ below.
+
+   PEL provides a set of key bindings that open you local copy of
+   the file (or the Github-hosted copy) inside most key prefixes.  For example to
+   open your local copy of the `Search and Replace`_ PDF file that describes
+   the search and replace features available under Emacs type ``<f11> s <f1>``.
+   To open the same file but from the Github site prefix these keys with ``C-u``.
+
 See the `PDF Documentation`_ section for more info on why these are PDF files.
 The format of these files makes them something between a set of quick-sheets and
 a full blown manual.
@@ -4053,6 +4065,7 @@ Note:
 
 **Emacs Concepts**
 
+#. `PEL Key Maps`_
 #. `File and Directory Local Variables`_
 #. `Modifier Keys`_
 
@@ -4072,7 +4085,7 @@ Note:
 #. `Customization <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf>`_.
 #. `Counting`_
 #. Cross-Referencing: `Etags-based Cross-Reference`_
-#. `CUA Mode <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/cua.pdf>`_
+#. `CUA Mode Support`_
 #. `Cut, Delete, Copy and Paste`_ (killing and yanking)
 #. `Diff and Merge`_
 #. `Display Lines`_
@@ -4147,6 +4160,8 @@ Note:
 
      - `ERT <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/ert.pdf>`_ (Emacs Lisp Regression Testing system)
 
+   - `Lispy mode support`_
+
 #. `Forth <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth.pdf>`_
 #. `Julia <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-julia.pdf>`_
 #. `Python <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-python.pdf>`_
@@ -4165,6 +4180,7 @@ Note:
 
 
 .. _Document Legend:                          https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-legend.pdf
+.. _PEL Key Maps:                             https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-pel-key-maps.pdf
 .. _Abbreviations:                            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/abbreviations.pdf
 .. _Align:                                    https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/align.pdf
 .. _Auto-Completion:                          https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/auto-completion.pdf
@@ -4177,8 +4193,9 @@ Note:
 .. _Comments:                                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/comments.pdf
 .. _Input Completion:                         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/completion-input.pdf
 .. _Counting:                                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/counting.pdf
-.. _User Option Customization:                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf
+.. _CUA Mode Support:                         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/cua.pdf
 .. _Cursor:                                   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/cursor.pdf
+.. _User Option Customization:                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf
 .. _Cut, Delete, Copy and Paste:              https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/cut-paste.pdf
 .. _Diff and Merge:                           https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/diff-merge.pdf
 .. _Display Lines:                            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/display-lines.pdf
@@ -4214,15 +4231,22 @@ Note:
 .. _Narrowing:                                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/narrowing.pdf
 .. _Navigation:                               https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/navigation.pdf
 .. _Number Keypad:                            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/numkeypad.pdf
-.. _PlantUML-Mode:                            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/plantuml.pdf
 .. _Packages:                                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/packages.pdf
-.. _Projectile Project Interaction Manager:   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/projectile.pdf
 .. _Apple-Script:                             https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-applescript.pdf
 ..  C++
 ..  C
 .. _Common Lisp:                              https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-common-lisp.pdf
+.. _Lispy mode support:                       https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/plm-lispy.pdf
 ..  D
+..  elixir
 .. _Emacs Lisp:                               https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-emacs-lisp.pdf
+..  erlang
+..  forth
+..  python
+..  REXX
+.. _PlantUML-Mode:                            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/plantuml.pdf
+
+.. _Projectile Project Interaction Manager:   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/projectile.pdf
 .. _Rectangles:                               https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/rectangles.pdf
 .. _Registers:                                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/registers.pdf
 .. _Scrolling:                                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/scrolling.pdf
