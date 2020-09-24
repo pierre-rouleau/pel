@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-24 14:47:13, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-24 14:53:14, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -3912,8 +3912,8 @@ To see the list of PEL prefix keys inside Emacs, do one of the following:
   **F1**.
 
 As described in the `Naming Conventions`_ section the names in the binding
-column that use the "pel:" prefix are sub key-maps.
-The commands use the prefix "pel-".
+column that use the ``pel:`` prefix are sub key-maps.
+All PEL command functions use the prefix ``pel-``.
 
 
 PEL Mode Sensitive Key-maps
