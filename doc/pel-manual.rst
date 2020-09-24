@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-22 13:48:50, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-24 14:47:13, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -3888,110 +3888,33 @@ PEL Key Bindings
 ================
 
 PEL key bindings are mostly use function key prefixes.
-It currently uses the **F2**, **F6**, **F11** and **F12** keys as prefix keys.
+It currently uses the **F2**, **F6**, **F7**, **F8**, **F11** and **F12** keys
+as prefix keys.
 It also binds **F5** as the repeat key.
-In this version these bindings are hard-coded.
 
-**Note:**
-         If you have already bound these keys to something else, you can easily
-         override PEL's binding by placing your own binding statements in your
-         Emacs init file **after** the call to ``pel-init``.
-         You can also use
-         PEL's key-maps but change the prefix keys.
-         See the section titled `To override or change PEL key bindings`_ for
-         more info.
+PEL's main global prefix key is the **F11** key.  The **F12** key is also
+available in some major modes as described in the section titled
+`PEL Mode Sensitive Key-maps`_.
+
+All PEL key prefixes  are used for PEL key maps.  These all have names that
+start with ``pel:``.  The complete list of the prefixes is available inside the
+`PEL Key Maps PDF file`_.
 
 
-The best way to quickly see the list of PEL prefix key is right inside Emacs.
-Type the prefix key (like **F11**) and then quickly type
-either **C-h** or **F1**.
-Emacs will open a ``*help*`` buffer that lists all keys available.  You can
-navigate this buffer and follow the links to the described commands. To get the
-list of the keys for a sub-prefix type it and again follow with
-either **C-h** or **F1**.
+.. _PEL Key Maps PDF file: https://github.com/pierre-rouleau/pel/blob/master/doc/pdf/-pel-key-maps.pdf
 
-The following table lists the **F11** key map as an example.
+
+To see the list of PEL prefix keys inside Emacs, do one of the following:
+
+- Type the  prefix key (like **F11**) and then quickly **C-h**.  Emacs will open
+  a ``*Help*`` buffer and list the available keys under F11.
+- To open a local copy of the `PEL Key Maps PDF file`_ type **F11** followed by
+  **F1**.
+
 As described in the `Naming Conventions`_ section the names in the binding
 column that use the "pel:" prefix are sub key-maps.
 The commands use the prefix "pel-".
-As you can see some of the commands are accessible right after the **F11**
-prefix, but there's a large number of sub-prefix following.
-The key-map names were chosen to be as descriptive as possible and use keys that
-mnemonically associate to the related concept if at all possible.
 
-=============================== ===========================================
-key                             binding
-=============================== ===========================================
-``<f11> DEL``                   **c-hungry-delete-backwards**
-``<f11> RET``                   **auto-fill-mode**
-``<f11> SPC``                   Prefix Command to access the
-                                `PEL Mode Sensitive Key-maps`_
-                                from any buffer.
-``<f11> TAB``                   pel:indent
-``<f11> #``                     **pel-toggle-mac-numlock**
-``<f11> $``                     pel:spell
-``<f11> '``                     pel:bookMark
-``<f11> +``                     **pel-copy-marked-or-whole-line**
-``<f11> ,``                     pel:auto-completion
-``<f11> -``                     pel:kill
-``<f11> .``                     pel:mark
-``<f11> /``                     pel:hideShow
-``<f11> 0``                     **hl-line-mode**
-``<f11> ;``                     pel:comment
-``<f11> =``                     pel:copy
-``<f11> ?``                     pel:help
-``<f11> A``                     **counsel-osx-app**
-``<f11> C``                     pel:clipboard
-``<f11> D``                     pel:draw
-``<f11> F``                     pel:frame
-``<f11> N``                     **neotree-toggle**
-``<f11> R``                     **cua-rectangle-mark-mode**
-``<f11> S``                     pel:session
-``<f11> X``                     pel:xref
-``<f11> [``                     **pel-cua-move-rectangle-left**
-``<f11> ]``                     **pel-cua-move-rectangle-right**
-``<f11> _``                     pel:underline
-``<f11> ```                     **overwrite-mode**
-``<f11> a``                     pel:abbrev
-``<f11> b``                     pel:buffer
-``<f11> c``                     pel:count
-``<f11> d``                     pel:diff
-``<f11> f``                     pel:file
-``<f11> g``                     pel:grep
-``<f11> i``                     pel:insert
-``<f11> k``                     pel:kbmacro
-``<f11> l``                     pel:linectrl
-``<f11> o``                     pel:order
-``<f11> r``                     pel:register
-``<f11> s``                     pel:search-replace
-``<f11> t``                     pel:text
-``<f11> u``                     pel:undo
-``<f11> v``                     pel:vcs
-``<f11> w``                     pel:window
-``<f11> x``                     pel:eXecute
-``<f11> |``                     pel:scroll
-``<f11> <f2>``                  pel:config
-``<f11> <f10>``                 pel:menu
-``<f11> <f11>``                 **pel-toggle-frame-fullscreen**
-``<f11> <f12>``                 **xterm-mouse-mode**
-``<f11> M-c``                   **pel-select-completion-mode**
-``<f11> M-s``                   pel:speedbar
-``<f11> <C-S-down>``            **pel-close-window-down**
-``<f11> <C-S-left>``            **pel-close-window-left**
-``<f11> <C-S-right>``           **pel-close-window-right**
-``<f11> <C-S-up>``              **pel-close-window-up**
-``<f11> <C-down>``              **pel-create-window-down**
-``<f11> <C-left>``              **pel-create-window-left**
-``<f11> <C-right>``             **pel-create-window-right**
-``<f11> <C-up>``                **pel-create-window-up**
-``<f11> <M-left>``              **pel-backward-syntaxchange-start**
-``<f11> <M-right>``             **pel-forward-syntaxchange-start**
-``<f11> <C-f10>``               **menu-bar-mode**
-``<f11> <down>``                **windmove-down**
-``<f11> <left>``                **windmove-left**
-``<f11> <right>``               **windmove-right**
-``<f11> <up>``                  **windmove-up**
-=============================== ===========================================
 
 PEL Mode Sensitive Key-maps
 ---------------------------
