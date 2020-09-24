@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-24 15:22:23, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-24 16:22:15, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4005,10 +4005,16 @@ Tables`_ below.
 
 Open PEL PDF files quickly from Emacs:
    PEL provides a set of key bindings that open you local copy of
-   the file (or the Github-hosted copy) inside most key prefixes.  For example to
-   open your local copy of the `Search and Replace`_ PDF file that describes
-   the search and replace features available under Emacs type ``<f11> s <f1>``.
-   To open the same file but from the Github site prefix these keys with ``C-u``.
+   the file (or the Github-hosted copy) inside most key prefixes.
+
+   - For example to open your local copy of the `Search and Replace`_ PDF file
+     that describes the search and replace features available under Emacs type
+     ``<f11> s <f1>``.  To open the same file but from the Github site prefix
+     these keys with ``C-u``.
+   - For topics such as `Narrowing`_ and `Navigation`_, type ``<f11> ? p``
+     followed by the topic name or a portion of the name followed by tab to
+     activate Emacs completion, then hit return once you selected the topic.
+
 
 See the `PDF Documentation`_ section for more info on why these are PDF files.
 The format of these files makes them something between a set of quick-sheets and
