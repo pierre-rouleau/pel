@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-24 11:28:59, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-25 14:42:50, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -442,7 +442,8 @@ Return nil if nothing found."
         (cl-return file-path)))))
 
 (defconst pel--group-library-names
-  '(("rxt"  . "pcre2el"))
+  '(("rxt"   . "pcre2el")
+    ("Ztree" . "ztree-view"))
   "Maps a group name for the library that defines it.
 This is only required for the libraries that cannot be found
 with the existing code.")
@@ -454,12 +455,14 @@ Attempts to find a library that has the same name as the group,
 if that fails, it tires to see if this library is in the list
 of `pel--group-library-names' associated list and tries with that
 instead."
-  (let ((file-path (locate-library group)))
-    (if file-path
-        file-path
-      (let ((libname (cdr (assoc group pel--group-library-names))))
-        (when libname
-          (locate-library libname))))))
+  ;; If a specified library name exists for a group, use that before
+  ;; trying to parse a file with the same group name.
+  (let ((libname (cdr (assoc group pel--group-library-names))))
+    (if libname
+        (locate-library libname)
+      ;; if nothing is in the table try using a file name with the
+      ;; same name as the group
+      (locate-library group))))
 
 (defun pel--group-isin-libfile (group)
   "Return non-nil if customize GROUP is defined in an accessible Emacs Lisp file.
@@ -468,17 +471,13 @@ GROUP must be a string.
 Return nil otherwise."
   (let ((file-path (pel--locate-library-for group)))
     (when file-path
-      ;; The code could either be inside a .el or .el.gz file.
-      ;; Find which one is on the file-system.
-      ;;
-      ;; that match a .el.gz file
       (let ((file-path (pel--which-el-file file-path)))
         (when file-path
           (with-temp-buffer
             (insert-file-contents file-path)
             (when
                 (or (pel--found (format "^ *?(defgroup +?%s " group))
-                    (pel--found (format "^ +?:group +?'%s)?$" group)))
+                    (pel--found (format "^ +?:group +?'%s)?\\( ?\\|$\\)" group)))
               file-path)))))))
 
 (defun pel--customize-group (group &optional other-window)
