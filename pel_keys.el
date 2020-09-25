@@ -3152,38 +3152,58 @@ the ones defined from the buffer now."
 (define-key pel:diff "k"  'diff-backup)
 (define-key pel:diff "w"  'compare-windows)
 
-(when pel-use-neotree
-  (use-package neotree
-    :ensure t
-    :pin melpa
-    :commands neotree-toggle
-    :init
-    (define-key pel:  "N" 'neotree-toggle)))
+;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> B`` : Browse commands
 
-(when pel-use-ztree
-  ;; The ztree package does nothing but requiring ztree-dir and ztree-diff
-  ;; It's the loading of those 2 that we need to trigger on to set the PEL
-  ;; customization into the corresponding ztree variables.
-  (use-package ztree-dir
-    :ensure ztree
-    :pin melpa
-    :commands ztree-dir
-    :init
-    (define-key pel:     "Z" 'ztree-dir)
-    :config
-    (setq ztree-dir-move-focus pel-ztree-dir-move-focus)
-    (when pel-ztree-dir-filter-list
-      (setq-default ztree-dir-filter-list
-                    (append pel-ztree-dir-filter-list ztree-dir-filter-list)))
+(when (or pel-use-neotree
+          pel-use-ztree
+          pel-use-treemacs)
+  (define-pel-global-prefix pel:browse (kbd "<f11> B"))
+
+  (when pel-use-treemacs
+    (use-package treemacs
+      :ensure t
+      :pin melpa
+      :defer t
+      :commands treemacs
+      :init
+      (define-key pel:browse  "T" 'treemacs)
+      (with-eval-after-load 'winum
+        (when (boundp 'winum-keymap)
+          (define-key winum-keymap (kbd "<f9>") #'treemacs-select-window)))))
+
+  (when pel-use-neotree
+    (use-package neotree
+      :ensure t
+      :pin melpa
+      :commands neotree-toggle
+      :init
+      (define-key pel:browse  "N" 'neotree-toggle)))
+
+  (when pel-use-ztree
+    ;; The ztree package does nothing but requiring ztree-dir and ztree-diff
+    ;; It's the loading of those 2 that we need to trigger on to set the PEL
+    ;; customization into the corresponding ztree variables.
+    (use-package ztree-dir
+      :ensure ztree
+      :pin melpa
+      :commands ztree-dir
+      :init
+      (define-key pel:browse     "Z" 'ztree-dir)
+      :config
+      (setq ztree-dir-move-focus pel-ztree-dir-move-focus)
+      (when pel-ztree-dir-filter-list
+        (setq-default ztree-dir-filter-list
+                      (append pel-ztree-dir-filter-list ztree-dir-filter-list)))
       (setq-default ztree-dir-show-filtered-files
                     pel-ztree-dir-show-filtered-files))
-  ;;
-  (use-package ztree-diff
-    :ensure ztree
-    :pin melpa
-    :commands ztree-diff
-    :init
-    (define-key pel:diff "z" 'ztree-diff)))
+    ;;
+    (use-package ztree-diff
+      :ensure ztree
+      :pin melpa
+      :commands ztree-diff
+      :init
+      (define-key pel:diff "z" 'ztree-diff))))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> d e`` : ediff commands

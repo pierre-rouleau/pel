@@ -43,7 +43,8 @@
 ;;     - pel-pkg-for-dired
 ;;     - pel-pkg-for-expand
 ;;     - pel-pkg-for-filemng
-;;       - pel-pkg-for-ztree
+;;       - pel-pkg-for-browse
+;;         - pel-pkg-for-ztree
 ;;     - pel-pkg-for-grep
 ;;     - pel-pkg-for-insertions
 ;;     - pel-pkg-for-kbmacro
@@ -152,6 +153,7 @@ commands and key bindings of a specific aspect of Emacs.  The PDF files document
 the standard Emacs key bindings as well as PEL's specific key bindings."
   :group 'convenience
   :link `(file-link :tag "Directory of PDF table files" ,(pel-pdf-directory))
+  :link `(url-link  :tag "PEL key maps PDF" ,(pel-pdf-file-url "-pel-key-maps"))
   :package-version '(pel . "0.2.0"))
 
 ;; -----------------------------------------------------------------------------
@@ -476,16 +478,34 @@ make script files executable on save when non-nil, don't otherwise."
           (const :tag "Use pel:ffap bindings" t)
           (const :tag "Activate standard ffap bindings" ffap-bindings)))
 
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Directory Tree Browsing and Management
+;; --------------------------------------
+
+(defgroup pel-pkg-for-browse nil
+  "PEL Directory Tree Browsing and Management."
+    :group 'pel-pkg-for-filemng)
+
+
 (defcustom pel-use-neotree nil
-  "Control whether PEL uses the Emacs NeoTree search package.
-See: https://github.com/jaypei/emacs-neotree"
-  :group 'pel-pkg-for-filemng
+  "Control whether PEL uses the Emacs NeoTree search package."
+  :group 'pel-pkg-for-browse
   :type 'boolean
-  :safe #'booleanp)
+  :safe #'booleanp
+  :link `(url-link  :tag "NeoTree @ github"  "https://github.com/jaypei/emacs-neotree"))
+
+(defcustom pel-use-treemacs nil
+  "Control whether PEL uses the treemacs package."
+  :group 'pel-pkg-for-browse
+  :type 'boolean
+  :safe #'booleanp
+  :link `(url-link  :tag "treemacs @ github"  "https://github.com/Alexander-Miller/treemacs"))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 (defgroup pel-pkg-for-ztree nil
   "PEL extra configuration for ztree packages."
-    :group 'pel-pkg-for-filemng)
+    :group 'pel-pkg-for-browse)
 
 (defcustom pel-use-ztree nil
   "Control whether the ztree package is used."
