@@ -44,7 +44,6 @@
 
 ;;; Code:
 
-;; -----------------------------------------------------------------------------
 ;; - Bootstrap `use-package' if needed
 ;; -----------------------------------
 ;;
@@ -3173,12 +3172,22 @@ the ones defined from the buffer now."
           (define-key winum-keymap (kbd "<f9>") #'treemacs-select-window)))))
 
   (when pel-use-neotree
+    (define-pel-global-prefix pel:neotree (kbd "<f11> B N"))
+
     (use-package neotree
       :ensure t
       :pin melpa
-      :commands neotree-toggle
+      :commands (neotree-find
+                 neotree-dir
+                 neotree-toggle)
       :init
-      (define-key pel:browse  "N" 'neotree-toggle)))
+      (define-key pel:neotree  "N" 'neotree-toggle)
+      (define-key pel:neotree  "F" 'neotree-find)
+      (define-key pel:neotree  "D" 'neotree-dir)
+
+      :config
+      (define-key pel:neotree  "S" 'neotree-show)
+      (define-key pel:neotree  "H" 'neotree-hide)))
 
   (when pel-use-ztree
     ;; The ztree package does nothing but requiring ztree-dir and ztree-diff

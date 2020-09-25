@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-25 14:45:05, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-25 16:18:36, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -157,9 +157,10 @@
                                                                         dired))
 
     ;; no PDF for browse yet, the info is  in file-mngt.
-    ([f11 ?B]         "file-mngt"             pel-pkg-for-browse       (neotree
-                                                                        treemacs
-                                                                        Ztree))
+    ([f11 ?B]         "file-mngt"             (pel-pkg-for-browse
+                                               pel-pkg-for-ztree)     (treemacs
+                                                                       Ztree))
+    ([f11 ?B ?N]      "file-mngt"             pel-pkg-for-browse       neotree)
 
     ([f11 ?f ?a]      "file-mngt"              nil                     ffap)
     ([f11 ?f ?r]      "file-mngt"              nil                     auto-revert)
