@@ -45,6 +45,8 @@
 ;;     - pel-pkg-for-filemng
 ;;       - pel-pkg-for-browse
 ;;         - pel-pkg-for-ztree
+;;     - pel-pkg-for-graphics-emacs
+;;       - pel-pkg-for-graphics-cursor
 ;;     - pel-pkg-for-grep
 ;;     - pel-pkg-for-insertions
 ;;     - pel-pkg-for-kbmacro
@@ -336,31 +338,6 @@ The available options are:
   :group 'cursor
   :link `(url-link :tag "Cursor PDF" ,(pel-pdf-file-url "cursor")))
 
-
-(defface pel-cursor-overwrite-mode-color
-  '((((background light)) :background "black")
-    (((background dark))  :background "white"))
-  "Cursor face of cursor in overwrite-mode.
-Takes effects only when Emacs runs in graphics mode."
-  :group 'pel-pkg-for-cursor
-  :group 'cursor)
-
-(defcustom pel-cursor-type-when-mark nil
-  "Cursor type used when the mark is active.
-If nil, the cursor type does not change when mark is active.
-Otherwise the choices are:
- - bar
- - box
- - hollow
-These only take effect when Emacs is running in graphics mode."
-  :group 'pel-pkg-for-cursor
-  :group 'cursor
-  :type '(choice
-          (const :tag "No change - use default cursor type" nil)
-          (const :tag "bar" bar)
-          (const :tag "box" box)
-          (const :tag "hollow" hollow)))
-
 (defcustom pel-use-multiple-cursors nil
   "Control whether PEL uses the multiple cursors package."
   :group 'pel-pkg-for-cursor
@@ -487,12 +464,6 @@ make script files executable on save when non-nil, don't otherwise."
     :group 'pel-pkg-for-filemng)
 
 
-(defcustom pel-use-neotree nil
-  "Control whether PEL uses the Emacs NeoTree search package."
-  :group 'pel-pkg-for-browse
-  :type 'boolean
-  :safe #'booleanp
-  :link `(url-link  :tag "NeoTree @ github"  "https://github.com/jaypei/emacs-neotree"))
 
 (defcustom pel-use-treemacs nil
   "Control whether PEL uses the treemacs package."
@@ -500,6 +471,37 @@ make script files executable on save when non-nil, don't otherwise."
   :type 'boolean
   :safe #'booleanp
   :link `(url-link  :tag "treemacs @ github"  "https://github.com/Alexander-Miller/treemacs"))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defgroup pel-pkg-for-neotree nil
+  "PEL extra configuration for NeoTree package."
+    :group 'pel-pkg-for-browse)
+
+(defcustom pel-use-neotree nil
+  "Control whether PEL uses the Emacs NeoTree search package."
+  :group 'pel-pkg-for-neotree
+  :type 'boolean
+  :safe #'booleanp
+  :link `(url-link  :tag "NeoTree @ github"  "https://github.com/jaypei/emacs-neotree"))
+
+(defcustom pel-neotree-font-in-terminal nil
+  "NeoTree view font for directory node in terminal mode.
+Default is to use + and - ."
+  :group 'pel-pkg-for-neotree
+  :type  '(choice
+           (const :tag "Default" nil)
+           (const :tag "Arrows" arrows)))
+
+(defcustom pel-neotree-font-in-graphics nil
+  "NeoTree view font for directory node in graphics mode.
+Default is to use [+] and [-] .
+The Icons choice uses the icons from the package all-the-icons."
+  :group 'pel-pkg-for-neotree
+  :type  '(choice
+           (const :tag "Default" nil)
+           (const :tag "Icons" icons))
+  :link `(url-link :tag "all-the-icons @ github"
+                   "https://github.com/domtronn/all-the-icons.el"))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -537,6 +539,56 @@ a non-customizable variable."
   :group 'pel-pkg-for-ztree
   :type 'boolean
   :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; Support for Emacs Running in Graphics Mode
+;; ------------------------------------------
+(defgroup pel-pkg-for-graphics-emacs nil
+  "List of external packages that PEL can use for Emacs in graphics mode."
+  :group 'pel-package-use)
+
+(defcustom pel-use-all-the-icons nil
+  "Control whether PEL uses the all-the-icons package.
+This is only used when Emacs runs in graphics mode."
+  :group 'pel-pkg-for-graphics-emacs
+  :type 'boolean
+  :safe #'booleanp
+  :link `(url-link :tag "all-the-icons @ github"
+                   "https://github.com/domtronn/all-the-icons.el"))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Graphics Cursor Control
+;; -----------------------
+
+(defgroup pel-pkg-for-graphics-cursor nil
+  "Control graphics mode cursor."
+  :group 'pel-pkg-for-graphics-emacs)
+
+(defface pel-cursor-overwrite-mode-color
+  '((((background light)) :background "black")
+    (((background dark))  :background "white"))
+  "Cursor face of cursor in overwrite-mode.
+Takes effects only when Emacs runs in graphics mode."
+  :group 'pel-pkg-for-graphics-cursor
+  :group 'pel-pkg-for-cursor
+  :group 'cursor)
+
+(defcustom pel-cursor-type-when-mark nil
+  "Cursor type used when the mark is active.
+If nil, the cursor type does not change when mark is active.
+Otherwise the choices are:
+ - bar
+ - box
+ - hollow
+These only take effect when Emacs is running in graphics mode."
+  :group 'pel-pkg-for-graphics-cursor
+  :group 'pel-pkg-for-cursor
+  :group 'cursor
+  :type '(choice
+          (const :tag "No change - use default cursor type" nil)
+          (const :tag "bar" bar)
+          (const :tag "box" box)
+          (const :tag "hollow" hollow)))
 
 ;; -----------------------------------------------------------------------------
 ;; pel-pkg-for-grep
