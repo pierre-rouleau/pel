@@ -296,25 +296,42 @@ Returns the new window."
 ;; - `pel-2-vertical-windows'
 ;; - `pel-2-horizontal-windows'
 ;;   - `pel-flip-2-windows-to'
+;;     - `pel-other-flippable-window'
+;;       - `pel-window-unflippable'
 
+(defun pel-window-unflippable ()
+  "Return string describing why window is unflippable.
+Return nil if it can be flipped."
+  (cond ((window-dedicated-p)
+         "dedicated")
+        ((window-minibuffer-p)
+         "minibuffer")
+        (t nil)))
 
-(defun pel-other-non-dedicated-window (count)
-  "Select another non dedicated window in cyclic ordering of windows.
+(defun pel-other-flippable-window (count)
+  "Select another flippable window in cyclic ordering of windows.
 COUNT specifies the number of windows to skip.
 If the skipped to window is dedicated skip one more."
-  (when  (window-dedicated-p)
-    (user-error "Current window is dedicated!"))
-  (other-window count)
-  (when (window-dedicated-p)
-    (other-window 1)
-    (when (window-dedicated-p)
-      (user-error "Cannot flip dedicated window"))))
+  (let  ((reason  (pel-window-unflippable)))
+    (when reason
+      (user-error "Cannot flip %s window!" reason)))
+  (let ((original-window (selected-window)))
+    (other-window count)
+    (when (pel-window-unflippable)
+      (other-window 1)
+      (if (pel-window-unflippable)
+          (user-error "Cannot flip dedicated window!")
+        (when (eq (selected-window) original-window)
+          (user-error "Cannot flip window: need another one"))))))
+
 
 (defun pel-flip-2-windows-to (orientation)
   "Flip the ORIENTATION of 2 windows: current and next window.
 ORIENTATION must be one of: `horizontal or `vertical."
+  (unless (> (pel-count-non-dedicated-windows) 1)
+    (user-error "Need 2 flippable windows!"))
   (let ((original-window (selected-window)))
-    (pel-other-non-dedicated-window 1)
+    (pel-other-flippable-window 1)
     (let ((otherwin-buf (buffer-name)))
       (delete-window)
       (cond ((eq orientation 'horizontal) (split-window-below))
