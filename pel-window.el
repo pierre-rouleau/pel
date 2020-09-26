@@ -308,36 +308,36 @@ Return nil if it can be flipped."
          "minibuffer")
         (t nil)))
 
-(defun pel-other-flippable-window (count)
+(defun pel-other-flippable-window ()
   "Select another flippable window in cyclic ordering of windows.
-COUNT specifies the number of windows to skip.
+The new window must be in the same frame.
 If the skipped to window is dedicated skip one more."
   (let  ((reason  (pel-window-unflippable)))
     (when reason
       (user-error "Cannot flip %s window!" reason)))
   (let ((original-window (selected-window)))
-    (other-window count)
+    (select-window (next-window nil :skip-minibuffer :current-frame-only))
     (when (pel-window-unflippable)
-      (other-window 1)
+      (select-window (next-window nil :skip-minibuffer :current-frame-only))
       (if (pel-window-unflippable)
           (user-error "Cannot flip dedicated window!")
         (when (eq (selected-window) original-window)
-          (user-error "Cannot flip window: need another one"))))))
+          (user-error "Cannot flip window: need another one!"))))))
 
 
 (defun pel-flip-2-windows-to (orientation)
   "Flip the ORIENTATION of 2 windows: current and next window.
 ORIENTATION must be one of: `horizontal or `vertical."
   (unless (> (pel-count-non-dedicated-windows) 1)
-    (user-error "Need 2 flippable windows!"))
+    (user-error "Need 2 flippable windows in current frame!"))
   (let ((original-window (selected-window)))
-    (pel-other-flippable-window 1)
+    (pel-other-flippable-window)
     (let ((otherwin-buf (buffer-name)))
       (delete-window)
       (cond ((eq orientation 'horizontal) (split-window-below))
             ((eq orientation 'vertical)   (split-window-right))
             (t (error "Invalid orientation: %S" orientation)))
-      (other-window 1)
+      (pel-other-flippable-window)
       (switch-to-buffer otherwin-buf))
     (select-window original-window)))
 
@@ -480,12 +480,12 @@ Window selection:
 ;; are re-mapped. The following provide access to that function anyway.
 
 ;;-pel-autoload
-(defun pel-other-window ()
+(defun pel-other-window (&optional all-frames)
   "Execute (other-window 1).
 Useful when `other-window' has been remapped to something like `ace-window'
 and want to see where the next window is."
-  (interactive)
-  (other-window 1))
+  (interactive "P")
+  (other-window 1 (if all-frames t nil)))
 
 ;; -----------------------------------------------------------------------------
 ;; Move to previous window
@@ -495,9 +495,13 @@ and want to see where the next window is."
 (defun pel-other-window-backward (&optional n)
   "Select Nth previous window.
 
-  - n defaults to 1 : meaning direct previous window."
+  - n defaults to 1 : meaning direct previous window.
+  - if n is negative: move backwards but consider all frames."
   (interactive "P")
-  (other-window (- (prefix-numeric-value n))))
+  (let* ((n          (prefix-numeric-value n))
+         (count      (- (abs n)))
+         (all-frames (< n 0)))
+    (other-window count all-frames)))
 
 ;; -----------------------------------------------------------------------------
 ;; Show information about window
