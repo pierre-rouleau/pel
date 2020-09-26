@@ -470,7 +470,6 @@
                  pel-close-window-left
                  pel-close-window-right
                  pel-split-window-sensibly
-                 pel-flip-2-windows-to
                  pel-2-vertical-windows
                  pel-2-horizontal-windows
                  pel-find-window

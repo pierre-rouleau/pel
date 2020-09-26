@@ -42,7 +42,7 @@
 ;;    - `pel-toggle-window-dedicated' toggles the dedicated status of the
 ;;      current window.  Use it to dedicate the current window or turn
 ;;      dedication off.
-;;    - `pel-count-non-dedicated-windows' returns the number of dedicated
+;;    - `pel-count-non-dedicated-windows' returns the number of non-dedicated
 ;;      windows.
 ;;
 ;;  - Creating new windows:
@@ -293,16 +293,28 @@ Returns the new window."
 ;;
 ;;
 ;; Functions:
-;; - pel-2-vertical-windows
-;; - pel-2-horizontal-windows
-;;   - pel-flip-2-windows
+;; - `pel-2-vertical-windows'
+;; - `pel-2-horizontal-windows'
+;;   - `pel-flip-2-windows-to'
 
-;;-pel-autoload
+
+(defun pel-other-non-dedicated-window (count)
+  "Select another non dedicated window in cyclic ordering of windows.
+COUNT specifies the number of windows to skip.
+If the skipped to window is dedicated skip one more."
+  (when  (window-dedicated-p)
+    (user-error "Current window is dedicated!"))
+  (other-window count)
+  (when (window-dedicated-p)
+    (other-window 1)
+    (when (window-dedicated-p)
+      (user-error "Cannot flip dedicated window"))))
+
 (defun pel-flip-2-windows-to (orientation)
   "Flip the ORIENTATION of 2 windows: current and next window.
 ORIENTATION must be one of: `horizontal or `vertical."
   (let ((original-window (selected-window)))
-    (other-window 1)
+    (pel-other-non-dedicated-window 1)
     (let ((otherwin-buf (buffer-name)))
       (delete-window)
       (cond ((eq orientation 'horizontal) (split-window-below))
