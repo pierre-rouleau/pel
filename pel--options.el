@@ -455,6 +455,14 @@ make script files executable on save when non-nil, don't otherwise."
           (const :tag "Use pel:ffap bindings" t)
           (const :tag "Activate standard ffap bindings" ffap-bindings)))
 
+(defcustom pel-use-recentf nil
+  "Control whether PEL activates the recentf built-in package.
+When the `pel-use-ido' is also activated, PEL maps ``<f11> f f``
+to the function `ido-recentf-open'."
+  :group 'pel-pkg-for-filemng
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Directory Tree Browsing and Management
 ;; --------------------------------------

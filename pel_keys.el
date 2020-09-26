@@ -3351,14 +3351,23 @@ the ones defined from the buffer now."
     (user-error
      "Activate auto-revert-mode before attempting to set/cancel its timer")))
 
+
+
+
 (declare-function find-grep "grep")
 (define-pel-global-prefix pel:file (kbd "<f11> f"))
+;; Used keys in <f11> f:
+;; . /
+;; F I L O W
+;; a d f g h i j l n o r t v w
+;; C-^  C-cj
+;; M-/  M-x
 (define-key pel:file "I" #'insert-file-literally)
 (define-key pel:file "O" #'find-file-read-only-other-window)
 (define-key pel:file "L" #'locate)
 (define-key pel:file "W" #'append-to-file)
 (define-key pel:file "d" #'find-dired)
-(define-key pel:file "f"  'pel-open-in-os-app)
+(define-key pel:file "F"  'pel-open-in-os-app)
 (define-key pel:file "g" #'find-grep)
 (define-key pel:file "h" #'find-grep-dired)
 (define-key pel:file "i" #'insert-file)
@@ -3368,6 +3377,30 @@ the ones defined from the buffer now."
 (define-key pel:file "t" #'time-stamp)
 (define-key pel:file "w" #'write-region)
 (define-key pel:file (kbd "M-x") 'hexl-find-file)
+
+
+(when (and pel-use-recentf
+           pel-use-ido)
+
+  (require 'recentf)
+  (recentf-mode 1)
+
+  (defvar recentf-list)
+
+  ;; Credits for ido-recentf-open: Mickey Petersen
+  ;; https://www.masteringemacs.org/article/find-files-faster-recent-files-package
+  (defun ido-recentf-open ()
+  "Use `ido-completing-read' to \\[find-file] a recent file"
+  (interactive)
+  (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+      (message "Opening file...")
+    (message "Aborting")))
+
+
+  (define-key pel:file "f" 'ido-recentf-open))
+
+
+
 ;; - Open file at point
 ;; --------------------
 (global-set-key (kbd "C-^") 'pel-open-at-point)

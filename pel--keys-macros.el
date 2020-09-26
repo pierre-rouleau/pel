@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-26 13:30:50, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-26 17:29:06, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -154,7 +154,8 @@
                        "mode-dired"
                        "web")                 (pel-pkg-for-filemng
                                                pel-kg-for-dired)       (files
-                                                                        dired))
+                                                                        dired
+                                                                        recentf))
 
     ;; no PDF for browse yet, the info is  in file-mngt.
     ([f11 ?B]         "file-mngt"             (pel-pkg-for-browse
