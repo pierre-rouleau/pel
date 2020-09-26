@@ -209,43 +209,78 @@ Done in this function to allow advising libraries that remap these keys."
 ;; -----------------------------------------------------------------------------
 ;; - Font Control
 ;; --------------
-;; On macOS, the keys used by the OS are the same as selected here, both in
-;; GUI mode and in terminal (TTY) mode:
-;; - In terminal mode: the Terminal.app uses the ⌘ command keys for fond size
-;;   control (it's not Emacs that acts on them, its the Terminal.app)
-;; - In graphics mode the same keys handled by Emacs: the Super modifier is
-;;   assigned to the ⌘ Command key.
-
-(when (and pel-system-is-macos-p
-           (display-graphic-p))
-
-  ;; Bind the face-remap commands. The face-remap package
-  ;; is part of Emacs standard distribution.
-  (global-set-key (kbd "s-=")             #'text-scale-adjust)
-  (global-set-key (kbd "s-+")             #'text-scale-adjust)
-  (global-set-key (kbd "s--")             #'text-scale-adjust)
-  (global-set-key (kbd "s-0")             #'text-scale-adjust)
-
-  ;; Load the pel-font file only as needed.
-  ;; Configure the pel-font commands as autoload.
-  ;; although ther is no such package, use the macro to set up
-  ;; the delayed autoloads and key bindings.
-  (use-package pel-font
-    ;; autoload it when one of the following commands is used.
-    :commands (pel-font-increase-size-all-buffers
-               pel-font-decrease-size-all-buffers
-               pel-font-reset-size-all-buffers)
 
 
-    ;; run following command before package is loaded to
-    ;; activate the autoload.
-    :init
-    (cl-eval-when 'compile (require 'pel-font nil :no-error))
-    (global-set-key (kbd "<s-kp-add>")
-                    #'pel-font-increase-size-all-buffers)
-    (global-set-key (kbd "<s-kp-subtract>")
-                    #'pel-font-decrease-size-all-buffers)
-    (global-set-key (kbd "<s-kp-0>")        #'pel-font-reset-size-all-buffers)))
+(when (display-graphic-p)
+
+  ;; Activate the all-the-icons package to get nice icons in graphics mode
+  ;; if requested
+  ;; NOTE: you must install the icons manually by executing:
+  ;;       M-x all-the-icons-install-fonts
+
+  (when (or pel-use-all-the-icons
+            pel-use-all-the-icons-ibuffer
+            pel-use-all-the-icons-dired
+            pel-use-all-the-icons-ivy
+            pel-neotree-font-in-graphics)
+    (use-package all-the-icons
+      :ensure t
+      :pin melpa))
+
+  (when pel-use-all-the-icons-ibuffer
+    (use-package all-the-icons-ibuffer
+      :ensure t
+      :init (all-the-icons-ibuffer-mode 1)))
+
+  (when pel-use-all-the-icons-dired
+    (use-package all-the-icons-dired
+      :ensure t
+      :init
+      (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)))
+
+  (when pel-use-all-the-icons-ivy
+    (use-package all-the-icons-ivy
+      :ensure t
+      :init
+      (add-hook 'after-init-hook 'all-the-icons-ivy-setup)))
+
+
+  ;; On macOS, the keys used by the OS are the same as selected here, both in
+  ;; GUI mode and in terminal (TTY) mode:
+  ;; - In terminal mode: the Terminal.app uses the ⌘ command keys for fond size
+  ;;   control (it's not Emacs that acts on them, its the Terminal.app)
+  ;; - In graphics mode the same keys handled by Emacs: the Super modifier is
+  ;;   assigned to the ⌘ Command key.
+
+  (when pel-system-is-macos-p
+
+    ;; Bind the face-remap commands. The face-remap package
+    ;; is part of Emacs standard distribution.
+    (global-set-key (kbd "s-=")             #'text-scale-adjust)
+    (global-set-key (kbd "s-+")             #'text-scale-adjust)
+    (global-set-key (kbd "s--")             #'text-scale-adjust)
+    (global-set-key (kbd "s-0")             #'text-scale-adjust)
+
+    ;; Load the pel-font file only as needed.
+    ;; Configure the pel-font commands as autoload.
+    ;; although ther is no such package, use the macro to set up
+    ;; the delayed autoloads and key bindings.
+    (use-package pel-font
+      ;; autoload it when one of the following commands is used.
+      :commands (pel-font-increase-size-all-buffers
+                 pel-font-decrease-size-all-buffers
+                 pel-font-reset-size-all-buffers)
+
+
+      ;; run following command before package is loaded to
+      ;; activate the autoload.
+      :init
+      (cl-eval-when 'compile (require 'pel-font nil :no-error))
+      (global-set-key (kbd "<s-kp-add>")
+                      #'pel-font-increase-size-all-buffers)
+      (global-set-key (kbd "<s-kp-subtract>")
+                      #'pel-font-decrease-size-all-buffers)
+      (global-set-key (kbd "<s-kp-0>")        #'pel-font-reset-size-all-buffers))))
 
 ;; -----------------------------------------------------------------------------
 ;; - Buffer navigation
@@ -3184,6 +3219,11 @@ the ones defined from the buffer now."
       (define-key pel:neotree  "N" 'neotree-toggle)
       (define-key pel:neotree  "F" 'neotree-find)
       (define-key pel:neotree  "D" 'neotree-dir)
+      (if (display-graphic-p)
+          (when pel-neotree-font-in-graphics
+            (setq neo-theme 'icons))
+        (when pel-neotree-font-in-terminal
+          (setq neo-theme 'arrow)))
 
       :config
       (define-key pel:neotree  "S" 'neotree-show)

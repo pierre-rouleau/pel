@@ -463,8 +463,6 @@ make script files executable on save when non-nil, don't otherwise."
   "PEL Directory Tree Browsing and Management."
     :group 'pel-pkg-for-filemng)
 
-
-
 (defcustom pel-use-treemacs nil
   "Control whether PEL uses the treemacs package."
   :group 'pel-pkg-for-browse
@@ -555,6 +553,27 @@ This is only used when Emacs runs in graphics mode."
   :safe #'booleanp
   :link `(url-link :tag "all-the-icons @ github"
                    "https://github.com/domtronn/all-the-icons.el"))
+
+(defcustom pel-use-all-the-icons-ibuffer nil
+  "Control whether PEL uses the all-the-icons package in ibuffer.
+This is only used when Emacs runs in graphics mode."
+  :group 'pel-pkg-for-graphics-emacs
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-all-the-icons-dired nil
+  "Control whether PEL uses the all-the-icons package in dired.
+This is only used when Emacs runs in graphics mode."
+  :group 'pel-pkg-for-graphics-emacs
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-all-the-icons-ivy nil
+  "Control whether PEL uses the all-the-icons package in ivy.
+This is only used when Emacs runs in graphics mode."
+  :group 'pel-pkg-for-graphics-emacs
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Graphics Cursor Control
