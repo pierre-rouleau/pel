@@ -1288,7 +1288,7 @@ Then save your changes."
   (define-key pel:cfg-emacs (kbd "C-c") 'pel-customize-cursor))
 
 (pel--cfg-pkg "completion"  pel:cfg-pel (kbd "M-c") helm ido ivy counsel)
-(pel--cfg-pkg "key-chord"   pel:cfg-pel "K")
+(pel--cfg-pkg "key-chord"   pel:cfg-pel (kbd "M-K"))
 (pel--cfg-pkg "navigation"  pel:cfg-pel "n" avy)
 (pel--cfg-pkg "project-mng" pel:cfg-pel (kbd "<f8>"))
 
