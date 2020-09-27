@@ -2613,6 +2613,21 @@ and usable shell for Emacs."
   :group 'pel-package-use
   :link `(url-link :tag "Spell Checking PDF" ,(pel-pdf-file-url "spell-checking")))
 
+(defcustom pel-spell-check-tool
+  '( "ispell" "~/.emacs.d/.ispell")
+  "Spell Checking tool and local dictionary.
+Overrides the value taken from `pel-spell-check-tools
+if it is specified.
+Use this to set the spell checker and dictionary as a file
+or directory local variable."
+  :group 'pel-pkg-for-spelling
+  :type
+  '(choice
+    (const :tag "Use the value specified by `pel-spell-check-tools' for the current OS" nil)
+    (list
+     (string :tag "spell checker      ")
+     (string :tag "personal dictionary"))))
+
 (defcustom pel-spell-check-tools
   '((gnu         "aspell"  "~/.emacs.d/.ispell")
     (gnu/linux   "aspell"  "~/.emacs.d/.ispell")

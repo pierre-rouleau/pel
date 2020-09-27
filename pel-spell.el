@@ -87,9 +87,12 @@
   (require 'popup nil :no-error)  ; use: popup-menu*
   )
 
-;; -----------------------------------------------------------------------------
+;;; ----------------------------------------------------------------------------
 ;;; Code:
 
+;; - `pel-spell-init-from-user-option'
+;;   - `pel--spell-select'
+;;     * `pel-spell-init'
 
 ;;-pel-autoload
 (defun pel-spell-init (spell-program-name
@@ -168,22 +171,32 @@ to allow the flyspell pop-up menu to work in terminal mode."
                'pel-spell-flyspell-emacs-popup-textual)))))
 
 
+(defun pel--spell-select (program-name dict-path origin)
+  "Use the PROGRAM-NAME spell checker, use the dictionary at DICT-PATH."
+  (let ((path           (file-name-directory program-name))
+        (personal-dict  (pel-string-or-nil dict-path)))
+    (if (and (not path)
+             (not (executable-find program-name)))
+        (user-error "%s is invalid!\n\
+Spell check program %s not found in your PATH!\n\
+See the spell-checking.pdf file for more info" origin)
+      (pel-spell-init program-name path personal-dict))))
+
 ;;-pel-autoload
 (defun pel-spell-init-from-user-option ()
   "Initialize Spell checking.
 Use the values taken from user option variable
-`pel-spell-check-tools'."
+`pel-spell-check-tools' if specified. Otherwise use the
+value specified in `pel-spell-check-tools' for the current OS."
+  (if pel-spell-check-tool
+      (pel--spell-select (nth 0 pel-spell-check-tool)
+                         (nth 1 pel-spell-check-tool)
+                         "pel-spell-check-tools")
   (cl-dolist (spec pel-spell-check-tools)
     (when (eq system-type (car spec))
-      (let* ((program-name (nth 1 spec))
-             (path (file-name-directory program-name))
-             (personal-dict  (pel-string-or-nil (nth 2 spec))))
-        (if (and (not path)
-                 (not (executable-find program-name)))
-            (user-error "pel-use-spell-check-tools for %s is invalid!\n\
-Spell check program %s not found in your PATH!\n\
-See the spell-checking.pdf file for more info" system-type program-name)
-          (pel-spell-init program-name path personal-dict))
+      (pel--spell-select (nth 1 spec)
+                         (nth 2 spec)
+                         (format "pel-use-spell-check-tools for %s" system-type))
       (cl-return)))))
 
 ;; --
