@@ -71,7 +71,7 @@ This file uses Org mode. Some useful (default) key-bindings:
   - Key bindings to quickly access the customization buffer of several
     customization groups.
   - and more...
-* Additions since 0.2.0 that will be part of upcoming Version 0.3.0
+* Additions since 0.2.0
 - *Fixes*:
   - Fixed distributed custom skeleton code for C.  Updated the example description.
   - *Window flipping commands*: The keys to flip windows horizontally (<f11> w
