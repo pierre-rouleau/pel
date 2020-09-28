@@ -90,9 +90,6 @@ To say something, use:  (do-applescript \"say \\\"Hello\\\"\")"
     "No COMMAND executed, error raised: this requires macOS."
     (error "The do-applescript is only available on macOS systems!")))
 
-
-
-
 ;;-pel-autoload
 (defun pel-say (text &optional translations)
   "Say TEXT out-loud.
