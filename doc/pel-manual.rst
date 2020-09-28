@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-24 18:52:06, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-28 16:00:01, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -353,7 +353,7 @@ An easy way to do this from a shell is:
 
 .. code:: shell
 
-          mkdir -p ~/.emacs.p/utils
+          mkdir -p ~/.emacs.d/utils
 
 
 Create or Update your Emacs init.el file
