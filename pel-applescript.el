@@ -118,7 +118,8 @@ Return t if the text was said, nil otherwise."
         (do-applescript
          (format "say \"%s\"%s"
                  text
-                 (if (and (stringp pel-mac-voice-name)
+                 (if (and (boundp pel-mac-voice-name)
+                          (stringp pel-mac-voice-name)
                           (> (length pel-mac-voice-name) 2))
                      (format " using \"%s\"" pel-mac-voice-name)
                    "")))
