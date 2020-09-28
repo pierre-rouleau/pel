@@ -72,6 +72,9 @@ The translation identified in the first list element is done first.")
 
 ;; --
 
+;; forward definition to prevent byte-compiler warnings
+(defvar pel-mac-voice-name)
+
 (if pel-system-is-macos-p
     (if (display-graphic-p)
         (require 'term/ns-win)
@@ -87,6 +90,9 @@ To say something, use:  (do-applescript \"say \\\"Hello\\\"\")"
     "No COMMAND executed, error raised: this requires macOS."
     (error "The do-applescript is only available on macOS systems!")))
 
+
+
+
 ;;-pel-autoload
 (defun pel-say (text &optional translations)
   "Say TEXT out-loud.
@@ -98,6 +104,8 @@ This is a list of (`input regexp` . `output text`)
 used to transform the text prior to narration.
 Return t if the text was said, nil otherwise."
   (interactive "MSay: ")
+  (unless pel-system-is-macos-p
+    (user-error "This is only available on macOS!"))
   ;; Filter comments of text in current mode.
   (dolist (string (list comment-start
                         comment-end
@@ -118,7 +126,7 @@ Return t if the text was said, nil otherwise."
         (do-applescript
          (format "say \"%s\"%s"
                  text
-                 (if (and (boundp pel-mac-voice-name)
+                 (if (and (boundp 'pel-mac-voice-name)
                           (stringp pel-mac-voice-name)
                           (> (length pel-mac-voice-name) 2))
                      (format " using \"%s\"" pel-mac-voice-name)
