@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-29 13:19:31, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-29 13:41:53, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -887,16 +887,14 @@ Simpler Prompts
 ^^^^^^^^^^^^^^^
 
 Emacs prompts that require you to type ``yes`` or ``no`` might be annoying.  If
-you would prefer being able to just type ``y`` or ``n`` instead add the
-following to your init.el file:
+you would prefer being able to just type ``y`` or ``n`` instead, as most
+people do, set the ``pel-prompt-accept-y-n`` user option to **t**.  There are
+several ways you can do this:
 
-.. code:: elisp
-
-  ;; Use 'y'/'n' or SPC/DEL instead of 'yes'/'no'
-  (fset 'yes-or-no-p 'y-or-n-p)
-  ;; Don't request [confirm] on non-existing file by C-x C-f or C-x b.
-  (setq confirm-nonexistent-file-or-buffer nil)
-
+- Execute:  ``M-x customize-option`` then type ``pel-prompt-accept-y-n``, hit
+  return to open the customization buffer and change the user option value.
+  Then apply and save it.
+- Use the PEL key sequence for the above: ``<f11> <f2> o`` and type the name.
 
 
 Generic Tips
@@ -932,11 +930,11 @@ On my system I have 2 commands that launch Emacs:
 - ``ge`` which launches the GUI version of Emacs.
 
 The ``e`` command is just a symlink to the Termcap Emacs version I am currently
-using.  I use this short symlink for its size also because I never use the `1970s E
-editor`_.
+using.  I use this short symlink for its size. And you probably don't have to
+worry about a clash with the `1970s E editor`_.
 
 And ``ge`` is a script to launch the graphical Emacs, providing access to the
-current directory and the complete environment:
+current directory and the complete environment on macOS:
 
 .. code:: shell
 
@@ -958,6 +956,26 @@ current directory and the complete environment:
           #
           /Applications/Emacs.app/Contents/MacOS/Emacs --chdir=$(pwd) "$@" 2>/dev/null &
 
+For Linux you can use a simpler technique and simply use Bash aliases written
+inside your ``.bashrc`` file:
+
+.. code:: shell
+
+          # Additions to you .bashrc for short Emacs commands line
+          #
+          # Add the following alias to your .bashrc
+          #
+          #  - e:  starts Emacs in terminal mode.
+          #        NOTE: unless your terminal implements ANSI code sequences
+          #              for the cursor keys and the function keys you won't be able
+          #              to use PEL main key prefixes.
+          #
+          #  - ge:  start Emacs in graphical mode, launch in separate async process
+          #         using the current directory as Emacs current directory.
+          #         You can continue using the shell for other things.
+
+          alias e='emacs -nw'
+          alias ge='emacs --chdir=$(pwd) "$@" 2>/dev/null &'
 
 
 
