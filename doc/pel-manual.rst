@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-29 09:58:33, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-29 10:22:41, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -432,7 +432,7 @@ Add the following code inside your "``~/.emacs.d/init.el``" file:
           (setq custom-file "~/.emacs.d/emacs-customization.el")
           (load custom-file)
 
-          ;; 5: Start PEL
+          ;; 6: Start PEL
           ;; - At first leave this commented out.
           ;; - Activate the code Once you have successfully built PEL once
           ;; (require 'pel)
