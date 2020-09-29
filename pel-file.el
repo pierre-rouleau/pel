@@ -389,7 +389,7 @@ were specified."
           (t
            (let* ((filename (cadr fileparts))
                   (fn-action (pel--complete-filename-for filename))
-                  (filename  (car fn-action))
+                  (filename  (expand-file-name (car fn-action)))
                   (action    (cdr fn-action))
                   (buffer   (find-buffer-visiting filename))
                   (window   (when buffer (get-buffer-window buffer)))
