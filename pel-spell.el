@@ -179,7 +179,7 @@ to allow the flyspell pop-up menu to work in terminal mode."
              (not (executable-find program-name)))
         (user-error "%s is invalid!\n\
 Spell check program %s not found in your PATH!\n\
-See the spell-checking.pdf file for more info" origin)
+See the spell-checking.pdf file for more info" origin program-name)
       (pel-spell-init program-name path personal-dict))))
 
 ;;-pel-autoload
