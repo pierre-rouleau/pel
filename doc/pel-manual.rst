@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-29 13:41:53, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-29 13:56:03, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -842,8 +842,9 @@ PEL itself loads quickly. You can use the following tricks to speed it up furthe
 Holding Garbage Collection during startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Use the following code to postpone Emacs Lisp garbage collection during Emacs startup.
-Enclose the entire code of your init.el file inside the following let form:
+Use the following code to postpone Emacs Lisp garbage collection during Emacs
+startup.  Enclose the entire code of your init.el file inside the following
+let form:
 
 .. code:: elisp
 
@@ -857,6 +858,11 @@ Enclose the entire code of your init.el file inside the following let form:
 What the above does is to disable special file association handling and garbage
 collection while Emacs processes your initialization code.  This has nothing to
 do with PEL though.
+
+The file `example/init/init-3.el`_ contains this logic.
+
+.. _example/init/init-3.el: ../example/init/init-3.el
+
 
 Disable Emacs Startup splash screen and echo area message
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
