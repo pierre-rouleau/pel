@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-29 12:38:47, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-29 13:19:31, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -529,7 +529,7 @@ Build first part of PEL
 
 **Description:**
 
-From you terminal shell, execute the commands show below.  They change the
+From you terminal shell, execute the commands shown below.  They change the
 current directory to the directory where you downloaded the PEL source code, and
 then issue two make commands: ``make clean`` and then ``make first-build``.
 
@@ -560,6 +560,7 @@ Activate PEL in your init.el file
 To activate PEL when Emacs starts, un-comment the 2 lines of Emacs Lisp code (identified as
 *section 5* in the init.el file example) in your "``~/.emacs.d/init.el``" file by
 removing the leading semi-colons from the last 2 lines.  And then save the modified file.
+The content of your init file should now look like the file in `example/init/init-1.el`_.
 
 **Do this:**
 
@@ -576,6 +577,9 @@ removing the leading semi-colons from the last 2 lines.  And then save the modif
   then ``s`` and then release the control key.)
 - Close Emacs, with ``C-x C-c`` (ie. with the control key depressed hit the
   ``x`` and then the ``c``.)
+
+.. _example/init/init-1.el: ../example/init/init-1.el
+
 
 
 Open Emacs to install use-package
@@ -737,6 +741,8 @@ that can be done after the first complete and successful installation of PEL.
 Delay Loading of Abbreviation Definition File
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+**Description**
+
 Emacs automatic abbreviation control provided by the ``abbrev-mode`` described
 in `PEL Abbreviation Management Support`_ store all abbreviations in a file
 identified by the ``abbrev-file-name`` user option variable.  By default
@@ -752,23 +758,40 @@ the cached value to ``pel-init`` optional argument.  By doing this you prevent
 Emacs from reading the abbreviation file and let PEL load it later silently when
 there is some idle time.
 
-
-Write code similar to the following early at the beginning of your init.el file:
-
-.. code:: elisp
-
-    (setq pel--abbrev-file-name abbrev-file-name)
-    (setq abbrev-file-name "~/abbrev_defs-invalid") ; use a non-existing file name
-
-Then pass the information when you call ``pel-init``:
-
-.. code:: elisp
-
-    (pel-init pel--abbrev-file-name)
-
 This code is included but commented-out in the init.el sample described in the
 PEL installation section titled `Create or Update your Emacs init.el file`_.
-Edit your init.el file to activate the code.
+You can also use the `example/init/init-2.el`_ file which contains the code as it
+should be.  Edit your init.el file to activate the code.
+
+
+**Do this:**
+
+- Create an empty file: ``~/.emacs.d/abbrev_defs``:
+
+  .. code:: shell
+
+            touch ~/.emacs.d/abbrev_defs
+
+
+- Modify your init.el file such that it contains the same code as the
+  `example/init/init-2.el`_:
+
+  - Write code similar to the following early at the beginning of your init.el file:
+
+    .. code:: elisp
+
+        (setq pel--abbrev-file-name abbrev-file-name)
+        (setq abbrev-file-name "~/abbrev_defs-invalid") ; use a non-existing file name
+
+  - Then pass the information when you call ``pel-init``:
+
+    .. code:: elisp
+
+        (pel-init pel--abbrev-file-name)
+
+
+
+.. _example/init/init-2.el: ../example/init/init-2.el
 
 
 Configure Spell Checking
