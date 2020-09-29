@@ -253,9 +253,8 @@ If N is 0 or 1, use the singular form.
 If N > 2: use the PLURAL form if specified,
           otherwise use SINGULAR with a 's' suffix."
   (if (> n 1)
-      (format "%d %s" n
-              (or plural
-                  (format "%ss" singular)))
+      (format "%d %s" n (or plural
+                            (format "%ss" singular)))
     (format "%d %s" n singular)))
 
 ;; -----------------------------------------------------------------------------
@@ -351,7 +350,7 @@ Otherwise return nil."
     value))
 
 (defun pel-string-or-nil (string)
-  "Return a non-empty string unchanged, nil if string is empty."
+  "Return a non-empty STRING unchanged, nil if string is empty."
   (if (string= string "")
       nil
     string))
@@ -368,7 +367,7 @@ Example:
     \"a.b.c.d.e.f\"
     ELISP> (pel-string-spread \"abcdef\" \"--\")
     \"a--b--c--d--e--f\"
-    ELISP> "
+    ELISP>"
   (string-join (cdr (butlast (split-string string "")))
                (or separator " ")))
 
@@ -383,7 +382,7 @@ first function with VALUE as argument and then the second, etc...
 For example, if t1, t2 and t3 are specified , the returned value is the result
 of the following call sequence:
 
-(t1 (t2 (t3 VALUE))
+\(t1 (t2 (t3 VALUE))
 
 Example:
 
@@ -403,7 +402,7 @@ And with transformation functions:
                        (function pel-capitalize-first-letter)
                        (function pel-end-text-with-period))
     0 (#o0, #x0, ?\C-@)
-    ELISP> "
+    ELISP>"
   (if (funcall check-function value)
       (dolist (transform-fun transform-functions value)
         (setq value (funcall transform-fun value)))
@@ -531,7 +530,7 @@ Return the new state of the mode: t if active, nil otherwise."
 ;; ------------
 
 (defun pel-add-hook-for (modes-list-symbol func)
-  "Add the FUNC hook to all modes listed in the MODE-LIST_SYMBOL."
+  "Add the FUNC hook to all modes listed in the MODES-LIST-SYMBOL."
     (dolist (mode (eval modes-list-symbol))
       (if (and mode              ; make sure the mode is a valid symbol
                (symbolp mode))   ; TODO: find better ways to detect major mode
@@ -819,7 +818,7 @@ otherwise it does not."
 ;; - `pel-line-has-only-whitespace-p'
 
 (defun pel-line-only-whitespace-p (&optional pos)
-  "Return non-nil if current line (or line at POS) contains only whitespace.
+  "Return non-nil if current line (or line at POS) contain only whitespace.
 Return nil otherwise.
 Whitespace characters are specified by the syntax table of the current major mode."
   (save-excursion
