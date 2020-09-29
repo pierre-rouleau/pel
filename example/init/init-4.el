@@ -9,6 +9,9 @@
 ;;        - display buffer and and file full filepath on frame title bar
 ;;        - speedbar without images
 ;;        - using adwaita theme
+;;      - benchmark of emacs startup:  install benchmark-init **before** using:
+;;           M-x package-install benchmark-init
+;;
 ;;
 ;; -----------------------------------------------------------------------------
 ;; To speed up Emacs init, prevent checking for file handling association and
@@ -16,6 +19,17 @@
 ;; seconds loading time in terminal mode.
 (let ((file-name-handler-alist nil)
       (gc-cons-threshold most-positive-fixnum))
+
+  ;; ---------------------------------------------------------------------------
+  ;; Setup Benchmark Measurement
+  ;; ---------------------------
+  ;; Load benchmark right away using the file name explicitly so we can use it
+  ;; to benchmark the complete package loading mechanism.
+  ;; CAUTION: Modify the path when a new version is available.
+  (require 'benchmark-init
+           (expand-file-name
+            "~/.emacs.d/elpa/benchmark-init-20150905.938/benchmark-init"))
+  (add-hook 'after-init-hook 'benchmark-init/deactivate)
 
   ;; ---------------------------------------------------------------------------
   ;; 1: Setup package sources: MELPA, MELPA-STABLE and a local mypelpa
