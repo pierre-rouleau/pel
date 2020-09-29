@@ -1,0 +1,17 @@
+# Additions to you .bashrc for short Emacs commands line
+#
+# Add the following alias to your .bashrc
+#
+#  - e:  starts Emacs in terminal mode.
+#        NOTE: unless your terminal implements ANSI code sequences
+#              for the cursor keys and the function keys you won't be able
+#              to use PEL main key prefixes.
+#
+#  - ge:  start Emacs in graphical mode, launch in separate async process
+#         using the current directory as Emacs current directory.
+#         You can continue using the shell for other things.
+
+alias e='emacs -nw'
+alias ge='emacs --chdir=$(pwd) "$@" 2>/dev/null &'
+
+# ----------------------------------------------------------------------------
