@@ -12,11 +12,6 @@
 ;;      - benchmark of emacs startup
 ;;      - Emacs starts without splash screen
 ;;
-;; DO THIS BEFORE USING THIS FILE:
-;;   - Edit the init.el file.
-;;     - On line 90, replace YOUR_USER_NAME by your OS login user name
-;;     - Un-comment line 90 and save your init.el
-;;
 ;; -----------------------------------------------------------------------------
 ;; To speed up Emacs init, prevent checking for file handling association and
 ;; prevent garbage collection.  The following 2 lines reduce by about .2
