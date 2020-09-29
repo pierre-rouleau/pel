@@ -132,7 +132,7 @@ Last character is a forward slash."
   "Return the full path of a pdf table for TOPIC.
 TOPIC is the file name body (no path, no extension).
 By default return the local file url.
-If web-url is non-nil return the web URL for the file hosted in Github."
+If WEB-URL is non-nil return the web URL for the file hosted in Github."
   (if web-url
       (format "https://raw.githubusercontent.com/pierre-rouleau/pel/\
 master/doc/pdf/%s.pdf" topic)
@@ -192,7 +192,7 @@ stored in the variable `align-rules-list'.
 
 These rules support the alignment of C and Python assignment
 statements, where the alignment is done on the equal sign
-character. Also for C++ \"//\" style comments.
+character.  Also for C++ \"//\" style comments.
 See `align-rules-list'.
 
 By default PEL does not activate it on any mode.  To activate a mode,
@@ -684,7 +684,7 @@ See the author site at URL http://malsyned.net/smart-dash.html"
     erlang-mode
     python-mode
     shell-script-mode)
-  "List of major modes that automatically activate smart-dash-mode.
+  "List of major modes that automatically activate the smart dash mode.
 Used when `pel-use-smart-dash' user option is t.
 To activate the changes for this you must 'Apply and Save' and restart Emacs."
   :group 'pel-pkg-for-spelling
@@ -1080,7 +1080,7 @@ The `pel-key-chords' value is a list of objects.
   :link `(url-link :tag "AsciiDoc PDF" ,(pel-pdf-file-url "asciidoc")))
 
 (defcustom pel-use-asciidoc nil
-  "Control whether PEL activates support for Asciidoc with adoc-mode."
+  "Control whether PEL activates support for Asciidoc with adoc mode."
   :group 'pel-pkg-for-asciidoc
   :type 'boolean
   :safe #'booleanp)
@@ -1205,7 +1205,7 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
   :link `(url-link :tag "Navigation PDF" ,(pel-pdf-file-url "navigation")))
 
 (defcustom pel-use-ace-link nil
-  "Control activation of the ace-link package.
+  "Control activation of the ace link package.
 See URL https://github.com/abo-abo/ace-link for more info."
   :group 'pel-pkg-for-navigation
   :type 'boolean
@@ -1364,7 +1364,7 @@ You can use one of the following:
   You can start by using the example that is stored inside the file
   'custom/skeleton/custom-c-skel.el'.
   The file name can be an absolute file name but it can also be a relative
-  file name. On Unix systems you can use '~' to identify your home directory."
+  file name.  On Unix systems you can use '~' to identify your home directory."
   :group 'pel-pkg-generic-code-style
   :type '(choice
           (const  :tag "Default, controlled by PEL." nil)
@@ -1503,7 +1503,8 @@ CC Mode Built-in Styles, which include the following:
 - awk
 - user
 
-See URL https://www.gnu.org/software/emacs/manual/html_node/ccmode/Built_002din-Styles.html#Built_002din-Styles
+See URL https://www.gnu.org/software/emacs/manual/html_node/\
+ccmode/Built_002din-Styles.html#Built_002din-Styles
 for more details."
   :group 'pel-pkg-for-c
   :type 'string
@@ -1520,9 +1521,9 @@ for more details."
   "Column beyond which automatic line-wrapping should happen in C code.
 Can either be nil or an integer value.
 When set to nil, Emacs user option variable `fill-column' value
-is used for c-mode buffers, otherwise the integer value specified by
+is used for `c-mode' buffers, otherwise the integer value specified by
 `pel-c-fill-column' is stored in the variable `fill-column' for
-c-mode buffers.  The default is 80."
+`c-mode' buffers.  The default is 80."
   :group 'pel-c-code-style
   :type '(choice
           (const   :tag "Use the default fill-column value." nil)
@@ -1588,7 +1589,7 @@ You can use one of the following:
   You can start by using the example that is stored inside the file
   'custom/skeleton/custom-c-skel.el'.
   The file name can be an absolute file name but it can also be a relative
-  file name. On Unix systems you can use '~' to identify your home directory."
+  file name.  On Unix systems you can use '~' to identify your home directory."
   :group 'pel-c-code-style
   :type '(choice
           (const  :tag "Default, controlled by PEL." nil)
@@ -1607,11 +1608,12 @@ with titles identified by the variable `pel-c-skel-module-section-titles'."
                                               "Local Variables"
                                               "Code")
   "List of section titles to add in the module comment block.
-These section names are added when the variable `pel-c-skel-insert-module-sections'
-is t, after the \"Module Description\" section. The sections are placed inside the
-module documentation block in the order of appearance in the list
-with the string as it appears in the list.
-The default is to add the following sections:
+These section names are added when the variable
+`pel-c-skel-insert-module-sections' is t, after the \"Module
+Description\" section. The sections are placed inside the module
+documentation block in the order of appearance in the list with
+the string as it appears in the list.  The default is to add the
+following sections:
 
 - Header Inclusion,
 - Local Types,
@@ -1623,9 +1625,9 @@ Empty strings can be used to specify section with a tempo marker with no text."
   :type '(repeat string))
 
 (defcustom pel-c-skel-insert-function-sections t
-  "Specifies whether code sections are inserted inside C function comment block.
-This includes the DESCRIPTION section and sections with titles identified by
-the variable `pel-c-skel-function-section-titles'."
+  "Specifies whether code sections are inserted in C function comment block.
+This includes the DESCRIPTION section and sections with titles
+identified by the variable `pel-c-skel-function-section-titles'."
   :group 'pel-c-code-style
   :type 'boolean
   :safe #'booleanp)
@@ -1633,17 +1635,18 @@ the variable `pel-c-skel-function-section-titles'."
 (defcustom pel-c-skel-function-section-titles '("DIAGNOSTIC"
                                                 "SEE ALSO")
   "List of section titles to add in the function comment block.
-These section names are added when the variable `pel-c-skel-insert-function-sections'
-is t, after the DESCRIPTION section. The sections are placed inside the
-function documentation block in the order of appearance in the list
-with the string as it appears in the list.
-The default is to add the sections DIAGNOSTIC and SEE ALSO.
-Empty strings can be used to specify section with a tempo marker with no text."
+These section names are added when the variable
+`pel-c-skel-insert-function-sections' is t, after the DESCRIPTION
+section. The sections are placed inside the function
+documentation block in the order of appearance in the list with
+the string as it appears in the list.  The default is to add the
+sections DIAGNOSTIC and SEE ALSO.  Empty strings can be used to
+specify section with a tempo marker with no text."
   :group 'pel-c-code-style
   :type '(repeat string))
 
 (defcustom pel-c-skel-use-uuid-include-guards t
-  "Specifies whether UUID-based include guards are inserted inside C header file."
+  "Specifies whether UUID-based include guards are inserted in C header file."
   :group 'pel-c-code-style
   :type 'boolean
   :safe #'booleanp)
@@ -1682,13 +1685,13 @@ The choices are:
 - Man-page style documentation above the function definition with
   a DESCRIPTION section and other sections as defined by the value of
   the variable `pel-c-skel-function-section-titles'.
-- A user defined skeleton.  For this you need to write Emacs lisp code.
+- A user defined skeleton.  For this you need to write Emacs Lisp code.
   You have to write a function `pel-skels-c-function-def/custom'
   inside a file and store the name of that file inside the box that
   appear when you select this option.  You can start by using the
   example that is stored inside the file 'custom/skeleton/custom-c-skel.el'.
   The file name can be an absolute file name but it can also be a relative
-  file name. On Unix systems you can use '~' to identify your home directory."
+  file name.  On Unix systems you can use '~' to identify your home directory."
   :group 'pel-c-code-style
   :type '(choice
           (const :tag "Just code, no comment block." nil)
@@ -1896,7 +1899,7 @@ by the `pel-use-d-ac-dcd'."
   :link `(url-link :tag "abo-abo lispy" "https://github.com/abo-abo/lispy"))
 
 (defcustom pel-modes-activating-lispy  nil
-  "List of major modes that automatically activate lispy-mode."
+  "List of major modes that automatically activate `lispy-mode'."
   :group 'pel-pkg-for-lisp
     :type
   '(repeat symbol))
@@ -2169,13 +2172,13 @@ name can be identified in `pel-erlang-version-envvar'."
   :type 'string)
 
 (defcustom pel-erlang-version-envvar "PEL_ERLANG_VERSION"
-  "Name of environment variable used to identify the active Erlang version
-when `pel-erlang-version' is nil."
+  "Name of environment variable used to identify the active Erlang version.
+Used when `pel-erlang-version' is nil."
   :group 'pel-pkg-for-erlang
   :type 'string)
 
 (defcustom pel-erlang-shell-prevent-echo nil
-  "Set to t if the erlang-shell-mode shell echoes back commands.
+  "Set to t if the `erlang-shell-mode' shell echoes back commands.
 When set to t PEL activtaes code that prevent echo of the typed commands."
   :group 'pel-pkg-for-erlang
   :type 'boolean
@@ -2241,7 +2244,7 @@ if configured to activate automatically."
   "Column beyond which automatic line-wrapping should happen in Erlang code.
 Can either be nil or an integer value.
 When set to nil, Emacs user option variable `fill-column' value
-is used for erlang-mode buffers, otherwise the integer value specified by
+is used for `erlang-mode' buffers, otherwise the integer value specified by
 this value is stored in `fill-column' for Erlang source code files.
 The default is 100, a value recommended by the Inaka's Erlang Coding
 Standards & Guidelines."
@@ -2392,7 +2395,7 @@ IMPORTANT:
   :safe #'booleanp)
 
 (defcustom pel-python-tab-width 4
-  "Distance between tab stop for buffers in python-mode.
+  "Distance between tab stop for buffers in `python-mode'.
 PEL stores this in `tab-width' when opening Python buffers.
 This does *NOT* control the indentation in Python files,
 only for commands that mode point to tab stop positions
@@ -2671,7 +2674,7 @@ personal dictionary file."
     org-mode
     rst-mode
     vc-git-log-edit-mode)
-  "List of major modes that automatically activate flyspell-mode.
+  "List of major modes that automatically activate `flyspell-mode'.
 To activate the changes for this you must 'Apply and Save' and restart Emacs."
   :group 'pel-pkg-for-spelling
   :type
@@ -2691,7 +2694,7 @@ To activate the changes for this you must 'Apply and Save' and restart Emacs."
     plantuml-mode
     python-mode
     shell-script-mode)
-  "List of major modes that automatically activate flyspell-prog-mode.
+  "List of major modes that automatically activate `flyspell-prog-mode'.
 To activate the changes for this you must 'Apply and Save' and restart Emacs."
   :group 'pel-pkg-for-spelling
   :type
