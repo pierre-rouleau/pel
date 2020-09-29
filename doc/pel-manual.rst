@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-29 14:55:16, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-29 16:28:14, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -677,8 +677,35 @@ Once PEL is built, you can run Emacs and select the packages you want to use by
 customizing Emacs and setting the PEL user options to activate the packages you
 want to use.
 
+There are several ways to customize PEL and key sequences to access the
+various customization buffers.
+
+The easiest way at first - use the PEL customization tree
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+At first, the easiest way to learn PEL customization of various features is to
+use the customization browser on PEL tree.  You can then inspect each group
+one by one and activate what you want to use.
+
+To do that, type ``<f11> <f2> P M-b`` or type ``M-x pel-browse-pel``.
+This will open the customization tree at to root of PEL.
+
+Open another window side by side with ``C-x 3`` and select one option to
+customize inside it.  You can continue to use the other window to browse the
+customization tree and go over all features that PEL can activate.
+
+Here's a screen capture of that activity:
+
+
+.. image:: res/pel-start-customizing.png
+
+
+Access PEL Customization Root
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Later you may want to access the PEL customization buffer from the top.
 One way to quickly gain access to PEL customization group inside Emacs is to
-execute the ``pel-cfg`` command by typing the ``<f11> <f2> !`` key sequence.
+execute the ``pel-cfg`` command by typing the ``<f11> <f2> P !`` key sequence.
 When running Emacs in graphics mode, you'll see something like this:
 
 
@@ -725,7 +752,7 @@ See section `PEL Use Variables`_ for more info on quickly listing all
 ``pel-use`` user option variables and `Key Binding Help`_ for a quick trick to
 see what's available at the keyboard.
 
-Also note that PEL includes links to the PDF *semi-quick* sheet files relevant
+Also note that PEL includes links to the PDF *reference* sheet files relevant
 to the PEL customization group.  You can open your local PDF file by clicking on
 the button to the right of the "*See also*" note as shown here:
 
@@ -1106,7 +1133,7 @@ you can see PEL's use of the **F11** function key by hitting in sequence the
 **F11** key quickly followed by the **F1** key.  Emacs will list PEL's **F11**
 key bindings inside the ``*Help*`` buffer.
 
-You can also open the local copy of the  PDF *semi-quick* sheet file that
+You can also open the local copy of the  PDF *reference* sheet file that
 describes the commands and key bindings accessible through a given key prefix by
 using the **F1** key inside that key prefix.
 For example, as described in section `PEL Help Support`_, the PEL key prefix
@@ -1357,7 +1384,7 @@ of a portion of PEL's data tree:
 .. image:: res/pel-custom-tree.png
 
 
-See the `User Option Customization`_ *semi-quick* sheet for key bindings and the
+See the `User Option Customization`_ *reference* sheet for key bindings and the
 section titled `Activate PEL Features - Customize PEL`_ for relevant information.
 
 
@@ -1835,7 +1862,7 @@ The customization include the ``pel-use-free-keys`` and ``pel-use-which-key``
 variables.  The latter is enabled by default; it help see the available bindings
 following key prefixes.
 
-You can also open the local copy of the  PDF *semi-quick* sheet file that
+You can also open the local copy of the  PDF *reference* sheet file that
 describes the commands and key bindings accessible through a given key prefix by
 using the **F1** key inside that key prefix.
 For example, the PEL key prefix
@@ -4205,7 +4232,7 @@ Emacs packages and more tables will describe how to use them.
 PDF Document Tables
 ~~~~~~~~~~~~~~~~~~~
 
-The following *semi-quick* PDF sheets describe Emacs commands and key bindings
+The following *reference* PDF sheets describe Emacs commands and key bindings
 as well as PEL extensions.
 
 Note:
