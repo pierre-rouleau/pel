@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-29 14:12:49, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-29 14:35:25, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -865,28 +865,6 @@ The file `example/init/init-3.el`_ contains this logic.
 .. _example/init/init-3.el: ../example/init/init-3.el
 
 
-Disable Emacs Startup splash screen and echo area message
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-By default Emacs displays its splash screen on startup and displays a message on
-the echo area telling you about Emacs in general and the concept of free
-software. Once you have read this information, you can disable them with the
-following code:
-
-.. code:: elisp
-
-  ;; Do not display the splash screen.  Same as emacs -Q
-  (setq inhibit-startup-screen t)
-  ;; Don't display the start help in minibuffer, at least for me.
-  (setq inhibit-startup-echo-area-message "YOUR-USER_NAME_HERE")
-
-Replace "YOUR_USER_NAME_HERE" by a string containing your user name.
-Emacs was written to allow multiple users from having access to the same
-configuration, and this identifies the user that will not be reminded of Emacs
-concepts and principles every time Emacs starts.  So, to take advantage of that
-small speed up make sure you put your user name there.
-
-
 Convenience Tricks
 ~~~~~~~~~~~~~~~~~~
 
@@ -993,6 +971,32 @@ Emacs running in graphical mode.
 .. _1970s E editor: https://en.wikipedia.org/wiki/E_(1970s_text_editor)
 .. _example/init/init-3.el: ../example/init/init-3.el
 
+
+Disable Emacs Startup splash screen and echo area message
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+By default Emacs displays its splash screen on startup and displays a message on
+the echo area telling you about Emacs in general and the concept of free
+software. Once you have read this information, you can disable them with the
+following code:
+
+.. code:: elisp
+
+  ;; Do not display the splash screen.  Same as emacs -Q
+  (setq inhibit-startup-screen t)
+  ;; Don't display the start help in minibuffer, at least for me.
+  (setq inhibit-startup-echo-area-message "YOUR-USER_NAME_HERE")
+
+Replace "YOUR_USER_NAME_HERE" by a string containing your user name.
+Emacs was written to allow multiple users from having access to the same
+configuration, and this identifies the user that will not be reminded of Emacs
+concepts and principles every time Emacs starts.  So, to take advantage of that
+small speed up make sure you put your user name there.
+
+The file `example/init/init-5.el`_ contains the code that disables the splash
+screen. the code that disable the message is still commented out.
+
+.. _example/init/init-5.el: ../example/init/init-5.el
 
 To override or change PEL key bindings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
