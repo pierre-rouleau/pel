@@ -46,7 +46,7 @@
 
 ;;-pel-autoload
 (defun pel-emacs-load-path (&optional n)
-  "Show the current load-path inside a new *load-path* buffer.
+  "Show the current `load-path' inside a new *load-path* buffer.
 Open the buffer in the current window or the one identified by N,
 with the display-line-number-mode on.
 The buffer is NOT committed to a file.
