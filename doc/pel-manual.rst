@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-29 14:35:25, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-29 14:38:44, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -963,13 +963,48 @@ inside your ``.bashrc`` file:
           alias ge='emacs --chdir=$(pwd) "$@" 2>/dev/null &'
 
 
-See the example/init/init-3.el_ for an init.el example that sets some items for
+See the `example/init/init-3.el`_ for an init.el example that sets some items for
 Emacs running in graphical mode.
 
 
 .. _Steve Purcel in the readme file of his exec-path-from-shell: https://github.com/purcell/exec-path-from-shell#setting-up-your-shell-startup-files-correctly
 .. _1970s E editor: https://en.wikipedia.org/wiki/E_(1970s_text_editor)
 .. _example/init/init-3.el: ../example/init/init-3.el
+
+Using benchmark-init
+~~~~~~~~~~~~~~~~~~~~
+
+If you want to know the time each loaded file takes during Emacs initialization
+time you can use the benchmark-init_ package. This is not controlled by PEL
+because it must be launched as as early as possible inside your init.el file.
+
+To install it type ``M-x list-packages`` then hit the return key to get a list
+of all elpa-compliant packages. Search for ``benchmark-init``, select it and
+install it.  You can also type: ``M-x package-install benchmark-init``.
+
+Then add the following code as close as possible to the top of your init.el file:
+
+.. code:: elisp
+
+  (require 'benchmark-init
+           (expand-file-name
+            "~/.emacs.d/elpa/benchmark-init-20150905.938/benchmark-init"))
+  (add-hook 'after-init-hook 'benchmark-init/deactivate)
+
+This code is inside the file `example/init/init-4.el`_.
+
+With the above code in your init.el file, you can then execute the PEL command
+``pel-show-init-time`` (or using the ``<M-S-f9>`` keystroke for it) Emacs will
+open 2 buffers and will show something like this:
+
+.. image:: res/pel-benchmark.png
+
+This is a snapshot taken on GNU Emacs running in terminal mode on a 2014 macOS
+computer with PEL running with 96 packages selected by customization giving 156
+lines inside the benchmark-init buffers.
+
+
+.. _example/init/init-4.el: ../example/init/init-4.el
 
 
 Disable Emacs Startup splash screen and echo area message
@@ -1024,44 +1059,6 @@ please describe your request on the `PEL wiki`_, I'll take a look and see what I
 .. _PEL wiki:                         https://github.com/pierre-rouleau/pel/wiki
 .. _Function Keys Mappings PDF table: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/keys-fn.pdf
 
-
-Optional Installations
-----------------------
-
-Using benchmark-init
-~~~~~~~~~~~~~~~~~~~~
-
-If you want to know the time each loaded file takes during Emacs initialization
-time you can use the benchmark-init_ package. This is not controlled by PEL
-because it must be launched as as early as possible inside your init.el file.
-
-To install it type ``M-x list-packages`` then hit the return key to get a list
-of all elpa-compliant packages. Search for ``benchmark-init``, select it and
-install it.  You can also type: ``M-x package-install benchmark-init``.
-
-Then add the following code as close as possible to the top of your init.el file:
-
-.. code:: elisp
-
-  (require 'benchmark-init
-           (expand-file-name
-            "~/.emacs.d/elpa/benchmark-init-20150905.938/benchmark-init"))
-  (add-hook 'after-init-hook 'benchmark-init/deactivate)
-
-This code is inside the file `example/init/init-4.el`_.
-
-With the above code in your init.el file, you can then execute the PEL command
-``pel-show-init-time`` (or using the ``<M-S-f9>`` keystroke for it) Emacs will
-open 2 buffers and will show something like this:
-
-.. image:: res/pel-benchmark.png
-
-This is a snapshot taken on GNU Emacs running in terminal mode on a 2014 macOS
-computer with PEL running with 96 packages selected by customization giving 156
-lines inside the benchmark-init buffers.
-
-
-.. _example/init/init-4.el: ../example/init/init-4.el
 
 .. -----------------------------------------------------------------------------
 
