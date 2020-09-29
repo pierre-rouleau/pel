@@ -19,7 +19,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;;;---------------------------------------------------------------------------
 ;;; Commentary:
 
 ;; This file contains *all* PEL key bindings.
@@ -55,10 +55,12 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-;; -----------------------------------------------------------------------------
+;;;---------------------------------------------------------------------------
 ;; Required packages:
+(require 'debug)        ; use-package calls debug : prevents lint warnings
 (eval-when-compile
   (require 'cl-lib))    ; use: cl-eval-when
+
 (require 'pel--base)    ; use pel-system-is-macos-p
 ;;                      ;     pel-system-is-windows-p
 ;;                      ;     pel-toggle
@@ -69,7 +71,7 @@
 ;;                      ; also defines a set of utility functions to deal with
 ;;                      ; the options: pel-auto-complete-help
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Configure PEL-level autoloading
 ;; -------------------------------
 
@@ -79,7 +81,7 @@
   (if (fboundp 'pel--autoload-init)
       (pel--autoload-init)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Actions on File Save
 ;; --------------------
 ;; As controlled by PEL customized user options.
@@ -101,14 +103,14 @@
   (add-hook 'after-save-hook
             'executable-make-buffer-file-executable-if-script-p))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Control Emacs prompting
 ;; -----------------------
 (when pel-prompt-accept-y-n
   ;; Use 'y'/'n' or SPC/DEL instead of 'yes'/'no'
   (fset 'yes-or-no-p 'y-or-n-p))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Use popup-kill-ring
 ;; ---------------------
 ;; View all kill-ring deletions in a pop-up menu, when
@@ -130,7 +132,7 @@
     :init
     (cl-eval-when 'compile (require 'popup-kill-ring nil :no-error))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - PEL Modifier keys on different OS
 ;; -----------------------------------
 ;;
@@ -174,7 +176,7 @@
   (pel-setq w32-pass-apps-to-system nil)
   (pel-setq w32-apps-modifier 'hyper))      ; Menu/App key      := hyper
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Preserve negative-argument with C-- and C-_
 ;; ---------------------------------------------
 ;;
@@ -206,7 +208,7 @@ Done in this function to allow advising libraries that remap these keys."
 ;; to advise functions in other libraries.
 (pel-bind-negative-argument)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Font Control
 ;; --------------
 
@@ -280,16 +282,16 @@ Done in this function to allow advising libraries that remap these keys."
                       #'pel-font-increase-size-all-buffers)
       (global-set-key (kbd "<s-kp-subtract>")
                       #'pel-font-decrease-size-all-buffers)
-      (global-set-key (kbd "<s-kp-0>")        #'pel-font-reset-size-all-buffers))))
+      (global-set-key (kbd "<s-kp-0>") #'pel-font-reset-size-all-buffers))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Buffer navigation
 ;; -------------------
 ;; Replace `list-buffer' by the nicer, more flexible and more
 ;; powerful `ibuffer'. Show in current window, not other one.
 (global-set-key "\C-x\C-b" 'ibuffer)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; ace-link
 ;; --------
 ;;
@@ -305,7 +307,7 @@ Done in this function to allow advising libraries that remap these keys."
     :config
     (ace-link-setup-default)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; avy: fast tree movement
 ;; -----------------------
 ;;
@@ -322,11 +324,11 @@ Done in this function to allow advising libraries that remap these keys."
                avy-goto-word-1
                avy-goto-word-0)
     :init
-    ;; since avy uses home row keys for targets, the bindings also use
-    ;; keys that are on the home row (at least for the the single key bindings).
+    ;; Since avy uses home row keys for targets, the bindings also use keys
+    ;; that are on the home row (at least for the the single key bindings).
     ;; This helps speed the typing.  The meta key is used with some extra
-    ;; bindings using the control key in graphics mode (since these keys are not
-    ;; available in terminal mode).
+    ;; bindings using the control key in graphics mode (since these keys are
+    ;; not available in terminal mode).
     (when (display-graphic-p)
       (global-set-key (kbd "C-:") 'avy-goto-char)
       (global-set-key (kbd "C-'") 'avy-goto-char-2))
@@ -336,12 +338,12 @@ Done in this function to allow advising libraries that remap these keys."
     (global-set-key (kbd "M-g w") 'avy-goto-word-1)
     (global-set-key (kbd "M-g e") 'avy-goto-word-0)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Dired Extensions
 ;; ----------------
 
 (defun pel--install-undo-in-dired ()
-  "Ensure that dired-undo is available in Dired buffer."
+  "Ensure that `dired-undo' is available in Dired buffer."
   (when (boundp 'dired-mode-map)
     (define-key dired-mode-map (kbd "M-u")   'dired-undo)
     (define-key dired-mode-map (kbd "C-x u") 'dired-undo)
@@ -399,7 +401,7 @@ Done in this function to allow advising libraries that remap these keys."
         (pel-local-set-f12 'pel:for-dired-narrow))
      'dired-mode 'dired-mode-hook)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - PEL: Window Behaviour & operations
 ;; ------------------------------------
 ;;
@@ -455,14 +457,14 @@ Done in this function to allow advising libraries that remap these keys."
 ;; pel: keybinding, somewhere else in this file.
 (when (display-graphic-p)
   (use-package windmove
-    ;; specify defer: we don't want to require windmove here since it is
+    ;; Specify defer: we don't want to require windmove here since it is
     ;; autoloaded via the pel-window file.  However, when Emacs is running in
     ;; graphics mode, we need to either set the default bindings (and then we
     ;; force autoload of windmove) or force users to use something else of
     ;; windmove to activate its special binding.  None of this is a good
     ;; solution. So, as a compromise to delay the loading of windmove, just
-    ;; defer it for a specific amount of time, and then schedule the setting of
-    ;; the special binding when it is actually loaded.
+    ;; defer it for a specific amount of time, and then schedule the setting
+    ;; of the special binding when it is actually loaded.
     :defer 1
     :config
     (cl-eval-when 'compile (require 'windmove nil :no-error))
@@ -476,7 +478,8 @@ Done in this function to allow advising libraries that remap these keys."
   ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
   (cl-eval-when 'load
     (pel-install-file
-     "https://raw.githubusercontent.com/emacsmirror/framemove/master/framemove.el"
+     "https://raw.githubusercontent.com/emacsmirror\
+/framemove/master/framemove.el"
      "framemove.el"))
 
   (when (display-graphic-p)
@@ -525,7 +528,7 @@ Done in this function to allow advising libraries that remap these keys."
 ;; - try-expand-dabbrev-from-kill
 ;; - try-expand-line
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Markup Language Support
 ;; --=====================
 
@@ -563,7 +566,7 @@ Done in this function to allow advising libraries that remap these keys."
     ;; Use the cleaner outline view mode.
     (add-hook 'org-mode-hook 'org-indent-mode)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Programming Language Support
 ;; --============================
 
@@ -675,9 +678,10 @@ Done in this function to allow advising libraries that remap these keys."
     (add-hook 'racer-mode-hook 'eldoc-mode)
     (when pel-use-company
       (add-hook 'racer-mode-hook 'company-mode))
-    (define-key rust-mode-map (kbd "TAB") 'company-indent-or-complete-common)))
+    (define-key rust-mode-map
+      (kbd "TAB") 'company-indent-or-complete-common)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Extra key bindings
 ;; --==================
 ;;
@@ -695,22 +699,22 @@ Done in this function to allow advising libraries that remap these keys."
 ;;     |   ---0---     .   Enter  |
 ;;     +==========================+
 ;;
-;; The numeric keypad keys behave differently when Emacs is running in graphics
-;; mode and when it is running in Terminal mode.  Another difference is between
-;; the PC-keyaboard and the macOS keyboards.  The PC-keyboard has a numlock key,
-;; but the macOS keyboards do not: the Numlock is a clear key.
+;; The numeric keypad keys behave differently when Emacs is running in
+;; graphics mode and when it is running in Terminal mode.  Another difference
+;; is between the PC-keyaboard and the macOS keyboards.  The PC-keyboard has a
+;; numlock key, but the macOS keyboards do not: the Numlock is a clear key.
 ;;
-;; PEL attempts to provide the exact same behaviour for these keys in both modes
-;; for all environments despite the difference.
+;; PEL attempts to provide the exact same behaviour for these keys in both
+;; modes for all environments despite the difference.
 ;;
 
 ;; -- Numlock/Clear
 ;;
-;; For macOS, the top-left key, labelled as "NumLock" above, is detected only in
-;; graphics mode and is the [clear] key.  The Terminal mode does not detect that
-;; key. So 2 key bindings are done:
-;; - [clear] is mapped to pel-toggle-mac-numlock
-;; - <f11> # is also mapped to pel-toggle-mac-numlock (see later)
+;; For macOS, the top-left key, labelled as "NumLock" above, is detected only
+;; in graphics mode and is the [clear] key.  The Terminal mode does not detect
+;; that key. So 2 key bindings are done: - [clear] is mapped to
+;; pel-toggle-mac-numlock - <f11> # is also mapped to pel-toggle-mac-numlock
+;; (see later)
 
 (global-set-key [clear] 'pel-toggle-mac-numlock)
 
@@ -819,7 +823,7 @@ Done in this function to allow advising libraries that remap these keys."
   (global-set-key [C-kp-up]       #'backward-up-list)
   (global-set-key [C-kp-down]     #'down-list))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Navigation control facilities
 ;; -------------------------------
 ;; - uses: pel-navigate
@@ -831,8 +835,8 @@ Done in this function to allow advising libraries that remap these keys."
 (global-set-key (kbd "C-a") 'pel-beginning-of-line)
 
 ;; Remap standard `end-of-line' to `pel-end-of-line' for the similar reason:
-;; move to the end of line and then to the last non-whitespace in case there is
-;; trailing whitespace.
+;; move to the end of line and then to the last non-whitespace in case there
+;; is trailing whitespace.
 (global-set-key (kbd "C-e") 'pel-end-of-line)
 
 ;; Augment word movement by adding M-n to move to the beginning of a word,
@@ -844,8 +848,9 @@ Done in this function to allow advising libraries that remap these keys."
 (global-set-key (kbd "M-n")  'pel-forward-word-start)
 
 ;; Meta left/right to forward/backward-word as this is needed by term shells
-;; and python shells from outside Emacs so we leave it to get the same behaviour
-;; in these shells inside Emacs. These leave cursor at end of a word.
+;; and python shells from outside Emacs so we leave it to get the same
+;; behaviour in these shells inside Emacs. These leave cursor at end of a
+;; word.
 (global-set-key (kbd "<M-right>") #'forward-word)
 (global-set-key (kbd "<M-left>")  #'backward-word)
 
@@ -868,7 +873,7 @@ Done in this function to allow advising libraries that remap these keys."
 ;; Navigating through Sexp/blocks (not normally bound by Emacs)
 (global-set-key (kbd "C-M-]") 'up-list)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Conflict Checking
 ;; -----------------
 
@@ -881,15 +886,17 @@ Done in this function to allow advising libraries that remap these keys."
 ;; By default the key is (kbd "C-;").
 ;; There's 2 problems:
 ;; 1) that key is not available in terminal mode for such a useful command,
-;; 2) iedit-mode default key is also (kbd "C-;") as identified by its user option
-;;    `iedit-toggle-key-default'.  iedit-mode checks if something else is mapping it
-;;    but flyspell is activated lazily per mode, so iedit check never detects
-;;    the conflicting binding.
-;; There's no easy automatic solution for this, aside from checking for the
-;; conflict here and changing one of the user options.  Remember that user option
-;; variables are only available when their relative feature (file) has been
-;; loaded, which means that the check must be done when flyspell-mode is
-;; activated.  The code below perform the check when the modes are activated.
+;; 2) iedit-mode default key is also (kbd "C-;") as identified by its user
+;;    option `iedit-toggle-key-default'.  iedit-mode checks if something else
+;;    is mapping it but flyspell is activated lazily per mode, so iedit check
+;;    never detects the conflicting binding.  There's no easy automatic
+;;    solution for this, aside from checking for the conflict here and
+;;    changing one of the user options.  Remember that user option variables
+;;    are only available when their relative feature (file) has been loaded,
+;;    which means that the check must be done when flyspell-mode is activated.
+;;    The code below perform the check when the modes are activated.
+
+(defvar flyspell-auto-correct-binding)  ; prevent lint warnings
 
 (defun pel--check-flyspell-iedit-conflict ()
   "Check for key binding conflict between flyspell and iedit.
@@ -909,13 +916,13 @@ user options:\n\
 Then save your changes."
              (key-description flyspell-auto-correct-binding)))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Cursor Keys
 ;; -------------
 
-;; ============ ========== ===================== ==============================
-;; Cursor key   Modifier   Function              Notes
-;; ============ ========== ===================== ==============================
+;; ============ ========== ==================== =============================
+;; Cursor key   Modifier   Function             Notes
+;; ============ ========== ==================== =============================
 ;; Left         Control    left-word
 ;; Right        Control    right-word
 ;; Up           Control    backward-paragraph
@@ -925,10 +932,10 @@ Then save your changes."
 ;; kp-Up        Control    backward-up-list
 ;; kp-Down      Control    down-list
 ;;
-;; Left         Meta       backward-word         Move to word left
-;;                                               ignores all non-whitespace
-;; Right        Meta       forward-word          Move to word right
-;;                                               ignore all non-whitespace
+;; Left         Meta       backward-word        Move to word left
+;;                                              ignores all non-whitespace
+;; Right        Meta       forward-word         Move to word right
+;;                                              ignore all non-whitespace
 ;; Up           Meta       ??
 ;; Down         Meta       ??
 ;; kp-Left      Meta       digit-argument
@@ -945,28 +952,28 @@ Then save your changes."
 ;; kp-Up        Hyper      pel-8
 ;; kp-Down      Hyper      pel-2
 ;;
-;; Left         Super      windmove-left         Move cursor to window at left
-;; Right        Super      windmove-right        Move cursor to window at right
-;; Up           Super      windmove-up           Move cursor to window above
-;; Down         Super      windmove-down         Move cursor to window below
+;; Left         Super      windmove-left        Move cursor to window at left
+;; Right        Super      windmove-right       Move cursor to window at right
+;; Up           Super      windmove-up          Move cursor to window above
+;; Down         Super      windmove-down        Move cursor to window below
 ;; kp-Left      Super      ??
 ;; kp-Right     Super      ??
 ;; kp-Up        Super      ??
 ;; kp-Down      Super      ??
 ;;
-;; Left         Meta-Super pel-previous-visible  Move to word left
-;;                                               ignores all non-whitespace
-;; Right        Meta-Super pel-next-visible      Move to word right
-;;                                               ignore all non-whitespace
+;; Left         Meta-Super pel-previous-visible Move to word left
+;;                                              ignores all non-whitespace
+;; Right        Meta-Super pel-next-visible     Move to word right
+;;                                              ignore all non-whitespace
 ;; Up           Meta-Super ??
 ;; Down         Meta-Super ??
 ;; kp-Left      Meta-Super ??
 ;; kp-Right     Meta-Super ??
 ;; kp-Up        Meta-Super ??
 ;; kp-Down      Meta-Super ??
-;; ============ ========== ===================== ==============================
+;; ============ ========== ==================== ==============================
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys
 ;; ---------------
 ;;
@@ -974,10 +981,10 @@ Then save your changes."
 ;; with Control, Meta and Shift in macOS terminal:  I have not found a
 ;; way to get terminal escape sequences for the first 4 functions keys to work
 ;; with Emacs running in macOS Terminal.
-;; For F5 through F12, the combinations do work and aside from F8 (used by spell
-;; and flyspell), these keys are not used by the Emacs packages I use so far.
-;; I use F6 as an extra prefix and assign the other keys to various operations
-;; as described below.
+;; For F5 through F12, the combinations do work and aside from F8 (used by
+;; spell and flyspell), these keys are not used by the Emacs packages I use so
+;; far.  I use F6 as an extra prefix and assign the other keys to various
+;; operations as described below.
 
 ;; <f1>  : Emacs help system
 ;; <f2>  : prefix
@@ -989,22 +996,22 @@ Then save your changes."
 ;; <f8>  >                  (C)                (M)
 ;; <f9>  >                  (C)                (M)
 ;;                                             (M-S) pel-show-init-time
-;; <f10> > menu-bar-open,   (C) buffer-menu-open,         (M) toggle-frame-maximized
+;; <f10> > menu-bar-open,   (C) buffer-menu-open, (M) toggle-frame-maximized
 ;; <f11> > pel prefix,      <C-f11>: pel-previous-visible,  <M-f11>:
-;; <f12> > mode-sensitive,  <C-f12>: pel-next-visible,      <M-f12>: mode-sensitive
+;; <f12> > mode-sensitive,  <C-f12>: pel-next-visible, <M-f12>: mode-sensitive
 
 ;; - PEL: Protected keyboard-macro definitions
 ;; -------------------------------------------
 (global-set-key (kbd "<f3>") 'pel-kmacro-start-macro-or-insert-counter)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f5>
 ;; ----------------------
 ;; Bind repeat to a single key: <f5> and <S-F5>
 (global-set-key (kbd "<f5>") 'repeat)
 ;; <S-f5> is also bound to repeat but also marks.
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f6>
 ;; ----------------------
 ;;
@@ -1030,7 +1037,7 @@ Then save your changes."
 ;; Emacs init time.
 (run-with-idle-timer 2 nil (function pel--install-generic-skel) pel:f6)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11>
 ;; -----------------------
 ;;
@@ -1142,7 +1149,7 @@ Then save your changes."
 (global-set-key (kbd "<C-f11>") 'pel-previous-visible)
 (global-set-key (kbd "<C-f12>") 'pel-next-visible)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Use undo-tree
 ;; ---------------
 ;; Use undo-tree which provides undo/redo ability with complete storage and
@@ -1241,10 +1248,10 @@ Then save your changes."
       (cl-eval-when 'compile (require 'goto-last-change nil :no-error)))
   (define-key pel:undo "\\"  #'goto-last-change))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> <f10>`` : Menu commands
-;; Force load of pel-imenu after load of imenu: pel-imenu-init is identified as
-;; an autoload, and it configures the imenu system.
+;; Force load of pel-imenu after load of imenu: pel-imenu-init is identified
+;; as an autoload, and it configures the imenu system.
 
 (eval-after-load 'imenu
   (when (fboundp 'pel-imenu-init)
@@ -1257,12 +1264,12 @@ Then save your changes."
 (define-key pel:menu "o"      'pel-toggle-imenu-index-follows-order)
 (define-key pel:menu "t"     #'tmm-menubar)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> <f2>`` : Customization
 ;;
 
 (defun pel-browse-pel ()
-  "Browse the PEL customization group"
+  "Browse the PEL customization group."
   (interactive)
   (customize-browse 'pel))
 
@@ -1303,7 +1310,7 @@ Then save your changes."
 (pel--cfg-emacs pel:cfg-emacs "u" "browse-url")
 (pel--cfg-emacs pel:cfg-emacs "w" "woman")
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Input Completion Framework activation
 ;; -------------------------------------
 ;;
@@ -1378,7 +1385,7 @@ Then save your changes."
     (define-key pel:help  (kbd "M-c")  'pel-show-active-completion-mode)
     (pel-set-completion-mode pel-initial-completion-mode)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Project Management - Projectile
 
 (when pel-use-projectile
@@ -1397,9 +1404,10 @@ Then save your changes."
     :pin melpa
     :commands projectile-mode
 
-    ;; projectile uses both ripgrep and ag.  These are controlled independently
-    ;; but ensure that the commands used by projectile are identified as the autoloading
-    ;; commands.  See both of these in the Grep operation section below.
+    ;; projectile uses both ripgrep and ag.  These are controlled
+    ;; independently but ensure that the commands used by projectile are
+    ;; identified as the autoloading commands.  See both of these in the Grep
+    ;; operation section below.
 
     :init
     (define-pel-global-prefix pel:projectile (kbd "<f11> <f8>"))
@@ -1407,19 +1415,22 @@ Then save your changes."
 
     :config
     (define-key projectile-mode-map (kbd "<f8>")    'projectile-command-map)
-    (define-key projectile-command-map "~"          'projectile-toggle-project-read-only)
-    ;; the default Projectile key-map binds ESC to projectile-project-buffers-other-buffer
-    ;; this is unfortunate because it prevents the use of any function keys in terminal mode
-    ;; since they are implemented by ANSI escape sequences.
-    ;; Unbind ESC and remap projectile-project-buffers-other-buffer to a key that
-    ;; is physically closely located to Esc on most keyboards: the 1 key.
+    (define-key projectile-command-map "~"
+      'projectile-toggle-project-read-only)
+    ;; The default Projectile key-map binds ESC to
+    ;; projectile-project-buffers-other-buffer this is unfortunate because it
+    ;; prevents the use of any function keys in terminal mode since they are
+    ;; implemented by ANSI escape sequences.  Unbind ESC and remap
+    ;; projectile-project-buffers-other-buffer to a key that is physically
+    ;; closely located to Esc on most keyboards: the 1 key.
     (define-key projectile-command-map (kbd "ESC") nil)
-    (define-key projectile-command-map "1" #'projectile-project-buffers-other-buffer)
+    (define-key projectile-command-map "1"
+      #'projectile-project-buffers-other-buffer)
     (define-key projectile-command-map (kbd "<f1>") 'pel-help-pdf)
     (define-key projectile-command-map (kbd "<f2>") 'pel-customize-pel)
     (define-key projectile-command-map (kbd "<f3>") 'pel-customize-library)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Tempo skeleton - a powerful lisp-style templating system
 ;; Load pel-tempo when programming languages using it are used.
 ;; See the use of skeletons in the following sections.
@@ -1430,7 +1441,7 @@ Then save your changes."
     ;; autoload pel-tempo when the following command is used
     :commands pel-tempo-mode))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; yasnippet - a Texmate-like templating system
 
 (when pel-use-yasnippet
@@ -1478,7 +1489,7 @@ Then save your changes."
                (fboundp 'pel--start-yasnippet))
       (run-with-idle-timer 4 nil (function pel--start-yasnippet))))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - AppleScript support
 (when pel-use-applescript
   (use-package apples-mode
@@ -1487,7 +1498,8 @@ Then save your changes."
     :commands (apples-mode
                apples-open-scratch)
     :init
-    (add-to-list 'auto-mode-alist '("\\.\\(applescript\\|scpt\\)\\'" . apples-mode))
+    (add-to-list 'auto-mode-alist '("\\.\\(applescript\\|scpt\\)\\'"
+                                    . apples-mode))
 
     (define-pel-global-prefix pel:for-applescript (kbd "<f11> SPC a"))
     (define-key pel:for-applescript "s" 'apples-open-scratch)
@@ -1519,7 +1531,7 @@ Then save your changes."
 
 ;; HYDRA: pel-∑narrate is at the bottom of this file with all other PEL hydras.
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Utility function for mapping CC Mode keys
 
 (defun pel-key-electric-p (key)
@@ -1594,7 +1606,7 @@ If a key must be assigned to something different for the programming language
 just bind it again after this call."
   ;; electric mode control
   (define-key prefix (kbd "M-?")   'pel-cc-mode-info)
-  (define-key prefix (kbd "M-s")   'c-set-style)   ; interactively select style
+  (define-key prefix (kbd "M-s")   'c-set-style) ; interactively select style
   (define-key prefix (kbd "M-;")   'c-toggle-comment-style)
   (define-key prefix (kbd "M-e")   'c-toggle-electric-state)
   (define-key prefix (kbd "M-RET") 'c-toggle-auto-newline)
@@ -1632,13 +1644,13 @@ just bind it again after this call."
 MODE must be a symbol."
   (add-to-list 'c-default-style (cons mode bracket-style)))
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC c`` : C programming utilities
 
 ;; Note: C editing is always available in Emacs via the CC Mode and the c-mode
 ;; that is part of Emacs.  All autoloading is already set by Emacs.  The only
-;; extra code needed is to add the specialized menu and then activate it, along
-;; with the specialized CC Mode minor modes via the c-mode-hook.
+;; extra code needed is to add the specialized menu and then activate it,
+;; along with the specialized CC Mode minor modes via the c-mode-hook.
 
 (define-pel-global-prefix pel:for-c         (kbd "<f11> SPC c"))
 (define-pel-global-prefix pel:for-c-preproc (kbd "<f11> SPC c #"))
@@ -1679,7 +1691,7 @@ MODE must be a symbol."
  (function pel--setenv-for-c)
  'c-mode 'c-mode-hook)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C`` : C++ programming utilities
 
 ;; Note: C++ editing is always available in Emacs via the CC Mode and the
@@ -1718,7 +1730,7 @@ MODE must be a symbol."
     (pel-local-set-f12-M-f12 'pel:for-c++-preproc "#"))
  'c++-mode 'c++-mode-hook)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC D`` : D programming utilities
 
 (when pel-use-d
@@ -1796,8 +1808,8 @@ This is meant to be used in the d-mode hook lambda."
     ;; 2) Activate the indentation, using the PEL user option via a hook
     (pel--set-cc-style 'd-mode pel-d-bracket-style)))
 
-;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` : Erlang programming utilities
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` : Erlang programming
 
 (when pel-use-erlang
 
@@ -1854,22 +1866,22 @@ This is meant to be used in the d-mode hook lambda."
     ;; bind other erlang keys
     (define-key pel:for-erlang      "?"               'erlang-version)
 
-    (define-key pel:erlang-function "N"               'pel-beginning-of-next-defun)
-    (define-key pel:erlang-function "P"               'beginning-of-defun)
+    (define-key pel:erlang-function "N"          'pel-beginning-of-next-defun)
+    (define-key pel:erlang-function "P"          'beginning-of-defun)
     (define-key pel:erlang-function "n"               'pel-next-erl-function)
     (define-key pel:for-erlang      (kbd "<down>")    'pel-next-erl-function)
-    (define-key pel:erlang-function "p"               'pel-previous-erl-function)
-    (define-key pel:for-erlang      (kbd "<up>")      'pel-previous-erl-function)
+    (define-key pel:erlang-function "p"          'pel-previous-erl-function)
+    (define-key pel:for-erlang      (kbd "<up>") 'pel-previous-erl-function)
 
 
-    (define-key pel:erlang-clause   "a"               'erlang-beginning-of-clause)
-    (define-key pel:for-erlang      (kbd "<M-up>")    'erlang-beginning-of-clause)
-    (define-key pel:erlang-clause   "p"               'pel-end-of-previous-clause)
+    (define-key pel:erlang-clause   "a"           'erlang-beginning-of-clause)
+    (define-key pel:for-erlang      (kbd "<M-up>") 'erlang-beginning-of-clause)
+    (define-key pel:erlang-clause   "p"           'pel-end-of-previous-clause)
     (define-key pel:for-erlang      (kbd "<M-left>")
-                                                      'pel-end-of-previous-clause)
-    (define-key pel:erlang-clause   "n"               'pel-beginning-of-next-clause)
+                                                  'pel-end-of-previous-clause)
+    (define-key pel:erlang-clause   "n"         'pel-beginning-of-next-clause)
     (define-key pel:for-erlang      (kbd "<M-down>")
-                                                      'pel-beginning-of-next-clause)
+                                                'pel-beginning-of-next-clause)
     (define-key pel:erlang-clause   "e"               'erlang-end-of-clause)
     (define-key pel:for-erlang      (kbd "<M-right>") 'erlang-end-of-clause)
     (define-key pel:erlang-function "m"               'erlang-mark-function)
@@ -1878,11 +1890,11 @@ This is meant to be used in the d-mode hook lambda."
     (define-key pel:for-erlang      (kbd "M-p")      #'superword-mode)
     (define-key pel:for-erlang      (kbd "M-9")      #'show-paren-mode)
     (when pel-use-rainbow-delimiters
-      (define-key pel:for-erlang (kbd "M-r")          'rainbow-delimiters-mode))
+      (define-key pel:for-erlang (kbd "M-r")    'rainbow-delimiters-mode))
     (when pel-use-plantuml
-      (define-key pel:for-erlang "u"                  'pel-render-commented-plantuml))
+      (define-key pel:for-erlang "u"     'pel-render-commented-plantuml))
     (when pel-use-graphviz-dot
-      (define-key pel:for-erlang "G"                  'pel-render-commented-graphviz-dot))
+      (define-key pel:for-erlang "G"     'pel-render-commented-graphviz-dot))
 
     :config
     (setq erlang-root-dir (expand-file-name pel-erlang-rootdir))
@@ -1905,41 +1917,41 @@ This is meant to be used in the d-mode hook lambda."
         :config
         ;; EDTS keys
         ;;  edts cross reference command keys
-        (define-key pel:for-erlang      "w"             'edts-xref-who-calls)
-        (define-key pel:for-erlang      "W"             'edts-xref-last-who-calls)
+        (define-key pel:for-erlang      "w"    'edts-xref-who-calls)
+        (define-key pel:for-erlang      "W"    'edts-xref-last-who-calls)
         ;;  edts cross reference
-        (define-key pel:for-erlang      (kbd "M-f")     'edts-find-local-function)
-        (define-key pel:for-erlang      (kbd "M-g")     'edts-find-global-function)
+        (define-key pel:for-erlang (kbd "M-f") 'edts-find-local-function)
+        (define-key pel:for-erlang (kbd "M-g") 'edts-find-global-function)
         ;; edts refactoring
-        (define-key pel:for-erlang      "r"             'edts-refactor-extract-function)
+        (define-key pel:for-erlang      "r"    'edts-refactor-extract-function)
         ;; edts man page use
-        (define-key pel:for-erlang      "`"             'edts-man-setup)
-        (define-key pel:for-erlang      "h"             'edts-show-doc-under-point)
-        (define-key pel:for-erlang      "H"             'edts-find-doc)
+        (define-key pel:for-erlang      "`"    'edts-man-setup)
+        (define-key pel:for-erlang      "h"    'edts-show-doc-under-point)
+        (define-key pel:for-erlang      "H"    'edts-find-doc)
         ;; edts code analysis
-        (define-key pel:erlang-analysis "a"             'edts-dialyzer-analyze)
-        (define-key pel:erlang-analysis "t"             'edts-code-eunit)
-        (define-key pel:erlang-analysis "c"             'edts-code-compile-and-display)
+        (define-key pel:erlang-analysis "a"    'edts-dialyzer-analyze)
+        (define-key pel:erlang-analysis "t"    'edts-code-eunit)
+        (define-key pel:erlang-analysis "c"    'edts-code-compile-and-display)
         ;; edts debug
-        (define-key pel:erlang-debug    "b"             'edts-debug-toggle-breakpoint)
-        (define-key pel:erlang-debug    "B"             'edts-debug-list-breakpoints)
-        (define-key pel:erlang-debug    "p"             'edts-debug-list-processes)
-        (define-key pel:erlang-debug    "i"             'edts-debug-toggle-interpreted)
-        (define-key pel:erlang-debug    "I"             'edts-debug-list-interpreted)
+        (define-key pel:erlang-debug    "b"    'edts-debug-toggle-breakpoint)
+        (define-key pel:erlang-debug    "B"    'edts-debug-list-breakpoints)
+        (define-key pel:erlang-debug    "p"    'edts-debug-list-processes)
+        (define-key pel:erlang-debug    "i"    'edts-debug-toggle-interpreted)
+        (define-key pel:erlang-debug    "I"    'edts-debug-list-interpreted)
         ;; edts node
-        (define-key pel:for-erlang      "N"             'edts-buffer-node-name)
-        (define-key pel:for-erlang      "x"             'edts-shell)
-        (define-key pel:for-erlang      "X"             'edts-api-start-server)
+        (define-key pel:for-erlang      "N"    'edts-buffer-node-name)
+        (define-key pel:for-erlang      "x"    'edts-shell)
+        (define-key pel:for-erlang      "X"    'edts-api-start-server)
 
         ;; EDTS/(automatic highlight symbol)  features
-        (define-key pel:for-erlang      "e"             'edts-ahs-edit-current-function)
+        (define-key pel:for-erlang      "e"   'edts-ahs-edit-current-function)
         (define-key pel:for-erlang      "E"             'edts-ahs-edit-buffer)
         (define-key pel:for-erlang      "n"             'ahs-forward)
         (define-key pel:for-erlang      "p"             'ahs-backward)
         (define-key pel:for-erlang      "."             'ahs-back-to-start)
         ;; The following do not seem to do anything special in Erlang.
-        ;; (define-key pel:for-erlang      ">"             'ahs-forward-definition)
-        ;; (define-key pel:for-erlang      "<"             'ahs-backward-definition)
+        ;; (define-key pel:for-erlang      ">"     'ahs-forward-definition)
+        ;; (define-key pel:for-erlang      "<"     'ahs-backward-definition)
         (unless pel-activate-edts-automatically
           (require 'edts-start))))
     ;;
@@ -1964,7 +1976,8 @@ This is meant to be used in the d-mode hook lambda."
                     "-I" "../include" "-I" "../../include"
                     "-I" "../../../include" source)
           :error-patterns
-          ((warning line-start (file-name) ":" line ": Warning:" (message) line-end)
+          ((warning line-start (file-name) ":" line ": Warning:"
+                    (message) line-end)
            (error line-start (file-name) ":" line ": " (message) line-end)))
 
         (add-hook 'erlang-mode-hook
@@ -1973,8 +1986,8 @@ This is meant to be used in the d-mode hook lambda."
                       (flycheck-select-checker 'erlang-otp)
                       (flycheck-mode))))))))
 
-;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` : LFE programming utilities
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` : LFE programming
 ;; LFE := Lisp Flavoured Erlang
 
 ;; Note: the pel:eXecute has the run-lfe (in the code below.)
@@ -1986,8 +1999,8 @@ This is meant to be used in the d-mode hook lambda."
                inferior-lfe
                run-lfe)))
 
-;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC x`` : Elixir programming utilities
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC x`` : Elixir programming
 (when pel-use-elixir
   (use-package elixir-mode
     :ensure t
@@ -2037,7 +2050,7 @@ This is meant to be used in the d-mode hook lambda."
 ;;     :init
 ;;     (add-hook ‘elixir-mode-hook ’lsp)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` : Forth programming
 (when pel-use-forth
   (use-package forth-mode
@@ -2055,11 +2068,11 @@ This is meant to be used in the d-mode hook lambda."
         (pel-local-set-f12 'pel:for-forth))
      'forth-mode 'forth-mode-hook)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC F`` : FORTRAN programming
 ;; reserved but not implemented.
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC j`` : Julia programming
 (when (and pel-use-julia pel-use-vterm)
   ;; 🚧 Experimental: not yet completed.
@@ -2082,7 +2095,7 @@ This is meant to be used in the d-mode hook lambda."
      'julia-mode 'julia-mode-hook)
     (add-hook 'julia-mode-hook 'julia-snail-mode)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Lisp-style programming Languages
 ;; --------------------------------
 
@@ -2118,7 +2131,7 @@ This is meant to be used in the d-mode hook lambda."
      (lambda ()
        (pel-lispy-mode)))))
 
-;; ----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC l`` : Emacs Lisp programming
 
 ;; - Use parinfer
@@ -2233,8 +2246,8 @@ This is meant to be used in the d-mode hook lambda."
     (pel--install-elisp-skel pel:elisp-skel))
  'emacs-lisp-mode 'emacs-lisp-mode-hook :append)
 
-;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC L`` : (Common) Lisp programming
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC L`` : (Common) Lisp
 (when pel-use-common-lisp
   (define-pel-global-prefix pel:for-lisp (kbd "<f11> SPC L"))
   (when pel-use-plantuml
@@ -2252,8 +2265,8 @@ This is meant to be used in the d-mode hook lambda."
       (pel-local-set-f12-M-f12 'pel:for-lisp))
    'lisp-mode 'lisp-mode-hook))
 
-;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC p`` : Python programming utilities
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC p`` : Python programming
 (when pel-use-python
 
   (use-package elpy
@@ -2316,7 +2329,7 @@ This is meant to be used in the d-mode hook lambda."
       (define-key pel:for-python "1"         'lispy-describe-inline)
       (define-key pel:for-python "2"         'lispy-arglist-inline))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC R`` : REXX programming
 (when pel-use-rexx
   ;; Download and byte-compile rexx-mode if not already present.
@@ -2342,7 +2355,7 @@ This is meant to be used in the d-mode hook lambda."
         (pel-local-set-f12 'pel:for-rexx))
      'rexx-mode 'rexx-mode-hook)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; AsciiDoc support
 ;; ----------------
 
@@ -2354,7 +2367,7 @@ This is meant to be used in the d-mode hook lambda."
     :init
     (add-to-list 'auto-mode-alist '("\\.adoc\\'"  . adoc-mode))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC r`` : reSTucturedText
 (when pel-use-rst-mode
 
@@ -2417,7 +2430,7 @@ This is meant to be used in the d-mode hook lambda."
    (function pel--setup-for-rst)
    'rst-mode 'rst-mode-hook))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC g`` : Graphviz Dot
 (when pel-use-graphviz-dot
   (use-package graphviz-dot-mode
@@ -2439,7 +2452,7 @@ This is meant to be used in the d-mode hook lambda."
       (pel-local-set-f12 'pel:for-graphviz-dot))
    'graphviz-dot-mode 'graphviz-dot-mode-hook))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC u`` : PlantUML
 (when pel-use-plantuml
   (define-pel-global-prefix pel:for-plantuml (kbd "<f11> SPC u"))
@@ -2459,7 +2472,7 @@ This is meant to be used in the d-mode hook lambda."
       (pel-local-set-f12 'pel:for-plantuml))
    'plantuml-mode 'plantuml-mode-hook))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> =`` : Copy commands
 
 (define-pel-global-prefix pel:copy (kbd "<f11> ="))
@@ -2485,7 +2498,7 @@ This is meant to be used in the d-mode hook lambda."
 (global-set-key (kbd "M-w") 'pel-copy-marked-or-whole-line)
                                         ; replaces kill-ring-save
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> -`` : Kill commands
 
 (define-pel-global-prefix pel:kill (kbd "<f11> -"))
@@ -2528,7 +2541,7 @@ This is meant to be used in the d-mode hook lambda."
 (global-set-key [(control shift delete)] #'kill-word)
 (global-set-key [(control delete)]        'pel-delete-to-next-visible)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> ,`` : auto-completion
 
 (when pel-use-auto-complete
@@ -2567,7 +2580,7 @@ This is meant to be used in the d-mode hook lambda."
   (global-set-key (kbd "M-l") 'pel-complete))
 ;; (add-hook 'after-init-hook 'global-company-mode)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> .`` : mark commands
 
 (define-pel-global-prefix pel:mark (kbd "<f11> ."))
@@ -2603,7 +2616,7 @@ This is meant to be used in the d-mode hook lambda."
     (define-key pel:mark     "="  'er/expand-region)
     (global-set-key   (kbd "M-=") 'er/expand-region)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; CUA mode setup
 ;; Activate the ability to use cua-rectangle-mark-mode without using
 ;; the CUA re-binding of C-c, C-v, C-x and C-z.
@@ -2614,7 +2627,7 @@ This is meant to be used in the d-mode hook lambda."
 (global-set-key (kbd "<f11> [")  'pel-cua-move-rectangle-left)
 (global-set-key (kbd "<f11> ]")  'pel-cua-move-rectangle-right)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> ;`` : comment commands
 
 (define-pel-global-prefix pel:comment (kbd "<f11> ;"))
@@ -2650,7 +2663,7 @@ This is meant to be used in the d-mode hook lambda."
     (define-key pel:comment ";" 'hide/show-comments-toggle)
     (define-key pel:comment ":" 'hide/show-comments)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> ?`` : Help /apropos/info commands
 
 ;; pel:help prefix is defined at the beginning of the <f11> section to allow
@@ -2681,7 +2694,7 @@ This is meant to be used in the d-mode hook lambda."
     :init
     (define-key pel:help "A" 'ascii-table)))
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? a`` : Help Apropos commands
 
 (define-pel-global-prefix pel:apropos (kbd "<f11> ? a"))
@@ -2694,7 +2707,7 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:apropos "u"  #'apropos-value)
 (define-key pel:apropos "v"  #'apropos-variable)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? i`` : Help Info commands
 
 (define-pel-global-prefix pel:info (kbd "<f11> ? i"))
@@ -2702,7 +2715,7 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:info "i"  #'info)
 (define-key pel:info "m"  #'info-display-manual)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? d`` : Describe
 
 (define-pel-global-prefix pel:describe (kbd "<f11> ? d"))
@@ -2719,7 +2732,7 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:describe "s"  'pel-show-char-syntax)
 (define-key pel:describe "w"  'pel-show-window-sizes)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? e`` : Emacs info
 
 (define-pel-global-prefix pel:emacs (kbd "<f11> ? e"))
@@ -2826,7 +2839,7 @@ This is meant to be used in the d-mode hook lambda."
 (define-key pel:spell "v" #'ispell-check-version)
 
 (defun pel-flyspell-auto-correct-previous-word (position)
-  "Flyspell previous word if flyspell mode is active.
+  "Flyspell previous word from POSITION if flyspell mode is active.
 See `flyspell-auto-correct-previous-word' for more info."
   (interactive "d")
   (if (and (fboundp 'flyspell-auto-correct-previous-word)
@@ -4478,7 +4491,7 @@ the ones defined from the buffer now."
 ;;       instead of having them hard coded like they are now.
 
 (defun pel--maybe-vline-mode ()
-      "Use vline-mode when available."
+      "Use the vertical line mode when available."
       (interactive)
       (if (and pel-use-vline (require 'vline nil :noerror))
           (progn
