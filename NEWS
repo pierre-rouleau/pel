@@ -77,7 +77,10 @@ This file uses Org mode. Some useful (default) key-bindings:
   - *Window flipping commands*: The keys to flip windows horizontally (<f11> w
     h) and vertically (<f11> w v) are now safer.  They now take into account the
     minibuffer and dedicated windows and only operate on the current frame.
-  - User manual installation now properly references the "/.emacs.d" directory.
+  - pel-find-file-at-point properly handle relative file names.
+  - User Manual fixes:
+    - User manual installation now properly references the "/.emacs.d" directory.
+      and no longer references the "/.emacs.p" directory.
 - *New Features and improvements*:
   - The keys to flip windows horizontally (<f11> w h) and vertically (<f11> w v)
     are now safer.  They now take into account the minibuffer and dedicated
@@ -100,7 +103,7 @@ This file uses Org mode. Some useful (default) key-bindings:
     along with all hyperlinks allow a user to quickly navigate through the PEL
     documentation inside the PEL manual hosted on Github, the local PDF files
     and the PDF files hosted on Github.
-  - *Window navigation key sequences*: Added key bindings to navigation across
+  - Window navigation key sequences: Added key bindings to navigation across
     windows: The <Esc> key followed by the cursor pointing in the direction of
     the window are now bound to the corresponding wind move command. In graphics
     mode,  the <Esc> key followed by a Shift cursor key pointing in the
@@ -151,6 +154,14 @@ This file uses Org mode. Some useful (default) key-bindings:
   - Visible bookmarks no longer deferred loaded: loaded on demand: first time a bound-key is typed.
   - In graphic mode, the extra keys for windmove are loaded after 1 second instead of 5.
   - Temporarily set max-specpdl-size to 2000 while running benchmark-init commands to handle large set of packages.
+  - The repository now provides examples of Emacs init.el files starting with
+    the simplest one used to perform the first compilation to something that
+    provides more features.
+  - The repository now provides example of Bash alias commands to use a quick
+    keys to launch emacs (see the "example/bin" directory).
+  - User Manual changes and additions:
+    - The installation sections attempt to highlight the commands to execute.
+    - A copy of the original init.el is provided in the new example/init section of the repository.
 - *Reference PDF updates*:
   - Added hyperlinks in all PDF files.  The See also and title icons are now all links.
   - The help and customize PDFs have a lot of links to the of them PDF pages.
