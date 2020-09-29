@@ -9,9 +9,11 @@
 ;;        - display buffer and and file full filepath on frame title bar
 ;;        - speedbar without images
 ;;        - using adwaita theme
-;;      - benchmark of emacs startup:  install benchmark-init **before** using:
-;;           M-x package-install benchmark-init
+;;      - benchmark of emacs startup:
 ;;
+;; DO THIS BEFORE USING THIS FILE:
+;;   - install benchmark-init **before** using:
+;;           M-x package-install benchmark-init
 ;;
 ;; -----------------------------------------------------------------------------
 ;; To speed up Emacs init, prevent checking for file handling association and

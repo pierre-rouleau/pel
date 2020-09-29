@@ -1,5 +1,18 @@
-;;; ---Example init.el file -- For PEL, delayed abbreviation load--------------
+;;; ---Example init.el file ---------------------------------------------------
 ;;
+;; With:
+;;      - PEL,
+;;      - delayed abbreviation.
+;;
+;;
+;; DO THIS BEFORE USING THIS FILE:
+;;
+;; - create an empty file: ~/.emacs.d/abbrev_defs:
+;;
+;;      do ->  touch ~/.emacs.d/abbrev_defs
+;;
+;;
+;; -----------------------------------------------------------------------------
 ;; 1: Setup package sources: MELPA, MELPA-STABLE and a local mypelpa
 (when (>= emacs-major-version 24)
   (require 'package)
