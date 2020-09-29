@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-29 10:22:41, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-29 12:38:47, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -384,7 +384,11 @@ Create or Update your Emacs init.el file
 
 **Do this:**
 
-Add the following code inside your "``~/.emacs.d/init.el``" file:
+Add the following code inside your "``~/.emacs.d/init.el``" file.
+You can also use a copy of the file `example/init/init-0.el`_ :
+
+
+.. _example/init/init-0.el: ../example/init/init-0.el
 
 .. code:: elisp
 
