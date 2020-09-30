@@ -867,11 +867,11 @@ typed quickly or slowly when recorded.)"
                         (insert "bn"))))
 
     (global    ""         key-chord
-               "fg" (lambda ()
+               "gf" (lambda ()   ; note that using key-seq can help on this.
                       (interactive)
                       (if (require 'windmove nil :noerror)
                           (windmove-left)
-                        (insert "fg"))))
+                        (insert "gf"))))
 
     (global    ""         key-chord
                "jk" (lambda ()
