@@ -1961,8 +1961,9 @@ This is meant to be used in the d-mode hook lambda."
       ;; TODO: make it lazy
       (require 'erlang-flymake)
       (define-key pel:for-erlang   "F"         'flymake-mode)
-      (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
-      (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error))
+      (when (boundp 'flymake-mode-map)
+        (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
+        (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)))
 
     (when pel-use-erlang-flycheck
       (use-package flycheck
