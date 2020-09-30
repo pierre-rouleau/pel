@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-30 14:32:42, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-30 14:33:38, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -706,7 +706,7 @@ required tools are installed.  If you have not done that yet, go back to
 To install PEL, open a terminal shell and execute the following commands in
 sequence:
 
-#. Code PEL repository
+#. Clone PEL repository into ``~/projects/pel``:
 
    .. code:: shell
 
