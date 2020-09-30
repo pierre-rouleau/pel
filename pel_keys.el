@@ -2308,6 +2308,7 @@ This is meant to be used in the d-mode hook lambda."
   (define-pel-global-prefix pel:for-python (kbd "<f11> SPC p"))
   (define-key pel:for-python    "."        'pel-find-thing-at-point)
   (define-key pel:for-python (kbd "M-9")  #'show-paren-mode)
+  (define-key pel:for-python (kbd "M-p")  #'superword-mode)
   (when pel-use-plantuml
     (define-key pel:for-python    "u"      'pel-render-commented-plantuml))
   (when pel-use-graphviz-dot
@@ -4104,6 +4105,15 @@ the ones defined from the buffer now."
 (define-key pel:textmodes "s"  'pel-toggle-sentence-end)
 (define-key pel:textmodes "v" #'visible-mode)
 (define-key pel:textmodes "w" #'whitespace-mode)
+
+(pel-add-hook-for
+     'pel-modes-activating-superword-mode
+     (lambda ()
+       (superword-mode 1)))
+(pel-add-hook-for
+     'pel-modes-activating-subword-mode
+     (lambda ()
+       (subword-mode 1)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Function Keys - <f11> - Prefix ``<f11> t t``: Text transpose commands

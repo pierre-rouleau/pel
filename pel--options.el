@@ -85,6 +85,7 @@
 ;;     - pel-pkg-for-shells
 ;;     - pel-pkg-for-spelling
 ;;     - pel-pkg-for-tags
+;;     - pel-pkg-for-text-mode
 ;;     - pel-pkg-for-undo
 ;;     - pel-pkg-for-vcs
 ;;     - pel-pkg-for-window
@@ -2686,6 +2687,32 @@ See URL https://github.com/leoliu/ggtags"
   :group 'pel-pkg-for-tags
   :type 'boolean
   :safe #'booleanp)
+
+;; ---------------------------------------------------------------------------
+;; Text Mode support
+;; -----------------
+(defgroup pel-pkg-for-text-mode nil
+  "PEL support for text mode."
+  :group 'pel-package-use
+  :link `(url-link :tag "Text Modes PDF" ,(pel-pdf-file-url "text-modes")))
+
+(defcustom pel-modes-activating-superword-mode
+  '(c-mode
+    c++-mode
+    d-mode
+    erlang-mode
+    elixir-mode
+    python-mode
+    emacs-lisp-mode
+    lisp-mode)
+  "List of major modes that automatically activate the superword-mode."
+  :group 'pel-pkg-for-text-mode
+  :type '(repeat symbol))
+
+(defcustom pel-modes-activating-subword-mode nil
+  "List of major modes that automatically activate the subword-mode."
+  :group 'pel-pkg-for-text-mode
+  :type '(repeat symbol))
 
 ;; -----------------------------------------------------------------------------
 ;; Undo Mechanism Management
