@@ -189,18 +189,12 @@ See the spell-checking.pdf file for more info" origin program-name origin progra
 (defun pel-spell-init-from-user-option ()
   "Initialize Spell checking.
 Use the values taken from user option variable
-`pel-spell-check-tools' if specified. Otherwise use the
-value specified in `pel-spell-check-tools' for the current OS."
+`pel-spell-check-tool' if specified.  If nothing is specified
+the spell checker is not selected."
   (if pel-spell-check-tool
       (pel--spell-select (nth 0 pel-spell-check-tool)
                          (nth 1 pel-spell-check-tool)
-                         "pel-spell-check-tools")
-  (cl-dolist (spec pel-spell-check-tools)
-    (when (eq system-type (car spec))
-      (pel--spell-select (nth 1 spec)
-                         (nth 2 spec)
-                         (format "pel-use-spell-check-tools for %s" system-type))
-      (cl-return)))))
+                         "pel-spell-check-tool")))
 
 ;; --
 

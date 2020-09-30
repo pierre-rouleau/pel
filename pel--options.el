@@ -2616,57 +2616,23 @@ and usable shell for Emacs."
   :group 'pel-package-use
   :link `(url-link :tag "Spell Checking PDF" ,(pel-pdf-file-url "spell-checking")))
 
-(defcustom pel-spell-check-tool
-  '( "ispell" "~/.emacs.d/.ispell")
+(defcustom pel-spell-check-tool nil
   "Spell Checking tool and local dictionary.
-Overrides the value taken from `pel-spell-check-tools
-if it is specified.
-Use this to set the spell checker and dictionary as a file
-or directory local variable."
+The spell-checking tool must be an ispell-compatible
+command line tool. This includes:
+
+- ispell
+- aspell
+- hunspell
+- enchant
+
+The second line identifies the file where the local dictionary
+will be stored.  Often stored in ~/.emacs.d/.ispell"
   :group 'pel-pkg-for-spelling
   :type
-  '(choice
-    (const :tag "Use the value specified by `pel-spell-check-tools' for the current OS" nil)
-    (list
-     (string :tag "spell checker      ")
-     (string :tag "personal dictionary"))))
-
-(defcustom pel-spell-check-tools
-  '((gnu         "aspell"  "~/.emacs.d/.ispell")
-    (gnu/linux   "aspell"  "~/.emacs.d/.ispell")
-    (darwin      "aspell"  "~/.emacs.d/.ispell")
-    (windows-nt  "c:/pg/aspell/0.50.3-w32/bin/aspell.exe" ""))
-  "Spell checking tools used for supported Operating Systems.
-
-The value is a list of 3 elements, allowing the configuration for
-several Operating Systems.  This way the same customization data
-can be used on multiple Operating Systems.
-
-The first element of the list must be one of the valid symbols for
-the variable `system-type', including the following symbols:
-
-- gnu
-- gnu/linux
-- gnu/kfreebsd
-- darwin
-- ms-dos
-- windows-nt
-- cygwin
-
-The second element is a string representing the name of the spell check
-executable to use.  It can be a complete executable path or just the name
-if it is on your system path.
-
-The thirds element is optional.  If present, it's the full path to the
-personal dictionary file."
-  :group 'pel-pkg-for-spelling
-  :type
-  '(repeat
-    (list
-     (symbol :tag "system-type        ")
-     (string :tag "spell checker      ")
-     (string :tag "personal dictionary")
-     )))
+  '(list
+    (string :tag "ispell-compatible checker  ")
+    (string :tag "personal dictionary        ")))
 
 (defcustom pel-modes-activating-flyspell-mode
   '(log-edit-mode
