@@ -305,7 +305,7 @@ Not used nor needed for Emacs 27.1 or later."
 (defconst pel-USE-COUNSEL 4 "Bitmask identifying Counsel.  DON'T CHANGE!")
 (defconst pel-USE-HELM    8 "Bitmask identifying Helm.     DON'T CHANGE!")
 
-(defcustom pel-initial-completion-mode emacs-default
+(defcustom pel-initial-completion-mode 'emacs-default
   "Select the main text completion mode used when Emacs starts.
 
 PEL supports several completion engines.
