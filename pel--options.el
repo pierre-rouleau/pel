@@ -796,7 +796,7 @@ This can be set to:
 (defcustom pel-use-key-seq nil
   "Control whether PEL key-chord is also using key-seq.
 If t, the boolean field 'key-seq' key-chords definitions in
-`pel-key-chords' is honoured: instead of declaring hem a
+`pel-key-chords' is honoured: instead of declaring them a
 key-chord PEL declares them key-seq, making the order of the keys
 relevant.
 To use key-seq you must also activate key-chords via `pel-use-key-chord'."
