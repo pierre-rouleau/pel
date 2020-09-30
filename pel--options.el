@@ -457,8 +457,14 @@ make script files executable on save when non-nil, don't otherwise."
 
 (defcustom pel-use-recentf nil
   "Control whether PEL activates the recentf built-in package.
+This activates the \"Open Recent\" File menu.
+
 When the `pel-use-ido' is also activated, PEL maps ``<f11> f f``
-to the function `ido-recentf-open'."
+to the function `ido-recentf-open'.
+
+Note that activating that feature imposes a small impact on Emacs
+init time.  The feature cannot be delayed without impacting its
+ability to detect files opened on startup."
   :group 'pel-pkg-for-filemng
   :type 'boolean
   :safe #'booleanp)

@@ -3389,26 +3389,26 @@ the ones defined from the buffer now."
 (define-key pel:file (kbd "M-x") 'hexl-find-file)
 
 (when pel-use-recentf
-
-  (when pel-use-ido
-    (require 'recentf)
+  (use-package recentf
+    ;; recentf is built-in Emacs, Don't defer to allow remembering
+    ;; files opened at start.  This will impact init time by a small
+    ;; amount, but deferring it would impact the feature.
+    :config
     (recentf-mode 1)
-    (defvar recentf-list)
-    ;; Credits for ido-recentf-open: Mickey Petersen
-    ;; https://www.masteringemacs.org/article/find-files-faster-recent-files-package
-    (defun ido-recentf-open ()
-      "Use `ido-completing-read' to \\[find-file] a recent file"
-      (interactive)
-      (if (find-file (ido-completing-read "Find recent file: " recentf-list))
-          (message "Opening file...")
-        (message "Aborting")))
-    ;;
-    (define-key pel:file "f" 'ido-recentf-open))
-
-  (when pel-use-counsel
-    (define-key pel:file "R" 'counsel-recentf)))
-
-
+    (define-key pel:file (kbd "M-r") 'recentf-edit-list)
+    (when pel-use-ido
+      (defvar recentf-list)
+      ;; Credits for ido-recentf-open: Mickey Petersen
+      ;; https://www.masteringemacs.org/article/find-files-faster-recent-files-package
+      (defun ido-recentf-open ()
+        "Use `ido-completing-read' to \\[find-file] a recent file"
+        (interactive)
+        (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+            (message "Opening file...")
+          (message "Aborting")))
+      (define-key pel:file "f" 'ido-recentf-open))
+    (when pel-use-counsel
+      (define-key pel:file "R" 'counsel-recentf))))
 
 ;; - Open file at point
 ;; --------------------
