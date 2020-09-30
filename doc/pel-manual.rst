@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-29 22:37:51, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-30 14:24:44, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -217,16 +217,32 @@ MELPA_ or ELPA_.
 Therefore semi-automated installation instruction are detailed in the
 following sections.
 
-Essentially you need to:
+**Requirements**
+
+Before you can install PEL, you need to ensure that you have the
+required tools.  They are described in the following sections:
 
 #. `Install Emacs 26.1 or later`_. Ideally use the latest stable release: Emacs 26.3.
 #. `Install other required command line tools`_
+
+
+**Fast Track**
+
+If you don't want to read the full detailed description of the installation
+steps, you can skip to the section
+
+Fast Track Installation Steps
+
+**Detailed Track**
+
+The fully detailed instructions are described in the following sections:
+
 #. `Clone the PEL Git repository`_ on your computer.
 #. `Prepare Emacs Initialization directory`_ where lots of Emacs files will go.
 #. `Create a "~/.emacs.d/utils" directory`_ for files from the EmacsAttics_ and
    EmacsMirror_ that PEL uses.
-#. `Create or Update your Emacs init.el file`_.
 #. `Create the emacs-customization.el file`_.
+#. `Create or Update your Emacs init.el file`_.
 #. `Build first part of PEL`_ to byte-compile all files but two of them.
 #. `Activate PEL in your init.el file`_.
 #. `Open Emacs to install use-package`_; that will install `use-package`_ and
@@ -380,6 +396,39 @@ An easy way to do this from a shell is shown below.
           mkdir -p ~/.emacs.d/utils
 
 
+Create the emacs-customization.el file
+--------------------------------------
+
+**Description:**
+
+Emacs stores customization information inside your ``init.el`` file by default.
+It is best to store it somewhere else, as written in section 4 of the
+section `Create or Update your Emacs init.el file`_.
+
+By storing it inside "``~/.emacs.d/emacs-customization.el``" you can control
+your Emacs customization independently from your Emacs initialization and you
+can also copy and distribute the customization file across several computers to
+use the same tools the same way.  Since PEL controls activation and download of
+the external Emacs Lisp libraries by the PEL user options (with ``pel-use-``
+names), the customization will also control the external libraries installed.
+
+Before the next step you must therefore create an empty
+"``~/.emacs.d/emacs-customization.el``" file.
+This can be done from a terminal shell, as described below.
+
+**Do this:**
+
+.. code:: shell
+
+         touch ~/.emacs.d/emacs-customization.el
+
+**You might also have to do this:**
+
+If you already had a ``custom-set-variables`` form inside your init.el file,
+move it inside the "``~/.emacs.d/emacs-customization.el``" file, otherwise the
+file can stay empty.  It will be filled by Emacs in the next step.
+
+
 Create or Update your Emacs init.el file
 ----------------------------------------
 
@@ -490,39 +539,6 @@ Emacs settings, you could use several customization files and activate them
 for each project, reducing the load time further.
 That provides another degree of freedom, along with Emacs directory local
 and file local variables.
-
-Create the emacs-customization.el file
---------------------------------------
-
-**Description:**
-
-Emacs stores customization information inside your ``init.el`` file by default.
-It is best to store it somewhere else, as written in section 4 of the
-section `Create or Update your Emacs init.el file`_.
-
-By storing it inside "``~/.emacs.d/emacs-customization.el``" you can control
-your Emacs customization independently from your Emacs initialization and you
-can also copy and distribute the customization file across several computers to
-use the same tools the same way.  Since PEL controls activation and download of
-the external Emacs Lisp libraries by the PEL user options (with ``pel-use-``
-names), the customization will also control the external libraries installed.
-
-Before the next step you must therefore create an empty
-"``~/.emacs.d/emacs-customization.el``" file.
-This can be done from a terminal shell, as described below.
-
-**Do this:**
-
-.. code:: shell
-
-         touch ~/.emacs.d/emacs-customization.el
-
-**You might also have to do this:**
-
-If you already had a ``custom-set-variables`` form inside your init.el file,
-move it inside the "``~/.emacs.d/emacs-customization.el``" file, otherwise the
-file can stay empty.  It will be filled by Emacs in the next step.
-
 
 
 Build first part of PEL
@@ -668,6 +684,107 @@ and I will get to it.
 
 .. _create an issue: https://github.com/pierre-rouleau/pel/issues
 
+Skip the next section and read the section describing how to configure PEL:
+`Activate PEL Features - Customize PEL`_.
+
+
+.. ---------------------------------------------------------------------------
+
+Fast Track Installation Steps
+-----------------------------
+
+This section just lists the commands that must be used to install PEL once the
+required tools are installed.  If you have not done that yet, go back to
+`How to Install PEL`_.  Otherwise keep reading.
+
+**Important**:
+   If you have already used Emacs and have a ``~/.emacs.d`` and its ``init.el` file,
+   you should follow the detailed instructions.  If you want to use this
+   fast-track then move your ``~/.emacs.d/init.el`` file somewhere else because it
+   will be deleted by the following steps.  Or move your entire ``~/.emacs.d``
+   directory somewhere else.  Later you will need to merge the files.
+
+
+To install PEL, open a terminal shell and execute the following commands in
+sequence:
+
+#. Code PEL repository
+
+   .. code:: shell
+
+          cd
+          mkdir projects
+          cd projects
+          git clone https://github.com/pierre-rouleau/pel.git
+
+#. Create ~/.emacs.d directory, sub-directories and required files
+
+      .. code:: shell
+
+          mkdir -p ~/.emacs.d/utils
+          touch ~/.emacs.d/emacs-customization.el
+
+#. Create a simple ``~/.emacs.d/init.el`` using the provided example
+
+      .. code:: shell
+
+          cp ~/projects/pel/example/init/init-0.el ~/.emacs.d/init.el
+
+#. Build first part of PEL: byte-compile all PEL source code files except for pel_keys:
+
+      .. code:: shell
+
+          cd ~/projects/pel
+          make clean
+          make first-build
+
+#. Install example/init/init-1.el as ~/.emacs.d/init.el to activate the call
+   to pel-init:
+
+      .. code:: shell
+
+          cp ~/projects/pel/example/init/init-1.el ~/.emacs.d/init.el
+
+#. Open emacs to make it download use-package and other required libraries
+
+      .. code:: shell
+
+          emacs
+
+#. Once Emacs has completed the download,  type ``C-x C-c`` to close it.
+
+#. Build pel_keys.el, load and byte-compile packages:
+
+      .. code:: shell
+
+          cd ~/projects/pel
+          make
+
+At this pint PEL is installed.  You should continue and perform the extra
+steps to increase the performance of Emacs and PEL:
+
+#. Setup Delay Loading of Abbreviation Definition File:
+
+      .. code:: shell
+
+          cp ~/projects/pel/example/init/init-1.el ~/.emacs.d/init.el
+          touch ~/.emacs.d/abbrev_defs
+
+#. Install a spell-checker program.  It must be ispell-compatible.
+   Use you system installation command to install ispell, aspell, or hunspell.
+
+
+#. Speed-up Emacs: hold garbage collection during startup
+
+         .. code:: shell
+
+          cp ~/projects/pel/example/init/init-3.el ~/.emacs.d/init.el
+
+
+At this point, continue reading at the section titled `Convenience Tricks`_
+and the following once.
+
+.. ---------------------------------------------------------------------------
 
 
 Activate PEL Features - Customize PEL
