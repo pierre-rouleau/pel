@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-30 14:24:44, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-30 14:26:37, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -229,9 +229,7 @@ required tools.  They are described in the following sections:
 **Fast Track**
 
 If you don't want to read the full detailed description of the installation
-steps, you can skip to the section
-
-Fast Track Installation Steps
+steps, you can skip to the section titled `Fast Track Installation Steps`_.
 
 **Detailed Track**
 
