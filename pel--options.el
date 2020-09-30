@@ -793,6 +793,7 @@ This can be set to:
         `key-chord-mode' is executed.  Not before.
 - 2: use-from-start:  Use, load and activate  1 second after Emacs starts."
   :group 'pel-pkg-for-key-chord
+  :link `(url-link :tag "key-chord @ MELPA" "https://melpa.org/#/key-chord")
   :type '(choice
           (const :tag "Do not use" nil)
           (const :tag "Use, activate later by command"  t)

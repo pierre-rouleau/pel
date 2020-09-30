@@ -4464,10 +4464,14 @@ the ones defined from the buffer now."
     (key-chord-mode 1)))
 
 (when pel-use-key-chord
-  (define-key pel: (kbd "M-K")     'key-chord-mode)
-
   (use-package key-chord
+    :ensure t
+    :pin melpa
     :commands key-chord-mode
+
+    :init
+    (define-key pel: (kbd "M-K")     'key-chord-mode)
+
     :config
     (when (and (require 'pel-key-chord nil :noerror)
                (fboundp 'pel-activate-all-key-chords))
