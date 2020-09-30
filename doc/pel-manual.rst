@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-30 14:41:56, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-30 15:20:37, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -256,7 +256,7 @@ sections:
 
 - `Further PEL Customization`_
 - `Emacs and PEL Optimizations`_
-- `Generic Tips`_, specially `Running Emacs Graphics Mode`_.
+- `Generic Tips`_, specially `Launching graphics mode Emacs from a shell`_.
 
 .. _Emacs Lisp Packages: https://www.gnu.org/software/emacs/manual/html_node/emacs/Packages.html#Packages
 
@@ -1033,13 +1033,18 @@ several ways you can do this:
 Generic Tips
 ------------
 
-The following sections contain information related to Emacs and the OS environment.
+The following sections contain information related to Emacs and the OS
+environment.
 
-Running Emacs Graphics Mode
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Extra configuration for graphics mode Emacs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 See the `example/init/init-3.el`_ for an init.el example that sets some items for
 Emacs running in graphical mode.
+
+
+Launching graphics mode Emacs from a shell
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Under Unix-like Operating Systems like Linux and macOS when you run Emacs in
 graphics mode, Emacs may not get the complete environment variables that you get
@@ -1063,7 +1068,14 @@ your graphics copy of Emacs from a shell.  There are several advantages:
 On macOS
 ^^^^^^^^
 
-On my macOS system I have 2 commands that launch Emacs:
+On macOS I use the terminal-based Emacs more often than the graphical one
+because I can configure my terminal to generate ANSI sequence codes for the
+functions keys, the cursor keys and the numerical keypad keys.
+See the `macOS-terminal-settings PDF`_ for more information.
+
+.. _macOS-terminal-settings PDF: pdf/macOS-terminal-settings.pdf
+
+On macOS system I use 2 commands that launch Emacs:
 
 - ``e`` which launches a Termcap (TTY) character-only version of Emacs, and
 - ``ge`` which launches the GUI version of Emacs.
@@ -1074,6 +1086,7 @@ worry about a clash with the `1970s E editor`_.
 
 And ``ge`` is a script to launch the graphical Emacs, providing access to the
 current directory and the complete environment on macOS:
+
 
 .. code:: shell
 
