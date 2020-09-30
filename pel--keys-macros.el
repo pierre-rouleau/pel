@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-26 17:29:06, updated by Pierre Rouleau>
+;; Time-stamp: <2020-09-30 07:26:03, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -52,6 +52,7 @@
 ;;
 ;;
 (require 'pel--options)
+(require 'seq)          ; use: seq-concatenate, seq-drop, seq-subseq
 (eval-when-compile
   (require 'cl-lib))    ; use: cl-dolist and cl-return
 
