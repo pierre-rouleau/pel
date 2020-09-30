@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-29 21:55:53, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-29 22:37:51, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -917,6 +917,9 @@ The following sections contain information related to Emacs and the OS environme
 Running Emacs Graphics Mode
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+See the `example/init/init-3.el`_ for an init.el example that sets some items for
+Emacs running in graphical mode.
+
 Under Unix-like Operating Systems like Linux and macOS when you run Emacs in
 graphics mode, Emacs may not get the complete environment variables that you get
 in your shell.  That happens quite often in macOS as explained by
@@ -936,7 +939,10 @@ your graphics copy of Emacs from a shell.  There are several advantages:
   programming languages related yo your project.
 
 
-On my system I have 2 commands that launch Emacs:
+On macOS
+^^^^^^^^
+
+On my macOS system I have 2 commands that launch Emacs:
 
 - ``e`` which launches a Termcap (TTY) character-only version of Emacs, and
 - ``ge`` which launches the GUI version of Emacs.
@@ -968,8 +974,16 @@ current directory and the complete environment on macOS:
           #
           /Applications/Emacs.app/Contents/MacOS/Emacs --chdir=$(pwd) "$@" 2>/dev/null &
 
-For Linux you can use a simpler technique and simply use Bash aliases written
-inside your ``.bashrc`` file:
+On Linux
+^^^^^^^^
+
+For Linux, if you do not want to store a new executable script in a directory
+on your PATH, or create a new directory to your PATH, you can create a
+directory like ``~/bin`` that will hold a script and use a ``.bashrc`` alias
+to create a simple command to access it.  This way you don't add anything to
+your PATH.
+
+Add the following to your ``~/.bashrc`` file :
 
 .. code:: shell
 
@@ -977,22 +991,45 @@ inside your ``.bashrc`` file:
           #
           # Add the following alias to your .bashrc
           #
-          #  - e:  starts Emacs in terminal mode.
+          #  - ee:  starts Emacs in terminal mode.
           #        NOTE: unless your terminal implements ANSI code sequences
           #              for the cursor keys and the function keys you won't be able
           #              to use PEL main key prefixes.
           #
-          #  - ge:  start Emacs in graphical mode, launch in separate async process
-          #         using the current directory as Emacs current directory.
-          #         You can continue using the shell for other things.
+          #  - e:  start Emacs in graphical mode.
+          #         Use the bash executable script graphics-emacs.sh stored in the
+          #         ~/bin directory.
+          #         Copy the pel/example/bin/graphics-emacs.sh in a ~/bin directory,
+          #         make the file executable (chmod +x) and use the following alias.
+          #         This way you do not have to add ~/bin to your PATH.
 
-          alias e='emacs -nw'
-          alias ge='emacs --chdir=$(pwd) "$@" 2>/dev/null &'
+          alias ee='emacs -nw'
+          alias e='~/bin/graphics-emacs.sh'
+
+Then store the following script inside the file ``~/bin/graphics-emacs.sh``:
+
+.. code:: shell
+
+        #!/bin/sh
+        #  SH FILE: graphics-emacs.sh
+        #
+        #  Purpose   : Run graphics Emacs asynchronously on specified files.
+        #  Created   : Tuesday, September 29 2020.
+        #  Author    : Pierre Rouleau <prouleau001@gmail.com>
+        #  Time-stamp: <2020-09-29 22:28:41, updated by Pierre Rouleau>
+        # --------------------------------------------------------------------
+        emacs --chdir=$(pwd) "$@" 2>/dev/null &
+        # --------------------------------------------------------------------
 
 
-See the `example/init/init-3.el`_ for an init.el example that sets some items for
-Emacs running in graphical mode.
+With these you will be able to open any file(s) with Emacs from the command
+line, doing something like this:
 
+.. code:: shell
+
+          e hello.c
+          e hello.c hello.h
+          e *.c
 
 .. _Steve Purcel in the readme file of his exec-path-from-shell: https://github.com/purcell/exec-path-from-shell#setting-up-your-shell-startup-files-correctly
 .. _1970s E editor: https://en.wikipedia.org/wiki/E_(1970s_text_editor)
