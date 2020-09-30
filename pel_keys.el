@@ -4504,7 +4504,9 @@ the ones defined from the buffer now."
 (defun pel--maybe-vline-mode ()
       "Use the vertical line mode when available."
       (interactive)
-      (if (and pel-use-vline (require 'vline nil :noerror))
+      (if (and pel-use-vline
+               (require 'vline nil :noerror)
+               (boundp 'vline-mode))
           (progn
             (vline-mode (if vline-mode -1 +1))
             (move-to-column (if selective-display
@@ -4514,8 +4516,8 @@ the ones defined from the buffer now."
 
 (when pel-use-hydra
 
-  (setq pel--cache-for-hydra-is-helpful nil)
-  (setq pel--cache-for-hydra-is-helpful-filled nil)
+  (defvar pel--cache-for-hydra-is-helpful nil)
+  (defvar pel--cache-for-hydra-is-helpful-filled nil)
 
   (defun pel--cache-hydra-is-helpful ()
     "Store hydra-is-helpful user option."
