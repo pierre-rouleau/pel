@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-30 14:29:39, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-30 14:32:42, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -717,20 +717,20 @@ sequence:
 
 #. Create ~/.emacs.d directory, sub-directories and required files
 
-      .. code:: shell
+   .. code:: shell
 
           mkdir -p ~/.emacs.d/utils
           touch ~/.emacs.d/emacs-customization.el
 
 #. Create a simple ``~/.emacs.d/init.el`` using the provided example
 
-      .. code:: shell
+   .. code:: shell
 
           cp ~/projects/pel/example/init/init-0.el ~/.emacs.d/init.el
 
 #. Build first part of PEL: byte-compile all PEL source code files except for pel_keys:
 
-      .. code:: shell
+   .. code:: shell
 
           cd ~/projects/pel
           make clean
@@ -739,13 +739,13 @@ sequence:
 #. Install example/init/init-1.el as ~/.emacs.d/init.el to activate the call
    to pel-init:
 
-      .. code:: shell
+   .. code:: shell
 
           cp ~/projects/pel/example/init/init-1.el ~/.emacs.d/init.el
 
 #. Open emacs to make it download use-package and other required libraries
 
-      .. code:: shell
+   .. code:: shell
 
           emacs
 
@@ -753,7 +753,7 @@ sequence:
 
 #. Build pel_keys.el, load and byte-compile packages:
 
-      .. code:: shell
+   .. code:: shell
 
           cd ~/projects/pel
           make
@@ -763,7 +763,7 @@ steps to increase the performance of Emacs and PEL:
 
 #. Setup Delay Loading of Abbreviation Definition File:
 
-      .. code:: shell
+   .. code:: shell
 
           cp ~/projects/pel/example/init/init-1.el ~/.emacs.d/init.el
           touch ~/.emacs.d/abbrev_defs
@@ -774,7 +774,7 @@ steps to increase the performance of Emacs and PEL:
 
 #. Speed-up Emacs: hold garbage collection during startup
 
-         .. code:: shell
+   .. code:: shell
 
           cp ~/projects/pel/example/init/init-3.el ~/.emacs.d/init.el
 
