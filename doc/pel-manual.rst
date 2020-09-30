@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-29 21:44:08, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-29 21:55:53, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1118,7 +1118,7 @@ comment-empty-lines                      Set it to **t** if you want to
                                          comment empty lines when commenting
                                          a region of lines.
 
-confirm-nonexistent-file-or-buffer       Set it to **nil** to prevent
+confirm-nonexistent-file-or-buffer       Set it to **nil** (never) to prevent
                                          confirmation prompts every time you
                                          want to edit a file that does not
                                          exist to create it.
