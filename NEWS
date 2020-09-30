@@ -161,7 +161,12 @@ This file uses Org mode. Some useful (default) key-bindings:
     keys to launch emacs (see the "example/bin" directory).
   - User Manual changes and additions:
     - The installation sections attempt to highlight the commands to execute.
-    - A copy of the original init.el is provided in the new example/init section of the repository.
+    - A copy of the original init.el is provided in the new example/init
+      section of the repository.
+    - Recommends the use of pel-browse-pel to open the customize tree browser
+      buffer to customize PEL the first time it is used.
+    - A new section describes the Emacs user options that new users may want
+      to set.
 - *Reference PDF updates*:
   - Added hyperlinks in all PDF files.  The See also and title icons are now all links.
   - The help and customize PDFs have a lot of links to the of them PDF pages.
