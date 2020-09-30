@@ -2677,9 +2677,8 @@ To activate the changes for this you must 'Apply and Save' and restart Emacs."
 ;; ----------------
 (defgroup pel-pkg-for-tags nil
   "List of external packages that PEL can use to manage Tags cross-references."
-  :group 'pel-pkg-for-tags
+  :group 'pel-package-use
   :link `(url-link :tag "Tags/CTags PDF" ,(pel-pdf-file-url "tags")))
-
 
 (defcustom pel-use-ggtags nil
   "Control whether PEL uses the ggtags package.
