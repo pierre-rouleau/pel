@@ -2946,7 +2946,7 @@ See `flyspell-auto-correct-previous-word' for more info."
     (add-hook 'after-save-hook 'bm-buffer-save)
 
     ;; Restoring bookmarks
-    (add-hook 'find-file-hooks   'bm-buffer-restore)
+    (add-hook 'find-file-hook    'bm-buffer-restore)
     (add-hook 'after-revert-hook 'bm-buffer-restore)
 
     ;; The `after-revert-hook' is not necessary to use to achieve persistence,
@@ -2957,10 +2957,7 @@ See `flyspell-auto-correct-previous-word' for more info."
     ;; called before the buffer is reverted (like `vc-before-checkin-hook').
     ;; Then new bookmarks can be saved before the buffer is reverted.
     ;; Make sure bookmarks is saved before check-in (and revert-buffer)
-    (add-hook 'vc-before-checkin-hook 'bm-buffer-save)
-
-
-    ))
+    (add-hook 'vc-before-checkin-hook 'bm-buffer-save)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> <tab>`` : indentation
