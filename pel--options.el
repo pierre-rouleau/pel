@@ -687,7 +687,7 @@ See the author site at URL http://malsyned.net/smart-dash.html"
   "List of major modes that automatically activate the smart dash mode.
 Used when `pel-use-smart-dash' user option is t.
 To activate the changes for this you must 'Apply and Save' and restart Emacs."
-  :group 'pel-pkg-for-spelling
+  :group 'pel-pkg-for-insertions
   :type
   '(repeat symbol))
 
