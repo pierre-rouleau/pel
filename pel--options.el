@@ -447,7 +447,7 @@ make script files executable on save when non-nil, don't otherwise."
 - 2:  t   :=  use pel:ffap bindings, keeping default Emacs bindings for
               C-x C-f and other intact.
 - 3:  ffap-bindings := Use the bindings documented by ffap.el by executing
-      (ffap-bindings).  This replaces the bindings several file finding
+      (ffap-bindings).  This replaces the bindings of several file finding
       commands and cannot be undone until this is changed and Emacs is
       re-started."
   :group 'pel-pkg-for-filemng
