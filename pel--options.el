@@ -650,12 +650,13 @@ Setting `pel-use-ripgrep' to t indicates that you want to use ripgrep, so
 it identifies the installation of the `rg` package.  If you also set
 `pel-use-projectile' to non-nil, then the installation of the `ripgrep`
 package is also required becuase `projectile` uses the `ripgrep` package,
-it does not uses `rg`.
-
-References:
-- ripgrep: URL `https://github.com/BurntSushi/ripgrep'
-- Emacs rg  package: URL `https://melpa.org/#/rg'
-- Emacs ripgrep package: https://github.com/nlamirault/ripgrep.el"
+it does not uses `rg`."
+  :link `(url-link :tag "ripgrep @ github"
+                   "https://github.com/BurntSushi/ripgrep")
+  :link `(url-link :tag "Emacs rg  package"
+                   "https://melpa.org/#/rg")
+  :link `(url-link :tag "Emacs ripgrep @ github"
+                   "https://github.com/nlamirault/ripgrep.el")
   :group 'pel-pkg-for-grep
   :type 'boolean
   :safe #'booleanp)
@@ -775,13 +776,17 @@ Repository: https://github.com/Silex/elmacro"
   "PEL support for key-chords."
   :group 'pel-package-use
   :group 'keyboard
-  :link `(url-link :tag "Key-chords PDF" ,(pel-pdf-file-url "key-chords")))
+  :link `(url-link :tag "Key-chords PDF" ,(pel-pdf-file-url "key-chords"))
+  :link
+  `(url-link
+    :tag "key-chord.el"
+    "https://github.com/emacsorphanage/key-chord/blob/master/key-chord.el"))
 
 (defcustom pel-use-key-chord nil
   "Control whether PEL uses the key-chord external package.
 With it, it's possible to activate binding actions to two keys
 pressed simultaneously or a single key quicly pressed twice.
-See URL https://github.com/emacsorphanage/key-chord/blob/master/key-chord.el
+
 This can be set to:
 - 0: nil: Do not use.  key-chord is not required nor loaded.
 - 1: t: Use, activate by command.  key-chord loaded when the function
@@ -1111,12 +1116,13 @@ The `pel-key-chords' value is a list of objects.
 (defcustom pel-use-graphviz-dot nil
   "Control whether PEL uses the Graphviz Dot tool and its associated package.
 It supports the Graphviz Dot file format and the ability to create graphics
-images from their Graphviz Dot files.
-
-References:
-- Graphviz: URL `https://www.graphviz.org'
-- DOT Language URL `https://www.graphviz.org/doc/info/lang.html'
-- `graphviz-dot-mode' MELPA URL `https://melpa.org/#/graphviz-dot-mode'"
+images from their Graphviz Dot files."
+  :link `(url-link :tag "Graphviz home page"
+                   "https://www.graphviz.org")
+  :link `(url-link :tag "DOT Language"
+                   "https://www.graphviz.org/doc/info/lang.html")
+  :link `(url-link :tag "graphviz-dot-mode @ MELPA"
+                   "https://melpa.org/#/graphviz-dot-mode")
   :group 'pel-pkg-for-graphviz-dot
   :type 'boolean
   :safe #'booleanp)
@@ -1128,12 +1134,14 @@ References:
 (defgroup pel-pkg-for-plantuml nil
   "PEL UML support."
   :group 'pel-pkg-for-drawing-markup
-  :link `(url-link :tag "PlantUML PDF" ,(pel-pdf-file-url "plantuml")))
+  :link `(url-link :tag "PlantUML PDF" ,(pel-pdf-file-url "plantuml"))
+  :link `(url-link :tag "PlantUML @ github" "https://github.com/skuro/plantuml-mode.")
+  :link `(url-link :tag "PlantUML home page" "https://plantuml.com")
+  :link `(url-link :tag "PlantUML @ wikipedia" "https://en.wikipedia.org/wiki/PlantUML"))
 
 (defcustom pel-use-plantuml nil
   "Control whether PEL activates support for PlantUML to draw UML diagrams.
 This uses the `plantuml-mode' package.
-See URL https://github.com/skuro/plantuml-mode.
 
 The `plantuml-mode' can be used locally, using a local PlantUML
 Java application (plantuml.jar).  You can also use PlantUML web
@@ -1143,9 +1151,6 @@ internet.
 To use PlantUML locally you must have Java installed on your
 system and have the PlantUML Java application installed and
 its plantuml.jar file must be accessible.
-
-See URL https://plantuml.com
-Also see general info at URL https://en.wikipedia.org/wiki/PlantUML
 
 Note that this value overrides the value selected by the
 `plantuml-default-exec-mode' user option."
@@ -1212,15 +1217,15 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
   :link `(url-link :tag "Navigation PDF" ,(pel-pdf-file-url "navigation")))
 
 (defcustom pel-use-ace-link nil
-  "Control activation of the ace link package.
-See URL https://github.com/abo-abo/ace-link for more info."
+  "Control activation of the ace link package."
+  :link `(url-link :tag "ace-link @ github" "https://github.com/abo-abo/ace-link")
   :group 'pel-pkg-for-navigation
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-avy nil
-  "Control activation of the avy package.
-See URL https://github.com/abo-abo/avy for more info."
+  "Control activation of the avy package."
+  :link `(url-link :tag "avy @ github" "https://github.com/abo-abo/avy")
   :group 'pel-pkg-for-navigation
   :type 'boolean
   :safe #'booleanp)
@@ -1508,11 +1513,13 @@ CC Mode Built-in Styles, which include the following:
 - python
 - java
 - awk
-- user
-
-See URL https://www.gnu.org/software/emacs/manual/html_node/\
-ccmode/Built_002din-Styles.html#Built_002din-Styles
-for more details."
+- user"
+  :link `(url-link
+          :tag "Bracket styles @ Emacs Manual"
+          "https://www.gnu.org/software/emacs/manual/html_node/\
+ccmode/Built_002din-Styles.html#Built_002din-Styles")
+  :link `(url-link :tag "Indentation styles @ wikipedia"
+                   "https://en.wikipedia.org/wiki/Indentation_style")
   :group 'pel-pkg-for-c
   :type 'string
   :safe 'pel-c-style-valid-p)
@@ -1644,7 +1651,7 @@ identified by the variable `pel-c-skel-function-section-titles'."
   "List of section titles to add in the function comment block.
 These section names are added when the variable
 `pel-c-skel-insert-function-sections' is t, after the DESCRIPTION
-section. The sections are placed inside the function
+section.  The sections are placed inside the function
 documentation block in the order of appearance in the list with
 the string as it appears in the list.  The default is to add the
 sections DIAGNOSTIC and SEE ALSO.  Empty strings can be used to
@@ -2514,36 +2521,38 @@ or pel-use-regexp-steroids is t (for the others)."
           (const :tag "Use visual-regexp-steroids custom.     " vr/custom)))
 
 (defcustom pel-use-regex-tool nil
-  "Control whether PEL uses the external `regex-tool' library.
-See URL `https://github.com/jwiegley/regex-tool'."
+  "Control whether PEL uses the external `regex-tool' library."
+  :link `(url-link :tag "regex-tool @ github"
+                   "https://github.com/jwiegley/regex-tool")
   :group 'pel-pkg-for-regexp
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-pcre2el nil
-  "Control whether PEL uses the external pcre2el library.
-See URL `https://github.com/joddie/pcre2el'."
+  "Control whether PEL uses the external pcre2el library."
+  :link `(url-link :tag "pcre2el @ github" "https://github.com/joddie/pcre2el")
   :group 'pel-pkg-for-regexp
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-visual-regexp nil
-  "Control whether PEL uses the external visual-regexp library.
-See URL `https://github.com/benma/visual-regexp.el'."
+  "Control whether PEL uses the external visual-regexp library."
+  :link `(url-link :tag "visual-regexp @ github" "https://github.com/benma/visual-regexp.el")
   :group 'pel-pkg-for-regexp
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-visual-regexp-steroids nil
-  "Control whether PEL uses the external visual-regexp-steroids library.
-See URL `https://github.com/benma/visual-regexp-steroids.el'."
+  "Control whether PEL uses the external visual-regexp-steroids library."
+  :link `(url-link :tag "visual-regexp-steroids @ github"
+                   "https://github.com/benma/visual-regexp-steroids.el")
   :group 'pel-pkg-for-regexp
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-xr nil
-  "Control whether PEL uses the external xr library.
-See URL `https://elpa.gnu.org/packages/xr.html'."
+  "Control whether PEL uses the external xr library."
+  :link `(url-link :tag "xr @ elpa" "https://elpa.gnu.org/packages/xr.html")
   :group 'pel-pkg-for-regexp
   :type 'boolean
   :safe #'booleanp)
@@ -2626,7 +2635,7 @@ and usable shell for Emacs."
 (defcustom pel-spell-check-tool nil
   "Spell Checking tool and local dictionary.
 The spell-checking tool must be an ispell-compatible
-command line tool. This includes:
+command line tool.  This includes:
 
 - ispell
 - aspell
@@ -2682,8 +2691,8 @@ To activate the changes for this you must 'Apply and Save' and restart Emacs."
   :link `(url-link :tag "Tags/CTags PDF" ,(pel-pdf-file-url "tags")))
 
 (defcustom pel-use-ggtags nil
-  "Control whether PEL uses the ggtags package.
-See URL https://github.com/leoliu/ggtags"
+  "Control whether PEL uses the ggtags package."
+  :link `(url-link :tag "ggtags @ github" "https://github.com/leoliu/ggtags")
   :group 'pel-pkg-for-tags
   :type 'boolean
   :safe #'booleanp)
@@ -2705,12 +2714,12 @@ See URL https://github.com/leoliu/ggtags"
     python-mode
     emacs-lisp-mode
     lisp-mode)
-  "List of major modes that automatically activate the superword-mode."
+  "List of major modes that automatically activate the `superword-mode'."
   :group 'pel-pkg-for-text-mode
   :type '(repeat symbol))
 
 (defcustom pel-modes-activating-subword-mode nil
-  "List of major modes that automatically activate the subword-mode."
+  "List of major modes that automatically activate the `subword-mode'."
   :group 'pel-pkg-for-text-mode
   :type '(repeat symbol))
 
@@ -2732,13 +2741,11 @@ Notes:
   only activates it in graphics mode.
 - The version of this package on MELPA is version 0.2.8 and obsolete.
 - The author maintains its latest version (0.2.11) in the EmacsWiki.
-- PEL uses the EmacsWiki version.
-
-References:
-- `popup-kill-ring' source @ EmacsWiki: URL
-  `https://www.emacswiki.org/emacs/popup-kill-ring.el'
-- Uncle Dave's YouTube video on it: URL
-  `https://www.youtube.com/watch?v=LFXA089Tx38'"
+- PEL uses the EmacsWiki version."
+  :link `(url-link :tag "popup-kill-ring @ EmacsWiki"
+                   "https://www.emacswiki.org/emacs/popup-kill-ring.el")
+  :link `(url-link :tag "Uncle Dave's YouTube video on popup-kill-ring"
+                   "https://www.youtube.com/watch?v=LFXA089Tx38")
   :group 'pel-pkg-for-undo
   :type 'boolean
   :safe #'booleanp)
@@ -2818,17 +2825,18 @@ Notes:
 - This package work with Emacs in graphics mode.  Multiple
   frames *can* be used in terminal (TTY) mode but only one can
   be displayed at a time in the terminal window.
-- This file is not available MELPA (yet, as of Jan 2020).
-- The version 0.10 is available via the relevant EmacsWiki page
-  URL `https://www.emacswiki.org/emacs/framemove.el'
-- Older version 0.9 used an obsolete function, that was fixed in version 0.10.
-
-References:
-- Author's site: Emacs Tip# 35: framemove:
-  URL `http://trey-jackson.blogspot.com/2010/02/emacs-tip-35-framemove.html'.
-- EmacsWiki framemove page: URL `https://www.emacswiki.org/emacs/FrameMove'.
-- Youtube video on windmove and framemove: URL
-  `https://www.youtube.com/watch?v=f3th2jyv35c'."
+- This file is not available MELPA (as of Sept 2020).
+- The version 0.10 is available via the relevant EmacsWiki page.
+- Older version 0.9 used an obsolete function, that was fixed in version 0.10."
+  :link `(url-link "framemove.el @ EmacsWiki"
+                   "https://www.emacswiki.org/emacs/framemove.el")
+  :link `(url-link
+          :tag "Author's site: Emacs Tip# 35: framemove"
+          "http://trey-jackson.blogspot.com/2010/02/emacs-tip-35-framemove.html")
+  :link `(url-link :tag "EmacsWiki framemove page"
+                   "https://www.emacswiki.org/emacs/FrameMove")
+  :link `(url-link :tag "Youtube video on windmove and framemove"
+                   "https://www.youtube.com/watch?v=f3th2jyv35c")
   :group 'pel-pkg-for-window
   :type 'boolean
   :safe #'booleanp)
