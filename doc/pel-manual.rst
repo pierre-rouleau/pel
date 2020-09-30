@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-29 16:28:14, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-29 21:39:16, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1090,6 +1090,67 @@ please describe your request on the `PEL wiki`_, I'll take a look and see what I
 
 .. _PEL wiki:                         https://github.com/pierre-rouleau/pel/wiki
 .. _Function Keys Mappings PDF table: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/keys-fn.pdf
+
+
+More Emacs Customization
+------------------------
+
+If this is the first time you use Emacs you will also want to customize the
+following options.  Use ``<f11> <f2> o`` or ``M-x customize-option`` for each
+of those.
+
+======================================== ======================================
+Emacs user option                        Description
+======================================== ======================================
+bookmark-save-flag                       Set it to **1** to get Emacs to save
+                                         the bookmarks inside the bookmark
+                                         file every time a bookmark is set.
+
+bookmark-default-file                    Set the location of the bookmark
+                                         file. Something like
+                                         ``~/.emacs.d/bookmarks``
+
+column-number-mode                       Set it to **t** to activate the
+                                         display of the column number on the
+                                         mode line.
+
+comment-empty-lines                      Set it to **t** if you want to
+                                         comment empty lines when commenting
+                                         a region of lines.
+
+confirm-nonexistent-file-or-buffer       Set it to **nil** to prevent
+                                         confirmation prompts every time you
+                                         want to edit a file that does not
+                                         exist to create it.
+
+fill-column                              Set the default maximum line length.
+                                         A good number is **78**.  For source
+                                         code, PEL provides another set of
+                                         user options for each programming
+                                         language, allowing you to control
+                                         that user option from the file type.
+
+hl-line-sticky-flag                      Set it to **nil** if you only want to
+                                         highlight the text in the current
+                                         window when the buffer shows in
+                                         multiple windows.
+
+imenu-max-items                          Set the maximum number of entries in
+                                         the imenu list if the default of 25
+                                         does not correspond to what you like.
+
+truncate-lines                           Set it to **t** if you want Emacs to
+                                         truncate long lines instead of
+                                         wrapping them.  You can change this
+                                         behaviour by using ``<f11> l t`` or
+                                         ``M-x toggle-truncate-line``.
+
+user-full-name                           Your full name.
+                                         PEL uses it in various file skeletons.
+
+user-mail-address                        Your email address.
+                                         PEL uses it in various file skeletons.
+======================================== ======================================
 
 
 .. -----------------------------------------------------------------------------
