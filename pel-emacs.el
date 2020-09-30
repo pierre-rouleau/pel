@@ -36,6 +36,16 @@
            (length features)))
 
 
+;; Prevent byte-compiler warning by declaring variables that are
+;; always available.
+(defvar cons-cell-consed)
+(defvar float-consed)
+(defvar vector-cells-consed)
+(defvar string-chars-consed)
+(defvar misc-objects-consed)
+(defvar intervals-consed)
+(defvar strings-consed)
+
 ;;-pel-autoload
 (defun pel-emacs-mem-stats ()
   "Display Emacs memory statistics inside an *emacs-mem-stats* buffer."
