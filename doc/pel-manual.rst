@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-30 14:33:38, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-09-30 14:37:02, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -312,6 +312,12 @@ default is ispell. It's best to install it at the beginning if it is not
 already there, so also install:
 
 - **ispell**
+
+If you want to use the fast vterm_ shell into Emacs, you also need to install:
+
+- **cmake**
+- and possibly **libtool**.
+
 
 
 Clone the PEL Git repository
