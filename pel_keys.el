@@ -1100,7 +1100,7 @@ Then save your changes."
 
 (when (and pel-use-popup-kill-ring
            (display-graphic-p))
-  (define-key pel:         "y"             'popup-kill-ring))
+  (define-key pel: (kbd "M-y") 'popup-kill-ring))
 
 (when pel-use-smart-dash
   (use-package smart-dash
