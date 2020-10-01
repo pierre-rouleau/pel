@@ -502,7 +502,7 @@ Done in this function to allow advising libraries that remap these keys."
     (pel-setq uniquify-buffer-name-style 'post-forward)
     ;; rationalize buffer after killing uniquified buffer
     (pel-setq uniquify-after-kill-buffer-p t)
-    ;; Don't  not uniquify  special buffers
+    ;; Don't  not uniquify special buffers
     (pel-setq uniquify-ignore-buffers-re "^\\*")))
 
 ;; - Use Hippie Expand
@@ -1280,14 +1280,14 @@ Then save your changes."
 (define-pel-global-prefix pel:cfg-emacs     (kbd "<f11> <f2> E"))
 (define-pel-global-prefix pel:cfg-pel       (kbd "<f11> <f2> P"))
 
-(define-key pel:cfg "c"          'customize)
-(define-key pel:cfg "g"          'customize-group)
-(define-key pel:cfg "o"          'customize-option)
-(define-key pel:cfg (kbd "M-b")  'customize-browse)
+(define-key pel:cfg "c" 'customize)
+(define-key pel:cfg "g" 'customize-group)
+(define-key pel:cfg "o" 'customize-option)
+(define-key pel:cfg "B" 'customize-browse)
 ;;
 
-(define-key pel:cfg-pel (kbd "M-b")      'pel-browse-pel)
-(pel--cfg     ""            pel:cfg-pel "!")  ; all of PEL
+(define-key pel:cfg-pel "B" 'pel-browse-pel)
+(pel--cfg     ""  pel:cfg-pel "!")  ; all of PEL
 ;; Key bindings to access PEL customization groups quickly,
 ;; and optionally other related groups
 
@@ -3128,7 +3128,7 @@ the ones defined from the buffer now."
 (define-key pel:highlight      "s"   'pel-toggle-hl-line-sticky)
 (define-key pel:highlight      "u"  #'unhighlight-regexp)
 ;;                             "|" 'vline-mode
-;;                           "M-\" 'display-fill-column-indicator-mode | fci-mode
+;;                             "\" 'display-fill-column-indicator-mode | fci-mode
 (define-key pel:highlight      "w"  #'hi-lock-write-interactive-patterns)
 ;;
 (when pel-use-vline
@@ -3153,14 +3153,14 @@ the ones defined from the buffer now."
     :pin melpa
     :commands fci-mode
     :init
-    (define-key pel:highlight (kbd "M-\\") 'fci-mode)
-    (define-key pel:          "8"          'fci-mode)
+    (define-key pel:highlight "\\"  'fci-mode)
+    (define-key pel:          "8"  'fci-mode)
 
     ))
 ;; For Emacs 27.1 and later use the built-in display-fill-column-indicator-mode.
 (unless (version< emacs-version "27.1")
-  (define-key pel:highlight (kbd "M-\\") 'display-fill-column-indicator-mode)
-  (define-key pel:               "8"     'display-fill-column-indicator-mode))
+  (define-key pel:highlight "\\"'display-fill-column-indicator-mode)
+  (define-key pel:          "8" 'display-fill-column-indicator-mode))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> b I`` : Indirect buffer commands

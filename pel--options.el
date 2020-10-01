@@ -48,6 +48,8 @@
 ;;     - pel-pkg-for-graphics-emacs
 ;;       - pel-pkg-for-graphics-cursor
 ;;     - pel-pkg-for-grep
+;;     - pel-pkg-for-highlight
+;;       - pel-pkg-for-parens
 ;;     - pel-pkg-for-insertions
 ;;     - pel-pkg-for-kbmacro
 ;;     - pel-pkg-for-key-chord
@@ -59,9 +61,8 @@
 ;;         - pel-pkg-for-plantuml
 ;;       - pel-pkg-for-reST
 ;;     - pel-pkg-for-navigation
-;;     - pel-pkg-for-parens
 ;;     - pel-pkg-for-programming
-;;       - pel-pkg-for-all
+;;       - pel-pkg-for-all-languages
 ;;       - pel-pkg-for-applescript
 ;;       - pel-pkg-for-cc
 ;;         - pel-pkg-for-c
@@ -157,6 +158,7 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
   :group 'convenience
   :link `(file-link :tag "Directory of PDF table files" ,(pel-pdf-directory))
   :link `(url-link  :tag "PEL key maps PDF" ,(pel-pdf-file-url "-pel-key-maps"))
+  :link `(file-link :tag "PEL @ github" "https://github.com/pierre-rouleau/pel")
   :package-version '(pel . "0.2.0"))
 
 ;; -----------------------------------------------------------------------------
@@ -181,7 +183,7 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
 (defgroup pel-pkg-for-align nil
   "Customization of PEL alignment support."
   :group 'pel-package-use
-    :link `(url-link :tag "Align PDF" ,(pel-pdf-file-url "align")))
+  :link `(url-link :tag "Align PDF" ,(pel-pdf-file-url "align")))
 
 (defcustom pel-modes-activating-align-on-M-RET nil
   "List of major modes that automatically activate alignment on M-RET.
@@ -200,8 +202,9 @@ By default PEL does not activate it on any mode.  To activate a mode,
 add the mode name in the list.
 For example, to activate it for C, add the c-mode symbol to the list."
   :group 'pel-pkg-for-align
-  :type
-  '(repeat symbol))
+  :type  '(repeat symbol)
+  :link '(emacs-commentary-link :tag "commentary" "align.el")
+  :link `(url-link :tag "Align PDF" ,(pel-pdf-file-url "align")))
 
 ;; -----------------------------------------------------------------------------
 ;; Bookmark Support
@@ -209,13 +212,20 @@ For example, to activate it for C, add the c-mode symbol to the list."
 (defgroup pel-pkg-for-bookmark nil
   "List of external packages that PEL can use to manage bookmarks."
   :group 'pel-package-use
-  :link `(url-link :tag "Bookmarks PDF" ,(pel-pdf-file-url "bookmarks")))
+  :link `(url-link :tag "Bookmarks PDF" ,(pel-pdf-file-url "bookmarks"))
+  :link '(custom-manual "(emacs)Bookmarks"))
 
 (defcustom pel-use-bm nil
-  "Control whether PEL uses the bm (Visible Bookmarks) package."
+  "Control whether PEL uses the bm (Visible Bookmarks) package.
+With this activated PEL binds the following keys:
+- <f2>     : `bm-next'
+- <f11> '  : `bm-toggle'
+- <f11> n  : `bm-next'
+- <f11> p  : `bm-previous'"
   :group 'pel-pkg-for-bookmark
   :type 'boolean
-  :safe #'booleanp)
+  :safe #'booleanp
+  :link '(url-link :tag "bm @ github" "https://github.com/joodland/bm"))
 
 ;; -----------------------------------------------------------------------------
 ;; Buffer Management
@@ -223,44 +233,56 @@ For example, to activate it for C, add the c-mode symbol to the list."
 (defgroup pel-pkg-for-buffer nil
   "List of external packages that PEL can use to manage buffers."
   :group 'pel-package-use
-  :link `(url-link :tag "Buffers PDF" ,(pel-pdf-file-url "buffers")))
+  :link `(url-link :tag "Buffers PDF" ,(pel-pdf-file-url "buffers"))
+  :link '(custom-manual "(emacs)Buffers"))
 
 (defcustom pel-use-uniquify nil
-  "Control whether PEL uses the uniquify package."
-  :group 'pel-pkg-for-buffer
-  :type 'boolean
-  :safe #'booleanp)
+  "Control whether PEL uses the uniquify package.
+With this activated PEL changes the way Emacs displays the names
+of the buffers that visit identically-named files.
+It sets up the post-forward method for the buffers except the
+special buffers (which have their own disambiguation method) and
+forces rationalization of the names when buffers are killed.
 
-(defcustom pel-use-dired-narrow nil
-  "Control whether PEL uses the `dired-narrow' package."
-  :group 'pel-pkg-for-buffer
-  :type 'boolean
-  :safe #'booleanp)
+With the post-forward method, if you have 3 files opened, like:
+- ~/projects/p1/hello.c
+- ~/projects/p2/hello.c
+- ~/some/other/place/somedir/hello.c
 
-(defcustom pel-use-nhexl-mode nil
-  "Control whether PEL uses the package and function `nhexl-mode'."
-  :group 'pel-pkg-for-buffer
-  :type 'boolean
-  :safe #'booleanp)
+The buffers will respectively be named:
+- hello.c|p1
+- hello.c|p2
+- hello.c|somedir
 
-(defcustom pel-use-vline nil
-  "Control whether PEL uses the `vline' package."
+If you kill 2 of these buffers, the remaining buffer will be named
+hello.c"
   :group 'pel-pkg-for-buffer
   :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-fill-column-indicator nil
-  "Control whether PEL uses fill-column-indicator package.
-Not used nor needed for Emacs 27.1 or later."
-  :group 'pel-pkg-for-buffer
-  :type 'boolean
-  :safe #'booleanp)
+  :safe #'booleanp
+  :link '(custom-manual "(emacs)Uniquify"))
 
 (defcustom pel-use-ascii-table nil
-  "Control whether the `ascii-table' package is available."
+  "Control whether the `ascii-table' package is available.
+When set PEL activates the ``<f11> ? A`` key sequence to
+open the ASCII table in the current buffer."
   :group 'pel-pkg-for-buffer
   :type 'boolean
-  :safe #'booleanp)
+  :safe #'booleanp
+  :link '(url-link :tag "ascii-table @ MELPA"
+                   "https://melpa.org/#/ascii-table"))
+
+(defcustom pel-use-nhexl-mode nil
+  "Control whether PEL uses the package and function `nhexl-mode'.
+This mode supports editing a file in hexadecimal dump mode.
+When set, PEL activates the following key sequences:
+- <f11> t O  : nhexl-overwrite-only-mode
+- <f11> b x  : nhexl-mode
+- <f11> b X  : nhexl-nibble-edit-mode"
+  :group 'pel-pkg-for-buffer
+  :type 'boolean
+  :safe #'booleanp
+  :link '(url-link :tag "nhexl @ Elpa"
+                   "https://elpa.gnu.org/packages/nhexl-mode.html"))
 
 ;; -----------------------------------------------------------------------------
 ;; Completion Support
@@ -348,8 +370,17 @@ The available options are:
                    "https://github.com/magnars/multiple-cursors.el"))
 
 (defcustom pel-use-iedit nil
-  "Control whether PEL uses the iedit package."
+  "Control whether PEL uses the iedit package.
+
+When set PEL activates the iedit mode when one of the following key
+sequences are typed:
+
+- C-;
+- <f11> e
+- <f11> m i"
   :group 'pel-pkg-for-cursor
+  :group 'pel-pkg-for-all-languages
+  :group 'pel-pkg-for-highlight
   :type 'boolean
   :safe #'booleanp
   :link `(url-link :tag "iedit @ github"
@@ -363,6 +394,12 @@ The available options are:
   :group 'pel-package-use
   :group 'dired
   :link `(url-link :tag "Dired PDF" ,(pel-pdf-file-url "mode-dired")))
+
+(defcustom pel-use-dired-narrow nil
+  "Control whether PEL uses the `dired-narrow' package."
+  :group 'pel-pkg-for-dired
+  :type 'boolean
+  :safe #'booleanp)
 
 (defcustom pel-use-dired-x nil
   "Control whether PEL activates the Dired-X features in `dired-mode'."
@@ -661,13 +698,89 @@ it does not uses `rg`."
   :type 'boolean
   :safe #'booleanp)
 
+;; ---------------------------------------------------------------------------
+;; Highlight Support
+;; -----------------
+
+(defgroup pel-pkg-for-highlight nil
+  "PEL highlight control support."
+  :group 'pel-package-use
+  :link `(url-link :tag "Highlighting PDF" ,(pel-pdf-file-url "highlight")))
+
+(defcustom pel-use-fill-column-indicator nil
+  "Control whether PEL uses fill-column-indicator package.
+
+For Emacs versions earlier than 27.1 set it to activate the ability to
+highlight the current fill-column, the column where automatic line
+wrapping occurs and to activate the PEL key bindings for it.
+Not used nor needed for Emacs 27.1 or later: the PEL key bindings for
+that command are always enabled for Emacs 27.1 or later.
+
+The activated PEL key sequences are:
+- <f11> b h \\
+- <f11> 8"
+  :group 'pel-pkg-for-highlight
+  :type 'boolean
+  :safe #'booleanp
+  :link '(url-link :tag "fill-column-indicator @ github"
+                   "https://github.com/alpaker/fill-column-indicator"))
+
+(defcustom pel-use-vline nil
+  "Control whether PEL uses the `vline' package.
+When set, PEL binds the following key sequences `vline-mode'
+which toggles the highlighting of the current column in the
+current window:
+- <f11> 9
+- <f11> b h |"
+  :group 'pel-pkg-for-highlight
+  :type 'boolean
+  :safe #'booleanp
+  :link '(url-link :tag "vline.el @ emacsmirror"
+                   "https://github.com/emacsmirror/vline")
+  :link '(url-link :tag "vline @ EmacsWiki"
+                   "https://www.emacswiki.org/emacs/VlineMode"))
+
+;; -----------------------------------------------------------------------------
+;; Parens block management
+;; -----------------------
+
+(defgroup pel-pkg-for-parens nil
+  "List of external packages that PEL can use to help deal with parens.
+
+The word \"parens\" is a generic term that describes the following
+grouping characters:
+- parenthesis:     '(' and ')',
+- braces:          '{' and '}'
+- square brackets: '[' and ']'
+- angle brackets:  '<' and '>'
+- and potentially the quote characters:
+  - single quote:    '
+  - double quote:    \""
+  :group 'pel-pkg-for-highlight
+  :group 'pel-pkg-for-all-languages
+  :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp"))
+  :link `(url-link :tag "Common Lisp PDF" ,(pel-pdf-file-url "pl-common-lisp"))
+  :link `(url-link :tag "Diff & Merge PDF" ,(pel-pdf-file-url "diff-merge")))
+
+(defcustom pel-use-parinfer nil
+  "Control whether PEL uses the parinfer package."
+  :group 'pel-pkg-for-parens
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-rainbow-delimiters  nil
+  "Control whether PEL uses the rainbow-delimiters package."
+  :group 'pel-pkg-for-parens
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; -----------------------------------------------------------------------------
 ;; Insertion of Text & Templates
 ;; -----------------------------
 (defgroup pel-pkg-for-insertions nil
   "List of external packages that PEL can use to provide easy text insertion."
   :group 'pel-package-use
-  :link `(url-link :tag "Inserting Tex PDF" ,(pel-pdf-file-url "inserting-text")))
+  :link `(url-link :tag "Inserting Text PDF" ,(pel-pdf-file-url "inserting-text")))
 
 (defcustom pel-use-lice nil
   "Control whether PEL uses the lice package to insert software license text."
@@ -1232,38 +1345,6 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
   :safe #'booleanp)
 
 ;; -----------------------------------------------------------------------------
-;; Parens block management
-;; -----------------------
-;;
-;; Parens, a generic term to describe the following grouping characters:
-;; - parenthesis:     '(' and ')',
-;; - braces:          '{' and '}'
-;; - square brackets: '[' and ']'
-;; - angle brackets:  '<' and '>'
-;; also potentially the quote characters:
-;; - single quote:    '
-;; - double quote:    "
-;;
-(defgroup pel-pkg-for-parens nil
-  "List of external packages that PEL can use to help deal with parens."
-  :group 'pel-package-use
-  :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp"))
-  :link `(url-link :tag "Common Lisp PDF" ,(pel-pdf-file-url "pl-common-lisp"))
-  :link `(url-link :tag "Diff & Merge PDF" ,(pel-pdf-file-url "diff-merge")))
-
-(defcustom pel-use-parinfer nil
-  "Control whether PEL uses the parinfer package."
-  :group 'pel-pkg-for-parens
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-rainbow-delimiters  nil
-  "Control whether PEL uses the rainbow-delimiters package."
-  :group 'pel-pkg-for-parens
-  :type 'boolean
-  :safe #'booleanp)
-
-;; -----------------------------------------------------------------------------
 ;; Programming Language Support
 ;; ============================
 (defgroup pel-pkg-for-programming nil
@@ -1277,34 +1358,36 @@ edox-box displays Eldoc information inside a child frame.
 Note: eldoc-box only works in graphics mode, not in terminal (tty)
       mode.  In terminal-mode it is not activated even if this option
       is activated."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-all-languages
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-hide-comnt nil
   "Control whether PEL activates Drew Adams' hide-cmnt package.
 This package provides the ability to hide comments."
-  :group 'pel-pkg-for-programming
+  :group 'pel-pkg-for-all-languages
   :type 'boolean
   :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Language Server Protocol (LSP) Support
 ;; --------------------------------------
-;; (defcustom pel-pkg-for-LSP nil
-;;   "Language
+
+(defgroup pel-pkg-for-language-server nil
+  "PEL support for language server protocol."
+  :group  'pel-pkg-for-all-languages)
 
 (defcustom pel-use-eglot nil
   "Control whether PEL supports the eglot package.
-eglot is a client for Language Server Protocol (LSP) servers."
-  :group 'pel-pkg-for-programming
+eglot is a client for Language Server Protocol servers."
+  :group 'pel-pkg-for-language-server
   :type 'boolean
   :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Generic Programming Support
 ;; ---------------------------
-(defgroup pel-pkg-for-all nil
+(defgroup pel-pkg-for-all-languages nil
   "PEL Generic Programming support."
   :group 'pel-pkg-for-programming
   :link `(url-link :tag "Comments PDF" ,(pel-pdf-file-url "comments"))
@@ -1313,7 +1396,7 @@ eglot is a client for Language Server Protocol (LSP) servers."
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-pkg-generic-code-style nil
   "PEL Generic code style configuration."
-  :group 'pel-pkg-for-all
+  :group 'pel-pkg-for-all-languages
   :link `(url-link :tag "Inserting Text PDF" ,(pel-pdf-file-url "inserting-text")))
 
 (defcustom pel-generic-skel-use-separators t
@@ -1470,6 +1553,34 @@ of auto-newline while editing."
   :group 'pel-pkg-for-cc
   :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
 
+(defcustom pel-c-bracket-style "linux"
+  "Set the bracket style for the C programming language.
+PEL stores this value associated with the `c-mode' into the
+`c-default-style' user option variable.
+If you want to use something else, please select one of the
+CC Mode Built-in Styles, which include the following:
+- gnu
+- k&r
+- bsd
+- whitesmith
+- stroustrup
+- ellemtel
+- linux
+- python
+- java
+- awk
+- user"
+  :link '(custom-manual "(ccmode)Built-in Styles")
+  :link `(url-link
+          :tag "Bracket styles @ Emacs Manual"
+          "https://www.gnu.org/software/emacs/manual/html_node/\
+ccmode/Built_002din-Styles.html#Built_002din-Styles")
+  :link `(url-link :tag "Indentation styles @ wikipedia"
+                   "https://en.wikipedia.org/wiki/Indentation_style")
+  :group 'pel-pkg-for-c
+  :type 'string
+  :safe 'pel-c-style-valid-p)
+
 (defcustom pel-c-indentation 3
   "Number of columns for C source code indentation.
 PEL stores this in `c-basic-offset' when editing buffers with C code.
@@ -1497,33 +1608,6 @@ Values in the [2, 8] range are accepted."
   :group 'pel-pkg-for-c
   :type 'boolean
   :safe #'booleanp)
-
-(defcustom pel-c-bracket-style "linux"
-  "Set the bracket style for the C programming language.
-PEL stores this value associated with the `c-mode' into the
-`c-default-style' user option variable.
-If you want to use something else, please select one of the
-CC Mode Built-in Styles, which include the following:
-- gnu
-- k&r
-- bsd
-- whitesmith
-- stroustrup
-- ellemtel
-- linux
-- python
-- java
-- awk
-- user"
-  :link `(url-link
-          :tag "Bracket styles @ Emacs Manual"
-          "https://www.gnu.org/software/emacs/manual/html_node/\
-ccmode/Built_002din-Styles.html#Built_002din-Styles")
-  :link `(url-link :tag "Indentation styles @ wikipedia"
-                   "https://en.wikipedia.org/wiki/Indentation_style")
-  :group 'pel-pkg-for-c
-  :type 'string
-  :safe 'pel-c-style-valid-p)
 
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-c-code-style nil
@@ -1759,6 +1843,24 @@ potentially except the user defined ones, which could use that variable too."
   :group 'pel-pkg-for-cc
   :link `(url-link :tag "C++ PDF" ,(pel-pdf-file-url "pl-c++")))
 
+(defcustom pel-c++-bracket-style "stroustrup"
+  "Set the bracket style for the C++ programming language.
+PEL stores this value associated with the `c-mode' into the
+`c-default-style' user option variable.
+If you want to use something else, please select one of the
+CC Mode Built-in Styles."
+  :group 'pel-pkg-for-c++
+  :type 'string
+  :safe 'pel-c-style-valid-p
+  :link '(custom-group-link "pel-pkg-for-c")
+  :link '(custom-manual "(ccmode)Built-in Styles")
+  :link `(url-link
+          :tag "Bracket styles @ Emacs Manual"
+          "https://www.gnu.org/software/emacs/manual/html_node/\
+ccmode/Built_002din-Styles.html#Built_002din-Styles")
+  :link `(url-link :tag "Indentation styles @ wikipedia"
+                   "https://en.wikipedia.org/wiki/Indentation_style"))
+
 (defcustom pel-c++-indentation 3
   "Number of columns for C++ source code indentation.
 PEL stores this in `c-basic-offset' when editing buffers with C++ source.
@@ -1786,16 +1888,6 @@ Values in the [2, 8] range are accepted."
   :group 'pel-pkg-for-c++
   :type 'boolean
   :safe #'booleanp)
-
-(defcustom pel-c++-bracket-style "stroustrup"
-  "Set the bracket style for the C++ programming language.
-PEL stores this value associated with the `c-mode' into the
-`c-default-style' user option variable.
-If you want to use something else, please select one of the
-CC Mode Built-in Styles."
-  :group 'pel-pkg-for-c++
-  :type 'string
-  :safe 'pel-c-style-valid-p)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; D Language Support
@@ -1945,7 +2037,9 @@ by the `pel-use-d-ac-dcd'."
   "Control whether PEL uses the macrostep package."
   :group 'pel-pkg-for-elisp
   :type 'boolean
-  :safe #'booleanp)
+  :safe #'booleanp
+  :link '(url-link :tag "macrostep @ github" "https://github.com/joddie/macrostep")
+  :link '(custom-group-link "macrostep"))
 
 (defcustom pel-use-esup nil
   "Control whether PEL uses the esup package."

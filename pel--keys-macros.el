@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-30 10:57:14, updated by Pierre Rouleau>
+;; Time-stamp: <2020-10-01 10:34:18, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -137,7 +137,8 @@
                                                                         hexl
                                                                         nhexl))
     ;;  ([f11 ?b ?I]
-    ([f11 ?b ?h]      "highlight"              pel-pkg-for-parens       ,(let ((items
+    ([f11 ?b ?h]      "highlight"              (pel-pkg-for-highlight
+                                                pel-pkg-for-parens)     ,(let ((items
                                                                                 (list
                                                                                  'auto-highlight-symbol
                                                                                  'iedit
