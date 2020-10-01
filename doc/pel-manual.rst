@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-09-30 15:20:37, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-10-01 13:08:43, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -808,7 +808,7 @@ At first, the easiest way to learn PEL customization of various features is to
 use the customization browser on PEL tree.  You can then inspect each group
 one by one and activate what you want to use.
 
-To do that, type ``<f11> <f2> P M-b`` or type ``M-x pel-browse-pel``.
+To do that, type ``<f11> <f2> P B`` or type ``M-x pel-browse-pel``.
 This will open the customization tree at to root of PEL.
 
 Open another window side by side with ``C-x 3`` and select one option to
