@@ -78,6 +78,12 @@ This file uses Org mode. Some useful (default) key-bindings:
     h) and vertically (<f11> w v) are now safer.  They now take into account the
     minibuffer and dedicated windows and only operate on the current frame.
   - pel-find-file-at-point properly handle relative file names.
+  - popup-kill-ring binding is now <f11> M-y to prevent a clash with PEL's
+    yasnippet key prefix (<f11> y).
+  - Added missing key-seq loading.
+  - Added missing key-chord installation.
+  - pel-initial-completion-mode can now be edited properly.  The default value
+    is now valid.
   - User Manual fixes:
     - User manual installation now properly references the "/.emacs.d" directory.
       and no longer references the "/.emacs.p" directory.
@@ -126,7 +132,9 @@ This file uses Org mode. Some useful (default) key-bindings:
   - More consistent key binding for the PEL customization of key-chords: now use;  <f11> <f2> P M-K
   - Cleanup PEL customization group hierarchy. Modified key bindings to access
     customization groups to make it easier to remember.
-  - New PEL user option for spell checker control: pel-spell-check-tool.
+  - New PEL user option for spell checker control: pel-spell-check-tool.  This
+    replaces the old one that was used to define the spell checker program for
+    several OS.  The new one is simpler to use.
   - The commands that provide access to the local copy of the reference PDF
     files can also open the Github-hosted PDF file in the system browser.
   - Re-organized the key sequences to provide access to the reference PDF, the
@@ -135,7 +143,9 @@ This file uses Org mode. Some useful (default) key-bindings:
     - The key sequences start with the prefix for the PEL key map and end with
       <f1> for help, <f2> for PEL customization buffer, <f3> for Emacs
       customization buffer.
-    - The <f11> <f2> provides access to the commands to access customization search  (c), to the customization buffer option (o) and to a customization group (g).
+    - The <f11> <f2> provides access to the commands to access customization
+      search:  (c), to the customization buffer option (o) and to a
+      customization group (g).
     - The <f11> <f2> E provides access to some Emacs customization groups.
     - The <f11> <f2> P provides access to some of the PEL customization groups
       that are not accessible from a specific PEL key map.
@@ -144,8 +154,9 @@ This file uses Org mode. Some useful (default) key-bindings:
     - The <f11> ? p key sequence provide access to all reference PDF files
       (either the local copy or the GitHub-hosted web page) and support tab completion.
   - Added key binding to the customize browsers which allow you to navigate the customize data tree:
-    - <f11> <f2> M-b browse the customize tree from the top.
-    - <f11> <2> P M-b browse the customize tree from the top of the PEL customize tree.
+    - <f11> <f2> B browse the customize tree from the top.
+    - <f11> <2> P B browse the customize tree from the top of the PEL
+      customize tree.
   - Added a new PEL key map tree for browsing
     - <f11> B N : for NeoTree.  Removed the previous <f11> N  key sequence.
     - <f11> B Z : for ZTree.  Removed the previous <f11> Z key sequence.
@@ -159,14 +170,18 @@ This file uses Org mode. Some useful (default) key-bindings:
     provides more features.
   - The repository now provides example of Bash alias commands to use a quick
     keys to launch emacs (see the "example/bin" directory).
-  - User Manual changes and additions:
-    - The installation sections attempt to highlight the commands to execute.
-    - A copy of the original init.el is provided in the new example/init
-      section of the repository.
-    - Recommends the use of pel-browse-pel to open the customize tree browser
-      buffer to customize PEL the first time it is used.
-    - A new section describes the Emacs user options that new users may want
-      to set.
+  - Replaced the "fg" key-chord with a "gf" key-seq.  This is much less likely
+    to cause unwanted movements.
+- *User Manual changes and additions*:
+  - The installation sections attempt to highlight the commands to execute.
+  - A copy of the original init.el is provided in the new example/init
+    section of the repository.
+  - Recommends the use of pel-browse-pel to open the customize tree browser
+    buffer to customize PEL the first time it is used.
+  - A new section describes the Emacs user options that new users may want
+    to set.
+  - Added a fast-track section to the installation section, easier to follow
+    than the complete sections with all the descriptions.
 - *Reference PDF updates*:
   - Added hyperlinks in all PDF files.  The See also and title icons are now all links.
   - The help and customize PDFs have a lot of links to the of them PDF pages.
