@@ -45,6 +45,7 @@
 ;;     - pel-pkg-for-filemng
 ;;       - pel-pkg-for-browse
 ;;         - pel-pkg-for-ztree
+;;     - pel-pkg-for-frame
 ;;     - pel-pkg-for-graphics-emacs
 ;;       - pel-pkg-for-graphics-cursor
 ;;     - pel-pkg-for-grep
@@ -82,7 +83,10 @@
 ;;     - pel-pkg-for-project-mng
 ;;     - pel-pkg-for-regexp
 ;;     - pel-pkg-for-region
+;;     - pel-pkg-for-scrolling
 ;;     - pel-pkg-for-search
+;;     - pel-pkg-for-session
+;;     - pel-pkg-for-speedbar
 ;;     - pel-pkg-for-shells
 ;;     - pel-pkg-for-spelling
 ;;     - pel-pkg-for-tags
@@ -90,6 +94,7 @@
 ;;     - pel-pkg-for-undo
 ;;     - pel-pkg-for-vcs
 ;;     - pel-pkg-for-window
+;;       - pel-pkg-for-scrolling
 ;;       - pel-pkg-for-session
 ;;       - pel-pkg-for-speedbar
 ;;
@@ -587,6 +592,42 @@ a non-customizable variable."
 (defcustom pel-ztree-dir-show-filtered-files nil
   "Show or not files from the filtered list."
   :group 'pel-pkg-for-ztree
+  :type 'boolean
+  :safe #'booleanp)
+
+;; ----------------------------------------------------------------------------
+;; Frame Control
+;; -------------
+(defgroup pel-pkg-for-frame nil
+  "Frame Management Control."
+  :group 'pel-package-use
+  :group 'pel-pkg-for-window
+  :link `(url-link :tag "Frames PDF" ,(pel-pdf-file-url "frames")))
+
+
+(defcustom pel-use-framemove nil
+  "Control whether PEL uses the framemove package.
+It is similar to windmove and ties with it.
+
+Notes:
+- With PEL, if framemove is used windmove must also be used
+  (see `pel-use-windmove').
+- This package work with Emacs in graphics mode.  Multiple
+  frames *can* be used in terminal (TTY) mode but only one can
+  be displayed at a time in the terminal window.
+- This file is not available MELPA (as of Sept 2020).
+- The version 0.10 is available via the relevant EmacsWiki page.
+- Older version 0.9 used an obsolete function, that was fixed in version 0.10."
+  :link `(url-link "framemove.el @ EmacsWiki"
+                   "https://www.emacswiki.org/emacs/framemove.el")
+  :link `(url-link
+          :tag "Author's site: Emacs Tip# 35: framemove"
+          "http://trey-jackson.blogspot.com/2010/02/emacs-tip-35-framemove.html")
+  :link `(url-link :tag "EmacsWiki framemove page"
+                   "https://www.emacswiki.org/emacs/FrameMove")
+  :link `(url-link :tag "Youtube video on windmove and framemove"
+                   "https://www.youtube.com/watch?v=f3th2jyv35c")
+  :group 'pel-pkg-for-frame
   :type 'boolean
   :safe #'booleanp)
 
@@ -2668,6 +2709,23 @@ or pel-use-regexp-steroids is t (for the others)."
   :type 'boolean
   :safe #'booleanp)
 
+;; ----------------------------------------------------------------------------
+;; Scrolling Control
+;; -----------------
+(defgroup pel-pkg-for-scrolling nil
+  "PEL window scrolling control."
+  :group 'pel-package-use
+  :group 'pel-pkg-for-window
+  :link `(url-link :tag "Windows PDF" ,(pel-pdf-file-url "scrolling")))
+
+(defcustom pel-use-smooth-scrolling nil
+  "Control whether PEL provides the smooth-scrolling capability."
+  :group 'pel-pkg-for-scrolling
+  :type 'boolean
+  :safe #'booleanp
+  :link '(url-link :tag "smooth-scrolling @ github"
+                   "https://github.com/aspiers/smooth-scrolling/"))
+
 ;; -----------------------------------------------------------------------------
 ;; pel-pkg-for-search
 ;; ------------------
@@ -2702,6 +2760,94 @@ PEL supports the following tools:
           (const :tag "Use Emacs default" nil)
           (const :tag "Use Anzu" anzu)
           (const :tag "Use Swiper" swiper)))
+
+;; ----------------------------------------------------------------------------
+;; pel-pkg-for-session
+;; -------------------
+(defgroup pel-pkg-for-session nil
+  "PEL window session management."
+  :group 'pel-package-use
+  :group 'pel-pkg-for-window
+  :link `(url-link :tag "Sessions PDF" ,(pel-pdf-file-url "sessions"))
+  :link '(custom-manual "(emacs)Saving Emacs Sessions"))
+
+(defcustom pel-use-desktop nil
+  "Control whether desktop feature is used for session management.
+
+When session management controlled by desktop feature, then
+identify whether the built-in desktop.el is used alone or whether
+one of the desktop-registry or desktop+ is also used.
+
+The value can be:
+
+- nil : nothing is used.
+- t:                             Use built-in desktop but do NOT
+                                 activate the desktop save mode.
+- `with-desktop-automatic':      Use built-in desktop and
+                                 activate desktop save mode.
+- `with-desktop-registry':       Use desktop and the desktop-registry
+                                 external package.
+- `with-desktop-registry-automatic': Use desktop, the desktop-registry
+                                     and activate desktop auto-save mode.
+- `with-desktop+':               Use desktop and the desktop+ external package.
+                                 *Recommended* for new users."
+  :group 'pel-pkg-for-session
+  :type '(choice
+          (const :tag "Not used" nil)
+          (const :tag "Use built-in desktop - do NOT activate desktop-save-mode" t)
+          (const :tag "Use built-in desktop and ACTIVATE desktop-save-mode"
+                 with-desktop-automatic)
+          (const :tag "Use desktop with desktop-registry \
+- do NOT activate desktop-save-mode " with-desktop-registry)
+          (const :tag "Use desktop with desktop-registry \
+and ACTIVATE desktop-save-mode" with-desktop-registry-automatic)
+          (const :tag "Use desktop with desktop+" with-desktop+)))
+
+;; desktop  user options:
+;; - desktop-save-mode
+;; - desktop-restore-frames
+;; - desktop-files-not-to-save
+;; - frameset-filter-alist
+;; - desktop-path
+;; - desktop-restore-eager
+;; - desktop-globals-to-clear
+;; - desktop-clear-preserve-buffers-regexp
+;; - desktop-auto-save-timeout
+;; - desktop-load-locked-desktop
+
+;; ----------------------------------------------------------------------------
+;; pel-pkg-for-speedbar
+;; --------------------
+(defgroup pel-pkg-for-speedbar nil
+  "PEL Speedbar management."
+  :group 'pel-package-use
+  :group 'pel-pkg-for-window
+  :group 'speedbar
+  :link '(custom-group-link speedbar)
+  :link '(custom-group-link speedbar-vc)
+  :link '(custom-group-link speedbar-faces)
+  :link `(url-link :tag "Speedbar PDF" ,(pel-pdf-file-url "speedbar"))
+  :link '(custom-manual "(emacs)Speedbar")
+  :link '(url-link :tag "Speedbar @ CEDET"
+                   "http://cedet.sourceforge.net/speedbar.shtml"))
+
+(defcustom pel-use-speedbar nil
+  "Control whether PEL uses the Speedbar and SR-Speedbar packages.
+
+When set, PEL activates the keys that you can use to toggle the
+speedbar window on and off.  In terminal mode the SR-Speedbar is
+used if `pel-prefer-sr-speedbar-in-terminal' is set."
+  :group 'pel-pkg-for-speedbar
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-prefer-sr-speedbar-in-terminal t
+  "Prefer using Sr-Speedbar in terminal mode (when available) over Speedbar."
+  :group 'pel-pkg-for-speedbar
+  :type  'boolean
+  :safe  #'booleanp
+  :link '(url-link :tab "SR-Speedbar @ EmacsWiki"
+                   "https://www.emacswiki.org/emacs/SrSpeedbar"))
 
 ;; -----------------------------------------------------------------------------
 ;; Shell & Terminal Support
@@ -2893,124 +3039,30 @@ Notes:
 ;;       - winner
 
 (defcustom pel-use-ace-window  nil
-  "Control whether PEL uses the `ace-window' package."
+  "Control whether PEL uses the `ace-window' package.
+When set PEL activates key bindings to move point (the cursor)
+to a window identified by a number that shows up on the
+top-left corner of the windows, allowing you to move to windows
+far away quickly.
+See the key bindings in the Windows PDF."
   :group 'pel-pkg-for-window
   :type 'boolean
-  :safe #'booleanp)
+  :safe #'booleanp
+  :link `(url-link :tag "Windows PDF" ,(pel-pdf-file-url "windows")))
 
 (defcustom pel-use-winner nil
-  "Control whether PEL uses the `winner' package."
+  "Control whether PEL uses the `winner' package.
+When set PEL activates key bindings you can use to restore
+Emacs window layout previously used:
+- winner-undo:
+   - C-c <left>
+   - <f11> w p
+- winner-redo:
+   - C-c <right>
+   - <f11> w n"
   :group 'pel-pkg-for-window
   :type 'boolean
   :safe #'booleanp)
-
-(defcustom pel-use-smooth-scrolling nil
-  "Control whether PEL provides the smooth-scrolling capability."
-  :group 'pel-pkg-for-window
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-framemove nil
-  "Control whether PEL uses the framemove package.
-It is similar to windmove and ties with it.
-
-Notes:
-- With PEL, if framemove is used windmove must also be used
-  (see `pel-use-windmove').
-- This package work with Emacs in graphics mode.  Multiple
-  frames *can* be used in terminal (TTY) mode but only one can
-  be displayed at a time in the terminal window.
-- This file is not available MELPA (as of Sept 2020).
-- The version 0.10 is available via the relevant EmacsWiki page.
-- Older version 0.9 used an obsolete function, that was fixed in version 0.10."
-  :link `(url-link "framemove.el @ EmacsWiki"
-                   "https://www.emacswiki.org/emacs/framemove.el")
-  :link `(url-link
-          :tag "Author's site: Emacs Tip# 35: framemove"
-          "http://trey-jackson.blogspot.com/2010/02/emacs-tip-35-framemove.html")
-  :link `(url-link :tag "EmacsWiki framemove page"
-                   "https://www.emacswiki.org/emacs/FrameMove")
-  :link `(url-link :tag "Youtube video on windmove and framemove"
-                   "https://www.youtube.com/watch?v=f3th2jyv35c")
-  :group 'pel-pkg-for-window
-  :type 'boolean
-  :safe #'booleanp)
-
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; pel-pkg-for-session
-;; -------------------
-(defgroup pel-pkg-for-session nil
-  "PEL window session management."
-  :group 'pel-pkg-for-window
-  :link `(url-link :tag "Sessions PDF" ,(pel-pdf-file-url "sessions")))
-
-(defcustom pel-use-desktop nil
-  "Control whether desktop feature is used for session management.
-
-When session management controlled by desktop feature, then
-identify whether the built-in desktop.el is used alone or whether
-one of the desktop-registry or desktop+ is also used.
-
-The value can be:
-
-- nil : nothing is used.
-
-- t:                             use built-in desktop but do NOT
-                                 activate the desktop save mode.
-
-- `with-desktop-automatic':      use built-in desktop and
-                                 activate desktop save mode.
-
-- `with-desktop-registry':       use desktop and the desktop-registry
-                                 external package.
-
-- `with-desktop-registry-automatic': use desktop, the desktop-registry
-                                     and activate desktop auto-save mode.
-
-- `with-desktop+':               use desktop and the desktop+ external package."
-  :group 'pel-pkg-for-session
-  :type '(choice
-          (const :tag "Not used" nil)
-          (const :tag "Use built-in desktop - do NOT activate desktop-save-mode" t)
-          (const :tag "Use built-in desktop and ACTIVATE desktop-save-mode"
-                 with-desktop-automatic)
-          (const :tag "Use desktop with desktop-registry \
-- do NOT activate desktop-save-mode " with-desktop-registry)
-          (const :tag "Use desktop with desktop-registry \
-and ACTIVATE desktop-save-mode" with-desktop-registry-automatic)
-          (const :tag "Use desktop with desktop+" with-desktop+)))
-
-;; desktop  user options:
-;; - desktop-save-mode
-;; - desktop-restore-frames
-;; - desktop-files-not-to-save
-;; - frameset-filter-alist
-;; - desktop-path
-;; - desktop-restore-eager
-;; - desktop-globals-to-clear
-;; - desktop-clear-preserve-buffers-regexp
-;; - desktop-auto-save-timeout
-;; - desktop-load-locked-desktop
-
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; pel-pkg-for-speedbar
-;; --------------------
-(defgroup pel-pkg-for-speedbar nil
-  "PEL Speedbar management."
-  :group 'pel-pkg-for-window
-  :link `(url-link :tag "Speedbar PDF" ,(pel-pdf-file-url "speedbar")))
-
-(defcustom pel-use-speedbar nil
-  "Control whether PEL uses the Speedbar and SR-Speedbar packages."
-  :group 'pel-pkg-for-speedbar
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-prefer-sr-speedbar-in-terminal t
-  "Prefer using Sr-Speedbar in terminal mode (when available) over Speedbar."
-  :group 'pel-pkg-for-speedbar
-  :type  'boolean
-  :safe  #'booleanp)
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel--options)

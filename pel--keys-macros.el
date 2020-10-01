@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-10-01 10:34:18, updated by Pierre Rouleau>
+;; Time-stamp: <2020-10-01 15:18:26, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -125,7 +125,7 @@
     ;; ([f11 ?C]
     ([f11 ?D]         "drawing"                pel-pkg-for-drawing-markup)
     ([f11 ?D ?u]      "plantuml"               pel-pkg-for-plantuml    plantuml-mode)
-    ([f11 ?F]         "frames"                 pel-pkg-for-window      frames)
+    ([f11 ?F]         "frames"                 pel-pkg-for-frame       frames)
     ([f11 ?S]         "sessions"               pel-pkg-for-sessions    desktop)
     ;;  ([f11 ?S ?R]
     ([f11 ?X]         "tags"                   pel-pkg-for-tags        etags)
@@ -227,7 +227,7 @@
     ([f11 ?y]         "inserting-text"         pel-pkg-for-insertions  (yasnippet
                                                                         yasnippet-snippets
                                                                         yas-minor))
-    ([f11 ?|]         "scrolling"              pel-pkg-for-window      (follow
+    ([f11 ?|]         "scrolling"              pel-pkg-for-scrolling   (follow
                                                                         smooth-scrolling))
     )
   "Map from key prefix array to topic string.
