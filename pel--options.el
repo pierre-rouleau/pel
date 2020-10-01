@@ -872,8 +872,8 @@ typed quickly or slowly when recorded.)"
                           (windmove-down)
                         (insert "bn"))))
 
-    (global    ""         key-chord
-               "gf" (lambda ()   ; note that using key-seq can help on this.
+    (global    ""         key-seq ; prevent 'fg', often in words.
+               "gf" (lambda ()
                       (interactive)
                       (if (require 'windmove nil :noerror)
                           (windmove-left)
@@ -947,13 +947,13 @@ The `pel-key-chords' value is a list of objects.
 - Each object is a list of 5 items.
   - The first item is either:
     - global   : this key-chord is global
-    - A major mode name that identifies the major mode
+    - A mode name that identifies the major or minor mode
       where the key-chord must be activated.
-      For example:  c++-mode
+      For example:  c++-mode or flyspell-mode
   - The second is a string identifying the Emacs Lisp file
-    that provides the major mode identified in the first item.
+    that provides the mode identified in the first item.
     This is empty when the first item is set to global.
-    It is required when the first item identifies a major mode.
+    It is required when the first item identifies a mode.
     Identify a name that (load FILE) will be able to load, ie
     the name of a Emacs Lisp file accessible in Emacs load path.
     Do not identify a file extension.  For most files, the file

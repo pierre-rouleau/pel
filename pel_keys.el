@@ -4464,6 +4464,14 @@ the ones defined from the buffer now."
     (key-chord-mode 1)))
 
 (when pel-use-key-chord
+  (when pel-use-key-seq
+    ;; The key-seq is only activated once key-chord is activated.
+    ;; Both must be active for key-seq to be used.  When both are
+    ;; set PEL gives priority to key-seq.
+    (use-package key-seq
+      :ensure t
+      :pin melpa))
+
   (use-package key-chord
     :ensure t
     :pin melpa
@@ -4475,16 +4483,10 @@ the ones defined from the buffer now."
     :config
     (when (and (require 'pel-key-chord nil :noerror)
                (fboundp 'pel-activate-all-key-chords))
+      (when pel-use-key-seq
+        (require 'key-seq nil :noerror))
       (pel-activate-all-key-chords)))
 
-  (when pel-use-key-seq
-    ;; The key-seq is only activated once key-chord is activated.
-    ;; Both must be active for key-seq to be used.  When both are
-    ;; set PEL gives priority to key-seq.
-    (use-package key-seq
-      :ensure t
-      :pin melpa
-      :commands key-chord-mode))
 
   (when (eq pel-use-key-chord 'use-from-start)
     (run-with-idle-timer 1 nil (function pel--start-key-chord-mode))))

@@ -23,8 +23,72 @@
 ;; -----------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This file provides code that manages the creation of key-chords via Emacs
-;; customization UI.
+;; This file provides code that manages the creation of key chords via Emacs
+;; customization UI.  The key chords can be defined by the key-chord package
+;; or the key-seq package as identified by their definition structure.
+;;
+;; The key chords defined by key-chord do not distinguish on the key that is
+;; first typed.  The key chords defined by the key-seq package do, making them
+;; harder to type and therefore safer if the key pair selected corresponds to
+;; a key sequence often found in text.
+;;
+;; The intent here is that `pel-activate-all-key-chords' is called at start-up
+;; time to request activation of the key chords defined in the
+;; `pel-key-chords' user option structure.  This is a list of 5-element key
+;; chord definition lists that contain the following elements:
+;;
+;; - 1: A mode symbol. Either:
+;;      - 'global : meaning that the key chord must be defined globally, or
+;;      -  a major/minor mode symbol: meaning that the key chord must only be
+;;         activated when that mode is activated.
+;; - 2: string: the base name of an Emacs Lisp file or an empty string.
+;;      If the string identifies a file, like \"flyspell\" the definition of
+;;      the corresponding key chord is deferred up until that file is loaded.
+;;      This allows delayed loading of key chords.
+;; - 3: type symbol: either 'key-chord or 'key-seq.  This identifies whether
+;;      the key chord is defined with the key-chord functions or the key-seq
+;;      function and therefore identifies whether the key chord will be
+;;      accepted in any typing order (for 'key-chord) or just for the order
+;;      identified by the chord string.
+;; - 4: string.  The 2-character chord string.
+;; - 5: The action.  One of the following:
+;;      - A string. The string corresponds to the replacement text inserted.
+;;      - A command symbol. A command function to execute in place of the
+;;        typed chord.
+;;      - A lambda function.  The code to execute in place of the typed chord.
+;;
+;; The function `pel-activate-all-key-chords':
+;; - calls the function `pel-activate-key-chords-in' to either activate
+;;   immediately a key chord that does not need to be deferred and build an
+;;   association list that maps the mode (which can also identify 'global) to
+;;   the Emacs Lisp file that must be loaded for this mode for the differed
+;;   key chords.
+;;   - The function `pel-activate-key-chords-in' calls the function
+;;     `pel-activate-key-chord-from-spec' with a single 5-element list.
+;;     `pel-activate-key-chord-from-spec' activates a key chord if it can be
+;;     done right away and return t if done or the same 5-element list if the
+;;     key chord must be activated later.
+;;     In that case `pel-activate-all-key-chords'  gets those and force the
+;;     re-evaluation of the same specs when the specified code is loaded.
+
+;; Future improvement TODO:
+;;     The same list is processed again.  The overall operation could be
+;;     optimized, preventing re-execution of the same spec processing.  Since
+;;     the list of key chord is normally small, this does not take too much
+;;     time.  One way to optimize this would be to create a copy of the
+;;     specifications and removed each entry that has been processed.
+;;     This would speed up activation of the modes specified in the
+;;     `pel-key-chords' user option structure
+;;
+;;
+;; The call hierarchy is the following:
+;;
+;; - `pel-activate-all-key-chords'
+;;   - `pel--activate-deferred-key-chords'
+;;     - `pel-activate-key-chords-in'
+;;       - `pel-activate-key-chord-from-spec'
+;;         - `pel--kcs-define'
+;;         - `pel--kcs-define-global'
 
 ;; -----------------------------------------------------------------------------
 ;;; Code:
