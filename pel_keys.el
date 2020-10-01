@@ -3481,7 +3481,6 @@ the ones defined from the buffer now."
 (define-key pel:filevar "="  #'add-file-local-variable-prop-line)
 (define-key pel:filevar "-"  #'delete-file-local-variable-prop-line)
 (define-key pel:filevar "c"  #'copy-dir-locals-to-file-locals-prop-line)
-;;
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> f v D`` : Directory File variables
@@ -3490,7 +3489,6 @@ the ones defined from the buffer now."
 (define-key pel:dirvar "="  #'add-dir-local-variable)
 (define-key pel:dirvar "-"  #'delete-dir-local-variable)
 (define-key pel:dirvar "C"  #'copy-file-locals-to-dir-locals)
-;;
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> F`` : Frame operations
@@ -3508,7 +3506,9 @@ the ones defined from the buffer now."
 (define-key pel:frame "O"  #'switch-to-buffer-other-frame)
 (define-key pel:frame "p"   'pel-previous-frame)
 (define-key pel:frame "r"  #'find-file-read-only-other-frame)
-;;
+(when (display-graphic-p)
+  (require 'menu-bar nil :noerror) ; feature loaded in emacs -Q
+  (define-key pel:frame "F" 'menu-set-font))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> g`` : Grep operations

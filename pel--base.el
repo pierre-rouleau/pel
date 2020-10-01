@@ -147,6 +147,7 @@
   (and (eq system-type 'darwin)
        (not (display-graphic-p)))
   "Predicate: t if Emacs can properly show Unicode characters like 👍 or 👎.")
+;; TODO: add ability to install unicode fonts and take it into account.
 
 ;; -----------------------------------------------------------------------------
 ;; PEL version
