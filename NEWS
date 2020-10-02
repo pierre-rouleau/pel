@@ -198,3 +198,7 @@ This file uses Org mode. Some useful (default) key-bindings:
   - Identified Esc C- and C-[ C- key sequence alternatives for the for C-M-
     bindings in several locations in the PDFs (but not all yet).
   - Fixed errors and cleaned up several PDFs
+- *Code Changes*:
+  - pel-autoload.el now uses a pel-autoload macro to provide a more regular,
+    cleaner syntax code easier to maintain and possibly for future automatic
+    code generation.
