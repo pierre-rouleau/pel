@@ -69,6 +69,7 @@
 ;;         - pel-pkg-for-c
 ;;         - pel-pkg-for-c++
 ;;         - pel-pkg-for-d
+;;       - pel-pkg-for-javascript
 ;;       - pel-pkg-for-lisp
 ;;         - pel-pkg-for-clisp
 ;;         - pel-pkg-for-elisp
@@ -80,6 +81,7 @@
 ;;       - pel-pkg-for-python
 ;;       - pel-pkg-for-rexx
 ;;       - pel-pkg-for-rust
+;;       - pel-pkg-for-v
 ;;     - pel-pkg-for-project-mng
 ;;     - pel-pkg-for-regexp
 ;;     - pel-pkg-for-region
@@ -2029,6 +2031,24 @@ by the `pel-use-d-ac-dcd'."
   :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Javascript support
+;; ------------------
+(defgroup pel-pkg-for-javascript nil
+  "PEL support for Javascript. Experimental."
+  :group 'pel-pkg-for-programming)
+
+
+(defcustom pel-use-javascript nil
+  "Control whether PEL supports Javascript development.
+
+When set, identifies what mode is used to support Javascript."
+  :group 'pel-pkg-for-javascript
+  :type '(choice
+          (const :tag "Emacs basic support." nil)
+          (const :tag "Future: Emacs basic + PEL additions using built-in js-mode." js-mode)
+          (const :tag "Supported by the js2-mode external package." js2-mode)))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Lisp-like language support
 ;; --------------------------
 ;;
@@ -2049,8 +2069,7 @@ by the `pel-use-d-ac-dcd'."
 (defcustom pel-modes-activating-lispy  nil
   "List of major modes that automatically activate `lispy-mode'."
   :group 'pel-pkg-for-lisp
-    :type
-  '(repeat symbol))
+  :type '(repeat symbol))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Common Lisp Support
@@ -2595,6 +2614,39 @@ When set to non-nil, 3 packages are used:
   :type 'boolean
   :safe #'booleanp)
 
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; V Language Support
+;; ------------------
+(defgroup pel-pkg-for-v nil
+  "Pel V language support. Experimental."
+  :group 'pel-pkg-for-programming
+  :link '(url-link :tag "V Language home page" "https://vlang.io"))
+
+
+(defcustom pel-use-v nil
+  "Control whether PEL supports V Programming Language Development.
+
+When set, identifies what mode is used to support V.
+
+WARNING:
+ - The vlang-mode has very minimal support: just font locking.
+   It is not for serious use.  It is only there to compare with the
+   v-mode implementation and will allow some experimentation.
+   It could very well disappear in the future.
+ - The v-mode is much more mature and is RECOMMENDED."
+  :group 'pel-pkg-for-v
+  :type '(choice
+          (const :tag "No support."  nil)
+          (const
+           :tag "Supported by vlang-mode external, minimal, toy/experimental package."
+           vlang-mode)
+          (const :tag "Supported by v-mode, a more mature mode." v-mode))
+  :link '(url-link :tag "v-mode @ github"
+                   "https://github.com/damon-kwok/v-mode")
+  :link '(url-link :tag "v-mode @ MELPA"
+                   "https://melpa.org/#/v-mode")
+  :link '(url-link :tag "vlang-mode @ github"
+                   "https://github.com/pierre-rouleau/vlang-mode.el"))
 
 ;; -----------------------------------------------------------------------------
 ;; Project Manager Support

@@ -581,7 +581,7 @@ Done in this function to allow advising libraries that remap these keys."
   (use-package c-eldoc
     ;; c-eldoc is an external package.
     ;; Ensure it's installed via MELPA
-    :ensure t
+    :ensure t   ; warning is in c-eldoc: it requires cl instead of cl-lib.
     :pin melpa
 
     ;; autoload it when one of the following commands is used.
@@ -645,41 +645,6 @@ Done in this function to allow advising libraries that remap these keys."
 ;; Using Intero to support Haskell programming language.
 ;; Installed it via the list-packages.
 ;; ; (add-hook 'haskell-mode-hook 'intero-mode)
-
-;; - Programming Style: Rust & Cargo Support
-;; -----------------------------------------
-(when pel-use-rust                      ; TODO: complete this
-  (use-package racer
-    :ensure t
-    :pin melpa
-    :commands racer-mode
-    :init
-      (cl-eval-when 'compile (require 'racer nil :no-error)))
-
-  (use-package rust-mode
-    :ensure t
-    :pin melpa
-    :commands rust-mode
-    :init
-      (cl-eval-when 'compile (require 'rust-mode nil :no-error)))
-
-  (use-package cargo
-    :ensure t
-    :pin melpa
-    :commands cargo-minor-mode
-    :config
-    (cl-eval-when 'compile (require 'cargo nil :no-error))
-    ;; M-x package-install rust-mode
-    ;; M-x package-install cargo
-    ;; M-x package-install racer
-    ;; M-x package-install company
-    (add-hook 'rust-mode-hook  'cargo-minor-mode)
-    (add-hook 'rust-mode-hook  'racer-mode)
-    (add-hook 'racer-mode-hook 'eldoc-mode)
-    (when pel-use-company
-      (add-hook 'racer-mode-hook 'company-mode))
-    (define-key rust-mode-map
-      (kbd "TAB") 'company-indent-or-complete-common)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Extra key bindings
@@ -2074,6 +2039,50 @@ This is meant to be used in the d-mode hook lambda."
 ;; reserved but not implemented.
 
 ;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC i`` : Javascript programming
+(when pel-use-javascript
+  (define-pel-global-prefix pel:for-javascript  (kbd "<f11> SPC i"))
+  (add-to-list 'auto-mode-alist (cons "\\.js\\'"
+                                      (if (eq pel-use-javascript 'js-mode)
+                                          'js-mode
+                                        'js2-mode)))
+  (cond ((eq pel-use-javascript 'js-mode)
+         )
+        ((eq pel-use-javascript 'js2-mode)
+         (use-package js2-mode
+           :ensure t
+           :pin melpa
+           :commands js2-mode
+           :init
+           (if (version< emacs-version "27.1")
+               (progn
+                 (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
+                 (add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode)))
+             (add-hook 'js-mode-hook 'js2-minor-mode))
+           ;; Experimental ...
+           (define-key pel:for-javascript "." 'js2-find-node-at-point)
+           (define-key pel:for-javascript "?" 'js2-node-name-at-point)
+           (define-key pel:for-javascript "j" 'js2-print-json-path)
+           (define-key pel:for-javascript (kbd "<right>") 'js2-forward-sws)
+           (define-key pel:for-javascript (kbd "<left>") 'js2-backward-sws)
+           (define-key pel:for-javascript (kbd "TAB") 'js2-indent-bounce)
+           (define-key pel:for-javascript (kbd "<backtab>") 'js2-indent-bounce-backward)
+           ;; js2-display-error-list
+           ;; js2-error-buffer-mode
+           ;; js2-error-buffer-next
+           ;; js2-error-buffer-prev and some more...
+           ;; activate the <f12> key binding for rexx-mode
+           (pel--mode-hook-maybe-call
+            '(lambda ()
+               (pel-local-set-f12 'pel:for-javascript))
+            'js2-mode 'js2-mode-hook)))
+        ;;
+        ((eq pel-use-javascript 'js-mode)
+         ;; Use the built-in js.el
+         (use-package js
+           :commands js-mode))))
+
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC j`` : Julia programming
 (when (and pel-use-julia pel-use-vterm)
   ;; 🚧 Experimental: not yet completed.
@@ -2356,6 +2365,86 @@ This is meant to be used in the d-mode hook lambda."
      '(lambda ()
         (pel-local-set-f12 'pel:for-rexx))
      'rexx-mode 'rexx-mode-hook)))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC u`` : Rust programming
+
+;; - Programming Style: Rust & Cargo Support
+;; -----------------------------------------
+(when pel-use-rust                      ; Experimental: TODO: complete this
+  (use-package racer
+    :ensure t
+    :pin melpa
+    :commands racer-mode
+    :init
+      (cl-eval-when 'compile (require 'racer nil :no-error)))
+
+  (use-package rust-mode
+    :ensure t
+    :pin melpa
+    :commands rust-mode
+    :init
+      (cl-eval-when 'compile (require 'rust-mode nil :no-error)))
+
+  (use-package cargo
+    :ensure t
+    :pin melpa
+    :commands cargo-minor-mode
+    :config
+    (cl-eval-when 'compile (require 'cargo nil :no-error))
+    ;; M-x package-install rust-mode
+    ;; M-x package-install cargo
+    ;; M-x package-install racer
+    ;; M-x package-install company
+    (add-hook 'rust-mode-hook  'cargo-minor-mode)
+    (add-hook 'rust-mode-hook  'racer-mode)
+    (add-hook 'racer-mode-hook 'eldoc-mode)
+    (when pel-use-company
+      (add-hook 'racer-mode-hook 'company-mode))
+    (define-key rust-mode-map
+      (kbd "TAB") 'company-indent-or-complete-common)))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC v`` : V programming
+
+;; Experimental
+
+(when pel-use-v
+  (define-pel-global-prefix pel:for-v  (kbd "<f11> SPC v"))
+  ;; TODO: V file name extension clashes with Verilog.
+  ;;       Need to find a way to read the file content to distinguish them.
+  ;; TODO: Document purpose of .v, .vv, .vsh files
+  ;;       (ie. find where it's described)
+  (add-to-list 'auto-mode-alist (cons "\\.\\(v?v\\|vsh\\)\\'"
+                                      (if (eq pel-use-v 'v-mode)
+                                          'v-mode
+                                        'vlang-mode)))
+  (cond ((eq pel-use-v 'v-mode)
+         ;; TODO: since v-mode uses a hydra, PEL will
+         ;; cause a warning when a V file is opened before f7 is typed.
+         (use-package v-mode
+           :ensure t
+           :pin melpa
+           :commands v-mode
+           :init
+           (define-key pel:for-v (kbd "C-f") 'v-format-buffer)
+           (define-key pel:for-v (kbd "<f10>") 'v-menu)
+           ;; activate the <f12> key binding for v-mode
+           (pel--mode-hook-maybe-call
+            '(lambda ()
+               (pel-local-set-f12 'pel:for-v))
+            'v-mode 'v-mode-hook)))
+
+        ((eq pel-use-v 'vlang-mode)
+         ;; vlang-mode is a toy/experimental/early/testing/not for serious
+         ;; use, not on MELPA: download directly from github.
+         (cl-eval-when 'load
+           (pel-install-file
+            "https://raw.githubusercontent.com/pierre-rouleau/\
+vlang-mode.el/master/vlang-mode.el"
+            "vlang-mode.el"))
+         (use-package vlang-mode
+           :commands vlang-mode))))
 
 ;; ---------------------------------------------------------------------------
 ;; AsciiDoc support
@@ -3865,7 +3954,6 @@ the ones defined from the buffer now."
     (define-key pel:regexp "Q" 'vr/query-replace)
     (when pel-use-multiple-cursors
       (define-key pel:regexp "M" 'vr/mc-mark))))
-
 
 (when pel-use-visual-regexp-steroids
   (use-package visual-regexp-steroids
