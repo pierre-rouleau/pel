@@ -72,6 +72,15 @@ This file uses Org mode. Some useful (default) key-bindings:
     customization groups.
   - and more...
 * Additions since 0.2.0
+- This includes slots of cleanups, several new modes, new key
+  bindings, better installation procedure, several bug fixes.  I continue to
+  consider it a project in early development but only because it's lacking a
+  lot of features I'd like to integrate for software development in several
+  programming languages.  I am using it continuously though on Emacs 26.3 on
+  macOS Mojave and tested on some other platforms:
+  - Linux Fedora 32 with Emacs 27.1
+  - Linux Mint 20 with Emacs 26.3
+  - Linux Ubuntu 20.04 with Emacs 26.3
 - *Fixes*:
   - Fixed distributed custom skeleton code for C.  Updated the example description.
   - *Window flipping commands*: The keys to flip windows horizontally (<f11> w
@@ -174,13 +183,17 @@ This file uses Org mode. Some useful (default) key-bindings:
       files can also open the Github-hosted PDF file in the system browser.
     - Temporarily set max-specpdl-size to 2000 while running benchmark-init
       commands to handle large set of packages.
-  - *Improved customization data*:
+  - *Improved customization*:
     - Regrouped the PEL customization groups.
     - Cleanup PEL customization group hierarchy. Modified key bindings to access
       customization groups to make it easier to remember.
     - New PEL user option for spell checker control: pel-spell-check-tool.  This
       replaces the old one that was used to define the spell checker program for
       several OS.  The new one is simpler to use.
+    - It is now possible to identify the major modes that will automatically
+      activate the superword-mode and subword-mode: the user options
+      pel-modes-activating-superword-mode and
+      pel-modes-activating-subword-mode identify the respective modes.
 - *User Manual changes and additions*:
   - Fixed typos in the manual installation instructions: “./emacs.d” is now
     “/.emacs.d”
