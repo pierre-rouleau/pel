@@ -88,100 +88,115 @@ This file uses Org mode. Some useful (default) key-bindings:
     - User manual installation now properly references the "/.emacs.d" directory.
       and no longer references the "/.emacs.p" directory.
 - *New Features and improvements*:
-  - The keys to flip windows horizontally (<f11> w h) and vertically (<f11> w v)
-    are now safer.  They now take into account the minibuffer and dedicated
-    windows and only operate on the current frame.
-  - Added support for all-the-icons.
-    - In text mode it provides arrows for the NeoTree window.
-    - In Graphics mode, provides icons for NeoTree, dired, ibuffer and ivy when
-      their respective pel-use- user options are activated.
-  - Added support for lispy, a modal editing mode for Lisp-like programming languages.
-  - Added support for lpy, a lispy mode for Python.
-  - Added support for AsciiDoc via the adoc-mode.
-  - Added support for external packages that extend Emacs keyboard macro
-    support: centimacro, elmacro and emacros.  Both centimacro and emacros
-    libraries supported by PEL are forked of the original libraries with bug
-    fixes and improvements.
-  - The prefix set member key to quickly access customization buffer groups is
-    now <f2> instead of <f1>. The prefix set member key <f1> is now used to open
-    the local copy of the PDF that describes the topic(s) that manipulate the
-    commands executed by the keys under the same key prefix.   This feature,
-    along with all hyperlinks allow a user to quickly navigate through the PEL
-    documentation inside the PEL manual hosted on Github, the local PDF files
-    and the PDF files hosted on Github.
-  - Window navigation key sequences: Added key bindings to navigation across
-    windows: The <Esc> key followed by the cursor pointing in the direction of
-    the window are now bound to the corresponding wind move command. In graphics
-    mode,  the <Esc> key followed by a Shift cursor key pointing in the
-    direction of the other frame move point to that frame using the
-    corresponding fm command.  This works everywhere except in Org-Mode where
-    the <f11> based key sequences can be used instead.  The Esc based movements
-    are useful in the active vterm window.
-  - The M-RET key can be used to align text vertically in some modes.
-  - pel-kbmacro-prompts user option is now off by default to mimic Emacs.
-  - Regrouped the PEL customization groups.
-  - PEL Hydras are no longer terminated by typing ‘q’.   Use <f7> to terminate
-    them.  The ‘q’ key is used to execute the quit-window command.  Use it to
-    change the buffer seen in the current window. The loading of PEL Hydras is
-    no longer deferred: it’s loaded on demand.
-  - More keys in the window Hydra, pel-∑wnd: q to quit window, b and B to change
-    buffer in current window. Also changed the key to kill current buffer: it’s
-    k instead of K.
-  - The new binding to bm-toggle (<f1> ‘ ‘) is easier to type than the old one
-    (<f11> ‘ t)
-  - More consistent key binding for the PEL customization of key-chords: now use;  <f11> <f2> P M-K
-  - Cleanup PEL customization group hierarchy. Modified key bindings to access
-    customization groups to make it easier to remember.
-  - New PEL user option for spell checker control: pel-spell-check-tool.  This
-    replaces the old one that was used to define the spell checker program for
-    several OS.  The new one is simpler to use.
-  - The commands that provide access to the local copy of the reference PDF
-    files can also open the Github-hosted PDF file in the system browser.
-  - Re-organized the key sequences to provide access to the reference PDF, the
-    PEL customization and the Emacs customization buffer for topics accessible
-    via a key sequence inside a PEL key-map:
-    - The key sequences start with the prefix for the PEL key map and end with
-      <f1> for help, <f2> for PEL customization buffer, <f3> for Emacs
-      customization buffer.
-    - The <f11> <f2> provides access to the commands to access customization
-      search:  (c), to the customization buffer option (o) and to a
-      customization group (g).
-    - The <f11> <f2> E provides access to some Emacs customization groups.
-    - The <f11> <f2> P provides access to some of the PEL customization groups
-      that are not accessible from a specific PEL key map.
-    - The <f11> <f2> SPACE provide access to the programming specific groups
-      that do not have a specific key map: this includes lisp for the moment.
-    - The <f11> ? p key sequence provide access to all reference PDF files
-      (either the local copy or the GitHub-hosted web page) and support tab completion.
-  - Added key binding to the customize browsers which allow you to navigate the customize data tree:
-    - <f11> <f2> B browse the customize tree from the top.
-    - <f11> <2> P B browse the customize tree from the top of the PEL
-      customize tree.
-  - Added a new PEL key map tree for browsing
-    - <f11> B N : for NeoTree.  Removed the previous <f11> N  key sequence.
-    - <f11> B Z : for ZTree.  Removed the previous <f11> Z key sequence.
-    - <f11> B T: for early support of treemacs.  Its support is not complete yet.
-  - Fixed typos in the manual installation instructions: “./emacs.d” is now “/.emacs.d”
-  - Visible bookmarks no longer deferred loaded: loaded on demand: first time a bound-key is typed.
-  - In graphic mode, the extra keys for windmove are loaded after 1 second instead of 5.
-  - Temporarily set max-specpdl-size to 2000 while running benchmark-init commands to handle large set of packages.
-  - The repository now provides examples of Emacs init.el files starting with
-    the simplest one used to perform the first compilation to something that
-    provides more features.
-  - The repository now provides example of Bash alias commands to use a quick
-    keys to launch emacs (see the "example/bin" directory).
-  - Replaced the "fg" key-chord with a "gf" key-seq.  This is much less likely
-    to cause unwanted movements.
+  - *New/modified global keys (and commands)*:
+    - New navigation key sequences:  navigation across windows:
+      - The <Esc> key followed by the cursor pointing in the direction of
+        the window are now bound to the corresponding wind move command. In graphics
+        mode,  the <Esc> key followed by a Shift cursor key pointing in the
+        direction of the other frame move point to that frame using the
+        corresponding fm command.  This works everywhere except in Org-Mode where
+        the <f11> based key sequences can be used instead.  The Esc based movements
+        are useful in the active vterm window.
+    - New: the M-RET key can be used to align text vertically in some modes.
+    - New: the prefix set member key to quickly access customization buffer groups is
+      now <f2> instead of <f1>. The prefix set member key <f1> is now used to open
+      the local copy of the PDF that describes the topic(s) that manipulate the
+      commands executed by the keys under the same key prefix.   This feature,
+      along with all hyperlinks allow a user to quickly navigate through the PEL
+      documentation inside the PEL manual hosted on Github, the local PDF files
+      and the PDF files hosted on Github.
+    - New key binding to the customize browsers which allow you to navigate
+      the customize data tree:
+      - <f11> <f2> B browse the customize tree from the top.
+      - <f11> <f2> P B browse the customize tree from the top of the PEL
+        customize tree.
+    - New: Added a new PEL key map tree for browsing
+      - <f11> B N : for NeoTree.  Removed the previous <f11> N  key sequence.
+      - <f11> B Z : for ZTree.  Removed the previous <f11> Z key sequence.
+      - <f11> B T: for early support of treemacs.  Its support is not complete yet.
+    - Modified: the new binding to bm-toggle (<f1> ‘ ‘) is easier to type than
+      the old one (<f11> ‘ t)
+    - Modified: re-organized the key sequences to provide access to the
+      reference PDF, the PEL customization and the Emacs customization buffer
+      for topics accessible via a key sequence inside a PEL key-map:
+      - The key sequences start with the prefix for the PEL key map and end with
+        <f1> for help, <f2> for PEL customization buffer, <f3> for Emacs
+        customization buffer.
+      - The <f11> <f2> provides access to the commands to access customization
+        search:  (c), to the customization buffer option (o) and to a
+        customization group (g).
+      - The <f11> <f2> E provides access to some Emacs customization groups.
+      - The <f11> <f2> P provides access to some of the PEL customization groups
+        that are not accessible from a specific PEL key map.
+      - The <f11> <f2> SPACE provide access to the programming specific groups
+        that do not have a specific key map: this includes lisp for the moment.
+      - The <f11> ? p key sequence provide access to all reference PDF files
+        (either the local copy or the GitHub-hosted web page) and support tab completion.
+    - Modified: more consistent key binding for the PEL customization of
+      key-chords: now use:  <f11> <f2> P M-K
+    - Modified: PEL Hydras are no longer terminated by typing ‘q’, they are
+      terminated by typing <f7>, the same key tart starts it.
+      The ‘q’ key is used to execute the quit-window command.  Use it to
+      change the buffer seen in the current window. The loading of PEL Hydras is
+      no longer time delayed: it’s loaded on demand.
+    - Modified: more keys in the window Hydra, pel-∑wnd: q to quit window, b and B to change
+      buffer in current window. Also changed the key to kill current buffer: it’s
+      k instead of K.
+    - Modified: Replaced the "fg" key-chord with a "gf" key-seq.  This is much less likely
+      to cause unwanted and surprising point movements to the window at left.
+  - *New supported Modes*:
+    - Support for lispy, a modal editing mode for Lisp-like programming languages.
+    - Support for lpy, a lispy mode for Python.
+    - Support for AsciiDoc via the adoc-mode.
+    - Support for external packages that extend Emacs keyboard macro
+      support: centimacro, elmacro and emacros.  Both centimacro and emacros
+      libraries supported by PEL are forked of the original libraries with bug
+      fixes and improvements.
+    - Added support for all-the-icons.
+      - In text mode it provides arrows for the NeoTree window.
+      - In Graphics mode, provides icons for NeoTree, dired, ibuffer and ivy when
+        their respective pel-use- user options are activated.
+    - Experimental support for vlang-mode: support for the emerging V
+      programming language.
+    - Experimental support for js2-mode: support for Javascript.
+  - *Improved behaviour*:
+    - pel-kbmacro-prompts user option is now off by default to mimic Emacs.
+    - Visible bookmarks no longer deferred loaded: loaded on demand: first
+      time a bound-key is typed.
+    - In graphic mode, the extra keys for windmove are loaded after 1 second instead of 5.
+  - *Improved commands*:
+    - The keys to flip windows horizontally (<f11> w h) and vertically (<f11> w v)
+      are now safer.  They now take into account the minibuffer and dedicated
+      windows and only operate on the current frame.
+    - The commands that provide access to the local copy of the reference PDF
+      files can also open the Github-hosted PDF file in the system browser.
+    - Temporarily set max-specpdl-size to 2000 while running benchmark-init
+      commands to handle large set of packages.
+  - *Improved customization data*:
+    - Regrouped the PEL customization groups.
+    - Cleanup PEL customization group hierarchy. Modified key bindings to access
+      customization groups to make it easier to remember.
+    - New PEL user option for spell checker control: pel-spell-check-tool.  This
+      replaces the old one that was used to define the spell checker program for
+      several OS.  The new one is simpler to use.
 - *User Manual changes and additions*:
-  - The installation sections attempt to highlight the commands to execute.
-  - A copy of the original init.el is provided in the new example/init
-    section of the repository.
-  - Recommends the use of pel-browse-pel to open the customize tree browser
-    buffer to customize PEL the first time it is used.
-  - A new section describes the Emacs user options that new users may want
-    to set.
+  - Fixed typos in the manual installation instructions: “./emacs.d” is now
+    “/.emacs.d”
+  - Re-organized the installation sections trying to highlight the commands to
+    execute.
   - Added a fast-track section to the installation section, easier to follow
     than the complete sections with all the descriptions.
+  - Added copies of several versions of init.el.  They correspond to what is
+    needed by the installation steps and are also used in the new *fast track*
+    installation instructions.  The files are stored the new example/init
+    section of the repository.
+  - The installation instructions for new users now recommends the use of
+    pel-browse-pel to open the customize tree browser buffer to customize PEL
+    the first time it is used.
+  - A new section describes the Emacs user options that new users may want
+    to set.
+  - The repository now provides example of Bash alias commands to use a quick
+    keys to launch emacs (see the "example/bin" directory).
 - *Reference PDF updates*:
   - Added hyperlinks in all PDF files.  The See also and title icons are now all links.
   - The help and customize PDFs have a lot of links to the of them PDF pages.
