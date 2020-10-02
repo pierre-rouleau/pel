@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-10-01 13:08:43, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-10-02 16:28:53, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5470,8 +5470,13 @@ Package Name & Archive link   Archive Site
 ============================= ==========================
 ace-link_                     MELPA_
 ace-window_                   MELPA_
+adoc-mode_                    MELPA_
 `ag`_                         MELPA_
 alchemist_                    MELPA_
+all-the-icons_                MELPA_
+all-the-icons-ibuffer_        MELPA_
+all-the-icons-dired_          MELPA_
+all-the-icons-ivy_            MELPA_
 anzu_                         MELPA_
 apples-mode_                  MELPA_
 ascii-table_                  MELPA_
@@ -5512,6 +5517,7 @@ iedit_                        MELPA_
 ivy_                          MELPA_
 julia-mode_                   MELPA_
 julia-snail_                  MELPA_
+js2-mode_                     MELPA_
 keycast_                      MELPA_
 key-chord_                    MELPA_
 key-seq_                      MELPA_
@@ -5546,6 +5552,7 @@ sr-speedbar_                  MELPA_
 swiper_                       MELPA_
 undo-tree_                    ELPA_
 `use-package`_                MELPA_
+v-mode_                       MELPA_
 visual-regexp_                MELPA_
 visual-regexp-steroids_       MELPA_
 vline_                        Emacsmirror_
@@ -5580,7 +5587,12 @@ when running Emacs 27.1 and later versions.
 .. _ace-link:                  https://melpa.org/#/ace-link
 .. _ace-window:
 .. _ace-window package:        https://melpa.org/#/ace-window
+.. _adoc-mode:                 https://melpa.org/#/adoc-mode
 .. _ag:                        https://melpa.org/#/ag
+.. _all-the-icons:             https://melpa.org/#/all-the-icons
+.. _all-the-icons-ibuffer:     https://melpa.org/#/all-the-icons-ibuffer
+.. _all-the-icons-dired:       https://melpa.org/#/all-the-icons-dired
+.. _all-the-icons-ivy:         https://melpa.org/#/all-the-icons-ivy
 .. _alchemist:                 https://melpa.org/#/alchemist
 .. _ascii-table:               https://melpa.org/#/ascii-table
 .. _apples-mode:               https://melpa.org/#/apples-mode
@@ -5628,6 +5640,7 @@ when running Emacs 27.1 and later versions.
 .. _ivy:                       https://melpa.org/#/ivy
 .. _julia-mode:                https://melpa.org/#/julia-mode
 .. _julia-snail:               https://melpa.org/#/julia-snail
+.. _js2-mode:                  https://melpa.org/#/js2-mode
 .. _keycast:                   https://melpa.org/#/keycast
 .. _key-chord:                 https://melpa.org/#/key-chord
 .. _key-seq:                   https://melpa.org/#/key-seq
@@ -5661,18 +5674,20 @@ when running Emacs 27.1 and later versions.
 .. _sr-speedbar:               https://melpa.org/#/sr-speedbar
 .. _swiper:                    https://melpa.org/#/swiper
 .. _undo-tree:                 https://elpa.gnu.org/packages/undo-tree.html
-.. _which-key:                 https://elpa.gnu.org/packages/which-key.html
-.. _SBCL:                      https://en.wikipedia.org/wiki/Steel_Bank_Common_Lisp
-.. _ELPA:                      https://elpa.gnu.org
-.. _framemove:                 https://www.emacswiki.org/emacs/FrameMove
+.. _v-mode:                    https://melpa.org/#/v-mode
 .. _visual-regexp:             https://melpa.org/#/visual-regexp
 .. _visual-regexp-steroids:    https://melpa.org/#/visual-regexp-steroids
-.. _vline:                     https://www.emacswiki.org/emacs/VlineMode
 .. _vterm:                     https://melpa.org/#/vterm
+.. _which-key:                 https://elpa.gnu.org/packages/which-key.html
 .. _xr:                        https://elpa.gnu.org/packages/xr.html
 .. _yasnippet:                 https://melpa.org/#/yasnippet
 .. _yasnippet-snippets:        https://melpa.org/#/yasnippet-snippets
 .. _ztree:                     https://melpa.org/#/ztree
+
+.. _framemove:                 https://www.emacswiki.org/emacs/FrameMove
+.. _vline:                     https://www.emacswiki.org/emacs/VlineMode
+.. _SBCL:                      https://en.wikipedia.org/wiki/Steel_Bank_Common_Lisp
+.. _ELPA:                      https://elpa.gnu.org
 .. _Emacsmirror:               https://github.com/emacsmirror
 .. _EmacsAttics:               https://github.com/emacsattic
 
