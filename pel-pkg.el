@@ -24,7 +24,12 @@
     (use-package         "20191126.2034") ; melpa  Melpa-stable: 2.4
     (ace-link            "20200518.957")  ; melpa  Melpa-stable: 0.5.0
     (ace-window          "20200304.1344") ; melpa  Melpa-stable: 0.9.0
+    (adoc-mode           "20160314.2130")
     (ag                  "20190726.9")    ; melpa
+    (all-the-icons       "20200923.1339")
+    (all-the-icons-ibuffer "20200612.1642")
+    (all-the-icons-dired "20200403.1018")
+    (all-the-icons-ivy   "20190508.1803")
     (alchemist           "20180312.1304")
     (anzu                "20200514.1801") ; melpa
     (apples-mode         "20110121.418")
@@ -59,6 +64,7 @@
     (highlight-defined   "20181106.1718") ; melpa. Melpa-stable: 0.1.5
     (hydra               "20200306.913")
     (ivy                 "20200520.1809") ; melpa.
+    (js2-mode            "20200725.112")
     (julia-snail         "20200420.221")
     (keycast             "20200612.2247") ; melpa
     (key-seq             "20150907.756")  ; melpa
@@ -91,6 +97,7 @@
     (sr-speedbar         "20161025.831")  ; melpa. Melpa-stable: 20140914.2339
     (swiper              "20200503.1102") ; melpa.
     (undo-tree           "0.7.4")         ; gnu
+    (v-mode              "20200823.535")
     (visual-regexp       "20190414.814")  ; melpa
     (visual-regexp-steroids "20190414.814") ; melpa
     (vterm               "20200418.1610")
