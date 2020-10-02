@@ -71,7 +71,7 @@ This file uses Org mode. Some useful (default) key-bindings:
   - Key bindings to quickly access the customization buffer of several
     customization groups.
   - and more...
-* Additions since 0.2.0
+* Version 0.3.0
 - This includes slots of cleanups, several new modes, new key
   bindings, better installation procedure, several bug fixes.  I continue to
   consider it a project in early development but only because it's lacking a
