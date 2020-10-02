@@ -89,6 +89,8 @@ This file uses Org mode. Some useful (default) key-bindings:
       and no longer references the "/.emacs.p" directory.
 - *New Features and improvements*:
   - *New/modified global keys (and commands)*:
+    - New: the M-D key binding kill next word(s) and delete white-space after the
+      last word killed, bringing the next word just at point.
     - New navigation key sequences:  navigation across windows:
       - The <Esc> key followed by the cursor pointing in the direction of
         the window are now bound to the corresponding wind move command. In graphics

@@ -2631,6 +2631,9 @@ vlang-mode.el/master/vlang-mode.el"
 ;; ---------------------------------------------------------
 (global-set-key [(control shift delete)] #'kill-word)
 (global-set-key [(control delete)]        'pel-delete-to-next-visible)
+;; - Delete next word(s) and whitespace following it
+;; -------------------------------------------------
+(global-set-key (kbd "M-D")               'pel-kill-word-and-whitespace)
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> ,`` : auto-completion

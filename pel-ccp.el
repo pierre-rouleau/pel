@@ -417,7 +417,7 @@ All copy operations are performed by `kill-ring-save'."
 (defun pel-kill-from-beginning-of-line ()
   "Kill from the beginning of the line to point."
   (interactive)
-  ;; lazy load simple because it's the only function here that uses it.
+  ;; lazy load simple because it's one of the 2 functions here that uses it.
   ;; simple is part of Emacs standard distribution.
   (require 'simple)
   (kill-line 0))
@@ -436,6 +436,18 @@ All copy operations are performed by `kill-ring-save'."
         (pel-next-visible 1)
         (backward-delete-char-untabify 1))
     (error "Function pel-next-visible not loaded")))
+
+;;-pel-autoload
+(defun pel-kill-word-and-whitespace (arg)
+  "Kill forward word, delete all whitespace following it.
+With argument ARG, kill that many words then the whitespace following them."
+  (interactive "p")
+  ;; lazy load simple because it's one of the 2 functions here that uses it.
+  ;; simple is part of Emacs standard distribution.
+  (require 'simple)
+  (kill-word arg)                   ; kill next word(s)
+  (kill-append " " nil)             ; separate works in kill ring
+  (pel-delete-to-next-visible))     ; delete whitespace to next word
 
 ;; -----------------------------------------------------------------------------
 

@@ -123,7 +123,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-mark-whole-line
     pel-copy-marked-or-whole-line
     pel-kill-from-beginning-of-line
-    pel-delete-to-next-visible)
+    pel-delete-to-next-visible
+    pel-kill-word-and-whitespace)
 
   (pel-autoload "pel-comment" for:
     pel-comment-start
