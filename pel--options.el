@@ -2650,17 +2650,14 @@ When set to non-nil, 3 packages are used:
 
 When set, identifies what mode is used to support V.
 
-WARNING:
- - The vlang-mode has very minimal support: just font locking.
-   It is not for serious use.  It is only there to compare with the
-   v-mode implementation and will allow some experimentation.
-   It could very well disappear in the future.
- - The v-mode is much more mature and is RECOMMENDED."
+NOTE:
+ - The vlang-mode has minimal support: font locking only.
+ - The v-mode is more mature and is recommended."
   :group 'pel-pkg-for-v
   :type '(choice
           (const :tag "No support."  nil)
           (const
-           :tag "Supported by vlang-mode external, minimal, toy/experimental package."
+           :tag "Supported by vlang-mode minimal/experimental package."
            vlang-mode)
           (const :tag "Supported by v-mode, a more mature mode." v-mode))
   :link '(url-link :tag "v-mode @ github"
@@ -2668,7 +2665,7 @@ WARNING:
   :link '(url-link :tag "v-mode @ MELPA"
                    "https://melpa.org/#/v-mode")
   :link '(url-link :tag "vlang-mode @ github"
-                   "https://github.com/pierre-rouleau/vlang-mode.el"))
+                   "https://github.com/pierre-rouleau/vlang-mode"))
 
 ;; -----------------------------------------------------------------------------
 ;; Project Manager Support

@@ -2448,12 +2448,12 @@ This is meant to be used in the d-mode hook lambda."
             'v-mode 'v-mode-hook)))
 
         ((eq pel-use-v 'vlang-mode)
-         ;; vlang-mode is a toy/experimental/early/testing/not for serious
+         ;; vlang-mode is experimental: only provides font-locking
          ;; use, not on MELPA: download directly from github.
          (cl-eval-when 'load
            (pel-install-file
             "https://raw.githubusercontent.com/pierre-rouleau/\
-vlang-mode.el/master/vlang-mode.el"
+vlang-mode/master/vlang-mode.el"
             "vlang-mode.el"))
          (use-package vlang-mode
            :commands vlang-mode))))
