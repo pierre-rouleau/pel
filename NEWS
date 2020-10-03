@@ -1,10 +1,4 @@
-PEL Library NEWS         -*- org -*-
-
-This file uses Org mode. Some useful (default) key-bindings:
- - Use "C-c C-n"/"C-c C-p" to jump to next/prev heading
- - Use "<tab>" to expand/collapse nodes
- - Use "<backtab>" to cycle visibility of all nodes
- - Use "C-c C-o" to open links
+PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 
 * Version: 0.1.1
 - new features:
