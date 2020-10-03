@@ -1030,10 +1030,11 @@ Then save your changes."
              c-toggle-hungry-state
              c-toggle-syntactic-indentation))
 
-(global-set-key (kbd "ESC <up>")    'windmove-up)
-(global-set-key (kbd "ESC <down>")  'windmove-down)
-(global-set-key (kbd "ESC <right>") 'windmove-right)
-(global-set-key (kbd "ESC <left>")  'windmove-left)
+(when pel-windmove-on-esc-cursor
+  (global-set-key (kbd "ESC <up>")    'windmove-up)
+  (global-set-key (kbd "ESC <down>")  'windmove-down)
+  (global-set-key (kbd "ESC <right>") 'windmove-right)
+  (global-set-key (kbd "ESC <left>")  'windmove-left))
 
 (define-key pel:           "#"             'pel-toggle-mac-numlock)
 (define-key pel:           "`"            #'overwrite-mode)

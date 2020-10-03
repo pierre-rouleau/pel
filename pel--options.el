@@ -606,7 +606,6 @@ a non-customizable variable."
   :group 'pel-pkg-for-window
   :link `(url-link :tag "Frames PDF" ,(pel-pdf-file-url "frames")))
 
-
 (defcustom pel-use-framemove nil
   "Control whether PEL uses the framemove package.
 It is similar to windmove and ties with it.
@@ -3131,6 +3130,23 @@ Emacs window layout previously used:
 - winner-redo:
    - C-c <right>
    - <f11> w n"
+  :group 'pel-pkg-for-window
+  :type 'boolean
+  :safe #'booleanp)
+
+
+(defcustom pel-windmove-on-esc-cursor t
+  "Control whether the Esc-cursor keys are bound to windmove commands.
+
+When set to t, PEL activates the following four key bindings:
+
+- ESC <up>    : windmove-up
+- ESC <down>  : windmove-down
+- ESC <right> : windmove-right
+- ESC <left>  : windmove-left
+
+If it set to nil, these keys are not bound.
+When using Org-mode often it's probably best to set this off (nil)."
   :group 'pel-pkg-for-window
   :type 'boolean
   :safe #'booleanp)

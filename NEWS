@@ -239,3 +239,9 @@ This file uses Org mode. Some useful (default) key-bindings:
     set to *t*. Two new keys in the <f12> for Emacs Lisp mode:
     - <f12> b : eldoc-box-hover-at-point
     - <f12> B : eldoc-box-hover-mode
+  - New: user option pel-windmove-on-esc-cursor controls whether PEL binds the
+    Esc-cursor keys to windmove commands. It is on by default. Users of
+    Org-mode will probably want to turn it off.
+- *Modifications*:
+  - Change: vlang-mode.el repo was renamed to vlang-mode.  Updated download
+    control code accordingly.
