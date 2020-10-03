@@ -570,10 +570,13 @@ Done in this function to allow advising libraries that remap these keys."
 ;; - Programming Language Support
 ;; --============================
 
-;; (when (and pel-use-eldoc-box
-;;            (display-graphic-p))
-;;   (use-package eldoc-box
-;;     :require t))
+(when (and pel-use-eldoc-box
+           (display-graphic-p))
+  (use-package eldoc-box
+    :ensure t
+    :pin melpa
+    :commands (eldoc-box-hover-mode
+               eldoc-box-hover-at-point-mode)))
 
 ;; C-like programming languages: C, C++
 ;; ------------------------------------
@@ -2188,6 +2191,15 @@ This is meant to be used in the d-mode hook lambda."
   (define-key pel:for-elisp "G" 'pel-render-commented-graphviz-dot))
 (when pel-use-parinfer
   (define-key pel:for-elisp "i" 'parinfer-auto-fix))
+
+(define-pel-global-prefix pel:elisp-help (kbd "<f11> SPC l ?"))
+(define-key pel:elisp-help "e" 'eldoc-mode)
+(when (and pel-use-eldoc-box
+           (display-graphic-p))
+  (define-key pel:elisp-help "b" 'eldoc-box-hover-mode)
+  (define-key pel:elisp-help "B" 'eldoc-box-hover-at-point-mode))
+
+
 
 (define-pel-global-prefix pel:elisp-analyze (kbd "<f11> SPC l a"))
 (define-key pel:elisp-analyze ")" #'check-parens)

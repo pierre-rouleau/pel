@@ -1393,17 +1393,48 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
 (defgroup pel-pkg-for-programming nil
   "PEL customization for programming languages."
   :group 'pel-package-use
-  :link `(url-link :tag "Comments PDF" ,(pel-pdf-file-url "comments")))
+  :link `(url-link :tag "Comments PDF" ,(pel-pdf-file-url "comments"))
+  )
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Generic Programming Support
+;; ---------------------------
+(defgroup pel-pkg-for-all-languages nil
+  "PEL Generic Programming support."
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "Comments PDF" ,(pel-pdf-file-url "comments"))
+  :link `(url-link :tag "Inserting Text PDF" ,(pel-pdf-file-url "inserting-text")))
 
 (defcustom pel-use-eldoc-box nil
   "Control whether PEL supports the eldoc-box package.
-edox-box displays Eldoc information inside a child frame.
+
+The eldoc-box various modes display Eldoc information inside a
+child frame over the current window, covering text in the current
+buffer.  It is possible to select between 2 modes:
+
+- eldoc-box-hover-mode:
+        Display documentation of the symbol at point
+        in a childframe on upper corner.
+
+- eldoc-box-hover-at-point-mode:
+        Same as eldoc-box-hover-mode except the childframe
+        is displayed at point, instead of on the upper corner.
+
 Note: eldoc-box only works in graphics mode, not in terminal (tty)
       mode.  In terminal-mode it is not activated even if this option
-      is activated."
+      is activated.
+
+If you do not like seeing the eldoc information inside the echo
+area at the bottom of the Emacs screen, use this.  Otherwise it's
+of minimum value.  It can be useful when the echo area displays
+information you are interested in and do not want to have it
+replaced by eldoc text (however you can always disable eldoc with
+M-x eldoc-mode)."
   :group 'pel-pkg-for-all-languages
   :type 'boolean
-  :safe #'booleanp)
+  :safe #'booleanp
+  :link '(url-link :tag "eldoc-box @ github" "https://github.com/casouri/eldoc-box")
+  :link '(custom-group-link "eldoc"))
 
 (defcustom pel-use-hide-comnt nil
   "Control whether PEL activates Drew Adams' hide-cmnt package.
@@ -1426,15 +1457,6 @@ eglot is a client for Language Server Protocol servers."
   :group 'pel-pkg-for-language-server
   :type 'boolean
   :safe #'booleanp)
-
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; Generic Programming Support
-;; ---------------------------
-(defgroup pel-pkg-for-all-languages nil
-  "PEL Generic Programming support."
-  :group 'pel-pkg-for-programming
-  :link `(url-link :tag "Comments PDF" ,(pel-pdf-file-url "comments"))
-  :link `(url-link :tag "Inserting Text PDF" ,(pel-pdf-file-url "inserting-text")))
 
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-pkg-generic-code-style nil

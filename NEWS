@@ -232,3 +232,10 @@ This file uses Org mode. Some useful (default) key-bindings:
   - pel-autoload.el now uses a pel-autoload macro to provide a more regular,
     cleaner syntax code easier to maintain and possibly for future automatic
     code generation.
+* Changes after Version 0.3.0
+- *New Features and improvements**
+  - New: In Emacs Lisp mode: new key binding for eldoc-mode: <f12> e
+  - New: eldoc-box now available in graphics mode when pel-use-eldoc-box is
+    set to *t*. Two new keys in the <f12> for Emacs Lisp mode:
+    - <f12> b : eldoc-box-hover-at-point
+    - <f12> B : eldoc-box-hover-mode

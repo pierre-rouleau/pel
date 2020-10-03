@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-10-01 15:18:26, updated by Pierre Rouleau>
+;; Time-stamp: <2020-10-03 17:05:37, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -115,8 +115,10 @@
                                                                         julia-snail))
     ([f11 32 ?l]      "pl-emacs-lisp"          pel-pkg-for-elisp       (lisp
                                                                         elint
-                                                                        eldoc
                                                                         lispy))
+    ([f11 32 ?l ??]   "pl-emacs-lisp"          pel-pkg-for-all-languages (eldoc
+                                                                        eldoc-box))
+
     ([f11 32 ?p]      "pl-python"              pel-pkg-for-python      (python
                                                                         python-flymake))
     ([f11 32 ?r]      "mode-rst"               pel-pkg-for-reST        rst)
