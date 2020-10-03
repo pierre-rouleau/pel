@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-10-02 16:32:59, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-10-03 18:48:57, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4473,7 +4473,11 @@ Note:
   when the files are viewed through an OS-based or browser-based PDF viewer.
   Firefox has one built-in.  One can be installed on Google Chrome.
   The hyperlinks are not active when the files are viewed through the
-  Github PDF file rendering (for example, the `Github rendering of the Buffers PDF`_).
+  Github PDF file rendering (for example, the `Github rendering of the Buffers PDF`_)
+  which can also be viewed inside PEL's `doc/pdf github directory`_.
+
+
+.. _doc/pdf github directory: https://github.com/pierre-rouleau/pel/tree/master/doc/pdf
 
 
 - `Document Legend`_
