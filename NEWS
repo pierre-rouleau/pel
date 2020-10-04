@@ -226,7 +226,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - pel-autoload.el now uses a pel-autoload macro to provide a more regular,
     cleaner syntax code easier to maintain and possibly for future automatic
     code generation.
-* Changes after Version 0.3.0
+* Version 0.3.1
 - *Fixes*:
   - Spell check control user options and handling now simpler and don't have type
     mismatch that prevent customization buffer to edit the values.

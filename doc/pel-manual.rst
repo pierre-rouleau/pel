@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-10-03 18:48:57, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-10-03 23:13:42, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -651,7 +651,7 @@ At the end, if all goes right, you should see something like this::
 
     Loading pel_keys...
     PEL loaded, PEL keys binding in effect.
-    PEL version: 0.3.0
+    PEL version: 0.3.1
     Parsing tar file...
     Parsing tar file...done
 
