@@ -582,6 +582,17 @@ Done in this function to allow advising libraries that remap these keys."
 ;; C-like programming languages: C, C++
 ;; ------------------------------------
 (when pel-use-c-eldoc
+
+  (defun pel-toggle-c-eldoc-mode ()
+    "Toggle c-eldoc mode on/off."
+    (interactive)
+    (unless (boundp 'eldoc-mode)
+      (require 'c-eldoc nil :noerror))
+    (if eldoc-mode
+        (eldoc-mode -1)
+      (c-turn-on-eldoc-mode)))
+
+
   (cl-eval-when 'load
     (pel-install-file
      "https://raw.githubusercontent.com/pierre-rouleau/c-eldoc/master/c-eldoc.el"
@@ -1658,6 +1669,9 @@ MODE must be a symbol."
   (define-key             pel:for-c  "u" 'pel-render-commented-plantuml))
 (when pel-use-graphviz-dot
   (define-key pel:for-c "G" 'pel-render-commented-graphviz-dot))
+(when pel-use-c-eldoc
+  (define-pel-global-prefix pel:c-help (kbd "<f11> SPC c ?"))
+  (define-key pel:c-help "e" 'pel-toggle-c-eldoc-mode))
 
 (pel--map-cc-for pel:for-c pel:for-c-preproc)
 

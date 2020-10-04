@@ -242,3 +242,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 - *Modifications*:
   - Change: vlang-mode.el repo was renamed to vlang-mode.  Updated download
     control code accordingly.
+* Changes after version 0.3.1:
+** New Features:
+- New: integrated c-eldoc.  In C buffers, the ``<f12> ? e`` key sequence
+  toggles c-eldoc mode on/off. I am currently investigating c-eldoc various
+  versions trying to improve its performances.  For systems that do not have
+  access to a LSP for C/C++ c-eldoc might provide some help even though it is
+  limited.

@@ -1590,12 +1590,6 @@ Empty strings can be used to specify section with a tempo marker with no text."
   "PEL customization for curly-bracket programming languages."
   :group 'pel-pkg-for-programming)
 
-(defcustom pel-use-c-eldoc nil
-  "Control whether PEL supports the c-eldoc package."
-  :group 'pel-pkg-for-cc
-  :type 'boolean
-  :safe #'booleanp)
-
 (defcustom pel-cc-auto-newline t
   "Set the default state of CC Mode electric auto-newline for all CC Modes.
 This includes modes for C, C++, D.
@@ -1615,7 +1609,26 @@ of auto-newline while editing."
 (defgroup pel-pkg-for-c nil
   "PEL customization for C."
   :group 'pel-pkg-for-cc
+  :group 'c
   :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
+
+(defcustom pel-use-c-eldoc nil
+  "Control whether PEL supports the c-eldoc package.
+
+c-eldoc is a minor mode that provides function prototype information
+on the echo area when point is located on a function name.
+c-eldoc uses the eldoc infrastructure.
+Compared to language servers capabilities c-eldoc is limited.
+c-eldoc uses a local compiler to pre-process the current buffer in order
+to provide the information.  It can slow down cursor movement.
+
+If you activate this option PEL provides a command to toggle this mode
+via the ``<f12> ? e`` sequence."
+  :group 'pel-pkg-for-c
+  :type 'boolean
+  :safe #'booleanp
+  :link '(url-link :tag "c-eldoc @ github"
+                   "https://github.com/pierre-rouleau/c-eldoc"))
 
 (defcustom pel-c-bracket-style "linux"
   "Set the bracket style for the C programming language.
