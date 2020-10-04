@@ -191,10 +191,11 @@ See the spell-checking.pdf file for more info" origin program-name origin progra
 Use the values taken from user option variable
 `pel-spell-check-tool' if specified.  If nothing is specified
 the spell checker is not selected."
-  (if pel-spell-check-tool
-      (pel--spell-select (nth 0 pel-spell-check-tool)
-                         (nth 1 pel-spell-check-tool)
-                         "pel-spell-check-tool")))
+  (when pel-spell-check-tool
+    (pel--spell-select pel-spell-check-tool
+                       (or pel-spell-check-personal-dictionary
+                           "~/.ispell")
+                       "pel-spell-check-tool")))
 
 ;; --
 

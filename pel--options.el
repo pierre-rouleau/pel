@@ -2938,6 +2938,15 @@ and usable shell for Emacs."
 ;; -----------------------------------------------------------------------------
 ;; Spelling Support
 ;; ----------------
+
+;; '(pel-spell-check-tools
+;;    (quote
+;;     ((gnu "aspell" "~/.emacs.d/.ispell")
+;;      (gnu/linux "aspell" "~/.emacs.d/.ispell")
+;;      (darwin "aspell" "~/.emacs.d/.ispell")
+;;      (windows-nt "c:/pg/aspell/0.50.3-w32/bin/aspell.exe" ""))))
+
+
 (defgroup pel-pkg-for-spelling nil
   "PEL Spelling Support."
   :group 'pel-package-use
@@ -2956,10 +2965,21 @@ command line tool.  This includes:
 The second line identifies the file where the local dictionary
 will be stored.  Often stored in ~/.emacs.d/.ispell"
   :group 'pel-pkg-for-spelling
-  :type
-  '(list
-    (string :tag "ispell-compatible checker  ")
-    (string :tag "personal dictionary        ")))
+  :type '(choice
+          (const :tag "No spell check" nil)
+          (string :tag "ispell-compatible program name")))
+
+(defcustom  pel-spell-check-personal-dictionary nil
+  "Location of you personal dictionary file.
+
+If not specified, the location selected is \"~/.ispell\".
+
+However the recommend location is: \"~/.emacs.d/.ispell\" if your init.el
+file is located in the \"~/.emacs.d\" directory."
+  :group 'pel-pkg-for-spelling
+  :type '(choice
+          (const  :tag "Use default: ~/.ispell" nil)
+          (string :tag "Use specified file")))
 
 (defcustom pel-modes-activating-flyspell-mode
   '(log-edit-mode
