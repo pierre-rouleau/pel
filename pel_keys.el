@@ -582,11 +582,17 @@ Done in this function to allow advising libraries that remap these keys."
 ;; C-like programming languages: C, C++
 ;; ------------------------------------
 (when pel-use-c-eldoc
+  (cl-eval-when 'load
+    (pel-install-file
+     "https://raw.githubusercontent.com/pierre-rouleau/c-eldoc/master/c-eldoc.el"
+     "c-eldoc.el"))
+
   (use-package c-eldoc
     ;; c-eldoc is an external package.
-    ;; Ensure it's installed via MELPA
-    :ensure t   ; warning is in c-eldoc: it requires cl instead of cl-lib.
-    :pin melpa
+    ;; For the moment I am trying to update it. So download from my page
+    ;; for testing.
+    ;; :ensure t   ; warning is in c-eldoc: it requires cl instead of cl-lib.
+    ;; :pin melpa
 
     ;; autoload it when one of the following commands is used.
     :commands c-turn-on-eldoc-mode
