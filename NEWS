@@ -227,7 +227,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     cleaner syntax code easier to maintain and possibly for future automatic
     code generation.
 * Changes after Version 0.3.0
-- *New Features and improvements**
+- *Fixes*:
+  - Spell check control user options and handling now simpler and don't have type
+    mismatch that prevent customization buffer to edit the values.
+- *New Features and improvements*:
   - New: In Emacs Lisp mode: new key binding for eldoc-mode: <f12> e
   - New: eldoc-box now available in graphics mode when pel-use-eldoc-box is
     set to *t*. Two new keys in the <f12> for Emacs Lisp mode:
