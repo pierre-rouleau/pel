@@ -3641,12 +3641,14 @@ the ones defined from the buffer now."
 
 (define-pel-global-prefix pel:grep (kbd "<f11> g"))
 (declare-function kill-grep "grep")
-(define-key pel:grep      "f"  #'find-grep)
-(define-key pel:grep      "g"  #'grep)
-(define-key pel:grep      "k"  #'kill-grep)
-(define-key pel:grep      "l"  #'lgrep)
-(define-key pel:grep      "r"  #'rgrep)  ; execute recursive grep
-(define-key pel:grep      "z"  #'zrgrep)
+(define-key pel:grep      "f"         #'find-grep)
+(define-key pel:grep      "g"         #'grep)
+(define-key pel:grep      "k"         #'kill-grep)
+(define-key pel:grep      "l"         #'lgrep)
+(define-key pel:grep      "r"         #'rgrep)  ; execute recursive grep
+(define-key pel:grep      "z"         #'zrgrep)
+(define-key pel:grep      "1"          'first-error)
+
 ;;
 
 ;; ripgrep - a faster grep easier to use than grep.
@@ -3662,7 +3664,7 @@ the ones defined from the buffer now."
     :commands (rg rg-literal rg-menu)
     :init
     (cl-eval-when 'compile (require 'rg nil :no-error))
-    (define-key pel:grep  "I"     'rg-literal)
+    (define-key pel:grep  "t"     'rg-literal)
     (define-key pel:grep  "i"     'rg)
     (define-key pel:grep  "m"     'rg-menu)
     (global-set-key (kbd "C-c s") 'rg-menu)
@@ -3683,18 +3685,37 @@ the ones defined from the buffer now."
     :pin melpa
     :commands (ag
                ag-dired
-               ag-dired-regexp
+               ag/kill-process
                ag-files
-               ag-mode
+               ag-regexp
                ag-project
-               ag-project-dired
-               ag-project-dired-regexp
                ag-project-files
                ag-project-regexp
-               ag-regexp)
+               ag-dired-regexp
+               ag-project-dired-regexp
+               ag-kill-buffers
+               ag-kill-other-buffers)
+
     :init
-    (define-key pel:grep  "a"     'ag)
-    (define-key pel:grep  "A"     'ag-dired)))
+    (define-pel-global-prefix pel:ag (kbd "<f11> g a"))
+    (define-key pel:ag  "a"        'ag)
+    (define-key pel:ag  "x"        'ag-regexp)
+    (define-key pel:ag  "f"        'ag-files)
+
+    (define-pel-global-prefix pel:ag-project   (kbd "<f11> g a p"))
+    (define-key pel:ag-project "f" 'ag-project-files)
+    (define-key pel:ag-project "p" 'ag-project)
+    (define-key pel:ag-project "x" 'ag-project-regexp)
+
+    (define-pel-global-prefix pel:ag-dired (kbd "<f11> g a d"))
+    (define-key pel:ag-dired  "d"  'ag-dired)
+    (define-key pel:ag-dired  "x"  'ag-dired-regexp)
+    (define-key pel:ag-dired  "f"  'ag-project-dired-regexp)
+
+    (define-pel-global-prefix pel:ag-kill (kbd "<f11> g a k"))
+    (define-key pel:ag-kill  "a"   'ag-kill-buffers)
+    (define-key pel:ag-kill  "o"   'ag-kill-other-buffers)
+    (define-key pel:ag-kill  "p"   'ag/kill-process)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> i`` : Insert text operations

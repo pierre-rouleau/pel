@@ -1,12 +1,19 @@
 PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 
 * Changes since version 0.3.1:
-** New Features:
+** New Features and Improvements:
 - New: integrated c-eldoc.  In C buffers, the ``<f12> ? e`` key sequence
   toggles c-eldoc mode on/off. I am currently investigating c-eldoc various
   versions trying to improve its performances.  For systems that do not have
   access to a LSP for C/C++ c-eldoc might provide some help even though it is
   limited.
+- New: Added key bindings for ag-based search.
+** Modifications:
+- Modified key bindings in pel:grep to better organize commands for ag and for
+  better regularity.
+** Updates to Reference PDF files:
+- Grep PDF describes ag and ripgrep menu.  Also references projectile-based
+  search commands.
 * Version 0.3.1
 ** Fixes:
   - Spell check control user options and handling now simpler and don't have type
