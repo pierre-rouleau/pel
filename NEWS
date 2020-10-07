@@ -1,70 +1,28 @@
 PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 
-* Version: 0.1.1
-- new features:
-  - rst support: added commands for text emphasis (bold, italic, literal, interpreted).
-  - modified keymap: draw is now ``<f11> D``.
-  - added support and documentation for diff/ediff (with keymaps ``<f11> d`` and ``<f11> e``.
-  - Added support for Magit and Monky and ``<f11> v`` keymap for (D)VCS.
-  - Added ``pel-end-of-line`` which helps move before trailing spaces.
-  - Documentation: documented autoave & backup
-  - Documentation: described limitations in the dual-stage autoloading.
-- fixes:
-  - navigation: fixed autoloading
-* First Version: 0.1.0
-- This is the very first version of PEL, the Pragmatic Environment Library.
-
-  - As described in [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#overview][PEL manual overview]] PEL is a hybrid package.
-    It is:
-    - a [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#pdf-document-tables][collection of PDF]] files that document Emacs key bindings that covers
-      standard Emacs key-bindings but also the key bindings provided by PEL and
-      the external packages PEL uses.
-    - an Emacs key binding documentation project
-      (see [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#pel-key-bindings][Key Bindings Documentation]]),
-    - a collection of [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#id26][PEL convenience features]]  which:
-
-      - are implemented in several mostly independent files,
-      - have key bindings mostly using the function keys to provide
-        key map trees that do not interfere with standard Emacs key bindings,
-      - provide access to several other external Emacs packages (see [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#credits][Credits]])
-        but via [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#pel-customization][PEL Customization]] to selectively configure, enable and activate
-        these features.
-        - This conforms to the [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#pel-customization][Emacs easy customization]] system and reduces your
-          need to write custom Emacs Lisp configuration code.
-  - PEL is distributed via the [[https://github.com/pierre-rouleau/pel][PEL Github repository]] and provides a Makefile to
-    automate the compilation and a large part of the installation of PEL and its
-    dependencies.
-  - PEL is not yet distributed via sites like MELPA but
-    [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#how-to-install-pel][PEL's installation instructions]] should alleviate this problem.
-* Version 0.2.0
-- Lots of updates since version 0.1.0, too many to describe here.
-  PEL is still in what I consider an early development phase.
-  Although most base features are stable, there's still several rough edges,
-  lots of packages and programming languages I want to support are not
-  properly supported.
-
-  - I changed the instructions for installations on a new computer.
-  - Added lots of cross-reference links between the PDF sheets.
-  - Implemented a tempo skeleton generic file header block generation, and
-    specialized ones for C, Erlang and reStructuredText files.
-  - Support for Erlang and C is mostly complete, but there are several packages
-    not supported yet.
-  - Added support for sessions, projectile, hiding comments, hiding docstrings.
-  - Added ability to automatically download and install packages from some
-    non-Elpa compliant web sites (but path of Github) like EmacsAttic and
-    EmacsMirror.
-  - Support for generation of images using PlantUML and Graphviz Dot directly
-    from within Emacs.
-  - Support for several ways to deals with keys: Hydras, key-chord and key-seq,
-    avy and ace-link.
-  - Support for voice dictation under macOS and AppleScript.
-  - Support for auto-completion using either auto-complete or company.
-  - Support for input completion with Help, Ivy, Ivy/Counsel as well as Ido.
-  - Support for bookmark management with bm.
-  - Support for virtual-regexp
-  - Key bindings to quickly access the customization buffer of several
-    customization groups.
-  - and more...
+* Changes since version 0.3.1:
+** New Features:
+- New: integrated c-eldoc.  In C buffers, the ``<f12> ? e`` key sequence
+  toggles c-eldoc mode on/off. I am currently investigating c-eldoc various
+  versions trying to improve its performances.  For systems that do not have
+  access to a LSP for C/C++ c-eldoc might provide some help even though it is
+  limited.
+* Version 0.3.1
+** Fixes:
+  - Spell check control user options and handling now simpler and don't have type
+    mismatch that prevent customization buffer to edit the values.
+** New Features and improvements:
+  - New: In Emacs Lisp mode: new key binding for eldoc-mode: <f12> e
+  - New: eldoc-box now available in graphics mode when pel-use-eldoc-box is
+    set to *t*. Two new keys in the <f12> for Emacs Lisp mode:
+    - <f12> b : eldoc-box-hover-at-point
+    - <f12> B : eldoc-box-hover-mode
+  - New: user option pel-windmove-on-esc-cursor controls whether PEL binds the
+    Esc-cursor keys to windmove commands. It is on by default. Users of
+    Org-mode will probably want to turn it off.
+** Modifications:
+  - Change: vlang-mode.el repo was renamed to vlang-mode.  Updated download
+    control code accordingly.
 * Version 0.3.0
 - This includes slots of cleanups, several new modes, new key
   bindings, better installation procedure, several bug fixes.  I continue to
@@ -75,7 +33,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - Linux Fedora 32 with Emacs 27.1
   - Linux Mint 20 with Emacs 26.3
   - Linux Ubuntu 20.04 with Emacs 26.3
-- *Fixes*:
+** Fixes:
   - Fixed distributed custom skeleton code for C.  Updated the example description.
   - *Window flipping commands*: The keys to flip windows horizontally (<f11> w
     h) and vertically (<f11> w v) are now safer.  They now take into account the
@@ -90,7 +48,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - User Manual fixes:
     - User manual installation now properly references the "/.emacs.d" directory.
       and no longer references the "/.emacs.p" directory.
-- *New Features and improvements*:
+** New Features and improvements:
   - *New/modified global keys (and commands)*:
     - New: the M-D key binding kill next word(s) and delete white-space after the
       last word killed, bringing the next word just at point.
@@ -149,7 +107,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       k instead of K.
     - Modified: Replaced the "fg" key-chord with a "gf" key-seq.  This is much less likely
       to cause unwanted and surprising point movements to the window at left.
-  - *New supported Modes*:
+*** New supported Modes:
     - Support for lispy, a modal editing mode for Lisp-like programming languages.
     - Support for lpy, a lispy mode for Python.
     - Support for AsciiDoc via the adoc-mode.
@@ -164,12 +122,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     - Experimental support for vlang-mode: support for the emerging V
       programming language.
     - Experimental support for js2-mode: support for Javascript.
-  - *Improved behaviour*:
+*** Improved behaviour:
     - pel-kbmacro-prompts user option is now off by default to mimic Emacs.
     - Visible bookmarks no longer deferred loaded: loaded on demand: first
       time a bound-key is typed.
     - In graphic mode, the extra keys for windmove are loaded after 1 second instead of 5.
-  - *Improved commands*:
+*** Improved commands:
     - The keys to flip windows horizontally (<f11> w h) and vertically (<f11> w v)
       are now safer.  They now take into account the minibuffer and dedicated
       windows and only operate on the current frame.
@@ -177,7 +135,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       files can also open the Github-hosted PDF file in the system browser.
     - Temporarily set max-specpdl-size to 2000 while running benchmark-init
       commands to handle large set of packages.
-  - *Improved customization*:
+*** Improved customization:
     - Regrouped the PEL customization groups.
     - Cleanup PEL customization group hierarchy. Modified key bindings to access
       customization groups to make it easier to remember.
@@ -188,7 +146,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       activate the superword-mode and subword-mode: the user options
       pel-modes-activating-superword-mode and
       pel-modes-activating-subword-mode identify the respective modes.
-- *User Manual changes and additions*:
+** User Manual changes and additions:
   - Fixed typos in the manual installation instructions: “./emacs.d” is now
     “/.emacs.d”
   - Re-organized the installation sections trying to highlight the commands to
@@ -206,7 +164,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     to set.
   - The repository now provides example of Bash alias commands to use a quick
     keys to launch emacs (see the "example/bin" directory).
-- *Reference PDF updates*:
+** Reference PDF updates:
   - Added hyperlinks in all PDF files.  The See also and title icons are now all links.
   - The help and customize PDFs have a lot of links to the of them PDF pages.
   - Reduced the empty white space in several tables.
@@ -226,26 +184,67 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - pel-autoload.el now uses a pel-autoload macro to provide a more regular,
     cleaner syntax code easier to maintain and possibly for future automatic
     code generation.
-* Version 0.3.1
-- *Fixes*:
-  - Spell check control user options and handling now simpler and don't have type
-    mismatch that prevent customization buffer to edit the values.
-- *New Features and improvements*:
-  - New: In Emacs Lisp mode: new key binding for eldoc-mode: <f12> e
-  - New: eldoc-box now available in graphics mode when pel-use-eldoc-box is
-    set to *t*. Two new keys in the <f12> for Emacs Lisp mode:
-    - <f12> b : eldoc-box-hover-at-point
-    - <f12> B : eldoc-box-hover-mode
-  - New: user option pel-windmove-on-esc-cursor controls whether PEL binds the
-    Esc-cursor keys to windmove commands. It is on by default. Users of
-    Org-mode will probably want to turn it off.
-- *Modifications*:
-  - Change: vlang-mode.el repo was renamed to vlang-mode.  Updated download
-    control code accordingly.
-* Changes after version 0.3.1:
-** New Features:
-- New: integrated c-eldoc.  In C buffers, the ``<f12> ? e`` key sequence
-  toggles c-eldoc mode on/off. I am currently investigating c-eldoc various
-  versions trying to improve its performances.  For systems that do not have
-  access to a LSP for C/C++ c-eldoc might provide some help even though it is
-  limited.
+* Version 0.2.0
+- Lots of updates since version 0.1.0, too many to describe here.
+  PEL is still in what I consider an early development phase.
+  Although most base features are stable, there's still several rough edges,
+  lots of packages and programming languages I want to support are not
+  properly supported.
+  - I changed the instructions for installations on a new computer.
+  - Added lots of cross-reference links between the PDF sheets.
+  - Implemented a tempo skeleton generic file header block generation, and
+    specialized ones for C, Erlang and reStructuredText files.
+  - Support for Erlang and C is mostly complete, but there are several packages
+    not supported yet.
+  - Added support for sessions, projectile, hiding comments, hiding docstrings.
+  - Added ability to automatically download and install packages from some
+    non-Elpa compliant web sites (but path of Github) like EmacsAttic and
+    EmacsMirror.
+  - Support for generation of images using PlantUML and Graphviz Dot directly
+    from within Emacs.
+  - Support for several ways to deals with keys: Hydras, key-chord and key-seq,
+    avy and ace-link.
+  - Support for voice dictation under macOS and AppleScript.
+  - Support for auto-completion using either auto-complete or company.
+  - Support for input completion with Help, Ivy, Ivy/Counsel as well as Ido.
+  - Support for bookmark management with bm.
+  - Support for virtual-regexp
+  - Key bindings to quickly access the customization buffer of several
+    customization groups.
+  - and more...
+* Version: 0.1.1
+** new features:
+  - rst support: added commands for text emphasis (bold, italic, literal, interpreted).
+  - modified keymap: draw is now ``<f11> D``.
+  - added support and documentation for diff/ediff (with keymaps ``<f11> d`` and ``<f11> e``.
+  - Added support for Magit and Monky and ``<f11> v`` keymap for (D)VCS.
+  - Added ``pel-end-of-line`` which helps move before trailing spaces.
+  - Documentation: documented autoave & backup
+  - Documentation: described limitations in the dual-stage autoloading.
+** fixes:
+  - navigation: fixed autoloading
+* First Version: 0.1.0
+- This is the very first version of PEL, the Pragmatic Environment Library.
+
+  - As described in [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#overview][PEL manual overview]] PEL is a hybrid package.
+    It is:
+    - a [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#pdf-document-tables][collection of PDF]] files that document Emacs key bindings that covers
+      standard Emacs key-bindings but also the key bindings provided by PEL and
+      the external packages PEL uses.
+    - an Emacs key binding documentation project
+      (see [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#pel-key-bindings][Key Bindings Documentation]]),
+    - a collection of [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#id26][PEL convenience features]]  which:
+
+      - are implemented in several mostly independent files,
+      - have key bindings mostly using the function keys to provide
+        key map trees that do not interfere with standard Emacs key bindings,
+      - provide access to several other external Emacs packages (see [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#credits][Credits]])
+        but via [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#pel-customization][PEL Customization]] to selectively configure, enable and activate
+        these features.
+        - This conforms to the [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#pel-customization][Emacs easy customization]] system and reduces your
+          need to write custom Emacs Lisp configuration code.
+  - PEL is distributed via the [[https://github.com/pierre-rouleau/pel][PEL Github repository]] and provides a Makefile to
+    automate the compilation and a large part of the installation of PEL and its
+    dependencies.
+  - PEL is not yet distributed via sites like MELPA but
+    [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#how-to-install-pel][PEL's installation instructions]] should alleviate this problem.
