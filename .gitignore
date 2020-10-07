@@ -22,9 +22,15 @@ other/*
 # Emacs desktop file
 .emacs.desktop
 
+# Emacs emacro directory
+.emacros
+
 # (C)Tags files
 TAGS
 TAGS.*
+GPATH
+GRTAGS
+GTAGS
 
 # Undo-tree save-files
 *.~undo-tree
