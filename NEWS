@@ -12,9 +12,15 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 ** Modifications:
 - Modified key bindings in pel:grep to better organize commands for ag and for
   better regularity.
-** Updates to Reference PDF files:
-- Grep PDF describes ag and ripgrep menu.  Also references projectile-based
-  search commands.
+- The customization group pel-pkg-for-xref is now a child of
+  pel-pkg-for-navigation and holds tags based cross-reference build control as
+  well as non-tags based such as [[https://github.com/jacktasia/dumb-jump][dump-jump]].
+** Reference PDF updates:
+- [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/grep.pdf][⅀ Grep PDF]] describes ag and ripgrep menu.  Also references projectile-based
+ search commands.
+- [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀ Search/Replace PDF]] describes the superword-mode, subword-mode better, and
+  includes description of the projectile commands.
+- [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/text-modes.pdf][⅀ Text Modes PDF]] describes the superword-mode, subword-mode better.
 * Version 0.3.1
 ** Fixes:
   - Spell check control user options and handling now simpler and don't have type

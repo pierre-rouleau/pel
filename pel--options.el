@@ -63,7 +63,6 @@
 ;;       - pel-pkg-for-reST
 ;;     - pel-pkg-for-navigation
 ;;       - pel-pkg-for-cross-reference
-;;         - pel-pkg-for-tags
 ;;     - pel-pkg-for-programming
 ;;       - pel-pkg-for-all-languages
 ;;       - pel-pkg-for-applescript
@@ -1392,7 +1391,8 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
 ;; ---------------------------
 (defgroup pel-pkg-for-cross-reference nil
   "List of external packages PEL can use for handling cross references."
-  :group 'pel-pkg-for-navigation)
+  :group 'pel-pkg-for-navigation
+  :link `(url-link :tag "Tags/CTags PDF" ,(pel-pdf-file-url "tags")))
 
 (defcustom pel-use-dumb-jump nil
   "Control activation of the dumb-jump package.
@@ -1402,18 +1402,10 @@ identify symbol in several programming languages."
   :type 'boolean
   :safe #'booleanp)
 
-;; -----------------------------------------------------------------------------
-;; pel-pkg-for-tags
-;; ----------------
-(defgroup pel-pkg-for-tags nil
-  "List of external packages that PEL can use to manage Tags cross-references."
-  :group 'pel-pkg-for-cross-reference
-  :link `(url-link :tag "Tags/CTags PDF" ,(pel-pdf-file-url "tags")))
-
 (defcustom pel-use-ggtags nil
   "Control whether PEL uses the ggtags package."
   :link `(url-link :tag "ggtags @ github" "https://github.com/leoliu/ggtags")
-  :group 'pel-pkg-for-tags
+  :group 'pel-pkg-for-cross-reference
   :type 'boolean
   :safe #'booleanp)
 
