@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-10-08 11:42:32, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-10-08 15:26:22, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1643,6 +1643,87 @@ PEL Cross Reference Support
    🚧  This file is under early development.
 
 The file `pel-tags.el`_ holds utilities related to Etags based cross-reference support.
+
+
+Tag-based systems
+~~~~~~~~~~~~~~~~~
+
+Emacs supports several tag based systems back-ends for the creation,
+management and use of those tags for cross referencing purposes. The supported
+system include:
+
+- GNU ctags (ctags).
+- Universal CTags (ctags) , the successor of Exuberant CTags.
+- Emacs Etags (etags).
+- GNU GLOBAL gtags.
+
+The following sub-sections describe how to install, setup and use those.
+
+GNU GLOBAL source code tagging system - gtags
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The `GNU GLOBAL gtags homepage`_ describes this powerful system.  It combines
+the capabilities of `Universal Ctags`_, `Pygments`_ with its own logic when to parse
+and tag a large set of programming languages.  To use it effectively you must
+therefore install 3 programs and do a small script to configure them. You must
+also have Python installed since `Pygments`_ is written in Python.
+
+**Installation Instructions**
+
+- Install Python 3.5 or later if it is not already available on your platform.
+
+  - For macOS, you can follow the `Installing Python on macOS instructions`_
+    on my about-python_ documentation project.
+
+- Install GNU GLOBAL
+
+  - For macOS, use: ``brew install global``.
+  - On Fedora Linux, use: ``sudo dnf install global``
+  - On Mint Linux, use: ``sudo apt install global``
+  - On Ubuntu Linux, use: ``sudo apt install global``
+  - etc ...
+
+- Install Universal-Ctags (it will replace GNU ctags):
+
+  - for macOS, use: ``brew install universal-ctags``
+  - On Fedora Linux, use: ``sudo dnf install universal-ctags``
+  - On Mint Linux, use: ``sudo apt install universal-ctags``
+  - On Ubuntu Linux, use: ``sudo apt install universal-ctags``
+  - etc ...
+
+- Install Pygments:
+
+  - Use: ``pip install pygments``
+
+**Create a script to activate the Pygments plugin of GNU GLOBAL**
+
+Store a copy of the `envfor-gtags`_ shell script inside one of your
+directories.  Ideally a directory on your PATH but that's not absolutely
+necessary.
+
+Then, to activate GNU GLOBAL Pygment/Universal-CTags plugin source that script
+in the shell you want to use gtags in.
+
+For example you could store the script inside a ``~/bin`` directory and then
+use::
+
+     . envfor-gtags
+
+if ``~/bin`` is on your PATH, or::
+
+     . ~/bin/envfor-gtags
+
+if ``~/bin`` is not on your path.
+
+If you want to provide access to global in all shells, you can place this
+command in your startup script (e.g. ``~/.bash_profile`` for Bash).
+
+.. _GNU GLOBAL gtags homepage: https://www.gnu.org/software/global/
+.. _Pygments: https://pygments.org
+.. _Universal Ctags: https://ctags.io
+.. _Installing Python on macOS instructions: https://github.com/pierre-rouleau/about-python/blob/master/doc/installing-python.rst
+.. _about-python: https://github.com/pierre-rouleau/about-python
+.. _envfor-gtags: ../bin/envfor-gtags
 
 
 PEL CUA Mode Extension Utilities

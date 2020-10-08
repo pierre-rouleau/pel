@@ -1,0 +1,30 @@
+#!/bin/sh
+#  SH FILE: envfor-gtags
+#
+#  Purpose   : Setup Pygments/universal-ctags parser plugin for GNU Global gtags.
+#  Created   : Thursday, October  8 2020.
+#  Author    : Pierre Rouleau
+#  Time-stamp: <2020-10-08 15:13:42, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+#  Module Description
+#  ------------------
+#
+# Usage: source envfor-gtags
+#
+# Install the Pygments / Universal Ctags plugin of GNU Global according to the
+# instructions found inside the file
+# global/global-6.6.5/plugin-factory/PLUGIN_HOWTO.pygments
+#
+# On macOS, which GNU Global installed by Homebrew, the gtags files are
+# installed inside the /usr/local/Cellar/global/6.6.4_1 directory, so the
+# path of gtags.conf must be adjusted accordingly.
+
+# ----------------------------------------------------------------------------
+#  Code
+#  ----
+
+export GTAGSCONF=/usr/local/Cellar/global/6.6.4_1/share/gtags/gtags.conf
+export GTAGSLABEL=pygments
+
+echo GNU Global gtags - Pygments/Universal-CTags pluging installed.
+# ----------------------------------------------------------------------------
