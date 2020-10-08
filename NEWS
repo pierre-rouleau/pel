@@ -21,6 +21,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 - [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀ Search/Replace PDF]] describes the superword-mode, subword-mode better, and
   includes description of the projectile commands.
 - [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/text-modes.pdf][⅀ Text Modes PDF]] describes the superword-mode, subword-mode better.
+- Renamed ⅀ Tags to ⅀ Xref; the PDF will describe several cross-referencing
+  mechanisms, not just the tags-based mechanisms.
 * Version 0.3.1
 ** Fixes:
   - Spell check control user options and handling now simpler and don't have type

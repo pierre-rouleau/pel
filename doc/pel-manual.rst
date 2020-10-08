@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-10-08 10:39:45, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-10-08 11:42:32, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1635,7 +1635,7 @@ count text and display results in the echo area.
 PEL Cross Reference Support
 ---------------------------
 
-:PDF Sheet: `Etags-Based Cross-Reference`_
+:PDF Sheet: `Cross-Referencing`_
 :PEL Customization: *none*
 :PEL Key Prefix: **pel:xref**
 
@@ -2266,7 +2266,7 @@ customize UI, Emacs customize UI will report a mismatch error and you will not
 be able to make any modification.  If this happens to you, edit your
 customization file and delete the entry for ``pel-key-chords`` from the file,
 save the file back and restart Emacs.  If you followed the instructions in
-section titled `Update your Emacs Initialization file`_, this name of this file
+section titled `Create the emacs-customization.el file`_, this name of this file
 is "``~/.emacs.d/emacs-customization.el``".
 
 The logic for managing key-chord definitions stored in customization user option
@@ -2832,7 +2832,7 @@ Refer to the `PEL Erlang PDF`_ document for more information.
 .. _PEL Erlang PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf
 
 PEL Support for Elixir
-^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
 
 :PDF Sheet: `Elixir <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-elixir.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-elixir``
@@ -3965,7 +3965,7 @@ commands.
 
 
 PEL Text Filling and Justification Utilities
--------------------------------------------
+--------------------------------------------
 
 :PDF Sheet: `Filling and Justification`_, `Text-modes`_.
 :PEL Customization: *none*
@@ -4503,7 +4503,7 @@ Note:
 #. `Cursor`_
 #. `Customization <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf>`_.
 #. `Counting`_
-#. Cross-Referencing: `Etags-based Cross-Reference`_
+#. `Cross-Referencing`_
 #. `CUA Mode Support`_
 #. `Cut, Delete, Copy and Paste`_ (killing and yanking)
 #. `Diff and Merge`_
@@ -4679,7 +4679,7 @@ Note:
 .. _Sorting:                                  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/sorting.pdf
 .. _Speedbar:                                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/speedbar.pdf
 .. _Spell Checking:                           https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/spell-checking.pdf
-.. _Etags-based Cross-Reference:              https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/tags.pdf
+.. _Cross-Referencing:                        https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref.pdf
 .. _Text-modes:                               https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/text-modes.pdf
 .. _Transpose:                                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/transpose.pdf
 .. _Undo, Redo, Repeat and Prefix Arguments:  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/undo-redo-repeat.pdf
