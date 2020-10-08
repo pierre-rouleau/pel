@@ -165,7 +165,7 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
   :group 'convenience
   :link `(file-link :tag "Directory of PDF table files" ,(pel-pdf-directory))
   :link `(url-link  :tag "PEL key maps PDF" ,(pel-pdf-file-url "-pel-key-maps"))
-  :link `(file-link :tag "PEL @ github" "https://github.com/pierre-rouleau/pel")
+  :link `(file-link :tag "PEL @ Github" "https://github.com/pierre-rouleau/pel")
   :package-version '(pel . "0.3.1"))
 
 ;; -----------------------------------------------------------------------------
@@ -232,7 +232,7 @@ With this activated PEL binds the following keys:
   :group 'pel-pkg-for-bookmark
   :type 'boolean
   :safe #'booleanp
-  :link '(url-link :tag "bm @ github" "https://github.com/joodland/bm"))
+  :link '(url-link :tag "bm @ Github" "https://github.com/joodland/bm"))
 
 ;; -----------------------------------------------------------------------------
 ;; Buffer Management
@@ -373,7 +373,7 @@ The available options are:
   :group 'pel-pkg-for-cursor
   :type 'boolean
   :safe #'booleanp
-  :link `(url-link :tag "multiple-cursors @ github"
+  :link `(url-link :tag "multiple-cursors @ Github"
                    "https://github.com/magnars/multiple-cursors.el"))
 
 (defcustom pel-use-iedit nil
@@ -390,7 +390,7 @@ sequences are typed:
   :group 'pel-pkg-for-highlight
   :type 'boolean
   :safe #'booleanp
-  :link `(url-link :tag "iedit @ github"
+  :link `(url-link :tag "iedit @ Github"
                    "https://github.com/victorhge/iedit"))
 
 ;; -----------------------------------------------------------------------------
@@ -527,7 +527,7 @@ ability to detect files opened on startup."
   :group 'pel-pkg-for-browse
   :type 'boolean
   :safe #'booleanp
-  :link `(url-link  :tag "treemacs @ github"  "https://github.com/Alexander-Miller/treemacs"))
+  :link `(url-link  :tag "treemacs @ Github"  "https://github.com/Alexander-Miller/treemacs"))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-pkg-for-neotree nil
@@ -539,7 +539,7 @@ ability to detect files opened on startup."
   :group 'pel-pkg-for-neotree
   :type 'boolean
   :safe #'booleanp
-  :link `(url-link  :tag "NeoTree @ github"  "https://github.com/jaypei/emacs-neotree"))
+  :link `(url-link  :tag "NeoTree @ Github"  "https://github.com/jaypei/emacs-neotree"))
 
 (defcustom pel-neotree-font-in-terminal nil
   "NeoTree view font for directory node in terminal mode.
@@ -557,7 +557,7 @@ The Icons choice uses the icons from the package all-the-icons."
   :type  '(choice
            (const :tag "Default" nil)
            (const :tag "Icons" icons))
-  :link `(url-link :tag "all-the-icons @ github"
+  :link `(url-link :tag "all-the-icons @ Github"
                    "https://github.com/domtronn/all-the-icons.el"))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -645,7 +645,7 @@ This is only used when Emacs runs in graphics mode."
   :group 'pel-pkg-for-graphics-emacs
   :type 'boolean
   :safe #'booleanp
-  :link `(url-link :tag "all-the-icons @ github"
+  :link `(url-link :tag "all-the-icons @ Github"
                    "https://github.com/domtronn/all-the-icons.el"))
 
 (defcustom pel-use-all-the-icons-ibuffer nil
@@ -730,11 +730,11 @@ it identifies the installation of the `rg` package.  If you also set
 `pel-use-projectile' to non-nil, then the installation of the `ripgrep`
 package is also required becuase `projectile` uses the `ripgrep` package,
 it does not uses `rg`."
-  :link `(url-link :tag "ripgrep @ github"
+  :link `(url-link :tag "ripgrep @ Github"
                    "https://github.com/BurntSushi/ripgrep")
   :link `(url-link :tag "Emacs rg  package"
                    "https://melpa.org/#/rg")
-  :link `(url-link :tag "Emacs ripgrep @ github"
+  :link `(url-link :tag "Emacs ripgrep @ Github"
                    "https://github.com/nlamirault/ripgrep.el")
   :group 'pel-pkg-for-grep
   :type 'boolean
@@ -764,7 +764,7 @@ The activated PEL key sequences are:
   :group 'pel-pkg-for-highlight
   :type 'boolean
   :safe #'booleanp
-  :link '(url-link :tag "fill-column-indicator @ github"
+  :link '(url-link :tag "fill-column-indicator @ Github"
                    "https://github.com/alpaker/fill-column-indicator"))
 
 (defcustom pel-use-vline nil
@@ -1223,7 +1223,7 @@ The `pel-key-chords' value is a list of objects.
   :group 'pel-pkg-for-keys
   :type 'boolean
   :safe #'booleanp
-  :link '(url-link :tag "keycast @ github"
+  :link '(url-link :tag "keycast @ Github"
                    "https://github.com/tarsius/keycast"))
 
 ;; -----------------------------------------------------------------------------
@@ -1291,7 +1291,7 @@ images from their Graphviz Dot files."
   "PEL UML support."
   :group 'pel-pkg-for-drawing-markup
   :link `(url-link :tag "PlantUML PDF" ,(pel-pdf-file-url "plantuml"))
-  :link `(url-link :tag "PlantUML @ github" "https://github.com/skuro/plantuml-mode.")
+  :link `(url-link :tag "PlantUML @ Github" "https://github.com/skuro/plantuml-mode.")
   :link `(url-link :tag "PlantUML home page" "https://plantuml.com")
   :link `(url-link :tag "PlantUML @ wikipedia" "https://en.wikipedia.org/wiki/PlantUML"))
 
@@ -1374,14 +1374,14 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
 
 (defcustom pel-use-ace-link nil
   "Control activation of the ace link package."
-  :link `(url-link :tag "ace-link @ github" "https://github.com/abo-abo/ace-link")
+  :link `(url-link :tag "ace-link @ Github" "https://github.com/abo-abo/ace-link")
   :group 'pel-pkg-for-navigation
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-avy nil
   "Control activation of the avy package."
-  :link `(url-link :tag "avy @ github" "https://github.com/abo-abo/avy")
+  :link `(url-link :tag "avy @ Github" "https://github.com/abo-abo/avy")
   :group 'pel-pkg-for-navigation
   :type 'boolean
   :safe #'booleanp)
@@ -1398,13 +1398,13 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
   "Control activation of the dumb-jump package.
 With dumb-jump, the M-. command will use dumb-jump to
 identify symbol in several programming languages."
-  :link '(url-link :tag "dump-jump @ github" "https://github.com/jacktasia/dumb-jump")
+  :link '(url-link :tag "dump-jump @ Github" "https://github.com/jacktasia/dumb-jump")
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-ggtags nil
   "Control whether PEL uses the ggtags package."
-  :link `(url-link :tag "ggtags @ github" "https://github.com/leoliu/ggtags")
+  :link `(url-link :tag "ggtags @ Github" "https://github.com/leoliu/ggtags")
   :group 'pel-pkg-for-xref
   :type 'boolean
   :safe #'booleanp)
@@ -1455,7 +1455,7 @@ M-x eldoc-mode)."
   :group 'pel-pkg-for-all-languages
   :type 'boolean
   :safe #'booleanp
-  :link '(url-link :tag "eldoc-box @ github" "https://github.com/casouri/eldoc-box")
+  :link '(url-link :tag "eldoc-box @ Github" "https://github.com/casouri/eldoc-box")
   :link '(custom-group-link "eldoc"))
 
 (defcustom pel-use-hide-comnt nil
@@ -1650,7 +1650,7 @@ via the ``<f12> ? e`` sequence."
   :group 'pel-pkg-for-c
   :type 'boolean
   :safe #'booleanp
-  :link '(url-link :tag "c-eldoc @ github"
+  :link '(url-link :tag "c-eldoc @ Github"
                    "https://github.com/pierre-rouleau/c-eldoc"))
 
 (defcustom pel-c-bracket-style "linux"
@@ -2155,7 +2155,7 @@ When set, identifies what mode is used to support Javascript."
   :group 'pel-pkg-for-elisp
   :type 'boolean
   :safe #'booleanp
-  :link '(url-link :tag "macrostep @ github" "https://github.com/joddie/macrostep")
+  :link '(url-link :tag "macrostep @ Github" "https://github.com/joddie/macrostep")
   :link '(custom-group-link "macrostep"))
 
 (defcustom pel-use-esup nil
@@ -2637,7 +2637,7 @@ Note: `pel-use-python' must be t for this to be effective."
   :group 'pel-pkg-for-python
   :type 'boolean
   :safe #'booleanp
-  :link `(url-link :tag "lpy @ github"
+  :link `(url-link :tag "lpy @ Github"
                    "https://github.com/abo-abo/lpy"))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2695,11 +2695,11 @@ NOTE:
            :tag "Supported by vlang-mode minimal/experimental package."
            vlang-mode)
           (const :tag "Supported by v-mode, a more mature mode." v-mode))
-  :link '(url-link :tag "v-mode @ github"
+  :link '(url-link :tag "v-mode @ Github"
                    "https://github.com/damon-kwok/v-mode")
   :link '(url-link :tag "v-mode @ MELPA"
                    "https://melpa.org/#/v-mode")
-  :link '(url-link :tag "vlang-mode @ github"
+  :link '(url-link :tag "vlang-mode @ Github"
                    "https://github.com/pierre-rouleau/vlang-mode"))
 
 ;; -----------------------------------------------------------------------------
@@ -2764,7 +2764,7 @@ or pel-use-regexp-steroids is t (for the others)."
 
 (defcustom pel-use-regex-tool nil
   "Control whether PEL uses the external `regex-tool' library."
-  :link `(url-link :tag "regex-tool @ github"
+  :link `(url-link :tag "regex-tool @ Github"
                    "https://github.com/jwiegley/regex-tool")
   :group 'pel-pkg-for-regexp
   :type 'boolean
@@ -2772,21 +2772,21 @@ or pel-use-regexp-steroids is t (for the others)."
 
 (defcustom pel-use-pcre2el nil
   "Control whether PEL uses the external pcre2el library."
-  :link `(url-link :tag "pcre2el @ github" "https://github.com/joddie/pcre2el")
+  :link `(url-link :tag "pcre2el @ Github" "https://github.com/joddie/pcre2el")
   :group 'pel-pkg-for-regexp
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-visual-regexp nil
   "Control whether PEL uses the external visual-regexp library."
-  :link `(url-link :tag "visual-regexp @ github" "https://github.com/benma/visual-regexp.el")
+  :link `(url-link :tag "visual-regexp @ Github" "https://github.com/benma/visual-regexp.el")
   :group 'pel-pkg-for-regexp
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-visual-regexp-steroids nil
   "Control whether PEL uses the external visual-regexp-steroids library."
-  :link `(url-link :tag "visual-regexp-steroids @ github"
+  :link `(url-link :tag "visual-regexp-steroids @ Github"
                    "https://github.com/benma/visual-regexp-steroids.el")
   :group 'pel-pkg-for-regexp
   :type 'boolean
@@ -2829,7 +2829,7 @@ or pel-use-regexp-steroids is t (for the others)."
   :group 'pel-pkg-for-scrolling
   :type 'boolean
   :safe #'booleanp
-  :link '(url-link :tag "smooth-scrolling @ github"
+  :link '(url-link :tag "smooth-scrolling @ Github"
                    "https://github.com/aspiers/smooth-scrolling/"))
 
 ;; -----------------------------------------------------------------------------
