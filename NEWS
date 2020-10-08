@@ -27,7 +27,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 - Added instructions on how to install
   [[https://www.gnu.org/software/global/][GNU GLOBAL source code tagging system]] gtags utility with its [[https://pygments.org][Pygments]] and
   [[https://ctags.io][Universal-CTags]] plugins to support gtags-based tags management within
-  Emacs. This includes a small example shells script: [[../bin/envfor-gtags][envfor-gtags]].
+  Emacs. This includes a small example shells script: [[https://github.com/pierre-rouleau/pel/blob/master/bin/envfor-gtags][envfor-gtags]].
 * Version 0.3.1
 ** Fixes:
   - Spell check control user options and handling now simpler and don't have type
