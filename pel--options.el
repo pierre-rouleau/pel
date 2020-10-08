@@ -62,6 +62,8 @@
 ;;         - pel-pkg-for-plantuml
 ;;       - pel-pkg-for-reST
 ;;     - pel-pkg-for-navigation
+;;       - pel-pkg-for-cross-reference
+;;         - pel-pkg-for-tags
 ;;     - pel-pkg-for-programming
 ;;       - pel-pkg-for-all-languages
 ;;       - pel-pkg-for-applescript
@@ -91,7 +93,6 @@
 ;;     - pel-pkg-for-speedbar
 ;;     - pel-pkg-for-shells
 ;;     - pel-pkg-for-spelling
-;;     - pel-pkg-for-tags
 ;;     - pel-pkg-for-text-mode
 ;;     - pel-pkg-for-undo
 ;;     - pel-pkg-for-vcs
@@ -1383,6 +1384,36 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
   "Control activation of the avy package."
   :link `(url-link :tag "avy @ github" "https://github.com/abo-abo/avy")
   :group 'pel-pkg-for-navigation
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; pel-pkg-for-cross-reference
+;; ---------------------------
+(defgroup pel-pkg-for-cross-reference nil
+  "List of external packages PEL can use for handling cross references."
+  :group 'pel-pkg-for-navigation)
+
+(defcustom pel-use-dumb-jump nil
+  "Control activation of the dumb-jump package.
+With dumb-jump, the M-. command will use dumb-jump to
+identify symbol in several programming languages."
+  :link '(url-link :tag "dump-jump @ github" "https://github.com/jacktasia/dumb-jump")
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; pel-pkg-for-tags
+;; ----------------
+(defgroup pel-pkg-for-tags nil
+  "List of external packages that PEL can use to manage Tags cross-references."
+  :group 'pel-pkg-for-cross-reference
+  :link `(url-link :tag "Tags/CTags PDF" ,(pel-pdf-file-url "tags")))
+
+(defcustom pel-use-ggtags nil
+  "Control whether PEL uses the ggtags package."
+  :link `(url-link :tag "ggtags @ github" "https://github.com/leoliu/ggtags")
+  :group 'pel-pkg-for-tags
   :type 'boolean
   :safe #'booleanp)
 
@@ -3025,21 +3056,6 @@ To activate the changes for this you must 'Apply and Save' and restart Emacs."
   :group 'pel-pkg-for-spelling
   :type
   '(repeat symbol))
-
-;; -----------------------------------------------------------------------------
-;; pel-pkg-for-tags
-;; ----------------
-(defgroup pel-pkg-for-tags nil
-  "List of external packages that PEL can use to manage Tags cross-references."
-  :group 'pel-package-use
-  :link `(url-link :tag "Tags/CTags PDF" ,(pel-pdf-file-url "tags")))
-
-(defcustom pel-use-ggtags nil
-  "Control whether PEL uses the ggtags package."
-  :link `(url-link :tag "ggtags @ github" "https://github.com/leoliu/ggtags")
-  :group 'pel-pkg-for-tags
-  :type 'boolean
-  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; Text Mode support

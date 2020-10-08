@@ -529,6 +529,21 @@ Done in this function to allow advising libraries that remap these keys."
 ;; - try-expand-dabbrev-from-kill
 ;; - try-expand-line
 
+
+;; ---------------------------------------------------------------------------
+;; Programming Language Navigation
+;; --=============================
+
+;; dumb-jump
+;; ---------
+
+(when pel-use-dumb-jump
+  (use-package dumb-jump
+    :ensure t
+    :defer 1
+    :init
+    (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)))
+
 ;; ---------------------------------------------------------------------------
 ;; Markup Language Support
 ;; --=====================

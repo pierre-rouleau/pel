@@ -8,6 +8,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   access to a LSP for C/C++ c-eldoc might provide some help even though it is
   limited.
 - New: Added key bindings for ag-based search.
+- New: Added support for [[https://github.com/jacktasia/dumb-jump][dump-jump]]. The pel-use-dumb-jump activates it for M-.
 ** Modifications:
 - Modified key bindings in pel:grep to better organize commands for ag and for
   better regularity.
