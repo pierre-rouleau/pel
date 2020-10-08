@@ -62,7 +62,7 @@
 ;;         - pel-pkg-for-plantuml
 ;;       - pel-pkg-for-reST
 ;;     - pel-pkg-for-navigation
-;;       - pel-pkg-for-cross-reference
+;;       - pel-pkg-for-xref
 ;;     - pel-pkg-for-programming
 ;;       - pel-pkg-for-all-languages
 ;;       - pel-pkg-for-applescript
@@ -1387,9 +1387,9 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
   :safe #'booleanp)
 
 ;; -----------------------------------------------------------------------------
-;; pel-pkg-for-cross-reference
-;; ---------------------------
-(defgroup pel-pkg-for-cross-reference nil
+;; pel-pkg-for-xref
+;; ----------------
+(defgroup pel-pkg-for-xref nil
   "List of external packages PEL can use for handling cross references."
   :group 'pel-pkg-for-navigation
   :link `(url-link :tag "Tags/CTags PDF" ,(pel-pdf-file-url "tags")))
@@ -1405,7 +1405,7 @@ identify symbol in several programming languages."
 (defcustom pel-use-ggtags nil
   "Control whether PEL uses the ggtags package."
   :link `(url-link :tag "ggtags @ github" "https://github.com/leoliu/ggtags")
-  :group 'pel-pkg-for-cross-reference
+  :group 'pel-pkg-for-xref
   :type 'boolean
   :safe #'booleanp)
 
