@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-10-03 23:13:42, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-10-08 10:39:45, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5497,6 +5497,7 @@ d-mode_                       MELPA_
 `desktop+`_                   MELPA_
 `desktop-registry`_           MELPA_
 `dired-narrow`_               MELPA_
+`dumb-jump`_                  MELPA_
 `edts`_                       MELPA_
 elixir-mode_                  MELPA_
 elmacro_                      MELPA_
@@ -5621,6 +5622,7 @@ when running Emacs 27.1 and later versions.
 .. _desktop+:                  https://melpa.org/#/?q=desktop+
 .. _desktop-registry:          https://melpa.org/#/?q=desktop-registry
 .. _dired-narrow:              https://melpa.org/#/dired-narrow
+.. _dumb-jump:                 https://melpa.org/#/dumb-jump
 .. _edts:                      https://melpa.org/#/edts
 .. _elisp-lint:                https://melpa.org/#/elisp-lint
 .. _elixir-mode:               https://melpa.org/#/elixir-mode
