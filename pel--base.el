@@ -278,7 +278,7 @@ on/off value, otherwise use \"on\" and \"off\"."
     (or off-string "off")))
 
 (defun pel-symbol-on-off-string (symbol &optional on-string off-string void-string)
-  "Return representation of symbold value and whether it is bound.
+  "Return representation of SYMBOL value and whether it is bound.
 When SYMBOL is not bound: return VOID-STRING or \"void\" if it's nil,
 When it is bound, return:
 - the OFF-STRING or \"off\" for nil,
@@ -305,16 +305,22 @@ By default or when these arguments are nil:
       (or true-string "yes")
     (or false-string "no")))
 
-(defun pel-option-mode-state (option mode)
-  "Return description string for OPTION and its MODE.
-OPTION is the value of the specifed option,
-MODE is the mode symbol."
-  (if option
-      (if (boundp mode)
-          (format "available and %s"
-                  (pel-symbol-on-off-string mode))
-        "available but not loaded, use a command to load it")
-    "not available"))
+(defun pel-option-mode-state (mode user-option)
+  "Return description of MODE status controlled by USER_OPTION.
+USER-OPTION is a symbol.  A non-nil value of that symbol
+identifies whether the mode is made available, nil that it is not made
+available and most probably not loaded.
+MODE is the mode symbol, indicating whether the mode is active or not."
+  (if (boundp user-option)
+      (if (eval user-option)
+          (if (boundp mode)
+              (format "Available %s."
+                      (pel-symbol-on-off-string mode
+                                                "and on"
+                                                "but off"))
+            "Available but not loaded, use a command to load it.")
+        (format "Not available. Activate %s first." (symbol-name user-option)))
+    (format "%s symbol unknown" (symbol-name user-option))))
 
 ;; -----------------------------------------------------------------------------
 ;; String transformation utilities:

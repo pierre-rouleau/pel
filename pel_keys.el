@@ -531,20 +531,6 @@ Done in this function to allow advising libraries that remap these keys."
 
 
 ;; ---------------------------------------------------------------------------
-;; Programming Language Navigation
-;; --=============================
-
-;; dumb-jump
-;; ---------
-
-(when pel-use-dumb-jump
-  (use-package dumb-jump
-    :ensure t
-    :defer 1
-    :init
-    (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)))
-
-;; ---------------------------------------------------------------------------
 ;; Markup Language Support
 ;; --=====================
 
@@ -1335,23 +1321,26 @@ Then save your changes."
         (setq count (1+ count))))
     count))
 
-(when pel-use-helm
+(when (or pel-use-helm
+          pel-use-helm-xref)
   (use-package helm
     :ensure t
     :pin melpa
     :commands helm-mode
     :config
-    (require 'helm-config)
-    ;; <tab> or C-i are mapped to helm-select-action.  Use M-C-i to run
-    ;; persistent action.
-    (define-key helm-map (kbd "M-C-i") 'helm-execute-persistent-action)))
+    (when pel-use-helm
+      (require 'helm-config)
+      ;; <tab> or C-i are mapped to helm-select-action.  Use M-C-i to run
+      ;; persistent action.
+      (define-key helm-map (kbd "M-C-i") 'helm-execute-persistent-action))))
 
 (when pel-use-ido
   ;; IDO is distributed with Emacs.
   (use-package ido
     :commands ido-mode))
 
-(when pel-use-ivy
+(when (or pel-use-ivy
+          pel-use-ivy-xref)
   (use-package ivy
     :ensure t
     :pin melpa
@@ -4571,20 +4560,104 @@ the ones defined from the buffer now."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> X`` : Xref utilities
 ;;
-(define-pel-global-prefix pel:xref    (kbd "<f11> X"))
+(define-pel-global-prefix pel:xref          (kbd "<f11> X"))
+(define-pel-global-prefix pel:xref-backend  (kbd "<f11> X B"))
+
+(define-key pel:xref "?" #'pel-xref-show-status)
+(define-key pel:help "X" #'pel-xref-show-status) ; pel:help key
+
 (define-key pel:xref "." #'xref-find-apropos)
-(define-key pel:xref "X"  'xref-etags-mode)
-(define-key pel:xref "?" #'pel-show-etags-mode-status)
-(define-key pel:help "X" #'pel-show-etags-mode-status) ; pel:help key
-(define-key pel:xref "T"  'visit-tags-table)
-(define-key pel:xref "S"  'tags-search)
-(define-key pel:xref "R"  'tags-query-replace)
-(define-key pel:xref "N"  'tags-loop-continue)
-(define-key pel:xref "L"  'list-tags)
-(define-key pel:xref "F"  'next-file)
+(define-key pel:xref "t"  'visit-tags-table)
+(define-key pel:xref "s"  'tags-search)
+(define-key pel:xref "n"  'tags-loop-continue)
+(define-key pel:xref "l"  'list-tags)
+(define-key pel:xref "f"  'next-file)
 (define-key pel:xref "."  'xref-find-apropos)
-(define-key pel:xref "r"  'xref-query-replace-in-results)
+(define-key pel:xref "r"  'tags-query-replace)
+(define-key pel:xref (kbd "M-r")  'xref-query-replace-in-results)
 (define-key pel:xref "1"  'first-error)
+(define-key pel:xref "F"  'pel-xref-select-front-end)
+
+(define-key pel:xref-backend "E"  'xref-etags-mode)
+
+(when pel-use-ggtags
+  (use-package ggtags
+    :ensure t
+    :pin melpa
+    :commands ggtags-mode
+    :init
+    ;; ggtags has its own key map which has all we need.
+    ;; just provide a key to quickly enable or disable ggtags-mode.
+    (define-key pel:xref-backend "G" 'ggtags-mode)
+    (pel-add-hook-for
+     'pel-modes-activating-ggtags
+     (lambda ()
+       (ggtags-mode 1)))))
+
+;; dumb-jump
+;; ---------
+
+(when pel-use-dumb-jump
+  (use-package dumb-jump
+    :ensure t
+    :pin melpa
+    :commands pel-xref-toggle-dumb-jump-mode
+    :init
+    ;; pel-xref-toggle-dumb-jump-mode sets up the xref-backend-functions
+    ;; to use dumb-jump as the backend for xref, and use its key bindings.
+    (define-key pel:xref-backend "D" 'pel-xref-toggle-dumb-jump-mode)
+    ;; schedule activation for requested major modes.
+    (pel-add-hook-for 'pel-modes-activating-dumb-jump
+                      'pel-xref-dumb-jump-activate)))
+
+;; gxref
+(when pel-use-gxref
+  (use-package gxref
+    :ensure t
+    :pin melpa
+    :commands xref-show-xrefs-function
+    :init
+    (define-key pel:xref-backend "g" 'pel-xref-toggle-gxref)
+    (pel-add-hook-for 'pel-modes-activating-gxref
+                      'pel-xref-gxref-activate)))
+
+;; rtags
+
+(when pel-use-rtags-xref
+  (use-package rtags-xref
+    :ensure t
+    :pin melpa
+    :commands rtags-xref-enable
+    :init
+    (define-key pel:xref-backend "R" 'pel-xref-toggle-rtags)
+    (when (eq pel-use-rtags-xref 'use-from-start)
+      (pel-xref-rtags-activate))))
+
+;; ivy-xref
+(when pel-use-ivy-xref
+  (use-package ivy-xref
+    :ensure t
+    :pin melpa
+    :commands ivy-xref-show-xrefs))
+
+;; helm-xref
+(when pel-use-helm-xref
+  (if (< emacs-major-version 27)
+      (use-package helm-xref
+        :ensure t
+        :pin melpa
+        :commands helm-xref-show-xrefs)
+    (use-package helm-xref
+      :ensure t
+      :pin melpa
+      :commands (helm-xref-show-xrefs-27
+                 helm-xref-show-defs-27))))
+
+(when (or pel-use-ivy-xref
+          pel-use-helm-xref)
+  (run-with-idle-timer
+   1 nil
+   (function pel-xref-set-front-end) pel-startup-xref-front-end))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> _`` : Underlining commands
@@ -4618,7 +4691,6 @@ the ones defined from the buffer now."
 ;; Key-Chord Mode
 ;; ==============
 
-
 (defun pel--start-key-chord-mode ()
   "Activate key-chord mode if it can be loaded."
   (when (require 'key-chord nil :noerror)
@@ -4647,7 +4719,6 @@ the ones defined from the buffer now."
       (when pel-use-key-seq
         (require 'key-seq nil :noerror))
       (pel-activate-all-key-chords)))
-
 
   (when (eq pel-use-key-chord 'use-from-start)
     (run-with-idle-timer 1 nil (function pel--start-key-chord-mode))))

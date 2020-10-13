@@ -427,7 +427,15 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-spell-show-use)
 
   (pel-autoload "pel-tags" for:
-    pel-show-etags-mode-status)
+    pel-xref-dumb-jump-activate
+    pel-xref-toggle-dumb-jump-mode
+    pel-xref-gxref-activate
+    pel-xref-toggle-gxref
+    pel-xref-rtags-activate
+    pel-xref-toggle-rtags
+    pel-xref-set-front-end
+    pel-xref-select-front-end
+    pel-xref-show-status)
 
   (pel-autoload "pel-text-insert" for:
     pel-separator-line

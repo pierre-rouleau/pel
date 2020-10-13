@@ -31,6 +31,7 @@
 
 
 ;;; Code:
+(require 'pel--base)
 (require 'pel--options)
 (require 'pel--macros)     ; use: pel-when-bound, pel-when-fbound
 
@@ -56,7 +57,7 @@
 ;; The pel--setup-auto-complete function currently contains the bare bone
 ;; initialization code for auto-complete, the code that is often shown on how to
 ;; set it up.  This is the default setup. Eventually this code should be
-;; modified to support better customizations.
+;; modified to support better customization.
 ;;
 (defun pel--setup-auto-complete ()
   "Initialize `auto-complete'."
@@ -113,8 +114,8 @@ On first call, also configure it according to its customization."
 ;; Company Mode Support
 ;; ====================
 ;;
-;; Company Mode Intialization
-;; --------------------------
+;; Company Mode Initialization
+;; ---------------------------
 ;; TODO: update for finer control once PEL has explicit support for various
 ;;       programming languages.
 (defun pel--setup-company ()
@@ -196,7 +197,8 @@ Does not allow activation if Company Mode is active."
           (global-auto-complete-mode 0)
         (if (pel--company-mode-p)
             (user-error "First turn company-mode off!")
-          (pel--global-auto-complete-mode-on))))))
+          (pel--global-auto-complete-mode-on))))
+    (message (pel-symbol-text 'global-auto-complete-mode))))
 
 ;;-pel-autoload
 (defun pel-auto-complete-mode (&optional arg)
@@ -218,7 +220,8 @@ Does not allow activation if Company Mode is active."
          (auto-complete-mode 0)
        (if (pel--company-mode-p)
            (user-error "First turn company-mode off!")
-         (pel--auto-complete-mode-on))))))
+         (pel--auto-complete-mode-on))))
+   (message (pel-symbol-text 'auto-complete-mode))))
 
 
 ;; --
@@ -243,7 +246,8 @@ Does not allow activation if Auto Complete Mode is active."
           (global-company-mode 0)
         (if (pel--auto-complete-mode-p)
             (user-error "First turn auto-complete-mode off!")
-          (pel--global-company-mode-on))))))
+          (pel--global-company-mode-on))))
+    (message (pel-symbol-text 'global-company-mode))))
 
 ;;-pel-autoload
 (defun pel-company-mode (&optional arg)
@@ -263,7 +267,8 @@ If ARG is positive: activate it, otherwise de-activate it."
           (company-mode 0)
         (if (pel--auto-complete-mode-p)
             (user-error "First turn auto-complete-mode off!")
-          (company-mode 1))))))
+          (company-mode 1))))
+    (message (pel-symbol-text 'company-mode))))
 
 ;; --
 ;; PEL Generic Automatic Completion Commands
@@ -283,9 +288,9 @@ Auto-completion package state:
 - global-auto-complete-mode: %s
 - company-mode             : %s
 - global-company-mode      : %s"
-               (pel-option-mode-state pel-use-auto-complete 'auto-complete-mode)
+               (pel-option-mode-state 'auto-complete-mode 'pel-use-auto-complete)
                (pel-symbol-on-off-string 'global-auto-complete-mode)
-               (pel-option-mode-state pel-use-company 'company-mode)
+               (pel-option-mode-state 'company-mode 'pel-use-company)
                (pel-symbol-on-off-string 'global-company-mode))
     (user-error "File pel--base not loaded")))
 

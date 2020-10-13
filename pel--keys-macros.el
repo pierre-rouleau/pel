@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-10-08 09:40:44, updated by Pierre Rouleau>
+;; Time-stamp: <2020-10-13 10:58:50, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -130,8 +130,17 @@
     ([f11 ?F]         "frames"                 pel-pkg-for-frame       frames)
     ([f11 ?S]         "sessions"               pel-pkg-for-sessions    desktop)
     ;;  ([f11 ?S ?R]
-    ([f11 ?X]         "tags"                   pel-pkg-for-xref        (dumb-jump
-                                                                        etags))
+    ([f11 ?X]         "xref"                   pel-pkg-for-xref        (dumb-jump
+                                                                        etags
+                                                                        ggtags
+                                                                        gxref
+                                                                        xref
+                                                                        ivy-xref
+                                                                        helm-xref
+                                                                        ivy
+                                                                        helm
+                                                                        projectile
+                                                                        speedbar))
     ([f11 ?_]         "inserting-text")
     ([f11 ?a]         "abbreviations"          pel-pkg-for-expand      abbrev)
     ([f11 ?b]         "buffers"                pel-pkg-for-buffer      (Buffer-menu

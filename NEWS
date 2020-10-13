@@ -2,19 +2,43 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 
 * Changes since version 0.3.1:
 ** New Features and Improvements:
-- New: integrated c-eldoc.  In C buffers, the ``<f12> ? e`` key sequence
+- New: integrated [[https://github.com/nflath/c-eldoc][c-eldoc]].  In C buffers, the ``<f12> ? e`` key sequence
   toggles c-eldoc mode on/off. I am currently investigating c-eldoc various
   versions trying to improve its performances.  For systems that do not have
   access to a LSP for C/C++ c-eldoc might provide some help even though it is
   limited.
-- New: Added key bindings for ag-based search.
+- New: Added key bindings for [[https://github.com/ggreer/the_silver_searcher][ag]] (the silver searcher) based grep-style search.
 - New: Added support for [[https://github.com/jacktasia/dumb-jump][dump-jump]]. The pel-use-dumb-jump activates it for M-.
+- New: Added support for [[https://www.gnu.org/software/global/][GNU GLOBAL]] gtags-based [[https://github.com/leoliu/ggtags][ggtags]]. This includes support
+  for [[https://ctags.io][Universal-Ctags]] and [[https://pygments.org][Pygments]] plugins.  Several things must be done
+  properly to get this working, a descrption of the required installation
+  steps are in the PEL manual (see the manual additions below).
+- New: added support for gxref xref back-end using GNU GLOBAL.
+- In progress: adding support for RTags xref back-end for C/C++ code.
+- New: added support for ivy-xref and helm-xref front-end for xref search,
+  allowing selection of xref, ivy-xref or helm-xref display of multi-result
+  searches.
+- New: PEL command to dynamically modify the list of xref back-end functions
+  (mapped to the <f11> X B prefix) and to select the xref front-end function
+  (mapped to <f11> X F key sequence).  The supported xref back-end include:
+  etags, rtags, ggtags,  gxref, xref and dumb-jump.
+- Update: pel-xref-show-status (key sequence <f11> X ?) displays more
+  information: it now displays the state of ggtags, dumb-jump, gxref, rtags.
+- Update: the <f11> X <f3> key sequence provides access to the customization
+  buffer of more cross referencing packages. It provides access to dumb-jump,
+  etags, ggtags, gxref, xref, ivy-xref, helm-xref, ivy, helm, projectile and
+  speedbar.
+- Update: improved  messages printed by commands that describe state of modes
+  such as completion modes, etc...
+
 ** Modifications:
 - Modified key bindings in pel:grep to better organize commands for ag and for
   better regularity.
 - The customization group pel-pkg-for-xref is now a child of
   pel-pkg-for-navigation and holds tags based cross-reference build control as
   well as non-tags based such as [[https://github.com/jacktasia/dumb-jump][dump-jump]].
+-
+
 ** Reference PDF updates:
 - [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/grep.pdf][⅀ Grep PDF]] describes ag and ripgrep menu.  Also references projectile-based
  search commands.
@@ -26,7 +50,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 ** Use Manual Additions:
 - Added instructions on how to install
   [[https://www.gnu.org/software/global/][GNU GLOBAL source code tagging system]] gtags utility with its [[https://pygments.org][Pygments]] and
-  [[https://ctags.io][Universal-CTags]] plugins to support gtags-based tags management within
+  [[https://ctags.io][Universal-Ctags]] plugins to support gtags-based tags management within
   Emacs. This includes a small example shells script: [[https://github.com/pierre-rouleau/pel/blob/master/bin/envfor-gtags][envfor-gtags]].
 * Version 0.3.1
 ** Fixes:
@@ -269,3 +293,5 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     dependencies.
   - PEL is not yet distributed via sites like MELPA but
     [[https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst#how-to-install-pel][PEL's installation instructions]] should alleviate this problem.
+
+#  LocalWords:  Pygments speedbar gxref rtags ggtags RTags
