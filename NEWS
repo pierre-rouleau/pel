@@ -29,8 +29,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     information: it now displays the state of ggtags, dumb-jump, gxref, rtags.
   - Update: the <f11> X <f3> key sequence provides access to the customization
     buffer of more cross referencing packages. It provides access to dumb-jump,
-    eopengrok, etags, ggtags, gxref, xref, ivy-xref, helm-xref, ivy, helm,
-    projectile and speedbar.
+    eopengrok, etags, eopengrok, ggtags, gxref, xref, ivy-xref, helm-xref,
+    ivy, helm, projectile and speedbar.
 - Update: improved  messages printed by commands that describe state of modes
   such as completion modes, etc...
 - Update: *Navigation*:
