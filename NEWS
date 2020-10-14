@@ -42,10 +42,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     makes it very similar to the default <insert> key which is not available
     in macOS keyboards.
 - Update: *Help*:
-  - New: Added a command (<f11> ? e c) to open a local copy of Emacs PDF
-    reference card. PEL attempts to locate a directory where the PDF files are
-    located, but if that fails uses the directory identified by the
-    *pel-emacs-refcard-dirpath* user option.
+  - New: Added a command (<f11> ? e c) to open a local copy of
+    one of the [[https://www.gnu.org/software/emacs/refcards/index.html][Emacs PDF reference cards]]. PEL attempts to locate a directory
+    where the PDF files are located, but if that fails uses the directory
+    identified by the *pel-emacs-refcard-dirpath* user option.
   - New: key binding to a command to display Emacs executable path: <f11> ? e x.
   - New: key binding to display Emacs up-time (<f11> ? e u).
 ** Modifications:
