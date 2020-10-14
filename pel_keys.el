@@ -1054,6 +1054,11 @@ Then save your changes."
   (global-set-key (kbd "ESC <down>")  'windmove-down)
   (global-set-key (kbd "ESC <right>") 'windmove-right)
   (global-set-key (kbd "ESC <left>")  'windmove-left))
+(when pel-windmove-on-f1-cursor
+  (global-set-key (kbd "<f1> <up>")    'windmove-up)
+  (global-set-key (kbd "<f1> <down>")  'windmove-down)
+  (global-set-key (kbd "<f1> <right>") 'windmove-right)
+  (global-set-key (kbd "<f1> <left>")  'windmove-left))
 
 (define-key pel:           "#"             'pel-toggle-mac-numlock)
 (define-key pel:           "`"            #'overwrite-mode)

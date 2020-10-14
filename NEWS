@@ -33,6 +33,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     projectile and speedbar.
 - Update: improved  messages printed by commands that describe state of modes
   such as completion modes, etc...
+- New: <f1><cursor> keys sequences are assigned to windmove by default. This
+  can disabled by setting the *pel-windmove-on-f1-cursor* user option to off (nil).
 ** Modifications:
 - Modified key bindings in pel:grep to better organize commands for ag and for
   better regularity.
@@ -47,6 +49,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 - [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/text-modes.pdf][⅀ Text Modes PDF]] describes the superword-mode, subword-mode better.
 - Renamed ⅀ Tags to [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref.pdf][⅀ Xref]]; the PDF will describe several cross-referencing
   mechanisms, not just the tags-based mechanisms.
+- Updated [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf][⅀ Help PDF]] to better introduce reader to getting help from Emacs and
+  PEL.
+- Updated [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/windows.pdf][⅀ Windows]] to describe the new F1 cursor keys to navigate across windows.
 ** Use Manual Additions:
 - Added instructions on how to install
   [[https://www.gnu.org/software/global/][GNU GLOBAL source code tagging system]] gtags utility with its [[https://pygments.org][Pygments]] and

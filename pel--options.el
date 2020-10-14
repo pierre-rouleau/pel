@@ -3355,6 +3355,21 @@ When using Org-mode often it's probably best to set this off (nil)."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-windmove-on-f1-cursor t
+  "Control whether the F1-cursor keys are bound to windmove commands.
+
+When set to t, PEL activates the following four key bindings:
+
+- <f1> <up>    : windmove-up
+- <f1> <down>  : windmove-down
+- <f1> <right> : windmove-right
+- <f1> <left>  : windmove-left
+
+If it set to nil, these keys are not bound."
+  :group 'pel-pkg-for-window
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; -----------------------------------------------------------------------------
 (provide 'pel--options)
 
