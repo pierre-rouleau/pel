@@ -4659,6 +4659,33 @@ the ones defined from the buffer now."
    1 nil
    (function pel-xref-set-front-end) pel-startup-xref-front-end))
 
+;; eopengrok
+(when pel-use-eopengrok
+  (use-package eopengrok
+    :ensure t
+    :pin melpa
+    :commands (eopengrok-mode
+               eopengrok-create-index
+               eopengrok-create-index-with-enable-projects
+               eopengrok-find-definition
+               eopengrok-find-file
+               eopengrok-find-reference
+               eopengrok-find-text
+               eopengrok-find-history
+               eopengrok-find-custom
+               eopengrok-resume)
+    :init
+    (define-pel-global-prefix pel:opengrok (kbd "<f11> X O"))
+    (define-key pel:opengrok "i" 'eopengrok-create-index)
+    (define-key pel:opengrok "I" 'eopengrok-create-index-with-enable-projects)
+    (define-key pel:opengrok "d" 'eopengrok-find-definition)
+    (define-key pel:opengrok "f" 'eopengrok-find-file)
+    (define-key pel:opengrok "s" 'eopengrok-find-reference)
+    (define-key pel:opengrok "t" 'eopengrok-find-text)
+    (define-key pel:opengrok "h" 'eopengrok-find-history)
+    (define-key pel:opengrok "c" 'eopengrok-find-custom)
+    (define-key pel:opengrok "b" 'eopengrok-resume)))
+
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> _`` : Underlining commands
 

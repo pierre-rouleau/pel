@@ -1557,6 +1557,22 @@ This identifies how a multiple choice is shown."
           (const :tag "Use ivy-xref"    ivy-xref)
           (const :tag "Use helm-xref"   helm-xref)))
 
+;; -- opengrok
+(defcustom pel-use-eopengrok nil
+  "Control whether PEL uses the eopengrok package.
+
+The eopengrok package provides access to the opengrok code
+indexing system."
+  :link '(url-link :tag "eopengrok @ Github"
+                   "https://github.com/youngker/eopengrok.el")
+  :link '(url-link :tag "OpenGrok @ Wikipedia"
+                   "https://en.wikipedia.org/wiki/OpenGrok")
+  :link '(url-link :tag "OpengGrok home page"
+                   "https://oracle.github.io/opengrok/")
+  :group 'pel-pkg-for-xref
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; -----------------------------------------------------------------------------
 ;; Programming Language Support
 ;; ============================

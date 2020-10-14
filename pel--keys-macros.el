@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-10-13 10:58:50, updated by Pierre Rouleau>
+;; Time-stamp: <2020-10-13 22:29:01, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -131,6 +131,7 @@
     ([f11 ?S]         "sessions"               pel-pkg-for-sessions    desktop)
     ;;  ([f11 ?S ?R]
     ([f11 ?X]         "xref"                   pel-pkg-for-xref        (dumb-jump
+                                                                        eopengrok
                                                                         etags
                                                                         ggtags
                                                                         gxref
