@@ -20,10 +20,81 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
+;;
+;; A set of of utilities related to Emacs itself.
+;;
+;; - `pel-emacs-executable' identifies the Emacs executable path and prints it
+;;    on the echo area.
+;; - `pel-open-emacs-refcard' prompts for the name of an Emacs reference card
+;;   and opens the PDF file if it can locate it.  It attempts to locate the
+;;   directory unless the `pel-emacs-refcard-dirpath' user option identify the
+;;   directory where the reference card files are stored.
+;;   - It uses the `pel-emacs-refcard-dirpath' utility to identify the
+;;     location of the directory and topic specific PDF files.
+;; - `pel-emacs-load-stats' print Emacs Lisp load statistics in the echo area.
+;; - `pel-emacs-mem-stats' print Emacs Lisp memory statistics in a buffer.
+;;   Those might be useful when developing Emacs Lisp code.
 
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
+;;
+(require 'pel--options)
 
+;;; --------------------------------------------------------------------------
 ;;; Code:
+;;
+
+;;-pel-autoload
+(defun pel-emacs-executable ()
+  "Display Emacs executable path in echo area."
+  (interactive)
+  (message "Emacs := %s"
+           (file-truename
+            (expand-file-name invocation-name invocation-directory))))
+
+(defun pel-emacs-refcard-dirpath (&optional topic)
+  "Compute and return the path of Emacs refcard directory.
+If TOPIC is non-nil, return the full path  of the specified topic PDF file."
+  (let ((refcard-dirpath (expand-file-name
+                          (format "../../share/emacs/%s/etc/refcards" emacs-version)
+                          (file-truename
+                           (expand-file-name
+                            invocation-name
+                            invocation-directory)))))
+    (unless (file-exists-p refcard-dirpath)
+      (if (and pel-emacs-refcard-dirpath
+               (file-exists-p pel-emacs-refcard-dirpath))
+          (setq refcard-dirpath pel-emacs-refcard-dirpath)
+        (user-error "Cannot locate Emacs refcards directory!
+Please identify it in the pel-emacs-refcard-dirpath user option!")))
+    (if topic
+        (expand-file-name (format "%s.pdf" topic) refcard-dirpath)
+      refcard-dirpath)))
+
+;;-pel-autoload
+(defun pel-open-emacs-refcard ()
+  "Prompt for an Emacs REFCARD and open it.
+
+Attempts to find the directory where the Emacs PDF reference card
+files are stored.  Failing to detect them it uses the directory identified by
+the pel-emacs-refcard-dirpath user option."
+  (interactive)
+  (let* ((topics (mapcar
+                  (lambda (fn)
+                    (substring fn 0 -4))
+                  (directory-files
+                   (pel-emacs-refcard-dirpath) nil  "\\.pdf\\'")))
+         (topic  (completing-read
+                  "Refcard: "
+                  topics
+                  nil                   ; predicate
+                  t                     ; require-match
+                  nil                   ; initial
+                  'pel-prompt-history-for-emacs-refcard)))
+    (browse-url (format "file:%s" (pel-emacs-refcard-dirpath topic)))))
+
 
 ;;-pel-autoload
 (defun pel-emacs-load-stats ()

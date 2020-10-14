@@ -118,6 +118,9 @@
 ;;
 ;; Check text from buffer
 ;; - `pel-line-has-only-whitespace-p'
+;;
+;; File Path processing
+;; - `pel-parent-dirpath'
 
 ;; -----------------------------------------------------------------------------
 ;;; Dependencies:
@@ -240,7 +243,7 @@ The index of the first whitespace character is returned when one is present."
       (string= (substring text (- len 1) len) " "))))
 
 (defun pel-starts-with-space-p (text)
-  "Return t if TEXT starts with a space character, nil otherwise."
+  "Return t if TEXT has space character(s) at beginning, nil otherwise."
   (when (> (length text) 0)
     (string= (substring text 0 1) " ")))
 
@@ -835,6 +838,24 @@ Whitespace characters are specified by the syntax table of the current major mod
          (skip-syntax-forward " ")
          (point))
        (point-at-eol))))
+
+;; ---------------------------------------------------------------------------
+;; File Path processing
+;; --------------------
+
+(defsubst pel-parent-dirpath (pathname)
+  "Return parent directory of PATHNAME.
+
+For example:
+
+        ELISP> (pel-parent-dirpath \"/usr/local/Cellar/emacs/26.3/\")
+        \"/usr/local/Cellar/emacs/\"
+        ELISP> (pel-parent-dirpath \"/usr/local/Cellar/emacs/26.3\")
+        \"/usr/local/Cellar/emacs/\"
+        ELISP>
+
+which shows that the presence of a trailing slash has no impact."
+  (file-name-directory (directory-file-name pathname)))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel--base)

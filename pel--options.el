@@ -179,6 +179,15 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-emacs-refcard-dirpath nil
+  "Path name of a directory holding Emacs PDF reference cards."
+  :link '(url-link :tag "GNU Emacs Reference Cards home page"
+                   "https://www.gnu.org/software/emacs/refcards/index.html")
+  :group 'pel-base-emacs
+  :type '(choice
+          (const :tag "Locate automatically" nil)
+          (string :tag: "Use files in directory: ")))
+
 ;; -----------------------------------------------------------------------------
 (defgroup pel-package-use nil
   "List of external packages that can be used by PEL."
