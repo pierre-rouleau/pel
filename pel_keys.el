@@ -1062,6 +1062,7 @@ Then save your changes."
 
 (define-key pel:           "#"             'pel-toggle-mac-numlock)
 (define-key pel:           "`"            #'overwrite-mode)
+(global-set-key  (kbd "ESC <kp-0>")       #'overwrite-mode)
 (define-key pel: (kbd      "RET")         #'auto-fill-mode)
 (define-key pel: (kbd      "DEL")          'c-hungry-delete-backwards)
 (define-key pel: (kbd      "<deletechar>") 'c-hungry-delete-forward)

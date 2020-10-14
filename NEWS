@@ -37,6 +37,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - New: <f1><cursor> keys sequences are assigned to windmove by default. This
     can disabled by setting the *pel-windmove-on-f1-cursor* user option to off
     (nil).
+- Update: *Text Modes*:
+  - New: overwrite-mode is also bound to the <Esc><kp-0> key sequence.  This
+    makes it very similar to the default <insert> key which is not available
+    in macOS keyboards.
 - Update: *Help*:
   - New: Added a command (<f11> ? e c) to open a local copy of Emacs PDF
     reference card. PEL attempts to locate a directory where the PDF files are
