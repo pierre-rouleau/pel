@@ -91,7 +91,6 @@
 ;; -----------------------------------------------------------------------------
 ;;; Dependencies:
 
-(require 'thingatpt)        ; uses: bounds-of-thing-at-point
 (require 'pel--base)        ; uses: pel-whitespace-in-str-p
 ;;                          ;       pel-chars-at-point
 (require 'pel--options)
@@ -100,6 +99,15 @@
 
 ;; -----------------------------------------------------------------------------
 ;;; Code:
+
+;; Utility
+;; -------
+(defun pel--rst-require-thingatpt ()
+  "Load thingatpt/."
+  (message "pel--rst-require-thingatpt")
+  (unless (and (require 'thingatpt nil :noerror)
+               (fboundp 'bounds-of-thing-at-point))
+    (user-error "Failed loading thingatpt!")))
 
 ;; Section Adornment Control
 ;; -------------------------
@@ -595,6 +603,7 @@ Reference: see reStructuredText hyperlink format at URL
 `https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html\
 #hyperlink-references'"
   (interactive "*P")
+  (pel--rst-require-thingatpt)
   (let (p_begin p_end)
     (if (region-active-p)
         (progn
@@ -656,6 +665,7 @@ Move there with pel-rst-goto-ref-bookmark then add lines!"))))))))
 (defun pel--rst-emphasize-with (str)
   "Emphasize the current word or marked area using STR.
 Leave point right after the emphasized text."
+  (pel--rst-require-thingatpt)
   (let* ((p-begin (if (region-active-p)
                       (region-beginning)
                     (car (bounds-of-thing-at-point 'word))))

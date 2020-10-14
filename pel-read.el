@@ -35,12 +35,15 @@
 
 ;;; Code:
 
-(require 'thingatpt)      ; use: bounds-of-thing-at-point
 (require 'pel-navigate)   ; use: pel-forward-word-start
 
 (defun pel-thing-at-point (thing)
   "Read and return the string of THING at point.
 See `bounds-of-thing-at-point' for a list of possible THING symbols."
+  (message "pel-thing-at-point")
+  (unless (and (require 'thingatpt nil :noerror)      ; use: bounds-of-thing-at-point
+               (fboundp 'bounds-of-thing-at-point))
+    (user-error "Failed loading thingatpt!"))
   (let ((bounds (bounds-of-thing-at-point thing))
         text)
     (if bounds

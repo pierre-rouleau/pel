@@ -33,7 +33,14 @@
 
 ;;; Code:
 
-(require 'thingatpt)
+;; Utility
+;; -------
+(defun pel--ccp-require-thingatpt ()
+  "Load thingatpt/."
+  (message "pel--ccp-require-thingatpt")
+  (unless (and (require 'thingatpt nil :noerror)
+               (fboundp 'bounds-of-thing-at-point))
+    (user-error "Failed loading thingatpt!")))
 
 ;; Copy Commands.
 ;; --------------
@@ -46,6 +53,7 @@
 (defun pel--copy-thing-at-point (thing)
   "Copy the `thing-at-point' for the specified kind of THING.
 See `bounds-of-thing-at-point' for a list of possible THING symbols."
+  (pel--ccp-require-thingatpt)
   (let ((bounds (bounds-of-thing-at-point thing)))
     (if bounds
         (progn
@@ -198,6 +206,7 @@ a negative N copies the character backwards (before point)."
 (defun pel--kill-thing-at-point (thing)
   "Kill the `thing-at-point' for the specified kind of THING.
 See `bounds-of-thing-at-point' for a list of possible THING symbols."
+  (pel--ccp-require-thingatpt)
   (let ((bounds (bounds-of-thing-at-point thing)))
     (if bounds
         (kill-region (car bounds) (cdr bounds))
