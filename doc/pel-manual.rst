@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-10-08 15:26:22, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-10-15 13:56:41, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1642,7 +1642,7 @@ PEL Cross Reference Support
 **Note:**
    🚧  This file is under early development.
 
-The file `pel-tags.el`_ holds utilities related to Etags based cross-reference support.
+The file `pel-xref.el`_ holds utilities related to Etags based cross-reference support.
 
 
 Tag-based systems
@@ -5154,8 +5154,8 @@ The list of external packages used by PEL is shown in the `Credits`_ section.
 .. _pel-spell:
 .. _pel-spell.el:           ../pel-spell.el
 .. _pel-text-insert:
-.. _pel-tags:
-.. _pel-tags.el:            ../pel-tags.el
+.. _pel-xref:
+.. _pel-xref.el:            ../pel-xref.el
 .. _pel-text-insert.el:     ../pel-text-insert.el
 .. _pel-text-transform:
 .. _pel-text-transform.el:  ../pel-text-transform.el
