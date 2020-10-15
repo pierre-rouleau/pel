@@ -79,7 +79,7 @@ Please identify it in the pel-emacs-refcard-dirpath user option!")))
 
 Attempts to find the directory where the Emacs PDF reference card
 files are stored.  Failing to detect them it uses the directory identified by
-the pel-emacs-refcard-dirpath user option."
+the `pel-emacs-refcard-dirpath' user option."
   (interactive)
   (let* ((topics (mapcar
                   (lambda (fn)

@@ -180,7 +180,11 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
   :safe #'booleanp)
 
 (defcustom pel-emacs-refcard-dirpath nil
-  "Path name of a directory holding Emacs PDF reference cards."
+  "Path name of a directory holding Emacs PDF reference cards.
+
+If the function `pel-open-emacs-refcard' is not able to find the location
+of the GNU Emacs reference cards, download them from the site linked below,
+store them inside a directory and identify that directory here."
   :link '(url-link :tag "GNU Emacs Reference Cards home page"
                    "https://www.gnu.org/software/emacs/refcards/index.html")
   :group 'pel-base-emacs
