@@ -62,9 +62,15 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     in macOS keyboards.
 - Update: *Help*:
   - New: Added a command (<f11> ? e c) to open a local copy of
-    one of the [[https://www.gnu.org/software/emacs/refcards/index.html][Emacs PDF reference cards]]. PEL attempts to locate a directory
-    where the PDF files are located, but if that fails uses the directory
-    identified by the *pel-emacs-refcard-dirpath* user option.
+    one of the [[https://www.gnu.org/software/emacs/refcards/index.html][Emacs PDF reference cards]]. The new *pel-emacs-refcard-dirpath*
+    user option identifies a directory where Emacs PDF refcards are stored. If
+    you set that user option PEL uses it to locate the Emacs PDF refcards,
+    otherwise it attempts to locate it.  Under macOS automatic location often
+    works nicely because the Emacs reference cards are stored in PDF format.
+    On Linux platforms the refcards are stored in .tex format and PEL does not
+    attempt to build or render the .tex files, so its often best to download
+    the PDF files, store them in a directory and identify that location in the
+    user option.
   - New: key binding to a command to display Emacs executable path: <f11> ? e x.
   - New: key binding to display Emacs up-time (<f11> ? e u).
 ** Modifications:
