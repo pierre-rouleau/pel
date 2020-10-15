@@ -1,4 +1,4 @@
-;;; pel--options.el --- PEL Customization Options -*-lexical-binding: t-*-
+1;;; pel--options.el --- PEL Customization Options -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
@@ -190,7 +190,7 @@ store them inside a directory and identify that directory here."
   :group 'pel-base-emacs
   :type '(choice
           (const :tag "Locate automatically" nil)
-          (string :tag: "Use files in directory: ")))
+          (string :tag "Use files in directory")))
 
 ;; -----------------------------------------------------------------------------
 (defgroup pel-package-use nil
