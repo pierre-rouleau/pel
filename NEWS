@@ -10,27 +10,33 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 - New: Added key bindings for [[https://github.com/ggreer/the_silver_searcher][ag]] (the silver searcher) based grep-style
   search.
 - Update: *Cross Referencing support*:
-  - New: Added support for [[https://github.com/jacktasia/dumb-jump][dump-jump]]. The pel-use-dumb-jump activates it for M-.
-  - New: Added support for [[https://www.gnu.org/software/global/][GNU GLOBAL]] gtags-based [[https://github.com/leoliu/ggtags][ggtags]]. This includes support
-    for [[https://ctags.io][Universal-Ctags]] and [[https://pygments.org][Pygments]] plugins.  Several things must be done
-    properly to get this working, a descrption of the required installation
-    steps are in the PEL manual (see the manual additions below).
-  - New: added support for gxref xref back-end using GNU GLOBAL.
-  - In progress: adding support for RTags xref back-end for C/C++ code.
-  - New: added support for ivy-xref and helm-xref front-end for xref search,
-    allowing selection of xref, ivy-xref or helm-xref display of multi-result
-    searches.
-  - New: PEL command to dynamically modify the list of xref back-end functions
-    (mapped to the <f11> X B prefix) and to select the xref front-end function
-    (mapped to <f11> X F key sequence).  The supported xref back-end include:
-    etags, rtags, ggtags,  gxref, xref and dumb-jump.
-  - New: Added support for eopengrok front end to OpenGrok.
-  - Update: pel-xref-show-status (key sequence <f11> X ?) displays more
-    information: it now displays the state of ggtags, dumb-jump, gxref, rtags.
-  - Update: the <f11> X <f3> key sequence provides access to the customization
-    buffer of more cross referencing packages. It provides access to dumb-jump,
-    eopengrok, etags, eopengrok, ggtags, gxref, xref, ivy-xref, helm-xref,
-    ivy, helm, projectile and speedbar.
+  - New *xref back-end support*:
+    - New: Added support for [[https://github.com/jacktasia/dumb-jump][dump-jump]]. The pel-use-dumb-jump activates it for M-.
+    - New: Added support for [[https://www.gnu.org/software/global/][GNU GLOBAL]] gtags-based [[https://github.com/leoliu/ggtags][ggtags]]. This includes support
+      for [[https://ctags.io][Universal-Ctags]] and [[https://pygments.org][Pygments]] plugins.  Several things must be done
+      properly to get this working, a descrption of the required installation
+      steps are in the PEL manual (see the manual additions below).
+    - New: added support for gxref xref back-end using GNU GLOBAL.
+    - In progress: adding support for RTags xref back-end for C/C++ code.
+    - New: PEL command to dynamically modify the list of xref back-end functions
+      (mapped to the <f11> X B prefix) and to select the xref front-end function
+      (mapped to <f11> X F key sequence).  The supported xref back-end include:
+      etags, rtags, ggtags,  gxref, xref and dumb-jump.
+  - New *xref front-end support* and selection mechanism:
+    - New: added support for ivy-xref and helm-xref front-end for xref search,
+      allowing selection of xref, ivy-xref or helm-xref display of multi-result
+      searches.
+  - Updated *help support*:
+    - Update: pel-xref-show-status (key sequence <f11> X ?) displays more
+      information: it now displays the state of ggtags, dumb-jump, gxref,
+      rtags.
+  - Updated *customization support*:
+    - Update: the <f11> X <f3> key sequence provides access to the customization
+      buffer of more cross referencing packages. It provides access to dumb-jump,
+      eopengrok, etags, eopengrok, ggtags, gxref, xref, ivy-xref, helm-xref,
+      ivy, helm, projectile and speedbar.
+  - New: Added support for eopengrok front end to [[https://en.wikipedia.org/wiki/OpenGrok][OpenGrok]], a Java-based
+    source code indexing server.
 - Update: improved  messages printed by commands that describe state of modes
   such as completion modes, etc...
 - Update: *Navigation*:
