@@ -34,9 +34,22 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 - Update: improved  messages printed by commands that describe state of modes
   such as completion modes, etc...
 - Update: *Navigation*:
-  - New: <f1><cursor> keys sequences are assigned to windmove by default. This
-    can disabled by setting the *pel-windmove-on-f1-cursor* user option to off
-    (nil).
+  - New: when the new *pel-windmove-on-f1-cursor* user option is set to t, PEL
+    activates several key bindings for windows management using the <f1>
+    prefix followed by cursor keys sequences:
+    - <f1> <cursor> : to move to pointed window.
+    - <f1> <C-cursor> : to create window in pointed direction.
+    - <f1> <C-S-cursor> : to close window in pointed direction.
+    - <f1> <M-cursor> : to resize current window according to the cursor used.
+    - <f1> <kp-5> : to balance the size of all windows in current frame.
+  - New: when the new *pel-windmove-on-esc-cursor* user option is set to t, PEL
+    activates several key bindings for windows management using the *Esc*
+    prefix followed by cursor keys sequences:
+    - Esc <cursor> : to move to pointed window.
+    - Esc <C-cursor> : to create window in pointed direction.
+    - Esc <C-S-cursor> : to close window in pointed direction.
+    - Esc <M-cursor> : to resize current window according to the cursor used.
+    - Esc <kp-5> : to balance the size of all windows in current frame.
 - Update: *Text Modes*:
   - New: overwrite-mode is also bound to the <Esc><kp-0> key sequence.  This
     makes it very similar to the default <insert> key which is not available

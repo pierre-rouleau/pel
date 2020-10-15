@@ -1049,23 +1049,26 @@ Then save your changes."
              c-toggle-hungry-state
              c-toggle-syntactic-indentation))
 
-(when pel-windmove-on-esc-cursor
-  (global-set-key (kbd "ESC <up>")    'windmove-up)
-  (global-set-key (kbd "ESC <down>")  'windmove-down)
-  (global-set-key (kbd "ESC <right>") 'windmove-right)
-  (global-set-key (kbd "ESC <left>")  'windmove-left))
-(when pel-windmove-on-f1-cursor
-  (global-set-key (kbd "<f1> <up>")    'windmove-up)
-  (global-set-key (kbd "<f1> <down>")  'windmove-down)
-  (global-set-key (kbd "<f1> <right>") 'windmove-right)
-  (global-set-key (kbd "<f1> <left>")  'windmove-left))
+(defun pel--global-windmove-on (prefix)
+  "Bind windmove commands on PREFIX key followed by cursor."
+  (global-set-key (kbd (format "%s <up>"        prefix)) 'windmove-up)
+  (global-set-key (kbd (format "%s <down>"      prefix)) 'windmove-down)
+  (global-set-key (kbd (format "%s <right>"     prefix)) 'windmove-right)
+  (global-set-key (kbd (format "%s <left>"      prefix)) 'windmove-left)
+  (global-set-key (kbd (format "%s <C-down>"    prefix)) 'pel-create-window-down)
+  (global-set-key (kbd (format "%s <C-up>"      prefix)) 'pel-create-window-up)
+  (global-set-key (kbd (format "%s <C-left>"    prefix)) 'pel-create-window-left)
+  (global-set-key (kbd (format "%s <C-right>"   prefix)) 'pel-create-window-right)
+  (global-set-key (kbd (format "%s <C-S-down>"  prefix)) 'pel-close-window-down)
+  (global-set-key (kbd (format "%s <C-S-up>"    prefix)) 'pel-close-window-up)
+  (global-set-key (kbd (format "%s <C-S-left>"  prefix)) 'pel-close-window-left)
+  (global-set-key (kbd (format "%s <C-S-right>" prefix)) 'pel-close-window-right))
 
-(define-key pel:           "#"             'pel-toggle-mac-numlock)
-(define-key pel:           "`"            #'overwrite-mode)
-(global-set-key  (kbd "ESC <kp-0>")       #'overwrite-mode)
-(define-key pel: (kbd      "RET")         #'auto-fill-mode)
-(define-key pel: (kbd      "DEL")          'c-hungry-delete-backwards)
-(define-key pel: (kbd      "<deletechar>") 'c-hungry-delete-forward)
+(when pel-windmove-on-esc-cursor
+  (pel--global-windmove-on "ESC"))
+(when pel-windmove-on-f1-cursor
+  (pel--global-windmove-on "<f1>"))
+
 (define-key pel: (kbd      "<down>")       'windmove-down)
 (define-key pel: (kbd      "<up>")         'windmove-up)
 (define-key pel: (kbd      "<left>")       'windmove-left)
@@ -1078,6 +1081,13 @@ Then save your changes."
 (define-key pel: (kbd      "<C-S-up>")     'pel-close-window-up)
 (define-key pel: (kbd      "<C-S-left>")   'pel-close-window-left)
 (define-key pel: (kbd      "<C-S-right>")  'pel-close-window-right)
+
+(define-key pel:           "#"             'pel-toggle-mac-numlock)
+(define-key pel:           "`"            #'overwrite-mode)
+(global-set-key  (kbd "ESC <kp-0>")       #'overwrite-mode)
+(define-key pel: (kbd      "RET")         #'auto-fill-mode)
+(define-key pel: (kbd      "DEL")          'c-hungry-delete-backwards)
+(define-key pel: (kbd      "<deletechar>") 'c-hungry-delete-forward)
 (define-key pel: (kbd      "<M-right>")    'pel-forward-syntaxchange-start)
 (define-key pel: (kbd      "<M-left>")     'pel-backward-syntaxchange-start)
 (define-key pel: (kbd      "0")           #'hl-line-mode)
@@ -4424,9 +4434,23 @@ the ones defined from the buffer now."
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> w s`` : Window size operations
 ;;
+
+(defun pel--global-resize-window-on (prefix)
+  "Bind window resize commands on PREFIX followed by cursor."
+  (global-set-key (kbd (format "%s <kp-5>"    prefix)) #'balance-windows)
+  (global-set-key (kbd (format "%s <M-up>"    prefix)) #'enlarge-window)
+  (global-set-key (kbd (format "%s <M-down>"  prefix)) #'shrink-window)
+  (global-set-key (kbd (format "%s <M-right>" prefix)) #'enlarge-window-horizontally)
+  (global-set-key (kbd (format "%s <M-left>"  prefix)) #'shrink-window-horizontally))
+
+(when pel-windmove-on-esc-cursor
+  (pel--global-resize-window-on "ESC"))
+(when pel-windmove-on-f1-cursor
+  (pel--global-resize-window-on "<f1>"))
+
 (define-pel-global-prefix pel:window-size (kbd "<f11> w s"))
-(define-key pel:window-size "=" #'balance-windows)
 (define-key pel:window-size "-" #'shrink-window-if-larger-than-buffer)
+(define-key pel:window-size "=" #'balance-windows)
 (define-key pel:window-size "V" #'enlarge-window)
 (define-key pel:window-size "v" #'shrink-window)
 (define-key pel:window-size "H" #'enlarge-window-horizontally)
