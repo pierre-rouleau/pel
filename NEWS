@@ -78,7 +78,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   mechanisms, not just the tags-based mechanisms.
 - Updated [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf][⅀ Help PDF]] to better introduce reader to getting help from Emacs and
   PEL.
-- Updated [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/windows.pdf][⅀ Windows]] to describe the new F1 cursor keys to navigate across windows.
+- Updated [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/windows.pdf][⅀ Windows]] to describe the new Esc and <f1> cursor keys to manage
+  and navigate across windows.
 ** Use Manual Additions:
 - Added instructions on how to install
   [[https://www.gnu.org/software/global/][GNU GLOBAL source code tagging system]] gtags utility with its [[https://pygments.org][Pygments]] and
