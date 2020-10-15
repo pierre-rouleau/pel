@@ -428,7 +428,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-spell-init-from-user-option
     pel-spell-show-use)
 
-  (pel-autoload "pel-tags" for:
+  (pel-autoload "pel-xref" for:
     pel-xref-dumb-jump-activate
     pel-xref-toggle-dumb-jump-mode
     pel-xref-gxref-activate

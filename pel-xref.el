@@ -1,4 +1,4 @@
-;;; pel-tags.el --- xref cross referencing utilities -*-lexical-binding: t-*-
+;;; pel-xref.el --- xref cross referencing utilities -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
@@ -364,6 +364,6 @@ FRONT-END must be one of:
    (pel-xref-helm-xref-state-str)))
 
 ;;; --------------------------------------------------------------------------
-(provide 'pel-tags)
+(provide 'pel-xref)
 
-;;; pel-tags.el ends here
+;;; pel-xref.el ends here
