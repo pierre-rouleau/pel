@@ -57,18 +57,18 @@
 (defun pel-emacs-refcard-dirpath (&optional topic)
   "Compute and return the path of Emacs refcard directory.
 If TOPIC is non-nil, return the full path  of the specified topic PDF file."
-  (let ((refcard-dirpath (expand-file-name
-                          (format "../../share/emacs/%s/etc/refcards" emacs-version)
-                          (file-truename
-                           (expand-file-name
-                            invocation-name
-                            invocation-directory)))))
+  (let ((refcard-dirpath (or pel-emacs-refcard-dirpath
+                             (expand-file-name
+                              (format "../../share/emacs/%s/etc/refcards" emacs-version)
+                              (file-truename
+                               (expand-file-name
+                                invocation-name
+                                invocation-directory))))))
     (unless (file-exists-p refcard-dirpath)
-      (if (and pel-emacs-refcard-dirpath
-               (file-exists-p pel-emacs-refcard-dirpath))
-          (setq refcard-dirpath pel-emacs-refcard-dirpath)
-        (user-error "Cannot locate Emacs refcards directory!
-Please identify it in the pel-emacs-refcard-dirpath user option!")))
+      (user-error (if pel-emacs-refcard-dirpath
+                      "Directory identified by pel-emacs-refcard-dirpath is invalid! Please fix it!"
+"Cannot locate Emacs refcard directory!
+Please identify a directory with PDF refcard files in the pel-emacs-refcard-dirpath user option!")))
     (if topic
         (expand-file-name (format "%s.pdf" topic) refcard-dirpath)
       refcard-dirpath)))
