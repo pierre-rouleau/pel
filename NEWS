@@ -56,6 +56,19 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     - Esc <C-S-cursor> : to close window in pointed direction.
     - Esc <M-cursor> : to resize current window according to the cursor used.
     - Esc <kp-5> : to balance the size of all windows in current frame.
+- Update: *Searching*:
+  - Improved: pel-search-word-from-top (mapped to ``<f11> s .`` key sequence
+    and to the ``.;`` key chord) can now:
+    - search for text from marked area; this enables searching for anything,
+      not just words.  It is useful in modes where super-word mode is not
+      honoured.
+    - toggle text mode and search in window selected by a numbered prefix:
+      - a numbered prefix in the range [10..18] grab the word with subword
+        mode temporarily activated and then select the window as if the
+        numbered prefix was 0 to 8.
+      - a numbered prefix in the range [20..28] grab the word with super-word
+        mode temporarily activated and then select the window as if the
+        numbered prefix was 0 to 8.
 - Update: *Text Modes*:
   - New: overwrite-mode is also bound to the <Esc><kp-0> key sequence.  This
     makes it very similar to the default <insert> key which is not available

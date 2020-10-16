@@ -148,9 +148,11 @@ Depends on 2 Emacs (base system) variables:
 
 ;;-pel-autoload
 (defun pel-search-word-from-top (&optional n)
-  "Search word at point from top/bottom of buffer in window identified by N.
+  "Search text in region or word at point from top/bottom of specified buffer.
 
-Grab the word at point from the current window.
+If an area is marked used the text in the area as the searched text,
+otherwise search for the word at point.
+
 Search in the window identified by N:
 - If N is negative, search backward from the bottom of the window
   identified by (abs N).  Otherwise search forward from the top
@@ -164,10 +166,14 @@ Search in the window identified by N:
                                    -             8 := 'up
                                    - 4 := 'left  5 := 'current  6 := 'right
                                    -             2 := 'down
-- If N is 7:                     : toggle subword-mode for this search in
-                                   current window.
-- If N is 9 or larger            : toggle superword mode for this search
-                                   in current window.
+- If N in [10..18] range         : toggle subword mode in the current buffer
+                                   to grab the word to search for this search,
+                                   and use (N - 10) to identify the window
+                                   to perform the search.
+- For N in [20..28] range        : toggle superword mode in the current buffer
+                                   to grab the word to search for this search,
+                                   and use (N - 20) to identify the window
+                                   to perform the search.
 
 Explicitly selecting the minibuffer window, or a non-existing window is not
 allowed, and search is done in current window.
@@ -178,37 +184,47 @@ Position before searched word is pushed on the mark ring."
   (interactive "P")
   ;; Use current window if n is not specified.
   ;; Otherwise select direction from numerical argument.
-  (push-mark)
-  (let* ((n-value           (prefix-numeric-value n))
-         (do-forward-search (>= n-value 0))
-         (n-abs             (abs n-value))
-         (mode-to-toggle    (cond ((= n-abs 7) 'subword-mode)
-                                  ((= n-abs 9) 'superword-mode)
-                                  (t nil)))
-         (direction         (pel-window-direction-for n-abs 'current))
-         searched-word)
-    ;; grab word at point, optionally alterning the meaning of word
-    ;; while grabbing it.
-    (ignore-errors
-      (when mode-to-toggle
-        (pel-toggle-mode mode-to-toggle))
-      (setq searched-word (pel-word-at-point))
-      (when mode-to-toggle
-        (pel-toggle-mode mode-to-toggle)))
-    ;; Move to the destination window
-    (when (eq direction 'new)
-      (setq direction 'current))
-    (pel-window-select direction)
-    ;; then search from the specified buffer end point
-    (if do-forward-search
-        ;; forward search
-        (progn
-          (goto-char (point-min))
-          (isearch-forward nil :no-recursive-edit))
-      ;; backward search
-      (goto-char (point-max))
-      (isearch-backward nil :no-recursive-edit))
-    (isearch-yank-string searched-word)))
+  (let ((searched-text))
+    (when (use-region-p)
+      (setq searched-text (buffer-substring-no-properties
+                           (region-beginning)
+                           (region-end)))
+      (deactivate-mark))
+    (push-mark)
+    (let* ((n-value           (prefix-numeric-value n))
+           (do-forward-search (>= n-value 0))
+           (n-abs             (abs n-value))
+           (mode-to-toggle    (cond ((>= 28 n-abs 20) 'superword-mode)
+                                    ((>= 18 n-abs 10) 'subword-mode)
+                                    (t nil)))
+           (n-abs             (cond ((>= 28 n-abs 20) (- n-abs 20))
+                                    ((>= 18 n-abs 10) (- n-abs 10))
+                                    (t n-abs)))
+           (direction         (pel-window-direction-for n-abs 'current)))
+      ;; If text to search was not already identified by a marked region,
+      ;; grab word at point, optionally alternating the meaning of word
+      ;; while grabbing it.
+      (ignore-errors
+        (unless searched-text
+          (when mode-to-toggle
+            (pel-toggle-mode mode-to-toggle))
+          (setq searched-text (pel-word-at-point))
+          (when mode-to-toggle
+            (pel-toggle-mode mode-to-toggle))))
+      ;; Move to the destination window
+      (when (eq direction 'new)
+        (setq direction 'current))
+      (pel-window-select direction)
+      ;; then search from the specified buffer end point
+      (if do-forward-search
+          ;; forward search
+          (progn
+            (goto-char (point-min))
+            (isearch-forward nil :no-recursive-edit))
+        ;; backward search
+        (goto-char (point-max))
+        (isearch-backward nil :no-recursive-edit))
+      (isearch-yank-string searched-text))))
 
 ;; -----------------------------------------------------------------------------
 ;; PEL Search Tool Control
