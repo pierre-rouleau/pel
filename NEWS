@@ -10,6 +10,19 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 - New: Added key bindings for [[https://github.com/ggreer/the_silver_searcher][ag]] (the silver searcher) based grep-style
   search.
 - Update: *Cross Referencing support*:
+  - Non-xref cross-reference/code indexing packages:
+    - New: Added support for [[https://en.wikipedia.org/wiki/Cscope][CScope]] via the external [[https://github.com/dkogan/xcscope.el][xcscope]] and the
+      [[https://github.com/alpha22jp/helm-cscope.el][helm-cscope]] Emacs packages.
+      - The xcscope package is enabled when the *pel-use-xcscope* user option
+        is on (non-nil).
+      - When enabled, the ``<f11> X C C`` key sequence toggles the
+        xcscope-minor-mode. Automatic activation of xcscope-minor-mode can be
+        specified with the *pel-modes-activating-cscope*.  This could be done
+        for c-mode, c++-mode and dired-mode.
+      - The *pel-use-helm-cscope* user option enables the use of the helm-cscope
+        external Emacs package that uses Helm to display CSope matches.
+    - New: Added support for eopengrok front end to [[https://en.wikipedia.org/wiki/OpenGrok][OpenGrok]], a Java-based
+      source code indexing server.
   - New *xref back-end support*:
     - New: Added support for [[https://github.com/jacktasia/dumb-jump][dump-jump]]. The pel-use-dumb-jump activates it for M-.
     - New: Added support for [[https://www.gnu.org/software/global/][GNU GLOBAL]] gtags-based [[https://github.com/leoliu/ggtags][ggtags]]. This includes support
@@ -35,8 +48,6 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       buffer of more cross referencing packages. It provides access to dumb-jump,
       eopengrok, etags, eopengrok, ggtags, gxref, xref, ivy-xref, helm-xref,
       ivy, helm, projectile and speedbar.
-  - New: Added support for eopengrok front end to [[https://en.wikipedia.org/wiki/OpenGrok][OpenGrok]], a Java-based
-    source code indexing server.
 - Update: improved  messages printed by commands that describe state of modes
   such as completion modes, etc...
 - Update: *Navigation*:

@@ -1338,7 +1338,8 @@ Then save your changes."
     count))
 
 (when (or pel-use-helm
-          pel-use-helm-xref)
+          pel-use-helm-xref
+          (and pel-use-xcscope pel-use-helm-cscope))
   (use-package helm
     :ensure t
     :pin melpa
@@ -4627,9 +4628,35 @@ the ones defined from the buffer now."
      (lambda ()
        (ggtags-mode 1)))))
 
-;; dumb-jump
-;; ---------
+;; cscope
+(when pel-use-xcscope
+  (define-pel-global-prefix pel:cscope (kbd "<f11> X C"))
+  (use-package xcscope
+    :ensure t
+    :pin melpa
+    :commands cscope-minor-mode
+    :init
+    (define-key pel:cscope "C" 'cscope-minor-mode)
+    ;; schedule activation of cscope minor mode for selected ones
+    (pel-add-hook-for 'pel-modes-activating-cscope
+                      'cscope-minor-mode))
 
+  (when pel-use-helm-cscope
+    (use-package helm-cscope
+      :ensure t
+      :pin melpa
+      :commands helm-cscope-mode
+      :init
+      (define-key pel:cscope "H" 'helm-cscope-mode)
+      (add-hook 'c-mode-common-hook 'helm-cscope-mode)
+      (add-hook 'helm-cscope-mode-hook
+                (lambda ()
+                  (local-set-key (kbd "M-.") 'helm-cscope-find-global-definition)
+                  (local-set-key (kbd "M-@") 'helm-cscope-find-calling-this-function)
+                  (local-set-key (kbd "M-s") 'helm-cscope-find-this-symbol)
+                  (local-set-key (kbd "M-,") 'helm-cscope-pop-mark))))))
+
+;; dumb-jump
 (when pel-use-dumb-jump
   (use-package dumb-jump
     :ensure t

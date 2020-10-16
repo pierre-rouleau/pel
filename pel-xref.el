@@ -350,7 +350,8 @@ FRONT-END must be one of:
  - rtags-xref (for C/C++)  : %s
 - xref-show-xrefs-function : %s
   - ivy-xref               : %s
-  - helm-xref              : %s"
+  - helm-xref              : %s
+- xcscope-minor-mode       : %s"
    (pel-xref-dumb-jump-mode-state-str)
    (pel-option-mode-state 'ggtags-mode 'pel-use-ggtags)
    (pel-xref-functions-hook-str xref-backend-functions)
@@ -361,7 +362,8 @@ FRONT-END must be one of:
    (pel-xref-rtags-state-str)
    xref-show-xrefs-function
    (pel-xref-ivy-xref-state-str)
-   (pel-xref-helm-xref-state-str)))
+   (pel-xref-helm-xref-state-str)
+   (pel-option-mode-state 'xcscope-minor-mode 'pel-use-xcscope)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-xref)
