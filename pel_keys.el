@@ -4566,6 +4566,7 @@ the ones defined from the buffer now."
 
 (declare-function eshell "eshell")
 
+(define-key pel:eXecute    "?" #'list-processes)
 (define-key pel:eXecute    "a" #'ansi-term)
 (define-key pel:eXecute    "e" #'eshell)
 (when pel-use-julia

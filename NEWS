@@ -67,6 +67,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     - Esc <C-S-cursor> : to close window in pointed direction.
     - Esc <M-cursor> : to resize current window according to the cursor used.
     - Esc <kp-5> : to balance the size of all windows in current frame.
+- Update: *Process execution*:
+  - New: the list-processes command is now bound to ``<f11> x ?`` key sequence.
 - Update: *Searching*:
   - Improved: pel-search-word-from-top (mapped to ``<f11> s .`` key sequence
     and to the ``.;`` key chord) can now:
