@@ -313,7 +313,7 @@ FRONT-END must be one of:
 
 ;;-pel-autoload
 (defun pel-xref-select-front-end ()
-  "Select the xref back-end."
+  "Select the xref front-end."
   (interactive)
   (let ((original-value pel--xref-front-end-used-tool))
     (pel-select-from "xref front-end"
