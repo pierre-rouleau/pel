@@ -4648,14 +4648,10 @@ the ones defined from the buffer now."
       :pin melpa
       :commands helm-cscope-mode
       :init
-      (define-key pel:cscope "H" 'helm-cscope-mode)
-      (add-hook 'c-mode-common-hook 'helm-cscope-mode)
-      (add-hook 'helm-cscope-mode-hook
-                (lambda ()
-                  (local-set-key (kbd "M-.") 'helm-cscope-find-global-definition)
-                  (local-set-key (kbd "M-@") 'helm-cscope-find-calling-this-function)
-                  (local-set-key (kbd "M-s") 'helm-cscope-find-this-symbol)
-                  (local-set-key (kbd "M-,") 'helm-cscope-pop-mark))))))
+      (define-key pel:cscope "H" 'pel-toggle-helm-cscope)
+      (add-hook 'helm-cscope-mode-hook 'pel-activate-helm-cscope)
+      (pel-add-hook-for 'pel-modes-activating-helm-cscope
+                        'pel-activate-helm-cscope))))
 
 ;; dumb-jump
 (when pel-use-dumb-jump

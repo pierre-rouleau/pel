@@ -437,6 +437,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-xref-toggle-rtags
     pel-xref-set-front-end
     pel-xref-select-front-end
+    pel-activate-helm-cscope
+    pel-toggle-helm-cscope
     pel-xref-show-status)
 
   (pel-autoload "pel-text-insert" for:

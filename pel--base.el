@@ -53,6 +53,7 @@
 ;;
 ;; String generation utilities:
 ;;  - `pel-option-mode-state'
+;;    - `pel-activated-in-str'
 ;;  - `pel-symbol-text'
 ;;    - `pel-symbol-on-off-string'
 ;;      - `pel-on-off-string'
@@ -64,12 +65,16 @@
 ;; - `pel-hastext'
 ;; - `pel-when-text-in'
 ;; - `pel-string-spread'
-;;
+;; - `pel-list-str'
+
 ;; Value check:
 ;; - `pel-use-or'
 ;;
 ;; Operations on sequences:
 ;;  - `pel-concat-strings-in-list'
+;;
+;; Lazy loading:
+;; - `pel-require'
 ;;
 ;; Toggle a local mode:
 ;;  - `pel-toggle-mode'
@@ -267,6 +272,7 @@ If N > 2: use the PLURAL form if specified,
 ;;
 ;; Call hierarchy:
 ;;  - `pel-option-mode-state'
+;;    - `pel-activated-in-str'
 ;;  - `pel-symbol-text'
 ;;    - `pel-symbol-on-off-string'
 ;;      - `pel-on-off-string'
@@ -308,22 +314,39 @@ By default or when these arguments are nil:
       (or true-string "yes")
     (or false-string "no")))
 
-(defun pel-option-mode-state (mode user-option)
+(defun pel-activated-in-str (activated-in)
+  "Return a string describing ACTIVATED-IN list.
+Return an empty string if ACTIVATED-IN is nil.
+Otherwise return a string start starts with \" Auto-loaded in: \"
+followed by the elements of ACTIVATED-IN separated by commas."
+  (if activated-in
+      (format " Auto-loaded in: %s"
+              (pel-list-str activated-in))
+    ""))
+
+(defun pel-option-mode-state (mode user-option &optional activated-in)
   "Return description of MODE status controlled by USER_OPTION.
 USER-OPTION is a symbol.  A non-nil value of that symbol
 identifies whether the mode is made available, nil that it is not made
 available and most probably not loaded.
-MODE is the mode symbol, indicating whether the mode is active or not."
+MODE is the mode symbol, indicating whether the mode is active or not.
+If ACTIVATED-IN is specified that's the list of major modes where MODE
+is automatically activated; this is included in the description."
+  (let ((autoloaded-str (pel-activated-in-str activated-in)))
   (if (boundp user-option)
       (if (eval user-option)
           (if (boundp mode)
-              (format "Available %s."
+              (format "Available %s.%s"
                       (pel-symbol-on-off-string mode
                                                 "and on"
-                                                "but off"))
-            "Available but not loaded, use a command to load it.")
-        (format "Not available. Activate %s first." (symbol-name user-option)))
-    (format "%s symbol unknown" (symbol-name user-option))))
+                                                "but off")
+                      autoloaded-str)
+            (format "Available but not loaded, use a command to load it.%s"
+                    autoloaded-str))
+        (format "Not available. Activate %s first.%s"
+                (symbol-name user-option)
+                autoloaded-str))
+    (format "%s symbol unknown" (symbol-name user-option)))))
 
 ;; -----------------------------------------------------------------------------
 ;; String transformation utilities:
@@ -332,6 +355,7 @@ MODE is the mode symbol, indicating whether the mode is active or not."
 ;; - `pel-hastext'
 ;; - `pel-when-text-in'
 ;; - `pel-string-spread'
+;; - `pel-list-str'
 
 (defun pel-capitalize-first-letter (text)
   "Return TEXT with first character up-cased, all other unchanged.
@@ -380,6 +404,12 @@ Example:
     ELISP>"
   (string-join (cdr (butlast (split-string string "")))
                (or separator " ")))
+
+(defun pel-list-str (list)
+  "Return a string representation of a LIST using comma separator."
+  (string-join (mapcar (function symbol-name)
+                       list)
+               ", "))
 
 ;; -----------------------------------------------------------------------------
 ;; Value check
@@ -510,6 +540,19 @@ Usage Example:
               alist)
           (nconc alist (list (list key val)))))
     (error "Call to pel-cons-alist-at given an empty ALIST argument!")))
+
+;; ---------------------------------------------------------------------------
+;; Lazy loading:
+;; - `pel-require'
+(defun pel-require (feature)
+  "Load FEATURE if not already loaded.
+FEATURE is a symbol.
+Issue a use-error on failure.
+Otherwise return the loading state of the FEATURE."
+    (unless (featurep feature)
+      (unless (require feature nil :noerror)
+        (user-error "Failed loading %s!" feature)))
+    (featurep feature))
 
 ;; -----------------------------------------------------------------------------
 ;; Toggle a local mode

@@ -1416,7 +1416,8 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
   "Control whether PEL uses the xcscope package.
 
 Activates the xcscope package which provides commands
-to interact with the CScope built databases.
+to interact with the CScope built databases, via the
+cscope-minor-mode.
 
 This requires the CScope command line utility.
 Note: on macOS you can install cscope with Homebrew
@@ -1443,6 +1444,24 @@ CScope minor mode only supports the following major modes, so only
 put the following in the list:
 
 - c-mode
+- c-mode-common
+- c++-mode
+- dired-mode"
+  :group 'pel-pkg-for-xref
+  :type '(repeat symbol))
+
+(defcustom pel-modes-activating-helm-cscope nil
+  "List of major modes that automatically activate helm-cscope mode.
+
+The list of modes should be equal or a sub-set of the list of modes
+identified in the variable `pel-modes-activating-cscope' since this
+mode adds key bindings for cscope-mode operations.
+
+CScope minor mode only supports the following major modes, so only
+put the following in the list:
+
+- c-mode
+- c-mode-common
 - c++-mode
 - dired-mode"
   :group 'pel-pkg-for-xref

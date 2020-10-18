@@ -69,7 +69,6 @@
 ;;    - `pel-xref-rtags-state-str'
 ;;    - `pel-xref-rtags-activate'
 ;;
-;;    - `pel--xref-require'
 ;;    - `pel-xref-function-hook-local-p'
 
 
@@ -88,12 +87,6 @@
   "Return non-nil if the FUNCTION-HOOK list is a local hook, nil if global."
   (memq t function-hook))
 
-(defun pel--xref-require ()
-  "Delay load xref."
-  (unless (featurep 'xref)
-    (unless (require 'xref nil :noerror)
-      (user-error "Failed loading xref!"))))
-
 ;; ---------------------------------------------------------------------------
 ;; xref back-ends
 ;; ==============
@@ -104,10 +97,8 @@
 ;;-pel-autoload
 (defun pel-xref-dumb-jump-activate ()
   "Activate dumb-jump."
-  (pel--xref-require)
-  (unless (featurep 'dumb-jump)
-    (unless (require 'dumb-jump nil :noerror)
-      (user-error "Failed loading dumb-jump!")))
+  (pel-require 'xref)
+  (pel-require 'dumb-jump)
   ;; In some major modes the hooks are done locally
   ;; in others they are done globally: update the proper one.
   (add-hook 'xref-backend-functions
@@ -117,24 +108,27 @@
 
 (defun pel-xref-dumb-jump-active-p ()
   "Return non-nil when dumb-jump is active, nil otherwise."
-  (pel--xref-require)
+  (pel-require 'xref)
   (and (featurep 'dumb-jump)
        (memq 'dumb-jump-xref-activate xref-backend-functions)))
 
 (defun pel-xref-dumb-jump-mode-state-str ()
   "Return a string describing the dumb-jump mode status."
-  (pel--xref-require)
-  (if (featurep 'dumb-jump)
-      (pel-on-off-string (pel-xref-dumb-jump-active-p))
-    (if pel-use-dumb-jump
-        "Available but off."
-      "Not available. Activate pel-use-dumb-jump first!")))
+  (pel-require 'xref)
+  (let ((state-str (if (featurep 'dumb-jump)
+                       (pel-on-off-string (pel-xref-dumb-jump-active-p))
+                     (if pel-use-dumb-jump
+                         "Available but off."
+                       "Not available. Activate pel-use-dumb-jump first!"))))
+    (format "%s%s"
+            state-str
+            (pel-activated-in-str pel-modes-activating-dumb-jump))))
 
 ;;-pel-autoload
 (defun pel-xref-toggle-dumb-jump-mode ()
   "Activate/deactivate dumb-jump mode."
   (interactive)
-  (pel--xref-require)
+  (pel-require 'xref)
   (if (pel-xref-dumb-jump-active-p)
       (remove-hook 'xref-backend-functions
                    'dumb-jump-xref-activate
@@ -149,10 +143,8 @@
 ;;-pel-autoload
 (defun pel-xref-gxref-activate ()
   "Activate the gxref xref back-end for the current major mode."
-  (pel--xref-require)
-  (unless (featurep 'gxref)
-    (unless (require 'gxref nil :noerror)
-      (user-error "Failed loading gxref!")))
+  (pel-require 'xref)
+  (pel-require 'gxref)
   (add-hook 'xref-backend-functions
             'gxref-xref-backend
             nil
@@ -160,23 +152,28 @@
 
 (defun pel-xref-gxref-active-p ()
   "Return non-nil when gxref back-end is active, nil otherwise."
-  (pel--xref-require)
+  (pel-require 'xref)
   (and (featurep 'gxref)
        (memq 'gxref-xref-backend xref-backend-functions)))
 
+
 (defun pel-xref-gxref-state-str ()
   "Return a string describing the gxref xref back-end use."
-  (if (featurep 'gxref)
-      (pel-on-off-string (pel-xref-gxref-active-p))
-    (if pel-use-gxref
-        "Available but off."
-      "Not available. Activate pel-use-gxref first!")))
+  (pel-require 'xref)
+  (let ((state-str   (if (featurep 'gxref)
+                         (pel-on-off-string (pel-xref-gxref-active-p))
+                       (if pel-use-gxref
+                           "Available but off."
+                         "Not available. Activate pel-use-gxref first!"))))
+    (format "%s%s"
+            state-str
+            (pel-activated-in-str pel-modes-activating-gxref))))
 
 ;;-pel-autoload
 (defun pel-xref-toggle-gxref ()
   "Toggle activation of the gxref xref-back-end for the current major mode."
   (interactive)
-  (pel--xref-require)
+  (pel-require 'xref)
   (if (pel-xref-gxref-active-p)
       (remove-hook 'xref-backend-functions
                    'gxref-xref-backend
@@ -194,14 +191,12 @@
 ;;-pel-autoload
 (defun pel-xref-rtags-activate ()
   "Activate the rtags-xref xref back-end for C modes."
-  (unless (featurep 'rtags-xref)
-    (unless (require 'rtags-xref nil :noerror)
-      (user-error "Failed loading rtags-xref!")))
+  (pel-require 'rtags-xref)
   (add-hook 'c-mode-common-hook 'rtags-xref-enable))
 
 (defun pel-xref-rtags-active-p ()
   "Return non-nil when rtags-xref is active, nil otherwise."
-  (pel--xref-require)
+  (pel-require 'xref)
   (and (featurep 'rtags-xref)
        (memq 'rtags-xref-enable c-mode-common-hook)))
 
@@ -273,9 +268,7 @@ FRONT-END must be one of:
   (cond
    ;; ivy-xref
    ((eq front-end 'ivy-xref)
-    (unless (featurep 'ivy-xref)
-      (unless (require 'ivy-xref nil :noerror)
-        (user-error "Cannot load ivy-xref!")))
+    (pel-require 'ivy-xref)
     (if (fboundp 'ivy-xref-show-xrefs)
         (progn
           (setq xref-show-xrefs-function 'ivy-xref-show-xrefs)
@@ -285,9 +278,7 @@ FRONT-END must be one of:
       (user-error "Despite trying, ivy-xref is not loaded!")))
    ;; helm-xref
    ((eq front-end 'helm-xref)
-    (unless (featurep 'helm-xref)
-      (unless (require 'helm-xref nil :noerror)
-        (user-error "Cannot load helm-xref!")))
+    (pel-require 'helm-xref)
     (if (< emacs-major-version 27)
         (if (fboundp 'helm-xref-show-xrefs)
             (progn
@@ -327,6 +318,70 @@ FRONT-END must be one of:
              (symbol-name pel--xref-front-end-used-tool))))
 
 ;; ---------------------------------------------------------------------------
+;; CScope Support
+;; --------------
+(defvar-local pel--helm-cscope-keys-active nil
+  "Set to non-nil when helm-cscope keys are active in current buffer.
+Nil otherwise.
+Only set by pel-activate-helm-cscope-keys & pel-deactivate-helm-cscope-keys.")
+
+(defvar-local pel--helm-cscope-toggling-mode nil
+  "Set to t during pel-toggle-helm-scope execution ONLY.
+Used as a protection to what seems to be a bug in helm-cscope-mode.")
+
+(defun pel-activate-helm-cscope-keys ()
+  "Activates helm-cscope keys for current buffer."
+  (pel-require 'helm-cscope)
+  (local-set-key (kbd "M-.") 'helm-cscope-find-global-definition)
+  (local-set-key (kbd "M-@") 'helm-cscope-find-calling-this-function)
+  (local-set-key (kbd "M-s") 'helm-cscope-find-this-symbol)
+  (local-set-key (kbd "M-,") 'helm-cscope-pop-mark)
+  (setq pel--helm-cscope-keys-active t))
+
+(defun pel-deactivate-helm-cscope-keys ()
+  "Activates helm-cscope keys for current buffer."
+  (local-unset-key (kbd "M-."))
+  (local-unset-key (kbd "M-@"))
+  (local-unset-key (kbd "M-s"))
+  (local-unset-key (kbd "M-,"))
+  (setq pel--helm-cscope-keys-active nil))
+
+;;-pel-autoload
+(defun pel-activate-helm-cscope ()
+  "Activate helm-cscope-mode.
+Don't do anything if pel--toggling-helm-cscope is t.
+Done to prevent call to pel-activate-helm-cscope-keys when
+trying to turn the mode off.
+That is required by a strange behaviour by helm-scope-mode which
+calls the hook function even when trying to disable the mode."
+  (unless pel--helm-cscope-toggling-mode
+    (pel-activate-helm-cscope-keys)))
+
+;;-pel-autoload
+(defun pel-toggle-helm-cscope ()
+  "Toggle helm-cscope-mode and its key bindings in current buffer.
+
+The helm-cscope-mode is a complement to the cscope-mode: it adds a
+set of key bindings that use Helm to show the results.
+The keys are:
+  - M-. : `helm-cscope-find-global-definition'
+  - M-@ : `helm-cscope-find-calling-this-function'
+  - M-s : `helm-cscope-find-this-symbol'
+  - M-, : `helm-cscope-pop-mark'"
+  (interactive)
+  (pel-require 'helm-cscope)
+  (if pel--helm-cscope-keys-active
+      (pel-deactivate-helm-cscope-keys)
+    (pel-activate-helm-cscope-keys))
+  (let ((pel--helm-cscope-toggling-mode t))
+    (helm-cscope-mode (if pel--helm-cscope-keys-active
+                          1
+                        -1)))
+  (message "helm-cscope now: %s, its keys: %s"
+           (pel-symbol-on-off-string 'helm-cscope-mode)
+           (pel-on-off-string pel--helm-cscope-keys-active)))
+
+;; ---------------------------------------------------------------------------
 
 (defun pel-xref-functions-hook-str (function-hook)
   "Return representation of the FUNCTION-HOOK with local/global mention."
@@ -351,7 +406,9 @@ FRONT-END must be one of:
 - xref-show-xrefs-function : %s
   - ivy-xref               : %s
   - helm-xref              : %s
-- xcscope-minor-mode       : %s"
+- cscope-minor-mode        : %s
+  - helm-cscope-mode       : %s
+  - helm-scope key bindings: %s"
    (pel-xref-dumb-jump-mode-state-str)
    (pel-option-mode-state 'ggtags-mode 'pel-use-ggtags)
    (pel-xref-functions-hook-str xref-backend-functions)
@@ -363,7 +420,11 @@ FRONT-END must be one of:
    xref-show-xrefs-function
    (pel-xref-ivy-xref-state-str)
    (pel-xref-helm-xref-state-str)
-   (pel-option-mode-state 'xcscope-minor-mode 'pel-use-xcscope)))
+   (pel-option-mode-state 'cscope-minor-mode
+                          'pel-use-xcscope
+                          pel-modes-activating-cscope)
+   (pel-symbol-on-off-string 'helm-cscope-mode nil nil "not loaded")
+   (pel-on-off-string pel--helm-cscope-keys-active)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-xref)

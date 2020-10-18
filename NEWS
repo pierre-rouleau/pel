@@ -10,6 +10,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 - New: Added key bindings for [[https://github.com/ggreer/the_silver_searcher][ag]] (the silver searcher) based grep-style
   search.
 - Update: *Cross Referencing support*:
+  - PEL's goals is to provide easy access to multiple indexing and
+    cross-referencing systems.  Once a system is enabled via the appropriate
+    PEL user option, it is possible to activate its mode or turn it off using
+    one of the commands PEL provide.  PEL provides a command to display the
+    state of the indexing/cross-referencing modes: pel-xref-show-status, bound
+    to ``<f11> X ?``.
   - Non-xref cross-reference/code indexing packages:
     - New: Added support for [[https://en.wikipedia.org/wiki/Cscope][CScope]] via the external [[https://github.com/dkogan/xcscope.el][xcscope]] and the
       [[https://github.com/alpha22jp/helm-cscope.el][helm-cscope]] Emacs packages.
@@ -20,7 +26,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
         specified with the *pel-modes-activating-cscope*.  This could be done
         for c-mode, c++-mode and dired-mode.
       - The *pel-use-helm-cscope* user option enables the use of the helm-cscope
-        external Emacs package that uses Helm to display CSope matches.
+        external Emacs package that uses Helm to display CScope matches. It
+        also enables the ``<f11> X C H`` key binding to toggle the use of
+        helm-cscope-mode and the extra key bindings this mode activates.
     - New: Added support for eopengrok front end to [[https://en.wikipedia.org/wiki/OpenGrok][OpenGrok]], a Java-based
       source code indexing server.
   - New *xref back-end support*:
