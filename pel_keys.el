@@ -1392,8 +1392,8 @@ Then save your changes."
     :defer 1
 
     :config
-    (define-key pel:      (kbd "M-c ") 'pel-select-completion-mode)
-    (define-key pel:help  (kbd "M-c")  'pel-show-active-completion-mode)
+    (define-key pel:      (kbd "M-c") 'pel-select-completion-mode)
+    (define-key pel:help  (kbd "M-c") 'pel-show-active-completion-mode)
     (pel-set-completion-mode pel-initial-completion-mode)))
 
 ;; ---------------------------------------------------------------------------
