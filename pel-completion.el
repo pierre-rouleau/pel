@@ -131,14 +131,21 @@ The nil value means that Emacs default is used."
 ;;-pel-autoload
 (defun pel-activated-completion-mode-name ()
   "Return string with name of currently used completion MODE."
-  (cl-case (pel-activated-completion-mode)
-    (nil "Emacs default")
-    (ido "Ido")
-    (ido/helm "Ido/Helm")
-    (ivy "Ivy")
-    (ivy/counsel "Ivy/Counsel")
-    (helm "Helm")
-    (t "??")))
+  (let ((current-completion-mode (pel-activated-completion-mode)))
+    (if (not current-completion-mode)
+        "Emacs default"
+      (cond ((eq current-completion-mode 'ivy/counsel)
+             "Ivy/Counsel")
+            ((eq current-completion-mode 'ivy)
+             "Ivy")
+            ((eq current-completion-mode 'ido)
+             "Ido")
+            ((eq current-completion-mode 'ido/helm)
+             "Ido/Helm")
+            ((eq current-completion-mode 'helm)
+             "Helm")
+            (t
+             (format "[?? : %S]" current-completion-mode))))))
 
 ;;-pel-autoload
 (defun pel-show-active-completion-mode (&optional now)
@@ -264,7 +271,7 @@ Display a message describing what mode was actually activated."
 
 (defun pel--completion-mode-selection ()
   "Return a list of (char prompt symbol) of available completion choices."
-  (let ((selection '((?e "Emacs Default" nil))))
+  (let ((selection '((?e "Emacs Default" emacs-default))))
     (when pel-use-helm    (push '(?h "Helm" helm)
                                 selection))
     (when pel-use-ido     (push '(?d "Ido" ido)
