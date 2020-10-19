@@ -7,8 +7,13 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   versions trying to improve its performances.  For systems that do not have
   access to a LSP for C/C++ c-eldoc might provide some help even though it is
   limited.
-- New: Added key bindings for [[https://github.com/ggreer/the_silver_searcher][ag]] (the silver searcher) based grep-style
-  search.
+- Update: improved  messages printed by commands that describe state of modes
+  such as completion modes, etc...
+- Update: *Application Launching*:
+  - New: The ``<f11> A`` key sequence is bound to counsel-linux-app on Lix=nux
+    systems and to counsel-osx-app on macOS system.  This allows selecting an
+    OS application by name to launch it.  The first one is available when
+    pel-use-counsel is on and the second when pel-use-counsel-osx-app is on.
 - Update: *Cross Referencing support*:
   - PEL's goals is to provide easy access to multiple indexing and
     cross-referencing systems.  Once a system is enabled via the appropriate
@@ -60,8 +65,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       buffer of more cross referencing packages. It provides access to dumb-jump,
       eopengrok, etags, eopengrok, ggtags, gxref, xref, ivy-xref, helm-xref,
       ivy, helm, projectile and speedbar.
-- Update: improved  messages printed by commands that describe state of modes
-  such as completion modes, etc...
+- Update: *Customization*:
+  - New: added several links to package home pages, user manuals and relevant
+    Emacs manuals and sections.
+- Update: *Grep*:
+  - New: Added key bindings for [[https://github.com/ggreer/the_silver_searcher][ag]] (the silver searcher) based grep-style
+    search.
 - Update: *Navigation*:
   - New: when the new *pel-windmove-on-f1-cursor* user option is set to t, PEL
     activates several key bindings for windows management using the <f1>

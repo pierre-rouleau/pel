@@ -1370,7 +1370,10 @@ Then save your changes."
     (use-package counsel
       :ensure t
       :pin melpa
-      :defer 1)
+      :defer 1
+      :config
+      (when pel-system-is-linux-p
+        (define-key pel: "A" 'counsel-linux-app)))
     ;;
     (when (and pel-system-is-macos-p pel-use-counsel-osx-app)
       (use-package counsel-osx-app

@@ -147,6 +147,10 @@
   (eq system-type 'darwin)
   "Predicate: t if running under a macOS Operating System, nil otherwise.")
 
+(defconst pel-system-is-linux-p
+  (eq system-type 'gnu/linux)
+  "Predicate: t if running under a Linux Operating System, nil otherwise.")
+
 (defconst pel-system-is-windows-p
   (memq system-type '(windows-nt ms-dos))
   "Predicate: t if running under a Windows Operating System, nil otherwise.")

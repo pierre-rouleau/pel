@@ -308,36 +308,80 @@ When set, PEL activates the following key sequences:
 ;; Completion Support
 ;; ------------------
 (defgroup pel-pkg-for-completion nil
-  "List of external packages that PEL can use to manage completion."
+  "List of external packages that PEL can use to manage completion.
+
+PEL allows selecting completion mechanism dynamically.  You can use Ido, Ivy,
+Ivy-With-Counsel, Helm, or none of them at any time.  To use any of them you
+must first activate these engines in this configuration buffer."
   :group 'pel-package-use
   :link `(url-link :tag "Input Completion PDF" ,(pel-pdf-file-url "completion-input")))
 
 (defcustom pel-use-ido nil
-  "Control whether PEL uses the Ido package."
+  "Control whether PEL uses the Ido package.
+
+The IDO package is distributed with Emacs.  It provides very efficient
+completion mechanism that is preferred by many people."
+  :link '(custom-manual "(ido)Overview")
+  :link '(url-link :tag "Introduction to Ido Mode @ Mastering Emacs"
+                   "https://www.masteringemacs.org/article/introduction-to-ido-mode")
+  :link '(custom-group-link "ido")
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-ivy nil
-  "Control whether PEL uses the Ivy package."
+  "Control whether PEL uses the Ivy package.
+
+Ivy is another popular interactive completion mechanism for Emacs using menu
+lists and designed for speed of selection."
+  :link '(url-link :tag "Ivy @ GitHub"
+                   "")
+  :link '(url-link :tag "Ivy User Manual"
+                   "https://oremacs.com/swiper/")
+  :link '(custom-group-link "ivy")
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-counsel nil
-  "Control whether Counsel is used when Ivy is used."
+  "Control whether Counsel is used when Ivy is used.
+You must also activate the user option variable  `pel-use-ivy' to use counsel."
+  :link '(url-link :tag "counsel/swiper @ GitHub"
+                   "https://github.com/abo-abo/swiper")
+  :link '(url-link :tag "Description of counsel-linux-app"
+                   "https://oremacs.com/2016/03/16/counsel-linux-app/")
+  :link '(url-link :tag "Ivy, Counsel and Swiper Tutorial"
+                   "https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html")
+  :link '(custom-group-link "counsel")
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-counsel-osx-app nil
-  "Control whether `counsel-osx-app' is used when counsel is used on macOS."
+  "Control whether `counsel-osx-app' is used when counsel is used on macOS.
+
+With this package activated, PEL provides the ``<f11> A`` key sequence to
+counsel-osx-app.  This allows selection of an macOS application using ivy
+completion.
+
+On Linux, the `counsel-linux-app` is bound to the same key if user option
+variable `pel-use-counsel' is set to t."
+  :link '(url-link :tag "counsel-osx-app @ GitHub"
+                   "https://github.com/d12frosted/counsel-osx-app")
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-helm nil
-  "Control whether PEL uses the Helm package."
+  "Control whether PEL uses the Helm package.
+
+Helm is a very powerful interactive incremental completion and
+selection package which provides a large number of commands you
+can execute on the completion list."
+  :link '(url-link :tag "Helm home page"
+                   "https://emacs-helm.github.io/helm/")
+  :link '(url-link :tag "A package in a league of its own: Helm"
+                   "https://tuhdo.github.io/helm-intro.html")
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
@@ -540,7 +584,7 @@ ability to detect files opened on startup."
   :group 'pel-pkg-for-browse
   :type 'boolean
   :safe #'booleanp
-  :link `(url-link  :tag "treemacs @ GitHub"  "https://github.com/Alexander-Miller/treemacs"))
+  :link `(url-link :tag "treemacs @ GitHub"  "https://github.com/Alexander-Miller/treemacs"))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-pkg-for-neotree nil
@@ -552,7 +596,7 @@ ability to detect files opened on startup."
   :group 'pel-pkg-for-neotree
   :type 'boolean
   :safe #'booleanp
-  :link `(url-link  :tag "NeoTree @ GitHub"  "https://github.com/jaypei/emacs-neotree"))
+  :link `(url-link :tag "NeoTree @ GitHub"  "https://github.com/jaypei/emacs-neotree"))
 
 (defcustom pel-neotree-font-in-terminal nil
   "NeoTree view font for directory node in terminal mode.
@@ -632,11 +676,11 @@ Notes:
 - This file is not available MELPA (as of Sept 2020).
 - The version 0.10 is available via the relevant EmacsWiki page.
 - Older version 0.9 used an obsolete function, that was fixed in version 0.10."
-  :link `(url-link "framemove.el @ EmacsWiki"
+  :link `(url-link :tag "framemove.el @ EmacsWiki"
                    "https://www.emacswiki.org/emacs/framemove.el")
-  :link `(url-link
-          :tag "Author's site: Emacs Tip# 35: framemove"
-          "http://trey-jackson.blogspot.com/2010/02/emacs-tip-35-framemove.html")
+  :link `(url-link :tag "Author's site: Emacs Tip# 35: framemove"
+                   "http://trey-jackson.blogspot.com/2010/02/\
+emacs-tip-35-framemove.html")
   :link `(url-link :tag "EmacsWiki framemove page"
                    "https://www.emacswiki.org/emacs/FrameMove")
   :link `(url-link :tag "Youtube video on windmove and framemove"
@@ -945,10 +989,9 @@ Repository: https://github.com/Silex/elmacro"
   :group 'pel-package-use
   :group 'keyboard
   :link `(url-link :tag "Key-chords PDF" ,(pel-pdf-file-url "key-chords"))
-  :link
-  `(url-link
-    :tag "key-chord.el"
-    "https://github.com/emacsorphanage/key-chord/blob/master/key-chord.el"))
+  :link `(url-link :tag "key-chord.el"
+                   "https://github.com/emacsorphanage/key-chord/\
+blob/master/key-chord.el"))
 
 (defcustom pel-use-key-chord nil
   "Control whether PEL uses the key-chord external package.
