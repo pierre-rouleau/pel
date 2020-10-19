@@ -233,7 +233,7 @@ When stopping, use the reverse order."
 ;;-pel-autoload
 (defun pel-set-completion-mode (requested)
   "Activate the requested completion mode (if allowed by configuration).
-The REQUESTED is nil or one of: 'ido, 'ivy or 'ivy/counsel.
+The REQUESTED is nil or one of: 'emacs-default, 'ido, 'ivy or 'ivy/counsel.
 A nil value for REQUESTED corresponds to Emacs default.
 If the REQUESTED mode is currently not supported by the pel-use-..
 option variable then the request is ignored.
@@ -247,7 +247,11 @@ Display a message describing what mode was actually activated."
                                                              pel-USE-IVY
                                                              pel-USE-COUNSEL))
                                ((eq requested 'helm) pel-USE-HELM)
-                               ((not requested) 0)))
+                               ((or (eq requested 'emacs-default)
+                                    (not requested))
+                                0)
+                               (t (error "Invalid requested argument \
+(%S) passed to pel-set-completion-mode" requested))))
          (allowed-mask (logand requested-mask
                                (pel--available-completion-mode-mask)))
          (new-mode (pel--completion-mode-symbol-for-mask allowed-mask)))
