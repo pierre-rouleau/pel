@@ -370,13 +370,16 @@ The keys are:
   - M-, : `helm-cscope-pop-mark'"
   (interactive)
   (pel-require 'helm-cscope)
-  (if pel--helm-cscope-keys-active
-      (pel-deactivate-helm-cscope-keys)
-    (pel-activate-helm-cscope-keys))
-  (let ((pel--helm-cscope-toggling-mode t))
-    (helm-cscope-mode (if pel--helm-cscope-keys-active
-                          1
-                        -1)))
+  (if (fboundp 'helm-cscope-mode)
+      (progn
+        (if pel--helm-cscope-keys-active
+            (pel-deactivate-helm-cscope-keys)
+          (pel-activate-helm-cscope-keys))
+        (let ((pel--helm-cscope-toggling-mode t))
+          (helm-cscope-mode (if pel--helm-cscope-keys-active
+                                1
+                              -1))))
+    (user-error "helm-cscope-mode unknown!"))
   (message "helm-cscope now: %s, its keys: %s"
            (pel-symbol-on-off-string 'helm-cscope-mode)
            (pel-on-off-string pel--helm-cscope-keys-active)))
