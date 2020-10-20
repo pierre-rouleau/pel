@@ -157,6 +157,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   PEL.
 - Updated [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/windows.pdf][⅀ Windows]] to describe the new Esc and <f1> cursor keys to manage
   and navigate across windows.
+- Updates to the Buffer, CUA, Cut & Paste, Marking, Undo PDF reference tables.
 ** Use Manual Additions:
 - Added instructions on how to install
   [[https://www.gnu.org/software/global/][GNU GLOBAL source code tagging system]] gtags utility with its [[https://pygments.org][Pygments]] and
