@@ -124,7 +124,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-copy-marked-or-whole-line
     pel-kill-from-beginning-of-line
     pel-delete-to-next-visible
-    pel-kill-word-and-whitespace)
+    pel-kill-word-and-whitespace
+    pel-delete-to-eol)
 
   (pel-autoload "pel-comment" for:
     pel-comment-start

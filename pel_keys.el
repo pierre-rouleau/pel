@@ -2660,6 +2660,7 @@ vlang-mode/master/vlang-mode.el"
 (define-key pel:kill "b" #'backward-kill-paragraph)
 (define-key pel:kill "c"  'pel-kill-char-at-point)
 (define-key pel:kill "e" #'kill-line)
+(define-key pel:kill "E"  'pel-delete-to-eol)
 (define-key pel:kill "F"  'pel-kill-filename-at-point)
 (define-key pel:kill "f"  'pel-kill-function-at-point)
 (define-key pel:kill "H"  'pel-kill-paragraph-at-point)
@@ -2673,8 +2674,9 @@ vlang-mode/master/vlang-mode.el"
 (define-key pel:kill "]" #'kill-sexp)
 (define-key pel:kill "[" #'backward-kill-sexp)
 
-(if (display-graphic-p)
-    (global-set-key (kbd "s-x") 'pel-kill-or-delete-marked-or-whole-line))
+(when (display-graphic-p)
+  (global-set-key (kbd "s-x") 'pel-kill-or-delete-marked-or-whole-line)
+  (global-set-key (kbd "C-K") 'pel-delete-to-eol))
 (global-set-key (kbd "C-w")     'pel-kill-or-delete-marked-or-whole-line)
 ;; Note: also assigned via pel-kp-subtact
 

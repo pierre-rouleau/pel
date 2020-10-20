@@ -458,6 +458,21 @@ With argument ARG, kill that many words then the whitespace following them."
   (kill-append " " nil)             ; separate works in kill ring
   (pel-delete-to-next-visible))     ; delete whitespace to next word
 
+;; ---------------------------------------------------------------------------
+;; Delete text to end of line
+;; --------------------------
+
+;;-pel-autoload
+(defun pel-delete-to-eol ()
+  "Delete text from cursor to end of line.
+Nothing is copied to the kill ring."
+  (interactive)
+  (delete-region
+   (point)
+   (progn
+     (move-end-of-line 1)
+     (point))))
+
 ;; -----------------------------------------------------------------------------
 
 (provide 'pel-ccp)

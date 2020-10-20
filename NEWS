@@ -72,6 +72,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     customization of the following groups: cua-mode, killing, popup-kill-ring.
   - Modification: new customization group *pel-pkg-for-cut-and-paste* which
     holds pel-use-popup-kill-ring that was previously under the undo group.
+- Update: *Cut & Paste*:
+  - New: added command *pel-delete-to-eol* to delete text from point to end
+    of line without copying it to the kill ring.  It is bound to ``C-K`` (in
+    graphics mode only) and to ``<f11> - E`` key sequence.
 - Update: *Grep*:
   - New: Added key bindings for [[https://github.com/ggreer/the_silver_searcher][ag]] (the silver searcher) based grep-style
     search.
