@@ -95,7 +95,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     and to the ``.;`` key chord):
     - New: the *pel-search-from-top-in-other* user option controls how
       *pel-search-word-from-top* operates when there is only 2 non-dedicated windows.
-      - if set to **t* the function the search in the other window without
+      - if set to *t* the function the search in the other window without
         specifying any numeric argument when there is only 2 non-dedicated
         windows.  To search in the current window when there is only 2
         non-dedicated windows use the numeric prefix 3 or 5
