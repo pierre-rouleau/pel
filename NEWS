@@ -68,6 +68,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 - Update: *Customization*:
   - New: added several links to package home pages, user manuals and relevant
     Emacs manuals and sections.
+  - New: The ``<f11> - <f3>`` key sequence provides access to the
+    customization of the following groups: cua-mode, killing, popup-kill-ring.
+  - Modification: new customization group *pel-pkg-for-cut-and-paste* which
+    holds pel-use-popup-kill-ring that was previously under the undo group.
 - Update: *Grep*:
   - New: Added key bindings for [[https://github.com/ggreer/the_silver_searcher][ag]] (the silver searcher) based grep-style
     search.
@@ -134,7 +138,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - New: key binding to a command to display Emacs executable path: <f11> ? e x.
   - New: key binding to display Emacs up-time (<f11> ? e u).
 ** Modifications:
-- Modified key bindings in pel:grep to better organize commands for ag and for
+- Modified key bindings in pel:grep to better organize commands for [[https://github.com/ggreer/the_silver_searcher][ag]] and for
   better regularity.
 - The customization group pel-pkg-for-xref is now a child of
   pel-pkg-for-navigation and holds tags based cross-reference build control as

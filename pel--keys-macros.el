@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-10-16 16:10:45, updated by Pierre Rouleau>
+;; Time-stamp: <2020-10-20 15:09:04, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -82,7 +82,9 @@
     ([f11 ?,]         "auto-completion"        pel-pkg-for-expand      (auto-complete ; f2 f3
                                                                         company
                                                                         hippie-expand)) ; helm, ivy, ??? no prefix for those
-    ([f11 ?-]         "cut-paste"              nil                     (killing
+    ([f11 ?-]         "cut-paste"              pel-pkg-for-cut-and-paste
+                                                                        (cua-mode
+                                                                        killing
                                                                         popup-kill-ring))
     ([f11 ?.]         "marking"                nil)
     ([f11 ?=]         "cut-paste"              nil)

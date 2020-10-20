@@ -40,6 +40,7 @@
 ;;     - pel-pkg-for-buffer
 ;;     - pel-pkg-for-completion
 ;;     - pel-pkg-for-cursor
+;;     - pel-pkg-for-cut-and-paste
 ;;     - pel-pkg-for-dired
 ;;     - pel-pkg-for-expand
 ;;     - pel-pkg-for-filemng
@@ -449,6 +450,34 @@ sequences are typed:
   :safe #'booleanp
   :link `(url-link :tag "iedit @ GitHub"
                    "https://github.com/victorhge/iedit"))
+
+;; ---------------------------------------------------------------------------
+;; pel-pkg-for-cut-and-paste
+;; -------------------------
+(defgroup pel-pkg-for-cut-and-paste nil
+  "List of external packages that PEL can use to control cut/paste, kill/yank."
+  :group 'pel-package-use
+  :link `(url-link :tag "Cut & Paste -- Copy/Delete/Kill/Yank PDF"
+                   ,(pel-pdf-file-url "cut-paste")))
+
+(defcustom pel-use-popup-kill-ring nil
+  "Control whether PEL uses the `popup-kill-ring' package.
+With this package selective yanking can be done with the
+the Meta-y key which pops-up a menu listing the kill ring entries.
+
+Notes:
+- Unfortunately it does not work reliably in terminal (TTY) mode, so PEL
+  only activates it in graphics mode.
+- The version of this package on MELPA is version 0.2.8 and obsolete.
+- The author maintains its latest version (0.2.11) in the EmacsWiki.
+- PEL uses the EmacsWiki version."
+  :link `(url-link :tag "popup-kill-ring @ EmacsWiki"
+                   "https://www.emacswiki.org/emacs/popup-kill-ring.el")
+  :link `(url-link :tag "Uncle Dave's YouTube video on popup-kill-ring"
+                   "https://www.youtube.com/watch?v=LFXA089Tx38")
+  :group 'pel-pkg-for-cut-and-paste
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; -----------------------------------------------------------------------------
 ;; pel-pkg-for-dired
@@ -3375,25 +3404,6 @@ To activate the changes for this you must 'Apply and Save' and restart Emacs."
   "List of external packages that PEL can use to control the undo mechanisms."
   :group 'pel-package-use
   :link `(url-link :tag "Undo/Redo/Repeat PDF" ,(pel-pdf-file-url "undo-redo-repeat")))
-
-(defcustom pel-use-popup-kill-ring nil
-  "Control whether PEL uses the `popup-kill-ring' package.
-With this package selective yanking can be done with the
-the Meta-y key which pops-up a menu listing the kill ring entries.
-
-Notes:
-- Unfortunately it does not work reliably in terminal (TTY) mode, so PEL
-  only activates it in graphics mode.
-- The version of this package on MELPA is version 0.2.8 and obsolete.
-- The author maintains its latest version (0.2.11) in the EmacsWiki.
-- PEL uses the EmacsWiki version."
-  :link `(url-link :tag "popup-kill-ring @ EmacsWiki"
-                   "https://www.emacswiki.org/emacs/popup-kill-ring.el")
-  :link `(url-link :tag "Uncle Dave's YouTube video on popup-kill-ring"
-                   "https://www.youtube.com/watch?v=LFXA089Tx38")
-  :group 'pel-pkg-for-undo
-  :type 'boolean
-  :safe #'booleanp)
 
 (defcustom pel-use-undo-tree nil
   "Control whether PEL uses the undo-tree package."
