@@ -62,8 +62,9 @@
 ;;                       ;      pel-initial-search-tool
 (require 'pel--macros)
 (require 'pel-prompt)
-(require 'pel-read)  ; use: pel-word-at-point
-(require 'pel-window); use pel-window-direction-for
+(require 'pel-read)      ; use: pel-word-at-point
+(require 'pel-window)    ; use: pel-window-direction-for,
+;;                       ;      pel-count-non-dedicated-windows
 
 ;; -----------------------------------------------------------------------------
 ;; Search behaviour control functions
@@ -153,19 +154,24 @@ Depends on 2 Emacs (base system) variables:
 If an area is marked used the text in the area as the searched text,
 otherwise search for the word at point.
 
-Search in the window identified by N:
-- If N is negative, search backward from the bottom of the window
-  identified by (abs N).  Otherwise search forward from the top
-  of the the window identified by N.
-- If N is not specified, nil or 1: search in the current window.
-- If N is 0:                     : search in other window
-- If N is 3                      : search in current window
-- If N in remaining [2,8] range  : search in window identified by the direction
-                                   corresponding to the cursor in a numeric
-                                   keypad:
-                                   -             8 := 'up
-                                   - 4 := 'left  5 := 'current  6 := 'right
-                                   -             2 := 'down
+If 1 non-dedicated window: search from top of current buffer..
+If 2 non-dedicated windows:
+ - with no argument: search from the top of the other window buffer.
+ - with argument 3 or 5: search from the top of current window buffer.
+If 3 or more non-dedicated windows:
+ Search in the window identified by N:
+ - If N is negative, search backward from the bottom of the window
+   identified by (abs N).  Otherwise search forward from the top
+   of the the window identified by N.
+ - If N is not specified, nil or 1: search in the current window buffer.
+ - If N is 0:                     : search in other window buffer
+ - If N is 3                      : search in current window buffer
+ - If N in remaining [2,8] range  : search in the buffer of window identified
+                                    by the direction corresponding to the cursor
+                                    in a numeric keypad:
+                                    -             8 := 'up
+                                    - 4 := 'left  5 := 'current  6 := 'right
+                                    -             2 := 'down
 - If N in [10..18] range         : toggle subword mode in the current buffer
                                    to grab the word to search for this search,
                                    and use (N - 10) to identify the window
@@ -200,7 +206,11 @@ Position before searched word is pushed on the mark ring."
            (n-abs             (cond ((>= 28 n-abs 20) (- n-abs 20))
                                     ((>= 18 n-abs 10) (- n-abs 10))
                                     (t n-abs)))
-           (direction         (pel-window-direction-for n-abs 'current)))
+           (direction         (if (and pel-search-from-top-in-other
+                                       (eq (pel-count-non-dedicated-windows) 2)
+                                       (not (member  n-abs '(3 5))))
+                                  'other
+                                (pel-window-direction-for n-abs 'current))))
       ;; If text to search was not already identified by a marked region,
       ;; grab word at point, optionally alternating the meaning of word
       ;; while grabbing it.

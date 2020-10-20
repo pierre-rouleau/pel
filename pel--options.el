@@ -1,4 +1,4 @@
-1;;; pel--options.el --- PEL Customization Options -*-lexical-binding: t-*-
+;;; pel--options.el --- PEL Customization Options -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
@@ -3113,6 +3113,24 @@ or pel-use-regexp-steroids is t (for the others)."
   "List of external packages that PEL can use for searching text."
   :group 'pel-package-use
   :link `(url-link :tag "Search/Replace PDF" ,(pel-pdf-file-url "search-replace")))
+
+(defcustom pel-search-from-top-in-other nil
+  "Force function `pel-search-word-from-top' search in other of 2 windows.
+
+If set to t, the function `pel-search-word-from-top' search in
+the other window if there are only 2 non-dedicated window by
+default. To force it to search in the current buffer the numeric
+argument of 3 or 5 must be specified.
+
+If set to nil, the function `pel-search-word-from-top' search in
+the current buffer when no numeric argument is specified,
+regardless of the number of non-dedicated windows in the current
+frame.  To search in the other window you must use a numeric
+argument (0 identifies the other window, but you can also specify
+the window by its position with the other numbers)."
+  :group 'pel-pkg-for-search
+  :type 'boolean
+  :safe #'booleanp)
 
 (defcustom pel-use-anzu nil
   "Control whether PEL uses the Anzu.
