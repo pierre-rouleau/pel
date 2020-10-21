@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-10-20 23:25:04, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-10-20 23:26:15, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -3292,7 +3292,7 @@ The code provided does not use the second argument, ``is-a-header``. If you
 want to distinguish between code files and header files, use this
 argument. PEL code does.
 
-The first lisp form of the function is a ``let*`` form that defines `local
+The first lisp form of the function is a ``let`` form that defines `local
 variables`_.  The ``purpose`` variable is set with the result of the prompt
 asking the user the purpose of the C file.  If no purpose is specified by the
 user, the function returns its default, the symbol ``p``.  That symbol is used
