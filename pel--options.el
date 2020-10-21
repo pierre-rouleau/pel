@@ -2019,7 +2019,6 @@ Values in the [2, 8] range are accepted."
   :group 'pel-pkg-for-c
   :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
 
-
 (defcustom pel-c-fill-column 80
   "Column beyond which automatic line-wrapping should happen in C code.
 Can either be nil or an integer value.
@@ -2032,6 +2031,12 @@ is used for `c-mode' buffers, otherwise the integer value specified by
           (const   :tag "Use the default fill-column value." nil)
           (integer :tag "Use a value specific for c-mode buffers:")))
 
+;;     -       -       -       -       -       -       -       -       -       -
+(defgroup pel-c-skeleton-control nil
+  "Control Skeleton that generate C source code."
+  :group 'pel-c-code-style
+  :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
+
 (defcustom pel-c-skel-comment-with-2stars t
   "Specifies whether multi-line C comments continuation use 2 stars.
 If set to t (the default), C comments in generated code
@@ -2042,7 +2047,7 @@ use the following style comment format:   /*
 If set to nil, the comment style is:      /*
                                            *
                                            */"
-  :group 'pel-c-code-style
+  :group 'pel-c-skeleton-control
   :type 'boolean
   :safe #'booleanp)
 
@@ -2050,19 +2055,32 @@ If set to nil, the comment style is:      /*
   "Specifies whether C code block include separators line.
 If nil no separator line comment is used, otherwise separator line
 comments of length controlled by variable `fill-column' are inserted."
-  :group 'pel-c-code-style
+  :group 'pel-c-skeleton-control
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-c-skel-doc-markup nil
+  "Specifies the documentation markup system used for C source code."
+  :group 'pel-c-skeleton-control
+  :type '(choice
+          (const :tag "No documentation markup inserted in templates." nil)
+          (const :tag "Insert Doxygen markup in templates." doxygen)))
+
+;;     .       .       .       .       .       .       .       .       .       .
+(defgroup pel-c-module-header-skeleton-control nil
+  "Control Skeleton that generate C source code."
+  :group 'pel-c-skeleton-control
+  :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
+
 (defcustom pel-c-skel-insert-file-timestamp t
   "Specifies whether a timestamp is inserted inside C file header block."
-  :group 'pel-c-code-style
+  :group 'pel-c-module-header-skeleton-control
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-c-skel-use-uuid-include-guards t
   "Specifies whether UUID-based include guards are inserted inside C header file."
-  :group 'pel-c-code-style
+  :group 'pel-c-module-header-skeleton-control
   :type 'boolean
   :safe #'booleanp)
 
@@ -2093,7 +2111,7 @@ You can use one of the following:
   'custom/skeleton/custom-c-skel.el'.
   The file name can be an absolute file name but it can also be a relative
   file name.  On Unix systems you can use '~' to identify your home directory."
-  :group 'pel-c-code-style
+  :group 'pel-c-module-header-skeleton-control
   :type '(choice
           (const  :tag "Default, controlled by PEL." nil)
           (string :tag "Use your own custom definition\n inside file")))
@@ -2102,7 +2120,7 @@ You can use one of the following:
   "Specifies whether code sections are inserted inside C file comment block.
 This includes the \"Module Description\" section and sections
 with titles identified by the variable `pel-c-skel-module-section-titles'."
-  :group 'pel-c-code-style
+  :group 'pel-c-module-header-skeleton-control
   :type 'boolean
   :safe #'booleanp)
 
@@ -2124,33 +2142,12 @@ following sections:
 - Code.
 
 Empty strings can be used to specify section with a tempo marker with no text."
-  :group 'pel-c-code-style
-  :type '(repeat string))
-
-(defcustom pel-c-skel-insert-function-sections t
-  "Specifies whether code sections are inserted in C function comment block.
-This includes the DESCRIPTION section and sections with titles
-identified by the variable `pel-c-skel-function-section-titles'."
-  :group 'pel-c-code-style
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-c-skel-function-section-titles '("DIAGNOSTIC"
-                                                "SEE ALSO")
-  "List of section titles to add in the function comment block.
-These section names are added when the variable
-`pel-c-skel-insert-function-sections' is t, after the DESCRIPTION
-section.  The sections are placed inside the function
-documentation block in the order of appearance in the list with
-the string as it appears in the list.  The default is to add the
-sections DIAGNOSTIC and SEE ALSO.  Empty strings can be used to
-specify section with a tempo marker with no text."
-  :group 'pel-c-code-style
+  :group 'pel-c-module-header-skeleton-control
   :type '(repeat string))
 
 (defcustom pel-c-skel-use-uuid-include-guards t
   "Specifies whether UUID-based include guards are inserted in C header file."
-  :group 'pel-c-code-style
+  :group 'pel-c-module-header-skeleton-control
   :type 'boolean
   :safe #'booleanp)
 
@@ -2171,9 +2168,36 @@ file written inside the global setting like this:
 
 Replace the gpl-3.0 with the license you want and write your name inside
 the copyright holder value."
-  :group 'pel-c-code-style
+  :group 'pel-c-module-header-skeleton-control
   :type 'boolean
   :safe #'booleanp)
+
+;;     .       .       .       .       .       .       .       .       .       .
+(defgroup pel-c-function-header-skeleton-control nil
+  "Control Skeleton that generate C source code."
+  :group 'pel-c-skeleton-control
+  :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
+
+(defcustom pel-c-skel-insert-function-sections t
+  "Specifies whether code sections are inserted in C function comment block.
+This includes the DESCRIPTION section and sections with titles
+identified by the variable `pel-c-skel-function-section-titles'."
+  :group 'pel-c-function-header-skeleton-control
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-c-skel-function-section-titles '("DIAGNOSTIC"
+                                                "SEE ALSO")
+  "List of section titles to add in the function comment block.
+These section names are added when the variable
+`pel-c-skel-insert-function-sections' is t, after the DESCRIPTION
+section.  The sections are placed inside the function
+documentation block in the order of appearance in the list with
+the string as it appears in the list.  The default is to add the
+sections DIAGNOSTIC and SEE ALSO.  Empty strings can be used to
+specify section with a tempo marker with no text."
+  :group 'pel-c-function-header-skeleton-control
+  :type '(repeat string))
 
 (defcustom pel-c-skel-function-define-style nil
   "Specifies the style of C function definition comment blocks.
@@ -2195,19 +2219,12 @@ The choices are:
   example that is stored inside the file 'custom/skeleton/custom-c-skel.el'.
   The file name can be an absolute file name but it can also be a relative
   file name.  On Unix systems you can use '~' to identify your home directory."
-  :group 'pel-c-code-style
+  :group 'pel-c-function-header-skeleton-control
   :type '(choice
           (const :tag "Just code, no comment block." nil)
           (const :tag "Basic documentation block above function definition." basic-style)
           (const :tag "Man-page style documentation block above function definition." man-style)
           (string :tag "Use your own custom definition\n inside file")))
-
-(defcustom pel-c-skel-doc-markup nil
-  "Specifies the documentation markup system used for C source code."
-    :group 'pel-c-code-style
-  :type '(choice
-          (const :tag "No documentation markup inserted in templates." nil)
-          (const :tag "Insert Doxygen markup in templates." doxygen)))
 
 (defcustom pel-c-skel-function-name-on-first-column nil
   "Set whether defined function name is on the beginning of the line.
@@ -2234,7 +2251,7 @@ int* some_function(int some_arg)
 
 This affects all styles specified by variable `pel-c-skel-function-define-style'
 potentially except the user defined ones, which could use that variable too."
-  :group 'pel-c-code-style
+  :group 'pel-c-function-header-skeleton-control
   :type 'boolean
   :safe #'booleanp)
 
