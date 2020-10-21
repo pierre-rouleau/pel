@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-10-21 10:56:23, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-10-21 13:18:45, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -3029,24 +3029,74 @@ showing these 2 groups within their context.
 .. image:: res/pel-customizing-skeletons.png
 
 
-C file header/module block template
+C file module/header block template
 ***********************************
 
-Insert a C file header block with the ``<f12> <f12> h`` key sequence.
-It will prompt for the [purpose of the file.  Then insert the comment block at
-the beginning of the C file according to the user options that are part of the
-``pel-c-code-style`` customization group.
+To insert a C file module/header block inside a C file, use
+the ``<f12> <f12> h`` key sequence.  It will prompt for the purpose of the
+file.  Once you hit the return key it inserts the comment block at the
+beginning of the C file according to the user options that are part of the
+``pel-c-code-style`` customization group.  See the example in the next section.
 
 In a .c C file
 >>>>>>>>>>>>>>
 
-For example, with block style comments, with the default values for everything
-and ``pel-c-skel-with-license`` set to **t** and the ``lice:default-license``
-set to ``"gpl-3.0"`` executing this command at the top of the ``monitor.c``
-file, the command prompts for the file purpose and assuming you type
-``process monitoring facilities`` the command inserts the following code
-(but with your email address as identified by your Emacs settings)
-in the buffer:
+For this example, the CC mode variables and user option variables are all set
+to their default values except the first 4 listed in the following table:
+
+==================================== ======= =====================================
+Variable                             Value   Description
+==================================== ======= =====================================
+user-full-name                       ➽       Set your full name.
+user-mail-address                    ➽       Set you email address in this
+                                             variable.  Emacs tries to infer it
+                                             but it may only contain your user
+                                             name and your computer name.
+c-block-comment-flag                 nil     Emacs internal variable.
+                                             Use C-style comment: ``/* */``.
+                                             Change with ``<f12> M-;``.
+pel-c-skel-with-license              t       Insert a source code license into
+                                             the module/header block.
+
+pel-c-skel-with-license              t       Insert an open source license
+                                             inside the module header.  The
+                                             license text is based on the lice_
+                                             external package and the license
+                                             type must be identified in the
+                                             ``lice:default-license``.
+
+lice:default-license                 glp-3.0 Use the GPL V3.0 license.
+
+pel-c-skel-comment-with-2-stars      t       Use ``**`` as continuation comment.
+pel-c-skel-use-separators            t       Use separator lines.
+pel-c-skel-doc-markup                nil     Identifies the markup style in
+                                             comment: none used.
+pel-c-skel-insert-file-timestamp     t       Insert a time stamp that is updated
+                                             automatically when the file is
+                                             saved.
+pel-c-skel-use-uuid-include-guards   nil     Used for C header files only:
+                                             if set header files have include
+                                             guards that incorporate a UUID in
+                                             their name.
+
+pel-c-skel-module-header-block-style nil     The selected style for the module
+                                             header: use PEL's default style.
+
+pel-c-skel-insert-module-sections    t       Insert module code sections: the
+                                             sections defined in the next user
+                                             option variable.
+
+pel-c-skel-module-section-titles     ➽       Use the module sections
+                                             identified by PEL's default:
+                                             "Header Inclusion", "Local Types",
+                                             "Local Variables" and "Code".
+==================================== ======= =====================================
+
+
+When typing the ``<f12> <f12> h`` key sequence inside the buffer of the file
+``monitor.c``, the command prompts for the file purpose, entering "process
+monitoring facilities" and hitting return the command inserts the following
+code in the buffer:
 
 .. code:: c
 
