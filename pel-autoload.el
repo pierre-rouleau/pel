@@ -156,6 +156,10 @@ Argument FOR: just a required separator keyword to make code look better."
 
   ;; pel-cursor: loaded by pel-init. No need for autoloading.
 
+  (pel-autoload "pel-custom" for:
+    pel-browse-pel
+    pel-browse-group)
+
   (pel-autoload "pel-emacs" for:
     pel-emacs-executable
     pel-open-emacs-refcard

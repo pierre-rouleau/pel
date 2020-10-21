@@ -66,6 +66,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       eopengrok, etags, eopengrok, ggtags, gxref, xref, ivy-xref, helm-xref,
       ivy, helm, projectile and speedbar.
 - Update: *Customization*:
+  - New: command *pel-browse-group* which prompts allowing the browsing of the
+    customization group tree from any group.  This complements the Emacs
+    customize-browse which unfortunately does not prompt.
   - New: added several links to package home pages, user manuals and relevant
     Emacs manuals and sections.
   - New: The ``<f11> - <f3>`` key sequence provides access to the

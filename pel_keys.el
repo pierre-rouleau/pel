@@ -1272,10 +1272,6 @@ Then save your changes."
 ;; - Function Keys - <f11> - Prefix ``<f11> <f2>`` : Customization
 ;;
 
-(defun pel-browse-pel ()
-  "Browse the PEL customization group."
-  (interactive)
-  (customize-browse 'pel))
 
 ;; -- Key bindings
 ;; Set up the key prefixes.
@@ -1288,6 +1284,7 @@ Then save your changes."
 (define-key pel:cfg "g" 'customize-group)
 (define-key pel:cfg "o" 'customize-option)
 (define-key pel:cfg "B" 'customize-browse)
+(define-key pel:cfg "b" 'pel-browse-group)
 ;;
 
 (define-key pel:cfg-pel "B" 'pel-browse-pel)
