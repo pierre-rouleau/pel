@@ -90,8 +90,9 @@
 ;;     - pel-pkg-for-scrolling
 ;;     - pel-pkg-for-search
 ;;     - pel-pkg-for-session
-;;     - pel-pkg-for-speedbar
 ;;     - pel-pkg-for-shells
+;;     - pel-pkg-for-skeletons
+;;     - pel-pkg-for-speedbar
 ;;     - pel-pkg-for-spelling
 ;;     - pel-pkg-for-text-mode
 ;;     - pel-pkg-for-undo
@@ -1472,249 +1473,6 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
   :safe #'booleanp)
 
 ;; -----------------------------------------------------------------------------
-;; pel-pkg-for-xref
-;; ----------------
-(defgroup pel-pkg-for-xref nil
-  "List of external packages PEL can use for handling cross references."
-  :group 'pel-pkg-for-navigation
-  :group 'pel-package-use
-  :link '(custom-group-link "pel-pkg-for-project-mng")
-  :link '(custom-group-link "projectile")
-  :link '(custom-group-link "speedbar")
-  :link `(url-link :tag "Xref PDF" ,(pel-pdf-file-url "xref")))
-
-;; -- cscope
-(defcustom pel-use-xcscope nil
-  "Control whether PEL uses the xcscope package.
-
-Activates the xcscope package which provides commands
-to interact with the CScope built databases, via the
-cscope-minor-mode.
-
-This requires the CScope command line utility.
-Note: on macOS you can install cscope with Homebrew
-      with: brew install cscope."
-  :group 'pel-pkg-for-xref
-  :link '(url-link :tag "xcscope @ GitHub" "https://github.com/dkogan/xcscope.el")
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-helm-cscope nil
-  "Control whether PEL uses the helm-cscope package.
-
-Note: activating `pel-use-helm-cscope' and `pel-use-xcscope'
-implicitly activates `pel-use-helm'."
-  :group 'pel-pkg-for-xref
-  :link '(url-link :tag "helm-cscope @ GitHub" "https://github.com/alpha22jp/helm-cscope.el")
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-modes-activating-cscope nil
-  "List of major modes that automatically activate cscope-minor-mode.
-
-CScope minor mode only supports the following major modes, so only
-put the following in the list:
-
-- c-mode
-- c-mode-common
-- c++-mode
-- dired-mode"
-  :group 'pel-pkg-for-xref
-  :type '(repeat symbol))
-
-(defcustom pel-modes-activating-helm-cscope nil
-  "List of major modes that automatically activate helm-cscope mode.
-
-The list of modes should be equal or a sub-set of the list of modes
-identified in the variable `pel-modes-activating-cscope' since this
-mode adds key bindings for cscope-mode operations.
-
-CScope minor mode only supports the following major modes, so only
-put the following in the list:
-
-- c-mode
-- c-mode-common
-- c++-mode
-- dired-mode"
-  :group 'pel-pkg-for-xref
-  :type '(repeat symbol))
-
-;; -- dumb-jump
-(defcustom pel-use-dumb-jump nil
-  "Control whether PEL uses the dumb-jump package.
-With dumb-jump, the M-. command will use dumb-jump to
-identify symbol in several programming languages."
-  :group 'pel-pkg-for-xref
-  :link '(url-link :tag "dump-jump @ GitHub" "https://github.com/jacktasia/dumb-jump")
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-modes-activating-dumb-jump nil
-  "List of major modes that automatically activate dumb-jump.
-
-Each entry must be the symbol name of a major mode.
-For example, to activate it in Python, add a line with `python-mode'
-without the quotes.
-
-Note that you can also toggle dumb-jump for a major mode by
-using the function `pel-xref-toggle-dumb-jump-mode' which is bound
-to \\[pel-xref-toggle-dumb-jump-mode], regardless of the initial state."
-  :group 'pel-pkg-for-xref
-  :type '(repeat symbol))
-
-;; -- ggtags
-(defcustom pel-use-ggtags nil
-  "Control whether PEL uses the ggtags package."
-  :link '(url-link :tag "ggtags @ GitHub" "https://github.com/leoliu/ggtags")
-  :link '(url-link :tag "Instructions for GNU Global & plugins installation"
-                   "https://github.com/pierre-rouleau/pel/blob/master\
-/doc/pel-manual.rst#51111gnu-global-source-code-tagging-system---gtags")
-  :group 'pel-pkg-for-xref
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-modes-activating-ggtags nil
-  "List of major modes that automatically activate ggtags-mode.
-
-Each entry must be the symbol name of a major mode.
-For example, to activate it in Python, add a line with `python-mode'
-without the quotes.
-
-The function `ggtags-mode' is a cross referencing mode using
-the GNU Global tag system, one of the ctags-type cross referencing systems
-supported by Emacs.
-
-Note:
-Automatic loading of ggtags-mode will incur processing time and will
-mask the M-= key binding of er/expand-region (but the <f11> . = binding
-remains available).
-
-As an alternative you can quickly toggle ggtags-mode with the <f11> X G
-key sequence."
-  :group 'pel-pkg-for-xref
-  :type '(repeat symbol)
-  :link '(url-link :tag "ggtags @ GitHub"
-                   "https://github.com/leoliu/ggtags")
-  :link '(url-link :tag "GNU Global home page"
-                   "https://www.gnu.org/software/global/"))
-
-;; -- gxref
-(defcustom pel-use-gxref nil
-  "Control whether PEL uses the gxref package."
-  :link '(url-link :tag "gxref @ GitHub"
-                   "https://github.com/dedi/gxref")
-  :group 'pel-pkg-for-xref
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-modes-activating-gxref nil
-  "List of major modes that automatically activate gxref-mode.
-
-Each entry must be the symbol name of a major mode.
-For example, to activate it in Python, add a line with `python-mode'
-without the quotes.
-
-The gxref package is a xref backend using GNU GLOBAL  cross referencing
-system.
-
-As an alternative you can quickly toggle the use of gxref xref backend
-with gxref-mode with the <f11> X R key sequence."
-  :group 'pel-pkg-for-xref
-  :type '(repeat symbol)
-  :link '(url-link :tag "gxref @ GitHub"
-                   "https://github.com/dedi/gxref"))
-
-;; -- rtags
-(defcustom pel-use-rtags nil
-  "Control whether PEL uses the rtags package.
-This is required for the rtag-xref xref backend.
-
-NOTE: when `pel-use-rtags' is set to t, PEL activates it for all
-C/C++ modes."
-  :link '(url-link :tag "rtags @ GitHub"
-                   "https://github.com/Andersbakken/rtags")
-  :group 'pel-pkg-for-xref
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-rtags-xref nil
-  "Control whether PEL uses the rtags-xref package."
-  :link '(url-link :tag "rtags-xref @ MELPA"
-                   "https://melpa.org/#/rtags-xref")
-  :group 'pel-pkg-for-xref
-  :type '(choice
-          (const :tag "Do not use" nil)
-          (const :tag "Use, activate later by command"  t)
-          (const :tag "Use, activate when Emacs starts" use-from-start)))
-
-;; -- ivy-xref
-(defcustom pel-use-ivy-xref nil
-  "Control whether PEL uses the ivy-xref package.
-
-The ivy-xref package is a front-end for xref, allowing selection
-of multiple selection using ivy instead of the default *xref*
-buffer.
-
-When it is available the `pel-xref-set-front-end' command will
-allow selection of that front end for xref search result.
-
-NOTE: activating `pel-use-ivy-xref' forces the implicit
-activation of `pel-use-ivy': `pel-use-ivy' is not set to t but
-the ivy package will be activated regardless."
-  :link '(url-link :tag "ivy-xref @ GitHub"
-                   "https://github.com/alexmurray/ivy-xref")
-  :group 'pel-pkg-for-xref
-  :type 'boolean
-  :safe #'booleanp)
-
-;; -- helm-xref
-(defcustom pel-use-helm-xref nil
-  "Control whether PEL uses the helm-xref package.
-
-The helm-xref package is a front-end for xref, allowing selection
-of multiple selection using helm instead of the default *xref*
-buffer.
-
-When it is available the `pel-xref-set-front-end' command will
-allow selection of that front end for xref search result.
-
-NOTE: activating `pel-use-helm-xref' forces the implicit
-activation of `pel-use-helm': `pel-use-helm' is not set to t but
-the helm package will be activated regardless."
-  :link '(url-link :tag "helm-xref @ GitHub"
-                   "https://github.com/brotzeit/helm-xref")
-  :group 'pel-pkg-for-xref
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-startup-xref-front-end nil
-  "Identifies which xref front-end to activate on startup.
-
-This identifies how a multiple choice is shown."
-  :group 'pel-pkg-for-xref
-  :type '(choice
-          (const :tag "Leave default."  nil)
-          (const :tag "Use xref buffer" xref)
-          (const :tag "Use ivy-xref"    ivy-xref)
-          (const :tag "Use helm-xref"   helm-xref)))
-
-;; -- opengrok
-(defcustom pel-use-eopengrok nil
-  "Control whether PEL uses the eopengrok package.
-
-The eopengrok package provides access to the opengrok code
-indexing system."
-  :link '(url-link :tag "eopengrok @ GitHub"
-                   "https://github.com/youngker/eopengrok.el")
-  :link '(url-link :tag "OpenGrok @ Wikipedia"
-                   "https://en.wikipedia.org/wiki/OpenGrok")
-  :link '(url-link :tag "OpengGrok home page"
-                   "https://oracle.github.io/opengrok/")
-  :group 'pel-pkg-for-xref
-  :type 'boolean
-  :safe #'booleanp)
-
-;; -----------------------------------------------------------------------------
 ;; Programming Language Support
 ;; ============================
 (defgroup pel-pkg-for-programming nil
@@ -1788,6 +1546,7 @@ eglot is a client for Language Server Protocol servers."
 (defgroup pel-pkg-generic-code-style nil
   "PEL Generic code style configuration."
   :group 'pel-pkg-for-all-languages
+  :group 'pel-pkg-for-skeletons
   :link `(url-link :tag "Inserting Text PDF" ,(pel-pdf-file-url "inserting-text")))
 
 (defcustom pel-generic-skel-use-separators t
@@ -2035,6 +1794,7 @@ is used for `c-mode' buffers, otherwise the integer value specified by
 (defgroup pel-c-skeleton-control nil
   "Control Skeleton that generate C source code."
   :group 'pel-c-code-style
+  :group 'pel-pkg-for-skeletons
   :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
 
 (defcustom pel-c-skel-comment-with-2stars t
@@ -2802,11 +2562,18 @@ Standards & Guidelines."
   :link '(url-link :tag "Inka Erlang Guideline"
                    "https://github.com/inaka/erlang_guidelines#100-column-per-line"))
 
+;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+(defgroup pel-erlang-skeleton-control nil
+  "Control Skeleton that generate Erlang source code."
+  :group 'pel-erlang-code-style
+  :group 'pel-pkg-for-skeletons
+  :link `(url-link :tag "Erlang PDF" ,(pel-pdf-file-url "pl-erlang")))
+
 (defcustom pel-erlang-skel-use-separators t
   "Specifies whether Erlang code block include separators line.
 If nil no separator line comment is used, otherwise separator line
 comments of length controlled by variable `fill-column' are inserted."
-  :group 'pel-erlang-code-style
+  :group 'pel-erlang-skeleton-control
   :type 'boolean
   :safe #'booleanp)
 
@@ -2820,19 +2587,19 @@ Secondary separator lines are:
 
 If non-nil, the secondary line separators are included, otherwise they are not
 included, reducing the comments overhead in files."
-  :group 'pel-erlang-code-style
+  :group 'pel-erlang-skeleton-control
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-erlang-skel-insert-file-timestamp nil
   "Specifies whether a timestamp is inserted inside Erlang file header block."
-  :group 'pel-erlang-code-style
+  :group 'pel-erlang-skeleton-control
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-erlang-skel-with-edoc t
   "Control whether Edoc comments are placed inside generated Erlang code."
-  :group 'pel-erlang-code-style
+  :group 'pel-erlang-skeleton-control
   :type '(choice
           (const :tag "Do not insert Edoc comment." nil)
           (const :tag "Insert Edoc comments everywhere." t)
@@ -2840,7 +2607,7 @@ included, reducing the comments overhead in files."
 
 (defcustom pel-erlang-skel-prompt-for-purpose t
   "Control whether skeleton insertions prompt for purpose strings."
-  :group 'pel-erlang-code-style
+  :group 'pel-erlang-skeleton-control
   :type '(choice
           (const :tag "Never prompt for purpose." nil)
           (const :tag "Always prompt for purpose (and function name)." t)
@@ -2849,13 +2616,13 @@ included, reducing the comments overhead in files."
 
 (defcustom pel-erlang-skel-prompt-for-function-name t
   "Control whether skeleton insertions prompt for function name."
-  :group 'pel-erlang-code-style
+  :group 'pel-erlang-skeleton-control
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-erlang-skel-prompt-for-function-arguments t
   "Control whether skeleton insertions prompt for function arguments."
-  :group 'pel-erlang-code-style
+  :group 'pel-erlang-skeleton-control
   :type 'boolean
   :safe #'booleanp)
 
@@ -2876,7 +2643,7 @@ file written inside the global setting like this:
 
 Replace the gpl-3.0 with the license you want and write your name inside
 the copyright holder value."
-  :group 'pel-erlang-code-style
+  :group 'pel-erlang-skeleton-control
   :type 'boolean
   :safe #'booleanp)
 
@@ -3259,6 +3026,33 @@ and ACTIVATE desktop-save-mode" with-desktop-registry-automatic)
 ;; - desktop-auto-save-timeout
 ;; - desktop-load-locked-desktop
 
+;; -----------------------------------------------------------------------------
+;; Shell & Terminal Support
+;; ------------------------
+(defgroup pel-pkg-for-shells nil
+  "List of external packages that PEL can use to support shells and terminals."
+  :group 'pel-package-use
+  :link `(url-link :tag "Shells PDF" ,(pel-pdf-file-url "shells")))
+
+(defcustom pel-use-vterm nil
+  "Control whether the vterm shell is available.
+The vterm package used the libvterm library to provide a very fast
+and usable shell for Emacs."
+  :group 'pel-pkg-for-shells
+  :type 'boolean
+  :safe #'booleanp)
+
+;; ---------------------------------------------------------------------------
+;; pel-pkg-for-skeletons
+;; ---------------------
+(defgroup pel-pkg-for-skeletons nil
+  "Holds options for controlling skeleton code generation."
+  :group 'pel-package-use)
+;; The children of that group are scattered in the respective programming
+;; or markup language code sections. Keep this group here: a group may have
+;; several parent groups and all skeleton control groups refer to this one as their
+;; parent.
+
 ;; ----------------------------------------------------------------------------
 ;; pel-pkg-for-speedbar
 ;; --------------------
@@ -3293,22 +3087,6 @@ used if `pel-prefer-sr-speedbar-in-terminal' is set."
   :safe  #'booleanp
   :link '(url-link :tab "SR-Speedbar @ EmacsWiki"
                    "https://www.emacswiki.org/emacs/SrSpeedbar"))
-
-;; -----------------------------------------------------------------------------
-;; Shell & Terminal Support
-;; ------------------------
-(defgroup pel-pkg-for-shells nil
-  "List of external packages that PEL can use to support shells and terminals."
-  :group 'pel-package-use
-  :link `(url-link :tag "Shells PDF" ,(pel-pdf-file-url "shells")))
-
-(defcustom pel-use-vterm nil
-  "Control whether the vterm shell is available.
-The vterm package used the libvterm library to provide a very fast
-and usable shell for Emacs."
-  :group 'pel-pkg-for-shells
-  :type 'boolean
-  :safe #'booleanp)
 
 ;; -----------------------------------------------------------------------------
 ;; Spelling Support
@@ -3524,6 +3302,250 @@ When set to t, PEL activates the following four key bindings:
 
 If it set to nil, these keys are not bound."
   :group 'pel-pkg-for-window
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -----------------------------------------------------------------------------
+;; pel-pkg-for-xref
+;; ----------------
+(defgroup pel-pkg-for-xref nil
+  "List of external packages PEL can use for handling cross references."
+  :group 'pel-package-use
+  :group 'pel-pkg-for-navigation
+  :group 'pel-pkg-for-programming
+  :link '(custom-group-link "pel-pkg-for-project-mng")
+  :link '(custom-group-link "projectile")
+  :link '(custom-group-link "speedbar")
+  :link `(url-link :tag "Xref PDF" ,(pel-pdf-file-url "xref")))
+
+;; -- cscope
+(defcustom pel-use-xcscope nil
+  "Control whether PEL uses the xcscope package.
+
+Activates the xcscope package which provides commands
+to interact with the CScope built databases, via the
+cscope-minor-mode.
+
+This requires the CScope command line utility.
+Note: on macOS you can install cscope with Homebrew
+      with: brew install cscope."
+  :group 'pel-pkg-for-xref
+  :link '(url-link :tag "xcscope @ GitHub" "https://github.com/dkogan/xcscope.el")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-helm-cscope nil
+  "Control whether PEL uses the helm-cscope package.
+
+Note: activating `pel-use-helm-cscope' and `pel-use-xcscope'
+implicitly activates `pel-use-helm'."
+  :group 'pel-pkg-for-xref
+  :link '(url-link :tag "helm-cscope @ GitHub" "https://github.com/alpha22jp/helm-cscope.el")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-modes-activating-cscope nil
+  "List of major modes that automatically activate cscope-minor-mode.
+
+CScope minor mode only supports the following major modes, so only
+put the following in the list:
+
+- c-mode
+- c-mode-common
+- c++-mode
+- dired-mode"
+  :group 'pel-pkg-for-xref
+  :type '(repeat symbol))
+
+(defcustom pel-modes-activating-helm-cscope nil
+  "List of major modes that automatically activate helm-cscope mode.
+
+The list of modes should be equal or a sub-set of the list of modes
+identified in the variable `pel-modes-activating-cscope' since this
+mode adds key bindings for cscope-mode operations.
+
+CScope minor mode only supports the following major modes, so only
+put the following in the list:
+
+- c-mode
+- c-mode-common
+- c++-mode
+- dired-mode"
+  :group 'pel-pkg-for-xref
+  :type '(repeat symbol))
+
+;; -- dumb-jump
+(defcustom pel-use-dumb-jump nil
+  "Control whether PEL uses the dumb-jump package.
+With dumb-jump, the M-. command will use dumb-jump to
+identify symbol in several programming languages."
+  :group 'pel-pkg-for-xref
+  :link '(url-link :tag "dump-jump @ GitHub" "https://github.com/jacktasia/dumb-jump")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-modes-activating-dumb-jump nil
+  "List of major modes that automatically activate dumb-jump.
+
+Each entry must be the symbol name of a major mode.
+For example, to activate it in Python, add a line with `python-mode'
+without the quotes.
+
+Note that you can also toggle dumb-jump for a major mode by
+using the function `pel-xref-toggle-dumb-jump-mode' which is bound
+to \\[pel-xref-toggle-dumb-jump-mode], regardless of the initial state."
+  :group 'pel-pkg-for-xref
+  :type '(repeat symbol))
+
+;; -- ggtags
+(defcustom pel-use-ggtags nil
+  "Control whether PEL uses the ggtags package."
+  :link '(url-link :tag "ggtags @ GitHub" "https://github.com/leoliu/ggtags")
+  :link '(url-link :tag "Instructions for GNU Global & plugins installation"
+                   "https://github.com/pierre-rouleau/pel/blob/master\
+/doc/pel-manual.rst#51111gnu-global-source-code-tagging-system---gtags")
+  :group 'pel-pkg-for-xref
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-modes-activating-ggtags nil
+  "List of major modes that automatically activate ggtags-mode.
+
+Each entry must be the symbol name of a major mode.
+For example, to activate it in Python, add a line with `python-mode'
+without the quotes.
+
+The function `ggtags-mode' is a cross referencing mode using
+the GNU Global tag system, one of the ctags-type cross referencing systems
+supported by Emacs.
+
+Note:
+Automatic loading of ggtags-mode will incur processing time and will
+mask the M-= key binding of er/expand-region (but the <f11> . = binding
+remains available).
+
+As an alternative you can quickly toggle ggtags-mode with the <f11> X G
+key sequence."
+  :group 'pel-pkg-for-xref
+  :type '(repeat symbol)
+  :link '(url-link :tag "ggtags @ GitHub"
+                   "https://github.com/leoliu/ggtags")
+  :link '(url-link :tag "GNU Global home page"
+                   "https://www.gnu.org/software/global/"))
+
+;; -- gxref
+(defcustom pel-use-gxref nil
+  "Control whether PEL uses the gxref package."
+  :link '(url-link :tag "gxref @ GitHub"
+                   "https://github.com/dedi/gxref")
+  :group 'pel-pkg-for-xref
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-modes-activating-gxref nil
+  "List of major modes that automatically activate gxref-mode.
+
+Each entry must be the symbol name of a major mode.
+For example, to activate it in Python, add a line with `python-mode'
+without the quotes.
+
+The gxref package is a xref backend using GNU GLOBAL  cross referencing
+system.
+
+As an alternative you can quickly toggle the use of gxref xref backend
+with gxref-mode with the <f11> X R key sequence."
+  :group 'pel-pkg-for-xref
+  :type '(repeat symbol)
+  :link '(url-link :tag "gxref @ GitHub"
+                   "https://github.com/dedi/gxref"))
+
+;; -- rtags
+(defcustom pel-use-rtags nil
+  "Control whether PEL uses the rtags package.
+This is required for the rtag-xref xref backend.
+
+NOTE: when `pel-use-rtags' is set to t, PEL activates it for all
+C/C++ modes."
+  :link '(url-link :tag "rtags @ GitHub"
+                   "https://github.com/Andersbakken/rtags")
+  :group 'pel-pkg-for-xref
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-rtags-xref nil
+  "Control whether PEL uses the rtags-xref package."
+  :link '(url-link :tag "rtags-xref @ MELPA"
+                   "https://melpa.org/#/rtags-xref")
+  :group 'pel-pkg-for-xref
+  :type '(choice
+          (const :tag "Do not use" nil)
+          (const :tag "Use, activate later by command"  t)
+          (const :tag "Use, activate when Emacs starts" use-from-start)))
+
+;; -- ivy-xref
+(defcustom pel-use-ivy-xref nil
+  "Control whether PEL uses the ivy-xref package.
+
+The ivy-xref package is a front-end for xref, allowing selection
+of multiple selection using ivy instead of the default *xref*
+buffer.
+
+When it is available the `pel-xref-set-front-end' command will
+allow selection of that front end for xref search result.
+
+NOTE: activating `pel-use-ivy-xref' forces the implicit
+activation of `pel-use-ivy': `pel-use-ivy' is not set to t but
+the ivy package will be activated regardless."
+  :link '(url-link :tag "ivy-xref @ GitHub"
+                   "https://github.com/alexmurray/ivy-xref")
+  :group 'pel-pkg-for-xref
+  :type 'boolean
+  :safe #'booleanp)
+
+;; -- helm-xref
+(defcustom pel-use-helm-xref nil
+  "Control whether PEL uses the helm-xref package.
+
+The helm-xref package is a front-end for xref, allowing selection
+of multiple selection using helm instead of the default *xref*
+buffer.
+
+When it is available the `pel-xref-set-front-end' command will
+allow selection of that front end for xref search result.
+
+NOTE: activating `pel-use-helm-xref' forces the implicit
+activation of `pel-use-helm': `pel-use-helm' is not set to t but
+the helm package will be activated regardless."
+  :link '(url-link :tag "helm-xref @ GitHub"
+                   "https://github.com/brotzeit/helm-xref")
+  :group 'pel-pkg-for-xref
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-startup-xref-front-end nil
+  "Identifies which xref front-end to activate on startup.
+
+This identifies how a multiple choice is shown."
+  :group 'pel-pkg-for-xref
+  :type '(choice
+          (const :tag "Leave default."  nil)
+          (const :tag "Use xref buffer" xref)
+          (const :tag "Use ivy-xref"    ivy-xref)
+          (const :tag "Use helm-xref"   helm-xref)))
+
+;; -- opengrok
+(defcustom pel-use-eopengrok nil
+  "Control whether PEL uses the eopengrok package.
+
+The eopengrok package provides access to the opengrok code
+indexing system."
+  :link '(url-link :tag "eopengrok @ GitHub"
+                   "https://github.com/youngker/eopengrok.el")
+  :link '(url-link :tag "OpenGrok @ Wikipedia"
+                   "https://en.wikipedia.org/wiki/OpenGrok")
+  :link '(url-link :tag "OpengGrok home page"
+                   "https://oracle.github.io/opengrok/")
+  :group 'pel-pkg-for-xref
   :type 'boolean
   :safe #'booleanp)
 
