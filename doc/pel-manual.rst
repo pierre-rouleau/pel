@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-10-20 23:11:45, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-10-20 23:25:04, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -3257,11 +3257,6 @@ Assuming you set the user options to the following values:
 - ``pel-c-skel-module-header-block-style`` set to the name of a file that
   contains the same code as in `custom/skeleton/custom-c-skel.el`_
 
-
-The code provided does not use the second argument, ``is-a-header``. If you
-want to distinguish between code files and header files, use this
-argument. PEL code does.
-
 Assuming also that your name is ``Same One`` and you work for ``U-FooBar``,
 typing the ``<f12> <f12> h`` in the file ``ufoobar.c``, something like the
 following comment would be inserted in the buffer:
@@ -3292,6 +3287,10 @@ take 3 mandatory arguments, and as described in the function docstring these are
   - cb : comment begin string
   - cc : comment continuation string
   - ce : comment end string.
+
+The code provided does not use the second argument, ``is-a-header``. If you
+want to distinguish between code files and header files, use this
+argument. PEL code does.
 
 The first lisp form of the function is a ``let*`` form that defines `local
 variables`_.  The ``purpose`` variable is set with the result of the prompt
