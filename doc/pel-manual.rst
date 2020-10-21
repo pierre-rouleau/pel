@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-10-21 08:06:07, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-10-21 10:56:23, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2999,6 +2999,35 @@ C files and you can have different ones inside different directory trees, have
 special settings for some files.
 
 This is extremely flexible.
+
+Controlling PEL Tempo Skeletons
+*******************************
+
+The PEL tempo skeletons used to generate source code come in two major groups:
+
+- The generic skeletons which are programming language agnostic and produce
+  generic code such as file module header blocks.  These skeletons do not
+  insert programming language specific specializations.
+- The programming or markup language specific skeletons.  These skeletons are
+  aware of the target programming or markup language and may insert
+  specialized source code constructs.
+
+Most of the PEL tempo Skeletons are controlled by a set of customization user
+option variables.  These affect the generated code, the style, the format,
+etc...
+
+To see or modify those user option variables the easiest way is to use the
+``pel-browse-group`` command, bound to ``<f11> <f2> b`` and specify the name
+of the PEL customization group related to C programming,
+``pel-c-code-style``.
+
+You can also look at it from the group
+``pel-pkg-for-programming`` or from the ``pel-pkg-for-skeletons``.  The
+screenshot below shows 2 windows with the ``*Customize Browser*`` buffers
+showing these 2 groups within their context.
+
+.. image:: res/pel-customizing-skeletons.png
+
 
 C file header/module block template
 ***********************************
