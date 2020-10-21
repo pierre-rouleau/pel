@@ -1905,12 +1905,6 @@ Empty strings can be used to specify section with a tempo marker with no text."
   :group 'pel-c-module-header-skeleton-control
   :type '(repeat string))
 
-(defcustom pel-c-skel-use-uuid-include-guards t
-  "Specifies whether UUID-based include guards are inserted in C header file."
-  :group 'pel-c-module-header-skeleton-control
-  :type 'boolean
-  :safe #'booleanp)
-
 (defcustom pel-c-skel-with-license nil
   "Control whether a license text is inserted in C file header.
 
