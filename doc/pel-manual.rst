@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-10-20 23:26:15, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-10-21 08:06:07, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -3308,6 +3308,9 @@ compliant insertion list.  The first element of that list is the symbol ``l``,
 and then each element is either a string, a function returning a string, a
 variable name that evaluates to a string or the symbol ``n`` that identifies
 the end of a line.  The symbols are quoted otherwise they would be evaluated.
+For more information about the syntax of tempo skeleton templates see the
+docstring of the ``tempo-define-template`` function.  To open a help buffer
+with it, type: ``<f1> o tempo-define-template RET``.
 
 The code calls several of PEL's functions. These functions are all
 documented. To get more info about them uses Emacs help system: move your
