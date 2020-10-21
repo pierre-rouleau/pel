@@ -231,7 +231,10 @@ inside the specified KEY_MAP."
                  (s-tempo-fun   (intern s-tempo-fname))
                  (s-pel-fname   (format "pel-%s-%s" mode-abbrev s-name))
                  (s-docstring   (format "\
-Insert '%s' %s skeleton's text (also available through %s/Skeleton menu)."
+Insert '%s' %s skeleton's text (also available through %s/Skeleton menu).\
+\
+This function is dynamically defined by a call to the function \
+`pel-tempo-install-pel-skel'."
                                         s-name cap-mode cap-mode))
                  (assoc-value   (cdr (assoc s-name keys-alist)))
                  (key           (if (listp assoc-value)
