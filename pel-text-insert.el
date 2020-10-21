@@ -38,7 +38,8 @@
 ;; -----------------------------------------------------------------------------
 ;;; Dependencies:
 
-(require 'pel--base)       ; use: pel-current-buffer-filename
+(require 'pel--base)       ; use: pel-require
+;;                         ;      pel-current-buffer-filename
 ;;                         ;      pel-ends-with-space-p
 (require 'pel--macros)     ; use: pel-concat-to
 
@@ -57,6 +58,8 @@ The string starts with `comment-start' unless COMMENT-PREFIX is specified,
 in which case that is used.
 The string ends (if applicable) with the comment character(s).
 The string does not end with a newline."
+  (pel-require 'newcomment)
+  (comment-normalize-vars)
   (let* ((linelen (if linelen
                       (abs (prefix-numeric-value linelen))
                     fill-column))

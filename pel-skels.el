@@ -272,7 +272,7 @@ The any extra ARGS are arguments passed to SKEL-FUNCTION."
 
 
 (defun pel-skel-comments-strings ()
-  "Return a list of 3 strings describing C-style comments.
+  "Return a list of 3 strings describing comments.
 These 3 strings are:
 1- The comment begin string:        comment-start
 2- The comment continuation string: comment-continue
@@ -291,6 +291,10 @@ The string returned is selected by the currently active C-style.
 The following variables are used for the decision:
 - variable `c-block-comment-flag'
 - variable `pel-c-skel-comment-with-2stars'."
+  ;; ensure that comments for the current buffer mode are identified.
+  ;; if they are not, prompt the user.
+  (pel-require 'newcomment)
+  (comment-normalize-vars)
   (let* ((c-style   (and (boundp 'c-block-comment-flag)
                          c-block-comment-flag))
          (cb        (if c-style "/*"  comment-start))

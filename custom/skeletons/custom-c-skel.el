@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, August 28 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-09 07:56:01, updated by Pierre Rouleau>
+;; Time-stamp: <2020-10-20 23:12:04, updated by Pierre Rouleau>
 
 ;;; ----------------------------------------------------------------------------
 ;;; Commentary:
@@ -119,10 +119,10 @@ The arguments are:
             - cb : comment begin string
             - cc : comment continuation string
             - ce : comment end string."
-  (let* ((purpose  (pel-prompt-purpose-for "File" 'p))
-         (cb       (nth 0 cmt-style))
-         (cc       (nth 1 cmt-style))
-         (ce       (nth 2 cmt-style)))
+  (let ((purpose  (pel-prompt-purpose-for "File" 'p))
+        (cb       (nth 0 cmt-style))
+        (cc       (nth 1 cmt-style))
+        (ce       (nth 2 cmt-style)))
     (list
      'l
      cb " " fname " : " purpose  'n
@@ -144,7 +144,7 @@ The arguments are:
          (c-style         (pel-skel-comments-strings))
          (cb              (nth 0 c-style))   ; comment begin: "/*" or "//"
          (cc              (nth 1 c-style))   ; comment continue: "**", " *" or "//"
-         (ce              (nth 2 c-style))  ; comment end: "*/", " */",  or ""
+         (ce              (nth 2 c-style))   ; comment end: "*/", " */",  or ""
          (line            (make-string (length fct-name) ?=)))
     ;; create and return a tempo skeleton inclusion list that creates the C code
     (list

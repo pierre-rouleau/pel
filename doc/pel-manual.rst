@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-10-15 13:56:41, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-10-20 23:11:45, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -3194,29 +3194,77 @@ or:
             // ---------------------------------------------------------------------------
 
 
-Using user-specified skeleton
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Using user-specified module/header skeleton
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-The default skeleton with all the user options PEL provides might still not
-generate exactly what you need. In that case you can write your own tempo
-skeleton code in a function named ``pel-skels-c-header-module-block/custom``
-in a file that you identify in the ``pel-c-skel-module-header-block-style`` user
-option.
+The default module/header skeleton with all the user options PEL provides
+might still not generate exactly what you need.  In that case, you can write
+your own skeleton template and get PEL to use it.
 
-See the provided example inside the file
-`custom/skeleton/custom-c-skel.el`_.
+To replace PEL's generated code with a template of your own you must do the
+following:
 
-With:
+- Read and understand the provided example in the file
+  `custom/skeleton/custom-c-skel.el`_.  See the explanations below.  For this
+  you will need a minimal understanding of the Emacs Lisp programming
+  language.  You'll need to learn more than what you need to learn to write
+  yasnippet_ templates, but you can then take advantage of all Emacs Lisp
+  power and use the PEL functions to prompt for function and purpose, check
+  for function name validity, transform the function name and have the whole
+  action already bound to a key sequence.
+- Write a Emacs Lisp Skeleton file that will define your skeleton template
+  with something similar to what you found in the example:
 
-- ``pel-c-skel-insert-module-section`` set to nil,
-- ``pel-c-skel-comment-with-2stars`` set to nil,
+  - Inside that file, create a Emacs Lisp defun for the function named
+    ``pel-skels-c-header-module-block/custom``.
+
+- Set the ``pel-c-skel-module-header-block-style`` user option to take a user
+  defined skeleton instead of PEL's default: write the path name of the Emacs
+  Lisp file where you wrote your own skeleton code.
+
+
+**Description of the Custom Skeleton Example:**
+
+- Source code: `custom/skeleton/custom-c-skel.el`_.
+
+First, the custom example takes advantage of the functionality provide by the
+PEL functions and the features it can customize further.  Which means that
+your custom skeleton can be written to take advantage of PEL's user option
+variables to control some of the aspects of the generated code.  These user
+options are the following:
+
+- ``pel-c-skel-insert-module-section`` which specifies whether or not code
+  sections delimiters are inserted inside the generated code.  Code sections
+  that describe the purpose the sections of your file. If you want to have
+  those sections you can define their titles inside the
+  ``pel-c-skel-module-section-titles`` user option.  The default is to include
+  the following sections after the *Module Description* section:
+
+  - Header Inclusion
+  - Local Types
+  - Local Variables
+  - Code
+
+- ``pel-c-skel-comment-with-2stars`` which identifies whether one or two start
+  characters will be used in the C continuation comment.
+
+
+Assuming you set the user options to the following values:
+
+- ``pel-c-skel-insert-module-section`` set to nil to prevent generating sections.
+- ``pel-c-skel-comment-with-2stars`` set to nil to use the single star C style
+  comment.
 - ``pel-c-skel-module-header-block-style`` set to the name of a file that
   contains the same code as in `custom/skeleton/custom-c-skel.el`_
 
-and assuming your name is ``Same One`` and you work for ``U-FooBar``, typing the
-``<f12> <f12> h`` in the file ``ufoobar.c``, something like the following
-comment would be inserted in the buffer:
 
+The code provided does not use the second argument, ``is-a-header``. If you
+want to distinguish between code files and header files, use this
+argument. PEL code does.
+
+Assuming also that your name is ``Same One`` and you work for ``U-FooBar``,
+typing the ``<f12> <f12> h`` in the file ``ufoobar.c``, something like the
+following comment would be inserted in the buffer:
 
 .. code:: c
 
@@ -3228,6 +3276,49 @@ comment would be inserted in the buffer:
              * Time-stamp: <2020-08-29 17:47:38, updated by Same One>
              */
 
+If you know Emacs Lisp, skip this section.
+
+Notice the first line of the `custom/skeleton/custom-c-skel.el`_ file that
+specifies lexical binding.
+
+Inside the file, the function ``pel-skels-c-header-module-block/custom`` is defined to
+take 3 mandatory arguments, and as described in the function docstring these are:
+
+- arg 1: ``fname``, a string : the file name (without path)
+- arg 2: ``is-a-header``, a boolean: is non-nil when the file is a C header
+  file, and nil when it is a .c file.
+- arg 3: cmt-style, a list of 3 strings: (cb cc ce), where:
+
+  - cb : comment begin string
+  - cc : comment continuation string
+  - ce : comment end string.
+
+The first lisp form of the function is a ``let*`` form that defines `local
+variables`_.  The ``purpose`` variable is set with the result of the prompt
+asking the user the purpose of the C file.  If no purpose is specified by the
+user, the function returns its default, the symbol ``p``.  That symbol is used
+in the tempo skeleton and means that the location of the purpose string will
+instead be a tempo marker (shown in the output example above with the Ⓜ️
+characters) to remind the user to fill the file's purpose string.
+
+The next 3 lines uses the ``nth`` function to extract the first second and
+third element of the ``cmt-style`` argument.
+
+The last form of the function is the dynamic construction of a tempo-skeleton
+compliant insertion list.  The first element of that list is the symbol ``l``,
+and then each element is either a string, a function returning a string, a
+variable name that evaluates to a string or the symbol ``n`` that identifies
+the end of a line.  The symbols are quoted otherwise they would be evaluated.
+
+The code calls several of PEL's functions. These functions are all
+documented. To get more info about them uses Emacs help system: move your
+cursor on the function name and hit ``<f1> o``.  Emacs will prompt with the
+function name you selected.  Hit return and Emacs will show a help buffer with
+the description of the function.  The first line of the help buffer will end
+with the name of the file where the function is defined. Hit tab to move point
+there and hit return again to open PEL's file where the function is defined.
+
+.. _local variables: https://www.gnu.org/software/emacs/manual/html_node/elisp/Local-Variables.html#Local-Variables
 
 C function template
 *******************
@@ -3475,23 +3566,38 @@ With C++ style comments and ``pel-c-skel-function-name-on-first-column`` set to
 User selected template for C function definition
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-The above choices, with all provided flexibility may not correspond with your
-needs. In that can you can store the name of a file with you own code
-inside the ``pel-c-skel-function-define-style`` user option variable.
+The default function definition header skeleton with all the user options PEL
+provides might still not generate exactly what you need.  In that case, you
+can write your own skeleton template and get PEL to use it.
 
-The file `custom/skeleton/custom-c-skel.el`_ is an example of a user defined
-skeleton. As you'll see you will need to write Emacs Lisp code for this.
-You'll need to learn more than what you need to learn to write yasnippet_
-templates, but you can then take advantage of all Emacs Lisp power and use the
-PEL functions to prompt for function and purpose, check for function name
-validity, transform the function name and have the whole action already bound to
-a key sequence.
+To replace PEL's generated code with a template for C function definition of
+your own you must do the following:
 
-The example generates code like the following, controlled by various PEL user
-options that identify whether the horizontal separator line is inserted, whether
-the C function return type is on a separate line (as in the example below) or on
-the same line as the function name, and you can also switch to C++ style
-comments. The indentation is also controlled by customization.
+- Read and understand the provided example in the file
+  `custom/skeleton/custom-c-skel.el`_.  For this
+  you will need a minimal understanding of the Emacs Lisp programming
+  language.  The code for creating a C function definition code is similar to
+  the code that generates the C module/header, so if you're new to Emacs Lisp
+  see the explanation inside the section titled
+  `Using user-specified module/header skeleton`_ above.
+- Write a Emacs Lisp Skeleton file that will define your skeleton template
+  with something similar to what you found in the example:
+
+  - Inside that file, create a Emacs Lisp defun for the function named
+    ``pel-skels-c-function-def/custom``.
+
+- Set the ``pel-c-skel-function-define-style`` user option to take a user
+  defined skeleton instead of PEL's default: write the path name of the Emacs
+  Lisp file where you wrote your own skeleton code.  The name of that file may
+  be the same as what you might have defined inside the
+  ``pel-c-skel-module-header-block-style`` user option.
+
+The example taken from the file `custom/skeleton/custom-c-skel.el`_ generates
+code like the following, controlled by various PEL user options that identify
+whether the horizontal separator line is inserted, whether the C function
+return type is on a separate line (as in the example below) or on the same
+line as the function name, and you can also switch to C++ style comments. The
+indentation is also controlled by customization.
 
 .. code:: c
 

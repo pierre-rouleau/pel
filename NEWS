@@ -79,6 +79,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 - Update: *Grep*:
   - New: Added key bindings for [[https://github.com/ggreer/the_silver_searcher][ag]] (the silver searcher) based grep-style
     search.
+- Update: *Text Insertion*:
+  - Improved: generic file mode/header template insetion (``<f6>
+    h``) and separator line insertion (``<f6> l``) now get comment style from
+    user if they are not already defined.
 - Update: *Navigation*:
   - New: when the new *pel-windmove-on-f1-cursor* user option is set to t, PEL
     activates several key bindings for windows management using the <f1>
@@ -162,11 +166,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 - Updated [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/windows.pdf][⅀ Windows]] to describe the new Esc and <f1> cursor keys to manage
   and navigate across windows.
 - Updates to the Buffer, CUA, Cut & Paste, Marking, Undo PDF reference tables.
-** Use Manual Additions:
+** Use Manual Additions and Improvements:
 - Added instructions on how to install
   [[https://www.gnu.org/software/global/][GNU GLOBAL source code tagging system]] gtags utility with its [[https://pygments.org][Pygments]] and
   [[https://ctags.io][Universal-Ctags]] plugins to support gtags-based tags management within
   Emacs. This includes a small example shells script: [[https://github.com/pierre-rouleau/pel/blob/master/bin/envfor-gtags][envfor-gtags]].
+- Better description of how to write customize tempo skeletons.
 * Version 0.3.1
 ** Fixes:
   - Spell check control user options and handling now simpler and don't have type

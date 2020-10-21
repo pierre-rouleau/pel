@@ -2085,7 +2085,7 @@ You can use one of the following:
             - ce : comment end string.
 
   The function can use or ignore these arguments.
-  See the code of function `pel-skels-c-header-module-block'
+  See PEL's function `pel-skels-c-header-module-block' source code
   for an example of how these arguments are used to create the standard
   header-module block skeleton.
 
