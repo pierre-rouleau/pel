@@ -2234,7 +2234,15 @@ When set, identifies what mode is used to support Javascript."
   :link '(custom-group-link "macrostep"))
 
 (defcustom pel-use-esup nil
-  "Control whether PEL uses the esup package."
+  "Control whether PEL uses the esup package.
+
+ESUP - Emacs Start Up Profiler, a tool to profile
+execution.  Profiles the init.el by default.
+Only works when Emacs runs in Graphics mode.
+PEL therefore only activates it when Emacs runs
+in Graphics mode."
+  :link '(url-link :tag "esup @ GitHub"
+                   "https://github.com/jschaf/esup")
   :group 'pel-pkg-for-elisp
   :type 'boolean
   :safe #'booleanp)

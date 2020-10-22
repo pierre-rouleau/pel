@@ -647,18 +647,6 @@ Done in this function to allow advising libraries that remap these keys."
             (concat "file://"
                     (expand-file-name "~/docs/HyperSpec/"))))
 
-;; -------------------------------
-;; - Programming Style: Emacs Lisp
-;; -------------------------------
-(when pel-use-esup
-  (use-package esup
-    ;; esup is an external package:
-    ;; ensure it's installed from MELPA if not available.
-    :ensure t
-    :pin melpa
-    :commands esup
-    :init
-    (cl-eval-when 'compile (require 'esup nil :no-error))))
 
 ;; ------------------------------------
 ;; - Programming Style: Haskell Support
@@ -2907,6 +2895,17 @@ vlang-mode/master/vlang-mode.el"
   :commands pel-show-load-path
   :init
   (define-key pel:emacs "p" 'pel-emacs-load-path))
+
+;; Profiling support: esup
+(when (and pel-use-esup
+           (display-graphic-p))
+  (use-package esup
+    :ensure t
+    :pin melpa
+    :commands esup
+    :init
+    (cl-eval-when 'compile (require 'esup nil :no-error))
+    (define-key pel:emacs "P"  'esup)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? k`` : Info on Keys
