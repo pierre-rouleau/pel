@@ -1638,7 +1638,13 @@ just bind it again after this call."
 (defun pel--set-cc-style (mode bracket-style)
   "Set the MODE BRACKET-STYLE and TAB-SIZE for the current mode.
 MODE must be a symbol."
-  (add-to-list 'c-default-style (cons mode bracket-style)))
+  (let* ((used-style  (assoc mode c-default-style))
+         (force-style (not
+                       (and used-style
+                            (string-equal (cdr used-style) bracket-style)))))
+    (when force-style
+      (add-to-list 'c-default-style (cons mode bracket-style))
+      (c-set-style bracket-style :dont-override-default))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC c`` : C programming utilities
@@ -1652,20 +1658,24 @@ MODE must be a symbol."
 (define-pel-global-prefix pel:for-c-preproc (kbd "<f11> SPC c #"))
 (define-pel-global-prefix pel:c-skel        (kbd "<f11> SPC c <f12>"))
 
+
 (defun pel--setenv-for-c ()
   "Set the environment for editing C files."
+  ;; Configure some of the special CC minor modes
+  (pel--set-cc-style 'c-mode pel-c-bracket-style)
+
   ;; Set variables always available in Emacs
   (setq tab-width          pel-c-tab-width
         indent-tabs-mode   pel-c-use-tabs)
   ;; set fill-column to C's default if specified
- (when pel-c-fill-column
+  (when pel-c-fill-column
     (setq fill-column pel-c-fill-column))
 
   ;; Set CC Mode variables
-  ;; (and therefore not known at compilation when CC Mode not loaded).
+  ;; Note: these variables are  not known at compilation when CC Mode is
+  ;;       not loaded).
   (pel-setq c-basic-offset pel-c-indentation)
-  ;; Configure some of the special CC minor modes
-  (pel--set-cc-style 'c-mode pel-c-bracket-style)
+
   (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
   ;; Configure M-( to put parentheses after a function name.
   (set (make-local-variable 'parens-require-spaces) nil)

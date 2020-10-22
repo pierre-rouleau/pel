@@ -1733,6 +1733,7 @@ CC Mode Built-in Styles, which include the following:
 - java
 - awk
 - user"
+  :link '(custom-group-link "C")
   :link '(custom-manual "(ccmode)Built-in Styles")
   :link `(url-link
           :tag "Bracket styles @ Emacs Manual"
