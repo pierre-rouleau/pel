@@ -3,7 +3,7 @@
 # Copyright (C) 2020 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2020-10-21 10:15:35, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2020-10-23 16:46:34, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -117,6 +117,7 @@ EL_FILES := pel--base.el \
 			pel-autoload.el \
 			pel-benchmark.el \
 			pel-bookmark.el \
+			pel-cc.el \
 			pel-ccp.el \
 			pel-comment.el \
 			pel-comment-adorn.el \
@@ -465,6 +466,7 @@ pel-applescript.elc:    pel-read.elc
 pel-autocomplete.elc:   pel--base.elc pel--macros.elc pel--options.elc
 pel-autoload.elc:       pel--options.elc
 pel-bookmark.elc:       pel--base.elc
+pel-cc.elc:             pel--base.elc
 pel-ccp.elc:            pel-navigate.elc
 pel-comment.elc:        pel--base.elc
 pel-comment-adorn.elc:  pel-rst.elc pel-comment.elc pel-mark.elc

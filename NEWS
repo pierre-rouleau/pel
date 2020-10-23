@@ -109,6 +109,11 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     user option.
   - New: key binding to a command to display Emacs executable path: <f11> ? e x.
   - New: key binding to display Emacs up-time (<f11> ? e u).
+- Update: *Programming Language Support -- CC Mode Utilities*
+  - Refactoring: Moved cc-mode utilities from pel_keys.el to the new pel-cc.el
+    file.
+  - New: *pel-cc-mode-info* can now be used from any major mode where it will
+    display info about non-loaded symbols and features.
 - Update: *Programming Language Support -- C*
   - New: ``<f12> <f12> d`` insert a C pre-processor #define statement.
   - New: ``<f12> <f12> i`` insert a C pre-processor #include statement for

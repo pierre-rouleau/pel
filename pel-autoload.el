@@ -91,6 +91,9 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-bookmark" for: pel-bookmark-in-current-file-p)
 
+  (pel-autoload "pel-cc" for
+    pel-cc-mode-info)
+
   (pel-autoload "pel-ccp" for:
     pel-copy-word-at-point
     pel-copy-symbol-at-point

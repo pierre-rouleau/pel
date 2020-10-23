@@ -54,6 +54,7 @@
 ;; String generation utilities:
 ;;  - `pel-option-mode-state'
 ;;    - `pel-activated-in-str'
+;;  - `pel-symbol-value-or'
 ;;  - `pel-symbol-text'
 ;;    - `pel-symbol-on-off-string'
 ;;      - `pel-on-off-string'
@@ -278,6 +279,7 @@ If N > 2: use the PLURAL form if specified,
 ;; Call hierarchy:
 ;;  - `pel-option-mode-state'
 ;;    - `pel-activated-in-str'
+;;  - `pel-symbol-value-or'
 ;;  - `pel-symbol-text'
 ;;    - `pel-symbol-on-off-string'
 ;;      - `pel-on-off-string'
@@ -309,6 +311,20 @@ If symbol is nil: show OFF-STRING if defined, \"nil\" otherwise."
   (format "%s is now: %s"
           symbol
           (pel-symbol-on-off-string symbol on-string off-string)))
+
+(defun pel-symbol-value-or (symbol &optional replacement)
+  "Return SYMBOL value if non void, otherwise its REPLACEMENT.
+
+If SYMBOL is void and there is no REPLACEMENT return a string
+created by (format \"unknown - %S is not loaded\" symbol).
+If SYMBOL is void and replacement is :nil-for-void, return nil."
+  (if (boundp symbol)
+      (symbol-value symbol)
+    (if replacement
+        (if (eq replacement :nil-for-void)
+            nil
+          replacement)
+      (format "unknown - %S is not loaded" symbol))))
 
 (defun pel-yes-no-string (test &optional true-string false-string)
   "Return TRUE-STRING when boolean TEST is non-nil, otherwise FALSE_STRING.

@@ -568,67 +568,12 @@ Done in this function to allow advising libraries that remap these keys."
     ;; Use the cleaner outline view mode.
     (add-hook 'org-mode-hook 'org-indent-mode)))
 
-;; ---------------------------------------------------------------------------
-;; - Programming Language Support
-;; --============================
 
-(when (and pel-use-eldoc-box
-           (display-graphic-p))
-  (use-package eldoc-box
-    :ensure t
-    :pin melpa
-    :commands (eldoc-box-hover-mode
-               eldoc-box-hover-at-point-mode)))
-
-;; C-like programming languages: C, C++
-;; ------------------------------------
-(when pel-use-c-eldoc
-
-  (defun pel-toggle-c-eldoc-mode ()
-    "Toggle c-eldoc mode on/off."
-    (interactive)
-    (unless (boundp 'eldoc-mode)
-      (require 'c-eldoc nil :noerror))
-    (if eldoc-mode
-        (eldoc-mode -1)
-      (c-turn-on-eldoc-mode)))
-
-
-  (cl-eval-when 'load
-    (pel-install-file
-     "https://raw.githubusercontent.com/pierre-rouleau/c-eldoc/master/c-eldoc.el"
-     "c-eldoc.el"))
-
-  (use-package c-eldoc
-    ;; c-eldoc is an external package.
-    ;; For the moment I am trying to update it. So download from my page
-    ;; for testing.
-    ;; :ensure t   ; warning is in c-eldoc: it requires cl instead of cl-lib.
-    ;; :pin melpa
-
-    ;; autoload it when one of the following commands is used.
-    :commands c-turn-on-eldoc-mode
-
-    ;; run following command before package is loaded to
-    ;; activate the autoload.
-    :init
-    (cl-eval-when 'compile (require 'c-eldoc nil :no-error))
-    (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)))
 
 ;; ---------------
 ;; - CMake support
 ;; ---------------
 ;; (use-package cmake-mode)
-
-
-
-;; ------------------------------------
-;; - Programming Style: Haskell Support
-;; ------------------------------------
-;;
-;; Using Intero to support Haskell programming language.
-;; Installed it via the list-packages.
-;; ; (add-hook 'haskell-mode-hook 'intero-mode)
 
 ;; ---------------------------------------------------------------------------
 ;; - Extra key bindings
@@ -1460,6 +1405,18 @@ Then save your changes."
       (run-with-idle-timer 4 nil (function pel--start-yasnippet))))))
 
 ;; ---------------------------------------------------------------------------
+;; - Programming Language Support
+;; --============================
+
+(when (and pel-use-eldoc-box
+           (display-graphic-p))
+  (use-package eldoc-box
+    :ensure t
+    :pin melpa
+    :commands (eldoc-box-hover-mode
+               eldoc-box-hover-at-point-mode)))
+
+;; ---------------------------------------------------------------------------
 ;; - AppleScript support
 (when pel-use-applescript
   (use-package apples-mode
@@ -1501,72 +1458,43 @@ Then save your changes."
 
 ;; HYDRA: pel-∑narrate is at the bottom of this file with all other PEL hydras.
 
+;; C-like programming languages: C, C++
+;; ------------------------------------
+(when pel-use-c-eldoc
+
+  (defun pel-toggle-c-eldoc-mode ()
+    "Toggle c-eldoc mode on/off."
+    (interactive)
+    (unless (boundp 'eldoc-mode)
+      (require 'c-eldoc nil :noerror))
+    (if eldoc-mode
+        (eldoc-mode -1)
+      (c-turn-on-eldoc-mode)))
+
+
+  (cl-eval-when 'load
+    (pel-install-file
+     "https://raw.githubusercontent.com/pierre-rouleau/c-eldoc/master/c-eldoc.el"
+     "c-eldoc.el"))
+
+  (use-package c-eldoc
+    ;; c-eldoc is an external package.
+    ;; For the moment I am trying to update it. So download from my page
+    ;; for testing.
+    ;; :ensure t   ; warning is in c-eldoc: it requires cl instead of cl-lib.
+    ;; :pin melpa
+
+    ;; autoload it when one of the following commands is used.
+    :commands c-turn-on-eldoc-mode
+
+    ;; run following command before package is loaded to
+    ;; activate the autoload.
+    :init
+    (cl-eval-when 'compile (require 'c-eldoc nil :no-error))
+    (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)))
+
 ;; ---------------------------------------------------------------------------
 ;; Utility function for mapping CC Mode keys
-
-(defun pel-key-electric-p (key)
-  "Return non-nil if KEY is electric, nil otherwise."
-  ;; Work only with keys that may be electric.
-  (local-key-binding key))
-
-(defun pel-filter-electric-key (char)
-  "Return CHAR if it is electric, space otherwise."
-  (if (pel-key-electric-p (kbd char))
-      char
-    nil))
-
-(defun pel-electric-keys ()
-  "Return a string with the electric keys."
-  (seq-filter 'pel-filter-electric-key
-          (mapcar 'string "#*/<>(){}:;,")))
-
-(defun pel-cc-mode-info ()
-  "Display information about current CC mode derivative."
-  (interactive)
-  (let ((not-avail-msg "not available for this mode"))
-    (message "%s state:
-- Indent width     : %s
-- Tab width        : %s
-- Indenting with   : %s
-- Bracket style    : %s
-- Comment style    : %s
-- Electric chars   : %s
-- Auto newline     : %s
-- Syntactic indent : %s
-- Hungry delete    : %s"
-             major-mode
-             c-basic-offset
-             tab-width
-             (pel-on-off-string indent-tabs-mode
-                                "hard-tabs and spaces"
-                                "spaces only")
-             (alist-get major-mode c-default-style)
-             (if (and (boundp 'c-block-comment-flag)
-                      (boundp 'c-block-comment-starter)
-                      (boundp 'c-block-comment-ender)
-                      (boundp 'c-block-comment-prefix))
-                 (if c-block-comment-flag
-                     (format
-                      "Block comments: %s %s , continued line start with %s"
-                             c-block-comment-starter
-                             c-block-comment-ender
-                             c-block-comment-prefix)
-                   (format "Line comments: %s" c-line-comment-starter))
-               not-avail-msg)
-             (pel-symbol-on-off-string 'c-electric-flag
-                                       (format "active: %s"
-                                               (pel-concat-strings-in-list
-                                                (pel-electric-keys)))
-                                       "inactive"
-                                       not-avail-msg)
-             (pel-symbol-on-off-string 'c-auto-newline nil nil not-avail-msg)
-             (pel-symbol-on-off-string
-              'c-syntactic-indentation nil nil not-avail-msg)
-             (pel-symbol-on-off-string 'c-hungry-delete-key
-                                       nil
-                                       "off, but the \
-F11-⌦  and F11-⌫  keys are available."
-                                       not-avail-msg))))
 
 (defun pel--map-cc-for (prefix &optional c-preproc-prefix)
   "Map in the PEL keys for CC Mode in the keymap specified by PREFIX.
@@ -2034,6 +1962,13 @@ This is meant to be used in the d-mode hook lambda."
 ;;     :init
 ;;     (add-hook ‘elixir-mode-hook ’lsp)))
 
+;; ---------------------------------------------------------------------------
+;; - Programming Style: Haskell Support
+;; ------------------------------------
+;;
+;; Using Intero to support Haskell programming language.
+;; Installed it via the list-packages.
+;; ; (add-hook 'haskell-mode-hook 'intero-mode)
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` : Forth programming
 (when pel-use-forth
