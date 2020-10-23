@@ -115,6 +115,11 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     library files.
   - New: ``<f12> <f12> I`` insert a C pre-processor #include statement for
     local files.
+- Update: *Programming Language Support -- Common Lisp*
+  - New: user option *pel-clisp-hyperspec-root* to identify the location of
+    the LispWorks Common Lisp HyperSpec HTML documentation.
+  - New: The ``<f12> <f3>`` key sequence provides access to slime
+    customization buffer.
 - Update: *Text Insertion*:
   - Improved: generic file mode/header template insetion (``<f6>
     h``) and separator line insertion (``<f6> l``) now get comment style from

@@ -620,32 +620,6 @@ Done in this function to allow advising libraries that remap these keys."
 ;; ---------------
 ;; (use-package cmake-mode)
 
-;; ---------------------
-;; - Common Lisp support
-;; ---------------------
-(when pel-use-common-lisp
-  (use-package slime
-    :ensure t
-    :pin melpa
-    :defer t
-    :init
-    (cl-eval-when 'compile (require 'slime nil :no-error)))
-
-  (when (fboundp 'pel-cl-init)
-    (pel-cl-init :slime-is-used))
-  ;; TODO: generalize this code, allowing customization
-  ;; also provide ability to install the Hyperspec locally again through
-  ;; customization.
-  ;; A  copy of the latest version (version 7) of the LispWorks Hyperspec
-  ;; is at:
-  ;; http://ftp.lispworks.com/pub/software_tools/reference/HyperSpec-7-0.tar.gz
-  ;; as identified by the LispWorks Download page
-  ;; (http://www.lispworks.com/documentation/common-lisp.html).
-  ;; The following code is the default,
-  ;; symlinks can be use to point to the real location.
-  (pel-setq common-lisp-hyperspec-root
-            (concat "file://"
-                    (expand-file-name "~/docs/HyperSpec/"))))
 
 
 ;; ------------------------------------
@@ -2312,6 +2286,15 @@ This is meant to be used in the d-mode hook lambda."
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC L`` : (Common) Lisp
 (when pel-use-common-lisp
+
+  (when (fboundp 'pel-cl-init)
+    (pel-cl-init :slime-is-used))
+
+  ;; Enable use of the Common Lisp Hyperspec by setting their location.
+  ;; Customize `pel-clisp-hyperspec-root' if you want to use a local copy.
+  (pel-setq common-lisp-hyperspec-root
+            (pel-expand-url-file-name pel-clisp-hyperspec-root))
+
   (define-pel-global-prefix pel:for-lisp (kbd "<f11> SPC L"))
   (when pel-use-plantuml
     (define-key               pel:for-lisp "u" 'pel-render-commented-plantuml))
@@ -2326,7 +2309,14 @@ This is meant to be used in the d-mode hook lambda."
   (pel--mode-hook-maybe-call
    '(lambda ()
       (pel-local-set-f12-M-f12 'pel:for-lisp))
-   'lisp-mode 'lisp-mode-hook))
+   'lisp-mode 'lisp-mode-hook)
+
+  (use-package slime
+    :ensure t
+    :pin melpa
+    :defer t
+    :init
+    (cl-eval-when 'compile (require 'slime nil :no-error))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC p`` : Python programming

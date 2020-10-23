@@ -2219,6 +2219,26 @@ When set, identifies what mode is used to support Javascript."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-clisp-hyperspec-root
+  "http://www.lispworks.com/documentation/HyperSpec/"
+  "Location of the Common Lisp HyperSpec HTML documentation, a URL.
+
+The URL must identify the location of the HyperSpec root directory
+and must end with a / character.  It may identify a remote directory access
+through HTTP or HTTPS as in the default value, or a local directory with
+a \"file://\" prefix.  The path must be absolute. The special '~' character
+may be used.
+
+The default is: http://www.lispworks.com/documentation/HyperSpec/
+
+See the Common Lisp Hyperspec link if you want to download a copy of the
+latest version (currently version 7) of the LispWorks HyperSpec files to
+install them locally."
+  :link '(url-link :tag "Common Lisp Hyperspec"
+                   "http://www.lispworks.com/documentation/common-lisp.html")
+  :group 'pel-pkg-for-clisp
+  :type 'string)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Emacs Lisp Support
 ;; ------------------
