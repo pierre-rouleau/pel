@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-10-20 15:09:04, updated by Pierre Rouleau>
+;; Time-stamp: <2020-10-23 11:34:25, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -279,7 +279,8 @@ stored inside the doc/pdf directory.")
     ("apples"          [f11 32 ?a])
     ("c++"             [f11 32 ?C])
     ("c"               [f11 32 ?c])
-    ("common-lisp"     [f11 32 ?L])
+    ("lisp"            [f11 32 ?L])
+    ("common-lisp"     [f11 32 ?L])     ; an alias for lisp.
     ("d"               [f11 32 ?D])
     ("elixir"          [f11 32 ?x])
     ("emacs-lisp"      [f11 32 ?l])
@@ -310,7 +311,7 @@ thing so it can be used as an index inside variable
          (keyidx (cadr (assoc mode-str pel--mode-letter-alist))))
     (if keyidx
         (seq-concatenate 'vector keyidx (seq-drop keyseq 1))
-      (error "Missing entry for % in pel--mode-letter-alist" mode-str))))
+      (error "Missing entry for %s in pel--mode-letter-alist" mode-str))))
 
 (defun pel--kte-for (keyseq)
   "Return the table entry for the specified KEYSEQ.
@@ -320,7 +321,7 @@ The f12 key sequence is a mode-specific key sequence,
 where f12 abbreviates the full f11 key sequence for the
 current major mode.
 Check the key sequences.  Expand the f12 key sequence into
-the full f11 key sequence. Report invalid key sequence."
+the full f11 key sequence.  Report invalid key sequence."
   (let ((prefix-key (elt keyseq 0)))
     (unless (memq prefix-key '(f6 f7 f8 f11 f12 M-f12))
       (user-error "This command can only be invoked via F6, F7, F8, F11, F12 or M-F12 prefix.\n\
@@ -336,7 +337,9 @@ the full f11 key sequence. Report invalid key sequence."
 
 
 (defun pel--kte-pdfs (table-entry)
-  "Return a list of strings, the partial names of PDF files for the TABLE_ENTRY or nil if none."
+  "Return a list of partial names of PDF files in TABLE-ENTRY.
+Return strings: the partial names of PDF files for the TABLE-ENTRY.
+Return nil if there are none."
   (let ((elem (nth 1 table-entry)))
     (if (stringp elem)
         (list elem)
@@ -350,7 +353,8 @@ the full f11 key sequence. Report invalid key sequence."
       elem)))
 
 (defun pel--kte-lib-groups (table-entry)
-  "Return the library customization group (or list of groups) for the TABLE-ENTRY.
+  "Return the library customization group for the TABLE-ENTRY.
+Return a list of groups if there are several.
 Return nil if there are none."
   (nth 3 table-entry))
 
@@ -451,7 +455,7 @@ If enter is typed with no entry it defaults to the PEL key maps pdf."
 
 
 (defun pel--found (regxp)
-  "Search for regular expression from the top of buffer.
+  "Search for REGXP regular expression from the top of buffer.
 Return non-nil if found, nil otherwise."
   (goto-char (point-min))
   (re-search-forward regxp nil :noerror))
@@ -490,7 +494,7 @@ instead."
       (locate-library group))))
 
 (defun pel--group-isin-libfile (group)
-  "Return non-nil if customize GROUP is defined in an accessible Emacs Lisp file.
+  "Return non-nil if customize GROUP is defined in an accessible ELisp file.
 Return the path to the source file containing the group.
 GROUP must be a string.
 Return nil otherwise."
@@ -502,7 +506,8 @@ Return nil otherwise."
             (insert-file-contents file-path)
             (when
                 (or (pel--found (format "^ *?(defgroup +?%s " group))
-                    (pel--found (format "^ +?:group +?'%s)?\\( ?\\|$\\)" group)))
+                    (pel--found (format "^ +?:group +?'%s)?\\( ?\\|$\\)"
+                                        group)))
               file-path)))))))
 
 (defun pel--customize-group (group &optional other-window)
@@ -522,7 +527,7 @@ If OTHER-WINDOW is non-nil display in other window."
         (let ((library-name (file-name-base file-path)))
           (if (y-or-n-p
                (format
-                "Group %s is from a non loaded %s. Load it first? "
+                "Group %s is from a non loaded %s.  Load it first? "
                 group
                 library-name))
             (when (load-library library-name)
@@ -532,11 +537,13 @@ If OTHER-WINDOW is non-nil display in other window."
         (user-error "Customization group '%s' currently unknown.\n\
 PEL cannot locate a file that defines this group.\n\
 Is it installed? If not set PEL user option to activate it.\n\
-To customize it manually load the library where this group is defined." group)))))
+To customize it manually load the library where this group is defined"
+                    group)))))
 
 ;;-pel-autoload
 (defun pel-customize-pel (&optional other-window)
   "Open the PEL customize group(s) for the current context.
+If argument OTHER-WINDOW is specified, open in the other window.
 The context is determined by the key sequence typed.
 This command should be bound to a PEL key sequence that ends with f2."
   (interactive "P")
@@ -544,7 +551,8 @@ This command should be bound to a PEL key sequence that ends with f2."
          (kte    (pel--kte-for keyseq)) ; pel--prefix-to-topic-alist entry
          (groups (pel--kte-pel-groups kte)))
     (unless groups
-      (error "No PEL customization group entry in pel--prefix-to-topic-alist for %s\n\
+      (error "No PEL customization group entry in \
+pel--prefix-to-topic-alist for %s\n\
 There should be no key binding!" keyseq))
     (pel--customize-group
      (pel--kte-select-topic "Customize group: " groups)
@@ -553,6 +561,7 @@ There should be no key binding!" keyseq))
 ;;-pel-autoload
 (defun pel-customize-library (&optional other-window)
   "Open the customize group of a library related to the current context.
+If argument OTHER-WINDOW is specified, open in the other window.
 The context is determined by the key sequence typed.
 This command should be bound to a PEL key sequence that ends with f3."
   (interactive "P")
@@ -641,7 +650,8 @@ display in other window." (pel-prefixed
 ;; --
 
 (defmacro pel--cfg-ext-pkg (prefix key group)
-  "Define a function and a KEY mapping to configure an external package GROUP."
+  "Define a function to customize an external package GROUP.
+Bind the function to a specified key-map identified by a PREFIX and a KEY."
   (let ((fct (intern (format "pel-cfge-%s" group)))
         (docstring   (format "Customize external package %s group.\n\
 If OTHER-WINDOW is non-nil (use \\[universal-argument]), \
@@ -658,7 +668,8 @@ display in other window." group)))
 ;; --
 
 (defmacro pel--cfg-emacs (prefix key group)
-  "Define a function and a KEY mapping to configure Emacs GROUP."
+  "Define a function to customize an Emacs GROUP.
+Bind the function to a specified key-map identified by a PREFIX and a KEY."
   (let ((fct (intern (format "pel-cfge-%s" group)))
         (docstring   (format "Customize Emacs %s group.\n\
 If OTHER-WINDOW is non-nil (use \\[universal-argument]), \
