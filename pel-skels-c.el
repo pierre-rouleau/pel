@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-08-30 16:41:08, updated by Pierre Rouleau>
+;; Time-stamp: <2020-10-22 23:23:45, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -22,39 +22,92 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; ----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This defines tempo skeletons for C code and header files. The format of the
-;; inserted text is controlled by the user options inside the `pel-c-code-style'
-;; customization group.
+;; This defines tempo skeletons for C code and header files.  The format of
+;; the inserted text is controlled by the user options inside the
+;; `pel-c-code-style' customization group.
 ;;
-;; For header files, the skeleton can insert a include guard that uses a C
-;; pre-processor symbol made out of the file base name and a automatically
-;; generated UUID.   This provides a super safe include guard code that
-;; eliminates the possibility of symbol clash in C pre-processor include guards
-;; while creating portable C code.  The inclusion of this safe include guard
-;; code is controlled by the variable `pel-c-skel-use-uuid-include-guards', so
-;; users that prefer or need to use the less portable ``#pragma once`` can do
-;; that.
+;; It provides the following skeletons:
 ;;
-;; The C code files can be created with several code sections, with or without
-;; line separators.
+
+;; 1- File module header block: for .c and .h files.
 ;;
-;; The `pel-skels-c-file-header-block' function creates the file header block
-;; prompting for the purpose of the file and inserting it if entered. It also
-;; inserts the date the file is created, the author information and can insert
-;; an automatically updated time stamp and a open source license text.
+;;   - variable:    `pel-skels-c-large-header-skel'
+;;   - function:    `pel-skels-c-file-header-block'
+;;   - user options:
+;;     - For all C files:
+;;       - `pel-c-skel-module-header-block-style'
+;;       - `pel-c-skel-insert-file-timestamp'
+;;       - `pel-c-skel-with-license'
+;;       - `pel-c-skel-insert-module-sections'
+;;       - `pel-c-skel-module-section-titles'
+;;     - For header files only:
+;;       - `pel-c-skel-use-uuid-include-guards'
+;;
+;;
+;;   For header files, the skeleton can insert a include guard that uses a C
+;;   pre-processor symbol made out of the file base name and a automatically
+;;   generated UUID.  This provides a super safe include guard code that
+;;   eliminates the possibility of symbol clash in C pre-processor include
+;;   guards while creating portable C code.  The inclusion of this safe
+;;   include guard code is controlled by the variable
+;;   `pel-c-skel-use-uuid-include-guards', so users that prefer or need to use
+;;   the less portable ``#pragma once`` can do that.
+;;
+;;   The skeleton can create header blocks with several code sections, with or
+;;   without line separators.
+;;
+;;   The `pel-skels-c-file-header-block' function creates the file header
+;;   block prompting for the purpose of the file and inserting it if
+;;   entered.  It also inserts the date the file is created, the author
+;;   information and can insert an automatically updated time stamp and a open
+;;   source license text.
+
+;; 2- C function definition header block
+;;
+;;   - variable:    `pel-skels-c-function-definition-skel'
+;;   - function:    `pel-skels-c-function-definition'
+;;   - user options:
+;;       - `pel-c-skel-function-define-style'
+;;       - `pel-c-skel-insert-function-sections'
+;;       - `pel-c-skel-function-section-titles'
+;;       - `pel-c-skel-function-name-on-first-column'
+;;
+;;   The function generation skeleton create a C function definition block
+;;   preceded with an optional comment block and separator line.  The style is
+;;   selected by `pel-c-skel-function-define-style' user option: that can be a
+;;   user specified skeleton or one of the supported styles:
+;;   - just code, no comment block
+;;   - basic-style: a small documentation block before the function
+;;     definition.
+;;   - man-style: a bigger block with Man style sections describing aspects of
+;;     the function.  If `pel-c-skel-insert-function-sections' is t, there's
+;;     also a DESCRIPTION section followed by the sections
+;;     identified by the `pel-c-skel-function-section-titles' user option.
+
+;; 3- Skeleton and functions for C pre-processor statements:
+;;    - #define     : variable: `pel-skels-c-pp-define-skel'
+;;                  : function: `pel-skels-c-pp-define'
+;;
+;;    - #include "" : variable: `pel-skels-c-pp-include-local-skel'
+;;                  : function: `pel-skels-c-pp-include-local'
+;;
+;;    - #include <> : variable: `pel-skels-c-pp-include-global-skel'
+;;                  : function: `pel-skels-c-pp-include-global'
+
+;; Limitations:
 ;;
 ;; The tempo skeleton templates are currently minimal and do not yet support
-;; doxygen formatting and embedded lint specialized comments like I have done in
-;; other editing systems in the past. I'd like to support the excellent Gimpel
-;; PC-Lint Plus but also other lint and C tooling systems and provide the
-;; ability to select which one to use and provide many capabilities to help
-;; build robust C and self-documented code. I would also like to provide the
-;; ability to insert other type of information to increase the flexibility of
-;; this skeleton, but I'll do this later when I spend more time coding in C or
-;; if I get requests for that.
+;; doxygen formatting and embedded lint specialized comments like I have done
+;; in other editing systems in the past.  I'd like to support the excellent
+;; Gimpel PC-Lint Plus but also other lint and C tooling systems and provide
+;; the ability to select which one to use and provide many capabilities to
+;; help build robust C and self-documented code.  I would also like to provide
+;; the ability to insert other type of information to increase the flexibility
+;; of this skeleton, but I'll do this later when I spend more time coding in C
+;; or if I get requests for that.
 ;;
 
 ;; The function ('-') and variable ('>') hierarchy in this file is the
@@ -78,7 +131,7 @@
 ;; it loads pel_keys.el.
 
 
-;;; ----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 ;;
@@ -94,7 +147,7 @@
 (require 'pel-text-insert) ; use: pel-separator-line
 (require 'pel-uuid)        ; use: pel-c-include-guard
 (eval-when-compile (require 'subr-x)) ; use: string-trim
-;;; ----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
 
@@ -108,14 +161,15 @@ Otherwise return a string that ends with a newline."
   (when pel-c-skel-use-separators
     (concat (pel-separator-line) "\n")))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; File/Module header block
 
 (defun pel-skels-c-header-module-block (fname is-a-header cmt-style)
   "Return a tempo list for the comment block inserted at the top of the C file.
 The arguments are:
 - FNAME := string.  the name of the current file without path.
-- IS-A-HEADER := boolean. non-nil if the file is a C header file, nil otherwise.
+- IS-A-HEADER := boolean.  non-nil if the file is a C header file, nil
+  otherwise.
 - CMT-STYLE := a list of 3 strings: (cb cc ce)
             - cb : comment begin string
             - cc : comment continuation string
@@ -152,7 +206,8 @@ variable `pel-c-skel-module-header-block-style'."
          (cb           (nth 0 cmt-style))
          (cc           (nth 1 cmt-style))
          (ce           (nth 2 cmt-style)))
-    (goto-char (point-min)) ; TODO: del this but mod skels to force entry at top.
+    (goto-char (point-min)) ; TODO: del this but modify skels to force entry
+                            ;       at top.
     (list
      'l
      ;; insert the top level comment block for the top of the file
@@ -198,11 +253,11 @@ variable `pel-c-skel-module-header-block-style'."
                               'p 'n 'n)))
          (pel-append-to sk (list (pel-skel-c-separator-line))))))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; C function definitions
 
 (defun pel-valid-c-function-name (text)
-  "Return the string if it is a valid C function name, nil otherwise.
+  "Return TEXT if it is a valid C function name, nil otherwise.
 Replace dash characters with underscores, to simplify typing function
 names using underscores."
   (let ((text (replace-regexp-in-string "-" "_" (string-trim text))))
@@ -214,9 +269,9 @@ names using underscores."
 The function NAME can be passed via arguments,
 prompt user otherwise.
 When NAME is specified the optional separator line is *not* inserted:
-it's assumed that another function has already done it.
-"
-  (let* ((fct-name   (or name (pel-prompt-function (function pel-valid-c-function-name))))
+it's assumed that another function has already done it."
+  (let* ((fct-name   (or name (pel-prompt-function
+                               (function pel-valid-c-function-name))))
          (sk         (list 'l (unless name (pel-skel-c-separator-line)))))
     (if pel-c-skel-function-name-on-first-column
         (pel-append-to sk (list
@@ -235,7 +290,8 @@ it's assumed that another function has already done it.
   "Insert a basic function code template with simple comment block.
 The function NAME and PURPOSE can be passed via arguments,
 prompt user otherwise."
-  (let* ((fct-name   (or name (pel-prompt-function (function pel-valid-c-function-name))))
+  (let* ((fct-name   (or name (pel-prompt-function
+                               (function pel-valid-c-function-name))))
          (purpose    (or purpose (pel-prompt-purpose-for "Function" 'p)))
          (cmt-style  (pel-skel-comments-strings))
          (cb         (nth 0 cmt-style))
@@ -249,12 +305,14 @@ prompt user otherwise."
 
 (defun pel-skels-c-function-def-man ()
   "Insert a MAN-style C function definition command block.
-This begins with an optional separator line, the name of the function spread
-and underlined with its purpose on the same line.
+This begins with an optional separator line, the name of the
+function spread and underlined with its purpose on the same line.
 This style is selected when the user option variable
 `pel-c-skel-function-define-style' is set to the value man-style.
-The comment style is controlled by the CC mode variable `c-block-comment-flag'."
-  (let* ((fct-name        (pel-prompt-function (function pel-valid-c-function-name)))
+The comment style is controlled by the CC mode variable
+`c-block-comment-flag'."
+  (let* ((fct-name        (pel-prompt-function
+                           (function pel-valid-c-function-name)))
          (purpose         (pel-prompt-purpose-for "Function" 'p))
          (cmt-style       (pel-skel-comments-strings))
          (cb              (nth 0 cmt-style))
@@ -296,7 +354,32 @@ Insert the skeleton selected by the user option variable
         (t (pel-skel-call 'pel-c-skel-function-define-style
                           'pel-skels-c-function-def/custom))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
+(defun pel-skels-c-pp-define ()
+  "Return a tempo list for a C #define statement.
+If point is after text, go to new line.
+Leave point after statement."
+  (list
+   'l
+   '& "#define " 'p ))
+
+(defun pel-skels-c-pp-include-local ()
+  "Return a tempo list for a C #include \"\" statement.
+If point is after text, go to new line.
+Leave point when file name goes, then after statement."
+  (list
+   'l
+   '& "#include \"" 'p ".h\"" 'p))
+
+(defun pel-skels-c-pp-include-global ()
+  "Return a tempo list for a C #include <> statement.
+If point is after text, go to new line.
+Leave point when file name goes, then after statement."
+  (list
+   'l
+   '& "#include <" 'p ".h>" 'p))
+
+;; ---------------------------------------------------------------------------
 ;; Install Emacs Lisp skeletons
 
 (defvar pel-skels-c-large-header-skel
@@ -309,13 +392,35 @@ Insert the skeleton selected by the user option variable
     (pel-skels-c-function-definition))
   "The skeleton of a C function definition block.")
 
+(defvar pel-skels-c-pp-define-skel
+  '((pel-skels-c-pp-define))
+  "The skeleton of a C #define statement.")
+
+(defvar pel-skels-c-pp-include-local-skel
+  '(o
+    (pel-skels-c-pp-include-local))
+  "The skeleton of a #include \"\" statement.")
+
+(defvar pel-skels-c-pp-include-global-skel
+  '(o
+    (pel-skels-c-pp-include-global))
+  "The skeleton of a #include <> statement.")
+
 (defvar pel--c-skels
-  '(("File Header" "file-header" pel-skels-c-large-header-skel)
-    ("Function"    "function"    pel-skels-c-function-definition-skel))
+  '(("File Header"   "file-header"   pel-skels-c-large-header-skel)
+    ("Function"      "function"      pel-skels-c-function-definition-skel)
+    ("Define"        "define"        pel-skels-c-pp-define-skel)
+    ("Include \"\""  "include-local" pel-skels-c-pp-include-local-skel)
+    ("Include <>"    "include-lib"   pel-skels-c-pp-include-global-skel))
+
+
   "List of Emacs Lisp tempo skeletons.")
 
-(defvar pel--c-skels-keys '(("file-header" . "h")
-                            ("function"    . "f"))
+(defvar pel--c-skels-keys '(("file-header"   . "h")
+                            ("function"      . "f")
+                            ("define"        . "d")
+                            ("include-local" . "I")
+                            ("include-lib"   . "i"))
   "Key mapping for C skeletons.")
 
 ;;-pel-autoload
@@ -329,7 +434,7 @@ This function is meant to be called by the function `pel-init' only."
    pel--c-skels-keys
    "c"))
 
-;;; ----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 (provide 'pel-skels-c)
 
 ;;; pel-skels-c.el ends here

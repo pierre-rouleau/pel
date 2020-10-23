@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-08-30 16:40:53, updated by Pierre Rouleau>
+;; Time-stamp: <2020-10-22 18:27:52, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -27,7 +27,11 @@
 ;;
 ;; This file defines tempo skeletons that can be used for all files.  They are
 ;; not specialized for a specific programming or markup language.  They only
-;; adjust the strings used for comments.3
+;; adjust the strings used for comments.
+
+;; The only command is `pel--install-generic-skel' which dynamically creates
+;; skeletons commands with keyboard mappings for a specific keyboard map.
+;;
 
 ;;; ----------------------------------------------------------------------------
 ;;; Dependencies:

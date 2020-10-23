@@ -1849,7 +1849,7 @@ comments of length controlled by variable `fill-column' are inserted."
   "Specifies the style of the C file module header block.
 You can use one of the following:
 
-- The default, controlled by PEL's code.
+- The default (nil) controlled by PEL's code.
 - A user-specified one.  For this you have to write Emacs Lisp code.
   You have to write a function `pel-skels-c-header-module-block/custom'
   inside a file and store the name of that file inside the box that
@@ -1964,9 +1964,10 @@ The choices are:
 - No documentation comment inserted.
 - Basic documentation comment just above the function definition.
   This includes a function purpose.
-- Man-page style documentation above the function definition with
-  a DESCRIPTION section and other sections as defined by the value of
-  the variable `pel-c-skel-function-section-titles'.
+- Man-page style documentation above the function definition.
+  If variable `pel-c-skel-insert-function-sections' is t, the comment also
+  include a DESCRIPTION section and other sections as defined by the
+  value of the variable `pel-c-skel-function-section-titles'.
 - A user defined skeleton.  For this you need to write Emacs Lisp code.
   You have to write a function `pel-skels-c-function-def/custom'
   inside a file and store the name of that file inside the box that

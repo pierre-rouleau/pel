@@ -95,6 +95,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     user option.
   - New: key binding to a command to display Emacs executable path: <f11> ? e x.
   - New: key binding to display Emacs up-time (<f11> ? e u).
+- Update: *Programming Language Support -- C*
+  - New: ``<f12> <f12> d`` insert a C pre-processor #define statement.
+  - New: ``<f12> <f12> i`` insert a C pre-processor #include statement for
+    library files.
+  - New: ``<f12> <f12> I`` insert a C pre-processor #include statement for
+    local files.
 - Update: *Text Insertion*:
   - Improved: generic file mode/header template insetion (``<f6>
     h``) and separator line insertion (``<f6> l``) now get comment style from
