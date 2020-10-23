@@ -126,6 +126,7 @@
 ;;
 ;; File Path processing
 ;; - `pel-parent-dirpath'
+;; - `pel-expand-url-file-name'
 
 ;; -----------------------------------------------------------------------------
 ;;; Dependencies:
@@ -903,6 +904,22 @@ For example:
 
 which shows that the presence of a trailing slash has no impact."
   (file-name-directory (directory-file-name pathname)))
+
+
+(defun pel-expand-url-file-name (url)
+  "Expand and return file URL.
+Return other URL untouched.
+
+Example:
+
+   ELISP> (pel-expand-url-file-name \"file://~/docs/HyperSpec/\")
+   \"file:///Users/roup/docs/HyperSpec/\"
+   ELISP> (pel-expand-url-file-name \"http://www.lispworks.com\")
+   \"http://www.lispworks.com\"
+   ELISP>"
+  (if (eq 0 (string-match "file://" url))
+      (concat "file://" (expand-file-name (substring url 7)))
+    url))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel--base)
