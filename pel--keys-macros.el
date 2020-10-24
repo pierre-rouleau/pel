@@ -1,8 +1,8 @@
-;;; pel--keys-macros.el --- Key binding macros used by pel_keys.  -*- lexical-binding: t; -*-
+;;; pel--keys-macros.el --- Key binding macros.  -*- lexical-binding: t; -*-
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-10-23 11:35:23, updated by Pierre Rouleau>
+;; Time-stamp: <2020-10-24 16:35:55, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -22,7 +22,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; ----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; The functions and macros defined in this file are used by pel_keys.el to
@@ -47,7 +47,7 @@
 ;;         - `pel--group-isin-libfile'
 ;;         - `pel--isa-custom-group-p'
 
-;;; ----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 ;;
@@ -56,198 +56,200 @@
 (eval-when-compile
   (require 'cl-lib))    ; use: cl-dolist and cl-return
 
-;;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; PEL Key Sequences Prefix and their F1, F2 and F3 topics
 ;; -------------------------------------------------------
 
 (defconst pel--prefix-to-topic-alist
-  ;; key sequence     F1: Help PDF fname       F2: PEL custom group    F3: lib custom group
-  ;; ------------     ------------------       --------------------    -------------------
+  ;; key sequence    F1: Help PDF fname F2: PEL custom group F3: lib custom
+  ;;                                                             group
+  ;; ------------    ------------------ -------------------- -----------------
   `(
-    ([f6]             "inserting-text"         pel-pkg-for-insertions)
-    ([f7 f8]          "pl-applescript"         pel-pkg-for-applescript)
-    ([f8]             "projectile"             pel-pkg-for-project-mng projectile)
-    ([f11]            "-pel-key-maps"          nil)
-    ([f11 f10]        "menus"                  nil                     menu)       ;f3
-    ([f11 f2]         "customize"              nil                     customize)  ;f3
-    ([f11 f8]         "projectile"             pel-pkg-for-project-mng projectile)
-    ([f11 ?$]         "spell-checking"         pel-pkg-for-spelling    (ispell     ;f3
-                                                                        flyspell))
-    ([f11 ?']         "bookmarks"              pel-pkg-for-bookmark    (bookmark   ;f3
-                                                                        bm))
-    ([f11 ?,]         "auto-completion"        pel-pkg-for-expand      (auto-complete ; f2 f3
-                                                                        company
-                                                                        hippie-expand)) ; helm, ivy, ??? no prefix for those
-    ([f11 ?-]         "cut-paste"              pel-pkg-for-cut-and-paste
-                                                                        (cua-mode
-                                                                        killing
-                                                                        popup-kill-ring))
-    ([f11 ?.]         "marking"                nil)
-    ([f11 ?=]         "cut-paste"              nil)
-    ([f11 59]         ("comments"
-                       "hide-show-code")       pel-pkg-for-programming (comment      ; f2 f3
-                                                                        hideshow))
-    ([f11 ??]         "help")
-    ([f11 9]          "indentation"            nil                     indent) ;f3
-    ([f11 134217843]  "speedbar"               pel-pkg-for-speedbar    speedbar) ; 2 different possible key sequences.
-    ([f11 27 ?s]      "speedbar"               pel-pkg-for-speedbar    speedbar)
-    ([f11 32 ?C]      "pl-c++"                 pel-pkg-for-c++         (cpp
-                                                                        c-macro))
-    ([f11 32 ?C ?#]   "pl-c++"                 pel-pkg-for-c++         hide-ifdef)
-    ([f11 32 ?D]      "pl-d"                   pel-pkg-for-d           d-mode)
-    ([f11 32 ?L]      "pl-common-lisp"         pel-pkg-for-clisp       (lisp
-                                                                        lispy
-                                                                        slime))
-    ([f11 32 ?R]      "pl-rexx"                pel-pkg-for-rexx)
-    ([f11 32 ?a]      "pl-applescript"         pel-pkg-for-applescript apples)
-    ([f11 32 ?c]      "pl-c"                   pel-pkg-for-c           (c
-                                                                        c-macro))
-    ([f11 32 ?c ?#]   "pl-c"                   pel-pkg-for-c           hide-ifdef)
-    ([f11 32 ?e]      "pl-erlang"              pel-pkg-for-erlang      (erlang
-                                                                        erldoc
-                                                                        edts
-                                                                        auto-highlight-symbol))
-    ([f11 32 ?f]      "pl-forth"               pel-pkg-for-forth)
-    ([f11 32 ?g]      "graphviz-dot"           pel-pkg-for-graphviz-dot graphviz)
-    ([f11 32 ?j]      "pl-julia"               pel-pkg-for-julia       (julia
-                                                                        julia-mode
-                                                                        julia-snail))
-    ([f11 32 ?l]      "pl-emacs-lisp"          pel-pkg-for-elisp       (lisp
-                                                                        elint
-                                                                        lispy))
-    ([f11 32 ?l ??]   "pl-emacs-lisp"          pel-pkg-for-all-languages (eldoc
-                                                                        eldoc-box))
+    ([f6]            "inserting-text"   pel-pkg-for-insertions)
+    ([f7 f8]         "pl-applescript"   pel-pkg-for-applescript)
+    ([f8]            "projectile"       pel-pkg-for-project-mng projectile)
+    ([f11]           "-pel-key-maps"    nil)
+    ([f11 f10]       "menus"            nil                     menu)
+    ([f11 f2]        "customize"        nil                     customize)
+    ([f11 f8]        "projectile"       pel-pkg-for-project-mng projectile)
+    ([f11 ?$]        "spell-checking"   pel-pkg-for-spelling    (ispell
+                                                                 flyspell))
+    ([f11 ?']        "bookmarks"        pel-pkg-for-bookmark    (bookmark
+                                                                 bm))
+    ([f11 ?,]        "auto-completion"  pel-pkg-for-expand   (auto-complete
+                                                              company
+                                                              hippie-expand))
+    ([f11 ?-]        "cut-paste"  pel-pkg-for-cut-and-paste (cua-mode
+                                                             killing
+                                                             popup-kill-ring))
+    ([f11 ?.]        "marking"          nil)
+    ([f11 ?=]        "cut-paste"        nil)
+    ([f11 59]        ("comments"
+                      "hide-show-code") pel-pkg-for-programming (comment
+                                                                 hideshow))
+    ([f11 ??]        "help")
+    ([f11 9]         "indentation"      nil                     indent)
+    ;; 2 different possible key sequences for speedbar
+    ([f11 134217843] "speedbar"         pel-pkg-for-speedbar    speedbar)
+    ([f11 27 ?s]     "speedbar"         pel-pkg-for-speedbar    speedbar)
+    ([f11 32 ?C]     "pl-c++"           pel-pkg-for-c++         (cpp
+                                                                 c-macro))
+    ([f11 32 ?C ?#]  "pl-c++"           pel-pkg-for-c++         hide-ifdef)
+    ([f11 32 ?D]     "pl-d"             pel-pkg-for-d           d-mode)
+    ([f11 32 ?L]     "pl-common-lisp"   pel-pkg-for-clisp       (lisp
+                                                                 lispy
+                                                                 slime))
+    ([f11 32 ?R]     "pl-rexx"          pel-pkg-for-rexx)
+    ([f11 32 ?a]     "pl-applescript"   pel-pkg-for-applescript apples)
+    ([f11 32 ?c]     "pl-c"             pel-pkg-for-c           (c
+                                                                 c-macro))
+    ([f11 32 ?c ?#]  "pl-c"             pel-pkg-for-c           hide-ifdef)
+    ([f11 32 ?e]     "pl-erlang"   pel-pkg-for-erlang  (erlang
+                                                        erldoc
+                                                        edts
+                                                        auto-highlight-symbol))
+    ([f11 32 ?f]     "pl-forth"         pel-pkg-for-forth)
+    ([f11 32 ?g]     "graphviz-dot"     pel-pkg-for-graphviz-dot graphviz)
+    ([f11 32 ?j]     "pl-julia"         pel-pkg-for-julia       (julia
+                                                                 julia-mode
+                                                                 julia-snail))
+    ([f11 32 ?l]     "pl-emacs-lisp"    pel-pkg-for-elisp       (lisp
+                                                                 elint
+                                                                 lispy))
+    ([f11 32 ?l ??]  "pl-emacs-lisp"    pel-pkg-for-all-languages (eldoc
+                                                                   eldoc-box))
 
-    ([f11 32 ?p]      "pl-python"              pel-pkg-for-python      (python
-                                                                        python-flymake))
-    ([f11 32 ?r]      "mode-rst"               pel-pkg-for-reST        rst)
-    ([f11 32 ?u]      "plantuml"               pel-pkg-for-plantuml    plantuml-mode)
-    ([f11 32 ?x]      "pl-elixir"              pel-pkg-for-elixir      elixir)
+    ([f11 32 ?p]     "pl-python"    pel-pkg-for-python      (python
+                                                             python-flymake))
+    ([f11 32 ?r]     "mode-rst"         pel-pkg-for-reST        rst)
+    ([f11 32 ?u]     "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
+    ([f11 32 ?x]     "pl-elixir"        pel-pkg-for-elixir      elixir)
     ;; ([f11 ?C]
-    ([f11 ?D]         "drawing"                pel-pkg-for-drawing-markup)
-    ([f11 ?D ?u]      "plantuml"               pel-pkg-for-plantuml    plantuml-mode)
-    ([f11 ?F]         "frames"                 pel-pkg-for-frame       frames)
-    ([f11 ?S]         "sessions"               pel-pkg-for-sessions    desktop)
-    ;;  ([f11 ?S ?R]
-    ([f11 ?X]         "xref"                   pel-pkg-for-xref        (cscope
-                                                                        dumb-jump
-                                                                        eopengrok
-                                                                        etags
-                                                                        ggtags
-                                                                        gxref
-                                                                        helm
-                                                                        helm-cscope
-                                                                        helm-xref
-                                                                        ivy
-                                                                        ivy-xref
-                                                                        projectile
-                                                                        speedbar
-                                                                        xref))
-    ([f11 ?_]         "inserting-text")
-    ([f11 ?a]         "abbreviations"          pel-pkg-for-expand      abbrev)
-    ([f11 ?b]         "buffers"                pel-pkg-for-buffer      (Buffer-menu
-                                                                        ibuffer
-                                                                        minibuffer
-                                                                        hexl
-                                                                        nhexl))
-    ;;  ([f11 ?b ?I]
-    ([f11 ?b ?h]      "highlight"              (pel-pkg-for-highlight
-                                                pel-pkg-for-parens)     ,(let ((items
-                                                                                (list
-                                                                                 'auto-highlight-symbol
-                                                                                 'iedit
-                                                                                 'rainbow-delimiters
-                                                                                 'vline)))
-                                                                           (if (version< emacs-version "27.1")
-                                                                               (append items (list 'fill-column-indicator))
-                                                                             items)))
-    ([f11 ?c]         "counting"               nil)
-    ([f11 ?d]         "diff-merge"             pel-pkg-for-ztree)
-    ([f11 ?d ?e]      "diff-merge"             nil                     ediff)
-    ([f11 ?f ?v]      "file-variables"         nil)
-    ([dired]          "mode-dired"             pel-pkg-for-dired       dired)
-    ([f11 ?f]         ("file-mngt"
-                       "mode-dired"
-                       "web")                 (pel-pkg-for-filemng
-                                               pel-kg-for-dired)       (files
-                                                                        dired
-                                                                        recentf))
+    ([f11 ?D]        "drawing"          pel-pkg-for-drawing-markup)
+    ([f11 ?D ?u]     "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
+    ([f11 ?F]        "frames"           pel-pkg-for-frame       frames)
+    ([f11 ?S]        "sessions"         pel-pkg-for-sessions    desktop)
+    ;; ([f11 ?S ?R]
+    ([f11 ?X]        "xref"             pel-pkg-for-xref        (cscope
+                                                                 dumb-jump
+                                                                 eopengrok
+                                                                 etags
+                                                                 ggtags
+                                                                 gxref
+                                                                 helm
+                                                                 helm-cscope
+                                                                 helm-xref
+                                                                 ivy
+                                                                 ivy-xref
+                                                                 projectile
+                                                                 speedbar
+                                                                 xref))
+    ([f11 ?_]        "inserting-text")
+    ([f11 ?a]        "abbreviations"    pel-pkg-for-expand      abbrev)
+    ([f11 ?b]        "buffers"          pel-pkg-for-buffer      (Buffer-menu
+                                                                 ibuffer
+                                                                 minibuffer
+                                                                 hexl
+                                                                 nhexl))
+    ;; ([f11 ?b ?I]
+    ([f11 ?b ?h]
+     "highlight"
+     (pel-pkg-for-highlight
+      pel-pkg-for-parens)  ,(let ((items
+                                   (list
+                                    'auto-highlight-symbol
+                                    'iedit
+                                    'rainbow-delimiters
+                                    'vline)))
+                              (if (version< emacs-version "27.1")
+                                  (append items (list 'fill-column-indicator))
+                                items)))
+
+    ([f11 ?c]        "counting"         nil)
+    ([f11 ?d]        "diff-merge"       pel-pkg-for-ztree)
+    ([f11 ?d ?e]     "diff-merge"       nil                     ediff)
+    ([f11 ?f ?v]     "file-variables"   nil)
+    ([dired]         "mode-dired"       pel-pkg-for-dired       dired)
+    ([f11 ?f]        ("file-mngt"
+                      "mode-dired"
+                      "web")            (pel-pkg-for-filemng
+                                         pel-kg-for-dired)     (files
+                                                                dired
+                                                                recentf))
 
     ;; no PDF for browse yet, the info is  in file-mngt.
-    ([f11 ?B]         "file-mngt"             (pel-pkg-for-browse
-                                               pel-pkg-for-ztree)     (treemacs
-                                                                       Ztree))
-    ([f11 ?B ?N]      "file-mngt"             pel-pkg-for-neotree      neotree)
-
-    ([f11 ?f ?a]      "file-mngt"              nil                     ffap)
-    ([f11 ?f ?r]      "file-mngt"              nil                     auto-revert)
-    ([f11 ?f ?v]      "file-variables")
-    ([f11 ?f ?v ?D]   "file-variables")
-    ([f11 ?g]         "grep"                   pel-pkg-for-grep        (grep
-                                                                        ag
-                                                                        rg
-                                                                        ripgrep
-                                                                        wgrep))
-    ([f11 ?i]         "inserting-text"         pel-pkg-for-insertions  (lice
-                                                                        smart-dash
-                                                                        tempo
-                                                                        time-stamp
-                                                                        yanippet))
-    ([f11 ?k]         "keyboard-macros"        pel-pkg-for-kbmacro     (kmacro
-                                                                        centimacro))
-    ([f11 ?k ?e]      "keyboard-macros"        pel-pkg-for-kbmacro     emacros)
-    ([f11 ?k ?l]      "keyboard-macros"        pel-pkg-for-kbmacro     elmacro)
-    ([f11 ?l]         "display-lines"          nil                     visual-line)
-    ([f11 ?m]         "cursor"                 pel-pkg-for-cursor      (cursor
-                                                                        multiple-cursors)) ; vcursor??
-    ([f11 ?o]         "sorting"                nil)
-    ([f11 ?r]         "registers"              nil)
-    ([f11 ?s]         "search-replace"         pel-pkg-for-search      (isearch
-                                                                        anzu
-                                                                        swiper
-                                                                        iedit))
-    ([f11 ?s ?m]      "search-replace"         nil)
-    ([f11 ?s ?w]      "search-replace"         nil)
-    ([f11 ?s ?x]      "search-replace"         pel-pkg-for-regexp      (rxt  ; for pcre
-                                                                        re-builder
-                                                                        visual-regexp))
-    ([f11 ?t]         ("case-conversion"
-                       "input-method"
-                       "text-modes")           nil)
-    ([f11 ?t ?a]      "align"                  pel-pkg-for-align       align)
-    ([f11 ?t ?e]      "enriched-text"          nil                     enriched)
-    ([f11 ?t ?f]      "filling-justification"  nil                     fill)
-    ([f11 ?t ?j]      "filling-justification"  nil                     fill)
-    ([f11 ?t ?m]      "text-modes"             pel-pkg-for-text-mode)
-    ([f11 ?t ?t]      "transpose"              nil)
-    ([f11 ?t ?w]      "whitespaces"            nil                     whitespace)
-    ([f11 ?u]         "undo-redo-repeat"       pel-pkg-for-undo        (undo
-                                                                        undo-tree))
-    ([f11 ?v]         "vcs-mercurial"          pel-pkg-for-vcs         (vc
-                                                                        vc-hg
-                                                                        vc-git
-                                                                        magit
-                                                                        monky))
-    ([f11 ?w]         "windows"                pel-pkg-for-window      (windows
-                                                                        ace-window
-                                                                        ace-window-display
-                                                                        winner
-                                                                        windmove))
-    ([f11 ?w ?d]      "windows"                pel-pkg-for-window)
-    ([f11 ?w ?s]      "windows"                pel-pkg-for-window)
-    ([f11 ?x]         "shells"                 pel-pkg-for-shells      (term
-                                                                        terminals
-                                                                        vterm))
-    ([f11 ?y]         "inserting-text"         pel-pkg-for-insertions  (yasnippet
-                                                                        yasnippet-snippets
-                                                                        yas-minor))
-    ([f11 ?|]         "scrolling"              pel-pkg-for-scrolling   (follow
-                                                                        smooth-scrolling))
-    )
+    ([f11 ?B]        "file-mngt"        (pel-pkg-for-browse
+                                         pel-pkg-for-ztree)     (treemacs
+                                                                 Ztree))
+    ([f11 ?B ?N]     "file-mngt"        pel-pkg-for-neotree      neotree)
+    ([f11 ?f ?a]     "file-mngt"        nil                      ffap)
+    ([f11 ?f ?r]     "file-mngt"        nil                      auto-revert)
+    ([f11 ?f ?v]     "file-variables")
+    ([f11 ?f ?v ?D]  "file-variables")
+    ([f11 ?g]        "grep"             pel-pkg-for-grep        (grep
+                                                                 ag
+                                                                 rg
+                                                                 ripgrep
+                                                                 wgrep))
+    ([f11 ?i]        "inserting-text"   pel-pkg-for-insertions  (lice
+                                                                 smart-dash
+                                                                 tempo
+                                                                 time-stamp
+                                                                 yanippet))
+    ([f11 ?k]        "keyboard-macros"  pel-pkg-for-kbmacro     (kmacro
+                                                                 centimacro))
+    ([f11 ?k ?e]     "keyboard-macros"  pel-pkg-for-kbmacro     emacros)
+    ([f11 ?k ?l]     "keyboard-macros"  pel-pkg-for-kbmacro     elmacro)
+    ([f11 ?l]        "display-lines"    nil                     visual-line)
+    ([f11 ?m]        "cursor"     pel-pkg-for-cursor      (cursor
+                                                           multiple-cursors))
+    ([f11 ?o]        "sorting"          nil)
+    ([f11 ?r]        "registers"        nil)
+    ([f11 ?s]        "search-replace"   pel-pkg-for-search      (isearch
+                                                                 anzu
+                                                                 swiper
+                                                                 iedit))
+    ([f11 ?s ?m]     "search-replace"   nil)
+    ([f11 ?s ?w]     "search-replace"   nil)
+    ([f11 ?s ?x]     "search-replace"   pel-pkg-for-regexp    (rxt ; for pcre
+                                                               re-builder
+                                                               visual-regexp))
+    ([f11 ?t]        ("case-conversion"
+                      "input-method"
+                      "text-modes")     nil)
+    ([f11 ?t ?a]     "align"            pel-pkg-for-align       align)
+    ([f11 ?t ?e]     "enriched-text"    nil                     enriched)
+    ([f11 ?t ?f]     "filling-justification" nil               fill)
+    ([f11 ?t ?j]     "filling-justification" nil               fill)
+    ([f11 ?t ?m]     "text-modes"       pel-pkg-for-text-mode)
+    ([f11 ?t ?t]     "transpose"        nil)
+    ([f11 ?t ?w]     "whitespaces"      nil                     whitespace)
+    ([f11 ?u]        "undo-redo-repeat" pel-pkg-for-undo        (undo
+                                                                 undo-tree))
+    ([f11 ?v]        "vcs-mercurial"    pel-pkg-for-vcs         (vc
+                                                                 vc-hg
+                                                                 vc-git
+                                                                 magit
+                                                                 monky))
+    ([f11 ?w]        "windows"        pel-pkg-for-window  (windows
+                                                           ace-window
+                                                           ace-window-display
+                                                           winner
+                                                           windmove))
+    ([f11 ?w ?d]     "windows"          pel-pkg-for-window)
+    ([f11 ?w ?s]     "windows"          pel-pkg-for-window)
+    ([f11 ?x]        "shells"           pel-pkg-for-shells      (term
+                                                                 terminals
+                                                                 vterm))
+    ([f11 ?y]  "inserting-text"   pel-pkg-for-insertions  (yasnippet
+                                                           yasnippet-snippets
+                                                           yas-minor))
+    ([f11 ?|]        "scrolling"  pel-pkg-for-scrolling   (follow
+                                                           smooth-scrolling)))
   "Map from key prefix array to topic string.
 The topic string correspond to the base name of the PDF file
 stored inside the doc/pdf directory.")
@@ -325,9 +327,11 @@ Check the key sequences.  Expand the f12 key sequence into
 the full f11 key sequence.  Report invalid key sequence."
   (let ((prefix-key (elt keyseq 0)))
     (unless (memq prefix-key '(f6 f7 f8 f11 f12 M-f12))
-      (user-error "This command can only be invoked via F6, F7, F8, F11, F12 or M-F12 prefix.\n\
+      (user-error "This command can only be invoked via \
+F6, F7, F8, F11, F12 or M-F12 prefix.\n\
  Not %s in %s" prefix-key keyseq))
-    ;; Replace M-f12 by f12: all other logic has no knowledge of M-f12 bindings.
+    ;; Replace M-f12 by f12:
+    ;;  all other logic has no knowledge of M-f12 bindings.
     (when (eq prefix-key 'M-f12)
       (setq prefix-key 'f12)
       (aset keyseq 0 'f12))
@@ -570,7 +574,8 @@ This command should be bound to a PEL key sequence that ends with f3."
          (kte    (pel--kte-for keyseq)) ; pel--prefix-to-topic-alist entry
          (groups (pel--kte-lib-groups kte)))
     (unless groups
-      (error "No library customization group entry in pel--prefix-to-topic-alist for %s\n\
+      (error "No library customization group entry in \
+pel--prefix-to-topic-alist for %s\n\
 There should be no key binding!" keyseq))
     (if (symbolp groups)
         (pel--customize-group groups other-window)
@@ -583,7 +588,7 @@ There should be no key binding!" keyseq))
            other-window)
        (error "Failed loading pel-prompt!")))))
 
-;; -----------------------------------------------------------------------------
+;;----------------------------------------------------------------------------
 
 (defun pel--customize-groups (pel-group group-list other-window)
   "Customize one of the group in PEL-GROUP or groups named in the GROUP-LIST.
@@ -632,7 +637,7 @@ Pass empty string unchanged."
             str)))
 
 (defmacro pel--cfg (pel-group prefix key)
-  "Define a function and key binding to customize specified PEL-GROUP mapped to PREFIX KEY."
+  "Define function & key binding to customize PEL-GROUP mapped to PREFIX KEY."
   (let ((fct (intern (format "pel-cfg%s" (pel-prefixed pel-group "-"))))
         (group (intern (format "pel%s" (pel-prefixed pel-group "-"))))
         (docstring (format "Customize PEL%s support.\n\
@@ -762,7 +767,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   ;; don't use the current window
   (find-file (pel-pdf-directory)))
 
-;;; ----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 (provide 'pel--keys-macros)
 
 ;;; pel--keys-macros.el ends here
