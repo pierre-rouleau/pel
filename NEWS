@@ -202,6 +202,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   PEL.
 - Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/windows.pdf][⅀ Windows]] now describes the new Esc and <f1> cursor keys to manage
   and navigate across windows.
+- Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/undo-redo-repeat.pdf][⅀ Undo/Redo/Repeat/Arg]] better describes how to repeat commands.
 - Updates to the Buffer, CUA, Cut & Paste, Marking, Undo PDF reference tables.
 ** Use Manual Additions and Improvements:
 - Added instructions on how to install
