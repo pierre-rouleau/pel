@@ -113,7 +113,11 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - Refactoring: Moved cc-mode utilities from pel_keys.el to the new pel-cc.el
     file.
   - New: *pel-cc-mode-info* can now be used from any major mode where it will
-    display info about non-loaded symbols and features.
+    display info about non-loaded symbols and features. It also displays more
+    information to increase awareness of the active setting:
+    - the names of styles for current mode in c-default-style in order of
+      presence in the list,
+    - the active CC mode style.
 - Update: *Programming Language Support -- C*
   - New: ``<f12> <f12> d`` insert a C pre-processor #define statement.
   - New: ``<f12> <f12> i`` insert a C pre-processor #include statement for
