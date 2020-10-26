@@ -995,7 +995,9 @@ Then save your changes."
 (define-key pel: (kbd      "RET")         #'auto-fill-mode)
 (define-key pel: (kbd      "DEL")          'c-hungry-delete-backwards)
 (define-key pel: (kbd      "<deletechar>") 'c-hungry-delete-forward)
+(define-key pel: (kbd      "M-f")          'pel-forward-syntaxchange-start)
 (define-key pel: (kbd      "<M-right>")    'pel-forward-syntaxchange-start)
+(define-key pel: (kbd      "M-b")          'pel-backward-syntaxchange-start)
 (define-key pel: (kbd      "<M-left>")     'pel-backward-syntaxchange-start)
 (define-key pel: (kbd      "0")           #'hl-line-mode)
 
