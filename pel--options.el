@@ -207,7 +207,7 @@ store them inside a directory and identify that directory here."
   :group 'pel-package-use
   :link `(url-link :tag "Align PDF" ,(pel-pdf-file-url "align")))
 
-(defcustom pel-modes-activating-align-on-M-RET nil
+(defcustom pel-modes-activating-align-on-return nil
   "List of major modes that automatically activate alignment on M-RET.
 For these modes the buffer local variable `pel-newline-does-align' is
 automatically set to t.  This activates the automatic alignment of contiguous
@@ -1716,6 +1716,32 @@ via the ``<f12> ? e`` sequence."
   :link '(url-link :tag "c-eldoc @ GitHub"
                    "https://github.com/pierre-rouleau/c-eldoc"))
 
+(defcustom  pel-c-newline-mode 'context-newline
+  "Set default newline mode for c-mode buffers.
+
+This may be one of the following values:
+
+- context-newline : the default : the RET key is bound to
+  the function `c-context-line-break' with the extra ability to
+  repeat its execution with an argument.
+- newline-and-indent: RET uses the function `newline' passing ARG
+  and t for its arguments to insert newline and indent.
+- just-newline-no-indent: RET uses the function
+  `electric-indent-just-newline` with the specified argument (if
+  any).  This only insert a newline; it does not indent."
+  :group 'pel-pkg-for-c
+  :type '(choice
+          (const :tag "context-newline: use c-context-line-break.\n\
+Does all what newline does plus more."
+                 context-newline)
+          (const :tag "newline-and-indent: use newline. This inserts\n\
+a newline and then indent the new line."
+                 newline-and-indent)
+          (const :tag "just-newline-no-indent: use\
+ electric-indent-just-newline.\n\
+Does not indent."
+                 just-newline-no-indent)))
+
 (defcustom pel-c-bracket-style "linux"
   "Set the bracket style for the C programming language.
 PEL stores this value associated with the `c-mode' into the
@@ -2020,6 +2046,32 @@ potentially except the user defined ones, which could use that variable too."
   :group 'pel-pkg-for-cc
   :link `(url-link :tag "C++ PDF" ,(pel-pdf-file-url "pl-c++")))
 
+(defcustom  pel-c++-newline-mode 'context-newline
+  "Set default newline mode for c++-mode buffers.
+
+This may be one of the following values:
+
+- context-newline : the default : the RET key is bound to
+  the function `c-context-line-break' with the extra ability to
+  repeat its execution with an argument.
+- newline-and-indent: RET uses the function `newline' passing ARG
+  and t for its arguments to insert newline and indent.
+- just-newline-no-indent: RET uses the function
+  `electric-indent-just-newline` with the specified argument (if
+  any).  This only insert a newline; it does not indent."
+  :group 'pel-pkg-for-c++
+  :type '(choice
+          (const :tag "context-newline: use c-context-line-break.\n\
+Does all what newline does plus more."
+                 context-newline)
+          (const :tag "newline-and-indent: use newline. This inserts\n\
+a newline and then indent the new line."
+                 newline-and-indent)
+          (const :tag "just-newline-no-indent: use\
+ electric-indent-just-newline.\n\
+Does not indent."
+                 just-newline-no-indent)))
+
 (defcustom pel-c++-bracket-style "stroustrup"
   "Set the bracket style for the C++ programming language.
 PEL stores this value associated with the `c-mode' into the
@@ -2088,6 +2140,32 @@ Values in the [2, 8] range are accepted."
   :safe #'booleanp)
 
 ;-- D Style
+
+(defcustom  pel-d-newline-mode 'context-newline
+  "Set default newline mode for d-mode buffers.
+
+This may be one of the following values:
+
+- context-newline : the default : the RET key is bound to
+  the function `c-context-line-break' with the extra ability to
+  repeat its execution with an argument.
+- newline-and-indent: RET uses the function `newline' passing ARG
+  and t for its arguments to insert newline and indent.
+- just-newline-no-indent: RET uses the function
+  `electric-indent-just-newline` with the specified argument (if
+  any).  This only insert a newline; it does not indent."
+  :group 'pel-pkg-for-d
+  :type '(choice
+          (const :tag "context-newline: use c-context-line-break.\n\
+Does all what newline does plus more."
+                 context-newline)
+          (const :tag "newline-and-indent: use newline. This inserts\n\
+a newline and then indent the new line."
+                 newline-and-indent)
+          (const :tag "just-newline-no-indent: use\
+ electric-indent-just-newline.\n\
+Does not indent."
+                 just-newline-no-indent)))
 
 (defcustom pel-d-indentation 4
   "Number of columns for D source code indentation.

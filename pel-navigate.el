@@ -30,13 +30,6 @@
 ;;  - `pel-beginning-of-line' is meant to replace `beginning-of-line' as it does
 ;;    the same and extends it: if point is already at the beginning of the line
 ;;    then it moves it to the first non-whitespace character.
-;;  - `pel-newline-and-indent-below' is useful as a variant of the return key.
-;;    If buffer local variable `pel-newline-does-align' is set to t, the command
-;;    also aligns text based on the previous contiguous lines and then inserts
-;;    new line and indents.  If the variable is nil then it only inserts a new line
-;;    and indent. Use the function `pel-toggle-newline-indent-align' to toggle
-;;    the value of the variable and `pel-show-if-newline-aligns' to show its
-;;    current state.
 ;;  - `pel-find-thing-at-point' provides a search capability without the need fo
 ;;    a tag database but it is limited in what it can find.  It's a poor man
 ;;    cross reference.
@@ -107,42 +100,6 @@ By default N is 1.  If N is larger move to the beginning of N-1 line forward."
 ;; Insert Lines
 ;; ------------
 
-(defvar-local pel-newline-does-align nil
-  "When set to t, the function `pel-newline-and-indent-below'
-executes the function `align-newline-and-indent' which aligns
-the current line with the above one(s) before inserting the new line and
-indenting.
-Use the function `pel-toggle-newline-indent-align' to change this value.")
-
-;;-pel-autoload
-(defun pel-newline-and-indent-below ()
-  "Insert an indented line just below current line.
-If variable `pel-newline-does-align' is t, also align
-the statements on the current line with the above contiguous lines."
-  (interactive)
-  (move-end-of-line nil)
-  (if (and pel-newline-does-align
-           (require 'align nil :noerror)
-           (fboundp 'align-newline-and-indent))
-      (align-newline-and-indent)
-  (newline-and-indent)))
-
-;; pel-autoload
-(defun pel-show-if-newline-aligns ()
-  "Display the behaviour of M-RET in the current buffer."
-  (interactive)
-  (message (pel-symbol-text 'pel-newline-does-align
-                            "on : M-RET aligns, adds newline and indents."
-                            "off: M-RET adds newline and indents.")))
-
-;; pel-autoload
-(defun pel-toggle-newline-indent-align ()
-  "Toggle variable `pel-newline-does-align'.
-This toggles the way function `pel-newline-and-indent-below'
-operates."
-  (interactive)
-  (pel-toggle 'pel-newline-does-align)
-  (pel-show-if-newline-aligns))
 
 ;; -----------------------------------------------------------------------------
 ;; Navigate across code using symbols at point

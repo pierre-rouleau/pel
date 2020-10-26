@@ -65,6 +65,11 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (require 'pel--options)
 
+  (pel-autoload "pel-align" for:
+    pel-newline-and-indent-below
+    pel-show-if-newline-aligns
+    pel-toggle-newline-indent-align)
+
   (when (eq system-type 'darwin)
     (pel-autoload "pel-applescript" for:
       pel-pel-say-word
@@ -92,6 +97,7 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-bookmark" for: pel-bookmark-in-current-file-p)
 
   (pel-autoload "pel-cc" for
+    pel-cc-newline
     pel-cc-mode-info)
 
   (pel-autoload "pel-ccp" for:
@@ -283,9 +289,6 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-navigate" for:
     pel-beginning-of-line
     pel-end-of-line
-    pel-newline-and-indent-below
-    pel-show-if-newline-aligns
-    pel-toggle-newline-indent-align
     pel-find-thing-at-point
     pel-show-char-syntax
     pel-forward-token-start

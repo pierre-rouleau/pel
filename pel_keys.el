@@ -1497,7 +1497,7 @@ Then save your changes."
 ;; Utility function for mapping CC Mode keys
 
 (defun pel--map-cc-for (prefix &optional c-preproc-prefix)
-  "Map in the PEL keys for CC Mode in the keymap specified by PREFIX.
+  "Map in the PEL keys for CC Mode in the global keymap specified by PREFIX.
 If C-PREPROC-PREFIX also bind the keys for C preprocessor related commands and
 sub-keys inside that prefix.
 If a key must be assigned to something different for the programming language
@@ -1507,12 +1507,13 @@ just bind it again after this call."
   (define-key prefix (kbd "M-s")   'c-set-style) ; interactively select style
   (define-key prefix (kbd "M-;")   'c-toggle-comment-style)
   (define-key prefix (kbd "M-e")   'c-toggle-electric-state)
+  (define-key prefix (kbd "RET")   'pel-cc-change-newline-mode)
   (define-key prefix (kbd "M-RET") 'c-toggle-auto-newline)
   (define-key prefix (kbd "M-DEL") 'c-toggle-hungry-state)
   (define-key prefix (kbd "M-b")  #'subword-mode)
   (define-key prefix (kbd "M-p")  #'superword-mode)
   (define-key prefix (kbd "M-i")   'c-toggle-syntactic-indentation)
-  (define-key prefix (kbd "RET")   'c-context-open-line)
+  (define-key prefix (kbd "C-o")   'open-line)
   (define-key prefix      "F"      'c-fill-paragraph)
   (define-key prefix      "f"      'c-display-defun-name)
   ;;
@@ -1537,8 +1538,8 @@ just bind it again after this call."
     (define-key c-preproc-prefix "C" 'hif-clear-all-ifdef-defined)
     (define-key c-preproc-prefix "e" 'hif-evaluate-macro)))
 
-(defun pel--set-cc-style (mode bracket-style)
-  "Set the MODE BRACKET-STYLE and TAB-SIZE for the current mode.
+(defun pel--set-cc-style (mode bracket-style newline-mode)
+  "Set the BRACKET-STYLE and NEWLINE-MODE for MODE.
 MODE must be a symbol."
   (let* ((used-style  (assoc mode c-default-style))
          (force-style (not
@@ -1546,7 +1547,14 @@ MODE must be a symbol."
                             (string-equal (cdr used-style) bracket-style)))))
     (when force-style
       (add-to-list 'c-default-style (cons mode bracket-style))
-      (c-set-style bracket-style :dont-override-default))))
+      (c-set-style bracket-style :dont-override-default)))
+  ;; Activate CC mode specific local bindings
+  (pel-require 'pel-cc)
+  (if (boundp 'pel-cc-newline-mode)
+      (setq pel-cc-newline-mode newline-mode)
+    (error "Failed loading pel-align!"))
+  (local-set-key     (kbd "C-o")   'c-context-open-line)
+  (local-set-key     (kbd "RET")   'pel-cc-newline))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC c`` : C programming utilities
@@ -1564,7 +1572,7 @@ MODE must be a symbol."
 (defun pel--setenv-for-c ()
   "Set the environment for editing C files."
   ;; Configure some of the special CC minor modes
-  (pel--set-cc-style 'c-mode pel-c-bracket-style)
+  (pel--set-cc-style 'c-mode pel-c-bracket-style pel-c-newline-mode)
 
   ;; Set variables always available in Emacs
   (setq tab-width          pel-c-tab-width
@@ -1619,7 +1627,7 @@ MODE must be a symbol."
   ;; (and therefore not known at compilation when CC Mode not loaded).
   (pel-setq c-basic-offset pel-c++-indentation)
   ;; Configure some of the special CC minor modes
-  (pel--set-cc-style 'c++-mode pel-c++-bracket-style)
+  (pel--set-cc-style 'c++-mode pel-c++-bracket-style pel-c++-newline-mode)
   (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
   ;; Configure M-( to put parentheses after a function name.
   (set (make-local-variable 'parens-require-spaces) nil))
@@ -1717,7 +1725,7 @@ This is meant to be used in the d-mode hook lambda."
     ;;    by the D/Phobos library guideline, see the following document:
     ;;    URL https://dlang.org/dstyle.html#phobos_brackets .
     ;; 2) Activate the indentation, using the PEL user option via a hook
-    (pel--set-cc-style 'd-mode pel-d-bracket-style)))
+    (pel--set-cc-style 'd-mode pel-d-bracket-style pel-d-newline-mode)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` : Erlang programming
@@ -4160,8 +4168,9 @@ the ones defined from the buffer now."
 (defalias 'ar #'align-regexp)
 
 (pel-add-hook-for
- 'pel-modes-activating-align-on-M-RET
+ 'pel-modes-activating-align-on-return
  (lambda ()
+   (defvar pel-newline-does-align)      ;forward declare
    (setq pel-newline-does-align t)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

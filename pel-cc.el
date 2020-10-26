@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-10-23 18:50:57, updated by Pierre Rouleau>
+;; Time-stamp: <2020-10-25 21:47:35, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -36,6 +36,86 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
+
+(defvar-local pel-cc-newline-mode 'context-newline
+  "Operation mode of the RET key in CC mode.
+One of:
+- context-newline       : use function `c-context-line-break'
+- newline-and-indent    : use function `newline'
+- just-newline-no-indent: use function `electric-indent-just-newline'")
+
+;;-pel-autoload
+(defun pel-cc-newline (&optional n)
+  "Insert a newline and perhaps align.
+
+With argument N repeat N times.
+
+For newline insertion, operate according to the value of the
+variable `pel-cc-newline-mode'.
+
+If the variable `pel-newline-does-align' is t, then perform the
+text alignment done by the function `align'.
+
+For Emacs Lisp code: return value of effective variable
+`pel-cc-newline-mode' used.  The function may use something
+different then expected if the function it should call is not
+loaded. That would only occur if this function is called from a
+mode not fully supported."
+  (interactive "*P")
+  (pel-require 'align)
+  (pel-require 'pel-align)
+  (let ((separate (or (when (boundp 'align-region-separate)
+                        (if (and (symbolp align-region-separate)
+                                 (boundp align-region-separate))
+                            (symbol-value align-region-separate)
+                          align-region-separate))
+		      'entire))
+	(end      (point))
+        (mode-used
+         (cond ((and (eq pel-cc-newline-mode 'context-newline)
+                     (fboundp 'c-context-line-break))
+                (dotimes (_i (prefix-numeric-value n))
+                  (c-context-line-break))
+                'context-newline)
+               ((and (eq pel-cc-newline-mode 'just-newline-no-indent)
+                     (fboundp 'electric-indent-just-newline))
+                (electric-indent-just-newline n)
+                'just-newline-no-indent)
+               (t ; simple.el is always loaded so default to newline
+                (newline n :interactive)
+                'newline))))
+    (when (and (boundp 'pel-newline-does-align)
+               pel-newline-does-align
+               (fboundp 'align-new-section-p)
+               (fboundp 'align))
+      (save-excursion
+        (forward-line -1)
+        (while (not (or (bobp)
+                        (align-new-section-p (point) end separate)))
+          (forward-line -1))
+        (align (point) end)))
+    mode-used))
+
+;;-pel-autoload
+(defun pel-cc-change-newline-mode ()
+  "Change behaviour of function `pel-cc-newline'.
+
+Changes the mode to the next mode with the following order:
++-> context newline -> newline and indent -> just newline no indent ->+
+|----------------------<----------------------------------------------|
+
+Display and return the new value of the mode."
+  (interactive)
+  (prog1
+      (setq pel-cc-newline-mode (cond ((eq pel-cc-newline-mode 'context-newline)
+                                       'newline-and-indent)
+                                      ((eq pel-cc-newline-mode 'newline-and-indent)
+                                       'just-newline-no-indent)
+                                      (t
+                                       'context-newline)))
+    (message "Return key now does: %S" pel-cc-newline-mode)))
+
+;; --
 
 (defun pel-cc-key-electric-p (key)
   "Return non-nil if KEY is electric, nil otherwise."
@@ -80,31 +160,48 @@ return \"void\"."
   (let ((not-avail-msg "not available for this mode"))
     (message
      "%s state:
-- c-default-style     : %s
-- active style        : %s
-- Indent width        : %s
-- Tab width           : %s
-- Indenting with      : %s
+- active style        : %s. c-default-style: %s
+- RET mode            : %S%s
+- Electric characters : %s
+- Auto newline        : %s
+- Tab width           : %s, using %s
+- Indent width        : %s%s
+- Syntactic indent    : %s
 - c-indentation-style : %s
 - PEL Bracket style   : %s
 - Comment style       : %s
-- Electric chars      : %s
-- Auto newline        : %s
-- Syntactic indent    : %s
 - Hungry delete       : %s"
      major-mode                                 ; 1
-     (pel-cc-c-default-style-for major-mode)    ; 2
-     (if (boundp 'c-default-style)              ; 3
+     (if (boundp 'c-default-style)              ; 2
          (alist-get major-mode c-default-style)
        "Unknown - c-default-style not loaded")
-     (pel-symbol-on-off-string 'c-basic-offset) ; 4
-     tab-width                                  ; 5
-     (pel-on-off-string indent-tabs-mode        ; 6
+     (pel-cc-c-default-style-for major-mode)    ; 3
+     pel-cc-newline-mode                        ; 4
+     (pel-symbol-on-off-string 'pel-newline-does-align
+                               ", and aligns (comments, assignments, etc...)"
+                               ""
+                               "")              ; 5
+     (pel-symbol-on-off-string 'c-electric-flag ; 6
+                               (format "active on: %s"
+                                       (pel-concat-strings-in-list
+                                        (pel-cc-electric-keys)))
+                               "inactive"
+                               not-avail-msg)
+     (pel-symbol-on-off-string 'c-auto-newline nil nil not-avail-msg) ; 7
+     tab-width                                  ; 8
+     (pel-on-off-string indent-tabs-mode        ; 9
                         "hard-tabs and spaces"
                         "spaces only")
-     (pel-symbol-value-or 'c-indentation-style) ; 7
-     (pel-cc-bracket-style-for major-mode)      ; 8
-     (if (and (boundp 'c-block-comment-flag)    ; 9
+     (pel-symbol-value-or 'c-basic-offset) ; 10
+     (pel-symbol-on-off-string 'c-syntactic-indentation ; 11
+                               ", using syntactic indentation"
+                               ""
+                               "")
+     (pel-symbol-on-off-string                  ; 12
+      'c-syntactic-indentation nil nil not-avail-msg)
+     (pel-symbol-value-or 'c-indentation-style) ; 13
+     (pel-cc-bracket-style-for major-mode)      ; 14
+     (if (and (boundp 'c-block-comment-flag)    ; 15
               (boundp 'c-block-comment-starter)
               (boundp 'c-block-comment-ender)
               (boundp 'c-block-comment-prefix))
@@ -117,16 +214,7 @@ return \"void\"."
            (format "Line comments: %s" (pel-symbol-value-or
                                         'c-line-comment-starter)))
        not-avail-msg)
-     (pel-symbol-on-off-string 'c-electric-flag ; 10
-                               (format "active: %s"
-                                       (pel-concat-strings-in-list
-                                        (pel-cc-electric-keys)))
-                               "inactive"
-                               not-avail-msg)
-     (pel-symbol-on-off-string 'c-auto-newline nil nil not-avail-msg) ; 11
-     (pel-symbol-on-off-string                                        ; 12
-      'c-syntactic-indentation nil nil not-avail-msg)
-     (pel-symbol-on-off-string 'c-hungry-delete-key                   ; 13
+     (pel-symbol-on-off-string 'c-hungry-delete-key ; 16
                                nil
                                "off, but the \
 F11-⌦  and F11-⌫  keys are available."

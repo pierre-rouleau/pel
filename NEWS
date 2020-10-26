@@ -112,12 +112,36 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 - Update: *Programming Language Support -- CC Mode Utilities*
   - Refactoring: Moved cc-mode utilities from pel_keys.el to the new pel-cc.el
     file.
-  - New: *pel-cc-mode-info* can now be used from any major mode where it will
-    display info about non-loaded symbols and features. It also displays more
-    information to increase awareness of the active setting:
-    - the names of styles for current mode in c-default-style in order of
-      presence in the list,
-    - the active CC mode style.
+- Updated: *pel-cc-mode-info* can now be used from any major mode where it will
+   display info about non-loaded symbols and features. It also displays more
+   information to increase awareness of the active setting:
+  - the names of styles for current mode in c-default-style in order of
+    presence in the list, the active CC mode style,
+  - mode used by the return key.
+- New: command bound to the return key in c-mode, c++-mode and d-mode:
+  *pel-cc-newline*. The behaviour of the return key controlled by this
+  command can be selected by the PEL user options for each mode as well as
+  commands that control the activation of the features dynamically in the
+  current buffer.  The features include:
+  - Insertion of newline with or without indentation of the new inserted line,
+    extension of the comment, with or without alignment of comments,
+    assignments in the code block.
+    - The selection of the underlying command used to control the line
+      insertion defines its main behaviour: one of 3 different commands:
+      c-context-line-break, newline or electric-indent-just-newline which
+      identifies whether syntactic indentation, continuation of comment or
+      plain newline insertion is done.  The selection of the default behaviour
+      is done by the PEL user options *pel-c-newline-mode*,
+      *pel-c++-newline-mode* and *pel-d-newline-mode* for the respective major
+      modes.  The behaviour can also be dynamically changed in the current
+      buffer by the new *pel-cc-change-newline-mode** command (bound to
+      ``<f12> M-RET``).
+    - *pel-cc-newline* command also aligns comments
+      and assignments in the above code block is controlled by the variable
+      *pel-newline-does-align*.  That variable is turned on (set to t) for modes
+      identified in the *pel-modes-activating-align-on-return* user option.
+      It can also be modified dynamically by the command
+      *pel-toggle-newline-indent-align  which is bound to ``<f11> M-RET``.
 - Update: *Programming Language Support -- C*
   - New: ``<f12> <f12> d`` insert a C pre-processor #define statement.
   - New: ``<f12> <f12> i`` insert a C pre-processor #include statement for
