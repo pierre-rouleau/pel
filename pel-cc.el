@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-10-25 21:47:35, updated by Pierre Rouleau>
+;; Time-stamp: <2020-10-26 12:11:19, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -164,6 +164,7 @@ return \"void\"."
 - RET mode            : %S%s
 - Electric characters : %s
 - Auto newline        : %s
+- fill column         : %s
 - Tab width           : %s, using %s
 - Indent width        : %s%s
 - Syntactic indent    : %s
@@ -188,20 +189,21 @@ return \"void\"."
                                "inactive"
                                not-avail-msg)
      (pel-symbol-on-off-string 'c-auto-newline nil nil not-avail-msg) ; 7
-     tab-width                                  ; 8
-     (pel-on-off-string indent-tabs-mode        ; 9
+     fill-column                                ; 8
+     tab-width                                  ; 9
+     (pel-on-off-string indent-tabs-mode        ; 10
                         "hard-tabs and spaces"
                         "spaces only")
-     (pel-symbol-value-or 'c-basic-offset) ; 10
-     (pel-symbol-on-off-string 'c-syntactic-indentation ; 11
+     (pel-symbol-value-or 'c-basic-offset) ; 11
+     (pel-symbol-on-off-string 'c-syntactic-indentation ; 12
                                ", using syntactic indentation"
                                ""
                                "")
-     (pel-symbol-on-off-string                  ; 12
+     (pel-symbol-on-off-string                  ; 13
       'c-syntactic-indentation nil nil not-avail-msg)
-     (pel-symbol-value-or 'c-indentation-style) ; 13
-     (pel-cc-bracket-style-for major-mode)      ; 14
-     (if (and (boundp 'c-block-comment-flag)    ; 15
+     (pel-symbol-value-or 'c-indentation-style) ; 14
+     (pel-cc-bracket-style-for major-mode)      ; 15
+     (if (and (boundp 'c-block-comment-flag)    ; 16
               (boundp 'c-block-comment-starter)
               (boundp 'c-block-comment-ender)
               (boundp 'c-block-comment-prefix))
@@ -214,7 +216,7 @@ return \"void\"."
            (format "Line comments: %s" (pel-symbol-value-or
                                         'c-line-comment-starter)))
        not-avail-msg)
-     (pel-symbol-on-off-string 'c-hungry-delete-key ; 16
+     (pel-symbol-on-off-string 'c-hungry-delete-key ; 17
                                nil
                                "off, but the \
 F11-⌦  and F11-⌫  keys are available."

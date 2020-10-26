@@ -1716,31 +1716,11 @@ via the ``<f12> ? e`` sequence."
   :link '(url-link :tag "c-eldoc @ GitHub"
                    "https://github.com/pierre-rouleau/c-eldoc"))
 
-(defcustom  pel-c-newline-mode 'context-newline
-  "Set default newline mode for c-mode buffers.
-
-This may be one of the following values:
-
-- context-newline : the default : the RET key is bound to
-  the function `c-context-line-break' with the extra ability to
-  repeat its execution with an argument.
-- newline-and-indent: RET uses the function `newline' passing ARG
-  and t for its arguments to insert newline and indent.
-- just-newline-no-indent: RET uses the function
-  `electric-indent-just-newline` with the specified argument (if
-  any).  This only insert a newline; it does not indent."
+;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+(defgroup pel-c-code-style nil
+  "C Source Code Style options."
   :group 'pel-pkg-for-c
-  :type '(choice
-          (const :tag "context-newline: use c-context-line-break.\n\
-Does all what newline does plus more."
-                 context-newline)
-          (const :tag "newline-and-indent: use newline. This inserts\n\
-a newline and then indent the new line."
-                 newline-and-indent)
-          (const :tag "just-newline-no-indent: use\
- electric-indent-just-newline.\n\
-Does not indent."
-                 just-newline-no-indent)))
+  :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
 
 (defcustom pel-c-bracket-style "linux"
   "Set the bracket style for the C programming language.
@@ -1767,43 +1747,9 @@ CC Mode Built-in Styles, which include the following:
 ccmode/Built_002din-Styles.html#Built_002din-Styles")
   :link `(url-link :tag "Indentation styles @ wikipedia"
                    "https://en.wikipedia.org/wiki/Indentation_style")
-  :group 'pel-pkg-for-c
+  :group 'pel-c-code-style
   :type 'string
   :safe 'pel-c-style-valid-p)
-
-(defcustom pel-c-indentation 3
-  "Number of columns for C source code indentation.
-PEL stores this in `c-basic-offset' when editing buffers with C code.
-Values in the [2, 8] range are accepted."
-  :group 'pel-pkg-for-c
-  :type 'integer
-  :safe 'pel-indent-valid-p)
-
-(defcustom pel-c-tab-width 3
-  "Distance between tab stop for C source code.
-PEL stores this in `tab-width' when editing buffer with C source.
-This does *NOT* control the indentation in C source code, it is used
-only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB characters.
-It is often the same value as `pel-c-indentation'.
-Values in the [2, 8] range are accepted."
-  :group 'pel-pkg-for-c
-  :type 'integer
-  :safe 'pel-indent-valid-p)
-
-(defcustom pel-c-use-tabs nil
-  "Value of `indent-tabs-mode' for editing C source code.
-- If set to nil: only spaces are used for indentation.
-- If set to t: hard tabs are used when possible."
-  :group 'pel-pkg-for-c
-  :type 'boolean
-  :safe #'booleanp)
-
-;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
-(defgroup pel-c-code-style nil
-  "Emacs Lisp Source Code Style options."
-  :group 'pel-pkg-for-c
-  :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
 
 (defcustom pel-c-fill-column 80
   "Column beyond which automatic line-wrapping should happen in C code.
@@ -1816,6 +1762,61 @@ is used for `c-mode' buffers, otherwise the integer value specified by
   :type '(choice
           (const   :tag "Use the default fill-column value." nil)
           (integer :tag "Use a value specific for c-mode buffers:")))
+
+(defcustom  pel-c-newline-mode 'context-newline
+  "Set default newline mode for c-mode buffers.
+
+This may be one of the following values:
+
+- context-newline : the default : the RET key is bound to
+  the function `c-context-line-break' with the extra ability to
+  repeat its execution with an argument.
+- newline-and-indent: RET uses the function `newline' passing ARG
+  and t for its arguments to insert newline and indent.
+- just-newline-no-indent: RET uses the function
+  `electric-indent-just-newline` with the specified argument (if
+  any).  This only insert a newline; it does not indent."
+  :group 'pel-c-code-style
+  :type '(choice
+          (const :tag "context-newline: use c-context-line-break.\n\
+Does all what newline does plus more."
+                 context-newline)
+          (const :tag "newline-and-indent: use newline. This inserts\n\
+a newline and then indent the new line."
+                 newline-and-indent)
+          (const :tag "just-newline-no-indent: use\
+ electric-indent-just-newline.\n\
+Does not indent."
+                 just-newline-no-indent)))
+
+(defcustom pel-c-indentation 4
+  "Number of columns for C source code indentation.
+PEL stores this in `c-basic-offset' when editing buffers with C code.
+Values in the [2, 8] range are accepted."
+  :group 'pel-c-code-style
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-c-tab-width 4
+  "Distance between tab stop for C source code.
+PEL stores this in `tab-width' when editing buffer with C source.
+This does *NOT* control the indentation in C source code, it is used
+only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB characters.
+It is often the same value as `pel-c-indentation', if it is different
+it should probably be a multiple of `pel-c-indentation'.
+Values in the [2, 8] range are accepted."
+  :group 'pel-c-code-style
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-c-use-tabs nil
+  "Value of `indent-tabs-mode' for editing C source code.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-c-code-style
+  :type 'boolean
+  :safe #'booleanp)
 
 ;;     -       -       -       -       -       -       -       -       -       -
 (defgroup pel-c-skeleton-control nil
@@ -2046,6 +2047,42 @@ potentially except the user defined ones, which could use that variable too."
   :group 'pel-pkg-for-cc
   :link `(url-link :tag "C++ PDF" ,(pel-pdf-file-url "pl-c++")))
 
+;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+(defgroup pel-c++-code-style nil
+  "C++ Source Code Style options."
+  :group 'pel-pkg-for-c++
+  :link `(url-link :tag "C++ PDF" ,(pel-pdf-file-url "pl-c++")))
+
+(defcustom pel-c++-bracket-style "stroustrup"
+  "Set the bracket style for the C++ programming language.
+PEL stores this value associated with the `c-mode' into the
+`c-default-style' user option variable.
+If you want to use something else, please select one of the
+CC Mode Built-in Styles."
+  :group 'pel-c++-code-style
+  :type 'string
+  :safe 'pel-c-style-valid-p
+  :link '(custom-group-link "pel-pkg-for-c")
+  :link '(custom-manual "(ccmode)Built-in Styles")
+  :link `(url-link
+          :tag "Bracket styles @ Emacs Manual"
+          "https://www.gnu.org/software/emacs/manual/html_node/\
+ccmode/Built_002din-Styles.html#Built_002din-Styles")
+  :link `(url-link :tag "Indentation styles @ wikipedia"
+                   "https://en.wikipedia.org/wiki/Indentation_style"))
+
+(defcustom pel-c++-fill-column 80
+  "Column beyond which automatic line-wrapping should happen in C++ code.
+Can either be nil or an integer value.
+When set to nil, Emacs user option variable `fill-column' value
+is used for `c++-mode' buffers, otherwise the integer value specified by
+`pel-c++-fill-column' is stored in the variable `fill-column' for
+`c++-mode' buffers.  The default is 80."
+  :group 'pel-c++-code-style
+  :type '(choice
+          (const   :tag "Use the default fill-column value." nil)
+          (integer :tag "Use a value specific for c-mode buffers:")))
+
 (defcustom  pel-c++-newline-mode 'context-newline
   "Set default newline mode for c++-mode buffers.
 
@@ -2059,7 +2096,7 @@ This may be one of the following values:
 - just-newline-no-indent: RET uses the function
   `electric-indent-just-newline` with the specified argument (if
   any).  This only insert a newline; it does not indent."
-  :group 'pel-pkg-for-c++
+  :group 'pel-c++-code-style
   :type '(choice
           (const :tag "context-newline: use c-context-line-break.\n\
 Does all what newline does plus more."
@@ -2072,29 +2109,11 @@ a newline and then indent the new line."
 Does not indent."
                  just-newline-no-indent)))
 
-(defcustom pel-c++-bracket-style "stroustrup"
-  "Set the bracket style for the C++ programming language.
-PEL stores this value associated with the `c-mode' into the
-`c-default-style' user option variable.
-If you want to use something else, please select one of the
-CC Mode Built-in Styles."
-  :group 'pel-pkg-for-c++
-  :type 'string
-  :safe 'pel-c-style-valid-p
-  :link '(custom-group-link "pel-pkg-for-c")
-  :link '(custom-manual "(ccmode)Built-in Styles")
-  :link `(url-link
-          :tag "Bracket styles @ Emacs Manual"
-          "https://www.gnu.org/software/emacs/manual/html_node/\
-ccmode/Built_002din-Styles.html#Built_002din-Styles")
-  :link `(url-link :tag "Indentation styles @ wikipedia"
-                   "https://en.wikipedia.org/wiki/Indentation_style"))
-
 (defcustom pel-c++-indentation 3
   "Number of columns for C++ source code indentation.
 PEL stores this in `c-basic-offset' when editing buffers with C++ source.
 Values in the [2, 8] range are accepted."
-  :group 'pel-pkg-for-c++
+  :group 'pel-c++-code-style
   :type 'integer
   :safe 'pel-indent-valid-p)
 
@@ -2104,9 +2123,10 @@ PEL stores this in `tab-width' when editing buffer with C++ source.
 This does *NOT* control the indentation in C++ source code, it is used
 only for commands that mode point to tab stop positions
 such as `tab-to-tab-stop', and the display of hard TAB characters.
-It is often the same value as `pel-c++-indentation'.
+It is often the same value as `pel-c++-indentation', if it is different
+it should probably be a multiple of `pel-c++-indentation'.
 Values in the [2, 8] range are accepted."
-  :group 'pel-pkg-for-c++
+  :group 'pel-c++-code-style
   :type 'integer
   :safe 'pel-indent-valid-p)
 
@@ -2114,7 +2134,7 @@ Values in the [2, 8] range are accepted."
   "Value of `indent-tabs-mode' for editing C++ source code.
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
-  :group 'pel-pkg-for-c++
+  :group 'pel-c++-code-style
   :type 'boolean
   :safe #'booleanp)
 
@@ -2139,7 +2159,35 @@ Values in the [2, 8] range are accepted."
   :type 'boolean
   :safe #'booleanp)
 
-;-- D Style
+;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+(defgroup pel-d-code-style nil
+  "D Source Code Style options."
+  :group 'pel-pkg-for-d
+  :link `(url-link :tag "D PDF" ,(pel-pdf-file-url "pl-d")))
+
+(defcustom pel-d-bracket-style "bsd"
+  "Set the bracket style for the D programming language.
+PEL stores this value associated with the `d-mode' into the
+`c-default-style' user option variable.
+The BSD style (also called Allman style) is recommended by the
+D community, see URL https://dlang.org/dstyle.html#phobos_brackets .
+If you want to use something else, please select one of the
+CC Mode Built-in Styles."
+  :group 'pel-d-code-style
+  :type 'string
+  :safe 'pel-c-style-valid-p)
+
+(defcustom pel-d-fill-column 80
+  "Column beyond which automatic line-wrapping should happen in D code.
+Can either be nil or an integer value.
+When set to nil, Emacs user option variable `fill-column' value
+is used for `d-mode' buffers, otherwise the integer value specified by
+`pel-d-fill-column' is stored in the variable `fill-column' for
+`d-mode' buffers.  The default is 80."
+  :group 'pel-d-code-style
+  :type '(choice
+          (const   :tag "Use the default fill-column value." nil)
+          (integer :tag "Use a value specific for c-mode buffers:")))
 
 (defcustom  pel-d-newline-mode 'context-newline
   "Set default newline mode for d-mode buffers.
@@ -2154,7 +2202,7 @@ This may be one of the following values:
 - just-newline-no-indent: RET uses the function
   `electric-indent-just-newline` with the specified argument (if
   any).  This only insert a newline; it does not indent."
-  :group 'pel-pkg-for-d
+  :group 'pel-d-code-style
   :type '(choice
           (const :tag "context-newline: use c-context-line-break.\n\
 Does all what newline does plus more."
@@ -2173,7 +2221,7 @@ PEL stores this in `c-basic-offset' when editing buffers in `d-mode'.
 The D community recommends using 4 spaces for indentation
 therefore that's PEL's default.
 Values in the [2, 8] range are accepted."
-  :group 'pel-pkg-for-d
+  :group 'pel-d-code-style
   :type 'integer
   :safe 'pel-indent-valid-p)
 
@@ -2183,8 +2231,9 @@ PEL stores this in `tab-width' when editing buffer in `d-mode'.
 This does *NOT* control the indentation in D source code, it is used
 only for commands that mode point to tab stop positions and the
 display of hard TAB characters.
-It is often the same value as `pel-d-indentation'."
-  :group 'pel-pkg-for-d
+It is often the same value as `pel-d-indentation', if it is different
+it should probably be a multiple of `pel-d-indentation'."
+  :group 'pel-d-code-style
   :type 'integer
   :safe 'pel-indent-valid-p)
 
@@ -2192,21 +2241,9 @@ It is often the same value as `pel-d-indentation'."
   "Value of `indent-tabs-mode' for editing D source code.
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
-  :group 'pel-pkg-for-d
+  :group 'pel-d-code-style
   :type 'boolean
   :safe #'booleanp)
-
-(defcustom pel-d-bracket-style "bsd"
-  "Set the bracket style for the D programming language.
-PEL stores this value associated with the `d-mode' into the
-`c-default-style' user option variable.
-The BSD style (also called Allman style) is recommended by the
-D community, see URL https://dlang.org/dstyle.html#phobos_brackets .
-If you want to use something else, please select one of the
-CC Mode Built-in Styles."
-  :group 'pel-pkg-for-d
-  :type 'string
-  :safe 'pel-c-style-valid-p)
 
 ;;-- Tools for D
 

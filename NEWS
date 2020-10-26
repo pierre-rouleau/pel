@@ -220,6 +220,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 - Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf][⅀ Help PDF]] better introduces reader to getting help from Emacs and
   PEL.
 - Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/indentation.pdf][⅀ Indentation]] better describes handling of indentation on ``M-RET``.
+- Update: C, C++ and D programming language support tables.
 - Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀ Search/Replace PDF]] describes the superword-mode, subword-mode better, and
   includes description of the projectile commands.
 - Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/text-modes.pdf][⅀ Text Modes PDF]] describes the superword-mode, subword-mode better, and new

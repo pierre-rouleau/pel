@@ -1568,49 +1568,46 @@ MODE must be a symbol."
 (define-pel-global-prefix pel:for-c-preproc (kbd "<f11> SPC c #"))
 (define-pel-global-prefix pel:c-skel        (kbd "<f11> SPC c <f12>"))
 
-
 (defun pel--setenv-for-c ()
   "Set the environment for editing C files."
-  ;; Configure some of the special CC minor modes
+  ;; Configure the CC Mode style for C from PEL custom variables
+  ;; 1) set the style: it identifies everything
   (pel--set-cc-style 'c-mode pel-c-bracket-style pel-c-newline-mode)
-
-  ;; Set variables always available in Emacs
+  ;; 2) apply modifications requested by PEL user options.
+  ;; 2a) set variables always available in Emacs
   (setq tab-width          pel-c-tab-width
         indent-tabs-mode   pel-c-use-tabs)
-  ;; set fill-column to C's default if specified
+  ;; 2b) set variables only available in a CC mode - prevent warnings
+  (pel-setq c-basic-offset pel-c-indentation)
+  ;; 3) set fill-column to PEL specified C's default if specified
   (when pel-c-fill-column
     (setq fill-column pel-c-fill-column))
-
-  ;; Set CC Mode variables
-  ;; Note: these variables are  not known at compilation when CC Mode is
-  ;;       not loaded).
-  (pel-setq c-basic-offset pel-c-indentation)
-
+  ;; 4) Set default auto-newline mode as identified by PEL user option
   (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
-  ;; Configure M-( to put parentheses after a function name.
+  ;; 5) Configure M-( to put parentheses after a function name.
   (set (make-local-variable 'parens-require-spaces) nil)
-  ;; activate the mode specific prefixes
+  ;; 6) activate the mode specific key prefixes: <f12> and <M-f12>
   (pel-local-set-f12-M-f12 'pel:for-c)
   (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
+  ;; 7) Install language-specific skeletons
   (pel--install-c-skel      pel:c-skel))
 
 (when pel-use-plantuml
-  (define-key             pel:for-c  "u" 'pel-render-commented-plantuml))
+  (define-key pel:for-c "u" 'pel-render-commented-plantuml))
 (when pel-use-graphviz-dot
   (define-key pel:for-c "G" 'pel-render-commented-graphviz-dot))
 (when pel-use-c-eldoc
   (define-pel-global-prefix pel:c-help (kbd "<f11> SPC c ?"))
   (define-key pel:c-help "e" 'pel-toggle-c-eldoc-mode))
-
 (pel--map-cc-for pel:for-c pel:for-c-preproc)
 
 ;;
-;; activate the <f12> key binding for c-mode
+;; Schedule activation of C mode style and its <f12> key binding
 (pel--mode-hook-maybe-call
  (function pel--setenv-for-c)
  'c-mode 'c-mode-hook)
 
-;; ---------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C`` : C++ programming utilities
 
 ;; Note: C++ editing is always available in Emacs via the CC Mode and the
@@ -1618,55 +1615,76 @@ MODE must be a symbol."
 ;; The only extra code needed is to add the specialized menu and then activate
 ;; it, along with the specialized CC Mode minor modes via the c++-mode-hook.
 
-(defun pel--setenv-for-c++ ()
-  "Set the environment for editing C++ files."
-  ;; Set variables always available in Emacs
-  (setq tab-width          pel-c++-tab-width
-        indent-tabs-mode   pel-c++-use-tabs)
-  ;; Set CC Mode variables
-  ;; (and therefore not known at compilation when CC Mode not loaded).
-  (pel-setq c-basic-offset pel-c++-indentation)
-  ;; Configure some of the special CC minor modes
-  (pel--set-cc-style 'c++-mode pel-c++-bracket-style pel-c++-newline-mode)
-  (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
-  ;; Configure M-( to put parentheses after a function name.
-  (set (make-local-variable 'parens-require-spaces) nil))
-
 (define-pel-global-prefix pel:for-c++         (kbd "<f11> SPC C"))
 (define-pel-global-prefix pel:for-c++-preproc (kbd "<f11> SPC C #"))
+
+(defun pel--setenv-for-c++ ()
+  "Set the environment for editing C++ files."
+  ;; Configure the CC Mode style for C++ from PEL custom variables
+  ;; 1) set the style: it identifies everything
+  (pel--set-cc-style 'c++-mode pel-c++-bracket-style pel-c++-newline-mode)
+  ;; 2)  apply modifications requested by PEL user options.
+  ;; 2a) set variables always available in Emacs
+  (setq tab-width          pel-c++-tab-width
+        indent-tabs-mode   pel-c++-use-tabs)
+  ;; 2b) set variables only available in a CC mode - prevent warnings
+  (pel-setq c-basic-offset pel-c++-indentation)
+  ;; 3) set fill-column to PEL specified C++'s default if specified
+  (when pel-c++-fill-column
+    (setq fill-column pel-c++-fill-column))
+  ;; 4) Set default auto-newline mode as identified by PEL user option
+  (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+  ;; 5) Configure M-( to put parentheses after a function name.
+  (set (make-local-variable 'parens-require-spaces) nil)
+  ;; 6) activate the mode specific key prefixes: <f12> and <M-f12>
+  (pel-local-set-f12-M-f12 'pel:for-c++)
+  (pel-local-set-f12-M-f12 'pel:for-c++-preproc "#")
+  ;; 7) Install language-specific skeletons
+  ;; TODO
+  )
+
 (when pel-use-plantuml
-  (define-key             pel:for-c++    "u" 'pel-render-commented-plantuml))
+  (define-key pel:for-c++ "u" 'pel-render-commented-plantuml))
 (when pel-use-graphviz-dot
   (define-key pel:for-c++ "G" 'pel-render-commented-graphviz-dot))
 (pel--map-cc-for pel:for-c++ pel:for-c++-preproc)
 
 ;;
-;; activate the <f12> key binding for c++-mode
+;; Schedule activation of C++ mode style and its <f12> key binding
 (pel--mode-hook-maybe-call
- '(lambda ()
-    (pel--setenv-for-c++)
-    (pel-local-set-f12-M-f12 'pel:for-c++)
-    (pel-local-set-f12-M-f12 'pel:for-c++-preproc "#"))
+ (function pel--setenv-for-c++)
  'c++-mode 'c++-mode-hook)
 
-;; ---------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC D`` : D programming utilities
 
 (when pel-use-d
 
+  (define-pel-global-prefix pel:for-d (kbd "<f11> SPC D"))
+
   (defun pel--setenv-for-d ()
-    "Set the environment for editing D files.
-This is meant to be used in the d-mode hook lambda."
-    ;; Set variables always available in Emacs
+    "Set the environment for editing D files."
+    ;; Configure the CC Mode style for C++ from PEL custom variables
+    ;; 1) set the style: it identifies everything
+    (pel--set-cc-style 'd-mode pel-d-bracket-style pel-d-newline-mode)
+    ;; 2)  apply modifications requested by PEL user options.
+    ;; 2a) set variables always available in Emacs
     (setq tab-width          pel-d-tab-width
           indent-tabs-mode   pel-d-use-tabs)
-    ;; Set CC Mode variables
-    ;; (and therefore not known at compilation when CC Mode not loaded).
+    ;; 2b) set variables only available in a CC mode - prevent warnings
     (pel-setq c-basic-offset pel-d-indentation)
-    ;; Configure some of the special CC minor modes
+    ;; 3) set fill-column to PEL specified D's default if specified
+    (when pel-d-fill-column
+      (setq fill-column pel-d-fill-column))
+    ;; 4) Set default auto-newline mode as identified by PEL user option
     (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
     ;; Configure M-( to put parentheses after a function name.
-    (set (make-local-variable 'parens-require-spaces) nil))
+    (set (make-local-variable 'parens-require-spaces) nil)
+    ;; 6) activate the mode specific key prefixes: <f12> and <M-f12>
+    (pel-local-set-f12-M-f12 'pel:for-d)
+    ;; 7) Install language-specific skeletons
+    ;; TODO
+    )
 
   (use-package d-mode
     :ensure t
@@ -1678,21 +1696,19 @@ This is meant to be used in the d-mode hook lambda."
     ;; When opening a D source code file, load the d-mode feature.
     :init
     (add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
-    ;;
-    ;; activate the <f12> key binding for d-mode
-    (pel--mode-hook-maybe-call
-     '(lambda ()
-        (pel--setenv-for-d)
-        (pel-local-set-f12-M-f12 'pel:for-d))
-     'd-mode 'd-mode-hook)
 
-    ;; Configure commands avalable on the D key-map.
-    (define-pel-global-prefix pel:for-d (kbd "<f11> SPC D"))
+    ;; Configure commands available on the D key-map.
     (when pel-use-plantuml
-      (define-key      pel:for-d "u"      'pel-render-commented-plantuml))
+      (define-key pel:for-d "u" 'pel-render-commented-plantuml))
     (when pel-use-graphviz-dot
       (define-key pel:for-d "G" 'pel-render-commented-graphviz-dot))
     (pel--map-cc-for pel:for-d)
+
+    ;;
+    ;; Schedule activation of D mode style and its <f12> key binding
+    (pel--mode-hook-maybe-call
+     (function pel--setenv-for-d)
+     'd-mode 'd-mode-hook)
 
     ;; Configure auto-completion based on selection
     ;; There are 2 possibilities
@@ -1716,16 +1732,7 @@ This is meant to be used in the d-mode hook lambda."
         :pin melpa
         :commands company-dcd-mode
         :init
-        (add-hook 'd-mode-hook 'company-dcd-mode)))
-
-    ;; When a D file is edited, set up the CC Mode behaviour for D
-    :config
-    ;; 1) Use the bracket style for D identified by the pel-d-bracket-style
-    ;;    user option. It defaults to "bsd", the BSD/Allman style promoted
-    ;;    by the D/Phobos library guideline, see the following document:
-    ;;    URL https://dlang.org/dstyle.html#phobos_brackets .
-    ;; 2) Activate the indentation, using the PEL user option via a hook
-    (pel--set-cc-style 'd-mode pel-d-bracket-style pel-d-newline-mode)))
+        (add-hook 'd-mode-hook 'company-dcd-mode)))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` : Erlang programming
