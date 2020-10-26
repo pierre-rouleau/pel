@@ -1,44 +1,6 @@
 PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 
 * Changes since version 0.3.1:
-** Bug Fixes:
-- Fix: Inside Common Lisp buffers, PEL's mechanism to access help and
-  customization through the ``<f12> <f1>``, ``<f12> <f2>`` and ``<f12> <f3>``
-  failed to open the file or buffer.
-  - Root cause: a missing format specifier prevented the error detection
-    mechanism to detect a missing entry in the look up table: support for
-    lisp-mode was missing, just its alias, common-lisp-mode was present.
-    - Lesson Learned: Emacs 26.3 and 27.1 byte compiler as well as elint do
-      *not* detect this type of error, at least inside a ``user-error`` form!
-      Might need to investigate this, either contribute a fix or find a way to
-      detect this kind of coding errors.
-      - Probably a good time to schedule a try the [[https://github.com/emacs-elsa/Elsa][Elsa]] static analyzer for
-        Emacs Lisp and all that needs to be done to use it (you
-        need [[https://github.com/cask/cask][Cask]] to use it).
-- Fix: The history prompt was previously failing for ``pel-help-pdf-select``
-  and ``pel-open-emacs-refcard`` (which was added after PEL 0.3.1) when input
-  completion was set to Helm or Ido/Helm but not for the other input
-  completions. This was fixed.
-  - Root cause: the completing-read functions were given a symbol for the history
-    and relied on the completion-read to create the variable.  That failed in
-    helm. The fix is to explicitly create list variables and used them.  The
-    docstring of completing-read does not explicitly state that the specified
-    symbol must refer to an already existing variable and the code worked fine
-    with Emacs default completion, ido and ivy. So I'm unsure as to whether
-    there should be a variable or whether there's a bug in Helm. Any,
-    explicitly creating the variable is protecting against any issue.
-    - Lessons learned:
-      - This is an example of the "never ass-u-me" rule where
-        even reading the docstring and testing with the existing completion
-        engines but not all of them right from the a fresh Emacs session did not
-        dissipate uncertainty and left the bug dormant.
-      - I will probably need a complete testing system that tries every
-        combination of features.  At this point I'm not sure how to build it,
-        since PEL is integrating so many Emacs libraries and packages.
-        Perhaps I will need a system that would be able to drive the test
-        right from Emacs user interface.  But one thing for sure I need to be
-        able to execute the various tests in a fresh Emacs session to catch
-        these types of bugs.
 ** New Features and Improvements:
 - New: integrated [[https://github.com/nflath/c-eldoc][c-eldoc]].  In C buffers, the ``<f12> ? e`` key sequence
   toggles c-eldoc mode on/off. I am currently investigating c-eldoc various
@@ -264,6 +226,44 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   [[https://ctags.io][Universal-Ctags]] plugins to support gtags-based tags management within
   Emacs. This includes a small example shells script: [[https://github.com/pierre-rouleau/pel/blob/master/bin/envfor-gtags][envfor-gtags]].
 - Better description of how to write customize tempo skeletons.
+** Bug Fixes:
+- Fix: Inside Common Lisp buffers, PEL's mechanism to access help and
+  customization through the ``<f12> <f1>``, ``<f12> <f2>`` and ``<f12> <f3>``
+  failed to open the file or buffer.
+  - Root cause: a missing format specifier prevented the error detection
+    mechanism to detect a missing entry in the look up table: support for
+    lisp-mode was missing, just its alias, common-lisp-mode was present.
+    - Lesson Learned: Emacs 26.3 and 27.1 byte compiler as well as elint do
+      *not* detect this type of error, at least inside a ``user-error`` form!
+      Might need to investigate this, either contribute a fix or find a way to
+      detect this kind of coding errors.
+      - Probably a good time to schedule a try the [[https://github.com/emacs-elsa/Elsa][Elsa]] static analyzer for
+        Emacs Lisp and all that needs to be done to use it (you
+        need [[https://github.com/cask/cask][Cask]] to use it).
+- Fix: The history prompt was previously failing for ``pel-help-pdf-select``
+  and ``pel-open-emacs-refcard`` (which was added after PEL 0.3.1) when input
+  completion was set to Helm or Ido/Helm but not for the other input
+  completions. This was fixed.
+  - Root cause: the completing-read functions were given a symbol for the history
+    and relied on the completion-read to create the variable.  That failed in
+    helm. The fix is to explicitly create list variables and used them.  The
+    docstring of completing-read does not explicitly state that the specified
+    symbol must refer to an already existing variable and the code worked fine
+    with Emacs default completion, ido and ivy. So I'm unsure as to whether
+    there should be a variable or whether there's a bug in Helm. Any,
+    explicitly creating the variable is protecting against any issue.
+    - Lessons learned:
+      - This is an example of the "never ass-u-me" rule where
+        even reading the docstring and testing with the existing completion
+        engines but not all of them right from the a fresh Emacs session did not
+        dissipate uncertainty and left the bug dormant.
+      - I will probably need a complete testing system that tries every
+        combination of features.  At this point I'm not sure how to build it,
+        since PEL is integrating so many Emacs libraries and packages.
+        Perhaps I will need a system that would be able to drive the test
+        right from Emacs user interface.  But one thing for sure I need to be
+        able to execute the various tests in a fresh Emacs session to catch
+        these types of bugs.
 * Version 0.3.1
 ** Fixes:
   - Spell check control user options and handling now simpler and don't have type
