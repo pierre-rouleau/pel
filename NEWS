@@ -15,6 +15,30 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       - Probably a good time to schedule a try the [[https://github.com/emacs-elsa/Elsa][Elsa]] static analyzer for
         Emacs Lisp and all that needs to be done to use it (you
         need [[https://github.com/cask/cask][Cask]] to use it).
+- Fix: The history prompt was previously failing for ``pel-help-pdf-select``
+  and ``pel-open-emacs-refcard`` (which was added after PEL 0.3.1) when input
+  completion was set to Helm or Ido/Helm but not for the other input
+  completions. This was fixed.
+  - Root cause: the completing-read functions were given a symbol for the history
+    and relied on the completion-read to create the variable.  That failed in
+    helm. The fix is to explicitly create list variables and used them.  The
+    docstring of completing-read does not explicitly state that the specified
+    symbol must refer to an already existing variable and the code worked fine
+    with Emacs default completion, ido and ivy. So I'm unsure as to whether
+    there should be a variable or whether there's a bug in Helm. Any,
+    explicitly creating the variable is protecting against any issue.
+    - Lessons learned:
+      - This is an example of the "never ass-u-me" rule where
+        even reading the docstring and testing with the existing completion
+        engines but not all of them right from the a fresh Emacs session did not
+        dissipate uncertainty and left the bug dormant.
+      - I will probably need a complete testing system that tries every
+        combination of features.  At this point I'm not sure how to build it,
+        since PEL is integrating so many Emacs libraries and packages.
+        Perhaps I will need a system that would be able to drive the test
+        right from Emacs user interface.  But one thing for sure I need to be
+        able to execute the various tests in a fresh Emacs session to catch
+        these types of bugs.
 ** New Features and Improvements:
 - New: integrated [[https://github.com/nflath/c-eldoc][c-eldoc]].  In C buffers, the ``<f12> ? e`` key sequence
   toggles c-eldoc mode on/off. I am currently investigating c-eldoc various

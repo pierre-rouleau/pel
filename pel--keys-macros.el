@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-10-24 16:35:55, updated by Pierre Rouleau>
+;; Time-stamp: <2020-10-26 17:24:32, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -415,6 +415,9 @@ There should be no key binding!" keyseq))
     ("lispy"            . "plm-lispy"))
   "List of alias for PEL PDF file names.")
 
+(defvar pel--prompt-history-for-help-pdf nil
+  "History list for function `pel-help-pdf-select'.")
+
 ;;-pel-autoload
 (defun pel-help-pdf-select (&optional open-web-page)
   "Prompt for a PEL PDF and open it.
@@ -439,7 +442,7 @@ If enter is typed with no entry it defaults to the PEL key maps pdf."
                   nil           ; predicate
                   t             ; require-match
                   nil           ; initial
-                  'pel-prompt-history-for-help-pdf ; history
+                  'pel--prompt-history-for-help-pdf ; history
                   '("-pel-key-maps")))             ; default
          ;; since aliases are included in the list presented to user,
          ;; translate a selected alias back to its real file name

@@ -54,21 +54,30 @@
            (file-truename
             (expand-file-name invocation-name invocation-directory))))
 
+;; --
+
+(defvar pel--prompt-history-for-emacs-refcard nil
+  "History list for function `pel-open-emacs-refcard'.")
+
 (defun pel-emacs-refcard-dirpath (&optional topic)
   "Compute and return the path of Emacs refcard directory.
 If TOPIC is non-nil, return the full path  of the specified topic PDF file."
   (let ((refcard-dirpath (or pel-emacs-refcard-dirpath
                              (expand-file-name
-                              (format "../../share/emacs/%s/etc/refcards" emacs-version)
+                              (format "../../share/emacs/%s/etc/refcards"
+                                      emacs-version)
                               (file-truename
                                (expand-file-name
                                 invocation-name
                                 invocation-directory))))))
     (unless (file-exists-p refcard-dirpath)
-      (user-error (if pel-emacs-refcard-dirpath
-                      "Directory identified by pel-emacs-refcard-dirpath is invalid! Please fix it!"
-"Cannot locate Emacs refcard directory!
-Please identify a directory with PDF refcard files in the pel-emacs-refcard-dirpath user option!")))
+      (user-error
+       (if pel-emacs-refcard-dirpath
+           "Directory identified by pel-emacs-refcard-dirpath is invalid!\
+ Please fix it!"
+         "Cannot locate Emacs refcard directory!
+Please identify a directory with PDF refcard files in the \
+pel-emacs-refcard-dirpath user option!")))
     (if topic
         (expand-file-name (format "%s.pdf" topic) refcard-dirpath)
       refcard-dirpath)))
@@ -79,7 +88,7 @@ Please identify a directory with PDF refcard files in the pel-emacs-refcard-dirp
 
 Attempts to find the directory where the Emacs PDF reference card
 files are stored.  Failing to detect them it uses the directory identified by
-the `pel-emacs-refcard-dirpath' user option."
+the variable `pel-emacs-refcard-dirpath' user option."
   (interactive)
   (let* ((topics (mapcar
                   (lambda (fn)
@@ -92,9 +101,8 @@ the `pel-emacs-refcard-dirpath' user option."
                   nil                   ; predicate
                   t                     ; require-match
                   nil                   ; initial
-                  'pel-prompt-history-for-emacs-refcard)))
+                  'pel--prompt-history-for-emacs-refcard)))
     (browse-url (format "file:%s" (pel-emacs-refcard-dirpath topic)))))
-
 
 ;;-pel-autoload
 (defun pel-emacs-load-stats ()
@@ -146,7 +154,7 @@ On %s:
     (switch-to-buffer bufname)
     (goto-char (point-min))))
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 (provide 'pel-emacs)
 
 ;;; pel-emacs.el ends here
