@@ -203,23 +203,24 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   well as non-tags based such as [[https://github.com/jacktasia/dumb-jump][dump-jump]].
 - Code change: renamed pel-tags.el to pel-xref.el to better reflect its nature.
 ** Reference PDF updates:
-- Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/align.pdf][⅀ Align]] better describes handling of indentation on ``M-RET``.
-- Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/grep.pdf][⅀ Grep PDF]] describes ag and ripgrep menu.  Also references projectile-based
++ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/align.pdf][⅀ Align]] better describes handling of indentation on ``M-RET``.
++ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/grep.pdf][⅀ Grep PDF]] describes ag and ripgrep menu.  Also references projectile-based
  search commands.
-- Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf][⅀ Help PDF]] better introduces reader to getting help from Emacs and
++ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf][⅀ Help PDF]] better introduces reader to getting help from Emacs and
   PEL.
-- Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/indentation.pdf][⅀ Indentation]] better describes handling of indentation on ``M-RET``.
-- Update: C, C++ and D programming language support tables.
-- Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀ Search/Replace PDF]] describes the superword-mode, subword-mode better, and
++ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/indentation.pdf][⅀ Indentation]] better describes handling of indentation on ``M-RET``.
++ Update: C, C++ and D programming language support tables.
++ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/rectangles.pdf][⅀ Rectangles PDF]] better describes how to mark rectangle areas.
++ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀ Search/Replace PDF]] describes the superword-mode, subword-mode better, and
   includes description of the projectile commands.
-- Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/text-modes.pdf][⅀ Text Modes PDF]] describes the superword-mode, subword-mode better, and new
++ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/text-modes.pdf][⅀ Text Modes PDF]] describes the superword-mode, subword-mode better, and new
   key binding to overwrite-mode (<Esc><kp-0>).
-- Renamed ⅀ Tags to [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref.pdf][⅀ Xref]]; the PDF will describe several cross-referencing
++ Renamed ⅀ Tags to [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref.pdf][⅀ Xref]]; the PDF will describe several cross-referencing
   mechanisms, not just the tags-based mechanisms.
-- Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/undo-redo-repeat.pdf][⅀ Undo/Redo/Repeat/Arg]] better describes how to repeat commands.
-- Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/windows.pdf][⅀ Windows]] now describes the new Esc and <f1> cursor keys to manage
++ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/undo-redo-repeat.pdf][⅀ Undo/Redo/Repeat/Arg]] better describes how to repeat commands.
++ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/windows.pdf][⅀ Windows]] now describes the new Esc and <f1> cursor keys to manage
   and navigate across windows.
-- Updates to the Buffer, CUA, Cut & Paste, Marking, Undo PDF reference tables.
++ Updates to the Buffer, CUA, Cut & Paste, Marking, Undo PDF reference tables.
 ** Use Manual Additions and Improvements:
 - Added instructions on how to install
   [[https://www.gnu.org/software/global/][GNU GLOBAL source code tagging system]] gtags utility with its [[https://pygments.org][Pygments]] and
