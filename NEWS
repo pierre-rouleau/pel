@@ -265,6 +265,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
         right from Emacs user interface.  But one thing for sure I need to be
         able to execute the various tests in a fresh Emacs session to catch
         these types of bugs.
+- Fix: The key binding for the *centi-assign* command identified by
+  *pel-centi-assign-key* user option takes effect when pel-init executes as
+  opposed to when the centimacro feature is loaded as before, allowing it to
+  load the centimacro feature..
 * Version 0.3.1
 ** Fixes:
   - Spell check control user options and handling now simpler and don't have type

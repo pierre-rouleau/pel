@@ -3737,6 +3737,7 @@ the ones defined from the buffer now."
                centi-summary
                centi-restore-all)
     :init
+    (global-set-key (kbd pel-centi-assign-key) 'centi-assign)
     (define-key pel:kbmacro "="          'centi-assign)
     (define-key pel:kbmacro "?"          'centi-summary)
     (define-key pel:kbmacro (kbd "DEL")  'centi-restore-all)
@@ -3746,8 +3747,7 @@ the ones defined from the buffer now."
     ;; customization which binds <f5> to centi-assign.
     ;; PEL provides the `pel-centi-assign-key' which
     ;; <f5
-    (global-set-key (kbd "<f5>") 'repeat)
-    (global-set-key (kbd pel-centi-assign-key) 'centi-assign)))
+    (global-set-key (kbd "<f5>") 'repeat)))
 
 (when pel-use-elmacro
   (define-pel-global-prefix pel:elmacro (kbd "<f11> k l"))
