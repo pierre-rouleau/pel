@@ -258,6 +258,13 @@ The index of the first whitespace character is returned when one is present."
   (when (> (length text) 0)
     (string= (substring text 0 1) " ")))
 
+(defun pel-string-starts-with (text prefix &optional ignore-case)
+  "Return t if TEXT string does start with PREFIX string, nil otherwise.
+Ignore case differences if IGNORE-CASE is non-nil."
+  (eq t (compare-strings prefix nil nil
+                         text nil (length prefix)
+                         ignore-case)))
+
 ;; -----------------------------------------------------------------------------
 ;; - Pluralizer
 ;; ------------
@@ -447,10 +454,10 @@ of the following call sequence:
 
 Example:
 
-    ELISP> (pel-use-or \"abc\" (function pel-hastext) 9)
+    ELISP> (pel-use-or \"abc\" (function pel-hastext) \"empty!\")
     \"abc\"
-    ELISP> (pel-use-or \"\" (function pel-hastext) 9)
-    9 (#o11, #x9, ?\C-i)
+    ELISP> (pel-use-or \"\" (function pel-hastext) \"empty!\")
+    \"empty!\"
     ELISP>
 
 And with transformation functions:
