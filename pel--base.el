@@ -319,14 +319,18 @@ If symbol is nil: show OFF-STRING if defined, \"nil\" otherwise."
           symbol
           (pel-symbol-on-off-string symbol on-string off-string)))
 
-(defun pel-symbol-value-or (symbol &optional replacement)
+(defun pel-symbol-value-or (symbol &optional replacement formatter)
   "Return SYMBOL value if non void, otherwise its REPLACEMENT.
 
 If SYMBOL is void and there is no REPLACEMENT return a string
 created by (format \"unknown - %S is not loaded\" symbol).
-If SYMBOL is void and replacement is :nil-for-void, return nil."
+If SYMBOL is void and replacement is :nil-for-void, return nil.
+If SYMBOL is bound and FORMATTER is non nil it's a function that
+takes the symbol and returns a string."
   (if (boundp symbol)
-      (symbol-value symbol)
+      (if formatter
+          (funcall formatter symbol)
+        (symbol-value symbol))
     (if replacement
         (if (eq replacement :nil-for-void)
             nil
