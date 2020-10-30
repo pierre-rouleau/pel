@@ -61,6 +61,8 @@
     (goto-last-change    "20150109.1823") ; melpa. Melpa-stable: 1.2.1
     (graphviz-dot-mode   "20200304.432")  ; melpa. Melpa-stable: 0.4.2
     (helm                "20200517.509")  ; melpa.
+    (helm-cscope         "20190615.41")
+    (helm-xref           "20201004.1817")
     (highlight-defined   "20181106.1718") ; melpa. Melpa-stable: 0.1.5
     (hydra               "20200306.913")
     (ivy                 "20200520.1809") ; melpa.
@@ -89,6 +91,7 @@
     (ripgrep             "20190215.841")  ; melpa
     (rg                  "20200307.1623") ; melpa. Melpa-stable: 1.8.1
     (rust-mode           "20200303.932")  ; melpa. Melpa-stable: 0.4.0
+    (rtags-xref          "20200310.1909")
     (slime               "20200228.1656") ; melpa. Melpa-stable: 2.24
     (smart-dash          "20200104.1620") ; melpa.
     (smooth-scrolling    "20161002.1949") ; melpa. Melpa-stable: 2.0.0
@@ -96,12 +99,14 @@
     ;; in the 2016 version.
     (sr-speedbar         "20161025.831")  ; melpa. Melpa-stable: 20140914.2339
     (swiper              "20200503.1102") ; melpa.
+    (treemacs            "20201004.1125")
     (undo-tree           "0.7.4")         ; gnu
     (v-mode              "20200823.535")
     (visual-regexp       "20190414.814")  ; melpa
     (visual-regexp-steroids "20190414.814") ; melpa
     (vterm               "20200418.1610")
     (which-key           "20200216.1350") ; melpa. Melpa-table : 3.4.0
+    (xcscope             "20200828.1027")
     (xr                  "1.19")          ; gnu
     (yasnippet           "20200604.246")  ; melpa
     (yasnippet-snippets  "20200802.1658") ; melpa
