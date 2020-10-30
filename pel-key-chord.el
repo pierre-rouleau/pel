@@ -20,7 +20,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; This file provides code that manages the creation of key chords via Emacs
@@ -37,7 +37,7 @@
 ;; `pel-key-chords' user option structure.  This is a list of 5-element key
 ;; chord definition lists that contain the following elements:
 ;;
-;; - 1: A mode symbol. Either:
+;; - 1: A mode symbol.  Either:
 ;;      - 'global : meaning that the key chord must be defined globally, or
 ;;      -  a major/minor mode symbol: meaning that the key chord must only be
 ;;         activated when that mode is activated.
@@ -90,7 +90,7 @@
 ;;         - `pel--kcs-define'
 ;;         - `pel--kcs-define-global'
 
-;; -----------------------------------------------------------------------------
+;;;---------------------------------------------------------------------------
 ;;; Code:
 
 (require 'pel--base)     ; use: pel-concat-strings-in-list
@@ -99,10 +99,10 @@
 (defun pel--kcs-define-global (type keys action)
   "Map a global key-chord or key-seq as identified by the arguments.
 - TYPE is either key-chord or key-seq
-- keys is a string of 2 keys
-- action is a string or function identifying the action.
+- KEYS is a string of 2 keys
+- ACTION is a string or function identifying the action.
 This executes a `key-seq-define-global' if TYPE is
-key-seq and key-seq-define-global is bound, otherwise
+key-seq and `key-seq-define-global' is bound, otherwise
 it executes a `key-chord-define-global'.
 Return t if done, nil otherwise."
   (if (and (eq type 'key-seq)
@@ -124,11 +124,11 @@ Return t if done, nil otherwise."
 (defun pel--kcs-define (type mode keys action)
   "Map a mode-specific key-chord or key-seq as identified by the arguments.
 - TYPE is either key-chord or key-seq
-- MODE, a symbol, identifies the mode. It must be loaded.
-- keys is a string of 2 keys
-- action is a string or function identifying the action.
+- MODE, a symbol, identifies the mode.  It must be loaded.
+- KEYS is a string of 2 keys
+- ACTION is a string or function identifying the action.
 This executes a `key-seq-define' if TYPE is
-key-seq and key-seq-define is bound, otherwise
+key-seq and `key-seq-define' is bound, otherwise
 it executes a `key-chord-define'.
 Return t if done, nil otherwise."
   (if (and (eq type 'key-seq)
@@ -143,18 +143,20 @@ Return t if done, nil otherwise."
           (key-chord-define mode keys action)
           t)
       (lwarn 'pel-key-chords :warning
-             "Unable to activate mode-specific pel-key-chords entry: %S %S %S %S"
+             "Unable to activate mode-specific pel-key-chords entry:\
+ %S %S %S %S"
              type mode keys action)
       nil)))
 
 (defun pel-activate-key-chord-from-spec (key-chord-spec)
   "Activate the KEY-CHORD-SPEC.
-The KEY-CHORD-SPEC must be 5 element list like the following:
-(mode:     symbol
- fname:    string
- key-type: key-chord|key-seq
- key:      string
- action:   string|function)
+The KEY-CHORD-SPEC must be 5 element list like the following
+code snippet:
+        (mode:     symbol
+         fname:    string
+         key-type: key-chord|key-seq
+         key:      string
+         action:   string|function)
 The list element are:
 1. A symbol: either 'global or the name of a mode where the key-chord
    or key-seq will be active.
@@ -215,7 +217,8 @@ Return an alist of (mode . fname) for which the activation must be deferred."
           (let ((mode    (car activation-result))
                 (fname   (cadr activation-result)))
             (unless (assoc mode deferred-modes)
-              (setq deferred-modes (cons (cons mode fname) deferred-modes)))))))
+              (setq deferred-modes
+                    (cons (cons mode fname) deferred-modes)))))))
     deferred-modes))
 
 (defun pel--activate-deferred-key-chords ()
@@ -229,14 +232,16 @@ Return an alist of (mode . fname) for which the activation must be deferred."
     (dolist (mode-fname deferred-modes-alist)
       (let ((mode  (car mode-fname))
             (fname (cdr mode-fname)))
-        (message "deferring %s, via loading %s" mode fname)
+        (message
+         "pel-activate-all-key-chords: deferring %s, via loading of: %s"
+         mode fname)
         ;; for deferral, just re-execute the complete interpretation of
         ;; pel-key-chords.  This way if a change occurred in it, it will
         ;; be activated as soon as possible.
         (eval-after-load fname
           '(pel--activate-deferred-key-chords))))))
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 (provide 'pel-key-chord)
 
 ;;; pel-key-chord.el ends here
