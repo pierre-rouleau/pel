@@ -142,7 +142,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-comment-end
     pel-toggle-comment-auto-fill-only-comments
     pel-delete-all-comments
-    pel-kill-all-comments)
+    pel-kill-all-comments
+    pel-comment-show-variables)
 
   ;; pel-comment-adorn
   ;; Nothing specified here: the control is inside pel_keys.el

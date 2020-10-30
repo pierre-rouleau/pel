@@ -20,11 +20,12 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This file holds a collection of functions used to manipulate and insert
-;; comments in the current buffer.
+;; This file holds a collection of functions used to manipulate,insert
+;; comments in the current buffer and provide information about the way
+;; comments are handled.
 ;;
 ;; The file holds the following commands:
 
@@ -35,11 +36,15 @@
 ;; * pel-delete-all-comments
 ;; * pel-kill-all-comments
 
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
+;;
+(require 'pel--base)                     ; use: pel-toggle
+(eval-when-compile (require 'subr-x))
 
-
+;;; --------------------------------------------------------------------------
 ;;; Code:
 
-(require 'pel--base)                     ; use: pel-toggle
 
 ;;-pel-autoload
 (defun pel-comment-start (string)
@@ -105,7 +110,59 @@ ring entry."
     (save-excursion
       (goto-char start-point)
       (comment-kill (count-lines start-point end-point)))))
-;; -----------------------------------------------------------------------------
+
+;;-pel-autoload
+(defun pel-comment-show-variables (&optional only-user-options)
+  "Show the names and values of the comment related variables.
+
+Open a *comment-vars* buffer and insert the information at the end of the
+buffer. Move last line of text to the last line of window.
+
+If the ONLY-USER-OPTIONS argument is non-nil, include only user option
+variables."
+  (interactive "P")
+  (let ((comment-symbols '())
+        (max-length 0))
+    (mapatoms (lambda (symbol)
+                (when (and (boundp symbol)
+                           (or (not only-user-options)
+                               (get symbol 'custom-type))
+                           (pel-string-starts-with
+                            (symbol-name symbol) "comment-"))
+                  (push symbol comment-symbols))))
+    (setq comment-symbols
+          (sort comment-symbols (lambda (s1 s2)
+                                  (let ((n1 (symbol-name s1)))
+                                    (when (> (length n1) max-length)
+                                      (setq max-length (length n1)))
+                                    (string< n1
+                                             (symbol-name s2))))))
+    (let ((format-string (format "%%-%ds: %%S" max-length))
+          (lines '())
+          (context (format "buffer %s in %s" (buffer-name) major-mode))
+          (comment-vars-buffer (get-buffer-create "*comment-vars*")))
+      (with-current-buffer comment-vars-buffer
+        (goto-char (point-max))
+        (insert (format "----- List of comment %s from %s:\n"
+                        (if only-user-options
+                            "user options"
+                          "variables")
+                        context))
+        (insert (string-join
+                 (dolist (symbol comment-symbols (reverse lines))
+                   (push (format format-string
+                                 (symbol-name symbol)
+                                 (symbol-value symbol)) lines))
+                 "\n"))
+        (insert "\n\n")
+        (goto-char (point-max)))
+      ;; display the end part of the buffer showing comment variables
+      ;; move the last line of text to the bottom line of the window
+      (with-selected-window (display-buffer comment-vars-buffer)
+        (goto-char (- (point-max) 2))  ; last 2 chars are '\n'
+        (recenter -1)))))
+
+;;; --------------------------------------------------------------------------
 (provide 'pel-comment)
 
 ;;; pel-comment.el ends here

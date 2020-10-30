@@ -14,6 +14,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     systems and to counsel-osx-app on macOS system.  This allows selecting an
     OS application by name to launch it.  The first one is available when
     pel-use-counsel is on and the second when pel-use-counsel-osx-app is on.
+- Update: *Comments*:
+  - New: command *pel-comment-show-variables* (bound to ``<f11> ; ?``) opens a
+    special "\*comment-vars\*" buffer and prints the names and values of all
+    Emacs variables used to control the behaviour of comment generation. If a
+    prefix is specified it only prints the user option variables (the ones
+    that can be customized).
 - Update: *Cross Referencing support*:
   - PEL's goals is to provide easy access to multiple indexing and
     cross-referencing systems.  Once a system is enabled via the appropriate

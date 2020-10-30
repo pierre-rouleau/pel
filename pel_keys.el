@@ -2736,6 +2736,7 @@ vlang-mode/master/vlang-mode.el"
 (define-key pel:comment "D"            'pel-hide/show-all-docstrings)
 (define-key pel:comment "'"            'pel-toggle-docstring)
 (define-key pel:comment "\""           'pel-hide/show-docstring)
+(define-key pel:comment "?"            'pel-comment-show-variables)
 
 (when pel-use-hide-comnt
   ;; Download and byte-compile hide-comnt.el if its not present
