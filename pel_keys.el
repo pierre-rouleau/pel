@@ -4736,6 +4736,8 @@ the ones defined from the buffer now."
     (key-chord-mode 1)))
 
 (when pel-use-key-chord
+  (define-key pel:keys  (kbd "M-K")  'pel-key-chord-describe)
+
   (when pel-use-key-seq
     ;; The key-seq is only activated once key-chord is activated.
     ;; Both must be active for key-seq to be used.  When both are

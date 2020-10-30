@@ -101,6 +101,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     user option.
   - New: key binding to a command to display Emacs executable path: <f11> ? e x.
   - New: key binding to display Emacs up-time (<f11> ? e u).
+- Update: *Key Chords*:
+  - New: command *pel-key-chord-describe* (bound to ``<f11> ? k M-K``)
+    displays the state of key-chord/key-seq and the key bindings if
+    key-chord-mode is active.
 - Update: *Navigation*
   - New: ``<f11 M-f>`` binding for pel-forward-syntaxchange-start and
     ``<f11 M-b>`` binding for pel-backward-syntaxchange-start.
@@ -275,7 +279,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 - Fix: The key binding for the *centi-assign* command identified by
   *pel-centi-assign-key* user option takes effect when pel-init executes as
   opposed to when the centimacro feature is loaded as before, allowing it to
-  load the centimacro feature..
+  load the centimacro feature.
+- Fix: definitions of PEL key-chord or key-seq properly support the
+  identification of a command by its name.
 * Version 0.3.1
 ** Fixes:
   - Spell check control user options and handling now simpler and don't have type

@@ -1093,88 +1093,109 @@ typed quickly or slowly when recorded.)"
 ;;             ,@body)
 ;;         (insert ,key-chord)))))
 
+;; Define the wrapper functions instead of lambdas.
+;; This way help will identify the function names.
+
+(defun pel-kc-windmove-up ()
+  "Execute function `windmove-up' if available."
+  (interactive)
+  (if (require 'windmove nil :noerror)
+      (windmove-up)
+    (user-error "Failed loading windmove!")))
+
+(defun pel-kc-windmove-down ()
+  "Execute function `windmove-down' if available."
+  (interactive)
+  (if (require 'windmove nil :noerror)
+      (windmove-down)
+    (user-error "Failed loading windmove!")))
+
+(defun pel-kc-windmove-left ()
+  "Execute function `windmove-left' if available."
+  (interactive)
+  (if (require 'windmove nil :noerror)
+      (windmove-left)
+    (user-error "Failed loading windmove!")))
+
+(defun pel-kc-windmove-right ()
+  "Execute function `windmove-right' if available."
+  (interactive)
+  (if (require 'windmove nil :noerror)
+      (windmove-right)
+    (user-error "Failed loading windmove!")))
+
+(defun pel-kc-indent-rigidly (&optional n)
+  "Execute function `pel-indent-rigidly' if available.
+Optional argument N specifies lines to indent as in `pel-indent-rigidly'."
+  (interactive "*P")
+  (if (and (require 'pel-indent nil :noerror)
+           (fboundp 'pel-indent-rigidly))
+      (pel-indent-rigidly n)
+    (user-error "Failed loading pel-indent!")))
+
+(defun pel-kc-correct-word-before-point ()
+  "Execute function `flyspell-correct-word-before-point' if available."
+  (interactive)
+  (if (and (require 'flyspell nil :noerror)
+           (fboundp 'flyspell-correct-word-before-point))
+      (flyspell-correct-word-before-point)
+    (user-error "Failed loading flyspell!")))
+
+(defun pel-kc-open-at-point (&optional n)
+  "Execute function `pel-open-at-point' if available.
+See `pel-open-at-point' for description of argument N."
+  (interactive "P")
+  (if (and (require 'pel-open nil :noerror)
+           (fboundp 'pel-open-at-point))
+      (pel-open-at-point n)
+    (user-error "Failed loading pel-open!")))
+
+(defun pel-kc-browse-filename-at-point ()
+  "Execute function `pel-browse-filename-at-point' if available."
+  (interactive)
+  (if (and (require 'pel-open nil :noerror)
+           (fboundp 'pel-browse-filename-at-point))
+      (pel-browse-filename-at-point)
+    (user-error "Failed loading pel-open!")))
+
+(defun pel-kc-browse-url-at-point ()
+  "Execute function `browse-url-at-point' if available."
+  (interactive)
+  (if (and (require 'browse-url nil :noerror)
+           (fboundp 'browse-url-at-point))
+      (browse-url-at-point)
+    (user-error "Failed loading browse-url!")))
+
+(defun pel-kc-search-word-from-top (&optional n)
+  "Execute function `pel-search-word-from-top' if available.
+See `pel-search-word-from-top' for description of argument N."
+  (interactive "P")
+  (if (and (require 'pel-search nil :noerror)
+           (fboundp 'pel-search-word-from-top))
+      (pel-search-word-from-top n)
+    (user-error "Failed loading pel-search!")))
 
 (defcustom pel-key-chords
-  '((global    ""         key-chord      "<>"  "<>\C-b")
-    (global    ""         key-chord      "[]"  "[]\C-b")
-    (c-mode    "cc-mode"  key-chord      "{}"  "{\n\n}\C-p\C-p")
-    (c++-mode  "cc-mode"  key-chord      "{}"  "{\n\n}\C-p\C-p")
-    (global    ""         key-chord
-               "yu" (lambda ()
-                      (interactive)
-                      (if (require 'windmove nil :noerror)
-                          (windmove-up)
-                        (insert "yu"))))
-
-    (global    ""         key-chord
-               "bn" (lambda ()
-                      (interactive)
-                      (if (require 'windmove nil :noerror)
-                          (windmove-down)
-                        (insert "bn"))))
-
-    (global    ""         key-seq ; prevent 'fg', often in words.
-               "gf" (lambda ()
-                      (interactive)
-                      (if (require 'windmove nil :noerror)
-                          (windmove-left)
-                        (insert "gf"))))
-
-    (global    ""         key-chord
-               "jk" (lambda ()
-                      (interactive)
-                      (if (require 'windmove nil :noerror)
-                          (windmove-right)
-                        (insert "jk"))))
-
-    (global ""            key-chord
-            "	q" (lambda (&optional n)
-                     (interactive "*P")
-                     (if (require 'pel-indent nil :noerror)
-                         (pel-indent-rigidly n)
-                       (insert "	q"))))
-
-    (flyspell-mode "flyspell" key-chord
-                   "4r" (lambda ()
-                          (interactive)
-                          (if (require 'flyspell nil :noerror)
-                              (flyspell-correct-word-before-point)
-                            (insert "4r"))))
-
-    (flyspell-prog-mode "flyspell" key-chord
-                        "4r" (lambda ()
-                               (interactive)
-                               (if (require 'flyspell nil :noerror)
-                                   (flyspell-correct-word-before-point)
-                                 (insert "4r"))))
-
-    (global    ""         key-chord
-               "6y"  (lambda (&optional n)
-                       (interactive "P")
-                       (if (require 'pel-open nil :noerror)
-                           (pel-open-at-point n)
-                         (insert "6y"))))
-
-    (global    ""         key-chord
-               "6u"  (lambda ()
-                       (interactive)
-                       (if (require 'pel-open nil :noerror)
-                           (pel-browse-filename-at-point)
-                         (insert "6u"))))
-
-    (global    ""         key-chord
-               "7u"  (lambda ()
-                       (interactive)
-                       (if (require 'browse-url nil :noerror)
-                           (browse-url-at-point)
-                         (insert "7u"))))
-
-    (global    ""         key-chord
-               ".;"  (lambda (&optional n)
-                       (interactive "P")
-                       (if (require 'pel-search nil :noerror)
-                           (pel-search-word-from-top n)
-                         (insert ".;")))))
+  '((global        ""         key-chord   "<>"      "<>\C-b")
+    (global        ""         key-chord   "[]"      "[]\C-b")
+    (c-mode        "cc-mode"  key-chord   "{}"      "{\n\n}\C-p\C-p")
+    (c++-mode      "cc-mode"  key-chord   "{}"      "{\n\n}\C-p\C-p")
+    (global        ""         key-chord   "yu"      pel-kc-windmove-up)
+    (global        ""         key-chord   "bn"      pel-kc-windmove-down)
+    ; prevent 'fg' to trigger windmove as it appears often in words.
+    (global        ""         key-seq     "gf"      pel-kc-windmove-left)
+    (global        ""         key-chord   "jk"      pel-kc-windmove-right)
+    (global        ""         key-chord   "	q"  pel-kc-indent-rigidly)
+    ;; activate the "4r" key-chord in modes where flyspell-mode
+    ;; or flyspell-prog-mode is active.
+    (flyspell-mode "flyspell" key-chord   "4r"
+                   pel-kc-correct-word-before-point)
+    (flyspell-prog-mode "flyspell" key-chord  "4r"
+                        pel-kc-correct-word-before-point)
+    (global    ""            key-chord   "6y"       pel-kc-open-at-point)
+    (global    ""            key-chord   "6u"       pel-kc-browse-filename-at-point)
+    (global    ""            key-chord   "7u"       pel-kc-browse-url-at-point)
+    (global    ""            key-chord   ".;"       pel-kc-search-word-from-top))
   "List of key-chords activated when the key-chord-mode is turned on.
 PEL provides a set of defaults.  You can replace, delete or add new
 key-chord definitions to this default.
@@ -1220,7 +1241,7 @@ The `pel-key-chords' value is a list of objects.
   - The fifth item describes the action for the key-chord
     or key-seq.  The action can be expressed using one of 3 ways,
     selected by its Value Menu:
-    - 0: expansion keys:
+    - 0: expansion string:
          Type the keys you want as replacement. You can
          place several keys on a line, or spread them on several
          lines.  You can identify control keys by entering the
@@ -1233,7 +1254,7 @@ The `pel-key-chords' value is a list of objects.
          Use the lambda form instead.
          BTW, if you know how to fix that please don't hesitate
          to either let me know or submit a pull-request.
-    - 1: command:
+    - 1: command name:
          Type the name of the Emacs interactive function you want
          to execute when the key-chord is hit.
          IMPORTANT: use only functions that you know are *always*
@@ -1245,7 +1266,7 @@ The `pel-key-chords' value is a list of objects.
          then use a lambda form and write code that requires the
          feature providing the function.
          See the default for \"4r\" in the default above as an example.
-    - 2: lambda:
+    - 2: lambda form:
          This is the most flexible way.  Here you write any elisp
          code you need inside a lambda expression that take no
          argument.   You can call any elisp function in here.
@@ -1262,9 +1283,10 @@ The `pel-key-chords' value is a list of objects.
      (choice   (const :tag "key-chord" key-chord)
                (const :tag "key-seq"   key-seq))
      (string   :tag "2-keys")
-     (choice (string   :tag "expansion")
-             (function :tag "function")
-             (function :tag "lambda" :value (lambda () (interactive) <YOUR CODE HERE>))))))
+     (choice (string   :tag "expansion string")
+             (symbol   :tag "command name    ")
+             (function :tag "lambda form     "
+                       :value (lambda () (interactive) <YOUR CODE HERE>))))))
 
 ;; -----------------------------------------------------------------------------
 ;; Keys & Prompts

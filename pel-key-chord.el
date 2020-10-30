@@ -203,23 +203,45 @@ Return one of:
     (if done t key-chord-spec)))
 
 (defun pel-activate-key-chords-in (key-chords-spec)
-  "Activate all global key-chords in KEY-CHORDS-SPEC.
-Return an alist of (mode . fname) for which the activation must be deferred."
+  "Activate non-deferred global key-chords in KEY-CHORDS-SPEC.
+KEY-CHORDS-SPEC is a list of the following 5 elements:
+
+ - 1: A mode symbol.  Either:
+      - 'global : meaning that the key chord must be defined globally, or
+      -  a major/minor mode symbol: meaning that the key chord must only be
+         activated when that mode is activated.
+ - 2: string: the base name of an Emacs Lisp file or an empty string.
+      If the string identifies a file, like \"flyspell\" the definition of
+      the corresponding key chord is deferred up until that file is loaded.
+      This allows delayed loading of key chords.
+ - 3: type symbol: either 'key-chord or 'key-seq.  This identifies whether
+      the key chord is defined with the key-chord functions or the key-seq
+      function and therefore identifies whether the key chord will be
+      accepted in any typing order (for 'key-chord) or just for the order
+      identified by the chord string.
+ - 4: string.  The 2-character chord string.
+ - 5: The action.  One of the following:
+      - A string. The string corresponds to the replacement text inserted.
+      - A command symbol. A command function to execute in place of the
+        typed chord.
+      - A lambda function.  The code to execute in place of the typed chord.
+
+Return a list of (mode fname key-type key-string) for which the activation must be deferred."
   (let ((deferred-modes ())) ; alist of (mode . fname) that must be deferred
-    (dolist (spec key-chords-spec)
+    (dolist (spec key-chords-spec (reverse deferred-modes))
       (let ((activation-result (pel-activate-key-chord-from-spec spec)))
-        ;; activation-result := (mode-symbol
-        ;;                       fname
-        ;;                       key-type
-        ;;                       key-string
-        ;;                       action-string|function)
+        ;; activation-result := t | (mode-symbol
+        ;;                           fname
+        ;;                           key-type
+        ;;                           key-string
+        ;;                           action-string|function)
         (unless (eq activation-result t)
-          (let ((mode    (car activation-result))
-                (fname   (cadr activation-result)))
+          (let ((mode       (car activation-result))
+                (fname      (nth 1 activation-result))
+                (key-type   (nth 2 activation-result))
+                (key-string (nth 3 activation-result)))
             (unless (assoc mode deferred-modes)
-              (setq deferred-modes
-                    (cons (cons mode fname) deferred-modes)))))))
-    deferred-modes))
+              (push (list mode fname key-type key-string) deferred-modes))))))))
 
 (defun pel--activate-deferred-key-chords ()
   "Activates deferred key-chord(s).  Display a message to help follow."
@@ -230,16 +252,32 @@ Return an alist of (mode . fname) for which the activation must be deferred."
   "Activate all key-chords defined in `pel-key-chords'."
   (let ((deferred-modes-alist (pel-activate-key-chords-in pel-key-chords)))
     (dolist (mode-fname deferred-modes-alist)
-      (let ((mode  (car mode-fname))
-            (fname (cdr mode-fname)))
+      (let ((mode       (car   mode-fname))
+            (fname      (nth 1 mode-fname))
+            (key-type   (nth 2 mode-fname))
+            (key-string (nth 3 mode-fname)))
         (message
-         "pel-activate-all-key-chords: deferring %s, via loading of: %s"
-         mode fname)
+         "pel-activate-all-key-chords: deferring activation of %s %S for %s, \
+via loading of %s"
+         key-string key-type mode fname)
         ;; for deferral, just re-execute the complete interpretation of
         ;; pel-key-chords.  This way if a change occurred in it, it will
         ;; be activated as soon as possible.
         (eval-after-load fname
           '(pel--activate-deferred-key-chords))))))
+
+;; --
+
+;;-pel-autoload
+(defun pel-key-chord-describe ()
+  "Describe the state of the key-chord mode and its key bindings.
+Uses the function `key-chord-describe'."
+  (interactive)
+  (if (and (boundp 'key-chord-mode)
+           (fboundp 'key-chord-describe)
+           key-chord-mode)
+      (key-chord-describe)
+    (message "key-chord-mode is OFF.")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-key-chord)
