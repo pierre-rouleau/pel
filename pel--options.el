@@ -3435,7 +3435,7 @@ Emacs window layout previously used:
   :safe #'booleanp)
 
 
-(defcustom pel-windmove-on-esc-cursor t
+(defcustom pel-windmove-on-esc-cursor (not (eq system-type 'gnu/linux))
   "Control whether the Esc-cursor keys are bound to windmove commands.
 
 When set to t, PEL activates the following four key bindings:
