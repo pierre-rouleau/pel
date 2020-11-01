@@ -152,6 +152,11 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     the LispWorks Common Lisp HyperSpec HTML documentation.
   - New: The ``<f12> <f3>`` key sequence provides access to slime
     customization buffer.
+- Update: *Sessions*:
+  - New: temporary work-around fix for [[https://github.com/victorhge/iedit/issues/115][iedit bug # 115]] implemented inside
+    pel-init to prevent desktop restoration failures when ``iedit-mode`` was
+    active in past session being restored.  Waiting for incorporation of [[https://github.com/victorhge/iedit/pull/116][my
+    fix]] in iedit.
 - Update: *Text Insertion*:
   - Improved: generic file mode/header template insetion (``<f6>
     h``) and separator line insertion (``<f6> l``) now get comment style from
