@@ -122,14 +122,17 @@ If the ONLY-USER-OPTIONS argument is non-nil, include only user option
 variables."
   (interactive "P")
   (let ((comment-symbols '())
-        (max-length 0))
+        (max-length 0)
+        (local-values-alist '())) ; maps symbol to it's buffer local value
     (mapatoms (lambda (symbol)
                 (when (and (boundp symbol)
                            (or (not only-user-options)
                                (get symbol 'custom-type))
                            (pel-string-starts-with
                             (symbol-name symbol) "comment-"))
-                  (push symbol comment-symbols))))
+                  (push symbol comment-symbols)
+                  (push (cons symbol (symbol-value symbol))
+                        local-values-alist))))
     (setq comment-symbols
           (sort comment-symbols (lambda (s1 s2)
                                   (let ((n1 (symbol-name s1)))
@@ -152,7 +155,8 @@ variables."
                  (dolist (symbol comment-symbols (reverse lines))
                    (push (format format-string
                                  (symbol-name symbol)
-                                 (symbol-value symbol)) lines))
+                                 (cdr (assoc symbol local-values-alist)))
+                         lines))
                  "\n"))
         (insert "\n\n")
         (goto-char (point-max)))
