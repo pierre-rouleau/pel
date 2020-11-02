@@ -155,7 +155,7 @@ The tag uses TITLE if specified otherwise it uses ITEM capitalized."
   "Mail address of the user.")
 
 ;;-pel-autoload
-(defun pel-skel-author-comment (&optional comment-prefix author-word)
+(defun pel-skel-author-comment (&optional comment-prefix author-word on-this-line)
   "Return a commented line providing the file's author name.
 The line starts with `comment-start' unless COMMENT-PREFIX is specified,
 in which case that is used.
@@ -167,7 +167,8 @@ The returned string ends with a newline."
   (let ((auth-word (or author-word "Author    :"))
         (auth-comment (or comment-prefix comment-start)))
     (format "%s%s %s %s <%s>\n"
-            (if (pel-line-only-whitespace-p) "" "\n")
+            (if (or on-this-line
+                    (pel-line-only-whitespace-p)) "" "\n")
             auth-comment
             auth-word
             (user-full-name)
@@ -177,13 +178,14 @@ The returned string ends with a newline."
 ;; Created
 
 ;;-pel-autoload
-(defun pel-skel-created-comment (&optional comment-prefix)
+(defun pel-skel-created-comment (&optional comment-prefix on-this-line)
   "Return a \"Created timestamp\" line string.
 The line starts with `comment-start' unless COMMENT-PREFIX is specified,
 in which case that is used.
 The returned string ends with a newline."
   (format "%s%s Created   : %s\n"
-          (if (pel-line-only-whitespace-p) "" "\n")
+          (if (or on-this-line
+                  (pel-line-only-whitespace-p)) "" "\n")
           (or comment-prefix comment-start)
           (format-time-string "%A, %B %e %Y.")))
 
@@ -306,6 +308,10 @@ The following variables are used for the decision:
         (setq cc " *"))
       (when (string= ce "*/")
         (setq ce " */")))
+    (when (and (string= cb "/*")
+               (string= cc " *")
+               (string= ce "*/"))
+      (setq ce " */"))
     (list cb cc ce)))
 
 ;; -----------------------------------------------------------------------------
