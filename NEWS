@@ -152,15 +152,6 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     the LispWorks Common Lisp HyperSpec HTML documentation.
   - New: The ``<f12> <f3>`` key sequence provides access to slime
     customization buffer.
-- Update: *Sessions*:
-  - New: temporary work-around fix for [[https://github.com/victorhge/iedit/issues/115][iedit bug # 115]] implemented inside
-    pel-init to prevent desktop restoration failures when ``iedit-mode`` was
-    active in past session being restored.  Waiting for incorporation of [[https://github.com/victorhge/iedit/pull/116][my
-    fix]] in iedit.
-- Update: *Text Insertion*:
-  - Improved: generic file mode/header template insetion (``<f6>
-    h``) and separator line insertion (``<f6> l``) now get comment style from
-    user if they are not already defined.
 - Update: *Navigation*:
   - New: when the new *pel-windmove-on-f1-cursor* user option is set to t, PEL
     activates several key bindings for windows management using the <f1>
@@ -206,11 +197,20 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       - a numbered prefix in the range [20..28] grab the word with super-word
         mode temporarily activated and then select the window as if the
         numbered prefix was 0 to 8.
+- Update: *Sessions*:
+  - New: temporary work-around fix for [[https://github.com/victorhge/iedit/issues/115][iedit bug # 115]] implemented inside
+    pel-init to prevent desktop restoration failures when ``iedit-mode`` was
+    active in past session being restored.  Waiting for incorporation of [[https://github.com/victorhge/iedit/pull/116][my
+    fix]] in iedit.
 - Update: *Skeletons*:
   - Modified: Improved the handling of C-like modes for file header blocks:
     - prevent insertions of empty lines when a file header is inserted in
       non-empty file,
     - terminate C-style comments with 1-star continuation properly.
+- Update: *Text Insertion*:
+  - Improved: generic file mode/header template insetion (``<f6>
+    h``) and separator line insertion (``<f6> l``) now get comment style from
+    user if they are not already defined.
 - Update: *Text Modes*:
   - New: overwrite-mode is also bound to the <Esc><kp-0> key sequence.  This
     makes it very similar to the default <insert> key which is not available
