@@ -1839,6 +1839,24 @@ MODE must be a symbol."
     (require 'erlang-start)
     ;;
     (when pel-use-edts
+      (defun edts-mode-desktop-restore  (&rest args)
+        "Restore EDTS mode desktop with specified ARGS.
+        Prevent edts errors from stopping desktop restoration."
+        ;; log a message for each restoration to help understand potential failure.
+        (message "Desktop: (edts-mode-desktop-restore %S)" args)
+        (with-demoted-errors "Desktop: Problem restoring edts-mode: %S"
+          (if (fboundp 'edts-mode)
+              ;; If EDTS mode is available allow restoration but catch errors.
+              ;; If an error is detected, disable EDTS mode because EDTS can fail
+              ;; but the mode can still show as active(!).
+              (condition-case err
+                  (edts-mode 1)
+                (error (progn
+                         (message "Desktop: Error detected activating EDTS mode: %s"
+                                  (error-message-string err))
+                         (edts-mode -1))))
+            (error "edts-mode is void.  Is it installed?"))))
+
       (use-package edts
         :ensure t
         :pin melpa
@@ -1850,6 +1868,8 @@ MODE must be a symbol."
           (require 'edts-start))
 
         :config
+        (add-to-list 'desktop-minor-mode-handlers
+                 '(edts-mode . edts-mode-desktop-restore))
         ;; EDTS keys
         ;;  edts cross reference command keys
         (define-key pel:for-erlang      "w"    'edts-xref-who-calls)

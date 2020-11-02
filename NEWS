@@ -202,6 +202,11 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     pel-init to prevent desktop restoration failures when ``iedit-mode`` was
     active in past session being restored.  Waiting for incorporation of [[https://github.com/victorhge/iedit/pull/116][my
     fix]] in iedit.
+  - New: added a desktop restoration handler for edts-mode: it protects
+    desktop restoration against failures in edts-mode and reports them by
+    messages. It also deactivate edts-mode when the mode activation failed.
+    This is done to prevent a failed edts-mode from showing it is activated
+    when it is not.
 - Update: *Skeletons*:
   - Modified: Improved the handling of C-like modes for file header blocks:
     - prevent insertions of empty lines when a file header is inserted in
