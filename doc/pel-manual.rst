@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-10-21 14:07:55, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-11-05 17:20:58, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2252,8 +2252,10 @@ The file `pel-indent.el`_ includes some very basic utilities for simple
 indentation control, complementing what is available in Emacs.
 The available commands are:
 
-- ``pel-insert-c-indent`` inserts spaces to indent the current line.
-- ``pel-unindent`` removes spaces to un-indent the current line.
+- ``pel-indent-lines`` indent the current line or all lines included in the
+  current marked region, regardless of the point and mark position.
+- ``pel-unindent-lines`` un-indent the current line or all lines included in the
+  current marked region, regardless of the point and mark position.
 - ``pel-indent-rigidly`` indents the current line or marked region, this command
   extends the Emacs indent-rigidly command.
 
@@ -2969,6 +2971,108 @@ on which the c-mode is based via the **pel:for-c** key-map, bounded to the
 **F12** key for each buffer in c-mode.
 
 .. _C Programming Language: https://en.wikipedia.org/wiki/C_(programming_language)
+
+
+C Style Control
++++++++++++++++
+
+Ideally the editor should support various indentation styles for the C
+preprocessor directives.  A selection of styles is shown in the next section.
+
+I am working to implement the ability to support all of these styles.
+But it is work in progress.
+I will update this section once this work is done.
+
+
+Indentation of C pre-processor statements
+*****************************************
+
+All examples are using the bsd indentation style.
+
+**Style 1: no indentation**
+
+.. code::  c
+
+#ifdef SOMETHING
+  #if SOMETHING_ELSE
+    #define SOMEONE 1
+
+
+      for (...)
+      {
+        if (foo)
+        {
+          if (bar)
+          {
+      #ifdef __WIN32__
+            c = GetTickCount();
+      #else
+            c = clock();
+      #endif
+          }
+        }
+      }
+
+
+**Style 2: all indented**
+
+.. code::  c
+
+      for (...)
+      {
+        if (foo)
+        {
+          if (bar)
+          {
+            #ifdef __WIN32__
+              c = GetTickCount();
+            #else
+              c = clock();
+            #endif
+          }
+        }
+      }
+
+**Style 3: indented**
+
+.. code::  c
+
+      for (...)
+      {
+        if (foo)
+        {
+          if (bar)
+          {
+            #ifdef __WIN32__
+            c = GetTickCount();
+            #else
+            c = clock();
+            #endif
+          }
+        }
+      }
+
+
+**Style 4: anchored indented**
+
+      for (...)
+      {
+        if (foo)
+        {
+          if (bar)
+          {
+      #     ifdef __WIN32__
+              c = GetTickCount();
+      #     else
+              c = clock();
+      #     endif
+          }
+        }
+      }
+
+
+
+
 
 C Code Templates
 ++++++++++++++++
@@ -4768,10 +4872,10 @@ Note:
 #. `Closing and Suspending`_
 #. `Comments`_
 #. Completion: `Input Completion`_
-#. `Cursor`_
-#. `Customization <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf>`_.
 #. `Counting`_
 #. `Cross-Referencing`_
+#. `Cursor`_
+#. `Customization <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf>`_.
 #. `CUA Mode Support`_
 #. `Cut, Delete, Copy and Paste`_ (killing and yanking)
 #. `Diff and Merge`_
