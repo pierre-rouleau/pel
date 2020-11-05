@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-11-05 15:11:13, updated by Pierre Rouleau>
+;; Time-stamp: <2020-11-05 15:48:02, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -127,7 +127,9 @@ The MARKED-LINES-SPEC argument is a list with the following 3 elements:
 
 ;;-pel-autoload
 (defun pel-indent-lines (&optional n)
-  "Insert current or marked lines by N indentation levels.
+  "Indent current or marked lines by N indentation levels.
+Works with point anywhere on the line.
+All lines touched by the region are indented.
 A special argument N can specify more than one
 indentation level.  It defaults to 1.
 If a negative number is specified, `pel-unindent-lines' is used.
@@ -169,8 +171,9 @@ Limitation: does not handle hard tabs and may move point."
 
 ;;-pel-autoload
 (defun pel-unindent-lines (&optional n)
-  "Un-indent current line or marked region by N indentation levels.
+  "Un-indent current line or marked lines by N indentation levels.
 Works when point is anywhere on the line.
+All lines touched by the region are un-indented.
 If region was marked, the function does not deactivate it to allow
 repeated execution of the command.
 If a region was marked, the function does not deactivate it to allow
