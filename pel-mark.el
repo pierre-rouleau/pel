@@ -76,19 +76,27 @@ mark ring entry.
 This function can be used to help understand the behaviour and impact
 of commands on the mark and mark rings."
   (interactive)
-  (message "Global mark-ring size=%d/%d: %S
-%s: region=%s mark-ring size=%d/%d: %S
-point: %S, mark: %S"
-           (length global-mark-ring)
-           global-mark-ring-max
-           (pel-global-mark-buffer-positions)
+  (message "\
+Point, Mark          : %S, %S
+Delete selection Mode: %s
+%s: region=%s
+%s: mark-ring size=%d/%d: %S
+Global mark-ring size: %d/%d
+Global mark ring: %S"
+           (point)
+           (mark :force)
+           (pel-symbol-on-off-string 'delete-selection-mode)
+           ;; local
            (buffer-name)
            (pel-yes-no-string mark-active "active" "inactive")
+           (buffer-name)
            (length mark-ring)
            mark-ring-max
            (pel-mark-ring-positions)
-           (point)
-           (mark :force)))
+           ;; global
+           (length global-mark-ring)
+           global-mark-ring-max
+           (pel-global-mark-buffer-positions)))
 
 ;; --
 
