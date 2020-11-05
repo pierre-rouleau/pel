@@ -37,7 +37,6 @@
 ;; -------
 (defun pel--ccp-require-thingatpt ()
   "Load thingatpt/."
-  (message "pel--ccp-require-thingatpt")
   (unless (and (require 'thingatpt nil :noerror)
                (fboundp 'bounds-of-thing-at-point))
     (user-error "Failed loading thingatpt!")))
@@ -45,10 +44,21 @@
 ;; Copy Commands.
 ;; --------------
 
-(defun pel--show-kill-ring-top ()
-  "Display top of kill ring on echo area."
-  (message "Copy:「%s」"
+(defun pel--show-kill-ring-top (op-name)
+  "Display top of kill ring on echo area.
+Show the OP-NAME and the content of the kill ring at top."
+  (message "%s:「%s」"
+           op-name
            (substring-no-properties (car kill-ring))))
+
+
+(defun pel--show-copied ()
+  "Display what was copied."
+  (pel--show-kill-ring-top "Copy"))
+
+(defun pel--show-killed ()
+  "Display what was killed."
+  (pel--show-kill-ring-top "Kill"))
 
 (defun pel--copy-thing-at-point (thing)
   "Copy the `thing-at-point' for the specified kind of THING.
@@ -58,7 +68,7 @@ See `bounds-of-thing-at-point' for a list of possible THING symbols."
     (if bounds
         (progn
           (copy-region-as-kill (car bounds) (cdr bounds))
-          (pel--show-kill-ring-top))
+          (pel--show-copied))
       (error "No %s at point" thing))))
 
 ;;-pel-autoload
@@ -137,7 +147,7 @@ a negative N copies the current one and N-1 previous paragraphs."
                            (progn
                              (forward-paragraph n)
                              (point))))
-    (pel--show-kill-ring-top)))
+    (pel--show-copied)))
 
 
 ;;-pel-autoload
@@ -147,8 +157,7 @@ a negative N copies the current one and N-1 previous paragraphs."
   (save-excursion
     (copy-region-as-kill (point)
                          (progn (backward-paragraph) (point)))
-    (pel--show-kill-ring-top)))
-
+    (pel--show-copied)))
 
 ;;-pel-autoload
 (defun pel-copy-paragraph-end ()
@@ -159,7 +168,7 @@ a negative N copies the current one and N-1 previous paragraphs."
                          (progn
                            (forward-paragraph)
                            (point)))
-    (pel--show-kill-ring-top)))
+    (pel--show-copied)))
 
 
 ;;-pel-autoload
@@ -171,7 +180,7 @@ a negative N copies the current one and N-1 previous paragraphs."
                          (progn
                            (move-beginning-of-line nil)
                            (point)))
-    (pel--show-kill-ring-top)))
+    (pel--show-copied)))
 
 ;;-pel-autoload
 (defun pel-copy-line-end ()
@@ -182,7 +191,7 @@ a negative N copies the current one and N-1 previous paragraphs."
                          (progn
                            (move-end-of-line nil)
                            (point)))
-    (pel--show-kill-ring-top)))
+    (pel--show-copied)))
 
 
 ;;-pel-autoload
@@ -196,7 +205,7 @@ a negative N copies the character backwards (before point)."
                          (progn
                            (forward-char (prefix-numeric-value n))
                            (point)))
-    (pel--show-kill-ring-top)))
+    (pel--show-copied)))
 
 
 ;; -----------------------------------------------------------------------------
@@ -209,7 +218,9 @@ See `bounds-of-thing-at-point' for a list of possible THING symbols."
   (pel--ccp-require-thingatpt)
   (let ((bounds (bounds-of-thing-at-point thing)))
     (if bounds
-        (kill-region (car bounds) (cdr bounds))
+        (progn
+          (kill-region (car bounds) (cdr bounds))
+          (pel--show-killed))
       (error "No %s at point" thing))))
 
 ;;-pel-autoload
@@ -289,7 +300,8 @@ a negative N kills the current one and N-1 previous paragraphs."
       (kill-region  (point)
                     (progn
                       (forward-paragraph n)
-                      (point))))))
+                      (point)))
+      (pel--show-killed))))
 
 ;;-pel-autoload
 (defun pel-kill-char-at-point (&optional n)
@@ -301,7 +313,8 @@ a negative N kills characters backwards."
     (kill-region (point)
                  (progn
                    (forward-char (prefix-numeric-value n))
-                   (point)))))
+                   (point)))
+    (pel--show-killed)))
 
 ;; Flexible whole-line/marked area delete/kill
 ;; -------------------------------------------
