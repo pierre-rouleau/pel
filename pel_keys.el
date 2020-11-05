@@ -1545,7 +1545,17 @@ just bind it again after this call."
     (define-key c-preproc-prefix "r" 'hide-ifdef-toggle-read-only)
     (define-key c-preproc-prefix "w" 'hide-ifdef-toggle-shadowing)
     (define-key c-preproc-prefix "C" 'hif-clear-all-ifdef-defined)
-    (define-key c-preproc-prefix "e" 'hif-evaluate-macro)))
+    (define-key c-preproc-prefix "e" 'hif-evaluate-macro)
+    (define-key c-preproc-prefix "n" 'pel-pp-next-directive)
+    (define-key c-preproc-prefix "p" 'pel-pp-prev-directive)
+    (define-key c-preproc-prefix "?" 'pel-pp-show-state)))
+
+(defun pel--cc-extra-setup ()
+  "More setup for CC modes: add c preprocessor hydra."
+  ;; The pel-⅀c-preproc requires Hydra: load it via the pel--load-hydra
+  (when (and pel-use-hydra
+             (fboundp 'pel--load-hydra))
+(pel--load-hydra :no-request)))
 
 (defun pel--set-cc-style (mode bracket-style newline-mode)
   "Set the BRACKET-STYLE and NEWLINE-MODE for MODE.
@@ -1599,7 +1609,10 @@ MODE must be a symbol."
   (pel-local-set-f12-M-f12 'pel:for-c)
   (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
   ;; 7) Install language-specific skeletons
-  (pel--install-c-skel      pel:c-skel))
+  (pel--install-c-skel      pel:c-skel)
+  ;; 8) extra setup
+  (pel--cc-extra-setup))
+
 
 (when pel-use-plantuml
   (define-key pel:for-c "u" 'pel-render-commented-plantuml))
@@ -1650,7 +1663,8 @@ MODE must be a symbol."
   (pel-local-set-f12-M-f12 'pel:for-c++-preproc "#")
   ;; 7) Install language-specific skeletons
   ;; TODO
-  )
+  ;; 8) extra setup
+  (pel--cc-extra-setup))
 
 (when pel-use-plantuml
   (define-key pel:for-c++ "u" 'pel-render-commented-plantuml))
@@ -4988,6 +5002,56 @@ Simulate a F7 prefix key unless DONT-SIMULATE is non-nil."
       (">" pel-hs-hide-block-below-inc "+1" :column "Hide levels:")
       ("<" pel-hs-hide-block-below-dec "-1")
       ("<f7>" nil                      "cancel" :column "End"))
+
+    ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    ;; PEL HYDRA: C preprocessor
+    (defhydra pel-⅀c-preproc (pel:for-c "<f7>"  :foreign-keys run)
+      "C preprocessor"
+      ("n"    pel-pp-next-directive       "next"           :column "Move to")
+      ("p"    pel-pp-prev-directive       "prev"           :column "Move to")
+      ("C-p"  c-backward-conditional      "begin"          :column "Move to")
+      ("C-n"  c-forward-conditional       "end"            :column "Move to")
+      ("C-u"  c-up-conditional            "up"             :column "Move to")
+      ("#"    hide-ifdef-mode             "toggle mode"    :column "Hide")
+      ("W"    hide-ifdef-toggle-shadowing "toggle shadow"  :column "Hide")
+      ("R"    hide-ifdef-toggle-read-only "toggle RO"      :column "Hide")
+      ("H"    hide-ifdefs                 "hide"           :column "Hide")
+      ("S"    show-ifdefs                 "show"           :column "Hide")
+      ("h"    hide-ifdef-block            "hide block"     :column "Hide")
+      ("s"    show-ifdef-block            "show block"     :column "Hide")
+      ("e"    hif-evaluate-macro          "evaluate"       :column "# Vars")
+      ("d"    hide-ifdef-define           "define"         :column "# Vars")
+      ("u"    hide-ifdef-undef            "undef"          :column "# Vars")
+      ("U"    hide-ifdef-use-define-alist "Use list"       :column "# Vars")
+      ("D"    hide-ifdef-set-define-alist "Save list"      :column "# Vars")
+      ("C"    hif-clear-all-ifdef-defined "Clear all"      :column "# Vars")
+      ("?"    pel-pp-show-state           "Show state"     :column "Other")
+      ("<f7>" nil                         "cancel"         :column "Other"))
+
+    ;; TODO: find a way to eliminate this duplication
+    ;; PEL HYDRA: C preprocessor for C++
+    (defhydra pel-⅀c-preproc (pel:for-c++ "<f7>"  :foreign-keys run)
+      "C preprocessor"
+      ("n"    pel-pp-next-directive       "next"           :column "Move to")
+      ("p"    pel-pp-prev-directive       "prev"           :column "Move to")
+      ("C-p"  c-backward-conditional      "begin"          :column "Move to")
+      ("C-n"  c-forward-conditional       "end"            :column "Move to")
+      ("C-u"  c-up-conditional            "up"             :column "Move to")
+      ("#"    hide-ifdef-mode             "toggle mode"    :column "Hide")
+      ("W"    hide-ifdef-toggle-shadowing "toggle shadow"  :column "Hide")
+      ("R"    hide-ifdef-toggle-read-only "toggle RO"      :column "Hide")
+      ("H"    hide-ifdefs                 "hide"           :column "Hide")
+      ("S"    show-ifdefs                 "show"           :column "Hide")
+      ("h"    hide-ifdef-block            "hide block"     :column "Hide")
+      ("s"    show-ifdef-block            "show block"     :column "Hide")
+      ("e"    hif-evaluate-macro          "evaluate"       :column "# Vars")
+      ("d"    hide-ifdef-define           "define"         :column "# Vars")
+      ("u"    hide-ifdef-undef            "undef"          :column "# Vars")
+      ("U"    hide-ifdef-use-define-alist "Use list"       :column "# Vars")
+      ("D"    hide-ifdef-set-define-alist "Save list"      :column "# Vars")
+      ("C"    hif-clear-all-ifdef-defined "Clear all"      :column "# Vars")
+      ("?"    pel-pp-show-state           "Show state"     :column "Other")
+      ("<f7>" nil                         "cancel"         :column "Other"))
 
     ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     ;; PEL HYDRA: Selective Display

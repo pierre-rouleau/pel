@@ -111,12 +111,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 - Update: *Programming Language Support -- CC Mode Utilities*
   - Refactoring: Moved cc-mode utilities from pel_keys.el to the new pel-cc.el
     file.
-- Updated: *pel-cc-mode-info* can now be used from any major mode where it will
-   display info about non-loaded symbols and features. It also displays more
-   information to increase awareness of the active setting:
-  - the names of styles for current mode in c-default-style in order of
-    presence in the list, the active CC mode style,
-  - mode used by the return key.
+  - Updated: *pel-cc-mode-info* can now be used from any major mode where it will
+    display info about non-loaded symbols and features. It also displays more
+    information to increase awareness of the active setting:
+    - the names of styles for current mode in c-default-style in order of
+      presence in the list, the active CC mode style,
+    - mode used by the return key.
   - New: command bound to the return key in c-mode, c++-mode and d-mode:
     *pel-cc-newline*. The behaviour of the return key controlled by this
     command can be selected by the PEL user options for each mode as well as
@@ -141,6 +141,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       identified in the *pel-modes-activating-align-on-return* user option.
       It can also be modified dynamically by the command
       *pel-toggle-newline-indent-align  which is bound to ``<f11> M-RET``.
+  - New: for C and C++ modes, the ``<f12> <f7>`` key sequence opens the list
+    of C preprocessor Hydra keys that help navigate across C preprocessor
+    directives, hide and how them, etc...
 - Update: *Programming Language Support -- C*
   - New: ``<f12> <f12> d`` insert a C pre-processor #define statement.
   - New: ``<f12> <f12> i`` insert a C pre-processor #include statement for

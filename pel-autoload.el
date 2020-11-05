@@ -336,6 +336,11 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-plantuml" for: pel-render-commented-plantuml)
 
+  (pel-autoload "pel-pp" for:
+    pel-pp-next-directive
+    pel-pp-prev-directive
+    pel-pp-show-state)
+
   (pel-autoload "pel-prompt" for:
     pel-y-n-e-or-l-p
     pel-select-from)
