@@ -300,6 +300,13 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   load the centimacro feature.
 - Fix: definitions of PEL key-chord or key-seq properly support the
   identification of a command by its name.
+- Fix: Replaced ``pel-insert-c-indent`` by ``pel-indent-lines`` and
+  ``pel-unindent`` by ``pel-unindent-lines``.  The new functions handle all
+  file types as opposed to only the files with a major mode derived from CC
+  mode. They also allow any type of marking which they convert into a
+  line-type region mark to allow consecutive execution of the line indent and
+  line un-indenting commands.  The region is kept and no longer grows or shrink
+  in some scenarios as before.
 * Version 0.3.1
 ** Fixes:
   - Spell check control user options and handling now simpler and don't have type

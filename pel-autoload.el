@@ -263,8 +263,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-imenu-init)
 
   (pel-autoload "pel-indent" for:
-    pel-insert-c-indent
-    pel-unindent
+    pel-indent-lines
+    pel-unindent-lines
     pel-indent-rigidly)
 
   (pel-autoload "pel-kbmacros" for:

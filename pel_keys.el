@@ -1,4 +1,4 @@
-; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t-*-
+;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020  Pierre Rouleau
 
@@ -924,8 +924,8 @@ Then save your changes."
 (define-key pel:f6 (kbd "<right>")'end-of-defun)
 
 ;; (kbd "<tab>") does not work in terminal mode, it works only in graphics mode
-(define-key pel:f6 (kbd "C-i")       'pel-insert-c-indent)
-(define-key pel:f6 (kbd "<backtab>") 'pel-unindent)
+(define-key pel:f6 (kbd "C-i")       'pel-indent-lines)
+(define-key pel:f6 (kbd "<backtab>") 'pel-unindent-lines)
 ;;
 ;; Install the generic skeletons, 2 seconds after Emacs starts to reduce
 ;; Emacs init time.
@@ -3106,12 +3106,12 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 (define-pel-global-prefix pel:indent (kbd "<f11> TAB"))
 (define-key pel:indent "r"            #'indent-relative)
-(define-key pel:indent "c"             'pel-insert-c-indent)
-(define-key pel:indent "C"             'pel-unindent)
+(define-key pel:indent "c"             'pel-indent-lines)
+(define-key pel:indent "C"             'pel-unindent-lines)
 (define-key pel:indent (kbd "TAB")     'pel-indent-rigidly)
 (define-key pel:indent (kbd "<RET>")   'pel-newline-and-indent-below)
 
-(global-set-key (kbd "<backtab>") 'pel-unindent)
+(global-set-key (kbd "<backtab>") 'pel-unindent-lines)
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> |`` : Windows scroll lock commands
