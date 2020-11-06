@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-11-05 15:48:02, updated by Pierre Rouleau>
+;; Time-stamp: <2020-11-06 11:43:25, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -45,19 +45,99 @@
 ;; The number of columns used for the indentation level used by the functions
 ;; `pel-indent-lines' and 'pel-unindent-lines' is returned by the function
 ;; `pel-indent-level-colums'.
+;;
+;; The function `pel-indent-lines' and `pel-unindent-lines' handle hard tabs
+;; properly according to the currently active `indent-tabs-mode'.
+;;
+;; - When hard tabs are not permitted (i.e. `indent-tabs-mode' is nil), the
+;;   function replace all hard tabs in the indentation by the appropriate
+;;   number of space characters.  The functions do not replace hard tabs that
+;;   are somewhere else on the line (e.g. inside a code string).
+;; - When hard tabs are permitted (i.e. `indent-tabs-mode' is t), the
+;;   functions tabify the line or region marked.
+
+;; TODO: enhance pel-indent-level-columns to better consider various types of
+;; files for various programming and markup languages.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-;;
+;;  No dependencies - what's needed is loaded dynamically, with ability to
+;;  deal with load failures.
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
 ;; ---------------------------------------------------------------------------
-;; TODO: enhance pel-indent-level-columns to better consider various types of
-;; files for various programming and markup languages.
 
+(defun pel-indent-current-line-positions ()
+  "Return a cons with the positions of the beginning and end of current line."
+  (let (begin end)
+    (save-excursion
+      (setq begin (progn
+                    (beginning-of-line)
+                    (point)))
+      (setq end   (progn
+                    (end-of-line)
+                    (point))))
+    (cons begin end)))
+
+(defun pel-indent-tabify-current-line ()
+  "Tabify the current line."
+    (let ((begin.end (pel-indent-current-line-positions)))
+      (tabify (car begin.end) (cdr begin.end))))
+
+(defun pel-indent-untabify-current-line ()
+  "Untabify the current line."
+    (let ((begin.end (pel-indent-current-line-positions)))
+      (untabify (car begin.end) (cdr begin.end))))
+
+;; --
+
+(defun pel-indent-hard-tab-in-region-or-line-p ()
+  "Check if any lines is indented with a hard-tab in the marked region.
+Return non-nil if there is at least one.  The returned value is the position
+of the first hard tab found.
+Return nil if there are no hard tab in the indentation."
+  (let (begin-pos end-pos)
+    (if (use-region-p)
+        (progn
+          (setq begin-pos (region-beginning))
+          (setq end-pos   (region-end)))
+      (let ((begin.end (pel-indent-current-line-positions)))
+        (setq begin-pos (car begin.end))
+        (setq end-pos   (cdr begin.end))))
+    (save-excursion
+      (goto-char begin-pos)
+      (condition-case nil
+          (re-search-forward "^ *\t" end-pos)
+        (search-failed nil)))))
+
+(defun pel-indent-untabify-region (marked-lines-spec)
+  "Replace all hard tabs by spaces in the MARKED-LINES-SPEC region of lines.
+FIRST-LINE := line number of the first line in the region
+END-LINE   := line number of the last line in the region
+ORDER      := symbol.  One of 'point-before-mark or 'mark-before-point.
+The ORDER argument identifies the relative position of the point and mark
+in the region created by the function."
+  (let ((first-line (nth 0 marked-lines-spec))
+        (end-line   (nth 1 marked-lines-spec)))
+    (untabify (pel-indent-line-pos first-line nil)
+              (pel-indent-line-pos end-line t))))
+
+(defun pel-indent-tabify-region (marked-lines-spec)
+  "Use hard tabs and spaces in the MARKED-LINES-SPEC region of lines.
+FIRST-LINE := line number of the first line in the region
+END-LINE   := line number of the last line in the region
+ORDER      := symbol.  One of 'point-before-mark or 'mark-before-point.
+The ORDER argument identifies the relative position of the point and mark
+in the region created by the function."
+  (let ((first-line (nth 0 marked-lines-spec))
+        (end-line   (nth 1 marked-lines-spec)))
+    (tabify (pel-indent-line-pos first-line nil)
+            (pel-indent-line-pos end-line t))))
+
+;; --
 (defun pel-indent-level-columns (&optional n)
   "Return the number of columns corresponding to 1 (or N) indentation levels.
 The indentation level depends on the type of buffer."
@@ -135,25 +215,42 @@ indentation level.  It defaults to 1.
 If a negative number is specified, `pel-unindent-lines' is used.
 If a region was marked, the function does not deactivate it to allow
 repeated execution of the command.  It also modifies the region to
-include all characters in all affected lines."
+include all characters in all affected lines.
+Handles presence of hard tabs:
+- If `indent-tabs-mode' is non-nil the indentation is created with a mix
+  of hard-tabs and space characters.
+- If `indent-tabs-mode' is nil, any hard tab in the indentation of the
+  marked lines is replaced by the proper number of spaces.
+  Hard tabs after first non-whitespace character on the line are left."
   (interactive "*P")
   (let ((n (prefix-numeric-value n)))
-    (if (use-region-p)
-        (let ((original-region-spec (pel-indent-marked-lines))
-              (begin-point (region-beginning))
-              (line-count (count-lines (region-beginning) (region-end)))
-              ;; Normally, Emacs deactivates the region right after a command
-              ;; has executed.  To prevent this, and allow region to stay
-              ;; active and visible for further execution of this command,
-              ;; set the deactivate-mark variable to nil for this form.
-              (deactivate-mark nil))
-          (deactivate-mark)
-          (goto-char begin-point)
-          (dotimes (_i line-count)
-            (pel--insert-c-indent-line n)
-            (forward-line 1))
-          (pel-indent-mark-lines-by-spec original-region-spec))
-      (pel--insert-c-indent-line n))))
+    (let ((has-hard-tab (pel-indent-hard-tab-in-region-or-line-p)))
+      (if (use-region-p)
+          (let ((original-region-spec (pel-indent-marked-lines))
+                (begin-point (region-beginning))
+                (line-count (count-lines (region-beginning) (region-end)))
+                ;; Normally, Emacs deactivates the region right after a
+                ;; command has executed.  To prevent this, and allow region to
+                ;; stay active and visible for further execution of this
+                ;; command, set the deactivate-mark variable to nil for this
+                ;; form.
+                (deactivate-mark nil))
+            (when has-hard-tab
+              (pel-indent-untabify-region original-region-spec))
+            (deactivate-mark)
+            (goto-char begin-point)
+            (dotimes (_i line-count)
+              (pel--insert-c-indent-line n)
+              (forward-line 1))
+            (when indent-tabs-mode
+              (pel-indent-tabify-region original-region-spec))
+            (pel-indent-mark-lines-by-spec original-region-spec))
+        ;; handle single line
+        (when has-hard-tab
+          (pel-indent-untabify-current-line))
+        (pel--insert-c-indent-line n)
+        (when indent-tabs-mode
+          (pel-indent-tabify-current-line))))))
 
 ;; --
 (defun pel--line-unindent (&optional n)
@@ -179,9 +276,15 @@ repeated execution of the command.
 If a region was marked, the function does not deactivate it to allow
 repeated execution of the command.  It also modifies the region to
 include all characters in all affected lines.
-Limitation: does not handle hard tabs."
+Limitation: does not handle hard tabs.
+Handles presence of hard tabs:
+- If `indent-tabs-mode' is non-nil the indentation is created with a mix
+  of hard-tabs and space characters.
+- If `indent-tabs-mode' is nil, any hard tab in the indentation of the
+  marked lines is replaced by the proper number of spaces.
+  Hard tabs after first non-whitespace character on the line are left."
   (interactive "*P")
-  (save-excursion
+  (let ((has-hard-tab (pel-indent-hard-tab-in-region-or-line-p)))
     (if (use-region-p)
         (let ((original-region-spec (pel-indent-marked-lines))
               (begin-point (region-beginning))
@@ -191,13 +294,22 @@ Limitation: does not handle hard tabs."
               ;; active and visible for further execution of this command,
               ;; set the deactivate-mark variable to nil for this form.
               (deactivate-mark nil))
+          (when has-hard-tab
+              (pel-indent-untabify-region original-region-spec))
           (deactivate-mark)
           (goto-char begin-point)
           (dotimes (_i line-count)
             (pel--line-unindent n)
             (forward-line 1))
+          (when indent-tabs-mode
+            (pel-indent-tabify-region original-region-spec))
           (pel-indent-mark-lines-by-spec original-region-spec))
-      (pel--line-unindent n))))
+      ;; handle single line
+      (when has-hard-tab
+          (pel-indent-untabify-current-line))
+      (pel--line-unindent n)
+      (when indent-tabs-mode
+        (pel-indent-tabify-current-line)))))
 
 ;;-pel-autoload
 (defun pel-indent-rigidly (&optional n)

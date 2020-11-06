@@ -101,6 +101,16 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     user option.
   - New: key binding to a command to display Emacs executable path: <f11> ? e x.
   - New: key binding to display Emacs up-time (<f11> ? e u).
+- Update: *Indentation*:
+  - Improvement: to the commands bound to ``<f6> <tab>`` (now
+    ``pel-indent-lines``) and `<S-tab>`` (now ``pel-unindent-lines``):
+    - The commands now handle a marked region like a region marking all
+      touched lines and now longer suffers from a degradation of the marked
+      area on subsequent commands.
+    - The commands now properly handle the presence of hard tabs in the
+      indentation whitespace.  They also automatically tabify or untabify the
+      indentation whitespace, conforming to the mode identified by the
+      ``indent-tabs-mode`` variable.
 - Update: *Key Chords*:
   - New: command *pel-key-chord-describe* (bound to ``<f11> ? k M-K``)
     displays the state of key-chord/key-seq and the key bindings if
