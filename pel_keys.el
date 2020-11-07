@@ -213,7 +213,6 @@ Done in this function to allow advising libraries that remap these keys."
 ;; - Font Control
 ;; --------------
 
-
 (when (display-graphic-p)
 
   ;; Activate the all-the-icons package to get nice icons in graphics mode
@@ -4610,6 +4609,15 @@ the ones defined from the buffer now."
 (define-key pel:xref "F"  'pel-xref-select-front-end)
 
 (define-key pel:xref-backend "E"  'xref-etags-mode)
+
+
+;; Installation of work around for Emacs bug 44494
+;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=44494
+;; TODO: qualify this with emacs version as soon as a version of Emacs fixes
+;; the bug.
+(add-hook 'xref-etags-mode-hook (function
+                                 (lambda () (load "pel-etags" :no-error))))
+
 
 (when pel-use-ggtags
   (use-package ggtags

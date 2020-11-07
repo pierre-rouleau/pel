@@ -320,6 +320,18 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   line-type region mark to allow consecutive execution of the line indent and
   line un-indenting commands.  The region is kept and no longer grows or shrink
   in some scenarios as before.
+** Work-Around for Emacs Bugs:
+- Emacs 26.3 and 27.1 suffer from [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=44494][bug 44494]] where etags.el
+  xref-location-marker does not handle TAGS references to  .el.gz compressed
+  files. This prevents the xref-etags-mode to properly handle those
+  references.  I proposed a solution to this problem but until this, or
+  another solution is implemented to solve the problem, I implemented my own
+  solution, stored it inside the pel-etags.el file to replace the etags.el
+  code that fails.  The Makefile does not byte compile that file; it is just
+  loaded when the xref-etags-mode starts via a hook.  This file is not
+  stand-alone, that's why I don't byte compile it via make.  It can be byte
+  compiled when PEL is running if you want but its not necessary.   I will
+  remove this file and the hook once the Emacs bug is fixed.
 * Version 0.3.1
 ** Fixes:
   - Spell check control user options and handling now simpler and don't have type
