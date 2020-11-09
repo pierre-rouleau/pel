@@ -71,6 +71,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       buffer of more cross referencing packages. It provides access to dumb-jump,
       eopengrok, etags, eopengrok, ggtags, gxref, xref, ivy-xref, helm-xref,
       ivy, helm, projectile and speedbar.
+    - New: shell script to create etags-compatible TAGS files in the bin
+      directory:
+      - [[https://github.com/pierre-rouleau/pel/blob/master/bin/etags-el][etags-el]] creates a TAGS file for Emacs Lisp projects: all .el, .c and
+        .h files as well as their .gz compressed files.
 - Update: *Customization*:
   - New: command *pel-browse-group* which prompts allowing the browsing of the
     customization group tree from any group.  This complements the Emacs

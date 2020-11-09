@@ -1,0 +1,102 @@
+#!/bin/sh
+#  SH FILE: etags-el
+#
+#  Purpose   : Build Emacs Tags file for Emacs Lisp and C source code files.
+#  Created   : Thursday, October 15 2020.
+#  Author    : Pierre Rouleau <prouleau001@gmail.com>
+#  Time-stamp: <2020-11-09 10:24:13, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+#  Module Description
+#  ------------------
+#
+# Build an Emacs Tags file for all Emacs Lisp source code files in the
+# sub-directory tree.  This includes the Emacs Lisp files (the .el files)
+# as well as the C files.
+#
+# Usage:
+#  - cd where you want to store the TAGS file
+#  - etags-el path [path ...]
+#
+
+# ----------------------------------------------------------------------------
+#  Dependencies
+#  ------------
+#
+# - Uses fd (also named fdfind in some Linux distros like Mint) if it is
+#   available.  See URL:  https://github.com/sharkdp/fd .
+# - if fd/fdfind is not available, use find instead.
+#
+# Using fd/fdfind is preferred because it supports ignoring files identified
+# by .gitignore, .ignore, .fdignore files. The fd utility can also execute
+# faster than find in several scenarios.
+#
+# - To force use of find, set the ETAGS_USE_FIND environment variable to 1.
+
+# ----------------------------------------------------------------------------
+#  Code
+#  ----
+
+show_usage() {
+    printf "Usage: etags-el path [path ...] \n"
+    printf "• [Re]build an etags-compliant TAGS file in current directory\n"
+    printf "  for the Emacs Lisp & C code & header files in the directory\n"
+    printf "  trees identified on the command line.\n"
+    printf "• Stores the TAGS file in the current directory, over-writing\n"
+    printf "  previous one!\n"
+    printf "• Inspects content of .el, .c, .h and their gz compressed files.\n"
+    printf "• Uses fast fdfind or fd if available, uses find otherwise.\n"
+    printf "  - The fd utility is from: https://github.com/sharkdp/fd\n"
+    printf "  - In some Linux distros, fd is renamed fdfind.\n"
+    printf "• To force the use of find, set ETAGS-USE_FIND environment\n"
+    printf "  variable to 1.\n"
+    printf "• ☝️  When fdfind or fd is used, the content of files identified\n"
+    printf "  by the .gitignore, .ignore or .fdignore files are ignored.\n"
+    printf "  This feature alone makes using fd/fdfind worthwhile!\n"
+    printf "• Echoes the path of the find program used and echoes when\n"
+    printf "  repository ignore files are used.\n"
+    if [[ "$ETAGS_USE_FIND" == "1" ]]; then
+        printf "⚠️  Currently: ETAGS_USE_FIND forces the use of find!\n"
+    fi
+    return 1
+}
+
+# --
+
+if [[ "$#" = 1 && "$1" = "-h" || "$1" = "--help" ]]; then
+    show_usage
+elif [[ "$#" = 0 ]]; then
+    show_usage
+else
+    # Find the files, pass their names to etags which creates the TAGS file.
+    # To find the files, try to use fd or fdfind if they exist,
+    # otherwise use find.  Echo the actual program used to find files.
+    if [[ "$ETAGS_USE_FIND" == "1" ]]; then
+        echo "ETAGS_USE_FIND forces the use of find!"
+        echo "Using " `which find`
+        find -f $* \(   -name "*.el" \
+                    -or -name "*.el.gz" \
+                    -or -name "*.[ch]"  \)  -print | etags -
+    else
+        if [[ -x "$(command -v fdfind)" ]]; then
+            echo "Using " `which fdfind`
+            echo "Ignoring files identified in .gitignore, .ignore or .fdignore"
+            fdfind --type f -e .el -e .el.gz \
+                            -e .c -e .c.gz \
+                            -e .h -e .h.gz \
+                            . $* | etags -
+        elif [[ -x "$(command -v fd)" ]]; then
+            echo "Using " `which fd`
+            echo "Ignoring files identified in .gitignore, .ignore or .fdignore"
+            fd --type f -e .el -e .el.gz \
+                        -e .c  -e .c.gz \
+                        -e .h  -e .h.gz \
+                        . $* | etags -
+        else
+            echo "Using " `which find`
+            find -f $* \(   -name "*.el" \
+                        -or -name "*.el.gz" \
+                        -or -name "*.[ch]"  \)  -print | etags -
+        fi
+    fi
+fi
+# -----------------------------------------------------------------------------
