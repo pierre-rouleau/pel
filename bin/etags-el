@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Emacs Lisp and C source code files.
 #  Created   : Thursday, October 15 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2020-11-09 10:24:13, updated by Pierre Rouleau>
+#  Time-stamp: <2020-11-09 10:40:31, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -32,11 +32,18 @@
 #
 # - To force use of find, set the ETAGS_USE_FIND environment variable to 1.
 
+# TODO: eliminate code duplication while keeping capability to stay
+#       compatible with various shells (sh, bash, etc...)
+
 # ----------------------------------------------------------------------------
 #  Code
 #  ----
 
 show_usage() {
+    printf "Usage: etags-el\n"
+    printf "       etags-el -h\n"
+    printf "       etags-el --help\n"
+    printf "• Print this help information, exit with 1.\n\n"
     printf "Usage: etags-el path [path ...] \n"
     printf "• [Re]build an etags-compliant TAGS file in current directory\n"
     printf "  for the Emacs Lisp & C code & header files in the directory\n"
@@ -56,6 +63,8 @@ show_usage() {
     printf "  repository ignore files are used.\n"
     if [[ "$ETAGS_USE_FIND" == "1" ]]; then
         printf "⚠️  Currently: ETAGS_USE_FIND forces the use of find!\n"
+        printf "   To prevent this, set it to 0 or remove that\n"
+        printf "   environment variable.\n"
     fi
     return 1
 }
@@ -79,14 +88,14 @@ else
     else
         if [[ -x "$(command -v fdfind)" ]]; then
             echo "Using " `which fdfind`
-            echo "Ignoring files identified in .gitignore, .ignore or .fdignore"
+            echo "☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
             fdfind --type f -e .el -e .el.gz \
                             -e .c -e .c.gz \
                             -e .h -e .h.gz \
                             . $* | etags -
         elif [[ -x "$(command -v fd)" ]]; then
             echo "Using " `which fd`
-            echo "Ignoring files identified in .gitignore, .ignore or .fdignore"
+            echo "☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
             fd --type f -e .el -e .el.gz \
                         -e .c  -e .c.gz \
                         -e .h  -e .h.gz \
