@@ -1,9 +1,10 @@
+#!/bin/sh
 #  SH FILE: etags-erl
 #
 #  Purpose   : Build Emacs Tags file for Erlang and C source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2020-11-09 17:55:48, updated by Pierre Rouleau>
+#  Time-stamp: <2020-11-09 18:25:29, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
