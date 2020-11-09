@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2020-11-09 16:17:11, updated by Pierre Rouleau>
+#  Time-stamp: <2020-11-09 17:15:45, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -80,7 +80,6 @@ show_usage() {
 
 # --
 
-
 if [[ "$#" = 1 && "$1" = "-h" || "$1" = "--help" ]]; then
     show_usage
 elif [[ "$#" = 0 ]]; then
@@ -92,41 +91,42 @@ else
     if [[ "$ETAGS_USE_FIND" == "1" ]]; then
         echo "ETAGS_USE_FIND forces the use of find!"
         echo "Using " `which find`
-        find -f $* \(   -name "*.[ch]" \
-                    -or -name "*.[ch].gz" \
-                    -or -name "*.[ch].in" \
-                    -or -name "*.[ch].in.gz" \
-                    -or -name "*.[ch]++" \
-                    -or -name "*.[ch]++.gz" \
-                    -or -name "*.[ch]++.in" \
-                    -or -name "*.[ch]++.in.gz" \
-                    -or -name "*.[ch]pp" \
-                    -or -name "*.[ch]pp.gz" \
-                    -or -name "*.[ch]pp.in" \
-                    -or -name "*.[ch]pp.in.gz" \
-                    -or -name "*.[ch]xx" \
-                    -or -name "*.[ch]xx.gz" \
-                    -or -name "*.[ch]xx.in" \
-                    -or -name "*.[ch]xx.in.gz" \
-                    -or -name "*.[CH]" \
-                    -or -name "*.[CH].gz" \
-                    -or -name "*.[CH].in" \
-                    -or -name "*.[CH].in.gz" \
-                    -or -name "*.cc" \
-                    -or -name "*.cc.gz" \
-                    -or -name "*.cc.in" \
-                    -or -name "*.cc.in.gz" \
-                    -or -name "*.hh" \
-                    -or -name "*.hh.gz" \
-                    -or -name "*.hh.in" \
-                    -or -name "*.hh.in.gz" \
-                    -or -name "*.inl" \
-                    -or -name "*.inl.gz" \
-                    -or -name "*.M" \
-                    -or -name "*.M.gz" \
-                    -or -name "*.pdb" \
-                    -or -name "*.pdb.gz" \
-                    \)  -print | tee .etags-cpp-files.txt | etags --class-qualify -
+        find -f $* \
+             \(  -name "*.[ch]" \
+             -or -name "*.[ch].gz" \
+             -or -name "*.[ch].in" \
+             -or -name "*.[ch].in.gz" \
+             -or -name "*.[ch]++" \
+             -or -name "*.[ch]++.gz" \
+             -or -name "*.[ch]++.in" \
+             -or -name "*.[ch]++.in.gz" \
+             -or -name "*.[ch]pp" \
+             -or -name "*.[ch]pp.gz" \
+             -or -name "*.[ch]pp.in" \
+             -or -name "*.[ch]pp.in.gz" \
+             -or -name "*.[ch]xx" \
+             -or -name "*.[ch]xx.gz" \
+             -or -name "*.[ch]xx.in" \
+             -or -name "*.[ch]xx.in.gz" \
+             -or -name "*.[CH]" \
+             -or -name "*.[CH].gz" \
+             -or -name "*.[CH].in" \
+             -or -name "*.[CH].in.gz" \
+             -or -name "*.cc" \
+             -or -name "*.cc.gz" \
+             -or -name "*.cc.in" \
+             -or -name "*.cc.in.gz" \
+             -or -name "*.hh" \
+             -or -name "*.hh.gz" \
+             -or -name "*.hh.in" \
+             -or -name "*.hh.in.gz" \
+             -or -name "*.inl" \
+             -or -name "*.inl.gz" \
+             -or -name "*.M" \
+             -or -name "*.M.gz" \
+             -or -name "*.pdb" \
+             -or -name "*.pdb.gz" \
+             \)  -print | tee .etags-cpp-files.txt | etags --class-qualify -
     else
         if [[ -x "$(command -v fdfind)" ]]; then
             echo "Using " `which fdfind`
@@ -192,41 +192,42 @@ else
                         . $* | tee .etags-cpp-files.txt |  etags --class-qualify -
         else
             echo "Using " `which find`
-            find -f $* \(   -name "*.[ch]" \
-                        -or -name "*.[ch].gz" \
-                        -or -name "*.[ch].in" \
-                        -or -name "*.[ch].in.gz" \
-                        -or -name "*.[ch]++" \
-                        -or -name "*.[ch]++.gz" \
-                        -or -name "*.[ch]++.in" \
-                        -or -name "*.[ch]++.in.gz" \
-                        -or -name "*.[ch]pp" \
-                        -or -name "*.[ch]pp.gz" \
-                        -or -name "*.[ch]pp.in" \
-                        -or -name "*.[ch]pp.in.gz" \
-                        -or -name "*.[ch]xx" \
-                        -or -name "*.[ch]xx.gz" \
-                        -or -name "*.[ch]xx.in" \
-                        -or -name "*.[ch]xx.in.gz" \
-                        -or -name "*.[CH]" \
-                        -or -name "*.[CH].gz" \
-                        -or -name "*.[CH].in" \
-                        -or -name "*.[CH].in.gz" \
-                        -or -name "*.cc" \
-                        -or -name "*.cc.gz" \
-                        -or -name "*.cc.in" \
-                        -or -name "*.cc.in.gz" \
-                        -or -name "*.hh" \
-                        -or -name "*.hh.gz" \
-                        -or -name "*.hh.in" \
-                        -or -name "*.hh.in.gz" \
-                        -or -name "*.inl" \
-                        -or -name "*.inl.gz" \
-                        -or -name "*.M" \
-                        -or -name "*.M.gz" \
-                        -or -name "*.pdb" \
-                        -or -name "*.pdb.gz" \
-                        \)  -print | tee .etags-cpp-files.txt | etags --class-qualify -
+            find -f $* \
+                 \(  -name "*.[ch]" \
+                 -or -name "*.[ch].gz" \
+                 -or -name "*.[ch].in" \
+                 -or -name "*.[ch].in.gz" \
+                 -or -name "*.[ch]++" \
+                 -or -name "*.[ch]++.gz" \
+                 -or -name "*.[ch]++.in" \
+                 -or -name "*.[ch]++.in.gz" \
+                 -or -name "*.[ch]pp" \
+                 -or -name "*.[ch]pp.gz" \
+                 -or -name "*.[ch]pp.in" \
+                 -or -name "*.[ch]pp.in.gz" \
+                 -or -name "*.[ch]xx" \
+                 -or -name "*.[ch]xx.gz" \
+                 -or -name "*.[ch]xx.in" \
+                 -or -name "*.[ch]xx.in.gz" \
+                 -or -name "*.[CH]" \
+                 -or -name "*.[CH].gz" \
+                 -or -name "*.[CH].in" \
+                 -or -name "*.[CH].in.gz" \
+                 -or -name "*.cc" \
+                 -or -name "*.cc.gz" \
+                 -or -name "*.cc.in" \
+                 -or -name "*.cc.in.gz" \
+                 -or -name "*.hh" \
+                 -or -name "*.hh.gz" \
+                 -or -name "*.hh.in" \
+                 -or -name "*.hh.in.gz" \
+                 -or -name "*.inl" \
+                 -or -name "*.inl.gz" \
+                 -or -name "*.M" \
+                 -or -name "*.M.gz" \
+                 -or -name "*.pdb" \
+                 -or -name "*.pdb.gz" \
+                 \)  -print | tee .etags-cpp-files.txt | etags --class-qualify -
         fi
     fi
 fi

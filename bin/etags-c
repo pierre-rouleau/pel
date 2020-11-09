@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2020-11-09 16:19:11, updated by Pierre Rouleau>
+#  Time-stamp: <2020-11-09 17:16:21, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -83,9 +83,10 @@ else
     if [[ "$ETAGS_USE_FIND" == "1" ]]; then
         echo "ETAGS_USE_FIND forces the use of find!"
         echo "Using " `which find`
-        find -f $* \(   -name "*.[ch]" \
-                    -or -name "*.[ch].gz" \
-                    \)  -print | tee .etags-c-files.txt | etags -
+        find -f $* \
+             \(  -name "*.[ch]" \
+             -or -name "*.[ch].gz" \
+             \)  -print | tee .etags-c-files.txt | etags -
     else
         if [[ -x "$(command -v fdfind)" ]]; then
             echo "Using " `which fdfind`
@@ -101,9 +102,10 @@ else
                         . $* | tee .etags-c-files.txt | etags -
         else
             echo "Using " `which find`
-            find -f $* \(   -name "*.[ch]" \
-                        -or -name "*.[ch].gz" \
-                        \)  -print | tee .etags-c-files.txt | etags -
+            find -type f $* \
+                 \(  -name "*.[ch]" \
+                 -or -name "*.[ch].gz" \
+                 \)  -print | tee .etags-c-files.txt | etags -
         fi
     fi
 fi
