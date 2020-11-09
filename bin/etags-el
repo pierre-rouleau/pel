@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Emacs Lisp and C source code files.
 #  Created   : Thursday, October 15 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2020-11-09 10:40:31, updated by Pierre Rouleau>
+#  Time-stamp: <2020-11-09 12:02:48, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -84,7 +84,9 @@ else
         echo "Using " `which find`
         find -f $* \(   -name "*.el" \
                     -or -name "*.el.gz" \
-                    -or -name "*.[ch]"  \)  -print | etags -
+                    -or -name "*.[ch]"  \
+                    -or -name "*.[ch].gz" \
+                    \)  -print | etags -
     else
         if [[ -x "$(command -v fdfind)" ]]; then
             echo "Using " `which fdfind`
