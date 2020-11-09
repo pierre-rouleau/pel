@@ -43,6 +43,9 @@ GRTAGS
 GTAGS
 TAGS-PROJECTILE
 
+# etags-el generated file
+.etags-el-files.txt
+
 # Undo-tree save-files
 *.~undo-tree
 
