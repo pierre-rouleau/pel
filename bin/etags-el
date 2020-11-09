@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Emacs Lisp and C source code files.
 #  Created   : Thursday, October 15 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2020-11-09 12:02:48, updated by Pierre Rouleau>
+#  Time-stamp: <2020-11-09 16:20:43, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -51,6 +51,8 @@ show_usage() {
     printf "• Stores the TAGS file in the current directory, over-writing\n"
     printf "  previous one!\n"
     printf "• Inspects content of .el, .c, .h and their gz compressed files.\n"
+    printf "• Stores the names of inspected files in the file named\n"
+    printf "  .etags-el-files.txt stored in the same directory as TAGS."
     printf "• Uses fast fdfind or fd if available, uses find otherwise.\n"
     printf "  - The fd utility is from: https://github.com/sharkdp/fd\n"
     printf "  - In some Linux distros, fd is renamed fdfind.\n"
@@ -86,7 +88,7 @@ else
                     -or -name "*.el.gz" \
                     -or -name "*.[ch]"  \
                     -or -name "*.[ch].gz" \
-                    \)  -print | etags -
+                    \)  -print | tee .etags-el-files.txt | etags -
     else
         if [[ -x "$(command -v fdfind)" ]]; then
             echo "Using " `which fdfind`
@@ -94,19 +96,20 @@ else
             fdfind --type f -e .el -e .el.gz \
                             -e .c -e .c.gz \
                             -e .h -e .h.gz \
-                            . $* | etags -
+                            . $* | tee .etags-el-files.txt | etags -
         elif [[ -x "$(command -v fd)" ]]; then
             echo "Using " `which fd`
             echo "☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
             fd --type f -e .el -e .el.gz \
                         -e .c  -e .c.gz \
                         -e .h  -e .h.gz \
-                        . $* | etags -
+                        . $* | tee .etags-el-files.txt | etags -
         else
             echo "Using " `which find`
             find -f $* \(   -name "*.el" \
                         -or -name "*.el.gz" \
-                        -or -name "*.[ch]"  \)  -print | etags -
+                        -or -name "*.[ch]"  \) \
+                        -print | tee .etags-el-files.txt | etags -
         fi
     fi
 fi
