@@ -1,0 +1,174 @@
+#!/bin/sh
+#  SH FILE: etags-cpp
+#
+#  Purpose   : Build Emacs Tags file for C/C++ source code files.
+#  Created   : Monday, November  9 2020.
+#  Author    : Pierre Rouleau <prouleau001@gmail.com>
+#  Time-stamp: <2020-11-09 14:14:58, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+#  Module Description
+#  ------------------
+#
+# Build an Emacs Tags file for all C++ source code files in the sub-directory
+# tree.  This includes the files with the following extensions:
+#  - C++ files: .C .c++ .cc .cpp .cxx .H .h++ .hh .hpp .hxx .M .pdb
+#  - C files:   .c, .h
+#  - and their .gz compressed files.
+#
+# Usage:
+#  - cd where you want to store the TAGS file
+#  - etags-cpp path [path ...]
+#
+#
+
+# ----------------------------------------------------------------------------
+#  Dependencies
+#  ------------
+
+# - Uses fd (also named fdfind in some Linux distros like Mint) if it is
+#   available.  See URL:  https://github.com/sharkdp/fd .
+# - if fd/fdfind is not available, use find instead.
+#
+# Using fd/fdfind is preferred because it supports ignoring files identified
+# by .gitignore, .ignore, .fdignore files. The fd utility can also execute
+# faster than find in several scenarios.
+#
+# - To force use of find, set the ETAGS_USE_FIND environment variable to 1.
+
+# TODO: find a way to include C++ standard library files that have no file
+#       extensions.
+# TODO: eliminate code duplication while keeping capability to stay
+#       compatible with various shells (sh, bash, etc...)
+
+
+# ----------------------------------------------------------------------------
+#  Code
+#  ----
+
+show_usage() {
+    printf "Usage: etags-cpp\n"
+    printf "       etags-cpp -h\n"
+    printf "       etags-cpp --help\n"
+    printf "• Print this help information, exit with 1.\n\n"
+    printf "Usage: etags-cpp path [path ...] \n"
+    printf "• [Re]build an etags-compliant TAGS file in current directory\n"
+    printf "  for the C++ and C code & header files in the directory trees\n"
+    printf "  identified on the command line.\n"
+    printf "• Stores the TAGS file in the current directory, over-writing\n"
+    printf "  previous one!\n"
+    printf "• Inspects content of .el, .c, .h and their gz compressed files.\n"
+    printf "• Uses fast fdfind or fd if available, uses find otherwise.\n"
+    printf "  - The fd utility is from: https://github.com/sharkdp/fd\n"
+    printf "  - In some Linux distros, fd is renamed fdfind.\n"
+    printf "• To force the use of find, set ETAGS-USE_FIND environment\n"
+    printf "  variable to 1.\n"
+    printf "• ☝️  When fdfind or fd is used, the content of files identified\n"
+    printf "  by the .gitignore, .ignore or .fdignore files are ignored.\n"
+    printf "  This feature alone makes using fd/fdfind worthwhile!\n"
+    printf "• Echoes the path of the find program used and echoes when\n"
+    printf "  repository ignore files are used.\n"
+    if [[ "$ETAGS_USE_FIND" == "1" ]]; then
+        printf "⚠️  Currently: ETAGS_USE_FIND forces the use of find!\n"
+        printf "   To prevent this, set it to 0 or remove that\n"
+        printf "   environment variable.\n"
+    fi
+    return 1
+}
+
+# --
+
+
+if [[ "$#" = 1 && "$1" = "-h" || "$1" = "--help" ]]; then
+    show_usage
+elif [[ "$#" = 0 ]]; then
+    show_usage
+else
+    # Find the files, pass their names to etags which creates the TAGS file.
+    # To find the files, try to use fd or fdfind if they exist,
+    # otherwise use find.  Echo the actual program used to find files.
+    if [[ "$ETAGS_USE_FIND" == "1" ]]; then
+        echo "ETAGS_USE_FIND forces the use of find!"
+        echo "Using " `which find`
+        find -f $* \(   -name "*.[ch]" \
+                    -or -name "*.[ch].gz" \
+                    -or -name "*.[ch]++" \
+                    -or -name "*.[ch]++.gz" \
+                    -or -name "*.[ch]pp" \
+                    -or -name "*.[ch]pp.gz" \
+                    -or -name "*.[ch]xx" \
+                    -or -name "*.[ch]xx.gz" \
+                    -or -name "*.[CH]" \
+                    -or -name "*.[CH].gz" \
+                    -or -name "*.cc" \
+                    -or -name "*.cc.gz" \
+                    -or -name "*.hh" \
+                    -or -name "*.hh.gz" \
+                    -or -name "*.M" \
+                    -or -name "*.M.gz" \
+                    -or -name "*.pdb" \
+                    -or -name "*.pdb.gz" \
+                    \)  -print | etags --class-qualify -
+    else
+        if [[ -x "$(command -v fdfind)" ]]; then
+            echo "Using " `which fdfind`
+            echo "☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
+            fdfind --type f -e .c -e .c.gz \
+                            -e .h -e .h.gz \
+                            -e .c++ -e .c++.gz \
+                            -e .h++ -e .h++.gz \
+                            -e .cpp -e .cpp.gz \
+                            -e .hpp -e .hpp.gz \
+                            -e .cxx -e .cxx.gz \
+                            -e .hxx -e .hxx.gz \
+                            -e .C   -e .C.gz \
+                            -e .H   -e .H.gz \
+                            -e .cc  -e .cc.gz \
+                            -e .hh  -e .hh.gz \
+                            -e .M   -e .M.gz \
+                            -e .pdb -e .pdb.gz \
+                            . $* | etags --class-qualify -
+        elif [[ -x "$(command -v fd)" ]]; then
+            echo "Using " `which fd`
+            echo "☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
+            fd --type f -e .c  -e .c.gz \
+                        -e .h  -e .h.gz \
+                        -e .c++ -e .c++.gz \
+                        -e .h++ -e .h++.gz \
+                        -e .cpp -e .cpp.gz \
+                        -e .hpp -e .hpp.gz \
+                        -e .cxx -e .cxx.gz \
+                        -e .hxx -e .hxx.gz \
+                        -e .C   -e .C.gz \
+                        -e .H   -e .H.gz \
+                        -e .cc  -e .cc.gz \
+                        -e .hh  -e .hh.gz \
+                        -e .M   -e .M.gz \
+                        -e .pdb -e .pdb.gz \
+                        . $* | etags --class-qualify -
+        else
+            echo "Using " `which find`
+            find -f $* \(   -name "*.[ch]" \
+                 -or -name "*.[ch].gz" \
+                 -or -name "*.[ch]++" \
+                 -or -name "*.[ch]++.gz" \
+                 -or -name "*.[ch]pp" \
+                 -or -name "*.[ch]pp.gz" \
+                 -or -name "*.[ch]xx" \
+                 -or -name "*.[ch]xx.gz" \
+                 -or -name "*.[CH]" \
+                 -or -name "*.[CH].gz" \
+                 -or -name "*.cc" \
+                 -or -name "*.cc.gz" \
+                 -or -name "*.hh" \
+                 -or -name "*.hh.gz" \
+                 -or -name "*.M" \
+                 -or -name "*.M.gz" \
+                 -or -name "*.pdb" \
+                 -or -name "*.pdb.gz" \
+                 \)  -print | etags --class-qualify -
+        fi
+    fi
+fi
+
+
+# ----------------------------------------------------------------------------
