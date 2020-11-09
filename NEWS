@@ -75,6 +75,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       directory:
       - [[https://github.com/pierre-rouleau/pel/blob/master/bin/etags-el][etags-el]] creates a TAGS file for Emacs Lisp projects: all .el, .c and
         .h files as well as their .gz compressed files.
+      - [[https://github.com/pierre-rouleau/pel/blob/master/bin/etags-c][etags-c]] creates a etags-compliant TAGS file for C source code
+        projects: all .c, .h and their .gz compressed files.
 - Update: *Customization*:
   - New: command *pel-browse-group* which prompts allowing the browsing of the
     customization group tree from any group.  This complements the Emacs
