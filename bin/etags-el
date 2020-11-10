@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Emacs Lisp and C source code files.
 #  Created   : Thursday, October 15 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2020-11-09 17:07:51, updated by Pierre Rouleau>
+#  Time-stamp: <2020-11-10 12:00:40, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -32,8 +32,13 @@
 #
 # - To force use of find, set the ETAGS_USE_FIND environment variable to 1.
 
+# - Uses etags to process files unless ETAGS_USE_UCTAGS environment variable
+#   is set to 1, in which case the ctags utility is found, assuming that it
+#   is the Universal Ctags utility, not any other ctag command.
+
 # TODO: eliminate code duplication while keeping capability to stay
 #       compatible with various shells (sh, bash, etc...)
+# TODO: detect invalid directory names as find does not flag them.
 
 # ----------------------------------------------------------------------------
 #  Code
@@ -53,6 +58,8 @@ show_usage() {
     printf "• Inspects content of .el, .c, .h and their gz compressed files.\n"
     printf "• Stores the names of inspected files in the file named\n"
     printf "  .etags-el-files.txt stored in the same directory as TAGS."
+    printf "• Uses etags to build the TAGS file by default.\n"
+    printf "  Set ETAGS_USE_UCTAGS to 1 to force using Universal Ctags instead.\n"
     printf "• Uses fast fdfind or fd if available, uses find otherwise.\n"
     printf "  - The fd utility is from: https://github.com/sharkdp/fd\n"
     printf "  - In some Linux distros, fd is renamed fdfind.\n"
@@ -60,15 +67,31 @@ show_usage() {
     printf "  variable to 1.\n"
     printf "• ☝️  When fdfind or fd is used, the content of files identified\n"
     printf "  by the .gitignore, .ignore or .fdignore files are ignored.\n"
-    printf "  This feature alone makes using fd/fdfind worthwhile!\n"
+    printf "  Also invalid directory names specified are rejected.\n"
+    printf "  These 2 features alone make using fd/fdfind worthwhile!\n"
+    printf "  ⚠️  When using find, invalid directory names are just ignored!\n"
     printf "• Echoes the path of the find program used and echoes when\n"
     printf "  repository ignore files are used.\n"
     if [[ "$ETAGS_USE_FIND" == "1" ]]; then
         printf "⚠️  Currently: ETAGS_USE_FIND forces the use of find!\n"
         printf "   To prevent this, set it to 0 or remove that\n"
         printf "   environment variable.\n"
+        printf "  ⚠️  Ensure validity of directory names manually!\n"
+        printf "  When using find, invalid directory names are just ignored!\n"
     fi
     return 1
+}
+
+# --
+
+run__etags__el() {
+    if [[ "$ETAGS_USE_UCTAGS" == "1" ]]; then
+        xargs ctags --output-format=etags
+        printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" `which ctags`
+    else
+        etags -
+    fi
+    printf "%s files found and processed. List stored in: %s\n" `wc -l .etags-el-files.txt`
 }
 
 # --
@@ -88,7 +111,7 @@ else
                     -or -name "*.el.gz" \
                     -or -name "*.[ch]"  \
                     -or -name "*.[ch].gz" \
-                    \)  -print | tee .etags-el-files.txt | etags -
+                    \)  -print | tee .etags-el-files.txt | run__etags__el
     else
         if [[ -x "$(command -v fdfind)" ]]; then
             echo "Using " `which fdfind`
@@ -96,20 +119,20 @@ else
             fdfind --type f -e .el -e .el.gz \
                             -e .c -e .c.gz \
                             -e .h -e .h.gz \
-                            . $* | tee .etags-el-files.txt | etags -
+                            . $* | tee .etags-el-files.txt | run__etags__el
         elif [[ -x "$(command -v fd)" ]]; then
             echo "Using " `which fd`
             echo "☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
             fd --type f -e .el -e .el.gz \
                         -e .c  -e .c.gz \
                         -e .h  -e .h.gz \
-                        . $* | tee .etags-el-files.txt | etags -
+                        . $* | tee .etags-el-files.txt | run__etags__el
         else
             echo "Using " `which find`
             find -f $* \(   -name "*.el" \
                         -or -name "*.el.gz" \
                         -or -name "*.[ch]"  \) \
-                        -print | tee .etags-el-files.txt | etags -
+                        -print | tee .etags-el-files.txt | run__etags__el
         fi
     fi
 fi

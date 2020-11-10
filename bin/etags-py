@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Python source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2020-11-10 10:45:13, updated by Pierre Rouleau>
+#  Time-stamp: <2020-11-10 12:00:52, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -38,7 +38,7 @@
 
 # TODO: eliminate code duplication while keeping capability to stay
 #       compatible with various shells (sh, bash, etc...)
-
+# TODO: detect invalid directory names as find does not flag them.
 
 # ----------------------------------------------------------------------------
 #  Code
@@ -67,13 +67,17 @@ show_usage() {
     printf "  variable to 1.\n"
     printf "• ☝️  When fdfind or fd is used, the content of files identified\n"
     printf "  by the .gitignore, .ignore or .fdignore files are ignored.\n"
-    printf "  This feature alone makes using fd/fdfind worthwhile!\n"
+    printf "  Also invalid directory names specified are rejected.\n"
+    printf "  These 2 features alone make using fd/fdfind worthwhile!\n"
+    printf "  ⚠️  When using find, invalid directory names are just ignored!\n"
     printf "• Echoes the path of the find program used and echoes when\n"
     printf "  repository ignore files are used.\n"
     if [[ "$ETAGS_USE_FIND" == "1" ]]; then
         printf "⚠️  Currently: ETAGS_USE_FIND forces the use of find!\n"
         printf "   To prevent this, set it to 0 or remove that\n"
         printf "   environment variable.\n"
+        printf "  ⚠️  Ensure validity of directory names manually!\n"
+        printf "  When using find, invalid directory names are just ignored!\n"
     fi
     return 1
 }

@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C/C++ source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2020-11-09 17:15:45, updated by Pierre Rouleau>
+#  Time-stamp: <2020-11-10 12:00:45, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -35,11 +35,15 @@
 #
 # - To force use of find, set the ETAGS_USE_FIND environment variable to 1.
 
+# - Uses etags to process files unless ETAGS_USE_UCTAGS environment variable
+#   is set to 1, in which case the ctags utility is found, assuming that it
+#   is the Universal Ctags utility, not any other ctag command.
+
 # TODO: find a way to include C++ standard library files that have no file
 #       extensions.
 # TODO: eliminate code duplication while keeping capability to stay
 #       compatible with various shells (sh, bash, etc...)
-
+# TODO: detect invalid directory names as find does not flag them.
 
 # ----------------------------------------------------------------------------
 #  Code
@@ -60,6 +64,8 @@ show_usage() {
     printf "  as well as their .gz compressed files.\n"
     printf "• Stores the names of inspected files in the file named\n"
     printf "  .etags-cpp-files.txt stored in the same directory as TAGS."
+    printf "• Uses etags to build the TAGS file by default.\n"
+    printf "  Set ETAGS_USE_UCTAGS to 1 to force using Universal Ctags instead.\n"
     printf "• Uses fast fdfind or fd if available, uses find otherwise.\n"
     printf "  - The fd utility is from: https://github.com/sharkdp/fd\n"
     printf "  - In some Linux distros, fd is renamed fdfind.\n"
@@ -67,15 +73,31 @@ show_usage() {
     printf "  variable to 1.\n"
     printf "• ☝️  When fdfind or fd is used, the content of files identified\n"
     printf "  by the .gitignore, .ignore or .fdignore files are ignored.\n"
-    printf "  This feature alone makes using fd/fdfind worthwhile!\n"
+    printf "  Also invalid directory names specified are rejected.\n"
+    printf "  These 2 features alone make using fd/fdfind worthwhile!\n"
+    printf "  ⚠️  When using find, invalid directory names are just ignored!\n"
     printf "• Echoes the path of the find program used and echoes when\n"
     printf "  repository ignore files are used.\n"
     if [[ "$ETAGS_USE_FIND" == "1" ]]; then
         printf "⚠️  Currently: ETAGS_USE_FIND forces the use of find!\n"
         printf "   To prevent this, set it to 0 or remove that\n"
         printf "   environment variable.\n"
+        printf "  ⚠️  Ensure validity of directory names manually!\n"
+        printf "  When using find, invalid directory names are just ignored!\n"
     fi
     return 1
+}
+
+# --
+
+run__etags__cpp() {
+    if [[ "$ETAGS_USE_UCTAGS" == "1" ]]; then
+        xargs ctags --output-format=etags
+        printf "Note: ETAGS_USE_UCTAGS forced using %s to process files.\n" `which ctags`
+    else
+        etags --class-qualify -
+    fi
+    printf "%s files found and processed. List stored in: %s\n" `wc -l .etags-cpp-files.txt`
 }
 
 # --
@@ -126,7 +148,7 @@ else
              -or -name "*.M.gz" \
              -or -name "*.pdb" \
              -or -name "*.pdb.gz" \
-             \)  -print | tee .etags-cpp-files.txt | etags --class-qualify -
+             \)  -print | tee .etags-cpp-files.txt | run__etags__cpp
     else
         if [[ -x "$(command -v fdfind)" ]]; then
             echo "Using " `which fdfind`
@@ -158,7 +180,7 @@ else
                             -e .inl    -e .inl.gz \
                             -e .M      -e .M.gz \
                             -e .pdb    -e .pdb.gz \
-                            . $* | tee .etags-cpp-files.txt | etags --class-qualify -
+                            . $* | tee .etags-cpp-files.txt | run__etags__cpp
         elif [[ -x "$(command -v fd)" ]]; then
             echo "Using " `which fd`
             echo "☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
@@ -189,7 +211,7 @@ else
                         -e .inl    -e .inl.gz \
                         -e .M      -e .M.gz \
                         -e .pdb    -e .pdb.gz \
-                        . $* | tee .etags-cpp-files.txt |  etags --class-qualify -
+                        . $* | tee .etags-cpp-files.txt | run__etags__cpp
         else
             echo "Using " `which find`
             find -f $* \
@@ -227,7 +249,7 @@ else
                  -or -name "*.M.gz" \
                  -or -name "*.pdb" \
                  -or -name "*.pdb.gz" \
-                 \)  -print | tee .etags-cpp-files.txt | etags --class-qualify -
+                 \)  -print | tee .etags-cpp-files.txt | run__etags__cpp
         fi
     fi
 fi
