@@ -79,9 +79,13 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
         projects: includes C files ( .c, .h files) and C++ files (.C .c++ .cc
         .cpp .cxx .H .h++ .hh .hpp .hxx .M .pdb) files.
       - [[https://github.com/pierre-rouleau/pel/blob/master/bin/etags-el][etags-el]] creates a etags-compliant TAGS file for Emacs Lisp projects:
-        all .el, .c and .h files as well as their .gz compressed files.
-      - [[https://github.com/pierre-rouleau/pel/blob/master/bin/etags-erl][etags-erl]] creates a etags-compliant TAGS file for Erlang and C source code
-        projects.  It does not process compressed files.
+        all .el, .c and .h files. It supports used of compressed files when
+        etags is used.
+      - [[https://github.com/pierre-rouleau/pel/blob/master/bin/etags-erl][etags-erl]] creates a etags-compliant TAGS file for Erlang and C source
+        code projects.  It does not process compressed files.
+      - [[https://github.com/pierre-rouleau/pel/blob/master/bin/etags-lisp][etags-lisp]] creates a etags-compliant TAGS file for Common Lisp file
+        directory tree.  It supports used of compressed files when etags is
+        used.
       - [[https://github.com/pierre-rouleau/pel/blob/master/bin/etags-py][etags-py]] creates a etags-compliant TAGS file for Python source code
         file projects.  It does not process compressed files.
 - Update: *Customization*:
