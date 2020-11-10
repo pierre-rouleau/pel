@@ -4,13 +4,13 @@
 #  Purpose   : Build Emacs Tags file for C source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2020-11-10 12:04:01, updated by Pierre Rouleau>
+#  Time-stamp: <2020-11-10 13:26:33, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
 #
 # Build an Emacs Tags file for all C source code files in the sub-directory
-# tree.  This includes the .c, .h and the .gz compressed files.
+# tree.  This includes the .c, and .h files.
 #
 # Usage:
 #  - cd where you want to store the TAGS file
@@ -54,7 +54,7 @@ show_usage() {
     printf "  identified on the command line.\n"
     printf "• Stores the TAGS file in the current directory, over-writing\n"
     printf "  previous one!\n"
-    printf "• Inspects content of .c, .h and their gz compressed files.\n"
+    printf "• Inspects content of .c, and .h files.\n"
     printf "• Stores the names of inspected files in the file named\n"
     printf "  .etags-c-files.txt stored in the same directory as TAGS."
     printf "• Uses etags to build the TAGS file by default.\n"
@@ -108,26 +108,22 @@ else
         echo "Using " `which find`
         find -f $* \
              \(  -name "*.[ch]" \
-             -or -name "*.[ch].gz" \
              \)  -print | tee .etags-c-files.txt | run__etags_c
     else
         if [[ -x "$(command -v fdfind)" ]]; then
             echo "Using " `which fdfind`
             echo "☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
-            fdfind --type f -e .c -e .c.gz \
-                            -e .h -e .h.gz \
-                            . $* | tee .etags-c-files.txt | run__etags_c
+            fdfind --type f -e .c -e .h  \
+                   . $* | tee .etags-c-files.txt | run__etags_c
         elif [[ -x "$(command -v fd)" ]]; then
             echo "Using " `which fd`
             echo "☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
-            fd --type f -e .c  -e .c.gz \
-                        -e .h  -e .h.gz \
-                        . $* | tee .etags-c-files.txt | run__etags_c
+            fd --type f -e .c -e .h \
+               . $* | tee .etags-c-files.txt | run__etags_c
         else
             echo "Using " `which find`
             find -type f $* \
                  \(  -name "*.[ch]" \
-                 -or -name "*.[ch].gz" \
                  \)  -print | tee .etags-c-files.txt | run__etags_c
         fi
     fi
