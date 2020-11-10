@@ -82,6 +82,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
         .cpp .cxx .H .h++ .hh .hpp .hxx .M .pdb)  and their .gz compressed files.
       - [[https://github.com/pierre-rouleau/pel/blob/master/bin/etags-erl][etags-erl]] creates a etags-compliant TAGS file for Erlang and C source code
         projects.  It does not process compressed files.
+      - [[https://github.com/pierre-rouleau/pel/blob/master/bin/etags-py][etags-py]] creates a etags-compliant TAGS file for Python source code
+        file projects.  It does not process compressed files.
 - Update: *Customization*:
   - New: command *pel-browse-group* which prompts allowing the browsing of the
     customization group tree from any group.  This complements the Emacs
