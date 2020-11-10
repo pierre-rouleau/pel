@@ -73,13 +73,13 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       ivy, helm, projectile and speedbar.
     - New: shell script to create etags-compatible TAGS files in the bin
       directory:
-      - [[https://github.com/pierre-rouleau/pel/blob/master/bin/etags-el][etags-el]] creates a etags-compliant TAGS file for Emacs Lisp projects:
-        all .el, .c and .h files as well as their .gz compressed files.
       - [[https://github.com/pierre-rouleau/pel/blob/master/bin/etags-c][etags-c]] creates a etags-compliant TAGS file for C source code
         projects: all .c, .h and their .gz compressed files.
       - [[https://github.com/pierre-rouleau/pel/blob/master/bin/etags-cpp][etags-cpp]] creates a etags-compliant TAGS file for C++ source code
         projects: includes C files ( .c, .h files) and C++ files (.C .c++ .cc
         .cpp .cxx .H .h++ .hh .hpp .hxx .M .pdb)  and their .gz compressed files.
+      - [[https://github.com/pierre-rouleau/pel/blob/master/bin/etags-el][etags-el]] creates a etags-compliant TAGS file for Emacs Lisp projects:
+        all .el, .c and .h files as well as their .gz compressed files.
       - [[https://github.com/pierre-rouleau/pel/blob/master/bin/etags-erl][etags-erl]] creates a etags-compliant TAGS file for Erlang and C source code
         projects.  It does not process compressed files.
       - [[https://github.com/pierre-rouleau/pel/blob/master/bin/etags-py][etags-py]] creates a etags-compliant TAGS file for Python source code
