@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for Python source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2020-11-10 12:00:52, updated by Pierre Rouleau>
+#  Time-stamp: <2020-11-10 13:50:44, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -57,7 +57,7 @@ show_usage() {
     printf "  previous one!\n"
     printf "• Inspects content of .py and .pyw files.\n"
     printf "• Stores the names of inspected files in the file named\n"
-    printf "  .etags-py-files.txt stored in the same directory as TAGS."
+    printf "  .etags-py-files.txt stored in the same directory as TAGS.\n"
     printf "• Uses etags to build the TAGS file by default.\n"
     printf "  Set ETAGS_USE_UCTAGS to 1 to force using Universal Ctags instead.\n"
     printf "• Uses fast fdfind or fd if available, uses find otherwise.\n"
