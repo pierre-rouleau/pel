@@ -902,7 +902,7 @@ otherwise it does not."
 ;; Check text from buffer
 ;; - `pel-line-has-only-whitespace-p'
 
-(defun pel-line-only-whitespace-p (&optional pos)
+(defun pel-line-has-only-whitespace-p (&optional pos)
   "Return non-nil if current line (or line at POS) contain only whitespace.
 Return nil otherwise.
 Whitespace characters are specified by the syntax table of the current major mode."

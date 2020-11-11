@@ -47,7 +47,7 @@
 ;; -----------------------------------------------------------------------------
 ;;; Dependencies:
 
-(require 'pel--base)                  ; use: pel-line-only-whitespace-p
+(require 'pel--base)                  ; use: pel-line-has-only-whitespace-p
 (require 'pel--options)               ; use: pel-c-skel-comment-with-2stars
 (require 'pel-prompt)                 ; use: pel-prompt-purpose-for
 ;; -----------------------------------------------------------------------------
@@ -168,7 +168,7 @@ The returned string ends with a newline."
         (auth-comment (or comment-prefix comment-start)))
     (format "%s%s %s %s <%s>\n"
             (if (or on-this-line
-                    (pel-line-only-whitespace-p)) "" "\n")
+                    (pel-line-has-only-whitespace-p)) "" "\n")
             auth-comment
             auth-word
             (user-full-name)
@@ -185,7 +185,7 @@ in which case that is used.
 The returned string ends with a newline."
   (format "%s%s Created   : %s\n"
           (if (or on-this-line
-                  (pel-line-only-whitespace-p)) "" "\n")
+                  (pel-line-has-only-whitespace-p)) "" "\n")
           (or comment-prefix comment-start)
           (format-time-string "%A, %B %e %Y.")))
 
@@ -237,7 +237,7 @@ inserted."
         (format "\n%s\n"
                 (pel-license-text cpr-comment))
       (format "%s%s %s © %s, %s\n"
-              (if (pel-line-only-whitespace-p) "" "\n")
+              (if (pel-line-has-only-whitespace-p) "" "\n")
               cpr-comment
               cpr-word
               (format-time-string "%Y")
