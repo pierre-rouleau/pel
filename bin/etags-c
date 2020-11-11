@@ -4,7 +4,7 @@
 #  Purpose   : Build Emacs Tags file for C source code files.
 #  Created   : Monday, November  9 2020.
 #  Author    : Pierre Rouleau <prouleau001@gmail.com>
-#  Time-stamp: <2020-11-10 13:26:33, updated by Pierre Rouleau>
+#  Time-stamp: <2020-11-11 16:31:32, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 #  Module Description
 #  ------------------
@@ -62,7 +62,7 @@ show_usage() {
     printf "• Uses fast fdfind or fd if available, uses find otherwise.\n"
     printf "  - The fd utility is from: https://github.com/sharkdp/fd\n"
     printf "  - In some Linux distros, fd is renamed fdfind.\n"
-    printf "• To force the use of find, set ETAGS-USE_FIND environment\n"
+    printf "• To force the use of find, set ETAGS_USE_FIND environment\n"
     printf "  variable to 1.\n"
     printf "• ☝️  When fdfind or fd is used, the content of files identified\n"
     printf "  by the .gitignore, .ignore or .fdignore files are ignored.\n"
