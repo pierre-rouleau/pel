@@ -1,0 +1,206 @@
+#!/bin/sh
+#  SH FILE: cscope-cpp
+#
+#  Purpose   : Build CScope database for C/C++ files in specified directories.
+#  Created   : Wednesday, November 11 2020.
+#  Author    : Pierre Rouleau <prouleau001@gmail.com>
+#  Time-stamp: <2020-11-11 17:12:02, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+#  Module Description
+#  ------------------
+#
+#  Builds a CScope database for the C/C++ source code files located in the
+#  directory trees specified on the command line.
+# tree.  This includes the files with the following extensions:
+#  - C++ files: .C .c++ .cc .cpp .cxx .H .h++ .hh .hpp .hxx .M .pdb
+#  - C files:   .c, .h
+#
+# Usage:
+#  - cd where you want to store the CScope database
+#  - cscope-cpp path [path...]
+
+# ----------------------------------------------------------------------------
+#  Dependencies
+#  ------------
+
+# Requires find, fd (or fdfind) to identify the C source code files.
+# - Uses fd (also named fdfind in some Linux distros like Mint) if it is
+#   available.  See URL:  https://github.com/sharkdp/fd .
+# - if fd/fdfind is not available, use find instead.
+#
+# Using fd/fdfind is preferred because it supports ignoring files identified
+# by .gitignore, .ignore, .fdignore files. The fd utility can also execute
+# faster than find in several scenarios.
+#
+# - To force use of find, set the CSCOPE_USE_FIND environment variable to 1.
+
+# Requires CSCope command line tool.  On macOS and Linux it can be installed
+# using Homebrew.  On most Linux distros it can be installed by the standard
+# package manager.
+#
+# See the following references:
+#  - http://cscope.sourceforge.net
+#  - https://formulae.brew.sh/formula/cscope
+#  - https://formulae.brew.sh/formula-linux/cscope
+
+# ----------------------------------------------------------------------------
+#  Code
+#  ----
+
+show_usage() {
+    printf "Usage: cscope-cpp\n"
+    printf "       cscope-cpp -h\n"
+    printf "       cscope-cpp --help\n"
+    printf "• Print this help information, exit with 1.\n\n"
+    printf "Usage: cscope-cpp path [path ...] \n"
+    printf "• [Re]build an CScope database file set in current directory\n"
+    printf "  for the C/C++ code & header files in the directory trees\n"
+    printf "  identified on the command line.\n"
+    printf "• Updates previous database.\n"
+    printf "• Inspects content of .c, and .h files.\n"
+    printf "• Stores the names of inspected files in the file named\n"
+    printf "  cscope.files stored in the same directory as the CScope database."
+    printf "• Uses fast fdfind or fd if available, uses find otherwise.\n"
+    printf "  - The fd utility is from: https://github.com/sharkdp/fd\n"
+    printf "  - In some Linux distros, fd is renamed fdfind.\n"
+    printf "• To force the use of find, set CSCOPE_USE_FIND environment\n"
+    printf "  variable to 1.\n"
+    printf "• ☝️  When fdfind or fd is used, the content of files identified\n"
+    printf "  by the .gitignore, .ignore or .fdignore files are ignored.\n"
+    printf "  Also invalid directory names specified are rejected.\n"
+    printf "  These 2 features alone make using fd/fdfind worthwhile!\n"
+    printf "  ⚠️  When using find, invalid directory names are just ignored!\n"
+    printf "• Echoes the path of the find program used and echoes when\n"
+    printf "  repository ignore files are used.\n"
+    if [[ "$CSCOPE_USE_FIND" == "1" ]]; then
+        printf "⚠️  Currently: CSCOPE_USE_FIND forces the use of find!\n"
+        printf "   To prevent this, set it to 0 or remove that\n"
+        printf "   environment variable.\n"
+        printf "  ⚠️  Ensure validity of directory names manually!\n"
+        printf "  When using find, invalid directory names are just ignored!\n"
+    fi
+    return 1
+}
+
+# --
+
+if [[ "$#" = 1 && "$1" = "-h" || "$1" = "--help" ]]; then
+    show_usage
+elif [[ "$#" = 0 ]]; then
+    show_usage
+else
+    # Find the files, store them in cscope.files
+    # To find the files, try to use fd or fdfind if they exist,
+    # otherwise use find.  Echo the actual program used to find files.
+    if [[ "$CSCOPE_USE_FIND" == "1" ]]; then
+        echo "CSCOPE_USE_FIND forces the use of find!"
+        echo "Using " `which find`
+        find -f $* \
+             \(  -name "*.[ch]" \
+             -or -name "*.[ch].in" \
+             -or -name "*.[ch]++" \
+             -or -name "*.[ch]++.in" \
+             -or -name "*.[ch]pp" \
+             -or -name "*.[ch]pp.in" \
+             -or -name "*.[ch]xx" \
+             -or -name "*.[ch]xx.in" \
+             -or -name "*.[CH]" \
+             -or -name "*.[CH].in" \
+             -or -name "*.cc" \
+             -or -name "*.cc.in" \
+             -or -name "*.hh" \
+             -or -name "*.hh.in" \
+             -or -name "*.inl" \
+             -or -name "*.M" \
+             -or -name "*.pdb" \
+             \)  -print > cscope.files
+    else
+        if [[ -x "$(command -v fdfind)" ]]; then
+            echo "Using " `which fdfind`
+            echo "☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
+            fdfind --type f -e .c      \
+                            -e .c.in   \
+                            -e .h      \
+                            -e .h.in   \
+                            -e .c++    \
+                            -e .c++.in \
+                            -e .h++    \
+                            -e .h++.in \
+                            -e .cpp    \
+                            -e .cpp.in \
+                            -e .hpp    \
+                            -e .hpp.in \
+                            -e .cxx    \
+                            -e .cxx.in \
+                            -e .hxx    \
+                            -e .hxx.in \
+                            -e .C      \
+                            -e .C.in   \
+                            -e .H      \
+                            -e .H.in   \
+                            -e .cc     \
+                            -e .cc.in  \
+                            -e .hh     \
+                            -e .hh.in  \
+                            -e .inl    \
+                            -e .M      \
+                            -e .pdb    \
+                            . $* > cscope.files
+        elif [[ -x "$(command -v fd)" ]]; then
+            echo "Using " `which fd`
+            echo "☝️ Ignoring files identified in .gitignore, .ignore or .fdignore"
+            fd --type f -e .c      \
+                        -e .c.in   \
+                        -e .h      \
+                        -e .h.in   \
+                        -e .c++    \
+                        -e .c++.in \
+                        -e .h++    \
+                        -e .h++.in \
+                        -e .cpp    \
+                        -e .cpp.in \
+                        -e .hpp    \
+                        -e .hpp.in \
+                        -e .cxx    \
+                        -e .cxx.in \
+                        -e .hxx    \
+                        -e .hxx.in \
+                        -e .C      \
+                        -e .C.in   \
+                        -e .H      \
+                        -e .H.in   \
+                        -e .cc     \
+                        -e .cc.in  \
+                        -e .hh     \
+                        -e .hh.in  \
+                        -e .inl    \
+                        -e .M      \
+                        -e .pdb    \
+                        . $* > cscope.files
+        else
+            echo "Using " `which find`
+            find -f $* \
+                 \(  -name "*.[ch]" \
+                 -or -name "*.[ch].in" \
+                 -or -name "*.[ch]++" \
+                 -or -name "*.[ch]++.in" \
+                 -or -name "*.[ch]pp" \
+                 -or -name "*.[ch]pp.in" \
+                 -or -name "*.[ch]xx" \
+                 -or -name "*.[ch]xx.in" \
+                 -or -name "*.[CH]" \
+                 -or -name "*.[CH].in" \
+                 -or -name "*.cc" \
+                 -or -name "*.cc.in" \
+                 -or -name "*.hh" \
+                 -or -name "*.hh.in" \
+                 -or -name "*.inl" \
+                 -or -name "*.M" \
+                 -or -name "*.pdb" \
+                 \)  -print > cscope.files
+        fi
+    fi
+    # cscope uses the cscope.files
+    cscope -b -q -k
+fi
+# ----------------------------------------------------------------------------
