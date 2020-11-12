@@ -177,12 +177,13 @@ to allow the flyspell pop-up menu to work in terminal mode."
         (personal-dict  (pel-string-or-nil dict-path)))
     (if (and (not path)
              (not (executable-find program-name)))
-        (display-warning :error
+        (display-warning 'pel-spell
                          (format "Variable %s requires %s.\n\
 Is %s customize value valid?
 The spell check program %s not found in your PATH!\n\
 You may need to install it.\n\
-See the spell-checking.pdf file for more info" origin program-name origin program-name))
+See the spell-checking.pdf file for more info" origin program-name origin program-name)
+                         :error)
       (pel-spell-init program-name path personal-dict))))
 
 ;;-pel-autoload

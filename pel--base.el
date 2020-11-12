@@ -622,12 +622,13 @@ Return the new state of the mode: t if active, nil otherwise."
           (add-hook (pel-hook-symbol-for mode)
                     func)
         (display-warning
-         :error
+         'pel-mode-hooks
          (format "Invalid mode %s in the list %s.\n\
 Change its customized value with ``M-x customize %s``"
                  mode
                  modes-list-symbol
-                 modes-list-symbol)))))
+                 modes-list-symbol)
+         :error))))
 
 ;; -----------------------------------------------------------------------------
 ;; Basic functions working with values and variables
