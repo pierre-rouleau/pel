@@ -94,7 +94,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     be used, for example to:
     - select the shell-script-mode for extension-less
       files stored in a directory whose name ends with ``/bin/`` by
-      identifying the file pattern as "/bin/.+\`" and the mode as
+      identifying the file pattern as ``/bin/.+\``` and the mode as
       shell-script-mode.
     - select python-mode for [[https://www.scons.org][SCons]] files like Sconstruct and SConscript,
     - or any other association you may wish.  Invalid associations are
