@@ -98,7 +98,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       shell-script-mode.
     - select python-mode for [[https://www.scons.org][SCons]] files like Sconstruct and SConscript,
     - or any other association you may wish.  Invalid associations are
-      detected and a warning is displayed when Emacs starts.
+      detected and a warning is displayed when Emacs starts.  Association
+      to a mode to a mode function not bound by the time pel-init has
+      completed all loading is considered invalid.
   - New: command *pel-browse-group* which prompts allowing the browsing of the
     customization group tree from any group.  This complements the Emacs
     customize-browse which unfortunately does not prompt.
