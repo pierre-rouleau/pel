@@ -71,7 +71,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       buffer of more cross referencing packages. It provides access to dumb-jump,
       eopengrok, etags, eopengrok, ggtags, gxref, xref, ivy-xref, helm-xref,
       ivy, helm, projectile and speedbar.
-    - New: shell script to create etags-compatible TAGS files in the bin
+    - New: shell scripts to create etags-compatible TAGS files in the bin
       directory:
       - [[https://github.com/pierre-rouleau/pel/blob/master/bin/etags-c][etags-c]] creates a etags-compliant TAGS file for C source code
         projects: all .c, .h files.
@@ -88,6 +88,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
         used.
       - [[https://github.com/pierre-rouleau/pel/blob/master/bin/etags-py][etags-py]] creates a etags-compliant TAGS file for Python source code
         file projects.  It does not process compressed files.
+    - New: shell scripts to create CScope database for directory trees of C
+      and C++ files:
+      - [[https://github.com/pierre-rouleau/pel/blob/master/bin/cscope-c][cscope-c]] creates a CScope database and a cscope-files in the current
+        directory for directory tree(s) of C files.
+      - [[https://github.com/pierre-rouleau/pel/blob/master/bin/cscope-cpp][cscope-cpp]] creates a CScope database and a cscope-files in the current
+        directory for directory tree(s) of C and C++ files.
 - Update: *Customization*:
   - New: *pel-auto-mode-alist* user option in the Pel Base Emacs group allows
     user-specified  association of file name pattern to a major mode.  It can
