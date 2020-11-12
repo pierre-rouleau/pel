@@ -429,20 +429,6 @@ The keys are:
    (pel-symbol-on-off-string 'helm-cscope-mode nil nil "not loaded")
    (pel-on-off-string pel--helm-cscope-keys-active)))
 
-
-;; (defun pel-xref-find-definition ()
-;;   ""
-;;   (interactive)
-;;   (let ((text "cc-require2"))
-;;     (condition-case xref-find-err
-;;         (xref-find-definitions text)
-;;       (user-error
-;;        (condition-case find-tag-err
-;;            (find-tag text)
-;;          (user-error
-;;           (message "Not found:\nxref-find: %s\nfind-tag : %s" (nth 1 xref-find-err) (nth 1 find-tag-err))))))))
-
-
 ;;; --------------------------------------------------------------------------
 (provide 'pel-xref)
 
