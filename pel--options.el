@@ -175,6 +175,24 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
   "PEL Emacs basic configuration."
   :group 'pel)
 
+
+(defcustom pel-auto-mode-alist nil
+  "Alist of filename patterns vs corresponding major mode functions to set.
+These associations are added to Emacs variable `auto-mode-alist' at
+initialization time.
+See `auto-mode-alist' for more information.
+Use the INS and DEL buttons to add associations:
+- the first element is a string regxp pattern identifying the
+  file name to identify (which may only be matching it by its extension),
+- the second is a major mode symbol."
+  :group 'pel-base-emacs
+  :type
+  '(repeat
+    (list
+     (string :tag "file pattern")
+     (symbol :tag "major mode  "))))
+
+
 (defcustom pel-prompt-accept-y-n nil
   "Accept 'y' or 'n' instead of 'yes' or 'no' as answers to prompts."
   :group 'pel-base-emacs
@@ -363,7 +381,7 @@ You must also activate the user option variable  `pel-use-ivy' to use counsel."
   "Control whether `counsel-osx-app' is used when counsel is used on macOS.
 
 With this package activated, PEL provides the ``<f11> A`` key sequence to
-counsel-osx-app.  This allows selection of an macOS application using ivy
+`counsel-osx-app'.  This allows selection of an macOS application using ivy
 completion.
 
 On Linux, the `counsel-linux-app` is bound to the same key if user option
@@ -840,7 +858,7 @@ it does not uses `rg`."
   "Control whether PEL uses fill-column-indicator package.
 
 For Emacs versions earlier than 27.1 set it to activate the ability to
-highlight the current fill-column, the column where automatic line
+highlight the current `fill-column', the column where automatic line
 wrapping occurs and to activate the PEL key bindings for it.
 Not used nor needed for Emacs 27.1 or later: the PEL key bindings for
 that command are always enabled for Emacs 27.1 or later.
@@ -938,8 +956,7 @@ See the author site at URL http://malsyned.net/smart-dash.html"
 Used when `pel-use-smart-dash' user option is t.
 To activate the changes for this you must 'Apply and Save' and restart Emacs."
   :group 'pel-pkg-for-insertions
-  :type
-  '(repeat symbol))
+  :type  '(repeat symbol))
 
 (defcustom pel-use-yasnippet nil
   "Control whether PEL uses yasnippet package."

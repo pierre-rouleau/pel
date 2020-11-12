@@ -799,7 +799,7 @@ Warn user if necessary."
              (string= (key-description iedit-toggle-key-default)
                       (key-description flyspell-auto-correct-binding)))
     (display-warning
-     :warning
+     'pel-keys
      (format "Both iedit and flyspell bind functions to \"%s\"!\n\
 To use this key, change the key selected in one of the following \n\
 user options:\n\
@@ -4618,7 +4618,7 @@ the ones defined from the buffer now."
 (add-hook 'xref-etags-mode-hook (function
                                  (lambda () (load "pel-etags" :no-error))))
 
-
+;; ggtags
 (when pel-use-ggtags
   (use-package ggtags
     :ensure t
@@ -4683,7 +4683,6 @@ the ones defined from the buffer now."
                       'pel-xref-gxref-activate)))
 
 ;; rtags
-
 (when pel-use-rtags-xref
   (use-package rtags-xref
     :ensure t
@@ -4813,27 +4812,46 @@ the ones defined from the buffer now."
   (when (eq pel-use-key-chord 'use-from-start)
     (run-with-idle-timer 1 nil (function pel--start-key-chord-mode))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
+;; Set Automatic Modes for specified file associations
+;; ---------------------------------------------------
+;;
+;; Activate the list identified by the `pel-auto-mode-alist' user option
+(dolist (pattern-mode pel-auto-mode-alist)
+  (let ((pattern (car pattern-mode))
+        (mode    (cadr pattern-mode)))
+    (if (fboundp mode)
+        (add-to-list 'auto-mode-alist (cons pattern mode))
+      (display-warning
+       'pel-mode-association
+       (format "Cannot associate file pattern %S to mode %S: %s is not bound!
+      Please modify pel-auto-mode-alist.
+      To edit the user option, type:   <f11> <f2> o pel-auto-mode-alist RET"
+               pattern mode mode)
+       :error))))
+
+;; ---------------------------------------------------------------------------
 ;; Hydra Definitions
 ;; =================
 ;;
 ;; All PEL Hydras are invoked via the key <f7>.  The key typed right after f7
 ;; determines what Hydra will be used. Therefore try to limit using the same
 ;; keys inside the various PEL Hydras otherwise there won't be many keys to
-;; identify the exact Hydra to use.  For the moment most top left keys are used
-;; by the Window Hydra (pel-∑wnd), the other PEL Hydras use a secondary prefix
-;; key.
+;; identify the exact Hydra to use.  For the moment most top left keys are
+;; used by the Window Hydra (pel-∑wnd), the other PEL Hydras use a secondary
+;; prefix key.
 ;;
-;; Hydra auto-loading is controlled by the <f7> key. At first that key is mapped
-;; to execute `pel--load-hydra'. That function breaks this binding, load the
-;; hydra library, triggering the configuration of all PEL Hydras via the
-;; ```use-package hydra`` call.  Then it simulates a second <f7> key event to
-;; get the effect the user expects and then removes itself from Emacs.
+;; Hydra auto-loading is controlled by the <f7> key. At first that key is
+;; mapped to execute `pel--load-hydra'. That function breaks this binding,
+;; load the hydra library, triggering the configuration of all PEL Hydras via
+;; the ```use-package hydra`` call.  Then it simulates a second <f7> key event
+;; to get the effect the user expects and then removes itself from Emacs.
 ;;
 
-;; TODO: might want to place the different hydras inside their own files and
-;;       allow users to map them to some other bindings by using map references
-;;       instead of having them hard coded like they are now.
+;; TODO:
+;; - Might want to place the different hydras inside their own files and allow
+;;   users to map them to some other bindings by using map references instead
+;;   of having them hard coded like they are now.
 
 (defun pel--maybe-vline-mode ()
       "Use the vertical line mode when available."
@@ -4846,7 +4864,8 @@ the ones defined from the buffer now."
             (move-to-column (if selective-display
                                 (max 0 (- selective-display 1))
                               0)))
-        (user-error "Command vline-mode is not available.  Customize pel-use-vline to t!")))
+        (user-error "Command vline-mode is not available.  \
+Customize pel-use-vline to t!")))
 
 (when pel-use-hydra
 
@@ -4894,7 +4913,7 @@ Simulate a F7 prefix key unless DONT-SIMULATE is non-nil."
     :commands pel--load-hydra
 
     :config
-    ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     ;; PEL HYDRA: Narrate
     (when (and pel-use-applescript pel-system-is-macos-p)
       (defhydra pel-∑narrate (global-map "<f7> <f8>" :foreign-keys run)
@@ -4915,7 +4934,7 @@ Simulate a F7 prefix key unless DONT-SIMULATE is non-nil."
                (pel-forward-word-start))  "next sentence"     :column "Move to")
         ("<f7>" nil                       "cancel"            :column "End")))
 
-    ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     ;; PEL HYDRA: Window Management
     ;; The hydra includes functions that may not be available
     ;; provide dummy stubs for them if necessary.
@@ -4972,7 +4991,7 @@ Simulate a F7 prefix key unless DONT-SIMULATE is non-nil."
       ("?"           pel-toggle-hydra-hint       "hint"         :column "End")
       ("<f7>"        nil                         "cancel"       :column "End"))
 
-    ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     ;; PEL HYDRA: Hide/Show
 
     (use-package hideshow
@@ -5011,7 +5030,7 @@ Simulate a F7 prefix key unless DONT-SIMULATE is non-nil."
       ("<" pel-hs-hide-block-below-dec "-1")
       ("<f7>" nil                      "cancel" :column "End"))
 
-    ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     ;; PEL HYDRA: C preprocessor
     (defhydra pel-⅀c-preproc (pel:for-c "<f7>"  :foreign-keys run)
       "C preprocessor"
@@ -5061,7 +5080,7 @@ Simulate a F7 prefix key unless DONT-SIMULATE is non-nil."
       ("?"    pel-pp-show-state           "Show state"     :column "Other")
       ("<f7>" nil                         "cancel"         :column "Other"))
 
-    ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     ;; PEL HYDRA: Selective Display
     ;; Hide text based on indentation by column or indentation level.
 
@@ -5094,7 +5113,7 @@ Simulate a F7 prefix key unless DONT-SIMULATE is non-nil."
   (when (fboundp 'pel--load-hydra)
     (global-set-key (kbd "<f7>") 'pel--load-hydra)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 (provide 'pel_keys)
 
 ;;; pel_keys.el ends here

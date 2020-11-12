@@ -89,6 +89,16 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       - [[https://github.com/pierre-rouleau/pel/blob/master/bin/etags-py][etags-py]] creates a etags-compliant TAGS file for Python source code
         file projects.  It does not process compressed files.
 - Update: *Customization*:
+  - New: *pel-auto-mode-alist* user option in the Pel Base Emacs group allows
+    user-specified  association of file name pattern to a major mode.  It can
+    be used, for example to:
+    - select the shell-script-mode for extension-less
+      files stored in a directory whose name ends with ``/bin/`` by
+      identifying the file pattern as "/bin/.+\`" and the mode as
+      shell-script-mode.
+    - select python-mode for [[https://www.scons.org][SCons]] files like Sconstruct and SConscript,
+    - or any other association you may wish.  Invalid associations are
+      detected and a warning is displayed when Emacs starts.
   - New: command *pel-browse-group* which prompts allowing the browsing of the
     customization group tree from any group.  This complements the Emacs
     customize-browse which unfortunately does not prompt.
