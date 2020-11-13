@@ -3530,6 +3530,7 @@ the ones defined from the buffer now."
 (define-key pel:file "t" #'time-stamp)
 (define-key pel:file "w" #'write-region)
 (define-key pel:file (kbd "M-x") 'hexl-find-file)
+(define-key pel:file (kbd "M-l") 'find-file-literally)
 
 (when pel-use-recentf
   (use-package recentf
