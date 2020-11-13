@@ -120,6 +120,11 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - New: added command *pel-delete-to-eol* to delete text from point to end
     of line without copying it to the kill ring.  It is bound to ``C-K`` (in
     graphics mode only) and to ``<f11> - E`` key sequence.
+- Update: *File Management*:
+  - New: key binding ``<f11> f M-l`` to find-file-literally``.
+  - New: command *pel-show-buffer-file-encoding*, bound to ``<f11> f ?`` that
+    shows the encoding of the file in current buffer by opening the *Help*
+    buffer showing the value of Emacs variable buffer-file-coding-system.
 - Update: *Grep*:
   - New: Added key bindings for [[https://github.com/ggreer/the_silver_searcher][ag]] (the silver searcher) based grep-style
     search.

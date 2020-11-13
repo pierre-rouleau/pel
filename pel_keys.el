@@ -3507,6 +3507,11 @@ the ones defined from the buffer now."
     (user-error
      "Activate auto-revert-mode before attempting to set/cancel its timer")))
 
+(defun pel-show-buffer-file-encoding ()
+  "Show coding system of file in current buffer."
+  (interactive)
+  (describe-symbol 'buffer-file-coding-system))
+
 (declare-function find-grep "grep")
 (define-pel-global-prefix pel:file (kbd "<f11> f"))
 ;; Used keys in <f11> f:
@@ -3514,7 +3519,7 @@ the ones defined from the buffer now."
 ;; F I L O W R
 ;; a d f g h i j l n o r t v w
 ;; C-^  C-cj
-;; M-/  M-x
+;; M-/  M-e M-l M-x
 (define-key pel:file "I" #'insert-file-literally)
 (define-key pel:file "O" #'find-file-read-only-other-window)
 (define-key pel:file "L" #'locate)
@@ -3531,6 +3536,7 @@ the ones defined from the buffer now."
 (define-key pel:file "w" #'write-region)
 (define-key pel:file (kbd "M-x") 'hexl-find-file)
 (define-key pel:file (kbd "M-l") 'find-file-literally)
+(define-key pel:file "?" #'pel-show-buffer-file-encoding)
 
 (when pel-use-recentf
   (use-package recentf
