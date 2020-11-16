@@ -2359,7 +2359,7 @@ MODE must be a symbol."
   (when pel-use-graphviz-dot
     (define-key pel:for-python "G"         'pel-render-commented-graphviz-dot))
   (when pel-use-rainbow-delimiters
-    (define-key pel:for-python  "R"        'rainbow-delimiters-mode))
+    (define-key pel:for-python (kbd "M-r") 'rainbow-delimiters-mode))
   ;;
   ;; activate the <f12> key binding for python-mode
   (pel--mode-hook-maybe-call
