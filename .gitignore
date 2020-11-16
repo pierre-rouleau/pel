@@ -35,13 +35,25 @@ HTML/*
 # Emacs emacro directory
 .emacros
 
+# CScope files
+cscope.files
+cscope.in.out
+cscope.out
+cscope.po.out
+
 # (C)Tags files
 TAGS
 TAGS.*
+TAGS-PROJECTILE
+
+# Globag gtags files
 GPATH
 GRTAGS
 GTAGS
-TAGS-PROJECTILE
+gtags-explain.*
+
+# HTML rendering of PEL code
+HTML/*
 
 # etags-el generated file
 .etags-el-files.txt
