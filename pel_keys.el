@@ -2314,6 +2314,13 @@ MODE must be a symbol."
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC p`` : Python programming
 (when pel-use-python
 
+  (when pel-use-external-python-mode
+    (use-package python-mode
+      :ensure t
+      :pin melpa
+      :commands python-mode))
+
+
   (use-package elpy
     :ensure t
     :pin melpa
@@ -2366,7 +2373,7 @@ MODE must be a symbol."
    (function pel--setup-for-python)
    'python-mode 'python-mode-hook)
 
-  ;; lpy-mode: modal editing for Python.
+  ;; lpy-mode: lispy-style modal editing for Python.
   (when pel-use-lpy
     (use-package pel-lispy
       :commands pel-lpy-mode
