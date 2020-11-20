@@ -37,6 +37,9 @@
 ;;  - `pel-current-buffer-filename'
 ;;  - `pel-current-buffer-file-extension'
 ;;
+;; Emacs Lisp Development support:
+;; - `pel-add-dir-to-loadpath'
+;;
 ;; Check for Zero:
 ;;  - `pel-!0'
 ;;
@@ -131,6 +134,7 @@
 
 ;; -----------------------------------------------------------------------------
 ;;; Dependencies:
+                ;; subr (always loaded) ; use: called-interactively-p
 (eval-when-compile (require 'subr-x))   ; use: split-string, string-join
 
 ;; -----------------------------------------------------------------------------
@@ -217,6 +221,28 @@ Issue a user error if current buffer does not visit a file."
   (if buffer-file-truename
       (file-name-extension buffer-file-truename with-period)
     (user-error "No file in buffer %s" (buffer-name))))
+
+;; ---------------------------------------------------------------------------
+;; Emacs Lisp Development Support
+;; ------------------------------
+
+(defun pel-add-dir-to-loadpath (dir)
+  "Add a directory to Emacs variable `load-path' if not already in the list.
+Interactively display the number of directories in the list and whether
+the operation succeeded or not.
+Return non-nil if it was added, nil otherwise."
+  (interactive "DDir: ")
+  (let* ((original-length (length load-path))
+         (new-dir         (directory-file-name (expand-file-name dir)))
+         (new-length      (length (add-to-list 'load-path new-dir))))
+    (when (called-interactively-p 'interactive)
+      (message "load-path: %d directories.  %s was %s"
+               new-length
+               new-dir
+               (if (= new-length original-length)
+                   " already in the list, nothing new added!"
+                 "added.")))
+    (= new-length original-length)))
 
 ;; -----------------------------------------------------------------------------
 ;; Check for Zero

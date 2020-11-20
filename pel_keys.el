@@ -2187,6 +2187,7 @@ MODE must be a symbol."
 (define-pel-global-prefix pel:for-elisp  (kbd "<f11> SPC l"))
 (define-pel-global-prefix pel:elisp-skel (kbd "<f11> SPC l <f12>"))
 
+(define-key pel:for-elisp "D"  'pel-add-dir-to-loadpath)
 (define-key pel:for-elisp (kbd "M-p")  #'superword-mode)
 (pel--lispy-map-for pel:for-elisp)
 ;;

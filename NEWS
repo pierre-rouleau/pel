@@ -205,6 +205,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     the LispWorks Common Lisp HyperSpec HTML documentation.
   - New: The ``<f12> <f3>`` key sequence provides access to slime
     customization buffer.
+- Update: *Programming Language Support -- Emacs Lisp*
+  - New: ``<f12> D`` binding to new command ``pel-add-dir-to-loadpath`` which
+    adds a directory to Emacs load-path.
 - Update: *Programming Language Support -- Python*
   - Modified: binding to rainbow-delimiters-mode to ``<f12> M-r`` like it is
     for other programming languages.
