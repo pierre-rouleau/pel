@@ -2774,6 +2774,7 @@ vlang-mode/master/vlang-mode.el"
 (define-key pel:comment "A"    'pel-toggle-comment-auto-fill-only-comments)
 (define-key pel:comment "B"           #'comment-box)
 (define-key pel:comment (kbd  "DEL")   'pel-delete-all-comments)
+(define-key pel:comment "-"            'pel-kill-all-comments)
 (define-key pel:comment "k"           #'comment-kill)
 (define-key pel:comment "l"           #'comment-line)
 (define-key pel:comment "b"            'pel-comment-start)

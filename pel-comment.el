@@ -39,8 +39,13 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
+
+;; Elisp functions taken from files always loaded
+;; - from: newcomment                    ; use: comment-kill
+;; - from: simple                        ; use kill-ring
+
 (require 'pel--base)                     ; use: pel-toggle
-(eval-when-compile (require 'subr-x))
+(eval-when-compile (require 'subr-x))    ; use: dolist, with-current-buffer
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
