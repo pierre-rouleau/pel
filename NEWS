@@ -25,10 +25,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     cross-referencing systems.  Once a system is enabled via the appropriate
     PEL user option, it is possible to activate its mode or turn it off using
     one of the commands PEL provide.
-    - PEL provides the ``pel-xref-show-status`` command to display the
+    - PEL provides the *pel-xref-show-status* command to display the
       state of the indexing/cross-referencing modes.  It is bound
       to ``<f11> X ?``.  When invoked with any prefix argument it prints
-      the information inside a *xref-status* buffer.
+      the information inside a ``*xref-status*`` buffer.
       - It becomes easy to try different indexing systems; these systems are
         often complementary and often viable alternatives to active Language
         Server systems.  Note that PEL will also support Language Servers and
