@@ -24,13 +24,16 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - PEL's goals is to provide easy access to multiple indexing and
     cross-referencing systems.  Once a system is enabled via the appropriate
     PEL user option, it is possible to activate its mode or turn it off using
-    one of the commands PEL provide.  PEL also provides a command to display the
-    state of the indexing/cross-referencing modes: pel-xref-show-status, bound
-    to ``<f11> X ?``.  It becomes easy to try different indexing systems;
-    these systems are often complementary and often viable alternatives to
-    active Language Server systems.  Note that PEL will also support Language
-    Servers and will identify good set of tools for each of the programming
-    languages it will support.
+    one of the commands PEL provide.
+    - PEL provides the ``pel-xref-show-status`` command to display the
+      state of the indexing/cross-referencing modes.  It is bound
+      to ``<f11> X ?``.  When invoked with any prefix argument it prints
+      the information inside a *xref-status* buffer.
+      - It becomes easy to try different indexing systems; these systems are
+        often complementary and often viable alternatives to active Language
+        Server systems.  Note that PEL will also support Language Servers and
+        will identify good set of tools for each of the programming languages
+        it will support.
   - Non-xref cross-reference/code indexing packages:
     - New: Added support for [[https://en.wikipedia.org/wiki/Cscope][CScope]] via the external [[https://github.com/dkogan/xcscope.el][xcscope]] and the
       [[https://github.com/alpha22jp/helm-cscope.el][helm-cscope]] Emacs packages.

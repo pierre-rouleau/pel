@@ -348,9 +348,9 @@ Used as a protection to what seems to be a bug in helm-cscope-mode.")
 
 ;;-pel-autoload
 (defun pel-activate-helm-cscope ()
-  "Activate helm-cscope-mode.
+  "Activate `helm-cscope-mode'.
 Don't do anything if pel--toggling-helm-cscope is t.
-Done to prevent call to pel-activate-helm-cscope-keys when
+Done to prevent call to `pel-activate-helm-cscope-keys' when
 trying to turn the mode off.
 That is required by a strange behaviour by helm-scope-mode which
 calls the hook function even when trying to disable the mode."
@@ -393,10 +393,10 @@ The keys are:
                                      "global")))
 
 ;;-pel-autoload
-(defun pel-xref-show-status ()
+(defun pel-xref-show-status (&optional print-in-buffer)
   "Show the mode status of Xref back-ends in current buffer."
-  (interactive)
-  (message
+  (interactive "P")
+  (let ((msg (format
    "\
 - dumb-jump-mode           : %s
 - ggtags-mode              : %s
@@ -427,7 +427,21 @@ The keys are:
                           'pel-use-xcscope
                           pel-modes-activating-cscope)
    (pel-symbol-on-off-string 'helm-cscope-mode nil nil "not loaded")
-   (pel-on-off-string pel--helm-cscope-keys-active)))
+   (pel-on-off-string pel--helm-cscope-keys-active))))
+    (if print-in-buffer
+        (let ((current-buffer-name (buffer-name))
+              (outbuf (get-buffer-create "*xref-status*")))
+          (with-current-buffer outbuf
+            (goto-char (point-max))
+            (insert (format "----- Xref Status from %s:\n%s\n\n"
+                            current-buffer-name
+                            msg)))
+          ;; display the end part of the buffer showing comment variables
+          ;; move the last line of text to the bottom line of the window
+          (with-selected-window (display-buffer outbuf)
+            (goto-char (- (point-max) 2))  ; last 2 chars are '\n'
+            (recenter -1)))
+      (message msg))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-xref)
