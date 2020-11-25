@@ -2207,8 +2207,6 @@ MODE must be a symbol."
   (define-key pel:elisp-help "b" 'eldoc-box-hover-mode)
   (define-key pel:elisp-help "B" 'eldoc-box-hover-at-point-mode))
 
-
-
 (define-pel-global-prefix pel:elisp-analyze (kbd "<f11> SPC l a"))
 (define-key pel:elisp-analyze ")" #'check-parens)
 (when pel-use-parinfer
@@ -2221,6 +2219,7 @@ MODE must be a symbol."
 (define-key pel:elisp-compile "b"  'pel-byte-compile-file-and-load)
 (define-key pel:elisp-compile "d" #'byte-recompile-directory)
 (define-key pel:elisp-compile "f" #'byte-compile-file)
+(define-key pel:elisp-compile "a" #'disassemble)
 
 (define-pel-global-prefix pel:elisp-debug (kbd "<f11> SPC l d"))
 (define-key pel:elisp-debug "d" #'debug-on-entry)
