@@ -29,7 +29,7 @@
 
 ;;-pel-autoload
 (defun pel-show-face-at-point ()
-  "Display information ;about face at point."
+  "Display information about face at point."
   (interactive)
   (message "\
 - face           : %s
