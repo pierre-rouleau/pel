@@ -131,6 +131,9 @@
 ;; File Path processing
 ;; - `pel-parent-dirpath'
 ;; - `pel-expand-url-file-name'
+;;
+;; Print in dedicated buffer
+;; - `pel-print-in-buffer'
 
 ;; -----------------------------------------------------------------------------
 ;;; Dependencies:
@@ -974,6 +977,26 @@ Example:
   (if (eq 0 (string-match "file://" url))
       (concat "file://" (expand-file-name (substring url 7)))
     url))
+
+;; ---------------------------------------------------------------------------
+;; Print in dedicated buffer
+;; -------------------------
+
+(defun pel-print-in-buffer (bufname title text)
+  "Print TITLE than TEXT inside specified buffer BUFNAME."
+  (let ((current-buffer-name (buffer-name))
+        (outbuf (get-buffer-create bufname)))
+    (with-current-buffer outbuf
+      (goto-char (point-max))
+      (insert (format "----- %s from %s:\n%s\n\n"
+                      title
+                      current-buffer-name
+                      text)))
+    ;; display the end part of the buffer showing comment variables
+    ;; move the last line of text to the bottom line of the window
+    (with-selected-window (display-buffer outbuf)
+      (goto-char (- (point-max) 2))  ; last 2 chars are '\n'
+      (recenter -1))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel--base)

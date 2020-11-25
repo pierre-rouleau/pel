@@ -429,18 +429,7 @@ The keys are:
    (pel-symbol-on-off-string 'helm-cscope-mode nil nil "not loaded")
    (pel-on-off-string pel--helm-cscope-keys-active))))
     (if print-in-buffer
-        (let ((current-buffer-name (buffer-name))
-              (outbuf (get-buffer-create "*xref-status*")))
-          (with-current-buffer outbuf
-            (goto-char (point-max))
-            (insert (format "----- Xref Status from %s:\n%s\n\n"
-                            current-buffer-name
-                            msg)))
-          ;; display the end part of the buffer showing comment variables
-          ;; move the last line of text to the bottom line of the window
-          (with-selected-window (display-buffer outbuf)
-            (goto-char (- (point-max) 2))  ; last 2 chars are '\n'
-            (recenter -1)))
+        (pel-print-in-buffer "*xref-status*" "Xref Status" msg)
       (message msg))))
 
 ;;; --------------------------------------------------------------------------

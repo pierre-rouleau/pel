@@ -40,6 +40,7 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
+(require 'pel--base)                    ; use: pel-print-in-buffer
 (require 'pel--options)
 
 ;;; --------------------------------------------------------------------------
@@ -129,10 +130,9 @@ the variable `pel-emacs-refcard-dirpath' user option."
 (defun pel-emacs-mem-stats ()
   "Display Emacs memory statistics inside an *emacs-mem-stats* buffer."
   (interactive)
-  (let ((bufname (generate-new-buffer "*emacs-mem-stats*")))
-    (with-current-buffer bufname
-      (insert
-       (format "\
+  (pel-print-in-buffer "*emacs-mem-stats*"
+                       "Emacs Memory"
+                       (format "\
 On %s:
  - cons-cells-consed  : %19d
  - floats-consed      : %19d
@@ -151,8 +151,6 @@ On %s:
                misc-objects-consed
                intervals-consed
                strings-consed)))
-    (switch-to-buffer bufname)
-    (goto-char (point-min))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-emacs)
