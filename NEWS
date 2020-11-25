@@ -35,6 +35,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
         Server systems.  Note that PEL will also support Language Servers and
         will identify good set of tools for each of the programming languages
         it will support.
+  - New *xref search of Customization buffer user option variables*:
+    - PEL provides the command *pel-xref-find-custom-definition-at-line*,
+      bound to the ``<f11> X c`` key sequence.  This finds the source of a
+      user-option variable for the symbol listed on the current line of a
+      Customize buffer.  The user variable may have its name spread like in
+      "Kill Ring Max" or its real variable name like "kill-ring-max".
   - Non-xref cross-reference/code indexing packages:
     - New: Added support for [[https://en.wikipedia.org/wiki/Cscope][CScope]] via the external [[https://github.com/dkogan/xcscope.el][xcscope]] and the
       [[https://github.com/alpha22jp/helm-cscope.el][helm-cscope]] Emacs packages.

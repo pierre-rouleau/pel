@@ -459,7 +459,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-xref-select-front-end
     pel-activate-helm-cscope
     pel-toggle-helm-cscope
-    pel-xref-show-status)
+    pel-xref-show-status
+    pel-xref-find-custom-definition-at-line)
 
   (pel-autoload "pel-text-insert" for:
     pel-separator-line

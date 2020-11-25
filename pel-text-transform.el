@@ -20,7 +20,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; The Emacs native case conversion functions only operate on a
@@ -44,11 +44,19 @@
 ;;
 ;; Call hierarchy:
 ;;
+;; - pel-capitalize-first-letter
 ;; * pel-capitalize-word-or-region
 ;; * pel-upcase-word-or-region
 ;; * pel-downcase-word-or-region
 ;;   - pel-casechg-word-or-region
 ;;
+
+(defun pel-capitalize-first-letter (text)
+  "Return TEXT string with first letter capitalized."
+  (if (> (length text) 0)
+      (concat (upcase (substring text 0 1))
+              (substring text 1))
+    ""))
 
 (defun pel-casechg-word-or-region (operation n)
   "Detect marked region and perform case convert OPERATION N times.

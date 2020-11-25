@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 25 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-11-25 11:15:11, updated by Pierre Rouleau>
+;; Time-stamp: <2020-11-25 15:58:02, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -122,6 +122,55 @@ spaces even when point is located between the delimiters."
       (skip-chars-forward delimiters)
       (setq p2 (point))
       (buffer-substring-no-properties p1 p2))))
+
+;; ---------------------------------------------------------------------------
+;; Read Customize Symbol at point
+;; ------------------------------
+
+(defun pel-move-to-face (face limit)
+  "Move to the first char with specified FACE up to LIMIT point.
+Return point if char with FACE found, nil otherwise."
+  (while (and (not (eq face
+                       (get-char-property (point) 'face)))
+              (< (point) limit))
+    (forward-char 1))
+  (if (eq (point) limit)
+      nil
+    (point)))
+
+(defun pel-move-past-face (face limit)
+  "Move to the first char that does not have specified FACE up to LIMIT point.
+Return point if char with FACE found, nil otherwise."
+  (while (and (eq face
+                  (get-char-property (point) 'face))
+              (< (point) limit))
+    (forward-char 1))
+  (if (eq (point) limit)
+      nil
+    (point)))
+
+(defun pel-customize-symbol-at-line ()
+  "Return the string for the customize symbol on current line.
+
+Customize symbols are taken from Customize buffers *only*.
+They are identified by their `custom-variable-tag' face.
+The text may include space characters.
+The text must be on a single line."
+  ;; Identify the symbol by the face of text.
+  ;; Start from the beginning o the line.
+  (save-excursion
+    (let (p1     ; point of first char
+          p2     ; point of last char
+          (pe (progn
+                (move-end-of-line 1)
+                (point))))
+      ;; move to the beginning of line, unconstrained by fields
+      (forward-line 0)
+      (setq p1 (pel-move-to-face 'custom-variable-tag pe))
+      (when p1
+        (setq p2 (pel-move-past-face 'custom-variable-tag pe))
+        (when p2
+          (buffer-substring-no-properties p1 p2))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-read)

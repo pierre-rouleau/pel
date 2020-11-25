@@ -70,6 +70,7 @@
 ;; - `pel-when-text-in'
 ;; - `pel-string-spread'
 ;; - `pel-list-str'
+;; - `pel-title-case-to-dash-separated'
 
 ;; Value check:
 ;; - `pel-use-or'
@@ -471,6 +472,24 @@ Example:
   (string-join (mapcar (function symbol-name)
                        list)
                ", "))
+
+(defun pel-title-case-to-dash-separated (text)
+  "Return dash-separated lowercase for space-separated title-case words TEXT.
+
+Use this function to transform the symbol presentation in Customize buffers
+to the real name of Emacs Lisp user option variables.
+
+For example:
+
+ELISP> (pel-title-case-to-dash-separated \"Pdb Track Stack From Shell P\")
+\"pdb-track-stack-from-shell-p\"
+ELISP> (pel-title-case-to-dash-separated \"Py  Execute Use Temp File P\")
+\"py--execute-use-temp-file-p\"
+ELISP> "
+  (string-join
+   (mapcar (function downcase) (split-string text " "))
+   "-"))
+
 
 ;; -----------------------------------------------------------------------------
 ;; Value check

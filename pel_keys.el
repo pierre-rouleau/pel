@@ -4612,6 +4612,7 @@ the ones defined from the buffer now."
 (define-key pel:help "X" #'pel-xref-show-status) ; pel:help key
 
 (define-key pel:xref "." #'xref-find-apropos)
+(define-key pel:xref "c"  'pel-xref-find-custom-definition-at-line)
 (define-key pel:xref "t"  'visit-tags-table)
 (define-key pel:xref "s"  'tags-search)
 (define-key pel:xref "n"  'tags-loop-continue)

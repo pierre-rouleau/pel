@@ -77,7 +77,9 @@
 
 (require 'pel--base)
 (require 'pel--options)
-(require 'pel-prompt)                   ; use pel-select-from
+(require 'pel-prompt)                   ; use `pel-select-from'
+(require 'pel-read)                     ; use `pel-customize-symbol-at-line'
+(require 'pel-text-transform)           ; use `pel-capitalize-first-letter'
 
 ;; ---------------------------------------------------------------------------
 ;; Utilities
@@ -431,6 +433,73 @@ The keys are:
     (if print-in-buffer
         (pel-print-in-buffer "*xref-status*" "Xref Status" msg)
       (message msg))))
+
+;; ---------------------------------------------------------------------------
+;; Find definition of Customize symbol
+;; -----------------------------------
+;;
+;; The following uses code from pel-read to extract the symbol on the current
+;; line of a customize buffer than ensure it transforms it to standard symbol
+;; form by replacing spaces by dash characters and making each character lower
+;; case. Then it uses elisp--xref-backend to move to the symbol definition for
+;; a variable symbol taken from a Customize buffer.  Elisp xref should always
+;; work in this case because Emacs Customize buffers can only display
+;; information on a symbol if the file where it is defined has been loaded.
+
+(defun pel-elisp-find-variable (symbol)
+  "Move point to SYMBOL variable definition using elisp xref-backend.
+
+Always use Elisp backend, regardless of currently active xref-backend."
+  (pel-require 'xref)
+  (if (fboundp 'xref-push-marker-stack)
+      (progn
+        (xref-push-marker-stack)
+        (let ((buffer.point (find-variable-noselect symbol)))
+          (switch-to-buffer (car buffer.point))
+          (goto-char (cdr buffer.point))))
+    (user-error "Cannot load required xref-push-marker-stack")))
+
+
+;;-pel-autoload
+(defun pel-xref-find-custom-definition-at-line ()
+  "Move point to definition of customize user-option on the current line.
+
+Point must be inside a Customize buffer, anywhere on the line
+where the user variable symbol name appears.
+
+This command works for user option symbols that have been
+translated to look like a series of space-separated Title-case
+words and normal symbol as well.
+
+If the user option has a name that was transformed by replacing
+dash with space character and using title-case for each word, the
+original name is inferred and used for the cross reference
+search.
+
+If a user option has A-Name-Like-This the function also find it.
+It also looks for Name-like-this.
+
+This always uses the Elisp xref backend for searching the symbol
+since the symbol is displayed in a Customize buffer only when it
+has been loaded.  Emacs customize buffers are not able to display
+information on symbols from files that have not been already
+loaded."
+  (interactive)
+  (if (pel-string-starts-with (buffer-name) "*Customize ")
+      (let* ((custom-symbol-str (pel-customize-symbol-at-line))
+             (symbol-str (when custom-symbol-str
+                           (pel-title-case-to-dash-separated custom-symbol-str))))
+        (if symbol-str
+            (condition-case nil
+                (pel-elisp-find-variable (intern symbol-str))
+              (search-failed
+               (condition-case nil
+                   (pel-elisp-find-variable (intern (capitalize symbol-str)))
+                 (search-failed
+                  (pel-elisp-find-variable
+                   (intern (pel-capitalize-first-letter symbol-str)))))))
+          (user-error "No valid customize user-option on current line!"))
+        (user-error "Command is only available in a Customize buffer!"))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-xref)
