@@ -1,12 +1,13 @@
 ;;; pel-read.el --- Read text from buffer -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Created   : Tuesday, May 25 2020.
+;; Author    : Pierre Rouleau <prouleau001@gmail.com>
+;; Time-stamp: <2020-11-25 11:15:11, updated by Pierre Rouleau>
 
-;; Author: Pierre Rouleau <prouleau001@gmail.com>
-
+;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;;; License:
+;; Copyright (C) 2020  Pierre Rouleau
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -21,7 +22,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; Utility functions that read text from current buffer at point.
@@ -33,15 +34,21 @@
 ;;  - `pel-string-at-point'
 ;;
 
-;;; Code:
-
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
+;;
 (require 'pel-navigate)   ; use: pel-forward-word-start
+
+;;; --------------------------------------------------------------------------
+;;; Code:
+;;
 
 (defun pel-thing-at-point (thing)
   "Read and return the string of THING at point.
 See `bounds-of-thing-at-point' for a list of possible THING symbols."
   (message "pel-thing-at-point")
-  (unless (and (require 'thingatpt nil :noerror)      ; use: bounds-of-thing-at-point
+  ;; thingatpt: use: bounds-of-thing-at-point
+  (unless (and (require 'thingatpt nil :noerror)
                (fboundp 'bounds-of-thing-at-point))
     (user-error "Failed loading thingatpt!"))
   (let ((bounds (bounds-of-thing-at-point thing))
@@ -79,10 +86,9 @@ See `bounds-of-thing-at-point' for a list of possible THING symbols."
       (pel-forward-word-start))
     text))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Read string at point
 ;; --------------------
-
 
 (defun pel-string-at-point (delimiters &optional allow-space)
   "Return the string at point delimited by DELIMITERS string.
@@ -99,11 +105,13 @@ spaces even when point is located between the delimiters."
   (save-excursion
     (let* (p1
            p2
-           (at-delimiter (string-match-p (regexp-quote (string (char-after))) delimiters))
+           (at-delimiter (string-match-p (regexp-quote (string (char-after)))
+                                         delimiters))
            (delimiters (if (or at-delimiter allow-space)
                            delimiters
                          (concat " " delimiters)))
-           (delimiters (concat "^" delimiters))) ; skip all BUT those delimiters
+           ;; skip all BUT those delimiters
+           (delimiters (concat "^" delimiters)))
       (if at-delimiter
           ;; when at first delimiter move in the string.
           (forward-char)
@@ -115,7 +123,7 @@ spaces even when point is located between the delimiters."
       (setq p2 (point))
       (buffer-substring-no-properties p1 p2))))
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 (provide 'pel-read)
 
 ;;; pel-read.el ends here
