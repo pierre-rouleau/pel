@@ -4623,7 +4623,7 @@ the ones defined from the buffer now."
 (define-key pel:xref "1"  'first-error)
 (define-key pel:xref "F"  'pel-xref-select-front-end)
 
-(define-key pel:xref-backend "E"  'xref-etags-mode)
+(define-key pel:xref-backend "T"  'xref-etags-mode)
 
 
 ;; Installation of work around for Emacs bug 44494
