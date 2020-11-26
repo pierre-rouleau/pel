@@ -41,11 +41,20 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     used in other PEL key sequences, so it's more appropriate even though the
     command is also bound to C-M-. by Emacs.
   - New *xref search of Customization buffer user option variables*:
-    - PEL provides the command *pel-xref-find-custom-definition-at-line*,
-      bound to the ``<f11> X c`` key sequence.  This finds the source of a
-      user-option variable for the symbol listed on the current line of a
-      Customize buffer.  The user variable may have its name spread like in
-      "Kill Ring Max" or its real variable name like "kill-ring-max".
+    - PEL provides the command *pel-xref-find-custom-definition-at-line*.
+      This command finds the source of a user-option variable for the symbol
+      listed on the current line of a Customize buffer.  The user variable may
+      have its name spread like in "Kill Ring Max" or its real variable name
+      like "kill-ring-max".  It has several key bindings:
+      - It is globally bound to the ``<f11> X c`` key sequence.  However it
+        can only be used inside a Customize buffer; if used inside another
+        buffer it will report an error.
+      - In Customize buffers (buffers in Custom-Mode) the following keys are
+        activated:
+        - ``<f11> X .``
+        - ``M-.`` when the PEL user option
+          *pel-bind-m-dot-to-xref-find-custom-definition* is set to *(t*
+          (which is its default).
   - Non-xref cross-reference/code indexing packages:
     - New: Added support for [[https://en.wikipedia.org/wiki/Cscope][CScope]] via the external [[https://github.com/dkogan/xcscope.el][xcscope]] and the
       [[https://github.com/alpha22jp/helm-cscope.el][helm-cscope]] Emacs packages.

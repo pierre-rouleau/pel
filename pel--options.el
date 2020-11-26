@@ -3510,6 +3510,17 @@ If it set to nil, these keys are not bound."
   :link '(custom-group-link "speedbar")
   :link `(url-link :tag "Xref PDF" ,(pel-pdf-file-url "xref")))
 
+(defcustom pel-bind-m-dot-to-xref-find-custom-definition t
+  "If set, the M-. key is bound to special xref find in Custom buffers.
+
+When this is set to t, the M-. key is bound to the
+function `pel-xref-find-custom-definition-at-line' to
+find the source of the displayed user option variables.
+This is the default.  To prevent this binding, set it to nil."
+  :group 'pel-pkg-for-xref
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; -- cscope
 (defcustom pel-use-xcscope nil
   "Control whether PEL uses the xcscope package.

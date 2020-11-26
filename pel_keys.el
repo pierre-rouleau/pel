@@ -4625,13 +4625,20 @@ the ones defined from the buffer now."
 
 (define-key pel:xref-backend "T"  'xref-etags-mode)
 
-
 ;; Installation of work around for Emacs bug 44494
 ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=44494
 ;; TODO: qualify this with emacs version as soon as a version of Emacs fixes
 ;; the bug.
 (add-hook 'xref-etags-mode-hook (function
                                  (lambda () (load "pel-etags" :no-error))))
+
+
+(defun pel--setup-for-custom ()
+  "PEL setup for Custom-mode."
+  (when pel-bind-m-dot-to-xref-find-custom-definition
+    (local-set-key (kbd "M-.") 'pel-xref-find-custom-definition-at-line))
+  (local-set-key (kbd "<f11> X .") 'pel-xref-find-custom-definition-at-line))
+(add-hook 'Custom-mode-hook 'pel--setup-for-custom)
 
 ;; ggtags
 (when pel-use-ggtags
