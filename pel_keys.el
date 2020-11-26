@@ -1549,7 +1549,7 @@ just bind it again after this call."
     (define-key c-preproc-prefix "p" 'pel-pp-prev-directive)
     (define-key c-preproc-prefix "?" 'pel-pp-show-state)))
 
-(defun pel--cc-extra-setup ()
+(defun pel--setup-for-cc ()
   "More setup for CC modes: add c preprocessor hydra."
   ;; The pel-⅀c-preproc requires Hydra: load it via the pel--load-hydra
   (when (and pel-use-hydra
@@ -1610,7 +1610,7 @@ MODE must be a symbol."
   ;; 7) Install language-specific skeletons
   (pel--install-c-skel      pel:c-skel)
   ;; 8) extra setup
-  (pel--cc-extra-setup))
+  (pel--setup-for-cc))
 
 
 (when pel-use-plantuml
@@ -1663,7 +1663,7 @@ MODE must be a symbol."
   ;; 7) Install language-specific skeletons
   ;; TODO
   ;; 8) extra setup
-  (pel--cc-extra-setup))
+  (pel--setup-for-cc))
 
 (when pel-use-plantuml
   (define-key pel:for-c++ "u" 'pel-render-commented-plantuml))
@@ -1768,7 +1768,7 @@ MODE must be a symbol."
   (define-pel-global-prefix pel:erlang-debug    (kbd "<f11> SPC e d"))
   (define-pel-global-prefix pel:erlang-skel     (kbd "<f11> SPC e <f12>"))
 
-  (defun pel--setup-erlang ()
+  (defun pel--setup-for-erlang ()
     "Activate Erlang setup."
     ;; set fill-column to Erlang's default if specified
     (when pel-erlang-fill-column
@@ -1808,7 +1808,7 @@ MODE must be a symbol."
 
     ;; activate the <f12> key binding for erlang-mode
     (pel--mode-hook-maybe-call
-     (function pel--setup-erlang)
+     (function pel--setup-for-erlang)
      'erlang-mode 'erlang-mode-hook)
 
     ;; bind other erlang keys
