@@ -498,8 +498,8 @@ loaded."
                  (search-failed
                   (pel-elisp-find-variable
                    (intern (pel-capitalize-first-letter symbol-str)))))))
-          (user-error "No valid customize user-option on current line!"))
-        (user-error "Command is only available in a Customize buffer!"))))
+          (user-error "No valid customize user-option on current line!")))
+        (user-error "Command is only available in a Customize buffer!")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-xref)
