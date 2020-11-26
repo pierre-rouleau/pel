@@ -4611,14 +4611,13 @@ the ones defined from the buffer now."
 (define-key pel:xref "?" #'pel-xref-show-status)
 (define-key pel:help "X" #'pel-xref-show-status) ; pel:help key
 
-(define-key pel:xref "." #'xref-find-apropos)
+(define-key pel:xref "a" #'xref-find-apropos)
 (define-key pel:xref "c"  'pel-xref-find-custom-definition-at-line)
 (define-key pel:xref "t"  'visit-tags-table)
 (define-key pel:xref "s"  'tags-search)
 (define-key pel:xref "n"  'tags-loop-continue)
 (define-key pel:xref "l"  'list-tags)
 (define-key pel:xref "f"  'next-file)
-(define-key pel:xref "."  'xref-find-apropos)
 (define-key pel:xref "r"  'tags-query-replace)
 (define-key pel:xref (kbd "M-r")  'xref-query-replace-in-results)
 (define-key pel:xref "1"  'first-error)

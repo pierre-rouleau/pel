@@ -35,6 +35,11 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
         Server systems.  Note that PEL will also support Language Servers and
         will identify good set of tools for each of the programming languages
         it will support.
+  - Modified: PEL key binding for *xref-find-apropos*: the new key sequence is
+    ``<f11> X a`` instead of ``<f11> X .`` which is now reserved for major mode
+    specific specialized cross reference operations.  The 'a' for apropos is
+    used in other PEL key sequences, so it's more appropriate even though the
+    command is also bound to C-M-. by Emacs.
   - New *xref search of Customization buffer user option variables*:
     - PEL provides the command *pel-xref-find-custom-definition-at-line*,
       bound to the ``<f11> X c`` key sequence.  This finds the source of a
