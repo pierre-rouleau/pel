@@ -5027,8 +5027,9 @@ Simulate a F7 prefix key unless DONT-SIMULATE is non-nil."
       ("C-S-<down>"  pel-close-window-down       "below"      :column "Close.")
       ("C-S-<left>"  pel-close-window-left       "left"       :column "Close.")
       ("C-S-<right>" pel-close-window-right      "right"      :column "Close.")
-      ("?"           pel-toggle-hydra-hint       "hint"         :column "End")
-      ("<f7>"        nil                         "cancel"       :column "End"))
+      ("d"           pel-toggle-window-dedicated "un/dedicate"  :column "Other")
+      ("?"           pel-toggle-hydra-hint       "hint"         :column "Other")
+      ("<f7>"        nil                         "cancel"       :column "Other"))
 
     ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     ;; PEL HYDRA: Hide/Show
