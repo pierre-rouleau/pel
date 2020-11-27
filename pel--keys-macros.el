@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-11-14 18:53:44, updated by Pierre Rouleau>
+;; Time-stamp: <2020-11-27 09:21:43, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -91,7 +91,7 @@
     ([f11 59]        ("comments"
                       "hide-show-code") pel-pkg-for-programming (comment
                                                                  hideshow))
-    ([f11 ??]        "help")
+    ([f11 ??]        "help"             nil                    command-log)
     ([f11 9]         "indentation"      nil                     indent)
     ;; 2 different possible key sequences for speedbar
     ([f11 134217843] "speedbar"         pel-pkg-for-speedbar    speedbar)
@@ -481,10 +481,12 @@ Return nil if nothing found."
 
 (defconst pel--group-library-names
   '(("rxt"   . "pcre2el")
-    ("Ztree" . "ztree-view"))
+    ("Ztree" . "ztree-view")
+    ("command-log" . "command-log-mode"))
   "Maps a group name for the library that defines it.
 This is only required for the libraries that cannot be found
-with the existing code.")
+with the existing code, such as when the group name is different
+enough from the feature name.")
 
 (defun pel--locate-library-for (group)
   "Attempts to locate a library for the specified GROUP.

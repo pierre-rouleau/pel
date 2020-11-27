@@ -1351,6 +1351,17 @@ The `pel-key-chords' value is a list of objects.
   :link '(url-link :tag "keycast @ GitHub"
                    "https://github.com/tarsius/keycast"))
 
+(defcustom pel-use-command-log-mode nil
+  "Control whether PEL uses the command-log package.
+
+For the moment this uses a fork of the lewang/command-log-mode
+waiting for activity to resume in the lewang's repo."
+  :group 'pel-pkg-for-keys
+  :type 'boolean
+  :safe #'booleanp
+  :link '(url-link :tag "prouleau/command-log-mode @ GitHub"
+                   "https://github.com/prouleau/command-log-mode"))
+
 ;; -----------------------------------------------------------------------------
 ;; Markup Language Support
 ;; -----------------------

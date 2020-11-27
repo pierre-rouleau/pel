@@ -2962,6 +2962,23 @@ vlang-mode/master/vlang-mode.el"
     :init
     (define-key pel:keys  "c"  'keycast-mode)))
 
+(when pel-use-command-log-mode
+  (define-pel-global-prefix pel:command-log (kbd "<f11> ? k c"))
+  (cl-eval-when 'load
+    (pel-install-file
+     "https://raw.githubusercontent.com/pierre-rouleau/command-log-mode/master/command-log-mode.el"
+     "command-log-mode.el"))
+  (use-package command-log-mode
+    :commands (command-log-mode
+               global-command-log-mode)
+    :init
+    (define-key pel:command-log "c" 'command-log-mode)
+    (define-key pel:command-log "C" 'global-command-log-mode)
+    :config
+    (define-key pel:command-log "o" 'clm/open-command-log-buffer)
+    (define-key pel:command-log "." 'clm/close-command-log-buffer)
+    (define-key pel:command-log "/" 'clm/toggle-log-all)))
+
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> $`` : Spell Check
 
