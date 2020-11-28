@@ -27,17 +27,18 @@
 ;; This file contains a collection of navigation commands that complement the
 ;; standard Emacs navigation commands.
 ;;
-;;  - `pel-beginning-of-line' is meant to replace `beginning-of-line' as it does
-;;    the same and extends it: if point is already at the beginning of the line
-;;    then it moves it to the first non-whitespace character.
-;;  - `pel-find-thing-at-point' provides a search capability without the need fo
-;;    a tag database but it is limited in what it can find.  It's a poor man
-;;    cross reference.
+;;  - `pel-beginning-of-line' is meant to replace `beginning-of-line' as it
+;;    does the same and extends it: if point is already at the beginning of
+;;    the line then it moves it to the first non-whitespace character.
+;;  - `pel-find-thing-at-point' provides a search capability without the need
+;;    for a tag database but it is limited in what it can find.  It's a poor
+;;    man cross reference.
 ;;  - `pel-show-char-syntax' shows the character syntax of the character at
 ;;    point.
-;;  - `pel-forward-token-start' and `pel-backward-to-start' move forward
-;;    or backward to the beginning of a text semantic token as defined by Emacs
+;;  - `pel-forward-token-start' and `pel-backward-to-start' move forward or
+;;    backward to the beginning of a text semantic token as defined by Emacs
 ;;    character syntax for the current buffer.
+
 ;;  - `pel-forward-word-start' moves point to the beginning of next word.
 ;;    This complements what's already available in standard Emacs:
 ;;    `forward-word' and `backward-word'.
@@ -63,7 +64,7 @@
 (require 'pel-scroll)                   ; use: pel-in-scroll-sync
 (require 'subword)                      ; use: superword-mode
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Smart Beginning of line
 ;; -----------------------
 
@@ -96,12 +97,7 @@ By default N is 1.  If N is larger move to the beginning of N-1 line forward."
     (re-search-backward "[^ \t\r\n]" nil t)
     (right-char)))
 
-;; -----------------------------------------------------------------------------
-;; Insert Lines
-;; ------------
-
-
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Navigate across code using symbols at point
 ;; -------------------------------------------
 
@@ -120,7 +116,7 @@ supplied as IN-OTHER-WINDOW in which case it opens inside the other window."
           (find-variable-other-window symb))
       (find-variable symb))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Description Utilities
 ;; ---------------------
 
@@ -132,7 +128,7 @@ supplied as IN-OTHER-WINDOW in which case it opens inside the other window."
            (char-after)
            (char-syntax (char-after))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Navigate over tokens: words/symbols and over whitespace.
 ;; --------------------------------------------------------
 ;; This section provides two main commands:
@@ -264,15 +260,15 @@ See `pel-forward-token-start' for details."
                     'pel--backward-token-start
                     'pel--forward-token-start))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Move to the beginning of next word
 ;; -----------------------------------
 ;;
 ;; The standard forward-word moves point at the end of next word, and
-;; backward-word moves point to the beginning of the previous word. There is no
-;; command that moves point forward to the beginning of next word. That's what
-;; pel-forward-word-start does.  It's behaviour is affected by the current
-;; value of superword-mode.
+;; backward-word moves point to the beginning of the previous word. There is
+;; no command that moves point forward to the beginning of next word. That's
+;; what pel-forward-word-start does.  It's behaviour is affected by the
+;; current value of superword-mode.
 
 ;; Implementation call tree:
 ;; * pel-forward-word-start
@@ -305,7 +301,7 @@ On reaching end of buffer, stop and signal error."
   (interactive "^")
   (while (progn (forward-char) (not (pel-at-word-boundary-p)))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Navigate to end of whitespace
 ;; -----------------------------
 ;;
@@ -322,7 +318,7 @@ On reaching end of buffer, stop and signal error."
   (interactive)
   (while (progn (backward-char) (not (pel-at-wspace-end-p)))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Navigate to change of character syntax
 ;; --------------------------------------
 ;; The following commands help investigate the syntactic elements of an Emacs
@@ -352,7 +348,7 @@ On reaching end of buffer, stop and signal error."
   (interactive)
   (while (progn (backward-char) (not (pel-at-syntax-change-p)))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Moving to next/previous visible
 ;; -------------------------------
 ;; Move to previous/next non-whitespace
@@ -380,7 +376,7 @@ On reaching end of buffer, stop and signal error."
   (interactive "^P")
   (forward-whitespace (- (prefix-numeric-value n))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Navigate to beginning/end of line/window/buffer
 ;; -----------------------------------------------
 ;; These functions operate according to current position,
@@ -521,7 +517,7 @@ number of lines.
        nil
        (abs excursion-line-count)))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Navigate across function definitions
 ;; ------------------------------------
 
@@ -599,10 +595,11 @@ KNOWN LIMITATIONS:
           (let ((current-pos (point))
                 tentative-final-pos)
             (if (> current-pos start-pos)
-                ;; Check if point moved into the beginning of the last method of
-                ;; the next class by checking if we can go to the beginning of a
-                ;; defun that is before point but after start-pos.
-                (let ((potential-final-pos (pel--maybe-to-first-defun-after start-pos)))
+                ;; Check if point moved into the beginning of the last method
+                ;; of the next class by checking if we can go to the beginning
+                ;; of a defun that is before point but after start-pos.
+                (let ((potential-final-pos (pel--maybe-to-first-defun-after
+                                            start-pos)))
                   (if (= potential-final-pos current-pos)
                       (progn
                         (setq final-pos current-pos)
@@ -610,17 +607,19 @@ KNOWN LIMITATIONS:
                     (setq final-pos potential-final-pos)
                     'was-outside-class/m))
 
-              ;; If start-point was already inside a defun/function/method body then
-              ;; point will move back to the beginning of the current defun. If that's
-              ;; the case we have to try again by going to end defun twice and then go
-              ;; back up to the beginning of the defun.
-              ;; It's also possible that end-of-defun moves point to the end of the
-              ;; last method of a class so we have to go back several times to go back
-              ;; to the beginning of the very first method or class definition that is
-              ;; after where we started from.
+              ;; If start-point was already inside a defun/function/method
+              ;; body then point will move back to the beginning of the
+              ;; current defun. If that's the case we have to try again by
+              ;; going to end defun twice and then go back up to the beginning
+              ;; of the defun.
+              ;; It's also possible that end-of-defun moves point to the end
+              ;; of the last method of a class so we have to go back several
+              ;; times to go back to the beginning of the very first method or
+              ;; class definition that is after where we started from.
               (pel--end-of-defun)
               (end-of-defun)
-              (setq tentative-final-pos (pel--maybe-to-first-defun-after start-pos))
+              (setq tentative-final-pos (pel--maybe-to-first-defun-after
+                                         start-pos))
               (if (and (/= tentative-final-pos start-pos)
                        (not (eobp)))
                   (progn
@@ -681,7 +680,7 @@ KNOWN LIMITATIONS:
         (beep))
       nil)))
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 (provide 'pel-navigate)
 
 ;;; pel-navigate.el ends here
