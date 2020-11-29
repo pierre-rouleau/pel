@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-11-27 09:21:43, updated by Pierre Rouleau>
+;; Time-stamp: <2020-11-29 17:02:18, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -117,8 +117,9 @@
     ([f11 32 ?j]     "pl-julia"         pel-pkg-for-julia       (julia
                                                                  julia-mode
                                                                  julia-snail))
-    ([f11 32 ?l]     "pl-emacs-lisp"    pel-pkg-for-elisp       (lisp
+    ([f11 32 ?l]     "pl-emacs-lisp"    pel-pkg-for-elisp       (checkdoc
                                                                  elint
+                                                                 lisp
                                                                  lispy))
     ([f11 32 ?l ??]  "pl-emacs-lisp"    pel-pkg-for-all-languages (eldoc
                                                                    eldoc-box))
