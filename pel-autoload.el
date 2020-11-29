@@ -170,6 +170,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-browse-pel
     pel-browse-group)
 
+  (pel-autoload "pel-elisp" for:
+    pel-elisp-activate-motion-defuns
+    pel-elisp-toggle-motion-defuns)
+
   (pel-autoload "pel-emacs" for:
     pel-emacs-executable
     pel-open-emacs-refcard

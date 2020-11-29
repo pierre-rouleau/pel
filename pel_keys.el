@@ -2121,14 +2121,15 @@ MODE must be a symbol."
 
 (defun pel--lispy-map-for (prefix)
   "Map in the PEL keys for Lisp-like mode in the keymap for PREFIX."
-  (define-key prefix   (kbd "M-9")  #'show-paren-mode)
+  (define-key prefix   (kbd "M-9") #'show-paren-mode)
   (define-key prefix   (kbd "M-l")  'pel-toggle-lisp-modes)
   (when pel-use-parinfer
     (define-key prefix (kbd "M-i")  'parinfer-mode)
     (define-key prefix (kbd "M-I")  'parinfer-toggle-mode))
   (when pel-use-rainbow-delimiters
     (define-key prefix (kbd "M-r")  'rainbow-delimiters-mode))
-  (define-key prefix   (kbd "M-s")  #'semantic-mode)
+  (define-key prefix   (kbd "M-s") #'semantic-mode)
+  (define-key prefix   (kbd "M-n")  'pel-elisp-toggle-motion-defuns)
   (when pel-use-lispy
     (define-key prefix (kbd "M-L") 'pel-lispy-mode)
     (define-key prefix "1"         'lispy-describe-inline)
@@ -2260,6 +2261,9 @@ MODE must be a symbol."
     :init
     (cl-eval-when 'compile (require 'highlight-defined nil :no-error))
     (define-key pel:for-elisp  (kbd "M-d") 'highlight-defined-mode)))
+
+(when pel-use-defun-navigation-fix
+  (pel-elisp-activate-motion-defuns))
 
 ;;
 ;; activate the <f12> key binding for elisp-mode

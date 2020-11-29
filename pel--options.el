@@ -2412,6 +2412,33 @@ install them locally."
   :group 'pel-pkg-for-lisp
   :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp")))
 
+(defcustom pel-use-defun-navigation-fix nil
+  "Control whether PEL uses better defun navigation functions.
+
+Unfortunately the functions `end-of-defun' and
+`beginning-of-defun' provided by Emacs suffer from the following
+problem:
+
+- These functions treat Lisp statements inside a string as if it is real
+  Lisp code: they do not ignore lisp code inside strings.  This can be
+  annoying when you write lisp code that generate lisp code and you place
+  an opening parenthesis on the first column inside a string.
+
+PEL provide functions that do not suffer from this problem.
+They are used when the user option is set to t.
+If you prefer the default Emacs function set it to nil.
+
+During editing you can dynamically change them by using the following
+commands provided by PEL:
+- `pel-elisp-activate-motion-defuns' to activate the PEL functions,
+- `pel-elisp-restore-emacs-motion-defuns' to restore Emacs defaults.
+
+These act on each buffer independently.  The user option acts on
+all of them."
+  :group 'pel-pkg-for-elisp
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-macrostep nil
   "Control whether PEL uses the macrostep package."
   :group 'pel-pkg-for-elisp
