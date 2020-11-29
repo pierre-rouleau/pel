@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, November 27 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-11-29 10:18:48, updated by Pierre Rouleau>
+;; Time-stamp: <2020-11-29 16:11:58, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -64,49 +64,103 @@
 ;;
 
 (defun pel--bod ()
-  "Raw search to the beginning of a defun."
-  (when (re-search-backward "^\\s(" nil 'move 1)
-    (goto-char (1- (match-end 0)))
-    t))
+  "Raw search to the beginning of a defun.
+Move point if one is found.
+Return t if one found, nil otherwise."
+  (condition-case nil
+      (progn
+        (re-search-backward "^\\s(")
+        (goto-char (1- (match-end 0)))
+        t)
+    (search-failed nil)))
+
+(defun pel-elisp--bod (arg)
+  "Move backward to ARG beginning of defun.
+ARG must be positive.
+Return t if found, nil otherwise."
+  (let ((found t)
+        (continue t))
+    (while (and continue (> arg 0))
+      (setq arg (1- arg))
+      (if (pel--bod)
+          (let ((old-pos nil))
+            (while (and continue
+                        (eq (get-char-property (point) 'face)
+                            'font-lock-string-face)
+                        (not (eq (point) old-pos)))
+              (setq old-pos (point))
+              (backward-char 1)
+              (unless (pel--bod)
+                (setq found nil)
+                (setq continue nil))))
+        (setq found nil)
+        (setq continue nil)))
+    found))
 
 (defun pel-elisp-beginning-of-defun (&optional arg)
   "Move backward to the beginning of Elisp defun, ignoring strings.
-If ARG specified move that many times.
+
+Positive ARG means move backward to the ARGth beginning of defun.
+Negative ARG means move forward to the ARGth following beginning of defun.
+No ARG is equivalent to ARG set to 1.
+
 Return t if one found, nil otherwise.
 Supports shift marking."
   (interactive "^p")
+  ;; (message "pel-elisp-beginning-of-defun @ %d" (point))
   (unless arg (setq arg 1))
-  ;; (and (< arg 0) (not (eobp)) (forward-char 1))
-  (cl-dotimes (_i arg)
-    (if (pel--bod)
-        (while (eq (get-char-property (point) 'face)
-                   'font-lock-string-face)
-          (backward-char 1)
-          (unless (pel--bod)
-            (cl-return nil)))
-      (cl-return nil)))
-  t)
+  (if (<  arg 0)
+    ;; arg is negative
+      (when (not (eobp))
+        (let ((origin (point)))
+          ;; first try: move to next beginning
+          (pel-elisp-end-of-defun (- arg))
+          (pel-elisp--bod 1)
+          ;; check if we moved forward
+          (when (<= (point) origin)
+            ;; if we did not move forwards try again 1 more end forward
+            (pel-elisp-end-of-defun (1+ (- arg)))
+            (pel-elisp--bod 1)
+            )))
+    (pel-elisp--bod arg)))
+
+;--
 
 (defun pel--eod ()
   "Raw search forward to end of defun."
-  (forward-sexp 1))
+  (forward-sexp 1)
+  t)
 
 (defun pel-elisp-end-of-defun (&optional arg)
   "Move forward to the end of current or next defun, ignoring strings.
-If ARG specified move that many times.
+No ARG is equivalent to ARG set to 1.
+
 Return t if one found, nil otherwise.
 Supports shift marking."
   (interactive "^p")
+  ;; (message "pel-elisp-end-of-defun @ %d" (point))
   (unless arg (setq arg 1))
-  (cl-dotimes (_i arg)
-    (if (pel--eod)
-        (while (eq (get-char-property (point) 'face)
-                   'font-lock-string-face)
-          (forward-char 1)
-          (unless (pel--eod)
-            (cl-return nil)))
-      (cl-return nil)))
-  t)
+  (let ((found t)
+        (continue t))
+    (while (and continue (> arg 0))
+      (setq arg (1- arg))
+      (if (pel--eod)
+          (let ((old-pos nil))
+            (while (and continue
+                        (eq (get-char-property (point) 'face)
+                            'font-lock-string-face)
+                        (not (eq (point) old-pos)))
+              (setq old-pos (point))
+              (forward-char 1)
+              (unless (pel--eod)
+                (setq found nil)
+                (setq continue nil))))
+        (setq found nil)
+        (setq continue nil))
+      (forward-char 1))
+    found))
+
+;; ---------------------------------------------------------------------------
 
 (defvar pel-elisp--functions-are-used nil
   "Identifies whether the pel-elisp navigation functions are used.
@@ -124,7 +178,8 @@ Display a message when VERBOSE is non-nil."
       (display-warning
        'pel-elisp
        (format "Trying to activate pel-elisp navigation functions \
-when they are already being used!"))
+when they are already being used!")
+       :warning)
     (setq pel-elisp--functions-are-used
           (cons beginning-of-defun-function
                 end-of-defun-function))
@@ -134,7 +189,7 @@ when they are already being used!"))
               verbose)
       (message "Now using PEL pel-elisp-beginning-of-defun \
 and pel-elisp-end-of-defun
-CAUTION: This causes checkdoc to hang!!"))))
+CAUTION ⚠️ : This causes checkdoc to stop checking!"))))
 
 (defun pel-elisp-restore-emacs-motion-defuns (&optional verbose)
   "Deactivate the pel-elisp motion defuns.
@@ -145,7 +200,8 @@ Display a message when VERBOSE is non-nil."
       (display-warning
        'pel-elisp
        (format "Trying to restore Emacs navigation functions \
-when they are already being used!"))
+when they are already being used!")
+       :warning)
     (setq beginning-of-defun-function (car pel-elisp--functions-are-used))
     (setq end-of-defun-function       (cdr pel-elisp--functions-are-used))
     (setq pel-elisp--functions-are-used nil)
