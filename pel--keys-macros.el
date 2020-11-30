@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-11-30 13:09:23, updated by Pierre Rouleau>
+;; Time-stamp: <2020-11-30 13:27:05, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -288,6 +288,7 @@ stored inside the doc/pdf directory.")
     ("common-lisp"     [f11 32 ?L])     ; an alias for lisp.
     ("d"               [f11 32 ?D])
     ("elixir"          [f11 32 ?x])
+    ("lisp-interaction" [f11 32 ?l])    ; for scratch buffer
     ("emacs-lisp"      [f11 32 ?l])
     ("erlang"          [f11 32 ?e])
     ("forth"           [f11 32 ?f])
