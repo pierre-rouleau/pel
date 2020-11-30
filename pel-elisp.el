@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, November 27 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-11-30 12:49:59, updated by Pierre Rouleau>
+;; Time-stamp: <2020-11-30 13:40:55, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -58,8 +58,8 @@ Toggle the value of `open-paren-in-column-0-is-defun-start'."
   (interactive)
   (pel-toggle-and-show
    'open-paren-in-column-0-is-defun-start
-   "Now interpret all '(' in column 0 as a start of defun."
-   "A '(' in column 0 is no longer always interpreted as a defun start."))
+   "t, meaning: interpret all '(' in column 0 as a start of defun."
+   "nil, meaning: a '(' in column 0 is no longer always interpreted as a defun start."))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-elisp)
