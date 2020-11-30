@@ -239,10 +239,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - New: ``<f12> D`` binding to new command ``pel-add-dir-to-loadpath`` which
     adds a directory to Emacs load-path.
   - New: key binding ``<f12> c a`` to *disassemble*.
-  - New: Added ability to change behaviour of ``beginning-of-defun`` and
-    ``end-of-defun`` functions via the new *pel-use-defun-navigation-fix* user
-    option. When this user option is set to t, the navigation does not stop at
-    a defun included within a string.
+  - New: Added command *pel-toggle-paren-in-column-0-is-defun-start* which
+    toggles the standard Emacs user option
+    *open-paren-in-column-0-is-defun-start*.  This controls the behaviour of
+    ``beginning-of-defun`` and ``end-of-defun`` functions: whether a paren in
+    the first column is always interpreted as a start of defun, even inside
+    strings.
     - **Use this first implementation with care**: it prevents checkdoc from
       completing its verification.
       I am currently trying to fix this.

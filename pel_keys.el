@@ -2129,7 +2129,7 @@ MODE must be a symbol."
   (when pel-use-rainbow-delimiters
     (define-key prefix (kbd "M-r")  'rainbow-delimiters-mode))
   (define-key prefix   (kbd "M-s") #'semantic-mode)
-  (define-key prefix   (kbd "M-n")  'pel-elisp-toggle-motion-defuns)
+  (define-key prefix   (kbd "M-n")  'pel-toggle-paren-in-column-0-is-defun-start)
   (when pel-use-lispy
     (define-key prefix (kbd "M-L") 'pel-lispy-mode)
     (define-key prefix "1"         'lispy-describe-inline)
@@ -2261,9 +2261,6 @@ MODE must be a symbol."
     :init
     (cl-eval-when 'compile (require 'highlight-defined nil :no-error))
     (define-key pel:for-elisp  (kbd "M-d") 'highlight-defined-mode)))
-
-(when pel-use-defun-navigation-fix
-  (pel-elisp-activate-motion-defuns))
 
 ;;
 ;; activate the <f12> key binding for elisp-mode

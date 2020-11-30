@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-11-29 17:02:18, updated by Pierre Rouleau>
+;; Time-stamp: <2020-11-30 13:09:23, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -118,6 +118,7 @@
                                                                  julia-mode
                                                                  julia-snail))
     ([f11 32 ?l]     "pl-emacs-lisp"    pel-pkg-for-elisp       (checkdoc
+                                                                 editing-basics
                                                                  elint
                                                                  lisp
                                                                  lispy))

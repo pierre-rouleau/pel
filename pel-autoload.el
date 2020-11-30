@@ -171,8 +171,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-browse-group)
 
   (pel-autoload "pel-elisp" for:
-    pel-elisp-activate-motion-defuns
-    pel-elisp-toggle-motion-defuns)
+    pel-toggle-paren-in-column-0-is-defun-start)
 
   (pel-autoload "pel-emacs" for:
     pel-emacs-executable
