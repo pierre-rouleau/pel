@@ -2265,7 +2265,7 @@ a newline and then indent the new line."
 Does not indent."
                  just-newline-no-indent)))
 
-(defcustom pel-d-indentation 4
+(defcustom pel-d-indent-width 4
   "Number of columns for D source code indentation.
 PEL stores this in `c-basic-offset' when editing buffers in `d-mode'.
 The D community recommends using 4 spaces for indentation
@@ -2281,8 +2281,8 @@ PEL stores this in `tab-width' when editing buffer in `d-mode'.
 This does *NOT* control the indentation in D source code, it is used
 only for commands that mode point to tab stop positions and the
 display of hard TAB characters.
-It is often the same value as `pel-d-indentation', if it is different
-it should probably be a multiple of `pel-d-indentation'."
+It is often the same value as `pel-d-indent-width', if it is different
+it should probably be a multiple of `pel-d-indent-width'."
   :group 'pel-d-code-style
   :type 'integer
   :safe 'pel-indent-valid-p)

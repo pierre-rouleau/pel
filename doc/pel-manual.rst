@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-12-01 15:28:04, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-12-01 15:36:06, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -3919,7 +3919,7 @@ PEL Support For D
                       - Activation: ``pel-use-d``
                       - Configuration:
 
-                        - ``pel-d-indentation``
+                        - ``pel-d-indent-width``
                         - ``pel-d-tab-width``
                         - ``pel-d-use-tabs``
                         - ``pel-d-bracket-style``

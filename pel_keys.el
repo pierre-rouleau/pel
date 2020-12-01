@@ -1694,7 +1694,7 @@ MODE must be a symbol."
     (setq tab-width          pel-d-tab-width
           indent-tabs-mode   pel-d-use-tabs)
     ;; 2b) set variables only available in a CC mode - prevent warnings
-    (pel-setq c-basic-offset pel-d-indentation)
+    (pel-setq c-basic-offset pel-d-indent-width)
     ;; 3) set fill-column to PEL specified D's default if specified
     (when pel-d-fill-column
       (setq fill-column pel-d-fill-column))
