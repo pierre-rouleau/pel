@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-11-05 17:20:58, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-12-01 15:03:40, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2952,7 +2952,7 @@ PEL Support For C
                       - Activation: *none*
                       - Configuration:
 
-                        - ``pel-c-indentation``
+                        - ``pel-c-indent-width``
                         - ``pel-c-tab-width``
                         - ``pel-c-use-tabs``
                         - ``pel-c-bracket-style``
@@ -3713,7 +3713,7 @@ one is not already present.
             /* -------------------------------------------------------------------------- */
 
 It leaves tempo markers at the locations identified by Ⓜ️ .
-The indentation is controlled by the ``pel-c-indentation`` user option.
+The indentation is controlled by the ``pel-c-indent-width`` user option.
 Use ``C-c .`` to move point to the next tempo marker and ``C-c ,`` to the previous one.
 
 With C++ style comments and ``pel-c-skel-function-name-on-first-column`` set to
