@@ -1649,7 +1649,7 @@ MODE must be a symbol."
   (setq tab-width          pel-c++-tab-width
         indent-tabs-mode   pel-c++-use-tabs)
   ;; 2b) set variables only available in a CC mode - prevent warnings
-  (pel-setq c-basic-offset pel-c++-indentation)
+  (pel-setq c-basic-offset pel-c++-indent-width)
   ;; 3) set fill-column to PEL specified C++'s default if specified
   (when pel-c++-fill-column
     (setq fill-column pel-c++-fill-column))

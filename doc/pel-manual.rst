@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-12-01 15:03:40, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2020-12-01 15:28:04, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -3889,7 +3889,7 @@ PEL Support For C++
                       - Activation: *none*
                       - Configuration:
 
-                        - ``pel-c++-indentation``
+                        - ``pel-c++-indent-width``
                         - ``pel-c++-tab-width``
                         - ``pel-c++-use-tabs``
                         - ``pel-c++-bracket-style``

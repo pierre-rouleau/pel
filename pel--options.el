@@ -2159,7 +2159,7 @@ a newline and then indent the new line."
 Does not indent."
                  just-newline-no-indent)))
 
-(defcustom pel-c++-indentation 3
+(defcustom pel-c++-indent-width 3
   "Number of columns for C++ source code indentation.
 PEL stores this in `c-basic-offset' when editing buffers with C++ source.
 Values in the [2, 8] range are accepted."
@@ -2173,8 +2173,8 @@ PEL stores this in `tab-width' when editing buffer with C++ source.
 This does *NOT* control the indentation in C++ source code, it is used
 only for commands that mode point to tab stop positions
 such as `tab-to-tab-stop', and the display of hard TAB characters.
-It is often the same value as `pel-c++-indentation', if it is different
-it should probably be a multiple of `pel-c++-indentation'.
+It is often the same value as `pel-c++-indent-width', if it is different
+it should probably be a multiple of `pel-c++-indent-width'.
 Values in the [2, 8] range are accepted."
   :group 'pel-c++-code-style
   :type 'integer
