@@ -241,7 +241,7 @@ if N is 0 use previous line, etc..."
 When UPDATE is non-nil do not add a new line after the underlining line,
 but when UPDATE is nil, it adds a new line after the underlining.
 `pel-rst-adorn' leaves the cursor unmoved, on the title line."
-  (interactive "p*")
+  (interactive "*p")
   (pel--rst-activate-adornment-style)
   (if (>= level (length rst-preferred-adornments))
       (user-error

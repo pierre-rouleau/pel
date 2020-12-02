@@ -117,7 +117,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-copy-line-end
     pel-copy-char-at-point
     pel-kill-word-at-point
+    pel-kill-word-part
     pel-kill-symbol-at-point
+    pel-kill-symbol-part
     pel-kill-sentence-at-point
     pel-kill-function-at-point
     pel-kill-sexp-at-point
@@ -127,11 +129,29 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-kill-list-at-point
     pel-kill-paragraph-at-point
     pel-kill-char-at-point
+    pel-delete-word-at-point
+    pel-delete-word-part
+    pel-delete-symbol-at-point
+    pel-delete-symbol-part
+    pel-delete-sentence-at-point
+    pel-delete-function-at-point
+    pel-delete-sexp-at-point
+    pel-delete-whitespace-at-point
+    pel-delete-filename-at-point
+    pel-delete-url-at-point
+    pel-delete-list-at-point
+    pel-delete-paragraph-at-point
+    pel-backward-delete-paragraph
+    pel-delete-paragraph
+    pel-delete-sexp
+    pel-backward-delete-sexp
+    pel-delete-rectangle
     pel-delete-whole-line
     pel-kill-or-delete-marked-or-whole-line
     pel-mark-whole-line
     pel-copy-marked-or-whole-line
     pel-kill-from-beginning-of-line
+    pel-delete-from-beginning-of-line
     pel-delete-to-next-visible
     pel-kill-word-and-whitespace
     pel-delete-to-eol)

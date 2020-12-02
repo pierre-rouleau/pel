@@ -20,7 +20,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; A collection of copy, kill and delete functions targeting specific
@@ -33,6 +33,11 @@
 
 ;;; Code:
 
+
+;;; Dependencies:
+(require 'pel--base)
+
+;; ---------------------------------------------------------------------------
 ;; Utility
 ;; -------
 (defun pel--ccp-require-thingatpt ()
@@ -56,9 +61,16 @@ Show the OP-NAME and the content of the kill ring at top."
   "Display what was copied."
   (pel--show-kill-ring-top "Copy"))
 
+
+(defvar-local pel--isa-delete-operation nil
+  "Used to identify a delete operation. Don't change.")
+
 (defun pel--show-killed ()
   "Display what was killed."
-  (pel--show-kill-ring-top "Kill"))
+  (let ((op-name (if pel--isa-delete-operation
+                     "Delete"
+                   "Kill")))
+    (pel--show-kill-ring-top op-name)))
 
 (defun pel--copy-thing-at-point (thing)
   "Copy the `thing-at-point' for the specified kind of THING.
@@ -130,7 +142,7 @@ which only includes the list at point."
   (interactive)
   (pel--copy-thing-at-point 'list))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 
 ;;-pel-autoload
 (defun pel-copy-paragraph-at-point (&optional n)
@@ -208,9 +220,9 @@ a negative N copies the character backwards (before point)."
     (pel--show-copied)))
 
 
-;; -----------------------------------------------------------------------------
-;; Kill Commands.
-;; --------------
+;; ---------------------------------------------------------------------------
+;; Kill Commands
+;; -------------
 
 (defun pel--kill-thing-at-point (thing)
   "Kill the `thing-at-point' for the specified kind of THING.
@@ -226,56 +238,84 @@ See `bounds-of-thing-at-point' for a list of possible THING symbols."
 ;;-pel-autoload
 (defun pel-kill-word-at-point ()
   "Kill the word at point."
-  (interactive)
+  (interactive "*")
   (pel--kill-thing-at-point 'word))
+
+;;-pel-autoload
+(defun pel-kill-word-part (&optional beginning)
+  "Kill the end of word at point: from point to end of current word.
+With any prefix argument kill the BEGINNING of word up to current point."
+  (interactive "*P")
+  (insert " ")
+  (if beginning
+      (progn
+        (left-char 2)
+        (pel--kill-thing-at-point 'word)
+        (delete-char 1))
+    (pel--kill-thing-at-point 'word)
+    (delete-char -1)))
 
 ;;-pel-autoload
 (defun pel-kill-symbol-at-point ()
   "Kill the symbol at point."
-  (interactive)
+  (interactive "*")
   (pel--kill-thing-at-point 'symbol))
+
+;;-pel-autoload
+(defun pel-kill-symbol-part (&optional beginning)
+  "Kill the end of symbol at point: from point to end of current symbol.
+With any prefix argument kill the BEGINNING of symbol up to current point."
+  (interactive "*P")
+  (insert " ")
+  (if beginning
+      (progn
+        (left-char 2)
+        (pel--kill-thing-at-point 'symbol)
+        (delete-char 1))
+    (pel--kill-thing-at-point 'symbol)
+    (delete-char -1)))
 
 ;;-pel-autoload
 (defun pel-kill-sentence-at-point ()
   "Kill sentence at point."
-  (interactive)
+  (interactive "*")
   (pel--kill-thing-at-point 'sentence))
 
 ;;-pel-autoload
 (defun pel-kill-function-at-point ()
   "Kill function at point."
-  (interactive)
+  (interactive "*")
   (pel--kill-thing-at-point 'defun))
 
 ;;-pel-autoload
 (defun pel-kill-sexp-at-point ()
   "Kill sexp at point."
-  (interactive)
+  (interactive "*")
   (pel--kill-thing-at-point 'sexp))
 
 ;;-pel-autoload
 (defun pel-kill-whitespace-at-point ()
   "Kill all whitespace at and around point.
 Copy removed characters to kill ring."
-  (interactive)
+  (interactive "*")
   (pel--kill-thing-at-point 'whitespace))
 
 ;;-pel-autoload
 (defun pel-kill-filename-at-point ()
   "Kill filename at point."
-  (interactive)
+  (interactive "*")
   (pel--kill-thing-at-point 'filename))
 
 ;;-pel-autoload
 (defun pel-kill-url-at-point ()
   "Kill URL at point."
-  (interactive)
+  (interactive "*")
   (pel--kill-thing-at-point 'url))
 
 ;;-pel-autoload
 (defun pel-kill-list-at-point ()
   "Kill list at point."
-  (interactive)
+  (interactive "*")
   (pel--kill-thing-at-point 'list))
 
 ;; (defun pel-kill-marked-or-whole-line ()
@@ -291,7 +331,7 @@ Copy removed characters to kill ring."
   "Kill complete paragraph at point.
 With argument N, kill N consecutive paragraphs;
 a negative N kills the current one and N-1 previous paragraphs."
-  (interactive "P")
+  (interactive "*P")
   (let ((n (prefix-numeric-value n)))
     (progn
       (if (> n 0)
@@ -308,7 +348,7 @@ a negative N kills the current one and N-1 previous paragraphs."
   "Kill single character at point.
 With argument N, kill N consecutive characters;
 a negative N kills characters backwards."
-  (interactive "P")
+  (interactive "*P")
   (save-excursion
     (kill-region (point)
                  (progn
@@ -316,13 +356,188 @@ a negative N kills characters backwards."
                    (point)))
     (pel--show-killed)))
 
+;; ---------------------------------------------------------------------------
+;; Delete Commands
+;; ---------------
+;;-pel-autoload
+(defun pel-delete-word-at-point ()
+  "Delete the word at point."
+  (interactive "*")
+  (let (kill-ring
+        (pel--isa-delete-operation t))
+    (pel-kill-word-at-point)))
+
+
+;;-pel-autoload
+(defun pel-delete-word-part (&optional beginning)
+  "Delete the end of word at point: from point to end of current word.
+With any prefix argument delete the BEGINNING of word up to current point."
+  (interactive "*P")
+    (let (kill-ring
+          (pel--isa-delete-operation t))
+      (pel-kill-word-part beginning)))
+
+;;-pel-autoload
+(defun pel-delete-symbol-at-point ()
+  "Delete the symbol at point."
+  (interactive "*")
+  (let (kill-ring
+        (pel--isa-delete-operation t))
+    (pel-kill-symbol-at-point)))
+
+;;-pel-autoload
+(defun pel-delete-symbol-part (&optional beginning)
+  "Delete the end of symbol at point: from point to end of current symbol.
+With any prefix argument delete the BEGINNING of symbol up to current point."
+  (interactive "*P")
+  (let (kill-ring
+        (pel--isa-delete-operation t))
+    (pel-kill-symbol-part beginning)))
+
+;;-pel-autoload
+(defun pel-delete-sentence-at-point ()
+  "Delete sentence at point."
+  (interactive "*")
+  (let (kill-ring
+        (pel--isa-delete-operation t))
+    (pel-kill-sentence-at-point)))
+
+;;-pel-autoload
+(defun pel-delete-function-at-point ()
+  "Delete function at point."
+  (interactive "*")
+  (let (kill-ring
+        (pel--isa-delete-operation t))
+    (pel-kill-function-at-point)))
+
+;;-pel-autoload
+(defun pel-delete-sexp-at-point ()
+  "Delete sexp at point."
+  (interactive "*")
+  (let (kill-ring
+        (pel--isa-delete-operation t))
+    (pel-kill-sexp-at-point)))
+
+;;-pel-autoload
+(defun pel-delete-whitespace-at-point ()
+  "Delete all whitespace at and around point on a single line."
+  (interactive "*")
+  (let (kill-ring
+        (pel--isa-delete-operation t))
+    (pel-kill-whitespace-at-point)))
+
+;;-pel-autoload
+(defun pel-delete-filename-at-point ()
+  "Delete filename at point."
+  (interactive "*")
+  (let (kill-ring
+        (pel--isa-delete-operation t))
+    (pel-kill-filename-at-point)))
+
+;;-pel-autoload
+(defun pel-delete-url-at-point ()
+  "Delete URL at point."
+  (interactive "*")
+  (let (kill-ring
+        (pel--isa-delete-operation t))
+    (pel-kill-url-at-point)))
+
+;;-pel-autoload
+(defun pel-delete-list-at-point ()
+  "Delete list at point."
+  (interactive "*")
+  (let (kill-ring
+        (pel--isa-delete-operation t))
+    (pel-kill-list-at-point)))
+
+;;-pel-autoload
+(defun pel-delete-line ()
+  "Delete text from cursor to end of line."
+  (interactive "*")
+  (delete-region
+   (point)
+   (progn
+     (move-end-of-line 1)
+     (point))))
+
+;;-pel-autoload
+(defun pel-delete-paragraph-at-point (&optional n)
+  "Delete complete paragraph at point.
+With argument N, kill N consecutive paragraphs;
+a negative N deletes the current one and N-1 previous paragraphs."
+  (interactive "*P")
+  (let (kill-ring
+        (pel--isa-delete-operation t))
+    (pel-kill-paragraph-at-point n)))
+
+;;-pel-autoload
+(defun pel-backward-delete-paragraph (&optional n)
+  "Delete back to start of paragraph.
+With arg N, delete back to Nth start of paragraph;
+negative arg -N means delete forward to Nth end of paragraph."
+  (interactive "*P")
+  (let (kill-ring
+        (pel--isa-delete-operation t))
+    (pel-require 'paragraphs)
+    (when (fboundp 'backward-kill-paragraph)
+      (backward-kill-paragraph n))))
+
+;;-pel-autoload
+(defun pel-delete-paragraph (&optional n)
+  "Delete forward to end of paragraph.
+With arg N, delete forward to Nth end of paragraph;
+negative arg -N means delete backward to Nth start of paragraph."
+  (interactive "*P")
+  (let (kill-ring
+        (pel--isa-delete-operation t))
+    (pel-require 'paragraphs)
+    (when (fboundp 'kill-paragraph)
+      (kill-paragraph n))))
+
+;;-pel-autoload
+(defun pel-delete-sexp (&optional n)
+  "Delete the next N sexp or the current one from the point forward.
+With numeric argument: delete that many sexp in the direction identified
+by the sign of the argument.
+With negative sign: delete the previous sexp (the sexp backward)."
+  (interactive "*P")
+  (let (kill-ring
+        (pel--isa-delete-operation t))
+    (pel-require 'lisp)
+    (when (fboundp 'kill-sexp)
+      (kill-sexp n))))
+
+;;-pel-autoload
+(defun pel-backward-delete-sexp (&optional n)
+  "Delete the sexp (balanced expression) preceding point.
+With ARG, delete that many sexps before point.
+Negative arg -N means delete N sexps after point.
+This command assumes point is not in a string or comment."
+  (interactive "*P")
+  (let (kill-ring
+        (pel--isa-delete-operation t))
+    (pel-require 'lisp)
+    (when (fboundp 'backward-kill-sexp)
+      (backward-kill-sexp n))))
+
+;;-pel-autoload
+(defun pel-delete-rectangle (start end)
+  "Delete the rectangle region"
+  (interactive "*r")
+  (let (kill-ring
+        (pel--isa-delete-operation t))
+    (pel-require 'rect)
+    (when (fboundp 'kill-rectangle)
+      (kill-rectangle start end nil))))
+
+;; ---------------------------------------------------------------------------
 ;; Flexible whole-line/marked area delete/kill
 ;; -------------------------------------------
 
 ;;-pel-autoload
 (defun pel-delete-whole-line ()
   "Delete current line (including line termination); don't store in kill ring."
-  (interactive)
+  (interactive "*")
   (delete-region (line-beginning-position)
                  (min (point-max) (1+ (line-end-position)))))
 
@@ -366,7 +581,7 @@ a negative N kills characters backwards."
   - With an active (visible) region: argument negative: delete the region.
 When text is killed it is killed by `kill-region', so it retains
 the filtering and `kill-ring' appending capabilities."
-  (interactive "P")
+  (interactive "*P")
   ;; if n is nil or 0, interpret as if it was 1,
   ;; otherwise retain the positive or negative value.
   (let ((n (prefix-numeric-value n)))
@@ -438,19 +653,27 @@ All copy operations are performed by `kill-ring-save'."
 ;;-pel-autoload
 (defun pel-kill-from-beginning-of-line ()
   "Kill from the beginning of the line to point."
-  (interactive)
+  (interactive "*")
   ;; lazy load simple because it's one of the 2 functions here that uses it.
   ;; simple is part of Emacs standard distribution.
   (require 'simple)
   (kill-line 0))
 
-;; -----------------------------------------------------------------------------
+;;-pel-autoload
+(defun pel-delete-from-beginning-of-line ()
+  "Delete from the beginning of the line to point."
+  (interactive "*")
+  (let (kill-ring
+        (pel--isa-delete-operation t))
+    (pel-kill-from-beginning-of-line)))
+
+;; ---------------------------------------------------------------------------
 ;; Delete whitespace between point and next non-whitespace
 ;; -------------------------------------------------------
 ;;-pel-autoload
 (defun pel-delete-to-next-visible ()
   "Delete all whitespace between point and next non-whitespace character."
-  (interactive)
+  (interactive "*")
   (if (and (require 'pel-navigate nil :no-error)
            (fboundp 'pel-next-visible))
       (progn
@@ -463,7 +686,7 @@ All copy operations are performed by `kill-ring-save'."
 (defun pel-kill-word-and-whitespace (arg)
   "Kill forward word, delete all whitespace following it.
 With argument ARG, kill that many words then the whitespace following them."
-  (interactive "p")
+  (interactive "*p")
   ;; lazy load simple because it's one of the 2 functions here that uses it.
   ;; simple is part of Emacs standard distribution.
   (require 'simple)
@@ -471,22 +694,7 @@ With argument ARG, kill that many words then the whitespace following them."
   (kill-append " " nil)             ; separate works in kill ring
   (pel-delete-to-next-visible))     ; delete whitespace to next word
 
-;; ---------------------------------------------------------------------------
-;; Delete text to end of line
-;; --------------------------
-
-;;-pel-autoload
-(defun pel-delete-to-eol ()
-  "Delete text from cursor to end of line.
-Nothing is copied to the kill ring."
-  (interactive)
-  (delete-region
-   (point)
-   (progn
-     (move-end-of-line 1)
-     (point))))
-
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 
 (provide 'pel-ccp)
 

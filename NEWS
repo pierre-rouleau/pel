@@ -147,9 +147,22 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - Modification: new customization group *pel-pkg-for-cut-and-paste* which
     holds pel-use-popup-kill-ring that was previously under the undo group.
 - Update: *Cut & Paste*:
-  - New: added command *pel-delete-to-eol* to delete text from point to end
+  - New: added commands that delete elements, similar to the kill commands.
+    These are bound to the pel:delete key prefix, bound to the ``<f11> DEL``
+    key sequence.  There is now a delete command equivalent to the kill
+    commands.
+  - New: added commands to kill and delete the beginning or end of the word at
+    point, bound to `<f11> - q`` (for kill) and to ``<f11> DEL q`` (for
+    delete).  Same for symbol, using ``,`` instead of ``q``.
+  - Update: the command to delete duplicated lines is now bound inside the
+    pel:delete key prefix instead of the pel:kill key prefix.
+  - New: added command *pel-delete-line* to delete text from point to end
     of line without copying it to the kill ring.  It is bound to ``C-K`` (in
-    graphics mode only) and to ``<f11> - E`` key sequence.
+    graphics mode only) and to ``<f11> DEL e`` key sequence.
+  - New: added command *pel-delete-from-beginning-of-line* bound to ``<f11>
+    DEL a``.
+  - Update: the kill and delete commands are no longer allowed in read-only
+    buffer.
 - Update: *File Management*:
   - New: key binding ``<f11> f M-l`` to find-file-literally``.
   - New: command *pel-show-buffer-file-encoding*, bound to ``<f11> f ?`` that
