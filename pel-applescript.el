@@ -120,14 +120,15 @@ Return t if the text was said, nil otherwise."
   ;;
   (unless (string-match-p "\"" text)
     (if (fboundp 'do-applescript)
-        (do-applescript
-         (format "say \"%s\"%s"
+        (let ((cmd (format "say \"%s\"%s"
                  text
                  (if (and (boundp 'pel-mac-voice-name)
                           (stringp pel-mac-voice-name)
                           (> (length pel-mac-voice-name) 2))
                      (format " using \"%s\"" pel-mac-voice-name)
-                   "")))
+                   ""))))
+          (message cmd)
+          (do-applescript cmd))
       (user-error "The function do-applescript is not defined!"))
     t))
 
