@@ -854,10 +854,6 @@ Then save your changes."
 ;; kp-Up        Super      ??
 ;; kp-Down      Super      ??
 ;;
-;; Left         Meta-Super pel-previous-visible Move to word left
-;;                                              ignores all non-whitespace
-;; Right        Meta-Super pel-next-visible     Move to word right
-;;                                              ignore all non-whitespace
 ;; Up           Meta-Super ??
 ;; Down         Meta-Super ??
 ;; kp-Left      Meta-Super ??
@@ -890,7 +886,7 @@ Then save your changes."
 ;; <f9>  >                  (C)                (M)
 ;;                                             (M-S) pel-show-init-time
 ;; <f10> > menu-bar-open,   (C) buffer-menu-open, (M) toggle-frame-maximized
-;; <f11> > pel prefix,      <C-f11>: pel-previous-visible,  <M-f11>:
+;; <f11> > pel prefix,      <C-f11>:                   <M-f11>:
 ;; <f12> > mode-sensitive,  <C-f12>: pel-next-visible, <M-f12>: mode-sensitive
 
 ;; - PEL: Protected keyboard-macro definitions
@@ -1059,13 +1055,6 @@ Then save your changes."
 (define-key pel: (kbd      "<f11>")        'pel-toggle-frame-fullscreen)
 (unless (display-graphic-p)
   (define-key pel: (kbd    "<f12>")       #'xterm-mouse-mode))
-;;
-
-;; TODO: keep or remove the following now that we have the identified
-;;       corresponding:  pel-backward-token-start and
-;;                    :  pel-forward-token-start
-(global-set-key (kbd "<C-f11>") 'pel-previous-visible)
-(global-set-key (kbd "<C-f12>") 'pel-next-visible)
 
 ;; ---------------------------------------------------------------------------
 ;; - Use undo-tree
