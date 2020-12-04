@@ -468,6 +468,21 @@ found in the string are expanded and the delimiters include the
   (interactive)
   (message "File name :=「%s」" (pel-filename-at-point)))
 
+;;-pel-autoload
+(defun pel-load-visited-file (&optional use-elc)
+  "Load the elisp file visited by current buffer.
+Load the file source, not the byte-compiled version unless
+the optional USE-ELC argument is specified.
+Interactively use any prefix argument."
+  (interactive "P")
+  (let ((fn (pel-current-buffer-filename)))
+    (if (string= (file-name-extension fn) "el")
+        (let ((fn (file-name-sans-extension fn)))
+          (if use-elc
+              (load-file (concat fn ".elc"))
+            (load-file (concat fn ".el"))))
+      (user-error "Cannot load %s.  It is not an Emacs Lisp file!" fn))))
+
 ;; -----------------------------------------------------------------------------
 
 (provide 'pel-file)

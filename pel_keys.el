@@ -2219,7 +2219,6 @@ MODE must be a symbol."
 
 (define-pel-global-prefix pel:elisp-eval (kbd "<f11> SPC l e"))
 (define-key pel:elisp-eval "b" #'eval-buffer)
-(define-key pel:elisp-eval "f" #'load-file)
 (define-key pel:elisp-eval "r" #'eval-region)
 
 (define-pel-global-prefix pel:elisp-function (kbd "<f11> SPC l f"))
@@ -2227,8 +2226,10 @@ MODE must be a symbol."
 (define-key pel:elisp-function "p" 'beginning-of-defun)
 
 (define-pel-global-prefix pel:elisp-lib (kbd "<f11> SPC l l"))
-(define-key pel:elisp-lib "L" #'load-library)  ; Load an elisp file.
+(define-key pel:elisp-lib "f" #'load-file)
+(define-key pel:elisp-lib "F"  'pel-load-visited-file)
 (define-key pel:elisp-lib "l" #'find-library)  ; Open the elisp library file
+(define-key pel:elisp-lib "L" #'load-library)  ; Load an elisp library file.
 (define-key pel:elisp-lib "c" #'locate-library)
 (define-key pel:elisp-lib "p" #'list-packages)
 
