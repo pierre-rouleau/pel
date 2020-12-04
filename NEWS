@@ -249,7 +249,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - New: The ``<f12> <f3>`` key sequence provides access to slime
     customization buffer.
 - Update: *Programming Language Support -- Emacs Lisp*
-  - New: ``<f12> l F`` binding to ``pel-load-visited-file`` to load the file
+  - New: ``<f12> l v`` binding to ``pel-load-visited-file`` to load the file
     visited in current buffer either by source or its byte-compiled instance.
   - Modification: of the key binding of ``load-file``: changed its key binding
     from ``<f12> e f` to ``<f12> l f``.`

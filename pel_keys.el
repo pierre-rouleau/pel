@@ -2227,7 +2227,7 @@ MODE must be a symbol."
 
 (define-pel-global-prefix pel:elisp-lib (kbd "<f11> SPC l l"))
 (define-key pel:elisp-lib "f" #'load-file)
-(define-key pel:elisp-lib "F"  'pel-load-visited-file)
+(define-key pel:elisp-lib "v"  'pel-load-visited-file)
 (define-key pel:elisp-lib "l" #'find-library)  ; Open the elisp library file
 (define-key pel:elisp-lib "L" #'load-library)  ; Load an elisp library file.
 (define-key pel:elisp-lib "c" #'locate-library)
