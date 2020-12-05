@@ -6,6 +6,11 @@ PEL -- Pragmatic Environment Library for Emacs
    :alt: License
    :target: https://www.gnu.org/licenses/gpl-3.0.html
 
+.. image:: https://img.shields.io/badge/Version->V0.3.1-teal
+   :alt: Version
+   :target: https://github.com/pierre-rouleau/pel/blob/master/NEWS#changes-since-version-031
+
+
 - Tired of writing Emacs configuration code? 🤯
 - Ever declared `.emacs bankruptcy`_? 😰
 - Don't want to spend your time writing Emacs Lisp code? 😳
