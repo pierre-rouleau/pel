@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-11-30 13:27:05, updated by Pierre Rouleau>
+;; Time-stamp: <2020-12-05 21:23:34, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -416,7 +416,10 @@ There should be no key binding!" keyseq))
     ("rexx"             . "pl-rexx")
     ("mercurial"        . "vcs-mercurial")
     ("lispy"            . "plm-lispy")
-    ("encoding"         . "input-method"))
+    ("encoding"         . "input-method")
+    ("dired"            . "mode-dired")
+    ("org-mode"         . "mode-org-mode")
+    ("rst"              . "mode-rst"))
   "List of alias for PEL PDF file names.")
 
 (defvar pel--prompt-history-for-help-pdf nil
