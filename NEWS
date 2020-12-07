@@ -164,7 +164,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - Update: the kill and delete commands are no longer allowed in read-only
     buffer.
 - Update: *ERT - Emacs Regression Test* support:
-  * New: *pel-ert.el* file that defines a set of equality and inequality
+  * New: [[https://github.com/pierre-rouleau/pel/blob/master/pel-ert.el][file pel-ert.el]] that defines a set of equality and inequality
     predicates that are meant to be used in ert-deftest forms.  You can use these
     inequality functions to pass extra arguments whose values will be shown in
     the ERT failure report when the test fails, providing extra information.
