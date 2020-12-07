@@ -24,11 +24,11 @@
 ;;; Commentary:
 ;;
 ;; Currently the test code only verifies the extraction of the file name, line
-;; number and column numbers, nothing else. The behaviour with respect of window
+;; number and column numbers, nothing else.  The behaviour with respect of window
 ;; selection is not yet tested.
 
 (require 'pel-file)                     ; tested code file.
-(require 'ert)
+(require 'pel-ert)
 
 ;;; Code:
 
@@ -90,9 +90,9 @@
     ( "~/../other/src/python/d.py:"   (fname        "~/../other/src/python/d.py"    nil nil))))
 
 (ert-deftest ert-test-pel-file-extract-filename ()
-  (dolist (entry fn-strings)
-    (let* ((fnlc (car entry))
-           (ok-fn-spec (cadr entry))
+  (dolist (test-scenario fn-strings)
+    (let* ((fnlc (car test-scenario))
+           (ok-fn-spec (cadr test-scenario))
            ;;(ok-kind    (car ok-fn-spec))
            (ok-fn      (cadr ok-fn-spec))
            ;;(ok-line    (caddr ok-fn-spec))
@@ -119,7 +119,9 @@
           (goto-char (point-min))
           (insert (format "%s%s" ok-fn extra-chars))
           (goto-char (point-min))
-          (should (string= (pel-filename-at-point) ok-fn))
+          (should (pel-string= (pel-filename-at-point) ok-fn
+                               test-scenario
+                               extra-chars))
           (goto-char (point-min))
           (kill-line 2))
 
@@ -127,15 +129,17 @@
         (goto-char (point-min))
         (insert fnlc)
         (goto-char (point-min))
-        (should (equal (pel-filename-parts-at-point) ok-fn-spec))
+        (should (pel-equal (pel-filename-parts-at-point) ok-fn-spec
+                           test-scenario))
         (kill-line 2)
 
         ;; Now test a file name enclosed in quotes with embedded spaces
         (goto-char (point-min))
         (insert "\"/a/with spaces/ name.txt\"")
         (goto-char (point-min))
-        (should (string= (pel-filename-at-point)
-                         "/a/with spaces/ name.txt"))))))
+        (should (pel-string= (pel-filename-at-point)
+                             "/a/with spaces/ name.txt"
+                             test-scenario))))))
 
 
 ;;; --------------------------------------------------------------------------
