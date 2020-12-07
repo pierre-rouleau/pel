@@ -460,7 +460,9 @@ found in the string are expanded and the delimiters include the
           (when (eq major-mode 'sh-mode)
             (require 'env nil :noerror)
             (setq fname (substitute-env-vars fname)))
-          fname)))))
+          (if (string= (substring fname -1) ":")
+            (substring fname 0 -1)
+          fname))))))
 
 ;;-pel-autoload
 (defun pel-show-filename-at-point ()
