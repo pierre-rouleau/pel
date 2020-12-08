@@ -3959,6 +3959,7 @@ the ones defined from the buffer now."
 (define-key pel:search-replace "o" #'multi-occur)
 (define-key pel:search-replace "O" #'multi-occur-in-matching-buffers)
 (define-key pel:search-replace "r" #'replace-string)
+(define-key pel:search-replace "?"  'pel-show-search-status)
 ;; "S" reserved
 
 (define-pel-global-prefix pel:search-word (kbd "<f11> s w"))

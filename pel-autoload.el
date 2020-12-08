@@ -431,7 +431,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-search-word-from-top
     pel-show-active-search-tool
     pel-set-search-tool
-    pel-select-search-tool)
+    pel-select-search-tool
+    pel-show-search-status)
 
   (pel-autoload "pel-seq" for: pel-all-fboundp)
 

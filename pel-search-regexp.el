@@ -173,8 +173,33 @@ Return the new value if changed, nil if not changed."
 (defvar pel--active-search-regexp-engine-shown-already nil
   "Count number of times the message was shown.")
 
-;;-pel-autoload
 
+(defun pel-active-search-regexp-engine-str (&optional with-details)
+  "Return a string describing the used search regexp engine."
+  (let* ((with-details (or (not pel--active-search-regexp-engine-shown-already)
+                           with-details))
+         (text         (format "Search/replace regexp engine is: %s.%s"
+                               (pel--active-search-regexp-engine)
+                               (if with-details
+                                   (format "
+- Possible values:
+  - emacs         : always available.
+  - vr            : pel-use-visual-regexp (%s) must be t to use this.
+  - For the following, pel-use-visual-regexp-steroids (%s) must be t:
+    - vr/emacs
+    - vr/emacs-plain
+    - vr/pcre2el
+    - vr/python
+    - vr/custom
+  Change the values of the pel-use-visual-regexp... user option variables
+  than execute pel-init to activate or deactivate them."
+                                          pel-use-visual-regexp
+                                          pel-use-visual-regexp-steroids)
+                                ""))))
+    (setq pel--active-search-regexp-engine-shown-already t)
+    text))
+
+;;-pel-autoload
 (defun pel-show-active-search-regexp-engine (&optional with-details)
   "Display the currently used search regexp engine.
 Display a detailed message describing what is available the first time run
@@ -186,26 +211,7 @@ and when WITH-DETAILS argument is non-nil.
     (pel-set-search-regexp-engine pel-initial-regexp-engine)
     (setq pel--search-regexp-initialized 1))
   ;;
-  (let ((with-details (or (not pel--active-search-regexp-engine-shown-already)
-                          with-details)))
-    (message "Search/replace regexp engine is: %s.%s"
-             (pel--active-search-regexp-engine)
-             (if with-details (format "
-- Possible values:
-  - emacs         : always available.
-  - vr            : pel-use-visual-regexp (%s) must be t to use this.
-  - For the following, pel-use-visual-regexp-steroids (%s) must be t:
-    - vr/emacs
-    - vr/emacs-plain
-    - vr/pcre2el
-    - vr/python
-    - vr/custom
-Change the values of the pel-use-visual-regexp... user option variables
-than execute pel-init to activate or deactivate them."
-                                      pel-use-visual-regexp
-                                      pel-use-visual-regexp-steroids)
-               ""))
-    (setq pel--active-search-regexp-engine-shown-already t)))
+  (message "%s" (pel-active-search-regexp-engine-str with-details)))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-search-regexp)

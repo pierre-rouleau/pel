@@ -301,6 +301,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 - Update: *Process execution*:
   - New: the list-processes command is now bound to ``<f11> x ?`` key sequence.
 - Update: *Searching*:
+  - New: command *pel-show-search-status* bound to ``<f11> s ?`` that displays
+    all search settings in the echo area.  Use any prefix argument to display
+    extra information after the first time it is used.
   - Improved: *pel-search-word-from-top* (mapped to ``<f11> s .`` key sequence
     and to the ``.;`` key chord):
     - New: the *pel-search-from-top-in-other* user option controls how

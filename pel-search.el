@@ -43,7 +43,7 @@
 ;; Search Tool Management:
 ;;
 ;; * `pel-show-active-search-tool'
-;;   - `pel--active-search-tool'
+;;   - `pel-active-search-tool-str'
 ;; * `pel-select-search-tool'
 ;;   - `pel--search-tools-selection'
 ;;   - `pel--activated-search-tool'
@@ -63,6 +63,7 @@
 (require 'pel--macros)
 (require 'pel-prompt)
 (require 'pel-read)      ; use: pel-word-at-point
+(require 'pel-search-regexp)  ; use: pel-active-search-regexp-engine
 (require 'pel-window)    ; use: pel-window-direction-for,
 ;;                       ;      pel-count-non-dedicated-windows
 
@@ -126,11 +127,9 @@ Depends on 2 Emacs (base system) variables:
             (t "case insensitive unless uppercase in search."))
     "case sensitive search."))
 
-;;-pel-autoload
-(defun pel-show-search-case-state ()
-  "Describe the search case handling behaviour in the mini-buffer."
-  (interactive)
-  (message "\
+(defun pel-search-case-state-str ()
+  "Return a string describing search case behaviour."
+  (format"\
 - Search               : %s
 - Case-fold            : %s
 - Lax-whitespace       : %s
@@ -142,6 +141,12 @@ Depends on 2 Emacs (base system) variables:
            (pel-symbol-on-off-string 'isearch-regexp-lax-whitespace)
            (pel-symbol-on-off-string 'subword-mode)
            (pel-symbol-on-off-string 'superword-mode)))
+
+;;-pel-autoload
+(defun pel-show-search-case-state ()
+  "Describe the search case handling behaviour in the mini-buffer."
+  (interactive)
+  (message "%s" (pel-search-case-state-str)))
 
 ;; -----------------------------------------------------------------------------
 ;; Search Utilities
@@ -250,6 +255,16 @@ A nil value means that Emacs standard search is used.")
 
 ;; --
 
+(defun pel-active-search-tool-str ()
+  "Return a string describing the currently used search tool."
+  (if (not pel--active-search-tool)
+      "default ISearch"
+    (if (eq pel--active-search-tool 'anzu)
+        "ISearch and Anzu"
+      (if (eq pel--active-search-tool 'swiper)
+          "Swiper"
+        "??"))))
+
 (defun pel--activate-search-tool (tool)
   "Activate the specified search TOOL.
 The TOOL argument can be any of nil | anzu | swiper."
@@ -262,7 +277,7 @@ The TOOL argument can be any of nil | anzu | swiper."
         ((eq tool 'swiper)
          (global-set-key "\C-s" 'swiper)))
   (setq pel--active-search-tool tool)
-  (message "Now searching with %s" (pel--active-search-tool)))
+  (message "Now searching with %s" (pel-active-search-tool-str)))
 
 (defun pel--disable-search-tool (tool)
   "Disable currently specified search TOOL.
@@ -313,16 +328,6 @@ The nil value means that Emacs default is used."
 
 ;; --
 
-(defun pel--active-search-tool ()
-  "Return a string describing the currently used search tool."
-  (if (not pel--active-search-tool)
-      "default ISearch"
-    (if (eq pel--active-search-tool 'anzu)
-        "ISearch and Anzu"
-      (if (eq pel--active-search-tool 'swiper)
-          "Swiper"
-        "??"))))
-
 ;;-pel-autoload
 (defun pel-show-active-search-tool ()
   "Display the currently used search tool."
@@ -332,7 +337,27 @@ The nil value means that Emacs default is used."
     (pel-set-search-tool pel-initial-search-tool)
     (setq pel--search-initialized 1))
   ;;
-  (message "Searching with %s" (pel--active-search-tool)))
+  (message "Searching with %s" (pel-active-search-tool-str)))
+
+;; --
+;;-pel-autoload
+(defun pel-show-search-status (&optional with-details)
+  "Display search status.
+Display:
+- the name of the search tool used,
+- the regular expression tool used,
+- the search case settings used.
+
+With non-nil WITH-DETAILS or any prefix argument, displays
+more information about available choices."
+ (interactive "P")
+  (message "\
+- Searching with %s
+- %s
+%s"
+           (pel-active-search-tool-str)
+           (pel-active-search-regexp-engine-str with-details)
+           (pel-search-case-state-str)))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-search)
