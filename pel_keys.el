@@ -2109,6 +2109,11 @@ MODE must be a symbol."
 
 (defun pel--lispy-map-for (prefix)
   "Map in the PEL keys for Lisp-like mode in the keymap for PREFIX."
+  (define-key prefix (kbd "<down>")  'pel-beginning-of-next-defun)
+  (define-key prefix (kbd "<up>")    'beginning-of-defun)
+  (define-key prefix (kbd "<left>")  'pel-end-of-previous-defun)
+  (define-key prefix (kbd "<right>") 'end-of-defun)
+
   (define-key prefix   (kbd "M-9") #'show-paren-mode)
   (define-key prefix   (kbd "M-l")  'pel-toggle-lisp-modes)
   (when pel-use-parinfer
@@ -2180,6 +2185,7 @@ MODE must be a symbol."
 (define-key pel:for-elisp (kbd "M-p")  #'superword-mode)
 (pel--lispy-map-for pel:for-elisp)
 ;;
+
 (define-key pel:for-elisp   ")" #'check-parens)
 (define-key pel:for-elisp   "."  'pel-find-thing-at-point)
 (when pel-use-plantuml

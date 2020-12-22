@@ -253,11 +253,21 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - New: ``<f12> <f12> I`` insert a C pre-processor #include statement for
     local files.
 - Update: *Programming Language Support -- Common Lisp*
+  - New: Navigation keys:
+    - ``<f12> <down>``   binding to ``pel-beginning-of-next-defun``,
+    - ``<f12> <up>``     binding to  ``beginning-of-defun``
+    - ``<f12> <left>``   binding to  ``pel-end-of-previous-defun``
+    - ``<f12> <right>``  binding to  ``end-of-defun``
   - New: user option *pel-clisp-hyperspec-root* to identify the location of
     the LispWorks Common Lisp HyperSpec HTML documentation.
   - New: The ``<f12> <f3>`` key sequence provides access to slime
     customization buffer.
 - Update: *Programming Language Support -- Emacs Lisp*
+  - New: Navigation keys:
+    - ``<f12> <down>``   binding to ``pel-beginning-of-next-defun``,
+    - ``<f12> <up>``     binding to  ``beginning-of-defun``
+    - ``<f12> <left>``   binding to  ``pel-end-of-previous-defun``
+    - ``<f12> <right>``  binding to  ``end-of-defun``
   - New: ``<f12> l v`` binding to ``pel-load-visited-file`` to load the file
     visited in current buffer either by source or its byte-compiled instance.
   - Modification: of the key binding of ``load-file``: changed its key binding
