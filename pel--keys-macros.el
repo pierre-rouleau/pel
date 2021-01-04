@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-12-05 21:23:34, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-04 10:21:13, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -419,7 +419,12 @@ There should be no key binding!" keyseq))
     ("encoding"         . "input-method")
     ("dired"            . "mode-dired")
     ("org-mode"         . "mode-org-mode")
-    ("rst"              . "mode-rst"))
+    ("rst"              . "mode-rst")
+    ("copy"             . "cut-paste")
+    ("delete"           . "cut-paste")
+    ("kill"             . "cut-paste")
+    ("yank"             . "cut-paste")
+    ("iedit"            . "search-replace"))
   "List of alias for PEL PDF file names.")
 
 (defvar pel--prompt-history-for-help-pdf nil

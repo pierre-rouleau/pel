@@ -193,6 +193,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     user option.
   - New: key binding to a command to display Emacs executable path: <f11> ? e x.
   - New: key binding to display Emacs up-time (<f11> ? e u).
+  - New: added several alias for various PDF tables when using the
+    *pel-help-pdf-select* (which is bound to the  ``<f11> ? p`` key.
 - Update: *Indentation*:
   - Improvement: to the commands bound to ``<f6> <tab>`` (now
     ``pel-indent-lines``) and `<S-tab>`` (now ``pel-unindent-lines``):
@@ -208,6 +210,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     displays the state of key-chord/key-seq and the key bindings if
     key-chord-mode is active.
 - Update: *Navigation*
+
   - New: ``<f11 M-f>`` binding for pel-forward-syntaxchange-start and
     ``<f11 M-b>`` binding for pel-backward-syntaxchange-start.
 - Update: *Programming Language Support -- CC Mode Utilities*
