@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-04 10:21:13, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-04 15:21:51, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -424,7 +424,15 @@ There should be no key binding!" keyseq))
     ("delete"           . "cut-paste")
     ("kill"             . "cut-paste")
     ("yank"             . "cut-paste")
-    ("iedit"            . "search-replace"))
+    ("iedit"            . "search-replace")
+    ("commented-lines"  . "inserting-text")
+    ("copyright"        . "inserting-text")
+    ("license"          . "inserting-text")
+    ("date"             . "inserting-text")
+    ("timestamp"        . "inserting-text")
+    ("file-name"        . "inserting-text")
+    ("smart-dash"       . "inserting-text")
+    ("yasnippet"        . "inserting-text"))
   "List of alias for PEL PDF file names.")
 
 (defvar pel--prompt-history-for-help-pdf nil

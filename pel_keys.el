@@ -1,6 +1,6 @@
 ;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -907,7 +907,7 @@ Then save your changes."
 
 (define-pel-global-prefix pel:f6 (kbd "<f6>"))
 (define-key pel:f6 "l"  'pel-insert-line)
-(define-key pel:f6 "F"  'pel-insert-filename)
+(define-key pel:f6 "f"  'pel-insert-filename)
 
 ;; Move to the beginning of next function definition (while moving forward)
 ;;  complements C-M-e and C-M-a
@@ -3567,7 +3567,7 @@ the ones defined from the buffer now."
 ;; F I L O W R
 ;; a d f g h i j l n o r t v w
 ;; C-^  C-cj
-;; M-/  M-e M-l M-x
+;; M-/  M-e M-l M-t M-x
 (define-key pel:file "I" #'insert-file-literally)
 (define-key pel:file "O" #'find-file-read-only-other-window)
 (define-key pel:file "L" #'locate)
@@ -3581,6 +3581,7 @@ the ones defined from the buffer now."
 (define-key pel:file "n" #'find-name-dired)
 (define-key pel:file "o" #'find-file-other-window)
 (define-key pel:file "t" #'time-stamp)
+(define-key pel:file (kbd "M-t") #'time-stamp-toggle-active)
 (define-key pel:file "w" #'write-region)
 (define-key pel:file (kbd "M-x") 'hexl-find-file)
 (define-key pel:file (kbd "M-l") 'find-file-literally)
@@ -3793,11 +3794,16 @@ the ones defined from the buffer now."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> i`` : Insert text operations
 
+;; Used keys in <f11> i:
+;;   D   L
+;; c d f l t
+;; M-c
 (define-pel-global-prefix pel:insert (kbd "<f11> i"))
-(define-key pel:insert   "C" 'copyright)
+(define-key pel:insert   "c" 'copyright)
+(define-key pel:insert (kbd "M-c") 'copyright-update)
 (define-key pel:insert   "d" 'pel-insert-current-date)
 (define-key pel:insert   "D" 'pel-insert-current-date-time)
-(define-key pel:insert   "F" 'pel-insert-filename)
+(define-key pel:insert   "f" 'pel-insert-filename)
 (define-key pel:insert   "l" 'pel-insert-line)
 (define-key pel:insert   "t" 'pel-insert-iso8601-timestamp)
 (when (or pel-use-lice
