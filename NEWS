@@ -312,7 +312,13 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     ``<C-right>``, respectively bound to pel-backward-token-start and
     pel-forward-token-start.  This frees another 2 valuable quick access keys.
 - Update: *Process execution*:
-  - New: the list-processes command is now bound to ``<f11> x ?`` key sequence.
+  - New: the list-processes command is now bound to ``<f11> x ?`` key
+    sequence.
+- Update: *Rectangles*:
+  - New: the *iedit-rectangle-mode* is accessible directly with the ``C-x r
+    RET`` key binding.  There is no need to use the iedit-mode first.
+  - New: the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/rectangles.pdf][⅀ Rectangles PDF]] describes the *iedit-rectangle-mode* and available
+    commands.
 - Update: *Searching*:
   - New: command *pel-show-search-status* bound to ``<f11> s ?`` that displays
     all search settings in the echo area.  Use any prefix argument to display

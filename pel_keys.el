@@ -1015,6 +1015,7 @@ Then save your changes."
     :commands iedit-mode
     :init
     (define-key pel: "e" 'iedit-mode)
+    (define-key ctl-x-r-map "\r" 'iedit-rectangle-mode)
     :config
     ;; iedit does not properly set a handler for desktop handler
     ;; I reported iedit bug 115: https://github.com/victorhge/iedit/issues/115
@@ -1023,6 +1024,7 @@ Then save your changes."
     ;; distributed in MELPA.
     (add-to-list 'desktop-minor-mode-handlers
                  '(iedit-mode . ignore))
+    ;; More iedit config - always required.
     (pel--check-flyspell-iedit-conflict)
     (pel--add-keys-to-iedit-mode)))
 
