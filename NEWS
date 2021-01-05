@@ -342,6 +342,21 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       - a numbered prefix in the range [20..28] grab the word with super-word
         mode temporarily activated and then select the window as if the
         numbered prefix was 0 to 8.
+  - Improved *iedit-mode support*:
+    - New: added key bindings for the iedit-mode commands that are not
+      accessible in terminal mode:
+      - ``<f1> <f1>`` is bound to iedit-help-for-help.
+      - ``<f1> <f2>`` is bound to iedit-help-for-occurrences.
+      - ``<f1> C-o`` is bound to iedit-show/hide-occurrence-lines.
+      - ``<f1> C-a`` is bound to iedit-show/hide-context-lines.
+    - New: modified some iedit-mode command bindings for commands that
+     clashed with major command PEL bindings:
+      - ``M-C`` is bound to iedit-upcase-occurences instead of ``M-U`` which
+        remains bound to pel-redo.
+      - ``<f1> M-c`` is bound to iedit-toggle-case-sensitive instead of
+        ``M-C``.
+      - Use ``M-c`` to change occurrence to lower case and ``M-C`` to change
+        occurrences to upper case. Similar to what is available under PEL.
 - Update: *Sessions*:
   - New: temporary work-around fix for [[https://github.com/victorhge/iedit/issues/115][iedit bug # 115]] implemented inside
     pel-init to prevent desktop restoration failures when ``iedit-mode`` was
@@ -400,7 +415,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-python.pdf][𝕻𝔩 - Python]] programming language : listed more commands.
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/rectangles.pdf][⅀ Rectangles PDF]] better describes how to mark rectangle areas.
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀ Search/Replace PDF]] describes the superword-mode, subword-mode better, and
-  includes description of the projectile commands.
+  includes description of the projectile commands.  It also describes all
+  iedit-mode commands.
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/text-modes.pdf][⅀ Text Modes PDF]] describes the superword-mode, subword-mode better, and new
   key binding to overwrite-mode (<Esc><kp-0>).
 + Renamed ⅀ Tags to [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref.pdf][⅀ Xref]]; the PDF will describe several cross-referencing

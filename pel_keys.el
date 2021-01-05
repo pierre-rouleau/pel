@@ -995,6 +995,19 @@ Then save your changes."
 (define-key pel: (kbd      "<M-left>")     'pel-backward-syntaxchange-start)
 (define-key pel: (kbd      "0")           #'hl-line-mode)
 
+(defun pel--add-keys-to-iedit-mode ()
+  "Add keys that work in terminal mode to iedit-mode key maps."
+  (when (boundp 'iedit-lib-keymap)
+    (define-key iedit-lib-keymap (kbd "<f1> C-a") 'iedit-show/hide-context-lines)
+    (define-key iedit-lib-keymap (kbd "<f1> C-o") 'iedit-show/hide-occurrence-lines))
+  (when (boundp 'iedit-mode-occurrence-keymap)
+    (let ((map iedit-mode-occurrence-keymap))
+      (define-key map (kbd "<f1> <f2>") 'iedit-help-for-occurrences)
+      (define-key map (kbd "M-U")       'pel-redo)
+      (define-key map (kbd "<f1> M-c")  'iedit-toggle-case-sensitive)
+      (define-key map (kbd "M-c")       'iedit-downcase-occurrences)
+      (define-key map (kbd "M-C")       'iedit-upcase-occurrences))))
+
 (when (or pel-use-iedit pel-use-lispy)
   (use-package iedit
     :ensure t
@@ -1010,7 +1023,8 @@ Then save your changes."
     ;; distributed in MELPA.
     (add-to-list 'desktop-minor-mode-handlers
                  '(iedit-mode . ignore))
-    (pel--check-flyspell-iedit-conflict)))
+    (pel--check-flyspell-iedit-conflict)
+    (pel--add-keys-to-iedit-mode)))
 
 (when (and pel-use-popup-kill-ring
            (display-graphic-p))
