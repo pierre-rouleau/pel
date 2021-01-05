@@ -36,7 +36,7 @@
 
 ;;; Dependencies:
 (require 'pel--base)
-
+(require 'pel--options)
 ;; ---------------------------------------------------------------------------
 ;; Utility
 ;; -------
@@ -46,16 +46,33 @@
                (fboundp 'bounds-of-thing-at-point))
     (user-error "Failed loading thingatpt!")))
 
-;; Copy Commands.
-;; --------------
+;; Display Control
+;; ---------------
+
+;;-pel-autoload
+(defun pel-toggle-show-copy-cut-text (&optional globally)
+  "Toggle display of copied/cut text.
+By default change behaviour in local buffer only.
+With new GLOBALLY argument, change it for all buffers.
+Display current state.
+The change does not persist across Emacs sessions.
+To modify the global state permanently modify the customized value of the
+`pel-show-copy-cut-text' user option via the `pel-pkg-for-cut-and-paste'
+group customize buffer."
+  (interactive "P")
+  (unless globally
+    (with-current-buffer (current-buffer)
+      (unless (local-variable-p 'pel-show-copy-cut-text)
+        (make-local-variable 'pel-show-copy-cut-text))))
+  (pel-toggle-and-show 'pel-show-copy-cut-text))
 
 (defun pel--show-kill-ring-top (op-name)
   "Display top of kill ring on echo area.
 Show the OP-NAME and the content of the kill ring at top."
-  (message "%s:「%s」"
-           op-name
-           (substring-no-properties (car kill-ring))))
-
+  (when pel-show-copy-cut-text
+    (message "%s:「%s」"
+             op-name
+             (substring-no-properties (car kill-ring)))))
 
 (defun pel--show-copied ()
   "Display what was copied."
@@ -71,6 +88,9 @@ Show the OP-NAME and the content of the kill ring at top."
                      "Delete"
                    "Kill")))
     (pel--show-kill-ring-top op-name)))
+
+;; Copy Commands.
+;; --------------
 
 (defun pel--copy-thing-at-point (thing)
   "Copy the `thing-at-point' for the specified kind of THING.
@@ -602,7 +622,8 @@ the filtering and `kill-ring' appending capabilities."
               ;; kill n lines when n is 2 or more
               (kill-whole-line n))
           ;; otherwise delete the (abs n) lines
-          (pel--delete-whole-lines (abs n)))))))
+          (pel--delete-whole-lines (abs n)))))
+    (pel--show-killed)))
 
 ;; Copy current marked region or whole current line
 ;; ------------------------------------------------
@@ -645,8 +666,8 @@ All copy operations are performed by `kill-ring-save'."
                             (progn
                               (forward-line n)
                               (beginning-of-line)
-                              (point)))))))))
-
+                              (point)))))))
+    (pel--show-copied)))
 
 ;; Kill beginning of line
 ;; ----------------------
@@ -657,7 +678,8 @@ All copy operations are performed by `kill-ring-save'."
   ;; lazy load simple because it's one of the 2 functions here that uses it.
   ;; simple is part of Emacs standard distribution.
   (require 'simple)
-  (kill-line 0))
+  (kill-line 0)
+  (pel--show-killed))
 
 ;;-pel-autoload
 (defun pel-delete-from-beginning-of-line ()

@@ -994,6 +994,7 @@ Then save your changes."
 (define-key pel: (kbd      "M-b")          'pel-backward-syntaxchange-start)
 (define-key pel: (kbd      "<M-left>")     'pel-backward-syntaxchange-start)
 (define-key pel: (kbd      "0")           #'hl-line-mode)
+(define-key pel: (kbd      "M-=")          'pel-toggle-show-copy-cut-text)
 
 (defun pel--add-keys-to-iedit-mode ()
   "Add keys that work in terminal mode to iedit-mode key maps."
@@ -2665,7 +2666,7 @@ vlang-mode/master/vlang-mode.el"
 (define-key pel:delete ","  'pel-delete-symbol-part)
 (define-key pel:kill   "a"  'pel-kill-from-beginning-of-line)
 (define-key pel:delete "a"  'pel-delete-from-beginning-of-line)
-;; C-k
+(define-key pel:kill   "e" #'kill-line) ; also C-k
 (define-key pel:delete "e"  'pel-delete-line)
 (define-key pel:kill   "s"  'pel-kill-sentence-at-point)
 (define-key pel:delete "s"  'pel-delete-sentence-at-point)

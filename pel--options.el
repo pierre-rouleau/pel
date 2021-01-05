@@ -1,6 +1,6 @@
 ;;; pel--options.el --- PEL Customization Options -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -494,6 +494,19 @@ Notes:
                    "https://www.emacswiki.org/emacs/popup-kill-ring.el")
   :link `(url-link :tag "Uncle Dave's YouTube video on popup-kill-ring"
                    "https://www.youtube.com/watch?v=LFXA089Tx38")
+  :group 'pel-pkg-for-cut-and-paste
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-show-copy-cut-text t
+  "Set whether PEL commands that copy, cut or kill text show it in echo area.
+By default it is set to t.
+If you find this display annoying set it to nil.
+
+Like all user options, this setting is persistent.
+If you want to modify this setting for the current session without
+making the change persistent you can use the `pel-toggle-show-copy-cut-text'
+command to change it either for the local buffer or globally."
   :group 'pel-pkg-for-cut-and-paste
   :type 'boolean
   :safe #'booleanp)

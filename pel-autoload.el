@@ -1,6 +1,6 @@
 ;;; pel-autoload.el --- Autoloads PEL -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -101,6 +101,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-cc-mode-info)
 
   (pel-autoload "pel-ccp" for:
+    pel-toggle-show-copy-cut-text
     pel-copy-word-at-point
     pel-copy-symbol-at-point
     pel-copy-sentence-at-point

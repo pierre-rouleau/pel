@@ -147,6 +147,14 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - Modification: new customization group *pel-pkg-for-cut-and-paste* which
     holds pel-use-popup-kill-ring that was previously under the undo group.
 - Update: *Cut & Paste*:
+  - New: It's now possible to control whether the copy, kill, delete commands
+    that can display the copied, killed or deleted text. The new
+    *pel-show-copy-cut-text* user option controls it.  It is set *t* by
+    default, mimicking previous behaviour.  Setting it to nil will prevent the
+    display. The new command *pel-toggle-show-copy-cut-text* (bound to ``<f11>
+    M-=``) can be used to override this setting in the current Emacs session
+    either globally or for the current buffer.  the customize buffer is a
+    persistent setting that can be overridden
   - New: added commands that delete elements, similar to the kill commands.
     These are bound to the pel:delete key prefix, bound to the ``<f11> DEL``
     key sequence.  There is now a delete command equivalent to the kill
