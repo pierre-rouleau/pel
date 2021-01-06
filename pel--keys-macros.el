@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-06 10:23:00, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-06 11:23:25, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -400,8 +400,8 @@ There should be no key binding!" keyseq))
                  open-web-page))))
 
 (defconst pel--topic-alias
-  '(("input-completion" . "completion-input")
-    ("lines"            . "display-lines")
+  '(
+    ;; programming languages alias: all of their PDF files start with 'pl-'
     ("applescript"      . "pl-applescript")
     ("c++"              . "pl-c++")
     ("c"                . "pl-c")
@@ -414,12 +414,13 @@ There should be no key binding!" keyseq))
     ("julia"            . "pl-julia")
     ("python"           . "pl-python")
     ("rexx"             . "pl-rexx")
+    ;; mode names aliases
     ("mercurial"        . "vcs-mercurial")
     ("lispy"            . "plm-lispy")
-    ("encoding"         . "input-method")
     ("dired"            . "mode-dired")
     ("org-mode"         . "mode-org-mode")
     ("rst"              . "mode-rst")
+    ;; topic related aliases, ordered by file names
     ("hippie-expand"    . "abbreviations")
     ("dabbrev-expand"   . "abbreviations")
     ("text-align"       . "align")
@@ -428,22 +429,14 @@ There should be no key binding!" keyseq))
     ("company-mode"     . "auto-completion")
     ("binary"           . "buffers")
     ("hexadecimal"      . "buffers")
+    ("input-completion" . "completion-input")
     ("copy"             . "cut-paste")
     ("delete"           . "cut-paste")
     ("kill"             . "cut-paste")
     ("yank"             . "cut-paste")
-    ("iedit"            . "search-replace")
-    ("commented-lines"  . "inserting-text")
-    ("copyright"        . "inserting-text")
-    ("license"          . "inserting-text")
-    ("date"             . "inserting-text")
-    ("timestamp"        . "inserting-text")
-    ("file-name"        . "inserting-text")
-    ("smart-dash"       . "inserting-text")
-    ("yasnippet"        . "inserting-text")
+    ("lines"            . "display-lines")
     ("artist-mode"      . "drawing")
     ("picture-mode"     . "drawing")
-    ("desktop"          . "sessions")
     ("ascii-table"      . "help")
     ("prefix-keys"      . "help")
     ("keycast"          . "help")
@@ -452,7 +445,18 @@ There should be no key binding!" keyseq))
     ("info"             . "help")
     ("man"              . "help")
     ("emacs"            . "help")
-    ("benchmark"        . "help"))
+    ("benchmark"        . "help")
+    ("encoding"         . "input-method")
+    ("commented-lines"  . "inserting-text")
+    ("copyright"        . "inserting-text")
+    ("license"          . "inserting-text")
+    ("date"             . "inserting-text")
+    ("timestamp"        . "inserting-text")
+    ("file-name"        . "inserting-text")
+    ("smart-dash"       . "inserting-text")
+    ("yasnippet"        . "inserting-text")
+    ("iedit"            . "search-replace")
+    ("desktop"          . "sessions"))
   "List of alias for PEL PDF file names.")
 
 (defvar pel--prompt-history-for-help-pdf nil
