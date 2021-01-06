@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-06 09:28:00, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-06 09:30:25, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -420,6 +420,8 @@ There should be no key binding!" keyseq))
     ("dired"            . "mode-dired")
     ("org-mode"         . "mode-org-mode")
     ("rst"              . "mode-rst")
+    ("hippie-expand"    . "abbreviations")
+    ("dabbrev-expand"   . "abbreviations")
     ("copy"             . "cut-paste")
     ("delete"           . "cut-paste")
     ("kill"             . "cut-paste")
