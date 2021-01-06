@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-06 09:08:54, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-06 09:28:00, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -435,7 +435,15 @@ There should be no key binding!" keyseq))
     ("yasnippet"        . "inserting-text")
     ("artist-mode"      . "drawing")
     ("picture-mode"     . "drawing")
-    ("desktop"          . "sessions"))
+    ("desktop"          . "sessions")
+    ("prefix-keys"      . "help")
+    ("keycast"          . "help")
+    ("command-log"      . "help")
+    ("log"              . "help")
+    ("info"             . "help")
+    ("man"              . "help")
+    ("emacs"            . "help")
+    ("benchmark"        . "help"))
   "List of alias for PEL PDF file names.")
 
 (defvar pel--prompt-history-for-help-pdf nil
