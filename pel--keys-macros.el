@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-06 11:23:25, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-06 11:59:48, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -455,6 +455,9 @@ There should be no key binding!" keyseq))
     ("file-name"        . "inserting-text")
     ("smart-dash"       . "inserting-text")
     ("yasnippet"        . "inserting-text")
+    ("centimacro"       . "keyboard-macros")
+    ("elmacros"         . "keyboard-macros")
+    ("emacros"          . "keyboard-macros")
     ("iedit"            . "search-replace")
     ("desktop"          . "sessions"))
   "List of alias for PEL PDF file names.")
