@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-05 16:51:48, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-05 22:35:53, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -432,7 +432,9 @@ There should be no key binding!" keyseq))
     ("timestamp"        . "inserting-text")
     ("file-name"        . "inserting-text")
     ("smart-dash"       . "inserting-text")
-    ("yasnippet"        . "inserting-text"))
+    ("yasnippet"        . "inserting-text")
+    ("artist-mode"      . "drawing")
+    ("picture-mode"     . "drawing"))
   "List of alias for PEL PDF file names.")
 
 (defvar pel--prompt-history-for-help-pdf nil
