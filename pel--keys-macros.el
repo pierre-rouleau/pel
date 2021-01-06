@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-06 09:30:25, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-06 09:49:07, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -422,6 +422,12 @@ There should be no key binding!" keyseq))
     ("rst"              . "mode-rst")
     ("hippie-expand"    . "abbreviations")
     ("dabbrev-expand"   . "abbreviations")
+    ("text-align"       . "align")
+    ("completion"       . "auto-completion")
+    ("auto-complete"    . "auto-completion")
+    ("company-mode"     . "auto-completion")
+    ("binary"           . "buffers")
+    ("hexadecimal"      . "buffers")
     ("copy"             . "cut-paste")
     ("delete"           . "cut-paste")
     ("kill"             . "cut-paste")
