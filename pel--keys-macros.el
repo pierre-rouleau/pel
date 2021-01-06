@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-06 09:49:07, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-06 10:23:00, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -444,6 +444,7 @@ There should be no key binding!" keyseq))
     ("artist-mode"      . "drawing")
     ("picture-mode"     . "drawing")
     ("desktop"          . "sessions")
+    ("ascii-table"      . "help")
     ("prefix-keys"      . "help")
     ("keycast"          . "help")
     ("command-log"      . "help")
@@ -476,7 +477,6 @@ If enter is typed with no entry it defaults to the PEL key maps pdf."
                    (append topics
                            (mapcar (function car) pel--topic-alias))
                    (function string<))
-
 
                   nil           ; predicate
                   t             ; require-match
