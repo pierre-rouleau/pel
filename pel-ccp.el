@@ -51,20 +51,15 @@
 
 ;;-pel-autoload
 (defun pel-toggle-show-copy-cut-text (&optional globally)
-  "Toggle display of copied/cut text.
+  "Toggle display of copied/cut text and display current state.
 By default change behaviour in local buffer only.
-With new GLOBALLY argument, change it for all buffers.
-Display current state.
-The change does not persist across Emacs sessions.
+When GLOBALLY argument is non-nil, change it for all buffers for the current
+Emacs editing session (the change does not persist across Emacs sessions).
 To modify the global state permanently modify the customized value of the
 `pel-show-copy-cut-text' user option via the `pel-pkg-for-cut-and-paste'
 group customize buffer."
   (interactive "P")
-  (unless globally
-    (with-current-buffer (current-buffer)
-      (unless (local-variable-p 'pel-show-copy-cut-text)
-        (make-local-variable 'pel-show-copy-cut-text))))
-  (pel-toggle-and-show 'pel-show-copy-cut-text))
+  (pel-toggle-and-show-user-option 'pel-show-copy-cut-text globally))
 
 (defun pel--show-kill-ring-top (op-name)
   "Display top of kill ring on echo area.

@@ -1,6 +1,6 @@
 ;;; pel--base.el --- PEL base utilities. -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -93,8 +93,9 @@
 ;;  - `pel-add-hook-for'
 ;;
 ;; Basic functions working with values and variables:
-;;  - `pel-toggle-and-show'
-;;    - `pel-toggle'
+;;  - `pel-toggle-and-show-user-option'
+;;    - `pel-toggle-and-show'
+;;      - `pel-toggle'
 ;;  - `pel-val-or-default'
 ;;
 ;; Argument converter:
@@ -709,6 +710,17 @@ the caller must pass it quoted.
 The function issue an error if the argument is not a symbol."
   (pel-toggle symbol)
   (message (pel-symbol-text symbol on-string off-string)))
+
+
+(defun pel-toggle-and-show-user-option (user-option &optional globally)
+  "Toggle the behaviour of USER-OPTION for current buffer or GLOBALLY.
+Display the new state.
+USER-OPTION must be a variable symbol."
+  (unless globally
+    (with-current-buffer (current-buffer)
+      (unless (local-variable-p user-option)
+        (make-local-variable user-option))))
+    (pel-toggle-and-show user-option))
 
 (defun pel-val-or-default (val default)
   "Return VAL if not nil otherwise return DEFAULT."
