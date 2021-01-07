@@ -83,28 +83,6 @@
       (pel--autoload-init)))
 
 ;; ---------------------------------------------------------------------------
-;; Actions on File Save
-;; --------------------
-;; As controlled by PEL customized user options.
-
-(when pel-delete-trailing-whitespace
-  ;; - Remove trailing whitespaces on file save
-  (add-hook 'before-save-hook 'delete-trailing-whitespace))
-
-(when pel-update-time-stamp
-  ;; - Update file timestamp on file same (if any)
-  (add-hook 'before-save-hook 'time-stamp))
-
-(when pel-update-copyright
-  ;; Update the copyright notice present in a file
-  (add-hook 'before-save-hook 'copyright-update))
-
-(when pel-make-script-executable
-  ;; - Make script file executable on file save
-  (add-hook 'after-save-hook
-            'executable-make-buffer-file-executable-if-script-p))
-
-;; ---------------------------------------------------------------------------
 ;; Control Emacs prompting
 ;; -----------------------
 (when pel-prompt-accept-y-n
@@ -995,6 +973,95 @@ Then save your changes."
 (define-key pel: (kbd      "<M-left>")     'pel-backward-syntaxchange-start)
 (define-key pel: (kbd      "0")           #'hl-line-mode)
 (define-key pel: (kbd      "M-=")          'pel-toggle-show-copy-cut-text)
+
+;; ---------------------------------------------------------------------------
+;; Actions on File Save
+;; --------------------
+;; As controlled by PEL customized user options.
+
+;; -- delete trailing whitespace
+
+(defun pel-toggle-delete-trailing-space-on-save (&optional globally)
+  "Toggle deletion of trailing spaces on file save and display current state.
+By default change behaviour for local buffer only.
+When GLOBALLY argument is non-nil, change it for all buffers for the current
+Emacs editing session (the change does not persist across Emacs sessions).
+To modify the global state permanently modify the customized value of the
+`pel-delete-trailing-whitespace' user option via the `pel-pkg-for-filemng'
+group customize buffer."
+  (interactive "P")
+  (pel-toggle-and-show-user-option 'pel-delete-trailing-whitespace globally))
+
+(defun pel--delete-trailing-whitespace (&optional start end)
+  "Delete trailing whitespace if currently active."
+  (when pel-delete-trailing-whitespace
+    (delete-trailing-whitespace start end)))
+
+(when pel-delete-trailing-whitespace
+  ;; - Remove trailing whitespaces on file save
+  (add-hook 'before-save-hook  'pel--delete-trailing-whitespace)
+  (define-key pel: (kbd "M-W") 'pel-toggle-delete-trailing-space-on-save))
+
+;; -- update time stamp
+
+(defun pel-toggle-update-time-stamp-on-save (&optional globally)
+  "Toggle time-stamp update on file save and display current state.
+By default change behaviour for local buffer only.
+When GLOBALLY argument is non-nil, change it for all buffers for the current
+Emacs editing session (the change does not persist across Emacs sessions).
+To modify the global state permanently modify the customized value of the
+`pel-update-time-stamp' user option via the `pel-pkg-for-filemng'
+group customize buffer."
+  (interactive "P")
+  (pel-toggle-and-show-user-option 'pel-update-time-stamp globally))
+
+(defun pel--update-time-stamp ()
+  "Update time stamp if currently active."
+  (when pel-update-time-stamp
+    (time-stamp)))
+
+(when pel-update-time-stamp
+  ;; - Update file timestamp on file same (if any)
+  (add-hook 'before-save-hook  'pel--update-time-stamp)
+  (define-key pel: (kbd "M-T") 'pel-toggle-update-time-stamp-on-save))
+
+;; -- update copyright notice
+
+(defun pel-toggle-update-copyright-on-save (&optional globally)
+  "Toggle copyright update on file save and display current state.
+By default change behaviour for local buffer only.
+When GLOBALLY argument is non-nil, change it for all buffers for the current
+Emacs editing session (the change does not persist across Emacs sessions).
+To modify the global state permanently modify the customized value of the
+`pel-update-copyright' user option via the `pel-pkg-for-filemng'
+group customize buffer."
+  (interactive "P")
+  (pel-toggle-and-show-user-option 'pel-update-copyright globally))
+
+(defun pel--update-copyright (&optional arg interactivep)
+  "Update time stamp if currently active.
+With prefix ARG, replace the years in the notice rather than adding
+the current year after them.  If necessary, and
+‘copyright-current-gpl-version’ is set, any copying permissions
+following the copyright are updated as well.
+If non-nil, INTERACTIVEP tells the function to behave as when it’s called
+interactively."
+  (when pel-update-copyright
+    (copyright-update arg interactivep)))
+
+(when pel-update-copyright
+  ;; Update the copyright notice present in a file
+  (add-hook 'before-save-hook  'pel--update-copyright)
+  (define-key pel: (kbd "M-C") 'pel-toggle-update-copyright-on-save))
+
+;; -- make script executable
+
+(when pel-make-script-executable
+  ;; - Make script file executable on file save
+  (add-hook 'after-save-hook
+            'executable-make-buffer-file-executable-if-script-p))
+
+;; --------------------
 
 (defun pel--add-keys-to-iedit-mode ()
   "Add keys that work in terminal mode to iedit-mode key maps."

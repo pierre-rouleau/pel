@@ -185,6 +185,18 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - Improved: *pel-open-at-point* is now able to open a file when its name is
     immediately followed by a colon character.  Useful when trying to open the
     file whose name is shown in the result of a grep command.
+  - New: its now possible to dynamically control whether the following actions
+    occur when a buffer is saved into a file for each buffer independently or
+    all buffers globally.  These actions are activated by a customizable
+    user-option.  What is new is that new commands are available to
+    dynamically activate or deactivate the action either globally or each
+    buffer independently. The actions are:
+    - Update copyright notice on save: use ``<f11> M-C`` to toggle action
+      activation.
+    - Update time stamp on save: use ``<f11> M-T`` to toggle action
+      activation.
+    - Delete trailing space and lines on save: use ``<f11> M-W`` to toggle
+      action activation.
 - Update: *Grep*:
   - New: Added key bindings for [[https://github.com/ggreer/the_silver_searcher][ag]] (the silver searcher) based grep-style
     search.
