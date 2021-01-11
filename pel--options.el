@@ -2459,6 +2459,109 @@ in Graphics mode."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-elisp-target-forms 'all-top-level-forms
+  "Identify target of form navigation.
+
+Use as the target by the following commands:
+- `pel-elisp-beginning-of-next-form'
+- `pel-elisp-beginning-of-previous-form'
+
+The target is specified using one of the following:
+
+0) All top-level forms. The default.
+1) Top-level defun forms only.
+2) All defun forms, any level.
+3) All of the following forms, any level
+   - defun
+   - defsubst
+   - defmacro
+   - defalias
+   - defadvice
+4) All of the following forms, any level
+   - defun
+   - defsubst
+   - defmacro
+   - defalias
+   - defadvice
+   - defclass
+   - defmethod
+   - defgeneric
+5) All of the following forms, any level
+   - defun
+   - defsubst
+   - defmacro
+   - defalias
+   - defadvice
+   - defclass
+   - defmethod
+   - defgeneric
+   - defvar
+   - defvaralias
+   - defvar-local
+   - defvar-mode-local
+   - defconst
+   - defconst-mode-local
+   - defface
+   - deftheme
+   - defcustom
+   - defgroup
+6) All forms specified by the list strings.
+
+  Note that each entry of the list is a radio button, allowing you to disable
+  a string while keeping its value in memory for later re-use and activation.
+
+You can modify the buffer local value of `pel-elisp-target-forms' by using the
+`pel-elisp-set-navigate-target-form' command."
+  :group 'pel-pkg-for-elisp
+  :type '(choice
+          (const  :tag "All top-level forms" all-top-level-forms)
+          (const  :tag "All top-level defun" top-level-defun-forms)
+          (const  :tag "All defun forms, any level"
+                  defun-forms)
+          (const  :tag "All defun, defmacro, defsubst,... forms, any level"
+                  all-defun-defmacro-defsubst-forms)
+          (const  :tag "All of 3 + eieio class and method definition forms, \
+any level"
+                  all-functions-macros-eieio-def-forms)
+          (const  :tag "All of 4 + all variables define forms, any level"
+                  all-functions-variables-def-forms)
+          (repeat :tag "User specified"
+                  user-specified)))
+
+(defcustom pel-elisp-user-specified-targets '("defun"
+                                              "defsubst"
+                                              "defmacro"
+                                              "defalias"
+                                              "defadvice"
+                                              "defclass"
+                                              "defmethod"
+                                              "defgeneric"
+                                              "defvar"
+                                              "defvaralias"
+                                              "defvar-local"
+                                              "defvar-mode-local"
+                                              "defconst"
+                                              "defconst-mode-local"
+                                              "defface"
+                                              "deftheme"
+                                              "defcustom"
+                                              "defgroup"
+                                              "def-edebug-spec"
+                                              "defmath"
+                                              "defimage"
+                                              "defezimage"
+                                              "defun-gmm"
+                                              "deffoo"
+                                              "defvoo"
+                                              "defhydra"
+                                              "defhydra\+"
+                                              "defhydradio")
+  "User selected forms used as movement target.
+Use the radio buttons to deactivate any of them.
+You can also insert others."
+  :group 'pel-pkg-for-elisp
+  :type '(repeat (radio string (const nil))))
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-elisp-code-style nil
   "Emacs Lisp Source Code Style options."

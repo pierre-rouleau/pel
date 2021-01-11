@@ -192,7 +192,12 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-browse-group)
 
   (pel-autoload "pel-elisp" for:
-    pel-toggle-paren-in-column-0-is-defun-start)
+    pel-toggle-paren-in-column-0-is-defun-start
+    pel-elisp-set-navigate-target-form
+    pel-elisp-beginning-of-next-form
+    pel-elisp-beginning-of-next-defun
+    pel-elisp-beginning-of-previous-form
+    pel-elisp-beginning-of-previous-defun)
 
   (pel-autoload "pel-emacs" for:
     pel-emacs-executable

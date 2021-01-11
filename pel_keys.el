@@ -2193,8 +2193,8 @@ MODE must be a symbol."
 
 (defun pel--lispy-map-for (prefix)
   "Map in the PEL keys for Lisp-like mode in the keymap for PREFIX."
-  (define-key prefix (kbd "<down>")  'pel-beginning-of-next-defun)
-  (define-key prefix (kbd "<up>")    'beginning-of-defun)
+  (define-key prefix (kbd "<down>")  'pel-elisp-beginning-of-next-form)
+  (define-key prefix (kbd "<up>")    'pel-elisp-beginning-of-previous-form)
   (define-key prefix (kbd "<left>")  'pel-end-of-previous-defun)
   (define-key prefix (kbd "<right>") 'end-of-defun)
 
@@ -2206,7 +2206,8 @@ MODE must be a symbol."
   (when pel-use-rainbow-delimiters
     (define-key prefix (kbd "M-r")  'rainbow-delimiters-mode))
   (define-key prefix   (kbd "M-s") #'semantic-mode)
-  (define-key prefix   (kbd "M-n")  'pel-toggle-paren-in-column-0-is-defun-start)
+  (define-key prefix (kbd "M-n") 'pel-elisp-set-navigate-target-form)
+  (define-key prefix (kbd "M-N") 'pel-toggle-paren-in-column-0-is-defun-start)
   (when pel-use-lispy
     (define-key prefix (kbd "M-L") 'pel-lispy-mode)
     (define-key prefix "1"         'lispy-describe-inline)
@@ -2312,8 +2313,8 @@ MODE must be a symbol."
 (define-key pel:elisp-eval "r" #'eval-region)
 
 (define-pel-global-prefix pel:elisp-function (kbd "<f11> SPC l f"))
-(define-key pel:elisp-function "n" 'pel-beginning-of-next-defun)
-(define-key pel:elisp-function "p" 'beginning-of-defun)
+(define-key pel:elisp-function "n" 'pel-elisp-beginning-of-next-defun)
+(define-key pel:elisp-function "p" 'pel-elisp-beginning-of-previous-defun)
 
 (define-pel-global-prefix pel:elisp-lib (kbd "<f11> SPC l l"))
 (define-key pel:elisp-lib "f" #'load-file)
