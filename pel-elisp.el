@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, November 27 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-12 10:49:17, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-12 14:29:15, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -300,24 +300,29 @@ The function support shift-marking."
     (if (< n 0)
         (pel-elisp-beginning-of-previous-form (abs n))
       ;; move point past the regexp (n times)
-      (condition-case err
-          (let ((start-pos (point)))
-            (dotimes (_ n)
-              (while
-                  (progn
-                    (when (eq (following-char) 40) ; if following char is '('
-                      (right-char 1))  ; make sure point is past the open '('
-                    (re-search-forward (pel--navigate-target-regxp))
-                    (pel-point-in-comment-or-docstring))))
-            ;; move point on the opening paren
-            (back-to-indentation)
-            (unless dont-push-mark
-              (push-mark start-pos))
-            ;; On success, return t, nil on failure if silent
-            t)
-        (search-failed
-         (unless silent
-           (user-error "No form found: %s" err)))))))
+      (let ((start-pos (point)))
+        (condition-case err
+            (progn
+              (dotimes (_ n)
+                (while
+                    (progn
+                      (when (eq (following-char) 40) ; if following char is '('
+                        (right-char 1))  ; make sure point is past the open '('
+                      (re-search-forward (pel--navigate-target-regxp))
+                      (pel-point-in-comment-or-docstring))))
+              ;; move point on the opening paren
+              (back-to-indentation)
+              (unless dont-push-mark
+                (push-mark start-pos))
+              ;; On success, return t, nil on failure if silent
+              t)
+          (search-failed
+           ;; restore original position when search failed
+           (goto-char start-pos)
+           (unless silent
+             (user-error "Can't find %s: %s"
+                         (pel-count-string n "form")
+                         err))))))))
 
 ;;-pel-autoload
 (defun pel-elisp-beginning-of-next-defun (&optional n)
@@ -352,22 +357,27 @@ The function support shift-marking."
     (if (< n 0)
         (pel-elisp-beginning-of-next-form (abs n))
       ;; move point past the regexp (n times)
-      (condition-case err
-          (let ((start-pos (point)))
-            (dotimes (_ n)
-              (while
-                  (progn
-                    (re-search-backward (pel--navigate-target-regxp))
-                    (pel-point-in-comment-or-docstring))))
-            ;; move point on the opening paren
-            (back-to-indentation)
-            (unless dont-push-mark
-              (push-mark start-pos))
-            ;; On success, return t, nil on failure if silent
-            t)
-        (search-failed
-         (unless silent
-           (user-error "No form found: %s" err)))))))
+      (let ((start-pos (point)))
+        (condition-case err
+            (progn
+              (dotimes (_ n)
+                (while
+                    (progn
+                      (re-search-backward (pel--navigate-target-regxp))
+                      (pel-point-in-comment-or-docstring))))
+              ;; move point on the opening paren
+              (back-to-indentation)
+              (unless dont-push-mark
+                (push-mark start-pos))
+              ;; On success, return t, nil on failure if silent
+              t)
+          (search-failed
+           ;; restore original position when search failed
+           (goto-char start-pos)
+           (unless silent
+             (user-error "Can't find %s: %s"
+                         (pel-count-string n "form")
+                         err))))))))
 
 (defun pel-elisp-beginning-of-previous-defun (&optional n)
   "Move point to the beginning of previous N defun form - at any level.

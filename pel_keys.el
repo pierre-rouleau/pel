@@ -2193,8 +2193,11 @@ MODE must be a symbol."
 
 (defun pel--lispy-map-for (prefix)
   "Map in the PEL keys for Lisp-like mode in the keymap for PREFIX."
-  (define-key prefix (kbd "<down>")  'pel-elisp-beginning-of-next-form)
-  (define-key prefix (kbd "<up>")    'pel-elisp-beginning-of-previous-form)
+  (define-key prefix (kbd "<down>")   'pel-elisp-beginning-of-next-form)
+  (define-key prefix (kbd "<up>")     'pel-elisp-beginning-of-previous-form)
+  (define-key prefix (kbd "<M-down>") 'pel-elisp-beginning-of-next-defun)
+  (define-key prefix (kbd "<M-up>")   'pel-elisp-beginning-of-previous-defun)
+
   (define-key prefix (kbd "<left>")  'pel-end-of-previous-defun)
   (define-key prefix (kbd "<right>") 'end-of-defun)
 
@@ -2381,7 +2384,8 @@ MODE must be a symbol."
   ;; activate the <f12> key binding for lisp-mode
   (pel--mode-hook-maybe-call
    '(lambda ()
-      (pel-local-set-f12-M-f12 'pel:for-lisp))
+      (pel-local-set-f12-M-f12 'pel:for-lisp)
+      (pel-local-set-f12-M-f12 'pel:elisp-function "f"))
    'lisp-mode 'lisp-mode-hook)
 
   (use-package slime

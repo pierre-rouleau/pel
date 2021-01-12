@@ -319,8 +319,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     to  ``<f12> M-N``).
     - New Navigation keys:
       - ``<f12> <down>``   binding to ``pel-elisp-beginning-of-next-form``,
+      - ``<f12> <M-down>`` binding to ``pel-elisp-beginning-of-next-defun``,
       - ``<f12> f n``      binding to ``pel-elisp-beginning-of-next-defun``,
       - ``<f12> <up>``     binding to ``pel-elisp-beginning-of-previous-form``,
+      - ``<f12> <M-up>``   binding to ``pel-elisp-beginning-of-previous-defun``,
       - ``<f12> f p``      binding to ``pel-elisp-beginning-of-previous-defun``,
       - ``<f12> <left>``   binding to ``pel-end-of-previous-defun``,
       - ``<f12> <right>``  binding to ``end-of-defun``
