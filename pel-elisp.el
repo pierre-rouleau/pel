@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, November 27 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-11 15:45:26, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-12 10:49:17, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,21 +25,89 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This only contains a function to change the behaviour of the Emacs Lisp
-;; defun navigation functions like `beginning-of-defun' and `end-of-defun'.
+;; This file define a set of functions used to provide precise navigation
+;; across Emacs Lisp and Lisp definition forms in a way that is more flexible
+;; and convenient than the standard Emacs defun navigation functions like
+;; `beginning-of-defun' and `end-of-defun'.
 ;;
-;; By default these stop at what looks like a defun form located inside a
-;; string.  But the behaviour is controlled by the
-;; `open-paren-in-column-0-is-defun-start' user option.
+;; The standard `beginning-of-defun' and `end-of-defun' only navigate across
+;; any top-level form.  They do not discriminate between a defun, a defmacro
+;; or even an unless form.  They do not skip forms inside docstrings unless
+;; the `open-paren-in-column-0-is-defun-start' is set to nil.
 ;;
-;; This file provides the command function
-;; `pel-toggle-paren-in-column-0-is-defun-start' to toggle the user option and
-;; the behaviour of the navigation functions.
-
+;; The file provides the `pel-toggle-paren-in-column-0-is-defun-start' command
+;; to help toggle that user-option.
+;;
+;; It also provides the following functions that implement a more powerful and
+;; flexible navigation command set, providing the user that ability to choose
+;; the behaviour of the navigation commands.  The behaviour is controlled by
+;; two user-option customized variables:
+;;
+;;  - `pel-elisp-target-forms' and
+;;  - `pel-elisp-user-specified-targets'.
+;;
+;; With `pel-elisp-target-forms' you can select one of 6 types of targets:
+;; - Selection 0 is equivalent to Emacs standard behaviour: any top-level
+;;   form.
+;; - Selection 1 specifies only top-level defun forms.
+;; - Selection 2 specifies any defun forms (but only defun forms).
+;; - Selection 3 specifies defun, defmacro, defsubst, defalias and defadvice
+;;   forms (at any level).
+;; - Selection 4 adds defclass, defmethod and defgeneric forms to what's
+;;   available in Selection 3.
+;; - Selection 5 adds all variable definition forms to whats available in
+;;   selection 4.
+;; - Selection 6 is a user-specified set.  They are specified in the list
+;;   specified by `pel-elisp-user-specified-targets', giving the user ultimate
+;;   control of what can be a target.
+;;
+;; Note that `pel-elisp-user-specified-targets' user interface is a set of
+;; radio buttons controlled list.  The default lists all the forms present in
+;; selection 5 with some specialized additions such as support for Hydra
+;; forms.  You can add more.  You can also remove some.  But you can disable
+;; any, without removing the string by just disabling it with the radio
+;; button.  This places a 'nil' in the list which is ignored by the code. It's
+;; a convenient way to specify forms that you can quickly activate or
+;; de-activate as target.
+;;
+;; The targets specify how the following 2 commands behave:
+;;
+;;   - `pel-elisp-beginning-of-next-form'
+;;   - `pel-elisp-beginning-of-previous-form'
+;;
+;; The customizable user-option variables are turned into global or
+;; user-buffer local variables in any buffer where you issue the
+;; `pel-elisp-user-specified-targets' command.  It then becomes possible to
+;; select different behaviour of the navigation commands.  You could for
+;; example select to use selection 2 (only defuns at any level) as the
+;; persistent and default behaviour for the commands and then modify the
+;; behaviour for some of the buffers you are editing.  Or use another default
+;; since this specific setting is forced by the following specialized
+;; commands:
+;;
+;;  - `pel-elisp-beginning-of-next-defun'
+;;  - `pel-elisp-beginning-of-previous-defun'
+;;
+;; The commands (*) and function hierarchy of this file look like this:
+;;
+;; * `pel-toggle-paren-in-column-0-is-defun-start'
+;;
+;; * `pel-elisp-set-navigate-target-form'
+;; *`pel-elisp-beginning-of-next-defun'
+;;   * `pel-elisp-beginning-of-next-form'
+;; * `pel-elisp-beginning-of-previous-defun'
+;;   * `pel-elisp-beginning-of-previous-form'
+;;     - `pel--navigate-target-regxp'
+;;       - `pel--elisp-form-regexp-for'
+;;     - `pel-point-in-comment-or-docstring'
+;;
+;;
 ;; Credits:  Thanks to Andreas Röhler to mention the Standard Emacs variable
 ;;           `open-paren-in-column-0-is-defun-start'! That allowed me to
 ;;           replace a large amount of code with a simple toggle command and
 ;;           that handles the problem I had with checkdoc as well!
+;;           I also learned the existence and usefulness of parse-partial-sexp
+;;           by looking at his code.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -74,7 +142,7 @@ Select the behaviour of the following navigation functions:
 
 This modifies the value of the `pel-elisp-target-forms' user-option only for
 the current buffer unless the GLOBALLY argument is non-nil, in which case it
-modifies the behaviour for all buffers. The change in behaviour does not
+modifies the behaviour for all buffers.  The change in behaviour does not
 persist across Emacs sessions.  If you want your change to persist, modify
 the value of the `pel-elisp-target-forms' user-option and save it."
   (interactive "P")
@@ -200,10 +268,15 @@ TARGET, like `pel-elisp-target-forms' can be one of the following values:
         (concat "^" regexp)
       (concat "^[ \t]*" regexp))))
 
+(defun pel-point-in-comment-or-docstring ()
+  "Return position of start of comment or docstring surrounding point.
+Return nil when point is outside comment and docstring."
+  (nth 8 (parse-partial-sexp (point-min) (point))))
+
 ;;-pel-autoload
 (defun pel-elisp-beginning-of-next-form
     (&optional n target silent dont-push-mark)
-  "Move point forward to the beginning of next N top-level form.
+  "Move point forward to the beginning of next N top level form.
 
 The search is controlled by the value of `pel-elisp-target-forms' user
 option.  That value can be changed for the current session, for all
@@ -211,6 +284,8 @@ buffers or only for the current buffer by the command
 `pel-elisp-set-navigate-target-form'.
 It can also be specified by the TARGET argument: specify one of the
 symbols valid for `pel-elisp-target-forms'.
+
+The function skips over forms inside docstrings.
 
 If no valid form is found, don't move point, issue an error describing
 the failure unless SILENT is non-nil, in which case the function returns nil
@@ -228,9 +303,12 @@ The function support shift-marking."
       (condition-case err
           (let ((start-pos (point)))
             (dotimes (_ n)
-              (when (eq (following-char) 40) ; if following char is '('
-                (right-char 1))  ; make sure point is past the open '('
-              (re-search-forward (pel--navigate-target-regxp)))
+              (while
+                  (progn
+                    (when (eq (following-char) 40) ; if following char is '('
+                      (right-char 1))  ; make sure point is past the open '('
+                    (re-search-forward (pel--navigate-target-regxp))
+                    (pel-point-in-comment-or-docstring))))
             ;; move point on the opening paren
             (back-to-indentation)
             (unless dont-push-mark
@@ -241,17 +319,17 @@ The function support shift-marking."
          (unless silent
            (user-error "No form found: %s" err)))))))
 
-
 ;;-pel-autoload
 (defun pel-elisp-beginning-of-next-defun (&optional n)
-  "Move point to the beginning of next N defun form - at any level."
+  "Move point to the beginning of next N defun form - at any level.
+Skip over forms located inside docstrings."
   (interactive "^p")
   (pel-elisp-beginning-of-next-form n 'defun-forms))
 
 ;;-pel-autoload
 (defun pel-elisp-beginning-of-previous-form
     (&optional n target silent dont-push-mark)
-  "Move point backward to the beginning of previous N top-level form.
+  "Move point backward to the beginning of previous N top level form.
 
 The search is controlled by value of `pel-elisp-target-forms' user
 option.  That value can be changed for the current session, for all
@@ -277,7 +355,10 @@ The function support shift-marking."
       (condition-case err
           (let ((start-pos (point)))
             (dotimes (_ n)
-              (re-search-backward (pel--navigate-target-regxp)))
+              (while
+                  (progn
+                    (re-search-backward (pel--navigate-target-regxp))
+                    (pel-point-in-comment-or-docstring))))
             ;; move point on the opening paren
             (back-to-indentation)
             (unless dont-push-mark
@@ -289,7 +370,8 @@ The function support shift-marking."
            (user-error "No form found: %s" err)))))))
 
 (defun pel-elisp-beginning-of-previous-defun (&optional n)
-  "Move point to the beginning of previous N defun form - at any level."
+  "Move point to the beginning of previous N defun form - at any level.
+Skip over forms located inside docstrings."
   (interactive "^p")
   (pel-elisp-beginning-of-previous-form n 'defun-forms))
 

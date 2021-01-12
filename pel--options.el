@@ -2554,11 +2554,16 @@ any level"
                                               "deffoo"
                                               "defvoo"
                                               "defhydra"
-                                              "defhydra\+"
+                                              "defhydra\\+"
                                               "defhydradio")
   "User selected forms used as movement target.
 Use the radio buttons to deactivate any of them.
-You can also insert others."
+You can also insert others.
+
+These are used as the target by the following commands
+when `pel-elisp-target-forms' is set to 'user-specified:
+- `pel-elisp-beginning-of-next-form'
+- `pel-elisp-beginning-of-previous-form'"
   :group 'pel-pkg-for-elisp
   :type '(repeat (radio string (const nil))))
 
@@ -3251,7 +3256,7 @@ or pel-use-regexp-steroids is t (for the others)."
 
 If set to t, the function `pel-search-word-from-top' search in
 the other window if there are only 2 non-dedicated window by
-default. To force it to search in the current buffer the numeric
+default.  To force it to search in the current buffer the numeric
 argument of 3 or 5 must be specified.
 
 If set to nil, the function `pel-search-word-from-top' search in
@@ -3638,9 +3643,9 @@ If it set to nil, these keys are not bound."
   :link `(url-link :tag "Xref PDF" ,(pel-pdf-file-url "xref")))
 
 (defcustom pel-bind-m-dot-to-xref-find-custom-definition t
-  "If set, the M-. key is bound to special xref find in Custom buffers.
+  "If set, the M-.  key is bound to special xref find in Custom buffers.
 
-When this is set to t, the M-. key is bound to the
+When this is set to t, the M-.  key is bound to the
 function `pel-xref-find-custom-definition-at-line' to
 find the source of the displayed user option variables.
 This is the default.  To prevent this binding, set it to nil."
@@ -3707,7 +3712,7 @@ put the following in the list:
 ;; -- dumb-jump
 (defcustom pel-use-dumb-jump nil
   "Control whether PEL uses the dumb-jump package.
-With dumb-jump, the M-. command will use dumb-jump to
+With dumb-jump, the M-.  command will use dumb-jump to
 identify symbol in several programming languages."
   :group 'pel-pkg-for-xref
   :link '(url-link :tag "dump-jump @ GitHub" "https://github.com/jacktasia/dumb-jump")
