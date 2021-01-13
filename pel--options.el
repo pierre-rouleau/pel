@@ -3270,22 +3270,21 @@ the window by its position with the other numbers)."
   :safe #'booleanp)
 
 (defcustom pel-use-anzu nil
-  "Control whether PEL uses the Anzu.
-See: URL `https://melpa.org/#/anzu'"
+  "Control whether PEL uses the Anzu."
   :group 'pel-pkg-for-search
+  :link `(usr-link :tag "Anzu" "https://melpa.org/#/anzu'")
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-swiper nil
-  "Control whether PEL uses the Swiper search package.
-See: URL `https://github.com/abo-abo/swiper#swiper'"
+  "Control whether PEL uses the Swiper search package."
   :group 'pel-pkg-for-search
+  :link `(url-link :tag "Swiper" "https://github.com/abo-abo/swiper#swiper")
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-initial-search-tool nil
   "Select the search tool used when Emacs starts.
-
 PEL supports the following tools:
 - nil      : use Emacs default
 - `anzu'   : use Anzu globally to display search match counts in modeline.
