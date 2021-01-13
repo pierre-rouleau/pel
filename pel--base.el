@@ -136,6 +136,9 @@
 ;;
 ;; Print in dedicated buffer
 ;; - `pel-print-in-buffer'
+;;
+;; Code parsing support
+;;     - `pel-point-in-comment-or-docstring'
 
 ;; -----------------------------------------------------------------------------
 ;;; Dependencies:
@@ -1029,6 +1032,18 @@ Example:
       (goto-char (- (point-max) 2))  ; last 2 chars are '\n'
       (recenter -1))))
 
+;; ---------------------------------------------------------------------------
+;; Code Parsing Support
+;; --------------------
+
+(defun pel-point-in-comment-or-docstring (&optional move-fct)
+  "Return position of start of comment or docstring surrounding point.
+Return nil when point is outside comment and docstring.
+If MOVE-FCT is specified, call it before checking the state of point."
+  (save-excursion
+    (when move-fct
+      (funcall move-fct))
+    (nth 8 (parse-partial-sexp (point-min) (point)))))
 ;; -----------------------------------------------------------------------------
 (provide 'pel--base)
 

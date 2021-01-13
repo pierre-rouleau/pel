@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, November 27 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-13 14:10:32, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-13 14:19:04, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -99,9 +99,8 @@
 ;;   * `pel-elisp-beginning-of-next-form'
 ;; * `pel-elisp-beginning-of-previous-defun'
 ;;   * `pel-elisp-beginning-of-previous-form'
-;;     - `pel--navigate-target-regxp'
+;;     - `pel--elisp-navigate-target-regxp'
 ;;       - `pel--elisp-form-regexp-for'
-;;     - `pel-point-in-comment-or-docstring'
 ;;
 ;;
 ;; Credits:  Thanks to Andreas Röhler to mention the Standard Emacs variable
@@ -116,6 +115,7 @@
 ;;
 ;;
 (require 'pel--base)                    ; use: pel-toggle-and-show
+;;                                      ;    pel-point-in-comment-or-docstring
 (require 'pel--options)                 ; use: pel-elisp-target-forms
 (require 'pel-prompt)                   ; use: pel-select-from
 (eval-when-compile (require 'subr-x))   ; use: string-join
@@ -191,7 +191,7 @@ FORMS is a list of strings, each string is a form to search for."
            "\\|")
            "\\) +'?\\(\\_<.+\\_>\\) *"))
 
-(defun pel--navigate-target-regxp (&optional target)
+(defun pel--elisp-navigate-target-regxp (&optional target)
   "Return the regxp to search for the definition forms.
 As identified by the `pel-elisp-target-forms' variable or TARGET if specified.
 TARGET, like `pel-elisp-target-forms' can be one of the following values:
@@ -285,15 +285,6 @@ TARGET, like `pel-elisp-target-forms' can be one of the following values:
         (concat "^" regexp)
       (concat "^[ \t]*" regexp))))
 
-(defun pel-point-in-comment-or-docstring (&optional move-fct)
-  "Return position of start of comment or docstring surrounding point.
-Return nil when point is outside comment and docstring.
-If MOVE-FCT is specified, call it before checking the state of point."
-  (save-excursion
-    (when move-fct
-      (funcall move-fct))
-    (nth 8 (parse-partial-sexp (point-min) (point)))))
-
 ;;-pel-autoload
 (defun pel-elisp-beginning-of-next-form
     (&optional n target silent dont-push-mark)
@@ -332,7 +323,7 @@ The function support shift-marking."
                     (progn
                       (when (eq (following-char) 40) ; if following char is '('
                         (right-char 1))  ; make sure point is past the open '('
-                      (re-search-forward (pel--navigate-target-regxp))
+                      (re-search-forward (pel--elisp-navigate-target-regxp))
                       ;; when searching forward point is left after the regexp
                       ;; that might be inside a value which may be a string.
                       ;; The check if we're in a docstring, check the state
@@ -398,7 +389,7 @@ The function support shift-marking."
               (dotimes (_ n)
                 (while
                     (progn
-                      (re-search-backward (pel--navigate-target-regxp))
+                      (re-search-backward (pel--elisp-navigate-target-regxp))
                       (pel-point-in-comment-or-docstring)))
                 (setq count (1+ count)))
               ;; move point on the opening paren
