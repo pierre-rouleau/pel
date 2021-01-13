@@ -359,6 +359,13 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - New: the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/rectangles.pdf][⅀ Rectangles PDF]] describes the *iedit-rectangle-mode* and available
     commands.
 - Update: *Searching*:
+  - New: support for combined expression search with the [[https://github.com/TobiasZawada/cexp][cexp external
+    package]]:
+    - PEL downloads and activates the cexp package when the *pel-use-cexp*
+      user-option is set to *t*.
+    - PEL binds ``<f11> s c`` to *cexp-search-forward* command used to perform
+      a combined expression search.  Quite useful to search strings inside a
+      balanced/matching pair of parentheses for example.
   - New: command *pel-show-search-status* bound to ``<f11> s ?`` that displays
     all search settings in the echo area.  Use any prefix argument to display
     extra information after the first time it is used.

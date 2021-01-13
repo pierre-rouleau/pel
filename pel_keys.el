@@ -1551,7 +1551,6 @@ interactively."
         (eldoc-mode -1)
       (c-turn-on-eldoc-mode)))
 
-
   (cl-eval-when 'load
     (pel-install-file
      "https://raw.githubusercontent.com/pierre-rouleau/c-eldoc/master/c-eldoc.el"
@@ -4087,6 +4086,19 @@ the ones defined from the buffer now."
     :init
     (when (eq pel-initial-search-tool 'anzu)
       (global-anzu-mode +1))))
+
+(when pel-use-cexp
+  ;; download and byte-compile cexp if not already present
+  ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
+  (cl-eval-when 'load
+    (pel-install-file
+     "https://raw.githubusercontent.com/TobiasZawada/cexp/master/cexp.el"
+     "cexp.el"))
+  (use-package cexp
+    :commands cexp-search-forward
+    :init
+    (define-key pel:search-replace "c" 'cexp-search-forward)))
+
 
 (when pel-use-swiper
   (use-package swiper

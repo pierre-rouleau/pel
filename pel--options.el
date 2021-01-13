@@ -3272,7 +3272,17 @@ the window by its position with the other numbers)."
 (defcustom pel-use-anzu nil
   "Control whether PEL uses the Anzu."
   :group 'pel-pkg-for-search
-  :link `(usr-link :tag "Anzu" "https://melpa.org/#/anzu'")
+  :link `(url-link :tag "Anzu" "https://melpa.org/#/anzu'")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-cexp nil
+  "Control whether PEL uses cexp, combined expression search."
+  :group 'pel-pkg-for-search
+  :link `(url-link :tag "cexp" "https://github.com/TobiasZawada/cexp")
+  :link `(url-link :tag "emacs regex to match balanced parenthesis"
+                   "https://emacs.stackexchange.com/questions/45387/\
+emacs-regex-to-match-balanced-parenthesis")
   :type 'boolean
   :safe #'booleanp)
 
