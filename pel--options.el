@@ -74,7 +74,9 @@
 ;;       - pel-pkg-for-javascript
 ;;       - pel-pkg-for-lisp
 ;;         - pel-pkg-for-clisp
+;;           - pel-sexp-form-navigation
 ;;         - pel-pkg-for-elisp
+;;           - pel-sexp-form-navigation
 ;;       - pel-pkg-for-beam-vm
 ;;         - pel-pkg-for-elixir
 ;;         - pel-pkg-for-erlang
@@ -2459,6 +2461,31 @@ in Graphics mode."
   :type 'boolean
   :safe #'booleanp)
 
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Inter-S-Expression Navigation
+;; -----------------------------
+(defgroup pel-sexp-form-navigation nil
+  "Control navigation across S-expression forms with PEL keys.
+
+Includes user-option variables that control which of the S-expression forms
+the following commands move:
+
+- `pel-elisp-beginning-of-next-form'
+- `pel-elisp-beginning-of-previous-form'
+
+These commands are mostly used when editing code written in Lisp-like
+programming languages such as Emacs Lisp and Common Lisp.
+
+PEL binds these commands to the ``<f12>`` key prefix in Emacs-Lisp and
+Common-Lisp major modes. They can also be used in any other Lisp-like text.
+
+The main user-option variable is `pel-elisp-target-forms'.  With it you
+specify the group of targets.  The last possible choice is a user-specified
+list identified in the other user-option variable:
+`pel-elisp-user-specified-targets'."
+  :group 'pel-pkg-for-elisp
+  :group 'pel-pkg-for-clisp)
+
 (defcustom pel-elisp-target-forms 'all-top-level-forms
   "Identify target of form navigation.
 
@@ -2505,14 +2532,25 @@ The target is specified using one of the following:
    - deftheme
    - defcustom
    - defgroup
-6) All forms specified by the list strings.
+6) All of the following variable definition forms, at any level:
+   - defvar
+   - defvaralias
+   - defvar-local
+   - defvar-mode-local
+   - defconst
+   - defconst-mode-local
+   - defface
+   - deftheme
+   - defcustom
+   - defgroup
+7) All forms specified by the list strings.
 
   Note that each entry of the list is a radio button, allowing you to disable
   a string while keeping its value in memory for later re-use and activation.
 
 You can modify the buffer local value of `pel-elisp-target-forms' by using the
 `pel-elisp-set-navigate-target-form' command."
-  :group 'pel-pkg-for-elisp
+  :group 'pel-sexp-form-navigation
   :type '(choice
           (const  :tag "All top-level forms" all-top-level-forms)
           (const  :tag "All top-level defun" top-level-defun-forms)
@@ -2525,6 +2563,8 @@ any level"
                   all-functions-macros-eieio-def-forms)
           (const  :tag "All of 4 + all variables define forms, any level"
                   all-functions-variables-def-forms)
+          (const  :tag "Only variable forms, any level"
+                  all-variables-def-forms)
           (repeat :tag "User specified"
                   user-specified)))
 
@@ -2560,11 +2600,20 @@ any level"
 Use the radio buttons to deactivate any of them.
 You can also insert others.
 
+CAUTION:
+ When saving this to a file, all forms disabled by the radio button set
+ to nil are forgotten. You can restore the default of all settings for this
+ variable only by selecting the user-option variable by name
+ (`pel-elisp-user-specified-targets') in the search field and using the
+ 'Revert...' button. You can also use the 'Revert...' button when editing the
+ the `pel-sexp-form-navigation' group.  The only affected user-options
+ variables will be the user-options shown in the customize buffer.
+
 These are used as the target by the following commands
 when `pel-elisp-target-forms' is set to 'user-specified:
 - `pel-elisp-beginning-of-next-form'
 - `pel-elisp-beginning-of-previous-form'"
-  :group 'pel-pkg-for-elisp
+  :group 'pel-sexp-form-navigation
   :type '(repeat (radio string (const nil))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, November 27 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-12 14:29:15, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-13 14:10:32, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -57,7 +57,9 @@
 ;;   available in Selection 3.
 ;; - Selection 5 adds all variable definition forms to whats available in
 ;;   selection 4.
-;; - Selection 6 is a user-specified set.  They are specified in the list
+;; - Selection 6 specifies all variable definition forms such as defvar,
+;;   defconst, defcustom, etc...
+;; - Selection 7 is a user-specified set.  They are specified in the list
 ;;   specified by `pel-elisp-user-specified-targets', giving the user ultimate
 ;;   control of what can be a target.
 ;;
@@ -162,7 +164,9 @@ the value of the `pel-elisp-target-forms' user-option and save it."
                 all-functions-macros-eieio-def-forms)
             (?5 "All of the above and all variable definitions"
                 all-functions-variables-def-forms)
-            (?6 "User specified forms" user-specified))
+            (?6 "All variable definition forms"
+                all-variables-def-forms)
+            (?7 "User specified forms" user-specified))
           pel-elisp-target-forms)))
     (unless globally
       (with-current-buffer (current-buffer)
@@ -197,6 +201,7 @@ TARGET, like `pel-elisp-target-forms' can be one of the following values:
 - 'all-defun-defmacro-defsubst-forms
 - 'all-functions-macros-eieio-def-forms
 - 'all-functions-variables-def-forms
+- 'all-variables-def-forms
 - a list of strings."
   (let* (;; Protect against pel-elisp-target-forms being nil
          (pel-elisp-target-forms (or pel-elisp-target-forms
@@ -255,7 +260,19 @@ TARGET, like `pel-elisp-target-forms' can be one of the following values:
                                           "deftheme"
                                           "defcustom"
                                           "defgroup")))
-           ;; 6 : user specified string (may contain nil)
+           ;; 6
+           ((eq target 'all-variables-def-forms)
+            (pel--elisp-form-regexp-for '("defvar"
+                                          "defvaralias"
+                                          "defvar-local"
+                                          "defvar-mode-local"
+                                          "defconst"
+                                          "defconst-mode-local"
+                                          "defface"
+                                          "deftheme"
+                                          "defcustom"
+                                          "defgroup")))
+           ;; 7 : user specified string (may contain nil)
            ((eq target 'user-specified)
             (pel--elisp-form-regexp-for (remove nil pel-elisp-user-specified-targets)))
            (t
@@ -268,31 +285,37 @@ TARGET, like `pel-elisp-target-forms' can be one of the following values:
         (concat "^" regexp)
       (concat "^[ \t]*" regexp))))
 
-(defun pel-point-in-comment-or-docstring ()
+(defun pel-point-in-comment-or-docstring (&optional move-fct)
   "Return position of start of comment or docstring surrounding point.
-Return nil when point is outside comment and docstring."
-  (nth 8 (parse-partial-sexp (point-min) (point))))
+Return nil when point is outside comment and docstring.
+If MOVE-FCT is specified, call it before checking the state of point."
+  (save-excursion
+    (when move-fct
+      (funcall move-fct))
+    (nth 8 (parse-partial-sexp (point-min) (point)))))
 
 ;;-pel-autoload
 (defun pel-elisp-beginning-of-next-form
     (&optional n target silent dont-push-mark)
   "Move point forward to the beginning of next N top level form.
 
-The search is controlled by the value of `pel-elisp-target-forms' user
-option.  That value can be changed for the current session, for all
-buffers or only for the current buffer by the command
-`pel-elisp-set-navigate-target-form'.
-It can also be specified by the TARGET argument: specify one of the
-symbols valid for `pel-elisp-target-forms'.
+The search is controlled by the value of `pel-elisp-target-forms'
+user option.  That value can be changed for the current session,
+for all buffers or only for the current buffer by the command
+`pel-elisp-set-navigate-target-form'.  It can also be specified
+by the TARGET argument: specify one of the symbols valid for
+`pel-elisp-target-forms'.
 
 The function skips over forms inside docstrings.
 
-If no valid form is found, don't move point, issue an error describing
-the failure unless SILENT is non-nil, in which case the function returns nil
-on error and non-nil on success.
+If no valid form is found, don't move point, issue an error
+describing the failure unless SILENT is non-nil, in which case
+the function returns nil on error and non-nil on success.
+The error message states the number of instanced searched, the
+regexp used and the number of instances found.
 
-On success, the function push original position on the mark ring unless
-DONT-PUSH-MARK is non-nil.
+On success, the function push original position on the mark ring
+unless DONT-PUSH-MARK is non-nil.
 
 The function support shift-marking."
   (interactive "^p")
@@ -300,7 +323,8 @@ The function support shift-marking."
     (if (< n 0)
         (pel-elisp-beginning-of-previous-form (abs n))
       ;; move point past the regexp (n times)
-      (let ((start-pos (point)))
+      (let ((start-pos (point))
+            (count 0))
         (condition-case err
             (progn
               (dotimes (_ n)
@@ -309,7 +333,14 @@ The function support shift-marking."
                       (when (eq (following-char) 40) ; if following char is '('
                         (right-char 1))  ; make sure point is past the open '('
                       (re-search-forward (pel--navigate-target-regxp))
-                      (pel-point-in-comment-or-docstring))))
+                      ;; when searching forward point is left after the regexp
+                      ;; that might be inside a value which may be a string.
+                      ;; The check if we're in a docstring, check the state
+                      ;; for point at the beginning of the regexp, which is
+                      ;; the beginning of indentation.
+                      (pel-point-in-comment-or-docstring
+                       (function back-to-indentation))))
+                (setq count (1+ count)))
               ;; move point on the opening paren
               (back-to-indentation)
               (unless dont-push-mark
@@ -320,9 +351,10 @@ The function support shift-marking."
            ;; restore original position when search failed
            (goto-char start-pos)
            (unless silent
-             (user-error "Can't find %s: %s"
+             (user-error "Can't find %s: %s\n%d found."
                          (pel-count-string n "form")
-                         err))))))))
+                         err
+                         count))))))))
 
 ;;-pel-autoload
 (defun pel-elisp-beginning-of-next-defun (&optional n)
@@ -336,20 +368,22 @@ Skip over forms located inside docstrings."
     (&optional n target silent dont-push-mark)
   "Move point backward to the beginning of previous N top level form.
 
-The search is controlled by value of `pel-elisp-target-forms' user
-option.  That value can be changed for the current session, for all
-buffers or only for the current buffer by the command
+The search is controlled by value of `pel-elisp-target-forms'
+user option.  That value can be changed for the current session,
+for all buffers or only for the current buffer by the command
 `pel-elisp-set-navigate-target-form'.
 
-It can also be specified by the TARGET argument: specify one of the
-symbols valid for `pel-elisp-target-forms'.
+It can also be specified by the TARGET argument: specify one of
+the symbols valid for `pel-elisp-target-forms'.
 
-If no valid form is found, don't move point, issue an error describing
-the failure unless SILENT is non-nil, in which case the function returns nil
-on error and non-nil on success.
+If no valid form is found, don't move point, issue an error
+describing the failure unless SILENT is non-nil, in which case
+the function returns nil on error and non-nil on success.
+The error message states the number of instanced searched, the
+regexp used and the number of instances found.
 
-On success, the function push original position on the mark ring unless
-DONT-PUSH-MARK is non-nil.
+On success, the function push original position on the mark ring
+unless DONT-PUSH-MARK is non-nil.
 
 The function support shift-marking."
   (interactive "^p")
@@ -357,14 +391,16 @@ The function support shift-marking."
     (if (< n 0)
         (pel-elisp-beginning-of-next-form (abs n))
       ;; move point past the regexp (n times)
-      (let ((start-pos (point)))
+      (let ((start-pos (point))
+            (count 0))
         (condition-case err
             (progn
               (dotimes (_ n)
                 (while
                     (progn
                       (re-search-backward (pel--navigate-target-regxp))
-                      (pel-point-in-comment-or-docstring))))
+                      (pel-point-in-comment-or-docstring)))
+                (setq count (1+ count)))
               ;; move point on the opening paren
               (back-to-indentation)
               (unless dont-push-mark
@@ -375,9 +411,10 @@ The function support shift-marking."
            ;; restore original position when search failed
            (goto-char start-pos)
            (unless silent
-             (user-error "Can't find %s: %s"
+             (user-error "Can't find %s: %s\n%d found."
                          (pel-count-string n "form")
-                         err))))))))
+                         err
+                         count))))))))
 
 (defun pel-elisp-beginning-of-previous-defun (&optional n)
   "Move point to the beginning of previous N defun form - at any level.
