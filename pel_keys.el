@@ -2924,12 +2924,13 @@ vlang-mode/master/vlang-mode.el"
 ;; To help keep track what keay are used, the list of key under the pel:help
 ;; prefix are shown below.
 ;;
-;;   Used `pel:help' keys:  . ? A a c d e i k m p P s S w X
+;;   Used `pel:help' keys:  . ? A a c d e f i k m p P s S w X
 
 (define-key pel:help "." 'pel-mark-ring-stats)
 (define-key pel:help "m"  #'man)
 (define-key pel:help "w"  #'woman)
 (define-key pel:help "?"  'pel-show-major-mode)
+(define-key pel:help "f"  'which-function-mode)
 (define-key pel:help "p"  'pel-help-pdf-select)
 (define-key pel:help "P"  'pel-help-pdfs-dir)
 
