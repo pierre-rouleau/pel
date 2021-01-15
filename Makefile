@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-01-10 16:14:52, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-01-14 10:25:33, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -409,11 +409,11 @@ check-elc-files:
 # Creating the target directories when they don't exist.
 
 all-dirs:	$(OUT_DIR) \
-			$(PELPA-DIR) \
-			$(TMP_DIR) \
-			$(DEST_DIR) \
-			$(DEST_TEST_DIR) \
-			$(DEST_DOC_PDF_DIR)
+		$(PELPA-DIR) \
+		$(TMP_DIR) \
+		$(DEST_DIR) \
+		$(DEST_TEST_DIR) \
+		$(DEST_DOC_PDF_DIR)
 
 $(OUT_DIR):
 	mkdir -p $@
