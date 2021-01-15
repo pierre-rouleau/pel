@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, November 27 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-13 14:19:04, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-15 15:58:28, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -308,7 +308,7 @@ regexp used and the number of instances found.
 On success, the function push original position on the mark ring
 unless DONT-PUSH-MARK is non-nil.
 
-The function support shift-marking."
+The command support shift-marking."
   (interactive "^p")
   (let ((pel-elisp-target-forms (or target pel-elisp-target-forms)))
     (if (< n 0)
@@ -342,10 +342,10 @@ The function support shift-marking."
            ;; restore original position when search failed
            (goto-char start-pos)
            (unless silent
-             (user-error "Can't find %s: %s\n%d found."
+             (user-error "Found only %d of requested %s:\n%s"
+                         count
                          (pel-count-string n "form")
-                         err
-                         count))))))))
+                         err))))))))
 
 ;;-pel-autoload
 (defun pel-elisp-beginning-of-next-defun (&optional n)
@@ -376,7 +376,7 @@ regexp used and the number of instances found.
 On success, the function push original position on the mark ring
 unless DONT-PUSH-MARK is non-nil.
 
-The function support shift-marking."
+The command support shift-marking."
   (interactive "^p")
   (let ((pel-elisp-target-forms (or target pel-elisp-target-forms)))
     (if (< n 0)
@@ -402,10 +402,10 @@ The function support shift-marking."
            ;; restore original position when search failed
            (goto-char start-pos)
            (unless silent
-             (user-error "Can't find %s: %s\n%d found."
+             (user-error "Found only %d of requested %s:\n%s"
+                         count
                          (pel-count-string n "form")
-                         err
-                         count))))))))
+                         err))))))))
 
 (defun pel-elisp-beginning-of-previous-defun (&optional n)
   "Move point to the beginning of previous N defun form - at any level.
