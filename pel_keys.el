@@ -1485,8 +1485,30 @@ interactively."
       (run-with-idle-timer 4 nil (function pel--start-yasnippet))))))
 
 ;; ---------------------------------------------------------------------------
+;; - Make file editing support
+;; ===========================
+
+(define-pel-global-prefix pel:for-make (kbd "<f11> SPC M"))
+
+;;
+
+(defun pel--setenv-for-make ()
+  "Set the environment for Make file editing."
+  (define-key pel:for-make (kbd "<up>")      'makefile-previous-dependency)
+  (define-key pel:for-make (kbd "<down>")    'makefile-next-dependency)
+  (define-key pel:for-make (kbd "<M-up>")   #'pel-make-previous-macro)
+  (define-key pel:for-make (kbd "<M-down>") #'pel-make-next-macro)
+
+  (pel-local-set-f12-M-f12 'pel:for-make))
+
+;; Schedule activation of Make mode <f12> key binding
+(pel--mode-hook-maybe-call
+ (function pel--setenv-for-make)
+ 'makefile-mode 'makefile-mode-hook)
+
+;; ---------------------------------------------------------------------------
 ;; - Programming Language Support
-;; --============================
+;; ==============================
 
 (when (and pel-use-eldoc-box
            (display-graphic-p))

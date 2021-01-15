@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-06 12:35:06, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-15 13:49:28, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -103,6 +103,7 @@
     ([f11 32 ?L]     "pl-common-lisp"   pel-pkg-for-clisp       (lisp
                                                                  lispy
                                                                  slime))
+    ([f11 32 ?M]     "pl-make")
     ([f11 32 ?R]     "pl-rexx"          pel-pkg-for-rexx)
     ([f11 32 ?a]     "pl-applescript"   pel-pkg-for-applescript apples)
     ([f11 32 ?c]     "pl-c"             pel-pkg-for-c           (c
@@ -412,6 +413,7 @@ There should be no key binding!" keyseq))
     ("erlang"           . "pl-erlang")
     ("forth"            . "pl-forth")
     ("julia"            . "pl-julia")
+    ("make"             . "pl-make")
     ("python"           . "pl-python")
     ("rexx"             . "pl-rexx")
     ;; mode names aliases

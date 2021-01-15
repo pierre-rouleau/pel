@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-01-14 10:25:33, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-01-15 15:17:48, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -109,81 +109,82 @@ DEST_DOC_PDF_DIR := $(DEST_DIR)/doc/pdf
 #    - The file names are selected to impose that order when files
 #      are byte compiled by a process that select files alphabetically.
 EL_FILES := pel--base.el \
-			pel--keys-macros.el \
-			pel--macros.el \
-			pel--options.el \
-			pel-applescript.el \
-			pel-align.el \
-			pel-autocomplete.el \
-			pel-autoload.el \
-			pel-benchmark.el \
-			pel-bookmark.el \
-			pel-cc.el \
-			pel-ccp.el \
-			pel-comment.el \
-			pel-comment-adorn.el \
-			pel-commonlisp.el \
-			pel-completion.el \
-			pel-cua.el \
-			pel-cursor.el \
-			pel-custom.el \
-			pel-elisp.el \
-			pel-emacs.el \
-			pel-erlang.el \
-			pel-erlang-skels.el \
-			pel-ert.el \
-			pel-face-ut.el \
-			pel-file.el \
-			pel-filex.el \
-			pel-fill.el \
-			pel-font.el \
-			pel-frame-control.el \
-			pel-fs.el \
-			pel-graphviz-dot.el \
-			pel-help.el \
-			pel-hideshow.el \
-			pel-hide-docstring.el \
-			pel-highlight.el \
-			pel-imenu.el \
-			pel-indent.el \
-			pel-key-chord.el \
-			pel-kbmacros.el \
-			pel-line-control.el \
-			pel-lisp.el \
-			pel-lispy.el \
-			pel-list.el \
-			pel-mark.el \
-			pel-navigate.el \
-			pel-net.el \
-			pel-numkpad.el \
-			pel-open.el \
-			pel-pathmng.el \
-			pel-plantuml.el \
-			pel-pp.el\
-			pel-prompt.el \
-			pel-read.el \
-			pel-register.el \
-			pel-regexp.el \
-			pel-rst.el \
-			pel-scroll.el \
-			pel-search.el \
-			pel-search-regexp.el \
-			pel-seq.el \
-			pel-skels.el \
-			pel-skels-generic.el \
-			pel-skels-c.el \
-			pel-skels-elisp.el \
-			pel-skels-rst.el \
-			pel-speedbar.el \
-			pel-spell.el \
-			pel-xref.el \
-			pel-tempo.el \
-			pel-text-insert.el \
-			pel-text-transform.el \
-			pel-undo.el \
-			pel-uuid.el \
-			pel-window.el \
-			pel-xr.el
+		pel--keys-macros.el \
+		pel--macros.el \
+		pel--options.el \
+		pel-applescript.el \
+		pel-align.el \
+		pel-autocomplete.el \
+		pel-autoload.el \
+		pel-benchmark.el \
+		pel-bookmark.el \
+		pel-cc.el \
+		pel-ccp.el \
+		pel-comment.el \
+		pel-comment-adorn.el \
+		pel-commonlisp.el \
+		pel-completion.el \
+		pel-cua.el \
+		pel-cursor.el \
+		pel-custom.el \
+		pel-elisp.el \
+		pel-emacs.el \
+		pel-erlang.el \
+		pel-erlang-skels.el \
+		pel-ert.el \
+		pel-face-ut.el \
+		pel-file.el \
+		pel-filex.el \
+		pel-fill.el \
+		pel-font.el \
+		pel-frame-control.el \
+		pel-fs.el \
+		pel-graphviz-dot.el \
+		pel-help.el \
+		pel-hideshow.el \
+		pel-hide-docstring.el \
+		pel-highlight.el \
+		pel-imenu.el \
+		pel-indent.el \
+		pel-key-chord.el \
+		pel-kbmacros.el \
+		pel-line-control.el \
+		pel-lisp.el \
+		pel-lispy.el \
+		pel-list.el \
+		pel-make.el \
+		pel-mark.el \
+		pel-navigate.el \
+		pel-net.el \
+		pel-numkpad.el \
+		pel-open.el \
+		pel-pathmng.el \
+		pel-plantuml.el \
+		pel-pp.el\
+		pel-prompt.el \
+		pel-read.el \
+		pel-register.el \
+		pel-regexp.el \
+		pel-rst.el \
+		pel-scroll.el \
+		pel-search.el \
+		pel-search-regexp.el \
+		pel-seq.el \
+		pel-skels.el \
+		pel-skels-generic.el \
+		pel-skels-c.el \
+		pel-skels-elisp.el \
+		pel-skels-rst.el \
+		pel-speedbar.el \
+		pel-spell.el \
+		pel-xref.el \
+		pel-tempo.el \
+		pel-text-insert.el \
+		pel-text-transform.el \
+		pel-undo.el \
+		pel-uuid.el \
+		pel-window.el \
+		pel-xr.el
 
 EL_FILES2 := pel.el
 
@@ -197,79 +198,93 @@ OTHER_FILES := README
 TEST_FILES := pel-file-test.el pel-text-transform-test.el
 
 # Documentation PDF files to copy verbatim into the doc/pdfs
-PDF_FILES := -legend.pdf \
-			abbreviations.pdf \
-			align.pdf \
-			auto-completion.pdf \
-			autosave-backup.pdf \
-			bookmarks.pdf \
-			buffers.pdf \
-			case-conversion.pdf \
-			closing-suspending.pdf \
-			comments.pdf \
-			completion-input.pdf \
-			counting.pdf \
-			customize.pdf \
-			cut-paste.pdf \
-			diff-merge.pdf \
-			display-lines.pdf \
-			drawing.pdf \
-			enriched-text.pdf \
-			ert.pdf \
-			faces-fonts.pdf \
-			file-mngt.pdf \
-			file-variables.pdf \
-			filling-justification.pdf \
-			frames.pdf \
-			graphviz-dot.pdf \
-			grep.pdf \
-			help.pdf \
-			hide-show-code.pdf \
-			highlight.pdf \
-			hooks.pdf \
-			indentation.pdf \
-			input-method.pdf \
-			inserting-text.pdf \
-			keyboard-macros.pdf \
-			key-chords.pdf \
-			keys-f11.pdf \
-			keys-fn.pdf \
-			macOS-terminal-settings.pdf \
-			marking.pdf \
-			menus.pdf \
-			mode-dired.pdf \
-			mode-org-mode.pdf \
-			mode-rst.pdf \
-			modifier-keys.pdf \
-			mouse.pdf \
-			narrowing.pdf \
-			navigation.pdf \
-			numkeypad.pdf \
-			packages.pdf \
-			pl-applescript.pdf \
-			pl-c++.pdf \
-			pl-c.pdf \
-			pl-common-lisp.pdf \
-			pl-d.pdf \
-			pl-emacs-lisp.pdf \
-			pl-erlang.pdf \
-			rectangles.pdf \
-			registers.pdf \
-			scrolling.pdf \
-			search-replace.pdf \
-			sessions.pdf \
-			shells.pdf \
-			sorting.pdf \
-			speedbar.pdf \
-			spell-checking.pdf \
-			text-modes.pdf \
-			tags.pdf \
-			transpose.pdf \
-			undo-redo-repeat.pdf \
-			vsc-mercurial.pdf \
-			web.pdf \
-			whitespaces.pdf \
-			windows.pdf
+PDF_FILES := -legend.pdf                        \
+	-pel-key-maps.pdf			\
+	abbreviations.pdf			\
+	align.pdf				\
+	asciidoc.pdf				\
+	auto-completion.pdf			\
+	autosave-backup.pdf			\
+	bookmarks.pdf				\
+	buffers.pdf				\
+	case-conversion.pdf			\
+	closing-suspending.pdf			\
+	comments.pdf				\
+	completion-input.pdf			\
+	counting.pdf				\
+	cua.pdf					\
+	cursor.pdf				\
+	customize.pdf				\
+	cut-paste.pdf				\
+	diff-merge.pdf				\
+	display-lines.pdf			\
+	drawing.pdf				\
+	enriched-text.pdf			\
+	ert.pdf					\
+	faces-fonts.pdf				\
+	file-mngt.pdf				\
+	file-variables.pdf			\
+	filling-justification.pdf		\
+	frames.pdf				\
+	graphviz-dot.pdf			\
+	grep.pdf				\
+	help.pdf				\
+	hide-show-code.pdf			\
+	highlight.pdf				\
+	hooks.pdf				\
+	indentation.pdf				\
+	input-method.pdf			\
+	inserting-text.pdf			\
+	key-chords.pdf				\
+	keyboard-macros.pdf			\
+	keys-f11.pdf				\
+	keys-fn.pdf				\
+	macOS-terminal-settings.pdf		\
+	marking.pdf				\
+	menus.pdf				\
+	mode-dired.pdf				\
+	mode-org-mode.pdf			\
+	mode-rst.pdf				\
+	modifier-keys.pdf			\
+	mouse.pdf				\
+	narrowing.pdf				\
+	navigation.pdf				\
+	numkeypad.pdf				\
+	packages.pdf				\
+	pl-applescript.pdf			\
+	pl-c++.pdf				\
+	pl-c.pdf				\
+	pl-common-lisp.pdf			\
+	pl-d.pdf				\
+	pl-elixir.pdf				\
+	pl-emacs-lisp.pdf			\
+	pl-erlang.pdf				\
+	pl-forth.pdf				\
+	pl-julia.pdf				\
+	pl-make.pdf				\
+	pl-python.pdf				\
+	pl-rexx.pdf				\
+	plantuml.pdf				\
+	plm-lispy.pdf				\
+	projectile.pdf				\
+	rectangles.pdf				\
+	registers.pdf				\
+	scrolling.pdf				\
+	search-replace.pdf			\
+	sessions.pdf				\
+	shells.pdf				\
+	sorting.pdf				\
+	speedbar-and-modes.pdf			\
+	speedbar.pdf				\
+	spell-checking.pdf			\
+	text-modes.pdf				\
+	transpose.pdf				\
+	undo-redo-repeat.pdf			\
+	vcs-mercurial.pdf			\
+	web.pdf					\
+	whitespaces.pdf				\
+	windows.pdf				\
+	xref.pdf
 
 
 # SRC_FILES include *all* Emacs Lisp source files that are part of PEL,
@@ -377,12 +392,12 @@ help:
 
 .PHONY: check
 check: 	check-version \
-		check-src-dir \
-		check-dest-dir \
-		check-dest-test-dir \
-		check-doc-pdf \
-		check-target \
-		check-elc-files
+	check-src-dir \
+	check-dest-dir \
+	check-dest-test-dir \
+	check-doc-pdf \
+	check-target \
+	check-elc-files
 
 check-version:
 	@echo PEL_VERSION = $(PEL_VERSION)
@@ -493,6 +508,7 @@ pel-indent.elc:         pel-ccp.elc pel-mark.elc
 pel-kbmacros.elc:       pel--options.elc
 pel-key-chord.elc:      pel--base.elc pel--options.elc
 pel-lisp.elc:           pel--base.elc
+pel-make.elc:		pel--base.elc
 pel-mark.elc:           pel--base.elc
 pel-navigate.elc:       pel--base.elc pel-scroll.elc
 pel-numkpad.elc:        pel--base.elc pel-ccp.elc pel-navigate.elc pel-scroll.elc

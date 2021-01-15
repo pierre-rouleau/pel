@@ -311,6 +311,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-byte-compile-file-and-load
     pel-lint-elisp-file)
 
+  (pel-autoload "pel-make" for:
+    pel-make-next-macro
+    pel-make-previous-macro)
+
   (pel-autoload "pel-mark" for:
     pel-mark-ring-stats
     pel-popoff-mark-ring
