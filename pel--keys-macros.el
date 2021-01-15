@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-15 17:41:54, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-15 17:52:04, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -299,6 +299,7 @@ stored inside the doc/pdf directory.")
     ("makefile-gmake"  [f11 32 ?M])
     ("makefile-makepp" [f11 32 ?M])
     ("makefile-automake" [f11 32 ?M])
+    ("makefile-imake"  [f11 32 ?M])
     ("python"          [f11 32 ?p])
     ("rexx"            [f11 32 ?R])
     ("rst"             [f11 32 ?r])
