@@ -3486,7 +3486,7 @@ used if `pel-prefer-sr-speedbar-in-terminal' is set."
   :group 'pel-pkg-for-speedbar
   :type  'boolean
   :safe  #'booleanp
-  :link '(url-link :tab "SR-Speedbar @ EmacsWiki"
+  :link '(url-link :tag "SR-Speedbar @ EmacsWiki"
                    "https://www.emacswiki.org/emacs/SrSpeedbar"))
 
 ;; -----------------------------------------------------------------------------
