@@ -369,6 +369,9 @@ Done in this function to allow advising libraries that remap these keys."
     (defvar pel:for-dired-narrow)
     (define-prefix-command 'pel:for-dired-narrow)
     ;;
+    ;; open dired PDF
+    (define-key pel:for-dired-narrow (kbd "<f1>") 'pel-help-pdf)
+    ;; dired-narrow commands
     (define-key pel:for-dired-narrow "s" 'dired-narrow)
     (define-key pel:for-dired-narrow "r" 'dired-narrow-regexp)
     (define-key pel:for-dired-narrow "f" 'dired-narrow-fuzzy)
