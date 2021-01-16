@@ -2543,10 +2543,17 @@ The target is specified using one of the following:
    - deftheme
    - defcustom
    - defgroup
-7) All forms specified by the list strings.
+7) All forms specified by the list defined by:
+   - `pel-elisp-user-specified-targets'
+   - `pel-elisp-user-specified-targets2'
 
-  Note that each entry of the list is a radio button, allowing you to disable
-  a string while keeping its value in memory for later re-use and activation.
+  Note that each entry in `pel-elisp-user-specified-targets' has a checkbox.
+  Only the lines activated are searched.  The entries in that list correspond
+  to valid Emacs Lisp function or macro symbols. Their docstrings are
+  available except for those defined in files not yet loaded.  More free
+  format regular expressions can be defined in the second user-option
+  `pel-elisp-user-specified-targets2' to complement the first list.
+
 
 You can modify the buffer local value of `pel-elisp-target-forms' by using the
 `pel-elisp-set-navigate-target-form' command."
@@ -2600,8 +2607,10 @@ any level"
 Use the check-box buttons to deactivate or activate any of them.
 You can also insert others.
 
-These are used as the target by the following commands
-when `pel-elisp-target-forms' is set to 'user-specified:
+These, along with the symbols identified by
+`pel-elisp-user-specified-targets2',  are used as the target
+by the following commands when `pel-elisp-target-forms' is set to
+'user-specified:
 - `pel-elisp-beginning-of-next-form'
 - `pel-elisp-beginning-of-previous-form'"
   :group 'pel-sexp-form-navigation
@@ -2634,6 +2643,32 @@ when `pel-elisp-target-forms' is set to 'user-specified:
              defhydra
              defhydra+
              defhydradio))
+
+(defcustom pel-elisp-user-specified-targets2 nil
+  "List of regexp strings identifying more movement targets.
+
+These, along with the symbols identified by
+`pel-elisp-user-specified-targets', are used as the target by the
+following commands when `pel-elisp-target-forms' is set to
+'user-specified:
+- `pel-elisp-beginning-of-next-form'
+- `pel-elisp-beginning-of-previous-form'
+
+Unlike the symbols listed inside `pel-elisp-user-specified-targets'
+here you need to write the complete regular expression for searching
+an element.  For example, if you want to target all interactive commands
+you can place the following regex string in the list:
+
+   \"(interactive\"
+
+without the enclosing quotes.  Note that you must identify the leading
+parenthesis.
+
+Also note that the commands will search for your regex as the
+first non-blank character on a line, and will exclude all matches
+inside comments and docstrings."
+  :group 'pel-sexp-form-navigation
+  :type '(repeat string))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-elisp-code-style nil

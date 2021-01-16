@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, November 27 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-16 09:43:24, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-16 17:46:23, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -43,9 +43,10 @@
 ;; the behaviour of the navigation commands.  The behaviour is controlled by
 ;; two user-option customized variables:
 ;;
-;;  - `pel-elisp-target-forms' and
-;;  - `pel-elisp-user-specified-targets'.
-;;
+;;  - `pel-elisp-target-forms',
+;;  - `pel-elisp-user-specified-targets', and
+;;  - `pel-elisp-user-specified-targets2'.
+
 ;; With `pel-elisp-target-forms' you can select one of 6 types of targets:
 ;; - Selection 0 is equivalent to Emacs standard behaviour: any top-level
 ;;   form.
@@ -60,7 +61,8 @@
 ;; - Selection 6 specifies all variable definition forms such as defvar,
 ;;   defconst, defcustom, etc...
 ;; - Selection 7 is a user-specified set.  They are specified in the list
-;;   specified by `pel-elisp-user-specified-targets', giving the user ultimate
+;;   specified by `pel-elisp-user-specified-targets' and
+;;   `pel-elisp-user-specified-targets2', giving the user ultimate
 ;;   control of what can be a target.
 ;;
 ;; Note that `pel-elisp-user-specified-targets' user interface is a set of
@@ -172,22 +174,33 @@ the value of the `pel-elisp-target-forms' user-option and save it."
           (make-local-variable 'pel-elisp-target-forms))
         (when (eq selection 'user-specified)
           (unless (local-variable-p 'pel-elisp-user-specified-targets)
-            (make-local-variable 'pel-elisp-user-specified-targets)))))
+            (make-local-variable 'pel-elisp-user-specified-targets))
+          (unless (local-variable-p 'pel-elisp-user-specified-targets2)
+            (make-local-variable 'pel-elisp-user-specified-targets2)))))
     (setq pel-elisp-target-forms selection)
     (message "For navigation is now using %s for %s"
              selection
              (if globally "all non configured buffers"
                (current-buffer)))))
 
-(defun pel--elisp-form-regexp-for (forms)
+(defun pel--elisp-form-regexp-for (forms &optional other-strings)
   "Return a regexp to search for specified FORMS.
 FORMS is a list of strings, each string is a form to search for."
-  (concat "(\\("
-          (string-join
-           (mapcar (lambda (form) (format "\\(%s\\)" form))
-                   forms)
-           "\\|")
-           "\\) +'?\\(\\_<.+\\_>\\) *"))
+  (let ((symrgx (concat "("
+                        (pel-grp-regex (string-join
+                                        (mapcar (function pel-grp-regex)
+                                                forms)
+                                        "\\|")
+                                       " +'?\\(\\_<.+\\_>\\) *")))
+        (strgx  (when other-strings
+                  (pel-grp-regex (string-join
+                                  (mapcar (function pel-grp-regex)
+                                          other-strings)
+                                  "\\|")))))
+    (if strgx
+        (concat "\\(\\(" symrgx "\\)\\|\\(" strgx "\\)\\)")
+      symrgx)))
+
 
 (defun pel--elisp-navigate-target-regxp (&optional target)
   "Return the regxp to search for the definition forms.
@@ -270,7 +283,9 @@ TARGET, like `pel-elisp-target-forms' can be one of the following values:
                                           "deftheme"
                                           "defcustom"
                                           "defgroup")))
-           ;; 7 : user specified string (may contain nil or ignore)
+           ;; 7 : user specified string
+           ;;     remove duplicates, nil and ignore
+           ;;     escape regular expression meta-characters
            ((eq target 'user-specified)
             (pel--elisp-form-regexp-for
              (mapcar
@@ -278,7 +293,10 @@ TARGET, like `pel-elisp-target-forms' can be one of the following values:
               (mapcar
                (function symbol-name)
                (remove 'ignore
-                       (remove nil pel-elisp-user-specified-targets))))))
+                       (remove nil
+                               pel-elisp-user-specified-targets))))
+             pel-elisp-user-specified-targets2))
+           ;; anything else is an error
            (t
             (error
              "Invalid search criteria: pel-elisp-target-forms=%S, target=%S"

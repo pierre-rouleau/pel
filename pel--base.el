@@ -71,6 +71,7 @@
 ;; - `pel-string-spread'
 ;; - `pel-list-str'
 ;; - `pel-title-case-to-dash-separated'
+;; - `pel-grp-regex'
 
 ;; Value check:
 ;; - `pel-use-or'
@@ -89,7 +90,6 @@
 ;;  - `pel-map-symbol-for'
 ;;
 ;; Hook control
-;;
 ;;  - `pel-add-hook-for'
 ;;
 ;; Basic functions working with values and variables:
@@ -138,7 +138,7 @@
 ;; - `pel-print-in-buffer'
 ;;
 ;; Code parsing support
-;;     - `pel-point-in-comment-or-docstring'
+;; - `pel-point-in-comment-or-docstring'
 
 ;; -----------------------------------------------------------------------------
 ;;; Dependencies:
@@ -494,6 +494,17 @@ ELISP> "
    (mapcar (function downcase) (split-string text " "))
    "-"))
 
+
+(defun pel-grp-regex (text &optional tail)
+  "Return string with TEXT inside regexp group.
+
+For STR, the returned string is \"\\\\(STR\\\\)\",
+unless TAIL is specified, in which case tail is appended
+after the closing parenthesis."
+  (let ((str (format "\\(%s\\)" text)))
+    (if tail
+        (concat str tail)
+      str)))
 
 ;; -----------------------------------------------------------------------------
 ;; Value check
