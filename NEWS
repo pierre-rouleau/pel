@@ -489,7 +489,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 + New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-make.pdf][𝕻𝔩 - Make]] PDF that describes make file editing support.
 + New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/macOS-keys.pdf][ macOS Keys ]]PDF that lists and describes the macOS specific keys.
 + New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-CRiSP-Emacs.pdf][➢CRiSP ➫ Emacs]] PDF for Brief and CRiSP users.  It lists the
-  correspondences between Brief/Crisp and Emacs with PEL.
+  correspondences between Brief/CRiSP with CRiSPer and Emacs with PEL.
 ** Use Manual Additions and Improvements:
 - Added instructions on how to install
   [[https://www.gnu.org/software/global/][GNU GLOBAL source code tagging system]] gtags utility with its [[https://pygments.org][Pygments]] and
