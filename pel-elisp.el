@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, November 27 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-15 15:58:28, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-16 09:43:24, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -64,13 +64,11 @@
 ;;   control of what can be a target.
 ;;
 ;; Note that `pel-elisp-user-specified-targets' user interface is a set of
-;; radio buttons controlled list.  The default lists all the forms present in
-;; selection 5 with some specialized additions such as support for Hydra
+;; checkbox controlled list.  The default lists all the forms present in the
+;; largest selection with some specialized additions such as support for Hydra
 ;; forms.  You can add more.  You can also remove some.  But you can disable
-;; any, without removing the string by just disabling it with the radio
-;; button.  This places a 'nil' in the list which is ignored by the code. It's
-;; a convenient way to specify forms that you can quickly activate or
-;; de-activate as target.
+;; any, without removing the string by just disabling it with the checkbox
+;; button.
 ;;
 ;; The targets specify how the following 2 commands behave:
 ;;
@@ -272,9 +270,15 @@ TARGET, like `pel-elisp-target-forms' can be one of the following values:
                                           "deftheme"
                                           "defcustom"
                                           "defgroup")))
-           ;; 7 : user specified string (may contain nil)
+           ;; 7 : user specified string (may contain nil or ignore)
            ((eq target 'user-specified)
-            (pel--elisp-form-regexp-for (remove nil pel-elisp-user-specified-targets)))
+            (pel--elisp-form-regexp-for
+             (mapcar
+              (function regexp-quote) ; quote regexp meta char
+              (mapcar
+               (function symbol-name)
+               (remove 'ignore
+                       (remove nil pel-elisp-user-specified-targets))))))
            (t
             (error
              "Invalid search criteria: pel-elisp-target-forms=%S, target=%S"

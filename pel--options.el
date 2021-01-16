@@ -2568,53 +2568,72 @@ any level"
           (repeat :tag "User specified"
                   user-specified)))
 
-(defcustom pel-elisp-user-specified-targets '("defun"
-                                              "defsubst"
-                                              "defmacro"
-                                              "defalias"
-                                              "defadvice"
-                                              "defclass"
-                                              "defmethod"
-                                              "defgeneric"
-                                              "defvar"
-                                              "defvaralias"
-                                              "defvar-local"
-                                              "defvar-mode-local"
-                                              "defconst"
-                                              "defconst-mode-local"
-                                              "defface"
-                                              "deftheme"
-                                              "defcustom"
-                                              "defgroup"
-                                              "def-edebug-spec"
-                                              "defmath"
-                                              "defimage"
-                                              "defezimage"
-                                              "defun-gmm"
-                                              "deffoo"
-                                              "defvoo"
-                                              "defhydra"
-                                              "defhydra\\+"
-                                              "defhydradio")
+(defcustom pel-elisp-user-specified-targets '(defun
+                                              defsubst
+                                              defmacro
+                                              defalias
+                                              defadvice
+                                              defclass
+                                              defmethod
+                                              defgeneric
+                                              defvar
+                                              defvaralias
+                                              defvar-local
+                                              defvar-mode-local
+                                              defconst
+                                              defconst-mode-local
+                                              defface
+                                              deftheme
+                                              defcustom
+                                              defgroup
+                                              def-edebug-spec
+                                              defmath
+                                              defimage
+                                              defezimage
+                                              defun-gmm
+                                              deffoo
+                                              defvoo
+                                              defhydra
+                                              defhydra+
+                                              defhydradio)
   "User selected forms used as movement target.
-Use the radio buttons to deactivate any of them.
+Use the check-box buttons to deactivate or activate any of them.
 You can also insert others.
-
-CAUTION:
- When saving this to a file, all forms disabled by the radio button set
- to nil are forgotten. You can restore the default of all settings for this
- variable only by selecting the user-option variable by name
- (`pel-elisp-user-specified-targets') in the search field and using the
- 'Revert...' button. You can also use the 'Revert...' button when editing the
- the `pel-sexp-form-navigation' group.  The only affected user-options
- variables will be the user-options shown in the customize buffer.
 
 These are used as the target by the following commands
 when `pel-elisp-target-forms' is set to 'user-specified:
 - `pel-elisp-beginning-of-next-form'
 - `pel-elisp-beginning-of-previous-form'"
   :group 'pel-sexp-form-navigation
-  :type '(repeat (radio string (const nil))))
+  :type 'hook
+  :options '(defun
+             defsubst
+             defmacro
+             defalias
+             defadvice
+             defclass
+             defmethod
+             defgeneric
+             defvar
+             defvaralias
+             defvar-local
+             defvar-mode-local
+             defconst
+             defconst-mode-local
+             defface
+             deftheme
+             defcustom
+             defgroup
+             def-edebug-spec
+             defmath
+             defimage
+             defezimage
+             defun-gmm
+             deffoo
+             defvoo
+             defhydra
+             defhydra+
+             defhydradio))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-elisp-code-style nil
