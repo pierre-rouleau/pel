@@ -4300,14 +4300,29 @@ the ones defined from the buffer now."
     (cl-eval-when 'compile (require 'sr-speedbar nil :no-error))
     (define-pel-global-prefix pel:speedbar (kbd "<f11> M-s"))
     (define-key pel:speedbar (kbd "M-s")  'pel-open-close-speedbar)
-    (define-key pel:speedbar "."  'pel-toggle-to-speedbar)
+    (define-key pel:speedbar (kbd "M-.")  'pel-sr-speedbar-toggle-select-behaviour)
+    (define-key pel:speedbar "s"  'pel-toggle-to-speedbar)
     (define-key pel:speedbar "R"  'pel-speedbar-toggle-refresh)
     (define-key pel:speedbar "r"  'pel-speedbar-refresh)
     (define-key pel:speedbar "a"  'pel-speedbar-toggle-show-all-files)
     (define-key pel:speedbar "o"  'pel-speedbar-toggle-sorting)
     ;; (define-key pel:speedbar "e"  #'speedbar-toggle-etags)
     (when (display-graphic-p)
-      (define-key pel:speedbar "i" 'pel-speedbar-toggle-images))))
+      (define-key pel:speedbar "i" 'pel-speedbar-toggle-images))
+
+    (defun pel--sr-speedbar-setup()
+      "Setup the sr-speedbar hooks."
+      ;; Remove sr-speedbar hooks that switch back to the speedbar buffer
+      (remove-hook 'speedbar-before-visiting-file-hook #'sr-speedbar-before-visiting-file-hook)
+      (remove-hook 'speedbar-before-visiting-tag-hook  #'sr-speedbar-before-visiting-tag-hook)
+      (remove-hook 'speedbar-visiting-file-hook        #'sr-speedbar-visiting-file-hook)
+      (remove-hook 'speedbar-visiting-tag-hook         #'sr-speedbar-visiting-tag-hook)
+      ;; Instead add hooks that a command can control the behaviour
+      (add-hook 'speedbar-visiting-file-hook         'pel-sr-speedbar-visiting-control t)
+      (add-hook 'speedbar-visiting-tag-hook          'pel-sr-speedbar-visiting-control t))
+
+    (with-eval-after-load 'sr-speedbar
+      (advice-add 'sr-speedbar-open :after (function pel--sr-speedbar-setup)))))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> -        ``<f11> T`` : Directory Tree

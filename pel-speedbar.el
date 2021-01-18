@@ -1,6 +1,6 @@
 ;;; pel-speedbar.el --- PEL (Sr-)Speedbar support -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -20,7 +20,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; A set of utilities to help work with the native Emacs speedbar and
@@ -44,6 +44,27 @@
 ;; The mechanism selected is remembered inside the variable
 ;; `pel-speedbar-type-used'.  If you want to prevent the first prompt
 ;; set this variable to 'sr-speedbar or 'speedbar.
+;;
+;;
+;; Control Behaviour on SR-SPeedbar item selection
+;; -----------------------------------------------
+;;
+;; SR-speedbar has a potentially annoying behaviour: when you select a file or
+;; tag from the speedbar it opens the file in a buffer but returns the point
+;; back to the speedbar instead of leaving it inside the file's buffer window.
+;; In some case this behaviour might be useful though.  PEL provides the
+;; user-option `pel-sr-speedbar-move-point-to-target-on-select'. By default it
+;; is set to t, meaning that we want to leave point inside the window of the
+;; target, just like Speedbar behaves.  You can set it nil to get SR-standard
+;; behaviour of returning point into the SR-Speedbar buffer after a selection.
+;; The `pel--sr-speedbar-move-point-to-target-on-select' global variable is
+;; initialized with its value and can be modified by the command
+;; `pel-sr-speedbar-toggle-select-behaviour' dynamically.
+;; Then `el-sr-speedbar-visiting-control' is used as a call-back for the
+;; following SR-Speedbar hooks:
+;;
+;;  - `speedbar-visiting-file-hook', and
+;;  - `speedbar-visiting-tag-hook'.
 ;;
 ;; Note:
 ;;
@@ -244,7 +265,41 @@ If no speedbar is used, open one."
         (speedbar-toggle-images)
       (user-error "Open Speedbar first"))))
 
-;; -----------------------------------------------------------------------------
+;; --
+;; Control Behaviour on SR-SPeedbar item selection
+;; -----------------------------------------------
+
+(defvar pel--sr-speedbar-move-point-to-target-on-select
+  pel-sr-speedbar-move-point-to-target-on-select
+  "Global behaviour of `pel-sr-speedbar-move-point-to-target-on-select.")
+
+;;-pel-autoload
+(defun pel-sr-speedbar-toggle-select-behaviour ()
+  "Toggle SR-Speedbar selection behaviour."
+  (interactive)
+  (pel-toggle-and-show 'pel--sr-speedbar-move-point-to-target-on-select
+                       "Move to target on SR-Speedbar select"
+                       "Stay in SR-Speedbar buffer after select"))
+
+(defun pel--select-sr-speedbar-buffer-window ()
+  "Select SR-Speedbar buffer window."
+  (let ((sp-win (get-buffer-window "*SPEEDBAR*")))
+    (if sp-win
+        (select-window sp-win)
+      (error "Can't find buffer *SPEEDBAR*"))))
+
+(defun pel-sr-speedbar-visiting-control ()
+  "Hook callback: determine what buffer to select.
+
+This function is used by SR-speedbar hooks `speedbar-visiting-file-hook'
+and `speedbar-visiting-tag-hook'. It returns point to the SR-Speedbar
+buffer window when pel--sr-speedbar-move-point-to-target-on-select is nil,
+otherwise it leaves it in the window of the file selected by the SR-Speedbar
+selection user action."
+  (unless pel--sr-speedbar-move-point-to-target-on-select
+    (pel--select-sr-speedbar-buffer-window)))
+
+;; ---------------------------------------------------------------------------
 (provide 'pel-speedbar)
 
 ;;; pel-speedbar.el ends here

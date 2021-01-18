@@ -444,6 +444,17 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - Improved: generic file mode/header template insetion (``<f6>
     h``) and separator line insertion (``<f6> l``) now get comment style from
     user if they are not already defined.
+- Update: *Speedbar*:
+  - New: Better handling of target selection of the SR-Speedbar controlled by:
+    - A new *pel-sr-speedbar-toggle-select-behaviour* user-option selects
+      the behaviour of the SR-Speedbar selection action from the following 2:
+      - Move point into the window of the selected target (PEL's default),
+      - Keep point inside SR-Speedbar window after opening the selected target
+        into a (possibly new) window.  sr-speedbar only offers this behaviour.
+    - The new *pel-sr-speedbar-toggle-select-behaviour* command, mapped to
+      ``<f11> M-s M-.`` key sequence, allowing you to choose the SR-Speedbar
+      selection behaviour that suits you best and change it dynamically when the
+      need occurs.
 - Update: *Text Modes*:
   - New: overwrite-mode is also bound to the <Esc><kp-0> key sequence.  This
     makes it very similar to the default <insert> key which is not available

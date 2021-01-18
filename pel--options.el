@@ -3524,6 +3524,15 @@ used if `pel-prefer-sr-speedbar-in-terminal' is set."
   :link '(url-link :tag "SR-Speedbar @ EmacsWiki"
                    "https://www.emacswiki.org/emacs/SrSpeedbar"))
 
+(defcustom pel-sr-speedbar-move-point-to-target-on-select t
+  "When on, a SR-Speedback select moves point to the target buffer window.
+Otherwise it leaves point inside the SR-Speedbar buffer window.
+This behaviour can be modified dynamically by the command
+`pel-sr-speedbar-toggle-select-behaviour'."
+  :group 'pel-pkg-for-speedbar
+  :type  'boolean
+  :safe  #'booleanp)
+
 ;; -----------------------------------------------------------------------------
 ;; Spelling Support
 ;; ----------------
