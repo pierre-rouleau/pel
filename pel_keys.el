@@ -4524,6 +4524,7 @@ the ones defined from the buffer now."
 ;; Use the global local winner-mode, but don't use its key bindings;
 ;; use some in the '<f11> w' group:
 
+;; Used: # B O S b d f h k m n o p s v x
 ;;
 (define-pel-global-prefix pel:window (kbd "<f11> w"))
 (define-key pel:window    "B"  #'switch-to-buffer-other-window)
@@ -4548,12 +4549,11 @@ the ones defined from the buffer now."
   (use-package ace-window
     :ensure t
     :pin melpa
-
     :commands (ace-window
                ace-swap-window
                ace-delete-window
-               ace-delete-other-windows)
-
+               ace-delete-other-windows
+               ace-window-display-mode)
     :init
     (cl-eval-when 'compile (require 'ace-window nil :no-error))
     ;; move cursor to other window - 'C-x o' is normally mapped to
@@ -4564,6 +4564,7 @@ the ones defined from the buffer now."
     ;; but newer version obsoleted that and now use ace-delete-other-windows
     ;; If you do not have it, upgrade ace-window.
 
+    (define-key pel:window  "#"  'ace-window-display-mode)
     (define-key pel:window  "m"  'ace-delete-other-windows)
     (define-key pel:window  "x"  'ace-swap-window)
 
