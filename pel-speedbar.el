@@ -315,6 +315,27 @@ selection user action."
     (pel--select-sr-speedbar-buffer-window)))
 
 
+;; --
+
+(defun pel--speedbar-focus-on (buffer-name sp-win &optional original-window)
+  "Set speedbar focus on the content of specified BUFFER-NAME.
+Put the content for that buffer at the top of the speedbar and
+expand all first level elements.
+
+The SP-WIN argument identifies the Speedbar window.
+If optional ORIGINAL-WINDOW is not nil, return to that window,
+otherwise leave focus inside speedbar."
+  ;; move Speedbar line for current file at the top of
+  ;; the speedbar
+  (select-window sp-win)
+  (goto-char (point-min))
+  (when (search-forward (concat "] " buffer-name)
+                        nil :noerror)
+    (speedbar-expand-line)
+    (recenter-top-bottom 0))
+  (when original-window
+    (select-window original-window)))
+
 ;;-pel-autoload
 (defun pel-speedbar-focus-current-file (&optional stay-in-speedbar)
   "Set SR-Speedbar focus on the content of file in current window.
@@ -322,29 +343,31 @@ Place the tag list of the current file at the top of the speedbar.
 If optional STAY-IN-SPEEDBAR argument is non-nil, move point to speedbar,
 otherwise don't move it."
   (interactive "P")
-  (if (eq pel-speedbar-type-used 'sr-speedbar)
-      (let ((original-window (selected-window))
-            (current-fname (pel-current-buffer-filename
-                            :sans-directory nil :no-error))
-            (sp-win (get-buffer-window "*SPEEDBAR*")))
-        (if current-fname
+  (if (boundp 'speedbar-initial-expansion-list-name)
+      (if (eq pel-speedbar-type-used 'sr-speedbar)
+          (let ((original-window (unless stay-in-speedbar (selected-window)))
+                (buf-name (buffer-name))
+                (sp-win (get-buffer-window "*SPEEDBAR*")))
             (if sp-win
-                (progn
-                  ;; move Speedbar line for current file at the top of
-                  ;; the speedbar
-                  (select-window sp-win)
-                  (goto-char (point-min))
-                  (when (search-forward (concat "] " current-fname)
-                                        nil :noerror)
-                    (speedbar-expand-line)
-                    (recenter-top-bottom 0))
-                  (unless stay-in-speedbar
-                    (select-window original-window)))
-              (user-error "Open speedbar first!"))
-          (user-error "Use this command on buffer visiting a file")))
-    (if (eq pel-speedbar-type-used 'speedbar)
-        (user-error "This command only supports SR-speedbar!")
-      (user-error "Please open a SR-Speedbar first."))))
+                (cond
+                 ((string= speedbar-initial-expansion-list-name "files")
+                  (let ((fname (pel-current-buffer-filename
+                                :sans-directory nil :no-error)))
+                    (if fname
+                        (pel--speedbar-focus-on fname sp-win original-window)
+                      (user-error "Current buffer %s is not visiting a file"
+                                  buf-name))))
+                 ((member speedbar-initial-expansion-list-name
+                          '("buffers"
+                            "quick buffers"))
+                  (pel--speedbar-focus-on buf-name sp-win original-window))
+                 (t (error "Unsupported speedbar content: %s"
+                           speedbar-initial-expansion-list-name)))
+              (user-error "Open speedbar first!")))
+        (if (eq pel-speedbar-type-used 'speedbar)
+            (user-error "This command only supports SR-speedbar!")
+          (user-error "Please open a SR-Speedbar first.")))
+    (error "Cannot load speedbar!")))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel-speedbar)
