@@ -433,17 +433,6 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     - prevent insertions of empty lines when a file header is inserted in
       non-empty file,
     - terminate C-style comments with 1-star continuation properly.
-- Update: *Text Insertion*:
-  - Modified: key bindings, using more lower case letters:
-    - ``<f6> f`` and ``f11> i f`` are now used instead of ``<f6> F`` and
-      ``<f11>> i F`` for **pel-insert-filename*,
-    - ``<f11> i c`` is used instead of ``<f11> i C`` for *copyright*.
-  - New: key bindings:
-    - ``<f11> i M-t`` bound to *time-stamp-toggle-active*,
-    - ``<f11> i M-c`` bound to *copyright-update*.
-  - Improved: generic file mode/header template insetion (``<f6>
-    h``) and separator line insertion (``<f6> l``) now get comment style from
-    user if they are not already defined.
 - Update: *Speedbar*:
   - New: Better handling of target selection of the SR-Speedbar controlled by:
     - A new *pel-sr-speedbar-toggle-select-behaviour* user-option selects
@@ -455,6 +444,17 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       ``<f11> M-s M-.`` key sequence, allowing you to choose the SR-Speedbar
       selection behaviour that suits you best and change it dynamically when the
       need occurs.
+- Update: *Text Insertion*:
+  - Modified: key bindings, using more lower case letters:
+    - ``<f6> f`` and ``f11> i f`` are now used instead of ``<f6> F`` and
+      ``<f11>> i F`` for **pel-insert-filename*,
+    - ``<f11> i c`` is used instead of ``<f11> i C`` for *copyright*.
+  - New: key bindings:
+    - ``<f11> i M-t`` bound to *time-stamp-toggle-active*,
+    - ``<f11> i M-c`` bound to *copyright-update*.
+  - Improved: generic file mode/header template insetion (``<f6>
+    h``) and separator line insertion (``<f6> l``) now get comment style from
+    user if they are not already defined.
 - Update: *Text Modes*:
   - New: overwrite-mode is also bound to the <Esc><kp-0> key sequence.  This
     makes it very similar to the default <insert> key which is not available
