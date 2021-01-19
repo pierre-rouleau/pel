@@ -66,6 +66,14 @@
 ;;  - `speedbar-visiting-file-hook', and
 ;;  - `speedbar-visiting-tag-hook'.
 ;;
+;; Focus SR-Speedbar on current file
+;; ---------------------------------
+;;
+;; The command `pel-speedbar-focus-current-file' updates the SR-speedbar,
+;; updating its content to show the content of the currently edited file at
+;; the top of the SR-speedbar window.
+;;
+;;
 ;; Note:
 ;;
 ;; The 2014 version of the sr-speedbar.el file attempts to access the
@@ -253,7 +261,14 @@ If no speedbar is used, open one."
   "Execute `speedbar-toggle-sorting' if loaded, warn otherwise."
   (interactive)
   (if (fboundp 'speedbar-toggle-sorting)
-      (speedbar-toggle-sorting)
+      (let ((warning-msg (when (member 'speedbar-trim-words-tag-hierarchy
+                                       speedbar-tag-hierarchy-method)
+                           "\n⚠️ Speedbar trims and regroups symbols.  \
+Sorting has no impact. Customize speedbar-tag-hierarcy-method to change.")))
+      (message "Speedbar sorting now %s. \
+Contract and re-expand parents to see the change.%s"
+               (pel-on-off-string (speedbar-toggle-sorting))
+               (or warning-msg "")))
     (user-error "Open Speedbar first")))
 
 ;;-pel-autoload
@@ -298,6 +313,38 @@ otherwise it leaves it in the window of the file selected by the SR-Speedbar
 selection user action."
   (unless pel--sr-speedbar-move-point-to-target-on-select
     (pel--select-sr-speedbar-buffer-window)))
+
+
+;;-pel-autoload
+(defun pel-speedbar-focus-current-file (&optional stay-in-speedbar)
+  "Set SR-Speedbar focus on the content of file in current window.
+Place the tag list of the current file at the top of the speedbar.
+If optional STAY-IN-SPEEDBAR argument is non-nil, move point to speedbar,
+otherwise don't move it."
+  (interactive "P")
+  (if (eq pel-speedbar-type-used 'sr-speedbar)
+      (let ((original-window (selected-window))
+            (current-fname (pel-current-buffer-filename
+                            :sans-directory nil :no-error))
+            (sp-win (get-buffer-window "*SPEEDBAR*")))
+        (if current-fname
+            (if sp-win
+                (progn
+                  ;; move Speedbar line for current file at the top of
+                  ;; the speedbar
+                  (select-window sp-win)
+                  (goto-char (point-min))
+                  (when (search-forward (concat "] " current-fname)
+                                        nil :noerror)
+                    (speedbar-expand-line)
+                    (recenter-top-bottom 0))
+                  (unless stay-in-speedbar
+                    (select-window original-window)))
+              (user-error "Open speedbar first!"))
+          (user-error "Use this command on buffer visiting a file")))
+    (if (eq pel-speedbar-type-used 'speedbar)
+        (user-error "This command only supports SR-speedbar!")
+      (user-error "Please open a SR-Speedbar first."))))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel-speedbar)

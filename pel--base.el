@@ -203,11 +203,13 @@ If not specified (or nil) return the major mode of the current buffer."
         major-mode)
     major-mode))
 
-(defun pel-current-buffer-filename (&optional sans-directory sans-extension)
+(defun pel-current-buffer-filename
+    (&optional sans-directory sans-extension no-error)
   "Return current buffer's filename string.
 Return a filename with full path unless SANS-DIRECTORY is non-nil.
 If SANS-EXTENSION is non-nil exclude the extension, otherwise include it.
-Issue a user error if current buffer does not visit a file."
+Issue a user error if current buffer does not visit a file, unless the
+optional NO-ERROR argument is non-nil, in which case it returns nil."
   (if buffer-file-truename
       (let ((fn (expand-file-name buffer-file-truename)))
         (when sans-extension
@@ -215,7 +217,9 @@ Issue a user error if current buffer does not visit a file."
         (if sans-directory
             (file-name-nondirectory fn)
           fn))
-    (user-error "Buffer %s is not visiting a file!" (buffer-name))))
+    (if no-error
+        nil
+      (user-error "Buffer %s is not visiting a file!" (buffer-name)))))
 
 (defun pel-current-buffer-file-extension (&optional with-period)
   "Return the extension of the current buffer's file.

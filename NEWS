@@ -441,9 +441,13 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       - Keep point inside SR-Speedbar window after opening the selected target
         into a (possibly new) window.  sr-speedbar only offers this behaviour.
     - The new *pel-sr-speedbar-toggle-select-behaviour* command, mapped to
-      ``<f11> M-s M-.`` key sequence, allowing you to choose the SR-Speedbar
+      ``<f11> M-s M-b`` key sequence, allowing you to choose the SR-Speedbar
       selection behaviour that suits you best and change it dynamically when the
       need occurs.
+  - Update: Changed key bindings for easier typing: All ``pel:speedbar`` keys
+    use the Meta key.
+  - New: the *pel-speedbar-focus-current-file* command updates the SR-Speedbar
+    to show the list of items for the current file at the top of the speedbar.
 - Update: *Text Insertion*:
   - Modified: key bindings, using more lower case letters:
     - ``<f6> f`` and ``f11> i f`` are now used instead of ``<f6> F`` and
