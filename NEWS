@@ -347,7 +347,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     - **Use this first implementation with care**: it prevents checkdoc from
       completing its verification.
       I am currently trying to fix this.
-- New: *Make file Editing support*:
+- New: *Programming Language Support -- Make file Editing support*:
   - New:  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-make.pdf][𝕻𝔩 - Make]] PDF that describes make file editing support, along with
     PEL additions.
   - New: PEL provides two commands to navigate across make file macro
