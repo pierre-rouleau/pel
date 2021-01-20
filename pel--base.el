@@ -20,14 +20,14 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; A loosely coupled collection of simple utilities used by other PEL
 ;; which exist simply to simplify the PEL code.
 ;;
-;; The following is a list of available commands (*) and functions (-) listed in
-;; hierarchical calling order.
+;; The following is a list of available commands (*) and functions (-) listed
+;; in hierarchical calling order.
 ;;
 ;; PEL version:
 ;; * `pel-version'
@@ -140,15 +140,15 @@
 ;; Code parsing support
 ;; - `pel-point-in-comment-or-docstring'
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;;; Dependencies:
                 ;; subr (always loaded) ; use: called-interactively-p
 (eval-when-compile (require 'subr-x))   ; use: split-string, string-join
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;;; Code:
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Constants
 ;; ---------
 ;;
@@ -175,7 +175,7 @@
   "Predicate: t if Emacs can properly show Unicode characters like 👍 or 👎.")
 ;; TODO: add ability to install unicode fonts and take it into account.
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; PEL version
 ;; ===========
 
@@ -189,7 +189,7 @@ Optionally insert it at point if INSERT is non-nil."
     (message "PEL version: %s" version)
     version))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Environment Querying functions:
 ;; ------------------------------
 ;;
@@ -223,13 +223,16 @@ optional NO-ERROR argument is non-nil, in which case it returns nil."
 
 (defun pel-current-buffer-file-extension (&optional with-period)
   "Return the extension of the current buffer's file.
-By default, the returned value excludes the period that starts the extension,
-but if the optional argument WITH-PERIOD is non-nil, the period is included in
-the value and in that case, if FILENAME has no extension the returned value is
-\"\".
-See the function `file-name-extension' for details on how this treats files with
-no extension or file names that ends with a period.
-Issue a user error if current buffer does not visit a file."
+
+By default, the returned value excludes the period that starts
+the extension, but if the optional argument WITH-PERIOD is
+non-nil, the period is included in the value and in that case, if
+FILENAME has no extension the returned value is \"\".
+
+See the function `file-name-extension' for details on how this
+treats files with no extension or file names that ends with a
+period.  Issue a user error if current buffer does not visit a
+file."
   (if buffer-file-truename
       (file-name-extension buffer-file-truename with-period)
     (user-error "No file in buffer %s" (buffer-name))))
@@ -256,7 +259,7 @@ Return non-nil if it was added, nil otherwise."
                  "added.")))
     (= new-length original-length)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Check for Zero
 ;; --------------
 ;; In Lisp, nil is the only 'false' value.  Even 0 is an equivalent to 'true'.
@@ -266,7 +269,7 @@ Return non-nil if it was added, nil otherwise."
   "Return nil if V is 0, t otherwise."
   (not (equal v 0)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Bitwise Operations
 ;; ------------------
 (defun pel-all-bitset-p (value &rest bits)
@@ -276,7 +279,7 @@ Return non-nil if it was added, nil otherwise."
       (setq bitmask (logior bitmask bit)))
     (equal 0 (logxor value bitmask))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; String checks
 ;; -------------
 
@@ -303,7 +306,7 @@ Ignore case differences if IGNORE-CASE is non-nil."
                          text nil (length prefix)
                          ignore-case)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Pluralizer
 ;; ------------
 
@@ -317,7 +320,7 @@ If N > 2: use the PLURAL form if specified,
                             (format "%ss" singular)))
     (format "%d %s" n singular)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; String generation utilities
 ;; ---------------------------
 ;;
@@ -418,7 +421,7 @@ is automatically activated; this is included in the description."
                 autoloaded-str))
     (format "%s symbol unknown" (symbol-name user-option)))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; String transformation utilities:
 ;; - `pel-capitalize-first-letter'
 ;; - `pel-end-text-with-period'
@@ -510,7 +513,7 @@ after the closing parenthesis."
         (concat str tail)
       str)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Value check
 ;; -----------
 
@@ -547,7 +550,7 @@ And with transformation functions:
         (setq value (funcall transform-fun value)))
     alternative))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Operations on sequences
 ;; -----------------------
 
@@ -643,17 +646,51 @@ Usage Example:
 ;; ---------------------------------------------------------------------------
 ;; Lazy loading:
 ;; - `pel-require'
-(defun pel-require (feature)
-  "Load FEATURE if not already loaded.
-FEATURE is a symbol.
-Issue a use-error on failure.
-Otherwise return the loading state of the FEATURE."
-    (unless (featurep feature)
-      (unless (require feature nil :noerror)
-        (user-error "Failed loading %s!" feature)))
-    (featurep feature))
 
-;; -----------------------------------------------------------------------------
+(defun pel-require (feature &optional package)
+  "Load FEATURE if not already loaded, optionally try to install PACKAGE.
+
+FEATURE is a symbol.
+
+If optional PACKAGE is non-nil is specified and FEATURE is not loaded,
+try to install the specified package if it is not already available
+and try checking for the presence of FEATURE again, with the same behaviour.
+
+The specified package is specified by the PACKAGE argument. It can be either:
+
+- The special symbol `:install-when-missing' to indicate that the package to
+  install has the same name as the FEATURE.
+- Another symbol that identifies the name of the required package.
+
+Issue a user-error on failure.
+Otherwise return the loading state of the FEATURE."
+  (unless (featurep feature)
+    (let ((feature-is-loaded (require feature nil :noerror)))
+      (unless feature-is-loaded
+        ;; required failed - if package specified try installing it
+        ;; when not already present
+        (if (and package
+                 (fboundp 'package-installed-p)
+                 (fboundp 'package-install))
+            (let ((package (if (eq package :install-when-missing)
+                               feature
+                             package)))
+              (unless (package-installed-p package)
+                (package-install package)
+                (require feature nil :noerror)
+                (unless (featurep feature)
+                  (user-error
+                   "Failed loading %s even after installing package %s!"
+                   feature package))))
+          ;; no package specified, required failed
+          (user-error "Failed loading %s. %s!"
+                      feature
+                      (if package
+                          "Cannot load package.el"
+                        "No specified package"))))))
+  (featurep feature))
+
+;; ---------------------------------------------------------------------------
 ;; Toggle a local mode
 ;; -------------------
 
@@ -664,7 +701,7 @@ Return the new state of the mode: t if active, nil otherwise."
     (error "Nothing done: pel-toggle-mode expects a symbol as argument"))
   (funcall (symbol-function mode) (if (symbol-value mode) -1 1)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Symbol processing
 ;; -----------------
 
@@ -677,7 +714,7 @@ Return the new state of the mode: t if active, nil otherwise."
   "Return the map symbol for the specified MODE symbol."
     (intern (format "%s-map" (symbol-name mode))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Hook control
 ;; ------------
 
@@ -697,7 +734,7 @@ Change its customized value with ``M-x customize %s``"
                  modes-list-symbol)
          :error))))
 
-;; -----------------------------------------------------------------------------
+;;----------------------------------------------------------------------------
 ;; Basic functions working with values and variables
 ;; -------------------------------------------------
 ;;
@@ -744,7 +781,7 @@ USER-OPTION must be a variable symbol."
   "Return VAL if not nil otherwise return DEFAULT."
   (or val default))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Argument converter
 ;; ------------------
 
@@ -755,7 +792,7 @@ USER-OPTION must be a variable symbol."
 (defalias 'pel-mode-toggle-arg 'pel-multiplier
   "Convert a boolean value to the value required by mode toggling functions.")
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Iteration helpers
 ;; -----------------
 ;;
@@ -763,8 +800,8 @@ USER-OPTION must be a variable symbol."
 ;; decrement or increment a loop variable and to control termination of the
 ;; loop.
 ;;
-;; For example, the following code snippet inserts 10 lines of text, identifying
-;; line 1 to line 10:
+;; For example, the following code snippet inserts 10 lines of text,
+;; identifying line 1 to line 10:
 ;;
 ;; (let ((cnt 0))
 ;;   (while (pel-inc 'cnt 10)
@@ -803,7 +840,7 @@ Return nil if symbol N value is CEILING or larger."
     (if (< oldvalue (or ceiling most-positive-fixnum))
         (set n (1+ oldvalue)))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Text at point
 ;; -------------
 ;;
@@ -887,7 +924,7 @@ instead."
         (right-char step)))
     all-upper))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Calling functions
 ;; -----------------
 
@@ -902,7 +939,7 @@ Return nil."
     (dotimes (_i (abs n))
       (funcall neg-fct))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Moving Point
 ;; ------------
 ;;
@@ -925,7 +962,7 @@ Return nil."
     (if column
         (move-to-column column))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Identifying region:
 ;; - `pel-region-for'
 ;;
@@ -947,7 +984,7 @@ Return a (start . end) cons cell if found, otherwise return nil."
           (setq end (point))
           (cons beg end))))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Insert or overwrite text
 ;; - `pel-insert-or-overwrite'
 ;;
@@ -962,7 +999,7 @@ Multi-byte characters are handled properly."
       (delete-char 1)))
   (insert text))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Extract text from buffer
 ;; - `pel-text-from-beginning-of-line'
 
@@ -977,14 +1014,15 @@ otherwise it does not."
       (buffer-substring-no-properties begin end))))
 
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Check text from buffer
 ;; - `pel-line-has-only-whitespace-p'
 
 (defun pel-line-has-only-whitespace-p (&optional pos)
   "Return non-nil if current line (or line at POS) contain only whitespace.
 Return nil otherwise.
-Whitespace characters are specified by the syntax table of the current major mode."
+Whitespace characters are specified by the syntax table of the
+current major mode."
   (save-excursion
     (goto-char (or pos (point)))
     (beginning-of-line)
@@ -1059,7 +1097,8 @@ If MOVE-FCT is specified, call it before checking the state of point."
     (when move-fct
       (funcall move-fct))
     (nth 8 (parse-partial-sexp (point-min) (point)))))
-;; -----------------------------------------------------------------------------
+
+;;;---------------------------------------------------------------------------
 (provide 'pel--base)
 
 ;;; pel--base.el ends here
