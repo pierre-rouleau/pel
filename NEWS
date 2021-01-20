@@ -448,6 +448,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     use the Meta key.
   - New: the *pel-speedbar-focus-current-file* command updates the SR-Speedbar
     to show the list of items for the current file at the top of the speedbar.
+  - New: Added support for [[https://github.com/anshulverma/projectile-speedbar][projectile-speedbar]] activated by the
+    *pel-use-projectile-speedbar* user-option..  Once projectile is activated
+    and a speedbar is opened, set the speedbar to encompass all current
+    project directories and files with it.  The key binding is ``<f8> M-s``.
 - Update: *Text Insertion*:
   - Modified: key bindings, using more lower case letters:
     - ``<f6> f`` and ``f11> i f`` are now used instead of ``<f6> F`` and

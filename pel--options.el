@@ -848,7 +848,7 @@ Ripgrep is a very fast grep utility, and two packages support ripgrep:
 Setting `pel-use-ripgrep' to t indicates that you want to use ripgrep, so
 it identifies the installation of the `rg` package.  If you also set
 `pel-use-projectile' to non-nil, then the installation of the `ripgrep`
-package is also required becuase `projectile` uses the `ripgrep` package,
+package is also required because `projectile` uses the `ripgrep` package,
 it does not uses `rg`."
   :link `(url-link :tag "ripgrep @ GitHub"
                    "https://github.com/BurntSushi/ripgrep")
@@ -3250,7 +3250,6 @@ It binds:
   :type 'boolean
   :safe #'booleanp)
 
-
 (defcustom pel-initial-regexp-engine 'emacs
   "Select the search/replace regexp engine used when Emacs starts.
 Select one that is available according to the package installed.
@@ -3532,6 +3531,17 @@ This behaviour can be modified dynamically by the command
   :group 'pel-pkg-for-speedbar
   :type  'boolean
   :safe  #'booleanp)
+
+(defcustom pel-use-projectile-speedbar nil
+  "Control whether PEL uses projectile-speedbar package.
+This provides the command `pel-speedbar-focus-current-file'.
+Setting this non-nil also sets up the use of speedbar and projectile."
+  :group 'pel-pkg-for-speedbar
+  :type  'boolean
+  :safe  #'booleanp
+  :link '(custom-group-link "pel-pkg-for-project-mng")
+  :link '(url-link :tag "projectile + speedbar @ GitHub"
+                   "https://github.com/anshulverma/projectile-speedbar"))
 
 ;; -----------------------------------------------------------------------------
 ;; Spelling Support

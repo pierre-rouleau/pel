@@ -1386,7 +1386,8 @@ interactively."
 ;; ---------------------------------------------------------------------------
 ;; - Project Management - Projectile
 
-(when pel-use-projectile
+(when (or pel-use-projectile
+          pel-use-projectile-speedbar)
 
   (defun pel--start-projectile ()
     "Activate projectile-mode."
@@ -4290,7 +4291,9 @@ the ones defined from the buffer now."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> M-s`` : Speedbar/SR-Speedbar commands
 
-(when pel-use-speedbar
+(when (or pel-use-speedbar
+          pel-use-projectile-speedbar)
+
   (use-package sr-speedbar
     :ensure t
     :pin melpa
@@ -4323,7 +4326,17 @@ the ones defined from the buffer now."
       (add-hook 'speedbar-visiting-tag-hook          'pel-sr-speedbar-visiting-control t))
 
     (with-eval-after-load 'sr-speedbar
-      (advice-add 'sr-speedbar-open :after (function pel--sr-speedbar-setup)))))
+      (advice-add 'sr-speedbar-open :after (function pel--sr-speedbar-setup))))
+
+  (when pel-use-projectile-speedbar
+    (use-package projectile-speedbar
+      :ensure t
+      :pin melpa
+      :commands (projectile-speedbar-open-current-buffer-in-tree
+                 projectile-speedbar-toggle)
+      :init
+      (with-eval-after-load 'projectile
+        (define-key projectile-command-map (kbd "M-s") 'projectile-speedbar-open-current-buffer-in-tree)))))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> -        ``<f11> T`` : Directory Tree
