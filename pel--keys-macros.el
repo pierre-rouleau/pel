@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-15 17:52:04, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-19 22:47:47, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -71,11 +71,13 @@
   `(
     ([f6]            "inserting-text"   pel-pkg-for-insertions)
     ([f7 f8]         "pl-applescript"   pel-pkg-for-applescript)
-    ([f8]            "projectile"       pel-pkg-for-project-mng projectile)
+    ([f8]            "projectile"       pel-pkg-for-project-mng (projectile
+                                                                 projectile-speedbar))
     ([f11]           "-pel-key-maps"    nil)
     ([f11 f10]       "menus"            nil                     menu)
     ([f11 f2]        "customize"        nil                     customize)
-    ([f11 f8]        "projectile"       pel-pkg-for-project-mng projectile)
+    ([f11 f8]        "projectile"       pel-pkg-for-project-mng (projectile
+                                                                 projectile-speedbar))
     ([f11 ?$]        "spell-checking"   pel-pkg-for-spelling    (ispell
                                                                  flyspell))
     ([f11 ?']        "bookmarks"        pel-pkg-for-bookmark    (bookmark
@@ -94,8 +96,12 @@
     ([f11 ??]        "help"             nil                    command-log)
     ([f11 9]         "indentation"      nil                     indent)
     ;; 2 different possible key sequences for speedbar
-    ([f11 134217843] "speedbar"         pel-pkg-for-speedbar    speedbar)
-    ([f11 27 ?s]     "speedbar"         pel-pkg-for-speedbar    speedbar)
+    ([f11 134217843] "speedbar"         pel-pkg-for-speedbar    (speedbar
+                                                                 sr-speedbar
+                                                                 projectile-speedbar))
+    ([f11 27 ?s]     "speedbar"         pel-pkg-for-speedbar    (speedbar
+                                                                 sr-speedbar
+                                                                 projectile-speedbar))
     ([f11 32 ?C]     "pl-c++"           pel-pkg-for-c++         (cpp
                                                                  c-macro))
     ([f11 32 ?C ?#]  "pl-c++"           pel-pkg-for-c++         hide-ifdef)
