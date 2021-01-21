@@ -4309,7 +4309,7 @@ the ones defined from the buffer now."
     (define-key pel:speedbar (kbd "M-r")  'pel-speedbar-refresh)
     (define-key pel:speedbar (kbd "M-a")  'pel-speedbar-toggle-show-all-files)
     (define-key pel:speedbar (kbd "M-o")  'pel-speedbar-toggle-sorting)
-    (define-key pel:speedbar (kbd "M-=")  'pel-speedbar-focus-current-file)
+    (define-key pel:speedbar (kbd "M-f")  'pel-speedbar-focus-current-file)
     ;; (define-key pel:speedbar "e"  #'speedbar-toggle-etags)
     (when (display-graphic-p)
       (define-key pel:speedbar (kbd "M-i") 'pel-speedbar-toggle-images))
