@@ -4783,6 +4783,8 @@ the ones defined from the buffer now."
 (define-key pel:eXecute    "?" #'list-processes)
 (define-key pel:eXecute    "a" #'ansi-term)
 (define-key pel:eXecute    "e" #'eshell)
+(when pel-use-forth
+  (define-key pel:eXecute  "f" 'run-forth))
 (when pel-use-julia
   (define-key pel:eXecute  "j"  'julia-snail))
 (define-key pel:eXecute    "i" #'ielm)
