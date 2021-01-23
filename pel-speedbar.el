@@ -283,6 +283,22 @@ Contract and re-expand parents to see the change.%s"
 ;; --
 ;; Control Behaviour on SR-SPeedbar item selection
 ;; -----------------------------------------------
+;; The following logic determines what of the following 2 behaviours are used
+;; by the speedbar when a speedbar item is selected from the speedbar window,
+;; after the selected item is shown inside another Emacs window:
+;; 1) point is moved to the window where the item is shown
+;; 2) point remains inside the speedbar, allowing the user to select another
+;;   item.
+;;
+;; The default behaviour is selected by the
+;; `pel-sr-speedbar-move-point-to-target-on-select' user-option.  It can also
+;; be modified dynamically during an editing session by calling the command
+;; `pel-sr-speedbar-toggle-select-behaviour'.
+;;
+;; The heart of the control is the `pel-sr-speedbar-visiting-control'
+;; call-back used by the `speedbar-visiting-file-hook' which Speedbar invokes
+;; when a user selects a Speedbar file or tag item.
+
 
 (defvar pel--sr-speedbar-move-point-to-target-on-select
   pel-sr-speedbar-move-point-to-target-on-select
@@ -314,8 +330,21 @@ selection user action."
   (unless pel--sr-speedbar-move-point-to-target-on-select
     (pel--select-sr-speedbar-buffer-window)))
 
-
 ;; --
+;; Controlling the Speedbar item in focus
+;; --------------------------------------
+;; It would be nice to be able to automatically make the currently edited file
+;; (or tag) visible in the Speedbar window as soon as a new window is selected
+;; or when the content of the current window is changed to another buffer.
+;;
+;; At this point, at least with Emacs 26.3, I did not find an Emacs hook that
+;; I could use to update the Speedbar window when visiting a new file or
+;; changing window or the content of a window.
+;;
+;; So for now all I have is the command `pel--speedbar-focus-on' which forces
+;; an update of the content of the Speedbar window to put the current file
+;; content in focus: display it at the top of the Speedbar window and expand
+;; its top-level list.
 
 (defun pel--speedbar-focus-on (buffer-name sp-win &optional original-window)
   "Set speedbar focus on the content of specified BUFFER-NAME.
