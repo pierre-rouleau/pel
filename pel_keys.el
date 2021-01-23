@@ -2507,7 +2507,7 @@ MODE must be a symbol."
     :commands rexx-mode
     :init
     ;; set the file extensions
-    (add-to-list 'auto-mode-alist '("\\.\\(rexx\\|elx\\|ncomm\\|cpr\\)\\'"
+    (add-to-list 'auto-mode-alist '("\\.\\(rexx?\\|elx\\|ncomm\\|cpr\\)\\'"
                                     . rexx-mode))
     ;; Set the mode specific key prefix
     (define-pel-global-prefix pel:for-rexx (kbd "<f11> SPC R"))
