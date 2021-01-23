@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-19 22:47:47, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-23 10:31:59, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -88,7 +88,7 @@
     ([f11 ?-]        "cut-paste"  pel-pkg-for-cut-and-paste (cua-mode
                                                              killing
                                                              popup-kill-ring))
-    ([f11 ?.]        "marking"          nil)
+    ([f11 ?.]        "marking"          pel-pkg-for-marking  expand-region)
     ([f11 ?=]        "cut-paste"        pel-pkg-for-cut-and-paste)
     ([f11 59]        ("comments"
                       "hide-show-code") pel-pkg-for-programming (comment

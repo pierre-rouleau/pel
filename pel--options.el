@@ -56,6 +56,7 @@
 ;;     - pel-pkg-for-kbmacro
 ;;     - pel-pkg-for-key-chord
 ;;     - pel-pkg-for-keys
+;;     - pel-pkg-for-marking
 ;;     - pel-pkg-for-markup
 ;;       - pel-pkg-for-asciidoc
 ;;       - pel-pkg-for-drawing-markup
@@ -88,7 +89,6 @@
 ;;       - pel-pkg-for-v
 ;;     - pel-pkg-for-project-mng
 ;;     - pel-pkg-for-regexp
-;;     - pel-pkg-for-region
 ;;     - pel-pkg-for-scrolling
 ;;     - pel-pkg-for-search
 ;;     - pel-pkg-for-session
@@ -1377,7 +1377,24 @@ waiting for activity to resume in the lewang's repo."
   :link '(url-link :tag "prouleau/command-log-mode @ GitHub"
                    "https://github.com/prouleau/command-log-mode"))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
+;; Marking Management
+;; ------------------
+(defgroup pel-pkg-for-marking nil
+  "List of external packages that PEL can use to help deal with regions."
+  :group 'pel-package-use
+  :link `(url-link :tag "Marking PDF" ,(pel-pdf-file-url "marking"))
+  :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp"))
+  :link `(url-link :tag "Common Lisp PDF" ,(pel-pdf-file-url "pl-common-lisp")))
+
+(defcustom pel-use-expand-region nil
+  "Control whether PEL uses the expand-region package."
+  :group 'pel-pkg-for-marking
+  :link '(url-link :tag "expand-region @ GitHub" "https://github.com/magnars/expand-region.el")
+  :type 'boolean
+  :safe #'booleanp)
+
+;; ---------------------------------------------------------------------------
 ;; Markup Language Support
 ;; -----------------------
 (defgroup pel-pkg-for-markup nil
@@ -3313,22 +3330,6 @@ or pel-use-regexp-steroids is t (for the others)."
   :safe #'booleanp)
 
 ;; -----------------------------------------------------------------------------
-;; Region / Selection Management
-;; -----------------------------
-(defgroup pel-pkg-for-region nil
-  "List of external packages that PEL can use to help deal with regions."
-  :group 'pel-package-use
-  :link `(url-link :tag "Marking PDF" ,(pel-pdf-file-url "marking"))
-  :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp"))
-  :link `(url-link :tag "Common Lisp PDF" ,(pel-pdf-file-url "pl-common-lisp")))
-
-(defcustom pel-use-expand-region nil
-  "Control whether PEL uses the expand-region package."
-  :group 'pel-pkg-for-region
-  :type 'boolean
-  :safe #'booleanp)
-
-;; ----------------------------------------------------------------------------
 ;; Scrolling Control
 ;; -----------------
 (defgroup pel-pkg-for-scrolling nil
