@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-23 10:31:59, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-23 18:24:12, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -110,7 +110,8 @@
                                                                  lispy
                                                                  slime))
     ([f11 32 ?M]     "pl-make")
-    ([f11 32 ?R]     "pl-rexx"          pel-pkg-for-rexx)
+    ([f11 32 ?R]     "pl-rexx"          pel-pkg-for-rexx        rexx-mode)
+    ([f11 32 ?N]     "pl-rexx"          pel-pkg-for-rexx        netrexx)
     ([f11 32 ?a]     "pl-applescript"   pel-pkg-for-applescript apples)
     ([f11 32 ?c]     "pl-c"             pel-pkg-for-c           (c
                                                                  c-macro))
@@ -308,6 +309,7 @@ stored inside the doc/pdf directory.")
     ("makefile-imake"  [f11 32 ?M])
     ("python"          [f11 32 ?p])
     ("rexx"            [f11 32 ?R])
+    ("netrexx"         [f11 32 ?N])
     ("rst"             [f11 32 ?r])
     ("graphviz-dot"    [f11 32 ?g])
     ("plantuml"        [f11 32 ?u]))
@@ -428,6 +430,7 @@ There should be no key binding!" keyseq))
     ("make"             . "pl-make")
     ("python"           . "pl-python")
     ("rexx"             . "pl-rexx")
+    ("netrexx"          . "pl-rexx")
     ;; mode names aliases
     ("mercurial"        . "vcs-mercurial")
     ("lispy"            . "plm-lispy")
@@ -542,7 +545,8 @@ Return nil if nothing found."
 (defconst pel--group-library-names
   '(("rxt"   . "pcre2el")
     ("Ztree" . "ztree-view")
-    ("command-log" . "command-log-mode"))
+    ("command-log" . "command-log-mode")
+    ("netrexx"     . "netrexx-mode"))
   "Maps a group name for the library that defines it.
 This is only required for the libraries that cannot be found
 with the existing code, such as when the group name is different

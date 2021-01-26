@@ -2500,23 +2500,60 @@ MODE must be a symbol."
   ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
   (cl-eval-when 'load
     (pel-install-file
-     "https://raw.githubusercontent.com/emacsattic/rexx-mode/master/rexx-mode.el"
-     "rexx-mode.el"))
+     "https://raw.githubusercontent.com/pierre-rouleau/rexx-mode/master/rexx-mode.el"
+     "rexx-mode.el")
+    (pel-install-file
+     "https://raw.githubusercontent.com/pierre-rouleau/rexx-mode/master/rexx-debug.el"
+     "rexx-debug.el"))
+
+
+  ;; Set the mode specific key prefix
+  (define-pel-global-prefix pel:for-rexx (kbd "<f11> SPC R"))
+
+  (defun pel--setenv-for-rexx ()
+    "Set the environment for REXX file editing."
+    (pel-local-set-f12 'pel:for-rexx))
 
   (use-package rexx-mode
-    :commands rexx-mode
+    :commands (rexx-mode
+               rexx-goto-next-procedure
+               rexx-goto-previous-procedure)
     :init
     ;; set the file extensions
     (add-to-list 'auto-mode-alist '("\\.\\(rexx?\\|elx\\|ncomm\\|cpr\\)\\'"
                                     . rexx-mode))
-    ;; Set the mode specific key prefix
-    (define-pel-global-prefix pel:for-rexx (kbd "<f11> SPC R"))
-    ;;
+
+    (define-key pel:for-rexx (kbd "<down>") 'rexx-goto-next-procedure)
+    (define-key pel:for-rexx (kbd "<up>")   'rexx-goto-previous-procedure)
+
     ;; activate the <f12> key binding for rexx-mode
     (pel--mode-hook-maybe-call
-     '(lambda ()
-        (pel-local-set-f12 'pel:for-rexx))
+     (function pel--setenv-for-rexx)
      'rexx-mode 'rexx-mode-hook)))
+
+(when pel-use-netrexx
+  ;; Download netrexx.el directly from GitHub as there is no official support
+  ;; by either GNU Elpa or MELPA
+  (cl-eval-when 'load
+    (pel-install-file
+     "https://raw.githubusercontent.com/pierre-rouleau/netrexx-mode/master/netrexx-mode.el"
+     "netrexx-mode.el"))
+  (use-package netrexx-mode
+    :commands netrexx-mode
+    :init
+    ;; Set the file extension for NetRexx: ".nrx"
+    (add-to-list 'auto-mode-alist '("\\.nrx\\'"
+                                    . netrexx-mode))
+
+    ;; Set the mode specific key prefix
+    (define-pel-global-prefix pel:for-netrexx (kbd "<f11> SPC N"))
+
+    ;;
+    ;; activate the <f12> key binding for netrexx-mode
+    (pel--mode-hook-maybe-call
+     '(lambda ()
+        (pel-local-set-f12 'pel:for-netrexx))
+     'netrexx-mode 'netrexx-mode-hook)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC u`` : Rust programming

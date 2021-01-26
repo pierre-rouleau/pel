@@ -364,6 +364,15 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - Update: *Python*
     - Modified: binding to rainbow-delimiters-mode to ``<f12> M-r`` like it is
       for other programming languages.
+  - New: *REXX*:
+    - Add support for REXX programming language via a forked version of
+      rexx-mode which provides:
+      - support for imenu/speedbar for REXX procedure, navigation to the
+        next/previous REXX procedure,
+      - customization control for indentation management variables.
+    - New: *NetRexx*:
+      - Add support for NetRexx programming language via a forked version of
+        netrexx-mode.
 - Update: *Process execution*:
   - New: the list-processes command is now bound to ``<f11> x ?`` key
     sequence.

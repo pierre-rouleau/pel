@@ -1043,7 +1043,7 @@ Repository: https://github.com/Silex/elmacro"
   :type 'boolean
   :safe #'booleanp)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-key-chord
 ;; ---------------------
 (defgroup pel-pkg-for-key-chord nil
@@ -3172,7 +3172,7 @@ Note: `pel-use-python' must be t for this to be effective."
                    "https://github.com/abo-abo/lpy"))
 
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; REXX Support
 ;; ------------
 (defgroup pel-pkg-for-rexx nil
@@ -3183,10 +3183,27 @@ Note: `pel-use-python' must be t for this to be effective."
 (defcustom pel-use-rexx nil
   "Control whether PEL support REXX development."
   :group 'pel-pkg-for-rexx
+  :link '(url-link :tag "REXX programming language"
+                   "https://en.wikipedia.org/wiki/Rexx")
+  :link '(url-link :tag "rexx-mode @ GitHub"
+                   "https://github.com/pierre-rouleau/rexx-mode")
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defcustom pel-use-netrexx nil
+  "Control whether PEL support Net-Rexx development."
+  :group 'pel-pkg-for-rexx
+  :link '(url-link :tag "NetRexx home" "http://www.netrexx.org/index.nsp")
+  :link '(url-link :tag "netrexx-mode.el @ netrexx.org"
+                   "http://www.netrexx.org/files/netrexx-mode.el")
+  :link '(url-link :tag "Original netrexx-mode.el @ GitHub"
+                   "https://github.com/emacsattic/netrexx-mode")
+  :link '(url-link :tag "Used netrexx-mode.el @ GitHub"
+                   "https://github.com/pierre-rouleau/netrexx-mode")
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Rust Support
 ;; ------------
 (defgroup pel-pkg-for-rust nil
