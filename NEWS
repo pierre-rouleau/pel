@@ -520,7 +520,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   and navigate across windows.
 + Updates to the Buffer, CUA, Cut & Paste, Marking, Undo PDF reference tables.
 + New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-make.pdf][𝕻𝔩 - Make]] PDF that describes make file editing support.
-+ New:: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth][𝕻𝔩 - Forth]] PDF describing support for the Forth programming language.
++ New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth.pdf][𝕻𝔩 - Forth]] PDF describing support for the Forth programming language.
++ New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-netrexx.pdf][𝕻𝔩 - Netrexx]] PDF describing support for the NetRexx programming
+  language.
++ New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rexx.pdf][𝕻𝔩 - REXX]] PDF describing support for the REXX programming language.
 + New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/macOS-keys.pdf][ macOS Keys ]]PDF that lists and describes the macOS specific keys.
 + New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-CRiSP-Emacs.pdf][➢CRiSP ➫ Emacs]] PDF for Brief and CRiSP users.  It lists the
   correspondences between Brief/CRiSP with CRiSPer and Emacs with PEL.

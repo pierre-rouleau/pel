@@ -2506,7 +2506,6 @@ MODE must be a symbol."
      "https://raw.githubusercontent.com/pierre-rouleau/rexx-mode/master/rexx-debug.el"
      "rexx-debug.el"))
 
-
   ;; Set the mode specific key prefix
   (define-pel-global-prefix pel:for-rexx (kbd "<f11> SPC R"))
 
@@ -2531,6 +2530,8 @@ MODE must be a symbol."
      (function pel--setenv-for-rexx)
      'rexx-mode 'rexx-mode-hook)))
 
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC N`` : NetRexx programming
 (when pel-use-netrexx
   ;; Download netrexx.el directly from GitHub as there is no official support
   ;; by either GNU Elpa or MELPA
@@ -2538,6 +2539,14 @@ MODE must be a symbol."
     (pel-install-file
      "https://raw.githubusercontent.com/pierre-rouleau/netrexx-mode/master/netrexx-mode.el"
      "netrexx-mode.el"))
+
+  ;; Set the mode specific key prefix
+  (define-pel-global-prefix pel:for-netrexx (kbd "<f11> SPC N"))
+
+  (defun pel--setenv-for-netrexx ()
+    "Set the environment for NetRexx file editing."
+    (pel-local-set-f12 'pel:for-netrexx))
+
   (use-package netrexx-mode
     :commands netrexx-mode
     :init
@@ -2545,14 +2554,17 @@ MODE must be a symbol."
     (add-to-list 'auto-mode-alist '("\\.nrx\\'"
                                     . netrexx-mode))
 
-    ;; Set the mode specific key prefix
-    (define-pel-global-prefix pel:for-netrexx (kbd "<f11> SPC N"))
+    (define-key pel:for-netrexx (kbd "<down>") 'netrexx-next-method)
+    (define-key pel:for-netrexx (kbd "<up>")   'netrexx-previous-method)
+    (define-key pel:for-netrexx "="            'netrexx-select-current-block)
+    (define-key pel:for-netrexx "s"            'netrexx-sanitize-region)
+    (define-key pel:for-netrexx ";"            'netrexx-insert-end-comment)
+    (define-key pel:for-netrexx "e"            'netrexx-insert-end-comment-region)
+    (define-key pel:for-netrexx "j"            'netrexx-insert-javadoc-for-method)
 
-    ;;
     ;; activate the <f12> key binding for netrexx-mode
     (pel--mode-hook-maybe-call
-     '(lambda ()
-        (pel-local-set-f12 'pel:for-netrexx))
+     (function pel--setenv-for-netrexx)
      'netrexx-mode 'netrexx-mode-hook)))
 
 ;; ---------------------------------------------------------------------------
