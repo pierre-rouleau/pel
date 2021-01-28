@@ -1144,6 +1144,21 @@ interactively."
   (define-key pel: (kbd    "<f12>")       #'xterm-mouse-mode))
 
 ;; ---------------------------------------------------------------------------
+;; - Display of Regular Expression -- easy-escape
+;; ----------------------------------------------
+(when pel-use-easy-escape
+  (use-package easy-escape
+    :ensure t
+    :pin melpa
+    :commands easy-escape-minor-mode
+    :init
+    (define-key pel: "\"" 'easy-escape-minor-mode)
+    (pel-add-hook-for
+     'pel-modes-activating-easy-escape
+     (lambda ()
+       (easy-escape-minor-mode 1)))))
+
+;; ---------------------------------------------------------------------------
 ;; - Use undo-tree
 ;; ---------------
 ;; Use undo-tree which provides undo/redo ability with complete storage and

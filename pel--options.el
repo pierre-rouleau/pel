@@ -2402,7 +2402,7 @@ When set, identifies what mode is used to support Javascript."
   :group 'pel-pkg-for-lisp
   :type '(repeat symbol))
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Common Lisp Support
 ;; -------------------
 (defgroup pel-pkg-for-clisp nil
@@ -3345,6 +3345,30 @@ or pel-use-regexp-steroids is t (for the others)."
   :group 'pel-pkg-for-regexp
   :type 'boolean
   :safe #'booleanp)
+
+(defcustom pel-use-easy-escape nil
+  "Control whether PEL uses the easy-escape package.
+
+Once activated, you can customize it further via the easy-escape
+customization group."
+  :group 'pel-pkg-for-regexp
+  :link '(custom-group-link "easy-escape")
+  :type 'boolean
+  :safe #'booleanp
+  :link `(url-link :tag "easy-escape @ GitHub"
+                   "https://github.com/cpitclaudel/easy-escape"))
+
+(defcustom pel-modes-activating-easy-escape nil
+  "List of major modes that automatically activate easy-escape minor mode.
+Prime candidates for this would be the following:
+- `prog-mode        : to activate it on all programming language modes,
+- `emacs-lisp-mode  : to activate for Emacs Lisp code,
+- `lisp-mode        : to activate for Lisp mode.
+
+The minor mode can also be activated manually using the
+command `easy-escape-minor-mode'."
+  :group 'pel-pkg-for-regexp
+  :type  '(repeat symbol))
 
 ;; -----------------------------------------------------------------------------
 ;; Scrolling Control

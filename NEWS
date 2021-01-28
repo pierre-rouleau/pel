@@ -466,6 +466,15 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     *pel-use-projectile-speedbar* user-option..  Once projectile is activated
     and a speedbar is opened, set the speedbar to encompass all current
     project directories and files with it.  The key binding is ``<f8> M-s``.
+- New: *Text Display Control*:
+  - New: add support for the [[https://github.com/cpitclaudel/easy-escape][easy-escape]] external package to simplify the
+    display of regular expression strings:
+    - Activated by *pel-use-easy-escape* user-option.
+    - The *pel-modes-activating-easy-escape* user-option identifies the major
+      modes where the easy-escape minor mode is automatically activated.
+    - The new ``<f11> "`` key binding to *easy-escape-minor-mode* allows quick
+      toggle of the easy-escape minor mode.
+    - The command is described in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀ Search/Replace PDF]].
 - Update: *Text Insertion*:
   - Modified: key bindings, using more lower case letters:
     - ``<f6> f`` and ``f11> i f`` are now used instead of ``<f6> F`` and
