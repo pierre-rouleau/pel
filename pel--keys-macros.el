@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-28 15:53:44, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-28 16:53:55, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -466,6 +466,7 @@ There should be no key binding!" keyseq))
     ("emacs"            . "help")
     ("benchmark"        . "help")
     ("encoding"         . "input-method")
+    ("unicode"          . "input-method")
     ("commented-lines"  . "inserting-text")
     ("copyright"        . "inserting-text")
     ("license"          . "inserting-text")
