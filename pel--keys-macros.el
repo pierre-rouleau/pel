@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-28 13:41:56, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-28 15:53:44, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -128,6 +128,7 @@
     ([f11 32 ?l]     "pl-emacs-lisp"    pel-pkg-for-elisp       (checkdoc
                                                                  editing-basics
                                                                  elint
+                                                                 eros
                                                                  lisp
                                                                  lispy))
     ([f11 32 ?l ??]  "pl-emacs-lisp"    pel-pkg-for-all-languages (eldoc

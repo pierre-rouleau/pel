@@ -1509,8 +1509,6 @@ interactively."
 
 (define-pel-global-prefix pel:for-make (kbd "<f11> SPC M"))
 
-;;
-
 (defun pel--setenv-for-make ()
   "Set the environment for Make file editing."
   (define-key pel:for-make (kbd "<up>")      'makefile-previous-dependency)
@@ -2384,6 +2382,15 @@ MODE must be a symbol."
     :init
     (cl-eval-when 'compile (require 'highlight-defined nil :no-error))
     (define-key pel:for-elisp  (kbd "M-d") 'highlight-defined-mode)))
+
+(when pel-use-eros
+  (use-package eros
+    :ensure t
+    :pin melpa
+    :commands eros-mode
+    :init
+    (cl-eval-when 'compile (require 'eros nil :no-error))
+    (define-key pel:for-elisp "E" 'eros-mode)))
 
 ;;
 ;; activate the <f12> key binding for elisp-mode

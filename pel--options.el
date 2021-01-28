@@ -2478,6 +2478,19 @@ in Graphics mode."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-eros nil
+  "Control whether PEL uses the eros package.
+
+eros ≡ Evaluation Result OverlayS.
+
+With eros mode enabled, \\[eval-last-sexp] displays the result
+as an overlay instead of showing it inside the minibuffer."
+  :link '(url-link :tag "eros @ GitHub"
+                   "https://github.com/xiongtx/eros")
+  :group 'pel-pkg-for-elisp
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Inter-S-Expression Navigation
 ;; -----------------------------

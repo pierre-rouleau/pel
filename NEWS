@@ -348,6 +348,15 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       - **Use this first implementation with care**: it prevents checkdoc from
         completing its verification.
         I am currently trying to fix this.
+    - New: added support for eros-mode from the eros external package which
+      provides overlay display of the result of evaluations done by
+      *eval-last-sexp*:
+      - Set the *pel-use-eros* user-option to *t* to download and activate it.
+      - From emacs-lisp-mode, the ``<f12> E`` key sequence is bound to the
+        *eros-mode* command which toggles this mode.
+      - From emacs-lisp-mode, the ``<f12> <f3>`` key sequence brings a menu
+        from which you can select eros to bring the customization buffer to
+        configure eros, even if eros is not currently loaded.
   - New: *Forth*:
     - New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth][𝕻𝔩 - Forth]] PDF that describes the commands available for the Forth
       programming language.
