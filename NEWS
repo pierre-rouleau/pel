@@ -366,9 +366,15 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
         data, output data to query for functions that can provide this data
         transformation. The <f11> SPC l S`` keys sequence is also available
         globally.
-      -  Use ``<f12> <f3>`` from emacs-lisp-mode to open suggest customzation
-        buffer and ``<f12> <f2>`` to open PEL emacs-lisp customization buffer
-        where you can activate *pel-use-suggest*.
+      - Use ``<f12> <f3>`` from emacs-lisp-mode to open suggest customzation
+       buffer and ``<f12> <f2>`` to open PEL emacs-lisp customization buffer
+       where you can activate *pel-use-suggest*.
+    - New: added support for relint: regular expression lint checker.
+      - Set the *pel-use-relint* user-option to *t* to activate it.
+      - The commands are available via the ``<f11> s x M-l`` search/regular
+        expression prefix and from the Emacs-Lisp specific ``<f12> a l``
+        analyze prefix.  Commands to lint the current buffer, file  and
+        directory tree are bound.
   - New: *Forth*:
     - New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth][𝕻𝔩 - Forth]] PDF that describes the commands available for the Forth
       programming language.

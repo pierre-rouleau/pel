@@ -4337,7 +4337,6 @@ the ones defined from the buffer now."
     (when pel-use-multiple-cursors
       (define-key global-map (kbd "C-c m") 'vr/mc-mark))))
 
-;; -----------------------------------------------------------------------------
 ;; Choices:
 ;; - Standard Emacs Search/Replace
 ;; - Visual Regexp
@@ -4346,9 +4345,10 @@ the ones defined from the buffer now."
 ;; - Visual Regexp - pcre2el
 ;; - Visual Regexp - python
 
+;; - - -
 ;; xr-lint
 ;; xr-pp
-;; xr - Emacs regexp parser and analyser
+;; xr - Emacs regexp parser and analyzer
 
 (when pel-use-xr
   (use-package xr
@@ -4368,6 +4368,28 @@ the ones defined from the buffer now."
     (define-key pel:regexp "X" 'pel-xr-regxp)
     (define-key pel:regexp "l" 'pel-xr-lint-at-point)
     (define-key pel:regexp "L" 'pel-xr-lint)))
+
+;; - - -
+;; relint
+
+(when pel-use-relint
+  ;; provide access to the command via search/regexp and elisp/analyze
+  (define-pel-global-prefix pel:regxp-lint (kbd "<f11> s x M-l"))
+  (define-pel-global-prefix pel:elisp-regxp-lint (kbd "<f11> SPC l a l"))
+
+  (use-package relint
+    :ensure t
+    :pin gnu
+    :commands  (relint-current-buffer
+                relint-file
+                relint-directory)
+    :init
+    (define-key pel:regxp-lint "b" 'relint-current-buffer)
+    (define-key pel:regxp-lint "f" 'relint-file)
+    (define-key pel:regxp-lint "d" 'relint-directory)
+    (define-key pel:elisp-regxp-lint "b" 'relint-current-buffer)
+    (define-key pel:elisp-regxp-lint "f" 'relint-file)
+    (define-key pel:elisp-regxp-lint "d" 'relint-directory)))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> M-s`` : Speedbar/SR-Speedbar commands

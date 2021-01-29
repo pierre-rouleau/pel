@@ -3233,7 +3233,6 @@ Note: `pel-use-python' must be t for this to be effective."
   :link `(url-link :tag "lpy @ GitHub"
                    "https://github.com/abo-abo/lpy"))
 
-
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; REXX Support
 ;; ------------
@@ -3419,12 +3418,12 @@ PEL provide xr commands bound to the ``<f11> s x`` key prefix."
 
 Once activated, you can customize it further via the easy-escape
 customization group."
-  :group 'pel-pkg-for-regexp
   :link '(custom-group-link "easy-escape")
+  :link '(url-link :tag "easy-escape @ GitHub"
+                   "https://github.com/cpitclaudel/easy-escape")
+  :group 'pel-pkg-for-regexp
   :type 'boolean
-  :safe #'booleanp
-  :link `(url-link :tag "easy-escape @ GitHub"
-                   "https://github.com/cpitclaudel/easy-escape"))
+  :safe #'booleanp)
 
 (defcustom pel-modes-activating-easy-escape nil
   "List of major modes that automatically activate easy-escape minor mode.
@@ -3437,6 +3436,17 @@ The minor mode can also be activated manually using the
 command `easy-escape-minor-mode'."
   :group 'pel-pkg-for-regexp
   :type  '(repeat symbol))
+
+(defcustom pel-use-relint nil
+  "Controls whether PEL uses the relint package.
+
+The relint package is a regexp lint, with commands that verify the regular
+expressions of buffer, file, or directory."
+  :link '(url-link :tag "relint @ GitHub"
+                   "https://github.com/mattiase/relint")
+  :group 'pel-pkg-for-regexp
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; Scrolling Control
