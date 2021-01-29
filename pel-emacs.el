@@ -152,23 +152,39 @@ On %s:
                intervals-consed
                strings-consed)))
 
+(defun pel--emacs-command-binding (command)
+  "Return the first key bound to the COMMAND.
 
-(defun pel--emacs-command-count ()
-  "Return number of available commands."
+COMMAND must be a symbol.
+Return a key binding string if there is a binding.
+Return nil if there is no binding."
+  (let ((key-description (substitute-command-keys (format "\\[%s]" command)))
+        (m-x-sequence    (format "M-x %s" command)))
+    (unless (string= key-description m-x-sequence)
+      key-description)))
+
+(defun pel--emacs-command-count (&optional predicate)
+  "Return number of available commands that meet the (optional predicate)."
   (let ((command-count 0))
   (mapatoms
    (lambda (symbol)
-     (when (commandp symbol)
+     (when (and (commandp symbol)
+                (or (null predicate)
+                    (funcall predicate symbol)))
        (setq command-count (1+ command-count)))))
   command-count))
 
 ;;-pel-autoload
 (defun pel-emacs-command-stats ()
-  "Display number of available commands."
+  "Display number of available commands and command with key bindings."
   (interactive)
-  ;; TODO: find a way to detect count of commands bound to key
-  (message "Number of currently available commands: %d"
-           (pel--emacs-command-count)))
+  (message "\
+Number of currently available commands    : %4d
+Number of those commands with key bindings: %4d
+Number of global keys (and key prefixes)  : %4d"
+           (pel--emacs-command-count)
+           (pel--emacs-command-count (function pel--emacs-command-binding))
+           (length global-map)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-emacs)
