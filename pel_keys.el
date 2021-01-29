@@ -3095,7 +3095,8 @@ vlang-mode/master/vlang-mode.el"
 ;; - Function Keys - <f11> - Prefix ``<f11> ? e`` : Emacs info
 
 (define-pel-global-prefix pel:emacs (kbd "<f11> ? e"))
-(define-key pel:emacs "c"  'pel-open-emacs-refcard)
+(define-key pel:emacs "c"  'pel-emacs-command-stats)
+(define-key pel:emacs "r"  'pel-open-emacs-refcard)
 (define-key pel:emacs "s" #'list-load-path-shadows)
 (define-key pel:emacs "t"  'pel-show-init-time)
 (define-key pel:emacs "u" #'emacs-uptime)

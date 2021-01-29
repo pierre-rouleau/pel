@@ -1,6 +1,6 @@
 ;;; pel-emacs.el --- Emacs stats utilities -*- lexical-binding: t -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -151,6 +151,24 @@ On %s:
                misc-objects-consed
                intervals-consed
                strings-consed)))
+
+
+(defun pel--emacs-command-count ()
+  "Return number of available commands."
+  (let ((command-count 0))
+  (mapatoms
+   (lambda (symbol)
+     (when (commandp symbol)
+       (setq command-count (1+ command-count)))))
+  command-count))
+
+;;-pel-autoload
+(defun pel-emacs-command-stats ()
+  "Display number of available commands."
+  (interactive)
+  ;; TODO: find a way to detect count of commands bound to key
+  (message "Number of currently available commands: %d"
+           (pel--emacs-command-count)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-emacs)

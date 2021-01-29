@@ -203,7 +203,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-emacs-executable
     pel-open-emacs-refcard
     pel-emacs-load-stats
-    pel-emacs-mem-stats)
+    pel-emacs-mem-stats
+    pel-emacs-command-stats)
 
   (pel-autoload "pel-erlang" for:
     pel-erlang-shell-mode-init
