@@ -3366,7 +3366,11 @@ or pel-use-regexp-steroids is t (for the others)."
   :safe #'booleanp)
 
 (defcustom pel-use-xr nil
-  "Control whether PEL uses the external xr library."
+  "Control whether PEL uses the external xr library.
+
+xr : Emacs regexp parser and analyser.
+Use it to describe regular expressions using lisp forms.
+PEL provide xr commands bound to the ``<f11> s x`` key prefix."
   :link `(url-link :tag "xr @ elpa" "https://elpa.gnu.org/packages/xr.html")
   :group 'pel-pkg-for-regexp
   :type 'boolean
@@ -3396,7 +3400,7 @@ command `easy-escape-minor-mode'."
   :group 'pel-pkg-for-regexp
   :type  '(repeat symbol))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Scrolling Control
 ;; -----------------
 (defgroup pel-pkg-for-scrolling nil

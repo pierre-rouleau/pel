@@ -4348,7 +4348,7 @@ the ones defined from the buffer now."
 
 ;; xr-lint
 ;; xr-pp
-;; xr
+;; xr - Emacs regexp parser and analyser
 
 (when pel-use-xr
   (use-package xr
