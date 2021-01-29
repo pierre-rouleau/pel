@@ -112,7 +112,7 @@
 ;; - pel-modes-activating-<package name>
 ;; - pel-startup-<thing to activate at startup>
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;;; Code:
 
 
@@ -130,7 +130,7 @@
       (member style (mapcar 'car c-style-alist))
     (error "Failed loading cc-vars!")))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; File Path build utility
 ;; -----------------------
 
@@ -154,7 +154,7 @@ master/doc/pdf/%s.pdf" topic)
              (format "%s.pdf" topic)
              (pel-pdf-directory)))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; User Option Data Definition
 ;; ---------------------------
 
@@ -172,7 +172,7 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
   :link `(file-link :tag "PEL @ GitHub" "https://github.com/pierre-rouleau/pel")
   :package-version '(pel . "0.3.1"))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 (defgroup pel-base-emacs nil
   "PEL Emacs basic configuration."
   :group 'pel)
@@ -214,12 +214,12 @@ store them inside a directory and identify that directory here."
           (const :tag "Locate automatically" nil)
           (string :tag "Use files in directory")))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 (defgroup pel-package-use nil
   "List of external packages that can be used by PEL."
   :group 'pel)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Alignment Support
 ;; -----------------
 (defgroup pel-pkg-for-align nil
@@ -248,7 +248,7 @@ For example, to activate it for C, add the c-mode symbol to the list."
   :link '(emacs-commentary-link :tag "commentary" "align.el")
   :link `(url-link :tag "Align PDF" ,(pel-pdf-file-url "align")))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Bookmark Support
 ;; ----------------
 (defgroup pel-pkg-for-bookmark nil
@@ -269,7 +269,7 @@ With this activated PEL binds the following keys:
   :safe #'booleanp
   :link '(url-link :tag "bm @ GitHub" "https://github.com/joodland/bm"))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Buffer Management
 ;; -----------------
 (defgroup pel-pkg-for-buffer nil
@@ -326,7 +326,7 @@ When set, PEL activates the following key sequences:
   :link '(url-link :tag "nhexl @ Elpa"
                    "https://elpa.gnu.org/packages/nhexl-mode.html"))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Completion Support
 ;; ------------------
 (defgroup pel-pkg-for-completion nil
@@ -336,7 +336,8 @@ PEL allows selecting completion mechanism dynamically.  You can use Ido, Ivy,
 Ivy-With-Counsel, Helm, or none of them at any time.  To use any of them you
 must first activate these engines in this configuration buffer."
   :group 'pel-package-use
-  :link `(url-link :tag "Input Completion PDF" ,(pel-pdf-file-url "completion-input")))
+  :link `(url-link :tag "Input Completion PDF"
+                   ,(pel-pdf-file-url "completion-input")))
 
 (defcustom pel-use-ido nil
   "Control whether PEL uses the Ido package.
@@ -345,7 +346,8 @@ The IDO package is distributed with Emacs.  It provides very efficient
 completion mechanism that is preferred by many people."
   :link '(custom-manual "(ido)Overview")
   :link '(url-link :tag "Introduction to Ido Mode @ Mastering Emacs"
-                   "https://www.masteringemacs.org/article/introduction-to-ido-mode")
+                   "https://www.masteringemacs.org/article\
+/introduction-to-ido-mode")
   :link '(custom-group-link "ido")
   :group 'pel-pkg-for-completion
   :type 'boolean
@@ -373,7 +375,8 @@ You must also activate the user option variable  `pel-use-ivy' to use counsel."
   :link '(url-link :tag "Description of counsel-linux-app"
                    "https://oremacs.com/2016/03/16/counsel-linux-app/")
   :link '(url-link :tag "Ivy, Counsel and Swiper Tutorial"
-                   "https://writequit.org/denver-emacs/presentations/2017-04-11-ivy.html")
+                   "https://writequit.org/denver-emacs/presentations\
+/2017-04-11-ivy.html")
   :link '(custom-group-link "counsel")
   :group 'pel-pkg-for-completion
   :type 'boolean
@@ -425,7 +428,7 @@ The available options are:
 - `ido/helm'    : Use Ido with Helm, if both `pel-use-ido' and `pel-use-help'
                   are t.
 - `ivy'         : Use Ivy, when `pel-use-ivy' is t.
-- `ivy/counsel' : Use Ivy with Counsel, when `pel-use-ivy' and `pel-use-counsel'
+- `ivy/counsel' : Use Ivy with Counsel, when `pel-use-ivy' & `pel-use-counsel'
                   are both t."
   :group 'pel-pkg-for-completion
   :type '(choice
@@ -438,7 +441,7 @@ The available options are:
           (const :tag "Use Ivy & Counsel. Needs both `pel-use-ivy' and \
 `pel-use-counsel'." ivy/counsel)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-cursor
 ;; ------------------
 (defgroup pel-pkg-for-cursor nil
@@ -513,7 +516,7 @@ command to change it either for the local buffer or globally."
   :type 'boolean
   :safe #'booleanp)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-dired
 ;; -----------------
 (defgroup pel-pkg-for-dired nil
@@ -534,7 +537,7 @@ command to change it either for the local buffer or globally."
   :type 'boolean
   :safe #'booleanp)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Text and Code Completion and Expansion
 ;; --------------------------------------
 (defgroup pel-pkg-for-expand nil
@@ -544,7 +547,8 @@ Note that auto-complete and company can both be activated.
 However, PEL only allow one of them to be used per buffer.
 The Hippie Expand can be used together with any."
   :group 'pel-package-use
-  :link `(url-link :tag "Auto-Completion PDF" ,(pel-pdf-file-url "auto-completion")))
+  :link `(url-link :tag "Auto-Completion PDF"
+                   ,(pel-pdf-file-url "auto-completion")))
 
 (defcustom pel-use-auto-complete nil
   "Control whether PEL supports the {auto-complete} package."
@@ -564,7 +568,7 @@ The Hippie Expand can be used together with any."
   :type 'boolean
   :safe #'booleanp)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-filemng
 ;; -------------------
 (defgroup pel-pkg-for-filemng nil
@@ -634,7 +638,7 @@ ability to detect files opened on startup."
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Directory Tree Browsing and Management
 ;; --------------------------------------
 
@@ -647,9 +651,10 @@ ability to detect files opened on startup."
   :group 'pel-pkg-for-browse
   :type 'boolean
   :safe #'booleanp
-  :link `(url-link :tag "treemacs @ GitHub"  "https://github.com/Alexander-Miller/treemacs"))
+  :link `(url-link :tag "treemacs @ GitHub"
+                   "https://github.com/Alexander-Miller/treemacs"))
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-pkg-for-neotree nil
   "PEL extra configuration for NeoTree package."
     :group 'pel-pkg-for-browse)
@@ -659,7 +664,8 @@ ability to detect files opened on startup."
   :group 'pel-pkg-for-neotree
   :type 'boolean
   :safe #'booleanp
-  :link `(url-link :tag "NeoTree @ GitHub"  "https://github.com/jaypei/emacs-neotree"))
+  :link `(url-link :tag "NeoTree @ GitHub"
+                   "https://github.com/jaypei/emacs-neotree"))
 
 (defcustom pel-neotree-font-in-terminal nil
   "NeoTree view font for directory node in terminal mode.
@@ -680,7 +686,7 @@ The Icons choice uses the icons from the package all-the-icons."
   :link `(url-link :tag "all-the-icons @ GitHub"
                    "https://github.com/domtronn/all-the-icons.el"))
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 (defgroup pel-pkg-for-ztree nil
   "PEL extra configuration for ztree packages."
@@ -717,7 +723,7 @@ a non-customizable variable."
   :type 'boolean
   :safe #'booleanp)
 
-;; ----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Frame Control
 ;; -------------
 (defgroup pel-pkg-for-frame nil
@@ -752,7 +758,7 @@ emacs-tip-35-framemove.html")
   :type 'boolean
   :safe #'booleanp)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Support for Emacs Running in Graphics Mode
 ;; ------------------------------------------
 (defgroup pel-pkg-for-graphics-emacs nil
@@ -789,7 +795,7 @@ This is only used when Emacs runs in graphics mode."
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Graphics Cursor Control
 ;; -----------------------
 
@@ -823,7 +829,7 @@ These only take effect when Emacs is running in graphics mode."
           (const :tag "box" box)
           (const :tag "hollow" hollow)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-grep
 ;; ----------------
 (defgroup pel-pkg-for-grep nil
@@ -902,7 +908,7 @@ current window:
   :link '(url-link :tag "vline @ EmacsWiki"
                    "https://www.emacswiki.org/emacs/VlineMode"))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Parens block management
 ;; -----------------------
 
@@ -936,13 +942,14 @@ grouping characters:
   :type 'boolean
   :safe #'booleanp)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Insertion of Text & Templates
 ;; -----------------------------
 (defgroup pel-pkg-for-insertions nil
   "List of external packages that PEL can use to provide easy text insertion."
   :group 'pel-package-use
-  :link `(url-link :tag "Inserting Text PDF" ,(pel-pdf-file-url "inserting-text")))
+  :link `(url-link :tag "Inserting Text PDF"
+                   ,(pel-pdf-file-url "inserting-text")))
 
 (defcustom pel-use-lice nil
   "Control whether PEL uses the lice package to insert software license text."
@@ -979,7 +986,8 @@ To activate the changes for this you must 'Apply and Save' and restart Emacs."
   :type '(choice
           (const :tag "Do not use" nil)
           (const :tag "Use, activate later by command"  t)
-          (const :tag "Use, activate globally when Emacs starts" use-from-start)))
+          (const :tag "Use, activate globally when Emacs starts"
+                 use-from-start)))
 
 (defcustom pel-use-yasnippet-snippets nil
   "Control whether PEL uses the yasnippet-snippets package.
@@ -989,15 +997,17 @@ PEL activates it only if variable `pel-use-yasnippet' is non-nil."
   :type 'boolean
   :safe #'booleanp)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-kbmacro
 ;; -------------------
 (defgroup pel-pkg-for-kbmacro nil
   "List of external packages that PEL can use to handle keyboard macros."
   :group 'pel-package-use
   :group 'kmacro
-  :link `(url-link :tag "Keyboard Macros PDF" ,(pel-pdf-file-url "keyboard-macros"))
-  :link `(url-link :tag "Function Keys Usage PDF" ,(pel-pdf-file-url "keys-fn")))
+  :link `(url-link :tag "Keyboard Macros PDF"
+                   ,(pel-pdf-file-url "keyboard-macros"))
+  :link `(url-link :tag "Function Keys Usage PDF"
+                   ,(pel-pdf-file-url "keys-fn")))
 
 (defcustom pel-kbmacro-prompts nil
   "Prompt before overriding existing keyboard macro?
@@ -1083,15 +1093,17 @@ To use key-seq you must also activate key-chords via `pel-use-key-chord'."
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-key-chord-two-keys-delay 0.1	; 0.05 or 0.1
-  "Max time delay between two key press to be considered a key chord."
+(defcustom pel-key-chord-two-keys-delay 0.1
+  "Max time delay between two key press to be considered a key chord.
+A good value is 0.05 or 0.1."
   :group 'pel-pkg-for-key-chord
   :type 'float
   :safe #'floatp)
 
-(defcustom pel-key-chord-one-key-delay 0.2	; 0.2 or 0.3 to avoid first autorepeat
+(defcustom pel-key-chord-one-key-delay 0.2
   "Max time delay between 2 press of the same key to be considered a key chord.
-This should normally be a little longer than `key-chord-two-keys-delay'."
+This should normally be a little longer than `key-chord-two-keys-delay'.
+A value of 0.2 or 0.3 is used to avoid first autorepeat."
   :group 'pel-pkg-for-key-chord
   :type 'float
   :safe #'floatp)
@@ -1224,10 +1236,10 @@ See `pel-search-word-from-top' for description of argument N."
                    pel-kc-correct-word-before-point)
     (flyspell-prog-mode "flyspell" key-chord  "4r"
                         pel-kc-correct-word-before-point)
-    (global    ""            key-chord   "6y"       pel-kc-open-at-point)
-    (global    ""            key-chord   "6u"       pel-kc-browse-filename-at-point)
-    (global    ""            key-chord   "7u"       pel-kc-browse-url-at-point)
-    (global    ""            key-chord   ".;"       pel-kc-search-word-from-top))
+    (global    ""            key-chord   "6y" pel-kc-open-at-point)
+    (global    ""            key-chord   "6u" pel-kc-browse-filename-at-point)
+    (global    ""            key-chord   "7u" pel-kc-browse-url-at-point)
+    (global    ""            key-chord   ".;" pel-kc-search-word-from-top))
   "List of key-chords activated when the key-chord-mode is turned on.
 PEL provides a set of defaults.  You can replace, delete or add new
 key-chord definitions to this default.
@@ -1320,7 +1332,7 @@ The `pel-key-chords' value is a list of objects.
              (function :tag "lambda form     "
                        :value (lambda () (interactive) <YOUR CODE HERE>))))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Keys & Prompts
 ;; --------------
 (defgroup pel-pkg-for-keys nil
@@ -1385,12 +1397,14 @@ waiting for activity to resume in the lewang's repo."
   :group 'pel-package-use
   :link `(url-link :tag "Marking PDF" ,(pel-pdf-file-url "marking"))
   :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp"))
-  :link `(url-link :tag "Common Lisp PDF" ,(pel-pdf-file-url "pl-common-lisp")))
+  :link `(url-link :tag "Common Lisp PDF"
+                   ,(pel-pdf-file-url "pl-common-lisp")))
 
 (defcustom pel-use-expand-region nil
   "Control whether PEL uses the expand-region package."
   :group 'pel-pkg-for-marking
-  :link '(url-link :tag "expand-region @ GitHub" "https://github.com/magnars/expand-region.el")
+  :link '(url-link :tag "expand-region @ GitHub"
+                   "https://github.com/magnars/expand-region.el")
   :type 'boolean
   :safe #'booleanp)
 
@@ -1407,7 +1421,7 @@ waiting for activity to resume in the lewang's repo."
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; AsciiDoc Support
 ;; ----------------
 (defgroup pel-pkg-for-asciidoc nil
@@ -1421,7 +1435,7 @@ waiting for activity to resume in the lewang's repo."
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; pel-pkg-for-draw-markup
 ;; -----------------------
 (defgroup pel-pkg-for-drawing-markup nil
@@ -1429,7 +1443,7 @@ waiting for activity to resume in the lewang's repo."
   :group 'pel-pkg-for-markup
   :link `(url-link :tag "Drawing PDF" ,(pel-pdf-file-url "drawing")))
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; GraphViz-Dot Support
 ;; --------------------
 (defgroup pel-pkg-for-graphviz-dot nil
@@ -1451,7 +1465,7 @@ images from their Graphviz Dot files."
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; PlantUML Support
 ;; ----------------
 
@@ -1459,9 +1473,11 @@ images from their Graphviz Dot files."
   "PEL UML support."
   :group 'pel-pkg-for-drawing-markup
   :link `(url-link :tag "PlantUML PDF" ,(pel-pdf-file-url "plantuml"))
-  :link `(url-link :tag "PlantUML @ GitHub" "https://github.com/skuro/plantuml-mode.")
+  :link `(url-link :tag "PlantUML @ GitHub"
+                   "https://github.com/skuro/plantuml-mode.")
   :link `(url-link :tag "PlantUML home page" "https://plantuml.com")
-  :link `(url-link :tag "PlantUML @ wikipedia" "https://en.wikipedia.org/wiki/PlantUML"))
+  :link `(url-link :tag "PlantUML @ wikipedia"
+                   "https://en.wikipedia.org/wiki/PlantUML"))
 
 (defcustom pel-use-plantuml nil
   "Control whether PEL activates support for PlantUML to draw UML diagrams.
@@ -1491,7 +1507,7 @@ See info at URL https://github.com/alexmurray/flycheck-plantuml"
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; reStructuredText support
 ;; ------------------------
 (defgroup pel-pkg-for-reST nil
@@ -1532,7 +1548,7 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
   :type 'integer
   :safe 'pel-indent-valid-p)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-navigation
 ;; ----------------------
 (defgroup pel-pkg-for-navigation nil
@@ -1542,7 +1558,8 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
 
 (defcustom pel-use-ace-link nil
   "Control activation of the ace link package."
-  :link `(url-link :tag "ace-link @ GitHub" "https://github.com/abo-abo/ace-link")
+  :link `(url-link :tag "ace-link @ GitHub"
+                   "https://github.com/abo-abo/ace-link")
   :group 'pel-pkg-for-navigation
   :type 'boolean
   :safe #'booleanp)
@@ -1554,7 +1571,7 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
   :type 'boolean
   :safe #'booleanp)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Programming Language Support
 ;; ============================
 (defgroup pel-pkg-for-programming nil
@@ -1562,14 +1579,15 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
   :group 'pel-package-use
   :link `(url-link :tag "Comments PDF" ,(pel-pdf-file-url "comments")))
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Generic Programming Support
 ;; ---------------------------
 (defgroup pel-pkg-for-all-languages nil
   "PEL Generic Programming support."
   :group 'pel-pkg-for-programming
   :link `(url-link :tag "Comments PDF" ,(pel-pdf-file-url "comments"))
-  :link `(url-link :tag "Inserting Text PDF" ,(pel-pdf-file-url "inserting-text")))
+  :link `(url-link :tag "Inserting Text PDF"
+                   ,(pel-pdf-file-url "inserting-text")))
 
 (defcustom pel-use-eldoc-box nil
   "Control whether PEL supports the eldoc-box package.
@@ -1599,7 +1617,8 @@ M-x eldoc-mode)."
   :group 'pel-pkg-for-all-languages
   :type 'boolean
   :safe #'booleanp
-  :link '(url-link :tag "eldoc-box @ GitHub" "https://github.com/casouri/eldoc-box")
+  :link '(url-link :tag "eldoc-box @ GitHub"
+                   "https://github.com/casouri/eldoc-box")
   :link '(custom-group-link "eldoc"))
 
 (defcustom pel-use-hide-comnt nil
@@ -1609,7 +1628,7 @@ This package provides the ability to hide comments."
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Language Server Protocol (LSP) Support
 ;; --------------------------------------
 
@@ -1624,12 +1643,13 @@ eglot is a client for Language Server Protocol servers."
   :type 'boolean
   :safe #'booleanp)
 
-;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-pkg-generic-code-style nil
   "PEL Generic code style configuration."
   :group 'pel-pkg-for-all-languages
   :group 'pel-pkg-for-skeletons
-  :link `(url-link :tag "Inserting Text PDF" ,(pel-pdf-file-url "inserting-text")))
+  :link `(url-link :tag "Inserting Text PDF"
+                   ,(pel-pdf-file-url "inserting-text")))
 
 (defcustom pel-generic-skel-use-separators t
   "Specifies whether generic code block include separators line.
@@ -1723,18 +1743,20 @@ to add the following sections:
 - Local Variables,
 - Code.
 
-Empty strings can be used to specify section with a tempo marker with no text."
+Empty strings can be used to specify section with a tempo marker
+with no text."
   :group 'pel-pkg-generic-code-style
   :type '(repeat string))
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; AppleScript support
 ;; -------------------
 (defgroup pel-pkg-for-applescript nil
   "PEL customization for AppleScript."
   :group 'pel-pkg-for-programming
   :group 'apples
-  :link `(url-link :tag "AppleScript PDF" ,(pel-pdf-file-url "pl-applescript")))
+  :link `(url-link :tag "AppleScript PDF"
+                   ,(pel-pdf-file-url "pl-applescript")))
 
 (defcustom pel-use-applescript nil
   "Control whether PEL support the AppleScript mode."
@@ -1751,7 +1773,7 @@ Empty strings can be used to specify section with a tempo marker with no text."
     :group 'pel-pkg-for-applescript
     :type 'string))
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; CC Mode Language support
 ;; ------------------------
 (defgroup pel-pkg-for-cc nil
@@ -1770,7 +1792,7 @@ of auto-newline while editing."
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; C Language Support
 ;; ------------------
 
@@ -1798,7 +1820,7 @@ via the ``<f12> ? e`` sequence."
   :link '(url-link :tag "c-eldoc @ GitHub"
                    "https://github.com/pierre-rouleau/c-eldoc"))
 
-;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-c-code-style nil
   "C Source Code Style options."
   :group 'pel-pkg-for-c
@@ -1900,7 +1922,7 @@ Values in the [2, 8] range are accepted."
   :type 'boolean
   :safe #'booleanp)
 
-;;     -       -       -       -       -       -       -       -       -       -
+;;    -       -       -       -       -       -       -       -       -       -
 (defgroup pel-c-skeleton-control nil
   "Control Skeleton that generate C source code."
   :group 'pel-c-code-style
@@ -1936,7 +1958,7 @@ comments of length controlled by variable `fill-column' are inserted."
           (const :tag "No documentation markup inserted in templates." nil)
           (const :tag "Insert Doxygen markup in templates." doxygen)))
 
-;;     .       .       .       .       .       .       .       .       .       .
+;;    .       .       .       .       .       .       .       .       .       .
 (defgroup pel-c-module-header-skeleton-control nil
   "Control Skeleton that generate C source code."
   :group 'pel-c-skeleton-control
@@ -1949,7 +1971,7 @@ comments of length controlled by variable `fill-column' are inserted."
   :safe #'booleanp)
 
 (defcustom pel-c-skel-use-uuid-include-guards t
-  "Specifies whether UUID-based include guards are inserted inside C header file."
+  "Controls if UUID-based include guards are inserted inside C header file."
   :group 'pel-c-module-header-skeleton-control
   :type 'boolean
   :safe #'booleanp)
@@ -2036,7 +2058,7 @@ the copyright holder value."
   :type 'boolean
   :safe #'booleanp)
 
-;;     .       .       .       .       .       .       .       .       .       .
+;;    .       .       .       .       .       .       .       .       .       .
 (defgroup pel-c-function-header-skeleton-control nil
   "Control Skeleton that generate C source code."
   :group 'pel-c-skeleton-control
@@ -2087,8 +2109,10 @@ The choices are:
   :group 'pel-c-function-header-skeleton-control
   :type '(choice
           (const :tag "Just code, no comment block." nil)
-          (const :tag "Basic documentation block above function definition." basic-style)
-          (const :tag "Man-page style documentation block above function definition." man-style)
+          (const :tag "Basic documentation block above function definition."
+                 basic-style)
+          (const :tag "Man-page style documentation block above function \
+definition." man-style)
           (string :tag "Use your own custom definition\n inside file")))
 
 (defcustom pel-c-skel-function-name-on-first-column nil
@@ -2114,13 +2138,14 @@ int* some_function(int some_arg)
    some_code();
 }
 
-This affects all styles specified by variable `pel-c-skel-function-define-style'
-potentially except the user defined ones, which could use that variable too."
+This affects all styles specified by variable
+`pel-c-skel-function-define-style' potentially except the user
+defined ones, which could use that variable too."
   :group 'pel-c-function-header-skeleton-control
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; C++ Language Support
 ;; --------------------
 
@@ -2129,7 +2154,7 @@ potentially except the user defined ones, which could use that variable too."
   :group 'pel-pkg-for-cc
   :link `(url-link :tag "C++ PDF" ,(pel-pdf-file-url "pl-c++")))
 
-;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-c++-code-style nil
   "C++ Source Code Style options."
   :group 'pel-pkg-for-c++
@@ -2220,7 +2245,7 @@ Values in the [2, 8] range are accepted."
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; D Language Support
 ;; ------------------
 ;; Note: support is for D 2.x (as opposed to the older, different and now
@@ -2241,7 +2266,7 @@ Values in the [2, 8] range are accepted."
   :type 'boolean
   :safe #'booleanp)
 
-;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-d-code-style nil
   "D Source Code Style options."
   :group 'pel-pkg-for-d
@@ -2361,7 +2386,7 @@ by the `pel-use-d-ac-dcd'."
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Javascript support
 ;; ------------------
 (defgroup pel-pkg-for-javascript nil
@@ -2376,7 +2401,8 @@ When set, identifies what mode is used to support Javascript."
   :group 'pel-pkg-for-javascript
   :type '(choice
           (const :tag "Emacs basic support." nil)
-          (const :tag "Future: Emacs basic + PEL additions using built-in js-mode." js-mode)
+          (const :tag "Future: Emacs basic + \
+PEL additions using built-in js-mode." js-mode)
           (const :tag "Supported by the js2-mode external package." js2-mode)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2408,7 +2434,8 @@ When set, identifies what mode is used to support Javascript."
 (defgroup pel-pkg-for-clisp nil
   "PEL customization for Common Lisp."
   :group 'pel-pkg-for-lisp
-  :link `(url-link :tag "Common Lisp PDF" ,(pel-pdf-file-url "pl-common-lisp")))
+  :link `(url-link :tag "Common Lisp PDF"
+                   ,(pel-pdf-file-url "pl-common-lisp")))
 
 (defcustom pel-use-common-lisp nil
   "Control whether PEL supports Common Lisp development."
@@ -2436,7 +2463,7 @@ install them locally."
   :group 'pel-pkg-for-clisp
   :type 'string)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Emacs Lisp Support
 ;; ------------------
 (defgroup pel-pkg-for-elisp nil
@@ -2449,7 +2476,8 @@ install them locally."
   :group 'pel-pkg-for-elisp
   :type 'boolean
   :safe #'booleanp
-  :link '(url-link :tag "macrostep @ GitHub" "https://github.com/joddie/macrostep")
+  :link '(url-link :tag "macrostep @ GitHub"
+                   "https://github.com/joddie/macrostep")
   :link '(custom-group-link "macrostep"))
 
 (defcustom pel-use-esup nil
@@ -2504,7 +2532,7 @@ A great tool for learning new Emacs Lisp functions."
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Inter-S-Expression Navigation
 ;; -----------------------------
 (defgroup pel-sexp-form-navigation nil
@@ -2713,7 +2741,7 @@ inside comments and docstrings."
   :group 'pel-sexp-form-navigation
   :type '(repeat string))
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-elisp-code-style nil
   "Emacs Lisp Source Code Style options."
   :group 'pel-pkg-for-elisp
@@ -2766,14 +2794,14 @@ the copyright holder value."
   :type 'boolean
   :safe #'booleanp)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; BEAM Programming Languages
 ;; --------------------------
 (defgroup pel-pkg-for-beam-vm nil
   "PEL customization for BEAM Virtual Machine programming languages."
   :group 'pel-pkg-for-programming)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Elixir Support
 ;; --------------
 ;; Note: Elixir is a BEAM VM programming language.
@@ -2813,15 +2841,16 @@ package which provides the client/library for LSP."
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Erlang Support
 ;; --------------
 ;; Note: Erlang, is a BEAM VM programming language.
+;;
 ;; The PEL configuration for Erlang attempts to control several aspects of the
 ;; various Emacs packages supporting Erlang: there's what I currently perceive
-;; as a lack of commonality of control between them (erlang.el, edts, etc..) and
-;; I want to simplify the identification of the various Erlang files for several
-;; Erlang versions and for these tools.  The concepts controlled are:
+;; as a lack of commonality of control between them (erlang.el, edts, etc..)
+;; and I want to simplify the identification of the various Erlang files for
+;; several Erlang versions and for these tools.  The concepts controlled are:
 ;;
 ;; - The location of Erlang man page files:
 ;;   - erlang.el:
@@ -2863,10 +2892,11 @@ package which provides the client/library for LSP."
 ;;                    identified by `pel-erlang-version-envvar'.
 
 ;;  - PEL provides the version-erl command line utility (stored in PEL's bin
-;;    directory).  This is a short Erlang script that prints Erlang's version on
-;;    stdout.  The PEL Erlang initialization code uses that utility to
+;;    directory).  This is a short Erlang script that prints Erlang's version
+;;    on stdout.  The PEL Erlang initialization code uses that utility to
 ;;    automatically detects the version of Erlang available in Emacs parent
-;;    process. PEL uses that to identify which version of man pages should be used.
+;;    process. PEL uses that to identify which version of man pages should be
+;;    used.
 ;;
 ;;  - Use `pel-erlang-version' to identify the Erlang version used by default.
 ;;    It can be  a specific number string (like "23.0" or "21.3.8.7") or can
@@ -2875,7 +2905,8 @@ package which provides the client/library for LSP."
 ;;    environment variable name can be identified in
 ;;    `pel-erlang-version-envvar'.
 ;;
-;;  - To help support both edts and erlang.el model, PEL creates symbolic links:
+;;  - To help support both edts and erlang.el model, PEL creates symbolic
+;;    links:
 ;;   - ``~/.emacs.d/cache/erlang_mode_man_pages`` is a symlink that points to
 ;;     ``~/.emacs.d/edts/doc/V`` where V is the Erlang version determined by
 ;;     the method identified by `pel-erlang-version-detection-method'.
@@ -2926,11 +2957,13 @@ in `pel-erlang-version-envvar'." by-envvar)))
   "Erlang version used.
 Controls which directory in `pel-erlang-man-rootdir' is used to identify
 Erlang man files.
+
 `pel-erlang-version' can be a specific number string (like
-\"23.0\" or \"21.3.8.7\") or nil.  If set nil, PEL uses  an environment variable
-to identify the Erlang version. PEL uses the environment variable
-PEL_ERLANG_VERSION by default.  A different environment variable
-name can be identified in `pel-erlang-version-envvar'."
+\"23.0\" or \"21.3.8.7\") or nil.  If set nil, PEL uses an
+environment variable to identify the Erlang version. PEL uses the
+environment variable PEL_ERLANG_VERSION by default.  A different
+environment variable name can be identified in
+`pel-erlang-version-envvar'."
   :group 'pel-pkg-for-erlang
   :type 'string)
 
@@ -2997,7 +3030,7 @@ if configured to activate automatically."
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-erlang-code-style nil
   "Erlang Source Code Style options."
   :group 'pel-pkg-for-erlang
@@ -3016,9 +3049,10 @@ Standards & Guidelines."
           (const   :tag "Use the default fill-column value." nil)
           (integer :tag "Use a specific value for erlang-mode buffers:"))
   :link '(url-link :tag "Inka Erlang Guideline"
-                   "https://github.com/inaka/erlang_guidelines#100-column-per-line"))
+                   "https://github.com/inaka/erlang_guidelines#\
+100-column-per-line"))
 
-;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-erlang-skeleton-control nil
   "Control Skeleton that generate Erlang source code."
   :group 'pel-erlang-code-style
@@ -3059,7 +3093,8 @@ included, reducing the comments overhead in files."
   :type '(choice
           (const :tag "Do not insert Edoc comment." nil)
           (const :tag "Insert Edoc comments everywhere." t)
-          (const :tag "Insert Edoc comments only in functions, not in file header." in-function-only)))
+          (const :tag "Insert Edoc comments only in functions, \
+not in file header." in-function-only)))
 
 (defcustom pel-erlang-skel-prompt-for-purpose t
   "Control whether skeleton insertions prompt for purpose strings."
@@ -3068,7 +3103,8 @@ included, reducing the comments overhead in files."
           (const :tag "Never prompt for purpose." nil)
           (const :tag "Always prompt for purpose (and function name)." t)
           (const :tag "Only prompt for file purpose." in-file-only)
-          (const :tag "Only prompt for function purpose (and function name)." in-function-only)))
+          (const :tag "Only prompt for function purpose (and function name)."
+                 in-function-only)))
 
 (defcustom pel-erlang-skel-prompt-for-function-name t
   "Control whether skeleton insertions prompt for function name."
@@ -3103,7 +3139,7 @@ the copyright holder value."
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; LFE - Lisp Flavoured Erlang - Support
 ;; -------------------------------------
 ;; Note: LFE is a BEAM VM programming language.
@@ -3118,7 +3154,7 @@ the copyright holder value."
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Forth support
 ;; -------------
 (defgroup pel-pkg-for-forth nil
@@ -3132,7 +3168,7 @@ the copyright holder value."
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Julia Support
 ;; --------------
 (defgroup pel-pkg-for-julia nil
@@ -3150,7 +3186,7 @@ IMPORTANT:
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Python Support
 ;; --------------
 (defgroup pel-pkg-for-python nil
@@ -3246,7 +3282,7 @@ When set to non-nil, 3 packages are used:
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; V Language Support
 ;; ------------------
 (defgroup pel-pkg-for-v nil
@@ -3277,7 +3313,7 @@ NOTE:
   :link '(url-link :tag "vlang-mode @ GitHub"
                    "https://github.com/pierre-rouleau/vlang-mode"))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Project Manager Support
 ;; =======================
 (defgroup pel-pkg-for-project-mng nil
@@ -3293,13 +3329,14 @@ NOTE:
           (const :tag "Use, activate later by command"  t)
           (const :tag "Use, activate when Emacs starts" use-from-start)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-regexp
 ;; ------------------
 (defgroup pel-pkg-for-regexp nil
   "List of external packages that PEL can use for regular expressions."
   :group 'pel-package-use
-  :link `(url-link :tag "Search/Replace PDF" ,(pel-pdf-file-url "search-replace")))
+  :link `(url-link :tag "Search/Replace PDF"
+                   ,(pel-pdf-file-url "search-replace")))
 
 (defcustom pel-bind-keys-for-regexp nil
   "If set to t, PEL binds several keys in the C-c prefix.
@@ -3352,7 +3389,8 @@ or pel-use-regexp-steroids is t (for the others)."
 
 (defcustom pel-use-visual-regexp nil
   "Control whether PEL uses the external visual-regexp library."
-  :link `(url-link :tag "visual-regexp @ GitHub" "https://github.com/benma/visual-regexp.el")
+  :link `(url-link :tag "visual-regexp @ GitHub"
+                   "https://github.com/benma/visual-regexp.el")
   :group 'pel-pkg-for-regexp
   :type 'boolean
   :safe #'booleanp)
@@ -3417,13 +3455,14 @@ command `easy-escape-minor-mode'."
   :link '(url-link :tag "smooth-scrolling @ GitHub"
                    "https://github.com/aspiers/smooth-scrolling/"))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-search
 ;; ------------------
 (defgroup pel-pkg-for-search nil
   "List of external packages that PEL can use for searching text."
   :group 'pel-package-use
-  :link `(url-link :tag "Search/Replace PDF" ,(pel-pdf-file-url "search-replace")))
+  :link `(url-link :tag "Search/Replace PDF"
+                   ,(pel-pdf-file-url "search-replace")))
 
 (defcustom pel-search-from-top-in-other nil
   "Force function `pel-search-word-from-top' search in other of 2 windows.
@@ -3479,7 +3518,7 @@ PEL supports the following tools:
           (const :tag "Use Anzu" anzu)
           (const :tag "Use Swiper" swiper)))
 
-;; ----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-session
 ;; -------------------
 (defgroup pel-pkg-for-session nil
@@ -3512,7 +3551,8 @@ The value can be:
   :group 'pel-pkg-for-session
   :type '(choice
           (const :tag "Not used" nil)
-          (const :tag "Use built-in desktop - do NOT activate desktop-save-mode" t)
+          (const :tag "Use built-in desktop - do NOT activate \
+desktop-save-mode" t)
           (const :tag "Use built-in desktop and ACTIVATE desktop-save-mode"
                  with-desktop-automatic)
           (const :tag "Use desktop with desktop-registry \
@@ -3533,7 +3573,7 @@ and ACTIVATE desktop-save-mode" with-desktop-registry-automatic)
 ;; - desktop-auto-save-timeout
 ;; - desktop-load-locked-desktop
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Shell & Terminal Support
 ;; ------------------------
 (defgroup pel-pkg-for-shells nil
@@ -3555,12 +3595,12 @@ and usable shell for Emacs."
 (defgroup pel-pkg-for-skeletons nil
   "Holds options for controlling skeleton code generation."
   :group 'pel-package-use)
-;; The children of that group are scattered in the respective programming
-;; or markup language code sections. Keep this group here: a group may have
-;; several parent groups and all skeleton control groups refer to this one as their
-;; parent.
+;; The children of that group are scattered in the respective programming or
+;; markup language code sections. Keep this group here: a group may have
+;; several parent groups and all skeleton control groups refer to this one as
+;; their parent.
 
-;; ----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-speedbar
 ;; --------------------
 (defgroup pel-pkg-for-speedbar nil
@@ -3615,7 +3655,7 @@ Setting this non-nil also sets up the use of speedbar and projectile."
   :link '(url-link :tag "projectile + speedbar @ GitHub"
                    "https://github.com/anshulverma/projectile-speedbar"))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Spelling Support
 ;; ----------------
 
@@ -3630,7 +3670,8 @@ Setting this non-nil also sets up the use of speedbar and projectile."
 (defgroup pel-pkg-for-spelling nil
   "PEL Spelling Support."
   :group 'pel-package-use
-  :link `(url-link :tag "Spell Checking PDF" ,(pel-pdf-file-url "spell-checking")))
+  :link `(url-link :tag "Spell Checking PDF"
+                   ,(pel-pdf-file-url "spell-checking")))
 
 (defcustom pel-spell-check-tool nil
   "Spell Checking tool and local dictionary.
@@ -3719,13 +3760,14 @@ To activate the changes for this you must 'Apply and Save' and restart Emacs."
   :group 'pel-pkg-for-text-mode
   :type '(repeat symbol))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Undo Mechanism Management
 ;; -------------------------
 (defgroup pel-pkg-for-undo nil
   "List of external packages that PEL can use to control the undo mechanisms."
   :group 'pel-package-use
-  :link `(url-link :tag "Undo/Redo/Repeat PDF" ,(pel-pdf-file-url "undo-redo-repeat")))
+  :link `(url-link :tag "Undo/Redo/Repeat PDF"
+                   ,(pel-pdf-file-url "undo-redo-repeat")))
 
 (defcustom pel-use-undo-tree nil
   "Control whether PEL uses the undo-tree package."
@@ -3739,7 +3781,7 @@ To activate the changes for this you must 'Apply and Save' and restart Emacs."
   :type 'boolean
   :safe #'booleanp)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Version Control System Support
 ;; ------------------------------
 (defgroup pel-pkg-for-vcs nil
@@ -3759,7 +3801,7 @@ To activate the changes for this you must 'Apply and Save' and restart Emacs."
   :type 'boolean
   :safe #'booleanp)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Windows Management
 ;; ------------------
 (defgroup pel-pkg-for-window nil
@@ -3832,7 +3874,7 @@ If it set to nil, these keys are not bound."
   :type 'boolean
   :safe #'booleanp)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-xref
 ;; ----------------
 (defgroup pel-pkg-for-xref nil
@@ -3868,7 +3910,8 @@ This requires the CScope command line utility.
 Note: on macOS you can install cscope with Homebrew
       with: brew install cscope."
   :group 'pel-pkg-for-xref
-  :link '(url-link :tag "xcscope @ GitHub" "https://github.com/dkogan/xcscope.el")
+  :link '(url-link :tag "xcscope @ GitHub"
+                   "https://github.com/dkogan/xcscope.el")
   :type 'boolean
   :safe #'booleanp)
 
@@ -3878,7 +3921,8 @@ Note: on macOS you can install cscope with Homebrew
 Note: activating `pel-use-helm-cscope' and `pel-use-xcscope'
 implicitly activates `pel-use-helm'."
   :group 'pel-pkg-for-xref
-  :link '(url-link :tag "helm-cscope @ GitHub" "https://github.com/alpha22jp/helm-cscope.el")
+  :link '(url-link :tag "helm-cscope @ GitHub"
+                   "https://github.com/alpha22jp/helm-cscope.el")
   :type 'boolean
   :safe #'booleanp)
 
@@ -3918,7 +3962,8 @@ put the following in the list:
 With dumb-jump, the M-.  command will use dumb-jump to
 identify symbol in several programming languages."
   :group 'pel-pkg-for-xref
-  :link '(url-link :tag "dump-jump @ GitHub" "https://github.com/jacktasia/dumb-jump")
+  :link '(url-link :tag "dump-jump @ GitHub"
+                   "https://github.com/jacktasia/dumb-jump")
   :type 'boolean
   :safe #'booleanp)
 
@@ -4087,7 +4132,7 @@ indexing system."
   :type 'boolean
   :safe #'booleanp)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 (provide 'pel--options)
 
 ;;; pel--options.el ends here
