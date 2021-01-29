@@ -2491,6 +2491,19 @@ as an overlay instead of showing it inside the minibuffer."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-suggest nil
+  "Control whether PEL uses the suggest package.
+
+With it you can open a suggest buffer where you identify inputs
+and wanted output of an hypothetical function and request suggestions
+for functions that provide the requested functionality.
+A great tool for learning new Emacs Lisp functions."
+  :link '(url-link :tag "suggest @ GitHub"
+                   "https://github.com/Wilfred/suggest.el")
+  :group 'pel-pkg-for-elisp
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Inter-S-Expression Navigation
 ;; -----------------------------

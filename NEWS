@@ -357,6 +357,18 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       - From emacs-lisp-mode, the ``<f12> <f3>`` key sequence brings a menu
         from which you can select eros to bring the customization buffer to
         configure eros, even if eros is not currently loaded.
+    - New: added support for *suggest.el* which provides *Development by
+      Example* capabilities for Emacs Lisp!
+      - Set the *pel-use-suggest* user-option to *t* to download and activate
+        it.
+      - Once activated, the ``<f12> S`` key sequence is bound to suggest in
+        emacs-lisp-mode and opens a suggest buffer where you can enter input
+        data, output data to query for functions that can provide this data
+        transformation. The <f11> SPC l S`` keys sequence is also available
+        globally.
+      -  Use ``<f12> <f3>`` from emacs-lisp-mode to open suggest customzation
+        buffer and ``<f12> <f2>`` to open PEL emacs-lisp customization buffer
+        where you can activate *pel-use-suggest*.
   - New: *Forth*:
     - New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth][𝕻𝔩 - Forth]] PDF that describes the commands available for the Forth
       programming language.

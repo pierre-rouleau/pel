@@ -2392,6 +2392,15 @@ MODE must be a symbol."
     (cl-eval-when 'compile (require 'eros nil :no-error))
     (define-key pel:for-elisp "E" 'eros-mode)))
 
+(when pel-use-suggest
+  (use-package suggest
+    :ensure t
+    :pin melpa
+    :commands suggest
+    :init
+    (cl-eval-when 'compile (require 'suggest nil :no-error))
+    (define-key pel:for-elisp "S" 'suggest)))
+
 ;;
 ;; activate the <f12> key binding for elisp-mode
 (pel--mode-hook-maybe-call

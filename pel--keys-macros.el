@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-28 16:53:55, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-28 17:38:13, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -130,7 +130,8 @@
                                                                  elint
                                                                  eros
                                                                  lisp
-                                                                 lispy))
+                                                                 lispy
+                                                                 suggest))
     ([f11 32 ?l ??]  "pl-emacs-lisp"    pel-pkg-for-all-languages (eldoc
                                                                    eldoc-box))
 
