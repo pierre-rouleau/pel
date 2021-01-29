@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-28 17:38:13, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-28 20:47:52, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -300,6 +300,7 @@ stored inside the doc/pdf directory.")
     ("d"               [f11 32 ?D])
     ("elixir"          [f11 32 ?x])
     ("lisp-interaction" [f11 32 ?l])    ; for scratch buffer
+    ("suggest"         [f11 32 ?l])     ; suggest -> emacs-lisp help
     ("emacs-lisp"      [f11 32 ?l])
     ("erlang"          [f11 32 ?e])
     ("forth"           [f11 32 ?f])
