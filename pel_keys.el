@@ -3080,6 +3080,7 @@ vlang-mode/master/vlang-mode.el"
 (define-key pel:describe "$"  'pel-spell-show-use)
 (define-key pel:describe "a"  'pel-show-face-at-point)
 (define-key pel:describe "c" #'list-colors-display)
+(define-key pel:describe "C" #'describe-coding-system)
 (define-key pel:describe "F" #'list-faces-display)
 (define-key pel:describe "f"  'pel-show-window-filename-or-buffer-name)
 (define-key pel:describe "H" #'list-command-history)
