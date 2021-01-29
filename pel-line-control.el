@@ -1,6 +1,6 @@
 ;;; pel-line-control.el --- PEL Line Control Utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -66,6 +66,25 @@ If none is active, activate both."
                     1)))
     (column-number-mode activate)
     (line-number-mode activate)))
+
+;;-pel-autoload
+(defun pel-insert-line-above (n)
+  "Insert N lines above current line.
+Move point to the indentation level of the first of the new lines.
+If N is negative, do not move point."
+  (interactive "^p")
+  (let ((dont-move (< n 0))
+        (n         (abs n))
+        (final-pos nil))
+    (save-excursion
+      (move-beginning-of-line nil)
+      (dotimes (_ n)
+        (newline-and-indent))
+      (forward-line (- n))
+      (indent-according-to-mode)
+      (setq final-pos (point)))
+      (unless dont-move
+        (goto-char final-pos))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-line-control)

@@ -305,7 +305,8 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-line-control" for:
     pel-lc-previous-logical-line
     pel-lc-next-logical-line
-    pel-toggle-line-col-modes)
+    pel-toggle-line-col-modes
+    pel-insert-line-above)
 
   (pel-autoload "pel-lisp" for:
     pel-toggle-lisp-modes

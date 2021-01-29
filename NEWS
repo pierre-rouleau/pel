@@ -2,6 +2,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 
 * Changes since version 0.3.1:
 ** New Features and Improvements:
+- New: the new command *pel-insert-line-above* (bound to ``M-L``) inserts a
+  new line above current line and indents it. Optional numeric argument is
+  accepted, adding that many lines.  If the argument is negative, point is not
+  moved.
 - New: integrated [[https://github.com/nflath/c-eldoc][c-eldoc]].  In C buffers, the ``<f12> ? e`` key sequence
   toggles c-eldoc mode on/off. I am currently investigating c-eldoc various
   versions trying to improve its performances.  For systems that do not have

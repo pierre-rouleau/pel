@@ -188,6 +188,11 @@ Done in this function to allow advising libraries that remap these keys."
 (pel-bind-negative-argument)
 
 ;; ---------------------------------------------------------------------------
+;; Inserting empty line above
+;; --------------------------
+(global-set-key (kbd "M-L") 'pel-insert-line-above)
+
+;; ---------------------------------------------------------------------------
 ;; - Font Control
 ;; --------------
 
@@ -1277,7 +1282,6 @@ interactively."
 ;; - Function Keys - <f11> - Prefix ``<f11> <f2>`` : Customization
 ;;
 
-
 ;; -- Key bindings
 ;; Set up the key prefixes.
 (define-pel-global-prefix pel:cfg           (kbd "<f11> <f2>"))
@@ -1309,7 +1313,6 @@ interactively."
 (pel--cfg-pkg "lisp"         pel:cfg-pel-lang (kbd "M-L") lispy) ; all Lisps
 
 ;; --
-
 (pel--cfg-emacs pel:cfg-emacs "m" "man")
 (pel--cfg-emacs pel:cfg-emacs "j" "webjump")
 (pel--cfg-emacs pel:cfg-emacs "l" "locate")
