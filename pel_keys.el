@@ -1506,6 +1506,71 @@ interactively."
                (fboundp 'pel--start-yasnippet))
       (run-with-idle-timer 4 nil (function pel--start-yasnippet))))))
 
+
+;; ---------------------------------------------------------------------------
+;; Global prefixes to specialized prefixes
+;; =======================================
+;;
+;; All PEL specialized prefixes start with <f11> SPC followed by another
+;; character. These characters are listed below.
+;; Not all of these are implemented yet, but I'm documented the currently
+;; reserved character.  This is for reference and planning.
+;;
+;; 1   - APL
+;; A   - Ada
+;; C   - C++
+;; D   - D
+;; E   - Elm
+;; F   - FORTRAN
+;; G   - Groovy
+;; J   - Clojure
+;; L   - Common Lisp
+;; M   - Makefile
+;; N   - NetRexx
+;; P   - Perl
+;; R   - REXX
+;; S   - Scala
+;; U   - Ruby
+;; a   - AppleScript
+;; c   - C
+;; d   - Dart
+;; e   - Erlang
+;; f   - Forth
+;; g   - Go
+;; h   - Haskell
+;; i   - Javascript
+;; j   - Julia
+;; k   - Kotlin
+;; l   - Emacs Lisp
+;; n   - Nim
+;; o   - OCaml
+;; p   - Python
+;; r   - Rust
+;; s   - Swift
+;; t   - TCL
+;; u   - Lua
+;; v   - V
+;; x   - Elixir
+;; z   - Zig
+;; C-c - CMake
+;; C-e - Eiffel
+;; C-g - Prolog
+;; C-j - Java
+;; C-l - LFE
+;; C-m - ReasonML
+;; C-o - Objective-C
+;; C-p - Pike
+;; C-r - Red
+;; C-s - Smalltalk
+;; C-u - Raku
+;; M-a - AsciiDoc
+;; M-g - GraphViz Dot
+;; M-m - Markdown
+;; M-o - OrgMode
+;; M-r - reStructuredText
+;; M-s - SQL
+;; M-u - PlantUML
+
 ;; ---------------------------------------------------------------------------
 ;; - Make file editing support
 ;; ===========================
@@ -2069,7 +2134,7 @@ MODE must be a symbol."
                       (flycheck-mode))))))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` : LFE programming
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-l `` : LFE programming
 ;; LFE := Lisp Flavoured Erlang
 
 ;; Note: the pel:eXecute has the run-lfe (in the code below.)
@@ -2160,6 +2225,39 @@ MODE must be a symbol."
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC F`` : FORTRAN programming
 ;; reserved but not implemented.
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC g`` : Go programming
+(when pel-use-go
+  (when pel-use-go-mode
+    (define-pel-global-prefix pel:for-go (kbd "<f11> SPC g"))
+
+    (defun pel--setenv-for-go ()
+      "Set environment for Go programming."
+      (pel-local-set-f12 'pel:for-go)
+      ;; ensure gofmt is executed before saving file
+      (add-hook 'before-save-hook  'gofmt-before-save)
+
+      ;; overcoming omission bug in go-mode: add support for Speedbar
+      (pel-require 'speedbar)
+      (speedbar-add-supported-extension ".go")
+
+      ;; set the display width of hard tabs used in Go source
+      (setq tab-width 2))
+
+    (use-package go-mode
+      :ensure t
+      :pin melpa
+      :commands go-mode
+      :init
+      (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+
+
+      ;; activate the <f12> key binding for Go
+      (pel--mode-hook-maybe-call
+       (function pel--setenv-for-go)
+       'go-mode 'go-mode-hook)
+      )))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC i`` : Javascript programming
@@ -2464,7 +2562,6 @@ MODE must be a symbol."
       :pin melpa
       :commands python-mode))
 
-
   (use-package elpy
     :ensure t
     :pin melpa
@@ -2602,11 +2699,13 @@ MODE must be a symbol."
      'netrexx-mode 'netrexx-mode-hook)))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC u`` : Rust programming
+;; - Function Keys - <f11> - Prefix ``<f11> SPC r`` : Rust programming
 
 ;; - Programming Style: Rust & Cargo Support
 ;; -----------------------------------------
 (when pel-use-rust                      ; Experimental: TODO: complete this
+  (define-pel-global-prefix pel:for-rust  (kbd "<f11> SPC r"))
+
   (use-package racer
     :ensure t
     :pin melpa
@@ -2694,11 +2793,11 @@ vlang-mode/master/vlang-mode.el"
     (add-to-list 'auto-mode-alist '("\\.adoc\\'"  . adoc-mode))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC r`` : reSTucturedText
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-r`` : reSTucturedText
 (when pel-use-rst-mode
 
-  (define-pel-global-prefix pel:for-reST (kbd "<f11> SPC r"))
-  (define-pel-global-prefix pel:rst-skel (kbd "<f11> SPC r <f12>"))
+  (define-pel-global-prefix pel:for-reST (kbd "<f11> SPC M-r"))
+  (define-pel-global-prefix pel:rst-skel (kbd "<f11> SPC M-r <f12>"))
 
   (defun pel--setup-for-rst ()
     "Activate the reStructuredText (rst) mode."
@@ -2746,7 +2845,7 @@ vlang-mode/master/vlang-mode.el"
   (when pel-use-graphviz-dot
     (define-key pel:for-reST "G" 'pel-render-commented-graphviz-dot))
   ;;
-  (define-pel-global-prefix pel:rst-adorn-style (kbd "<f11> SPC r A"))
+  (define-pel-global-prefix pel:rst-adorn-style (kbd "<f11> SPC M-r A"))
   (define-key pel:rst-adorn-style "d" 'pel-rst-adorn-default)
   (define-key pel:rst-adorn-style "S" 'pel-rst-adorn-Sphinx-Python)
   (define-key pel:rst-adorn-style "C" 'pel-rst-adorn-CRiSPer)
@@ -2757,7 +2856,7 @@ vlang-mode/master/vlang-mode.el"
    'rst-mode 'rst-mode-hook))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC g`` : Graphviz Dot
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-g`` : Graphviz Dot
 (when pel-use-graphviz-dot
   (use-package graphviz-dot-mode
     :ensure t
@@ -2766,7 +2865,7 @@ vlang-mode/master/vlang-mode.el"
     :init
       (cl-eval-when 'compile (require 'graphviz-dot-mode nil :no-error)))
 
-  (define-pel-global-prefix pel:for-graphviz-dot (kbd "<f11> SPC g"))
+  (define-pel-global-prefix pel:for-graphviz-dot (kbd "<f11> SPC M-g"))
   (define-key pel: (kbd "M-g")         'graphviz-dot-mode)
   (define-key pel:for-graphviz-dot "c" 'compile)
   (define-key pel:for-graphviz-dot "p" 'graphviz-dot-preview)
@@ -2779,9 +2878,9 @@ vlang-mode/master/vlang-mode.el"
    'graphviz-dot-mode 'graphviz-dot-mode-hook))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC u`` : PlantUML
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-u`` : PlantUML
 (when pel-use-plantuml
-  (define-pel-global-prefix pel:for-plantuml (kbd "<f11> SPC u"))
+  (define-pel-global-prefix pel:for-plantuml (kbd "<f11> SPC M-u"))
   (define-key pel:for-plantuml (kbd "M-d")  'plantuml-enable-debug)
   (define-key pel:for-plantuml (kbd "M-D")  'plantuml-disable-debug)
   (define-key pel:for-plantuml "o"          'plantuml-set-output-type)

@@ -73,6 +73,7 @@
 ;;         - pel-pkg-for-c++
 ;;         - pel-pkg-for-d
 ;;       - pel-pkg-for-javascript
+;;       - pel-pkg-for-go
 ;;       - pel-pkg-for-lisp
 ;;         - pel-pkg-for-clisp
 ;;           - pel-sexp-form-navigation
@@ -2404,6 +2405,114 @@ When set, identifies what mode is used to support Javascript."
           (const :tag "Future: Emacs basic + \
 PEL additions using built-in js-mode." js-mode)
           (const :tag "Supported by the js2-mode external package." js2-mode)))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Go language support
+;; -------------------
+
+(defgroup pel-pkg-for-go nil
+  "PEL customization for tools supporting the Go programming language."
+  :group 'pel-pkg-for-programming)
+
+(defcustom pel-use-go nil
+  "Controls whether PEL supports the Go programming language.
+This *must* be activated to allow any other package for Go."
+  :link '(url-link :tag "Go @ wikipedia"
+                   "https://en.wikipedia.org/wiki/Go_(programming_language)")
+  :group 'pel-pkg-for-go
+  :type 'boolean
+  :safe #'booleanp)
+
+
+(defcustom pel-use-go-mode nil
+  "Controls whether PEL use the gomode package."
+  :link '(url-link :tag "gomode @ Github"
+                   "https://github.com/dominikh/go-mode.el")
+  :group 'pel-pkg-for-go
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-goflymake nil
+  "Controls whether PEL use the goflymake package."
+  :link '(url-link :tag "goflymake @ Github"
+                   "https://github.com/dougm/goflymake")
+  :group 'pel-pkg-for-go
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-gocode nil
+  "Controls whether PEL use the gocode package."
+  :link '(url-link :tag "gocode @ Github"
+                   "https://github.com/mdempsky/gocode")
+  :group 'pel-pkg-for-go
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-gopls nil
+  "Controls whether PEL use the gopls package."
+  :link '(url-link :tag "gopls @ Github"
+                   "https://github.com/golang/tools/blob/master/gopls/doc/emacs.md")
+  :link '(url-link :tag "Go Tools @ Github"
+                   "https://github.com/golang/tools")
+  :group 'pel-pkg-for-go
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-go-errcheck nil
+  "Controls whether PEL use the go-errcheck package."
+  :link '(url-link :tag "go-errcheck @ Github"
+                   "https://github.com/dominikh/go-errcheck.el")
+  :link '(url-link :tag "Go errcheck @ GitHub"
+                   "https://github.com/kisielk/errcheck")
+  :group 'pel-pkg-for-go
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-go-playground nil
+  "Controls whether PEL use the go-playground package."
+  :link '(url-link :tag "go-playground @ Github"
+                   "https://github.com/grafov/go-playground")
+  :group 'pel-pkg-for-go
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-gorepl-mode nil
+  "Controls whether PEL use the gorepl-mode package.
+
+Requires gocode."
+  :link '(url-link :tag "gorepl-mode @ Github"
+                   "https://github.com/manute/gorepl-mode")
+  :link '(url-link :tag "gore @ GitHub"
+                   "https://github.com/motemen/gore")
+  :group 'pel-pkg-for-go
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-gotest nil
+  "Controls whether PEL use the gotest package."
+  :link '(url-link :tag "gotest @ Github"
+                   "https://github.com/nlamirault/gotest.el")
+  :group 'pel-pkg-for-go
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-emacs-go-tag nil
+  "Controls whether PEL use the emacs-go-tag package."
+  :link '(url-link :tag "emacs-go-tag @ Github"
+                   "https://github.com/brantou/emacs-go-tag")
+  :link '(url-link :tag "gomodifytags @ GitHub"
+                   "https://github.com/fatih/gomodifytags")
+  :group 'pel-pkg-for-go
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-flycheck-golangci-lint nil
+  "Controls whether PEL use the flycheck-golangci-lint package."
+  :link '(url-link :tag "flycheck-golangci-lint @ Github"
+                   "https://github.com/weijiangan/flycheck-golangci-lint")
+  :group 'pel-pkg-for-go
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Lisp-like language support

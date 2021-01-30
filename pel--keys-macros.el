@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-28 20:47:52, updated by Pierre Rouleau>
+;; Time-stamp: <2021-01-30 18:17:36, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -95,8 +95,9 @@
                                                                  hideshow))
     ([f11 ??]        "help"             nil                    command-log)
     ([f11 9]         "indentation"      nil                     indent)
-    ;; 2 different possible key sequences for speedbar
-    ([f11 134217843] "speedbar"         pel-pkg-for-speedbar    (speedbar
+    ;; 2 different possible key sequences for speedbar,
+    ;; because M-s can also be typed ``Esc s``
+    (,(kbd "<f11> M-s") "speedbar"      pel-pkg-for-speedbar    (speedbar
                                                                  sr-speedbar
                                                                  projectile-speedbar))
     ([f11 27 ?s]     "speedbar"         pel-pkg-for-speedbar    (speedbar
@@ -121,7 +122,10 @@
                                                         edts
                                                         auto-highlight-symbol))
     ([f11 32 ?f]     "pl-forth"         pel-pkg-for-forth)
-    ([f11 32 ?g]     "graphviz-dot"     pel-pkg-for-graphviz-dot graphviz)
+    ([f11 32 ?g]     "pl-go"            pel-pkg-for-go          (go
+                                                                 go-cover
+                                                                 godoc
+                                                                 go-dot-mod))
     ([f11 32 ?j]     "pl-julia"         pel-pkg-for-julia       (julia
                                                                  julia-mode
                                                                  julia-snail))
@@ -137,8 +141,7 @@
 
     ([f11 32 ?p]     "pl-python"    pel-pkg-for-python      (python
                                                              python-flymake))
-    ([f11 32 ?r]     "mode-rst"         pel-pkg-for-reST        rst)
-    ([f11 32 ?u]     "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
+
     ([f11 32 ?x]     "pl-elixir"        pel-pkg-for-elixir      elixir)
     ;; ([f11 ?C]
     ([f11 ?D]        "drawing"          pel-pkg-for-drawing-markup)
@@ -262,7 +265,17 @@
                                                            yasnippet-snippets
                                                            yas-minor))
     ([f11 ?|]        "scrolling"  pel-pkg-for-scrolling   (follow
-                                                           smooth-scrolling)))
+                                                           smooth-scrolling))
+
+    ;; For keys with Meta, make sure the Esc equivalent is also entered
+    ;; to allow the F1, F2, F3 entries to be accessible via the Esc key.
+    ;; Because: in Emacs ``M-a`` can also be typed ``Esc a``
+    (,(kbd "<f11> SPC M-g") "graphviz-dot"     pel-pkg-for-graphviz-dot graphviz)
+    ([f11 32 27 ?g]         "graphviz-dot"     pel-pkg-for-graphviz-dot graphviz)
+    (,(kbd "<f11> SPC M-r") "mode-rst"         pel-pkg-for-reST        rst)
+    ([f11 32 27 ?r]         "mode-rst"         pel-pkg-for-reST        rst)
+    (,(kbd "<f11> SPC M-u") "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
+    ([f11 32 27 ?u]         "plantuml"         pel-pkg-for-plantuml    plantuml-mode))
   "Map from key prefix array to topic string.
 The topic string correspond to the base name of the PDF file
 stored inside the doc/pdf directory.")
@@ -304,6 +317,7 @@ stored inside the doc/pdf directory.")
     ("emacs-lisp"      [f11 32 ?l])
     ("erlang"          [f11 32 ?e])
     ("forth"           [f11 32 ?f])
+    ("go"              [f11 32 ?g])
     ("julia"           [f11 32 ?j])
     ("makefile"        [f11 32 ?M])
     ("makefile-bsdmake" [f11 32 ?M])
@@ -314,9 +328,9 @@ stored inside the doc/pdf directory.")
     ("python"          [f11 32 ?p])
     ("rexx"            [f11 32 ?R])
     ("netrexx"         [f11 32 ?N])
-    ("rst"             [f11 32 ?r])
-    ("graphviz-dot"    [f11 32 ?g])
-    ("plantuml"        [f11 32 ?u]))
+    ("rst"             [f11 32 27 ?r])
+    ("graphviz-dot"    [f11 32 27 ?g])
+    ("plantuml"        [f11 32 27 ?u]))
   "Maps the name of a major mode (without the -mode suffix)
 to a symbol or key sequence array to use as map key inside
 `pel--prefix-to-topic-alist' table.")
@@ -361,7 +375,6 @@ F6, F7, F8, F11, F12 or M-F12 prefix.\n\
                (pel--major-mode-keyseq keyseq)
              keyseq)
            pel--prefix-to-topic-alist)))
-
 
 (defun pel--kte-pdfs (table-entry)
   "Return a list of partial names of PDF files in TABLE-ENTRY.
@@ -807,10 +820,11 @@ KEY sequence then create function bindings under the PREFIX
 ;; --
 
 (defun pel--mode-hook-maybe-call (fct mode hook &optional append)
-  "Use FCT as the MODE HOOK and call it if buffer is currently in that MODE.
+  "Schedule FCT as the MODE HOOK and call it if buffer is currently in that MODE.
 The function FCT is added at the beginning of the hook list unless the
 optional argument APPEND is non-nil, in which case it is added at the end."
   (add-hook hook fct append)
+  ;; if the current mode is the required mode also run the specified function
   (if (eq major-mode mode)
       (funcall fct)))
 
