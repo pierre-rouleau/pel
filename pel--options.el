@@ -121,7 +121,7 @@
 ;; --------------------
 
 (defun pel-indent-valid-p (n)
-  "Return t if N is a valid indentation integer, nil otherwise."
+  "Return t if N is a valid indentation integer in 2-8 range, nil otherwise."
   (and (integerp n) (< n 9) (> n 1)))
 
 (defun pel-c-style-valid-p (style)
@@ -2423,6 +2423,32 @@ This *must* be activated to allow any other package for Go."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-go-tab-width 8
+  "Hard-tab display width used for Go source code.
+
+The Go programming language requires that Go source code file be processed by
+the gofmt utility which re-formats the file according to official Go style.
+That style requires that hard tab be used for indentation.  By default,
+a hard-tab is displayed with a width of 8 columns. You can safely change
+it to any number between 2 and 8.  It changes the way the code looks inside
+an Emacs Go buffer, but does not change the content of the file."
+  :group 'pel-pkg-for-go
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-go-run-gofmt-on-buffer-save t
+  "Control if gofmt is executed automatically when Go buffer saved.
+
+Turn on (set to t) to have gofmt run automatically when the Go buffer
+is saved. Turn off if you do not want it done.
+Turned on by default.
+
+Note that the command `pel-go-toggle-gofmt-on-buffer-save' changes the
+setting dynamically allowing you to disable the execution of gofmt for a while
+even when the user-option sets it on."
+  :group 'pel-pkg-for-go
+  :type 'boolean
+  :safe #'booleanp)
 
 (defcustom pel-use-go-mode nil
   "Controls whether PEL use the gomode package."

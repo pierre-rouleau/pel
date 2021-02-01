@@ -139,6 +139,9 @@
 ;;
 ;; Code parsing support
 ;; - `pel-point-in-comment-or-docstring'
+;;
+;; Tab width control
+;; - `pel-set-tab-width'
 
 ;; ---------------------------------------------------------------------------
 ;;; Dependencies:
@@ -1097,6 +1100,22 @@ If MOVE-FCT is specified, call it before checking the state of point."
     (when move-fct
       (funcall move-fct))
     (nth 8 (parse-partial-sexp (point-min) (point)))))
+
+;; ---------------------------------------------------------------------------
+;; Control Tab Width
+;; -----------------
+
+(defun pel-set-tab-width (n)
+  "Change the tab width used in current buffer.
+
+The change is temporary and affects the current buffer only.
+Return the new tab-width or nil if unchanged."
+  (interactive "nNew tab-width: ")
+  (while (not (and (< n 9) (> n 1)))
+    (setq n  (read-number "Enter valid tab-width in 2-8 range: " tab-width)))
+  (when (not (= n tab-width))
+    (message "Changed buffer's tab-width from %d to %d" tab-width n)
+    (setq tab-width n)))
 
 ;;;---------------------------------------------------------------------------
 (provide 'pel--base)

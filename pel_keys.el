@@ -2235,15 +2235,18 @@ MODE must be a symbol."
     (defun pel--setenv-for-go ()
       "Set environment for Go programming."
       (pel-local-set-f12 'pel:for-go)
-      ;; ensure gofmt is executed before saving file
-      (add-hook 'before-save-hook  'gofmt-before-save)
+      ;; ensure gofmt is executed before saving file if
+      ;; configured to do so
+      (when pel-go-run-gofmt-on-buffer-save
+        (add-hook 'before-save-hook  'pel-go-gofmt-on-buffer-save))
 
-      ;; overcoming omission bug in go-mode: add support for Speedbar
+      ;; Set the display width of hard tabs used in Go source
+      ;; as controlled by the user-option
+      (setq tab-width pel-go-tab-width)
+
+      ;; Overcoming omission bug in go-mode: add support for Speedbar
       (pel-require 'speedbar)
-      (speedbar-add-supported-extension ".go")
-
-      ;; set the display width of hard tabs used in Go source
-      (setq tab-width 2))
+      (speedbar-add-supported-extension ".go"))
 
     (use-package go-mode
       :ensure t
@@ -2251,6 +2254,9 @@ MODE must be a symbol."
       :commands go-mode
       :init
       (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+      (define-key pel:for-go (kbd "M-t") 'pel-go-set-tab-width)
+      (define-key pel:for-go (kbd "M-s") 'pel-go-toggle-gofmt-on-buffer-save)
+      (define-key pel:for-go "?"         'pel-go-setup-info)
 
 
       ;; activate the <f12> key binding for Go

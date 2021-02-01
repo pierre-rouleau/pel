@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-01-15 15:17:48, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-01-31 11:49:35, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -139,6 +139,7 @@ EL_FILES := pel--base.el \
 		pel-font.el \
 		pel-frame-control.el \
 		pel-fs.el \
+		pel-go.el \
 		pel-graphviz-dot.el \
 		pel-help.el \
 		pel-hideshow.el \
@@ -260,8 +261,10 @@ PDF_FILES := -legend.pdf                        \
 	pl-emacs-lisp.pdf			\
 	pl-erlang.pdf				\
 	pl-forth.pdf				\
+	pl-go.pdf				\
 	pl-julia.pdf				\
 	pl-make.pdf				\
+	pl-netrexx.pdf				\
 	pl-python.pdf				\
 	pl-rexx.pdf				\
 	plantuml.pdf				\
@@ -500,6 +503,7 @@ pel-erlang-skels.elc:   pel--base.elc pel--options.elc pel--macros.elc pel-list.
 pel-file.elc:           pel--base.elc pel-prompt.elc pel-read.elc pel-window.elc
 pel-fill.elc:           pel--base.elc
 pel-frame-control.elc:  pel--base.elc
+pel-go.elc:             pel--base.elc
 pel-graphviz-dot.elc:   pel--base.elc pel-ccp.elc
 pel-hide-docstring.elc: pel-face-ut.elc pel-navigate.elc
 pel-highlight.elc:      pel--base.elc
