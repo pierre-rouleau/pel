@@ -379,6 +379,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
         expression prefix and from the Emacs-Lisp specific ``<f12> a l``
         analyze prefix.  Commands to lint the current buffer, file  and
         directory tree are bound.
+  - Update: *Erlang*:
+    - New: Add Speedbar support for Erlang, showing the functions in the .erl,
+      .hrl and .escript files.
   - New: *Forth*:
     - New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth][𝕻𝔩 - Forth]] PDF that describes the commands available for the Forth
       programming language.

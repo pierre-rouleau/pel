@@ -1955,7 +1955,12 @@ MODE must be a symbol."
     (pel-local-set-f12-M-f12 'pel:for-erlang)
     (pel--install-erlang-skel pel:erlang-skel)
     ;; Configure M-( to put parentheses after a function name.
-    (set (make-local-variable 'parens-require-spaces) nil))
+    (set (make-local-variable 'parens-require-spaces) nil)
+    ;; Overcoming omission bug in erlang-mode: add support for Speedbar
+    (pel-require 'speedbar)
+    (speedbar-add-supported-extension '(".erl"
+                                        ".hrl"
+                                        ".escript")))
 
   ;;
   (when pel-erlang-shell-prevent-echo
