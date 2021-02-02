@@ -704,6 +704,27 @@ Return the new state of the mode: t if active, nil otherwise."
     (error "Nothing done: pel-toggle-mode expects a symbol as argument"))
   (funcall (symbol-function mode) (if (symbol-value mode) -1 1)))
 
+(defun pel-toggle-syntax-check-mode (selector)
+  "Toggle the active state of syntax checker mode identified by SELECTOR.
+
+SELECTOR must be the symbol of a (often defcustom) variable.
+That variable must have one of the following values:
+
+- nil
+- 'with-flymake
+- 'with-flycheck
+
+These values identify the syntax checker to control.
+When the value of the SELECTOR symbol is nil nothing is done.
+If the value is 'with-flymake, then flymake is toggled.
+If the value is 'with-flycheck then flycheck is toggled."
+  (let ((syntax-checker (symbol-value selector)))
+    (cond
+     ((eq syntax-checker 'with-flycheck)
+      (pel-toggle-mode 'flycheck-mode))
+     ((eq syntax-checker 'with-flymake)
+      (pel-toggle-mode 'flymake-mode)))))
+
 ;; ---------------------------------------------------------------------------
 ;; Symbol processing
 ;; -----------------

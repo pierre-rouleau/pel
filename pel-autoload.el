@@ -283,7 +283,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-go-set-tab-width
     pel-go-gofmt-on-buffer-save
     pel-go-toggle-gofmt-on-buffer-save
-    pel-go-setup-info)
+    pel-go-setup-info
+    pel-go-toggle-syntax-checker)
 
   (pel-autoload "pel-graphviz-dot" for: pel-render-commented-graphviz-dot)
 

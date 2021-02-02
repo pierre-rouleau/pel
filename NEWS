@@ -386,6 +386,16 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     - New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth][𝕻𝔩 - Forth]] PDF that describes the commands available for the Forth
       programming language.
     - New: the ``<f11> x f`` key sequences opens a Forth interpreter window.
+  - New: *Go*:
+    - New: Added support for the Go programming language when the *pel-use-go*
+      user option is set to *t*.  It allows the following mode activation:
+      - When the *pel-use-go-mode* user-option is set to *t*, editing a Go
+        file activates the *go-mode* major mode.
+        - The *pel-use-goflymake* user-option identifies whether flymake or
+          flycheck is used with Go files.  The ``<f12> !`` key can be used to
+          toggle the activated mode.
+    - New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-go][𝕻𝔩 - Go]] PDF that describes the commands available for the Go
+     programming language.
   - New: *Make file Editing support*:
     - New:  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-make.pdf][𝕻𝔩 - Make]] PDF that describes make file editing support, along with
       PEL additions.

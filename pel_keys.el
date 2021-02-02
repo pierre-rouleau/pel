@@ -2109,10 +2109,14 @@ MODE must be a symbol."
     ;;
     ;; TODO :  do not allow both flymake and flycheck for Emacs.
     ;;         but put logic after some experimentation and tests.
+    ;;         Note: info on the net seems to prefer flycheck over flymake
+    ;;         stating that flycheck is more efficient and has better support
+    ;;         than flymake. I have not yet fully tested both so I am not yet
+    ;;         ready to impose one versus the other.  I also have not tested
+    ;;         if they can co-exist when used for different programming languages.
     (when pel-use-erlang-flymake
-      ;; TODO: make it lazy
-      (require 'erlang-flymake)
-      (define-key pel:for-erlang   "F"         'flymake-mode)
+      (pel-require 'erlang-flymake :install-when-missing)
+      (define-key pel:for-erlang   "!"         'flymake-mode)
       (when (boundp 'flymake-mode-map)
         (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
         (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)))
@@ -2235,6 +2239,8 @@ MODE must be a symbol."
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC g`` : Go programming
 (when pel-use-go
+
+  ;; go-mode package
   (when pel-use-go-mode
     (define-pel-global-prefix pel:for-go (kbd "<f11> SPC g"))
 
@@ -2250,6 +2256,15 @@ MODE must be a symbol."
       ;; as controlled by the user-option
       (setq tab-width pel-go-tab-width)
 
+      (when pel-use-goflymake
+        ;; Activate flycheck or flymake if requested
+        (cond
+         ((eq pel-use-goflymake 'with-flycheck) (pel-require 'go-flycheck))
+         ((eq pel-use-goflymake 'with-flymake)  (pel-require 'go-flymake))
+         (t
+          (error "Unsupported pel-use-goflymake value: %S"
+                 pel-use-goflymake))))
+
       (when pel-use-speedbar
         ;; Overcoming omission bug in go-mode: add support for Speedbar
         (pel-require 'speedbar)
@@ -2264,13 +2279,40 @@ MODE must be a symbol."
       (define-key pel:for-go (kbd "M-t") 'pel-go-set-tab-width)
       (define-key pel:for-go (kbd "M-s") 'pel-go-toggle-gofmt-on-buffer-save)
       (define-key pel:for-go "?"         'pel-go-setup-info)
-
+      (when pel-use-goflymake
+        (define-key pel:for-go "!"       'pel-go-toggle-syntax-checker))
 
       ;; activate the <f12> key binding for Go
       (pel--mode-hook-maybe-call
        (function pel--setenv-for-go)
        'go-mode 'go-mode-hook)
-      )))
+      ))
+
+  ;; goflymake package - either using flymake or flycheck
+  (when pel-use-goflymake
+    ;; goflymake is a mixed package:
+    ;; - it has the Go source:  goflymake/main.go  that Go will compile into
+    ;;   the executable stored in a directory that should be on your PATH,
+    ;; - the emacs lisp go-flymake.el and go-flycheck.el
+    ;; To ensure the Emacs Lisp files are available to Emacs regardless of the
+    ;; Go project or workspace used, the Emacs Lisp files are stored in PEL
+    ;; utility directory.
+    ;; TODO: restore dougm URL once he has accepted by pull-request. In the
+    ;;       mean-time I'm using my fork that has code fixes.
+    (cond
+     ((eq pel-use-goflymake 'with-flycheck)
+      (pel-install-file
+       "https://raw.githubusercontent.com/pierre-rouleau\
+/goflymake/master/go-flycheck.el"
+       "go-flycheck.el"))
+     ((eq pel-use-goflymake 'with-flymake)
+      (pel-install-file
+       "https://raw.githubusercontent.com/pierre-rouleau\
+/goflymake/master/go-flymake.el"
+       "go-flymake.el"))
+     (t
+      (error "Unsupported pel-use-goflymake value: %S"
+             pel-use-goflymake)))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC i`` : Javascript programming

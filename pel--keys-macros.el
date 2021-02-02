@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-01 11:37:31, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-02 09:02:22, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -443,6 +443,7 @@ There should be no key binding!" keyseq))
     ("emacs-lisp"       . "pl-emacs-lisp")
     ("erlang"           . "pl-erlang")
     ("forth"            . "pl-forth")
+    ("go"               . "pl-go")
     ("julia"            . "pl-julia")
     ("make"             . "pl-make")
     ("python"           . "pl-python")

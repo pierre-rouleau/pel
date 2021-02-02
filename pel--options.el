@@ -1069,7 +1069,7 @@ blob/master/key-chord.el"))
 (defcustom pel-use-key-chord nil
   "Control whether PEL uses the key-chord external package.
 With it, it's possible to activate binding actions to two keys
-pressed simultaneously or a single key quicly pressed twice.
+pressed simultaneously or a single key quickly pressed twice.
 
 This can be set to:
 - 0: nil: Do not use.  key-chord is not required nor loaded.
@@ -1104,7 +1104,7 @@ A good value is 0.05 or 0.1."
 (defcustom pel-key-chord-one-key-delay 0.2
   "Max time delay between 2 press of the same key to be considered a key chord.
 This should normally be a little longer than `key-chord-two-keys-delay'.
-A value of 0.2 or 0.3 is used to avoid first autorepeat."
+A value of 0.2 or 0.3 is used to avoid first auto-repeat."
   :group 'pel-pkg-for-key-chord
   :type 'float
   :safe #'floatp)
@@ -1261,7 +1261,7 @@ The `pel-key-chords' value is a list of objects.
     that provides the mode identified in the first item.
     This is empty when the first item is set to global.
     It is required when the first item identifies a mode.
-    Identify a name that (load FILE) will be able to load, ie
+    Identify a name that (load FILE) will be able to load, ie.
     the name of a Emacs Lisp file accessible in Emacs load path.
     Do not identify a file extension.  For most files, the file
     base name is sufficient and more portable.
@@ -2361,7 +2361,7 @@ it should probably be a multiple of `pel-d-indent-width'."
 When set to t:
 - the ac-dcd package is used for code completion,
   - it uses flycheck-dmd-dub package, which uses the D package
-    registry called DUB to retreive all D dependencies information.
+    registry called DUB to retrieve all D dependencies information.
     - which uses DCD (the D Completion Daemon) written in D
       which must be installed separately.
 
@@ -2377,7 +2377,7 @@ by the `pel-use-d-company-dcd'."
 When set to t:
 - the `company-dcd' package is used for code completion,
   - it uses flycheck-dmd-dub package, which uses the D package
-    registry called DUB to retreive all D dependencies information.
+    registry called DUB to retrieve all D dependencies information.
     - which uses DCD (the D Completion Daemon) written in D
       which must be installed separately.
 
@@ -2459,12 +2459,29 @@ even when the user-option sets it on."
   :safe #'booleanp)
 
 (defcustom pel-use-goflymake nil
-  "Controls whether PEL use the goflymake package."
+  "Controls whether PEL use the goflymake package.
+
+The following choices are available:
+
+- Not used (nil), the default.
+- Use with flycheck.
+- Use with flymake.
+
+Note that flymake is built-in Emacs, flycheck is not.  flycheck
+seems to be the engine preferred by many people.  If you select
+flycheck it, PEL will install it if it is not already installed.
+
+When either is used you will also require the Go utility goflymake.
+Use the following command line to install it:
+
+    go get -u github.com/dougm/goflymake"
   :link '(url-link :tag "goflymake @ Github"
                    "https://github.com/dougm/goflymake")
   :group 'pel-pkg-for-go
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "Not used" nil)
+          (const :tag "Use with flycheck" with-flycheck)
+          (const :tag "Use with flymake"  with-flymake)))
 
 (defcustom pel-use-gocode nil
   "Controls whether PEL use the gocode package."
@@ -2545,7 +2562,7 @@ Requires gocode."
 ;; --------------------------
 ;;
 ;; The group pel-pkg-for-lisp has settings for tools that can be used for
-;; several Lisp-like programming languages like Eamcs-Lisp. Common-Lisp,
+;; several Lisp-like programming languages like Emacs-Lisp. Common-Lisp,
 ;; Clojure, Scheme, LFE, etc...
 
 (defgroup pel-pkg-for-lisp nil
