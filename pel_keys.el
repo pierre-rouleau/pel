@@ -1,4 +1,4 @@
-;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t-*-
+;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020, 2021  Pierre Rouleau
 
@@ -1572,6 +1572,16 @@ interactively."
 ;; M-u - PlantUML
 
 ;; ---------------------------------------------------------------------------
+;; Syntax Check with Flycheck (if requested)
+;; -----------------------------------------
+(when (or (eq pel-use-erlang-syntax-check 'with-flycheck)
+          (eq pel-use-goflymake           'with-flycheck))
+  (use-package flycheck
+    :ensure t
+    :pin melpa
+    :commands flycheck-mode))
+
+;; ---------------------------------------------------------------------------
 ;; - Make file editing support
 ;; ===========================
 
@@ -1623,7 +1633,6 @@ interactively."
      '(lambda ()
         (pel-local-set-f12 'pel:for-applescript))
      'apples-mode 'apples-mode-hook))
-
 
   ;; Text narration on macOS
   ;; -----------------------
@@ -2106,42 +2115,47 @@ MODE must be a symbol."
         ;; (define-key pel:for-erlang      "<"     'ahs-backward-definition)
         (unless pel-activate-edts-automatically
           (require 'edts-start))))
-    ;;
-    ;; TODO :  do not allow both flymake and flycheck for Emacs.
-    ;;         but put logic after some experimentation and tests.
-    ;;         Note: info on the net seems to prefer flycheck over flymake
-    ;;         stating that flycheck is more efficient and has better support
-    ;;         than flymake. I have not yet fully tested both so I am not yet
-    ;;         ready to impose one versus the other.  I also have not tested
-    ;;         if they can co-exist when used for different programming languages.
-    (when pel-use-erlang-flymake
-      (pel-require 'erlang-flymake :install-when-missing)
-      (define-key pel:for-erlang   "!"         'flymake-mode)
-      (when (boundp 'flymake-mode-map)
-        (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
-        (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)))
 
-    (when pel-use-erlang-flycheck
-      (use-package flycheck
-        :ensure t
-        :pin melpa
-        :commands flycheck-mode
-        :init
-        (flycheck-define-checker erlang-otp
-          "An Erlang syntax checker using the Erlang interpreter."
-          :command ("erlc" "-o" temporary-directory "-Wall"
-                    "-I" "../include" "-I" "../../include"
-                    "-I" "../../../include" source)
-          :error-patterns
-          ((warning line-start (file-name) ":" line ": Warning:"
-                    (message) line-end)
-           (error line-start (file-name) ":" line ": " (message) line-end)))
+    (when pel-use-erlang-syntax-check
 
-        (add-hook 'erlang-mode-hook
-                  (lambda ()
-                    (when (fboundp 'flycheck-select-checker)
-                      (flycheck-select-checker 'erlang-otp)
-                      (flycheck-mode))))))))
+      (cond
+       ;; when using flymake with Erlang
+       ((eq pel-use-erlang-syntax-check 'with-flymake)
+        (pel-require 'erlang-flymake :install-when-missing)
+        ;; The erlang-flymake.el code hooks flymake-mode to erlang-mode
+        ;; forcing flymake-mode on all Erlang files. Leave it if erlang-mode
+        ;; was identified as a mode to automatically activate syntax checking,
+        ;; otherwise remove the hook.
+        (unless (memq 'erlang-mode pel-modes-activating-syntax-check)
+          (remove-hook 'erlang-mode-hook #'flymake-mode))
+        (when (boundp 'flymake-mode-map)
+          (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
+          (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)))
+
+       ;; when using flycheck with Erlang
+       ((eq pel-use-erlang-syntax-check 'with-flycheck)
+
+        (defun pel--erlang-setup-for-flycheck ()
+          "Setup flycheck."
+          (when (fboundp 'flycheck-select-checker)
+            (flycheck-select-checker 'erlang-otp)
+            (flycheck-mode)))
+
+        ;; (flycheck-define-checker erlang-otp
+        ;;   "An Erlang syntax checker using the Erlang interpreter."
+        ;;   :command ("erlc" "-o" temporary-directory "-Wall"
+        ;;             "-I" "../include" "-I" "../../include"
+        ;;             "-I" "../../../include" source)
+        ;;   :error-patterns
+        ;;   ((warning line-start (file-name) ":" line ": Warning:"
+        ;;             (message) line-end)
+        ;;    (error line-start (file-name) ":" line ": " (message) line-end)))
+
+        (when (memq 'erlang-mode pel-modes-activating-syntax-check)
+          (add-hook 'erlang-mode-hook #'pel--erlang-setup-for-flycheck))))
+
+      ;; When any syntax checker is used with Erlang add a key to toggle it
+      (define-key pel:for-erlang "!" 'pel-erlang-toggle-syntax-checker))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-l `` : LFE programming

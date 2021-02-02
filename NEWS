@@ -382,6 +382,13 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - Update: *Erlang*:
     - New: Add Speedbar support for Erlang, showing the functions in the .erl,
       .hrl and .escript files.
+    - Modified: logic to select the syntax checker.  The new user option
+      *pel-use-erlang-syntax-checker* replaces what was previously used:
+      *pel-use-erlang-flymake* and *pel-use-erlang-flycheck*.  These last two
+      are no longer supported.  The new user-option is used to select one of
+      the 2 supported checkers.
+    - The previously used ``<f12> F`` key sequence to toggle flymake is
+      replaced by ``<f12> !`` which is bound to *pel-erlang-toggle-syntax-check*.
   - New: *Forth*:
     - New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth][𝕻𝔩 - Forth]] PDF that describes the commands available for the Forth
       programming language.

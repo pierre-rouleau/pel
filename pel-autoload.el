@@ -211,7 +211,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-end-of-previous-clause
     pel-beginning-of-next-clause
     pel-previous-erl-function
-    pel-next-erl-function)
+    pel-next-erl-function
+    pel-erlang-toggle-syntax-checker)
 
   (pel-autoload "pel-erlang-skels" for:
     pel--erlang-mode-setup

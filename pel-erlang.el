@@ -1,6 +1,6 @@
 ;;; pel-erlang.el --- Erlang programming Language support  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -29,6 +29,7 @@
 
 ;;; Code:
 (require 'comint)
+(require 'pel--base)            ; use: pel-toggle-syntax-check-mode
 (require 'pel--options)         ; use: pel-erlang-version-detection-method
 (require 'pel-fs)               ; use: pel-exec-pel-bin
 
@@ -209,6 +210,17 @@ On error, return nil."
       (and (buffer-name temp-buffer)
            (kill-buffer temp-buffer)))
     versions))
+
+
+;;-pel-autoload
+(defun pel-erlang-toggle-syntax-checker ()
+  "Toggle the syntax checker mode on/off.
+The syntax checker activated or deactivated is either flycheck
+or flymake, as selected by the user-option variable
+`pel-use-erlang-syntax-check'."
+
+  (interactive)
+  (pel-toggle-syntax-check-mode 'pel-use-erlang-syntax-check))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-erlang)

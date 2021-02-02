@@ -215,6 +215,29 @@ store them inside a directory and identify that directory here."
           (const :tag "Locate automatically" nil)
           (string :tag "Use files in directory")))
 
+(defcustom pel-modes-activating-syntax-check  nil
+  "List of major modes that automatically activate their syntax checker.
+
+PEL controls what syntax checker is used for each major mode.
+This includes flymake and flycheck and if others exist they will
+also be added to the support. A user may want to use flymake with
+one language and flycheck with another. PEL supports that.  By
+default PEL does not activate a syntax checker when the file is
+opened, allowing Emacs to run a little faster.  PEL provides a
+command (bound to the ``<f12> !`` key of that mode) for each
+supported major mode to toggle the syntax checker on or off.
+
+If you prefer to activate a syntax checker for a specific major
+mode right when the file is opened, add the name of the major
+mode to this list.  PEL will then activate the syntax checker
+right when the file is opened.  Each entry must be the symbol
+name of a major mode.
+
+For example, to activate it in Erlang, add a line with
+`erlang-mode' without the quotes."
+  :group 'pel-base-emacs
+  :type '(repeat symbol))
+
 ;; ---------------------------------------------------------------------------
 (defgroup pel-package-use nil
   "List of external packages that can be used by PEL."
@@ -2474,7 +2497,13 @@ flycheck it, PEL will install it if it is not already installed.
 When either is used you will also require the Go utility goflymake.
 Use the following command line to install it:
 
-    go get -u github.com/dougm/goflymake"
+    go get -u github.com/dougm/goflymake
+
+By default PEL does not automatically activate the syntax checker
+when a Go file is visited. If you want it activated
+automatically, then you must add the symbol `go-mode' to the
+defcustom variable `pel-modes-activating-syntax-check'."
+  :link '(custom-group-link "pel-base-emacs")
   :link '(url-link :tag "goflymake @ Github"
                    "https://github.com/dougm/goflymake")
   :group 'pel-pkg-for-go
@@ -3150,20 +3179,33 @@ When set to t PEL activates code that prevent echo of the typed commands."
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-use-erlang-flymake nil
-  "Control whether PEL uses erlang-flymake when `pel-use-erlang' is t."
-  :group 'pel-pkg-for-erlang
-  :type 'boolean
-  :safe #'booleanp)
+(defcustom pel-use-erlang-syntax-check  nil
+  "Controls whether PEL use ta syntax checker for Erlang.
 
-(defcustom pel-use-erlang-flycheck nil
-  "Control whether PEL uses flycheck for Erlang when `pel-use-erlang' is t.
-If `pel-use-erlang-flymake' is t, `pel-use-erlang-flycheck' is ignored:
-ie. priority is given to flymake because it is part of Emacs."
-  :group 'pel-pkg-for-erlang
-  :type 'boolean
-  :safe #'booleanp)
+The following choices are available:
 
+- Not used (nil), the default.
+- Use with flycheck.
+- Use with flymake.
+
+Select one of the last 2 choices to activate either flycheck or
+flymake.  Note that flymake is built-in Emacs, flycheck is not.
+flycheck seems to be the engine preferred by many people.  If you
+select flycheck it, PEL will install it if it is not already
+installed.
+
+By default PEL does not automatically activate the syntax checker
+when an Erlang file is visited. If you want it activated
+automatically, then you must add the symbol `erlang-mode' to the
+defcustom variable `pel-modes-activating-syntax-check'."
+  :link '(custom-group-link "pel-base-emacs")
+  :group 'pel-pkg-for-erlang
+  :type '(choice
+          (const :tag "Not used" nil)
+          (const :tag "Use with flycheck" with-flycheck)
+          (const :tag "Use with flymake"  with-flymake)))
+
+;; ---------------------------------------------------------------------------
 
 (defcustom pel-use-edts nil
   "Control whether PEL uses EDTS when `pel-use-erlang' is t.
