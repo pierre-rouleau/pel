@@ -1,4 +1,4 @@
-;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t-*-
+;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020, 2021  Pierre Rouleau
 
@@ -321,6 +321,11 @@ Done in this function to allow advising libraries that remap these keys."
     (global-set-key (kbd "M-g w") 'avy-goto-word-1)
     (global-set-key (kbd "M-g e") 'avy-goto-word-0)))
 
+;; ---------------------------------------------------------------------------
+;; Move to imenu symbol using Ido prompting
+;; ----------------------------------------
+(global-set-key (kbd "M-g h")   'pel-goto-symbol)
+(global-set-key (kbd "M-g M-h") 'pel-goto-symbol)
 ;; ---------------------------------------------------------------------------
 ;; Dired Extensions
 ;; ----------------

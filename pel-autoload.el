@@ -245,6 +245,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-show-kill-ring
     pel-show-major-mode)
 
+  (pel-autoload "pel-imenu-ido" for:
+    pel-goto-symbol)
+
   (pel-autoload "pel-key-chord" for:
     pel-key-chord-describe)
 

@@ -1,10 +1,10 @@
-;;; pel-imenu-ido.el --- Navigation over imenu symbols with Ido prompting.  -*- lexical-binding: t; -*-
+;;; pel-imenu-ido.el --- Navigation over imenu symbols with Ido prompting.  -*- lexical-binding: nil; -*-
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2021-02-03 07:57:12, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-03 12:08:58, updated by Pierre Rouleau>
 
-;; This file is an evolution of the single ido-goto-symbol function
+;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
 ;; written by shjk (updated by MattKeller to handle overlays as “positions”;
 ;; updated by VegardOye (to set the mark before jumping).
@@ -39,11 +39,28 @@
 ;;
 ;;
 
+;; The current (original) implementation uses dynamic binding and recursion.
+;; The following forms prevent byte compiler warnings.
+;; TODO: convert this code to semantic binding to be able to be able to run it
+;;       under gccemacs.
+(cl-eval-when 'compile (require 'ido   nil  :no-error))
+(cl-eval-when 'compile (require 'imenu nil  :no-error))
+
+(defvar imenu--index-alist)             ; prevent compiler warning
+(defvar imenu--rescan-item)             ; prevent compiler warning
+(defvar selected-symbol)                ; prevent compiler warning
+(defvar symbol-names)                   ; prevent compiler warning
+(defvar name-and-pos)                   ; prevent compiler warning
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
-(defun ido-goto-symbol (&optional symbol-list)
-  "Refresh imenu and jump to a place in the buffer using Ido."
+;;-pel-autoload
+(defun pel-goto-symbol (&optional symbol-list)
+  "Prompt using Ido for imenu symbol and move point to it.
+
+Refresh imenu and jump to a place in the buffer using Ido.
+Supports all Ido flex and tab completion."
   (interactive)
   (unless (featurep 'imenu)
     (require 'imenu nil t))
@@ -60,7 +77,7 @@
       (while (progn
                (imenu--cleanup)
                (setq imenu--index-alist nil)
-               (ido-goto-symbol (imenu--make-index-alist))
+               (pel-goto-symbol (imenu--make-index-alist))
                (setq selected-symbol
                      (ido-completing-read "Symbol? " symbol-names))
                (string= (car imenu--rescan-item) selected-symbol)))
@@ -72,12 +89,13 @@
         (goto-char (overlay-start position)))
        (t
         (goto-char position)))))
+   ;;
    ((listp symbol-list)
     (dolist (symbol symbol-list)
       (let (name position)
         (cond
          ((and (listp symbol) (imenu--subalist-p symbol))
-          (ido-goto-symbol symbol))
+          (pel-goto-symbol symbol))
          ((listp symbol)
           (setq name (car symbol))
           (setq position (cdr symbol)))
