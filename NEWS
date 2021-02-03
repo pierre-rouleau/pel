@@ -234,6 +234,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     displays the state of key-chord/key-seq and the key bindings if
     key-chord-mode is active.
 - Update: *Navigation*
+  - New: ``M-g h`` and ``M-g M-h`` key sequences mapped to pel-goto-symbol, a
+    command that uses imenu and Ido to provide an efficient way to jump to the
+    definition of any symbol in the current buffer.
   - New: ``<f11 M-f>`` binding for pel-forward-syntaxchange-start and
     ``<f11 M-b>`` binding for pel-backward-syntaxchange-start.
   - New: when the new *pel-windmove-on-f1-cursor* user option is set to t, PEL

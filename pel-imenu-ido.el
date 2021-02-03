@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2021-02-03 12:08:58, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-03 15:50:17, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -43,6 +43,8 @@
 ;; The following forms prevent byte compiler warnings.
 ;; TODO: convert this code to semantic binding to be able to be able to run it
 ;;       under gccemacs.
+(eval-when-compile
+  (require 'cl-lib))                    ; use: cl-eval-when
 (cl-eval-when 'compile (require 'ido   nil  :no-error))
 (cl-eval-when 'compile (require 'imenu nil  :no-error))
 
