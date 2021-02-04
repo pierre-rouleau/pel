@@ -359,6 +359,7 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-net" for:
     pel-install-file
     pel-install-files
+    pel-install-github-file
     pel-install-github-files)
 
   (pel-autoload "pel-numkpad" for:

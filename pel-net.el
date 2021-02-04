@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, August 31 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-04 10:51:57, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-04 11:25:25, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -99,7 +99,7 @@ downloaded, nil otherwise.  Permission errors are raised."
 
 ;;-pel-autoload
 (defun pel-install-github-files (user-project-branch fnames &optional refresh)
-  "Download & install files identified FNAMES from GitHub SITE-PATH.
+  "Download & install identified FNAMES from GitHub USER-PROJECT-BRANCH.
 
 - USER-PROJECT-BRANCH is a GitHub user/project/branch name path
   string.  Something like \"pierre-rouleau/pel/master\".
@@ -117,7 +117,10 @@ downloaded, nil otherwise.  Permission errors are raised."
                                           user-project-branch)))
     (pel-install-files github-rawfile-url fnames refresh)))
 
-;;; ----------------------------------------------------------------------------
+(defalias 'pel-install-github-file 'pel-install-github-files
+  "Download & install identified FNAME from GitHub USER-PROJECT-BRANCH.")
+
+;;; --------------------------------------------------------------------------
 (provide 'pel-net)
 
 ;;; pel-net.el ends here

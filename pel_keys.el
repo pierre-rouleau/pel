@@ -468,10 +468,7 @@ Done in this function to allow advising libraries that remap these keys."
   ;; download and byte-compile framemove if not already present.
   ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
   (cl-eval-when 'load
-    (pel-install-file
-     "https://raw.githubusercontent.com/emacsmirror\
-/framemove/master/framemove.el"
-     "framemove.el"))
+    (pel-install-github-file "emacsmirror/framemove/master" "framemove.el"))
 
   (when (display-graphic-p)
     (use-package framemove
@@ -1673,9 +1670,7 @@ interactively."
       (c-turn-on-eldoc-mode)))
 
   (cl-eval-when 'load
-    (pel-install-file
-     "https://raw.githubusercontent.com/pierre-rouleau/c-eldoc/master/c-eldoc.el"
-     "c-eldoc.el"))
+    (pel-install-github-file "pierre-rouleau/c-eldoc/master" "c-eldoc.el"))
 
   (use-package c-eldoc
     ;; c-eldoc is an external package.
@@ -2320,10 +2315,10 @@ MODE must be a symbol."
       ;; TODO: restore dougm URL once he has accepted by pull-request. In the
       ;;       mean-time I'm using my fork that has code fixes.
       (if (memq pel-use-goflymake '(with-flycheck with-flymake))
-          (pel-install-github-files "pierre-rouleau/goflymake/master"
-                                    (if (eq pel-use-goflymake 'with-flycheck)
-                                        "go-flycheck.el"
-                                      "go-flymake.el"))
+          (pel-install-github-file "pierre-rouleau/goflymake/master"
+                                   (if (eq pel-use-goflymake 'with-flycheck)
+                                       "go-flycheck.el"
+                                     "go-flymake.el"))
         (error "Unsupported pel-use-goflymake value: %S"
                pel-use-goflymake)))))
 
@@ -2698,12 +2693,9 @@ MODE must be a symbol."
   ;; See home page: https://github.com/emacsattic/rexx-mode
   ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
   (cl-eval-when 'load
-    (pel-install-file
-     "https://raw.githubusercontent.com/pierre-rouleau/rexx-mode/master/rexx-mode.el"
-     "rexx-mode.el")
-    (pel-install-file
-     "https://raw.githubusercontent.com/pierre-rouleau/rexx-mode/master/rexx-debug.el"
-     "rexx-debug.el"))
+    (pel-install-github-files "pierre-rouleau/rexx-mode/master"
+                              '("rexx-mode.el"
+                                "rexx-debug.el")))
 
   ;; Set the mode specific key prefix
   (define-pel-global-prefix pel:for-rexx (kbd "<f11> SPC R"))
@@ -2735,9 +2727,8 @@ MODE must be a symbol."
   ;; Download netrexx.el directly from GitHub as there is no official support
   ;; by either GNU Elpa or MELPA
   (cl-eval-when 'load
-    (pel-install-file
-     "https://raw.githubusercontent.com/pierre-rouleau/netrexx-mode/master/netrexx-mode.el"
-     "netrexx-mode.el"))
+    (pel-install-github-file "pierre-rouleau/netrexx-mode/master"
+                             "netrexx-mode.el"))
 
   ;; Set the mode specific key prefix
   (define-pel-global-prefix pel:for-netrexx (kbd "<f11> SPC N"))
@@ -2754,12 +2745,12 @@ MODE must be a symbol."
                                     . netrexx-mode))
 
     (define-key pel:for-netrexx (kbd "<down>") 'netrexx-next-method)
-    (define-key pel:for-netrexx (kbd "<up>")   'netrexx-previous-method)
-    (define-key pel:for-netrexx "="            'netrexx-select-current-block)
-    (define-key pel:for-netrexx "s"            'netrexx-sanitize-region)
-    (define-key pel:for-netrexx ";"            'netrexx-insert-end-comment)
-    (define-key pel:for-netrexx "e"            'netrexx-insert-end-comment-region)
-    (define-key pel:for-netrexx "j"            'netrexx-insert-javadoc-for-method)
+    (define-key pel:for-netrexx (kbd "<up>") 'netrexx-previous-method)
+    (define-key pel:for-netrexx "="          'netrexx-select-current-block)
+    (define-key pel:for-netrexx "s"          'netrexx-sanitize-region)
+    (define-key pel:for-netrexx ";"          'netrexx-insert-end-comment)
+    (define-key pel:for-netrexx "e"        'netrexx-insert-end-comment-region)
+    (define-key pel:for-netrexx "j"        'netrexx-insert-javadoc-for-method)
 
     ;; activate the <f12> key binding for netrexx-mode
     (pel--mode-hook-maybe-call
@@ -2841,10 +2832,8 @@ MODE must be a symbol."
          ;; vlang-mode is experimental: only provides font-locking
          ;; use, not on MELPA: download directly from github.
          (cl-eval-when 'load
-           (pel-install-file
-            "https://raw.githubusercontent.com/pierre-rouleau/\
-vlang-mode/master/vlang-mode.el"
-            "vlang-mode.el"))
+           (pel-install-github-file "pierre-rouleau/vlang-mode/master"
+                                    "vlang-mode.el"))
          (use-package vlang-mode
            :commands vlang-mode))))
 
@@ -3177,9 +3166,7 @@ vlang-mode/master/vlang-mode.el"
   ;; Download and byte-compile hide-comnt.el if its not present
   ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
   (cl-eval-when 'load
-    (pel-install-file
-     "https://raw.githubusercontent.com/emacsmirror/hide-comnt/master/hide-comnt.el"
-     "hide-comnt.el"))
+    (pel-install-github-file "emacsmirror/hide-comnt/master" "hide-comnt.el"))
 
   (use-package hide-comnt
     ;; autoload hide-comnt.el based on its 2 commands
@@ -3355,9 +3342,8 @@ vlang-mode/master/vlang-mode.el"
 (when pel-use-command-log-mode
   (define-pel-global-prefix pel:command-log (kbd "<f11> ? k c"))
   (cl-eval-when 'load
-    (pel-install-file
-     "https://raw.githubusercontent.com/pierre-rouleau/command-log-mode/master/command-log-mode.el"
-     "command-log-mode.el"))
+    (pel-install-github-file "pierre-rouleau/command-log-mode/master"
+                             "command-log-mode.el"))
   (use-package command-log-mode
     :commands (command-log-mode
                global-command-log-mode)
@@ -3694,9 +3680,7 @@ the ones defined from the buffer now."
   ;; download and byte-compile vline if not already present
   ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
   (cl-eval-when 'load
-    (pel-install-file
-     "https://raw.githubusercontent.com/emacsmirror/vline/master/vline.el"
-     "vline.el"))
+    (pel-install-github-file "emacsmirror/vline/master" "vline.el"))
 
   (use-package vline
     :commands vline-mode
@@ -4198,9 +4182,8 @@ the ones defined from the buffer now."
   ;; I'll support this package via my copy of the file from my fork
   ;; of the original project at https://github.com/abo-abo/centimacro
   (cl-eval-when 'load
-    (pel-install-file
-     "https://raw.githubusercontent.com/pierre-rouleau/centimacro/master/centimacro.el"
-     "centimacro.el"))
+    (pel-install-github-file "pierre-rouleau/centimacro/master"
+                             "centimacro.el"))
   (use-package centimacro
     :commands (centi-assign
                centi-summary
@@ -4234,9 +4217,7 @@ the ones defined from the buffer now."
 (when pel-use-emacros
   (define-pel-global-prefix pel:emacros (kbd "<f11> k e"))
   (cl-eval-when 'load
-    (pel-install-file
-     "https://raw.githubusercontent.com/pierre-rouleau/emacros/master/emacros.el"
-     "emacros.el"))
+    (pel-install-github-file "pierre-rouleau/emacros/master" "emacros.el"))
   (use-package emacros
     :commands emacros-load-macros
     :init
@@ -4255,7 +4236,7 @@ the ones defined from the buffer now."
     (define-key pel:emacros "m"          'emacros-move-macro)
     (define-key pel:emacros (kbd "DEL")  'emacros-remove-macro)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> l`` : Line control commands
 
 (define-pel-global-prefix pel:linectrl (kbd "<f11> l"))
@@ -4370,9 +4351,7 @@ the ones defined from the buffer now."
   ;; download and byte-compile cexp if not already present
   ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
   (cl-eval-when 'load
-    (pel-install-file
-     "https://raw.githubusercontent.com/TobiasZawada/cexp/master/cexp.el"
-     "cexp.el"))
+    (pel-install-github-file "TobiasZawada/cexp/master" "cexp.el"))
   (use-package cexp
     :commands cexp-search-forward
     :init
