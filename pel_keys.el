@@ -4547,9 +4547,14 @@ the ones defined from the buffer now."
 (when (or pel-use-speedbar
           pel-use-projectile-speedbar)
 
+  ;; Install sr-speedbar from my GitHub depot instead of from Melpa,
+  ;; because Melpa follows the older version in emacsmirror. I'm keeping
+  ;; min closer to what's available in the emacswiki.
+  (cl-eval-when 'load
+    (pel-install-github-file "pierre-rouleau/sr-speedbar/master"
+                             "sr-speedbar.el"))
+
   (use-package sr-speedbar
-    :ensure t
-    :pin melpa
     :commands (sr-speedbar-toggle
                sr-speedbar-window-p)
     :init
@@ -4574,7 +4579,7 @@ the ones defined from the buffer now."
       (remove-hook 'speedbar-before-visiting-tag-hook  #'sr-speedbar-before-visiting-tag-hook)
       (remove-hook 'speedbar-visiting-file-hook        #'sr-speedbar-visiting-file-hook)
       (remove-hook 'speedbar-visiting-tag-hook         #'sr-speedbar-visiting-tag-hook)
-      ;; Instead add hooks that a command can control the behaviour
+      ;; Instead add hooks to a command can controls the behaviour
       (add-hook 'speedbar-visiting-file-hook         'pel-sr-speedbar-visiting-control t)
       (add-hook 'speedbar-visiting-tag-hook          'pel-sr-speedbar-visiting-control t))
 
