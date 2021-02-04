@@ -4594,14 +4594,15 @@ the ones defined from the buffer now."
                  projectile-speedbar-toggle)
       :init
       (with-eval-after-load 'projectile
-        (define-key projectile-command-map (kbd "M-s") 'projectile-speedbar-open-current-buffer-in-tree)))))
+        (define-key projectile-command-map (kbd "M-s")
+          'projectile-speedbar-open-current-buffer-in-tree)))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> -        ``<f11> T`` : Directory Tree
 ;; The <f11> T key is assigned to ztree-dir when pel-use-ztree is t.
 ;; See the code above.
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> t`` : Text control commands
 
 (define-pel-global-prefix pel:text (kbd "<f11> t"))

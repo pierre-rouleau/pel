@@ -37,7 +37,7 @@
 ;; `pel-open-close-speedbar' prompts the first time it's called to select
 ;; which one to use.
 ;; When Emacs runs in terminal mode, `pel-open-close-speedbar' prompts
-;; only if the customizable variable `pel-prefer-sr-speedbar-in-terminal'
+;; only if the user-option variable `pel-prefer-sr-speedbar-in-terminal'
 ;; is nil, otherwise it automatically selects Sr-Speedbar, which is more
 ;; convenient.
 ;;
@@ -46,14 +46,14 @@
 ;; set this variable to 'sr-speedbar or 'speedbar.
 ;;
 ;;
-;; Control Behaviour on SR-SPeedbar item selection
+;; Control Behaviour on SR-Speedbar item selection
 ;; -----------------------------------------------
 ;;
 ;; SR-speedbar has a potentially annoying behaviour: when you select a file or
 ;; tag from the speedbar it opens the file in a buffer but returns the point
 ;; back to the speedbar instead of leaving it inside the file's buffer window.
 ;; In some case this behaviour might be useful though.  PEL provides the
-;; user-option `pel-sr-speedbar-move-point-to-target-on-select'. By default it
+;; user-option `pel-sr-speedbar-move-point-to-target-on-select'.  By default it
 ;; is set to t, meaning that we want to leave point inside the window of the
 ;; target, just like Speedbar behaves.  You can set it nil to get SR-standard
 ;; behaviour of returning point into the SR-Speedbar buffer after a selection.
@@ -264,7 +264,7 @@ If no speedbar is used, open one."
       (let ((warning-msg (when (member 'speedbar-trim-words-tag-hierarchy
                                        speedbar-tag-hierarchy-method)
                            "\n⚠️ Speedbar trims and regroups symbols.  \
-Sorting has no impact. Customize speedbar-tag-hierarcy-method to change.")))
+Sorting has no impact. Customize speedbar-tag-hierarchy-method to change.")))
       (message "Speedbar sorting now %s. \
 Contract and re-expand parents to see the change.%s"
                (pel-on-off-string (speedbar-toggle-sorting))
@@ -281,7 +281,7 @@ Contract and re-expand parents to see the change.%s"
       (user-error "Open Speedbar first"))))
 
 ;; --
-;; Control Behaviour on SR-SPeedbar item selection
+;; Control Behaviour on SR-Speedbar item selection
 ;; -----------------------------------------------
 ;; The following logic determines what of the following 2 behaviours are used
 ;; by the speedbar when a speedbar item is selected from the speedbar window,
@@ -323,8 +323,8 @@ Contract and re-expand parents to see the change.%s"
   "Hook callback: determine what buffer to select.
 
 This function is used by SR-speedbar hooks `speedbar-visiting-file-hook'
-and `speedbar-visiting-tag-hook'. It returns point to the SR-Speedbar
-buffer window when pel--sr-speedbar-move-point-to-target-on-select is nil,
+and `speedbar-visiting-tag-hook'.  It returns point to the SR-Speedbar
+buffer window when `pel--sr-speedbar-move-point-to-target-on-select' is nil,
 otherwise it leaves it in the window of the file selected by the SR-Speedbar
 selection user action."
   (unless pel--sr-speedbar-move-point-to-target-on-select
@@ -358,17 +358,29 @@ otherwise leave focus inside speedbar."
   ;; the speedbar
   (select-window sp-win)
   (goto-char (point-min))
-  (when (search-forward (concat "] " buffer-name)
-                        nil :noerror)
-    (speedbar-expand-line)
-    (recenter-top-bottom 0))
+  (let (file-name-position)
+    ;; first expand first level (file content) if found
+    (when (search-forward (concat "] " buffer-name)
+                          nil :noerror)
+      (setq file-name-position (point))
+      (speedbar-expand-line)
+      ;; then expand all found second level items
+      (while
+          (when (search-forward " {+}" nil :noerror)
+            (speedbar-expand-line)))
+      ;; put the first level at the top of the buffer
+      (goto-char file-name-position)
+      (recenter-top-bottom 0)))
   (when original-window
     (select-window original-window)))
 
 ;;-pel-autoload
 (defun pel-speedbar-focus-current-file (&optional stay-in-speedbar)
-  "Set SR-Speedbar focus on the content of file in current window.
-Place the tag list of the current file at the top of the speedbar.
+  "Set SR-Speedbar focus to the content of the buffer/file in current window.
+
+Place the its tag list at the top of the speedbar and expand all
+first and second level items.
+
 If optional STAY-IN-SPEEDBAR argument is non-nil, move point to speedbar,
 otherwise don't move it."
   (interactive "P")
@@ -395,7 +407,7 @@ otherwise don't move it."
               (user-error "Open speedbar first!")))
         (if (eq pel-speedbar-type-used 'speedbar)
             (user-error "This command only supports SR-speedbar!")
-          (user-error "Please open a SR-Speedbar first.")))
+          (user-error "Please open a SR-Speedbar first!")))
     (error "Cannot load speedbar!")))
 
 ;; ---------------------------------------------------------------------------
@@ -403,4 +415,4 @@ otherwise don't move it."
 
 ;;; pel-speedbar.el ends here
 
-;; LocalWords:  speedbar
+;; LocalWords:  speedbar sr
