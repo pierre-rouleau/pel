@@ -133,6 +133,8 @@
 ;; File Path processing
 ;; - `pel-parent-dirpath'
 ;; - `pel-expand-url-file-name'
+;; - `pel-path-strip'
+;; - `pel-url-join'
 ;;
 ;; Print in dedicated buffer
 ;; - `pel-print-in-buffer'
@@ -146,7 +148,8 @@
 ;; ---------------------------------------------------------------------------
 ;;; Dependencies:
                 ;; subr (always loaded) ; use: called-interactively-p
-(eval-when-compile (require 'subr-x))   ; use: split-string, string-join
+(eval-when-compile (require 'subr-x))   ; use: split-string, string-join,
+;;                                      ;      string-trim
 
 ;; ---------------------------------------------------------------------------
 ;;; Code:
@@ -1088,6 +1091,17 @@ Example:
   (if (eq 0 (string-match "file://" url))
       (concat "file://" (expand-file-name (substring url 7)))
     url))
+
+
+(defun pel-path-strip (text)
+  "Strip whitespace and forward slash(es) from beginning & end of TEXT."
+  (string-trim text "[ \t\n\r/]+" "[ \t\n\r/]+"))
+
+(defun pel-url-join (&rest parts)
+  "Join PARTS of URL strings into a single URL string."
+  (mapconcat (function pel-path-strip)
+             parts
+             "/"))
 
 ;; ---------------------------------------------------------------------------
 ;; Print in dedicated buffer
