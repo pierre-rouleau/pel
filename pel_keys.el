@@ -2308,30 +2308,24 @@ MODE must be a symbol."
       ))
 
   ;; goflymake package - either using flymake or flycheck
-  (when pel-use-goflymake
-    ;; goflymake is a mixed package:
-    ;; - it has the Go source:  goflymake/main.go  that Go will compile into
-    ;;   the executable stored in a directory that should be on your PATH,
-    ;; - the emacs lisp go-flymake.el and go-flycheck.el
-    ;; To ensure the Emacs Lisp files are available to Emacs regardless of the
-    ;; Go project or workspace used, the Emacs Lisp files are stored in PEL
-    ;; utility directory.
-    ;; TODO: restore dougm URL once he has accepted by pull-request. In the
-    ;;       mean-time I'm using my fork that has code fixes.
-    (cond
-     ((eq pel-use-goflymake 'with-flycheck)
-      (pel-install-file
-       "https://raw.githubusercontent.com/pierre-rouleau\
-/goflymake/master/go-flycheck.el"
-       "go-flycheck.el"))
-     ((eq pel-use-goflymake 'with-flymake)
-      (pel-install-file
-       "https://raw.githubusercontent.com/pierre-rouleau\
-/goflymake/master/go-flymake.el"
-       "go-flymake.el"))
-     (t
-      (error "Unsupported pel-use-goflymake value: %S"
-             pel-use-goflymake)))))
+  (cl-eval-when 'load
+    (when pel-use-goflymake
+      ;; goflymake is a mixed package:
+      ;; - it has the Go source:  goflymake/main.go  that Go will compile into
+      ;;   the executable stored in a directory that should be on your PATH,
+      ;; - the emacs lisp go-flymake.el and go-flycheck.el
+      ;; To ensure the Emacs Lisp files are available to Emacs regardless of the
+      ;; Go project or workspace used, the Emacs Lisp files are stored in PEL
+      ;; utility directory.
+      ;; TODO: restore dougm URL once he has accepted by pull-request. In the
+      ;;       mean-time I'm using my fork that has code fixes.
+      (if (memq pel-use-goflymake '(with-flycheck with-flymake))
+          (pel-install-github-files "pierre-rouleau/goflymake/master"
+                                    (if (eq pel-use-goflymake 'with-flycheck)
+                                        "go-flycheck.el"
+                                      "go-flymake.el"))
+        (error "Unsupported pel-use-goflymake value: %S"
+               pel-use-goflymake)))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC i`` : Javascript programming

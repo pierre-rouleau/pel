@@ -356,7 +356,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-beginning-of-next-defun
     pel-end-of-previous-defun)
 
-  (pel-autoload "pel-net" for: pel-install-file)
+  (pel-autoload "pel-net" for:
+    pel-install-file
+    pel-install-files
+    pel-install-github-files)
 
   (pel-autoload "pel-numkpad" for:
     pel-toggle-mac-numlock

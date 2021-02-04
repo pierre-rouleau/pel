@@ -1,6 +1,6 @@
 ;;; pel-file.el --- File Management utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -52,8 +52,7 @@
 (require 'pel-window)    ; use pel-window-direction-for
 ;;                       ;     pel-window-valid-for-editing-p
 
-(eval-when-compile
-  (require 'subr-x))           ; use: inlined: string-trim
+(eval-when-compile (require 'subr-x))  ; use: inlined: string-trim
 
 ;;; Code:
 
