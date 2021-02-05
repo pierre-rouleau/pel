@@ -560,6 +560,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 + New: Some of the header cells are coloured to help quickly identify the
   nature of a group of commands inside a long table.  This is mainly used in
   reference tables describing programming language support.
++ New: added background colours to key sequence cells to highlight the fact
+  that some key sequences are only available for specific major or minor modes
+  or when point is over text that has been turned into a button.
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/align.pdf][⅀ Align]] better describes handling of indentation on ``M-RET``.
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/grep.pdf][⅀ Grep PDF]] describes ag and ripgrep menu.  Also references projectile-based
  search commands.
