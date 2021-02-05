@@ -182,6 +182,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     the ERT failure report when the test fails, providing extra information.
     Pass test control variables to these extra arguments.
 - Update: *File Management*:
+  - New: command *pel-open-url-at-point* bound to ``<f11> f M-u`` copies the
+    file identified by the URL at point into a temporary file and visit that file.
   - New: key binding ``<f11> f M-l`` to find-file-literally``.
   - New: command *pel-show-buffer-file-encoding*, bound to ``<f11> f ?`` that
     shows the encoding of the file in current buffer by opening the *Help*

@@ -56,6 +56,25 @@ See `pel-find-file-at-point-in-window' for more information."
   (interactive)
   (pel-open-at-point 9))   ; n:=9 to force using a browser
 
+;;-pel-autoload
+(defun pel-open-url-at-point ()
+  "Open the URL at point in a local buffer.
+Copy the content of the URL into a temporary file, then open that file."
+  (interactive)
+  (if (and (require 'pel-file nil :no-error)
+           (fboundp 'pel-filename-parts-at-point))
+      (let* ((type.url (pel-filename-parts-at-point))
+             (url      (cdr type.url)))
+        (if url
+            (if (and (require 'url-handlers nil :no-error)
+                     (fboundp 'url-copy-file))
+                (let ((filename (make-temp-file "pel-open-url")))
+                  (url-copy-file url filename :ok-if-already-exists)
+                  (find-file filename))
+              (error "Can't load url-handler!"))
+          (user-error "No valid URL at point!")))
+    (error "Can't load pel-file!")))
+
 ;; -----------------------------------------------------------------------------
 (provide 'pel-open)
 

@@ -381,7 +381,8 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-open" for:
     pel-open-at-point
-    pel-browse-filename-at-point)
+    pel-browse-filename-at-point
+    pel-open-url-at-point)
 
   (pel-autoload "pel-pathmng" for: pel-emacs-load-path)
 

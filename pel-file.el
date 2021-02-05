@@ -73,7 +73,7 @@
 ;;  - pel--show-edit-action
 ;;
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; pel-find-file-at-point-in-window
 ;; --------------------------------
 
@@ -96,7 +96,9 @@ The function accepts Unix and Windows style file names and path.
 It accepts ':' and '@' as separators between the elements.
 Spaces are accepted within the file name and between the separators
 but *only* when the complete string is enclosed in double quotes
-*and* when point is located at the first quote."
+*and* when point is located at the first quote.
+
+A file URL is stripped from the string unless KEEP-FILE-URL is non-nil."
   (let ((str (pel-filename-at-point)))
     (unless keep-file-url
       (setq str (replace-regexp-in-string "^file:////?/?" "/" str)))

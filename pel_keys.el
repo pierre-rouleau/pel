@@ -3918,7 +3918,7 @@ the ones defined from the buffer now."
 ;; F I L O W R
 ;; a d f g h i j l n o r t v w
 ;; C-^  C-cj
-;; M-/  M-e M-l M-t M-x
+;; M-/  M-e M-l M-t M-u M-x
 (define-key pel:file "I" #'insert-file-literally)
 (define-key pel:file "O" #'find-file-read-only-other-window)
 (define-key pel:file "L" #'locate)
@@ -3966,6 +3966,7 @@ the ones defined from the buffer now."
 (define-key pel:file "."    'pel-open-at-point)
 (define-key pel:file "/"    'pel-browse-filename-at-point)
 (define-key pel:file (kbd "M-/") 'browse-url-at-point)
+(define-key pel:file (kbd "M-u") 'pel-open-url-at-point)
 (global-set-key "\C-cj"    'webjump)
 (define-key pel:file "j"   'webjump)
 
