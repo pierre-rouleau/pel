@@ -241,6 +241,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-next-frame
     pel-previous-frame)
 
+  (pel-autoload "pel-goto-addr" for:
+    pel-goto-next-url
+    pel-goto-previous-url)
+
   (pel-autoload "pel-help" for:
     pel-show-kill-ring
     pel-show-major-mode)

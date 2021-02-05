@@ -183,7 +183,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     Pass test control variables to these extra arguments.
 - Update: *File Management*:
   - New: command *pel-open-url-at-point* bound to ``<f11> f M-u`` copies the
-    file identified by the URL at point into a temporary file and visit that file.
+    file identified by the URL at point into a temporary file and visit that
+    file. This command is also bound to ``C-c C-f`` when the goto-address-mode
+    minor mode is active and point is over a URL.
   - New: key binding ``<f11> f M-l`` to find-file-literally``.
   - New: command *pel-show-buffer-file-encoding*, bound to ``<f11> f ?`` that
     shows the encoding of the file in current buffer by opening the *Help*
@@ -236,6 +238,11 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     displays the state of key-chord/key-seq and the key bindings if
     key-chord-mode is active.
 - Update: *Navigation*
+  - New: New commands to navigate across URLs in the current buffer:
+    - *pel-goto-next-url*, bound to ``<f6> C-n`` globally and to ``C-c C-n``
+      when the goto-address-mode minor mode is active and point is over a URL,
+    - *pel-goto-previous-url*, bound to ``<f6> C-p`` globally and to ``C-c C-p``
+      when the goto-address-mode minor mode is active and point is over a URL.
   - New: ``M-g h`` and ``M-g M-h`` key sequences mapped to pel-goto-symbol, a
     command that uses imenu and Ido to provide an efficient way to jump to the
     definition of any symbol in the current buffer.

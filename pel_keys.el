@@ -892,6 +892,12 @@ Then save your changes."
 ;; - Function Keys - <f6>
 ;; ----------------------
 ;;
+;; pel:f6 keys:
+;;  f l n p L
+;;  SPC
+;;  C-i <backtab> C-n C-p
+;;  <down> <up> <left> <right>
+;;  <f12>
 
 (define-pel-global-prefix pel:f6 (kbd "<f6>"))
 (define-key pel:f6 "l"  'pel-insert-line)
@@ -905,6 +911,8 @@ Then save your changes."
 (define-key pel:f6 (kbd "<up>")   'beginning-of-defun)
 (define-key pel:f6 (kbd "<left>") 'pel-end-of-previous-defun)
 (define-key pel:f6 (kbd "<right>")'end-of-defun)
+(define-key pel:f6 (kbd "C-n")    'pel-goto-next-url)
+(define-key pel:f6 (kbd "C-p")    'pel-goto-previous-url)
 
 ;; (kbd "<tab>") does not work in terminal mode, it works only in graphics mode
 (define-key pel:f6 (kbd "C-i")       'pel-indent-lines)
@@ -3984,6 +3992,22 @@ the ones defined from the buffer now."
 ;; binding PEL activates.
 (define-key pel:file "u" 'goto-address-mode)
 (define-key pel:file "U" 'goto-address-prog-mode)
+
+
+(defun pel--augment-goto-addr-map ()
+  "Add more key sequences to goto-addr key map."
+  (if (boundp 'goto-address-highlight-keymap)
+      (progn
+        ;; Add 3 more key sequences active when point is on a URL button
+        (define-key goto-address-highlight-keymap (kbd "C-c C-f") 'pel-open-url-at-point)
+        (define-key goto-address-highlight-keymap (kbd "C-c C-n") 'pel-goto-next-url)
+        (define-key goto-address-highlight-keymap (kbd "C-c C-p") 'pel-goto-previous-url))
+    (error "goto-address-highlight-keymap not defined!")))
+
+;; activate the extra keys for goto-addr-mode
+(pel--mode-hook-maybe-call
+ (function pel--augment-goto-addr-map)
+ 'goto-address-mode 'goto-address-mode-hook)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> f a`` : Find File At Point (ffap)
