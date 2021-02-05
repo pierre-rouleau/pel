@@ -650,6 +650,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   line-type region mark to allow consecutive execution of the line indent and
   line un-indenting commands.  The region is kept and no longer grows or shrink
   in some scenarios as before.
+- Fix: typos in names of *goto-address-mode* and *goto-address-prog-mode* that
+  prevented their ``<f11> f`` key bindings from working.
 ** Work-Around for Emacs Bugs:
 - Emacs 26.3 and 27.1 suffer from [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=44494][bug 44494]] where etags.el
   xref-location-marker does not handle TAGS references to  .el.gz compressed

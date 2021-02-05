@@ -3981,8 +3981,8 @@ the ones defined from the buffer now."
 ;; PEL provides the ability to open URL with several commands listed above.
 ;; Emacs also provides the goto-address-mode, which is also included in the
 ;; binding PEL activates.
-(define-key pel:file "u" 'goto-addess-mode)
-(define-key pel:file "U" 'goto-addess-prog-mode)
+(define-key pel:file "u" 'goto-address-mode)
+(define-key pel:file "U" 'goto-address-prog-mode)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> f a`` : Find File At Point (ffap)
