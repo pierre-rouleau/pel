@@ -461,9 +461,19 @@ The available options are:
           (const :tag "Use Ido.  Requires `pel-use-ido'." ido)
           (const :tag "Use Ido with Helm. Needs `pel-use-ido' & `pel-use-helm'"
                  ido/helm)
-          (const :tag "Use Ivy. Requires pel-use-ivy." ivy)
+          (const :tag "Use Ivy. Requires `pel-use-ivy'." ivy)
           (const :tag "Use Ivy & Counsel. Needs both `pel-use-ivy' and \
 `pel-use-counsel'." ivy/counsel)))
+
+(defcustom pel-goto-symbol-completion-method 'ido
+  "Select the completion mechanism used for prompting for local symbol.
+
+This is used by the command `pel-goto-symbol'."
+  :group 'pel-pkg-for-completion
+  :type '(choice
+          (const :tag "Use Ido. Requires `pel-use-ido'." ido)
+          (const :tag "Use Ido flex matching. Requires `pel-use-ido'." ido-flex)
+          (const :tag "Use Ivy. Requires `pel-use-ivy'." ivy)))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-cursor

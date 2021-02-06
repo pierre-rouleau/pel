@@ -326,6 +326,8 @@ Done in this function to allow advising libraries that remap these keys."
 ;; ----------------------------------------
 (global-set-key (kbd "M-g h")   'pel-goto-symbol)
 (global-set-key (kbd "M-g M-h") 'pel-goto-symbol)
+(global-set-key (kbd "M-g C-h") 'pel-goto-symbol-select-completion)
+
 ;; ---------------------------------------------------------------------------
 ;; Dired Extensions
 ;; ----------------

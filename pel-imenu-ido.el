@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2021-02-03 15:50:17, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-06 18:47:48, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -54,34 +54,60 @@
 (defvar symbol-names)                   ; prevent compiler warning
 (defvar name-and-pos)                   ; prevent compiler warning
 
+(require 'pel--options)       ; use: pel-goto-symbol-completion-function
+;;                            ;      pel-use-ivy
+(require 'pel-prompt)         ; use: pel-select-symbol-from
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
-;;-pel-autoload
-(defun pel-goto-symbol (&optional symbol-list)
-  "Prompt using Ido for imenu symbol and move point to it.
 
-Refresh imenu and jump to a place in the buffer using Ido.
-Supports all Ido flex and tab completion."
+(defvar pel--goto-symbol-completion-method pel-goto-symbol-completion-method
+  "Completing read function used by the command function `pel-goto-symbol'.
+The following functions can be used:
+- ido, the default
+- ido-flex which automatically activates `ido-enable-flex-matching'.
+- ivy, available when `pel-use-ivy' is t.
+
+This variable is set by the function `pel-goto-symbol' and used
+by the function `pel--goto-symbol'.")
+
+
+;;-pel-autoload
+(defun pel-goto-symbol-select-completion ()
+  "Select completion system for function `pel-goto-symbol'."
   (interactive)
+  (setq pel--goto-symbol-completion-method
+        (pel-select-symbol-from
+         (format "Select selection engine for pel-goto-symbol (%S): "
+                 pel--goto-symbol-completion-method)
+         '(ido
+           ido-flex
+           ivy))))
+
+;; --
+
+(defvar pel---goto-symbol-completion-function nil
+  "Internal selection.  Set by `pel-goto-symbol'.
+Do not modify.")
+
+(defun pel--goto-symbol (&optional symbol-list)
+  "Internal prompt for symbol from SYMBOL-LIST.
+
+Refresh imenu and jump to the location of selected symbol.
+Supports completion method specified by caller."
   (unless (featurep 'imenu)
     (require 'imenu nil t))
   (cond
    ((not symbol-list)
     (let ((ido-mode ido-mode)
-          (ido-enable-flex-matching
-           (if (boundp 'ido-enable-flex-matching)
-               ido-enable-flex-matching t))
           name-and-pos symbol-names position)
-      (unless ido-mode
-        (ido-mode 1)
-        (setq ido-enable-flex-matching t))
       (while (progn
                (imenu--cleanup)
                (setq imenu--index-alist nil)
-               (pel-goto-symbol (imenu--make-index-alist))
+               (pel--goto-symbol (imenu--make-index-alist))
                (setq selected-symbol
-                     (ido-completing-read "Symbol? " symbol-names))
+                     (funcall pel---goto-symbol-completion-function
+                              "Symbol? " symbol-names))
                (string= (car imenu--rescan-item) selected-symbol)))
       (unless (and (boundp 'mark-active) mark-active)
         (push-mark nil t nil))
@@ -97,7 +123,7 @@ Supports all Ido flex and tab completion."
       (let (name position)
         (cond
          ((and (listp symbol) (imenu--subalist-p symbol))
-          (pel-goto-symbol symbol))
+          (pel--goto-symbol symbol))
          ((listp symbol)
           (setq name (car symbol))
           (setq position (cdr symbol)))
@@ -109,6 +135,48 @@ Supports all Ido flex and tab completion."
                     (string= (car imenu--rescan-item) name))
           (add-to-list 'symbol-names name)
           (add-to-list 'name-and-pos (cons name position))))))))
+
+;;-pel-autoload
+(defun pel-goto-symbol ()
+  "Prompt using Ido for imenu symbol and move point to it.
+
+Refresh imenu and jump to a place in the buffer using one of the following
+completion mechanisms:
+- Ido
+- Ido with flex matching mode or,
+- Ivy
+
+as selected by user-option variable `pel-goto-symbol-completion-function'
+and the availability of ivy.
+
+If Ivy is selected by the user option variable `pel-use-ivy' is
+nil, then ido is still used."
+  (interactive)
+  ;; Define the completion mechanism and then invoke the command
+  ;; Ensure ido-enable-flex-matching is t only when ido-flex is selected,
+  ;; regardless of its customized value.
+  ;; TODO: IDO flex matching does not seem to be activated: the variable
+  ;;       is set and the ido-set-matches-1 function does see it but
+  ;;       that does not seem to have any impact on the ability to match
+  ;;       flexibly like described...
+  (let* (ido-enable-flex-matching
+         (pel---goto-symbol-completion-function
+          (cond
+           ((eq pel--goto-symbol-completion-method 'ido)
+            (progn
+              (setq ido-enable-flex-matching nil)
+              (function ido-completing-read)))
+           ((eq pel--goto-symbol-completion-method 'ido-flex)
+            (progn
+              (setq ido-enable-flex-matching 22)
+              (function ido-completing-read)))
+           ((eq pel--goto-symbol-completion-method 'ivy)
+            (if (and (require 'ivy nil :no-error)
+                     (fboundp 'ivy-completing-read))
+                (function ivy-completing-read)
+              (user-error "Ivy is not available!"))))))
+    (pel--goto-symbol)))
+
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-imenu-ido)
