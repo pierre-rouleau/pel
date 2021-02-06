@@ -3650,8 +3650,25 @@ the ones defined from the buffer now."
 ;; Reserved            "x"   (see declarations below with pel-use-nhexl-mode)
 ;; Reserved            "X"
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> b h`` : buffer highlighting commands
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - Function Keys - <f11> - Prefix ``<f11> b h`` : buffer highlight commands
+
+(define-pel-global-prefix pel:highlight (kbd "<f11> b h"))
+
+;; Keys used in pel:highlight:
+;; (  - . \ |
+;; C F G H L R
+;; c f h l p r s u w
+
+(when pel-use-rainbow-mode
+  (use-package rainbow-mode
+    :ensure t
+    :pin gnu
+    :commands rainbow-mode
+    :init
+    (cl-eval-when 'compile (require 'rainbow-mode nil :no-error))
+    ;; use c for color
+    (define-key pel:highlight "c" 'rainbow-mode)))
 
 (defun pel-hi-lock-find-patterns ()
   "Execute hi-lock-find-patterns when `hi-lock-mode' is active."
@@ -3661,10 +3678,8 @@ the ones defined from the buffer now."
       (hi-lock-find-patterns)
     (user-error "Turn hi-lock-mode on first")))
 
-(define-pel-global-prefix pel:highlight (kbd "<f11> b h"))
-(define-key pel:highlight "-" #'hl-line-mode)
-(define-key pel:highlight "(" #'show-paren-mode)
-
+(define-key pel:highlight      "-" #'hl-line-mode)
+(define-key pel:highlight      "(" #'show-paren-mode)
 (define-key pel:highlight      "."  #'highlight-symbol-at-point)
 (define-key pel:highlight      "C"  #'highlight-changes-mode)
 (define-key pel:highlight      "h"   'pel-set-highlight-color)
@@ -3680,8 +3695,6 @@ the ones defined from the buffer now."
 (define-key pel:highlight      "r"  #'highlight-regexp)
 (define-key pel:highlight      "s"   'pel-toggle-hl-line-sticky)
 (define-key pel:highlight      "u"  #'unhighlight-regexp)
-;;                             "|" 'vline-mode
-;;                             "\" 'display-fill-column-indicator-mode | fci-mode
 (define-key pel:highlight      "w"  #'hi-lock-write-interactive-patterns)
 ;;
 (when pel-use-vline
@@ -3704,16 +3717,14 @@ the ones defined from the buffer now."
     :pin melpa
     :commands fci-mode
     :init
-    (define-key pel:highlight "\\"  'fci-mode)
-    (define-key pel:          "8"  'fci-mode)
-
-    ))
-;; For Emacs 27.1 and later use the built-in display-fill-column-indicator-mode.
+    (define-key pel:highlight "\\" 'fci-mode)
+    (define-key pel:          "8"  'fci-mode)))
+;; For Emacs 27.1 & later use the built-in display-fill-column-indicator-mode.
 (unless (version< emacs-version "27.1")
   (define-key pel:highlight "\\"'display-fill-column-indicator-mode)
   (define-key pel:          "8" 'display-fill-column-indicator-mode))
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> b I`` : Indirect buffer commands
 
 (define-pel-global-prefix pel:indirect-buffer (kbd "<f11> b I"))

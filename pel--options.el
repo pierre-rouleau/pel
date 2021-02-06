@@ -932,6 +932,20 @@ current window:
   :link '(url-link :tag "vline @ EmacsWiki"
                    "https://www.emacswiki.org/emacs/VlineMode"))
 
+(defcustom pel-use-rainbow-mode nil
+  "Control whether PEL uses the `rainbow-mode' package.
+When activated the color code value constant strings in code file
+are highlighted with the color represented by the color code in the string.
+
+PEL binds command `rainbow-mode' to ``<f11> b h c``."
+  :link '(url-link :tag "rainbow-mode example"
+                   "https://jblevins.org/log/rainbow-mode")
+  :link '(url-link :tag "rainbow-mode @ Elpa"
+                   "https://elpa.gnu.org/packages/rainbow-mode.html")
+  :group 'pel-pkg-for-highlight
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; ---------------------------------------------------------------------------
 ;; Parens block management
 ;; -----------------------

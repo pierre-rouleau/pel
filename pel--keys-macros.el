@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-02 09:02:22, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-06 11:52:44, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -178,6 +178,7 @@
                                    (list
                                     'auto-highlight-symbol
                                     'iedit
+                                    'rainbow
                                     'rainbow-delimiters
                                     'vline)))
                               (if (version< emacs-version "27.1")
@@ -565,7 +566,8 @@ Return nil if nothing found."
   '(("rxt"   . "pcre2el")
     ("Ztree" . "ztree-view")
     ("command-log" . "command-log-mode")
-    ("netrexx"     . "netrexx-mode"))
+    ("netrexx"     . "netrexx-mode")
+    ("rainbow"     . "rainbow-mode"))
   "Maps a group name for the library that defines it.
 This is only required for the libraries that cannot be found
 with the existing code, such as when the group name is different
@@ -630,6 +632,7 @@ If OTHER-WINDOW is non-nil display in other window."
             (message nil)))
         (user-error "Customization group '%s' currently unknown.\n\
 PEL cannot locate a file that defines this group.\n\
+ It is also not identified in pel--group-library-names.\n\
 Is it installed? If not set PEL user option to activate it.\n\
 To customize it manually load the library where this group is defined"
                     group)))))
