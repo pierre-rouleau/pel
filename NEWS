@@ -259,6 +259,18 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       - Ido,
       - Ido with flex matching,
       - Ivy.
+  - New: Add support for imenu-anywhere, which provides the same functionality
+    as pel-goto-symbol with the ability to target the symbols of *all*
+    buffers:
+    - Activated with the *pel-use-imenu-anywhere* that is set to identify the
+      default completions method, one of: emacs-default, ido, ivy or helm.
+    - The *pel-imenu-anywhere-select-completion* command (bound to ``M-g
+      C-y``) can be used to change the completion method used in an Emacs
+      editing session.
+    - The *pel-imenu-anywhere* prompts using the selected completion method
+      and move point to the buffer and location where the symbol is
+      defined. The command is bound to ``M-g y`` and ``M-g M-y`` key
+      sequences.
   - New: ``<f11 M-f>`` binding for pel-forward-syntaxchange-start and
     ``<f11 M-b>`` binding for pel-backward-syntaxchange-start.
   - New: when the new *pel-windmove-on-f1-cursor* user option is set to t, PEL

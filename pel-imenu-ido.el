@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2021-02-06 18:47:48, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-07 10:02:05, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -177,6 +177,50 @@ nil, then ido is still used."
               (user-error "Ivy is not available!"))))))
     (pel--goto-symbol)))
 
+;; --
+(defvar pel--imenu-anywhere-method pel-use-imenu-anywhere
+  "Identifies whether imenu-anywhere is used and which completion to use.")
+
+;;-pel-autoload
+(defun pel-imenu-anywhere-select-completion ()
+  "Select completion system for function `pel-goto-symbol'."
+  (interactive)
+  (let ((available-methods '(emacs-default)))
+    (when pel-use-ido
+        (push 'ido available-methods))
+    (when pel-use-ivy
+      (push 'ivy available-methods))
+    (when pel-use-helm
+      (push 'helm available-methods))
+    (setq available-methods (reverse available-methods))
+    (setq pel--imenu-anywhere-method
+          (pel-select-symbol-from
+           (format "Select selection engine for imenu-anywhere (%S): "
+                   pel--imenu-anywhere-method)
+           available-methods))))
+
+;;-pel-autoload
+(defun pel-imenu-anywhere ()
+  "Go to imenu tag defined in all reachable buffers.
+See `imenu-anywhere' for more information.
+This function uses the completion method selected by
+`pel-use-imenu-anywhere' and any changes requested by executing the
+command `pel-imenu-anywhere--select-completion'."
+  (interactive)
+  (if (and (require 'imenu-anywhere nil :no-error)
+           (fboundp 'imenu-anywhere)
+           (fboundp 'ido-imenu-anywhere)
+           (fboundp 'ivy-imenu-anywhere)
+           (fboundp 'helm-imenu-anywhere))
+      (cond
+       ((eq pel--imenu-anywhere-method 'emacs-default) (imenu-anywhere))
+       ((eq pel--imenu-anywhere-method 'ido)           (ido-imenu-anywhere))
+       ((eq pel--imenu-anywhere-method 'ivy)           (ivy-imenu-anywhere))
+       ((eq pel--imenu-anywhere-method 'helm)          (helm-imenu-anywhere))
+       (t (error "Invalid pel--imenu-anywhere-method value: %S"
+                 pel--imenu-anywhere-method)))
+    (user-error "The package imenu-anywhere is not available. \
+Please set pel-use-imenu-anywhere")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-imenu-ido)

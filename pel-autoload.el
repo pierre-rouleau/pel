@@ -251,7 +251,9 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-imenu-ido" for:
     pel-goto-symbol-select-completion
-    pel-goto-symbol)
+    pel-goto-symbol
+    pel-imenu-anywhere-select-completion
+    pel-imenu-anywhere)
 
   (pel-autoload "pel-key-chord" for:
     pel-key-chord-describe)

@@ -475,6 +475,26 @@ This is used by the command `pel-goto-symbol'."
           (const :tag "Use Ido flex matching. Requires `pel-use-ido'." ido-flex)
           (const :tag "Use Ivy. Requires `pel-use-ivy'." ivy)))
 
+(defcustom pel-use-imenu-anywhere nil
+  "Whether PEL uses the imenu-anywhere external package.
+
+The imenu-anywhere package provides navigation for the imenu tags across
+all buffers, not just the current one.  It supports several completion methods:
+
+- Emacs default
+- Ido
+- Ivy
+- Helm
+
+Select the completion method you want as default when activating this package."
+  :group 'pel-pkg-for-completion
+  :type '(choice
+          (const :tag "Not used." nil)
+          (const :tag "Use Emacs default completion."    emacs-default)
+          (const :tag "Use Ido. Requires `pel-use-ido'." ido)
+          (const :tag "Use Ivy. Requires `pel-use-ivy'." ivy)
+          (const :tag "Use Helm. Requires `pel-use-helm'." helm)))
+
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-cursor
 ;; ------------------

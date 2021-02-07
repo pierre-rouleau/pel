@@ -328,6 +328,17 @@ Done in this function to allow advising libraries that remap these keys."
 (global-set-key (kbd "M-g M-h") 'pel-goto-symbol)
 (global-set-key (kbd "M-g C-h") 'pel-goto-symbol-select-completion)
 
+(when pel-use-imenu-anywhere
+  (use-package imenu-anywhere
+    :ensure t
+    :pin melpa
+    :commands (pel-imenu-anywhere-select-completion
+               pel-imenu-anywhere)
+    :init
+    (global-set-key (kbd "M-g y")   'pel-imenu-anywhere)
+    (global-set-key (kbd "M-g M-y") 'pel-imenu-anywhere)
+    (global-set-key (kbd "M-g C-y") 'pel-imenu-anywhere-select-completion)))
+
 ;; ---------------------------------------------------------------------------
 ;; Dired Extensions
 ;; ----------------
