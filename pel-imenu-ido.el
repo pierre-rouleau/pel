@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2021-02-07 10:02:05, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-07 10:29:44, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -175,6 +175,9 @@ nil, then ido is still used."
                      (fboundp 'ivy-completing-read))
                 (function ivy-completing-read)
               (user-error "Ivy is not available!"))))))
+    (when (and (require 'xref)
+               (fboundp 'xref-push-marker-stack))
+      (xref-push-marker-stack))
     (pel--goto-symbol)))
 
 ;; --
