@@ -1391,7 +1391,8 @@ interactively."
     ;; Add key bindings for Ido prompts to complement what is available
     ;; because some bindings are hidden by other keys, like the C-c
     ;; binding to ido-toggle-case.
-    (define-key ido-common-completion-map (kbd "M-c") 'ido-toggle-case)))
+    (define-key ido-common-completion-map (kbd "M-c") 'ido-toggle-case)
+    (define-key ido-common-completion-map (kbd "<f1>") 'pel-help-on-completion-input)))
 
 (when (or pel-use-ivy
           pel-use-ivy-xref)

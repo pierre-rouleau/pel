@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-06 11:52:44, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-08 18:17:46, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -503,6 +503,17 @@ There should be no key binding!" keyseq))
 (defvar pel--prompt-history-for-help-pdf nil
   "History list for function `pel-help-pdf-select'.")
 
+(defun pel-help-open-pdf (topic &optional open-web-page)
+  "Open PDF help for TOPIC string potentially OPEN_WEB-PAGE."
+  (browse-url (pel-pdf-file-url topic open-web-page)))
+
+;;-pel-autoload
+(defun pel-help-on-completion-input (&optional open-web-page)
+  "Open the input completion help PDF, in a browser if arg OPEN-WEB-PAGE set."
+  (interactive "P")
+  (pel-help-open-pdf "completion-input" open-web-page))
+
+
 ;;-pel-autoload
 (defun pel-help-pdf-select (&optional open-web-page)
   "Prompt for a PEL PDF and open it.
@@ -531,7 +542,7 @@ If enter is typed with no entry it defaults to the PEL key maps pdf."
          ;; since aliases are included in the list presented to user,
          ;; translate a selected alias back to its real file name
          (topic (alist-get topic pel--topic-alias topic nil (function equal))))
-    (browse-url (pel-pdf-file-url topic open-web-page))))
+    (pel-help-open-pdf topic open-web-page)))
 
 ;; --
 
