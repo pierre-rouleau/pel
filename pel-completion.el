@@ -67,12 +67,11 @@ Otherwise, de-activate the IDO mode."
                           ((> activate 0) (if ido-mode nil 'activate))
                           (t              (if ido-mode 'deactivate nil)))))
         (cond ((eq action 'activate)
-               (progn
-                 (ido-mode 1)
-                 (ido-everywhere 1)
-                 (setq ido-enable-flex-matching t)
-                 ;; don't require confirmation when creating new buffers with C-x b
-                 (pel-setq ido-create-new-buffer 'always)))
+               (ido-mode 1)
+               (ido-everywhere 1)
+               (setq ido-enable-flex-matching t)
+               ;; don't require confirmation when creating new buffers with C-x b
+               (pel-setq ido-create-new-buffer 'always))
               ((eq action 'deactivate)
                (ido-mode -1)
                (ido-everywhere -1)

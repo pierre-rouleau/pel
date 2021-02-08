@@ -1379,10 +1379,19 @@ interactively."
       ;; persistent action.
       (define-key helm-map (kbd "M-C-i") 'helm-execute-persistent-action))))
 
+(defvar ido-common-completion-map)      ; prevent byte-compiler warning
 (when pel-use-ido
-  ;; IDO is distributed with Emacs.
+  ;; When pel-use-ido is set, ensure that ido-mode is autoloaded.
+  ;; Ido is distributed with Emacs, so no need to provide logic to install it.
+  ;; The selection of the auto-completion mode used when Emacs starts
+  ;; is done below, with a call to `pel-set-completion-mode'.
   (use-package ido
-    :commands ido-mode))
+    :commands ido-mode
+    :config
+    ;; Add key bindings for Ido prompts to complement what is available
+    ;; because some bindings are hidden by other keys, like the C-c
+    ;; binding to ido-toggle-case.
+    (define-key ido-common-completion-map (kbd "M-c") 'ido-toggle-case)))
 
 (when (or pel-use-ivy
           pel-use-ivy-xref)
@@ -1411,8 +1420,9 @@ interactively."
         :init
         (define-key pel: "A" 'counsel-osx-app)))))
 
-;; If more than 1 completion mode is available activate the one selected by
-;; customization and install the selection command.
+;; If more than 1 completion mode is available, this means that the user may
+;; not want to use Emacs default: activate the one selected by customization
+;; and install the selection command.
 (when (> (pel-number-of-available-modes) 1)
   (use-package pel-completion
     ;; Of all input-completion packages, Helm takes the longuest time to load.
