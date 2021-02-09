@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-08 18:17:46, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-09 11:37:25, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -687,7 +687,7 @@ There should be no key binding!" keyseq))
       (require 'pel-prompt nil :noerror)
       (if (fboundp 'pel-select-symbol-from)
           (pel--customize-group
-           (pel-select-symbol-from "Select group: " groups)
+           (pel-select-symbol-from "Select group" groups)
            other-window)
        (error "Failed loading pel-prompt!")))))
 

@@ -182,6 +182,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     the ERT failure report when the test fails, providing extra information.
     Pass test control variables to these extra arguments.
 - Update: *File Management*:
+  - New: when using IDO completion you can control whether IDO uses the file
+    name at point with the new command *pel-set-ido-use-fname-at-point*.  By
+    default it sets the behaviour for the current buffer.  With a command
+    prefix it sets it globally.
   - New: command *pel-open-url-at-point* bound to ``<f11> f M-u`` copies the
     file identified by the URL at point into a temporary file and visit that
     file. This command is also bound to ``C-c C-f`` when the goto-address-mode

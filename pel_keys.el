@@ -4020,6 +4020,7 @@ the ones defined from the buffer now."
 ;; --------------------
 (global-set-key (kbd "C-^") 'pel-open-at-point)
 (define-key pel:file "."    'pel-open-at-point)
+(define-key pel:file (kbd "M-.") 'pel-set-ido-use-fname-at-point)
 (define-key pel:file "/"    'pel-browse-filename-at-point)
 (define-key pel:file (kbd "M-/") 'browse-url-at-point)
 (define-key pel:file (kbd "M-u") 'pel-open-url-at-point)

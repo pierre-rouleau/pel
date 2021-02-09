@@ -292,7 +292,8 @@ Display a message describing what mode was actually activated."
   (pel-select-from "Completion mode"
                    (pel--completion-mode-selection)
                    (pel-activated-completion-mode)
-                   #'pel-set-completion-mode))
+                   #'pel-set-completion-mode
+                   'emacs-default))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-completion)

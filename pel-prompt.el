@@ -1,6 +1,6 @@
 ;;; pel-prompt.el --- PEL Prompt Utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -20,7 +20,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; This file defines functions that prompt the user.
@@ -28,8 +28,12 @@
 ;; The file defines the following functions:
 ;;
 ;; - `pel-y-n-e-or-l-p'
-;; - `pel-select-from'
-;;   - `pel--prompt-for'
+;; - `pel-set-user-option'
+;; - `pel-select-string-from'
+;; - `pel-select-symbol-from'
+;;   - `pel-select-from'
+;;     - `pel--prompt-for'
+;;       - `pel--var-value-description'
 ;; - `pel-prompt-purpose-for'
 ;; - `pel-prompt-function'
 ;; - `pel-prompt-args'
@@ -42,7 +46,12 @@
 ;; 4 outcomes: yes, no, edit or findlib.
 ;;
 ;; The `pel-select-from' function provides a selection of choices to select from,
-;; providing a quick interactive selection of choices.
+;; providing a quick interactive selection of choices.  It is used by the
+;; following higher level functions:
+;; - `pel-set-user-option' sets a global or buffer local value for the
+;;    specified user-option variable.
+;; - `pel-select-string-from'
+;; - `pel-select-symbol-from'
 ;;
 ;; The `pel-prompt-purpose-for' function prompts for the purpose of a specific
 ;; item (file or function) and maintains a prompt history for each item.
@@ -53,10 +62,13 @@
 ;; These prompt histories do not persist when Emacs is stopped.
 
 
+;;; --------------------------------------------------------------------------
 ;;; Dependencies
 (require 'pel--base)                  ; use: pel-capitalize-first-letter
 ;;                                    ;      pel-end-text-with-period
 (eval-when-compile (require 'subr-x)) ; use: string-trim
+(eval-when-compile
+  (require 'cl-lib))    ; use: cl-dolist and cl-return
 
 ;;; Code:
 
@@ -179,27 +191,42 @@ y/Y (yes), n/N (no), e/E (edit), l/L (library).\n")
 ;;
 ;; - `pel-select-from'
 ;;   - `pel--prompt-for'
-;;
+;;     - `pel--var-value-description'
 
-(defun pel--prompt-for (title selection &optional current)
+(defun pel--var-value-description (value selection)
+  "Return string for the specific VALUE given the SELECTION.
+
+- SELECTION argument is a list of choices.
+Each choice is a list of 3 elements:
+  - A character, presented to the user to select the corresponding choice.
+  - A string, describing the choice
+  - A value, returned or used for the choice."
+  (cl-dolist (char.string.value selection)
+    (when (eq value (nth 2 char.string.value))
+      (cl-return (nth 1 char.string.value)))))
+
+(defun pel--prompt-for (title selection &optional current nil-value)
   "Return a prompt string with TITLE for SELECTION.
 SELECTION is a list of (char prompt value).
-CURRENT optionally identifies the currently used value."
-  (format "%s%s. Select: %s."
+CURRENT optionally identifies the currently used value.
+
+NIL-VALUE optionally identify a meaning for a nil value.  It is
+required when the USER-OPTION may be set to the same thing by one
+value in the SELECTION but also by the nil value, and that nil
+value is not part of the SELECTION."
+  (format "%s%s: %s."
           title
-          (let ((text "?"))
-            (format
-             " [%s]"
-             (dolist (choice selection text)
-               (when (equal (nth 2 choice) current)
-                 (setq text (nth 1 choice))))))
+          (format " [%s]. Select"
+                  (or (pel--var-value-description current selection)
+                      nil-value
+                      "?"))
           (mapconcat (lambda (elt)
                        (format "%c: %s"
                                (car elt) (cadr elt)))
                      selection
                      ", ")))
 
-(defun pel-select-from (title selection &optional current-value action)
+(defun pel-select-from (title selection &optional current-value action nil-value)
   "Prompt user with a TITLE for a SELECTION of choices.
 It optionally displays the CURRENT-VALUE in the prompt and
 also optionally calls the ACTION function passing selected value.
@@ -211,8 +238,13 @@ Each choice is a list of 3 elements:
   - A value, returned or used for the choice.
 If ACTION is nil or if the choice is the same as CURRENT-VALUE,
 `pel-select-from' returns the selected value, otherwise it
-returns the value returned by (ACTION selected-value) evaluation."
-  (let* ((prompt    (pel--prompt-for title selection current-value))
+returns the value returned by (ACTION selected-value) evaluation.
+
+NIL-VALUE optionally identify a meaning for a nil value.  It is
+required when the USER-OPTION may be set to the same thing by one
+value in the SELECTION but also by the nil value, and that nil
+value is not part of the SELECTION."
+  (let* ((prompt    (pel--prompt-for title selection current-value nil-value))
          (chars     (mapcar #'car selection))
          (choice    (read-char-choice prompt chars))
          (requested-value (nth 2 (assoc choice selection))))
@@ -265,7 +297,44 @@ STRINGS := a list of strings."
     (message nil)
     choice))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
+;; Set user-option from selected choices
+
+(defun pel-set-user-option (prompt user-option selection &optional locally nil-value)
+  "PROMPT to  set the value of USER-OPTION to one of the SELECTION.
+
+- USER-OPTION is a user-option symbol
+- SELECTION argument is a list of choices.
+Each choice is a list of 3 elements:
+  - A character, presented to the user to select the corresponding choice.
+  - A string, describing the choice
+  - A value, returned or used for the choice.
+
+Affects Emacs globally unless the LOCALLY argument is non-nil, in which case a
+buffer local variable is created for that user-option and the change value
+only affects the current buffer.
+
+NIL-VALUE optionally identify a meaning for a nil value.  It is
+required when the USER-OPTION may be set to the same thing by one
+value in the SELECTION but also by the nil value, and that nil
+value is not part of the SELECTION."
+  (let ((var-name  (symbol-name user-option))
+        (new-value (pel-select-from prompt
+                                    selection
+                                    (symbol-value user-option)
+                                    nil
+                                    nil-value)))
+    (when locally
+      (with-current-buffer (current-buffer)
+        (make-local-variable user-option)))
+    (set user-option new-value)
+    (message "%s now set to %s"
+             var-name
+             (pel--var-value-description
+              new-value
+              selection))))
+
+;; ---------------------------------------------------------------------------
 ;; Prompt for purpose and function names
 
 (defun pel-prompt-purpose-for (item &optional default)
@@ -291,8 +360,8 @@ returns DEFAULT"
 (defun pel-prompt-function (&optional transform-function)
   "Prompt for function and return potentially transformed input string.
 If TRANSFORM-FUNCTION is non-nil it must be a function that accepts
-the function name string and return it transformed or nil if the function
-name is not acceptable.
+the function var-name string and return it transformed or nil if the function
+var-name is not acceptable.
 Holds an independent function prompt history for each major mode."
   (let ((history-symbol (intern
                          (format
@@ -309,8 +378,8 @@ Holds an independent function prompt history for each major mode."
 (defun pel-prompt-args (&optional transform-function)
   "Prompt for argument(s) and return potentially transformed input string.
 If TRANSFORM-FUNCTION is non-nil it must be a function that accepts
-the function name string and return it transformed or nil if the function
-name is not acceptable.
+the function var-name string and return it transformed or nil if the function
+var-name is not acceptable.
 Holds an independent function prompt history for each major mode."
   (let ((history-symbol (intern
                          (format
