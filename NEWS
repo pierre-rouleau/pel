@@ -240,7 +240,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 - Update: *Input Completion*:
   - New: During Ido input completion, the ``<f1>`` key opens the
     [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/completion-input.pdf][⅀Input Completion PDF]] which now describes all key bindings available for
-    the Ido prompts.
+    the Ido prompts.  the same key is available in Ivy prompts.
+  - New: Add support for ivy-avy.  It is activated when both *pel-use-ivy* and
+    *pel-use-ivy* user-options are activated.
+  - New: Add extra key bindings for the ivy key-map to allow
+    *ivy-restrict-to-matches* and *ivy-avy* to be accessible when Emacs runs
+    in terminal mode.
 - Update: *Key Chords*:
   - New: command *pel-key-chord-describe* (bound to ``<f11> ? k M-K``)
     displays the state of key-chord/key-seq and the key bindings if

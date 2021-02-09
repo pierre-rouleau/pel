@@ -1379,12 +1379,12 @@ interactively."
       ;; persistent action.
       (define-key helm-map (kbd "M-C-i") 'helm-execute-persistent-action))))
 
-(defvar ido-common-completion-map)      ; prevent byte-compiler warning
 (when pel-use-ido
   ;; When pel-use-ido is set, ensure that ido-mode is autoloaded.
   ;; Ido is distributed with Emacs, so no need to provide logic to install it.
   ;; The selection of the auto-completion mode used when Emacs starts
   ;; is done below, with a call to `pel-set-completion-mode'.
+  (defvar ido-common-completion-map)      ; prevent byte-compiler warning
   (use-package ido
     :commands ido-mode
     :config
@@ -1392,17 +1392,30 @@ interactively."
     ;; because some bindings are hidden by other keys, like the C-c
     ;; binding to ido-toggle-case.
     (define-key ido-common-completion-map (kbd "M-c") 'ido-toggle-case)
-    (define-key ido-common-completion-map (kbd "<f1>") 'pel-help-on-completion-input)))
+    (define-key ido-common-completion-map (kbd "<f1>")
+      'pel-help-on-completion-input)))
 
 (when (or pel-use-ivy
           pel-use-ivy-xref)
+  (defvar ivy-minibuffer-map)             ; prevent byte-compiler warning
   (use-package ivy
     :ensure t
     :pin melpa
     :commands ivy-mode
     :config
     (setq ivy-use-virtual-buffers t
-          ivy-count-format "%d/%d "))
+          ivy-count-format "%d/%d ")
+    (define-key ivy-minibuffer-map (kbd "<f1>") 'pel-help-on-completion-input)
+    (define-key ivy-minibuffer-map (kbd "C-SPC") 'ivy-restrict-to-matches)
+    (when pel-use-avy
+      (define-key ivy-minibuffer-map (kbd "M-H") 'ivy-avy)))
+
+  ;; When ivy and avy are used, activate ivy-avy which integrate both.
+  (when pel-use-avy
+    (use-package ivy-avy
+      :ensure t
+      :pin melpa
+      :commands ivy-avy))
   ;;
   (when pel-use-counsel
     (use-package counsel
