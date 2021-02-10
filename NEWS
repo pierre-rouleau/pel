@@ -212,6 +212,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 - Update: *Grep*:
   - New: Added key bindings for [[https://github.com/ggreer/the_silver_searcher][ag]] (the silver searcher) based grep-style
     search.
+  - Modified: key bindings in pel:grep to better organize commands for [[https://github.com/ggreer/the_silver_searcher][ag]] and
+    for better regularity.
 - Update: *Help*:
   - New: Added a command (<f11> ? e c) to open a local copy of
     one of the [[https://www.gnu.org/software/emacs/refcards/index.html][Emacs PDF reference cards]]. The new *pel-emacs-refcard-dirpath*
@@ -603,9 +605,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - The Windows Hydra now provides quick access to the
     ``pel-toggle-window-dedicated`` command which toggles the dedicated state
     of a window.
-** Modifications:
-- Modified key bindings in pel:grep to better organize commands for [[https://github.com/ggreer/the_silver_searcher][ag]] and for
-  better regularity.
+** Other Modifications:
 - The customization group pel-pkg-for-xref is now a child of
   pel-pkg-for-navigation and holds tags based cross-reference build control as
   well as non-tags based such as [[https://github.com/jacktasia/dumb-jump][dump-jump]].
