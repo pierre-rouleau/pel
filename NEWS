@@ -610,6 +610,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   pel-pkg-for-navigation and holds tags based cross-reference build control as
   well as non-tags based such as [[https://github.com/jacktasia/dumb-jump][dump-jump]].
 - Code change: renamed pel-tags.el to pel-xref.el to better reflect its nature.
+- New: ``make it`` command used for development: compiles all Emacs Lisp
+  files, runs the tests but does not build the package.
 ** Reference PDF updates:
 + Update: More consistency in the key binding cell background colors.
 + New: Some of the header cells are coloured to help quickly identify the
