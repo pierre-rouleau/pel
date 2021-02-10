@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-02-09 10:03:21, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-02-10 09:05:24, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -338,7 +338,9 @@ PEL_TAR_FILE := pel-$(PEL_VERSION).tar
 # 4: Install that tar file into the local Elpa-compliant directory,
 #    ready to be used by Emacs.
 
-all: pel pel2 test pkg mypelpa
+all: it pkg mypelpa
+
+it: pel pel2 test
 
 # ------------------------------------------------------------------------------
 # Build all normal PEL files, except pel_keys for the very first build.
@@ -369,10 +371,11 @@ help:
 	@printf "      is located.\n"
 	@printf "\n"
 	@printf "Usage:\n"
-	@printf " * make             - build everything as needed.\n"
+	@printf " * make             - same as 'make all': build everything as needed.\n"
 	@printf " * make first-build - first build done on a virgin system.\n"
 	@printf " * make all         - build everything as needed.\n"
-	@printf " * make pel         - byte compile all files. Nothing else done.\n"
+	@printf " * make it          - byte compile all files and run tests. Use for development\n"
+	@printf " * make pel         - byte compile all files except pel.el. Nothing else done.\n"
 	@printf " * make compile     - byte compile all files. Nothing else done.\n"
 	@printf " * make lint        - check .el files with elisp-lint.\n"
 	@printf " * make all-dirs    - create all output and temporary directories.\n"
