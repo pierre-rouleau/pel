@@ -146,16 +146,23 @@ The nil value means that Emacs default is used."
             (t
              (format "[?? : %S]" current-completion-mode))))))
 
+(defun pel--ido-ubiquitous-state ()
+  "Return a string describing the state of `ido-ubiquitous-mode'."
+  (if pel-use-ido-completing-read+
+      (pel-symbol-on-off-string 'ido-ubiquitous-mode nil nil "not loaded")
+    "not activated"))
+
 ;;-pel-autoload
 (defun pel-show-active-completion-mode (&optional now)
   "Display the completion mode currently used.
 If NOW is non-nil message starts with \"Now\"
 otherwise it starts with \"Currently\"."
   (interactive)
-  (message "%s using %s completion mode."
+  (message "%s using %s completion mode%s."
            (if now "Now" "Currently")
-           (pel-activated-completion-mode-name)))
-
+           (pel-activated-completion-mode-name)
+           (format "\nIdo Ubiquitous Mode: %s"
+                   (pel--ido-ubiquitous-state))))
 
 (defun pel--start/stop (start &rest mode-funs)
   "START or stop all modes by calling their MODE-FUNS.
@@ -235,6 +242,26 @@ When stopping, use the reverse order."
         ))))
 
 
+(defun pel--set-ido-ubiquitous (activate)
+  "Activate or de-activate ubiquitous IDO according to argument ACTIVATE.
+
+On very first cal to activate it load the ido-completing-read+
+package if not already loaded."
+  (if activate
+      (if (and (pel-require 'ido-completing-read+)
+                (fboundp 'ido-ubiquitous-mode))
+          (ido-ubiquitous-mode 1)
+        (user-error "Failed loading ido-completing-read+"))
+    (when (fboundp 'ido-ubiquitous-mode)
+      (ido-ubiquitous-mode -1))))
+
+
+;;-pel-autoload
+(defun pel-toggle-ido-ubiquitous ()
+  "Toggle the `ido-ubiquitous-mode'."
+  (interactive )
+  (pel-toggle-mode 'ido-ubiquitous-mode)
+  (message "Ido Ubiquitous Mode now: %s" (pel--ido-ubiquitous-state)))
 
 ;;-pel-autoload
 (defun pel-set-completion-mode (requested)
@@ -243,7 +270,12 @@ The REQUESTED is nil or one of: 'emacs-default, 'ido, 'ivy or 'ivy/counsel.
 A nil value for REQUESTED corresponds to Emacs default.
 If the REQUESTED mode is currently not supported by the pel-use-..
 option variable then the request is ignored.
-Display a message describing what mode was actually activated."
+Display a message describing what mode was actually activated.
+
+If `pel-use-ido-completing-read+' is non-nil, activate the
+ubiquitous IDO completion mode unless the selected mode is
+emacs-default: IDO ubiquity allows IDO but also ivy and helm
+completion in lot more functions that IDO normally handles."
   (let* ((requested-mask (cond ((eq requested 'ido) pel-USE-IDO)
                                ((eq requested 'ido/helm) (logior
                                                           pel-USE-IDO
@@ -263,6 +295,8 @@ Display a message describing what mode was actually activated."
          (new-mode (pel--completion-mode-symbol-for-mask allowed-mask)))
     ;; perform the operation: turn off active mode (if any)
     (pel--activate-completion-mode (pel-activated-completion-mode) nil)
+    (unless (memq requested '(emacs-default nil))
+      (pel--set-ido-ubiquitous pel-use-ido-completing-read+))
     ;; then activate new one (if any)
     (pel--activate-completion-mode new-mode t)
     ;; and display the new state of completion mode

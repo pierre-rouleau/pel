@@ -208,7 +208,8 @@ Each choice is a list of 3 elements:
 (defun pel--prompt-for (title selection &optional current nil-value)
   "Return a prompt string with TITLE for SELECTION.
 SELECTION is a list of (char prompt value).
-CURRENT optionally identifies the currently used value.
+CURRENT optionally identifies the currently used value. It may hold
+the spacial value :no-current-value to prevent display of current value.
 
 NIL-VALUE optionally identify a meaning for a nil value.  It is
 required when the USER-OPTION may be set to the same thing by one
@@ -216,10 +217,12 @@ value in the SELECTION but also by the nil value, and that nil
 value is not part of the SELECTION."
   (format "%s%s: %s."
           title
-          (format " [%s]. Select"
-                  (or (pel--var-value-description current selection)
-                      nil-value
-                      "?"))
+          (if (eq current :no-current-value)
+              "Select"
+            (format " [%s]. Select"
+                    (or (pel--var-value-description current selection)
+                        nil-value
+                        "?")))
           (mapconcat (lambda (elt)
                        (format "%c: %s"
                                (car elt) (cadr elt)))
@@ -292,7 +295,8 @@ STRINGS := a list of strings."
                             string               ; a descriptive string
                             string)              ; the value to return
                            choices)
-                     (setq idx (1+ idx))))))
+                     (setq idx (1+ idx)))
+                   :no-current-value)))
     ;; clear echo area and return choice
     (message nil)
     choice))

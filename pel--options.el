@@ -421,6 +421,21 @@ variable `pel-use-counsel' is set to t."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-ido-completing-read+ nil
+  "Control whether the ido-completing-read+ package is used.
+
+With this package used, IDO completion is made available for a
+larger number of prompt functions and more can be activated via
+its customization. The functions that now support IDO completion
+will also use the ivy or helm completion if they are selected.
+
+To activate this you must also activate `pel-use-ido'."
+  :link '(url-link :tag "ido-completing-read+ @ Github"
+                   "https://github.com/DarwinAwardWinner/ido-completing-read-plus")
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-helm nil
   "Control whether PEL uses the Helm package.
 

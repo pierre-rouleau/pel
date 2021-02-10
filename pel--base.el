@@ -793,7 +793,6 @@ The function issue an error if the argument is not a symbol."
   (pel-toggle symbol)
   (message (pel-symbol-text symbol on-string off-string)))
 
-
 (defun pel-toggle-and-show-user-option (user-option &optional globally)
   "Toggle the behaviour of USER-OPTION for current buffer or GLOBALLY.
 Display the new state.

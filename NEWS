@@ -242,6 +242,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       indentation whitespace, conforming to the mode identified by the
       ``indent-tabs-mode`` variable.
 - Update: *Input Completion*:
+  - New: Add support for the *ido-ubiquitous-mode* via the
+    ido-completing-read+ package.
+    - It is activated via the
+      *pel-use-completing-read+* user-option.
+    - When active the *pel-toggle-ido-ubiquitous* command is mapped to ``<f11>
+      M-C``.
   - New: During Ido input completion, the ``<f1>`` key opens the
     [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/completion-input.pdf][⅀Input Completion PDF]] which now describes all key bindings available for
     the Ido prompts.  the same key is available in Ivy prompts.
@@ -577,6 +583,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       toggle of the easy-escape minor mode.
     - The command is described in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀ Search/Replace PDF]].
 - Update: *Text Insertion*:
+  - Modified: key binding to *pel-toggle-update-copyright-on-save* from
+    ``<f11> M-C`` to ``<f11> M-@``.
   - Modified: key bindings, using more lower case letters:
     - ``<f6> f`` and ``f11> i f`` are now used instead of ``<f6> F`` and
       ``<f11>> i F`` for **pel-insert-filename*,

@@ -1083,7 +1083,7 @@ interactively."
 (when pel-update-copyright
   ;; Update the copyright notice present in a file
   (add-hook 'before-save-hook  'pel--update-copyright)
-  (define-key pel: (kbd "M-C") 'pel-toggle-update-copyright-on-save))
+  (define-key pel: (kbd "M-@") 'pel-toggle-update-copyright-on-save))
 
 ;; -- make script executable
 
@@ -1327,7 +1327,7 @@ interactively."
 (when (display-graphic-p)
   (define-key pel:cfg-emacs (kbd "C-c") 'pel-customize-cursor))
 
-(pel--cfg-pkg "completion"  pel:cfg-pel (kbd "M-c") helm ido ivy counsel minibuffer)
+(pel--cfg-pkg "completion"  pel:cfg-pel (kbd "M-c") helm ido ido-completing-read-plus ivy counsel minibuffer)
 (pel--cfg-pkg "key-chord"   pel:cfg-pel (kbd "M-K"))
 (pel--cfg-pkg "navigation"  pel:cfg-pel "n" avy)
 (pel--cfg-pkg "project-mng" pel:cfg-pel (kbd "<f8>"))
@@ -1393,7 +1393,15 @@ interactively."
     ;; binding to ido-toggle-case.
     (define-key ido-common-completion-map (kbd "M-c") 'ido-toggle-case)
     (define-key ido-common-completion-map (kbd "<f1>")
-      'pel-help-on-completion-input)))
+      'pel-help-on-completion-input))
+
+  (when pel-use-ido-completing-read+
+    ;; add autoloading control for it.  The actual loading is controlled
+    ;; by the pel-completion logic.
+    (use-package ido-completing-read+
+      :ensure t
+      :pin melpa
+      :commands ido-ubiquitous-mode)))
 
 (when (or pel-use-ivy
           pel-use-ivy-xref)
@@ -1446,6 +1454,8 @@ interactively."
     :config
     (define-key pel:      (kbd "M-c") 'pel-select-completion-mode)
     (define-key pel:help  (kbd "M-c") 'pel-show-active-completion-mode)
+    (when pel-use-ido-completing-read+
+      (define-key pel:    (kbd "M-C") 'pel-toggle-ido-ubiquitous))
     (pel-set-completion-mode pel-initial-completion-mode)))
 
 ;; ---------------------------------------------------------------------------
