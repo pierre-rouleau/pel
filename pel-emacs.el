@@ -109,11 +109,16 @@ the variable `pel-emacs-refcard-dirpath' user option."
 (defun pel-emacs-load-stats ()
   "Display number of loaded files & features."
   (interactive)
-  (message "\
-# loaded files: %d
-# features    : %d"
-           (length load-history)
-           (length features)))
+  (if (and (require 'package nil :no-error)
+           (boundp  'package-selected-packages))
+      (message "\
+# loaded files     : %d
+# features         : %d
+# packages selected: %d"
+               (length load-history)
+               (length features)
+               (length package-selected-packages))
+    (user-error "The package file is not loaded!")))
 
 
 ;; Prevent byte-compiler warning by declaring variables that are
