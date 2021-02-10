@@ -1327,7 +1327,6 @@ interactively."
 (when (display-graphic-p)
   (define-key pel:cfg-emacs (kbd "C-c") 'pel-customize-cursor))
 
-(pel--cfg-pkg "completion"  pel:cfg-pel (kbd "M-c") helm ido ido-completing-read-plus ivy counsel minibuffer)
 (pel--cfg-pkg "key-chord"   pel:cfg-pel (kbd "M-K"))
 (pel--cfg-pkg "navigation"  pel:cfg-pel "n" avy)
 (pel--cfg-pkg "project-mng" pel:cfg-pel (kbd "<f8>"))
@@ -1354,6 +1353,8 @@ interactively."
 ;; - Ido mode
 ;; - Ivy mode
 ;; - Ivy mode with Counsel
+
+(define-pel-global-prefix pel:completion (kbd "<f11> M-c"))
 
 (defun pel-number-of-available-modes ()
   "Return number of available modes."
@@ -1401,7 +1402,30 @@ interactively."
     (use-package ido-completing-read+
       :ensure t
       :pin melpa
-      :commands ido-ubiquitous-mode)))
+      :commands ido-ubiquitous-mode))
+
+  (when pel-use-ido-grid-mode
+    (use-package ido-grid-mode
+      :ensure t
+      :pin melpa
+      :commands ido-grid-mode))
+
+  (when pel-use-ido-vertical-mode
+    (use-package ido-vertical-mode
+      :ensure t
+      :pin melpa
+      :commands ido-vertical-mode))
+
+  (when pel-use-smex
+    (use-package smex
+      :ensure t
+      :pin melpa
+      :commands (smex
+                 smex-major-mode-commands)
+      :init
+      (global-set-key (kbd "M-x") 'smex)
+      (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+      (define-key pel: (kbd "M-x") 'execute-extended-command))))
 
 (when (or pel-use-ivy
           pel-use-ivy-xref)
@@ -1452,10 +1476,10 @@ interactively."
     :defer 1
 
     :config
-    (define-key pel:      (kbd "M-c") 'pel-select-completion-mode)
     (define-key pel:help  (kbd "M-c") 'pel-show-active-completion-mode)
+    (define-key pel:completion (kbd "M-c") 'pel-select-completion-mode)
     (when pel-use-ido-completing-read+
-      (define-key pel:    (kbd "M-C") 'pel-toggle-ido-ubiquitous))
+      (define-key pel:completion (kbd "M-u") 'pel-toggle-ido-ubiquitous))
     (pel-set-completion-mode pel-initial-completion-mode)))
 
 ;; ---------------------------------------------------------------------------

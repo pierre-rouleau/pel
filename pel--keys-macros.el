@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-09 11:37:25, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-10 15:33:50, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -64,6 +64,10 @@
 ;; PEL Key Sequences Prefix and their F1, F2 and F3 topics
 ;; -------------------------------------------------------
 
+;; TODO: add logic in the processing of that table to allow the first element
+;;       of a row to be a list of key sequences.
+;;       This will help reduce duplication when several key sequences lead
+;;       to the same data.
 (defconst pel--prefix-to-topic-alist
   ;; key sequence    F1: Help PDF fname F2: PEL custom group F3: lib custom
   ;;                                                             group
@@ -271,6 +275,24 @@
     ;; For keys with Meta, make sure the Esc equivalent is also entered
     ;; to allow the F1, F2, F3 entries to be accessible via the Esc key.
     ;; Because: in Emacs ``M-a`` can also be typed ``Esc a``
+    (,(kbd "<f11> M-c")     "completion-input" pel-pkg-for-completion (helm
+                                                                       ido
+                                                                       ido-completing-read-plus
+                                                                       ido-grid-mode
+                                                                       ido-vertical
+                                                                       ivy
+                                                                       counsel
+                                                                       minibuffer
+                                                                       smex))
+    ([f11 27 99]            "completion-input" pel-pkg-for-completion (helm
+                                                                       ido
+                                                                       ido-completing-read-plus
+                                                                       ido-grid-mode
+                                                                       ido-vertical
+                                                                       ivy
+                                                                       counsel
+                                                                       minibuffer
+                                                                       smex))
     (,(kbd "<f11> SPC M-g") "graphviz-dot"     pel-pkg-for-graphviz-dot graphviz)
     ([f11 32 27 ?g]         "graphviz-dot"     pel-pkg-for-graphviz-dot graphviz)
     (,(kbd "<f11> SPC M-r") "mode-rst"         pel-pkg-for-reST        rst)
@@ -284,7 +306,6 @@ stored inside the doc/pdf directory.")
 ;; PDF files not identified by the key sequences above
 ;;   "autosave-backup"
 ;;   "closing-suspending"
-;;   "completion-input"
 ;;   "cua"
 ;;   "ert"
 ;;   "faces-fonts"

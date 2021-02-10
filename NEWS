@@ -244,6 +244,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       indentation whitespace, conforming to the mode identified by the
       ``indent-tabs-mode`` variable.
 - Update: *Input Completion*:
+  - New: Add support for the *smex* external package.  Activate it by setting
+    the *pel-use-smex* user-option to *t*.
+  - New: Add support for the *ido-grid-mode* external package.  Activate it by
+    setting the *pel-use-ido-grid-mode* user-option to *t*.
+  - New: Add support for the *ido-vertical-mode* external package. Activate it
+    by setting the *pel-use-ido-vertical-mode* user-option to *t*.
   - New: Add support for the *ido-ubiquitous-mode* via the
     ido-completing-read+ package.
     - It is activated via the

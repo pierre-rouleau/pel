@@ -377,6 +377,46 @@ completion mechanism that is preferred by many people."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-smex nil
+  "Control whether PEL uses the smex package.
+
+The smex package adds Ido completion to the M-x command and
+provides the M-X which does completion commands related to active
+for major mode only.
+
+To use this you must also have `pel-use-ido' set to t."
+  :link '(url-link :tag "smex @ GitHub"
+                   "https://github.com/nonsequitur/smex")
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-ido-grid-mode nil
+  "Control whether PEL uses the ido-grid-mode package.
+
+This modifies the presentation geometry of the Ido completion prompt: it shows
+candidates in multiple columns.
+
+To use this you must also have `pel-use-ido' set to t."
+  :link '(url-link :tag "ido-grid-mode @ GitHub"
+                   "https://github.com/larkery/ido-grid-mode.el")
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-ido-vertical-mode nil
+  "Control whether PEL uses the ido-vertical-mode package.
+
+This modifies the presentation geometry of the Ido completion prompt: it shows
+candidates in multiple lines, like ivy does.
+
+To use this you must also have `pel-use-ido' set to t."
+  :link '(url-link :tag "ido-vertical-mode @ GitHub"
+                   "https://github.com/creichert/ido-vertical-mode.el")
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-ivy nil
   "Control whether PEL uses the Ivy package.
 
