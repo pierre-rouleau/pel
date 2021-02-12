@@ -4035,6 +4035,19 @@ the ones defined from the buffer now."
 (define-key pel:file (kbd "M-l") 'find-file-literally)
 (define-key pel:file "?" #'pel-show-buffer-file-encoding)
 
+;; Fallback command - use when experimentation leads to Ido breaking.
+(defun pel-find-file ()
+  "Fallback to find-file."
+    (interactive
+   (find-file-read-args "Find file: "
+                        (confirm-nonexistent-file-or-buffer)))
+  (let ((value (find-file-noselect filename nil nil wildcards)))
+    (if (listp value)
+	(mapcar 'pop-to-buffer-same-window (nreverse value))
+      (pop-to-buffer-same-window value))))
+
+(define-key pel:file (kbd "C-f") 'pel-find-file)
+
 (when pel-use-recentf
   (use-package recentf
     ;; recentf is built-in Emacs, Don't defer to allow remembering
@@ -5715,6 +5728,7 @@ Simulate a F7 prefix key unless DONT-SIMULATE is non-nil."
   ;; it and preventing the invalid use-package error reporting.
   (when (fboundp 'pel--load-hydra)
     (global-set-key (kbd "<f7>") 'pel--load-hydra)))
+
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel_keys)

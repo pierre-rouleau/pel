@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-12 16:26:21, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-12 17:37:34, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -190,10 +190,8 @@ otherwise it starts with \"Currently\"."
   (message "%s using %s completion mode%s%s."
            (if now "Now" "Currently")
            (pel-activated-completion-mode-name)
-           (if (memq (pel-activated-completion-mode) '(ido ido/helm))
-               (format "\nIdo prompt geometry: %s"
+           (format "\nIdo prompt geometry: %s"
                        (pel-activated-ido-geometry))
-             "")
            (format "\nIdo Ubiquitous Mode: %s"
                    (pel--ido-ubiquitous-state))))
 
