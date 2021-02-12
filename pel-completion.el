@@ -1,35 +1,58 @@
-;;; pel-completion.el --- Completion Mode Control  -*- lexical-binding: t; -*-
+;;; pel-completion.el --- Input Completion Control.  -*- lexical-binding: t; -*-
 
+;; Created   Wednesday, May 20 2020.
+;; Author    : Pierre Rouleau <prouleau001@gmail.com>
+;; Time-stamp: <2021-02-12 10:17:17, updated by Pierre Rouleau>
+
+;; This file is part of the PEL package.
+;; This file is not part of GNU Emacs.
+
+;; Copyright (C) 2021  Pierre Rouleau
+;;
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;;  Emacs supports several text completion frameworks that provide completion at
-;;  various prompting commands like find-file, switch-to-buffer, etc...
-;;  Emacs has its own builtin completion, where you use tab key to expand and
-;;  show the completions.  Others are available: Ido, Ivy, Ivy with Counsel,
-;;  Helm.
+;; Emacs supports several text completion frameworks that provide completion
+;; at various prompting commands like find-file, switch-to-buffer, etc...
+;; Emacs has its own builtin completion, where you use tab key to expand and
+;; show the completions.  Others are available: Ido, Ivy, Ivy with Counsel,
+;; Helm.
 ;;
-;;  Each one of these help in different situations.  I often use Ido but when
-;;  looking for a list of updated packages in the package list buffer I use Ivy
-;;  to quickly look at the list of packages that have updates.
+;; Each one of these help in different situations.  I often use Ido but when
+;; looking for a list of updated packages in the package list buffer I use Ivy
+;; to quickly look at the list of packages that have updates.
 ;;
-;;  This file holds the logic to dynamically switch from using one completion
-;;  mode to another.  This allows one to install all the completion modes and
-;;  then activate the one best suited for the current task.
+;; This file holds the logic to dynamically switch from using one completion
+;; mode to another.  This allows one to install all the completion modes and
+;; then activate the one best suited for the current task.
 ;;
-;;  PEL has customization variables to identify the available modes in the
-;;  pel-pkg-for-completion customization group.
-;;  Set the `pel-initial-completion-mode' to select the completion mode
-;;  to use when Emacs starts.
+;; PEL has customization variables to identify the available modes in the
+;; pel-pkg-for-completion customization group.  Set the
+;; `pel-initial-completion-mode' to select the completion mode to use when
+;; Emacs starts.
 ;;
-;;  Later use the `pel-select-completion-mode' command to select another mode.
+;; Later use the `pel-select-completion-mode' command to select another mode.
 ;;
-;;  At any time you can use `pel-show-active-completion-mode' to display which
-;;  mode is currently used.
+;; At any time you can use `pel-show-active-completion-mode' to display which
+;; mode is currently used.
 ;;
-;; The following is a list of available commands (*) and functions (-) listed in
-;; hierarchical calling order.  All function/commands with a name that start
-;; with 'pel-' are 'public'.  The functions with a name staring with 'pel--' are
-;;'private' and should not be called from outside this file.
+;; The following is a list of available commands (*) and functions (-) listed
+;; in hierarchical calling order.  All function/commands with a name that
+;; start with 'pel-' are 'public'.  The functions with a name staring with
+;; 'pel--' are 'private' and should not be called from outside this file.
 ;;
 ;; * `pel-select-completion-mode'
 ;;   - `pel--completion-mode-selection'
@@ -43,7 +66,10 @@
 ;;     - `pel--available-completion-mode-mask'
 ;; * `pel-ido-mode'
 ;;
-;;; Code:
+
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
+
 (require 'pel--base)
 (require 'pel--macros)
 (require 'pel--options)
@@ -51,7 +77,9 @@
 (require 'pel-seq)
 (eval-when-compile
   (require 'cl-macs))                   ; use: cl-case.
-;; --
+
+;;; --------------------------------------------------------------------------
+;;; Code:
 
 ;;-pel-autoload
 (defun pel-ido-mode (&optional activate)
@@ -70,7 +98,8 @@ Otherwise, de-activate the IDO mode."
                (ido-mode 1)
                (ido-everywhere 1)
                (setq ido-enable-flex-matching t)
-               ;; don't require confirmation when creating new buffers with C-x b
+               ;; don't require confirmation when creating new buffers
+               ;; with C-x b
                (pel-setq ido-create-new-buffer 'always))
               ((eq action 'deactivate)
                (ido-mode -1)
@@ -264,7 +293,7 @@ package if not already loaded."
   (message "Ido Ubiquitous Mode now: %s" (pel--ido-ubiquitous-state)))
 
 ;;-pel-autoload
-(defun pel-set-completion-mode (requested)
+(defun pel-set-completion-mode (requested &optional silent)
   "Activate the requested completion mode (if allowed by configuration).
 The REQUESTED is nil or one of: 'emacs-default, 'ido, 'ivy or 'ivy/counsel.
 A nil value for REQUESTED corresponds to Emacs default.
@@ -275,7 +304,9 @@ Display a message describing what mode was actually activated.
 If `pel-use-ido-completing-read+' is non-nil, activate the
 ubiquitous IDO completion mode unless the selected mode is
 emacs-default: IDO ubiquity allows IDO but also ivy and helm
-completion in lot more functions that IDO normally handles."
+completion in lot more functions that IDO normally handles.
+
+Print message describing active mode unless SILENT argument is non-nil."
   (let* ((requested-mask (cond ((eq requested 'ido) pel-USE-IDO)
                                ((eq requested 'ido/helm) (logior
                                                           pel-USE-IDO
@@ -300,7 +331,8 @@ completion in lot more functions that IDO normally handles."
     ;; then activate new one (if any)
     (pel--activate-completion-mode new-mode t)
     ;; and display the new state of completion mode
-    (pel-show-active-completion-mode :now)))
+    (unless silent
+      (pel-show-active-completion-mode :now))))
 
 (defun pel--completion-mode-selection ()
   "Return a list of (char prompt symbol) of available completion choices."
@@ -329,7 +361,7 @@ completion in lot more functions that IDO normally handles."
                    #'pel-set-completion-mode
                    'emacs-default))
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 (provide 'pel-completion)
 
 ;;; pel-completion.el ends here
