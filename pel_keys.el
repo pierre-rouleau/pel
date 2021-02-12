@@ -1482,7 +1482,7 @@ interactively."
     (define-key pel:completion (kbd "M-c") 'pel-select-completion-mode)
     (when pel-use-ido-completing-read+
       (define-key pel:completion (kbd "M-u") 'pel-toggle-ido-ubiquitous))
-    (pel-set-completion-mode pel-initial-completion-mode)))
+    (pel-set-completion-mode pel-initial-completion-mode :silent)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Project Management - Projectile
