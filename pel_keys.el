@@ -1480,9 +1480,14 @@ interactively."
     :config
     (define-key pel:help  (kbd "M-c") 'pel-show-active-completion-mode)
     (define-key pel:completion (kbd "M-c") 'pel-select-completion-mode)
+    (define-key pel:completion "?"         'pel-show-active-completion-mode)
     (when pel-use-ido-completing-read+
       (define-key pel:completion (kbd "M-u") 'pel-toggle-ido-ubiquitous))
-    (pel-set-completion-mode pel-initial-completion-mode :silent)))
+    (pel-set-completion-mode pel-initial-completion-mode :silent)
+    (pel-set-ido-geometry    pel-initial-ido-geometry    :silent)))
+
+(when pel-use-ido-grid-mode
+  (define-key pel:completion (kbd "M-g") 'pel-select-ido-geometry))
 
 ;; ---------------------------------------------------------------------------
 ;; - Project Management - Projectile

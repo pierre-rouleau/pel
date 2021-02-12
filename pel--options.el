@@ -410,7 +410,18 @@ To use this you must also have `pel-use-ido' set to t."
 This modifies the presentation geometry of the Ido completion prompt: it shows
 candidates in multiple lines, like ivy does.
 
-To use this you must also have `pel-use-ido' set to t."
+To use this you must also have `pel-use-ido' set to t.
+
+**CAUTION**
+ The current version of this package impacts negatively
+ the use of Ido mode as reported by this bug report:
+ https://github.com/creichert/ido-vertical-mode.el/issues/47
+
+ Because of that PEL does not allow this package until a solution
+ is implemented.  In the mean-time, remove all reference to
+ ido-vertical-mode from your customization file and remove
+ the ido-vertical-mode package from your ~/.emacs.d/elpa
+ directory."
   :link '(url-link :tag "ido-vertical-mode @ GitHub"
                    "https://github.com/creichert/ido-vertical-mode.el")
   :group 'pel-pkg-for-completion
@@ -494,6 +505,26 @@ can execute on the completion list."
 (defconst pel-USE-IVY     2 "Bitmask identifying Ivy.      DON'T CHANGE!")
 (defconst pel-USE-COUNSEL 4 "Bitmask identifying Counsel.  DON'T CHANGE!")
 (defconst pel-USE-HELM    8 "Bitmask identifying Helm.     DON'T CHANGE!")
+
+(defcustom pel-initial-ido-geometry 'emacs-default
+  "Select Ido prompt geometry used when Emacs starts.
+
+PEL supports several Ido extension modes that modify the
+Ido prompt geometry. The following modes are available:
+
+- `emacs-default'  : standard, linear IDO
+- `grid-collapsed' : show candidates in a grid.  Collapsed on 1 line
+                     at first.  Press tab to expand the grid on multiple
+                     lines.
+- `grid-expanded'  : show candidates in a grid.  Expanded right away.
+
+Both grid modes require an activated `pel-use-ido-grid-mode'.
+The ido-vertical-mode is not supported as it breaks Ido."
+  :group 'pel-pkg-for-completion
+  :type '(choice
+          (const :tag "Use Emacs default" emacs-default)
+          (const :tag "Use grid - collapsed" grid-collapsed)
+          (const :tag "Use grid - expanded"  grid-expanded)))
 
 (defcustom pel-initial-completion-mode 'emacs-default
   "Select the main text completion mode used when Emacs starts.

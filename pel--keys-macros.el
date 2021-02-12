@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-10 15:33:50, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-12 11:25:58, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -279,7 +279,6 @@
                                                                        ido
                                                                        ido-completing-read-plus
                                                                        ido-grid-mode
-                                                                       ido-vertical
                                                                        ivy
                                                                        counsel
                                                                        minibuffer
@@ -288,7 +287,6 @@
                                                                        ido
                                                                        ido-completing-read-plus
                                                                        ido-grid-mode
-                                                                       ido-vertical
                                                                        ivy
                                                                        counsel
                                                                        minibuffer

@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-12 10:17:17, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-12 16:26:21, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -187,9 +187,13 @@ The nil value means that Emacs default is used."
 If NOW is non-nil message starts with \"Now\"
 otherwise it starts with \"Currently\"."
   (interactive)
-  (message "%s using %s completion mode%s."
+  (message "%s using %s completion mode%s%s."
            (if now "Now" "Currently")
            (pel-activated-completion-mode-name)
+           (if (memq (pel-activated-completion-mode) '(ido ido/helm))
+               (format "\nIdo prompt geometry: %s"
+                       (pel-activated-ido-geometry))
+             "")
            (format "\nIdo Ubiquitous Mode: %s"
                    (pel--ido-ubiquitous-state))))
 
@@ -267,8 +271,7 @@ When stopping, use the reverse order."
       ;; for helm mode only (not ido/helm)
       (when (eq mode 'helm)
         (pel-map-helm (kbd "C-x C-f") start 'helm-find-files 'find-file)
-        (pel-map-helm (kbd "C-x b")   start 'helm-mini 'switch-to-buffer)
-        ))))
+        (pel-map-helm (kbd "C-x b")   start 'helm-mini 'switch-to-buffer)))))
 
 
 (defun pel--set-ido-ubiquitous (activate)
@@ -360,6 +363,93 @@ Print message describing active mode unless SILENT argument is non-nil."
                    (pel-activated-completion-mode)
                    #'pel-set-completion-mode
                    'emacs-default))
+
+;; --
+
+(defun pel--set-ido-grid (state)
+  "Set the ido-grid-mode to specified STATE.
+State can be one of:
+- 'emacs-default : meaning grid is off
+- 'grid-collapsed
+- 'grid-expanded."
+  (when (and pel-use-ido-grid-mode
+           (require 'ido-grid-mode nil :no-error)
+           (featurep 'ido-grid-mode)
+           (boundp  'ido-grid-mode)
+           (fboundp 'ido-grid-mode)
+           (boundp  'ido-grid-mode-start-collapsed))
+      (cond
+       ((eq state 'off)
+        (ido-grid-mode -1))
+       ((eq state 'grid-collapsed)
+        (ido-grid-mode -1)
+        (setq ido-grid-mode-start-collapsed t)
+        (ido-grid-mode 1))
+       ((eq state 'grid-expanded)
+        (ido-grid-mode -1)
+        (setq ido-grid-mode-start-collapsed nil)
+        (ido-grid-mode 1))
+       (t (user-error "Invalid ido grid state request: %S" state)))))
+
+;;-pel-autoload
+(defun pel-activated-ido-geometry ()
+  "Return a string describing Ido currently used prompt geometry."
+  (if (and pel-use-ido-grid-mode
+           (require 'ido-grid-mode nil :no-error)
+           (featurep 'ido-grid-mode)
+           (boundp  'ido-grid-mode)
+           (fboundp 'ido-grid-mode)
+           (boundp  'ido-grid-mode-start-collapsed))
+      (if ido-grid-mode-start-collapsed
+          "grid mode, starts collapsed: expand with tab"
+        "grid mode, starts already expanded")
+    "default: linear"))
+
+(defun pel--activated-ido-geometry-symbol ()
+  "Return a symbol describing Ido currently used prompt geometry."
+  (if (and pel-use-ido-grid-mode
+           (require 'ido-grid-mode nil :no-error)
+           (featurep 'ido-grid-mode)
+           (boundp  'ido-grid-mode)
+           (fboundp 'ido-grid-mode)
+           (boundp  'ido-grid-mode-start-collapsed))
+      (if ido-grid-mode-start-collapsed
+          'grid-collapsed
+        'grid-expanded)
+    'emacs-default))
+
+;;-pel-autoload
+(defun pel-set-ido-geometry (geometry &optional silent)
+  "Set the Ido prompt GEOMETRY. Display description unless SILENT requested."
+  (cond
+   ((eq geometry 'emacs-default)
+    (pel--set-ido-grid 'off))
+   ((eq geometry 'grid-collapsed)
+    (pel--set-ido-grid 'grid-collapsed))
+   ((eq geometry 'grid-expanded)
+    (pel--set-ido-grid 'grid-expanded))
+   (t (user-error "Non-supported Ido geometry selected: %S" geometry)))
+  (unless silent
+    (pel-show-active-completion-mode)))
+
+(defun pel--ido-geometry-selection ()
+  "Return a list of (char prompt symbol) of available Ido geometry choices."
+  (let ((selection '((?e "Emacs default - linear" 'emacs-default))))
+    (when pel-use-ido-grid-mode
+      (push '(?c "grid - Collapsed" grid-collapsed) selection)
+      (push '(?x "grid - eXpanded"  grid-expanded)  selection))
+    (reverse selection)))
+
+;;-pel-autoload
+(defun pel-select-ido-geometry ()
+  "Select Ido presentation geometry."
+  (interactive)
+  (let ((selected-geometry (pel-select-from
+                            "Ido prompt geometry"
+                            (pel--ido-geometry-selection)
+                            (pel--activated-ido-geometry-symbol))))
+    (when selected-geometry
+      (pel-set-ido-geometry selected-geometry))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-completion)

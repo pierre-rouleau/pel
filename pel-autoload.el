@@ -179,7 +179,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-activated-completion-mode-name
     pel-show-active-completion-mode
     pel-ido-mode
-    pel-toggle-ido-ubiquitous)
+    pel-toggle-ido-ubiquitous
+    pel-activated-ido-geometry
+    pel-set-ido-geometry
+    pel-select-ido-geometry)
 
   (pel-autoload "pel-cua" for:
     pel-cua-rectangle-mark
