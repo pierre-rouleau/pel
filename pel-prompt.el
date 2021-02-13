@@ -211,7 +211,7 @@ SELECTION is a list of (char prompt value).
 CURRENT optionally identifies the currently used value. It may hold
 the spacial value :no-current-value to prevent display of current value.
 
-NIL-VALUE optionally identify a meaning for a nil value.  It is
+NIL-VALUE optional string identifies meaning for a nil value.  It is
 required when the USER-OPTION may be set to the same thing by one
 value in the SELECTION but also by the nil value, and that nil
 value is not part of the SELECTION."
@@ -243,7 +243,7 @@ If ACTION is nil or if the choice is the same as CURRENT-VALUE,
 `pel-select-from' returns the selected value, otherwise it
 returns the value returned by (ACTION selected-value) evaluation.
 
-NIL-VALUE optionally identify a meaning for a nil value.  It is
+NIL-VALUE optional string identifies a meaning for a nil value.  It is
 required when the USER-OPTION may be set to the same thing by one
 value in the SELECTION but also by the nil value, and that nil
 value is not part of the SELECTION."

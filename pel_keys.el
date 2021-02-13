@@ -1381,6 +1381,10 @@ interactively."
       (define-key helm-map (kbd "M-C-i") 'helm-execute-persistent-action))))
 
 (when pel-use-ido
+  ;; The Ido extenders sometime fail on ido-completions being void.
+  ;; to prevent that make sure it is auto-loaded.
+  (autoload 'ido-completions "ido")
+
   ;; When pel-use-ido is set, ensure that ido-mode is autoloaded.
   ;; Ido is distributed with Emacs, so no need to provide logic to install it.
   ;; The selection of the auto-completion mode used when Emacs starts
@@ -1483,8 +1487,11 @@ interactively."
     (define-key pel:completion "?"         'pel-show-active-completion-mode)
     (when pel-use-ido-completing-read+
       (define-key pel:completion (kbd "M-u") 'pel-toggle-ido-ubiquitous))
-    (pel-set-completion-mode pel-initial-completion-mode :silent)
-    (pel-set-ido-geometry    pel-initial-ido-geometry    :silent)))
+    (pel-set-completion-mode pel-initial-completion-mode :silent)))
+
+(when (and pel-use-ido
+           (memq pel-initial-completion-mode '(nil ido ido/helm)))
+  (pel-set-ido-geometry    pel-initial-ido-geometry    :silent))
 
 (when pel-use-ido-grid-mode
   (define-key pel:completion (kbd "M-g") 'pel-select-ido-geometry))
@@ -4034,19 +4041,6 @@ the ones defined from the buffer now."
 (define-key pel:file (kbd "M-x") 'hexl-find-file)
 (define-key pel:file (kbd "M-l") 'find-file-literally)
 (define-key pel:file "?" #'pel-show-buffer-file-encoding)
-
-;; Fallback command - use when experimentation leads to Ido breaking.
-(defun pel-find-file ()
-  "Fallback to find-file."
-    (interactive
-   (find-file-read-args "Find file: "
-                        (confirm-nonexistent-file-or-buffer)))
-  (let ((value (find-file-noselect filename nil nil wildcards)))
-    (if (listp value)
-	(mapcar 'pop-to-buffer-same-window (nreverse value))
-      (pop-to-buffer-same-window value))))
-
-(define-key pel:file (kbd "C-f") 'pel-find-file)
 
 (when pel-use-recentf
   (use-package recentf
