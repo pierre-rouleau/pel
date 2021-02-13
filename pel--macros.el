@@ -1,6 +1,6 @@
 ;;; pel--macros.el --- PEL utility macros -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -20,26 +20,27 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;;;----------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;;  Utility macros used in PEL code.
 ;;
-;;  One aspect of PEL is that it integrates external packages that may or may not
-;;  be available in user's system.  Also all of PEL's Emacs Lisp code is using
-;;  lexical-binding and is byte compiled. The goal of PEL is to provide access to
-;;  a large amount of Emacs Lisp packages while retaining the ability to start
-;;  Emacs quickly.
+;;  One aspect of PEL is that it integrates external packages that may or may
+;;  not be available in user's system.  Also all of PEL's Emacs Lisp code is
+;;  using lexical-binding and is byte compiled. The goal of PEL is to provide
+;;  access to a large amount of Emacs Lisp packages while retaining the
+;;  ability to start Emacs quickly.
 ;;
-;;  To achieve the above goals PEL files cannot load or require external packages
-;;  directly, they must do it lazily. The code inside pel_keys.el take advantage
-;;  of the use-package macro to do that.  The code inside the other files must
-;;  require the external packages lazily inside functions and must also verify if
-;;  the external functions and variables they use are bound, otherwise the
-;;  compiler generates warnings and the code may fail inside a PEL function.
+;;  To achieve the above goals PEL files cannot load or require external
+;;  packages directly, they must do it lazily. The code inside pel_keys.el
+;;  take advantage of the use-package macro to do that.  The code inside the
+;;  other files must require the external packages lazily inside functions and
+;;  must also verify if the external functions and variables they use are
+;;  bound, otherwise the compiler generates warnings and the code may fail
+;;  inside a PEL function.
 ;;
-;;  This file provides a set of macros that simplify writing the needed
-;;  symbol bound check code as well as the lazy library require calls. These are:
+;;  This file provides a set of macros that simplify writing the needed symbol
+;;  bound check code as well as the lazy library require calls. These are:
 ;;
 ;;   - `pel-when-fbound'
 ;;   - `pel-when-bound'
@@ -48,23 +49,23 @@
 ;;
 ;;  The following macro append elements to a named list variable.
 ;;
-;;  - `pel-append-to'
+;;   - `pel-append-to'
 ;;
 ;;  And this one appends text to a string variable.
 ;;
-;;  - `pel-concat-to'
+;;   - `pel-concat-to'
 ;;
 ;;  The following 2 macros are used to prevent lint warnings:
 ;;
-;;   - `pel-setq'
-;;   - `pel-setq-default'
+;;    - `pel-setq'
+;;    - `pel-setq-default'
 ;;
 ;;  This last macro is used for writing loops that must not run more than a
 ;;  specified number of times:
 ;;
-;;  - `while-n'
+;;   - `while-n'
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Code:
 
 
@@ -117,7 +118,8 @@ VARIABLES := list of variable symbol(s) or nil
 
 \(fn (FEATURES) (FUNCS) (VARS) BODY... )"
   (declare (indent 3))
-  (let ((check-features  (pel-make-apply-to-elems 'require features nil :noerror))
+  (let ((check-features  (pel-make-apply-to-elems 'require features nil
+                                                  :noerror))
         (check-functions (pel-make-apply-to-elems 'fboundp functions))
         (check-variables (pel-make-apply-to-elems 'boundp variables)))
   `(progn
@@ -128,7 +130,7 @@ VARIABLES := list of variable symbol(s) or nil
            ,@body)
        (error "Failed loading required resources!")))))
 
-;; -----------------------------------------------------------------------------
+;;----------------------------------------------------------------------------
 ;; Appending to a list
 ;; -------------------
 
@@ -136,14 +138,14 @@ VARIABLES := list of variable symbol(s) or nil
   "Append ELEM to LISTVAR."
   `(setq ,listvar (append ,listvar ,elem)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Appending to a string
 
 (defmacro pel-concat-to  (stringvar text)
   "Append TEXT to STRINGVAR."
   `(setq ,stringvar (concat ,stringvar ,text)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Warning Preventing Macros
 ;; -------------------------
 
@@ -163,7 +165,7 @@ VARIABLES := list of variable symbol(s) or nil
      ;; now set the symbol to the specified value
      (setq-default ,sym ,val)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Loop Control Macro
 ;; ------------------
 
@@ -176,7 +178,7 @@ VARIABLES := list of variable symbol(s) or nil
          ,@body
          (decf ,tmpvar)))))
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 (provide 'pel--macros)
 
 ;;; pel--macros.el ends here
