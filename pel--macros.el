@@ -1,8 +1,8 @@
 ;;; pel--macros.el --- PEL utility macros -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
-
-;; Author: Pierre Rouleau <prouleau001@gmail.com>
+;; Created   : Monday, March 23 2020.
+;; Author    : Pierre Rouleau <prouleau001@gmail.com>
+;; Time-stamp: <2021-02-13 12:04:53, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -27,12 +27,12 @@
 ;;
 ;;  One aspect of PEL is that it integrates external packages that may or may
 ;;  not be available in user's system.  Also all of PEL's Emacs Lisp code is
-;;  using lexical-binding and is byte compiled. The goal of PEL is to provide
+;;  using lexical-binding and is byte compiled.  The goal of PEL is to provide
 ;;  access to a large amount of Emacs Lisp packages while retaining the
 ;;  ability to start Emacs quickly.
 ;;
 ;;  To achieve the above goals PEL files cannot load or require external
-;;  packages directly, they must do it lazily. The code inside pel_keys.el
+;;  packages directly, they must do it lazily.  The code inside pel_keys.el
 ;;  take advantage of the use-package macro to do that.  The code inside the
 ;;  other files must require the external packages lazily inside functions and
 ;;  must also verify if the external functions and variables they use are
@@ -40,12 +40,17 @@
 ;;  inside a PEL function.
 ;;
 ;;  This file provides a set of macros that simplify writing the needed symbol
-;;  bound check code as well as the lazy library require calls. These are:
+;;  bound check code as well as the lazy library require calls.  These are:
 ;;
 ;;   - `pel-when-fbound'
 ;;   - `pel-when-bound'
 ;;   - `pel-with-required'
 ;;     - `pel-make-apply-to-elems'
+;;
+;;  These macros are used to set the state of minor modes:
+;;
+;;   - `pel-turn-mode-on-when-off'
+;;   - `pel-turn-mode-off-when-on'
 ;;
 ;;  The following macro append elements to a named list variable.
 ;;
@@ -93,9 +98,10 @@
 ;; --
 
 (defun pel-make-apply-to-elems (func elems &rest args)
-  "Return a list of calls to FUNC with each element of ELEMS.
+  "Return a list of function call to FUNC with each element of ELEMS.
 FUNC  := symbol of a function.
-ELEMS := quoted list of elements
+ELEMS := quoted list of elements.
+ARGS  := quoted list of extra arguments to the functions.
 For example:
   (pel-make-apply-to-elems 'run '(a b c))
 returns:
@@ -110,7 +116,7 @@ This is used in code building macros."
 
 (defmacro pel-with-required (features functions variables &rest body)
   "Evaluate BODY only if FEATURES, FUNCTIONS and VARIABLES are available.
-If something is not available raise an error. Otherwise evaluate BODY.
+If something is not available raise an error.  Otherwise evaluate BODY.
 
 FEATURES  := list of feature symbol(s) or nil
 FUNCTIONS := list of function symbol(s) or nil
@@ -130,7 +136,47 @@ VARIABLES := list of variable symbol(s) or nil
            ,@body)
        (error "Failed loading required resources!")))))
 
-;;----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
+;; Set mode state
+;; --------------
+
+(defmacro pel-turn-mode-on-when-off (mode &optional feature)
+  "Turn MODE on, but only if it is currently off.
+
+MODE is the mode symbol unquoted.
+FEATURE is an optional feature name symbol, also unquoted.
+
+Check that the mode feature is active before checking if the mode
+is currently off.
+
+The macro assumes that the mode command is either already loaded
+or auto-loaded.
+
+Check the feature state using FEATURE, if specified, otherwise
+check its feature using the MODE symbol.
+
+Most Emacs Lisp features use a feature name that is the same as
+the mode name.  In those cases the FEATURE argument is not
+required, it is required when they differ."
+  (let ((feature-symbol (or feature mode)))
+    `(when (or (not (featurep (quote ,feature-symbol)))
+               (not ,mode))
+       (,mode 1))))
+
+
+(defmacro pel-turn-mode-off-when-on (mode &optional feature)
+  "Turn MODE off, but only if it is currently off.
+
+MODE is the mode symbol unquoted.
+FEATURE is an optional feature name symbol, also unquoted.
+
+See `pel-turn-mode-on-when-off' for more info."
+  (let ((feature-symbol (or feature mode)))
+    `(when (and (featurep (quote ,feature-symbol))
+                ,mode)
+       (,mode -1))))
+
+;; ---------------------------------------------------------------------------
 ;; Appending to a list
 ;; -------------------
 
