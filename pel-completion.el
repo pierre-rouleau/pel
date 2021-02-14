@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-13 23:01:11, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-14 11:08:10, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -180,7 +180,7 @@ When stopping, use the reverse order."
   "START or stop specified completion MODE to a NEWSTATE.
 - MODE must be one of: nil | 'ido | 'ido/helm | 'ivy | 'ivy/counsel | 'helm
   If nil, nothing is done.
-- START is non-nil to activate , nil to de-activate."
+- START is non-nil to activate, nil to de-activate."
   (let (chg-helm)
     (cond ((eq mode 'ido) (pel--start/stop start 'ido-mode))
           ;;
@@ -241,16 +241,19 @@ When stopping, use the reverse order."
 (defun pel--set-ido-ubiquitous (activate)
   "Activate or de-activate ubiquitous IDO according to argument ACTIVATE.
 
-On very first cal to activate it load the ido-completing-read+
+On very first call to activate, load the ido-completing-read+
 package if not already loaded."
   (if activate
       (if (and (pel-require 'ido-completing-read+)
-                (fboundp 'ido-ubiquitous-mode))
-          (ido-ubiquitous-mode 1)
+               (boundp  'ido-ubiquitous-mode)
+               (fboundp 'ido-ubiquitous-mode))
+          (when (not ido-ubiquitous-mode)
+            (ido-ubiquitous-mode 1))
         (user-error "Failed loading ido-completing-read+"))
-    (when (fboundp 'ido-ubiquitous-mode)
+    (when (and (boundp  'ido-ubiquitous-mode)
+               (fboundp 'ido-ubiquitous-mode)
+               ido-ubiquitous-mode)
       (ido-ubiquitous-mode -1))))
-
 
 ;;-pel-autoload
 (defun pel-toggle-ido-ubiquitous ()
@@ -274,7 +277,8 @@ emacs-default: IDO ubiquity allows IDO but also ivy and helm
 completion in lot more functions that IDO normally handles.
 
 Print message describing active mode unless SILENT argument is non-nil."
-  (let* ((requested-mask (cond ((eq requested 'ido) pel-USE-IDO)
+  (let* ((current-mode (pel-activated-completion-mode))
+         (requested-mask (cond ((eq requested 'ido) pel-USE-IDO)
                                ((eq requested 'ido/helm) (logior
                                                           pel-USE-IDO
                                                           pel-USE-HELM))
@@ -291,12 +295,22 @@ Print message describing active mode unless SILENT argument is non-nil."
          (allowed-mask (logand requested-mask
                                (pel--available-completion-mode-mask)))
          (new-mode (pel--completion-mode-symbol-for-mask allowed-mask)))
-    ;; perform the operation: turn off active mode (if any)
-    (pel--activate-completion-mode (pel-activated-completion-mode) nil)
-    (unless (memq requested '(emacs-default nil))
-      (pel--set-ido-ubiquitous pel-use-ido-ubiquitous))
-    ;; then activate new one (if any)
+    ;; perform the operation:
+    ;; 1: turn off active mode (if any)
+    ;;    - first turn off ido-ubiquitous if it is on
+    (when (and (boundp 'ido-ubiquitous-mode)
+               ido-ubiquitous-mode)
+      (pel--set-ido-ubiquitous nil))
+    ;;    - then turn off current mode, returning to Emacs default completion
+    (pel--activate-completion-mode current-mode nil)
+    ;; 2: then activate new one (if any)
+    ;;    - activate the new mode
     (pel--activate-completion-mode new-mode t)
+    ;;    - and activate ido-ubiquitous when ido is now used
+    ;;      and ido-ubiquitous is required
+    (when (eq requested 'ido)
+      (pel--set-ido-ubiquitous pel-use-ido-ubiquitous))
+
     ;; and display the new state of completion mode
     (unless silent
       (pel-show-active-completion-mode :now))))
