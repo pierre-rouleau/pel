@@ -644,6 +644,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   PEL.
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/input-method.pdf][⅀ Input Method]] also includes information about encoding. The ``<f11>
   ? p`` key binding completion allows "encoding" to open that PDF.
++ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/completion-input.pdf][⅀ Input Completion PDF]] table better describes Ido, Ivy and Helm and the
+  commands that PEL supports to change mode dynamically.
++ New:  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/completion-input-availability.pdf][🚦Input Completion Availability PDF]] table describes the feature
+  availability of the various input-completion methods supported by PEL.
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/indentation.pdf][⅀ Indentation]] better describes handling of indentation on ``M-RET``.
 + Update: C, C++ and D programming language support tables.
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-python.pdf][𝕻𝔩 - Python]] programming language : listed more commands.
