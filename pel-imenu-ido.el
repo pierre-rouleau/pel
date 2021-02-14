@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2021-02-14 09:22:01, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-14 10:28:39, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -70,7 +70,7 @@
   "Association list of (symbol . string) for completion mode")
 
 
-(defvar pel--goto-symbol-completion-method pel-goto-symbol-completion-method
+(defvar pel--goto-symbol-completion-mode pel-initial-goto-symbol-completion-mode
   "Completing read function used by the command function `pel-goto-symbol'.
 The following functions can be used:
 - ido, the default
@@ -95,9 +95,9 @@ by the function `pel--goto-symbol'.")
          (selected-mode (pel-select-from
                          prompt-msg
                          (pel--goto-symbol-completion-mode-selection)
-                         pel--goto-symbol-completion-method)))
+                         pel--goto-symbol-completion-mode)))
     (when selected-mode
-      (setq pel--goto-symbol-completion-method selected-mode)
+      (setq pel--goto-symbol-completion-mode selected-mode)
       (message "%s now set to %s" prompt-msg
                (cdr (assoc selected-mode
                            pel--goto-completion-mode-names-alist))))))
@@ -172,11 +172,11 @@ nil, then ido is still used."
   ;; Define the completion mechanism and then invoke the command
   (let* ((pel---goto-symbol-completion-function
           (cond
-           ((eq pel--goto-symbol-completion-method 'ido)
+           ((eq pel--goto-symbol-completion-mode 'ido)
             (progn
               ;(setq ido-enable-flex-matching nil)
               (function ido-completing-read)))
-           ((eq pel--goto-symbol-completion-method 'ivy)
+           ((eq pel--goto-symbol-completion-mode 'ivy)
             (if (and (require 'ivy nil :no-error)
                      (fboundp 'ivy-completing-read))
                 (function ivy-completing-read)

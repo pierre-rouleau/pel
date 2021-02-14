@@ -290,7 +290,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     provide an efficient way to jump to the definition of any symbol in the
     current buffer.
     - The command provides completion using the completion method selected by
-      the *pel-goto-symbol-completion-method* which defaults to Ido.
+      the *pel-initial-goto-symbol-completion-mode* which defaults to Ido.
       You can use the command *pel-goto-symbol-select-completion* to change
       the completion method used in the current Emacs session. The available
       completion methods are:

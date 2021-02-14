@@ -428,6 +428,26 @@ To use this you must also have `pel-use-ido' set to t.
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-ido-ubiquitous nil
+  "Control whether the ido-completing-read+ package is used.
+
+Note that the original name of that package used to be
+ido-ubiquitous.  The new name is ido-completing-read+.  However,
+the name of the user-option uses the old name as it's shorter and
+better represents the concept.
+
+With this package used, IDO completion is made available for a
+larger number of prompt functions and more can be activated via
+its customization. The functions that now support IDO completion
+will also use the ivy or helm completion if they are selected.
+
+To activate this you must also activate `pel-use-ido'."
+  :link '(url-link :tag "ido-completing-read+ @ Github"
+                   "https://github.com/DarwinAwardWinner/ido-completing-read-plus")
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-ivy nil
   "Control whether PEL uses the Ivy package.
 
@@ -468,26 +488,6 @@ On Linux, the `counsel-linux-app` is bound to the same key if user option
 variable `pel-use-counsel' is set to t."
   :link '(url-link :tag "counsel-osx-app @ GitHub"
                    "https://github.com/d12frosted/counsel-osx-app")
-  :group 'pel-pkg-for-completion
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-ido-ubiquitous nil
-  "Control whether the ido-completing-read+ package is used.
-
-Note that the original name of that package used to be
-ido-ubiquitous.  The new name is ido-completing-read+.  However,
-the name of the user-option uses the old name as it's shorter and
-better represents the concept.
-
-With this package used, IDO completion is made available for a
-larger number of prompt functions and more can be activated via
-its customization. The functions that now support IDO completion
-will also use the ivy or helm completion if they are selected.
-
-To activate this you must also activate `pel-use-ido'."
-  :link '(url-link :tag "ido-completing-read+ @ Github"
-                   "https://github.com/DarwinAwardWinner/ido-completing-read-plus")
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
@@ -558,7 +558,7 @@ The available options are:
           (const :tag "Use Ivy & Counsel. Needs both `pel-use-ivy' and \
 `pel-use-counsel'." ivy/counsel)))
 
-(defcustom pel-goto-symbol-completion-method 'ido
+(defcustom pel-initial-goto-symbol-completion-mode 'ido
   "Select the completion mechanism used for prompting for local symbol.
 
 This is used by the command `pel-goto-symbol'."
