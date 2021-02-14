@@ -517,14 +517,16 @@ Ido prompt geometry. The following modes are available:
                      at first.  Press tab to expand the grid on multiple
                      lines.
 - `grid-expanded'  : show candidates in a grid.  Expanded right away.
+- `vertical'       : show vertical list.
 
 Both grid modes require an activated `pel-use-ido-grid-mode'.
-The ido-vertical-mode is not supported as it breaks Ido."
+The vertical mode requires an activated `pel-use-ido-vertical-mode'."
   :group 'pel-pkg-for-completion
   :type '(choice
           (const :tag "Use Emacs default" emacs-default)
           (const :tag "Use grid - collapsed" grid-collapsed)
-          (const :tag "Use grid - expanded"  grid-expanded)))
+          (const :tag "Use grid - expanded"  grid-expanded)
+          (const :tag "Use vertical"         vertical)))
 
 (defcustom pel-initial-completion-mode 'emacs-default
   "Select the main text completion mode used when Emacs starts.

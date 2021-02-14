@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2021-02-07 10:29:44, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-13 18:58:04, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -61,28 +61,46 @@
 ;;; Code:
 ;;
 
+(defconst pel--goto-completion-mode-names-alist
+  '(
+    (emacs-default . "Emacs default")
+    (ivy           . "Ivy")
+    (ido           . "Ido")
+    (helm          . "Helm"))
+  "Association list of (symbol . string) for completion mode")
+
+
 (defvar pel--goto-symbol-completion-method pel-goto-symbol-completion-method
   "Completing read function used by the command function `pel-goto-symbol'.
 The following functions can be used:
 - ido, the default
-- ido-flex which automatically activates `ido-enable-flex-matching'.
 - ivy, available when `pel-use-ivy' is t.
 
 This variable is set by the function `pel-goto-symbol' and used
 by the function `pel--goto-symbol'.")
 
+(defun pel--goto-symbol-completion-mode-selection ()
+  "Return a list of (char string symbol) of available completion modes."
+  (let ((selection '()))
+    ;; only support Ido and Ivy for this now.
+    (when pel-use-ido  (push '(?d "Ido" ido) selection))
+    (when pel-use-ivy  (push '(?i "Ivy" ivy) selection))
+    (reverse selection)))
 
 ;;-pel-autoload
 (defun pel-goto-symbol-select-completion ()
   "Select completion system for function `pel-goto-symbol'."
   (interactive)
-  (setq pel--goto-symbol-completion-method
-        (pel-select-symbol-from
-         (format "Select selection engine for pel-goto-symbol (%S): "
-                 pel--goto-symbol-completion-method)
-         '(ido
-           ido-flex
-           ivy))))
+  (let* ((prompt-msg "Completion mode for pel-goto-symbol")
+         (selected-mode (pel-select-from
+                         prompt-msg
+                         (pel--goto-symbol-completion-mode-selection)
+                         pel--goto-symbol-completion-method)))
+    (when selected-mode
+      (setq pel--goto-symbol-completion-method selected-mode)
+      (message "%s now set to %s" prompt-msg
+               (cdr (assoc selected-mode
+                           pel--goto-completion-mode-names-alist))))))
 
 ;; --
 
@@ -143,7 +161,6 @@ Supports completion method specified by caller."
 Refresh imenu and jump to a place in the buffer using one of the following
 completion mechanisms:
 - Ido
-- Ido with flex matching mode or,
 - Ivy
 
 as selected by user-option variable `pel-goto-symbol-completion-function'
@@ -153,28 +170,18 @@ If Ivy is selected by the user option variable `pel-use-ivy' is
 nil, then ido is still used."
   (interactive)
   ;; Define the completion mechanism and then invoke the command
-  ;; Ensure ido-enable-flex-matching is t only when ido-flex is selected,
-  ;; regardless of its customized value.
-  ;; TODO: IDO flex matching does not seem to be activated: the variable
-  ;;       is set and the ido-set-matches-1 function does see it but
-  ;;       that does not seem to have any impact on the ability to match
-  ;;       flexibly like described...
-  (let* (ido-enable-flex-matching
-         (pel---goto-symbol-completion-function
+  (let* ((pel---goto-symbol-completion-function
           (cond
            ((eq pel--goto-symbol-completion-method 'ido)
             (progn
-              (setq ido-enable-flex-matching nil)
-              (function ido-completing-read)))
-           ((eq pel--goto-symbol-completion-method 'ido-flex)
-            (progn
-              (setq ido-enable-flex-matching 22)
+              ;(setq ido-enable-flex-matching nil)
               (function ido-completing-read)))
            ((eq pel--goto-symbol-completion-method 'ivy)
             (if (and (require 'ivy nil :no-error)
                      (fboundp 'ivy-completing-read))
                 (function ivy-completing-read)
               (user-error "Ivy is not available!"))))))
+    ;; when moving, push xref marker to allow coming back
     (when (and (require 'xref)
                (fboundp 'xref-push-marker-stack))
       (xref-push-marker-stack))
@@ -184,23 +191,29 @@ nil, then ido is still used."
 (defvar pel--imenu-anywhere-method pel-use-imenu-anywhere
   "Identifies whether imenu-anywhere is used and which completion to use.")
 
+(defun pel--imenu-anywhere-completion-mode-selection ()
+  "Return a list of (char string symbol) of available completion modes."
+  (let ((selection '(?e "Emacs-default" emacs-default)))
+    ;; only support Ido and Ivy for this now.
+    (when pel-use-ido  (push '(?d "Ido"  ido)  selection))
+    (when pel-use-ivy  (push '(?v "Ivy"  ivy)  selection))
+    (when pel-use-helm (push '(?h "Helm" helm) selection))
+    (reverse selection)))
+
 ;;-pel-autoload
 (defun pel-imenu-anywhere-select-completion ()
   "Select completion system for function `pel-goto-symbol'."
   (interactive)
-  (let ((available-methods '(emacs-default)))
-    (when pel-use-ido
-        (push 'ido available-methods))
-    (when pel-use-ivy
-      (push 'ivy available-methods))
-    (when pel-use-helm
-      (push 'helm available-methods))
-    (setq available-methods (reverse available-methods))
-    (setq pel--imenu-anywhere-method
-          (pel-select-symbol-from
-           (format "Select selection engine for imenu-anywhere (%S): "
-                   pel--imenu-anywhere-method)
-           available-methods))))
+  (let* ((prompt-msg "Completion mode for imenu-anywhere")
+         (selected-mode (pel-select-from
+                        prompt-msg
+                        (pel--imenu-anywhere-completion-mode-selection)
+                        pel--imenu-anywhere-method)))
+    (when selected-mode
+      (setq pel--imenu-anywhere-method selected-mode)
+      (message "%s now set to %s" prompt-msg
+               (cdr (assoc selected-mode
+                           pel--goto-completion-mode-names-alist))))))
 
 ;;-pel-autoload
 (defun pel-imenu-anywhere ()

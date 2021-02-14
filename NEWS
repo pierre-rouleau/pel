@@ -260,8 +260,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     setting the *pel-use-ido-grid-mode* user-option to *t*.
   - New: Add and then disabled support for the *ido-vertical-mode* external
     package. Activate it by setting the *pel-use-ido-vertical-mode*
-    user-option to *t*.  This is currently disabled because the current
-    version breaks Ido.
+    user-option to *t*.
   - New: Add support for the *ido-ubiquitous-mode* via the
     ido-completing-read+ package.
     - It is activated via the

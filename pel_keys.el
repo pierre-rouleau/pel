@@ -1414,13 +1414,11 @@ interactively."
       :pin melpa
       :commands ido-grid-mode))
 
-  ;; ido-vertical-mode has a major bug that breaks Ido
-  ;; as reported by https://github.com/creichert/ido-vertical-mode.el/issues/47
-  ;; (when pel-use-ido-vertical-mode
-  ;;   (use-package ido-vertical-mode
-  ;;     :ensure t
-  ;;     :pin melpa
-  ;;     :commands ido-vertical-mode))
+  (when pel-use-ido-vertical-mode
+    (use-package ido-vertical-mode
+      :ensure t
+      :pin melpa
+      :commands ido-vertical-mode))
 
   (when pel-use-smex
     (use-package smex
