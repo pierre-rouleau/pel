@@ -1400,7 +1400,7 @@ interactively."
     (define-key ido-common-completion-map (kbd "<f1><f12>")
       'pel-help-on-completion-input))
 
-  (when pel-use-ido-completing-read+
+  (when pel-use-ido-ubiquitous
     ;; add autoloading control for it.  The actual loading is controlled
     ;; by the pel-completion logic.
     (use-package ido-completing-read+
@@ -1483,7 +1483,7 @@ interactively."
     (define-key pel:help  (kbd "M-c") 'pel-show-active-completion-mode)
     (define-key pel:completion (kbd "M-c") 'pel-select-completion-mode)
     (define-key pel:completion "?"         'pel-show-active-completion-mode)
-    (when pel-use-ido-completing-read+
+    (when pel-use-ido-ubiquitous
       (define-key pel:completion (kbd "M-u") 'pel-toggle-ido-ubiquitous))
     (pel-set-completion-mode pel-initial-completion-mode :silent)))
 

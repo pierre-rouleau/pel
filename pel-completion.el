@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-13 17:48:33, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-13 23:01:11, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -157,7 +157,7 @@ The nil value means that Emacs default is used."
 
 (defun pel--ido-ubiquitous-state ()
   "Return a string describing the state of `ido-ubiquitous-mode'."
-  (if pel-use-ido-completing-read+
+  (if pel-use-ido-ubiquitous
       (pel-symbol-on-off-string 'ido-ubiquitous-mode nil nil "not loaded")
     "not activated"))
 
@@ -268,7 +268,7 @@ If the REQUESTED mode is currently not supported by the pel-use-..
 option variable then the request is ignored.
 Display a message describing what mode was actually activated.
 
-If `pel-use-ido-completing-read+' is non-nil, activate the
+If `pel-use-ido-ubiquitous' is non-nil, activate the
 ubiquitous IDO completion mode unless the selected mode is
 emacs-default: IDO ubiquity allows IDO but also ivy and helm
 completion in lot more functions that IDO normally handles.
@@ -294,7 +294,7 @@ Print message describing active mode unless SILENT argument is non-nil."
     ;; perform the operation: turn off active mode (if any)
     (pel--activate-completion-mode (pel-activated-completion-mode) nil)
     (unless (memq requested '(emacs-default nil))
-      (pel--set-ido-ubiquitous pel-use-ido-completing-read+))
+      (pel--set-ido-ubiquitous pel-use-ido-ubiquitous))
     ;; then activate new one (if any)
     (pel--activate-completion-mode new-mode t)
     ;; and display the new state of completion mode

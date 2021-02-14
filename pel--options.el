@@ -472,8 +472,13 @@ variable `pel-use-counsel' is set to t."
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-use-ido-completing-read+ nil
+(defcustom pel-use-ido-ubiquitous nil
   "Control whether the ido-completing-read+ package is used.
+
+Note that the original name of that package used to be
+ido-ubiquitous.  The new name is ido-completing-read+.  However,
+the name of the user-option uses the old name as it's shorter and
+better represents the concept.
 
 With this package used, IDO completion is made available for a
 larger number of prompt functions and more can be activated via
