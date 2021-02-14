@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2021-02-13 18:58:04, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-14 09:22:01, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -193,7 +193,7 @@ nil, then ido is still used."
 
 (defun pel--imenu-anywhere-completion-mode-selection ()
   "Return a list of (char string symbol) of available completion modes."
-  (let ((selection '(?e "Emacs-default" emacs-default)))
+  (let ((selection '((?e "Emacs-default" emacs-default))))
     ;; only support Ido and Ivy for this now.
     (when pel-use-ido  (push '(?d "Ido"  ido)  selection))
     (when pel-use-ivy  (push '(?v "Ivy"  ivy)  selection))
