@@ -254,6 +254,11 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     - The *pel-show-active-completion-mode* displays the currently active
       completion mode, whether ubiquitous Ido is active and the Ido prompt
       geometry active.
+  - New: Add support for *flx* and *flx-ido* external packages. Activate both
+    by setting the *pel-use-flx* user-option to *t*.  Set the initial state in
+    the *pel-initial-ido-flx-state*.  Use the new command
+    *pel-toggle-flx-ido*, bound the ``<f11> M-c M-f`` key sequence, to stop or
+    start its use during an editing session.
   - New: Add support for the *smex* external package.  Activate it by setting
     the *pel-use-smex* user-option to *t*.
   - New: Add support for the *ido-grid-mode* external package.  Activate it by

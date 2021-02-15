@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-14 11:08:10, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-15 17:39:46, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -81,6 +81,56 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
+(defvar pel--use-flx-with-ido (and pel-use-flx
+                                   pel-initial-ido-flx-state)
+  "Whether flx-ido is used with Ido.")
+
+(defvar pel--ido-was-using-faces nil
+  "Caches `ido-use-faces' while flx-ido is used.") ; TODO find better way
+
+(defvar ido-use-faces)                  ; prevent byte-compiler warning
+
+(defun pel--set-flx-ido (activate)
+  "ACTIVATE or deactivate fuzzy flx engine with Ido.
+Return t when it is activated, nil otherwise.
+
+Constraint: Ido must be active when this is called to activate flx-ido."
+  (if activate
+      ;; activating flx-ido
+      (if (and (require 'flx-ido nil :no-error)
+               (featurep 'flx-ido)
+               (boundp   'flx-ido-mode)
+               (fboundp  'flx-ido-mode)
+               ;; at this point Ido should have been loaded and activated
+               (boundp   'ido-enable-flex-matching)
+               (boundp   'ido-use-faces))
+          (progn
+            (flx-ido-mode 1)
+            ;; disable ido faces to see flx highlights.
+            (setq ido-enable-flex-matching t)
+            (setq pel--ido-was-using-faces ido-use-faces)
+            (setq ido-use-faces nil)
+            t )
+        (user-error "Failed loading ido-flx!"))
+    ;; Deactivate flx-ido
+    (when (and (featurep 'flx-ido)
+               (boundp   'flx-ido-mode)
+               (fboundp  'flx-ido-mode))
+       (flx-ido-mode -1)
+       (setq ido-use-faces pel--ido-was-using-faces)
+       nil)))
+
+;; auto-loaded via use-package in pel_keys: no need for this unless
+;; flx-ido is used.
+(defun pel-toggle-flx-ido ()
+  "Toggle the use of the fuzzy flx engine with Ido."
+  (interactive)
+  (message "flx-ido is now: %s."
+           (pel-on-off-string (pel--set-flx-ido
+                               (pel-toggle 'pel--use-flx-with-ido)))))
+
+;; --
+
 ;;-pel-autoload
 (defun pel-ido-mode (&optional activate)
   "ACTIVATE/deactivate/toggle use of the IDO mode.
@@ -100,8 +150,12 @@ Otherwise, de-activate the IDO mode."
                (setq ido-enable-flex-matching t)
                ;; don't require confirmation when creating new buffers
                ;; with C-x b
-               (pel-setq ido-create-new-buffer 'always))
+               (pel-setq ido-create-new-buffer 'always)
+               (when pel--use-flx-with-ido
+                 (pel--set-flx-ido t)))
+              ;;
               ((eq action 'deactivate)
+               (pel--set-flx-ido nil)
                (ido-mode -1)
                (ido-everywhere -1)
                (setq ido-enable-flex-matching nil))))
@@ -510,9 +564,11 @@ otherwise it starts with \"Currently\"."
            (if (memq current-mode '(ido ido/helm))
                (format "
   - Ido prompt geometry: %s
-  - Ido Ubiquitous Mode: %s"
+  - Ido Ubiquitous mode: %s
+  - flx-ido        mode: %s"
                        (pel-activated-ido-geometry)
-                       (pel--ido-ubiquitous-state))
+                       (pel--ido-ubiquitous-state)
+                       (pel-on-off-string pel--use-flx-with-ido))
              ""))))
 
 ;;; --------------------------------------------------------------------------

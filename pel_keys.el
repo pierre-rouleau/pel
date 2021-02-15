@@ -1476,6 +1476,14 @@ interactively."
         :init
         (define-key pel: "A" 'counsel-osx-app)))))
 
+(when (and pel-use-flx
+           (or pel-use-ido pel-use-ivy))
+  (use-package flx-ido ; that also requires the flx package
+    :ensure t
+    :pin melpa
+    :commands (flx-ido-mode
+               pel-toggle-flx-ido)))
+
 ;; If more than 1 completion mode is available, this means that the user may
 ;; not want to use Emacs default: activate the one selected by customization
 ;; and install the selection command.
@@ -1493,12 +1501,13 @@ interactively."
       (define-key pel:completion (kbd "M-u") 'pel-toggle-ido-ubiquitous))
     (pel-set-completion-mode pel-initial-completion-mode :silent)))
 
-(when (and pel-use-ido
-           (memq pel-initial-completion-mode '(nil ido ido/helm)))
-  (pel-set-ido-geometry    pel-initial-ido-geometry    :silent))
-
-(when pel-use-ido-grid-mode
-  (define-key pel:completion (kbd "M-g") 'pel-select-ido-geometry))
+(when pel-use-ido
+  (when (memq pel-initial-completion-mode '(nil ido ido/helm))
+    (pel-set-ido-geometry    pel-initial-ido-geometry    :silent))
+  (when pel-use-ido-grid-mode
+    (define-key pel:completion (kbd "M-g") 'pel-select-ido-geometry))
+  (when pel-use-flx
+    (define-key pel:completion (kbd "M-f") 'pel-toggle-flx-ido)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Project Management - Projectile

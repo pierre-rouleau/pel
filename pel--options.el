@@ -443,7 +443,31 @@ will also use the ivy or helm completion if they are selected.
 
 To activate this you must also activate `pel-use-ido'."
   :link '(url-link :tag "ido-completing-read+ @ Github"
-                   "https://github.com/DarwinAwardWinner/ido-completing-read-plus")
+                   "https://github.com/DarwinAwardWinner\
+/ido-completing-read-plus")
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-flx nil
+  "Control whether PEL uses the flx matching package.
+
+The flx completion fuzzy pattern matching engine takes a large
+amount of memory but is well suite for matching file names inside
+a long path easily.  It is similar to what is available on the
+Sublime editor.
+
+To use this you must also have `pel-use-ido' or `pel-use-ivy' set to t."
+  :link '(url-link :tag "flx @ Github"
+                   "https://github.com/lewang/flx")
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-initial-ido-flx-state nil
+  "Control whether the flx fuzzy engine is used with Ido on startup."
+  :link '(url-link :tag "flx @ Github"
+                   "https://github.com/lewang/flx")
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
