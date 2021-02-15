@@ -14,17 +14,21 @@ PEL -- Pragmatic Environment Library for Emacs
 - Tired of writing Emacs configuration code? 🤯
 - Ever declared `.emacs bankruptcy`_? 😰
 - Don't want to spend your time writing Emacs Lisp code? 😳
-- Want to learn Emacs? 😇
+- Want to learn Emacs and try several built-in and external packages? 😇
 
 PEL might be for you!
 
 - PEL builds on `Emacs easy customization`_ to let you pick and choose various
   behaviours and packages without the need for writing Emacs Lisp code.
 - PEL integrates a large and growing set of `built-in and external Emacs packages`_,
-  and adds a large number of key bindings that do not interfere with the standard
-  Emacs key bindings (except for a very small few documented ones).
+  and adds a large number of key bindings **that mostly do not interfere with the standard
+  Emacs key bindings** (except for a very small few documented ones).
 - PEL controls the activation of the loading of the selected packages, with
-  the emphasis of reducing Emacs initialization time to a minimum.
+  emphasis on:
+
+  - reducing Emacs initialization time to a minimum and,
+  - providing key bindings when Emacs is running in both graphics mode and
+    terminal mode.
 
   - On my system with 182 packages with benchmark-init on I get 0.3 to 0.4 seconds
     on a 2014 iMac running macOS Mojave in terminal mode and 0.6 seconds in
@@ -41,7 +45,7 @@ PEL comes with lots of overview and reference documentation:
 
   - Read the section on `How to install PEL`_.
 
-- `Key Bindings Documentation`_, over 80 `PDF reference sheets`_, each
+- `Key Bindings Documentation`_, over 95 `PDF reference sheets`_, each
   one is about a specific editing topic or Emacs mode or package, describing all
   related Emacs, packages, and PEL specific key bindings and commands.
   The PDF files have lots of hyperlinks to other PEL PDF files,
@@ -57,8 +61,8 @@ PEL would not exist without the great software available for Emacs listed in the
 PEL is still evolving, with new packages being integrated, new documentation
 created and new features developed.  The evolution is described in the `NEWS file`_.
 
-Comments, constructive criticism, suggestions and requests are always welcome.
-Drop me a note in the wiki_!
+Questions, comments, constructive criticism, suggestions and requests are always welcome.
+Drop me a note in the wiki_ or in the `discussion board`_!
 
 .. links
 
@@ -84,6 +88,7 @@ Drop me a note in the wiki_!
 .. _wiki:                       https://github.com/pierre-rouleau/pel/wiki
 .. _How to install PEL:         doc/pel-manual.rst#how-to-install-pel
 .. _NEWS file:                  NEWS
+.. _discussion board:           https://github.com/pierre-rouleau/pel/discussions
 
 
 ..
