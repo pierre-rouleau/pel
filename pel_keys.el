@@ -1390,16 +1390,20 @@ interactively."
   ;; The selection of the auto-completion mode used when Emacs starts
   ;; is done below, with a call to `pel-set-completion-mode'.
   (defvar ido-common-completion-map)      ; prevent byte-compiler warning
+  (defvar ido-buffer-completion-map)      ; prevent byte-compiler warning
   (use-package ido
     :commands ido-mode
     :config
+    ;; Add binding to quickly open the input completion PDF
+    (define-key ido-common-completion-map (kbd "<f12><f1>")
+      'pel-help-on-completion-input)
     ;; Add key bindings for Ido prompts to complement what is available
     ;; because some bindings are hidden by other keys, like the C-c
     ;; binding to ido-toggle-case or C-p in ido-grid-mode.
-    (define-key ido-common-completion-map (kbd "<f12>C-c") 'ido-toggle-case)
-    (define-key ido-common-completion-map (kbd "<f12>C-p") 'ido-toggle-prefix)
-    (define-key ido-common-completion-map (kbd "<f12><f1>")
-      'pel-help-on-completion-input))
+    (define-key ido-common-completion-map (kbd "<f12>c") 'ido-toggle-case)
+    (define-key ido-common-completion-map (kbd "<f12>p") 'ido-toggle-prefix)
+    ;; Add a binding to access the command in terminal mode
+    (define-key ido-buffer-completion-map (kbd "<f12>b") 'ido-bury-buffer-at-head))
 
   (when pel-use-ido-ubiquitous
     ;; add autoloading control for it.  The actual loading is controlled
