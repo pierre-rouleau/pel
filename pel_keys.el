@@ -1398,7 +1398,7 @@ interactively."
     ;; binding to ido-toggle-case.
     (define-key ido-common-completion-map (kbd "M-c") 'ido-toggle-case)
     (define-key ido-common-completion-map (kbd "M-.") 'ido-toggle-prefix)
-    (define-key ido-common-completion-map (kbd "<f1><f12>")
+    (define-key ido-common-completion-map (kbd "<f12><f1>")
       'pel-help-on-completion-input))
 
   (when pel-use-ido-ubiquitous
