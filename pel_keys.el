@@ -1397,6 +1397,7 @@ interactively."
     ;; because some bindings are hidden by other keys, like the C-c
     ;; binding to ido-toggle-case.
     (define-key ido-common-completion-map (kbd "M-c") 'ido-toggle-case)
+    (define-key ido-common-completion-map (kbd "M-.") 'ido-toggle-prefix)
     (define-key ido-common-completion-map (kbd "<f1><f12>")
       'pel-help-on-completion-input))
 
