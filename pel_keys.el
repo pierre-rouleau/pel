@@ -1446,8 +1446,9 @@ interactively."
     :config
     (setq ivy-use-virtual-buffers t
           ivy-count-format "%d/%d ")
-    (define-key ivy-minibuffer-map (kbd "<f1>") 'pel-help-on-completion-input)
-    (define-key ivy-minibuffer-map (kbd "C-SPC") 'ivy-restrict-to-matches)
+    (define-key ivy-minibuffer-map (kbd "<f12><f1>") 'pel-help-on-completion-input)
+    (define-key ivy-minibuffer-map (kbd "<f12>c")    'ivy-toggle-case-fold)
+    (define-key ivy-minibuffer-map (kbd "C-SPC")     'ivy-restrict-to-matches)
     (when pel-use-avy
       (define-key ivy-minibuffer-map (kbd "M-H") 'ivy-avy)))
 
