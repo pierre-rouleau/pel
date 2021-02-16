@@ -82,6 +82,9 @@
 ;; Lazy loading:
 ;; - `pel-require'
 ;;
+;; Mode argument interpretation
+;; -  `pel-action-for'
+;;
 ;; Toggle a local mode:
 ;;  - `pel-toggle-mode'
 ;;
@@ -695,6 +698,36 @@ Otherwise return the loading state of the FEATURE."
                           "Cannot load package.el"
                         "No specified package"))))))
   (featurep feature))
+
+
+;; ---------------------------------------------------------------------------
+(defun pel-action-for (action current-state)
+  "Return 'activate, 'deactivate or nil for requested ACTION and CURRENT-STATE.
+
+Interpret requested ACTION according to its value:
+ - nil or 0        : toggle,
+ - > 0             : activate,
+ - < 0             : deactivate.
+
+The CURRENT-STATE is either:
+-  nil (currently deactivated) or
+- non-nil (currently activated)
+
+The returned value is:
+- nil         : nothing to do: the current-state is what is requested,
+- 'activate   : need to activate it
+- 'deactivate : need to deactivate it."
+  (cond
+   ;; action requested: toggle
+   ((or (not action)
+        (eq action 0))
+    (if current-state 'deactivate 'activate))
+   ;; action requested: activate
+   ((> action 0)
+    (if current-state nil 'activate))
+   ;; action requested: deactivate
+   (t
+    (if current-state 'deactivate nil))))
 
 ;; ---------------------------------------------------------------------------
 ;; Toggle a local mode

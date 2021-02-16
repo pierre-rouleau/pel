@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-02-10 09:05:24, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-02-16 16:04:46, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -596,6 +596,7 @@ lint:
 .PHONY: test
 test:
 	@printf "***** Running Integration tests\n"
+	$(EMACS) --batch -L . -l ert -l test/pel-base-tests.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
 
 # -----------------------------------------------------------------------------
