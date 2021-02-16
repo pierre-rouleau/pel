@@ -706,11 +706,15 @@ Otherwise return the loading state of the FEATURE."
 
 Interpret requested ACTION according to its value:
  - nil or 0        : toggle,
- - > 0             : activate,
+ - > 0 or a list   : activate,
  - < 0             : deactivate.
 
+Interpreting a list as positive allows action to be taken from
+the argument of an (interactive \"P\") function without the need
+to call `prefix-numeric-value' on the argument.
+
 The CURRENT-STATE is either:
--  nil (currently deactivated) or
+- nil (currently deactivated) or
 - non-nil (currently activated)
 
 The returned value is:
@@ -723,7 +727,8 @@ The returned value is:
         (eq action 0))
     (if current-state 'deactivate 'activate))
    ;; action requested: activate
-   ((> action 0)
+   ((or (listp action)
+        (> action 0))
     (if current-state nil 'activate))
    ;; action requested: deactivate
    (t

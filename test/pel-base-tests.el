@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, February 16 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-16 16:07:20, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-16 16:40:50, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -50,6 +50,11 @@
   (should (eq (pel-action-for 1 t)      nil))
   (should (eq (pel-action-for 10 nil)  'activate ))
   (should (eq (pel-action-for 10 t)      nil))
+  ;; test activate with a list - as C-u would cause
+  (should (eq (pel-action-for '(4) nil)   'activate ))
+  (should (eq (pel-action-for '(4) t)      nil))
+  (should (eq (pel-action-for '(16) nil)  'activate ))
+  (should (eq (pel-action-for '(16) t)     nil))
   ;; test deactivate request
   (should (eq (pel-action-for -1 nil)   nil ))
   (should (eq (pel-action-for -1 t)     'deactivate))
