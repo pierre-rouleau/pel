@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-15 17:39:46, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-16 11:54:06, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -56,16 +56,38 @@
 ;;
 ;; * `pel-select-completion-mode'
 ;;   - `pel--completion-mode-selection'
+
+
 ;;   - `pel-set-completion-mode'
-;;     - `pel--activate-completion-mode'
-;;       - `pel--start/stop'
+;;      - `pel-activated-completion-mode'
+;;      - `pel--available-completion-mode-mask'
+;;      - `pel--completion-mode-symbol-for-mask'
+;;      - `pel--set-ido-ubiquitous'
+;;      - `pel--activate-completion-mode'
+;;         - `pel--start/stop'
+;;         - `pel-set-ido-geometry'
+;;            - `pel--set-ido-grid'
+;;            - `pel--set-ido-vertical'
+;;            * `pel-show-active-completion-mode'
+
 ;;     * `pel-show-active-completion-mode'
 ;;       - `pel-activated-completion-mode-name'
 ;;         - `pel-activated-completion-mode'
-;;     - `pel--completion-mode-symbol-for-mask'
-;;     - `pel--available-completion-mode-mask'
 ;; * `pel-ido-mode'
 ;;
+
+
+;; - `pel-activated-ido-geometry'
+;;    - `pel--activated-ido-geometry-symbol'
+
+;; * `pel-select-ido-geometry'
+;;    - `pel--ido-geometry-selection'
+;;    - `pel--activated-ido-geometry-symbol'
+;;    - `pel-set-ido-geometry'
+;;       - `pel--set-ido-grid'
+;;       - `pel--set-ido-vertical'
+;;       * `pel-show-active-completion-mode'
+
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -81,6 +103,158 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
+
+;; --
+
+(defun pel--set-ido-grid (state)
+  "Set the ido-grid-mode to specified STATE.
+State can be one of:
+- 'emacs-default : ido mode is used, but grid is off
+- 'grid-collapsed
+- 'grid-expanded.
+- 'vertical"
+  (message "ROUP: pel--set-ido-grid")
+  (if (require 'ido nil :no-error)
+      (progn
+        (pel-turn-mode-on-when-off ido-mode)
+        (when (and pel-use-ido-vertical-mode
+                   (featurep 'ido-vertical-mode)
+                   (boundp  'ido-vertical-mode)
+                   (fboundp 'ido-vertical-mode))
+          (pel-turn-mode-off-when-on ido-vertical-mode))
+        (when (and pel-use-ido-grid-mode
+                   (require 'ido-grid-mode nil :no-error)
+                   (featurep 'ido-grid-mode)
+                   (boundp  'ido-grid-mode)
+                   (fboundp 'ido-grid-mode)
+                   (boundp  'ido-grid-mode-start-collapsed))
+          (cond
+           ((eq state 'off)
+            (pel-turn-mode-off-when-on ido-grid-mode))
+           ;;
+           ((eq state 'grid-collapsed)
+            (pel-turn-mode-off-when-on ido-grid-mode)
+            (setq ido-grid-mode-start-collapsed t)
+            (ido-grid-mode 1))
+           ;;
+           ((eq state 'grid-expanded)
+            (pel-turn-mode-off-when-on ido-grid-mode)
+            (setq ido-grid-mode-start-collapsed nil)
+            (ido-grid-mode 1))
+           (t (user-error "Invalid ido grid state request: %S" state)))))
+    (error "Cannot load required Ido mode!")))
+
+(defun pel--set-ido-vertical ()
+  "Set the ido-vertical mode on."
+  (message "ROUP pel--set-ido-vertical")
+  (if (require 'ido nil :no-error)
+      (progn
+        (pel-turn-mode-on-when-off ido-mode)
+        (when (and pel-use-ido-grid-mode
+                   (featurep 'ido-grid-mode)
+                   (boundp  'ido-grid-mode)
+                   (fboundp 'ido-grid-mode))
+          (pel-turn-mode-off-when-on ido-grid-mode))
+        (if (and pel-use-ido-vertical-mode
+                 (require 'ido-vertical-mode nil :no-error)
+                 (featurep 'ido-vertical-mode)
+                 (boundp  'ido-vertical-mode)
+                 (fboundp 'ido-vertical-mode))
+            (pel-turn-mode-on-when-off ido-vertical-mode)
+          (user-error "Cannot activate ido-vertical-mode")))
+    (error "Cannot load required Ido mode!")))
+
+;; --
+
+(defun pel--activated-ido-geometry-symbol ()
+  "Return a symbol describing Ido currently used prompt geometry."
+  (message "ROUP pel--activated-ido-geometry-symbol")
+    (if (and pel-use-ido-vertical-mode
+           (featurep 'ido-vertical-mode)
+           (boundp 'ido-vertical-mode)
+           ido-vertical-mode)
+        'vertical
+      (if (and pel-use-ido-grid-mode
+               (featurep 'ido-grid-mode)
+               (boundp  'ido-grid-mode)
+               ido-grid-mode
+               (boundp  'ido-grid-mode-start-collapsed))
+          (if ido-grid-mode-start-collapsed
+              'grid-collapsed
+            'grid-expanded)
+        'emacs-default)))
+
+(defconst pel--ido-geometry-names-alist
+  '((nil            . "default linear")
+    (emacs-default  . "default-linear")
+    (grid-collapsed . "grid mode, starts collapsed: expand with tab")
+    (grid-expanded  . "grid mode, starts already expanded")
+    (vertical       . "vertical mode"))
+  "Association list of (symbol . string) for the Ido geometry.")
+
+;;-pel-autoload
+(defun pel-activated-ido-geometry ()
+  "Return a string describing Ido currently used prompt geometry."
+  (message "ROUP pel-activated-ido-geometry")
+  (cdr (assoc (pel--activated-ido-geometry-symbol)
+              pel--ido-geometry-names-alist)))
+
+;; -
+
+(defvar pel--ido-geometry pel-initial-ido-geometry
+  "Currently selected Ido geometry.")
+
+(defvar pel--set-ido-geometry-initialized nil
+  "Non-nil once Ido geometry has been initialized.
+Only set non-nil by `pel-set-ido-geometry', nothing else.")
+
+;;-pel-autoload
+(defun pel-set-ido-geometry (geometry &optional silent now)
+  "Set the Ido prompt GEOMETRY. Display description unless SILENT requested.
+Identify that its a change when NOW argument is specified.
+This assumes that Ido mode is currently activated."
+  (message "ROUP pel-set-ido-geometry: silent=%S" silent)
+  (cond
+   ((eq geometry 'emacs-default)
+    (pel--set-ido-grid 'off))
+   ((eq geometry 'grid-collapsed)
+    (pel--set-ido-grid 'grid-collapsed))
+   ((eq geometry 'grid-expanded)
+    (pel--set-ido-grid 'grid-expanded))
+   ((eq geometry 'vertical)
+    (pel--set-ido-vertical))
+   (t (user-error "Non-supported Ido geometry selected: %S" geometry)))
+  (setq pel--set-ido-geometry-initialized t)
+  (unless silent
+    (pel-show-active-completion-mode now)))
+
+(defun pel--ido-geometry-selection ()
+  "Return a list of (char prompt symbol) of available Ido geometry choices."
+  (message "ROUP pel--ido-geometry-selection")
+  (let ((selection '((?e "Emacs default - linear" emacs-default))))
+    (when pel-use-ido-grid-mode
+      (push '(?c "grid - Collapsed" grid-collapsed) selection)
+      (push '(?x "grid - eXpanded"  grid-expanded)  selection))
+    (when pel-use-ido-vertical-mode
+      (push '(?v "vertical" vertical) selection))
+    (reverse selection)))
+
+;;-pel-autoload
+(defun pel-select-ido-geometry ()
+  "Select Ido presentation geometry."
+  (interactive)
+  (message "ROUP pel-select-ido-geometry")
+  (let ((selected-geometry (pel-select-from
+                            "Ido prompt geometry"
+                            (pel--ido-geometry-selection)
+                            (pel--activated-ido-geometry-symbol)
+                            nil
+                            "default - linear")))
+    (when selected-geometry
+      (pel-set-ido-geometry selected-geometry nil :now))))
+
+;; --
+
 (defvar pel--use-flx-with-ido (and pel-use-flx
                                    pel-initial-ido-flx-state)
   "Whether flx-ido is used with Ido.")
@@ -95,6 +269,7 @@
 Return t when it is activated, nil otherwise.
 
 Constraint: Ido must be active when this is called to activate flx-ido."
+  (message "ROUP pel--set-flx-ido")
   (if activate
       ;; activating flx-ido
       (if (and (require 'flx-ido nil :no-error)
@@ -125,6 +300,7 @@ Constraint: Ido must be active when this is called to activate flx-ido."
 (defun pel-toggle-flx-ido ()
   "Toggle the use of the fuzzy flx engine with Ido."
   (interactive)
+  (message "ROUP pel-toggle-flx-ido")
   (message "flx-ido is now: %s."
            (pel-on-off-string (pel--set-flx-ido
                                (pel-toggle 'pel--use-flx-with-ido)))))
@@ -138,6 +314,7 @@ If ACTIVATE is absent or nil toggle the IDO mode.
 If ACTIVATE is positive, activate the IDO mode.
 Otherwise, de-activate the IDO mode."
   (interactive "P")
+  (message "ROUP pel-ido-mode")
   (if (and (require 'ido nil :noerror)
            (fboundp 'ido-everywhere)
            (boundp 'ido-enable-flex-matching))
@@ -169,6 +346,7 @@ The completion modes available is taken from the following user options:
 - `pel-use-ivy'
 - `pel-use-counsel'
 The bit layout corresponds to the values of pel-USE-{IDO|IVY|COUNSEL|HELM}."
+  (message "ROUP pel--available-completion-mode-mask")
   (let ((mask 0))
     (when pel-use-ido
       (setq mask pel-USE-IDO))
@@ -183,6 +361,7 @@ The bit layout corresponds to the values of pel-USE-{IDO|IVY|COUNSEL|HELM}."
 (defun pel--completion-mode-symbol-for-mask (mask)
   "Return the symbol corresponding to the bit MASK.
 It can return nil | 'ido | 'ido/helm | 'ivy | 'ivy/counsel | 'helm"
+  (message "ROUP pel--completion-mode-symbol-for-mask")
   (cond ((pel-all-bitset-p mask pel-USE-IDO) 'ido)
         ((pel-all-bitset-p mask pel-USE-IDO pel-USE-HELM) 'ido/helm)
         ((pel-all-bitset-p mask pel-USE-IVY pel-USE-COUNSEL) 'ivy/counsel)
@@ -197,6 +376,7 @@ It can return nil | 'ido | 'ido/helm | 'ivy | 'ivy/counsel | 'helm"
   "Return input completion engine currently used.
 Return one of:  nil | 'ido | 'ido/helm | 'ivy | 'ivy/counsel | 'helm
 The nil value means that Emacs default is used."
+  (message "ROUP pel-activated-completion-mode")
   (if (bound-and-true-p counsel-mode)
       'ivy/counsel
     (if (bound-and-true-p ivy-mode)
@@ -211,6 +391,7 @@ The nil value means that Emacs default is used."
 
 (defun pel--ido-ubiquitous-state ()
   "Return a string describing the state of `ido-ubiquitous-mode'."
+  (message "ROUP pel--ido-ubiquitous-state")
   (if pel-use-ido-ubiquitous
       (pel-symbol-on-off-string 'ido-ubiquitous-mode nil nil "not loaded")
     "not activated"))
@@ -220,6 +401,7 @@ The nil value means that Emacs default is used."
 To start set START to t.  To stop: set it nil.
 When starting, start the modes in order of functions in the argument list.
 When stopping, use the reverse order."
+  (message "ROUP pel--start/stop")
   (let ((mode-arg (if start 1 -1))
         (funs     (if start mode-funs (reverse mode-funs))))
     (mapcar
@@ -230,11 +412,12 @@ When stopping, use the reverse order."
   "Map KEY to HELM-CMD when START-HELM otherwise to OTHER-CMD."
   `(global-set-key ,key (if ,start-helm ,helm-cmd ,other-cmd)))
 
-(defun pel--activate-completion-mode (mode start)
+(defun pel--activate-completion-mode (mode start &optional silent)
   "START or stop specified completion MODE to a NEWSTATE.
 - MODE must be one of: nil | 'ido | 'ido/helm | 'ivy | 'ivy/counsel | 'helm
   If nil, nothing is done.
 - START is non-nil to activate, nil to de-activate."
+  (message "ROUP pel--activate-completion-mode. silent=%S" silent)
   (let (chg-helm)
     (cond ((eq mode 'ido) (pel--start/stop start 'ido-mode))
           ;;
@@ -289,7 +472,13 @@ When stopping, use the reverse order."
       ;; for helm mode only (not ido/helm)
       (when (eq mode 'helm)
         (pel-map-helm (kbd "C-x C-f") start 'helm-find-files 'find-file)
-        (pel-map-helm (kbd "C-x b")   start 'helm-mini 'switch-to-buffer)))))
+        (pel-map-helm (kbd "C-x b")   start 'helm-mini 'switch-to-buffer)))
+    ;; On start of Ido or Ido/helm:
+    (when (and start
+               (memq mode '(ido ido/helm)))
+      ;; - if Ido geometry has not yet been initialized then initialize it.
+      (unless pel--set-ido-geometry-initialized
+        (pel-set-ido-geometry pel--ido-geometry silent)))))
 
 
 (defun pel--set-ido-ubiquitous (activate)
@@ -297,6 +486,7 @@ When stopping, use the reverse order."
 
 On very first call to activate, load the ido-completing-read+
 package if not already loaded."
+  (message "ROUP pel--set-ido-ubiquitous")
   (if activate
       (if (and (pel-require 'ido-completing-read+)
                (boundp  'ido-ubiquitous-mode)
@@ -313,6 +503,7 @@ package if not already loaded."
 (defun pel-toggle-ido-ubiquitous ()
   "Toggle the `ido-ubiquitous-mode'."
   (interactive )
+  (message "ROUP pel-toggle-ido-ubiquitous")
   (pel-toggle-mode 'ido-ubiquitous-mode)
   (message "Ido Ubiquitous Mode now: %s" (pel--ido-ubiquitous-state)))
 
@@ -331,6 +522,7 @@ emacs-default: IDO ubiquity allows IDO but also ivy and helm
 completion in lot more functions that IDO normally handles.
 
 Print message describing active mode unless SILENT argument is non-nil."
+  (message "ROUP pel-set-completion-mode. silent=%S" silent)
   (let* ((current-mode (pel-activated-completion-mode))
          (requested-mask (cond ((eq requested 'ido) pel-USE-IDO)
                                ((eq requested 'ido/helm) (logior
@@ -356,21 +548,21 @@ Print message describing active mode unless SILENT argument is non-nil."
                ido-ubiquitous-mode)
       (pel--set-ido-ubiquitous nil))
     ;;    - then turn off current mode, returning to Emacs default completion
-    (pel--activate-completion-mode current-mode nil)
+    (pel--activate-completion-mode current-mode nil silent)
     ;; 2: then activate new one (if any)
     ;;    - activate the new mode
-    (pel--activate-completion-mode new-mode t)
+    (pel--activate-completion-mode new-mode t silent)
     ;;    - and activate ido-ubiquitous when ido is now used
     ;;      and ido-ubiquitous is required
     (when (eq requested 'ido)
       (pel--set-ido-ubiquitous pel-use-ido-ubiquitous))
-
     ;; and display the new state of completion mode
     (unless silent
       (pel-show-active-completion-mode :now))))
 
 (defun pel--completion-mode-selection ()
   "Return a list of (char prompt symbol) of available completion choices."
+  (message "ROUP pel--completion-mode-selection")
   (let ((selection '((?e "Emacs Default" emacs-default))))
     (when pel-use-helm    (push '(?h "Helm" helm)
                                 selection))
@@ -390,146 +582,12 @@ Print message describing active mode unless SILENT argument is non-nil."
 (defun pel-select-completion-mode ()
   "Prompt user for completion mode to activate."
   (interactive)
+  (message "ROUP pel-select-completion-mode")
   (pel-select-from "Completion mode"
                    (pel--completion-mode-selection)
                    (pel-activated-completion-mode)
                    #'pel-set-completion-mode
                    'emacs-default))
-
-;; --
-
-(defun pel--set-ido-grid (state)
-  "Set the ido-grid-mode to specified STATE.
-State can be one of:
-- 'emacs-default : ido mode is used, but grid is off
-- 'grid-collapsed
-- 'grid-expanded.
-- 'vertical"
-  (if (require 'ido nil :no-error)
-      (progn
-        (pel-turn-mode-on-when-off ido-mode)
-        (when (and pel-use-ido-vertical-mode
-                   (featurep 'ido-vertical-mode)
-                   (boundp  'ido-vertical-mode)
-                   (fboundp 'ido-vertical-mode))
-          (pel-turn-mode-off-when-on ido-vertical-mode))
-        (when (and pel-use-ido-grid-mode
-                   (require 'ido-grid-mode nil :no-error)
-                   (featurep 'ido-grid-mode)
-                   (boundp  'ido-grid-mode)
-                   (fboundp 'ido-grid-mode)
-                   (boundp  'ido-grid-mode-start-collapsed))
-          (cond
-           ((eq state 'off)
-            (pel-turn-mode-off-when-on ido-grid-mode))
-           ;;
-           ((eq state 'grid-collapsed)
-            (pel-turn-mode-off-when-on ido-grid-mode)
-            (setq ido-grid-mode-start-collapsed t)
-            (ido-grid-mode 1))
-           ;;
-           ((eq state 'grid-expanded)
-            (pel-turn-mode-off-when-on ido-grid-mode)
-            (setq ido-grid-mode-start-collapsed nil)
-            (ido-grid-mode 1))
-           (t (user-error "Invalid ido grid state request: %S" state)))))
-    (error "Cannot load required Ido mode!")))
-
-(defun pel--set-ido-vertical ()
-  "Set the ido-vertical mode on."
-  (if (require 'ido nil :no-error)
-      (progn
-        (pel-turn-mode-on-when-off ido-mode)
-        (when (and pel-use-ido-grid-mode
-                   (featurep 'ido-grid-mode)
-                   (boundp  'ido-grid-mode)
-                   (fboundp 'ido-grid-mode))
-          (pel-turn-mode-off-when-on ido-grid-mode))
-        (if (and pel-use-ido-vertical-mode
-                 (require 'ido-vertical-mode nil :no-error)
-                 (featurep 'ido-vertical-mode)
-                 (boundp  'ido-vertical-mode)
-                 (fboundp 'ido-vertical-mode))
-            (pel-turn-mode-on-when-off ido-vertical-mode)
-          (user-error "Cannot activate ido-vertical-mode")))
-    (error "Cannot load required Ido mode!")))
-
-;; --
-
-(defun pel--activated-ido-geometry-symbol ()
-  "Return a symbol describing Ido currently used prompt geometry."
-    (if (and pel-use-ido-vertical-mode
-           (featurep 'ido-vertical-mode)
-           (boundp 'ido-vertical-mode)
-           ido-vertical-mode)
-        'vertical
-      (if (and pel-use-ido-grid-mode
-               (featurep 'ido-grid-mode)
-               (boundp  'ido-grid-mode)
-               ido-grid-mode
-               (boundp  'ido-grid-mode-start-collapsed))
-          (if ido-grid-mode-start-collapsed
-              'grid-collapsed
-            'grid-expanded)
-        'emacs-default)))
-
-(defconst pel--ido-geometry-names-alist
-  '((nil            . "default linear")
-    (emacs-default  . "default-linear")
-    (grid-collapsed . "grid mode, starts collapsed: expand with tab")
-    (grid-expanded  . "grid mode, starts already expanded")
-    (vertical       . "vertical mode"))
-  "Association list of (symbol . string) for the Ido geometry.")
-
-;;-pel-autoload
-(defun pel-activated-ido-geometry ()
-  "Return a string describing Ido currently used prompt geometry."
-  (cdr (assoc (pel--activated-ido-geometry-symbol)
-              pel--ido-geometry-names-alist)))
-
-;; --
-
-;;-pel-autoload
-(defun pel-set-ido-geometry (geometry &optional silent now)
-  "Set the Ido prompt GEOMETRY. Display description unless SILENT requested.
-Identify that its a change when NOW argument is specified."
-  (cond
-   ((eq geometry 'emacs-default)
-    (pel--set-ido-grid 'off))
-   ((eq geometry 'grid-collapsed)
-    (pel--set-ido-grid 'grid-collapsed))
-   ((eq geometry 'grid-expanded)
-    (pel--set-ido-grid 'grid-expanded))
-   ((eq geometry 'vertical)
-    (pel--set-ido-vertical))
-   (t (user-error "Non-supported Ido geometry selected: %S" geometry)))
-  (unless silent
-    (pel-show-active-completion-mode now)))
-
-(defun pel--ido-geometry-selection ()
-  "Return a list of (char prompt symbol) of available Ido geometry choices."
-  (let ((selection '((?e "Emacs default - linear" emacs-default))))
-    (when pel-use-ido-grid-mode
-      (push '(?c "grid - Collapsed" grid-collapsed) selection)
-      (push '(?x "grid - eXpanded"  grid-expanded)  selection))
-    (when pel-use-ido-vertical-mode
-      (push '(?v "vertical" vertical) selection))
-    (reverse selection)))
-
-;;-pel-autoload
-(defun pel-select-ido-geometry ()
-  "Select Ido presentation geometry."
-  (interactive)
-  (let ((selected-geometry (pel-select-from
-                            "Ido prompt geometry"
-                            (pel--ido-geometry-selection)
-                            (pel--activated-ido-geometry-symbol)
-                            nil
-                            "default - linear")))
-    (when selected-geometry
-      (pel-set-ido-geometry selected-geometry nil :now))))
-
-
 
 ;; --
 
@@ -547,6 +605,7 @@ Identify that its a change when NOW argument is specified."
 ;;-pel-autoload
 (defun pel-activated-completion-mode-name ()
   "Return string with name of currently used completion MODE."
+  (message "ROUP pel-activated-completion-mode-name")
   (cdr (assoc (pel-activated-completion-mode)
               pel--completion-mode-names-alist)))
 
@@ -556,6 +615,7 @@ Identify that its a change when NOW argument is specified."
 If NOW is non-nil, message starts with \"Now\"
 otherwise it starts with \"Currently\"."
   (interactive)
+  (message "ROUP pel-show-active-completion-mode")
   (let ((current-mode      (pel-activated-completion-mode))
         (current-mode-name (pel-activated-completion-mode-name)))
   (message "%s using:\n- %s completion mode%s."

@@ -1361,7 +1361,8 @@ interactively."
   (let ((count 1))
     (dolist (option '(pel-use-ido
                       pel-use-ivy
-                      pel-use-counsel))
+                      pel-use-counsel
+                      pel-use-helm))
       (when (eval option)
         (setq count (1+ count))))
     count))
@@ -1494,20 +1495,20 @@ interactively."
     :defer 1
 
     :config
-    (define-key pel:help  (kbd "M-c") 'pel-show-active-completion-mode)
+    ;; after specified delay configure input completion:
+    ;; - set the key bindings
+    (define-key pel:help       (kbd "M-c") 'pel-show-active-completion-mode)
     (define-key pel:completion (kbd "M-c") 'pel-select-completion-mode)
     (define-key pel:completion "?"         'pel-show-active-completion-mode)
-    (when pel-use-ido-ubiquitous
-      (define-key pel:completion (kbd "M-u") 'pel-toggle-ido-ubiquitous))
+    (when pel-use-ido
+      (when pel-use-ido-ubiquitous
+        (define-key pel:completion (kbd "M-u") 'pel-toggle-ido-ubiquitous))
+      (when pel-use-ido-grid-mode
+        (define-key pel:completion (kbd "M-g") 'pel-select-ido-geometry))
+      (when pel-use-flx
+        (define-key pel:completion (kbd "M-f") 'pel-toggle-flx-ido)))
+    ;; - then initialize the mode requested
     (pel-set-completion-mode pel-initial-completion-mode :silent)))
-
-(when pel-use-ido
-  (when (memq pel-initial-completion-mode '(nil ido ido/helm))
-    (pel-set-ido-geometry    pel-initial-ido-geometry    :silent))
-  (when pel-use-ido-grid-mode
-    (define-key pel:completion (kbd "M-g") 'pel-select-ido-geometry))
-  (when pel-use-flx
-    (define-key pel:completion (kbd "M-f") 'pel-toggle-flx-ido)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Project Management - Projectile
