@@ -702,7 +702,7 @@ Otherwise return the loading state of the FEATURE."
 
 ;; ---------------------------------------------------------------------------
 (defun pel-action-for (action current-state)
-  "Return 'activate, 'deactivate or nil for requested ACTION and CURRENT-STATE.
+  "Return 'activate, 'deactivate or nil for requested ACTION on CURRENT-STATE.
 
 Interpret requested ACTION according to its value:
  - nil or 0        : toggle,
