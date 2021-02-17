@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-16 11:54:06, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-16 17:46:41, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -73,8 +73,14 @@
 ;;     * `pel-show-active-completion-mode'
 ;;       - `pel-activated-completion-mode-name'
 ;;         - `pel-activated-completion-mode'
+
+;;
 ;; * `pel-ido-mode'
 ;;
+
+;; * `pel-ido-ubiquitous'
+;;    - `pel--set-ido-ubiquitous'
+;;    - `pel--ido-ubiquitous-state'
 
 
 ;; - `pel-activated-ido-geometry'
@@ -204,10 +210,6 @@ State can be one of:
 (defvar pel--ido-geometry pel-initial-ido-geometry
   "Currently selected Ido geometry.")
 
-(defvar pel--set-ido-geometry-initialized nil
-  "Non-nil once Ido geometry has been initialized.
-Only set non-nil by `pel-set-ido-geometry', nothing else.")
-
 ;;-pel-autoload
 (defun pel-set-ido-geometry (geometry &optional silent now)
   "Set the Ido prompt GEOMETRY. Display description unless SILENT requested.
@@ -224,7 +226,6 @@ This assumes that Ido mode is currently activated."
    ((eq geometry 'vertical)
     (pel--set-ido-vertical))
    (t (user-error "Non-supported Ido geometry selected: %S" geometry)))
-  (setq pel--set-ido-geometry-initialized t)
   (unless silent
     (pel-show-active-completion-mode now)))
 
@@ -305,39 +306,116 @@ Constraint: Ido must be active when this is called to activate flx-ido."
            (pel-on-off-string (pel--set-flx-ido
                                (pel-toggle 'pel--use-flx-with-ido)))))
 
+
+;; --
+;; Control ido ubiquitous mode
+;;
+;; * `pel-ido-ubiquitous'
+;;    - `pel--set-ido-ubiquitous'
+;;    - `pel--ido-ubiquitous-state'
+
+(defun pel--ido-ubiquitous-state ()
+  "Return a string describing the state of `ido-ubiquitous-mode'."
+  (message "ROUP pel--ido-ubiquitous-state")
+  (if pel-use-ido-ubiquitous
+      (pel-symbol-on-off-string 'ido-ubiquitous-mode nil nil "not loaded")
+    "not activated"))
+
+(defun pel--set-ido-ubiquitous (activate)
+  "Activate or de-activate ubiquitous IDO according to argument ACTIVATE.
+
+On very first call to activate, load the ido-completing-read+
+package if not already loaded."
+  (message "ROUP pel--set-ido-ubiquitous")
+  (if activate
+      (if (and (pel-require 'ido-completing-read+)
+               (boundp  'ido-ubiquitous-mode)
+               (fboundp 'ido-ubiquitous-mode))
+          (when (not ido-ubiquitous-mode)
+            (ido-ubiquitous-mode 1))
+        (user-error "Failed loading ido-completing-read+"))
+    (when (and (boundp  'ido-ubiquitous-mode)
+               (fboundp 'ido-ubiquitous-mode)
+               ido-ubiquitous-mode)
+      (ido-ubiquitous-mode -1))))
+
+;;-pel-autoload
+(defun pel-ido-ubiquitous (&optional activate silent)
+  "Toggle the `ido-ubiquitous-mode'.
+Display new state unless SILENT."
+  (interactive "P")
+  (message "ROUP pel-toggle-ido-ubiquitous, activate=%S" activate)
+  (let* ((current-state (and (boundp 'ido-ubiquitous-mode)
+                             ido-ubiquitous-mode))
+         (action (pel-action-for activate current-state))
+         (msg "is already"))
+    (when action
+      (pel--set-ido-ubiquitous (eq action 'activate))
+      (setq msg "mode now"))
+    (unless silent
+      (message "Ido Ubiquitous %s: %s" msg (pel--ido-ubiquitous-state)))))
+
 ;; --
 
 ;;-pel-autoload
-(defun pel-ido-mode (&optional activate)
-  "ACTIVATE/deactivate/toggle use of the IDO mode.
-If ACTIVATE is absent or nil toggle the IDO mode.
-If ACTIVATE is positive, activate the IDO mode.
-Otherwise, de-activate the IDO mode."
+(defun pel-ido-mode (&optional activate verbose)
+  "Activate, deactivate or toggle use of the IDO mode.
+
+Argument:
+-  ACTIVATE:
+ - absent, 0 or nil: toggle IDO mode.
+ - > 0             : activate IDO mode.
+ - < 0             : deactivate IDO mode.
+- VERBOSE: print new state
+
+Also activate/deactivate the IDO extensions:
+- ido-flx
+- ido-ubiquitous
+- Ido modified prompt geography:
+  - ido grid mode
+  - ido vertical mode."
   (interactive "P")
   (message "ROUP pel-ido-mode")
   (if (and (require 'ido nil :noerror)
            (fboundp 'ido-everywhere)
            (boundp 'ido-enable-flex-matching))
-      (let ((action (cond ((not activate) (if ido-mode 'deactivate 'activate))
-                          ((> activate 0) (if ido-mode nil 'activate))
-                          (t              (if ido-mode 'deactivate nil)))))
-        (cond ((eq action 'activate)
-               (ido-mode 1)
-               (ido-everywhere 1)
-               (setq ido-enable-flex-matching t)
-               ;; don't require confirmation when creating new buffers
-               ;; with C-x b
-               (pel-setq ido-create-new-buffer 'always)
-               (when pel--use-flx-with-ido
-                 (pel--set-flx-ido t)))
-              ;;
-              ((eq action 'deactivate)
-               (pel--set-flx-ido nil)
-               (ido-mode -1)
-               (ido-everywhere -1)
-               (setq ido-enable-flex-matching nil))))
+      ;; Identify action: activate or deactivate?
+      (let ((action (pel-action-for activate ido-mode)))
+        (cond
+         ;; Activate
+         ((eq action 'activate)
+          ;;
+          ;; - activate Ido
+          (ido-mode 1)
+          (ido-everywhere 1)
+          (setq ido-enable-flex-matching t)
+          ;; don't require confirmation when creating new buffers
+          ;; with C-x b
+          (pel-setq ido-create-new-buffer 'always)
+          ;; - activate flx-ido if needed
+          (when pel--use-flx-with-ido
+            (pel--set-flx-ido t))
+          ;; - activate ido-ubiquitous if needed
+          (when pel-use-ido-ubiquitous
+            (pel-ido-ubiquitous 1 (not verbose)))
+          ;; - set ido geometry
+          (pel-set-ido-geometry pel--ido-geometry (not verbose)))
+         ;;
+         ;; Deactivate
+         ((eq action 'deactivate)
+          ;; - deactivate extended IDO geometry: use emacs-default
+          (pel-set-ido-geometry 'emacs-default (not verbose))
+          ;; - deactivate ido-ubiquitous
+          (pel-ido-ubiquitous -1 (not verbose))
+          ;; - deactivate flx-ido
+          (pel--set-flx-ido nil)
+          ;; - deactivate Ido
+          (ido-mode -1)
+          (ido-everywhere -1)
+          (setq ido-enable-flex-matching nil))))
     (user-error "IDO mode is not available! Please install it first")))
 
+;; ---------------------------------------------------------------------------
 (defun pel--available-completion-mode-mask ()
   "Return bit mask corresponding to the encoding of completion modes available.
 The completion modes available is taken from the following user options:
@@ -389,13 +467,6 @@ The nil value means that Emacs default is used."
             'helm
           nil)))))
 
-(defun pel--ido-ubiquitous-state ()
-  "Return a string describing the state of `ido-ubiquitous-mode'."
-  (message "ROUP pel--ido-ubiquitous-state")
-  (if pel-use-ido-ubiquitous
-      (pel-symbol-on-off-string 'ido-ubiquitous-mode nil nil "not loaded")
-    "not activated"))
-
 (defun pel--start/stop (start &rest mode-funs)
   "START or stop all modes by calling their MODE-FUNS.
 To start set START to t.  To stop: set it nil.
@@ -419,7 +490,8 @@ When stopping, use the reverse order."
 - START is non-nil to activate, nil to de-activate."
   (message "ROUP pel--activate-completion-mode. silent=%S" silent)
   (let (chg-helm)
-    (cond ((eq mode 'ido) (pel--start/stop start 'ido-mode))
+    (cond ((eq mode 'ido)
+           (pel--start/stop start 'pel-ido-mode))
           ;;
           ((eq mode 'ido/helm)
            (setq chg-helm t)
@@ -472,40 +544,7 @@ When stopping, use the reverse order."
       ;; for helm mode only (not ido/helm)
       (when (eq mode 'helm)
         (pel-map-helm (kbd "C-x C-f") start 'helm-find-files 'find-file)
-        (pel-map-helm (kbd "C-x b")   start 'helm-mini 'switch-to-buffer)))
-    ;; On start of Ido or Ido/helm:
-    (when (and start
-               (memq mode '(ido ido/helm)))
-      ;; - if Ido geometry has not yet been initialized then initialize it.
-      (unless pel--set-ido-geometry-initialized
-        (pel-set-ido-geometry pel--ido-geometry silent)))))
-
-
-(defun pel--set-ido-ubiquitous (activate)
-  "Activate or de-activate ubiquitous IDO according to argument ACTIVATE.
-
-On very first call to activate, load the ido-completing-read+
-package if not already loaded."
-  (message "ROUP pel--set-ido-ubiquitous")
-  (if activate
-      (if (and (pel-require 'ido-completing-read+)
-               (boundp  'ido-ubiquitous-mode)
-               (fboundp 'ido-ubiquitous-mode))
-          (when (not ido-ubiquitous-mode)
-            (ido-ubiquitous-mode 1))
-        (user-error "Failed loading ido-completing-read+"))
-    (when (and (boundp  'ido-ubiquitous-mode)
-               (fboundp 'ido-ubiquitous-mode)
-               ido-ubiquitous-mode)
-      (ido-ubiquitous-mode -1))))
-
-;;-pel-autoload
-(defun pel-toggle-ido-ubiquitous ()
-  "Toggle the `ido-ubiquitous-mode'."
-  (interactive )
-  (message "ROUP pel-toggle-ido-ubiquitous")
-  (pel-toggle-mode 'ido-ubiquitous-mode)
-  (message "Ido Ubiquitous Mode now: %s" (pel--ido-ubiquitous-state)))
+        (pel-map-helm (kbd "C-x b")   start 'helm-mini 'switch-to-buffer)))))
 
 ;;-pel-autoload
 (defun pel-set-completion-mode (requested &optional silent)
@@ -516,10 +555,8 @@ If the REQUESTED mode is currently not supported by the pel-use-..
 option variable then the request is ignored.
 Display a message describing what mode was actually activated.
 
-If `pel-use-ido-ubiquitous' is non-nil, activate the
-ubiquitous IDO completion mode unless the selected mode is
-emacs-default: IDO ubiquity allows IDO but also ivy and helm
-completion in lot more functions that IDO normally handles.
+When Ido mode is used, activate or deactivate the Ido mode
+extensions when Ido is activated or deactivated.
 
 Print message describing active mode unless SILENT argument is non-nil."
   (message "ROUP pel-set-completion-mode. silent=%S" silent)
@@ -543,20 +580,12 @@ Print message describing active mode unless SILENT argument is non-nil."
          (new-mode (pel--completion-mode-symbol-for-mask allowed-mask)))
     ;; perform the operation:
     ;; 1: turn off active mode (if any)
-    ;;    - first turn off ido-ubiquitous if it is on
-    (when (and (boundp 'ido-ubiquitous-mode)
-               ido-ubiquitous-mode)
-      (pel--set-ido-ubiquitous nil))
     ;;    - then turn off current mode, returning to Emacs default completion
     (pel--activate-completion-mode current-mode nil silent)
     ;; 2: then activate new one (if any)
     ;;    - activate the new mode
     (pel--activate-completion-mode new-mode t silent)
-    ;;    - and activate ido-ubiquitous when ido is now used
-    ;;      and ido-ubiquitous is required
-    (when (eq requested 'ido)
-      (pel--set-ido-ubiquitous pel-use-ido-ubiquitous))
-    ;; and display the new state of completion mode
+    ;; 3: display the new state of completion mode
     (unless silent
       (pel-show-active-completion-mode :now))))
 

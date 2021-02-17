@@ -1408,7 +1408,7 @@ interactively."
 
   (when pel-use-ido-ubiquitous
     ;; add autoloading control for it.  The actual loading is controlled
-    ;; by the pel-completion logic.
+    ;; by the logic inside pel-completion.el
     (use-package ido-completing-read+
       :ensure t
       :pin melpa
@@ -1502,7 +1502,7 @@ interactively."
     (define-key pel:completion "?"         'pel-show-active-completion-mode)
     (when pel-use-ido
       (when pel-use-ido-ubiquitous
-        (define-key pel:completion (kbd "M-u") 'pel-toggle-ido-ubiquitous))
+        (define-key pel:completion (kbd "M-u") 'pel-ido-ubiquitous))
       (when pel-use-ido-grid-mode
         (define-key pel:completion (kbd "M-g") 'pel-select-ido-geometry))
       (when pel-use-flx
