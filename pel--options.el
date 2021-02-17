@@ -113,6 +113,11 @@
 ;; - pel-modes-activating-<package name>
 ;; - pel-startup-<thing to activate at startup>
 
+;; The pel-use-  user-options are either t/nil boolean types or tri-state
+;; types that can be set to nil, t or 'use-from-start.  When set to t, they
+;; are only activated once a PEL command for that effect is executed by the
+;; user.
+
 ;; ---------------------------------------------------------------------------
 ;;; Code:
 
@@ -397,7 +402,8 @@ To use this you must also have `pel-use-ido' set to t."
 This modifies the presentation geometry of the Ido completion prompt: it shows
 candidates in multiple columns.
 
-To use this you must also have `pel-use-ido' set to t."
+To use this you must also have `pel-use-ido' set to t.
+The initial Ido geometry is set by `pel-initial-ido-geometry'."
   :link '(url-link :tag "ido-grid-mode @ GitHub"
                    "https://github.com/larkery/ido-grid-mode.el")
   :group 'pel-pkg-for-completion
@@ -411,17 +417,7 @@ This modifies the presentation geometry of the Ido completion prompt: it shows
 candidates in multiple lines, like ivy does.
 
 To use this you must also have `pel-use-ido' set to t.
-
-**CAUTION**
- The current version of this package impacts negatively
- the use of Ido mode as reported by this bug report:
- https://github.com/creichert/ido-vertical-mode.el/issues/47
-
- Because of that PEL does not allow this package until a solution
- is implemented.  In the mean-time, remove all reference to
- ido-vertical-mode from your customization file and remove
- the ido-vertical-mode package from your ~/.emacs.d/elpa
- directory."
+The initial Ido geometry is set by `pel-initial-ido-geometry'."
   :link '(url-link :tag "ido-vertical-mode @ GitHub"
                    "https://github.com/creichert/ido-vertical-mode.el")
   :group 'pel-pkg-for-completion
@@ -446,8 +442,11 @@ To activate this you must also activate `pel-use-ido'."
                    "https://github.com/DarwinAwardWinner\
 /ido-completing-read-plus")
   :group 'pel-pkg-for-completion
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "Do not use" nil)
+          (const :tag "Use, activate later by command"  t)
+          (const :tag "Use, activate globally when Emacs starts"
+                 use-from-start)))
 
 (defcustom pel-use-flx nil
   "Control whether PEL uses the flx matching package.
@@ -461,22 +460,18 @@ To use this you must also have `pel-use-ido' or `pel-use-ivy' set to t."
   :link '(url-link :tag "flx @ Github"
                    "https://github.com/lewang/flx")
   :group 'pel-pkg-for-completion
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-initial-ido-flx-state nil
-  "Control whether the flx fuzzy engine is used with Ido on startup."
-  :link '(url-link :tag "flx @ Github"
-                   "https://github.com/lewang/flx")
-  :group 'pel-pkg-for-completion
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "Do not use" nil)
+          (const :tag "Use, activate later by command"  t)
+          (const :tag "Use, activate globally when Emacs starts"
+                 use-from-start)))
 
 (defcustom pel-use-ivy nil
   "Control whether PEL uses the Ivy package.
 
 Ivy is another popular interactive completion mechanism for Emacs using menu
-lists and designed for speed of selection."
+lists and designed for speed of selection.
+The initial completion mode is set by `pel-initial-completion-mode'."
   :link '(url-link :tag "Ivy @ GitHub"
                    "")
   :link '(url-link :tag "Ivy User Manual"
@@ -521,7 +516,8 @@ variable `pel-use-counsel' is set to t."
 
 Helm is a very powerful interactive incremental completion and
 selection package which provides a large number of commands you
-can execute on the completion list."
+can execute on the completion list.
+The initial completion mode is set by `pel-initial-completion-mode'."
   :link '(url-link :tag "Helm home page"
                    "https://emacs-helm.github.io/helm/")
   :link '(url-link :tag "A package in a league of its own: Helm"

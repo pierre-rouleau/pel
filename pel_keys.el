@@ -1479,11 +1479,10 @@ interactively."
 
 (when (and pel-use-flx
            (or pel-use-ido pel-use-ivy))
-  (use-package flx-ido ; that also requires the flx package
+  (use-package flx-ido ; flx-ido also explicitly requires the flx package
     :ensure t
     :pin melpa
-    :commands (flx-ido-mode
-               pel-toggle-flx-ido)))
+    :commands flx-ido-mode))
 
 ;; If more than 1 completion mode is available, this means that the user may
 ;; not want to use Emacs default: activate the one selected by customization
@@ -1503,10 +1502,11 @@ interactively."
     (when pel-use-ido
       (when pel-use-ido-ubiquitous
         (define-key pel:completion (kbd "M-u") 'pel-ido-ubiquitous))
-      (when pel-use-ido-grid-mode
+      (when (or pel-use-ido-grid-mode
+                pel-use-ido-vertical-mode)
         (define-key pel:completion (kbd "M-g") 'pel-select-ido-geometry))
       (when pel-use-flx
-        (define-key pel:completion (kbd "M-f") 'pel-toggle-flx-ido)))
+        (define-key pel:completion (kbd "M-f") 'pel-flx-ido)))
     ;; - then initialize the mode requested
     (pel-set-completion-mode pel-initial-completion-mode :silent)))
 
@@ -4060,7 +4060,8 @@ the ones defined from the buffer now."
   (use-package recentf
     ;; recentf is built-in Emacs, Don't defer to allow remembering
     ;; files opened at start.  This will impact init time by a small
-    ;; amount, but deferring it would impact the feature.
+    ;; amount as it also load tree-widget, but deferring it would
+    ;; impact the feature.
     :config
     (recentf-mode 1)
     (define-key pel:file (kbd "M-r") 'recentf-edit-list)

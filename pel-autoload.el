@@ -175,13 +175,10 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-completion" for:
     pel-select-completion-mode
     pel-set-completion-mode
-    pel-activated-completion-mode
-    pel-activated-completion-mode-name
     pel-show-active-completion-mode
     pel-ido-mode
     pel-ido-ubiquitous
-    pel-activated-ido-geometry
-    pel-set-ido-geometry
+    pel-flx-ido
     pel-select-ido-geometry)
 
   (pel-autoload "pel-cua" for:
