@@ -139,6 +139,9 @@
 ;; - `pel-path-strip'
 ;; - `pel-url-join'
 ;;
+;; Insertion of text in current buffer
+;; - `pel-insert-list-content'
+;;
 ;; Print in dedicated buffer
 ;; - `pel-print-in-buffer'
 ;;
@@ -1141,19 +1144,39 @@ Example:
              "/"))
 
 ;; ---------------------------------------------------------------------------
+;; Insertion of text in current buffer
+;; -----------------------------------
+
+(defun pel-insert-list-content (symbol)
+  "Insert a description of the content of the list identified by its SYMBOL."
+  (insert (format "Content of %s:\n\n" (symbol-name symbol)))
+  (let ((idx 0))
+    (dolist (elem (symbol-value symbol))
+            (setq idx (1+ idx))
+            (insert (format "%3d - %s\n" idx elem)))
+    (insert "\n\n\n")))
+
+;; ---------------------------------------------------------------------------
 ;; Print in dedicated buffer
 ;; -------------------------
 
 (defun pel-print-in-buffer (bufname title text)
-  "Print TITLE than TEXT inside specified buffer BUFNAME."
+  "Print TITLE than TEXT inside specified buffer BUFNAME.
+
+TEXT is either a string or a function that calls insert
+to insert the strings into the buffer."
   (let ((current-buffer-name (buffer-name))
         (outbuf (get-buffer-create bufname)))
     (with-current-buffer outbuf
       (goto-char (point-max))
-      (insert (format "----- %s from %s:\n%s\n\n"
+      (insert (format "----- %s from %s:\n"
                       title
-                      current-buffer-name
-                      text)))
+                      current-buffer-name))
+      (cond ((stringp text)
+             (insert (format "%s\n\n"text)))
+            ((functionp text)
+             (funcall text))
+            (t (error "Invalid type for text: %S" text))))
     ;; display the end part of the buffer showing comment variables
     ;; move the last line of text to the bottom line of the window
     (with-selected-window (display-buffer outbuf)

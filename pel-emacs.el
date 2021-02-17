@@ -106,18 +106,32 @@ the variable `pel-emacs-refcard-dirpath' user option."
     (browse-url (format "file:%s" (pel-emacs-refcard-dirpath topic)))))
 
 ;;-pel-autoload
-(defun pel-emacs-load-stats ()
-  "Display number of loaded files & features."
-  (interactive)
+(defun pel-emacs-load-stats (&optional with-details)
+  "Display number of loaded files & features.
+
+If WITH-DETAILS, print details in the *emacs-load-stats* buffer."
+  (interactive "P")
   (if (and (require 'package nil :no-error)
            (boundp  'package-selected-packages))
-      (message "\
+      (let ((overview-msg  (format "\
 # loaded files     : %d
 # features         : %d
 # packages selected: %d"
-               (length load-history)
-               (length features)
-               (length package-selected-packages))
+                                   (length load-history)
+                                   (length features)
+                                   (length package-selected-packages))))
+        (if with-details
+            (pel-print-in-buffer
+             "*emacs-load-stats*"
+             "Emacs Load Statistics"
+             (lambda ()
+               "Print stats in buffer."
+               (insert overview-msg "\n\n")
+               (pel-insert-list-content 'load-history)
+               (pel-insert-list-content 'features)
+               (pel-insert-list-content 'package-selected-packages)))
+          (message overview-msg)
+          ))
     (user-error "The package file is not loaded!")))
 
 
