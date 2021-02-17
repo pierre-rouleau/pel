@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, December  7 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-12-07 16:42:46, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-16 17:16:52, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@
 ;;
 ;;
 ;; But what if you wanted to execute a more complex test under a large set of
-;; conditions like various user-options (variables defined with defcustoms
+;; conditions like various user-options (variables defined with defcustom
 ;; forms) and wanted to avoid having to repeat your test while keeping the
 ;; ability to quickly identify the invalid conditions?
 ;;
