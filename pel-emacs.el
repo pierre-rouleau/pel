@@ -109,11 +109,13 @@ the variable `pel-emacs-refcard-dirpath' user option."
 (defun pel-emacs-load-stats (&optional with-details)
   "Display number of loaded files & features.
 
-If WITH-DETAILS, print details in the *emacs-load-stats* buffer."
+If WITH-DETAILS, print details in the *emacs-load-stats* buffer.
+With \\[universal-argument] \\[universal-argument] prefix, also print content of load-history."
   (interactive "P")
   (if (and (require 'package nil :no-error)
            (boundp  'package-selected-packages))
-      (let ((overview-msg  (format "\
+      (let ((numeric-arg   (prefix-numeric-value with-details))
+            (overview-msg  (format "\
 # loaded files     : %d
 # features         : %d
 # packages selected: %d"
@@ -127,7 +129,8 @@ If WITH-DETAILS, print details in the *emacs-load-stats* buffer."
              (lambda ()
                "Print stats in buffer."
                (insert overview-msg "\n\n")
-               (pel-insert-list-content 'load-history)
+               (when (>= numeric-arg 16)
+                 (pel-insert-list-content 'load-history))
                (pel-insert-list-content 'features)
                (pel-insert-list-content 'package-selected-packages)))
           (message overview-msg)
