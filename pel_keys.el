@@ -3750,9 +3750,9 @@ the ones defined from the buffer now."
 ;; Reserved            "X"
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> b h`` : buffer highlight commands
+;; - Function Keys - <f11> - Prefix ``<f11> h`` : highlight commands
 
-(define-pel-global-prefix pel:highlight (kbd "<f11> b h"))
+(define-pel-global-prefix pel:highlight (kbd "<f11> h"))
 
 ;; Keys used in pel:highlight:
 ;; (  - . \ |

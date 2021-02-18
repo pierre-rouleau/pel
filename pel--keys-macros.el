@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-14 17:22:20, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-18 08:58:51, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -175,7 +175,7 @@
                                                                  hexl
                                                                  nhexl))
     ;; ([f11 ?b ?I]
-    ([f11 ?b ?h]
+    ([f11 ?h]
      "highlight"
      (pel-pkg-for-highlight
       pel-pkg-for-parens)  ,(let ((items

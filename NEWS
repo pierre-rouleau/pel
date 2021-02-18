@@ -230,12 +230,14 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - New: added several alias for various PDF tables when using the
     *pel-help-pdf-select* (which is bound to the  ``<f11> ? p`` key.
 - Update: *Highlighting*:
+  - Modified: the pel:highlight prefix key sequence changed from ``<f11> b h``
+    to the simpler ``<f11> h``.
   - New: add support for *rainbow-mode* to highlight color code strings in
-    source code. The ``<f11> b h c`` key sequence is bound to the command
+    source code. The ``<f11> h c`` key sequence is bound to the command
     *rainbow-mode* to toggle activation of the mode.
 - Update: *Indentation*:
   - Improvement: to the commands bound to ``<f6> <tab>`` (now
-    ``pel-indent-lines``) and `<S-tab>`` (now ``pel-unindent-lines``):
+    ``pel-indent-lines``) and ``<S-tab>`` (now ``pel-unindent-lines``):
     - The commands now handle a marked region like a region marking all
       touched lines and now longer suffers from a degradation of the marked
       area on subsequent commands.
