@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-17 16:17:23, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-18 14:12:19, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -285,9 +285,7 @@ This assumes that Ido mode is currently activated."
 
 (defun pel--flx-ido-state ()
   "Return a string describing the sate of the `flx-ido-mode'."
-  (if pel--use-flx-with-ido
-      (pel-symbol-on-off-string 'flx-ido-mode nil nil "not loaded")
-    "not activated"))
+  (pel-on-off-string pel--use-flx-with-ido))
 
 (defvar pel--ido-was-using-faces nil
   "Caches `ido-use-faces' while flx-ido is used.") ; TODO find better way
@@ -314,7 +312,8 @@ Constraint: Ido must be active when this is called to activate flx-ido."
               ;; disable ido faces to see flx highlights.
               (setq ido-enable-flex-matching t)
               (setq pel--ido-was-using-faces ido-use-faces)
-              (setq ido-use-faces nil))
+              (setq ido-use-faces nil)
+              (setq pel--use-flx-with-ido flx-ido-mode))
             t )
         (user-error "Failed loading ido-flx!"))
     ;; Deactivate flx-ido
@@ -324,6 +323,7 @@ Constraint: Ido must be active when this is called to activate flx-ido."
                flx-ido-mode)
        (flx-ido-mode -1)
        (setq ido-use-faces pel--ido-was-using-faces)
+       (setq pel--use-flx-with-ido flx-ido-mode)
        nil)))
 
 ;; auto-loaded via use-package in pel_keys: no need for this unless
@@ -362,9 +362,7 @@ Display new state unless SILENT."
 
 (defun pel--ido-ubiquitous-state ()
   "Return a string describing the state of `ido-ubiquitous-mode'."
-  (if pel--use-ido-ubiquitous
-      (pel-symbol-on-off-string 'ido-ubiquitous-mode nil nil "not loaded")
-    "not activated"))
+  (pel-on-off-string pel--use-ido-ubiquitous))
 
 (defun pel--set-ido-ubiquitous (activate)
   "Activate or de-activate ubiquitous IDO according to argument ACTIVATE.
@@ -375,12 +373,14 @@ Constraint: Ido must be active when this is called to activate ido-ubiquitous."
                (boundp  'ido-ubiquitous-mode)
                (fboundp 'ido-ubiquitous-mode))
           (when (not ido-ubiquitous-mode)
-            (ido-ubiquitous-mode 1))
+            (ido-ubiquitous-mode 1)
+            (setq pel--use-ido-ubiquitous ido-ubiquitous-mode))
         (user-error "Failed loading ido-completing-read+"))
     (when (and (boundp  'ido-ubiquitous-mode)
                (fboundp 'ido-ubiquitous-mode)
                ido-ubiquitous-mode)
-      (ido-ubiquitous-mode -1))))
+      (ido-ubiquitous-mode -1)
+      (setq pel--use-ido-ubiquitous ido-ubiquitous-mode))))
 
 ;;-pel-autoload
 (defun pel-ido-ubiquitous (&optional activate silent)
