@@ -113,14 +113,17 @@ If WITH-DETAILS, print details in the *emacs-load-stats* buffer.
 With \\[universal-argument] \\[universal-argument] prefix, also print content of load-history."
   (interactive "P")
   (if (and (require 'package nil :no-error)
-           (boundp  'package-selected-packages))
+           (boundp  'package-selected-packages)
+           (boundp  'package-activated-list))
       (let ((numeric-arg   (prefix-numeric-value with-details))
             (overview-msg  (format "\
-# loaded files     : %d
-# features         : %d
-# packages selected: %d"
+# loaded files      : %d
+# features          : %d
+# packages activated: %d
+# packages selected : %d"
                                    (length load-history)
                                    (length features)
+                                   (length package-activated-list)
                                    (length package-selected-packages))))
         (if with-details
             (pel-print-in-buffer
@@ -132,6 +135,7 @@ With \\[universal-argument] \\[universal-argument] prefix, also print content of
                (when (>= numeric-arg 16)
                  (pel-insert-list-content 'load-history))
                (pel-insert-list-content 'features)
+               (pel-insert-list-content 'package-activated-list)
                (pel-insert-list-content 'package-selected-packages)))
           (message overview-msg)
           ))
