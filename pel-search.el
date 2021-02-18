@@ -1,12 +1,14 @@
 ;;; pel-search.el --- PEL Search Utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
-
-;; Author: Pierre Rouleau <prouleau001@gmail.com>
+;; Created   Saturday, February 29 2020.
+;; Author    : Pierre Rouleau <prouleau001@gmail.com>
+;; Time-stamp: <2021-02-18 15:43:48, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
 
+;; Copyright (C) 2020, 2021  Pierre Rouleau
+;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
@@ -20,7 +22,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; This file holds a set of search utilities and function that manages the
@@ -52,11 +54,12 @@
 ;;     - `pel--activate-search-tool'
 ;;
 
-;;; Code:
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
 
 (require 'isearch)       ; use: search-upper-case.
-;;                       ; isearch is part of standard Emacs distribution and is
-;;                       ; loaded even by emacs -Q (in emacs 26).
+;;                       ; isearch is part of standard Emacs distribution and
+;;                       ; is loaded even by emacs -Q (in emacs 26).
 (require 'pel--base)     ; use: pel-symbol-on-off-string
 (require 'pel--options)  ; use: pel-use-ansu, pel-use-swiper,
 ;;                       ;      pel-initial-search-tool
@@ -67,7 +70,10 @@
 (require 'pel-window)    ; use: pel-window-direction-for,
 ;;                       ;      pel-count-non-dedicated-windows
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
+;;; Code:
+
+
 ;; Search behaviour control functions
 ;; ----------------------------------
 
@@ -148,7 +154,7 @@ Depends on 2 Emacs (base system) variables:
   (interactive)
   (message "%s" (pel-search-case-state-str)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Search Utilities
 ;; ----------------
 
@@ -159,7 +165,7 @@ Depends on 2 Emacs (base system) variables:
 If an area is marked used the text in the area as the searched text,
 otherwise search for the word at point.
 
-If 1 non-dedicated window: search from top of current buffer..
+If 1 non-dedicated window: search from top of current buffer.
 If 2 non-dedicated windows:
  - with no argument: search from the top of the other window buffer.
  - with argument 3 or 5: search from the top of current window buffer.
@@ -172,8 +178,8 @@ If 3 or more non-dedicated windows:
  - If N is 0:                     : search in other window buffer
  - If N is 3                      : search in current window buffer
  - If N in remaining [2,8] range  : search in the buffer of window identified
-                                    by the direction corresponding to the cursor
-                                    in a numeric keypad:
+                                    by the direction corresponding to the
+                                    cursor in a numeric keypad:
                                     -             8 := 'up
                                     - 4 := 'left  5 := 'current  6 := 'right
                                     -             2 := 'down
@@ -191,7 +197,11 @@ allowed, and search is done in current window.
 
 Searched word is remembered and can be used again to repeat an interactive
 search with \\[isearch-forward] or \\[isearch-backward].
-Position before searched word is pushed on the mark ring."
+Position before searched word is pushed on the mark ring.
+
+When string is not found, point does not move and an error is thrown.
+This allows the use of this command in a keyboard macro that will stop on
+failure."
   (interactive "P")
   ;; Use current window if n is not specified.
   ;; Otherwise select direction from numerical argument.
@@ -202,7 +212,9 @@ Position before searched word is pushed on the mark ring."
                            (region-end)))
       (deactivate-mark))
     (push-mark)
-    (let* ((n-value           (prefix-numeric-value n))
+    (let* ((original-window   (selected-window))
+           (original-pos      (point))
+           (n-value           (prefix-numeric-value n))
            (do-forward-search (>= n-value 0))
            (n-abs             (abs n-value))
            (mode-to-toggle    (cond ((>= 28 n-abs 20) 'superword-mode)
@@ -226,22 +238,52 @@ Position before searched word is pushed on the mark ring."
           (setq searched-text (pel-word-at-point))
           (when mode-to-toggle
             (pel-toggle-mode mode-to-toggle))))
-      ;; Move to the destination window
-      (when (eq direction 'new)
-        (setq direction 'current))
-      (pel-window-select direction)
-      ;; then search from the specified buffer end point
-      (if do-forward-search
-          ;; forward search
+      (if  searched-text
           (progn
-            (goto-char (point-min))
-            (isearch-forward nil :no-recursive-edit))
-        ;; backward search
-        (goto-char (point-max))
-        (isearch-backward nil :no-recursive-edit))
-      (isearch-yank-string searched-text))))
+            ;; Move to the destination window
+            (when (eq direction 'new)
+              (setq direction 'current))
+            (pel-window-select direction)
+            ;; Search from the specified buffer end point to move point
+            ;; to target
+            (condition-case err
+                ;; Perform an Isearch to allow remembering the word and
+                ;; provide ability to repeat a manual Isearch.
+                ;; But also ensure that an error is thrown when the word is
+                ;; not found and prevent the Isearch prompt. For the moment I
+                ;; have not found any other way than performing a regular
+                ;; search first and then re-do it with an Isearch that is
+                ;; guaranteed to succeed.  The first regular search is used to
+                ;; detect failure and the Isearch is done to set-up the
+                ;; ability to call isearch-yank-string: without it, invalid
+                ;; highlighting is done in the target window.    This is
+                ;; wasteful but it works.  I could dig into the search
+                ;; functions and implement an non-prompting Isearch but I'll
+                ;; leave it for later. (TODO?)
+                (if do-forward-search
+                    ;; forward search
+                    (progn
+                      (goto-char (point-min))
+                      (search-forward searched-text)
+                      (goto-char (point-min))
+                      (isearch-forward nil :no-recursive-edit))
+                  ;; backward search
+                  (goto-char (point-max))
+                  (search-backward searched-text)
+                  (goto-char (point-max))
+                  (isearch-backward nil :no-recursive-edit))
+              ;; on failure move point back to original window and
+              ;; issue the error.
+              (search-failed
+               (select-window original-window)
+               (goto-char original-pos)
+               (signal (car err) (cdr err))))
+            ;; On success, remember what was searched and allow consecutive
+            ;; searches on the same word
+            (isearch-yank-string searched-text))
+        (user-error "No valid word at point to search")))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; PEL Search Tool Control
 ;; -----------------------
 
@@ -359,7 +401,7 @@ more information about available choices."
            (pel-active-search-regexp-engine-str with-details)
            (pel-search-case-state-str)))
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 (provide 'pel-search)
 
 ;;; pel-search.el ends here

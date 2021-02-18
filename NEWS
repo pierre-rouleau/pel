@@ -529,8 +529,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - New: command *pel-show-search-status* bound to ``<f11> s ?`` that displays
     all search settings in the echo area.  Use any prefix argument to display
     extra information after the first time it is used.
-  - Improved: *pel-search-word-from-top* (mapped to ``<f11> s .`` key sequence
-    and to the ``.;`` key chord):
+  - Improved: *pel-search-word-from-top* :
+    - New: mapped to ``<f11> s .`` key sequence and to the ``.;`` key chord.
     - New: the *pel-search-from-top-in-other* user option controls how
       *pel-search-word-from-top* operates when there is only 2 non-dedicated windows.
       - if set to *t* the function the search in the other window without
@@ -554,6 +554,11 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       - a numbered prefix in the range [20..28] grab the word with super-word
         mode temporarily activated and then select the window as if the
         numbered prefix was 0 to 8.
+    - New: on search failure it no longer moves point, not even to the
+      different window that may be identified. It issues an error
+      (beep/flash/message depending on the settings) which allows using the
+      command inside a keyboard macro.  A keyboard macro will stop on the
+      search failure.
   - Improved *iedit-mode support*:
     - New: added key bindings for the iedit-mode commands that are not
       accessible in terminal mode:
