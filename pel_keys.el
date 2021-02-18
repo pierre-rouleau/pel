@@ -4218,7 +4218,7 @@ the ones defined from the buffer now."
 ;; Keys used in pel:highlight:
 ;; (  - . \ |
 ;; C F G H L R
-;; c f h l p r s u w
+;; c f h i l p r s u w
 
 (when pel-use-rainbow-mode
   (use-package rainbow-mode
@@ -4257,6 +4257,9 @@ the ones defined from the buffer now."
 (define-key pel:highlight      "u"  #'unhighlight-regexp)
 (define-key pel:highlight      "w"  #'hi-lock-write-interactive-patterns)
 ;;
+(when pel-use-iedit
+  (define-key pel:highlight "i" 'iedit-mode))
+
 (when pel-use-vline
   ;; download and byte-compile vline if not already present
   ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
