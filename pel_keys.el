@@ -3755,80 +3755,6 @@ the ones defined from the buffer now."
 ;; Reserved            "X"
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; - Function Keys - <f11> - Prefix ``<f11> h`` : highlight commands
-
-(define-pel-global-prefix pel:highlight (kbd "<f11> h"))
-
-;; Keys used in pel:highlight:
-;; (  - . \ |
-;; C F G H L R
-;; c f h l p r s u w
-
-(when pel-use-rainbow-mode
-  (use-package rainbow-mode
-    :ensure t
-    :pin gnu
-    :commands rainbow-mode
-    :init
-    (cl-eval-when 'compile (require 'rainbow-mode nil :no-error))
-    ;; use c for color
-    (define-key pel:highlight "c" 'rainbow-mode)))
-
-(defun pel-hi-lock-find-patterns ()
-  "Execute hi-lock-find-patterns when `hi-lock-mode' is active."
-  (interactive)
-  (declare-function hi-lock-find-patterns "hi-lock")
-  (if (fboundp 'hi-lock-find-patterns)
-      (hi-lock-find-patterns)
-    (user-error "Turn hi-lock-mode on first")))
-
-(define-key pel:highlight      "-" #'hl-line-mode)
-(define-key pel:highlight      "(" #'show-paren-mode)
-(define-key pel:highlight      "."  #'highlight-symbol-at-point)
-(define-key pel:highlight      "C"  #'highlight-changes-mode)
-(define-key pel:highlight      "h"   'pel-set-highlight-color)
-(define-key pel:highlight      "H"   'pel-customize-highlight)
-(define-key pel:highlight      "F"  #'font-lock-mode)
-(define-key pel:highlight      "f"   'pel-hi-lock-find-patterns)
-(define-key pel:highlight      "G"  #'global-hi-lock-mode)
-(define-key pel:highlight      "L"  #'hi-lock-mode)
-(define-key pel:highlight      "l"  #'highlight-lines-matching-regexp)
-(define-key pel:highlight      "p"  #'highlight-phrase)
-(when pel-use-rainbow-delimiters
-  (define-key pel:highlight    "R"  'rainbow-delimiters-mode))
-(define-key pel:highlight      "r"  #'highlight-regexp)
-(define-key pel:highlight      "s"   'pel-toggle-hl-line-sticky)
-(define-key pel:highlight      "u"  #'unhighlight-regexp)
-(define-key pel:highlight      "w"  #'hi-lock-write-interactive-patterns)
-;;
-(when pel-use-vline
-  ;; download and byte-compile vline if not already present
-  ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
-  (cl-eval-when 'load
-    (pel-install-github-file "emacsmirror/vline/master" "vline.el"))
-
-  (use-package vline
-    :commands vline-mode
-    :init
-    ;; Bind the commands to keys
-    (define-key pel:highlight    "|"  'vline-mode)
-    (define-key pel:             "9"  'vline-mode)))
-
-(when (and (version< emacs-version "27.1")
-           pel-use-fill-column-indicator)
-  (use-package fill-column-indicator
-    :ensure t
-    :pin melpa
-    :commands fci-mode
-    :init
-    (define-key pel:highlight "\\" 'fci-mode)
-    (define-key pel:          "8"  'fci-mode)))
-;; For Emacs 27.1 & later use the built-in display-fill-column-indicator-mode.
-(unless (version< emacs-version "27.1")
-  (define-key pel:highlight "\\"'display-fill-column-indicator-mode)
-  (define-key pel:          "8" 'display-fill-column-indicator-mode))
-
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> b I`` : Indirect buffer commands
 
 (define-pel-global-prefix pel:indirect-buffer (kbd "<f11> b I"))
@@ -4283,6 +4209,80 @@ the ones defined from the buffer now."
     (define-key pel:ag-kill  "a"   'ag-kill-buffers)
     (define-key pel:ag-kill  "o"   'ag-kill-other-buffers)
     (define-key pel:ag-kill  "p"   'ag/kill-process)))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> h`` : highlight commands
+
+(define-pel-global-prefix pel:highlight (kbd "<f11> h"))
+
+;; Keys used in pel:highlight:
+;; (  - . \ |
+;; C F G H L R
+;; c f h l p r s u w
+
+(when pel-use-rainbow-mode
+  (use-package rainbow-mode
+    :ensure t
+    :pin gnu
+    :commands rainbow-mode
+    :init
+    (cl-eval-when 'compile (require 'rainbow-mode nil :no-error))
+    ;; use c for color
+    (define-key pel:highlight "c" 'rainbow-mode)))
+
+(defun pel-hi-lock-find-patterns ()
+  "Execute hi-lock-find-patterns when `hi-lock-mode' is active."
+  (interactive)
+  (declare-function hi-lock-find-patterns "hi-lock")
+  (if (fboundp 'hi-lock-find-patterns)
+      (hi-lock-find-patterns)
+    (user-error "Turn hi-lock-mode on first")))
+
+(define-key pel:highlight      "-" #'hl-line-mode)
+(define-key pel:highlight      "(" #'show-paren-mode)
+(define-key pel:highlight      "."  #'highlight-symbol-at-point)
+(define-key pel:highlight      "C"  #'highlight-changes-mode)
+(define-key pel:highlight      "h"   'pel-set-highlight-color)
+(define-key pel:highlight      "H"   'pel-customize-highlight)
+(define-key pel:highlight      "F"  #'font-lock-mode)
+(define-key pel:highlight      "f"   'pel-hi-lock-find-patterns)
+(define-key pel:highlight      "G"  #'global-hi-lock-mode)
+(define-key pel:highlight      "L"  #'hi-lock-mode)
+(define-key pel:highlight      "l"  #'highlight-lines-matching-regexp)
+(define-key pel:highlight      "p"  #'highlight-phrase)
+(when pel-use-rainbow-delimiters
+  (define-key pel:highlight    "R"  'rainbow-delimiters-mode))
+(define-key pel:highlight      "r"  #'highlight-regexp)
+(define-key pel:highlight      "s"   'pel-toggle-hl-line-sticky)
+(define-key pel:highlight      "u"  #'unhighlight-regexp)
+(define-key pel:highlight      "w"  #'hi-lock-write-interactive-patterns)
+;;
+(when pel-use-vline
+  ;; download and byte-compile vline if not already present
+  ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
+  (cl-eval-when 'load
+    (pel-install-github-file "emacsmirror/vline/master" "vline.el"))
+
+  (use-package vline
+    :commands vline-mode
+    :init
+    ;; Bind the commands to keys
+    (define-key pel:highlight    "|"  'vline-mode)
+    (define-key pel:             "9"  'vline-mode)))
+
+(when (and (version< emacs-version "27.1")
+           pel-use-fill-column-indicator)
+  (use-package fill-column-indicator
+    :ensure t
+    :pin melpa
+    :commands fci-mode
+    :init
+    (define-key pel:highlight "\\" 'fci-mode)
+    (define-key pel:          "8"  'fci-mode)))
+;; For Emacs 27.1 & later use the built-in display-fill-column-indicator-mode.
+(unless (version< emacs-version "27.1")
+  (define-key pel:highlight "\\"'display-fill-column-indicator-mode)
+  (define-key pel:          "8" 'display-fill-column-indicator-mode))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> i`` : Insert text operations
