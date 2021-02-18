@@ -2507,6 +2507,11 @@ MODE must be a symbol."
   (define-key prefix (kbd "<M-down>") 'pel-elisp-beginning-of-next-defun)
   (define-key prefix (kbd "<M-up>")   'pel-elisp-beginning-of-previous-defun)
 
+  (define-key prefix (kbd "<C-down>")   'pel-elisp-to-name-of-next-form)
+  (define-key prefix (kbd "<C-up>")     'pel-elisp-to-name-of-previous-form)
+  (define-key prefix (kbd "<C-M-down>") 'pel-elisp-to-name-of-next-defun)
+  (define-key prefix (kbd "<C-M-up>")   'pel-elisp-to-name-of-previous-defun)
+
   (define-key prefix (kbd "<left>")  'pel-end-of-previous-defun)
   (define-key prefix (kbd "<right>") 'end-of-defun)
 

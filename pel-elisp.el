@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, November 27 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-16 17:46:23, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-18 11:05:43, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -95,13 +95,24 @@
 ;; * `pel-toggle-paren-in-column-0-is-defun-start'
 ;;
 ;; * `pel-elisp-set-navigate-target-form'
-;; *`pel-elisp-beginning-of-next-defun'
+;;
+;; * `pel-elisp-to-name-of-next-defun'
+;; * `pel-elisp-beginning-of-next-defun'
+;; * `pel-elisp-to-name-of-next-form'
 ;;   * `pel-elisp-beginning-of-next-form'
+;;
+;;
+;; * `pel-elisp-to-name-of-previous-defun'
 ;; * `pel-elisp-beginning-of-previous-defun'
+;; * `pel-elisp-to-name-of-previous-form'
 ;;   * `pel-elisp-beginning-of-previous-form'
 ;;     - `pel--elisp-navigate-target-regxp'
 ;;       - `pel--elisp-form-regexp-for'
 ;;
+;;
+
+
+
 ;;
 ;; Credits:  Thanks to Andreas Röhler to mention the Standard Emacs variable
 ;;           `open-paren-in-column-0-is-defun-start'! That allowed me to
@@ -118,6 +129,7 @@
 ;;                                      ;    pel-point-in-comment-or-docstring
 (require 'pel--options)                 ; use: pel-elisp-target-forms
 (require 'pel-prompt)                   ; use: pel-select-from
+(require 'pel-navigate)                 ; use: pel-forward-token-start
 (eval-when-compile (require 'subr-x))   ; use: string-join
 
 ;;; --------------------------------------------------------------------------
@@ -370,12 +382,29 @@ The command support shift-marking."
                          err))))))))
 
 ;;-pel-autoload
+(defun pel-elisp-to-name-of-next-form (&optional n)
+  "Move point to the name of next N defun form - at any level.
+Skip over forms located inside docstrings."
+  (interactive "^p")
+  (pel-elisp-beginning-of-next-form n)
+  (pel-forward-token-start 2))
+
+;;-pel-autoload
 (defun pel-elisp-beginning-of-next-defun (&optional n)
   "Move point to the beginning of next N defun form - at any level.
 Skip over forms located inside docstrings."
   (interactive "^p")
   (pel-elisp-beginning-of-next-form n 'defun-forms))
 
+;;-pel-autoload
+(defun pel-elisp-to-name-of-next-defun (&optional n)
+  "Move point to the name of next N defun form - at any level.
+Skip over forms located inside docstrings."
+  (interactive "^p")
+  (pel-elisp-beginning-of-next-form n 'defun-forms)
+  (pel-forward-token-start 2))
+
+;; --
 ;;-pel-autoload
 (defun pel-elisp-beginning-of-previous-form
     (&optional n target silent dont-push-mark)
@@ -429,11 +458,29 @@ The command support shift-marking."
                          (pel-count-string n "form")
                          err))))))))
 
+(defun pel-elisp-to-name-of-previous-form (&optional n)
+  "Move point to the name of previous N defun form - at any level.
+Skip over forms located inside docstrings."
+  (interactive "^p")
+  (push-mark (point))
+  (move-beginning-of-line 1)
+  (pel-elisp-beginning-of-previous-form n nil nil :dont-push-mark)
+  (pel-forward-token-start 2))
+
 (defun pel-elisp-beginning-of-previous-defun (&optional n)
   "Move point to the beginning of previous N defun form - at any level.
 Skip over forms located inside docstrings."
   (interactive "^p")
   (pel-elisp-beginning-of-previous-form n 'defun-forms))
+
+(defun pel-elisp-to-name-of-previous-defun (&optional n)
+  "Move point to the name of previous N defun form - at any level.
+Skip over forms located inside docstrings."
+  (interactive "^p")
+  (push-mark (point))
+  (move-beginning-of-line 1)
+  (pel-elisp-beginning-of-previous-form n 'defun-forms nil :dont-push-mark)
+  (pel-forward-token-start 2))
 
 ;;; --------------------------------------------------------------------------
 

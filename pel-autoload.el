@@ -198,7 +198,11 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-elisp-beginning-of-next-form
     pel-elisp-beginning-of-next-defun
     pel-elisp-beginning-of-previous-form
-    pel-elisp-beginning-of-previous-defun)
+    pel-elisp-beginning-of-previous-defun
+    pel-elisp-to-name-of-next-form
+    pel-elisp-to-name-of-previous-form
+    pel-elisp-to-name-of-next-defun
+    pel-elisp-to-name-of-previous-defun)
 
   (pel-autoload "pel-emacs" for:
     pel-emacs-executable
