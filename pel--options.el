@@ -52,6 +52,7 @@
 ;;     - pel-pkg-for-grep
 ;;     - pel-pkg-for-highlight
 ;;       - pel-pkg-for-parens
+;;     - pel-pkg-for-imenu
 ;;     - pel-pkg-for-insertions
 ;;     - pel-pkg-for-kbmacro
 ;;     - pel-pkg-for-key-chord
@@ -601,6 +602,7 @@ all buffers, not just the current one.  It supports several completion methods:
 
 Select the completion method you want as default when activating this package."
   :group 'pel-pkg-for-completion
+  :group 'pel-pkg-for-imenu
   :type '(choice
           (const :tag "Not used." nil)
           (const :tag "Use Emacs default completion."    emacs-default)
@@ -1120,6 +1122,25 @@ grouping characters:
 (defcustom pel-use-rainbow-delimiters  nil
   "Control whether PEL uses the rainbow-delimiters package."
   :group 'pel-pkg-for-parens
+  :type 'boolean
+  :safe #'booleanp)
+
+;; ---------------------------------------------------------------------------
+;; iMenu extension support
+;; -----------------------
+
+(defgroup pel-pkg-for-imenu nil
+  "List of external packages and variables that PEL use to extend imenu."
+  :group 'pel-package-use
+  :group 'imenu)
+
+(defcustom pel-imenu-index-follows-order-p t
+  "Control how imenu index entries are listed:
+- nil: the entries with sub-menus are shown at the top (original, standard
+       behaviour).
+- t:   the entries are shown as an outline: in the exact same other
+       as they appear in the buffer/file -- (new default behaviour)."
+  :group 'pel-pkg-for-imenu
   :type 'boolean
   :safe #'booleanp)
 

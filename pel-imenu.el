@@ -1,6 +1,6 @@
 ;;; pel-imenu.el --- PEL imenu extensions. -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -20,16 +20,16 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; imenu index menu lists the entries with sub-menu first then the entries
-;; without sub-menus after.  So the order of the entries in the menu does
+;; The imenu index menu lists the entries with sub-menu first then the entries
+;; without sub-menus.  Therefore, the order of the entries in the menu does
 ;; not reflect the order of those entries in the file.
 ;; This is quite annoying when using the menu to list things like the
 ;; sections of a reStructuredtext file.
 ;;
-;; The following code changes this behavior.
+;; The following code changes this behaviour.
 ;;
 ;; *Credit*
 ;; Code based on the pdf-tools/pdf-outline code, which I found via the
@@ -38,9 +38,10 @@
 ;; /questions/31791/order-of-items-in-imenu?noredirect=1#comment48799_31791
 ;;
 ;;
-;; The new behaviour is activated at startup.
-;; Change the behaviour by executing pel-toggle-imenu-index-follows-order and
-;; then rescan the index.
+;; The behaviour activated at startup is identified by the value of the
+;; user-option variable `pel-imenu-index-follows-order-p'.  During an editing
+;; session the user can modify this behaviour by executing the command
+;; function `pel-toggle-imenu-index-follows-order' and then rescan the index.
 
 ;; BUG:
 ;; I would like to not have to rescan after executing
@@ -49,18 +50,19 @@
 ;; looked into the code enough to find out.
 ;;
 
-;; -----------------------------------------------------------------------------
-;;; Code:
+;;; --------------------------------------------------------------------------
 
 (require 'pel--base)                    ; use: pel-toggle
+(require 'pel--options)                 ; use: pel-imenu-index-follows-order-p
 (eval-when-compile
   (require 'imenu))                     ; use: imenu--rescan-item,
                                         ;      imenu-max-items,
                                         ;      imenu--split
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
+;;; Code:
 
-(defvar pel-imenu-index-follows-order-p t
+(defvar pel--imenu-index-follows-order-p pel-imenu-index-follows-order-p
   "Control how imenu index entries are listed:
 - nil: the entries with sub-menus are shown at the top (original, standard
        behaviour).
@@ -71,10 +73,10 @@
 (defun pel-toggle-imenu-index-follows-order ()
   "Change the way the imenu index entries are organized."
   (interactive)
-  (pel-toggle 'pel-imenu-index-follows-order-p)
+  (pel-toggle 'pel--imenu-index-follows-order-p)
   (beep)
   (message "Rescan the menu to show sub-menus %s."
-           (if pel-imenu-index-follows-order-p
+           (if pel--imenu-index-follows-order-p
                "in order of appearance of content in file"
              "at the top")))
 
@@ -82,12 +84,12 @@
   "Replacement function for `imenu--split-menu'.
 This function does not move sub-menus to the top, to keep buffer's
 outline order.  Also it does not call `imenu-sort-function'.
-It has two modes, controlled by `pel-imenu-index-follows-order-p';
+It has two modes, controlled by `pel--imenu-index-follows-order-p';
 when that is t it does not change the entries order, but when it is
 nil it behaves like the original implementation which is passed
 via OLDFUN.  The original two arguments MENULIST and TITLE follow."
   (if (fboundp 'imenu--split)
-      (if pel-imenu-index-follows-order-p
+      (if pel--imenu-index-follows-order-p
           (let ((menulist (copy-sequence menulist))
                 keep-at-top)
             (if (memq imenu--rescan-item menulist)
