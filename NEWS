@@ -502,14 +502,14 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     - Modified: binding to rainbow-delimiters-mode to ``<f12> M-r`` like it is
       for other programming languages.
   - New: *REXX*:
-    - Add support for REXX programming language via a forked version of
-      rexx-mode which provides:
-      - support for imenu/speedbar for REXX procedure, navigation to the
-        next/previous REXX procedure,
+    - Add support for REXX programming language via a [[https://github.com/pierre-rouleau/rexx-mode][my forked rexx-mode
+      GitHub project]] which provides:
+      - [[https://github.com/pierre-rouleau/rexx-mode/commit/546d3589f0d967d01405c2a5f380bc1782672f69][support for imenu/speedbar for REXX procedure]],
+      - [[https://github.com/pierre-rouleau/rexx-mode/commit/546d3589f0d967d01405c2a5f380bc1782672f69][navigation to the next/previous REXX procedure]],
       - customization control for indentation management variables.
     - New: *NetRexx*:
-      - Add support for NetRexx programming language via a forked version of
-        netrexx-mode.
+      - Add support for NetRexx programming language via
+        [[https://github.com/pierre-rouleau/netrexx-mode][my forked netrexx-mode GitHub project]].
 - Update: *Process execution*:
   - New: the list-processes command is now bound to ``<f11> x ?`` key
     sequence.
@@ -519,8 +519,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - New: the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/rectangles.pdf][⅀ Rectangles PDF]] describes the *iedit-rectangle-mode* and available
     commands.
 - Update: *Searching*:
-  - New: support for combined expression search with the [[https://github.com/TobiasZawada/cexp][cexp external
-    package]]:
+  - New: support for combined expression search with the
+    [[https://github.com/TobiasZawada/cexp][cexp external package]]:
     - PEL downloads and activates the cexp package when the *pel-use-cexp*
       user-option is set to *t*.
     - PEL binds ``<f11> s c`` to *cexp-search-forward* command used to perform
