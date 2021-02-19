@@ -2023,6 +2023,11 @@ MODE must be a symbol."
     ;; TODO
     )
 
+  (when pel-use-speedbar
+    ;; Overcoming omission bug in erlang-mode: add support for Speedbar
+    (pel-require 'speedbar)
+    (speedbar-add-supported-extension '(".d")))
+
   (use-package d-mode
     :ensure t
     :pin melpa
