@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, August 31 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-04 11:25:25, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-19 15:58:44, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -36,9 +36,13 @@
 ;;   same web site.
 ;; - `pel-install-github-files' downloads and installs one or several files
 ;;    from GitHub specified user project branch.
+;; - `pel-install-github-file' downloads and installs one file.  That file
+;;   may have a name that differs from the URL used to download it.  This is
+;;   mostly used when a file name has a character that cannot be part of a URL
+;;   and must be encoded differently.
+
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
-;;
 ;;
 
 (require 'pel--base)                    ; use: pel-url-join
@@ -46,7 +50,6 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
-
 
 ;;-pel-autoload
 (defun pel-install-file (url fname &optional refresh)
@@ -99,7 +102,7 @@ downloaded, nil otherwise.  Permission errors are raised."
 
 ;;-pel-autoload
 (defun pel-install-github-files (user-project-branch fnames &optional refresh)
-  "Download & install identified FNAMES from GitHub USER-PROJECT-BRANCH.
+  "Download & install FNAMES from GitHub USER-PROJECT-BRANCH.
 
 - USER-PROJECT-BRANCH is a GitHub user/project/branch name path
   string.  Something like \"pierre-rouleau/pel/master\".
@@ -117,8 +120,30 @@ downloaded, nil otherwise.  Permission errors are raised."
                                           user-project-branch)))
     (pel-install-files github-rawfile-url fnames refresh)))
 
-(defalias 'pel-install-github-file 'pel-install-github-files
-  "Download & install identified FNAME from GitHub USER-PROJECT-BRANCH.")
+(defun pel-install-github-file (user-project-branch
+                                fname &optional url-fname refresh)
+  "Download & install FNAME from GitHub USER-PROJECT-BRANCH/URL-FNAME.
+
+- USER-PROJECT-BRANCH is a GitHub user/project/branch name path
+  string.  Something like \"pierre-rouleau/pel/master\".
+  If a depot file is stored in a depot sub-directory, include the
+  path of depot directory inside USER-PROJECT-BRANCH.
+- FNAME is the name of the file, with its .el extension.
+- URL-FNAME is the name of the file as it appears in the
+  URL. This argument is only required when it differs from FNAME.
+
+If a file already exists in the destination, no download
+is done unless REFRESH is non-nil, in which case the function
+prompts for confirmation.
+
+The function returns t if the file was
+downloaded, nil otherwise.  Permission errors are raised."
+  (pel-install-file
+   (pel-url-join "https://raw.githubusercontent.com"
+                 user-project-branch
+                 (or url-fname fname))
+   fname
+   refresh))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-net)
