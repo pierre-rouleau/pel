@@ -72,7 +72,10 @@
 ;; - `pel-list-str'
 ;; - `pel-title-case-to-dash-separated'
 ;; - `pel-grp-regex'
-
+;;
+;; Symbol value extraction
+;; - `pel-symbol-value'
+;;
 ;; Value check:
 ;; - `pel-use-or'
 ;;
@@ -140,6 +143,7 @@
 ;; - `pel-url-join'
 ;;
 ;; Insertion of text in current buffer
+;; - `pel-insert-symbol-content'
 ;; - `pel-insert-list-content'
 ;;
 ;; Print in dedicated buffer
@@ -524,6 +528,18 @@ after the closing parenthesis."
     (if tail
         (concat str tail)
       str)))
+
+
+;; ---------------------------------------------------------------------------
+;; Symbol value extraction
+;; -----------------------
+
+(defun pel-symbol-value (symbol &optional buffer)
+  "Return SYMBOL value in current or specified BUFFER."
+  (if buffer
+      (with-current-buffer buffer
+        (symbol-value symbol))
+    (symbol-value symbol)))
 
 ;; ---------------------------------------------------------------------------
 ;; Value check
@@ -1147,14 +1163,38 @@ Example:
 ;; Insertion of text in current buffer
 ;; -----------------------------------
 
-(defun pel-insert-list-content (symbol)
-  "Insert a description of the content of the list identified by its SYMBOL."
-  (insert (format "Content of %s:\n\n" (symbol-name symbol)))
-  (let ((idx 0))
-    (dolist (elem (symbol-value symbol))
-            (setq idx (1+ idx))
-            (insert (format "%3d - %s\n" idx elem)))
-    (insert "\n\n\n")))
+(defun pel-insert-symbol-content (symbol &optional buffer)
+  "Insert the name followed by the content of the specified SYMBOL.
+
+By default SYMBOL must be a global symbol as its value is read in the scope
+of the output buffer.  If the SYMBOL is a buffer local symbol, specify the
+buffer in the optional BUFFER argument."
+  (let ((value (pel-symbol-value symbol buffer)))
+    (insert (format "\nContent of %s:\n%S\n"
+                    (symbol-name symbol)
+                    value))))
+
+(defun pel-insert-list-content (symbol &optional buffer without-index)
+  "Insert a description of the content of the list identified by its SYMBOL.
+
+By default SYMBOL must be a global symbol as its value is read in the scope
+of the output buffer.  If the SYMBOL is a buffer local symbol, specify the
+buffer in the optional BUFFER argument.
+
+By default, each element of the list is printed on a new line preceded by an
+element index number unless WITHOUT-INDEX is non-nil."
+  (insert (format "\nContent of %s:\n"
+                  (symbol-name symbol)))
+  (let ((idx 0)
+        (list-value (pel-symbol-value symbol buffer)))
+    (if list-value
+        (dolist (elem list-value)
+          (setq idx (1+ idx))
+          (if without-index
+              (insert (format "%S\n" elem))
+            (insert (format "%3d - %S\n" idx elem))))
+      (insert "nil\n"))
+    (insert "\n\n")))
 
 ;; ---------------------------------------------------------------------------
 ;; Print in dedicated buffer
@@ -1169,9 +1209,10 @@ to insert the strings into the buffer."
         (outbuf (get-buffer-create bufname)))
     (with-current-buffer outbuf
       (goto-char (point-max))
-      (insert (format "----- %s from %s:\n"
+      (insert (format "----- %s from %s --- %s:\n"
                       title
-                      current-buffer-name))
+                      current-buffer-name
+                      (format-time-string "%A, %B %d, %Y @ %T")))
       (cond ((stringp text)
              (insert (format "%s\n\n"text)))
             ((functionp text)

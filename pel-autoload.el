@@ -257,6 +257,9 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-ido" for:
     pel-set-ido-use-fname-at-point)
 
+  (pel-autoload "pel-imenu-dbg" for:
+    pel-imenu-dbg-print-vars)
+
   (pel-autoload "pel-imenu-ido" for:
     pel-goto-symbol-select-completion
     pel-goto-symbol

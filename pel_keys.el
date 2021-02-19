@@ -3362,9 +3362,13 @@ MODE must be a symbol."
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? e`` : Emacs info
+;; Used keys:
+;; P
+;; c l m p r s t u v x
 
 (define-pel-global-prefix pel:emacs (kbd "<f11> ? e"))
 (define-key pel:emacs "c"  'pel-emacs-command-stats)
+(define-key pel:emacs "i"  'pel-imenu-dbg-print-vars)
 (define-key pel:emacs "r"  'pel-open-emacs-refcard)
 (define-key pel:emacs "s" #'list-load-path-shadows)
 (define-key pel:emacs "t"  'pel-show-init-time)
