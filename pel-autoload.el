@@ -321,6 +321,7 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-imenu" for:
     pel-toggle-imenu-index-follows-order
+    pel-imenu-rescan
     pel-imenu-init)
 
   (pel-autoload "pel-indent" for:

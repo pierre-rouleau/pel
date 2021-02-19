@@ -107,6 +107,17 @@ via OLDFUN.  The original two arguments MENULIST and TITLE follow."
     (error "Internal error: the function imenu--split is unknown")))
 
 ;;-pel-autoload
+(defun pel-imenu-rescan ()
+  "Force immediate imenu rescan."
+  (interactive)
+  (if (and (require 'imenu nil :no-error)
+           (fboundp 'imenu--menubar-select)
+           (boundp  'imenu--rescan-item))
+      (imenu--menubar-select imenu--rescan-item)
+    (user-error "Cannot rescan imenu: \
+imenu--menubar-select or imenu--rescan-item missing")))
+
+;;-pel-autoload
 (defun pel-imenu-init ()
   "Initialize the use of imenu by PEL."
   (advice-add 'imenu--split-menu :around #'pel-imenu-outline--split-menu))

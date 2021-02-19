@@ -1291,18 +1291,18 @@ interactively."
 ;; as an autoload, and it configures the imenu system.
 ;;
 ;; Used keys:
-;; B I i o t
+;; B I i o r t
 
 ;; Initialize PEL special imenu handling
 (eval-after-load 'imenu
-  (when (fboundp 'pel-imenu-init)
-    (pel-imenu-init)))
+    (pel-imenu-init))
 
 (define-pel-global-prefix pel:menu (kbd "<f11> <f10>"))
 (define-key pel:menu "B"     #'menu-bar-mode)
 (define-key pel:menu "I"     #'imenu-add-menubar-index)
 (define-key pel:menu "i"     #'imenu)
 (define-key pel:menu "o"      'pel-toggle-imenu-index-follows-order)
+(define-key pel:menu "r"      'pel-imenu-rescan)
 (define-key pel:menu "t"     #'tmm-menubar)
 
 (when pel-use-imenu+

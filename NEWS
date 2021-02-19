@@ -245,6 +245,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       indentation whitespace.  They also automatically tabify or untabify the
       indentation whitespace, conforming to the mode identified by the
       ``indent-tabs-mode`` variable.
+- Update: *iMenu support*:
+  - Add support for the *imenu+* external package.  Activate by setting
+    *pel-use-imenu+* user-option to *t*.
+  - Add support for the *imenu-extra* external package.  Make it available by
+    setting the *pel-use-imenu-extra* user-option to *t*.
+  - Add *pel-imenu-rescan*, bound to ``<f11> <f10> r``.
 - Update: *Input Completion*:
   - New: Customization and dynamic control of Ido prompt geometry.
     - The *pel-initial-ido-geometry* user-option allows you to select the
