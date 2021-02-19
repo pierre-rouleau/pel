@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-18 08:58:51, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-18 21:49:48, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -78,7 +78,7 @@
     ([f8]            "projectile"       pel-pkg-for-project-mng (projectile
                                                                  projectile-speedbar))
     ([f11]           "-pel-key-maps"    nil)
-    ([f11 f10]       "menus"            nil                     menu)
+    ([f11 f10]       "menus"            nil                     (menu imenu))
     ([f11 f2]        "customize"        nil                     customize)
     ([f11 f8]        "projectile"       pel-pkg-for-project-mng (projectile
                                                                  projectile-speedbar))
