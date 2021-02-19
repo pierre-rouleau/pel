@@ -1289,7 +1289,11 @@ interactively."
 ;; - Function Keys - <f11> - Prefix ``<f11> <f10>`` : Menu commands
 ;; Force load of pel-imenu after load of imenu: pel-imenu-init is identified
 ;; as an autoload, and it configures the imenu system.
+;;
+;; Used keys:
+;; B I i o t
 
+;; Initialize PEL special imenu handling
 (eval-after-load 'imenu
   (when (fboundp 'pel-imenu-init)
     (pel-imenu-init)))
@@ -1300,6 +1304,23 @@ interactively."
 (define-key pel:menu "i"     #'imenu)
 (define-key pel:menu "o"      'pel-toggle-imenu-index-follows-order)
 (define-key pel:menu "t"     #'tmm-menubar)
+
+(when pel-use-imenu+
+    (cl-eval-when 'load
+      (pel-install-github-file "emacsmirror/emacswiki.org/master"
+                               "imenu+.el" "imenu%2B.el")))
+
+;; Although imenu-extra is available through MELPA, that package just provide
+;; tools that may be used by other PEL code to incorporate symbol generated
+;; by modes into imenu.  It has nothing to autoload.  So instead of using
+;; use-package to control its download, the code downloads the file in
+;; ~/.emacs.d/utils if requested by the user-option.
+;; If you want to get a version of the file newer than the one you have, just
+;; delete ~/.emacs.d/utils/imenu-extra.el and restart Emacs.
+(when pel-use-imenu-extra
+    (cl-eval-when 'load
+      (pel-install-github-file "redguardtoo/imenu-extra/master"
+                               "imenu-extra.el")))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> <f2>`` : Customization

@@ -1132,7 +1132,9 @@ grouping characters:
 (defgroup pel-pkg-for-imenu nil
   "List of external packages and variables that PEL use to extend imenu."
   :group 'pel-package-use
-  :group 'imenu)
+  :group 'imenu
+  :link `(url-link :tag "Menu/iMenu PDF"
+                   ,(pel-pdf-file-url "menus")))
 
 (defcustom pel-imenu-index-follows-order-p t
   "Control how imenu index entries are listed:
@@ -1140,6 +1142,24 @@ grouping characters:
        behaviour).
 - t:   the entries are shown as an outline: in the exact same other
        as they appear in the buffer/file -- (new default behaviour)."
+  :group 'pel-pkg-for-imenu
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-imenu+ nil
+  "Control whether PEL provides access to imenu+ external package."
+  :link '(url-link :tag "Imenu+ description @ emacswiki"
+                   "https://www.emacswiki.org/emacs/ImenuMode#h5o-10")
+  :link '(url-link :tag "imenu+.el @ emacswiki"
+                   "https://www.emacswiki.org/emacs/imenu%2b.el")
+  :group 'pel-pkg-for-imenu
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-imenu-extra nil
+  "Control whether PEL provides access to imenu-extra external package."
+  :link '(url-link :tag "imenu-extra @ GitHub"
+                   "https://github.com/redguardtoo/imenu-extra")
   :group 'pel-pkg-for-imenu
   :type 'boolean
   :safe #'booleanp)
