@@ -2,12 +2,12 @@
 
 ;; Created   : Wednesday, October 21 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-10-21 10:47:13, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-20 11:41:05, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -71,6 +71,11 @@ Lazily load file `cus-edit' if needed."
       (setq group (intern group)))
     (customize-browse group)))
 
+;;-pel-autoload
+(defun pel-customize-pel-base-emacs-group (&optional other-window)
+  "Open `pel-base-emacs' customization group."
+  (interactive "P")
+  (customize-group 'pel-base-emacs other-window))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-custom)

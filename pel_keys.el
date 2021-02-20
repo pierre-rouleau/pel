@@ -1338,6 +1338,7 @@ interactively."
 (define-key pel:cfg "o" 'customize-option)
 (define-key pel:cfg "B" 'customize-browse)
 (define-key pel:cfg "b" 'pel-browse-group)
+(define-key pel:cfg "p" 'pel-customize-pel-base-emacs-group)
 ;;
 
 (define-key pel:cfg-pel "B" 'pel-browse-pel)

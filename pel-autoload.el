@@ -190,7 +190,8 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-custom" for:
     pel-browse-pel
-    pel-browse-group)
+    pel-browse-group
+    pel-customize-pel-base-emacs-group)
 
   (pel-autoload "pel-elisp" for:
     pel-toggle-paren-in-column-0-is-defun-start
