@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-19 11:35:48, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-20 09:36:41, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -241,7 +241,7 @@
                                                                visual-regexp))
     ([f11 ?t]        ("case-conversion"
                       "input-method"
-                      "text-modes")     nil)
+                      "text-modes")     pel-pkg-for-text-mode)
     ([f11 ?t ?a]     "align"            pel-pkg-for-align       align)
     ([f11 ?t ?e]     "enriched-text"    nil                     enriched)
     ([f11 ?t ?f]     "filling-justification" nil               fill)
