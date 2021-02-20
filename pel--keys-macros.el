@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-20 09:36:41, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-20 15:03:37, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -182,6 +182,7 @@
                                    (list
                                     'auto-highlight-symbol
                                     'iedit
+                                    'highlight-indentation
                                     'rainbow
                                     'rainbow-delimiters
                                     'vline)))

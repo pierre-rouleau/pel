@@ -568,9 +568,7 @@ Done in this function to allow advising libraries that remap these keys."
     ;; Use the cleaner outline view mode.
     (add-hook 'org-mode-hook 'org-indent-mode)))
 
-
-
-;; ---------------
+;; ---------------------------------------------------------------------------
 ;; - CMake support
 ;; ---------------
 ;; (use-package cmake-mode)
@@ -4258,7 +4256,17 @@ the ones defined from the buffer now."
 ;; Keys used in pel:highlight:
 ;; (  - . \ |
 ;; C F G H L R
-;; c f h i l p r s u w
+;; a c f h i l p r s u w
+;; M-c M-i
+
+(when pel-use-auto-highlight-symbol
+  (use-package auto-highlight-symbol
+    :ensure t
+    :pin melpa
+    :commands (auto-highlight-symbol-mode
+               global-auto-highlight-symbol-mode)
+    :init
+    (define-key pel:highlight "a" 'auto-highlight-symbol-mode)))
 
 (when pel-use-rainbow-mode
   (use-package rainbow-mode
@@ -4296,6 +4304,16 @@ the ones defined from the buffer now."
 (define-key pel:highlight      "s"   'pel-toggle-hl-line-sticky)
 (define-key pel:highlight      "u"  #'unhighlight-regexp)
 (define-key pel:highlight      "w"  #'hi-lock-write-interactive-patterns)
+;;
+(when pel-use-highlight-indentation
+  (use-package highlight-indentation
+    :ensure t
+    :pin melpa
+    :commands (highlight-indentation-mode
+               highlight-indentation-current-column-mode)
+    :init
+    (define-key pel:highlight (kbd "M-i") 'highlight-indentation-mode)
+    (define-key pel:highlight (kbd "M-c") 'highlight-indentation-current-column-mode)))
 ;;
 (when pel-use-iedit
   (define-key pel:highlight "i" 'iedit-mode))

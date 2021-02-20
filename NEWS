@@ -235,6 +235,15 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - New: add support for *rainbow-mode* to highlight color code strings in
     source code. The ``<f11> h c`` key sequence is bound to the command
     *rainbow-mode* to toggle activation of the mode.
+  - New: Add support for *auto-highlight-symbol*, activated by the
+    *pel-use-auto-highlight-symbol* user-option.  The
+    *auto-highlight-symbol-mode* command is bound to the ``<f11> h a`` key
+    sequence.
+  - New: Add support for the *highlight-indentation* package activated by
+    *pel-use-highlight-indentation* user-option.  This provides the
+    *highlight-indentation-mode* command (bound to ``<f11> h M-i`` key
+    sequence) and to the *highlight-indentation-current-column-mode* command
+    bound to ``<f11> h M-c``.
 - Update: *Indentation*:
   - Improvement: to the commands bound to ``<f6> <tab>`` (now
     ``pel-indent-lines``) and ``<S-tab>`` (now ``pel-unindent-lines``):

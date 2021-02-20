@@ -1102,6 +1102,22 @@ PEL binds command `rainbow-mode' to ``<f11> b h c``."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-auto-highlight-symbol nil
+  "Control whether PEL activates the auto-highlight-symbol external package."
+  :link '(url-link :tag "auto-highlight-symbol @ GitHub"
+                   "https://github.com/jcs-elpa/auto-highlight-symbol")
+  :group 'pel-pkg-for-highlight
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-highlight-indentation nil
+  "Control whether PEL activates the highlight-indentation external package."
+  :link '(url-link :tag "highlight-indentation @ Github"
+                   "https://github.com/antonj/Highlight-Indentation-for-Emacs")
+  :group 'pel-pkg-for-highlight
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; ---------------------------------------------------------------------------
 ;; Parens block management
 ;; -----------------------
