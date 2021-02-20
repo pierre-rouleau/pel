@@ -2990,6 +2990,18 @@ MODE must be a symbol."
     (add-hook 'org-mode-hook 'org-indent-mode)))
 
 ;; ---------------------------------------------------------------------------
+;; YAML Support
+;; ------------
+
+(when pel-use-yaml-mode
+  (use-package yaml-mode
+    :ensure t
+    :pin melpa
+    :commands yaml-mode
+    :init
+    (add-to-list 'auto-mode-alist '("\\.yml\\'"  . yaml-mode))))
+
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-r`` : reSTucturedText
 (when pel-use-rst-mode
 

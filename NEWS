@@ -301,6 +301,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - New: command *pel-key-chord-describe* (bound to ``<f11> ? k M-K``)
     displays the state of key-chord/key-seq and the key bindings if
     key-chord-mode is active.
+- Update: *Markup Language Support*
+  - New: Add support for YAML with *yaml-mode*.
+    Activate it with the *pel-use-yaml-mode* user option.
 - Update: *Navigation*
   - New: New commands to navigate across URLs in the current buffer:
     - *pel-goto-next-url*, bound to ``<f6> C-n`` globally and to ``C-c C-n``

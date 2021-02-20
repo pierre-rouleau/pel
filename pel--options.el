@@ -1797,6 +1797,20 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
   :type 'integer
   :safe 'pel-indent-valid-p)
 
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; YAML support
+;; ------------
+(defgroup pel-pkg-for-yaml nil
+  "PEL YAML support."
+  :group 'pel-pkg-for-markup)
+;;  :link `(url-link :tag "yaml PDF" ,(pel-pdf-file-url "yaml"))
+
+(defcustom pel-use-yaml-mode nil
+  "Control whether PEL provides access to the yaml-mode external package."
+  :group 'pel-pkg-for-yaml
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-navigation
 ;; ----------------------
