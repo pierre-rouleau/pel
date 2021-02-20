@@ -4159,8 +4159,13 @@ To activate the changes for this you must 'Apply and Save' and restart Emacs."
     elixir-mode
     python-mode
     emacs-lisp-mode
-    lisp-mode)
-  "List of major modes that automatically activate the `superword-mode'."
+    lisp-mode
+    makefile-mode)
+  "List of major modes that automatically activate the `superword-mode'.
+
+PEL activates several of these modes.
+Add or remove any.  Use the `superword-mode' command to toggle this
+mode during an editing session."
   :group 'pel-pkg-for-text-mode
   :type '(repeat symbol))
 
