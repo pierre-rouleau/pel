@@ -529,45 +529,6 @@ Done in this function to allow advising libraries that remap these keys."
 ;; - try-expand-dabbrev-from-kill
 ;; - try-expand-line
 
-
-;; ---------------------------------------------------------------------------
-;; Markup Language Support
-;; --=====================
-
-;; --------------------------
-;; - Lightweight markup modes
-;; --------------------------
-;; (use-package markdown-mode)
-
-;; -----------------------------
-;; - Programming Style: Org-Mode
-;; -----------------------------
-(when pel-use-org-mode
-  ;; Org-Mode activation (as suggested by
-  ;; https://orgmode.org/manual/Activation.html#Activation ):
-  (use-package org
-    :commands (org-mode
-               org-indent-mode
-               org-store-link
-               org-agenda
-               org-capture
-               org-switchb)
-    :init
-    (cl-eval-when 'compile (require 'org nil :no-error))
-    (global-set-key "\C-cl" 'org-store-link)
-    (global-set-key "\C-ca" 'org-agenda)
-    (global-set-key "\C-cc" 'org-capture)
-    (global-set-key "\C-cb" 'org-switchb)
-    ;; Activate specialized C-a and C-e in Org-Mode.
-    (pel-setq org-special-ctrl-a/e t)
-    ;; Activate timestamp log for DONE tasks
-    (pel-setq org-log-done 'time)
-    ;; Add the "IN-PROGRESS" in the list of TODO states
-    (pel-setq org-todo-keywords
-              (quote ((sequence "TODO" "IN-PROGRESS" "DONE"))))
-    ;; Use the cleaner outline view mode.
-    (add-hook 'org-mode-hook 'org-indent-mode)))
-
 ;; ---------------------------------------------------------------------------
 ;; - CMake support
 ;; ---------------
@@ -2984,6 +2945,9 @@ MODE must be a symbol."
            :commands vlang-mode))))
 
 ;; ---------------------------------------------------------------------------
+;; Markup Language Support
+;; --=====================
+
 ;; AsciiDoc support
 ;; ----------------
 
@@ -2994,6 +2958,36 @@ MODE must be a symbol."
     :commands adoc-mode
     :init
     (add-to-list 'auto-mode-alist '("\\.adoc\\'"  . adoc-mode))))
+
+;; ---------------------------------------------------------------------------
+;; Org-Mode Support
+;; ----------------
+
+(when pel-use-org-mode
+  ;; Org-Mode activation (as suggested by
+  ;; https://orgmode.org/manual/Activation.html#Activation ):
+  (use-package org
+    :commands (org-mode
+               org-indent-mode
+               org-store-link
+               org-agenda
+               org-capture
+               org-switchb)
+    :init
+    (cl-eval-when 'compile (require 'org nil :no-error))
+    (global-set-key "\C-cl" 'org-store-link)
+    (global-set-key "\C-ca" 'org-agenda)
+    (global-set-key "\C-cc" 'org-capture)
+    (global-set-key "\C-cb" 'org-switchb)
+    ;; Activate specialized C-a and C-e in Org-Mode.
+    (pel-setq org-special-ctrl-a/e t)
+    ;; Activate timestamp log for DONE tasks
+    (pel-setq org-log-done 'time)
+    ;; Add the "IN-PROGRESS" in the list of TODO states
+    (pel-setq org-todo-keywords
+              (quote ((sequence "TODO" "IN-PROGRESS" "DONE"))))
+    ;; Use the cleaner outline view mode.
+    (add-hook 'org-mode-hook 'org-indent-mode)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-r`` : reSTucturedText
