@@ -2757,11 +2757,10 @@ MODE must be a symbol."
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC p`` : Python programming
 (when pel-use-python
 
-  (when pel-use-external-python-mode
-    (use-package python-mode
-      :ensure t
-      :pin melpa
-      :commands python-mode))
+  ;; ⚠️  I recommend that you stay away from the external package python-mode.el
+  ;; Support for pel-use-external-python-mode was removed because use-package
+  ;; will load it and once it is loaded, it conflicts with Emacs built-in
+  ;; python.el.
 
   (use-package elpy
     :ensure t

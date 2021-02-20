@@ -3603,12 +3603,19 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
   :safe 'pel-indent-valid-p)
 
 (defcustom pel-use-external-python-mode nil
-  "Control whether the external python-mode package is used.
-Emacs has a built-in python.el library that implements the
-built-in `python-mode'.
-There is another external package hosted on gitlab named
-python-mode.el that also implements a `python-mode' major mode.
-To use that external package set this user option to t."
+  "Control whether PEL uses this external python-mode package is used.
+
+⚠️ CAUTION ⚠️ : This is no longer supported as it causes too many
+problems.  I strongly recommend you stay away from using this as
+it clashes with Emacs native Python support and other tools.
+This external package would require a large amount of cleanup.
+
+If you have this activated, please:
+
+- turn this off,
+- delete the python-mode package from you ~/.emacs.d/elpa directory,
+- delete python-mode from the package-selected-packages list inside
+  your ~/.emacs.d/emacs-customization.el file."
   :group 'pel-pkg-for-python
   :type 'boolean
   :safe #'booleanp
