@@ -1006,6 +1006,16 @@ Then save your changes."
 (define-key pel: (kbd      "M-=")          'pel-toggle-show-copy-cut-text)
 
 ;; ---------------------------------------------------------------------------
+;; EditorConfig Support
+;; --------------------
+(when pel-use-editor-config
+  (use-package editorconfig
+    :ensure t
+    :pin melpa
+    :config
+    (editorconfig-mode 1)))
+
+;; ---------------------------------------------------------------------------
 ;; Actions on File Save
 ;; --------------------
 ;; As controlled by PEL customized user options.
@@ -5781,3 +5791,5 @@ Simulate a F7 prefix key unless DONT-SIMULATE is non-nil."
 (provide 'pel_keys)
 
 ;;; pel_keys.el ends here
+
+; LocalWords:  EditorConfig

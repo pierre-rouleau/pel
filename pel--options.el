@@ -184,7 +184,6 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
   "PEL Emacs basic configuration."
   :group 'pel)
 
-
 (defcustom pel-auto-mode-alist nil
   "Alist of filename patterns vs corresponding major mode functions to set.
 These associations are added to Emacs variable `auto-mode-alist' at
@@ -248,6 +247,18 @@ For example, to activate it in Erlang, add a line with
 (defgroup pel-package-use nil
   "List of external packages that can be used by PEL."
   :group 'pel)
+
+
+(defcustom pel-use-editor-config nil
+  "Control whether PEL activates EditorConfig plugin for Emacs."
+  :link '(url-link :tag "EditorConfig home page"
+                   "https://editorconfig.org")
+  :link '(url-link :tag "editorconfig-emacs @ GitHub"
+                   "https://github.com/editorconfig/editorconfig-emacs")
+  :group 'pel-base-emacs
+  :group 'pel-package-use
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; Alignment Support
