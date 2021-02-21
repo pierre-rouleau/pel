@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-21 12:32:25, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-21 16:41:03, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -92,6 +92,7 @@
 ;;                    |     Control Ido Ubiquitous Mode
 ;;                    |     ---------------------------
 ;;                    |
+;; -------------------|---> - `pel-set-ido-ubiquitous'
 ;;                    +---> * `pel-ido-ubiquitous'
 ;;                    |        - `pel--set-ido-ubiquitous'
 ;;                    |        - `pel--ido-ubiquitous-state'
@@ -359,6 +360,25 @@ Display new state unless SILENT."
 (defvar pel--use-ido-ubiquitous  (eq pel-use-ido-ubiquitous 'use-from-start)
   "Whether Ido Ubiquitous is currently used.")
 
+(defconst pel--ido-ubiquitous-whitelist '(describe-symbol
+                                          describe-function
+                                          describe-variable
+                                          describe-input-method
+                                          describe-language-environment
+                                          describe-package
+                                          info-lookup-symbol
+                                          where-is
+                                          pel-help-pdf-select
+                                          imenu)
+  "List of function symbols that must use Ido via Ido Ubiquitous.")
+
+(defun pel-set-ido-ubiquitous ()
+  "Set Ido Ubiquitous - ensure that some commands use Ido."
+  (when (boundp 'ido-cr+-function-whitelist)
+    (dolist (fct pel--ido-ubiquitous-whitelist)
+      (unless (memq fct ido-cr+-function-whitelist)
+        (push fct ido-cr+-function-whitelist)))))
+
 (defun pel--ido-ubiquitous-state ()
   "Return a string describing the state of `ido-ubiquitous-mode'."
   (pel-on-off-string pel--use-ido-ubiquitous))
@@ -366,7 +386,8 @@ Display new state unless SILENT."
 (defun pel--set-ido-ubiquitous (activate)
   "Activate or de-activate ubiquitous IDO according to argument ACTIVATE.
 
-Constraint: Ido must be active when this is called to activate ido-ubiquitous."
+Constraint:
+- Ido must be active when this is called to activate ido-ubiquitous."
   (if activate
       (if (and (require 'ido-completing-read+ nil :no-error)
                (boundp  'ido-ubiquitous-mode)

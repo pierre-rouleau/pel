@@ -177,6 +177,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-set-completion-mode
     pel-show-active-completion-mode
     pel-ido-mode
+    pel-set-ido-ubiquitous
     pel-ido-ubiquitous
     pel-flx-ido
     pel-select-ido-geometry)

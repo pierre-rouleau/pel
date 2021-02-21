@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2021-02-21 12:31:53, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-21 18:09:18, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -32,8 +32,64 @@
 ;;; Commentary:
 ;;
 ;;
+;; The code in this file implement commands used to moved quickly to item
+;; definition statement identified by the imenu system.  The basic imenu
+;; command provides a plain Emacs-default completion prompt.
+;;
+;; The functions here provide better input completion mechanism, as provided
+;; by Ido, Ido extension libraries, Ivy and Helm.  The two main entry point
+;; commands are:
+;;
+;;  - `pel-goto-symbol' which provides the ability to jump point to a item
+;;    definition into the current buffer.
+;;  - `pel-imenu-anywhere' which provides the same ability but for all buffers
+;;    of the same major modes: it uses and extends the imenu-anywhere package.
+;;
+;; The input completion mechanism used by these two commands are selected in
+;; with their respective user-option variables:
+;;
+;;  - `pel-initial-goto-symbol-completion-mode' sets the completion mode used
+;;    initially by `pel-goto-symbol'.  It can be changed dynamically during an
+;;    editing session with the command `pel-goto-symbol-select-completion'.
+;;  - `pel-use-imenu-anywhere' activates the use of imenu-anywhere and set the
+;;    initial completion mode used by `pel-imenu-anywhere'. It can be changed
+;;    dynamically during an editing session with the command
+;;    `pel-imenu-anywhere-select-completion'.
+;;
+;; The `pel-popup-imenu' command disregards the current input completion
+;; selection and imenu configuration: it pops up a menu with the imenu items
+;; around the location of the cursor in the current window.
 
+;;
+;; The following is a list of available commands (*) and functions (-) listed
+;; in hierarchical calling order.  All function/commands with a name that
+;; start with 'pel-' are 'public'.  The functions with a name staring with
+;; 'pel--' are 'private' and should not be called from outside this file.
+;;
+;;
+;;
+;;     * `pel-goto-symbol'
+;;        - `pel--goto-symbol'   (recursive)
+;;          * `pel-popup-imenu'
+;;
+;;     * `pel-imenu-anywhere'
+;;
+;;     * `pel-goto-symbol-select-completion'
+;;        - `pel--goto-symbol-completion-mode-selection'
+;;
+;;     * `pel-imenu-anywhere-select-completion'
+;;       - `pel--imenu-anywhere-completion-mode-selection'
+;;
 
+;; Note that the current implementation of the recursive function
+;; `pel--goto-symbol' depends on dynamic binding.  It's the only function in
+;; the file that requires dynamic binding; all others can use lexical binding.
+;; For now the entire file is set to use dynamic scoping because of that
+;; function.  This function is an evolution of the code copied from
+;; https://www.emacswiki.org/emacs/ImenuMode#h5o-14
+;;
+;; TODO: convert this code to semantic binding to allow better optimization.
+;;
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
@@ -41,8 +97,7 @@
 
 ;; The current (original) implementation uses dynamic binding and recursion.
 ;; The following forms prevent byte compiler warnings.
-;; TODO: convert this code to semantic binding to be able to be able to run it
-;;       under gccemacs.
+
 (eval-when-compile
   (require 'cl-lib))                    ; use: cl-eval-when
 (cl-eval-when 'compile (require 'ido   nil  :no-error))
@@ -68,7 +123,6 @@
     (ido           . "Ido")
     (helm          . "Helm"))
   "Association list of (symbol . string) for completion mode")
-
 
 (defvar pel--goto-symbol-completion-mode
   pel-initial-goto-symbol-completion-mode
@@ -237,6 +291,7 @@ nil, then ido is still used."
                (cdr (assoc selected-mode
                            pel--goto-completion-mode-names-alist))))))
 
+;; --
 ;;-pel-autoload
 (defun pel-imenu-anywhere ()
   "Go to imenu tag defined in all reachable buffers.

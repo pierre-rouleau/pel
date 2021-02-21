@@ -1404,7 +1404,9 @@ interactively."
     (use-package ido-completing-read+
       :ensure t
       :pin melpa
-      :commands ido-ubiquitous-mode))
+      :commands ido-ubiquitous-mode
+      :config
+      (pel-set-ido-ubiquitous)))
 
   (when pel-use-ido-grid-mode
     (use-package ido-grid-mode
