@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, February 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-19 09:50:35, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-20 22:33:43, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -47,9 +47,11 @@
      "imenu control variables"
      (lambda ()
        "Print imenu variables."
-       (pel-insert-list-content 'imenu-generic-expression buffer)
-       (pel-insert-symbol-content 'imenu-case-fold-search buffer)
-       (pel-insert-list-content 'imenu-syntax-alist buffer)))))
+       (pel-insert-symbol-content 'imenu-case-fold-search      buffer)
+       (pel-insert-symbol-content 'imenu-create-index-function buffer)
+       (pel-insert-symbol-content 'imenu-prev-index-position-function buffer)
+       (pel-insert-list-content   'imenu-generic-expression    buffer)
+       (pel-insert-list-content   'imenu-syntax-alist          buffer)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-imenu-dbg)

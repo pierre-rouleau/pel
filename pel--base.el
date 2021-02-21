@@ -1193,8 +1193,7 @@ element index number unless WITHOUT-INDEX is non-nil."
           (if without-index
               (insert (format "%S\n" elem))
             (insert (format "%3d - %S\n" idx elem))))
-      (insert "nil\n"))
-    (insert "\n\n")))
+      (insert "nil\n"))))
 
 ;; ---------------------------------------------------------------------------
 ;; Print in dedicated buffer
