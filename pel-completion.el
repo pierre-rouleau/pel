@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-18 14:12:19, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-21 12:32:25, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -128,7 +128,6 @@
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
-
 
 ;; --
 ;; Ido Prompt Geometry Management

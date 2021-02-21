@@ -598,7 +598,8 @@ This is used by the command `pel-goto-symbol'."
   :type '(choice
           (const :tag "Use Ido. Requires `pel-use-ido'." ido)
           (const :tag "Use Ido flex matching. Requires `pel-use-ido'." ido-flex)
-          (const :tag "Use Ivy. Requires `pel-use-ivy'." ivy)))
+          (const :tag "Use Ivy. Requires `pel-use-ivy'." ivy)
+          (const :tag "Use a pop-up imenu." popup-imenu)))
 
 (defcustom pel-use-imenu-anywhere nil
   "Whether PEL uses the imenu-anywhere external package.

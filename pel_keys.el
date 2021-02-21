@@ -1269,6 +1269,7 @@ interactively."
 (define-pel-global-prefix pel:menu (kbd "<f11> <f10>"))
 (define-key pel:menu "B"     #'menu-bar-mode)
 (define-key pel:menu "I"     #'imenu-add-menubar-index)
+(define-key pel:menu (kbd "<f10>") 'pel-popup-imenu)
 (define-key pel:menu "i"     #'imenu)
 (define-key pel:menu "o"      'pel-toggle-imenu-index-follows-order)
 (define-key pel:menu "r"      'pel-imenu-rescan)

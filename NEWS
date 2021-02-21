@@ -260,6 +260,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - Add support for the *imenu-extra* external package.  Make it available by
     setting the *pel-use-imenu-extra* user-option to *t*.
   - Add *pel-imenu-rescan*, bound to ``<f11> <f10> r``.
+  - Add *pel-popup-imenu*, bound to ``<f11> <f10> <f10>``.  It opens a pop-up
+    menu of items detected by imenu.
 - Update: *Input Completion*:
   - New: Customization and dynamic control of Ido prompt geometry.
     - The *pel-initial-ido-geometry* user-option allows you to select the
@@ -321,7 +323,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       completion methods are:
       - Ido,
       - Ido with flex matching,
-      - Ivy.
+      - Ivy,
+      - imenu pop-up menu (not exactly a completion method, but one of the
+        choices that allows the command top pop-up a menu of all available
+        choices).
   - New: Add support for imenu-anywhere, which provides the same functionality
     as pel-goto-symbol with the ability to target the symbols of *all*
     buffers:
