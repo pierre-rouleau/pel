@@ -1208,15 +1208,18 @@ to insert the strings into the buffer."
         (outbuf (get-buffer-create bufname)))
     (with-current-buffer outbuf
       (goto-char (point-max))
-      (insert (format "----- %s from %s --- %s:\n"
-                      title
-                      current-buffer-name
-                      (format-time-string "%A, %B %d, %Y @ %T")))
+      (insert (propertize
+               (format "----%s from %s --- %s -----\n"
+                       title
+                       current-buffer-name
+                       (format-time-string "%A, %B %d, %Y @ %T"))
+               'face 'bold))
       (cond ((stringp text)
              (insert (format "%s\n\n"text)))
             ((functionp text)
              (funcall text))
-            (t (error "Invalid type for text: %S" text))))
+            (t (error "Invalid type for text: %S" text)))
+      (insert "\n"))
     ;; display the end part of the buffer showing comment variables
     ;; move the last line of text to the bottom line of the window
     (with-selected-window (display-buffer outbuf)
