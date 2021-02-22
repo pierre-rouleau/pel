@@ -4,9 +4,9 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2020-12-01 15:36:06, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2021-02-22 10:41:46, updated by Pierre Rouleau>
 :License:
-    Copyright (c) 2020 Pierre Rouleau <prouleau001@gmail.com>
+    Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
 
     You can redistribute this document and/or modify it under the terms of the GNU
@@ -1544,13 +1544,48 @@ PEL (Input) Completion Mode Control
 -----------------------------------
 
 :PDF Sheet: - `Input Completion`_
-           - `User Option Customization`_.
+            - `User Option Customization`_.
 :PEL Key Prefix: *none*
 
-Emacs has one native input completion mechanism that kicks into action whenever you
-use a command that prompts for something like a file name, a buffer name, a
-command name, etc...  Several other completion modes exist.  The IDO completion
-mode is shipped with Emacs.  The Ivy, Counsel and Helm are other popular
+Emacs support several input completion mechanisms.  These help you enter
+something at a prompt.  For example when entering the name of a file you can
+type the beginning of the file name and then hit a key to complete it.  Emacs
+allows this kind of input completion to be used in several context and PEL
+provides you with the ability to try and select various methods for various
+prompts.  You can select what you want to start with and then change it during
+an editing session to adapt to the situation or to test various ways of doing
+things.
+
+Emacs has one native input completion mechanism (called Emacs default) that
+kicks into action whenever you use a command that prompts for something like a
+file name, a buffer name, a command name, etc...  It's a minimal input
+completion mechanism that works by extending the currently typed string with
+the *tab* key.  Emacs then show possible completion in a completion buffer.
+
+
+Several other completion modes exist.
+The IDO completion mode is shipped with Emacs.  It is very powerful and
+supports several ways of filtering the suggestions. The `Input Completion`_
+PDF describes the various keystrokes it supports.  It is well worth the effort
+to learn these.
+
+IDO can also be extended in various ways.  PEL supports several packages:
+
+- that extend the way it presents available choices:
+
+  - in a grid, originally collapsed in 1 line
+  - in a grid fully extended on start
+  - vertically, similar to what Ivy does (see below).
+
+- that extend the way it searches for potential choices:
+
+  - flx-ido
+
+- that extend what prompt command provide IDO input completion:
+
+  - ido-ubiquitous.
+
+PEL also provide access to The Ivy, Counsel and Helm that are other popular
 completion modes.  They can be installed via PEL and activated by PEL
 customization and the mode that should be used when Emacs starts is identified
 by the ``pel-initial-completion-mode`` user option.
@@ -1563,9 +1598,14 @@ With this you can start with Ido mode, then quickly switch to using Ivy mode for
 a while and return to Ido mode when you're done. Or use whatever you want at the
 moment you want without having to change and reload your Emacs initialization code.
 
+Persistence of your choices across Emacs editing sessions is provided by Emacs
+customization mechanism.
+See the `Input Completion`_ and
+`Customization <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf>`_
+PDF files for more information.
+
 The management of completion mode is provided by the `pel-completion`_ file.
 
-See the `Customization <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf>`_ PDF file for more information.
 
 
 PEL Configuration/Customization Support
@@ -4189,8 +4229,8 @@ See the `Sessions`_ PDF document for more information and the key bindings: they
 all use the **pel:session** key prefix, which PEL binds to ``<f11> S``.
 
 
-PEL  Shell Support
-------------------
+PEL Shell Support
+-----------------
 
 :PDF Sheet: `Shells`_.
 :PEL Customization: ``pel-use-erlang``.
