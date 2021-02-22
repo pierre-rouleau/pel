@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2021-02-22 11:02:05, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2021-02-22 11:06:18, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2768,7 +2768,7 @@ The details are available in the `Navigation`_ PDF table.
 
 
 Navigation Using imenu detected definitions
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Emacs provides a powerful item detection and indexing system called *imenu*.
 Each major mode can support imenu to quickly identify important locations
