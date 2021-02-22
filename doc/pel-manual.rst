@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2021-02-22 10:41:46, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2021-02-22 11:02:05, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2765,6 +2765,54 @@ provide super efficient navigation inside windows and *across* windows using the
 keyboard home row!
 
 The details are available in the `Navigation`_ PDF table.
+
+
+Navigation Using imenu detected definitions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Emacs provides a powerful item detection and indexing system called *imenu*.
+Each major mode can support imenu to quickly identify important locations
+inside the file such as the location of function or type definitions inside a
+programming language file or the section headers inside a markup file.
+
+PEL takes advantage of this and extends it with available input completion
+mechanisms to provide a set of easy to use key sequences to quickly navigate
+to such locations inside the current buffer or to any currently opened buffer
+of the same major mode as the current one.
+
+The imenu system parse the content of the buffers.  When you modify the buffer
+you may need to manually *re-scan* the buffer to update imenu indexing
+system.  PEL provide the ``<f11> <f10> r`` key sequence for that.
+
+To pop a menu of the current index list PEL provides the ``<f11> <f10> <f10>``
+key sequence.  The following screen shot shows what it does when used inside
+the imenu.el file.
+
+The provided menu is often a hierarchical menu of entries: you can
+select function, types, variables, classes and then their names or sub-names, etc..
+
+.. image:: res/m-g-h/imenu-popup.png
+
+PEL also provide the ``M-g h`` and the ``M-g M-h`` key sequences to prompt for
+one of the items by name or partial name using one of the powerful input
+completion like Ido, Ido-grid, Ido-vertical or Ivy.
+
+You can select the completion mechanism via the input completion
+customization.  You can also change the mode used during an editing session
+(although your choice won't persist across editing sessions).  Use the ``M-g
+C-h`` key sequence to select the mode.
+
+Here's what it looks like when using the ``M-g h`` key with Ido-grid with the
+grid expanded.
+
+.. image:: res/m-g-h/ido-grid.png
+
+And what it looks when using Ivy:
+
+.. image:: res/m-g-h/ivy.png
+
+
+
 
 PEL Number Keypad Support
 -------------------------
