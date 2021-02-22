@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2021-02-21 18:09:18, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-21 22:33:15, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -66,11 +66,10 @@
 ;; start with 'pel-' are 'public'.  The functions with a name staring with
 ;; 'pel--' are 'private' and should not be called from outside this file.
 ;;
-;;
-;;
 ;;     * `pel-goto-symbol'
-;;        - `pel--goto-symbol'   (recursive)
-;;          * `pel-popup-imenu'
+;;        - `pel--goto-symbol'
+;;           - `pel---goto-symbol'   (recursive)
+;;              * `pel-popup-imenu'
 ;;
 ;;     * `pel-imenu-anywhere'
 ;;
@@ -81,8 +80,10 @@
 ;;       - `pel--imenu-anywhere-completion-mode-selection'
 ;;
 
+
+
 ;; Note that the current implementation of the recursive function
-;; `pel--goto-symbol' depends on dynamic binding.  It's the only function in
+;; `pel---goto-symbol' depends on dynamic binding.  It's the only function in
 ;; the file that requires dynamic binding; all others can use lexical binding.
 ;; For now the entire file is set to use dynamic scoping because of that
 ;; function.  This function is an evolution of the code copied from
@@ -112,6 +113,7 @@
 (require 'pel--options)       ; use: pel-goto-symbol-completion-function
 ;;                            ;      pel-use-ivy
 (require 'pel-prompt)         ; use: pel-select-symbol-from
+(require 'pel-completion)     ; use: pel--use-ido-ubiquitous
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -132,7 +134,7 @@ The following functions can be used:
 - ivy, available when `pel-use-ivy' is t.
 
 This variable is set by the function `pel-goto-symbol' and used
-by the function `pel--goto-symbol'.")
+by the function `pel---goto-symbol'.")
 
 (defun pel--goto-symbol-completion-mode-selection ()
   "Return a list of (char string symbol) of available completion modes."
@@ -171,18 +173,18 @@ Do not modify.")
   "Open pop-up imenu.
 
 Can be used by the user, but can also be called internally
-by `pel--goto-symbol' as one of the functions identified by the variable
+by `pel---goto-symbol' as one of the functions identified by the variable
 `pel--goto-symbol-completion-function', it must accept the _PROMPT and
 _CHOICES arguments for compatibility.  It, however, ignores them."
   (interactive)
   (if (and (require 'imenu nil :no-error)
            (boundp  'imenu-use-popup-menu)
-           (fboundp 'imenu))
+           `(fboundp 'imenu))
       (let ((imenu-use-popup-menu t))
         (call-interactively (function imenu)))
     (user-error "Required imenu library is not loaded")))
 
-(defun pel--goto-symbol (&optional symbol-list)
+(defun pel---goto-symbol (&optional symbol-list)
   "Internal prompt for symbol from SYMBOL-LIST.
 
 Refresh imenu and jump to the location of selected symbol.
@@ -196,7 +198,7 @@ Supports completion method specified by caller."
       (while (progn
                (imenu--cleanup)
                (setq imenu--index-alist nil)
-               (pel--goto-symbol (imenu--make-index-alist))
+               (pel---goto-symbol (imenu--make-index-alist))
                (setq selected-symbol
                      (funcall pel--goto-symbol-completion-function
                               "Symbol? " symbol-names))
@@ -215,7 +217,7 @@ Supports completion method specified by caller."
       (let (name position)
         (cond
          ((and (listp symbol) (imenu--subalist-p symbol))
-          (pel--goto-symbol symbol))
+          (pel---goto-symbol symbol))
          ((listp symbol)
           (setq name (car symbol))
           (setq position (cdr symbol)))
@@ -227,6 +229,25 @@ Supports completion method specified by caller."
                     (string= (car imenu--rescan-item) name))
           (add-to-list 'symbol-names name)
           (add-to-list 'name-and-pos (cons name position))))))))
+
+(defun pel--goto-symbol ()
+  "Utility: call `pel---goto-symbol' unless Ido with Ubiquitous is requested.
+In that case use `imenu'."
+  ;; If Ivy or Ido with Ido Ubiquitous is selected use the
+  ;; imenu command instead of this because imenu provides access to the
+  ;; hierarchical item selection, and this function does not do that.
+  ;; Use the function if ivy was selected or if Ido is selected without the
+  ;; availability of Ido Ubiquitous.
+  (if (and (require 'imenu nil :no-error)
+           (fboundp 'imenu)
+           (or (eq pel--goto-symbol-completion-mode 'ivy)
+               (and (eq pel--goto-symbol-completion-mode 'ido)
+                    pel--use-ido-ubiquitous)))
+      (call-interactively (function imenu))
+    ;; use the local implementation when Ido without Ido Ubiquitous is
+    ;; requested because Ido is not applied to imenu unless Ido Ubiquitous is
+    ;; used and we'd end up with plain Emacs completion.
+    (pel---goto-symbol)))
 
 ;;-pel-autoload
 (defun pel-goto-symbol ()
@@ -243,25 +264,23 @@ and the availability of ivy.
 If Ivy is selected by the user option variable `pel-use-ivy' is
 nil, then ido is still used."
   (interactive)
-  ;; Define the completion mechanism and then invoke the command
-  (let* ((pel--goto-symbol-completion-function
-          (cond
-           ((eq pel--goto-symbol-completion-mode 'ido)
-            (progn
-              ;(setq ido-enable-flex-matching nil)
-              (function ido-completing-read)))
-           ((eq pel--goto-symbol-completion-mode 'ivy)
-            (if (and (require 'ivy nil :no-error)
-                     (fboundp 'ivy-completing-read))
-                (function ivy-completing-read)
-              (user-error "Ivy is not available!")))
-           ((eq pel--goto-symbol-completion-mode 'popup-imenu)
-            (function pel-popup-imenu)))))
-    ;; when moving, push xref marker to allow coming back
-    (when (and (require 'xref)
-               (fboundp 'xref-push-marker-stack))
-      (xref-push-marker-stack))
-    (pel--goto-symbol)))
+    ;; Define the completion mechanism and then invoke the command
+    (let* ((pel--goto-symbol-completion-function
+            (cond
+             ((eq pel--goto-symbol-completion-mode 'ido)
+              (function ido-completing-read))
+             ((eq pel--goto-symbol-completion-mode 'ivy)
+              (if (and (require 'ivy nil :no-error)
+                       (fboundp 'ivy-completing-read))
+                  (function ivy-completing-read)
+                (user-error "Ivy is not available!")))
+             ((eq pel--goto-symbol-completion-mode 'popup-imenu)
+              (function pel-popup-imenu)))))
+      ;; when moving, push xref marker to allow coming back
+      (when (and (require 'xref)
+                 (fboundp 'xref-push-marker-stack))
+        (xref-push-marker-stack))
+      (pel--goto-symbol)))
 
 ;; --
 (defvar pel--imenu-anywhere-method pel-use-imenu-anywhere
