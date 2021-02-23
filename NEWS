@@ -601,10 +601,6 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       - Use ``M-c`` to change occurrence to lower case and ``M-C`` to change
         occurrences to upper case. Similar to what is available under PEL.
 - Update: *Sessions*:
-  - New: temporary work-around fix for [[https://github.com/victorhge/iedit/issues/115][iedit bug # 115]] implemented inside
-    pel-init to prevent desktop restoration failures when ``iedit-mode`` was
-    active in past session being restored.  Waiting for incorporation of [[https://github.com/victorhge/iedit/pull/116][my
-    fix]] in iedit.
   - New: added a desktop restoration handler for edts-mode: it protects
     desktop restoration against failures in edts-mode and reports them by
     messages. It also deactivate edts-mode when the mode activation failed.
