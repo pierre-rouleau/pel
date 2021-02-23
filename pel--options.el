@@ -98,6 +98,7 @@
 ;;     - pel-pkg-for-skeletons
 ;;     - pel-pkg-for-speedbar
 ;;     - pel-pkg-for-spelling
+;;     - pel-pkg-for-sw-build
 ;;     - pel-pkg-for-text-mode
 ;;     - pel-pkg-for-undo
 ;;     - pel-pkg-for-vcs
@@ -4184,6 +4185,23 @@ To activate the changes for this you must 'Apply and Save' and restart Emacs."
   :group 'pel-pkg-for-spelling
   :type
   '(repeat symbol))
+
+;; ---------------------------------------------------------------------------
+;; Software Build Support
+;; ----------------------
+
+(defgroup pel-pkg-for-sw-build nil
+  "PEL support for software build systems."
+  :group 'pel-package-use)
+
+(defcustom pel-use-tup nil
+  "Control activation of support for Tup files."
+  :link '(url-link :tag "Tup Home" "http://gittup.org/tup/")
+  :link '(url-link :tag "tup-mode @ GitHub"
+                   "https://github.com/pierre-rouleau/tup-mode")
+  :type 'boolean
+  :safe #'booleanp)
+
 
 ;; ---------------------------------------------------------------------------
 ;; Text Mode support

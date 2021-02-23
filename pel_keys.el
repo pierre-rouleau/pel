@@ -530,11 +530,6 @@ Done in this function to allow advising libraries that remap these keys."
 ;; - try-expand-line
 
 ;; ---------------------------------------------------------------------------
-;; - CMake support
-;; ---------------
-;; (use-package cmake-mode)
-
-;; ---------------------------------------------------------------------------
 ;; - Extra key bindings
 ;; --==================
 ;;
@@ -1685,8 +1680,16 @@ interactively."
     :commands flycheck-mode))
 
 ;; ---------------------------------------------------------------------------
-;; - Make file editing support
+;; Software Build Tool Support
 ;; ===========================
+
+;; - CMake support
+;; ---------------
+;; (use-package cmake-mode)
+
+;; - Make file editing support
+;; ---------------------------
+;; Nothing needs to be installed as make support is built-in Emacs.
 
 (define-pel-global-prefix pel:for-make (kbd "<f11> SPC M"))
 
@@ -1703,6 +1706,18 @@ interactively."
 (pel--mode-hook-maybe-call
  (function pel--setenv-for-make)
  'makefile-mode 'makefile-mode-hook)
+
+
+;; - Tup Built Tool Support
+;; ------------------------
+
+(when pel-use-tup
+  (cl-eval-when 'load
+    (pel-install-github-file "pierre-rouleau/tup-mode/master" "tup-mode.el"))
+  (autoload 'tup-mode "tup-mode")
+  (add-to-list 'auto-mode-alist '("\\.tup\\'"  . tup-mode))
+  (add-to-list 'auto-mode-alist '("Tupfile"    . tup-mode))
+  (add-to-list 'auto-mode-alist '("tup.config" . tup-mode)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Programming Language Support

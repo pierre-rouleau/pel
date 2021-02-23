@@ -18,6 +18,18 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     systems and to counsel-osx-app on macOS system.  This allows selecting an
     OS application by name to launch it.  The first one is available when
     pel-use-counsel is on and the second when pel-use-counsel-osx-app is on.
+- New: *Build Tool Scripting Support*:
+  - New: *Make file Editing support*:
+    - New:  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-make.pdf][𝕻𝔩 - Make]] PDF that describes make file editing support, along with
+      PEL additions.
+    - New: PEL provides two commands to navigate across make file macro
+      definition statements (they can also be used to count them):
+      - *pel-make-previous-macro*, bound to ``<f12> <M-up>`` and ``<M-f12>
+        <M-up>``.
+      - *pel-make-next-macro*, bound to ``<f12> <M-down>`` and ``<M-f12>
+        <M-down>`.
+  - New: *Tup file editing support*:
+    - Support for *Tup* files activated by the *pel-use-tup* user-option.
 - Update: *Comments*:
   - New: command *pel-comment-show-variables* (bound to ``<f11> ; ?``) opens a
     special "\*comment-vars\*" buffer and prints the names and values of all
@@ -512,15 +524,6 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
           toggle the activated mode.
     - New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-go][𝕻𝔩 - Go]] PDF that describes the commands available for the Go
      programming language.
-  - New: *Make file Editing support*:
-    - New:  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-make.pdf][𝕻𝔩 - Make]] PDF that describes make file editing support, along with
-      PEL additions.
-    - New: PEL provides two commands to navigate across make file macro
-      definition statements (they can also be used to count them):
-      - *pel-make-previous-macro*, bound to ``<f12> <M-up>`` and ``<M-f12>
-        <M-up>``.
-      - *pel-make-next-macro*, bound to ``<f12> <M-down>`` and ``<M-f12>
-        <M-down>`.
   - Update: *Python*
     - Modified: binding to rainbow-delimiters-mode to ``<f12> M-r`` like it is
       for other programming languages.
