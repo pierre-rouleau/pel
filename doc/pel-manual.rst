@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2021-02-22 11:06:18, updated by Pierre Rouleau>
+:Last Modified Time-stamp: <2021-02-23 09:59:41, updated by Pierre Rouleau>
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2812,6 +2812,43 @@ And what it looks when using Ivy:
 .. image:: res/m-g-h/ivy.png
 
 
+Navigation in a large file using imenu and speedbar
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When navigating in a very large file, the imenu pop-up menu will be split into
+several sections.  It does not give you an overview of the content of the file
+though.  For that you can use the `Speedbar`_.  Both present information in
+hierarchical fashion.  You can customize the speedbar to display all elements
+of the same *type* as a continuous list.
+
+Here's an example using the file sqlite3.c_.  This file contains **all** the C
+code of the SQLite 3 database: about 231,756 lines.
+
+The following screen shot shows the file open in Emacs running in terminal
+mode with that file opened.  The imenu popup window is opened by typing  ``<f11>
+<f10> <f10>``:
+
+.. image:: res/navigation/def-lists/sqlite3-imenu-popup-top.png
+
+The list is split in several sections.  The first section is **Class** with is
+the name of a sub-section.  Later, somewhere else in that file, using the same
+command and selecting the Class section, imenu shows the list of structure
+names also organized in sub-sets.
+
+.. image:: res/navigation/def-lists/sqlite3-imenu-popup-class.png
+
+Here's what you see on the same file when opening the Speedbar in terminal
+mode.  With PEL use ``<f11> M-s`` to open the speedbar.
+
+.. image:: res/navigation/def-lists/sqlite3-speedbar-top.png
+
+Without moving point you can scroll the speedbar window using the ``<M-S-f6>``
+key stroke and see more of it.
+
+.. image:: res/navigation/def-lists/sqlite3-speedbar-scrolled-down.png
+
+
+.. _sqlite3.c: https://github.com/gittup/tup/blob/master/src/sqlite3/sqlite3.c
 
 
 PEL Number Keypad Support
@@ -2899,7 +2936,7 @@ PEL provides explicit support for the following
 `LISP-based programming languages`_:
 
 - `Common Lisp <https://en.wikipedia.org/wiki/Common_Lisp>`_
-- `Emacs Lisp <https://en.wikipedia.org/wiki/Emacs_Lisp>`_
+- `Emacs Lisp  <https://en.wikipedia.org/wiki/Emacs_Lisp>`_
 
 .. _LISP-based programming languages: https://en.wikipedia.org/wiki/Lisp_(programming_language)
 
@@ -3025,7 +3062,7 @@ PEL Support for Curly-Bracket Programming Languages
 PEL provides explicit support for the following
 `curly-bracket programming languages`_:
 
-- `C <https://en.wikipedia.org/wiki/C_(programming_language)>`_
+- `C  <https://en.wikipedia.org/wiki/C_(programming_language)>`_
 - `C++ <https://en.wikipedia.org/wiki/C%2B%2B>`_
 - `D <https://en.wikipedia.org/wiki/D_(programming_language)>`_
 
@@ -3081,25 +3118,25 @@ All examples are using the bsd indentation style.
 
 .. code::  c
 
-#ifdef SOMETHING
-  #if SOMETHING_ELSE
-    #define SOMEONE 1
+    #ifdef SOMETHING
+      #if SOMETHING_ELSE
+        #define SOMEONE 1
 
 
-      for (...)
-      {
-        if (foo)
-        {
-          if (bar)
+          for (...)
           {
-      #ifdef __WIN32__
-            c = GetTickCount();
-      #else
-            c = clock();
-      #endif
+            if (foo)
+            {
+              if (bar)
+              {
+          #ifdef __WIN32__
+                c = GetTickCount();
+          #else
+                c = clock();
+          #endif
+              }
+            }
           }
-        }
-      }
 
 
 **Style 2: all indented**
@@ -3142,6 +3179,8 @@ All examples are using the bsd indentation style.
 
 
 **Style 4: anchored indented**
+
+.. code::  c
 
       for (...)
       {
@@ -5118,11 +5157,11 @@ Note:
 .. _Apple-Script:                             https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-applescript.pdf
 ..  C++
 ..  C
-.. _Common Lisp:                              https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-common-lisp.pdf
+..  Common Lisp
 .. _Lispy mode support:                       https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/plm-lispy.pdf
 ..  D
 ..  elixir
-.. _Emacs Lisp:                               https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-emacs-lisp.pdf
+..  Emacs Lisp
 ..  erlang
 ..  forth
 ..  python
@@ -6175,4 +6214,4 @@ exhaustive list):
 
 
 
------------------------------------------------------------------------------
+.. -----------------------------------------------------------------------------
