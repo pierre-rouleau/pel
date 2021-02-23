@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, February  5 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-05 14:29:24, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-23 12:36:46, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,7 +25,9 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;;
+;; Extension commands for the goto-address-mode.  The two provided commands
+;; should be added to the goto-address-mode key-map to ease navigation when
+;; this mode is active.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -41,20 +43,29 @@
   "Move point to the end of next URL in buffer."
   (interactive)
   (if (and (require 'goto-addr nil :no-error)
-           (boundp  'goto-address-url-regexp))
+           (boundp  'goto-address-url-regexp)
+           (boundp  'goto-address-mode)
+           (fboundp 'goto-address-mode))
       (progn
+        (unless goto-address-mode
+          (goto-address-mode 1))
         (re-search-forward goto-address-url-regexp)
-        (left-char))
-    (error "Can't load goto-addr!")))
+        (left-char)) ; move point back over the URL
+    (error "Failed loading goto-addr!")))
 
 ;;-pel-autoload
 (defun pel-goto-previous-url ()
   "Move point to the beginning of previous URL in buffer."
   (interactive)
-    (if (and (require 'goto-addr nil :no-error)
-           (boundp  'goto-address-url-regexp))
+  (if (and (require 'goto-addr nil :no-error)
+           (boundp  'goto-address-url-regexp)
+           (boundp  'goto-address-mode)
+           (fboundp 'goto-address-mode))
+      (progn
+        (unless goto-address-mode
+          (goto-address-mode 1))
         (re-search-backward goto-address-url-regexp))
-    (error "Can't load goto-addr!"))
+    (error "Failed loading goto-addr!")))
 
 
 ;;; --------------------------------------------------------------------------
