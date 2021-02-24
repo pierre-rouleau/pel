@@ -1,6 +1,6 @@
 ;;; pel-ccp.el --- PEL cut & paste, etc... -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -710,6 +710,44 @@ With argument ARG, kill that many words then the whitespace following them."
   (kill-word arg)                   ; kill next word(s)
   (kill-append " " nil)             ; separate works in kill ring
   (pel-delete-to-next-visible))     ; delete whitespace to next word
+
+;; ---------------------------------------------------------------------------
+;; Duplicate current line
+;; ----------------------
+
+(defun pel-duplicate-line (&optional n)
+  "Duplicate the current line N times.  N defaults to 1.
+
+Insert new line(s) below and move point to the last one entered,
+at the same relative position inside the line.
+
+If some text on the original line is marked, the
+function prompts and uses a replacement for each duplicated line.
+The command maintains a prompt history, accessible with M-n and M-p.
+
+Nothing is copied to the kill ring."
+  (interactive "*p")
+  (let* ((original-pos (point))
+         (original-bol (line-beginning-position))
+         (original-line (buffer-substring-no-properties original-bol
+                                                        (line-end-position)))
+         (text-to-replace (when (use-region-p)
+                            (buffer-substring-no-properties (region-beginning)
+                                                            (region-end)))))
+    (while (progn
+             (forward-line 1)
+             (insert (if text-to-replace
+                         (replace-regexp-in-string
+                          text-to-replace
+                          (read-from-minibuffer
+                           (format "%s  -> " text-to-replace)
+                           nil nil nil 'pel-duplicate-line-history)
+                          original-line nil t nil)
+                       original-line)
+                     "\n")
+             (forward-line -1)
+             (right-char (- original-pos original-bol))
+             (> (setq n (1- n)) 0)))))
 
 ;;; --------------------------------------------------------------------------
 

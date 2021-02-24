@@ -860,7 +860,7 @@ Then save your changes."
 ;; ----------------------
 ;;
 ;; pel:f6 keys:
-;;  f l n p L
+;;  d f l n p L
 ;;  SPC
 ;;  C-i <backtab> C-n C-p
 ;;  <down> <up> <left> <right>
@@ -872,6 +872,7 @@ Then save your changes."
 
 ;; Move to the beginning of next function definition (while moving forward)
 ;;  complements C-M-e and C-M-a
+(define-key pel:f6 "d"            'pel-duplicate-line)
 (define-key pel:f6 "n"            'pel-beginning-of-next-defun)
 (define-key pel:f6 (kbd "<down>") 'pel-beginning-of-next-defun)
 (define-key pel:f6 "p"            'beginning-of-defun)

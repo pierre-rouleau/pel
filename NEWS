@@ -163,6 +163,11 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - Modification: new customization group *pel-pkg-for-cut-and-paste* which
     holds pel-use-popup-kill-ring that was previously under the undo group.
 - Update: *Cut & Paste*:
+  - New: *pel-duplicate-line* command (bound to ``<f6> d``) that duplicates
+    the current line N times, with N defaulting to 1 and taken from a
+    numerical argument. If some text on the original line is marked, the
+    function prompts and uses a replacement for each duplicated line.
+    The command maintains a prompt history, accessible with M-n and M-p.
   - New: It's now possible to control whether the copy, kill, delete commands
     that can display the copied, killed or deleted text. The new
     *pel-show-copy-cut-text* user option controls it.  It is set *t* by
