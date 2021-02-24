@@ -4440,7 +4440,9 @@ the ones defined from the buffer now."
   (cl-eval-when 'load
     (pel-install-github-file "pierre-rouleau/emacros/master" "emacros.el"))
   (use-package emacros
-    :commands emacros-load-macros
+    :commands (emacros-load-macros
+               emacros-show-macros
+               emacros-show-macro-names)
     :init
     (add-hook 'find-file-hook 'emacros-load-macros)
 
