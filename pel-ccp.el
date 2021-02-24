@@ -715,34 +715,53 @@ With argument ARG, kill that many words then the whitespace following them."
 ;; Duplicate current line
 ;; ----------------------
 
-(defun pel-duplicate-line (&optional n)
+(defun pel-duplicate-line (&optional n)  ; line a line another line
   "Duplicate the current line N times.  N defaults to 1.
 
 Insert new line(s) below and move point to the last one entered,
 at the same relative position inside the line.
 
-If some text on the original line is marked, the
-function prompts and uses a replacement for each duplicated line.
+If some text on the original line is marked, the function prompts
+for a replacement, and replace each instance of that text in the duplicated
+line. If N is negative the replacement is only done for the marked area.
+
+When (abs N) is larger than 1 the function inserts that many duplicated lines,
+and prompts for a new replacement for each new line.
 The command maintains a prompt history, accessible with M-n and M-p.
 
 Nothing is copied to the kill ring."
   (interactive "*p")
-  (let* ((original-pos (point))
+  (let* ((replace-once (< n 0))
+         (n (abs n))
+         (original-pos (point))
          (original-bol (line-beginning-position))
          (original-line (buffer-substring-no-properties original-bol
                                                         (line-end-position)))
          (text-to-replace (when (use-region-p)
                             (buffer-substring-no-properties (region-beginning)
-                                                            (region-end)))))
+                                                            (region-end))))
+         text-before
+         text-after)
+    (when (use-region-p)
+      (setq text-before (buffer-substring-no-properties
+                         original-bol
+                         (region-beginning)))
+      (setq text-after (buffer-substring-no-properties
+                        (region-end)
+                        (line-end-position))))
     (while (progn
              (forward-line 1)
              (insert (if text-to-replace
-                         (replace-regexp-in-string
-                          text-to-replace
-                          (read-from-minibuffer
-                           (format "%s  -> " text-to-replace)
-                           nil nil nil 'pel-duplicate-line-history)
-                          original-line nil t nil)
+                         (let ((new-text (read-from-minibuffer
+                                          (format "%s  -> " text-to-replace)
+                                          nil nil nil
+                                          'pel-duplicate-line-history)))
+                           (if replace-once
+                               (concat text-before new-text text-after)
+                             (replace-regexp-in-string
+                              text-to-replace
+                              new-text
+                              original-line nil t nil)))
                        original-line)
                      "\n")
              (forward-line -1)

@@ -167,6 +167,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     the current line N times, with N defaulting to 1 and taken from a
     numerical argument. If some text on the original line is marked, the
     function prompts and uses a replacement for each duplicated line.
+    If N is positive all instances of text in the original line are replaced
+    in the duplicate lines.  If N is negative, only the marked text is replaced.
     The command maintains a prompt history, accessible with M-n and M-p.
   - New: It's now possible to control whether the copy, kill, delete commands
     that can display the copied, killed or deleted text. The new
