@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-25 17:11:18, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-25 18:15:52, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -69,13 +69,10 @@ DIRPATH can be a dirpath name (ending with separator)
 or a dirpath file name (not ending with separator)."
   (file-exists-p (expand-file-name filename dirpath)))
 
-(if pel-system-is-windows-p
-    (defun pel-dir-is-root (dirpath)
-      "Return t is DIRPATH is the root of the file-system."
-      (not (null (string-match "\\([a-zA-Z]:\\)?[/\\]\\'"  dirpath))))
-
-  (defsubst pel-dir-is-root (dirpath)
-    "Return t is DIRPATH is the root of the file-system."
+(defun pel-dir-is-root (dirpath)
+  "Return t is DIRPATH is the root of the file-system."
+  (if pel-system-is-windows-p
+      (not (null (string-match "\\([a-zA-Z]:\\)?[/\\]\\'"  dirpath)))
     (string= dirpath "/")))
 
 (defun pel-parent-directory (dirpath)
