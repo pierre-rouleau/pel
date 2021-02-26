@@ -2598,6 +2598,7 @@ MODE must be a symbol."
 
 (define-key pel:for-elisp   ")" #'check-parens)
 (define-key pel:for-elisp   "."  'pel-find-thing-at-point)
+(define-key pel:for-elisp   "t"  'pel-run-ert)
 (when pel-use-plantuml
   (define-key pel:for-elisp   "u"  'pel-render-commented-plantuml))
 (when pel-use-graphviz-dot

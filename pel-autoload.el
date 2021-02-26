@@ -207,6 +207,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-elisp-to-name-of-next-defun
     pel-elisp-to-name-of-previous-defun)
 
+  (pel-autoload "pel-elisp-analyze" for:
+    pel-run-ert)
+
   (pel-autoload "pel-emacs" for:
     pel-emacs-executable
     pel-open-emacs-refcard
