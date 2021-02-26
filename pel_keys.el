@@ -4153,7 +4153,29 @@ the ones defined from the buffer now."
   (when (eq pel-use-ffap 'ffap-bindings)
     (run-with-idle-timer 1 nil (function pel--activate-ffap-bindings))))
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - Project Management - find-file-in-project
+
+;; CAUTION: This package needs major tuning!  It takes forever searching for a
+;;          project.  For the moment, Projectile is MUCH better!
+
+(define-pel-global-prefix pel:ffip (kbd "<f11> f p"))
+
+(when pel-use-find-file-in-project
+  (cl-eval-when 'load
+    (pel-install-github-file "pierre-rouleau/find-file-in-project/master"
+                             "find-file-in-project.el")
+    (autoload 'find-file-in-project "find-file-in-project"))
+  (define-key pel:ffip "p" 'find-file-in-project))
+
+;; Use my fork of this project until my contribution to support Emacs Customization
+;; is merged in. See https://github.com/redguardtoo/find-file-in-project/pull/126
+;; (use-package find-file-in-project
+;;   :ensure t
+;;   :pin melpa
+;;   :commands find-file-in-project)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> f v`` : File variables
 
 (define-pel-global-prefix pel:filevar (kbd "<f11> f v"))
@@ -4161,7 +4183,7 @@ the ones defined from the buffer now."
 (define-key pel:filevar "-"  #'delete-file-local-variable-prop-line)
 (define-key pel:filevar "c"  #'copy-dir-locals-to-file-locals-prop-line)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> f v D`` : Directory File variables
 
 (define-pel-global-prefix pel:dirvar (kbd "<f11> f v D"))
@@ -4169,7 +4191,7 @@ the ones defined from the buffer now."
 (define-key pel:dirvar "-"  #'delete-dir-local-variable)
 (define-key pel:dirvar "C"  #'copy-file-locals-to-dir-locals)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> F`` : Frame operations
 
 (define-pel-global-prefix pel:frame (kbd "<f11> F"))
@@ -4189,7 +4211,7 @@ the ones defined from the buffer now."
   (require 'menu-bar nil :noerror) ; feature loaded in emacs -Q
   (define-key pel:frame "F" 'menu-set-font))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> g`` : Grep operations
 
 (define-pel-global-prefix pel:grep (kbd "<f11> g"))

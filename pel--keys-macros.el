@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-20 15:03:37, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-26 15:43:48, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -208,6 +208,7 @@
                                                                  Ztree))
     ([f11 ?B ?N]     "file-mngt"        pel-pkg-for-neotree      neotree)
     ([f11 ?f ?a]     "file-mngt"        nil                      ffap)
+    ([f11 ?f ?p]     "file-mngt"        pel-pkg-for-project-mng  ffip)
     ([f11 ?f ?r]     "file-mngt"        nil                      auto-revert)
     ([f11 ?f ?v]     "file-variables")
     ([f11 ?f ?v ?D]  "file-variables")
@@ -599,7 +600,8 @@ Return nil if nothing found."
     ("Ztree" . "ztree-view")
     ("command-log" . "command-log-mode")
     ("netrexx"     . "netrexx-mode")
-    ("rainbow"     . "rainbow-mode"))
+    ("rainbow"     . "rainbow-mode")
+    ("ffip"        . "find-file-in-project"))
   "Maps a group name for the library that defines it.
 This is only required for the libraries that cannot be found
 with the existing code, such as when the group name is different

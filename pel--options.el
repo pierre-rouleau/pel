@@ -2840,7 +2840,15 @@ Requires gocode."
   :group 'pel-pkg-for-programming)
 
 (defcustom pel-use-lispy nil
-  "Control whether PEL uses the lispy package."
+  "Control whether PEL uses the lispy package.
+
+Note that lispy has commands that use find-file-in-project
+or projectile.  PEL supports these package with, respectively:
+- `pel-use-find-file-in-project'
+- `pel-use-projectile'
+
+I strongly recommend using projectile.  ffip takes an enormous
+amount of time to search for a project (even with fd)."
   :type 'boolean
   :safe #'booleanp
   :link `(url-link :tag "abo-abo lispy" "https://github.com/abo-abo/lispy"))
@@ -3761,6 +3769,17 @@ NOTE:
   "PEL customization for project managers."
   :group 'pel-package-use
   :link `(url-link :tag "Projectile PDF" ,(pel-pdf-file-url "projectile")))
+
+(defcustom pel-use-find-file-in-project nil
+  "Control whether PEL supports the find-file-in-project package.
+
+CAUTION: This package needs major tuning!  It takes forever searching for a
+         project.  For the moment, Projectile is MUCH better!"
+  :link '(url-link :tag "find-file-in-project @ Github"
+                   "https://github.com/redguardtoo/find-file-in-project")
+  :group 'pel-pkg-for-project-mng
+  :type 'boolean
+  :safe #'booleanp)
 
 (defcustom pel-use-projectile nil
   "Control whether PEL supports the projectile project manager."
