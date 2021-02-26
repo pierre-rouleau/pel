@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, September 14 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-16 17:51:24, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-26 09:59:46, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -83,7 +83,7 @@ This PEL function acts as a proxy to the real function
     (if (and (fboundp 'lispy-mode)
              (boundp  'lispy-mode))
         (lispy-mode (if lispy-mode -1 1))
-      (error "Failed to load lispy!"))))
+      (error "Failed to toggle lispy!"))))
 
 (defun pel-lpy-mode ()
   "Activate (then toggle) lpy mode.
