@@ -675,7 +675,7 @@ Usage Example:
 ;; Lazy loading:
 ;; - `pel-require'
 
-(defun pel-require (feature &optional package)
+(defun pel-require (feature &optional package with-pel-install fname url-fname)
   "Load FEATURE if not already loaded, optionally try to install PACKAGE.
 
 FEATURE is a symbol.
@@ -690,6 +690,10 @@ The specified package is specified by the PACKAGE argument. It can be either:
   install has the same name as the FEATURE.
 - Another symbol that identifies the name of the required package.
 
+If WITH-PEL-INSTALL is non-nil it should be a user-project-branch of the
+`pel-install-github-file' that is used to perform the installation with FNAME
+and URL-FNAME argument passed to that function.
+
 Issue a user-error on failure.
 Otherwise return the loading state of the FEATURE."
   (unless (featurep feature)
@@ -697,27 +701,33 @@ Otherwise return the loading state of the FEATURE."
       (unless feature-is-loaded
         ;; required failed - if package specified try installing it
         ;; when not already present
-        (if (and package
-                 (fboundp 'package-installed-p)
-                 (fboundp 'package-install))
-            (let ((package (if (eq package :install-when-missing)
-                               feature
-                             package)))
-              (unless (package-installed-p package)
-                (package-install package)
-                (require feature nil :noerror)
-                (unless (featurep feature)
-                  (user-error
-                   "Failed loading %s even after installing package %s!"
-                   feature package))))
-          ;; no package specified, required failed
-          (user-error "Failed loading %s. %s!"
-                      feature
-                      (if package
-                          "Cannot load package.el"
-                        "No specified package"))))))
+        (if package
+            (if with-pel-install
+                (if (and (require 'pel-net nil :no-error)
+                         (fboundp 'pel-install-github-file))
+                    (pel-install-github-file with-pel-install fname url-fname)
+                  (user-error "Failed loading pel-net to install %s" with-pel-install))
+              (if (and
+                   (fboundp 'package-installed-p)
+                   (fboundp 'package-install))
+                  (let ((package (if (eq package :install-when-missing)
+                                     feature
+                                   package)))
+                    (unless (package-installed-p package)
+                      (package-install package)
+                      (require feature nil :noerror)
+                      (unless (featurep feature)
+                        (user-error
+                         "Failed loading %s even after installing package %s!"
+                         feature package))))
+                ;; no package specified, required failed
+                (user-error "Failed loading %s. %s!"
+                            feature
+                            (if package
+                                "Cannot load package.el"
+                              "No specified package"))))
+          (user-error "%s is not available, no request to load it!" feature)))))
   (featurep feature))
-
 
 ;; ---------------------------------------------------------------------------
 (defun pel-action-for (action current-state)
