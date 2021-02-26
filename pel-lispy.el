@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, September 14 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-26 09:59:46, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-26 17:28:21, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -80,7 +80,8 @@ This PEL function acts as a proxy to the real function
             (lispy-mode 1)
           (error "Failed to load lispy!")))
     ;; All other times, just toggle the lispy-mode
-    (if (and (fboundp 'lispy-mode)
+    (if (and (require 'lispy nil :no-error)
+             (fboundp 'lispy-mode)
              (boundp  'lispy-mode))
         (lispy-mode (if lispy-mode -1 1))
       (error "Failed to toggle lispy!"))))
