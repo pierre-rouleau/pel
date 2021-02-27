@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, November 27 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-18 11:05:43, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-27 11:48:08, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -172,13 +172,15 @@ the value of the `pel-elisp-target-forms' user-option and save it."
                 defun-forms)
             (?3 "All functions, macros definitions"
                 all-defun-defmacro-defsubst-forms)
-            (?4 "All functions, macros & eieio definitions"
+            (?4 "All defmacro"
+                all-defmacro-forms)
+            (?5 "All functions, macros & eieio definitions"
                 all-functions-macros-eieio-def-forms)
-            (?5 "All of the above and all variable definitions"
+            (?6 "All of the above and all variable definitions"
                 all-functions-variables-def-forms)
-            (?6 "All variable definition forms"
+            (?7 "All variable definition forms"
                 all-variables-def-forms)
-            (?7 "User specified forms" user-specified))
+            (?8 "User specified forms" user-specified))
           pel-elisp-target-forms)))
     (unless globally
       (with-current-buffer (current-buffer)
@@ -222,6 +224,7 @@ TARGET, like `pel-elisp-target-forms' can be one of the following values:
 - 'top-level-defun-forms
 - 'defun-forms
 - 'all-defun-defmacro-defsubst-forms
+- 'all-defmacro-forms'
 - 'all-functions-macros-eieio-def-forms
 - 'all-functions-variables-def-forms
 - 'all-variables-def-forms
@@ -254,6 +257,9 @@ TARGET, like `pel-elisp-target-forms' can be one of the following values:
                                           "defalias"
                                           "defadvice")))
            ;; 4
+           ((eq target 'all-defmacro-forms)
+            (pel--elisp-form-regexp-for '("defmacro")))
+           ;; 5
            ((eq target 'all-functions-macros-eieio-def-forms)
             (pel--elisp-form-regexp-for '("defun"
                                           "defsubst"
@@ -263,7 +269,7 @@ TARGET, like `pel-elisp-target-forms' can be one of the following values:
                                           "defclass"
                                           "defmethod"
                                           "defgeneric")))
-           ;; 5
+           ;; 6
            ((eq target 'all-functions-variables-def-forms)
             (pel--elisp-form-regexp-for '("defun"
                                           "defsubst"
@@ -283,7 +289,7 @@ TARGET, like `pel-elisp-target-forms' can be one of the following values:
                                           "deftheme"
                                           "defcustom"
                                           "defgroup")))
-           ;; 6
+           ;; 7
            ((eq target 'all-variables-def-forms)
             (pel--elisp-form-regexp-for '("defvar"
                                           "defvaralias"
@@ -295,7 +301,7 @@ TARGET, like `pel-elisp-target-forms' can be one of the following values:
                                           "deftheme"
                                           "defcustom"
                                           "defgroup")))
-           ;; 7 : user specified string
+           ;; 8 : user specified string
            ;;     remove duplicates, nil and ignore
            ;;     escape regular expression meta-characters
            ((eq target 'user-specified)

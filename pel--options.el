@@ -3005,15 +3005,7 @@ The target is specified using one of the following:
    - defmacro
    - defalias
    - defadvice
-4) All of the following forms, any level
-   - defun
-   - defsubst
-   - defmacro
-   - defalias
-   - defadvice
-   - defclass
-   - defmethod
-   - defgeneric
+4) All defmacro forms, any level.
 5) All of the following forms, any level
    - defun
    - defsubst
@@ -3023,6 +3015,15 @@ The target is specified using one of the following:
    - defclass
    - defmethod
    - defgeneric
+6) All of the following forms, any level
+   - defun
+   - defsubst
+   - defmacro
+   - defalias
+   - defadvice
+   - defclass
+   - defmethod
+   - defgeneric
    - defvar
    - defvaralias
    - defvar-local
@@ -3033,7 +3034,7 @@ The target is specified using one of the following:
    - deftheme
    - defcustom
    - defgroup
-6) All of the following variable definition forms, at any level:
+7) All of the following variable definition forms, at any level:
    - defvar
    - defvaralias
    - defvar-local
@@ -3044,7 +3045,7 @@ The target is specified using one of the following:
    - deftheme
    - defcustom
    - defgroup
-7) All forms specified by the list defined by:
+8) All forms specified by the list defined by:
    - `pel-elisp-user-specified-targets'
    - `pel-elisp-user-specified-targets2'
 
@@ -3066,10 +3067,12 @@ You can modify the buffer local value of `pel-elisp-target-forms' by using the
                   defun-forms)
           (const  :tag "All defun, defmacro, defsubst,... forms, any level"
                   all-defun-defmacro-defsubst-forms)
+          (const  :tag "All defmacro"
+                  all-defmacro-forms)
           (const  :tag "All of 3 + eieio class and method definition forms, \
 any level"
                   all-functions-macros-eieio-def-forms)
-          (const  :tag "All of 4 + all variables define forms, any level"
+          (const  :tag "All of 5 + all variables define forms, any level"
                   all-functions-variables-def-forms)
           (const  :tag "Only variable forms, any level"
                   all-variables-def-forms)
