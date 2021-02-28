@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Last Modified Time-stamp: <2021-02-23 09:59:41, updated by Pierre Rouleau>
+:Modified: 2021-02-28 15:42:46, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -6215,3 +6215,9 @@ exhaustive list):
 
 
 .. -----------------------------------------------------------------------------
+
+..
+       Local Variables:
+       time-stamp-start: "^:Modified:[ \t]+\\\\?"
+       time-stamp-end:   "\\.$"
+       End:
