@@ -20,6 +20,19 @@ PEL might be for you!
 
 - PEL builds on `Emacs easy customization`_ to let you pick and choose various
   behaviours and packages without the need for writing Emacs Lisp code.
+
+  - PEL provides several context-sensitive key sequences to access
+    customization groups for PEL, Emacs and external packages, to help you
+    fine tune your Emacs customization quickly.
+
+    - PEL provides access to customization groups for features not even loaded
+      yet.  Increasing your awareness of available features.
+
+  - PEL saves your customization data inside a file separate from your
+    ``init.el`` file, providing an extra degree of freedom and control when
+    you same these files in a (D)VCS. Save and restore your configurations
+    from Git, Mercurial or any VCS.
+
 - PEL integrates a large and growing set of `built-in and external Emacs packages`_,
   and adds a large number of key bindings **that mostly do not interfere with the standard
   Emacs key bindings** (except for a very small few documented ones).
@@ -51,6 +64,13 @@ PEL comes with lots of overview and reference documentation:
   The PDF files have lots of hyperlinks to other PEL PDF files,
   Emacs manual documentation, external packages and articles.
 
+  - All of these PDF files have a large number of hyperlinks to Emacs manual,
+    Emacs Wiki, external package home on Github, MELPA and the other PDF
+    that contain relevant information.  If your browser is configured to
+    display PDF files online (like Firefox does by default) you can easily
+    browse the PDF files by accessing the raw version of these files on
+    GitHub.  See the `raw version of the PEL Key Maps PDF`_ as a starting point.
+
 **Credits**
 
 PEL would not exist without the great software available for Emacs listed in the
@@ -65,6 +85,8 @@ Questions, comments, constructive criticism, suggestions and requests are always
 Drop me a note in the wiki_ or in the `discussion board`_!
 
 .. links
+
+.. _raw version of the PEL Key Maps PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-pel-key-maps.pdf
 
 .. _Emacs easy customization:
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
