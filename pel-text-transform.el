@@ -235,26 +235,26 @@ When N is 0, perform the operation once on the beginning of the current word."
 - delete-selection-mode: %s.
 - enriched-mode:  %s.
 - overwrite mode: %s.
+- case-fold-search: %s, sort-fold-case: %s.
+- subword mode: %s,  superword mode: %s, glass-mode: %s.
+- visible-mode: %s,  smart-dash-mode: %s.
 - Sentences end with %s.
 - paragraph-start   : %S
-- paragraph-separate: %S
-- case-fold-search: %s.
-- sort-fold-case: %s.
-- subword mode: %s,  superword mode: %s, glass-mode: %s.
-- visible-mode: %s."
+- paragraph-separate: %S"
            (pel-symbol-on-off-string 'electric-quote-mode)
            (pel-symbol-on-off-string 'delete-selection-mode)
            (pel-symbol-on-off-string 'enriched-mode nil nil "not loaded")
            (pel-symbol-on-off-string 'overwrite-mode)
-           (pel--sentence-end-description)
-           paragraph-start
-           paragraph-separate
            (pel-symbol-on-off-string 'case-fold-search)
            (pel-symbol-on-off-string 'sort-fold-case nil nil "not loaded")
            (pel-symbol-on-off-string 'subword-mode)
            (pel-symbol-on-off-string 'superword-mode)
            (pel-symbol-on-off-string 'glasses-mode nil nil "not loaded")
-           (pel-symbol-on-off-string 'visible-mode)))
+           (pel-symbol-on-off-string 'visible-mode)
+           (pel-symbol-on-off-string 'smart-dash-mode nil nil "not loaded")
+           (pel--sentence-end-description)
+           paragraph-start
+           paragraph-separate))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-text-transform)
