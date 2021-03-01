@@ -4990,6 +4990,7 @@ the ones defined from the buffer now."
 (define-key pel:textmodes "?"  'pel-show-text-modes)
 (define-key pel:textmodes "b" #'subword-mode)
 (define-key pel:textmodes "d" #'delete-selection-mode)
+(define-key pel:textmodes "g" #'glasses-mode)
 (define-key pel:textmodes "p" #'superword-mode)
 (define-key pel:textmodes "s"  'pel-toggle-sentence-end)
 (define-key pel:textmodes "v" #'visible-mode)
