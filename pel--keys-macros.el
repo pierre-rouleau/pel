@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-26 15:43:48, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-01 12:12:17, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -248,7 +248,7 @@
     ([f11 ?t ?e]     "enriched-text"    nil                     enriched)
     ([f11 ?t ?f]     "filling-justification" nil               fill)
     ([f11 ?t ?j]     "filling-justification" nil               fill)
-    ([f11 ?t ?m]     "text-modes"       pel-pkg-for-text-mode)
+    ([f11 ?t ?m]     "text-modes"       pel-pkg-for-text-mode  glasses)
     ([f11 ?t ?t]     "transpose"        nil)
     ([f11 ?t ?w]     "whitespaces"      nil                     whitespace)
     ([f11 ?u]        "undo-redo-repeat" pel-pkg-for-undo        (undo
