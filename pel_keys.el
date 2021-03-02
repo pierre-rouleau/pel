@@ -4997,9 +4997,9 @@ the ones defined from the buffer now."
 (define-key pel:textmodes "w" #'whitespace-mode)
 
 (pel-add-hook-for
-     'pel-modes-activating-superword-mode
-     (lambda ()
-       (superword-mode 1)))
+ 'pel-modes-activating-superword-mode
+ (lambda ()
+   (superword-mode 1)))
 (pel-add-hook-for
      'pel-modes-activating-subword-mode
      (lambda ()
