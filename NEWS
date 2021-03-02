@@ -140,6 +140,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
         directory for directory tree(s) of C files.
       - [[https://github.com/pierre-rouleau/pel/blob/master/bin/cscope-cpp][cscope-cpp]] creates a CScope database and a cscope-files in the current
         directory for directory tree(s) of C and C++ files.
+- Update: *Cursor/Multiple-Cursors*:
+  - Update: completed the key bindings required to use the *multiple-cursors*
+    package efficiently:
+    - Add ``<f11> m n`` key sequence binding to *mc/mark-next-like-this*
+    - Add ``<f11> m p`` key sequence binding to *mc/mark-previous-like-this*
+    - Add ``<f11> m a`` key sequence binding to *mc/mark-all-like-this*
 - Update: *Customization*:
   - New: *pel-auto-mode-alist* user option in the Pel Base Emacs group allows
     user-specified  association of file name pattern to a major mode.  It can

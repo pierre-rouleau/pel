@@ -4507,9 +4507,15 @@ the ones defined from the buffer now."
     (use-package multiple-cursors
       :ensure t
       :pin melpa
-      :commands mc/edit-lines
+      :commands (mc/edit-lines
+                 mc/mark-next-like-this
+                 mc/mark-previous-like-this
+                 mc/mark-all-tlike-this)
       :init
-      (define-key pel:mcursors "m" 'mc/edit-lines)))
+      (define-key pel:mcursors "m" 'mc/edit-lines)
+      (define-key pel:mcursors "n" 'mc/mark-next-like-this)
+      (define-key pel:mcursors "p" 'mc/mark-previous-like-this)
+      (define-key pel:mcursors "a" 'mc/mark-all-like-this)))
   (when (or pel-use-iedit pel-use-lispy)
     (define-key pel:mcursors "i" 'iedit-mode)))
 
