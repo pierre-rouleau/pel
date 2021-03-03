@@ -4370,6 +4370,14 @@ If it set to nil, these keys are not bound."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-windresize nil
+  "Control whether PEL provides the windresize external package."
+  :link '(url-link :tag "windresize @ Elpa"
+                   "https://elpa.gnu.org/packages/windresize.html")
+  :group 'pel-pkg-for-window
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-xref
 ;; ----------------

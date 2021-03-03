@@ -675,10 +675,13 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - New: overwrite-mode is also bound to the <Esc><kp-0> key sequence.  This
     makes it very similar to the default <insert> key which is not available
     in macOS keyboards.
-- Update: *Windows*:
+- Update: *Windows Management*:
   - The Windows Hydra now provides quick access to the
     ``pel-toggle-window-dedicated`` command which toggles the dedicated state
     of a window.
+  - Add support for the *windresize* external package:
+    - Activate it by setting *pel-use-windresize* to *t*.
+    - The windresize command is bound to the ``<f11> w r`` key sequence.
 ** Other Modifications:
 - The customization group pel-pkg-for-xref is now a child of
   pel-pkg-for-navigation and holds tags based cross-reference build control as

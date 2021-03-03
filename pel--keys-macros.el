@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-01 12:12:17, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-03 17:14:02, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -262,7 +262,8 @@
                                                            ace-window
                                                            ace-window-display
                                                            winner
-                                                           windmove))
+                                                           windmove
+                                                           windresize))
     ([f11 ?w ?d]     "windows"          pel-pkg-for-window)
     ([f11 ?w ?s]     "windows"          pel-pkg-for-window)
     ([f11 ?x]        "shells"           pel-pkg-for-shells      (term
@@ -526,7 +527,7 @@ There should be no key binding!" keyseq))
   "History list for function `pel-help-pdf-select'.")
 
 (defun pel-help-open-pdf (topic &optional open-web-page)
-  "Open PDF help for TOPIC string potentially OPEN_WEB-PAGE."
+  "Open PDF help for TOPIC string potentially OPEN-WEB-PAGE."
   (browse-url (pel-pdf-file-url topic open-web-page)))
 
 ;;-pel-autoload
@@ -607,21 +608,29 @@ This is only required for the libraries that cannot be found
 with the existing code, such as when the group name is different
 enough from the feature name.")
 
+(defconst pel--group-for-library-without-group
+  '(("windresize"  . "convenience"))
+  "Maps a feature name to the customization group it uses.
+Some libraries unfortunately do not define their own customization group and
+instead place their user-option variables into a generic Emacs customization
+group.  This maps the feature name of such a library, which PEL uses in that
+case, to the group name it uses.")
+
 (defun pel--locate-library-for (group)
   "Attempts to locate a library for the specified GROUP.
 Return the file-path of the library if found, nil otherwise.
 Attempts to find a library that has the same name as the group,
-if that fails, it tires to see if this library is in the list
+if that fails, it tries to see if this library is in the list
 of `pel--group-library-names' associated list and tries with that
 instead."
   ;; If a specified library name exists for a group, use that before
-  ;; trying to parse a file with the same group name.
-  (let ((libname (cdr (assoc group pel--group-library-names))))
-    (if libname
-        (locate-library libname)
-      ;; if nothing is in the table try using a file name with the
-      ;; same name as the group
-      (locate-library group))))
+    ;; trying to parse a file with the same group name.
+    (let ((libname (cdr (assoc group pel--group-library-names))))
+      (if libname
+          (locate-library libname)
+        ;; if nothing is in the table try using a file name with the
+        ;; same name as the group
+        (locate-library group))))
 
 (defun pel--group-isin-libfile (group)
   "Return non-nil if customize GROUP is defined in an accessible ELisp file.
@@ -649,7 +658,6 @@ user to load it before customizing it.
 If OTHER-WINDOW is non-nil display in other window."
   (when (symbolp group)
     (setq group (symbol-name group)))
-
   (if (pel--isa-custom-group-p group)
       (customize-group group other-window)
     (let ((file-path (pel--group-isin-libfile group)))
@@ -664,12 +672,35 @@ If OTHER-WINDOW is non-nil display in other window."
               (customize-group group other-window))
             ;; user entered no: clear the message area
             (message nil)))
-        (user-error "Customization group '%s' currently unknown.\n\
+        ;; Nothing found for the requested group.  Perhaps the library
+        ;; does not use its own group but unfortunately uses one of Emacs
+        ;; default groups.  Use `pel--group-for-library-without-group'
+        ;; association for that.  If it's not there raise an error.
+        (let ((candidate (cdr (assoc group
+                                     pel--group-for-library-without-group))))
+          (if candidate
+              (progn
+                (unless (featurep (intern group))
+                  (if (y-or-n-p (format
+                                 "There is no specific customization for %s.
+Unfortunately it places its user-options inside the group %s instead.
+You may be able to see its user-options there.
+If you don't see them try searching with a prefix starting with \"%s-\"
+without the quotes.
+The %s library is not yet loaded.  Load it first and open the %s group? "
+                                 group candidate group group candidate))
+                      (load-library group)
+                    ;; user entered no: clear the message area
+                    (message nil)))
+                (when (featurep (intern group))
+                  (customize-group candidate other-window)
+                  (setq group candidate)))
+            (user-error "Customization group '%s' currently unknown.\n\
 PEL cannot locate a file that defines this group.\n\
  It is also not identified in pel--group-library-names.\n\
 Is it installed? If not set PEL user option to activate it.\n\
 To customize it manually load the library where this group is defined"
-                    group)))))
+                        group)))))))
 
 ;;-pel-autoload
 (defun pel-customize-pel (&optional other-window)
@@ -858,7 +889,7 @@ KEY sequence then create function bindings under the PREFIX
 ;; --
 
 (defun pel--mode-hook-maybe-call (fct mode hook &optional append)
-  "Schedule FCT as the MODE HOOK and call it if buffer is currently in that MODE.
+  "Schedule FCT as the MODE HOOK: call it if buffer is currently in that MODE.
 The function FCT is added at the beginning of the hook list unless the
 optional argument APPEND is non-nil, in which case it is added at the end."
   (add-hook hook fct append)

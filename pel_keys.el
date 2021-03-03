@@ -5090,7 +5090,7 @@ the ones defined from the buffer now."
 ;; Use the global local winner-mode, but don't use its key bindings;
 ;; use some in the '<f11> w' group:
 
-;; Used: # B O S b d f h k m n o p s v x
+;; Used: # B O S b d f h k m n o p r s v x
 ;;
 (define-pel-global-prefix pel:window (kbd "<f11> w"))
 (define-key pel:window    "B"  #'switch-to-buffer-other-window)
@@ -5108,6 +5108,7 @@ the ones defined from the buffer now."
 ;; - x: ace-window
 ;; - n: winner
 ;; - p: winner
+;; - r: windresize
 ;; - s: window size operations
 
 ;; --
@@ -5175,6 +5176,14 @@ the ones defined from the buffer now."
     ;; turn on the global minor mode
     (declare-function winner-mode "winner")
     (winner-mode t)))
+
+(when pel-use-windresize
+  (use-package windresize
+    :ensure t
+    :pin gnu
+    :commands windresize
+    :init
+    (define-key pel:window "r" 'windresize)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> w d`` : Windows dedicated operations
