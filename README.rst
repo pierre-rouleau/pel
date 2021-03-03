@@ -12,8 +12,9 @@ PEL -- Pragmatic Environment Library for Emacs
 
 
 - Tired of writing Emacs configuration code? 🤯
-- Ever declared `.emacs bankruptcy`_? 😰
+- Afraid of or ever declared `.emacs bankruptcy`_? 😰
 - Don't want to spend your time writing Emacs Lisp code? 😳
+- Need to quickly access help now and later on specific topic? 🤔
 - Want to learn Emacs and try several built-in and external packages? 😇
 
 PEL might be for you!
