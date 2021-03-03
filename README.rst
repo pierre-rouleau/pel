@@ -21,7 +21,7 @@ PEL might be for you!
 - PEL builds on `Emacs easy customization`_ to let you pick and choose various
   behaviours and packages without the need for writing Emacs Lisp code.
 
-  - PEL controls installation, configuration and activation of over 150
+  - PEL controls installation, configuration and activation of **over 150**
     *top-level* [1]_ external packages through the use of easy-to-setup
     customization user-options.  These have a name that start with the
     "``pel-use-``" prefix.
