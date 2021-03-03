@@ -21,6 +21,23 @@ PEL might be for you!
 - PEL builds on `Emacs easy customization`_ to let you pick and choose various
   behaviours and packages without the need for writing Emacs Lisp code.
 
+  - PEL controls installation, configuration and activation of over 150
+    *top-level* [1]_ external packages through the use of easy-to-setup
+    customization user-options.  These have a name that start with the
+    "``pel-use-``" prefix.
+    See the manual `built-in and external Emacs packages`_ section.
+
+    - PEL integrates these packages and adds a large number of key bindings
+      **that mostly do not interfere with the standard Emacs key bindings**
+      (except for a very small few documented ones).
+
+    - PEL controls the activation of the loading of the selected packages, with
+      emphasis on:
+
+      - reducing Emacs initialization time to a minimum [2]_ and,
+      - providing key bindings when Emacs is running in both graphics mode and
+        terminal mode.
+
   - PEL provides several context-sensitive key sequences to access
     customization groups for PEL, Emacs and external packages, to help you
     fine tune your Emacs customization quickly.
@@ -32,20 +49,6 @@ PEL might be for you!
     ``init.el`` file, providing an extra degree of freedom and control when
     you same these files in a (D)VCS. Save and restore your configurations
     from Git, Mercurial or any VCS.
-
-- PEL integrates a large and growing set of `built-in and external Emacs packages`_,
-  and adds a large number of key bindings **that mostly do not interfere with the standard
-  Emacs key bindings** (except for a very small few documented ones).
-- PEL controls the activation of the loading of the selected packages, with
-  emphasis on:
-
-  - reducing Emacs initialization time to a minimum and,
-  - providing key bindings when Emacs is running in both graphics mode and
-    terminal mode.
-
-  - On my system with 182 packages with benchmark-init on I get 0.3 to 0.4 seconds
-    on a 2014 iMac running macOS Mojave in terminal mode and 0.6 seconds in
-    graphics mode, and get similar times on Linux running inside VMs.
 
 - PEL documentation and code emphasizes the ability to execute commands in
   both terminal and graphics mode.
@@ -83,6 +86,14 @@ created and new features developed.  The evolution is described in the `NEWS fil
 
 Questions, comments, constructive criticism, suggestions and requests are always welcome.
 Drop me a note in the wiki_ or in the `discussion board`_!
+
+
+*Notes*:
+
+.. [1] An external package may have dependencies.  The dependencies are also installed.
+.. [2] **Quick initialization**: On my system with 182 packages with benchmark-init on I get 0.3 to 0.4 seconds
+       on a 2014 iMac running macOS Mojave in terminal mode and 0.6 seconds in
+       graphics mode, and get similar times on Linux running inside VMs.
 
 .. links
 
