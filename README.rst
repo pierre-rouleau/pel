@@ -91,7 +91,10 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 
 *Notes*:
 
-.. [1] An external package may have dependencies.  The dependencies are also installed.
+.. [1] An external package may have dependencies.  The dependencies are also
+       installed. PEL currently provides access to over 150 top-level
+       packages. The actual number of packages is larger when counting their dependencies.
+
 .. [2] **Quick initialization**: On my system with 182 packages with benchmark-init on I get 0.3 to 0.4 seconds
        on a 2014 iMac running macOS Mojave in terminal mode and 0.6 seconds in
        graphics mode, and get similar times on Linux running inside VMs.
