@@ -4501,7 +4501,9 @@ the ones defined from the buffer now."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> m`` : Multiple Cursors
 
-(when (or pel-use-multiple-cursors pel-use-iedit pel-use-lispy)
+(when (or pel-use-multiple-cursors
+          pel-use-iedit
+          pel-use-lispy)
   (define-pel-global-prefix pel:mcursors (kbd "<f11> m"))
   (when pel-use-multiple-cursors
     (use-package multiple-cursors
@@ -4510,12 +4512,32 @@ the ones defined from the buffer now."
       :commands (mc/edit-lines
                  mc/mark-next-like-this
                  mc/mark-previous-like-this
-                 mc/mark-all-tlike-this)
+                 mc/mark-all-like-this)
       :init
       (define-key pel:mcursors "m" 'mc/edit-lines)
-      (define-key pel:mcursors "n" 'mc/mark-next-like-this)
-      (define-key pel:mcursors "p" 'mc/mark-previous-like-this)
-      (define-key pel:mcursors "a" 'mc/mark-all-like-this)))
+      (define-key pel:mcursors "a" 'mc/mark-all-like-this)
+
+      (define-key pel:mcursors "n"         'mc/mark-next-like-this)
+      (define-key pel:mcursors "p"         'mc/mark-previous-like-this)
+      (define-key pel:mcursors (kbd "M-n") 'mc/unmark-next-like-this)
+      (define-key pel:mcursors (kbd "M-p") 'mc/unmark-previous-like-this)
+      (define-key pel:mcursors ">"         'mc/skip-to-next-like-this)
+      (define-key pel:mcursors "<"         'mc/skip-to-previous-like-this)
+
+      (define-key pel:mcursors "w"         'mc/mark-next-word-like-this)
+      (define-key pel:mcursors "W"         'mc/mark-previous-word-like-this)
+      (define-key pel:mcursors (kbd "M-w") 'mc/mark-next-like-this-word)
+      (define-key pel:mcursors (kbd "C-w") 'mc/mark-next-like-this-word)
+
+      (define-key pel:mcursors "s"         'mc/mark-next-symbol-like-this)
+      (define-key pel:mcursors "S"         'mc/mark-previous-symbol-like-this)
+      (define-key pel:mcursors (kbd "M-s") 'mc/mark-next-like-this-symbol)
+
+      ;; TODO: put key in mc/keymap
+      (autoload 'mc-hide-unmatched-lines-mode "mc-hide-unmatched-line-mode")
+      (define-key pel:mcursors (kbd "M-/") 'mc-hide-unmatched-lines-mode)
+      ))
+
   (when (or pel-use-iedit pel-use-lispy)
     (define-key pel:mcursors "i" 'iedit-mode)))
 
