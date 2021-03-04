@@ -146,7 +146,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     - Add ``<f11> m n`` key sequence binding to *mc/mark-next-like-this*
     - Add ``<f11> m p`` key sequence binding to *mc/mark-previous-like-this*
     - Add ``<f11> m a`` key sequence binding to *mc/mark-all-like-this*
-    - ... and several other commands: there's a total of 37 of them,
+    - ... and several other commands: there's a total of 35 of them,
       all documented in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/cursor.pdf][⅀ Cursor PDF]].
 - Update: *Customization*:
   - New: *pel-auto-mode-alist* user option in the Pel Base Emacs group allows
