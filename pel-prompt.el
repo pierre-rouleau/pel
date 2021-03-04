@@ -1,12 +1,14 @@
 ;;; pel-prompt.el --- PEL Prompt Utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
-
-;; Author: Pierre Rouleau <prouleau001@gmail.com>
+;; Created   : Saturday, February 29 2020.
+;; Author    : Pierre Rouleau <prouleau001@gmail.com>
+;; Time-stamp: <2021-03-04 08:50:35, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
 
+;; Copyright (C) 2020, 2021  Pierre Rouleau
+;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
@@ -208,7 +210,7 @@ Each choice is a list of 3 elements:
 (defun pel--prompt-for (title selection &optional current nil-value)
   "Return a prompt string with TITLE for SELECTION.
 SELECTION is a list of (char prompt value).
-CURRENT optionally identifies the currently used value. It may hold
+CURRENT optionally identifies the currently used value.  It may hold
 the spacial value :no-current-value to prevent display of current value.
 
 NIL-VALUE optional string identifies meaning for a nil value.  It is
@@ -219,10 +221,12 @@ value is not part of the SELECTION."
           title
           (if (eq current :no-current-value)
               "Select"
-            (format " [%s]. Select"
-                    (or (pel--var-value-description current selection)
-                        nil-value
-                        "?")))
+            (let ((initial-value (or (pel--var-value-description current
+                                                                 selection)
+                                     nil-value)))
+              (if initial-value
+                  (format " [%s]. Select" initial-value)
+                "")))
           (mapconcat (lambda (elt)
                        (format "%c: %s"
                                (car elt) (cadr elt)))
@@ -261,7 +265,7 @@ value is not part of the SELECTION."
 The list of choices use index characters starting at 1 unless
 FIRST-IDX is provided: a character.
 Return the selected symbol.
-TITLE   := a prompt string. It should end with a space.
+TITLE   := a prompt string.  It should end with a space.
 SYMBOLS := a list of symbols."
   (let* ((choices '())
          (idx     (or first-idx ?1))
@@ -283,7 +287,7 @@ SYMBOLS := a list of symbols."
 The list of choices use index characters starting at 1 unless
 FIRST-IDX is provided: a character.
 Return the selected symbol.
-TITLE   := a prompt string. It should end with a space.
+TITLE   := a prompt string.  It should end with a space.
 STRINGS := a list of strings."
   (let* ((choices '())
          (idx     (or first-idx ?1))
