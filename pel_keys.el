@@ -4498,7 +4498,7 @@ the ones defined from the buffer now."
 (define-key pel:linectrl "t"            #'toggle-truncate-lines)
 (define-key pel:linectrl "v"            #'visual-line-mode)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> m`` : Multiple Cursors
 
 (when (or pel-use-multiple-cursors
@@ -4514,24 +4514,48 @@ the ones defined from the buffer now."
                  mc/mark-previous-like-this
                  mc/mark-all-like-this)
       :init
-      (define-key pel:mcursors "m" 'mc/edit-lines)
-      (define-key pel:mcursors "a" 'mc/mark-all-like-this)
+      ;; guessing from point
+      (define-key pel:mcursors "m"         'mc/mark-all-like-this-dwim)
+      (define-key pel:mcursors (kbd "M-m") 'mc/mark-all-dwim)
+      (define-key pel:mcursors "."         'mc/mark-more-like-this-extended)
+      ;; lines
+      (define-key pel:mcursors "l"         'mc/edit-lines)
+      (define-key pel:mcursors (kbd "C-a") 'mc/edit-beginnings-of-lines)
+      (define-key pel:mcursors (kbd "C-e") 'mc/edit-ends-of-lines)
+      ;; all like this
+      (define-key pel:mcursors "a"           'mc/mark-all-like-this)
+      (define-key pel:mcursors (kbd "C-M-a") 'mc/mark-all-like-this-in-defun)
+      (define-key pel:mcursors "?"           'mc/mark-all-in-region)
 
+      ;; like this: next and previous, mark, unmark, skip & extended
       (define-key pel:mcursors "n"         'mc/mark-next-like-this)
       (define-key pel:mcursors "p"         'mc/mark-previous-like-this)
-      (define-key pel:mcursors (kbd "M-n") 'mc/unmark-next-like-this)
-      (define-key pel:mcursors (kbd "M-p") 'mc/unmark-previous-like-this)
-      (define-key pel:mcursors ">"         'mc/skip-to-next-like-this)
-      (define-key pel:mcursors "<"         'mc/skip-to-previous-like-this)
-
-      (define-key pel:mcursors "w"         'mc/mark-next-word-like-this)
-      (define-key pel:mcursors "W"         'mc/mark-previous-word-like-this)
-      (define-key pel:mcursors (kbd "M-w") 'mc/mark-next-like-this-word)
-      (define-key pel:mcursors (kbd "C-w") 'mc/mark-next-like-this-word)
-
-      (define-key pel:mcursors "s"         'mc/mark-next-symbol-like-this)
-      (define-key pel:mcursors "S"         'mc/mark-previous-symbol-like-this)
-      (define-key pel:mcursors (kbd "M-s") 'mc/mark-next-like-this-symbol)
+      (define-key pel:mcursors "N"         'mc/unmark-next-like-this)
+      (define-key pel:mcursors "P"         'mc/unmark-previous-like-this)
+      (define-key pel:mcursors (kbd "M-n") 'mc/skip-to-next-like-this)
+      (define-key pel:mcursors (kbd "M-p") 'mc/skip-to-previous-like-this)
+      ;; word
+      (define-key pel:mcursors "w"           'mc/mark-next-word-like-this)
+      (define-key pel:mcursors (kbd "M-w")   'mc/mark-next-like-this-word)
+      (define-key pel:mcursors "W"           'mc/mark-previous-word-like-this)
+      (define-key pel:mcursors (kbd "M-W")   'mc/mark-previous-like-this-word)
+      (define-key pel:mcursors (kbd "C-w")   'mc/mark-all-words-like-this)
+      (define-key pel:mcursors (kbd "C-M-w") 'mc/mark-all-words-like-this-in-defun)
+      ;; symbol
+      (define-key pel:mcursors "s"           'mc/mark-next-symbol-like-this)
+      (define-key pel:mcursors (kbd "M-s")   'mc/mark-next-like-this-symbol)
+      (define-key pel:mcursors "S"           'mc/mark-previous-symbol-like-this)
+      (define-key pel:mcursors (kbd "M-S")   'mc/mark-previous-like-this-symbol)
+      (define-key pel:mcursors (kbd "C-s")   'mc/mark-all-symbols-like-this)
+      (define-key pel:mcursors (kbd "C-M-s") 'mc/mark-all-symbols-like-this-in-defun)
+      ;; special
+      (define-key pel:mcursors "c"         'set-rectangular-region-anchor)
+      (define-key pel:mcursors "t"         'mc/mark-sgml-tag-pair)
+      (define-key pel:mcursors "0"         'mc/insert-numbers)
+      (define-key pel:mcursors "A"         'mc/insert-letters)
+      (define-key pel:mcursors "o"         'mc/sort-regions)
+      (define-key pel:mcursors "O"         'mc/reverse-regions)
+      (define-key pel:mcursors "|"         'mc/vertical-align-with-space)
 
       ;; TODO: put key in mc/keymap
       (autoload 'mc-hide-unmatched-lines-mode "mc-hide-unmatched-line-mode")
@@ -4541,7 +4565,7 @@ the ones defined from the buffer now."
   (when (or pel-use-iedit pel-use-lispy)
     (define-key pel:mcursors "i" 'iedit-mode)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> o`` : ordering (sorting)
 
 (define-pel-global-prefix pel:order (kbd "<f11> o"))
@@ -5877,6 +5901,7 @@ Simulate a F7 prefix key unless DONT-SIMULATE is non-nil."
       ("|"      pel--maybe-vline-mode "rightmost visible limit" :column "Show")
       ("<f7>"      nil                           "cancel"      :column "End")))
 
+  ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   ;; Temporary global binding that will be removed after
   ;; being used once.  If located above the use-package
   ;; statements this global-set-key statement provokes use-package
@@ -5887,7 +5912,6 @@ Simulate a F7 prefix key unless DONT-SIMULATE is non-nil."
   ;; it and preventing the invalid use-package error reporting.
   (when (fboundp 'pel--load-hydra)
     (global-set-key (kbd "<f7>") 'pel--load-hydra)))
-
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel_keys)
