@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, September 14 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-06 13:27:52, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-06 13:31:06, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -50,6 +50,7 @@
 ;; `pel--load-hydra' still exists to call it, the `fboundp' check does what is
 ;; needed.
 
+(require 'pel--base)
 (when (fboundp 'pel--load-hydra)
   (pel--load-hydra :no-request)
   (pel-require 'lispy :install-when-missing))
