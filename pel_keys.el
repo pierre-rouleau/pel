@@ -2548,6 +2548,8 @@ MODE must be a symbol."
 
 (when pel-use-lispy
   (use-package pel-lispy
+    :ensure t
+    :pin melpa
     :commands (pel-lispy-mode
                lispy-describe-inline
                lispy-arglist-inline)
