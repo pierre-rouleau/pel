@@ -1731,9 +1731,12 @@ interactively."
 ;; ---------------------------------------------------------------------------
 ;; - AppleScript support
 (when pel-use-applescript
+  (cl-eval-when 'load
+    (pel-install-github-file "pierre-rouleau/apples-mode/master" "apples-mode.el"))
   (use-package apples-mode
-    :ensure t
-    :pin melpa
+    ;; the Melpa package does not seemed maintained. Use my copy instead.
+    ;; :ensure t
+    ;; :pin melpa
     :commands (apples-mode
                apples-open-scratch)
     :init
