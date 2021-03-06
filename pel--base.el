@@ -680,7 +680,7 @@ Usage Example:
 
 FEATURE is a symbol.
 
-If optional PACKAGE is non-nil is specified and FEATURE is not loaded,
+If optional PACKAGE is specified (non-nil) and FEATURE is not loaded,
 try to install the specified package if it is not already available
 and try checking for the presence of FEATURE again, with the same behaviour.
 

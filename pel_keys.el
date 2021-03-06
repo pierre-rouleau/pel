@@ -2547,9 +2547,8 @@ MODE must be a symbol."
     (define-key prefix "9"         'lispy-out-forward-newline)))
 
 (when pel-use-lispy
+  ;; The pel-lispy file controls the loading of lispy.
   (use-package pel-lispy
-    :ensure t
-    :pin melpa
     :commands (pel-lispy-mode
                lispy-describe-inline
                lispy-arglist-inline)
