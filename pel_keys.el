@@ -2547,7 +2547,8 @@ MODE must be a symbol."
     (define-key prefix "4"         'lispy-x)
     (define-key prefix "7"         'lispy-cursor-down)
     (define-key prefix "8"         'lispy-parens-down)
-    (define-key prefix "9"         'lispy-out-forward-newline)))
+    (define-key prefix "9"         'lispy-out-forward-newline)
+    (define-key prefix (kbd "DEL") 'lispy-kill-at-point)))
 
 (when pel-use-lispy
   ;; The pel-lispy file controls the loading of lispy.
