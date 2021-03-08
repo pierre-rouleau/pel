@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-21 16:41:03, updated by Pierre Rouleau>
+;; Time-stamp: <2021-02-26 23:13:22, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -577,6 +577,7 @@ When stopping, use the reverse order."
 
 (defmacro pel-map-helm (key start-helm helm-cmd other-cmd)
   "Map KEY to HELM-CMD when START-HELM otherwise to OTHER-CMD."
+  (declare (debug t))
   `(global-set-key ,key (if ,start-helm ,helm-cmd ,other-cmd)))
 
 (defun pel--activate-completion-mode (mode start)
