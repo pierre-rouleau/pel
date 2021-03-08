@@ -1618,7 +1618,7 @@ interactively."
 ;; E   - Elm
 ;; F   - FORTRAN
 ;; G   - Groovy
-;; J   - Clojure
+;; J   - Java
 ;; L   - Common Lisp
 ;; M   - Makefile
 ;; N   - NetRexx
@@ -1650,13 +1650,14 @@ interactively."
 ;; C-c - CMake
 ;; C-e - Eiffel
 ;; C-g - Prolog
-;; C-j - Java
+;; C-j - Clojure
+;; C-h - Hy
 ;; C-l - LFE
 ;; C-m - ReasonML
 ;; C-o - Objective-C
 ;; C-p - Pike
-;; C-r - Red
-;; C-s - Smalltalk
+;; C-r - Racket
+;; C-s - Scheme
 ;; C-u - Raku
 ;; M-a - AsciiDoc
 ;; M-g - GraphViz Dot
@@ -2531,6 +2532,9 @@ MODE must be a symbol."
 
   (define-key prefix   (kbd "M-9") #'show-paren-mode)
   (define-key prefix   (kbd "M-l")  'pel-toggle-lisp-modes)
+  (define-key prefix   (kbd "M-p") #'superword-mode)
+  (define-key prefix   ")"         #'check-parens)
+
   (when pel-use-parinfer
     (define-key prefix (kbd "M-i")  'parinfer-mode)
     (define-key prefix (kbd "M-I")  'parinfer-toggle-mode))
@@ -2610,11 +2614,9 @@ MODE must be a symbol."
 (define-pel-global-prefix pel:elisp-skel (kbd "<f11> SPC l <f12>"))
 
 (define-key pel:for-elisp "D"  'pel-add-dir-to-loadpath)
-(define-key pel:for-elisp (kbd "M-p")  #'superword-mode)
 (pel--lisp-languages-map-for pel:for-elisp)
 ;;
 
-(define-key pel:for-elisp   ")" #'check-parens)
 (define-key pel:for-elisp   "."  'pel-find-thing-at-point)
 (define-key pel:for-elisp   "t"  'pel-run-ert)
 (when pel-use-plantuml
@@ -2737,9 +2739,6 @@ MODE must be a symbol."
     (define-key pel:for-lisp "G" 'pel-render-commented-graphviz-dot))
   (pel--lisp-languages-map-for pel:for-lisp)
   ;;
-  (define-key pel:for-lisp      ")"     #'check-parens)
-  (define-key pel:for-lisp (kbd "M-p")  #'superword-mode)
-  ;;
   ;; activate the <f12> key binding for lisp-mode
   (pel--mode-hook-maybe-call
    '(lambda ()
@@ -2753,6 +2752,23 @@ MODE must be a symbol."
     :defer t
     :init
     (cl-eval-when 'compile (require 'slime nil :no-error))))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-r`` : Racket
+(when pel-use-racket
+
+  (define-pel-global-prefix pel:for-racket (kbd "<f11> SPC C-r"))
+  ;; activate the <f12> key binding for racket-mode
+  (pel--mode-hook-maybe-call
+   '(lambda ()
+      (pel-local-set-f12-M-f12 'pel:for-racket))
+   'racket-mode 'racket-mode-hook)
+  (pel--lisp-languages-map-for pel:for-racket)
+
+  (use-package racket-mode
+    :ensure t
+    :pin melpa
+    :commands racket-mode))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC p`` : Python programming

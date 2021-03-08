@@ -545,6 +545,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - Update: *Python*
     - Modified: binding to rainbow-delimiters-mode to ``<f12> M-r`` like it is
       for other programming languages.
+  - New: *Racket*
+    - New: Add preliminary support for the Racket programming language.
+      - The user-option variable ``pel-use-racket`` activates it, using the
+        *racket-mode* external package.
+      - The PEL ``<f12>`` LISP hot key is available in that mode, along with
+        what is available to Emacs Lips and Common Lisp, including *lispy*.
   - New: *REXX*:
     - Add support for REXX programming language via a [[https://github.com/pierre-rouleau/rexx-mode][my forked rexx-mode
       GitHub project]] which provides:

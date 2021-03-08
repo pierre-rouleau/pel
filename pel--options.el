@@ -80,6 +80,7 @@
 ;;           - pel-sexp-form-navigation
 ;;         - pel-pkg-for-elisp
 ;;           - pel-sexp-form-navigation
+;;         - pel-pkg-for-racket
 ;;       - pel-pkg-for-beam-vm
 ;;         - pel-pkg-for-elixir
 ;;         - pel-pkg-for-erlang
@@ -2844,8 +2845,8 @@ Requires gocode."
 
 Note that lispy has commands that use find-file-in-project
 or projectile.  PEL supports these package with, respectively:
-- `pel-use-find-file-in-project'
-- `pel-use-projectile'
+- User-option variable `pel-use-find-file-in-project'
+- User-option variable `pel-use-projectile'
 
 I strongly recommend using projectile.  ffip takes an enormous
 amount of time to search for a project (even with fd)."
@@ -2870,8 +2871,8 @@ amount of time to search for a project (even with fd)."
   "List of major modes that automatically activate `lispy-mode'.
 
 The lispy mode is a powerful editing mode for Lisp programming languages.
-You can enable it for the major modes listed in the
-`pel-allowed-modes-for-lispy'.
+You can enable it for the major modes listed in the user-option
+variable `pel-allowed-modes-for-lispy'.
 
 PEL will ignore other modes."
 
@@ -2979,6 +2980,24 @@ A great tool for learning new Emacs Lisp functions."
   :link '(url-link :tag "suggest @ GitHub"
                    "https://github.com/Wilfred/suggest.el")
   :group 'pel-pkg-for-elisp
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Racket Support
+;; --------------
+(defgroup pel-pkg-for-racket nil
+  "PEL customization for Racket programming language support."
+  :group 'pel-pkg-for-lisp)
+
+(defcustom pel-use-racket nil
+  "Control whether PEL support the Racket programming language.
+
+When this is activated, PEL activates the racket-mode
+package."
+  :group 'pel-pkg-for-racket
+  :link '(url-link :tag "racket-mode @ GitHub"
+                   "https://github.com/greghendershott/racket-mode")
   :type 'boolean
   :safe #'booleanp)
 
