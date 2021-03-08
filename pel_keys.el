@@ -2514,7 +2514,7 @@ MODE must be a symbol."
 ;; Lisp-style programming Languages
 ;; --------------------------------
 
-(defun pel--lispy-map-for (prefix)
+(defun pel--lisp-languages-map-for (prefix)
   "Map in the PEL keys for Lisp-like mode in the keymap for PREFIX."
   (define-key prefix (kbd "<down>")   'pel-elisp-beginning-of-next-form)
   (define-key prefix (kbd "<up>")     'pel-elisp-beginning-of-previous-form)
@@ -2548,20 +2548,30 @@ MODE must be a symbol."
     (define-key prefix "7"         'lispy-cursor-down)
     (define-key prefix "8"         'lispy-parens-down)
     (define-key prefix "9"         'lispy-out-forward-newline)
-    (define-key prefix (kbd "DEL") 'lispy-kill-at-point)))
+    (define-key prefix (kbd "DEL") 'lispy-kill-at-point)
+    ))
+
+(defun pel--activate-lispy ()
+  (require 'pel-lispy nil :no-error)
+  (if (fboundp 'pel-lispy-mode)
+      (pel-lispy-mode)
+    (user-error "Failed loading pel-lispy!")))
 
 (when pel-use-lispy
+
+  (pel-add-hook-for
+   'pel-modes-activating-lispy
+   #'pel--activate-lispy
+   pel-allowed-modes-for-lispy)
+
   ;; The pel-lispy file controls the loading of lispy.
   (use-package pel-lispy
     :commands (pel-lispy-mode
                lispy-describe-inline
                lispy-arglist-inline)
     :init
-    (cl-eval-when 'compile (require 'pel-lispy nil :no-error))
-    (pel-add-hook-for
-     'pel-modes-activating-lispy
-     (lambda ()
-       (pel-lispy-mode)))))
+    (cl-eval-when 'compile
+      (require 'pel-lispy nil :no-error))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC l`` : Emacs Lisp programming
@@ -2601,7 +2611,7 @@ MODE must be a symbol."
 
 (define-key pel:for-elisp "D"  'pel-add-dir-to-loadpath)
 (define-key pel:for-elisp (kbd "M-p")  #'superword-mode)
-(pel--lispy-map-for pel:for-elisp)
+(pel--lisp-languages-map-for pel:for-elisp)
 ;;
 
 (define-key pel:for-elisp   ")" #'check-parens)
@@ -2725,7 +2735,7 @@ MODE must be a symbol."
     (define-key               pel:for-lisp "u" 'pel-render-commented-plantuml))
   (when pel-use-graphviz-dot
     (define-key pel:for-lisp "G" 'pel-render-commented-graphviz-dot))
-  (pel--lispy-map-for pel:for-lisp)
+  (pel--lisp-languages-map-for pel:for-lisp)
   ;;
   (define-key pel:for-lisp      ")"     #'check-parens)
   (define-key pel:for-lisp (kbd "M-p")  #'superword-mode)

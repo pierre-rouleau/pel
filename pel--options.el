@@ -2827,7 +2827,7 @@ Requires gocode."
   :type 'boolean
   :safe #'booleanp)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Lisp-like language support
 ;; --------------------------
 ;;
@@ -2851,10 +2851,30 @@ I strongly recommend using projectile.  ffip takes an enormous
 amount of time to search for a project (even with fd)."
   :type 'boolean
   :safe #'booleanp
+  :link `(url-link :tag "Lispy PDF" ,(pel-pdf-file-url "plm-lispy"))
   :link `(url-link :tag "abo-abo lispy" "https://github.com/abo-abo/lispy"))
 
+(defconst pel-allowed-modes-for-lispy
+  '(emacs-lisp-mode                     ; Emacs Lisp  - Lisp 2 for Emacs
+    lisp-mode                           ; Common Lisp - Lisp 2
+    lfe-mode                            ; LFE         - Lisp 2 for BEAM
+    clojure-mode                        ; Clojure     - Lisp 1 for the JVM
+    hy-mode                             ; Hy          - Lisp 1 for Python
+    scheme-mode                         ; Scheme      - Lisp 1
+    racket-mode)                        ; Racket      - Lisp 1 based on Scheme
+  "List of major modes that can use lispy.")
+;; If the mode you want is not listed above, please let me know: I will
+;; add it or will accept PRs proposing it.  Thanks.
+
 (defcustom pel-modes-activating-lispy  nil
-  "List of major modes that automatically activate `lispy-mode'."
+  "List of major modes that automatically activate `lispy-mode'.
+
+The lispy mode is a powerful editing mode for Lisp programming languages.
+You can enable it for the major modes listed in the
+`pel-allowed-modes-for-lispy'.
+
+PEL will ignore other modes."
+
   :group 'pel-pkg-for-lisp
   :type '(repeat symbol))
 

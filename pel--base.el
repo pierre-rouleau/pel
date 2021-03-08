@@ -812,21 +812,26 @@ If the value is 'with-flycheck then flycheck is toggled."
 ;; Hook control
 ;; ------------
 
-(defun pel-add-hook-for (modes-list-symbol func)
-  "Add the FUNC hook to all modes listed in the MODES-LIST-SYMBOL."
-    (dolist (mode (eval modes-list-symbol))
-      (if (and mode              ; make sure the mode is a valid symbol
-               (symbolp mode))   ; TODO: find better ways to detect major mode
-          (add-hook (pel-hook-symbol-for mode)
-                    func)
-        (display-warning
-         'pel-mode-hooks
-         (format "Invalid mode %s in the list %s.\n\
+(defun pel-add-hook-for (modes-list-symbol func &optional allowed-modes)
+  "Add the FUNC hook to all modes listed in the MODES-LIST-SYMBOL.
+When ALLOWED-MODES is specified the accepted mode list symbols in
+MODES-LIST-SYMBOL is restricted the ones in ALLOWED-MODES.
+If another mode is included in MODES-LIST-SYMBOL a warning is issued."
+  (dolist (mode (eval modes-list-symbol))
+    (if (and mode                       ; make sure the mode is a valid symbol
+             (symbolp mode)
+             (or (null allowed-modes)
+                 (memq mode allowed-modes)))
+        (add-hook (pel-hook-symbol-for mode)
+                  func)
+      (display-warning
+       'pel-mode-hooks
+       (format "Invalid mode %s in the list %s.\n\
 Change its customized value with ``M-x customize %s``"
-                 mode
-                 modes-list-symbol
-                 modes-list-symbol)
-         :error))))
+               mode
+               modes-list-symbol
+               modes-list-symbol)
+       :error))))
 
 ;;----------------------------------------------------------------------------
 ;; Basic functions working with values and variables
