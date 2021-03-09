@@ -2281,18 +2281,6 @@ MODE must be a symbol."
       ;; When any syntax checker is used with Erlang add a key to toggle it
       (define-key pel:for-erlang "!" 'pel-erlang-toggle-syntax-checker))))
 
-;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC C-l `` : LFE programming
-;; LFE := Lisp Flavoured Erlang
-
-;; Note: the pel:eXecute has the run-lfe (in the code below.)
-(when pel-use-lfe
-  (use-package lfe-mode
-    :ensure t
-    :pin melpa
-    :commands (lfe-mode
-               inferior-lfe
-               run-lfe)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC x`` : Elixir programming
@@ -2818,7 +2806,7 @@ MODE must be a symbol."
     :commands racket-mode))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC C-r`` : Scheme
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s`` : Scheme
 (when pel-use-scheme
 
   ;; Note: scheme-mode and its file associations are supported by Emacs.
@@ -2831,6 +2819,39 @@ MODE must be a symbol."
       (pel-local-set-f12-M-f12 'pel:for-scheme))
    'scheme-mode 'scheme-mode-hook)
   (pel--lisp-languages-map-for pel:for-scheme))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-l `` : LFE programming
+;; LFE := Lisp Flavoured Erlang
+
+;; Note: the pel:eXecute has the run-lfe (in the code below.)
+(when pel-use-lfe
+
+  (define-pel-global-prefix pel:for-lfe (kbd "<f11> SPC C-l"))
+  ;; activate the <f12> key binding for lfe-mode
+  (pel--mode-hook-maybe-call
+   '(lambda ()
+      (pel-local-set-f12-M-f12 'pel:for-lfe))
+   'lfe-mode 'lfe-mode-hook)
+  (pel--lisp-languages-map-for pel:for-lfe)
+
+  (use-package lfe-mode
+    :ensure t
+    :pin melpa
+    :commands (lfe-mode
+               inferior-lfe
+               run-lfe)
+    :init
+    (define-key pel:for-lfe "[" 'lfe-insert-brackets)
+    :config
+    (unless (display-graphic-p)
+      (if (boundp 'lfe-mode-map)
+          (define-key lfe-mode-map (kbd "M-[") nil)
+        (display-warning 'pel-lfe
+                         "The lfe-mode-map is not bound.
+ Cannot disable the problematic M-[ key.
+ Function keys starting with F5 will no work!"
+                         :error)))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC p`` : Python programming
