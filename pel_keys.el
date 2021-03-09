@@ -2559,14 +2559,22 @@ MODE must be a symbol."
   (require 'pel-lispy nil :no-error)
   (if (fboundp 'pel-lispy-mode)
       (pel-lispy-mode)
-    (user-error "Failed loading pel-lispy!")))
+    (display-warning
+     'pel-lispy
+     "Failed loading pel-lispy which controls the use of lispy within PEL.
+  Verify your PEL installation: refer to PEL manual."
+     :error)))
 
 (defun pel--update-lispy-keymap ()
   "Update lispy key-map according to PEL user-options."
   (if (boundp 'lispy-mode-map)
       (unless pel-enable-lispy-meta-return
         (define-key lispy-mode-map (kbd "M-RET") nil))
-    (message "lispy-mode-map not bound!")))
+    (display-warning
+     'pel-lispy
+     "The lispy-mode-map is not bound.
+  Cannot disable lispy-meta-return binding to M-RET!"
+     :error)))
 
 (when pel-use-lispy
   ;; Setup activation of Lispy for specified major modes that are allowed.
