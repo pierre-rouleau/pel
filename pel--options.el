@@ -2875,9 +2875,19 @@ You can enable it for the major modes listed in the user-option
 variable `pel-allowed-modes-for-lispy'.
 
 PEL will ignore other modes."
-
   :group 'pel-pkg-for-lisp
   :type '(repeat symbol))
+
+(defcustom pel-enable-lispy-meta-return nil
+  "Enable the lispy-meta-return binding to M-RET when on.
+
+It is off by default, since it conflicts with PEL global binding to the M-RET
+key."
+  :group 'pel-pkg-for-lisp
+  :link `(url-link :tag "Lispy meta-return @ Lispy manual"
+                   "http://oremacs.com/lispy/#lispy-shifttab")
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Common Lisp Support

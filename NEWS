@@ -435,6 +435,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     - New: ``<f12> <f12> I`` insert a C pre-processor #include statement for
       local files.
   - Update: *Lisp Languages Family*:
+    - Update: *Modes for all Lisp Languages*:
+      - Update: *Lispy mode*:
+        - The ``M-RET`` binding to *lispy-meta-return* is now controlled by
+          the *pel-enable-lispy-meta-return*, which is off by default because
+          it conflicts with PEL's global binding for M-RET, useful in Lisp
+          editing major modes.
     - Update: *Common Lisp*
       - New: Navigation keys:
         - ``<f12> <down>``   binding to ``pel-beginning-of-next-defun``,

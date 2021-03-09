@@ -2561,12 +2561,23 @@ MODE must be a symbol."
       (pel-lispy-mode)
     (user-error "Failed loading pel-lispy!")))
 
-(when pel-use-lispy
+(defun pel--update-lispy-keymap ()
+  "Update lispy key-map according to PEL user-options."
+  (if (boundp 'lispy-mode-map)
+      (unless pel-enable-lispy-meta-return
+        (define-key lispy-mode-map (kbd "M-RET") nil))
+    (message "lispy-mode-map not bound!")))
 
+(when pel-use-lispy
+  ;; Setup activation of Lispy for specified major modes that are allowed.
   (pel-add-hook-for
    'pel-modes-activating-lispy
    #'pel--activate-lispy
    pel-allowed-modes-for-lispy)
+
+  ;; Control some keys in the Lispy keyboard map.
+  (eval-after-load "lispy"
+    '(pel--update-lispy-keymap))
 
   ;; The pel-lispy file controls the loading of lispy.
   (use-package pel-lispy
