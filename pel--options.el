@@ -80,7 +80,9 @@
 ;;           - pel-sexp-form-navigation
 ;;         - pel-pkg-for-elisp
 ;;           - pel-sexp-form-navigation
+;;         - pel-pkg-for-arc
 ;;         - pel-pkg-for-racket
+;;         - pel-pkg-for-scheme
 ;;       - pel-pkg-for-beam-vm
 ;;         - pel-pkg-for-elixir
 ;;         - pel-pkg-for-erlang
@@ -3677,7 +3679,8 @@ the copyright holder value."
 
 (defgroup pel-pkg-for-lfe nil
   "PEL customization for LFE (Lisp Flavoured Erlang)."
-  :group 'pel-pkg-for-beam-vm)
+  :group 'pel-pkg-for-beam-vm
+  :group 'pel-pkg-for-lisp)
 
 (defcustom pel-use-lfe nil
   "Control whether PEL supports Elixir development."
