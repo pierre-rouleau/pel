@@ -434,90 +434,97 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       library files.
     - New: ``<f12> <f12> I`` insert a C pre-processor #include statement for
       local files.
-  - Update: *Common Lisp*
-    - New: Navigation keys:
-      - ``<f12> <down>``   binding to ``pel-beginning-of-next-defun``,
-      - ``<f12> <M-down>`` binding to ``pel-elisp-beginning-of-next-defun``,
-      - ``<f12> f n``      binding to ``pel-elisp-beginning-of-next-defun``,
-      - ``<f12> <up>``     binding to ``beginning-of-defun``
-      - ``<f12> <M-up>``   binding to ``pel-elisp-beginning-of-previous-defun``,
-      - ``<f12> f p``      binding to ``pel-elisp-beginning-of-previous-defun``,
-      - ``<f12> <left>``   binding to ``pel-end-of-previous-defun``
-      - ``<f12> <right>``  binding to ``end-of-defun``
-    - New: user option *pel-clisp-hyperspec-root* to identify the location of
-      the LispWorks Common Lisp HyperSpec HTML documentation.
-    - New: The ``<f12> <f3>`` key sequence provides access to slime
-      customization buffer.
-  - Update: *Emacs Lisp*
-    - New: Much more flexible navigation across definition forms.  The main
-      commands provide the ability to select, via customization user-option
-      variable, the target: either any top-level form, a top-level defun, any
-      defun, any defun, defmacro, defsubst, defaliast, defadvice form, or any of
-      those with eieio class, method and generic definition forms, and with or
-      without the variable definition forms.  It is also possible to identify a
-      set of forms by their name.  All of these can take effect globally but can
-      also be overridden on each buffer or globally.  The local selection is
-      done with a new command (*pel-elisp-set-navigate-target-form* bound to
-      ``<f12> M-n`` while *pel-toggle-paren-in-column-0-is-defun-start* which
-      selects how the standard Emacs form navigation commands operate, is bound
-      to  ``<f12> M-N``).
-      - New Navigation keys:
-        - ``<f12> <down>``     binding to ``pel-elisp-beginning-of-next-form``,
-        - ``<f12> <C-down>``   binding to ``pel-elisp-to-name-of-next-form``,
-        - ``<f12> <M-down>``   binding to ``pel-elisp-beginning-of-next-defun``,
-        - ``<f12> <C-M-down>`` binding to ``pel-elisp-to-name-of-next-defun``,
-        - ``<f12> f n``        binding to ``pel-elisp-beginning-of-next-defun``,
-        - ``<f12> <up>``       binding to ``pel-elisp-beginning-of-previous-form``,
-        - ``<f12> <C-up>``     binding to ``pel-elisp-to-name-of-previous-form``,
-        - ``<f12> <M-up>``     binding to ``pel-elisp-beginning-of-previous-defun``,
-        - ``<f12> <C-M-up>``   binding to ``pel-elisp-to-name-of-previous-defun``,
-        - ``<f12> f p``        binding to ``pel-elisp-beginning-of-previous-defun``,
-        - ``<f12> <left>``     binding to ``pel-end-of-previous-defun``,
-        - ``<f12> <right>``    binding to ``end-of-defun``
-      - The ``<f12> <down`` and ``<f12> <up>`` keys sequences are bound to the
-        most flexible commands: you can configure them to move to top-level
-        form, or top-level defun, any defun, etc...
-    - New: ``<f12> l v`` binding to ``pel-load-visited-file`` to load the file
-      visited in current buffer either by source or its byte-compiled instance.
-    - Modification: of the key binding of ``load-file``: changed its key binding
-      from ``<f12> e f` to ``<f12> l f``.`
-    - New: ``<f12> D`` binding to new command ``pel-add-dir-to-loadpath`` which
-      adds a directory to Emacs load-path.
-    - New: key binding ``<f12> c a`` to *disassemble*.
-      *open-paren-in-column-0-is-defun-start*.  This controls the behaviour of
-      ``beginning-of-defun`` and ``end-of-defun`` functions: whether a paren in
-      the first column is always interpreted as a start of defun, even inside
-      strings.
-      - **Use this first implementation with care**: it prevents checkdoc from
-        completing its verification.
-        I am currently trying to fix this.
-    - New: added support for *eros-mode* from the eros external package which
-      provides overlay display of the result of evaluations done by
-      *eval-last-sexp*:
-      - Set the *pel-use-eros* user-option to *t* to download and activate it.
-      - From emacs-lisp-mode, the ``<f12> E`` key sequence is bound to the
-        *eros-mode* command which toggles this mode.
-      - From emacs-lisp-mode, the ``<f12> <f3>`` key sequence brings a menu
-        from which you can select eros to bring the customization buffer to
-        configure eros, even if eros is not currently loaded.
-    - New: added support for *suggest.el* which provides *Development by
-      Example* capabilities for Emacs Lisp!
-      - Set the *pel-use-suggest* user-option to *t* to download and activate
-        it.
-      - Once activated, the ``<f12> S`` key sequence is bound to suggest in
-        emacs-lisp-mode and opens a suggest buffer where you can enter input
-        data, output data to query for functions that can provide this data
-        transformation. The <f11> SPC l S`` keys sequence is also available
-        globally.
-      - Use ``<f12> <f3>`` from emacs-lisp-mode to open suggest customzation
-       buffer and ``<f12> <f2>`` to open PEL emacs-lisp customization buffer
-       where you can activate *pel-use-suggest*.
-    - New: added support for relint: regular expression lint checker.
-      - Set the *pel-use-relint* user-option to *t* to activate it.
-      - The commands are available via the ``<f11> s x M-l`` search/regular
-        expression prefix and from the Emacs-Lisp specific ``<f12> a l``
-        analyze prefix.  Commands to lint the current buffer, file  and
-        directory tree are bound.
+  - Update: *Lisp Languages Family*:
+    - Update: *Common Lisp*
+      - New: Navigation keys:
+        - ``<f12> <down>``   binding to ``pel-beginning-of-next-defun``,
+        - ``<f12> <M-down>`` binding to ``pel-elisp-beginning-of-next-defun``,
+        - ``<f12> f n``      binding to ``pel-elisp-beginning-of-next-defun``,
+        - ``<f12> <up>``     binding to ``beginning-of-defun``
+        - ``<f12> <M-up>``   binding to ``pel-elisp-beginning-of-previous-defun``,
+        - ``<f12> f p``      binding to ``pel-elisp-beginning-of-previous-defun``,
+        - ``<f12> <left>``   binding to ``pel-end-of-previous-defun``
+        - ``<f12> <right>``  binding to ``end-of-defun``
+      - New: user option *pel-clisp-hyperspec-root* to identify the location of
+        the LispWorks Common Lisp HyperSpec HTML documentation.
+      - New: The ``<f12> <f3>`` key sequence provides access to slime
+        customization buffer.
+    - Update: *Emacs Lisp*
+      - New: Much more flexible navigation across definition forms.  The main
+        commands provide the ability to select, via customization user-option
+        variable, the target: either any top-level form, a top-level defun, any
+        defun, any defun, defmacro, defsubst, defaliast, defadvice form, or any of
+        those with eieio class, method and generic definition forms, and with or
+        without the variable definition forms.  It is also possible to identify a
+        set of forms by their name.  All of these can take effect globally but can
+        also be overridden on each buffer or globally.  The local selection is
+        done with a new command (*pel-elisp-set-navigate-target-form* bound to
+        ``<f12> M-n`` while *pel-toggle-paren-in-column-0-is-defun-start* which
+        selects how the standard Emacs form navigation commands operate, is bound
+        to  ``<f12> M-N``).
+        - New Navigation keys:
+          - ``<f12> <down>``     binding to ``pel-elisp-beginning-of-next-form``,
+          - ``<f12> <C-down>``   binding to ``pel-elisp-to-name-of-next-form``,
+          - ``<f12> <M-down>``   binding to ``pel-elisp-beginning-of-next-defun``,
+          - ``<f12> <C-M-down>`` binding to ``pel-elisp-to-name-of-next-defun``,
+          - ``<f12> f n``        binding to ``pel-elisp-beginning-of-next-defun``,
+          - ``<f12> <up>``       binding to ``pel-elisp-beginning-of-previous-form``,
+          - ``<f12> <C-up>``     binding to ``pel-elisp-to-name-of-previous-form``,
+          - ``<f12> <M-up>``     binding to ``pel-elisp-beginning-of-previous-defun``,
+          - ``<f12> <C-M-up>``   binding to ``pel-elisp-to-name-of-previous-defun``,
+          - ``<f12> f p``        binding to ``pel-elisp-beginning-of-previous-defun``,
+          - ``<f12> <left>``     binding to ``pel-end-of-previous-defun``,
+          - ``<f12> <right>``    binding to ``end-of-defun``
+        - The ``<f12> <down`` and ``<f12> <up>`` keys sequences are bound to the
+          most flexible commands: you can configure them to move to top-level
+          form, or top-level defun, any defun, etc...
+      - New: ``<f12> l v`` binding to ``pel-load-visited-file`` to load the file
+        visited in current buffer either by source or its byte-compiled instance.
+      - Modification: of the key binding of ``load-file``: changed its key binding
+        from ``<f12> e f` to ``<f12> l f``.`
+      - New: ``<f12> D`` binding to new command ``pel-add-dir-to-loadpath`` which
+        adds a directory to Emacs load-path.
+      - New: key binding ``<f12> c a`` to *disassemble*.
+        *open-paren-in-column-0-is-defun-start*.  This controls the behaviour of
+        ``beginning-of-defun`` and ``end-of-defun`` functions: whether a paren in
+        the first column is always interpreted as a start of defun, even inside
+        strings.
+        - **Use this first implementation with care**: it prevents checkdoc from
+          completing its verification.
+          I am currently trying to fix this.
+      - New: added support for *eros-mode* from the eros external package which
+        provides overlay display of the result of evaluations done by
+        *eval-last-sexp*:
+        - Set the *pel-use-eros* user-option to *t* to download and activate it.
+        - From emacs-lisp-mode, the ``<f12> E`` key sequence is bound to the
+          *eros-mode* command which toggles this mode.
+        - From emacs-lisp-mode, the ``<f12> <f3>`` key sequence brings a menu
+          from which you can select eros to bring the customization buffer to
+          configure eros, even if eros is not currently loaded.
+      - New: added support for *suggest.el* which provides *Development by
+        Example* capabilities for Emacs Lisp!
+        - Set the *pel-use-suggest* user-option to *t* to download and activate
+          it.
+        - Once activated, the ``<f12> S`` key sequence is bound to suggest in
+          emacs-lisp-mode and opens a suggest buffer where you can enter input
+          data, output data to query for functions that can provide this data
+          transformation. The <f11> SPC l S`` keys sequence is also available
+          globally.
+        - Use ``<f12> <f3>`` from emacs-lisp-mode to open suggest customzation
+         buffer and ``<f12> <f2>`` to open PEL emacs-lisp customization buffer
+         where you can activate *pel-use-suggest*.
+      - New: added support for relint: regular expression lint checker.
+        - Set the *pel-use-relint* user-option to *t* to activate it.
+        - The commands are available via the ``<f11> s x M-l`` search/regular
+          expression prefix and from the Emacs-Lisp specific ``<f12> a l``
+          analyze prefix.  Commands to lint the current buffer, file  and
+          directory tree are bound.
+    - New: *Racket*
+      - New: Add preliminary support for the Racket programming language.
+        - The user-option variable ``pel-use-racket`` activates it, using the
+          *racket-mode* external package.
+        - The PEL ``<f12>`` LISP hot key is available in that mode, along with
+          what is available to Emacs Lips and Common Lisp, including *lispy*.
   - Update: *Erlang*:
     - New: Add Speedbar support for Erlang, showing the functions in the .erl,
       .hrl and .escript files.
@@ -545,12 +552,6 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - Update: *Python*
     - Modified: binding to rainbow-delimiters-mode to ``<f12> M-r`` like it is
       for other programming languages.
-  - New: *Racket*
-    - New: Add preliminary support for the Racket programming language.
-      - The user-option variable ``pel-use-racket`` activates it, using the
-        *racket-mode* external package.
-      - The PEL ``<f12>`` LISP hot key is available in that mode, along with
-        what is available to Emacs Lips and Common Lisp, including *lispy*.
   - New: *REXX*:
     - Add support for REXX programming language via a [[https://github.com/pierre-rouleau/rexx-mode][my forked rexx-mode
       GitHub project]] which provides:
