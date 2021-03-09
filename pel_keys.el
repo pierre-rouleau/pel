@@ -2782,6 +2782,21 @@ MODE must be a symbol."
     :commands racket-mode))
 
 ;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-r`` : Scheme
+(when pel-use-scheme
+
+  ;; Note: scheme-mode and its file associations are supported by Emacs.
+  ;;       Just activate the <f12> key for Scheme.
+
+  (define-pel-global-prefix pel:for-scheme (kbd "<f11> SPC C-s"))
+  ;; activate the <f12> key binding for scheme-mode
+  (pel--mode-hook-maybe-call
+   '(lambda ()
+      (pel-local-set-f12-M-f12 'pel:for-scheme))
+   'scheme-mode 'scheme-mode-hook)
+  (pel--lisp-languages-map-for pel:for-scheme))
+
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC p`` : Python programming
 (when pel-use-python
 

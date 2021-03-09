@@ -3012,6 +3012,19 @@ package."
   :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Scheme Support
+;; --------------
+(defgroup pel-pkg-for-scheme nil
+  "PEL customization for Scheme programming language support."
+  :group 'pel-pkg-for-lisp)
+
+(defcustom pel-use-scheme nil
+  "Control whether PEL support the Scheme programming language."
+  :group 'pel-pkg-for-scheme
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Inter-S-Expression Navigation
 ;; -----------------------------
 (defgroup pel-sexp-form-navigation nil

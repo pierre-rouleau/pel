@@ -530,7 +530,13 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
         - The user-option variable ``pel-use-racket`` activates it, using the
           *racket-mode* external package.
         - The PEL ``<f12>`` Lisp hot key is available in that mode, along with
-          what is available to Emacs Lips and Common Lisp, including *lispy*.
+          what is available to Emacs Lisp and Common Lisp, including *lispy*.
+    - New: *Scheme*:
+      - New: Add preliminary support for the Scheme programming language.
+        - The user-option variable ``pel-use-scheme`` activates PEL extra
+          support for Scheme.
+          - The PEL ``<f12>`` Lisp hot key is available in that mode, along with
+            what is available to Emacs Lisp and Common Lisp, including *lispy*.
   - Update: *Erlang*:
     - New: Add Speedbar support for Erlang, showing the functions in the .erl,
       .hrl and .escript files.
