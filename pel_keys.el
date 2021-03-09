@@ -1618,25 +1618,25 @@ interactively."
 ;; E   - Elm
 ;; F   - FORTRAN
 ;; G   - Groovy
-;; J   - Java
-;; L   - Common Lisp
+;; J   - Java            -              JVM
+;; L   - Common Lisp     - Lisp Family
 ;; M   - Makefile
 ;; N   - NetRexx
 ;; P   - Perl
 ;; R   - REXX
-;; S   - Scala
+;; S   - Scala           -              JVM
 ;; U   - Ruby
 ;; a   - AppleScript
 ;; c   - C
 ;; d   - Dart
-;; e   - Erlang
+;; e   - Erlang          -              BEAM language
 ;; f   - Forth
 ;; g   - Go
 ;; h   - Haskell
 ;; i   - Javascript
 ;; j   - Julia
-;; k   - Kotlin
-;; l   - Emacs Lisp
+;; k   - Kotlin          -              JVM
+;; l   - Emacs Lisp      - Lisp Family
 ;; n   - Nim
 ;; o   - OCaml
 ;; p   - Python
@@ -1645,19 +1645,21 @@ interactively."
 ;; t   - TCL
 ;; u   - Lua
 ;; v   - V
-;; x   - Elixir
+;; x   - Elixir          -              BEAM Language
 ;; z   - Zig
+;; C-a - Arc             - Lisp Family
 ;; C-c - CMake
 ;; C-e - Eiffel
+;; C-f - Fennel          - Lisp Family, Lua
 ;; C-g - Prolog
-;; C-j - Clojure
-;; C-h - Hy
-;; C-l - LFE
+;; C-j - Clojure         - Lisp Family, JVM
+;; C-h - Hy              - Lisp Family, Python
+;; C-l - LFE             - Lisp Family, BEAM language
 ;; C-m - ReasonML
 ;; C-o - Objective-C
 ;; C-p - Pike
-;; C-r - Racket
-;; C-s - Scheme
+;; C-r - Racket          - Lisp Family
+;; C-s - Scheme          - Lisp Family
 ;; C-u - Raku
 ;; M-a - AsciiDoc
 ;; M-g - GraphViz Dot
@@ -2773,6 +2775,32 @@ MODE must be a symbol."
     (cl-eval-when 'compile (require 'slime nil :no-error))))
 
 ;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-a`` : Arc
+(when pel-use-arc
+
+  (define-pel-global-prefix pel:for-arc    (kbd "<f11> SPC C-a"))
+  ;; activate the <f12> key binding for arc-mode
+  (pel--mode-hook-maybe-call
+   '(lambda ()
+      (pel-local-set-f12-M-f12 'pel:for-arc))
+   'arc-mode 'arc-mode-hook)
+  (pel--lisp-languages-map-for pel:for-arc)
+
+  ;; associate .arc file with arc-mode
+  (add-to-list 'auto-mode-alist '("\\.arc\\'" . arc-mode))
+  ;; set up auto-loading
+  (pel-autoload "arc"          for: arc-mode)
+  (pel-autoload "inferior-arc" for: run-arc)
+  ;; Emacs support extracted from the anarki implementation from its
+  ;; Github project folder.  However, since the code there is old and
+  ;; has bugs, I used my fork until my fixes have been incorporated.
+  ;; See: https://github.com/arclanguage/anarki/pull/194
+  (cl-eval-when 'load
+    (pel-install-github-files "pierre-rouleau/anarki/master/extras"
+                              '("arc.el"
+                                "inferior-arc.el"))))
+
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-r`` : Racket
 (when pel-use-racket
 
@@ -2929,8 +2957,7 @@ MODE must be a symbol."
     :commands netrexx-mode
     :init
     ;; Set the file extension for NetRexx: ".nrx"
-    (add-to-list 'auto-mode-alist '("\\.nrx\\'"
-                                    . netrexx-mode))
+    (add-to-list 'auto-mode-alist '("\\.nrx\\'" . netrexx-mode))
 
     (define-key pel:for-netrexx (kbd "<down>") 'netrexx-next-method)
     (define-key pel:for-netrexx (kbd "<up>") 'netrexx-previous-method)

@@ -2860,9 +2860,12 @@ amount of time to search for a project (even with fd)."
     lisp-mode                           ; Common Lisp - Lisp 2
     lfe-mode                            ; LFE         - Lisp 2 for BEAM
     clojure-mode                        ; Clojure     - Lisp 1 for the JVM
-    hy-mode                             ; Hy          - Lisp 1 for Python
     scheme-mode                         ; Scheme      - Lisp 1
-    racket-mode)                        ; Racket      - Lisp 1 based on Scheme
+    racket-mode                         ; Racket      - Lisp 1, Scheme family
+    arc-mode                            ; Arc         - Lisp 1, experimental
+    fennel-mode                         ; Fennel      - A lisp-like to Lua
+    hy-mode)                            ; Hy          - Lisp 1 for Python
+
   "List of major modes that can use lispy.")
 ;; If the mode you want is not listed above, please let me know: I will
 ;; add it or will accept PRs proposing it.  Thanks.
@@ -2994,10 +2997,30 @@ A great tool for learning new Emacs Lisp functions."
   :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Arc Support
+;; -----------
+(defgroup pel-pkg-for-arc nil
+  "PEL customization for the Arc programming language support."
+  :group 'pel-pkg-for-lisp)
+
+(defcustom pel-use-arc nil
+  "Control whether PEL support the Arc programming language.
+
+When this is activated, PEL activates the packages that support Arc and
+provide arc-mode and Arc inferior mode."
+  :group 'pel-pkg-for-arc
+  :link '(url-link :tag "Arc support via bug fix on anarki @ GitHub"
+                   "https://github.com/pierre-rouleau/anarki")
+  :link '(url-link :tag "Arc anarki @ GitHub"
+                   "https://github.com/arclanguage/anarki")
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Racket Support
 ;; --------------
 (defgroup pel-pkg-for-racket nil
-  "PEL customization for Racket programming language support."
+  "PEL customization for the Racket programming language support."
   :group 'pel-pkg-for-lisp)
 
 (defcustom pel-use-racket nil
@@ -3015,7 +3038,7 @@ package."
 ;; Scheme Support
 ;; --------------
 (defgroup pel-pkg-for-scheme nil
-  "PEL customization for Scheme programming language support."
+  "PEL customization for the Scheme programming language support."
   :group 'pel-pkg-for-lisp)
 
 (defcustom pel-use-scheme nil

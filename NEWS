@@ -541,6 +541,15 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
             what is available to Emacs Lisp and Common Lisp, including *lispy*.
         - It's ``<f12> <f2>`` key opens PEL scheme customization buffer.
         - It's ``<f12> <f3>`` key opens the scheme customization buffer.
+  - New: *Arc*:
+      - New: Add preliminary support for the Arc programming language.
+        - The user-option variable ``pel-use-arc`` activates it, using the
+          *arc.el* and *inferior-arc.el* files from the [[GitHub
+          anarki][https://github.com/arclanguage/anarki]] depot.
+        - The PEL ``<f12>`` Lisp hot key is available in that mode, along with
+          what is available to Emacs Lisp and Common Lisp, including *lispy*.
+        - It's ``<f12> <f2>`` key opens PEL arc customization buffer.
+        - It's ``<f12> <f3>`` key opens the arc-mode customization buffer.
   - Update: *Erlang*:
     - New: Add Speedbar support for Erlang, showing the functions in the .erl,
       .hrl and .escript files.
