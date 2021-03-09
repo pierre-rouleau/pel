@@ -1255,8 +1255,8 @@ interactively."
 ;; B I i o r t
 
 ;; Initialize PEL special imenu handling
-(eval-after-load 'imenu
-    (pel-imenu-init))
+(eval-after-load "imenu"
+  (pel-imenu-init))
 
 (define-pel-global-prefix pel:menu (kbd "<f11> <f10>"))
 (define-key pel:menu "B"     #'menu-bar-mode)
