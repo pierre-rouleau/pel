@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-03 17:14:02, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-08 22:35:21, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -147,6 +147,8 @@
                                                              python-flymake))
 
     ([f11 32 ?x]     "pl-elixir"        pel-pkg-for-elixir      elixir)
+    (,(kbd "<f11> SPC C-r") nil         pel-pkg-for-racket      racket)
+    (,(kbd "<f11> SPC C-s") nil         pel-pkg-for-scheme      scheme)
     ;; ([f11 ?C]
     ([f11 ?D]        "drawing"          pel-pkg-for-drawing-markup)
     ([f11 ?D ?u]     "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
@@ -349,9 +351,11 @@ stored inside the doc/pdf directory.")
     ("makefile-automake" [f11 32 ?M])
     ("makefile-imake"  [f11 32 ?M])
     ("python"          [f11 32 ?p])
+    ("racket"          [f11 32 18])
     ("rexx"            [f11 32 ?R])
     ("netrexx"         [f11 32 ?N])
     ("rst"             [f11 32 27 ?r])
+    ("scheme"          [f11 32 19])
     ("graphviz-dot"    [f11 32 27 ?g])
     ("plantuml"        [f11 32 27 ?u]))
   "Maps the name of a major mode (without the -mode suffix)
@@ -601,6 +605,7 @@ Return nil if nothing found."
     ("Ztree" . "ztree-view")
     ("command-log" . "command-log-mode")
     ("netrexx"     . "netrexx-mode")
+    ("racket"      . "racket-custom")
     ("rainbow"     . "rainbow-mode")
     ("ffip"        . "find-file-in-project"))
   "Maps a group name for the library that defines it.
