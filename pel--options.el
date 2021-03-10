@@ -1,4 +1,4 @@
-;;; pel--options.el --- PEL Customization Options -*-lexical-binding: t-*-
+
 
 ;; Copyright (C) 2020, 2021  Pierre Rouleau
 
@@ -2027,7 +2027,7 @@ with no text."
                    ,(pel-pdf-file-url "pl-applescript")))
 
 (defcustom pel-use-applescript nil
-  "Control whether PEL support the AppleScript mode."
+  "Control whether PEL supports the AppleScript mode."
   :group 'pel-pkg-for-applescript
   :type 'boolean
   :safe #'booleanp)
@@ -2864,6 +2864,7 @@ amount of time to search for a project (even with fd)."
     clojure-mode                        ; Clojure     - Lisp 1 for the JVM
     scheme-mode                         ; Scheme      - Lisp 1
     racket-mode                         ; Racket      - Lisp 1, Scheme family
+    gerbil-mode                         ; Gerbil      - Lisp 1, Scheme family
     arc-mode                            ; Arc         - Lisp 1, experimental
     fennel-mode                         ; Fennel      - A lisp-like to Lua
     hy-mode)                            ; Hy          - Lisp 1 for Python
@@ -3006,7 +3007,7 @@ A great tool for learning new Emacs Lisp functions."
   :group 'pel-pkg-for-lisp)
 
 (defcustom pel-use-arc nil
-  "Control whether PEL support the Arc programming language.
+  "Control whether PEL supports the Arc programming language.
 
 When this is activated, PEL activates the packages that support Arc and
 provide arc-mode and Arc inferior mode."
@@ -3019,6 +3020,43 @@ provide arc-mode and Arc inferior mode."
   :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Scheme Support
+;; --------------
+(defgroup pel-pkg-for-scheme nil
+  "PEL customization for the Scheme programming language support."
+  :link `(url-link :tag "Scheme PDF" ,(pel-pdf-file-url "pl-scheme"))
+  :group 'pel-pkg-for-lisp)
+
+(defcustom pel-use-scheme nil
+  "Control whether PEL supports the Scheme programming language."
+  :group 'pel-pkg-for-scheme
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-geiser nil
+  "Control whether PEL supports the Geiser IDE for Scheme support.
+
+The user-option variable `pel-use-scheme' must be turned on to activate this."
+  :link '(url-link :tag "Geiser Homepage"
+                   "https://www.nongnu.org/geiser/")
+  :link '(url-link :tag "Geiser @ Melpa"
+                   "https://melpa.org/#/geiser")
+  :link '(url-link :tag "Geiser source @ Gitlab"
+                   "https://gitlab.com/jaor/geiser")
+  :group 'pel-pkg-for-scheme
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-quack nil
+  "Control whether PEL supports the Quack Enhance Scheme editing package.
+
+The user-option variable `pel-use-scheme' must be turned on to activate this."
+  :group 'pel-pkg-for-scheme
+  :type 'boolean
+  :safe #'booleanp)
+
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Racket Support
 ;; --------------
 (defgroup pel-pkg-for-racket nil
@@ -3026,7 +3064,7 @@ provide arc-mode and Arc inferior mode."
   :group 'pel-pkg-for-lisp)
 
 (defcustom pel-use-racket nil
-  "Control whether PEL support the Racket programming language.
+  "Control whether PEL supports the Racket programming language.
 
 When this is activated, PEL activates the racket-mode
 package."
@@ -3037,14 +3075,21 @@ package."
   :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; Scheme Support
-;; --------------
-(defgroup pel-pkg-for-scheme nil
-  "PEL customization for the Scheme programming language support."
+;; Gerbil Scheme Support
+;; ---------------------
+(defgroup pel-pkg-for-gerbil nil
+  "PEL customization for the Gerbil Scheme programming language support."
   :group 'pel-pkg-for-lisp)
 
-(defcustom pel-use-scheme nil
-  "Control whether PEL support the Scheme programming language."
+(defcustom pel-use-gerbil nil
+  "Control whether PEL supports the Gerbil Scheme-based programming language."
+  :link '(url-link :tag "Gerbil Homepage"
+                   "https://cons.io")
+  :link '(url-link :tag "Gerbil @ Github"
+                   "https://github.com/vyzo/gerbil")
+  :link '(url-link :tag "gerbil-mode @ Github"
+                   "https://github.com/vyzo/gerbil/blob/master/etc/gerbil-mode.el")
+  :group 'pel-pkg-for-gerbil
   :group 'pel-pkg-for-scheme
   :type 'boolean
   :safe #'booleanp)
@@ -3684,6 +3729,7 @@ the copyright holder value."
 
 (defcustom pel-use-lfe nil
   "Control whether PEL supports Elixir development."
+  :link `(url-link :tag "LFE PDF" ,(pel-pdf-file-url "pl-lfe"))
   :group 'pel-pkg-for-lfe
   :type 'boolean
   :safe #'booleanp)
@@ -3783,7 +3829,7 @@ Note: `pel-use-python' must be t for this to be effective."
   :link `(url-link :tag "REXX PDF" ,(pel-pdf-file-url "pl-rexx")))
 
 (defcustom pel-use-rexx nil
-  "Control whether PEL support REXX development."
+  "Control whether PEL supports REXX development."
   :group 'pel-pkg-for-rexx
   :link '(url-link :tag "REXX programming language"
                    "https://en.wikipedia.org/wiki/Rexx")
@@ -3793,7 +3839,7 @@ Note: `pel-use-python' must be t for this to be effective."
   :safe #'booleanp)
 
 (defcustom pel-use-netrexx nil
-  "Control whether PEL support Net-Rexx development."
+  "Control whether PEL supports Net-Rexx development."
   :group 'pel-pkg-for-rexx
   :link '(url-link :tag "NetRexx home" "http://www.netrexx.org/index.nsp")
   :link '(url-link :tag "netrexx-mode.el @ netrexx.org"

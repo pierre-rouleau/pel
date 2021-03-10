@@ -1653,6 +1653,7 @@ interactively."
 ;; C-f - Fennel          - Lisp Family, Lua
 ;; C-g - Prolog
 ;; C-j - Clojure         - Lisp Family, JVM
+;; C-g - Gerbil          - Lisp & Scheme Families
 ;; C-h - Hy              - Lisp Family, Python
 ;; C-l - LFE             - Lisp Family, BEAM language
 ;; C-m - ReasonML
@@ -2818,7 +2819,64 @@ MODE must be a symbol."
    '(lambda ()
       (pel-local-set-f12-M-f12 'pel:for-scheme))
    'scheme-mode 'scheme-mode-hook)
-  (pel--lisp-languages-map-for pel:for-scheme))
+  (pel--lisp-languages-map-for pel:for-scheme)
+
+  ;; Install requested options
+  (when pel-use-geiser
+    (use-package geiser
+      :ensure t
+      :pin melpa
+      :commands (geiser
+                 geiser-mode)))
+
+  (when pel-use-quack
+    ;; I have fixed byte-compiler warnings in quack in a fork of emacsmirror/quack
+    ;; Since that repo is read-only I contacted the author and wait for his reply.
+    ;; In the mean time, I use my fork.
+    (cl-eval-when 'load
+      (pel-install-github-file "pierre-rouleau/quack/master" "quack.el"))
+    (pel-autoload "quack" for:
+      quack-kill-current-buffer
+      quack-uncomment-region
+      quack-backward-sexp
+      quack-browse-quack-web-page
+      quack-w3m-browse-url-other-window
+      quack-about
+      quack-dired-pltcollect
+      quack-find-file
+      quack-newline
+      quack-insert-closing-paren
+      quack-insert-closing-bracket
+      quack-insert-opening-paren
+      quack-insert-opening-bracket
+      quack-toggle-lambda
+      quack-tidy-buffer
+      quack-update-srfi-index
+      quack-view-srfi
+      quack-view-manual
+      quack-view-keyword-docs
+      quack-customize
+      quack-set-other-default-program
+      quack-pltfile-mode
+      quack-pltfile-raw
+      quack-pltfile-quit)))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-g`` : Gerbil
+(when pel-use-gerbil
+
+  (define-pel-global-prefix pel:for-gerbil (kbd "<f11> SPC C-g"))
+  ;; activate the <f12> key binding for gerbil-mode
+  (pel--mode-hook-maybe-call
+   '(lambda ()
+      (pel-local-set-f12-M-f12 'pel:for-gerbil))
+   'gerbil-mode 'gerbil-mode-hook)
+  (pel--lisp-languages-map-for pel:for-gerbil)
+
+  ;; No package made for this.  Take the code directly from Github
+  (cl-eval-when 'load
+    (pel-install-github-file "vyzo/gerbil/master/etc/" "gerbil-mode.el"))
+  (pel-autoload "gerbil-mode" for: gerbil-mode))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-l `` : LFE programming

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-09 16:05:45, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-10 12:01:24, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -150,7 +150,10 @@
     (,(kbd "<f11> SPC C-a") nil         pel-pkg-for-arc         arc)
     (,(kbd "<f11> SPC C-l") "pl-lfe"    pel-pkg-for-lfe)
     (,(kbd "<f11> SPC C-r") nil         pel-pkg-for-racket      racket)
-    (,(kbd "<f11> SPC C-s") nil         pel-pkg-for-scheme      scheme)
+    (,(kbd "<f11> SPC C-s") "pl-scheme" pel-pkg-for-scheme      (scheme
+                                                                 geiser
+                                                                 quack))
+    (,(kbd "<f11> SPC C-g") "pl-scheme" pel-pkg-for-gerbil      gerbil-mode)
     ;; ([f11 ?C]
     ([f11 ?D]        "drawing"          pel-pkg-for-drawing-markup)
     ([f11 ?D ?u]     "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
@@ -354,6 +357,7 @@ stored inside the doc/pdf directory.")
     ("makefile-imake"  [f11 32 ?M])
     ("python"          [f11 32 ?p])
     ("arc"             [f11 32 1])
+    ("gerbil"          [f11 32 7])
     ("lfe"             [f11 32 12])
     ("racket"          [f11 32 18])
     ("rexx"            [f11 32 ?R])
@@ -481,6 +485,8 @@ There should be no key binding!" keyseq))
     ("python"           . "pl-python")
     ("rexx"             . "pl-rexx")
     ("netrexx"          . "pl-rexx")
+    ("scheme"           . "pl-scheme")
+    ("gerbil"           . "pl-scheme")
     ;; mode names aliases
     ("mercurial"        . "vcs-mercurial")
     ("lispy"            . "plm-lispy")
