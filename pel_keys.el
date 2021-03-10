@@ -2912,6 +2912,24 @@ MODE must be a symbol."
                          :error)))))
 
 ;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-h`` : Hy
+;; Hy: A Lisp in Python
+(when pel-use-hy
+
+  (define-pel-global-prefix pel:for-hy (kbd "<f11> SPC C-h"))
+  ;; activate the <f12> key binding for hy-mode
+  (pel--mode-hook-maybe-call
+   '(lambda ()
+      (pel-local-set-f12-M-f12 'pel:for-hy))
+   'hy-mode 'hy-mode-hook)
+  (pel--lisp-languages-map-for pel:for-hy)
+
+  (use-package hy-mode
+    :ensure t
+    :pin melpa
+    :commands hy-mode))
+
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC p`` : Python programming
 (when pel-use-python
 

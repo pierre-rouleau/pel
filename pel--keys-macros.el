@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-10 12:01:24, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-10 15:16:43, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -148,12 +148,13 @@
 
     ([f11 32 ?x]     "pl-elixir"        pel-pkg-for-elixir      elixir)
     (,(kbd "<f11> SPC C-a") nil         pel-pkg-for-arc         arc)
+    (,(kbd "<f11> SPC C-g") "pl-scheme" pel-pkg-for-gerbil      gerbil-mode)
+    (,(kbd "<f11> SPC C-h") "pl-hy"     pel-pkg-for-hy)
     (,(kbd "<f11> SPC C-l") "pl-lfe"    pel-pkg-for-lfe)
     (,(kbd "<f11> SPC C-r") nil         pel-pkg-for-racket      racket)
     (,(kbd "<f11> SPC C-s") "pl-scheme" pel-pkg-for-scheme      (scheme
                                                                  geiser
                                                                  quack))
-    (,(kbd "<f11> SPC C-g") "pl-scheme" pel-pkg-for-gerbil      gerbil-mode)
     ;; ([f11 ?C]
     ([f11 ?D]        "drawing"          pel-pkg-for-drawing-markup)
     ([f11 ?D ?u]     "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
@@ -358,6 +359,7 @@ stored inside the doc/pdf directory.")
     ("python"          [f11 32 ?p])
     ("arc"             [f11 32 1])
     ("gerbil"          [f11 32 7])
+    ("hy"              [f11 32 8])
     ("lfe"             [f11 32 12])
     ("racket"          [f11 32 18])
     ("rexx"            [f11 32 ?R])
@@ -479,6 +481,7 @@ There should be no key binding!" keyseq))
     ("erlang"           . "pl-erlang")
     ("forth"            . "pl-forth")
     ("go"               . "pl-go")
+    ("hy"               . "pl-hy")
     ("julia"            . "pl-julia")
     ("lfe"              . "pl-lfe")
     ("make"             . "pl-make")

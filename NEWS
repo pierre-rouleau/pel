@@ -563,6 +563,13 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
           what is available to Emacs Lisp and Common Lisp, including *lispy*.
         - It's ``<f12> <f2>`` key opens PEL arc customization buffer.
         - It's ``<f12> <f3>`` key opens the arc-mode customization buffer.
+    - New: *Hy*:
+      - New: Add preliminary support for the Hy programming language.
+        - The user-option variable ``pel-use-hy`` activates it.
+        - The PEL ``<f12>`` Lisp hot key is available in that mode, along with
+          what is available to Emacs Lisp and Common Lisp, including *lispy*.
+        - It's ``<f12> <f1>`` key opens the preliminary  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-hy.pdf][𝕻𝔩 - Hy PDF]].
+        - It's ``<f12> <f2>`` key opens PEL hy customization buffer.
     - Update: *LFE - Lisp Flavored Erlang*:
         - New: Added PEL ``<f12>`` Lisp hot key with all Lisp-available features.
           what is available to Emacs Lisp and Common Lisp, including *lispy*.

@@ -2866,7 +2866,7 @@ amount of time to search for a project (even with fd)."
     racket-mode                         ; Racket      - Lisp 1, Scheme family
     gerbil-mode                         ; Gerbil      - Lisp 1, Scheme family
     arc-mode                            ; Arc         - Lisp 1, experimental
-    fennel-mode                         ; Fennel      - A lisp-like to Lua
+    fennel-mode                         ; Fennel      - A lisp-like to Lua 🚧
     hy-mode)                            ; Hy          - Lisp 1 for Python
 
   "List of major modes that can use lispy.")
@@ -3016,6 +3016,25 @@ provide arc-mode and Arc inferior mode."
                    "https://github.com/pierre-rouleau/anarki")
   :link '(url-link :tag "Arc anarki @ GitHub"
                    "https://github.com/arclanguage/anarki")
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Hy Support
+;; -----------
+(defgroup pel-pkg-for-hy nil
+  "PEL customization for the Hy programming language support.
+Hy is a Lisp in Python."
+  :group 'pel-pkg-for-lisp)
+
+(defcustom pel-use-hy nil
+  "Control whether PEL supports the Hy programming language.
+Hy is a Lisp in Python."
+  :group 'pel-pkg-for-hy
+  :link '(url-link :tag "Hy Homepage"
+                   "https://docs.hylang.org/en/stable/")
+  :link '(url-link :tag "hy-mode @ GitHub"
+                   "https://github.com/hylang/hy-mode")
   :type 'boolean
   :safe #'booleanp)
 
