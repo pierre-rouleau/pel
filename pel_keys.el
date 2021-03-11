@@ -3136,6 +3136,11 @@ MODE must be a symbol."
 (when pel-use-rust
   (define-pel-global-prefix pel:for-rust (kbd "<f11> SPC r"))
 
+  (when pel-use-speedbar
+    ;; Add support for Speedbar
+    (pel-require 'speedbar)
+    (speedbar-add-supported-extension '(".rs")))
+
   (defun pel--common-rust-setup ()
     "Setup for Rust editing."
     (pel--mode-hook-maybe-call
