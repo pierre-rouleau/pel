@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-10 15:16:43, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-10 17:39:55, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -150,6 +150,9 @@
     (,(kbd "<f11> SPC C-a") nil         pel-pkg-for-arc         arc)
     (,(kbd "<f11> SPC C-g") "pl-scheme" pel-pkg-for-gerbil      gerbil-mode)
     (,(kbd "<f11> SPC C-h") "pl-hy"     pel-pkg-for-hy)
+    (,(kbd "<f11> SPC C-j") "pl-clojure" pel-pkg-for-clojure    (clojure
+                                                                 cider
+                                                                 cljr))
     (,(kbd "<f11> SPC C-l") "pl-lfe"    pel-pkg-for-lfe)
     (,(kbd "<f11> SPC C-r") nil         pel-pkg-for-racket      racket)
     (,(kbd "<f11> SPC C-s") "pl-scheme" pel-pkg-for-scheme      (scheme
@@ -341,6 +344,7 @@ stored inside the doc/pdf directory.")
     ("c"               [f11 32 ?c])
     ("lisp"            [f11 32 ?L])
     ("common-lisp"     [f11 32 ?L])     ; an alias for lisp.
+    ("clojure"         [f11 32 10])
     ("d"               [f11 32 ?D])
     ("elixir"          [f11 32 ?x])
     ("lisp-interaction" [f11 32 ?l])    ; for scratch buffer
@@ -475,6 +479,7 @@ There should be no key binding!" keyseq))
     ("c++"              . "pl-c++")
     ("c"                . "pl-c")
     ("common-lisp"      . "pl-common-lisp")
+    ("clojure"          . "pl-clojure")
     ("d"                . "pl-d")
     ("elixir"           . "pl-elixir")
     ("emacs-lisp"       . "pl-emacs-lisp")
@@ -618,6 +623,8 @@ Return nil if nothing found."
   '(("rxt"         . "pcre2el")
     ("Ztree"       . "ztree-view")
     ("command-log" . "command-log-mode")
+    ("clojure"     . "clojure-mode")
+    ("cljr"        . "clj-refactor")
     ("netrexx"     . "netrexx-mode")
     ("racket"      . "racket-custom")
     ("rainbow"     . "rainbow-mode")

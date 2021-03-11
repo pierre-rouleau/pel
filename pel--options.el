@@ -1,4 +1,4 @@
-
+;;; pel--options.el --- PEL Customization Options -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020, 2021  Pierre Rouleau
 
@@ -81,8 +81,11 @@
 ;;         - pel-pkg-for-elisp
 ;;           - pel-sexp-form-navigation
 ;;         - pel-pkg-for-arc
-;;         - pel-pkg-for-racket
+;;         - pel-pkg-for-clojure
+;;         - pel-pkg-for-hy
 ;;         - pel-pkg-for-scheme
+;;         - pel-pkg-for-racket
+;;         - pel-pkg-for-gerbil
 ;;       - pel-pkg-for-beam-vm
 ;;         - pel-pkg-for-elixir
 ;;         - pel-pkg-for-erlang
@@ -3020,6 +3023,54 @@ provide arc-mode and Arc inferior mode."
   :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Clojure Support
+;; ---------------
+(defgroup pel-pkg-for-clojure nil
+  "PEL customization for the Clojure programming language support."
+  :group 'pel-pkg-for-lisp)
+
+(defcustom pel-use-clojure nil
+  "Control whether PEL supports the Clojure programming language."
+  :group 'pel-pkg-for-clojure
+  :link '(url-link :tag "Clojure Mode @ GitHub"
+                   "https://github.com/clojure-emacs/clojure-mode")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-cider nil
+  "Control whether PEL activates the Cider Clojure IDE package.
+
+To activate it you must activate the user-option variable `pel-use-clojure'."
+  :group 'pel-pkg-for-clojure
+  :link '(url-link :tag "Cider @ GitHub"
+                   "https://github.com/clojure-emacs/cider")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-clj-refactor nil
+  "Control whether PEL activates the clj-refactor package.
+
+To activate it you must activate the user-option variable `pel-use-clojure'."
+  :group 'pel-pkg-for-clojure
+  :link '(url-link :tag "clj-refactor @ GitHub"
+                   "https://github.com/clojure-emacs/clj-refactor.el")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-clojure-snippets nil
+  "Control whether PEL activates clojure-snippets package.
+
+This package provides Yasnippet snippets for Clojure.
+To use it you must also turn on:
+- the variable `pel-use-clojure',
+- the variable `pel-use-yasnippet'."
+  :group 'pel-pkg-for-clojure
+  :link '(url-link :tag "clojure-snippets @ GitHub"
+                   "https://github.com/mpenet/clojure-snippets")
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Hy Support
 ;; -----------
 (defgroup pel-pkg-for-hy nil
@@ -3073,7 +3124,6 @@ The user-option variable `pel-use-scheme' must be turned on to activate this."
   :group 'pel-pkg-for-scheme
   :type 'boolean
   :safe #'booleanp)
-
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Racket Support

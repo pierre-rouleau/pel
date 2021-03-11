@@ -525,6 +525,20 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
           expression prefix and from the Emacs-Lisp specific ``<f12> a l``
           analyze prefix.  Commands to lint the current buffer, file  and
           directory tree are bound.
+    - New: *Clojure*:
+      - New: Add preliminary support for the Clojure programming language.
+        - The user-option variable *pel-use-clojure* activates PEL
+          support for Clojure with the clojure-mode package..
+          - The PEL ``<f12>`` Lisp hot key is available in that mode, along with
+            what is available to Emacs Lisp and Common Lisp, including *lispy*.
+            - It's ``<f12> <f1>`` key opens the preliminary  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-clojure.pdf][𝕻𝔩 - Clojure PDF]]
+            - It's ``<f12> <f2>`` key opens PEL clojure customization buffer.
+            - It's ``<f12> <f3>`` key opens the clojure customization buffer.
+        - The user-option variable *pel-use-cider* activates Cider.
+        - The user-option variable *pel-use-clj-refactor* activates the
+          clj-refactor package.
+        - The user-option variable *pel-use-clojure-snippets* activates the
+          Yasnippets for Clojure using the clojure-snippets package.
     - New: *Racket*:
       - New: Add preliminary support for the Racket programming language.
         - The user-option variable ``pel-use-racket`` activates it, using the

@@ -2790,6 +2790,68 @@ MODE must be a symbol."
                                 "inferior-arc.el"))))
 
 ;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-j`` : Clojure
+(when pel-use-clojure
+
+  (define-pel-global-prefix pel:for-clojure (kbd "<f11> SPC C-j"))
+  ;; activate the <f12> key binding for clojure-mode
+  (pel--mode-hook-maybe-call
+   '(lambda ()
+      (pel-local-set-f12-M-f12 'pel:for-clojure))
+   'clojure-mode 'clojure-mode-hook)
+  (pel--lisp-languages-map-for pel:for-clojure)
+
+  (use-package clojure-mode
+    :ensure t
+    :pin melpa
+    :commands clojure-mode)
+
+  (when pel-use-cider
+    (use-package cider
+      :ensure t
+      :pin melpa
+      :commands (cider-jack-in
+                 cider-connect
+                 cider-connect-cljs)
+      :init
+      (define-key pel:for-clojure "j" 'cider-jack-in)
+      (define-key pel:for-clojure "c" 'cider-connect)
+      (define-key pel:for-clojure "C" 'cider-connect-cljs)))
+
+  (when pel-use-clj-refactor
+    (defun pel-clojure-mode-hook ()
+      "Activate clj-refactor and optionally Yasnippet"
+      (if (and (fboundp 'clj-refactor-mode)
+               (fboundp 'cljr-add-keybindings-with-prefix))
+          (progn
+            (clj-refactor-mode 1)
+            (when (and pel-use-yasnippet
+                       (fboundp 'yas-minor-mode))
+              ;; for adding require/use/import statements
+              (yas-minor-mode 1))
+            ;; This choice of keybinding leaves cider-macroexpand-1 unbound
+            (cljr-add-keybindings-with-prefix "C-c C-m"))
+        (display-warning 'pel-clojure
+                         "clj-refactor not properly loaded"
+                         :error)))
+
+    (use-package clj-refactor
+      :ensure t
+      :pin melpa
+      :init
+      (add-hook 'clojure-mode-hook #'pel-clojure-mode-hook)))
+
+  ;; Activate Yasnippets for Clojure if requested.
+  ;; Load the package when Yasnippet starts.
+  (when (and  pel-use-clojure-snippets
+              pel-use-yasnippet)
+    (use-package clojure-snippets
+      :ensure t
+      :pin melpa
+      :commands (yas-global-mode
+                 yas-minor-mode))))
+
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-r`` : Racket
 (when pel-use-racket
 
