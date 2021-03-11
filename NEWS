@@ -541,7 +541,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
           Yasnippets for Clojure using the clojure-snippets package.
     - New: *Racket*:
       - New: Add preliminary support for the Racket programming language.
-        - The user-option variable ``pel-use-racket`` activates it, using the
+        - The user-option variable *pel-use-racket* activates it, using the
           *racket-mode* external package.
           - The PEL ``<f12>`` Lisp hot key is available in that mode, along with
             what is available to Emacs Lisp and Common Lisp, including *lispy*.
@@ -549,7 +549,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
             - It's ``<f12> <f3>`` key opens the racket-mode customization buffer.
     - New: *Scheme*:
       - New: Add preliminary support for the Scheme programming language.
-        - The user-option variable ``pel-use-scheme`` activates PEL extra
+        - The user-option variable *pel-use-scheme* activates PEL extra
           support for Scheme.
           - The PEL ``<f12>`` Lisp hot key is available in that mode, along with
             what is available to Emacs Lisp and Common Lisp, including *lispy*.
@@ -558,7 +558,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
             - It's ``<f12> <f3>`` key opens the scheme customization buffer.
     - New: *Gerbil Scheme*:
       - New: Add preliminary support for the Gerbil Scheme programming language.
-        - The user-option variable ``pel-use-gerbil`` activates PEL extra
+        - The user-option variable *pel-use-gerbil* activates PEL extra
           support for Gerbil.
           - The PEL ``<f12>`` Lisp hot key is available in that mode, along with
             what is available to Emacs Lisp and Common Lisp, including *lispy*.
@@ -570,7 +570,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
             - It's ``<f12> <f3>`` key opens the scheme customization buffer.
     - New: *Arc*:
       - New: Add preliminary support for the Arc programming language.
-        - The user-option variable ``pel-use-arc`` activates it, using
+        - The user-option variable *pel-use-arc* activates it, using
           the *arc.el* and *inferior-arc.el* files from the
           [[https://github.com/arclanguage/anarki][GitHub arclanguage/anarki repository]].
           - The PEL ``<f12>`` Lisp hot key is available in that mode, along with
@@ -579,7 +579,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
             - It's ``<f12> <f3>`` key opens the arc-mode customization buffer.
     - New: *Hy*:
       - New: Add preliminary support for the Hy programming language.
-        - The user-option variable ``pel-use-hy`` activates it.
+        - The user-option variable *pel-use-hy* activates it.
           - The PEL ``<f12>`` Lisp hot key is available in that mode, along with
             what is available to Emacs Lisp and Common Lisp, including *lispy*.
             - It's ``<f12> <f1>`` key opens the preliminary  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-hy.pdf][𝕻𝔩 - Hy PDF]].
