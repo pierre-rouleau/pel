@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-10 17:39:55, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-11 15:21:02, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -145,6 +145,11 @@
 
     ([f11 32 ?p]     "pl-python"    pel-pkg-for-python      (python
                                                              python-flymake))
+    ([f11 32 ?r]     "pl-rust"      pel-pkg-for-rust        (rust-mode
+                                                             rustic
+                                                             racer
+                                                             cargo
+                                                             ))
 
     ([f11 32 ?x]     "pl-elixir"        pel-pkg-for-elixir      elixir)
     (,(kbd "<f11> SPC C-a") nil         pel-pkg-for-arc         arc)
@@ -367,6 +372,7 @@ stored inside the doc/pdf directory.")
     ("lfe"             [f11 32 12])
     ("racket"          [f11 32 18])
     ("rexx"            [f11 32 ?R])
+    ("rust"            [f11 32 ?r])
     ("netrexx"         [f11 32 ?N])
     ("rst"             [f11 32 27 ?r])
     ("scheme"          [f11 32 19])
@@ -492,6 +498,7 @@ There should be no key binding!" keyseq))
     ("make"             . "pl-make")
     ("python"           . "pl-python")
     ("rexx"             . "pl-rexx")
+    ("rust"             . "pl-rust")
     ("netrexx"          . "pl-rexx")
     ("scheme"           . "pl-scheme")
     ("gerbil"           . "pl-scheme")

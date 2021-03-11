@@ -3929,10 +3929,54 @@ Note: `pel-use-python' must be t for this to be effective."
 
 (defcustom pel-use-rust  nil
   "Control whether PEL supports Rust development.
-When set to non-nil, 3 packages are used:
-- {rust-mode}
-- {racer}
-- {cargo}."
+
+This must be turned on (set to t) to allow the other user-options
+to take effect."
+  :group 'pel-pkg-for-rust
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-rust-mode nil
+  "Control whether rust-mode is activated.
+Requires the user-option variable `pel-use-rust' to be on (t)."
+  :link '(url-link :tag "rust-mode @ GitHub"
+                   "https://github.com/rust-lang/rust-mode")
+  :group 'pel-pkg-for-rust
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-rustic nil
+  "Control whether rustic is activated.
+Requires the user-option variable `pel-use-rust' to be on (t)."
+  :link '(url-link :tag "rustic @ GitHub"
+                   "https://github.com/brotzeit/rustic")
+  :group 'pel-pkg-for-rust
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-flycheck-rust nil
+  "Control whether flycheck-rust is activated.
+Requires the user-option variable `pel-use-rust' to be on (t)."
+  :link '(url-link :tag "flycheck-rust @ GitHub"
+                   "https://github.com/flycheck/flycheck-rust")
+  :group 'pel-pkg-for-rust
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-emacs-racer nil
+  "Control whether emacs-racer is activated.
+Requires the user-option variable `pel-use-rust' to be on (t)."
+  :link '(url-link :tag "Emacs racer @ GitHub"
+                   "https://github.com/racer-rust/emacs-racer")
+  :group 'pel-pkg-for-rust
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-cargo nil
+  "Control whether cargo is activated.
+Requires the user-option variable `pel-use-rust' to be on (t)."
+  :link '(url-link :tag "cargo.el @ GitHub"
+                   "https://github.com/kwrooijen/cargo.el")
   :group 'pel-pkg-for-rust
   :type 'boolean
   :safe #'booleanp)

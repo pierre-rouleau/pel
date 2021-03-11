@@ -3133,43 +3133,73 @@ MODE must be a symbol."
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC r`` : Rust programming
+(when pel-use-rust
+  (define-pel-global-prefix pel:for-rust (kbd "<f11> SPC r"))
 
-;; - Programming Style: Rust & Cargo Support
-;; -----------------------------------------
-(when pel-use-rust                      ; Experimental: TODO: complete this
-  (define-pel-global-prefix pel:for-rust  (kbd "<f11> SPC r"))
+  (defun pel--common-rust-setup ()
+    "Setup for Rust editing."
+    (pel--mode-hook-maybe-call
+     (lambda ()
+       (pel-local-set-f12 'pel:for-rust))
+     'rust-mode 'rust-mode-hook)
+    (define-key pel:for-rust "c" 'rust-run)
+    (define-key pel:for-rust "d" 'rust-dbg-wrap-or-unwrap)
+    (define-key pel:for-rust "l" 'rust-run-clippy)
+    (add-hook 'rust-mode-hook
+              (lambda ()
+                (setq indent-tabs-mode nil))))
 
-  (use-package racer
-    :ensure t
-    :pin melpa
-    :commands racer-mode
-    :init
-      (cl-eval-when 'compile (require 'racer nil :no-error)))
+  (when pel-use-rust-mode
+    ;; Important rust-mode user-options:
+    ;; - rust-format-on-save
+    (use-package rust-mode
+      :ensure t
+      :pin melpa
+      :commands rust-mode
+      :init
+      (pel--common-rust-setup)
+      ;; (cl-eval-when 'compile (require 'rust-mode nil :no-error))
+      ))
 
-  (use-package rust-mode
-    :ensure t
-    :pin melpa
-    :commands rust-mode
-    :init
-      (cl-eval-when 'compile (require 'rust-mode nil :no-error)))
+  (when pel-use-rustic
+    (use-package rustic
+      :ensure t
+      :pin melpa
+      :commands rustic))
 
-  (use-package cargo
-    :ensure t
-    :pin melpa
-    :commands cargo-minor-mode
-    :config
-    (cl-eval-when 'compile (require 'cargo nil :no-error))
-    ;; M-x package-install rust-mode
-    ;; M-x package-install cargo
-    ;; M-x package-install racer
-    ;; M-x package-install company
-    (add-hook 'rust-mode-hook  'cargo-minor-mode)
-    (add-hook 'rust-mode-hook  'racer-mode)
-    (add-hook 'racer-mode-hook 'eldoc-mode)
-    (when pel-use-company
-      (add-hook 'racer-mode-hook 'company-mode))
-    (define-key rust-mode-map
-      (kbd "TAB") 'company-indent-or-complete-common)))
+  (when (and pel-use-rust-mode
+             pel-use-flycheck-rust)
+    (use-package flycheck-rust
+      :ensure t
+      :pin melpa
+      :after (flycheck rust-mode))
+
+    (with-eval-after-load 'rust-mode
+      (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
+
+  (when pel-use-emacs-racer
+    (use-package racer
+      :ensure t
+      :pin melpa
+      :commands racer-mode
+      :init
+      (cl-eval-when 'compile (require 'racer nil :no-error))))
+
+  (when pel-use-cargo
+    (use-package cargo
+      :ensure t
+      :pin melpa
+      :commands cargo-minor-mode
+      :config
+      (cl-eval-when 'compile (require 'cargo nil :no-error))
+      ;; M-x package-install company
+      (add-hook 'rust-mode-hook 'cargo-minor-mode)
+      (add-hook 'rust-mode-hook 'racer-mode)
+      (add-hook 'racer-mode-hook 'eldoc-mode)
+      (when pel-use-company
+        (add-hook 'racer-mode-hook 'company-mode))
+      (define-key rust-mode-map
+        (kbd "TAB") 'company-indent-or-complete-common))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC v`` : V programming

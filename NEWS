@@ -629,6 +629,27 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     - New: *NetRexx*:
       - Add support for NetRexx programming language via
         [[https://github.com/pierre-rouleau/netrexx-mode][my forked netrexx-mode GitHub project]].
+  - Update: *Rust*:
+    - Modified: ⚠️  *Customization affecting change*: customization setting, *pel-use-rust*,
+      no longer automatically activates cargo and racer for Emacs.  These now
+      have to be enabled by their own user-option variable.  The user-option
+      variables controlling Rust support are now the following:
+      - *pel-use-rust*: must be turned on (set to t) to activate Rust support.
+      - *pel-use-rust-mode*: activates the use of rust-mode.
+      - *pel-use-rustic*: activates the use of rustic.  Both rust-mode and
+        rustic may be enabled if needed.
+      - *pel-use-flycheck-rust*: activates flycheck for Rust code.
+      - *pel-use-emacs-racer*: activates Emacs Racer for Rust.
+      - *pel-use-cargo*: activates Emacs Cargo for Rust.
+    - New: Added a Rust-specific key prefix (``pel:for-rust``) accessible
+      globally  via ``<f11> SPC r`` and inside a Rust mode via ``<f12>``.
+      This prefix key provides access to Rust specific commands, which include:
+      - The ``<f12> <f1>`` key opens the preliminary  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rust.pdf][𝕻𝔩 - Rust PDF]].
+      - The ``<f12> <f2>`` key opens PEL Rust customization buffer.
+      - The ``<f12> <f3>`` key opens the Rust customization buffer.
+      - The ``<f12> c`` key builds the Rust file using ``rust-run``.
+      - The ``<f12> d`` key is bound to ``rust-dbg-wrap-or-unwrap``.
+      - The ``<f12> l`` key is bound to ``rust-run-clippy``, Rust's Lint checker.
 - Update: *Process execution*:
   - New: the list-processes command is now bound to ``<f11> x ?`` key
     sequence.
