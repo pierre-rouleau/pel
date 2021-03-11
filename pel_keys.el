@@ -404,7 +404,7 @@ Done in this function to allow advising libraries that remap these keys."
     ;;
     ;; activate the <f12> key binding for dired-narrow-mode
     (pel--mode-hook-maybe-call
-     '(lambda ()
+     (lambda ()
         (pel-local-set-f12 'pel:for-dired-narrow))
      'dired-mode 'dired-mode-hook)))
 
@@ -1752,8 +1752,8 @@ interactively."
     ;;
     ;; activate the <f12> key binding for apples-mode
     (pel--mode-hook-maybe-call
-     '(lambda ()
-        (pel-local-set-f12 'pel:for-applescript))
+     (lambda ()
+       (pel-local-set-f12 'pel:for-applescript))
      'apples-mode 'apples-mode-hook))
 
   ;; Text narration on macOS
@@ -2299,8 +2299,8 @@ MODE must be a symbol."
 
     ;;
     (pel--mode-hook-maybe-call
-     '(lambda ()
-        (pel-local-set-f12 'pel:for-elixir))
+     (lambda ()
+       (pel-local-set-f12 'pel:for-elixir))
      'elixir-mode 'elixir-mode-hook))
 
   (define-key pel:for-elixir  (kbd "M-p")  #'superword-mode)
@@ -2355,8 +2355,8 @@ MODE must be a symbol."
     ;;
     ;; activate the <f12> key binding for forth-mode
     (pel--mode-hook-maybe-call
-     '(lambda ()
-        (pel-local-set-f12 'pel:for-forth))
+     (lambda ()
+       (pel-local-set-f12 'pel:for-forth))
      'forth-mode 'forth-mode-hook)))
 
 ;; ---------------------------------------------------------------------------
@@ -2470,8 +2470,8 @@ MODE must be a symbol."
            ;; js2-error-buffer-prev and some more...
            ;; activate the <f12> key binding for rexx-mode
            (pel--mode-hook-maybe-call
-            '(lambda ()
-               (pel-local-set-f12 'pel:for-javascript))
+            (lambda ()
+              (pel-local-set-f12 'pel:for-javascript))
             'js2-mode 'js2-mode-hook)))
         ;;
         ((eq pel-use-javascript 'js-mode)
@@ -2497,8 +2497,8 @@ MODE must be a symbol."
     ;;
     ;; activate the <f12> key binding for julia-mode
     (pel--mode-hook-maybe-call
-     '(lambda ()
-        (pel-local-set-f12 'pel:for-julia))
+     (lambda ()
+       (pel-local-set-f12 'pel:for-julia))
      'julia-mode 'julia-mode-hook)
     (add-hook 'julia-mode-hook 'julia-snail-mode)))
 
@@ -2719,15 +2719,15 @@ MODE must be a symbol."
 ;;
 ;; activate the <f12> key binding for elisp-mode
 (pel--mode-hook-maybe-call
- '(lambda ()
-    (pel-local-set-f12-M-f12 'pel:for-elisp)
-    (pel-local-set-f12-M-f12 'pel:elisp-analyze  "a")
-    (pel-local-set-f12-M-f12 'pel:elisp-compile  "c")
-    (pel-local-set-f12-M-f12 'pel:elisp-debug    "d")
-    (pel-local-set-f12-M-f12 'pel:elisp-eval     "e")
-    (pel-local-set-f12-M-f12 'pel:elisp-function "f")
-    (pel-local-set-f12-M-f12 'pel:elisp-lib      "l")
-    (pel--install-elisp-skel pel:elisp-skel))
+ (lambda ()
+   (pel-local-set-f12-M-f12 'pel:for-elisp)
+   (pel-local-set-f12-M-f12 'pel:elisp-analyze  "a")
+   (pel-local-set-f12-M-f12 'pel:elisp-compile  "c")
+   (pel-local-set-f12-M-f12 'pel:elisp-debug    "d")
+   (pel-local-set-f12-M-f12 'pel:elisp-eval     "e")
+   (pel-local-set-f12-M-f12 'pel:elisp-function "f")
+   (pel-local-set-f12-M-f12 'pel:elisp-lib      "l")
+   (pel--install-elisp-skel pel:elisp-skel))
  'emacs-lisp-mode 'emacs-lisp-mode-hook :append)
 
 ;; ---------------------------------------------------------------------------
@@ -2751,9 +2751,9 @@ MODE must be a symbol."
   ;;
   ;; activate the <f12> key binding for lisp-mode
   (pel--mode-hook-maybe-call
-   '(lambda ()
-      (pel-local-set-f12-M-f12 'pel:for-lisp)
-      (pel-local-set-f12-M-f12 'pel:elisp-function "f"))
+   (lambda ()
+     (pel-local-set-f12-M-f12 'pel:for-lisp)
+     (pel-local-set-f12-M-f12 'pel:elisp-function "f"))
    'lisp-mode 'lisp-mode-hook)
 
   (use-package slime
@@ -2770,8 +2770,8 @@ MODE must be a symbol."
   (define-pel-global-prefix pel:for-arc    (kbd "<f11> SPC C-a"))
   ;; activate the <f12> key binding for arc-mode
   (pel--mode-hook-maybe-call
-   '(lambda ()
-      (pel-local-set-f12-M-f12 'pel:for-arc))
+   (lambda ()
+     (pel-local-set-f12-M-f12 'pel:for-arc))
    'arc-mode 'arc-mode-hook)
   (pel--lisp-languages-map-for pel:for-arc)
 
@@ -2796,8 +2796,8 @@ MODE must be a symbol."
   (define-pel-global-prefix pel:for-clojure (kbd "<f11> SPC C-j"))
   ;; activate the <f12> key binding for clojure-mode
   (pel--mode-hook-maybe-call
-   '(lambda ()
-      (pel-local-set-f12-M-f12 'pel:for-clojure))
+   (lambda ()
+     (pel-local-set-f12-M-f12 'pel:for-clojure))
    'clojure-mode 'clojure-mode-hook)
   (pel--lisp-languages-map-for pel:for-clojure)
 
@@ -2858,8 +2858,8 @@ MODE must be a symbol."
   (define-pel-global-prefix pel:for-racket (kbd "<f11> SPC C-r"))
   ;; activate the <f12> key binding for racket-mode
   (pel--mode-hook-maybe-call
-   '(lambda ()
-      (pel-local-set-f12-M-f12 'pel:for-racket))
+   (lambda ()
+     (pel-local-set-f12-M-f12 'pel:for-racket))
    'racket-mode 'racket-mode-hook)
   (pel--lisp-languages-map-for pel:for-racket)
 
@@ -2878,8 +2878,8 @@ MODE must be a symbol."
   (define-pel-global-prefix pel:for-scheme (kbd "<f11> SPC C-s"))
   ;; activate the <f12> key binding for scheme-mode
   (pel--mode-hook-maybe-call
-   '(lambda ()
-      (pel-local-set-f12-M-f12 'pel:for-scheme))
+   (lambda ()
+     (pel-local-set-f12-M-f12 'pel:for-scheme))
    'scheme-mode 'scheme-mode-hook)
   (pel--lisp-languages-map-for pel:for-scheme)
 
@@ -2930,8 +2930,8 @@ MODE must be a symbol."
   (define-pel-global-prefix pel:for-gerbil (kbd "<f11> SPC C-g"))
   ;; activate the <f12> key binding for gerbil-mode
   (pel--mode-hook-maybe-call
-   '(lambda ()
-      (pel-local-set-f12-M-f12 'pel:for-gerbil))
+   (lambda ()
+     (pel-local-set-f12-M-f12 'pel:for-gerbil))
    'gerbil-mode 'gerbil-mode-hook)
   (pel--lisp-languages-map-for pel:for-gerbil)
 
@@ -2950,8 +2950,8 @@ MODE must be a symbol."
   (define-pel-global-prefix pel:for-lfe (kbd "<f11> SPC C-l"))
   ;; activate the <f12> key binding for lfe-mode
   (pel--mode-hook-maybe-call
-   '(lambda ()
-      (pel-local-set-f12-M-f12 'pel:for-lfe))
+   (lambda ()
+     (pel-local-set-f12-M-f12 'pel:for-lfe))
    'lfe-mode 'lfe-mode-hook)
   (pel--lisp-languages-map-for pel:for-lfe)
 
@@ -2981,8 +2981,8 @@ MODE must be a symbol."
   (define-pel-global-prefix pel:for-hy (kbd "<f11> SPC C-h"))
   ;; activate the <f12> key binding for hy-mode
   (pel--mode-hook-maybe-call
-   '(lambda ()
-      (pel-local-set-f12-M-f12 'pel:for-hy))
+   (lambda ()
+     (pel-local-set-f12-M-f12 'pel:for-hy))
    'hy-mode 'hy-mode-hook)
   (pel--lisp-languages-map-for pel:for-hy)
 
@@ -3198,8 +3198,8 @@ MODE must be a symbol."
            (define-key pel:for-v (kbd "<f10>") 'v-menu)
            ;; activate the <f12> key binding for v-mode
            (pel--mode-hook-maybe-call
-            '(lambda ()
-               (pel-local-set-f12 'pel:for-v))
+            (lambda ()
+              (pel-local-set-f12 'pel:for-v))
             'v-mode 'v-mode-hook)))
 
         ((eq pel-use-v 'vlang-mode)
@@ -3349,8 +3349,8 @@ MODE must be a symbol."
   ;;
   ;; activate the <f12> key binding for graphviz-dot-mode
   (pel--mode-hook-maybe-call
-   '(lambda ()
-      (pel-local-set-f12 'pel:for-graphviz-dot))
+   (lambda ()
+     (pel-local-set-f12 'pel:for-graphviz-dot))
    'graphviz-dot-mode 'graphviz-dot-mode-hook))
 
 ;; ---------------------------------------------------------------------------
@@ -3369,8 +3369,8 @@ MODE must be a symbol."
   ;;
   ;; activate the <f12> key binding for plantuml-mode
   (pel--mode-hook-maybe-call
-   '(lambda ()
-      (pel-local-set-f12 'pel:for-plantuml))
+   (lambda ()
+     (pel-local-set-f12 'pel:for-plantuml))
    'plantuml-mode 'plantuml-mode-hook))
 
 ;; ---------------------------------------------------------------------------
@@ -3904,9 +3904,9 @@ See `flyspell-auto-correct-previous-word' for more info."
     ;; Saving the repository to file when on exit.
     ;; kill-buffer-hook is not called when Emacs is killed, so we
     ;; must save all bookmarks first.
-    (add-hook 'kill-emacs-hook '(lambda nil
-                                  (bm-buffer-save-all)
-                                  (bm-repository-save)))
+    (add-hook 'kill-emacs-hook (lambda nil
+                                 (bm-buffer-save-all)
+                                 (bm-repository-save)))
 
     ;; The `after-save-hook' is not necessary to use to achieve persistence,
     ;; but it makes the bookmark data in repository more in sync with the file
