@@ -4110,6 +4110,8 @@ the ones defined from the buffer now."
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> B`` : Browse commands
+;; pel:diff is defined later but used here.
+(define-pel-global-prefix pel:diff (kbd "<f11> d"))
 
 (when (or pel-use-neotree
           pel-use-ztree
@@ -4195,11 +4197,11 @@ the ones defined from the buffer now."
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> d`` : diff commands
-(define-pel-global-prefix pel:diff (kbd "<f11> d"))
 (define-key pel:diff "f"  'diff)
 (define-key pel:diff "b"  'diff-buffer-with-file)
 (define-key pel:diff "k"  'diff-backup)
 (define-key pel:diff "w"  'compare-windows)
+(define-key pel:diff "2"  'pel-ediff-2files)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> d e`` : ediff commands

@@ -195,6 +195,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-browse-group
     pel-customize-pel-base-emacs-group)
 
+  (pel-autoload "pel-diff" for:
+    pel-ediff-2files)
+
   (pel-autoload "pel-elisp" for:
     pel-toggle-paren-in-column-0-is-defun-start
     pel-elisp-set-navigate-target-form

@@ -211,6 +211,11 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - New: *pel-run-ert* command, bound to ``<f12> t`` in Emacs Lisp buffers,
     that byte-compile the file and runs *ert* to on the file visited by the
     current buffer.
+- Update: *File Diff*:
+  - New: command *pel-ediff-2files*, bound to ``<f11> d 2``, runs the EDiff
+    command on the files in the current window and the other window, allowing
+    to quickly set up an EDiff session to compare the content of the 2 edited
+    files.
 - Update: *File Management*:
   - New: when using IDO completion you can control whether IDO uses the file
     name at point with the new command *pel-set-ido-use-fname-at-point*.  By
