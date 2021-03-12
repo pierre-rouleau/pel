@@ -4107,34 +4107,6 @@ the ones defined from the buffer now."
 (define-key pel:indirect-buffer "c"  #'clone-indirect-buffer)
 (define-key pel:indirect-buffer "m"  #'make-indirect-buffer)
 (define-key pel:indirect-buffer "w"  #'clone-indirect-buffer-other-window)
-;;
-
-;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> c`` : count things
-
-(define-pel-global-prefix pel:count (kbd "<f11> c"))
-(define-key pel:count "m" #'count-matches)
-(define-key pel:count "p" #'count-lines-page)
-(define-key pel:count "W" #'count-words-region)
-(define-key pel:count "w" #'count-words)
-;;
-
-;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> C`` : clipboard commands
-
-(define-pel-global-prefix pel:clipboard (kbd "<f11> C"))
-(define-key pel:clipboard "c" #'clipboard-kill-ring-save)
-(define-key pel:clipboard "x" #'clipboard-kill-region)
-(define-key pel:clipboard "v" #'clipboard-yank)
-;;
-
-;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> d`` : diff commands
-(define-pel-global-prefix pel:diff (kbd "<f11> d"))
-(define-key pel:diff "f"  'diff)
-(define-key pel:diff "b"  'diff-buffer-with-file)
-(define-key pel:diff "k"  'diff-backup)
-(define-key pel:diff "w"  'compare-windows)
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> B`` : Browse commands
@@ -4205,6 +4177,31 @@ the ones defined from the buffer now."
       (define-key pel:diff "z" 'ztree-diff))))
 
 ;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> c`` : count things
+
+(define-pel-global-prefix pel:count (kbd "<f11> c"))
+(define-key pel:count "m" #'count-matches)
+(define-key pel:count "p" #'count-lines-page)
+(define-key pel:count "W" #'count-words-region)
+(define-key pel:count "w" #'count-words)
+
+;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> C`` : clipboard commands
+
+(define-pel-global-prefix pel:clipboard (kbd "<f11> C"))
+(define-key pel:clipboard "c" #'clipboard-kill-ring-save)
+(define-key pel:clipboard "x" #'clipboard-kill-region)
+(define-key pel:clipboard "v" #'clipboard-yank)
+
+;; -----------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> d`` : diff commands
+(define-pel-global-prefix pel:diff (kbd "<f11> d"))
+(define-key pel:diff "f"  'diff)
+(define-key pel:diff "b"  'diff-buffer-with-file)
+(define-key pel:diff "k"  'diff-backup)
+(define-key pel:diff "w"  'compare-windows)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> d e`` : ediff commands
 (define-pel-global-prefix pel:ediff (kbd "<f11> d e"))
 (define-key pel:ediff "?"  'ediff-documentation)
