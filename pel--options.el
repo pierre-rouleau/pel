@@ -108,6 +108,8 @@
 ;;     - pel-pkg-for-text-mode
 ;;     - pel-pkg-for-undo
 ;;     - pel-pkg-for-vcs
+;;       - pel-pkg-for-git
+;;       - pel-pkg-for-mercurial
 ;;     - pel-pkg-for-window
 ;;       - pel-pkg-for-scrolling
 ;;       - pel-pkg-for-session
@@ -4529,18 +4531,26 @@ mode during an editing session."
 ;; ------------------------------
 (defgroup pel-pkg-for-vcs nil
   "List of external packages that PEL can use to support use of (D)VCS."
-  :group 'pel-package-use
-  :link `(url-link :tag "Mercurial PDF" ,(pel-pdf-file-url "vcs-mercurial")))
+  :group 'pel-package-use)
+
+(defgroup pel-pkg-for-git nil
+  "PEL customization group for Git."
+  :group 'pel-pkg-for-vcs)
 
 (defcustom pel-use-magit nil
   "Control whether PEL provides access to the Magit package."
-  :group 'pel-pkg-for-vcs
+  :group 'pel-pkg-for-git
   :type 'boolean
   :safe #'booleanp)
 
+(defgroup pel-pkg-for-mercurial nil
+  "PEL customization group for Mercurial."
+  :group 'pel-pkg-for-vcs
+  :link `(url-link :tag "Mercurial PDF" ,(pel-pdf-file-url "vcs-mercurial")))
+
 (defcustom pel-use-monky nil
   "Control whether PEL provides access to the Monky package."
-  :group 'pel-pkg-for-vcs
+  :group 'pel-pkg-for-mercurial
   :type 'boolean
   :safe #'booleanp)
 
