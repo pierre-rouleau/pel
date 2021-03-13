@@ -1,6 +1,6 @@
 ;;; pel-rst.el --- PEL reStructuredText support -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -276,18 +276,24 @@ but when UPDATE is nil, it adds a new line after the underlining.
 ;;-pel-autoload
 (defun pel-rst-adorn-title ()
   "Adorn current line with level-0 (title) reStructuredText section adornment.
-If point is at the top of the file, the top adorn line is placed on the first
-line of the file.
-In all cases point is placed at the end of the title text line."
+If point is at the top of the file, the top adorn line is placed
+on the first line of the file.
+
+In all cases, a mark is left at the end of the title text line
+and point is placed 2 lines below."
   (interactive "*")
   (let ((orig-line (line-number-at-pos)))
     (pel-rst-adorn 0)
     (when (< orig-line 2)
-    ;; delete the empty line this creates when done at the top of the file
+      ;; delete the empty line this creates when done at the top of the file
       (forward-line -2)
       (delete-char 1))
+    ;; move point to end of title
     (forward-line 1)
-    (end-of-line)))
+    (end-of-line)
+    (push-mark)
+    (forward-line 2)
+    (insert "\n")))
 
 ;;-pel-autoload
 (defun pel-rst-adorn-1 ()
