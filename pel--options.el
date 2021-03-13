@@ -4548,6 +4548,14 @@ mode during an editing session."
   :group 'pel-pkg-for-vcs
   :link `(url-link :tag "Mercurial PDF" ,(pel-pdf-file-url "vcs-mercurial")))
 
+(defcustom pel-use-hgignore-mode nil
+  "Determines whether PEL activates the hgignore-mode for .hgignore files."
+  :link '(url-link :tag "hgignore-mode @ GitHub"
+                   "https://github.com/omajid/hgignore-mode")
+  :group 'pel-pkg-for-mercurial
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-monky nil
   "Control whether PEL provides access to the Monky package."
   :group 'pel-pkg-for-mercurial

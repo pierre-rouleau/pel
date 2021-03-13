@@ -73,6 +73,18 @@
 ;;                      ; the options: pel-auto-complete-help
 
 ;; ---------------------------------------------------------------------------
+;; Macros used in this file only
+;; -----------------------------
+
+(defmacro pel-install-package (package when: pel-use)
+  "Install named PACKAGE when the PEL-USE variable is non-nil."
+  (declare (indent 2))
+  (ignore when:)
+  `(when (and ,pel-use
+              (not (package-installed-p (quote ,package))))
+     (package-install (quote ,package))))
+
+;; ---------------------------------------------------------------------------
 ;; Configure PEL-level autoloading
 ;; -------------------------------
 
@@ -5376,6 +5388,7 @@ the ones defined from the buffer now."
 (define-pel-global-prefix pel:vcs (kbd "<f11> v"))
 (define-key pel:vcs "v"  'vc-dir)
 
+;; Git support
 (when pel-use-magit
   (use-package magit
     :ensure t
@@ -5383,8 +5396,9 @@ the ones defined from the buffer now."
     :commands (magit
                magit-status)
     :init
-    (define-key pel:vcs "g"  'magit-status))) ;Git
+    (define-key pel:vcs "g"  'magit-status)))
 
+;; Mercurial Support
 (when pel-use-monky
   (use-package monky
     :ensure t
@@ -5392,7 +5406,12 @@ the ones defined from the buffer now."
 
     :commands monky-status
     :init
-    (define-key pel:vcs "m"  'monky-status))) ; Mercurial
+    (define-key pel:vcs "m"  'monky-status)))
+
+;; Install & compile hgignore-mode if requested.  No key assignment;
+;; the package installation will activate the file name association
+;; and the auto-loading.
+(pel-install-package hgignore-mode when: pel-use-hgignore-mode)
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> w`` : Windows operations
