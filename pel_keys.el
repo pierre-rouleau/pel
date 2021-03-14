@@ -73,11 +73,36 @@
 ;;                      ; the options: pel-auto-complete-help
 
 ;; ---------------------------------------------------------------------------
-;; Macros used in this file only
-;; -----------------------------
+;; Package Installation Control
+;; ----------------------------
+;;
+;; The following code defines the `pel-install-package' macro that will be
+;; used below as a replacement for the `use-package' ``:ensure t`` mechanism.
+;;
+;; This is done to:
+;; - install a package when the appropriate pel-use variable is turned on,
+;; - but do NOT install it when byte-compiling the code, something the
+;;   use-package :ensure t does, unfortunately.
+;; - Allow the selection of a Elpa site, just as the use-package :pin does.
+;; - Prevent loading use-package when nothing needs to be installed.
+;;
+;; The `pel-install-package' macro uses the `pel-install-pkg' function to
+;; reduce the amount of code generated and executed to the expense of one
+;; function call.
 
-(defmacro pel-install-package (package when: pel-use &optional from: pinned-site)
-  "Install named PACKAGE when the PEL-USE variable is non-nil.
+(defun pel-install-pkg (pkg elpa-site)
+  "Install package PKG.
+PKG must be a symbol.
+If ELPA-SITE is non-nil it should be a string holding the name of one of the
+Elpa repositories identified in the variable `package-archive'."
+  (require 'use-package nil :no-error)
+  (when elpa-site
+    (use-package-pin-package pkg elpa-site))
+  (use-package-ensure-elpa pkg '(t) nil))
+
+(defmacro pel-install-package (pkg when: pel-use &optional from: pinned-site)
+  "Install package named PKG when the PEL-USE variable is non-nil.
+PKG must be an unquoted symbol.
 When PINNED-SITE (a unquoted symbol) is specified use this as the Elpa
 repository, which must be listed in the variable `package-archive'.
 
@@ -87,18 +112,10 @@ on the Elpa site."
   (declare (indent 2))
   (ignore when:)
   (ignore from:)
-  (let* ((pin-site-name (if pinned-site (symbol-name pinned-site) ""))
-         (pin-site (if pinned-site
-                       `((use-package-pin-package
-                          (quote ,package)
-                          ,pin-site-name))
-                     (ignore))))
+  (let* ((pin-site-name (when pinned-site (symbol-name pinned-site))))
     `(when (and ,pel-use
-                (not (package-installed-p (quote ,package))))
-       ,@pin-site
-       (use-package-ensure-elpa (quote ,package)
-                                (list (if ,pel-use t nil))
-                                'nil))))
+                (not (package-installed-p (quote ,pkg))))
+       (pel-install-pkg (quote ,pkg) ,pin-site-name))))
 
 ;; ---------------------------------------------------------------------------
 ;; Configure PEL-level autoloading
@@ -116,28 +133,6 @@ on the Elpa site."
 (when pel-prompt-accept-y-n
   ;; Use 'y'/'n' or SPC/DEL instead of 'yes'/'no'
   (fset 'yes-or-no-p 'y-or-n-p))
-
-;; ---------------------------------------------------------------------------
-;; - Use popup-kill-ring
-;; ---------------------
-;; View all kill-ring deletions in a pop-up menu, when
-;; M-y is typed.
-;; Activate the popup-kill-ring in graphic mode only
-;; because it does not seem to work in terminal mode.
-;; It uses the pos-tip package.
-;; the 2 packages manually.
-(when (and pel-use-popup-kill-ring
-           (display-graphic-p))
-
-  (use-package popup-kill-ring
-    ;; Note: pos-tip, required by popup-kill-ring is installed
-    ;;       when popup-kill-ring is installed (and loaded by
-    ;;       it too).
-    :ensure t
-    :pin melpa
-    :commands popup-kill-ring
-    :init
-    (cl-eval-when 'compile (require 'popup-kill-ring nil :no-error))))
 
 ;; ---------------------------------------------------------------------------
 ;; - PEL Modifier keys on different OS
@@ -1116,10 +1111,29 @@ interactively."
     (pel--check-flyspell-iedit-conflict)
     (pel--add-keys-to-iedit-mode)))
 
+;; - popup-kill-ring
+;; -----------------
+;; View all kill-ring deletions in a pop-up menu, when M-y is typed.
+;; Activate the popup-kill-ring in graphic mode only
+;; because it does not seem to work in terminal mode.
+;; It uses the pos-tip package.
 (when (and pel-use-popup-kill-ring
            (display-graphic-p))
-  (define-key pel: (kbd "M-y") 'popup-kill-ring))
+  (pel-install-package
+      popup-kill-ring when: (and pel-use-popup-kill-ring
+                                 (display-graphic-p))
+      from: melpa)
+  (use-package popup-kill-ring
+    ;; Note: pos-tip, required by popup-kill-ring is installed
+    ;;       when popup-kill-ring is installed (and loaded by
+    ;;       it too).
+    :commands popup-kill-ring
+    :init
+    (cl-eval-when 'compile (require 'popup-kill-ring nil :no-error))
+    (define-key pel: (kbd "M-y") 'popup-kill-ring)))
 
+;; - smart-dash
+;; ------------
 (when pel-use-smart-dash
   (use-package smart-dash
     :ensure t
@@ -5398,7 +5412,7 @@ the ones defined from the buffer now."
 (define-key pel:text-whitespace "T"        'pel-toggle-show-trailing-whitespace)
 (define-key pel:text-whitespace "t"         #'delete-trailing-whitespace)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> v`` : VCS operations
 ;;
 (define-pel-global-prefix pel:vcs (kbd "<f11> v"))
@@ -5429,7 +5443,7 @@ the ones defined from the buffer now."
 ;; and the auto-loading.
 (pel-install-package hgignore-mode when: pel-use-hgignore-mode from: melpa)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> w`` : Windows operations
 ;; Use the global local winner-mode, but don't use its key bindings;
 ;; use some in the '<f11> w' group:
