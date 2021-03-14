@@ -76,13 +76,29 @@
 ;; Macros used in this file only
 ;; -----------------------------
 
-(defmacro pel-install-package (package when: pel-use)
-  "Install named PACKAGE when the PEL-USE variable is non-nil."
+(defmacro pel-install-package (package when: pel-use &optional from: pinned-site)
+  "Install named PACKAGE when the PEL-USE variable is non-nil.
+When PINNED-SITE (a unquoted symbol) is specified use this as the Elpa
+repository, which must be listed in the variable `package-archive'.
+
+The package list is refreshed before attempting installation to prevent
+trying to install an obsolete version of a package that is no longer present
+on the Elpa site."
   (declare (indent 2))
   (ignore when:)
-  `(when (and ,pel-use
-              (not (package-installed-p (quote ,package))))
-     (package-install (quote ,package))))
+  (ignore from:)
+  (let* ((pin-site-name (if pinned-site (symbol-name pinned-site) ""))
+         (pin-site (if pinned-site
+                       `((use-package-pin-package
+                          (quote ,package)
+                          ,pin-site-name))
+                     (ignore))))
+    `(when (and ,pel-use
+                (not (package-installed-p (quote ,package))))
+       ,@pin-site
+       (use-package-ensure-elpa (quote ,package)
+                                (list (if ,pel-use t nil))
+                                'nil))))
 
 ;; ---------------------------------------------------------------------------
 ;; Configure PEL-level autoloading
@@ -5411,7 +5427,7 @@ the ones defined from the buffer now."
 ;; Install & compile hgignore-mode if requested.  No key assignment;
 ;; the package installation will activate the file name association
 ;; and the auto-loading.
-(pel-install-package hgignore-mode when: pel-use-hgignore-mode)
+(pel-install-package hgignore-mode when: pel-use-hgignore-mode from: melpa)
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> w`` : Windows operations
