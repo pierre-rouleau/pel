@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-02-28 15:42:46, updated by Pierre Rouleau.
+:Modified: 2021-03-14 14:53:15, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -222,7 +222,8 @@ following sections.
 Before you can install PEL, you need to ensure that you have the
 required tools.  They are described in the following sections:
 
-#. `Install Emacs 26.1 or later`_. Ideally use the latest stable release: Emacs 26.3.
+#. `Install Emacs 26.1 or later`_. If you are new to Emacs, the easiest is to use
+   one of the the latest stable releases: Emacs 26.3, or 27.1.
 #. `Install other required command line tools`_
 
 
@@ -238,10 +239,12 @@ The fully detailed instructions are described in the following sections:
 #. `Clone the PEL Git repository`_ on your computer.
 #. `Prepare Emacs Initialization directory`_ where lots of Emacs files will go.
 #. `Create a "~/.emacs.d/utils" directory`_ for files from the EmacsAttics_ and
-   EmacsMirror_ that PEL uses.
+   EmacsMirror_ that PEL uses and for files hosted on GitHub and Gitlab that are not
+   supported by Elpa packaging mechanism.
 #. `Create the emacs-customization.el file`_.
 #. `Create or Update your Emacs init.el file`_.
-#. `Build first part of PEL`_ to byte-compile all files but two of them.
+#. `Build first part of PEL`_ to byte-compile all PEL Emacs Lisp files except
+   for two of them.
 #. `Activate PEL in your init.el file`_.
 #. `Open Emacs to install use-package`_; that will install `use-package`_ and
    its dependencies.
@@ -328,6 +331,11 @@ Clone the PEL Git repository
 Clone the `PEL's Github repo`_ somewhere in your home directory but outside your
 "~/.emacs.d" directory.  The instruction assumes that you store it inside
 "~/projects" to create "~/projects/pel".
+
+Note:
+     You could use anything, but then you'll have to remember to update the
+     instructions appropriately, replacing "``~/projects``" with whatever you want
+     to use.
 
 The commands will create the "``~/projects/pel``" directory tree with all
 PEL's files inside it, including all `PDF document tables`_
@@ -500,7 +508,7 @@ You can also use a copy of the file `example/init/init-0.el`_ :
 
 **Description:**
 
-- Section 1 of the code adds the following URLS of Elpa-compliant Emacs package
+- Section 1 of the code adds the following URLs of Elpa-compliant Emacs package
   archives:
 
   - MELPA_
