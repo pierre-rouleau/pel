@@ -226,29 +226,31 @@ Done in this function to allow advising libraries that remap these keys."
   ;; NOTE: you must install the icons manually by executing:
   ;;       M-x all-the-icons-install-fonts
 
-  (when (or pel-use-all-the-icons
-            pel-use-all-the-icons-ibuffer
-            pel-use-all-the-icons-dired
-            pel-use-all-the-icons-ivy
-            pel-neotree-font-in-graphics)
-    (use-package all-the-icons
-      :ensure t
-      :pin melpa))
+  (pel-ensure-package all-the-icons
+      when: (or pel-use-all-the-icons
+                pel-use-all-the-icons-ibuffer
+                pel-use-all-the-icons-dired
+                pel-use-all-the-icons-ivy
+                pel-neotree-font-in-graphics)
+      from: melpa)
 
   (when pel-use-all-the-icons-ibuffer
+    (pel-ensure-package all-the-icons-ibuffer
+        when: pel-use-all-the-icons-ibuffer)
     (use-package all-the-icons-ibuffer
-      :ensure t
       :init (all-the-icons-ibuffer-mode 1)))
 
   (when pel-use-all-the-icons-dired
+    (pel-ensure-package all-the-icons-dired
+        when: pel-use-all-the-icons-dired)
     (use-package all-the-icons-dired
-      :ensure t
       :init
       (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)))
 
   (when pel-use-all-the-icons-ivy
+    (pel-ensure-package all-the-icons-ivy
+        when: pel-use-all-the-icons-ivy)
     (use-package all-the-icons-ivy
-      :ensure t
       :init
       (add-hook 'after-init-hook 'all-the-icons-ivy-setup)))
 
@@ -306,9 +308,8 @@ Done in this function to allow advising libraries that remap these keys."
 ;; In these modes, the 'o' key puts a letter to identify the target links.
 ;; See URL https://github.com/abo-abo/ace-link
 (when pel-use-ace-link
+  (pel-ensure-package ace-link when: pel-use-ace-link from: melpa)
   (use-package ace-link
-    :ensure t
-    :pin melpa
     :defer 1.5
     :config
     (ace-link-setup-default)))
@@ -320,9 +321,8 @@ Done in this function to allow advising libraries that remap these keys."
 ;; The avy package provides quick navigation inside any buffer and across
 ;; windows. See URL https://github.com/abo-abo/avy
 (when pel-use-avy
+  (pel-ensure-package avy when: pel-use-avy from: melpa)
   (use-package avy
-    :ensure t
-    :pin melpa
     :commands (avy-goto-char
                avy-goto-char-2
                avy-goto-char-timer
@@ -355,9 +355,8 @@ Done in this function to allow advising libraries that remap these keys."
 (global-set-key (kbd "M-g C-h") 'pel-goto-symbol-select-completion)
 
 (when pel-use-imenu-anywhere
+  (pel-ensure-package imenu-anywhere when: pel-use-imenu-anywhere from: melpa)
   (use-package imenu-anywhere
-    :ensure t
-    :pin melpa
     :commands (pel-imenu-anywhere-select-completion
                pel-imenu-anywhere)
     :init
@@ -398,13 +397,8 @@ Done in this function to allow advising libraries that remap these keys."
 ;; commands.
 
 (when pel-use-dired-narrow
-
+  (pel-ensure-package dired-narrow when: pel-use-dired-narrow from: melpa)
   (use-package dired-narrow
-    ;; dired-narrow is an external package.
-    ;; Ensure it's installed via MELPA
-    :ensure t
-    :pin melpa
-
     ;; autoload it when one of the following commands is used.
     :commands (dired-narrow
                dired-narrow-regexp
@@ -428,7 +422,7 @@ Done in this function to allow advising libraries that remap these keys."
     ;; activate the <f12> key binding for dired-narrow-mode
     (pel--mode-hook-maybe-call
      (lambda ()
-        (pel-local-set-f12 'pel:for-dired-narrow))
+       (pel-local-set-f12 'pel:for-dired-narrow))
      'dired-mode 'dired-mode-hook)))
 
 ;; ---------------------------------------------------------------------------
@@ -990,9 +984,8 @@ Then save your changes."
 ;; EditorConfig Support
 ;; --------------------
 (when pel-use-editor-config
+  (pel-ensure-package editorconfig when: pel-use-editor-config from: melpa)
   (use-package editorconfig
-    :ensure t
-    :pin melpa
     :config
     (editorconfig-mode 1)))
 
@@ -1099,9 +1092,10 @@ interactively."
       (define-key map (kbd "M-C")       'iedit-upcase-occurrences))))
 
 (when (or pel-use-iedit pel-use-lispy)
+  (pel-ensure-package iedit
+      when: (or pel-use-iedit pel-use-lispy)
+      from: melpa)
   (use-package iedit
-    :ensure t
-    :pin melpa
     :commands iedit-mode
     :init
     (define-key pel: "e" 'iedit-mode)
@@ -1135,9 +1129,8 @@ interactively."
 ;; - smart-dash
 ;; ------------
 (when pel-use-smart-dash
+  (pel-ensure-package smart-dash when: pel-use-smart-dash from: melpa)
   (use-package smart-dash
-    :ensure t
-    :pin melpa
     :commands smart-dash-mode
     :init
     (define-key pel: (kbd "M--") 'smart-dash-mode)
@@ -1178,9 +1171,8 @@ interactively."
 ;; - Display of Regular Expression -- easy-escape
 ;; ----------------------------------------------
 (when pel-use-easy-escape
+  (pel-ensure-package easy-escape when: pel-use-easy-escape from: melpa)
   (use-package easy-escape
-    :ensure t
-    :pin melpa
     :commands easy-escape-minor-mode
     :init
     (define-key pel: "\"" 'easy-escape-minor-mode)
@@ -1236,12 +1228,8 @@ interactively."
         (define-key pel:undo    "u"       #'pel-undo)
         (define-key pel:undo    "r"       #'pel-redo))
 
-      ;; The pel-undo functions will use the undo-tree functions
-      ;; when the undo-tree mode is active, so schedule the
-      ;; auto-loading of the undo-tree file via its functions.
+      (pel-ensure-package undo-tree when: pel-use-undo-tree from: gnu)
       (use-package undo-tree
-        :ensure t
-        :pin gnu
         :commands (undo-tree-mode
                    global-undo-tree-mode
                    undo-tree-undo
@@ -1249,9 +1237,9 @@ interactively."
                    undo-tree-visualize
                    undo-tree-switch-branch)
         :init
-        (cl-eval-when 'compile (require 'undo-tree nil :no-error))
-        (define-key pel:undo    "v"       #'undo-tree-visualize)
-        (define-key pel:undo    "x"       #'undo-tree-switch-branch)
+        ;; (cl-eval-when 'compile (require 'undo-tree nil :no-error))
+        (define-key pel:undo    "v"       'undo-tree-visualize)
+        (define-key pel:undo    "x"       'undo-tree-switch-branch)
 
         :config
         ;; The file undo-tree sets the undo-tree-map key-map which
@@ -4327,7 +4315,7 @@ the ones defined from the buffer now."
         (require 'flycheck-plantuml)
         (flycheck-plantuml-setup)))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> f`` : File operations
 
 (defun pel-auto-revert-set-timer ()
