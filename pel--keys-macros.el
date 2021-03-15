@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-11 15:21:02, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-15 16:14:24, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -207,7 +207,8 @@
                                 items)))
 
     ([f11 ?c]        "counting"         nil)
-    ([f11 ?d]        "diff-merge"       pel-pkg-for-ztree)
+    ([f11 ?d]        "diff-merge"       pel-pkg-for-ztree       (diff
+                                                                 ediff))
     ([f11 ?d ?e]     "diff-merge"       nil                     ediff)
     ([f11 ?f ?v]     "file-variables"   nil)
     ([dired]         "mode-dired"       pel-pkg-for-dired       dired)
