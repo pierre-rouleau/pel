@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 12 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-12 10:53:31, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-15 14:01:25, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -39,12 +39,20 @@
 ;;-pel-autoload
 (defun pel-ediff-2files ()
   "Run ediff-files on the files of current and other window."
+  ;; Note: ediff-files is available in Emacs -Q
   (interactive)
   (let ((fname-a (pel-current-buffer-filename))
         (fname-b (save-excursion
                    (other-window 1)
                    (pel-current-buffer-filename))))
     (ediff-files fname-a fname-b )))
+
+;;-pel-autoload
+(defun pel-ediff-revision ()
+  "Run ediff-revision for current file against its last commit version."
+  ;; Note: ediff-revision is available in Emacs -Q
+  (interactive)
+  (ediff-revision (pel-current-buffer-filename)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-diff)

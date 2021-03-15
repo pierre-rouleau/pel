@@ -216,6 +216,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     command on the files in the current window and the other window, allowing
     to quickly set up an EDiff session to compare the content of the 2 edited
     files.
+  - New: command *pel-ediff-revision*, bound to ``<f11> d r``, runs the Ediff
+    command to compare revisions of the file in the current window, defaulting
+    to the current copy and the last committed revision.
 - Update: *File Management*:
   - New: when using IDO completion you can control whether IDO uses the file
     name at point with the new command *pel-set-ido-use-fname-at-point*.  By

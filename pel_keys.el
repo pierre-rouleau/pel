@@ -4245,6 +4245,7 @@ the ones defined from the buffer now."
 (define-key pel:diff "k"  'diff-backup)
 (define-key pel:diff "w"  'compare-windows)
 (define-key pel:diff "2"  'pel-ediff-2files)
+(define-key pel:diff "r"  'pel-ediff-revision)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> d e`` : ediff commands
