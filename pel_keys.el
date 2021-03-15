@@ -54,7 +54,7 @@
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
-  (package-install 'use-package))
+  (pel-package-install 'use-package))
 
 ;;;---------------------------------------------------------------------------
 ;; Required packages:
