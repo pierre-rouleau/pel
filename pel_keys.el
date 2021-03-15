@@ -76,7 +76,7 @@
 ;; Package Installation Control
 ;; ----------------------------
 ;;
-;; The following code defines the `pel-install-package' macro that will be
+;; The following code defines the `pel-ensure-package' macro that will be
 ;; used below as a replacement for the `use-package' ``:ensure t`` mechanism.
 ;;
 ;; This is done to:
@@ -86,11 +86,11 @@
 ;; - Allow the selection of a Elpa site, just as the use-package :pin does.
 ;; - Prevent loading use-package when nothing needs to be installed.
 ;;
-;; The `pel-install-package' macro uses the `pel-install-pkg' function to
+;; The `pel-ensure-package' macro uses the `pel-ensure-pkg' function to
 ;; reduce the amount of code generated and executed to the expense of one
 ;; function call.
 
-(defun pel-install-pkg (pkg elpa-site)
+(defun pel-ensure-pkg (pkg elpa-site)
   "Install package PKG.
 PKG must be a symbol.
 If ELPA-SITE is non-nil it should be a string holding the name of one of the
@@ -100,7 +100,7 @@ Elpa repositories identified in the variable `package-archive'."
     (use-package-pin-package pkg elpa-site))
   (use-package-ensure-elpa pkg '(t) nil))
 
-(defmacro pel-install-package (pkg when: pel-use &optional from: pinned-site)
+(defmacro pel-ensure-package (pkg when: pel-use &optional from: pinned-site)
   "Install package named PKG when the PEL-USE variable is non-nil.
 PKG must be an unquoted symbol.
 When PINNED-SITE (a unquoted symbol) is specified use this as the Elpa
@@ -115,7 +115,7 @@ on the Elpa site."
   (let* ((pin-site-name (when pinned-site (symbol-name pinned-site))))
     `(when (and ,pel-use
                 (not (package-installed-p (quote ,pkg))))
-       (pel-install-pkg (quote ,pkg) ,pin-site-name))))
+       (pel-ensure-pkg (quote ,pkg) ,pin-site-name))))
 
 ;; ---------------------------------------------------------------------------
 ;; Configure PEL-level autoloading
@@ -1119,7 +1119,7 @@ interactively."
 ;; It uses the pos-tip package.
 (when (and pel-use-popup-kill-ring
            (display-graphic-p))
-  (pel-install-package
+  (pel-ensure-package
       popup-kill-ring when: (and pel-use-popup-kill-ring
                                  (display-graphic-p))
       from: melpa)
@@ -4150,7 +4150,7 @@ the ones defined from the buffer now."
 (define-key pel:indirect-buffer "m"  #'make-indirect-buffer)
 (define-key pel:indirect-buffer "w"  #'clone-indirect-buffer-other-window)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> B`` : Browse commands
 ;; pel:diff is defined later but used here.
 (define-pel-global-prefix pel:diff (kbd "<f11> d"))
@@ -4208,8 +4208,9 @@ the ones defined from the buffer now."
       :config
       (setq ztree-dir-move-focus pel-ztree-dir-move-focus)
       (when pel-ztree-dir-filter-list
-        (setq-default ztree-dir-filter-list
-                      (append pel-ztree-dir-filter-list ztree-dir-filter-list)))
+        (setq-default
+         ztree-dir-filter-list
+         (append pel-ztree-dir-filter-list ztree-dir-filter-list)))
       (setq-default ztree-dir-show-filtered-files
                     pel-ztree-dir-show-filtered-files))
     ;;
@@ -4220,7 +4221,7 @@ the ones defined from the buffer now."
       :init
       (define-key pel:diff "z" 'ztree-diff))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> c`` : count things
 
 (define-pel-global-prefix pel:count (kbd "<f11> c"))
@@ -4229,7 +4230,7 @@ the ones defined from the buffer now."
 (define-key pel:count "W" #'count-words-region)
 (define-key pel:count "w" #'count-words)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> C`` : clipboard commands
 
 (define-pel-global-prefix pel:clipboard (kbd "<f11> C"))
@@ -4237,7 +4238,7 @@ the ones defined from the buffer now."
 (define-key pel:clipboard "x" #'clipboard-kill-region)
 (define-key pel:clipboard "v" #'clipboard-yank)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> d`` : diff commands
 (define-key pel:diff "f"  'diff)
 (define-key pel:diff "b"  'diff-buffer-with-file)
@@ -4245,7 +4246,7 @@ the ones defined from the buffer now."
 (define-key pel:diff "w"  'compare-windows)
 (define-key pel:diff "2"  'pel-ediff-2files)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> d e`` : ediff commands
 (define-pel-global-prefix pel:ediff (kbd "<f11> d e"))
 (define-key pel:ediff "?"  'ediff-documentation)
@@ -4291,7 +4292,7 @@ the ones defined from the buffer now."
 (define-key pel:ediff-merge "r"  'ediff-merge-revisions)
 (define-key pel:ediff-merge "R"  'ediff-merge-revisions-with-ancestor)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> D`` : draw commands
 
 (define-pel-global-prefix pel:draw (kbd "<f11> D"))
@@ -5441,7 +5442,7 @@ the ones defined from the buffer now."
 ;; Install & compile hgignore-mode if requested.  No key assignment;
 ;; the package installation will activate the file name association
 ;; and the auto-loading.
-(pel-install-package hgignore-mode when: pel-use-hgignore-mode from: melpa)
+(pel-ensure-package hgignore-mode when: pel-use-hgignore-mode from: melpa)
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> w`` : Windows operations
