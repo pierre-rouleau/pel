@@ -1,6 +1,6 @@
-;;; pel-window.el --- PEL Window Management Utilities -*-lexical-binding: t-*-
+;;; pel-window.el --- PEL Window Management Utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -22,8 +22,8 @@
 
 ;;; Commentary:
 ;;
-;; The file `pel-window.el' provides a set of window management utilities.  Some
-;; of these utility commands use or extend the features provided by the
+;; The file `pel-window.el' provides a set of window management utilities.
+;; Some of these utility commands use or extend the features provided by the
 ;; `windmove' library, a library packaged with standard GNU Emacs.
 ;;
 ;; The file provides the following features:
@@ -37,8 +37,9 @@
 ;;
 ;;  - Dedicated window management utilities:
 ;;
-;;    - `pel-show-window-dedicated-status' displays the dedicated status of the
-;;      current window: ie. whether the current window is dedicated or not.
+;;    - `pel-show-window-dedicated-status' displays the dedicated status of
+;;      the current window: ie. whether the current window is dedicated or
+;;      not.
 ;;    - `pel-toggle-window-dedicated' toggles the dedicated status of the
 ;;      current window.  Use it to dedicate the current window or turn
 ;;      dedication off.
@@ -47,8 +48,8 @@
 ;;
 ;;  - Creating new windows:
 ;;
-;;    The following 4 commands allow creating cursor bindings to create windows
-;;    pointed by a cardinal direction:
+;;    The following 4 commands allow creating cursor bindings to create
+;;    windows pointed by a cardinal direction:
 ;;
 ;;    - `pel-create-window-down'
 ;;    - `pel-create-window-left'
@@ -81,9 +82,9 @@
 ;;
 ;;  - Changing orientation of 2 windows:
 ;;
-;;    The commands `pel-2-vertical-windows' and `pel-2-horizontal-windows' flip
-;;    the orientation of the current and next window from horizontal to vertical
-;;    and vice-versa.
+;;    The commands `pel-2-vertical-windows' and `pel-2-horizontal-windows'
+;;    flip the orientation of the current and next window from horizontal to
+;;    vertical and vice-versa.
 ;;
 ;; - Moving to windows by direction or context:
 ;;
@@ -118,8 +119,8 @@
 ;;     window.
 
 
-
-;;; Code:
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
 
 (require 'pel--base)      ; use: pel-current-buffer-filename
 
@@ -132,7 +133,9 @@
 (autoload 'windmove-down               "windmove")
 (autoload 'windmove-find-other-window  "windmove")
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
+;;; Code:
+
 ;; Window buffer
 ;; -------------
 
@@ -149,7 +152,7 @@ Used twice returns to the same buffer."
   (interactive)
   (switch-to-buffer (other-buffer)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Dedicated Windows
 ;; -----------------
 
@@ -175,7 +178,7 @@ Exclude the minibuffer."
   (length (delq t (mapcar #'window-dedicated-p
                           (window-list nil :exclude-minibuf)))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Create new Window
 ;; -----------------
 
@@ -205,7 +208,7 @@ Exclude the minibuffer."
   (interactive)
   (split-window-right))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Move to specified window
 ;; ------------------------
 
@@ -220,7 +223,7 @@ Raise an error if the DIRECTION is invalid."
         ((eq direction 'right) (windmove-right))
         (t (error "Invalid direction %S" direction))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Window close by direction
 ;; -------------------------
 
@@ -256,16 +259,19 @@ Ensure that point remains in the window from where the function was called."
   (interactive)
   (pel--close-window 'right))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Split Current Window More Sensibly
 ;; ----------------------------------
 
 ;;-pel-autoload
 (defun pel-split-window-sensibly ()
   "Split current window sensibly.  Keep same point in both.
-Spit window more sensibly than `split-window-sensibly' by looking at the overall
-sizes of the current window and preferring horizontal split when the width is
-larger than height and when the width is 160 columns or more.
+
+Spit window more sensibly than `split-window-sensibly' by looking
+at the overall sizes of the current window and preferring
+horizontal split when the width is larger than height and when
+the width is 160 columns or more.
+
 Do not select the new window.
 Returns the new window."
   (let ( (w_height (window-size))
@@ -283,13 +289,13 @@ Returns the new window."
             (split-window-below))
         (user-error "%S too small for splitting" (selected-window))))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Re-orient 2 windows
 ;; -------------------
 ;;
-;; The commands `pel-2-vertical-windows' and `pel-2-horizontal-windows' flip the
-;; orientation of the current and next window from horizontal to vertical and
-;; vice-versa.
+;; The commands `pel-2-vertical-windows' and `pel-2-horizontal-windows' flip
+;; the orientation of the current and next window from horizontal to vertical
+;; and vice-versa.
 ;;
 ;;
 ;; Functions:
@@ -355,7 +361,7 @@ Flip the orientation of the current window and its next one."
   (interactive)
   (pel-flip-2-windows-to 'horizontal))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Select window by direction and context
 ;; --------------------------------------
 ;;
@@ -422,7 +428,7 @@ Return the selected window, or nil if nothing is valid."
              (not (window-minibuffer-p a_window)))
         (select-window a_window))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Window direction argument processing utility
 ;; --------------------------------------------
 
@@ -440,7 +446,7 @@ Window selection:
 - If N is nil or 1     : the selection depends on PREFER:
   - If PREFER is non-nil then it should be set to one of the possible valid
     returned values because it is returned unchanged.
-  - If PREFER-CURRENT is nil, then select the window according to the number
+  - If PREFER is nil, then select the window according to the number
     of non-dedicated and non-minibuffer windows in the current frame:
     - 1 window  in frame: return 'new
     - 2 windows in frame: return 'other
@@ -473,7 +479,7 @@ Window selection:
             'new))
       direction)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Original other-window
 ;; ---------------------
 ;; The function other-window is replaced by ace-window and the keys
@@ -487,7 +493,7 @@ and want to see where the next window is."
   (interactive "P")
   (other-window 1 (if all-frames t nil)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Move to previous window
 ;; -----------------------
 
@@ -503,7 +509,7 @@ and want to see where the next window is."
          (all-frames (< n 0)))
     (other-window count all-frames)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Show information about window
 ;; -----------------------------
 
@@ -527,7 +533,7 @@ Display in minibuffer."
            (window-size)
            (window-size nil t)))
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 (provide 'pel-window)
 
 ;;; pel-window.el ends here
