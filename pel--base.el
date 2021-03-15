@@ -82,8 +82,9 @@
 ;; Operations on sequences:
 ;;  - `pel-concat-strings-in-list'
 ;;
-;; Lazy loading:
+;; Lazy loading and package installation:
 ;; - `pel-require'
+;;   - `pel-package-install'
 ;;
 ;; Mode argument interpretation
 ;; -  `pel-action-for'
@@ -672,8 +673,65 @@ Usage Example:
     (error "Call to pel-cons-alist-at given an empty ALIST argument!")))
 
 ;; ---------------------------------------------------------------------------
-;; Lazy loading:
+;; Lazy loading and package installation:
 ;; - `pel-require'
+;;   - `pel-package-install'
+
+
+(defun pel-package-install (pkg)
+  "Install package PKG, return t on success, nil otherwise.
+
+PKG must be a symbol naming one of the available packages in one
+of the archives listed in variable `package-archives'.
+
+If the first attempt fails, the function refreshes the package
+list and tries again. This prevents failing to install a package
+when its version identified in the package list identifies an
+obsolete version no longer supported by the Elpa archive site.
+
+If the second attempt fails, then a error-level warning is logged
+and the function returns nil"
+  ;; package.el is part of Emacs but it's not loaded until required.
+  ;; Load it lazily and check if the required functions are bounded
+  ;; to prevent byte-compiler warnings.
+  (let ((package-was-installed nil))
+    (if (and (require 'package nil :no-error)
+             (fboundp 'package-install))
+        (condition-case-unless-debug err
+            (progn
+              (package-install pkg)
+              (setq package-was-installed t))
+          (error
+           (if (and (fboundp 'package-refresh-content)
+                    (fboundp 'package-read-all-archive-contents)
+                    (boundp  'package-pinned-packages))
+               (progn
+                 (message (format "Failed to install %s: %s
+  Refreshing package list and re-trying..."
+                                  pkg
+                                  (error-message-string err)))
+                 (package-refresh-content)
+                 (when (assoc pkg (bound-and-true-p package-pinned-packages))
+                   (condition-case-unless-debug err
+                       (progn
+                         (package-read-all-archive-contents)
+                         (package-install pkg)
+                         (setq package-was-installed t))
+                     (error
+                      (display-warning
+                       'pel-package-install
+                       (format "After refresh, failed to install %s: %s"
+                               pkg
+                               (error-message-string err))
+                       :error)))))
+             (display-warning
+              'pel-package-install
+              "A package symbol needed is void. Can't install!"
+              :error))))
+      (display-warning
+       'pel-package-install
+       "package-install is void. Can't install!" :error))
+    package-was-installed))
 
 (defun pel-require (feature &optional package with-pel-install fname url-fname)
   "Load FEATURE if not already loaded, optionally try to install PACKAGE.
@@ -690,9 +748,10 @@ The specified package is specified by the PACKAGE argument. It can be either:
   install has the same name as the FEATURE.
 - Another symbol that identifies the name of the required package.
 
-If WITH-PEL-INSTALL is non-nil it should be a user-project-branch of the
-`pel-install-github-file' that is used to perform the installation with FNAME
-and URL-FNAME argument passed to that function.
+If WITH-PEL-INSTALL is non-nil it should be a user-project-branch
+of the format used by `pel-install-github-file' that we be used
+to perform the installation with FNAME and URL-FNAME argument
+passed to that function.
 
 Issue a user-error on failure.
 Otherwise return the loading state of the FEATURE."
@@ -714,7 +773,7 @@ Otherwise return the loading state of the FEATURE."
                                      feature
                                    package)))
                     (unless (package-installed-p package)
-                      (package-install package)
+                      (pel-package-install package)
                       (require feature nil :noerror)
                       (unless (featurep feature)
                         (user-error
