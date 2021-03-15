@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 12 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-15 14:01:25, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-15 15:37:17, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,18 +32,29 @@
 ;;
 ;;
 (require 'pel--base)                    ; use: pel-current-buffer-filename
+(require 'pel-window)                   ; use: pel-window-direction-for
+;;                                      ;      pel-window-select
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
 
 ;;-pel-autoload
-(defun pel-ediff-2files ()
-  "Run ediff-files on the files of current and other window."
+(defun pel-ediff-2files (&optional n)
+  "Run ediff-files on the files of current and other window.
+
+If argument N is specified and in the [2,8] range it identifies
+the window in the direction corresponding to the cursor numeric keypad:
+  -             8 := 'up
+  - 4 := 'left  5 := 'current  6 := 'right
+  -             2 := 'down "
   ;; Note: ediff-files is available in Emacs -Q
-  (interactive)
+  (interactive "P")
   (let ((fname-a (pel-current-buffer-filename))
         (fname-b (save-excursion
-                   (other-window 1)
+                   (pel-window-select
+                    (pel-window-direction-for
+                     (abs (prefix-numeric-value n))
+                     'other))
                    (pel-current-buffer-filename))))
     (ediff-files fname-a fname-b )))
 

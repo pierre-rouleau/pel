@@ -215,7 +215,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - New: command *pel-ediff-2files*, bound to ``<f11> d 2``, runs the EDiff
     command on the files in the current window and the other window, allowing
     to quickly set up an EDiff session to compare the content of the 2 edited
-    files.
+    files. With numerical argument another window can be selected from the
+    direction of the corresponding cursor on a numeric keypad.
   - New: command *pel-ediff-revision*, bound to ``<f11> d r``, runs the Ediff
     command to compare revisions of the file in the current window, defaulting
     to the current copy and the last committed revision.
