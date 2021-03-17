@@ -186,9 +186,14 @@
   (memq system-type '(windows-nt ms-dos))
   "Predicate: t if running under a Windows Operating System, nil otherwise.")
 
-(defconst pel-can-display-special-chars-p
-  (and (eq system-type 'darwin)
-       (not (display-graphic-p)))
+(defconst pel-emacs-is-graphic-p (display-graphic-p)
+  "Predicate: t when Emacs is running in graphics mode, nil otherwise.")
+
+(defconst pel-emacs-is-a-tty-p (not pel-emacs-is-graphic-p)
+  "Predicate: t when Emacs is running in TTY mode, nil otherwise.")
+
+(defconst pel-can-display-special-chars-p  (and (eq system-type 'darwin)
+                                                pel-emacs-is-a-tty-p)
   "Predicate: t if Emacs can properly show Unicode characters like 👍 or 👎.")
 ;; TODO: add ability to install unicode fonts and take it into account.
 
@@ -674,6 +679,7 @@ Usage Example:
 
 ;; ---------------------------------------------------------------------------
 ;; Lazy loading and package installation:
+;; - `pel-require-at-load'
 ;; - `pel-require'
 ;;   - `pel-package-install'
 
@@ -787,6 +793,17 @@ Otherwise return the loading state of the FEATURE."
                               "No specified package"))))
           (user-error "%s is not available, no request to load it!" feature)))))
   (featurep feature))
+
+(defmacro pel-require-at-load (feature)
+  "Require specified FEATURE when loading only, not when compiling.
+
+FEATURE must be a quoted symbol representing the required feature, similar to
+the argument to the `require' macro."
+  `(cl-eval-when 'load
+     (unless (require ,feature nil :no-error)
+       (display-warning 'pel-require-at-load
+                        (format "Failed loading %s" ,feature)
+                        :error))))
 
 ;; ---------------------------------------------------------------------------
 (defun pel-action-for (action current-state)
