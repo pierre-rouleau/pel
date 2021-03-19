@@ -1,6 +1,6 @@
 ;;; pel-skels.el --- Base code skeleton utilities  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -194,16 +194,19 @@ The returned string ends with a newline."
 ;; License
 
 (defun pel-license-text (&optional comment-prefix)
-  "Return the license text identified by the function `lice'.
+  "Return the license text identified by the function `lice' when used.
+If the user-option variable `pel-use-lice' is t, the function `lice'
+is used to create a license text, otherwise no license is created.
 The line starts with `comment-start' unless COMMENT-PREFIX is specified,
 in which case that is used."
-  (if (and (require 'lice)
-             (fboundp 'lice))
-    (let ((the-comment-start (or comment-prefix comment-start)))
-      (with-temp-buffer
-        (let ((comment-start the-comment-start))
-          (call-interactively 'lice)
-          (buffer-string))))
+  (if (and pel-use-lice
+           (require 'lice)
+           (fboundp 'lice))
+      (let ((the-comment-start (or comment-prefix comment-start)))
+        (with-temp-buffer
+          (let ((comment-start the-comment-start))
+            (call-interactively 'lice)
+            (buffer-string))))
     ""))
 
 ;;-pel-autoload
