@@ -1948,8 +1948,7 @@ MODE must be a symbol."
 
   (when pel-use-speedbar
     ;; Overcoming omission bug in d-mode: add support for Speedbar
-    (pel-require 'speedbar)
-    (speedbar-add-supported-extension '(".d")))
+    (pel-add-speedbar-extension ".d"))
 
   (pel-ensure-package d-mode from: melpa)
   (pel-autoload-file d-mode for: d-mode)
@@ -2011,10 +2010,9 @@ d-mode not added to ac-modes!"
     (set (make-local-variable 'parens-require-spaces) nil)
     (when pel-use-speedbar
       ;; Overcoming omission bug in erlang-mode: add support for Speedbar
-      (pel-require 'speedbar)
-      (speedbar-add-supported-extension '(".erl"
-                                          ".hrl"
-                                          ".escript"))))
+      (pel-add-speedbar-extension '(".erl"
+                                    ".hrl"
+                                    ".escript"))))
   (declare-function pel--setup-for-erlang "pel_keys")
 
   ;;
@@ -2294,8 +2292,7 @@ d-mode not added to ac-modes!"
 
       (when pel-use-speedbar
         ;; Overcoming omission bug in go-mode: add support for Speedbar
-        (pel-require 'speedbar)
-        (speedbar-add-supported-extension ".go")))
+        (pel-add-speedbar-extension ".go")))
     (declare-function pel--setenv-for-go "pel_keys")
 
     (pel-ensure-package go-mode from: melpa)
@@ -3007,8 +3004,7 @@ d-mode not added to ac-modes!"
 
   (when pel-use-speedbar
     ;; Add support for Speedbar
-    (pel-require 'speedbar)
-    (speedbar-add-supported-extension '(".rs")))
+    (pel-add-speedbar-extension ".rs"))
 
   (when pel-use-rust-mode
     ;; Important rust-mode user-options:
@@ -3207,7 +3203,11 @@ d-mode not added to ac-modes!"
   ;; activate the <f12> key binding for rst-mode
   (pel--mode-hook-maybe-call
    (function pel--setup-for-rst)
-   'rst-mode 'rst-mode-hook))
+   'rst-mode 'rst-mode-hook)
+
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension '(".rst"
+                                  ".stxt"))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-g`` : Graphviz Dot
