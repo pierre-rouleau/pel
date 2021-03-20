@@ -165,14 +165,17 @@
 ;;
 ;; Tab width control
 ;; - `pel-set-tab-width'
+;;
+;; Speedbar Support
+;; - `pel-add-speedbar-extension'
 
-;; ---------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;; subr (always loaded) ; use: called-interactively-p
 (eval-when-compile (require 'subr-x))   ; use: split-string, string-join,
 ;;                                      ;      string-trim
 
-;; ---------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Code:
 
 ;; ---------------------------------------------------------------------------
@@ -274,7 +277,7 @@ file."
 ;; ------------------------------
 
 (defun pel-add-dir-to-loadpath (dir)
-  "Add a directory to Emacs variable `load-path' if not already in the list.
+  "Add directory DIR to Emacs variable `load-path' if not already in the list.
 Interactively display the number of directories in the list and whether
 the operation succeeded or not.
 Return non-nil if it was added, nil otherwise."
@@ -552,7 +555,7 @@ ELISP> (pel-title-case-to-dash-separated \"Pdb Track Stack From Shell P\")
 \"pdb-track-stack-from-shell-p\"
 ELISP> (pel-title-case-to-dash-separated \"Py  Execute Use Temp File P\")
 \"py--execute-use-temp-file-p\"
-ELISP> "
+ELISP>"
   (string-join
    (mapcar (function downcase) (split-string text " "))
    "-"))
@@ -721,7 +724,7 @@ PKG must be a symbol naming one of the available packages in one
 of the archives listed in variable `package-archives'.
 
 If the first attempt fails, the function refreshes the package
-list and tries again. This prevents failing to install a package
+list and tries again.  This prevents failing to install a package
 when its version identified in the package list identifies an
 obsolete version no longer supported by the Elpa archive site.
 
@@ -789,7 +792,7 @@ If optional PACKAGE is specified (non-nil) and FEATURE is not loaded,
 try to install the specified package if it is not already available
 and try checking for the presence of FEATURE again, with the same behaviour.
 
-The specified package is specified by the PACKAGE argument. It can be either:
+The specified package is specified by the PACKAGE argument.  It can be either:
 
 - The special symbol `:install-when-missing' to indicate that the package to
   install has the same name as the FEATURE.
@@ -800,7 +803,7 @@ of the format used by `pel-install-github-file' that we be used
 to perform the installation with FNAME and URL-FNAME argument
 passed to that function.
 
-Issue a user-error on failure.
+Issue a `user-error' on failure.
 Otherwise return the loading state of the FEATURE."
   (unless (featurep feature)
     (let ((feature-is-loaded (require feature nil :noerror)))
@@ -874,6 +877,7 @@ Use this for the configuration phase, like the :config of use-package."
 (defmacro pel-set-auto-mode (mode for: &rest regexps)
   "Activate automatic MODE for the list of file REGXEPS.
 MODE must be an un-quoted symbol.
+FOR: separator must be present.  It is cosmetic only.
 REGEXPS is on or several regular expression strings."
   (declare (indent 0))
   (ignore for:)
@@ -912,7 +916,8 @@ functions."
 
 (defmacro pel-declare-file (fname defines: &rest commands)
   "Declare one or several COMMANDS to be defined in specified FNAME.
-This does not generate any code.  It prevents byte-compiler warnings."
+This does not generate any code.  It prevents byte-compiler warnings.
+DEFINES: is a cosmetic only argument that must be present."
   (declare (indent 0))
   (ignore defines:)
   (let ((fname     (if (stringp fname) fname (symbol-name fname)))
@@ -957,13 +962,13 @@ The ARCHIVE argument may be a string or a symbol."
     found))
 
 (defvar pel--pinned-packages nil
-  "list of packages that are associated with  a specific Elpa archive.")
+  "List of packages that are associated with  a specific Elpa archive.")
 
 (defun pel--pin-package (package archive)
   "Pin PACKAGE to ARCHIVE."
   (if (pel-archive-exists-p archive)
       (add-to-list 'pel--pinned-packages (cons package (pel-as-string archive)))
-    (error "Archive '%S' requested for package '%S' is not listed in package-archives."
+    (error "Archive '%S' requested for package '%S' is not listed in package-archives!"
            archive package))
   (unless (bound-and-true-p package--initialized)
     (package-initialize t)))
@@ -1015,6 +1020,8 @@ Elpa repositories identified in the variable `package-archive'."
 PKG must be an unquoted symbol.
 When PINNED-SITE (a unquoted symbol) is specified use this as the Elpa
 repository, which must be listed in the variable `package-archive'.
+
+The FROM: argument must be present.  It is cosmetics only.
 
 The package list is refreshed before attempting installation to prevent
 trying to install an obsolete version of a package that is no longer present
@@ -1558,10 +1565,10 @@ If MOVE-FCT is specified, call it before checking the state of point."
 ;; -----------------
 
 (defun pel-set-tab-width (n)
-  "Change the tab width used in current buffer.
+  "Set the tab width used in current buffer to the value N.
 
 The change is temporary and affects the current buffer only.
-Return the new tab-width or nil if unchanged."
+Return the new `tab-width' or nil if unchanged."
   (interactive "nNew tab-width: ")
   (while (not (and (< n 9) (> n 1)))
     (setq n  (read-number "Enter valid tab-width in 2-8 range: " tab-width)))
@@ -1569,7 +1576,23 @@ Return the new tab-width or nil if unchanged."
     (message "Changed buffer's tab-width from %d to %d" tab-width n)
     (setq tab-width n)))
 
-;;;---------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
+;; Speedbar Support
+;; ----------------
+
+(defun pel-add-speedbar-extension (extension)
+  "Add Speedbar support for the specified file EXTENSION.
+EXTENSION is either a string or a list of strings.
+Each string is the file extension staring with the period."
+  (pel-require 'speedbar)
+  (declare-function speedbar-add-supported-extension "speedbar")
+  (let ((extensions (if (stringp extension)
+                        (list extension)
+                      extension)))
+    (dolist (ext extensions)
+      (speedbar-add-supported-extension ext))))
+
+;;; --------------------------------------------------------------------------
 (provide 'pel--base)
 
 ;;; pel--base.el ends here
