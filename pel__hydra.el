@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-19 14:28:26, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-20 11:54:55, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -29,6 +29,7 @@
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel--base)
 (require 'hydra)
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -177,21 +178,21 @@
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; PEL HYDRA: Hide/Show
 
-(pel-autoload-command hideshow for: hs-minor-mode)
-(pel-autoload-command pel-hideshow for:
-                      pel-show-hide-state
-                      pel-toggle-hide-all
-                      pel-toggle-hide-block
-                      pel-hide-all
-                      pel-hide-block
-                      pel-show-all
-                      pel-show-block
-                      pel-hide-level-1
-                      pel-hide-level-2
-                      pel-hide-level-3
-                      pel-hide-level-4
-                      pel-hs-hide-block-below-inc
-                      pel-hs-hide-block-below-dec)
+(pel-autoload-file hideshow for: hs-minor-mode)
+(pel-autoload-file pel-hideshow for:
+                   pel-show-hide-state
+                   pel-toggle-hide-all
+                   pel-toggle-hide-block
+                   pel-hide-all
+                   pel-hide-block
+                   pel-show-all
+                   pel-show-block
+                   pel-hide-level-1
+                   pel-hide-level-2
+                   pel-hide-level-3
+                   pel-hide-level-4
+                   pel-hs-hide-block-below-inc
+                   pel-hs-hide-block-below-dec)
 
 (defhydra pel-⅀hideshow (global-map "<f7> /"
                                     :foreign-keys run)
@@ -215,29 +216,29 @@
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; PEL HYDRA: C preprocessor
 
-(pel-autoload-command hideif for:
-                      hide-ifdef-mode
-                      hide-ifdef-toggle-shadowing
-                      hide-ifdef-toggle-read-only
-                      hide-ifdefs
-                      show-ifdefs
-                      hide-ifdef-block
-                      show-ifdef-block
-                      hif-evaluate-macro
-                      hide-ifdef-define
-                      hide-ifdef-undef
-                      hide-ifdef-use-define-alist
-                      hide-ifdef-set-define-alist
+(pel-autoload-file hideif for:
+                   hide-ifdef-mode
+                   hide-ifdef-toggle-shadowing
+                   hide-ifdef-toggle-read-only
+                   hide-ifdefs
+                   show-ifdefs
+                   hide-ifdef-block
+                   show-ifdef-block
+                   hif-evaluate-macro
+                   hide-ifdef-define
+                   hide-ifdef-undef
+                   hide-ifdef-use-define-alist
+                   hide-ifdef-set-define-alist
                       hif-clear-all-ifdef-defined)
 
 (pel-declare-file pel-pp declares:
                   pel-pp-next-directive
                   pel-pp-prev-directive)
 
-(pel-autoload-command cc-cmds for:
-                      c-backward-conditional
-                      c-forward-conditional
-                      c-up-conditional)
+(pel-autoload-file cc-cmds for:
+                   c-backward-conditional
+                   c-forward-conditional
+                   c-up-conditional)
 (defhydra pel-⅀c (pel:for-c "<f7>"  :foreign-keys run)
   "C preprocessor"
   ("n"    pel-pp-next-directive       "next"           :column "Move to")
