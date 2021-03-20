@@ -1,6 +1,6 @@
 ;;; pel.el --- Pragmatic Environment Library -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 ;; URL: https://github.com/pierre-rouleau/pel
@@ -113,8 +113,8 @@ modifications simply activate new features, you may be able to simply
 re-execute `pel-init' again to activate them."
   (interactive)
   (setq pel--cached-abbrev-file-name  cached-abbrev-file-name)
-  ;; Note that pel-keys.el has a file name that ensures that packages controlled
-  ;; byte-compilation compiles it *before* compiling pel.el
+  ;; Note that pel_keys.el has a file name that ensures that packages
+  ;; controlled byte-compilation compiles it *before* compiling pel.el
   (load-library "pel_keys")
   (message "PEL loaded, PEL keys binding in effect."))
 

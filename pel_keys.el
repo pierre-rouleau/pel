@@ -56,20 +56,8 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
-;; - Bootstrap `use-package' if needed
-;; -----------------------------------
-;;
-;; The following code initialize the use-package if it has not been done
-;; already.  You may want to copy that code inside your init.el file to
-;; use use-package there but is is not required.
-
-;; (unless (package-installed-p 'use-package)
-;;   (package-refresh-contents)
-;;   (pel-package-install 'use-package))
-
 ;;;---------------------------------------------------------------------------
 ;; Required packages:
-(require 'debug)        ; use-package calls debug : prevents lint warnings
 (eval-when-compile
   (require 'cl-lib))    ; use: cl-eval-when
 

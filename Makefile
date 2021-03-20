@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-03-19 16:51:42, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-03-20 13:36:45, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -581,8 +581,9 @@ compile: pel
 
 pel: $(ELC_FILES)
 
-
+# Remove pel_keys.elc to ensure we always run the very latest.
 pel2: $(ELC_FILES2)
+	-rm pel_keys.elc
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -f batch-byte-compile pel_keys.el
 
 
@@ -614,14 +615,14 @@ test:
 
 .PHONY: a-copy
 a-copy: $(OUT_DIR) \
-		$(DEST_DIR) \
-		$(TARGET_SOURCE_FILES)
+	$(DEST_DIR) \
+	$(TARGET_SOURCE_FILES)
 
 
-#		$(DEST_TEST_DIR) \
-#		$(TARGET_TEST_FILES) \
-#		$(DEST_DOC_PDF_DIR)  \
-#		$(TARGET_PDF_FILES)
+#	$(DEST_TEST_DIR) \
+#	$(TARGET_TEST_FILES) \
+#	$(DEST_DOC_PDF_DIR)  \
+#	$(TARGET_PDF_FILES)
 
 # -----------------------------------------------------------------------------
 # Distribution tar package file creation rule
