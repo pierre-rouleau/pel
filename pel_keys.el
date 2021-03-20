@@ -3593,7 +3593,7 @@ d-mode not added to ac-modes!"
   (define-key pel:keys  "K"  'which-key-mode)
   (define-key pel:keys  "k"  'which-key-show-major-mode)
   (pel-eval-after-load which-key
-    (which-key-mode)))
+    (which-key-mode 1)))
 
 ;; ---------------------------------------------------------------------------
 ;; Keycast and logging
