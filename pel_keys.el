@@ -5470,9 +5470,9 @@ the ones defined from the buffer now."
   (if (< emacs-major-version 27)
       (progn
         (pel-ensure-package helm-xref from: melpa)
-        (pel-autoload-file helm-xref helm-xref-show-xrefs))
+        (pel-autoload-file helm-xref for: helm-xref-show-xrefs))
     (pel-ensure-package helm-xref from: melpa)
-    (pel-autoload-file helm-xref
+    (pel-autoload-file helm-xref for:
                           helm-xref-show-xrefs-27
                           helm-xref-show-defs-27)))
 
