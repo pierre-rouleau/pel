@@ -2935,6 +2935,32 @@ install them locally."
   :group 'pel-pkg-for-clisp
   :type 'string)
 
+(defcustom pel-use-slime nil
+  "Control whether PEL activates SLIME for Common Lisp.
+
+To activate Slime with Common Lisp the user-option variable
+`pel-use-common-lisp' must also be set to t."
+  :link '(url-link :tag "Slime @ Wikipedia"
+                   "https://en.wikipedia.org/wiki/SLIME")
+  :link '(url-link :tag "Slime home page"
+                   "https://common-lisp.net/project/slime/")
+  :link '(url-link :tag "Slime @ GitHub"
+                   "https://github.com/slime/slime")
+  :group 'pel-pkg-for-clisp
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-sly nil
+  "Control whether PEL activates SLY for Common Lisp.
+
+To activate Sly with Common Lisp the user-option variable
+`pel-use-common-lisp' must also be set to t."
+  :link '(url-link :tag "Sly @ GitHub"
+                   "https://github.com/joaotavora/sly")
+  :group 'pel-pkg-for-clisp
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Emacs Lisp Support
 ;; ------------------

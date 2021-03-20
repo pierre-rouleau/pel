@@ -21,7 +21,6 @@
   ;; -- Pierre Rouleau
   ;;
   '((emacs "26.1")
-    (use-package         "20191126.2034") ; melpa  Melpa-stable: 2.4
     (ace-link            "20200518.957")  ; melpa  Melpa-stable: 0.5.0
     (ace-window          "20200304.1344") ; melpa  Melpa-stable: 0.9.0
     (adoc-mode           "20160314.2130")
@@ -36,7 +35,6 @@
     (ascii-table         "20200329.1744") ; melpa
     (auto-complete       "20170125.245")  ; melpa  Melpa-stable: 1.5.1
     (avy                 "20200624.1148") ; melpa
-    (bind-key            "20191110.416")  ; melpa  Melpa-stable: 2.4
     (bm                  "20190807.1217") ; melpa  Melpa-stable: 201905
     (c-eldoc             "20181109.439")  ; melpa. Melpa-stable: N/A
     (cargo               "20191224.47")   ; melpa. Melpa-stable: 0.4.1

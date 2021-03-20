@@ -35,14 +35,25 @@
 ;;       a little unusual in the Emacs Lisp world but provides a simple way
 ;;       to provide proper file name ordering.
 ;;
-;;       This file is similar to what would be located inside a init.el file.
-;;       It is, however, byte-compiled and linted to check for error.
-;;       All use-package forms would generate warnings normally.
-;;       To prevent that the code uses a cl-eval-when 'compile form
-;;       to require external packages *only* when compiling, not at load time.
-;;       During execution the external packages are only loaded lazily,
-;;       when they are required, not before.
+;; Declaration of the auto-loaded interactive functions
+;; ----------------------------------------------------
+;;
+;; The code uses the `pel-autoload-file' macro to setup the auto-loading of
+;; interactive functions.  The macro generates a call to the `autoload'
+;; function and also generates a call to `declare-function' to prevent
+;; byte-compiler warnings on code that reference the interactive functions
+;; that are autoloaded.  The `declare-function' form does not generate any
+;; extra code: it is removed by the byte-compiler, but it prevents the
+;; warnings.
+;;
+;; Some of the defun forms in this file are not top-level forms and are
+;; declared inside a conditional form.  For those, the byte-compiler would
+;; generate a warning since it cannot guarantee the existence of the
+;; functions. Therefore these defun forms are followed by `declare-function'
+;; forms.  The logic must therefore be correct to ensure the existence of the
+;; function at run-time.
 
+;;; --------------------------------------------------------------------------
 ;;; Code:
 
 ;; - Bootstrap `use-package' if needed
@@ -52,9 +63,9 @@
 ;; already.  You may want to copy that code inside your init.el file to
 ;; use use-package there but is is not required.
 
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (pel-package-install 'use-package))
+;; (unless (package-installed-p 'use-package)
+;;   (package-refresh-contents)
+;;   (pel-package-install 'use-package))
 
 ;;;---------------------------------------------------------------------------
 ;; Required packages:
@@ -64,58 +75,20 @@
 
 (require 'pel--base)    ; use pel-system-is-macos-p
 ;;                      ;     pel-system-is-windows-p
+;;                      ;     pel-emacs-is-a-tty-p
+;;                      ;     pel-emacs-is-graphic-p
 ;;                      ;     pel-toggle
 ;;                      ;     pel-mode-toggle-arg
+;;                      ;     pel-ensure-package
+;;                      ;
+;;                      ;
+;;                      ;
+;;                      ;
 (require 'pel--macros)  ; use: pel-setq, pel-seq-default
 (require 'pel--keys-macros)
 (require 'pel--options) ; all `pel-use-...' variables identify what to use.
 ;;                      ; also defines a set of utility functions to deal with
 ;;                      ; the options: pel-auto-complete-help
-
-;; ---------------------------------------------------------------------------
-;; Package Installation Control
-;; ----------------------------
-;;
-;; The following code defines the `pel-ensure-package' macro that will be
-;; used below as a replacement for the `use-package' ``:ensure t`` mechanism.
-;;
-;; This is done to:
-;; - install a package when the appropriate pel-use variable is turned on,
-;; - but do NOT install it when byte-compiling the code, something the
-;;   use-package :ensure t does, unfortunately.
-;; - Allow the selection of a Elpa site, just as the use-package :pin does.
-;; - Prevent loading use-package when nothing needs to be installed.
-;;
-;; The `pel-ensure-package' macro uses the `pel-ensure-pkg' function to
-;; reduce the amount of code generated and executed to the expense of one
-;; function call.
-
-(defun pel-ensure-pkg (pkg elpa-site)
-  "Install package PKG.
-PKG must be a symbol.
-If ELPA-SITE is non-nil it should be a string holding the name of one of the
-Elpa repositories identified in the variable `package-archive'."
-  (require 'use-package nil :no-error)
-  (when elpa-site
-    (use-package-pin-package pkg elpa-site))
-  (use-package-ensure-elpa pkg '(t) nil))
-
-(defmacro pel-ensure-package (pkg when: pel-use &optional from: pinned-site)
-  "Install package named PKG when the PEL-USE variable is non-nil.
-PKG must be an unquoted symbol.
-When PINNED-SITE (a unquoted symbol) is specified use this as the Elpa
-repository, which must be listed in the variable `package-archive'.
-
-The package list is refreshed before attempting installation to prevent
-trying to install an obsolete version of a package that is no longer present
-on the Elpa site."
-  (declare (indent 2))
-  (ignore when:)
-  (ignore from:)
-  (let* ((pin-site-name (when pinned-site (symbol-name pinned-site))))
-    `(when (and ,pel-use
-                (not (package-installed-p (quote ,pkg))))
-       (pel-ensure-pkg (quote ,pkg) ,pin-site-name))))
 
 ;; ---------------------------------------------------------------------------
 ;; Configure PEL-level autoloading
@@ -159,7 +132,7 @@ on the Elpa site."
 ;;   Note: this does not work on the terminal based emacs,
 ;;         only on the graphics, Carbon-based emacs.
 (when (and pel-system-is-macos-p
-           (display-graphic-p))
+           pel-emacs-is-graphic-p)
   (pel-setq ns-function-modifier 'hyper))
 
 ;; On Windows, the Ctrl-Alt key combination works with letter keys
@@ -219,41 +192,36 @@ Done in this function to allow advising libraries that remap these keys."
 ;; - Font Control
 ;; --------------
 
-(when (display-graphic-p)
-
-  ;; Activate the all-the-icons package to get nice icons in graphics mode
-  ;; if requested
+(when pel-emacs-is-graphic-p
+  ;; Activate the all-the-icons package to get nice icons in graphics mode if
+  ;; requested.
+  ;;
   ;; NOTE: you must install the icons manually by executing:
   ;;       M-x all-the-icons-install-fonts
-
-  (pel-ensure-package all-the-icons
-      when: (or pel-use-all-the-icons
-                pel-use-all-the-icons-ibuffer
-                pel-use-all-the-icons-dired
-                pel-use-all-the-icons-ivy
-                pel-neotree-font-in-graphics)
-      from: melpa)
+  ;;
+  (when (or pel-use-all-the-icons
+            pel-use-all-the-icons-ibuffer
+            pel-use-all-the-icons-dired
+            pel-use-all-the-icons-ivy
+            pel-neotree-font-in-graphics)
+    (pel-ensure-package all-the-icons from: melpa))
 
   (when pel-use-all-the-icons-ibuffer
-    (pel-ensure-package all-the-icons-ibuffer
-        when: pel-use-all-the-icons-ibuffer)
-    (use-package all-the-icons-ibuffer
-      :init (all-the-icons-ibuffer-mode 1)))
+    (pel-ensure-package  all-the-icons-ibuffer)
+    (pel-require-at-load all-the-icons-ibuffer)
+    (pel-autoload-file   all-the-icons-ibuffer for:
+                          all-the-icons-ibuffer-mode)
+    (all-the-icons-ibuffer-mode 1))
 
   (when pel-use-all-the-icons-dired
-    (pel-ensure-package all-the-icons-dired
-        when: pel-use-all-the-icons-dired)
-    (use-package all-the-icons-dired
-      :init
-      (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)))
+    (pel-ensure-package  all-the-icons-dired)
+    (pel-require-at-load all-the-icons-dired)
+    (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
   (when pel-use-all-the-icons-ivy
-    (pel-ensure-package all-the-icons-ivy
-        when: pel-use-all-the-icons-ivy)
-    (use-package all-the-icons-ivy
-      :init
-      (add-hook 'after-init-hook 'all-the-icons-ivy-setup)))
-
+    (pel-ensure-package  all-the-icons-ivy)
+    (pel-require-at-load all-the-icons-ivy)
+    (add-hook 'after-init-hook 'all-the-icons-ivy-setup))
 
   ;; On macOS, the keys used by the OS are the same as selected here, both in
   ;; GUI mode and in terminal (TTY) mode:
@@ -261,36 +229,22 @@ Done in this function to allow advising libraries that remap these keys."
   ;;   control (it's not Emacs that acts on them, its the Terminal.app)
   ;; - In graphics mode the same keys handled by Emacs: the Super modifier is
   ;;   assigned to the ⌘ Command key.
-
   (when pel-system-is-macos-p
-
     ;; Bind the face-remap commands. The face-remap package
     ;; is part of Emacs standard distribution.
     (global-set-key (kbd "s-=")             #'text-scale-adjust)
     (global-set-key (kbd "s-+")             #'text-scale-adjust)
     (global-set-key (kbd "s--")             #'text-scale-adjust)
     (global-set-key (kbd "s-0")             #'text-scale-adjust)
-
     ;; Load the pel-font file only as needed.
     ;; Configure the pel-font commands as autoload.
-    ;; although ther is no such package, use the macro to set up
-    ;; the delayed autoloads and key bindings.
-    (use-package pel-font
-      ;; autoload it when one of the following commands is used.
-      :commands (pel-font-increase-size-all-buffers
-                 pel-font-decrease-size-all-buffers
-                 pel-font-reset-size-all-buffers)
-
-
-      ;; run following command before package is loaded to
-      ;; activate the autoload.
-      :init
-      (cl-eval-when 'compile (require 'pel-font nil :no-error))
-      (global-set-key (kbd "<s-kp-add>")
-                      #'pel-font-increase-size-all-buffers)
-      (global-set-key (kbd "<s-kp-subtract>")
-                      #'pel-font-decrease-size-all-buffers)
-      (global-set-key (kbd "<s-kp-0>") #'pel-font-reset-size-all-buffers))))
+    (pel-autoload-file pel-font for:
+                       pel-font-increase-size-all-buffers
+                       pel-font-decrease-size-all-buffers
+                       pel-font-reset-size-all-buffers)
+    (global-set-key (kbd "<s-kp-add>")      'pel-font-increase-size-all-buffers)
+    (global-set-key (kbd "<s-kp-subtract>") 'pel-font-decrease-size-all-buffers)
+    (global-set-key (kbd "<s-kp-0>")        'pel-font-reset-size-all-buffers)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Buffer navigation
@@ -307,11 +261,11 @@ Done in this function to allow advising libraries that remap these keys."
 ;; eww-mode, compilation-mode, Custom mode and several other.
 ;; In these modes, the 'o' key puts a letter to identify the target links.
 ;; See URL https://github.com/abo-abo/ace-link
+;; Delay its loading 1.5 seconds since it's normally not needed right away.
 (when pel-use-ace-link
-  (pel-ensure-package ace-link when: pel-use-ace-link from: melpa)
-  (use-package ace-link
-    :defer 1.5
-    :config
+  (pel-ensure-package     ace-link from: melpa)
+  (pel-require-after-init ace-link 1.5)
+  (pel-eval-after-load    ace-link
     (ace-link-setup-default)))
 
 ;; ---------------------------------------------------------------------------
@@ -321,31 +275,30 @@ Done in this function to allow advising libraries that remap these keys."
 ;; The avy package provides quick navigation inside any buffer and across
 ;; windows. See URL https://github.com/abo-abo/avy
 (when pel-use-avy
-  (pel-ensure-package avy when: pel-use-avy from: melpa)
-  (use-package avy
-    :commands (avy-goto-char
-               avy-goto-char-2
-               avy-goto-char-timer
-               avy-goto-line
-               avy-goto-word-1
-               avy-goto-word-0)
-    :init
-    ;; Since avy uses home row keys for targets, the bindings also use keys
-    ;; that are on the home row (at least for the the single key bindings).
-    ;; This helps speed the typing.  The meta key is used with some extra
-    ;; bindings using the control key in graphics mode (since these keys are
-    ;; not available in terminal mode).
-    (when (display-graphic-p)
-      (global-set-key (kbd "C-:") 'avy-goto-char)
-      (global-set-key (kbd "C-'") 'avy-goto-char-2))
-    (global-set-key (kbd "M-G")     'avy-goto-char)
-    (global-set-key (kbd "M-g M-c") 'avy-goto-char)
-    (global-set-key (kbd "M-H")     'avy-goto-char-2)
-    (global-set-key (kbd "M-g M-j") 'avy-goto-char-2)
-    (global-set-key (kbd "M-g f")   'avy-goto-line)
-    (global-set-key (kbd "M-g l")   'avy-goto-line)
-    (global-set-key (kbd "M-g w") 'avy-goto-word-1)
-    (global-set-key (kbd "M-g e") 'avy-goto-word-0)))
+  (pel-ensure-package avy from: melpa)
+  (pel-autoload-file avy for:
+                     avy-goto-char
+                     avy-goto-char-2
+                     avy-goto-char-timer
+                     avy-goto-line
+                     avy-goto-word-1
+                     avy-goto-word-0)
+  ;; Since avy uses home row keys for targets, the bindings also use keys
+  ;; that are on the home row (at least for the the single key bindings).
+  ;; This helps speed the typing.  The meta key is used with some extra
+  ;; bindings using the control key in graphics mode (since these keys are
+  ;; not available in terminal mode).
+  (when pel-emacs-is-graphic-p
+    (global-set-key (kbd "C-:")   'avy-goto-char)
+    (global-set-key (kbd "C-'")   'avy-goto-char-2))
+  (global-set-key (kbd "M-G")     'avy-goto-char)
+  (global-set-key (kbd "M-g M-c") 'avy-goto-char)
+  (global-set-key (kbd "M-H")     'avy-goto-char-2)
+  (global-set-key (kbd "M-g M-j") 'avy-goto-char-2)
+  (global-set-key (kbd "M-g f")   'avy-goto-line)
+  (global-set-key (kbd "M-g l")   'avy-goto-line)
+  (global-set-key (kbd "M-g w")   'avy-goto-word-1)
+  (global-set-key (kbd "M-g e")   'avy-goto-word-0))
 
 ;; ---------------------------------------------------------------------------
 ;; Move to imenu symbol using Ido prompting
@@ -355,14 +308,13 @@ Done in this function to allow advising libraries that remap these keys."
 (global-set-key (kbd "M-g C-h") 'pel-goto-symbol-select-completion)
 
 (when pel-use-imenu-anywhere
-  (pel-ensure-package imenu-anywhere when: pel-use-imenu-anywhere from: melpa)
-  (use-package imenu-anywhere
-    :commands (pel-imenu-anywhere-select-completion
-               pel-imenu-anywhere)
-    :init
-    (global-set-key (kbd "M-g y")   'pel-imenu-anywhere)
-    (global-set-key (kbd "M-g M-y") 'pel-imenu-anywhere)
-    (global-set-key (kbd "M-g C-y") 'pel-imenu-anywhere-select-completion)))
+  (pel-ensure-package imenu-anywhere from: melpa)
+  (pel-autoload-file imenu-anywhere for:
+                     pel-imenu-anywhere-select-completion
+                     pel-imenu-anywhere)
+  (global-set-key (kbd "M-g y")   'pel-imenu-anywhere)
+  (global-set-key (kbd "M-g M-y") 'pel-imenu-anywhere)
+  (global-set-key (kbd "M-g C-y") 'pel-imenu-anywhere-select-completion))
 
 ;; ---------------------------------------------------------------------------
 ;; Dired Extensions
@@ -397,33 +349,34 @@ Done in this function to allow advising libraries that remap these keys."
 ;; commands.
 
 (when pel-use-dired-narrow
-  (pel-ensure-package dired-narrow when: pel-use-dired-narrow from: melpa)
-  (use-package dired-narrow
-    ;; autoload it when one of the following commands is used.
-    :commands (dired-narrow
-               dired-narrow-regexp
-               dired-narrow-fuzzy)
+  (pel-ensure-package dired-narrow from: melpa)
+  (pel-autoload-file dired-narrow for:
+                     dired-narrow
+                     dired-narrow-regexp
+                     dired-narrow-fuzzy)
+  (defvar pel:for-dired-narrow)
+  (define-prefix-command 'pel:for-dired-narrow)
+  ;;
+  ;; open dired PDF
+  (define-key pel:for-dired-narrow (kbd "<f1>") 'pel-help-pdf)
+  ;; dired-narrow commands
+  (define-key pel:for-dired-narrow "s" 'dired-narrow)
+  (define-key pel:for-dired-narrow "r" 'dired-narrow-regexp)
+  (define-key pel:for-dired-narrow "f" 'dired-narrow-fuzzy)
+  ;;
+  ;; activate the <f12> key binding for dired-narrow-mode
+  (pel--mode-hook-maybe-call
+   (lambda ()
+     (pel-local-set-f12 'pel:for-dired-narrow))
+   'dired-mode 'dired-mode-hook))
 
-    ;; run following command before package is loaded to
-    ;; activate the autoload.
-    :init
-    (cl-eval-when 'compile (require 'dired-narrow nil :no-error))
+;; ---------------------------------------------------------------------------
+;; PEL Top Level key prefix
+;; ------------------------
 
-    (defvar pel:for-dired-narrow)
-    (define-prefix-command 'pel:for-dired-narrow)
-    ;;
-    ;; open dired PDF
-    (define-key pel:for-dired-narrow (kbd "<f1>") 'pel-help-pdf)
-    ;; dired-narrow commands
-    (define-key pel:for-dired-narrow "s" 'dired-narrow)
-    (define-key pel:for-dired-narrow "r" 'dired-narrow-regexp)
-    (define-key pel:for-dired-narrow "f" 'dired-narrow-fuzzy)
-    ;;
-    ;; activate the <f12> key binding for dired-narrow-mode
-    (pel--mode-hook-maybe-call
-     (lambda ()
-       (pel-local-set-f12 'pel:for-dired-narrow))
-     'dired-mode 'dired-mode-hook)))
+;; <f11> Global key prefixes used for multiple packages:
+(define-pel-global-prefix pel:     (kbd "<f11>"))
+(define-pel-global-prefix pel:help (kbd "<f11> ?"))
 
 ;; ---------------------------------------------------------------------------
 ;; - PEL: Window Behaviour & operations
@@ -468,7 +421,7 @@ Done in this function to allow advising libraries that remap these keys."
 ;; can be used with cursor keys to help navigation across Emacs
 ;; windows:
 ;;  - for Windows: H-left, H-right, H-up and H-down
-;;  - for macOS : s-left, s-right, s-up and s-down.
+;;  - for macOS  : s-left, s-right, s-up and s-down.
 ;;
 ;; Also, in graphics mode, if a (modified) version of the
 ;; framemove.el file is available, then we can allow the
@@ -479,47 +432,72 @@ Done in this function to allow advising libraries that remap these keys."
 ;; it is used, via autoloading. Here, just identify default keybindings when
 ;; Emacs is running in graphics mode.  Other keybindings are defined for the
 ;; pel: keybinding, somewhere else in this file.
-(when (display-graphic-p)
-  (use-package windmove
-    ;; Specify defer: we don't want to require windmove here since it is
-    ;; autoloaded via the pel-window file.  However, when Emacs is running in
-    ;; graphics mode, we need to either set the default bindings (and then we
-    ;; force autoload of windmove) or force users to use something else of
-    ;; windmove to activate its special binding.  None of this is a good
-    ;; solution. So, as a compromise to delay the loading of windmove, just
-    ;; defer it for a specific amount of time, and then schedule the setting
-    ;; of the special binding when it is actually loaded.
-    :defer 1
-    :config
-    (cl-eval-when 'compile (require 'windmove nil :no-error))
-    (declare-function windmove-default-keybindings "windmove")
+(when pel-emacs-is-graphic-p
+
+  ;; In graphics mode provide control over cursor color and type (shape): the
+  ;; logic is in the pel-cursor.el file.
+  ;; Don't delay loading: it's small enough.
+  (require 'pel-cursor)
+  (define-key pel: (kbd  "C-c")     'pel-set-cursor-color)
+
+  ;; Add key cursor bindings for windmove when Emacs runs in graphics mode.
+  ;; The windmove package is autoloaded via the pel-window file.  It's not
+  ;; enough in graphics mode: we need to either set the default bindings (and
+  ;; then we force autoload of windmove) or force users to use something else
+  ;; of windmove to activate its special binding.  None of this is a good
+  ;; solution. So, as a compromise to delay the loading of windmove, just
+  ;; defer it for a specific amount of time, and then schedule the setting of
+  ;; the special binding when it is actually loaded.
+  (pel-require-after-init windmove 1)
+  (pel-autoload-file windmove for: windmove-default-keybindings)
+  (pel-eval-after-load windmove
     (windmove-default-keybindings (if pel-system-is-macos-p
                                       'super
-                                    'hyper))))
-
-(when pel-use-framemove
-  ;; download and byte-compile framemove if not already present.
-  ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
-  (cl-eval-when 'load
-    (pel-install-github-file "emacsmirror/framemove/master" "framemove.el"))
-
-  (when (display-graphic-p)
-    (use-package framemove
-      :config
-      (cl-eval-when 'compile (require 'framemove nil :noerror))
+                                    'hyper)))
+  (when pel-use-framemove
+    ;; In graphics mode, bindings to go directly to another frame
+    ;; without having to move through all intervening windows in current
+    ;; frame.
+    ;; download and byte-compile framemove if not already present.
+    ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
+    (cl-eval-when 'load
+      (pel-install-github-file "emacsmirror/framemove/master" "framemove.el"))
+    (pel-autoload-file framemove for:
+                       fm-up-frame
+                       fm-down-frame
+                       fm-right-frame
+                       fm-left-frame
+                       fm-down-frame
+                       fm-up-frame
+                       fm-left-frame
+                       fm-right-frame)
+    (pel-eval-after-load framemove
       (when (boundp 'framemove-hook-into-windmove)
-        (setq framemove-hook-into-windmove t)))))
+        (setq framemove-hook-into-windmove t)))
+    (global-set-key  (kbd "ESC <S-up>")    'fm-up-frame)
+    (global-set-key  (kbd "ESC <S-down>")  'fm-down-frame)
+    (global-set-key  (kbd "ESC <S-right>") 'fm-right-frame)
+    (global-set-key  (kbd "ESC <S-left>")  'fm-left-frame)
+    (define-key pel: (kbd  "<S-down>")     'fm-down-frame)
+    (define-key pel: (kbd  "<S-up>")       'fm-up-frame)
+    (define-key pel: (kbd  "<S-left>")     'fm-left-frame)
+    (define-key pel: (kbd  "<S-right>")    'fm-right-frame)))
 
-;; Uniquify: meaningful names when multiple buffers have the same name
-;; -------------------------------------------------------------------
+;; - Full Screen and Mouse Control
+;; -------------------------------
+(define-key pel: (kbd      "<f11>")        'pel-toggle-frame-fullscreen)
+(when pel-emacs-is-a-tty-p
+  (define-key pel: (kbd    "<f12>")       #'xterm-mouse-mode))
+
+;; - Uniquify: meaningful names when multiple buffers have the same name
+;; ---------------------------------------------------------------------
 ;; Uniquify provides meaningful names for buffers with the same name.
 ;; The following code snippet evolved from what's available on
 ;; https://github.com/bbatsov/prelude.
 ;; uniquify is now part of Emacs distribution.
 (when pel-use-uniquify
-  (use-package uniquify
-    :config
-    (cl-eval-when 'compile (require 'uniquify nil :no-error))
+  (pel-require-at-load uniquify)
+  (pel-eval-after-load uniquify
     (pel-setq uniquify-buffer-name-style 'post-forward)
     ;; rationalize buffer after killing uniquified buffer
     (pel-setq uniquify-after-kill-buffer-p t)
@@ -631,7 +609,7 @@ Done in this function to allow advising libraries that remap these keys."
 ;; In both cases, bind the key to pel-kp-decimal which behaves according
 ;; to the state of num-locking controlled by pel-numkpad.el
 
-(if (display-graphic-p)
+(if pel-emacs-is-graphic-p
     (global-set-key [kp-decimal] 'pel-kp-decimal)
   (global-set-key (kbd "M-O n") 'pel-kp-decimal))
 
@@ -642,7 +620,7 @@ Done in this function to allow advising libraries that remap these keys."
 ;; So PEL binds the appropriate key to pel-kp-add which selects the action
 ;; according to the state of num-locking controlled by pel-numkpad.el
 
-(if (display-graphic-p)
+(if pel-emacs-is-graphic-p
     (global-set-key [kp-add] 'pel-kp-add)
   (global-set-key [kp-separator] 'pel-kp-add))
 
@@ -914,26 +892,11 @@ Then save your changes."
 ;; - Function Keys - <f11>
 ;; -----------------------
 ;;
-;; <f11> Global key prefixes used for multiple packages:
-(define-pel-global-prefix pel:     (kbd "<f11>"))
-(define-pel-global-prefix pel:help (kbd "<f11> ?"))
+;; See the definition of pel: in the upper portion of this file.
 
 ;; --
 ;; - Function Keys - <f11> top-level prefix keys
 
-(use-package cc-cmds
-  ;; Autoload cc-cmds for the c-hungry-delete commands.
-  ;; Also autoload c-toggle-hungry-state because it is is used for
-  ;; CC Mode compliant modes (see later sections of code, below).
-  :commands (c-context-open-line
-             c-fill-paragraph
-             c-hungry-delete-backwards
-             c-hungry-delete-forward
-             c-toggle-auto-newline
-             c-toggle-comment-style
-             c-toggle-electric-state
-             c-toggle-hungry-state
-             c-toggle-syntactic-indentation))
 
 (defun pel--global-windmove-on (prefix)
   "Bind windmove commands on PREFIX key followed by cursor."
@@ -984,9 +947,9 @@ Then save your changes."
 ;; EditorConfig Support
 ;; --------------------
 (when pel-use-editor-config
-  (pel-ensure-package editorconfig when: pel-use-editor-config from: melpa)
-  (use-package editorconfig
-    :config
+  (pel-ensure-package  editorconfig from: melpa)
+  (pel-require-at-load editorconfig)
+  (pel-eval-after-load editorconfig
     (editorconfig-mode 1)))
 
 ;; ---------------------------------------------------------------------------
@@ -1076,32 +1039,29 @@ interactively."
   (add-hook 'after-save-hook
             'executable-make-buffer-file-executable-if-script-p))
 
-;; --------------------
-
-(defun pel--add-keys-to-iedit-mode ()
-  "Add keys that work in terminal mode to iedit-mode key maps."
-  (when (boundp 'iedit-lib-keymap)
-    (define-key iedit-lib-keymap (kbd "<f1> C-a") 'iedit-show/hide-context-lines)
-    (define-key iedit-lib-keymap (kbd "<f1> C-o") 'iedit-show/hide-occurrence-lines))
-  (when (boundp 'iedit-mode-occurrence-keymap)
-    (let ((map iedit-mode-occurrence-keymap))
-      (define-key map (kbd "<f1> <f2>") 'iedit-help-for-occurrences)
-      (define-key map (kbd "M-U")       'pel-redo)
-      (define-key map (kbd "<f1> M-c")  'iedit-toggle-case-sensitive)
-      (define-key map (kbd "M-c")       'iedit-downcase-occurrences)
-      (define-key map (kbd "M-C")       'iedit-upcase-occurrences))))
-
+;; - iedit - Powerful editing of multiple instances
+;; ------------------------------------------------
 (when (or pel-use-iedit pel-use-lispy)
-  (pel-ensure-package iedit
-      when: (or pel-use-iedit pel-use-lispy)
-      from: melpa)
-  (use-package iedit
-    :commands iedit-mode
-    :init
-    (define-key pel: "e" 'iedit-mode)
-    (define-key ctl-x-r-map "\r" 'iedit-rectangle-mode)
-    :config
-    ;; More iedit config - always required.
+  (defun pel--add-keys-to-iedit-mode ()
+    "Add keys that work in terminal mode to iedit-mode key maps."
+    (when (boundp 'iedit-lib-keymap)
+      (define-key iedit-lib-keymap (kbd "<f1> C-a") 'iedit-show/hide-context-lines)
+      (define-key iedit-lib-keymap (kbd "<f1> C-o") 'iedit-show/hide-occurrence-lines))
+    (when (boundp 'iedit-mode-occurrence-keymap)
+      (let ((map iedit-mode-occurrence-keymap))
+        (define-key map (kbd "<f1> <f2>") 'iedit-help-for-occurrences)
+        (define-key map (kbd "M-U")       'pel-redo)
+        (define-key map (kbd "<f1> M-c")  'iedit-toggle-case-sensitive)
+        (define-key map (kbd "M-c")       'iedit-downcase-occurrences)
+        (define-key map (kbd "M-C")       'iedit-upcase-occurrences))))
+  (declare-function pel--add-keys-to-iedit-mode "pel_keys")
+
+  (pel-ensure-package iedit from: melpa)
+  (pel-autoload-file iedit for: iedit-mode)
+  (define-key pel: "e" 'iedit-mode)
+  (define-key ctl-x-r-map "\r" 'iedit-rectangle-mode)
+  ;; More iedit config - always required.
+  (pel-eval-after-load iedit-mode
     (pel--check-flyspell-iedit-conflict)
     (pel--add-keys-to-iedit-mode)))
 
@@ -1112,74 +1072,38 @@ interactively."
 ;; because it does not seem to work in terminal mode.
 ;; It uses the pos-tip package.
 (when (and pel-use-popup-kill-ring
-           (display-graphic-p))
-  (pel-ensure-package
-      popup-kill-ring when: (and pel-use-popup-kill-ring
-                                 (display-graphic-p))
-      from: melpa)
-  (use-package popup-kill-ring
-    ;; Note: pos-tip, required by popup-kill-ring is installed
-    ;;       when popup-kill-ring is installed (and loaded by
-    ;;       it too).
-    :commands popup-kill-ring
-    :init
-    (cl-eval-when 'compile (require 'popup-kill-ring nil :no-error))
-    (define-key pel: (kbd "M-y") 'popup-kill-ring)))
+           pel-emacs-is-graphic-p)
+  ;; Note: pos-tip, required by popup-kill-ring is installed
+  ;;       when popup-kill-ring is installed.
+  (pel-ensure-package popup-kill-ring from: melpa)
+  (pel-autoload-file popup-kill-ring for: popup-kill-ring)
+  (define-key pel: (kbd "M-y") 'popup-kill-ring))
 
 ;; - smart-dash
 ;; ------------
 (when pel-use-smart-dash
-  (pel-ensure-package smart-dash when: pel-use-smart-dash from: melpa)
-  (use-package smart-dash
-    :commands smart-dash-mode
-    :init
-    (define-key pel: (kbd "M--") 'smart-dash-mode)
-
-    (pel-add-hook-for
-     'pel-modes-activating-smart-dash-mode
-     (lambda ()
-       (smart-dash-mode 1)
-       ;; ensure that the keypad dash is used as pel-kp-subtract
-       ;; which either cuts current line or inserts a normal dash.
-       (fset 'smart-dash-insert-dash 'pel-kp-subtract)))))
-
-(when (display-graphic-p)
-  ;; In graphics mode provide control over cursor color and type (shape): the
-  ;; logic is in the pel-cursor.el file.
-  ;; Don't delay loading: it's small enough.
-  (require 'pel-cursor)
-  (define-key pel: (kbd  "C-c")     'pel-set-cursor-color)
-
-  ;; In graphics mode, bindings to go directly to another frame
-  ;; without having to move through all intervening windows in current
-  ;; frame.
-  (when pel-use-framemove
-    (global-set-key  (kbd "ESC <S-up>")    'fm-up-frame)
-    (global-set-key  (kbd "ESC <S-down>")  'fm-down-frame)
-    (global-set-key  (kbd "ESC <S-right>") 'fm-right-frame)
-    (global-set-key  (kbd "ESC <S-left>")  'fm-left-frame)
-    (define-key pel: (kbd  "<S-down>")     'fm-down-frame)
-    (define-key pel: (kbd  "<S-up>")       'fm-up-frame)
-    (define-key pel: (kbd  "<S-left>")     'fm-left-frame)
-    (define-key pel: (kbd  "<S-right>")    'fm-right-frame)))
-;;
-(define-key pel: (kbd      "<f11>")        'pel-toggle-frame-fullscreen)
-(unless (display-graphic-p)
-  (define-key pel: (kbd    "<f12>")       #'xterm-mouse-mode))
+  (pel-ensure-package smart-dash from: melpa)
+  (pel-autoload-file smart-dash for: smart-dash-mode)
+  (define-key pel: (kbd "M--") 'smart-dash-mode)
+  (pel-add-hook-for
+   'pel-modes-activating-smart-dash-mode
+   (lambda ()
+     (smart-dash-mode 1)
+     ;; ensure that the keypad dash is used as pel-kp-subtract
+     ;; which either cuts current line or inserts a normal dash.
+     (fset 'smart-dash-insert-dash 'pel-kp-subtract))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Display of Regular Expression -- easy-escape
 ;; ----------------------------------------------
 (when pel-use-easy-escape
-  (pel-ensure-package easy-escape when: pel-use-easy-escape from: melpa)
-  (use-package easy-escape
-    :commands easy-escape-minor-mode
-    :init
-    (define-key pel: "\"" 'easy-escape-minor-mode)
-    (pel-add-hook-for
-     'pel-modes-activating-easy-escape
-     (lambda ()
-       (easy-escape-minor-mode 1)))))
+  (pel-ensure-package easy-escape from: melpa)
+  (pel-autoload-file easy-escape for: easy-escape-minor-mode)
+  (define-key pel: "\"" 'easy-escape-minor-mode)
+  (pel-add-hook-for
+   'pel-modes-activating-easy-escape
+   (lambda ()
+     (easy-escape-minor-mode 1))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Use undo-tree
@@ -1208,57 +1132,48 @@ interactively."
 
 (if pel-use-undo-tree
     (progn
+      ;; autoload pel-undo if one of the following commands
+      ;; are executed - in the case where pel-use-undo-tree is t.
+      (pel-autoload-file pel-undo for:
+                         pel-undo
+                         pel-redo)
+      (global-set-key (kbd "C-z")  'pel-undo)
+      (when pel-emacs-is-graphic-p
+        (global-set-key (kbd  "s-z")   'pel-undo)
+        (global-set-key (kbd  "s-Z")   'pel-redo))
+      (global-set-key (kbd    "C-x u") 'pel-undo)
+      (global-set-key (kbd    "C-/")   'pel-undo)
+      (global-set-key (kbd    "M-u")   'pel-undo)
+      (global-set-key (kbd    "M-U")   'pel-redo)
+      (define-key pel:undo    "u"      'pel-undo)
+      (define-key pel:undo    "r"      'pel-redo)
 
-      (use-package pel-undo
-        ;; autoload pel-undo if one of the following commands
-        ;; are executed - in the case where pel-use-undo-tree is t.
-        :commands (pel-undo
-                   pel-redo)
-        :init
-        (global-set-key (kbd "C-z")  'pel-undo)
-
-        (when (display-graphic-p)
-          (global-set-key (kbd  "s-z")    #'pel-undo)
-          (global-set-key (kbd  "s-Z")    #'pel-redo))
-        (global-set-key (kbd    "C-x u")  #'pel-undo)
-        (global-set-key (kbd    "C-/")    #'pel-undo)
-        (global-set-key (kbd    "M-u")    #'pel-undo)
-        (global-set-key (kbd    "M-U")    #'pel-redo)
-
-        (define-key pel:undo    "u"       #'pel-undo)
-        (define-key pel:undo    "r"       #'pel-redo))
-
-      (pel-ensure-package undo-tree when: pel-use-undo-tree from: gnu)
-      (use-package undo-tree
-        :commands (undo-tree-mode
-                   global-undo-tree-mode
-                   undo-tree-undo
-                   undo-tree-redo
-                   undo-tree-visualize
-                   undo-tree-switch-branch)
-        :init
-        ;; (cl-eval-when 'compile (require 'undo-tree nil :no-error))
-        (define-key pel:undo    "v"       'undo-tree-visualize)
-        (define-key pel:undo    "x"       'undo-tree-switch-branch)
-
-        :config
-        ;; The file undo-tree sets the undo-tree-map key-map which
-        ;; sets the binding of M-_ and C-_ to `undo-tree-undo' and
-        ;; `undo-tree-redo' and therefore changes the setting that PEL
-        ;; is promoting when pel-use-undo-tree is set:
-        ;; the binding of M-_ and C-_ to `negative-argument'.
-        ;; To correct that, we modify the undo-tree-map and install
-        ;; the `negative-argument' function after activating undo tree
-        ;; globally.
-        ;; Also reduce lenght of undo-tree-mode-lighter
-        (setq undo-tree-mode-lighter " uTr")
+      (pel-ensure-package   undo-tree from: gnu)
+      (pel-autoload-file undo-tree for:
+                         undo-tree-mode
+                         global-undo-tree-mode
+                         undo-tree-undo
+                         undo-tree-redo
+                         undo-tree-visualize
+                         undo-tree-switch-branch)
+      (define-key pel:undo  "v"    'undo-tree-visualize)
+      (define-key pel:undo  "x"    'undo-tree-switch-branch)
+      ;; The file undo-tree sets the undo-tree-map key-map which
+      ;; sets the binding of M-_ and C-_ to `undo-tree-undo' and
+      ;; `undo-tree-redo' and therefore changes the setting that PEL
+      ;; is promoting when pel-use-undo-tree is set:
+      ;; the binding of M-_ and C-_ to `negative-argument'.
+      ;; To correct that, we modify the undo-tree-map and install
+      ;; the `negative-argument' function after activating undo tree
+      ;; globally.
+      (pel-eval-after-load undo-tree
         (global-undo-tree-mode)
         (define-key undo-tree-map  (kbd "C-_") 'negative-argument)
         (define-key undo-tree-map  (kbd "M-_") 'negative-argument)))
 
   ;; When pel-use-undo-tree is not t, then use standard Emacs undo but
   ;; map to similar keys (except the redo keys: ``<f11> u r`` and ``M-U``)
-  (when (display-graphic-p)
+  (when pel-emacs-is-graphic-p
     (global-set-key (kbd  "s-z")    #'undo))
   (global-set-key (kbd    "C-x u")  #'undo)
   (global-set-key (kbd    "C-/")    #'undo)
@@ -1268,13 +1183,9 @@ interactively."
 ;; - Use goto-last-change
 ;; ----------------------
 (when pel-use-goto-last-change
-  (use-package goto-last-change
-    :ensure t
-    :pin melpa
-    :commands goto-last-change
-    :init
-      (cl-eval-when 'compile (require 'goto-last-change nil :no-error)))
-  (define-key pel:undo "\\"  #'goto-last-change))
+  (pel-ensure-package goto-last-change from: melpa)
+  (pel-autoload-file goto-last-change for: goto-last-change)
+  (define-key pel:undo "\\" 'goto-last-change))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> <f10>`` : Menu commands
@@ -1338,7 +1249,7 @@ interactively."
 ;; Key bindings to access PEL customization groups quickly,
 ;; and optionally other related groups
 
-(when (display-graphic-p)
+(when pel-emacs-is-graphic-p
   (define-key pel:cfg-emacs (kbd "C-c") 'pel-customize-cursor))
 
 (pel--cfg-pkg "key-chord"   pel:cfg-pel (kbd "M-K"))
@@ -1346,7 +1257,7 @@ interactively."
 (pel--cfg-pkg "project-mng" pel:cfg-pel (kbd "<f8>"))
 
 ;;
-(pel--cfg-pkg "lisp"         pel:cfg-pel-lang (kbd "M-L") lispy) ; all Lisps
+(pel--cfg-pkg "lisp" pel:cfg-pel-lang (kbd "M-L") lispy) ; all Lisps
 
 ;; --
 (pel--cfg-emacs pel:cfg-emacs "m" "man")
@@ -1381,20 +1292,22 @@ interactively."
         (setq count (1+ count))))
     count))
 
+;; Helm
+;; ----
 (when (or pel-use-helm
           pel-use-helm-xref
           (and pel-use-xcscope pel-use-helm-cscope))
-  (use-package helm
-    :ensure t
-    :pin melpa
-    :commands helm-mode
-    :config
-    (when pel-use-helm
-      (require 'helm-config)
-      ;; <tab> or C-i are mapped to helm-select-action.  Use M-C-i to run
-      ;; persistent action.
-      (define-key helm-map (kbd "M-C-i") 'helm-execute-persistent-action))))
+  (pel-ensure-package helm from: melpa)
+  (pel-autoload-file helm for: helm-mode)
+  (pel-eval-after-load helm
+    (require 'helm-config)
+    (defvar helm-map)                   ; prevent byte-compiler warning
+    ;; <tab> or C-i are mapped to helm-select-action.  Use M-C-i to run
+    ;; persistent action.
+    (define-key helm-map (kbd "M-C-i") 'helm-execute-persistent-action)))
 
+;; Ido
+;; ---
 (when pel-use-ido
   ;; The Ido extenders sometime fail on ido-completions being void.
   ;; to prevent that make sure it is auto-loaded.
@@ -1404,11 +1317,10 @@ interactively."
   ;; Ido is distributed with Emacs, so no need to provide logic to install it.
   ;; The selection of the auto-completion mode used when Emacs starts
   ;; is done below, with a call to `pel-set-completion-mode'.
-  (defvar ido-common-completion-map)      ; prevent byte-compiler warning
-  (defvar ido-buffer-completion-map)      ; prevent byte-compiler warning
-  (use-package ido
-    :commands ido-mode
-    :config
+  (defvar ido-common-completion-map)    ; prevent byte-compiler warning
+  (defvar ido-buffer-completion-map)    ; prevent byte-compiler warning
+  (pel-autoload-file ido for: ido-mode)
+  (pel-eval-after-load ido
     ;; Add binding to quickly open the input completion PDF
     (define-key ido-common-completion-map (kbd "<f12><f1>")
       'pel-help-on-completion-input)
@@ -1421,95 +1333,87 @@ interactively."
     (define-key ido-buffer-completion-map (kbd "<f12>b") 'ido-bury-buffer-at-head))
 
   (when pel-use-ido-ubiquitous
+    (pel-ensure-package ido-completing-read+ from: melpa)
     ;; add autoloading control for it.  The actual loading is controlled
     ;; by the logic inside pel-completion.el
-    (use-package ido-completing-read+
-      :ensure t
-      :pin melpa
-      :commands ido-ubiquitous-mode
-      :config
+    (pel-autoload-file ido-completing-read+ for:
+                       ido-ubiquitous-mode)
+    (pel-eval-after-load ido-completing-read+
       (pel-set-ido-ubiquitous)))
 
   (when pel-use-ido-grid-mode
-    (use-package ido-grid-mode
-      :ensure t
-      :pin melpa
-      :commands ido-grid-mode))
+    (pel-ensure-package ido-grid-mode from: melpa)
+    (pel-autoload-file ido-grid-mode for:
+                       ido-grid-mode))
 
   (when pel-use-ido-vertical-mode
-    (use-package ido-vertical-mode
-      :ensure t
-      :pin melpa
-      :commands ido-vertical-mode))
+    (pel-ensure-package ido-vertical-mode from: melpa)
+    (pel-autoload-file ido-vertical-mode for:
+                       ido-vertical-mode))
 
   (when pel-use-smex
-    (use-package smex
-      :ensure t
-      :pin melpa
-      :commands (smex
-                 smex-major-mode-commands)
-      :init
-      (global-set-key (kbd "M-x") 'smex)
-      (global-set-key (kbd "M-X") 'smex-major-mode-commands)
-      (define-key pel: (kbd "M-x") 'execute-extended-command))))
+    (pel-ensure-package smex from: melpa)
+    (pel-autoload-file smex for:
+                       smex
+                       smex-major-mode-commands)
+    (global-set-key (kbd "M-x") 'smex)
+    (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+    (define-key pel: (kbd "M-x") 'execute-extended-command)))
 
+;; ivy
+;; ---
 (when (or pel-use-ivy
           pel-use-ivy-xref)
-  (defvar ivy-minibuffer-map)             ; prevent byte-compiler warning
-  (use-package ivy
-    :ensure t
-    :pin melpa
-    :commands ivy-mode
-    :config
+  (defvar ivy-use-virtual-buffers)       ; prevent byte-compiler warning
+  (defvar ivy-count-format)
+  (defvar ivy-minibuffer-map)
+  (pel-ensure-package ivy from: melpa)
+  (pel-autoload-file ivy for: ivy-mode)
+  (pel-eval-after-load ivy
     (setq ivy-use-virtual-buffers t
           ivy-count-format "%d/%d ")
     (define-key ivy-minibuffer-map (kbd "<f12><f1>") 'pel-help-on-completion-input)
-    (define-key ivy-minibuffer-map (kbd "<f12>c")    'ivy-toggle-case-fold)
-    (define-key ivy-minibuffer-map (kbd "C-SPC")     'ivy-restrict-to-matches)
+    (define-key ivy-minibuffer-map (kbd "<f12>c") 'ivy-toggle-case-fold)
+    (define-key ivy-minibuffer-map (kbd "C-SPC") 'ivy-restrict-to-matches)
     (when pel-use-avy
       (define-key ivy-minibuffer-map (kbd "M-H") 'ivy-avy)))
 
   ;; When ivy and avy are used, activate ivy-avy which integrate both.
   (when pel-use-avy
-    (use-package ivy-avy
-      :ensure t
-      :pin melpa
-      :commands ivy-avy))
+    (pel-ensure-package ivy-avy from: melpa)
+    (pel-autoload-file ivy-avy for: ivy-avy))
   ;;
   (when pel-use-counsel
-    (use-package counsel
-      :ensure t
-      :pin melpa
-      :defer 1
-      :config
+    (pel-ensure-package counsel from: melpa)
+    (pel-require-after-init counsel 1)
+    (pel-eval-after-load counsel
       (when pel-system-is-linux-p
         (define-key pel: "A" 'counsel-linux-app)))
     ;;
     (when (and pel-system-is-macos-p pel-use-counsel-osx-app)
-      (use-package counsel-osx-app
-        :ensure t
-        :pin melpa
-        :commands counsel-osx-app
-        :init
-        (define-key pel: "A" 'counsel-osx-app)))))
+      (pel-ensure-package counsel-osx-app from: melpa)
+      (pel-autoload-file counsel-osx-app for: counsel-osx-app)
+      (define-key pel: "A" 'counsel-osx-app))))
 
+;; flx-ido
+;; -------
 (when (and pel-use-flx
            (or pel-use-ido pel-use-ivy))
-  (use-package flx-ido ; flx-ido also explicitly requires the flx package
-    :ensure t
-    :pin melpa
-    :commands flx-ido-mode))
+  (pel-ensure-package flx-ido from: melpa)
+  ;; Note: flx-ido also explicitly requires the flx package
+  (pel-autoload-file flx-ido for: flx-ido-mode))
 
+;; All completion
+;; --------------
 ;; If more than 1 completion mode is available, this means that the user may
 ;; not want to use Emacs default: activate the one selected by customization
 ;; and install the selection command.
 (when (> (pel-number-of-available-modes) 1)
-  (use-package pel-completion
-    ;; Of all input-completion packages, Helm takes the longuest time to load.
-    ;; Defer its loading a little and allow switching ony once it's loaded.
-    :defer 1
-
-    :config
+  ;; Of all input-completion packages, Helm takes the longuest time to load.
+  ;; Defer loading of pel-completion a little and allow switching only once
+  ;; it's loaded.
+  (pel-require-after-init pel-completion 1)
+  (pel-eval-after-load pel-completion
     ;; after specified delay configure input completion:
     ;; - set the key bindings
     (define-key pel:help       (kbd "M-c") 'pel-show-active-completion-mode)
@@ -1541,24 +1445,13 @@ interactively."
              (fboundp 'pel--start-projectile))
     (run-with-idle-timer 1 nil (function pel--start-projectile)))
 
-  (use-package projectile
-    :ensure t
-    :pin melpa
-    :commands projectile-mode
-
-    ;; projectile uses both ripgrep and ag.  These are controlled
-    ;; independently but ensure that the commands used by projectile are
-    ;; identified as the autoloading commands.  See both of these in the Grep
-    ;; operation section below.
-
-    :init
-    (define-pel-global-prefix pel:projectile (kbd "<f11> <f8>"))
-    (define-key pel:projectile (kbd "<f8>") 'projectile-mode)
-
-    :config
+  (pel-ensure-package projectile from: melpa)
+  (pel-autoload-file projectile for: projectile-mode)
+  (defvar projectile-mode-map)          ; prevent byte-compiler warning
+  (defvar projectile-command-map)
+  (pel-eval-after-load projectile
     (define-key projectile-mode-map (kbd "<f8>")    'projectile-command-map)
-    (define-key projectile-command-map "~"
-      'projectile-toggle-project-read-only)
+    (define-key projectile-command-map "~"  'projectile-toggle-project-read-only)
     ;; The default Projectile key-map binds ESC to
     ;; projectile-project-buffers-other-buffer this is unfortunate because it
     ;; prevents the use of any function keys in terminal mode since they are
@@ -1567,10 +1460,16 @@ interactively."
     ;; closely located to Esc on most keyboards: the 1 key.
     (define-key projectile-command-map (kbd "ESC") nil)
     (define-key projectile-command-map "1"
-      #'projectile-project-buffers-other-buffer)
+      'projectile-project-buffers-other-buffer)
     (define-key projectile-command-map (kbd "<f1>") 'pel-help-pdf)
     (define-key projectile-command-map (kbd "<f2>") 'pel-customize-pel)
-    (define-key projectile-command-map (kbd "<f3>") 'pel-customize-library)))
+    (define-key projectile-command-map (kbd "<f3>") 'pel-customize-library))
+  ;; projectile uses both ripgrep and ag.  These are controlled
+  ;; independently but ensure that the commands used by projectile are
+  ;; identified as the autoloading commands.  See both of these in the Grep
+  ;; operation section below.
+  (define-pel-global-prefix pel:projectile (kbd "<f11> <f8>"))
+  (define-key pel:projectile (kbd "<f8>") 'projectile-mode))
 
 ;; ---------------------------------------------------------------------------
 ;; Tempo skeleton - a powerful lisp-style templating system
@@ -1579,9 +1478,7 @@ interactively."
 
 (when (or pel-use-erlang
           pel-use-rst-mode)
-  (use-package pel-tempo
-    ;; autoload pel-tempo when the following command is used
-    :commands pel-tempo-mode))
+  (pel-autoload-file pel-tempo for: pel-tempo-mode))
 
 ;; ---------------------------------------------------------------------------
 ;; yasnippet - a Texmate-like templating system
@@ -1593,12 +1490,13 @@ interactively."
     (when (and (require 'yasnippet nil :noerror)
                (fboundp 'yas-global-mode))
       (yas-global-mode 1)))
+  (declare-function pel--start-yasnippet "pel_keys") ; prevent warning
 
   (defun pel--start-yasnippet-snippets ()
     "Activate yasnippet and the yasnippet-snippets globally."
     (load-library "yasnippet-snippets")
-    (when (fboundp 'pel--start-yasnippet)
-      (pel--start-yasnippet)))
+    (pel--start-yasnippet))
+  (declare-function pel--start-yasnippet-snippets "pel_keys")
 
   (define-pel-global-prefix pel:yasnippet (kbd "<f11> y"))
   (define-key pel:yasnippet "Y"          'yas-global-mode)
@@ -1609,28 +1507,21 @@ interactively."
   (define-key pel:yasnippet "n"          'yas-new-snippet)
   (define-key pel:yasnippet "v"          'yas-visit-snippet-file)
 
-  (if pel-use-yasnippet-snippets
-    (use-package yasnippet-snippets
-      :ensure t
-      :pin melpa
-      :commands (yas-global-mode
-                 yas-minor-mode)
-      :init
-      (when (and (eq pel-use-yasnippet 'use-from-start)
-                 (fboundp 'pel--start-yasnippet-snippets))
-        (run-with-idle-timer 4 nil (function pel--start-yasnippet-snippets))))
+  (when pel-use-yasnippet-snippets
+    (pel-ensure-package yasnippet-snippets from: melpa)
+    (pel-autoload-file yasnippet-snippets for:
+                       yas-global-mode
+                       yas-minor-mode)
+    (when (eq pel-use-yasnippet 'use-from-start)
+      (run-with-idle-timer 4 nil (function pel--start-yasnippet-snippets))))
 
-    (use-package yasnippet
-    :ensure t
-    :pin melpa
-    :commands (yas-global-mode
-               yas-minor-mode)
-    :init
-    (when (and (not pel-use-yasnippet-snippets)
-               (eq pel-use-yasnippet 'use-from-start)
-               (fboundp 'pel--start-yasnippet))
-      (run-with-idle-timer 4 nil (function pel--start-yasnippet))))))
-
+  (pel-ensure-package yasnippet from: melpa)
+  (pel-autoload-file yasnippet for:
+                     yas-global-mode
+                     yas-minor-mode)
+  (when (and (not pel-use-yasnippet-snippets)
+             (eq pel-use-yasnippet 'use-from-start))
+    (run-with-idle-timer 4 nil (function pel--start-yasnippet))))
 
 ;; ---------------------------------------------------------------------------
 ;; Global prefixes to specialized prefixes
@@ -1704,11 +1595,11 @@ interactively."
 ;; Syntax Check with Flycheck (if requested)
 ;; -----------------------------------------
 (when (or (eq pel-use-erlang-syntax-check 'with-flycheck)
-          (eq pel-use-goflymake           'with-flycheck))
-  (use-package flycheck
-    :ensure t
-    :pin melpa
-    :commands flycheck-mode))
+          (eq pel-use-goflymake 'with-flycheck))
+  (pel-ensure-package flycheck from: melpa)
+  (pel-autoload-file flycheck for:
+                     flycheck-mode
+                     flycheck-select-checker))
 
 ;; ---------------------------------------------------------------------------
 ;; Software Build Tool Support
@@ -1746,66 +1637,64 @@ interactively."
   (cl-eval-when 'load
     (pel-install-github-file "pierre-rouleau/tup-mode/master" "tup-mode.el"))
   (autoload 'tup-mode "tup-mode")
-  (add-to-list 'auto-mode-alist '("\\.tup\\'"  . tup-mode))
-  (add-to-list 'auto-mode-alist '("Tupfile"    . tup-mode))
-  (add-to-list 'auto-mode-alist '("tup.config" . tup-mode)))
+  (pel-set-auto-mode tup-mode for:
+                     "\\.tup\\'"
+                     "Tupfile"
+                     "tup.config"))
 
 ;; ---------------------------------------------------------------------------
 ;; - Programming Language Support
 ;; ==============================
 
 (when (and pel-use-eldoc-box
-           (display-graphic-p))
-  (use-package eldoc-box
-    :ensure t
-    :pin melpa
-    :commands (eldoc-box-hover-mode
-               eldoc-box-hover-at-point-mode)))
+           pel-emacs-is-graphic-p)
+  (pel-ensure-package eldoc-box from: melpa)
+  (pel-autoload-file eldoc-box for:
+                     eldoc-box-hover-mode
+                     eldoc-box-hover-at-point-mode))
 
 ;; ---------------------------------------------------------------------------
 ;; - AppleScript support
 (when pel-use-applescript
+  ;; the Melpa package does not seemed maintained. Use my copy instead.
   (cl-eval-when 'load
-    (pel-install-github-file "pierre-rouleau/apples-mode/master" "apples-mode.el"))
-  (use-package apples-mode
-    ;; the Melpa package does not seemed maintained. Use my copy instead.
-    ;; :ensure t
-    ;; :pin melpa
-    :commands (apples-mode
-               apples-open-scratch)
-    :init
-    (add-to-list 'auto-mode-alist '("\\.\\(applescript\\|scpt\\)\\'"
-                                    . apples-mode))
+    (pel-install-github-file "pierre-rouleau/apples-mode/master"
+                             "apples-mode.el"))
+  (pel-autoload-file apples-mode for:
+                     apples-mode
+                     apples-open-scratch)
+  (add-to-list 'auto-mode-alist '("\\.\\(applescript\\|scpt\\)\\'"
+                                  . apples-mode))
 
-    (define-pel-global-prefix pel:for-applescript (kbd "<f11> SPC a"))
-    (define-key pel:for-applescript "s" 'apples-open-scratch)
-    ;;
-    ;; activate the <f12> key binding for apples-mode
-    (pel--mode-hook-maybe-call
-     (lambda ()
-       (pel-local-set-f12 'pel:for-applescript))
-     'apples-mode 'apples-mode-hook))
+  (define-pel-global-prefix pel:for-applescript (kbd "<f11> SPC a"))
+  (define-key pel:for-applescript "s" 'apples-open-scratch)
+  ;;
+  ;; activate the <f12> key binding for apples-mode
+  (pel--mode-hook-maybe-call
+   (lambda ()
+     (pel-local-set-f12 'pel:for-applescript))
+   'apples-mode 'apples-mode-hook)
+
 
   ;; Text narration on macOS
   ;; -----------------------
+  ;; HYDRA: pel-∑narrate is at the bottom of this file with all other PEL hydras.
   (when pel-system-is-macos-p
-    (use-package pel-applescript
-      :commands (pel-say
-                 pel-say-word
-                 pel-say-sentence
-                 pel-say-paragraph
-                 pel-say-region)
-      :init
-      (when (not pel-use-hydra)
+    (pel-autoload-file pel-applescript for:
+                       pel-say
+                       pel-say-word
+                       pel-say-sentence
+                       pel-say-paragraph
+                       pel-say-region)
+    (when (not pel-use-hydra)
         (define-pel-global-prefix pel:narrate (kbd "<f7> <f8>"))
         (define-key pel:narrate "t" 'pel-say)
         (define-key pel:narrate "R" 'pel-say-region)
         (define-key pel:narrate "w" 'pel-say-word)
         (define-key pel:narrate "s" 'pel-say-sentence)
-        (define-key pel:narrate "p" 'pel-say-paragraph)))))
+        (define-key pel:narrate "p" 'pel-say-paragraph))))
 
-;; HYDRA: pel-∑narrate is at the bottom of this file with all other PEL hydras.
-
+;; ---------------------------------------------------------------------------
 ;; C-like programming languages: C, C++
 ;; ------------------------------------
 (when pel-use-c-eldoc
@@ -1818,28 +1707,34 @@ interactively."
     (if eldoc-mode
         (eldoc-mode -1)
       (c-turn-on-eldoc-mode)))
+  (declare-function pel-toggle-c-eldoc-mode "pel_keys")
 
+  ;; TODO: check if main repo is OK.
+  ;; c-eldoc is an external package.
+  ;; I am waiting for a fix to be incorporated, using my copy with the fix
+  ;; incorporated for now.
   (cl-eval-when 'load
     (pel-install-github-file "pierre-rouleau/c-eldoc/master" "c-eldoc.el"))
 
-  (use-package c-eldoc
-    ;; c-eldoc is an external package.
-    ;; For the moment I am trying to update it. So download from my page
-    ;; for testing.
-    ;; :ensure t   ; warning is in c-eldoc: it requires cl instead of cl-lib.
-    ;; :pin melpa
-
-    ;; autoload it when one of the following commands is used.
-    :commands c-turn-on-eldoc-mode
-
-    ;; run following command before package is loaded to
-    ;; activate the autoload.
-    :init
-    (cl-eval-when 'compile (require 'c-eldoc nil :no-error))
-    (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)))
+  (pel-autoload-file c-eldoc for: c-turn-on-eldoc-mode)
+  (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode))
 
 ;; ---------------------------------------------------------------------------
 ;; Utility function for mapping CC Mode keys
+
+;; Autoload cc-cmds for the c-hungry-delete commands.
+;; Also autoload c-toggle-hungry-state because it is is used for
+;; CC Mode compliant modes (see later sections of code, below).
+(pel-autoload-file cc-cmds for:
+                   c-context-open-line
+                   c-fill-paragraph
+                   c-hungry-delete-backwards
+                   c-hungry-delete-forward
+                   c-toggle-auto-newline
+                   c-toggle-comment-style
+                   c-toggle-electric-state
+                   c-toggle-hungry-state
+                   c-toggle-syntactic-indentation)
 
 (defun pel--map-cc-for (prefix &optional c-preproc-prefix)
   "Map in the PEL keys for CC Mode in the global keymap specified by PREFIX.
@@ -1888,28 +1783,38 @@ just bind it again after this call."
 
 (defun pel--setup-for-cc ()
   "More setup for CC modes: add c preprocessor hydra."
-  ;; The pel-⅀c-preproc requires Hydra: load it via the pel--load-hydra
+  ;; The pel-⅀c-preproc requires Hydra: load it via the `pel--load-hydra'.
+  ;; Note that `pel--load-hydra' removes itself and its presence is used as an
+  ;; indication.  So we must check for it being bound and we must NOT use a
+  ;; `declare-function' for it even if it was conditionally defined (which
+  ;; currently is not the case anyway).
   (when (and pel-use-hydra
              (fboundp 'pel--load-hydra))
-(pel--load-hydra :no-request)))
+    (pel--load-hydra :no-request)))
 
 (defun pel--set-cc-style (mode bracket-style newline-mode)
   "Set the BRACKET-STYLE and NEWLINE-MODE for MODE.
 MODE must be a symbol."
-  (let* ((used-style  (assoc mode c-default-style))
-         (force-style (not
-                       (and used-style
-                            (string-equal (cdr used-style) bracket-style)))))
-    (when force-style
-      (add-to-list 'c-default-style (cons mode bracket-style))
-      (c-set-style bracket-style :dont-override-default)))
-  ;; Activate CC mode specific local bindings
-  (pel-require 'pel-cc)
-  (if (boundp 'pel-cc-newline-mode)
-      (setq pel-cc-newline-mode newline-mode)
-    (error "Failed loading pel-align!"))
-  (local-set-key     (kbd "C-o")   'c-context-open-line)
-  (local-set-key     (kbd "RET")   'pel-cc-newline))
+  (if (and (require 'cc-vars nil :no-error)
+           (boundp 'c-default-style))
+      (progn
+        (let* ((used-style  (assoc mode c-default-style))
+               (force-style (not
+                             (and used-style
+                                  (string-equal (cdr used-style) bracket-style)))))
+          (when force-style
+            (add-to-list 'c-default-style (cons mode bracket-style))
+            (c-set-style bracket-style :dont-override-default)))
+        ;; Activate CC mode specific local bindings
+        (pel-require 'pel-cc)
+        (if (boundp 'pel-cc-newline-mode)
+            (setq pel-cc-newline-mode newline-mode)
+          (error "Failed loading pel-align!"))
+        (local-set-key     (kbd "C-o")   'c-context-open-line)
+        (local-set-key     (kbd "RET")   'pel-cc-newline))
+    (display-warning 'pel--set-cc-style
+                     "Problem loading cc-vars!"
+                     :error)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC c`` : C programming utilities
@@ -2044,59 +1949,49 @@ MODE must be a symbol."
     ;; 7) Install language-specific skeletons
     ;; TODO
     )
+  (declare-function pel--setenv-for-d "pel_keys")
+  (declare-function speedbar-add-supported-extension "speedbar")
 
   (when pel-use-speedbar
-    ;; Overcoming omission bug in erlang-mode: add support for Speedbar
+    ;; Overcoming omission bug in d-mode: add support for Speedbar
     (pel-require 'speedbar)
     (speedbar-add-supported-extension '(".d")))
 
-  (use-package d-mode
-    :ensure t
-    :pin melpa
+  (pel-ensure-package d-mode from: melpa)
+  (pel-autoload-file d-mode for: d-mode)
+  ;; When opening a D source code file, load the d-mode feature.
+  (add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
+  ;; Configure commands available on the D key-map.
+  (when pel-use-plantuml
+    (define-key pel:for-d "u" 'pel-render-commented-plantuml))
+  (when pel-use-graphviz-dot
+    (define-key pel:for-d "G" 'pel-render-commented-graphviz-dot))
+  (pel--map-cc-for pel:for-d)
+  ;; Schedule activation of D mode style and its <f12> key binding
+  (pel--mode-hook-maybe-call
+   (function pel--setenv-for-d)
+   'd-mode 'd-mode-hook)
 
-    ;; Load only when the d-mode command is used.
-    :commands d-mode
 
-    ;; When opening a D source code file, load the d-mode feature.
-    :init
-    (add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
+  ;; Configure auto-completion based on selection
+  ;; There are 2 possibilities
+  (when pel-use-d-ac-dcd
+    (pel-ensure-package ac-dcd from: melpa)
+    (pel-autoload-file ac-dcd for: ac-dcd-setup)
+    (pel-eval-after-load d-mode
+      (if (and (require 'auto-complete nil :no-error)
+               (boundp 'ac-modes))
+          (add-to-list 'ac-modes 'd-mode)
+        (display-warning 'pel-use-d-ac-dcd
+                         "Failed loading auto-complete: \
+d-mode not added to ac-modes!"
+                         :error)))
+    (add-hook 'd-mode-hook 'ac-dcd-setup))
 
-    ;; Configure commands available on the D key-map.
-    (when pel-use-plantuml
-      (define-key pel:for-d "u" 'pel-render-commented-plantuml))
-    (when pel-use-graphviz-dot
-      (define-key pel:for-d "G" 'pel-render-commented-graphviz-dot))
-    (pel--map-cc-for pel:for-d)
-
-    ;;
-    ;; Schedule activation of D mode style and its <f12> key binding
-    (pel--mode-hook-maybe-call
-     (function pel--setenv-for-d)
-     'd-mode 'd-mode-hook)
-
-    ;; Configure auto-completion based on selection
-    ;; There are 2 possibilities
-    ;; TODO:  complete logic once this is all tested/documented
-    ;; -->for now assume only one is configure in...
-    (when pel-use-d-ac-dcd
-      (use-package ac-dcd
-        :ensure t
-        :pin melpa
-        :commands ac-dcd-setup
-        :init
-        (add-to-list 'ac-modes 'd-mode)
-        (add-hook 'd-mode-hook #'ac-dcd-setup)))
-
-    ;; --> ... so the code does not prevent both to be activated
-    ;;         together (will do some experiment and will decide later
-    ;;         what the final code should be).
-    (when pel-use-d-company-dcd
-      (use-package company-dcd
-        :ensure t
-        :pin melpa
-        :commands company-dcd-mode
-        :init
-        (add-hook 'd-mode-hook 'company-dcd-mode)))))
+  (when pel-use-d-company-dcd
+    (pel-ensure-package company-dcd from: melpa)
+    (pel-autoload-file company-dcd for: company-dcd-mode)
+    (add-hook 'd-mode-hook 'company-dcd-mode)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` : Erlang programming
@@ -2126,80 +2021,81 @@ MODE must be a symbol."
       (speedbar-add-supported-extension '(".erl"
                                           ".hrl"
                                           ".escript"))))
+  (declare-function pel--setup-for-erlang "pel_keys")
 
   ;;
   (when pel-erlang-shell-prevent-echo
-      ;; Prevent erlang shell to echo back commands.
+    ;; Prevent erlang shell to echo back commands.
     (add-hook 'erlang-shell-mode-hook 'pel-erlang-shell-mode-init))
 
-  (use-package erlang
-    :ensure t
-    :pin melpa
-    :commands erlang-mode
-    :mode (("\\.erl?$"             . erlang-mode)
-           ("\\.hrl?$"             . erlang-mode)
-           ("rebar\\.config$"      . erlang-mode)
-           ("relx\\.config$"       . erlang-mode)
-           ("sys\\.config\\.src$"  . erlang-mode)
-           ("sys\\.config$"        . erlang-mode)
-           ("\\.config\\.src?$"    . erlang-mode)
-           ("\\.config\\.script?$" . erlang-mode)
-           ("\\.app?$"             . erlang-mode)
-           ("\\.app.src?$"         . erlang-mode)
-           ("\\Emakefile"          . erlang-mode))
+  (pel-ensure-package erlang from: melpa)
+  (pel-autoload-file erlang for: erlang-mode)
+  (pel-set-auto-mode erlang for:
+                     "\\.erl?$"
+                     "\\.hrl?$"
+                     "rebar\\.config$"
+                     "relx\\.config$"
+                     "sys\\.config\\.src$"
+                     "sys\\.config$"
+                     "\\.config\\.src?$"
+                     "\\.config\\.script?$"
+                     "\\.app?$"
+                     "\\.app.src?$"
+                     "\\Emakefile")
 
-    :init
-    ;; Augment the skeletons defined inside erlang.el.
-    ;; Do this once - right after erlang.el file is loaded and
-    ;; before the erlang-mode executes.
-    (advice-add 'erlang-mode :before #'pel--erlang-mode-setup)
+  ;; Augment the skeletons defined inside erlang.el.
+  ;; Do this once - right after erlang.el file is loaded and
+  ;; before the erlang-mode executes.
+  (advice-add 'erlang-mode :before #'pel--erlang-mode-setup)
 
-    ;; activate the <f12> key binding for erlang-mode
-    (pel--mode-hook-maybe-call
-     (function pel--setup-for-erlang)
-     'erlang-mode 'erlang-mode-hook)
+  ;; activate the <f12> key binding for erlang-mode
+  (pel--mode-hook-maybe-call
+   (function pel--setup-for-erlang)
+   'erlang-mode 'erlang-mode-hook)
 
-    ;; bind other erlang keys
-    (define-key pel:for-erlang      "?"               'erlang-version)
+  ;; bind other erlang keys
+  (define-key pel:for-erlang      "?"         'erlang-version)
+  (define-key pel:erlang-function "N"         'pel-beginning-of-next-defun)
+  (define-key pel:erlang-function "P"         'beginning-of-defun)
+  (define-key pel:erlang-function "n"         'pel-next-erl-function)
+  (define-key pel:for-erlang (kbd "<down>")   'pel-next-erl-function)
+  (define-key pel:erlang-function "p"         'pel-previous-erl-function)
+  (define-key pel:for-erlang (kbd "<up>")     'pel-previous-erl-function)
+  (define-key pel:erlang-clause   "a"         'erlang-beginning-of-clause)
+  (define-key pel:for-erlang (kbd "<M-up>")   'erlang-beginning-of-clause)
+  (define-key pel:erlang-clause   "p"         'pel-end-of-previous-clause)
+  (define-key pel:for-erlang (kbd "<M-left>") 'pel-end-of-previous-clause)
+  (define-key pel:erlang-clause   "n"         'pel-beginning-of-next-clause)
+  (define-key pel:for-erlang (kbd "<M-down>") 'pel-beginning-of-next-clause)
+  (define-key pel:erlang-clause   "e"         'erlang-end-of-clause)
+  (define-key pel:for-erlang (kbd "<M-right>") 'erlang-end-of-clause)
+  (define-key pel:erlang-function "m"         'erlang-mark-function)
+  (define-key pel:erlang-clause   "m"         'erlang-mark-clause)
+  (define-key pel:for-erlang (kbd "M-p")      #'superword-mode)
+  (define-key pel:for-erlang (kbd "M-9")      #'show-paren-mode)
+  (when pel-use-rainbow-delimiters
+    (define-key pel:for-erlang (kbd "M-r")    'rainbow-delimiters-mode))
+  (when pel-use-plantuml
+    (define-key pel:for-erlang "u"     'pel-render-commented-plantuml))
+  (when pel-use-graphviz-dot
+    (define-key pel:for-erlang "G"     'pel-render-commented-graphviz-dot))
 
-    (define-key pel:erlang-function "N"          'pel-beginning-of-next-defun)
-    (define-key pel:erlang-function "P"          'beginning-of-defun)
-    (define-key pel:erlang-function "n"               'pel-next-erl-function)
-    (define-key pel:for-erlang      (kbd "<down>")    'pel-next-erl-function)
-    (define-key pel:erlang-function "p"          'pel-previous-erl-function)
-    (define-key pel:for-erlang      (kbd "<up>") 'pel-previous-erl-function)
-
-
-    (define-key pel:erlang-clause   "a"           'erlang-beginning-of-clause)
-    (define-key pel:for-erlang      (kbd "<M-up>") 'erlang-beginning-of-clause)
-    (define-key pel:erlang-clause   "p"           'pel-end-of-previous-clause)
-    (define-key pel:for-erlang      (kbd "<M-left>")
-                                                  'pel-end-of-previous-clause)
-    (define-key pel:erlang-clause   "n"         'pel-beginning-of-next-clause)
-    (define-key pel:for-erlang      (kbd "<M-down>")
-                                                'pel-beginning-of-next-clause)
-    (define-key pel:erlang-clause   "e"               'erlang-end-of-clause)
-    (define-key pel:for-erlang      (kbd "<M-right>") 'erlang-end-of-clause)
-    (define-key pel:erlang-function "m"               'erlang-mark-function)
-    (define-key pel:erlang-clause   "m"               'erlang-mark-clause)
-
-    (define-key pel:for-erlang      (kbd "M-p")      #'superword-mode)
-    (define-key pel:for-erlang      (kbd "M-9")      #'show-paren-mode)
-    (when pel-use-rainbow-delimiters
-      (define-key pel:for-erlang (kbd "M-r")    'rainbow-delimiters-mode))
-    (when pel-use-plantuml
-      (define-key pel:for-erlang "u"     'pel-render-commented-plantuml))
-    (when pel-use-graphviz-dot
-      (define-key pel:for-erlang "G"     'pel-render-commented-graphviz-dot))
-
-    :config
-    (setq erlang-root-dir (expand-file-name pel-erlang-rootdir))
+  (pel-eval-after-load erlang
+    ;; TODO: do we want to set erlang-root-dir, which is a user-option?
+    (if (boundp 'erlang-root-dir)
+        (unless erlang-root-dir
+          (setq erlang-root-dir (expand-file-name pel-erlang-rootdir)))
+      (display-warning 'pel-use-erlang
+                       "erlang-root-dir is void, can't set it!"
+                       :error))
     (when (file-exists-p pel-erlang-exec-path)
       (add-to-list 'exec-path pel-erlang-exec-path) )
     ;;
     (require 'erlang-start)
-    ;;
     (when pel-use-edts
+      (pel-ensure-package edts from: melpa)
+      (pel-autoload-file edts for: edts-mode)
+
       (defun edts-mode-desktop-restore  (&rest args)
         "Restore EDTS mode desktop with specified ARGS.
         Prevent edts errors from stopping desktop restoration."
@@ -2212,67 +2108,66 @@ MODE must be a symbol."
               ;; but the mode can still show as active(!).
               (condition-case err
                   (edts-mode 1)
-                (error (progn
-                         (message "Desktop: Error detected activating EDTS mode: %s"
-                                  (error-message-string err))
-                         (edts-mode -1))))
-            (error "edts-mode is void.  Is it installed?"))))
+                (error
+                 (progn
+                   (display-warning
+                    'pel-use-edts
+                    (format "Desktop: Error detected activating EDTS mode: %s"
+                            (error-message-string err))
+                    :error)
+                   (edts-mode -1))))
+            (display-warning
+             'pel-use-edts
+             "edts-mode is void.  Is it installed?"
+             :error))))
 
-      (use-package edts
-        :ensure t
-        :pin melpa
-        :commands edts-mode
-        :init
-        ;; Key to start EDTS
-        (define-key pel:for-erlang      (kbd "M-SPC")   'edts-mode)
-        (when pel-activate-edts-automatically
-          (require 'edts-start))
-
-        :config
+      ;; Key to start EDTS
+      (define-key pel:for-erlang      (kbd "M-SPC")   'edts-mode)
+      (when pel-activate-edts-automatically
+        (require 'edts-start))
+      (pel-eval-after-load edts
         (add-to-list 'desktop-minor-mode-handlers
-                 '(edts-mode . edts-mode-desktop-restore))
+                     '(edts-mode . edts-mode-desktop-restore))
+        (unless pel-activate-edts-automatically
+          (require 'edts-start))
         ;; EDTS keys
+        ;; The following do not seem to do anything special in Erlang.
+        ;; (define-key pel:for-erlang      ">"     'ahs-forward-definition)
+        ;; (define-key pel:for-erlang      "<"     'ahs-backward-definition)
         ;;  edts cross reference command keys
-        (define-key pel:for-erlang      "w"    'edts-xref-who-calls)
-        (define-key pel:for-erlang      "W"    'edts-xref-last-who-calls)
+        (define-key pel:for-erlang "w" 'edts-xref-who-calls)
+        (define-key pel:for-erlang "W" 'edts-xref-last-who-calls)
         ;;  edts cross reference
         (define-key pel:for-erlang (kbd "M-f") 'edts-find-local-function)
         (define-key pel:for-erlang (kbd "M-g") 'edts-find-global-function)
         ;; edts refactoring
-        (define-key pel:for-erlang      "r"    'edts-refactor-extract-function)
+        (define-key pel:for-erlang "r" 'edts-refactor-extract-function)
         ;; edts man page use
-        (define-key pel:for-erlang      "`"    'edts-man-setup)
-        (define-key pel:for-erlang      "h"    'edts-show-doc-under-point)
-        (define-key pel:for-erlang      "H"    'edts-find-doc)
+        (define-key pel:for-erlang "`" 'edts-man-setup)
+        (define-key pel:for-erlang "h" 'edts-show-doc-under-point)
+        (define-key pel:for-erlang "H" 'edts-find-doc)
         ;; edts code analysis
-        (define-key pel:erlang-analysis "a"    'edts-dialyzer-analyze)
-        (define-key pel:erlang-analysis "t"    'edts-code-eunit)
-        (define-key pel:erlang-analysis "c"    'edts-code-compile-and-display)
+        (define-key pel:erlang-analysis "a" 'edts-dialyzer-analyze)
+        (define-key pel:erlang-analysis "t" 'edts-code-eunit)
+        (define-key pel:erlang-analysis "c" 'edts-code-compile-and-display)
         ;; edts debug
-        (define-key pel:erlang-debug    "b"    'edts-debug-toggle-breakpoint)
-        (define-key pel:erlang-debug    "B"    'edts-debug-list-breakpoints)
-        (define-key pel:erlang-debug    "p"    'edts-debug-list-processes)
-        (define-key pel:erlang-debug    "i"    'edts-debug-toggle-interpreted)
-        (define-key pel:erlang-debug    "I"    'edts-debug-list-interpreted)
+        (define-key pel:erlang-debug "b" 'edts-debug-toggle-breakpoint)
+        (define-key pel:erlang-debug "B" 'edts-debug-list-breakpoints)
+        (define-key pel:erlang-debug "p" 'edts-debug-list-processes)
+        (define-key pel:erlang-debug "i" 'edts-debug-toggle-interpreted)
+        (define-key pel:erlang-debug "I" 'edts-debug-list-interpreted)
         ;; edts node
-        (define-key pel:for-erlang      "N"    'edts-buffer-node-name)
-        (define-key pel:for-erlang      "x"    'edts-shell)
-        (define-key pel:for-erlang      "X"    'edts-api-start-server)
-
+        (define-key pel:for-erlang "N" 'edts-buffer-node-name)
+        (define-key pel:for-erlang "x" 'edts-shell)
+        (define-key pel:for-erlang "X" 'edts-api-start-server)
         ;; EDTS/(automatic highlight symbol)  features
-        (define-key pel:for-erlang      "e"   'edts-ahs-edit-current-function)
-        (define-key pel:for-erlang      "E"             'edts-ahs-edit-buffer)
-        (define-key pel:for-erlang      "n"             'ahs-forward)
-        (define-key pel:for-erlang      "p"             'ahs-backward)
-        (define-key pel:for-erlang      "."             'ahs-back-to-start)
-        ;; The following do not seem to do anything special in Erlang.
-        ;; (define-key pel:for-erlang      ">"     'ahs-forward-definition)
-        ;; (define-key pel:for-erlang      "<"     'ahs-backward-definition)
-        (unless pel-activate-edts-automatically
-          (require 'edts-start))))
+        (define-key pel:for-erlang "e" 'edts-ahs-edit-current-function)
+        (define-key pel:for-erlang "E" 'edts-ahs-edit-buffer)
+        (define-key pel:for-erlang "n" 'ahs-forward)
+        (define-key pel:for-erlang "p" 'ahs-backward)
+        (define-key pel:for-erlang "." 'ahs-back-to-start)))
 
     (when pel-use-erlang-syntax-check
-
       (cond
        ;; when using flymake with Erlang
        ((eq pel-use-erlang-syntax-check 'with-flymake)
@@ -2292,9 +2187,11 @@ MODE must be a symbol."
 
         (defun pel--erlang-setup-for-flycheck ()
           "Setup flycheck."
-          (when (fboundp 'flycheck-select-checker)
-            (flycheck-select-checker 'erlang-otp)
-            (flycheck-mode)))
+          ;; Note that both flycheck-select-checker and flycheck-mode
+          ;; are autoloaded.  See section: 'Syntax Check with Flycheck'
+          (flycheck-select-checker 'erlang-otp)
+          (flycheck-mode))
+        (declare-function pel--erlang-setup-for-flycheck "pel_keys")
 
         ;; (flycheck-define-checker erlang-otp
         ;;   "An Erlang syntax checker using the Erlang interpreter."
@@ -2312,49 +2209,40 @@ MODE must be a symbol."
       ;; When any syntax checker is used with Erlang add a key to toggle it
       (define-key pel:for-erlang "!" 'pel-erlang-toggle-syntax-checker))))
 
-
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC x`` : Elixir programming
 (when pel-use-elixir
-  (use-package elixir-mode
-    :ensure t
-    :pin melpa
-    :commands elixir-mode
-    :init
-    (define-pel-global-prefix pel:for-elixir (kbd "<f11> SPC x"))
-    (when pel-use-plantuml
-      (define-key    pel:for-elixir "u"    'pel-render-commented-plantuml))
-    (when pel-use-graphviz-dot
-      (define-key pel:for-elixir "G" 'pel-render-commented-graphviz-dot))
+  (pel-ensure-package elixir-mode from: melpa)
+  (pel-autoload-file elixir-mode for: elixir-mode)
+  (define-pel-global-prefix pel:for-elixir (kbd "<f11> SPC x"))
 
-    ;;
-    (pel--mode-hook-maybe-call
-     (lambda ()
-       (pel-local-set-f12 'pel:for-elixir))
-     'elixir-mode 'elixir-mode-hook))
-
-  (define-key pel:for-elixir  (kbd "M-p")  #'superword-mode)
+  (define-key pel:for-elixir (kbd "M-p") #'superword-mode)
+  (when pel-use-plantuml
+    (define-key pel:for-elixir "u" 'pel-render-commented-plantuml))
+  (when pel-use-graphviz-dot
+    (define-key pel:for-elixir "G" 'pel-render-commented-graphviz-dot))
+  ;;
+  (pel--mode-hook-maybe-call
+   (lambda ()
+     (pel-local-set-f12 'pel:for-elixir))
+   'elixir-mode 'elixir-mode-hook)
 
   (when pel-use-alchemist
-    (use-package alchemist
-      :ensure t
-      :pin melpa
-      :commands (alchemist-iex-mode
-                 alchemist-iex-run)
-
-    ))
+    (pel-ensure-package alchemist from: melpa)
+    (pel-autoload-file alchemist for:
+                       alchemist-iex-mode
+                       alchemist-iex-run))
   (when pel-use-elixir-exunit
-    (use-package exunit
-      :ensure t
-      :pin melpa
-      :commands (exunit-mode
-                 exunit-rerun
-                 exunit-verify-all
-                 exunit-verify-all-in-umbrella
-                 exunit-verify-single
-                 exunit-verify
-                 exunit-toggle-file-and-test
-                 exunit-toggle-file-and-test-other-window))))
+    (pel-ensure-package exunit from: melpa)
+    (pel-autoload-file exunit for:
+                       exunit-mode
+                       exunit-rerun
+                       exunit-verify-all
+                       exunit-verify-all-in-umbrella
+                       exunit-verify-single
+                       exunit-verify
+                       exunit-toggle-file-and-test
+                       exunit-toggle-file-and-test-other-window)))
 
 ;; (when pel-use-elixir-lsp
 ;;   (use-package lsp-elixir
@@ -2365,29 +2253,20 @@ MODE must be a symbol."
 ;;     (add-hook ‘elixir-mode-hook ’lsp)))
 
 ;; ---------------------------------------------------------------------------
-;; - Programming Style: Haskell Support
-;; ------------------------------------
-;;
-;; Using Intero to support Haskell programming language.
-;; Installed it via the list-packages.
-;; ; (add-hook 'haskell-mode-hook 'intero-mode)
-;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` : Forth programming
 (when pel-use-forth
-  (use-package forth-mode
-    :ensure t
-    :pin melpa
-    :commands (forth-mode
-               forth-block-mode
-               forth-interaction-mode)
-    :init
-    (define-pel-global-prefix pel:for-forth (kbd "<f11> SPC f"))
-    ;;
-    ;; activate the <f12> key binding for forth-mode
-    (pel--mode-hook-maybe-call
-     (lambda ()
-       (pel-local-set-f12 'pel:for-forth))
-     'forth-mode 'forth-mode-hook)))
+  (pel-ensure-package forth-mode from: melpa)
+  (pel-autoload-file forth-mode for:
+                     forth-mode
+                     forth-block-mode
+                     forth-interaction-mode)
+  (define-pel-global-prefix pel:for-forth (kbd "<f11> SPC f"))
+  ;;
+  ;; activate the <f12> key binding for forth-mode
+  (pel--mode-hook-maybe-call
+   (lambda ()
+     (pel-local-set-f12 'pel:for-forth))
+   'forth-mode 'forth-mode-hook))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC F`` : FORTRAN programming
@@ -2396,11 +2275,8 @@ MODE must be a symbol."
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC g`` : Go programming
 (when pel-use-go
-
-  ;; go-mode package
   (when pel-use-go-mode
     (define-pel-global-prefix pel:for-go (kbd "<f11> SPC g"))
-
     (defun pel--setenv-for-go ()
       "Set environment for Go programming."
       (pel-local-set-f12 'pel:for-go)
@@ -2426,24 +2302,20 @@ MODE must be a symbol."
         ;; Overcoming omission bug in go-mode: add support for Speedbar
         (pel-require 'speedbar)
         (speedbar-add-supported-extension ".go")))
+    (declare-function pel--setenv-for-go "pel_keys")
 
-    (use-package go-mode
-      :ensure t
-      :pin melpa
-      :commands go-mode
-      :init
-      (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
-      (define-key pel:for-go (kbd "M-t") 'pel-go-set-tab-width)
-      (define-key pel:for-go (kbd "M-s") 'pel-go-toggle-gofmt-on-buffer-save)
-      (define-key pel:for-go "?"         'pel-go-setup-info)
-      (when pel-use-goflymake
-        (define-key pel:for-go "!"       'pel-go-toggle-syntax-checker))
-
-      ;; activate the <f12> key binding for Go
-      (pel--mode-hook-maybe-call
-       (function pel--setenv-for-go)
-       'go-mode 'go-mode-hook)
-      ))
+    (pel-ensure-package go-mode from: melpa)
+    (pel-autoload-file go-mode for: go-mode)
+    (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+    (define-key pel:for-go (kbd "M-t") 'pel-go-set-tab-width)
+    (define-key pel:for-go (kbd "M-s") 'pel-go-toggle-gofmt-on-buffer-save)
+    (define-key pel:for-go "?"         'pel-go-setup-info)
+    (when pel-use-goflymake
+      (define-key pel:for-go "!"       'pel-go-toggle-syntax-checker))
+    ;; activate the <f12> key binding for Go
+    (pel--mode-hook-maybe-call
+     (function pel--setenv-for-go)
+     'go-mode 'go-mode-hook))
 
   ;; goflymake package - either using flymake or flycheck
   (cl-eval-when 'load
@@ -2462,8 +2334,19 @@ MODE must be a symbol."
                                    (if (eq pel-use-goflymake 'with-flycheck)
                                        "go-flycheck.el"
                                      "go-flymake.el"))
-        (error "Unsupported pel-use-goflymake value: %S"
-               pel-use-goflymake)))))
+        (display-warning
+         'pel-use-goflymake
+         (format "Unsupported pel-use-goflymake value: %S"
+                 pel-use-goflymake)
+         :error)))))
+
+;; ---------------------------------------------------------------------------
+;; - Programming Style: Haskell Support
+;; ------------------------------------
+;;
+;; Using Intero to support Haskell programming language.
+;; Installed it via the list-packages.
+;; ; (add-hook 'haskell-mode-hook 'intero-mode)
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC i`` : Javascript programming
@@ -2473,41 +2356,36 @@ MODE must be a symbol."
                                       (if (eq pel-use-javascript 'js-mode)
                                           'js-mode
                                         'js2-mode)))
-  (cond ((eq pel-use-javascript 'js-mode)
-         )
-        ((eq pel-use-javascript 'js2-mode)
-         (use-package js2-mode
-           :ensure t
-           :pin melpa
-           :commands js2-mode
-           :init
-           (if (version< emacs-version "27.1")
-               (progn
-                 (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
-                 (add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode)))
-             (add-hook 'js-mode-hook 'js2-minor-mode))
-           ;; Experimental ...
-           (define-key pel:for-javascript "." 'js2-find-node-at-point)
-           (define-key pel:for-javascript "?" 'js2-node-name-at-point)
-           (define-key pel:for-javascript "j" 'js2-print-json-path)
-           (define-key pel:for-javascript (kbd "<right>") 'js2-forward-sws)
-           (define-key pel:for-javascript (kbd "<left>") 'js2-backward-sws)
-           (define-key pel:for-javascript (kbd "TAB") 'js2-indent-bounce)
-           (define-key pel:for-javascript (kbd "<backtab>") 'js2-indent-bounce-backward)
-           ;; js2-display-error-list
-           ;; js2-error-buffer-mode
-           ;; js2-error-buffer-next
-           ;; js2-error-buffer-prev and some more...
-           ;; activate the <f12> key binding for rexx-mode
-           (pel--mode-hook-maybe-call
-            (lambda ()
-              (pel-local-set-f12 'pel:for-javascript))
-            'js2-mode 'js2-mode-hook)))
-        ;;
-        ((eq pel-use-javascript 'js-mode)
-         ;; Use the built-in js.el
-         (use-package js
-           :commands js-mode))))
+  (cond
+   ((eq pel-use-javascript 'js2-mode)
+    (pel-ensure-package js2-mode from: melpa)
+    (pel-autoload-file js2-mode for: js2-mode)
+    (if (version< emacs-version "27.1")
+        (progn
+          (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
+          (add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode)))
+      (add-hook 'js-mode-hook 'js2-minor-mode))
+    ;; Experimental ...
+    (define-key pel:for-javascript "." 'js2-find-node-at-point)
+    (define-key pel:for-javascript "?" 'js2-node-name-at-point)
+    (define-key pel:for-javascript "j" 'js2-print-json-path)
+    (define-key pel:for-javascript (kbd "<right>") 'js2-forward-sws)
+    (define-key pel:for-javascript (kbd "<left>") 'js2-backward-sws)
+    (define-key pel:for-javascript (kbd "TAB") 'js2-indent-bounce)
+    (define-key pel:for-javascript (kbd "<backtab>") 'js2-indent-bounce-backward)
+    ;; js2-display-error-list
+    ;; js2-error-buffer-mode
+    ;; js2-error-buffer-next
+    ;; js2-error-buffer-prev and some more...
+    ;; activate the <f12> key binding for rexx-mode
+    (pel--mode-hook-maybe-call
+     (lambda ()
+       (pel-local-set-f12 'pel:for-javascript))
+     'js2-mode 'js2-mode-hook))
+   ;;
+   ((eq pel-use-javascript 'js-mode)
+    ;; Use the built-in js.el
+    (pel-autoload-file js for: js-mode))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC j`` : Julia programming
@@ -2516,25 +2394,65 @@ MODE must be a symbol."
   ;; For Julia, the julia-snail package uses julia-mode and
   ;; other required package.
   ;; Note that it also requires the vterm package.
-  (use-package julia-snail
-    :ensure t
-    :pin melpa
-    :commands (julia-mode
-               julia-snail
-               julia-snail-mode)
-    :init
-    (define-pel-global-prefix pel:for-julia (kbd "<f11> SPC j"))
-    ;;
-    ;; activate the <f12> key binding for julia-mode
-    (pel--mode-hook-maybe-call
-     (lambda ()
-       (pel-local-set-f12 'pel:for-julia))
-     'julia-mode 'julia-mode-hook)
-    (add-hook 'julia-mode-hook 'julia-snail-mode)))
+  (pel-ensure-package julia-snail from: melpa)
+  (pel-autoload-file julia-snail for:
+                     julia-mode
+                     julia-snail
+                     julia-snail-mode)
+  (define-pel-global-prefix pel:for-julia (kbd "<f11> SPC j"))
+  ;; activate the <f12> key binding for julia-mode
+  (pel--mode-hook-maybe-call
+   (lambda ()
+     (pel-local-set-f12 'pel:for-julia))
+   'julia-mode 'julia-mode-hook)
+  (add-hook 'julia-mode-hook 'julia-snail-mode))
 
 ;; ---------------------------------------------------------------------------
 ;; Lisp-style programming Languages
 ;; --------------------------------
+
+(when pel-use-lispy
+  (pel-ensure-package lispy from: melpa)
+
+  (defun pel--activate-lispy ()
+    "Activate lispy lazily."
+    (if (and (require 'pel-lispy nil :no-error)
+             (fboundp 'pel-lispy-mode))
+        (pel-lispy-mode)
+      (display-warning
+       'pel-lispy
+       "Failed loading pel-lispy which controls the use of lispy within PEL.
+  Verify your PEL installation: refer to PEL manual."
+       :error)))
+  (declare-function pel--activate-lispy "pel_keys")
+
+  (defun pel--update-lispy-keymap ()
+    "Update lispy key-map according to PEL user-options."
+    (if (boundp 'lispy-mode-map)
+        (unless pel-enable-lispy-meta-return
+          (define-key lispy-mode-map (kbd "M-RET") nil))
+      (display-warning
+       'pel-lispy
+       "The lispy-mode-map is not bound.
+  Cannot disable lispy-meta-return binding to M-RET!"
+       :error)))
+  (declare-function pel--update-lispy-keymap "pel_keys")
+
+  ;; Setup activation of Lispy for specified major modes that are allowed.
+  (pel-add-hook-for 'pel-modes-activating-lispy
+                    #'pel--activate-lispy
+                    pel-allowed-modes-for-lispy)
+
+  ;; Control some keys in the Lispy keyboard map.
+  (eval-after-load 'lispy
+    '(pel--update-lispy-keymap))
+
+  ;; The pel-lispy file controls the loading of lispy.
+  (pel-autoload-file lispy for: lispy-mode)
+  (pel-autoload-file pel-lispy for:
+                     pel-lispy-mode
+                     lispy-describe-inline
+                     lispy-arglist-inline))
 
 (defun pel--lisp-languages-map-for (prefix)
   "Map in the PEL keys for Lisp-like mode in the keymap for PREFIX."
@@ -2542,20 +2460,20 @@ MODE must be a symbol."
   (define-key prefix (kbd "<up>")     'pel-elisp-beginning-of-previous-form)
   (define-key prefix (kbd "<M-down>") 'pel-elisp-beginning-of-next-defun)
   (define-key prefix (kbd "<M-up>")   'pel-elisp-beginning-of-previous-defun)
-
+  ;;
   (define-key prefix (kbd "<C-down>")   'pel-elisp-to-name-of-next-form)
   (define-key prefix (kbd "<C-up>")     'pel-elisp-to-name-of-previous-form)
   (define-key prefix (kbd "<C-M-down>") 'pel-elisp-to-name-of-next-defun)
   (define-key prefix (kbd "<C-M-up>")   'pel-elisp-to-name-of-previous-defun)
-
+  ;;
   (define-key prefix (kbd "<left>")  'pel-end-of-previous-defun)
   (define-key prefix (kbd "<right>") 'end-of-defun)
-
+  ;;
   (define-key prefix   (kbd "M-9") #'show-paren-mode)
   (define-key prefix   (kbd "M-l")  'pel-toggle-lisp-modes)
   (define-key prefix   (kbd "M-p") #'superword-mode)
   (define-key prefix   ")"         #'check-parens)
-
+  ;;
   (when pel-use-parinfer
     (define-key prefix (kbd "M-i")  'parinfer-mode)
     (define-key prefix (kbd "M-I")  'parinfer-toggle-mode))
@@ -2573,49 +2491,9 @@ MODE must be a symbol."
     (define-key prefix "7"         'lispy-cursor-down)
     (define-key prefix "8"         'lispy-parens-down)
     (define-key prefix "9"         'lispy-out-forward-newline)
-    (define-key prefix (kbd "DEL") 'lispy-kill-at-point)
-    ))
+    (define-key prefix (kbd "DEL") 'lispy-kill-at-point)))
 
-(defun pel--activate-lispy ()
-  (require 'pel-lispy nil :no-error)
-  (if (fboundp 'pel-lispy-mode)
-      (pel-lispy-mode)
-    (display-warning
-     'pel-lispy
-     "Failed loading pel-lispy which controls the use of lispy within PEL.
-  Verify your PEL installation: refer to PEL manual."
-     :error)))
 
-(defun pel--update-lispy-keymap ()
-  "Update lispy key-map according to PEL user-options."
-  (if (boundp 'lispy-mode-map)
-      (unless pel-enable-lispy-meta-return
-        (define-key lispy-mode-map (kbd "M-RET") nil))
-    (display-warning
-     'pel-lispy
-     "The lispy-mode-map is not bound.
-  Cannot disable lispy-meta-return binding to M-RET!"
-     :error)))
-
-(when pel-use-lispy
-  ;; Setup activation of Lispy for specified major modes that are allowed.
-  (pel-add-hook-for
-   'pel-modes-activating-lispy
-   #'pel--activate-lispy
-   pel-allowed-modes-for-lispy)
-
-  ;; Control some keys in the Lispy keyboard map.
-  (eval-after-load "lispy"
-    '(pel--update-lispy-keymap))
-
-  ;; The pel-lispy file controls the loading of lispy.
-  (use-package pel-lispy
-    :commands (pel-lispy-mode
-               lispy-describe-inline
-               lispy-arglist-inline)
-    :init
-    (cl-eval-when 'compile
-      (require 'pel-lispy nil :no-error))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC l`` : Emacs Lisp programming
@@ -2623,25 +2501,19 @@ MODE must be a symbol."
 ;; - Use parinfer
 ;; --------------
 (when pel-use-parinfer
-  (use-package parinfer
-    :ensure t
-    :pin melpa
-    :commands (parinfer-mode
-               parinfer-toggle-mode
-               parinfer-auto-fix
-               parinfer-diff)
-    :init
-      (cl-eval-when 'compile (require 'parinfer nil :no-error))))
+  (pel-ensure-package parinfer from: melpa)
+  (pel-autoload-file parinfer for:
+                     parinfer-mode
+                     parinfer-toggle-mode
+                     parinfer-auto-fix
+                     parinfer-diff))
 
 ;; - Use rainbow-delimiters
 ;; ------------------------
 (when pel-use-rainbow-delimiters
-  (use-package rainbow-delimiters
-    :ensure t
-    :pin melpa
-    :commands rainbow-delimiters-mode
-    :init
-      (cl-eval-when 'compile (require 'rainbow-delimiters nil :no-error))))
+  (pel-ensure-package rainbow-delimiters from: melpa)
+  (pel-autoload-file rainbow-delimiters for:
+                     rainbow-delimiters-mode))
 
 ;; rainbow-delimiters-max-face-count identifies max depth where colours
 ;; are cycled.  Its default value is 9.  That should be more than enough.
@@ -2649,14 +2521,12 @@ MODE must be a symbol."
 ;; rainbow-delimiters-depth-X-face  (where 'X' is a digit between 1 and
 ;; 9 included.) Customize these user option variables.
 
-
 (define-pel-global-prefix pel:for-elisp  (kbd "<f11> SPC l"))
 (define-pel-global-prefix pel:elisp-skel (kbd "<f11> SPC l <f12>"))
 
 (define-key pel:for-elisp "D"  'pel-add-dir-to-loadpath)
 (pel--lisp-languages-map-for pel:for-elisp)
 ;;
-
 (define-key pel:for-elisp   "."  'pel-find-thing-at-point)
 (define-key pel:for-elisp   "t"  'pel-run-ert)
 (when pel-use-plantuml
@@ -2669,7 +2539,7 @@ MODE must be a symbol."
 (define-pel-global-prefix pel:elisp-help (kbd "<f11> SPC l ?"))
 (define-key pel:elisp-help "e" 'eldoc-mode)
 (when (and pel-use-eldoc-box
-           (display-graphic-p))
+           pel-emacs-is-graphic-p)
   (define-key pel:elisp-help "b" 'eldoc-box-hover-mode)
   (define-key pel:elisp-help "B" 'eldoc-box-hover-at-point-mode))
 
@@ -2711,40 +2581,24 @@ MODE must be a symbol."
 (define-key pel:elisp-lib "p" #'list-packages)
 
 (when pel-use-macrostep
-  (use-package macrostep
-    :ensure t
-    :pin melpa
-    :commands macrostep-expand
-    :init
-    (cl-eval-when 'compile (require 'macrostep nil :no-error))
-    (define-key pel:for-elisp  (kbd "M-m") #'macrostep-expand)))
+  (pel-ensure-package macrostep from: melpa)
+  (pel-autoload-file macrostep for: macrostep-expand)
+  (define-key pel:for-elisp  (kbd "M-m") #'macrostep-expand))
 
 (when pel-use-highlight-defined
-  (use-package highlight-defined
-    :ensure t
-    :pin melpa
-    :commands highlight-defined-mode
-    :init
-    (cl-eval-when 'compile (require 'highlight-defined nil :no-error))
-    (define-key pel:for-elisp  (kbd "M-d") 'highlight-defined-mode)))
+  (pel-ensure-package highlight-defined from: melpa)
+  (pel-autoload-file highlight-defined for: highlight-defined-mode)
+  (define-key pel:for-elisp  (kbd "M-d") 'highlight-defined-mode))
 
 (when pel-use-eros
-  (use-package eros
-    :ensure t
-    :pin melpa
-    :commands eros-mode
-    :init
-    (cl-eval-when 'compile (require 'eros nil :no-error))
-    (define-key pel:for-elisp "E" 'eros-mode)))
+  (pel-ensure-package eros from: melpa)
+  (pel-autoload-file eros for: eros-mode)
+  (define-key pel:for-elisp "E" 'eros-mode))
 
 (when pel-use-suggest
-  (use-package suggest
-    :ensure t
-    :pin melpa
-    :commands suggest
-    :init
-    (cl-eval-when 'compile (require 'suggest nil :no-error))
-    (define-key pel:for-elisp "S" 'suggest)))
+  (pel-ensure-package suggest from: melpa)
+  (pel-autoload-file suggest for: suggest)
+  (define-key pel:for-elisp "S" 'suggest))
 
 ;;
 ;; activate the <f12> key binding for elisp-mode
@@ -2786,12 +2640,13 @@ MODE must be a symbol."
      (pel-local-set-f12-M-f12 'pel:elisp-function "f"))
    'lisp-mode 'lisp-mode-hook)
 
-  (use-package slime
-    :ensure t
-    :pin melpa
-    :defer t
-    :init
-    (cl-eval-when 'compile (require 'slime nil :no-error))))
+  ;; Slime Support : TODO complete
+  (when pel-use-slime
+    (pel-ensure-package slime from: melpa))
+
+  ;; SLY Support : TODO complete
+  (when pel-use-sly
+    (pel-ensure-package sly from: melpa)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-a`` : Arc
@@ -2808,8 +2663,8 @@ MODE must be a symbol."
   ;; associate .arc file with arc-mode
   (add-to-list 'auto-mode-alist '("\\.arc\\'" . arc-mode))
   ;; set up auto-loading
-  (pel-autoload "arc"          for: arc-mode)
-  (pel-autoload "inferior-arc" for: run-arc)
+  (pel-autoload-file arc for: arc-mode)
+  (pel-autoload-file inferior-arc for: run-arc)
   ;; Emacs support extracted from the anarki implementation from its
   ;; Github project folder.  However, since the code there is old and
   ;; has bugs, I used my fork until my fixes have been incorporated.
@@ -2831,22 +2686,18 @@ MODE must be a symbol."
    'clojure-mode 'clojure-mode-hook)
   (pel--lisp-languages-map-for pel:for-clojure)
 
-  (use-package clojure-mode
-    :ensure t
-    :pin melpa
-    :commands clojure-mode)
+  (pel-ensure-package clojure-mode from: melpa)
+  (pel-autoload-file clojure-mode for: clojure-mode)
 
   (when pel-use-cider
-    (use-package cider
-      :ensure t
-      :pin melpa
-      :commands (cider-jack-in
-                 cider-connect
-                 cider-connect-cljs)
-      :init
-      (define-key pel:for-clojure "j" 'cider-jack-in)
-      (define-key pel:for-clojure "c" 'cider-connect)
-      (define-key pel:for-clojure "C" 'cider-connect-cljs)))
+    (pel-ensure-package cider from: melpa)
+    (pel-autoload-file cider for:
+                       cider-jack-in
+                       cider-connect
+                       cider-connect-cljs)
+    (define-key pel:for-clojure "j" 'cider-jack-in)
+    (define-key pel:for-clojure "c" 'cider-connect)
+    (define-key pel:for-clojure "C" 'cider-connect-cljs))
 
   (when pel-use-clj-refactor
     (defun pel-clojure-mode-hook ()
@@ -2864,22 +2715,19 @@ MODE must be a symbol."
         (display-warning 'pel-clojure
                          "clj-refactor not properly loaded"
                          :error)))
+    (declare-function pel-clojure-mode-hook "pel_keys")
 
-    (use-package clj-refactor
-      :ensure t
-      :pin melpa
-      :init
-      (add-hook 'clojure-mode-hook #'pel-clojure-mode-hook)))
+    (pel-ensure-package clj-refactor from: melpa)
+    (add-hook 'clojure-mode-hook #'pel-clojure-mode-hook))
 
   ;; Activate Yasnippets for Clojure if requested.
   ;; Load the package when Yasnippet starts.
   (when (and  pel-use-clojure-snippets
               pel-use-yasnippet)
-    (use-package clojure-snippets
-      :ensure t
-      :pin melpa
-      :commands (yas-global-mode
-                 yas-minor-mode))))
+    (pel-ensure-package clojure-snippets from: melpa)
+    (pel-autoload-file clojure-snippets for:
+                       yas-global-mode
+                       yas-minor-mode)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-r`` : Racket
@@ -2893,10 +2741,8 @@ MODE must be a symbol."
    'racket-mode 'racket-mode-hook)
   (pel--lisp-languages-map-for pel:for-racket)
 
-  (use-package racket-mode
-    :ensure t
-    :pin melpa
-    :commands racket-mode))
+  (pel-ensure-package racket-mode from: melpa)
+  (pel-autoload-file racket-mode for: racket-mode))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s`` : Scheme
@@ -2915,11 +2761,10 @@ MODE must be a symbol."
 
   ;; Install requested options
   (when pel-use-geiser
-    (use-package geiser
-      :ensure t
-      :pin melpa
-      :commands (geiser
-                 geiser-mode)))
+    (pel-ensure-package geiser from: melpa)
+    (pel-autoload-file geiser for:
+                       geiser
+                       geiser-mode))
 
   (when pel-use-quack
     ;; I have fixed byte-compiler warnings in quack in a fork of emacsmirror/quack
@@ -2927,31 +2772,31 @@ MODE must be a symbol."
     ;; In the mean time, I use my fork.
     (cl-eval-when 'load
       (pel-install-github-file "pierre-rouleau/quack/master" "quack.el"))
-    (pel-autoload "quack" for:
-      quack-kill-current-buffer
-      quack-uncomment-region
-      quack-backward-sexp
-      quack-browse-quack-web-page
-      quack-w3m-browse-url-other-window
-      quack-about
-      quack-dired-pltcollect
-      quack-find-file
-      quack-newline
-      quack-insert-closing-paren
-      quack-insert-closing-bracket
-      quack-insert-opening-paren
-      quack-insert-opening-bracket
-      quack-toggle-lambda
-      quack-tidy-buffer
-      quack-update-srfi-index
-      quack-view-srfi
-      quack-view-manual
-      quack-view-keyword-docs
-      quack-customize
-      quack-set-other-default-program
-      quack-pltfile-mode
-      quack-pltfile-raw
-      quack-pltfile-quit)))
+    (pel-autoload-file quack for:
+                       quack-kill-current-buffer
+                       quack-uncomment-region
+                       quack-backward-sexp
+                       quack-browse-quack-web-page
+                       quack-w3m-browse-url-other-window
+                       quack-about
+                       quack-dired-pltcollect
+                       quack-find-file
+                       quack-newline
+                       quack-insert-closing-paren
+                       quack-insert-closing-bracket
+                       quack-insert-opening-paren
+                       quack-insert-opening-bracket
+                       quack-toggle-lambda
+                       quack-tidy-buffer
+                       quack-update-srfi-index
+                       quack-view-srfi
+                       quack-view-manual
+                       quack-view-keyword-docs
+                       quack-customize
+                       quack-set-other-default-program
+                       quack-pltfile-mode
+                       quack-pltfile-raw
+                       quack-pltfile-quit)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-g`` : Gerbil
@@ -2968,7 +2813,7 @@ MODE must be a symbol."
   ;; No package made for this.  Take the code directly from Github
   (cl-eval-when 'load
     (pel-install-github-file "vyzo/gerbil/master/etc/" "gerbil-mode.el"))
-  (pel-autoload "gerbil-mode" for: gerbil-mode))
+  (pel-autoload-file gerbil-mode for: gerbil-mode))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-l `` : LFE programming
@@ -2985,16 +2830,14 @@ MODE must be a symbol."
    'lfe-mode 'lfe-mode-hook)
   (pel--lisp-languages-map-for pel:for-lfe)
 
-  (use-package lfe-mode
-    :ensure t
-    :pin melpa
-    :commands (lfe-mode
-               inferior-lfe
-               run-lfe)
-    :init
-    (define-key pel:for-lfe "[" 'lfe-insert-brackets)
-    :config
-    (unless (display-graphic-p)
+  (pel-ensure-package lfe-mode from: melpa)
+  (pel-autoload-file lfe-mode for:
+                     lfe-mode
+                     inferior-lfe
+                     run-lfe)
+  (define-key pel:for-lfe "[" 'lfe-insert-brackets)
+  (pel-eval-after-load lfe-mode
+    (when pel-emacs-is-a-tty-p
       (if (boundp 'lfe-mode-map)
           (define-key lfe-mode-map (kbd "M-[") nil)
         (display-warning 'pel-lfe
@@ -3007,7 +2850,6 @@ MODE must be a symbol."
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-h`` : Hy
 ;; Hy: A Lisp in Python
 (when pel-use-hy
-
   (define-pel-global-prefix pel:for-hy (kbd "<f11> SPC C-h"))
   ;; activate the <f12> key binding for hy-mode
   (pel--mode-hook-maybe-call
@@ -3016,10 +2858,8 @@ MODE must be a symbol."
    'hy-mode 'hy-mode-hook)
   (pel--lisp-languages-map-for pel:for-hy)
 
-  (use-package hy-mode
-    :ensure t
-    :pin melpa
-    :commands hy-mode))
+  (pel-ensure-package hy-mode from: melpa)
+  (pel-autoload-file hy-mode for: hy-mode))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC p`` : Python programming
@@ -3030,12 +2870,8 @@ MODE must be a symbol."
   ;; will load it and once it is loaded, it conflicts with Emacs built-in
   ;; python.el.
 
-  (use-package elpy
-    :ensure t
-    :pin melpa
-    :defer t
-    :init
-    (cl-eval-when 'compile (require 'elpy nil :no-error)))
+  (pel-ensure-package elpy from: melpa)
+  ;; TODO control start of elpy
 
   ;; Normally, (python-shell-prompt-detect) should evaluate to
   ;; (">>> " "... " "") for Python shell to work properly.
@@ -3065,6 +2901,7 @@ MODE must be a symbol."
     "Activate the python mode."
     (setq tab-width    pel-python-tab-width)
     (pel-local-set-f12 'pel:for-python))
+  (declare-function pel--setup-for-python "pel_keys")
 
   (define-pel-global-prefix pel:for-python (kbd "<f11> SPC p"))
   (define-key pel:for-python    "."        'pel-find-thing-at-point)
@@ -3084,12 +2921,22 @@ MODE must be a symbol."
 
   ;; lpy-mode: lispy-style modal editing for Python.
   (when pel-use-lpy
-    (use-package pel-lispy
-      :commands pel-lpy-mode
-      :init
-      (define-key pel:for-python (kbd "M-L") 'pel-lpy-mode)
-      (define-key pel:for-python "1"         'lispy-describe-inline)
-      (define-key pel:for-python "2"         'lispy-arglist-inline))))
+    (pel-autoload-file pel-lispy for: pel-lpy-mode)
+    (define-key pel:for-python (kbd "M-L") 'pel-lpy-mode)
+    (define-key pel:for-python "1"         'lispy-describe-inline)
+    (define-key pel:for-python "2"         'lispy-arglist-inline)))
+
+;; (use-package jedi
+;;   :ensure t
+;;   :init
+;;   (add-hook 'python-mode-hook 'jedi:setup)
+;;   (add-hook 'python-mode-hook 'jedi:ac-setup))
+
+;; NOTE: Jedi requires the installation of the backend server with
+;; M-x jedi:install-server
+;;
+;; For this to work, virtualenv must be present!!
+;; inside /usr/local/bin/virtualenv
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC R`` : REXX programming
@@ -3108,23 +2955,22 @@ MODE must be a symbol."
   (defun pel--setenv-for-rexx ()
     "Set the environment for REXX file editing."
     (pel-local-set-f12 'pel:for-rexx))
+  (declare-function pel--setenv-for-rexx "pel_keys")
+  (pel-autoload-file rexx-mode for:
+                     rexx-mode
+                     rexx-goto-next-procedure
+                     rexx-goto-previous-procedure)
+  ;; set the file extensions
+  (pel-set-auto-mode rexx-mode for:
+                     "\\.\\(rexx?\\|elx\\|ncomm\\|cpr\\)\\'")
 
-  (use-package rexx-mode
-    :commands (rexx-mode
-               rexx-goto-next-procedure
-               rexx-goto-previous-procedure)
-    :init
-    ;; set the file extensions
-    (add-to-list 'auto-mode-alist '("\\.\\(rexx?\\|elx\\|ncomm\\|cpr\\)\\'"
-                                    . rexx-mode))
+  (define-key pel:for-rexx (kbd "<down>") 'rexx-goto-next-procedure)
+  (define-key pel:for-rexx (kbd "<up>")   'rexx-goto-previous-procedure)
 
-    (define-key pel:for-rexx (kbd "<down>") 'rexx-goto-next-procedure)
-    (define-key pel:for-rexx (kbd "<up>")   'rexx-goto-previous-procedure)
-
-    ;; activate the <f12> key binding for rexx-mode
-    (pel--mode-hook-maybe-call
-     (function pel--setenv-for-rexx)
-     'rexx-mode 'rexx-mode-hook)))
+  ;; activate the <f12> key binding for rexx-mode
+  (pel--mode-hook-maybe-call
+   (function pel--setenv-for-rexx)
+   'rexx-mode 'rexx-mode-hook))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC N`` : NetRexx programming
@@ -3141,25 +2987,24 @@ MODE must be a symbol."
   (defun pel--setenv-for-netrexx ()
     "Set the environment for NetRexx file editing."
     (pel-local-set-f12 'pel:for-netrexx))
+  (declare-function pel--setenv-for-netrexx "pel_keys")
 
-  (use-package netrexx-mode
-    :commands netrexx-mode
-    :init
-    ;; Set the file extension for NetRexx: ".nrx"
-    (add-to-list 'auto-mode-alist '("\\.nrx\\'" . netrexx-mode))
+  (pel-autoload-file netrexx-mode for: netrexx-mode)
+  ;; Set the file extension for NetRexx: ".nrx"
+  (pel-set-auto-mode netrexx-mode for: "\\.nrx\\'")
 
-    (define-key pel:for-netrexx (kbd "<down>") 'netrexx-next-method)
-    (define-key pel:for-netrexx (kbd "<up>") 'netrexx-previous-method)
-    (define-key pel:for-netrexx "="          'netrexx-select-current-block)
-    (define-key pel:for-netrexx "s"          'netrexx-sanitize-region)
-    (define-key pel:for-netrexx ";"          'netrexx-insert-end-comment)
-    (define-key pel:for-netrexx "e"        'netrexx-insert-end-comment-region)
-    (define-key pel:for-netrexx "j"        'netrexx-insert-javadoc-for-method)
+  (define-key pel:for-netrexx (kbd "<down>") 'netrexx-next-method)
+  (define-key pel:for-netrexx (kbd "<up>") 'netrexx-previous-method)
+  (define-key pel:for-netrexx "="          'netrexx-select-current-block)
+  (define-key pel:for-netrexx "s"          'netrexx-sanitize-region)
+  (define-key pel:for-netrexx ";"          'netrexx-insert-end-comment)
+  (define-key pel:for-netrexx "e"        'netrexx-insert-end-comment-region)
+  (define-key pel:for-netrexx "j"        'netrexx-insert-javadoc-for-method)
 
-    ;; activate the <f12> key binding for netrexx-mode
-    (pel--mode-hook-maybe-call
-     (function pel--setenv-for-netrexx)
-     'netrexx-mode 'netrexx-mode-hook)))
+  ;; activate the <f12> key binding for netrexx-mode
+  (pel--mode-hook-maybe-call
+   (function pel--setenv-for-netrexx)
+   'netrexx-mode 'netrexx-mode-hook))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC r`` : Rust programming
@@ -3171,8 +3016,11 @@ MODE must be a symbol."
     (pel-require 'speedbar)
     (speedbar-add-supported-extension '(".rs")))
 
-  (defun pel--common-rust-setup ()
-    "Setup for Rust editing."
+  (when pel-use-rust-mode
+    ;; Important rust-mode user-options:
+    ;; - rust-format-on-save
+    (pel-ensure-package rust-mode from: melpa)
+    (pel-autoload-file rust-mode for: rust-mode)
     (pel--mode-hook-maybe-call
      (lambda ()
        (pel-local-set-f12 'pel:for-rust))
@@ -3184,97 +3032,75 @@ MODE must be a symbol."
               (lambda ()
                 (setq indent-tabs-mode nil))))
 
-  (when pel-use-rust-mode
-    ;; Important rust-mode user-options:
-    ;; - rust-format-on-save
-    (use-package rust-mode
-      :ensure t
-      :pin melpa
-      :commands rust-mode
-      :init
-      (pel--common-rust-setup)
-      ;; (cl-eval-when 'compile (require 'rust-mode nil :no-error))
-      ))
-
   (when pel-use-rustic
-    (use-package rustic
-      :ensure t
-      :pin melpa
-      :commands rustic))
+    (pel-ensure-package rustic from: melpa)
+    (pel-autoload-file rustic for: rustic))
 
   (when (and pel-use-rust-mode
              pel-use-flycheck-rust)
-    (use-package flycheck-rust
-      :ensure t
-      :pin melpa
-      :after (flycheck rust-mode))
-
-    (with-eval-after-load 'rust-mode
-      (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
+    (pel-ensure-package flycheck-rust from: melpa)
+    (pel-eval-after-load rust-mode
+      (add-hook 'flycheck-mode-hook 'flycheck-rust-setup)
+      (pel-eval-after-load flycheck
+        (require 'flycheck-rust))))
 
   (when pel-use-emacs-racer
-    (use-package racer
-      :ensure t
-      :pin melpa
-      :commands racer-mode
-      :init
-      (cl-eval-when 'compile (require 'racer nil :no-error))))
+    (pel-ensure-package racer from: melpa)
+    (pel-autoload-file racer for: racer-mode))
 
   (when pel-use-cargo
-    (use-package cargo
-      :ensure t
-      :pin melpa
-      :commands cargo-minor-mode
-      :config
-      (cl-eval-when 'compile (require 'cargo nil :no-error))
+    (pel-ensure-package cargo from: melpa)
+    (pel-autoload-file cargo for: cargo-minor-mode)
+    (pel-eval-after-load cargo
       ;; M-x package-install company
       (add-hook 'rust-mode-hook 'cargo-minor-mode)
       (add-hook 'rust-mode-hook 'racer-mode)
       (add-hook 'racer-mode-hook 'eldoc-mode)
       (when pel-use-company
-        (add-hook 'racer-mode-hook 'company-mode))
-      (define-key rust-mode-map
-        (kbd "TAB") 'company-indent-or-complete-common))))
+        (add-hook 'racer-mode-hook 'company-mode)))
+    (when pel-use-rust-mode
+      (defvar rust-mode-map)            ; prevent byte-compiler warning
+      (pel-eval-after-load rust-mode
+        (define-key rust-mode-map
+          (kbd "TAB") 'company-indent-or-complete-common)))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC v`` : V programming
-
-;; Experimental
+;; Experimental 🚧
 
 (when pel-use-v
   (define-pel-global-prefix pel:for-v  (kbd "<f11> SPC v"))
   ;; TODO: V file name extension clashes with Verilog.
   ;;       Need to find a way to read the file content to distinguish them.
+  ;;       Perhaps using magic-mode-alist and a regexp or a function that
+  ;;       looks for what could be either V or Verilog code.
   ;; TODO: Document purpose of .v, .vv, .vsh files
   ;;       (ie. find where it's described)
   (add-to-list 'auto-mode-alist (cons "\\.\\(v?v\\|vsh\\)\\'"
                                       (if (eq pel-use-v 'v-mode)
                                           'v-mode
                                         'vlang-mode)))
-  (cond ((eq pel-use-v 'v-mode)
-         ;; TODO: since v-mode uses a hydra, PEL will
-         ;; cause a warning when a V file is opened before f7 is typed.
-         (use-package v-mode
-           :ensure t
-           :pin melpa
-           :commands v-mode
-           :init
-           (define-key pel:for-v (kbd "C-f") 'v-format-buffer)
-           (define-key pel:for-v (kbd "<f10>") 'v-menu)
-           ;; activate the <f12> key binding for v-mode
-           (pel--mode-hook-maybe-call
-            (lambda ()
-              (pel-local-set-f12 'pel:for-v))
-            'v-mode 'v-mode-hook)))
+  (cond
+   ((eq pel-use-v 'v-mode)
+    ;; TODO: since v-mode uses a hydra, PEL will
+    ;; cause a warning when a V file is opened before f7 is typed.
+    (pel-ensure-package v-mode from: melpa)
+    (pel-autoload-file v-mode for: v-mode)
+    (define-key pel:for-v (kbd "C-f") 'v-format-buffer)
+    (define-key pel:for-v (kbd "<f10>") 'v-menu)
+    ;; activate the <f12> key binding for v-mode
+    (pel--mode-hook-maybe-call
+     (lambda ()
+       (pel-local-set-f12 'pel:for-v))
+     'v-mode 'v-mode-hook))
 
-        ((eq pel-use-v 'vlang-mode)
-         ;; vlang-mode is experimental: only provides font-locking
-         ;; use, not on MELPA: download directly from github.
-         (cl-eval-when 'load
-           (pel-install-github-file "pierre-rouleau/vlang-mode/master"
-                                    "vlang-mode.el"))
-         (use-package vlang-mode
-           :commands vlang-mode))))
+   ((eq pel-use-v 'vlang-mode)
+    ;; vlang-mode is experimental: only provides font-locking
+    ;; use, not on MELPA: download directly from github.
+    (cl-eval-when 'load
+      (pel-install-github-file "pierre-rouleau/vlang-mode/master"
+                               "vlang-mode.el"))
+    (pel-autoload-file vlang-mode for: vlang-mode))))
 
 ;; ---------------------------------------------------------------------------
 ;; Markup Language Support
@@ -3284,54 +3110,46 @@ MODE must be a symbol."
 ;; ----------------
 
 (when pel-use-asciidoc
-  (use-package adoc-mode
-    :ensure t
-    :pin melpa
-    :commands adoc-mode
-    :init
-    (add-to-list 'auto-mode-alist '("\\.adoc\\'"  . adoc-mode))))
+  (pel-ensure-package adoc-mode from: melpa)
+  (pel-autoload-file adoc-mode for: adoc-mode)
+  (pel-set-auto-mode adoc-mode for: "\\.adoc\\'"))
 
 ;; ---------------------------------------------------------------------------
 ;; Org-Mode Support
 ;; ----------------
 
 (when pel-use-org-mode
-  ;; Org-Mode activation (as suggested by
-  ;; https://orgmode.org/manual/Activation.html#Activation ):
-  (use-package org
-    :commands (org-mode
-               org-indent-mode
-               org-store-link
-               org-agenda
-               org-capture
-               org-switchb)
-    :init
-    (cl-eval-when 'compile (require 'org nil :no-error))
-    (global-set-key "\C-cl" 'org-store-link)
-    (global-set-key "\C-ca" 'org-agenda)
-    (global-set-key "\C-cc" 'org-capture)
-    (global-set-key "\C-cb" 'org-switchb)
-    ;; Activate specialized C-a and C-e in Org-Mode.
-    (pel-setq org-special-ctrl-a/e t)
-    ;; Activate timestamp log for DONE tasks
-    (pel-setq org-log-done 'time)
-    ;; Add the "IN-PROGRESS" in the list of TODO states
-    (pel-setq org-todo-keywords
-              (quote ((sequence "TODO" "IN-PROGRESS" "DONE"))))
-    ;; Use the cleaner outline view mode.
-    (add-hook 'org-mode-hook 'org-indent-mode)))
+  ;; Org-Mode activation, as suggested by
+  ;; https://orgmode.org/manual/Activation.html#Activation :
+  (pel-autoload-file org for:
+                     org-mode
+                     org-indent-mode
+                     org-store-link
+                     org-agenda
+                     org-capture
+                     org-switchb)
+  (global-set-key "\C-cl" 'org-store-link)
+  (global-set-key "\C-ca" 'org-agenda)
+  (global-set-key "\C-cc" 'org-capture)
+  (global-set-key "\C-cb" 'org-switchb)
+  ;; Activate specialized C-a and C-e in Org-Mode.
+  (pel-setq org-special-ctrl-a/e t)
+  ;; Activate timestamp log for DONE tasks
+  (pel-setq org-log-done 'time)
+  ;; Add the "IN-PROGRESS" in the list of TODO states
+  (pel-setq org-todo-keywords
+            (quote ((sequence "TODO" "IN-PROGRESS" "DONE"))))
+  ;; Use the cleaner outline view mode.
+  (add-hook 'org-mode-hook 'org-indent-mode))
 
 ;; ---------------------------------------------------------------------------
 ;; YAML Support
 ;; ------------
 
 (when pel-use-yaml-mode
-  (use-package yaml-mode
-    :ensure t
-    :pin melpa
-    :commands yaml-mode
-    :init
-    (add-to-list 'auto-mode-alist '("\\.yml\\'"  . yaml-mode))))
+  (pel-ensure-package yaml-mode from: melpa)
+  (pel-autoload-file yaml-mode for: yaml-mode)
+  (pel-set-auto-mode yaml-mode for: "\\.yml\\'"))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-r`` : reSTucturedText
@@ -3345,6 +3163,7 @@ MODE must be a symbol."
     (setq tab-width    pel-rst-tab-width)
     (pel-local-set-f12 'pel:for-reST)
     (pel--install-rst-skel pel:rst-skel))
+  (declare-function pel--setup-for-rst "pel_keys")
 
   ;; Add .stxt to the accepted file extensions for rst-mode
   ;; to the ones that are normally used: .rst and .rest
@@ -3399,13 +3218,8 @@ MODE must be a symbol."
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-g`` : Graphviz Dot
 (when pel-use-graphviz-dot
-  (use-package graphviz-dot-mode
-    :ensure t
-    :pin melpa
-    :commands graphviz-dot-mode
-    :init
-      (cl-eval-when 'compile (require 'graphviz-dot-mode nil :no-error)))
-
+  (pel-ensure-package graphviz-dot-mode from: melpa)
+  (pel-autoload-file graphviz-dot-mode for: graphviz-dot-mode)
   (define-pel-global-prefix pel:for-graphviz-dot (kbd "<f11> SPC M-g"))
   (define-key pel: (kbd "M-g")         'graphviz-dot-mode)
   (define-key pel:for-graphviz-dot "c" 'compile)
@@ -3518,7 +3332,7 @@ MODE must be a symbol."
 (define-key pel:delete "*" #'delete-duplicate-lines)
 (define-key pel:kill   "l"  'pel-kill-or-delete-marked-or-whole-line)
 
-(when (display-graphic-p)
+(when pel-emacs-is-graphic-p
   (global-set-key (kbd "s-x") 'pel-kill-or-delete-marked-or-whole-line)
   (global-set-key (kbd "C-K") 'pel-delete-line))
 (global-set-key (kbd "C-w")     'pel-kill-or-delete-marked-or-whole-line)
@@ -3546,21 +3360,18 @@ MODE must be a symbol."
   ;; Defer loading of auto-complete using its autoload that will be
   ;; trigerred when the one of the pel-auto-complete-mode or
   ;; pel-global-auto-complete-mode is executed.
-  (use-package auto-complete
-    :ensure t
-    :pin melpa
-    :commands (auto-complete-mode global-auto-complete-mode)
-    :init   (cl-eval-when 'compile (require 'auto-complete nil :no-error))))
+  (pel-ensure-package auto-complete from: melpa)
+  (pel-autoload-file auto-complete for:
+                     auto-complete-mode
+                     global-auto-complete-mode))
 
 (when pel-use-company
   ;; Defer-load company.el via the autoload company-mode and
   ;; global-autoload-mode are called by one of the pel functions.
-  (use-package company
-    :ensure t
-    :pin melpa
-    :commands (company-mode global-company-mode)
-    :init
-    (cl-eval-when 'compile (require 'company nil :no-error))))
+  (pel-ensure-package company from: melpa)
+  (pel-autoload-file company for:
+                     company-mode
+                     global-company-mode))
 
 (define-pel-global-prefix pel:auto-completion (kbd "<f11> ,"))
 (define-key pel:auto-completion   "?"   'pel-completion-help)
@@ -3605,14 +3416,10 @@ MODE must be a symbol."
 (global-set-key (kbd "M-S-<down>")     'pel-mark-line-down)
 
 (when pel-use-expand-region
-  (use-package expand-region
-    :ensure t
-    :pin melpa
-    :commands er/expand-region
-    :init
-    (cl-eval-when 'compile (require 'expand-region nil :no-error))
-    (define-key pel:mark     "="  'er/expand-region)
-    (global-set-key   (kbd "M-=") 'er/expand-region)))
+  (pel-ensure-package expand-region from: melpa)
+  (pel-autoload-file expand-region for: er/expand-region)
+  (define-key pel:mark     "="  'er/expand-region)
+  (global-set-key   (kbd "M-=") 'er/expand-region))
 
 ;; ---------------------------------------------------------------------------
 ;; CUA mode setup
@@ -3652,14 +3459,11 @@ MODE must be a symbol."
   (cl-eval-when 'load
     (pel-install-github-file "emacsmirror/hide-comnt/master" "hide-comnt.el"))
 
-  (use-package hide-comnt
-    ;; autoload hide-comnt.el based on its 2 commands
-    :commands (hide/show-comments
-               hide/show-comments-toggle)
-    :init
-    ;; Bind commands to keys
-    (define-key pel:comment ";" 'hide/show-comments-toggle)
-    (define-key pel:comment ":" 'hide/show-comments)))
+  (pel-autoload-file hide-comnt for:
+                     hide/show-comments
+                     hide/show-comments-toggle)
+  (define-key pel:comment ";" 'hide/show-comments-toggle)
+  (define-key pel:comment ":" 'hide/show-comments))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> ?`` : Help /apropos/info commands
@@ -3681,17 +3485,14 @@ MODE must be a symbol."
 (define-key pel:help "p"  'pel-help-pdf-select)
 (define-key pel:help "P"  'pel-help-pdfs-dir)
 
-(use-package pel-help
-  :commands (pel-show-kill-ring
-             pel-show-major-mode))
+(pel-autoload-file pel-help for:
+                   pel-show-kill-ring
+                   pel-show-major-mode)
 
 (when pel-use-ascii-table
-  (use-package ascii-table
-    :ensure t
-    :pin melpa
-    :commands ascii-table
-    :init
-    (define-key pel:help "A" 'ascii-table)))
+  (pel-ensure-package ascii-table from: melpa)
+  (pel-autoload-file ascii-table for: ascii-table)
+  (define-key pel:help "A" 'ascii-table))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? a`` : Help Apropos commands
@@ -3750,95 +3551,75 @@ MODE must be a symbol."
 
 (global-set-key (kbd "<M-S-f9>")  'pel-show-init-time)
 
-(use-package pel-emacs
-  :commands (pel-emacs-load-stats
-             pel-emacs-mem-stats)
-  :init
-  (define-key pel:emacs "l"  'pel-emacs-load-stats)
-  (define-key pel:emacs "m"  'pel-emacs-mem-stats))
+(pel-autoload-file pel-emacs for:
+                   pel-emacs-load-stats
+                   pel-emacs-mem-stats)
+(define-key pel:emacs "l"  'pel-emacs-load-stats)
+(define-key pel:emacs "m"  'pel-emacs-mem-stats)
 
-(use-package pel-pathmng
-  :commands pel-show-load-path
-  :init
-  (define-key pel:emacs "p" 'pel-emacs-load-path))
+(pel-autoload-file pel-pathmng for: pel-show-load-path)
+(define-key pel:emacs "p" 'pel-emacs-load-path)
 
 ;; Profiling support: esup
 (when (and pel-use-esup
-           (display-graphic-p))
-  (use-package esup
-    :ensure t
-    :pin melpa
-    :commands esup
-    :init
-    (cl-eval-when 'compile (require 'esup nil :no-error))
-    (define-key pel:emacs "P"  'esup)))
+           pel-emacs-is-graphic-p)
+  (pel-ensure-package esup from: melpa)
+  (pel-autoload-file esup for: esup)
+  (define-key pel:emacs "P"  'esup))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? k`` : Info on Keys
 
 (define-pel-global-prefix pel:keys (kbd "<f11> ? k"))
-(define-key pel:keys    "#"  'pel-show-mac-numlock)
-(define-key pel:keys    "l" #'view-lossage)
-(define-key pel:keys    "m" #'describe-mode)
+(define-key pel:keys "#"  'pel-show-mac-numlock)
+(define-key pel:keys "l" #'view-lossage)
+(define-key pel:keys "m" #'describe-mode)
 
 (when pel-use-free-keys
-  (use-package free-keys
-    :ensure t
-    :pin melpa
-    :commands free-keys
-    :init
-    (cl-eval-when 'compile (require 'free-keys nil :no-error))
-    (define-key pel:keys  "f" #'free-keys)))
+  (pel-ensure-package free-keys from: melpa)
+  (pel-autoload-file free-keys for: free-keys)
+  (define-key pel:keys "f" #'free-keys))
 
 (when pel-use-bind-key
-  (use-package bind-key
-    :ensure t
-    :pin melpa
-    :commands describe-personal-keybindings
-    :init
-    (cl-eval-when 'compile (require 'bind-key nil :no-error))
-    (define-key pel:keys  "b" #'describe-personal-keybindings)))
+  (pel-ensure-package bind-key from: melpa)
+  (pel-autoload-file bind-key for: describe-personal-keybindings)
+  (define-key pel:keys "b" #'describe-personal-keybindings))
 
 (when pel-use-which-key
-  (use-package which-key                  ; for <f11> ? k k
-    ;; List key completions: help show the f11 bindings.
-    ;; When requested, delay a little to speed init time.
-    ;; Note that "<f11> ? k k" will execute autoloaded
-    ;; command which-key-show-major-mode which will force
-    ;; loading and ensure the key mode if it's not already loaded.
-    :ensure t
-    :pin melpa
-    :defer 1
-    :commands (which-key-mode
-               which-key-show-major-mode)
-    :init
-    (cl-eval-when 'compile (require 'which-key nil :no-error))
-    (define-key pel:keys  "K"  'which-key-mode)
-    (define-key pel:keys  "k"  'which-key-show-major-mode)
-    :config
-    (declare-function which-key-mode "which-key")
+  ;; List key completions: help show the f11 bindings.
+  ;; When requested, delay a little to speed init time.
+  ;; Note that "<f11> ? k k" will execute autoloaded
+  ;; command which-key-show-major-mode which will force
+  ;; loading and ensure the key mode if it's not already loaded.
+  (pel-ensure-package     which-key from: melpa)
+  (pel-require-after-init which-key 1)
+  (pel-autoload-file which-key for:
+                     which-key-mode
+                     which-key-show-major-mode)
+  (define-key pel:keys  "K"  'which-key-mode)
+  (define-key pel:keys  "k"  'which-key-show-major-mode)
+  (pel-eval-after-load which-key
     (which-key-mode)))
 
+;; ---------------------------------------------------------------------------
+;; Keycast and logging
+;; -------------------
 (when pel-use-keycast
-  (use-package keycast
-    :ensure t
-    :pin melpa
-    :commands keycast-mode
-    :init
-    (define-key pel:keys  "c"  'keycast-mode)))
+  (pel-ensure-package keycast from: melpa)
+  (pel-autoload-file keycast for: keycast-mode)
+  (define-key pel:keys  "c"  'keycast-mode))
 
 (when pel-use-command-log-mode
   (define-pel-global-prefix pel:command-log (kbd "<f11> ? k c"))
   (cl-eval-when 'load
     (pel-install-github-file "pierre-rouleau/command-log-mode/master"
                              "command-log-mode.el"))
-  (use-package command-log-mode
-    :commands (command-log-mode
-               global-command-log-mode)
-    :init
-    (define-key pel:command-log "c" 'command-log-mode)
-    (define-key pel:command-log "C" 'global-command-log-mode)
-    :config
+  (pel-autoload-file command-log-mode for:
+                     command-log-mode
+                     global-command-log-mode)
+  (define-key pel:command-log "c" 'command-log-mode)
+  (define-key pel:command-log "C" 'global-command-log-mode)
+  (pel-eval-after-load command-log-mode
     (define-key pel:command-log "o" 'clm/open-command-log-buffer)
     (define-key pel:command-log "." 'clm/close-command-log-buffer)
     (define-key pel:command-log "/" 'clm/toggle-log-all)))
@@ -3848,13 +3629,9 @@ MODE must be a symbol."
 
 ;; popup is used in Terminal mode for spell check menu,
 ;; and must be available when pel-spell-init is called.
-(unless (display-graphic-p)
-  (use-package popup
-    :ensure t
-    :pin melpa-stable
-    :commands pel-spell-init
-    :init
-    (cl-eval-when 'compile (require 'popup nil :no-error))))
+(when pel-emacs-is-a-tty-p
+  (pel-ensure-package popup from: melpa)
+  (pel-autoload-file popup for: pel-spell-init))
 
 (define-pel-global-prefix pel:spell (kbd "<f11> $"))
 ;;
@@ -3918,32 +3695,25 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;; Visible Bookmark (bm.el)
 ;; ------------------------
+;; configure bm package to be loaded only on first use.
 (when pel-use-bm
+  (pel-ensure-package bm from: melpa)
+  (pel-autoload-file bm for:
+                     bm-next
+                     bm-previous
+                     bm-toggle
+                     bm-buffer-save
+                     bm-buffer-restore)
+  (global-set-key (kbd "<f2>")  'bm-next)
+  (define-key pel:bookMark "'"  'bm-toggle) ; toggle visible bookmark
+  (define-key pel:bookMark "n"  'bm-next)
+  (define-key pel:bookMark "p"  'bm-previous)
 
-  ;; configure bm package to be loaded only on first use.
-  (use-package bm
-    :ensure t
-    :pin melpa
-    :commands (bm-next
-               bm-previous
-               bm-toggle)
+  ;; Ensure that bm restores bookmark when it loads.
+  (defvar bm-restore-repository-on-load) ;  Prevent byte-compiler warnings
+  (setq bm-restore-repository-on-load t)
 
-    :init
-    ;; TODO?: find a better binding?
-    ;; A non conflicting, allowing function key to be used as prefix?
-    (global-set-key (kbd "<f2>")   'bm-next)
-
-    (define-key pel:bookMark "'"  'bm-toggle) ; toggle visible bookmark
-    (define-key pel:bookMark "n"  'bm-next)
-    (define-key pel:bookMark "p"  'bm-previous)
-
-    ;;  Prevent lint warnings using empty defvar
-    (defvar bm-restore-repository-on-load)
-    ;; Ensure that bm restores bookmark when it loads.
-    (setq bm-restore-repository-on-load t)
-
-    :config
-    (cl-eval-when 'compile (require 'bm nil :no-error))
+  (pel-eval-after-load bm
     ;;  Prevent lint warnings using empty defvar
     ;; Allow cross-buffer 'next'
     (pel-setq bm-cycle-all-buffers t)
@@ -3957,21 +3727,18 @@ See `flyspell-auto-correct-previous-word' for more info."
     ;; Loading the repository from file when on start up.
     (add-hook 'after-init-hook 'bm-repository-load)
 
-    ;; prevent byte-compiler warnings
-    (declare-function bm-buffer-save      "bm")
-    (declare-function bm-buffer-save-all  "bm")
-    (declare-function bm-repository-save  "bm")
-    (declare-function bm-buffer-restore   "bm")
-
     ;; Saving bookmarks
     (add-hook 'kill-buffer-hook 'bm-buffer-save)
 
-    ;; Saving the repository to file when on exit.
+    ;; Saving the repository to file on exit.
     ;; kill-buffer-hook is not called when Emacs is killed, so we
     ;; must save all bookmarks first.
-    (add-hook 'kill-emacs-hook (lambda nil
-                                 (bm-buffer-save-all)
-                                 (bm-repository-save)))
+    (add-hook 'kill-emacs-hook
+              (lambda nil
+                (when (and (fboundp 'bm-buffer-save-all)
+                           (fboundp 'bm-repository-save))
+                  (bm-buffer-save-all)
+                  (bm-repository-save))))
 
     ;; The `after-save-hook' is not necessary to use to achieve persistence,
     ;; but it makes the bookmark data in repository more in sync with the file
@@ -4039,7 +3806,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 (global-set-key (kbd "<M-f6>")    'pel-scroll-down)
 (global-set-key (kbd "<M-S-f6>")  'pel-scroll-down-other)
 ;; and with the mouse in terminal mode
-(unless (display-graphic-p)
+(when pel-emacs-is-a-tty-p
   ;; activate mouse-based scrolling
   (global-set-key (kbd "<mouse-4>") 'pel-scroll-down)
   (global-set-key (kbd "<mouse-5>") 'pel-scroll-up))
@@ -4054,17 +3821,13 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:scroll "l" #'scroll-lock-mode)
 
 (when pel-use-smooth-scrolling
-  (use-package smooth-scrolling
-    :ensure t
-    :pin melpa
-    :defer 2
-    :init
-    (cl-eval-when 'compile (require 'smooth-scrolling nil :no-error))
-    (if (fboundp 'smooth-scrolling-mode)
-        (define-key pel:scroll "s" 'smooth-scrolling-mode))
-    :config
-    (if (fboundp 'smooth-scrolling-mode)
-        (smooth-scrolling-mode 1))))
+  (pel-ensure-package smooth-scrolling from: melpa)
+  (pel-autoload-file smooth-scrolling for: smooth-scrolling-mode)
+  (define-key pel:scroll "s" 'smooth-scrolling-mode)
+  (pel-eval-after-load smooth-scrolling
+    (smooth-scrolling-mode 1))
+  ;; activate smooth scrolling after startup
+  (pel-require-after-init smooth-scrolling 2))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> a`` : abbreviations
@@ -4149,65 +3912,61 @@ the ones defined from the buffer now."
   (define-pel-global-prefix pel:browse (kbd "<f11> B"))
 
   (when pel-use-treemacs
-    (use-package treemacs
-      :ensure t
-      :pin melpa
-      :defer t
-      :commands treemacs
-      :init
-      (define-key pel:browse  "T" 'treemacs)
+    (pel-ensure-package treemacs from: melpa)
+    (pel-autoload-file treemacs for: treemacs)
+    (define-key pel:browse  "T" 'treemacs)
       (with-eval-after-load 'winum
         (when (boundp 'winum-keymap)
-          (define-key winum-keymap (kbd "<f9>") #'treemacs-select-window)))))
+          (define-key winum-keymap (kbd "<f9>") 'treemacs-select-window))))
 
   (when pel-use-neotree
     (define-pel-global-prefix pel:neotree (kbd "<f11> B N"))
+    (pel-ensure-package neotree from: melpa)
+    (pel-autoload-file neotree for:
+                       neotree-dir
+                       neotree-find
+                       neotree-toggle)
+    (define-key pel:neotree  "D" 'neotree-dir)
+    (define-key pel:neotree  "F" 'neotree-find)
+    (define-key pel:neotree  "N" 'neotree-toggle)
 
-    (use-package neotree
-      :ensure t
-      :pin melpa
-      :commands (neotree-find
-                 neotree-dir
-                 neotree-toggle)
-      :init
-      (define-key pel:neotree  "N" 'neotree-toggle)
-      (define-key pel:neotree  "F" 'neotree-find)
-      (define-key pel:neotree  "D" 'neotree-dir)
-      (if (display-graphic-p)
+    (defvar neo-theme)                  ; prevent byte-compiler warning
+    (pel-eval-after-load neotree
+      ;; TODO: should we not have PEL customization for neo-theme instead?
+      (if pel-emacs-is-graphic-p
           (when pel-neotree-font-in-graphics
             (setq neo-theme 'icons))
         (when pel-neotree-font-in-terminal
           (setq neo-theme 'arrow)))
-
-      :config
       (define-key pel:neotree  "S" 'neotree-show)
       (define-key pel:neotree  "H" 'neotree-hide)))
 
   (when pel-use-ztree
-    ;; The ztree package does nothing but requiring ztree-dir and ztree-diff
-    ;; It's the loading of those 2 that we need to trigger on to set the PEL
-    ;; customization into the corresponding ztree variables.
-    (use-package ztree-dir
-      :ensure ztree
-      :pin melpa
-      :commands ztree-dir
-      :init
-      (define-key pel:browse     "Z" 'ztree-dir)
-      :config
+    ;; The ztree package has 3 files: ztree.el, ztree-dir.el and ztree-diff.el
+    ;; The ztree.el has no other code than requiring the other 2 files.
+    ;; Therefore the code ensures the ztree is loaded for the commands,
+    ;; which essentially gets both of these files loaded.
+    (pel-ensure-package ztree from: melpa)
+    (pel-autoload-file ztree for:
+                       ztree-dir
+                       ztree-diff)
+    (define-key pel:browse "Z" 'ztree-dir)
+    (define-key pel:diff "z" 'ztree-diff)
+
+    ;; ztree uses variables instead of defcustom forms for its configuration
+    ;; variables. PEL provides customization user-options instead, until ztree
+    ;; code uses customization.
+    (defvar ztree-dir-move-focus)       ; prevent byte-compiler warning
+    (defvar ztree-dir-filter-list)
+    (defvar ztree-dir-show-filtered-files)
+    (pel-eval-after-load ztree-dir
       (setq ztree-dir-move-focus pel-ztree-dir-move-focus)
       (when pel-ztree-dir-filter-list
-        (setq-default
-         ztree-dir-filter-list
-         (append pel-ztree-dir-filter-list ztree-dir-filter-list)))
+        (setq-default ztree-dir-filter-list
+                      (append pel-ztree-dir-filter-list
+                              ztree-dir-filter-list)))
       (setq-default ztree-dir-show-filtered-files
-                    pel-ztree-dir-show-filtered-files))
-    ;;
-    (use-package ztree-diff
-      :ensure ztree
-      :pin melpa
-      :commands ztree-diff
-      :init
-      (define-key pel:diff "z" 'ztree-diff))))
+                    pel-ztree-dir-show-filtered-files))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> c`` : count things
@@ -4289,30 +4048,26 @@ the ones defined from the buffer now."
 (define-key pel:draw "p"  'picture-mode)      ; activate picture-mode
 
 (when pel-use-plantuml
-  (use-package plantuml-mode
-    :ensure t
-    :pin melpa
-    :commands (plantuml-mode
-               plantuml-download-jar
-               plantuml-set-exec-mode)
-    :init
-    (define-pel-global-prefix pel:plantuml (kbd "<f11> D u"))
-    (define-key pel:plantuml "u"         'plantuml-mode)
-    (define-key pel:plantuml (kbd "M-d") 'plantuml-download-jar)
-    (define-key pel:plantuml (kbd "M-x") 'plantuml-set-exec-mode)
-    (define-key pel:plantuml "p"         'pel-render-commented-plantuml))
+  (pel-ensure-package plantuml-mode from: melpa)
+  (pel-autoload-file plantuml-mode for:
+                     plantuml-mode
+                     plantuml-download-jar
+                     plantuml-set-exec-mode)
+  (define-pel-global-prefix pel:plantuml (kbd "<f11> D u"))
+  (define-key pel:plantuml "u"         'plantuml-mode)
+  (define-key pel:plantuml (kbd "M-d") 'plantuml-download-jar)
+  (define-key pel:plantuml (kbd "M-x") 'plantuml-set-exec-mode)
+  (define-key pel:plantuml "p"         'pel-render-commented-plantuml)
 
-  ;; Configure plantuml default execution mode according to PEL's selection.
-  (setq plantuml-default-exec-mode (if (eq pel-use-plantuml 'server) 'server 'jar))
-
-  (when pel-use-flycheck-plantuml
-    (use-package flycheck-plantuml
-      :ensure t
-      :pin melpa
-      :defer 2
-      :config
+  (defvar plantuml-default-exec-mode)   ; prevent byte-compiler warning
+  (pel-eval-after-load plantuml-mode
+    ;; Configure plantuml default execution mode according to PEL's selection.
+    (setq plantuml-default-exec-mode (if (eq pel-use-plantuml 'server) 'server 'jar))
+    (when pel-use-flycheck-plantuml
+      (pel-ensure-package flycheck-plantuml from: melpa)
       (with-eval-after-load 'flycheck
         (require 'flycheck-plantuml)
+        (declare-function flycheck-plantuml-setup "flycheck-plantuml")
         (flycheck-plantuml-setup)))))
 
 ;; ---------------------------------------------------------------------------
@@ -4365,12 +4120,13 @@ the ones defined from the buffer now."
 (define-key pel:file "?" #'pel-show-buffer-file-encoding)
 
 (when pel-use-recentf
-  (use-package recentf
-    ;; recentf is built-in Emacs, Don't defer to allow remembering
-    ;; files opened at start.  This will impact init time by a small
-    ;; amount as it also load tree-widget, but deferring it would
-    ;; impact the feature.
-    :config
+  ;; recentf is built-in Emacs, Don't defer to allow remembering
+  ;; files opened at start.  This will impact init time by a small
+  ;; amount as it also load tree-widget, but deferring it would
+  ;; impact the feature.
+  (pel-autoload-file recentf for:
+                     recentf-mode)
+  (pel-eval-after-load recentf
     (recentf-mode 1)
     (define-key pel:file (kbd "M-r") 'recentf-edit-list)
     (when pel-use-ido
@@ -4385,7 +4141,8 @@ the ones defined from the buffer now."
           (message "Aborting")))
       (define-key pel:file "f" 'ido-recentf-open))
     (when pel-use-counsel
-      (define-key pel:file "R" 'counsel-recentf))))
+      (define-key pel:file "R" 'counsel-recentf)))
+  (pel-require-at-load recentf))
 
 ;; - Open file at point
 ;; --------------------
@@ -4432,40 +4189,46 @@ the ones defined from the buffer now."
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> f a`` : Find File At Point (ffap)
 
-(defun pel--activate-ffap-bindings ()
-  "Activate ffap standard key bindings."
-  (ffap-bindings))
-
 (when pel-use-ffap
-  (use-package ffap
-    :commands (ffap
-               ffap-read-only
-               ffap-alternate-file
-               ffap-other-window
-               ffap-other-frame
-               ffap-read-only-other-window
-               ffap-read-only-other-frame
-               dired-at-point
-               ffap-dired-other-window
-               ffap-dired-other-frame
-               ffap-list-directory
-               ffap-menu
-               ffap-bindings)
+  ;; ffap is built-in Emacs.  When requested by PEL customization provide key
+  ;; bindings to the autoloaded commands.  ffap's default key bindings overlap
+  ;; with several other Emacs key bindings, so PEL provides a user-option to
+  ;; determine whether those will also be used (when pel-use-ffap is set to
+  ;; 'ffap-bindings).
 
-    :init
-    (define-pel-global-prefix pel:ffap (kbd "<f11> f a"))
-    (define-key pel:ffap  "p"     #'ffap) ; find-file-at-point
-    (define-key pel:ffap  "P"     #'ffap-read-only)
-    (define-key pel:ffap  "v"     #'ffap-alternate-file)
-    (define-key pel:ffap  "w"     #'ffap-other-window)
-    (define-key pel:ffap  "f"     #'ffap-other-frame)
-    (define-key pel:ffap  "W"     #'ffap-read-only-other-window)
-    (define-key pel:ffap  "F"     #'ffap-read-only-other-frame)
-    (define-key pel:ffap  "d"     #'dired-at-point)
-    (define-key pel:ffap  "D"     #'ffap-dired-other-window)
-    (define-key pel:ffap  (kbd "M-d") #'ffap-dired-other-frame)
-    (define-key pel:ffap  "l"     #'ffap-list-directory)
-    (define-key pel:ffap  "m"     #'ffap-menu))
+  (pel-autoload-file ffap for:
+                     ffap
+                     ffap-read-only
+                     ffap-alternate-file
+                     ffap-other-window
+                     ffap-other-frame
+                     ffap-read-only-other-window
+                     ffap-read-only-other-frame
+                     dired-at-point
+                     ffap-dired-other-window
+                     ffap-dired-other-frame
+                     ffap-list-directory
+                     ffap-menu
+                     ffap-bindings)
+
+  (define-pel-global-prefix pel:ffap (kbd "<f11> f a"))
+  (define-key pel:ffap  "p"     #'ffap) ; find-file-at-point
+  (define-key pel:ffap  "P"     #'ffap-read-only)
+  (define-key pel:ffap  "v"     #'ffap-alternate-file)
+  (define-key pel:ffap  "w"     #'ffap-other-window)
+  (define-key pel:ffap  "f"     #'ffap-other-frame)
+  (define-key pel:ffap  "W"     #'ffap-read-only-other-window)
+  (define-key pel:ffap  "F"     #'ffap-read-only-other-frame)
+  (define-key pel:ffap  "d"     #'dired-at-point)
+  (define-key pel:ffap  "D"     #'ffap-dired-other-window)
+  (define-key pel:ffap  (kbd "M-d") #'ffap-dired-other-frame)
+  (define-key pel:ffap  "l"     #'ffap-list-directory)
+  (define-key pel:ffap  "m"     #'ffap-menu)
+
+  (defun pel--activate-ffap-bindings ()
+    "Activate ffap standard key bindings."
+    (ffap-bindings))
+  (declare-function pel--activate-ffap-bindings "pel_keys")
 
   (when (eq pel-use-ffap 'ffap-bindings)
     (run-with-idle-timer 1 nil (function pel--activate-ffap-bindings))))
@@ -4524,7 +4287,7 @@ the ones defined from the buffer now."
 (define-key pel:frame "O"  #'switch-to-buffer-other-frame)
 (define-key pel:frame "p"   'pel-previous-frame)
 (define-key pel:frame "r"  #'find-file-read-only-other-frame)
-(when (display-graphic-p)
+(when pel-emacs-is-graphic-p
   (require 'menu-bar nil :noerror) ; feature loaded in emacs -Q
   (define-key pel:frame "F" 'menu-set-font))
 
@@ -4541,73 +4304,66 @@ the ones defined from the buffer now."
 (define-key pel:grep      "z"         #'zrgrep)
 (define-key pel:grep      "1"          'first-error)
 
-;;
-
 ;; ripgrep - a faster grep easier to use than grep.
+;; 2 packages support ripgrep: rg.el and ripgrep.el
+;; Install rg.el and install ripgrep.el if projectile is used.
 (when  pel-use-ripgrep
-  ;; 2 packages support ripgrep: rg.el and ripgrep.el
-  ;; Install rg.el and install ripgrep.el if projectile
-  ;; is used.
-
   ;; rg.el
-  (use-package rg
-    :ensure t
-    :pin melpa
-    :commands (rg rg-literal rg-menu)
-    :init
-    (cl-eval-when 'compile (require 'rg nil :no-error))
-    (define-key pel:grep  "t"     'rg-literal)
-    (define-key pel:grep  "i"     'rg)
-    (define-key pel:grep  "m"     'rg-menu)
-    (global-set-key (kbd "C-c s") 'rg-menu)
-    :config
-    (declare-function rg-enable-default-bindings "rg")
+  (pel-ensure-package rg from: melpa)
+  (pel-autoload-file rg for:
+                     rg
+                     rg-literal
+                     rg-menu
+                     rg-enable-default-bindings)
+  (pel-eval-after-load rg
     (rg-enable-default-bindings))
+  (define-key pel:grep  "t"     'rg-literal)
+  (define-key pel:grep  "i"     'rg)
+  (define-key pel:grep  "m"     'rg-menu)
+  (global-set-key (kbd "C-c s") 'rg-menu)
 
   ;; ripgrep.el
   (when pel-use-projectile
-    (use-package ripgrep
-      :ensure t
-      :pin melpa
-      :commands ripgrep-regexp)))
+    (pel-ensure-package ripgrep from: melpa)
+    (pel-autoload-file ripgrep for: ripgrep-regexp)))
+
+;; ag
+;; --
 
 (when pel-use-ag
-  (use-package ag
-    :ensure t
-    :pin melpa
-    :commands (ag
-               ag-dired
-               ag/kill-process
-               ag-files
-               ag-regexp
-               ag-project
-               ag-project-files
-               ag-project-regexp
-               ag-dired-regexp
-               ag-project-dired-regexp
-               ag-kill-buffers
-               ag-kill-other-buffers)
+  (pel-ensure-package ag from: melpa)
+  (pel-autoload-file ag for:
+                     ag
+                     ag-dired
+                     ag/kill-process
+                     ag-files
+                     ag-regexp
+                     ag-project
+                     ag-project-files
+                     ag-project-regexp
+                     ag-dired-regexp
+                     ag-project-dired-regexp
+                     ag-kill-buffers
+                     ag-kill-other-buffers)
+  (define-pel-global-prefix pel:ag (kbd "<f11> g a"))
+  (define-key pel:ag  "a"        'ag)
+  (define-key pel:ag  "x"        'ag-regexp)
+  (define-key pel:ag  "f"        'ag-files)
 
-    :init
-    (define-pel-global-prefix pel:ag (kbd "<f11> g a"))
-    (define-key pel:ag  "a"        'ag)
-    (define-key pel:ag  "x"        'ag-regexp)
-    (define-key pel:ag  "f"        'ag-files)
+  (define-pel-global-prefix pel:ag-project   (kbd "<f11> g a p"))
+  (define-key pel:ag-project "f" 'ag-project-files)
+  (define-key pel:ag-project "p" 'ag-project)
+  (define-key pel:ag-project "x" 'ag-project-regexp)
 
-    (define-pel-global-prefix pel:ag-project   (kbd "<f11> g a p"))
-    (define-key pel:ag-project "f" 'ag-project-files)
-    (define-key pel:ag-project "p" 'ag-project)
-    (define-key pel:ag-project "x" 'ag-project-regexp)
+  (define-pel-global-prefix pel:ag-dired (kbd "<f11> g a d"))
+  (define-key pel:ag-dired  "d"  'ag-dired)
+  (define-key pel:ag-dired  "x"  'ag-dired-regexp)
+  (define-key pel:ag-dired  "f"  'ag-project-dired-regexp)
 
-    (define-pel-global-prefix pel:ag-dired (kbd "<f11> g a d"))
-    (define-key pel:ag-dired  "d"  'ag-dired)
-    (define-key pel:ag-dired  "x"  'ag-dired-regexp)
-    (define-key pel:ag-dired  "f"  'ag-project-dired-regexp)
-
-    (define-pel-global-prefix pel:ag-kill (kbd "<f11> g a k"))
-    (define-key pel:ag-kill  "a"   'ag-kill-buffers)
-    (define-key pel:ag-kill  "o"   'ag-kill-other-buffers)
-    (define-key pel:ag-kill  "p"   'ag/kill-process)))
+  (define-pel-global-prefix pel:ag-kill (kbd "<f11> g a k"))
+  (define-key pel:ag-kill  "a"   'ag-kill-buffers)
+  (define-key pel:ag-kill  "o"   'ag-kill-other-buffers)
+  (define-key pel:ag-kill  "p"   'ag/kill-process))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> h`` : highlight commands
@@ -4621,23 +4377,16 @@ the ones defined from the buffer now."
 ;; M-c M-i
 
 (when pel-use-auto-highlight-symbol
-  (use-package auto-highlight-symbol
-    :ensure t
-    :pin melpa
-    :commands (auto-highlight-symbol-mode
-               global-auto-highlight-symbol-mode)
-    :init
-    (define-key pel:highlight "a" 'auto-highlight-symbol-mode)))
+  (pel-ensure-package auto-highlight-symbol from: melpa)
+  (pel-autoload-file auto-highlight-symbol for:
+                     auto-highlight-symbol-mode
+                     global-auto-highlight-symbol-mode)
+  (define-key pel:highlight "a" 'auto-highlight-symbol-mode))
 
 (when pel-use-rainbow-mode
-  (use-package rainbow-mode
-    :ensure t
-    :pin gnu
-    :commands rainbow-mode
-    :init
-    (cl-eval-when 'compile (require 'rainbow-mode nil :no-error))
-    ;; use c for color
-    (define-key pel:highlight "c" 'rainbow-mode)))
+  (pel-ensure-package rainbow-mode from: melpa)
+  (pel-autoload-file rainbow-mode for: rainbow-mode)
+  (define-key pel:highlight "c" 'rainbow-mode)) ; use c for color
 
 (defun pel-hi-lock-find-patterns ()
   "Execute hi-lock-find-patterns when `hi-lock-mode' is active."
@@ -4667,14 +4416,12 @@ the ones defined from the buffer now."
 (define-key pel:highlight      "w"  #'hi-lock-write-interactive-patterns)
 ;;
 (when pel-use-highlight-indentation
-  (use-package highlight-indentation
-    :ensure t
-    :pin melpa
-    :commands (highlight-indentation-mode
-               highlight-indentation-current-column-mode)
-    :init
-    (define-key pel:highlight (kbd "M-i") 'highlight-indentation-mode)
-    (define-key pel:highlight (kbd "M-c") 'highlight-indentation-current-column-mode)))
+  (pel-ensure-package highlight-indentation from: melpa)
+  (pel-autoload-file highlight-indentation for:
+                     highlight-indentation-mode
+                     highlight-indentation-current-column-mode)
+  (define-key pel:highlight (kbd "M-i") 'highlight-indentation-mode)
+  (define-key pel:highlight (kbd "M-c") 'highlight-indentation-current-column-mode))
 ;;
 (when pel-use-iedit
   (define-key pel:highlight "i" 'iedit-mode))
@@ -4684,23 +4431,16 @@ the ones defined from the buffer now."
   ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
   (cl-eval-when 'load
     (pel-install-github-file "emacsmirror/vline/master" "vline.el"))
-
-  (use-package vline
-    :commands vline-mode
-    :init
-    ;; Bind the commands to keys
-    (define-key pel:highlight    "|"  'vline-mode)
-    (define-key pel:             "9"  'vline-mode)))
+  (pel-autoload-file vline for: vline-mode)
+  (define-key pel:highlight "|"  'vline-mode)
+  (define-key pel:          "9"  'vline-mode))
 
 (when (and (version< emacs-version "27.1")
            pel-use-fill-column-indicator)
-  (use-package fill-column-indicator
-    :ensure t
-    :pin melpa
-    :commands fci-mode
-    :init
-    (define-key pel:highlight "\\" 'fci-mode)
-    (define-key pel:          "8"  'fci-mode)))
+  (pel-ensure-package fill-column-indicator from: melpa)
+  (pel-autoload-file fill-column-indicator for: fci-mode)
+  (define-key pel:highlight "\\" 'fci-mode)
+  (define-key pel:          "8"  'fci-mode))
 ;; For Emacs 27.1 & later use the built-in display-fill-column-indicator-mode.
 (unless (version< emacs-version "27.1")
   (define-key pel:highlight "\\"'display-fill-column-indicator-mode)
@@ -4721,18 +4461,15 @@ the ones defined from the buffer now."
 (define-key pel:insert   "f" 'pel-insert-filename)
 (define-key pel:insert   "l" 'pel-insert-line)
 (define-key pel:insert   "t" 'pel-insert-iso8601-timestamp)
+
 (when (or pel-use-lice
           pel-c-skel-with-license
           pel-elisp-skel-with-license
           pel-erlang-skel-with-license)
-  (use-package lice
-    :ensure t
-    :pin melpa
-    :commands lice
-    :init
-    (cl-eval-when 'compile (require 'lice nil :no-error))
-    (define-key pel:insert "L" 'lice)
-    (define-key pel:f6 "L" 'lice)))
+  (pel-ensure-package lice from: melpa)
+  (pel-autoload-file lice for: lice)
+  (define-key pel:insert "L" 'lice)
+  (define-key pel:f6 "L" 'lice))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> k`` : Keyboard macro operations
@@ -4748,59 +4485,52 @@ the ones defined from the buffer now."
   (cl-eval-when 'load
     (pel-install-github-file "pierre-rouleau/centimacro/master"
                              "centimacro.el"))
-  (use-package centimacro
-    :commands (centi-assign
-               centi-summary
-               centi-restore-all)
-    :init
-    (global-set-key (kbd pel-centi-assign-key) 'centi-assign)
-    (define-key pel:kbmacro "="          'centi-assign)
-    (define-key pel:kbmacro "?"          'centi-summary)
-    (define-key pel:kbmacro (kbd "DEL")  'centi-restore-all)
-
-    :config
+  (pel-autoload-file centimacro for:
+                     centi-assign
+                     centi-summary
+                     centi-restore-all)
+  (global-set-key (kbd pel-centi-assign-key) 'centi-assign)
+  (define-key pel:kbmacro "="          'centi-assign)
+  (define-key pel:kbmacro "?"          'centi-summary)
+  (define-key pel:kbmacro (kbd "DEL")  'centi-restore-all)
+  (pel-eval-after-load centimacro
     ;; Restore PEL's binding of <f5> to `repeat' despite centimacro's default
-    ;; customization which binds <f5> to centi-assign.
-    ;; PEL provides the `pel-centi-assign-key' which
-    ;; <f5
+    ;; customization which binds <f5> to centi-assign.  PEL provides the
+    ;; `pel-centi-assign-key' which identifies the key binding for the
+    ;; `centi-assign' command.
     (global-set-key (kbd "<f5>") 'repeat)))
 
 (when pel-use-elmacro
   (define-pel-global-prefix pel:elmacro (kbd "<f11> k l"))
-  (use-package elmacro
-    :ensure t
-    :pin melpa
-    :commands elmacro-mode
-    :init
-    (define-key pel:elmacro "l"          'elmacro-mode)
-    :config
-    (define-key pel:elmacro "m"          'elmacro-show-last-macro)
-    (define-key pel:elmacro "c"          'elmacro-show-last-commands)
-    (define-key pel:elmacro (kbd "DEL")  'elmacro-clear-command-history)))
+  (pel-ensure-package elmacro from: melpa)
+  (pel-autoload-file elmacro for: elmacro-mode)
+  (define-key pel:elmacro "l" 'elmacro-mode)
+  (pel-eval-after-load elmacro
+    (define-key pel:elmacro "m" 'elmacro-show-last-macro)
+    (define-key pel:elmacro "c" 'elmacro-show-last-commands)
+    (define-key pel:elmacro (kbd "DEL") 'elmacro-clear-command-history)))
 
 (when pel-use-emacros
   (define-pel-global-prefix pel:emacros (kbd "<f11> k e"))
   (cl-eval-when 'load
     (pel-install-github-file "pierre-rouleau/emacros/master" "emacros.el"))
-  (use-package emacros
-    :commands (emacros-load-macros
-               emacros-show-macros
-               emacros-show-macro-names)
-    :init
-    (add-hook 'find-file-hook 'emacros-load-macros)
-
-    (global-set-key "\C-ce" 'emacros-execute-named-macro)
-    (global-set-key "\C-cx" 'emacros-auto-execute-named-macro)
-    (define-key pel:emacros "="          'emacros-name-last-kbd-macro-add)
-    (define-key pel:emacros "e"          'emacros-execute-named-macro)
-    (define-key pel:        (kbd "<f4>") 'emacros-execute-named-macro)
-    (define-key pel:emacros "?"          'emacros-show-macros)
-    (define-key pel:emacros "/"          'emacros-show-macro-names)
-    (define-key pel:emacros "L"          'emacros-load-macros)
-    (define-key pel:emacros "R"          'emacros-refresh-macros)
-    (define-key pel:emacros "r"          'emacros-rename-macro)
-    (define-key pel:emacros "m"          'emacros-move-macro)
-    (define-key pel:emacros (kbd "DEL")  'emacros-remove-macro)))
+  (pel-autoload-file emacros for:
+                     emacros-load-macros
+                     emacros-show-macros
+                     emacros-show-macro-names)
+  (add-hook 'find-file-hook 'emacros-load-macros)
+  (global-set-key "\C-ce" 'emacros-execute-named-macro)
+  (global-set-key "\C-cx" 'emacros-auto-execute-named-macro)
+  (define-key pel:emacros "=" 'emacros-name-last-kbd-macro-add)
+  (define-key pel:emacros "e" 'emacros-execute-named-macro)
+  (define-key pel: (kbd "<f4>") 'emacros-execute-named-macro)
+  (define-key pel:emacros "?" 'emacros-show-macros)
+  (define-key pel:emacros "/" 'emacros-show-macro-names)
+  (define-key pel:emacros "L" 'emacros-load-macros)
+  (define-key pel:emacros "R" 'emacros-refresh-macros)
+  (define-key pel:emacros "r" 'emacros-rename-macro)
+  (define-key pel:emacros "m" 'emacros-move-macro)
+  (define-key pel:emacros (kbd "DEL") 'emacros-remove-macro))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> l`` : Line control commands
@@ -4823,61 +4553,56 @@ the ones defined from the buffer now."
           pel-use-lispy)
   (define-pel-global-prefix pel:mcursors (kbd "<f11> m"))
   (when pel-use-multiple-cursors
-    (use-package multiple-cursors
-      :ensure t
-      :pin melpa
-      :commands (mc/edit-lines
-                 mc/mark-next-like-this
-                 mc/mark-previous-like-this
-                 mc/mark-all-like-this)
-      :init
-      ;; guessing from point
-      (define-key pel:mcursors "m"         'mc/mark-all-like-this-dwim)
-      (define-key pel:mcursors (kbd "M-m") 'mc/mark-all-dwim)
-      (define-key pel:mcursors "."         'mc/mark-more-like-this-extended)
-      ;; lines
-      (define-key pel:mcursors "l"         'mc/edit-lines)
-      (define-key pel:mcursors (kbd "C-a") 'mc/edit-beginnings-of-lines)
-      (define-key pel:mcursors (kbd "C-e") 'mc/edit-ends-of-lines)
-      ;; all like this
-      (define-key pel:mcursors "a"           'mc/mark-all-like-this)
-      (define-key pel:mcursors (kbd "C-M-a") 'mc/mark-all-like-this-in-defun)
-      (define-key pel:mcursors "?"           'mc/mark-all-in-region)
-
-      ;; like this: next and previous, mark, unmark, skip & extended
-      (define-key pel:mcursors "n"         'mc/mark-next-like-this)
-      (define-key pel:mcursors "p"         'mc/mark-previous-like-this)
-      (define-key pel:mcursors "N"         'mc/unmark-next-like-this)
-      (define-key pel:mcursors "P"         'mc/unmark-previous-like-this)
-      (define-key pel:mcursors (kbd "M-n") 'mc/skip-to-next-like-this)
-      (define-key pel:mcursors (kbd "M-p") 'mc/skip-to-previous-like-this)
-      ;; word
-      (define-key pel:mcursors "w"           'mc/mark-next-word-like-this)
-      (define-key pel:mcursors (kbd "M-w")   'mc/mark-next-like-this-word)
-      (define-key pel:mcursors "W"           'mc/mark-previous-word-like-this)
-      (define-key pel:mcursors (kbd "M-W")   'mc/mark-previous-like-this-word)
-      (define-key pel:mcursors (kbd "C-w")   'mc/mark-all-words-like-this)
-      (define-key pel:mcursors (kbd "C-M-w") 'mc/mark-all-words-like-this-in-defun)
-      ;; symbol
-      (define-key pel:mcursors "s"           'mc/mark-next-symbol-like-this)
-      (define-key pel:mcursors (kbd "M-s")   'mc/mark-next-like-this-symbol)
-      (define-key pel:mcursors "S"           'mc/mark-previous-symbol-like-this)
-      (define-key pel:mcursors (kbd "M-S")   'mc/mark-previous-like-this-symbol)
-      (define-key pel:mcursors (kbd "C-s")   'mc/mark-all-symbols-like-this)
-      (define-key pel:mcursors (kbd "C-M-s") 'mc/mark-all-symbols-like-this-in-defun)
-      ;; special
-      (define-key pel:mcursors "c"         'set-rectangular-region-anchor)
-      (define-key pel:mcursors "t"         'mc/mark-sgml-tag-pair)
-      (define-key pel:mcursors "0"         'mc/insert-numbers)
-      (define-key pel:mcursors "A"         'mc/insert-letters)
-      (define-key pel:mcursors "o"         'mc/sort-regions)
-      (define-key pel:mcursors "O"         'mc/reverse-regions)
-      (define-key pel:mcursors "|"         'mc/vertical-align-with-space)
-
-      ;; TODO: put key in mc/keymap
-      (autoload 'mc-hide-unmatched-lines-mode "mc-hide-unmatched-line-mode")
-      (define-key pel:mcursors (kbd "M-/") 'mc-hide-unmatched-lines-mode)
-      ))
+    (pel-ensure-package multiple-cursors from: melpa)
+    (pel-autoload-file multiple-cursors for:
+                       mc/edit-lines
+                       mc/mark-next-like-this
+                       mc/mark-previous-like-this
+                       mc/mark-all-like-this)
+    ;; guessing from point
+    (define-key pel:mcursors "m" 'mc/mark-all-like-this-dwim)
+    (define-key pel:mcursors (kbd "M-m") 'mc/mark-all-dwim)
+    (define-key pel:mcursors "." 'mc/mark-more-like-this-extended)
+    ;; lines
+    (define-key pel:mcursors "l" 'mc/edit-lines)
+    (define-key pel:mcursors (kbd "C-a") 'mc/edit-beginnings-of-lines)
+    (define-key pel:mcursors (kbd "C-e") 'mc/edit-ends-of-lines)
+    ;; all like this
+    (define-key pel:mcursors "a" 'mc/mark-all-like-this)
+    (define-key pel:mcursors (kbd "C-M-a") 'mc/mark-all-like-this-in-defun)
+    (define-key pel:mcursors "?" 'mc/mark-all-in-region)
+    ;; like this: next and previous, mark, unmark, skip & extended
+    (define-key pel:mcursors "n" 'mc/mark-next-like-this)
+    (define-key pel:mcursors "p" 'mc/mark-previous-like-this)
+    (define-key pel:mcursors "N" 'mc/unmark-next-like-this)
+    (define-key pel:mcursors "P" 'mc/unmark-previous-like-this)
+    (define-key pel:mcursors (kbd "M-n") 'mc/skip-to-next-like-this)
+    (define-key pel:mcursors (kbd "M-p") 'mc/skip-to-previous-like-this)
+    ;; word
+    (define-key pel:mcursors "w" 'mc/mark-next-word-like-this)
+    (define-key pel:mcursors (kbd "M-w") 'mc/mark-next-like-this-word)
+    (define-key pel:mcursors "W" 'mc/mark-previous-word-like-this)
+    (define-key pel:mcursors (kbd "M-W") 'mc/mark-previous-like-this-word)
+    (define-key pel:mcursors (kbd "C-w") 'mc/mark-all-words-like-this)
+    (define-key pel:mcursors (kbd "C-M-w") 'mc/mark-all-words-like-this-in-defun)
+    ;; symbol
+    (define-key pel:mcursors "s" 'mc/mark-next-symbol-like-this)
+    (define-key pel:mcursors (kbd "M-s") 'mc/mark-next-like-this-symbol)
+    (define-key pel:mcursors "S" 'mc/mark-previous-symbol-like-this)
+    (define-key pel:mcursors (kbd "M-S") 'mc/mark-previous-like-this-symbol)
+    (define-key pel:mcursors (kbd "C-s") 'mc/mark-all-symbols-like-this)
+    (define-key pel:mcursors (kbd "C-M-s") 'mc/mark-all-symbols-like-this-in-defun)
+    ;; special
+    (define-key pel:mcursors "c" 'set-rectangular-region-anchor)
+    (define-key pel:mcursors "t" 'mc/mark-sgml-tag-pair)
+    (define-key pel:mcursors "0" 'mc/insert-numbers)
+    (define-key pel:mcursors "A" 'mc/insert-letters)
+    (define-key pel:mcursors "o" 'mc/sort-regions)
+    (define-key pel:mcursors "O" 'mc/reverse-regions)
+    (define-key pel:mcursors "|" 'mc/vertical-align-with-space)
+    ;; TODO: put key in mc/keymap
+    (autoload 'mc-hide-unmatched-lines-mode "mc-hide-unmatched-line-mode")
+    (define-key pel:mcursors (kbd "M-/") 'mc-hide-unmatched-lines-mode))
 
   (when (or pel-use-iedit pel-use-lispy)
     (define-key pel:mcursors "i" 'iedit-mode)))
@@ -4957,34 +4682,24 @@ the ones defined from the buffer now."
 ;; Search Tool Control
 
 (when pel-use-anzu
-  (use-package anzu
-    :ensure t
-    :pin melpa
-    :commands global-anzu-mode
-    :init
-    (when (eq pel-initial-search-tool 'anzu)
-      (global-anzu-mode +1))))
+  (pel-ensure-package anzu from: melpa)
+  (pel-autoload-file anzu for: global-anzu-mode)
+  (when (eq pel-initial-search-tool 'anzu)
+    (global-anzu-mode +1)))
 
 (when pel-use-cexp
   ;; download and byte-compile cexp if not already present
   ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
   (cl-eval-when 'load
     (pel-install-github-file "TobiasZawada/cexp/master" "cexp.el"))
-  (use-package cexp
-    :commands cexp-search-forward
-    :init
-    (define-key pel:search-replace "c" 'cexp-search-forward)))
-
+  (pel-autoload-file cexp for: cexp-search-forward)
+  (define-key pel:search-replace "c" 'cexp-search-forward))
 
 (when pel-use-swiper
-  (use-package swiper
-    :ensure t
-    :pin melpa
-    :commands swiper
-    :init
-    (when (eq pel-initial-search-tool 'swiper)
-      (global-set-key "\C-s" 'swiper))))
-
+  (pel-ensure-package swiper from: melpa)
+  (pel-autoload-file swiper for: swiper)
+  (when (eq pel-initial-search-tool 'swiper)
+    (global-set-key "\C-s" 'swiper)))
 
 (defun pel-number-of-available-search-tools ()
   "Return the number of available search tools."
@@ -4996,12 +4711,11 @@ the ones defined from the buffer now."
     count))
 
 (when (> (pel-number-of-available-search-tools) 1)
-  (use-package pel-search
-    :commands (pel-select-search-tool
-               pel-show-active-search-tool)
-    :init
-    (define-key pel:search-replace "s" 'pel-select-search-tool)
-    (define-key pel:help           "s" 'pel-show-active-search-tool)))
+  (pel-autoload-file pel-search for:
+                     pel-select-search-tool
+                     pel-show-active-search-tool)
+  (define-key pel:search-replace "s" 'pel-select-search-tool)
+  (define-key pel:help           "s" 'pel-show-active-search-tool))
 
 ;; --
 ;; Regular Expression Builder
@@ -5030,70 +4744,59 @@ the ones defined from the buffer now."
 ;; Other Regular Expression support
 
 (when pel-use-regex-tool
-
   (defun pel-select-regex-tool-backend ()
     "Select regexp-tool backend via customization."
     (interactive)
     (customize-option 'regex-tool-backend))
 
-  (use-package regex-tool
-    :ensure t
-    :pin melpa
-    :commands regex-tool
-    :init
-    (define-key pel:regexp "T" 'regex-tool)
-    :config
+  (pel-ensure-package regex-tool from: melpa)
+  (pel-autoload-file regex-tool for: regex-tool)
+  (define-key pel:regexp "T" 'regex-tool)
+  (pel-eval-after-load regex-tool
     (when (boundp 'regex-tool-mode-map)
       (define-key
-        regex-tool-mode-map (kbd "C-c <f2>") 'pel-select-regex-tool-backend))))
+        regex-tool-mode-map (kbd "C-c <f2>")
+        'pel-select-regex-tool-backend))))
 
 (when pel-use-pcre2el
-  (use-package pcre2el
-    :ensure t
-    :pin melpa
-    :commands  (rxt-mode
-                pcre-mode)
-    :init
-    (define-key pel:regexp "P" 'pcre-mode)
-    (define-key pel:regexp "p" 'rxt-mode)))
+  (pel-ensure-package pcre2el from: melpa)
+  (pel-autoload-file pcre2el for:
+                     rxt-mode
+                     pcre-mode)
+  (define-key pel:regexp "p" 'rxt-mode)
+  (define-key pel:regexp "P" 'pcre-mode))
 
 (when pel-use-visual-regexp
-  (use-package visual-regexp
-    :ensure t
-    :pin melpa
-    :commands  (vr/replace
-                vr/query-replace
-                vr/mc-mark)
-    :init
-    (define-key pel:regexp "R" 'vr/replace)
-    (define-key pel:regexp "Q" 'vr/query-replace)
-    (when pel-use-multiple-cursors
-      (define-key pel:regexp "M" 'vr/mc-mark))))
+  (pel-ensure-package visual-regexp from: melpa)
+  (pel-autoload-file visual-regexp for:
+                     vr/replace
+                     vr/query-replace
+                     vr/mc-mark)
+  (define-key pel:regexp "R" 'vr/replace)
+  (define-key pel:regexp "Q" 'vr/query-replace)
+  (when pel-use-multiple-cursors
+    (define-key pel:regexp "M" 'vr/mc-mark)))
 
 (when pel-use-visual-regexp-steroids
-  (use-package visual-regexp-steroids
-    :ensure t
-    :pin melpa
-    :commands  (vr/select-replace
-                vr/select-query-replace
-                vr/select-mc-mark
-                vr/isearch-forward
-                vr/isearch-backward)
-
-    :init                               ; TODO: preliminary bindings: might change
-    (define-key pel:regexp (kbd "M-r") 'vr/select-replace)
-    (define-key pel:regexp (kbd "M-q") 'vr/select-query-replace)
-    (define-key pel:regexp (kbd "M-m") 'vr/select-mc-mark)
-    (define-key pel:regexp (kbd "C-s") 'vr/isearch-forward)
-    (define-key pel:regexp (kbd "C-r") 'vr/isearch-backward)))
+  (pel-ensure-package visual-regexp-steroids from: melpa)
+  (pel-autoload-file visual-regexp-steroids for:
+                     vr/select-replace
+                     vr/select-query-replace
+                     vr/select-mc-mark
+                     vr/isearch-forward
+                     vr/isearch-backward)
+  (define-key pel:regexp (kbd "M-r") 'vr/select-replace)
+  (define-key pel:regexp (kbd "M-q") 'vr/select-query-replace)
+  (define-key pel:regexp (kbd "M-m") 'vr/select-mc-mark)
+  (define-key pel:regexp (kbd "C-s") 'vr/isearch-forward)
+  (define-key pel:regexp (kbd "C-r") 'vr/isearch-backward))
 
 (when (or pel-use-visual-regexp pel-use-visual-regexp-steroids)
-  (use-package pel-search-regexp
-    :commands (pel-select-search-regexp-engine
-               pel-show-active-search-regexp-engine
-               pel-replace-regexp
-               pel-query-replace-regexp))
-
+  (pel-autoload-file pel-search-regexp for:
+                     pel-select-search-regexp-engine
+                     pel-show-active-search-regexp-engine
+                     pel-replace-regexp
+                     pel-query-replace-regexp)
   (define-key pel:search-replace "S" 'pel-select-search-regexp-engine)
   (define-key pel:help   "S" 'pel-show-active-search-regexp-engine)
   ;; replace some already bound keys
@@ -5119,23 +4822,19 @@ the ones defined from the buffer now."
 ;; xr - Emacs regexp parser and analyzer
 
 (when pel-use-xr
-  (use-package xr
-    :ensure t
-    :pin gnu
-    :commands (xr-pp
-               xr-lint))
-
-  (use-package pel-xr
-    :commands (pel-xr-at-point
-               pel-xr-regxp
-               pel-xr-lint
-               pel-xr-lint-at-point)
-
-    :init
-    (define-key pel:regexp "x" 'pel-xr-at-point)
-    (define-key pel:regexp "X" 'pel-xr-regxp)
-    (define-key pel:regexp "l" 'pel-xr-lint-at-point)
-    (define-key pel:regexp "L" 'pel-xr-lint)))
+  (pel-ensure-package xr from: gnu)
+  (pel-autoload-file xr for:
+                     xr-pp
+                     xr-lint)
+  (pel-autoload-file pel-xr for:
+                     pel-xr-at-point
+                     pel-xr-regxp
+                     pel-xr-lint
+                     pel-xr-lint-at-point)
+  (define-key pel:regexp "x" 'pel-xr-at-point)
+  (define-key pel:regexp "X" 'pel-xr-regxp)
+  (define-key pel:regexp "l" 'pel-xr-lint-at-point)
+  (define-key pel:regexp "L" 'pel-xr-lint))
 
 ;; - - -
 ;; relint
@@ -5145,19 +4844,17 @@ the ones defined from the buffer now."
   (define-pel-global-prefix pel:regxp-lint (kbd "<f11> s x M-l"))
   (define-pel-global-prefix pel:elisp-regxp-lint (kbd "<f11> SPC l a l"))
 
-  (use-package relint
-    :ensure t
-    :pin gnu
-    :commands  (relint-current-buffer
-                relint-file
-                relint-directory)
-    :init
-    (define-key pel:regxp-lint "b" 'relint-current-buffer)
-    (define-key pel:regxp-lint "f" 'relint-file)
-    (define-key pel:regxp-lint "d" 'relint-directory)
-    (define-key pel:elisp-regxp-lint "b" 'relint-current-buffer)
-    (define-key pel:elisp-regxp-lint "f" 'relint-file)
-    (define-key pel:elisp-regxp-lint "d" 'relint-directory)))
+  (pel-ensure-package relint from: gnu)
+  (pel-autoload-file relint for:
+                     relint-current-buffer
+                     relint-file
+                     relint-directory)
+  (define-key pel:regxp-lint "b" 'relint-current-buffer)
+  (define-key pel:regxp-lint "f" 'relint-file)
+  (define-key pel:regxp-lint "d" 'relint-directory)
+  (define-key pel:elisp-regxp-lint "b" 'relint-current-buffer)
+  (define-key pel:elisp-regxp-lint "f" 'relint-file)
+  (define-key pel:elisp-regxp-lint "d" 'relint-directory))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> M-s`` : Speedbar/SR-Speedbar commands
@@ -5172,48 +4869,46 @@ the ones defined from the buffer now."
     (pel-install-github-file "pierre-rouleau/sr-speedbar/master"
                              "sr-speedbar.el"))
 
-  (use-package sr-speedbar
-    :commands (sr-speedbar-toggle
-               sr-speedbar-window-p)
-    :init
-    (cl-eval-when 'compile (require 'sr-speedbar nil :no-error))
-    (define-pel-global-prefix pel:speedbar (kbd "<f11> M-s"))
-    (define-key pel:speedbar (kbd "M-s")  'pel-open-close-speedbar)
-    (define-key pel:speedbar (kbd "M-b")  'pel-sr-speedbar-toggle-select-behaviour)
-    (define-key pel:speedbar (kbd "M-t")  'pel-toggle-to-speedbar)
-    (define-key pel:speedbar (kbd "M-R")  'pel-speedbar-toggle-refresh)
-    (define-key pel:speedbar (kbd "M-r")  'pel-speedbar-refresh)
-    (define-key pel:speedbar (kbd "M-a")  'pel-speedbar-toggle-show-all-files)
-    (define-key pel:speedbar (kbd "M-o")  'pel-speedbar-toggle-sorting)
-    (define-key pel:speedbar (kbd "M-f")  'pel-speedbar-focus-current-file)
-    ;; (define-key pel:speedbar "e"  #'speedbar-toggle-etags)
-    (when (display-graphic-p)
-      (define-key pel:speedbar (kbd "M-i") 'pel-speedbar-toggle-images))
+  (pel-autoload-file sr-speedbar for:
+                     sr-speedbar-toggle
+                     sr-speedbar-window-p)
+  (define-pel-global-prefix pel:speedbar (kbd "<f11> M-s"))
+  (define-key pel:speedbar (kbd "M-s")  'pel-open-close-speedbar)
+  (define-key pel:speedbar (kbd "M-b")  'pel-sr-speedbar-toggle-select-behaviour)
+  (define-key pel:speedbar (kbd "M-t")  'pel-toggle-to-speedbar)
+  (define-key pel:speedbar (kbd "M-R")  'pel-speedbar-toggle-refresh)
+  (define-key pel:speedbar (kbd "M-r")  'pel-speedbar-refresh)
+  (define-key pel:speedbar (kbd "M-a")  'pel-speedbar-toggle-show-all-files)
+  (define-key pel:speedbar (kbd "M-o")  'pel-speedbar-toggle-sorting)
+  (define-key pel:speedbar (kbd "M-f")  'pel-speedbar-focus-current-file)
+  ;; (define-key pel:speedbar "e"  #'speedbar-toggle-etags)
+  (when pel-emacs-is-graphic-p
+    (define-key pel:speedbar (kbd "M-i") 'pel-speedbar-toggle-images))
 
-    (defun pel--sr-speedbar-setup()
-      "Setup the sr-speedbar hooks."
-      ;; Remove sr-speedbar hooks that switch back to the speedbar buffer
-      (remove-hook 'speedbar-before-visiting-file-hook #'sr-speedbar-before-visiting-file-hook)
-      (remove-hook 'speedbar-before-visiting-tag-hook  #'sr-speedbar-before-visiting-tag-hook)
-      (remove-hook 'speedbar-visiting-file-hook        #'sr-speedbar-visiting-file-hook)
-      (remove-hook 'speedbar-visiting-tag-hook         #'sr-speedbar-visiting-tag-hook)
-      ;; Instead add hooks to a command can controls the behaviour
-      (add-hook 'speedbar-visiting-file-hook         'pel-sr-speedbar-visiting-control t)
-      (add-hook 'speedbar-visiting-tag-hook          'pel-sr-speedbar-visiting-control t))
+  (defun pel--sr-speedbar-setup()
+    "Setup the sr-speedbar hooks."
+    ;; Remove sr-speedbar hooks that switch back to the speedbar buffer
+    (remove-hook 'speedbar-before-visiting-file-hook 'sr-speedbar-before-visiting-file-hook)
+    (remove-hook 'speedbar-before-visiting-tag-hook  'sr-speedbar-before-visiting-tag-hook)
+    (remove-hook 'speedbar-visiting-file-hook        'sr-speedbar-visiting-file-hook)
+    (remove-hook 'speedbar-visiting-tag-hook         'sr-speedbar-visiting-tag-hook)
+    ;; Instead add hooks to a command can controls the behaviour
+    (add-hook 'speedbar-visiting-file-hook         'pel-sr-speedbar-visiting-control t)
+    (add-hook 'speedbar-visiting-tag-hook
+              'pel-sr-speedbar-visiting-control t))
+  (declare-function pel--sr-speedbar-setup "pel_keys")
 
-    (with-eval-after-load 'sr-speedbar
-      (advice-add 'sr-speedbar-open :after (function pel--sr-speedbar-setup))))
+  (with-eval-after-load 'sr-speedbar
+    (advice-add 'sr-speedbar-open :after (function pel--sr-speedbar-setup)))
 
   (when pel-use-projectile-speedbar
-    (use-package projectile-speedbar
-      :ensure t
-      :pin melpa
-      :commands (projectile-speedbar-open-current-buffer-in-tree
-                 projectile-speedbar-toggle)
-      :init
-      (with-eval-after-load 'projectile
-        (define-key projectile-command-map (kbd "M-s")
-          'projectile-speedbar-open-current-buffer-in-tree)))))
+    (pel-ensure-package projectile-speedbar from: melpa)
+    (pel-autoload-file projectile-speedbar for:
+                       projectile-speedbar-open-current-buffer-in-tree
+                       projectile-speedbar-toggle)
+    (with-eval-after-load 'projectile
+      (define-key projectile-command-map (kbd "M-s")
+        'projectile-speedbar-open-current-buffer-in-tree))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> -        ``<f11> T`` : Directory Tree
@@ -5255,22 +4950,17 @@ the ones defined from the buffer now."
 ;;       (message "Activating nhexl nibble mode"))))
 
 (when pel-use-nhexl-mode
-  (use-package nhexl-mode
-    :ensure t
-    :pin gnu
-    :commands (nhexl-mode
-               nhexl-nibble-edit-mode
-               nhexl-overwrite-only-mode)
-    :init
-    (cl-eval-when 'compile (require 'nhexl-mode nil :no-error))
-    (define-key pel:text   "O"  #'nhexl-overwrite-only-mode)
-
-    (define-key pel:buffer "x"  #'nhexl-mode)
-    ;; Toggle nibble editing (mainly useful in nhexl mode,
-    ;; but can also be used in normal mode to enter character
-    ;; in hexadecimal easily)
-    (define-key pel:buffer "X"  #'nhexl-nibble-edit-mode)))
-
+  (pel-ensure-package nhexl-mode from: gnu)
+  (pel-autoload-file nhexl-mode for:
+                     nhexl-mode
+                     nhexl-nibble-edit-mode
+                     nhexl-overwrite-only-mode)
+  (define-key pel:text   "O"  #'nhexl-overwrite-only-mode)
+  (define-key pel:buffer "x"  #'nhexl-mode)
+  ;; Toggle nibble editing (mainly useful in nhexl mode,
+  ;; but can also be used in normal mode to enter character
+  ;; in hexadecimal easily)
+  (define-key pel:buffer "X"  #'nhexl-nibble-edit-mode))
 
 ;; - Optimized keys for Case Conversion
 ;; ------------------------------------
@@ -5410,28 +5100,23 @@ the ones defined from the buffer now."
 
 ;; Git support
 (when pel-use-magit
-  (use-package magit
-    :ensure t
-    :pin melpa
-    :commands (magit
-               magit-status)
-    :init
-    (define-key pel:vcs "g"  'magit-status)))
+  (pel-ensure-package magit from: melpa)
+  (pel-autoload-file magit for:
+                     magit
+                     magit-status)
+  (define-key pel:vcs "g"  'magit-status))
 
 ;; Mercurial Support
 (when pel-use-monky
-  (use-package monky
-    :ensure t
-    :pin melpa
+  (pel-ensure-package monky from: melpa)
+  (pel-autoload-file monky for: monky-status)
+  (define-key pel:vcs "m"  'monky-status))
 
-    :commands monky-status
-    :init
-    (define-key pel:vcs "m"  'monky-status)))
-
-;; Install & compile hgignore-mode if requested.  No key assignment;
-;; the package installation will activate the file name association
-;; and the auto-loading.
-(pel-ensure-package hgignore-mode when: pel-use-hgignore-mode from: melpa)
+(when pel-use-hgignore-mode
+  ;; Install & compile hgignore-mode if requested.  No key assignment;
+  ;; the package installation will activate the file name association
+  ;; and the auto-loading.
+  (pel-ensure-package hgignore-mode from: melpa))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> w`` : Windows operations
@@ -5461,39 +5146,37 @@ the ones defined from the buffer now."
 
 ;; --
 (when pel-use-ace-window
-  (use-package ace-window
-    :ensure t
-    :pin melpa
-    :commands (ace-window
-               ace-swap-window
-               ace-delete-window
-               ace-delete-other-windows
-               ace-window-display-mode)
-    :init
-    (cl-eval-when 'compile (require 'ace-window nil :no-error))
-    ;; move cursor to other window - 'C-x o' is normally mapped to
-    ;; this function, but PEL remap it.
-    (define-key pel:window  "o"  'pel-other-window)
-    (define-key pel:window  "k"  'ace-delete-window)
-    ;; old version of ace-window had ace-maximize-window
-    ;; but newer version obsoleted that and now use ace-delete-other-windows
-    ;; If you do not have it, upgrade ace-window.
+  (pel-ensure-package ace-window from: melpa)
+  (pel-autoload-file ace-window for:
+                     ace-window
+                     ace-swap-window
+                     ace-delete-window
+                     ace-delete-other-windows
+                     ace-window-display-mode)
+  ;; move cursor to other window - 'C-x o' is normally mapped to
+  ;; this function, but PEL remap it.
+  (define-key pel:window  "o"  'pel-other-window)
+  (define-key pel:window  "k"  'ace-delete-window)
+  ;; old version of ace-window had ace-maximize-window
+  ;; but newer version obsoleted that and now use ace-delete-other-windows
+  ;; If you do not have it, upgrade ace-window.
 
-    (define-key pel:window  "#"  'ace-window-display-mode)
-    (define-key pel:window  "m"  'ace-delete-other-windows)
-    (define-key pel:window  "x"  'ace-swap-window)
+  (define-key pel:window  "#"  'ace-window-display-mode)
+  (define-key pel:window  "m"  'ace-delete-other-windows)
+  (define-key pel:window  "x"  'ace-swap-window)
 
-    ;; Replace other-window, bound to 'C-x o', to ace-window
-    ;; and make the font larger - in graphics mode.
-    ;; So `C-x o` shows a window number in top left corner, unless
-    ;; there's only 2 windows and if with frames, in terminal mode,
-    ;; the argument does not request it.
-    (global-set-key [remap other-window] 'ace-window)
+  ;; Replace other-window, bound to 'C-x o', to ace-window
+  ;; and make the font larger - in graphics mode.
+  ;; So `C-x o` shows a window number in top left corner, unless
+  ;; there's only 2 windows and if with frames, in terminal mode,
+  ;; the argument does not request it.
+  (global-set-key [remap other-window] 'ace-window)
 
-    :config
-    (custom-set-faces
-     '(aw-leading-char-face
-       ((t (:inherit ace-jump-face-forward :height 3.0)))))))
+  (when pel-emacs-is-graphic-p
+    (pel-eval-after-load ace-window
+      (custom-set-faces
+       '(aw-leading-char-face
+         ((t (:inherit ace-jump-face-forward :height 3.0))))))))
 
 ;; --
 ;; TODO: change to use a hook before the function split-window is called and
@@ -5507,31 +5190,27 @@ the ones defined from the buffer now."
 ;; I need a better understanding of the advice mechanism.
 
 (when pel-use-winner
-  (use-package winner
-    :defer 1
-    ;; :commands (winner-undo winner-redo)
-
-    :init
-    (cl-eval-when 'compile (require 'winner nil :no-error))
-    (define-key pel:window    "n"  'winner-redo)   ; next window arrangement
-    (define-key pel:window    "p"  'winner-undo)   ; previous window arrangement
-
-    :config
+  ;; winner is built-in Emacs.
+  (pel-autoload-file winner for: winner-mode)
+  (pel-require-after-init winner 1)
+  (pel-autoload-file winner for:
+                     winner-undo
+                     winner-redo)
+  (define-key pel:window    "n"  'winner-redo) ; next window arrangement
+  (define-key pel:window    "p"  'winner-undo) ; previous window arrangement
+  (defvar winner-dont-bind-my-keys)            ; prevent byte-compiler warning
+  (pel-eval-after-load winner
     ;; winner-mode default bindings use the Shift cursor keys,
     ;; this conflict with org-mode, so use the '<f11> w' bindings
     ;; instead.
     (setq winner-dont-bind-my-keys t)
     ;; turn on the global minor mode
-    (declare-function winner-mode "winner")
     (winner-mode t)))
 
 (when pel-use-windresize
-  (use-package windresize
-    :ensure t
-    :pin gnu
-    :commands windresize
-    :init
-    (define-key pel:window "r" 'windresize)))
+  (pel-ensure-package windresize from: gnu)
+  (pel-autoload-file windresize for: windresize)
+  (define-key pel:window "r" 'windresize))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> w d`` : Windows dedicated operations
@@ -5576,96 +5255,89 @@ the ones defined from the buffer now."
 (when pel-use-desktop
   (define-pel-global-prefix pel:session (kbd "<f11> S"))
   ;;
-  (use-package desktop
-    :commands (desktop-save
-               desktop-read
-               desktop-save-mode
-               desktop-change-dir
-               desktop-revert
-               desktop-clear)
-    :init
-    (unless (eq pel-use-desktop 'with-desktop+)
-      (define-key pel:session (kbd "M-s") 'desktop-save-mode)
-      (define-key pel:session "S"         'desktop-save)
-      (define-key pel:session "L"         'desktop-read)
-      (define-key pel:session "c"         'desktop-clear)
-      (define-key pel:session "d"         'desktop-change-dir)
-      (define-key pel:session "r"         'desktop-revert))
-    ;;
-    ;; When Emacs runs in Terminal (TTY) mode, desktop does not restore the
-    ;; window layout, because desktop-restoring-frameset-p returns nil in
-    ;; terminal mode.  One way to add the functionality would be to advice that
-    ;; function or to explicitly restore the frameset data via a hook.
-    ;; That's what we do.
-    (unless (display-graphic-p)
-      (add-hook
-       'desktop-after-read-hook
-       (lambda ()
-         (frameset-restore
-          desktop-saved-frameset
-          :reuse-frames (eq desktop-restore-reuses-frames t)
-          :cleanup-frames (not (eq desktop-restore-reuses-frames 'keep))
-          :force-display desktop-restore-in-current-display
-          :force-onscreen nil))));)
-
-    (unless (eq pel-use-desktop 'with-desktop+)
-      ;; desktop+ autoloaded logic advices of the desktop functions.
-      ;; Since that autoloading might already be done if desktop+ is installed
-      ;; these advices are already done even if the user does not want to use
-      ;; desktop+ and they will prevent proper operation of desktop alone.
-      ;; Remove these advices to allow proper access of the desktop.el
-      ;; functions.
-      ;; Compatible with feature+ version 0.1.1, package-version: 20170107.2132
-      (when (fboundp 'desktop+--advice--desktop-save)
-        (advice-remove 'desktop-save
-                       #'desktop+--advice--desktop-save))
-      (when (fboundp 'desktop+--advice--desktop-restore-frameset)
-        (advice-remove 'desktop-restore-frameset
-                       #'desktop+--advice--desktop-restore-frameset))))
+  (pel-autoload-file desktop for:
+                     desktop-save
+                     desktop-read
+                     desktop-save-mode
+                     desktop-change-dir
+                     desktop-revert
+                     desktop-clear)
+  (unless (eq pel-use-desktop 'with-desktop+)
+    (define-key pel:session (kbd "M-s") 'desktop-save-mode)
+    (define-key pel:session "S"         'desktop-save)
+    (define-key pel:session "L"         'desktop-read)
+    (define-key pel:session "c"         'desktop-clear)
+    (define-key pel:session "d"         'desktop-change-dir)
+    (define-key pel:session "r"         'desktop-revert))
   ;;
-  ;;    ;; -- Using with-desktop-auto-save-mode
-  (cond ((eq pel-use-desktop 'with-desktop-automatic)
-         (desktop-save-mode 1))
-        ;;
-        ;; -- Using desktop-registry
-        ((memq pel-use-desktop '(with-desktop-registry
-                                 with-desktop-registry-automatic))
-         ;;
-         (when (eq pel-use-desktop 'with-desktop-registry-automatic)
-           (desktop-save-mode 1))
-         ;;
-         (define-pel-global-prefix pel:session-registry (kbd "<f11> S R"))
-         (use-package desktop-registry
-           :ensure t
-           :pin melpa
-           :commands (desktop-registry-change-desktop
-                      desktop-registry-remove-desktop
-                      desktop-registry-rename-desktop
-                      desktop-registry-add-directory
-                      desktop-registry-add-current-desktop
-                      desktop-registry-list-desktops)
-           :init
-           (define-key pel:session-registry "l" 'desktop-registry-list-desktops)
-           (define-key pel:session-registry "o" 'desktop-registry-change-desktop)
-           (define-key pel:session-registry "d" 'desktop-registry-remove-desktop)
-           (define-key pel:session-registry "R" 'desktop-registry-rename-desktop)
-           (define-key pel:session-registry "a" 'desktop-registry-add-directory)
-           (define-key pel:session-registry "A" 'desktop-registry-add-current-desktop)))
-        ;;
-        ;; -- Using desktop+
-        ((eq pel-use-desktop 'with-desktop+)
-         (use-package desktop+
-           :ensure t
-           :pin melpa
-           :commands (desktop+-create
-                      desktop+-load
-                      desktop+-create-auto
-                      desktop+-load-auto))
-         :init
-         (define-key pel:session "s" 'desktop+-create)
-         (define-key pel:session "l" 'desktop+-load)
-         (define-key pel:session "S" 'desktop+-create-auto)
-         (define-key pel:session "L" 'desktop+-load-auto))))
+  ;; When Emacs runs in Terminal (TTY) mode, desktop does not restore the
+  ;; window layout, because desktop-restoring-frameset-p returns nil in
+  ;; terminal mode.  One way to add the functionality would be to advice that
+  ;; function or to explicitly restore the frameset data via a hook.
+  ;; That's what we do.
+  (defvar desktop-saved-frameset)       ; prevent byte-compiler warning
+  (defvar desktop-restore-reuses-frames)
+  (defvar desktop-restore-in-current-display)
+  (when pel-emacs-is-a-tty-p
+    (add-hook 'desktop-after-read-hook
+              (lambda ()
+                (frameset-restore
+                 desktop-saved-frameset
+                 :reuse-frames (eq desktop-restore-reuses-frames t)
+                 :cleanup-frames (not (eq desktop-restore-reuses-frames 'keep))
+                 :force-display desktop-restore-in-current-display
+                 :force-onscreen nil))))
+
+  (unless (eq pel-use-desktop 'with-desktop+)
+    ;; desktop+ autoloaded logic advices of the desktop functions.
+    ;; Since that autoloading might already be done if desktop+ is installed
+    ;; these advices are already done even if the user does not want to use
+    ;; desktop+ and they will prevent proper operation of desktop alone.
+    ;; Remove these advices to allow proper access of the desktop.el
+    ;; functions.
+    ;; Compatible with feature+ version 0.1.1, package-version: 20170107.2132
+    (when (fboundp 'desktop+--advice--desktop-save)
+      (advice-remove 'desktop-save
+                     #'desktop+--advice--desktop-save))
+    (when (fboundp 'desktop+--advice--desktop-restore-frameset)
+      (advice-remove 'desktop-restore-frameset
+                     #'desktop+--advice--desktop-restore-frameset)))
+  (cond
+   ;; -- Using with-desktop-auto-save-mode
+   ((eq pel-use-desktop 'with-desktop-automatic)
+    (desktop-save-mode 1))
+   ;; -- Using desktop-registry
+   ((memq pel-use-desktop '(with-desktop-registry
+                            with-desktop-registry-automatic))
+    (when (eq pel-use-desktop 'with-desktop-registry-automatic)
+      (desktop-save-mode 1))
+    (define-pel-global-prefix pel:session-registry (kbd "<f11> S R"))
+    (pel-ensure-package desktop-registry from: melpa)
+    (pel-autoload-file desktop-registry for:
+                       desktop-registry-change-desktop
+                       desktop-registry-remove-desktop
+                       desktop-registry-rename-desktop
+                       desktop-registry-add-directory
+                       desktop-registry-add-current-desktop
+                       desktop-registry-list-desktops)
+    (define-key pel:session-registry "l" 'desktop-registry-list-desktops)
+    (define-key pel:session-registry "o" 'desktop-registry-change-desktop)
+    (define-key pel:session-registry "d" 'desktop-registry-remove-desktop)
+    (define-key pel:session-registry "R" 'desktop-registry-rename-desktop)
+    (define-key pel:session-registry "a" 'desktop-registry-add-directory)
+    (define-key pel:session-registry "A" 'desktop-registry-add-current-desktop))
+   ;; -- Using desktop+
+   ((eq pel-use-desktop 'with-desktop+)
+    (pel-ensure-package desktop+ from: melpa)
+    (pel-autoload-file desktop+ for:
+                       desktop+-create
+                       desktop+-load
+                       desktop+-create-auto
+                       desktop+-load-auto)
+    (define-key pel:session "s" 'desktop+-create)
+    (define-key pel:session "l" 'desktop+-load)
+    (define-key pel:session "S" 'desktop+-create-auto)
+    (define-key pel:session "L" 'desktop+-load-auto))))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> x`` : Process eXecution utilities
@@ -5695,12 +5367,9 @@ the ones defined from the buffer now."
 
 ;; support for the extremely fast/nice libvterm-based vterm shell.
 (when pel-use-vterm
-  (use-package vterm
-    :ensure t
-    :pin melpa
-    :commands vterm
-    :init
-    (define-key pel:eXecute "v" 'vterm)))
+  (pel-ensure-package vterm from: melpa)
+  (pel-autoload-file vterm for: vterm)
+  (define-key pel:eXecute "v" 'vterm))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> X`` : Xref utilities
@@ -5742,98 +5411,76 @@ the ones defined from the buffer now."
 
 ;; ggtags
 (when pel-use-ggtags
-  (use-package ggtags
-    :ensure t
-    :pin melpa
-    :commands ggtags-mode
-    :init
-    ;; ggtags has its own key map which has all we need.
-    ;; just provide a key to quickly enable or disable ggtags-mode.
-    (define-key pel:xref-backend "G" 'ggtags-mode)
-    (pel-add-hook-for
-     'pel-modes-activating-ggtags
-     (lambda ()
-       (ggtags-mode 1)))))
+  (pel-ensure-package ggtags from: melpa)
+  (pel-autoload-file ggtags for: ggtags-mode)
+  ;; ggtags has its own key map which has all we need.
+  ;; just provide a key to quickly enable or disable ggtags-mode.
+  (define-key pel:xref-backend "G" 'ggtags-mode)
+  (pel-add-hook-for
+   'pel-modes-activating-ggtags
+   (lambda ()
+     (ggtags-mode 1))))
 
 ;; cscope
 (when pel-use-xcscope
   (define-pel-global-prefix pel:cscope (kbd "<f11> X C"))
-  (use-package xcscope
-    :ensure t
-    :pin melpa
-    :commands cscope-minor-mode
-    :init
-    (define-key pel:cscope "C" 'cscope-minor-mode)
-    ;; schedule activation of cscope minor mode for selected ones
-    (pel-add-hook-for 'pel-modes-activating-cscope
-                      'cscope-minor-mode))
+  (pel-ensure-package xcscope from: melpa)
+  (pel-autoload-file xcscope for: cscope-minor-mode)
+  (define-key pel:cscope "C" 'cscope-minor-mode)
+  ;; schedule activation of cscope minor mode for selected ones
+  (pel-add-hook-for 'pel-modes-activating-cscope
+                    'cscope-minor-mode)
 
   (when pel-use-helm-cscope
-    (use-package helm-cscope
-      :ensure t
-      :pin melpa
-      :commands helm-cscope-mode
-      :init
-      (define-key pel:cscope "H" 'pel-toggle-helm-cscope)
-      (add-hook 'helm-cscope-mode-hook 'pel-activate-helm-cscope)
-      (pel-add-hook-for 'pel-modes-activating-helm-cscope
-                        'pel-activate-helm-cscope))))
+    (pel-ensure-package helm-cscope from: melpa)
+    (pel-autoload-file helm-cscope for: helm-cscope-mode)
+    (define-key pel:cscope "H" 'pel-toggle-helm-cscope)
+    (add-hook 'helm-cscope-mode-hook 'pel-activate-helm-cscope)
+    (pel-add-hook-for 'pel-modes-activating-helm-cscope
+                      'pel-activate-helm-cscope)))
 
 ;; dumb-jump
 (when pel-use-dumb-jump
-  (use-package dumb-jump
-    :ensure t
-    :pin melpa
-    :commands pel-xref-toggle-dumb-jump-mode
-    :init
-    ;; pel-xref-toggle-dumb-jump-mode sets up the xref-backend-functions
-    ;; to use dumb-jump as the backend for xref, and use its key bindings.
-    (define-key pel:xref-backend "D" 'pel-xref-toggle-dumb-jump-mode)
-    ;; schedule activation for requested major modes.
-    (pel-add-hook-for 'pel-modes-activating-dumb-jump
-                      'pel-xref-dumb-jump-activate)))
+  (pel-ensure-package dumb-jump from: melpa)
+  (pel-autoload-file dumb-jump for: pel-xref-toggle-dumb-jump-mode)
+  ;; pel-xref-toggle-dumb-jump-mode sets up the xref-backend-functions
+  ;; to use dumb-jump as the backend for xref, and use its key bindings.
+  (define-key pel:xref-backend "D" 'pel-xref-toggle-dumb-jump-mode)
+  ;; schedule activation for requested major modes.
+  (pel-add-hook-for 'pel-modes-activating-dumb-jump
+                    'pel-xref-dumb-jump-activate))
 
 ;; gxref
 (when pel-use-gxref
-  (use-package gxref
-    :ensure t
-    :pin melpa
-    :commands xref-show-xrefs-function
-    :init
-    (define-key pel:xref-backend "g" 'pel-xref-toggle-gxref)
-    (pel-add-hook-for 'pel-modes-activating-gxref
-                      'pel-xref-gxref-activate)))
+  (pel-ensure-package gxref from: melpa)
+  (pel-autoload-file gxref for: xref-show-xrefs-function)
+  (define-key pel:xref-backend "g" 'pel-xref-toggle-gxref)
+  (pel-add-hook-for 'pel-modes-activating-gxref
+                    'pel-xref-gxref-activate))
 
 ;; rtags
 (when pel-use-rtags-xref
-  (use-package rtags-xref
-    :ensure t
-    :pin melpa
-    :commands rtags-xref-enable
-    :init
-    (define-key pel:xref-backend "R" 'pel-xref-toggle-rtags)
-    (when (eq pel-use-rtags-xref 'use-from-start)
-      (pel-xref-rtags-activate))))
+  (pel-ensure-package rtags-xref from: melpa)
+  (pel-autoload-file rtags-xref for: rtags-xref-enable)
+  (define-key pel:xref-backend "R" 'pel-xref-toggle-rtags)
+  (when (eq pel-use-rtags-xref 'use-from-start)
+    (pel-xref-rtags-activate)))
 
 ;; ivy-xref
 (when pel-use-ivy-xref
-  (use-package ivy-xref
-    :ensure t
-    :pin melpa
-    :commands ivy-xref-show-xrefs))
+  (pel-ensure-package ivy-xref from: melpa)
+  (pel-autoload-file ivy-xref for: ivy-xref-show-xrefs))
 
 ;; helm-xref
 (when pel-use-helm-xref
   (if (< emacs-major-version 27)
-      (use-package helm-xref
-        :ensure t
-        :pin melpa
-        :commands helm-xref-show-xrefs)
-    (use-package helm-xref
-      :ensure t
-      :pin melpa
-      :commands (helm-xref-show-xrefs-27
-                 helm-xref-show-defs-27))))
+      (progn
+        (pel-ensure-package helm-xref from: melpa)
+        (pel-autoload-file helm-xref helm-xref-show-xrefs))
+    (pel-ensure-package helm-xref from: melpa)
+    (pel-autoload-file helm-xref
+                          helm-xref-show-xrefs-27
+                          helm-xref-show-defs-27)))
 
 (when (or pel-use-ivy-xref
           pel-use-helm-xref)
@@ -5843,47 +5490,43 @@ the ones defined from the buffer now."
 
 ;; eopengrok
 (when pel-use-eopengrok
-  (use-package eopengrok
-    :ensure t
-    :pin melpa
-    :commands (eopengrok-mode
-               eopengrok-create-index
-               eopengrok-create-index-with-enable-projects
-               eopengrok-find-definition
-               eopengrok-find-file
-               eopengrok-find-reference
-               eopengrok-find-text
-               eopengrok-find-history
-               eopengrok-find-custom
-               eopengrok-resume)
-    :init
-    (define-pel-global-prefix pel:opengrok (kbd "<f11> X O"))
-    (define-key pel:opengrok "i" 'eopengrok-create-index)
-    (define-key pel:opengrok "I" 'eopengrok-create-index-with-enable-projects)
-    (define-key pel:opengrok "d" 'eopengrok-find-definition)
-    (define-key pel:opengrok "f" 'eopengrok-find-file)
-    (define-key pel:opengrok "s" 'eopengrok-find-reference)
-    (define-key pel:opengrok "t" 'eopengrok-find-text)
-    (define-key pel:opengrok "h" 'eopengrok-find-history)
-    (define-key pel:opengrok "c" 'eopengrok-find-custom)
-    (define-key pel:opengrok "b" 'eopengrok-resume)))
+  (pel-ensure-package eopengrok from: melpa)
+  (pel-autoload-file eopengrok for:
+                        eopengrok-mode
+                        eopengrok-create-index
+                        eopengrok-create-index-with-enable-projects
+                        eopengrok-find-definition
+                        eopengrok-find-file
+                        eopengrok-find-reference
+                        eopengrok-find-text
+                        eopengrok-find-history
+                        eopengrok-find-custom
+                        eopengrok-resume)
+  (define-pel-global-prefix pel:opengrok (kbd "<f11> X O"))
+  (define-key pel:opengrok "i" 'eopengrok-create-index)
+  (define-key pel:opengrok "I" 'eopengrok-create-index-with-enable-projects)
+  (define-key pel:opengrok "d" 'eopengrok-find-definition)
+  (define-key pel:opengrok "f" 'eopengrok-find-file)
+  (define-key pel:opengrok "s" 'eopengrok-find-reference)
+  (define-key pel:opengrok "t" 'eopengrok-find-text)
+  (define-key pel:opengrok "h" 'eopengrok-find-history)
+  (define-key pel:opengrok "c" 'eopengrok-find-custom)
+  (define-key pel:opengrok "b" 'eopengrok-resume))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> _`` : Underlining commands
 
-(use-package pel-comment-adorn
-  ;; autoload it when keys are using commands
-  :commands (pel-commented-adorn-1
-             pel-commented-adorn-2
-             pel-commented-adorn-3
-             pel-commented-adorn-4
-             pel-commented-adorn-5
-             pel-commented-adorn-6
-             pel-commented-adorn-7
-             pel-commented-adorn-8
-             pel-commented-adorn-9
-             pel-commented-adorn-10))
-
+(pel-autoload-file pel-comment-adorn for:
+                   pel-commented-adorn-1
+                   pel-commented-adorn-2
+                   pel-commented-adorn-3
+                   pel-commented-adorn-4
+                   pel-commented-adorn-5
+                   pel-commented-adorn-6
+                   pel-commented-adorn-7
+                   pel-commented-adorn-8
+                   pel-commented-adorn-9
+                   pel-commented-adorn-10)
 (define-pel-global-prefix pel:underline (kbd "<f11> _"))
 (define-key pel:underline "1" 'pel-commented-adorn-1)
 (define-key pel:underline "2" 'pel-commented-adorn-2)
@@ -5900,31 +5543,25 @@ the ones defined from the buffer now."
 ;; Key-Chord Mode
 ;; ==============
 
-(defun pel--start-key-chord-mode ()
-  "Activate key-chord mode if it can be loaded."
-  (when (require 'key-chord nil :noerror)
-    (key-chord-mode 1)))
-
 (when pel-use-key-chord
+  (defun pel--start-key-chord-mode ()
+    "Activate key-chord mode if it can be loaded."
+    (when (require 'key-chord nil :noerror)
+      (key-chord-mode 1)))
+  (declare-function pel--start-key-chord-mode "pel_keys")
+
   (define-key pel:keys  (kbd "M-K")  'pel-key-chord-describe)
 
+  ;; The key-seq is only activated once key-chord is activated.
+  ;; Both must be active for key-seq to be used.  When both are
+  ;; set PEL gives priority to key-seq.
   (when pel-use-key-seq
-    ;; The key-seq is only activated once key-chord is activated.
-    ;; Both must be active for key-seq to be used.  When both are
-    ;; set PEL gives priority to key-seq.
-    (use-package key-seq
-      :ensure t
-      :pin melpa))
+    (pel-ensure-package key-seq from: melpa))
 
-  (use-package key-chord
-    :ensure t
-    :pin melpa
-    :commands key-chord-mode
-
-    :init
-    (define-key pel: (kbd "M-K")     'key-chord-mode)
-
-    :config
+  (pel-ensure-package key-chord from: melpa)
+  (pel-autoload-file key-chord for: key-chord-mode)
+  (define-key pel: (kbd "M-K")     'key-chord-mode)
+  (pel-eval-after-load key-chord
     (when (and (require 'pel-key-chord nil :noerror)
                (fboundp 'pel-activate-all-key-chords))
       (when pel-use-key-seq
@@ -5953,289 +5590,91 @@ the ones defined from the buffer now."
        :error))))
 
 ;; ---------------------------------------------------------------------------
-;; Hydra Definitions
-;; =================
-;;
-;; All PEL Hydras are invoked via the key <f7>.  The key typed right after f7
-;; determines what Hydra will be used. Therefore try to limit using the same
-;; keys inside the various PEL Hydras otherwise there won't be many keys to
-;; identify the exact Hydra to use.  For the moment most top left keys are
-;; used by the Window Hydra (pel-∑wnd), the other PEL Hydras use a secondary
-;; prefix key.
-;;
-;; Hydra auto-loading is controlled by the <f7> key. At first that key is
-;; mapped to execute `pel--load-hydra'. That function breaks this binding,
-;; load the hydra library, triggering the configuration of all PEL Hydras via
-;; the ```use-package hydra`` call.  Then it simulates a second <f7> key event
-;; to get the effect the user expects and then removes itself from Emacs.
-;;
-
-;; TODO:
-;; - Might want to place the different hydras inside their own files and allow
-;;   users to map them to some other bindings by using map references instead
-;;   of having them hard coded like they are now.
-
-(defun pel--maybe-vline-mode ()
-      "Use the vertical line mode when available."
-      (interactive)
-      (if (and pel-use-vline
-               (require 'vline nil :noerror)
-               (boundp 'vline-mode))
-          (progn
-            (vline-mode (if vline-mode -1 +1))
-            (move-to-column (if selective-display
-                                (max 0 (- selective-display 1))
-                              0)))
-        (user-error "Command vline-mode is not available.  \
-Customize pel-use-vline to t!")))
+;; PEL Hydras Control
+;; ------------------
 
 (when pel-use-hydra
+  ;; PEL's code for Hydra control is located in the file pel__hydra.el.
+  ;; The PEL Hydra code defines several Hydras, using the defhydra macro.
+  ;; The defhydra macro is only available once the hydra package is installed.
+  ;; Therefore, PEL's hydra code can't be byte-compiled until the hydra
+  ;; package is installed.
+  ;;
+  ;; However, we want to be able to byte-compile all of PEL's code even when
+  ;; some external packages are not installed.  After all the whole point of
+  ;; PEL is to control installation of external package via customization and
+  ;; ensure that we byte-compile everything to increase speed and catch as
+  ;; many coding errors as possible.
+  ;;
+  ;; To resolve this problem, all PEL's hydra definition code that must be
+  ;; executed during Emacs initialization is stored inside a separate file:
+  ;; pel__hydra.el.  PEL's make file does not byte compile pel__hydra.el.  The
+  ;; pel__hydra.el is byte compiled by the code here, when the user-option
+  ;; `pel-use-hydra' is turned on, and after it installs and loads the hydra
+  ;; package.
+  ;;
+  ;; This way, if the user does not want to use PEL's hydra facilities and
+  ;; leaves `pel-use-hydra' turned off, the hydra package is not installed at
+  ;; compilation nor at run time.  Later, if the user wants to use PEL's hydra
+  ;; and turns `pel-use-hydra' on, then one of the following action will
+  ;; install the hydra package, byte-compile PEL's hydra code and provide its
+  ;; full functionality.  This will occur on one of the following actions:
+  ;;
+  ;; - PEL is built with make,
+  ;; - Emacs is re-started,
+  ;; - Within Emacs, the user issues a `pel-init' command.
 
-  (defvar pel--cache-for-hydra-is-helpful nil)
-  (defvar pel--cache-for-hydra-is-helpful-filled nil)
+  ;; The hydra external library is however not loaded immediately.
+  ;; The pel__hydra file is also not loaded immediately.
+  ;; Why?  To reduce Emacs initialization time.
+  ;; How is it loaded then?  From PEL's perspective it is controlled by the
+  ;; use of the ``<f7>`` key.  The ``<f7>`` key is the key prefix for all PEL
+  ;; hydras.  But right after Emacs starts, PEL configures that key to execute
+  ;; the special interactive function `pel--load-hydra' which loads
+  ;; `pel__hydra' and unbinds itself.  The `pel__hydra' file loads the `hydra'
+  ;; library and defines the PEL hydras which use the ``<f7>`` key as their
+  ;; prefixes.
+  ;;
+  ;; This way the `hydra' library is loaded lazily: the first time the user
+  ;; press a PEL hydra key or when another package requires the `hydra'
+  ;; external library, whatever comes first.
 
-  (defun pel--cache-hydra-is-helpful ()
-    "Store hydra-is-helpful user option."
-    (unless pel--cache-for-hydra-is-helpful-filled
-      (setq pel--cache-for-hydra-is-helpful hydra-is-helpful)
-      (setq pel--cache-for-hydra-is-helpful-filled t)))
-
-  (defun pel--restore-hydra-is-helpful ()
-    "Restore the value of hydra-is-helpful user option."
-    (when pel--cache-for-hydra-is-helpful-filled
-      (setq hydra-is-helpful pel--cache-for-hydra-is-helpful)
-      (setq pel--cache-for-hydra-is-helpful-filled nil)))
-
-  (defun pel-toggle-hydra-hint ()
-    "Toggle display of the current hydra hint."
-    (interactive)
-    (message (if (pel-toggle 'hydra-is-helpful)
-                 "Showing Hydra Hint"
-               "Hiding Hint")))
-
-  ;; NOTE: pel--load-hydra is first globally bound to f7: see
-  ;;       the global-set-key statements below *after* the
-  ;;       use-package call.
+  ;; --
   (defun pel--load-hydra (&optional dont-simulate)
-    "Load Hydra. Available once: destroys itself.
-Simulate a F7 prefix key unless DONT-SIMULATE is non-nil."
+    "Define the PEL Hydra key sequences.
+
+This is available once: this function destroys itself!
+The presence of this function indicates that the PEL Hydras
+have not yet been loaded.
+
+This call simulates a F7 prefix key unless DONT-SIMULATE is non-nil."
     (interactive)
     ;; remove the temporary global binding to f7
     (global-unset-key (kbd "<f7>"))
-    (load-library "hydra")
+    (load-library "pel__hydra")
     (unless dont-simulate
       ;; simulate f7 again so the user sees what he expects
       (setq unread-command-events (listify-key-sequence (kbd "<f7>"))))
     ;; then get rid of this function.
     (fmakunbound 'pel--load-hydra))
+  (declare-function pel--load-hydra "pel_keys")
 
-  (use-package hydra
-    :ensure t
-    :pin melpa
-    :commands pel--load-hydra
+  ;; Bind the Hydra activation key
+  (global-set-key (kbd "<f7>") 'pel--load-hydra)
 
-    :config
-    ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    ;; PEL HYDRA: Narrate
-    (when (and pel-use-applescript pel-system-is-macos-p)
-      (defhydra pel-∑narrate (global-map "<f7> <f8>" :foreign-keys run)
-        ""
-        ("w"     pel-say-word             "word"              :column "Read")
-        ("s"     pel-say-sentence         "sentence"          :column "Read")
-        ("p"     pel-say-paragraph        "paragraph"         :column "Read")
-        ("R"     pel-say-region           "region"            :column "Read")
-        ("r" (progn
-               (backward-word)
-               (pel-say-word))            "last word"         :column "Repeat")
-        ("t"     pel-say                  "at prompt"         :column "Type")
-        ("b"     backward-word            "previous word"     :column "Move to")
-        ("n"     pel-forward-word-start   "next word"         :column "Move to")
-        ("B"     backward-sentence        "previous sentence" :column "Move to")
-        ("N" (progn
-               (forward-sentence)
-               (pel-forward-word-start))  "next sentence"     :column "Move to")
-        ("<f7>" nil                       "cancel"            :column "End")))
+  ;; --
+  ;; Install the hydra external package if it is not already installed.
+  ;; Then provide some auto-loading.
+  (pel-ensure-package hydra from: melpa)
+  (pel-autoload-file hydra for: defhydra)
 
-    ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    ;; PEL HYDRA: Window Management
-    ;; The hydra includes functions that may not be available
-    ;; provide dummy stubs for them if necessary.
-    (when (not pel-use-winner)
-      (defun winner-redo ()
-        "Warning stub"
-        (user-error "Unavailable - set pel-use-winner to t to activate!"))
-      (defun winner-undo ()
-        "Warning stub"
-        (user-error "Unavailable - set pel-use-winner to t to activate!")))
-
-    (when (not pel-use-ace-window)
-      (defun ace-swap-window ()
-        "Warning stub"
-        (user-error "Unavailable - set pel-ace-window to t to activate!")))
-
-    (defhydra pel-∑wnd (global-map "<f7>"
-                                   :pre  (pel--cache-hydra-is-helpful)
-                                   :post (pel--restore-hydra-is-helpful))
-      ""
-
-      ("<up>"        windmove-up                 "up"           :column "Move")
-      ("<down>"      windmove-down               "down"         :column "Move")
-      ("<left>"      windmove-left               "left"         :column "Move")
-      ("<right>"     windmove-right              "right"        :column "Move")
-      ("="           balance-windows             "balance"     :column "Resize")
-      ("V"           enlarge-window              "taller"      :column "Resize")
-      ("v"           shrink-window               "shorter"     :column "Resize")
-      ("H"           enlarge-window-horizontally "wider"       :column "Resize")
-      ("h"           shrink-window-horizontally  "narrower"    :column "Resize")
-      ("|"           split-window-right          "vertically"   :column "Split")
-      ("3"           split-window-right          "vertically"   :column "Split")
-      ("_"           split-window-below          "horizontally" :column "Split")
-      ("2"           split-window-below          "horizontally" :column "Split")
-      ("C-<up>"      pel-create-window-up        "above"     :column "Split.")
-      ("C-<down>"    pel-create-window-down      "below"     :column "Split.")
-      ("C-<left>"    pel-create-window-left      "left"      :column "Split.")
-      ("C-<right>"   pel-create-window-right     "right"     :column "Split.")
-      ("n"           winner-redo                 "next layout" :column "Layout")
-      ("p"           winner-undo                 "last layout" :column "Layout")
-      ("x"           ace-swap-window             "swap with.." :column "Layout")
-      ("M-v"         pel-2-vertical-windows      "flip vert."  :column "Layout")
-      ("M-h"         pel-2-horizontal-windows    "flip horiz." :column "Layout")
-      ("0"           delete-window               "this window"  :column "Close/Buffer")
-      ("k"           kill-buffer-and-window      "&kill buffer" :column "Close/Buffer")
-      ("1"           delete-other-windows        "all others"   :column "Close/Buffer")
-      ("q"           quit-window                 "quit window"  :column "Close/Buffer")
-      ("b"           next-buffer                 "next buffer"  :column "Close/Buffer")
-      ("B"           previous-buffer             "prev buffer"  :column "Close/Buffer")
-      ("C-S-<up>"    pel-close-window-up         "above"      :column "Close.")
-      ("C-S-<down>"  pel-close-window-down       "below"      :column "Close.")
-      ("C-S-<left>"  pel-close-window-left       "left"       :column "Close.")
-      ("C-S-<right>" pel-close-window-right      "right"      :column "Close.")
-      ("d"           pel-toggle-window-dedicated "un/dedicate"  :column "Other")
-      ("?"           pel-toggle-hydra-hint       "hint"         :column "Other")
-      ("<f7>"        nil                         "cancel"       :column "Other"))
-
-    ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    ;; PEL HYDRA: Hide/Show
-
-    (use-package hideshow
-      :commands hs-minor-mode)
-    (use-package pel-hideshow
-      :commands (pel-show-hide-state
-                 pel-toggle-hide-all
-                 pel-toggle-hide-block
-                 pel-hide-all
-                 pel-hide-block
-                 pel-show-all
-                 pel-show-block
-                 pel-hide-level-1
-                 pel-hide-level-2
-                 pel-hide-level-3
-                 pel-hide-level-4
-                 pel-hs-hide-block-below-inc
-                 pel-hs-hide-block-below-dec))
-
-    (defhydra pel-⅀hideshow (global-map "<f7> /"
-                                        :foreign-keys run)
-      "Hide/Show:"
-      ("/" hs-minor-mode               "Toggle hs mode" :column "State")
-      ("?" pel-show-hide-state         "info")
-      ("a" pel-toggle-hide-all         "all"    :column "Hide/Show")
-      ("b" pel-toggle-hide-block       "block")
-      ("H" pel-hide-all                "all"    :column "Hide")
-      ("h" pel-hide-block              "block")
-      ("S" pel-show-all                "all"    :column "Show")
-      ("s" pel-show-block              "block")
-      ("1" pel-hide-level-1            ">= 1"  :column "Hide levels")
-      ("2" pel-hide-level-2            ">= 2")
-      ("3" pel-hide-level-3            ">= 3")
-      ("4" pel-hide-level-4            ">= 4")
-      (">" pel-hs-hide-block-below-inc "+1" :column "Hide levels:")
-      ("<" pel-hs-hide-block-below-dec "-1")
-      ("<f7>" nil                      "cancel" :column "End"))
-
-    ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    ;; PEL HYDRA: C preprocessor
-    (defhydra pel-⅀c-preproc (pel:for-c "<f7>"  :foreign-keys run)
-      "C preprocessor"
-      ("n"    pel-pp-next-directive       "next"           :column "Move to")
-      ("p"    pel-pp-prev-directive       "prev"           :column "Move to")
-      ("C-p"  c-backward-conditional      "begin"          :column "Move to")
-      ("C-n"  c-forward-conditional       "end"            :column "Move to")
-      ("C-u"  c-up-conditional            "up"             :column "Move to")
-      ("#"    hide-ifdef-mode             "toggle mode"    :column "Hide")
-      ("W"    hide-ifdef-toggle-shadowing "toggle shadow"  :column "Hide")
-      ("R"    hide-ifdef-toggle-read-only "toggle RO"      :column "Hide")
-      ("H"    hide-ifdefs                 "hide"           :column "Hide")
-      ("S"    show-ifdefs                 "show"           :column "Hide")
-      ("h"    hide-ifdef-block            "hide block"     :column "Hide")
-      ("s"    show-ifdef-block            "show block"     :column "Hide")
-      ("e"    hif-evaluate-macro          "evaluate"       :column "# Vars")
-      ("d"    hide-ifdef-define           "define"         :column "# Vars")
-      ("u"    hide-ifdef-undef            "undef"          :column "# Vars")
-      ("U"    hide-ifdef-use-define-alist "Use list"       :column "# Vars")
-      ("D"    hide-ifdef-set-define-alist "Save list"      :column "# Vars")
-      ("C"    hif-clear-all-ifdef-defined "Clear all"      :column "# Vars")
-      ("?"    pel-pp-show-state           "Show state"     :column "Other")
-      ("<f7>" nil                         "cancel"         :column "Other"))
-
-    ;; TODO: find a way to eliminate this duplication
-    ;; PEL HYDRA: C preprocessor for C++
-    (defhydra pel-⅀c-preproc (pel:for-c++ "<f7>"  :foreign-keys run)
-      "C preprocessor"
-      ("n"    pel-pp-next-directive       "next"           :column "Move to")
-      ("p"    pel-pp-prev-directive       "prev"           :column "Move to")
-      ("C-p"  c-backward-conditional      "begin"          :column "Move to")
-      ("C-n"  c-forward-conditional       "end"            :column "Move to")
-      ("C-u"  c-up-conditional            "up"             :column "Move to")
-      ("#"    hide-ifdef-mode             "toggle mode"    :column "Hide")
-      ("W"    hide-ifdef-toggle-shadowing "toggle shadow"  :column "Hide")
-      ("R"    hide-ifdef-toggle-read-only "toggle RO"      :column "Hide")
-      ("H"    hide-ifdefs                 "hide"           :column "Hide")
-      ("S"    show-ifdefs                 "show"           :column "Hide")
-      ("h"    hide-ifdef-block            "hide block"     :column "Hide")
-      ("s"    show-ifdef-block            "show block"     :column "Hide")
-      ("e"    hif-evaluate-macro          "evaluate"       :column "# Vars")
-      ("d"    hide-ifdef-define           "define"         :column "# Vars")
-      ("u"    hide-ifdef-undef            "undef"          :column "# Vars")
-      ("U"    hide-ifdef-use-define-alist "Use list"       :column "# Vars")
-      ("D"    hide-ifdef-set-define-alist "Save list"      :column "# Vars")
-      ("C"    hif-clear-all-ifdef-defined "Clear all"      :column "# Vars")
-      ("?"    pel-pp-show-state           "Show state"     :column "Other")
-      ("<f7>" nil                         "cancel"         :column "Other"))
-
-    ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    ;; PEL HYDRA: Selective Display
-    ;; Hide text based on indentation by column or indentation level.
-
-    (defhydra pel-⅀hide-indent (global-map "<f7> C-x $" :foreign-keys run)
-      "Selective Display"
-      ("<right>"   pel-selective-display-column-inc  "+1"   :column "By Column")
-      ("<left>"    pel-selective-display-column-dec  "-1"   :column "By Column")
-      ("0"         (lambda ()
-                     (interactive)
-                     (set-selective-display nil))  "unhide" :column "By Column")
-      ("1"         (lambda ()
-                     (interactive)
-                     (set-selective-display 1)) "hide at 1" :column "By Column")
-
-      ("S-<right>"
-       pel-selective-display-indent-inc        "+indent" :column "By Indent")
-      ("S-<left>"
-       pel-selective-display-indent-dec        "-indent" :column "By Indent")
-      ("|"      pel--maybe-vline-mode "rightmost visible limit" :column "Show")
-      ("<f7>"      nil                           "cancel"      :column "End")))
-
-  ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  ;; Temporary global binding that will be removed after
-  ;; being used once.  If located above the use-package
-  ;; statements this global-set-key statement provokes use-package
-  ;; errors stating that f7 is not a prefix key, but by the
-  ;; time the defhydra statements are executed, f7 is no longer
-  ;; mapped to anything and can be used as a prefix.
-  ;; So the statement is located after, preventing the compiler from seeing
-  ;; it and preventing the invalid use-package error reporting.
-  (when (fboundp 'pel--load-hydra)
-    (global-set-key (kbd "<f7>") 'pel--load-hydra)))
+  ;; Byte-compile pel__hydra.el if needed
+  (when (or (not (file-exists-p "pel__hydra.elc"))
+            (time-less-p
+             (file-attribute-modification-time (file-attributes "pel__hydra.elc"))
+             (file-attribute-modification-time (file-attributes "pel__hydra.el"))))
+    ;; byte-compile pel__hydra but do not load it yet.
+    (byte-compile-file "pel__hydra.el")))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel_keys)

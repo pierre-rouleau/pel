@@ -54,6 +54,9 @@
 ;; Pluralizer:
 ;;  - `pel-count-string'
 ;;
+;; Symbol value extraction
+;; - `pel-symbol-value'
+;;
 ;; String generation utilities:
 ;;  - `pel-option-mode-state'
 ;;    - `pel-activated-in-str'
@@ -73,9 +76,6 @@
 ;; - `pel-title-case-to-dash-separated'
 ;; - `pel-grp-regex'
 ;;
-;; Symbol value extraction
-;; - `pel-symbol-value'
-;;
 ;; Value check:
 ;; - `pel-use-or'
 ;;
@@ -83,9 +83,19 @@
 ;;  - `pel-concat-strings-in-list'
 ;;
 ;; Lazy loading and package installation:
+;; - `pel-require-at-load-deferred'
+;; - `pel-require-at-load'
 ;; - `pel-require'
+;;   - `pel-package-installed-p'
 ;;   - `pel-package-install'
-;;
+;; - `pel-require-after-init'
+;; - `pel-eval-after-load'
+;; - `pel-set-auto-mode'
+;; - `pel-autoload-file'
+;; - `pel-declare-file'
+;; - `pel-ensure-package'
+;;   - `pel-ensure-pkg'
+
 ;; Mode argument interpretation
 ;; -  `pel-action-for'
 ;;
@@ -158,7 +168,7 @@
 
 ;; ---------------------------------------------------------------------------
 ;;; Dependencies:
-                ;; subr (always loaded) ; use: called-interactively-p
+;; subr (always loaded) ; use: called-interactively-p
 (eval-when-compile (require 'subr-x))   ; use: split-string, string-join,
 ;;                                      ;      string-trim
 
@@ -341,6 +351,30 @@ If N > 2: use the PLURAL form if specified,
       (format "%d %s" n (or plural
                             (format "%ss" singular)))
     (format "%d %s" n singular)))
+
+;; ---------------------------------------------------------------------------
+;; Symbol value extraction
+;; -----------------------
+
+(defun pel-symbol-value (symbol &optional buffer)
+  "Return SYMBOL value in current or specified BUFFER."
+  (if buffer
+      (with-current-buffer buffer
+        (symbol-value symbol))
+    (symbol-value symbol)))
+
+(defun pel-as-symbol (s)
+  "Return the symbol for S, which can either be a string or a symbol."
+  (if (symbolp s)
+      s
+    (intern s)))
+
+(defun pel-as-string (s)
+  "Return the string for S, which can either be a string or a symbol.
+Caution: if a number is passed, the number is returned."
+  (if (symbolp s)
+      (symbol-name s)
+    s))
 
 ;; ---------------------------------------------------------------------------
 ;; String generation utilities
@@ -535,18 +569,6 @@ after the closing parenthesis."
         (concat str tail)
       str)))
 
-
-;; ---------------------------------------------------------------------------
-;; Symbol value extraction
-;; -----------------------
-
-(defun pel-symbol-value (symbol &optional buffer)
-  "Return SYMBOL value in current or specified BUFFER."
-  (if buffer
-      (with-current-buffer buffer
-        (symbol-value symbol))
-    (symbol-value symbol)))
-
 ;; ---------------------------------------------------------------------------
 ;; Value check
 ;; -----------
@@ -679,10 +701,18 @@ Usage Example:
 
 ;; ---------------------------------------------------------------------------
 ;; Lazy loading and package installation:
+;; - `pel-require-at-load-deferred'
 ;; - `pel-require-at-load'
 ;; - `pel-require'
+;;   - `pel-package-installed-p'
 ;;   - `pel-package-install'
-
+;; - `pel-require-after-init'
+;; - `pel-eval-after-load'
+;; - `pel-set-auto-mode'
+;; - `pel-autoload-file'
+;; - `pel-declare-file'
+;; - `pel-ensure-package'
+;;   - `pel-ensure-pkg'
 
 (defun pel-package-install (pkg)
   "Install package PKG, return t on success, nil otherwise.
@@ -739,6 +769,17 @@ and the function returns nil"
        "package-install is void. Can't install!" :error))
     package-was-installed))
 
+(defun pel-package-installed-p (feature)
+  "Return t if FEATURE is installed, nil otherwise.
+Load the package library if that's not already done."
+  (if (and (require 'package nil :no-error)
+           (fboundp 'package-installed-p))
+      (package-installed-p feature)
+    (display-warning 'pel--package-installed-p
+                     "Failed loading package.el to use package-installed-p!"
+                     :error)
+    nil))
+
 (defun pel-require (feature &optional package with-pel-install fname url-fname)
   "Load FEATURE if not already loaded, optionally try to install PACKAGE.
 
@@ -768,44 +809,226 @@ Otherwise return the loading state of the FEATURE."
         ;; when not already present
         (if package
             (if with-pel-install
+                ;; install using specified GitHub repository
                 (if (and (require 'pel-net nil :no-error)
                          (fboundp 'pel-install-github-file))
                     (pel-install-github-file with-pel-install fname url-fname)
-                  (user-error "Failed loading pel-net to install %s" with-pel-install))
-              (if (and
-                   (fboundp 'package-installed-p)
-                   (fboundp 'package-install))
-                  (let ((package (if (eq package :install-when-missing)
-                                     feature
-                                   package)))
-                    (unless (package-installed-p package)
-                      (pel-package-install package)
-                      (require feature nil :noerror)
-                      (unless (featurep feature)
-                        (user-error
-                         "Failed loading %s even after installing package %s!"
-                         feature package))))
-                ;; no package specified, required failed
-                (user-error "Failed loading %s. %s!"
-                            feature
-                            (if package
-                                "Cannot load package.el"
-                              "No specified package"))))
-          (user-error "%s is not available, no request to load it!" feature)))))
+                  (display-warning 'pel-require
+                                   (format "Failed loading pel-net to install %s"
+                                           with-pel-install)))
+              ;; install using Elpa package system
+              (let ((package (if (eq package :install-when-missing)
+                                 feature
+                               package)))
+                (unless (pel-package-installed-p package)
+                  (pel-package-install package)
+                  (require feature nil :noerror)
+                  (unless (featurep feature)
+                    (display-warning 'pel-require
+                                     (format
+                                      "Failed loading %s even after installing package %s!"
+                                      feature package))))))
+          (error "%s is not available, code does not request to load it!" feature)))))
   (featurep feature))
 
 (defmacro pel-require-at-load (feature)
   "Require specified FEATURE when loading only, not when compiling.
 
-FEATURE must be a quoted symbol representing the required feature, similar to
-the argument to the `require' macro."
+FEATURE must be an unquoted symbol representing the required
+feature."
   `(cl-eval-when 'load
-     (unless (require ,feature nil :no-error)
+     (unless (require (quote ,feature) nil :no-error)
        (display-warning 'pel-require-at-load
-                        (format "Failed loading %s" ,feature)
+                        (format "Failed loading %s" (quote ,feature))
                         :error))))
 
+(defmacro pel-require-after-init (feature secs)
+  "Require specified FEATURE some SECS after initializing Emacs.
+
+Don't require the feature when compiling.
+FEATURE must be an unquoted symbol representing the required
+feature.
+SECS may be an integer, a floating point number, or the internal
+time format returned by, e.g., ‘current-idle-time’."
+  `(cl-eval-when 'load
+     (run-with-idle-timer ,secs nil
+                          (function require)
+                          (quote ,feature) nil :no-error)))
+
+(defmacro pel-eval-after-load (feature &rest body)
+  "Evaluate BODY after the FEATURE has been loaded.
+FEATURE is an unquoted symbol.
+Use this for the configuration phase, like the :config of use-package."
+  (declare (indent 1))
+  `(eval-after-load (quote ,feature)
+     '(condition-case-unless-debug err
+          (progn
+            ,@body)
+        (error
+         (display-warning 'pel-eval-after-load
+                          (format "Failed configuring %s: %s"
+                                  (quote ,feature)
+                                  err)
+                          :error)))))
+
+(defmacro pel-set-auto-mode (mode for: &rest regexps)
+  "Activate automatic MODE for the list of file REGXEPS.
+MODE must be an un-quoted symbol.
+REGEXPS is on or several regular expression strings."
+  (declare (indent 0))
+  (ignore for:)
+  (let ((forms '()))
+    (setq forms
+          (dolist (regxp regexps (reverse forms))
+            (push `(add-to-list 'auto-mode-alist (quote (,regxp . ,mode))) forms)))
+    `(progn
+       ,@forms)))
+
+(defmacro pel-autoload-file (fname for: &rest commands)
+  "Schedule the autoloading of FNAME for specified COMMANDS.
+FNAME is either a string or an unquoted symbol.
+The autoload is generated only when the command is not already bound.
+Argument FOR: just a required separator keyword to make code look better.
+
+The macro also generates a `declare-function' for each function in
+COMMANDS preventing byte-compiler warnings on code referencing these
+functions."
+  (declare (indent 0))
+  (ignore for:)
+  (let ((fname     (if (stringp fname) fname (symbol-name fname)))
+        (decl-fcts '()))
+    (dolist (fct commands)
+      (push `(declare-function ,fct ,fname) decl-fcts))
+    (if (> (length commands) 1)
+        `(progn
+           (dolist (fct (quote (,@commands)))
+             (unless (fboundp fct)
+               (autoload fct ,fname nil :interactive)))
+           ,@decl-fcts)
+      `(progn
+         (unless (fboundp (quote ,@commands))
+           (autoload (quote ,@commands) ,fname nil :interactive))
+         ,@decl-fcts))))
+
+(defmacro pel-declare-file (fname defines: &rest commands)
+  "Declare one or several COMMANDS to be defined in specified FNAME.
+This does not generate any code.  It prevents byte-compiler warnings."
+  (declare (indent 0))
+  (ignore defines:)
+  (let ((fname     (if (stringp fname) fname (symbol-name fname)))
+        (decl-fcts '()))
+    (dolist (fct commands)
+      (push `(declare-function ,fct ,fname) decl-fcts))
+    `(progn
+       ,@decl-fcts)))
+
+;;
+;; The following code defines the `pel-ensure-package' macro that is
+;; used below as a replacement for the `use-package' ``:ensure t`` mechanism.
+;;
+;; This is done to:
+;; - install a package when the appropriate pel-use variable is turned on,
+;; - but do NOT install it when byte-compiling the code, something the
+;;   use-package :ensure t does, unfortunately.
+;; - Allow the selection of a Elpa site, just as the use-package :pin does.
+;; - Prevent loading use-package when nothing needs to be installed.
+;;
+;; The `pel-ensure-package' macro uses the `pel-ensure-pkg' function to
+;; reduce the amount of code generated and executed to the expense of one
+;; function call.
+;;
+;; Credit: the package installation code is heavily influenced by the
+;; very popular use-package library found at
+;; https://github.com/jwiegley/use-package
+
+
+(defun pel-archive-exists-p (archive)
+  "Return t if the specified package ARCHIVE is being used, nil otherwise.
+The ARCHIVE argument may be a string or a symbol."
+  (let ((archive (pel-as-string archive))
+        (found nil))
+    (if (boundp 'package-archives)
+        (dolist (pa-entry package-archives)
+          (when (string= archive (car pa-entry))
+            (setq found 't)))
+      (display-warning 'pel-archive-exists-p
+                       "package.el is not loaded: package-archive is void"
+                       :error))
+    found))
+
+(defvar pel--pinned-packages nil
+  "list of packages that are associated with  a specific Elpa archive.")
+
+(defun pel--pin-package (package archive)
+  "Pin PACKAGE to ARCHIVE."
+  (if (pel-archive-exists-p archive)
+      (add-to-list 'pel--pinned-packages (cons package (pel-as-string archive)))
+    (error "Archive '%S' requested for package '%S' is not listed in package-archives."
+           archive package))
+  (unless (bound-and-true-p package--initialized)
+    (package-initialize t)))
+
+(defun pel--package-ensure-elpa (package)
+  "Install specified Emacs Lisp PACKAGE.
+PACKAGE must be a symbol.
+
+DO NOT use this function directly.  Use function `pel-ensure-package' instead.
+
+Issue an error when the installation fails."
+  (if (and (require 'package nil :no-error)
+           (boundp 'package-archive-contents)
+           (fboundp 'package-read-all-archive-contents))
+      (condition-case-unless-debug err
+          (progn
+            (when (assoc package (bound-and-true-p
+                                  pel--pinned-packages))
+              (package-read-all-archive-contents))
+            (if (assoc package package-archive-contents)
+                (package-install package)
+              (package-refresh-contents)
+              (when (assoc package (bound-and-true-p
+                                    pel--pinned-packages))
+                (package-read-all-archive-contents))
+              (package-install package))
+            t)
+        (error
+         (display-warning 'pel-ensure-package
+                          (format "Failed trying to install %s: %s"
+                                  package (error-message-string err))
+                          :error)))
+    (display-warning 'pel-ensure-package
+                     (format "Cannot install %s: package.el is not properly loaded."
+                             package)
+                     :error)))
+
+(defun pel-ensure-pkg (pkg &optional elpa-site)
+  "Install package PKG.
+PKG must be a symbol.
+If ELPA-SITE is non-nil it should be a string holding the name of one of the
+Elpa repositories identified in the variable `package-archive'."
+  (when elpa-site
+    (pel--pin-package pkg elpa-site))
+  (pel--package-ensure-elpa pkg))
+
+(defmacro pel-ensure-package (pkg &optional from: pinned-site)
+  "Install package named PKG, optionally from specified PINNED-SITE.
+PKG must be an unquoted symbol.
+When PINNED-SITE (a unquoted symbol) is specified use this as the Elpa
+repository, which must be listed in the variable `package-archive'.
+
+The package list is refreshed before attempting installation to prevent
+trying to install an obsolete version of a package that is no longer present
+on the Elpa site."
+  (declare (indent 1))
+  (ignore from:)
+  (let* ((pin-site-name (when pinned-site (symbol-name pinned-site))))
+    `(unless (pel-package-installed-p (quote ,pkg))
+       (pel-ensure-pkg (quote ,pkg) ,pin-site-name))))
+
 ;; ---------------------------------------------------------------------------
+;; Mode argument interpretation
+;; ----------------------------
+
 (defun pel-action-for (action current-state)
   "Return 'activate, 'deactivate or nil for requested ACTION on CURRENT-STATE.
 

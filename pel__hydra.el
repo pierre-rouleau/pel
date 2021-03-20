@@ -1,0 +1,334 @@
+;;; pel__hydra.el --- PEL Hydra control.  -*- lexical-binding: t; -*-
+
+;; Created   : Friday, March 19 2021.
+;; Author    : Pierre Rouleau <prouleau001@gmail.com>
+;; Time-stamp: <2021-03-19 14:28:26, updated by Pierre Rouleau>
+
+;; This file is part of the PEL package.
+;; This file is not part of GNU Emacs.
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; --------------------------------------------------------------------------
+;;; Commentary:
+;;
+;; This file defines a set of Hydras for PEL.
+
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
+;;
+;;
+(require 'hydra)
+;;; --------------------------------------------------------------------------
+;;; Code:
+;;
+
+;; Hydra Definitions
+;; =================
+;;
+;; All PEL Hydras are invoked via the key <f7>.  The key typed right after f7
+;; determines what Hydra will be used. Therefore try to limit using the same
+;; keys inside the various PEL Hydras otherwise there won't be many keys to
+;; identify the exact Hydra to use.  For the moment most top left keys are
+;; used by the Window Hydra (pel-∑wnd), the other PEL Hydras use a secondary
+;; prefix key.
+;;
+;; Hydra auto-loading is controlled by the <f7> key. At first that key is
+;; mapped to execute `pel--load-hydra'. That function breaks this binding,
+;; load the hydra library, triggering the configuration of all PEL Hydras via
+;; the ```use-package hydra`` call.  Then it simulates a second <f7> key event
+;; to get the effect the user expects and then removes itself from Emacs.
+;;
+
+;; TODO:
+;; - Might want to place the different hydras inside their own files and allow
+;;   users to map them to some other bindings by using map references instead
+;;   of having them hard coded like they are now.
+
+;; PEL variables
+(defvar pel--cache-for-hydra-is-helpful nil)
+(defvar pel--cache-for-hydra-is-helpful-filled nil)
+
+;; Declarations of Hydra variables to prevent byte-compiler warnings
+(defvar hydra-is-helpful)
+
+(defun pel--cache-hydra-is-helpful ()
+  "Store hydra-is-helpful user option."
+  (unless pel--cache-for-hydra-is-helpful-filled
+    (setq pel--cache-for-hydra-is-helpful hydra-is-helpful)
+    (setq pel--cache-for-hydra-is-helpful-filled t)))
+(declare-function pel--cache-hydra-is-helpful "pel_keys")
+
+(defun pel--restore-hydra-is-helpful ()
+  "Restore the value of hydra-is-helpful user option."
+  (when pel--cache-for-hydra-is-helpful-filled
+    (setq hydra-is-helpful pel--cache-for-hydra-is-helpful)
+    (setq pel--cache-for-hydra-is-helpful-filled nil)))
+(declare-function pel--restore-hydra-is-helpful "pel_keys")
+
+(defun pel-toggle-hydra-hint ()
+  "Toggle display of the current hydra hint."
+  (interactive)
+  (message (if (pel-toggle 'hydra-is-helpful)
+               "Showing Hydra Hint"
+             "Hiding Hint")))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; PEL HYDRA: Narrate
+(when (and pel-use-applescript pel-system-is-macos-p)
+  (pel-declare-file pel-applescript defines:
+                    pel-say-word
+                    pel-say-sentence
+                    pel-say-paragraph
+                    pel-say-region
+                    pel-say)
+  (pel-declare-file pel-navigate defines: pel-forward-word-start)
+  (defhydra pel-∑narrate (global-map "<f7> <f8>" :foreign-keys run)
+    ""
+    ("w"     pel-say-word             "word"              :column "Read")
+    ("s"     pel-say-sentence         "sentence"          :column "Read")
+    ("p"     pel-say-paragraph        "paragraph"         :column "Read")
+    ("R"     pel-say-region           "region"            :column "Read")
+    ("r" (progn
+           (backward-word)
+           (pel-say-word))            "last word"         :column "Repeat")
+    ("t"     pel-say                  "at prompt"         :column "Type")
+    ("b"     backward-word            "previous word"     :column "Move to")
+    ("n"     pel-forward-word-start   "next word"         :column "Move to")
+    ("B"     backward-sentence        "previous sentence" :column "Move to")
+    ("N" (progn
+           (forward-sentence)
+           (pel-forward-word-start))  "next sentence"     :column "Move to")
+    ("<f7>" nil                       "cancel"            :column "End")))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; PEL HYDRA: Window Management
+;; The hydra includes functions that may not be available
+;; provide dummy stubs for them if necessary.
+(when (not pel-use-winner)
+  (defun winner-redo ()
+    "Warning stub"
+    (user-error "Unavailable - set pel-use-winner to t to activate!"))
+  (declare-function winner-redo "pel__hydra")
+
+  (defun winner-undo ()
+    "Warning stub"
+    (user-error "Unavailable - set pel-use-winner to t to activate!"))
+  (declare-function winner-undo "pel__hydra"))
+
+(when (not pel-use-ace-window)
+  (defun ace-swap-window ()
+    "Warning stub"
+    (user-error "Unavailable - set pel-ace-window to t to activate!"))
+  (declare-function ace-swap-window "pel__hydra"))
+
+(defhydra pel-∑wnd (global-map "<f7>"
+                               :pre  (pel--cache-hydra-is-helpful)
+                               :post (pel--restore-hydra-is-helpful))
+  ""
+
+  ("<up>"        windmove-up                 "up"           :column "Move")
+  ("<down>"      windmove-down               "down"         :column "Move")
+  ("<left>"      windmove-left               "left"         :column "Move")
+  ("<right>"     windmove-right              "right"        :column "Move")
+  ("="           balance-windows             "balance"     :column "Resize")
+  ("V"           enlarge-window              "taller"      :column "Resize")
+  ("v"           shrink-window               "shorter"     :column "Resize")
+  ("H"           enlarge-window-horizontally "wider"       :column "Resize")
+  ("h"           shrink-window-horizontally  "narrower"    :column "Resize")
+  ("|"           split-window-right          "vertically"   :column "Split")
+  ("3"           split-window-right          "vertically"   :column "Split")
+  ("_"           split-window-below          "horizontally" :column "Split")
+  ("2"           split-window-below          "horizontally" :column "Split")
+  ("C-<up>"      pel-create-window-up        "above"     :column "Split.")
+  ("C-<down>"    pel-create-window-down      "below"     :column "Split.")
+  ("C-<left>"    pel-create-window-left      "left"      :column "Split.")
+  ("C-<right>"   pel-create-window-right     "right"     :column "Split.")
+  ("n"           winner-redo                 "next layout" :column "Layout")
+  ("p"           winner-undo                 "last layout" :column "Layout")
+  ("x"           ace-swap-window             "swap with.." :column "Layout")
+  ("M-v"         pel-2-vertical-windows      "flip vert."  :column "Layout")
+  ("M-h"         pel-2-horizontal-windows    "flip horiz." :column "Layout")
+  ("0"           delete-window               "this window"  :column "Close/Buffer")
+  ("k"           kill-buffer-and-window      "&kill buffer" :column "Close/Buffer")
+  ("1"           delete-other-windows        "all others"   :column "Close/Buffer")
+  ("q"           quit-window                 "quit window"  :column "Close/Buffer")
+  ("b"           next-buffer                 "next buffer"  :column "Close/Buffer")
+  ("B"           previous-buffer             "prev buffer"  :column "Close/Buffer")
+  ("C-S-<up>"    pel-close-window-up         "above"      :column "Close.")
+  ("C-S-<down>"  pel-close-window-down       "below"      :column "Close.")
+  ("C-S-<left>"  pel-close-window-left       "left"       :column "Close.")
+  ("C-S-<right>" pel-close-window-right      "right"      :column "Close.")
+  ("d"           pel-toggle-window-dedicated "un/dedicate"  :column "Other")
+  ("?"           pel-toggle-hydra-hint       "hint"         :column "Other")
+  ("<f7>"        nil                         "cancel"       :column "Other"))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; PEL HYDRA: Hide/Show
+
+(pel-autoload-command hideshow for: hs-minor-mode)
+(pel-autoload-command pel-hideshow for:
+                      pel-show-hide-state
+                      pel-toggle-hide-all
+                      pel-toggle-hide-block
+                      pel-hide-all
+                      pel-hide-block
+                      pel-show-all
+                      pel-show-block
+                      pel-hide-level-1
+                      pel-hide-level-2
+                      pel-hide-level-3
+                      pel-hide-level-4
+                      pel-hs-hide-block-below-inc
+                      pel-hs-hide-block-below-dec)
+
+(defhydra pel-⅀hideshow (global-map "<f7> /"
+                                    :foreign-keys run)
+  "Hide/Show:"
+  ("/" hs-minor-mode               "Toggle hs mode" :column "State")
+  ("?" pel-show-hide-state         "info")
+  ("a" pel-toggle-hide-all         "all"    :column "Hide/Show")
+  ("b" pel-toggle-hide-block       "block")
+  ("H" pel-hide-all                "all"    :column "Hide")
+  ("h" pel-hide-block              "block")
+  ("S" pel-show-all                "all"    :column "Show")
+  ("s" pel-show-block              "block")
+  ("1" pel-hide-level-1            ">= 1"  :column "Hide levels")
+  ("2" pel-hide-level-2            ">= 2")
+  ("3" pel-hide-level-3            ">= 3")
+  ("4" pel-hide-level-4            ">= 4")
+  (">" pel-hs-hide-block-below-inc "+1" :column "Hide levels:")
+  ("<" pel-hs-hide-block-below-dec "-1")
+  ("<f7>" nil                      "cancel" :column "End"))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; PEL HYDRA: C preprocessor
+
+(pel-autoload-command hideif for:
+                      hide-ifdef-mode
+                      hide-ifdef-toggle-shadowing
+                      hide-ifdef-toggle-read-only
+                      hide-ifdefs
+                      show-ifdefs
+                      hide-ifdef-block
+                      show-ifdef-block
+                      hif-evaluate-macro
+                      hide-ifdef-define
+                      hide-ifdef-undef
+                      hide-ifdef-use-define-alist
+                      hide-ifdef-set-define-alist
+                      hif-clear-all-ifdef-defined)
+
+(pel-declare-file pel-pp declares:
+                  pel-pp-next-directive
+                  pel-pp-prev-directive)
+
+(pel-autoload-command cc-cmds for:
+                      c-backward-conditional
+                      c-forward-conditional
+                      c-up-conditional)
+(defhydra pel-⅀c (pel:for-c "<f7>"  :foreign-keys run)
+  "C preprocessor"
+  ("n"    pel-pp-next-directive       "next"           :column "Move to")
+  ("p"    pel-pp-prev-directive       "prev"           :column "Move to")
+  ("C-p"  c-backward-conditional      "begin"          :column "Move to")
+  ("C-n"  c-forward-conditional       "end"            :column "Move to")
+  ("C-u"  c-up-conditional            "up"             :column "Move to")
+  ("#"    hide-ifdef-mode             "toggle mode"    :column "Hide")
+  ("W"    hide-ifdef-toggle-shadowing "toggle shadow"  :column "Hide")
+  ("R"    hide-ifdef-toggle-read-only "toggle RO"      :column "Hide")
+  ("H"    hide-ifdefs                 "hide"           :column "Hide")
+  ("S"    show-ifdefs                 "show"           :column "Hide")
+  ("h"    hide-ifdef-block            "hide block"     :column "Hide")
+  ("s"    show-ifdef-block            "show block"     :column "Hide")
+  ("e"    hif-evaluate-macro          "evaluate"       :column "# Vars")
+  ("d"    hide-ifdef-define           "define"         :column "# Vars")
+  ("u"    hide-ifdef-undef            "undef"          :column "# Vars")
+  ("U"    hide-ifdef-use-define-alist "Use list"       :column "# Vars")
+  ("D"    hide-ifdef-set-define-alist "Save list"      :column "# Vars")
+  ("C"    hif-clear-all-ifdef-defined "Clear all"      :column "# Vars")
+  ("?"    pel-pp-show-state           "Show state"     :column "Other")
+  ("<f7>" nil                         "cancel"         :column "Other"))
+
+;; TODO: Find a way to inject the above hydra into the C++ key prefix instead
+;;       of having to duplicate it as it is done below because now this
+;;       produces twice as many hydra functions: one set for C and another set
+;;       of identical functions for C++.  This wastes time and memory space.
+;;
+;; PEL HYDRA: C preprocessor for C++
+(defhydra pel-⅀c++ (pel:for-c++ "<f7>"  :foreign-keys run)
+  "C preprocessor"
+  ("n"    pel-pp-next-directive       "next"           :column "Move to")
+  ("p"    pel-pp-prev-directive       "prev"           :column "Move to")
+  ("C-p"  c-backward-conditional      "begin"          :column "Move to")
+  ("C-n"  c-forward-conditional       "end"            :column "Move to")
+  ("C-u"  c-up-conditional            "up"             :column "Move to")
+  ("#"    hide-ifdef-mode             "toggle mode"    :column "Hide")
+  ("W"    hide-ifdef-toggle-shadowing "toggle shadow"  :column "Hide")
+  ("R"    hide-ifdef-toggle-read-only "toggle RO"      :column "Hide")
+  ("H"    hide-ifdefs                 "hide"           :column "Hide")
+  ("S"    show-ifdefs                 "show"           :column "Hide")
+  ("h"    hide-ifdef-block            "hide block"     :column "Hide")
+  ("s"    show-ifdef-block            "show block"     :column "Hide")
+  ("e"    hif-evaluate-macro          "evaluate"       :column "# Vars")
+  ("d"    hide-ifdef-define           "define"         :column "# Vars")
+  ("u"    hide-ifdef-undef            "undef"          :column "# Vars")
+  ("U"    hide-ifdef-use-define-alist "Use list"       :column "# Vars")
+  ("D"    hide-ifdef-set-define-alist "Save list"      :column "# Vars")
+  ("C"    hif-clear-all-ifdef-defined "Clear all"      :column "# Vars")
+  ("?"    pel-pp-show-state           "Show state"     :column "Other")
+  ("<f7>" nil                         "cancel"         :column "Other"))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; PEL HYDRA: Selective Display
+;; Hide text based on indentation by column or indentation level.
+
+(defun pel--maybe-vline-mode ()
+  "Use the vertical line mode when available."
+  (interactive)
+  (if (and pel-use-vline
+           (require 'vline nil :noerror)
+           (boundp 'vline-mode)
+           (fboundp 'vline-mode))
+      (progn
+        (vline-mode (if vline-mode -1 +1))
+        (move-to-column (if selective-display
+                            (max 0 (- selective-display 1))
+                          0)))
+    (user-error "Command vline-mode is not available.  \
+Customize pel-use-vline to t!")))
+
+
+(defhydra pel-⅀hide-indent (global-map "<f7> C-x $" :foreign-keys run)
+  "Selective Display"
+  ("<right>"   pel-selective-display-column-inc  "+1"   :column "By Column")
+  ("<left>"    pel-selective-display-column-dec  "-1"   :column "By Column")
+  ("0"         (lambda ()
+                 (interactive)
+                 (set-selective-display nil))  "unhide" :column "By Column")
+  ("1"         (lambda ()
+                 (interactive)
+                 (set-selective-display 1)) "hide at 1" :column "By Column")
+
+  ("S-<right>"
+   pel-selective-display-indent-inc        "+indent" :column "By Indent")
+  ("S-<left>"
+   pel-selective-display-indent-dec        "-indent" :column "By Indent")
+  ("|"      pel--maybe-vline-mode "rightmost visible limit" :column "Show")
+  ("<f7>"      nil                           "cancel"      :column "End"))
+
+;;; --------------------------------------------------------------------------
+(provide 'pel__hydra)
+
+;;; pel__hydra.el ends here

@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, September 14 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-06 13:31:06, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-20 10:05:19, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -46,74 +46,106 @@
 ;;; Dependencies:
 ;;
 ;; The function `pel--load-hydra' is defined in pel_keys.el, which has been
-;; loaded by the time pel-lispy is loaded.  Since we need to check if
-;; `pel--load-hydra' still exists to call it, the `fboundp' check does what is
-;; needed.
+;; loaded by the time pel-lispy is loaded.  The existence of that function is
+;; also used to indicate whether the `hydra' external package is loaded: the
+;; function is bound when the `hydra' library has not yet been loaded.
+;; The `lispy' library uses the `hydra' library.  Under normal circumstances,
+;; when `lispy' is installed its required `hydra' library is also
+;; installed.
+;;
+;; However, PEL supports the ability to turn off features via customization
+;; and it would be possible to leave `pel-use-lispy' on and turn
+;; `pel-use-hydra' off which could mean that the `hydra' package could be
+;; removed while lispy remains.  Under these condition a ``(require 'lispy)``
+;; form may fail.
+;;
+;; To prevent any failure, the code ensures the presence of the `hydra'
+;; package.
 
 (require 'pel--base)
-(when (fboundp 'pel--load-hydra)
-  (pel--load-hydra :no-request)
-  (pel-require 'lispy :install-when-missing))
+(require 'pel--options)
 
 ;;; ----------------------------------------------------------------------------
 ;;; Code:
 ;;
 
+;; lispy mode
+;; ----------
+
+(defun pel--get-hydra-and-lispy ()
+  "Ensure Hydra and lispy are available, install them if necessary.
+Return t when lispy is loaded, nil otherwise"
+  (when (or (not pel-use-hydra)
+            (fboundp 'pel--load-hydra))
+    ;; The hydra system is not yet loaded.
+    ;; Prevent the possibility that the external `hydra' package is missing:
+    ;; install it if it is missing.
+    (pel-ensure-package hydra from: melpa)
+    ;; If PEL is configured to use the Hydra package, set it up.
+    (when (fboundp 'pel--load-hydra)
+      (pel--load-hydra :dont-simulate-the-f7-key)))
+
+  ;; Now ensure lispy is installed and loaded.
+  (pel-ensure-package lispy from: melpa)
+  (require 'lispy nil :no-error))
 
 (defun pel-lispy-mode ()
-  "Activate (then toggle) lispy mode.
+  "Activate or toggle lispy mode.
 This PEL function acts as a proxy to the real function
 `lispy-mode' to ensure that the PEL setup is taken into account."
   (interactive)
-  ;; If Hydra setup was not completed, complete it and then load lispy
-  (if (fboundp 'pel--load-hydra)
-      (progn
-        ;; Set up PEL Hydra, removing the global F7 key.
-        (pel--load-hydra :no-request)
-        ;; then install lispy if it is not already installed
-        (when (fboundp 'package-installed-p)
-          (unless (package-installed-p 'lispy)
-            (package-refresh-contents)
-            (package-install 'lispy)))
-        ;; load lispy
-        (load "lispy")
-        ;; and activate the lispy-mode
-        (if (fboundp 'lispy-mode)
-            (lispy-mode 1)
-          (error "Failed to load lispy!")))
-    ;; All other times, just toggle the lispy-mode
-    (if (and (require 'lispy nil :no-error)
-             (fboundp 'lispy-mode)
-             (boundp  'lispy-mode))
+  (if  (or (not (boundp 'lispy-mode))
+           (not (fboundp 'lispy-mode)))
+      ;; lispy is not loaded
+      ;; ensure that both Hydra and Lispy packages are available.
+      ;; then activate it
+      (if (and (pel--get-hydra-and-lispy)
+               (fboundp 'lispy-mode))
+          (lispy-mode 1)
+        (error "Failed to activate Lispy, was Hydra removed? Try again or restart Emacs."))
+    ;; lispy is already loaded.
+    ;; It might never have been called and the variable may not
+    ;; yet be bound though.
+    (declare-function lispy-mode "lispy")
+    (if (boundp 'lispy-mode)
+        ;; if the variable is bound, toggle lispy mode
         (lispy-mode (if lispy-mode -1 1))
-      (error "Failed to toggle lispy!"))))
+      ;; otherwise just activate lispy mode
+      (lispy-mode 1))))
+
+;; lpy mode
+;; --------
+
+(defun pel--get-hydra-lispy-and-lpy ()
+  "Ensure Hydra, lispy and lpy are available, install them if necessary.
+Return t when lpy is loaded, nil otherwise"
+  (when (pel--get-hydra-and-lispy)
+    ;; ensure that the lpy package is installed and loaded
+    (pel-ensure-package lpy from: melpa)
+    (require 'lpy nil :no-error)))
 
 (defun pel-lpy-mode ()
-  "Activate (then toggle) lpy mode.
+  "Activate or toggle lpy mode.
 This PEL function acts as a proxy to the real function
 `lpy-mode' to ensure that the PEL setup is taken into account."
   (interactive)
-  ;; If Hydra setup was not completed, complete it and then load lpy
-  (if (fboundp 'pel--load-hydra)
-      (progn
-        ;; Set up PEL Hydra, removing the global F7 key.
-        (pel--load-hydra :no-request)
-        ;; then install lpy if it is not already installed
-        (when (fboundp 'package-installed-p)
-          (unless (package-installed-p 'lpy)
-            (package-refresh-contents)
-            (package-install 'lpy)))
-        ;; load lpy
-        (load "lpy")
-        ;; and activate the lpy-mode
-        (if (fboundp 'lpy-mode)
-            (lpy-mode 1)
-          (error "Failed to load lpy!")))
-    ;; All other times, just toggle the lpy-mode
-    (if (and (fboundp 'lpy-mode)
-             (boundp  'lpy-mode))
+  (if  (not (fboundp 'lpy-mode))
+      ;; lpy is not loaded
+      ;; ensure that both Hydra and Lispy packages are available.
+      ;; then activate it
+      (if (and (pel--get-hydra-lispy-and-lpy)
+               (fboundp 'lpy-mode))
+          (lpy-mode 1)
+        (error "Failed to activate Lpy!"))
+    ;; lpy is already loaded.
+    ;; It might never have been called and the variable may not
+    ;; yet be bound though.
+    (declare-function lpy-mode "lpy")
+    (if (boundp 'lpy-mode)
+        ;; if the variable is bound, toggle lpy mode
         (lpy-mode (if lpy-mode -1 1))
-      (error "Failed to load lpy!"))))
+      ;; otherwise just activate lpy mode
+      (lpy-mode 1))))
 
 ;;; ----------------------------------------------------------------------------
 (provide 'pel-lispy)
