@@ -1168,8 +1168,14 @@ interactively."
       ;; globally.
       (pel-eval-after-load undo-tree
         (global-undo-tree-mode)
-        (define-key undo-tree-map  (kbd "C-_") 'negative-argument)
-        (define-key undo-tree-map  (kbd "M-_") 'negative-argument)))
+        (if (boundp 'undo-tree-map)
+            (progn
+              (define-key undo-tree-map  (kbd "C-_") 'negative-argument)
+              (define-key undo-tree-map  (kbd "M-_") 'negative-argument))
+          (display-warning 'pel-use-undo-tree
+                           "The undo-tree-map variable is not bound, \
+can't bind negative-argument to C-_ and M-_"
+                           :error))))
 
   ;; When pel-use-undo-tree is not t, then use standard Emacs undo but
   ;; map to similar keys (except the redo keys: ``<f11> u r`` and ``M-U``)
