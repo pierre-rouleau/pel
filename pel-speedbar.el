@@ -20,30 +20,30 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; ---------------------------------------------------------------------------
+;;; ------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; A set of utilities to help work with the native Emacs speedbar and
-;; sr-speedbar which displays in the same frame, which is useful in
-;; terminal mode.
+;; sr-speedbar which displays in the same frame, which is useful in terminal
+;; mode.
 ;;
 ;; In graphics mode, both are equally functional, but in terminal mode
-;; Sr-speedbar is clearly superior because Speedbar will take over the
-;; entire frame while SR-Speedbar uses only one of the windows.
+;; Sr-speedbar is clearly superior because Speedbar will take over the entire
+;; frame while SR-Speedbar uses only one of the windows.
 ;;
 ;; If SR-speedbar is not available, Speedbar is used.
 ;;
 ;; If SR-speedbar is available, when Emacs runs in graphics mode, then
 ;; `pel-open-close-speedbar' prompts the first time it's called to select
 ;; which one to use.
-;; When Emacs runs in terminal mode, `pel-open-close-speedbar' prompts
-;; only if the user-option variable `pel-prefer-sr-speedbar-in-terminal'
-;; is nil, otherwise it automatically selects Sr-Speedbar, which is more
-;; convenient.
+;;
+;; When Emacs runs in terminal mode, `pel-open-close-speedbar' prompts only if
+;; the user-option variable `pel-prefer-sr-speedbar-in-terminal' is nil,
+;; otherwise it automatically selects Sr-Speedbar, which is more convenient.
 ;;
 ;; The mechanism selected is remembered inside the variable
-;; `pel-speedbar-type-used'.  If you want to prevent the first prompt
-;; set this variable to 'sr-speedbar or 'speedbar.
+;; `pel-speedbar-type-used'.  If you want to prevent the first prompt set this
+;; variable to 'sr-speedbar or 'speedbar.
 ;;
 ;;
 ;; Control Behaviour on SR-Speedbar item selection
@@ -52,16 +52,17 @@
 ;; SR-speedbar has a potentially annoying behaviour: when you select a file or
 ;; tag from the speedbar it opens the file in a buffer but returns the point
 ;; back to the speedbar instead of leaving it inside the file's buffer window.
+;;
 ;; In some case this behaviour might be useful though.  PEL provides the
-;; user-option `pel-sr-speedbar-move-point-to-target-on-select'.  By default it
-;; is set to t, meaning that we want to leave point inside the window of the
-;; target, just like Speedbar behaves.  You can set it nil to get SR-standard
-;; behaviour of returning point into the SR-Speedbar buffer after a selection.
-;; The `pel--sr-speedbar-move-point-to-target-on-select' global variable is
-;; initialized with its value and can be modified by the command
-;; `pel-sr-speedbar-toggle-select-behaviour' dynamically.
-;; Then `el-sr-speedbar-visiting-control' is used as a call-back for the
-;; following SR-Speedbar hooks:
+;; user-option `pel-sr-speedbar-move-point-to-target-on-select'.  By default
+;; it is set to t, meaning that we want to leave point inside the window of
+;; the target, just like Speedbar behaves.  You can set it nil to get
+;; SR-standard behaviour of returning point into the SR-Speedbar buffer after
+;; a selection.  The `pel--sr-speedbar-move-point-to-target-on-select' global
+;; variable is initialized with its value and can be modified by the command
+;; `pel-sr-speedbar-toggle-select-behaviour' dynamically.  Then
+;; `el-sr-speedbar-visiting-control' is used as a call-back for the following
+;; SR-Speedbar hooks:
 ;;
 ;;  - `speedbar-visiting-file-hook', and
 ;;  - `speedbar-visiting-tag-hook'.
@@ -78,24 +79,26 @@
 ;;
 ;; The 2014 version of the sr-speedbar.el file attempts to access the
 ;; `helm-alive-p' variable, but does not require helm nor check if that
-;; variable is bounded, causing byte-compilation warnings in pel.el or
-;; here.
+;; variable is bounded, causing byte-compilation warnings in pel.el or here.
 ;; The 2016 version of sr-speedbar fixes this problem.
 ;;
-;; If you get this warning while byte compiling any of the PEL code,
-;; make sure to use the 2016 version of sr-speedbar, available at MELPA.
+;; If you get this warning while byte compiling any of the PEL code, make sure
+;; to use the 2016 version of sr-speedbar, available at MELPA.
 
-;;; Code:
+;;;---------------------------------------------------------------------------
+;;; Dependencies:
 
-;; require the libraries that either come with Emacs or are part of PEL
 (require 'speedbar)
 (require 'pel--base)
 (require 'pel--macros)
-(require 'pel--options)              ; use: pel-prefer-sr-speedbar-in-terminal
+(require 'pel--options)      ; use: pel-prefer-sr-speedbar-in-terminal
 ;; sr-speedbar may not be installed.
 ;; Allow compilation if it's not installed:
 ;; later code checks if its symbols are bound
 (require 'sr-speedbar nil :noerror)
+
+;;;---------------------------------------------------------------------------
+;;; Code:
 
 ;; PEL: Speedbar/Sr-Speedbar management
 ;; ------------------------------------
@@ -189,9 +192,9 @@ otherwise move to the other window."
       (if pel--speedbar-active
           (if (sr-speedbar-window-p)
               (when pel-window-before-sr-speedbar
-                ;; Return point back to window that had focus
-                ;; before moving to sr-speedbar
-                ;; If that window is still alive, otherwise move to other window.
+                ;; Return point back to window that had focus before
+                ;; moving to sr-speedbar If that window is still
+                ;; alive, otherwise move to other window.
                 (if (window-live-p pel-window-before-sr-speedbar)
                     (select-window pel-window-before-sr-speedbar)
                   (other-window 1))
@@ -221,13 +224,15 @@ If no speedbar is used, open one."
   (if pel--speedbar-active
       (cond ((equal pel-speedbar-type-used 'speedbar)
              (speedbar-toggle-updates)
-             (message "Speedbar automatic refresh is now: %s"
-                      (pel-symbol-on-off-string 'speedbar-update-flag)))
+             (message
+              "Speedbar automatic refresh is now: %s"
+              (pel-symbol-on-off-string 'speedbar-update-flag)))
             ((equal pel-speedbar-type-used 'sr-speedbar)
              (pel-when-fbound 'sr-speedbar-refresh-toggle
                (sr-speedbar-refresh-toggle)
-               (message "Sr-Speedbar automatic refresh is now: %s"
-                        (pel-symbol-on-off-string 'sr-speedbar-auto-refresh))))
+               (message
+                "Sr-Speedbar automatic refresh is now: %s"
+                (pel-symbol-on-off-string 'sr-speedbar-auto-refresh))))
             (t
              (error "Logic error, please report")))
     (user-error "Open Speedbar first")))
@@ -264,7 +269,8 @@ If no speedbar is used, open one."
       (let ((warning-msg (when (member 'speedbar-trim-words-tag-hierarchy
                                        speedbar-tag-hierarchy-method)
                            "\n⚠️ Speedbar trims and regroups symbols.  \
-Sorting has no impact. Customize speedbar-tag-hierarchy-method to change.")))
+Sorting has no impact. \
+Customize speedbar-tag-hierarchy-method to change.")))
       (message "Speedbar sorting now %s. \
 Contract and re-expand parents to see the change.%s"
                (pel-on-off-string (speedbar-toggle-sorting))
@@ -283,21 +289,24 @@ Contract and re-expand parents to see the change.%s"
 ;; --
 ;; Control Behaviour on SR-Speedbar item selection
 ;; -----------------------------------------------
-;; The following logic determines what of the following 2 behaviours are used
-;; by the speedbar when a speedbar item is selected from the speedbar window,
-;; after the selected item is shown inside another Emacs window:
-;; 1) point is moved to the window where the item is shown
-;; 2) point remains inside the speedbar, allowing the user to select another
-;;   item.
+;;
+;; The following logic determines what of the following 2 behaviours
+;; are used by the speedbar when a speedbar item is selected from the
+;; speedbar window, after the selected item is shown inside another
+;; Emacs window:
+
+;; 1) point is moved to the window where the item is shown,
+;; 2) point remains inside the speedbar, allowing the user to select
+;;   another item.
 ;;
 ;; The default behaviour is selected by the
-;; `pel-sr-speedbar-move-point-to-target-on-select' user-option.  It can also
-;; be modified dynamically during an editing session by calling the command
-;; `pel-sr-speedbar-toggle-select-behaviour'.
+;; `pel-sr-speedbar-move-point-to-target-on-select' user-option.  It
+;; can also be modified dynamically during an editing session by
+;; calling the command `pel-sr-speedbar-toggle-select-behaviour'.
 ;;
 ;; The heart of the control is the `pel-sr-speedbar-visiting-control'
-;; call-back used by the `speedbar-visiting-file-hook' which Speedbar invokes
-;; when a user selects a Speedbar file or tag item.
+;; call-back used by the `speedbar-visiting-file-hook' which Speedbar
+;; invokes when a user selects a Speedbar file or tag item.
 
 
 (defvar pel--sr-speedbar-move-point-to-target-on-select
@@ -322,29 +331,32 @@ Contract and re-expand parents to see the change.%s"
 (defun pel-sr-speedbar-visiting-control ()
   "Hook callback: determine what buffer to select.
 
-This function is used by SR-speedbar hooks `speedbar-visiting-file-hook'
-and `speedbar-visiting-tag-hook'.  It returns point to the SR-Speedbar
-buffer window when `pel--sr-speedbar-move-point-to-target-on-select' is nil,
-otherwise it leaves it in the window of the file selected by the SR-Speedbar
-selection user action."
+This function is used by SR-speedbar hooks
+`speedbar-visiting-file-hook' and `speedbar-visiting-tag-hook'.
+It returns point to the SR-Speedbar buffer window when
+`pel--sr-speedbar-move-point-to-target-on-select' is nil,
+otherwise it leaves it in the window of the file selected by the
+SR-Speedbar selection user action."
   (unless pel--sr-speedbar-move-point-to-target-on-select
     (pel--select-sr-speedbar-buffer-window)))
 
 ;; --
 ;; Controlling the Speedbar item in focus
 ;; --------------------------------------
-;; It would be nice to be able to automatically make the currently edited file
-;; (or tag) visible in the Speedbar window as soon as a new window is selected
-;; or when the content of the current window is changed to another buffer.
 ;;
-;; At this point, at least with Emacs 26.3, I did not find an Emacs hook that
-;; I could use to update the Speedbar window when visiting a new file or
-;; changing window or the content of a window.
+;; It would be nice to be able to automatically make the currently
+;; edited file (or tag) visible in the Speedbar window as soon as a
+;; new window is selected or when the content of the current window is
+;; changed to another buffer.
 ;;
-;; So for now all I have is the command `pel--speedbar-focus-on' which forces
-;; an update of the content of the Speedbar window to put the current file
-;; content in focus: display it at the top of the Speedbar window and expand
-;; its top-level list.
+;; At this point, at least with Emacs 26.3, I did not find an Emacs
+;; hook that I could use to update the Speedbar window when visiting a
+;; new file or changing window or the content of a window.
+;;
+;; So for now all I have is the command `pel--speedbar-focus-on' which
+;; forces an update of the content of the Speedbar window to put the
+;; current file content in focus: display it at the top of the
+;; Speedbar window and expand its top-level list.
 
 (defun pel--speedbar-focus-on (buffer-name sp-win &optional original-window)
   "Set speedbar focus on the content of specified BUFFER-NAME.
@@ -376,13 +388,13 @@ otherwise leave focus inside speedbar."
 
 ;;-pel-autoload
 (defun pel-speedbar-focus-current-file (&optional stay-in-speedbar)
-  "Set SR-Speedbar focus to the content of the buffer/file in current window.
+  "Set SR-Speedbar focus to the content of current window buffer.
 
 Place the its tag list at the top of the speedbar and expand all
 first and second level items.
 
-If optional STAY-IN-SPEEDBAR argument is non-nil, move point to speedbar,
-otherwise don't move it."
+If optional STAY-IN-SPEEDBAR argument is non-nil, move point to
+speedbar, otherwise don't move it."
   (interactive "P")
   (if (boundp 'speedbar-initial-expansion-list-name)
       (if (eq pel-speedbar-type-used 'sr-speedbar)
@@ -410,7 +422,7 @@ otherwise don't move it."
           (user-error "Please open a SR-Speedbar first!")))
     (error "Cannot load speedbar!")))
 
-;; ---------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 (provide 'pel-speedbar)
 
 ;;; pel-speedbar.el ends here
