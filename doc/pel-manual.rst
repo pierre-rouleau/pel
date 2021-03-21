@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-03-14 14:53:15, updated by Pierre Rouleau.
+:Modified: 2021-03-20 21:14:26, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -205,7 +205,6 @@ The PEL files are listed in each of the corresponding
 ..
    -----------------------------------------------------------------------------
 
-
 How to Install PEL
 ==================
 
@@ -243,12 +242,7 @@ The fully detailed instructions are described in the following sections:
    supported by Elpa packaging mechanism.
 #. `Create the emacs-customization.el file`_.
 #. `Create or Update your Emacs init.el file`_.
-#. `Build first part of PEL`_ to byte-compile all PEL Emacs Lisp files except
-   for two of them.
-#. `Activate PEL in your init.el file`_.
-#. `Open Emacs to install use-package`_; that will install `use-package`_ and
-   its dependencies.
-#. `Build second part of PEL`_.
+#. `Byte Compile PEL Files`_.
 #. `Activate PEL Features - Customize PEL`_.
 
 
@@ -447,14 +441,14 @@ Create or Update your Emacs init.el file
 **Do this:**
 
 Add the following code inside your "``~/.emacs.d/init.el``" file.
-You can also use a copy of the file `example/init/init-0.el`_ :
+You can also use a copy of the file `example/init/init-1.el`_ :
 
 
-.. _example/init/init-0.el: ../example/init/init-0.el
+.. _example/init/init-1.el: ../example/init/init-1.el
 
 .. code:: elisp
 
-          ;;; ---init.el file -----------------------------------------------------------
+          ;;; ---Example init.el file -- For PEL final compilation-----------------------
           ;;
           ;; 1: Setup package sources: MELPA, MELPA-STABLE and a local mypelpa
           (when (>= emacs-major-version 24)
@@ -501,10 +495,10 @@ You can also use a copy of the file `example/init/init-0.el`_ :
           ;; 6: Start PEL
           ;; - At first leave this commented out.
           ;; - Activate the code Once you have successfully built PEL once
-          ;; (require 'pel)
-          ;; (pel-init)  ; or later->; (pel-init pel--abbrev-file-name)
+          (require 'pel)
+          (pel-init)  ; or later->; (pel-init pel--abbrev-file-name)
 
-          ;;; ---- end of init.el ---
+          ;;; ---- end of init.el -------------------------------------------------------
 
 **Description:**
 
@@ -532,9 +526,8 @@ You can also use a copy of the file `example/init/init-0.el`_ :
   "``~/.emacs.d/emacs-customization.el``".  If you already have Emacs customization
   inside your current init.el file, copy it inside that new file.
   Emacs customization is the full content of the ``(custom-set-variables ...)`` form.
-- Section 6 load and initializes PEL.  The code is commented out.
-  Do not activate the code until later in the installation steps, after
-  your first successful build of PEL.
+- Section 6 load and initializes PEL by evaluating the ``pel-init`` function that
+  is located inside the file ``pel.el``.
 
 .. _cloned PEL: `Clone the PEL Git repository`_
 
@@ -553,22 +546,15 @@ That provides another degree of freedom, along with Emacs directory local
 and file local variables.
 
 
-Build first part of PEL
------------------------
+Byte Compile PEL Files
+----------------------
 
 **Description:**
 
-From you terminal shell, execute the commands shown below.  They change the
-current directory to the directory where you downloaded the PEL source code, and
-then issue two make commands: ``make clean`` and then ``make first-build``.
-
-Again, you must ensure that the ``emacs`` command for your shell refers to
-Emacs that is version 26.1 or later.
-
-The following commands byte compile every PEL source code file except two
-`pel.el`_ and `pel_keys.el`_.  That's done on purpose: these are the files
-that load the key bindings and they need the presence of some tools that will
-be installed on the next two steps.
+Use the provide Makefile script to byte-compile all required PEL Emacs Lisp
+source code files located in the ``pel`` directory.
+It will also run some regression tests.
+Nothing will be downloaded during this byte compilation.
 
 
 **Do this:**
@@ -577,121 +563,32 @@ be installed on the next two steps.
 
           cd ~/projects/pel
           make clean
-          make first-build
+          make it
 
+The make script should terminate with an exit code of 0
+and you should see no error or warning.
 
-
-Activate PEL in your init.el file
----------------------------------
-
-**Description:**
-
-To activate PEL when Emacs starts, un-comment the 2 lines of Emacs Lisp code (identified as
-*section 5* in the init.el file example) in your "``~/.emacs.d/init.el``" file by
-removing the leading semi-colons from the last 2 lines.  And then save the modified file.
-The content of your init file should now look like the file in `example/init/init-1.el`_.
-
-**Do this:**
-
-- Edit your "``~/.emacs.d/init.el``" file.
-- Un-comment the last 2 lines of code by removing leading semi-colons
-  on the following lines:
-
-  .. code:: elisp
-
-            (require 'pel)
-            (pel-init)
-
-- Save the file, with ``C-x C-s`` (ie. with the control key depressed type ``x``
-  then ``s`` and then release the control key.)
-- Close Emacs, with ``C-x C-c`` (ie. with the control key depressed hit the
-  ``x`` and then the ``c``.)
-
-.. _example/init/init-1.el: ../example/init/init-1.el
-
-
-
-Open Emacs to install use-package
----------------------------------
-
-**Description:**
-
-In this step, you will open Emacs again.
-This time, PEL will be loaded and that will force the installation of the
-`use-package`_ external Emacs Lisp library along with all its dependencies.
-The files will be installed inside the directory ``~/.emacs.d/elpa``.
-
-While installing Emacs displays messages inside the echo area at the bottom of
-its window.  Wait for all of this to complete.
-
-**Do this:**
-
-- Open Emacs.
-- Wait for everything to load and complete.
-- Once that done, close Emacs again.
-
-
-
-Build second part of PEL
-------------------------
-
-**Description:**
-
-This is the final step required to build PEL.
-It uses the make script from the terminal shell from the PEL directory.
-
-This ``make`` command will now byte compile `pel.el`_ and `pel_keys.el`_, and
-doing so will install all other external Emacs Lisp package PEL supports.
-
-It will also run some regression tests.
-
-That will take some time as it downloads several external packages from MELPA_,
-ELPA_, EmacsAttics_ and EmacsMirror_.
-These will all be stored inside ``~/.emacs.d/elpa``.
-
-It will also create a PEL Elpa-compliant package
-archive tar file and store it into your "``~/project/pel/pelpa``" directory.
-This tar file can be used later to install PEL in other computers.
-
-The build might prompt you, so keep an eye on it.
-
-At the end, if all goes right, you should see something like this::
-
-    Loading pel_keys...
-    PEL loaded, PEL keys binding in effect.
-    PEL version: 0.3.1
-    Parsing tar file...
-    Parsing tar file...done
-
-
-**Do this:**
-
-.. code:: shell
-
-          cd ~/projects/pel
-          make
-
-**You should be done**
+**At this point you can use Emacs with PEL**
 
 You should have a working version of PEL with all
 files byte-compiled for efficiency 😅!
 
-The *only* thing left is to use Emacs customization system to activate the features you
-want. That's described in the next section.
+If you start Emacs now, PEL will start and will download and install the
+following Emacs packages if you don't already have them:
+
+- which-key_ (because ``pel-use-which-key`` is turned on by default)
+  and any package(s) which-key_ may require.
+
+The *only* thing left is to use Emacs customization system to activate the
+features you want. That's described in the next section.
 
 **In case of Errors:**
 
-If the make script stopped at an error, you can try making everything
-again with:
+If the make script stopped at an error, just repeat the operation listed above.
 
-.. code:: shell
-
-          cd ~/projects/pel
-          make clean
-          make
-
-If the problem persists, please `create an issue`_ describing the problem and your environment
-and I will get to it.
+If the problem persists, or if you see an error or a warning during the build
+or when you start Emacs, please `create an issue`_ describing the problem and
+your environment and I will get to it.
 
 
 .. _create an issue: https://github.com/pierre-rouleau/pel/issues
@@ -740,37 +637,30 @@ sequence:
 
    .. code:: shell
 
-          cp ~/projects/pel/example/init/init-0.el ~/.emacs.d/init.el
+          cp ~/projects/pel/example/init/init-1.el ~/.emacs.d/init.el
 
-#. Build first part of PEL: byte-compile all PEL source code files except for pel_keys:
+#. Build PEL: byte-compile all PEL source code files:
 
    .. code:: shell
 
           cd ~/projects/pel
           make clean
-          make first-build
+          make it
 
-#. Install example/init/init-1.el as ~/.emacs.d/init.el to activate the call
-   to pel-init:
 
-   .. code:: shell
-
-          cp ~/projects/pel/example/init/init-1.el ~/.emacs.d/init.el
-
-#. Open emacs to make it download use-package and other required libraries
+#. Open emacs to make it download packages like which-key_ activated by default:
 
    .. code:: shell
 
           emacs
 
-#. Once Emacs has completed the download,  type ``C-x C-c`` to close it.
+#. Once Emacs has completed the download, you can use Emacs with PEL.
 
-#. Build pel_keys.el, load and byte-compile packages:
+   - Type ``<f11> ? p`` and a topic to open one of the PEL PDF files.
+     Use tab to complete what you type.  Type tab at first to see a complete
+     list of PDF files.
+   - As usual in Emacs, type ``C-x C-c`` to close it.
 
-   .. code:: shell
-
-          cd ~/projects/pel
-          make
 
 At this point PEL is installed.  You should continue and perform the extra
 steps to increase the performance of Emacs and PEL:
@@ -5425,29 +5315,12 @@ The PEL Emacs Lisp files types are the following:
 
      - This file is, however, byte-compiled.
        But it is byte-compiled *after* every other PEL file has been
-       byte-compiled and also with all external packages available and loadable.
+       byte-compiled.
 
        - The byte-compilation line for this file inside the Makefile_  loads the
          user's init.el file.  The Makefile_ identifies it with the ``EMACS_INIT``
          macro, and it is defined by default to be located inside
          ``"~/.emacs.d/init.el"``.
-       - The external packages are loaded during byte-compilation of
-         `pel_keys.el`_ but **not** when it is loaded, at run-time.
-
-         - This is done using  ``cl-eval-when 'compile`` forms for each
-           package loaded via the `use-package`_ logic.
-
-       - The two above techniques allows byte-compilation of this file. The
-         byte-compilation provides a little extra speed and also provides an
-         extra validation of the file content.
-       - All external packages that originate from ELPA_, MELPA_ and
-         MELPA-STABLE_ will be automatically downloaded when PEL is installed
-         via the ``package-install`` command.
-       - 🚧 ⚠️  Some of the external packages are, however, **not** from the
-         Elpa-type archives (see the table in `Credits`_).  There is currently
-         no logic provided to install them automatically, you must install them
-         manually (which amounts to copy the respective files into a directory
-         that is identified in Emacs ``load-path``).
 
    - The file `pel_keys.el`_ loads the file `pel-autoload.el`_ to define the
      auto-loading of all PEL features.
@@ -5480,7 +5353,7 @@ It implements a 2-step auto-loading mechanism described here:
   That function defines the auto-loading of all ``pel-``
   files, the PEL feature which are mostly independent from each other.
 
-Currently, PEL only uses `use-package`_
+Currently, PEL use its own logic on top of the built-in package library
 to control the installation of missing package if the corresponding feature
 is activated via `PEL customization`_ ``pel-use-`` customization variable.
 However, when using `Emacs package-install`_ to install PEL, then all
@@ -5972,7 +5845,6 @@ PEL uses the following libraries distributed with GNU Emacs:
 .. _GNU Emacs: https://www.gnu.org/software/emacs/
 
 
-PEL code uses the `use-package`_ library.
 It also provides access to the features of the libraries listed in the
 following table when the corresponding PEL user option is set to **t**:
 
@@ -6063,7 +5935,6 @@ smooth-scrolling_             MELPA_
 sr-speedbar_                  MELPA_
 swiper_                       MELPA_
 undo-tree_                    ELPA_
-`use-package`_                MELPA_
 v-mode_                       MELPA_
 visual-regexp_                MELPA_
 visual-regexp-steroids_       MELPA_
@@ -6115,7 +5986,6 @@ when running Emacs 27.1 and later versions.
 .. _avy:                       https://melpa.org/#/avy
 .. _MELPA:                     https://melpa.org/
 .. _MELPA-STABLE:              https://stable.melpa.org/
-.. _use-package:               https://melpa.org/#/use-package
 .. _bind-key:                  https://melpa.org/#/bind-key
 .. _benchmark-init:            https://melpa.org/#/benchmark-init
 .. _visible bookmarks:
