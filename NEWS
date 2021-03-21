@@ -7,7 +7,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   of the built-in package library to install external packages.  This
   simplifies the PEL installation procedure and allows byte-compiling all of
   PEL without requiring any external package.  PEL will download and install
-  new package **only** when you activate one of the ``pel-use-`` user-option
+  new package *only* when you activate the related ``pel-use-`` user-option
   variable.
 - New: the new command *pel-insert-line-above* (bound to ``M-L``) inserts a
   new line above current line and indents it. Optional numeric argument is
