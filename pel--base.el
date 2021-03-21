@@ -1592,6 +1592,23 @@ Each string is the file extension staring with the period."
     (dolist (ext extensions)
       (speedbar-add-supported-extension ext))))
 
+;; ---------------------------------------------------------------------------
+;; Byte-compilation
+;; ----------------
+
+(defun pel-byte-compile-if-needed (el-filename)
+  "Byte-compile Emacs Lisp source EL-FILENAME if it's needed.
+EL-FILENAME must be the name of a Emacs lisp file and must include the .el
+extension. The name of the file may be relative or absolute.
+The file is byte compiled if it is newer than its byte-compiled output file (a
+file with the .elc extension) or if the .elc file does not exists."
+  (let ((elc-filename (concat el-filename "c")))
+    (when (or (not (file-exists-p elc-filename))
+              (time-less-p
+               (file-attribute-modification-time (file-attributes elc-filename))
+               (file-attribute-modification-time (file-attributes el-filename))))
+      (byte-compile-file el-filename))))
+
 ;;; --------------------------------------------------------------------------
 (provide 'pel--base)
 

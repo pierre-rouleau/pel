@@ -5664,14 +5664,8 @@ This call simulates a F7 prefix key unless DONT-SIMULATE is non-nil."
 
   ;; Byte-compile pel__hydra.el if needed
   (let* ((current-directory (file-name-directory load-file-name))
-         (el-filename (expand-file-name "pel__hydra.el" current-directory))
-         (elc-filename (concat el-filename "c")))
-    (when (or (not (file-exists-p elc-filename))
-              (time-less-p
-               (file-attribute-modification-time (file-attributes elc-filename))
-               (file-attribute-modification-time (file-attributes el-filename))))
-      ;; byte-compile pel__hydra but do not load it yet.
-      (byte-compile-file "pel__hydra.el"))))
+         (el-filename (expand-file-name "pel__hydra.el" current-directory)))
+    (pel-byte-compile-if-needed el-filename)))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel_keys)
