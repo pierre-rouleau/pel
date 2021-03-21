@@ -188,6 +188,15 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
   :link `(file-link :tag "PEL @ GitHub" "https://github.com/pierre-rouleau/pel")
   :package-version '(pel . "0.3.1"))
 
+;; Properties applied to defcustom variables
+;; -----------------------------------------
+;;
+;; The `:requires' property is applied to the `pel-use-' user-option variables
+;; only. It indicates that the related package is only installed when the
+;; specified other user-option(s) are also turned on.  This information is
+;; used in the logic PEL uses to disable/remove packages when a `pel-use-'
+;; user option is turned off and the function `pel-cleanup' is executed.
+
 ;; ---------------------------------------------------------------------------
 (defgroup pel-base-emacs nil
   "PEL Emacs basic configuration."
@@ -1255,6 +1264,7 @@ PEL activates it only if variable `pel-use-yasnippet' is non-nil."
   :group 'pel-pkg-for-insertions
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-yasnippet-snippets :requires 'pel-use-yasnippet)
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-kbmacro
@@ -1760,11 +1770,13 @@ Note that this value overrides the value selected by the
           (const :tag "Use the remote PlantUML server" server)))
 
 (defcustom pel-use-flycheck-plantuml nil
-  "Control the flycheck-plantuml PlantUML checker package is used with PEL.
-See info at URL https://github.com/alexmurray/flycheck-plantuml"
+  "Control the flycheck-plantuml PlantUML checker package is used with PEL."
+  :link '(url-link :tag "flycheck-plantuml @ GitHub"
+                   "https://github.com/alexmurray/flycheck-plantuml")
   :group 'pel-pkg-for-plantuml
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-flycheck-plantuml :requires 'pel-use-plantuml)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; reStructuredText support
@@ -2642,6 +2654,7 @@ by the `pel-use-d-company-dcd'."
   :group 'pel-pkg-for-d
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-d-ac-dcd :requires 'pel-use-d)
 
 (defcustom pel-use-d-company-dcd nil
   "Control whether Company/DCD based code completion is used for D.
@@ -2658,6 +2671,7 @@ by the `pel-use-d-ac-dcd'."
   :group 'pel-pkg-for-d
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-d-company-dcd :requires 'pel-use-d)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Javascript support
@@ -2729,6 +2743,8 @@ even when the user-option sets it on."
   :group 'pel-pkg-for-go
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-d-company-dcd :requires 'pel-use-go)
+
 
 (defcustom pel-use-goflymake nil
   "Controls whether PEL use the goflymake package.
@@ -2760,6 +2776,8 @@ defcustom variable `pel-modes-activating-syntax-check'."
           (const :tag "Not used" nil)
           (const :tag "Use with flycheck" with-flycheck)
           (const :tag "Use with flymake"  with-flymake)))
+(put 'pel-use-d-company-dcd :requires 'pel-use-go)
+
 
 (defcustom pel-use-gocode nil
   "Controls whether PEL use the gocode package."
@@ -2768,6 +2786,7 @@ defcustom variable `pel-modes-activating-syntax-check'."
   :group 'pel-pkg-for-go
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-gocode :requires 'pel-use-go)
 
 (defcustom pel-use-gopls nil
   "Controls whether PEL use the gopls package."
@@ -2778,6 +2797,7 @@ defcustom variable `pel-modes-activating-syntax-check'."
   :group 'pel-pkg-for-go
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-gopls :requires 'pel-use-go)
 
 (defcustom pel-use-go-errcheck nil
   "Controls whether PEL use the go-errcheck package."
@@ -2788,6 +2808,7 @@ defcustom variable `pel-modes-activating-syntax-check'."
   :group 'pel-pkg-for-go
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-go-errcheck :requires 'pel-use-go)
 
 (defcustom pel-use-go-playground nil
   "Controls whether PEL use the go-playground package."
@@ -2796,6 +2817,7 @@ defcustom variable `pel-modes-activating-syntax-check'."
   :group 'pel-pkg-for-go
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-go-playground :requires 'pel-use-go)
 
 (defcustom pel-use-gorepl-mode nil
   "Controls whether PEL use the gorepl-mode package.
@@ -2808,6 +2830,7 @@ Requires gocode."
   :group 'pel-pkg-for-go
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-gorepl-mode :requires 'pel-use-go)
 
 (defcustom pel-use-gotest nil
   "Controls whether PEL use the gotest package."
@@ -2816,6 +2839,7 @@ Requires gocode."
   :group 'pel-pkg-for-go
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-gotest :requires 'pel-use-go)
 
 (defcustom pel-use-emacs-go-tag nil
   "Controls whether PEL use the emacs-go-tag package."
@@ -2826,6 +2850,7 @@ Requires gocode."
   :group 'pel-pkg-for-go
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-emacs-go-tag :requires 'pel-use-go)
 
 (defcustom pel-use-flycheck-golangci-lint nil
   "Controls whether PEL use the flycheck-golangci-lint package."
@@ -2834,6 +2859,7 @@ Requires gocode."
   :group 'pel-pkg-for-go
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-flycheck-golangci-lint :requires 'pel-use-go)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Lisp-like language support
@@ -2949,6 +2975,7 @@ To activate Slime with Common Lisp the user-option variable
   :group 'pel-pkg-for-clisp
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-slime :requires 'pel-use-common-lisp)
 
 (defcustom pel-use-sly nil
   "Control whether PEL activates SLY for Common Lisp.
@@ -2960,6 +2987,7 @@ To activate Sly with Common Lisp the user-option variable
   :group 'pel-pkg-for-clisp
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-sly  :requires 'pel-use-common-lisp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Emacs Lisp Support
@@ -3074,6 +3102,7 @@ To activate it you must activate the user-option variable `pel-use-clojure'."
                    "https://github.com/clojure-emacs/cider")
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-cider :requires 'pel-use-clojure)
 
 (defcustom pel-use-clj-refactor nil
   "Control whether PEL activates the clj-refactor package.
@@ -3084,6 +3113,7 @@ To activate it you must activate the user-option variable `pel-use-clojure'."
                    "https://github.com/clojure-emacs/clj-refactor.el")
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-clj-refactor :requires 'pel-use-clojure)
 
 (defcustom pel-use-clojure-snippets nil
   "Control whether PEL activates clojure-snippets package.
@@ -3097,6 +3127,7 @@ To use it you must also turn on:
                    "https://github.com/mpenet/clojure-snippets")
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-clojure-snippets :requires 'pel-use-clojure)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Hy Support
@@ -3144,6 +3175,7 @@ The user-option variable `pel-use-scheme' must be turned on to activate this."
   :group 'pel-pkg-for-scheme
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-geiser :requires 'pel-use-scheme)
 
 (defcustom pel-use-quack nil
   "Control whether PEL supports the Quack Enhance Scheme editing package.
@@ -3152,6 +3184,7 @@ The user-option variable `pel-use-scheme' must be turned on to activate this."
   :group 'pel-pkg-for-scheme
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-quack :requires 'pel-use-scheme)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Racket Support
@@ -3486,6 +3519,7 @@ IMPORTANT:
   :group 'pel-pkg-for-elixir
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-alchemist :requires 'pel-use-elixir)
 
 (defcustom pel-use-elixir-exunit nil
   "Control whether PEL supports Elixir Unit Test development.
@@ -3494,6 +3528,7 @@ IMPORTANT:
   :group 'pel-pkg-for-elixir
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-elixir-exunit :requires 'pel-use-elixir)
 
 (defcustom pel-use-elixir-lsp nil
   "Control whether PEL supports Lsp-Elixir package: Language Server Protocol.
@@ -3502,6 +3537,7 @@ package which provides the client/library for LSP."
   :group 'pel-pkg-for-elixir
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-elixir-lsp :requires 'pel-use-elixir)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Erlang Support
@@ -3659,6 +3695,7 @@ When set to t PEL activates code that prevent echo of the typed commands."
   :group 'pel-pkg-for-erlang
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-erlang-start :requires 'pel-use-erlang)
 
 (defcustom pel-use-erlang-syntax-check  nil
   "Controls whether PEL use ta syntax checker for Erlang.
@@ -3685,8 +3722,9 @@ defcustom variable `pel-modes-activating-syntax-check'."
           (const :tag "Not used" nil)
           (const :tag "Use with flycheck" with-flycheck)
           (const :tag "Use with flymake"  with-flymake)))
+(put 'pel-use-erlang-syntax-check :requires 'pel-use-erlang)
 
-;; ---------------------------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 (defcustom pel-use-edts nil
   "Control whether PEL uses EDTS when `pel-use-erlang' is t.
@@ -3694,6 +3732,7 @@ EDTS := Erlang Development Tool Suite."
   :group 'pel-pkg-for-erlang
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-edts :requires 'pel-use-erlang)
 
 (defcustom pel-activate-edts-automatically nil
   "Control whether EDTS is activated automatically for Erlang files.
@@ -3916,6 +3955,7 @@ Note: `pel-use-python' must be t for this to be effective."
   :safe #'booleanp
   :link `(url-link :tag "lpy @ GitHub"
                    "https://github.com/abo-abo/lpy"))
+(put 'pel-use-lpy :requires 'pel-use-python)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; REXX Support
@@ -3972,6 +4012,7 @@ Requires the user-option variable `pel-use-rust' to be on (t)."
   :group 'pel-pkg-for-rust
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-rust-mode :requires 'pel-use-rust)
 
 (defcustom pel-use-rustic nil
   "Control whether rustic is activated.
@@ -3981,6 +4022,7 @@ Requires the user-option variable `pel-use-rust' to be on (t)."
   :group 'pel-pkg-for-rust
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-rustic :requires 'pel-use-rust)
 
 (defcustom pel-use-flycheck-rust nil
   "Control whether flycheck-rust is activated.
@@ -3990,6 +4032,7 @@ Requires the user-option variable `pel-use-rust' to be on (t)."
   :group 'pel-pkg-for-rust
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-flycheck-rust :requires 'pel-use-rust)
 
 (defcustom pel-use-emacs-racer nil
   "Control whether emacs-racer is activated.
@@ -3999,6 +4042,7 @@ Requires the user-option variable `pel-use-rust' to be on (t)."
   :group 'pel-pkg-for-rust
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-emacs-racer :requires 'pel-use-rust)
 
 (defcustom pel-use-cargo nil
   "Control whether cargo is activated.
@@ -4008,6 +4052,7 @@ Requires the user-option variable `pel-use-rust' to be on (t)."
   :group 'pel-pkg-for-rust
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-cargo :requires 'pel-use-rust)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; V Language Support
@@ -4403,6 +4448,8 @@ Setting this non-nil also sets up the use of speedbar and projectile."
   :link '(custom-group-link "pel-pkg-for-project-mng")
   :link '(url-link :tag "projectile + speedbar @ GitHub"
                    "https://github.com/anshulverma/projectile-speedbar"))
+(put 'pel-use-projectile-speedbar :requires '(pel-use-speedbar
+                                            pel-use-projectile))
 
 ;; ---------------------------------------------------------------------------
 ;; Spelling Support
@@ -4859,6 +4906,7 @@ C/C++ modes."
           (const :tag "Do not use" nil)
           (const :tag "Use, activate later by command"  t)
           (const :tag "Use, activate when Emacs starts" use-from-start)))
+(put 'pel-use-rtags-xref :requires 'pel-use-rtags)
 
 ;; -- ivy-xref
 (defcustom pel-use-ivy-xref nil
@@ -4879,6 +4927,7 @@ the ivy package will be activated regardless."
   :group 'pel-pkg-for-xref
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-ivy-xref :requires 'pel-use-ivy)
 
 ;; -- helm-xref
 (defcustom pel-use-helm-xref nil
@@ -4899,6 +4948,7 @@ the helm package will be activated regardless."
   :group 'pel-pkg-for-xref
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-helm-xref :requires 'pel-use-helm)
 
 (defcustom pel-startup-xref-front-end nil
   "Identifies which xref front-end to activate on startup.
