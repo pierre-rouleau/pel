@@ -42,7 +42,7 @@
 (setq custom-file "~/.emacs.d/emacs-customization.el")
 (load custom-file)
 
-;; 5: Start PEL
+;; 6: Start PEL
 ;; - At first leave this commented out.
 ;; - Activate the code Once you have successfully built PEL once
 (require 'pel)
