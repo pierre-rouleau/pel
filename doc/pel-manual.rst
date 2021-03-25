@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-03-25 16:51:39, updated by Pierre Rouleau.
+:Modified: 2021-03-25 17:42:21, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -448,7 +448,8 @@ You can also use a copy of the file `example/init/init-1.el`_ :
 
 .. code:: elisp
 
-          ;;; ---Example init.el file -- For PEL final compilation-----------------------
+          ;; -*-no-byte-compile: t; -*-
+          ;;; ---Example init.el file ---------------- Step 1----------------------------
           ;;
           ;; 1: Setup additional package sources: MELPA, MELPA-STABLE.
           ;;    By default Emacs only identifies the gnu archive located at

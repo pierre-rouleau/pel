@@ -1,4 +1,5 @@
-;;; ---Example init.el file -- For PEL final compilation-----------------------
+;; -*-no-byte-compile: t; -*-
+;;; ---Example init.el file ---------------- Step 1----------------------------
 ;;
 ;; 1: Setup additional package sources: MELPA, MELPA-STABLE.
 ;;    By default Emacs only identifies the gnu archive located at
