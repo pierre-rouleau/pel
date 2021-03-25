@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-03-20 21:14:26, updated by Pierre Rouleau.
+:Modified: 2021-03-25 16:51:39, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -450,7 +450,10 @@ You can also use a copy of the file `example/init/init-1.el`_ :
 
           ;;; ---Example init.el file -- For PEL final compilation-----------------------
           ;;
-          ;; 1: Setup package sources: MELPA, MELPA-STABLE and a local mypelpa
+          ;; 1: Setup additional package sources: MELPA, MELPA-STABLE.
+          ;;    By default Emacs only identifies the gnu archive located at
+          ;;    URL "https://elpa.gnu.org/packages/".
+          ;;    Add the MELPA archives as they provide more packages.
           (when (>= emacs-major-version 24)
             (require 'package)
             (setq package-enable-at-startup nil)
@@ -463,10 +466,7 @@ You can also use a copy of the file `example/init/init-1.el`_ :
                            (cons "melpa" (concat proto "://melpa.org/packages/")) t)
               (add-to-list 'package-archives
                            (cons "melpa-stable"
-                                 (concat proto "://stable.melpa.org/packages/")) t)
-              (add-to-list 'package-archives
-                           (cons "mypelpa"
-                                 (expand-file-name "~/projects/pel/pelpa/")) t))
+                                 (concat proto "://stable.melpa.org/packages/")) t))
             (package-initialize))
 
           ;; 2: Delay loading of abbreviation definitions
@@ -507,12 +507,6 @@ You can also use a copy of the file `example/init/init-1.el`_ :
 
   - MELPA_
   - MELPA-STABLE_
-  - "``~/projects/pel/pelpa``"
-
-  The last one is the location of the "pelpa" directory inside the PEL project
-  directory, the location you selected when you `cloned PEL`_ to your drive.
-  Later, you would be able to use that PEL archive file to install PEL into
-  other computers.  This, however is not needed for this installation.
 
 - Section 2 delays the loading of the abbreviation lists to after PEL is
   loaded.  This mechanism is described in the section titled
@@ -563,7 +557,7 @@ Nothing will be downloaded during this byte compilation.
 
           cd ~/projects/pel
           make clean
-          make it
+          make
 
 The make script should terminate with an exit code of 0
 and you should see no error or warning.
@@ -645,10 +639,10 @@ sequence:
 
           cd ~/projects/pel
           make clean
-          make it
+          make
 
 
-#. Open emacs to make it download packages like which-key_ activated by default:
+#. Open emacs to download packages like which-key_ activated by default:
 
    .. code:: shell
 
@@ -5601,74 +5595,7 @@ The following commands are used to test the code, issued from PEL root directory
           make lint
           make test
 
-Then I create a local Elpa Emacs Archive and run the following command to build
-PEL archive and place it inside the local archive:
-
-.. code:: shell
-
-          make mypelpa
-
-Once this is done, I use the switch-emacs script (`see below`_) to switch
-the ``.emacs.d`` directory to
-something with minimal configuration, (normally called "~/min-emacs")
-with enough to set the ``load-path`` and
-access to ELPA_, MELPA_ and MELPA-STABLE_ and the local archive where ``pel``
-was stored.
-
-I also wipe out the directory "~/.emacs.d/elpa" directory to remove all the
-packages from it.
-
-Using this minimal Emacs configuration I then execute Emacs.  That instance of
-Emacs does not have access to PEL (yet).  So then I use ``M-x list-packages``
-and install ``pel`` from that, using ``package-install``.
-The ``pel`` package comes from the local archive
-but everything else comes from the real sites.
-The ``package-install`` command downloads all PEL pre-requisites and byte-compile
-PEL files.  I make sure no warning is issued from the PEL files.
-
-.. _see below:    `The switch-emacs script`_
-
-
-The switch-emacs script
-~~~~~~~~~~~~~~~~~~~~~~~
-
-The following ``switch-emacs`` script renames "~/.emacs.d" to either
-"~/real-emacs" or "~/min-emacs" depending which one exists.
-The "~/real-emacs" is a temporary name for the *real* Emacs configuration directory,
-while "~/min-emacs" is a minimal Emacs configuration to allow testing Emacs with
-a minimal configuration. To use the script you must first create "~/min-emacs"
-and a ~/min-emacs/init.el" file that provides enough code to set the ``load-path``
-and access to the external and local Emcas archive repositiories.
-
-.. code:: shell
-
-          #!/bin/sh
-          # Exchange ~/.emacs.d -> ~/real-emacs
-          #          ~/min-emacs -> ~/.emacs.d
-          # or vice versa: exchange real emacs for a new emacs directory.
-          #
-          # ~/min-emacs  : a minimal Emacs configuration to perform package-install PEL tests.
-          # ~/real-emacs : a temporary storage for the *real* emacs configuration directory.
-
-          cd
-          if [[ -d "min-emacs" ]]; then
-              echo "---> min-emacs exists. Activating the min-emacs."
-              mv .emacs.d real-emacs
-              mv min-emacs .emacs.d
-
-          elif [[ -d "real-emacs" ]]; then
-              echo "---> real-emacs exists.  Activating the real-emacs."
-              mv .emacs.d min-emacs
-              mv real-emacs .emacs.d
-          else
-              echo "First create a ~/min-emacs directory with minimal init.el"
-              echo "The ~/min-emacs/init.el should:"
-              echo " - set load-path to find utilities not compig from elpa-compatible archive,"
-              echo " - set package-archives list to include melpa, melpa-stable, gnu elpa,"
-              echo "   and your local mypelpa."
-              echo "It should not load PEL nor execute pel-init."
-          fi
-
+There should be no error, no warning and all tests should pass.
 
 .. _elint.el:                          https://github.com/emacs-mirror/emacs/blob/master/lisp/emacs-lisp/elint.el
 .. _standard GNU Emacs code guidelines:
@@ -5715,13 +5642,7 @@ targets and their purpose.
 
 #. The current Makefile_ and build-pel.el_ assume that the files are
    located in a specific location.
-#. The ``make``, ``make all``  always rebuild everything regardless of
-   the state and dependencies of the files.
 #. Overall, this makefile is also a bit verbose and could be cleaned up.
-
-These defects currently don't prevent me from using the
-Makefile but do bug me, so that's another thing on my 🚧 todo list.
-
 
 .. _Makefile:             ../Makefile
 

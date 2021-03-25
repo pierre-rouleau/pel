@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-03-22 14:18:56, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-03-25 16:37:10, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -343,10 +343,11 @@ PEL_TAR_FILE := pel-$(PEL_VERSION).tar
 # 4: Install that tar file into the local Elpa-compliant directory,
 #    ready to be used by Emacs.
 
-all: it pkg mypelpa
+all: it
 
 it: pel pel2 test
 
+local-pkg: pkg mypelpa
 # ------------------------------------------------------------------------------
 # Build all normal PEL files, except pel_keys for the very first build.
 #
@@ -378,8 +379,8 @@ help:
 	@printf "Usage:\n"
 	@printf " * make             - same as 'make all': build everything as needed.\n"
 	@printf " * make first-build - first build done on a virgin system.\n"
-	@printf " * make all         - build everything as needed.\n"
-	@printf " * make it          - byte compile all files and run tests. Use for development\n"
+	@printf " * make all         - byte compile all files and run tests.\n"
+	@printf " * make it          - byte compile all files and run tests.\n"
 	@printf " * make pel         - byte compile all files except pel.el. Nothing else done.\n"
 	@printf " * make compile     - byte compile all files. Nothing else done.\n"
 	@printf " * make lint        - check .el files with elisp-lint.\n"
@@ -389,15 +390,17 @@ help:
 	@printf " * make clean_tar   - remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
 	@printf " * make clean_mypelpa - remove the directory $(PELPA_DIR)\n"
 	@printf " * make test        - Run the regression tests.\n"
+	@printf " * make local-pkg   - build local PEL melpa archive: make pkg mypelpa.\n"
 	@printf " * make pkg         - Build the tar file inside $(OUT_DIR).\n"
 	@printf " * make mypelpa     - Copy the tar file into a local package archive.\n"
 	@printf "\n"
 	@printf "LIMITATIONS:\n"
-	@printf "  - The package version number must be updated inside several\n"
-	@printf "    files:\n"
+	@printf "  - To build a package, the package version number must be updated\n"
+	@printf "    inside several files:\n"
 	@printf "    - Makefile\n"
 	@printf "    - pel.el\n"
 	@printf "    - pel-pkg.el\n"
+	@printf "Note: building a package is not needed to use PEL. Experimental use only.\n"
 	@printf "\n"
 
 # -----------------------------------------------------------------------------

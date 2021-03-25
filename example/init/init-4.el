@@ -34,7 +34,10 @@
   (add-hook 'after-init-hook 'benchmark-init/deactivate)
 
   ;; ---------------------------------------------------------------------------
-  ;; 1: Setup package sources: MELPA, MELPA-STABLE and a local mypelpa
+  ;; 1: Setup additional package sources: MELPA, MELPA-STABLE.
+  ;;    By default Emacs only identifies the gnu archive located at
+  ;;    URL "https://elpa.gnu.org/packages/".
+  ;;    Add the MELPA archives as they provide more packages.
   (when (>= emacs-major-version 24)
     (require 'package)
     (setq package-enable-at-startup nil)
@@ -47,10 +50,7 @@
                    (cons "melpa" (concat proto "://melpa.org/packages/")) t)
       (add-to-list 'package-archives
                    (cons "melpa-stable"
-                         (concat proto "://stable.melpa.org/packages/")) t)
-      (add-to-list 'package-archives
-                   (cons "mypelpa"
-                         (expand-file-name "~/projects/pel/pelpa/")) t))
+                         (concat proto "://stable.melpa.org/packages/")) t))
     (package-initialize))
 
   ;; ---------------------------------------------------------------------------
@@ -128,7 +128,6 @@
     ;; The speedbar icons used in graphics mode are ancient
     ;; looking. Using ASCII characters instead is nicer.
     (setq speedbar-use-images nil))
-
 
   ;; ---------------------------------------------------------------------------
   ;; 5: Store Emacs customization inside a separate file
