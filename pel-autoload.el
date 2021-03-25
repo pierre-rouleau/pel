@@ -415,6 +415,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-browse-filename-at-point
     pel-open-url-at-point)
 
+  (pel-autoload "pel-package" for : pel-install-from-elpa-attic)
+
   (pel-autoload "pel-pathmng" for: pel-emacs-load-path)
 
   (pel-autoload "pel-plantuml" for: pel-render-commented-plantuml)

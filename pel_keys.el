@@ -1136,7 +1136,7 @@ interactively."
       (define-key pel:undo    "u"      'pel-undo)
       (define-key pel:undo    "r"      'pel-redo)
 
-      (pel-ensure-package   undo-tree from: gnu)
+      (pel-ensure-package undo-tree from: gnu)
       (pel-autoload-file undo-tree for:
                          undo-tree-mode
                          global-undo-tree-mode
@@ -2234,15 +2234,12 @@ d-mode not added to ac-modes!"
                        exunit-verify-single
                        exunit-verify
                        exunit-toggle-file-and-test
-                       exunit-toggle-file-and-test-other-window)))
+                       exunit-toggle-file-and-test-other-window))
 
-;; (when pel-use-elixir-lsp
-;;   (use-package lsp-elixir
-;;     :ensure t
-;;     :pin melpa
-;;     :commands elixir-mode
-;;     :init
-;;     (add-hook ‘elixir-mode-hook ’lsp)))
+  (when pel-use-elixir-lsp
+    (pel-ensure-package lsp-elixir from: melpa)
+    (pel-autoload-file lsp-elixir for: elixir-mode)
+    (add-hook 'elixir-mode-hook 'lsp)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` : Forth programming
@@ -2492,6 +2489,12 @@ d-mode not added to ac-modes!"
 ;; - Use parinfer
 ;; --------------
 (when pel-use-parinfer
+  (cl-eval-when 'load
+    (or (and (eq pel-use-parinfer 'use-pel-elpa-attic-copy)
+             (pel-install-from-elpa-attic "parinfer"))
+        (pel-install-github-files "emacsattic/parinfer/master" '("parinfer.el"
+                                                                 "parinferlib.el"
+                                                                 "parinfer-ext.el"))))
   (pel-ensure-package parinfer from: melpa)
   (pel-autoload-file parinfer for:
                      parinfer-mode
@@ -2886,7 +2889,6 @@ d-mode not added to ac-modes!"
         (add-to-list
          'python-shell-completion-native-disabled-interpreters "python")
       (setq python-shell-completion-native-disabled-interpreters '("python"))))
-
 
   (defun pel--setup-for-python ()
     "Activate the python mode."
@@ -5185,9 +5187,9 @@ the ones defined from the buffer now."
 
 (when pel-use-winner
   ;; winner is built-in Emacs.
-  (pel-autoload-file winner for: winner-mode)
   (pel-require-after-init winner 1)
   (pel-autoload-file winner for:
+                     winner-mode
                      winner-undo
                      winner-redo)
   (define-key pel:window    "n"  'winner-redo) ; next window arrangement
@@ -5467,14 +5469,12 @@ the ones defined from the buffer now."
 
 ;; helm-xref
 (when pel-use-helm-xref
+  (pel-ensure-package helm-xref from: melpa)
   (if (< emacs-major-version 27)
-      (progn
-        (pel-ensure-package helm-xref from: melpa)
-        (pel-autoload-file helm-xref for: helm-xref-show-xrefs))
-    (pel-ensure-package helm-xref from: melpa)
+      (pel-autoload-file helm-xref for: helm-xref-show-xrefs)
     (pel-autoload-file helm-xref for:
-                          helm-xref-show-xrefs-27
-                          helm-xref-show-defs-27)))
+                       helm-xref-show-xrefs-27
+                       helm-xref-show-defs-27)))
 
 (when (or pel-use-ivy-xref
           pel-use-helm-xref)

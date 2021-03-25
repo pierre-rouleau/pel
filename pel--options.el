@@ -128,6 +128,57 @@
 ;; are only activated once a PEL command for that effect is executed by the
 ;; user.
 
+;; Properties applied to defcustom variables
+;; -----------------------------------------
+;;
+;; Extra information is stored inside attributes of the `pel-use-' defcustom
+;; user-option variables.  This information is used in the logic PEL uses to
+;; disable/remove packages when a `pel-use-' user option is turned off and the
+;; function `pel-cleanup' is executed.
+;;
+;; The following properties are applied to the the `pel-use-' user-option
+;; variables only.
+
+;; The `:requires' property indicates package dependencies.  The attribute
+;; value might be: - A single `pel-use-' symbol: stating that this parent must
+;; also be activated for the package to be installed.  - A list of several
+;; `pel-use-' symbols, stating that if any of these parent is activated the
+;; package should be installed.  - A list of several `pel-use-' symbols with
+;; `:all' in the first element, stating that *all* parent packages must be
+;; activated for this package to be installed.
+;;
+
+
+;; In most case the name of the package that is controlled by the `pel-use-'
+;; variables is the string that follows the "pel-use-" prefix in the symbol
+;; name.  But this is not always the case. There are the  other possibilities
+;; that are identified by the `:package-is' property:
+;;
+;;  - the `:a-gate' property value means that this user-option acts as a
+;;    gate and does not install anything.  Other user-options use it as a
+;;    parent to gate their installation.  This property is often used for
+;;    programming languages.
+;;  - the `:builtin-emacs' property value indicates that the package is
+;;    distributed with Emacs and cannot be de-installed,
+;;  - the `:in-utils' property value indicates that the package is installed
+;;    by PEL into the ~/.emacs.d/utils directory and not managed by the Emacs
+;;    `package' library.  The package name is identified by the suffix of the
+;;    pel-use- symbol.
+;;  - A symbol which is the real name of a package that is downloaded
+;;    from an Elpa-compliant package management site and managed trough Emacs
+;;    `package' library.
+;;  - a consp form that must be evaluated dynamically to compute the symbol or
+;;    list of symbols representing the Elpa packages that are used. The result
+;;    must be a cons cell or a list of cons cell where the car is a symbol that
+;;    identifies the packaging mechanism and the cdr is the package name
+;;    symbol. The package mechanisms supported are 'elpa and 'utils.  The
+;;    'elpa symbol identifies a package that is downloaded and managed by the
+;;     Emacs package library and comes from an Elpa-compliant repository.  The
+;;     'utils symbol identifies a file that is downloaded from a web-site and
+;;     stored into PEL's utils directory. See `pel-use-ripgrep' for an example.
+;;  - In the absence of the `:package-is' property, the name of the package is
+;;    extracted from the name of the `pel-use-' symbol.
+
 ;; ---------------------------------------------------------------------------
 ;;; Code:
 
@@ -187,15 +238,6 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
   :link `(url-link  :tag "PEL key maps PDF" ,(pel-pdf-file-url "-pel-key-maps"))
   :link `(file-link :tag "PEL @ GitHub" "https://github.com/pierre-rouleau/pel")
   :package-version '(pel . "0.3.1"))
-
-;; Properties applied to defcustom variables
-;; -----------------------------------------
-;;
-;; The `:requires' property is applied to the `pel-use-' user-option variables
-;; only. It indicates that the related package is only installed when the
-;; specified other user-option(s) are also turned on.  This information is
-;; used in the logic PEL uses to disable/remove packages when a `pel-use-'
-;; user option is turned off and the function `pel-cleanup' is executed.
 
 ;; ---------------------------------------------------------------------------
 (defgroup pel-base-emacs nil
@@ -277,6 +319,7 @@ For example, to activate it in Erlang, add a line with
   :group 'pel-package-use
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-editor-config :package-is 'editorconfig)
 
 ;; ---------------------------------------------------------------------------
 ;; Alignment Support
@@ -361,6 +404,7 @@ hello.c"
   :type 'boolean
   :safe #'booleanp
   :link '(custom-manual "(emacs)Uniquify"))
+(put 'pel-use-uniquify :package-is :builtin-emacs)
 
 (defcustom pel-use-ascii-table nil
   "Control whether the `ascii-table' package is available.
@@ -411,6 +455,7 @@ completion mechanism that is preferred by many people."
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-ido :package-is :builtin-emacs)
 
 (defcustom pel-use-smex nil
   "Control whether PEL uses the smex package.
@@ -477,6 +522,7 @@ To activate this you must also activate `pel-use-ido'."
           (const :tag "Use, activate later by command"  t)
           (const :tag "Use, activate globally when Emacs starts"
                  use-from-start)))
+(put 'pel-use-ido-ubiquitous :package-is 'ido-completing-read+)
 
 (defcustom pel-use-flx nil
   "Control whether PEL uses the flx matching package.
@@ -495,6 +541,7 @@ To use this you must also have `pel-use-ido' or `pel-use-ivy' set to t."
           (const :tag "Use, activate later by command"  t)
           (const :tag "Use, activate globally when Emacs starts"
                  use-from-start)))
+(put 'pel-use-flx :package-is 'flx-ido)
 
 (defcustom pel-use-ivy nil
   "Control whether PEL uses the Ivy package.
@@ -735,6 +782,7 @@ command to change it either for the local buffer or globally."
   :group 'pel-pkg-for-dired
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-dired-x :package-is :builtin-emacs)
 
 ;; ---------------------------------------------------------------------------
 ;; Text and Code Completion and Expansion
@@ -766,6 +814,7 @@ The Hippie Expand can be used together with any."
   :group 'pel-pkg-for-expand
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-hippie-expand :package-is :builtin-emacs)
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-filemng
@@ -822,6 +871,7 @@ make script files executable on save when non-nil, don't otherwise."
           (const :tag "Do not use" nil)
           (const :tag "Use pel:ffap bindings" t)
           (const :tag "Activate standard ffap bindings" ffap-bindings)))
+(put 'pel-use-ffap :package-is :builtin-emacs)
 
 (defcustom pel-use-recentf nil
   "Control whether PEL activates the recentf built-in package.
@@ -836,6 +886,7 @@ ability to detect files opened on startup."
   :group 'pel-pkg-for-filemng
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-recentf :package-is :builtin-emacs)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Directory Tree Browsing and Management
@@ -843,7 +894,7 @@ ability to detect files opened on startup."
 
 (defgroup pel-pkg-for-browse nil
   "PEL Directory Tree Browsing and Management."
-    :group 'pel-pkg-for-filemng)
+  :group 'pel-pkg-for-filemng)
 
 (defcustom pel-use-treemacs nil
   "Control whether PEL uses the treemacs package."
@@ -933,29 +984,32 @@ a non-customizable variable."
 
 (defcustom pel-use-framemove nil
   "Control whether PEL uses the framemove package.
-It is similar to windmove and ties with it.
+It is similar to the Emacs builtin windmove and extends it to frames
+when Emacs is used in graphics mode.
 
-Notes:
-- With PEL, if framemove is used windmove must also be used
-  (see `pel-use-windmove').
-- This package work with Emacs in graphics mode.  Multiple
-  frames *can* be used in terminal (TTY) mode but only one can
-  be displayed at a time in the terminal window.
-- This file is not available MELPA (as of Sept 2020).
-- The version 0.10 is available via the relevant EmacsWiki page.
-- Older version 0.9 used an obsolete function, that was fixed in version 0.10."
-  :link `(url-link :tag "framemove.el @ EmacsWiki"
+- Multiple frames *can* be used in terminal (TTY) mode but only one can
+  be displayed at a time in the terminal window, therefore this package
+ is not needed in terminal mode.
+- This file is not available on MELPA (as of March 2021).
+- PEL installs the copy available on Emacsmirror, which is version 0.10.
+- The version 0.10 is also available via the relevant EmacsWiki page.
+- Older version 0.9 used an obsolete function, that was fixed in
+  version 0.10."
+  :link '(url-link :tag "framemove @ EmacsMirror"
+                   "https://github.com/emacsmirror/framemove")
+  :link '(url-link :tag "framemove.el @ EmacsWiki"
                    "https://www.emacswiki.org/emacs/framemove.el")
-  :link `(url-link :tag "Author's site: Emacs Tip# 35: framemove"
+  :link '(url-link :tag "Author's site: Emacs Tip# 35: framemove"
                    "http://trey-jackson.blogspot.com/2010/02/\
 emacs-tip-35-framemove.html")
-  :link `(url-link :tag "EmacsWiki framemove page"
+  :link '(url-link :tag "EmacsWiki framemove page"
                    "https://www.emacswiki.org/emacs/FrameMove")
-  :link `(url-link :tag "Youtube video on windmove and framemove"
+  :link '(url-link :tag "Youtube video on windmove and framemove"
                    "https://www.youtube.com/watch?v=f3th2jyv35c")
   :group 'pel-pkg-for-frame
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-framemove :package-is :in-utils)
 
 ;; ---------------------------------------------------------------------------
 ;; Support for Emacs Running in Graphics Mode
@@ -1053,17 +1107,20 @@ Ripgrep is a very fast grep utility, and two packages support ripgrep:
 Setting `pel-use-ripgrep' to t indicates that you want to use ripgrep, so
 it identifies the installation of the `rg` package.  If you also set
 `pel-use-projectile' to non-nil, then the installation of the `ripgrep`
-package is also required because `projectile` uses the `ripgrep` package,
-it does not uses `rg`."
+package is also required because `projectile` uses the `ripgrep` package."
+  :link `(url-link :tag "rg @ Github"
+                   "https://github.com/dajva/rg.el")
   :link `(url-link :tag "ripgrep @ GitHub"
                    "https://github.com/BurntSushi/ripgrep")
-  :link `(url-link :tag "Emacs rg  package"
-                   "https://melpa.org/#/rg")
   :link `(url-link :tag "Emacs ripgrep @ GitHub"
                    "https://github.com/nlamirault/ripgrep.el")
   :group 'pel-pkg-for-grep
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-ripgrep :package-is '(if pel-use-projectile
+                                       '((elpa . rg)
+                                         (elpa . ripgrep))
+                                     '((elpa .rg))))
 
 ;; ---------------------------------------------------------------------------
 ;; Highlight Support
@@ -1106,6 +1163,7 @@ current window:
                    "https://github.com/emacsmirror/vline")
   :link '(url-link :tag "vline @ EmacsWiki"
                    "https://www.emacswiki.org/emacs/VlineMode"))
+(put 'pel-use-vline :package-is :in-utils)
 
 (defcustom pel-use-rainbow-mode nil
   "Control whether PEL uses the `rainbow-mode' package.
@@ -1160,12 +1218,38 @@ grouping characters:
   :link `(url-link :tag "Diff & Merge PDF" ,(pel-pdf-file-url "diff-merge")))
 
 (defcustom pel-use-parinfer nil
-  "Control whether PEL uses the parinfer package."
-  :group 'pel-pkg-for-parens
-  :type 'boolean
-  :safe #'booleanp)
+  "Control whether PEL uses the parinfer package.
 
-(defcustom pel-use-rainbow-delimiters  nil
+Note that this package is obsolete, the author failed to complete a fast
+enough implementation using Emacs Lisp.  There is, however, a successor,
+implemented in Rust, parinfer-rust-mode that can be used instead.  Activate
+that with `pel-use-parinfer-rust-mode'.
+
+If you have an old installation of parinfer downloaded via Melpa, and you
+request a PEL cleanup, your copy will be stored inside your
+~/.emacs.d/elpa-attic directory.
+
+New installations will be done using the files from EmacsAttic.
+
+To activate this package select one of the options:
+- use-local-elpa-attic-copy  but only if you have an old copy in your elpa-attic.
+- use-emacs-attic for all other case."
+  :link '(url-link :tab "parinfer manual"
+                   "https://shaunlebron.github.io/parinfer/")
+  :link '(url-link :tab "parinfer @ EmacsAttic"
+                   "https://github.com/emacsattic/parinfer")
+  :link '(url-link :tab "parinfer @ GitHub, archived."
+                   "https://github.com/shaunlebron/parinfer")
+  :group 'pel-pkg-for-parens
+  :type '(choice
+          (const :tag "Use Emacs Attic" t)
+          (const :tag "Use local Elpa attic copy") 'use-pel-elpa-attic-copy))
+(put 'pel-use-parinfer :package-is '(if (eq pel-use-parinfer
+                                            'use-pel-elpa-attic-copy)
+                                        '(elpa . parinfer)
+                                      '(utils . parinfer)))
+
+(defcustom pel-use-rainbow-delimiters nil
   "Control whether PEL uses the rainbow-delimiters package."
   :group 'pel-pkg-for-parens
   :type 'boolean
@@ -1201,6 +1285,7 @@ grouping characters:
   :group 'pel-pkg-for-imenu
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-imenu+ :package-is :in-utils)
 
 (defcustom pel-use-imenu-extra nil
   "Control whether PEL provides access to imenu-extra external package."
@@ -1209,6 +1294,7 @@ grouping characters:
   :group 'pel-pkg-for-imenu
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-imenu-extra :package-is :in-utils)
 
 ;; ---------------------------------------------------------------------------
 ;; Insertion of Text & Templates
@@ -1293,6 +1379,7 @@ See repository at URL https://github.com/abo-abo/centimacro"
   :group 'pel-pkg-for-kbmacro
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-centimacro :package-is :in-utils)
 
 (defcustom pel-centi-assign-key "<C-f5>"
   "Default key binding for function `centi-assign'.
@@ -1321,6 +1408,7 @@ Repository: https://github.com/Silex/elmacro"
   :group 'pel-pkg-for-kbmacro
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-emacros :package-is :in-utils)
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-key-chord
@@ -1361,6 +1449,7 @@ To use key-seq you must also activate key-chords via `pel-use-key-chord'."
   :group 'pel-pkg-for-key-chord
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-key-seq :requires 'pel-use-key-chord)
 
 (defcustom pel-key-chord-two-keys-delay 0.1
   "Max time delay between two key press to be considered a key chord.
@@ -1657,6 +1746,7 @@ waiting for activity to resume in the lewang's repo."
   :safe #'booleanp
   :link '(url-link :tag "prouleau/command-log-mode @ GitHub"
                    "https://github.com/prouleau/command-log-mode"))
+(put 'pel-use-command-log-mode :package-is :in-utils)
 
 ;; ---------------------------------------------------------------------------
 ;; Marking Management
@@ -1689,6 +1779,7 @@ waiting for activity to resume in the lewang's repo."
   :group 'pel-pkg-for-markup
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-org-mode :package-is :builtin-emacs)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; AsciiDoc Support
@@ -1700,9 +1791,12 @@ waiting for activity to resume in the lewang's repo."
 
 (defcustom pel-use-asciidoc nil
   "Control whether PEL activates support for Asciidoc with adoc mode."
+  :link '(url-link :tag "adoc-mode @GitHub"
+                   "https://github.com/sensorflo/adoc-mode")
   :group 'pel-pkg-for-asciidoc
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-asciidoc :package-is 'adoc-mode )
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; pel-pkg-for-draw-markup
@@ -1791,6 +1885,7 @@ Note that this value overrides the value selected by the
   :group 'pel-pkg-for-reST
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-rst-mode :package-is :builtin-emacs)
 
 (defcustom pel-rst-adornment-style 'CRiSPer
   "Select the section adornment style.
@@ -1855,6 +1950,12 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
   :group 'pel-pkg-for-navigation
   :type 'boolean
   :safe #'booleanp)
+;; There's no specific PEL user-option for ivy-avy, but it is installed
+;; when both pel-use-avy and pel-use-ivy are set. It is identified in the
+;; following property.  It could also be located in the pel-use-ivy with
+;; adjusted logic. I selected the one here.
+(put 'pel-use-avy :package-is '(when pel-use-ivy
+                                 '((elpa . ivy-avy))))
 
 ;; ---------------------------------------------------------------------------
 ;; Programming Language Support
@@ -1912,6 +2013,7 @@ This package provides the ability to hide comments."
   :group 'pel-pkg-for-all-languages
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-hide-comnt :package-is :in-utils)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Language Server Protocol (LSP) Support
@@ -1921,12 +2023,13 @@ This package provides the ability to hide comments."
   "PEL support for language server protocol."
   :group  'pel-pkg-for-all-languages)
 
-(defcustom pel-use-eglot nil
-  "Control whether PEL supports the eglot package.
-eglot is a client for Language Server Protocol servers."
-  :group 'pel-pkg-for-language-server
-  :type 'boolean
-  :safe #'booleanp)
+;; TODO:  FUTURE
+;; (defcustom pel-use-eglot nil
+;;   "Control whether PEL supports the eglot package.
+;; eglot is a client for Language Server Protocol servers."
+;;   :group 'pel-pkg-for-language-server
+;;   :type 'boolean
+;;   :safe #'booleanp)
 
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-pkg-generic-code-style nil
@@ -2048,6 +2151,7 @@ with no text."
   :group 'pel-pkg-for-applescript
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-applescript :package-is :in-utils)
 
 (when (eq system-type 'darwin)
   (defcustom  pel-mac-voice-name nil
@@ -2104,6 +2208,7 @@ via the ``<f12> ? e`` sequence."
   :safe #'booleanp
   :link '(url-link :tag "c-eldoc @ GitHub"
                    "https://github.com/pierre-rouleau/c-eldoc"))
+(put 'pel-use-c-eldoc :package-is :in-utils)
 
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-c-code-style nil
@@ -2550,6 +2655,7 @@ Values in the [2, 8] range are accepted."
   :group 'pel-pkg-for-d
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-d :package-is 'd-mode)
 
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-d-code-style nil
@@ -2691,6 +2797,8 @@ When set, identifies what mode is used to support Javascript."
           (const :tag "Future: Emacs basic + \
 PEL additions using built-in js-mode." js-mode)
           (const :tag "Supported by the js2-mode external package." js2-mode)))
+(put 'pel-use-javascript :package-is '(when (eq pel-use-javascript 'js2-mode)
+                                        '(elpa . js2-mode)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Go language support
@@ -2708,6 +2816,7 @@ This *must* be activated to allow any other package for Go."
   :group 'pel-pkg-for-go
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-go :package-is :a-gate)
 
 (defcustom pel-go-tab-width 8
   "Hard-tab display width used for Go source code.
@@ -2743,7 +2852,7 @@ even when the user-option sets it on."
   :group 'pel-pkg-for-go
   :type 'boolean
   :safe #'booleanp)
-(put 'pel-use-d-company-dcd :requires 'pel-use-go)
+(put 'pel-use-go-mode :requires 'pel-use-go)
 
 
 (defcustom pel-use-goflymake nil
@@ -2776,7 +2885,14 @@ defcustom variable `pel-modes-activating-syntax-check'."
           (const :tag "Not used" nil)
           (const :tag "Use with flycheck" with-flycheck)
           (const :tag "Use with flymake"  with-flymake)))
-(put 'pel-use-d-company-dcd :requires 'pel-use-go)
+(put 'pel-use-goflymake :requires 'pel-use-go)
+(put 'pel-use-goflymake :package-is
+     '(cond ((eq pel-use-goflymake 'with-flycheck)
+             '((utils . go-flycheck)
+               (elpa  . flycheck)))
+            ((eq pel-use-goflymake 'with-flymake)
+             ;; flymake is part of Emacs
+             '((utils . go-flymake)))))
 
 
 (defcustom pel-use-gocode nil
@@ -3020,12 +3136,6 @@ in Graphics mode."
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-use-re-builder nil
-  "Control whether PEL uses the {re-builder} package."
-  :group 'pel-pkg-for-elisp
-  :type 'boolean
-  :safe #'booleanp)
-
 (defcustom pel-use-highlight-defined nil
   "Control whether PEL uses the {highlight-defined} package."
   :group 'pel-pkg-for-elisp
@@ -3077,7 +3187,8 @@ provide arc-mode and Arc inferior mode."
                    "https://github.com/arclanguage/anarki")
   :type 'boolean
   :safe #'booleanp)
-
+(put 'pel-use-arc :package-is '(quote ((utils . arc)
+                                       (utils . inferior-arc))))
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Clojure Support
 ;; ---------------
@@ -3092,6 +3203,7 @@ provide arc-mode and Arc inferior mode."
                    "https://github.com/clojure-emacs/clojure-mode")
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-clojure :package-is 'clojure-mode)
 
 (defcustom pel-use-cider nil
   "Control whether PEL activates the Cider Clojure IDE package.
@@ -3147,6 +3259,7 @@ Hy is a Lisp in Python."
                    "https://github.com/hylang/hy-mode")
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-hy :package-is 'hy-mode)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Scheme Support
@@ -3161,6 +3274,7 @@ Hy is a Lisp in Python."
   :group 'pel-pkg-for-scheme
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-scheme :package-is :a-gate)
 
 (defcustom pel-use-geiser nil
   "Control whether PEL supports the Geiser IDE for Scheme support.
@@ -3185,6 +3299,7 @@ The user-option variable `pel-use-scheme' must be turned on to activate this."
   :type 'boolean
   :safe #'booleanp)
 (put 'pel-use-quack :requires 'pel-use-scheme)
+(put 'pel-use-quack :package-is :in-utils)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Racket Support
@@ -3203,6 +3318,7 @@ package."
                    "https://github.com/greghendershott/racket-mode")
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-racket :package-is 'racket-mode)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Gerbil Scheme Support
@@ -3223,6 +3339,7 @@ package."
   :group 'pel-pkg-for-scheme
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-gerbil :package-is '(quote ((utils . gerbil-mode))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Inter-S-Expression Navigation
@@ -3511,6 +3628,7 @@ the copyright holder value."
   :group 'pel-pkg-for-elixir
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-elixir :package-is 'elixir-mode)
 
 (defcustom pel-use-alchemist nil
   "Control whether PEL supports Elixir Alchemist package.
@@ -3537,6 +3655,7 @@ package which provides the client/library for LSP."
   :group 'pel-pkg-for-elixir
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-elixir-lsp :package-is 'lsp-elixir)
 (put 'pel-use-elixir-lsp :requires 'pel-use-elixir)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -3690,12 +3809,13 @@ When set to t PEL activates code that prevent echo of the typed commands."
   :group 'pel-pkg-for-erlang
   :type 'string)
 
-(defcustom pel-use-erlang-start nil
-  "Control whether PEL uses erlang-start package when `pel-use-erlang' is t."
-  :group 'pel-pkg-for-erlang
-  :type 'boolean
-  :safe #'booleanp)
-(put 'pel-use-erlang-start :requires 'pel-use-erlang)
+;; TODO: complete support or remove pel-use-erlang-start
+;; (defcustom pel-use-erlang-start nil
+;;   "Control whether PEL uses erlang-start package when `pel-use-erlang' is t."
+;;   :group 'pel-pkg-for-erlang
+;;   :type 'boolean
+;;   :safe #'booleanp)
+;; (put 'pel-use-erlang-start :requires 'pel-use-erlang)
 
 (defcustom pel-use-erlang-syntax-check  nil
   "Controls whether PEL use ta syntax checker for Erlang.
@@ -3723,6 +3843,10 @@ defcustom variable `pel-modes-activating-syntax-check'."
           (const :tag "Use with flycheck" with-flycheck)
           (const :tag "Use with flymake"  with-flymake)))
 (put 'pel-use-erlang-syntax-check :requires 'pel-use-erlang)
+(put 'pel-use-erlang-syntax-check :package-is
+     ;; flymake is built-in but not flycheck
+     '(when (eq pel-use-erlang-syntax-check 'with-flycheck)
+        '((elpa  . flycheck))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -3869,6 +3993,7 @@ the copyright holder value."
   :group 'pel-pkg-for-lfe
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-lfe :package-is 'lfe-mode)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Forth support
@@ -3883,6 +4008,7 @@ the copyright holder value."
   :group 'pel-pkg-for-forth
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-forth :package-is 'forth-mode)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Julia Support
@@ -3901,6 +4027,8 @@ IMPORTANT:
   :group 'pel-pkg-for-julia
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-julia :package-is 'julia-snail)
+(put 'pel-use-julia :requires 'pel-use-vterm)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Python Support
@@ -3915,6 +4043,7 @@ IMPORTANT:
   :group 'pel-pkg-for-python
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-python :package-is :builtin-emacs)
 
 (defcustom pel-python-tab-width 4
   "Distance between tab stop for buffers in `python-mode'.
@@ -3974,6 +4103,8 @@ Note: `pel-use-python' must be t for this to be effective."
                    "https://github.com/pierre-rouleau/rexx-mode")
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-rexx :package-is '(quote ((utils . rexx-mode)
+                                        (utils . rexx-debug))))
 
 (defcustom pel-use-netrexx nil
   "Control whether PEL supports Net-Rexx development."
@@ -3987,6 +4118,7 @@ Note: `pel-use-python' must be t for this to be effective."
                    "https://github.com/pierre-rouleau/netrexx-mode")
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-netrexx :package-is :in-utils)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Rust Support
@@ -4003,6 +4135,7 @@ to take effect."
   :group 'pel-pkg-for-rust
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-rust :package-is :a-gate)
 
 (defcustom pel-use-rust-mode nil
   "Control whether rust-mode is activated.
@@ -4032,7 +4165,8 @@ Requires the user-option variable `pel-use-rust' to be on (t)."
   :group 'pel-pkg-for-rust
   :type 'boolean
   :safe #'booleanp)
-(put 'pel-use-flycheck-rust :requires 'pel-use-rust)
+(put 'pel-use-flycheck-rust :requires '(:all pel-use-rust
+                                             pel-use-rust-mode))
 
 (defcustom pel-use-emacs-racer nil
   "Control whether emacs-racer is activated.
@@ -4084,6 +4218,10 @@ NOTE:
                    "https://melpa.org/#/v-mode")
   :link '(url-link :tag "vlang-mode @ GitHub"
                    "https://github.com/pierre-rouleau/vlang-mode"))
+(put 'pel-use-v :package-is '(cond ((eq pel-use-v 'v-mode)
+                                    '((elpa . v-mode)))
+                                   ((eq pel-use-v 'vlang-mode)
+                                    '((utils . vlang-mode)))))
 
 ;; ---------------------------------------------------------------------------
 ;; Project Manager Support
@@ -4103,6 +4241,7 @@ CAUTION: This package needs major tuning!  It takes forever searching for a
   :group 'pel-pkg-for-project-mng
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-find-file-in-project :package-is :in-utils)
 
 (defcustom pel-use-projectile nil
   "Control whether PEL supports the projectile project manager."
@@ -4292,6 +4431,7 @@ the window by its position with the other numbers)."
 emacs-regex-to-match-balanced-parenthesis")
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-cexp :package-is :in-utils)
 
 (defcustom pel-use-swiper nil
   "Control whether PEL uses the Swiper search package."
@@ -4354,6 +4494,14 @@ desktop-save-mode" t)
           (const :tag "Use desktop with desktop-registry \
 and ACTIVATE desktop-save-mode" with-desktop-registry-automatic)
           (const :tag "Use desktop with desktop+" with-desktop+)))
+(put 'pel-use-desktop :package-is
+     '(cond ((memq pel-use-desktop '(t with-desktop-automatic))
+             nil)
+            ((memq pel-use-desktop '(with-desktop-registry
+                                     with-desktop-registry-automatic))
+             '((elpa . desktop-registry)))
+            ((eq pel-use-desktop 'with-desktop+)
+             '((elpa . desktop+)))))
 
 ;; desktop  user options:
 ;; - desktop-save-mode
@@ -4420,6 +4568,7 @@ used if `pel-prefer-sr-speedbar-in-terminal' is set."
   :group 'pel-pkg-for-speedbar
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-speedbar :package-is :builtin-emacs)
 
 (defcustom pel-prefer-sr-speedbar-in-terminal t
   "Prefer using Sr-Speedbar in terminal mode (when available) over Speedbar."
@@ -4448,8 +4597,9 @@ Setting this non-nil also sets up the use of speedbar and projectile."
   :link '(custom-group-link "pel-pkg-for-project-mng")
   :link '(url-link :tag "projectile + speedbar @ GitHub"
                    "https://github.com/anshulverma/projectile-speedbar"))
-(put 'pel-use-projectile-speedbar :requires '(pel-use-speedbar
-                                            pel-use-projectile))
+(put 'pel-use-projectile-speedbar :requires '(:all
+                                              pel-use-speedbar
+                                              pel-use-projectile))
 
 ;; ---------------------------------------------------------------------------
 ;; Spelling Support
@@ -4545,6 +4695,7 @@ To activate the changes for this you must 'Apply and Save' and restart Emacs."
                    "https://github.com/pierre-rouleau/tup-mode")
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-tup :package-is '(quote ((utils . tup-mode))))
 
 
 ;; ---------------------------------------------------------------------------
@@ -4675,6 +4826,7 @@ Emacs window layout previously used:
   :group 'pel-pkg-for-window
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-winner :package-is :builtin-emacs)
 
 
 (defcustom pel-windmove-on-esc-cursor (not (eq system-type 'gnu/linux))
@@ -4767,6 +4919,7 @@ implicitly activates `pel-use-helm'."
                    "https://github.com/alpha22jp/helm-cscope.el")
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-helm-cscope :requires 'pel-use-xcscope)
 
 (defcustom pel-modes-activating-cscope nil
   "List of major modes that automatically activate cscope-minor-mode.
@@ -4885,6 +5038,7 @@ with gxref-mode with the <f11> X R key sequence."
                    "https://github.com/dedi/gxref"))
 
 ;; -- rtags
+;; TODO: complete the implementation: it's currently not installed
 (defcustom pel-use-rtags nil
   "Control whether PEL uses the rtags package.
 This is required for the rtag-xref xref backend.
@@ -4948,7 +5102,8 @@ the helm package will be activated regardless."
   :group 'pel-pkg-for-xref
   :type 'boolean
   :safe #'booleanp)
-(put 'pel-use-helm-xref :requires 'pel-use-helm)
+(put 'pel-use-helm-xref :package-is '(quote ((elpa . helm)
+                                             (elpa . helm-xref))))
 
 (defcustom pel-startup-xref-front-end nil
   "Identifies which xref front-end to activate on startup.

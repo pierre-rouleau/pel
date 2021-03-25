@@ -1,0 +1,211 @@
+;;; pel-package.el --- PEL package management.  -*- lexical-binding: t; -*-
+
+;; Created   : Monday, March 22 2021.
+;; Author    : Pierre Rouleau <prouleau001@gmail.com>
+;; Time-stamp: <2021-03-24 20:42:35, updated by Pierre Rouleau>
+
+;; This file is part of the PEL package.
+;; This file is not part of GNU Emacs.
+
+;; Copyright (C) 2021  Pierre Rouleau
+;;
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; --------------------------------------------------------------------------
+;;; Commentary:
+;;
+;;  This file holds the logic PEL uses to control the management of Emacs Lisp
+;;  packages, mainly the automatic *removal* of packages when a PEL user
+;;  option is changed from active to inactive.
+;;
+;;  The code uses information stored into properties of `pel-use-' defcustom
+;;  user-option variables.
+;;
+;;  The strategy for module cleanup is the following: when the `pel-cleanup'
+;;  command is executed, it extracts the list of all packages that should be
+;;  located in the Emacs elpa directory and in the PEL utils directory.  It
+;;  gets this information by processing the properties of each `pel-use-'
+;;  user-option variables that are non-nil. For each of them it calls the
+;;  function `pel-packages-for'.  The function returns nil if nothing is
+;;  expected to be present, otherwise it returns a list of (type . package)
+;;  cons cells where type is either 'elpa or 'utils and package is a symbol
+;;  that holds the name of the elpa package or the utils .el file name.  By
+;;  doing this for all `pel-use-' user option we accumulate the list of
+;;  expected packages.  Then  by looking into the directories we can remove or
+;;  disable the exceeding package (by moving the package into an *attic*
+;;  directory). For elpa package the package name is removed from the
+;;  `package-selected-packages' variable and the active customization file is
+;;  updated.
+;;
+;;  Removing packages that are not used improves Emacs speed: it reduces the
+;;  load path: unfortunately the package management creates one directory per
+;;  package and place this directory in the load path.  This is not so much an
+;;  issue with the files stored in the utils directory as only one directory
+;;  is inside the load path.
+;;
+;;  TODO: complete the file by adding the package removal logic. 🚧
+;;
+
+
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
+;;
+;;
+
+;;; --------------------------------------------------------------------------
+;;; Code:
+;;
+
+(defun pel-user-option-p (symbol)
+  "Return t when SYMBOL is a valid PEL User-option, nil otherwise."
+  (and (custom-variable-p symbol)
+       (eq t (compare-strings "pel-use-" nil nil
+                              (symbol-name symbol) 0 8))))
+
+(defun pel-user-options ()
+  "Return a list of all pel-use- user-option symbols."
+  (let ((symbols '()))
+    (mapatoms
+     (lambda (symbol)
+       (when (pel-user-option-p symbol)
+         (push symbol symbols))))
+    symbols))
+
+(defun pel--assert-valid-user-option  (symbol)
+  "Assert that the SYMBOL argument is a valid PEL user-option symbol.
+Return t if it is, issue an error otherwise."
+  (if (pel-user-option-p symbol)
+      t
+    (error "Invalid pel-package-for argument: %S.\
+  It is not a valid PEL user-option!" symbol)))
+
+;;-pel-autoload
+(defun pel-install-from-elpa-attic (pkg)
+  "Install package PKG from the local copy stored in the elpa-attic directory.
+
+Return t on success, nil otherwise.
+The elpa-attic directory is the ~/.emacs.d/pel-elpa-attic directory."
+  (display-warning 'pel-install-from-elpa-attic
+                   (format "(pel-install-from-elpa-attic %s) not yet implemented!"
+                           pkg)
+                   :error)
+  nil)
+
+(defun pel-package-for (symbol)
+  "Return package info for specified PEL-USER-OPTION.
+PEL-USER-OPTION must be a `pel-use-' user-option symbol.
+Returns a list of (type . package) cons cells for the external
+package(s) that are installed when this user-option is turned on, if any.
+The type is either 'elpa or 'utils.
+Returns nil when:
+- the user-option is not requesting anything to be installed
+  - when the user-option is off
+  - when the user option request to use a built-in package."
+  (pel--assert-valid-user-option symbol)
+  (when (symbol-value symbol)
+    (let ((attribute-value (get symbol :package-is)))
+      (cond
+       ;; no attribute - use symbol suffix.  Standard Elpa.
+       ((null attribute-value)
+        (list (cons 'elpa
+                    (intern (substring (symbol-name symbol) 8)))))
+       ;; built-in attribute: return nil: nothing to manage
+       ((eq attribute-value :builtin-emacs)
+        nil)
+       ;; gate attribute : user-option acts as a gate.
+       ((eq attribute-value :a-gate)
+        nil)
+       ;; in-utils attribute: return the name from symbol but from utils
+       ((eq attribute-value :in-utils)
+        (list (cons 'utils
+                    (intern (substring (symbol-name symbol) 8)))))
+       ;; a cons form is used - evaluate it to extract its content
+       ;; the evaluation may perform some checks and should have no side-effect.
+       ;; The form should evaluate to a list of (type . package-name) cons cell(s).
+       ((consp attribute-value)
+        (eval attribute-value))
+       ;; a symbol indicates an Elpa-based package
+       ((symbolp attribute-value)
+        (list (list (cons 'elpa attribute-value))))
+       ;; Everything else is invalid
+       (t
+        (error "Invalid PEL package spec for %s: %S" symbol
+               attribute-value))))))
+
+(defun pel-packages-for (symbol)
+  "Return availability specs for specified PEL user-option SYMBOL.
+
+SYMBOL must be a PEL `pel-use-' user-option symbol.
+
+Returns a (potentially nil) list of (type . package) cons cells
+where `type' represents where the package should be located and
+`package' is the package name.  The possible values for `type'
+are:
+  - elpa : stating that `package' should be available in the local
+    elpa directory.
+  - utils: stating that `package' should be available in the local
+    PEL utils directory.
+The returned information identifies what *should* be the state of the package
+installation.  It is mainly used to accumulate lists of the packages that must
+remain in the local elpa and PEL utils when a PEL cleanup is requested after
+some PEL user-options have been turned off."
+  (pel--assert-valid-user-option symbol)
+  (let ((parent-user-options (get symbol :requires))
+        (pkg-spec-list '())
+        (a-parent-is-disabled nil)
+        (a-parent-is-enabled nil)
+        (requires-all-parents nil))
+    ;; The parent-user-options may be a single symbol or a list of symbols.
+    ;; If it's a list of symbols, its first element may be the `:all' symbol
+    ;; to indicate that all parents must be active for the SYMBOL to be
+    ;; installed.  Remember the condition and remove it from the list.
+    ;; If its only a symbol, transform it into a list of 1 symbol.
+    (if (listp parent-user-options)
+        (when (eq (car parent-user-options) :all)
+          (setq requires-all-parents t)
+          (setq parent-user-options (cdr parent-user-options)))
+      (setq parent-user-options (list parent-user-options)))
+    ;; The package spec for SYMBOL is installed along its parent's
+    ;; when the symbol value of each of the parent symbols is non-nil.
+    ;; If any of them is nil, then the package for SYMBOL will not be
+    ;; installed and only the active parent(s) is/are installed.
+    (dolist (parent-user-option parent-user-options)
+      (if (symbol-value parent-user-option)
+          (progn
+            (setq a-parent-is-enabled t)
+            (dolist (spec (pel-package-for parent-user-option))
+              (when spec
+                (push spec pkg-spec-list))))
+        (setq a-parent-is-disabled t)))
+    ;; If there is no required parents, or
+    ;; all parents are require and are all enabled, or
+    ;; one of several parent is required and one is enabled
+    ;; then the package corresponding to the SYMBOL is installed.
+    ;; TODO: does not handle more complex situations like: (A and B) are both
+    ;; needed or (C and D) or E.
+    (when (or (null parent-user-options)
+              (and requires-all-parents
+                   (not a-parent-is-disabled))
+              (and (not requires-all-parents)
+                   a-parent-is-enabled))
+      (dolist (spec (pel-package-for symbol))
+        (when spec
+          (push spec pkg-spec-list))))
+    ;; return the list of packages that should be present.
+    pkg-spec-list))
+
+;;; --------------------------------------------------------------------------
+(provide 'pel-package)
+
+;;; pel-package.el ends here
