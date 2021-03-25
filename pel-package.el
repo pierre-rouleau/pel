@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-24 20:42:35, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-25 09:21:28, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -137,7 +137,7 @@ Returns nil when:
         (eval attribute-value))
        ;; a symbol indicates an Elpa-based package
        ((symbolp attribute-value)
-        (list (list (cons 'elpa attribute-value))))
+        (list (cons 'elpa attribute-value)))
        ;; Everything else is invalid
        (t
         (error "Invalid PEL package spec for %s: %S" symbol
@@ -204,6 +204,33 @@ some PEL user-options have been turned off."
           (push spec pkg-spec-list))))
     ;; return the list of packages that should be present.
     pkg-spec-list))
+
+(defun pel-symbol-name-< (s1 s2)
+  "Compare name strings of S1 and S2 symbols."
+  (string< (symbol-name s1) (symbol-name s2)))
+
+(defun pel-activated-packages ()
+  "Return a list of packages activated by PEL user-options.
+
+Return a list of 2 lists:
+- first list is a list of elpa package symbols,
+- second list is a list of utils file name symbols.
+
+The elements of each list are sorted by alphabetical order of
+their names."
+  (let ((elpa-list '())
+        (utils-list '()))
+    (dolist (user-option (pel-user-options))
+      (dolist (spec (pel-packages-for user-option))
+        (cond ((eq 'elpa (car spec))
+               (push (cdr spec) elpa-list))
+              ((eq 'utils (car spec))
+               (push (cdr spec) utils-list))
+              (t (error "Invalid spec for %s: %S" user-option spec)))
+        ))
+    (list
+     (sort elpa-list (function pel-symbol-name-<))
+     (sort utils-list (function pel-symbol-name-<)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-package)
