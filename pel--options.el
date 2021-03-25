@@ -148,7 +148,6 @@
 ;; activated for this package to be installed.
 ;;
 
-
 ;; In most case the name of the package that is controlled by the `pel-use-'
 ;; variables is the string that follows the "pel-use-" prefix in the symbol
 ;; name.  But this is not always the case. There are the  other possibilities
@@ -2151,7 +2150,7 @@ with no text."
   :group 'pel-pkg-for-applescript
   :type 'boolean
   :safe #'booleanp)
-(put 'pel-use-applescript :package-is :in-utils)
+(put 'pel-use-applescript :package-is '(quote ((utils . apples-mode))) )
 
 (when (eq system-type 'darwin)
   (defcustom  pel-mac-voice-name nil

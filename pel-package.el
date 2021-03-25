@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-25 09:21:28, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-25 11:29:58, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -231,6 +231,32 @@ their names."
     (list
      (sort elpa-list (function pel-symbol-name-<))
      (sort utils-list (function pel-symbol-name-<)))))
+
+
+(defun pel-active-and-excess-utils ()
+  "Return a cons of 2 lists of utils Emacs Lisp files: active and not active.
+
+Each returned list contains directory relative .el file names, in sorted name
+order.
+The first list identifies the files that are currently active, requested by
+PEL user-options.
+The second list identifies the files that are currently not used by the PEL
+user options."
+  (let ((utils-el-files (directory-files "~/.emacs.d/utils" nil "\\.el\\'"))
+        (active-utils-files '())
+        (excess-utils-files '()))
+    (dolist (utils-symbol (cadr (pel-activated-packages)))
+      (push (format "%s.el" utils-symbol) active-utils-files))
+    (dolist (util-el-file utils-el-files)
+      (unless (member util-el-file active-utils-files)
+        (push util-el-file excess-utils-files)))
+    (cons (reverse active-utils-files)
+          (reverse excess-utils-files))))
+
+(defun pel-utils-unrequired ()
+  "Return the list of utils files not currently required."
+  (cdr (pel-active-and-excess-utils)))
+
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-package)
