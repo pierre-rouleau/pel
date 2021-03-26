@@ -765,11 +765,17 @@ and the function returns nil"
                        :error)))))
              (display-warning
               'pel-package-install
-              "A package symbol needed is void. Can't install!"
+              (format "The package.el is not loaded properly.
+Failed installation of %s.
+Please verify the validity of your package-archives setup!"
+                      pkg)
               :error))))
       (display-warning
        'pel-package-install
-       "package-install is void. Can't install!" :error))
+       (format  "package-install is void. Can't install %s!
+Please verify the validity of your package-archives setup!"
+                pkg)
+       :error))
     package-was-installed))
 
 (defun pel-package-installed-p (feature)
