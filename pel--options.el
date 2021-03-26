@@ -307,6 +307,16 @@ For example, to activate it in Erlang, add a line with
   "List of external packages that can be used by PEL."
   :group 'pel)
 
+(defcustom pel-elpa-package-to-keep '(benchmark-init)
+  "List of Elpa package names that should not be removed by pel-cleanup.
+
+Put the names of the packages you install manually in this list.
+PEL will not remove them when it performs a cleanup.
+The benchmark-init package, which you can use to measure your
+initialization time is in the default."
+  :group 'pel-package-use
+  :type '(repeat symbol))
+
 
 (defcustom pel-use-editor-config nil
   "Control whether PEL activates EditorConfig plugin for Emacs."

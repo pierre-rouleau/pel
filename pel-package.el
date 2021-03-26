@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-25 11:29:58, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-26 09:53:40, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -44,7 +44,7 @@
 ;;  doing this for all `pel-use-' user option we accumulate the list of
 ;;  expected packages.  Then  by looking into the directories we can remove or
 ;;  disable the exceeding package (by moving the package into an *attic*
-;;  directory). For elpa package the package name is removed from the
+;;  directory). For elpa package the package name is removed-files from the
 ;;  `package-selected-packages' variable and the active customization file is
 ;;  updated.
 ;;
@@ -62,6 +62,7 @@
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel--options)                 ; use: pel-elpa-package-to-keep
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -90,6 +91,7 @@ Return t if it is, issue an error otherwise."
     (error "Invalid pel-package-for argument: %S.\
   It is not a valid PEL user-option!" symbol)))
 
+;; TODO complete pel-install-from-elpa-attic
 ;;-pel-autoload
 (defun pel-install-from-elpa-attic (pkg)
   "Install package PKG from the local copy stored in the elpa-attic directory.
@@ -233,6 +235,36 @@ their names."
      (sort utils-list (function pel-symbol-name-<)))))
 
 
+(defun pel-el-file-for (filename)
+  "Return the .el filename of an .elc FILENAME."
+  (format "%s.el" (file-name-sans-extension filename)))
+
+(defun pel-remove-invalid-elc (directory)
+  "Remove the old and the orphaned elc files in DIRECTORY.
+
+DIRECTORY must be a directory path string.
+Returns the list of removed file names."
+  (let ((removed-files '())
+        (elc-files (directory-files directory :full-path "\\.elc\\'"))
+        (el-file nil))
+    (dolist (elc-file elc-files)
+      (setq el-file (pel-el-file-for elc-file))
+      (unless (or (file-exists-p el-file)
+                  (file-newer-than-file-p el-file elc-file))
+        (push elc-file removed-files)
+        (delete-file elc-file)))
+    removed-files))
+
+
+(defconst pel-utils-dirpath (file-name-as-directory
+                             (expand-file-name "utils" user-emacs-directory))
+  "Absolute path of the PEL utils directory.")
+
+(defconst pel-utils-attic-dirpath (file-name-as-directory
+                                   (expand-file-name "utils-attic"
+                                                     user-emacs-directory))
+  "Absolute path of the PEL utils-attic directory.")
+
 (defun pel-active-and-excess-utils ()
   "Return a cons of 2 lists of utils Emacs Lisp files: active and not active.
 
@@ -242,7 +274,7 @@ The first list identifies the files that are currently active, requested by
 PEL user-options.
 The second list identifies the files that are currently not used by the PEL
 user options."
-  (let ((utils-el-files (directory-files "~/.emacs.d/utils" nil "\\.el\\'"))
+  (let ((utils-el-files (directory-files pel-utils-dirpath nil "\\.el\\'"))
         (active-utils-files '())
         (excess-utils-files '()))
     (dolist (utils-symbol (cadr (pel-activated-packages)))
@@ -257,6 +289,27 @@ user options."
   "Return the list of utils files not currently required."
   (cdr (pel-active-and-excess-utils)))
 
+(defun pel-clean-utils (&optional verbose)
+  "Move all unrequired Emacs Lisp files from utils to utils-attic directory."
+  (let ((unrequired-files (pel-utils-unrequired)))
+    (when unrequired-files
+      (unless (file-exists-p pel-utils-attic-dirpath)
+        (make-directory pel-utils-attic-dirpath))
+      (dolist (file unrequired-files)
+        (rename-file (expand-file-name file pel-utils-dirpath)
+                     pel-utils-attic-dirpath))
+      (when verbose
+        (message "Moved %d files from %s to %s\nThe files are: %s"
+                 (length unrequired-files)
+                 pel-utils-dirpath
+                 pel-utils-attic-dirpath
+                 unrequired-files)))))
+
+
+;; TODO: complete the cleanup of elpa
+(defun pel-clean (&optional verbose)
+  "Move all unrequired packages to their attic directory."
+  (pel-clean-utils verbose))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-package)
