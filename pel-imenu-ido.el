@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2021-02-21 22:33:15, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-26 10:23:04, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -79,8 +79,6 @@
 ;;     * `pel-imenu-anywhere-select-completion'
 ;;       - `pel--imenu-anywhere-completion-mode-selection'
 ;;
-
-
 
 ;; Note that the current implementation of the recursive function
 ;; `pel---goto-symbol' depends on dynamic binding.  It's the only function in
@@ -225,7 +223,8 @@ Supports completion method specified by caller."
           (setq name symbol)
           (setq position
                 (get-text-property 1 'org-imenu-marker symbol))))
-        (unless (or (null position) (null name)
+        (unless (or (null position)
+                    (null name)
                     (string= (car imenu--rescan-item) name))
           (add-to-list 'symbol-names name)
           (add-to-list 'name-and-pos (cons name position))))))))
