@@ -45,10 +45,13 @@
 ;; This simplifies maintenance.
 
 
+;;; --------------------------------------------------------------------------
 ;;; Code:
 
+;; TODO: find a way to create a macro that generates the autoload for
+;; interactive or non-interactive functions by checking what the symbol refers to.
 
-(defmacro pel-autoload (fname for: &rest functions)
+(defmacro pel-autoload-function (fname for: &rest functions)
   "Schedule the autoloading of FNAME for specified FUNCTIONS.
 Argument FOR: just a required separator keyword to make code look better."
   (declare (indent 2))
@@ -57,6 +60,16 @@ Argument FOR: just a required separator keyword to make code look better."
       `(dolist (fct (quote (,@functions)))
          (autoload fct ,fname))
     `(autoload (quote ,@functions) ,fname)))
+
+(defmacro pel-autoload (fname for: &rest functions)
+  "Schedule the autoloading of FNAME for specified interactive FUNCTIONS.
+Argument FOR: just a required separator keyword to make code look better."
+  (declare (indent 2))
+  (ignore for:)
+  (if (> (length functions) 1)
+      `(dolist (fct (quote (,@functions)))
+         (autoload fct ,fname nil :interactive))
+    `(autoload (quote ,@functions) ,fname nil :interactive)))
 
 ;; ---------------------------------------------------------------------------
 
@@ -77,8 +90,10 @@ Argument FOR: just a required separator keyword to make code look better."
       pel-say-paragraph
       pel-say-region
       pel-say
-      pel-say-words
+      pel-say-words)
+    (pel-autoload-function "pel-applescript" for:
       pel-run-applescript))
+
 
   (pel-autoload "pel-autocomplete" for:
     pel-completion-help
@@ -94,7 +109,7 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-benchmark" for:  pel-show-init-time)
 
-  (pel-autoload "pel-bookmark" for: pel-bookmark-in-current-file-p)
+  (pel-autoload-function "pel-bookmark" for: pel-bookmark-in-current-file-p)
 
   (pel-autoload "pel-cc" for
     pel-cc-newline
@@ -171,17 +186,18 @@ Argument FOR: just a required separator keyword to make code look better."
   ;; Nothing specified here: the control is inside pel_keys.el
   ;; only.
 
-  (pel-autoload "pel-commonlisp" for: pel-cl-init)
+  (pel-autoload-function "pel-commonlisp" for: pel-cl-init)
 
   (pel-autoload "pel-completion" for:
     pel-select-completion-mode
-    pel-set-completion-mode
     pel-show-active-completion-mode
     pel-ido-mode
     pel-set-ido-ubiquitous
     pel-ido-ubiquitous
     pel-flx-ido
     pel-select-ido-geometry)
+  (pel-autoload-function "pel-completion" for:
+    pel-set-completion-mode)
 
   (pel-autoload "pel-cua" for:
     pel-cua-rectangle-mark
@@ -222,14 +238,15 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-emacs-command-stats)
 
   (pel-autoload "pel-erlang" for:
-    pel-erlang-shell-mode-init
     pel-end-of-previous-clause
     pel-beginning-of-next-clause
     pel-previous-erl-function
     pel-next-erl-function
     pel-erlang-toggle-syntax-checker)
+  (pel-autoload-function "pel-erlang" for:
+    pel-erlang-shell-mode-init)
 
-  (pel-autoload "pel-erlang-skels" for:
+  (pel-autoload-function "pel-erlang-skels" for:
     pel--erlang-mode-setup
     pel--install-erlang-skel)
 
@@ -315,10 +332,11 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-go" for:
     pel-go-set-tab-width
-    pel-go-gofmt-on-buffer-save
     pel-go-toggle-gofmt-on-buffer-save
     pel-go-setup-info
     pel-go-toggle-syntax-checker)
+  (pel-autoload-function "pel-go" for:
+    pel-go-gofmt-on-buffer-save)
 
   (pel-autoload "pel-graphviz-dot" for: pel-render-commented-graphviz-dot)
 
@@ -332,7 +350,8 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-imenu" for:
     pel-toggle-imenu-index-follows-order
-    pel-imenu-rescan
+    pel-imenu-rescan)
+  (pel-autoload-function "pel-imenu" for:
     pel-imenu-init)
 
   (pel-autoload "pel-indent" for:
@@ -387,7 +406,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-beginning-of-next-defun
     pel-end-of-previous-defun)
 
-  (pel-autoload "pel-net" for:
+  (pel-autoload-function "pel-net" for:
     pel-install-file
     pel-install-files
     pel-install-github-file
@@ -415,7 +434,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-browse-filename-at-point
     pel-open-url-at-point)
 
-  (pel-autoload "pel-package" for : pel-install-from-elpa-attic)
+  (pel-autoload "pel-package" for:
+    pel-package-stats)
+  (pel-autoload-function "pel-package" for:
+    pel-install-from-elpa-attic)
 
   (pel-autoload "pel-pathmng" for: pel-emacs-load-path)
 
@@ -426,7 +448,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-pp-prev-directive
     pel-pp-show-state)
 
-  (pel-autoload "pel-prompt" for:
+  (pel-autoload-function "pel-prompt" for:
     pel-y-n-e-or-l-p
     pel-select-from)
 
@@ -440,7 +462,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-number-to-register
     pel-kmacro-to-register)
 
-  (pel-autoload "pel-read" for:
+  (pel-autoload-function "pel-read" for:
     pel-word-at-point
     pel-sentence-at-point
     pel-paragraph-at-point)
@@ -491,13 +513,14 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-show-search-case-state
     pel-search-word-from-top
     pel-show-active-search-tool
-    pel-set-search-tool
     pel-select-search-tool
     pel-show-search-status)
+  (pel-autoload-function "pel-search" for:
+    pel-set-search-tool)
 
-  (pel-autoload "pel-seq" for: pel-all-fboundp)
+  (pel-autoload-function "pel-seq" for: pel-all-fboundp)
 
-  (pel-autoload "pel-skels" for:
+  (pel-autoload-function "pel-skels" for:
     pel-date
     pel-time-stamp
     pel-skel-author-comment
@@ -505,16 +528,16 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-skel-copyright-comment
     pel-skel-insert-license-when)
 
-  (pel-autoload "pel-skels-generic" for:
+  (pel-autoload-function "pel-skels-generic" for:
     pel--install-generic-skel)
 
-  (pel-autoload "pel-skels-c" for:
+  (pel-autoload-function "pel-skels-c" for:
     pel--install-c-skel)
 
-  (pel-autoload "pel-skels-elisp" for:
+  (pel-autoload-function "pel-skels-elisp" for:
     pel--install-elisp-skel)
 
-  (pel-autoload "pel-skels-rst" for:
+  (pel-autoload-function "pel-skels-rst" for:
     pel--install-rst-skel)
 
   (when (and (boundp 'pel-use-speedbar) pel-use-speedbar)
@@ -531,32 +554,35 @@ Argument FOR: just a required separator keyword to make code look better."
       (pel-autoload "pel-speedbar" for:
         pel-speedbar-toggle-images)))
 
-  (pel-autoload "pel-spell" for:
+  (pel-autoload-function "pel-spell" for:
     pel-spell-init
-    pel-spell-init-from-user-option
+    pel-spell-init-from-user-option)
+  (pel-autoload "pel-spell" for:
     pel-spell-show-use)
 
   (pel-autoload "pel-xref" for:
-    pel-xref-dumb-jump-activate
     pel-xref-toggle-dumb-jump-mode
-    pel-xref-gxref-activate
     pel-xref-toggle-gxref
-    pel-xref-rtags-activate
     pel-xref-toggle-rtags
-    pel-xref-set-front-end
     pel-xref-select-front-end
-    pel-activate-helm-cscope
     pel-toggle-helm-cscope
     pel-xref-show-status
     pel-xref-find-custom-definition-at-line)
+  (pel-autoload-function "pel-xref" for:
+    pel-xref-dumb-jump-activate
+    pel-xref-gxref-activate
+    pel-xref-rtags-activate
+    pel-xref-set-front-end
+    pel-activate-helm-cscope)
 
   (pel-autoload "pel-text-insert" for:
-    pel-separator-line
     pel-insert-line
     pel-insert-filename
     pel-insert-current-date-time
     pel-insert-current-date
     pel-insert-iso8601-timestamp)
+  (pel-autoload-function "pel-text-insert" for:
+    pel-separator-line)
 
   (pel-autoload "pel-text-transform" for:
     pel-capitalize-word-or-region
@@ -578,22 +604,23 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-create-window-right
     pel-create-window-up
     pel-create-window-left
-    pel-move-to-window
     pel-close-window-down
     pel-close-window-up
     pel-close-window-left
     pel-close-window-right
-    pel-split-window-sensibly
     pel-2-vertical-windows
     pel-2-horizontal-windows
-    pel-find-window
-    pel-window-valid-for-editing-p
-    pel-window-select
-    pel-window-direction-for
     pel-other-window
     pel-other-window-backward
     pel-show-window-filename-or-buffer-name
     pel-show-window-sizes)
+  (pel-autoload-function "pel-window" for:
+    pel-move-to-window
+    pel-split-window-sensibly
+    pel-find-window
+    pel-window-valid-for-editing-p
+    pel-window-select
+    pel-window-direction-for)
 
   (pel-autoload "pel-xr" for:
     pel-xr-regxp
