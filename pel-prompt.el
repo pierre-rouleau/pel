@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-04 08:50:35, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-26 15:46:08, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -233,6 +233,7 @@ value is not part of the SELECTION."
                      selection
                      ", ")))
 
+;; pel-autoload
 (defun pel-select-from (title selection &optional current-value action nil-value)
   "Prompt user with a TITLE for a SELECTION of choices.
 It optionally displays the CURRENT-VALUE in the prompt and

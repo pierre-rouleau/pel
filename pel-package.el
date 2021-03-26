@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-26 09:53:40, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-26 16:30:31, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -62,6 +62,7 @@
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel--base)                    ; use: pel-as-string, pel-as-symbol
 (require 'pel--options)                 ; use: pel-elpa-package-to-keep
 
 ;;; --------------------------------------------------------------------------
@@ -211,8 +212,23 @@ some PEL user-options have been turned off."
   "Compare name strings of S1 and S2 symbols."
   (string< (symbol-name s1) (symbol-name s2)))
 
-(defun pel-activated-packages ()
+(defun pel-elpa-pkg-dependencies (pkg)
+  "Return a list of package symbols that are elpa dependencies of package PKG.
+
+PKG may be a symbol or a string."
+  ;; Make sure that pkg is present, if it is not then its dependants
+  ;; are not installed via that package.
+  (when (locate-library (pel-as-string pkg))
+    (if (and (require 'package nil :no-error)
+             (fboundp 'package--get-deps))
+        (package--get-deps (pel-as-symbol pkg))
+      (error "Failed loading package"))))
+
+(defun pel-activated-packages (&optional without-dependants)
   "Return a list of packages activated by PEL user-options.
+
+The lists include all dependant packages unless WITHOUT-DEPENDANTS is
+specified and non-nil.
 
 Return a list of 2 lists:
 - first list is a list of elpa package symbols,
@@ -224,15 +240,54 @@ their names."
         (utils-list '()))
     (dolist (user-option (pel-user-options))
       (dolist (spec (pel-packages-for user-option))
-        (cond ((eq 'elpa (car spec))
-               (push (cdr spec) elpa-list))
-              ((eq 'utils (car spec))
-               (push (cdr spec) utils-list))
-              (t (error "Invalid spec for %s: %S" user-option spec)))
+        (cond
+         ;; elpa package
+         ((eq 'elpa (car spec))
+          (let  ((elpa-pkg (cdr spec)))
+            (unless (memq elpa-pkg elpa-list)
+              (push elpa-pkg elpa-list)
+              (unless without-dependants
+                (dolist (dep-pkg (pel-elpa-pkg-dependencies elpa-pkg))
+                  (unless (memq dep-pkg elpa-list)
+                    (push dep-pkg elpa-list)))))))
+         ;; utils package
+         ((eq 'utils (car spec))
+          (let ((utils-pkg (cdr spec)))
+            (unless (memq utils-pkg utils-list)
+              (push utils-pkg utils-list))))
+         (t (error "Invalid spec for %s: %S" user-option spec)))
         ))
     (list
      (sort elpa-list (function pel-symbol-name-<))
      (sort utils-list (function pel-symbol-name-<)))))
+
+;; pel-autoload
+(defun pel-package-stats ()
+  "Display number of packages required by PEL"
+  (interactive)
+  (let* ((all-activated (pel-activated-packages))
+         (activated     (pel-activated-packages :without-deps))
+         (elpa-all      (length (car all-activated)))
+         (elpa-base     (length (car activated)))
+         (elpa-deps     (- elpa-all elpa-base))
+         (utils-all     (length (cadr all-activated)))
+         (utils-base    (length (cadr activated)))
+         (utils-deps    (- utils-all utils-base))
+         (user-options  (pel-user-options)))
+    (message "\
+Number of PEL user-options  : %d (%d are active)
+PEL activated elpa  packages: %d%s
+PEL Activated utils files   : %d%s"
+             (length user-options)
+             (length (seq-filter (lambda (x) (symbol-value x)) user-options))
+             elpa-base
+             (if (> elpa-deps 0)
+                 (format " (with %d extra dependency packages)" elpa-deps)
+               "")
+             utils-base
+             (if (> utils-deps 0)
+                 (format " (with %d extra dependency files)" utils-deps)
+               ""))))
 
 
 (defun pel-el-file-for (filename)
@@ -266,7 +321,7 @@ Returns the list of removed file names."
   "Absolute path of the PEL utils-attic directory.")
 
 (defun pel-active-and-excess-utils ()
-  "Return a cons of 2 lists of utils Emacs Lisp files: active and not active.
+  "Return a list of 2 lists of utils Emacs Lisp files: active and not active.
 
 Each returned list contains directory relative .el file names, in sorted name
 order.
@@ -282,12 +337,12 @@ user options."
     (dolist (util-el-file utils-el-files)
       (unless (member util-el-file active-utils-files)
         (push util-el-file excess-utils-files)))
-    (cons (reverse active-utils-files)
+    (list (reverse active-utils-files)
           (reverse excess-utils-files))))
 
 (defun pel-utils-unrequired ()
   "Return the list of utils files not currently required."
-  (cdr (pel-active-and-excess-utils)))
+  (cadr (pel-active-and-excess-utils)))
 
 (defun pel-clean-utils (&optional verbose)
   "Move all unrequired Emacs Lisp files from utils to utils-attic directory."
@@ -304,6 +359,50 @@ user options."
                  pel-utils-dirpath
                  pel-utils-attic-dirpath
                  unrequired-files)))))
+
+
+(defconst pel-elpa-dirpath  (file-name-as-directory
+                             (expand-file-name "elpa"
+                                               user-emacs-directory))
+  "Absolute path of the user elpa directory.")
+
+(defconst pel-elpa-attic-dirpath  (file-name-as-directory
+                                   (expand-file-name "elpa-attic"
+                                                     user-emacs-directory))
+  "Absolute path of the user elpa-attic directory.")
+
+(defun pel-move-to-dir (file dir)
+  "Move FILE to directory DIR.
+FILE may represent a file or a directory.
+DIR must represent a directory.
+Trailing slash is not required for DIR but allowed."
+  ;; make sure DIR does not end with slash otherwise rename-file will
+  ;; act as if we wanted to move FILE into DIR as opposed to rename it.
+  (rename-file (directory-file-name file)
+               (directory-file-name dir)))
+
+(defun pel-elpa-dirs-for (pkg)
+  "Return a list of all directories for specified package PKG.
+
+PKG may be a symbol or a string.
+Each directory is specified with full path: a directory inside the elpa
+directory."
+  (directory-files pel-elpa-dirpath
+                   :full-path
+                   (format "\\`%s-[0-9-.]+\\'"
+                           (regexp-quote (pel-as-string pkg)))))
+
+
+
+
+(defun pel-move-elpa-to-elpa-attic (pkg)
+  "Move all versions of PKG package from elpa to the elpa-attic directory."
+  (display-warning 'pel-move-elpa-to-elpa-attic
+                   (format "TODO: complete pel-move-elpa-to-elpa-attic: %s"
+                           pkg)
+                   :error))
+
+
 
 
 ;; TODO: complete the cleanup of elpa

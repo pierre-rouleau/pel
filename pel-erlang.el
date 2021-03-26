@@ -218,7 +218,6 @@ On error, return nil."
 The syntax checker activated or deactivated is either flycheck
 or flymake, as selected by the user-option variable
 `pel-use-erlang-syntax-check'."
-
   (interactive)
   (pel-toggle-syntax-check-mode 'pel-use-erlang-syntax-check))
 

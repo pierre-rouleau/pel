@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-02 11:14:59, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-26 15:35:55, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -99,7 +99,6 @@ Runs gofmt on buffer save: %s"
 The syntax checker activated or deactivated is either flycheck
 or flymake, as selected by the user-option variable
 `pel-use-goflymake'."
-
   (interactive)
   (pel-toggle-syntax-check-mode 'pel-use-goflymake))
 
