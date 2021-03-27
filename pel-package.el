@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-26 16:30:31, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-27 11:35:12, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -57,6 +57,22 @@
 ;;  TODO: complete the file by adding the package removal logic. 🚧
 ;;
 
+;; * `pel-package-stats'
+;;   - `pel-activated-packages'
+;;   - `pel-user-options'
+;;     - `pel-user-option-p'
+
+;; - `pel-clean-utils'
+;;   - `pel-utils-unrequired'
+;;     - `pel-active-and-excess-utils'
+;;       - `pel-activated-packages'
+;;         - `pel-user-options'
+;;         - `pel-packages-for'
+;;           - `pel-package-for'
+;;             - `pel--assert-valid-user-option'
+;;               - `pel-user-option-p'
+;;       - `pel-remove-invalid-elc'
+;;         - `pel-el-file-for'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -289,10 +305,11 @@ PEL Activated utils files   : %d%s"
                  (format " (with %d extra dependency files)" utils-deps)
                ""))))
 
+;; --
 
-(defun pel-el-file-for (filename)
-  "Return the .el filename of an .elc FILENAME."
-  (format "%s.el" (file-name-sans-extension filename)))
+(defun pel-el-file-for (filepath)
+  "Return the .el filepath of an .elc FILENAME."
+  (format "%s.el" (file-name-sans-extension filepath)))
 
 (defun pel-remove-invalid-elc (directory)
   "Remove the old and the orphaned elc files in DIRECTORY.
@@ -345,22 +362,37 @@ user options."
   (cadr (pel-active-and-excess-utils)))
 
 (defun pel-clean-utils (&optional verbose)
-  "Move all unrequired Emacs Lisp files from utils to utils-attic directory."
-  (let ((unrequired-files (pel-utils-unrequired)))
+  "Move all unrequired Emacs Lisp files from utils to utils-attic directory.
+Byte-compile all Emacs Lisp files in the utils directory.
+Remove orphaned elc files from the utils directory.
+When VERBOSE is specified and non-nil display information about what is being
+done in the echo area."
+  (let ((unrequired-files (pel-utils-unrequired))
+        (removed-elc-files '()))
     (when unrequired-files
       (unless (file-exists-p pel-utils-attic-dirpath)
         (make-directory pel-utils-attic-dirpath))
       (dolist (file unrequired-files)
         (rename-file (expand-file-name file pel-utils-dirpath)
                      pel-utils-attic-dirpath))
+      ;; byte recompile all .el files newer than .elc or when the .elc is
+      ;; missing.
+      (byte-recompile-directory pel-utils-dirpath 0)
+      ;; remove any orphaned .elc (a .elc without a .el file)
+      (setq removed-elc-files (pel-remove-invalid-elc pel-utils-dirpath))
       (when verbose
-        (message "Moved %d files from %s to %s\nThe files are: %s"
+        (message "Moved %d files from %s to %s
+%sThe files moved to utils-attic are: %s"
                  (length unrequired-files)
                  pel-utils-dirpath
                  pel-utils-attic-dirpath
+                 (if removed-elc-files
+                     (format "Removed %d orphaned .elc files.\n"
+                             (length removed-elc-files))
+                   "")
                  unrequired-files)))))
 
-
+;; --
 (defconst pel-elpa-dirpath  (file-name-as-directory
                              (expand-file-name "elpa"
                                                user-emacs-directory))
@@ -392,9 +424,6 @@ directory."
                    (format "\\`%s-[0-9-.]+\\'"
                            (regexp-quote (pel-as-string pkg)))))
 
-
-
-
 (defun pel-move-elpa-to-elpa-attic (pkg)
   "Move all versions of PKG package from elpa to the elpa-attic directory."
   (display-warning 'pel-move-elpa-to-elpa-attic
@@ -402,7 +431,63 @@ directory."
                            pkg)
                    :error))
 
+(defun pel-clean-package-selected-packages-in (pkgs &optional filepath)
+  "Remove packages PKGS from the filed package-selected-package form.
 
+Remove each package identified in the PKGS list from the
+`package-selected-package' form in the customization file.
+PKGS may be a symbol or a list of symbols.
+
+If FILENAME is specified, modify the content of that file, otherwise
+modify the file specified by the variable `custom-file'.
+
+Save the file."
+  (let ((edited-filepath (or filepath custom-file))
+        (pkgs (if (listp pkgs) pkgs (list pkgs)))
+        ;; (buffer-save-without-query t)
+        (remove-count 0))
+    (with-temp-file edited-filepath
+      (insert-file-contents edited-filepath)
+      ;; use superword-mode to ensure that movement commands jump over
+      ;; punctuation symbols sometimes used in symbol names.
+      (superword-mode 1)
+      (when (search-forward "'(package-selected-packages")
+        ;; narrow the region to the package-selected-package form
+        (pel-backward-token-start)
+        (left-char)
+        (set-mark-command nil)
+        (forward-sexp)
+        (narrow-to-region (region-beginning) (region-end))
+        ;; With the region narrowed, remove the specified package symbols
+        ;; for the list
+        (dolist (pkg pkgs)
+          (let ((pkg-string (pel-as-string pkg)))
+            (goto-char (point-min))
+            ;; search for the package symbol. It may fail.
+            (when  (re-search-forward
+                    (format "[ (]%s[ )]"
+                            (regexp-quote pkg-string))
+                    nil :noerror)
+              (backward-word)
+              (delete-char (length pkg-string))
+              ;; if symbol was not the last in the list, delete the space
+              ;; separator if there was one. 32 := SPACE character.
+              (if (eq 32 (char-after))
+                  (delete-char 1)
+                ;; if it was at the end of the list delete the space separator
+                ;; that was before the symbol.
+                (left-char)
+                (when (eq 32 (char-after))
+                  (delete-char 1)))
+              (setq remove-count (1+ remove-count)))))
+        (widen)
+        remove-count))))
+
+
+;; (defun pel-clean-elpa (&optional verbose)
+;;   "Move all unrequired Emacs Lisp packages from elpa to elpa-attic directory.
+;; Remove their symbol from the customization package-selected-packages list. "
+;;   )
 
 
 ;; TODO: complete the cleanup of elpa
