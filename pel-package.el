@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-29 17:34:01, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-29 17:50:40, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -665,7 +665,7 @@ removed."
   (if (and (require 'package nil :noerror)
            (boundp 'package-selected-packages))
       (dolist (pkg pkgs)
-        (setq package-selected-package (delete pkg package-selected-package)))
+        (setq package-selected-packages (delete pkg package-selected-packages)))
     (error "Can't modify package-selected-package!")))
 
 (defun pel-clean-package-selected-packages-in-file (pkgs &optional filepath)
@@ -860,29 +860,35 @@ been done if you issue a `pel-cleanup' command without the key
 prefix and answer 'y' to the prompt.
 
 "))
-           (insert (format "Moved %d files,
+           (when (or removed-el-files removed-elc-files)
+             (insert (format "Moved %d files,
 - from: %s
 - to  : %s
 %sThe files moved to utils-attic are:\n\n"
-                           (length removed-el-files)
-                           pel-utils-dirpath
-                           pel-utils-attic-dirpath
-                           (if removed-elc-files
-                               (format "Removed %d orphaned .elc files.\n"
-                                       (length removed-elc-files))
-                             "")))
-           (dolist (fn removed-el-files)
-             (setq n (1+ n ))
-             (insert (format "- %3d: %s\n" n fn)))
-           (insert (format "\n\nElpa packages moved:
+                             (length removed-el-files)
+                             pel-utils-dirpath
+                             pel-utils-attic-dirpath
+                             (if removed-elc-files
+                                 (format "Removed %d orphaned .elc files.\n"
+                                         (length removed-elc-files))
+                               "")))
+             (dolist (fn removed-el-files)
+               (setq n (1+ n ))
+               (insert (format "- %3d: %s\n" n fn))))
+           (when moved-elpa-dirs
+             (insert (format "\n\nElpa packages moved:
 - from: %s
 - to  : %s:\n\n"
-                           pel-elpa-dirpath
-                           pel-elpa-attic-dirpath))
-           (setq n 0)
-           (dolist (pkgdir moved-elpa-dirs)
-             (setq n (1+ n))
-             (insert (format "- %3d: %s\n" n pkgdir)))))))))
+                             pel-elpa-dirpath
+                             pel-elpa-attic-dirpath))
+             (setq n 0)
+             (dolist (pkgdir moved-elpa-dirs)
+               (setq n (1+ n))
+               (insert (format "- %3d: %s\n" n pkgdir))))
+           (unless (or removed-el-files
+                       removed-elc-files
+                       moved-elpa-dirs)
+             (insert "Nothing to cleanup!!"))))))))
 
 ;; --
 
