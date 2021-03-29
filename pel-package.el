@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-29 17:05:31, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-29 17:34:01, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -663,7 +663,7 @@ removed."
 (defun pel-clean-package-selected-packages (pkgs)
   "Remove package symbols in PKGS from the `package-selected-package' form."
   (if (and (require 'package nil :noerror)
-           (boundp 'package-selected-package))
+           (boundp 'package-selected-packages))
       (dolist (pkg pkgs)
         (setq package-selected-package (delete pkg package-selected-package)))
     (error "Can't modify package-selected-package!")))
