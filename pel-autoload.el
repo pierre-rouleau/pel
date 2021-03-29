@@ -435,7 +435,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-open-url-at-point)
 
   (pel-autoload "pel-package" for:
-    pel-package-stats)
+    pel-package-info
+    pel-cleanup)
   (pel-autoload-function "pel-package" for:
     pel-install-from-elpa-attic)
 

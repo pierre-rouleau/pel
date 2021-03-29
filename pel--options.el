@@ -137,8 +137,17 @@
 ;; function `pel-cleanup' is executed.
 ;;
 ;; The following properties are applied to the the `pel-use-' user-option
-;; variables only.
+;; variables only:
+;;
+;;  - `:requires'
+;;  - `:package-is'
+;;  - `:restricted-to'
+;;
+;; They are described below.
 
+;; `:requires'
+;; ----------
+;;
 ;; The `:requires' property indicates package dependencies.  The attribute
 ;; value might be: - A single `pel-use-' symbol: stating that this parent must
 ;; also be activated for the package to be installed.  - A list of several
@@ -148,6 +157,21 @@
 ;; activated for this package to be installed.
 ;;
 
+;; `:requires-package'
+;; ------------------
+;;
+;; The package dependency of some packages do not identify all of their
+;; dependencies.  In some case they do that because the package activates
+;; extra functionality only when the extra dependency is present.  Well, when
+;; it is present you want to keep it during a `pel-cleanup' operation.
+;; To identify that dependency use the `:requires-package' property and
+;; identify the required package.  The semantics is the same as for the
+;; `:requires' property above except for the fact that if it is not present
+;; nothing is inferred.
+
+;; `:package-is'
+;; ------------
+;;
 ;; In most case the name of the package that is controlled by the `pel-use-'
 ;; variables is the string that follows the "pel-use-" prefix in the symbol
 ;; name.  But this is not always the case. There are the  other possibilities
@@ -177,6 +201,27 @@
 ;;     stored into PEL's utils directory. See `pel-use-ripgrep' for an example.
 ;;  - In the absence of the `:package-is' property, the name of the package is
 ;;    extracted from the name of the `pel-use-' symbol.
+
+;; `:restricted-to'
+;; ----------------
+;;
+;; Some packages are restricted to a specific mode of Emacs operation. The
+;; value of this property is a variable symbol that identifies when this
+;; package is used.
+;;
+;; Currently, this property is only used to identify whether a package is
+;; restricted to Emacs running in graphics or TTY mode.  It is possible to use
+;; PEL with multiple customization files.  There could be one for Emacs
+;; running in graphics mode and another for Emacs running in TTY mode.  The
+;; selection must be done in your init file before pel-init is ever called.
+;; We use this property to prevent `pel-cleanup' from removing a
+;; graphics-mode-only package when `pel-cleanup' is invoked from Emacs running
+;; in TTY mode.  The `pel-cleanup' disables packages only when the value for
+;; this attribute evaluates to non-nil.  In other words, `pel-cleanup' will
+;; only remove a package associated to a user-option that has a
+;; `:restricted-to' property set to `pel-emacs-is-graphic-p' when Emacs is
+;; running in graphics mode.
+
 
 ;; ---------------------------------------------------------------------------
 ;;; Code:
@@ -307,8 +352,8 @@ For example, to activate it in Erlang, add a line with
   "List of external packages that can be used by PEL."
   :group 'pel)
 
-(defcustom pel-elpa-package-to-keep '(benchmark-init)
-  "List of Elpa package names that should not be removed by pel-cleanup.
+(defcustom pel-elpa-packages-to-keep '(benchmark-init)
+  "List of Elpa package names that should not be removed by `pel-cleanup'.
 
 Put the names of the packages you install manually in this list.
 PEL will not remove them when it performs a cleanup.
@@ -317,6 +362,13 @@ initialization time is in the default."
   :group 'pel-package-use
   :type '(repeat symbol))
 
+(defcustom pel-utils-packages-to-keep nil
+  "List of utils file names that should not be removed by `pel-cleanup'.
+
+If you manually install Emacs Lisp files in your utils directory, you should
+put their names in this list to prevent their removal by `pel-cleanup'."
+  :group 'pel-package-use
+  :type '(repeat string))
 
 (defcustom pel-use-editor-config nil
   "Control whether PEL activates EditorConfig plugin for Emacs."
@@ -581,6 +633,9 @@ You must also activate the user option variable  `pel-use-ivy' to use counsel."
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
+;; counsel uses the request package but does not identify it as part
+;; of its dependencies. Therefore I add the dependency info here.
+(put 'pel-use-counsel :requires-package 'request)
 
 (defcustom pel-use-counsel-osx-app nil
   "Control whether `counsel-osx-app' is used when counsel is used on macOS.
@@ -757,6 +812,7 @@ Notes:
   :group 'pel-pkg-for-cut-and-paste
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-popup-kill-ring :restricted-to 'pel-emacs-is-graphic-p)
 
 (defcustom pel-show-copy-cut-text t
   "Set whether PEL commands that copy, cut or kill text show it in echo area.
@@ -1019,6 +1075,7 @@ emacs-tip-35-framemove.html")
   :type 'boolean
   :safe #'booleanp)
 (put 'pel-use-framemove :package-is :in-utils)
+(put 'pel-use-framemove :restricted-to 'pel-emacs-is-graphic-p)
 
 ;; ---------------------------------------------------------------------------
 ;; Support for Emacs Running in Graphics Mode
@@ -1035,6 +1092,7 @@ This is only used when Emacs runs in graphics mode."
   :safe #'booleanp
   :link `(url-link :tag "all-the-icons @ GitHub"
                    "https://github.com/domtronn/all-the-icons.el"))
+(put 'pel-use-all-the-icons :restricted-to 'pel-emacs-is-graphic-p)
 
 (defcustom pel-use-all-the-icons-ibuffer nil
   "Control whether PEL uses the all-the-icons package in ibuffer.
@@ -1042,6 +1100,7 @@ This is only used when Emacs runs in graphics mode."
   :group 'pel-pkg-for-graphics-emacs
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-all-the-icons-ibuffer :restricted-to 'pel-emacs-is-graphic-p)
 
 (defcustom pel-use-all-the-icons-dired nil
   "Control whether PEL uses the all-the-icons package in dired.
@@ -1049,6 +1108,7 @@ This is only used when Emacs runs in graphics mode."
   :group 'pel-pkg-for-graphics-emacs
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-all-the-icons-dired :restricted-to 'pel-emacs-is-graphic-p)
 
 (defcustom pel-use-all-the-icons-ivy nil
   "Control whether PEL uses the all-the-icons package in ivy.
@@ -1056,6 +1116,7 @@ This is only used when Emacs runs in graphics mode."
   :group 'pel-pkg-for-graphics-emacs
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-all-the-icons-ivy :restricted-to 'pel-emacs-is-graphic-p)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Graphics Cursor Control
@@ -1836,6 +1897,7 @@ images from their Graphviz Dot files."
   :group 'pel-pkg-for-graphviz-dot
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-graphviz-dot :package-is 'graphviz-dot-mode)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; PlantUML Support
@@ -1871,6 +1933,7 @@ Note that this value overrides the value selected by the
           (const :tag "Not used" nil)
           (const :tag "Use local plantuml.jar application" t)
           (const :tag "Use the remote PlantUML server" server)))
+(put 'pel-use-plantuml :package-is 'plantuml-mode)
 
 (defcustom pel-use-flycheck-plantuml nil
   "Control the flycheck-plantuml PlantUML checker package is used with PEL."
@@ -2015,6 +2078,7 @@ M-x eldoc-mode)."
   :link '(url-link :tag "eldoc-box @ GitHub"
                    "https://github.com/casouri/eldoc-box")
   :link '(custom-group-link "eldoc"))
+(put 'pel-use-eldoc-box :restricted-to 'pel-emacs-is-graphic-p)
 
 (defcustom pel-use-hide-comnt nil
   "Control whether PEL activates Drew Adams' hide-cmnt package.
@@ -2786,6 +2850,7 @@ by the `pel-use-d-ac-dcd'."
   :group 'pel-pkg-for-d
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-d-company-dcd :package-is 'company-dcd)
 (put 'pel-use-d-company-dcd :requires 'pel-use-d)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -3144,6 +3209,7 @@ in Graphics mode."
   :group 'pel-pkg-for-elisp
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-esup :restricted-to 'pel-emacs-is-graphic-p)
 
 (defcustom pel-use-highlight-defined nil
   "Control whether PEL uses the {highlight-defined} package."
@@ -3655,6 +3721,7 @@ IMPORTANT:
   :group 'pel-pkg-for-elixir
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-elixir-exunit :package-is 'exunit)
 (put 'pel-use-elixir-exunit :requires 'pel-use-elixir)
 
 (defcustom pel-use-elixir-lsp nil
@@ -4095,6 +4162,13 @@ Note: `pel-use-python' must be t for this to be effective."
                    "https://github.com/abo-abo/lpy"))
 (put 'pel-use-lpy :requires 'pel-use-python)
 
+
+;; TODO: add support for several Python supporting packages:
+;; - elpy           : https://github.com/jorgenschaefer/elpy
+;; - jedi           : https://github.com/tkf/emacs-jedi
+;;   - company-jedi : https://github.com/emacsorphanage/company-jedi
+
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; REXX Support
 ;; ------------
@@ -4127,7 +4201,7 @@ Note: `pel-use-python' must be t for this to be effective."
                    "https://github.com/pierre-rouleau/netrexx-mode")
   :type 'boolean
   :safe #'booleanp)
-(put 'pel-use-netrexx :package-is :in-utils)
+(put 'pel-use-netrexx :package-is '(quote ((utils . netrexx-mode))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Rust Support
@@ -4185,6 +4259,7 @@ Requires the user-option variable `pel-use-rust' to be on (t)."
   :group 'pel-pkg-for-rust
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-emacs-racer :package-is 'racer)
 (put 'pel-use-emacs-racer :requires 'pel-use-rust)
 
 (defcustom pel-use-cargo nil
@@ -4577,7 +4652,9 @@ used if `pel-prefer-sr-speedbar-in-terminal' is set."
   :group 'pel-pkg-for-speedbar
   :type 'boolean
   :safe #'booleanp)
-(put 'pel-use-speedbar :package-is :builtin-emacs)
+;; speedbar is built-in Emacs but when `pel-use-speedbar' is active
+;; sr-speedbar is installed.
+(put 'pel-use-speedbar :package-is '(quote ((utils . sr-speedbar))))
 
 (defcustom pel-prefer-sr-speedbar-in-terminal t
   "Prefer using Sr-Speedbar in terminal mode (when available) over Speedbar."

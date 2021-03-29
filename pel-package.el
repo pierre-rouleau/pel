@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-27 11:35:12, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-29 17:05:31, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -36,7 +36,7 @@
 ;;  command is executed, it extracts the list of all packages that should be
 ;;  located in the Emacs elpa directory and in the PEL utils directory.  It
 ;;  gets this information by processing the properties of each `pel-use-'
-;;  user-option variables that are non-nil. For each of them it calls the
+;;  user-option variables that are non-nil.  For each of them it calls the
 ;;  function `pel-packages-for'.  The function returns nil if nothing is
 ;;  expected to be present, otherwise it returns a list of (type . package)
 ;;  cons cells where type is either 'elpa or 'utils and package is a symbol
@@ -49,41 +49,126 @@
 ;;  updated.
 ;;
 ;;  Removing packages that are not used improves Emacs speed: it reduces the
-;;  load path: unfortunately the package management creates one directory per
-;;  package and place this directory in the load path.  This is not so much an
-;;  issue with the files stored in the utils directory as only one directory
-;;  is inside the load path.
+;;  length of the load path that tends to grow rapidly with new packages
+;;  installed because, unfortunately, the package management creates one
+;;  directory per package and place this directory in the load path.  This is
+;;  not so much an issue with the files stored in the utils directory as only
+;;  one directory is inside the load path.
 ;;
-;;  TODO: complete the file by adding the package removal logic. 🚧
+;;  The file provides two commands:
 ;;
+;;  - Use `pel-package-info' to get a quick overview of the packages requested
+;;    by PEL user-options, their dependencies and the packages that must
+;;    remain because they are use by Emacs running in another mode
+;;    (graphic/TTY).  Produce a more detailed report in a *pel-user-options*
+;;    buffer by passing an argument to the command.
+;; - Use the command `pel-cleanup' to deactivate all packages in excess:
+;;   packages that are not in the list of:
+;;
+;;   - packages that PEL requires via its `pel-use-' user-options,
+;;   - their dependencies,
+;;   - packages that are *locked*, installed by Emacs running in another mode
+;;     of operation (graphics vs TTY),
+;;   - packages installed manually that you have identified in the following
+;;     PEL user-options:
+;;                       - `pel-elpa-packages-to-keep'
+;;                       - `pel-utils-packages-to-keep'
+;;
+;;     The `pel-cleanup' command does not delete files and directories.
+;;     Instead it moves them into *attic* directories where they can be
+;;     retrieved later.  This way if you stop using a specific Elpa package
+;;     and then it disappears from MELPA (because the author stops maintaining
+;;     it - that happens) you will still have access to it. If however you
+;;     disable a package that is already in the *attic* directory, then it
+;;     will be deleted but placed in your computer trash can where you can
+;;     extract it if you want.
+;;
+;;  The code identifies you local Elpa and utils directories and their attic
+;;  counterparts, normally stored inside the ~/.emacs.d directory or the
+;;  equivalent.  The location of those directories is stored inside the
+;;  following defconst variables:
+;;
+;;                       - `pel-elpa-dirpath'
+;;                       - `pel-elpa-attic-dirpath'
+;;                       - `pel-utils-dirpath'
+;;                       - `pel-utils-attic-dirpath'
 
-;; * `pel-package-stats'
+;; * `pel-package-info'
 ;;   - `pel-activated-packages'
 ;;   - `pel-user-options'
 ;;     - `pel-user-option-p'
-
-;; - `pel-clean-utils'
-;;   - `pel-utils-unrequired'
-;;     - `pel-active-and-excess-utils'
-;;       - `pel-activated-packages'
-;;         - `pel-user-options'
-;;         - `pel-packages-for'
-;;           - `pel-package-for'
-;;             - `pel--assert-valid-user-option'
-;;               - `pel-user-option-p'
-;;       - `pel-remove-invalid-elc'
-;;         - `pel-el-file-for'
+;;   - `pel--show-pkgs-for'
+;;   - `pel-elpa-unrequired'            (see its call tree below)
+;;   - `pel-utils-unrequired'           (see its call tree below)
+;;   - `pel--show-pkgs-in-excess-for'
+;;
+;;
+;; * `pel-cleanup'
+;;   - `pel-clean-utils'
+;;     - `pel-utils-unrequired'
+;;       - `pel-active-and-excess-utils'
+;;         - `pel-activated-packages'
+;;           - `pel-user-options'
+;;             - `pel-user-option-p'
+;;           - `pel-packages-for'
+;;             - `pel-package-for'
+;;               - `pel--assert-valid-user-option'
+;;                 - `pel-user-option-p'
+;;               - `pel-restricted-active-user-option-p'
+;;                 - `pel--assert-valid-user-option'
+;;                   - `pel-user-option-p'
+;;               - `pel-spec-for-symbol-attribute'
+;;           - `pel-elpa-pkg-dependencies'
+;;           - `pel-symbol-name-<'
+;;     - `pel-remove-invalid-elc'
+;;       - `pel-el-file-for'
+;;   - `pel-clean-elpa'
+;;     - `pel-elpa-unrequired'
+;;       - `pel-activated-packages'     (see its call tree above)
+;;       - `pel-elpa-packages-in-dir'
+;;       - `pel-symbol-name-<'
+;;     - `pel-move-elpa-pkg-to-elpa-attic'
+;;       - `pel-elpa-dirs-for'
+;;       - `pel-move-to-dir'
+;;     - `pel-clean-package-selected-packages'
+;;     - `pel-clean-package-selected-packages-in-file'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 ;;
 (require 'pel--base)                    ; use: pel-as-string, pel-as-symbol
-(require 'pel--options)                 ; use: pel-elpa-package-to-keep
+;;                                      ;      pel-print-in-buffer
+(require 'pel--options)                 ; use: pel-elpa-packages-to-keep
+;;                                      ;      pel-utils-packages-to-keep
+(require 'pel-navigate)                 ; use: pel-backward-token-start
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
+
+(defconst pel-elpa-dirpath  (file-name-as-directory
+                             (expand-file-name "elpa"
+                                               user-emacs-directory))
+  "Absolute path of the user elpa directory.")
+
+(defconst pel-elpa-attic-dirpath  (file-name-as-directory
+                                   (expand-file-name "elpa-attic"
+                                                     user-emacs-directory))
+  "Absolute path of the user elpa-attic directory.")
+
+(defconst pel-utils-dirpath (file-name-as-directory
+                             (expand-file-name "utils" user-emacs-directory))
+  "Absolute path of the PEL utils directory.")
+
+(defconst pel-utils-attic-dirpath (file-name-as-directory
+                                   (expand-file-name "utils-attic"
+                                                     user-emacs-directory))
+  "Absolute path of the PEL utils-attic directory.")
+
+(defconst pel-required-packages '(popup)
+  "List of package names that PEL always uses.")
+
 
 (defun pel-user-option-p (symbol)
   "Return t when SYMBOL is a valid PEL User-option, nil otherwise."
@@ -105,64 +190,107 @@
 Return t if it is, issue an error otherwise."
   (if (pel-user-option-p symbol)
       t
-    (error "Invalid pel-package-for argument: %S.\
+    (error "Invalid argument: %S.\
   It is not a valid PEL user-option!" symbol)))
 
-;; TODO complete pel-install-from-elpa-attic
-;;-pel-autoload
-(defun pel-install-from-elpa-attic (pkg)
-  "Install package PKG from the local copy stored in the elpa-attic directory.
+;; --
 
-Return t on success, nil otherwise.
-The elpa-attic directory is the ~/.emacs.d/pel-elpa-attic directory."
-  (display-warning 'pel-install-from-elpa-attic
-                   (format "(pel-install-from-elpa-attic %s) not yet implemented!"
-                           pkg)
-                   :error)
-  nil)
+(defun pel-restricted-active-user-option-p (symbol)
+  "Return t when user-option SYMBOL has an active restriction, nil otherwise.
 
-(defun pel-package-for (symbol)
-  "Return package info for specified PEL-USER-OPTION.
-PEL-USER-OPTION must be a `pel-use-' user-option symbol.
+An active restriction is specified by the `:restricted-to'
+attribute which identifies a condition.  When this condition is
+nil the related package cannot be removed: the restriction is
+active.
+
+PEL currently supports restrictions related to the mode Emacs
+runs in: either graphics or TTY.  For example, a package that runs
+in graphics mode can only be removed in graphics mode.  So when running in
+terminal mode, such a package is identified as active to prevent the
+`pel-cleanup' function to remove it when the user-option is not active."
+  (pel--assert-valid-user-option symbol)
+  (let ((restricted-prop (get symbol :restricted-to)))
+    (and restricted-prop
+         (not (eval restricted-prop)))))
+
+
+(defun pel-spec-for-symbol-attribute (symbol property
+                                              &optional no-property-is-elpa)
+  "Extract the spec list for the PROPERTY of specified SYMBOL"
+  (let ((attribute-value (get symbol property)))
+    (cond
+     ;; no attribute - use symbol suffix.  Standard Elpa.
+     ((null attribute-value)
+      (when no-property-is-elpa
+        (list (cons 'elpa
+                    (intern (substring (symbol-name symbol) 8))))))
+     ;; built-in attribute: return nil: nothing to manage
+     ((eq attribute-value :builtin-emacs)
+      nil)
+     ;; gate attribute : user-option acts as a gate.
+     ((eq attribute-value :a-gate)
+      nil)
+     ;; in-utils attribute: return the name from symbol but from
+     ;; utils
+     ((eq attribute-value :in-utils)
+      (list (cons 'utils
+                  (intern (substring (symbol-name symbol) 8)))))
+     ;; a cons form is used - evaluate it to extract its content the
+     ;; evaluation may perform some checks and should have no
+     ;; side-effect.  The form should evaluate to a list of (type
+     ;; . package-name) cons cell(s).
+     ((consp attribute-value)
+      (eval attribute-value))
+     ;; a symbol indicates an Elpa-based package
+     ((symbolp attribute-value)
+      (list (cons 'elpa attribute-value)))
+     ;; Everything else is invalid
+     (t
+      (error "Invalid PEL package spec for %s: %S" symbol
+             attribute-value)))))
+
+(defun pel-package-for (symbol &optional ignore-restriction)
+  "Return package info for specified PEL user-option SYMBOL.
+SYMBOL must be a `pel-use-' user-option symbol.
 Returns a list of (type . package) cons cells for the external
 package(s) that are installed when this user-option is turned on, if any.
 The type is either 'elpa or 'utils.
+
+The lists include all external packages that cannot be removed
+because of imposed restriction unless IGNORE-RESTRICTION is
+non-nil.
+
 Returns nil when:
 - the user-option is not requesting anything to be installed
   - when the user-option is off
   - when the user option request to use a built-in package."
   (pel--assert-valid-user-option symbol)
-  (when (symbol-value symbol)
-    (let ((attribute-value (get symbol :package-is)))
-      (cond
-       ;; no attribute - use symbol suffix.  Standard Elpa.
-       ((null attribute-value)
-        (list (cons 'elpa
-                    (intern (substring (symbol-name symbol) 8)))))
-       ;; built-in attribute: return nil: nothing to manage
-       ((eq attribute-value :builtin-emacs)
-        nil)
-       ;; gate attribute : user-option acts as a gate.
-       ((eq attribute-value :a-gate)
-        nil)
-       ;; in-utils attribute: return the name from symbol but from utils
-       ((eq attribute-value :in-utils)
-        (list (cons 'utils
-                    (intern (substring (symbol-name symbol) 8)))))
-       ;; a cons form is used - evaluate it to extract its content
-       ;; the evaluation may perform some checks and should have no side-effect.
-       ;; The form should evaluate to a list of (type . package-name) cons cell(s).
-       ((consp attribute-value)
-        (eval attribute-value))
-       ;; a symbol indicates an Elpa-based package
-       ((symbolp attribute-value)
-        (list (cons 'elpa attribute-value)))
-       ;; Everything else is invalid
-       (t
-        (error "Invalid PEL package spec for %s: %S" symbol
-               attribute-value))))))
+  ;; Package for the symbol is active when the pel-use- user-option is non-nil
+  ;; or when the symbol is for a restricted package and the restriction
+  ;; applies and is not ignored.
+  (when (or (symbol-value symbol)
+            (and (not ignore-restriction)
+                 (pel-restricted-active-user-option-p symbol)))
+    (let ((specs (pel-spec-for-symbol-attribute
+                  symbol :package-is :no-property-is-elpa)))
+      ;; Some `pel-use-' user-options are for packages that do not completely
+      ;; identify their dependencies in their pkg-X.el file.  We complete it
+      ;; with the :requires-package property.  Extract these specs and append
+      ;; them to the specs.
+      ;;
+      ;; TODO: currently packages inserted like these and not explicitly
+      ;; requested by a `pel-use-' user-option are not identified as
+      ;; dependencies in the report.  There should be some indication about it
+      ;; being requested via a dependency identified by PEL.
+      (dolist (xtra-spec (pel-spec-for-symbol-attribute
+                          symbol :requires-package))
+        (push xtra-spec specs))
+      ;; return the complete list of specs
+      specs)))
 
-(defun pel-packages-for (symbol)
+;; --
+
+(defun pel-packages-for (symbol &optional ignore-restriction)
   "Return availability specs for specified PEL user-option SYMBOL.
 
 SYMBOL must be a PEL `pel-use-' user-option symbol.
@@ -175,6 +303,10 @@ are:
     elpa directory.
   - utils: stating that `package' should be available in the local
     PEL utils directory.
+
+The lists include all packages that cannot be removed because of imposed
+restriction unless IGNORE-RESTRICTION is non-nil.
+
 The returned information identifies what *should* be the state of the package
 installation.  It is mainly used to accumulate lists of the packages that must
 remain in the local elpa and PEL utils when a PEL cleanup is requested after
@@ -195,7 +327,7 @@ some PEL user-options have been turned off."
           (setq requires-all-parents t)
           (setq parent-user-options (cdr parent-user-options)))
       (setq parent-user-options (list parent-user-options)))
-    ;; The package spec for SYMBOL is installed along its parent's
+    ;; The package spec for SYMBOL is active along its parent's
     ;; when the symbol value of each of the parent symbols is non-nil.
     ;; If any of them is nil, then the package for SYMBOL will not be
     ;; installed and only the active parent(s) is/are installed.
@@ -203,7 +335,8 @@ some PEL user-options have been turned off."
       (if (symbol-value parent-user-option)
           (progn
             (setq a-parent-is-enabled t)
-            (dolist (spec (pel-package-for parent-user-option))
+            (dolist (spec (pel-package-for parent-user-option
+                                           ignore-restriction))
               (when spec
                 (push spec pkg-spec-list))))
         (setq a-parent-is-disabled t)))
@@ -218,11 +351,13 @@ some PEL user-options have been turned off."
                    (not a-parent-is-disabled))
               (and (not requires-all-parents)
                    a-parent-is-enabled))
-      (dolist (spec (pel-package-for symbol))
+      (dolist (spec (pel-package-for symbol ignore-restriction))
         (when spec
           (push spec pkg-spec-list))))
     ;; return the list of packages that should be present.
     pkg-spec-list))
+
+;; ----
 
 (defun pel-symbol-name-< (s1 s2)
   "Compare name strings of S1 and S2 symbols."
@@ -240,11 +375,13 @@ PKG may be a symbol or a string."
         (package--get-deps (pel-as-symbol pkg))
       (error "Failed loading package"))))
 
-(defun pel-activated-packages (&optional without-dependants)
+(defun pel-activated-packages (&optional without-dependants ignore-restriction)
   "Return a list of packages activated by PEL user-options.
 
 The lists include all dependant packages unless WITHOUT-DEPENDANTS is
 specified and non-nil.
+The list includes all packages that cannot be removed because of imposed
+restriction unless IGNORE-RESTRICTION is non-nil.
 
 Return a list of 2 lists:
 - first list is a list of elpa package symbols,
@@ -255,7 +392,7 @@ their names."
   (let ((elpa-list '())
         (utils-list '()))
     (dolist (user-option (pel-user-options))
-      (dolist (spec (pel-packages-for user-option))
+      (dolist (spec (pel-packages-for user-option ignore-restriction))
         (cond
          ;; elpa package
          ((eq 'elpa (car spec))
@@ -277,38 +414,129 @@ their names."
      (sort elpa-list (function pel-symbol-name-<))
      (sort utils-list (function pel-symbol-name-<)))))
 
-;; pel-autoload
-(defun pel-package-stats ()
-  "Display number of packages required by PEL"
-  (interactive)
-  (let* ((all-activated (pel-activated-packages))
-         (activated     (pel-activated-packages :without-deps))
-         (elpa-all      (length (car all-activated)))
-         (elpa-base     (length (car activated)))
-         (elpa-deps     (- elpa-all elpa-base))
-         (utils-all     (length (cadr all-activated)))
-         (utils-base    (length (cadr activated)))
-         (utils-deps    (- utils-all utils-base))
-         (user-options  (pel-user-options)))
-    (message "\
-Number of PEL user-options  : %d (%d are active)
-PEL activated elpa  packages: %d%s
-PEL Activated utils files   : %d%s"
-             (length user-options)
-             (length (seq-filter (lambda (x) (symbol-value x)) user-options))
-             elpa-base
-             (if (> elpa-deps 0)
-                 (format " (with %d extra dependency packages)" elpa-deps)
-               "")
-             utils-base
-             (if (> utils-deps 0)
-                 (format " (with %d extra dependency files)" utils-deps)
-               ""))))
-
 ;; --
 
+(defun pel--show-pkgs-for (group-name all-pkgs pkgs+lock pkgs+deps to-keep)
+  "Utility: insert description of used packages.
+- GROUP-NAME: String: either \"Elpa\" or \"Utils\".
+- ALL-PKGS:   List of all packages for this group.
+- PKGS+LOCK:  List of packages requested by PEL user-options and the ones
+              that are included because of restriction locks.
+- PKGS+DEPS:  List of packages requested by PEL user-options and their
+              dependencies.
+TO-KEEP:      List of package symbols or file name strings that are installed
+              independently from PEL and must therefore not be removed by the
+              execution of the `pel-cleanup' function."
+  (insert (format "\n%s activated packages:\n" group-name))
+  (let ((n 0))
+    (dolist (pkg all-pkgs)
+      (let ((isa-dep (and (not (memq pkg pkgs+lock))
+                          (memq pkg pkgs+deps)))
+            (isa-lck (and (not (memq pkg pkgs+deps))
+                          (memq pkg pkgs+lock))))
+        (setq n (1+ n))
+        (insert (format "- %3d: %-40s%s%s\n"
+                        n
+                        pkg
+                        (if isa-dep "  (dependency) "
+                          "               ")
+                        (if isa-lck "  (requested by restriction)"
+                          "")))))
+    (when to-keep
+      (setq n 0)
+      (insert (format "%s manually installed:\n" group-name))
+      (dolist (pkg to-keep)
+        (setq n (1+ n))
+        (insert (format "- %3d: %-40s\n" n pkg))))))
+
+(defun pel--show-pkgs-in-excess-for (group pkgs)
+  "Utility: list GROUP package PKGS in excess.
+Return the number of packages in excess."
+  (let ((n 0))
+    (when pkgs
+      (insert (format "\n%s packages in excess:\n" group))
+      (dolist (pkg pkgs)
+        (setq n (1+ n))
+        (insert (format "- %3d: %s\n" n pkg))))
+    n))
+
+;; pel-autoload
+(defun pel-package-info (&optional full-report)
+  "Display information about packages required by PEL.
+Prints the information on the echo area unless a FULL-REPORT
+argument is specified.  In that case, prints a complete report inside a special
+*pel-user-options* buffer, listing all packages, indicating whether the
+package is in elpa or utils and whether it is a dependency or included because
+of a restriction lock."
+  (interactive "P")
+  (let* ((all-activated   (pel-activated-packages)) ; all (with deps & locks)
+         (activated+lock  (pel-activated-packages :without-deps))
+         (activated-bdeps (pel-activated-packages nil :without-locks))
+         (elpa-all          (car all-activated))
+         (n-elpa-all        (length elpa-all))
+         (elpa+lock         (car activated+lock))
+         (n-elpa-base       (length elpa+lock))
+         (elpa-bdeps        (car activated-bdeps))
+         (n-elpa-bdeps      (length elpa-bdeps))
+         (n-elpa-deps       (- n-elpa-all n-elpa-base))
+         (n-elpa-locked     (- n-elpa-all n-elpa-bdeps))
+         (utils-all         (cadr all-activated))
+         (n-utils-all       (length utils-all))
+         (utils+lock        (cadr activated+lock))
+         (n-utils-base      (length utils+lock))
+         (utils-bdeps       (cadr activated-bdeps))
+         (n-utils-bdeps     (length utils-bdeps))
+         (n-utils-deps      (- n-utils-all n-utils-base))
+         (n-utils-locked    (- n-utils-all n-utils-bdeps))
+         (user-options      (pel-user-options))
+         (overview  (format "\
+Number of PEL user-options  : %3d (%d are active)
+PEL activated elpa  packages: %3d (%3d dependants, %d imposed by restrictions)
+PEL Activated utils files   : %3d (%3d dependants, %d imposed by restrictions)"
+                            (length user-options)
+                            (length (seq-filter
+                                     (lambda (x)
+                                       (symbol-value x)) user-options))
+                            n-elpa-base n-elpa-deps n-elpa-locked
+                            n-utils-base n-utils-deps n-utils-locked)))
+    (if full-report
+        (pel-print-in-buffer
+         "*pel-user-options*"
+         "PEL User Option activated packages"
+         (lambda ()
+           "Print full report."
+           (insert (format "\n%s\n
+Elpa packages and Utils files are shown below.  The dependencies
+and lock restrictions are identified.  Note that a package
+required by PEL may also be a dependency of another package; the
+ones identified as dependencies may also be requested by PEL
+user-options.
+
+- The Elpa packages are stored in: %s
+- The Utils files   are stored in: %s\n"
+                           overview
+                           pel-elpa-dirpath
+                           pel-utils-dirpath))
+           (pel--show-pkgs-for "Elpa" elpa-all elpa+lock elpa-bdeps
+                               pel-elpa-packages-to-keep)
+           (pel--show-pkgs-for "Utils" utils-all utils+lock utils-bdeps
+                               pel-utils-packages-to-keep)
+           (let ((elpa-in-excess (pel-elpa-unrequired))
+                 (utils-in-excess (pel-utils-unrequired)))
+             (if (or elpa-in-excess
+                     utils-in-excess)
+                 (progn
+                   (insert "
+\npel-cleanup would remove the following packages:\n")
+                   (pel--show-pkgs-in-excess-for "Elpa" elpa-in-excess)
+                   (pel--show-pkgs-in-excess-for "Utils" utils-in-excess))
+               (insert "\n\nNo package is in excess.")))))
+      (message overview))))
+
+;; ----
+
 (defun pel-el-file-for (filepath)
-  "Return the .el filepath of an .elc FILENAME."
+  "Return the .el filepath of an .elc FILEPATH."
   (format "%s.el" (file-name-sans-extension filepath)))
 
 (defun pel-remove-invalid-elc (directory)
@@ -327,15 +555,7 @@ Returns the list of removed file names."
         (delete-file elc-file)))
     removed-files))
 
-
-(defconst pel-utils-dirpath (file-name-as-directory
-                             (expand-file-name "utils" user-emacs-directory))
-  "Absolute path of the PEL utils directory.")
-
-(defconst pel-utils-attic-dirpath (file-name-as-directory
-                                   (expand-file-name "utils-attic"
-                                                     user-emacs-directory))
-  "Absolute path of the PEL utils-attic directory.")
+;; --
 
 (defun pel-active-and-excess-utils ()
   "Return a list of 2 lists of utils Emacs Lisp files: active and not active.
@@ -351,9 +571,13 @@ user options."
         (excess-utils-files '()))
     (dolist (utils-symbol (cadr (pel-activated-packages)))
       (push (format "%s.el" utils-symbol) active-utils-files))
+    ;; Some packages are identified by the user as used, even though PEL may
+    ;; not requests it via user-options; make sure to not identify these
+    ;; packages as utils packages in excess.
     (dolist (util-el-file utils-el-files)
       (unless (member util-el-file active-utils-files)
-        (push util-el-file excess-utils-files)))
+        (unless (member util-el-file pel-utils-packages-to-keep)
+          (push util-el-file excess-utils-files))))
     (list (reverse active-utils-files)
           (reverse excess-utils-files))))
 
@@ -361,57 +585,35 @@ user options."
   "Return the list of utils files not currently required."
   (cadr (pel-active-and-excess-utils)))
 
-(defun pel-clean-utils (&optional verbose)
+(defun pel-clean-utils (&optional dry-run)
   "Move all unrequired Emacs Lisp files from utils to utils-attic directory.
 Byte-compile all Emacs Lisp files in the utils directory.
 Remove orphaned elc files from the utils directory.
-When VERBOSE is specified and non-nil display information about what is being
-done in the echo area."
+Don't execute when DRY-RUN is non-nil.
+Return the a list of 2 lists:
+- a list of .el files that have been or would have been removed,
+- a list of the .elc orphaned files that were also removed."
   (let ((unrequired-files (pel-utils-unrequired))
         (removed-elc-files '()))
-    (when unrequired-files
-      (unless (file-exists-p pel-utils-attic-dirpath)
-        (make-directory pel-utils-attic-dirpath))
-      (dolist (file unrequired-files)
-        (rename-file (expand-file-name file pel-utils-dirpath)
-                     pel-utils-attic-dirpath))
-      ;; byte recompile all .el files newer than .elc or when the .elc is
-      ;; missing.
-      (byte-recompile-directory pel-utils-dirpath 0)
-      ;; remove any orphaned .elc (a .elc without a .el file)
-      (setq removed-elc-files (pel-remove-invalid-elc pel-utils-dirpath))
-      (when verbose
-        (message "Moved %d files from %s to %s
-%sThe files moved to utils-attic are: %s"
-                 (length unrequired-files)
-                 pel-utils-dirpath
-                 pel-utils-attic-dirpath
-                 (if removed-elc-files
-                     (format "Removed %d orphaned .elc files.\n"
-                             (length removed-elc-files))
-                   "")
-                 unrequired-files)))))
+    (unless dry-run
+      (when unrequired-files
+        (unless (file-exists-p pel-utils-attic-dirpath)
+          (make-directory pel-utils-attic-dirpath))
+        (dolist (file unrequired-files)
+          (let ((utils-filename (expand-file-name file pel-utils-dirpath))
+                (attic-filename (expand-file-name file
+                                                  pel-utils-attic-dirpath)))
+            (if (file-exists-p attic-filename)
+                (delete-file utils-filename)
+              (rename-file utils-filename pel-utils-attic-dirpath))))
+        ;; byte recompile all .el files newer than .elc or when the .elc is
+        ;; missing.
+        (byte-recompile-directory pel-utils-dirpath 0)
+        ;; remove any orphaned .elc (a .elc without a .el file)
+        (setq removed-elc-files (pel-remove-invalid-elc pel-utils-dirpath))))
+    (list unrequired-files removed-elc-files)))
 
 ;; --
-(defconst pel-elpa-dirpath  (file-name-as-directory
-                             (expand-file-name "elpa"
-                                               user-emacs-directory))
-  "Absolute path of the user elpa directory.")
-
-(defconst pel-elpa-attic-dirpath  (file-name-as-directory
-                                   (expand-file-name "elpa-attic"
-                                                     user-emacs-directory))
-  "Absolute path of the user elpa-attic directory.")
-
-(defun pel-move-to-dir (file dir)
-  "Move FILE to directory DIR.
-FILE may represent a file or a directory.
-DIR must represent a directory.
-Trailing slash is not required for DIR but allowed."
-  ;; make sure DIR does not end with slash otherwise rename-file will
-  ;; act as if we wanted to move FILE into DIR as opposed to rename it.
-  (rename-file (directory-file-name file)
-               (directory-file-name dir)))
 
 (defun pel-elpa-dirs-for (pkg)
   "Return a list of all directories for specified package PKG.
@@ -424,24 +626,59 @@ directory."
                    (format "\\`%s-[0-9-.]+\\'"
                            (regexp-quote (pel-as-string pkg)))))
 
-(defun pel-move-elpa-to-elpa-attic (pkg)
-  "Move all versions of PKG package from elpa to the elpa-attic directory."
-  (display-warning 'pel-move-elpa-to-elpa-attic
-                   (format "TODO: complete pel-move-elpa-to-elpa-attic: %s"
-                           pkg)
-                   :error))
+(defun pel-move-to-dir (file dir)
+  "Move FILE to directory DIR.
+- FILE may represent a file or a directory.  When it is a directory, the entire
+  directory tree is moved.
+- DIR must represent a directory.
+  Trailing slash is however not required for DIR but allowed."
+  ;; make sure DIR ends with slash otherwise rename-file will act as if we
+  ;; wanted to rename FILE into DIR as opposed to move FILE into DIR.
+  (rename-file (directory-file-name file)
+               (file-name-as-directory dir)))
 
-(defun pel-clean-package-selected-packages-in (pkgs &optional filepath)
+(defun pel-move-elpa-pkg-to-elpa-attic (pkg &optional dry-run)
+  "Move all versions of PKG package from elpa to the elpa-attic directory.
+
+If any elpa package directory already exists in the elpa-attic directory, then
+the elpa package directory is only deleted.
+
+If DRY-RUN is non-nil don't move, don't delete.
+In all cases, return a list of directories that have or would have been
+removed."
+  (let ((removed-dirpaths '()))
+    (dolist (dirpath (pel-elpa-dirs-for pkg))
+      (push dirpath removed-dirpaths)
+      (unless dry-run
+        (let ((new-location (expand-file-name
+                             (file-name-nondirectory dirpath)
+                             pel-elpa-attic-dirpath)))
+          (if (file-exists-p new-location)
+              (delete-directory dirpath :recursively)
+            (pel-move-to-dir dirpath pel-elpa-attic-dirpath)))))
+    removed-dirpaths))
+
+;; --
+
+(defun pel-clean-package-selected-packages (pkgs)
+  "Remove package symbols in PKGS from the `package-selected-package' form."
+  (if (and (require 'package nil :noerror)
+           (boundp 'package-selected-package))
+      (dolist (pkg pkgs)
+        (setq package-selected-package (delete pkg package-selected-package)))
+    (error "Can't modify package-selected-package!")))
+
+(defun pel-clean-package-selected-packages-in-file (pkgs &optional filepath)
   "Remove packages PKGS from the filed package-selected-package form.
 
 Remove each package identified in the PKGS list from the
 `package-selected-package' form in the customization file.
 PKGS may be a symbol or a list of symbols.
-
-If FILENAME is specified, modify the content of that file, otherwise
+If FILEPATH is specified, modify the content of that file, otherwise
 modify the file specified by the variable `custom-file'.
-
-Save the file."
+Save the modified file.
+Return the number of symbols that were removed from the
+`package-selected-package' form."
   (let ((edited-filepath (or filepath custom-file))
         (pkgs (if (listp pkgs) pkgs (list pkgs)))
         ;; (buffer-save-without-query t)
@@ -464,10 +701,10 @@ Save the file."
           (let ((pkg-string (pel-as-string pkg)))
             (goto-char (point-min))
             ;; search for the package symbol. It may fail.
-            (when  (re-search-forward
-                    (format "[ (]%s[ )]"
-                            (regexp-quote pkg-string))
-                    nil :noerror)
+            (when (re-search-forward
+                   (format "[ (]%s[ )]"
+                           (regexp-quote pkg-string))
+                   nil :noerror)
               (backward-word)
               (delete-char (length pkg-string))
               ;; if symbol was not the last in the list, delete the space
@@ -483,17 +720,185 @@ Save the file."
         (widen)
         remove-count))))
 
+(defun pel-elpa-packages-in-dir ()
+  "Return a list of symbol for all packages present in local Elpa directory.
 
-;; (defun pel-clean-elpa (&optional verbose)
-;;   "Move all unrequired Emacs Lisp packages from elpa to elpa-attic directory.
-;; Remove their symbol from the customization package-selected-packages list. "
-;;   )
+The function search the directory identified by the variable
+`pel-elpa-dirpath'.
+
+The directory holds sub-directories, one per package/version.
+The directory may hold several versions of a specific Elpa package.
+The returned list contains only one symbol identifying the package for each
+version of that package.
+The list of package symbols is sorted by symbol names."
+  (let ((elpa-pkg-dir-names  (directory-files
+                              pel-elpa-dirpath nil ".+[0-9-.]+\\'"))
+        (elpa-pkg-names '()))
+    (dolist (dir-name elpa-pkg-dir-names)
+      (when (eq 0 (string-match "\\`\\([^ ]+\\)-[0-9-.]+\\'" dir-name))
+        (let ((pkg-name  (intern (match-string 1 dir-name))))
+          (unless (memq pkg-name elpa-pkg-names)
+            (push pkg-name elpa-pkg-names)))))
+    (reverse elpa-pkg-names)))
+
+(defun pel-elpa-unrequired ()
+  "Return a list of the elpa packages that are not required by PEL.
+Packages not required are packages not requested by any PEL user-option or any
+of their dependencies.
+The returned list contains symbols, each symbol is the name (without any
+version numbering) of the elpa package.  The list is sorted."
+  (let ((activated-elpa (car (pel-activated-packages)))
+        (available-elpa (pel-elpa-packages-in-dir))
+        (excess-elpa    '()))
+    ;; Some packages are identified by the user as used, even though PEL may
+    ;; not requests it via user-options; make sure to not identify these
+    ;; packages as elpa packages in excess.
+    (dolist (pkg pel-elpa-packages-to-keep)
+      (unless (memq pkg activated-elpa)
+        (push pkg activated-elpa)))
+    ;; Some other packages are always used by PEL.  These should not be
+    ;; removed.
+    (dolist (pkg pel-required-packages)
+      (unless (memq pkg activated-elpa)
+        (push pkg activated-elpa)))
+    ;; Now identify the packages present inside the elpa directory that are
+    ;; not required.
+    (dolist (elpa-pkg available-elpa)
+      (unless (memq elpa-pkg activated-elpa)
+        (push elpa-pkg excess-elpa)))
+    (sort excess-elpa (function pel-symbol-name-<))))
+
+;; --
+
+(defun pel-clean-elpa (&optional dry-run)
+  "Remove Elpa packages not requested by PEL user-options.
+Perform the following:
+- Move all unrequired Emacs Lisp packages from elpa to elpa-attic directory.
+- Remove their symbol from the `package-selected-packages' variable.
+- Remove their symbol from the customization `package-selected-packages' list
+  located inside the currently used customization file (identified by the
+  content of the variable `custom-file'.
+Don't execute when DRY-RUN is non-nil.
+Return a list of elpa directories moved or deleted."
+  (let ((unrequired-elpa (pel-elpa-unrequired))
+        (moved-elpa-dirs '()))
+    (when unrequired-elpa
+      ;; If any Elpa package is in excess, move it in the elpa-attic
+      ;; unless this is a dry-run (in which case just accumulate the directory
+      ;; names in the moved-elpa-dirs list).  If the directory is already
+      ;; inside the elpa-attic then delete it.
+      (unless (file-exists-p pel-elpa-attic-dirpath)
+        (make-directory pel-elpa-attic-dirpath))
+      (dolist (pkg unrequired-elpa)
+        (setq moved-elpa-dirs
+              (append moved-elpa-dirs
+                      (pel-move-elpa-pkg-to-elpa-attic pkg dry-run))))
+      ;; Also remove the packages from the package-selected-package form
+      ;; in memory and the one stored in the currently active customization
+      ;; file.
+      (unless dry-run
+        (pel-clean-package-selected-packages unrequired-elpa)
+        (pel-clean-package-selected-packages-in-file unrequired-elpa)))
+    ;; We could also update load-path and remove the paths related to the
+    ;; package directories removed, but let's play safe and wait for Emacs
+    ;; to restart: the load-path will be updated then.
+    moved-elpa-dirs))
+
+(defun pel-cleanup (&optional dry-run)
+  "Move all unrequired packages to their attic directory.
+
+With optional argument DRY-RUN, do nothing just report what would
+be done.  Print a description of the operation in the
+*pel-cleanup* buffer."
+  (interactive "P")
+  (when (or dry-run
+            (y-or-n-p "Proceed with removal of non-required packages? "))
+    (let* ((utils-results     (pel-clean-utils dry-run))
+           (removed-el-files  (car utils-results))
+           (removed-elc-files (cadr utils-results))
+           (moved-elpa-dirs   (pel-clean-elpa dry-run)))
+      (pel-print-in-buffer
+       "*pel-cleanup*"
+       (if dry-run "Dry-run of PEL Cleanup"
+         "PEL Cleanup")
+       (lambda ()
+         (let ((n 0))
+           (insert (format "
+The PEL cleanup removes packages that are not needed, based on
+the value of the `pel-use-' customization user-options.
+
+PEL does not remove packages that are dependencies of packages
+that are activated by the user-options or packages manually
+installed that have been identified in the following user-options:
+
+- `pel-elpa-packages-to-keep',
+- `pel-utils-packages-to-keep'.
+
+******************
+**IMPORTANT NOTE**
+******************
+
+- If you want to install packages that are not managed by PEL,
+  please add their names to these lists, otherwise a `pel-cleanup'
+  will remove them.
+- Also note that if a package is already present inside the attic
+ directory the file in the utils or elpa directory is removed.
 
 
-;; TODO: complete the cleanup of elpa
-(defun pel-clean (&optional verbose)
-  "Move all unrequired packages to their attic directory."
-  (pel-clean-utils verbose))
+
+PEL CLEANUP %s:
+**********************
+
+" (if dry-run "DRY - RUN"
+    "EXECUTION")))
+           (when dry-run
+             (insert "This is a dry-run ONLY.  NOTHING was done!
+
+The remainder of the message is written as if something was
+performed, but it was not done: it just shows what would have
+been done if you issue a `pel-cleanup' command without the key
+prefix and answer 'y' to the prompt.
+
+"))
+           (insert (format "Moved %d files,
+- from: %s
+- to  : %s
+%sThe files moved to utils-attic are:\n\n"
+                           (length removed-el-files)
+                           pel-utils-dirpath
+                           pel-utils-attic-dirpath
+                           (if removed-elc-files
+                               (format "Removed %d orphaned .elc files.\n"
+                                       (length removed-elc-files))
+                             "")))
+           (dolist (fn removed-el-files)
+             (setq n (1+ n ))
+             (insert (format "- %3d: %s\n" n fn)))
+           (insert (format "\n\nElpa packages moved:
+- from: %s
+- to  : %s:\n\n"
+                           pel-elpa-dirpath
+                           pel-elpa-attic-dirpath))
+           (setq n 0)
+           (dolist (pkgdir moved-elpa-dirs)
+             (setq n (1+ n))
+             (insert (format "- %3d: %s\n" n pkgdir)))))))))
+
+;; --
+
+;; TODO complete pel-install-from-elpa-attic
+;;-pel-autoload
+(defun pel-install-from-elpa-attic (pkg)
+  "Install package PKG from the local copy stored in the elpa-attic directory.
+
+Return t on success, nil otherwise.
+The elpa-attic directory is the ~/.emacs.d/pel-elpa-attic directory."
+  (display-warning 'pel-install-from-elpa-attic
+                   (format "(pel-install-from-elpa-attic %s) not yet implemented!"
+                           pkg)
+                   :error)
+  nil)
+
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-package)
