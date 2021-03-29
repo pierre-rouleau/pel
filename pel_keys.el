@@ -2864,7 +2864,8 @@ d-mode not added to ac-modes!"
   ;; will load it and once it is loaded, it conflicts with Emacs built-in
   ;; python.el.
 
-  (pel-ensure-package elpy from: melpa)
+  (when pel-use-elpy
+    (pel-ensure-package elpy from: melpa))
   ;; TODO control start of elpy
 
   ;; Normally, (python-shell-prompt-detect) should evaluate to

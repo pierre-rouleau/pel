@@ -4158,13 +4158,23 @@ Note: `pel-use-python' must be t for this to be effective."
   :group 'pel-pkg-for-python
   :type 'boolean
   :safe #'booleanp
-  :link `(url-link :tag "lpy @ GitHub"
-                   "https://github.com/abo-abo/lpy"))
+  :link '(url-link :tag "lpy @ GitHub"
+                  "https://github.com/abo-abo/lpy"))
+(put 'pel-use-lpy :requires 'pel-use-python)
+
+
+(defcustom pel-use-elpy nil
+  "Control whether PEL activates the elpy package."
+  :link '(url-link :tag "elpy @ GitHub"
+                   "https://github.com/jorgenschaefer/elpy")
+  :group 'pel-pkg-for-python
+  :type 'boolean
+  :safe #'booleanp)
 (put 'pel-use-lpy :requires 'pel-use-python)
 
 
 ;; TODO: add support for several Python supporting packages:
-;; - elpy           : https://github.com/jorgenschaefer/elpy
+;; - elpy           : complete the support
 ;; - jedi           : https://github.com/tkf/emacs-jedi
 ;;   - company-jedi : https://github.com/emacsorphanage/company-jedi
 
