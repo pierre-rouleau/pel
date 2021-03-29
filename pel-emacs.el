@@ -118,10 +118,12 @@ With \\[universal-argument] \\[universal-argument] prefix, also print content of
       (let ((numeric-arg   (prefix-numeric-value with-details))
             (overview-msg  (format "\
 # loaded files      : %d
+# load-path length  : %d
 # features          : %d
 # packages activated: %d
 # packages selected : %d"
                                    (length load-history)
+                                   (length load-path)
                                    (length features)
                                    (length package-activated-list)
                                    (length package-selected-packages))))
