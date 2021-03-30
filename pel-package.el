@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-30 11:25:11, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-30 16:40:10, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -150,6 +150,7 @@
 ;;                                      ;      pel-print-in-buffer
 (require 'pel--options)                 ; use: pel-elpa-packages-to-keep
 ;;                                      ;      pel-utils-packages-to-keep
+;;                                      ;      pel-elpa-obsolete-packages
 (require 'pel-navigate)                 ; use: pel-backward-token-start
 
 ;;; --------------------------------------------------------------------------
@@ -159,26 +160,26 @@
 (defun pel-locate-elpa ()
   "Return the absolute path of the local Elpa directory.
 
-Handle cases when the user's init file has set `package-use-dir'
+Handle cases when the user's init file has set `package-user-dir'
 variable to specify a directory that is not the standard elpa
 directory.
 
 This can be used, for example to create a several elpa package directories for
 various purposes.  For example one for Emacs running in TTY, one for Emacs
-running in graphics mode, etc...  For that you must set `package-use-dir'
+running in graphics mode, etc...  For that you must set `package-user-dir'
 inside your init.el file.
 
 It that variable is not set then the elpa in the directory identified by the
 variable `user-emacs-directory' is used."
   (file-name-as-directory (if (and (require 'package nil :no-error)
-                                   (boundp 'package-use-dir))
-                              (expand-file-name package-use-dir)
+                                   (boundp 'package-user-dir))
+                              (expand-file-name package-user-dir)
                             (expand-file-name "elpa" user-emacs-directory))))
 
 
 (defconst pel-elpa-dirpath  (pel-locate-elpa)
   "Absolute path of the user elpa directory.
-Note that you can have several elpa directories if you set `package-use-dir'
+Note that you can have several elpa directories if you set `package-user-dir'
 inside your init.el file.")
 
 (defconst pel-elpa-attic-dirpath  (file-name-as-directory
@@ -410,10 +411,13 @@ PKG may be a symbol or a string."
         (condition-case err
             (package--get-deps (pel-as-symbol pkg))
           (wrong-type-argument
-           (display-warning
-            'pel-elpa-pkg-dependencies
-            (format "Error extracting dependencies for %s : %s" pkg err)
-            :error)
+           (unless (memq pkg pel-elpa-obsolete-packages)
+             (display-warning
+              'pel-elpa-pkg-dependencies
+              (format "Error extracting dependencies for %s : %s
+Is it obsolete? If so it should be added to pel-elpa-obsolete-packages."
+                      pkg err)
+              :error))
            nil))
       (error "Failed loading package"))))
 

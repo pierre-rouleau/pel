@@ -989,6 +989,13 @@ Packages in the Elpa archive sites are regularly updated and old
 versions purged.  Requesting an old version of a package may
 occur when our local list is outdated.  When a failure occurs,
 refresh the local list and try again."
+  ;; this function is only called when package is loaded: prevent
+  ;; byte-compiler warnings.
+  (declare-function package-install                   "package")
+  (declare-function package-refresh-contents          "package")
+  (declare-function package-read-all-archive-contents "package")
+  (defvar package-archive-contents)
+  ;;
   (condition-case-unless-debug err
       (package-install package)
     (error

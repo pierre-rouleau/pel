@@ -2481,8 +2481,6 @@ d-mode not added to ac-modes!"
     (define-key prefix "9"         'lispy-out-forward-newline)
     (define-key prefix (kbd "DEL") 'lispy-kill-at-point)))
 
-
-
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC l`` : Emacs Lisp programming
 

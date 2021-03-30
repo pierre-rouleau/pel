@@ -352,6 +352,9 @@ For example, to activate it in Erlang, add a line with
   "List of external packages that can be used by PEL."
   :group 'pel)
 
+(defconst pel-elpa-obsolete-packages '(parinfer)
+  "Lists the PEL supported ELPA packages that are no longer available.")
+
 (defcustom pel-elpa-packages-to-keep '(benchmark-init)
   "List of Elpa package names that should not be removed by `pel-cleanup'.
 
@@ -1330,6 +1333,11 @@ To activate this package select one of the options:
                                             'use-pel-elpa-attic-copy)
                                         '((elpa . parinfer))
                                       '((utils . parinfer))))
+;; parinfer is no longer available in MELPA.
+;; If you have it in an attic directory it will be used.
+;; The dependencies are no longer retrievable trough MELPA,
+;; so they are identified here.
+(put 'pel-use-parinfer :requires-package  '(quote ((elpa . dash))))
 
 (defcustom pel-use-rainbow-delimiters nil
   "Control whether PEL uses the rainbow-delimiters package."
