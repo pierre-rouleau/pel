@@ -3469,13 +3469,15 @@ The target is specified using one of the following:
    - defun
    - defsubst
    - defmacro
+   - cl-defmacro
    - defalias
    - defadvice
-4) All defmacro forms, any level.
+4) All defmacro and cl-defmacro forms, any level.
 5) All of the following forms, any level
    - defun
    - defsubst
    - defmacro
+   - cl-defmacro
    - defalias
    - defadvice
    - defclass
@@ -3485,6 +3487,7 @@ The target is specified using one of the following:
    - defun
    - defsubst
    - defmacro
+   - cl-defmacro
    - defalias
    - defadvice
    - defclass

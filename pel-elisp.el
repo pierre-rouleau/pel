@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, November 27 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-27 11:48:08, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-30 11:42:01, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -254,16 +254,19 @@ TARGET, like `pel-elisp-target-forms' can be one of the following values:
             (pel--elisp-form-regexp-for '("defun"
                                           "defsubst"
                                           "defmacro"
+                                          "cl-defmacro"
                                           "defalias"
                                           "defadvice")))
            ;; 4
            ((eq target 'all-defmacro-forms)
-            (pel--elisp-form-regexp-for '("defmacro")))
+            (pel--elisp-form-regexp-for '("defmacro"
+                                          "cl-defmacro")))
            ;; 5
            ((eq target 'all-functions-macros-eieio-def-forms)
             (pel--elisp-form-regexp-for '("defun"
                                           "defsubst"
                                           "defmacro"
+                                          "cl-defmacro"
                                           "defalias"
                                           "defadvice"
                                           "defclass"
@@ -274,6 +277,7 @@ TARGET, like `pel-elisp-target-forms' can be one of the following values:
             (pel--elisp-form-regexp-for '("defun"
                                           "defsubst"
                                           "defmacro"
+                                          "cl-defmacro"
                                           "defalias"
                                           "defadvice"
                                           "defclass"
