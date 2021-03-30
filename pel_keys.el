@@ -3545,7 +3545,7 @@ d-mode not added to ac-modes!"
 (define-key pel:emacs "u" #'emacs-uptime)
 (define-key pel:emacs "v" #'emacs-version)
 (define-key pel:emacs "x"  'pel-emacs-executable)
-(define-key pel:emacs "?"  'pel-package-stats)
+(define-key pel:emacs "?"  'pel-package-info)
 
 (global-set-key (kbd "<M-S-f9>")  'pel-show-init-time)
 

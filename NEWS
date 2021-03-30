@@ -2,13 +2,29 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 
 * Changes since version 0.3.1:
 ** New Features and Improvements:
-- New: PEL no longer depends on the [[https://github.com/jwiegley/use-package][use-package]] external package to install
-  other external packages. PEL now provides all the logic it requires on top
-  of the built-in package library to install external packages.  This
-  simplifies the PEL installation procedure and allows byte-compiling all of
-  PEL without requiring any external package.  PEL will download and install
-  new package *only* when you activate the related ``pel-use-`` user-option
-  variable.
+- New: PEL now provides *customization-driven package management*.
+  It installs packages identified by the ``pel-use-`` user-option when the
+  *pel-init* command is issued and some of the requested packages are missing.
+  And it deactivates packages that are not required  y these user-options when
+  you execute the ``pel-cleanup`` command.
+  - PEL no longer depends on the [[https://github.com/jwiegley/use-package][use-package]] external package to install
+    other external packages. PEL now provides all the logic it requires on top
+    of the built-in package library to install external packages.  This
+    simplifies the PEL installation procedure and allows byte-compiling all of
+    PEL without requiring any external package.  PEL will download and install
+    new package *only* when you activate the related ``pel-use-`` user-option
+    variable.
+  - New: PEL supports the ability to perform automatic cleanup of packages:
+    - The ``pel-cleanup`` command disable packages not required by the PEL
+      user-options: it moves the packages in excess into an "attic"
+      directory. It also updates the ``package-selected-packages``
+      customization.  That reduces the Emacs load-path which helps speeding up
+      Emacs initialization time.
+    - If the command is issued with any prefix key the command executes in
+      dry-run mode and produces a detailed report of what would be removed.
+  - New: The ``pel-package-info`` command generates a report of the used
+    packages.  By default it prints a short report on the echo area. When
+    invoked with any prefix key it produces a detailed report in a special buffer.
 - New: the new command *pel-insert-line-above* (bound to ``M-L``) inserts a
   new line above current line and indents it. Optional numeric argument is
   accepted, adding that many lines.  If the argument is negative, point is not
