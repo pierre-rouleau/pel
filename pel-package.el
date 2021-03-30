@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-30 09:00:13, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-30 10:45:11, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -156,23 +156,49 @@
 ;;; Code:
 ;;
 
-(defconst pel-elpa-dirpath  (file-name-as-directory
-                             (expand-file-name "elpa"
-                                               user-emacs-directory))
-  "Absolute path of the user elpa directory.")
+(defun pel-locate-elpa ()
+  "Return the absolute path of the local Elpa directory.
+
+Handle cases when the user's init file has set `package-use-dir'
+variable to specify a directory that is not the standard elpa
+directory.
+
+This can be used, for example to create a several elpa package directories for
+various purposes.  For example one for Emacs running in TTY, one for Emacs
+running in graphics mode, etc...  For that you must set `package-use-dir'
+inside your init.el file.
+
+It that variable is not set then the elpa in the directory identified by the
+variable `user-emacs-directory' is used."
+  (file-name-as-directory (if (and (require 'package nil :no-error)
+                                   (boundp 'package-use-dir))
+                              (expand-file-name package-use-dir)
+                            (expand-file-name "elpa" user-emacs-directory))))
+
+
+(defconst pel-elpa-dirpath  (pel-locate-elpa)
+  "Absolute path of the user elpa directory.
+Note that you can have several elpa directories if you set `package-use-dir'
+inside your init.el file.")
 
 (defconst pel-elpa-attic-dirpath  (file-name-as-directory
                                    (expand-file-name "elpa-attic"
                                                      user-emacs-directory))
-  "Absolute path of the user elpa-attic directory.")
+  "Absolute path of the user elpa-attic directory.
+PEL supports only ONE pel-attic directory, even when several Elpa
+directories are used.  This way all disabled package copies are
+stored in the same directory.
+You may want to put your elpa-attic directory under VCS control.")
 
 (defconst pel-utils-dirpath (file-name-as-directory
-                             (expand-file-name "utils" user-emacs-directory))
+                             (expand-file-name pel-utils-dirname
+                                               user-emacs-directory))
   "Absolute path of the PEL utils directory.")
 
-(defconst pel-utils-attic-dirpath (file-name-as-directory
-                                   (expand-file-name "utils-attic"
-                                                     user-emacs-directory))
+(defconst pel-utils-attic-dirpath
+  (file-name-as-directory
+   (expand-file-name (concat pel-utils-dirname "-attic")
+                     user-emacs-directory))
   "Absolute path of the PEL utils-attic directory.")
 
 (defconst pel-required-packages '(popup)

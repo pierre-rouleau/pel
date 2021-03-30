@@ -370,6 +370,17 @@ put their names in this list to prevent their removal by `pel-cleanup'."
   :group 'pel-package-use
   :type '(repeat string))
 
+(defcustom pel-utils-dirname "utils"
+  "Name of the PEL utils directory, where non-Elpa Emacs files are stored.
+
+The directory is always located in the directory identified by the Emacs
+variable `user-emacs-directory'.
+
+PEL uses \"utils\" by default but you may want to specify another
+directory for whatever reason."
+  :group 'pel-package-use
+  :type 'string)
+
 (defcustom pel-use-editor-config nil
   "Control whether PEL activates EditorConfig plugin for Emacs."
   :link '(url-link :tag "EditorConfig home page"
