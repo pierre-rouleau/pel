@@ -22,11 +22,12 @@ PEL might be for you!
 - PEL builds on `Emacs easy customization`_ to let you pick and choose various
   behaviours and packages without the need for writing Emacs Lisp code.
 
-  - PEL controls installation, configuration and activation of **over 150**
+  - PEL provide **customization-driven package management** with controlled
+    download, installation, configuration and activation of **over 150**
     *top-level* [1]_ external packages through the use of easy-to-setup
     customization user-options.  These have a name that start with the
-    "``pel-use-``" prefix.
-    See the manual `built-in and external Emacs packages`_ section.
+    "``pel-use-``" prefix.  See the manual `built-in and external Emacs
+    packages`_ section.
 
     - PEL integrates these packages and adds a large number of key bindings
       **that mostly do not interfere with the standard Emacs key bindings**
@@ -38,6 +39,10 @@ PEL might be for you!
       - reducing Emacs initialization time to a minimum [2]_ and,
       - providing key bindings when Emacs is running in both graphics mode and
         terminal mode.
+
+    - The **pel-cleanup** command deactivates packages not requested by PEL
+      user-options, removing the packages from the Elpa directory and placing
+      them in *attic* directories for backup and later re-activation.
 
   - PEL provides several context-sensitive key sequences to access
     customization groups for PEL, Emacs and external packages, to help you
