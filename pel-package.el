@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-29 17:50:40, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-30 09:00:13, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -83,6 +83,10 @@
 ;;     will be deleted but placed in your computer trash can where you can
 ;;     extract it if you want.
 ;;
+;; The file also provides the `pel-install-from-elpa-attic' function, used to
+;; install files from the elpa attic, allowing quick restoration of disabled
+;; elpa package without having to access the Internet.
+;;
 ;;  The code identifies you local Elpa and utils directories and their attic
 ;;  counterparts, normally stored inside the ~/.emacs.d directory or the
 ;;  equivalent.  The location of those directories is stored inside the
@@ -93,6 +97,8 @@
 ;;                       - `pel-utils-dirpath'
 ;;                       - `pel-utils-attic-dirpath'
 
+;; The function call trees are shown here:
+;;
 ;; * `pel-package-info'
 ;;   - `pel-activated-packages'
 ;;   - `pel-user-options'
@@ -132,6 +138,9 @@
 ;;       - `pel-move-to-dir'
 ;;     - `pel-clean-package-selected-packages'
 ;;     - `pel-clean-package-selected-packages-in-file'
+;;
+;;  - `pel-install-from-elpa-attic'
+;;    - `pel-elpa-dirs-for'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -615,13 +624,22 @@ Return the a list of 2 lists:
 
 ;; --
 
-(defun pel-elpa-dirs-for (pkg)
+(defun pel-elpa-dirs-for (pkg &optional in-attic)
   "Return a list of all directories for specified package PKG.
 
 PKG may be a symbol or a string.
-Each directory is specified with full path: a directory inside the elpa
-directory."
-  (directory-files pel-elpa-dirpath
+
+By default, return package directory names available in the elpa
+directory, but if the IN-ATTIC argument is non-nil, return
+packages in the elpa-attic directory. Each directory is specified
+with full path.
+
+The returned list of directory paths is sorted in alphabetical
+order.  For several versions of a given package the most recent
+is placed last."
+  (directory-files (if in-attic
+                       pel-elpa-attic-dirpath
+                     pel-elpa-dirpath)
                    :full-path
                    (format "\\`%s-[0-9-.]+\\'"
                            (regexp-quote (pel-as-string pkg)))))
@@ -892,19 +910,31 @@ prefix and answer 'y' to the prompt.
 
 ;; --
 
-;; TODO complete pel-install-from-elpa-attic
 ;;-pel-autoload
 (defun pel-install-from-elpa-attic (pkg)
   "Install package PKG from the local copy stored in the elpa-attic directory.
 
 Return t on success, nil otherwise.
 The elpa-attic directory is the ~/.emacs.d/pel-elpa-attic directory."
-  (display-warning 'pel-install-from-elpa-attic
-                   (format "(pel-install-from-elpa-attic %s) not yet implemented!"
-                           pkg)
-                   :error)
-  nil)
-
+  ;; Get the name of the most recent package pkg stored in the elpa-attic if
+  ;; any.  The most recent has a directory name that sorts last as we use
+  ;; MELPA packages which uses ISO-8601 format.
+  (let ((elpa-attic-pkg-dirpath (car-safe
+                                 (last (pel-elpa-dirs-for pkg :in-attic))))
+        (installation-succeeded nil))
+    (when elpa-attic-pkg-dirpath
+      (let ((dest-dirpath
+             (expand-file-name (file-name-nondirectory
+                                elpa-attic-pkg-dirpath)
+                               pel-elpa-dirpath)))
+        (unless (file-exists-p dest-dirpath)
+          (copy-directory elpa-attic-pkg-dirpath
+                          (file-name-as-directory pel-elpa-dirpath)
+                          :keep-time))
+        (push dest-dirpath load-path)
+        (load-library (pel-as-string pkg))
+        (setq installation-succeeded t)))
+    installation-succeeded))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-package)
