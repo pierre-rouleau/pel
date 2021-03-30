@@ -95,7 +95,9 @@
 ;; - `pel-declare-file'
 ;; - `pel-ensure-package'
 ;;   - `pel-ensure-pkg'
-
+;;     - `pel--package-ensure-elpa'
+;;       - `pel--package-install'
+;;
 ;; Mode argument interpretation
 ;; -  `pel-action-for'
 ;;
@@ -979,6 +981,27 @@ The ARCHIVE argument may be a string or a symbol."
   (unless (bound-and-true-p package--initialized)
     (package-initialize t)))
 
+
+(defun pel--package-install (package)
+  "Install a package.  On failure refresh ELPA content and try again.
+
+Packages in the Elpa archive sites are regularly updated and old
+versions purged.  Requesting an old version of a package may
+occur when our local list is outdated.  When a failure occurs,
+refresh the local list and try again."
+  (condition-case-unless-debug err
+      (package-install package)
+    (error
+     (message "Error trying to install %s : %s.  \
+Refreshing package list and trying again." package err)
+     (package-refresh-contents)
+     (package-read-all-archive-contents)
+     (if (assoc package package-archive-contents)
+         (package-install package)
+       (display-warning 'pel--install-package
+                        (format "Failed locating package %s" package)
+                        :error)))))
+
 (defun pel--package-ensure-elpa (package)
   "Install specified Emacs Lisp PACKAGE.
 PACKAGE must be a symbol.
@@ -995,12 +1018,12 @@ Issue an error when the installation fails."
                                   pel--pinned-packages))
               (package-read-all-archive-contents))
             (if (assoc package package-archive-contents)
-                (package-install package)
+                (pel--package-install package)
               (package-refresh-contents)
               (when (assoc package (bound-and-true-p
                                     pel--pinned-packages))
                 (package-read-all-archive-contents))
-              (package-install package))
+              (pel--package-install package))
             t)
         (error
          (display-warning 'pel-ensure-package
