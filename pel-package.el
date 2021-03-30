@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-30 11:14:52, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-30 11:25:11, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -407,7 +407,14 @@ PKG may be a symbol or a string."
   (when (locate-library (pel-as-string pkg))
     (if (and (require 'package nil :no-error)
              (fboundp 'package--get-deps))
-        (package--get-deps (pel-as-symbol pkg))
+        (condition-case err
+            (package--get-deps (pel-as-symbol pkg))
+          (wrong-type-argument
+           (display-warning
+            'pel-elpa-pkg-dependencies
+            (format "Error extracting dependencies for %s : %s" pkg err)
+            :error)
+           nil))
       (error "Failed loading package"))))
 
 (defun pel-activated-packages (&optional without-dependants ignore-restriction)
