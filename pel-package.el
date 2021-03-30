@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-30 10:45:11, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-30 11:14:52, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -866,7 +866,17 @@ be done.  Print a description of the operation in the
        (if dry-run "Dry-run of PEL Cleanup"
          "PEL Cleanup")
        (lambda ()
-         (let ((n 0))
+         (let ((n 0)
+               verb-moved
+               verb-Moved
+               verb-Removed)
+           (if dry-run
+               (setq verb-moved "that would have been moved"
+                     verb-Moved "Would move"
+                     verb-Removed "Would remove")
+             (setq verb-moved "moved"
+                   verb-Moved "Moved"
+                   verb-Removed "Removed"))
            (insert (format "
 The PEL cleanup removes packages that are not needed, based on
 the value of the `pel-use-' customization user-options.
@@ -898,31 +908,35 @@ PEL CLEANUP %s:
            (when dry-run
              (insert "This is a dry-run ONLY.  NOTHING was done!
 
-The remainder of the message is written as if something was
-performed, but it was not done: it just shows what would have
-been done if you issue a `pel-cleanup' command without the key
-prefix and answer 'y' to the prompt.
+The remainder of the message shows what would have been done if
+you elected to perform a real cleanup by issuing the
+`pel-cleanup' command without the key prefix and confirming your
+intention by typing 'y' to its prompt.
 
 "))
            (when (or removed-el-files removed-elc-files)
-             (insert (format "Moved %d files,
-- from: %s
-- to  : %s
-%sThe files moved to utils-attic are:\n\n"
+             (insert (format "%s %d files,
+from: %s
+to  : %s
+%sThe files %s to utils-attic are:\n\n"
+                             verb-Moved
                              (length removed-el-files)
                              pel-utils-dirpath
                              pel-utils-attic-dirpath
                              (if removed-elc-files
-                                 (format "Removed %d orphaned .elc files.\n"
+                                 (format "%s %d orphaned .elc files.\n"
+                                         verb-Removed
                                          (length removed-elc-files))
-                               "")))
+                               "")
+                             verb-moved))
              (dolist (fn removed-el-files)
                (setq n (1+ n ))
                (insert (format "- %3d: %s\n" n fn))))
            (when moved-elpa-dirs
-             (insert (format "\n\nElpa packages moved:
-- from: %s
-- to  : %s:\n\n"
+             (insert (format "\n\nElpa packages %s,
+from: %s
+to  : %s :\n\n"
+                             verb-moved
                              pel-elpa-dirpath
                              pel-elpa-attic-dirpath))
              (setq n 0)
