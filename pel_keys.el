@@ -2489,13 +2489,15 @@ d-mode not added to ac-modes!"
 ;; - Use parinfer
 ;; --------------
 (when pel-use-parinfer
+  ;; parinfer was removed from MELPA, if you have an old copy in your elpa-attic
+  ;; set pel-use-parinfer to use-pel-elpa-attic-copy otherwise PEL will extract it
+  ;; from the emacsattic.
   (cl-eval-when 'load
     (or (and (eq pel-use-parinfer 'use-pel-elpa-attic-copy)
              (pel-install-from-elpa-attic "parinfer"))
         (pel-install-github-files "emacsattic/parinfer/master" '("parinfer.el"
                                                                  "parinferlib.el"
                                                                  "parinfer-ext.el"))))
-  (pel-ensure-package parinfer from: melpa)
   (pel-autoload-file parinfer for:
                      parinfer-mode
                      parinfer-toggle-mode

@@ -1312,8 +1312,9 @@ To activate this package select one of the options:
                    "https://github.com/shaunlebron/parinfer")
   :group 'pel-pkg-for-parens
   :type '(choice
-          (const :tag "Use Emacs Attic" t)
-          (const :tag "Use local Elpa attic copy") 'use-pel-elpa-attic-copy))
+          (const :tag "Don't use" nil)
+          (const :tag "Use emacsattic site files" t)
+          (const :tag "Use local Elpa attic copy" use-pel-elpa-attic-copy)))
 (put 'pel-use-parinfer :package-is '(if (eq pel-use-parinfer
                                             'use-pel-elpa-attic-copy)
                                         '(elpa . parinfer)
