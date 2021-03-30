@@ -1317,8 +1317,8 @@ To activate this package select one of the options:
           (const :tag "Use local Elpa attic copy" use-pel-elpa-attic-copy)))
 (put 'pel-use-parinfer :package-is '(if (eq pel-use-parinfer
                                             'use-pel-elpa-attic-copy)
-                                        '(elpa . parinfer)
-                                      '(utils . parinfer)))
+                                        '((elpa . parinfer))
+                                      '((utils . parinfer))))
 
 (defcustom pel-use-rainbow-delimiters nil
   "Control whether PEL uses the rainbow-delimiters package."
@@ -2873,7 +2873,7 @@ When set, identifies what mode is used to support Javascript."
 PEL additions using built-in js-mode." js-mode)
           (const :tag "Supported by the js2-mode external package." js2-mode)))
 (put 'pel-use-javascript :package-is '(when (eq pel-use-javascript 'js2-mode)
-                                        '(elpa . js2-mode)))
+                                        '((elpa . js2-mode))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Go language support
