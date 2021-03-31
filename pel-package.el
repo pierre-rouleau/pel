@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-31 14:41:11, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-31 15:10:17, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -406,15 +406,27 @@ PKG may be a symbol or a string."
   ;; Make sure that pkg is present, if it is not then its dependants
   ;; are not installed via that package.
   (when (locate-library (pel-as-string pkg))
+    (setq pkg (pel-as-symbol pkg))
     (if (and (require 'package nil :no-error)
              (fboundp 'package--get-deps))
         (condition-case err
-            (let ((pkg-arg (pel-as-symbol pkg)))
+            (let ((pkg-arg      pkg)
+                  (dependencies '()))
               ;; package--get-deps was modified on the October 6th 2019.
               ;; The argument for the new version is a list.
               (when (>= emacs-major-version 27)
                 (setq pkg-arg (list pkg-arg)))
-              (package--get-deps pkg-arg))
+              (setq dependencies (package--get-deps pkg-arg))
+              ;; package--get-deps of October 6th 2019 leaves the searched
+              ;; pkg in the list of dependencies it returns.  The old code did
+              ;; not do that. IMHO its a bug, violating the principle of least
+              ;; surprise, but it looks like the only place where it is
+              ;; invoked requires it to be included.
+              ;; Since I don't want the pkg to be listed in its dependencies,
+              ;; I remove it if it is there.
+              (when (memq pkg dependencies)
+                (delete pkg dependencies))
+              dependencies)
           (wrong-type-argument
            (unless (memq pkg pel-elpa-obsolete-packages)
              (display-warning
@@ -520,7 +532,7 @@ argument is specified.  In that case, prints a complete report inside a special
 package is in elpa or utils and whether it is a dependency or included because
 of a restriction lock."
   (interactive "P")
-  (let* ((all-activated   (pel-activated-packages)) ; all (with deps & locks)
+  (let* ((all-activated   (pel-activated-packages)) ; all (with dependencies & locks)
          (activated+lock  (pel-activated-packages :without-deps))
          (activated-bdeps (pel-activated-packages nil :without-locks))
          (elpa-all          (car all-activated))
