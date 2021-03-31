@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-31 14:36:21, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-31 14:41:11, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -909,8 +909,8 @@ installed that have been identified in the following user-options:
 ******************
 
 - If you want to install packages that are not managed by PEL,
-  please add their names to these lists, otherwise a `pel-cleanup'
-  will remove them.
+  please add their names to the lists mentioned above, otherwise
+  a `pel-cleanup' will remove them.
 - Also note that if a package is already present inside the attic
  directory the file in the utils or elpa directory is removed.
 
