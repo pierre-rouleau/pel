@@ -1,9 +1,9 @@
-# Makefile --- GNU Make to build the PEL distributable package
+# Makefile --- GNU Make to build the PEL distributable package  -*- mode: makefile-gmake; -*-
 #
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-03-28 19:01:25, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-03-31 15:29:05, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -24,10 +24,25 @@
 
 # -----------------------------------------------------------------------------
 # Description:
-#
+# -----------
+
 # To get a description on how to use this makefile, execute "make help".
 #
 # - Tested with macOS GNU Make version 3.81
+
+# ----------------------------------------------------------------------------
+# Technical Details - Make syntax notes
+# -------------------------------------
+#
+# Macros
+# - all macro names are in uppercase
+#   - Operator used:
+#   -  =   Recursive assignment, re-evaluated on each use: if has other
+#          expansions these are done on each expansion and may therefore
+#          change if the content of a variable used in the expression changes.
+#   -  :=  Single time assignment.  Fixed, never changes.
+#   -  ?=  Set variable only if it does not already have a value.
+#
 
 # -----------------------------------------------------------------------------
 # Portable makefile
@@ -35,7 +50,7 @@
 
 # -----------------------------------------------------------------------------
 # allow overriding the Emacs binary at the command line
-EMACS = emacs
+EMACS ?= emacs
 
 # Note: the above macro allows the following use of make with
 # other Emacs binaries:
