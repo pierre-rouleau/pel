@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2021-04-01 15:23:44, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-01 16:44:52, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -176,12 +176,21 @@ by `pel---goto-symbol' as one of the functions identified by the variable
 `pel--goto-symbol-completion-function', it must accept the _PROMPT and
 _CHOICES arguments for compatibility.  It, however, ignores them."
   (interactive)
-  (if (and (require 'imenu nil :no-error)
-           (boundp  'imenu-use-popup-menu)
-           `(fboundp 'imenu))
-      (let ((imenu-use-popup-menu t))
-        (call-interactively (function imenu)))
-    (user-error "Required imenu library is not loaded")))
+  (cond
+   ((and pel-use-popup-switcher
+         (fboundp 'psw-switch-function))
+    (psw-switch-function))
+   ((and pel-use-popup-imenu
+         (fboundp 'popup-imenu))
+    (popup-imenu))
+   ;; use imenu if nothing else is available
+   ((and (require 'imenu nil :no-error)
+         (boundp  'imenu-use-popup-menu)
+         `(fboundp 'imenu))
+    (let ((imenu-use-popup-menu t))
+      (call-interactively (function imenu))))
+   (t
+    (user-error "Required imenu library is not loaded"))))
 
 (defun pel---goto-symbol (completion-function &optional symbol-list)
   "Internal prompt for symbol from SYMBOL-LIST.

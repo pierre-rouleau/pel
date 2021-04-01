@@ -1187,7 +1187,9 @@ can't bind negative-argument to C-_ and M-_"
 ;; as an autoload, and it configures the imenu system.
 ;;
 ;; Used keys:
-;; B I i o r t
+;; B f F I i o r t
+;; <f9> <f10>
+;; M-b M-f M-F M-g M-P M-r
 
 ;; Initialize PEL special imenu handling
 (eval-after-load "imenu"
@@ -1218,6 +1220,50 @@ can't bind negative-argument to C-_ and M-_"
     (cl-eval-when 'load
       (pel-install-github-file "redguardtoo/imenu-extra/master"
                                "imenu-extra.el")))
+
+(when pel-use-flimenu
+  (pel-ensure-package flimenu from: melpa)
+  (define-key pel:menu "f" 'flimenu-mode)
+  (define-key pel:menu "F" 'flimenu-global-mode))
+
+(when pel-use-popup-imenu
+  (cl-eval-when 'load
+    (pel-install-github-file "pierre-rouleau/popup-imenu/master" "popup-imenu.el")
+    ;; install it's external mandatory dependencies
+    (pel-ensure-package dash from: melpa)
+    (pel-ensure-package popup from: melpa)
+    (pel-ensure-package flx-ido from melpa))
+  (pel-autoload-file popup-imenu for: popup-imenu)
+  (define-key pel:menu (kbd "<f9>") 'popup-imenu)
+  ;; It's possible to activate a key to close the menu, as in below
+  ;; (declare-function popup-isearch-cancel "popup-imenu")
+  ;; (define-key popup-isearch-keymap (kbd "<f9>") 'popup-isearch-cancel)
+  )
+
+(when pel-use-popup-switcher
+  ;; (pel-ensure-package popup-switcher from: melpa)
+  ;; popup-switcher 2.14 has several bugs I fixed in
+  ;; https://github.com/kostafey/popup-switcher/pull/20
+  ;; Until this is integrated, we'll use my fork.
+  (cl-eval-when 'load
+    (pel-install-github-file "pierre-rouleau/popup-switcher/master" "popup-switcher.el")
+    ;; install it's mandatory external dependencies
+    (pel-ensure-package dash from: melpa)
+    (pel-ensure-package popup from: melpa))
+  (pel-autoload-file popup-switcher for:
+                     psw-switch-buffer
+                     psw-switch-recentf
+                     psw-navigate-files
+                     psw-switch-function
+                     psw-switch-projectile-files
+                     psw-switch-projectile-projects)
+  (define-key pel:menu (kbd "M-b") 'psw-switch-buffer)
+  (define-key pel:menu (kbd "M-r") 'psw-switch-recentf)
+  (define-key pel:menu (kbd "M-f") 'psw-navigate-files)
+  (define-key pel:menu (kbd "M-g") 'psw-switch-function)
+  (when pel-use-projectile
+    (define-key pel:menu (kbd "M-F") 'psw-switch-projectile-files)
+    (define-key pel:menu (kbd "M-P") 'psw-switch-projectile-projects)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> <f2>`` : Customization
@@ -1634,7 +1680,7 @@ can't bind negative-argument to C-_ and M-_"
 (when pel-use-tup
   (cl-eval-when 'load
     (pel-install-github-file "pierre-rouleau/tup-mode/master" "tup-mode.el"))
-  (autoload 'tup-mode "tup-mode")
+  (pel-autoload-file tup-mode for: tup-mode)
   (pel-set-auto-mode tup-mode for:
                      "\\.tup\\'"
                      "Tupfile"

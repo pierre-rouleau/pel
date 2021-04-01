@@ -1386,6 +1386,58 @@ To activate this package select one of the options:
   :safe #'booleanp)
 (put 'pel-use-imenu-extra :package-is :in-utils)
 
+(defcustom pel-use-flimenu nil
+  "Control whether PEL provides access to the flimenu package.
+It provides a local and a global minor mode that flattens the
+iMenu lists.  Useful even in other completion prompts by
+eliminating the hierarchical access and provide a flat list."
+  :link '(url-link :tag "flimenu @ GitHub"
+                   "https://github.com/IvanMalison/flimenu")
+  :group 'pel-pkg-for-imenu
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-popup-imenu nil
+  "Control whether PEL provides access to the popup-imenu package.
+
+When available and when `pel-use-popup-switcher' is not active,
+PEL uses it for the pel-goto-symbol when the popup-imenu
+mode is selected."
+  :link '(url-link :tag "popup-imenu @ GitHub"
+                   "https://github.com/ancane/popup-imenu")
+  :link '(url-link :tag "popup-imenu fork with customization support, used by PEL"
+                   "https://github.com/pierre-rouleau/popup-imenu")
+  :group 'pel-pkg-for-imenu
+  :type 'boolean
+  :safe #'booleanp)
+(put 'pel-use-popup-imenu :package-is :in-utils)
+(put 'pel-use-popup-imenu :requires-package '(quote ((elpa . dash)
+                                                     (elpa . popup)
+                                                     (elpa . flx-ido))))
+
+(defcustom pel-use-popup-switcher nil
+  "Control whether PEL provides access to the popup-switcher package.
+
+This package provides popup menu for navigating across:
+  - functions/methods
+  - buffers
+  - files
+  - recent files
+  - projectile files
+  - projectile projects
+
+When available PEL uses it for the pel-goto-symbol when the popup-imenu
+mode is selected.
+Note: popup-switcher 2.14 has several bugs I fixed in my fork, which PEL
+      uses until they're integrated."
+  :link '(url-link :tag "popup-switcher @ GitHub"
+                   "https://github.com/kostafey/popup-switcher")
+  :link '(url-link :tag "popup-switcher fork wit bug fixed"
+                   "https://github.com/pierre-rouleau/popup-switcher")
+  :group 'pel-pkg-for-imenu
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; ---------------------------------------------------------------------------
 ;; Insertion of Text & Templates
 ;; -----------------------------
