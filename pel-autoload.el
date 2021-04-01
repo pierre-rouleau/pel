@@ -376,7 +376,8 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-make" for:
     pel-make-next-macro
-    pel-make-previous-macro)
+    pel-make-previous-macro
+    makefile-nmake-mode)
 
   (pel-autoload "pel-mark" for:
     pel-mark-ring-stats

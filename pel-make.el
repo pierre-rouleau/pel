@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 15 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-01-15 16:00:26, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-01 09:04:39, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -41,6 +41,7 @@
 ;;
 ;;
 (require 'pel--base)                    ; use: pel-count-string
+(require 'make-mode)                    ; for nmake support @ end of file
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -127,6 +128,48 @@ The command support shift-marking."
                        count
                        (pel-count-string n "macro definition statement")
                        err)))))))
+
+;; ---------------------------------------------------------------------------
+;; NMake format support
+;; --------------------
+;; Credit:
+;;  Original code taken from:     https://www.emacswiki.org/emacs/MakefileMode
+;;  Author:                       https://www.emacswiki.org/emacs/RolfUnger
+;; Updates as per Visual Studio 2019 specs for Nmake
+
+;; TODO: the nmake specs state that the ! must be at the beginning of the line
+;; but it can be followed by spaces and tab characters.  Unfortunately the
+;; makefile-mode code does not support regexp.
+;; Change the code to accept regexp and support the full syntax.
+(defconst makefile-nmake-statements
+  `("!cmdswitches"   "!CMDSWITCHES"
+    "!else"          "!ELSE"
+    "!elseif"        "!ELSEIF"
+    "!elseifdef"     "!ELSEIFDEF"
+    "!endif"         "!ENDIF"
+    "!error"         "!ERROR"
+    "!if"            "!IF"
+    "!ifdef"         "!IFDEF"
+    "!ifndef"        "!IFNDEF"
+    "!include"       "!INCLUDE"
+    "!message"       "!MESSAGE"
+    "!undef"         "!UNDEF"
+    ,@makefile-statements)
+  "List of keywords understood by nmake.")
+
+(defconst makefile-nmake-font-lock-keywords
+  (makefile-make-font-lock-keywords
+   makefile-var-use-regex
+   makefile-nmake-statements
+   t))
+
+;;-pel-autoload
+(define-derived-mode makefile-nmake-mode makefile-mode "Nmake"
+  "An adapted `makefile-mode' that knows about nmake."
+  (setq font-lock-defaults
+        `(makefile-nmake-font-lock-keywords ,@(cdr font-lock-defaults))))
+
+(define-key makefile-mode-map "\C-c\C-m\C-n" 'makefile-nmake-mode)
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-make)

@@ -1615,6 +1615,7 @@ can't bind negative-argument to C-_ and M-_"
   (define-key pel:for-make (kbd "<down>")    'makefile-next-dependency)
   (define-key pel:for-make (kbd "<M-up>")   #'pel-make-previous-macro)
   (define-key pel:for-make (kbd "<M-down>") #'pel-make-next-macro)
+  (define-key pel:for-make "."               'completion-at-point)
 
   (pel-local-set-f12-M-f12 'pel:for-make))
 
@@ -1623,6 +1624,9 @@ can't bind negative-argument to C-_ and M-_"
  (function pel--setenv-for-make)
  'makefile-mode 'makefile-mode-hook)
 
+;; Support for nmake - additions to what is supported by make-mode
+(declare-function makefile-nmake-mode "pel-make")
+(add-to-list 'auto-mode-alist '("\\.mak\\'" . makefile-nmake-mode))
 
 ;; - Tup Built Tool Support
 ;; ------------------------
