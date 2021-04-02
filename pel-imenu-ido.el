@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2021-04-01 16:44:52, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-02 18:20:14, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -161,7 +161,8 @@ by the function `pel---goto-symbol'.")
                    (cdr (assoc selected-mode
                                '((popup-imenu "iMenu pop-up menu")))))))))
 
-;; --
+;; ---------------------------------------------------------------------------
+
 
 (defvar pel--goto-symbol-completion-function nil
   "Internal selection.  Set by `pel-goto-symbol'.
@@ -289,7 +290,32 @@ nil, then ido is still used."
    (t (error "Invalid pel--goto-symbol-completion-mode: %S"
              pel--goto-symbol-completion-mode))))
 
-;; --
+;; ---------------------------------------------------------------------------
+;; iMenu Anywhere
+;; --------------
+;; Support for iMenu Anywhere with several input completion mechanisms:
+;;   - Ido
+;;   - Ivy
+;;   - Helm
+;;
+;; The `pel-use-imenu-anywhere' user-option when non-nil, identifies the
+;; input completion method used when Emacs starts.  Later the user can modify
+;; what is used in the current editing session by executing the function
+;; `pel-imenu-anywhere-select-completion'.
+;;
+;; The selection is stored inside the variable `pel--imenu-anywhere-method'
+;; and then used by the `pel-imenu-anywhere'.
+;;
+;; The `pel-imenu-anywhere' function requires the imenu-anywhere external
+;; library lazily and verifies if it is available.
+;;
+;; The call tree is simple:
+;;
+;; * `pel-imenu-anywhere-select-completion'
+;;   - `pel--imenu-anywhere-completion-mode-selection'
+;; * `pel-imenu-anywhere'
+;;
+
 (defvar pel--imenu-anywhere-method pel-use-imenu-anywhere
   "Identifies whether imenu-anywhere is used and which completion to use.")
 
@@ -339,7 +365,7 @@ command `pel-imenu-anywhere--select-completion'."
        (t (error "Invalid pel--imenu-anywhere-method value: %S"
                  pel--imenu-anywhere-method)))
     (user-error "The package imenu-anywhere is not available. \
-Please set pel-use-imenu-anywhere")))
+Please turn pel-use-imenu-anywhere on")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-imenu-ido)
