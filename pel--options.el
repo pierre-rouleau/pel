@@ -510,10 +510,81 @@ When set, PEL activates the following key sequences:
 (defgroup pel-pkg-for-completion nil
   "List of external packages that PEL can use to manage completion.
 
-PEL allows selecting completion mechanism dynamically.  You can use Ido, Ivy,
-Ivy-With-Counsel, Helm, or none of them at any time.  To use any of them you
-must first activate these engines in this configuration buffer."
+PEL allows selecting input completion mechanism dynamically.
+Aside from Emacs tab-based completion default, you can also use
+Ido, Ivy, or Helm.
+
+Ido is very flexible and powerful.  It is built-in Emacs but can
+be extended with several external packages which can select
+various input geometries, activate 'flx' fuzzy matching, etc...
+
+If you prefer using a simpler drop-down menu with search
+capabilities built-in you may prefer Ivy.
+
+And if you want a input completion mechanism that has tons of
+functionality and are willing to learn its power, you can use
+Helm.
+
+Note that with PEL you can select the input completion used by
+default and change it dynamically during an editing session, as
+long as it is activated by its user-option.
+
+- Activate Ido with : `pel-use-ido'.
+- Activate ivy with : `pel-use-ivy'.
+- Activate Helm with: `pel-use-helm'.
+
+To provide smart input completion of commands related to current
+major mode, use Smex and activate it with `pel-use-smex'.
+
+Ido extensions include the following:
+
+- Ido prompt geometries:
+
+  - Ido Grid Mode: activate with `pel-use-ido-grid-mode'
+  - Ido Vertical mode: activate with `pel-use-ido-vertical-mode'
+  - Select initial Ido geometry with: `pel-initial-ido-geometry'
+
+- Ido 'flx' fuzzy matching: activate with `pel-use-flx'
+- Ido completion is multiple prompt commands: activate it
+  with `pel-use-ido-ubiquitous'.
+
+There is also a set of extension packages for Ivy. PEL supports:
+
+- Counsel. If you want to be able to use Ivy completion mode in most
+  prompting commands, then activate Counsel with `pel-use-counsel'.
+- Counsel OSX App on macOS to launch macOS application via en Emacs prompt
+  with Ivy completion: activate with `pel-use-counsel-osx-app'.
+
+Select the input completion mode used at startup with:
+`pel-initial-completion-mode'.
+
+PEL also provides 2 commands to navigate into the current buffer and all
+opened buffers using the symbols detected by the Emacs imenu symbol parsing of
+the buffer major modes.
+
+- The `pel-goto-symbol' moves point to a symbol in current buffer. PEL
+  provides  several user interface mechanisms for it, various input
+  completions or popup menu systems. Select its user interface with
+ `pel-initial-goto-symbol-UI'.
+- The `pel-goto-any-buffer', which does the same but for all currently opened
+  buffer.  It uses imenu-anywhere which you must activate with
+  `pel-use-imenu-anywhere'.  This user option also selects the user interface
+  used when Emacs starts.
+
+PEL provides commands you can use to dynamically change the user interface
+used by these 2 commands during an editing session without affecting the
+initial user interface:
+
+- `pel-select-goto-symbol-UI'
+- `pel-select-goto-any-buffer-UI'.
+
+Since imenu is used as user interface candidates for these
+commands, if you select imenu specific modes you must also
+configure what imenu extension is activated via the
+`pel-pkg-for-imenu' customization group.  Use the link to quickly
+move to that buffer."
   :group 'pel-package-use
+  :link '(custom-group-link "pel-pkg-for-imenu")
   :link `(url-link :tag "Input Completion PDF"
                    ,(pel-pdf-file-url "completion-input")))
 
@@ -549,8 +620,8 @@ To use this you must also have `pel-use-ido' set to t."
 (defcustom pel-use-ido-grid-mode nil
   "Control whether PEL uses the ido-grid-mode package.
 
-This modifies the presentation geometry of the Ido completion prompt: it shows
-candidates in multiple columns.
+This modifies the presentation geometry of the Ido completion
+prompt: it shows candidates in multiple columns.
 
 To use this you must also have `pel-use-ido' set to t.
 The initial Ido geometry is set by `pel-initial-ido-geometry'."
@@ -563,8 +634,8 @@ The initial Ido geometry is set by `pel-initial-ido-geometry'."
 (defcustom pel-use-ido-vertical-mode nil
   "Control whether PEL uses the ido-vertical-mode package.
 
-This modifies the presentation geometry of the Ido completion prompt: it shows
-candidates in multiple lines, like ivy does.
+This modifies the presentation geometry of the Ido completion
+prompt: it shows candidates in multiple lines, like ivy does.
 
 To use this you must also have `pel-use-ido' set to t.
 The initial Ido geometry is set by `pel-initial-ido-geometry'."
@@ -624,10 +695,8 @@ To use this you must also have `pel-use-ido' or `pel-use-ivy' set to t."
 Ivy is another popular interactive completion mechanism for Emacs using menu
 lists and designed for speed of selection.
 The initial completion mode is set by `pel-initial-completion-mode'."
-  :link '(url-link :tag "Ivy @ GitHub"
-                   "")
-  :link '(url-link :tag "Ivy User Manual"
-                   "https://oremacs.com/swiper/")
+  :link '(url-link :tag "Ivy @ GitHub" "https://github.com/abo-abo/swiper")
+  :link '(url-link :tag "Ivy User Manual" "https://oremacs.com/swiper/")
   :link '(custom-group-link "ivy")
   :group 'pel-pkg-for-completion
   :type 'boolean
@@ -1369,11 +1438,12 @@ To activate this package select one of the options:
 ;; ---------------------------------------------------------------------------
 ;; iMenu extension support
 ;; -----------------------
-
+;;
 (defgroup pel-pkg-for-imenu nil
   "List of external packages and variables that PEL use to extend imenu."
   :group 'pel-package-use
   :group 'imenu
+  :link '(custom-group-link "pel-pkg-for-completion")
   :link `(url-link :tag "Menu/iMenu PDF"
                    ,(pel-pdf-file-url "menus")))
 
@@ -1456,9 +1526,11 @@ Note: popup-switcher 2.14 has several bugs I fixed in my fork, which PEL
   :link '(url-link :tag "popup-switcher fork wit bug fixed"
                    "https://github.com/pierre-rouleau/popup-switcher")
   :group 'pel-pkg-for-imenu
+  :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
 (put 'pel-use-popup-switcher :package-is :in-utils)
+
 ;; ---------------------------------------------------------------------------
 ;; Insertion of Text & Templates
 ;; -----------------------------
