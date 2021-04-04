@@ -1228,18 +1228,14 @@ can't bind negative-argument to C-_ and M-_"
   (define-key pel:menu "F" 'flimenu-global-mode))
 
 (when pel-use-popup-imenu
+  ;; No key binding - its used by pel-goto-symbol.
   (cl-eval-when 'load
     (pel-install-github-file "pierre-rouleau/popup-imenu/master" "popup-imenu.el")
     ;; install it's external mandatory dependencies
     (pel-ensure-package dash from: melpa)
     (pel-ensure-package popup from: melpa)
     (pel-ensure-package flx-ido from melpa))
-  (pel-autoload-file popup-imenu for: popup-imenu)
-  (define-key pel:menu (kbd "<f9>") 'popup-imenu)
-  ;; It's possible to activate a key to close the menu, as in below
-  ;; (declare-function popup-isearch-cancel "popup-imenu")
-  ;; (define-key popup-isearch-keymap (kbd "<f9>") 'popup-isearch-cancel)
-  )
+  (pel-autoload-file popup-imenu for: popup-imenu))
 
 (when pel-use-popup-switcher
   ;; (pel-ensure-package popup-switcher from: melpa)
