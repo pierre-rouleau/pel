@@ -703,7 +703,13 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     all search settings in the echo area.  Use any prefix argument to display
     extra information after the first time it is used.
   - Improved: *pel-search-word-from-top* :
-    - New: mapped to ``<f11> s .`` key sequence and to the ``.;`` key chord.
+    - New: mapped *pel-search-word-from-top* to ``<f11> s .`` key sequence and
+           to the ``.;`` key chord.
+    - New: *pel-search-word-from-top* can now search for the title format of a
+      user-option when searching into a buffer in Custom-mode.  Use the
+      numeric prefix in the range 30 to 38 for that. For example if you issue
+      the command when point is over "pel-use-ido", the command searches for
+      the title "Pel Use Ido: ".
     - New: the *pel-search-from-top-in-other* user option controls how
       *pel-search-word-from-top* operates when there is only 2 non-dedicated windows.
       - if set to *t* the function the search in the other window without

@@ -2,7 +2,7 @@
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-18 15:43:48, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-04 12:32:40, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -61,6 +61,7 @@
 ;;                       ; isearch is part of standard Emacs distribution and
 ;;                       ; is loaded even by emacs -Q (in emacs 26).
 (require 'pel--base)     ; use: pel-symbol-on-off-string
+;;                       ;      pel-capitalize-first-letter
 (require 'pel--options)  ; use: pel-use-ansu, pel-use-swiper,
 ;;                       ;      pel-initial-search-tool
 (require 'pel--macros)
@@ -158,6 +159,18 @@ Depends on 2 Emacs (base system) variables:
 ;; Search Utilities
 ;; ----------------
 
+(defun pel-user-option-title-string (user-option-string)
+  "Convert a user-option name string into its title.
+
+For example, convert \"pel-use-ido\" into
+\"Pel Use Ido: \""
+  (concat (string-join
+           (mapcar
+            (function pel-capitalize-first-letter)
+            (split-string user-option-string "-"))
+           " ")
+          ": "))
+
 ;;-pel-autoload
 (defun pel-search-word-from-top (&optional n)
   "Search text in region or word at point from top/bottom of specified buffer.
@@ -191,6 +204,13 @@ If 3 or more non-dedicated windows:
                                    to grab the word to search for this search,
                                    and use (N - 20) to identify the window
                                    to perform the search.
+- For N in [30..38] range        : Activate superword mode for text extraction
+                                   in current buffer, then if the target
+                                   buffer is using Custom-mode,
+                                   convert the searched string into a
+                                   customization user-option title and
+                                   and use (N - 30) to identify the window
+                                   to perform the search.
 
 Explicitly selecting the minibuffer window, or a non-existing window is not
 allowed, and search is done in current window.
@@ -217,10 +237,12 @@ failure."
            (n-value           (prefix-numeric-value n))
            (do-forward-search (>= n-value 0))
            (n-abs             (abs n-value))
+           (search-user-option-title (>= 38 n-abs 30))
            (mode-to-toggle    (cond ((>= 28 n-abs 20) 'superword-mode)
                                     ((>= 18 n-abs 10) 'subword-mode)
                                     (t nil)))
-           (n-abs             (cond ((>= 28 n-abs 20) (- n-abs 20))
+           (n-abs             (cond ((>= 38 n-abs 30) (- n-abs 30))
+                                    ((>= 28 n-abs 20) (- n-abs 20))
                                     ((>= 18 n-abs 10) (- n-abs 10))
                                     (t n-abs)))
            (direction         (if (and pel-search-from-top-in-other
@@ -233,17 +255,27 @@ failure."
       ;; while grabbing it.
       (ignore-errors
         (unless searched-text
+          (when (and search-user-option-title
+                     (not superword-mode))
+            (setq mode-to-toggle 'superword-mode))
           (when mode-to-toggle
             (pel-toggle-mode mode-to-toggle))
           (setq searched-text (pel-word-at-point))
           (when mode-to-toggle
             (pel-toggle-mode mode-to-toggle))))
-      (if  searched-text
+      (if searched-text
           (progn
             ;; Move to the destination window
             (when (eq direction 'new)
               (setq direction 'current))
             (pel-window-select direction)
+            ;; if requested to search for a user-option title and destination
+            ;; window is a buffer operating in Custom-mode, transform the
+            ;; searched string into a user-option title
+            (when (and search-user-option-title
+                       (eq major-mode 'Custom-mode))
+              (setq searched-text
+                    (pel-user-option-title-string searched-text)))
             ;; Search from the specified buffer end point to move point
             ;; to target
             (condition-case err
