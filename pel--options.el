@@ -733,16 +733,20 @@ The available options are:
           (const :tag "Use Ivy & Counsel. Needs both `pel-use-ivy' and \
 `pel-use-counsel'." ivy/counsel)))
 
-(defcustom pel-initial-goto-symbol-completion-mode 'ido
-  "Select the completion mechanism used for prompting for local symbol.
+(defcustom pel-initial-goto-symbol-UI 'emacs-default
+  "Select the User Interface used for prompting for local symbol.
 
 This is used by the command `pel-goto-symbol'."
   :group 'pel-pkg-for-completion
   :type '(choice
-          (const :tag "Use Ido. Requires `pel-use-ido'." ido)
-          (const :tag "Use Ido flex matching. Requires `pel-use-ido'." ido-flex)
-          (const :tag "Use Ivy. Requires `pel-use-ivy'." ivy)
-          (const :tag "Use a pop-up imenu." popup-imenu)))
+          (const :tag "Use Emacs default: imenu" emacs-default)
+          (const :tag "Use Ido.  Requires `pel-use-ido' and `pel-use-ido-ubiquitous'." ido)
+          (const :tag "Use Ivy.  Requires `pel-use-ivy' and `pel-use-counsel'." ivy)
+          (const :tag "Use helm. Requires `pel-use-helm'." helm)
+          (const :tag "Use popup-imenu. Requires `pel-use-popup-imenu'."
+                 popup-imenu)
+          (const :tag "Use popup-switcher. Requires `pel-use-popup-switcher'."
+                 popup-switcher)))
 
 (defcustom pel-use-imenu-anywhere nil
   "Whether PEL uses the imenu-anywhere external package.
@@ -760,9 +764,9 @@ Select the completion method you want as default when activating this package."
   :group 'pel-pkg-for-imenu
   :type '(choice
           (const :tag "Not used." nil)
-          (const :tag "Use Emacs default completion."    emacs-default)
-          (const :tag "Use Ido. Requires `pel-use-ido'." ido)
-          (const :tag "Use Ivy. Requires `pel-use-ivy'." ivy)
+          (const :tag "Use Emacs default completion."      emacs-default)
+          (const :tag "Use Ido.  Requires `pel-use-ido'."  ido)
+          (const :tag "Use Ivy.  Requires `pel-use-ivy'."  ivy)
           (const :tag "Use Helm. Requires `pel-use-helm'." helm)))
 
 ;; ---------------------------------------------------------------------------
@@ -966,6 +970,23 @@ ability to detect files opened on startup."
   :type 'boolean
   :safe #'booleanp)
 (put 'pel-use-recentf :package-is :builtin-emacs)
+
+
+(defcustom pel-initial-recentf-function 'ido-recentf-open
+  "Interactive function used to display recently opened files.
+Note that:
+
+- `pel-use-counsel' must be turned on to be able to use
+  counsel-recentf,
+- `pel-use-popup-switcher' must be turned on to be able to use
+  psw-switch-recentf."
+  :group 'pel-pkg-for-filemng
+  :group 'pel-pkg-for-buffer
+  :type '(choice
+          (const :tag "ido-recentf-open   - Using ido"     ido-recentf-open)
+          (const :tag "counsel-recentf    - Using counsel" counsel-recentf)
+          (const :tag "psw-switch-recentf - Using popup-switcher"
+                 psw-switch-recentf)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Directory Tree Browsing and Management
@@ -4828,8 +4849,7 @@ file is located in the \"~/.emacs.d\" directory."
   "List of major modes that automatically activate `flyspell-mode'.
 To activate the changes for this you must 'Apply and Save' and restart Emacs."
   :group 'pel-pkg-for-spelling
-  :type
-  '(repeat symbol))
+  :type '(repeat symbol))
 
 (defcustom pel-modes-activating-flyspell-prog-mode
   '(c-mode
@@ -4848,8 +4868,7 @@ To activate the changes for this you must 'Apply and Save' and restart Emacs."
   "List of major modes that automatically activate `flyspell-prog-mode'.
 To activate the changes for this you must 'Apply and Save' and restart Emacs."
   :group 'pel-pkg-for-spelling
-  :type
-  '(repeat symbol))
+  :type '(repeat symbol))
 
 ;; ---------------------------------------------------------------------------
 ;; Software Build Support

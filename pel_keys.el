@@ -291,18 +291,20 @@ Done in this function to allow advising libraries that remap these keys."
 ;; ---------------------------------------------------------------------------
 ;; Move to imenu symbol using Ido prompting
 ;; ----------------------------------------
+
+(define-pel-global-prefix pel:cfg-goto (kbd "M-g <f4>"))
+
+(global-set-key (kbd "M-g ?")   'pel-show-goto-symbol-settings)
+
 (global-set-key (kbd "M-g h")   'pel-goto-symbol)
 (global-set-key (kbd "M-g M-h") 'pel-goto-symbol)
-(global-set-key (kbd "M-g C-h") 'pel-goto-symbol-select-completion)
+(define-key pel:cfg-goto "h" 'pel-select-goto-symbol-UI)
 
 (when pel-use-imenu-anywhere
   (pel-ensure-package imenu-anywhere from: melpa)
-  (pel-autoload-file imenu-anywhere for:
-                     pel-imenu-anywhere-select-completion
-                     pel-imenu-anywhere)
-  (global-set-key (kbd "M-g y")   'pel-imenu-anywhere)
-  (global-set-key (kbd "M-g M-y") 'pel-imenu-anywhere)
-  (global-set-key (kbd "M-g C-y") 'pel-imenu-anywhere-select-completion))
+  (global-set-key (kbd "M-g y")    'pel-goto-any-buffer)
+  (global-set-key (kbd "M-g M-y")  'pel-goto-any-buffer)
+  (define-key pel:cfg-goto "y" 'pel-select-goto-any-buffer-UI))
 
 ;; ---------------------------------------------------------------------------
 ;; Dired Extensions
@@ -1198,7 +1200,6 @@ can't bind negative-argument to C-_ and M-_"
 (define-pel-global-prefix pel:menu (kbd "<f11> <f10>"))
 (define-key pel:menu "B"     #'menu-bar-mode)
 (define-key pel:menu "I"     #'imenu-add-menubar-index)
-(define-key pel:menu (kbd "<f10>") 'pel-popup-imenu)
 (define-key pel:menu "i"     #'imenu)
 (define-key pel:menu "o"      'pel-toggle-imenu-index-follows-order)
 (define-key pel:menu "r"      'pel-imenu-rescan)
@@ -1250,20 +1251,14 @@ can't bind negative-argument to C-_ and M-_"
     ;; install it's mandatory external dependencies
     (pel-ensure-package dash from: melpa)
     (pel-ensure-package popup from: melpa))
+  ;; autoload when installed in utils
   (pel-autoload-file popup-switcher for:
                      psw-switch-buffer
                      psw-switch-recentf
                      psw-navigate-files
                      psw-switch-function
                      psw-switch-projectile-files
-                     psw-switch-projectile-projects)
-  (define-key pel:menu (kbd "M-b") 'psw-switch-buffer)
-  (define-key pel:menu (kbd "M-r") 'psw-switch-recentf)
-  (define-key pel:menu (kbd "M-f") 'psw-navigate-files)
-  (define-key pel:menu (kbd "M-g") 'psw-switch-function)
-  (when pel-use-projectile
-    (define-key pel:menu (kbd "M-F") 'psw-switch-projectile-files)
-    (define-key pel:menu (kbd "M-P") 'psw-switch-projectile-projects)))
+                     psw-switch-projectile-projects))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> <f2>`` : Customization
@@ -1503,7 +1498,10 @@ can't bind negative-argument to C-_ and M-_"
       'projectile-project-buffers-other-buffer)
     (define-key projectile-command-map (kbd "<f1>") 'pel-help-pdf)
     (define-key projectile-command-map (kbd "<f2>") 'pel-customize-pel)
-    (define-key projectile-command-map (kbd "<f3>") 'pel-customize-library))
+    (define-key projectile-command-map (kbd "<f3>") 'pel-customize-library)
+    (when pel-use-popup-switcher
+      (define-key projectile-command-map (kbd "M-f") 'psw-switch-projectile-files)
+      (define-key projectile-command-map (kbd "M-p") 'psw-switch-projectile-projects)))
   ;; projectile uses both ripgrep and ag.  These are controlled
   ;; independently but ensure that the commands used by projectile are
   ;; identified as the autoloading commands.  See both of these in the Grep
@@ -3917,6 +3915,12 @@ the ones defined from the buffer now."
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> b`` : buffer commands
+;; Used keys:
+;;   -
+;;   C-c
+;;   M-a M-p
+;;   I R U X
+;;   b c f h i k l n p r v x
 
 (define-pel-global-prefix pel:buffer (kbd "<f11> b"))
 (define-key pel:buffer "-"  #'ruler-mode)
@@ -3936,6 +3940,8 @@ the ones defined from the buffer now."
 (define-key pel:buffer "i"  #'insert-buffer)
 (define-key pel:buffer "f"  #'append-to-file)
 (define-key pel:buffer (kbd "M-x") 'hexl-mode)
+(when pel-use-popup-switcher
+  (define-key pel:buffer "b" 'psw-switch-buffer))
 ;; Reserved            "h"  highlight prefix
 ;; Reserved            "I"  indirect buffer prefix
 ;; Reserved            "x"   (see declarations below with pel-use-nhexl-mode)
@@ -4143,11 +4149,12 @@ the ones defined from the buffer now."
 (declare-function find-grep "grep")
 (define-pel-global-prefix pel:file (kbd "<f11> f"))
 ;; Used keys in <f11> f:
-;; . /
-;; F I L O W R
-;; a d f g h i j l n o r t v w
-;; C-^  C-cj
-;; M-/  M-e M-l M-t M-u M-x
+;; . / ?
+;; F I L O W
+;; a d f g h i j l n o p r t u v w
+;; C-f
+;; M-. M-/ M-l M-t M-u M-x
+(define-key pel: (kbd "C-f") 'find-file)
 (define-key pel:file "I" #'insert-file-literally)
 (define-key pel:file "O" #'find-file-read-only-other-window)
 (define-key pel:file "L" #'locate)
@@ -4166,30 +4173,29 @@ the ones defined from the buffer now."
 (define-key pel:file (kbd "M-x") 'hexl-find-file)
 (define-key pel:file (kbd "M-l") 'find-file-literally)
 (define-key pel:file "?" #'pel-show-buffer-file-encoding)
+(when pel-use-popup-switcher
+  (define-key pel:file "f" 'psw-navigate-files))
 
+;; - Open recent file
+;; ------------------
 (when pel-use-recentf
-  ;; recentf is built-in Emacs, Don't defer to allow remembering
-  ;; files opened at start.  This will impact init time by a small
-  ;; amount as it also load tree-widget, but deferring it would
-  ;; impact the feature.
-  (pel-autoload-file recentf for:
-                     recentf-mode)
+  (define-pel-global-prefix pel:recent-file (kbd "<f11> f M-r"))
+  ;; recentf is built-in Emacs, but its not loaded by default.
+  ;; It must be available soon to be able to work properly.
+  ;; So don't defer it.
+  ;; Its loading will impact init time by a small amount to load the
+  ;; tree-widget but it's the price to pay to use the feature.
+  (pel-autoload-file recentf for: recentf-mode)
+  (pel-autoload-file pel-file-recent for:
+                     pel-find-recent-file
+                     pel-show-recentf-function
+                     pel-select-recentf-function)
   (pel-eval-after-load recentf
     (recentf-mode 1)
-    (define-key pel:file (kbd "M-r") 'recentf-edit-list)
-    (when pel-use-ido
-      (defvar recentf-list)
-      ;; Credits for ido-recentf-open: Mickey Petersen
-      ;; https://www.masteringemacs.org/article/find-files-faster-recent-files-package
-      (defun ido-recentf-open ()
-        "Use `ido-completing-read' to \\[find-file] a recent file"
-        (interactive)
-        (if (find-file (ido-completing-read "Find recent file: " recentf-list))
-            (message "Opening file...")
-          (message "Aborting")))
-      (define-key pel:file "f" 'ido-recentf-open))
-    (when pel-use-counsel
-      (define-key pel:file "R" 'counsel-recentf)))
+    (define-key pel:recent-file (kbd "M-e") 'recentf-edit-list)
+    (define-key pel:recent-file (kbd "M-r") 'pel-find-recent-file)
+    (define-key pel:recent-file (kbd "M-?") 'pel-show-recentf-function)
+    (define-key pel:recent-file (kbd "M-R") 'pel-select-recentf-function))
   (pel-require-at-load recentf))
 
 ;; - Open file at point
@@ -4203,12 +4209,13 @@ the ones defined from the buffer now."
 (global-set-key "\C-cj"    'webjump)
 (define-key pel:file "j"   'webjump)
 
+;; - Revert
+;; -------
 (define-pel-global-prefix pel:file-revert (kbd "<f11> f r"))
 (define-key pel:file-revert "a" #'auto-revert-mode)
 (define-key pel:file-revert " "  'pel-auto-revert-set-timer) ; cancel/restart the timer
 (define-key pel:file-revert "f" #'revert-buffer)
 (define-key pel:file-revert "t" #'auto-revert-tail-mode)
-;;
 
 ;; Navigating URL: goto-address-mode
 ;; ---------------------------------

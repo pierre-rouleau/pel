@@ -288,11 +288,11 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-imenu-dbg-print-vars)
 
   (pel-autoload "pel-imenu-ido" for:
-    pel-popup-imenu
-    pel-goto-symbol-select-completion
+    pel-select-goto-symbol-UI
     pel-goto-symbol
-    pel-imenu-anywhere-select-completion
-    pel-imenu-anywhere)
+    pel-select-goto-any-buffer-UI
+    pel-goto-any-buffer
+    pel-show-goto-symbol-settings)
 
   (pel-autoload "pel-key-chord" for:
     pel-key-chord-describe)

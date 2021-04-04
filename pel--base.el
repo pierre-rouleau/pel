@@ -71,6 +71,9 @@
 ;; - `pel-end-text-with-period'
 ;; - `pel-hastext'
 ;; - `pel-when-text-in'
+;; - `pel-string-or-nil'
+;; - `pel-string-for'
+;; - `pel-string-when'
 ;; - `pel-string-spread'
 ;; - `pel-list-str'
 ;; - `pel-title-case-to-dash-separated'
@@ -488,8 +491,13 @@ is automatically activated; this is included in the description."
 ;; - `pel-end-text-with-period'
 ;; - `pel-hastext'
 ;; - `pel-when-text-in'
+;; - `pel-string-or-nil'
+;; - `pel-string-for'
+;; - `pel-string-when'
 ;; - `pel-string-spread'
 ;; - `pel-list-str'
+;; - `pel-title-case-to-dash-separated'
+;; - `pel-grp-regex'
 
 (defun pel-capitalize-first-letter (text)
   "Return TEXT with first character up-cased, all other unchanged.
@@ -522,6 +530,14 @@ Otherwise return nil."
   (if (string= string "")
       nil
     string))
+
+(defun pel-string-for (text)
+  "Return TEXT if it's a string. If nil return empty string"
+  (if text text ""))
+
+(defun pel-string-when (condition text)
+  "Return TEXT when CONDITION is non-nil, empty string otherwise."
+  (if condition text ""))
 
 (defun pel-string-spread (string &optional separator)
   "Return STRING with characters separated by SEPARATOR.

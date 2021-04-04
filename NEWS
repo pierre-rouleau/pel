@@ -380,26 +380,25 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     a command that uses imenu to extract all symbols from the buffer to
     provide an efficient way to jump to the definition of any symbol in the
     current buffer.
-    - The command provides completion using the completion method selected by
-      the *pel-initial-goto-symbol-completion-mode* which defaults to Ido.
-      You can use the command *pel-goto-symbol-select-completion* to change
-      the completion method used in the current Emacs session. The available
-      completion methods are:
+    - The command provides several user interface methods selected by
+      the *pel-initial-goto-symbol-UI* which defaults to Emacs default: imenu.
+      You can use the command *pel-select-goto-symbol-UI*, bound to ``M-g <f4>
+      h``, to change the user interface method used in the current Emacs
+      session. The available completion methods are:
       - Ido,
-      - Ido with flex matching,
       - Ivy,
-      - imenu pop-up menu (not exactly a completion method, but one of the
-        choices that allows the command top pop-up a menu of all available
-        choices).
+      - helm
+      - popup-imenu
+      - popup-switcher.
   - New: Add support for imenu-anywhere, which provides the same functionality
     as pel-goto-symbol with the ability to target the symbols of *all*
     buffers:
     - Activated with the *pel-use-imenu-anywhere* that is set to identify the
-      default completions method, one of: emacs-default, ido, ivy or helm.
-    - The *pel-imenu-anywhere-select-completion* command (bound to ``M-g
-      C-y``) can be used to change the completion method used in an Emacs
+      default user interface method, one of: emacs-default, ido, ivy or helm.
+    - The *pel-select-goto-any-buffer-UI* command (bound to ``M-g
+      <f4> y``) can be used to change the completion method used in an Emacs
       editing session.
-    - The *pel-imenu-anywhere* prompts using the selected completion method
+    - The *pel-goto-any-buffer* prompts using the selected completion method
       and move point to the buffer and location where the symbol is
       defined. The command is bound to ``M-g y`` and ``M-g M-y`` key
       sequences.

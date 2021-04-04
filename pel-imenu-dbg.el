@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, February 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-22 14:21:18, updated by Pierre Rouleau>
+;; Time-stamp: <2021-03-31 13:11:48, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,7 +25,8 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;;
+;; imenu support is not always correct.  The code in this file help
+;; investigate imenu support.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:

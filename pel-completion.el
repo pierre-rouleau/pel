@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-26 23:13:22, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-03 11:01:35, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -729,6 +729,17 @@ Print message describing active mode unless SILENT argument is non-nil."
   (cdr (assoc (pel-activated-completion-mode)
               pel--completion-mode-names-alist)))
 
+(defun pel-ido-completion-settings-string (&optional prefix-string)
+  "Return a multi-line string describing IDO settings."
+  (let ((prefix (or prefix-string "")))
+    (format "\
+%sIdo prompt geometry: %s
+%sIdo Ubiquitous mode: %s
+%sflx-ido        mode: %s"
+            prefix (pel-activated-ido-geometry)
+            prefix (pel--ido-ubiquitous-state)
+            prefix (pel-on-off-string pel--use-flx-with-ido))))
+
 ;;-pel-autoload
 (defun pel-show-active-completion-mode (&optional now)
   "Display the completion mode currently used.
@@ -737,18 +748,12 @@ otherwise it starts with \"Currently\"."
   (interactive)
   (let ((current-mode      (pel-activated-completion-mode))
         (current-mode-name (pel-activated-completion-mode-name)))
-  (message "%s using:\n- %s completion mode%s."
-           (if now "Now" "Currently")
-           current-mode-name
-           (if (memq current-mode '(ido ido/helm))
-               (format "
-  - Ido prompt geometry: %s
-  - Ido Ubiquitous mode: %s
-  - flx-ido        mode: %s"
-                       (pel-activated-ido-geometry)
-                       (pel--ido-ubiquitous-state)
-                       (pel-on-off-string pel--use-flx-with-ido))
-             ""))))
+    (message "%s using:\n- %s completion mode%s."
+             (if now "Now" "Currently")
+             current-mode-name
+             (if (memq current-mode '(ido ido/helm))
+                 (concat "\n" (pel-ido-completion-settings-string "  - "))
+               ""))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-completion)

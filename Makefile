@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-03-31 15:29:05, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-04-03 22:09:52, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -153,6 +153,7 @@ EL_FILES := pel--base.el \
 		pel-file.el \
 		pel-filedir.el \
 		pel-filex.el \
+		pel-file-recent.el \
 		pel-fill.el \
 		pel-font.el \
 		pel-frame-control.el \
@@ -533,6 +534,7 @@ pel-erlang.elc:         pel--base.elc pel--options.elc pel-fs.elc
 pel-erlang-skels.elc:   pel--base.elc pel--options.elc pel--macros.elc pel-list.elc pel-tempo.elc pel-skels.elc
 pel-file.elc:           pel--base.elc pel-prompt.elc pel-read.elc pel-window.elc
 pel-filedir.elc:        pel--base.elc
+pel-file-recent.elc:    pel--options.elc pel-prompt.elc
 pel-fill.elc:           pel--base.elc
 pel-frame-control.elc:  pel--base.elc
 pel-go.elc:             pel--base.elc
@@ -542,7 +544,7 @@ pel-highlight.elc:      pel--base.elc
 pel-ido.elc:		pel-prompt.elc
 pel-imenu.elc:          pel--base.elc pel--options.elc
 pel-imenu-dbg.elc:      pel--base.elc
-pel-imenu-ido.elc:      pel--options.elc pel-prompt.elc pel-completion.elc
+pel-imenu-ido.elc:      pel--base.elc pel--options.elc pel-prompt.elc pel-completion.elc
 pel-indent.elc:         pel-ccp.elc pel-mark.elc
 pel-kbmacros.elc:       pel--options.elc
 pel-key-chord.elc:      pel--base.elc pel--options.elc

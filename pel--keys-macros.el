@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-01 16:19:51, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-03 23:36:10, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -73,6 +73,15 @@
   ;;                                                             group
   ;; ------------    ------------------ -------------------- -----------------
   `(
+    (,(kbd "M-g <f4>") nil              pel-pkg-for-completion (imenu
+                                                                flimenu
+                                                                popup-imenu
+                                                                popup-switcher))
+    ([27 103 f4]       nil              pel-pkg-for-completion (imenu
+                                                                flimenu
+                                                                popup-imenu
+                                                                popup-switcher))
+
     ([f6]            "inserting-text"   pel-pkg-for-insertions)
     ([f7 f8]         "pl-applescript"   pel-pkg-for-applescript)
     ([f8]            "projectile"       pel-pkg-for-project-mng (projectile
@@ -193,7 +202,8 @@
                                                                  ibuffer
                                                                  minibuffer
                                                                  hexl
-                                                                 nhexl))
+                                                                 nhexl
+                                                                 popup-switcher))
     ;; ([f11 ?b ?I]
     ([f11 ?h]
      "highlight"
@@ -221,7 +231,8 @@
                       "web")            (pel-pkg-for-filemng
                                          pel-kg-for-dired)     (files
                                                                 dired
-                                                                recentf))
+                                                                recentf
+                                                                popup-switcher))
 
     ;; no PDF for browse yet, the info is  in file-mngt.
     ([f11 ?B]        "file-mngt"        (pel-pkg-for-browse
@@ -408,7 +419,8 @@ thing so it can be used as an index inside variable
 
 (defun pel--kte-for (keyseq)
   "Return the table entry for the specified KEYSEQ.
-The KEYSEQ should start with either f11 or f12.
+The KEYSEQ should start with either f11 or f12, but also other prefix keys
+such as f6, f7, f8 and some key sequences.
 The f11 is a full key sequence.
 The f12 key sequence is a mode-specific key sequence,
 where f12 abbreviates the full f11 key sequence for the
@@ -416,7 +428,8 @@ current major mode.
 Check the key sequences.  Expand the f12 key sequence into
 the full f11 key sequence.  Report invalid key sequence."
   (let ((prefix-key (elt keyseq 0)))
-    (unless (memq prefix-key '(f6 f7 f8 f11 f12 M-f12))
+    (unless (or (memq prefix-key '(f6 f7 f8 f11 f12 M-f12))
+                (equal keyseq [27 103 f4])) ; special case command (for now)
       (user-error "This command can only be invoked via \
 F6, F7, F8, F11, F12 or M-F12 prefix.\n\
  Not %s in %s" prefix-key keyseq))
