@@ -1458,7 +1458,7 @@ Note: popup-switcher 2.14 has several bugs I fixed in my fork, which PEL
   :group 'pel-pkg-for-imenu
   :type 'boolean
   :safe #'booleanp)
-
+(put 'pel-use-popup-switcher :package-is :in-utils)
 ;; ---------------------------------------------------------------------------
 ;; Insertion of Text & Templates
 ;; -----------------------------
