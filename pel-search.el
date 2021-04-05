@@ -2,7 +2,7 @@
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-04 12:32:40, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-05 09:54:43, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -58,6 +58,8 @@
 ;;; Dependencies:
 
 (require 'isearch)       ; use: search-upper-case.
+(eval-when-compile (require 'subr-x))   ; use: split-string, string-join,
+;;
 ;;                       ; isearch is part of standard Emacs distribution and
 ;;                       ; is loaded even by emacs -Q (in emacs 26).
 (require 'pel--base)     ; use: pel-symbol-on-off-string
