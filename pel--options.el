@@ -355,13 +355,17 @@ For example, to activate it in Erlang, add a line with
 (defconst pel-elpa-obsolete-packages '(parinfer)
   "Lists the PEL supported ELPA packages that are no longer available.")
 
-(defcustom pel-elpa-packages-to-keep '(benchmark-init)
+(defcustom pel-elpa-packages-to-keep '(benchmark-init
+                                       elisp-lint package-lint dash)
   "List of Elpa package names that should not be removed by `pel-cleanup'.
 
 Put the names of the packages you install manually in this list.
 PEL will not remove them when it performs a cleanup.
-The benchmark-init package, which you can use to measure your
-initialization time is in the default."
+By default, PEL identifies the following packages:
+- benchmark-init: use this to measure your initialization time.
+- elisp-lint:     check your Emacs Lisp code. PEL's ``make lint`` uses it.
+                  elisp-lint requires package-lint and dash, which are also
+                  in the default list."
   :group 'pel-package-use
   :type '(repeat symbol))
 
