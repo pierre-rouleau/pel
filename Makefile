@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-04-03 22:09:52, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-04-05 18:14:20, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -361,7 +361,7 @@ PEL_TAR_FILE := pel-$(PEL_VERSION).tar
 
 all: it
 
-it: pel pel2 test
+it: pel pel_keys.elc
 
 local-pkg: pkg mypelpa
 # ------------------------------------------------------------------------------
@@ -372,7 +372,6 @@ local-pkg: pkg mypelpa
 # automatically download the rest on the normal ``make all``.
 
 first-build: pel
-
 
 # -----------------------------------------------------------------------------
 # Self-desciptive rule: make help prints the info.
@@ -604,22 +603,17 @@ compile: pel
 pel: $(ELC_FILES)
 
 # Remove pel_keys.elc to ensure we always run the very latest.
-pel2: $(ELC_FILES2)
+pel_keys.elc: pel_keys.el
 	-rm pel_keys.elc
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -f batch-byte-compile pel_keys.el
+	@printf "***** Running Integration tests\n"
+	$(EMACS) --batch -L . -l ert -l test/pel-base-tests.el -f ert-run-tests-batch-and-exit
+	$(EMACS) --batch -L . -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
 
-
-# Target to control file linting with the elisp-lint package.
-# This requires access to a load-path that can find elisp-lint as well
-# as all the tools it uses and all packages used by PEL.
-# This is why the Emacs init file is loaded.
-.PHONY: lint
-lint:
-	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -l elisp-lint.el -f elisp-lint-files-batch \
-			 --no-package-format $(EL_FILES) pel_keys.el
-	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -l elisp-lint.el -f elisp-lint-files-batch \
-			 pel.el
-
+# NOTE: make sure the tests above are the same as the test target below!
+#             It's done this way so that if nothing has changed and `make`
+#             is the issued command, nothing will be executed.
+#       TODO: find a way to eliminate this duplication.
 # -----------------------------------------------------------------------------
 # Integration test rules
 #
@@ -630,6 +624,18 @@ test:
 	@printf "***** Running Integration tests\n"
 	$(EMACS) --batch -L . -l ert -l test/pel-base-tests.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
+
+# ----------------------------------------------------------------------------
+# Target to control file linting with the elisp-lint package.
+# This requires access to a load-path that can find elisp-lint as well
+# as all the tools it uses and all packages used by PEL.
+# This is why the Emacs init file is loaded.
+.PHONY: lint
+lint:
+	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -l elisp-lint.el -f elisp-lint-files-batch \
+			 --no-package-format $(EL_FILES) pel_keys.el
+	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -l elisp-lint.el -f elisp-lint-files-batch \
+			 pel.el
 
 # -----------------------------------------------------------------------------
 # Dependency rule to create the directory used for creating a Tar file and
