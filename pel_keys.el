@@ -1448,9 +1448,8 @@ can't bind negative-argument to C-_ and M-_"
   (pel-eval-after-load pel-completion
     ;; after specified delay configure input completion:
     ;; - set the key bindings
-    (define-key pel:help       (kbd "M-c") 'pel-show-active-completion-mode)
-    (define-key pel:completion (kbd "M-c") 'pel-select-completion-mode)
-    (define-key pel:completion "?"         'pel-show-active-completion-mode)
+    (define-key pel:completion (kbd "<f4>") 'pel-select-completion-mode)
+    (define-key pel:completion "?"          'pel-show-active-completion-mode)
     (when pel-use-ido
       (when pel-use-ido-ubiquitous
         (define-key pel:completion (kbd "M-u") 'pel-ido-ubiquitous))
