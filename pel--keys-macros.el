@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-03 23:36:10, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-05 13:57:46, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -95,6 +95,8 @@
     ([f11 f2]        "customize"        nil                     customize)
     ([f11 f8]        "projectile"       pel-pkg-for-project-mng (projectile
                                                                  projectile-speedbar))
+
+    ([f11 f5 ?k]     "key-chords"        pel-pkg-for-key-chord   key-chord)
     ([f11 ?$]        "spell-checking"   pel-pkg-for-spelling    (ispell
                                                                  flyspell))
     ([f11 ?']        "bookmarks"        pel-pkg-for-bookmark    (bookmark
@@ -344,7 +346,6 @@ stored inside the doc/pdf directory.")
 ;;   "ert"
 ;;   "faces-fonts"
 ;;   "hooks"
-;;   "key-chords"
 ;;   "keys-f11"
 ;;   "keys-fn"
 ;;   "macOS-terminal-settings"

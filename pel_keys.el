@@ -367,6 +367,7 @@ Done in this function to allow advising libraries that remap these keys."
 ;; <f11> Global key prefixes used for multiple packages:
 (define-pel-global-prefix pel:     (kbd "<f11>"))
 (define-pel-global-prefix pel:help (kbd "<f11> ?"))
+(define-pel-global-prefix pel:mode (kbd "<f11> <f5>"))
 
 ;; ---------------------------------------------------------------------------
 ;; - PEL: Window Behaviour & operations
@@ -1283,7 +1284,7 @@ can't bind negative-argument to C-_ and M-_"
 (when pel-emacs-is-graphic-p
   (define-key pel:cfg-emacs (kbd "C-c") 'pel-customize-cursor))
 
-(pel--cfg-pkg "key-chord"   pel:cfg-pel (kbd "M-K"))
+
 (pel--cfg-pkg "navigation"  pel:cfg-pel "n" avy)
 (pel--cfg-pkg "project-mng" pel:cfg-pel (kbd "<f8>"))
 
@@ -1895,8 +1896,6 @@ MODE must be a symbol."
 
 (when pel-use-plantuml
   (define-key pel:for-c "u" 'pel-render-commented-plantuml))
-(when pel-use-graphviz-dot
-  (define-key pel:for-c "G" 'pel-render-commented-graphviz-dot))
 (when pel-use-c-eldoc
   (define-pel-global-prefix pel:c-help (kbd "<f11> SPC c ?"))
   (define-key pel:c-help "e" 'pel-toggle-c-eldoc-mode))
@@ -1947,8 +1946,6 @@ MODE must be a symbol."
 
 (when pel-use-plantuml
   (define-key pel:for-c++ "u" 'pel-render-commented-plantuml))
-(when pel-use-graphviz-dot
-  (define-key pel:for-c++ "G" 'pel-render-commented-graphviz-dot))
 (pel--map-cc-for pel:for-c++ pel:for-c++-preproc)
 
 ;;
@@ -2001,8 +1998,6 @@ MODE must be a symbol."
   ;; Configure commands available on the D key-map.
   (when pel-use-plantuml
     (define-key pel:for-d "u" 'pel-render-commented-plantuml))
-  (when pel-use-graphviz-dot
-    (define-key pel:for-d "G" 'pel-render-commented-graphviz-dot))
   (pel--map-cc-for pel:for-d)
   ;; Schedule activation of D mode style and its <f12> key binding
   (pel--mode-hook-maybe-call
@@ -2113,8 +2108,6 @@ d-mode not added to ac-modes!"
     (define-key pel:for-erlang (kbd "M-r")    'rainbow-delimiters-mode))
   (when pel-use-plantuml
     (define-key pel:for-erlang "u"     'pel-render-commented-plantuml))
-  (when pel-use-graphviz-dot
-    (define-key pel:for-erlang "G"     'pel-render-commented-graphviz-dot))
 
   (pel-eval-after-load erlang
     ;; TODO: do we want to set erlang-root-dir, which is a user-option?
@@ -2255,8 +2248,6 @@ d-mode not added to ac-modes!"
   (define-key pel:for-elixir (kbd "M-p") #'superword-mode)
   (when pel-use-plantuml
     (define-key pel:for-elixir "u" 'pel-render-commented-plantuml))
-  (when pel-use-graphviz-dot
-    (define-key pel:for-elixir "G" 'pel-render-commented-graphviz-dot))
   ;;
   (pel--mode-hook-maybe-call
    (lambda ()
@@ -2569,8 +2560,6 @@ d-mode not added to ac-modes!"
 (define-key pel:for-elisp   "t"  'pel-run-ert)
 (when pel-use-plantuml
   (define-key pel:for-elisp   "u"  'pel-render-commented-plantuml))
-(when pel-use-graphviz-dot
-  (define-key pel:for-elisp "G" 'pel-render-commented-graphviz-dot))
 (when pel-use-parinfer
   (define-key pel:for-elisp "i" 'parinfer-auto-fix))
 
@@ -2667,8 +2656,6 @@ d-mode not added to ac-modes!"
   (define-pel-global-prefix pel:for-lisp (kbd "<f11> SPC L"))
   (when pel-use-plantuml
     (define-key               pel:for-lisp "u" 'pel-render-commented-plantuml))
-  (when pel-use-graphviz-dot
-    (define-key pel:for-lisp "G" 'pel-render-commented-graphviz-dot))
   (pel--lisp-languages-map-for pel:for-lisp)
   ;;
   ;; activate the <f12> key binding for lisp-mode
@@ -2947,8 +2934,6 @@ d-mode not added to ac-modes!"
   (define-key pel:for-python (kbd "M-p")  #'superword-mode)
   (when pel-use-plantuml
     (define-key pel:for-python    "u"      'pel-render-commented-plantuml))
-  (when pel-use-graphviz-dot
-    (define-key pel:for-python "G"         'pel-render-commented-graphviz-dot))
   (when pel-use-rainbow-delimiters
     (define-key pel:for-python (kbd "M-r") 'rainbow-delimiters-mode))
   ;;
@@ -3239,8 +3224,6 @@ d-mode not added to ac-modes!"
   ;;
   (when pel-use-plantuml
     (define-key pel:for-reST  "u" 'pel-render-commented-plantuml))
-  (when pel-use-graphviz-dot
-    (define-key pel:for-reST "G" 'pel-render-commented-graphviz-dot))
   ;;
   (define-pel-global-prefix pel:rst-adorn-style (kbd "<f11> SPC M-r A"))
   (define-key pel:rst-adorn-style "d" 'pel-rst-adorn-default)
@@ -3260,9 +3243,14 @@ d-mode not added to ac-modes!"
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-g`` : Graphviz Dot
 (when pel-use-graphviz-dot
   (pel-ensure-package graphviz-dot-mode from: melpa)
+
+  ;; Global bindings for Graphviz-Dot
   (pel-autoload-file graphviz-dot-mode for: graphviz-dot-mode)
+  (define-key pel:mode (kbd "M-g") 'graphviz-dot-mode)
+  (define-key pel:mode "G"         'pel-render-commented-graphviz-dot)
+
+  ;; Graphviz-Dot specific mode keys
   (define-pel-global-prefix pel:for-graphviz-dot (kbd "<f11> SPC M-g"))
-  (define-key pel: (kbd "M-g")         'graphviz-dot-mode)
   (define-key pel:for-graphviz-dot "c" 'compile)
   (define-key pel:for-graphviz-dot "p" 'graphviz-dot-preview)
   (define-key pel:for-graphviz-dot (kbd "TAB") 'graphviz-dot-indent-graph)
@@ -4484,6 +4472,7 @@ the ones defined from the buffer now."
     (pel-install-github-file "emacsmirror/vline/master" "vline.el"))
   (pel-autoload-file vline for: vline-mode)
   (define-key pel:highlight "|"  'vline-mode)
+  (define-key pel:mode      "|"  'vline-mode)
   (define-key pel:          "9"  'vline-mode))
 
 (when (and (version< emacs-version "27.1")
@@ -4491,11 +4480,13 @@ the ones defined from the buffer now."
   (pel-ensure-package fill-column-indicator from: melpa)
   (pel-autoload-file fill-column-indicator for: fci-mode)
   (define-key pel:highlight "\\" 'fci-mode)
+  (define-key pel:mode      "\\"  'fci-mode)
   (define-key pel:          "8"  'fci-mode))
 ;; For Emacs 27.1 & later use the built-in display-fill-column-indicator-mode.
 (unless (version< emacs-version "27.1")
-  (define-key pel:highlight "\\"'display-fill-column-indicator-mode)
-  (define-key pel:          "8" 'display-fill-column-indicator-mode))
+  (define-key pel:highlight "\\" 'display-fill-column-indicator-mode)
+  (define-key pel:          "8"  'display-fill-column-indicator-mode)
+  (define-key pel:mode      "\\" 'display-fill-column-indicator-mode))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> i`` : Insert text operations
@@ -5592,6 +5583,8 @@ the ones defined from the buffer now."
 ;; Key-Chord Mode
 ;; ==============
 
+(define-pel-global-prefix pel:mode-key-chord (kbd "<f11> <f5> k"))
+
 (when pel-use-key-chord
   (defun pel--start-key-chord-mode ()
     "Activate key-chord mode if it can be loaded."
@@ -5599,7 +5592,7 @@ the ones defined from the buffer now."
       (key-chord-mode 1)))
   (declare-function pel--start-key-chord-mode "pel_keys")
 
-  (define-key pel:keys  (kbd "M-K")  'pel-key-chord-describe)
+  (define-key pel:mode-key-chord  "?" 'pel-key-chord-describe)
 
   ;; The key-seq is only activated once key-chord is activated.
   ;; Both must be active for key-seq to be used.  When both are
@@ -5609,7 +5602,7 @@ the ones defined from the buffer now."
 
   (pel-ensure-package key-chord from: melpa)
   (pel-autoload-file key-chord for: key-chord-mode)
-  (define-key pel: (kbd "M-K")     'key-chord-mode)
+  (define-key pel:mode-key-chord "k" 'key-chord-mode)
   (pel-eval-after-load key-chord
     (when (and (require 'pel-key-chord nil :noerror)
                (fboundp 'pel-activate-all-key-chords))

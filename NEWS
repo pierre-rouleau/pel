@@ -37,7 +37,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 - Update: improved  messages printed by commands that describe state of modes
   such as completion modes, etc...
 - Update: *Application Launching*:
-  - New: The ``<f11> A`` key sequence is bound to counsel-linux-app on Lix=nux
+  - New: The ``<f11> A`` key sequence is bound to counsel-linux-app on Linux
     systems and to counsel-osx-app on macOS system.  This allows selecting an
     OS application by name to launch it.  The first one is available when
     pel-use-counsel is on and the second when pel-use-counsel-osx-app is on.
@@ -364,9 +364,16 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     *ivy-restrict-to-matches* and *ivy-avy* to be accessible when Emacs runs
     in terminal mode.
 - Update: *Key Chords*:
-  - New: command *pel-key-chord-describe* (bound to ``<f11> ? k M-K``)
-    displays the state of key-chord/key-seq and the key bindings if
-    key-chord-mode is active.
+  - New: a new key prefix is used to access key-chord commands:
+    *pel:mode-key-chord*, mapped to ``<f11> <f5> k``.  It holds the following
+    commands:
+    - Command *key-chord-mode*, mapped to ``<f11> <f5> k k``.
+    - Command *pel-key-chord-describe* (bound to ``<f11> <f5> k ?``)
+      displays the state of key-chord/key-seq and the key bindings if
+      key-chord-mode is active.
+    - ``<f11> <f5> k <f1>`` opens the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/key-chords.pdf][⅀ Key-Chords PDF]].
+    - ``<f11> <f5> k <f2>`` opens the PEL key-chords customization buffer.
+    - ``<f11> <f5> k <f3>`` opens the key-chords package customization buffer.
 - Update: *Markup Language Support*
   - New: Add support for YAML with *yaml-mode*.
     Activate it with the *pel-use-yaml-mode* user option.
