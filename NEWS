@@ -405,7 +405,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     - The *pel-select-goto-any-buffer-UI* command (bound to ``M-g
       <f4> y``) can be used to change the completion method used in an Emacs
       editing session.
-    - The *pel-goto-any-buffer* prompts using the selected completion method
+    - The *pel-goto-symbol-any-buffer* prompts using the selected completion method
       and move point to the buffer and location where the symbol is
       defined. The command is bound to ``M-g y`` and ``M-g M-y`` key
       sequences.

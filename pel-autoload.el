@@ -291,7 +291,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-select-goto-symbol-UI
     pel-goto-symbol
     pel-select-goto-any-buffer-UI
-    pel-goto-any-buffer
+    pel-goto-symbol-any-buffer
     pel-show-goto-symbol-settings)
 
   (pel-autoload "pel-key-chord" for:

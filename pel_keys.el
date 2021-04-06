@@ -302,8 +302,8 @@ Done in this function to allow advising libraries that remap these keys."
 
 (when pel-use-imenu-anywhere
   (pel-ensure-package imenu-anywhere from: melpa)
-  (global-set-key (kbd "M-g y")    'pel-goto-any-buffer)
-  (global-set-key (kbd "M-g M-y")  'pel-goto-any-buffer)
+  (global-set-key (kbd "M-g y")    'pel-goto-symbol-any-buffer)
+  (global-set-key (kbd "M-g M-y")  'pel-goto-symbol-any-buffer)
   (define-key pel:cfg-goto "y" 'pel-select-goto-any-buffer-UI))
 
 ;; ---------------------------------------------------------------------------

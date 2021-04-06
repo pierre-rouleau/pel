@@ -570,10 +570,10 @@ the buffer major modes.
   provides  several user interface mechanisms for it, various input
   completions or popup menu systems. Select its user interface with
  `pel-initial-goto-symbol-UI'.
-- The `pel-goto-any-buffer', which does the same but for all currently opened
-  buffer.  It uses imenu-anywhere which you must activate with
-  `pel-use-imenu-anywhere'.  This user option also selects the user interface
-  used when Emacs starts.
+- The `pel-goto-symbol-any-buffer', which does the same but for
+  all currently opened buffer.  It uses imenu-anywhere which you
+  must activate with `pel-use-imenu-anywhere'.  This user option
+  also selects the user interface used when Emacs starts.
 
 PEL provides commands you can use to dynamically change the user interface
 used by these 2 commands during an editing session without affecting the
