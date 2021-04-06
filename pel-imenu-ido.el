@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2021-04-06 16:11:05, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-06 16:50:40, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -382,10 +382,16 @@ Please turn pel-use-imenu-anywhere on")))
   "Display current settings used by the goto symbol commands."
   (interactive)
   (message "\
-goto-symbol     UI is: %s
+goto-symbol     UI is: %s%s
 goto-any-buffer UI is: %s
 - iMenu lists are%s flatten.%s%s"
            (pel--goto-symbol-ui-name)
+           (pel-string-for
+            (when (and (eq 'ido pel--goto-symbol-UI)
+                       (not pel--use-ido-ubiquitous))
+              (concat ", but: "
+                      (propertize "WARNING: Ido Ubiquitous is off!" 'face 'bold)
+                      " Turn it on to use Ido for this. Use M-g <f4> M-u.")))
            (pel--goto-any-buffer-ui-name)
            (if pel-use-flimenu "" " not")
            (pel-string-for
