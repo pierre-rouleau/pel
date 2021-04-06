@@ -84,6 +84,13 @@ re-execute `pel-init' again to activate them.
 
 ;;;***
 
+;;;### (autoloads nil "pel-align" "pel-align.el" (0 0 0 0))
+;;; Generated autoloads from pel-align.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-align" '("pel-")))
+
+;;;***
+
 ;;;### (autoloads nil "pel-applescript" "pel-applescript.el" (0 0
 ;;;;;;  0 0))
 ;;; Generated autoloads from pel-applescript.el
@@ -118,6 +125,13 @@ re-execute `pel-init' again to activate them.
 ;;; Generated autoloads from pel-bookmark.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-bookmark" '("pel-bookmark-in-current-file-p")))
+
+;;;***
+
+;;;### (autoloads nil "pel-cc" "pel-cc.el" (0 0 0 0))
+;;; Generated autoloads from pel-cc.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-cc" '("pel-cc-")))
 
 ;;;***
 
@@ -173,6 +187,35 @@ re-execute `pel-init' again to activate them.
 
 ;;;***
 
+;;;### (autoloads nil "pel-custom" "pel-custom.el" (0 0 0 0))
+;;; Generated autoloads from pel-custom.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-custom" '("pel-")))
+
+;;;***
+
+;;;### (autoloads nil "pel-diff" "pel-diff.el" (0 0 0 0))
+;;; Generated autoloads from pel-diff.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-diff" '("pel-ediff-")))
+
+;;;***
+
+;;;### (autoloads nil "pel-elisp" "pel-elisp.el" (0 0 0 0))
+;;; Generated autoloads from pel-elisp.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-elisp" '("pel-")))
+
+;;;***
+
+;;;### (autoloads nil "pel-elisp-analyze" "pel-elisp-analyze.el"
+;;;;;;  (0 0 0 0))
+;;; Generated autoloads from pel-elisp-analyze.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-elisp-analyze" '("pel-run-ert")))
+
+;;;***
+
 ;;;### (autoloads nil "pel-emacs" "pel-emacs.el" (0 0 0 0))
 ;;; Generated autoloads from pel-emacs.el
 
@@ -195,6 +238,20 @@ re-execute `pel-init' again to activate them.
 
 ;;;***
 
+;;;### (autoloads nil "pel-ert" "pel-ert.el" (0 0 0 0))
+;;; Generated autoloads from pel-ert.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-ert" '("pel-")))
+
+;;;***
+
+;;;### (autoloads nil "pel-etags" "pel-etags.el" (0 0 0 0))
+;;; Generated autoloads from pel-etags.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-etags" '("pel-file-or-compressed-file-for")))
+
+;;;***
+
 ;;;### (autoloads nil "pel-face-ut" "pel-face-ut.el" (0 0 0 0))
 ;;; Generated autoloads from pel-face-ut.el
 
@@ -206,6 +263,21 @@ re-execute `pel-init' again to activate them.
 ;;; Generated autoloads from pel-file.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-file" '("pel-")))
+
+;;;***
+
+;;;### (autoloads nil "pel-file-recent" "pel-file-recent.el" (0 0
+;;;;;;  0 0))
+;;; Generated autoloads from pel-file-recent.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-file-recent" '("pel-" "ido-recentf-open")))
+
+;;;***
+
+;;;### (autoloads nil "pel-filedir" "pel-filedir.el" (0 0 0 0))
+;;; Generated autoloads from pel-filedir.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-filedir" '("pel-")))
 
 ;;;***
 
@@ -242,6 +314,20 @@ re-execute `pel-init' again to activate them.
 ;;; Generated autoloads from pel-fs.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-fs" '("pel-")))
+
+;;;***
+
+;;;### (autoloads nil "pel-go" "pel-go.el" (0 0 0 0))
+;;; Generated autoloads from pel-go.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-go" '("pel-go-")))
+
+;;;***
+
+;;;### (autoloads nil "pel-goto-addr" "pel-goto-addr.el" (0 0 0 0))
+;;; Generated autoloads from pel-goto-addr.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-goto-addr" '("pel-goto-")))
 
 ;;;***
 
@@ -282,10 +368,31 @@ re-execute `pel-init' again to activate them.
 
 ;;;***
 
+;;;### (autoloads nil "pel-ido" "pel-ido.el" (0 0 0 0))
+;;; Generated autoloads from pel-ido.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-ido" '("pel-set-ido-use-fname-at-point")))
+
+;;;***
+
 ;;;### (autoloads nil "pel-imenu" "pel-imenu.el" (0 0 0 0))
 ;;; Generated autoloads from pel-imenu.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-imenu" '("pel-")))
+
+;;;***
+
+;;;### (autoloads nil "pel-imenu-dbg" "pel-imenu-dbg.el" (0 0 0 0))
+;;; Generated autoloads from pel-imenu-dbg.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-imenu-dbg" '("pel-imenu-dbg-print-vars")))
+
+;;;***
+
+;;;### (autoloads nil "pel-imenu-ido" "pel-imenu-ido.el" (0 0 0 0))
+;;; Generated autoloads from pel-imenu-ido.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-imenu-ido" '("pel-")))
 
 ;;;***
 
@@ -339,10 +446,31 @@ re-execute `pel-init' again to activate them.
 
 ;;;***
 
+;;;### (autoloads nil "pel-list-comp" "pel-list-comp.el" (0 0 0 0))
+;;; Generated autoloads from pel-list-comp.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-list-comp" '("pel-")))
+
+;;;***
+
+;;;### (autoloads nil "pel-make" "pel-make.el" (0 0 0 0))
+;;; Generated autoloads from pel-make.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-make" '("makefile-nmake-" "pel-make-")))
+
+;;;***
+
 ;;;### (autoloads nil "pel-mark" "pel-mark.el" (0 0 0 0))
 ;;; Generated autoloads from pel-mark.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-mark" '("pel-")))
+
+;;;***
+
+;;;### (autoloads nil "pel-mode-line" "pel-mode-line.el" (0 0 0 0))
+;;; Generated autoloads from pel-mode-line.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-mode-line" '("my-mode-line-" "mode-line-benchmark" "pel-mode-line-time-info")))
 
 ;;;***
 
@@ -374,6 +502,13 @@ re-execute `pel-init' again to activate them.
 
 ;;;***
 
+;;;### (autoloads nil "pel-package" "pel-package.el" (0 0 0 0))
+;;; Generated autoloads from pel-package.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-package" '("pel-")))
+
+;;;***
+
 ;;;### (autoloads nil "pel-pathmng" "pel-pathmng.el" (0 0 0 0))
 ;;; Generated autoloads from pel-pathmng.el
 
@@ -388,10 +523,31 @@ re-execute `pel-init' again to activate them.
 
 ;;;***
 
+;;;### (autoloads nil "pel-pp" "pel-pp.el" (0 0 0 0))
+;;; Generated autoloads from pel-pp.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-pp" '("pel-pp-")))
+
+;;;***
+
+;;;### (autoloads nil "pel-ppindent" "pel-ppindent.el" (0 0 0 0))
+;;; Generated autoloads from pel-ppindent.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-ppindent" '("pel-ppindent-")))
+
+;;;***
+
 ;;;### (autoloads nil "pel-prompt" "pel-prompt.el" (0 0 0 0))
 ;;; Generated autoloads from pel-prompt.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-prompt" '("pel-")))
+
+;;;***
+
+;;;### (autoloads nil "pel-python" "pel-python.el" (0 0 0 0))
+;;; Generated autoloads from pel-python.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-python" '("pel-python-qualified-module-name" "py-qualified-module-name")))
 
 ;;;***
 
@@ -420,6 +576,13 @@ re-execute `pel-init' again to activate them.
 ;;; Generated autoloads from pel-rst.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-rst" '("pel-")))
+
+;;;***
+
+;;;### (autoloads nil "pel-safe-list" "pel-safe-list.el" (0 0 0 0))
+;;; Generated autoloads from pel-safe-list.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-safe-list" '("caar-safe" "cadr-safe")))
 
 ;;;***
 
@@ -561,6 +724,13 @@ re-execute `pel-init' again to activate them.
 
 ;;;***
 
+;;;### (autoloads nil "pel__hydra" "pel__hydra.el" (0 0 0 0))
+;;; Generated autoloads from pel__hydra.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel__hydra" '("pel-")))
+
+;;;***
+
 ;;;### (autoloads nil "pel_keys" "pel_keys.el" (0 0 0 0))
 ;;; Generated autoloads from pel_keys.el
 
@@ -568,7 +738,29 @@ re-execute `pel-init' again to activate them.
 
 ;;;***
 
-;;;### (autoloads nil nil ("pel-pkg.el") (0 0 0 0))
+;;;### (autoloads nil "sexp" "sexp.el" (0 0 0 0))
+;;; Generated autoloads from sexp.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "sexp" '("triangle-using-cond" "abc" "last-in" "first-in")))
+
+;;;***
+
+;;;### (autoloads nil "t" "t.el" (0 0 0 0))
+;;; Generated autoloads from t.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t" '("pel-clean-package-selected-packages-in")))
+
+;;;***
+
+;;;### (autoloads nil "tlambda" "tlambda.el" (0 0 0 0))
+;;; Generated autoloads from tlambda.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "tlambda" '("sum-fibonacci" "evenp")))
+
+;;;***
+
+;;;### (autoloads nil nil ("au.el" "pel-pkg.el" "pel-stats.el") (0
+;;;;;;  0 0 0))
 
 ;;;***
 
