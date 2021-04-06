@@ -2644,6 +2644,10 @@ d-mode not added to ac-modes!"
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC L`` : (Common) Lisp
 (when pel-use-common-lisp
 
+  (when pel-use-speedbar
+    ;; Add support for Speedbar listing Common Lisp files:
+    (pel-add-speedbar-extension ".li?sp"))
+
   (when (fboundp 'pel-cl-init)
     (pel-cl-init :slime-is-used))
 
