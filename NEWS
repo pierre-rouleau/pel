@@ -402,7 +402,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     buffers:
     - Activated with the *pel-use-imenu-anywhere* that is set to identify the
       default user interface method, one of: emacs-default, ido, ivy or helm.
-    - The *pel-select-goto-any-buffer-UI* command (bound to ``M-g
+    - The *pel-select-goto-symbol-any-buffer-UI* command (bound to ``M-g
       <f4> y``) can be used to change the completion method used in an Emacs
       editing session.
     - The *pel-goto-symbol-any-buffer* prompts using the selected completion method

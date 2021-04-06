@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2021-04-06 16:50:40, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-06 16:59:16, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -64,7 +64,7 @@
 ;; The commands that select the user-interface configurations are:
 ;;
 ;;     * `pel-select-goto-symbol-UI'
-;;     * `pel-select-goto-any-buffer-UI'
+;;     * `pel-select-goto-symbol-any-buffer-UI'
 ;;
 ;; To see what interface are currently active use the following status display
 ;; command:
@@ -275,7 +275,7 @@ nil, then ido is still used."
 ;; commands:
 ;;
 ;; * `pel-goto-symbol-any-buffer'
-;; * `pel-select-goto-any-buffer-UI'
+;; * `pel-select-goto-symbol-any-buffer-UI'
 ;;
 ;; PEL supports iMenu Anywhere with several input completion mechanisms:
 ;;   - Emacs default
@@ -286,7 +286,7 @@ nil, then ido is still used."
 ;; The `pel-use-imenu-anywhere' user-option when non-nil, identifies the
 ;; input completion method used when Emacs starts.  Later the user can modify
 ;; what is used in the current editing session by executing the function
-;; `pel-select-goto-any-buffer-UI'.
+;; `pel-select-goto-symbol-any-buffer-UI'.
 ;;
 ;; The selection is stored inside the variable `pel--imenu-anywhere-method'
 ;; and then used by the `pel-goto-symbol-any-buffer'.
@@ -296,7 +296,7 @@ nil, then ido is still used."
 ;;
 ;; Call tree:
 ;;
-;; * `pel-select-goto-any-buffer-UI'
+;; * `pel-select-goto-symbol-any-buffer-UI'
 ;;   - `pel--ui-selection'
 ;;   - `pel--goto-any-buffer-ui-name'
 ;; * `pel-goto-symbol-any-buffer'
@@ -321,7 +321,7 @@ Maps UI symbol name to its specs: (key description requirement)")
                 pel--goto-symbol-UI-alist))))
 
 ;;-pel-autoload
-(defun pel-select-goto-any-buffer-UI ()
+(defun pel-select-goto-symbol-any-buffer-UI ()
   "Select completion system for function `pel-goto-symbol-any-buffer'."
   (interactive)
   (let* ((prompt-msg "Completion mode for pel-goto-symbol-any-buffer")
@@ -342,7 +342,7 @@ Maps UI symbol name to its specs: (key description requirement)")
 See `imenu-anywhere' for more information.
 This function uses the completion method selected by
 `pel-use-imenu-anywhere' and any changes requested by executing the
-command `pel-select-goto-any-buffer-UI'."
+command `pel-select-goto-symbol-any-buffer-UI'."
   (interactive)
   (if (and (require 'imenu-anywhere nil :no-error)
            (fboundp 'imenu-anywhere)
@@ -382,8 +382,8 @@ Please turn pel-use-imenu-anywhere on")))
   "Display current settings used by the goto symbol commands."
   (interactive)
   (message "\
-goto-symbol     UI is: %s%s
-goto-any-buffer UI is: %s
+pel-goto-symbol            UI is: %s%s
+pel-goto-symbol-any-buffer UI is: %s
 - iMenu lists are%s flatten.%s%s"
            (pel--goto-symbol-ui-name)
            (pel-string-for

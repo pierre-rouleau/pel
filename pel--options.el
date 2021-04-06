@@ -580,7 +580,7 @@ used by these 2 commands during an editing session without affecting the
 initial user interface:
 
 - `pel-select-goto-symbol-UI'
-- `pel-select-goto-any-buffer-UI'.
+- `pel-select-goto-symbol-any-buffer-UI'.
 
 Since imenu is used as user interface candidates for these
 commands, if you select imenu specific modes you must also

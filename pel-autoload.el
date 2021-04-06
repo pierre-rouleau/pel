@@ -290,7 +290,7 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-imenu-ido" for:
     pel-select-goto-symbol-UI
     pel-goto-symbol
-    pel-select-goto-any-buffer-UI
+    pel-select-goto-symbol-any-buffer-UI
     pel-goto-symbol-any-buffer
     pel-show-goto-symbol-settings)
 
