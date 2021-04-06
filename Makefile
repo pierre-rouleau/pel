@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-04-05 20:23:41, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-04-05 20:36:38, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -633,9 +633,9 @@ test:
 .PHONY: lint
 lint:
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -l elisp-lint.el -f elisp-lint-files-batch \
-			 --no-package-format --no-package-lint $(EL_FILES) pel_keys.el
+			 --no-package-format --no-package-lint --no-fill-column $(EL_FILES) pel_keys.el
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -l elisp-lint.el -f elisp-lint-files-batch \
-			 --no-package-lint pel.el
+			 --no-package-lint --no-fill-column pel.el
 
 # -----------------------------------------------------------------------------
 # Dependency rule to create the directory used for creating a Tar file and
