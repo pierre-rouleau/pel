@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-04-05 20:36:38, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-04-06 15:57:58, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -512,6 +512,7 @@ $(DEST_DIR)/README: $(SRC_DIR)/README
 # byte-compilation but also on the very first compilation: it alters the order of
 # byte-compilation for the pel- files.
 
+# TODO: find a way to generate the dependency list automatically by code scanning.
 
 pel-applescript.elc:    pel-read.elc
 pel-align.elc:          pel--base.elc
@@ -577,7 +578,7 @@ pel-text-insert.elc:    pel--base.elc pel--macros.elc pel-window.elc
 pel-text-transform.elc: pel--base.elc
 pel-window.elc:         pel--base.elc
 pel-xr.elc:             pel--base.elc pel-read.elc
-pel_keys.elc:           pel--base.elc pel--macros.elc pel--options.elc pel-completion.elc pel-search.elc
+pel_keys.elc:           pel--base.elc pel--macros.elc pel--keys-macros.elc pel--options.elc pel-autoload.elc pel-cursor.elc pel-cc.elc pel-lispy.elc pel-key-chord.elc pel-completion.elc pel-search.elc
 
 # -----------------------------------------------------------------------------
 # Rules to byte-compile the Emacs-Lisp source code files
