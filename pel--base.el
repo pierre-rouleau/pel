@@ -253,7 +253,7 @@ optional NO-ERROR argument is non-nil, in which case it returns nil."
   (if buffer-file-truename
       (let ((fn (expand-file-name buffer-file-truename)))
         (when sans-extension
-            (setq fn (file-name-sans-extension fn)))
+          (setq fn (file-name-sans-extension fn)))
         (if sans-directory
             (file-name-nondirectory fn)
           fn))
@@ -405,7 +405,8 @@ on/off value, otherwise use \"on\" and \"off\"."
       (or on-string "on")
     (or off-string "off")))
 
-(defun pel-symbol-on-off-string (symbol &optional on-string off-string void-string)
+(defun pel-symbol-on-off-string (symbol &optional on-string off-string
+                                        void-string)
   "Return representation of SYMBOL value and whether it is bound.
 When SYMBOL is not bound: return VOID-STRING or \"void\" if it's nil,
 When it is bound, return:
@@ -470,20 +471,20 @@ MODE is the mode symbol, indicating whether the mode is active or not.
 If ACTIVATED-IN is specified that's the list of major modes where MODE
 is automatically activated; this is included in the description."
   (let ((autoloaded-str (pel-activated-in-str activated-in)))
-  (if (boundp user-option)
-      (if (eval user-option)
-          (if (boundp mode)
-              (format "Available %s.%s"
-                      (pel-symbol-on-off-string mode
-                                                "and on"
-                                                "but off")
-                      autoloaded-str)
-            (format "Available but not loaded, use a command to load it.%s"
-                    autoloaded-str))
-        (format "Not available. Activate %s first.%s"
-                (symbol-name user-option)
-                autoloaded-str))
-    (format "%s symbol unknown" (symbol-name user-option)))))
+    (if (boundp user-option)
+        (if (eval user-option)
+            (if (boundp mode)
+                (format "Available %s.%s"
+                        (pel-symbol-on-off-string mode
+                                                  "and on"
+                                                  "but off")
+                        autoloaded-str)
+              (format "Available but not loaded, use a command to load it.%s"
+                      autoloaded-str))
+          (format "Not available. Activate %s first.%s"
+                  (symbol-name user-option)
+                  autoloaded-str))
+      (format "%s symbol unknown" (symbol-name user-option)))))
 
 ;; ---------------------------------------------------------------------------
 ;; String transformation utilities:
@@ -510,9 +511,9 @@ Return empty string if no input string."
   "Append a period character to TEXT if none is present.
 Return empty string if TEXT is the empty string."
   (if (> (length text) 0)
-    (if (string= (substring text -1) ".")
-        text
-      (concat text "."))
+      (if (string= (substring text -1) ".")
+          text
+        (concat text "."))
     ""))
 
 (defun pel-hastext (string)
@@ -532,7 +533,7 @@ Otherwise return nil."
     string))
 
 (defun pel-string-for (text)
-  "Return TEXT if it's a string. If nil return empty string"
+  "Return TEXT if it's a string.  If nil return empty string."
   (if text text ""))
 
 (defun pel-string-when (condition text)
@@ -807,7 +808,8 @@ Load the package library if that's not already done."
                      :error)
     nil))
 
-(defun pel-require (feature &optional package with-pel-install fname url-fname)
+(defun pel-require (feature &optional package with-pel-install fname
+                            url-fname)
   "Load FEATURE if not already loaded, optionally try to install PACKAGE.
 
 FEATURE is a symbol.
@@ -841,8 +843,9 @@ Otherwise return the loading state of the FEATURE."
                          (fboundp 'pel-install-github-file))
                     (pel-install-github-file with-pel-install fname url-fname)
                   (display-warning 'pel-require
-                                   (format "Failed loading pel-net to install %s"
-                                           with-pel-install)))
+                                   (format
+                                    "Failed loading pel-net to install %s"
+                                    with-pel-install)))
               ;; install using Elpa package system
               (let ((package (if (eq package :install-when-missing)
                                  feature
@@ -852,10 +855,11 @@ Otherwise return the loading state of the FEATURE."
                   (require feature nil :noerror)
                   (unless (featurep feature)
                     (display-warning 'pel-require
-                                     (format
-                                      "Failed loading %s even after installing package %s!"
-                                      feature package))))))
-          (error "%s is not available, code does not request to load it!" feature)))))
+                                     (format "\
+Failed loading %s even after installing package %s!"
+                                             feature package))))))
+          (error "%s is not available, code does not request to load it!"
+                 feature)))))
   (featurep feature))
 
 (defmacro pel-require-at-load (feature)
@@ -908,7 +912,8 @@ REGEXPS is on or several regular expression strings."
   (let ((forms '()))
     (setq forms
           (dolist (regxp regexps (reverse forms))
-            (push `(add-to-list 'auto-mode-alist (quote (,regxp . ,mode))) forms)))
+            (push `(add-to-list 'auto-mode-alist
+                                (quote (,regxp . ,mode))) forms)))
     `(progn
        ,@forms)))
 
@@ -991,15 +996,17 @@ The ARCHIVE argument may be a string or a symbol."
 (defun pel--pin-package (package archive)
   "Pin PACKAGE to ARCHIVE."
   (if (pel-archive-exists-p archive)
-      (add-to-list 'pel--pinned-packages (cons package (pel-as-string archive)))
-    (error "Archive '%S' requested for package '%S' is not listed in package-archives!"
+      (add-to-list 'pel--pinned-packages
+                   (cons package (pel-as-string archive)))
+    (error "\
+Archive '%S' requested for package '%S' is not listed in package-archives!"
            archive package))
   (unless (bound-and-true-p package--initialized)
     (package-initialize t)))
 
 
 (defun pel--package-install (package)
-  "Install a package.  On failure refresh ELPA content and try again.
+  "Install a PACKAGE.  On failure refresh ELPA content and try again.
 
 Packages in the Elpa archive sites are regularly updated and old
 versions purged.  Requesting an old version of a package may
@@ -1054,8 +1061,9 @@ Issue an error when the installation fails."
                                   package (error-message-string err))
                           :error)))
     (display-warning 'pel-ensure-package
-                     (format "Cannot install %s: package.el is not properly loaded."
-                             package)
+                     (format
+                      "Cannot install %s: package.el is not properly loaded."
+                      package)
                      :error)))
 
 (defun pel-ensure-pkg (pkg &optional elpa-site)
@@ -1164,7 +1172,7 @@ If the value is 'with-flycheck then flycheck is toggled."
 
 (defun pel-map-symbol-for (mode)
   "Return the map symbol for the specified MODE symbol."
-    (intern (format "%s-map" (symbol-name mode))))
+  (intern (format "%s-map" (symbol-name mode))))
 
 ;; ---------------------------------------------------------------------------
 ;; Hook control
@@ -1231,7 +1239,7 @@ USER-OPTION must be a variable symbol."
     (with-current-buffer (current-buffer)
       (unless (local-variable-p user-option)
         (make-local-variable user-option))))
-    (pel-toggle-and-show user-option))
+  (pel-toggle-and-show user-option))
 
 (defun pel-val-or-default (val default)
   "Return VAL if not nil otherwise return DEFAULT."
@@ -1650,15 +1658,19 @@ Each string is the file extension staring with the period."
 
 (defun pel-byte-compile-if-needed (el-filename)
   "Byte-compile Emacs Lisp source EL-FILENAME if it's needed.
-EL-FILENAME must be the name of a Emacs lisp file and must include the .el
-extension. The name of the file may be relative or absolute.
-The file is byte compiled if it is newer than its byte-compiled output file (a
-file with the .elc extension) or if the .elc file does not exists."
+EL-FILENAME must be the name of a Emacs Lisp file and must
+include the .el extension.  The name of the file may be relative
+or absolute.
+The file is byte compiled if it is newer than its byte-compiled
+output file (a file with the .elc extension) or if the .elc file
+does not exists."
   (let ((elc-filename (concat el-filename "c")))
     (when (or (not (file-exists-p elc-filename))
               (time-less-p
-               (file-attribute-modification-time (file-attributes elc-filename))
-               (file-attribute-modification-time (file-attributes el-filename))))
+               (file-attribute-modification-time
+                (file-attributes elc-filename))
+               (file-attribute-modification-time
+                (file-attributes el-filename))))
       (byte-compile-file el-filename))))
 
 ;;; --------------------------------------------------------------------------
