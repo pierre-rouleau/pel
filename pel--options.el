@@ -835,6 +835,8 @@ all buffers, not just the current one.  It supports several completion methods:
 Select the completion method you want as default when activating this package."
   :group 'pel-pkg-for-completion
   :group 'pel-pkg-for-imenu
+  :link '(url-link :tag "imenu-anywhere @ GitHub"
+                   "https://github.com/vspinu/imenu-anywhere")
   :type '(choice
           (const :tag "Not used." nil)
           (const :tag "Use Emacs default completion."      emacs-default)
@@ -873,8 +875,8 @@ sequences are typed:
   :group 'pel-pkg-for-highlight
   :type 'boolean
   :safe #'booleanp
-  :link `(url-link :tag "iedit @ GitHub"
-                   "https://github.com/victorhge/iedit"))
+  :link '(url-link :tag "iedit @ GitHub"
+                  "https://github.com/victorhge/iedit"))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-cut-and-paste

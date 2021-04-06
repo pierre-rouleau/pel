@@ -1452,12 +1452,15 @@ can't bind negative-argument to C-_ and M-_"
     (define-key pel:completion "?"          'pel-show-active-completion-mode)
     (when pel-use-ido
       (when pel-use-ido-ubiquitous
-        (define-key pel:completion (kbd "M-u") 'pel-ido-ubiquitous))
+        (define-key pel:completion (kbd "M-u") 'pel-ido-ubiquitous)
+        (define-key pel:cfg-goto   (kbd "M-u") 'pel-ido-ubiquitous))
       (when (or pel-use-ido-grid-mode
                 pel-use-ido-vertical-mode)
-        (define-key pel:completion (kbd "M-g") 'pel-select-ido-geometry))
+        (define-key pel:completion (kbd "M-g") 'pel-select-ido-geometry)
+        (define-key pel:cfg-goto   (kbd "M-g") 'pel-select-ido-geometry))
       (when pel-use-flx
-        (define-key pel:completion (kbd "M-f") 'pel-flx-ido)))
+        (define-key pel:completion (kbd "M-f") 'pel-flx-ido)
+        (define-key pel:cfg-goto   (kbd "M-f") 'pel-flx-ido)))
     ;; - then initialize the mode requested
     (pel-set-completion-mode pel-initial-completion-mode :silent)))
 
