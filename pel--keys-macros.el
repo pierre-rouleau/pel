@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-05 13:57:46, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-06 15:59:37, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -89,6 +89,7 @@
     ([f11]           "-pel-key-maps"    nil)
     ([f11 f10]       "menus"            pel-pkg-for-imenu       (menu
                                                                  imenu
+                                                                 Imenu-Plus
                                                                  flimenu
                                                                  popup-imenu
                                                                  popup-switcher))
@@ -649,6 +650,7 @@ Return nil if nothing found."
 
 (defconst pel--group-library-names
   '(("rxt"         . "pcre2el")
+    ("Imenu-Plus"  . "imenu+")
     ("Ztree"       . "ztree-view")
     ("command-log" . "command-log-mode")
     ("clojure"     . "clojure-mode")
