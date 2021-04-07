@@ -105,7 +105,9 @@
 ;; -  `pel-action-for'
 ;;
 ;; Toggle a local mode:
-;;  - `pel-toggle-mode'
+;;  - `pel-toggle-mode-and-show'
+;;    - `pel-toggle-mode'
+;;      - `pel-autoload-p'
 ;;
 ;; Symbol processing
 ;;  - `pel-hook-symbol-for'
@@ -1133,12 +1135,39 @@ The returned value is:
 ;; Toggle a local mode
 ;; -------------------
 
+
+(defun pel-autoload-p (fct)
+  "Return file to load if FCT is an autoloaded function not yet loaded.
+Return nil otherwise."
+  (when (and (fboundp fct)
+             (eq 'autoload (car (symbol-function fct))))
+    (cadr (symbol-function fct))))
+
 (defun pel-toggle-mode (mode)
   "Toggle the specified MODE (a symbol).
-Return the new state of the mode: t if active, nil otherwise."
+Return the new state of the mode: t if active, nil otherwise.
+If the mode function is an autoload and not yet loaded the file
+is loaded and the mode activated."
   (unless (symbolp mode)
     (error "Nothing done: pel-toggle-mode expects a symbol as argument"))
-  (funcall (symbol-function mode) (if (symbol-value mode) -1 1)))
+  ;; Some modes define their state variables only when they are first ran.
+  ;; For those allow calling the function with an argument 1 when their
+  ;; variable is still not yet bound.
+  (let ((file-to-load (pel-autoload-p mode)))
+    (when file-to-load
+      (load file-to-load))
+    (funcall (symbol-function mode) (if (and (boundp mode)
+                                             (symbol-value mode))
+                                        -1
+                                      1))))
+
+(defun pel-toggle-mode-and-show (mode &optional on-string off-string)
+  "Toggle specified MODE (a symbol), and show it's new value.
+If ON-STRING and OFF-STRING arguments are specified use them as the
+on/off value, otherwise use \"on\" and \"off\".
+The function issue an error if the argument is not a symbol."
+  (pel-toggle-mode mode)
+  (message (pel-symbol-text mode on-string off-string)))
 
 (defun pel-toggle-syntax-check-mode (selector)
   "Toggle the active state of syntax checker mode identified by SELECTOR.
@@ -1231,15 +1260,17 @@ The function issue an error if the argument is not a symbol."
   (pel-toggle symbol)
   (message (pel-symbol-text symbol on-string off-string)))
 
-(defun pel-toggle-and-show-user-option (user-option &optional globally)
+(defun pel-toggle-and-show-user-option (user-option &optional globally on-string off-string)
   "Toggle the behaviour of USER-OPTION for current buffer or GLOBALLY.
 Display the new state.
+If ON-STRING and OFF-STRING arguments are specified use them as the
+on/off value, otherwise use \"on\" and \"off\".
 USER-OPTION must be a variable symbol."
   (unless globally
     (with-current-buffer (current-buffer)
       (unless (local-variable-p user-option)
         (make-local-variable user-option))))
-  (pel-toggle-and-show user-option))
+  (pel-toggle-and-show user-option on-string off-string))
 
 (defun pel-val-or-default (val default)
   "Return VAL if not nil otherwise return DEFAULT."
