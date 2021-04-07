@@ -1544,15 +1544,18 @@ Example:
 ;; Insertion of text in current buffer
 ;; -----------------------------------
 
-(defun pel-insert-symbol-content (symbol &optional buffer)
+(defun pel-insert-symbol-content (symbol &optional buffer on-same-line)
   "Insert the name followed by the content of the specified SYMBOL.
 
 By default SYMBOL must be a global symbol as its value is read in the scope
 of the output buffer.  If the SYMBOL is a buffer local symbol, specify the
-buffer in the optional BUFFER argument."
+buffer in the optional BUFFER argument.
+By default, the value is printed on the line after the variable name, unless
+ON-SAME-LINE is set."
   (let ((value (pel-symbol-value symbol buffer)))
-    (insert (format "\nContent of %s:\n%S\n"
+    (insert (format "\n- %-40s:%s%S"
                     (symbol-name symbol)
+                    (if on-same-line " " "\n")
                     value))))
 
 (defun pel-insert-list-content (symbol &optional buffer without-index)
@@ -1564,7 +1567,7 @@ buffer in the optional BUFFER argument.
 
 By default, each element of the list is printed on a new line preceded by an
 element index number unless WITHOUT-INDEX is non-nil."
-  (insert (format "\nContent of %s:\n"
+  (insert (format "\n- %s:\n"
                   (symbol-name symbol)))
   (let ((idx 0)
         (list-value (pel-symbol-value symbol buffer)))
