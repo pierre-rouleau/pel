@@ -349,10 +349,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-toggle-indent-tabs-mode)
 
   (pel-autoload "pel-imenu" for:
-    pel-toggle-imenu-index-follows-order
     pel-imenu-rescan)
-  (pel-autoload-function "pel-imenu" for:
-    pel-imenu-init)
 
   (pel-autoload "pel-indent" for:
     pel-indent-lines

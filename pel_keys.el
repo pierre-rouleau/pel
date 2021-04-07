@@ -1194,15 +1194,10 @@ can't bind negative-argument to C-_ and M-_"
 ;; <f9> <f10>
 ;; M-b M-f M-F M-g M-P M-r
 
-;; Initialize PEL special imenu handling
-(eval-after-load "imenu"
-  (pel-imenu-init))
-
 (define-pel-global-prefix pel:menu (kbd "<f11> <f10>"))
 (define-key pel:menu "B"     #'menu-bar-mode)
 (define-key pel:menu "I"     #'imenu-add-menubar-index)
 (define-key pel:menu "i"     #'imenu)
-(define-key pel:menu "o"      'pel-toggle-imenu-index-follows-order)
 (define-key pel:menu "r"      'pel-imenu-rescan)
 (define-key pel:menu "t"     #'tmm-menubar)
 
