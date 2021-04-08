@@ -1453,6 +1453,16 @@ To activate this package select one of the options:
   :link `(url-link :tag "Menu/iMenu PDF"
                    ,(pel-pdf-file-url "menus")))
 
+(defcustom pel-imenu-index-follows-order-p nil
+  "Control how imenu index entries are listed:
+- nil: the entries with sub-menus are shown at the top (original, standard
+       behaviour).
+- t:   the entries are shown as an outline: in the exact same other
+       as they appear in the buffer/file."
+  :group 'pel-pkg-for-imenu
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-imenu+ nil
   "Control whether PEL provides access to imenu+ external package."
   :link '(url-link :tag "Imenu+ description @ emacswiki"
