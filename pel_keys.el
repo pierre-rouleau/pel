@@ -296,6 +296,8 @@ Done in this function to allow advising libraries that remap these keys."
 
 (global-set-key (kbd "M-g ?")   'pel-show-goto-symbol-settings)
 
+(global-set-key (kbd "M-g i")   'imenu)
+(global-set-key (kbd "M-g M-i") 'imenu)
 (global-set-key (kbd "M-g h")   'pel-goto-symbol)
 (global-set-key (kbd "M-g M-h") 'pel-goto-symbol)
 (define-key pel:cfg-goto "h" 'pel-select-goto-symbol-UI)
@@ -305,6 +307,13 @@ Done in this function to allow advising libraries that remap these keys."
   (global-set-key (kbd "M-g y")    'pel-goto-symbol-any-buffer)
   (global-set-key (kbd "M-g M-y")  'pel-goto-symbol-any-buffer)
   (define-key pel:cfg-goto "y" 'pel-select-goto-symbol-any-buffer-UI))
+
+;; pel-flimenu-mode is always available it displays info if flimenu-mode
+;; is not available
+(define-key pel:cfg-goto "f" 'pel-imenu-toggle-flatten)
+(define-key pel:cfg-goto "o" 'pel-imenu-toggle-follows-order)
+(define-key pel:cfg-goto "p" 'pel-imenu-toggle-popup)
+(define-key pel:cfg-goto "R" 'pel-imenu-toggle-auto-rescan)
 
 ;; ---------------------------------------------------------------------------
 ;; Dired Extensions
@@ -1190,9 +1199,13 @@ can't bind negative-argument to C-_ and M-_"
 ;; as an autoload, and it configures the imenu system.
 ;;
 ;; Used keys:
-;; B f F I i o r t
+;; B f F I f i o p r t
 ;; <f9> <f10>
 ;; M-b M-f M-F M-g M-P M-r
+
+;; Initialize PEL special imenu handling
+(eval-after-load 'imenu
+  (pel-imenu-init))
 
 (define-pel-global-prefix pel:menu (kbd "<f11> <f10>"))
 (define-key pel:menu "B"     #'menu-bar-mode)
@@ -1200,11 +1213,15 @@ can't bind negative-argument to C-_ and M-_"
 (define-key pel:menu "i"     #'imenu)
 (define-key pel:menu "r"      'pel-imenu-rescan)
 (define-key pel:menu "t"     #'tmm-menubar)
+(define-key pel:menu "o"      'pel-imenu-toggle-follows-order)
+(define-key pel:menu "f"      'pel-imenu-toggle-flatten)
+(define-key pel:menu "p"      'pel-imenu-toggle-popup)
+(define-key pel:menu "R"      'pel-imenu-toggle-auto-rescan)
 
 (when pel-use-imenu+
-    (cl-eval-when 'load
-      (pel-install-github-file "emacsmirror/emacswiki.org/master"
-                               "imenu+.el" "imenu%2B.el")))
+  (cl-eval-when 'load
+    (pel-install-github-file "emacsmirror/emacswiki.org/master"
+                             "imenu+.el" "imenu%2B.el")))
 
 ;; Although imenu-extra is available through MELPA, that package just provide
 ;; tools that may be used by other PEL code to incorporate symbol generated

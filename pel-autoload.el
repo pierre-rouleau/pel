@@ -284,6 +284,11 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-ido" for:
     pel-set-ido-use-fname-at-point)
 
+  (pel-autoload "pel-imenu" for:
+    pel-imenu-toggle-follows-order
+    pel-imenu-toggle-auto-rescan
+    pel-imenu-init)
+
   (pel-autoload "pel-imenu-dbg" for:
     pel-imenu-dbg-print-vars)
 
@@ -292,6 +297,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-goto-symbol
     pel-select-goto-symbol-any-buffer-UI
     pel-goto-symbol-any-buffer
+    pel-imenu-toggle-popup
+    pel-imenu-toggle-flatten
     pel-show-goto-symbol-settings)
 
   (pel-autoload "pel-key-chord" for:

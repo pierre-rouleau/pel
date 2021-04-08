@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2021-04-06 16:59:16, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-07 21:41:34, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -360,6 +360,39 @@ command `pel-select-goto-symbol-any-buffer-UI'."
 Please turn pel-use-imenu-anywhere on")))
 
 ;; ---------------------------------------------------------------------------
+;; iMenu : dynamic selection of popup menu VS. completion buffer
+;; -------------------------------------------------------------
+
+;;-pel-autoload
+(defun pel-imenu-toggle-popup (&optional in-current-buffer)
+  "Toggle the use of pop-up menu versus completion buffer for imenu.
+By default this applies to imenu issued in all buffers,
+but with the IN-CURRENT-BUFFER argument set the change applies only
+to the current buffer."
+  (interactive "P")
+  (if (require 'imenu nil :no-error)
+      (pel-toggle-and-show-user-option 'imenu-use-popup-menu
+                                       (not in-current-buffer)
+                                       "use pop-up menu"
+                                       "use completion buffer")
+    (user-error "Failed loading imenu")))
+
+;; iMenu flatten lists : flimenu-mode access
+;; -----------------------------------------
+
+;;-pel-autoload
+(defun pel-imenu-toggle-flatten ()
+  "Toggle between a hierarchical and a flat imenu."
+  (interactive)
+  (if (fboundp 'flimenu-mode)
+      (pel-toggle-mode-and-show 'flimenu-mode
+                                "on:  imenu is flat"
+                                "off: imenu is hierarchical")
+    (user-error
+     "flimenu-mode is not available: pel-use-flimode is %s"
+     (pel-on-off-string pel-use-flimenu))))
+
+;; ---------------------------------------------------------------------------
 ;; goto symbol/any-buffer help
 ;; ---------------------------
 ;;
@@ -383,8 +416,9 @@ Please turn pel-use-imenu-anywhere on")))
   (interactive)
   (message "\
 pel-goto-symbol            UI is: %s%s
-pel-goto-symbol-any-buffer UI is: %s
-- iMenu lists are%s flatten.%s%s"
+pel-goto-symbol-any-buffer UI is: %s%s
+- iMenu lists are %s.%s%s
+- Semantic mode is: %s"
            (pel--goto-symbol-ui-name)
            (pel-string-for
             (when (and (eq 'ido pel--goto-symbol-UI)
@@ -393,7 +427,19 @@ pel-goto-symbol-any-buffer UI is: %s
                       (propertize "WARNING: Ido Ubiquitous is off!" 'face 'bold)
                       " Turn it on to use Ido for this. Use M-g <f4> M-u.")))
            (pel--goto-any-buffer-ui-name)
-           (if pel-use-flimenu "" " not")
+           (pel-string-for
+            (when (boundp 'imenu-use-popup-menu)
+              (format "\n- iMenu UI is: %s" (if imenu-use-popup-menu
+                                                "pop-up menu"
+                                              "completion buffer"))))
+           (if (and (boundp 'flimenu-mode)
+                    flimenu-mode)
+               (format
+                "flat (but may be split if longer than %s entries)"
+                (if (boundp 'imenu-max-items)
+                    imenu-max-items
+                  "some number of"))
+             "hierarchical")
            (pel-string-for
             (when (or (eq 'ido pel--goto-symbol-UI)
                       (eq 'ido pel--imenu-anywhere-method))
@@ -409,7 +455,8 @@ pel-goto-symbol-any-buffer UI is: %s
                       psw-popup-menu-max-length
                       (pel-string-when
                        psw-use-flx
-                       "\n  - supports 'flx' fuzzy engine."))))))
+                       "\n  - supports 'flx' fuzzy engine."))))
+           (pel-symbol-on-off-string 'semantic-mode nil nil "not loaded")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-imenu-ido)
