@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, February 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-07 10:48:38, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-09 12:58:08, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -48,17 +48,36 @@
      "imenu control variables"
      (lambda ()
        "Print imenu variables."
+       (pel-insert-symbol-content 'imenu-use-markers                  buffer :on-same-line)
+       (pel-insert-symbol-content 'imenu-max-item-length              buffer :on-same-line)
        (pel-insert-symbol-content 'imenu-auto-rescan                  buffer :on-same-line)
        (pel-insert-symbol-content 'imenu-auto-rescan-maxout           buffer :on-same-line)
+       (pel-insert-symbol-content 'imenu-use-popup-menu               buffer :on-same-line)
+       (pel-insert-symbol-content 'imenu-eager-completion-buffer      buffer :on-same-line)
+       (pel-insert-symbol-content 'imenu-after-jump-hook              buffer :on-same-line)
+       (pel-insert-symbol-content 'imenu-sort-function                buffer :on-same-line)
+       (pel-insert-symbol-content 'imenu-max-items                    buffer :on-same-line)
+       (pel-insert-symbol-content 'imenu-space-replacement            buffer :on-same-line)
+       (pel-insert-symbol-content 'imenu-level-separator              buffer :on-same-line)
+       (pel-insert-symbol-content 'imenu-generic-skip-comments-and-strings  buffer :on-same-line)
        (pel-insert-symbol-content 'imenu-case-fold-search             buffer :on-same-line)
        (pel-insert-symbol-content 'imenu-create-index-function        buffer :on-same-line)
        (pel-insert-symbol-content 'imenu-prev-index-position-function buffer :on-same-line)
        (pel-insert-symbol-content 'imenu-extract-index-name-function  buffer :on-same-line)
        (pel-insert-symbol-content 'imenu-name-lookup-function         buffer :on-same-line)
        (pel-insert-symbol-content 'imenu-default-goto-function        buffer :on-same-line)
+       (pel-insert-symbol-content 'imenu--cleanup-seen                buffer :on-same-line)
+       (pel-insert-symbol-content 'imenu--menubar-keymap              buffer :on-same-line)
+       (pel-insert-symbol-content 'imenu-buffer-menubar               buffer :on-same-line)
+       (pel-insert-symbol-content 'imenu-menubar-modified-tick        buffer :on-same-line)
+       (pel-insert-symbol-content 'imenu-example--function-name-regexp-c buffer :on-same-line)
+       (pel-insert-symbol-content 'imenu--rescan-item                  buffer :on-same-line)
+
+       (pel-insert-list-content   'imenu--index-alist-roup            buffer)
        (pel-insert-list-content   'imenu-generic-expression           buffer)
        (pel-insert-list-content   'imenu-syntax-alist                 buffer)
-       (pel-insert-list-content   'imenu--index-alist                 buffer)))))
+       (pel-insert-list-content   'imenu--last-menubar-index-alist    buffer)
+       (pel-insert-list-content   'imenu--history-list                buffer)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-imenu-dbg)
