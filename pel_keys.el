@@ -2599,8 +2599,10 @@ d-mode not added to ac-modes!"
 (define-key pel:elisp-compile "a" #'disassemble)
 
 (define-pel-global-prefix pel:elisp-debug (kbd "<f11> SPC l d"))
-(define-key pel:elisp-debug "d" #'debug-on-entry)
-(define-key pel:elisp-debug "D" #'cancel-debug-on-entry)
+(define-key pel:elisp-debug "f" #'debug-on-entry)
+(define-key pel:elisp-debug "F" #'cancel-debug-on-entry)
+(define-key pel:elisp-debug "v" #'debug-on-variable-change)
+(define-key pel:elisp-debug "V" #'cancel-debug-on-variable-change)
 (define-key pel:elisp-debug "!" #'toggle-debug-on-error)
 (define-key pel:elisp-debug ")" #'toggle-debug-on-quit)
 (define-key pel:elisp-debug "e"  'edebug-defun)
