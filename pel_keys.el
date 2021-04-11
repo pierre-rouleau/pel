@@ -2075,7 +2075,7 @@ d-mode not added to ac-modes!"
 
   (pel-ensure-package erlang from: melpa)
   (pel-autoload-file erlang for: erlang-mode)
-  (pel-set-auto-mode erlang for:
+  (pel-set-auto-mode erlang-mode for:
                      "\\.erl?$"
                      "\\.hrl?$"
                      "rebar\\.config$"
