@@ -1675,9 +1675,8 @@ can't bind negative-argument to C-_ and M-_"
   (pel-local-set-f12-M-f12 'pel:for-make))
 
 ;; Schedule activation of Make mode <f12> key binding
-(pel--mode-hook-maybe-call
- (function pel--setenv-for-make)
- 'makefile-mode 'makefile-mode-hook)
+(pel--mode-hook-maybe-call (function pel--setenv-for-make)
+                           'makefile-mode 'makefile-mode-hook)
 
 ;; Support for nmake - additions to what is supported by make-mode
 (declare-function makefile-nmake-mode "pel-make")
@@ -1920,9 +1919,8 @@ MODE must be a symbol."
 ;;
 ;; Schedule activation of C mode style and its <f12> key binding
 (pel-check-minor-modes-in pel-c-activates-minor-modes)
-(pel--mode-hook-maybe-call
- (function pel--setenv-for-c)
- 'c-mode 'c-mode-hook)
+(pel--mode-hook-maybe-call (function pel--setenv-for-c)
+                           'c-mode 'c-mode-hook)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C`` : C++ programming utilities
@@ -1970,9 +1968,8 @@ MODE must be a symbol."
 ;;
 ;; Schedule activation of C++ mode style and its <f12> key binding
 (pel-check-minor-modes-in pel-c++-activates-minor-modes)
-(pel--mode-hook-maybe-call
- (function pel--setenv-for-c++)
- 'c++-mode 'c++-mode-hook)
+(pel--mode-hook-maybe-call (function pel--setenv-for-c++)
+                           'c++-mode 'c++-mode-hook)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC D`` : D programming utilities
@@ -2022,9 +2019,8 @@ MODE must be a symbol."
   (pel--map-cc-for pel:for-d)
   ;; Schedule activation of D mode style and its <f12> key binding
   (pel-check-minor-modes-in pel-d-activates-minor-modes)
-  (pel--mode-hook-maybe-call
-   (function pel--setenv-for-d)
-   'd-mode 'd-mode-hook)
+  (pel--mode-hook-maybe-call (function pel--setenv-for-d)
+                             'd-mode 'd-mode-hook)
 
   ;; Configure auto-completion based on selection
   ;; There are 2 possibilities
@@ -2917,7 +2913,7 @@ d-mode not added to ac-modes!"
 
   ;; activate the <f12> key binding for gerbil-mode
   (pel-check-minor-modes-in pel-gerbil-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--mode-hook-maybe-call)
+  (pel--mode-hook-maybe-call (function pel--setup-for-gerbil)
                              'gerbil-mode 'gerbil-mode-hook)
 
   ;; No package made for this.  Take the code directly from Github
@@ -4381,9 +4377,8 @@ the ones defined from the buffer now."
     (error "goto-address-highlight-keymap not defined!")))
 
 ;; activate the extra keys for goto-addr-mode
-(pel--mode-hook-maybe-call
- (function pel--augment-goto-addr-map)
- 'goto-address-mode 'goto-address-mode-hook)
+(pel--mode-hook-maybe-call  (function pel--augment-goto-addr-map)
+                            'goto-address-mode 'goto-address-mode-hook)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> f a`` : Find File At Point (ffap)
