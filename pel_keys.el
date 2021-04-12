@@ -3252,7 +3252,16 @@ d-mode not added to ac-modes!"
 (when pel-use-asciidoc
   (pel-ensure-package adoc-mode from: melpa)
   (pel-autoload-file adoc-mode for: adoc-mode)
-  (pel-set-auto-mode adoc-mode for: "\\.adoc\\'"))
+  (pel-set-auto-mode adoc-mode for: "\\.adoc\\'")
+
+  (defun pel--setup-for-asciidoc ()
+    "Activate AsciiDoc setup."
+    ;; Activates minor modes requested by user
+    (pel-turn-on-minor-modes-in pel-asciidoc-activates-minor-modes))
+
+    (pel-check-minor-modes-in pel-asciidoc-activates-minor-modes)
+    (pel--mode-hook-maybe-call (function pel--setup-for-asciidoc)
+                               'adoc-mode 'adoc-mode-hook))
 
 ;; ---------------------------------------------------------------------------
 ;; Org-Mode Support
@@ -3280,7 +3289,16 @@ d-mode not added to ac-modes!"
   (pel-setq org-todo-keywords
             (quote ((sequence "TODO" "IN-PROGRESS" "DONE"))))
   ;; Use the cleaner outline view mode.
-  (add-hook 'org-mode-hook 'org-indent-mode))
+  (add-hook 'org-mode-hook 'org-indent-mode)
+
+  (defun pel--setup-for-org-mode ()
+    "Activate Org-Mode setup."
+    ;; Activates minor modes requested by user
+    (pel-turn-on-minor-modes-in pel-org-mode-activates-minor-modes))
+
+  (pel-check-minor-modes-in pel-org-mode-activates-minor-modes)
+  (pel--mode-hook-maybe-call (function pel--setup-for-org-mode)
+                             'org-mode-mode 'org-mode-mode-hook))
 
 ;; ---------------------------------------------------------------------------
 ;; YAML Support
@@ -3289,7 +3307,16 @@ d-mode not added to ac-modes!"
 (when pel-use-yaml-mode
   (pel-ensure-package yaml-mode from: melpa)
   (pel-autoload-file yaml-mode for: yaml-mode)
-  (pel-set-auto-mode yaml-mode for: "\\.yml\\'"))
+  (pel-set-auto-mode yaml-mode for: "\\.yml\\'")
+
+  (defun pel--setup-for-yaml ()
+    "Activate Yaml setup."
+    ;; Activates minor modes requested by user
+    (pel-turn-on-minor-modes-in pel-yaml-activates-minor-modes))
+
+  (pel-check-minor-modes-in pel-yaml-activates-minor-modes)
+  (pel--mode-hook-maybe-call (function pel--setup-for-yaml)
+                             'yaml-mode 'yaml-mode-hook))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-r`` : reSTucturedText
@@ -3302,7 +3329,9 @@ d-mode not added to ac-modes!"
     "Activate the reStructuredText (rst) mode."
     (setq tab-width    pel-rst-tab-width)
     (pel-local-set-f12 'pel:for-reST)
-    (pel--install-rst-skel pel:rst-skel))
+    (pel--install-rst-skel pel:rst-skel)
+    ;; Activates minor modes requested by user
+    (pel-turn-on-minor-modes-in pel-rst-activates-minor-modes))
   (declare-function pel--setup-for-rst "pel_keys")
 
   ;; Add .stxt to the accepted file extensions for rst-mode
@@ -3349,9 +3378,9 @@ d-mode not added to ac-modes!"
   (define-key pel:rst-adorn-style "C" 'pel-rst-adorn-CRiSPer)
   ;;
   ;; activate the <f12> key binding for rst-mode
-  (pel--mode-hook-maybe-call
-   (function pel--setup-for-rst)
-   'rst-mode 'rst-mode-hook)
+  (pel-check-minor-modes-in pel-rst-activates-minor-modes)
+  (pel--mode-hook-maybe-call (function pel--setup-for-rst)
+                             'rst-mode 'rst-mode-hook)
 
   (when pel-use-speedbar
     (pel-add-speedbar-extension '(".rst"
@@ -3372,12 +3401,20 @@ d-mode not added to ac-modes!"
   (define-key pel:for-graphviz-dot "c" 'compile)
   (define-key pel:for-graphviz-dot "p" 'graphviz-dot-preview)
   (define-key pel:for-graphviz-dot (kbd "TAB") 'graphviz-dot-indent-graph)
+
+  (defun pel--setup-for-graphviz-dot ()
+    "Activate Graphviz-Dot setup."
+    (pel-local-set-f12 'pel:for-graphviz-dot)
+    ;; Activates minor modes requested by user
+    (pel-turn-on-minor-modes-in pel-graphviz-dot-activates-minor-modes))
   ;;
   ;; activate the <f12> key binding for graphviz-dot-mode
-  (pel--mode-hook-maybe-call
-   (lambda ()
-     (pel-local-set-f12 'pel:for-graphviz-dot))
-   'graphviz-dot-mode 'graphviz-dot-mode-hook))
+  (pel--mode-hook-maybe-call (function pel--setup-for-grahviz-dot)
+                             'graphviz-dot-mode 'graphviz-dot-mode-hook)
+
+  (pel-check-minor-modes-in pel-graphviz-dot-activates-minor-modes)
+  (pel--mode-hook-maybe-call (function pel--setup-for-graphviz-dot)
+                             'graphviz-dot-mode 'graphviz-dot-mode-hook))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-u`` : PlantUML
@@ -3392,12 +3429,17 @@ d-mode not added to ac-modes!"
   (define-key pel:for-plantuml "p"          'plantuml-preview)
   (define-key pel:for-plantuml "/"          'plantuml-complete-symbol)
   (define-key pel:for-plantuml (kbd "TAB")  'plantuml-indent-line)
-  ;;
+
+  (defun pel--setup-for-plantuml ()
+    "Activate Plantuml setup."
+    (pel-local-set-f12 'pel:for-plantuml)
+    ;; Activates minor modes requested by user
+    (pel-turn-on-minor-modes-in pel-plantuml-activates-minor-modes))
+
+  (pel-check-minor-modes-in pel-plantuml-activates-minor-modes)
   ;; activate the <f12> key binding for plantuml-mode
-  (pel--mode-hook-maybe-call
-   (lambda ()
-     (pel-local-set-f12 'pel:for-plantuml))
-   'plantuml-mode 'plantuml-mode-hook))
+  (pel--mode-hook-maybe-call (function pel--setup-for-plantuml)
+                             'plantuml-mode 'plantuml-mode-hook))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> =`` : Copy commands

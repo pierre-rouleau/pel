@@ -2023,6 +2023,13 @@ waiting for activity to resume in the lewang's repo."
   :safe #'booleanp)
 (put 'pel-use-org-mode :package-is :builtin-emacs)
 
+(defcustom pel-org-mode-activates-minor-modes nil
+  "List of minor-modes automatically activated for Org-Mode buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-org-mode
+  :type '(repeat function))
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; AsciiDoc Support
 ;; ----------------
@@ -2039,6 +2046,13 @@ waiting for activity to resume in the lewang's repo."
   :type 'boolean
   :safe #'booleanp)
 (put 'pel-use-asciidoc :package-is 'adoc-mode )
+
+(defcustom pel-asciidoc-activates-minor-modes nil
+  "List of minor-modes automatically activated for AsciiDoc buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-asciidoc
+  :type '(repeat function))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; pel-pkg-for-draw-markup
@@ -2070,6 +2084,13 @@ images from their Graphviz Dot files."
   :type 'boolean
   :safe #'booleanp)
 (put 'pel-use-graphviz-dot :package-is 'graphviz-dot-mode)
+
+(defcustom pel-graphviz-dot-activates-minor-modes nil
+  "List of minor-modes automatically activated for Graphviz Dot buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-graphviz-dot
+  :type '(repeat function))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; PlantUML Support
@@ -2107,6 +2128,13 @@ Note that this value overrides the value selected by the
           (const :tag "Use the remote PlantUML server" server)))
 (put 'pel-use-plantuml :package-is 'plantuml-mode)
 
+(defcustom pel-plantuml-activates-minor-modes nil
+  "List of minor-modes automatically activated for PlantUML buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-plantuml
+  :type '(repeat function))
+
 (defcustom pel-use-flycheck-plantuml nil
   "Control the flycheck-plantuml PlantUML checker package is used with PEL."
   :link '(url-link :tag "flycheck-plantuml @ GitHub"
@@ -2130,6 +2158,13 @@ Note that this value overrides the value selected by the
   :type 'boolean
   :safe #'booleanp)
 (put 'pel-use-rst-mode :package-is :builtin-emacs)
+
+(defcustom pel-rst-activates-minor-modes nil
+  "List of minor-modes automatically activated for reStructuredText buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-reST
+  :type '(repeat function))
 
 (defcustom pel-rst-adornment-style 'CRiSPer
   "Select the section adornment style.
@@ -2171,6 +2206,13 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
   :group 'pel-pkg-for-yaml
   :type 'boolean
   :safe #'booleanp)
+
+(defcustom pel-yaml-activates-minor-modes nil
+  "List of minor-modes automatically activated for YAML buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-yaml
+  :type '(repeat function))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-navigation
