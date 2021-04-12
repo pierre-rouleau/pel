@@ -1664,7 +1664,7 @@ can't bind negative-argument to C-_ and M-_"
 
 (define-pel-global-prefix pel:for-make (kbd "<f11> SPC M"))
 
-(defun pel--setenv-for-make ()
+(defun pel--setup-for-make ()
   "Set the environment for Make file editing."
   (define-key pel:for-make (kbd "<up>")      'makefile-previous-dependency)
   (define-key pel:for-make (kbd "<down>")    'makefile-next-dependency)
@@ -1675,7 +1675,7 @@ can't bind negative-argument to C-_ and M-_"
   (pel-local-set-f12-M-f12 'pel:for-make))
 
 ;; Schedule activation of Make mode <f12> key binding
-(pel--mode-hook-maybe-call (function pel--setenv-for-make)
+(pel--mode-hook-maybe-call (function pel--setup-for-make)
                            'makefile-mode 'makefile-mode-hook)
 
 ;; Support for nmake - additions to what is supported by make-mode
@@ -1880,7 +1880,7 @@ MODE must be a symbol."
 (define-pel-global-prefix pel:for-c-preproc (kbd "<f11> SPC c #"))
 (define-pel-global-prefix pel:c-skel        (kbd "<f11> SPC c <f12>"))
 
-(defun pel--setenv-for-c ()
+(defun pel--setup-for-c ()
   "Set the environment for editing C files."
   ;; Configure the CC Mode style for C from PEL custom variables
   ;; 1) set the style: it identifies everything
@@ -1919,7 +1919,7 @@ MODE must be a symbol."
 ;;
 ;; Schedule activation of C mode style and its <f12> key binding
 (pel-check-minor-modes-in pel-c-activates-minor-modes)
-(pel--mode-hook-maybe-call (function pel--setenv-for-c)
+(pel--mode-hook-maybe-call (function pel--setup-for-c)
                            'c-mode 'c-mode-hook)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1933,7 +1933,7 @@ MODE must be a symbol."
 (define-pel-global-prefix pel:for-c++         (kbd "<f11> SPC C"))
 (define-pel-global-prefix pel:for-c++-preproc (kbd "<f11> SPC C #"))
 
-(defun pel--setenv-for-c++ ()
+(defun pel--setup-for-c++ ()
   "Set the environment for editing C++ files."
   ;; Configure the CC Mode style for C++ from PEL custom variables
   ;; 1) set the style: it identifies everything
@@ -1968,7 +1968,7 @@ MODE must be a symbol."
 ;;
 ;; Schedule activation of C++ mode style and its <f12> key binding
 (pel-check-minor-modes-in pel-c++-activates-minor-modes)
-(pel--mode-hook-maybe-call (function pel--setenv-for-c++)
+(pel--mode-hook-maybe-call (function pel--setup-for-c++)
                            'c++-mode 'c++-mode-hook)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1978,7 +1978,7 @@ MODE must be a symbol."
 
   (define-pel-global-prefix pel:for-d (kbd "<f11> SPC D"))
 
-  (defun pel--setenv-for-d ()
+  (defun pel--setup-for-d ()
     "Set the environment for editing D files."
     ;; Configure the CC Mode style for C++ from PEL custom variables
     ;; 1) set the style: it identifies everything
@@ -2002,7 +2002,7 @@ MODE must be a symbol."
     ;; TODO
     ;; 9) activate any mode user wants
     (pel-turn-on-minor-modes-in pel-d-activates-minor-modes))
-  (declare-function pel--setenv-for-d "pel_keys")
+  (declare-function pel--setup-for-d "pel_keys")
   (declare-function speedbar-add-supported-extension "speedbar")
 
   (when pel-use-speedbar
@@ -2019,7 +2019,7 @@ MODE must be a symbol."
   (pel--map-cc-for pel:for-d)
   ;; Schedule activation of D mode style and its <f12> key binding
   (pel-check-minor-modes-in pel-d-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setenv-for-d)
+  (pel--mode-hook-maybe-call (function pel--setup-for-d)
                              'd-mode 'd-mode-hook)
 
   ;; Configure auto-completion based on selection
@@ -2332,7 +2332,7 @@ d-mode not added to ac-modes!"
   (when pel-use-go-mode
     (define-pel-global-prefix pel:for-go (kbd "<f11> SPC g"))
 
-    (defun pel--setenv-for-go ()
+    (defun pel--setup-for-go ()
       "Set environment for Go programming."
       (pel-local-set-f12-M-f12 'pel:for-go)
       ;; ensure gofmt is executed before saving file if
@@ -2352,7 +2352,7 @@ d-mode not added to ac-modes!"
                  pel-use-goflymake))))
       ;; Activates minor modes requested by user
       (pel-turn-on-minor-modes-in pel-go-activates-minor-modes))
-    (declare-function pel--setenv-for-go "pel_keys")
+    (declare-function pel--setup-for-go "pel_keys")
 
     ;; Overcoming omission bug in go-mode: add support for Speedbar
     (when pel-use-speedbar
@@ -2368,7 +2368,7 @@ d-mode not added to ac-modes!"
       (define-key pel:for-go "!"       'pel-go-toggle-syntax-checker))
     ;; activate the <f12> key binding for Go
     (pel-check-minor-modes-in pel-go-activates-minor-modes)
-    (pel--mode-hook-maybe-call (function pel--setenv-for-go)
+    (pel--mode-hook-maybe-call (function pel--setup-for-go)
                                'go-mode 'go-mode-hook))
 
   ;; goflymake package - either using flymake or flycheck
@@ -2829,15 +2829,15 @@ d-mode not added to ac-modes!"
   (pel-ensure-package racket-mode from: melpa)
   (pel-autoload-file racket-mode for: racket-mode)
 
-  (defun pel--setenv-for-racket ()
+  (defun pel--setup-for-racket ()
     "Activate Racket setup."
     (pel-local-set-f12-M-f12 'pel:for-racket)
     ;; Activates minor modes requested by user
     (pel-turn-on-minor-modes-in pel-racket-activates-minor-modes))
-  (declare-function pel--setenv-for-racket "pel_keys")
+  (declare-function pel--setup-for-racket "pel_keys")
 
   ;; activate the <f12> key binding for racket-mode
-  (pel--mode-hook-maybe-call (function pel--setenv-for-racket)
+  (pel--mode-hook-maybe-call (function pel--setup-for-racket)
                              'racket-mode 'racket-mode-hook))
 
 ;; ---------------------------------------------------------------------------
@@ -3072,11 +3072,11 @@ d-mode not added to ac-modes!"
   ;; Set the mode specific key prefix
   (define-pel-global-prefix pel:for-rexx (kbd "<f11> SPC R"))
 
-  (defun pel--setenv-for-rexx ()
+  (defun pel--setup-for-rexx ()
     "Set the environment for REXX file editing."
     (pel-local-set-f12 'pel:for-rexx)
     (pel-turn-on-minor-modes-in pel-rexx-activates-minor-modes))
-  (declare-function pel--setenv-for-rexx "pel_keys")
+  (declare-function pel--setup-for-rexx "pel_keys")
 
   (pel-autoload-file rexx-mode for:
                      rexx-mode
@@ -3091,7 +3091,7 @@ d-mode not added to ac-modes!"
 
   ;; activate the <f12> key binding for rexx-mode
   (pel-check-minor-modes-in pel-rexx-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setenv-for-rexx)
+  (pel--mode-hook-maybe-call (function pel--setup-for-rexx)
                              'rexx-mode 'rexx-mode-hook))
 
 ;; ---------------------------------------------------------------------------
@@ -3106,11 +3106,11 @@ d-mode not added to ac-modes!"
   ;; Set the mode specific key prefix
   (define-pel-global-prefix pel:for-netrexx (kbd "<f11> SPC N"))
 
-  (defun pel--setenv-for-netrexx ()
+  (defun pel--setup-for-netrexx ()
     "Set the environment for NetRexx file editing."
     (pel-local-set-f12 'pel:for-netrexx)
     (pel-turn-on-minor-modes-in pel-netrexx-activates-minor-modes))
-  (declare-function pel--setenv-for-netrexx "pel_keys")
+  (declare-function pel--setup-for-netrexx "pel_keys")
 
   (pel-autoload-file netrexx-mode for: netrexx-mode)
   ;; Set the file extension for NetRexx: ".nrx"
@@ -3126,7 +3126,7 @@ d-mode not added to ac-modes!"
 
   ;; activate the <f12> key binding for netrexx-mode
   (pel-check-minor-modes-in pel-netrexx-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setenv-for-netrexx)
+  (pel--mode-hook-maybe-call (function pel--setup-for-netrexx)
                              'netrexx-mode 'netrexx-mode-hook))
 
 ;; ---------------------------------------------------------------------------
@@ -3405,7 +3405,7 @@ d-mode not added to ac-modes!"
     (pel-turn-on-minor-modes-in pel-graphviz-dot-activates-minor-modes))
   ;;
   ;; activate the <f12> key binding for graphviz-dot-mode
-  (pel--mode-hook-maybe-call (function pel--setup-for-grahviz-dot)
+  (pel--mode-hook-maybe-call (function pel--setup-for-graphviz-dot)
                              'graphviz-dot-mode 'graphviz-dot-mode-hook)
 
   (pel-check-minor-modes-in pel-graphviz-dot-activates-minor-modes)
