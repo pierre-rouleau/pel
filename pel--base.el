@@ -366,12 +366,18 @@ If N > 2: use the PLURAL form if specified,
 ;; Symbol value extraction
 ;; -----------------------
 
+(defun pel--symbol-value (symbol)
+  "Return SYMBOL value or a list with the symbol and a string if not bound."
+  (if (boundp symbol)
+      (symbol-value symbol)
+    (list symbol "**is currently unbound!**")))
+
 (defun pel-symbol-value (symbol &optional buffer)
   "Return SYMBOL value in current or specified BUFFER."
   (if buffer
       (with-current-buffer buffer
-        (symbol-value symbol))
-    (symbol-value symbol)))
+        (pel--symbol-value symbol))
+    (pel--symbol-value symbol)))
 
 (defun pel-as-symbol (s)
   "Return the symbol for S, which can either be a string or a symbol."
