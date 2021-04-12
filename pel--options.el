@@ -122,7 +122,8 @@
 ;; - pel-use-<package name>
 ;; - pel-modes-activating-<package name>
 ;; - pel-startup-<thing to activate at startup>
-
+;; - pel-<mode>-activates-minor-modes
+;;
 ;; The pel-use-  user-options are either t/nil boolean types or tri-state
 ;; types that can be set to nil, t or 'use-from-start.  When set to t, they
 ;; are only activated once a PEL command for that effect is executed by the
@@ -274,7 +275,7 @@ master/doc/pdf/%s.pdf" topic)
 A collection of facilities designed to integrate and complement a large
 set of Emacs libraries while providing key bindings that mainly use function
 keys as key prefixes, leaving the standard Emacs keys untouched.
-PEL comes with a manual and a large set of PDF files, each documenting the
+PELcomes with a manual and a large set of PDF files, each documenting the
 commands and key bindings of a specific aspect of Emacs.  The PDF files document
 the standard Emacs key bindings as well as PEL's specific key bindings."
   :group 'convenience
@@ -2435,6 +2436,13 @@ of auto-newline while editing."
   :group 'c
   :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
 
+(defcustom pel-c-activates-minor-modes nil
+  "List of minor-modes automatically activated for C buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-c
+  :type '(repeat function))
+
 (defcustom pel-use-c-eldoc nil
   "Control whether PEL supports the c-eldoc package.
 
@@ -2788,6 +2796,14 @@ defined ones, which could use that variable too."
   :group 'pel-pkg-for-cc
   :link `(url-link :tag "C++ PDF" ,(pel-pdf-file-url "pl-c++")))
 
+
+(defcustom pel-c++-activates-minor-modes nil
+  "List of minor-modes automatically activated for C++ buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-c++
+  :type '(repeat function))
+
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-c++-code-style nil
   "C++ Source Code Style options."
@@ -2900,6 +2916,13 @@ Values in the [2, 8] range are accepted."
   :type 'boolean
   :safe #'booleanp)
 (put 'pel-use-d :package-is 'd-mode)
+
+(defcustom pel-d-activates-minor-modes nil
+  "List of minor-modes automatically activated for D buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-d
+  :type '(repeat function))
 
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-d-code-style nil
@@ -3045,6 +3068,13 @@ PEL additions using built-in js-mode." js-mode)
 (put 'pel-use-javascript :package-is '(when (eq pel-use-javascript 'js2-mode)
                                         '((elpa . js2-mode))))
 
+(defcustom pel-javascript-activates-minor-modes nil
+  "List of minor-modes automatically activated for Javascript buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-javascript
+  :type '(repeat function))
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Go language support
 ;; -------------------
@@ -3062,6 +3092,13 @@ This *must* be activated to allow any other package for Go."
   :type 'boolean
   :safe #'booleanp)
 (put 'pel-use-go :package-is :a-gate)
+
+(defcustom pel-go-activates-minor-modes nil
+  "List of minor-modes automatically activated for Go buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-go
+  :type '(repeat function))
 
 (defcustom pel-go-tab-width 8
   "Hard-tab display width used for Go source code.
@@ -3098,7 +3135,6 @@ even when the user-option sets it on."
   :type 'boolean
   :safe #'booleanp)
 (put 'pel-use-go-mode :requires 'pel-use-go)
-
 
 (defcustom pel-use-goflymake nil
   "Controls whether PEL use the goflymake package.
@@ -3138,7 +3174,6 @@ defcustom variable `pel-modes-activating-syntax-check'."
             ((eq pel-use-goflymake 'with-flymake)
              ;; flymake is part of Emacs
              '((utils . go-flymake)))))
-
 
 (defcustom pel-use-gocode nil
   "Controls whether PEL use the gocode package."
@@ -3296,6 +3331,13 @@ key."
   :link `(url-link :tag "Common Lisp PDF"
                    ,(pel-pdf-file-url "pl-common-lisp")))
 
+(defcustom pel-clisp-activates-minor-modes nil
+  "List of minor-modes automatically activated for Common Lisp buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-clisp
+  :type '(repeat function))
+
 (defcustom pel-use-common-lisp nil
   "Control whether PEL supports Common Lisp development."
   :group 'pel-pkg-for-clisp
@@ -3357,6 +3399,13 @@ To activate Sly with Common Lisp the user-option variable
   "PEL customization for Emacs Lisp."
   :group 'pel-pkg-for-lisp
   :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp")))
+
+(defcustom pel-elisp-activates-minor-modes nil
+  "List of minor-modes automatically activated for Emacs Lisp buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-elisp
+  :type '(repeat function))
 
 (defcustom pel-use-macrostep nil
   "Control whether PEL uses the macrostep package."
@@ -3421,6 +3470,13 @@ A great tool for learning new Emacs Lisp functions."
   "PEL customization for the Arc programming language support."
   :group 'pel-pkg-for-lisp)
 
+(defcustom pel-arc-activates-minor-modes nil
+  "List of minor-modes automatically activated for Arc buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-arc
+  :type '(repeat function))
+
 (defcustom pel-use-arc nil
   "Control whether PEL supports the Arc programming language.
 
@@ -3441,6 +3497,13 @@ provide arc-mode and Arc inferior mode."
 (defgroup pel-pkg-for-clojure nil
   "PEL customization for the Clojure programming language support."
   :group 'pel-pkg-for-lisp)
+
+(defcustom pel-clojure-activates-minor-modes nil
+  "List of minor-modes automatically activated for Clojure buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-clojure
+  :type '(repeat function))
 
 (defcustom pel-use-clojure nil
   "Control whether PEL supports the Clojure programming language."
@@ -3495,6 +3558,13 @@ To use it you must also turn on:
 Hy is a Lisp in Python."
   :group 'pel-pkg-for-lisp)
 
+(defcustom pel-hy-activates-minor-modes nil
+  "List of minor-modes automatically activated for Hy  buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-hy
+  :type '(repeat function))
+
 (defcustom pel-use-hy nil
   "Control whether PEL supports the Hy programming language.
 Hy is a Lisp in Python."
@@ -3514,6 +3584,13 @@ Hy is a Lisp in Python."
   "PEL customization for the Scheme programming language support."
   :link `(url-link :tag "Scheme PDF" ,(pel-pdf-file-url "pl-scheme"))
   :group 'pel-pkg-for-lisp)
+
+(defcustom pel-scheme-activates-minor-modes nil
+  "List of minor-modes automatically activated for Scheme buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-scheme
+  :type '(repeat function))
 
 (defcustom pel-use-scheme nil
   "Control whether PEL supports the Scheme programming language."
@@ -3554,6 +3631,13 @@ The user-option variable `pel-use-scheme' must be turned on to activate this."
   "PEL customization for the Racket programming language support."
   :group 'pel-pkg-for-lisp)
 
+(defcustom pel-racket-activates-minor-modes nil
+  "List of minor-modes automatically activated for Racket buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-racket
+  :type '(repeat function))
+
 (defcustom pel-use-racket nil
   "Control whether PEL supports the Racket programming language.
 
@@ -3572,6 +3656,13 @@ package."
 (defgroup pel-pkg-for-gerbil nil
   "PEL customization for the Gerbil Scheme programming language support."
   :group 'pel-pkg-for-lisp)
+
+(defcustom pel-gerbil-activates-minor-modes nil
+  "List of minor-modes automatically activated for Gerbil buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-gerbil
+  :type '(repeat function))
 
 (defcustom pel-use-gerbil nil
   "Control whether PEL supports the Gerbil Scheme-based programming language."
@@ -3879,6 +3970,13 @@ the copyright holder value."
   :safe #'booleanp)
 (put 'pel-use-elixir :package-is 'elixir-mode)
 
+(defcustom pel-elixir-activates-minor-modes nil
+  "List of minor-modes automatically activated for Elixir buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-elixir
+  :type '(repeat function))
+
 (defcustom pel-use-alchemist nil
   "Control whether PEL supports Elixir Alchemist package.
 IMPORTANT:
@@ -3995,6 +4093,13 @@ package which provides the client/library for LSP."
   :group 'pel-pkg-for-erlang
   :type 'boolean
   :safe #'booleanp)
+
+(defcustom pel-erlang-activates-minor-modes nil
+  "List of minor-modes automatically activated for Erlang buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-erlang
+  :type '(repeat function))
 
 (defcustom pel-erlang-man-rootdir "~/.emacs.d/edts/doc"
   "Path to the directory holding Erlang man files for several Erlang versions.
@@ -4245,6 +4350,13 @@ the copyright holder value."
   :safe #'booleanp)
 (put 'pel-use-lfe :package-is 'lfe-mode)
 
+(defcustom pel-lfe-activates-minor-modes nil
+  "List of minor-modes automatically activated for LFE buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-lfe
+  :type '(repeat function))
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Forth support
 ;; -------------
@@ -4259,6 +4371,13 @@ the copyright holder value."
   :type 'boolean
   :safe #'booleanp)
 (put 'pel-use-forth :package-is 'forth-mode)
+
+(defcustom pel-forth-activates-minor-modes nil
+  "List of minor-modes automatically activated for Forth buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-forth
+  :type '(repeat function))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Julia Support
@@ -4280,6 +4399,13 @@ IMPORTANT:
 (put 'pel-use-julia :package-is 'julia-snail)
 (put 'pel-use-julia :requires 'pel-use-vterm)
 
+(defcustom pel-julia-activates-minor-modes nil
+  "List of minor-modes automatically activated for Julia buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-julia
+  :type '(repeat function))
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Python Support
 ;; --------------
@@ -4294,6 +4420,13 @@ IMPORTANT:
   :type 'boolean
   :safe #'booleanp)
 (put 'pel-use-python :package-is :builtin-emacs)
+
+(defcustom pel-python-activates-minor-modes nil
+  "List of minor-modes automatically activated for Python buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-python
+  :type '(repeat function))
 
 (defcustom pel-python-tab-width 4
   "Distance between tab stop for buffers in `python-mode'.
@@ -4373,6 +4506,13 @@ Note: `pel-use-python' must be t for this to be effective."
 (put 'pel-use-rexx :package-is '(quote ((utils . rexx-mode)
                                         (utils . rexx-debug))))
 
+(defcustom pel-rexx-activates-minor-modes nil
+  "List of minor-modes automatically activated for REXX buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-rexx
+  :type '(repeat function))
+
 (defcustom pel-use-netrexx nil
   "Control whether PEL supports Net-Rexx development."
   :group 'pel-pkg-for-rexx
@@ -4386,6 +4526,13 @@ Note: `pel-use-python' must be t for this to be effective."
   :type 'boolean
   :safe #'booleanp)
 (put 'pel-use-netrexx :package-is '(quote ((utils . netrexx-mode))))
+
+(defcustom pel-netrexx-activates-minor-modes nil
+  "List of minor-modes automatically activated for Net-Rexx buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-rexx
+  :type '(repeat function))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Rust Support
@@ -4413,6 +4560,13 @@ Requires the user-option variable `pel-use-rust' to be on (t)."
   :type 'boolean
   :safe #'booleanp)
 (put 'pel-use-rust-mode :requires 'pel-use-rust)
+
+(defcustom pel-rust-activates-minor-modes nil
+  "List of minor-modes automatically activated for Rust buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-rust
+  :type '(repeat function))
 
 (defcustom pel-use-rustic nil
   "Control whether rustic is activated.
@@ -4490,6 +4644,13 @@ NOTE:
                                     '((elpa . v-mode)))
                                    ((eq pel-use-v 'vlang-mode)
                                     '((utils . vlang-mode)))))
+
+(defcustom pel-v-activates-minor-modes nil
+  "List of minor-modes automatically activated for V buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-v
+  :type '(repeat function))
 
 ;; ---------------------------------------------------------------------------
 ;; Project Manager Support

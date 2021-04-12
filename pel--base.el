@@ -919,6 +919,7 @@ REGEXPS is on or several regular expression strings."
     `(progn
        ,@forms)))
 
+
 (defmacro pel-autoload-file (fname for: &rest commands)
   "Schedule the autoloading of FNAME for specified COMMANDS.
 FNAME is either a string or an unquoted symbol.
@@ -1228,7 +1229,42 @@ Change its customized value with ``M-x customize %s``"
                modes-list-symbol)
        :error))))
 
-;;----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
+
+(defun pel--check-minor-modes-in (list-var minor-modes)
+  "Check validity of all MINOR-MODES specified in the LIST-VAR.
+LIST-VAR is the symbol of the variable holding MINOR-MODES.
+MINOR-MODES is he list of minor modes symbols.
+Generate a warning if any symbol in the MINOR-MODES list is not a valid
+mode switching symbol."
+  (let ((error-count 0))
+    (dolist (minor-mode minor-modes)
+      (unless (and (symbolp minor-mode)
+                   (fboundp minor-mode)
+                   (commandp minor-mode))
+        (setq error-count (1+ error-count))
+        (display-warning 'pel-invalid-mode-symbol
+                         (format "Invalid mode symbol in %s: %S"
+                                 list-var minor-mode)
+                         :error)))
+    (when (> error-count 0)
+      (display-warning
+       'pel-invalid-mode-symbol
+       (format "Please fix the above errors in the %s customization user-option." list-var)
+       :error))
+    error-count))
+
+(defmacro pel-check-minor-modes-in (minor-modes)
+  "Check validity of minor-modes listed in MINOR-MODES list.
+The MINOR-MODES argument must be an unquoted symbol."
+  `(pel--check-minor-modes-in (quote ,minor-modes) ,minor-modes))
+
+(defun pel-turn-on-minor-modes-in (minor-modes)
+  "Turn all MINOR-MODES on."
+  (dolist (minor-mode minor-modes)
+    (funcall minor-mode 1)))
+
+;; ---------------------------------------------------------------------------
 ;; Basic functions working with values and variables
 ;; -------------------------------------------------
 ;;

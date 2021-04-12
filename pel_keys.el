@@ -1905,7 +1905,9 @@ MODE must be a symbol."
   ;; 7) Install language-specific skeletons
   (pel--install-c-skel      pel:c-skel)
   ;; 8) extra setup
-  (pel--setup-for-cc))
+  (pel--setup-for-cc)
+  ;; 9) activate any mode user wants
+  (pel-turn-on-minor-modes-in pel-c-activates-minor-modes))
 
 
 (when pel-use-plantuml
@@ -1917,6 +1919,7 @@ MODE must be a symbol."
 
 ;;
 ;; Schedule activation of C mode style and its <f12> key binding
+(pel-check-minor-modes-in pel-c-activates-minor-modes)
 (pel--mode-hook-maybe-call
  (function pel--setenv-for-c)
  'c-mode 'c-mode-hook)
@@ -1956,7 +1959,9 @@ MODE must be a symbol."
   ;; 7) Install language-specific skeletons
   ;; TODO
   ;; 8) extra setup
-  (pel--setup-for-cc))
+  (pel--setup-for-cc)
+  ;; 9) activate any mode user wants
+  (pel-turn-on-minor-modes-in pel-c++-activates-minor-modes))
 
 (when pel-use-plantuml
   (define-key pel:for-c++ "u" 'pel-render-commented-plantuml))
@@ -1964,6 +1969,7 @@ MODE must be a symbol."
 
 ;;
 ;; Schedule activation of C++ mode style and its <f12> key binding
+(pel-check-minor-modes-in pel-c++-activates-minor-modes)
 (pel--mode-hook-maybe-call
  (function pel--setenv-for-c++)
  'c++-mode 'c++-mode-hook)
@@ -1997,7 +2003,8 @@ MODE must be a symbol."
     (pel-local-set-f12-M-f12 'pel:for-d)
     ;; 7) Install language-specific skeletons
     ;; TODO
-    )
+    ;; 9) activate any mode user wants
+    (pel-turn-on-minor-modes-in pel-d-activates-minor-modes))
   (declare-function pel--setenv-for-d "pel_keys")
   (declare-function speedbar-add-supported-extension "speedbar")
 
@@ -2014,10 +2021,10 @@ MODE must be a symbol."
     (define-key pel:for-d "u" 'pel-render-commented-plantuml))
   (pel--map-cc-for pel:for-d)
   ;; Schedule activation of D mode style and its <f12> key binding
+  (pel-check-minor-modes-in pel-d-activates-minor-modes)
   (pel--mode-hook-maybe-call
    (function pel--setenv-for-d)
    'd-mode 'd-mode-hook)
-
 
   ;; Configure auto-completion based on selection
   ;; There are 2 possibilities
@@ -2065,7 +2072,9 @@ d-mode not added to ac-modes!"
       ;; Overcoming omission bug in erlang-mode: add support for Speedbar
       (pel-add-speedbar-extension '(".erl"
                                     ".hrl"
-                                    ".escript"))))
+                                    ".escript")))
+    ;; Activates minor modes requested by user
+    (pel-turn-on-minor-modes-in pel-erlang-activates-minor-modes))
   (declare-function pel--setup-for-erlang "pel_keys")
 
   ;;
@@ -2094,9 +2103,9 @@ d-mode not added to ac-modes!"
   (advice-add 'erlang-mode :before #'pel--erlang-mode-setup)
 
   ;; activate the <f12> key binding for erlang-mode
-  (pel--mode-hook-maybe-call
-   (function pel--setup-for-erlang)
-   'erlang-mode 'erlang-mode-hook)
+  (pel-check-minor-modes-in pel-erlang-activates-minor-modes)
+  (pel--mode-hook-maybe-call (function pel--setup-for-erlang)
+                             'erlang-mode 'erlang-mode-hook)
 
   ;; bind other erlang keys
   (define-key pel:for-erlang      "?"         'erlang-version)
@@ -2259,15 +2268,20 @@ d-mode not added to ac-modes!"
   (pel-autoload-file elixir-mode for: elixir-mode)
   (define-pel-global-prefix pel:for-elixir (kbd "<f11> SPC x"))
 
+  (defun pel--setup-for-elixir ()
+    "Activate Elixir setup."
+    (pel-local-set-f12-M-f12 'pel:for-elixir)
+    ;; Activates minor modes requested by user
+    (pel-turn-on-minor-modes-in pel-elixir-activates-minor-modes))
+
   (define-key pel:for-elixir (kbd "M-p") #'superword-mode)
   (when pel-use-plantuml
     (define-key pel:for-elixir "u" 'pel-render-commented-plantuml))
   ;;
-  (pel--mode-hook-maybe-call
-   (lambda ()
-     (pel-local-set-f12 'pel:for-elixir))
-   'elixir-mode 'elixir-mode-hook)
-
+  (pel-check-minor-modes-in pel-elixir-activates-minor-modes)
+  (pel--mode-hook-maybe-call (function pel--setup-for-elixir)
+                             'elixir-mode 'elixir-mode-hook)
+  ;;
   (when pel-use-alchemist
     (pel-ensure-package alchemist from: melpa)
     (pel-autoload-file alchemist for:
@@ -2300,11 +2314,17 @@ d-mode not added to ac-modes!"
                      forth-interaction-mode)
   (define-pel-global-prefix pel:for-forth (kbd "<f11> SPC f"))
   ;;
+  (defun pel--setup-for-forth ()
+    "Activate Forth setup."
+    (pel-local-set-f12-M-f12 'pel:for-forth)
+    ;; Activates minor modes requested by user
+    (pel-turn-on-minor-modes-in pel-forth-activates-minor-modes))
+  (declare-function pel--setup-for-forth "pel_keys")
+
   ;; activate the <f12> key binding for forth-mode
-  (pel--mode-hook-maybe-call
-   (lambda ()
-     (pel-local-set-f12 'pel:for-forth))
-   'forth-mode 'forth-mode-hook))
+  (pel-check-minor-modes-in pel-forth-activates-minor-modes)
+  (pel--mode-hook-maybe-call (function pel--setup-for-forth)
+                             'forth-mode 'forth-mode-hook))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC F`` : FORTRAN programming
@@ -2315,18 +2335,17 @@ d-mode not added to ac-modes!"
 (when pel-use-go
   (when pel-use-go-mode
     (define-pel-global-prefix pel:for-go (kbd "<f11> SPC g"))
+
     (defun pel--setenv-for-go ()
       "Set environment for Go programming."
-      (pel-local-set-f12 'pel:for-go)
+      (pel-local-set-f12-M-f12 'pel:for-go)
       ;; ensure gofmt is executed before saving file if
       ;; configured to do so
       (when pel-go-run-gofmt-on-buffer-save
         (add-hook 'before-save-hook  'pel-go-gofmt-on-buffer-save))
-
       ;; Set the display width of hard tabs used in Go source
       ;; as controlled by the user-option
       (setq tab-width pel-go-tab-width)
-
       (when pel-use-goflymake
         ;; Activate flycheck or flymake if requested
         (cond
@@ -2335,11 +2354,13 @@ d-mode not added to ac-modes!"
          (t
           (error "Unsupported pel-use-goflymake value: %S"
                  pel-use-goflymake))))
-
-      (when pel-use-speedbar
-        ;; Overcoming omission bug in go-mode: add support for Speedbar
-        (pel-add-speedbar-extension ".go")))
+      ;; Activates minor modes requested by user
+      (pel-turn-on-minor-modes-in pel-go-activates-minor-modes))
     (declare-function pel--setenv-for-go "pel_keys")
+
+    ;; Overcoming omission bug in go-mode: add support for Speedbar
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension ".go"))
 
     (pel-ensure-package go-mode from: melpa)
     (pel-autoload-file go-mode for: go-mode)
@@ -2350,9 +2371,9 @@ d-mode not added to ac-modes!"
     (when pel-use-goflymake
       (define-key pel:for-go "!"       'pel-go-toggle-syntax-checker))
     ;; activate the <f12> key binding for Go
-    (pel--mode-hook-maybe-call
-     (function pel--setenv-for-go)
-     'go-mode 'go-mode-hook))
+    (pel-check-minor-modes-in pel-go-activates-minor-modes)
+    (pel--mode-hook-maybe-call (function pel--setenv-for-go)
+                               'go-mode 'go-mode-hook))
 
   ;; goflymake package - either using flymake or flycheck
   (cl-eval-when 'load
@@ -2414,11 +2435,17 @@ d-mode not added to ac-modes!"
     ;; js2-error-buffer-mode
     ;; js2-error-buffer-next
     ;; js2-error-buffer-prev and some more...
-    ;; activate the <f12> key binding for rexx-mode
-    (pel--mode-hook-maybe-call
-     (lambda ()
-       (pel-local-set-f12 'pel:for-javascript))
-     'js2-mode 'js2-mode-hook))
+
+    (defun pel--setup-for-javascript ()
+      "Activate Javascript setup."
+      (pel-local-set-f12-M-f12 'pel:for-javascript)
+      (pel-turn-on-minor-modes-in pel-javascript-activates-minor-modes))
+    (declare-function pel--setup-for-javascript "pel_keys")
+
+    ;; activate the <f12> key binding for javascript
+    (pel-check-minor-modes-in pel-javascript-activates-minor-modes)
+    (pel--mode-hook-maybe-call (function pel--setup-for-javascript)
+                               'js2-mode 'js2-mode-hook))
    ;;
    ((eq pel-use-javascript 'js-mode)
     ;; Use the built-in js.el
@@ -2437,11 +2464,16 @@ d-mode not added to ac-modes!"
                      julia-snail
                      julia-snail-mode)
   (define-pel-global-prefix pel:for-julia (kbd "<f11> SPC j"))
+
+  (defun pel--setup-for-julia ()
+    "Activate Julia setup."
+    (pel-local-set-f12-M-f12 'pel:for-julia)
+    (pel-turn-on-minor-modes-in pel-julia-activates-minor-modes))
+  (declare-function pel--setup-for-julia "pel_keys")
+
   ;; activate the <f12> key binding for julia-mode
-  (pel--mode-hook-maybe-call
-   (lambda ()
-     (pel-local-set-f12 'pel:for-julia))
-   'julia-mode 'julia-mode-hook)
+  (pel--mode-hook-maybe-call (function pel--setup-for-julia)
+                             'julia-mode 'julia-mode-hook)
   (add-hook 'julia-mode-hook 'julia-snail-mode))
 
 ;; ---------------------------------------------------------------------------
@@ -2645,6 +2677,7 @@ d-mode not added to ac-modes!"
 
 ;;
 ;; activate the <f12> key binding for elisp-mode
+(pel-check-minor-modes-in pel-elisp-activates-minor-modes)
 (pel--mode-hook-maybe-call
  (lambda ()
    (pel-local-set-f12-M-f12 'pel:for-elisp)
@@ -2654,12 +2687,14 @@ d-mode not added to ac-modes!"
    (pel-local-set-f12-M-f12 'pel:elisp-eval     "e")
    (pel-local-set-f12-M-f12 'pel:elisp-function "f")
    (pel-local-set-f12-M-f12 'pel:elisp-lib      "l")
-   (pel--install-elisp-skel pel:elisp-skel))
+   (pel--install-elisp-skel pel:elisp-skel)
+   (pel-turn-on-minor-modes-in pel-elisp-activates-minor-modes))
  'emacs-lisp-mode 'emacs-lisp-mode-hook :append)
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC L`` : (Common) Lisp
 (when pel-use-common-lisp
+  (define-pel-global-prefix pel:for-lisp (kbd "<f11> SPC L"))
 
   (when pel-use-speedbar
     ;; Add support for Speedbar listing Common Lisp files:
@@ -2673,17 +2708,22 @@ d-mode not added to ac-modes!"
   (pel-setq common-lisp-hyperspec-root
             (pel-expand-url-file-name pel-clisp-hyperspec-root))
 
-  (define-pel-global-prefix pel:for-lisp (kbd "<f11> SPC L"))
+  (pel--lisp-languages-map-for pel:for-lisp)
   (when pel-use-plantuml
     (define-key               pel:for-lisp "u" 'pel-render-commented-plantuml))
-  (pel--lisp-languages-map-for pel:for-lisp)
-  ;;
+
+  (defun pel--setup-for-clisp ()
+    "Activate Common Lisp setup."
+    (pel-local-set-f12-M-f12 'pel:for-lisp)
+    (pel-local-set-f12-M-f12 'pel:elisp-function "f")
+    ;; Activates minor modes requested by user
+    (pel-turn-on-minor-modes-in pel-clisp-activates-minor-modes))
+  (declare-function pel--setup-for-clisp "pel_keys")
+
   ;; activate the <f12> key binding for lisp-mode
-  (pel--mode-hook-maybe-call
-   (lambda ()
-     (pel-local-set-f12-M-f12 'pel:for-lisp)
-     (pel-local-set-f12-M-f12 'pel:elisp-function "f"))
-   'lisp-mode 'lisp-mode-hook)
+  (pel-check-minor-modes-in pel-clisp-activates-minor-modes)
+  (pel--mode-hook-maybe-call (function pel--setup-for-clisp)
+                             'lisp-mode 'lisp-mode-hook)
 
   ;; Slime Support : TODO complete
   (when pel-use-slime
@@ -2696,14 +2736,19 @@ d-mode not added to ac-modes!"
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-a`` : Arc
 (when pel-use-arc
-
   (define-pel-global-prefix pel:for-arc    (kbd "<f11> SPC C-a"))
-  ;; activate the <f12> key binding for arc-mode
-  (pel--mode-hook-maybe-call
-   (lambda ()
-     (pel-local-set-f12-M-f12 'pel:for-arc))
-   'arc-mode 'arc-mode-hook)
   (pel--lisp-languages-map-for pel:for-arc)
+
+  (defun pel--setup-for-arc ()
+    "Activate Arc setup."
+    (pel-local-set-f12-M-f12 'pel:for-arc)
+    (pel-turn-on-minor-modes-in pel-arc-activates-minor-modes))
+  (declare-function pel--setup-for-arc "pel_keys")
+
+  ;; activate the <f12> key binding for arc-mode
+  (pel-check-minor-modes-in pel-arc-activates-minor-modes)
+  (pel--mode-hook-maybe-call (function pel--setup-for-arc)
+                             'arc-mode 'arc-mode-hook)
 
   ;; associate .arc file with arc-mode
   (add-to-list 'auto-mode-alist '("\\.arc\\'" . arc-mode))
@@ -2722,18 +2767,23 @@ d-mode not added to ac-modes!"
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-j`` : Clojure
 (when pel-use-clojure
-
   (define-pel-global-prefix pel:for-clojure (kbd "<f11> SPC C-j"))
-  ;; activate the <f12> key binding for clojure-mode
-  (pel--mode-hook-maybe-call
-   (lambda ()
-     (pel-local-set-f12-M-f12 'pel:for-clojure))
-   'clojure-mode 'clojure-mode-hook)
   (pel--lisp-languages-map-for pel:for-clojure)
+
+  (defun pel--setup-for-clojure ()
+    "Activate Clojure setup."
+    (pel-local-set-f12-M-f12 'pel:for-clojure)
+    ;; Activates minor modes requested by user
+    (pel-turn-on-minor-modes-in pel-clojure-activates-minor-modes))
+  (declare-function pel--setup-for-clojure "pel_keys")
+
+  ;; activate the <f12> key binding for clojure-mode
+  (pel-check-minor-modes-in pel-clojure-activates-minor-modes)
+  (pel--mode-hook-maybe-call (function pel--setup-for-clojure)
+                             'clojure-mode 'clojure-mode-hook)
 
   (pel-ensure-package clojure-mode from: melpa)
   (pel-autoload-file clojure-mode for: clojure-mode)
-
   (when pel-use-cider
     (pel-ensure-package cider from: melpa)
     (pel-autoload-file cider for:
@@ -2777,32 +2827,41 @@ d-mode not added to ac-modes!"
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-r`` : Racket
 (when pel-use-racket
-
   (define-pel-global-prefix pel:for-racket (kbd "<f11> SPC C-r"))
-  ;; activate the <f12> key binding for racket-mode
-  (pel--mode-hook-maybe-call
-   (lambda ()
-     (pel-local-set-f12-M-f12 'pel:for-racket))
-   'racket-mode 'racket-mode-hook)
   (pel--lisp-languages-map-for pel:for-racket)
 
   (pel-ensure-package racket-mode from: melpa)
-  (pel-autoload-file racket-mode for: racket-mode))
+  (pel-autoload-file racket-mode for: racket-mode)
+
+  (defun pel--setenv-for-racket ()
+    "Activate Racket setup."
+    (pel-local-set-f12-M-f12 'pel:for-racket)
+    ;; Activates minor modes requested by user
+    (pel-turn-on-minor-modes-in pel-racket-activates-minor-modes))
+  (declare-function pel--setenv-for-racket "pel_keys")
+
+  ;; activate the <f12> key binding for racket-mode
+  (pel--mode-hook-maybe-call (function pel--setenv-for-racket)
+                             'racket-mode 'racket-mode-hook))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s`` : Scheme
 (when pel-use-scheme
-
   ;; Note: scheme-mode and its file associations are supported by Emacs.
   ;;       Just activate the <f12> key for Scheme.
-
   (define-pel-global-prefix pel:for-scheme (kbd "<f11> SPC C-s"))
-  ;; activate the <f12> key binding for scheme-mode
-  (pel--mode-hook-maybe-call
-   (lambda ()
-     (pel-local-set-f12-M-f12 'pel:for-scheme))
-   'scheme-mode 'scheme-mode-hook)
   (pel--lisp-languages-map-for pel:for-scheme)
+
+  (defun pel--setup-for-scheme ()
+    "Activate Scheme setup."
+    (pel-local-set-f12-M-f12 'pel:for-scheme)
+    (pel-turn-on-minor-modes-in pel-scheme-activates-minor-modes))
+  (declare-function pel--setup-for-scheme "pel_keys")
+
+  ;; activate the <f12> key binding for scheme-mode
+  (pel-check-minor-modes-in pel-scheme-activates-minor-modes)
+  (pel--mode-hook-maybe-call (function pel--setup-for-scheme)
+                             'scheme-mode 'scheme-mode-hook)
 
   ;; Install requested options
   (when pel-use-geiser
@@ -2846,14 +2905,20 @@ d-mode not added to ac-modes!"
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-g`` : Gerbil
 (when pel-use-gerbil
-
   (define-pel-global-prefix pel:for-gerbil (kbd "<f11> SPC C-g"))
-  ;; activate the <f12> key binding for gerbil-mode
-  (pel--mode-hook-maybe-call
-   (lambda ()
-     (pel-local-set-f12-M-f12 'pel:for-gerbil))
-   'gerbil-mode 'gerbil-mode-hook)
   (pel--lisp-languages-map-for pel:for-gerbil)
+
+  (defun pel--setup-for-gerbil ()
+    "Activate Gerbil setup."
+    (pel-local-set-f12-M-f12 'pel:for-gerbil)
+    ;; Activates minor modes requested by user
+    (pel-turn-on-minor-modes-in pel-gerbil-activates-minor-modes))
+  (declare-function pel--setup-for-gerbil "pel_keys")
+
+  ;; activate the <f12> key binding for gerbil-mode
+  (pel-check-minor-modes-in pel-gerbil-activates-minor-modes)
+  (pel--mode-hook-maybe-call (function pel--mode-hook-maybe-call)
+                             'gerbil-mode 'gerbil-mode-hook)
 
   ;; No package made for this.  Take the code directly from Github
   (cl-eval-when 'load
@@ -2866,20 +2931,27 @@ d-mode not added to ac-modes!"
 
 ;; Note: the pel:eXecute has the run-lfe (in the code below.)
 (when pel-use-lfe
-
   (define-pel-global-prefix pel:for-lfe (kbd "<f11> SPC C-l"))
-  ;; activate the <f12> key binding for lfe-mode
-  (pel--mode-hook-maybe-call
-   (lambda ()
-     (pel-local-set-f12-M-f12 'pel:for-lfe))
-   'lfe-mode 'lfe-mode-hook)
   (pel--lisp-languages-map-for pel:for-lfe)
+
+  (defun pel--setup-for-lfe ()
+    "Activate Lfe setup."
+    (pel-local-set-f12-M-f12 'pel:for-lfe)
+    ;; Activates minor modes requested by user
+    (pel-turn-on-minor-modes-in pel-lfe-activates-minor-modes))
+  (declare-function pel--setup-for-lfe "pel_keys")
+
+  ;; activate the <f12> key binding for lfe-mode
+  (pel-check-minor-modes-in pel-lfe-activates-minor-modes)
+  (pel--mode-hook-maybe-call (function pel--setup-for-lfe)
+                             'lfe-mode 'lfe-mode-hook)
 
   (pel-ensure-package lfe-mode from: melpa)
   (pel-autoload-file lfe-mode for:
                      lfe-mode
                      inferior-lfe
                      run-lfe)
+
   (define-key pel:for-lfe "[" 'lfe-insert-brackets)
   (pel-eval-after-load lfe-mode
     (when pel-emacs-is-a-tty-p
@@ -2896,12 +2968,19 @@ d-mode not added to ac-modes!"
 ;; Hy: A Lisp in Python
 (when pel-use-hy
   (define-pel-global-prefix pel:for-hy (kbd "<f11> SPC C-h"))
-  ;; activate the <f12> key binding for hy-mode
-  (pel--mode-hook-maybe-call
-   (lambda ()
-     (pel-local-set-f12-M-f12 'pel:for-hy))
-   'hy-mode 'hy-mode-hook)
   (pel--lisp-languages-map-for pel:for-hy)
+
+  (defun pel--setup-for-hy ()
+    "Activate Hy setup."
+    (pel-local-set-f12-M-f12 'pel:for-hy)
+    ;; Activates minor modes requested by user
+    (pel-turn-on-minor-modes-in pel-hy-activates-minor-modes))
+  (declare-function pel--setup-for-hy "pel_keys")
+
+  ;; activate the <f12> key binding for hy-mode
+  (pel-check-minor-modes-in pel-hy-activates-minor-modes)
+  (pel--mode-hook-maybe-call (function pel--setup-for-hy)
+                             'hy-mode 'hy-mode-hook)
 
   (pel-ensure-package hy-mode from: melpa)
   (pel-autoload-file hy-mode for: hy-mode))
@@ -2945,7 +3024,9 @@ d-mode not added to ac-modes!"
   (defun pel--setup-for-python ()
     "Activate the python mode."
     (setq tab-width    pel-python-tab-width)
-    (pel-local-set-f12 'pel:for-python))
+    (pel-local-set-f12 'pel:for-python)
+    (pel-turn-on-minor-modes-in pel-python-activates-minor-modes))
+
   (declare-function pel--setup-for-python "pel_keys")
 
   (define-pel-global-prefix pel:for-python (kbd "<f11> SPC p"))
@@ -2958,9 +3039,9 @@ d-mode not added to ac-modes!"
     (define-key pel:for-python (kbd "M-r") 'rainbow-delimiters-mode))
   ;;
   ;; activate the <f12> key binding for python-mode
-  (pel--mode-hook-maybe-call
-   (function pel--setup-for-python)
-   'python-mode 'python-mode-hook)
+  (pel-check-minor-modes-in pel-python-activates-minor-modes)
+  (pel--mode-hook-maybe-call (function pel--setup-for-python)
+                             'python-mode 'python-mode-hook)
 
   ;; lpy-mode: lispy-style modal editing for Python.
   (when pel-use-lpy
@@ -2997,8 +3078,10 @@ d-mode not added to ac-modes!"
 
   (defun pel--setenv-for-rexx ()
     "Set the environment for REXX file editing."
-    (pel-local-set-f12 'pel:for-rexx))
+    (pel-local-set-f12 'pel:for-rexx)
+    (pel-turn-on-minor-modes-in pel-rexx-activates-minor-modes))
   (declare-function pel--setenv-for-rexx "pel_keys")
+
   (pel-autoload-file rexx-mode for:
                      rexx-mode
                      rexx-goto-next-procedure
@@ -3011,9 +3094,9 @@ d-mode not added to ac-modes!"
   (define-key pel:for-rexx (kbd "<up>")   'rexx-goto-previous-procedure)
 
   ;; activate the <f12> key binding for rexx-mode
-  (pel--mode-hook-maybe-call
-   (function pel--setenv-for-rexx)
-   'rexx-mode 'rexx-mode-hook))
+  (pel-check-minor-modes-in pel-rexx-activates-minor-modes)
+  (pel--mode-hook-maybe-call (function pel--setenv-for-rexx)
+                             'rexx-mode 'rexx-mode-hook))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC N`` : NetRexx programming
@@ -3029,7 +3112,8 @@ d-mode not added to ac-modes!"
 
   (defun pel--setenv-for-netrexx ()
     "Set the environment for NetRexx file editing."
-    (pel-local-set-f12 'pel:for-netrexx))
+    (pel-local-set-f12 'pel:for-netrexx)
+    (pel-turn-on-minor-modes-in pel-netrexx-activates-minor-modes))
   (declare-function pel--setenv-for-netrexx "pel_keys")
 
   (pel-autoload-file netrexx-mode for: netrexx-mode)
@@ -3045,9 +3129,9 @@ d-mode not added to ac-modes!"
   (define-key pel:for-netrexx "j"        'netrexx-insert-javadoc-for-method)
 
   ;; activate the <f12> key binding for netrexx-mode
-  (pel--mode-hook-maybe-call
-   (function pel--setenv-for-netrexx)
-   'netrexx-mode 'netrexx-mode-hook))
+  (pel-check-minor-modes-in pel-netrexx-activates-minor-modes)
+  (pel--mode-hook-maybe-call (function pel--setenv-for-netrexx)
+                             'netrexx-mode 'netrexx-mode-hook))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC r`` : Rust programming
@@ -3063,16 +3147,23 @@ d-mode not added to ac-modes!"
     ;; - rust-format-on-save
     (pel-ensure-package rust-mode from: melpa)
     (pel-autoload-file rust-mode for: rust-mode)
-    (pel--mode-hook-maybe-call
-     (lambda ()
-       (pel-local-set-f12 'pel:for-rust))
-     'rust-mode 'rust-mode-hook)
+
+    (defun pel--setup-for-rust-mode ()
+      "Activate Rust-mode setup."
+      (pel-local-set-f12 'pel:for-rust)
+      (setq indent-tabs-mode nil)
+      ;; Activates minor modes requested by user
+      (pel-turn-on-minor-modes-in pel-rust-activates-minor-modes))
+    (declare-function pel--setup-for-rust-mode "pel_keys")
+
+    ;; activate the <f12> key binding for forth-mode
+    (pel-check-minor-modes-in pel-rust-activates-minor-modes)
+    (pel--mode-hook-maybe-call (function pel--setup-for-rust-mode)
+                               'rust-mode 'rust-mode-hook)
+
     (define-key pel:for-rust "c" 'rust-run)
     (define-key pel:for-rust "d" 'rust-dbg-wrap-or-unwrap)
-    (define-key pel:for-rust "l" 'rust-run-clippy)
-    (add-hook 'rust-mode-hook
-              (lambda ()
-                (setq indent-tabs-mode nil))))
+    (define-key pel:for-rust "l" 'rust-run-clippy))
 
   (when pel-use-rustic
     (pel-ensure-package rustic from: melpa)
@@ -3130,11 +3221,18 @@ d-mode not added to ac-modes!"
     (pel-autoload-file v-mode for: v-mode)
     (define-key pel:for-v (kbd "C-f") 'v-format-buffer)
     (define-key pel:for-v (kbd "<f10>") 'v-menu)
+
+    (defun pel--setup-for-v ()
+      "Activate V setup."
+      (pel-local-set-f12-M-f12 'pel:for-v)
+      ;; Activates minor modes requested by user
+      (pel-turn-on-minor-modes-in pel-v-activates-minor-modes))
+    (declare-function pel--setup-for-v "pel_keys")
+
     ;; activate the <f12> key binding for v-mode
-    (pel--mode-hook-maybe-call
-     (lambda ()
-       (pel-local-set-f12 'pel:for-v))
-     'v-mode 'v-mode-hook))
+    (pel-check-minor-modes-in pel-v-activates-minor-modes)
+    (pel--mode-hook-maybe-call (function pel--setup-for-v)
+                               'v-mode 'v-mode-hook))
 
    ((eq pel-use-v 'vlang-mode)
     ;; vlang-mode is experimental: only provides font-locking
