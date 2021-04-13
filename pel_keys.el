@@ -950,7 +950,9 @@ Then save your changes."
   (pel-ensure-package  editorconfig from: melpa)
   (pel-require-at-load editorconfig)
   (pel-eval-after-load editorconfig
-    (editorconfig-mode 1)))
+    (if (fboundp 'editorconfig-mode)
+        (editorconfig-mode 1)
+      (user-error "Failed loading editorconfig"))))
 
 ;; ---------------------------------------------------------------------------
 ;; Actions on File Save
@@ -2708,26 +2710,27 @@ d-mode not added to ac-modes!"
   (when pel-use-plantuml
     (define-key               pel:for-lisp "u" 'pel-render-commented-plantuml))
 
-  (defun pel--setup-for-clisp ()
-    "Activate Common Lisp setup."
-    (pel-local-set-f12-M-f12 'pel:for-lisp)
-    (pel-local-set-f12-M-f12 'pel:elisp-function "f")
-    ;; Activates minor modes requested by user
-    (pel-turn-on-minor-modes-in pel-clisp-activates-minor-modes))
-  (declare-function pel--setup-for-clisp "pel_keys")
-
-  ;; activate the <f12> key binding for lisp-mode
-  (pel-check-minor-modes-in pel-clisp-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setup-for-clisp)
-                             'lisp-mode 'lisp-mode-hook)
-
   ;; Slime Support : TODO complete
   (when pel-use-slime
     (pel-ensure-package slime from: melpa))
 
   ;; SLY Support : TODO complete
   (when pel-use-sly
-    (pel-ensure-package sly from: melpa)))
+    (pel-ensure-package sly from: melpa))
+
+  (defun pel--setup-for-clisp ()
+    "Activate Common Lisp setup."
+    (pel-local-set-f12-M-f12 'pel:for-lisp)
+    (pel-local-set-f12-M-f12 'pel:elisp-function "f")
+    ;; imenu support
+    (when (boundp 'lisp-imenu-generic-expression)
+      (setq-local imenu-generic-expression lisp-imenu-generic-expression))
+    ;; Activates minor modes requested by user
+    (pel-turn-on-minor-modes-in pel-clisp-activates-minor-modes))
+  (declare-function pel--setup-for-clisp "pel_keys")
+
+  (pel-check-minor-modes-in pel-clisp-activates-minor-modes)
+  (pel-setup-major-mode-for lisp))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-a`` : Arc

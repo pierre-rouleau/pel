@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-06 15:59:37, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-12 23:03:28, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -953,6 +953,23 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   (if (eq major-mode mode)
       (funcall fct)))
 
+(defmacro pel-setup-major-mode-for (target-mode)
+  "Setup the major MODE.
+MODE is an unquoted symbol identifying the mode: it's the target-mode name
+without the -mode suffix.
+Something like emacs-lisp, c, python, etc..."
+  (let ((fct1 (intern (format "pel--setup-for-%s-with-local-vars" target-mode)))
+        (docstring1 (format "Activate %s setup, take local variables into account." target-mode))
+        (fct2 (intern (format "pel--setup-for-%s" target-mode)))
+        (mode-name (intern (format "%s-mode" target-mode)))
+        (mode-hook (intern (format "%s-mode-hook" target-mode))))
+    `(progn
+       (defun ,fct1 ()
+         ,docstring1
+         (add-hook 'hack-local-variables-hook (function ,fct2) nil t))
+       (pel--mode-hook-maybe-call (function ,fct1)
+                                  (quote ,mode-name)
+                                  (quote ,mode-hook)))))
 ;; --
 
 (defun pel-local-set-f12 (prefix &optional key)
