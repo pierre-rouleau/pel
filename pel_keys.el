@@ -1664,25 +1664,27 @@ can't bind negative-argument to C-_ and M-_"
 ;; ---------------------------
 ;; Nothing needs to be installed as make support is built-in Emacs.
 
-(define-pel-global-prefix pel:for-make (kbd "<f11> SPC M"))
+(when pel-use-makefile
+  (define-pel-global-prefix pel:for-make (kbd "<f11> SPC M"))
 
-(defun pel--setup-for-make ()
-  "Set the environment for Make file editing."
-  (define-key pel:for-make (kbd "<up>")      'makefile-previous-dependency)
-  (define-key pel:for-make (kbd "<down>")    'makefile-next-dependency)
-  (define-key pel:for-make (kbd "<M-up>")   #'pel-make-previous-macro)
-  (define-key pel:for-make (kbd "<M-down>") #'pel-make-next-macro)
-  (define-key pel:for-make "."               'completion-at-point)
+  ;; Support for nmake - additions to what is supported by make-mode
+  (declare-function makefile-nmake-mode "pel-make")
+  (add-to-list 'auto-mode-alist '("\\.mak\\'" . makefile-nmake-mode))
 
-  (pel-local-set-f12-M-f12 'pel:for-make))
+  (defun pel--setup-for-makefile ()
+    "Set the environment for Make file editing."
+    (define-key pel:for-make (kbd "<up>")      'makefile-previous-dependency)
+    (define-key pel:for-make (kbd "<down>")    'makefile-next-dependency)
+    (define-key pel:for-make (kbd "<M-up>")   #'pel-make-previous-macro)
+    (define-key pel:for-make (kbd "<M-down>") #'pel-make-next-macro)
+    (define-key pel:for-make "."               'completion-at-point)
+    ;; activate make mode <f12> keys.
+    (pel-local-set-f12-M-f12 'pel:for-make)
+    ;; Activate minor modes requested by user
+    (pel-turn-on-minor-modes-in pel-makefile-activates-minor-modes))
 
-;; Schedule activation of Make mode <f12> key binding
-(pel--mode-hook-maybe-call (function pel--setup-for-make)
-                           'makefile-mode 'makefile-mode-hook)
-
-;; Support for nmake - additions to what is supported by make-mode
-(declare-function makefile-nmake-mode "pel-make")
-(add-to-list 'auto-mode-alist '("\\.mak\\'" . makefile-nmake-mode))
+  (pel-check-minor-modes-in pel-makefile-activates-minor-modes)
+  (pel-setup-major-mode-for makefile pel--setup-for-makefile))
 
 ;; - Tup Built Tool Support
 ;; ------------------------
@@ -1694,7 +1696,15 @@ can't bind negative-argument to C-_ and M-_"
   (pel-set-auto-mode tup-mode for:
                      "\\.tup\\'"
                      "Tupfile"
-                     "tup.config"))
+                     "tup.config")
+
+  (defun pel--setup-for-tup ()
+    "Set the environment for tup buffers."
+    ;; Activate minor modes requested by user
+    (pel-turn-on-minor-modes-in pel-tup-activates-minor-modes))
+
+  (pel-check-minor-modes-in pel-tup-activates-minor-modes)
+  (pel-setup-major-mode-for tup pel--setup-for-tup))
 
 ;; ---------------------------------------------------------------------------
 ;; - Programming Language Support
@@ -2727,7 +2737,6 @@ d-mode not added to ac-modes!"
       (setq-local imenu-generic-expression lisp-imenu-generic-expression))
     ;; Activates minor modes requested by user
     (pel-turn-on-minor-modes-in pel-clisp-activates-minor-modes))
-  (declare-function pel--setup-for-clisp "pel_keys")
 
   (pel-check-minor-modes-in pel-clisp-activates-minor-modes)
   (pel-setup-major-mode-for lisp pel--setup-for-lisp))

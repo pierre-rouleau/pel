@@ -400,6 +400,17 @@ directory for whatever reason."
   :type 'boolean
   :safe #'booleanp)
 (put 'pel-use-editor-config :package-is 'editorconfig)
+;; TODO: pel-cleanup currently does not remove the following lines from the
+;;       `custom-set-variable' form:
+;;        -  '(editorconfig-mode t)
+;;        -  '(editorconfig-mode-lighter " 🎛 ")
+;;      I probably need to add another property-driven concept in pel-cleanup
+;;      support to get it to identify forms that must be removed. Perhaps the
+;;      lighter config could stay, but setting the mode to true should be
+;;      removed.  Note however, that these will not activate the mode once
+;;      the current cleanup has been done, they will just be left in the
+;;      `custom-set-variable' which has no impact once `pel-cleanup' ran and
+;;      uninstalled editorconfig.
 
 ;; ---------------------------------------------------------------------------
 ;; Alignment Support
@@ -5161,6 +5172,7 @@ To activate the changes for this you must 'Apply and Save' and restart Emacs."
 
 (defcustom pel-use-tup nil
   "Control activation of support for Tup files."
+  :group 'pel-pkg-for-sw-build
   :link '(url-link :tag "Tup Home" "http://gittup.org/tup/")
   :link '(url-link :tag "tup-mode @ GitHub"
                    "https://github.com/pierre-rouleau/tup-mode")
@@ -5168,6 +5180,26 @@ To activate the changes for this you must 'Apply and Save' and restart Emacs."
   :safe #'booleanp)
 (put 'pel-use-tup :package-is '(quote ((utils . tup-mode))))
 
+(defcustom pel-tup-activates-minor-modes nil
+  "List of minor-modes automatically activated for tup buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-org-mode
+  :type '(repeat function))
+
+(defcustom pel-use-makefile t
+  "Control whether PEL provides extra support for makefile.
+On by default. Turn it off if you don't need it."
+  :group 'pel-pkg-for-sw-build
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-makefile-activates-minor-modes nil
+  "List of minor-modes automatically activated for makefile buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-org-mode
+  :type '(repeat function))
 
 ;; ---------------------------------------------------------------------------
 ;; Text Mode support
