@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 15 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-01 09:04:39, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-13 11:19:35, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -46,7 +46,7 @@
 ;;; Code:
 ;;
 
-(defconst pel-make-macro-regxp "^[ \t]*\\(\\_<[_[:alpha:]][_[:alnum:]]+\\_>\\) *:*="
+(defconst pel-make-macro-regxp "^[ \t]*\\(\\_<[_[:alpha:]][_[:alnum:]]+\\_>\\) *[?:]*="
   "Regexp used to search make file macro definitions.")
 
 ;; --
