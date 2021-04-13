@@ -1732,21 +1732,30 @@ Each string is the file extension staring with the period."
 ;; Byte-compilation
 ;; ----------------
 
-(defun pel-byte-compile-if-needed (el-filename)
+(defun pel-modtime-of (filename)
+  "Return the modification time of FILENAME."
+  (file-attribute-modification-time (file-attributes filename)))
+
+(defun pel-byte-compile-if-needed (el-filename &rest other-dependencies)
   "Byte-compile Emacs Lisp source EL-FILENAME if it's needed.
-EL-FILENAME must be the name of a Emacs Lisp file and must
+The EL-FILENAME string must be the name of a Emacs Lisp file and must
 include the .el extension.  The name of the file may be relative
 or absolute.
 The file is byte compiled if it is newer than its byte-compiled
 output file (a file with the .elc extension) or if the .elc file
-does not exists."
-  (let ((elc-filename (concat el-filename "c")))
+does not exists.
+It is also possible to pass OTHER-DEPENDENCIES, that are name of files that
+if newer than the EL-FILENAME, force byte-compilation of the EL-FILENAME."
+  (let ((elc-filename (concat el-filename "c"))
+        elc-modtime)
     (when (or (not (file-exists-p elc-filename))
-              (time-less-p
-               (file-attribute-modification-time
-                (file-attributes elc-filename))
-               (file-attribute-modification-time
-                (file-attributes el-filename))))
+              (time-less-p (setq elc-modtime (pel-modtime-of elc-filename))
+                           (pel-modtime-of el-filename))
+              (and other-dependencies
+                   (or (mapcar
+                        (lambda (fname)
+                          (time-less-p elc-modtime (pel-modtime-of fname)))
+                        other-dependencies))))
       (byte-compile-file el-filename))))
 
 ;;; --------------------------------------------------------------------------
