@@ -2730,7 +2730,7 @@ d-mode not added to ac-modes!"
   (declare-function pel--setup-for-clisp "pel_keys")
 
   (pel-check-minor-modes-in pel-clisp-activates-minor-modes)
-  (pel-setup-major-mode-for lisp))
+  (pel-setup-major-mode-for lisp pel--setup-for-lisp))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-a`` : Arc
