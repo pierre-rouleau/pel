@@ -2718,7 +2718,7 @@ d-mode not added to ac-modes!"
   (when pel-use-sly
     (pel-ensure-package sly from: melpa))
 
-  (defun pel--setup-for-clisp ()
+  (defun pel--setup-for-lisp ()
     "Activate Common Lisp setup."
     (pel-local-set-f12-M-f12 'pel:for-lisp)
     (pel-local-set-f12-M-f12 'pel:elisp-function "f")
