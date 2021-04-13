@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-04-07 22:01:47, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-04-13 15:28:02, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -578,7 +578,11 @@ pel-text-insert.elc:    pel--base.elc pel--macros.elc pel-window.elc
 pel-text-transform.elc: pel--base.elc
 pel-window.elc:         pel--base.elc
 pel-xr.elc:             pel--base.elc pel-read.elc
-pel_keys.elc:           pel--base.elc pel--macros.elc pel--keys-macros.elc pel--options.elc pel-autoload.elc pel-cursor.elc pel-cc.elc pel-lispy.elc pel-key-chord.elc pel-completion.elc pel-search.elc
+# Note that pel__hydra.el is byte-compiled by the code of pel_keys.el
+# when pel_keys is loading. Therefore, if pel__hydra.el is modified
+# then pel_keys.el must also be built.  The pel_keys.elc therefore
+# depend on the source of pel__hydra: pel__hydra.el , *not* the .elc file!
+pel_keys.elc:           pel__hydra.el pel--base.elc pel--macros.elc pel--keys-macros.elc pel--options.elc pel-autoload.elc pel-cursor.elc pel-cc.elc pel-lispy.elc pel-key-chord.elc pel-completion.elc pel-search.elc
 
 # -----------------------------------------------------------------------------
 # Rules to byte-compile the Emacs-Lisp source code files
