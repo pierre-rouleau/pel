@@ -2039,14 +2039,12 @@ waiting for activity to resume in the lewang's repo."
   :safe #'booleanp)
 (put 'pel-use-org-mode :package-is :builtin-emacs)
 
-(defcustom pel-org-mode-activates-minor-modes nil
+(defcustom pel-org-activates-minor-modes nil
   "List of minor-modes automatically activated for Org-Mode buffers.
 Enter minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-org-mode
   :type '(repeat function))
-(defvaralias 'pel-org-activates-minor-modes 'pel-org-mode-activates-minor-modes
-  "Name used by pel_keys logic.")
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; AsciiDoc Support
@@ -2065,14 +2063,12 @@ Do not enter lambda expressions."
   :safe #'booleanp)
 (put 'pel-use-asciidoc :package-is 'adoc-mode )
 
-(defcustom pel-asciidoc-activates-minor-modes nil
+(defcustom pel-adoc-activates-minor-modes nil
   "List of minor-modes automatically activated for AsciiDoc buffers.
 Enter minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-asciidoc
   :type '(repeat function))
-(defvaralias 'pel-adoc-activates-minor-modes 'pel-asciidoc-activates-minor-modes
-  "Name used by pel_keys logic.")
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; pel-pkg-for-draw-markup
@@ -3143,15 +3139,18 @@ PEL additions using built-in js-mode." js-mode)
                                         '((elpa . js2-mode))))
 
 (defcustom pel-javascript-activates-minor-modes nil
-  "List of minor-modes automatically activated for Javascript buffers.
+  "List of minor-modes automatically activated for javascript-mode buffers.
 Enter minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-javascript
   :type '(repeat function))
 
-(defvaralias 'pel-js-activates-minor-modes
-  'pel-javascript-activates-minor-modes
-  "Name used when js-mode is used for Javascript.")
+(defcustom pel-js-activates-minor-modes nil
+  "List of minor-modes automatically activated for js-mode buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-javascript
+  :type '(repeat function))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Go language support
@@ -3409,15 +3408,12 @@ key."
   :link `(url-link :tag "Common Lisp PDF"
                    ,(pel-pdf-file-url "pl-common-lisp")))
 
-(defcustom pel-clisp-activates-minor-modes nil
+(defcustom pel-lisp-activates-minor-modes nil
   "List of minor-modes automatically activated for Common Lisp buffers.
 Enter minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-clisp
   :type '(repeat function))
-
-(defvaralias 'pel-lisp-activates-minor-modes 'pel-clisp-activates-minor-modes
-  "Used to help code generation because the Common Lisp major mode is lisp'-mode")
 
 (defcustom pel-use-common-lisp nil
   "Control whether PEL supports Common Lisp development."
