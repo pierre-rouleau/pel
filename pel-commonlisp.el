@@ -1,6 +1,6 @@
 ;;; pel-commonlisp.el --- PEL Common Lisp Support -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -26,23 +26,7 @@
 
 ;;; Code:
 
-;;-pel-autoload
-(defun pel-cl-init (use-slime)
-  "Initialize Common Lisp editing/development support.
-The USE-SLIME argument identifies whether Slime is/will be used.
-Set important hooks.
-Should be called by the init.el file."
-  ;; Common Lisp indentation rules differ from Emacs Lisp indentation rules:
-  ;; - for Common Lisp buffers, use common-lisp-indent-function as indenter,
-  ;;   replacing the default indenter (which conforms to the Emacs Lisp
-  ;;   indentation rules).
-  ;; NOTE: this code is already done by slime-setup, so this is therefore
-  ;; not required when Slime is used.
-  (unless use-slime
-    (add-hook 'lisp-mode-hook
-              (lambda ()
-                (set (make-local-variable 'lisp-indent-function)
-                     'common-lisp-indent-function)))))
+;; THIS FILE IS OBSOLETE.  Will be removed from repository.
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-commonlisp)

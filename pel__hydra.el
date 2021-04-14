@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-20 11:54:55, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-13 14:40:26, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -30,6 +30,7 @@
 ;;
 ;;
 (require 'pel--base)
+(require 'pel--options)
 (require 'hydra)
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -51,6 +52,17 @@
 ;; the ```use-package hydra`` call.  Then it simulates a second <f7> key event
 ;; to get the effect the user expects and then removes itself from Emacs.
 ;;
+;;
+;; Byte-compilation
+;; ----------------
+;;
+;; The byte compilation of this file is NOT controlled by the Makefile.
+;; Instead it is dynamically byte-compiled by the logic inside the *end*
+;; of pel_keys.el.
+;; Therefore *all* symbols interned by pel_keys.el are available for use
+;; in this file here.  Do not try to byte compile pel__hydra.el to detect
+;; undefined symbol.
+
 
 ;; TODO:
 ;; - Might want to place the different hydras inside their own files and allow
@@ -216,80 +228,84 @@
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; PEL HYDRA: C preprocessor
 
-(pel-autoload-file hideif for:
-                   hide-ifdef-mode
-                   hide-ifdef-toggle-shadowing
-                   hide-ifdef-toggle-read-only
-                   hide-ifdefs
-                   show-ifdefs
-                   hide-ifdef-block
-                   show-ifdef-block
-                   hif-evaluate-macro
-                   hide-ifdef-define
-                   hide-ifdef-undef
-                   hide-ifdef-use-define-alist
-                   hide-ifdef-set-define-alist
-                      hif-clear-all-ifdef-defined)
+(when pel-use-c
+  (pel-autoload-file hideif for:
+                     hide-ifdef-mode
+                     hide-ifdef-toggle-shadowing
+                     hide-ifdef-toggle-read-only
+                     hide-ifdefs
+                     show-ifdefs
+                     hide-ifdef-block
+                     show-ifdef-block
+                     hif-evaluate-macro
+                     hide-ifdef-define
+                     hide-ifdef-undef
+                     hide-ifdef-use-define-alist
+                     hide-ifdef-set-define-alist
+                     hif-clear-all-ifdef-defined)
 
-(pel-declare-file pel-pp declares:
-                  pel-pp-next-directive
-                  pel-pp-prev-directive)
+  (pel-declare-file pel-pp declares:
+                    pel-pp-next-directive
+                    pel-pp-prev-directive)
 
-(pel-autoload-file cc-cmds for:
-                   c-backward-conditional
-                   c-forward-conditional
-                   c-up-conditional)
-(defhydra pel-⅀c (pel:for-c "<f7>"  :foreign-keys run)
-  "C preprocessor"
-  ("n"    pel-pp-next-directive       "next"           :column "Move to")
-  ("p"    pel-pp-prev-directive       "prev"           :column "Move to")
-  ("C-p"  c-backward-conditional      "begin"          :column "Move to")
-  ("C-n"  c-forward-conditional       "end"            :column "Move to")
-  ("C-u"  c-up-conditional            "up"             :column "Move to")
-  ("#"    hide-ifdef-mode             "toggle mode"    :column "Hide")
-  ("W"    hide-ifdef-toggle-shadowing "toggle shadow"  :column "Hide")
-  ("R"    hide-ifdef-toggle-read-only "toggle RO"      :column "Hide")
-  ("H"    hide-ifdefs                 "hide"           :column "Hide")
-  ("S"    show-ifdefs                 "show"           :column "Hide")
-  ("h"    hide-ifdef-block            "hide block"     :column "Hide")
-  ("s"    show-ifdef-block            "show block"     :column "Hide")
-  ("e"    hif-evaluate-macro          "evaluate"       :column "# Vars")
-  ("d"    hide-ifdef-define           "define"         :column "# Vars")
-  ("u"    hide-ifdef-undef            "undef"          :column "# Vars")
-  ("U"    hide-ifdef-use-define-alist "Use list"       :column "# Vars")
-  ("D"    hide-ifdef-set-define-alist "Save list"      :column "# Vars")
-  ("C"    hif-clear-all-ifdef-defined "Clear all"      :column "# Vars")
-  ("?"    pel-pp-show-state           "Show state"     :column "Other")
-  ("<f7>" nil                         "cancel"         :column "Other"))
+  (pel-autoload-file cc-cmds for:
+                     c-backward-conditional
+                     c-forward-conditional
+                     c-up-conditional)
+  (defvar pel:for-c)
+  (defhydra pel-⅀c (pel:for-c "<f7>"  :foreign-keys run)
+    "C preprocessor"
+    ("n"    pel-pp-next-directive       "next"           :column "Move to")
+    ("p"    pel-pp-prev-directive       "prev"           :column "Move to")
+    ("C-p"  c-backward-conditional      "begin"          :column "Move to")
+    ("C-n"  c-forward-conditional       "end"            :column "Move to")
+    ("C-u"  c-up-conditional            "up"             :column "Move to")
+    ("#"    hide-ifdef-mode             "toggle mode"    :column "Hide")
+    ("W"    hide-ifdef-toggle-shadowing "toggle shadow"  :column "Hide")
+    ("R"    hide-ifdef-toggle-read-only "toggle RO"      :column "Hide")
+    ("H"    hide-ifdefs                 "hide"           :column "Hide")
+    ("S"    show-ifdefs                 "show"           :column "Hide")
+    ("h"    hide-ifdef-block            "hide block"     :column "Hide")
+    ("s"    show-ifdef-block            "show block"     :column "Hide")
+    ("e"    hif-evaluate-macro          "evaluate"       :column "# Vars")
+    ("d"    hide-ifdef-define           "define"         :column "# Vars")
+    ("u"    hide-ifdef-undef            "undef"          :column "# Vars")
+    ("U"    hide-ifdef-use-define-alist "Use list"       :column "# Vars")
+    ("D"    hide-ifdef-set-define-alist "Save list"      :column "# Vars")
+    ("C"    hif-clear-all-ifdef-defined "Clear all"      :column "# Vars")
+    ("?"    pel-pp-show-state           "Show state"     :column "Other")
+    ("<f7>" nil                         "cancel"         :column "Other")))
 
-;; TODO: Find a way to inject the above hydra into the C++ key prefix instead
-;;       of having to duplicate it as it is done below because now this
-;;       produces twice as many hydra functions: one set for C and another set
-;;       of identical functions for C++.  This wastes time and memory space.
-;;
-;; PEL HYDRA: C preprocessor for C++
-(defhydra pel-⅀c++ (pel:for-c++ "<f7>"  :foreign-keys run)
-  "C preprocessor"
-  ("n"    pel-pp-next-directive       "next"           :column "Move to")
-  ("p"    pel-pp-prev-directive       "prev"           :column "Move to")
-  ("C-p"  c-backward-conditional      "begin"          :column "Move to")
-  ("C-n"  c-forward-conditional       "end"            :column "Move to")
-  ("C-u"  c-up-conditional            "up"             :column "Move to")
-  ("#"    hide-ifdef-mode             "toggle mode"    :column "Hide")
-  ("W"    hide-ifdef-toggle-shadowing "toggle shadow"  :column "Hide")
-  ("R"    hide-ifdef-toggle-read-only "toggle RO"      :column "Hide")
-  ("H"    hide-ifdefs                 "hide"           :column "Hide")
-  ("S"    show-ifdefs                 "show"           :column "Hide")
-  ("h"    hide-ifdef-block            "hide block"     :column "Hide")
-  ("s"    show-ifdef-block            "show block"     :column "Hide")
-  ("e"    hif-evaluate-macro          "evaluate"       :column "# Vars")
-  ("d"    hide-ifdef-define           "define"         :column "# Vars")
-  ("u"    hide-ifdef-undef            "undef"          :column "# Vars")
-  ("U"    hide-ifdef-use-define-alist "Use list"       :column "# Vars")
-  ("D"    hide-ifdef-set-define-alist "Save list"      :column "# Vars")
-  ("C"    hif-clear-all-ifdef-defined "Clear all"      :column "# Vars")
-  ("?"    pel-pp-show-state           "Show state"     :column "Other")
-  ("<f7>" nil                         "cancel"         :column "Other"))
+(when pel-use-c++
+  ;; TODO: Find a way to inject the above hydra into the C++ key prefix instead
+  ;;       of having to duplicate it as it is done below because now this
+  ;;       produces twice as many hydra functions: one set for C and another set
+  ;;       of identical functions for C++.  This wastes time and memory space.
+  ;;
+  ;; PEL HYDRA: C preprocessor for C++
+  (defvar pel:for-c++)
+  (defhydra pel-⅀c++ (pel:for-c++ "<f7>"  :foreign-keys run)
+    "C preprocessor"
+    ("n"    pel-pp-next-directive       "next"           :column "Move to")
+    ("p"    pel-pp-prev-directive       "prev"           :column "Move to")
+    ("C-p"  c-backward-conditional      "begin"          :column "Move to")
+    ("C-n"  c-forward-conditional       "end"            :column "Move to")
+    ("C-u"  c-up-conditional            "up"             :column "Move to")
+    ("#"    hide-ifdef-mode             "toggle mode"    :column "Hide")
+    ("W"    hide-ifdef-toggle-shadowing "toggle shadow"  :column "Hide")
+    ("R"    hide-ifdef-toggle-read-only "toggle RO"      :column "Hide")
+    ("H"    hide-ifdefs                 "hide"           :column "Hide")
+    ("S"    show-ifdefs                 "show"           :column "Hide")
+    ("h"    hide-ifdef-block            "hide block"     :column "Hide")
+    ("s"    show-ifdef-block            "show block"     :column "Hide")
+    ("e"    hif-evaluate-macro          "evaluate"       :column "# Vars")
+    ("d"    hide-ifdef-define           "define"         :column "# Vars")
+    ("u"    hide-ifdef-undef            "undef"          :column "# Vars")
+    ("U"    hide-ifdef-use-define-alist "Use list"       :column "# Vars")
+    ("D"    hide-ifdef-set-define-alist "Save list"      :column "# Vars")
+    ("C"    hif-clear-all-ifdef-defined "Clear all"      :column "# Vars")
+    ("?"    pel-pp-show-state           "Show state"     :column "Other")
+    ("<f7>" nil                         "cancel"         :column "Other")))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; PEL HYDRA: Selective Display

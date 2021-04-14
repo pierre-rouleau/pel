@@ -150,12 +150,17 @@
 ;; ----------
 ;;
 ;; The `:requires' property indicates package dependencies.  The attribute
-;; value might be: - A single `pel-use-' symbol: stating that this parent must
-;; also be activated for the package to be installed.  - A list of several
-;; `pel-use-' symbols, stating that if any of these parent is activated the
-;; package should be installed.  - A list of several `pel-use-' symbols with
-;; `:all' in the first element, stating that *all* parent packages must be
-;; activated for this package to be installed.
+;; value might be:
+;;
+;; - A single `pel-use-' symbol: stating that this parent must also be
+;;   activated for the package to be installed.
+;;
+;; - A list of several `pel-use-' symbols, stating that any of the specified
+;;   parent must be installed for this package to be installed.
+;;
+;; - A list of several `pel-use-' symbols with `:all' in the first element,
+;;   stating that *all* parent packages must be activated for this package to
+;;   be installed.
 ;;
 
 ;; `:requires-package'
@@ -2040,6 +2045,8 @@ Enter minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-org-mode
   :type '(repeat function))
+(defvaralias 'pel-org-activates-minor-modes 'pel-org-mode-activates-minor-modes
+  "Name used by pel_keys logic.")
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; AsciiDoc Support
@@ -2064,6 +2071,8 @@ Enter minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-asciidoc
   :type '(repeat function))
+(defvaralias 'pel-adoc-activates-minor-modes 'pel-asciidoc-activates-minor-modes
+  "Name used by pel_keys logic.")
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; pel-pkg-for-draw-markup
@@ -2489,6 +2498,12 @@ of auto-newline while editing."
   :group 'c
   :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
 
+(defcustom pel-use-c nil
+  "Controls whether PEL implements extra functionality for C support."
+  :group 'pel-pkg-for-c
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-c-activates-minor-modes nil
   "List of minor-modes automatically activated for C buffers.
 Enter minor-mode activating function symbols.
@@ -2514,6 +2529,7 @@ via the ``<f12> ? e`` sequence."
   :link '(url-link :tag "c-eldoc @ GitHub"
                    "https://github.com/pierre-rouleau/c-eldoc"))
 (put 'pel-use-c-eldoc :package-is :in-utils)
+(put 'pel-use-c-eldoc :requires '(pel-use-c pel-use-c++))
 
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-c-code-style nil
@@ -2849,6 +2865,11 @@ defined ones, which could use that variable too."
   :group 'pel-pkg-for-cc
   :link `(url-link :tag "C++ PDF" ,(pel-pdf-file-url "pl-c++")))
 
+(defcustom pel-use-c++ nil
+  "Controls whether PEL implements extra functionality for C++ support."
+  :group 'pel-pkg-for-c++
+  :type 'boolean
+  :safe #'booleanp)
 
 (defcustom pel-c++-activates-minor-modes nil
   "List of minor-modes automatically activated for C++ buffers.
@@ -3128,6 +3149,10 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-javascript
   :type '(repeat function))
 
+(defvaralias 'pel-js-activates-minor-modes
+  'pel-javascript-activates-minor-modes
+  "Name used when js-mode is used for Javascript.")
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Go language support
 ;; -------------------
@@ -3390,6 +3415,9 @@ Enter minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-clisp
   :type '(repeat function))
+
+(defvaralias 'pel-lisp-activates-minor-modes 'pel-clisp-activates-minor-modes
+  "Used to help code generation because the Common Lisp major mode is lisp'-mode")
 
 (defcustom pel-use-common-lisp nil
   "Control whether PEL supports Common Lisp development."

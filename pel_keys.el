@@ -1660,8 +1660,8 @@ can't bind negative-argument to C-_ and M-_"
 ;; ---------------
 ;; (use-package cmake-mode)
 
-;; - Make file editing support
-;; ---------------------------
+;; - Makefile editing support
+;; --------------------------
 ;; Nothing needs to be installed as make support is built-in Emacs.
 
 (when pel-use-makefile
@@ -1671,20 +1671,12 @@ can't bind negative-argument to C-_ and M-_"
   (declare-function makefile-nmake-mode "pel-make")
   (add-to-list 'auto-mode-alist '("\\.mak\\'" . makefile-nmake-mode))
 
-  (defun pel--setup-for-makefile ()
-    "Set the environment for Make file editing."
+  (pel-setup-major-mode makefile pel:for-make
     (define-key pel:for-make (kbd "<up>")      'makefile-previous-dependency)
     (define-key pel:for-make (kbd "<down>")    'makefile-next-dependency)
     (define-key pel:for-make (kbd "<M-up>")   #'pel-make-previous-macro)
     (define-key pel:for-make (kbd "<M-down>") #'pel-make-next-macro)
-    (define-key pel:for-make "."               'completion-at-point)
-    ;; activate make mode <f12> keys.
-    (pel-local-set-f12-M-f12 'pel:for-make)
-    ;; Activate minor modes requested by user
-    (pel-turn-on-minor-modes-in pel-makefile-activates-minor-modes))
-
-  (pel-check-minor-modes-in pel-makefile-activates-minor-modes)
-  (pel-setup-major-mode-for makefile pel--setup-for-makefile))
+    (define-key pel:for-make "."               'completion-at-point)))
 
 ;; - Tup Built Tool Support
 ;; ------------------------
@@ -1697,14 +1689,7 @@ can't bind negative-argument to C-_ and M-_"
                      "\\.tup\\'"
                      "Tupfile"
                      "tup.config")
-
-  (defun pel--setup-for-tup ()
-    "Set the environment for tup buffers."
-    ;; Activate minor modes requested by user
-    (pel-turn-on-minor-modes-in pel-tup-activates-minor-modes))
-
-  (pel-check-minor-modes-in pel-tup-activates-minor-modes)
-  (pel-setup-major-mode-for tup pel--setup-for-tup))
+  (pel-setup-major-mode tup :no-f12-keys))
 
 ;; ---------------------------------------------------------------------------
 ;; - Programming Language Support
@@ -1784,101 +1769,104 @@ can't bind negative-argument to C-_ and M-_"
   (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode))
 
 ;; ---------------------------------------------------------------------------
-;; Utility function for mapping CC Mode keys
+;; Utility function for mapping CC Mode keys : used by C, C++ and D
+(when (or pel-use-c
+          pel-use-c++
+          pel-use-d)
 
-;; Autoload cc-cmds for the c-hungry-delete commands.
-;; Also autoload c-toggle-hungry-state because it is is used for
-;; CC Mode compliant modes (see later sections of code, below).
-(pel-autoload-file cc-cmds for:
-                   c-context-open-line
-                   c-fill-paragraph
-                   c-hungry-delete-backwards
-                   c-hungry-delete-forward
-                   c-toggle-auto-newline
-                   c-toggle-comment-style
-                   c-toggle-electric-state
-                   c-toggle-hungry-state
-                   c-toggle-syntactic-indentation)
+  ;; Autoload cc-cmds for the c-hungry-delete commands.
+  ;; Also autoload c-toggle-hungry-state because it is is used for
+  ;; CC Mode compliant modes (see later sections of code, below).
+  (pel-autoload-file cc-cmds for:
+                     c-context-open-line
+                     c-fill-paragraph
+                     c-hungry-delete-backwards
+                     c-hungry-delete-forward
+                     c-toggle-auto-newline
+                     c-toggle-comment-style
+                     c-toggle-electric-state
+                     c-toggle-hungry-state
+                     c-toggle-syntactic-indentation)
 
-(defun pel--map-cc-for (prefix &optional c-preproc-prefix)
-  "Map in the PEL keys for CC Mode in the global keymap specified by PREFIX.
-If C-PREPROC-PREFIX also bind the keys for C preprocessor related commands and
-sub-keys inside that prefix.
-If a key must be assigned to something different for the programming language
-just bind it again after this call."
-  ;; electric mode control
-  (define-key prefix (kbd "M-?")   'pel-cc-mode-info)
-  (define-key prefix (kbd "M-s")   'c-set-style) ; interactively select style
-  (define-key prefix (kbd "M-;")   'c-toggle-comment-style)
-  (define-key prefix (kbd "M-e")   'c-toggle-electric-state)
-  (define-key prefix (kbd "RET")   'pel-cc-change-newline-mode)
-  (define-key prefix (kbd "M-RET") 'c-toggle-auto-newline)
-  (define-key prefix (kbd "M-DEL") 'c-toggle-hungry-state)
-  (define-key prefix (kbd "M-b")  #'subword-mode)
-  (define-key prefix (kbd "M-p")  #'superword-mode)
-  (define-key prefix (kbd "M-i")   'c-toggle-syntactic-indentation)
-  (define-key prefix (kbd "C-o")   'open-line)
-  (define-key prefix      "F"      'c-fill-paragraph)
-  (define-key prefix      "f"      'c-display-defun-name)
-  ;;
-  (define-key prefix (kbd "M-9")  #'show-paren-mode)
-  ;; reserve "." for a command that find the thing at point in C (via CTags?)
-  (define-key prefix      ")"      #'check-parens)
-  (when pel-use-rainbow-delimiters
-    (define-key prefix (kbd "M-r")  'rainbow-delimiters-mode))
-  (when c-preproc-prefix
-    (define-key prefix (kbd "M-#")  'hide-ifdef-mode)
-    (define-key c-preproc-prefix "#" 'c-macro-expand)
-    (define-key c-preproc-prefix "H" 'hide-ifdefs)
-    (define-key c-preproc-prefix "S" 'show-ifdefs)
-    (define-key c-preproc-prefix "h" 'hide-ifdef-block)
-    (define-key c-preproc-prefix "s" 'show-ifdef-block)
-    (define-key c-preproc-prefix "d" 'hide-ifdef-define)
-    (define-key c-preproc-prefix "u" 'hide-ifdef-undef)
-    (define-key c-preproc-prefix "D" 'hide-ifdef-set-define-alist)
-    (define-key c-preproc-prefix "U" 'hide-ifdef-use-define-alist)
-    (define-key c-preproc-prefix "r" 'hide-ifdef-toggle-read-only)
-    (define-key c-preproc-prefix "w" 'hide-ifdef-toggle-shadowing)
-    (define-key c-preproc-prefix "C" 'hif-clear-all-ifdef-defined)
-    (define-key c-preproc-prefix "e" 'hif-evaluate-macro)
-    (define-key c-preproc-prefix "n" 'pel-pp-next-directive)
-    (define-key c-preproc-prefix "p" 'pel-pp-prev-directive)
-    (define-key c-preproc-prefix "?" 'pel-pp-show-state)))
+  (defun pel--map-cc-for (prefix &optional c-preproc-prefix)
+    "Map in the PEL keys for CC Mode in the global keymap specified by PREFIX.
+If C-PREPROC-PREFIX also bind the keys for C preprocessor related
+commands and sub-keys inside that prefix.  If a key must be
+assigned to something different for the programming language just
+bind it again after this call."
+    ;; electric mode control
+    (define-key prefix (kbd "M-?")   'pel-cc-mode-info)
+    (define-key prefix (kbd "M-s")   'c-set-style) ; interactively select style
+    (define-key prefix (kbd "M-;")   'c-toggle-comment-style)
+    (define-key prefix (kbd "M-e")   'c-toggle-electric-state)
+    (define-key prefix (kbd "RET")   'pel-cc-change-newline-mode)
+    (define-key prefix (kbd "M-RET") 'c-toggle-auto-newline)
+    (define-key prefix (kbd "M-DEL") 'c-toggle-hungry-state)
+    (define-key prefix (kbd "M-b")  #'subword-mode)
+    (define-key prefix (kbd "M-p")  #'superword-mode)
+    (define-key prefix (kbd "M-i")   'c-toggle-syntactic-indentation)
+    (define-key prefix (kbd "C-o")   'open-line)
+    (define-key prefix      "F"      'c-fill-paragraph)
+    (define-key prefix      "f"      'c-display-defun-name)
+    ;;
+    (define-key prefix (kbd "M-9")  #'show-paren-mode)
+    ;; reserve "." for a command that find the thing at point in C (via CTags?)
+    (define-key prefix      ")"      #'check-parens)
+    (when pel-use-rainbow-delimiters
+      (define-key prefix (kbd "M-r")  'rainbow-delimiters-mode))
+    (when c-preproc-prefix
+      (define-key prefix (kbd "M-#")  'hide-ifdef-mode)
+      (define-key c-preproc-prefix "#" 'c-macro-expand)
+      (define-key c-preproc-prefix "H" 'hide-ifdefs)
+      (define-key c-preproc-prefix "S" 'show-ifdefs)
+      (define-key c-preproc-prefix "h" 'hide-ifdef-block)
+      (define-key c-preproc-prefix "s" 'show-ifdef-block)
+      (define-key c-preproc-prefix "d" 'hide-ifdef-define)
+      (define-key c-preproc-prefix "u" 'hide-ifdef-undef)
+      (define-key c-preproc-prefix "D" 'hide-ifdef-set-define-alist)
+      (define-key c-preproc-prefix "U" 'hide-ifdef-use-define-alist)
+      (define-key c-preproc-prefix "r" 'hide-ifdef-toggle-read-only)
+      (define-key c-preproc-prefix "w" 'hide-ifdef-toggle-shadowing)
+      (define-key c-preproc-prefix "C" 'hif-clear-all-ifdef-defined)
+      (define-key c-preproc-prefix "e" 'hif-evaluate-macro)
+      (define-key c-preproc-prefix "n" 'pel-pp-next-directive)
+      (define-key c-preproc-prefix "p" 'pel-pp-prev-directive)
+      (define-key c-preproc-prefix "?" 'pel-pp-show-state)))
 
-(defun pel--setup-for-cc ()
-  "More setup for CC modes: add c preprocessor hydra."
-  ;; The pel-⅀c-preproc requires Hydra: load it via the `pel--load-hydra'.
-  ;; Note that `pel--load-hydra' removes itself and its presence is used as an
-  ;; indication.  So we must check for it being bound and we must NOT use a
-  ;; `declare-function' for it even if it was conditionally defined (which
-  ;; currently is not the case anyway).
-  (when (and pel-use-hydra
-             (fboundp 'pel--load-hydra))
-    (pel--load-hydra :no-request)))
+  (defun pel--setup-for-cc ()
+    "More setup for CC modes: add c preprocessor hydra."
+    ;; The pel-⅀c-preproc requires Hydra: load it via the `pel--load-hydra'.
+    ;; Note that `pel--load-hydra' removes itself and its presence is used as an
+    ;; indication.  So we must check for it being bound and we must NOT use a
+    ;; `declare-function' for it even if it was conditionally defined (which
+    ;; currently is not the case anyway).
+    (when (and pel-use-hydra
+               (fboundp 'pel--load-hydra))
+      (pel--load-hydra :no-request)))
 
-(defun pel--set-cc-style (mode bracket-style newline-mode)
-  "Set the BRACKET-STYLE and NEWLINE-MODE for MODE.
+  (defun pel--set-cc-style (mode bracket-style newline-mode)
+    "Set the BRACKET-STYLE and NEWLINE-MODE for MODE.
 MODE must be a symbol."
-  (if (and (require 'cc-vars nil :no-error)
-           (boundp 'c-default-style))
-      (progn
-        (let* ((used-style  (assoc mode c-default-style))
-               (force-style (not
-                             (and used-style
-                                  (string-equal (cdr used-style) bracket-style)))))
-          (when force-style
-            (add-to-list 'c-default-style (cons mode bracket-style))
-            (c-set-style bracket-style :dont-override-default)))
-        ;; Activate CC mode specific local bindings
-        (pel-require 'pel-cc)
-        (if (boundp 'pel-cc-newline-mode)
-            (setq pel-cc-newline-mode newline-mode)
-          (error "Failed loading pel-align!"))
-        (local-set-key     (kbd "C-o")   'c-context-open-line)
-        (local-set-key     (kbd "RET")   'pel-cc-newline))
-    (display-warning 'pel--set-cc-style
-                     "Problem loading cc-vars!"
-                     :error)))
+    (if (and (require 'cc-vars nil :no-error)
+             (boundp 'c-default-style))
+        (progn
+          (let* ((used-style  (assoc mode c-default-style))
+                 (force-style (not
+                               (and used-style
+                                    (string-equal (cdr used-style) bracket-style)))))
+            (when force-style
+              (add-to-list 'c-default-style (cons mode bracket-style))
+              (c-set-style bracket-style :dont-override-default)))
+          ;; Activate CC mode specific local bindings
+          (pel-require 'pel-cc)
+          (if (boundp 'pel-cc-newline-mode)
+              (setq pel-cc-newline-mode newline-mode)
+            (error "Failed loading pel-align!"))
+          (local-set-key     (kbd "C-o")   'c-context-open-line)
+          (local-set-key     (kbd "RET")   'pel-cc-newline))
+      (display-warning 'pel--set-cc-style
+                       "Problem loading cc-vars!"
+                       :error))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC c`` : C programming utilities
@@ -1888,51 +1876,41 @@ MODE must be a symbol."
 ;; extra code needed is to add the specialized menu and then activate it,
 ;; along with the specialized CC Mode minor modes via the c-mode-hook.
 
-(define-pel-global-prefix pel:for-c         (kbd "<f11> SPC c"))
-(define-pel-global-prefix pel:for-c-preproc (kbd "<f11> SPC c #"))
-(define-pel-global-prefix pel:c-skel        (kbd "<f11> SPC c <f12>"))
+(when pel-use-c
+  (define-pel-global-prefix pel:for-c         (kbd "<f11> SPC c"))
+  (define-pel-global-prefix pel:for-c-preproc (kbd "<f11> SPC c #"))
+  (define-pel-global-prefix pel:c-skel        (kbd "<f11> SPC c <f12>"))
 
-(defun pel--setup-for-c ()
-  "Set the environment for editing C files."
-  ;; Configure the CC Mode style for C from PEL custom variables
-  ;; 1) set the style: it identifies everything
-  (pel--set-cc-style 'c-mode pel-c-bracket-style pel-c-newline-mode)
-  ;; 2) apply modifications requested by PEL user options.
-  ;; 2a) set variables always available in Emacs
-  (setq tab-width          pel-c-tab-width
-        indent-tabs-mode   pel-c-use-tabs)
-  ;; 2b) set variables only available in a CC mode - prevent warnings
-  (pel-setq c-basic-offset pel-c-indent-width)
-  ;; 3) set fill-column to PEL specified C's default if specified
-  (when pel-c-fill-column
-    (setq fill-column pel-c-fill-column))
-  ;; 4) Set default auto-newline mode as identified by PEL user option
-  (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
-  ;; 5) Configure M-( to put parentheses after a function name.
-  (set (make-local-variable 'parens-require-spaces) nil)
-  ;; 6) activate the mode specific key prefixes: <f12> and <M-f12>
-  (pel-local-set-f12-M-f12 'pel:for-c)
-  (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
-  ;; 7) Install language-specific skeletons
-  (pel--install-c-skel      pel:c-skel)
-  ;; 8) extra setup
-  (pel--setup-for-cc)
-  ;; 9) activate any mode user wants
-  (pel-turn-on-minor-modes-in pel-c-activates-minor-modes))
+  (when pel-use-plantuml
+    (define-key pel:for-c "u" 'pel-render-commented-plantuml))
+  (when pel-use-c-eldoc
+    (define-pel-global-prefix pel:c-help (kbd "<f11> SPC c ?"))
+    (define-key pel:c-help "e" 'pel-toggle-c-eldoc-mode))
+  (pel--map-cc-for pel:for-c pel:for-c-preproc)
 
-
-(when pel-use-plantuml
-  (define-key pel:for-c "u" 'pel-render-commented-plantuml))
-(when pel-use-c-eldoc
-  (define-pel-global-prefix pel:c-help (kbd "<f11> SPC c ?"))
-  (define-key pel:c-help "e" 'pel-toggle-c-eldoc-mode))
-(pel--map-cc-for pel:for-c pel:for-c-preproc)
-
-;;
-;; Schedule activation of C mode style and its <f12> key binding
-(pel-check-minor-modes-in pel-c-activates-minor-modes)
-(pel--mode-hook-maybe-call (function pel--setup-for-c)
-                           'c-mode 'c-mode-hook)
+  (pel-setup-major-mode c pel:for-c
+    ;; Configure the CC Mode style for C from PEL custom variables
+    ;; 1) set the style: it identifies everything
+    (pel--set-cc-style 'c-mode pel-c-bracket-style pel-c-newline-mode)
+    ;; 2) apply modifications requested by PEL user options.
+    ;; 2a) set variables always available in Emacs
+    (setq tab-width          pel-c-tab-width
+          indent-tabs-mode   pel-c-use-tabs)
+    ;; 2b) set variables only available in a CC mode - prevent warnings
+    (pel-setq c-basic-offset pel-c-indent-width)
+    ;; 3) set fill-column to PEL specified C's default if specified
+    (when pel-c-fill-column
+      (setq fill-column pel-c-fill-column))
+    ;; 4) Set default auto-newline mode as identified by PEL user option
+    (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+    ;; 5) Configure M-( to put parentheses after a function name.
+    (set (make-local-variable 'parens-require-spaces) nil)
+    ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
+    (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
+    ;; 7) Install language-specific skeletons
+    (pel--install-c-skel      pel:c-skel)
+    ;; 8) extra setup
+    (pel--setup-for-cc)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C`` : C++ programming utilities
@@ -1942,97 +1920,58 @@ MODE must be a symbol."
 ;; The only extra code needed is to add the specialized menu and then activate
 ;; it, along with the specialized CC Mode minor modes via the c++-mode-hook.
 
-(define-pel-global-prefix pel:for-c++         (kbd "<f11> SPC C"))
-(define-pel-global-prefix pel:for-c++-preproc (kbd "<f11> SPC C #"))
+(when pel-use-c++
+  (define-pel-global-prefix pel:for-c++         (kbd "<f11> SPC C"))
+  (define-pel-global-prefix pel:for-c++-preproc (kbd "<f11> SPC C #"))
 
-(defun pel--setup-for-c++ ()
-  "Set the environment for editing C++ files."
-  ;; Configure the CC Mode style for C++ from PEL custom variables
-  ;; 1) set the style: it identifies everything
-  (pel--set-cc-style 'c++-mode pel-c++-bracket-style pel-c++-newline-mode)
-  ;; 2)  apply modifications requested by PEL user options.
-  ;; 2a) set variables always available in Emacs
-  (setq tab-width          pel-c++-tab-width
-        indent-tabs-mode   pel-c++-use-tabs)
-  ;; 2b) set variables only available in a CC mode - prevent warnings
-  (pel-setq c-basic-offset pel-c++-indent-width)
-  ;; 3) set fill-column to PEL specified C++'s default if specified
-  (when pel-c++-fill-column
-    (setq fill-column pel-c++-fill-column))
-  ;; 4) Set default auto-newline mode as identified by PEL user option
-  (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
-  ;; 5) Configure M-( to put parentheses after a function name.
-  (set (make-local-variable 'parens-require-spaces) nil)
-  ;; 6) activate the mode specific key prefixes: <f12> and <M-f12>
-  (pel-local-set-f12-M-f12 'pel:for-c++)
-  (pel-local-set-f12-M-f12 'pel:for-c++-preproc "#")
-  ;; 7) Install language-specific skeletons
-  ;; TODO
-  ;; 8) extra setup
-  (pel--setup-for-cc)
-  ;; 9) activate any mode user wants
-  (pel-turn-on-minor-modes-in pel-c++-activates-minor-modes))
+  (when pel-use-plantuml
+    (define-key pel:for-c++ "u" 'pel-render-commented-plantuml))
+  (pel--map-cc-for pel:for-c++ pel:for-c++-preproc)
 
-(when pel-use-plantuml
-  (define-key pel:for-c++ "u" 'pel-render-commented-plantuml))
-(pel--map-cc-for pel:for-c++ pel:for-c++-preproc)
-
-;;
-;; Schedule activation of C++ mode style and its <f12> key binding
-(pel-check-minor-modes-in pel-c++-activates-minor-modes)
-(pel--mode-hook-maybe-call (function pel--setup-for-c++)
-                           'c++-mode 'c++-mode-hook)
+  (pel-setup-major-mode c++ pel:for-c++
+    ;; "Set the environment for editing C++ files."
+    ;; Configure the CC Mode style for C++ from PEL custom variables
+    ;; 1) set the style: it identifies everything
+    (pel--set-cc-style 'c++-mode pel-c++-bracket-style pel-c++-newline-mode)
+    ;; 2)  apply modifications requested by PEL user options.
+    ;; 2a) set variables always available in Emacs
+    (setq tab-width          pel-c++-tab-width
+          indent-tabs-mode   pel-c++-use-tabs)
+    ;; 2b) set variables only available in a CC mode - prevent warnings
+    (pel-setq c-basic-offset pel-c++-indent-width)
+    ;; 3) set fill-column to PEL specified C++'s default if specified
+    (when pel-c++-fill-column
+      (setq fill-column pel-c++-fill-column))
+    ;; 4) Set default auto-newline mode as identified by PEL user option
+    (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+    ;; 5) Configure M-( to put parentheses after a function name.
+    (set (make-local-variable 'parens-require-spaces) nil)
+    ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
+    (pel-local-set-f12-M-f12 'pel:for-c++-preproc "#")
+    ;; 7) Install language-specific skeletons
+    ;; TODO
+    ;; 8) extra setup
+    (pel--setup-for-cc)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC D`` : D programming utilities
 
 (when pel-use-d
-
   (define-pel-global-prefix pel:for-d (kbd "<f11> SPC D"))
-
-  (defun pel--setup-for-d ()
-    "Set the environment for editing D files."
-    ;; Configure the CC Mode style for C++ from PEL custom variables
-    ;; 1) set the style: it identifies everything
-    (pel--set-cc-style 'd-mode pel-d-bracket-style pel-d-newline-mode)
-    ;; 2)  apply modifications requested by PEL user options.
-    ;; 2a) set variables always available in Emacs
-    (setq tab-width          pel-d-tab-width
-          indent-tabs-mode   pel-d-use-tabs)
-    ;; 2b) set variables only available in a CC mode - prevent warnings
-    (pel-setq c-basic-offset pel-d-indent-width)
-    ;; 3) set fill-column to PEL specified D's default if specified
-    (when pel-d-fill-column
-      (setq fill-column pel-d-fill-column))
-    ;; 4) Set default auto-newline mode as identified by PEL user option
-    (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
-    ;; Configure M-( to put parentheses after a function name.
-    (set (make-local-variable 'parens-require-spaces) nil)
-    ;; 6) activate the mode specific key prefixes: <f12> and <M-f12>
-    (pel-local-set-f12-M-f12 'pel:for-d)
-    ;; 7) Install language-specific skeletons
-    ;; TODO
-    ;; 9) activate any mode user wants
-    (pel-turn-on-minor-modes-in pel-d-activates-minor-modes))
-  (declare-function pel--setup-for-d "pel_keys")
-  (declare-function speedbar-add-supported-extension "speedbar")
-
-  (when pel-use-speedbar
-    ;; Overcoming omission bug in d-mode: add support for Speedbar
-    (pel-add-speedbar-extension ".d"))
 
   (pel-ensure-package d-mode from: melpa)
   (pel-autoload-file d-mode for: d-mode)
   ;; When opening a D source code file, load the d-mode feature.
   (add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
+
+  ;; Overcome omission bug in d-mode: add support for Speedbar
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".d"))
+
   ;; Configure commands available on the D key-map.
   (when pel-use-plantuml
     (define-key pel:for-d "u" 'pel-render-commented-plantuml))
   (pel--map-cc-for pel:for-d)
-  ;; Schedule activation of D mode style and its <f12> key binding
-  (pel-check-minor-modes-in pel-d-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setup-for-d)
-                             'd-mode 'd-mode-hook)
 
   ;; Configure auto-completion based on selection
   ;; There are 2 possibilities
@@ -2052,13 +1991,34 @@ d-mode not added to ac-modes!"
   (when pel-use-d-company-dcd
     (pel-ensure-package company-dcd from: melpa)
     (pel-autoload-file company-dcd for: company-dcd-mode)
-    (add-hook 'd-mode-hook 'company-dcd-mode)))
+    (add-hook 'd-mode-hook 'company-dcd-mode))
+
+  (pel-setup-major-mode d pel:for-d
+    ;; "Set the environment for editing D files."
+    ;; Configure the CC Mode style for C++ from PEL custom variables
+    ;; 1) set the style: it identifies everything
+    (pel--set-cc-style 'd-mode pel-d-bracket-style pel-d-newline-mode)
+    ;; 2)  apply modifications requested by PEL user options.
+    ;; 2a) set variables always available in Emacs
+    (setq tab-width          pel-d-tab-width
+          indent-tabs-mode   pel-d-use-tabs)
+    ;; 2b) set variables only available in a CC mode - prevent warnings
+    (pel-setq c-basic-offset pel-d-indent-width)
+    ;; 3) set fill-column to PEL specified D's default if specified
+    (when pel-d-fill-column
+      (setq fill-column pel-d-fill-column))
+    ;; 4) Set default auto-newline mode as identified by PEL user option
+    (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+    ;; Configure M-( to put parentheses after a function name.
+    (set (make-local-variable 'parens-require-spaces) nil)
+    ;; 7) Install language-specific skeletons
+    ;; TODO
+    ))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` : Erlang programming
 
 (when pel-use-erlang
-
   (define-pel-global-prefix pel:for-erlang (kbd "<f11> SPC e"))
   (define-pel-global-prefix pel:erlang-function (kbd "<f11> SPC e f"))
   (define-pel-global-prefix pel:erlang-clause   (kbd "<f11> SPC e c"))
@@ -2066,32 +2026,9 @@ d-mode not added to ac-modes!"
   (define-pel-global-prefix pel:erlang-debug    (kbd "<f11> SPC e d"))
   (define-pel-global-prefix pel:erlang-skel     (kbd "<f11> SPC e <f12>"))
 
-  (defun pel--setup-for-erlang ()
-    "Activate Erlang setup."
-    ;; set fill-column to Erlang's default if specified
-    (when pel-erlang-fill-column
-      (setq fill-column pel-erlang-fill-column))
-    ;; setup the Erlang-specific key bindings
-    (pel-local-set-f12-M-f12 'pel:for-erlang)
-    (pel--install-erlang-skel pel:erlang-skel)
-    ;; Configure M-( to put parentheses after a function name.
-    (set (make-local-variable 'parens-require-spaces) nil)
-    (when pel-use-speedbar
-      ;; Overcoming omission bug in erlang-mode: add support for Speedbar
-      (pel-add-speedbar-extension '(".erl"
-                                    ".hrl"
-                                    ".escript")))
-    ;; Activates minor modes requested by user
-    (pel-turn-on-minor-modes-in pel-erlang-activates-minor-modes))
-  (declare-function pel--setup-for-erlang "pel_keys")
-
-  ;;
-  (when pel-erlang-shell-prevent-echo
-    ;; Prevent erlang shell to echo back commands.
-    (add-hook 'erlang-shell-mode-hook 'pel-erlang-shell-mode-init))
-
   (pel-ensure-package erlang from: melpa)
   (pel-autoload-file erlang for: erlang-mode)
+
   (pel-set-auto-mode erlang-mode for:
                      "\\.erl?$"
                      "\\.hrl?$"
@@ -2105,15 +2042,21 @@ d-mode not added to ac-modes!"
                      "\\.app.src?$"
                      "\\Emakefile")
 
+  ;; Overcome omission bug in erlang-mode: add support for Speedbar
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension '(".erl"
+                                  ".hrl"
+                                  ".escript")))
+
+  (when pel-erlang-shell-prevent-echo
+    ;; Prevent erlang shell to echo back commands.
+    (add-hook 'erlang-shell-mode-hook 'pel-erlang-shell-mode-init))
+
+
   ;; Augment the skeletons defined inside erlang.el.
   ;; Do this once - right after erlang.el file is loaded and
   ;; before the erlang-mode executes.
   (advice-add 'erlang-mode :before #'pel--erlang-mode-setup)
-
-  ;; activate the <f12> key binding for erlang-mode
-  (pel-check-minor-modes-in pel-erlang-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setup-for-erlang)
-                             'erlang-mode 'erlang-mode-hook)
 
   ;; bind other erlang keys
   (define-key pel:for-erlang      "?"         'erlang-version)
@@ -2267,29 +2210,30 @@ d-mode not added to ac-modes!"
           (add-hook 'erlang-mode-hook #'pel--erlang-setup-for-flycheck))))
 
       ;; When any syntax checker is used with Erlang add a key to toggle it
-      (define-key pel:for-erlang "!" 'pel-erlang-toggle-syntax-checker))))
+      (define-key pel:for-erlang "!" 'pel-erlang-toggle-syntax-checker)))
+
+  (pel-setup-major-mode erlang pel:for-erlang
+    ;; "Activate Erlang setup."
+    ;; set fill-column to Erlang's default if specified
+    (when pel-erlang-fill-column
+      (setq fill-column pel-erlang-fill-column))
+    ;; setup the Erlang-specific key bindings
+    (pel--install-erlang-skel pel:erlang-skel)
+    ;; Configure M-( to put parentheses after a function name.
+    (set (make-local-variable 'parens-require-spaces) nil)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC x`` : Elixir programming
 (when pel-use-elixir
   (pel-ensure-package elixir-mode from: melpa)
   (pel-autoload-file elixir-mode for: elixir-mode)
-  (define-pel-global-prefix pel:for-elixir (kbd "<f11> SPC x"))
 
-  (defun pel--setup-for-elixir ()
-    "Activate Elixir setup."
-    (pel-local-set-f12-M-f12 'pel:for-elixir)
-    ;; Activates minor modes requested by user
-    (pel-turn-on-minor-modes-in pel-elixir-activates-minor-modes))
+  (define-pel-global-prefix pel:for-elixir (kbd "<f11> SPC x"))
 
   (define-key pel:for-elixir (kbd "M-p") #'superword-mode)
   (when pel-use-plantuml
     (define-key pel:for-elixir "u" 'pel-render-commented-plantuml))
-  ;;
-  (pel-check-minor-modes-in pel-elixir-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setup-for-elixir)
-                             'elixir-mode 'elixir-mode-hook)
-  ;;
+
   (when pel-use-alchemist
     (pel-ensure-package alchemist from: melpa)
     (pel-autoload-file alchemist for:
@@ -2310,7 +2254,10 @@ d-mode not added to ac-modes!"
   (when pel-use-elixir-lsp
     (pel-ensure-package lsp-elixir from: melpa)
     (pel-autoload-file lsp-elixir for: elixir-mode)
-    (add-hook 'elixir-mode-hook 'lsp)))
+    (add-hook 'elixir-mode-hook 'lsp))
+
+  ;; Activate Elixir setup.
+  (pel-setup-major-mode elixir pel:for-elixir))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` : Forth programming
@@ -2320,19 +2267,12 @@ d-mode not added to ac-modes!"
                      forth-mode
                      forth-block-mode
                      forth-interaction-mode)
-  (define-pel-global-prefix pel:for-forth (kbd "<f11> SPC f"))
-  ;;
-  (defun pel--setup-for-forth ()
-    "Activate Forth setup."
-    (pel-local-set-f12-M-f12 'pel:for-forth)
-    ;; Activates minor modes requested by user
-    (pel-turn-on-minor-modes-in pel-forth-activates-minor-modes))
-  (declare-function pel--setup-for-forth "pel_keys")
 
-  ;; activate the <f12> key binding for forth-mode
-  (pel-check-minor-modes-in pel-forth-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setup-for-forth)
-                             'forth-mode 'forth-mode-hook))
+  ;; the <f12> key provides access to help and customization
+  (define-pel-global-prefix pel:for-forth (kbd "<f11> SPC f"))
+
+  ;; Activate Forth setup.
+  (pel-setup-major-mode forth pel:for-forth))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC F`` : FORTRAN programming
@@ -2342,11 +2282,48 @@ d-mode not added to ac-modes!"
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC g`` : Go programming
 (when pel-use-go
   (when pel-use-go-mode
-    (define-pel-global-prefix pel:for-go (kbd "<f11> SPC g"))
+    ;; go-mode installation
+    (pel-ensure-package go-mode from: melpa)
+    (pel-autoload-file go-mode for: go-mode)
 
-    (defun pel--setup-for-go ()
-      "Set environment for Go programming."
-      (pel-local-set-f12-M-f12 'pel:for-go)
+    ;; goflymake package installation - either using flymake or flycheck
+    (cl-eval-when 'load
+      (when pel-use-goflymake
+        ;; goflymake is a mixed package:
+        ;; - it has the Go source:  goflymake/main.go  that Go will compile into
+        ;;   the executable stored in a directory that should be on your PATH,
+        ;; - the emacs lisp go-flymake.el and go-flycheck.el
+        ;; To ensure the Emacs Lisp files are available to Emacs regardless of the
+        ;; Go project or workspace used, the Emacs Lisp files are stored in PEL
+        ;; utility directory.
+        ;; TODO: restore dougm URL once he has accepted by pull-request. In the
+        ;;       mean-time I'm using my fork that has code fixes.
+        (if (memq pel-use-goflymake '(with-flycheck with-flymake))
+            (pel-install-github-file "pierre-rouleau/goflymake/master"
+                                     (if (eq pel-use-goflymake 'with-flycheck)
+                                         "go-flycheck.el"
+                                       "go-flymake.el"))
+          (display-warning
+           'pel-use-goflymake
+           (format "Unsupported pel-use-goflymake value: %S"
+                   pel-use-goflymake)
+           :error))))
+
+    ;; Setup Go
+    (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+    ;; Overcome omission bug in go-mode: add support for Speedbar
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension ".go"))
+
+    (define-pel-global-prefix pel:for-go (kbd "<f11> SPC g"))
+    (define-key pel:for-go (kbd "M-t") 'pel-go-set-tab-width)
+    (define-key pel:for-go (kbd "M-s") 'pel-go-toggle-gofmt-on-buffer-save)
+    (define-key pel:for-go "?"         'pel-go-setup-info)
+    (when pel-use-goflymake
+      (define-key pel:for-go "!"       'pel-go-toggle-syntax-checker))
+
+    ;; Set environment for Go programming using go-mode.
+    (pel-setup-major-mode go pel:for-go
       ;; ensure gofmt is executed before saving file if
       ;; configured to do so
       (when pel-go-run-gofmt-on-buffer-save
@@ -2361,50 +2338,7 @@ d-mode not added to ac-modes!"
          ((eq pel-use-goflymake 'with-flymake)  (pel-require 'go-flymake))
          (t
           (error "Unsupported pel-use-goflymake value: %S"
-                 pel-use-goflymake))))
-      ;; Activates minor modes requested by user
-      (pel-turn-on-minor-modes-in pel-go-activates-minor-modes))
-    (declare-function pel--setup-for-go "pel_keys")
-
-    ;; Overcoming omission bug in go-mode: add support for Speedbar
-    (when pel-use-speedbar
-      (pel-add-speedbar-extension ".go"))
-
-    (pel-ensure-package go-mode from: melpa)
-    (pel-autoload-file go-mode for: go-mode)
-    (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
-    (define-key pel:for-go (kbd "M-t") 'pel-go-set-tab-width)
-    (define-key pel:for-go (kbd "M-s") 'pel-go-toggle-gofmt-on-buffer-save)
-    (define-key pel:for-go "?"         'pel-go-setup-info)
-    (when pel-use-goflymake
-      (define-key pel:for-go "!"       'pel-go-toggle-syntax-checker))
-    ;; activate the <f12> key binding for Go
-    (pel-check-minor-modes-in pel-go-activates-minor-modes)
-    (pel--mode-hook-maybe-call (function pel--setup-for-go)
-                               'go-mode 'go-mode-hook))
-
-  ;; goflymake package - either using flymake or flycheck
-  (cl-eval-when 'load
-    (when pel-use-goflymake
-      ;; goflymake is a mixed package:
-      ;; - it has the Go source:  goflymake/main.go  that Go will compile into
-      ;;   the executable stored in a directory that should be on your PATH,
-      ;; - the emacs lisp go-flymake.el and go-flycheck.el
-      ;; To ensure the Emacs Lisp files are available to Emacs regardless of the
-      ;; Go project or workspace used, the Emacs Lisp files are stored in PEL
-      ;; utility directory.
-      ;; TODO: restore dougm URL once he has accepted by pull-request. In the
-      ;;       mean-time I'm using my fork that has code fixes.
-      (if (memq pel-use-goflymake '(with-flycheck with-flymake))
-          (pel-install-github-file "pierre-rouleau/goflymake/master"
-                                   (if (eq pel-use-goflymake 'with-flycheck)
-                                       "go-flycheck.el"
-                                     "go-flymake.el"))
-        (display-warning
-         'pel-use-goflymake
-         (format "Unsupported pel-use-goflymake value: %S"
-                 pel-use-goflymake)
-         :error)))))
+                 pel-use-goflymake)))))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Programming Style: Haskell Support
@@ -2443,21 +2377,12 @@ d-mode not added to ac-modes!"
     ;; js2-error-buffer-mode
     ;; js2-error-buffer-next
     ;; js2-error-buffer-prev and some more...
-
-    (defun pel--setup-for-javascript ()
-      "Activate Javascript setup."
-      (pel-local-set-f12-M-f12 'pel:for-javascript)
-      (pel-turn-on-minor-modes-in pel-javascript-activates-minor-modes))
-    (declare-function pel--setup-for-javascript "pel_keys")
-
-    ;; activate the <f12> key binding for javascript
-    (pel-check-minor-modes-in pel-javascript-activates-minor-modes)
-    (pel--mode-hook-maybe-call (function pel--setup-for-javascript)
-                               'js2-mode 'js2-mode-hook))
+    (pel-setup-major-mode javascript pel:for-javascript))
    ;;
    ((eq pel-use-javascript 'js-mode)
     ;; Use the built-in js.el
-    (pel-autoload-file js for: js-mode))))
+    (pel-autoload-file js for: js-mode)
+    (pel-setup-major-mode js pel:for-javascript))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC j`` : Julia programming
@@ -2471,18 +2396,15 @@ d-mode not added to ac-modes!"
                      julia-mode
                      julia-snail
                      julia-snail-mode)
+
   (define-pel-global-prefix pel:for-julia (kbd "<f11> SPC j"))
 
-  (defun pel--setup-for-julia ()
-    "Activate Julia setup."
-    (pel-local-set-f12-M-f12 'pel:for-julia)
-    (pel-turn-on-minor-modes-in pel-julia-activates-minor-modes))
-  (declare-function pel--setup-for-julia "pel_keys")
-
-  ;; activate the <f12> key binding for julia-mode
-  (pel--mode-hook-maybe-call (function pel--setup-for-julia)
-                             'julia-mode 'julia-mode-hook)
-  (add-hook 'julia-mode-hook 'julia-snail-mode))
+  (pel-setup-major-mode julia pel:for-julia
+    (if (fboundp 'julia-snail-mode)
+        (julia-snail-mode 1)
+      (display-warning 'pel-use-julia
+                       "Cannot load julia-nail-mode"
+                       :error))))
 
 ;; ---------------------------------------------------------------------------
 ;; Lisp-style programming Languages
@@ -2702,24 +2624,6 @@ d-mode not added to ac-modes!"
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC L`` : (Common) Lisp
 (when pel-use-common-lisp
-  (define-pel-global-prefix pel:for-lisp (kbd "<f11> SPC L"))
-
-  (when pel-use-speedbar
-    ;; Add support for Speedbar listing Common Lisp files:
-    (pel-add-speedbar-extension ".li?sp"))
-
-  (when (fboundp 'pel-cl-init)
-    (pel-cl-init :slime-is-used))
-
-  ;; Enable use of the Common Lisp Hyperspec by setting their location.
-  ;; Customize `pel-clisp-hyperspec-root' if you want to use a local copy.
-  (pel-setq common-lisp-hyperspec-root
-            (pel-expand-url-file-name pel-clisp-hyperspec-root))
-
-  (pel--lisp-languages-map-for pel:for-lisp)
-  (when pel-use-plantuml
-    (define-key               pel:for-lisp "u" 'pel-render-commented-plantuml))
-
   ;; Slime Support : TODO complete
   (when pel-use-slime
     (pel-ensure-package slime from: melpa))
@@ -2728,39 +2632,38 @@ d-mode not added to ac-modes!"
   (when pel-use-sly
     (pel-ensure-package sly from: melpa))
 
-  (defun pel--setup-for-lisp ()
-    "Activate Common Lisp setup."
-    (pel-local-set-f12-M-f12 'pel:for-lisp)
+  ;; Add support for Speedbar listing Common Lisp files:
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".li?sp"))
+
+  (define-pel-global-prefix pel:for-lisp (kbd "<f11> SPC L"))
+  (pel--lisp-languages-map-for pel:for-lisp)
+  (when pel-use-plantuml
+    (define-key pel:for-lisp "u" 'pel-render-commented-plantuml))
+
+  ;; Enable use of the Common Lisp Hyperspec by setting their location.
+  ;; Customize `pel-clisp-hyperspec-root' if you want to use a local copy.
+  (pel-setq common-lisp-hyperspec-root
+            (pel-expand-url-file-name pel-clisp-hyperspec-root))
+
+  (pel-setup-major-mode lisp pel:for-lisp
     (pel-local-set-f12-M-f12 'pel:elisp-function "f")
+    ;; Common Lisp indentation rules differ from Emacs Lisp indentation rules:
+    ;; - for Common Lisp buffers, use common-lisp-indent-function as indenter,
+    ;;   replacing the default indenter (which conforms to the Emacs Lisp
+    ;;   indentation rules).
+    ;; NOTE: this code is already done by slime-setup, so this is therefore
+    ;; not required when Slime is used.
+    (unless pel-use-slime
+      (set (make-local-variable 'lisp-indent-function)
+           'common-lisp-indent-function))
     ;; imenu support
     (when (boundp 'lisp-imenu-generic-expression)
-      (setq-local imenu-generic-expression lisp-imenu-generic-expression))
-    ;; Activates minor modes requested by user
-    (pel-turn-on-minor-modes-in pel-clisp-activates-minor-modes))
-
-  (pel-check-minor-modes-in pel-clisp-activates-minor-modes)
-  (pel-setup-major-mode-for lisp pel--setup-for-lisp))
+      (setq-local imenu-generic-expression lisp-imenu-generic-expression))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-a`` : Arc
 (when pel-use-arc
-  (define-pel-global-prefix pel:for-arc    (kbd "<f11> SPC C-a"))
-  (pel--lisp-languages-map-for pel:for-arc)
-
-  (defun pel--setup-for-arc ()
-    "Activate Arc setup."
-    (pel-local-set-f12-M-f12 'pel:for-arc)
-    (pel-turn-on-minor-modes-in pel-arc-activates-minor-modes))
-  (declare-function pel--setup-for-arc "pel_keys")
-
-  ;; activate the <f12> key binding for arc-mode
-  (pel-check-minor-modes-in pel-arc-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setup-for-arc)
-                             'arc-mode 'arc-mode-hook)
-
-  ;; associate .arc file with arc-mode
-  (add-to-list 'auto-mode-alist '("\\.arc\\'" . arc-mode))
-  ;; set up auto-loading
   (pel-autoload-file arc for: arc-mode)
   (pel-autoload-file inferior-arc for: run-arc)
   ;; Emacs support extracted from the anarki implementation from its
@@ -2770,28 +2673,27 @@ d-mode not added to ac-modes!"
   (cl-eval-when 'load
     (pel-install-github-files "pierre-rouleau/anarki/master/extras"
                               '("arc.el"
-                                "inferior-arc.el"))))
+                                "inferior-arc.el")))
+
+  ;; associate .arc file with arc-mode
+  (add-to-list 'auto-mode-alist '("\\.arc\\'" . arc-mode))
+
+  (define-pel-global-prefix pel:for-arc (kbd "<f11> SPC C-a"))
+  (pel--lisp-languages-map-for pel:for-arc)
+
+  ;; activate the <f12> key binding for arc-mode
+  (pel-setup-major-mode arc pel:for-arc))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-j`` : Clojure
 (when pel-use-clojure
+  ;; Installation
+  (pel-ensure-package clojure-mode from: melpa)
+  (pel-autoload-file clojure-mode for: clojure-mode)
+
   (define-pel-global-prefix pel:for-clojure (kbd "<f11> SPC C-j"))
   (pel--lisp-languages-map-for pel:for-clojure)
 
-  (defun pel--setup-for-clojure ()
-    "Activate Clojure setup."
-    (pel-local-set-f12-M-f12 'pel:for-clojure)
-    ;; Activates minor modes requested by user
-    (pel-turn-on-minor-modes-in pel-clojure-activates-minor-modes))
-  (declare-function pel--setup-for-clojure "pel_keys")
-
-  ;; activate the <f12> key binding for clojure-mode
-  (pel-check-minor-modes-in pel-clojure-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setup-for-clojure)
-                             'clojure-mode 'clojure-mode-hook)
-
-  (pel-ensure-package clojure-mode from: melpa)
-  (pel-autoload-file clojure-mode for: clojure-mode)
   (when pel-use-cider
     (pel-ensure-package cider from: melpa)
     (pel-autoload-file cider for:
@@ -2802,9 +2704,22 @@ d-mode not added to ac-modes!"
     (define-key pel:for-clojure "c" 'cider-connect)
     (define-key pel:for-clojure "C" 'cider-connect-cljs))
 
+  ;; Activate Yasnippets for Clojure if requested.
+  ;; Load the package when Yasnippet starts.
+  (when (and  pel-use-clojure-snippets
+              pel-use-yasnippet)
+    (pel-ensure-package clojure-snippets from: melpa)
+    (pel-autoload-file clojure-snippets for:
+                       yas-global-mode
+                       yas-minor-mode))
+
   (when pel-use-clj-refactor
-    (defun pel-clojure-mode-hook ()
-      "Activate clj-refactor and optionally Yasnippet"
+    (pel-ensure-package clj-refactor from: melpa))
+
+  ;; activate the <f12> key binding for clojure-mode
+  (pel-setup-major-mode clojure pel:for-clojure
+    (when pel-use-clj-refactor
+      ;; Activate clj-refactor and optionally Yasnippet
       (if (and (fboundp 'clj-refactor-mode)
                (fboundp 'cljr-add-keybindings-with-prefix))
           (progn
@@ -2817,59 +2732,24 @@ d-mode not added to ac-modes!"
             (cljr-add-keybindings-with-prefix "C-c C-m"))
         (display-warning 'pel-clojure
                          "clj-refactor not properly loaded"
-                         :error)))
-    (declare-function pel-clojure-mode-hook "pel_keys")
-
-    (pel-ensure-package clj-refactor from: melpa)
-    (add-hook 'clojure-mode-hook #'pel-clojure-mode-hook))
-
-  ;; Activate Yasnippets for Clojure if requested.
-  ;; Load the package when Yasnippet starts.
-  (when (and  pel-use-clojure-snippets
-              pel-use-yasnippet)
-    (pel-ensure-package clojure-snippets from: melpa)
-    (pel-autoload-file clojure-snippets for:
-                       yas-global-mode
-                       yas-minor-mode)))
+                         :error)))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-r`` : Racket
 (when pel-use-racket
-  (define-pel-global-prefix pel:for-racket (kbd "<f11> SPC C-r"))
-  (pel--lisp-languages-map-for pel:for-racket)
-
   (pel-ensure-package racket-mode from: melpa)
   (pel-autoload-file racket-mode for: racket-mode)
 
-  (defun pel--setup-for-racket ()
-    "Activate Racket setup."
-    (pel-local-set-f12-M-f12 'pel:for-racket)
-    ;; Activates minor modes requested by user
-    (pel-turn-on-minor-modes-in pel-racket-activates-minor-modes))
-  (declare-function pel--setup-for-racket "pel_keys")
+  (define-pel-global-prefix pel:for-racket (kbd "<f11> SPC C-r"))
+  (pel--lisp-languages-map-for pel:for-racket)
 
   ;; activate the <f12> key binding for racket-mode
-  (pel--mode-hook-maybe-call (function pel--setup-for-racket)
-                             'racket-mode 'racket-mode-hook))
+  (pel-setup-major-mode racket pel:for-racket))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s`` : Scheme
 (when pel-use-scheme
   ;; Note: scheme-mode and its file associations are supported by Emacs.
-  ;;       Just activate the <f12> key for Scheme.
-  (define-pel-global-prefix pel:for-scheme (kbd "<f11> SPC C-s"))
-  (pel--lisp-languages-map-for pel:for-scheme)
-
-  (defun pel--setup-for-scheme ()
-    "Activate Scheme setup."
-    (pel-local-set-f12-M-f12 'pel:for-scheme)
-    (pel-turn-on-minor-modes-in pel-scheme-activates-minor-modes))
-  (declare-function pel--setup-for-scheme "pel_keys")
-
-  ;; activate the <f12> key binding for scheme-mode
-  (pel-check-minor-modes-in pel-scheme-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setup-for-scheme)
-                             'scheme-mode 'scheme-mode-hook)
 
   ;; Install requested options
   (when pel-use-geiser
@@ -2908,30 +2788,28 @@ d-mode not added to ac-modes!"
                        quack-set-other-default-program
                        quack-pltfile-mode
                        quack-pltfile-raw
-                       quack-pltfile-quit)))
+                       quack-pltfile-quit))
+
+  ;; Just activate the <f12> key for Scheme.
+  (define-pel-global-prefix pel:for-scheme (kbd "<f11> SPC C-s"))
+  (pel--lisp-languages-map-for pel:for-scheme)
+
+  ;; activate the <f12> key binding for scheme-mode
+  (pel-setup-major-mode scheme pel:for-scheme))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-g`` : Gerbil
 (when pel-use-gerbil
-  (define-pel-global-prefix pel:for-gerbil (kbd "<f11> SPC C-g"))
-  (pel--lisp-languages-map-for pel:for-gerbil)
-
-  (defun pel--setup-for-gerbil ()
-    "Activate Gerbil setup."
-    (pel-local-set-f12-M-f12 'pel:for-gerbil)
-    ;; Activates minor modes requested by user
-    (pel-turn-on-minor-modes-in pel-gerbil-activates-minor-modes))
-  (declare-function pel--setup-for-gerbil "pel_keys")
-
-  ;; activate the <f12> key binding for gerbil-mode
-  (pel-check-minor-modes-in pel-gerbil-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setup-for-gerbil)
-                             'gerbil-mode 'gerbil-mode-hook)
-
   ;; No package made for this.  Take the code directly from Github
   (cl-eval-when 'load
     (pel-install-github-file "vyzo/gerbil/master/etc/" "gerbil-mode.el"))
-  (pel-autoload-file gerbil-mode for: gerbil-mode))
+  (pel-autoload-file gerbil-mode for: gerbil-mode)
+
+  (define-pel-global-prefix pel:for-gerbil (kbd "<f11> SPC C-g"))
+  (pel--lisp-languages-map-for pel:for-gerbil)
+
+  ;; activate the <f12> key binding for gerbil-mode
+  (pel-setup-major-mode gerbil pel:for-gerbil))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-l `` : LFE programming
@@ -2939,29 +2817,18 @@ d-mode not added to ac-modes!"
 
 ;; Note: the pel:eXecute has the run-lfe (in the code below.)
 (when pel-use-lfe
-  (define-pel-global-prefix pel:for-lfe (kbd "<f11> SPC C-l"))
-  (pel--lisp-languages-map-for pel:for-lfe)
-
-  (defun pel--setup-for-lfe ()
-    "Activate Lfe setup."
-    (pel-local-set-f12-M-f12 'pel:for-lfe)
-    ;; Activates minor modes requested by user
-    (pel-turn-on-minor-modes-in pel-lfe-activates-minor-modes))
-  (declare-function pel--setup-for-lfe "pel_keys")
-
-  ;; activate the <f12> key binding for lfe-mode
-  (pel-check-minor-modes-in pel-lfe-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setup-for-lfe)
-                             'lfe-mode 'lfe-mode-hook)
-
   (pel-ensure-package lfe-mode from: melpa)
   (pel-autoload-file lfe-mode for:
                      lfe-mode
                      inferior-lfe
                      run-lfe)
 
+  (define-pel-global-prefix pel:for-lfe (kbd "<f11> SPC C-l"))
+  (pel--lisp-languages-map-for pel:for-lfe)
   (define-key pel:for-lfe "[" 'lfe-insert-brackets)
-  (pel-eval-after-load lfe-mode
+
+  ;; Activate LFE setup.
+  (pel-setup-major-mode lfe pel:for-lfe
     (when pel-emacs-is-a-tty-p
       (if (boundp 'lfe-mode-map)
           (define-key lfe-mode-map (kbd "M-[") nil)
@@ -2975,23 +2842,14 @@ d-mode not added to ac-modes!"
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-h`` : Hy
 ;; Hy: A Lisp in Python
 (when pel-use-hy
+  (pel-ensure-package hy-mode from: melpa)
+  (pel-autoload-file hy-mode for: hy-mode)
+
   (define-pel-global-prefix pel:for-hy (kbd "<f11> SPC C-h"))
   (pel--lisp-languages-map-for pel:for-hy)
 
-  (defun pel--setup-for-hy ()
-    "Activate Hy setup."
-    (pel-local-set-f12-M-f12 'pel:for-hy)
-    ;; Activates minor modes requested by user
-    (pel-turn-on-minor-modes-in pel-hy-activates-minor-modes))
-  (declare-function pel--setup-for-hy "pel_keys")
-
   ;; activate the <f12> key binding for hy-mode
-  (pel-check-minor-modes-in pel-hy-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setup-for-hy)
-                             'hy-mode 'hy-mode-hook)
-
-  (pel-ensure-package hy-mode from: melpa)
-  (pel-autoload-file hy-mode for: hy-mode))
+  (pel-setup-major-mode hy pel:for-hy))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC p`` : Python programming
@@ -3029,14 +2887,6 @@ d-mode not added to ac-modes!"
          'python-shell-completion-native-disabled-interpreters "python")
       (setq python-shell-completion-native-disabled-interpreters '("python"))))
 
-  (defun pel--setup-for-python ()
-    "Activate the python mode."
-    (setq tab-width    pel-python-tab-width)
-    (pel-local-set-f12 'pel:for-python)
-    (pel-turn-on-minor-modes-in pel-python-activates-minor-modes))
-
-  (declare-function pel--setup-for-python "pel_keys")
-
   (define-pel-global-prefix pel:for-python (kbd "<f11> SPC p"))
   (define-key pel:for-python    "."        'pel-find-thing-at-point)
   (define-key pel:for-python (kbd "M-9")  #'show-paren-mode)
@@ -3045,18 +2895,17 @@ d-mode not added to ac-modes!"
     (define-key pel:for-python    "u"      'pel-render-commented-plantuml))
   (when pel-use-rainbow-delimiters
     (define-key pel:for-python (kbd "M-r") 'rainbow-delimiters-mode))
-  ;;
-  ;; activate the <f12> key binding for python-mode
-  (pel-check-minor-modes-in pel-python-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setup-for-python)
-                             'python-mode 'python-mode-hook)
 
   ;; lpy-mode: lispy-style modal editing for Python.
   (when pel-use-lpy
     (pel-autoload-file pel-lispy for: pel-lpy-mode)
     (define-key pel:for-python (kbd "M-L") 'pel-lpy-mode)
     (define-key pel:for-python "1"         'lispy-describe-inline)
-    (define-key pel:for-python "2"         'lispy-arglist-inline)))
+    (define-key pel:for-python "2"         'lispy-arglist-inline))
+
+  ;; Activate python mode
+  (pel-setup-major-mode python pel:for-python
+    (setq tab-width pel-python-tab-width)))
 
 ;; (use-package jedi
 ;;   :ensure t
@@ -3081,15 +2930,6 @@ d-mode not added to ac-modes!"
                               '("rexx-mode.el"
                                 "rexx-debug.el")))
 
-  ;; Set the mode specific key prefix
-  (define-pel-global-prefix pel:for-rexx (kbd "<f11> SPC R"))
-
-  (defun pel--setup-for-rexx ()
-    "Set the environment for REXX file editing."
-    (pel-local-set-f12 'pel:for-rexx)
-    (pel-turn-on-minor-modes-in pel-rexx-activates-minor-modes))
-  (declare-function pel--setup-for-rexx "pel_keys")
-
   (pel-autoload-file rexx-mode for:
                      rexx-mode
                      rexx-goto-next-procedure
@@ -3098,13 +2938,13 @@ d-mode not added to ac-modes!"
   (pel-set-auto-mode rexx-mode for:
                      "\\.\\(rexx?\\|elx\\|ncomm\\|cpr\\)\\'")
 
+  ;; Set the mode specific key prefix
+  (define-pel-global-prefix pel:for-rexx (kbd "<f11> SPC R"))
   (define-key pel:for-rexx (kbd "<down>") 'rexx-goto-next-procedure)
   (define-key pel:for-rexx (kbd "<up>")   'rexx-goto-previous-procedure)
 
   ;; activate the <f12> key binding for rexx-mode
-  (pel-check-minor-modes-in pel-rexx-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setup-for-rexx)
-                             'rexx-mode 'rexx-mode-hook))
+  (pel-setup-major-mode rexx pel:for-rexx))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC N`` : NetRexx programming
@@ -3115,68 +2955,39 @@ d-mode not added to ac-modes!"
     (pel-install-github-file "pierre-rouleau/netrexx-mode/master"
                              "netrexx-mode.el"))
 
-  ;; Set the mode specific key prefix
-  (define-pel-global-prefix pel:for-netrexx (kbd "<f11> SPC N"))
-
-  (defun pel--setup-for-netrexx ()
-    "Set the environment for NetRexx file editing."
-    (pel-local-set-f12 'pel:for-netrexx)
-    (pel-turn-on-minor-modes-in pel-netrexx-activates-minor-modes))
-  (declare-function pel--setup-for-netrexx "pel_keys")
-
   (pel-autoload-file netrexx-mode for: netrexx-mode)
   ;; Set the file extension for NetRexx: ".nrx"
   (pel-set-auto-mode netrexx-mode for: "\\.nrx\\'")
 
+  ;; Set the mode specific key prefix
+  (define-pel-global-prefix pel:for-netrexx (kbd "<f11> SPC N"))
   (define-key pel:for-netrexx (kbd "<down>") 'netrexx-next-method)
-  (define-key pel:for-netrexx (kbd "<up>") 'netrexx-previous-method)
-  (define-key pel:for-netrexx "="          'netrexx-select-current-block)
-  (define-key pel:for-netrexx "s"          'netrexx-sanitize-region)
-  (define-key pel:for-netrexx ";"          'netrexx-insert-end-comment)
-  (define-key pel:for-netrexx "e"        'netrexx-insert-end-comment-region)
-  (define-key pel:for-netrexx "j"        'netrexx-insert-javadoc-for-method)
+  (define-key pel:for-netrexx (kbd "<up>")   'netrexx-previous-method)
+  (define-key pel:for-netrexx "="            'netrexx-select-current-block)
+  (define-key pel:for-netrexx "s"            'netrexx-sanitize-region)
+  (define-key pel:for-netrexx ";"            'netrexx-insert-end-comment)
+  (define-key pel:for-netrexx "e"          'netrexx-insert-end-comment-region)
+  (define-key pel:for-netrexx "j"          'netrexx-insert-javadoc-for-method)
 
   ;; activate the <f12> key binding for netrexx-mode
-  (pel-check-minor-modes-in pel-netrexx-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setup-for-netrexx)
-                             'netrexx-mode 'netrexx-mode-hook))
+  (pel-setup-major-mode netrexx pel:for-netrexx))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC r`` : Rust programming
 (when pel-use-rust
-  (define-pel-global-prefix pel:for-rust (kbd "<f11> SPC r"))
-
-  (when pel-use-speedbar
-    ;; Add support for Speedbar
-    (pel-add-speedbar-extension ".rs"))
-
+  ;; TODO: only allow one of rust-mode or rustic and determine what
+  ;;       must be made available for rustic.  Currently the code assumes
+  ;;       that rust-mode is used.
   (when pel-use-rust-mode
     ;; Important rust-mode user-options:
     ;; - rust-format-on-save
     (pel-ensure-package rust-mode from: melpa)
-    (pel-autoload-file rust-mode for: rust-mode)
-
-    (defun pel--setup-for-rust-mode ()
-      "Activate Rust-mode setup."
-      (pel-local-set-f12 'pel:for-rust)
-      (setq indent-tabs-mode nil)
-      ;; Activates minor modes requested by user
-      (pel-turn-on-minor-modes-in pel-rust-activates-minor-modes))
-    (declare-function pel--setup-for-rust-mode "pel_keys")
-
-    ;; activate the <f12> key binding for forth-mode
-    (pel-check-minor-modes-in pel-rust-activates-minor-modes)
-    (pel--mode-hook-maybe-call (function pel--setup-for-rust-mode)
-                               'rust-mode 'rust-mode-hook)
-
-    (define-key pel:for-rust "c" 'rust-run)
-    (define-key pel:for-rust "d" 'rust-dbg-wrap-or-unwrap)
-    (define-key pel:for-rust "l" 'rust-run-clippy))
-
+    (pel-autoload-file rust-mode for: rust-mode))
   (when pel-use-rustic
     (pel-ensure-package rustic from: melpa)
     (pel-autoload-file rustic for: rustic))
 
+  ;; flycheck with rust-mode
   (when (and pel-use-rust-mode
              pel-use-flycheck-rust)
     (pel-ensure-package flycheck-rust from: melpa)
@@ -3189,6 +3000,10 @@ d-mode not added to ac-modes!"
     (pel-ensure-package racer from: melpa)
     (pel-autoload-file racer for: racer-mode))
 
+  ;; Add Speedbar support for Rust
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".rs"))
+
   (when pel-use-cargo
     (pel-ensure-package cargo from: melpa)
     (pel-autoload-file cargo for: cargo-minor-mode)
@@ -3199,11 +3014,22 @@ d-mode not added to ac-modes!"
       (add-hook 'racer-mode-hook 'eldoc-mode)
       (when pel-use-company
         (add-hook 'racer-mode-hook 'company-mode)))
-    (when pel-use-rust-mode
-      (defvar rust-mode-map)            ; prevent byte-compiler warning
-      (pel-eval-after-load rust-mode
-        (define-key rust-mode-map
-          (kbd "TAB") 'company-indent-or-complete-common)))))
+    )
+
+  (define-pel-global-prefix pel:for-rust (kbd "<f11> SPC r"))
+  (define-key pel:for-rust "c" 'rust-run)
+  (define-key pel:for-rust "d" 'rust-dbg-wrap-or-unwrap)
+  (define-key pel:for-rust "l" 'rust-run-clippy)
+
+  (pel-setup-major-mode rust pel:for-rust
+    (setq indent-tabs-mode nil)
+    (when pel-use-cargo
+      (if (boundp 'rust-mode-map)
+          (define-key rust-mode-map
+            (kbd "TAB") 'company-indent-or-complete-common)
+        (display-warning 'pel-use-rust
+                         "Unbound rust-mode-map!"
+                         :error)))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC v`` : V programming
@@ -3229,18 +3055,7 @@ d-mode not added to ac-modes!"
     (pel-autoload-file v-mode for: v-mode)
     (define-key pel:for-v (kbd "C-f") 'v-format-buffer)
     (define-key pel:for-v (kbd "<f10>") 'v-menu)
-
-    (defun pel--setup-for-v ()
-      "Activate V setup."
-      (pel-local-set-f12-M-f12 'pel:for-v)
-      ;; Activates minor modes requested by user
-      (pel-turn-on-minor-modes-in pel-v-activates-minor-modes))
-    (declare-function pel--setup-for-v "pel_keys")
-
-    ;; activate the <f12> key binding for v-mode
-    (pel-check-minor-modes-in pel-v-activates-minor-modes)
-    (pel--mode-hook-maybe-call (function pel--setup-for-v)
-                               'v-mode 'v-mode-hook))
+    (pel-setup-major-mode v pel:for-v))
 
    ((eq pel-use-v 'vlang-mode)
     ;; vlang-mode is experimental: only provides font-locking
@@ -3262,14 +3077,7 @@ d-mode not added to ac-modes!"
   (pel-autoload-file adoc-mode for: adoc-mode)
   (pel-set-auto-mode adoc-mode for: "\\.adoc\\'")
 
-  (defun pel--setup-for-asciidoc ()
-    "Activate AsciiDoc setup."
-    ;; Activates minor modes requested by user
-    (pel-turn-on-minor-modes-in pel-asciidoc-activates-minor-modes))
-
-    (pel-check-minor-modes-in pel-asciidoc-activates-minor-modes)
-    (pel--mode-hook-maybe-call (function pel--setup-for-asciidoc)
-                               'adoc-mode 'adoc-mode-hook))
+  (pel-setup-major-mode adoc :no-f12-keys))
 
 ;; ---------------------------------------------------------------------------
 ;; Org-Mode Support
@@ -3296,17 +3104,15 @@ d-mode not added to ac-modes!"
   ;; Add the "IN-PROGRESS" in the list of TODO states
   (pel-setq org-todo-keywords
             (quote ((sequence "TODO" "IN-PROGRESS" "DONE"))))
-  ;; Use the cleaner outline view mode.
-  (add-hook 'org-mode-hook 'org-indent-mode)
 
-  (defun pel--setup-for-org-mode ()
-    "Activate Org-Mode setup."
-    ;; Activates minor modes requested by user
-    (pel-turn-on-minor-modes-in pel-org-mode-activates-minor-modes))
 
-  (pel-check-minor-modes-in pel-org-mode-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setup-for-org-mode)
-                             'org-mode-mode 'org-mode-mode-hook))
+  (pel-setup-major-mode org :no-f12-keys
+    ;; Use the cleaner outline view mode.
+    (if (fboundp 'org-indent-mode)
+        (org-indent-mode 1)
+      (display-warning 'pel-use-org-mode
+                       "Unbound org-indent-mode"
+                       :error))))
 
 ;; ---------------------------------------------------------------------------
 ;; YAML Support
@@ -3317,30 +3123,18 @@ d-mode not added to ac-modes!"
   (pel-autoload-file yaml-mode for: yaml-mode)
   (pel-set-auto-mode yaml-mode for: "\\.yml\\'")
 
-  (defun pel--setup-for-yaml ()
-    "Activate Yaml setup."
-    ;; Activates minor modes requested by user
-    (pel-turn-on-minor-modes-in pel-yaml-activates-minor-modes))
-
-  (pel-check-minor-modes-in pel-yaml-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setup-for-yaml)
-                             'yaml-mode 'yaml-mode-hook))
+  (pel-setup-major-mode yaml :no-f12-keys))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-r`` : reSTucturedText
 (when pel-use-rst-mode
+  ;; Nothing to install, rst-mode is built in Emacs
+
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension '(".rst" ".stxt")))
 
   (define-pel-global-prefix pel:for-reST (kbd "<f11> SPC M-r"))
   (define-pel-global-prefix pel:rst-skel (kbd "<f11> SPC M-r <f12>"))
-
-  (defun pel--setup-for-rst ()
-    "Activate the reStructuredText (rst) mode."
-    (setq tab-width    pel-rst-tab-width)
-    (pel-local-set-f12 'pel:for-reST)
-    (pel--install-rst-skel pel:rst-skel)
-    ;; Activates minor modes requested by user
-    (pel-turn-on-minor-modes-in pel-rst-activates-minor-modes))
-  (declare-function pel--setup-for-rst "pel_keys")
 
   ;; Add .stxt to the accepted file extensions for rst-mode
   ;; to the ones that are normally used: .rst and .rest
@@ -3384,23 +3178,18 @@ d-mode not added to ac-modes!"
   (define-key pel:rst-adorn-style "d" 'pel-rst-adorn-default)
   (define-key pel:rst-adorn-style "S" 'pel-rst-adorn-Sphinx-Python)
   (define-key pel:rst-adorn-style "C" 'pel-rst-adorn-CRiSPer)
-  ;;
-  ;; activate the <f12> key binding for rst-mode
-  (pel-check-minor-modes-in pel-rst-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setup-for-rst)
-                             'rst-mode 'rst-mode-hook)
 
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension '(".rst"
-                                  ".stxt"))))
+  (pel-setup-major-mode rst pel:for-reST
+    (setq tab-width    pel-rst-tab-width)
+    (pel--install-rst-skel pel:rst-skel)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-g`` : Graphviz Dot
 (when pel-use-graphviz-dot
   (pel-ensure-package graphviz-dot-mode from: melpa)
+  (pel-autoload-file graphviz-dot-mode for: graphviz-dot-mode)
 
   ;; Global bindings for Graphviz-Dot
-  (pel-autoload-file graphviz-dot-mode for: graphviz-dot-mode)
   (define-key pel:mode (kbd "M-g") 'graphviz-dot-mode)
   (define-key pel:mode "G"         'pel-render-commented-graphviz-dot)
 
@@ -3410,23 +3199,28 @@ d-mode not added to ac-modes!"
   (define-key pel:for-graphviz-dot "p" 'graphviz-dot-preview)
   (define-key pel:for-graphviz-dot (kbd "TAB") 'graphviz-dot-indent-graph)
 
-  (defun pel--setup-for-graphviz-dot ()
-    "Activate Graphviz-Dot setup."
-    (pel-local-set-f12 'pel:for-graphviz-dot)
-    ;; Activates minor modes requested by user
-    (pel-turn-on-minor-modes-in pel-graphviz-dot-activates-minor-modes))
-  ;;
-  ;; activate the <f12> key binding for graphviz-dot-mode
-  (pel--mode-hook-maybe-call (function pel--setup-for-graphviz-dot)
-                             'graphviz-dot-mode 'graphviz-dot-mode-hook)
-
-  (pel-check-minor-modes-in pel-graphviz-dot-activates-minor-modes)
-  (pel--mode-hook-maybe-call (function pel--setup-for-graphviz-dot)
-                             'graphviz-dot-mode 'graphviz-dot-mode-hook))
+  (pel-setup-major-mode graphviz-dot pel:for-graphviz-dot))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-u`` : PlantUML
 (when pel-use-plantuml
+
+  (pel-ensure-package plantuml-mode from: melpa)
+  (pel-autoload-file plantuml-mode for:
+                     plantuml-mode
+                     plantuml-download-jar
+                     plantuml-set-exec-mode)
+  (when pel-use-flycheck-plantuml
+    (pel-ensure-package flycheck-plantuml from: melpa))
+
+  ;; keys inside pel:draw (see below)
+  (define-pel-global-prefix pel:plantuml (kbd "<f11> D u"))
+  (define-key pel:plantuml "u"         'plantuml-mode)
+  (define-key pel:plantuml (kbd "M-d") 'plantuml-download-jar)
+  (define-key pel:plantuml (kbd "M-x") 'plantuml-set-exec-mode)
+  (define-key pel:plantuml "p"         'pel-render-commented-plantuml)
+
+  ;; keys for PlantUML mode buffer
   (define-pel-global-prefix pel:for-plantuml (kbd "<f11> SPC M-u"))
   (define-key pel:for-plantuml (kbd "M-d")  'plantuml-enable-debug)
   (define-key pel:for-plantuml (kbd "M-D")  'plantuml-disable-debug)
@@ -3438,16 +3232,20 @@ d-mode not added to ac-modes!"
   (define-key pel:for-plantuml "/"          'plantuml-complete-symbol)
   (define-key pel:for-plantuml (kbd "TAB")  'plantuml-indent-line)
 
-  (defun pel--setup-for-plantuml ()
-    "Activate Plantuml setup."
-    (pel-local-set-f12 'pel:for-plantuml)
-    ;; Activates minor modes requested by user
-    (pel-turn-on-minor-modes-in pel-plantuml-activates-minor-modes))
 
-  (pel-check-minor-modes-in pel-plantuml-activates-minor-modes)
-  ;; activate the <f12> key binding for plantuml-mode
-  (pel--mode-hook-maybe-call (function pel--setup-for-plantuml)
-                             'plantuml-mode 'plantuml-mode-hook))
+  (pel-setup-major-mode plantuml pel:for-plantuml
+    ;; Configure plantuml default execution mode according to PEL's selection.
+    (if (boundp 'plantuml-default-exec-mode)
+        (setq plantuml-default-exec-mode (if (eq pel-use-plantuml 'server)
+                                             'server
+                                           'jar))
+      (display-warning 'pel-use-plantuml
+                       "Unbound plantuml-default-exec-mode!"
+                       :error))
+    (with-eval-after-load 'flycheck
+      (require 'flycheck-plantuml)
+      (declare-function flycheck-plantuml-setup "flycheck-plantuml")
+      (flycheck-plantuml-setup))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> =`` : Copy commands
@@ -3873,7 +3671,7 @@ See `flyspell-auto-correct-previous-word' for more info."
    (flyspell-prog-mode)
    (pel--check-flyspell-iedit-conflict)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> '`` : bookmark commands
 
 (define-pel-global-prefix pel:bookMark (kbd "<f11> '"))
@@ -3957,7 +3755,7 @@ See `flyspell-auto-correct-previous-word' for more info."
     ;; Make sure bookmarks is saved before check-in (and revert-buffer)
     (add-hook 'vc-before-checkin-hook 'bm-buffer-save)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> <tab>`` : indentation
 
 ;; More powerful indent-rigidly: pel-indent-rigidly
@@ -3980,7 +3778,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 (global-set-key (kbd "<backtab>") 'pel-unindent-lines)
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> |`` : Windows scroll lock commands
 ;;
 ;; - Scrolling up & down without moving point
@@ -4027,7 +3825,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   ;; activate smooth scrolling after startup
   (pel-require-after-init smooth-scrolling 2))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> a`` : abbreviations
 
 (define-pel-global-prefix pel:abbrev (kbd "<f11> a"))
@@ -4065,7 +3863,7 @@ the ones defined from the buffer now."
       (define-abbrevs arg)
     (message "Nothing done.")))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> b`` : buffer commands
 ;; Used keys:
 ;;   -
@@ -4253,28 +4051,7 @@ the ones defined from the buffer now."
 (define-key pel:draw "a"  'artist-mode)       ; toggle artist-mode
 (define-key pel:draw "p"  'picture-mode)      ; activate picture-mode
 
-(when pel-use-plantuml
-  (pel-ensure-package plantuml-mode from: melpa)
-  (pel-autoload-file plantuml-mode for:
-                     plantuml-mode
-                     plantuml-download-jar
-                     plantuml-set-exec-mode)
-  (define-pel-global-prefix pel:plantuml (kbd "<f11> D u"))
-  (define-key pel:plantuml "u"         'plantuml-mode)
-  (define-key pel:plantuml (kbd "M-d") 'plantuml-download-jar)
-  (define-key pel:plantuml (kbd "M-x") 'plantuml-set-exec-mode)
-  (define-key pel:plantuml "p"         'pel-render-commented-plantuml)
 
-  (defvar plantuml-default-exec-mode)   ; prevent byte-compiler warning
-  (pel-eval-after-load plantuml-mode
-    ;; Configure plantuml default execution mode according to PEL's selection.
-    (setq plantuml-default-exec-mode (if (eq pel-use-plantuml 'server) 'server 'jar))
-    (when pel-use-flycheck-plantuml
-      (pel-ensure-package flycheck-plantuml from: melpa)
-      (with-eval-after-load 'flycheck
-        (require 'flycheck-plantuml)
-        (declare-function flycheck-plantuml-setup "flycheck-plantuml")
-        (flycheck-plantuml-setup)))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> f`` : File operations
@@ -4392,7 +4169,7 @@ the ones defined from the buffer now."
 (pel--mode-hook-maybe-call  (function pel--augment-goto-addr-map)
                             'goto-address-mode 'goto-address-mode-hook)
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> f a`` : Find File At Point (ffap)
 
 (when pel-use-ffap

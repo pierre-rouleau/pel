@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-13 07:24:08, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-13 23:46:55, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -953,22 +953,84 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   (if (eq major-mode mode)
       (funcall fct)))
 
-(defmacro pel-setup-major-mode-for (target-mode setup-function)
-  "Setup the major MODE.
-MODE is an unquoted symbol identifying the mode: it's the target-mode name
-without the -mode suffix.
-Something like emacs-lisp, c, python, etc..."
-  (let ((gn-fct (intern (format "pel--setup-for-%s-with-local-vars" target-mode)))
-        (gn-docstring (format "Activate %s setup, take local variables into account." target-mode))
+(when (version< emacs-version "28")
+  ;; the following function is available in Emacs 28, as part of macroexp
+  ;; TODO: check if this file must be required in Emacs 28
+  (defun macroexp-file-name ()
+    "Return the name of the file from which the code comes.
+Returns nil when we do not know.
+A non-nil result is expected to be reliable when called from a macro in order
+to find the file in which the macro's call was found, and it should be
+reliable as well when used at the top-level of a file.
+Other uses risk returning non-nil value that point to the wrong file."
+    ;; `eval-buffer' binds `current-load-list' but not `load-file-name',
+    ;; so prefer using it over using `load-file-name'.
+    (let ((file (car (last current-load-list))))
+      (or (if (stringp file) file)
+          (bound-and-true-p byte-compile-current-file)))))
+(declare-function macroexp-file-name (if (version< emacs-version "28")
+                                         "pel_keys"
+                                       "macroexp"))
+
+(defmacro pel-setup-major-mode (target-mode &optional key-prefix &rest body)
+  "Setup the major mode identified by TARGET-MODE.
+
+TARGET-MODE is an unquoted symbol identifying the mode: it's the
+major mode name without the -mode suffix. Something like
+emacs-lisp, c, python, etc...
+
+The KEY-PREFIX argument is a PEL mode-specific key-prefix
+unquoted symbol.  Something like pel:for-c pel-for-make.  That
+symbol must already been defined prior to the macro invocation,
+and it should have been defined with a `define-pel-global-prefix'
+form.  If KEY-PREFIX is nil or :no-f12-keys no <f12> and <M-f12>
+PEL key prefix are created for the major mode.
+
+The BODY is a set of forms to execute when the major mode hook
+executes, at the moment when a buffer with that major mode opens
+and after the local variables have been loaded."
+  (declare (indent 2))
+  (let ((gn-fct1 (intern (format "pel--setup-for-%s-with-local-vars"
+                                 target-mode)))
+        (gn-docstring1
+         (format "Activate %s setup, take local variables into account."
+                 target-mode))
+        (gn-fct2 (intern (format "pel--setup-for-%s" target-mode)))
+        (gn-docstring2 (format "Set the environment for %s buffers."
+                               target-mode))
         (gn-mode-name (intern (format "%s-mode" target-mode)))
-        (gn-mode-hook (intern (format "%s-mode-hook" target-mode))))
+        (gn-mode-hook (intern (format "%s-mode-hook" target-mode)))
+        (gn-minor-modes (intern (format "pel-%s-activates-minor-modes"
+                                        target-mode)))
+        (gn-fname       (file-name-base (macroexp-file-name))))
+    ;; When the <f12> key prefixes are defined, set them up first
+    ;; in the function body to ensure they are available and will not shadow
+    ;; another call to `pel-local-set-f12-M-f12' that wants to install a
+    ;; sub-prefix.
+    (when (and key-prefix
+               (not (eq key-prefix :no-f12-keys)))
+      (push `(pel-local-set-f12-M-f12 (quote ,key-prefix)) body))
+    ;; Add the code that activates the minor modes identified by the
+    ;;`pel-<mode>-activates-minor-modes' user-option.
+    (setq body (append body `((pel-turn-on-minor-modes-in ,gn-minor-modes))))
+    ;; return generated code
     `(progn
-       (defun ,gn-fct ()
-         ,gn-docstring
-         (add-hook 'hack-local-variables-hook (function ,setup-function) nil t))
-       (pel--mode-hook-maybe-call (function ,gn-fct)
+       (defun ,gn-fct2 ()
+         ,gn-docstring2
+         (progn
+           ,@body))
+       (declare-function ,gn-fct2 ,gn-fname)
+       ;;
+       (defun ,gn-fct1 ()
+         ,gn-docstring1
+         (add-hook 'hack-local-variables-hook (function ,gn-fct2) nil t))
+       (declare-function ,gn-fct1 ,gn-fname)
+       ;;
+       (pel-check-minor-modes-in ,gn-minor-modes)
+       (pel--mode-hook-maybe-call (function ,gn-fct1)
                                   (quote ,gn-mode-name)
                                   (quote ,gn-mode-hook)))))
+
 ;; --
 
 (defun pel-local-set-f12 (prefix &optional key)
