@@ -20,7 +20,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; ---------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; A loosely coupled collection of simple utilities used by other PEL
@@ -230,6 +230,29 @@ Optionally insert it at point if INSERT is non-nil."
         (insert version))
     (message "PEL version: %s" version)
     version))
+
+;; ---------------------------------------------------------------------------
+;; Support for future Emacs versions
+;; ---------------------------------
+
+(when (version< emacs-version "28")
+  ;; the following function is available in Emacs 28, as part of macroexp
+  ;; TODO: check if this file must be required in Emacs 28
+  (defun macroexp-file-name ()
+    "Return the name of the file from which the code comes.
+Returns nil when we do not know.
+A non-nil result is expected to be reliable when called from a macro in order
+to find the file in which the macro's call was found, and it should be
+reliable as well when used at the top-level of a file.
+Other uses risk returning non-nil value that point to the wrong file."
+    ;; `eval-buffer' binds `current-load-list' but not `load-file-name',
+    ;; so prefer using it over using `load-file-name'.
+    (let ((file (car (last current-load-list))))
+      (or (if (stringp file) file)
+          (bound-and-true-p byte-compile-current-file)))))
+(declare-function macroexp-file-name (if (version< emacs-version "28")
+                                         "pel_keys"
+                                       "macroexp"))
 
 ;; ---------------------------------------------------------------------------
 ;; Environment Querying functions:

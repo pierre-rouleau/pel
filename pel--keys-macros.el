@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-13 23:46:55, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-14 08:24:10, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -51,6 +51,7 @@
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel--base)    ; use: macroexp-file-name
 (require 'pel--options)
 (require 'seq)          ; use: seq-concatenate, seq-drop, seq-subseq
 (eval-when-compile
@@ -952,25 +953,6 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   ;; if the current mode is the required mode also run the specified function
   (if (eq major-mode mode)
       (funcall fct)))
-
-(when (version< emacs-version "28")
-  ;; the following function is available in Emacs 28, as part of macroexp
-  ;; TODO: check if this file must be required in Emacs 28
-  (defun macroexp-file-name ()
-    "Return the name of the file from which the code comes.
-Returns nil when we do not know.
-A non-nil result is expected to be reliable when called from a macro in order
-to find the file in which the macro's call was found, and it should be
-reliable as well when used at the top-level of a file.
-Other uses risk returning non-nil value that point to the wrong file."
-    ;; `eval-buffer' binds `current-load-list' but not `load-file-name',
-    ;; so prefer using it over using `load-file-name'.
-    (let ((file (car (last current-load-list))))
-      (or (if (stringp file) file)
-          (bound-and-true-p byte-compile-current-file)))))
-(declare-function macroexp-file-name (if (version< emacs-version "28")
-                                         "pel_keys"
-                                       "macroexp"))
 
 (defmacro pel-setup-major-mode (target-mode &optional key-prefix &rest body)
   "Setup the major mode identified by TARGET-MODE.
