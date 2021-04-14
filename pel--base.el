@@ -945,7 +945,8 @@ REGEXPS is on or several regular expression strings."
     (setq forms
           (dolist (regxp regexps (reverse forms))
             (push `(add-to-list 'auto-mode-alist
-                                (quote (,regxp . ,mode))) forms)))
+                                (quote (,regxp . ,mode)))
+                  forms)))
     `(progn
        ,@forms)))
 
