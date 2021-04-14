@@ -1,5 +1,26 @@
 ;;; pel-autocomplete.el --- PEL auto-completion support -*-lexical-binding: t-*-
 
+;; Copyright (C) 2020, 2021  Pierre Rouleau
+
+;; Author: Pierre Rouleau <prouleau001@gmail.com>
+
+;; This file is part of the PEL package
+;; This file is not part of GNU Emacs.
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; This file holds code that manages the use of various auto-completion
@@ -29,11 +50,13 @@
 ;;     - global-company-mode
 ;;     - company-mode
 
-
-;;; Code:
-(require 'pel--base)
-(require 'pel--options)
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
+(require 'pel--base)       ; use: pel-symbol-text
+;;                         ;      pel-option-mode-state
+;;                         ;      pel-symbol-on-off-string
 (require 'pel--macros)     ; use: pel-when-bound, pel-when-fbound
+(require 'pel--options)
 
 (eval-when-compile
   ;; need macros from pel--base
@@ -44,6 +67,9 @@
   ;; the file even if the packages are not installed.
   (require 'auto-complete nil :noerror)
   (require 'company nil :noerror))
+
+;;; --------------------------------------------------------------------------
+;;; Code:
 
 ;; -----------------------------------------------------------------------------
 ;; Auto-Complete Support
@@ -129,7 +155,7 @@ On first call, also configure it according to its customization."
       (progn
         (setq company-tooltip-align-annotations t)
         (setq company-show-numbers t))
-    (user-error "Package company not loaded")))
+    (error "Package company not loaded")))
 
 ;; --
 ;; Utilities: return state of company-mode variables that may be unbound
@@ -279,20 +305,16 @@ If ARG is positive: activate it, otherwise de-activate it."
 Show which one is enabled via customization,
 and show current activation state."
   (interactive)
-  (if (and (require 'pel--base nil :no-error)
-           (fboundp 'pel-option-mode-state)
-           (fboundp 'pel-symbol-on-off-string))
-      (message "\
+  (message "\
 Auto-completion package state:
 - auto-complete-mode       : %s
 - global-auto-complete-mode: %s
 - company-mode             : %s
 - global-company-mode      : %s"
-               (pel-option-mode-state 'auto-complete-mode 'pel-use-auto-complete)
-               (pel-symbol-on-off-string 'global-auto-complete-mode)
-               (pel-option-mode-state 'company-mode 'pel-use-company)
-               (pel-symbol-on-off-string 'global-company-mode))
-    (user-error "File pel--base not loaded")))
+           (pel-option-mode-state 'auto-complete-mode 'pel-use-auto-complete)
+           (pel-symbol-on-off-string 'global-auto-complete-mode)
+           (pel-option-mode-state 'company-mode 'pel-use-company)
+           (pel-symbol-on-off-string 'global-company-mode)))
 
 ;;-pel-autoload
 (defun pel-complete ()
