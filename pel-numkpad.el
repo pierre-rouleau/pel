@@ -1,6 +1,6 @@
 ;;; pel-numkpad.el --- PEL Numeric Keypad Key Control -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -20,7 +20,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; Dynamic control of the keypad keys to allow both numlocking and non
@@ -34,14 +34,16 @@
 ;; access to low-level information to distinguish the keypad keys from normal
 ;; keyboard keys.
 
-;;; Code:
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
 (require 'pel--base)      ; use pel-toggle
 ;; pel-scroll functions are only needed if the pel-3 or pel-9 commands
 ;; are used.  Avoid loading pel-scroll until those commands are used.
 (eval-when-compile
   (require 'pel-scroll))  ; use: pel-scroll-up, pel-scroll-down
 
-
+;;; --------------------------------------------------------------------------
+;;; Code:
 
 (defvar pel-mac-keypad-numlocked nil
   "Identify whether macOS numeric keypad is used as numlocked or not.
@@ -131,7 +133,7 @@ Limitations: In not Numlocked mode the cursor keys cannot
                 (pel-scroll-up  n))
             (when (fboundp 'pel-scroll-down)
               (pel-scroll-down (abs n))))
-        (user-error "File not loaded: pel-scroll")))))
+        (error "File not loaded: pel-scroll")))))
 
 ;;-pel-autoload
 (defun pel-4 (&optional n)
@@ -194,7 +196,7 @@ Limitations: In not Numlocked mode the cursor keys cannot
                 (pel-scroll-down n))
             (when (fboundp 'pel-scroll-up)
               (pel-scroll-up (abs n))))
-        (user-error "File not loaded: pel-scroll")))))
+        (error "File not loaded: pel-scroll")))))
 
 ;;-pel-autoload
 (defun pel-kp-decimal (&optional n)
@@ -229,7 +231,7 @@ Limitations: In not Numlocked mode the cursor keys cannot
                (fboundp 'pel-copy-marked-or-whole-line))
           (pel-copy-marked-or-whole-line)))))
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 (provide 'pel-numkpad)
 
 ;;; pel-numkpad.el ends here
