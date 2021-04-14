@@ -20,7 +20,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; --------------------------------------------------------------------------
+;;; ---------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; A loosely coupled collection of simple utilities used by other PEL
@@ -250,9 +250,10 @@ Other uses risk returning non-nil value that point to the wrong file."
     (let ((file (car (last current-load-list))))
       (or (if (stringp file) file)
           (bound-and-true-p byte-compile-current-file)))))
-(declare-function macroexp-file-name (if (version< emacs-version "28")
-                                         "pel_keys"
-                                       "macroexp"))
+
+;; (declare-function macroexp-file-name (if (version< emacs-version "28")
+;;                                          "pel--base"
+;;                                        "macroexp"))
 
 ;; ---------------------------------------------------------------------------
 ;; Environment Querying functions:
