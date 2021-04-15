@@ -3408,6 +3408,38 @@ key."
   :link `(url-link :tag "Common Lisp PDF"
                    ,(pel-pdf-file-url "pl-common-lisp")))
 
+(defcustom pel-use-common-lisp nil
+  "Control whether PEL supports Common Lisp development.
+
+When turning this on, you will probably also want to activate one
+of the following minor modes that will help with Common Lisp
+editing:
+
+- Lispy, by setting `pel-use-lispy'
+- One of:
+  - Slime, by setting `pel-use-slime', or
+  - Sly, by setting `pel-use-sly'.
+
+You will also want to use a Common Lisp REPL and want to use it
+inside Emacs. For that you can identify the executable inside
+`pel-inferior-lisp-program'."
+  :group 'pel-pkg-for-clisp
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-inferior-lisp-program nil
+  "Name (with optional path) of the Common Lisp REPL to use.
+
+PEL will copy this inside the variable `inferior-lisp-program',
+which defaults to \"lisp\".
+
+Another way would be to create an executable shell script called 'lisp'
+that executes the a Common Lisp REPL selected by some external criteria or use
+a symlink to the one you want and ensure that is on your path.
+In any case, you can override it by setting the name here."
+  :group 'pel-pkg-for-clisp
+  :type 'string)
+
 (defcustom pel-lisp-activates-minor-modes nil
   "List of minor-modes automatically activated for Common Lisp buffers.
 Enter minor-mode activating function symbols.
@@ -3415,11 +3447,12 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-clisp
   :type '(repeat function))
 
-(defcustom pel-use-common-lisp nil
-  "Control whether PEL supports Common Lisp development."
+(defcustom pel-clisp-extra-files nil
+  "Optional files and file extensions for Common Lisp.
+Add regexp describing Common Lisp files or file extensions that are not
+already identified by Emacs or PEL as Common Lisp files."
   :group 'pel-pkg-for-clisp
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(repeat string))
 
 (defcustom pel-clisp-hyperspec-root
   "http://www.lispworks.com/documentation/HyperSpec/"
@@ -3441,11 +3474,32 @@ install them locally."
   :group 'pel-pkg-for-clisp
   :type 'string)
 
+(defcustom pel-common-lisp-ide nil
+  "Control what Common Lisp IDE is used, if any.
+The following IDE are supported:  Slime and SLY."
+  :group 'pel-pkg-for-clisp
+  :type '(choice
+          (const :tag "No IDE" nil)
+          (const :tag "Use Slime - `pel-use-slime' must be set" slime)
+          (const :tag "Use SLY   - `pel-use-sly' must be set"   sly)))
+
 (defcustom pel-use-slime nil
   "Control whether PEL activates SLIME for Common Lisp.
 
-To activate Slime with Common Lisp the user-option variable
-`pel-use-common-lisp' must also be set to t."
+The value can be:
+- 0: not used
+- 1: Use - no extra contrib
+- 2: Use with extra contrib.
+
+Select 2 to specify extra slime features to activate, as symbols
+that have a name that starts with 'slime-' and corresponds to
+slime extra contributions, like: slime-fancy, slime-quicklisp and
+slime-asdf.  By default, slime activates only slime-fancy
+contribution.
+
+Also note that to activate Slime you must also set:
+- `pel-common-lisp-ide' to slime.
+- `pel-use-common-lisp' to t."
   :link '(url-link :tag "Slime @ Wikipedia"
                    "https://en.wikipedia.org/wiki/SLIME")
   :link '(url-link :tag "Slime home page"
@@ -3453,15 +3507,18 @@ To activate Slime with Common Lisp the user-option variable
   :link '(url-link :tag "Slime @ GitHub"
                    "https://github.com/slime/slime")
   :group 'pel-pkg-for-clisp
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "Not used" nil)
+          (const :tag "Use - no extra contribs" t)
+          (repeat :tag "Use with extra contribs" (symbol :tag "extra contrib"))))
 (put 'pel-use-slime :requires 'pel-use-common-lisp)
 
 (defcustom pel-use-sly nil
   "Control whether PEL activates SLY for Common Lisp.
 
-To activate Sly with Common Lisp the user-option variable
-`pel-use-common-lisp' must also be set to t."
+Also note that to activate SLY you must also set:
+- `pel-common-lisp-ide' to sly.
+- `pel-use-common-lisp' to t."
   :link '(url-link :tag "Sly @ GitHub"
                    "https://github.com/joaotavora/sly")
   :group 'pel-pkg-for-clisp
@@ -3479,8 +3536,8 @@ To activate Sly with Common Lisp the user-option variable
 
 (defcustom pel-elisp-activates-minor-modes nil
   "List of minor-modes automatically activated for Emacs Lisp buffers.
-Enter minor-mode activating function symbols.
-Do not enter lambda expressions."
+  Enter minor-mode activating function symbols.
+  Do not enter lambda expressions."
   :group 'pel-pkg-for-elisp
   :type '(repeat function))
 
@@ -3496,11 +3553,11 @@ Do not enter lambda expressions."
 (defcustom pel-use-esup nil
   "Control whether PEL uses the esup package.
 
-ESUP - Emacs Start Up Profiler, a tool to profile
-execution.  Profiles the init.el by default.
-Only works when Emacs runs in Graphics mode.
-PEL therefore only activates it when Emacs runs
-in Graphics mode."
+  ESUP - Emacs Start Up Profiler, a tool to profile
+  execution.  Profiles the init.el by default.
+  Only works when Emacs runs in Graphics mode.
+  PEL therefore only activates it when Emacs runs
+  in Graphics mode."
   :link '(url-link :tag "esup @ GitHub"
                    "https://github.com/jschaf/esup")
   :group 'pel-pkg-for-elisp
@@ -3517,10 +3574,10 @@ in Graphics mode."
 (defcustom pel-use-eros nil
   "Control whether PEL uses the eros package.
 
-eros ≡ Evaluation Result OverlayS.
+  eros ≡ Evaluation Result OverlayS.
 
-With eros mode enabled, \\[eval-last-sexp] displays the result
-as an overlay instead of showing it inside the minibuffer."
+  With eros mode enabled, \\[eval-last-sexp] displays the result
+  as an overlay instead of showing it inside the minibuffer."
   :link '(url-link :tag "eros @ GitHub"
                    "https://github.com/xiongtx/eros")
   :group 'pel-pkg-for-elisp
@@ -3530,10 +3587,10 @@ as an overlay instead of showing it inside the minibuffer."
 (defcustom pel-use-suggest nil
   "Control whether PEL uses the suggest package.
 
-With it you can open a suggest buffer where you identify inputs
-and wanted output of an hypothetical function and request suggestions
-for functions that provide the requested functionality.
-A great tool for learning new Emacs Lisp functions."
+  With it you can open a suggest buffer where you identify inputs
+  and wanted output of an hypothetical function and request suggestions
+  for functions that provide the requested functionality.
+  A great tool for learning new Emacs Lisp functions."
   :link '(url-link :tag "suggest @ GitHub"
                    "https://github.com/Wilfred/suggest.el")
   :group 'pel-pkg-for-elisp
@@ -3549,16 +3606,16 @@ A great tool for learning new Emacs Lisp functions."
 
 (defcustom pel-arc-activates-minor-modes nil
   "List of minor-modes automatically activated for Arc buffers.
-Enter minor-mode activating function symbols.
-Do not enter lambda expressions."
+  Enter minor-mode activating function symbols.
+  Do not enter lambda expressions."
   :group 'pel-pkg-for-arc
   :type '(repeat function))
 
 (defcustom pel-use-arc nil
   "Control whether PEL supports the Arc programming language.
 
-When this is activated, PEL activates the packages that support Arc and
-provide arc-mode and Arc inferior mode."
+  When this is activated, PEL activates the packages that support Arc and
+  provide arc-mode and Arc inferior mode."
   :group 'pel-pkg-for-arc
   :link '(url-link :tag "Arc support via bug fix on anarki @ GitHub"
                    "https://github.com/pierre-rouleau/anarki")
@@ -3577,8 +3634,8 @@ provide arc-mode and Arc inferior mode."
 
 (defcustom pel-clojure-activates-minor-modes nil
   "List of minor-modes automatically activated for Clojure buffers.
-Enter minor-mode activating function symbols.
-Do not enter lambda expressions."
+  Enter minor-mode activating function symbols.
+  Do not enter lambda expressions."
   :group 'pel-pkg-for-clojure
   :type '(repeat function))
 
@@ -3594,7 +3651,7 @@ Do not enter lambda expressions."
 (defcustom pel-use-cider nil
   "Control whether PEL activates the Cider Clojure IDE package.
 
-To activate it you must activate the user-option variable `pel-use-clojure'."
+  To activate it you must activate the user-option variable `pel-use-clojure'."
   :group 'pel-pkg-for-clojure
   :link '(url-link :tag "Cider @ GitHub"
                    "https://github.com/clojure-emacs/cider")
@@ -3605,7 +3662,7 @@ To activate it you must activate the user-option variable `pel-use-clojure'."
 (defcustom pel-use-clj-refactor nil
   "Control whether PEL activates the clj-refactor package.
 
-To activate it you must activate the user-option variable `pel-use-clojure'."
+  To activate it you must activate the user-option variable `pel-use-clojure'."
   :group 'pel-pkg-for-clojure
   :link '(url-link :tag "clj-refactor @ GitHub"
                    "https://github.com/clojure-emacs/clj-refactor.el")
@@ -3616,10 +3673,10 @@ To activate it you must activate the user-option variable `pel-use-clojure'."
 (defcustom pel-use-clojure-snippets nil
   "Control whether PEL activates clojure-snippets package.
 
-This package provides Yasnippet snippets for Clojure.
-To use it you must also turn on:
-- the variable `pel-use-clojure',
-- the variable `pel-use-yasnippet'."
+  This package provides Yasnippet snippets for Clojure.
+  To use it you must also turn on:
+  - the variable `pel-use-clojure',
+  - the variable `pel-use-yasnippet'."
   :group 'pel-pkg-for-clojure
   :link '(url-link :tag "clojure-snippets @ GitHub"
                    "https://github.com/mpenet/clojure-snippets")
@@ -3632,19 +3689,19 @@ To use it you must also turn on:
 ;; -----------
 (defgroup pel-pkg-for-hy nil
   "PEL customization for the Hy programming language support.
-Hy is a Lisp in Python."
+  Hy is a Lisp in Python."
   :group 'pel-pkg-for-lisp)
 
 (defcustom pel-hy-activates-minor-modes nil
   "List of minor-modes automatically activated for Hy  buffers.
-Enter minor-mode activating function symbols.
-Do not enter lambda expressions."
+  Enter minor-mode activating function symbols.
+  Do not enter lambda expressions."
   :group 'pel-pkg-for-hy
   :type '(repeat function))
 
 (defcustom pel-use-hy nil
   "Control whether PEL supports the Hy programming language.
-Hy is a Lisp in Python."
+  Hy is a Lisp in Python."
   :group 'pel-pkg-for-hy
   :link '(url-link :tag "Hy Homepage"
                    "https://docs.hylang.org/en/stable/")
@@ -3664,8 +3721,8 @@ Hy is a Lisp in Python."
 
 (defcustom pel-scheme-activates-minor-modes nil
   "List of minor-modes automatically activated for Scheme buffers.
-Enter minor-mode activating function symbols.
-Do not enter lambda expressions."
+  Enter minor-mode activating function symbols.
+  Do not enter lambda expressions."
   :group 'pel-pkg-for-scheme
   :type '(repeat function))
 
@@ -3679,7 +3736,7 @@ Do not enter lambda expressions."
 (defcustom pel-use-geiser nil
   "Control whether PEL supports the Geiser IDE for Scheme support.
 
-The user-option variable `pel-use-scheme' must be turned on to activate this."
+  The user-option variable `pel-use-scheme' must be turned on to activate this."
   :link '(url-link :tag "Geiser Homepage"
                    "https://www.nongnu.org/geiser/")
   :link '(url-link :tag "Geiser @ Melpa"
@@ -3694,7 +3751,7 @@ The user-option variable `pel-use-scheme' must be turned on to activate this."
 (defcustom pel-use-quack nil
   "Control whether PEL supports the Quack Enhance Scheme editing package.
 
-The user-option variable `pel-use-scheme' must be turned on to activate this."
+  The user-option variable `pel-use-scheme' must be turned on to activate this."
   :group 'pel-pkg-for-scheme
   :type 'boolean
   :safe #'booleanp)
@@ -3710,16 +3767,16 @@ The user-option variable `pel-use-scheme' must be turned on to activate this."
 
 (defcustom pel-racket-activates-minor-modes nil
   "List of minor-modes automatically activated for Racket buffers.
-Enter minor-mode activating function symbols.
-Do not enter lambda expressions."
+  Enter minor-mode activating function symbols.
+  Do not enter lambda expressions."
   :group 'pel-pkg-for-racket
   :type '(repeat function))
 
 (defcustom pel-use-racket nil
   "Control whether PEL supports the Racket programming language.
 
-When this is activated, PEL activates the racket-mode
-package."
+  When this is activated, PEL activates the racket-mode
+  package."
   :group 'pel-pkg-for-racket
   :link '(url-link :tag "racket-mode @ GitHub"
                    "https://github.com/greghendershott/racket-mode")
@@ -3736,8 +3793,8 @@ package."
 
 (defcustom pel-gerbil-activates-minor-modes nil
   "List of minor-modes automatically activated for Gerbil buffers.
-Enter minor-mode activating function symbols.
-Do not enter lambda expressions."
+  Enter minor-mode activating function symbols.
+  Do not enter lambda expressions."
   :group 'pel-pkg-for-gerbil
   :type '(repeat function))
 
@@ -3761,35 +3818,35 @@ Do not enter lambda expressions."
 (defgroup pel-sexp-form-navigation nil
   "Control navigation across S-expression forms with PEL keys.
 
-Includes user-option variables that control which of the S-expression forms
-the following commands move:
+  Includes user-option variables that control which of the S-expression forms
+  the following commands move:
 
-- `pel-elisp-beginning-of-next-form'
-- `pel-elisp-beginning-of-previous-form'
+  - `pel-elisp-beginning-of-next-form'
+  - `pel-elisp-beginning-of-previous-form'
 
-These commands are mostly used when editing code written in Lisp-like
-programming languages such as Emacs Lisp and Common Lisp.
+  These commands are mostly used when editing code written in Lisp-like
+  programming languages such as Emacs Lisp and Common Lisp.
 
-PEL binds these commands to the ``<f12>`` key prefix in Emacs-Lisp and
-Common-Lisp major modes. They can also be used in any other Lisp-like text.
+  PEL binds these commands to the ``<f12>`` key prefix in Emacs-Lisp and
+  Common-Lisp major modes. They can also be used in any other Lisp-like text.
 
-The main user-option variable is `pel-elisp-target-forms'.  With it you
-specify the group of targets.  The last possible choice is a user-specified
-list identified in the other user-option variable:
-`pel-elisp-user-specified-targets'."
+  The main user-option variable is `pel-elisp-target-forms'.  With it you
+  specify the group of targets.  The last possible choice is a user-specified
+  list identified in the other user-option variable:
+  `pel-elisp-user-specified-targets'."
   :group 'pel-pkg-for-elisp
   :group 'pel-pkg-for-clisp)
 
 (defcustom pel-elisp-target-forms 'all-top-level-forms
   "Identify target of form navigation.
 
-Use as the target by the following commands:
-- `pel-elisp-beginning-of-next-form'
-- `pel-elisp-beginning-of-previous-form'
+  Use as the target by the following commands:
+  - `pel-elisp-beginning-of-next-form'
+  - `pel-elisp-beginning-of-previous-form'
 
-The target is specified using one of the following:
+  The target is specified using one of the following:
 
-0) All top-level forms. The default.
+  0) All top-level forms. The default.
 1) Top-level defun forms only.
 2) All defun forms, any level.
 3) All of the following forms, any level

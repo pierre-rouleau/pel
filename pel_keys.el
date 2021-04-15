@@ -2622,19 +2622,33 @@ d-mode not added to ac-modes!"
  'emacs-lisp-mode 'emacs-lisp-mode-hook :append)
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC L`` : (Common) Lisp
+;; - Function Keys - <f11> - Prefix ``<f11> SPC L`` : Common Lisp
 (when pel-use-common-lisp
-  ;; Slime Support : TODO complete
-  (when pel-use-slime
-    (pel-ensure-package slime from: melpa))
+  (when (and pel-inferior-lisp-program
+             (boundp 'inferior-lisp-program))
+    (setq inferior-lisp-program pel-inferior-lisp-program))
 
-  ;; SLY Support : TODO complete
-  (when pel-use-sly
-    (pel-ensure-package sly from: melpa))
+  ;; Install Slime or Sly, not both.
+  ;; TODO: enhance PEL package management and options to support
+  ;;       selections of packages by choice better.
+  (cond
+   ;; Use Slime
+   ((and pel-use-slime
+         (eq pel-common-lisp-ide 'slime))
+    (pel-ensure-package slime from: melpa))
+   ;; Use SLY
+   ((and pel-use-sly
+         (eq pel-common-lisp-ide 'sly))
+    (pel-ensure-package sly from: melpa)))
 
   ;; Add support for Speedbar listing Common Lisp files:
   (when pel-use-speedbar
-    (pel-add-speedbar-extension ".li?sp"))
+    (pel-add-speedbar-extension ".li?sp")
+    (dolist (ext-regexp pel-clisp-extra-files)
+      (pel-add-speedbar-extension ext-regexp)))
+  ;; Add extra Common Lisp file extensions if requested by user
+  (dolist (ext-regexp pel-clisp-extra-files)
+    (add-to-list 'auto-mode-alist ext-regexp))
 
   (define-pel-global-prefix pel:for-lisp (kbd "<f11> SPC L"))
   (pel--lisp-languages-map-for pel:for-lisp)
@@ -2657,6 +2671,12 @@ d-mode not added to ac-modes!"
     (unless pel-use-slime
       (set (make-local-variable 'lisp-indent-function)
            'common-lisp-indent-function))
+    ;; When Slime is used and extra slime contributions are identified
+    ;; activate them.
+    (when (and pel-use-slime
+               (listp pel-use-slime)
+               (fboundp 'slime-setup))
+      (slime-setup pel-use-slime))
     ;; imenu support
     (when (boundp 'lisp-imenu-generic-expression)
       (setq-local imenu-generic-expression lisp-imenu-generic-expression))))
