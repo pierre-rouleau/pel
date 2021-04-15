@@ -53,6 +53,7 @@
 ;;
 ;; Pluralizer:
 ;;  - `pel-count-string'
+;;    - `pel-plural-of'
 ;;
 ;; Symbol value extraction
 ;; - `pel-symbol-value'
@@ -376,14 +377,38 @@ Ignore case differences if IGNORE-CASE is non-nil."
 ;; - Pluralizer
 ;; ------------
 
+(defun pel-plural-of (word)
+  "Return the plural of the specified word.
+Does not handle all of English, it handles the following types:
+  - class   -> classes
+  - tomato  -> tomatoes
+  - sky     -> skies
+  - calf    -> calves
+  - command -> commands"
+  (let ((last-letter (substring-no-properties word -1)))
+    (cond
+     ;; class -> classes.  tomato -> tomatoes
+     ((member last-letter '("s" "o"))
+      (concat word "es"))
+     ;; sky -> skies
+     ((string= last-letter "y")
+      (concat (substring-no-properties word 0 -1) "ies"))
+     ;; calf -> calves
+     ((string= last-letter "f")
+      (concat (substring-no-properties word 0 -1) "ves"))
+     ;; command -> commands
+     (t (concat word "s")))))
+
 (defun pel-count-string (n singular &optional plural)
-  "Return a formatted string for N in SINGULAR or PLURAL.
+  "Return a formatted string for N in SINGULAR form or PLURAL form.
 If N is 0 or 1, use the singular form.
 If N > 2: use the PLURAL form if specified,
-          otherwise use SINGULAR with a 's' suffix."
+          otherwise use `pel-plural-of' to compute the plural
+          form of SINGULAR."
+
   (if (> n 1)
       (format "%d %s" n (or plural
-                            (format "%ss" singular)))
+                            (pel-plural-of singular)))
     (format "%d %s" n singular)))
 
 ;; ---------------------------------------------------------------------------
