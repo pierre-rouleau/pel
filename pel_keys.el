@@ -2624,6 +2624,9 @@ d-mode not added to ac-modes!"
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC L`` : Common Lisp
 (when pel-use-common-lisp
+  (defvar pel-lisp-imenu-generic-expression nil
+    "Cache copy for the PEL computed imenu index rule for Common Lisp.")
+
   (when (and pel-inferior-lisp-program
              (boundp 'inferior-lisp-program))
     (setq inferior-lisp-program pel-inferior-lisp-program))
@@ -2634,11 +2637,11 @@ d-mode not added to ac-modes!"
   (cond
    ;; Use Slime
    ((and pel-use-slime
-         (eq pel-common-lisp-ide 'slime))
+         (eq pel-clisp-ide 'slime))
     (pel-ensure-package slime from: melpa))
    ;; Use SLY
    ((and pel-use-sly
-         (eq pel-common-lisp-ide 'sly))
+         (eq pel-clisp-ide 'sly))
     (pel-ensure-package sly from: melpa)))
 
   ;; Add support for Speedbar listing Common Lisp files:
@@ -2677,8 +2680,15 @@ d-mode not added to ac-modes!"
                (listp pel-use-slime)
                (fboundp 'slime-setup))
       (slime-setup pel-use-slime))
-    ;; imenu support
+    ;; imenu support: add ability to extract more Common Lisp definitions.
+    ;; compute it once after a pel-init (instead of on each file opened).
     (when (boundp 'lisp-imenu-generic-expression)
+      (when (and (boundp 'lisp-mode-symbol-regexp)
+                 (not pel-lisp-imenu-generic-expression))
+        (pel-add-imenu-sections-to pel-clisp-define-forms
+                                   'lisp-imenu-generic-expression)
+        (setq pel-lisp-imenu-generic-expression
+              lisp-imenu-generic-expression))
       (setq-local imenu-generic-expression lisp-imenu-generic-expression))))
 
 ;; ---------------------------------------------------------------------------

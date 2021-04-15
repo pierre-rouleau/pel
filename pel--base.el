@@ -176,6 +176,13 @@
 ;;
 ;; Speedbar Support
 ;; - `pel-add-speedbar-extension'
+;;
+;; Byte Compilation
+;; - `pel-byte-compile-if-needed'
+;;   - `pel-modtime-of'
+;;
+;; Imenu Utilities
+;; - `pel-add-imenu-sections-to'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -1807,6 +1814,54 @@ if newer than the EL-FILENAME, force byte-compilation of the EL-FILENAME."
                           (time-less-p elc-modtime (pel-modtime-of fname)))
                         other-dependencies))))
       (byte-compile-file el-filename))))
+
+;; ---------------------------------------------------------------------------
+;; Imenu Utilities
+;; ---------------
+
+(defun pel-add-imenu-sections-to (title-rule-keywords list-var)
+  "Add rules to extract imenu indices to the specified LIST-VAR.
+
+The LIST-VAR argument must be a symbol.  For example, to add the
+definitions to the imenu variable used for Common Lisp, you would
+pass the quoted `lisp-imenu-generic-expression' symbol.
+
+The SYMBOL-REGEXP argument must be a regexp string used to
+extract the name of the defined symbol.  For example, use
+`lisp-mode-symbol-regexp' when parsing a Lisp-like buffer.
+
+Each entry in the TITLE-RULE-KEYWORDS list must consist of:
+
+- string: Title : a short descriptive string that will be used in
+  the imenu as title.
+- rule: one of:
+  - `lisp-mode-symbol-regexp' which identifies the standard Lisp symbol
+    extraction regexp.
+  - a list of 2 elements:
+    - string: a different, explicit symbol extraction regexp,
+    - integer: identifies the regexp group extracting the symbol name.
+- list of one or several:
+  - string: Function : a string corresponding to the Common Lisp
+    function symbol.
+
+Return the new value of LIST-VAR."
+  (dolist (title-rule-keyword title-rule-keywords)
+    (let* ((title    (car title-rule-keyword))
+           (rule     (cadr title-rule-keyword))
+           (keywords (caddr title-rule-keyword))
+           (group-n  (if (symbolp rule)
+                         2
+                       (cadr rule)))
+           (symbol-regexp (if (symbolp rule)
+                              (symbol-value rule)
+                            (car rule))))
+      (add-to-list list-var (list title
+                                  (concat
+                                   "^\\s-*("
+                                   (regexp-opt keywords t)
+                                   "\\s-+\\(" symbol-regexp "\\)")
+                                  group-n))))
+  (symbol-value list-var))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel--base)

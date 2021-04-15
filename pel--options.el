@@ -3454,6 +3454,44 @@ already identified by Emacs or PEL as Common Lisp files."
   :group 'pel-pkg-for-clisp
   :type '(repeat string))
 
+(defcustom pel-clisp-define-forms
+  '(("Bookmarklet-Commands" lisp-mode-symbol-regexp ("define-bookmarklet-command"))
+    ("Classes"              lisp-mode-symbol-regexp ("define-class"))
+    ("Commands"             lisp-mode-symbol-regexp ("define-command"))
+    ("FFI-Methods"          lisp-mode-symbol-regexp ("define-ffi-method"))
+    ("Functions"            lisp-mode-symbol-regexp ("define-function"))
+    ("Modes"                lisp-mode-symbol-regexp ("define-mode"))
+    ("Parenscripts"         lisp-mode-symbol-regexp ("define-parenscript"))
+    ("User-Classes"         lisp-mode-symbol-regexp ("define-user-class"))
+    ("ASDF System Define"   ("\\\"\\(\\(?:\\sw\\|\\s_\\)+\\)\\\"" 3)  ("defsystem")))
+  "A list of 2-entries lists that identify Common Lisp define forms.
+
+Each list consist of:
+- string: Title : a short descriptive string that will be used in
+  the imenu as title.
+- rule: one of:
+  - `lisp-mode-symbol-regexp' which identifies the standard Lisp symbol
+    extraction regexp.
+  - a list of 2 elements:
+    - string: a different, explicit symbol extraction regexp,
+    - integer: identifies the regexp group extracting the symbol name.
+- list of one or several:
+  - string: Function : a string corresponding to the Common Lisp
+    function symbol.
+
+These entries will be added to the `lisp-imenu-generic-expression' used by
+the `imenu' function to parse Common Lisp source and extract indices."
+  :type '(repeat
+          (list
+           (string :tag "Title"    :value "")
+           (choice
+            (const :tag "lisp-symbol" lisp-mode-symbol-regexp)
+            (list
+             (string :tag "symbol extraction regexp")
+             (integer :tag "extraction group" :value 2)))
+           (repeat
+            (string :tag "Function" :value "")))))
+
 (defcustom pel-clisp-hyperspec-root
   "http://www.lispworks.com/documentation/HyperSpec/"
   "Location of the Common Lisp HyperSpec HTML documentation, a URL.
@@ -3474,7 +3512,7 @@ install them locally."
   :group 'pel-pkg-for-clisp
   :type 'string)
 
-(defcustom pel-common-lisp-ide nil
+(defcustom pel-clisp-ide nil
   "Control what Common Lisp IDE is used, if any.
 The following IDE are supported:  Slime and SLY."
   :group 'pel-pkg-for-clisp
@@ -3498,7 +3536,7 @@ slime-asdf.  By default, slime activates only slime-fancy
 contribution.
 
 Also note that to activate Slime you must also set:
-- `pel-common-lisp-ide' to slime.
+- `pel-clisp-ide' to slime.
 - `pel-use-common-lisp' to t."
   :link '(url-link :tag "Slime @ Wikipedia"
                    "https://en.wikipedia.org/wiki/SLIME")
@@ -3517,7 +3555,7 @@ Also note that to activate Slime you must also set:
   "Control whether PEL activates SLY for Common Lisp.
 
 Also note that to activate SLY you must also set:
-- `pel-common-lisp-ide' to sly.
+- `pel-clisp-ide' to sly.
 - `pel-use-common-lisp' to t."
   :link '(url-link :tag "Sly @ GitHub"
                    "https://github.com/joaotavora/sly")
