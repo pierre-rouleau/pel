@@ -1680,7 +1680,6 @@ can't bind negative-argument to C-_ and M-_"
 
 ;; - Tup Built Tool Support
 ;; ------------------------
-
 (when pel-use-tup
   (cl-eval-when 'load
     (pel-install-github-file "pierre-rouleau/tup-mode/master" "tup-mode.el"))
@@ -1690,6 +1689,13 @@ can't bind negative-argument to C-_ and M-_"
                      "Tupfile"
                      "tup.config")
   (pel-setup-major-mode tup :no-f12-keys))
+
+;; - Nix Package Manager Support
+;; -----------------------------
+(when pel-use-nix-mode
+  (pel-ensure-package nix-mode from: melpa)
+  (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode))
+  (pel-setup-major-mode nix :no-f12-keys))
 
 ;; ---------------------------------------------------------------------------
 ;; - Programming Language Support

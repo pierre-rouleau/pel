@@ -53,6 +53,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
         <M-up>``.
       - *pel-make-next-macro*, bound to ``<f12> <M-down>`` and ``<M-f12>
         <M-down>`.
+  - New: *Nix package Manager support:
+    - Support is activated by the *pel-use-nix-mode* user-option.
+      It installs the nix-mode package.
   - New: *Tup file editing support*:
     - Support for *Tup* files activated by the *pel-use-tup* user-option.
 - Update: *Comments*:

@@ -2043,7 +2043,7 @@ waiting for activity to resume in the lewang's repo."
   "List of minor-modes automatically activated for Org-Mode buffers.
 Enter minor-mode activating function symbols.
 Do not enter lambda expressions."
-  :group 'pel-pkg-for-org-mode
+  :group 'pel-pkg-for-markup
   :type '(repeat function))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -5303,7 +5303,7 @@ To activate the changes for this you must 'Apply and Save' and restart Emacs."
   "List of minor-modes automatically activated for tup buffers.
 Enter minor-mode activating function symbols.
 Do not enter lambda expressions."
-  :group 'pel-pkg-for-org-mode
+  :group 'pel-pkg-for-sw-build
   :type '(repeat function))
 
 (defcustom pel-use-makefile t
@@ -5317,7 +5317,22 @@ On by default. Turn it off if you don't need it."
   "List of minor-modes automatically activated for makefile buffers.
 Enter minor-mode activating function symbols.
 Do not enter lambda expressions."
-  :group 'pel-pkg-for-org-mode
+  :group 'pel-pkg-for-sw-build
+  :type '(repeat function))
+
+(defcustom pel-use-nix-mode nil
+  "Control whether PEL activates support for the Nix package manager files."
+  :link '(url-link :tag "nix-mode @ Github"
+                   "https://github.com/NixOS/nix-mode")
+  :group 'pel-pkg-for-sw-build
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-nix-activates-minor-modes nil
+  "List of minor-modes automatically activated for nix buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-sw-build
   :type '(repeat function))
 
 ;; ---------------------------------------------------------------------------
