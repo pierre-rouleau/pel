@@ -326,6 +326,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - Add *pel-imenu-rescan*, bound to ``<f11> <f10> r``.
   - Add *pel-popup-imenu*, bound to ``<f11> <f10> <f10>``.  It opens a pop-up
     menu of items detected by imenu.
+  - Add the *pel-clisp-define-forms* user-option that allows you to identify
+    Common Lisp definition form keywords to include in the imenu list.
 - Update: *Input Completion*:
   - New: Customization and dynamic control of Ido prompt geometry.
     - The *pel-initial-ido-geometry* user-option allows you to select the
@@ -469,11 +471,18 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       of C preprocessor Hydra keys that help navigate across C preprocessor
       directives, hide and how them, etc...
   - Update: *C*
+    - New: PEL support for C is now activated with the *pel-use-c*
+      user-option.  This allows turning it off to reduce Emacs init time when
+      you do not need to edit C files.
     - New: ``<f12> <f12> d`` insert a C pre-processor #define statement.
     - New: ``<f12> <f12> i`` insert a C pre-processor #include statement for
       library files.
     - New: ``<f12> <f12> I`` insert a C pre-processor #include statement for
       local files.
+  - Update: *C++*
+    - New: PEL support for C++ is now activated with the *pel-use-c++*
+      user-option.  This allows turning it off to reduce Emacs init time when
+      you do not need to edit C++ files.
   - Update: *Lisp Languages Family*:
     - Update: *Modes for all Lisp Languages*:
       - Update: *Lispy mode*:
@@ -495,6 +504,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
         the LispWorks Common Lisp HyperSpec HTML documentation.
       - New: The ``<f12> <f3>`` key sequence provides access to slime
         customization buffer.
+      - New: Add the *pel-clisp-define-forms* user-option that allows you to identify
+        Common Lisp definition form keywords to include in the imenu list.
+      - Update: Add better control for selection of the Common Lisp/Emacs IDE
+        selection: slime or SLY.
     - Update: *Emacs Lisp*
       - New: Much more flexible navigation across definition forms.  The main
         commands provide the ability to select, via customization user-option
