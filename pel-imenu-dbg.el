@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, February 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-09 12:58:08, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-14 20:50:31, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -73,7 +73,7 @@
        (pel-insert-symbol-content 'imenu-example--function-name-regexp-c buffer :on-same-line)
        (pel-insert-symbol-content 'imenu--rescan-item                  buffer :on-same-line)
 
-       (pel-insert-list-content   'imenu--index-alist-roup            buffer)
+       (pel-insert-list-content   'imenu--index-alist                 buffer)
        (pel-insert-list-content   'imenu-generic-expression           buffer)
        (pel-insert-list-content   'imenu-syntax-alist                 buffer)
        (pel-insert-list-content   'imenu--last-menubar-index-alist    buffer)
