@@ -1752,7 +1752,16 @@ can't bind negative-argument to C-_ and M-_"
 ;; ---------------------------------------------------------------------------
 ;; C-like programming languages: C, C++
 ;; ------------------------------------
-(when pel-use-c-eldoc
+(when (and pel-use-c-eldoc
+           (or pel-use-c
+               pel-use-c++))
+
+  ;; TODO: check if main repo is OK.
+  ;; c-eldoc is an external package.
+  ;; I am waiting for a fix to be incorporated, using my copy with the fix
+  ;; incorporated for now.
+  (cl-eval-when 'load
+    (pel-install-github-file "pierre-rouleau/c-eldoc/master" "c-eldoc.el"))
 
   (defun pel-toggle-c-eldoc-mode ()
     "Toggle c-eldoc mode on/off."
@@ -1763,13 +1772,6 @@ can't bind negative-argument to C-_ and M-_"
         (eldoc-mode -1)
       (c-turn-on-eldoc-mode)))
   (declare-function pel-toggle-c-eldoc-mode "pel_keys")
-
-  ;; TODO: check if main repo is OK.
-  ;; c-eldoc is an external package.
-  ;; I am waiting for a fix to be incorporated, using my copy with the fix
-  ;; incorporated for now.
-  (cl-eval-when 'load
-    (pel-install-github-file "pierre-rouleau/c-eldoc/master" "c-eldoc.el"))
 
   (pel-autoload-file c-eldoc for: c-turn-on-eldoc-mode)
   (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode))
