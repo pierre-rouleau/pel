@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-16 09:53:45, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-16 13:24:36, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -130,7 +130,8 @@
     ([f11 32 ?D]     "pl-d"             pel-pkg-for-d           d-mode)
     ([f11 32 ?L]     "pl-common-lisp"   pel-pkg-for-clisp       (lisp
                                                                  lispy
-                                                                 slime))
+                                                                 slime
+                                                                 sly))
     ([f11 32 ?M]     "pl-make"          nil                     makefile)
     ([f11 32 ?R]     "pl-rexx"          pel-pkg-for-rexx        rexx-mode)
     ([f11 32 ?N]     "pl-rexx"          pel-pkg-for-rexx        netrexx)
