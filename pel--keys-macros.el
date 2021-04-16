@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-14 08:24:10, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-16 09:53:45, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -432,7 +432,9 @@ Check the key sequences.  Expand the f12 key sequence into
 the full f11 key sequence.  Report invalid key sequence."
   (let ((prefix-key (elt keyseq 0)))
     (unless (or (memq prefix-key '(f6 f7 f8 f11 f12 M-f12))
-                (equal keyseq [27 103 f4])) ; special case command (for now)
+                ;; special case command (for now)
+                (equal keyseq [27 103 f4])
+                (equal keyseq (kbd "M-g <f4>")))
       (user-error "This command can only be invoked via \
 F6, F7, F8, F11, F12 or M-F12 prefix.\n\
  Not %s in %s" prefix-key keyseq))
