@@ -2499,6 +2499,7 @@ of auto-newline while editing."
   :group 'pel-pkg-for-c
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-c :package-is :builtin-emacs)
 
 (defcustom pel-c-activates-minor-modes nil
   "List of minor-modes automatically activated for C buffers.
@@ -2866,6 +2867,7 @@ defined ones, which could use that variable too."
   :group 'pel-pkg-for-c++
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-c++ :package-is :builtin-emacs)
 
 (defcustom pel-c++-activates-minor-modes nil
   "List of minor-modes automatically activated for C++ buffers.
@@ -5312,6 +5314,7 @@ On by default. Turn it off if you don't need it."
   :group 'pel-pkg-for-sw-build
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-makefile :package-is :builtin-emacs)
 
 (defcustom pel-makefile-activates-minor-modes nil
   "List of minor-modes automatically activated for makefile buffers.
