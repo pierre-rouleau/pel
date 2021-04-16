@@ -826,10 +826,23 @@ The available options are:
 (defcustom pel-initial-goto-symbol-UI 'emacs-default
   "Select the User Interface used for prompting for local symbol.
 
-This is used by the command `pel-goto-symbol'."
+This is used by the command `pel-goto-symbol'.
+
+Further customization is available for several selections:
+- For Emacs default - imenu:
+  - default is to use the tab-based completion buffer,
+  - a pop-up imenu is available if you activate the following:
+    - set `imenu-use-popup-menu' to 'always'
+    - activate `pel-use-popup-imenu'.
+- For Ido:
+  - you can add Ido flx fuzzy matching by activating: `pel-use-flx'.
+
+Warning: both popup-imenu and popup-switcher seem to be affected by
+         bugs that prevent them to show the complete list of items
+         reliably."
   :group 'pel-pkg-for-completion
   :type '(choice
-          (const :tag "Use Emacs default: imenu" emacs-default)
+          (const :tag "Use Emacs default - imenu" emacs-default)
           (const :tag "Use Ido.  Requires `pel-use-ido' and `pel-use-ido-ubiquitous'." ido)
           (const :tag "Use Ivy.  Requires `pel-use-ivy' and `pel-use-counsel'." ivy)
           (const :tag "Use helm. Requires `pel-use-helm'." helm)
