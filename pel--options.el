@@ -3470,8 +3470,7 @@ already identified by Emacs or PEL as Common Lisp files."
   :type '(repeat string))
 
 (defcustom pel-clisp-define-forms
-  '(("Bookmarklet-Commands" lisp-mode-symbol-regexp ("define-bookmarklet-command"))
-    ("Classes"              lisp-mode-symbol-regexp ("define-class"))
+  '(("Classes"              lisp-mode-symbol-regexp ("define-class"))
     ("Commands"             lisp-mode-symbol-regexp ("define-command"))
     ("FFI-Methods"          lisp-mode-symbol-regexp ("define-ffi-method"))
     ("Functions"            lisp-mode-symbol-regexp ("define-function"))
@@ -3479,7 +3478,7 @@ already identified by Emacs or PEL as Common Lisp files."
     ("Parenscripts"         lisp-mode-symbol-regexp ("define-parenscript"))
     ("User-Classes"         lisp-mode-symbol-regexp ("define-user-class"))
     ("ASDF System Define"   ("\\\"\\(\\(?:\\sw\\|\\s_\\)+\\)\\\"" 3)  ("defsystem")))
-  "A list of 2-entries lists that identify Common Lisp define forms.
+  "A list of lists identifying Common Lisp define forms for imenu parsing.
 
 Each list consist of:
 - string: Title : a short descriptive string that will be used in
