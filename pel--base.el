@@ -311,6 +311,15 @@ file."
       (file-name-extension buffer-file-truename with-period)
     (user-error "No file in buffer %s" (buffer-name))))
 
+(defun pel-buffers-in-mode (wanted-mode)
+  "Return a list of buffers with specified WANTED-MODE, nil if none open.
+WANTED-MODE is a symbol."
+  (let ((buffers-in-wanted-mode '()))
+    (dolist (buffer (buffer-list) (reverse buffers-in-wanted-mode))
+      (with-current-buffer buffer
+        (when (eq major-mode wanted-mode)
+          (push buffer buffers-in-wanted-mode))))))
+
 ;; ---------------------------------------------------------------------------
 ;; Emacs Lisp Development Support
 ;; ------------------------------

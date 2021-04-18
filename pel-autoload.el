@@ -186,6 +186,9 @@ Argument FOR: just a required separator keyword to make code look better."
   ;; Nothing specified here: the control is inside pel_keys.el
   ;; only.
 
+  (pel-autoload "pel-commonlisp" for:
+    pel-cl-repl)
+
   (pel-autoload "pel-completion" for:
     pel-select-completion-mode
     pel-show-active-completion-mode

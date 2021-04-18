@@ -511,6 +511,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
         Common Lisp definition form keywords to include in the imenu list.
       - Update: Add better control for selection of the Common Lisp/Emacs IDE
         selection: slime or SLY.
+      - New: the *pel-cl-repl* opens a buffer with the Common Lisp REPL
+        selected by the PEL user-options *pel-use-sly*, *pel-use-slime* and
+        *pel-clisp-ide*.  This is bound to the ``<f12> R`` key sequence.
     - Update: *Emacs Lisp*
       - New: Much more flexible navigation across definition forms.  The main
         commands provide the ability to select, via customization user-option
