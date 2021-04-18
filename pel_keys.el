@@ -2537,6 +2537,7 @@ d-mode not added to ac-modes!"
 (define-pel-global-prefix pel:for-elisp  (kbd "<f11> SPC l"))
 (define-pel-global-prefix pel:elisp-skel (kbd "<f11> SPC l <f12>"))
 
+(define-key pel:for-elisp "R"  'ielm)
 (define-key pel:for-elisp "D"  'pel-add-dir-to-loadpath)
 (pel--lisp-languages-map-for pel:for-elisp)
 ;;
@@ -5368,19 +5369,24 @@ the ones defined from the buffer now."
 ;; - Function Keys - <f11> - Prefix ``<f11> x`` : Process eXecution utilities
 ;;
 (define-pel-global-prefix pel:eXecute (kbd "<f11> x"))
+;; Used keys:
+;; ? a e f i j l p r s t v x
+;; L
 
 (declare-function eshell "eshell")
 
 (define-key pel:eXecute    "?" #'list-processes)
+(when pel-use-common-lisp
+  (define-key pel:eXecute  "L" #'pel-cl-repl))
 (define-key pel:eXecute    "a" #'ansi-term)
 (define-key pel:eXecute    "e" #'eshell)
 (when pel-use-forth
   (define-key pel:eXecute  "f" 'run-forth))
 (when pel-use-julia
   (define-key pel:eXecute  "j"  'julia-snail))
-(define-key pel:eXecute    "i" #'ielm)
+(define-key pel:eXecute    "l" #'ielm)
 (when pel-use-lfe
-  (define-key pel:eXecute  "l"  'run-lfe))
+  (define-key pel:eXecute  (kbd "C-l")  'run-lfe))
 (when pel-use-python
   (define-key pel:eXecute  "p" #'run-python))
 (when pel-use-erlang
