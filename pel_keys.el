@@ -3573,8 +3573,10 @@ d-mode not added to ac-modes!"
 ;; Used keys:
 ;; P
 ;; c l m p r s t u v x
+;; C-p
 
 (define-pel-global-prefix pel:emacs (kbd "<f11> ? e"))
+(define-key pel:emacs (kbd "C-p") #'list-processes)
 (define-key pel:emacs "c"  'pel-emacs-command-stats)
 (define-key pel:emacs "i"  'pel-imenu-dbg-print-vars)
 (define-key pel:emacs "r"  'pel-open-emacs-refcard)
