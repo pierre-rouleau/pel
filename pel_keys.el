@@ -2666,7 +2666,7 @@ d-mode not added to ac-modes!"
   (pel--lisp-languages-map-for pel:for-lisp)
   (when pel-use-plantuml
     (define-key pel:for-lisp "u" 'pel-render-commented-plantuml))
-  (define-key pel:for-lisp "R" 'pel-cl-repl)
+  (define-key pel:for-lisp "z" 'pel-cl-repl)
 
   ;; Enable use of the Common Lisp Hyperspec by setting their location.
   ;; Customize `pel-clisp-hyperspec-root' if you want to use a local copy.
