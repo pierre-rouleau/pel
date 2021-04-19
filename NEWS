@@ -513,7 +513,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
         selection: slime or SLY.
       - New: the *pel-cl-repl* opens a buffer with the Common Lisp REPL
         selected by the PEL user-options *pel-use-sly*, *pel-use-slime* and
-        *pel-clisp-ide*.  This is bound to the ``<f12> R`` key sequence.
+        *pel-clisp-ide*.  This is bound to the ``<f12> z`` key sequence.
     - Update: *Emacs Lisp*
       - New: Much more flexible navigation across definition forms.  The main
         commands provide the ability to select, via customization user-option
@@ -710,7 +710,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       - The ``<f12> d`` key is bound to ``rust-dbg-wrap-or-unwrap``.
       - The ``<f12> l`` key is bound to ``rust-run-clippy``, Rust's Lint checker.
 - Update: *Process execution*:
-  - New: the list-processes command is now bound to ``<f11> x ?`` key
+  - New: the list-processes command is now bound to ``<f11> z ?`` key
     sequence.
 - Update: *Rectangles*:
   - New: the *iedit-rectangle-mode* is accessible directly with the ``C-x r
@@ -785,6 +785,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     messages. It also deactivate edts-mode when the mode activation failed.
     This is done to prevent a failed edts-mode from showing it is activated
     when it is not.
+- Update: *Shells*:
+  - *Change*: the key prefix changed from ``<f11> x`` to ``<f11> z``.
+    The letter ``z`` is normally used in Emacs for commands related to shells.
 - Update: *Skeletons*:
   - Modified: Improved the handling of C-like modes for file header blocks:
     - prevent insertions of empty lines when a file header is inserted in

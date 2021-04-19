@@ -2855,7 +2855,7 @@ d-mode not added to ac-modes!"
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-l `` : LFE programming
 ;; LFE := Lisp Flavoured Erlang
 
-;; Note: the pel:eXecute has the run-lfe (in the code below.)
+;; Note: the pel:execute has the run-lfe (in the code below.)
 (when pel-use-lfe
   (pel-ensure-package lfe-mode from: melpa)
   (pel-autoload-file lfe-mode for:
@@ -5368,41 +5368,41 @@ the ones defined from the buffer now."
     (define-key pel:session "L" 'desktop+-load-auto))))
 
 ;; -----------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> x`` : Process eXecution utilities
+;; - Function Keys - <f11> - Prefix ``<f11> z`` : Process & shells execution
 ;;
-(define-pel-global-prefix pel:eXecute (kbd "<f11> x"))
+(define-pel-global-prefix pel:execute (kbd "<f11> z"))
 ;; Used keys:
 ;; ? a e f i j l p r s t v x
 ;; L
 
 (declare-function eshell "eshell")
 
-(define-key pel:eXecute    "?" #'list-processes)
+(define-key pel:execute    "?" #'list-processes)
 (when pel-use-common-lisp
-  (define-key pel:eXecute  "L" #'pel-cl-repl))
-(define-key pel:eXecute    "a" #'ansi-term)
-(define-key pel:eXecute    "e" #'eshell)
+  (define-key pel:execute  "L" #'pel-cl-repl))
+(define-key pel:execute    "a" #'ansi-term)
+(define-key pel:execute    "e" #'eshell)
 (when pel-use-forth
-  (define-key pel:eXecute  "f" 'run-forth))
+  (define-key pel:execute  "f" 'run-forth))
 (when pel-use-julia
-  (define-key pel:eXecute  "j"  'julia-snail))
-(define-key pel:eXecute    "l" #'ielm)
+  (define-key pel:execute  "j"  'julia-snail))
+(define-key pel:execute    "l" #'ielm)
 (when pel-use-lfe
-  (define-key pel:eXecute  (kbd "C-l")  'run-lfe))
+  (define-key pel:execute  (kbd "C-l")  'run-lfe))
 (when pel-use-python
-  (define-key pel:eXecute  "p" #'run-python))
+  (define-key pel:execute  "p" #'run-python))
 (when pel-use-erlang
-  (define-key pel:eXecute  "r"  'erlang-shell))
+  (define-key pel:execute  "r"  'erlang-shell))
 (when (and pel-use-elixir pel-use-alchemist)
-  (define-key pel:eXecute  "x"  'alchemist-iex-run))
-(define-key pel:eXecute    "s" #'shell)
-(define-key pel:eXecute    "t" #'term)
+  (define-key pel:execute  "x"  'alchemist-iex-run))
+(define-key pel:execute    "s" #'shell)
+(define-key pel:execute    "t" #'term)
 
 ;; support for the extremely fast/nice libvterm-based vterm shell.
 (when pel-use-vterm
   (pel-ensure-package vterm from: melpa)
   (pel-autoload-file vterm for: vterm)
-  (define-key pel:eXecute "v" 'vterm))
+  (define-key pel:execute "v" 'vterm))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> X`` : Xref utilities

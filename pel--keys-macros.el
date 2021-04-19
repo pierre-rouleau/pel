@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-16 13:24:36, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-19 10:19:46, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -304,7 +304,7 @@
                                                            windresize))
     ([f11 ?w ?d]     "windows"          pel-pkg-for-window)
     ([f11 ?w ?s]     "windows"          pel-pkg-for-window)
-    ([f11 ?x]        "shells"           pel-pkg-for-shells      (term
+    ([f11 ?z]        "shells"           pel-pkg-for-shells      (term
                                                                  terminals
                                                                  vterm))
     ([f11 ?y]  "inserting-text"   pel-pkg-for-insertions  (yasnippet
