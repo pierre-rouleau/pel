@@ -537,7 +537,7 @@ This command assumes point is not in a string or comment."
 
 ;;-pel-autoload
 (defun pel-delete-rectangle (start end)
-  "Delete the rectangle region"
+  "Delete the rectangle region identified by START and END."
   (interactive "*r")
   (let (kill-ring
         (pel--isa-delete-operation t))
@@ -715,6 +715,7 @@ With argument ARG, kill that many words then the whitespace following them."
 ;; Duplicate current line
 ;; ----------------------
 
+;;-pel-autoload
 (defun pel-duplicate-line (&optional n)  ; line a line another line
   "Duplicate the current line N times.  N defaults to 1.
 
@@ -727,7 +728,7 @@ line. If N is negative the replacement is only done for the marked area.
 
 When (abs N) is larger than 1 the function inserts that many duplicated lines,
 and prompts for a new replacement for each new line.
-The command maintains a prompt history, accessible with M-n and M-p.
+The command maintains a prompt history, accessible with 'M-n' and 'M-p'.
 
 Nothing is copied to the kill ring."
   (interactive "*p")
