@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-26 15:46:08, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-20 09:33:50, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -310,7 +310,7 @@ STRINGS := a list of strings."
 ;; Set user-option from selected choices
 
 (defun pel-set-user-option (prompt user-option selection &optional locally nil-value)
-  "PROMPT to  set the value of USER-OPTION to one of the SELECTION.
+  "PROMPT to set the value of USER-OPTION to one of the SELECTION.
 
 - USER-OPTION is a user-option symbol
 - SELECTION argument is a list of choices.
@@ -402,17 +402,35 @@ Holds an independent function prompt history for each major mode."
         (setq args (funcall transform-function args))))
     args))
 
+;; ---------------------------------------------------------------------------
+;; Generic prompt
+
+(defun pel-prompt (prompt &optional scope capitalize)
+  "Generic PROMPT for string.
+
+Optionally identify a SCOPE symbol for the prompt history.
+If it is specified the prompt has its own history for each major mode,
+otherwise it has no history.
+
+Return entered string, optionally capitalized if CAPITALIZE is non-nil."
+  (let* ((history-symbol (when scope
+                           (intern
+                            (format "pel-prompt-%s-%s" scope major-mode))))
+         (text (string-trim
+                (read-from-minibuffer (format "%s: " prompt)
+                                      nil nil nil history-symbol))))
+    (if capitalize
+        (pel-capitalize-first-letter text)
+      text)))
+
+;; ---------------------------------------------------------------------------
+;; Title prompt
+
 (defun pel-prompt-title (&optional with-full-stop)
   "Prompt and return a title string.
 Returned string has the first letter capitalized.
 If WITH-FULL-STOP is non-nil a period is added if user did not enter one."
-  (let* ((history-symbol (intern
-                         (format
-                          "pel-prompt-title-%s" major-mode)))
-         (title  (pel-capitalize-first-letter
-                  (string-trim
-                   (read-from-minibuffer "Title: "
-                                         nil nil nil history-symbol)))))
+  (let ((title (pel-prompt "Title" 'title :capitalize)))
     (if with-full-stop
         (pel-end-text-with-period title)
       title)))
