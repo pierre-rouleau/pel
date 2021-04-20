@@ -503,6 +503,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
         - ``<f12> f p``      binding to ``pel-elisp-beginning-of-previous-defun``,
         - ``<f12> <left>``   binding to ``pel-end-of-previous-defun``
         - ``<f12> <right>``  binding to ``end-of-defun``
+      - New: *pel-cl-add-symbol-to-imenu* command, bound to ``M-g <f4> .`` in
+        lisp-mode buffers.  Use this command to add a form defining macro
+        symbol to the imenu list of detected symbols.
       - New: user option *pel-clisp-hyperspec-root* to identify the location of
         the LispWorks Common Lisp HyperSpec HTML documentation.
       - New: The ``<f12> <f3>`` key sequence provides access to slime

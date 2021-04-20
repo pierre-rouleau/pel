@@ -2663,6 +2663,7 @@ d-mode not added to ac-modes!"
     (add-to-list 'auto-mode-alist ext-regexp))
 
   (define-pel-global-prefix pel:for-lisp (kbd "<f11> SPC L"))
+  (define-pel-global-prefix pel:lisp-skel (kbd "<f11> SPC L <f12>"))
   (pel--lisp-languages-map-for pel:for-lisp)
   (when pel-use-plantuml
     (define-key pel:for-lisp "u" 'pel-render-commented-plantuml))
@@ -2675,6 +2676,13 @@ d-mode not added to ac-modes!"
 
   (pel-setup-major-mode lisp pel:for-lisp
     (pel-local-set-f12-M-f12 'pel:elisp-function "f")
+    ;;
+    ;; TODO: Add keys for Common Lisp Skeletons
+    ;(pel--install-clisp-skel pel:lisp-skel)
+    ;;
+    ;; Add key that can add symbols for imenu parsing
+    (local-set-key (kbd "M-g <f4> .") 'pel-cl-add-symbol-to-imenu)
+    ;;
     ;; Common Lisp indentation rules differ from Emacs Lisp indentation rules:
     ;; - for Common Lisp buffers, use common-lisp-indent-function as indenter,
     ;;   replacing the default indenter (which conforms to the Emacs Lisp

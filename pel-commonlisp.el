@@ -37,11 +37,29 @@
 ;;     - `pel-select-buffer'
 ;;       - `pel-nth-elt'       (credit to Drew Adams for this one)
 ;;
+;;
+;; The file also provide the `pel-cl-add-symbol-to-imenu' command.
+;; The `pel-cl-add-symbol-to-imenu' command adds the Common Lisp symbol at
+;; point to the iMenu section allowing that symbol to be detected and show in
+;; the iMenu index list under a specified section title.
+;;
+;; There's not that many programming languages where a defining construct can
+;; be defined by user's code.  Common Lisp is one of them.  These will not
+;; always be defined ahead of time in a Emacs file or dir-local setting
+;; of the `lisp-imenu-generic-expression'.  Therefore it will be useful to
+;; have the ability to dynamically add such a symbol when browsing Common Lisp
+;; source code that use a DSL where form defining macros are used.
+;;
+;; It's code hierarchy is:
+;;
+;; * `pel-cl-add-symbol-to-imenu'
+;;   - `pel-cl-add-to-imenu'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 (require 'pel--base)                    ; use: pel-buffers-in-mode
+;;                                      ;      pel-add-imenu-sections-to
 (require 'pel--options)
 (require 'pel-prompt)
 ;;;---------------------------------------------------------------------------
@@ -84,7 +102,7 @@ MODE is a symbol.
   to select.
 
 If the buffer is currently displayed in a frame window, select
-that window. Otherwise open the buffer in the current window
+that window.  Otherwise open the buffer in the current window
 unless IN-OTHER-WINDOW is non-nil: then select another window to
 open the buffer using the MODE.
 
@@ -118,6 +136,7 @@ Use the other window if an IN-OTHER-WINDOW argument is specified."
           (switch-to-buffer-other-window selected-buffer)
         (switch-to-buffer selected-buffer)))))
 
+;;-pel-autoload
 (defun pel-cl-repl (&optional n)
   "Open or switch to Common-Lisp REPL buffer window.
 Use the Common Lisp REPL selected by the PEL user-options:
@@ -172,6 +191,62 @@ The behaviour of the command is affected by the optional argument N:
                     (not (pel-switch-to-window 'inferior-lisp-mode in-other-window)))
             (run-lisp nil))
         (user-error "Function run-lisp is unbound"))))))
+
+;; ---------------------------------------------------------------------------
+;; Add Common Lisp define macro symbols to iMenu section
+;; -----------------------------------------------------
+;;
+
+(defun pel-cl-add-to-imenu (symbol-string title)
+  "Add SYMBOL-STRING to the imenu under specified TITLE."
+  (pel-add-imenu-sections-to
+   (list
+    (list title
+          'lisp-mode-symbol-regexp
+          (list symbol-string)))
+   'imenu-generic-expression))
+
+;;-pel-autoload
+(defun pel-cl-add-symbol-to-imenu ()
+  "Add symbol at point to imenu.
+
+Common Lisp macro can define code definition forms similar to
+`defun' and friends, effectively creating a Domain Specific
+Language.  The DSL symbols may not currently be know to `imenu'
+parsing.
+
+You can add new symbols to `imenu' by placing the point over such
+a symbol and executing this command.
+
+For example, if the file's code uses a `define-rule' macro like
+this:
+
+  (define-rule rule1
+    (do-this)
+    (do-that)
+    (ensure this and that))
+
+  (define-rule secondary
+    (ensure something-else))
+
+Place point over `define-rule' and execute the command.
+You will be prompt for a title for `define-rule', where
+you could enter \"rules\".
+
+Then the `imenu' list will be able to show the \"rule\" and
+\"secondary\" under the \"Rules\" iMenu section."
+  (interactive)
+  (if (and (require 'thingatpt nil :noerror)
+           (fboundp 'thing-at-point))
+      (let ((symbol (thing-at-point 'symbol :no-properties)))
+        (if symbol
+            (let ((title (pel-prompt (format "iMenu section for %s" symbol)
+                                     'imenu-section
+                                     :capitalize)))
+              (when title
+                (pel-cl-add-to-imenu symbol title)))
+          (user-error "No symbol at point")))
+    (error "Function thing-at-point not loaded!")))
 
 ;;;---------------------------------------------------------------------------
 (provide 'pel-commonlisp)
