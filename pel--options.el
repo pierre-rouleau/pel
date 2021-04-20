@@ -2923,7 +2923,7 @@ is used for `c++-mode' buffers, otherwise the integer value specified by
   :group 'pel-c++-code-style
   :type '(choice
           (const   :tag "Use the default fill-column value." nil)
-          (integer :tag "Use a value specific for c-mode buffers:")))
+          (integer :tag "Use a value specific for c++-mode buffers:")))
 
 (defcustom  pel-c++-newline-mode 'context-newline
   "Set default newline mode for c++-mode buffers.
@@ -3037,7 +3037,7 @@ is used for `d-mode' buffers, otherwise the integer value specified by
   :group 'pel-d-code-style
   :type '(choice
           (const   :tag "Use the default fill-column value." nil)
-          (integer :tag "Use a value specific for c-mode buffers:")))
+          (integer :tag "Use a value specific for d-mode buffers:")))
 
 (defcustom  pel-d-newline-mode 'context-newline
   "Set default newline mode for d-mode buffers.
