@@ -3562,7 +3562,8 @@ Also note that to activate Slime you must also set:
   :type '(choice
           (const :tag "Not used" nil)
           (const :tag "Use - no extra contribs" t)
-          (repeat :tag "Use with extra contribs" (symbol :tag "extra contrib"))))
+          (repeat :tag "Use with extra contribs"
+                  (symbol :tag "extra contrib"))))
 (put 'pel-use-slime :requires 'pel-use-common-lisp)
 
 (defcustom pel-use-sly nil
@@ -3577,6 +3578,25 @@ Also note that to activate SLY you must also set:
   :type 'boolean
   :safe #'booleanp)
 (put 'pel-use-sly  :requires 'pel-use-common-lisp)
+
+;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+(defgroup pel-clisp-code-style nil
+  "Common Lisp Code Style options."
+  :group 'pel-pkg-for-clisp)
+
+(defcustom pel-clisp-fill-column 100
+  "Maximum length of Common Lisp source code line.
+Column beyond which automatic line-wrapping should occur for
+Common Lisp code.
+Can either be nil or an integer value.
+When set to nil, Emacs user option variable `fill-column' value
+is used for `lisp-mode' buffers, otherwise the integer value specified by
+`pel-clisp-fill-column' is stored in the variable `fill-column' for
+`lisp-mode' buffers.  The default is 100."
+  :group 'pel-clisp-code-style
+  :type '(choice
+          (const   :tag "Use the default fill-column value." nil)
+          (integer :tag "Use a value specific for c-mode buffers:")))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Emacs Lisp Support

@@ -2683,6 +2683,10 @@ d-mode not added to ac-modes!"
     ;; Add key that can add symbols for imenu parsing
     (local-set-key (kbd "M-g <f4> .") 'pel-cl-add-symbol-to-imenu)
     ;;
+    ;; Adjust fill-column if specified by user-option
+    (when pel-clisp-fill-column
+      (setq fill-column pel-clisp-fill-column))
+    ;;
     ;; Common Lisp indentation rules differ from Emacs Lisp indentation rules:
     ;; - for Common Lisp buffers, use common-lisp-indent-function as indenter,
     ;;   replacing the default indenter (which conforms to the Emacs Lisp

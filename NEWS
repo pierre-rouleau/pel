@@ -517,6 +517,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       - New: the *pel-cl-repl* opens a buffer with the Common Lisp REPL
         selected by the PEL user-options *pel-use-sly*, *pel-use-slime* and
         *pel-clisp-ide*.  This is bound to the ``<f12> z`` key sequence.
+      - New: Common Lisp code style customization group *pel-clisp-code-style*
+        which holds the following user-options:
+        - *pel-clisp-fill-column* which identifies the column beyond which
+          automatic line-wrapping should occur in Common Lisp code.  Defaults
+          to 100.  Can be changed to any integer or set to nil to use Emacs
+          default.
     - Update: *Emacs Lisp*
       - New: Much more flexible navigation across definition forms.  The main
         commands provide the ability to select, via customization user-option
