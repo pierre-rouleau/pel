@@ -1,6 +1,6 @@
 ;;; pel-text-insert.el --- PEL Text Insertion Utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -41,6 +41,7 @@
 (require 'pel--base)       ; use: pel-require
 ;;                         ;      pel-current-buffer-filename
 ;;                         ;      pel-ends-with-space-p
+;;                         ;      pel-comment-prefix
 (require 'pel--macros)     ; use: pel-concat-to
 
 ;; -----------------------------------------------------------------------------
@@ -48,14 +49,17 @@
 
 ;; Separator line
 
+
 ;;-pel-auto load
 (defun pel-separator-line (&optional linelen char comment-prefix)
   "Return a (commented) line string.
 The number of characters is identified by LINELEN.
 If LINELEN is not specified the buffer's `fill-column' value is used.
 The character used is identified by CHAR, otherwise '-' is used.
-The string starts with `comment-start' unless COMMENT-PREFIX is specified,
-in which case that is used.
+The string starts with the string specified by:
+- COMMENT-PREFIX, if not nil, or
+- the buffer-local variable `pel-comment-prefix' if not nil, or
+- `comment-start' otherwise.
 The string ends (if applicable) with the comment character(s).
 The string does not end with a newline."
   (pel-require 'newcomment)
@@ -67,7 +71,7 @@ The string does not end with a newline."
          ;; that use single chars like Lisp and Erlang double up these characters
          ;; for comments tart start at the beginning of the line. Other, like
          ;; Python or shells scripting, who use '#' don't.
-         (cmt-start (or comment-prefix comment-start))
+         (cmt-start (or comment-prefix pel-comment-prefix comment-start))
          (len-comment-start (length cmt-start))
          (line-comment-start (if (and (= len-comment-start 1)
                                       (member cmt-start '(";" "%")))

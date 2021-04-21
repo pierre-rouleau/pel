@@ -226,6 +226,13 @@
 ;; TODO: add ability to install unicode fonts and take it into account.
 
 ;; ---------------------------------------------------------------------------
+;; Code Style Buffer Local Variables
+;; ---------------------------------
+
+(defvar-local pel-comment-prefix nil
+  "String identifying the comment start. Set by specific modes only.")
+
+;; ---------------------------------------------------------------------------
 ;; PEL version
 ;; ===========
 

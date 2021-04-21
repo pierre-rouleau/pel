@@ -2678,14 +2678,17 @@ d-mode not added to ac-modes!"
     (pel-local-set-f12-M-f12 'pel:elisp-function "f")
     ;;
     ;; TODO: Add keys for Common Lisp Skeletons
-    ;(pel--install-clisp-skel pel:lisp-skel)
+                                        ;(pel--install-clisp-skel pel:lisp-skel)
     ;;
     ;; Add key that can add symbols for imenu parsing
     (local-set-key (kbd "M-g <f4> .") 'pel-cl-add-symbol-to-imenu)
     ;;
+    ;; Common Lisp Style
     ;; Adjust fill-column if specified by user-option
     (when pel-clisp-fill-column
       (setq fill-column pel-clisp-fill-column))
+    ;; Ensure that pel-separator-line uses 3 semicolons.
+    (setq-local pel-comment-prefix ";;;")
     ;;
     ;; Common Lisp indentation rules differ from Emacs Lisp indentation rules:
     ;; - for Common Lisp buffers, use common-lisp-indent-function as indenter,
