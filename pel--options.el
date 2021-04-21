@@ -3596,7 +3596,7 @@ is used for `lisp-mode' buffers, otherwise the integer value specified by
   :group 'pel-clisp-code-style
   :type '(choice
           (const   :tag "Use the default fill-column value." nil)
-          (integer :tag "Use a value specific for c-mode buffers:")))
+          (integer :tag "Use a value specific for lisp-mode buffers:")))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Emacs Lisp Support
