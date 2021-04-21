@@ -23,20 +23,28 @@
 ;;;---------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This provides the `pel-cl-repl' command.  It opens a Common Lisp REPL, or
-;; switch to one already running, using the available technology based on the
-;; user-option selection: SLY, Slime or the bare-bone inferior Lisp mode REPL.
-
-;; Credit: Drew Adams for nth-elt
-;; https://emacs.stackexchange.com/questions/10492/how-to-get-element-number-in-a-list
-
+;; Environment Agnostic Commands
+;; -----------------------------
+;;
+;; - The `pel-cl-repl' command opens a Common Lisp REPL, or switch to one
+;;   already running, using the available technology based on the user-option
+;;   selection: SLY, Slime or the bare-bone inferior Lisp mode REPL.
+;;
+;; - The `pel-cl-hyperspec-lookup' command which invokes the slime or sly
+;;   documentation lookup command depending of which is available.
+;;
 ;; Code hierarchy:
 ;;
 ;; * `pel-cl-repl'
 ;;   - `pel-switch-to-window'
 ;;     - `pel-select-buffer'
 ;;       - `pel-nth-elt'       (credit to Drew Adams for this one)
+;; * `pel-cl-hyperspec-lookup'
+;;   - `pel-symbol-at-point'
 ;;
+;;
+;; iMenu Extension
+;; ---------------
 ;;
 ;; The file also provide the `pel-cl-add-symbol-to-imenu' command.
 ;; The `pel-cl-add-symbol-to-imenu' command adds the Common Lisp symbol at
@@ -53,7 +61,11 @@
 ;; It's code hierarchy is:
 ;;
 ;; * `pel-cl-add-symbol-to-imenu'
+;;   - `pel-symbol-at-point'
 ;;   - `pel-cl-add-to-imenu'
+
+;; Credit: Drew Adams for nth-elt
+;; https://emacs.stackexchange.com/questions/10492/how-to-get-element-number-in-a-list
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -66,6 +78,9 @@
 ;;; Code:
 
 
+;; Low level utilities
+;; -------------------
+
 (defun pel-nth-elt (element elements)
   "Return zero-indexed position of ELEMENT in ELEMENTS list, or nil if absent."
   (let ((idx  0))
@@ -75,6 +90,17 @@
         (setq idx (1+ idx)))
       nil)))
 
+
+(defun pel-symbol-at-point ()
+  "Return symbol at point. Return nil if there are none."
+  (if (and (require 'thingatpt nil :noerror)
+           (fboundp 'thing-at-point))
+      (thing-at-point 'symbol :no-properties)
+    (error "Function thing-at-point not loaded!")))
+
+;; ---------------------------------------------------------------------------
+;; pel-cl-repl
+;; -----------
 
 (defun pel-select-buffer (mode)
   "Select a buffer in specified MODE.
@@ -193,6 +219,39 @@ The behaviour of the command is affected by the optional argument N:
         (user-error "Function run-lisp is unbound"))))))
 
 ;; ---------------------------------------------------------------------------
+
+;;-pel-autoload
+(defun pel-cl-hyperspec-lookup ()
+  "Open Hyperspec documentation for symbol at point.
+Use the Slime, SLY or PEL mechanism, whatever is available."
+  (interactive)
+  (cond
+   ;;
+   ;; Use Slime
+   ((and pel-use-slime
+         (eq pel-clisp-ide 'slime))
+    (if (fboundp 'slime-documentation-lookup)
+        (slime-documentation-lookup)
+      (user-error "Function slime-documentation-lookup is unbound")))
+   ;;
+   ;; Use SLY
+   ((and pel-use-sly
+         (eq pel-clisp-ide 'sly))
+    (if (fboundp 'sly-documentation-lookup)
+        (sly-documentation-lookup)
+      (user-error "Function sly is unbound")))
+   ;;
+   ;; No IDE: implement it.
+   (t
+    (if (and (require 'hyperspec nil :no-error)
+             (fboundp 'common-lisp-hyperspec))
+        (let ((symbol (or (pel-symbol-at-point)
+                          (pel-prompt "Symbol: "
+                                      'hyperspec-search))))
+          (common-lisp-hyperspec symbol))
+      (user-error "Function common-lisp-hyperspec not available!")))))
+
+;; ---------------------------------------------------------------------------
 ;; Add Common Lisp define macro symbols to iMenu section
 ;; -----------------------------------------------------
 ;;
@@ -236,17 +295,14 @@ you could enter \"rules\".
 Then the `imenu' list will be able to show the \"rule\" and
 \"secondary\" under the \"Rules\" iMenu section."
   (interactive)
-  (if (and (require 'thingatpt nil :noerror)
-           (fboundp 'thing-at-point))
-      (let ((symbol (thing-at-point 'symbol :no-properties)))
-        (if symbol
-            (let ((title (pel-prompt (format "iMenu section for %s" symbol)
-                                     'imenu-section
-                                     :capitalize)))
-              (when title
-                (pel-cl-add-to-imenu symbol title)))
-          (user-error "No symbol at point")))
-    (error "Function thing-at-point not loaded!")))
+  (let ((symbol (pel-symbol-at-point)))
+    (if symbol
+        (let ((title (pel-prompt (format "iMenu section for %s" symbol)
+                                 'imenu-section
+                                 :capitalize)))
+          (when title
+            (pel-cl-add-to-imenu symbol title)))
+      (user-error "No symbol at point"))))
 
 ;;;---------------------------------------------------------------------------
 (provide 'pel-commonlisp)

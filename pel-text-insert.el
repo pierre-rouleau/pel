@@ -69,7 +69,7 @@ The string does not end with a newline."
                     fill-column))
          ;; adjust the comment start to required style: programming languages
          ;; that use single chars like Lisp and Erlang double up these characters
-         ;; for comments tart start at the beginning of the line. Other, like
+         ;; for comments that start at the beginning of the line. Other, like
          ;; Python or shells scripting, who use '#' don't.
          (cmt-start (or comment-prefix pel-comment-prefix comment-start))
          (len-comment-start (length cmt-start))

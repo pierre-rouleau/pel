@@ -360,6 +360,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       *pel-use-completing-read+* user-option.
     - When active the *pel-toggle-ido-ubiquitous* command is mapped to ``<f11>
       M-C``.
+  - New: *pel-cl-hyperspec-lookup* command that uses Slime, SLY or PEL's own
+    implementation of Common Lisp Hyperspec symbol lookup.  It's bound to the
+    Common Lisp specific ``<f12> ?`` key sequence.
   - New: During Ido input completion, the ``<f1>`` key opens the
     [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/completion-input.pdf][⅀Input Completion PDF]] which now describes all key bindings available for
     the Ido prompts.  the same key is available in Ivy prompts.
