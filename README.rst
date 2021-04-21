@@ -67,18 +67,14 @@ PEL comes with lots of overview and reference documentation:
 
   - Read the section on `How to install PEL`_.
 
-- `Key Bindings Documentation`_, over 95 `PDF reference sheets`_, each
-  one is about a specific editing topic or Emacs mode or package, describing all
-  related Emacs, packages, and PEL specific key bindings and commands.
-  The PDF files have lots of hyperlinks to other PEL PDF files,
-  Emacs manual documentation, external packages and articles.
+- **Over 95 PDF reference sheets** organized by topics with hyperlinks to Emacs
+  manuals, external packages, articles and other references. See:
 
-  - All of these PDF files have a large number of hyperlinks to Emacs manual,
-    Emacs Wiki, external package home on Github, MELPA and the other PDF
-    that contain relevant information.  If your browser is configured to
-    display PDF files online (like Firefox does by default) you can easily
-    browse the PDF files by accessing the raw version of these files on
-    GitHub.  See the `raw version of the PEL Key Maps PDF`_ as a starting point.
+  - the `raw version of the PEL Key Maps PDF`_ as a starting point, use a
+    browser, like Firefox, that can render these PDF so you can use the links
+    easily.
+  - See the manual sections on `Key Bindings Documentation`_, and the `PDF
+    reference sheets`_.
 
 **Credits**
 
