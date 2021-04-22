@@ -2677,6 +2677,7 @@ d-mode not added to ac-modes!"
 
   (pel-setup-major-mode lisp pel:for-lisp
     (pel-local-set-f12-M-f12 'pel:elisp-function "f")
+    (pel--install-clisp-skel pel:lisp-skel)
     ;;
     ;; TODO: Add keys for Common Lisp Skeletons
                                         ;(pel--install-clisp-skel pel:lisp-skel)
@@ -4508,6 +4509,7 @@ the ones defined from the buffer now."
 
 (when (or pel-use-lice
           pel-c-skel-with-license
+          pel-clisp-skel-with-license
           pel-elisp-skel-with-license
           pel-erlang-skel-with-license)
   (pel-ensure-package lice from: melpa)

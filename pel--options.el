@@ -1581,6 +1581,11 @@ Note: popup-switcher 2.14 has several bugs I fixed in my fork, which PEL
   :group 'pel-pkg-for-insertions
   :type 'boolean
   :safe #'booleanp)
+;; TODO: add mechanism to indicate that this package is installed when
+;;       other user-options are turned on, regardless of the value of pel-use-lice
+;;       Required to ensure that it does not get removed when pel-use-lice is nil
+;;       but it is installed anyway because of other user-options.
+;;       Property name ?:= required-by
 
 (defcustom pel-use-smart-dash nil
   "Control whether PEL activates the smart-dash package.
@@ -3597,6 +3602,71 @@ is used for `lisp-mode' buffers, otherwise the integer value specified by
   :type '(choice
           (const   :tag "Use the default fill-column value." nil)
           (integer :tag "Use a value specific for lisp-mode buffers:")))
+
+(defcustom pel-clisp-emacs-filevar-line nil
+  "Identifies the Emacs File Variable setting string for top of files.
+If this string is specified, it is placed on the very first line of
+Common Lisp source code files when the PEL skeleton is used.
+The string is placed between the two -*- tags."
+  :group 'pel-clisp-code-style
+  :type '(choice
+          (const :tag "No file variable file." nil)
+          (string :tag "Use specified string.")))
+
+(defcustom pel-clisp-skel-package-name 'extract-from-file-name
+  "Specifies whether a package name ownership note is inserted.
+If you want to insert one, it can either be extracted from the file name (in
+this case it's the first word of the file name, fully up-cased) or can be
+specified as a string."
+  :group 'pel-clisp-code-style
+  :type '(choice
+          (const :tag "No, don't add package ownership note." nil)
+          (const :tag "Add package ownership note extracted from file name."
+                 extract-from-file-name)
+          (string :tag "Use this specified string.")))
+
+(defcustom pel-clisp-skel-use-separators t
+  "Specifies whether Common Lisp code block include separators line.
+If nil no separator line comment is used, otherwise separator line
+comments of length controlled by variable `fill-column' are inserted."
+  :group 'pel-clisp-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-clisp-skel-insert-file-timestamp nil
+  "Set whether a timestamp is inserted inside Common Lisp file header block."
+  :group 'pel-clisp-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-clisp-skel-with-license nil
+  "Control whether a license text is inserted in Common Lisp file header.
+
+When either license-line or license-text, open source license
+information is inserted in the generated file header skeletons.
+
+If license-line is selected a prompt asks for the license type
+name and the name is placed on the line.
+
+If license-text is selected the complete license text is inserted
+in the file.  This also activates the `pel-use-lice' if it is not
+activated already.
+
+The text of the inserted license is selected by the `lice:default-license'
+user option, normally configured inside the directory's '.dir-locals.el'
+file written inside the global setting like this:
+
+   ((nil   .      ((fill-column . 80)
+                   (lice:default-license  . \"gpl-3.0\")
+                   (lice:copyright-holder . \"Your Name\")))
+
+Replace the gpl-3.0 with the license you want and write your name inside
+the copyright holder value."
+  :group 'pel-clisp-code-style
+  :type '(choice
+          (const :tag "No licence mention." nil)
+          (const :tag "Just a licence line." license-line)
+          (const :tag "With license text."   license-text)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Emacs Lisp Support

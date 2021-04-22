@@ -543,6 +543,9 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload-function "pel-skels-c" for:
     pel--install-c-skel)
 
+  (pel-autoload-function "pel-skels-clisp" for:
+    pel--install-clisp-skel)
+
   (pel-autoload-function "pel-skels-elisp" for:
     pel--install-elisp-skel)
 

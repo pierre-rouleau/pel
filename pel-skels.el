@@ -81,7 +81,7 @@ Return a UTC Date Time if UTC is non-nil."
      (format-time-string "%F")))
 
 ;;-pel-autoload
-(defun pel-time-stamp (&optional event user-text utc)
+(defun pel-time-stamp (&optional event user-text utc spacing)
   "Return a YYYY-MM-DD HH:MM:SS Emacs compliant time stamp.
 The EVENT (if any) is capitalized and placed before the time stamp.
 Use UTC format when UTC is non-nil.
@@ -89,8 +89,9 @@ Set USER-TEXT to the a descriptive string like \"by \") to
 add that text followed by the full user name.
 This time stamp will be updated automatically by Emacs on file save
 when `pel-update-time-stamp' is non-nil."
-  (format "%sTime-stamp: <%s%s>"
+  (format "%sTime-stamp%s: <%s%s>"
           (if event (capitalize event) "")
+          (or spacing "")
           (if utc
               (format-time-string "%F %T (UTC)" nil t)
             (format-time-string "%F %T"))
@@ -100,14 +101,14 @@ when `pel-update-time-stamp' is non-nil."
                       (user-full-name))
             "")))
 
-(defun pel-skel-time-stamp (condition &optional comment-prefix event)
+(defun pel-skel-time-stamp (condition &optional comment-prefix event utc spacing)
   "Return a time stamp string if CONDITION is non-nil.
 The string starts with `comment-start' unless COMMENT-PREFIX is specified,
 in which case that is used."
   (when condition
     (format "%s %s\n"
             (or comment-prefix comment-start)
-            (pel-time-stamp event "by "))))
+            (pel-time-stamp event "by " utc spacing))))
 
 ;; --
 ;; Purpose
@@ -164,9 +165,9 @@ case that is used.  This can be useful for documentation systems such as
 Erlang's Edoc, where \"@author\" can be specified.
 The author's name follows along with it's email address.
 The returned string ends with a newline."
-  (let ((auth-word (or author-word "Author    :"))
+  (let ((auth-word (or author-word "Author    "))
         (auth-comment (or comment-prefix comment-start)))
-    (format "%s%s %s %s <%s>\n"
+    (format "%s%s %s: %s <%s>\n"
             (if (or on-this-line
                     (pel-line-has-only-whitespace-p)) "" "\n")
             auth-comment
@@ -178,15 +179,17 @@ The returned string ends with a newline."
 ;; Created
 
 ;;-pel-autoload
-(defun pel-skel-created-comment (&optional comment-prefix on-this-line)
+(defun pel-skel-created-comment (&optional comment-prefix on-this-line title)
   "Return a \"Created timestamp\" line string.
 The line starts with `comment-start' unless COMMENT-PREFIX is specified,
 in which case that is used.
+It starts on a new line unless ON-THIS-LINE is non-nil.
 The returned string ends with a newline."
-  (format "%s%s Created   : %s\n"
+  (format "%s%s %s: %s\n"
           (if (or on-this-line
                   (pel-line-has-only-whitespace-p)) "" "\n")
           (or comment-prefix comment-start)
+          (or title "Created   ")
           (format-time-string "%A, %B %e %Y.")))
 
 
