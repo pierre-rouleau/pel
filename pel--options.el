@@ -630,11 +630,22 @@ completion mechanism that is preferred by many people."
   :link '(url-link :tag "Introduction to Ido Mode @ Mastering Emacs"
                    "https://www.masteringemacs.org/article\
 /introduction-to-ido-mode")
+  :link '(url-link :tag "Interactively Do things @ EmacsWiki"
+                   "https://www.emacswiki.org/emacs/InteractivelyDoThings")
   :link '(custom-group-link "ido")
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
 (put 'pel-use-ido :package-is :builtin-emacs)
+
+(defcustom pel-use-idomenu nil
+  "Control  whether PEL uses the idomenu package."
+  :link '(url-link :tag "idomenu @ Github"
+                   "https://github.com/birkenfeld/idomenu")
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+(put 'pel-use-idomenu :requires 'pel-use-ido)
 
 (defcustom pel-use-smex nil
   "Control whether PEL uses the smex package.
@@ -649,6 +660,7 @@ To use this you must also have `pel-use-ido' set to t."
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-smex :requires 'pel-use-ido)
 
 (defcustom pel-use-ido-grid-mode nil
   "Control whether PEL uses the ido-grid-mode package.
@@ -663,6 +675,8 @@ The initial Ido geometry is set by `pel-initial-ido-geometry'."
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-ido-grid-mode :requires 'pel-use-ido)
+
 
 (defcustom pel-use-ido-vertical-mode nil
   "Control whether PEL uses the ido-vertical-mode package.
@@ -677,6 +691,7 @@ The initial Ido geometry is set by `pel-initial-ido-geometry'."
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
+(put 'pel-use-ido-vertical-mode :requires 'pel-use-ido)
 
 (defcustom pel-use-ido-ubiquitous nil
   "Control whether the ido-completing-read+ package is used.
@@ -702,6 +717,7 @@ To activate this you must also activate `pel-use-ido'."
           (const :tag "Use, activate globally when Emacs starts"
                  use-from-start)))
 (put 'pel-use-ido-ubiquitous :package-is 'ido-completing-read+)
+(put 'pel-use-ido-ubiquitous :requires 'pel-use-ido)
 
 (defcustom pel-use-flx nil
   "Control whether PEL uses the flx matching package.
@@ -721,6 +737,9 @@ To use this you must also have `pel-use-ido' or `pel-use-ivy' set to t."
           (const :tag "Use, activate globally when Emacs starts"
                  use-from-start)))
 (put 'pel-use-flx :package-is 'flx-ido)
+(put 'pel-use-flx :requires   '(pel-use-ido pel-use-ivy))
+
+;; --
 
 (defcustom pel-use-ivy nil
   "Control whether PEL uses the Ivy package.

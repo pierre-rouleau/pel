@@ -1378,6 +1378,10 @@ can't bind negative-argument to C-_ and M-_"
     ;; Add a binding to access the command in terminal mode
     (define-key ido-buffer-completion-map (kbd "<f12>b") 'ido-bury-buffer-at-head))
 
+  (when pel-use-idomenu
+    (pel-ensure-package idomenu from: melpa)
+    )
+
   (when pel-use-ido-ubiquitous
     (pel-ensure-package ido-completing-read+ from: melpa)
     ;; add autoloading control for it.  The actual loading is controlled

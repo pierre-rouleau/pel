@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2021-04-07 21:41:34, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-23 11:59:52, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -231,10 +231,10 @@ nil, then ido is still used."
     (call-interactively (function imenu)))
    ;;
    ((eq pel--goto-symbol-UI 'ido)
-    (if pel-use-ido-ubiquitous
-        ;; call imenu interactively so it can prompt user
-        (call-interactively (function imenu))
-      (user-error "Please turn pel-use-ido-ubiquitous on first!")))
+    (if (and pel-use-idomenu
+             (fboundp 'idomenu))
+        (idomenu)
+      (user-error "idomenu is not available!")))
    ;;
    ((eq pel--goto-symbol-UI 'ivy)
     (if (and pel-use-counsel
@@ -251,12 +251,18 @@ nil, then ido is still used."
    ((eq pel--goto-symbol-UI 'popup-imenu)
     (if (and pel-use-popup-imenu
              (fboundp 'popup-imenu))
+        ;; TODO: this external package seems to only work once
+        ;;       investigate and fix it
         (popup-imenu)
       (user-error "popup-imenu is not available!")))
    ;;
    ((eq pel--goto-symbol-UI 'popup-switcher)
     (if (and pel-use-popup-switcher
              (fboundp 'psw-switch-function))
+        ;; TODO: this external package has 2 major bugs:
+        ;;        1) it fails to detect the target after the first use
+        ;;        2) it leaks highlighting when flex was used.
+        ;;        Fix it.
         (psw-switch-function)
       (user-error "psw-switch-function is not available!")))
    ;;
@@ -415,17 +421,11 @@ to the current buffer."
   "Display current settings used by the goto symbol commands."
   (interactive)
   (message "\
-pel-goto-symbol            UI is: %s%s
+pel-goto-symbol            UI is: %s
 pel-goto-symbol-any-buffer UI is: %s%s
 - iMenu lists are %s.%s%s
 - Semantic mode is: %s"
            (pel--goto-symbol-ui-name)
-           (pel-string-for
-            (when (and (eq 'ido pel--goto-symbol-UI)
-                       (not pel--use-ido-ubiquitous))
-              (concat ", but: "
-                      (propertize "WARNING: Ido Ubiquitous is off!" 'face 'bold)
-                      " Turn it on to use Ido for this. Use M-g <f4> M-u.")))
            (pel--goto-any-buffer-ui-name)
            (pel-string-for
             (when (boundp 'imenu-use-popup-menu)
