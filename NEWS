@@ -323,7 +323,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       ``indent-tabs-mode`` variable.
 - Update: *iMenu support*:
   - New: add support for the *imenu+* external package.  Activate by setting
-    *pel-use-imenu+* user-option to *t*.
+    *pel-use-imenu+* user-option to *t*.  This activates the execution of
+    the *imenup-add-defs-to-menubar* function to enhance the content of the MenuBar
+    imenu index entry.  It is activated on file entry and has a 'DEFS' index
+    menu entry with the `imenu+' extra features activated: toggle of menu
+    entry sorting, ability to index commented definitions, several types in
+    various file types.
   - New: add support for the *imenu-extra* external package.  Make it available by
     setting the *pel-use-imenu-extra* user-option to *t*.
   - New: add *pel-imenu-rescan*, bound to ``<f11> <f10> r``.

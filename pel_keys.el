@@ -1223,7 +1223,11 @@ can't bind negative-argument to C-_ and M-_"
 (when pel-use-imenu+
   (cl-eval-when 'load
     (pel-install-github-file "emacsmirror/emacswiki.org/master"
-                             "imenu+.el" "imenu%2B.el")))
+                             "imenu+.el" "imenu%2B.el"))
+  (pel-autoload-file imenu+ for:
+                     imenup-add-defs-to-menubar)
+  (when (fboundp 'imenup-add-defs-to-menubar)
+    (add-hook 'prog-mode-hook 'imenup-add-defs-to-menubar)))
 
 ;; Although imenu-extra is available through MELPA, that package just provide
 ;; tools that may be used by other PEL code to incorporate symbol generated
@@ -1379,8 +1383,7 @@ can't bind negative-argument to C-_ and M-_"
     (define-key ido-buffer-completion-map (kbd "<f12>b") 'ido-bury-buffer-at-head))
 
   (when pel-use-idomenu
-    (pel-ensure-package idomenu from: melpa)
-    )
+    (pel-ensure-package idomenu from: melpa))
 
   (when pel-use-ido-ubiquitous
     (pel-ensure-package ido-completing-read+ from: melpa)
@@ -3166,14 +3169,16 @@ d-mode not added to ac-modes!"
   (pel-setq org-todo-keywords
             (quote ((sequence "TODO" "IN-PROGRESS" "DONE"))))
 
-
   (pel-setup-major-mode org :no-f12-keys
     ;; Use the cleaner outline view mode.
     (if (fboundp 'org-indent-mode)
         (org-indent-mode 1)
       (display-warning 'pel-use-org-mode
                        "Unbound org-indent-mode"
-                       :error))))
+                       :error))
+    (when (and pel-use-imenu+
+               (fboundp 'imenup-add-defs-to-menubar))
+      (imenup-add-defs-to-menubar))))
 
 ;; ---------------------------------------------------------------------------
 ;; YAML Support
@@ -3242,7 +3247,10 @@ d-mode not added to ac-modes!"
 
   (pel-setup-major-mode rst pel:for-reST
     (setq tab-width    pel-rst-tab-width)
-    (pel--install-rst-skel pel:rst-skel)))
+    (pel--install-rst-skel pel:rst-skel)
+    (when (and pel-use-imenu+
+               (fboundp 'imenup-add-defs-to-menubar))
+      (imenup-add-defs-to-menubar))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-g`` : Graphviz Dot
