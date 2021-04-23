@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2021-04-23 11:59:52, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-23 15:01:49, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -424,7 +424,8 @@ to the current buffer."
 pel-goto-symbol            UI is: %s
 pel-goto-symbol-any-buffer UI is: %s%s
 - iMenu lists are %s.%s%s
-- Semantic mode is: %s"
+- iMenu+ support is: %s
+- Semantic mode  is: %s"
            (pel--goto-symbol-ui-name)
            (pel--goto-any-buffer-ui-name)
            (pel-string-for
@@ -456,6 +457,7 @@ pel-goto-symbol-any-buffer UI is: %s%s
                       (pel-string-when
                        psw-use-flx
                        "\n  - supports 'flx' fuzzy engine."))))
+           (pel-symbol-on-off-string 'pel-use-imenu+ "on, which impacts all Ido-based prompts" nil "off")
            (pel-symbol-on-off-string 'semantic-mode nil nil "not loaded")))
 
 ;;; --------------------------------------------------------------------------
