@@ -146,6 +146,18 @@
 ;;
 ;; They are described below.
 
+;; `:also-required-when'
+;; --------------------
+;;
+;; The `:also-required-when' property indicates that the package controlled
+;; by the `pel-use-' user-option is also activated by something else.  The
+;; condition that also activates it is identified by the quoted form that is
+;; used as the value for this property.  Any valid form can be used.
+;; As an example, look at the `pel-use-lice' user-option: the lice package is
+;; installed when `pel-use-lice' is non-nil but also when one of the
+;; programming language skels requires the use of code license.
+;;
+
 ;; `:requires'
 ;; ----------
 ;;
@@ -1581,11 +1593,10 @@ Note: popup-switcher 2.14 has several bugs I fixed in my fork, which PEL
   :group 'pel-pkg-for-insertions
   :type 'boolean
   :safe #'booleanp)
-;; TODO: add mechanism to indicate that this package is installed when
-;;       other user-options are turned on, regardless of the value of pel-use-lice
-;;       Required to ensure that it does not get removed when pel-use-lice is nil
-;;       but it is installed anyway because of other user-options.
-;;       Property name ?:= required-by
+(put 'pel-use-lice :also-required-when '(or pel-c-skel-with-license
+                                            pel-clisp-skel-with-license
+                                            pel-elisp-skel-with-license
+                                            pel-erlang-skel-with-license))
 
 (defcustom pel-use-smart-dash nil
   "Control whether PEL activates the smart-dash package.

@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-31 15:10:17, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-23 10:23:18, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -37,16 +37,16 @@
 ;;  located in the Emacs elpa directory and in the PEL utils directory.  It
 ;;  gets this information by processing the properties of each `pel-use-'
 ;;  user-option variables that are non-nil.  For each of them it calls the
-;;  function `pel-packages-for'.  The function returns nil if nothing is
-;;  expected to be present, otherwise it returns a list of (type . package)
+;;  function `pel-packages-for'.  That function returns nil if nothing is
+;;  expected to be available, otherwise it returns a list of (type . package)
 ;;  cons cells where type is either 'elpa or 'utils and package is a symbol
 ;;  that holds the name of the elpa package or the utils .el file name.  By
 ;;  doing this for all `pel-use-' user option we accumulate the list of
-;;  expected packages.  Then  by looking into the directories we can remove or
-;;  disable the exceeding package (by moving the package into an *attic*
-;;  directory). For elpa package the package name is removed-files from the
-;;  `package-selected-packages' variable and the active customization file is
-;;  updated.
+;;  packages that should be available.  Then by looking into the directories
+;;  we can remove or disable the exceeding package (by moving the package into
+;;  an *attic* directory). For elpa package the package name is removed-files
+;;  from the `package-selected-packages' variable and the active customization
+;;  file is updated.
 ;;
 ;;  Removing packages that are not used improves Emacs speed: it reduces the
 ;;  length of the load path that tends to grow rapidly with new packages
@@ -120,6 +120,7 @@
 ;;             - `pel-package-for'
 ;;               - `pel--assert-valid-user-option'
 ;;                 - `pel-user-option-p'
+;;               - `pel-package-also-required-p'
 ;;               - `pel-restricted-active-user-option-p'
 ;;                 - `pel--assert-valid-user-option'
 ;;                   - `pel-user-option-p'
@@ -285,6 +286,14 @@ terminal mode, such a package is identified as active to prevent the
       (error "Invalid PEL package spec for %s: %S" symbol
              attribute-value)))))
 
+(defun pel-package-also-required-p (symbol)
+  "Return non-nil if `pel-use-' SYMBOL has true :also-required-when property.
+Return nil otherwise."
+  (pel--assert-valid-user-option symbol)
+  (let ((boolean-form (get symbol :also-required-when)))
+    (when boolean-form
+      (eval boolean-form))))
+
 (defun pel-package-for (symbol &optional ignore-restriction)
   "Return package info for specified PEL user-option SYMBOL.
 SYMBOL must be a `pel-use-' user-option symbol.
@@ -297,14 +306,15 @@ because of imposed restriction unless IGNORE-RESTRICTION is
 non-nil.
 
 Returns nil when:
-- the user-option is not requesting anything to be installed
-  - when the user-option is off
+- the user-option is not requesting anything to be installed:
+  - when the user-option is off and nothing else force its installation
   - when the user option request to use a built-in package."
   (pel--assert-valid-user-option symbol)
   ;; Package for the symbol is active when the pel-use- user-option is non-nil
   ;; or when the symbol is for a restricted package and the restriction
   ;; applies and is not ignored.
   (when (or (symbol-value symbol)
+            (pel-package-also-required-p symbol)
             (and (not ignore-restriction)
                  (pel-restricted-active-user-option-p symbol)))
     (let ((specs (pel-spec-for-symbol-attribute
@@ -376,9 +386,9 @@ some PEL user-options have been turned off."
               (when spec
                 (push spec pkg-spec-list))))
         (setq a-parent-is-disabled t)))
-    ;; If there is no required parents, or
-    ;; all parents are require and are all enabled, or
-    ;; one of several parent is required and one is enabled
+    ;; If - there is no required parents, or
+    ;;    - all parents are require and are all enabled, or
+    ;;    - one of several parent is required and one is enabled, or
     ;; then the package corresponding to the SYMBOL is installed.
     ;; TODO: does not handle more complex situations like: (A and B) are both
     ;; needed or (C and D) or E.
