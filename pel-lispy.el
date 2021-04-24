@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, September 14 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-20 10:05:19, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-24 18:05:06, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -22,27 +22,35 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; ----------------------------------------------------------------------------
+;;;---------------------------------------------------------------------------
 ;;; Commentary:
 ;;
+;; This file provides PEL-specific logic to load Lispy in a way that supports
+;; PEL's delayed loading of Hydras and the single prefix keys for PEL Hydras:
+;; the F7 key.
+;;
 ;; PEL Hydras all use the same prefix key: the F7 key.
-;; PEL does not identify F7 as a prefix key until Hydra is loaded.
-;; The hydra package is loaded on demand, only when a key requests it.  That key
-;; is also set to F7.  At first F7 is bound to `pel--load-hydra'.  The role of
-;; that function is to load hydra, which creates new key bindings that use F7 as
-;; a prefix key, then simulate a new F7 key event to simulate the wanted f7
-;; prefix as if it was always available and then destroys the `pel--load-hydra'
-;; function to prevent it from interfering with the binding.
+;; However, PEL does not identify F7 as a prefix key until Hydra is loaded.
 ;;
-;; This works fine as long as no external package attempts to load hydra before
-;; the above `pel--load-hydra' had a chance to run.
+;; The hydra package is loaded on demand, only when a key requests it.  That
+;; key is also set to F7.  At first F7 is bound to `pel--load-hydra'.  The
+;; role of that function is to load hydra, which creates new key bindings that
+;; use F7 as a prefix key, then simulate a new F7 key event to simulate the
+;; wanted f7 prefix as if it was always available and then destroys the
+;; `pel--load-hydra' function to prevent it from interfering with the binding.
 ;;
-;; This pel-lispy module exists solely to handle this problem since lispy loads
-;; hydra. All it does is run `pel--load-hydra' if it is still available and then
-;; load lispy. This prevents the generation of a warning that would have shown
-;; up otherwise.
+;; This works fine as long as no external package attempts to load hydra
+;; before the above `pel--load-hydra' had a chance to run.
+;;
+;; This pel-lispy module exists solely to handle this problem since lispy
+;; loads hydra. All it does is run `pel--load-hydra' if it is still available
+;; and then load lispy. This prevents the generation of a warning that would
+;; have shown up otherwise.
+;;
+;; Lispy supports multiple programming languages in the Lisp family as well as
+;; Python. The logic here supports these languages as well.
 
-;; -----------------------------------------------------------------------------
+;;;---------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 ;; The function `pel--load-hydra' is defined in pel_keys.el, which has been
@@ -65,7 +73,7 @@
 (require 'pel--base)
 (require 'pel--options)
 
-;;; ----------------------------------------------------------------------------
+;;;---------------------------------------------------------------------------
 ;;; Code:
 ;;
 
@@ -89,6 +97,26 @@ Return t when lispy is loaded, nil otherwise"
   (pel-ensure-package lispy from: melpa)
   (require 'lispy nil :no-error))
 
+(defun pel-set-lispy-mode-to (new-value)
+  "Activate Lispy and any extra language support if needed.
+NEW-VALUE is either 1, to activate or -1, to de-activate"
+  (if (fboundp 'lispy-mode)
+      (progn
+        ;; activate/deactivate lispy
+        (lispy-mode new-value)
+        ;; activate extra language support if needed by current major mode
+        (when (and (eq new-value 1)
+                   (memq major-mode '(lisp-mode
+                                      clojure-mode
+                                      python-mode
+                                      racket-mode
+                                      scheme-mode
+                                      julia-mode
+                                      hy-mode)))
+          (let ((mode-name (substring (symbol-name major-mode) 0 -5)))
+            (require (intern (format "le-%s" mode-name)) nil :no-error))))
+    (error "Function lispy-mode is void!")))
+
 (defun pel-lispy-mode ()
   "Activate or toggle lispy mode.
 This PEL function acts as a proxy to the real function
@@ -101,17 +129,18 @@ This PEL function acts as a proxy to the real function
       ;; then activate it
       (if (and (pel--get-hydra-and-lispy)
                (fboundp 'lispy-mode))
-          (lispy-mode 1)
-        (error "Failed to activate Lispy, was Hydra removed? Try again or restart Emacs."))
+          (pel-set-lispy-mode-to 1)
+        (error "Failed to activate Lispy, was Hydra removed?
+Try again or restart Emacs."))
     ;; lispy is already loaded.
     ;; It might never have been called and the variable may not
     ;; yet be bound though.
     (declare-function lispy-mode "lispy")
     (if (boundp 'lispy-mode)
         ;; if the variable is bound, toggle lispy mode
-        (lispy-mode (if lispy-mode -1 1))
+        (pel-set-lispy-mode-to (if lispy-mode -1 1))
       ;; otherwise just activate lispy mode
-      (lispy-mode 1))))
+      (pel-set-lispy-mode-to 1))))
 
 ;; lpy mode
 ;; --------
@@ -147,7 +176,7 @@ This PEL function acts as a proxy to the real function
       ;; otherwise just activate lpy mode
       (lpy-mode 1))))
 
-;;; ----------------------------------------------------------------------------
+;;;---------------------------------------------------------------------------
 (provide 'pel-lispy)
 
 ;;; pel-lispy.el ends here
