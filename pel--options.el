@@ -3413,8 +3413,14 @@ amount of time to search for a project (even with fd)."
 
 (defconst pel-allowed-modes-for-lispy
   '(emacs-lisp-mode                     ; Emacs Lisp  - Lisp 2 for Emacs
+    ielm-mode                           ;  repl := inferior-emacs-lisp-mode
     lisp-mode                           ; Common Lisp - Lisp 2
+    inferior-lisp-mode                  ;  repl
+    slime-repl-mode                     ;  repl
+    sly-mrepl-mode                      ;  repl
     lfe-mode                            ; LFE         - Lisp 2 for BEAM
+    ;; inferior-lfe-mode does not work well with lispy -
+    ;; See: https://github.com/abo-abo/lispy/issues/592
     clojure-mode                        ; Clojure     - Lisp 1 for the JVM
     scheme-mode                         ; Scheme      - Lisp 1
     racket-mode                         ; Racket      - Lisp 1, Scheme family
@@ -3424,6 +3430,8 @@ amount of time to search for a project (even with fd)."
     hy-mode)                            ; Hy          - Lisp 1 for Python
 
   "List of major modes that can use lispy.")
+;; TODO: Add the various REPL for the all the Lisp languages above: several
+;;       are missing.
 ;; If the mode you want is not listed above, please let me know: I will
 ;; add it or will accept PRs proposing it.  Thanks.
 

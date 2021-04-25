@@ -1301,8 +1301,11 @@ If another mode is included in MODES-LIST-SYMBOL a warning is issued."
                   func)
       (display-warning
        'pel-mode-hooks
-       (format "Invalid mode %s in the list %s.\n\
-Change its customized value with ``M-x customize %s``"
+       (format "Invalid mode %s in the list %s?
+Should the mode be added to the `pel-allowed-modes-for-lispy'?
+If this mode should be allowed please report the issue.
+For now change its customized value with ``M-x customize %s``
+and activate the mode manually with M-x lispy-mode."
                mode
                modes-list-symbol
                modes-list-symbol)
