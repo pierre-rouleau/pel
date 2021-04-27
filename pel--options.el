@@ -2209,6 +2209,39 @@ Do not enter lambda expressions."
 (put 'pel-use-flycheck-plantuml :requires 'pel-use-plantuml)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; markdown support
+;; ----------------
+(defgroup pel-pkg-for-markdown nil
+  "PEL markdown support."
+  :group 'pel-pkg-for-markup
+  :link `(url-link :tag "markdown PDF" ,(pel-pdf-file-url "mode-markdown")))
+
+(defcustom pel-use-markdown nil
+  "Control whether PEL activates markdown markup support."
+  :group 'pel-pkg-for-markdown
+  :type 'boolean
+  :safe #'booleanp)
+(put 'pel-use-markdown :package-is :a-gate)
+
+(defcustom pel-use-markdown-mode nil
+  "Control whether PEL uses the markdown-mode external package.
+The `pel-use-markdown' user-option must also be turned on to
+activate this package."
+  :group 'pel-pkg-for-markdown
+  :type 'boolean
+  :safe #'booleanp)
+(put 'pel-use-markdown-mode :requires 'pel-use-markdown)
+
+;; (defcustom pel-use-markdown-mode+ nil
+;;   "Control whether PEL uses the markdown-mode+ external package.
+;; The `pel-use-markdown' user-option must also be turned on to
+;; activate this package."
+;;   :group 'pel-pkg-for-markdown
+;;   :type 'boolean
+;;   :safe #'booleanp)
+;; (put 'pel-use-markdown-mode :requires 'pel-use-markdown)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; reStructuredText support
 ;; ------------------------
 (defgroup pel-pkg-for-reST nil
@@ -4923,6 +4956,7 @@ Requires the user-option variable `pel-use-rust' to be on (t)."
   :type 'boolean
   :safe #'booleanp)
 (put 'pel-use-cargo :requires 'pel-use-rust)
+(put 'pel-use-cargo :requires-package 'pel-use-markdown-mode)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; V Language Support

@@ -2671,6 +2671,7 @@ d-mode not added to ac-modes!"
 
   (define-pel-global-prefix pel:for-lisp (kbd "<f11> SPC L"))
   (define-pel-global-prefix pel:lisp-skel (kbd "<f11> SPC L <f12>"))
+  ;; (define-pel-global-prefix pel:for-lisp-repl (kbd "<f11> SPC z L")) Future <f12> key right inside the REPL.
   (pel--lisp-languages-map-for pel:for-lisp)
   (when pel-use-plantuml
     (define-key pel:for-lisp "u" 'pel-render-commented-plantuml))
@@ -3190,6 +3191,12 @@ d-mode not added to ac-modes!"
   (pel-set-auto-mode yaml-mode for: "\\.yml\\'")
 
   (pel-setup-major-mode yaml :no-f12-keys))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-m`` : Markdown
+(when pel-use-markdown
+  (when pel-use-markdown-mode
+    (pel-ensure-package markdown-mode from: melpa)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-r`` : reSTucturedText
