@@ -2261,12 +2261,6 @@ Do not enter lambda expressions."
   :safe #'booleanp)
 (pel-put 'pel-use-markdown :package-is :a-gate)
 
-(defmacro isa-defcustom (symbol)
-  "Test detection of defcustom by a macro."
-  (if (custom-variable-p symbol)
-      `(format "%s IS a defcustom" ,symbol)
-    `(format "%s is NOT a defcustom" ,symbol)))
-
 (defcustom pel-use-markdown-mode nil
   "Control whether PEL activates the markdown-mode external package.
 The `pel-use-markdown' user-option must also be turned on to
