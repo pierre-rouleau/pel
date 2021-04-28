@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-04-28 09:48:04, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-04-28 14:48:13, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -221,7 +221,9 @@ OTHER_EL_FILES := pel_keys.el pel-pkg.el pel-autoloads.el
 OTHER_FILES := README
 
 # Emacs Regression Test files that uses ert, to test and include in tar file.
-TEST_FILES := pel-file-test.el pel-text-transform-test.el
+# TODO: there is no rule yet to generate tests from $(TEST_FILES), they have to be
+#       added explicitly in the :test rules.
+TEST_FILES := pel-file-test.el pel-text-transform-test.el pel-package-test.el
 
 # Documentation PDF files to copy verbatim into the doc/pdfs
 PDF_FILES := -legend.pdf                        \
@@ -634,11 +636,13 @@ pel_keys.elc: pel_keys.el
 #
 # PEL uses the ERT package to run tests.
 
+
 .PHONY: test
 test:
 	@printf "***** Running Integration tests\n"
 	$(EMACS) --batch -L . -l ert -l test/pel-base-tests.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
+	$(EMACS) --batch -L . -l ert -l test/pel-package-test.el -f ert-run-tests-batch-and-exit
 
 # ----------------------------------------------------------------------------
 # Target to control file linting with the elisp-lint package.

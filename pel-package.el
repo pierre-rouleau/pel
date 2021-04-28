@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-28 11:58:16, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-28 14:10:47, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -398,8 +398,9 @@ some PEL user-options have been turned off."
                 (push spec pkg-spec-list))))
         (setq a-parent-is-disabled t)))
     ;; If - there is no required parents, or
-    ;;    - all parents are require and are all enabled, or
+    ;;    - all parents are required and are all enabled, or
     ;;    - one of several parent is required and one is enabled, or
+    ;;    - the package is also required by another package that is enabled,
     ;; then the package corresponding to the SYMBOL is installed.
     ;; TODO: does not handle more complex situations like: (A and B) are both
     ;; needed or (C and D) or E.
@@ -407,7 +408,8 @@ some PEL user-options have been turned off."
               (and requires-all-parents
                    (not a-parent-is-disabled))
               (and (not requires-all-parents)
-                   a-parent-is-enabled))
+                   a-parent-is-enabled)
+              (pel-package-also-required-p symbol))
       (dolist (spec (pel-package-for symbol ignore-restriction))
         (when spec
           (push spec pkg-spec-list))))
