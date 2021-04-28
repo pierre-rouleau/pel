@@ -2268,23 +2268,82 @@ Do not enter lambda expressions."
     `(format "%s is NOT a defcustom" ,symbol)))
 
 (defcustom pel-use-markdown-mode nil
-  "Control whether PEL uses the markdown-mode external package.
+  "Control whether PEL activates the markdown-mode external package.
 The `pel-use-markdown' user-option must also be turned on to
 activate this package."
+  :link '(url-link "markdown-mode @ Github"
+                   "https://jblevins.org/projects/markdown-mode/")
   :group 'pel-pkg-for-markdown
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-markdown-mode :requires 'pel-use-markdown)
 (pel-put 'pel-use-markdown-mode :also-required-when 'pel-use-cargo)
 
-;; (defcustom pel-use-markdown-mode+ nil
-;;   "Control whether PEL uses the markdown-mode+ external package.
-;; The `pel-use-markdown' user-option must also be turned on to
-;; activate this package."
-;;   :group 'pel-pkg-for-markdown
-;;   :type 'boolean
-;;   :safe #'booleanp)
-;; (pel-put 'pel-use-markdown-mode :requires 'pel-use-markdown)
+(defcustom pel-use-markdown-mode+ nil
+  "Control whether PEL activates the markdown-mode+ external package.
+The `pel-use-markdown' user-option must also be turned on to
+activate this package."
+  :link '(url-link "markdown-mode+ @ Github"
+                   "http://github.com/milkypostman/markdown-mode-plus")
+  :group 'pel-pkg-for-markdown
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-markdown-mode :requires 'pel-use-markdown)
+
+(defcustom pel-use-impatient-showdown nil
+  "Control whether PEL activates the impatient-showdown package.
+The `pel-use-markdown' user-option must also be turned on to
+activate this package."
+  :link '(url-link :tag "impatient-showdown @ GitHub"
+                   "https://github.com/jcs-elpa/impatient-showdown")
+  :group 'pel-pkg-for-markdown
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-impatient-showdown :requires 'pel-use-markdown)
+
+(defcustom pel-use-markdown-preview-eww nil
+  "Control whether PEL activates the markdown-preview-eww package.
+The `pel-use-markdown' user-option must also be turned on to
+activate this package."
+  :link '(url-link :tag "markdown-preview-eww @ GitHub"
+                   "https://github.com/niku/markdown-preview-eww")
+  :group 'pel-pkg-for-markdown
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-markdown-preview-eww :requires 'pel-use-markdown)
+
+(defcustom pel-use-markdown-preview-mode nil
+  "Control whether PEL activates the markdown-preview-mode package.
+The `pel-use-markdown' user-option must also be turned on to
+activate this package."
+  :link '(url-link :tag "markdown-preview-mode @ GitHub"
+                   "https://github.com/ancane/markdown-preview-mode")
+  :group 'pel-pkg-for-markdown
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-markdown-preview-mode :requires 'pel-use-markdown)
+
+(defcustom pel-use-markdown-toc nil
+  "Control whether PEL activates the markdown-toc package.
+The `pel-use-markdown' user-option must also be turned on to
+activate this package."
+  :link '(url-link :tag "markdown-toc @ GitHub"
+                   "http://github.com/ardumont/markdown-toc")
+  :group 'pel-pkg-for-markdown
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-markdown-toc :requires 'pel-use-markdown)
+
+(defcustom pel-use-vmd-mode nil
+  "Control whether PEL activates the vmd-mode package.
+The `pel-use-markdown' user-option must also be turned on to
+activate this package."
+  :link '(url-link :tag "vmd-mode @ GitHub"
+                   "https://github.com/blak3mill3r/vmd-mode")
+  :group 'pel-pkg-for-markdown
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-vmd-mode :requires 'pel-use-markdown)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; reStructuredText support

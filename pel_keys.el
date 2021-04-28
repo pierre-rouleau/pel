@@ -3196,7 +3196,19 @@ d-mode not added to ac-modes!"
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-m`` : Markdown
 (when pel-use-markdown
   (when pel-use-markdown-mode
-    (pel-ensure-package markdown-mode from: melpa)))
+    (pel-ensure-package markdown-mode from: melpa))
+  (when pel-use-markdown-mode+
+    (pel-ensure-package markdown-mode+ from: melpa))
+  (when pel-use-impatient-showdown
+    (pel-ensure-package impatient-showdown from: melpa))
+  (when pel-use-markdown-preview-eww
+    (pel-ensure-package markdown-preview-eww from: melpa))
+  (when pel-use-markdown-preview-mode
+    (pel-ensure-package markdown-preview-mode from: melpa))
+  (when pel-use-markdown-toc
+    (pel-ensure-package markdown-toc from: melpa))
+  (when pel-use-vmd-mode
+    (pel-ensure-package vmd-mode from: melpa)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-r`` : reSTucturedText
