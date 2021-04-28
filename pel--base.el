@@ -40,6 +40,9 @@
 ;; Emacs Lisp Development support:
 ;; - `pel-add-dir-to-loadpath'
 ;;
+;; Base predicates:
+;; - `pel-expression-p'
+;;
 ;; Check for Zero:
 ;;  - `pel-!0'
 ;;
@@ -349,6 +352,25 @@ Return non-nil if it was added, nil otherwise."
                  "added.")))
     (= new-length original-length)))
 
+
+;; ---------------------------------------------------------------------------
+;; Base predicates
+;; ---------------
+;;
+;; I looked for the following predicate function and did not find it.
+;; If there is something like this already, let me know.
+
+(defun pel-expression-p (val)
+  "Return non-nil if VAL is an expression, nil if it is a value.
+Return nil for t and nil.
+Return t for 'some-symbols or '(some expressions), nothing else.
+Meant to be used to identify code that is quoted (for delayed
+code execution)."
+  (and (not (eq val t))
+       (not (eq val nil))
+       (or (symbolp val)
+           (consp val))))
+
 ;; ---------------------------------------------------------------------------
 ;; Check for Zero
 ;; --------------
@@ -357,7 +379,7 @@ Return non-nil if it was added, nil otherwise."
 ;; If I find something similar native in Emacs I'll use and remove this one.
 (defsubst pel-!0 (v)
   "Return nil if V is 0, t otherwise."
-  (not (equal v 0)))
+  (not (zerop v)))
 
 ;; ---------------------------------------------------------------------------
 ;; Bitwise Operations

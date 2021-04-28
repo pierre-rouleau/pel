@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, February 16 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-16 16:40:50, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-27 22:13:07, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -60,6 +60,25 @@
   (should (eq (pel-action-for -1 t)     'deactivate))
   (should (eq (pel-action-for -10 nil)  nil))
   (should (eq (pel-action-for -10 t)    'deactivate)))
+
+(ert-deftest ert-test-pel-base-expression ()
+  "Test pel-expression-p."
+  (should (eq nil (pel-expression-p nil)))
+  (should (eq nil (pel-expression-p t)))
+  (should (eq nil (pel-expression-p 't)))
+  (should (eq nil (pel-expression-p 'nil)))
+  (should (eq nil (pel-expression-p 22)))
+  (should (eq nil (pel-expression-p 22.3)))
+  (should (eq nil (pel-expression-p "22.3")))
+  (let ((some-val 3))
+    (should (eq nil (pel-expression-p some-val))))
+  ;;
+  (should (eq t (pel-expression-p 'a-symbol)))
+  (should (eq t (pel-expression-p '(+ 2 3))))
+  (let ((indirect-symbol 'a-symbol)
+        (indirect-expr   '(* 3 4)))
+    (should (eq t   (pel-expression-p indirect-symbol)))
+    (should (eq t   (pel-expression-p indirect-expr)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-base-tests)
