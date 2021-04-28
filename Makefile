@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-04-28 14:48:13, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-04-28 16:25:11, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -626,6 +626,7 @@ pel_keys.elc: pel_keys.el
 	@printf "***** Running Integration tests\n"
 	$(EMACS) --batch -L . -l ert -l test/pel-base-tests.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
+	$(EMACS) --batch -L . -l ert -l test/pel-package-test.el -f ert-run-tests-batch-and-exit
 
 # NOTE: make sure the tests above are the same as the test target below!
 #             It's done this way so that if nothing has changed and `make`
