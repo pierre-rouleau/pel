@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-04-21 15:46:50, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-04-28 09:48:04, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -516,6 +516,7 @@ $(DEST_DIR)/README: $(SRC_DIR)/README
 # TODO: find a way to generate the dependency list automatically by code scanning.
 
 pel--keys-macros.elc:   pel--base.elc pel--options.elc pel-prompt.elc
+pel--options.elc:       pel--base.elc
 pel-align.elc:          pel--base.elc
 pel-applescript.elc:    pel--base.elc pel--options.elc pel-read.elc
 pel-autocomplete.elc:   pel--base.elc pel--options.elc pel--macros.elc

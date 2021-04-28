@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-23 10:23:18, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-28 11:58:16, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -206,13 +206,6 @@ You may want to put your elpa-attic directory under VCS control.")
 (defconst pel-required-packages '(popup)
   "List of package names that PEL always uses.")
 
-
-(defun pel-user-option-p (symbol)
-  "Return t when SYMBOL is a valid PEL User-option, nil otherwise."
-  (and (custom-variable-p symbol)
-       (eq t (compare-strings "pel-use-" nil nil
-                              (symbol-name symbol) 0 8))))
-
 (defun pel-user-options ()
   "Return a list of all pel-use- user-option symbols."
   (let ((symbols '()))
@@ -230,6 +223,17 @@ Return t if it is, issue an error otherwise."
     (error "Invalid argument: %S.\
   It is not a valid PEL user-option!" symbol)))
 
+(defun pel--assert-valid-expression (expr &optional context)
+  "Assert that EXPR is really a Lisp expression or symbol, not a value.
+Return t if EXPR is an expression, issue an error otherwise.
+If CONTEXT is specified, it is printed in the error message when
+EXPR is not an expression."
+  (if (pel-expression-p expr)
+      t
+    (error "Invalid expression: %S%s" expr
+           (if context
+               (format " : %s" context)
+             ""))))
 ;; --
 
 (defun pel-restricted-active-user-option-p (symbol)
@@ -252,8 +256,12 @@ terminal mode, such a package is identified as active to prevent the
 
 
 (defun pel-spec-for-symbol-attribute (symbol property
-                                              &optional no-property-is-elpa)
-  "Extract the spec list for the PROPERTY of specified SYMBOL"
+                                             &optional no-property-is-elpa)
+  "Extract the spec list for the PROPERTY of specified `pel-use-' SYMBOL.
+Returns a list of (`type' . `package-name') cons cells.
+Where:
+- `type'         := 'elpa or 'utils
+- `package-name' := a Emacs package name."
   (let ((attribute-value (get symbol property)))
     (cond
      ;; no attribute - use symbol suffix.  Standard Elpa.
@@ -287,11 +295,14 @@ terminal mode, such a package is identified as active to prevent the
              attribute-value)))))
 
 (defun pel-package-also-required-p (symbol)
-  "Return non-nil if `pel-use-' SYMBOL has true :also-required-when property.
-Return nil otherwise."
+  "Return evaluated form associated with :also-required-when property of pel-use- SYMBOL.
+Return nil otherwise.
+Raise issue if SYMBOL is not a pel-use- symbol or when the value of the
+:also-required-when property is not a form to evaluate."
   (pel--assert-valid-user-option symbol)
   (let ((boolean-form (get symbol :also-required-when)))
-    (when boolean-form
+    (when (and boolean-form
+               (pel--assert-valid-expression boolean-form "for :also-required-when"))
       (eval boolean-form))))
 
 (defun pel-package-for (symbol &optional ignore-restriction)

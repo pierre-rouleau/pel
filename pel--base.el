@@ -371,6 +371,12 @@ code execution)."
        (or (symbolp val)
            (consp val))))
 
+(defun pel-user-option-p (symbol)
+  "Return t when SYMBOL is a valid PEL User-option, nil otherwise."
+  (and (custom-variable-p symbol)
+       (eq t (compare-strings "pel-use-" nil nil
+                              (symbol-name symbol) 0 8))))
+
 ;; ---------------------------------------------------------------------------
 ;; Check for Zero
 ;; --------------
