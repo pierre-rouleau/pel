@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-19 10:19:46, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-27 17:33:51, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -528,11 +528,15 @@ There should be no key binding!" keyseq))
     ("netrexx"          . "pl-rexx")
     ("scheme"           . "pl-scheme")
     ("gerbil"           . "pl-scheme")
+    ;; repl
+    ;; ("sly"              . "repl-cl-sly")
+    ;; ("slime"            . "repl-cl-slime")
     ;; mode names aliases
     ("mercurial"        . "vcs-mercurial")
     ("lispy"            . "plm-lispy")
     ("dired"            . "mode-dired")
     ("org-mode"         . "mode-org-mode")
+    ("markdown"         . "mode-markdown")
     ("rst"              . "mode-rst")
     ;; topic related aliases, ordered by file names
     ("hippie-expand"    . "abbreviations")
