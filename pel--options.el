@@ -808,7 +808,7 @@ You must also activate the user option variable  `pel-use-ivy' to use counsel."
   :safe #'booleanp)
 ;; counsel uses the request package but does not identify it as part
 ;; of its dependencies. Therefore I add the dependency info here.
-(pel-put 'pel-use-counsel :requires-package 'request)
+(pel-put 'pel-use-counsel :requires-package '(quote ((elpa . request))))
 
 (defcustom pel-use-counsel-osx-app nil
   "Control whether `counsel-osx-app' is used when counsel is used on macOS.
@@ -2272,6 +2272,7 @@ activate this package."
   :safe #'booleanp)
 (pel-put 'pel-use-markdown-mode :requires 'pel-use-markdown)
 (pel-put 'pel-use-markdown-mode :also-required-when 'pel-use-cargo)
+(pel-put 'pel-use-markdown-mode :requires-package '(quote ((elpa . edit-indirect))))
 
 (defcustom pel-use-markdown-mode+ nil
   "Control whether PEL activates the markdown-mode+ external package.

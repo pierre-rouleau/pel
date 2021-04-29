@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, March 24 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-28 14:49:54, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-29 12:38:09, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -192,7 +192,8 @@
              nil))
     (should (equal
              (pel-packages-for 'pel-use-markdown-mode)
-             '((elpa . markdown-mode))))))
+             '((elpa . markdown-mode)
+               (elpa . edit-indirect))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-package-test)
