@@ -3200,6 +3200,9 @@ d-mode not added to ac-modes!"
 
   (when pel-use-edit-indirect
     (pel-ensure-package edit-indirect from: melpa))
+  (when pel-use-grip-mode
+    (pel-ensure-package grip-mode from: melpa)
+    (define-key pel:for-markdown-preview "g" 'grip-mode))
   (when pel-use-markdown-mode
     (pel-ensure-package markdown-mode from: melpa))
   (when pel-use-markdown-mode+
@@ -3265,6 +3268,7 @@ d-mode not added to ac-modes!"
           (display-warning 'pel-markdown-toc-refresh
                            "Cannot refresh table of content - missing elements!"
                            :error)))
+      (declare-function pel-markdown-toc-refresh "pel_keys")
       ;; hook just for the markdown buffers
       (add-hook 'before-save-hook
                 (function pel-markdown-toc-refresh)

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-30 18:07:34, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-30 18:55:29, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -71,6 +71,7 @@
 ;; entries.
 
 (defconst pel--markdown-groups '(markdown
+                                 grip
                                  impatient-showdown
                                  markdown-preview
                                  markdown-toc
@@ -681,6 +682,7 @@ Return nil if nothing found."
     ("command-log" . "command-log-mode")
     ("clojure"     . "clojure-mode")
     ("cljr"        . "clj-refactor")
+    ("grip"        . "grip-mode")
     ("markdown"    . "markdown-mode")
     ("netrexx"     . "netrexx-mode")
     ("racket"      . "racket-custom")

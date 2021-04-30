@@ -2293,6 +2293,19 @@ major mode of that programming language."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-grip-mode nil
+  "Control whether PEL activates grip-mode external package.
+This package provides HTML rendering of markdown and org-mode buffers.
+It requires Python and the grip python package that you can install
+using the command 'pip install grip'."
+  :link '(url-link "grip-mode @ GitHub"
+                   "https://github.com/seagle0128/grip-mode")
+  :link '(url-link "grip @ GitHub"
+                   "https://github.com/joeyespo/grip")
+  :group 'pel-pkg-for-markdown
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-markdown-mode+ nil
   "Control whether PEL activates the markdown-mode+ external package.
 The `pel-use-markdown' user-option must also be turned on to
