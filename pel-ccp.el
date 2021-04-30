@@ -67,7 +67,8 @@ Show the OP-NAME and the content of the kill ring at top."
   (when pel-show-copy-cut-text
     (message "%s:「%s」"
              op-name
-             (substring-no-properties (car kill-ring)))))
+             (substring-no-properties (or (car kill-ring)
+                                          "")))))
 
 (defun pel--show-copied ()
   "Display what was copied."
