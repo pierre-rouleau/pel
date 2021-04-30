@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-29 21:14:56, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-30 10:55:17, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -346,7 +346,7 @@
                                                                        markdown-preview
                                                                        markdown-toc
                                                                        vmd))
-p    (,(kbd "<f11> SPC M-u") "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
+    (,(kbd "<f11> SPC M-u") "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
     ([f11 32 27 ?u]         "plantuml"         pel-pkg-for-plantuml    plantuml-mode))
   "Map from key prefix array to topic string.
 The topic string correspond to the base name of the PDF file
