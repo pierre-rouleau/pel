@@ -405,6 +405,13 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       ``<f3>`` keys in PEL, the package does not have to be loaded for the key
       to be able to access the customization group.  PEL will load the package
       first if necessary.
+    - The ``<f12><M-t`` key prefix to commands that generate, refresh or delete a
+      table of contents are available when the *pel-use-markdown-toc*
+      user-option is set.  And if it is set to ``update-toc-on-save`` the
+      table of content is updated on buffer save if it is present.
+    - The markdown extension packages that provide other mechanisms to
+      generate a HTML rendering have commands mapped to the ``<f12> M-p`` key
+      prefix.
   - New: Add support for YAML with *yaml-mode*.
     Activate it with the *pel-use-yaml-mode* user option.
 - Update: *Navigation*

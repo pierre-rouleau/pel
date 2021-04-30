@@ -3251,7 +3251,22 @@ d-mode not added to ac-modes!"
   (define-key pel:for-markdown "6" 'markdown-insert-header-atx-6)
   (define-key pel:for-markdown-preview "l" 'markdown-live-preview-mode)
 
-  (pel-setup-major-mode markdown pel:for-markdown))
+  (pel-setup-major-mode markdown pel:for-markdown
+    (when (eq pel-use-markdown-toc 'update-toc-on-save)
+      (defun pel-markdown-toc-refresh ()
+        "Update the table of content if present."
+        (if (and (require 'markdown-toc nil :no-error)
+                 (fboundp 'markdown-toc--toc-already-present-p)
+                 (fboundp 'markdown-toc-generate-toc))
+            (when (markdown-toc--toc-already-present-p)
+              (markdown-toc-generate-toc t))
+          (display-warning 'pel-markdown-toc-refresh
+                           "Cannot refresh table of content - missing elements!"
+                           :error)))
+      ;; hook just for the markdown buffers
+      (add-hook 'before-save-hook
+                (function pel-markdown-toc-refresh)
+                nil :local))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-r`` : reSTucturedText

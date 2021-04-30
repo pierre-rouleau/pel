@@ -2347,8 +2347,10 @@ activate this package."
   :link '(url-link :tag "markdown-toc @ GitHub"
                    "https://github.com/ardumont/markdown-toc")
   :group 'pel-pkg-for-markdown
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "Use markdown-toc" t)
+          (const :tag "Use markdown-toc and update TOC on save"
+                 update-toc-on-save)))
 (pel-put 'pel-use-markdown-toc :requires 'pel-use-markdown)
 (pel-put 'pel-use-markdown-toc
          :requires-package '(quote ((elpa . dash)
