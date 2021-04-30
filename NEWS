@@ -390,6 +390,21 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     - ``<f11> <f5> k <f2>`` opens the PEL key-chords customization buffer.
     - ``<f11> <f5> k <f3>`` opens the key-chords package customization buffer.
 - Update: *Markup Language Support*
+  - New: Add support for Markdown, via the *markdown-mode* and several other
+    external packages: *markdown-mode+, *impatient-showdown*,
+    *markdown-preview-eww*, *markdown-preview-mode*, *markdown-toc*,
+    *vmd-mode*.
+  - The ``<f11> SPC M-m`` key prefix gives access to the Markdown specific
+    PEL keys which becomes the ``<f12>`` key when the markdown-mode is active.
+    Currently this key prefix has only 3 sub-keys:
+    - ``<f1>`` opens the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/mode-markdown.pdf][Ɱ Markdown PDF]].
+    - ``<f2>`` opens the *pel-pkg-for-markdown* customization group where various markdown
+      support packages can be enabled with the PEL user-options.
+    - ``<f3>`` provides access to the customization group for the
+      markdown-mode and other markdown support packages.  As for all other
+      ``<f3>`` keys in PEL, the package does not have to be loaded for the key
+      to be able to access the customization group.  PEL will load the package
+      first if necessary.
   - New: Add support for YAML with *yaml-mode*.
     Activate it with the *pel-use-yaml-mode* user option.
 - Update: *Navigation*
@@ -734,7 +749,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 - Update: *Rectangles*:
   - New: the *iedit-rectangle-mode* is accessible directly with the ``C-x r
     RET`` key binding.  There is no need to use the iedit-mode first.
-  - New: the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/rectangles.pdf][⅀ Rectangles PDF]] describes the *iedit-rectangle-mode* and available
+  - New: the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/rectangles.pdf][⅀ Rectangles PDF]]describes the *iedit-rectangle-mode* and available
     commands.
 - Update: *Searching*:
   - New: support for combined expression search with the
@@ -917,6 +932,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 + New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-netrexx.pdf][𝕻𝔩 - Netrexx]] PDF describing support for the NetRexx programming
   language.
 + New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rexx.pdf][𝕻𝔩 - REXX]] PDF describing support for the REXX programming language.
++ New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/mode-markdown.pdf][Ɱ Markdown PDF]], describing markdown support.
 + New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/macOS-keys.pdf][ macOS Keys ]]PDF that lists and describes the macOS specific keys.
 + New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-CRiSP-Emacs.pdf][➢CRiSP ➫ Emacs]] PDF for Brief and CRiSP users.  It lists the
   correspondences between Brief/CRiSP with CRiSPer and Emacs with PEL.

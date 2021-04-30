@@ -2261,6 +2261,13 @@ Do not enter lambda expressions."
   :safe #'booleanp)
 (pel-put 'pel-use-markdown :package-is :a-gate)
 
+(defcustom pel-markdown-activates-minor-modes nil
+  "List of minor-modes automatically activated for markdown buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-markdown
+  :type '(repeat function))
+
 (defcustom pel-use-markdown-mode nil
   "Control whether PEL activates the markdown-mode external package.
 The `pel-use-markdown' user-option must also be turned on to
@@ -2279,7 +2286,7 @@ activate this package."
 The `pel-use-markdown' user-option must also be turned on to
 activate this package."
   :link '(url-link "markdown-mode+ @ Github"
-                   "http://github.com/milkypostman/markdown-mode-plus")
+                   "https://github.com/milkypostman/markdown-mode-plus")
   :group 'pel-pkg-for-markdown
   :type 'boolean
   :safe #'booleanp)
@@ -2323,7 +2330,7 @@ activate this package."
 The `pel-use-markdown' user-option must also be turned on to
 activate this package."
   :link '(url-link :tag "markdown-toc @ GitHub"
-                   "http://github.com/ardumont/markdown-toc")
+                   "https://github.com/ardumont/markdown-toc")
   :group 'pel-pkg-for-markdown
   :type 'boolean
   :safe #'booleanp)

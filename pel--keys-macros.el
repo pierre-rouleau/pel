@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-27 17:33:51, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-29 21:14:56, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -336,7 +336,17 @@
     ([f11 32 27 ?g]         "graphviz-dot"     pel-pkg-for-graphviz-dot graphviz)
     (,(kbd "<f11> SPC M-r") "mode-rst"         pel-pkg-for-reST        rst)
     ([f11 32 27 ?r]         "mode-rst"         pel-pkg-for-reST        rst)
-    (,(kbd "<f11> SPC M-u") "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
+    (,(kbd "<f11> SPC M-m") "mode-markdown"    pel-pkg-for-markdown   (markdown
+                                                                       impatient-showdown
+                                                                       markdown-preview
+                                                                       markdown-toc
+                                                                       vmd))
+    ([f11 32 27 ?m]         "mode-markdown"    pel-pkg-for-markdown   (markdown
+                                                                       impatient-showdown
+                                                                       markdown-preview
+                                                                       markdown-toc
+                                                                       vmd))
+p    (,(kbd "<f11> SPC M-u") "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
     ([f11 32 27 ?u]         "plantuml"         pel-pkg-for-plantuml    plantuml-mode))
   "Map from key prefix array to topic string.
 The topic string correspond to the base name of the PDF file
@@ -395,6 +405,7 @@ stored inside the doc/pdf directory.")
     ("racket"          [f11 32 18])
     ("rexx"            [f11 32 ?R])
     ("rust"            [f11 32 ?r])
+    ("markdown"        [f11 32 27 ?m])
     ("netrexx"         [f11 32 ?N])
     ("rst"             [f11 32 27 ?r])
     ("scheme"          [f11 32 19])
@@ -663,6 +674,7 @@ Return nil if nothing found."
     ("command-log" . "command-log-mode")
     ("clojure"     . "clojure-mode")
     ("cljr"        . "clj-refactor")
+    ("markdown"    . "markdown-mode")
     ("netrexx"     . "netrexx-mode")
     ("racket"      . "racket-custom")
     ("rainbow"     . "rainbow-mode")

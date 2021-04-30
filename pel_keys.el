@@ -3195,6 +3195,8 @@ d-mode not added to ac-modes!"
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-m`` : Markdown
 (when pel-use-markdown
+  (define-pel-global-prefix pel:for-markdown (kbd "<f11> SPC M-m"))
+
   (when pel-use-markdown-mode
     (pel-ensure-package markdown-mode from: melpa))
   (when pel-use-markdown-mode+
@@ -3208,7 +3210,9 @@ d-mode not added to ac-modes!"
   (when pel-use-markdown-toc
     (pel-ensure-package markdown-toc from: melpa))
   (when pel-use-vmd-mode
-    (pel-ensure-package vmd-mode from: melpa)))
+    (pel-ensure-package vmd-mode from: melpa))
+
+  (pel-setup-major-mode markdown pel:for-markdown))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-r`` : reSTucturedText
