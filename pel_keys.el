@@ -3196,19 +3196,26 @@ d-mode not added to ac-modes!"
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-m`` : Markdown
 (when pel-use-markdown
   (define-pel-global-prefix pel:for-markdown (kbd "<f11> SPC M-m"))
+  (define-pel-global-prefix pel:for-markdown-preview (kbd "<f11> SPC M-m M-p"))
 
   (when pel-use-markdown-mode
     (pel-ensure-package markdown-mode from: melpa))
   (when pel-use-markdown-mode+
     (pel-ensure-package markdown-mode+ from: melpa))
   (when pel-use-impatient-showdown
-    (pel-ensure-package impatient-showdown from: melpa))
+    (pel-ensure-package impatient-showdown from: melpa)
+    (define-key pel:for-markdown-preview "i" 'impatient-showdown-mode))
   (when pel-use-markdown-preview-eww
     (pel-ensure-package markdown-preview-eww from: melpa))
   (when pel-use-markdown-preview-mode
-    (pel-ensure-package markdown-preview-mode from: melpa))
+    (pel-ensure-package markdown-preview-mode from: melpa)
+    (define-key pel:for-markdown-preview "p" 'markdown-preview-mode))
   (when pel-use-markdown-toc
-    (pel-ensure-package markdown-toc from: melpa))
+    (pel-ensure-package markdown-toc from: melpa)
+    (define-pel-global-prefix pel:for-markdown-toc (kbd "<f11> SPC M-m M-t"))
+    (define-key pel:for-markdown-toc (kbd "M-t") 'markdown-toc-generate-toc)
+    (define-key pel:for-markdown-toc (kbd "M-r") 'markdown-toc-generate-or-refresh-toc)
+    (define-key pel:for-markdown-toc (kbd "M-d") 'markdown-toc-delete-toc))
   (when pel-use-vmd-mode
     (pel-ensure-package vmd-mode from: melpa))
 
@@ -3242,6 +3249,7 @@ d-mode not added to ac-modes!"
   (define-key pel:for-markdown "4" 'markdown-insert-header-atx-4)
   (define-key pel:for-markdown "5" 'markdown-insert-header-atx-5)
   (define-key pel:for-markdown "6" 'markdown-insert-header-atx-6)
+  (define-key pel:for-markdown-preview "l" 'markdown-live-preview-mode)
 
   (pel-setup-major-mode markdown pel:for-markdown))
 

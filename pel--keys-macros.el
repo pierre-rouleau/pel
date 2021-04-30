@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-30 10:55:17, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-30 11:11:05, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -64,6 +64,20 @@
 ;; ---------------------------------------------------------------------------
 ;; PEL Key Sequences Prefix and their F1, F2 and F3 topics
 ;; -------------------------------------------------------
+;;
+;; Some packages have a large set of package dependencies with customize
+;; groups. For those define their list first and inject them inside the
+;; `pel--prefix-to-topic-alist' below.  Specially those that have duplicated
+;; entries.
+
+(defconst pel--markdown-groups '(markdown
+                                 impatient-showdown
+                                 markdown-preview
+                                 markdown-toc
+                                 vmd
+                                 htmlize
+                                 simple-httpd)
+  "List of groups for packages used by markdown.")
 
 ;; TODO: add logic in the processing of that table to allow the first element
 ;;       of a row to be a list of key sequences.
@@ -113,7 +127,7 @@
     ([f11 ?=]        "cut-paste"        pel-pkg-for-cut-and-paste)
     ([f11 59]        ("comments"
                       "hide-show-code") pel-pkg-for-programming (comment
-                                                                 hideshow))
+                      hideshow))
     ([f11 ??]        "help"             nil                    command-log)
     ([f11 9]         "indentation"      nil                     indent)
     ;; 2 different possible key sequences for speedbar,
@@ -221,9 +235,9 @@
                                     'rainbow
                                     'rainbow-delimiters
                                     'vline)))
-                              (if (version< emacs-version "27.1")
-                                  (append items (list 'fill-column-indicator))
-                                items)))
+      (if (version< emacs-version "27.1")
+          (append items (list 'fill-column-indicator))
+        items)))
 
     ([f11 ?c]        "counting"         nil)
     ([f11 ?d]        "diff-merge"       pel-pkg-for-ztree       (diff
@@ -234,15 +248,15 @@
     ([f11 ?f]        ("file-mngt"
                       "mode-dired"
                       "web")            (pel-pkg-for-filemng
-                                         pel-kg-for-dired)     (files
-                                                                dired
-                                                                recentf
-                                                                popup-switcher))
+                      pel-kg-for-dired)     (files
+                      dired
+                      recentf
+                      popup-switcher))
 
     ;; no PDF for browse yet, the info is  in file-mngt.
     ([f11 ?B]        "file-mngt"        (pel-pkg-for-browse
                                          pel-pkg-for-ztree)     (treemacs
-                                                                 Ztree))
+                                         Ztree))
     ([f11 ?B ?N]     "file-mngt"        pel-pkg-for-neotree      neotree)
     ([f11 ?f ?a]     "file-mngt"        nil                      ffap)
     ([f11 ?f ?p]     "file-mngt"        pel-pkg-for-project-mng  ffip)
@@ -336,16 +350,8 @@
     ([f11 32 27 ?g]         "graphviz-dot"     pel-pkg-for-graphviz-dot graphviz)
     (,(kbd "<f11> SPC M-r") "mode-rst"         pel-pkg-for-reST        rst)
     ([f11 32 27 ?r]         "mode-rst"         pel-pkg-for-reST        rst)
-    (,(kbd "<f11> SPC M-m") "mode-markdown"    pel-pkg-for-markdown   (markdown
-                                                                       impatient-showdown
-                                                                       markdown-preview
-                                                                       markdown-toc
-                                                                       vmd))
-    ([f11 32 27 ?m]         "mode-markdown"    pel-pkg-for-markdown   (markdown
-                                                                       impatient-showdown
-                                                                       markdown-preview
-                                                                       markdown-toc
-                                                                       vmd))
+    (,(kbd "<f11> SPC M-m") "mode-markdown"    pel-pkg-for-markdown   ,pel--markdown-groups)
+    ([f11 32 27 ?m]         "mode-markdown"    pel-pkg-for-markdown   ,pel--markdown-groups)
     (,(kbd "<f11> SPC M-u") "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
     ([f11 32 27 ?u]         "plantuml"         pel-pkg-for-plantuml    plantuml-mode))
   "Map from key prefix array to topic string.

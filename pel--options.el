@@ -2247,7 +2247,7 @@ Do not enter lambda expressions."
 (pel-put 'pel-use-flycheck-plantuml :requires 'pel-use-plantuml)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; markdown support
+;; Markdown support
 ;; ----------------
 (defgroup pel-pkg-for-markdown nil
   "PEL markdown support."
@@ -2284,7 +2284,9 @@ activate this package."
 (defcustom pel-use-markdown-mode+ nil
   "Control whether PEL activates the markdown-mode+ external package.
 The `pel-use-markdown' user-option must also be turned on to
-activate this package."
+activate this package.
+
+NOTE: ⚠️  not recommended: this package is incomplete."
   :link '(url-link "markdown-mode+ @ Github"
                    "https://github.com/milkypostman/markdown-mode-plus")
   :group 'pel-pkg-for-markdown
@@ -2295,18 +2297,27 @@ activate this package."
 (defcustom pel-use-impatient-showdown nil
   "Control whether PEL activates the impatient-showdown package.
 The `pel-use-markdown' user-option must also be turned on to
-activate this package."
+activate this package.
+This package gives you the ability to see the HTML rendering of the markdown
+buffer inside your default browser.  The rendering is updated automatically as
+the buffer is updated."
   :link '(url-link :tag "impatient-showdown @ GitHub"
                    "https://github.com/jcs-elpa/impatient-showdown")
   :group 'pel-pkg-for-markdown
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-impatient-showdown :requires 'pel-use-markdown)
+(pel-put 'pel-use-impatient-showdown :requires-package '(quote ((elpa . htmlize)
+                                                                (elpa . simple-httpd))))
 
 (defcustom pel-use-markdown-preview-eww nil
   "Control whether PEL activates the markdown-preview-eww package.
 The `pel-use-markdown' user-option must also be turned on to
-activate this package."
+activate this package.
+
+NOTE: ⚠️  not recommended: markdown-live-preview-mode from
+         markdown-mode does the same and does not need the setup
+         required by markdown-preview-eww."
   :link '(url-link :tag "markdown-preview-eww @ GitHub"
                    "https://github.com/niku/markdown-preview-eww")
   :group 'pel-pkg-for-markdown
@@ -2324,6 +2335,10 @@ activate this package."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-markdown-preview-mode :requires 'pel-use-markdown)
+(pel-put 'pel-use-markdown-preview-mode
+         :requires-package '(quote ((elpa . websocket)
+                                    (elpa . seq)
+                                    (elpa . web-server))))
 
 (defcustom pel-use-markdown-toc nil
   "Control whether PEL activates the markdown-toc package.
@@ -2335,6 +2350,9 @@ activate this package."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-markdown-toc :requires 'pel-use-markdown)
+(pel-put 'pel-use-markdown-toc
+         :requires-package '(quote ((elpa . dash)
+                                    (elpa . s))))
 
 (defcustom pel-use-vmd-mode nil
   "Control whether PEL activates the vmd-mode package.
