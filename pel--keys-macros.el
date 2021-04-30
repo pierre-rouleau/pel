@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-30 11:11:05, updated by Pierre Rouleau>
+;; Time-stamp: <2021-04-30 18:07:34, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -75,6 +75,7 @@
                                  markdown-preview
                                  markdown-toc
                                  vmd
+                                 edit-indirect
                                  htmlize
                                  simple-httpd)
   "List of groups for packages used by markdown.")
