@@ -2279,7 +2279,19 @@ activate this package."
   :safe #'booleanp)
 (pel-put 'pel-use-markdown-mode :requires 'pel-use-markdown)
 (pel-put 'pel-use-markdown-mode :also-required-when 'pel-use-cargo)
-(pel-put 'pel-use-markdown-mode :requires-package '(quote ((elpa . edit-indirect))))
+(pel-put 'pel-use-markdown-mode :requires-package '(quote
+                                                    ((elpa . edit-indirect))))
+
+(defcustom pel-use-edit-indirect nil
+  "Control whether PEL activates the edit-indirect external package.
+This package provides the ability to edit code blocks of specified programming
+languages located inside markdown file via indirect buffers operating in the
+major mode of that programming language."
+  :link '(url-link "edit-indirect @ GitHub"
+                   "https://github.com/Fanael/edit-indirect/")
+  :group 'pel-pkg-for-markdown
+  :type 'boolean
+  :safe #'booleanp)
 
 (defcustom pel-use-markdown-mode+ nil
   "Control whether PEL activates the markdown-mode+ external package.
@@ -2307,8 +2319,9 @@ the buffer is updated."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-impatient-showdown :requires 'pel-use-markdown)
-(pel-put 'pel-use-impatient-showdown :requires-package '(quote ((elpa . htmlize)
-                                                                (elpa . simple-httpd))))
+(pel-put 'pel-use-impatient-showdown :requires-package
+         '(quote ((elpa . htmlize)
+                  (elpa . simple-httpd))))
 
 (defcustom pel-use-markdown-preview-eww nil
   "Control whether PEL activates the markdown-preview-eww package.

@@ -3198,6 +3198,8 @@ d-mode not added to ac-modes!"
   (define-pel-global-prefix pel:for-markdown (kbd "<f11> SPC M-m"))
   (define-pel-global-prefix pel:for-markdown-preview (kbd "<f11> SPC M-m M-p"))
 
+  (when pel-use-edit-indirect
+    (pel-ensure-package edit-indirect from: melpa))
   (when pel-use-markdown-mode
     (pel-ensure-package markdown-mode from: melpa))
   (when pel-use-markdown-mode+
