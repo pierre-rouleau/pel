@@ -3224,6 +3224,8 @@ d-mode not added to ac-modes!"
   (when pel-use-vmd-mode
     (pel-ensure-package vmd-mode from: melpa))
 
+  (define-key pel:for-markdown "}" 'markdown-forward-block)
+  (define-key pel:for-markdown "{" 'markdown-backward-block)
   (define-key pel:for-markdown "b" 'markdown-insert-bold)
   (define-key pel:for-markdown "i" 'markdown-insert-italic)
   (define-key pel:for-markdown "c" 'markdown-insert-code)
