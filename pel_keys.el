@@ -3222,10 +3222,15 @@ d-mode not added to ac-modes!"
     (define-key pel:for-markdown-toc (kbd "M-r") 'markdown-toc-generate-or-refresh-toc)
     (define-key pel:for-markdown-toc (kbd "M-d") 'markdown-toc-delete-toc))
   (when pel-use-vmd-mode
+    (define-key pel:for-markdown-preview "v" 'vmd-mode)
     (pel-ensure-package vmd-mode from: melpa))
 
   (define-key pel:for-markdown "}" 'markdown-forward-block)
   (define-key pel:for-markdown "{" 'markdown-backward-block)
+  (define-key pel:for-markdown (kbd "<right>") 'end-of-defun)
+  (define-key pel:for-markdown (kbd "<down>")  'pel-beginning-of-next-defun)
+  (define-key pel:for-markdown (kbd "<up>")   'beginning-of-defun)
+  (define-key pel:for-markdown (kbd "<left>") 'beginning-of-defun)
   (define-key pel:for-markdown "b" 'markdown-insert-bold)
   (define-key pel:for-markdown "i" 'markdown-insert-italic)
   (define-key pel:for-markdown "c" 'markdown-insert-code)
