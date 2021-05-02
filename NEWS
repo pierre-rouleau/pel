@@ -908,6 +908,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 + New: added background colours to key sequence cells to highlight the fact
   that some key sequences are only available for specific major or minor modes
   or when point is over text that has been turned into a button.
++ New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf][➢Index]] PDF which holds links to all other PDF tables.
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/align.pdf][⅀ Align]] better describes handling of indentation on ``M-RET``.
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/grep.pdf][⅀ Grep PDF]] describes ag and ripgrep menu.  Also references projectile-based
  search commands.
@@ -941,7 +942,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 + New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rexx.pdf][𝕻𝔩 - REXX]] PDF describing support for the REXX programming language.
 + New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/mode-markdown.pdf][Ɱ Markdown PDF]], describing markdown support.
 + New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/macOS-keys.pdf][ macOS Keys ]]PDF that lists and describes the macOS specific keys.
-+ New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-CRiSP-Emacs.pdf][➢CRiSP ➫ Emacs]] PDF for Brief and CRiSP users.  It lists the
++ New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-CRiSP-Emacs.pdf][➢CRiSP ➫ Emacs] PDF for Brief and CRiSP users.  It lists the
   correspondences between Brief/CRiSP with CRiSPer and Emacs with PEL.
 ** Use Manual Additions and Improvements:
 - Added instructions on how to install

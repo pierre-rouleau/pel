@@ -67,12 +67,12 @@ PEL comes with lots of overview and reference documentation:
 
   - Read the section on `How to install PEL`_.
 
-- **Over 95 PDF reference sheets** organized by topics with hyperlinks to Emacs
-  manuals, external packages, articles and other references. See:
+- **Over 100 PDF reference sheets** organized by topics with hyperlinks to Emacs
+  manuals, external packages, articles and other references.
 
-  - the `raw version of the PEL Key Maps PDF`_ as a starting point, use a
-    browser, like Firefox, that can render these PDF so you can use the links
-    easily.
+  - See the `PEL Index PDF`_ and `PEL Key Maps PDF`_ as a starting point.
+    For best user experience, use a browser, like Firefox, that can render
+    the PDF inline so you can use the links quickly.
   - See the manual sections on `Key Bindings Documentation`_, and the `PDF
     reference sheets`_.
 
@@ -102,8 +102,8 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 
 .. links
 
-.. _raw version of the PEL Key Maps PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-pel-key-maps.pdf
-
+.. _PEL Key Maps PDF:   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-pel-key-maps.pdf
+.. _PEL Index PDF:      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 .. _Emacs easy customization:
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
 .. _Emacs initialization file: https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html#Init-File
