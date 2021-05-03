@@ -2391,7 +2391,18 @@ activate this package."
   :group 'pel-pkg-for-markdown
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-vmd-mode :requires 'pel-use-markdown)
+
+(defcustom pel-use-remark-mode nil
+  "Control whether PEL activates the remark-mode package.
+The `pel-use-markdown' user-option must also be turned on to
+activate this package."
+  :link '(url-link :tag "remark-mode @ GitHub"
+                   "https://github.com/torgeir/remark-mode.el")
+  :group 'pel-pkg-for-markdown
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-remark-mode :requires 'pel-use-markdown)
+
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; reStructuredText support

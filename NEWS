@@ -393,7 +393,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - New: Add support for Markdown, via the *markdown-mode* and several other
     external packages: *grip-mode*, *markdown-mode+, *impatient-showdown*,
     *markdown-preview-eww*, *markdown-preview-mode*, *markdown-toc*,
-    *vmd-mode*.
+    *vmd-mode* and *remark-mode*.
   - The ``<f11> SPC M-m`` key prefix gives access to the Markdown specific
     PEL keys which becomes the ``<f12>`` key when the markdown-mode is active.
     Currently this key prefix has only 3 sub-keys:
@@ -908,8 +908,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 + New: added background colours to key sequence cells to highlight the fact
   that some key sequences are only available for specific major or minor modes
   or when point is over text that has been turned into a button.
-+ New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf][➢Index]] PDF which holds links to all other PDF tables.
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/align.pdf][⅀ Align]] better describes handling of indentation on ``M-RET``.
++ New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf][➢Index]] PDF which holds links to all other PDF tables.
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/grep.pdf][⅀ Grep PDF]] describes ag and ripgrep menu.  Also references projectile-based
  search commands.
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf][⅀ Help PDF]] better introduces reader to getting help from Emacs and
