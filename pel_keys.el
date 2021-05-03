@@ -3263,6 +3263,10 @@ d-mode not added to ac-modes!"
   (define-key pel:for-markdown "6" 'markdown-insert-header-atx-6)
   (define-key pel:for-markdown-preview "l" 'markdown-live-preview-mode)
 
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension '(".md"
+                                 ".markdown")))
+
   (pel-setup-major-mode markdown pel:for-markdown
     (when (eq pel-use-markdown-toc 'update-toc-on-save)
       (defun pel-markdown-toc-refresh ()
