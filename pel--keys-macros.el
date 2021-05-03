@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-30 18:55:29, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-03 16:23:25, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -46,6 +46,9 @@
 ;;       - `pel--customize-group'
 ;;         - `pel--group-isin-libfile'
 ;;         - `pel--isa-custom-group-p'
+;;         - `pel--multi-file-customization-p'
+;;         - `pel--load-all-libs-for'
+;;           - `pel--load-all-in'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -192,7 +195,7 @@
     (,(kbd "<f11> SPC C-j") "pl-clojure" pel-pkg-for-clojure    (clojure
                                                                  cider
                                                                  cljr))
-    (,(kbd "<f11> SPC C-l") "pl-lfe"    pel-pkg-for-lfe)
+    (,(kbd "<f11> SPC C-l") "pl-lfe"    pel-pkg-for-lfe         lfe)
     (,(kbd "<f11> SPC C-r") nil         pel-pkg-for-racket      racket)
     (,(kbd "<f11> SPC C-s") "pl-scheme" pel-pkg-for-scheme      (scheme
                                                                  geiser
@@ -683,6 +686,8 @@ Return nil if nothing found."
     ("clojure"     . "clojure-mode")
     ("cljr"        . "clj-refactor")
     ("grip"        . "grip-mode")
+    ("lfe"         . ("lfe-indent"
+                      "lfe-mode"))   ; several files - defgroup is in lfe-mode
     ("markdown"    . "markdown-mode")
     ("netrexx"     . "netrexx-mode")
     ("racket"      . "racket-custom")
@@ -709,13 +714,15 @@ if that fails, it tries to see if this library is in the list
 of `pel--group-library-names' associated list and tries with that
 instead."
   ;; If a specified library name exists for a group, use that before
-    ;; trying to parse a file with the same group name.
-    (let ((libname (cdr (assoc group pel--group-library-names))))
-      (if libname
-          (locate-library libname)
-        ;; if nothing is in the table try using a file name with the
-        ;; same name as the group
-        (locate-library group))))
+  ;; trying to parse a file with the same group name.
+  (let ((libname (cdr (assoc group pel--group-library-names))))
+    (if libname
+        (if (listp libname)
+            (locate-library (car (last libname)))
+          (locate-library libname))
+      ;; if nothing is in the table try using a file name with the
+      ;; same name as the group
+      (locate-library group))))
 
 (defun pel--group-isin-libfile (group)
   "Return non-nil if customize GROUP is defined in an accessible ELisp file.
@@ -734,6 +741,25 @@ Return nil otherwise."
                                         group)))
               file-path)))))))
 
+(defun pel--multi-file-customization-p (group)
+  "Return non-nil if GROUP customization specified in several files.
+Return NIL otherwise."
+  (let ((libname (cdr (assoc group pel--group-library-names))))
+    (and libname
+         (listp libname))))
+
+(defun pel--load-all-in (libs)
+  "Load all Emacs Lisp libraries that in LIBS list.
+Return t when all libraries have been loaded, nil otherwise."
+  (let ((all-loaded t))
+    (dolist (lib libs all-loaded)
+      (unless (load-library lib)
+        (setq all-loaded nil)))))
+
+(defun pel--load-all-libs-for (group)
+  "Load all Emacs Lisp libraries that customize specified GROUP."
+  (pel--load-all-in (cdr (assoc group pel--group-library-names))))
+
 (defun pel--customize-group (group &optional other-window)
   "Customize a specified GROUP.
 GROUP can be a string or a symbol.
@@ -747,16 +773,21 @@ If OTHER-WINDOW is non-nil display in other window."
       (customize-group group other-window)
     (let ((file-path (pel--group-isin-libfile group)))
       (if file-path
-        (let ((library-name (file-name-base file-path)))
-          (if (y-or-n-p
-               (format
-                "Group %s is from a non loaded %s.  Load it first? "
-                group
-                library-name))
-            (when (load-library library-name)
-              (customize-group group other-window))
-            ;; user entered no: clear the message area
-            (message nil)))
+          (let* ((library-name (file-name-base file-path))
+                 (in-multi-files (pel--multi-file-customization-p group))
+                 (prompt
+                  (if in-multi-files
+                      "Group %s and customization is from %s and other files \
+that are not all loaded.  Load them first? "
+                    "Group %s is from a non-loaded %s.  Load it first? " )))
+            (if (y-or-n-p
+                 (format prompt group library-name))
+                (when (if in-multi-files
+                          (pel--load-all-libs-for group)
+                        (load-library library-name))
+                  (customize-group group other-window))
+              ;; user entered no: clear the message area
+              (message nil)))
         ;; Nothing found for the requested group.  Perhaps the library
         ;; does not use its own group but unfortunately uses one of Emacs
         ;; default groups.  Use `pel--group-for-library-without-group'
@@ -986,7 +1017,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   "Setup the major mode identified by TARGET-MODE.
 
 TARGET-MODE is an unquoted symbol identifying the mode: it's the
-major mode name without the -mode suffix. Something like
+major mode name without the -mode suffix.  Something like
 emacs-lisp, c, python, etc...
 
 The KEY-PREFIX argument is a PEL mode-specific key-prefix
