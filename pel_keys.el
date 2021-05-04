@@ -3159,6 +3159,8 @@ d-mode not added to ac-modes!"
 ;; ----------------
 
 (when pel-use-org-mode
+  (define-pel-global-prefix pel:for-org-mode (kbd "<f11> SPC M-o"))
+
   ;; Org-Mode activation, as suggested by
   ;; https://orgmode.org/manual/Activation.html#Activation :
   (pel-autoload-file org for:
@@ -3180,7 +3182,7 @@ d-mode not added to ac-modes!"
   (pel-setq org-todo-keywords
             (quote ((sequence "TODO" "IN-PROGRESS" "DONE"))))
 
-  (pel-setup-major-mode org :no-f12-keys
+  (pel-setup-major-mode org pel:for-org-mode
     ;; Use the cleaner outline view mode.
     (if (fboundp 'org-indent-mode)
         (org-indent-mode 1)

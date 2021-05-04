@@ -2129,9 +2129,18 @@ waiting for activity to resume in the lewang's repo."
   "Markup Language editing packages PEL can use."
   :group 'pel-package-use)
 
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Org Mode Support
+;; ----------------
+
+(defgroup pel-pkg-for-org-mode  nil
+  "PEL Org Mode support."
+  :group 'pel-pkg-for-markup
+  :link `(url-link :tag "Org Mode PDF" ,(pel-pdf-file-url "mode-org-mode")))
+
 (defcustom pel-use-org-mode nil
   "Control whether PEL supports Org-Mode."
-  :group 'pel-pkg-for-markup
+  :group 'pel-pkg-for-org-mode
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-org-mode :package-is :builtin-emacs)
@@ -2140,7 +2149,7 @@ waiting for activity to resume in the lewang's repo."
   "List of minor-modes automatically activated for Org-Mode buffers.
 Enter minor-mode activating function symbols.
 Do not enter lambda expressions."
-  :group 'pel-pkg-for-markup
+  :group 'pel-pkg-for-org-mode
   :type '(repeat function))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-04 11:28:45, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-04 14:56:57, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -359,6 +359,10 @@
     ([f11 32 27 ?r]         "mode-rst"         pel-pkg-for-reST        rst)
     (,(kbd "<f11> SPC M-m") "mode-markdown"    pel-pkg-for-markdown   ,pel--markdown-groups)
     ([f11 32 27 ?m]         "mode-markdown"    pel-pkg-for-markdown   ,pel--markdown-groups)
+
+    (,(kbd "<f11> SPC M-o") "mode-org-mode"    pel-pkg-for-org-mode    org)
+    ([f11 32 27 ?o]         "mode-org-mode"    pel-pkg-for-org-mode    org)
+
     (,(kbd "<f11> SPC M-u") "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
     ([f11 32 27 ?u]         "plantuml"         pel-pkg-for-plantuml    plantuml-mode))
   "Map from key prefix array to topic string.
@@ -375,7 +379,6 @@ stored inside the doc/pdf directory.")
 ;;   "keys-f11"
 ;;   "keys-fn"
 ;;   "macOS-terminal-settings"
-;;   "mode-org-mode"
 ;;   "modifier-keys"
 ;;   "mouse"
 ;;   "narrowing"
@@ -422,6 +425,7 @@ stored inside the doc/pdf directory.")
     ("netrexx"         [f11 32 ?N])
     ("rst"             [f11 32 27 ?r])
     ("scheme"          [f11 32 19])
+    ("org"             [f11 32 27 ?o])
     ("graphviz-dot"    [f11 32 27 ?g])
     ("plantuml"        [f11 32 27 ?u]))
   "Maps the name of a major mode (without the -mode suffix)
