@@ -2546,6 +2546,7 @@ d-mode not added to ac-modes!"
 (define-key pel:for-elisp "R"  'ielm)
 (define-key pel:for-elisp "D"  'pel-add-dir-to-loadpath)
 (pel--lisp-languages-map-for pel:for-elisp)
+(define-key pel:for-elisp  (kbd "M-l")  'pel-toggle-lisp-modes)
 ;;
 (define-key pel:for-elisp   "."  'pel-find-thing-at-point)
 (define-key pel:for-elisp   "t"  'pel-run-ert)
