@@ -2484,7 +2484,6 @@ d-mode not added to ac-modes!"
   (define-key prefix (kbd "<right>") 'end-of-defun)
   ;;
   (define-key prefix   (kbd "M-9") #'show-paren-mode)
-  (define-key prefix   (kbd "M-l")  'pel-toggle-lisp-modes)
   (define-key prefix   (kbd "M-p") #'superword-mode)
   (define-key prefix   ")"         #'check-parens)
   ;;
@@ -5711,6 +5710,7 @@ the ones defined from the buffer now."
   (declare-function pel--start-key-chord-mode "pel_keys")
 
   (define-key pel:mode-key-chord  "?" 'pel-key-chord-describe)
+  (define-key pel:keys (kbd "M-K")    'pel-key-chord-describe)
 
   ;; The key-seq is only activated once key-chord is activated.
   ;; Both must be active for key-seq to be used.  When both are
