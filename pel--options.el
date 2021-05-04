@@ -1041,6 +1041,17 @@ command to change it either for the local buffer or globally."
   :safe #'booleanp)
 (pel-put 'pel-use-dired-x :package-is :builtin-emacs)
 
+(defcustom pel-use-emacs-ls-emulation nil
+  "Control whether Emacs ls emulation is used.
+When activated, Emacs emulation of ls is used.
+This provides better Dired support for environment where
+the GNU Coreutils ls is not available.  The GNU Coreutils ls
+can parse file names with leading spaces and supports the \"--dired\"
+option.  See `dired-use-ls-dired' for more information."
+  :group 'pel-pkg-for-dired
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; ---------------------------------------------------------------------------
 ;; Text and Code Completion and Expansion
 ;; --------------------------------------

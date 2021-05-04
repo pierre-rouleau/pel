@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-03 16:23:25, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-04 11:28:45, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -249,14 +249,16 @@
                                                                  ediff))
     ([f11 ?d ?e]     "diff-merge"       nil                     ediff)
     ([f11 ?f ?v]     "file-variables"   nil)
-    ([dired]         "mode-dired"       pel-pkg-for-dired       dired)
+    (,(kbd "<f11> SPC M-D") "mode-dired" pel-pkg-for-dired      (dired
+                                                                 ls-lisp))
+    ([f11 32 27 ?D]  "mode-dired"       pel-pkg-for-dired       (dired
+                                                                 ls-lisp))
+    ([dired]         "mode-dired"       pel-pkg-for-dired       (dired
+                                                                 ls-lisp))
     ([f11 ?f]        ("file-mngt"
-                      "mode-dired"
-                      "web")            (pel-pkg-for-filemng
-                      pel-kg-for-dired)     (files
-                      dired
-                      recentf
-                      popup-switcher))
+                      "web")            pel-pkg-for-filemng     (files
+                                                                 recentf
+                                                                 popup-switcher))
 
     ;; no PDF for browse yet, the info is  in file-mngt.
     ([f11 ?B]        "file-mngt"        (pel-pkg-for-browse

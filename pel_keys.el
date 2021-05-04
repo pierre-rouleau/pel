@@ -316,8 +316,32 @@ Done in this function to allow advising libraries that remap these keys."
 (define-key pel:cfg-goto "R" 'pel-imenu-toggle-auto-rescan)
 
 ;; ---------------------------------------------------------------------------
+;; PEL Top Level key prefix
+;; ------------------------
+
+;; <f11> Global key prefixes used for multiple packages:
+(define-pel-global-prefix pel:     (kbd "<f11>"))
+(define-pel-global-prefix pel:help (kbd "<f11> ?"))
+(define-pel-global-prefix pel:mode (kbd "<f11> <f5>"))
+
+;; ---------------------------------------------------------------------------
 ;; Dired Extensions
 ;; ----------------
+(define-pel-global-prefix pel:for-dired (kbd "<f11> SPC M-D"))
+;;
+;; activate the <f12> key binding for dired
+(pel--mode-hook-maybe-call
+ (lambda ()
+   (pel-local-set-f12 'pel:for-dired))
+ 'dired-mode 'dired-mode-hook)
+
+;; Emacs ls emulation support
+;; --------------------------
+(when pel-use-emacs-ls-emulation
+  (defvar dired-use-ls-dired)
+  (setq dired-use-ls-dired nil)
+  (require 'ls-lisp)
+  (setq ls-lisp-use-insert-directory-program nil))
 
 (defun pel--install-undo-in-dired ()
   "Ensure that `dired-undo' is available in Dired buffer."
@@ -353,30 +377,10 @@ Done in this function to allow advising libraries that remap these keys."
                      dired-narrow
                      dired-narrow-regexp
                      dired-narrow-fuzzy)
-  (defvar pel:for-dired-narrow)
-  (define-prefix-command 'pel:for-dired-narrow)
-  ;;
-  ;; open dired PDF
-  (define-key pel:for-dired-narrow (kbd "<f1>") 'pel-help-pdf)
   ;; dired-narrow commands
-  (define-key pel:for-dired-narrow "s" 'dired-narrow)
-  (define-key pel:for-dired-narrow "r" 'dired-narrow-regexp)
-  (define-key pel:for-dired-narrow "f" 'dired-narrow-fuzzy)
-  ;;
-  ;; activate the <f12> key binding for dired-narrow-mode
-  (pel--mode-hook-maybe-call
-   (lambda ()
-     (pel-local-set-f12 'pel:for-dired-narrow))
-   'dired-mode 'dired-mode-hook))
-
-;; ---------------------------------------------------------------------------
-;; PEL Top Level key prefix
-;; ------------------------
-
-;; <f11> Global key prefixes used for multiple packages:
-(define-pel-global-prefix pel:     (kbd "<f11>"))
-(define-pel-global-prefix pel:help (kbd "<f11> ?"))
-(define-pel-global-prefix pel:mode (kbd "<f11> <f5>"))
+  (define-key pel:for-dired "s" 'dired-narrow)
+  (define-key pel:for-dired "r" 'dired-narrow-regexp)
+  (define-key pel:for-dired "f" 'dired-narrow-fuzzy))
 
 ;; ---------------------------------------------------------------------------
 ;; - PEL: Window Behaviour & operations
@@ -1648,6 +1652,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-r - reStructuredText
 ;; M-s - SQL
 ;; M-u - PlantUML
+;; M-D - Dired
 
 ;; ---------------------------------------------------------------------------
 ;; Syntax Check with Flycheck (if requested)
