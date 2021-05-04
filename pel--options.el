@@ -2317,19 +2317,6 @@ using the command 'pip install grip'."
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-use-markdown-mode+ nil
-  "Control whether PEL activates the markdown-mode+ external package.
-The `pel-use-markdown' user-option must also be turned on to
-activate this package.
-
-NOTE: ⚠️  not recommended: this package is incomplete."
-  :link '(url-link "markdown-mode+ @ Github"
-                   "https://github.com/milkypostman/markdown-mode-plus")
-  :group 'pel-pkg-for-markdown
-  :type 'boolean
-  :safe #'booleanp)
-(pel-put 'pel-use-markdown-mode :requires 'pel-use-markdown)
-
 (defcustom pel-use-impatient-showdown nil
   "Control whether PEL activates the impatient-showdown package.
 The `pel-use-markdown' user-option must also be turned on to
@@ -2402,6 +2389,7 @@ activate this package."
   :group 'pel-pkg-for-markdown
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-vmd-mode :requires 'pel-use-markdown)
 
 (defcustom pel-use-remark-mode nil
   "Control whether PEL activates the remark-mode package.
@@ -2413,7 +2401,6 @@ activate this package."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-remark-mode :requires 'pel-use-markdown)
-
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; reStructuredText support

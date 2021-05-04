@@ -391,7 +391,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     - ``<f11> <f5> k <f3>`` opens the key-chords package customization buffer.
 - Update: *Markup Language Support*
   - New: Add support for Markdown, via the *markdown-mode* and several other
-    external packages: *grip-mode*, *markdown-mode+, *impatient-showdown*,
+    external packages: *grip-mode*, *impatient-showdown*,
     *markdown-preview-eww*, *markdown-preview-mode*, *markdown-toc*,
     *vmd-mode* and *remark-mode*.
   - The ``<f11> SPC M-m`` key prefix gives access to the Markdown specific

@@ -3215,8 +3215,6 @@ d-mode not added to ac-modes!"
     (define-key pel:for-markdown-preview "g" 'grip-mode))
   (when pel-use-markdown-mode
     (pel-ensure-package markdown-mode from: melpa))
-  (when pel-use-markdown-mode+
-    (pel-ensure-package markdown-mode+ from: melpa))
   (when pel-use-impatient-showdown
     (pel-ensure-package impatient-showdown from: melpa)
     (define-key pel:for-markdown-preview "i" 'impatient-showdown-mode))
