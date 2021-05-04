@@ -338,7 +338,8 @@ Done in this function to allow advising libraries that remap these keys."
 ;; Emacs ls emulation support
 ;; --------------------------
 (when pel-use-emacs-ls-emulation
-  (defvar dired-use-ls-dired)
+  (defvar dired-use-ls-dired)           ; prevent byte-compile warnings
+  (defvar ls-lisp-use-insert-directory-program) ; ditto
   (setq dired-use-ls-dired nil)
   (require 'ls-lisp)
   (setq ls-lisp-use-insert-directory-program nil))
