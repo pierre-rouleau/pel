@@ -2887,6 +2887,10 @@ d-mode not added to ac-modes!"
                      lfe-mode
                      inferior-lfe
                      run-lfe)
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension '(".lfe"
+                                  ".lfes"
+                                  ".lfesh")))
 
   (define-pel-global-prefix pel:for-lfe (kbd "<f11> SPC C-l"))
   (pel--lisp-languages-map-for pel:for-lfe)
