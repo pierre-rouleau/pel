@@ -370,6 +370,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-kmacro-start-macro-or-insert-counter
     pel-forget-recorded-keyboard-macro)
 
+  (pel-autoload "pel-lfe" for:
+    pel-lfe-eval-buffer)
+
   (pel-autoload "pel-line-control" for:
     pel-lc-previous-logical-line
     pel-lc-next-logical-line

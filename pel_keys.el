@@ -2904,6 +2904,7 @@ d-mode not added to ac-modes!"
   (pel--lisp-languages-map-for pel:for-lfe)
   (define-key pel:for-lfe "[" 'lfe-insert-brackets)
   (define-key pel:for-lfe "z" 'run-lfe)
+  (define-key pel:for-lfe (kbd "M-c") 'pel-lfe-eval-buffer)
 
   ;; Activate LFE setup.
   (pel-setup-major-mode lfe pel:for-lfe
