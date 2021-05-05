@@ -118,7 +118,7 @@ ring entry."
   "Show the names and values of the comment related variables.
 
 Open a *comment-vars* buffer and insert the information at the end of the
-buffer. Move last line of text to the last line of window.
+buffer.  Move last line of text to the last line of window.
 
 If the ONLY-USER-OPTIONS argument is non-nil, include only user option
 variables."
