@@ -2578,6 +2578,7 @@ d-mode not added to ac-modes!"
 (define-key pel:elisp-analyze   "f" #'elint-file)
 
 (define-pel-global-prefix pel:elisp-compile (kbd "<f11> SPC l c"))
+(define-key pel:for-elisp (kbd "M-c") 'pel-byte-compile-file-and-load)
 (define-key pel:elisp-compile "b"  'pel-byte-compile-file-and-load)
 (define-key pel:elisp-compile "d" #'byte-recompile-directory)
 (define-key pel:elisp-compile "f" #'byte-compile-file)
