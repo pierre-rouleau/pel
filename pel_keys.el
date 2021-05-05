@@ -2099,6 +2099,7 @@ d-mode not added to ac-modes!"
   (define-key pel:erlang-clause   "m"         'erlang-mark-clause)
   (define-key pel:for-erlang (kbd "M-p")      #'superword-mode)
   (define-key pel:for-erlang (kbd "M-9")      #'show-paren-mode)
+  (define-key pel:for-erlang (kbd "M-c")      'erlang-compile)
   (when pel-use-rainbow-delimiters
     (define-key pel:for-erlang (kbd "M-r")    'rainbow-delimiters-mode))
   (when pel-use-plantuml
