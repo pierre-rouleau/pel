@@ -1,6 +1,6 @@
 ;;; pel-comment.el --- PEL Comments Utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -44,7 +44,8 @@
 ;; - from: newcomment                    ; use: comment-kill
 ;; - from: simple                        ; use kill-ring
 
-(require 'pel--base)                     ; use: pel-toggle
+(require 'pel--base)                     ; use: pel-toggle,
+;;                                       ;       pel-print-in-buffer
 (eval-when-compile (require 'subr-x))    ; use: dolist, with-current-buffer
 
 ;;; --------------------------------------------------------------------------
@@ -124,7 +125,8 @@ variables."
   (interactive "P")
   (let ((comment-symbols '())
         (max-length 0)
-        (local-values-alist '())) ; maps symbol to it's buffer local value
+        (local-values-alist '()))     ; maps symbol to it's buffer local value
+    ;; Accumulate names of `comment-' variables and their values.
     (mapatoms (lambda (symbol)
                 (when (and (boundp symbol)
                            (or (not only-user-options)
@@ -134,6 +136,7 @@ variables."
                   (push symbol comment-symbols)
                   (push (cons symbol (symbol-value symbol))
                         local-values-alist))))
+    ;; Sort their names.
     (setq comment-symbols
           (sort comment-symbols (lambda (s1 s2)
                                   (let ((n1 (symbol-name s1)))
@@ -141,31 +144,21 @@ variables."
                                       (setq max-length (length n1)))
                                     (string< n1
                                              (symbol-name s2))))))
-    (let ((format-string (format "%%-%ds: %%S" max-length))
-          (lines '())
-          (context (format "buffer %s in %s" (buffer-name) major-mode))
-          (comment-vars-buffer (get-buffer-create "*comment-vars*")))
-      (with-current-buffer comment-vars-buffer
-        (goto-char (point-max))
-        (insert (format "----- List of comment %s from %s:\n"
-                        (if only-user-options
-                            "user options"
-                          "variables")
-                        context))
-        (insert (string-join
-                 (dolist (symbol comment-symbols (reverse lines))
-                   (push (format format-string
-                                 (symbol-name symbol)
-                                 (cdr (assoc symbol local-values-alist)))
-                         lines))
-                 "\n"))
-        (insert "\n\n")
-        (goto-char (point-max)))
-      ;; display the end part of the buffer showing comment variables
-      ;; move the last line of text to the bottom line of the window
-      (with-selected-window (display-buffer comment-vars-buffer)
-        (goto-char (- (point-max) 2))  ; last 2 chars are '\n'
-        (recenter -1)))))
+    ;; Print a report inside a specialized buffer.
+    (let ((format-string (format "%%-%ds: %%S\n" max-length)))
+      (pel-print-in-buffer
+       "*comment-vars*"
+       "Comment controlling variables"
+       (lambda ()
+         "Print comment control data."
+         (insert (format "----- List of comment %s:\n"
+                         (if only-user-options
+                             "user options"
+                           "variables")))
+         (dolist (symbol comment-symbols)
+           (insert (format format-string
+                           (symbol-name symbol)
+                           (cdr (assoc symbol local-values-alist))))))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-comment)
