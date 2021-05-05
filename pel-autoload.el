@@ -145,6 +145,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-kill-list-at-point
     pel-kill-paragraph-at-point
     pel-kill-char-at-point
+    pel-delete-all-empty-lines
     pel-delete-word-at-point
     pel-delete-word-part
     pel-delete-symbol-at-point

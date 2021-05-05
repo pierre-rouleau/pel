@@ -375,6 +375,18 @@ a negative N kills characters backwards."
 ;; ---------------------------------------------------------------------------
 ;; Delete Commands
 ;; ---------------
+
+(defun pel-delete-all-empty-lines (&optional begin end)
+  "Remove all empty lines from marked area or the entire buffer."
+  (interactive "*")
+  (let ((start-point (if (region-active-p)
+                         (region-beginning)
+                       (or begin (point-min))))
+        (end-point   (if (region-active-p)
+                         (region-end)
+                       (or end (point-max)))))
+    (flush-lines "^\\s-*$" start-point end-point)))
+
 ;;-pel-autoload
 (defun pel-delete-word-at-point ()
   "Delete the word at point."

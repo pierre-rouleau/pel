@@ -46,6 +46,7 @@
 
 (require 'pel--base)                     ; use: pel-toggle,
 ;;                                       ;       pel-print-in-buffer
+(require 'pel-ccp)                       ; use: pel-delete-all-empty-lines
 (eval-when-compile (require 'subr-x))    ; use: dolist, with-current-buffer
 
 ;;; --------------------------------------------------------------------------
@@ -107,11 +108,15 @@ ring entry."
       (comment-kill (count-lines start-point end-point)))))
 
 ;;-pel-autoload
-(defun pel-delete-all-comments ()
+(defun pel-delete-all-comments (&optional keep-empty-lines)
   "Delete all comments in current (possibly narrowed) buffer or marked region."
-  (interactive "*")
+  (interactive "*P")
   (let (kill-ring)
-    (pel-kill-all-comments)))
+    (pel-kill-all-comments)
+    (unless keep-empty-lines
+      (let ((start-point (if (region-active-p) (region-beginning) (point-min)))
+            (end-point   (if (region-active-p) (region-end) (point-max))))
+        (pel-delete-all-empty-lines start-point end-point )))))
 
 ;;-pel-autoload
 (defun pel-comment-show-variables (&optional only-user-options)

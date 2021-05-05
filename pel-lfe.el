@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, May  5 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-05 10:52:17, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-05 16:01:01, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -31,7 +31,7 @@
 ;;; Dependencies:
 ;;
 ;;  Currently loads LFE support lazily.
-
+(require 'pel-comment)                 ; use: pel-delete-all-comments
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -43,6 +43,8 @@ Start the inferior LFE process if it's not already running.
 Switch to the LFE buffer afterwards when AND-GO argument is non-nil."
   (interactive "P")
   (if (and (require 'inferior-lfe nil :no-error)
+           (require 'lfe-mode     nil :no-error)
+           (fboundp 'lfe-mode)
            (fboundp 'lfe-eval-region)
            (fboundp 'inferior-lfe))
       (progn
@@ -50,8 +52,13 @@ Switch to the LFE buffer afterwards when AND-GO argument is non-nil."
           (let ((original-window (selected-window)))
             (inferior-lfe nil)
             (select-window original-window)))
-        (lfe-eval-region (point-min) (point-max) and-go))
-    (user-error "Can't load inferior-lfe!")))
+        (let ((original-buffer (current-buffer)))
+          (with-temp-buffer
+            (insert-buffer-substring original-buffer)
+            (lfe-mode)
+            (pel-delete-all-comments)
+            (lfe-eval-region (point-min) (point-max) and-go))))
+    (user-error "Can't load LFE support!")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-lfe)

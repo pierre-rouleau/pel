@@ -3507,6 +3507,7 @@ d-mode not added to ac-modes!"
 (define-key pel:delete "r"  'pel-delete-rectangle)
 (define-key pel:kill   ";"  'pel-kill-all-comments)
 (define-key pel:delete ";"  'pel-delete-all-comments)
+(define-key pel:delete (kbd "M-SPC")  'pel-delete-all-empty-lines)
 
 (define-key pel:delete "*" #'delete-duplicate-lines)
 (define-key pel:kill   "l"  'pel-kill-or-delete-marked-or-whole-line)
