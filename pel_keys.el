@@ -3279,7 +3279,11 @@ d-mode not added to ac-modes!"
 
   (when pel-use-speedbar
     (pel-add-speedbar-extension '(".md"
-                                 ".markdown")))
+                                  ".markdown"
+                                  ".mkd"
+                                  ".mdown"
+                                  ".mkdn"
+                                  ".mdwn")))
 
   (pel-setup-major-mode markdown pel:for-markdown
     (when (eq pel-use-markdown-toc 'update-toc-on-save)
