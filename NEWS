@@ -717,6 +717,11 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
           toggle the activated mode.
     - New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-go][𝕻𝔩 - Go]] PDF that describes the commands available for the Go
      programming language.
+  - New: *Gleam*, an Erlang BEAM language
+    - New: added support for the Gleam programming language, activated when
+      the *pel-use-gleam* user-option is turned on (set to *t*).  The support
+      is very basic.
+    - New:  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-gleam][𝕻𝔩 - Gleam]] PDF.
   - Update: *Python*
     - Modified: binding to rainbow-delimiters-mode to ``<f12> M-r`` like it is
       for other programming languages.

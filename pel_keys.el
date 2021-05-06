@@ -1654,6 +1654,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-s - SQL
 ;; M-u - PlantUML
 ;; M-D - Dired
+;; M-G - Gleam           -              BEAM Language
 
 ;; ---------------------------------------------------------------------------
 ;; Syntax Check with Flycheck (if requested)
@@ -2916,6 +2917,23 @@ d-mode not added to ac-modes!"
  Cannot disable the problematic M-[ key.
  Function keys starting with F5 will no work!"
                          :error)))))
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-G `` : Gleam
+
+(when pel-use-gleam
+  (pel-install-github-files "pierre-rouleau/gleam-mode/master"
+                            "gleam-mode.el")
+  (pel-autoload-file gleam-mode for:
+                     gleam-mode)
+  (add-to-list 'auto-mode-alist '("\\.gleam\\'" . gleam-mode))
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".gleam"))
+
+  (define-pel-global-prefix pel:for-gleam (kbd "<f11> SPC M-G"))
+  (pel--lisp-languages-map-for pel:for-gleam)
+
+  ;; Activate GLEAM setup.
+  (pel-setup-major-mode gleam pel:for-gleam))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-h`` : Hy

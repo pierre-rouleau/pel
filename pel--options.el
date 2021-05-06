@@ -4860,7 +4860,8 @@ the copyright holder value."
   :group 'pel-pkg-for-lisp)
 
 (defcustom pel-use-lfe nil
-  "Control whether PEL supports Elixir development."
+  "Control whether PEL supports LFE development.
+LFE is Lisp Flavored Erlang, a Lisp language for the BEAM."
   :link `(url-link :tag "LFE PDF" ,(pel-pdf-file-url "pl-lfe"))
   :group 'pel-pkg-for-lfe
   :type 'boolean
@@ -4872,6 +4873,33 @@ the copyright holder value."
 Enter minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-lfe
+  :type '(repeat function))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Gleam Support
+;; -------------
+
+(defgroup pel-pkg-for-gleam nil
+  "PEL customization for GLEAM - a BEAM programming language."
+  :group 'pel-pkg-for-beam-vm
+  :group 'pel-pkg-for-lisp)
+
+(defcustom pel-use-gleam nil
+  "Control whether PEL supports Gleam development.
+Gleam is an experimental functional static-type checking language for the BEAM."
+  :link `(url-link :tag "Gleam PDF" ,(pel-pdf-file-url "pl-gleam"))
+  :link '(usr-link :tag "gleam-mode @ Github"
+                   "https://github.com/pierre-rouleau/gleam-mode")
+  :group 'pel-pkg-for-gleam
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-gleam :package-is 'gleam-mode)
+
+(defcustom pel-gleam-activates-minor-modes nil
+  "List of minor-modes automatically activated for GLEAM buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-gleam
   :type '(repeat function))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
