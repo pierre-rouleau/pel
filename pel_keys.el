@@ -2892,10 +2892,7 @@ d-mode not added to ac-modes!"
 ;; Note: the pel:execute has the run-lfe (in the code below.)
 (when pel-use-lfe
   (pel-ensure-package lfe-mode from: melpa)
-  (pel-autoload-file lfe-mode for:
-                     lfe-mode
-                     inferior-lfe
-                     run-lfe)
+  (require 'lfe-start nil :no-error)    ; autoloads lfe commands
   (when pel-use-speedbar
     (pel-add-speedbar-extension '(".lfe"
                                   ".lfes"
