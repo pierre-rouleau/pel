@@ -937,7 +937,7 @@ of the format used by `pel-install-github-file' that we be used
 to perform the installation with FNAME and URL-FNAME argument
 passed to that function.
 
-Issue a `user-error' on failure.
+Generate a warning when failing to load the FEATURE.
 Otherwise return the loading state of the FEATURE."
   (unless (featurep feature)
     (let ((feature-is-loaded (require feature nil :noerror)))
@@ -966,8 +966,10 @@ Otherwise return the loading state of the FEATURE."
                                      (format "\
 Failed loading %s even after installing package %s!"
                                              feature package))))))
-          (error "%s is not available, code does not request to load it!"
-                 feature)))))
+          (display-warning 'pel-require
+                           (format "pel-require(%s) failed. No request to install."
+                                   feature)
+                           :error)))))
   (featurep feature))
 
 (defmacro pel-require-at-load (feature)
