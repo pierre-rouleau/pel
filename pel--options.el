@@ -1387,6 +1387,19 @@ These only take effect when Emacs is running in graphics mode."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-deadgrep nil
+  "Control whether PEL uses the deadgrep external package.
+The deadgrep Emacs packages uses the ripgrep command line utility
+and implements a search mechanism that uses a dedicated deadgrep
+buffer with buttons that provide extra commands.
+It works well with Emacs in graphics mode with the mouse.
+It also supports the terminal mode."
+  :link '(url-link :tag "deadgrep @ GitHub"
+                   "https://github.com/Wilfred/deadgrep")
+  :group 'pel-pkg-for-grep
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-ripgrep nil
   "Control whether PEL uses the ripgrep tool and its associated packages.
 Ripgrep is a very fast grep utility, and two packages support ripgrep:
@@ -1398,12 +1411,12 @@ Setting `pel-use-ripgrep' to t indicates that you want to use ripgrep, so
 it identifies the installation of the `rg` package.  If you also set
 `pel-use-projectile' to non-nil, then the installation of the `ripgrep`
 package is also required because `projectile` uses the `ripgrep` package."
-  :link `(url-link :tag "rg @ Github"
-                   "https://github.com/dajva/rg.el")
-  :link `(url-link :tag "ripgrep @ GitHub"
-                   "https://github.com/BurntSushi/ripgrep")
-  :link `(url-link :tag "Emacs ripgrep @ GitHub"
-                   "https://github.com/nlamirault/ripgrep.el")
+  :link '(url-link :tag "rg @ Github"
+                  "https://github.com/dajva/rg.el")
+  :link '(url-link :tag "ripgrep @ GitHub"
+                  "https://github.com/BurntSushi/ripgrep")
+  :link '(url-link :tag "Emacs ripgrep @ GitHub"
+                  "https://github.com/nlamirault/ripgrep.el")
   :group 'pel-pkg-for-grep
   :type 'boolean
   :safe #'booleanp)
@@ -1411,6 +1424,7 @@ package is also required because `projectile` uses the `ripgrep` package."
                                            '((elpa . rg)
                                              (elpa . ripgrep))
                                          '((elpa \.rg))))
+
 
 ;; ---------------------------------------------------------------------------
 ;; Highlight Support

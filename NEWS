@@ -281,6 +281,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     search.
   - Modified: key bindings in pel:grep to better organize commands for [[https://github.com/ggreer/the_silver_searcher][ag]] and
     for better regularity.
+  - New: add support for [[https://github.com/Wilfred/deadgrep][deadgrep]] package, activated by the
+    *pel-use-deadgrep* user-option.  When it is turned on, the ``deadgrep`` command is bound
+    to ``<f11> g d``.
 - Update: *Help*:
   - New: Added a command (<f11> ? e c) to open a local copy of
     one of the [[https://www.gnu.org/software/emacs/refcards/index.html][Emacs PDF reference cards]]. The new *pel-emacs-refcard-dirpath*

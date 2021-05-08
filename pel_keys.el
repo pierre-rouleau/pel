@@ -4553,6 +4553,10 @@ the ones defined from the buffer now."
   (define-key pel:ag-kill  "o"   'ag-kill-other-buffers)
   (define-key pel:ag-kill  "p"   'ag/kill-process))
 
+(when pel-use-deadgrep
+  (pel-ensure-package deadgrep from: melpa)
+  (define-key pel:grep  "d"     'deadgrep))
+
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> h`` : highlight commands
 
