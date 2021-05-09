@@ -1891,7 +1891,7 @@ MODE must be a symbol."
       (display-warning 'pel--set-cc-style
                        "Problem loading cc-vars!"
                        :error)))
-  (declare-function pel-set-cc-style "pel_keys"))
+  (declare-function pel--set-cc-style "pel_keys"))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC c`` : C programming utilities
