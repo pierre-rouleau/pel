@@ -67,7 +67,9 @@ PEL might be for you!
     - See the `PEL Index PDF`_ as a starting point.
       For best user experience, use a browser, like Firefox, that can render
       the PDF inline so you can use the links quickly.  Inside Emacs use
-      ``<f11> <f1>`` to open the `PEL Index PDF`_ and then navigate from it.
+      ``<f11> <f1>`` to open the `PEL Index PDF`_ and then navigate from it,
+      or use ``<f12> <f1>`` to open the PDF related to the  major mode of the
+      current buffer.
 
   - `PEL's Manual`_ describes PEL features in more details. See:
 
