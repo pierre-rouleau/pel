@@ -19,62 +19,66 @@ PEL -- Pragmatic Environment Library for Emacs
 
 PEL might be for you!
 
-- PEL builds on `Emacs easy customization`_ to let you pick and choose various
-  behaviours and packages without the need for writing Emacs Lisp code.
+- PEL provide **customization-driven package management** built on `Emacs easy
+  customization`_ to pick and chose packages and behaviours, all without
+  having to write Emacs Lisp code.  PEL enhances Emacs customization system:
+  PEL provides keys to quickly access customization groups of Emacs built-in
+  and external Emacs Lisp libraries even if they are not even loaded.
 
-  - PEL provide **customization-driven package management** with controlled
-    download, installation, configuration and activation of **over 150**
-    *top-level* [1]_ external packages through the use of easy-to-setup
-    customization user-options.  These have a name that start with the
-    "``pel-use-``" prefix.  See the manual `built-in and external Emacs
-    packages`_ section.
+- PEL controls the download, installation, configuration and activation of
+  **over 190** *top-level* [1]_ external packages through the use of
+  easy-to-setup customization user-options that have a name that start with
+  the "``pel-use-``" prefix.  See the manual `built-in and external Emacs
+  packages`_ section.
 
-    - PEL integrates these packages and adds a large number of key bindings
-      **that mostly do not interfere with the standard Emacs key bindings**
-      (except for a very small few documented ones).
+- PEL can install packages from `GNU Elpa`_, MELPA_, and simple GitHub or
+  Gitlab repositories even when the files have not been setup as an
+  elpa-compliant package.
 
-    - PEL controls the activation of the loading of the selected packages, with
-      emphasis on:
+- Use the **pel-cleanup** command to **remove** deactivated packages not
+  requested by PEL user-options, moving those packages from the ``elpa``
+  or ``utils`` directory to the corresponding *attic* directories for
+  backup and later re-activation.
 
-      - reducing Emacs initialization time to a minimum [2]_ and,
-      - providing key bindings when Emacs is running in both graphics mode and
-        terminal mode.
+- PEL integrates these packages and adds a large number of key bindings
+  **that mostly do not interfere with the standard Emacs key bindings**
+  (except for a very small few documented ones).
 
-    - The **pel-cleanup** command deactivates packages not requested by PEL
-      user-options, removing the packages from the Elpa directory and placing
-      them in *attic* directories for backup and later re-activation.
+- PEL saves your customization data inside a file separate from your
+  ``init.el`` file, providing an extra degree of freedom and control when you
+  same these files in a (D)VCS. Save and restore your configurations from Git,
+  Mercurial or any VCS.
 
-  - PEL provides several context-sensitive key sequences to access
-    customization groups for PEL, Emacs and external packages, to help you
-    fine tune your Emacs customization quickly.
+- PEL controls the activation of the loading of the selected packages, with
+  emphasis on:
 
-    - PEL provides access to customization groups for features not even loaded
-      yet.  Increasing your awareness of available features.
+  - reducing Emacs initialization time to a minimum [2]_ and,
+  - providing key bindings when Emacs is running in both graphics mode and
+    terminal mode,
+  - adding extra commands that complement Emacs commands and the commands of
+    external packages.
 
-  - PEL saves your customization data inside a file separate from your
-    ``init.el`` file, providing an extra degree of freedom and control when
-    you same these files in a (D)VCS. Save and restore your configurations
-    from Git, Mercurial or any VCS.
+- PEL **extends Emacs documentation**:
 
-- PEL documentation and code emphasizes the ability to execute commands in
-  both terminal and graphics mode.
-- PEL also implements its own `PEL convenience features`_ sometimes extending or
-  integrating existing packages.
+  - PEL provides **Over 100 PDF topics oriented reference sheets** with
+    hyperlinks to Emacs manuals, external packages, articles and other
+    references.
 
-PEL comes with lots of overview and reference documentation:
+    - See the `PEL Index PDF`_ as a starting point.
+      For best user experience, use a browser, like Firefox, that can render
+      the PDF inline so you can use the links quickly.  Inside Emacs use
+      ``<f11> <f1>`` to open the `PEL Index PDF`_ and then navigate from it.
 
-- `PEL's Manual`_,
+  - `PEL's Manual`_ describes PEL features in more details. See:
 
-  - Read the section on `How to install PEL`_.
+    - `How to install PEL`_,
+    - `PEL convenience features`_ ,
+    - `Key Bindings Documentation`_,
+    - `PDF reference sheets`_.
 
-- **Over 100 PDF reference sheets** organized by topics with hyperlinks to Emacs
-  manuals, external packages, articles and other references.
 
-  - See the `PEL Index PDF`_ and `PEL Key Maps PDF`_ as a starting point.
-    For best user experience, use a browser, like Firefox, that can render
-    the PDF inline so you can use the links quickly.
-  - See the manual sections on `Key Bindings Documentation`_, and the `PDF
-    reference sheets`_.
+
+
 
 **Credits**
 
@@ -93,12 +97,15 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 *Notes*:
 
 .. [1] An external package may have dependencies.  The dependencies are also
-       installed. PEL currently provides access to over 150 top-level
+       installed. PEL currently provides access to over 190 top-level
        packages. The actual number of packages is larger when counting their dependencies.
 
 .. [2] **Quick initialization**: On my system with 182 packages with benchmark-init on I get 0.3 to 0.4 seconds
        on a 2014 iMac running macOS Mojave in terminal mode and 0.6 seconds in
-       graphics mode, and get similar times on Linux running inside VMs.
+       graphics mode, and get similar times on Linux running inside VMs.  I
+       can reduce this further by reducing the number of features supported by
+       turning them off and run **M-x pel-cleanup** to remove them from Emacs
+       path and internal processing.
 
 .. links
 
@@ -127,6 +134,8 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _How to install PEL:         doc/pel-manual.rst#how-to-install-pel
 .. _NEWS file:                  NEWS
 .. _discussion board:           https://github.com/pierre-rouleau/pel/discussions
+.. _GNU Elpa:                   https://elpa.gnu.org
+.. _MELPA:                      https://melpa.org/#/
 
 
 ..
