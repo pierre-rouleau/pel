@@ -1854,6 +1854,7 @@ bind it again after this call."
       (define-key c-preproc-prefix "n" 'pel-pp-next-directive)
       (define-key c-preproc-prefix "p" 'pel-pp-prev-directive)
       (define-key c-preproc-prefix "?" 'pel-pp-show-state)))
+  (declare-function pel--map-cc-for "pel_keys")
 
   (defun pel--setup-for-cc ()
     "More setup for CC modes: add c preprocessor hydra."
@@ -1865,6 +1866,7 @@ bind it again after this call."
     (when (and pel-use-hydra
                (fboundp 'pel--load-hydra))
       (pel--load-hydra :no-request)))
+  (declare-function pel--setup-for-cc "pel_keys")
 
   (defun pel--set-cc-style (mode bracket-style newline-mode)
     "Set the BRACKET-STYLE and NEWLINE-MODE for MODE.
@@ -1888,7 +1890,8 @@ MODE must be a symbol."
           (local-set-key     (kbd "RET")   'pel-cc-newline))
       (display-warning 'pel--set-cc-style
                        "Problem loading cc-vars!"
-                       :error))))
+                       :error)))
+  (declare-function pel-set-cc-style "pel_keys"))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC c`` : C programming utilities
