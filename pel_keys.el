@@ -1653,8 +1653,10 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-r - reStructuredText
 ;; M-s - SQL
 ;; M-u - PlantUML
+;; M-A - Alpaca          -              BEAM Language, Functional/ML
 ;; M-D - Dired
 ;; M-G - Gleam           -              BEAM Language
+;; M-H - Hamler          -              BEAM Language, Functional/ML/Haskell
 
 ;; ---------------------------------------------------------------------------
 ;; Syntax Check with Flycheck (if requested)
@@ -2935,6 +2937,27 @@ d-mode not added to ac-modes!"
 
   ;; Activate GLEAM setup.
   (pel-setup-major-mode gleam pel:for-gleam))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-H `` : Hamler
+;; Programming Language Family: BEAM, Functional/ML/Haskell
+;; Future: hamler-mode is not written yet
+;;
+;; (when pel-use-hamler
+;;   (cl-eval-when 'load
+;;     (pel-install-github-files "hamler-lang/hamler-mode/master"
+;;                               "hamler-mode.el"))
+;;   (pel-autoload-file hamler-mode for:
+;;                      hamler-mode)
+;;   (add-to-list 'auto-mode-alist '("\\.hm\\'" . hamler-mode))
+;;   (when pel-use-speedbar
+;;     (pel-add-speedbar-extension ".hm"))
+;;
+;;   (define-pel-global-prefix pel:for-hamler (kbd "<f11> SPC M-H"))
+;;   (pel--lisp-languages-map-for pel:for-hamler)
+;;
+;;   ;; Activate HAMLER setup.
+;;   (pel-setup-major-mode hamler pel:for-hamler))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; BEAM programming Language common tools
