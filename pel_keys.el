@@ -2041,251 +2041,6 @@ d-mode not added to ac-modes!"
     ))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` : Erlang programming
-
-(when pel-use-erlang
-  (define-pel-global-prefix pel:for-erlang (kbd "<f11> SPC e"))
-  (define-pel-global-prefix pel:erlang-function (kbd "<f11> SPC e f"))
-  (define-pel-global-prefix pel:erlang-clause   (kbd "<f11> SPC e c"))
-  (define-pel-global-prefix pel:erlang-analysis (kbd "<f11> SPC e a"))
-  (define-pel-global-prefix pel:erlang-debug    (kbd "<f11> SPC e d"))
-  (define-pel-global-prefix pel:erlang-skel     (kbd "<f11> SPC e <f12>"))
-
-  (pel-ensure-package erlang from: melpa)
-  (pel-autoload-file erlang for: erlang-mode)
-
-  (pel-set-auto-mode erlang-mode for:
-                     "\\.erl?$"
-                     "\\.hrl?$"
-                     "rebar\\.config$"
-                     "relx\\.config$"
-                     "sys\\.config\\.src$"
-                     "sys\\.config$"
-                     "\\.config\\.src?$"
-                     "\\.config\\.script?$"
-                     "\\.app?$"
-                     "\\.app.src?$"
-                     "\\Emakefile")
-
-  ;; Overcome omission bug in erlang-mode: add support for Speedbar
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension '(".erl"
-                                  ".hrl"
-                                  ".escript")))
-
-  (when pel-erlang-shell-prevent-echo
-    ;; Prevent erlang shell to echo back commands.
-    (add-hook 'erlang-shell-mode-hook 'pel-erlang-shell-mode-init))
-
-
-  ;; Augment the skeletons defined inside erlang.el.
-  ;; Do this once - right after erlang.el file is loaded and
-  ;; before the erlang-mode executes.
-  (advice-add 'erlang-mode :before #'pel--erlang-mode-setup)
-
-  ;; bind other erlang keys
-  (define-key pel:for-erlang      "?"         'erlang-version)
-  (define-key pel:erlang-function "N"         'pel-beginning-of-next-defun)
-  (define-key pel:erlang-function "P"         'beginning-of-defun)
-  (define-key pel:erlang-function "n"         'pel-next-erl-function)
-  (define-key pel:for-erlang (kbd "<down>")   'pel-next-erl-function)
-  (define-key pel:erlang-function "p"         'pel-previous-erl-function)
-  (define-key pel:for-erlang (kbd "<up>")     'pel-previous-erl-function)
-  (define-key pel:erlang-clause   "a"         'erlang-beginning-of-clause)
-  (define-key pel:for-erlang (kbd "<M-up>")   'erlang-beginning-of-clause)
-  (define-key pel:erlang-clause   "p"         'pel-end-of-previous-clause)
-  (define-key pel:for-erlang (kbd "<M-left>") 'pel-end-of-previous-clause)
-  (define-key pel:erlang-clause   "n"         'pel-beginning-of-next-clause)
-  (define-key pel:for-erlang (kbd "<M-down>") 'pel-beginning-of-next-clause)
-  (define-key pel:erlang-clause   "e"         'erlang-end-of-clause)
-  (define-key pel:for-erlang (kbd "<M-right>") 'erlang-end-of-clause)
-  (define-key pel:erlang-function "m"         'erlang-mark-function)
-  (define-key pel:erlang-clause   "m"         'erlang-mark-clause)
-  (define-key pel:for-erlang (kbd "M-p")      #'superword-mode)
-  (define-key pel:for-erlang (kbd "M-9")      #'show-paren-mode)
-  (define-key pel:for-erlang (kbd "M-c")      'erlang-compile)
-  (when pel-use-rainbow-delimiters
-    (define-key pel:for-erlang (kbd "M-r")    'rainbow-delimiters-mode))
-  (when pel-use-plantuml
-    (define-key pel:for-erlang "u"     'pel-render-commented-plantuml))
-
-  (pel-eval-after-load erlang
-    ;; TODO: do we want to set erlang-root-dir, which is a user-option?
-    (if (boundp 'erlang-root-dir)
-        (unless erlang-root-dir
-          (setq erlang-root-dir (expand-file-name pel-erlang-rootdir)))
-      (display-warning 'pel-use-erlang
-                       "erlang-root-dir is void, can't set it!"
-                       :error))
-    (when (file-exists-p pel-erlang-exec-path)
-      (add-to-list 'exec-path pel-erlang-exec-path) )
-    ;;
-    (require 'erlang-start)
-    (when pel-use-edts
-      (pel-ensure-package edts from: melpa)
-      (pel-autoload-file edts for: edts-mode)
-
-      (defun edts-mode-desktop-restore  (&rest args)
-        "Restore EDTS mode desktop with specified ARGS.
-        Prevent edts errors from stopping desktop restoration."
-        ;; log a message for each restoration to help understand potential failure.
-        (message "Desktop: (edts-mode-desktop-restore %S)" args)
-        (with-demoted-errors "Desktop: Problem restoring edts-mode: %S"
-          (if (fboundp 'edts-mode)
-              ;; If EDTS mode is available allow restoration but catch errors.
-              ;; If an error is detected, disable EDTS mode because EDTS can fail
-              ;; but the mode can still show as active(!).
-              (condition-case err
-                  (edts-mode 1)
-                (error
-                 (progn
-                   (display-warning
-                    'pel-use-edts
-                    (format "Desktop: Error detected activating EDTS mode: %s"
-                            (error-message-string err))
-                    :error)
-                   (edts-mode -1))))
-            (display-warning
-             'pel-use-edts
-             "edts-mode is void.  Is it installed?"
-             :error))))
-
-      ;; Key to start EDTS
-      (define-key pel:for-erlang      (kbd "M-SPC")   'edts-mode)
-      (when pel-activate-edts-automatically
-        (require 'edts-start))
-      (pel-eval-after-load edts
-        (add-to-list 'desktop-minor-mode-handlers
-                     '(edts-mode . edts-mode-desktop-restore))
-        (unless pel-activate-edts-automatically
-          (require 'edts-start))
-        ;; EDTS keys
-        ;; The following do not seem to do anything special in Erlang.
-        ;; (define-key pel:for-erlang      ">"     'ahs-forward-definition)
-        ;; (define-key pel:for-erlang      "<"     'ahs-backward-definition)
-        ;;  edts cross reference command keys
-        (define-key pel:for-erlang "w" 'edts-xref-who-calls)
-        (define-key pel:for-erlang "W" 'edts-xref-last-who-calls)
-        ;;  edts cross reference
-        (define-key pel:for-erlang (kbd "M-f") 'edts-find-local-function)
-        (define-key pel:for-erlang (kbd "M-g") 'edts-find-global-function)
-        ;; edts refactoring
-        (define-key pel:for-erlang "r" 'edts-refactor-extract-function)
-        ;; edts man page use
-        (define-key pel:for-erlang "`" 'edts-man-setup)
-        (define-key pel:for-erlang "h" 'edts-show-doc-under-point)
-        (define-key pel:for-erlang "H" 'edts-find-doc)
-        ;; edts code analysis
-        (define-key pel:erlang-analysis "a" 'edts-dialyzer-analyze)
-        (define-key pel:erlang-analysis "t" 'edts-code-eunit)
-        (define-key pel:erlang-analysis "c" 'edts-code-compile-and-display)
-        ;; edts debug
-        (define-key pel:erlang-debug "b" 'edts-debug-toggle-breakpoint)
-        (define-key pel:erlang-debug "B" 'edts-debug-list-breakpoints)
-        (define-key pel:erlang-debug "p" 'edts-debug-list-processes)
-        (define-key pel:erlang-debug "i" 'edts-debug-toggle-interpreted)
-        (define-key pel:erlang-debug "I" 'edts-debug-list-interpreted)
-        ;; edts node
-        (define-key pel:for-erlang "N" 'edts-buffer-node-name)
-        (define-key pel:for-erlang "x" 'edts-shell)
-        (define-key pel:for-erlang "X" 'edts-api-start-server)
-        ;; EDTS/(automatic highlight symbol)  features
-        (define-key pel:for-erlang "e" 'edts-ahs-edit-current-function)
-        (define-key pel:for-erlang "E" 'edts-ahs-edit-buffer)
-        (define-key pel:for-erlang "n" 'ahs-forward)
-        (define-key pel:for-erlang "p" 'ahs-backward)
-        (define-key pel:for-erlang "." 'ahs-back-to-start)))
-
-    (when pel-use-erlang-syntax-check
-      (cond
-       ;; when using flymake with Erlang
-       ((eq pel-use-erlang-syntax-check 'with-flymake)
-        (pel-require 'erlang-flymake :install-when-missing)
-        ;; The erlang-flymake.el code hooks flymake-mode to erlang-mode
-        ;; forcing flymake-mode on all Erlang files. Leave it if erlang-mode
-        ;; was identified as a mode to automatically activate syntax checking,
-        ;; otherwise remove the hook.
-        (unless (memq 'erlang-mode pel-modes-activating-syntax-check)
-          (remove-hook 'erlang-mode-hook #'flymake-mode))
-        (when (boundp 'flymake-mode-map)
-          (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
-          (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)))
-
-       ;; when using flycheck with Erlang
-       ((eq pel-use-erlang-syntax-check 'with-flycheck)
-
-        (defun pel--erlang-setup-for-flycheck ()
-          "Setup flycheck."
-          ;; Note that both flycheck-select-checker and flycheck-mode
-          ;; are autoloaded.  See section: 'Syntax Check with Flycheck'
-          (flycheck-select-checker 'erlang-otp)
-          (flycheck-mode))
-        (declare-function pel--erlang-setup-for-flycheck "pel_keys")
-
-        ;; (flycheck-define-checker erlang-otp
-        ;;   "An Erlang syntax checker using the Erlang interpreter."
-        ;;   :command ("erlc" "-o" temporary-directory "-Wall"
-        ;;             "-I" "../include" "-I" "../../include"
-        ;;             "-I" "../../../include" source)
-        ;;   :error-patterns
-        ;;   ((warning line-start (file-name) ":" line ": Warning:"
-        ;;             (message) line-end)
-        ;;    (error line-start (file-name) ":" line ": " (message) line-end)))
-
-        (when (memq 'erlang-mode pel-modes-activating-syntax-check)
-          (add-hook 'erlang-mode-hook #'pel--erlang-setup-for-flycheck))))
-
-      ;; When any syntax checker is used with Erlang add a key to toggle it
-      (define-key pel:for-erlang "!" 'pel-erlang-toggle-syntax-checker)))
-
-  (pel-setup-major-mode erlang pel:for-erlang
-    ;; "Activate Erlang setup."
-    ;; set fill-column to Erlang's default if specified
-    (when pel-erlang-fill-column
-      (setq fill-column pel-erlang-fill-column))
-    ;; setup the Erlang-specific key bindings
-    (pel--install-erlang-skel pel:erlang-skel)
-    ;; Configure M-( to put parentheses after a function name.
-    (set (make-local-variable 'parens-require-spaces) nil)))
-
-;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC x`` : Elixir programming
-(when pel-use-elixir
-  (pel-ensure-package elixir-mode from: melpa)
-  (pel-autoload-file elixir-mode for: elixir-mode)
-
-  (define-pel-global-prefix pel:for-elixir (kbd "<f11> SPC x"))
-
-  (define-key pel:for-elixir (kbd "M-p") #'superword-mode)
-  (when pel-use-plantuml
-    (define-key pel:for-elixir "u" 'pel-render-commented-plantuml))
-
-  (when pel-use-alchemist
-    (pel-ensure-package alchemist from: melpa)
-    (pel-autoload-file alchemist for:
-                       alchemist-iex-mode
-                       alchemist-iex-run))
-  (when pel-use-elixir-exunit
-    (pel-ensure-package exunit from: melpa)
-    (pel-autoload-file exunit for:
-                       exunit-mode
-                       exunit-rerun
-                       exunit-verify-all
-                       exunit-verify-all-in-umbrella
-                       exunit-verify-single
-                       exunit-verify
-                       exunit-toggle-file-and-test
-                       exunit-toggle-file-and-test-other-window))
-
-  (when pel-use-elixir-lsp
-    (pel-ensure-package lsp-elixir from: melpa)
-    (pel-autoload-file lsp-elixir for: elixir-mode)
-    (add-hook 'elixir-mode-hook 'lsp))
-
-  ;; Activate Elixir setup.
-  (pel-setup-major-mode elixir pel:for-elixir))
-
-;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` : Forth programming
 (when pel-use-forth
   (pel-ensure-package forth-mode from: melpa)
@@ -2889,8 +2644,255 @@ d-mode not added to ac-modes!"
   (pel-setup-major-mode gerbil pel:for-gerbil))
 
 ;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` : Erlang programming
+;; Programming Language Family: BEAM
+(when pel-use-erlang
+  (define-pel-global-prefix pel:for-erlang (kbd "<f11> SPC e"))
+  (define-pel-global-prefix pel:erlang-function (kbd "<f11> SPC e f"))
+  (define-pel-global-prefix pel:erlang-clause   (kbd "<f11> SPC e c"))
+  (define-pel-global-prefix pel:erlang-analysis (kbd "<f11> SPC e a"))
+  (define-pel-global-prefix pel:erlang-debug    (kbd "<f11> SPC e d"))
+  (define-pel-global-prefix pel:erlang-skel     (kbd "<f11> SPC e <f12>"))
+
+  (pel-ensure-package erlang from: melpa)
+  (pel-autoload-file erlang for: erlang-mode)
+
+  (pel-set-auto-mode erlang-mode for:
+                     "\\.erl?$"
+                     "\\.hrl?$"
+                     "rebar\\.config$"
+                     "relx\\.config$"
+                     "sys\\.config\\.src$"
+                     "sys\\.config$"
+                     "\\.config\\.src?$"
+                     "\\.config\\.script?$"
+                     "\\.app?$"
+                     "\\.app.src?$"
+                     "\\Emakefile")
+
+  ;; Overcome omission bug in erlang-mode: add support for Speedbar
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension '(".erl"
+                                  ".hrl"
+                                  ".escript")))
+
+  (when pel-erlang-shell-prevent-echo
+    ;; Prevent erlang shell to echo back commands.
+    (add-hook 'erlang-shell-mode-hook 'pel-erlang-shell-mode-init))
+
+
+  ;; Augment the skeletons defined inside erlang.el.
+  ;; Do this once - right after erlang.el file is loaded and
+  ;; before the erlang-mode executes.
+  (advice-add 'erlang-mode :before #'pel--erlang-mode-setup)
+
+  ;; bind other erlang keys
+  (define-key pel:for-erlang      "?"         'erlang-version)
+  (define-key pel:erlang-function "N"         'pel-beginning-of-next-defun)
+  (define-key pel:erlang-function "P"         'beginning-of-defun)
+  (define-key pel:erlang-function "n"         'pel-next-erl-function)
+  (define-key pel:for-erlang (kbd "<down>")   'pel-next-erl-function)
+  (define-key pel:erlang-function "p"         'pel-previous-erl-function)
+  (define-key pel:for-erlang (kbd "<up>")     'pel-previous-erl-function)
+  (define-key pel:erlang-clause   "a"         'erlang-beginning-of-clause)
+  (define-key pel:for-erlang (kbd "<M-up>")   'erlang-beginning-of-clause)
+  (define-key pel:erlang-clause   "p"         'pel-end-of-previous-clause)
+  (define-key pel:for-erlang (kbd "<M-left>") 'pel-end-of-previous-clause)
+  (define-key pel:erlang-clause   "n"         'pel-beginning-of-next-clause)
+  (define-key pel:for-erlang (kbd "<M-down>") 'pel-beginning-of-next-clause)
+  (define-key pel:erlang-clause   "e"         'erlang-end-of-clause)
+  (define-key pel:for-erlang (kbd "<M-right>") 'erlang-end-of-clause)
+  (define-key pel:erlang-function "m"         'erlang-mark-function)
+  (define-key pel:erlang-clause   "m"         'erlang-mark-clause)
+  (define-key pel:for-erlang (kbd "M-p")      #'superword-mode)
+  (define-key pel:for-erlang (kbd "M-9")      #'show-paren-mode)
+  (define-key pel:for-erlang (kbd "M-c")      'erlang-compile)
+  (when pel-use-rainbow-delimiters
+    (define-key pel:for-erlang (kbd "M-r")    'rainbow-delimiters-mode))
+  (when pel-use-plantuml
+    (define-key pel:for-erlang "u"     'pel-render-commented-plantuml))
+
+  (pel-eval-after-load erlang
+    ;; TODO: do we want to set erlang-root-dir, which is a user-option?
+    (if (boundp 'erlang-root-dir)
+        (unless erlang-root-dir
+          (setq erlang-root-dir (expand-file-name pel-erlang-rootdir)))
+      (display-warning 'pel-use-erlang
+                       "erlang-root-dir is void, can't set it!"
+                       :error))
+    (when (file-exists-p pel-erlang-exec-path)
+      (add-to-list 'exec-path pel-erlang-exec-path) )
+    ;;
+    (require 'erlang-start)
+    (when pel-use-edts
+      (pel-ensure-package edts from: melpa)
+      (pel-autoload-file edts for: edts-mode)
+
+      (defun edts-mode-desktop-restore  (&rest args)
+        "Restore EDTS mode desktop with specified ARGS.
+        Prevent edts errors from stopping desktop restoration."
+        ;; log a message for each restoration to help understand potential failure.
+        (message "Desktop: (edts-mode-desktop-restore %S)" args)
+        (with-demoted-errors "Desktop: Problem restoring edts-mode: %S"
+          (if (fboundp 'edts-mode)
+              ;; If EDTS mode is available allow restoration but catch errors.
+              ;; If an error is detected, disable EDTS mode because EDTS can fail
+              ;; but the mode can still show as active(!).
+              (condition-case err
+                  (edts-mode 1)
+                (error
+                 (progn
+                   (display-warning
+                    'pel-use-edts
+                    (format "Desktop: Error detected activating EDTS mode: %s"
+                            (error-message-string err))
+                    :error)
+                   (edts-mode -1))))
+            (display-warning
+             'pel-use-edts
+             "edts-mode is void.  Is it installed?"
+             :error))))
+
+      ;; Key to start EDTS
+      (define-key pel:for-erlang      (kbd "M-SPC")   'edts-mode)
+      (when pel-activate-edts-automatically
+        (require 'edts-start))
+      (pel-eval-after-load edts
+        (add-to-list 'desktop-minor-mode-handlers
+                     '(edts-mode . edts-mode-desktop-restore))
+        (unless pel-activate-edts-automatically
+          (require 'edts-start))
+        ;; EDTS keys
+        ;; The following do not seem to do anything special in Erlang.
+        ;; (define-key pel:for-erlang      ">"     'ahs-forward-definition)
+        ;; (define-key pel:for-erlang      "<"     'ahs-backward-definition)
+        ;;  edts cross reference command keys
+        (define-key pel:for-erlang "w" 'edts-xref-who-calls)
+        (define-key pel:for-erlang "W" 'edts-xref-last-who-calls)
+        ;;  edts cross reference
+        (define-key pel:for-erlang (kbd "M-f") 'edts-find-local-function)
+        (define-key pel:for-erlang (kbd "M-g") 'edts-find-global-function)
+        ;; edts refactoring
+        (define-key pel:for-erlang "r" 'edts-refactor-extract-function)
+        ;; edts man page use
+        (define-key pel:for-erlang "`" 'edts-man-setup)
+        (define-key pel:for-erlang "h" 'edts-show-doc-under-point)
+        (define-key pel:for-erlang "H" 'edts-find-doc)
+        ;; edts code analysis
+        (define-key pel:erlang-analysis "a" 'edts-dialyzer-analyze)
+        (define-key pel:erlang-analysis "t" 'edts-code-eunit)
+        (define-key pel:erlang-analysis "c" 'edts-code-compile-and-display)
+        ;; edts debug
+        (define-key pel:erlang-debug "b" 'edts-debug-toggle-breakpoint)
+        (define-key pel:erlang-debug "B" 'edts-debug-list-breakpoints)
+        (define-key pel:erlang-debug "p" 'edts-debug-list-processes)
+        (define-key pel:erlang-debug "i" 'edts-debug-toggle-interpreted)
+        (define-key pel:erlang-debug "I" 'edts-debug-list-interpreted)
+        ;; edts node
+        (define-key pel:for-erlang "N" 'edts-buffer-node-name)
+        (define-key pel:for-erlang "x" 'edts-shell)
+        (define-key pel:for-erlang "X" 'edts-api-start-server)
+        ;; EDTS/(automatic highlight symbol)  features
+        (define-key pel:for-erlang "e" 'edts-ahs-edit-current-function)
+        (define-key pel:for-erlang "E" 'edts-ahs-edit-buffer)
+        (define-key pel:for-erlang "n" 'ahs-forward)
+        (define-key pel:for-erlang "p" 'ahs-backward)
+        (define-key pel:for-erlang "." 'ahs-back-to-start)))
+
+    (when pel-use-erlang-syntax-check
+      (cond
+       ;; when using flymake with Erlang
+       ((eq pel-use-erlang-syntax-check 'with-flymake)
+        (pel-require 'erlang-flymake :install-when-missing)
+        ;; The erlang-flymake.el code hooks flymake-mode to erlang-mode
+        ;; forcing flymake-mode on all Erlang files. Leave it if erlang-mode
+        ;; was identified as a mode to automatically activate syntax checking,
+        ;; otherwise remove the hook.
+        (unless (memq 'erlang-mode pel-modes-activating-syntax-check)
+          (remove-hook 'erlang-mode-hook #'flymake-mode))
+        (when (boundp 'flymake-mode-map)
+          (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
+          (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)))
+
+       ;; when using flycheck with Erlang
+       ((eq pel-use-erlang-syntax-check 'with-flycheck)
+
+        (defun pel--erlang-setup-for-flycheck ()
+          "Setup flycheck."
+          ;; Note that both flycheck-select-checker and flycheck-mode
+          ;; are autoloaded.  See section: 'Syntax Check with Flycheck'
+          (flycheck-select-checker 'erlang-otp)
+          (flycheck-mode))
+        (declare-function pel--erlang-setup-for-flycheck "pel_keys")
+
+        ;; (flycheck-define-checker erlang-otp
+        ;;   "An Erlang syntax checker using the Erlang interpreter."
+        ;;   :command ("erlc" "-o" temporary-directory "-Wall"
+        ;;             "-I" "../include" "-I" "../../include"
+        ;;             "-I" "../../../include" source)
+        ;;   :error-patterns
+        ;;   ((warning line-start (file-name) ":" line ": Warning:"
+        ;;             (message) line-end)
+        ;;    (error line-start (file-name) ":" line ": " (message) line-end)))
+
+        (when (memq 'erlang-mode pel-modes-activating-syntax-check)
+          (add-hook 'erlang-mode-hook #'pel--erlang-setup-for-flycheck))))
+
+      ;; When any syntax checker is used with Erlang add a key to toggle it
+      (define-key pel:for-erlang "!" 'pel-erlang-toggle-syntax-checker)))
+
+  (pel-setup-major-mode erlang pel:for-erlang
+    ;; "Activate Erlang setup."
+    ;; set fill-column to Erlang's default if specified
+    (when pel-erlang-fill-column
+      (setq fill-column pel-erlang-fill-column))
+    ;; setup the Erlang-specific key bindings
+    (pel--install-erlang-skel pel:erlang-skel)
+    ;; Configure M-( to put parentheses after a function name.
+    (set (make-local-variable 'parens-require-spaces) nil)))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC x`` : Elixir programming
+;; Programming Language Family: BEAM
+(when pel-use-elixir
+  (pel-ensure-package elixir-mode from: melpa)
+  (pel-autoload-file elixir-mode for: elixir-mode)
+
+  (define-pel-global-prefix pel:for-elixir (kbd "<f11> SPC x"))
+
+  (define-key pel:for-elixir (kbd "M-p") #'superword-mode)
+  (when pel-use-plantuml
+    (define-key pel:for-elixir "u" 'pel-render-commented-plantuml))
+
+  (when pel-use-alchemist
+    (pel-ensure-package alchemist from: melpa)
+    (pel-autoload-file alchemist for:
+                       alchemist-iex-mode
+                       alchemist-iex-run))
+  (when pel-use-elixir-exunit
+    (pel-ensure-package exunit from: melpa)
+    (pel-autoload-file exunit for:
+                       exunit-mode
+                       exunit-rerun
+                       exunit-verify-all
+                       exunit-verify-all-in-umbrella
+                       exunit-verify-single
+                       exunit-verify
+                       exunit-toggle-file-and-test
+                       exunit-toggle-file-and-test-other-window))
+
+  (when pel-use-elixir-lsp
+    (pel-ensure-package lsp-elixir from: melpa)
+    (pel-autoload-file lsp-elixir for: elixir-mode)
+    (add-hook 'elixir-mode-hook 'lsp))
+
+  ;; Activate Elixir setup.
+  (pel-setup-major-mode elixir pel:for-elixir))
+
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-l `` : LFE programming
 ;; LFE := Lisp Flavoured Erlang
+;; Programming Language Family: BEAM, Lisp
 
 ;; Note: the pel:execute has the run-lfe (in the code below.)
 (when pel-use-lfe
@@ -2919,7 +2921,7 @@ d-mode not added to ac-modes!"
                          :error)))))
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-G `` : Gleam
-
+;; Programming Language Family: BEAM
 (when pel-use-gleam
   (pel-install-github-files "pierre-rouleau/gleam-mode/master"
                             "gleam-mode.el")
