@@ -4917,6 +4917,30 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Emacs Tools for BEAM languages
+;; ------------------------------
+;;
+;; The packages here can be used with more than on BEAM language and they
+;; are explicitly declared children of multiple packages to ease their access
+;; from all of the respective BEAM language groups.
+
+(defcustom pel-use-flycheck-rebar3 nil
+  "Control whether PEL supports the flycheck-rebar3 external package."
+  :link '(url-link :tag "flycheck-rebar3 @ GitHub"
+                   "https://github.com/joedevivo/flycheck-rebar3")
+  :group 'pel-pkg-for-erlang
+  :group 'pel-pkg-for-elixir
+  :group 'pel-pkg-for-lfe
+  :group 'pel-pkg-for-gleam
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-flycheck-rebar3 :requires '(pel-use-erlang
+                                              pel-use-elixir
+                                              pel-use-lfe
+                                              pel-use-gleam))
+;; TODO : add dependency on flycheck
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Forth support
 ;; -------------
 (defgroup pel-pkg-for-forth nil

@@ -2388,7 +2388,6 @@ d-mode not added to ac-modes!"
   (pel-autoload-file suggest for: suggest)
   (define-key pel:for-elisp "S" 'suggest))
 
-;;
 ;; activate the <f12> key binding for elisp-mode
 (pel-check-minor-modes-in pel-elisp-activates-minor-modes)
 (pel--mode-hook-maybe-call
@@ -2506,7 +2505,6 @@ d-mode not added to ac-modes!"
     (pel-install-github-files "pierre-rouleau/anarki/master/extras"
                               '("arc.el"
                                 "inferior-arc.el")))
-
   ;; associate .arc file with arc-mode
   (add-to-list 'auto-mode-alist '("\\.arc\\'" . arc-mode))
 
@@ -2923,8 +2921,9 @@ d-mode not added to ac-modes!"
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-G `` : Gleam
 ;; Programming Language Family: BEAM
 (when pel-use-gleam
-  (pel-install-github-files "pierre-rouleau/gleam-mode/master"
-                            "gleam-mode.el")
+  (cl-eval-when 'load
+    (pel-install-github-files "pierre-rouleau/gleam-mode/master"
+                              "gleam-mode.el"))
   (pel-autoload-file gleam-mode for:
                      gleam-mode)
   (add-to-list 'auto-mode-alist '("\\.gleam\\'" . gleam-mode))
@@ -2936,6 +2935,20 @@ d-mode not added to ac-modes!"
 
   ;; Activate GLEAM setup.
   (pel-setup-major-mode gleam pel:for-gleam))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; BEAM programming Language common tools
+(when (or pel-use-erlang
+          pel-use-elixir
+          pel-use-lfe
+          pel-use-gleam)
+  (when pel-use-flycheck-rebar3
+    (cl-eval-when 'load
+      (pel-install-github-files "joedevivo/flycheck-rebar3/master"
+                                "flycheck-rebar3.el"))
+    (pel-autoload-file flycheck-rebar3 for:
+                       flycheck-rebar3-setup)))
+;; TODO: test and complete dependency management of flycheck and rebar3
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-h`` : Hy
