@@ -4907,7 +4907,7 @@ Gleam is an experimental functional static-type checking language for the BEAM."
   :group 'pel-pkg-for-gleam
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-gleam :package-is 'gleam-mode)
+(pel-put 'pel-use-gleam :package-is :in-utils)
 
 (defcustom pel-gleam-activates-minor-modes nil
   "List of minor-modes automatically activated for GLEAM buffers.
@@ -4938,7 +4938,7 @@ Do not enter lambda expressions."
                                               pel-use-elixir
                                               pel-use-lfe
                                               pel-use-gleam))
-;; TODO : add dependency on flycheck
+;; TODO : ad dependency on flycheck
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Forth support
