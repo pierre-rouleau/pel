@@ -638,6 +638,11 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-window-select
     pel-window-direction-for)
 
+  (pel-autoload "pel-whitespace" for:
+    pel-toggle-delete-trailing-space-on-save)
+  (pel-autoload-function "pel-whitespace" for:
+    pel-delete-trailing-whitespace-if-activated)
+
   (pel-autoload "pel-xr" for:
     pel-xr-regxp
     pel-xr-at-point

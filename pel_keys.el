@@ -964,28 +964,10 @@ Then save your changes."
 ;; --------------------
 ;; As controlled by PEL customized user options.
 
-;; -- delete trailing whitespace
-
-(defun pel-toggle-delete-trailing-space-on-save (&optional globally)
-  "Toggle deletion of trailing spaces on file save and display current state.
-By default change behaviour for local buffer only.
-When GLOBALLY argument is non-nil, change it for all buffers for the current
-Emacs editing session (the change does not persist across Emacs sessions).
-To modify the global state permanently modify the customized value of the
-`pel-delete-trailing-whitespace' user option via the `pel-pkg-for-filemng'
-group customize buffer."
-  (interactive "P")
-  (pel-toggle-and-show-user-option 'pel-delete-trailing-whitespace globally))
-
-(defun pel--delete-trailing-whitespace (&optional start end)
-  "Delete trailing whitespace if currently active."
-  (when pel-delete-trailing-whitespace
-    (delete-trailing-whitespace start end)))
-
 (when pel-delete-trailing-whitespace
   ;; - Remove trailing whitespaces on file save
-  (add-hook 'before-save-hook  'pel--delete-trailing-whitespace)
-  (define-key pel: (kbd "M-W") 'pel-toggle-delete-trailing-space-on-save))
+  (add-hook 'before-save-hook  'pel-delete-trailing-whitespace-if-activated))
+(define-key pel: (kbd "M-W") 'pel-toggle-delete-trailing-space-on-save)
 
 ;; -- update time stamp
 
@@ -1595,7 +1577,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; Not all of these are implemented yet, but I'm documented the currently
 ;; reserved character.  This is for reference and planning.
 ;;
-;; 1   - APL
+;; .   - APL
 ;; A   - Ada
 ;; C   - C++
 ;; D   - D
@@ -5325,6 +5307,7 @@ the ones defined from the buffer now."
 (define-key pel:text-whitespace "o"         #'whitespace-toggle-options)
 (define-key pel:text-whitespace "T"        'pel-toggle-show-trailing-whitespace)
 (define-key pel:text-whitespace "t"         #'delete-trailing-whitespace)
+(define-key pel:text-whitespace (kbd "M-W") 'pel-toggle-delete-trailing-space-on-save)
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> v`` : VCS operations

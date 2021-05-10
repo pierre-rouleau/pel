@@ -94,6 +94,7 @@
 (require 'pel--base)        ; uses: pel-whitespace-in-str-p
 ;;                          ;       pel-chars-at-point
 (require 'pel--options)
+(require 'pel-whitespace)   ; uses: pel-delete-trailing-whitespace
 (require 'pel--macros)
 (require 'rst)              ; rst-mode code. Use rst-backward-section
 
@@ -230,11 +231,6 @@ if N is 0 use previous line, etc..."
 ;; then making it a stand-alone command will be worthwhile:
 ;; I want to reduce the dependencies to the maximum to reduce extra loading.
 ;;
-(defun pel-delete-trailing-whitespace ()
-  "Delete trailing whitespace on current line."
-  (let ((line-start-pos (progn (forward-line 0) (point)))
-        (line-end-pos   (progn (move-end-of-line nil))))
-    (delete-trailing-whitespace line-start-pos line-end-pos)))
 
 (defun pel-rst-adorn (&optional level update)
   "Adorn the current line as a reStructuredText section at the specified LEVEL.

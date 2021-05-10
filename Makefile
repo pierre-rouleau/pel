@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-05-05 16:30:55, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-05-10 08:59:05, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -210,6 +210,7 @@ EL_FILES := pel--base.el \
 		pel-text-transform.el \
 		pel-undo.el \
 		pel-uuid.el \
+		pel-whitespace.el \
 		pel-window.el \
 		pel-xr.el
 
@@ -573,7 +574,7 @@ pel-pp.elc:             pel--base.elc
 pel-ppindent.elc:       pel--base.elc pel-prompt.elc
 pel-prompt.elc:         pel--base.elc
 pel-read.elc:           pel-navigate.elc
-pel-rst.elc:            pel--base.elc pel--options.elc pel--macros.elc pel-bookmark.elc pel-file.elc
+pel-rst.elc:            pel--base.elc pel--options.elc pel-whitespace.elc pel--macros.elc pel-bookmark.elc pel-file.elc
 pel-search-regexp.elc:  pel--options.elc
 pel-search.elc:         pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-read.elc pel-search-regexp.elc pel-window.elc
 pel-skels-c.elc:        pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc pel-uuid.elc
@@ -587,6 +588,7 @@ pel-spell.elc:          pel--base.elc pel--options.elc pel--macros.elc
 pel-text-insert.elc:    pel--base.elc pel--macros.elc pel-window.elc
 pel-text-transform.elc: pel--base.elc
 pel-undo.elc:           pel--options.elc
+pel-whitespace.elc:     pel--base.elc pel--options.elc
 pel-window.elc:         pel--base.elc
 pel-xr.elc:             pel--base.elc pel-read.elc
 pel-xref.elc:           pel--base.elc pel--options.elc pel-prompt.elc pel-read.elc pel-text-transform.elc
