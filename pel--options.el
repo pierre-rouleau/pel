@@ -1093,7 +1093,6 @@ The Hippie Expand can be used together with any."
   :group 'files
   :link `(url-link :tag "File Management PDF" ,(pel-pdf-file-url "file-mngt")))
 
-
 (defcustom pel-delete-trailing-whitespace t
   "Controls whether whitespaces are automatically deleted when file is saved.
 Deleted automatically when non-nil, don't otherwise."
@@ -4884,6 +4883,13 @@ LFE is Lisp Flavored Erlang, a Lisp language for the BEAM."
 
 (defcustom pel-lfe-activates-minor-modes nil
   "List of minor-modes automatically activated for LFE buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-lfe
+  :type '(repeat function))
+
+(defcustom pel-inferior-lfe-activates-minor-modes nil
+  "List of minor-modes automatically activated for LFE shell buffers.
 Enter minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-lfe

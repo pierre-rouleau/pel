@@ -1577,6 +1577,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; Not all of these are implemented yet, but I'm documented the currently
 ;; reserved character.  This is for reference and planning.
 ;;
+;; SPC - prefix for sub keys
 ;; .   - APL
 ;; A   - Ada
 ;; C   - C++
@@ -1639,7 +1640,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-D - Dired
 ;; M-G - Gleam           -              BEAM Language
 ;; M-H - Hamler          -              BEAM Language, Functional/ML/Haskell
-
+;; SPC C-l - lfe-inferior-mode
 ;; ---------------------------------------------------------------------------
 ;; Syntax Check with Flycheck (if requested)
 ;; -----------------------------------------
@@ -2900,7 +2901,22 @@ d-mode not added to ac-modes!"
                          "The lfe-mode-map is not bound.
  Cannot disable the problematic M-[ key.
  Function keys starting with F5 will no work!"
-                         :error)))))
+                         :error))))
+
+  ;; Add <f12> keys to the LFE shell (no macro yet for that, spell it out)
+  ;; TODO simplify this code, integrate the ability to add <f12> key setup
+  ;;      to an inferior process mode to the macros I normally use.
+  (define-pel-global-prefix pel:for-inferior-lfe (kbd "<f11> SPC SPC C-l"))
+  ;; (pel-setup-major-mode inferior-lfe pel:for-inferior-lfe)
+  (defun pel--setup-for-inferior-lfe ()
+    "Activate inferior-lfe setup, take local variables into account."
+    (pel-local-set-f12-M-f12 'pel:for-inferior-lfe)
+    (pel-turn-on-minor-modes-in pel-inferior-lfe-activates-minor-modes))
+  (declare-function pel--setup-for-inferior-lfe "pel_keys")
+  (pel-check-minor-modes-in pel-inferior-lfe-activates-minor-modes)
+  (pel--mode-hook-maybe-call
+   (function pel--setup-for-inferior-lfe)
+   'inferior-lfe-mode 'inferior-lfe-mode-hook))
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-G `` : Gleam
 ;; Programming Language Family: BEAM

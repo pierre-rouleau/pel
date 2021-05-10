@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-04 16:00:51, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-10 16:26:55, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -196,6 +196,7 @@
                                                                  cider
                                                                  cljr))
     (,(kbd "<f11> SPC C-l") "pl-lfe"    pel-pkg-for-lfe         lfe)
+    (,(kbd "<f11> SPC SPC C-l") "pl-lfe" pel-pkg-for-lfe        lfe)
     (,(kbd "<f11> SPC C-r") nil         pel-pkg-for-racket      racket)
     (,(kbd "<f11> SPC C-s") "pl-scheme" pel-pkg-for-scheme      (scheme
                                                                  geiser
@@ -418,6 +419,7 @@ stored inside the doc/pdf directory.")
     ("gerbil"          [f11 32 7])
     ("hy"              [f11 32 8])
     ("lfe"             [f11 32 12])
+    ("inferior-lfe"    [f11 32 32 12])
     ("racket"          [f11 32 18])
     ("rexx"            [f11 32 ?R])
     ("rust"            [f11 32 ?r])
