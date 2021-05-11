@@ -45,7 +45,10 @@
 ;;     - pel-pkg-for-expand
 ;;     - pel-pkg-for-filemng
 ;;       - pel-pkg-for-browse
-;;         - pel-pkg-for-ztree
+;;         - pel-pkg-for-file-browse
+;;           - pel-pkg-for-neotree
+;;           - pel-pkg-for-ztree
+;;         - pel-pkg-for-web-browse
 ;;     - pel-pkg-for-frame
 ;;     - pel-pkg-for-graphics-emacs
 ;;       - pel-pkg-for-graphics-cursor
@@ -1180,18 +1183,23 @@ Note that:
   "PEL Directory Tree Browsing and Management."
   :group 'pel-pkg-for-filemng)
 
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defgroup pel-pkg-for-file-browse nil
+  "PEL Local File And Directory Tree Browsing and Management."
+  :group 'pel-pkg-for-browse)
+
 (defcustom pel-use-treemacs nil
   "Control whether PEL uses the treemacs package."
-  :group 'pel-pkg-for-browse
+  :group 'pel-pkg-for-file-browse
   :type 'boolean
   :safe #'booleanp
   :link `(url-link :tag "treemacs @ GitHub"
                    "https://github.com/Alexander-Miller/treemacs"))
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;;   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-pkg-for-neotree nil
   "PEL extra configuration for NeoTree package."
-    :group 'pel-pkg-for-browse)
+    :group 'pel-pkg-for-file-browse)
 
 (defcustom pel-use-neotree nil
   "Control whether PEL uses the Emacs NeoTree search package."
@@ -1220,11 +1228,10 @@ The Icons choice uses the icons from the package all-the-icons."
   :link `(url-link :tag "all-the-icons @ GitHub"
                    "https://github.com/domtronn/all-the-icons.el"))
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+;;   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-pkg-for-ztree nil
   "PEL extra configuration for ztree packages."
-    :group 'pel-pkg-for-browse)
+    :group 'pel-pkg-for-file-browse)
 
 (defcustom pel-use-ztree nil
   "Control whether the ztree package is used."
@@ -1256,6 +1263,36 @@ a non-customizable variable."
   :group 'pel-pkg-for-ztree
   :type 'boolean
   :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defgroup pel-pkg-for-web-browse nil
+  "PEL Web Browsing Options.
+
+See the documentation of the function `pel-help-pdf' for a description
+of the impact these user-option variable have."
+  :group 'pel-pkg-for-browse)
+
+(defcustom pel-browser-used nil
+  "Define which web browser to use when opening PEL PDF files."
+  :group 'pel-pkg-for-web-browse
+  :type '(choice
+          (const :tag "Use browser selected by `browse-url-browser-function'" nil)
+          (const :tag "Use Firefox." firefox)
+          (const :tag "Use Chrome" chrome)))
+
+(defcustom pel-open-pdf-method 'pdf-viewer
+  "Defines main/default method of opening PEL PDF files.
+
+The main method is either:
+
+- pdf-viewer, or
+- web-browser: the web browser identified by `pel-browser-used'.
+
+The alternate method is the other one."
+  :group 'pel-pkg-for-web-browse
+  :type '(choice
+          (const :tag "Open PEL PDF with PDF viewer." pdf-viewer)
+          (const :tag "Open PEL PDF with web browser." web-browser)))
 
 ;; ---------------------------------------------------------------------------
 ;; Frame Control
@@ -4734,11 +4771,14 @@ defcustom variable `pel-modes-activating-syntax-check'."
             '((elpa . flycheck))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defgroup pel-erlang-ide nil
+  "PEL customization of the IDE for Erlang."
+  :group 'pel-pkg-for-erlang)
 
 (defcustom pel-use-edts nil
   "Control whether PEL uses EDTS when `pel-use-erlang' is t.
 EDTS := Erlang Development Tool Suite."
-  :group 'pel-pkg-for-erlang
+  :group 'pel-erlang-ide
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-edts :requires 'pel-use-erlang)
@@ -4749,9 +4789,18 @@ Activates EDTS automatically on Erlang files if set to t, otherwise
 you must activate it manually with \\[edts-mode].
 Starting EDTS takes some time and will slow down opening Erlang files
 if configured to activate automatically."
-  :group 'pel-pkg-for-erlang
+  :group 'pel-erlang-ide
   :type 'boolean
   :safe #'booleanp)
+
+;; (defcustom pel-use-erlang_ls nil
+;;   "Control whether PEL uses the Erlang Language Server."
+;;   :link '(url-link :tag "erlang_ls @ GitHub"
+;;                    "https://github.com/erlang-ls/erlang_ls")
+;;   :group 'pel-erlang-ide
+;;   :type 'boolean
+;;   :safe #'booleanp)
+;; (pel-put 'pel-use-erlang_ls :requires 'pel-use-erlang)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-erlang-code-style nil

@@ -111,6 +111,8 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload-function "pel-bookmark" for: pel-bookmark-in-current-file-p)
 
+  (pel-autoload "pel-browse" for: pel-browse-url)
+
   (pel-autoload "pel-cc" for
     pel-cc-newline
     pel-cc-mode-info)

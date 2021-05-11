@@ -2663,7 +2663,6 @@ d-mode not added to ac-modes!"
     ;; Prevent erlang shell to echo back commands.
     (add-hook 'erlang-shell-mode-hook 'pel-erlang-shell-mode-init))
 
-
   ;; Augment the skeletons defined inside erlang.el.
   ;; Do this once - right after erlang.el file is loaded and
   ;; before the erlang-mode executes.

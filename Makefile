@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-05-10 08:59:05, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-05-11 15:29:35, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -133,6 +133,7 @@ EL_FILES := pel--base.el \
 		pel-autoload.el \
 		pel-benchmark.el \
 		pel-bookmark.el \
+		pel-browse.el \
 		pel-cc.el \
 		pel-ccp.el \
 		pel-comment.el \
@@ -230,6 +231,7 @@ TEST_FILES := pel-file-test.el pel-text-transform-test.el pel-package-test.el
 # Documentation PDF files to copy verbatim into the doc/pdfs
 PDF_FILES := -legend.pdf                        \
 	-pel-key-maps.pdf			\
+	-index.pdf                              \
 	abbreviations.pdf			\
 	align.pdf				\
 	asciidoc.pdf				\
@@ -292,6 +294,7 @@ PDF_FILES := -legend.pdf                        \
 	pl-forth.pdf				\
 	pl-go.pdf				\
 	pl-julia.pdf				\
+	pl-lfe.pdf                              \
 	pl-make.pdf				\
 	pl-netrexx.pdf				\
 	pl-python.pdf				\
@@ -519,13 +522,14 @@ $(DEST_DIR)/README: $(SRC_DIR)/README
 
 # TODO: find a way to generate the dependency list automatically by code scanning.
 
-pel--keys-macros.elc:   pel--base.elc pel--options.elc pel-prompt.elc
+pel--keys-macros.elc:   pel--base.elc pel--options.elc pel-browse.elc pel-prompt.elc
 pel--options.elc:       pel--base.elc
 pel-align.elc:          pel--base.elc
 pel-applescript.elc:    pel--base.elc pel--options.elc pel-read.elc
 pel-autocomplete.elc:   pel--base.elc pel--options.elc pel--macros.elc
 pel-autoload.elc:       pel--options.elc
 pel-bookmark.elc:       pel--base.elc
+pel-browse.elc:         pel--base.elc pel--options.elc
 pel-cc.elc:             pel--base.elc
 pel-ccp.elc:            pel--base.elc pel--options.elc pel-navigate.elc
 pel-comment-adorn.elc:  pel-rst.elc pel-comment.elc pel-mark.elc
