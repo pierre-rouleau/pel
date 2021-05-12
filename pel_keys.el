@@ -4506,6 +4506,9 @@ the ones defined from the buffer now."
 (define-key pel:dirvar "-"  #'delete-dir-local-variable)
 (define-key pel:dirvar "C"  #'copy-file-locals-to-dir-locals)
 
+(when pel-use-syslog-mode
+  (pel-ensure-package syslog-mode from: melpa))
+
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> F`` : Frame operations
 

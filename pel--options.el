@@ -2129,6 +2129,21 @@ The `pel-key-chords' value is a list of objects.
                        :value (lambda () (interactive) <YOUR CODE HERE>))))))
 
 ;; ---------------------------------------------------------------------------
+;; Log Files & Systems
+;; -------------------
+(defgroup pel-pkg-for-logging nil
+  "List of external packages that PEL can use to deal with logging."
+  :group 'pel-package-use)
+
+(defcustom pel-use-syslog-mode nil
+  "Control whether PEL uses the syslog-mode external package."
+  :link '(url-link :tag "syslog-mode @ GitHub"
+                   "https://github.com/vapniks/syslog-mode")
+  :group 'pel-pkg-for-logging
+  :type 'boolean
+  :safe #'booleanp)
+
+;; ---------------------------------------------------------------------------
 ;; Keys & Prompts
 ;; --------------
 (defgroup pel-pkg-for-keys nil
