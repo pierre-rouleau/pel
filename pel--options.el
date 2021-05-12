@@ -67,20 +67,32 @@
 ;;       - pel-pkg-for-drawing-markup
 ;;         - pel-pkg-for-graphviz-dot
 ;;         - pel-pkg-for-plantuml
+;;       - pel-pkg-for-markdown
+;;       - pel-pkg-for-org-mode
 ;;       - pel-pkg-for-reST
+;;       - pel-pkg-for-yaml
 ;;     - pel-pkg-for-navigation
 ;;       - pel-pkg-for-xref
 ;;     - pel-pkg-for-programming
 ;;       - pel-pkg-for-all-languages
+;;         - pel-pkg-for-language-server
+;;         - pel-pkg-generic-code-style
 ;;       - pel-pkg-for-applescript
 ;;       - pel-pkg-for-cc
 ;;         - pel-pkg-for-c
+;;           - pel-c-code-style
+;;             - pel-c-skeleton-control
+;;               - pel-c-module-header-skeleton-control
+;;               - pel-c-function-header-skeleton-control
 ;;         - pel-pkg-for-c++
+;;           - pel-c++-code-style
 ;;         - pel-pkg-for-d
+;;           - pel-d-code-style
 ;;       - pel-pkg-for-javascript
 ;;       - pel-pkg-for-go
 ;;       - pel-pkg-for-lisp
 ;;         - pel-pkg-for-clisp
+;;           - pel-clisp-code-style
 ;;           - pel-sexp-form-navigation
 ;;         - pel-pkg-for-elisp
 ;;           - pel-sexp-form-navigation
@@ -93,7 +105,12 @@
 ;;       - pel-pkg-for-beam-vm
 ;;         - pel-pkg-for-elixir
 ;;         - pel-pkg-for-erlang
+;;           - pel-erlang-ide
+;;           - pel-erlang-code-style
+;;             - pel-erlang-skeleton-control
 ;;         - pel-pkg-for-lfe
+;;         - pel-pkg-for-gleam
+;;       - pel-pkg-for-forth
 ;;       - pel-pkg-for-julia
 ;;       - pel-pkg-for-python
 ;;       - pel-pkg-for-rexx
@@ -2196,29 +2213,6 @@ waiting for activity to resume in the lewang's repo."
   :group 'pel-package-use)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; Org Mode Support
-;; ----------------
-
-(defgroup pel-pkg-for-org-mode  nil
-  "PEL Org Mode support."
-  :group 'pel-pkg-for-markup
-  :link `(url-link :tag "Org Mode PDF" ,(pel-pdf-file-url "mode-org-mode")))
-
-(defcustom pel-use-org-mode nil
-  "Control whether PEL supports Org-Mode."
-  :group 'pel-pkg-for-org-mode
-  :type 'boolean
-  :safe #'booleanp)
-(pel-put 'pel-use-org-mode :package-is :builtin-emacs)
-
-(defcustom pel-org-activates-minor-modes nil
-  "List of minor-modes automatically activated for Org-Mode buffers.
-Enter minor-mode activating function symbols.
-Do not enter lambda expressions."
-  :group 'pel-pkg-for-org-mode
-  :type '(repeat function))
-
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; AsciiDoc Support
 ;; ----------------
 (defgroup pel-pkg-for-asciidoc nil
@@ -2476,6 +2470,29 @@ activate this package."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-remark-mode :requires 'pel-use-markdown)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Org Mode Support
+;; ----------------
+
+(defgroup pel-pkg-for-org-mode  nil
+  "PEL Org Mode support."
+  :group 'pel-pkg-for-markup
+  :link `(url-link :tag "Org Mode PDF" ,(pel-pdf-file-url "mode-org-mode")))
+
+(defcustom pel-use-org-mode nil
+  "Control whether PEL supports Org-Mode."
+  :group 'pel-pkg-for-org-mode
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-org-mode :package-is :builtin-emacs)
+
+(defcustom pel-org-activates-minor-modes nil
+  "List of minor-modes automatically activated for Org-Mode buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-org-mode
+  :type '(repeat function))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; reStructuredText support
