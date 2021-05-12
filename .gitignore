@@ -74,4 +74,9 @@ pelpa/*
 # Mercurial DVCS files (when double repository is used)
 .hg*
 
+# Links to other directories / used for development
+elpa
+emacs-26.3
+emacslib
+
 # -----------------------------------------------------------------------------
