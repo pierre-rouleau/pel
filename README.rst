@@ -99,10 +99,10 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 
 *Notes*:
 
-.. [1] The instructions for installing PEL are located inside section 2 of `PEL manual`_.
+.. [1] The instructions for installing PEL are located inside `section 2`_ of `PEL manual`_.
        The manual is large and some browser do not always move to the right location.
-.. [2] The instructions for updating PEL are located inside section 3 of `PEL
-       manual`_.
+.. [2] The instructions for updating PEL are located inside `section 3`_ of `PEL
+       manual`_.  You can also use the `manual's table of contents`_ to move around.
        The manual is large and some browser do not always move to the right location.
 .. [3] An external package may have dependencies.  The dependencies are also
        installed. PEL currently provides access to over 190 top-level
@@ -141,12 +141,15 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _.emacs bankruptcy:          https://www.emacswiki.org/emacs/DotEmacsBankruptcy
 .. _wiki:                       https://github.com/pierre-rouleau/pel/wiki
 .. _install it:
+.. _section 2:
 .. _How to install PEL:         doc/pel-manual.rst#how-to-install-pel
+.. _section 3:
 .. _update it:                  doc/pel-manual.rst#updating-pel
 .. _NEWS file:                  NEWS
 .. _discussion board:           https://github.com/pierre-rouleau/pel/discussions
 .. _GNU Elpa:                   https://elpa.gnu.org
 .. _MELPA:                      https://melpa.org/#/
+.. _manual's table of contents: doc/pel-manual.rst
 
 
 ..
