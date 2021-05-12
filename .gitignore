@@ -1,6 +1,9 @@
 # Identifies files to be ignored by Git.
 # Also used by fd|fdfind  to identify directories and files to ignore
 
+# internald evelopment notes
+pel_doc.org
+
 # Temporary holding directories
 tmp/*
 old/*
@@ -8,6 +11,13 @@ old/*
 other/*
 regexp/*
 debug/*
+learning/*
+pelpa.0/*
+removed/*
+t/*
+tmp-bugs/*
+tmp-doc-future/*
+tmp-future/*
 
 # GNU Global generated HTML rendering of code
 HTML/*
