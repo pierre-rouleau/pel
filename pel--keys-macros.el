@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-11 16:44:05, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-12 10:58:55, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -130,9 +130,7 @@
                                                              popup-kill-ring))
     ([f11 ?.]        "marking"          pel-pkg-for-marking  expand-region)
     ([f11 ?=]        "cut-paste"        pel-pkg-for-cut-and-paste)
-    ([f11 59]        ("comments"
-                      "hide-show-code") pel-pkg-for-programming (comment
-                      hideshow))
+    ([f11 59]        "comments"         pel-pkg-for-programming comment)
     ([f11 ??]        "help"             nil                    command-log)
     ([f11 9]         "indentation"      nil                     indent)
     ;; 2 different possible key sequences for speedbar,
@@ -338,6 +336,8 @@
     ;; For keys with Meta, make sure the Esc equivalent is also entered
     ;; to allow the F1, F2, F3 entries to be accessible via the Esc key.
     ;; Because: in Emacs ``M-a`` can also be typed ``Esc a``
+    (,(kbd "<f11> M-/")     "hide-show-code"   pel-pkg-for-hide-show  (hideshow hide-lines))
+    ([f11 27 ?/]            "hide-show-code"   pel-pkg-for-hide-show  (hideshow hide-lines))
     (,(kbd "<f11> M-c")     "completion-input" pel-pkg-for-completion (helm
                                                                        ido
                                                                        ido-completing-read-plus

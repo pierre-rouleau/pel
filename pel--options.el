@@ -53,6 +53,7 @@
 ;;     - pel-pkg-for-graphics-emacs
 ;;       - pel-pkg-for-graphics-cursor
 ;;     - pel-pkg-for-grep
+;;     - pel-pkg-for-hide-show
 ;;     - pel-pkg-for-highlight
 ;;       - pel-pkg-for-parens
 ;;     - pel-pkg-for-imenu
@@ -1460,7 +1461,22 @@ package is also required because `projectile` uses the `ripgrep` package."
                                            '((elpa . rg)
                                              (elpa . ripgrep))
                                          '((elpa \.rg))))
+;; ---------------------------------------------------------------------------
+;; Hide/Show support
+;; -----------------
 
+(defgroup pel-pkg-for-hide-show nil
+  "PEL hide/show generic control support."
+  :group 'pel-package-use
+  :link `(url-link :tag "Hide/Show PDF" ,(pel-pdf-file-url "hide-show-code")))
+
+(defcustom pel-use-hide-lines nil
+  "Control whether PEL uses the hide-lines package."
+  :group 'pel-pkg-for-hide-show
+  :link '(url-link :tag "hide-lines @ GitHub"
+                   "https://github.com/vapniks/hide-lines")
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; Highlight Support
@@ -2615,6 +2631,7 @@ M-x eldoc-mode)."
   "Control whether PEL activates Drew Adams' hide-cmnt package.
 This package provides the ability to hide comments."
   :group 'pel-pkg-for-all-languages
+  :group 'pel-pkg-for-hide-show
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-hide-comnt :package-is :in-utils)

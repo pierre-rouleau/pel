@@ -3699,6 +3699,18 @@ d-mode not added to ac-modes!"
   (define-key pel:comment ":" 'hide/show-comments))
 
 ;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> M-/`` : Hide/Show commands
+(define-pel-global-prefix pel:hide-show (kbd "<f11> M-/"))
+
+(when pel-use-hide-lines
+  (pel-ensure-package hide-lines from: melpa)
+  (global-set-key (kbd "C-c /") 'hide-lines)
+  (define-key pel:hide-show "h"         'hide-lines)
+  (define-key pel:hide-show (kbd "M-h") 'hide-lines-matching)
+  (define-key pel:hide-show (kbd "M-o") 'hide-lines-not-matching)
+  (define-key pel:hide-show (kbd "M-s") 'hide-lines-show-all))
+
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> ?`` : Help /apropos/info commands
 
 ;; pel:help prefix is defined at the beginning of the <f11> section to allow
