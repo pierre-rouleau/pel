@@ -4508,6 +4508,8 @@ the ones defined from the buffer now."
 
 (when pel-use-syslog-mode
   (pel-ensure-package syslog-mode from: melpa))
+(when pel-use-vlf
+  (pel-ensure-package vlf from: melpa))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> F`` : Frame operations

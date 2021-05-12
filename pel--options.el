@@ -2143,6 +2143,15 @@ The `pel-key-chords' value is a list of objects.
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-vlf nil
+  "Control whether PEL uses the vlf external package.
+This package helps Emacs deal with very large files."
+  :link '(url-link :tag "vlf @ GitHub"
+                   "https://github.com/m00natic/vlfi")
+  :group 'pel-pkg-for-logging
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; ---------------------------------------------------------------------------
 ;; Keys & Prompts
 ;; --------------
