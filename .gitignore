@@ -18,6 +18,7 @@ t/*
 tmp-bugs/*
 tmp-doc-future/*
 tmp-future/*
+doc/emacs-keys/*
 
 # GNU Global generated HTML rendering of code
 HTML/*
