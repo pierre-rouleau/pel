@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 11 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-11 16:54:11, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-12 10:37:03, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -74,13 +74,15 @@ Use the browser identified by the user-option variable
    ((null pel-browser-used)
     (browse-url url args))
    ((eq pel-browser-used 'firefox)
-    (if pel-system-is-macos-p
-        (pel--macos-browse "Firefox" url)
-      (browse-url-firefox url)))
+    (when (if pel-system-is-macos-p
+              (pel--macos-browse "Firefox" url)
+            (browse-url-firefox url))
+      (message "Page opened in Firefox.")))
    ((eq pel-browser-used 'chrome)
-    (if pel-system-is-macos-p
-        (pel--macos-browse "Google Chrome" url)
-      (browse-url-chrome url)))
+    (when (if pel-system-is-macos-p
+              (pel--macos-browse "Google Chrome" url)
+            (browse-url-chrome url))
+      (message "Page opened in Google Chrome.")))
    (t (user-error "Invalid value for pel-browser-used: %s" pel-browser-used))))
 
 ;;; --------------------------------------------------------------------------
