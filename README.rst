@@ -17,7 +17,8 @@ PEL -- Pragmatic Environment Library for Emacs
 - Need to quickly access help now and later on specific topic? 🤔
 - Want to learn Emacs and try several built-in and external packages? 😇
 
-PEL might be for you!  Then go ahead, `install it`_ or `update it`_!
+PEL might be for you!  Then go ahead, `install it`_ [1]_
+or `update it`_ [2]_ !
 
 - PEL provide **customization-driven package management** built on `Emacs easy
   customization`_ to pick and chose packages and behaviours, all without
@@ -26,7 +27,7 @@ PEL might be for you!  Then go ahead, `install it`_ or `update it`_!
   and external Emacs Lisp libraries even if they are not even loaded.
 
 - PEL controls the download, installation, configuration and activation of
-  **over 190** *top-level* [1]_ external packages through the use of
+  **over 190** *top-level* [3]_ external packages through the use of
   easy-to-setup customization user-options that have a name that start with
   the "``pel-use-``" prefix.  See the manual `built-in and external Emacs
   packages`_ section.
@@ -52,7 +53,7 @@ PEL might be for you!  Then go ahead, `install it`_ or `update it`_!
 - PEL controls the activation of the loading of the selected packages, with
   emphasis on:
 
-  - reducing Emacs initialization time to a minimum [2]_ and,
+  - reducing Emacs initialization time to a minimum [4]_ and,
   - providing key bindings when Emacs is running in both graphics mode and
     terminal mode,
   - adding extra commands that complement Emacs commands and the commands of
@@ -98,11 +99,16 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 
 *Notes*:
 
-.. [1] An external package may have dependencies.  The dependencies are also
+.. [1] The instructions for installing PEL are located inside section 2 of `PEL manual`_.
+       The manual is large and some browser do not always move to the right location.
+.. [2] The instructions for updating PEL are located inside section 3 of `PEL
+       manual`_.
+       The manual is large and some browser do not always move to the right location.
+.. [3] An external package may have dependencies.  The dependencies are also
        installed. PEL currently provides access to over 190 top-level
        packages. The actual number of packages is larger when counting their dependencies.
 
-.. [2] **Quick initialization**: On my system with 182 packages with benchmark-init on I get 0.3 to 0.4 seconds
+.. [4] **Quick initialization**: On my system with 182 packages with benchmark-init on I get 0.3 to 0.4 seconds
        on a 2014 iMac running macOS Mojave in terminal mode and 0.6 seconds in
        graphics mode, and get similar times on Linux running inside VMs.  I
        can reduce this further by reducing the number of features supported by
@@ -117,6 +123,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
 .. _Emacs initialization file: https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html#Init-File
 .. _manual:
+.. _PEL manual:
 .. _PEL's Manual:               doc/pel-manual.rst
 .. _Key Bindings Documentation: doc/pel-manual.rst#key-bindings-documentation
 .. _PDF reference sheets:       doc/pel-manual.rst#pdf-document-tables
