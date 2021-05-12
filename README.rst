@@ -17,7 +17,7 @@ PEL -- Pragmatic Environment Library for Emacs
 - Need to quickly access help now and later on specific topic? 🤔
 - Want to learn Emacs and try several built-in and external packages? 😇
 
-PEL might be for you!
+PEL might be for you!  Then go ahead, `install it`_ or `update it`_!
 
 - PEL provide **customization-driven package management** built on `Emacs easy
   customization`_ to pick and chose packages and behaviours, all without
@@ -133,7 +133,9 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _which-key:                  https://elpa.gnu.org/packages/which-key.html
 .. _.emacs bankruptcy:          https://www.emacswiki.org/emacs/DotEmacsBankruptcy
 .. _wiki:                       https://github.com/pierre-rouleau/pel/wiki
+.. _install it:
 .. _How to install PEL:         doc/pel-manual.rst#how-to-install-pel
+.. _update it:                  doc/pel-manual.rst#updating-pel
 .. _NEWS file:                  NEWS
 .. _discussion board:           https://github.com/pierre-rouleau/pel/discussions
 .. _GNU Elpa:                   https://elpa.gnu.org
