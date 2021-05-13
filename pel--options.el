@@ -1494,6 +1494,8 @@ package is also required because `projectile` uses the `ripgrep` package."
                    "https://github.com/vapniks/hide-lines")
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-hide-lines :package-is :in-utils) ; Using my copy until my
+                                                    ; PR is merged in.
 
 ;; ---------------------------------------------------------------------------
 ;; Highlight Support
