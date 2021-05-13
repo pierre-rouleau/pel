@@ -6242,6 +6242,15 @@ with gxref-mode with the <f11> X R key sequence."
   :link '(url-link :tag "gxref @ GitHub"
                    "https://github.com/dedi/gxref"))
 
+;; -- jtags
+(defcustom pel-use-jtags nil
+  "Control whether PEL uses the jtags package."
+  :link '(url-link :tag "jtags @ MELPA"
+                   "https://melpa.org/#/jtags")
+  :group 'pel-pkg-for-xref
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; -- rtags
 ;; TODO: complete the implementation: it's currently not installed
 (defcustom pel-use-rtags nil

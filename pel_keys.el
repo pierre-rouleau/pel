@@ -5740,6 +5740,10 @@ the ones defined from the buffer now."
   (pel-add-hook-for 'pel-modes-activating-gxref
                     'pel-xref-gxref-activate))
 
+;; jtags
+(when pel-use-jtags
+  (pel-ensure-package jtags from: melpa))
+
 ;; rtags
 (when pel-use-rtags-xref
   (pel-ensure-package rtags-xref from: melpa)
