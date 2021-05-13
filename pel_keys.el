@@ -3703,25 +3703,7 @@ d-mode not added to ac-modes!"
 (define-pel-global-prefix pel:hide-show (kbd "<f11> M-/"))
 
 (when pel-use-hide-lines
-  ;; MELPA had a problem (now resolved), that the old version was promoted
-  ;; (breaking support for syslog-mode).  Now the latest version is from MELPA
-  ;; but the PR I submitted on Jan 17 is still waiting:
-  ;;     https://github.com/vapniks/hide-lines/pull/6
-  ;; So let's use my clone that fixes the problems in the meantime.
-  (cl-eval-when 'load
-    (pel-install-github-file "pierre-rouleau/hide-lines/master"
-                             "hide-lines.el"))
-  ;; autoload the commands, except hide-lines-kill-hidden.
-  (pel-autoload-file hide-lines for:
-                     hide-lines
-                     hide-lines-not-matching
-                     hide-lines-matching
-                     hide-lines-show-all
-                     hide-blocks
-                     hide-blocks-not-matching
-                     hide-blocks-matching)
-
-  ;; (pel-ensure-package hide-lines from: melpa)
+  (pel-ensure-package hide-lines from: melpa)
   (global-set-key (kbd "C-c /") 'hide-lines)
   (define-key pel:hide-show "h"         'hide-lines)
   (define-key pel:hide-show (kbd "M-h") 'hide-lines-matching)
