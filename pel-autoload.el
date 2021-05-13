@@ -159,6 +159,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-delete-filename-at-point
     pel-delete-url-at-point
     pel-delete-list-at-point
+    pel-delete-line
     pel-delete-paragraph-at-point
     pel-backward-delete-paragraph
     pel-delete-paragraph
