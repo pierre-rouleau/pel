@@ -3726,7 +3726,10 @@ d-mode not added to ac-modes!"
   (define-key pel:hide-show "h"         'hide-lines)
   (define-key pel:hide-show (kbd "M-h") 'hide-lines-matching)
   (define-key pel:hide-show (kbd "M-o") 'hide-lines-not-matching)
-  (define-key pel:hide-show (kbd "M-s") 'hide-lines-show-all))
+  (define-key pel:hide-show (kbd "M-s") 'hide-lines-show-all)
+  (define-key pel:hide-show "b"         'hide-blocks)
+  (define-key pel:hide-show (kbd "M-b") 'hide-blocks-matching)
+  (define-key pel:hide-show (kbd "M-p") 'hide-blocks-not-matching))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> ?`` : Help /apropos/info commands
