@@ -4528,6 +4528,8 @@ the ones defined from the buffer now."
 (define-key pel:dirvar "C"  #'copy-file-locals-to-dir-locals)
 
 (when pel-use-log-support
+  (when pel-use-logview
+    (pel-ensure-package logview from: melpa))
   (when pel-use-log4j-mode
     (pel-ensure-package log4j-mode from: melpa))
   (when pel-use-rails-log-mode

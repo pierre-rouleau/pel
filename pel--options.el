@@ -2144,6 +2144,16 @@ The `pel-key-chords' value is a list of objects.
   :safe #'booleanp)
 (pel-put 'pel-use-log-support :package-is :a-gate)
 
+(defcustom pel-use-logview nil
+  "Control whether PEL uses the logview external package.
+To activate it you must also activate `pel-use-log-support'"
+  :link '(url-link :tag "logview @ GitHub"
+                   "https://github.com/doublep/logview")
+  :group 'pel-pkg-for-logging
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-logview :requires 'pel-use-log-support)
+
 (defcustom pel-use-log4j-mode nil
   "Control whether PEL uses the log4j-mode external package.
 To activate it you must also activate `pel-use-log-support'"
