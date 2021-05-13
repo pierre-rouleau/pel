@@ -3721,7 +3721,7 @@ d-mode not added to ac-modes!"
                      hide-blocks-not-matching
                      hide-blocks-matching)
 
-  (pel-ensure-package hide-lines from: melpa)
+  ;; (pel-ensure-package hide-lines from: melpa)
   (global-set-key (kbd "C-c /") 'hide-lines)
   (define-key pel:hide-show "h"         'hide-lines)
   (define-key pel:hide-show (kbd "M-h") 'hide-lines-matching)
