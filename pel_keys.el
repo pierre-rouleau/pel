@@ -4527,10 +4527,15 @@ the ones defined from the buffer now."
 (define-key pel:dirvar "-"  #'delete-dir-local-variable)
 (define-key pel:dirvar "C"  #'copy-file-locals-to-dir-locals)
 
-(when pel-use-syslog-mode
-  (pel-ensure-package syslog-mode from: melpa))
-(when pel-use-vlf
-  (pel-ensure-package vlf from: melpa))
+(when pel-use-log-support
+  (when pel-use-log4j-mode
+    (pel-ensure-package log4j-mode from: melpa))
+  (when pel-use-rails-log-mode
+    (pel-ensure-package rails-log-mode from: melpa))
+  (when pel-use-syslog-mode
+    (pel-ensure-package syslog-mode from: melpa))
+  (when pel-use-vlf
+    (pel-ensure-package vlf from: melpa)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> F`` : Frame operations

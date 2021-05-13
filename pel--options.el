@@ -2137,22 +2137,53 @@ The `pel-key-chords' value is a list of objects.
   "List of external packages that PEL can use to deal with logging."
   :group 'pel-package-use)
 
+(defcustom pel-use-log-support nil
+  "Control whether PEL supports any of the log support packages."
+  :group 'pel-pkg-for-logging
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-log-support :package-is :a-gate)
+
+(defcustom pel-use-log4j-mode nil
+  "Control whether PEL uses the log4j-mode external package.
+To activate it you must also activate `pel-use-log-support'"
+  :link '(url-link :tag "log4j-mode @ MELPA"
+                   "https://melpa.org/#/log4j-mode")
+  :group 'pel-pkg-for-logging
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-log4j-mode :requires 'pel-use-log-support)
+
+(defcustom pel-use-rails-log-mode nil
+  "Control whether PEL uses the rails-mode external package.
+To activate it you must also activate `pel-use-log-support'"
+  :link '(url-link :tag "rails-log-mode @ GitHub"
+                   "https://github.com/ananthakumaran/rails-log-mode")
+  :group 'pel-pkg-for-logging
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-rails-log-mode :requires 'pel-use-log-support)
+
 (defcustom pel-use-syslog-mode nil
-  "Control whether PEL uses the syslog-mode external package."
+  "Control whether PEL uses the syslog-mode external package.
+To activate it you must also activate `pel-use-log-support'"
   :link '(url-link :tag "syslog-mode @ GitHub"
                    "https://github.com/vapniks/syslog-mode")
   :group 'pel-pkg-for-logging
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-syslog-mode :requires 'pel-use-log-support)
 
 (defcustom pel-use-vlf nil
   "Control whether PEL uses the vlf external package.
-This package helps Emacs deal with very large files."
+This package helps Emacs deal with very large files.
+To activate it you must also activate `pel-use-log-support'"
   :link '(url-link :tag "vlf @ GitHub"
                    "https://github.com/m00natic/vlfi")
   :group 'pel-pkg-for-logging
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-vlf :requires 'pel-use-log-support)
 
 ;; ---------------------------------------------------------------------------
 ;; Keys & Prompts
