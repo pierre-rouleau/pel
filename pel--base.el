@@ -163,6 +163,7 @@
 ;; - `pel-expand-url-file-name'
 ;; - `pel-path-strip'
 ;; - `pel-url-join'
+;; - `pel-url-location'
 ;;
 ;; Insertion of text in current buffer
 ;; - `pel-insert-symbol-content'
@@ -1718,6 +1719,13 @@ Example:
   (mapconcat (function pel-path-strip)
              parts
              "/"))
+
+(defun pel-url-location (url)
+  "Return a description string for the URL.
+Either \"Local\" or \"Remote\"."
+  (if (pel-string-starts-with url "file:")
+      "Local"
+    "Remote"))
 
 ;; ---------------------------------------------------------------------------
 ;; Insertion of text in current buffer

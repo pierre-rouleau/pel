@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-14 10:34:04, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-14 11:10:55, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -569,7 +569,8 @@ There should be no key binding!" keyseq))
                    (fboundp 'pel-browse-url))
               (pel-browse-url url)
             (error "Failed loading pel-browse!"))
-        (browse-url url)))))
+        (when (browse-url url)
+          (message "%s file opened." (pel-url-location url)))))))
 
 (defconst pel--topic-alias
   '(

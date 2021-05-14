@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 11 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-12 10:37:03, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-14 11:11:00, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -42,7 +42,7 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)
+(require 'pel--base)                    ; use: pel-url-location
 (require 'pel--options)
 (require 'browse-url)
 
@@ -70,20 +70,25 @@ Use the browser identified by the user-option variable
   ;; On macOS, the normal browser-url- functions do not work.
   ;; So use the macOS scripting osascript to launch the browser
   ;; when firefox or chrome is selected by the user-option.
-  (cond
-   ((null pel-browser-used)
-    (browse-url url args))
-   ((eq pel-browser-used 'firefox)
-    (when (if pel-system-is-macos-p
-              (pel--macos-browse "Firefox" url)
-            (browse-url-firefox url))
-      (message "Page opened in Firefox.")))
-   ((eq pel-browser-used 'chrome)
-    (when (if pel-system-is-macos-p
-              (pel--macos-browse "Google Chrome" url)
-            (browse-url-chrome url))
-      (message "Page opened in Google Chrome.")))
-   (t (user-error "Invalid value for pel-browser-used: %s" pel-browser-used))))
+  (let* ((url-location (pel-url-location url))
+         (msg-fmt (format "%s page opened in %%s." url-location)))
+    (cond
+     ((null pel-browser-used)
+      (browse-url url args)
+      (message "%s file opened." url-location))
+     ;;
+     ((eq pel-browser-used 'firefox)
+      (when (if pel-system-is-macos-p
+                (pel--macos-browse "Firefox" url)
+              (browse-url-firefox url))
+        (message msg-fmt "Firefox")))
+     ;;
+     ((eq pel-browser-used 'chrome)
+      (when (if pel-system-is-macos-p
+                (pel--macos-browse "Google Chrome" url)
+              (browse-url-chrome url))
+        (message msg-fmt "Google Chrome")))
+     (t (user-error "Invalid value for pel-browser-used: %s" pel-browser-used)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-browse)
