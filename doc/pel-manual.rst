@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-05-12 16:36:33, updated by Pierre Rouleau.
+:Modified: 2021-05-14 16:59:28, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -72,6 +72,7 @@ PEL provides:
 - `PEL key bindings`_ avoid modification of most Emacs keys, instead
   PEL uses several function keys (**F2**, **F5**, **F6**, **F11** and **F12**)
   as described in the section titled `PEL Function Keys Bindings`_.
+  It also uses the **F9** key with some external packages.
 - `PEL convenience features`_ include:
 
   - The key-bindings under **F6**, **F11** and **F12** function keys.

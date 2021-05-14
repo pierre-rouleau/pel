@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-14 14:31:30, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-14 16:18:00, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -224,6 +224,7 @@
     (,(kbd "<f11> SPC SPC b") "ibuffer-mode"  nil               ibuffer)
     ([f11 ?b]        "buffers"          pel-pkg-for-buffer      (Buffer-menu
                                                                  ibuffer
+                                                                 iflipb
                                                                  minibuffer
                                                                  hexl
                                                                  nhexl

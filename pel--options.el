@@ -596,6 +596,17 @@ When set, PEL activates the following key sequences:
   :link '(url-link :tag "nhexl @ Elpa"
                    "https://elpa.gnu.org/packages/nhexl-mode.html"))
 
+(defcustom pel-use-iflipb nil
+  "Control whether PEL provides access to the iflipb package."
+  :link '(url-link :tag "iflipb @GitHub"
+                   "https://github.com/jrosdahl/iflipb")
+  :group 'pel-pkg-for-buffer
+  :type 'boolean
+  :safe #'booleanp)
+;; use my fork until my PR gets merged in
+;;  See: https://github.com/jrosdahl/iflipb/pull/12
+(pel-put 'pel-use-iflipb :package-is :in-utils)
+
 ;; ---------------------------------------------------------------------------
 ;; Completion Support
 ;; ------------------

@@ -4127,7 +4127,8 @@ the ones defined from the buffer now."
 ;;   -
 ;;   C-c
 ;;   M-a M-p
-;;   I R U X
+;;   ?
+;;   I K R U X
 ;;   b c f h i k l n p r v x
 
 (define-pel-global-prefix pel:buffer (kbd "<f11> b"))
@@ -4136,7 +4137,7 @@ the ones defined from the buffer now."
 (define-key pel:buffer "k"  #'kill-current-buffer)
 (define-key pel:buffer "l"   'pel-switch-to-last-used-buffer)
 (define-key pel:buffer "n"  #'next-buffer)
-(define-key pel:buffer "P"   'pel-show-window-previous-buffer)
+(define-key pel:buffer "?"   'pel-show-window-previous-buffer)
 (define-key pel:buffer "p"  #'previous-buffer)
 (define-key pel:buffer "r"  #'read-only-mode)
 (define-key pel:buffer "v"  #'view-buffer)
@@ -4148,6 +4149,7 @@ the ones defined from the buffer now."
 (define-key pel:buffer "i"  #'insert-buffer)
 (define-key pel:buffer "f"  #'append-to-file)
 (define-key pel:buffer (kbd "M-x") 'hexl-mode)
+
 (when pel-use-popup-switcher
   (define-key pel:buffer "b" 'psw-switch-buffer))
 ;; Reserved            "h"  highlight prefix
@@ -4155,17 +4157,29 @@ the ones defined from the buffer now."
 ;; Reserved            "x"   (see declarations below with pel-use-nhexl-mode)
 ;; Reserved            "X"
 
+(when pel-use-iflipb
+  (cl-eval-when 'load
+    (pel-install-github-file "pierre-rouleau/iflipb/master"
+                             "iflipb.el"))
+  (pel-autoload-file iflipb for:
+                     iflipb-next-buffer
+                     iflipb-previous-buffer
+                     iflipb-kill-buffer)
+  (global-set-key        (kbd "<f9>")     'iflipb-next-buffer)
+  (global-set-key        (kbd "<S-f9>")   'iflipb-previous-buffer)
+  (define-key pel:buffer "K"              'iflipb-kill-buffer))
+
 ;; ibuffer-mode support
 ;; Provide <f12> <f1>, <f12><f2> and <f12><f3> in ibuffer-mode
 ;; TODO simplify this code
 (define-pel-global-prefix pel:for-ibuffer (kbd "<f11> SPC SPC b"))
 (defun pel--setup-for-ibuffer ()
-    "Activate ibuffer setup, take local variables into account."
-    (pel-local-set-f12-M-f12 'pel:for-ibuffer))
-  (declare-function pel--setup-for-ibuffer "pel_keys")
-  (pel--mode-hook-maybe-call
-   (function pel--setup-for-ibuffer)
-   'ibuffer-mode 'ibuffer-mode-hook)
+  "Activate ibuffer setup, take local variables into account."
+  (pel-local-set-f12-M-f12 'pel:for-ibuffer))
+(declare-function pel--setup-for-ibuffer "pel_keys")
+(pel--mode-hook-maybe-call
+ (function pel--setup-for-ibuffer)
+ 'ibuffer-mode 'ibuffer-mode-hook)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> b I`` : Indirect buffer commands

@@ -41,6 +41,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     systems and to counsel-osx-app on macOS system.  This allows selecting an
     OS application by name to launch it.  The first one is available when
     pel-use-counsel is on and the second when pel-use-counsel-osx-app is on.
+- Update: *Buffer Support*:
+  - New: support for the *iflipb* external package is activated by the
+    *pel-use-iflipb* user-option.  When active the ``<f9>`` key flip to the
+    next buffer and ``<S-f9>`` to the previous buffer in the stack.
 - New: *Build Tool Scripting Support*:
   - New: *Make file Editing support*:
     - New:  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-make.pdf][𝕻𝔩 - Make]] PDF that describes make file editing support, along with
