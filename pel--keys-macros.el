@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-14 11:10:55, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-14 14:31:30, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -221,6 +221,7 @@
                                                                  xref))
     ([f11 ?_]        "inserting-text")
     ([f11 ?a]        "abbreviations"    pel-pkg-for-expand      abbrev)
+    (,(kbd "<f11> SPC SPC b") "ibuffer-mode"  nil               ibuffer)
     ([f11 ?b]        "buffers"          pel-pkg-for-buffer      (Buffer-menu
                                                                  ibuffer
                                                                  minibuffer
@@ -423,6 +424,7 @@ stored inside the doc/pdf directory.")
     ("hy"              [f11 32 8])
     ("lfe"             [f11 32 12])
     ("inferior-lfe"    [f11 32 32 12])
+    ("ibuffer"         [f11 32 32 ?b])
     ("vc-dir"          [f11 32 32 ?v])
     ("racket"          [f11 32 18])
     ("rexx"            [f11 32 ?R])
