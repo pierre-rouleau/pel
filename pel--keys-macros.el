@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-12 10:58:55, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-14 10:34:04, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -316,6 +316,9 @@
                                                                  vc-git
                                                                  magit
                                                                  monky))
+    (,(kbd "<f11> SPC SPC v") "vcs-mercurial" pel-pkg-for-vcs   (vc
+                                                                 vc-hg
+                                                                 vc-git))
     ([f11 ?w]        "windows"        pel-pkg-for-window  (windows
                                                            ace-window
                                                            ace-window-display
@@ -420,6 +423,7 @@ stored inside the doc/pdf directory.")
     ("hy"              [f11 32 8])
     ("lfe"             [f11 32 12])
     ("inferior-lfe"    [f11 32 32 12])
+    ("vc-dir"          [f11 32 32 ?v])
     ("racket"          [f11 32 18])
     ("rexx"            [f11 32 ?R])
     ("rust"            [f11 32 ?r])

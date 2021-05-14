@@ -1641,6 +1641,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-G - Gleam           -              BEAM Language
 ;; M-H - Hamler          -              BEAM Language, Functional/ML/Haskell
 ;; SPC C-l - lfe-inferior-mode
+;; SPC v - vc-dir-mode
 ;; ---------------------------------------------------------------------------
 ;; Syntax Check with Flycheck (if requested)
 ;; -----------------------------------------
@@ -2902,6 +2903,7 @@ d-mode not added to ac-modes!"
  Function keys starting with F5 will no work!"
                          :error))))
 
+  ;; lfe-inferior-mode support
   ;; Add <f12> keys to the LFE shell (no macro yet for that, spell it out)
   ;; TODO simplify this code, integrate the ability to add <f12> key setup
   ;;      to an inferior process mode to the macros I normally use.
@@ -5376,6 +5378,18 @@ the ones defined from the buffer now."
   ;; the package installation will activate the file name association
   ;; and the auto-loading.
   (pel-ensure-package hgignore-mode from: melpa))
+
+;; vc-dir-mode support
+;; Provide <f12> <f1>, <f12><f2> and <f12><f3> in vc-dir-mode
+;; TODO simplify this code
+(define-pel-global-prefix pel:for-vc-dir (kbd "<f11> SPC SPC v"))
+(defun pel--setup-for-vc-dir ()
+    "Activate vc-dir setup, take local variables into account."
+    (pel-local-set-f12-M-f12 'pel:for-vc-dir))
+  (declare-function pel--setup-for-vc-dir "pel_keys")
+  (pel--mode-hook-maybe-call
+   (function pel--setup-for-vc-dir)
+   'vc-dir-mode 'vc-dir-mode-hook)
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> w`` : Windows operations
