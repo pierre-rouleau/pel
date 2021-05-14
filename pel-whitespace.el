@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, May 10 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-10 08:56:54, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-14 17:47:54, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,7 +25,7 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This file holds functions and commands that delete trailing whitepaces.
+;; This file holds functions and commands that delete trailing whitespaces.
 ;;
 ;; - The `pel-delete-trailing-whitespace-if-activated' function is used as a
 ;;   hook call-back when the file is saved.
