@@ -214,6 +214,22 @@
 ;; property and identify the required package.  The semantics is the same as
 ;; for the `:requires' property above except for the fact that if it is not
 ;; present nothing is inferred.
+;;
+;; *Development Tip*:
+;; When writing support for a new package that is coming from and
+;; Elpa-compliant repo:
+;; - write the specification code here and the code calling
+;;   the `pel-ensure-package' inside pel_keys.el,
+;; - turn the option on and execute `pel-init' to get PEL to install the new
+;;   package.
+;; - Inspect the source file(s) of the newly install package to identify its
+;;   dependencies.
+;; - Execute the function `pel-elpa-pkg-dependencies' on the package and see
+;;   if it identifies all its dependencies.
+;;   - If that's not the case, then add a `:requires-package' property to the
+;;     package `pel-use-' user-option that identifies the unspecified
+;;     dependencies.
+;;
 
 ;; `:package-is'
 ;; ------------
@@ -2508,9 +2524,7 @@ activate this package."
   :safe #'booleanp)
 (pel-put 'pel-use-markdown-preview-mode :requires 'pel-use-markdown)
 (pel-put 'pel-use-markdown-preview-mode
-         :requires-package '(quote ((elpa . websocket)
-                                    (elpa . seq)
-                                    (elpa . web-server))))
+         :requires-package '(quote ((elpa . seq))))
 
 (defcustom pel-use-markdown-toc nil
   "Control whether PEL activates the markdown-toc package.
@@ -2524,9 +2538,6 @@ activate this package."
           (const :tag "Use markdown-toc and update TOC on save"
                  update-toc-on-save)))
 (pel-put 'pel-use-markdown-toc :requires 'pel-use-markdown)
-(pel-put 'pel-use-markdown-toc
-         :requires-package '(quote ((elpa . dash)
-                                    (elpa . s))))
 
 (defcustom pel-use-vmd-mode nil
   "Control whether PEL activates the vmd-mode package.
