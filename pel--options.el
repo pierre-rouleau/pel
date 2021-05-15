@@ -603,9 +603,6 @@ When set, PEL activates the following key sequences:
   :group 'pel-pkg-for-buffer
   :type 'boolean
   :safe #'booleanp)
-;; use my fork until my PR gets merged in
-;;  See: https://github.com/jrosdahl/iflipb/pull/12
-(pel-put 'pel-use-iflipb :package-is :in-utils)
 
 ;; ---------------------------------------------------------------------------
 ;; Completion Support

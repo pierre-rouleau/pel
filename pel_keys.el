@@ -4158,13 +4158,7 @@ the ones defined from the buffer now."
 ;; Reserved            "X"
 
 (when pel-use-iflipb
-  (cl-eval-when 'load
-    (pel-install-github-file "pierre-rouleau/iflipb/master"
-                             "iflipb.el"))
-  (pel-autoload-file iflipb for:
-                     iflipb-next-buffer
-                     iflipb-previous-buffer
-                     iflipb-kill-buffer)
+  (pel-ensure-package iflipb from: melpa)
   (global-set-key        (kbd "<f9>")     'iflipb-next-buffer)
   (global-set-key        (kbd "<S-f9>")   'iflipb-previous-buffer)
   (define-key pel:buffer "K"              'iflipb-kill-buffer))
