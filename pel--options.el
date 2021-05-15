@@ -145,7 +145,7 @@
 ;; - pel-startup-<thing to activate at startup>
 ;; - pel-<mode>-activates-minor-modes
 ;;
-;; The pel-use-  user-options are either t/nil boolean types or tri-state
+;; The `pel-use-' user-options are either t/nil boolean types or tri-state
 ;; types that can be set to nil, t or 'use-from-start.  When set to t, they
 ;; are only activated once a PEL command for that effect is executed by the
 ;; user.
@@ -200,14 +200,18 @@
 ;; `:requires-package'
 ;; ------------------
 ;;
-;; The package dependency of some packages do not identify all of their
-;; dependencies.  In some case they do that because the package activates
-;; extra functionality only when the extra dependency is present.  Well, when
-;; it is present you want to keep it during a `pel-cleanup' operation.
-;; To identify that dependency use the `:requires-package' property and
-;; identify the required package.  The semantics is the same as for the
-;; `:requires' property above except for the fact that if it is not present
-;; nothing is inferred.
+;; If a package is taken from an Elpa-compliant repo it is packaged and it
+;; already identifies its dependencies.   The `pel-cleanup' function reads the
+;; package dependencies and takes them into account.
+;;
+;; However, the package dependency of some packages do not identify *all* of
+;; their dependencies.  In some case they do that because the package
+;; activates extra functionality only when the extra dependency is present.
+;; Well, when it is present you want to keep it during a `pel-cleanup'
+;; operation.  To identify those extra dependencies use the `:requires-package'
+;; property and identify the required package.  The semantics is the same as
+;; for the `:requires' property above except for the fact that if it is not
+;; present nothing is inferred.
 
 ;; `:package-is'
 ;; ------------
