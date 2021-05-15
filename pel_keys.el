@@ -2923,20 +2923,21 @@ d-mode not added to ac-modes!"
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-G `` : Gleam
 ;; Programming Language Family: BEAM
 (when pel-use-gleam
-  (cl-eval-when 'load
-    (pel-install-github-files "pierre-rouleau/gleam-mode/master"
-                              "gleam-mode.el"))
-  (pel-autoload-file gleam-mode for:
-                     gleam-mode)
-  (add-to-list 'auto-mode-alist '("\\.gleam\\'" . gleam-mode))
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension ".gleam"))
+  (when pel-use-gleam-mode
+    (cl-eval-when 'load
+      (pel-install-github-files "pierre-rouleau/gleam-mode/master"
+                                "gleam-mode.el"))
+    (pel-autoload-file gleam-mode for:
+                       gleam-mode)
+    (add-to-list 'auto-mode-alist '("\\.gleam\\'" . gleam-mode))
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension ".gleam"))
 
-  (define-pel-global-prefix pel:for-gleam (kbd "<f11> SPC M-G"))
-  (pel--lisp-languages-map-for pel:for-gleam)
+    (define-pel-global-prefix pel:for-gleam (kbd "<f11> SPC M-G"))
+    (pel--lisp-languages-map-for pel:for-gleam)
 
-  ;; Activate GLEAM setup.
-  (pel-setup-major-mode gleam pel:for-gleam))
+    ;; Activate GLEAM setup.
+    (pel-setup-major-mode gleam pel:for-gleam)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-H `` : Hamler

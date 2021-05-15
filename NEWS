@@ -732,7 +732,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - New: *Gleam*, an Erlang BEAM language
     - New: added support for the Gleam programming language, activated when
       the *pel-use-gleam* user-option is turned on (set to *t*).  The support
-      is very basic.
+      is very basic.  It provides early *gleam-mode* package when the
+      *pel-use-gleam-mode* user-option is turned on.
     - New:  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-gleam][𝕻𝔩 - Gleam]] PDF.
   - Update: *Python*
     - Modified: binding to rainbow-delimiters-mode to ``<f12> M-r`` like it is

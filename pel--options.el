@@ -187,7 +187,9 @@
 ;; value might be:
 ;;
 ;; - A single `pel-use-' symbol: stating that this parent must also be
-;;   activated for the package to be installed.
+;;   activated for the package to be installed.  The parent may be a 'gate'
+;;   package (a `pel-use-' symbol that has the :package-is :a-gate property),
+;;   or a `pel-use-' symbol for a normal package.
 ;;
 ;; - A list of several `pel-use-' symbols, stating that any of the specified
 ;;   parent must be installed for this package to be installed.
@@ -5058,22 +5060,31 @@ Do not enter lambda expressions."
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Gleam Support
 ;; -------------
-
 (defgroup pel-pkg-for-gleam nil
   "PEL customization for GLEAM - a BEAM programming language."
+  :link `(url-link :tag "Gleam PDF" ,(pel-pdf-file-url "pl-gleam"))
+  :link '(url-link :tag "Gleam Home" "https://gleam.run")
   :group 'pel-pkg-for-beam-vm
   :group 'pel-pkg-for-lisp)
 
 (defcustom pel-use-gleam nil
   "Control whether PEL supports Gleam development.
 Gleam is an experimental functional static-type checking language for the BEAM."
-  :link `(url-link :tag "Gleam PDF" ,(pel-pdf-file-url "pl-gleam"))
-  :link '(usr-link :tag "gleam-mode @ Github"
+  :group 'pel-pkg-for-gleam
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-gleam :package-is :a-gate)
+
+(defcustom pel-use-gleam-mode nil
+  "Control whether PEL supports the gleam-mode package.
+This is an early version of Gleam support for Emacs."
+  :link '(url-link :tag "gleam-mode @ Github"
                    "https://github.com/pierre-rouleau/gleam-mode")
   :group 'pel-pkg-for-gleam
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-gleam :package-is :in-utils)
+(pel-put 'pel-use-gleam-mode :package-is :in-utils)
+(pel-put 'pel-use-gleam-mode :requires 'pel-use-gleam)
 
 (defcustom pel-gleam-activates-minor-modes nil
   "List of minor-modes automatically activated for GLEAM buffers.
