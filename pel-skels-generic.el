@@ -2,12 +2,12 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-11-01 16:39:18, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-16 15:27:56, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -47,6 +47,8 @@
 ;;                         ;      pel-skel-call
 (require 'pel-tempo)       ; use: pel-tempo-install-pel-skel
 (require 'pel-text-insert) ; use: pel-separator-line
+(eval-when-compile
+  (require 'subr-x))       ; use: string-trim-right
 
 ;;; ----------------------------------------------------------------------------
 ;;; Code:
@@ -74,8 +76,8 @@ The arguments are:
             - cc : comment continuation string
             - ce : comment end string."
   (let* ((purpose  (pel-prompt-purpose-for "File" 'p))
-         (cb       (nth 0 cmt-style))
-         (cc       (nth 1 cmt-style))
+         (cb       (string-trim-right (nth 0 cmt-style)))
+         (cc       (string-trim-right (nth 1 cmt-style)))
          (ce       (nth 2 cmt-style)))
     (list
      'l
