@@ -1328,8 +1328,22 @@ of the impact these user-option variable have."
           (const :tag "Use Firefox." firefox)
           (const :tag "Use Chrome" chrome)))
 
+
+(defcustom pel-flip-help-pdf-arg nil
+  "When set, flip value of the pel-help-pdf argument.
+When pel-flip-help-pdf-arg is set, the argument of the function `pel-help-pdf'
+is reversed before used.
+
+By default, `pel-help-pdf' opens the local PDF file when no
+argument is passed, and the remote PDF file is opened when the
+argument is specified.  If `pel-flip-help-pdf-arg' is set it's the other way
+around."
+  :group 'pel-pkg-for-web-browse
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-open-pdf-method 'pdf-viewer
-  "Defines main/default method of opening PEL PDF files.
+  "Defines main/default method of opening local PEL PDF files.
 
 The main method is either:
 

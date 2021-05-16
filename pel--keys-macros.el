@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-14 16:18:00, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-16 11:26:23, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -524,33 +524,32 @@ allowed the command to be invoked."
       (error "Cannot load pel-prompt!"))))
 
 ;;-pel-autoload
-(defun pel-help-pdf (&optional alternate-method)
+(defun pel-help-pdf (&optional open-github-page)
   "Open the PEL PDF file(s) for the current context.
 
-Open the PDF file using the method selected by the user-option
-variable `pel-open-pdf-method' unless the ALTERNATE-METHOD
-argument is specified, in which case the other method is used.
+By default the function opens the local PDF file unless the
+OPEN-GITHUB-PAGE is specified, in which case it opens the GitHub
+hosted raw PDF file.  However, if the user-option variable
+`pel-flip-help-pdf-arg' is set, it's the other way around: the GitHub remote
+file is opened by default.
 
-By default the main method is to use the local PDF viewer
-application and the alternate is to use the web browser selected
-by the user-option variable `pel-browser-used'.  You can flip this
-choice by setting the `pel-open-pdf-method' to 'web-browser.
+The function uses Emacs default browse mechanism specified by the
+user-option variable `browse-url-browser-function' unless the
+user-option variable `pel-browser-used' forces the use of a
+specific browser.
 
-Also, by default, the web browser selected is selected by Emacs'
-user-option variable `browse-url-browser-function', which is set
-to the default system browser by default. But you can force using
-either Firefox or Chrome by setting `pel-browser-used'
-accordingly.  If your system browser is not capable of displaying
-PDF files and downloads them instead, like macOS Safari does, you
-can force using Firefox this way, since Firefox does display PDF
-in the browser.
+If your system default browser can not render PDF files directly
+and downloads them, then you can force the use of the Firefox
+browser (which renders PDF) by setting `pel-browser-used' to
+'firefox.
 
-You will get a better user experience viewing PEL PDF files
-inside a browser: you will be able to follow the numerous links
-this way.
+Using a browser that is capable of direct rendering of PDF
+produces a much better user experience: you will be able to
+quickly navigate through PEL documentation inside the browser.
 
-The topic is determined by the key sequence typed.
-This command should be bound to a PEL key sequence that ends with f1."
+The `pel-help-pdf' function determines the requested PDF topic by the key
+sequence that led to the execution of the command.  These key sequences
+normally end with the F1 key."
   (interactive "P")
   (let* ((keyseq (pel--keyseq))
          (kte    (pel--kte-for keyseq)) ; pel--prefix-to-topic-alist entry
@@ -558,22 +557,13 @@ This command should be bound to a PEL key sequence that ends with f1."
     (unless pdfs
       (error "No PDF entry in pel--prefix-to-topic-alist for %s.\n\
 There should be no key binding!" keyseq))
-    (let* ((force-browser (and (eq pel-open-pdf-method 'web-browser)
-                               (null alternate-method)))
-           (read-web-file     (or (and (eq pel-open-pdf-method 'web-browser)
-                                       (null alternate-method))
-                                  (and (eq pel-open-pdf-method 'pdf-viewer)
-                                       alternate-method)))
+    (let* ((open-github-file (if pel-flip-help-pdf-arg
+                                 (not open-github-page)
+                               open-github-page))
            (url (pel-pdf-file-url (pel--kte-select-topic "Open the PDF file: "
                                                          pdfs)
-                                  read-web-file)))
-      (if force-browser
-          (if (and (require 'pel-browse nil :no-error)
-                   (fboundp 'pel-browse-url))
-              (pel-browse-url url)
-            (error "Failed loading pel-browse!"))
-        (when (browse-url url)
-          (message "%s file opened." (pel-url-location url)))))))
+                                  open-github-file)))
+      (pel--help-browse url))))
 
 (defconst pel--topic-alias
   '(
@@ -657,19 +647,26 @@ There should be no key binding!" keyseq))
 (defvar pel--prompt-history-for-help-pdf nil
   "History list for function `pel-help-pdf-select'.")
 
-(defun pel-help-open-pdf (topic &optional alternate-method)
+(defun pel--help-browse (url)
+  "Browse the specified URL using the method selected by user-options."
+  (if (and (require 'pel-browse nil :no-error)
+           (fboundp 'pel-browse-url))
+      (pel-browse-url url)
+    (browse-url url)
+    (user-error "Failed loading pel-browse, used Emacs browse-url instead!")))
+
+(defun pel-help-open-pdf (topic &optional open-github-page)
   "Open PDF help for TOPIC string potentially OPEN-WEB-PAGE."
-  (browse-url (pel-pdf-file-url topic alternate-method)))
+  (pel--help-browse (pel-pdf-file-url topic open-github-page)))
 
 ;;-pel-autoload
-(defun pel-help-on-completion-input (&optional alternate-method)
+(defun pel-help-on-completion-input (&optional open-github-page)
   "Open the input completion help PDF, in a browser if arg OPEN-WEB-PAGE set."
   (interactive "P")
-  (pel-help-open-pdf "completion-input" alternate-method))
-
+  (pel-help-open-pdf "completion-input" open-github-page))
 
 ;;-pel-autoload
-(defun pel-help-pdf-select (&optional alternate-method)
+(defun pel-help-pdf-select (&optional open-github-page)
   "Prompt for a PEL PDF and open it.
 By default it opens the local PDF file, but if the OPEN-WEB-PAGE argument
 is non-nil it opens the web-based PDF copy hosted on Github.
@@ -696,7 +693,7 @@ If enter is typed with no entry it defaults to the PEL key maps pdf."
          ;; since aliases are included in the list presented to user,
          ;; translate a selected alias back to its real file name
          (topic (alist-get topic pel--topic-alias topic nil (function equal))))
-    (pel-help-open-pdf topic alternate-method)))
+    (pel-help-open-pdf topic open-github-page)))
 
 ;; --
 

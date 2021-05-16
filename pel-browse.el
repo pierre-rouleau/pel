@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 11 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-14 11:11:00, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-16 11:36:08, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -73,7 +73,9 @@ Use the browser identified by the user-option variable
   (let* ((url-location (pel-url-location url))
          (msg-fmt (format "%s page opened in %%s." url-location)))
     (cond
-     ((null pel-browser-used)
+     ((or (null pel-browser-used)
+          (and (string= url-location "Local")
+               (eq pel-open-pdf-method 'pdf-viewer)))
       (browse-url url args)
       (message "%s file opened." url-location))
      ;;
