@@ -278,6 +278,16 @@ The any extra ARGS are arguments passed to SKEL-FUNCTION."
           ;; if there are any
           (apply skel-function args))))))
 
+(defun pel-lisp-family-major-mode-p ()
+  "Return t if the current major mode is for a Lisp-family language.
+Return nil otherwise."
+  (memq major-mode '(lisp-mode
+                     emacs-lisp-mode
+                     lfe-mode
+                     clojure-mode
+                     hy-mode
+                     scheme-mode
+                     racket-mode)))
 
 (defun pel-skel-comments-strings ()
   "Return a list of 3 strings describing comments.
@@ -286,9 +296,11 @@ These 3 strings are:
 2- The comment continuation string: comment-continue
 3- The comment closing string:      comment-end
 
-The function supports generically all types of files,
-but also gives special considerations to the
-C programming language, where the 3 strings are:
+The function supports generically all types of files, but also
+gives special considerations to the cc programming language (C,
+C++...), to Erlang and Lisp-family programming languages.
+
+In the cc (C, C++...) languages where the 3 strings are:
 
 1- The comment start block.  Something like \"/*\" or \"//\".
    It does *not* end with a space.
@@ -298,26 +310,48 @@ C programming language, where the 3 strings are:
 The string returned is selected by the currently active C-style.
 The following variables are used for the decision:
 - variable `c-block-comment-flag'
-- variable `pel-c-skel-comment-with-2stars'."
+- variable `pel-c-skel-comment-with-2stars'.
+
+For Lisp-family languages, comments can start with 1, 2, 3, or 4
+';' the end-comment is empty.  For Erlang, comments can start
+with 1, 2, 3 or 4 '%' and the end-comment is empty.  For those
+the function returns a list of strings as the first element of
+the returned list.  So for Lisp languages and for Erlang, the
+function returns:
+
+1- A list of comment begin strings with the first element being
+   the deeper level comment string with only one character like
+   \";\" or \"%\", and the next elements have 2 , 3 and 4 characters.
+2- The comment continuation string: comment-continue
+3- The comment closing string:      comment-end
+
+"
   ;; ensure that comments for the current buffer mode are identified.
   ;; if they are not, prompt the user.
   (pel-require 'newcomment)
   (comment-normalize-vars)
   (let* ((c-style   (and (boundp 'c-block-comment-flag)
                          c-block-comment-flag))
-         (cb        (if c-style "/*"  comment-start))
+         (cb        (cond
+                     ((pel-lisp-family-major-mode-p)
+                      '(";" ";;" ";;;" ";;;;"))
+                     ((eq major-mode 'erlang-mode)
+                      '("%" "%%" "%%%" "%%%%"))
+                     (t
+                      (if c-style "/*"  comment-start))))
          (cc        (if c-style "**"  (or comment-continue comment-start)))
          (ce        (if c-style "*/"  comment-end)))
-    (unless pel-c-skel-comment-with-2stars
-      ;; use " *" instead of "**" to continue C-style comments
-      (when (string= cc "**")
-        (setq cc " *"))
-      (when (string= ce "*/")
+    (when (stringp cb)
+      (unless pel-c-skel-comment-with-2stars
+        ;; use " *" instead of "**" to continue C-style comments
+        (when (string= cc "**")
+          (setq cc " *"))
+        (when (string= ce "*/")
+          (setq ce " */")))
+      (when (and (string= cb "/*")
+                 (string= cc " *")
+                 (string= ce "*/"))
         (setq ce " */")))
-    (when (and (string= cb "/*")
-               (string= cc " *")
-               (string= ce "*/"))
-      (setq ce " */"))
     (list cb cc ce)))
 
 ;; -----------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-16 15:27:56, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-16 16:43:19, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -72,12 +72,14 @@ Otherwise return a string that ends with a newline."
 The arguments are:
 - FNAME := string.  the name of the current file without path.
 - CMT-STYLE := a list of 3 strings: (cb cc ce)
-            - cb : comment begin string
+            - cb : comment begin string, or a list of 4 strings
             - cc : comment continuation string
             - ce : comment end string."
   (let* ((purpose  (pel-prompt-purpose-for "File" 'p))
-         (cb       (string-trim-right (nth 0 cmt-style)))
-         (cc       (string-trim-right (nth 1 cmt-style)))
+         (cb       (nth 0 cmt-style))
+         (has4     (listp cb))
+         (cb       (string-trim-right (if has4 (nth 2 cb) cb)))
+         (cc       (string-trim-right (if has4 cb (nth 1 cmt-style))))
          (ce       (nth 2 cmt-style)))
     (list
      'l
@@ -105,9 +107,11 @@ The file header portion is controlled by the style selected by the
 variable `pel-generic-skel-module-header-block-style'."
   (let* ((fname        (pel-current-buffer-filename :sans-directory))
          (cmt-style    (pel-skel-comments-strings))
-         (cb           (nth 0 cmt-style))
-         (cc           (nth 1 cmt-style))
-         (ce           (nth 2 cmt-style)))
+         (cb       (nth 0 cmt-style))
+         (has4     (listp cb))
+         (cb       (string-trim-right (if has4 (nth 2 cb) cb)))
+         (cc       (string-trim-right (if has4 cb (nth 1 cmt-style))))
+         (ce       (nth 2 cmt-style)))
     (goto-char (point-min)) ; TODO: del this but mod skels to force entry at top.
     (list
      'l

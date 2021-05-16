@@ -1,6 +1,6 @@
 ;;; pel-tempo.el --- Specialized tempo mode  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -231,8 +231,8 @@ inside the specified KEY_MAP."
                  (s-tempo-fun   (intern s-tempo-fname))
                  (s-pel-fname   (format "pel-%s-%s" mode-abbrev s-name))
                  (s-docstring   (format "\
-Insert '%s' %s skeleton's text (also available through %s/Skeleton menu).\
-\
+Insert '%s' %s skeleton's text (also available through %s/Skeleton menu).
+
 This function is dynamically defined by a call to the function \
 `pel-tempo-install-pel-skel'."
                                         s-name cap-mode cap-mode))
