@@ -2801,6 +2801,12 @@ comments of length controlled by variable `fill-column' are inserted."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-generic-skel-with-copyright nil
+  "Whether a copyright notice is placed in code file module header block."
+  :group 'pel-pkg-generic-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-generic-skel-with-license nil
   "Control whether a license text is inserted in code file module header block.
 
@@ -5798,7 +5804,8 @@ and usable shell for Emacs."
 ;; ---------------------
 (defgroup pel-pkg-for-skeletons nil
   "Holds options for controlling skeleton code generation."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :group 'pel-pkg-for-insertions)
 ;; The children of that group are scattered in the respective programming or
 ;; markup language code sections. Keep this group here: a group may have
 ;; several parent groups and all skeleton control groups refer to this one as

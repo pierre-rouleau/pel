@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-17 09:46:05, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-17 10:35:17, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -109,6 +109,8 @@ The arguments are:
      (pel-skel-created-comment cc :no-new-line)
      (pel-skel-author-comment  cc nil :no-new-line)
      (pel-skel-time-stamp pel-generic-skel-insert-file-timestamp cc)
+     (when pel-generic-skel-with-copyright
+       (pel-skel-copyright-comment cc))
      (cond
       ((eq pel-generic-skel-with-license t)
        (list 'l
