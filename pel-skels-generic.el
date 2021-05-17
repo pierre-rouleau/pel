@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-16 16:43:19, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-17 09:46:05, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -67,6 +67,26 @@ Otherwise return a string that ends with a newline."
 ;; -----------------------------------------------------------------------------
 ;; File/Module header block
 
+(defun pel--file-isa-sourced-script (fname)
+  "Return non-nil if the FNAME is the name of a sourced script, nil otherwise.
+The identification is done by a match with the user-option variable
+`pel-shell-sourced-script-file-name-prefix'"
+  (when (and (eq major-mode 'sh-mode)
+             pel-shell-sourced-script-file-name-prefix
+             (null (file-name-extension fname)))
+    (string-match pel-shell-sourced-script-file-name-prefix fname)))
+
+(defun pel-skels-generic-first-line (fname)
+  "Return a string for the first line.  Starts with a space character."
+  (if (pel--file-isa-sourced-script fname)
+      (concat (format pel-shell-sourced-script-first-line fname) "\n")
+    (format "%s %s FILE: %s\n"
+            (if (eq major-mode 'sh-mode)
+                (format "%s\n#" pel-shell-script-shebang-line)
+              "")
+            (upcase (car (split-string (symbol-name major-mode) "-")))
+            fname)))
+
 (defun pel-skels-generic-header-module-block (fname cmt-style)
   "Return a tempo list for the header/module comment block.
 The arguments are:
@@ -83,19 +103,21 @@ The arguments are:
          (ce       (nth 2 cmt-style)))
     (list
      'l
-     cb (format " %s FILE: %s\n"
-                (upcase (car (split-string (symbol-name major-mode) "-")))
-                fname)
+     cb (pel-skels-generic-first-line fname)
      cc 'n
      cc " Purpose   : " purpose 'n
      (pel-skel-created-comment cc :no-new-line)
      (pel-skel-author-comment  cc nil :no-new-line)
      (pel-skel-time-stamp pel-generic-skel-insert-file-timestamp cc)
-     (when pel-generic-skel-with-license
+     (cond
+      ((eq pel-generic-skel-with-license t)
        (list 'l
              cc 'n
              (pel-license-text cc)
              cc 'n))
+      ((stringp pel-generic-skel-with-license)
+       (list 'l
+             cc " License   : " pel-generic-skel-with-license 'n)))
      ce (pel-when-text-in ce 'n)
      (pel-separator-line) 'n)))
 

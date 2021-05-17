@@ -123,6 +123,12 @@
 ;;     - pel-pkg-for-session
 ;;     - pel-pkg-for-shells
 ;;     - pel-pkg-for-skeletons
+;;       - pel-pkg-generic-code-style
+;;         - pel-shell-script-skeleton-control
+;;       - pel-c-skeleton-control
+;;         - pel-c-module-header-skeleton-control
+;;         - pel-c-function-header-skeleton-control
+;;       - pel-erlang-skeleton-control
 ;;     - pel-pkg-for-speedbar
 ;;     - pel-pkg-for-spelling
 ;;     - pel-pkg-for-sw-build
@@ -2798,6 +2804,11 @@ comments of length controlled by variable `fill-column' are inserted."
 (defcustom pel-generic-skel-with-license nil
   "Control whether a license text is inserted in code file module header block.
 
+You can specify to have the complete license text entered in the file
+when setting the value to `t, or only enter the license name when you specify
+the license name with a string.  That string will be entered verbatim
+inside a file header line.
+
 When t, the licence inserted is controlled by the function `lice' taken
 from the external library with the same name.
 If t this activates `pel-use-lice' if it is not activated already.
@@ -2813,8 +2824,11 @@ file written inside the global setting like this:
 Replace the gpl-3.0 with the license you want and write your name inside
 the copyright holder value."
   :group 'pel-pkg-generic-code-style
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "No license." nil)
+          (const :tag "With license text selected by `lice:default-license'"
+                 t)
+          (string :tag "License name only")))
 
 (defcustom pel-generic-skel-module-header-block-style nil
   "Specifies the style of the code file module header block.
@@ -2877,6 +2891,40 @@ Empty strings can be used to specify section with a tempo marker
 with no text."
   :group 'pel-pkg-generic-code-style
   :type '(repeat string))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defgroup pel-shell-script-skeleton-control nil
+  "PEL generic shell-script skeleton style control.
+Controls what the ``<f6> h`` command does."
+  :group 'pel-pkg-generic-code-style)
+
+(defcustom pel-shell-script-shebang-line "!/bin/sh"
+  "Shebang file placed in Shell scripts by function `pel-generic-file-header'.
+Do not include the comment character '#' in the string."
+  :group 'pel-shell-script-skeleton-control
+  :type 'string)
+
+(defcustom pel-shell-sourced-script-first-line
+  " Sourced script: %s  -*- mode: sh; -*- "
+  "Format string placed after the comment of the first line.
+
+This string is  inserted by by the function `pel-generic-file-header',
+bound to``<f6> h``.
+
+It *must* have ONE string argument in the form of \"%s\".
+The name of the file will be written in side it."
+  :group 'pel-shell-script-skeleton-control
+  :type 'string)
+
+(defcustom pel-shell-sourced-script-file-name-prefix nil
+  "Identifies names of shell files that are meant to be sourced.
+If non-nil PEL treats the files with no extensions that match the specified
+requirements as shell script mean to be sourced and adjusts the skeleton
+used by the ``<f6> h`` command accordingly."
+  :group 'pel-shell-script-skeleton-control
+  :type '(choice
+          (const :tag  "Not specified" nil)
+          (regexp :tag "File name regexp" :var "\\`_")))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; AppleScript support
