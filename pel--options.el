@@ -2784,6 +2784,7 @@ This package provides the ability to hide comments."
   "PEL Generic code style configuration."
   :group 'pel-pkg-for-all-languages
   :group 'pel-pkg-for-skeletons
+  :group 'pel-pkg-for-insertions
   :link `(url-link :tag "Inserting Text PDF"
                    ,(pel-pdf-file-url "inserting-text")))
 
