@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-17 10:35:17, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-17 14:07:58, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -150,27 +150,19 @@ variable `pel-generic-skel-module-header-block-style'."
      ;; then add the remainder for either a header file or code file
      (let ((sk (list 'l)))
        (if pel-generic-skel-insert-module-sections
-           (progn
+           (dolist (mtitle pel-generic-skel-module-section-titles)
              (pel-append-to sk
                             (list
-                             cb " Module Description\n"
-                             cc " ------------------\n"
+                             cb " " mtitle 'n
+                             cc " " (make-string (length mtitle) ?-) 'n
                              cc 'n
-                             cc " " 'p 'n
-                             cc 'n
-                             ce 'n (pel-when-text-in ce 'n)))
-             (dolist (mtitle pel-generic-skel-module-section-titles)
-               (pel-append-to sk
-                              (list
-                               (pel-skels-generic-separator-line)
-                               cb " " mtitle 'n
-                               cc " " (make-string (length mtitle) ?-) 'n
-                               ce 'n (pel-when-text-in ce 'n)
-                               'p 'n 'n))))
+                             cc " " 'p 'n (pel-when-text-in ce 'n)
+                             'n 'n
+                             (pel-skels-generic-separator-line))))
          (pel-append-to sk (list
                             'n
                             'p 'n 'n)))
-       (pel-append-to sk (list (pel-skels-generic-separator-line)))))))
+       sk))))
 
 ;; -----------------------------------------------------------------------------
 ;; Install Emacs Lisp skeletons

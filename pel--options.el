@@ -2879,20 +2879,16 @@ with titles identified by the variable
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-generic-skel-module-section-titles '("Dependencies"
+(defcustom pel-generic-skel-module-section-titles '("Module Description"
+                                                    "Dependencies"
                                                     "Code")
   "List of section titles to add in the module comment block.
 These section names are added when the variable
-`pel-generic-skel-insert-module-sections' is t, after the
-\"Module Description\" section. The sections are placed inside
-the module documentation block in the order of appearance in the
-list with the string as it appears in the list.  The default is
-to add the following sections:
+`pel-generic-skel-insert-module-sections' is t.
 
-- Header Inclusion,
-- Local Types,
-- Local Variables,
-- Code.
+The sections are placed inside the module documentation block in
+the order of appearance in the list with the string as it appears
+in the list.
 
 Empty strings can be used to specify section with a tempo marker
 with no text."

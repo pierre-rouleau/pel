@@ -884,14 +884,15 @@ Then save your changes."
 (define-key pel:f6 (kbd "<right>")'end-of-defun)
 (define-key pel:f6 (kbd "C-n")    'pel-goto-next-url)
 (define-key pel:f6 (kbd "C-p")    'pel-goto-previous-url)
+(define-key pel:f6 (kbd "SPC")    'pel-tempo-mode)
 
 ;; (kbd "<tab>") does not work in terminal mode, it works only in graphics mode
 (define-key pel:f6 (kbd "C-i")       'pel-indent-lines)
 (define-key pel:f6 (kbd "<backtab>") 'pel-unindent-lines)
 ;;
-;; Install the generic skeletons, 2 seconds after Emacs starts to reduce
+;; Install the generic skeletons, 1 second after Emacs starts to reduce
 ;; Emacs init time.
-(run-with-idle-timer 2 nil (function pel--install-generic-skel) pel:f6)
+(run-with-idle-timer 1 nil (function pel--install-generic-skel) pel:f6)
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11>
