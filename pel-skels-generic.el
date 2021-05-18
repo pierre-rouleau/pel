@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-17 14:07:58, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-18 10:04:31, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -71,10 +71,12 @@ Otherwise return a string that ends with a newline."
   "Return non-nil if the FNAME is the name of a sourced script, nil otherwise.
 The identification is done by a match with the user-option variable
 `pel-shell-sourced-script-file-name-prefix'"
-  (when (and (eq major-mode 'sh-mode)
-             pel-shell-sourced-script-file-name-prefix
-             (null (file-name-extension fname)))
-    (string-match pel-shell-sourced-script-file-name-prefix fname)))
+  (let ((file-extension (file-name-extension fname)))
+    (when (and (eq major-mode 'sh-mode)
+               pel-shell-sourced-script-file-name-prefix
+               (or  (null file-extension)
+                    (not (member file-extension '("sh" "bash")))))
+      (string-match pel-shell-sourced-script-file-name-prefix fname))))
 
 (defun pel-skels-generic-first-line (fname)
   "Return a string for the first line.  Starts with a space character."
