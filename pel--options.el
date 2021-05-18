@@ -2919,11 +2919,26 @@ The name of the file will be written in side it."
   :group 'pel-shell-script-skeleton-control
   :type 'string)
 
+(defcustom pel-shell-script-extensions '("sh" "bash")
+  "Recognized extensions for shell script.
+
+PEL code generation function `pel-generic-file-header' is able to generate
+special code for shell script meant to be sourced. It recognizes the files
+meant to be sourced when the file is recognized as a shell script file that
+has a name prefix identifiable by `pel-shell-sourced-script-file-name-prefix'.
+But you can force some files to have that prefix and still be regular shell
+script files by using a file extension that is one of the extensions given
+here."
+  :group 'pel-shell-script-skeleton-control
+  :type '(repeat string))
+
 (defcustom pel-shell-sourced-script-file-name-prefix nil
   "Identifies names of shell files that are meant to be sourced.
 If non-nil PEL treats the files with no extensions that match the specified
 requirements as shell script mean to be sourced and adjusts the skeleton
-used by the ``<f6> h`` command accordingly."
+used by the ``<f6> h`` command accordingly.
+
+See also: `pel-shell-script-extensions'."
   :group 'pel-shell-script-skeleton-control
   :type '(choice
           (const :tag  "Not specified" nil)

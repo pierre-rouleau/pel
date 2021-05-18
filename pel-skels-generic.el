@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-18 10:04:31, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-18 10:20:05, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -75,7 +75,7 @@ The identification is done by a match with the user-option variable
     (when (and (eq major-mode 'sh-mode)
                pel-shell-sourced-script-file-name-prefix
                (or  (null file-extension)
-                    (not (member file-extension '("sh" "bash")))))
+                    (not (member file-extension pel-shell-script-extensions))))
       (string-match pel-shell-sourced-script-file-name-prefix fname))))
 
 (defun pel-skels-generic-first-line (fname)
