@@ -2792,16 +2792,17 @@ d-mode not added to ac-modes!"
       ;; install lsp-mode clients
       (pel-ensure-package lsp-mode from: melpa)
       ;; Customize prefix for key-bindings ; TODO may change
-      (setq lsp-keymap-prefix "C-l")
+      (when (boundp 'lsp-keymap-prefix)
+        (setq lsp-keymap-prefix "C-l"))
       ;; Enable LSP for Erlang files
       (add-hook 'erlang-mode-hook #'lsp)
       ;; Enable logging for lsp-mode
-      (setq lsp-log-io t)
+      (pel-setq lsp-log-io t)
       ;; Enable and configure the LSP UI Package
       (pel-ensure-package lsp-ui from: melpa)
-      (setq lsp-ui-sideline-enable t)
-      (setq lsp-ui-doc-enable t)
-      (setq lsp-ui-doc-position 'bottom)
+      (pel-setq lsp-ui-sideline-enable t)
+      (pel-setq lsp-ui-doc-enable t)
+      (pel-setq lsp-ui-doc-position 'bottom)
       ;; Enable LSP Origami Mode (for folding ranges)
       (pel-ensure-package lsp-origami from:  melpa)
       (add-hook 'origami-mode-hook #'lsp-origami-mode)
