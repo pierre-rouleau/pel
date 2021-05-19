@@ -4961,7 +4961,10 @@ installed.
 By default PEL does not automatically activate the syntax checker
 when an Erlang file is visited. If you want it activated
 automatically, then you must add the symbol `erlang-mode' to the
-defcustom variable `pel-modes-activating-syntax-check'."
+defcustom variable `pel-modes-activating-syntax-check'.
+
+Note that if `pel-use-erlang-ls' is set, then flycheck is activated
+regardless of the value of this user-option."
   :link '(custom-group-link "pel-base-emacs")
   :group 'pel-pkg-for-erlang
   :type '(choice
@@ -4971,7 +4974,8 @@ defcustom variable `pel-modes-activating-syntax-check'."
 (pel-put 'pel-use-erlang-syntax-check :requires 'pel-use-erlang)
 (pel-put 'pel-use-erlang-syntax-check :package-is
          ;; flymake is built-in but not flycheck
-         '(when (eq pel-use-erlang-syntax-check 'with-flycheck)
+         '(when (or pel-use-erlang-ls
+                    (eq pel-use-erlang-syntax-check 'with-flycheck))
             '((elpa . flycheck))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -4998,7 +5002,10 @@ if configured to activate automatically."
   :safe #'booleanp)
 
 (defcustom pel-use-erlang-ls nil
-  "Control whether PEL uses the Erlang Language Server."
+  "Control whether PEL uses the Erlang Language Server.
+
+Note that when set this activates the flycheck-mode, regardless
+of the value of the `pel-use-erlang-syntax-check' user-option."
   :link '(url-link :tag "erlang_ls @ GitHub"
                    "https://github.com/erlang-ls/erlang_ls")
   :group 'pel-erlang-ide

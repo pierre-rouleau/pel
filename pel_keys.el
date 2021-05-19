@@ -2819,7 +2819,9 @@ d-mode not added to ac-modes!"
          (display-buffer-reuse-window display-buffer-in-side-window)
          (side            . bottom)
          (reusable-frames . visible)
-         (window-height   . 0.33))))
+         (window-height   . 0.33)))
+      ;; Force the use of flycheck when LSP is used.
+      (setq pel-use-erlang-syntax-check 'with-flycheck))
 
     (when pel-use-erlang-syntax-check
       (cond
@@ -2838,7 +2840,6 @@ d-mode not added to ac-modes!"
 
        ;; when using flycheck with Erlang
        ((eq pel-use-erlang-syntax-check 'with-flycheck)
-
         (defun pel--erlang-setup-for-flycheck ()
           "Setup flycheck."
           ;; Note that both flycheck-select-checker and flycheck-mode
