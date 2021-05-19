@@ -53,6 +53,7 @@
 ;;     - pel-pkg-for-graphics-emacs
 ;;       - pel-pkg-for-graphics-cursor
 ;;     - pel-pkg-for-grep
+;;     - pel-pkg-for-help
 ;;     - pel-pkg-for-hide-show
 ;;     - pel-pkg-for-highlight
 ;;       - pel-pkg-for-parens
@@ -416,18 +417,6 @@ Use the INS and DEL buttons to add associations:
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-emacs-refcard-dirpath nil
-  "Path name of a directory holding Emacs PDF reference cards.
-
-If the function `pel-open-emacs-refcard' is not able to find the location
-of the GNU Emacs reference cards, download them from the site linked below,
-store them inside a directory and identify that directory here."
-  :link '(url-link :tag "GNU Emacs Reference Cards home page"
-                   "https://www.gnu.org/software/emacs/refcards/index.html")
-  :group 'pel-base-emacs
-  :type '(choice
-          (const :tag "Locate automatically" nil)
-          (string :tag "Use files in directory")))
 
 (defcustom pel-modes-activating-syntax-check  nil
   "List of major modes that automatically activate their syntax checker.
@@ -1528,6 +1517,40 @@ package is also required because `projectile` uses the `ripgrep` package."
                                            '((elpa . rg)
                                              (elpa . ripgrep))
                                          '((elpa \.rg))))
+
+;; ---------------------------------------------------------------------------
+(defgroup pel-pkg-for-help nil
+  "PEL help/documentation control support."
+  :group 'pel-package-use
+  :link `(url-link :tag "Help PDF" ,(pel-pdf-file-url "help")))
+
+(defcustom pel-use-helpful nil
+  "Control whether PEL provides access to the helpful external package."
+  :group 'pel-pkg-for-help
+  :link '(url-link :tag "helpful @ GitHub"
+                   "https://github.com/Wilfred/helpful")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-helpful-with-counsel nil
+  "Control whether helpful use counsel commands."
+  :group 'pel-pkg-for-help
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-emacs-refcard-dirpath nil
+  "Path name of a directory holding Emacs PDF reference cards.
+
+If the function `pel-open-emacs-refcard' is not able to find the location
+of the GNU Emacs reference cards, download them from the site linked below,
+store them inside a directory and identify that directory here."
+  :link '(url-link :tag "GNU Emacs Reference Cards home page"
+                   "https://www.gnu.org/software/emacs/refcards/index.html")
+  :group 'pel-base-emacs
+  :type '(choice
+          (const :tag "Locate automatically" nil)
+          (string :tag "Use files in directory")))
+
 ;; ---------------------------------------------------------------------------
 ;; Hide/Show support
 ;; -----------------

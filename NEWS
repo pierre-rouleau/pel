@@ -303,6 +303,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - New: key binding to display Emacs up-time (<f11> ? e u).
   - New: added several alias for various PDF tables when using the
     *pel-help-pdf-select* (which is bound to the  ``<f11> ? p`` key.
+  - New: Add support for the *helpful* package.  Activated when the
+    *pel-use-helpful* user-option is turned on.  Its commands are bound to the
+    ``<f1> <f2>`` key prefix.
 - Update: *Hide/Show*:
   - New: add support for the *hide-lines* external package, activated when the
     *pel-use-hide-lines* user-option is turned on (set to *t*). It provides

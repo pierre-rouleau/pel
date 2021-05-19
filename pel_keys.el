@@ -3785,6 +3785,21 @@ d-mode not added to ac-modes!"
   (pel-autoload-file ascii-table for: ascii-table)
   (define-key pel:help "A" 'ascii-table))
 
+(when pel-use-helpful
+  (pel-ensure-package helpful from: melpa)
+  (define-pel-global-prefix pel:helpful (kbd "<f1> <f2>"))
+  (define-key pel:helpful "a" 'helpful-callable)
+  (define-key pel:helpful "f" 'helpful-function)
+  (define-key pel:helpful "m" 'helpful-macro)
+  (define-key pel:helpful "c" 'helpful-command)
+  (define-key pel:helpful "k" 'helpful-key)
+  (define-key pel:helpful "v" 'helpful-variable)
+  (define-key pel:helpful "." 'helpful-at-point)
+  (when (and pel-use-helpful-with-counsel
+             pel-use-counsel)
+    (pel-setq counsel-describe-function-function 'helpful-callable)
+    (pel-setq counsel-describe-variable-function 'helpful-variable)))
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? a`` : Help Apropos commands
 
