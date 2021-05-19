@@ -2795,7 +2795,7 @@ d-mode not added to ac-modes!"
       (when (boundp 'lsp-keymap-prefix)
         (setq lsp-keymap-prefix "C-l"))
       ;; Enable LSP for Erlang files
-      (add-hook 'erlang-mode-hook #'lsp)
+      (add-hook 'erlang-mode-hook 'lsp)
       ;; Enable logging for lsp-mode
       (pel-setq lsp-log-io t)
       ;; Enable and configure the LSP UI Package
@@ -2805,8 +2805,8 @@ d-mode not added to ac-modes!"
       (pel-setq lsp-ui-doc-position 'bottom)
       ;; Enable LSP Origami Mode (for folding ranges)
       (pel-ensure-package lsp-origami from:  melpa)
-      (add-hook 'origami-mode-hook #'lsp-origami-mode)
-      (add-hook 'erlang-mode-hook #'origami-mode)
+      (add-hook 'origami-mode-hook 'lsp-origami-mode)
+      (add-hook 'erlang-mode-hook 'origami-mode)
       (when pel-use-helm
         ;; Provide commands to list workspace symbols:
         ;; - helm-lsp-workspace-symbol
