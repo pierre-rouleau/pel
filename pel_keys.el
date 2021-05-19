@@ -2811,7 +2811,15 @@ d-mode not added to ac-modes!"
         ;; Provide commands to list workspace symbols:
         ;; - helm-lsp-workspace-symbol
         ;; - helm-lsp-global-workspace-symbol
-        (pel-ensure-package helm-lsp from: melpa)))
+        (pel-ensure-package helm-lsp from: melpa))
+      ;; Always show diagnostics at the bottom, using 1/3 of available space
+      (add-to-list
+       'display-buffer-alist
+       `(,(rx bos "*Flycheck errors*" eos)
+         (display-buffer-reuse-window display-buffer-in-side-window)
+         (side            . bottom)
+         (reusable-frames . visible)
+         (window-height   . 0.33))))
 
     (when pel-use-erlang-syntax-check
       (cond
