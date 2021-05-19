@@ -948,6 +948,10 @@ Then save your changes."
 (define-key pel: (kbd      "<M-left>")     'pel-backward-syntaxchange-start)
 (define-key pel: (kbd      "0")           #'hl-line-mode)
 (define-key pel: (kbd      "M-=")          'pel-toggle-show-copy-cut-text)
+;; add ``<f11> C-l`` binding to recenter-top-bottom because some modes use C-l
+;; as a prefix key and this feature is quite useful.
+(define-key pel: (kbd      "C-l")          'recenter-top-bottom)
+
 
 ;; ---------------------------------------------------------------------------
 ;; EditorConfig Support
