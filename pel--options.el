@@ -933,7 +933,7 @@ The available options are:
 - nil           : Use Emacs default.
 - `helm'        : Use Helm, when `pel-use-helm' is t.
 - `ido'         : Use Ido, when `pel-use-ido' is t.
-- `ido/helm'    : Use Ido with Helm, if both `pel-use-ido' and `pel-use-help'
+- `ido/helm'    : Use Ido with Helm, if both `pel-use-ido' and `pel-use-helm'
                   are t.
 - `ivy'         : Use Ivy, when `pel-use-ivy' is t.
 - `ivy/counsel' : Use Ivy with Counsel, when `pel-use-ivy' & `pel-use-counsel'
