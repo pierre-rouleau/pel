@@ -2784,6 +2784,30 @@ d-mode not added to ac-modes!"
         (define-key pel:for-erlang "p" 'ahs-backward)
         (define-key pel:for-erlang "." 'ahs-back-to-start)))
 
+    (when pel-use-erlang-ls
+      ;; install lsp-mode clients
+      (pel-ensure-package lsp-mode from: melpa)
+      ;; Customize prefix for key-bindings ; TODO may change
+      (setq lsp-keymap-prefix "C-l")
+      ;; Enable LSP for Erlang files
+      (add-hook 'erlang-mode-hook #'lsp)
+      ;; Enable logging for lsp-mode
+      (setq lsp-log-io t)
+      ;; Enable and configure the LSP UI Package
+      (pel-ensure-package lsp-ui from: melpa)
+      (setq lsp-ui-sideline-enable t)
+      (setq lsp-ui-doc-enable t)
+      (setq lsp-ui-doc-position 'bottom)
+      ;; Enable LSP Origami Mode (for folding ranges)
+      (pel-ensure-package lsp-origami from:  melpa)
+      (add-hook 'origami-mode-hook #'lsp-origami-mode)
+      (add-hook 'erlang-mode-hook #'origami-mode)
+      (when pel-use-helm
+        ;; Provide commands to list workspace symbols:
+        ;; - helm-lsp-workspace-symbol
+        ;; - helm-lsp-global-workspace-symbol
+        (pel-ensure-package helm-lsp from: melpa)))
+
     (when pel-use-erlang-syntax-check
       (cond
        ;; when using flymake with Erlang

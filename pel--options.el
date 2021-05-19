@@ -4997,14 +4997,14 @@ if configured to activate automatically."
   :type 'boolean
   :safe #'booleanp)
 
-;; (defcustom pel-use-erlang_ls nil
-;;   "Control whether PEL uses the Erlang Language Server."
-;;   :link '(url-link :tag "erlang_ls @ GitHub"
-;;                    "https://github.com/erlang-ls/erlang_ls")
-;;   :group 'pel-erlang-ide
-;;   :type 'boolean
-;;   :safe #'booleanp)
-;; (pel-put 'pel-use-erlang_ls :requires 'pel-use-erlang)
+(defcustom pel-use-erlang-ls nil
+  "Control whether PEL uses the Erlang Language Server."
+  :link '(url-link :tag "erlang_ls @ GitHub"
+                   "https://github.com/erlang-ls/erlang_ls")
+  :group 'pel-erlang-ide
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-erlang-ls :requires 'pel-use-erlang)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-erlang-code-style nil
