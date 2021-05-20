@@ -118,6 +118,9 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
         helm-cscope-mode and the extra key bindings this mode activates.
     - New: Added support for eopengrok front end to [[https://en.wikipedia.org/wiki/OpenGrok][OpenGrok]], a Java-based
       source code indexing server.
+    - New: Added support for elisp-refs package, activated by *pel-use-elisp-refs*
+      as well as from *pel-use-helpful* user-options.  The commands have key
+      bindings under the ``<f12> r`` key prefix of Emacs Lisp Mode.
   - New *xref back-end support*:
     - New: Added support for [[https://github.com/jacktasia/dumb-jump][dump-jump]]. The pel-use-dumb-jump activates it for M-.
     - New: Added support for [[https://www.gnu.org/software/global/][GNU GLOBAL]] gtags-based [[https://github.com/leoliu/ggtags][ggtags]]. This includes support

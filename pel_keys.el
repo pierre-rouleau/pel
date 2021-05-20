@@ -2395,6 +2395,15 @@ d-mode not added to ac-modes!"
    (pel-turn-on-minor-modes-in pel-elisp-activates-minor-modes))
  'emacs-lisp-mode 'emacs-lisp-mode-hook :append)
 
+(when (or pel-use-elisp-refs       ; it will be set if pel-use-helpful
+          pel-use-helpful)         ; is set, but it's done below
+  (define-pel-global-prefix pel:elisp-refs (kbd "<f11> SPC l r"))
+  (define-key pel:elisp-refs "f" 'elisp-refs-function)
+  (define-key pel:elisp-refs "m" 'elisp-refs-macro)
+  (define-key pel:elisp-refs "v" 'elisp-refs-variable)
+  (define-key pel:elisp-refs "s" 'elisp-refs-special)
+  (define-key pel:elisp-refs "o" 'elisp-refs-symbol))
+
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC L`` : Common Lisp
 (when pel-use-common-lisp
@@ -3786,6 +3795,7 @@ d-mode not added to ac-modes!"
   (define-key pel:help "A" 'ascii-table))
 
 (when pel-use-helpful
+  (setq pel-use-elisp-refs t)           ; helpful uses elisp-refs
   (pel-ensure-package helpful from: melpa)
   (define-pel-global-prefix pel:helpful (kbd "<f1> <f2>"))
   (define-key pel:helpful "a" 'helpful-callable)

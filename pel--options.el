@@ -4269,6 +4269,17 @@ the copyright holder value."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-elisp-refs nil
+  "Control whether PEL installs and activates elisp-refs external package.
+
+This user-option is also set to t  when the `pel-use-helpful' user-option
+is set: it is used by the helpful package."
+  :link '(url-link :tag "elisp-refs @ GitHub"
+                   "https://github.com/Wilfred/elisp-refs")
+  :group 'pel-pkg-for-elisp
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Arc Support
 ;; -----------
