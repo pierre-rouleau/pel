@@ -213,14 +213,21 @@
 ;; already identifies its dependencies.   The `pel-cleanup' function reads the
 ;; package dependencies and takes them into account.
 ;;
-;; However, the package dependency of some packages do not identify *all* of
+;; However, there are cases where the dependencies are not fully identified.
+;;
+;; - Case 1: the pel-init call in pel_keys.el sometimes installs and activates
+;; several packages for a single `pel-use-' variable.  These other packages
+;; must be identified.
+;;
+;; - Case 2: the package dependency of some packages do not identify *all* of
 ;; their dependencies.  In some case they do that because the package
 ;; activates extra functionality only when the extra dependency is present.
-;; Well, when it is present you want to keep it during a `pel-cleanup'
-;; operation.  To identify those extra dependencies use the `:requires-package'
-;; property and identify the required package.  The semantics is the same as
-;; for the `:requires' property above except for the fact that if it is not
-;; present nothing is inferred.
+;;
+;; In both cases, when these extra packages are present you want to keep them
+;; during a `pel-cleanup' operation.  To identify those extra dependencies use
+;; the `:requires-package' property and identify the required package.  The
+;; semantics is the same as for the `:requires' property above except for the
+;; fact that if it is not present nothing is inferred.
 ;;
 ;; *Development Tip*:
 ;; When writing support for a new package that is coming from and
@@ -236,7 +243,12 @@
 ;;   - If that's not the case, then add a `:requires-package' property to the
 ;;     package `pel-use-' user-option that identifies the unspecified
 ;;     dependencies.
-;;
+;; - Activate the package `pel-use-' variable and run `pel-init' to ensure
+;;   that all required packages are installed.
+;; - With the variable still active, run a dry-run `pel-cleanup' to check that
+;;   nothing it requires would be un-installed.
+;; - Deactivate the variable and run a dry-run `pel-cleanup' to verify that it
+;;   removes only what should be removed.
 
 ;; `:package-is'
 ;; ------------
@@ -5035,6 +5047,14 @@ of the value of the `pel-use-erlang-syntax-check' user-option."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-erlang-ls :requires 'pel-use-erlang)
+(pel-put 'pel-use-erlang-ls :requires-package
+         '(append (quote
+                   ((elpa . lsp-mode )
+                    (elpa . lsp-ui)
+                    (elpa . lsp-origami)))
+                  (when pel-use-helm
+                    (quote
+                     ((elpa . helm-lsp))))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-erlang-code-style nil
