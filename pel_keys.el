@@ -3795,6 +3795,7 @@ d-mode not added to ac-modes!"
   (define-key pel:helpful "k" 'helpful-key)
   (define-key pel:helpful "v" 'helpful-variable)
   (define-key pel:helpful "." 'helpful-at-point)
+  (define-key pel:helpful "o" 'helpful-symbol)
   (when (and pel-use-helpful-with-counsel
              pel-use-counsel)
     (pel-setq counsel-describe-function-function 'helpful-callable)
