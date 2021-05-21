@@ -527,18 +527,18 @@ This bookmark identifies the location for the next reStructuredText reference."
   ;; Also on the very first call, force loading the bookmarks to ensure that an old
   ;; bookmark for that file will be known.
   (when (and (buffer-modified-p)
-             (not pel--rst-file-was-saved-once-p)
-             (require 'bookmark nil :no-error)
-             (boundp 'bookmark-default-file)
-             (fboundp 'bookmark-load))
+             (not pel--rst-file-was-saved-once-p))
     (save-buffer)
     (setq pel--rst-file-was-saved-once-p t))
   ;; Although the docs states that the bookmark file is loaded automatically
   ;; for some reason sometimes it's not.  So make sure it is because the file
   ;; may have a bookmark for the edited reStructuredText file.
   (unless pel--bookmark-file-loaded-p
-    (bookmark-load bookmark-default-file)
-    (setq pel--bookmark-file-loaded-p t))
+    (when (and (require 'bookmark nil :no-error)
+               (boundp 'bookmark-default-file)
+               (fboundp 'bookmark-load))
+      (bookmark-load bookmark-default-file)
+      (setq pel--bookmark-file-loaded-p t)))
   (format "RST-%s" (pel-current-buffer-filename)))
 
 ;;-pel-autoload
