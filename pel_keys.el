@@ -2806,10 +2806,10 @@ d-mode not added to ac-modes!"
       ;; Enable LSP for Erlang files
       (add-hook 'erlang-mode-hook 'lsp)
       ;; Enable logging for lsp-mode
-      (pel-setq lsp-log-io t)
+      (pel-setq lsp-log-io t)       ; TODO: add a command to toggle this?
       ;; Enable and configure the LSP UI Package
       (pel-ensure-package lsp-ui from: melpa)
-      (pel-setq lsp-ui-sideline-enable t)
+      (pel-setq lsp-ui-sideline-enable t) ; TODO: add a command to toggle this?
       (pel-setq lsp-ui-doc-enable t)
       (pel-setq lsp-ui-doc-position 'bottom)
       ;; Enable LSP Origami Mode (for folding ranges)

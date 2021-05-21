@@ -513,9 +513,32 @@ previous section."
 ;;   - pel-rst-goto-ref-bookmark
 ;;   - pel--rst-bookmark-exists-p
 
+(defvar-local pel--rst-file-was-saved-once-p nil
+  "Remember if the rst file was saved once when creating a bookmark.")
+
+(defvar pel--bookmark-file-loaded-p nil
+  "Remember if the bookmark file was loaded once explicitly.")
+
 (defun pel-rst-ref-bookmark-name ()
   "Return the bookmark name string used for the current file.
 This bookmark identifies the location for the next reStructuredText reference."
+  ;; Make sure the file has been saved once when creating a RST bookmark for
+  ;; it, otherwise trying to create a hyperlink will prompt to rename the bookmark.
+  ;; Also on the very first call, force loading the bookmarks to ensure that an old
+  ;; bookmark for that file will be known.
+  (when (and (buffer-modified-p)
+             (not pel--rst-file-was-saved-once-p)
+             (require 'bookmark nil :no-error)
+             (boundp 'bookmark-default-file)
+             (fboundp 'bookmark-load))
+    (save-buffer)
+    (setq pel--rst-file-was-saved-once-p t))
+  ;; Although the docs states that the bookmark file is loaded automatically
+  ;; for some reason sometimes it's not.  So make sure it is because the file
+  ;; may have a bookmark for the edited reStructuredText file.
+  (unless pel--bookmark-file-loaded-p
+    (bookmark-load bookmark-default-file)
+    (setq pel--bookmark-file-loaded-p t))
   (format "RST-%s" (pel-current-buffer-filename)))
 
 ;;-pel-autoload
