@@ -243,9 +243,14 @@ Return a list of (mode fname key-type key-string) for which the activation must 
             (unless (assoc mode deferred-modes)
               (push (list mode fname key-type key-string) deferred-modes))))))))
 
+(defvar pel--print-key-chord-activation-messages-p nil
+  "Turn this to t to provide more information on startup.
+Otherwise leave it nil to minimize printing over messages from major modes.")
+
 (defun pel--activate-deferred-key-chords ()
-  "Activates deferred key-chord(s).  Display a message to help follow."
-  (message "Activating deferred key-chord.")
+  "Activates deferred key-chord(s)."
+  (when pel--print-key-chord-activation-messages-p
+    (message "Activating deferred key-chord."))
   (pel-activate-key-chords-in pel-key-chords))
 
 (defun pel-activate-all-key-chords ()
@@ -256,10 +261,11 @@ Return a list of (mode fname key-type key-string) for which the activation must 
             (fname      (nth 1 mode-fname))
             (key-type   (nth 2 mode-fname))
             (key-string (nth 3 mode-fname)))
-        (message
-         "pel-activate-all-key-chords: deferring activation of %s %S for %s, \
+        (when pel--print-key-chord-activation-messages-p
+          (message
+           "pel-activate-all-key-chords: deferring activation of %s %S for %s, \
 via loading of %s"
-         key-string key-type mode fname)
+           key-string key-type mode fname))
         ;; for deferral, just re-execute the complete interpretation of
         ;; pel-key-chords.  This way if a change occurred in it, it will
         ;; be activated as soon as possible.
