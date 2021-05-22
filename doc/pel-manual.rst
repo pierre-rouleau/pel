@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-05-21 17:55:34, updated by Pierre Rouleau.
+:Modified: 2021-05-22 12:49:34, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -3216,14 +3216,13 @@ pel-c-skel-use-uuid-include-guards   nil     Used for C header files only:
 pel-c-skel-module-header-block-style nil     The selected style for the module
                                              header: use PEL's default style.
 
-pel-c-skel-insert-module-sections    t       Insert module code sections: the
-                                             sections defined in the next user
-                                             option variable.
-
 pel-c-skel-module-section-titles     ➽       Use the module sections
                                              identified by PEL's default:
+                                             "Module Description"
                                              "Header Inclusion", "Local Types",
                                              "Local Variables" and "Code".
+                                             The value can also be set to nil
+                                             to prevent insertion of the sections.
 ==================================== ======= =====================================
 
 

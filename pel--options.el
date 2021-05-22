@@ -96,6 +96,7 @@
 ;;           - pel-clisp-code-style
 ;;           - pel-sexp-form-navigation
 ;;         - pel-pkg-for-elisp
+;;           - pel-elisp-code-style
 ;;           - pel-sexp-form-navigation
 ;;         - pel-pkg-for-arc
 ;;         - pel-pkg-for-clojure
@@ -303,6 +304,15 @@
 ;; `:restricted-to' property set to `pel-emacs-is-graphic-p' when Emacs is
 ;; running in graphics mode.
 
+;; `:choices'
+;; ----------
+;;
+;; This property is currently used only for the code template user-options to
+;; identify a sample of valid choices for the user-option.  These are used in
+;; the test code that generate the file sample examples stored inside the
+;; example/templates directory.  These files provide samples of what is
+;; possible to generate with the PEL code generation.
+
 ;;; --------------------------------------------------------------------------
 ;;; Dependency
 (require 'pel--base)                    ; use: pel-expression-p
@@ -355,6 +365,9 @@ Validate at byte-compile time."
         (and (consp value)
              (eq (car value) 'quote)
              (pel-expression-p value)))
+       ;; choices is to help testing - accept them
+       ((eq propname :choices)
+        t)
        (t nil))
       `(put ,symbol ,propname ,value)
     `(error "Invalid %s property value %S for symbol %s"
@@ -3177,6 +3190,106 @@ Values in the [2, 8] range are accepted."
   :group 'pel-pkg-for-skeletons
   :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
 
+;; style - 0
+(defcustom pel-c-skel-use-separators t
+  "Specifies whether C code block include separators line.
+If nil no separator line comment is used, otherwise separator line
+comments of length controlled by variable `fill-column' are inserted."
+  :group 'pel-c-skeleton-control
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-c-skel-use-separators :choices '(nil t))
+
+;; style - 1
+(defcustom pel-c-skel-insert-file-timestamp t
+  "Specifies whether a timestamp is inserted inside C file header block."
+  :group 'pel-c-skeleton-control
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-c-skel-insert-file-timestamp :choices '(nil t))
+
+;; style - 2
+(defcustom pel-c-skel-with-license nil
+  "Control whether a license text is inserted in C file header.
+
+You can specify to have the complete license text entered in the file
+when setting the value to `t, or only enter the license name when you specify
+the license name with a string.  That string will be entered verbatim
+inside a file header line.
+
+When t, the licence inserted is controlled by the function `lice' taken
+from the external library with the same name.
+If t this activates `pel-use-lice' if it is not activated already.
+
+The text of the inserted license is selected by the `lice:default-license'
+user option, normally configured inside the directory's '.dir-locals.el'
+file written inside the global setting like this:
+
+   ((nil   .      ((fill-column . 80)
+                   (lice:default-license  . \"gpl-3.0\")
+                   (lice:copyright-holder . \"Your Name\")))
+
+Replace the gpl-3.0 with the license you want and write your name inside
+the copyright holder value."
+  :group 'pel-c-skeleton-control
+  :type '(choice
+          (const :tag "No license." nil)
+          (const :tag "With license text selected by `lice:default-license'"
+                 t)
+          (string :tag "License name only")))
+(pel-put 'pel-c-skel-with-license :choices '(nil t "MIT"))
+
+;; style - 3 : no package name support for C
+;; style - 4 : no file variable support for C
+
+;; style - 5
+(defcustom pel-c-skel-module-section-titles '("Module Description"
+                                              "Header Inclusion"
+                                              "Local Types"
+                                              "Local Variables"
+                                              "Code")
+  "Specifies whether code sections are inserted inside C file comment block.
+
+The choices are:
+- nil: no section titles are inserted.
+- a list of sections.
+
+The default includes fives sections.  You can add, replace and remove them.
+
+These section titles are placed inside the module documentation
+block in the order of appearance in the list with the string as
+it appears in the list.  The default is to add the following
+sections:
+
+- Module Description
+- Header Inclusion,
+- Local Types,
+- Local Variables,
+- Code.
+
+Empty strings can be used to specify section with a tempo marker with no text."
+  :group 'pel-c-skeleton-control
+  :type '(choice
+          (const :tag "No code section titles." nil)
+          (repeat :tag "Section titles" string)))
+(pel-put 'pel-c-skel-module-section-titles
+         :choices
+         '(nil
+           ("Module Description"
+            "Header Inclusion"
+            "Local Types"
+            "Local Variables"
+            "Code")))
+
+;; style - 6
+(defcustom pel-c-skel-doc-markup nil
+  "Specifies the documentation markup system used for C source code."
+  :group 'pel-c-skeleton-control
+  :type '(choice
+          (const :tag "No documentation markup inserted in templates." nil)
+          (const :tag "Insert Doxygen markup in templates." doxygen)))
+
+;; style - 7
 (defcustom pel-c-skel-comment-with-2stars t
   "Specifies whether multi-line C comments continuation use 2 stars.
 If set to t (the default), C comments in generated code
@@ -3191,32 +3304,11 @@ If set to nil, the comment style is:      /*
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-c-skel-use-separators t
-  "Specifies whether C code block include separators line.
-If nil no separator line comment is used, otherwise separator line
-comments of length controlled by variable `fill-column' are inserted."
-  :group 'pel-c-skeleton-control
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-c-skel-doc-markup nil
-  "Specifies the documentation markup system used for C source code."
-  :group 'pel-c-skeleton-control
-  :type '(choice
-          (const :tag "No documentation markup inserted in templates." nil)
-          (const :tag "Insert Doxygen markup in templates." doxygen)))
-
 ;;    .       .       .       .       .       .       .       .       .       .
 (defgroup pel-c-module-header-skeleton-control nil
   "Control Skeleton that generate C source code."
   :group 'pel-c-skeleton-control
   :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
-
-(defcustom pel-c-skel-insert-file-timestamp t
-  "Specifies whether a timestamp is inserted inside C file header block."
-  :group 'pel-c-module-header-skeleton-control
-  :type 'boolean
-  :safe #'booleanp)
 
 (defcustom pel-c-skel-use-uuid-include-guards t
   "Controls if UUID-based include guards are inserted inside C header file."
@@ -3256,63 +3348,8 @@ You can use one of the following:
           (const  :tag "Default, controlled by PEL." nil)
           (string :tag "Use your own custom definition\n inside file")))
 
-(defcustom pel-c-skel-insert-module-sections t
-  "Specifies whether code sections are inserted inside C file comment block.
-This includes the \"Module Description\" section and sections
-with titles identified by the variable `pel-c-skel-module-section-titles'."
-  :group 'pel-c-module-header-skeleton-control
-  :type 'boolean
-  :safe #'booleanp)
 
-(defcustom pel-c-skel-module-section-titles '("Header Inclusion"
-                                              "Local Types"
-                                              "Local Variables"
-                                              "Code")
-  "List of section titles to add in the module comment block.
-These section names are added when the variable
-`pel-c-skel-insert-module-sections' is t, after the \"Module
-Description\" section. The sections are placed inside the module
-documentation block in the order of appearance in the list with
-the string as it appears in the list.  The default is to add the
-following sections:
 
-- Header Inclusion,
-- Local Types,
-- Local Variables,
-- Code.
-
-Empty strings can be used to specify section with a tempo marker with no text."
-  :group 'pel-c-module-header-skeleton-control
-  :type '(repeat string))
-
-(defcustom pel-c-skel-with-license nil
-  "Control whether a license text is inserted in C file header.
-
-You can specify to have the complete license text entered in the file
-when setting the value to `t, or only enter the license name when you specify
-the license name with a string.  That string will be entered verbatim
-inside a file header line.
-
-When t, the licence inserted is controlled by the function `lice' taken
-from the external library with the same name.
-If t this activates `pel-use-lice' if it is not activated already.
-
-The text of the inserted license is selected by the `lice:default-license'
-user option, normally configured inside the directory's '.dir-locals.el'
-file written inside the global setting like this:
-
-   ((nil   .      ((fill-column . 80)
-                   (lice:default-license  . \"gpl-3.0\")
-                   (lice:copyright-holder . \"Your Name\")))
-
-Replace the gpl-3.0 with the license you want and write your name inside
-the copyright holder value."
-  :group 'pel-c-module-header-skeleton-control
-  :type '(choice
-          (const :tag "No license." nil)
-          (const :tag "With license text selected by `lice:default-license'"
-                 t)
-          (string :tag "License name only")))
 
 ;;    .       .       .       .       .       .       .       .       .       .
 (defgroup pel-c-function-header-skeleton-control nil
@@ -4141,28 +4178,7 @@ is used for `lisp-mode' buffers, otherwise the integer value specified by
           (const   :tag "Use the default fill-column value." nil)
           (integer :tag "Use a value specific for lisp-mode buffers:")))
 
-(defcustom pel-clisp-emacs-filevar-line nil
-  "Identifies the Emacs File Variable setting string for top of files.
-If this string is specified, it is placed on the very first line of
-Common Lisp source code files when the PEL skeleton is used.
-The string is placed between the two -*- tags."
-  :group 'pel-clisp-code-style
-  :type '(choice
-          (const :tag "No file variable file." nil)
-          (string :tag "Use specified string.")))
-
-(defcustom pel-clisp-skel-package-name 'extract-from-file-name
-  "Specifies whether a package name ownership note is inserted.
-If you want to insert one, it can either be extracted from the file name (in
-this case it's the first word of the file name, fully up-cased) or can be
-specified as a string."
-  :group 'pel-clisp-code-style
-  :type '(choice
-          (const :tag "No, don't add package ownership note." nil)
-          (const :tag "Add package ownership note extracted from file name."
-                 extract-from-file-name)
-          (string :tag "Use this specified string.")))
-
+;; style - 0
 (defcustom pel-clisp-skel-use-separators t
   "Specifies whether Common Lisp code block include separators line.
 If nil no separator line comment is used, otherwise separator line
@@ -4171,12 +4187,15 @@ comments of length controlled by variable `fill-column' are inserted."
   :type 'boolean
   :safe #'booleanp)
 
+;; style - 1
 (defcustom pel-clisp-skel-insert-file-timestamp nil
   "Set whether a timestamp is inserted inside Common Lisp file header block."
   :group 'pel-clisp-code-style
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-clisp-skel-insert-file-timestamp :choices '(nil t))
 
+;; style - 2
 (defcustom pel-clisp-skel-with-license nil
   "Control whether a license text is inserted in Common Lisp file header.
 
@@ -4219,9 +4238,38 @@ the copyright holder value."
           (string :tag "License name only")
           (const :tag "Just a licence line --- deprecated." license-line)
           (const :tag "With license text --- deprecated!"   license-text)))
+(pel-put 'pel-clisp-skel-with-license :choices '(nil t "MIT" license-line license-text))
 ;; TODO: refactoring needed: change the type of pel-clisp-skel-with-license
 ;;       to comply with what the other -skel-with-license defcustom support:
 ;;       replace 'license-text with 't
+
+;; style - 3
+(defcustom pel-clisp-skel-package-name 'extract-from-file-name
+  "Specifies whether a package name ownership note is inserted.
+If you want to insert one, it can either be extracted from the file name (in
+this case it's the first word of the file name, fully up-cased) or can be
+specified as a string."
+  :group 'pel-clisp-code-style
+  :type '(choice
+          (const :tag "No, don't add package ownership note." nil)
+          (const :tag "Add package ownership note extracted from file name."
+                 extract-from-file-name)
+          (string :tag "Use this specified string.")))
+(pel-put 'pel-clisp-skel-package-name :choices '(nil extract-from-file-name "foo"))
+
+;; style -4
+(defcustom pel-clisp-emacs-filevar-line nil
+  "Identifies the Emacs File Variable setting string for top of files.
+If this string is specified, it is placed on the very first line of
+Common Lisp source code files when the PEL skeleton is used.
+The string is placed between the two -*- tags."
+  :group 'pel-clisp-code-style
+  :type '(choice
+          (const :tag "No file variable file." nil)
+          (string :tag "Use specified string.")))
+(pel-put 'pel-clisp-emacs-filevar-line
+         :choices
+         '(nil "Mode: Lisp; Syntax: ANSI-Common-Lisp; Base: 10"))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Emacs Lisp Support
@@ -4741,18 +4789,7 @@ inside comments and docstrings."
   :group 'pel-pkg-for-elisp
   :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp")))
 
-(defcustom pel-elisp-skel-package-name 'extract-from-file-name
-  "Specifies whether a package name ownership note is inserted.
-If you want to insert one, it can either be extracted from the file name (in
-this case it's the first word of the file name, fully up-cased) or can be
-specified as a string."
-  :group 'pel-elisp-code-style
-  :type '(choice
-          (const :tag "No, don't add package ownership note." nil)
-          (const :tag "Add package ownership note extracted from file name."
-                 extract-from-file-name)
-          (string :tag "Use this specified string.")))
-
+;; style - 0
 (defcustom pel-elisp-skel-use-separators t
   "Specifies whether Elisp code block include separators line.
 If nil no separator line comment is used, otherwise separator line
@@ -4760,13 +4797,17 @@ comments of length controlled by variable `fill-column' are inserted."
   :group 'pel-elisp-code-style
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-elisp-skel-use-separators :choices '(nil t))
 
+;; style - 1
 (defcustom pel-elisp-skel-insert-file-timestamp nil
   "Specifies whether a timestamp is inserted inside Elisp file header block."
   :group 'pel-elisp-code-style
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-elisp-skel-insert-file-timestamp :choices '(nil t))
 
+;; style - 2
 (defcustom pel-elisp-skel-with-license nil
   "Control whether a license text is inserted in Elisp file header.
 
@@ -4795,6 +4836,21 @@ the copyright holder value."
           (const :tag "With license text selected by `lice:default-license'"
                  t)
           (string :tag "License name only")))
+(pel-put 'pel-elisp-skel-with-license :choices '(nil t "MIT"))
+
+;; style - 3
+(defcustom pel-elisp-skel-package-name 'extract-from-file-name
+  "Specifies whether a package name ownership note is inserted.
+If you want to insert one, it can either be extracted from the file name (in
+this case it's the first word of the file name, fully up-cased) or can be
+specified as a string."
+  :group 'pel-elisp-code-style
+  :type '(choice
+          (const :tag "No, don't add package ownership note." nil)
+          (const :tag "Add package ownership note extracted from file name."
+                 extract-from-file-name)
+          (string :tag "Use this specified string.")))
+(pel-put 'pel-elisp-skel-package-name :choices '(nil extract-from-file-name "foo"))
 
 ;; ---------------------------------------------------------------------------
 ;; BEAM Programming Languages
@@ -5122,21 +5178,17 @@ Standards & Guidelines."
                    "https://github.com/inaka/erlang_guidelines#\
 100-column-per-line"))
 
-;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
-(defgroup pel-erlang-skeleton-control nil
-  "Control Skeleton that generate Erlang source code."
-  :group 'pel-erlang-code-style
-  :group 'pel-pkg-for-skeletons
-  :link `(url-link :tag "Erlang PDF" ,(pel-pdf-file-url "pl-erlang")))
-
+;; style - 0
 (defcustom pel-erlang-skel-use-separators t
   "Specifies whether Erlang code block include separators line.
 If nil no separator line comment is used, otherwise separator line
 comments of length controlled by variable `fill-column' are inserted."
-  :group 'pel-erlang-skeleton-control
+  :group 'pel-erlang-code-style
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-erlang-skel-use-separators :choices '(nil t))
 
+;; style 0.1
 (defcustom pel-erlang-skel-use-secondary-separators t
   "Specifies whether Erlang code block include secondary separators line.
 
@@ -5147,47 +5199,20 @@ Secondary separator lines are:
 
 If non-nil, the secondary line separators are included, otherwise they are not
 included, reducing the comments overhead in files."
-  :group 'pel-erlang-skeleton-control
+  :group 'pel-erlang-code-style
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-erlang-skel-use-secondary-separators :choices '(nil t))
 
+;; style - 1
 (defcustom pel-erlang-skel-insert-file-timestamp nil
   "Specifies whether a timestamp is inserted inside Erlang file header block."
-  :group 'pel-erlang-skeleton-control
+  :group 'pel-erlang-code-style
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-erlang-skel-insert-file-timestamp :choices '(nil t))
 
-(defcustom pel-erlang-skel-with-edoc t
-  "Control whether Edoc comments are placed inside generated Erlang code."
-  :group 'pel-erlang-skeleton-control
-  :type '(choice
-          (const :tag "Do not insert Edoc comment." nil)
-          (const :tag "Insert Edoc comments everywhere." t)
-          (const :tag "Insert Edoc comments only in functions, \
-not in file header." in-function-only)))
-
-(defcustom pel-erlang-skel-prompt-for-purpose t
-  "Control whether skeleton insertions prompt for purpose strings."
-  :group 'pel-erlang-skeleton-control
-  :type '(choice
-          (const :tag "Never prompt for purpose." nil)
-          (const :tag "Always prompt for purpose (and function name)." t)
-          (const :tag "Only prompt for file purpose." in-file-only)
-          (const :tag "Only prompt for function purpose (and function name)."
-                 in-function-only)))
-
-(defcustom pel-erlang-skel-prompt-for-function-name t
-  "Control whether skeleton insertions prompt for function name."
-  :group 'pel-erlang-skeleton-control
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-erlang-skel-prompt-for-function-arguments t
-  "Control whether skeleton insertions prompt for function arguments."
-  :group 'pel-erlang-skeleton-control
-  :type 'boolean
-  :safe #'booleanp)
-
+;; style - 2
 (defcustom pel-erlang-skel-with-license nil
   "Control whether a license text is inserted in file header comment block.
 
@@ -5210,12 +5235,57 @@ file written inside the global setting like this:
 
 Replace the gpl-3.0 with the license you want and write your name inside
 the copyright holder value."
-  :group 'pel-erlang-skeleton-control
+  :group 'pel-erlang-code-style
   :type '(choice
           (const :tag "No license." nil)
           (const :tag "With license text selected by `lice:default-license'"
                  t)
           (string :tag "License name only")))
+(pel-put 'pel-erlang-skel-with-license :choices '(nil t "MIT"))
+
+;; style - 3 : no package name support for Erlang
+;; style - 4 : no file variable support for Erlang
+;; style - 5 : no module section support for Erlang
+
+;; style - 6
+(defcustom pel-erlang-skel-with-edoc t
+  "Control whether Edoc comments are placed inside generated Erlang code."
+  :group 'pel-erlang-code-style
+  :type '(choice
+          (const :tag "Do not insert Edoc comment." nil)
+          (const :tag "Insert Edoc comments everywhere." t)
+          (const :tag "Insert Edoc comments only in functions, \
+not in file header." in-function-only)))
+(pel-put 'pel-erlang-skel-with-edoc :choices '(nil t in-function-only))
+
+;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+(defgroup pel-erlang-skeleton-control nil
+  "Control Skeleton that generate Erlang source code."
+  :group 'pel-erlang-code-style
+  :group 'pel-pkg-for-skeletons
+  :link `(url-link :tag "Erlang PDF" ,(pel-pdf-file-url "pl-erlang")))
+
+(defcustom pel-erlang-skel-prompt-for-purpose t
+  "Control whether skeleton insertions prompt for purpose strings."
+  :group 'pel-erlang-skeleton-control
+  :type '(choice
+          (const :tag "Never prompt for purpose." nil)
+          (const :tag "Always prompt for purpose (and function name)." t)
+          (const :tag "Only prompt for file purpose." in-file-only)
+          (const :tag "Only prompt for function purpose (and function name)."
+                 in-function-only)))
+
+(defcustom pel-erlang-skel-prompt-for-function-name t
+  "Control whether skeleton insertions prompt for function name."
+  :group 'pel-erlang-skeleton-control
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-erlang-skel-prompt-for-function-arguments t
+  "Control whether skeleton insertions prompt for function arguments."
+  :group 'pel-erlang-skeleton-control
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; LFE - Lisp Flavoured Erlang - Support

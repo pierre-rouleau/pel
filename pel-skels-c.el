@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-21 23:48:03, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-22 12:45:27, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -41,7 +41,6 @@
 ;;       - `pel-c-skel-module-header-block-style'
 ;;       - `pel-c-skel-insert-file-timestamp'
 ;;       - `pel-c-skel-with-license'
-;;       - `pel-c-skel-insert-module-sections'
 ;;       - `pel-c-skel-module-section-titles'
 ;;     - For header files only:
 ;;       - `pel-c-skel-use-uuid-include-guards'
@@ -234,24 +233,15 @@ variable `pel-c-skel-module-header-block-style'."
             "#endif\n"
             ))
        (let ((sk (list 'l)))
-         (if pel-c-skel-insert-module-sections
-             (progn
+         (if pel-c-skel-module-section-titles
+             (dolist (mtitle pel-c-skel-module-section-titles)
                (pel-append-to sk
                               (list
-                               cb " Module Description\n"
-                               cc " ------------------\n"
-                               cc 'n
-                               cc " " 'p 'n
-                               cc 'n
-                               ce 'n (pel-when-text-in ce 'n)))
-               (dolist (mtitle pel-c-skel-module-section-titles)
-                 (pel-append-to sk
-                                (list
-                                 (pel-skel-c-separator-line)
-                                 cb " " mtitle 'n
-                                 cc " " (make-string (length mtitle) ?-) 'n
-                                 ce 'n (pel-when-text-in ce 'n)
-                                 'p 'n 'n))))
+                               (pel-skel-c-separator-line)
+                               cb " " mtitle 'n
+                               cc " " (make-string (length mtitle) ?-) 'n
+                               ce 'n (pel-when-text-in ce 'n)
+                               'p 'n 'n)))
            (pel-append-to sk (list
                               'n
                               'p 'n 'n)))
