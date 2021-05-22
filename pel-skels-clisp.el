@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, April 20 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-21 17:52:05, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-21 23:45:37, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -87,13 +87,23 @@ If PREFIX is nil \";;;\" is used."
         ";;;;\n"
         )
        )
-     ";;;; Common Lisp File: " fname 'n
-     ";;;; Purpose         : " purpose 'n
-     (pel-skel-created-comment ";;;;" nil "Created         ")
-     (pel-skel-author-comment  ";;;;"     "Author          ")
-     (pel-skel-time-stamp pel-clisp-skel-insert-file-timestamp ";;;;" nil nil "      ")
+     ";;;; Lisp File : " fname 'n
+     ";;;; Purpose   : " purpose 'n
+     (pel-skel-created-comment ";;;;" nil "Created   ")
+     (pel-skel-author-comment  ";;;;"     "Author    ")
+     (pel-skel-time-stamp pel-clisp-skel-insert-file-timestamp ";;;;" nil nil "")
      (when pel-clisp-skel-with-license
        (cond
+        ((eq pel-clisp-skel-with-license t)
+         (list 'l
+               ";;;;\n"
+               (pel-license-text ";;;;")
+               ";;;;\n"))
+        ((stringp pel-clisp-skel-with-license)
+         (list 'l
+               (pel-skel-copyright-comment ";;;;" nil pel-clisp-skel-with-license)
+               'n))
+        ;; TODO: decide what's next with these deprecated cases.
         ((eq pel-clisp-skel-with-license 'license-text)
          (list 'l
                ";;;;\n"

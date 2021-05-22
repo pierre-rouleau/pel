@@ -1,12 +1,12 @@
 ;;; pel-skels-elisp.el --- Tempo skeleton for Emacs Lisp.  -*- lexical-binding: t; -*-
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-08-30 16:41:27, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-21 23:02:33, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 ;;
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -103,9 +103,13 @@ Otherwise return a string that ends with a newline."
      (pel-skel-time-stamp pel-elisp-skel-insert-file-timestamp ";;") 'n
      (pel-skel-elisp-package-name-line)
      ";; This file is not part of GNU Emacs.\n\n" ; if that's not the case, let me know!
-     (when pel-elisp-skel-with-license
+     (cond
+      ((eq pel-elisp-skel-with-license t)
+       (list 'l (pel-license-text ";;") 'n))
+      ((stringp pel-elisp-skel-with-license)
        (list 'l
-             (pel-license-text ";;") 'n))
+             (pel-skel-copyright-comment ";;" nil pel-elisp-skel-with-license)
+             'n)))
      (pel-separator-line nil nil ";;;") 'n
      ";;; Commentary:" 'n
      ";;\n"

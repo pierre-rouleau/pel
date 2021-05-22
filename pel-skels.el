@@ -232,22 +232,33 @@ in which case that is used.
 The word 'Copyright' is used unless COPYRIGHT-WORD is specified, in which
 case that is used.  It can be useful for documentation systems such as
 Erlang Edoc, where \"@copyright\" can be specified.
-If WITH-LICENSE is non-nil, license text, controlled by function `lice' is
-inserted."
+Insertion of license text is controlled by WITH-LICENSE:
+- nil:       no license information is inserted,
+- t:         complete license text is inserted, controlled by the
+             function `lice' which will prompt for the license type
+             if required,
+- a string: if a string is passed as the argument value, then the
+            string itself will be inserted: the string is expected
+            to be the name of the license, something like \"MIT\" or \"GPL-v3\"
+            or whatever appropriate."
   (let ((cpr-word (or copyright-word "Copyright"))
         (cpr-owner (if (boundp '*copyright-organization*)
                        *copyright-organization*
                      (user-full-name)))
         (cpr-comment (or comment-prefix comment-start)))
-    (if with-license
-        (format "\n%s\n"
-                (pel-license-text cpr-comment))
-      (format "%s%s %s © %s, %s\n"
+    (cond
+     ((eq with-license t)
+      (format "\n%s\n"
+              (pel-license-text cpr-comment)))
+     ((stringp with-license)
+      (format "%s%s %s © %s, %s\n%s License   : %s\n"
               (if (pel-line-has-only-whitespace-p) "" "\n")
               cpr-comment
               cpr-word
               (format-time-string "%Y")
-              cpr-owner))))
+              cpr-owner
+              cpr-comment
+              with-license)))))
 
 ;; --
 ;; Calling skel function specified by user file

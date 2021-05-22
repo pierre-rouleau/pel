@@ -3288,6 +3288,11 @@ Empty strings can be used to specify section with a tempo marker with no text."
 (defcustom pel-c-skel-with-license nil
   "Control whether a license text is inserted in C file header.
 
+You can specify to have the complete license text entered in the file
+when setting the value to `t, or only enter the license name when you specify
+the license name with a string.  That string will be entered verbatim
+inside a file header line.
+
 When t, the licence inserted is controlled by the function `lice' taken
 from the external library with the same name.
 If t this activates `pel-use-lice' if it is not activated already.
@@ -3303,8 +3308,11 @@ file written inside the global setting like this:
 Replace the gpl-3.0 with the license you want and write your name inside
 the copyright holder value."
   :group 'pel-c-module-header-skeleton-control
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "No license." nil)
+          (const :tag "With license text selected by `lice:default-license'"
+                 t)
+          (string :tag "License name only")))
 
 ;;    .       .       .       .       .       .       .       .       .       .
 (defgroup pel-c-function-header-skeleton-control nil
@@ -4172,6 +4180,17 @@ comments of length controlled by variable `fill-column' are inserted."
 (defcustom pel-clisp-skel-with-license nil
   "Control whether a license text is inserted in Common Lisp file header.
 
+You can specify to have the complete license text entered in the file
+when setting the value to `t, or only enter the license name when you specify
+the license name with a string.  That string will be entered verbatim
+inside a file header line.
+
+When t, the licence inserted is controlled by the function `lice' taken
+from the external library with the same name.
+If t this activates `pel-use-lice' if it is not activated already.
+
+This also supports the following (deprecated) choices:
+
 When either license-line or license-text, open source license
 information is inserted in the generated file header skeletons.
 
@@ -4195,8 +4214,14 @@ the copyright holder value."
   :group 'pel-clisp-code-style
   :type '(choice
           (const :tag "No licence mention." nil)
-          (const :tag "Just a licence line." license-line)
-          (const :tag "With license text."   license-text)))
+          (const :tag "With license text selected by `lice:default-license'"
+                 t)
+          (string :tag "License name only")
+          (const :tag "Just a licence line --- deprecated." license-line)
+          (const :tag "With license text --- deprecated!"   license-text)))
+;; TODO: refactoring needed: change the type of pel-clisp-skel-with-license
+;;       to comply with what the other -skel-with-license defcustom support:
+;;       replace 'license-text with 't
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Emacs Lisp Support
@@ -4745,6 +4770,11 @@ comments of length controlled by variable `fill-column' are inserted."
 (defcustom pel-elisp-skel-with-license nil
   "Control whether a license text is inserted in Elisp file header.
 
+You can specify to have the complete license text entered in the file
+when setting the value to `t, or only enter the license name when you specify
+the license name with a string.  That string will be entered verbatim
+inside a file header line.
+
 When t, the licence inserted is controlled by the function `lice' taken
 from the external library with the same name.
 If t this activates `pel-use-lice' if it is not activated already.
@@ -4760,8 +4790,11 @@ file written inside the global setting like this:
 Replace the gpl-3.0 with the license you want and write your name inside
 the copyright holder value."
   :group 'pel-elisp-code-style
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "No license." nil)
+          (const :tag "With license text selected by `lice:default-license'"
+                 t)
+          (string :tag "License name only")))
 
 ;; ---------------------------------------------------------------------------
 ;; BEAM Programming Languages
@@ -5158,6 +5191,11 @@ not in file header." in-function-only)))
 (defcustom pel-erlang-skel-with-license nil
   "Control whether a license text is inserted in file header comment block.
 
+You can specify to have the complete license text entered in the file
+when setting the value to `t, or only enter the license name when you specify
+the license name with a string.  That string will be entered verbatim
+inside a file header line.
+
 When t, the licence inserted is controlled by the function `lice' taken
 from the external library with the same name.
 If t this activates `pel-use-lice' if it is not activated already.
@@ -5173,8 +5211,11 @@ file written inside the global setting like this:
 Replace the gpl-3.0 with the license you want and write your name inside
 the copyright holder value."
   :group 'pel-erlang-skeleton-control
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "No license." nil)
+          (const :tag "With license text selected by `lice:default-license'"
+                 t)
+          (string :tag "License name only")))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; LFE - Lisp Flavoured Erlang - Support

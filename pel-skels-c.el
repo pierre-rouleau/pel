@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-10-22 23:23:45, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-21 23:48:03, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -186,11 +186,15 @@ The arguments are:
      (pel-skel-created-comment cc)
      (pel-skel-author-comment  cc)
      (pel-skel-time-stamp pel-c-skel-insert-file-timestamp cc)
-     (when pel-c-skel-with-license
+     (cond
+      ((eq pel-c-skel-with-license t)
        (list 'l
              cc 'n
              (pel-license-text cc)
              cc 'n))
+      ((stringp pel-c-skel-with-license)
+       (list 'l
+             (pel-skel-copyright-comment cc nil pel-c-skel-with-license))))
      ce (pel-when-text-in ce 'n)
      (pel-separator-line) 'n)))
 
