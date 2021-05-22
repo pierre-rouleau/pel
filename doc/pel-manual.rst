@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-05-14 16:59:28, updated by Pierre Rouleau.
+:Modified: 2021-05-21 17:55:34, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -3191,6 +3191,13 @@ pel-c-skel-with-license              t       Insert an open source license
                                              external package and the license
                                              type must be identified in the
                                              ``lice:default-license``.
+
+pel-c-skel-with-license              string  You can also specify the name of
+                                             license type as a plain string.
+                                             That string will be inserted
+                                             instead of the complete license
+                                             text.
+
 
 lice:default-license                 glp-3.0 Use the GPL V3.0 license.
 
