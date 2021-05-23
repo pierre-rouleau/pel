@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, May 23 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-23 01:23:50, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-23 01:44:30, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -60,7 +60,9 @@ then an extra number patter is added to it to create the file name."
                                _default-value
                                _inherit-input-method)
                  (message "The prompt is: %s" prompt)
-                 "testing the template")))
+                 (if (string= prompt "File purpose: ")
+                     "testing the template"
+                   license-name))))
       (cl-letf (((symbol-function 'lice:read-license)
                  (lambda ()
                    license-name)))
