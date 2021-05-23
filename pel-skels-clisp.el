@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, April 20 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-21 23:45:37, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-22 23:54:50, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -81,12 +81,7 @@ If PREFIX is nil \";;;\" is used."
         'l
         ";;;; -*- "
         pel-clisp-emacs-filevar-line
-        " -*-\n"
-        ";;;;\n"
-        (pel-skel-clisp-separator-line ";;;;")
-        ";;;;\n"
-        )
-       )
+        " -*-\n"))
      ";;;; Lisp File : " fname 'n
      ";;;; Purpose   : " purpose 'n
      (pel-skel-created-comment ";;;;" nil "Created   ")
@@ -102,17 +97,7 @@ If PREFIX is nil \";;;\" is used."
         ((stringp pel-clisp-skel-with-license)
          (list 'l
                (pel-skel-copyright-comment ";;;;" nil pel-clisp-skel-with-license)
-               'n))
-        ;; TODO: decide what's next with these deprecated cases.
-        ((eq pel-clisp-skel-with-license 'license-text)
-         (list 'l
-               ";;;;\n"
-               (pel-license-text ";;;;") 'n))
-        ((eq pel-clisp-skel-with-license 'license-line)
-         (let ((license-type (or (pel-prompt "License type" 'license-type)
-                                 'p)))
-           (list 'l
-                 ";;;; License Type    : " license-type 'n )))))
+               'n))))
      (pel-skel-clisp-separator-line ";;;;")
      ";;;; Commentary:" 'n
      ";;;;\n"

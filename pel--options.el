@@ -4186,6 +4186,7 @@ comments of length controlled by variable `fill-column' are inserted."
   :group 'pel-clisp-code-style
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-clisp-skel-use-separators :choices '(nil t))
 
 ;; style - 1
 (defcustom pel-clisp-skel-insert-file-timestamp nil
@@ -4235,13 +4236,8 @@ the copyright holder value."
           (const :tag "No licence mention." nil)
           (const :tag "With license text selected by `lice:default-license'"
                  t)
-          (string :tag "License name only")
-          (const :tag "Just a licence line --- deprecated." license-line)
-          (const :tag "With license text --- deprecated!"   license-text)))
-(pel-put 'pel-clisp-skel-with-license :choices '(nil t "MIT" license-line license-text))
-;; TODO: refactoring needed: change the type of pel-clisp-skel-with-license
-;;       to comply with what the other -skel-with-license defcustom support:
-;;       replace 'license-text with 't
+          (string :tag "License name only")))
+(pel-put 'pel-clisp-skel-with-license :choices '(nil t "MIT"))
 
 ;; style - 3
 (defcustom pel-clisp-skel-package-name 'extract-from-file-name
