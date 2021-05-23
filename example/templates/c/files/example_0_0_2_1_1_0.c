@@ -1,4 +1,4 @@
-/* C MODULE: example-0-0-2-1-1-0.c
+/* C MODULE: example_0_0_2_1_1_0.c
  *
  * Purpose   : Testing the template.
  * Created   : Sunday, May 23 2021.

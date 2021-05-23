@@ -1,9 +1,9 @@
-/* C MODULE: example-1-1-0-1-0-0.c
+/* C MODULE: example_1_1_0_1_0_0.c
  *
  * Purpose   : Testing the template.
  * Created   : Sunday, May 23 2021.
  * Author    : Pierre Rouleau <prouleau001@gmail.com>
- * Time-stamp: <2021-05-23 01:11:55, updated by Pierre Rouleau>
+ * Time-stamp: <2021-05-23 01:44:47, updated by Pierre Rouleau>
  */
 /* -------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------- */
