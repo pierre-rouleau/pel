@@ -3288,6 +3288,7 @@ Empty strings can be used to specify section with a tempo marker with no text."
   :type '(choice
           (const :tag "No documentation markup inserted in templates." nil)
           (const :tag "Insert Doxygen markup in templates." doxygen)))
+(pel-put 'pel-c-skel-doc-markup :choices '(nil doxygen))
 
 ;; style - 7
 (defcustom pel-c-skel-comment-with-2stars t
@@ -3303,6 +3304,7 @@ If set to nil, the comment style is:      /*
   :group 'pel-c-skeleton-control
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-c-skel-comment-with-2stars :choices '(nil t))
 
 ;;    .       .       .       .       .       .       .       .       .       .
 (defgroup pel-c-module-header-skeleton-control nil
