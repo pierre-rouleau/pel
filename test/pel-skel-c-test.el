@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, May 23 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-23 01:11:45, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-23 01:23:50, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -91,7 +91,7 @@ then an extra number patter is added to it to create the file name."
                           (dolist (pel-c-skel-comment-with-2stars
                                    (get 'pel-c-skel-comment-with-2stars :choices))
                             (cl-incf f6)
-                            (setq file-name (format "%s-%d-%d-%d-%d-%d-%d.%s" base-name f1 f2 f3 f4 f5 f6 extension))
+                            (setq file-name (format "%s_%d_%d_%d_%d_%d_%d.%s" base-name f1 f2 f3 f4 f5 f6 extension))
                             (message "Testing with %s: %S, %S, %S, %S, %S, %S"
                                      file-name
                                      pel-c-skel-use-separators
