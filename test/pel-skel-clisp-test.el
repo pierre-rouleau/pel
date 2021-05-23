@@ -1,8 +1,8 @@
-;;; pel-skel-clisp-test.el --- Test the Emacs Common Lisp Skeletons.  -*- lexical-binding: t; -*-
+;;; pel-skel-clisp-test.el --- Test the Common Lisp Skeletons.  -*- lexical-binding: t; -*-
 
 ;; Created   : Saturday, May 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-23 01:46:04, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-23 01:51:59, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
