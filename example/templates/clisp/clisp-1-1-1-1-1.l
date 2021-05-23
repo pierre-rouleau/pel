@@ -1,5 +1,5 @@
 ;;;; -*- Mode: Lisp; Syntax: ANSI-Common-Lisp; Base: 10 -*-
-;;;; Lisp File : clisp-1-1-1-1-1.el
+;;;; Lisp File : clisp-1-1-1-1-1.l
 ;;;; Purpose   : Testing the template.
 ;;;; Created   : Sunday, May 23 2021.
 ;;;; Author    : Pierre Rouleau <prouleau001@gmail.com>

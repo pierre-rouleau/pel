@@ -1,4 +1,4 @@
-;;;; Lisp File : clisp-1-0-2-1-0.el
+;;;; Lisp File : clisp-1-0-2-1-0.l
 ;;;; Purpose   : Testing the template.
 ;;;; Created   : Sunday, May 23 2021.
 ;;;; Author    : Pierre Rouleau <prouleau001@gmail.com>
