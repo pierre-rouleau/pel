@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-21 22:46:48, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-23 22:37:26, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -151,16 +151,16 @@ variable `pel-generic-skel-module-header-block-style'."
        (pel-skels-generic-header-module-block fname cmt-style))
      ;; then add the remainder for either a header file or code file
      (let ((sk (list 'l)))
-       (if pel-generic-skel-insert-module-sections
-           (dolist (mtitle pel-generic-skel-module-section-titles)
-             (pel-append-to sk
-                            (list
-                             cb " " mtitle 'n
-                             cc " " (make-string (length mtitle) ?-) 'n
-                             cc 'n
-                             cc " " 'p 'n (pel-when-text-in ce 'n)
-                             'n 'n
-                             (pel-skels-generic-separator-line))))
+       (if pel-generic-skel-module-section-titles
+         (dolist (mtitle pel-generic-skel-module-section-titles)
+           (pel-append-to sk
+                          (list
+                           cb " " mtitle 'n
+                           cc " " (make-string (length mtitle) ?-) 'n
+                           cc 'n
+                           cc " " 'p 'n (pel-when-text-in ce 'n)
+                           'n 'n
+                           (pel-skels-generic-separator-line))))
          (pel-append-to sk (list
                             'n
                             'p 'n 'n)))

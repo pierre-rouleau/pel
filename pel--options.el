@@ -2917,22 +2917,16 @@ You can use one of the following:
           (const  :tag "Default, controlled by PEL." nil)
           (string :tag "Use your own custom definition\n inside file")))
 
-
-(defcustom pel-generic-skel-insert-module-sections t
-  "Specifies whether code sections are inserted inside code file comment block.
-This includes the \"Module Description\" section and sections
-with titles identified by the variable
-`pel-generic-skel-module-section-titles'."
-  :group 'pel-pkg-generic-code-style
-  :type 'boolean
-  :safe #'booleanp)
-
 (defcustom pel-generic-skel-module-section-titles '("Module Description"
                                                     "Dependencies"
                                                     "Code")
-  "List of section titles to add in the module comment block.
-These section names are added when the variable
-`pel-generic-skel-insert-module-sections' is t.
+  "Specifies whether code sections are inserted.
+
+The choices are:
+- nil: no section titles are inserted.
+- a list of sections.
+
+List of section titles to add in the module comment block.
 
 The sections are placed inside the module documentation block in
 the order of appearance in the list with the string as it appears
@@ -2941,7 +2935,9 @@ in the list.
 Empty strings can be used to specify section with a tempo marker
 with no text."
   :group 'pel-pkg-generic-code-style
-  :type '(repeat string))
+  :type '(choice
+          (const  :tag "No code section titles." nil)
+          (repeat :tag "Section titles" string)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-shell-script-skeleton-control nil
