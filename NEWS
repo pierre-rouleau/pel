@@ -908,7 +908,7 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     in macOS keyboards.
 - Update: *VCS*:
   - New: The *pel-use-gitignore-mode* user-option activates support for the
-    *gitignore-mode*.
+    *gitignore-mode*, *gitattributes-mode* and the *gitconfig-mode*.
   - New: The *pel-use-hgignore-mode* user-option activates support for
     *hgignore-mode* when turned on (set to t).  This provides font locking for
     the Mercurial .hgignore files.

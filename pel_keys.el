@@ -5455,6 +5455,8 @@ the ones defined from the buffer now."
   (define-key pel:vcs "g"  'magit-status))
 
 (when pel-use-gitignore-mode
+  (pel-ensure-package gitattributes-mode from: melpa)
+  (pel-ensure-package gitconfig-mode from: melpa)
   (pel-ensure-package gitignore-mode from: melpa))
 
 ;; Mercurial Support

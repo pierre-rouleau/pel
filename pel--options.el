@@ -167,7 +167,7 @@
 ;; disable/remove packages when a `pel-use-' user option is turned off and the
 ;; function `pel-cleanup' is executed.
 ;;
-;; The following properties are applied to the the `pel-use-' user-option
+;; The following properties are applied to the `pel-use-' user-option
 ;; variables only:
 ;;
 ;;  - `:also-required-when'
@@ -6356,10 +6356,16 @@ mode during an editing session."
   :safe #'booleanp)
 
 (defcustom pel-use-gitignore-mode nil
-  "Control whether PEL provides access to  the gitignore-mode package."
+  "Control whether PEL provides access to the gitignore-mode package.
+It also provides access to the gitattributes-mode and top the gitconfig-mode."
+  :link '(url-link :tag "gitignore-mode @ GitHub"
+                   "https://github.com/magit/git-modes")
   :group 'pel-pkg-for-git
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-gitignore-mode :requires-package '(quote
+                                                     ((elpa . gitattributes-mode)
+                                                      (elpa . gitconfig-mode))))
 
 (defgroup pel-pkg-for-mercurial nil
   "PEL customization group for Mercurial."
