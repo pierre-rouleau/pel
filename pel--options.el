@@ -6355,6 +6355,12 @@ mode during an editing session."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-gitignore-mode nil
+  "Control whether PEL provides access to  the gitignore-mode package."
+  :group 'pel-pkg-for-git
+  :type 'boolean
+  :safe #'booleanp)
+
 (defgroup pel-pkg-for-mercurial nil
   "PEL customization group for Mercurial."
   :group 'pel-pkg-for-vcs
