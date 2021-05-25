@@ -1839,14 +1839,16 @@ Note: popup-switcher 2.14 has several bugs I fixed in my fork, which PEL
                    ,(pel-pdf-file-url "inserting-text")))
 
 (defcustom pel-use-lice nil
-  "Control whether PEL uses the lice package to insert software license text."
+  "Control whether PEL uses the lice package to insert software license text.
+Note that the lice package is installed when its used in PEL tempo skeletons
+as requested by their respective user-options."
   :group 'pel-pkg-for-insertions
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-lice :also-required-when '(or pel-c-skel-with-license
-                                                pel-clisp-skel-with-license
-                                                pel-elisp-skel-with-license
-                                                pel-erlang-skel-with-license))
+(pel-put 'pel-use-lice :also-required-when '(or (eq pel-c-skel-with-license t)
+                                                (eq pel-clisp-skel-with-license t)
+                                                (eq pel-elisp-skel-with-license t)
+                                                (eq pel-erlang-skel-with-license t)))
 
 (defcustom pel-use-smart-dash nil
   "Control whether PEL activates the smart-dash package.

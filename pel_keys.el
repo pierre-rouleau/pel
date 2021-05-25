@@ -4809,10 +4809,10 @@ the ones defined from the buffer now."
 (define-key pel:insert   "t" 'pel-insert-iso8601-timestamp)
 
 (when (or pel-use-lice
-          pel-c-skel-with-license
-          pel-clisp-skel-with-license
-          pel-elisp-skel-with-license
-          pel-erlang-skel-with-license)
+          (eq pel-c-skel-with-license t)
+          (eq pel-clisp-skel-with-license t)
+          (eq pel-elisp-skel-with-license t)
+          (eq pel-erlang-skel-with-license t))
   (pel-ensure-package lice from: melpa)
   (pel-autoload-file lice for: lice)
   (define-key pel:insert "L" 'lice)
