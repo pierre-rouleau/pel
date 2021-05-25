@@ -1,14 +1,10 @@
 ;;; elisp-1-1-2-2.el --- Testing the template.  -*- lexical-binding: t; -*-
 
-;; Created   : Saturday, May 22 2021.
+;; Created   : Tuesday, May 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-22 23:24:24, updated by Pierre Rouleau>
-
-;; This file is part of the foo package.
-;; This file is not part of GNU Emacs.
-
+;; Time-stamp: <2021-05-25 12:41:23, updated by Pierre Rouleau>
 ;; Copyright © 2021, Pierre Rouleau
-;; License   : MIT
+;; This file is part of the foo package.
 
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
@@ -20,7 +16,7 @@
 ;; This file was generated with the following user-options values:
 ;; - pel-elisp-skel-use-separators        : t
 ;; - pel-elisp-skel-insert-file-timestamp : t
-;; - pel-elisp-skel-with-license          : "MIT"
+;; - pel-elisp-skel-with-license          : only-copyright
 ;; - pel-elisp-skel-package-name          : "foo"
 ;;  ]
 
@@ -32,7 +28,6 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
-
 
 ;;; --------------------------------------------------------------------------
 (provide 'elisp-1-1-2-2)

@@ -1,6 +1,6 @@
 ;;; elisp-1-0-1-1.el --- Testing the template.  -*- lexical-binding: t; -*-
 
-;; Created   : Saturday, May 22 2021.
+;; Created   : Tuesday, May 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
 
 ;; This file is part of the ELISP package.
@@ -43,7 +43,6 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
-
 
 ;;; --------------------------------------------------------------------------
 (provide 'elisp-1-0-1-1)

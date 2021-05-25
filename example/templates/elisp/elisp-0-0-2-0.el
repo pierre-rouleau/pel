@@ -1,14 +1,9 @@
 ;;; elisp-0-0-2-0.el --- Testing the template.  -*- lexical-binding: t; -*-
 
-;; Created   : Saturday, May 22 2021.
+;; Created   : Tuesday, May 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-
-;; This file is not part of GNU Emacs.
-
 ;; Copyright © 2021, Pierre Rouleau
-;; License   : MIT
 
-;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; [
@@ -18,7 +13,7 @@
 ;; This file was generated with the following user-options values:
 ;; - pel-elisp-skel-use-separators        : nil
 ;; - pel-elisp-skel-insert-file-timestamp : nil
-;; - pel-elisp-skel-with-license          : "MIT"
+;; - pel-elisp-skel-with-license          : only-copyright
 ;; - pel-elisp-skel-package-name          : nil
 ;;  ]
 
@@ -29,8 +24,6 @@
 ;;; Code:
 ;;
 
-
-;;; --------------------------------------------------------------------------
 (provide 'elisp-0-0-2-0)
 
 ;;; elisp-0-0-2-0.el ends here

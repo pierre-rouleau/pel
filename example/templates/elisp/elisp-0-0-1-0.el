@@ -1,6 +1,6 @@
 ;;; elisp-0-0-1-0.el --- Testing the template.  -*- lexical-binding: t; -*-
 
-;; Created   : Saturday, May 22 2021.
+;; Created   : Tuesday, May 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
 
 ;; This file is not part of GNU Emacs.
@@ -20,7 +20,6 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; [
@@ -41,8 +40,6 @@
 ;;; Code:
 ;;
 
-
-;;; --------------------------------------------------------------------------
 (provide 'elisp-0-0-1-0)
 
 ;;; elisp-0-0-1-0.el ends here

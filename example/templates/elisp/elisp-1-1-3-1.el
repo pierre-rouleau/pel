@@ -1,9 +1,10 @@
-;;; elisp-1-1-2-1.el --- Testing the template.  -*- lexical-binding: t; -*-
+;;; elisp-1-1-3-1.el --- Testing the template.  -*- lexical-binding: t; -*-
 
 ;; Created   : Tuesday, May 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
 ;; Time-stamp: <2021-05-25 12:41:23, updated by Pierre Rouleau>
 ;; Copyright © 2021, Pierre Rouleau
+;; License   : MIT
 ;; This file is part of the ELISP package.
 
 ;;; --------------------------------------------------------------------------
@@ -16,7 +17,7 @@
 ;; This file was generated with the following user-options values:
 ;; - pel-elisp-skel-use-separators        : t
 ;; - pel-elisp-skel-insert-file-timestamp : t
-;; - pel-elisp-skel-with-license          : only-copyright
+;; - pel-elisp-skel-with-license          : "MIT"
 ;; - pel-elisp-skel-package-name          : extract-from-file-name
 ;;  ]
 
@@ -30,6 +31,6 @@
 ;;
 
 ;;; --------------------------------------------------------------------------
-(provide 'elisp-1-1-2-1)
+(provide 'elisp-1-1-3-1)
 
-;;; elisp-1-1-2-1.el ends here
+;;; elisp-1-1-3-1.el ends here
