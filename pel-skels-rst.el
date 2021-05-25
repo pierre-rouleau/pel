@@ -43,6 +43,10 @@
   "Return a reStructuredText file header tempo list."
   (let ((title (pel-prompt-title))
         (title-entry nil))
+    ;; Make sure the time-stamp control for this file takes place
+    ;; (setq time-stamp-line-limit 10)
+    ;; (setq time-stamp-start "^:Modified:[ \\t]+\\\\\\\\?")
+    ;; (setq time-stamp-end  "\\\\.$")
     (if (string= title "")
         (setq title-entry (list 'l
                                 "==================" 'n
@@ -58,14 +62,32 @@
      ":Project: " 'p 'n
      (pel-skel-created-comment "" ":Created: ")
      (pel-skel-author-comment  "" ":Author: ")
-     (pel-time-stamp ":") 'n
-     (pel-skel-copyright-comment "" "" ":Copyright: ©" ":License: " ) ; TODO: add user-option to select
+     (pel-skel-time-stamp pel-rst-skel-insert-file-timestamp
+                          ""            ; not a comment: place the format string on col 0.
+                          ":Modified: %s%s.")
+     (pel-skel-copyright-comment pel-rst-skel-with-license
+                                 ""
+                                 ":Copyright: ©"
+                                 ":License: ")
      'p 'n 'n `
      ".. contents::  **Table of Contents**" 'n
      ".. sectnum::" 'n 'n
      (pel-separator-line) 'n 'n 'p
      'n 'n
-     (pel-separator-line) 'n)))
+     (pel-separator-line) 'n
+     'n
+     ;; Generate the local variable control at the end of the file
+     ;; but write it so Emacs dos not detect it as a local variable
+     ;; setup for this file.
+     "..\n"
+     "       Local "
+     "Variables:\n"
+     "       time-stamp-line-limit: 10\n"
+     "       time-stamp-start: \"^:Modified:[ \\t]+\\\\\\\\?\"\n"
+     "       time-stamp-end:   \"\\\\.$\"\n"
+     "       "
+     "End"
+     ":\n")))
 
 ;; -----------------------------------------------------------------------------
 ;; Install reStructuredText skeleton based commands

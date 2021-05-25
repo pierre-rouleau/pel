@@ -81,34 +81,68 @@ Return a UTC Date Time if UTC is non-nil."
      (format-time-string "%F")))
 
 ;;-pel-autoload
-(defun pel-time-stamp (&optional event user-text utc spacing)
-  "Return a YYYY-MM-DD HH:MM:SS Emacs compliant time stamp.
-The EVENT (if any) is capitalized and placed before the time stamp.
-Use UTC format when UTC is non-nil.
-Set USER-TEXT to the a descriptive string like \"by \") to
-add that text followed by the full user name.
+(defun pel-time-stamp (&optional format-string user-format utc)
+  "Return a YYYY-MM-DD HH:MM:SS Emacs compliant time stamp string.
+
+By default the format string is \"Time-stamp: <%s%s>\" unless
+specified by the FORMAT-STRING argument.  In both cases the
+format string uses the following two string arguments, in the
+following order:
+
+- Date/Time format which is in UTC format when the UTC argument
+  is non-nil, otherwise it is using local time.
+- A format string that describes the user and takes one string argument. It is
+  specified by USER-FORMAT, defaulting to \", by %s\".  The string argument is
+  filled with the user name, extracted by the function `user-full-name'.
+  If USER-FORMAT is specified and is a empty-string, then nothing is inserted
+  after the date/time value.
+
 This time stamp will be updated automatically by Emacs on file save
 when `pel-update-time-stamp' is non-nil."
-  (format "%sTime-stamp%s: <%s%s>"
-          (if event (capitalize event) "")
-          (or spacing "")
+  (format (or format-string "Time-stamp: <%s%s>")
           (if utc
               (format-time-string "%F %T (UTC)" nil t)
             (format-time-string "%F %T"))
-          (if user-text
-              (format ", %s%s"
-                      user-text
-                      (user-full-name))
-            "")))
+          (if (and (stringp user-format)
+                   (string= user-format ""))
+              ""
+            (format (or user-format ", by %s")
+                    (user-full-name)))))
 
-(defun pel-skel-time-stamp (condition &optional comment-prefix event utc spacing)
+(defun pel-skel-time-stamp (condition &optional
+                                      comment-prefix
+                                      format-string
+                                      user-format
+                                      utc)
   "Return a time stamp string if CONDITION is non-nil.
-The string starts with `comment-start' unless COMMENT-PREFIX is specified,
-in which case that is used."
+
+The string starts with `comment-start' unless COMMENT-PREFIX is
+specified, in which case that is used.  If a COMMENT-PREFIX is a
+non-empty string a space is placed after it.  If COMMENT-PREFIX
+is an empty string, then no space is placed.
+
+By default the format string is \"Time-stamp: <%s%s>\" unless
+specified by the FORMAT-STRING argument.  In both cases the
+format string uses the following two string arguments, in the
+following order:
+
+- Date/Time format which is in UTC format when the UTC argument
+  is non-nil, otherwise it is using local time.
+- A format string that describes the user and takes one string argument. It is
+  specified by USER-FORMAT, defaulting to \", by %s\".  The string argument is
+  filled with the user name, extracted by the function `user-full-name'.
+  If USER-FORMAT is specified and is a empty-string, then nothing is inserted
+  after the date/time value."
   (when condition
-    (format "%s %s\n"
-            (or comment-prefix comment-start)
-            (pel-time-stamp event "by " utc spacing))))
+    (let* ((used-comment-prefix (or comment-prefix comment-start))
+           ;; only use a space after comment string when there is a comment
+           ;; string, otherwise don't put an extra space.
+           (format-str (if (string= used-comment-prefix "")
+                           "%s%s\n"
+                         "%s %s\n")))
+      (format format-str
+              used-comment-prefix
+              (pel-time-stamp format-string user-format utc)))))
 
 ;; --
 ;; Purpose

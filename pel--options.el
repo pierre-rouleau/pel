@@ -71,6 +71,7 @@
 ;;       - pel-pkg-for-markdown
 ;;       - pel-pkg-for-org-mode
 ;;       - pel-pkg-for-reST
+;;         - pel-reST-style
 ;;       - pel-pkg-for-yaml
 ;;     - pel-pkg-for-navigation
 ;;       - pel-pkg-for-xref
@@ -2700,6 +2701,49 @@ such as `tab-to-tab-stop', and the display of hard TAB characters."
   :group 'pel-pkg-for-reST
   :type 'integer
   :safe 'pel-indent-valid-p)
+
+;;   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+(defgroup pel-reST-style nil
+  "PEL reStructuredText skeleton format control."
+  :group 'pel-pkg-for-reST)
+
+;; style - 0 : use-separators : not used for rst templates
+
+;; style - 1
+(defcustom pel-rst-skel-insert-file-timestamp t
+  "Specifies whether a timestamp is inserted inside file module header block."
+  :group 'pel-reST-style
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-rst-skel-insert-file-timestamp :choices '(nil t))
+
+;; style - 2
+(defcustom pel-rst-skel-with-license nil
+  "Control if copyright & license is inserted in code file module header block.
+
+The available choices are:
+
+- 0: No copyright, no license.                 nil
+- 1: Copyright only, no license.               'only-copyright
+- 2: Copyright, with selected license name.    a string
+
+For choice 3, you specify the name of the license in the string
+field.  Something like MIT or GPL-3.0, or anything appropriate.
+That string will be entered verbatim inside a file header line.
+
+For reStructuredText, the ability to include the license text
+itself is not available."
+  :group 'pel-reST-style
+  :type
+  '(choice
+    (const :tag  "No license, no copyright." nil)
+    (const :tag  "Copyright only." only-copyright)
+    (string :tag "Copyright with specified license name.")))
+(pel-put 'pel-rst-skel-with-license :choices '(nil only-copyright "MIT"))
+
+;; style - 3 : package names: not used for rst templates
+;; style - 4 : file variable: not used for rst templates
+;; style - 5 : doc section titles: not used for rst templates.
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; YAML support
