@@ -1,6 +1,6 @@
 ;;; pel-skels-rst.el --- Tempo skeletons for reStructuredText  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -53,16 +53,19 @@
         (setq title-entry (list 'l title-line 'n title 'n title-line 'n 'n))))
     (list
      'l
-      title-entry
-      ":Home page: " 'p 'n
-      (pel-time-stamp ":") 'n
-      (pel-skel-copyright-comment ":Copyright: ")
-      ":License: " 'p 'n 'n
-      ".. contents::  **Table of Contents**" 'n
-      ".. sectnum::" 'n 'n
-      (pel-separator-line) 'n 'n 'p
-      'n 'n
-      (pel-separator-line) 'n)))
+     title-entry
+     ":Home URL: " 'p 'n
+     ":Project: " 'p 'n
+     (pel-skel-created-comment "" ":Created: ")
+     (pel-skel-author-comment  "" ":Author: ")
+     (pel-time-stamp ":") 'n
+     (pel-skel-copyright-comment "" "" ":Copyright: ©" ":License: " ) ; TODO: add user-option to select
+     'p 'n 'n `
+     ".. contents::  **Table of Contents**" 'n
+     ".. sectnum::" 'n 'n
+     (pel-separator-line) 'n 'n 'p
+     'n 'n
+     (pel-separator-line) 'n)))
 
 ;; -----------------------------------------------------------------------------
 ;; Install reStructuredText skeleton based commands

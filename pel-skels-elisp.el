@@ -1,7 +1,7 @@
 ;;; pel-skels-elisp.el --- Tempo skeleton for Emacs Lisp.  -*- lexical-binding: t; -*-
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-21 23:02:33, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-24 23:15:47, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -81,12 +81,25 @@ If a string is returned  ends with a new line."
     (when package-name
       (format ";; This file is part of the %s package.\n" package-name))))
 
-(defun pel-skel-elisp-separator-line ()
-  "Return a section separator line for Elisp if required.
-If prohibited (by customization) returns nil.
-Otherwise return a string that ends with a newline."
-  (when pel-elisp-skel-use-separators
-    (concat (pel-separator-line nil nil ";;;") "\n")))
+(defun pel-skel-elisp-separator-line (prefix &optional no-leading-new-line)
+  "Return a section separator line for Common lisp if required.
+
+The returned string is made of:
+
+- A leading newline unless NO-LEADING-NEW-LINE is non-nil,
+- If the user-option variable `pel-elisp-skel-use-separators' is non-nil:
+  A separator line which starts with the specified PREFIX and a line
+  made of dashes, otherwise nothing.
+- A terminating newline."
+  (concat
+   (if no-leading-new-line
+       ""
+     "\n")
+   (if pel-elisp-skel-use-separators
+       (concat
+        (pel-separator-line nil nil prefix)
+        "\n")
+     "")))
 
 (defun pel-skels-elisp-file-header-block ()
   "Return a tempo list for a Emacs Lisp file header block."
@@ -100,29 +113,29 @@ Otherwise return a string that ends with a newline."
      "  -*- lexical-binding: t; -*-\n\n"
      (pel-skel-created-comment ";;")
      (pel-skel-author-comment  ";;")
-     (pel-skel-time-stamp pel-elisp-skel-insert-file-timestamp ";;") 'n
-     (pel-skel-elisp-package-name-line)
-     ";; This file is not part of GNU Emacs.\n\n" ; if that's not the case, let me know!
-     (cond
-      ((eq pel-elisp-skel-with-license t)
-       (list 'l (pel-license-text ";;") 'n))
-      ((stringp pel-elisp-skel-with-license)
+     (pel-skel-time-stamp pel-elisp-skel-insert-file-timestamp ";;")
+     (if (eq pel-elisp-skel-with-license t)
+         (list 'l
+               'n
+               (pel-skel-elisp-package-name-line)
+               ";; This file is not part of GNU Emacs.\n" ; if that's not the case, let me know!
+               (pel-skel-copyright-comment pel-elisp-skel-with-license ";;"))
        (list 'l
-             (pel-skel-copyright-comment ";;" nil pel-elisp-skel-with-license)
-             'n)))
-     (pel-separator-line nil nil ";;;") 'n
+             (pel-skel-copyright-comment pel-elisp-skel-with-license ";;")
+             (pel-skel-elisp-package-name-line)))
+     (pel-skel-elisp-separator-line ";;;" (eq pel-elisp-skel-with-license t))
      ";;; Commentary:" 'n
      ";;\n"
-     ";; " 'p 'n 'n
-     (pel-skel-elisp-separator-line)
+     ";; " 'p 'n
+     (pel-skel-elisp-separator-line ";;;")
      ";;; Dependencies:" 'n
      ";;\n"
-     ";; " 'p 'n 'n
-     (pel-skel-elisp-separator-line)
+     ";; " 'p 'n
+     (pel-skel-elisp-separator-line ";;;")
      ";;; Code:" 'n
      ";;\n"
-     'p 'n 'n
-     (pel-separator-line nil nil ";;;") 'n
+     'p
+     (pel-skel-elisp-separator-line ";;;")
      "(provide '" libname ")" 'n 'n
      ";;; " fname " ends here" 'n)))
 

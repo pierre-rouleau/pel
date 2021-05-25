@@ -158,19 +158,25 @@ The tag uses TITLE if specified otherwise it uses ITEM capitalized."
 ;;-pel-autoload
 (defun pel-skel-author-comment (&optional comment-prefix author-word on-this-line)
   "Return a commented line providing the file's author name.
-The line starts with `comment-start' unless COMMENT-PREFIX is specified,
-in which case that is used.
+
+The line starts with `comment-start' unless COMMENT-PREFIX is
+specified, in which case that is used.
+
 The string \"Author    :\" is used unless AUTHOR-WORD is specified, in which
 case that is used.  This can be useful for documentation systems such as
 Erlang's Edoc, where \"@author\" can be specified.
+
 The author's name follows along with it's email address.
 The returned string ends with a newline."
-  (let ((auth-word (or author-word "Author    "))
+  (let ((auth-word (or author-word "Author    :"))
         (auth-comment (or comment-prefix comment-start)))
-    (format "%s%s %s: %s <%s>\n"
+    (format "%s%s%s%s %s <%s>\n"
             (if (or on-this-line
                     (pel-line-has-only-whitespace-p)) "" "\n")
             auth-comment
+            (if (string= comment-prefix "")
+                ""
+              " ")
             auth-word
             (user-full-name)
             pel-skel-email-address)))
@@ -179,19 +185,27 @@ The returned string ends with a newline."
 ;; Created
 
 ;;-pel-autoload
-(defun pel-skel-created-comment (&optional comment-prefix on-this-line title)
+(defun pel-skel-created-comment (&optional comment-prefix title on-this-line)
   "Return a \"Created timestamp\" line string.
-The line starts with `comment-start' unless COMMENT-PREFIX is specified,
-in which case that is used.
+
+The line starts with `comment-start' unless COMMENT-PREFIX is
+specified, in which case that is used.
+
+The string \"Created   :\" is used unless the TITLE is specified, in which
+case that is used. This can be useful for some types of files which have a
+specific requirement for some meta fields, such as reStructuredText.
+
 It starts on a new line unless ON-THIS-LINE is non-nil.
 The returned string ends with a newline."
-  (format "%s%s %s: %s\n"
+  (format "%s%s%s%s %s\n"
           (if (or on-this-line
                   (pel-line-has-only-whitespace-p)) "" "\n")
           (or comment-prefix comment-start)
-          (or title "Created   ")
+          (if (string= comment-prefix "")
+              ""
+            " ")
+          (or title "Created   :")
           (format-time-string "%A, %B %e %Y.")))
-
 
 ;; --
 ;; License
@@ -220,44 +234,76 @@ in which case that is used."
   (if condition (pel-license-text comment-prefix) "" ))
 
 ;; --
-;; Copyright
+;; Copyright & License
 
 ;;-pel-autoload
-(defun pel-skel-copyright-comment (&optional comment-prefix copyright-word with-license)
-  "Return a commented copyright adapted to the organization or user.
+(defun pel-skel-copyright-comment (with-license &optional
+                                                comment-prefix
+                                                copyright-word
+                                                license-word)
+  "Return a commented copyright & license adapted to the organization or user.
+
 The copyright is assigned to `*copyright-organization*' if it is bound,
 otherwise it is assigned to the value returned by function  `user-full-name'.
+
 The line starts with `comment-start' unless COMMENT-PREFIX is specified,
 in which case that is used.
-The word 'Copyright' is used unless COPYRIGHT-WORD is specified, in which
-case that is used.  It can be useful for documentation systems such as
-Erlang Edoc, where \"@copyright\" can be specified.
-Insertion of license text is controlled by WITH-LICENSE:
-- nil:       no license information is inserted,
-- t:         complete license text is inserted, controlled by the
-             function `lice' which will prompt for the license type
-             if required,
-- a string: if a string is passed as the argument value, then the
-            string itself will be inserted: the string is expected
-            to be the name of the license, something like \"MIT\" or \"GPL-v3\"
-            or whatever appropriate."
-  (let ((cpr-word (or copyright-word "Copyright"))
+
+By default the strings \" Copyright ©\" and \" License :\" are
+used for their specific lines, unless the COPYRIGHT-WORD and
+LICENSE_WORD argument specify another string to use for their
+corresponding argument.  Note that the two default strings have
+the same length.  It may be useful to replace the default for
+some type of files, such as Erlang where \"@copyright\" might be
+a good choice and for reStructuredText where \":copyright:\"
+markup might be used to create a file meta attribute.
+
+The format of the inserted text is controlled by the argument
+WITH-LICENSE:
+
+- nil:             No copyright, no license information is inserted.
+- only-copyright:  A copyright notice with user name and date, no
+                   license.
+- a string:        Insert a copyright notice and licence line, with only the
+                   license name specified, not the full license text.
+                   The string should be the name of the license type
+                   something like \"MIT\" or \"GPL-v3\" or whatever
+                   appropriate.
+- t:               Insert a copyright notice and the full text of a license.
+                   The type of the license is controlled by the function
+                   `lice' from the lice package.  If the license type is
+                   not specified by lice customization, the function will
+                   prompt for the license type.
+
+In the first case, the function returns nil.  In the 3 other cases, it returns
+a string that contains the relevant information and ends with a newline
+character."
+  (let ((cpr-word (or copyright-word " Copyright ©"))
         (cpr-owner (if (boundp '*copyright-organization*)
                        *copyright-organization*
                      (user-full-name)))
-        (cpr-comment (or comment-prefix comment-start)))
+        (lic-word (or license-word   " License   :"))
+        (comment-str (or comment-prefix comment-start)))
     (cond
      ((eq with-license t)
       (format "\n%s\n"
-              (pel-license-text cpr-comment)))
-     ((stringp with-license)
-      (format "%s%s %s © %s, %s\n%s License   : %s\n"
+              (pel-license-text comment-str)))
+     ((eq with-license 'only-copyright)
+      (format "%s%s%s %s, %s\n"
               (if (pel-line-has-only-whitespace-p) "" "\n")
-              cpr-comment
+              comment-str
+              cpr-word
+              (format-time-string "%Y")
+              cpr-owner))
+     ((stringp with-license)
+      (format "%s%s%s %s, %s\n%s%s %s\n"
+              (if (pel-line-has-only-whitespace-p) "" "\n")
+              comment-str
               cpr-word
               (format-time-string "%Y")
               cpr-owner
-              cpr-comment
+              comment-str
+              lic-word
               with-license)))))
 
 ;; --

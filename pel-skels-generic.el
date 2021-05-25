@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-23 22:37:26, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-24 18:08:32, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -108,20 +108,10 @@ The arguments are:
      cb (pel-skels-generic-first-line fname)
      cc 'n
      cc " Purpose   : " purpose 'n
-     (pel-skel-created-comment cc :no-new-line)
+     (pel-skel-created-comment cc nil :no-new-line)
      (pel-skel-author-comment  cc nil :no-new-line)
      (pel-skel-time-stamp pel-generic-skel-insert-file-timestamp cc)
-     (when pel-generic-skel-with-copyright
-       (pel-skel-copyright-comment cc))
-     (cond
-      ((eq pel-generic-skel-with-license t)
-       (list 'l
-             cc 'n
-             (pel-license-text cc)
-             cc 'n))
-      ((stringp pel-generic-skel-with-license)
-       (list 'l
-             cc " License   : " pel-generic-skel-with-license 'n)))
+     (pel-skel-copyright-comment pel-generic-skel-with-license cc)
      ce (pel-when-text-in ce 'n)
      (pel-separator-line) 'n)))
 

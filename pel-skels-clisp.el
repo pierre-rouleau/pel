@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, April 20 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-22 23:54:50, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-24 22:51:17, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -61,57 +61,60 @@
 
 ;; ---------------------------------------------------------------------------
 
-(defun pel-skel-clisp-separator-line (&optional prefix)
+(defun pel-skel-clisp-separator-line (prefix &optional no-leading-new-line)
   "Return a section separator line for Common lisp if required.
-If prohibited (by customization) returns nil.
-Otherwise return a string with specified PREFIX ending with a newline.
-If PREFIX is nil \";;;\" is used."
-  (when pel-elisp-skel-use-separators
-    (concat (pel-separator-line nil nil prefix) "\n")))
+
+The returned string is made of:
+
+- A leading newline unless NO-LEADING-NEW-LINE is non-nil,
+- If the user-option variable `pel-clisp-skel-use-separators' is non-nil:
+  A separator line which starts with the specified PREFIX and a line
+  made of dashes, otherwise nothing.
+- A terminating newline."
+  (concat
+   (if no-leading-new-line
+       ""
+     "\n")
+   (if pel-clisp-skel-use-separators
+       (concat
+        (pel-separator-line nil nil prefix)
+        "\n")
+     "")))
 
 (defun pel-skels-clisp-file-header-block ()
   "Return a tempo list for a Common Lisp file header block."
   (let ((purpose (pel-prompt-purpose-for "File" 'p))
         (fname   (pel-current-buffer-filename :sans-directory)))
     (goto-char (point-min)) ; TODO: del this but mod skels to force entry at top.
-    (list
-     'l
-     (when pel-clisp-emacs-filevar-line
-       (list
-        'l
-        ";;;; -*- "
-        pel-clisp-emacs-filevar-line
-        " -*-\n"))
-     ";;;; Lisp File : " fname 'n
-     ";;;; Purpose   : " purpose 'n
-     (pel-skel-created-comment ";;;;" nil "Created   ")
-     (pel-skel-author-comment  ";;;;"     "Author    ")
-     (pel-skel-time-stamp pel-clisp-skel-insert-file-timestamp ";;;;" nil nil "")
-     (when pel-clisp-skel-with-license
-       (cond
-        ((eq pel-clisp-skel-with-license t)
-         (list 'l
-               ";;;;\n"
-               (pel-license-text ";;;;")
-               ";;;;\n"))
-        ((stringp pel-clisp-skel-with-license)
-         (list 'l
-               (pel-skel-copyright-comment ";;;;" nil pel-clisp-skel-with-license)
-               'n))))
-     (pel-skel-clisp-separator-line ";;;;")
-     ";;;; Commentary:" 'n
-     ";;;;\n"
-     ";;;; " 'p 'n 'n
-     (pel-skel-clisp-separator-line ";;;;")
-     ";;;; Dependencies:" 'n
-     ";;;;\n"
-     ";;;; " 'p 'n 'n
-     (pel-skel-clisp-separator-line ";;;;")
-     ";;;; Code:" 'n
-     ";;;;\n"
-     'p 'n 'n
-     (pel-skel-clisp-separator-line ";;;;")
-     'n)))
+    (let ((cc ";;;;"))
+      (list
+       'l
+       (when pel-clisp-emacs-filevar-line
+         (list
+          'l
+          cc " -*- "
+          pel-clisp-emacs-filevar-line
+          " -*-\n"))
+       cc " Lisp File : " fname 'n
+       cc " Purpose   : " purpose 'n
+       (pel-skel-created-comment cc "Created   ")
+       (pel-skel-author-comment  cc "Author    ")
+       (pel-skel-time-stamp pel-clisp-skel-insert-file-timestamp cc nil nil "")
+       (pel-skel-copyright-comment pel-clisp-skel-with-license cc)
+       (pel-skel-clisp-separator-line cc (eq pel-clisp-skel-with-license t))
+       cc " Commentary:" 'n
+       cc 'n
+       cc " " 'p 'n
+       (pel-skel-clisp-separator-line cc)
+       cc " Dependencies:" 'n
+       cc 'n
+       cc " " 'p 'n
+       (pel-skel-clisp-separator-line cc)
+       cc " Code:" 'n
+       cc 'n
+       'p 'n 'n
+       (pel-skel-clisp-separator-line cc)
+       'n))))
 
 ;; -----------------------------------------------------------------------------
 ;; Install Common Lisp skeletons

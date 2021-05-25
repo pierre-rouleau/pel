@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-22 12:45:27, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-24 22:05:14, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -135,7 +135,7 @@
 ;;
 ;;
 (require 'pel--base)       ; use: pel-current-buffer-filename
-(require 'pel--options)    ; use: pel-elisp-skel-package-name
+(require 'pel--options)    ; use: pel-c-skel-...
 (require 'pel--macros)     ; use: pel-append-to
 (require 'pel-prompt)      ; use: pel-prompt-purpose-for
 (require 'pel-skels)       ; use: pel-skel-create-comment
@@ -185,17 +185,8 @@ The arguments are:
      (pel-skel-created-comment cc)
      (pel-skel-author-comment  cc)
      (pel-skel-time-stamp pel-c-skel-insert-file-timestamp cc)
-     (cond
-      ((eq pel-c-skel-with-license t)
-       (list 'l
-             cc 'n
-             (pel-license-text cc)
-             cc 'n))
-      ((stringp pel-c-skel-with-license)
-       (list 'l
-             (pel-skel-copyright-comment cc nil pel-c-skel-with-license))))
-     ce (pel-when-text-in ce 'n)
-     (pel-separator-line) 'n)))
+     (pel-skel-copyright-comment pel-c-skel-with-license cc)
+     ce (pel-when-text-in ce 'n))))
 
 (defun pel-skels-c-file-header-block ()
   "Return a tempo list for a C file header block.
@@ -226,6 +217,7 @@ variable `pel-c-skel-module-header-block-style'."
          (when pel-c-skel-use-uuid-include-guards
            (list
             'l
+            (pel-separator-line) 'n
             (pel-c-include-guard)
             (pel-separator-line) 'n
             'p 'n

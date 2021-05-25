@@ -1,6 +1,6 @@
 ;;; pel-erlang-skels.el --- Erlang specific tempo skeletons  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -421,10 +421,10 @@ line description if it was identified."
                                    (when (pel-erlang-skel-edoc-in-header-p)
                                      "@author"))
       (pel-erlang-skel-maybe-timestamp) ; this must be in the first 8 lines!
-      (pel-skel-copyright-comment  "%%%"
+      (pel-skel-copyright-comment  pel-erlang-skel-with-license
+                                   "%%%"
                                    (when (pel-erlang-skel-edoc-in-header-p)
-                                     "@copyright")
-                                   pel-erlang-skel-with-license)
+                                     "@copyright"))
       (pel-erlang-skel-separator)
       (pel-erlang-skel-file-doc)
       (pel-tempo-include-when (pel-erlang-file-is-module)

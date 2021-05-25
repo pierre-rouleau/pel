@@ -2836,55 +2836,6 @@ This package provides the ability to hide comments."
   :link `(url-link :tag "Inserting Text PDF"
                    ,(pel-pdf-file-url "inserting-text")))
 
-(defcustom pel-generic-skel-use-separators t
-  "Specifies whether generic code block include separators line.
-If nil no separator line comment is used, otherwise separator line
-comments of length controlled by variable `fill-column' are inserted."
-  :group 'pel-pkg-generic-code-style
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-generic-skel-insert-file-timestamp t
-  "Specifies whether a timestamp is inserted inside file module header block."
-  :group 'pel-pkg-generic-code-style
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-generic-skel-with-copyright nil
-  "Whether a copyright notice is placed in code file module header block."
-  :group 'pel-pkg-generic-code-style
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-generic-skel-with-license nil
-  "Control whether a license text is inserted in code file module header block.
-
-You can specify to have the complete license text entered in the file
-when setting the value to `t, or only enter the license name when you specify
-the license name with a string.  That string will be entered verbatim
-inside a file header line.
-
-When t, the licence inserted is controlled by the function `lice' taken
-from the external library with the same name.
-If t this activates `pel-use-lice' if it is not activated already.
-
-The text of the inserted license is selected by the `lice:default-license'
-user option, normally configured inside the directory's '.dir-locals.el'
-file written inside the global setting like this:
-
-   ((nil   .      ((fill-column . 80)
-                   (lice:default-license  . \"gpl-3.0\")
-                   (lice:copyright-holder . \"Your Name\")))
-
-Replace the gpl-3.0 with the license you want and write your name inside
-the copyright holder value."
-  :group 'pel-pkg-generic-code-style
-  :type '(choice
-          (const :tag "No license." nil)
-          (const :tag "With license text selected by `lice:default-license'"
-                 t)
-          (string :tag "License name only")))
-
 (defcustom pel-generic-skel-module-header-block-style nil
   "Specifies the style of the code file module header block.
 You can use one of the following:
@@ -2917,6 +2868,71 @@ You can use one of the following:
           (const  :tag "Default, controlled by PEL." nil)
           (string :tag "Use your own custom definition\n inside file")))
 
+;; style - 0
+(defcustom pel-generic-skel-use-separators t
+  "Specifies whether generic code block include separators line.
+If nil no separator line comment is used, otherwise separator line
+comments of length controlled by variable `fill-column' are inserted."
+  :group 'pel-pkg-generic-code-style
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-generic-skel-use-separators :choices '(nil t))
+
+;; style - 1
+(defcustom pel-generic-skel-insert-file-timestamp t
+  "Specifies whether a timestamp is inserted inside file module header block."
+  :group 'pel-pkg-generic-code-style
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-generic-skel-insert-file-timestamp :choices '(nil t))
+
+;; style - 2
+(defcustom pel-generic-skel-with-license nil
+  "Control if copyright & license is inserted in code file module header block.
+
+The available choices are:
+
+- 0: No copyright, no license.                 nil
+- 1: Copyright only, no license.               'only-copyright
+- 2: Copyright, with selected license name.    a string
+- 3: Copyright, with complete license text.    t
+
+For choice 3, you specify the name of the license in the string
+field.  Something like MIT or GPL-3.0, or anything appropriate.
+That string will be entered verbatim inside a file header line.
+
+For choice 4, the type of the license and its text are selected
+the function `lice' taken from the external library with the same name.
+
+The text of the inserted license is selected by the
+`lice:default-license' user option, normally configured inside
+the directory's '.dir-locals.el' file written inside the global
+setting like this:
+
+   ((nil . ((fill-column . 80)
+            (lice:default-license  . \"gpl-3.0\")
+            (lice:copyright-holder . \"Your Name\")))
+
+Replace \"gpl-3.0\" with the license you want and write your name
+inside the copyright holder value.
+
+When the user-option is t PEL activates the `pel-use-lice'
+user-option if it is not activated already."
+  :group 'pel-pkg-generic-code-style
+  :type
+  '(choice
+    (const :tag  "No license, no copyright." nil)
+    (const :tag  "Copyright only." only-copyright)
+    (string :tag "Copyright with specified license name.")
+    (const :tag
+           "Copyright with license text selected by `lice:default-license'"
+           t)))
+(pel-put 'pel-generic-skel-with-license :choices '(nil only-copyright t "MIT"))
+
+;; style - 3 : package names: not used for generic templates
+;; style - 4 : file variable: not used for generic templates
+
+;; style - 5
 (defcustom pel-generic-skel-module-section-titles '("Module Description"
                                                     "Dependencies"
                                                     "Code")
@@ -2927,6 +2943,7 @@ The choices are:
 - a list of sections.
 
 List of section titles to add in the module comment block.
+`pel-generic-skel-insert-module-sections' is t.
 
 The sections are placed inside the module documentation block in
 the order of appearance in the list with the string as it appears
@@ -2938,6 +2955,11 @@ with no text."
   :type '(choice
           (const  :tag "No code section titles." nil)
           (repeat :tag "Section titles" string)))
+(pel-put 'pel-generic-skel-module-section-titles
+         :choices '(nil
+                    ("Module Description"
+                     "Dependencies"
+                     "Code")))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-shell-script-skeleton-control nil
@@ -3208,32 +3230,44 @@ comments of length controlled by variable `fill-column' are inserted."
 (defcustom pel-c-skel-with-license nil
   "Control whether a license text is inserted in C file header.
 
-You can specify to have the complete license text entered in the file
-when setting the value to `t, or only enter the license name when you specify
-the license name with a string.  That string will be entered verbatim
-inside a file header line.
+The available choices are:
 
-When t, the licence inserted is controlled by the function `lice' taken
-from the external library with the same name.
-If t this activates `pel-use-lice' if it is not activated already.
+- 0: No copyright, no license.                 nil
+- 1: Copyright only, no license.               'only-copyright
+- 2: Copyright, with selected license name.    a string
+- 3: Copyright, with complete license text.    t
 
-The text of the inserted license is selected by the `lice:default-license'
-user option, normally configured inside the directory's '.dir-locals.el'
-file written inside the global setting like this:
+For choice 3, you specify the name of the license in the string
+field.  Something like MIT or GPL-3.0, or anything appropriate.
+That string will be entered verbatim inside a file header line.
 
-   ((nil   .      ((fill-column . 80)
-                   (lice:default-license  . \"gpl-3.0\")
-                   (lice:copyright-holder . \"Your Name\")))
+For choice 4, the type of the license and its text are selected
+the function `lice' taken from the external library with the same name.
 
-Replace the gpl-3.0 with the license you want and write your name inside
-the copyright holder value."
-  :group 'pel-c-skeleton-control
-  :type '(choice
-          (const :tag "No license." nil)
-          (const :tag "With license text selected by `lice:default-license'"
-                 t)
-          (string :tag "License name only")))
-(pel-put 'pel-c-skel-with-license :choices '(nil t "MIT"))
+The text of the inserted license is selected by the
+`lice:default-license' user option, normally configured inside
+the directory's '.dir-locals.el' file written inside the global
+setting like this:
+
+   ((nil . ((fill-column . 80)
+            (lice:default-license  . \"gpl-3.0\")
+            (lice:copyright-holder . \"Your Name\")))
+
+Replace \"gpl-3.0\" with the license you want and write your name
+inside the copyright holder value.
+
+When the user-option is t PEL activates the `pel-use-lice'
+user-option if it is not activated already."
+  :group 'pel-pkg-generic-code-style
+  :type
+  '(choice
+    (const :tag  "No license, no copyright." nil)
+    (const :tag  "Copyright only." only-copyright)
+    (string :tag "Copyright with specified license name.")
+    (const :tag
+           "Copyright with license text selected by `lice:default-license'"
+           t)))
+(pel-put 'pel-c-skel-with-license :choices '(nil only-copyright t "MIT"))
 
 ;; style - 3 : no package name support for C
 ;; style - 4 : no file variable support for C
@@ -4198,44 +4232,44 @@ comments of length controlled by variable `fill-column' are inserted."
 (defcustom pel-clisp-skel-with-license nil
   "Control whether a license text is inserted in Common Lisp file header.
 
-You can specify to have the complete license text entered in the file
-when setting the value to `t, or only enter the license name when you specify
-the license name with a string.  That string will be entered verbatim
-inside a file header line.
+The available choices are:
 
-When t, the licence inserted is controlled by the function `lice' taken
-from the external library with the same name.
-If t this activates `pel-use-lice' if it is not activated already.
+- 0: No copyright, no license.                 nil
+- 1: Copyright only, no license.               'only-copyright
+- 2: Copyright, with selected license name.    a string
+- 3: Copyright, with complete license text.    t
 
-This also supports the following (deprecated) choices:
+For choice 3, you specify the name of the license in the string
+field.  Something like MIT or GPL-3.0, or anything appropriate.
+That string will be entered verbatim inside a file header line.
 
-When either license-line or license-text, open source license
-information is inserted in the generated file header skeletons.
+For choice 4, the type of the license and its text are selected
+the function `lice' taken from the external library with the same name.
 
-If license-line is selected a prompt asks for the license type
-name and the name is placed on the line.
+The text of the inserted license is selected by the
+`lice:default-license' user option, normally configured inside
+the directory's '.dir-locals.el' file written inside the global
+setting like this:
 
-If license-text is selected the complete license text is inserted
-in the file.  This also activates the `pel-use-lice' if it is not
-activated already.
+   ((nil . ((fill-column . 80)
+            (lice:default-license  . \"gpl-3.0\")
+            (lice:copyright-holder . \"Your Name\")))
 
-The text of the inserted license is selected by the `lice:default-license'
-user option, normally configured inside the directory's '.dir-locals.el'
-file written inside the global setting like this:
+Replace \"gpl-3.0\" with the license you want and write your name
+inside the copyright holder value.
 
-   ((nil   .      ((fill-column . 80)
-                   (lice:default-license  . \"gpl-3.0\")
-                   (lice:copyright-holder . \"Your Name\")))
-
-Replace the gpl-3.0 with the license you want and write your name inside
-the copyright holder value."
-  :group 'pel-clisp-code-style
-  :type '(choice
-          (const :tag "No licence mention." nil)
-          (const :tag "With license text selected by `lice:default-license'"
-                 t)
-          (string :tag "License name only")))
-(pel-put 'pel-clisp-skel-with-license :choices '(nil t "MIT"))
+When the user-option is t PEL activates the `pel-use-lice'
+user-option if it is not activated already."
+  :group 'pel-pkg-generic-code-style
+  :type
+  '(choice
+    (const :tag  "No license, no copyright." nil)
+    (const :tag  "Copyright only." only-copyright)
+    (string :tag "Copyright with specified license name.")
+    (const :tag
+           "Copyright with license text selected by `lice:default-license'"
+           t)))
+(pel-put 'pel-clisp-skel-with-license :choices '(nil t only-copyright "MIT"))
 
 ;; style - 3
 (defcustom pel-clisp-skel-package-name 'extract-from-file-name
@@ -4805,32 +4839,44 @@ comments of length controlled by variable `fill-column' are inserted."
 (defcustom pel-elisp-skel-with-license nil
   "Control whether a license text is inserted in Elisp file header.
 
-You can specify to have the complete license text entered in the file
-when setting the value to `t, or only enter the license name when you specify
-the license name with a string.  That string will be entered verbatim
-inside a file header line.
+The available choices are:
 
-When t, the licence inserted is controlled by the function `lice' taken
-from the external library with the same name.
-If t this activates `pel-use-lice' if it is not activated already.
+- 0: No copyright, no license.                 nil
+- 1: Copyright only, no license.               'only-copyright
+- 2: Copyright, with selected license name.    a string
+- 3: Copyright, with complete license text.    t
 
-The text of the inserted license is selected by the `lice:default-license'
-user option, normally configured inside the directory's '.dir-locals.el'
-file written inside the global setting like this:
+For choice 3, you specify the name of the license in the string
+field.  Something like MIT or GPL-3.0, or anything appropriate.
+That string will be entered verbatim inside a file header line.
 
-   ((nil   .      ((fill-column . 80)
-                   (lice:default-license  . \"gpl-3.0\")
-                   (lice:copyright-holder . \"Your Name\")))
+For choice 4, the type of the license and its text are selected
+the function `lice' taken from the external library with the same name.
 
-Replace the gpl-3.0 with the license you want and write your name inside
-the copyright holder value."
-  :group 'pel-elisp-code-style
-  :type '(choice
-          (const :tag "No license." nil)
-          (const :tag "With license text selected by `lice:default-license'"
-                 t)
-          (string :tag "License name only")))
-(pel-put 'pel-elisp-skel-with-license :choices '(nil t "MIT"))
+The text of the inserted license is selected by the
+`lice:default-license' user option, normally configured inside
+the directory's '.dir-locals.el' file written inside the global
+setting like this:
+
+   ((nil . ((fill-column . 80)
+            (lice:default-license  . \"gpl-3.0\")
+            (lice:copyright-holder . \"Your Name\")))
+
+Replace \"gpl-3.0\" with the license you want and write your name
+inside the copyright holder value.
+
+When the user-option is t PEL activates the `pel-use-lice'
+user-option if it is not activated already."
+  :group 'pel-pkg-generic-code-style
+  :type
+  '(choice
+    (const :tag  "No license, no copyright." nil)
+    (const :tag  "Copyright only." only-copyright)
+    (string :tag "Copyright with specified license name.")
+    (const :tag
+           "Copyright with license text selected by `lice:default-license'"
+           t)))
+(pel-put 'pel-elisp-skel-with-license :choices '(nil t only-copyright "MIT"))
 
 ;; style - 3
 (defcustom pel-elisp-skel-package-name 'extract-from-file-name
@@ -5210,32 +5256,44 @@ included, reducing the comments overhead in files."
 (defcustom pel-erlang-skel-with-license nil
   "Control whether a license text is inserted in file header comment block.
 
-You can specify to have the complete license text entered in the file
-when setting the value to `t, or only enter the license name when you specify
-the license name with a string.  That string will be entered verbatim
-inside a file header line.
+The available choices are:
 
-When t, the licence inserted is controlled by the function `lice' taken
-from the external library with the same name.
-If t this activates `pel-use-lice' if it is not activated already.
+- 0: No copyright, no license.                 nil
+- 1: Copyright only, no license.               'only-copyright
+- 2: Copyright, with selected license name.    a string
+- 3: Copyright, with complete license text.    t
 
-The text of the inserted license is selected by the `lice:default-license'
-user option, normally configured inside the directory's '.dir-locals.el'
-file written inside the global setting like this:
+For choice 3, you specify the name of the license in the string
+field.  Something like MIT or GPL-3.0, or anything appropriate.
+That string will be entered verbatim inside a file header line.
 
-   ((nil   .      ((fill-column . 80)
-                   (lice:default-license  . \"gpl-3.0\")
-                   (lice:copyright-holder . \"Your Name\")))
+For choice 4, the type of the license and its text are selected
+the function `lice' taken from the external library with the same name.
 
-Replace the gpl-3.0 with the license you want and write your name inside
-the copyright holder value."
-  :group 'pel-erlang-code-style
-  :type '(choice
-          (const :tag "No license." nil)
-          (const :tag "With license text selected by `lice:default-license'"
-                 t)
-          (string :tag "License name only")))
-(pel-put 'pel-erlang-skel-with-license :choices '(nil t "MIT"))
+The text of the inserted license is selected by the
+`lice:default-license' user option, normally configured inside
+the directory's '.dir-locals.el' file written inside the global
+setting like this:
+
+   ((nil . ((fill-column . 80)
+            (lice:default-license  . \"gpl-3.0\")
+            (lice:copyright-holder . \"Your Name\")))
+
+Replace \"gpl-3.0\" with the license you want and write your name
+inside the copyright holder value.
+
+When the user-option is t PEL activates the `pel-use-lice'
+user-option if it is not activated already."
+  :group 'pel-pkg-generic-code-style
+  :type
+  '(choice
+    (const :tag  "No license, no copyright." nil)
+    (const :tag  "Copyright only." only-copyright)
+    (string :tag "Copyright with specified license name.")
+    (const :tag
+           "Copyright with license text selected by `lice:default-license'"
+           t)))
+(pel-put 'pel-erlang-skel-with-license :choices '(nil t only-copyright "MIT"))
 
 ;; style - 3 : no package name support for Erlang
 ;; style - 4 : no file variable support for Erlang
