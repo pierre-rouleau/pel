@@ -20,6 +20,9 @@ tmp-doc-future/*
 tmp-future/*
 doc/emacs-keys/*
 
+# PEL Test output directory
+test-result/*
+
 # GNU Global generated HTML rendering of code
 HTML/*
 

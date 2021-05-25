@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, May 24 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-24 15:54:08, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-25 14:44:17, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -117,10 +117,10 @@ then an extra number patter is added to it to create the file name."
 
 (defun pel--generic-all-sk-files ()
   "Generate Emacs  skeleton template files with all possible combinations.
-Store them inside the pel/example/templates/generic directory."
+Store them inside the pel/test-result/templates/generic directory."
   (interactive)
   (let ((dir-name (expand-file-name
-                   "example/templates/generic" (file-name-directory (locate-library "pel--options")))))
+                   "test-result/templates/generic" (file-name-directory (locate-library "pel--options")))))
     (let ((pel-use-d-ac-dcd nil)
           (pel-use-d-company-dcd nil))
       (pel--generic-all-sk-file-header dir-name "example" "d" 'd-mode "mit"))

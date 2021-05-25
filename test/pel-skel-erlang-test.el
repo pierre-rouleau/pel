@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, May 23 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-23 22:01:28, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-25 14:46:02, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -126,10 +126,10 @@ then an extra number patter is added to it to create the file name."
 
 (defun pel--erlang-all-sk-files ()
   "Generate Emacs Lisp skeleton template files with all possible combinations.
-Store them inside the pel/example/templates/erlang directory."
+Store them inside the pel/test-result/templates/erlang directory."
   (interactive)
   (let ((dir-name (expand-file-name
-                   "example/templates/erlang" (file-name-directory (locate-library "pel--options")))))
+                   "test-result/templates/erlang" (file-name-directory (locate-library "pel--options")))))
     (dolist (name.gen '(("small_header"       .  pel-erl-small-header)
                         ("normal_header"      .  pel-erl-normal-header)
                         ("large_header"       .  pel-erl-large-header)

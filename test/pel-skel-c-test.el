@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, May 23 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-24 18:35:59, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-25 14:36:09, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -128,11 +128,11 @@ then an extra number patter is added to it to create the file name."
                             (kill-buffer)))))))))))))))
 
 (defun pel--c-all-sk-files ()
-  "Generate Emacs  skeleton template files with all possible combinations.
-Store them inside the pel/example/templates/c/files directory."
+  "Generate Emacs skeleton template files with all possible combinations.
+Store them inside the pel/test-result/templates/c/files directory."
   (interactive)
   (let ((dir-name (expand-file-name
-                   "example/templates/c/files" (file-name-directory (locate-library "pel--options")))))
+                   "test-result/templates/c/files" (file-name-directory (locate-library "pel--options")))))
     (pel--c-all-sk-file-header dir-name "example" "c" "mit")
     (pel--c-all-sk-file-header dir-name "example" "h" "mit")))
 

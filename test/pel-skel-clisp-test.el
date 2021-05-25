@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, May 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-23 01:51:59, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-25 14:39:42, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -122,10 +122,10 @@ then an extra number patter is added to it to create the file name."
 
 (defun pel--clisp-all-sk-files ()
   "Generate Emacs Lisp skeleton template files with all possible combinations.
-Store them inside the pel/example/templates/clisp directory."
+Store them inside the pel/test-result/templates/clisp directory."
   (interactive)
   (let ((dir-name (expand-file-name
-                   "example/templates/clisp" (file-name-directory (locate-library "pel--options")))))
+                   "test-result/templates/clisp" (file-name-directory (locate-library "pel--options")))))
     (pel--clisp-all-sk-file-header dir-name "clisp" "mit")))
 
 ;;; --------------------------------------------------------------------------
