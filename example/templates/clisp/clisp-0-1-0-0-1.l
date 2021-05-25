@@ -1,10 +1,10 @@
 ;;;; -*- Mode: Lisp; Syntax: ANSI-Common-Lisp; Base: 10 -*-
 ;;;; Lisp File : clisp-0-1-0-0-1.l
 ;;;; Purpose   : Testing the template.
-;;;; Created   : Sunday, May 23 2021.
-;;;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;;;; Time-stamp: <2021-05-23 00:07:19, updated by Pierre Rouleau>
-;;;; -----------------------------------------------------------------------------------------------
+;;;; Created    Tuesday, May 25 2021.
+;;;; Author     Pierre Rouleau <prouleau001@gmail.com>
+;;;; Time-stamp: <2021-05-25 12:39:28, updated by Pierre Rouleau>
+
 ;;;; Commentary:
 ;;;;
 ;;;; [
@@ -19,14 +19,9 @@
 ;;;; - pel-clisp-emacs-filevar-line         : "Mode: Lisp; Syntax: ANSI-Common-Lisp; Base: 10"
 ;;;;  ]
 
-;;;; -----------------------------------------------------------------------------------------------
 ;;;; Dependencies:
 ;;;;
 ;;;;
 
-;;;; -----------------------------------------------------------------------------------------------
 ;;;; Code:
 ;;;;
-
-
-;;;; -----------------------------------------------------------------------------------------------

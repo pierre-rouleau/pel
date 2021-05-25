@@ -1,10 +1,10 @@
 ;;;; -*- Mode: Lisp; Syntax: ANSI-Common-Lisp; Base: 10 -*-
 ;;;; Lisp File : clisp-1-1-1-0-1.l
 ;;;; Purpose   : Testing the template.
-;;;; Created   : Sunday, May 23 2021.
-;;;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;;;; Time-stamp: <2021-05-23 00:07:21, updated by Pierre Rouleau>
-;;;;
+;;;; Created    Tuesday, May 25 2021.
+;;;; Author     Pierre Rouleau <prouleau001@gmail.com>
+;;;; Time-stamp: <2021-05-25 12:39:32, updated by Pierre Rouleau>
+
 ;;;; Copyright (C) 2021  Pierre Rouleau
 ;;;;
 ;;;; Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,7 +23,7 @@
 ;;;; LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 ;;;; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 ;;;; THE SOFTWARE.
-;;;;
+
 ;;;; -----------------------------------------------------------------------------------------------
 ;;;; Commentary:
 ;;;;
@@ -47,6 +47,7 @@
 ;;;; -----------------------------------------------------------------------------------------------
 ;;;; Code:
 ;;;;
+
 
 
 ;;;; -----------------------------------------------------------------------------------------------

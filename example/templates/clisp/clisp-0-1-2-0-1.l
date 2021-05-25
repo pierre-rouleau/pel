@@ -1,13 +1,11 @@
 ;;;; -*- Mode: Lisp; Syntax: ANSI-Common-Lisp; Base: 10 -*-
 ;;;; Lisp File : clisp-0-1-2-0-1.l
 ;;;; Purpose   : Testing the template.
-;;;; Created   : Sunday, May 23 2021.
-;;;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;;;; Time-stamp: <2021-05-23 00:07:20, updated by Pierre Rouleau>
+;;;; Created    Tuesday, May 25 2021.
+;;;; Author     Pierre Rouleau <prouleau001@gmail.com>
+;;;; Time-stamp: <2021-05-25 12:39:29, updated by Pierre Rouleau>
 ;;;; Copyright © 2021, Pierre Rouleau
-;;;; License   : MIT
 
-;;;; -----------------------------------------------------------------------------------------------
 ;;;; Commentary:
 ;;;;
 ;;;; [
@@ -17,19 +15,14 @@
 ;;;; This file was generated with the following user-options values:
 ;;;; - pel-clisp-skel-use-separators        : nil
 ;;;; - pel-clisp-skel-insert-file-timestamp : t
-;;;; - pel-clisp-skel-with-license          : "MIT"
+;;;; - pel-clisp-skel-with-license          : only-copyright
 ;;;; - pel-clisp-skel-package-name          : nil
 ;;;; - pel-clisp-emacs-filevar-line         : "Mode: Lisp; Syntax: ANSI-Common-Lisp; Base: 10"
 ;;;;  ]
 
-;;;; -----------------------------------------------------------------------------------------------
 ;;;; Dependencies:
 ;;;;
 ;;;;
 
-;;;; -----------------------------------------------------------------------------------------------
 ;;;; Code:
 ;;;;
-
-
-;;;; -----------------------------------------------------------------------------------------------
