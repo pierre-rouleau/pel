@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-19 18:08:51, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-26 16:27:11, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -144,23 +144,28 @@
                                                                  projectile-speedbar))
     ([f11 32 ?C]     "pl-c++"           pel-pkg-for-c++         (cpp
                                                                  c-macro))
+    ([f11 32 ?C f12] "pl-c++"           pel-c++-skeleton-control)
     ([f11 32 ?C ?#]  "pl-c++"           pel-pkg-for-c++         hide-ifdef)
     ([f11 32 ?D]     "pl-d"             pel-pkg-for-d           d-mode)
     ([f11 32 ?L]     "pl-common-lisp"   pel-pkg-for-clisp       (lisp
                                                                  lispy
                                                                  slime
                                                                  sly))
+    ([f11 32 ?L f12] "pl-common-lisp"   pel-clisp-code-style)
     ([f11 32 ?M]     "pl-make"          nil                     makefile)
     ([f11 32 ?R]     "pl-rexx"          pel-pkg-for-rexx        rexx-mode)
     ([f11 32 ?N]     "pl-rexx"          pel-pkg-for-rexx        netrexx)
     ([f11 32 ?a]     "pl-applescript"   pel-pkg-for-applescript apples)
     ([f11 32 ?c]     "pl-c"             pel-pkg-for-c           (c
-                                                                 c-macro))
+                                                                 c-macro
+                                                                 bison-mode))
+    ([f11 32 ?c f12] "pl-c"             pel-c-skeleton-control)
     ([f11 32 ?c ?#]  "pl-c"             pel-pkg-for-c           hide-ifdef)
-    ([f11 32 ?e]     "pl-erlang"   pel-pkg-for-erlang  (erlang
-                                                        erldoc
-                                                        edts
-                                                        auto-highlight-symbol))
+    ([f11 32 ?e]     "pl-erlang"        pel-pkg-for-erlang      (erlang
+                                                                 erldoc
+                                                                 edts
+                                                                 auto-highlight-symbol))
+    ([f11 32 ?e f12] "pl-erlang"        pel-erlang-code-style)
     ([f11 32 ?f]     "pl-forth"         pel-pkg-for-forth)
     ([f11 32 ?g]     "pl-go"            pel-pkg-for-go          (go
                                                                  go-cover
@@ -176,6 +181,7 @@
                                                                  lisp
                                                                  lispy
                                                                  suggest))
+    ([f11 32 ?l f12] "pl-emacs-lisp"    pel-elisp-code-style)
     ([f11 32 ?l ??]  "pl-emacs-lisp"    pel-pkg-for-all-languages (eldoc
                                                                    eldoc-box))
 
