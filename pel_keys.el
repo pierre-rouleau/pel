@@ -1941,6 +1941,17 @@ MODE must be a symbol."
   (define-pel-global-prefix pel:for-c++         (kbd "<f11> SPC C"))
   (define-pel-global-prefix pel:for-c++-preproc (kbd "<f11> SPC C #"))
 
+  (when pel-use-speedbar
+    ;; Add extensions not already covered by default Emacs code
+    (pel-add-speedbar-extension '(".cc"
+                                  ".C"
+                                  ".CC"
+                                  ".hh"
+                                  ".HH"
+                                  ".ii"
+                                  ".inl")))
+  (pel-set-auto-mode c++-mode for: "\\.inl\\'") ; not supported by default
+
   (when pel-use-plantuml
     (define-key pel:for-c++ "u" 'pel-render-commented-plantuml))
   (pel--map-cc-for pel:for-c++ pel:for-c++-preproc)
