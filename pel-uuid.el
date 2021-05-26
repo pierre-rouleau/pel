@@ -1,6 +1,6 @@
 ;;; pel-uuid.el --- PEL UUID Generation  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -143,15 +143,15 @@ pre-processor."
          (preproc-symbol (format
                           "%s__%s_%s"
                           (upcase fn-body)
-                          (upcase fn-extension)
+                          (upcase (replace-regexp-in-string "\\+" "pl" fn-extension))
                           (replace-regexp-in-string "-" "_" (pel-uuid)))))
-         (format "\
+    (format "\
 #ifndef %s
 #define %s /* include guard */
 %s"
-                 preproc-symbol
-                 preproc-symbol
-                 (if with-endif "\n#endif\n" ""))))
+            preproc-symbol
+            preproc-symbol
+            (if with-endif "\n#endif\n" ""))))
 
 (defun pel-insert-c-include-guard ()
   "Insert a C pre-processor include guard.
