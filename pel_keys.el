@@ -1893,7 +1893,7 @@ MODE must be a symbol."
 ;; extra code needed is to add the specialized menu and then activate it,
 ;; along with the specialized CC Mode minor modes via the c-mode-hook.
 
-(when pel-use-c
+(when (or pel-use-c pel-use-bison-mode)
   (define-pel-global-prefix pel:for-c         (kbd "<f11> SPC c"))
   (define-pel-global-prefix pel:for-c-preproc (kbd "<f11> SPC c #"))
   (define-pel-global-prefix pel:c-skel        (kbd "<f11> SPC c <f12>"))
@@ -1904,6 +1904,22 @@ MODE must be a symbol."
     (define-pel-global-prefix pel:c-help (kbd "<f11> SPC c ?"))
     (define-key pel:c-help "e" 'pel-toggle-c-eldoc-mode))
   (pel--map-cc-for pel:for-c pel:for-c-preproc)
+
+  (when pel-use-bison-mode
+    (pel-ensure-package bison-mode from: melpa)
+    ;; the bison-mode file associates: .y -> bison-mode
+    ;;                                 .l -> flex-mode
+    ;;                                 .jison -> jison-mode
+    ;; add missing associations
+    (pel-set-auto-mode bison-mode for: "\\.yacc\\'")
+    (pel-set-auto-mode flex-mode for:  "\\.lex\\'")
+    ;; and add speedbar support when activated
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension '(".y"
+                                    ".yacc"
+                                    ".lex"
+                                    ".l"
+                                    ".jison"))))
 
   (pel-setup-major-mode c pel:for-c
     ;; Configure the CC Mode style for C from PEL custom variables

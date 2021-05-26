@@ -523,6 +523,11 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     - New: for C and C++ modes, the ``<f12> <f7>`` key sequence opens the list
       of C preprocessor Hydra keys that help navigate across C preprocessor
       directives, hide and how them, etc...
+  - New: **Bison, Lex, YACC*:
+    - New: PEL activates the *bison-mode* external package when the
+      *pel-use-bison-mode* user-option is turned on (set to *t*) and
+      associates the .y, .yacc fiels to bison-mode, the .l and .lex to
+      flex-mode and the .jison files to jison-mode.
   - Update: *C*
     - New: PEL support for C is now activated with the *pel-use-c*
       user-option.  This allows turning it off to reduce Emacs init time when

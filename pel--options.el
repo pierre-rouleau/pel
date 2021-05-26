@@ -79,6 +79,7 @@
 ;;       - pel-pkg-for-all-languages
 ;;         - pel-pkg-for-language-server
 ;;         - pel-pkg-generic-code-style
+;;           - pel-shell-script-skeleton-control
 ;;       - pel-pkg-for-applescript
 ;;       - pel-pkg-for-cc
 ;;         - pel-pkg-for-c
@@ -86,8 +87,12 @@
 ;;             - pel-c-skeleton-control
 ;;               - pel-c-module-header-skeleton-control
 ;;               - pel-c-function-header-skeleton-control
+;;           - pel-pkg-for-bison
 ;;         - pel-pkg-for-c++
 ;;           - pel-c++-code-style
+;;             - pel-c++-skeleton-control
+;;               - pel-c++-module-header-skeleton-control
+;;               - pel-c-function-header-skeleton-control
 ;;         - pel-pkg-for-d
 ;;           - pel-d-code-style
 ;;       - pel-pkg-for-javascript
@@ -128,7 +133,7 @@
 ;;     - pel-pkg-for-skeletons
 ;;       - pel-pkg-generic-code-style
 ;;         - pel-shell-script-skeleton-control
-;;       - pel-c-skeleton-control
+;;       - pel-c-module-header-skeleton-control
 ;;         - pel-c-module-header-skeleton-control
 ;;         - pel-c-function-header-skeleton-control
 ;;       - pel-erlang-skeleton-control
@@ -3254,12 +3259,18 @@ Values in the [2, 8] range are accepted."
   :group 'pel-pkg-for-skeletons
   :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
 
+;;    .       .       .       .       .       .       .       .       .       .
+(defgroup pel-c-module-header-skeleton-control nil
+  "Control Skeleton that generate C source code."
+  :group 'pel-c-skeleton-control
+  :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
+
 ;; style - 0
 (defcustom pel-c-skel-use-separators t
   "Specifies whether C code block include separators line.
 If nil no separator line comment is used, otherwise separator line
 comments of length controlled by variable `fill-column' are inserted."
-  :group 'pel-c-skeleton-control
+  :group 'pel-c-module-header-skeleton-control
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-c-skel-use-separators :choices '(nil t))
@@ -3267,7 +3278,7 @@ comments of length controlled by variable `fill-column' are inserted."
 ;; style - 1
 (defcustom pel-c-skel-insert-file-timestamp t
   "Specifies whether a timestamp is inserted inside C file header block."
-  :group 'pel-c-skeleton-control
+  :group 'pel-c-module-header-skeleton-control
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-c-skel-insert-file-timestamp :choices '(nil t))
@@ -3304,7 +3315,7 @@ inside the copyright holder value.
 
 When the user-option is t PEL activates the `pel-use-lice'
 user-option if it is not activated already."
-  :group 'pel-pkg-generic-code-style
+  :group 'pel-c-module-header-skeleton-control
   :type
   '(choice
     (const :tag  "No license, no copyright." nil)
@@ -3344,7 +3355,7 @@ sections:
 - Code.
 
 Empty strings can be used to specify section with a tempo marker with no text."
-  :group 'pel-c-skeleton-control
+  :group 'pel-c-module-header-skeleton-control
   :type '(choice
           (const :tag "No code section titles." nil)
           (repeat :tag "Section titles" string)))
@@ -3360,7 +3371,7 @@ Empty strings can be used to specify section with a tempo marker with no text."
 ;; style - 6
 (defcustom pel-c-skel-doc-markup nil
   "Specifies the documentation markup system used for C source code."
-  :group 'pel-c-skeleton-control
+  :group 'pel-c-module-header-skeleton-control
   :type '(choice
           (const :tag "No documentation markup inserted in templates." nil)
           (const :tag "Insert Doxygen markup in templates." doxygen)))
@@ -3377,17 +3388,12 @@ use the following style comment format:   /*
 If set to nil, the comment style is:      /*
                                            *
                                            */"
-  :group 'pel-c-skeleton-control
+  :group 'pel-c-module-header-skeleton-control
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-c-skel-comment-with-2stars :choices '(nil t))
 
-;;    .       .       .       .       .       .       .       .       .       .
-(defgroup pel-c-module-header-skeleton-control nil
-  "Control Skeleton that generate C source code."
-  :group 'pel-c-skeleton-control
-  :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
-
+;; style - 8
 (defcustom pel-c-skel-use-uuid-include-guards t
   "Controls if UUID-based include guards are inserted inside C header file."
   :group 'pel-c-module-header-skeleton-control
@@ -3514,6 +3520,30 @@ defined ones, which could use that variable too."
   :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Bison, Lex, Yacc Support
+;; ------------------------
+;;
+;; These modes extend the C mode that is described below.
+;; Most commands available for C are available in bison-mode.
+
+(defgroup pel-pkg-for-bison nil
+  "PEL customization for Bison, Lex and YACC."
+  :group 'pel-pkg-for-cc
+  :group 'c
+  :group 'pel-pkg-for-c
+  :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
+
+(defcustom pel-use-bison-mode nil
+  "Control whether PEL activates the bison-mode.
+When active it is associated to the .lex and .yacc files,
+taking over the default association with c-mode."
+  :group 'pel-pkg-for-bison
+  :link '(url-link :tag "bison-mode @ GitHub"
+                   "https://github.com/Wilfred/bison-mode")
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; C++ Language Support
 ;; --------------------
 
@@ -3632,14 +3662,20 @@ Values in the [2, 8] range are accepted."
   "Control Skeleton that generate C++ source code."
   :group 'pel-c++-code-style
   :group 'pel-pkg-for-skeletons
-  :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
+  :link `(url-link :tag "C++ PDF" ,(pel-pdf-file-url "pl-c++")))
+
+;;    .       .       .       .       .       .       .       .       .       .
+(defgroup pel-c++-module-header-skeleton-control nil
+  "Control Skeleton that generate C++ source code."
+  :group 'pel-c++-skeleton-control
+  :link `(url-link :tag "C++ PDF" ,(pel-pdf-file-url "pl-c++")))
 
 ;; style - 0
 (defcustom pel-c++-skel-use-separators t
   "Specifies whether C++ code block include separators line.
 If nil no separator line comment is used, otherwise separator line
 comments of length controlled by variable `fill-column' are inserted."
-  :group 'pel-c++-skeleton-control
+  :group 'pel-c++-module-header-skeleton-control
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-c++-skel-use-separators :choices '(nil t))
@@ -3647,7 +3683,7 @@ comments of length controlled by variable `fill-column' are inserted."
 ;; style - 1
 (defcustom pel-c++-skel-insert-file-timestamp t
   "Specifies whether a timestamp is inserted inside C++ file header block."
-  :group 'pel-c++-skeleton-control
+  :group 'pel-c++-module-header-skeleton-control
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-c++-skel-insert-file-timestamp :choices '(nil t))
@@ -3684,7 +3720,7 @@ inside the copyright holder value.
 
 When the user-option is t PEL activates the `pel-use-lice'
 user-option if it is not activated already."
-  :group 'pel-pkg-generic-code-style
+  :group 'pel-c++-module-header-skeleton-control
   :type
   '(choice
     (const :tag  "No license, no copyright." nil)
@@ -3724,7 +3760,7 @@ sections:
 - Code.
 
 Empty strings can be used to specify section with a tempo marker with no text."
-  :group 'pel-c++-skeleton-control
+  :group 'pel-c++-module-header-skeleton-control
   :type '(choice
           (const :tag "No code section titles." nil)
           (repeat :tag "Section titles" string)))
@@ -3763,7 +3799,7 @@ sections:
 The Code section is mean to store template and inline definitions.
 
 Empty strings can be used to specify section with a tempo marker with no text."
-  :group 'pel-c++-skeleton-control
+  :group 'pel-c++-module-header-skeleton-control
   :type '(choice
           (const :tag "No code section titles." nil)
           (repeat :tag "Section titles" string)))
@@ -3780,7 +3816,7 @@ Empty strings can be used to specify section with a tempo marker with no text."
 ;; style - 6
 (defcustom pel-c++-skel-doc-markup nil
   "Specifies the documentation markup system used for C++ source code."
-  :group 'pel-c++-skeleton-control
+  :group 'pel-c++-module-header-skeleton-control
   :type '(choice
           (const :tag "No documentation markup inserted in templates." nil)
           (const :tag "Insert Doxygen markup in templates." doxygen)))
@@ -3788,12 +3824,7 @@ Empty strings can be used to specify section with a tempo marker with no text."
 
 ;; style - 7 : C++ templates comments only support //
 
-;;    .       .       .       .       .       .       .       .       .       .
-(defgroup pel-c++-module-header-skeleton-control nil
-  "Control Skeleton that generate C++ source code."
-  :group 'pel-c++-skeleton-control
-  :link `(url-link :tag "C++ PDF" ,(pel-pdf-file-url "pl-c++")))
-
+;; style - 8
 (defcustom pel-c++-skel-use-uuid-include-guards t
   "Controls if UUID-based include guards are inserted inside C++ header file."
   :group 'pel-c++-module-header-skeleton-control
@@ -4591,7 +4622,7 @@ inside the copyright holder value.
 
 When the user-option is t PEL activates the `pel-use-lice'
 user-option if it is not activated already."
-  :group 'pel-pkg-generic-code-style
+  :group 'pel-clisp-code-style
   :type
   '(choice
     (const :tag  "No license, no copyright." nil)
@@ -5198,7 +5229,7 @@ inside the copyright holder value.
 
 When the user-option is t PEL activates the `pel-use-lice'
 user-option if it is not activated already."
-  :group 'pel-pkg-generic-code-style
+  :group 'pel-elisp-code-style
   :type
   '(choice
     (const :tag  "No license, no copyright." nil)
@@ -5615,7 +5646,7 @@ inside the copyright holder value.
 
 When the user-option is t PEL activates the `pel-use-lice'
 user-option if it is not activated already."
-  :group 'pel-pkg-generic-code-style
+  :group 'pel-erlang-code-style
   :type
   '(choice
     (const :tag  "No license, no copyright." nil)
