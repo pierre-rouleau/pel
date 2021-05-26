@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-24 22:05:14, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-26 10:14:05, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -366,7 +366,7 @@ Leave point when file name goes, then after statement."
    '& "#include <" 'p ".h>" 'p))
 
 ;; ---------------------------------------------------------------------------
-;; Install Emacs Lisp skeletons
+;; Install C Code skeletons
 
 (defvar pel-skels-c-large-header-skel
   '(o
@@ -400,7 +400,7 @@ Leave point when file name goes, then after statement."
     ("Include <>"    "include-lib"   pel-skels-c-pp-include-global-skel))
 
 
-  "List of Emacs Lisp tempo skeletons.")
+  "List of C code tempo skeletons.")
 
 (defvar pel--c-skels-keys '(("file-header"   . "h")
                             ("function"      . "f")

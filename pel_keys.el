@@ -1925,7 +1925,7 @@ MODE must be a symbol."
     ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
     (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
     ;; 7) Install language-specific skeletons
-    (pel--install-c-skel      pel:c-skel)
+    (pel--install-c-skel pel:c-skel)
     ;; 8) extra setup
     (pel--setup-for-cc)))
 
@@ -1940,6 +1940,7 @@ MODE must be a symbol."
 (when pel-use-c++
   (define-pel-global-prefix pel:for-c++         (kbd "<f11> SPC C"))
   (define-pel-global-prefix pel:for-c++-preproc (kbd "<f11> SPC C #"))
+  (define-pel-global-prefix pel:c++-skel        (kbd "<f11> SPC C <f12>"))
 
   (when pel-use-speedbar
     ;; Add extensions not already covered by default Emacs code
@@ -1977,7 +1978,7 @@ MODE must be a symbol."
     ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
     (pel-local-set-f12-M-f12 'pel:for-c++-preproc "#")
     ;; 7) Install language-specific skeletons
-    ;; TODO
+    (pel--install-c++-skel pel:c++-skel)
     ;; 8) extra setup
     (pel--setup-for-cc)))
 

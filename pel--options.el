@@ -3426,9 +3426,6 @@ You can use one of the following:
           (const  :tag "Default, controlled by PEL." nil)
           (string :tag "Use your own custom definition\n inside file")))
 
-
-
-
 ;;    .       .       .       .       .       .       .       .       .       .
 (defgroup pel-c-function-header-skeleton-control nil
   "Control Skeleton that generate C source code."
@@ -3627,6 +3624,294 @@ Values in the [2, 8] range are accepted."
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
   :group 'pel-c++-code-style
+  :type 'boolean
+  :safe #'booleanp)
+
+;;    -       -       -       -       -       -       -       -       -       -
+(defgroup pel-c++-skeleton-control nil
+  "Control Skeleton that generate C++ source code."
+  :group 'pel-c++-code-style
+  :group 'pel-pkg-for-skeletons
+  :link `(url-link :tag "C PDF" ,(pel-pdf-file-url "pl-c")))
+
+;; style - 0
+(defcustom pel-c++-skel-use-separators t
+  "Specifies whether C++ code block include separators line.
+If nil no separator line comment is used, otherwise separator line
+comments of length controlled by variable `fill-column' are inserted."
+  :group 'pel-c++-skeleton-control
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-c++-skel-use-separators :choices '(nil t))
+
+;; style - 1
+(defcustom pel-c++-skel-insert-file-timestamp t
+  "Specifies whether a timestamp is inserted inside C++ file header block."
+  :group 'pel-c++-skeleton-control
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-c++-skel-insert-file-timestamp :choices '(nil t))
+
+;; style - 2
+(defcustom pel-c++-skel-with-license nil
+  "Control whether a license text is inserted in C++ file header.
+
+The available choices are:
+
+- 0: No copyright, no license.                 nil
+- 1: Copyright only, no license.               'only-copyright
+- 2: Copyright, with selected license name.    a string
+- 3: Copyright, with complete license text.    t
+
+For choice 3, you specify the name of the license in the string
+field.  Something like MIT or GPL-3.0, or anything appropriate.
+That string will be entered verbatim inside a file header line.
+
+For choice 4, the type of the license and its text are selected
+the function `lice' taken from the external library with the same name.
+
+The text of the inserted license is selected by the
+`lice:default-license' user option, normally configured inside
+the directory's '.dir-locals.el' file written inside the global
+setting like this:
+
+   ((nil . ((fill-column . 80)
+            (lice:default-license  . \"gpl-3.0\")
+            (lice:copyright-holder . \"Your Name\")))
+
+Replace \"gpl-3.0\" with the license you want and write your name
+inside the copyright holder value.
+
+When the user-option is t PEL activates the `pel-use-lice'
+user-option if it is not activated already."
+  :group 'pel-pkg-generic-code-style
+  :type
+  '(choice
+    (const :tag  "No license, no copyright." nil)
+    (const :tag  "Copyright only." only-copyright)
+    (string :tag "Copyright with specified license name.")
+    (const :tag
+           "Copyright with license text selected by `lice:default-license'"
+           t)))
+(pel-put 'pel-c++-skel-with-license :choices '(nil only-copyright t "MIT"))
+
+;; style - 3 : no package name support for C++
+;; style - 4 : no file variable support for C++
+
+;; style - 5
+(defcustom pel-c++-skel-cppfile-section-titles '("Module Description"
+                                                 "Header Inclusion"
+                                                 "Local Types"
+                                                 "Local Variables"
+                                                 "Code")
+  "Specifies whether code sections are inserted inside C++ file comment block.
+
+The choices are:
+- nil: no section titles are inserted.
+- a list of sections.
+
+The default includes fives sections.  You can add, replace and remove them.
+
+These section titles are placed inside the module documentation
+block in the order of appearance in the list with the string as
+it appears in the list.  The default is to add the following
+sections:
+
+- Module Description
+- Header Inclusion,
+- Local Types,
+- Local Variables,
+- Code.
+
+Empty strings can be used to specify section with a tempo marker with no text."
+  :group 'pel-c++-skeleton-control
+  :type '(choice
+          (const :tag "No code section titles." nil)
+          (repeat :tag "Section titles" string)))
+
+;; style - 5.1
+(defcustom pel-c++-skel-hppfile-section-titles '("Description"
+                                                 "."
+                                                 "Header Inclusion"
+                                                 "Types"
+                                                 "Variables"
+                                                 "Code")
+  "Specifies whether code sections are inserted inside C++ file comment block.
+
+The choices are:
+- nil: no section titles are inserted.
+- a list of sections.
+
+When section titles are identified a special section string \".\"
+identifies where the include guard code must be inserted.
+
+The default includes fives sections and the position of the
+include guard is located between the first and the second
+section.  You can add, replace and remove them.
+
+These section titles are placed inside the module documentation
+block in the order of appearance in the list with the string as
+it appears in the list.  The default is to add the following
+sections:
+
+- Description
+- Header Inclusion,
+- Types,
+- Variables,
+- Code.
+
+The Code section is mean to store template and inline definitions.
+
+Empty strings can be used to specify section with a tempo marker with no text."
+  :group 'pel-c++-skeleton-control
+  :type '(choice
+          (const :tag "No code section titles." nil)
+          (repeat :tag "Section titles" string)))
+(pel-put 'pel-c++-skel-hppfile-section-titles
+         :choices
+         '(nil
+           ("Description"
+            "."
+            "Header Inclusion"
+            "Types"
+            "Variables"
+            "Code")))
+
+;; style - 6
+(defcustom pel-c++-skel-doc-markup nil
+  "Specifies the documentation markup system used for C++ source code."
+  :group 'pel-c++-skeleton-control
+  :type '(choice
+          (const :tag "No documentation markup inserted in templates." nil)
+          (const :tag "Insert Doxygen markup in templates." doxygen)))
+(pel-put 'pel-c++-skel-doc-markup :choices '(nil doxygen))
+
+;; style - 7 : C++ templates comments only support //
+
+;;    .       .       .       .       .       .       .       .       .       .
+(defgroup pel-c++-module-header-skeleton-control nil
+  "Control Skeleton that generate C++ source code."
+  :group 'pel-c++-skeleton-control
+  :link `(url-link :tag "C++ PDF" ,(pel-pdf-file-url "pl-c++")))
+
+(defcustom pel-c++-skel-use-uuid-include-guards t
+  "Controls if UUID-based include guards are inserted inside C++ header file."
+  :group 'pel-c++-module-header-skeleton-control
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-c++-skel-module-header-block-style nil
+  "Specifies the style of the C++ file module header block.
+You can use one of the following:
+
+- The default (nil) controlled by PEL's code.
+- A user-specified one.  For this you have to write Emacs Lisp code.
+  You have to write a function `pel-skels-c++-header-module-block/custom'
+  inside a file and store the name of that file inside the box that
+  appear when you select this option.   The function must accept
+  2 arguments:
+  - arg 1: string : the file name (without path)
+  - arg 2: boolean: is non-nil when the file is a C++ header file,
+                    and nil when it is a code file.
+
+  The function can use or ignore these arguments.
+  See PEL's function `pel-skels-c++-header-module-block' source code
+  for an example of how these arguments are used to create the standard
+  header-module block skeleton.
+
+  You can start by using the example that is stored inside the file
+  'custom/skeleton/custom-c++-skel.el'.
+  The file name can be an absolute file name but it can also be a relative
+  file name.  On Unix systems you can use '~' to identify your home directory."
+  :group 'pel-c++-module-header-skeleton-control
+  :type '(choice
+          (const  :tag "Default, controlled by PEL." nil)
+          (string :tag "Use your own custom definition\n inside file")))
+
+;;    .       .       .       .       .       .       .       .       .       .
+(defgroup pel-c++-function-header-skeleton-control nil
+  "Control Skeleton that generate C++ source code."
+  :group 'pel-c++-skeleton-control
+  :link `(url-link :tag "C++ PDF" ,(pel-pdf-file-url "pl-c++")))
+
+(defcustom pel-c++-skel-insert-function-sections t
+  "Specifies whether code sections are inserted in C++ function comment block.
+This includes the DESCRIPTION section and sections with titles
+identified by the variable `pel-c++-skel-function-section-titles'."
+  :group 'pel-c++-function-header-skeleton-control
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-c++-skel-function-section-titles '("DIAGNOSTIC"
+                                                  "SEE ALSO")
+  "List of section titles to add in the function comment block.
+These section names are added when the variable
+`pel-c++-skel-insert-function-sections' is t, after the DESCRIPTION
+section.  The sections are placed inside the function
+documentation block in the order of appearance in the list with
+the string as it appears in the list.  The default is to add the
+sections DIAGNOSTIC and SEE ALSO.  Empty strings can be used to
+specify section with a tempo marker with no text."
+  :group 'pel-c++-function-header-skeleton-control
+  :type '(repeat string))
+
+(defcustom pel-c++-skel-function-define-style nil
+  "Specifies the style of C++ function definition comment blocks.
+Several styles are provided with ability to load a style from
+a separately provided skeleton file.
+
+The choices are:
+
+- No documentation comment inserted.
+- Basic documentation comment just above the function definition.
+  This includes a function purpose.
+- Man-page style documentation above the function definition.
+  If variable `pel-c++-skel-insert-function-sections' is t, the comment also
+  include a DESCRIPTION section and other sections as defined by the
+  value of the variable `pel-c++-skel-function-section-titles'.
+- A user defined skeleton.  For this you need to write Emacs Lisp code.
+  You have to write a function `pel-skels-c++-function-def/custom'
+  inside a file and store the name of that file inside the box that
+  appear when you select this option.  You can start by using the
+  example that is stored inside the file 'custom/skeleton/custom-c++-skel.el'.
+  The file name can be an absolute file name but it can also be a relative
+  file name.  On Unix systems you can use '~' to identify your home directory."
+  :group 'pel-c++-function-header-skeleton-control
+  :type '(choice
+          (const :tag "Just code, no comment block." nil)
+          (const :tag "Basic documentation block above function definition."
+                 basic-style)
+          (const :tag "Man-page style documentation block above function \
+definition." man-style)
+          (string :tag "Use your own custom definition\n inside file")))
+
+(defcustom pel-c++-skel-function-name-on-first-column nil
+  "Set whether defined function name is on the beginning of the line.
+If non-nil, the return type of a function definition is located
+on a line by itself, above the function name that starts at the
+beginning of next line.  When nil, the return type of the
+function definition is located on the same line as the function
+name.
+
+For example, if t, the style is:
+
+int*
+some_function(int some_arg)
+{
+   some_code();
+}
+
+If the value is nil, the style is this instead:
+
+int* some_function(int some_arg)
+{
+   some_code();
+}
+
+This affects all styles specified by variable
+`pel-c++-skel-function-define-style' potentially except the user
+defined ones, which could use that variable too."
+  :group 'pel-c++-function-header-skeleton-control
   :type 'boolean
   :safe #'booleanp)
 
