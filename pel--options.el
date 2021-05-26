@@ -2353,8 +2353,8 @@ waiting for activity to resume in the lewang's repo."
   :group 'pel-pkg-for-keys
   :type 'boolean
   :safe #'booleanp
-  :link '(url-link :tag "prouleau/command-log-mode @ GitHub"
-                   "https://github.com/prouleau/command-log-mode"))
+  :link '(url-link :tag "pierre-rouleau/command-log-mode @ GitHub"
+                   "https://github.com/pierre-rouleau/command-log-mode"))
 (pel-put 'pel-use-command-log-mode :package-is :in-utils)
 
 ;; ---------------------------------------------------------------------------
