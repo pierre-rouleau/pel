@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-26 10:52:46, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-26 18:15:05, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -86,6 +86,7 @@ The arguments are:
                                       "HH"
                                       "hpp"
                                       "hxx"
+                                      "h++"
                                       "ii"
                                       "inl")
   "List of C++ file extensions seen when in c++-mode.")
