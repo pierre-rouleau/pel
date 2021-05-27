@@ -36,6 +36,7 @@
 ;;; Dependencies:
 (eval-when-compile
   (require 'cl-macs))                      ; use: cl-dolist and cl-return
+(require 'seq)                             ; use: seq-subseq
 ;; ---------------------------------------------------------------------------
 ;;; Code:
 
