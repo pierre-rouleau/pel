@@ -20,7 +20,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; ---------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; This file defines a set of functions that operate on lists:
@@ -32,6 +32,10 @@
 ;;   - `pel-list-index'
 ;;
 
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
+(eval-when-compile
+  (require 'cl-macs))                      ; use: cl-dolist and cl-return
 ;; ---------------------------------------------------------------------------
 ;;; Code:
 
