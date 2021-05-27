@@ -133,6 +133,9 @@
 ;;  - `pel-dec'
 ;;  - `pel-inc'
 ;;
+;; Swap 2 values:
+;; - `pel-swap'
+;;
 ;; Text at point:
 ;;  - `pel-at-lowercase-p'
 ;;  - `pel-at-uppercase-p'
@@ -1483,6 +1486,14 @@ Return nil if symbol N value is CEILING or larger."
   (let ((oldvalue (eval n)))
     (if (< oldvalue (or ceiling most-positive-fixnum))
         (set n (1+ oldvalue)))))
+
+;; ---------------------------------------------------------------------------
+;; Swap 2 values
+;; -------------
+
+(defmacro pel-swap (var-a var-b)
+  "Swap the content of VAR-A and VAR-B. Return value of VAR-A."
+  `(setq ,var-a (prog1 ,var-b (setq ,var-b ,var-a))))
 
 ;; ---------------------------------------------------------------------------
 ;; Text at point
