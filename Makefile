@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-05-26 10:51:13, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-05-27 11:23:14, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -227,7 +227,7 @@ OTHER_FILES := README
 # Emacs Regression Test files that uses ert, to test and include in tar file.
 # TODO: there is no rule yet to generate tests from $(TEST_FILES), they have to be
 #       added explicitly in the :test rules.
-TEST_FILES := pel-file-test.el pel-text-transform-test.el pel-package-test.el
+TEST_FILES := pel-file-test.el pel-list-test.el pel-text-transform-test.el pel-package-test.el
 
 # Documentation PDF files to copy verbatim into the doc/pdfs
 PDF_FILES := -legend.pdf                        \
@@ -635,6 +635,7 @@ pel_keys.elc: pel_keys.el
 	@printf "***** Running Integration tests\n"
 	$(EMACS) --batch -L . -l ert -l test/pel-base-tests.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
+	$(EMACS) --batch -L . -l ert -l test/pel-list-test.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-package-test.el -f ert-run-tests-batch-and-exit
 
 # NOTE: make sure the tests above are the same as the test target below!
@@ -652,6 +653,7 @@ test:
 	@printf "***** Running Integration tests\n"
 	$(EMACS) --batch -L . -l ert -l test/pel-base-tests.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
+	$(EMACS) --batch -L . -l ert -l test/pel-list-test.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-package-test.el -f ert-run-tests-batch-and-exit
 
 # ----------------------------------------------------------------------------

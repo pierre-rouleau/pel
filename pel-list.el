@@ -1,6 +1,6 @@
 ;;; pel-list.el --- List utilities  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -28,6 +28,9 @@
 ;; - `pel-insert-in-list'
 ;; - `pel-insert-list-in-list'
 ;; - `pel-join'
+;; - `pel-list-split'
+;;   - `pel-list-index'
+;;
 
 ;; ---------------------------------------------------------------------------
 ;;; Code:
@@ -53,7 +56,7 @@ Performance: O(n) - of LIST size."
 
 (defun pel-join (elems sep &optional max-per-line prefix)
   "Return a string joining each string in ELEMS.
-Use SEP as separator.
+Use SEP, a string,  as separator.
 Allow up to MAX-PER-LINE elements per line.
 For second and following lines, put leading PREFIX string."
   (let ((text  "")
@@ -70,6 +73,33 @@ For second and following lines, put leading PREFIX string."
                                  (concat sep "\n" prefix)
                                sep)
                            ""))))))
+
+(defun pel-list-index (object list)
+  "Return index of first OBJECT found inside LIST, nil if not present."
+  (let ((index -1))
+    (cl-dolist (elt list)
+      (setq index (1+ index))
+      (when (equal elt object)
+        (cl-return index)))))
+
+(defun pel-list-split (object list &optional include-object)
+  "Split LIST in 2 lists.
+
+Break the list at the first instance of OBJECT.
+
+If INCLUDE-OBJECT is non-nil it may be set to :in-first or
+:in-last to indicate to include OBJECT at the end of the first
+list or at the first element of the second list, respectively."
+  (let ((split-idx (pel-list-index object list)))
+    (if split-idx
+        (list
+         (seq-subseq list 0 (if (eq include-object :in-first)
+                                (+ 1 split-idx)
+                              split-idx))
+         (seq-subseq list (if (eq include-object :in-last)
+                              split-idx
+                            (+ 1 split-idx))))
+      (list list nil))))
 
 ;; ---------------------------------------------------------------------------
 ;;
