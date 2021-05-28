@@ -79,6 +79,9 @@
 ;;                      ; the options: pel-auto-complete-help
 
 ;; ---------------------------------------------------------------------------
+
+
+;; ---------------------------------------------------------------------------
 ;; Configure PEL-level autoloading
 ;; -------------------------------
 
@@ -1035,7 +1038,7 @@ interactively."
 
 ;; - iedit - Powerful editing of multiple instances
 ;; ------------------------------------------------
-(when (or pel-use-iedit pel-use-lispy)
+(when pel-use-iedit
   (defun pel--add-keys-to-iedit-mode ()
     "Add keys that work in terminal mode to iedit-mode key maps."
     (when (boundp 'iedit-lib-keymap)
@@ -1336,10 +1339,7 @@ can't bind negative-argument to C-_ and M-_"
 
 ;; Helm
 ;; ----
-(when (or pel-use-helm
-          pel-use-helm-xref
-          (and pel-use-xcscope pel-use-helm-cscope))
-  (pel-ensure-package helm from: melpa)
+(when pel-use-helm (pel-ensure-package helm from: melpa)
   (pel-autoload-file helm for: helm-mode)
   (pel-eval-after-load helm
     (require 'helm-config)
@@ -1407,8 +1407,7 @@ can't bind negative-argument to C-_ and M-_"
 
 ;; ivy
 ;; ---
-(when (or pel-use-ivy
-          pel-use-ivy-xref)
+(when pel-use-ivy
   (defvar ivy-use-virtual-buffers)       ; prevent byte-compiler warning
   (defvar ivy-count-format)
   (defvar ivy-minibuffer-map)
@@ -1480,8 +1479,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; ---------------------------------------------------------------------------
 ;; - Project Management - Projectile
 
-(when (or pel-use-projectile
-          pel-use-projectile-speedbar)
+(when pel-use-projectile
 
   (defun pel--start-projectile ()
     "Activate projectile-mode."
@@ -1526,7 +1524,10 @@ can't bind negative-argument to C-_ and M-_"
 ;; Load pel-tempo when programming languages using it are used.
 ;; See the use of skeletons in the following sections.
 
-(when (or pel-use-erlang
+(when (or pel-use-c
+          pel-use-c++
+          pel-use-common-lisp
+          pel-use-erlang
           pel-use-rst-mode)
   (pel-autoload-file pel-tempo for: pel-tempo-mode))
 
@@ -1893,7 +1894,7 @@ MODE must be a symbol."
 ;; extra code needed is to add the specialized menu and then activate it,
 ;; along with the specialized CC Mode minor modes via the c-mode-hook.
 
-(when (or pel-use-c pel-use-bison-mode)
+(when pel-use-c
   (define-pel-global-prefix pel:for-c         (kbd "<f11> SPC c"))
   (define-pel-global-prefix pel:for-c-preproc (kbd "<f11> SPC c #"))
   (define-pel-global-prefix pel:c-skel        (kbd "<f11> SPC c <f12>"))
@@ -4840,6 +4841,7 @@ the ones defined from the buffer now."
 
 (when (or pel-use-lice
           (eq pel-c-skel-with-license t)
+          (eq pel-c++-skel-with-license t)
           (eq pel-clisp-skel-with-license t)
           (eq pel-elisp-skel-with-license t)
           (eq pel-erlang-skel-with-license t))
@@ -4925,63 +4927,61 @@ the ones defined from the buffer now."
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> m`` : Multiple Cursors
 
-(when (or pel-use-multiple-cursors
-          pel-use-iedit
-          pel-use-lispy)
-  (define-pel-global-prefix pel:mcursors (kbd "<f11> m"))
-  (when pel-use-multiple-cursors
-    (pel-ensure-package multiple-cursors from: melpa)
-    (pel-autoload-file multiple-cursors for:
-                       mc/edit-lines
-                       mc/mark-next-like-this
-                       mc/mark-previous-like-this
-                       mc/mark-all-like-this)
-    ;; guessing from point
-    (define-key pel:mcursors "m" 'mc/mark-all-like-this-dwim)
-    (define-key pel:mcursors (kbd "M-m") 'mc/mark-all-dwim)
-    (define-key pel:mcursors "." 'mc/mark-more-like-this-extended)
-    ;; lines
-    (define-key pel:mcursors "l" 'mc/edit-lines)
-    (define-key pel:mcursors (kbd "C-a") 'mc/edit-beginnings-of-lines)
-    (define-key pel:mcursors (kbd "C-e") 'mc/edit-ends-of-lines)
-    ;; all like this
-    (define-key pel:mcursors "a" 'mc/mark-all-like-this)
-    (define-key pel:mcursors (kbd "C-M-a") 'mc/mark-all-like-this-in-defun)
-    (define-key pel:mcursors "?" 'mc/mark-all-in-region)
-    ;; like this: next and previous, mark, unmark, skip & extended
-    (define-key pel:mcursors "n" 'mc/mark-next-like-this)
-    (define-key pel:mcursors "p" 'mc/mark-previous-like-this)
-    (define-key pel:mcursors "N" 'mc/unmark-next-like-this)
-    (define-key pel:mcursors "P" 'mc/unmark-previous-like-this)
-    (define-key pel:mcursors (kbd "M-n") 'mc/skip-to-next-like-this)
-    (define-key pel:mcursors (kbd "M-p") 'mc/skip-to-previous-like-this)
-    ;; word
-    (define-key pel:mcursors "w" 'mc/mark-next-word-like-this)
-    (define-key pel:mcursors (kbd "M-w") 'mc/mark-next-like-this-word)
-    (define-key pel:mcursors "W" 'mc/mark-previous-word-like-this)
-    (define-key pel:mcursors (kbd "M-W") 'mc/mark-previous-like-this-word)
-    (define-key pel:mcursors (kbd "C-w") 'mc/mark-all-words-like-this)
-    (define-key pel:mcursors (kbd "C-M-w") 'mc/mark-all-words-like-this-in-defun)
-    ;; symbol
-    (define-key pel:mcursors "s" 'mc/mark-next-symbol-like-this)
-    (define-key pel:mcursors (kbd "M-s") 'mc/mark-next-like-this-symbol)
-    (define-key pel:mcursors "S" 'mc/mark-previous-symbol-like-this)
-    (define-key pel:mcursors (kbd "M-S") 'mc/mark-previous-like-this-symbol)
-    (define-key pel:mcursors (kbd "C-s") 'mc/mark-all-symbols-like-this)
-    (define-key pel:mcursors (kbd "C-M-s") 'mc/mark-all-symbols-like-this-in-defun)
-    ;; special
-    (define-key pel:mcursors "c" 'set-rectangular-region-anchor)
-    (define-key pel:mcursors "t" 'mc/mark-sgml-tag-pair)
-    (define-key pel:mcursors "0" 'mc/insert-numbers)
-    (define-key pel:mcursors "A" 'mc/insert-letters)
-    (define-key pel:mcursors "o" 'mc/sort-regions)
-    (define-key pel:mcursors "O" 'mc/reverse-regions)
-    (define-key pel:mcursors "|" 'mc/vertical-align-with-space)
-    ;; TODO: put key in mc/keymap
-    (autoload 'mc-hide-unmatched-lines-mode "mc-hide-unmatched-line-mode")
-    (define-key pel:mcursors (kbd "M-/") 'mc-hide-unmatched-lines-mode))
+(when pel-use-multiple-cursors
 
-  (when (or pel-use-iedit pel-use-lispy)
+  (define-pel-global-prefix pel:mcursors (kbd "<f11> m"))
+  (pel-ensure-package multiple-cursors from: melpa)
+  (pel-autoload-file multiple-cursors for:
+                     mc/edit-lines
+                     mc/mark-next-like-this
+                     mc/mark-previous-like-this
+                     mc/mark-all-like-this)
+  ;; guessing from point
+  (define-key pel:mcursors "m" 'mc/mark-all-like-this-dwim)
+  (define-key pel:mcursors (kbd "M-m") 'mc/mark-all-dwim)
+  (define-key pel:mcursors "." 'mc/mark-more-like-this-extended)
+  ;; lines
+  (define-key pel:mcursors "l" 'mc/edit-lines)
+  (define-key pel:mcursors (kbd "C-a") 'mc/edit-beginnings-of-lines)
+  (define-key pel:mcursors (kbd "C-e") 'mc/edit-ends-of-lines)
+  ;; all like this
+  (define-key pel:mcursors "a" 'mc/mark-all-like-this)
+  (define-key pel:mcursors (kbd "C-M-a") 'mc/mark-all-like-this-in-defun)
+  (define-key pel:mcursors "?" 'mc/mark-all-in-region)
+  ;; like this: next and previous, mark, unmark, skip & extended
+  (define-key pel:mcursors "n" 'mc/mark-next-like-this)
+  (define-key pel:mcursors "p" 'mc/mark-previous-like-this)
+  (define-key pel:mcursors "N" 'mc/unmark-next-like-this)
+  (define-key pel:mcursors "P" 'mc/unmark-previous-like-this)
+  (define-key pel:mcursors (kbd "M-n") 'mc/skip-to-next-like-this)
+  (define-key pel:mcursors (kbd "M-p") 'mc/skip-to-previous-like-this)
+  ;; word
+  (define-key pel:mcursors "w" 'mc/mark-next-word-like-this)
+  (define-key pel:mcursors (kbd "M-w") 'mc/mark-next-like-this-word)
+  (define-key pel:mcursors "W" 'mc/mark-previous-word-like-this)
+  (define-key pel:mcursors (kbd "M-W") 'mc/mark-previous-like-this-word)
+  (define-key pel:mcursors (kbd "C-w") 'mc/mark-all-words-like-this)
+  (define-key pel:mcursors (kbd "C-M-w") 'mc/mark-all-words-like-this-in-defun)
+  ;; symbol
+  (define-key pel:mcursors "s" 'mc/mark-next-symbol-like-this)
+  (define-key pel:mcursors (kbd "M-s") 'mc/mark-next-like-this-symbol)
+  (define-key pel:mcursors "S" 'mc/mark-previous-symbol-like-this)
+  (define-key pel:mcursors (kbd "M-S") 'mc/mark-previous-like-this-symbol)
+  (define-key pel:mcursors (kbd "C-s") 'mc/mark-all-symbols-like-this)
+  (define-key pel:mcursors (kbd "C-M-s") 'mc/mark-all-symbols-like-this-in-defun)
+  ;; special
+  (define-key pel:mcursors "c" 'set-rectangular-region-anchor)
+  (define-key pel:mcursors "t" 'mc/mark-sgml-tag-pair)
+  (define-key pel:mcursors "0" 'mc/insert-numbers)
+  (define-key pel:mcursors "A" 'mc/insert-letters)
+  (define-key pel:mcursors "o" 'mc/sort-regions)
+  (define-key pel:mcursors "O" 'mc/reverse-regions)
+  (define-key pel:mcursors "|" 'mc/vertical-align-with-space)
+  ;; TODO: put key in mc/keymap
+  (autoload 'mc-hide-unmatched-lines-mode "mc-hide-unmatched-line-mode")
+  (define-key pel:mcursors (kbd "M-/") 'mc-hide-unmatched-lines-mode)
+
+  (when pel-use-iedit
     (define-key pel:mcursors "i" 'iedit-mode)))
 
 ;; ---------------------------------------------------------------------------
@@ -5152,23 +5152,8 @@ the ones defined from the buffer now."
   (define-key pel:regexp "R" 'vr/replace)
   (define-key pel:regexp "Q" 'vr/query-replace)
   (when pel-use-multiple-cursors
-    (define-key pel:regexp "M" 'vr/mc-mark)))
+    (define-key pel:regexp "M" 'vr/mc-mark))
 
-(when pel-use-visual-regexp-steroids
-  (pel-ensure-package visual-regexp-steroids from: melpa)
-  (pel-autoload-file visual-regexp-steroids for:
-                     vr/select-replace
-                     vr/select-query-replace
-                     vr/select-mc-mark
-                     vr/isearch-forward
-                     vr/isearch-backward)
-  (define-key pel:regexp (kbd "M-r") 'vr/select-replace)
-  (define-key pel:regexp (kbd "M-q") 'vr/select-query-replace)
-  (define-key pel:regexp (kbd "M-m") 'vr/select-mc-mark)
-  (define-key pel:regexp (kbd "C-s") 'vr/isearch-forward)
-  (define-key pel:regexp (kbd "C-r") 'vr/isearch-backward))
-
-(when (or pel-use-visual-regexp pel-use-visual-regexp-steroids)
   (pel-autoload-file pel-search-regexp for:
                      pel-select-search-regexp-engine
                      pel-show-active-search-regexp-engine
@@ -5184,6 +5169,20 @@ the ones defined from the buffer now."
     (define-key global-map (kbd "C-c q") 'pel-query-replace-regexp)
     (when pel-use-multiple-cursors
       (define-key global-map (kbd "C-c m") 'vr/mc-mark))))
+
+(when pel-use-visual-regexp-steroids
+  (pel-ensure-package visual-regexp-steroids from: melpa)
+  (pel-autoload-file visual-regexp-steroids for:
+                     vr/select-replace
+                     vr/select-query-replace
+                     vr/select-mc-mark
+                     vr/isearch-forward
+                     vr/isearch-backward)
+  (define-key pel:regexp (kbd "M-r") 'vr/select-replace)
+  (define-key pel:regexp (kbd "M-q") 'vr/select-query-replace)
+  (define-key pel:regexp (kbd "M-m") 'vr/select-mc-mark)
+  (define-key pel:regexp (kbd "C-s") 'vr/isearch-forward)
+  (define-key pel:regexp (kbd "C-r") 'vr/isearch-backward))
 
 ;; Choices:
 ;; - Standard Emacs Search/Replace
@@ -5236,8 +5235,7 @@ the ones defined from the buffer now."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> M-s`` : Speedbar/SR-Speedbar commands
 
-(when (or pel-use-speedbar
-          pel-use-projectile-speedbar)
+(when pel-use-speedbar
 
   ;; Install sr-speedbar from my GitHub depot instead of from Melpa,
   ;; because Melpa follows the older version in emacsmirror. I'm keeping
@@ -5278,6 +5276,9 @@ the ones defined from the buffer now."
   (with-eval-after-load 'sr-speedbar
     (advice-add 'sr-speedbar-open :after (function pel--sr-speedbar-setup)))
 
+  ;; Note: when pel-use-projectile-speedbar is active
+  ;;       then pel-use-speedbar is also active, as imposed by
+  ;;       the end of pel--options.el.
   (when pel-use-projectile-speedbar
     (pel-ensure-package projectile-speedbar from: melpa)
     (pel-autoload-file projectile-speedbar for:
@@ -5829,15 +5830,14 @@ the ones defined from the buffer now."
   (define-key pel:cscope "C" 'cscope-minor-mode)
   ;; schedule activation of cscope minor mode for selected ones
   (pel-add-hook-for 'pel-modes-activating-cscope
-                    'cscope-minor-mode)
-
-  (when pel-use-helm-cscope
-    (pel-ensure-package helm-cscope from: melpa)
-    (pel-autoload-file helm-cscope for: helm-cscope-mode)
-    (define-key pel:cscope "H" 'pel-toggle-helm-cscope)
-    (add-hook 'helm-cscope-mode-hook 'pel-activate-helm-cscope)
-    (pel-add-hook-for 'pel-modes-activating-helm-cscope
-                      'pel-activate-helm-cscope)))
+                    'cscope-minor-mode))
+(when pel-use-helm-cscope
+  (pel-ensure-package helm-cscope from: melpa)
+  (pel-autoload-file helm-cscope for: helm-cscope-mode)
+  (define-key pel:cscope "H" 'pel-toggle-helm-cscope)
+  (add-hook 'helm-cscope-mode-hook 'pel-activate-helm-cscope)
+  (pel-add-hook-for 'pel-modes-activating-helm-cscope
+                    'pel-activate-helm-cscope))
 
 ;; dumb-jump
 (when pel-use-dumb-jump

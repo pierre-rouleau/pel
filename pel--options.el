@@ -868,6 +868,7 @@ The initial completion mode is set by `pel-initial-completion-mode'."
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-ivy :also-required-when 'pel-use-ivy-xref)
 
 (defcustom pel-use-counsel nil
   "Control whether Counsel is used when Ivy is used.
@@ -883,6 +884,8 @@ You must also activate the user option variable  `pel-use-ivy' to use counsel."
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-counsel :package-is '(when pel-use-ivy
+                                         '((elpa . counsel))))
 ;; counsel uses the request package but does not identify it as part
 ;; of its dependencies. Therefore I add the dependency info here.
 (pel-put 'pel-use-counsel :requires-package '(quote ((elpa . request))))
@@ -908,7 +911,9 @@ variable `pel-use-counsel' is set to t."
 Helm is a very powerful interactive incremental completion and
 selection package which provides a large number of commands you
 can execute on the completion list.
-The initial completion mode is set by `pel-initial-completion-mode'."
+The initial completion mode is set by `pel-initial-completion-mode'.
+
+Note that `pel-use-help-cscope' indirectly activates `pel-use-helm'."
   :link '(url-link :tag "Helm home page"
                    "https://emacs-helm.github.io/helm/")
   :link '(url-link :tag "A package in a league of its own: Helm"
@@ -916,6 +921,8 @@ The initial completion mode is set by `pel-initial-completion-mode'."
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-helm :also-required-when '(or pel-use-help-cscope
+                                                pel-use-helm-xref))
 
 (defconst pel-USE-IDO     1 "Bitmask identifying Ido.      DON'T CHANGE!")
 (defconst pel-USE-IVY     2 "Bitmask identifying Ivy.      DON'T CHANGE!")
@@ -1030,12 +1037,16 @@ Select the completion method you want as default when activating this package."
   :link `(url-link :tag "Cursor PDF" ,(pel-pdf-file-url "cursor")))
 
 (defcustom pel-use-multiple-cursors nil
-  "Control whether PEL uses the multiple cursors package."
+  "Control whether PEL uses the multiple cursors package.
+
+Activating the `pel-use-lispy' user-option indirectly activates
+`pel-use-multiple-cursors'."
   :group 'pel-pkg-for-cursor
   :type 'boolean
   :safe #'booleanp
   :link `(url-link :tag "multiple-cursors @ GitHub"
                    "https://github.com/magnars/multiple-cursors.el"))
+(pel-put 'pel-use-multiple-cursors :also-required-when 'pel-use-lispy)
 
 (defcustom pel-use-iedit nil
   "Control whether PEL uses the iedit package.
@@ -1045,14 +1056,18 @@ sequences are typed:
 
 - C-;
 - <f11> e
-- <f11> m i"
+- <f11> m i
+
+Activating the `pel-use-lispy' user-option indirectly activates
+`pel-use-iedit'."
   :group 'pel-pkg-for-cursor
   :group 'pel-pkg-for-all-languages
   :group 'pel-pkg-for-highlight
   :type 'boolean
   :safe #'booleanp
   :link '(url-link :tag "iedit @ GitHub"
-                  "https://github.com/victorhge/iedit"))
+                   "https://github.com/victorhge/iedit"))
+(pel-put 'pel-use-iedit :also-required-when 'pel-use-lispy)
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-cut-and-paste
@@ -3122,6 +3137,7 @@ of auto-newline while editing."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-c :package-is :builtin-emacs)
+(pel-put 'pel-use-c :also-required-when 'pel-use-bison-mode)
 
 (defcustom pel-c-activates-minor-modes nil
   "List of minor-modes automatically activated for C buffers.
@@ -6204,6 +6220,7 @@ CAUTION: This package needs major tuning!  It takes forever searching for a
           (const :tag "Do not use" nil)
           (const :tag "Use, activate later by command"  t)
           (const :tag "Use, activate when Emacs starts" use-from-start)))
+(pel-put 'pel-use-projectile :also-required-when 'pel-use-projectile-speedbar)
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-regexp
@@ -6264,12 +6281,16 @@ or pel-use-regexp-steroids is t (for the others)."
   :safe #'booleanp)
 
 (defcustom pel-use-visual-regexp nil
-  "Control whether PEL uses the external visual-regexp library."
+  "Control whether PEL uses the external visual-regexp library.
+
+This is indirectly activated by `pel-use-visual-regexp-steroids' user-option."
   :link `(url-link :tag "visual-regexp @ GitHub"
                    "https://github.com/benma/visual-regexp.el")
   :group 'pel-pkg-for-regexp
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-visual-regexp :also-required-when
+         'pel-use-visual-regexp-steroids)
 
 (defcustom pel-use-visual-regexp-steroids nil
   "Control whether PEL uses the external visual-regexp-steroids library."
@@ -6526,6 +6547,7 @@ used if `pel-prefer-sr-speedbar-in-terminal' is set."
 ;; speedbar is built-in Emacs but when `pel-use-speedbar' is active
 ;; sr-speedbar is installed.
 (pel-put 'pel-use-speedbar :package-is '(quote ((utils . sr-speedbar))))
+(pel-put 'pel-use-speedbar :also-required-when 'pel-use-projectile-speedbar)
 
 (defcustom pel-prefer-sr-speedbar-in-terminal t
   "Prefer using Sr-Speedbar in terminal mode (when available) over Speedbar."
@@ -6554,9 +6576,9 @@ Setting this non-nil also sets up the use of speedbar and projectile."
   :link '(custom-group-link "pel-pkg-for-project-mng")
   :link '(url-link :tag "projectile + speedbar @ GitHub"
                    "https://github.com/anshulverma/projectile-speedbar"))
-(pel-put 'pel-use-projectile-speedbar :requires '(:all
-                                                  pel-use-speedbar
-                                                  pel-use-projectile))
+;; (pel-put 'pel-use-projectile-speedbar :requires '(:all
+;;                                                   pel-use-speedbar
+;;                                                   pel-use-projectile))
 
 ;; ---------------------------------------------------------------------------
 ;; Spelling Support
@@ -6912,6 +6934,7 @@ Note: on macOS you can install cscope with Homebrew
                    "https://github.com/dkogan/xcscope.el")
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-xcscope :also-required-when 'pel-use-helm-cscope)
 
 (defcustom pel-use-helm-cscope nil
   "Control whether PEL uses the helm-cscope package.
@@ -7144,6 +7167,45 @@ indexing system."
   :group 'pel-pkg-for-xref
   :type 'boolean
   :safe #'booleanp)
+
+
+;; ---------------------------------------------------------------------------
+;; Process indirect activation
+;; ---------------------------
+;; When some of the pel-use- user-options are activated, they implicitly
+;; activate another PEL user option.  Since logic below take actions based on
+;; the values of the PEL user-options, check for those and set their
+;; dependent.  This way we simplify the logic of all other files that require
+;; the `pel--options' feature and ensure that the pel-use- of a package that
+;; is activated indirectly is set to reflect that it is active.
+;;
+;; Note: When adding such dependencies, ensure that these dependencies are
+;;       also reflected by the `:also-required-when' property of the
+;;       `pel-use-' user-option of the package(s) that get activated indirectly.
+
+(when pel-use-projectile-speedbar
+  (setq pel-use-projectile t)  ; t:= activate projectile later by command
+  (setq pel-use-speedbar t))
+
+(when pel-use-lispy
+  (setq pel-use-iedit t)
+  (setq pel-use-multiple-cursors t))
+
+(when pel-use-visual-regexp-steroids
+  (setq pel-use-visual-regexp t))
+
+(when pel-use-helm-cscope
+  (setq pel-use-xcscope t)
+  (setq pel-use-helm t))
+
+(when pel-use-helm-xref
+  (setq pel-use-helm t))
+
+(when pel-use-ivy-xref
+  (setq pel-use-ivy t))
+
+(when pel-use-bison-mode
+  (setq pel-use-c t))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel--options)
