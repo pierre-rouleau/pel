@@ -3477,7 +3477,7 @@ The choices are:
 An include guard with-uuid is the most portable and it is safe since
 it prevents re-use of the same C pre-processor symbol."
   :group 'pel-c-module-header-skeleton-control
-  :type ''(choice
+  :type '(choice
           (const :tag "No include guard" nil)
           (const :tag "Use pragma-once" pragma-once)
           (const :tag "Classic include-guard" t)
