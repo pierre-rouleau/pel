@@ -3330,11 +3330,11 @@ user-option if it is not activated already."
 ;; style - 4 : no file variable support for C
 
 ;; style - 5
-(defcustom pel-c-skel-module-section-titles '("Module Description"
-                                              "Header Inclusion"
-                                              "Local Types"
-                                              "Local Variables"
-                                              "Code")
+(defcustom pel-c-skel-cfile-section-titles '("Module Description"
+                                             "Header Inclusion"
+                                             "Local Types"
+                                             "Local Variables"
+                                             "Code")
   "Specifies whether code sections are inserted inside C file comment block.
 
 The choices are:
@@ -3359,7 +3359,7 @@ Empty strings can be used to specify section with a tempo marker with no text."
   :type '(choice
           (const :tag "No code section titles." nil)
           (repeat :tag "Section titles" string)))
-(pel-put 'pel-c-skel-module-section-titles
+(pel-put 'pel-c-skel-cfile-section-titles
          :choices
          '(nil
            ("Module Description"
@@ -3367,6 +3367,60 @@ Empty strings can be used to specify section with a tempo marker with no text."
             "Local Types"
             "Local Variables"
             "Code")))
+
+;; style - 5.1
+(defcustom pel-c-skel-hfile-section-titles '("Description"
+                                             "."
+                                             "Header Inclusion"
+                                             "Types"
+                                             "Constants"
+                                             "Inline Functions")
+  "Specifies whether code sections are inserted inside C file comment block.
+
+The choices are:
+- nil: no section titles are inserted.
+- a list of sections.
+
+When section titles are identified a special section string \".\"
+identifies where the include guard code must be inserted.
+
+The default includes fives sections and the position of the
+include guard is located between the first and the second
+section.  You can add, replace and remove them.
+
+These section titles are placed inside the module documentation
+block in the order of appearance in the list with the string as
+it appears in the list.  The default is to add the following
+sections:
+
+- Description
+- Header Inclusion,
+- Types,
+- Variables,
+- Code.
+
+The Code section is mean to store template and inline definitions.
+
+Empty strings can be used to specify section with a tempo marker with no text."
+  :group 'pel-c-module-header-skeleton-control
+  :type '(choice
+          (const :tag "No code section titles." nil)
+          (repeat :tag "Section titles" string)))
+(pel-put 'pel-c-skel-hfile-section-titles
+         :choices
+         '(nil
+           ("Description"
+            "."
+            "Header Inclusion"
+            "Types"
+            "Constants"
+            "Inline Functions")
+           ("Description"
+            "Header Inclusion"
+            "Types"
+            "Constants"
+            "Inline Functions")
+           ))
 
 ;; style - 6
 (defcustom pel-c-skel-doc-markup nil
@@ -3394,11 +3448,28 @@ If set to nil, the comment style is:      /*
 (pel-put 'pel-c-skel-comment-with-2stars :choices '(nil t))
 
 ;; style - 8
-(defcustom pel-c-skel-use-uuid-include-guards t
-  "Controls if UUID-based include guards are inserted inside C header file."
+(defcustom pel-c-skel-use-include-guards t
+  "Controls if include guards are inserted inside C header file.
+Also identifies what type of include guard are used.
+The choices are:
+
+- insert no include guard:         nil
+- insert pragma-once:             'pragma-once
+- insert classic include-guard:    t
+- insert include-guard with UUID: 'with-uuid
+
+An include guard with-uuid is the most portable and it is safe since
+it prevents re-use of the same C pre-processor symbol."
   :group 'pel-c-module-header-skeleton-control
-  :type 'boolean
-  :safe #'booleanp)
+  :type ''(choice
+          (const :tag "No include guard" nil)
+          (const :tag "Use pragma-once" pragma-once)
+          (const :tag "Classic include-guard" t)
+          (const :tag "Include-guard with UUID" with-uuid)))
+(pel-put 'pel-c-skel-use-include-guards :choices '(nil
+                                                   pragma-once
+                                                   t
+                                                   with-uuid))
 
 (defcustom pel-c-skel-module-header-block-style nil
   "Specifies the style of the C file module header block.
@@ -3825,11 +3896,28 @@ Empty strings can be used to specify section with a tempo marker with no text."
 ;; style - 7 : C++ templates comments only support //
 
 ;; style - 8
-(defcustom pel-c++-skel-use-uuid-include-guards t
-  "Controls if UUID-based include guards are inserted inside C++ header file."
+(defcustom pel-c++-skel-use-include-guards t
+  "Controls if include guards are inserted inside C++ header file.
+Also identifies what type of include guard are used.
+The choices are:
+
+- insert no include guard:         nil
+- insert pragma-once:             'pragma-once
+- insert classic include-guard:    t
+- insert include-guard with UUID: 'with-uuid
+
+An include guard with-uuid is the most portable and it is safe since
+it prevents re-use of the same C pre-processor symbol."
   :group 'pel-c++-module-header-skeleton-control
-  :type 'boolean
-  :safe #'booleanp)
+  :type '(choice
+          (const :tag "No include guard" nil)
+          (const :tag "Use pragma-once" pragma-once)
+          (const :tag "Classic include-guard" t)
+          (const :tag "Include-guard with UUID" with-uuid)))
+(pel-put 'pel-c++-skel-use-include-guards :choices '(nil
+                                                     pragma-once
+                                                     t
+                                                     with-uuid))
 
 (defcustom pel-c++-skel-module-header-block-style nil
   "Specifies the style of the C++ file module header block.

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-26 18:15:05, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-27 21:56:15, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -31,16 +31,16 @@
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel--base)       ; use: pel-swap
 (require 'pel--options)    ; use: pel-c++-skel-...
 (require 'pel-prompt)      ; use: pel-prompt-purpose-for
+(require 'pel-text-insert) ; use: pel-separator-line
+(require 'pel-uuid)        ; use: pel-c-include-guard
+(require 'pel-tempo)       ; use: pel-tempo-install-pel-skel
 (require 'pel-skels)       ; use: pel-skel-create-comment
 ;;                         ;      pel-skel-author-comment
 ;;                         ;      pel-skel-time-stamp
 ;;                         ;      pel-skel-call
-(require 'pel-text-insert) ; use: pel-separator-line
-(require 'pel-uuid)        ; use: pel-c-include-guard
-(require 'pel-tempo)       ; use: pel-tempo-install-pel-skel
-
 (require 'pel-skels-c)     ; use: pel-skels-c-pp-define-skel
 ;;                         ;      pel-skels-c-pp-include-local-skel
 ;;                         ;      pel-skels-c-pp-include-global-skel
@@ -62,14 +62,18 @@ Otherwise return a string that ends with a newline."
 ;; ---------------------------------------------------------------------------
 ;; File/Module header block
 
-(defun pel-skels-c++-header-module-block (fname is-a-header)
+(defun pel-skels-c++-header-module-block (fname is-a-header cmt-style)
   "Return a tempo list for the comment block inserted at the top of the C++ file.
 The arguments are:
 - FNAME := string.  the name of the current file without path.
 - IS-A-HEADER := boolean.  non-nil if the file is a C++ header file, nil
-  otherwise."
+  otherwise.
+- CMT-STYLE := a list of 3 strings: (cb cc ce)
+            - cb : comment begin string
+            - cc : comment continuation string
+            - ce : comment end string."
   (let* ((purpose  (pel-prompt-purpose-for "File" 'p))
-         (cc       "//"))
+         (cc       (nth 1 cmt-style)))
     (list
      'l
      "// C++ " (if is-a-header "HEADER" "MODULE") ": "  fname 'n
@@ -97,53 +101,14 @@ The format of the file header block is adjusted for the supported file types:
 the C++ code file and the C++ header file.
 The file header portion is controlled by the style selected by the
 variable `pel-c++-skel-module-header-block-style'."
-  (let* ((fname        (pel-current-buffer-filename :sans-directory))
-         (is-a-header  (member (file-name-extension fname) pel-c++-header-extensions))
-         (cmt-style    (pel-skel-comments-strings))
-         (cb           (nth 0 cmt-style))
-         (cc           (nth 1 cmt-style))
-         (ce           (nth 2 cmt-style)))
-    (goto-char (point-min))   ; TODO: del this but modify skels to force entry
-                                        ;       at top.
-    (list
-     'l
-     ;; insert the top level comment block for the top of the file
-     ;; Select the style from `pel-c++-skel-module-header-block-style'
-     (if pel-c++-skel-module-header-block-style
-         (pel-skel-call 'pel-c++-skel-module-header-block-style
-                        'pel-skels-c++-header-module-block/custom
-                        fname is-a-header
-                        cmt-style)
-       (pel-skels-c++-header-module-block fname is-a-header))
-     ;; then add the remainder for either a header file or code file
-     (if is-a-header
-         (when pel-c++-skel-use-uuid-include-guards
-           (list
-            'l
-            (pel-separator-line) 'n
-            (pel-c-include-guard)
-            (pel-separator-line) 'n
-            'p 'n
-            (pel-separator-line) 'n
-            "#endif\n"
-            ))
-       (let ((sk (list 'l))
-             (section-titles (if is-a-header
+  (pel-skel-cc-file-header-block pel-c++-skel-module-header-block-style
+                                 'pel-skels-c++-header-module-block/custom
                                  pel-c++-skel-hppfile-section-titles
-                               pel-c++-skel-cppfile-section-titles)))
-         (if section-titles
-             (dolist (mtitle section-titles)
-               (pel-append-to sk
-                              (list
-                               (pel-skel-c++-separator-line)
-                               cb " " mtitle 'n
-                               cc " " (make-string (length mtitle) ?-) 'n
-                               ce 'n (pel-when-text-in ce 'n)
-                               'p 'n 'n)))
-           (pel-append-to sk (list
-                              'n
-                              'p 'n 'n)))
-         (pel-append-to sk (list (pel-skel-c++-separator-line))))))))
+                                 pel-c++-skel-cppfile-section-titles
+                                 pel-c++-skel-use-include-guards
+                                 (function pel-skels-c++-header-module-block)
+                                 (function pel-skel-c++-separator-line)
+                                 pel-c++-header-extensions))
 
 ;; ---------------------------------------------------------------------------
 ;; C++ Function skeleton

@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-26 10:14:05, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-28 11:28:23, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -41,9 +41,11 @@
 ;;       - `pel-c-skel-module-header-block-style'
 ;;       - `pel-c-skel-insert-file-timestamp'
 ;;       - `pel-c-skel-with-license'
-;;       - `pel-c-skel-module-section-titles'
+;;     - For C code files only:
+;;       - `pel-c-skel-cfile-section-titles'
 ;;     - For header files only:
-;;       - `pel-c-skel-use-uuid-include-guards'
+;;       - `pel-c-skel-hfile-section-titles'
+;;       - `pel-c-skel-use-include-guards'
 ;;
 ;;
 ;;   For header files, the skeleton can insert a include guard that uses a C
@@ -52,7 +54,7 @@
 ;;   eliminates the possibility of symbol clash in C pre-processor include
 ;;   guards while creating portable C code.  The inclusion of this safe
 ;;   include guard code is controlled by the variable
-;;   `pel-c-skel-use-uuid-include-guards', so users that prefer or need to use
+;;   `pel-c-skel-use-include-guards', so users that prefer or need to use
 ;;   the less portable ``#pragma once`` can do that.
 ;;
 ;;   The skeleton can create header blocks with several code sections, with or
@@ -138,6 +140,7 @@
 (require 'pel--options)    ; use: pel-c-skel-...
 (require 'pel--macros)     ; use: pel-append-to
 (require 'pel-prompt)      ; use: pel-prompt-purpose-for
+(require 'pel-list)        ; use: pel-list-split
 (require 'pel-skels)       ; use: pel-skel-create-comment
 ;;                         ;      pel-skel-author-comment
 ;;                         ;      pel-skel-time-stamp
@@ -150,7 +153,148 @@
 ;;; Code:
 ;;
 
-;; --
+;; ---------------------------------------------------------------------------
+;; Generic code for both C and C++
+
+(defun pel-skel-section-titles (section-titles cb cc ce line-separator-fct)
+  "Return a skeleton list of SECTION-TITLES.
+The CB, CC and CE are the comments beginning, continuation and end strings.
+The LINE-SEPARATOR-FCT is a function that takes no argument and return a
+separator line string.
+SECTION-TITLES may be nil.  In that case the function returns nil."
+  (when section-titles
+    (let ((sk (list 'l)))
+      (dolist (mtitle section-titles)
+        (pel-append-to
+         sk
+         (list
+          (funcall line-separator-fct)
+          cb (pel-skel-space-for cb) mtitle 'n
+          cc (pel-skel-space-for cc) (make-string (length mtitle) ?-) 'n
+          ce 'n (pel-when-text-in ce 'n)
+          'p 'n 'n)))
+      sk)))
+
+(defun pel-skel-cc-file-header-block (cc-module-header-block-style
+                                      cc-header-module-block/custom
+                                      cc-skel-hfile-section-titles
+                                      cc-skel-cfile-section-titles
+                                      cc-skel-use-include-guards
+                                      cc-header-module-block-fct
+                                      cc-separator-line-fct
+                                      cc-header-extensions)
+  "Return a tempo list for a C/C++ file header block.
+The format of the file header block is adjusted for the supported file types:
+the C/C++ code file and the C/C++ header file.
+
+The behaviour of this function is determined by its arguments that are meant
+to be the customization user-option variables of C or C++:
+
+- CC-MODULE-HEADER-BLOCK-STYLE :  pel-c++-skel-module-header-block-style
+                               or pel-c-skel-module-header-block-style
+
+- CC-HEADER-MODULE-BLOCK/CUSTOM:  pel-skels-c++-header-module-block/custom
+                               or pel-skels-c-header-module-block/custom
+
+- CC-SKEL-HFILE-SECTION-TITLES :  pel-c++-skel-hppfile-section-titles
+                               or pel-c-skel-hfile-section-titles
+
+- CC-SKEL-CFILE-SECTION-TITLES :  pel-c++-skel-cppfile-section-titles
+                               or pel-c++-skel-cfile-section-titles
+
+- CC-SKEL-USE-INCLUDE-GUARDS   :  pel-c++-skel-use-include-guards
+                               or pel-c-skel-use-include-guards
+
+- CC-HEADER-MODULE-BLOCK-FCT   :  pel-skels-c++-header-module-block
+  (3 argument)                  or pel-skels-c-header-module-block
+
+- CC-SEPARATOR-LINE-FCT        :  pel-skel-c++-separator-line
+  (no argument)                 or pel-skel-c-separator-line
+
+- CC-HEADER-EXTENSIONS         : a list of extension strings."
+  (let* ((fname        (pel-current-buffer-filename :sans-directory))
+         (is-a-header  (member (file-name-extension fname) cc-header-extensions))
+         (cmt-style    (pel-skel-comments-strings))
+         (cb           (nth 0 cmt-style))
+         (cc           (nth 1 cmt-style))
+         (ce           (nth 2 cmt-style))
+         (section-titles (if is-a-header
+                             cc-skel-hfile-section-titles
+                           cc-skel-cfile-section-titles))
+         (titles-a-and-b (pel-list-split "." section-titles))
+         (section-titles-before-incguard (car titles-a-and-b))
+         (section-titles-after-incguard (cadr titles-a-and-b)))
+    ;; if there's no split, all sections should be after the include guard.
+    (unless section-titles-after-incguard
+      (pel-swap section-titles-before-incguard section-titles-after-incguard))
+    (goto-char (point-min)) ; TODO: del this but modify skels to force entry at top.
+    (list
+     'l
+     ;; 1- Insert the top level comment block for the top of the file.
+     ;; Select the style from `cc-module-header-block-style'
+     ;; That block does not end with a separator line.
+     (if cc-module-header-block-style
+         (pel-skel-call 'cc-module-header-block-style
+                        cc-header-module-block/custom
+                        fname is-a-header
+                        cmt-style)
+       (funcall cc-header-module-block-fct fname is-a-header cmt-style))
+     ;; 2- Add the remainder for either a header file or code file.
+     (if is-a-header
+         ;; A: for a header file
+         (list
+          'l
+          ;; Insert section titles that must be inserted before the include guard.
+          (when (or (and (not section-titles-before-incguard)
+                         cc-skel-use-include-guards)
+                    (and (not section-titles-before-incguard)
+                         (not section-titles-after-incguard)
+                         (not cc-skel-use-include-guards)))
+            (funcall cc-separator-line-fct))
+          (pel-skel-section-titles section-titles-before-incguard
+                                   cb cc ce
+                                   cc-separator-line-fct)
+          (when (and section-titles-before-incguard
+                     cc-skel-use-include-guards)
+            (funcall cc-separator-line-fct))
+          ;; Insert the selected include guard and the remaining code.
+          (list
+           'l
+           (cond
+            ;; pragma-once
+            ((eq cc-skel-use-include-guards 'pragma-once)
+             (list
+              'l
+              "#pragma once\n"
+              'p 'n))
+            ;; a #ifdef #define include guard - just the beginning
+            ((memq cc-skel-use-include-guards '(t with-uuid))
+             (pel-c-include-guard (eq cc-skel-use-include-guards 'with-uuid))))
+           ;; Insert the remaining section list if any
+           (when (and (not section-titles-after-incguard)
+                      (memq cc-skel-use-include-guards '(t with-uuid)))
+             (funcall cc-separator-line-fct))
+           (pel-skel-section-titles section-titles-after-incguard
+                                    cb cc ce
+                                    cc-separator-line-fct)
+           ;; drop tempo mark on area where will be written if there
+           ;; were no sections titles after the include guard.
+           (unless section-titles-after-incguard
+             (list 'l
+                   'n 'p 'n 'n))
+           (funcall cc-separator-line-fct)
+           ;; Terminate the #ifdef #define include guard if that is requested.
+           (when (memq cc-skel-use-include-guards '(t with-uuid))
+             "#endif\n")))
+       ;; B: for a code file
+       (list
+        'l
+        (pel-skel-section-titles section-titles
+                                 cb cc ce
+                                 cc-separator-line-fct)
+        (funcall cc-separator-line-fct))))))
+
+;; ---------------------------------------------------------------------------
 ;; Utility functions
 
 (defun pel-skel-c-separator-line ()
@@ -194,50 +338,14 @@ The format of the file header block is adjusted for the supported file types:
 the C code file and the C header file.
 The file header portion is controlled by the style selected by the
 variable `pel-c-skel-module-header-block-style'."
-  (let* ((fname        (pel-current-buffer-filename :sans-directory))
-         (is-a-header  (string= (file-name-extension fname) "h"))
-         (cmt-style    (pel-skel-comments-strings))
-         (cb           (nth 0 cmt-style))
-         (cc           (nth 1 cmt-style))
-         (ce           (nth 2 cmt-style)))
-    (goto-char (point-min)) ; TODO: del this but modify skels to force entry
-                            ;       at top.
-    (list
-     'l
-     ;; insert the top level comment block for the top of the file
-     ;; Select the style from `pel-c-skel-module-header-block-style'
-     (if pel-c-skel-module-header-block-style
-         (pel-skel-call 'pel-c-skel-module-header-block-style
-                        'pel-skels-c-header-module-block/custom
-                        fname is-a-header
-                        cmt-style)
-       (pel-skels-c-header-module-block fname is-a-header cmt-style))
-     ;; then add the remainder for either a header file or code file
-     (if is-a-header
-         (when pel-c-skel-use-uuid-include-guards
-           (list
-            'l
-            (pel-separator-line) 'n
-            (pel-c-include-guard)
-            (pel-separator-line) 'n
-            'p 'n
-            (pel-separator-line) 'n
-            "#endif\n"
-            ))
-       (let ((sk (list 'l)))
-         (if pel-c-skel-module-section-titles
-             (dolist (mtitle pel-c-skel-module-section-titles)
-               (pel-append-to sk
-                              (list
-                               (pel-skel-c-separator-line)
-                               cb " " mtitle 'n
-                               cc " " (make-string (length mtitle) ?-) 'n
-                               ce 'n (pel-when-text-in ce 'n)
-                               'p 'n 'n)))
-           (pel-append-to sk (list
-                              'n
-                              'p 'n 'n)))
-         (pel-append-to sk (list (pel-skel-c-separator-line))))))))
+  (pel-skel-cc-file-header-block pel-c-skel-module-header-block-style
+                                 'pel-skels-c-header-module-block/custom
+                                 pel-c-skel-hfile-section-titles
+                                 pel-c-skel-cfile-section-titles
+                                 pel-c-skel-use-include-guards
+                                 (function pel-skels-c-header-module-block)
+                                 (function pel-skel-c-separator-line)
+                                 '("h" "i")))
 
 ;; ---------------------------------------------------------------------------
 ;; C function definitions

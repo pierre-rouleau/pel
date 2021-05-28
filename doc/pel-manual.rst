@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-05-25 07:42:28, updated by Pierre Rouleau.
+:Modified: 2021-05-27 09:43:08, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -3208,10 +3208,18 @@ pel-c-skel-doc-markup                nil     Identifies the markup style in
 pel-c-skel-insert-file-timestamp     t       Insert a time stamp that is updated
                                              automatically when the file is
                                              saved.
-pel-c-skel-use-uuid-include-guards   nil     Used for C header files only:
+pel-c-skel-use-include-guards        nil     Used for C header files only:
                                              if set header files have include
-                                             guards that incorporate a UUID in
-                                             their name.
+                                             guards. You can select between
+                                             no include-guard, include-guard
+                                             using ``#pragma once`` statement,
+                                             classic include guard with
+                                             ``#ifdef`` pre-processor
+                                             statement or an include-guard
+                                             that uses a ``#ifdef``
+                                             pre-processor statement with a
+                                             symbol that incorporates a UUID,
+                                             making it unique.
 
 pel-c-skel-module-header-block-style nil     The selected style for the module
                                              header: use PEL's default style.
@@ -3324,12 +3332,12 @@ section with the "Module Description" title.  The following section names
 In a C header file
 >>>>>>>>>>>>>>>>>>
 
-If you use the exact same command inside a C header (``.h``) file,
-but with ``pel-c-skel-with-license`` set to nil to prevent the inclusion
-of license text, and with the ``pel-c-skel-use-uuid-include-guards`` the command
-will also prompt for the file purpose (and you can get the previous entry by
-typing ``M-p`` or the ``<up>`` cursor key), then you get the following code
-instead:
+If you use the exact same command inside a C header (``.h``) file, but with
+``pel-c-skel-with-license`` set to nil to prevent the inclusion of license
+text, and with the ``pel-c-skel-use-include-guards`` set to ``with-uuid``,
+the command will also prompt for the file purpose (and you can get the
+previous entry by typing ``M-p`` or the ``<up>`` cursor key), then you get the
+following code instead:
 
 .. code:: c
 
@@ -3379,7 +3387,7 @@ code uses a C-style (block comment) following a C pre-processor include
 statement, again to increase code compatibility over compilers since the
 original C-style comment is always supported by C pre-processors.
 
-If you have ``pel-c-skel-use-uuid-include-guards`` set to nil, the include guard
+If you have ``pel-c-skel-use-include-guards`` set to nil, the include guard
 code is not included, and you'll get something like this instead:
 
 .. code:: c
