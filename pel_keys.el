@@ -4243,6 +4243,8 @@ the ones defined from the buffer now."
 (define-key pel:buffer "i"  #'insert-buffer)
 (define-key pel:buffer "f"  #'append-to-file)
 (define-key pel:buffer (kbd "M-x") 'hexl-mode)
+(define-key pel:buffer "."  'pel-bs-next)
+(define-key pel:buffer ","  'pel-bs-previous)
 
 (when pel-use-popup-switcher
   (define-key pel:buffer "b" 'psw-switch-buffer))
