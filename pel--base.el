@@ -49,10 +49,12 @@
 ;; Bitwise Operations:
 ;;  - `pel-all-bitset-p'
 ;;
-;; String checks:
+;; String predicates:
 ;;  - `pel-whitespace-in-str-p'
 ;;  - `pel-ends-with-space-p'
 ;;  - `pel-starts-with-space-p'
+;;  - `pel-lowercase-p'
+;;  - `pel-uppercase-p'
 ;;
 ;; Pluralizer:
 ;;  - `pel-count-string'
@@ -402,8 +404,8 @@ code execution)."
     (equal 0 (logxor value bitmask))))
 
 ;; ---------------------------------------------------------------------------
-;; String checks
-;; -------------
+;; String predicates
+;; -----------------
 
 (defun pel-whitespace-in-str-p (text)
   "Return non-nil if any whitespace character is inside TEXT, nil otherwise.
@@ -427,6 +429,16 @@ Ignore case differences if IGNORE-CASE is non-nil."
   (eq t (compare-strings prefix nil nil
                          text nil (length prefix)
                          ignore-case)))
+
+(defun pel-lowercase-p (string)
+  "Return t if all characters in STRING are lowercase, nil otherwise."
+  (let ((case-fold-search nil))
+    (not (string-match-p "[[:upper:]]" string))))
+
+(defun pel-uppercase-p (string)
+  "Return t if all characters in STRING are uppercase, nil otherwise."
+  (let ((case-fold-search nil))
+    (not (string-match-p "[[:lower:]]" string))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Pluralizer

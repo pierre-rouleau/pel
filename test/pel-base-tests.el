@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, February 16 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-27 22:13:07, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-29 12:15:56, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -79,6 +79,26 @@
         (indirect-expr   '(* 3 4)))
     (should (eq t   (pel-expression-p indirect-symbol)))
     (should (eq t   (pel-expression-p indirect-expr)))))
+
+(ert-deftest ert-test-lowercase-p ()
+  "Test pel-lowercase-p."
+  (should (pel-lowercase-p "a"))
+  (should (pel-lowercase-p "abc"))
+  (should (pel-lowercase-p "abcéèêëüïôûîç"))
+  (should (pel-lowercase-p "a 0123456789-=+_!@#$%^&*()~`,.<>/?;:'"))
+  (should (pel-lowercase-p "0123456789-=+_!@#$%^&*()~`,.<>/?;:'"))
+  (should (not (pel-lowercase-p "aAbcdefghijkl")))
+  (should (not (pel-lowercase-p "A"))))
+
+(ert-deftest ert-test-uppercase-p ()
+  "Test pel-uppercase-p."
+  (should (pel-uppercase-p "A"))
+  (should (pel-uppercase-p "ABC"))
+  (should (pel-uppercase-p "ABCÉÈÊËÜÏÔÛÎÇ"))
+  (should (pel-uppercase-p "A 0123456789-=+_!@#$%^&*()~`,.<>/?;:'"))
+  (should (pel-uppercase-p "0123456789-=+_!@#$%^&*()~`,.<>/?;:'"))
+  (should (not (pel-uppercase-p "AaBCDEFGHIJKL")))
+  (should (not (pel-uppercase-p "a"))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-base-tests)
