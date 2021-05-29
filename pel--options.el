@@ -92,7 +92,7 @@
 ;;           - pel-c++-code-style
 ;;             - pel-c++-skeleton-control
 ;;               - pel-c++-module-header-skeleton-control
-;;               - pel-c-function-header-skeleton-control
+;;               - pel-c++-function-header-skeleton-control
 ;;         - pel-pkg-for-d
 ;;           - pel-d-code-style
 ;;       - pel-pkg-for-javascript
@@ -3965,7 +3965,7 @@ You can use one of the following:
 
 ;;    .       .       .       .       .       .       .       .       .       .
 (defgroup pel-c++-function-header-skeleton-control nil
-  "Control Skeleton that generate C++ source code."
+  "Control Skeleton that generate C++ function definition source code."
   :group 'pel-c++-skeleton-control
   :link `(url-link :tag "C++ PDF" ,(pel-pdf-file-url "pl-c++")))
 
@@ -4049,6 +4049,119 @@ defined ones, which could use that variable too."
   :group 'pel-c++-function-header-skeleton-control
   :type 'boolean
   :safe #'booleanp)
+
+;;    .       .       .       .       .       .       .       .       .       .
+(defgroup pel-c++-class-skeleton-control nil
+  "Control Skeleton that generate C++ class definition source code."
+  :group 'pel-c++-skeleton-control
+  :link `(url-link :tag "C++ PDF" ,(pel-pdf-file-url "pl-c++")))
+
+(defcustom pel-c++-class-has-doc-block nil
+  "Specifies whether a description block is placed before class definition."
+  :group 'pel-c++-class-skeleton-control
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-c++-class-doc-section-titles '("Description"
+                                              "Diagnostic"
+                                              "Example"
+                                              "See Also")
+  "Specifies C++ class documentation block section titles.
+
+The choices are:
+- nil: no section titles are inserted.
+- a list of section titles, inserted above the C++ class definition code."
+  :group 'pel-c++-class-skeleton-control
+  :type '(choice
+          (const :tag "No section titles." nil)
+          (repeat :tag "Section"
+                  (string :tag "Title"))))
+
+(defcustom pel-c++-class-members-sections
+  '((public    "exception class" )
+    (public    "types" )
+    (protected "types" )
+    (private   "types" )
+    (public    "static class constant data members" )
+    (public    "static class function members")
+    (public    "class construction/destruction/operators"
+               ("// Default constructor. Allows:"
+                "//                      - $class-name value;"
+                "//                      - $class-name arr[10];"
+                "//                      - $class-name* pt = new $class-name[20];"
+                "$class-name();"
+                ""
+                "// $class-name destructor: cleanup"
+                "virtual ~$class-name();"
+                "$$"
+                ""))
+    (public    "function members")
+    (protected "function members")
+    (private   "function members")
+    (public    "static class data members")
+    (protected "static class data members")
+    (private   "static class data members")
+    (private   "Forbidden operators"
+               (
+                "// For pre-C++11:"
+                "//lint -save"
+                "//lint -esym(1526, $class-name::$class-name )"
+                "//lint -esym(1704, $class-name::$class-name )"
+                "//lint -esym(1714, $class-name::$class-name )"
+                "// copy constructor. "
+                "//   supports : $class-name a_$class-name = another_$class-name;"
+                "//   and      : some_function($class-name value) "
+                "$class-name($class-name const& other);"
+                ""
+                "//lint -esym(1526, $class-name::operator= )"
+                "//lint -esym(1704, $class-name::operator= )"
+                "//lint -esym(1714, $class-name::operator= )"
+                "// assignment: cleanup and copy.    "
+                "//   supports:  a_$class-name = another_$class-name = yetanother_$class-name;"
+                "$class-name& operator=($class-name const& other);"
+                "$$"
+                ""
+                "// assignment from other type.      Prevents: a_$class-name = a_Other;"
+                "$class-name& operator=(Other const& other);"
+                "$$"
+                ""
+                "//lint -restore")))
+  "Specifies the member sections of a class definition.
+
+Specify any number of member group code blocks.
+Each one has:
+- access keyword: public, protected or private,
+- a title (empty string means no title): the access keyword
+  is placed in front of the title in the expansion, unless
+  the first letter of the title is upper-case.  Every word
+ is capitalized in the expansion.
+- 0 or more strings of code:
+  - If no string is specified, a 3 line entry is generated with
+    a tempo marker on the second line.
+  - If one or more string is specified, each string correspond
+    to a line and only these lines are entered.
+    - An empty string identify just a new line.
+    - A string mys contain comment and or C++ code.
+    - The following meta-symbols have special meaning:
+      - $$ inside a string identify the position of a
+        tempo marker.
+      - $class-name is replaced with the actual class name
+        during expansion.
+
+Each line is indented according to the `pel-c++-indent-width'.
+
+The default is a showcase of what can be done with this template.
+Adjust it to your needs."
+  :group 'pel-c++-class-skeleton-control
+  :type '(repeat
+          (list
+           (choice :tag "Access"
+                   (const :tag "public" public)
+                   (const :tag "protected" protected)
+                   (const :tag "private" private))
+           (string :tag "Title")
+           (repeat :tag "Code"
+                   (string :tag "line")))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; D Language Support

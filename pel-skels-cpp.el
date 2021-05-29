@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-27 21:56:15, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-29 17:29:26, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -72,8 +72,8 @@ The arguments are:
             - cb : comment begin string
             - cc : comment continuation string
             - ce : comment end string."
-  (let* ((purpose  (pel-prompt-purpose-for "File" 'p))
-         (cc       (nth 1 cmt-style)))
+  (let ((purpose  (pel-prompt-purpose-for "File" 'p))
+        (cc       (nth 1 cmt-style)))
     (list
      'l
      "// C++ " (if is-a-header "HEADER" "MODULE") ": "  fname 'n
@@ -114,7 +114,7 @@ variable `pel-c++-skel-module-header-block-style'."
 ;; C++ Function skeleton
 
 
-(defun pel-valid-c++-function-name (text)
+(defun pel-valid-c++-symbol (text)
   "Return TEXT if it is a valid C function name, nil otherwise.
 Replace dash characters with underscores, to simplify typing function
 names using underscores."
@@ -129,7 +129,7 @@ prompt user otherwise.
 When NAME is specified the optional separator line is *not* inserted:
 it's assumed that another function has already done it."
   (let* ((fct-name   (or name (pel-prompt-function
-                               (function pel-valid-c++-function-name))))
+                               (function pel-valid-c++-symbol))))
          (sk         (list 'l (unless name (pel-skel-c++-separator-line)))))
     (if pel-c++-skel-function-name-on-first-column
         (pel-append-to sk (list
@@ -149,7 +149,7 @@ it's assumed that another function has already done it."
 The function NAME and PURPOSE can be passed via arguments,
 prompt user otherwise."
   (let* ((fct-name   (or name (pel-prompt-function
-                               (function pel-valid-c++-function-name))))
+                               (function pel-valid-c++-symbol))))
          (purpose    (or purpose (pel-prompt-purpose-for "Function" 'p)))
          (cmt-style  (pel-skel-comments-strings))
          (cb         (nth 0 cmt-style))
@@ -170,7 +170,7 @@ This style is selected when the user option variable
 The comment style is controlled by the CC mode variable
 `c-block-comment-flag'."
   (let* ((fct-name        (pel-prompt-function
-                           (function pel-valid-c++-function-name)))
+                           (function pel-valid-c++-symbol)))
          (purpose         (pel-prompt-purpose-for "Function" 'p))
          (cmt-style       (pel-skel-comments-strings))
          (cb              (nth 0 cmt-style))
@@ -213,6 +213,94 @@ Insert the skeleton selected by the user option variable
                           'pel-skels-c++-function-def/custom))))
 
 ;; ---------------------------------------------------------------------------
+;; C++ Class Definitions
+;; ---------------------
+
+(defun pel-skels-c++-doc-section-titles (section-titles)
+  "Return a C++ documentation block skeleton list of SECTION-TITLES.
+SECTION-TITLES may be nil.  In that case the function returns nil."
+  (when section-titles
+    (let ((cc "// ")
+          (sk (list 'l)))
+      (dolist (stitle section-titles)
+        (pel-append-to
+         sk
+         (list
+          cc stitle ":\n"
+          cc " " 'p 'n
+          cc 'n
+          cc 'n)))
+      sk)))
+
+(defun pel-skels-c++-doc-block (class-name &optional purpose)
+  "Return a skeleton list for the C++ CLASS-NAME description block."
+  (when pel-c++-class-has-doc-block
+    (let ((purpose (or purpose (pel-prompt-purpose-for "Class" 'p))))
+      (list
+       'l
+       (format "// Class %s: %s\n//\n" class-name purpose)
+       (pel-skels-c++-doc-section-titles pel-c++-class-doc-section-titles)
+       'n))))
+
+(defun pel-skels-c++-instrumented-code (code-line)
+  "Return skeleton list for CODE-LINE, replace $$ by tempo marker."
+  (let ((sk (list 'l)))
+    (dolist (code (split-string code-line "\\$\\$") (butlast (reverse sk)))
+      (push code sk)
+      (push 'p sk))))
+
+(defun pel-skels-c++-code (class-name code-lines)
+  "Return a skeleton list of C++ code lines."
+  (let ((sk (list 'l)))
+    (dolist (code-line code-lines)
+      (pel-append-to
+       sk
+       (list
+        'n>
+        (pel-skels-c++-instrumented-code
+         (replace-regexp-in-string "\\$class-name" class-name code-line)))))
+    sk))
+
+(defun pel-skels-c++-member-block (class-name)
+  "Return a skeleton list for the C++ CLASS-NAME member block."
+  (let ((sk (list 'l))
+        access title code-lines)
+    (dolist (section pel-c++-class-members-sections)
+      (setq access (car section))
+      (setq title  (cadr section))
+      (setq code-lines (caddr section))
+      (when (pel-uppercase-p (substring title 0 1))
+        (setq title (format "%s %s" access title)))
+      (pel-append-to
+       sk
+       (list
+        'n>
+        "// - " (capitalize title) ":" 'n>
+        (format "%s:" access)
+        (if code-lines
+            (pel-skels-c++-code class-name code-lines)
+          (list
+           'l
+           'n>
+           'p 'n)))))
+    sk))
+
+(defun pel-skels-c++-class-definition (&optional name purpose)
+  "Insert a C++ class definition code.
+If the class NAME is specified use it, otherwise prompt for it.
+Replace dash characters with underscores, to simplify typing function
+names using underscores."
+  (let* ((class-name (or name (pel-prompt-class
+                               (function pel-valid-c++-symbol)))))
+    (list
+     'l
+     (when pel-c++-class-has-doc-block
+       (pel-skels-c++-doc-block class-name purpose))
+     "class " class-name 'p "\n{"
+     (pel-skels-c++-member-block class-name)
+     "\n}\n")))
+
+;; ---------------------------------------------------------------------------
 ;; Install C++ code skeletons
 
 (defvar pel-skels-c++-large-header-skel
@@ -225,19 +313,24 @@ Insert the skeleton selected by the user option variable
     (pel-skels-c++-function-definition))
   "The skeleton of a C function definition block.")
 
+(defvar pel-skels-c++-class-definition-skel
+  '(o
+    (pel-skels-c++-class-definition))
+  "The skeleton of a C class definition block.")
+
 
 (defvar pel--c++-skels
   '(("File Header"   "file-header"   pel-skels-c++-large-header-skel)
     ("Function"      "function"      pel-skels-c++-function-definition-skel)
+    ("Class"         "class"         pel-skels-c++-class-definition-skel)
     ("Define"        "define"        pel-skels-c-pp-define-skel)
     ("Include \"\""  "include-local" pel-skels-c-pp-include-local-skel)
     ("Include <>"    "include-lib"   pel-skels-c-pp-include-global-skel))
-
-
   "List of C++ code tempo skeletons.")
 
 (defvar pel--c++-skels-keys '(("file-header"   . "h")
                               ("function"      . "f")
+                              ("class"         . "c")
                               ("define"        . "d")
                               ("include-local" . "I")
                               ("include-lib"   . "i"))

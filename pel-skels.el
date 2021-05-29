@@ -446,10 +446,14 @@ function returns:
           (setq cc " *"))
         (when (string= ce "*/")
           (setq ce " */")))
-      (when (and (string= cb "/*")
-                 (string= cc " *")
-                 (string= ce "*/"))
-        (setq ce " */")))
+      (cond ((and (string= cb "/*")
+                  (string= cc " *")
+                  (string= ce "*/"))
+             (setq ce " */"))
+            ((and (string= cb "// ")
+                  (string= cc "// "))
+             (setq cb "//")
+             (setq cc "//"))))
     (list cb cc ce)))
 
 ;; -----------------------------------------------------------------------------

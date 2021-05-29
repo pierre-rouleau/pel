@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-20 09:33:50, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-28 17:24:11, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -365,6 +365,24 @@ returns DEFAULT"
      default
      (function pel-capitalize-first-letter)
      (function pel-end-text-with-period))))
+
+(defun pel-prompt-class (&optional transform-class)
+  "Prompt for class and return potentially transformed input string.
+If TRANSFORM-CLASS is non-nil it must be a function that accepts
+the class var-name string and return it transformed or nil if the class
+var-name is not acceptable.
+Holds an independent class prompt history for each major mode."
+  (let ((history-symbol (intern
+                         (format
+                          "pel-prompt-history-for-class-%s" major-mode)))
+        (fname          nil))
+    (while (not fname)
+      (setq fname
+            (string-trim
+             (read-from-minibuffer "Class name: " nil nil nil history-symbol)))
+      (when transform-class
+        (setq fname (funcall transform-class fname))))
+    fname))
 
 (defun pel-prompt-function (&optional transform-function)
   "Prompt for function and return potentially transformed input string.
