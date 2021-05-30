@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-30 09:20:06, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-30 15:17:53, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -132,10 +132,12 @@
   (defun iflipb-next-buffer ()
     "Warning stub."
     (user-error "Unavailable - set pel-use-iflipb to activate!"))
+  (declare-function iflipb-next-buffer "pel__hydra")
 
   (defun iflipb-previous-buffer ()
     "Warning stub."
-    (user-error "Unavailable - set pel-use-iflipb to activate!")))
+    (user-error "Unavailable - set pel-use-iflipb to activate!"))
+  (declare-function iflipb-previous-buffer "pel__hydra"))
 
 (defhydra pel-∑buffer (global-map "<f7> <f9>"
                                   :foreign-keys run)
@@ -162,18 +164,23 @@
 ;; provide dummy stubs for them if necessary.
 (when (not pel-use-winner)
   (defun winner-redo ()
-    "Warning stub"
+    "Warning stub."
     (user-error "Unavailable - set pel-use-winner to t to activate!"))
   (declare-function winner-redo "pel__hydra")
 
   (defun winner-undo ()
-    "Warning stub"
+    "Warning stub."
     (user-error "Unavailable - set pel-use-winner to t to activate!"))
   (declare-function winner-undo "pel__hydra"))
 
 (when (not pel-use-ace-window)
+  (defun ace-window ()
+    "Warning stub."
+    (user-error "Unavailable - set pel-ace-window to t to activate!"))
+  (declare-function ace-window "pel__hydra")
+
   (defun ace-swap-window ()
-    "Warning stub"
+    "Warning stub."
     (user-error "Unavailable - set pel-ace-window to t to activate!"))
   (declare-function ace-swap-window "pel__hydra"))
 
@@ -186,6 +193,7 @@
   ("<down>"      windmove-down               "down"         :column "Move")
   ("<left>"      windmove-left               "left"         :column "Move")
   ("<right>"     windmove-right              "right"        :column "Move")
+  ("#"           ace-window                  "to #"         :column "Move")
   ("="           balance-windows             "balance"     :column "Resize")
   ("V"           enlarge-window              "taller"      :column "Resize")
   ("v"           shrink-window               "shorter"     :column "Resize")
