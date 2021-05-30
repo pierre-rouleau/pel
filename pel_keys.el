@@ -4255,10 +4255,8 @@ the ones defined from the buffer now."
 ;; Reserved            "X"
 
 (when pel-use-iflipb
-  (pel-ensure-package iflipb from: melpa)
-  (global-set-key        (kbd "<f9>")     'iflipb-next-buffer)
-  (global-set-key        (kbd "<S-f9>")   'iflipb-previous-buffer)
-  (define-key pel:buffer "K"              'iflipb-kill-buffer))
+  ;; All key bindings are inside the pel-∑buffer Hydra
+  (pel-ensure-package iflipb from: melpa))
 
 ;; ibuffer-mode support
 ;; Provide <f12> <f1>, <f12><f2> and <f12><f3> in ibuffer-mode

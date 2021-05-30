@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-13 14:40:26, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-29 23:10:41, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -126,6 +126,36 @@
     ("<f7>" nil                       "cancel"            :column "End")))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; PEL HYDRA: Buffer Navigation/Management
+
+(when (not pel-use-iflipb)
+  (defun iflipb-next-buffer ()
+    "Warning stub."
+    (user-error "Unavailable - set pel-use-iflipb to activate!"))
+
+  (defun iflipb-previous-buffer ()
+    "Warning stub."
+    (user-error "Unavailable - set pel-use-iflipb to activate!")))
+
+(defhydra pel-∑buffer (global-map "<f7> <f9>"
+                                  :foreign-keys run)
+  ""
+  ("M-n"     next-buffer             "next"      :column "Buffer")
+  ("M-p"     previous-buffer         "prev"      :column "Buffer")
+
+  ("M-."     pel-bs-next             "next"      :column "Buffer Selection")
+  ("M-,"     pel-bs-previous         "prev"      :column "Buffer Selection")
+  ("M-c"     bs-customize            "customize" :column "Buffer Selection")
+  ("M-s"     bs-show                 "show"      :column "Buffer Selection")
+
+  ("<f9>"    iflipb-next-buffer      "next"      :column "Flip")
+  ("S-<f9>"  iflipb-previous-buffer  "prev"      :column "Flip")
+  ("M-k"     iflipb-kill-buffer      "kill"      :column "Flip")
+
+  ("?"       pel-toggle-hydra-hint   "hint"      :column "Other")
+  ("<f7>"    nil                     "cancel"    :column "Other"))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; PEL HYDRA: Window Management
 ;; The hydra includes functions that may not be available
 ;; provide dummy stubs for them if necessary.
@@ -161,7 +191,7 @@
   ("H"           enlarge-window-horizontally "wider"       :column "Resize")
   ("h"           shrink-window-horizontally  "narrower"    :column "Resize")
   ("|"           split-window-right          "vertically"   :column "Split")
-  ("3"           split-window-right          "vertically"   :column "Split")
+   ("3"           split-window-right          "vertically"   :column "Split")
   ("_"           split-window-below          "horizontally" :column "Split")
   ("2"           split-window-below          "horizontally" :column "Split")
   ("C-<up>"      pel-create-window-up        "above"     :column "Split.")

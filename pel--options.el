@@ -2330,6 +2330,7 @@ To activate it you must also activate `pel-use-log-support'"
   :group 'pel-pkg-for-keys
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-hydra :also-required-when 'pel-use-iflipb)
 
 (defcustom pel-use-which-key t
   "Control whether PEL uses the which-key package."
@@ -7319,6 +7320,9 @@ indexing system."
 
 (when pel-use-bison-mode
   (setq pel-use-c t))
+
+(when pel-use-iflipb
+  (setq pel-use-hydra t))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel--options)
