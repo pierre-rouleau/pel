@@ -22,10 +22,12 @@
 
 ;;;---------------------------------------------------------------------------
 ;;; Commentary:
-
-;; This file contains *all* PEL key bindings.
+;;
+;; This file defines most PEL key bindings, with some defined by the pel-skels
+;; files and by pel__hydra file.
+;;
 ;; This file is *only* loaded by pel-init, nothing else.
-;; This way the time is only spent when pel-init is executed, not when
+;; This way time is only spent when pel-init is executed, not when
 ;; Emacs starts.
 ;;
 ;; Note: the file and feature name has been selected so that the file name
