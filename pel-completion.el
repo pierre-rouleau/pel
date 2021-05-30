@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-03 11:01:35, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-30 09:00:35, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -733,9 +733,9 @@ Print message describing active mode unless SILENT argument is non-nil."
   "Return a multi-line string describing IDO settings."
   (let ((prefix (or prefix-string "")))
     (format "\
-%sIdo prompt geometry: %s
-%sIdo Ubiquitous mode: %s
-%sflx-ido        mode: %s"
+%sIdo prompt geometry (<f11> M-c M-g): %s
+%sIdo Ubiquitous mode (<f11> M-c M-u): %s
+%sflx-ido        mode (<f11> M-c M-f): %s"
             prefix (pel-activated-ido-geometry)
             prefix (pel--ido-ubiquitous-state)
             prefix (pel-on-off-string pel--use-flx-with-ido))))
@@ -748,7 +748,7 @@ otherwise it starts with \"Currently\"."
   (interactive)
   (let ((current-mode      (pel-activated-completion-mode))
         (current-mode-name (pel-activated-completion-mode-name)))
-    (message "%s using:\n- %s completion mode%s."
+    (message "%s using:\n- %s completion mode%s.\nChange it by typing: <f11> M-c <f4>"
              (if now "Now" "Currently")
              current-mode-name
              (if (memq current-mode '(ido ido/helm))

@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-29 23:10:41, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-30 09:20:06, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -142,6 +142,7 @@
   ""
   ("M-n"     next-buffer             "next"      :column "Buffer")
   ("M-p"     previous-buffer         "prev"      :column "Buffer")
+  ("M-l"     pel-switch-to-last-used-buffer "last" :column "Buffer")
 
   ("M-."     pel-bs-next             "next"      :column "Buffer Selection")
   ("M-,"     pel-bs-previous         "prev"      :column "Buffer Selection")
