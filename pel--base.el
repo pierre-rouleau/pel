@@ -33,7 +33,8 @@
 ;; * `pel-version'
 ;;
 ;; Environment Querying functions:
-;;  - `pel-major-mode-of'
+;;  - `pel-buffers-in-mode'
+;;    - `pel-major-mode-of'
 ;;  - `pel-current-buffer-filename'
 ;;  - `pel-current-buffer-file-extension'
 ;;
@@ -293,6 +294,15 @@ If not specified (or nil) return the major mode of the current buffer."
         major-mode)
     major-mode))
 
+(defun pel-buffers-in-mode (wanted-major-mode)
+  "Return a list of buffers with specified WANTED-MAJOR-MODE, nil if none open.
+WANTED-MODE is a symbol."
+  (let ((buffers-in-wanted-mode '()))
+    (dolist (buffer (buffer-list) (reverse buffers-in-wanted-mode))
+      (with-current-buffer buffer
+        (when (eq major-mode wanted-major-mode)
+          (push buffer buffers-in-wanted-mode))))))
+
 (defun pel-current-buffer-filename
     (&optional sans-directory sans-extension no-error)
   "Return current buffer's filename string.
@@ -326,15 +336,6 @@ file."
   (if buffer-file-truename
       (file-name-extension buffer-file-truename with-period)
     (user-error "No file in buffer %s" (buffer-name))))
-
-(defun pel-buffers-in-mode (wanted-major-mode)
-  "Return a list of buffers with specified WANTED-MAJOR-MODE, nil if none open.
-WANTED-MODE is a symbol."
-  (let ((buffers-in-wanted-mode '()))
-    (dolist (buffer (buffer-list) (reverse buffers-in-wanted-mode))
-      (with-current-buffer buffer
-        (when (eq major-mode wanted-major-mode)
-          (push buffer buffers-in-wanted-mode))))))
 
 ;; ---------------------------------------------------------------------------
 ;; Emacs Lisp Development Support

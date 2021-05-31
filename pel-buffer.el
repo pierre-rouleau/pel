@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, May 27 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-31 16:54:32, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-31 19:15:16, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,7 +32,9 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)
+(require 'pel--base)                    ; use: `pel-buffers-in-mode',
+;;                                      ;      `pel-major-mode-of'
+(require 'pel-list)                     ; use: `pel-list-index'
 (require 'bs)                           ; Emacs built-in
 
 ;;; --------------------------------------------------------------------------
@@ -103,6 +105,69 @@ major mode."
   (if (boundp 'bs-mode-map)
       (define-key bs-mode-map "." 'pel-bs-this-mode-only)
     (user-error "Failed installing PEL command in bs-mode-map!")))
+
+
+;; ---------------------------------------------------------------------------
+;; Stand-alone iteration over buffers of same major modes
+;; ------------------------------------------------------
+
+(defvar pel--smb-list nil
+  "List of buffers of the same major modes.")
+
+(defvar pel--smb-list-mode nil
+  "Currently active major mode.")
+
+(defvar pel--smb-list-size nil
+  "Size of pel--smb-list.")
+
+(defvar pel--smb-list-idx nil
+  "Zero-based index of the current buffer shown in the list.  Nil if none shown.")
+
+;;-pel-autoload
+(defun pel-smb-capture ()
+  "Build a list of the buffers using the same major mode as the current one.
+The other 2 commands will use that list."
+  (setq pel--smb-list (pel-buffers-in-mode major-mode))
+  (setq pel--smb-list-idx (pel-list-index (current-buffer) pel--smb-list))
+  (setq pel--smb-list-size (length pel--smb-list))
+  (setq pel--smb-list-mode major-mode))
+
+(defun pel--show-buffer (idx)
+  "Show buffer identified by index IDX in current window."
+  (let ((buf-obj (nth idx pel--smb-list)))
+    (switch-to-buffer buf-obj)))
+
+(defun pel--refresh-when-needed (refresh)
+  "Refresh buffer list when needed."
+  (when (or refresh
+            (not pel--smb-list)
+            (not pel--smb-list-idx)
+            (not (eq major-mode pel--smb-list-mode)))
+    (pel-smb-capture)))
+
+;;-pel-autoload
+(defun pel-smb-next (&optional refresh)
+  "Open next buffer of same major-mode from the registered list.
+If the optional prefix argument is passed, REFRESH the list of buffers."
+  (interactive "P")
+  (pel--refresh-when-needed refresh)
+  ;; increment index and wrap at end of list
+  (setq pel--smb-list-idx (1+ pel--smb-list-idx))
+  (when (>= pel--smb-list-idx pel--smb-list-size)
+    (setq pel--smb-list-idx 0))
+  (pel--show-buffer pel--smb-list-idx))
+
+;;-pel-autoload
+(defun pel-smb-previous (&optional refresh)
+  "Open previous buffer of same major-mode from the registered list.
+If the optional prefix argument is passed, REFRESH the list of buffers."
+  (interactive "P")
+  (pel--refresh-when-needed refresh)
+  ;; increment index and wrap at end of list
+  (setq pel--smb-list-idx (1- pel--smb-list-idx))
+  (when (< pel--smb-list-idx 0)
+    (setq pel--smb-list-idx (- pel--smb-list-size 1)))
+  (pel--show-buffer pel--smb-list-idx))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-buffer)

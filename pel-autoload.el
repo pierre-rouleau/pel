@@ -116,7 +116,9 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-buffer" for:
     pel-bs-next
     pel-bs-previous
-    pel-bs-init)
+    pel-bs-init
+    pel-smb-next
+    pel-smb-previous)
 
   (pel-autoload "pel-cc" for
     pel-cc-newline

@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-31 10:28:50, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-31 19:16:01, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -154,6 +154,9 @@
   ("<f9>"    iflipb-next-buffer      "next"      :column "Flip")
   ("S-<f9>"  iflipb-previous-buffer  "prev"      :column "Flip")
   ("M-k"     iflipb-kill-buffer      "kill"      :column "Flip")
+
+  ("]"       pel-smb-next            "next"      :column "Same Mode")
+  ("["       pel-smb-previous        "previous"  :column "Same Mode")
 
   ("?"       pel-toggle-hydra-hint   "hint"      :column "Other")
   ("<f7>"    nil                     "cancel"    :column "Other"))
