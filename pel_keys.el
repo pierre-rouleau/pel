@@ -4225,8 +4225,8 @@ the ones defined from the buffer now."
 ;;   C-c
 ;;   M-a M-p
 ;;   ?
-;;   I K R U X
-;;   b c f h i k l n p r v x
+;;   I K R S U X
+;;   b c f h i k l n p r s v x
 
 (define-pel-global-prefix pel:buffer (kbd "<f11> b"))
 (define-key pel:buffer "-"  #'ruler-mode)
@@ -4237,6 +4237,8 @@ the ones defined from the buffer now."
 (define-key pel:buffer "?"   'pel-show-window-previous-buffer)
 (define-key pel:buffer "p"  #'previous-buffer)
 (define-key pel:buffer "r"  #'read-only-mode)
+(define-key pel:buffer "s"   'bs-show)
+(define-key pel:buffer "S"   'bs-customize)
 (define-key pel:buffer "v"  #'view-buffer)
 (define-key pel:buffer "R"  #'rename-buffer)
 (define-key pel:buffer "U"  #'rename-uniquely)
