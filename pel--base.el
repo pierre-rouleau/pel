@@ -33,7 +33,7 @@
 ;; * `pel-version'
 ;;
 ;; Environment Querying functions:
-;;  - `pel-used-major-mode-of'
+;;  - `pel-major-mode-of'
 ;;  - `pel-current-buffer-filename'
 ;;  - `pel-current-buffer-file-extension'
 ;;
@@ -285,7 +285,7 @@ Other uses risk returning non-nil value that point to the wrong file."
 ;;
 ;; The following functions provide information about the Emacs environment.
 
-(defun pel-used-major-mode-of (&optional buffer-or-name)
+(defun pel-major-mode-of (&optional buffer-or-name)
   "Return the major mode symbol of the specified BUFFER-OR-NAME.
 If not specified (or nil) return the major mode of the current buffer."
   (if buffer-or-name
@@ -327,13 +327,13 @@ file."
       (file-name-extension buffer-file-truename with-period)
     (user-error "No file in buffer %s" (buffer-name))))
 
-(defun pel-buffers-in-mode (wanted-mode)
-  "Return a list of buffers with specified WANTED-MODE, nil if none open.
+(defun pel-buffers-in-mode (wanted-major-mode)
+  "Return a list of buffers with specified WANTED-MAJOR-MODE, nil if none open.
 WANTED-MODE is a symbol."
   (let ((buffers-in-wanted-mode '()))
     (dolist (buffer (buffer-list) (reverse buffers-in-wanted-mode))
       (with-current-buffer buffer
-        (when (eq major-mode wanted-mode)
+        (when (eq major-mode wanted-major-mode)
           (push buffer buffers-in-wanted-mode))))))
 
 ;; ---------------------------------------------------------------------------

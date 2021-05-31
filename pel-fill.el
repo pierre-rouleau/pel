@@ -1,6 +1,6 @@
 ;;; pel-fill.el --- PEL Source code management -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -25,7 +25,7 @@
 ;;
 ;; Loose collection of commands and functions that deal with text fill.
 
-(require 'pel--base)                 ; use: pel-used-major-mode-of, pel-toggle
+(require 'pel--base)                 ; use: pel-major-mode-of, pel-toggle
 ;;; Code:
 
 ;; The following 2 declarations of global variables from other files
@@ -45,7 +45,7 @@ Activate/de-activate automatic filling in source code comments only."
 (defun pel-show-fill-columns ()
   "Display value of relevant fill columns for current buffer."
   (interactive)
-  (if (memq (pel-used-major-mode-of)
+  (if (memq (pel-major-mode-of)
             '(emacs-lisp-mode lisp-interaction-mode lisp-mode))
       (message "Lisp fill columns:
 - comment  : %S

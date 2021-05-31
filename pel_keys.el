@@ -4252,6 +4252,9 @@ the ones defined from the buffer now."
 (define-key pel:buffer "."  'pel-bs-next)
 (define-key pel:buffer ","  'pel-bs-previous)
 
+;; Add key bindings inside the Buffer Selection Mode.
+(add-hook 'bs-mode-hook 'pel-bs-init)
+
 (when pel-use-popup-switcher
   (define-key pel:buffer "b" 'psw-switch-buffer))
 ;; Reserved            "h"  highlight prefix
