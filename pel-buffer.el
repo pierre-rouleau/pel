@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, May 27 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-01 10:40:00, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-01 11:39:16, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -40,6 +40,63 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
+;; This provides ability to iterate through buffers of the same major mode.
+;; Two facilities are provided: an extension of the Buffer Selection built-in
+;; Emacs `bs' feature and another, totally independent mechanism.
+;;
+;; The Buffer Selection extension:
+;; - - - - - - - - - - - - - - - -
+;;
+;; The Buffer Selection extension mechanism adds buffer filter configurations,
+;; named 'only-X' where X is the major mode name.  The code provides a new
+;; command, the function `pel-bs-this-mode-only' that is mapped into the
+;; Buffer Selection key map using the "." key.
+;;
+;; To add a new major-mode-specific configuration the user must first open the
+;; Buffer Selection mode buffer, move point to a buffer line that lists a
+;; buffer of the wanted mode and then press the "." key.  This invokes the
+;; function `pel-bs-this-mode-only' that creates and activates a new
+;; specialized Buffer Selection configuration.  That configuration can be
+;; invoked later using the "c" or "C" Buffer Selection configuration.
+;;
+;; The name of each new specialized Buffer Selection configuration is stored
+;; in the variable `pel--registered-bs-mode-configurations' to prevent
+;; re-creation of the same closures and limit memory consumption.
+;;
+;; Additionally the file provides the command functions `pel-bs-next' and
+;; `pel-bs-previous' that changes the current buffer to the next or previous
+;; buffer in the currently active Buffer Selection list.  These allow a user
+;; to quickly cycle through the buffers in that list without having to open
+;; the Buffer Selection buffer itself.
+;;
+;; On startup PEL hooks the function `pel-bs-init' to the `bs-mode-hook' to
+;; activate the "." key binding in the Buffer Selection key map.
+;;
+;; While the use of Buffer Selection mechanism described above work fine it
+;; requires the user to open a Buffer Selection buffer and select the proper
+;; configuration first.  That's useful in itself because you can get a list of
+;; all buffers of the same mode quickly.  But if you're in a buffer of a
+;; specific major mode and just want to go to the next one with the same major
+;; mode, that's a lot of things to do.  It'd be nice to only have to hit a key
+;; to cycle to the next buffer.  That's what the following code offers.
+;;
+;;
+;; Independent cycling over buffers of the same major mode
+;; -------------------------------------------------------
+;;
+;; To quickly cycle through buffers of the same major mode, use the command
+;; functions `pel-smb-next' and `pel-smb-previous'.  The "smb" acronym here
+;; stand for "Same Mode Buffer".  When invoked, these functions create a list
+;; of buffers in the same mode using the internal function `pel--smb-capture'
+;; which updates the values of internal variables `pel--smb-list-mode',
+;; `pel--smb-list',  `pel--smb-list-size' and `pel--smb-list-idx'.  Successive
+;; calls use the index `pel--smb-list-idx' to identify the next or previous
+;; buffer.  The function also call `pel--refresh-when-needed' to refresh these
+;; variables when needed, when the index is back to 0 or when the major mode
+;; of the current buffer is not the same as what was remembered.  Refreshing
+;; the list at index 0 handle the cases when new buffers of the same mode were
+;; added or removed.  The functions also detect killed buffers and skip them.
+;; The list refreshing removes the killed buffers.
 
 ;; ---------------------------------------------------------------------------
 ;; Buffer Selection (bs) Extension
@@ -65,27 +122,37 @@
 
 ;; - Add Buffer Selection Configuration: list all buffer of same major mode
 
-;; TODO: re-use already made closure instead of creating one new one every
-;; time the command is invoked on the same type of buffer.
-;; (defvar pel--bs-mode-closures-alist nil)
+(defvar pel--registered-bs-mode-configurations nil
+  "List of bs configuration names (strings) already created.
+Used by function `pel-bs-set-for-this-mode-only' to prevent
+multiple creation of the same closures used to filter buffers on
+the value of their major mode.")
 
 (defun pel-bs-set-for-this-mode-only (wanted-major-mode)
-  "Activate new bs configuration: show only buffers in WANTED-MAJOR-MODE.
-Return new configuration mode."
+  "Create a new bs configuration: show only buffers in WANTED-MAJOR-MODE.
+
+The creation of the configuration for a specific WANTED-MAJOR-MODE is done
+once per Emacs editing session; they are remembered in the variable
+`pel--registered-bs-mode-configurations'.
+
+Return new configuration name."
   (let ((bs-config-name (format "only-%s" wanted-major-mode)))
-    ;; create closures that filter buffers based on their major mode
-    (add-to-list 'bs-configurations
-                 (list
-                  bs-config-name
-                  nil                   ; bs-must-show-regexp
-                  (lambda (buffer-obj)  ; bs-must-show-function
-                    (with-current-buffer buffer-obj
-                      (eq major-mode wanted-major-mode)))
-                  nil                   ; bs-dont-show-regexp
-                  (lambda (buffer-obj)  ; bs-dont-show-function
-                    (with-current-buffer buffer-obj
-                      (not (eq major-mode wanted-major-mode))))
-                  nil))                 ; bs-buffer-sort-function
+    (unless (member bs-config-name pel--registered-bs-mode-configurations)
+      ;; create new closures that filter buffers based on their major mode
+      ;; for the specific wanted-major-mode
+      (add-to-list 'bs-configurations
+                   (list
+                    bs-config-name
+                    nil                  ; bs-must-show-regexp
+                    (lambda (buffer-obj) ; bs-must-show-function
+                      (with-current-buffer buffer-obj
+                        (eq major-mode wanted-major-mode)))
+                    nil                  ; bs-dont-show-regexp
+                    (lambda (buffer-obj) ; bs-dont-show-function
+                      (with-current-buffer buffer-obj
+                        (not (eq major-mode wanted-major-mode))))
+                    nil))               ; bs-buffer-sort-function
+      (push bs-config-name pel--registered-bs-mode-configurations))
     bs-config-name))
 
 (defun pel-bs-this-mode-only ()
@@ -107,7 +174,7 @@ Also set the default configuration to this new selected mode."
 
 ;;-pel-autoload
 (defun pel-bs-init ()
-  "Initialize PEL addition commands to the bs-show mode.
+  "Initialize PEL addition commands to the Buffer Selection mode.
 Add the dot command that adds a configuration for buffers in the same
 major mode."
   (if (boundp 'bs-mode-map)
@@ -122,20 +189,20 @@ major mode."
 ;;
 ;; Iterate over buffers of same major modes.
 
-(defvar pel--smb-list nil
-  "List of buffers of the same major modes.")
-
 (defvar pel--smb-list-mode nil
   "Currently active major mode.")
 
+(defvar pel--smb-list nil
+  "List of buffers of the same major modes.")
+
 (defvar pel--smb-list-size nil
-  "Size of pel--smb-list.")
+  "Size of the list `pel--smb-list'.")
 
 (defvar pel--smb-list-idx nil
   "0-based index of the current buffer shown in the list, nil if none shown.")
 
 ;;-pel-autoload
-(defun pel-smb-capture ()
+(defun pel--smb-capture ()
   "Build a list of the buffers using the same major mode as the current one.
 The other 2 commands will use that list."
   (setq pel--smb-list (pel-buffers-in-mode major-mode))
@@ -151,19 +218,20 @@ Return the displayed buffer, nil if the buffer no longer exists."
       (switch-to-buffer buf-obj))))
 
 (defun pel--refresh-when-needed (refresh)
-  "Refresh buffer list when needed."
+  "Refresh buffer list when needed.
+The REFRESH argument, when non-nil, forces it."
   (when (or refresh
             (not pel--smb-list)
             (not pel--smb-list-idx)
             (not (eq major-mode pel--smb-list-mode)))
-    (pel-smb-capture)))
+    (pel--smb-capture)))
 
 (defun pel--to-next-idx ()
   "Increment list index and wrap back to 0 at the end.
 On index 0 refresh the list to handle buffer deletions and additions.
 Return new idx value."
   (when (= pel--smb-list-idx 0)
-    (pel-smb-capture))
+    (pel--smb-capture))
   (setq pel--smb-list-idx (1+ pel--smb-list-idx))
   (when (>= pel--smb-list-idx pel--smb-list-size)
     (setq pel--smb-list-idx 0))
@@ -171,7 +239,7 @@ Return new idx value."
 
 ;;-pel-autoload
 (defun pel-smb-next (&optional refresh)
-  "Open next buffer of same major-mode from the registered list.
+  "Open next buffer of same major mode from the registered list.
 If the optional prefix argument is passed, REFRESH the list of buffers."
   (interactive "P")
   (pel--refresh-when-needed refresh)
@@ -190,7 +258,7 @@ If the optional prefix argument is passed, REFRESH the list of buffers."
 On index 0 refresh the list to handle buffer deletions and additions.
 Return new idx value."
   (when (= pel--smb-list-idx 0)
-    (pel-smb-capture))
+    (pel--smb-capture))
   (setq pel--smb-list-idx (1- pel--smb-list-idx))
   (when (< pel--smb-list-idx 0)
     (setq pel--smb-list-idx (- pel--smb-list-size 1)))
@@ -198,7 +266,7 @@ Return new idx value."
 
 ;;-pel-autoload
 (defun pel-smb-previous (&optional refresh)
-  "Open previous buffer of same major-mode from the registered list.
+  "Open previous buffer of same major mode from the registered list.
 If the optional prefix argument is passed, REFRESH the list of buffers."
   (interactive "P")
   (pel--refresh-when-needed refresh)
