@@ -262,6 +262,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     *hide-dot-files-by-default*.  Add a new key binding ("/") in dired-mode
     to toggle hiding of the dot-files.  The "." key binding already exists in
     dired, it is not used for this.
+  - New: add support for the dired-git-info external package when the
+    *pel-use-dired-git-info* user-option is set to *t* or to
+    *activate-for-git-directories*. This adds a new key binding ")" in
+    dired-mode to toggle the display of the last git log entry for each file.
 - Update: *ERT - Emacs Regression Test* support:
   - New: [[https://github.com/pierre-rouleau/pel/blob/master/pel-ert.el][file pel-ert.el]] that defines a set of equality and inequality
     predicates that are meant to be used in ert-deftest forms.  You can use these

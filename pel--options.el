@@ -1156,7 +1156,17 @@ The choices are:
   :type '(choice
           (const :tag "Do not use" nil)
           (const :tag "Use, activate later" t)
-          (const :tag "Use, hide dot-files by default" hide-dot-files-by-default)))
+          (const :tag "Use, hide dot-files by default"
+                 hide-dot-files-by-default)))
+
+(defcustom pel-use-dired-git-info nil
+  "Control whether dired-git-info package is made available."
+  :group 'pel-pkg-for-dired
+  :type '(choice
+          (const :tag "Do not use" nil)
+          (const :tag "Use, activate later" t)
+          (const :tag "Use, activate automatically for Git directory"
+                 on-for-git-directories)))
 
 ;; ---------------------------------------------------------------------------
 ;; Text and Code Completion and Expansion

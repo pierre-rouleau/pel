@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-01 13:40:12, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-01 15:46:16, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -260,11 +260,14 @@
     ([f11 ?f ?v]     "file-variables"   nil)
     (,(kbd "<f11> SPC M-D") "mode-dired" pel-pkg-for-dired      (dired
                                                                  ls-lisp
+                                                                 dired-git-info
                                                                  dired-hide-dotfiles))
     ([f11 32 27 ?D]  "mode-dired"       pel-pkg-for-dired       (dired
+                                                                 dired-git-info
                                                                  dired-hide-dotfiles
                                                                  ls-lisp))
     ([dired]         "mode-dired"       pel-pkg-for-dired       (dired
+                                                                 dired-git-info
                                                                  dired-hide-dotfiles
                                                                  ls-lisp))
     ([f11 ?f]        ("file-mngt"

@@ -396,6 +396,13 @@ Done in this function to allow advising libraries that remap these keys."
   (eval-after-load "dired"
     '(define-key dired-mode-map "/" 'dired-hide-dotfiles-mode)))
 
+(when pel-use-dired-git-info
+  (pel-ensure-package dired-git-info from: melpa)
+  (when (eq pel-use-dired-git-info 'on-for-git-directories)
+    (add-hook 'dired-after-readin-hook 'dired-git-info-auto-enable))
+  (eval-after-load "dired"
+    '(define-key dired-mode-map ")" 'dired-git-info-mode)))
+
 ;; ---------------------------------------------------------------------------
 ;; - PEL: Window Behaviour & operations
 ;; ------------------------------------
