@@ -388,6 +388,14 @@ Done in this function to allow advising libraries that remap these keys."
   (define-key pel:for-dired "r" 'dired-narrow-regexp)
   (define-key pel:for-dired "f" 'dired-narrow-fuzzy))
 
+(when pel-use-dired-hide-dotfiles
+  (pel-ensure-package dired-hide-dotfiles from: melpa)
+  (when (eq pel-use-dired-hide-dotfiles 'hide-dot-files-by-default)
+    (declare-function dired-hide-dotfiles-mode "dired-hide-dotfiles")
+    (add-hook 'dired-mode-hook (function dired-hide-dotfiles-mode)))
+  (eval-after-load "dired"
+    '(define-key dired-mode-map "/" 'dired-hide-dotfiles-mode)))
+
 ;; ---------------------------------------------------------------------------
 ;; - PEL: Window Behaviour & operations
 ;; ------------------------------------

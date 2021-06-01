@@ -256,6 +256,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     DEL a``.
   - Update: the kill and delete commands are no longer allowed in read-only
     buffer.
+- Update: *Dired*:
+  - New: add support for the dired-hide-dotfiles external package when the
+    *pel-use-dired-hide-dotfiles* user-option is set to either *t* or to
+    *hide-dot-files-by-default*.  Add a new key binding ("/") in dired-mode
+    to toggle hiding of the dot-files.  The "." key binding already exists in
+    dired, it is not used for this.
 - Update: *ERT - Emacs Regression Test* support:
   - New: [[https://github.com/pierre-rouleau/pel/blob/master/pel-ert.el][file pel-ert.el]] that defines a set of equality and inequality
     predicates that are meant to be used in ert-deftest forms.  You can use these

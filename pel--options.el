@@ -1144,6 +1144,20 @@ option.  See `dired-use-ls-dired' for more information."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-dired-hide-dotfiles nil
+  "Control whether PEL activates dired-hide-dotfiles package.
+The choices are:
+- Do not use               : nil , default
+- Use, activate later      : t
+- Use, activate on startup : hide-dot-files-by-default"
+  :link '(url-link :tag "dired-hide-dotfiles @ Github"
+                   "https://github.com/mattiasb/dired-hide-dotfiles")
+  :group 'pel-pkg-for-dired
+  :type '(choice
+          (const :tag "Do not use" nil)
+          (const :tag "Use, activate later" t)
+          (const :tag "Use, hide dot-files by default" hide-dot-files-by-default)))
+
 ;; ---------------------------------------------------------------------------
 ;; Text and Code Completion and Expansion
 ;; --------------------------------------
