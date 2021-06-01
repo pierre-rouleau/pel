@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, May 27 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-31 23:14:14, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-01 09:32:15, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -41,6 +41,12 @@
 ;;; Code:
 ;;
 
+;; ---------------------------------------------------------------------------
+;; Buffer Selection (bs) Extension
+;; -------------------------------
+
+;; - Commands that change buffer to next/previous in Buffer Selection list.
+
 ;;-pel-autoload
 (defun pel-bs-next ()
   "Show next buffer in current window."
@@ -57,25 +63,24 @@
   (bs-up 1)
   (bs-select))
 
-;; ---------------------------------------------------------------------------
+;; - Add Buffer Selection Configuration: list all buffer of same major mode
 
+;; TODO: use an assoc list to support more than one major-mode configuration
 (defvar pel--bs-buffer-mode nil
   "Major mode to search.")
 
-(defun pel-include-this-buffer-p (buffer-spec)
-  "Check if this buffer is the same mode as the wanted one."
-  (let ((buffer-obj (if  (bufferp buffer-spec)
-                       buffer-spec
-                  (get-buffer buffer-spec))))
-    (with-current-buffer buffer-obj
-      (eq major-mode pel--bs-buffer-mode))))
+(defun pel-include-this-buffer-p (buffer-obj)
+  "Return t if BUFFER-OBJ uses the requested major mode, nil otherwise."
+  (with-current-buffer buffer-obj
+    (eq major-mode pel--bs-buffer-mode)))
 
-(defun pel-exclude-this-buffer-p (buffer-spec)
-  "Check if this buffer is the same mode as the wanted one."
-  (not (pel-include-this-buffer-p buffer-spec)))
+(defun pel-exclude-this-buffer-p (buffer-obj)
+  "Return nil if BUFFER-OBJ uses the requested major mode, t otherwise."
+  (not (pel-include-this-buffer-p buffer-obj)))
 
 (defun pel-bs-set-for-this-mode-only (wanted-major-mode)
-  "Activate new bs configuration: show only buffers in WANTED-MAJOR-MODE."
+  "Activate new bs configuration: show only buffers in WANTED-MAJOR-MODE.
+Return new configuration mode."
   (let ((bs-config-name (format "only-%s" wanted-major-mode)))
     (add-to-list 'bs-configurations
                  (list
@@ -84,7 +89,8 @@
                   (function pel-include-this-buffer-p) ; bs-must-show-function
                   nil                                  ; bs-dont-show-regexp
                   (function pel-exclude-this-buffer-p) ; bs-dont-show-function
-                  nil))))                              ; bs-buffer-sort-function
+                  nil))                              ; bs-buffer-sort-function
+    bs-config-name))
 
 (defun pel-bs-this-mode-only ()
   "Add a Buffer Selection configuration for buffer of this mode only.
@@ -93,8 +99,10 @@ mode of the current line buffer.
 This configuration will only show buffers that use the same major mode."
   (interactive)
   (setq pel--bs-buffer-mode (pel-major-mode-of (bs--current-buffer)))
-  (pel-bs-set-for-this-mode-only pel--bs-buffer-mode)
-  (message "Configuration is: %s" pel--bs-buffer-mode))
+  (let ((config-name (pel-bs-set-for-this-mode-only pel--bs-buffer-mode)))
+    (bs-set-configuration config-name)
+    (bs--redisplay t)
+    (message "New configuration is: %s" config-name)))
 
 ;;-pel-autoload
 (defun pel-bs-init ()
@@ -103,12 +111,15 @@ Add the dot command that adds a configuration for buffers in the same
 major mode."
   (if (boundp 'bs-mode-map)
       (define-key bs-mode-map "." 'pel-bs-this-mode-only)
-    (user-error "Failed installing PEL command in bs-mode-map!")))
-
+    (display-warning 'pel-bs-this-mode-only
+                     "Failed installing PEL command in (unbound) bs-mode-map!"
+                     :error)))
 
 ;; ---------------------------------------------------------------------------
-;; Stand-alone iteration over buffers of same major modes
-;; ------------------------------------------------------
+;; Same Mode Buffer (smb) iteration
+;; --------------------------------
+;;
+;; Iterate over buffers of same major modes.
 
 (defvar pel--smb-list nil
   "List of buffers of the same major modes.")
@@ -120,7 +131,7 @@ major mode."
   "Size of pel--smb-list.")
 
 (defvar pel--smb-list-idx nil
-  "Zero-based index of the current buffer shown in the list.  Nil if none shown.")
+  "0-based index of the current buffer shown in the list, nil if none shown.")
 
 ;;-pel-autoload
 (defun pel-smb-capture ()
@@ -148,9 +159,10 @@ Return the displayed buffer, nil if the buffer no longer exists."
 
 (defun pel--to-next-idx ()
   "Increment list index and wrap back to 0 at the end.
+On index 0 refresh the list to handle buffer deletions and additions.
 Return new idx value."
   (when (= pel--smb-list-idx 0)
-      (pel-smb-capture))
+    (pel-smb-capture))
   (setq pel--smb-list-idx (1+ pel--smb-list-idx))
   (when (>= pel--smb-list-idx pel--smb-list-size)
     (setq pel--smb-list-idx 0))
@@ -174,9 +186,10 @@ If the optional prefix argument is passed, REFRESH the list of buffers."
 
 (defun pel--to-previous-idx ()
   "Decrement list index and wrap at end.
+On index 0 refresh the list to handle buffer deletions and additions.
 Return new idx value."
   (when (= pel--smb-list-idx 0)
-        (pel-smb-capture))
+    (pel-smb-capture))
   (setq pel--smb-list-idx (1- pel--smb-list-idx))
   (when (< pel--smb-list-idx 0)
     (setq pel--smb-list-idx (- pel--smb-list-size 1)))
