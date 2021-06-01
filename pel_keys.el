@@ -4221,7 +4221,7 @@ the ones defined from the buffer now."
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> b`` : buffer commands
 ;; Used keys:
-;;   -
+;;   - [ ]
 ;;   C-c
 ;;   M-a M-p
 ;;   ?
@@ -4251,6 +4251,8 @@ the ones defined from the buffer now."
 (define-key pel:buffer (kbd "M-x") 'hexl-mode)
 (define-key pel:buffer "."  'pel-bs-next)
 (define-key pel:buffer ","  'pel-bs-previous)
+(define-key pel:buffer "]"  'pel-smb-next)
+(define-key pel:buffer "["  'pel-smb-previous)
 
 ;; Add key bindings inside the Buffer Selection Mode.
 (add-hook 'bs-mode-hook 'pel-bs-init)

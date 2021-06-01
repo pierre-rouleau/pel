@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, May 27 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-31 19:15:16, updated by Pierre Rouleau>
+;; Time-stamp: <2021-05-31 23:14:14, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -68,7 +68,6 @@
                        buffer-spec
                   (get-buffer buffer-spec))))
     (with-current-buffer buffer-obj
-      (message "--> %S  -- %S" buffer-obj major-mode)
       (eq major-mode pel--bs-buffer-mode))))
 
 (defun pel-exclude-this-buffer-p (buffer-spec)
@@ -133,9 +132,11 @@ The other 2 commands will use that list."
   (setq pel--smb-list-mode major-mode))
 
 (defun pel--show-buffer (idx)
-  "Show buffer identified by index IDX in current window."
+  "Show buffer identified by index IDX in current window.
+Return the displayed buffer, nil if the buffer no longer exists."
   (let ((buf-obj (nth idx pel--smb-list)))
-    (switch-to-buffer buf-obj)))
+    (when (buffer-live-p buf-obj)
+      (switch-to-buffer buf-obj))))
 
 (defun pel--refresh-when-needed (refresh)
   "Refresh buffer list when needed."
@@ -145,17 +146,41 @@ The other 2 commands will use that list."
             (not (eq major-mode pel--smb-list-mode)))
     (pel-smb-capture)))
 
+(defun pel--to-next-idx ()
+  "Increment list index and wrap back to 0 at the end.
+Return new idx value."
+  (when (= pel--smb-list-idx 0)
+      (pel-smb-capture))
+  (setq pel--smb-list-idx (1+ pel--smb-list-idx))
+  (when (>= pel--smb-list-idx pel--smb-list-size)
+    (setq pel--smb-list-idx 0))
+  pel--smb-list-idx)
+
 ;;-pel-autoload
 (defun pel-smb-next (&optional refresh)
   "Open next buffer of same major-mode from the registered list.
 If the optional prefix argument is passed, REFRESH the list of buffers."
   (interactive "P")
   (pel--refresh-when-needed refresh)
-  ;; increment index and wrap at end of list
-  (setq pel--smb-list-idx (1+ pel--smb-list-idx))
-  (when (>= pel--smb-list-idx pel--smb-list-size)
-    (setq pel--smb-list-idx 0))
-  (pel--show-buffer pel--smb-list-idx))
+  ;; Try to display next buffer.
+  ;; It's possible buffers have been deleted, so try as many times
+  ;; as the length of the list, no more.
+  (let ((attempt-down-count pel--smb-list-size))
+    (while
+        (progn
+          (setq attempt-down-count (1- attempt-down-count))
+          (and (null (pel--show-buffer (pel--to-next-idx)))
+               (> attempt-down-count 0))))))
+
+(defun pel--to-previous-idx ()
+  "Decrement list index and wrap at end.
+Return new idx value."
+  (when (= pel--smb-list-idx 0)
+        (pel-smb-capture))
+  (setq pel--smb-list-idx (1- pel--smb-list-idx))
+  (when (< pel--smb-list-idx 0)
+    (setq pel--smb-list-idx (- pel--smb-list-size 1)))
+  pel--smb-list-idx)
 
 ;;-pel-autoload
 (defun pel-smb-previous (&optional refresh)
@@ -163,11 +188,15 @@ If the optional prefix argument is passed, REFRESH the list of buffers."
 If the optional prefix argument is passed, REFRESH the list of buffers."
   (interactive "P")
   (pel--refresh-when-needed refresh)
-  ;; increment index and wrap at end of list
-  (setq pel--smb-list-idx (1- pel--smb-list-idx))
-  (when (< pel--smb-list-idx 0)
-    (setq pel--smb-list-idx (- pel--smb-list-size 1)))
-  (pel--show-buffer pel--smb-list-idx))
+  ;; Try to display next buffer.
+  ;; It's possible buffers have been deleted, so try as many times
+  ;; as the length of the list, no more.
+  (let ((attempt-down-count pel--smb-list-size))
+    (while
+        (progn
+          (setq attempt-down-count (1- attempt-down-count))
+          (and (null (pel--show-buffer (pel--to-previous-idx)))
+               (> attempt-down-count 0))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-buffer)
