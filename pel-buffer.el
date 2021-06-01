@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, May 27 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-01 11:39:16, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-01 11:49:44, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -82,7 +82,7 @@
 ;;
 ;;
 ;; Independent cycling over buffers of the same major mode
-;; -------------------------------------------------------
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;
 ;; To quickly cycle through buffers of the same major mode, use the command
 ;; functions `pel-smb-next' and `pel-smb-previous'.  The "smb" acronym here
