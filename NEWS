@@ -45,6 +45,25 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   - New: support for the *iflipb* external package is activated by the
     *pel-use-iflipb* user-option.  When active the ``<f9>`` key flip to the
     next buffer and ``<S-f9>`` to the previous buffer in the stack.
+  - New: support for Buffer Selection mode. The command *bs-show* is mapped to
+    ``<f11> b s`` and the *bs-customize* command is mapped to ``<f11> b S``.
+    - Extensions to Buffer Selection mode:
+      - The commands *pel-bs-next* (bound to ``<f11> b .``) and the *pel-bs-previous*
+        (bound to ``<f11> b ,``) changes the buffer of the current window to
+        the next and previous buffer identified from the Buffer Selection
+        list.
+      - A new key binding (".")  in the Buffer Selection mode creates a mode
+        to cycle through the buffers of the same major mode as the one
+        selected on the current line.  Allowing the *pel-bs-next* and
+        *pel-bs-previous* commands to cycle through the buffers of the same
+        major mode.
+  - New: provide commands to cycle through the buffers of the same major mode
+    as the current buffer without the use of the Buffer Selection mode:
+    - The commands *pel-smb-next* (bound to ``<f11> b ]``) and
+      *pel-smb-previous* (bound to ``<f11> b [`` ) can be used to cycles
+      through all  buffers of the same major mode in the current window
+      without any prior setup.
+  - New: a new pel-∑buffer Hydra provides quick access to these commands.
 - New: *Build Tool Scripting Support*:
   - New: *Make file Editing support*:
     - New:  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-make.pdf][𝕻𝔩 - Make]] PDF that describes make file editing support, along with
