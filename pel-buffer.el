@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, May 27 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-01 11:49:44, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-01 11:52:04, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -201,7 +201,6 @@ major mode."
 (defvar pel--smb-list-idx nil
   "0-based index of the current buffer shown in the list, nil if none shown.")
 
-;;-pel-autoload
 (defun pel--smb-capture ()
   "Build a list of the buffers using the same major mode as the current one.
 The other 2 commands will use that list."
