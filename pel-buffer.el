@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, May 27 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-01 09:32:15, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-01 10:40:00, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -65,42 +65,43 @@
 
 ;; - Add Buffer Selection Configuration: list all buffer of same major mode
 
-;; TODO: use an assoc list to support more than one major-mode configuration
-(defvar pel--bs-buffer-mode nil
-  "Major mode to search.")
-
-(defun pel-include-this-buffer-p (buffer-obj)
-  "Return t if BUFFER-OBJ uses the requested major mode, nil otherwise."
-  (with-current-buffer buffer-obj
-    (eq major-mode pel--bs-buffer-mode)))
-
-(defun pel-exclude-this-buffer-p (buffer-obj)
-  "Return nil if BUFFER-OBJ uses the requested major mode, t otherwise."
-  (not (pel-include-this-buffer-p buffer-obj)))
+;; TODO: re-use already made closure instead of creating one new one every
+;; time the command is invoked on the same type of buffer.
+;; (defvar pel--bs-mode-closures-alist nil)
 
 (defun pel-bs-set-for-this-mode-only (wanted-major-mode)
   "Activate new bs configuration: show only buffers in WANTED-MAJOR-MODE.
 Return new configuration mode."
   (let ((bs-config-name (format "only-%s" wanted-major-mode)))
+    ;; create closures that filter buffers based on their major mode
     (add-to-list 'bs-configurations
                  (list
                   bs-config-name
-                  nil                                  ; bs-must-show-regexp
-                  (function pel-include-this-buffer-p) ; bs-must-show-function
-                  nil                                  ; bs-dont-show-regexp
-                  (function pel-exclude-this-buffer-p) ; bs-dont-show-function
-                  nil))                              ; bs-buffer-sort-function
+                  nil                   ; bs-must-show-regexp
+                  (lambda (buffer-obj)  ; bs-must-show-function
+                    (with-current-buffer buffer-obj
+                      (eq major-mode wanted-major-mode)))
+                  nil                   ; bs-dont-show-regexp
+                  (lambda (buffer-obj)  ; bs-dont-show-function
+                    (with-current-buffer buffer-obj
+                      (not (eq major-mode wanted-major-mode))))
+                  nil))                 ; bs-buffer-sort-function
     bs-config-name))
 
 (defun pel-bs-this-mode-only ()
   "Add a Buffer Selection configuration for buffer of this mode only.
 Add a Buffer Selection that will be named \"only-X\" where X is the major
 mode of the current line buffer.
-This configuration will only show buffers that use the same major mode."
+This configuration will only show buffers that use the same major mode.
+
+Refresh the  Buffer Selection buffer to show only buffer of selected mode,
+which also includes the current buffer which may be of another mode.
+Also set the default configuration to this new selected mode."
   (interactive)
-  (setq pel--bs-buffer-mode (pel-major-mode-of (bs--current-buffer)))
-  (let ((config-name (pel-bs-set-for-this-mode-only pel--bs-buffer-mode)))
+  (let ((config-name (pel-bs-set-for-this-mode-only
+                      (pel-major-mode-of (bs--current-buffer)))))
     (bs-set-configuration config-name)
+    (setq bs-default-configuration config-name)
     (bs--redisplay t)
     (message "New configuration is: %s" config-name)))
 
