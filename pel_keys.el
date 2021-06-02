@@ -2702,17 +2702,24 @@ d-mode not added to ac-modes!"
   (pel-ensure-package erlang from: melpa)
   (pel-autoload-file erlang for: erlang-mode)
 
+  ;; The ~/.erlang is the Erlang configuration file: allow the file
+  ;; to be located anywhere but currently don't allow something.erlang
+  ;; to be recognized. Is this too harsh?  It might be, OTOH it will
+  ;; allow opening the file in fundamental mode and then choose to activate
+  ;; the erlang mode, just in case we want to modify it without it having
+  ;; an impact on the Erlang process we're trying to modify.
   (pel-set-auto-mode erlang-mode for:
-                     "\\.erl?$"
-                     "\\.hrl?$"
-                     "rebar\\.config$"
-                     "relx\\.config$"
-                     "sys\\.config\\.src$"
-                     "sys\\.config$"
-                     "\\.config\\.src?$"
-                     "\\.config\\.script?$"
-                     "\\.app?$"
-                     "\\.app.src?$"
+                     "\\.erl?\\'"
+                     "\\.hrl?\\'"
+                     "[\\/]\\.erlang\\'"
+                     "rebar\\.config\\'"
+                     "relx\\.config\\'"
+                     "sys\\.config\\.src\\'"
+                     "sys\\.config\\'"
+                     "\\.config\\.src?\\'"
+                     "\\.config\\.script?\\'"
+                     "\\.app?\\'"
+                     "\\.app.src?\\'"
                      "\\Emakefile")
 
   ;; Overcome omission bug in erlang-mode: add support for Speedbar
