@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-01 15:46:16, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-02 11:38:14, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -654,6 +654,7 @@ There should be no key binding!" keyseq))
     ("elmacros"         . "keyboard-macros")
     ("emacros"          . "keyboard-macros")
     ("terminal-settings" . "macOS-terminal-settings")
+    ("regxp"            . "search-replace")
     ("iedit"            . "search-replace")
     ("desktop"          . "sessions"))
   "List of alias for PEL PDF file names.")
