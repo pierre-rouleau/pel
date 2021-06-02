@@ -639,7 +639,7 @@ Reference: see reStructuredText hyperlink format at URL
     (if (and (not p_begin) (not p_end))
         (user-error "Please select an anchor word or a region!")
       (let* ((anchor (buffer-substring-no-properties p_begin p_end))
-             (anchor_isa_single_word (not (pel-whitespace-in-str-p anchor))))
+             (anchor-isa-alnum (pel-alnum-p anchor)))
         (deactivate-mark)
         (if arg
             ;; Use embedded URI format
@@ -657,7 +657,7 @@ Reference: see reStructuredText hyperlink format at URL
 with pel-rst-set-ref-bookmark!")
             (if (pel--space-for-extra-link-p)
                 (progn
-                  (if anchor_isa_single_word
+                  (if anchor-isa-alnum
                       (progn
                         (goto-char p_end)
                         (insert "_"))
