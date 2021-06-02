@@ -441,6 +441,13 @@ Ignore case differences if IGNORE-CASE is non-nil."
   (let ((case-fold-search nil))
     (not (string-match-p "[[:lower:]]" string))))
 
+(defun pel-alnum-p (string)
+  "Return t if all characters in STRING are letters or digits, nil otherwise."
+  (let ((case-fold-search nil))
+    (and (not (string-match-p "[[:punct:]]" string))
+         (not (string-match-p "[[:space:]]" string))
+         (not (string-match-p "[[:cntrl:]]" string)))))
+
 ;; ---------------------------------------------------------------------------
 ;; - Pluralizer
 ;; ------------
