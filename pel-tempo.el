@@ -103,8 +103,7 @@ commands to help navigate to the next and previous tempo mark.
 Key1 bindings:
 \\{pel-tempo-minor-mode-map}"
   :lighter " ‡"
-  :keymap pel-tempo-minor-mode-map
-  )
+  :keymap pel-tempo-minor-mode-map)
 
 ;; -----------------------------------------------------------------------------
 ;; Tempo template creation utilities
