@@ -56,6 +56,13 @@ Goals
 - Ability to use all of this in Emacs running in graphical mode or in terminal
   (termcap) mode.
 
+.. ---------------------------------------------------------------------------
+
+Installing Erlang
+=================
+
+Instructions on how to install Erlang in various ways and how to install
+Erlang man files is available in the `Installing Erlang`_ document.
 
 
 .. ---------------------------------------------------------------------------
@@ -63,6 +70,8 @@ Goals
 
 .. _issue: https://github.com/pierre-rouleau/pel/issues
 .. _discussions: https://github.com/pierre-rouleau/pel/discussions
+.. _Installing Erlang: https://github.com/pierre-rouleau/about-erlang/blob/master/doc/installing-erlang.rst
+.. _PEL Project home page: https://github.com/pierre-rouleau/pel#readme
 
 
 
