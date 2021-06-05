@@ -1099,6 +1099,7 @@ interactively."
   (pel-ensure-package smart-dash from: melpa)
   (pel-autoload-file smart-dash for: smart-dash-mode)
   (define-key pel: (kbd "M--") 'smart-dash-mode)
+
   (pel-add-hook-for
    'pel-modes-activating-smart-dash-mode
    (lambda ()
@@ -2764,15 +2765,53 @@ d-mode not added to ac-modes!"
     (define-key pel:for-erlang "u"     'pel-render-commented-plantuml))
 
   (pel-eval-after-load erlang
-    ;; TODO: do we want to set erlang-root-dir, which is a user-option?
+    ;; Set erlang-root-dir from the content of pel-erlang-man-parent-rootdir
     (if (boundp 'erlang-root-dir)
-        (unless erlang-root-dir
-          (setq erlang-root-dir (expand-file-name pel-erlang-rootdir)))
-      (display-warning 'pel-use-erlang
-                       "erlang-root-dir is void, can't set it!"
-                       :error))
-    (when (file-exists-p pel-erlang-exec-path)
-      (add-to-list 'exec-path pel-erlang-exec-path) )
+        (when pel-erlang-man-parent-rootdir
+          (cond
+           ((stringp pel-erlang-man-parent-rootdir)
+            (if (file-exists-p pel-erlang-man-parent-rootdir)
+                (setq erlang-root-dir pel-erlang-man-parent-rootdir)
+              (display-warning 'pel-use-erlang
+                               (format "\
+Invalid directory %s specified by pel-erlang-man-parent-rootdir"
+                                       pel-erlang-man-parent-rootdir)
+                               :error)))
+           ((consp pel-erlang-man-parent-rootdir)
+            (let* ((envvar (cdr pel-erlang-man-parent-rootdir))
+                  (path  (getenv envvar)))
+              (if (and path
+                       (file-exists-p path))
+                  (setq erlang-root-dir path)
+                (display-warning 'pel-use-erlang
+                                 (format "\
+Invalid directory %s specified by pel-erlang-man-parent-rootdir \
+via environment variable %s"
+                                         path
+                                         envvar)
+                                 :error)))))))
+    ;; Optionally add a Erlang Bin directory to the exec-path
+    (when pel-erlang-exec-path
+      (cond ((stringp pel-erlang-exec-path)
+             (if (file-exists-p pel-erlang-exec-path)
+                 (add-to-list 'exec-path pel-erlang-exec-path)
+               (display-warning 'pel-use-erlang (format "\
+Invalid path specified by pel-erlang-exec-path: %s
+Ignored!"
+                                                  pel-erlang-exec-path)
+                                :error)))
+            ((consp pel-erlang-exec-path)
+             (let* ((envvar (cdr pel-erlang-exec-path))
+                    (path (getenv envvar)))
+               (if (and path
+                        (file-exists-p path))
+                   (add-to-list 'exec-path path)
+                 (display-warning 'pel-use-erlang
+                                  (format "\
+Invalid path %s from %s as specified by pel-erlang-exec-path"
+                                          path envvar)
+                                  :error))))))
+
     ;;
     (require 'erlang-start)
     (when pel-use-edts

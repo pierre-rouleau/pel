@@ -113,6 +113,7 @@
 ;;       - pel-pkg-for-beam-vm
 ;;         - pel-pkg-for-elixir
 ;;         - pel-pkg-for-erlang
+;;           - pel-erlang-environment
 ;;           - pel-erlang-ide
 ;;           - pel-erlang-code-style
 ;;             - pel-erlang-skeleton-control
@@ -157,6 +158,7 @@
 ;; - pel-use-<package name>
 ;; - pel-modes-activating-<package name>
 ;; - pel-startup-<thing to activate at startup>
+
 ;; - pel-<mode>-activates-minor-modes
 ;;
 ;; The `pel-use-' user-options are either t/nil boolean types or tri-state
@@ -5561,77 +5563,6 @@ package which provides the client/library for LSP."
 ;; --------------
 ;; Note: Erlang, is a BEAM VM programming language.
 ;;
-;; The PEL configuration for Erlang attempts to control several aspects of the
-;; various Emacs packages supporting Erlang: there's what I currently perceive
-;; as a lack of commonality of control between them (erlang.el, edts, etc..)
-;; and I want to simplify the identification of the various Erlang files for
-;; several Erlang versions and for these tools.  The concepts controlled are:
-;;
-;; - The location of Erlang man page files:
-;;   - erlang.el:
-;;     - Supports only one version of Erlang at a time in Emacs.
-;;     - Downloads the Erlang man files inside
-;;       ~/.emacs.d/cache/erlang_mode_man_pages
-;;     - Has `erlang-root-dir' that should point to that location.
-;;
-;;  - edts:
-;;    - Supports several versions of Erlang at a time in Emacs, allowing
-;;      files from different directories to be associated as a project and
-;;      identified as using a specific version of Erlang.
-;;    - Downloads the Erlang man files for a specific Erlang version V into
-;;      ~/.emacs.d/edts/doc/V
-;;
-;; PEL:
-;;  - Supports multiple versions of Erlang, supports both erlang.el and edts
-;;    models, supports the use of MANPATH in the parent shell to identify the
-;;    path where the man files are stored.
-;;  - Use `pel-erlang-man-rootdir' that identifies a directory that must hold
-;;    sub-directories (or symlinks to the directories) named after the Erlang
-;;    version (such as 23.0) where each of them as holding the content of the
-;;    Erlang man tarball content:
-;;       - COPYRIGHT
-;;       - PR.template
-;;       - README.md
-;;       - man directory holding man1, man3, etc...
-;;    By default `pel-erlang-man-rootdir' is set to ~/.emacs.d/edts/doc.
-;;
-;;  - The `pel-erlang-version-detection-method' selects one of 3 method to
-;;    detect Erlang's version. They are:
-;;
-;;    - auto-detect : automatic detection using the `version-erl' command
-;;                    line utility (provided in PEL's bin directory).
-;;    - specified   : the version is specified in the `pel-erlang-version'
-;;                    user option.
-;;    - by-envvar   : the version is read in the content of an environment
-;;                    variable. The name of the environment variable is
-;;                    identified by `pel-erlang-version-envvar'.
-
-;;  - PEL provides the version-erl command line utility (stored in PEL's bin
-;;    directory).  This is a short Erlang script that prints Erlang's version
-;;    on stdout.  The PEL Erlang initialization code uses that utility to
-;;    automatically detects the version of Erlang available in Emacs parent
-;;    process. PEL uses that to identify which version of man pages should be
-;;    used.
-;;
-;;  - Use `pel-erlang-version' to identify the Erlang version used by default.
-;;    It can be  a specific number string (like "23.0" or "21.3.8.7") or can
-;;    specify an environment variable that holds that string. PEL uses the
-;;    environment variable PEL_ERLANG_VERSION by default.  A different
-;;    environment variable name can be identified in
-;;    `pel-erlang-version-envvar'.
-;;
-;;  - To help support both edts and erlang.el model, PEL creates symbolic
-;;    links:
-;;   - ``~/.emacs.d/cache/erlang_mode_man_pages`` is a symlink that points to
-;;     ``~/.emacs.d/edts/doc/V`` where V is the Erlang version determined by
-;;     the method identified by `pel-erlang-version-detection-method'.
-;;   - Creates ``~/.emacs.d/edts/doc/V`` symlinks for all V versions of Erlang
-;;     identified in the directory pointed by `pel-erlang-man-rootdir'.
-;;
-;;  This way for each version of Erlang one set of files is needed and used via
-;;  1 or 2 symlinks.
-;;
-;;
 
 (defgroup pel-pkg-for-erlang nil
   "PEL customization for Erlang."
@@ -5651,76 +5582,12 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-erlang
   :type '(repeat function))
 
-(defcustom pel-erlang-man-rootdir "~/.emacs.d/edts/doc"
-  "Path to the directory holding Erlang man files for several Erlang versions.
-This identifies a directory that must hold
-sub-directories (or symlinks to the directories) named after the Erlang
-version (such as 23.0) where each of them as holding the content of the
-Erlang man tarball content, something like:
-  - COPYRIGHT
-  - PR.template
-  - README.md
-  - man directory holding man1, man3, etc..."
-  :group 'pel-pkg-for-erlang
-  :type 'string)
-
-(defcustom pel-erlang-version-detection-method 'auto-detect
-  "Identifies the method PEL uses to determine Erlang's version to use."
-  :group 'pel-pkg-for-erlang
-  :type '(choice
-          (const :tag "Automatic detection using PEL's bin/version-erl."
-                 auto-detect)
-          (const :tag "Version number specified explicitly in \
-`pel-erlang-version'."  specified)
-          (const :tag "Version number defined in environment variable named \
-in `pel-erlang-version-envvar'." by-envvar)))
-
-(defcustom pel-erlang-version nil
-  "Erlang version used.
-Controls which directory in `pel-erlang-man-rootdir' is used to identify
-Erlang man files.
-
-`pel-erlang-version' can be a specific number string (like
-\"23.0\" or \"21.3.8.7\") or nil.  If set nil, PEL uses an
-environment variable to identify the Erlang version. PEL uses the
-environment variable PEL_ERLANG_VERSION by default.  A different
-environment variable name can be identified in
-`pel-erlang-version-envvar'."
-  :group 'pel-pkg-for-erlang
-  :type 'string)
-
-(defcustom pel-erlang-version-envvar "PEL_ERLANG_VERSION"
-  "Name of environment variable used to identify the active Erlang version.
-Used when `pel-erlang-version' is nil."
-  :group 'pel-pkg-for-erlang
-  :type 'string)
-
 (defcustom pel-erlang-shell-prevent-echo nil
   "Set to t if the `erlang-shell-mode' shell echoes back commands.
 When set to t PEL activates code that prevent echo of the typed commands."
   :group 'pel-pkg-for-erlang
   :type 'boolean
   :safe #'booleanp)
-
-;; TODO: find a way to indicate either a path or the name of an environment variable
-(defcustom pel-erlang-rootdir "/usr/local/otp"
-  "Root directory of Erlang OTP."
-  :group 'pel-pkg-for-erlang
-  :type 'string)
-
-;; TODO: find a way to indicate either a path or the name of an environment variable
-(defcustom pel-erlang-exec-path "/usr/local/otp/bin"
-  "Directory where Erlang binaries are located."
-  :group 'pel-pkg-for-erlang
-  :type 'string)
-
-;; TODO: complete support or remove pel-use-erlang-start
-;; (defcustom pel-use-erlang-start nil
-;;   "Control whether PEL uses erlang-start package when `pel-use-erlang' is t."
-;;   :group 'pel-pkg-for-erlang
-;;   :type 'boolean
-;;   :safe #'booleanp)
-;; (pel-put 'pel-use-erlang-start :requires 'pel-use-erlang)
 
 (defcustom pel-use-erlang-syntax-check  nil
   "Controls whether PEL use ta syntax checker for Erlang.
@@ -5756,6 +5623,146 @@ regardless of the value of this user-option."
          '(when (or pel-use-erlang-ls
                     (eq pel-use-erlang-syntax-check 'with-flycheck))
             '((elpa . flycheck))))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defgroup pel-erlang-environment nil
+  "PEL specific environment to support Erlang development."
+  :group 'pel-pkg-for-erlang)
+
+;; The PEL configuration for Erlang attempts to control several aspects of the
+;; various Emacs packages supporting Erlang: there's what I currently perceive
+;; as a lack of commonality of control between them (erlang.el, edts, etc..)
+;; and I want to simplify the identification of the various Erlang files for
+;; several Erlang versions and for these tools.  The concepts controlled are:
+;;
+;; - The location of Erlang man page files:
+;;   - erlang.el:
+;;     - Supports only one version of Erlang at a time in Emacs.
+;;     - Uses the user-option variable `erlang-root-dir' which, despite its
+;;       name, identifies the directory where the man directory holding the
+;;       man1, man3 directories that contain Erlang man files.  If it is nil,
+;;       then erlang.el uses the man files inside
+;;       ~/.emacs.d/cache/erlang_mode_man_pages
+;;
+;;  - EDTS:
+;;    - Supports several versions of Erlang at a time in Emacs, allowing
+;;      files from different directories to be associated as a project and
+;;      identified as using a specific version of Erlang.
+;;    - Downloads the Erlang man files for a specific Erlang version V into
+;;      ~/.emacs.d/edts/doc/V
+;;
+;; PEL:
+;;  - Supports multiple versions of Erlang, supports both erlang.el and EDTS
+;;    models, supports the use of MANPATH in the parent shell to identify the
+;;    path where the man files are stored.
+;;  - If `pel-erlang-man-parent-rootdir' is non-nil it either identifies the
+;;    parent directory of the Erlang man directory or an environment variable
+;;    that identifies it. When the identified directory exists PEL sets the
+;;    value of `erlang-root-dir' with it.
+;;
+;;       To support both erlang.el and EDTS, you can either store all the man
+;;       parent directories inside ~/.emacs.d/edts/doc or place it somewhere
+;;       else, like ~/docs/Erlang and create symlink ~/.emacs.d/edts/doc/V
+;;       pointing to the directory ~/docs/Erlang/V that holds the man
+;;       directory for the version V of Erlang.
+;;
+;;  - The `pel-erlang-version-detection-method' selects one of 3 method to
+;;    detect Erlang's version. They are:
+;;
+;;    - auto-detect : automatic detection using the `version-erl' command
+;;                    line utility (provided in PEL's bin directory).
+;;    - specified   : `pel-erlang-version-detection-method' is a string that
+;;                    identifies the Erlang version number.
+;;                    user option.
+;;    - by-envvar   : the version is read in the content of an environment
+;;                    variable specified by name.
+;;
+;;  - PEL provides the version-erl command line utility (stored in PEL's bin
+;;    directory).  This is a short Erlang script that prints Erlang's version
+;;    on stdout.  The PEL Erlang initialization code uses that utility to
+;;    automatically detects the version of Erlang available in Emacs parent
+;;    process.
+
+(defcustom pel-erlang-man-parent-rootdir nil
+  "Root directory holding OTP man/man1 directory.
+
+Set the user-option variable to hold (or detect) the absolute
+path of the directory that holds Erlang/OTP man directory.  That
+man directory should hold a man1, man3, man4 and man6 holding
+Erlang man files.
+
+Available choices:
+
+- nil : do not set it, leave control in the variable `erlang-rootdir'.
+- Enter a string, such as /usr/local/otp, that holds the man directory which
+  holds man1, man3, man4 and man6.
+- Use an environment variable, such as PEL_ERLANG_MAN_PARENT_DIR, that
+  contains the name of the directory to use.  This is more flexible, as it
+  allows several OS shells to be defined with different values of that
+  environment variable that identifies the location of the man file directory
+  for the version of Erlang each shell activates."
+  :group 'pel-erlang-environment
+  :type '(radio
+          (const  :tag "Use path defined in `erlang-rootdir'" nil)
+          (string :tag "Use this absolute directory path"
+                  :value "/usr/local/otp")
+          (cons
+           (const  :tag "Path set by content of environment variable"
+                   in-envvar)
+           (string :tag "Use this environment variable   "
+                   :value "PEL_ERLANG_MAN_PARENT_DIR"))))
+
+(defcustom pel-erlang-exec-path nil
+  "Directory where the Erlang binaries are located.
+
+In some cases, you may want to identify the directory where Erlang binaries
+are located instead of depending on the execution path extracted from the OS
+PATH environment variable.  You can do it here.
+
+The choices are:
+
+- nil   : use the execution path identified by the PATH OS
+          environment variable.
+- string: Identify the absolute path explicitly, ignoring PATH.
+- environment variable: specify the name of an environment variable that holds
+          the absolute path where Erlang binaries are located."
+  :group 'pel-erlang-environment
+  :type '(radio
+          (const :tag "Use execution path identified by PATH" nil)
+          (string :tag "Use this absolute directory path"
+                  :value "/usr/local/otp/bin")
+          (cons
+           (const  :tag "Path set by content of environment variable"
+                   in-envvar)
+           (string :tag "Use this environment variable   "
+                   :value "PEL_ERLANG_EXECPATH"))))
+
+
+(defcustom pel-erlang-version-detection-method 'auto-detect
+  "Identifies the method PEL uses to determine Erlang's version available.
+
+This value is used by the function `pel-erlang-version' which attempts to
+identify the available version of Erlang.
+
+The choices are:
+
+- auto-detect : PEL extracts the version of Erlang by running the
+                bin/version-erl Erlang script.  This is the default.
+- by-envvar   : A string that is the name of en OS environment variable that
+                holds the version of Erlang.
+- specified by a string that represents the Erlang version number.
+  Use this to impose a specific version. Useful for storing in a
+  .dir-locals.el file. Something like \"22.3.4.2\" or \"23.0\" or \"R16B03\"."
+  :group 'pel-erlang-environment
+  :type '(radio
+          (const :tag "Automatic detection using PEL's bin/version-erl script."
+                 auto-detect)
+          (cons
+           (const :tag "Version set by content of environment variable"
+                  by-envvar)
+           (string :tag "Use this environment variable"
+                   :value "PEL_ERLANG_VERSION"))
+          (string :tag "Set Erlang version to")))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-erlang-ide nil

@@ -116,70 +116,146 @@ Stop at end of buffer."
 ;; Detecting Erlang Versions and Controlling Erlang Man Pages to Use
 ;; -----------------------------------------------------------------
 
-
-(defconst pel-erlang-md5-url "https://erlang.org/download/MD5"
+(defconst pel--erlang-md5-url "https://erlang.org/download/MD5"
   "URL of the official Erlang version MD5 file, using HTTPS.")
 
-(defconst pel-erlang-man-versions
+(defconst pel--hard-coded-erlang-man-versions
   '("R7B"
-    "R16B03" "R16B03-1" "R16B02" "R16B01" "R16B"
-    "R16A_RELEASE_CANDIDATE"
-    "R15B03" "R15B03-1" "R15B02" "R15B01" "R15B"
-    "R14B04" "R14B03" "R14B02" "R14B01" "R14B"
-    "R14A"
-    "R13B04" "R13B03" "R13B02" "R13B02-1" "R13B01" "R13B"
-    "R13A"
-    "R12B-5" "R12B-4" "R12B-3" "R12B-2" "R12B-1" "R12B-0"
-    "R11B-5" "R11B-4" "R11B-3" "R11B-2" "R11B-1" "R11B-0"
-    "R10B-9" "R10B-8" "R10B-7" "R10B-6" "R10B-5" "R10B-4"
-    "R10B-3" "R10B-2" "R10B-1a" "R10B-10" "R10B-0"
-    "23.0" "23.0-rc3" "23.0-rc2" "23.0-rc1"
-    "22.3"
-    "22.2"
-    "22.1"
-    "22.0" "22.0-rc3" "22.0-rc2" "22.0-rc1"
-    "21.3"
-    "21.2"
-    "21.1"
-    "21.0"
-    "20.3"
-    "20.2"
-    "20.1"
-    "20.0"
-    "19.3"
-    "19.2"
-    "19.1"
-    "19.0"
-    "18.3"
-    "18.2"
-    "18.2.1"
-    "18.1"
-    "18.0"
-    "17.5"
-    "17.4"
-    "17.3"
-    "17.1"
-    "17.0" "17.0-rc2" "17.0-rc1")
-  "List of available version of Erlang Man files.
-Snapshot read on 2020-07-24 16:12:52 (UTC).
-Used when access to `pel-erlang-md5-url' fails.")
+ "R16B03" "R16B03-1" "R16B02" "R16B01" "R16B"
+ "R16A_RELEASE_CANDIDATE"
+ "R15B03" "R15B03-1" "R15B02" "R15B01" "R15B"
+ "R14B04" "R14B03" "R14B02" "R14B01" "R14B"
+ "R14A"
+ "R13B04" "R13B03" "R13B02" "R13B02-1" "R13B01"
+ "R13B"
+ "R13A"
+ "R12B-5" "R12B-4" "R12B-3" "R12B-2" "R12B-1" "R12B-0"
+ "R11B-5" "R11B-4" "R11B-3" "R11B-2" "R11B-1" "R11B-0"
+ "R10B-9" "R10B-8" "R10B-7" "R10B-6" "R10B-5" "R10B-4"
+ "R10B-3" "R10B-2" "R10B-1a" "R10B-10" "R10B-0"
+ "24.0" "24.0-rc3" "24.0-rc2" "24.0-rc1"
+ "23.3"
+ "23.2"
+ "23.1"
+ "23.0" "23.0-rc3" "23.0-rc2"
+ "23.0-rc1"
+ "22.3"
+ "22.2"
+ "22.1"
+ "22.0" "22.0-rc3" "22.0-rc2" "22.0-rc1"
+ "21.3"
+ "21.2"
+ "21.1"
+ "21.0"
+ "20.3"
+ "20.2"
+ "20.1"
+ "20.0"
+ "19.3"
+ "19.2"
+ "19.1"
+ "19.0"
+ "18.3"
+ "18.2" "18.2.1"
+ "18.1"
+ "18.0"
+ "17.5"
+ "17.4"
+ "17.3"
+ "17.1"
+ "17.0" "17.0-rc2" "17.0-rc1")
+  "List of available version of Erlang with specific man files.
+As per https://erlang.org/download/MD5
+List updated on Wednesday, June 02, 2021.
+Used when access to `pel--erlang-md5-url' fails.")
 
+(defvar pel--downloaded-erlang-man-versions nil
+  "Cache of the Erlang Man versions.
+Stored by `pel-read-available-erlang-man-versions'.")
 
+(defun pel-read-available-erlang-man-versions (&optional force-download)
+  "Return a list of strings: the official versions of Erlang Man pages.
 
+Extract the list from the official Erlang.org web page listing
+the MD5 of all official Erlang tarball files for download.  Store
+the list in the variable `pel--downloaded-erlang-man-versions'
+and return that in following calls unless the FORCE-DOWNLOAD
+argument is set to non-nil.
+
+If the function fails to read or extract the version numbers it
+displays a warning and returns the list from the variable
+`pel--hard-coded-erlang-man-versions'."
+  (if (or force-download
+          (null pel--downloaded-erlang-man-versions))
+      (let ((temp-buffer (url-retrieve-synchronously pel--erlang-md5-url))
+            (versions '()))
+        (unwind-protect
+            (with-current-buffer temp-buffer
+              (progn
+                (goto-char (point-min))
+                (while (re-search-forward "otp_doc_man_\\(.+\\).tar.gz" nil t)
+                  (setq versions (cons (match-string 1) versions)))))
+          (and (buffer-name temp-buffer)
+               (kill-buffer temp-buffer)))
+        (unless versions
+          (display-warning 'pel-read-availableerlang-man-versions
+                           "Failed reading Erlang man versions from OTP site!
+Returning the values stored locally which may be out-of date!"
+                           :warning)
+          (setq versions pel--hard-coded-erlang-man-versions))
+        versions)
+    pel--downloaded-erlang-man-versions))
+
+;; ---------------------------------------------------------------------------
+;; Read Erlang Version
+;; -------------------
+
+;;-pel-autoload
 (defun pel-erlang-version ()
-  "Return the version of Erlang to use, according to PEL's customization."
-  (cond ((eq pel-erlang-version-detection-method 'auto-detect)
-         (let* ((exit-code.version (pel-exec-pel-bin "version-erl"))
-                (exit-code (car exit-code.version)))
-           (if (eq exit-code 0)
-               (cdr exit-code.version)
-             (user-error "Cannot detect Erlang version automatically!"))))
-        ;;
-        ((eq pel-erlang-version-detection-method 'specified)
-         pel-erlang-version)
-        ;;
-        ((eq pel-erlang-version-detection-method 'by-envvar)
-         (getenv pel-erlang-version-envvar))))
+  "Return the version of Erlang to use, according to PEL's customization.
+Return the version string on success.
+On error issue a warning describing the error and return nil."
+  (cond
+   ((stringp pel-erlang-version-detection-method)
+    pel-erlang-version-detection-method)
+   ;;
+   ((eq pel-erlang-version-detection-method 'auto-detect)
+    (let* ((exit-code.version (pel-exec-pel-bin "version-erl"))
+           (exit-code (car exit-code.version)))
+      (if (eq exit-code 0)
+          (cdr exit-code.version)
+        (display-warning
+         'pel-erlang-version
+         (format "version-erl failed with exit code: %S.
+Cannot detect Erlang version!" (car exit-code.version))
+         :error)
+        nil)))
+   ;;
+   ((and (consp pel-erlang-version-detection-method)
+         (eq (car pel-erlang-version-detection-method) 'by-envvar))
+    (let* ((envvar-name (cadr pel-erlang-version-detection-method))
+           (version-string (getenv envvar-name)))
+      (unless version-string
+        (display-warning
+         'pel-erlang-version
+         (format "Can't extract Erlang version from envvar '%S'"
+                 envvar-name)
+         :error))
+      version-string))
+   (t (display-warning
+       'pel-erlang-version
+       (format "Non-compliant data type: %S
+Can't detect Erlang version." pel-erlang-version-detection-method)
+       :error)
+      nil)))
+
+
+(defun pel-erlang-otp-dirname ()
+  "Return the name of the directory that Erlang OTP man directory.
+The returned string does not end with a slash or back-slash.
+This value may be stored into the variable `erlang-root-dir'"
+  "AAA")
+;; ---------------------------------------------------------------------------
 
 
 ;; (defun pel-erlang-organize-fs ()
@@ -194,22 +270,8 @@ Used when access to `pel-erlang-md5-url' fails.")
 ;;     (setq edts-man-download "https://erlang.org/download"))) ; use secure HTTP
 
 
-(defun pel-read-available-erlang-man-versions ()
-  "Return a list of strings: the official versions of Erlang Man pages.
-The list is extracted from the official Erlang.org web page listing the MD5
-of all official Erlang tarball files for download.
-On error, return nil."
-  (let ((temp-buffer (url-retrieve-synchronously pel-erlang-md5-url))
-        (versions '()))
-    (unwind-protect
-        (with-current-buffer temp-buffer
-          (progn
-            (goto-char (point-min))
-            (while (re-search-forward "otp_doc_man_\\(.+\\).tar.gz" nil t)
-              (setq versions (cons (match-string 1) versions)))))
-      (and (buffer-name temp-buffer)
-           (kill-buffer temp-buffer)))
-    versions))
+
+;; ---------------------------------------------------------------------------
 
 
 ;;-pel-autoload
