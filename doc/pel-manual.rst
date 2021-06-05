@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-05-27 09:43:08, updated by Pierre Rouleau.
+:Modified: 2021-06-04 18:22:08, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2915,7 +2915,6 @@ PEL Support for Erlang
                       - Activation:
 
                         - ``pel-use-erlang``
-                        - ``pel-use-erlang-start``
                         - ``pel-use-edts``
                         - ``pel-use-erlang-flycheck``
                         - ``pel-use-erlang-flymake``
