@@ -73,6 +73,7 @@
 ;;       - pel-pkg-for-reST
 ;;         - pel-reST-style
 ;;       - pel-pkg-for-yaml
+;;     - pel-pkg-for-modeline
 ;;     - pel-pkg-for-navigation
 ;;       - pel-pkg-for-xref
 ;;     - pel-pkg-for-programming
@@ -2814,6 +2815,22 @@ Enter minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-yaml
   :type '(repeat function))
+
+;; ---------------------------------------------------------------------------
+;; pel-pkg-for-modeline
+;; --------------------
+(defgroup pel-pkg-for-modeline nil
+  "List of external packages that PEL can use to control the modeline."
+  :group 'pel-package-use)
+
+(defcustom pel-use-delight nil
+  "Control whether PEL activates the delight external package.
+This provides ability to control the lighter of major and minor modes."
+  :group 'pel-pkg-for-modeline
+  :link '(url-link :tag "delight @ GNU"
+                   "https://savannah.nongnu.org/projects/delight")
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-navigation

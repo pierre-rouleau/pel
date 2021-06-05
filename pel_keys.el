@@ -247,6 +247,12 @@ Done in this function to allow advising libraries that remap these keys."
 (global-set-key "\C-x\C-b" 'ibuffer)
 
 ;; ---------------------------------------------------------------------------
+;; delight - control mode lighters
+;; -------------------------------
+(when pel-use-delight
+  (pel-ensure-package delight from: melpa))
+
+;; ---------------------------------------------------------------------------
 ;; ace-link
 ;; --------
 ;;
@@ -1099,6 +1105,12 @@ interactively."
   (pel-ensure-package smart-dash from: melpa)
   (pel-autoload-file smart-dash for: smart-dash-mode)
   (define-key pel: (kbd "M--") 'smart-dash-mode)
+
+  ;; when we can, activate a red lighter for Smart dash
+  (when pel-use-delight
+    (delight 'smart-dash-mode
+             (propertize " Sm-" 'font-lock-face '(:foreground "red"))
+             "smart-dash"))
 
   (pel-add-hook-for
    'pel-modes-activating-smart-dash-mode
