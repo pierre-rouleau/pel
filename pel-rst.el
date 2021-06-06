@@ -768,16 +768,18 @@ in that case return nil instead."
       (user-error "Point is not located over a rst-reference!"))))
 
 (defun pel--move-to-rst-target (target)
-  "Move point to the rst definition link for TARGET."
+  "Move point to the rst definition link for TARGET.
+Return non-nil if found, nil otherwise."
   (goto-char (point-min))
   (let ((regexp (format "^\\.\\. _%s:" (pel-rst-anchor-escaped target))))
     ;; search for a complete reference (target and URL on the same line) first
-    (unless (re-search-forward (concat regexp " +") nil :noerror)
+    (if (re-search-forward (concat regexp " +") nil :noerror)
+        t
       ;; if that fails search for a line that only has the target)
       (goto-char (point-min))
       (when (re-search-forward regexp nil :noerror)
         ;; if that's found move to the first complete reference line
-        (re-search-forward ": +https??://" nil :noerror)))))
+        (re-search-forward ": +.+$" nil :noerror)))))
 
 (defun pel-rst-open-target (&optional n noerror)
   "Open the target of rst-reference at point.
