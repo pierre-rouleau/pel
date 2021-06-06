@@ -2857,12 +2857,12 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 
       ;; Key to start EDTS
       (define-key pel:for-erlang      (kbd "M-SPC")   'edts-mode)
-      (when pel-activate-edts-automatically
+      (when (eq pel-use-edts 'start-automatically)
         (require 'edts-start))
       (pel-eval-after-load edts
         (add-to-list 'desktop-minor-mode-handlers
                      '(edts-mode . edts-mode-desktop-restore))
-        (unless pel-activate-edts-automatically
+        (unless (eq pel-use-edts 'start-automatically)
           (require 'edts-start))
         ;; EDTS keys
         ;; The following do not seem to do anything special in Erlang.

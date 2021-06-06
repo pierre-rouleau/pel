@@ -5790,19 +5790,13 @@ The choices are:
   "Control whether PEL uses EDTS when `pel-use-erlang' is t.
 EDTS := Erlang Development Tool Suite."
   :group 'pel-erlang-ide
-  :type 'boolean
-  :safe #'booleanp)
+  :link '(url-link "edts @ GitHub"
+                   "https://github.com/sebastiw/edts")
+  :type '(choice
+          (const :tag "Do not use" nil)
+          (const :tag "Use, activate manually" t)
+          (const :tag "Use, activate automatically" start-automatically)))
 (pel-put 'pel-use-edts :requires 'pel-use-erlang)
-
-(defcustom pel-activate-edts-automatically nil
-  "Control whether EDTS is activated automatically for Erlang files.
-Activates EDTS automatically on Erlang files if set to t, otherwise
-you must activate it manually with \\[edts-mode].
-Starting EDTS takes some time and will slow down opening Erlang files
-if configured to activate automatically."
-  :group 'pel-erlang-ide
-  :type 'boolean
-  :safe #'booleanp)
 
 (defcustom pel-use-erlang-ls nil
   "Control whether PEL uses the Erlang Language Server.
