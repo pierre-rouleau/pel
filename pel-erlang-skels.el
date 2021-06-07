@@ -365,38 +365,23 @@ line description if it was identified."
   (if (pel-erlang-file-is-module)
       (if (pel-erlang-skel-edoc-in-header-p)
           ;; with Edoc
-          (if (string= pel--skel-last-purpose "")
-              (list 'l
-                    '&
-                    "%%% @doc " 'p 'n
-                    "%%%      " 'p 'n
-                    "%%% @end" 'n
-                    (pel-erlang-skel-separator 3 ?=))
-            (list 'l
-                  '&
-                  (concat "%%% @doc " pel--skel-last-purpose) 'n
-                  "%%%      " 'p 'n
-                  "%%% @end" 'n
-                  (pel-erlang-skel-separator 3 ?=)))
-        ;; without Edoc
-        (if (string= pel--skel-last-purpose "")
-            (list 'l
-                  '&
-                  "%%% Module Description: " 'p 'n
-                  "%%% " 'n
-                  "%%% " 'p 'n
-                  "%%% " 'n
-                  (pel-erlang-skel-separator 3 ?=))
           (list 'l
                 '&
-                (concat "%%% Module Description: " pel--skel-last-purpose) 'n
-                "%%% " 'n
-                "%%% " 'p 'n
-                (pel-erlang-skel-separator 3 ?=))))
+                "%%% @doc " pel--skel-last-purpose 'n
+                "%%%      " 'p 'n
+                "%%% @end" 'n
+                (pel-erlang-skel-separator 3 ?=))
+        ;; without Edoc
+        (list 'l
+              '&
+              "%%% Module Description: " pel--skel-last-purpose 'n
+              "%%% " 'n
+              "%%% " 'p 'n
+              (pel-erlang-skel-separator 3 ?=)))
     ;; header file - no Edoc
     (list 'l
           '&
-          (concat "%%% Header Description: " pel--skel-last-purpose) 'n
+          "%%% Header Description: " pel--skel-last-purpose 'n
           "%%% " 'n
           "%%% " 'p 'n
           (pel-erlang-skel-separator 3 ?=))))

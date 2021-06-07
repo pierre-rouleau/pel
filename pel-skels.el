@@ -169,20 +169,14 @@ otherwise it leaves a tempo marker at its place.
 The line starts with `comment-start' unless COMMENT-PREFIX is specified,
 in which case that is used.
 The tag uses TITLE if specified otherwise it uses ITEM capitalized."
-  (let* ((purpose     (if get-text
-                          (pel-prompt-purpose-for item)
-                        ""))
-         (comment-str (or comment-prefix comment-start))
-         (text        (format "%s %s %s"
-                              comment-str
-                              (or title (capitalize item))
-                              purpose)))
-    ;; store entered purpose to allow re-use later inside a tempo skel
+  (let* ((purpose     (when get-text (pel-prompt-purpose-for item)))
+         (comment-str (or comment-prefix comment-start)))
+    (unless purpose
+      (setq purpose 'p))
+    ;; store entered purpose: it may be placed several times in a skeleton.
     (setq pel--skel-last-purpose purpose)
-    (if (string= purpose "")
-        ;; when user did not specify a purpose leave a tempo marker in place.
-        (list 'l text 'p 'n)
-      (list 'l text 'n))))
+    (list 'l
+          comment-str " " (or title (capitalize item)) " " purpose 'n)))
 
 ;; --
 ;; Author
