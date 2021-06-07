@@ -6,7 +6,7 @@ Developing Erlang with PEL
 :Project: `PEL Project home page`_
 :Created:  Thursday, June  3 2021.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2021-06-03 10:29:42, by Pierre Rouleau.
+:Modified: 2021-06-07 11:44:15, updated by Pierre Rouleau.
 :Copyright: © 2021, Pierre Rouleau
 
 
@@ -62,16 +62,40 @@ Installing Erlang
 =================
 
 Instructions on how to install Erlang in various ways and how to install
-Erlang man files is available in the `Installing Erlang`_ document.
+Erlang man files is available in the `Installing Erlang`_ document.  This
+document includes the following sections:
 
+- Installing Erlang:
+
+  - `Installing Erlang using Homebrew`_
+  - `Using Erlang Installer from Erlang Solutions`_
+  - `Using Kerl to build Erlang from source code`_
+  - `Using asdf-vm to build Erlang from source code`_
+
+- Further installation steps:
+
+  - `Manual installation of Erlang OTP Documentation and Man Files`_
+  - `Creating whatis files for Erlang man pages`_
+  - `Using Erlang Man files within Emacs`_
+  - `Using Specialized OS Shells for Erlang`_
+  - `Using PEL with Specialized Shells for Erlang to Edit Erlang`_
 
 .. ---------------------------------------------------------------------------
 
 
-.. _issue: https://github.com/pierre-rouleau/pel/issues
-.. _discussions: https://github.com/pierre-rouleau/pel/discussions
-.. _Installing Erlang: https://github.com/pierre-rouleau/about-erlang/blob/master/doc/installing-erlang.rst
-.. _PEL Project home page: https://github.com/pierre-rouleau/pel#readme
+.. _issue:                                                         https://github.com/pierre-rouleau/pel/issues
+.. _discussions:                                                   https://github.com/pierre-rouleau/pel/discussions
+.. _Installing Erlang:                                             https://github.com/pierre-rouleau/about-erlang/blob/master/doc/installing-erlang.rst
+.. _PEL Project home page:                                         https://github.com/pierre-rouleau/pel#readme
+.. _Installing Erlang using Homebrew:                              https://github.com/pierre-rouleau/about-erlang/blob/master/doc/installing-erlang-hb.rst
+.. _Using Erlang Installer from Erlang Solutions:                  https://github.com/pierre-rouleau/about-erlang/blob/master/doc/installing-erlang-ei.rst
+.. _Using Kerl to build Erlang from source code:                   https://github.com/pierre-rouleau/about-erlang/blob/master/doc/installing-erlang-kerl.rst
+.. _Using asdf-vm to build Erlang from source code:                https://github.com/pierre-rouleau/about-erlang/blob/master/doc/installing-erlang-asdf.rst
+.. _Manual installation of Erlang OTP Documentation and Man Files: https://github.com/pierre-rouleau/about-erlang/blob/master/doc/installing-erlang-man-files.rst
+.. _Creating whatis files for Erlang man pages:                    https://github.com/pierre-rouleau/about-erlang/blob/master/doc/whatis-files.rst
+.. _Using Erlang Man files within Emacs:                           https://github.com/pierre-rouleau/about-erlang/blob/master/doc/erlang-man-with-emacs.rst
+.. _Using Specialized OS Shells for Erlang:                        https://github.com/pierre-rouleau/about-erlang/blob/master/doc/specialized-shells.rst
+.. _Using PEL with Specialized Shells for Erlang to Edit Erlang:   https://github.com/pierre-rouleau/about-erlang/blob/master/doc/editing-erlang-with-pel.rst
 
 
 
