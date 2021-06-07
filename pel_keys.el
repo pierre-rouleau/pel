@@ -3005,7 +3005,8 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
     (pel-ensure-package alchemist from: melpa)
     (pel-autoload-file alchemist for:
                        alchemist-iex-mode
-                       alchemist-iex-run))
+                       alchemist-iex-run)
+    (define-key pel:for-elixir "z"         #'alchemist-iex-run))
   (when pel-use-elixir-exunit
     (pel-ensure-package exunit from: melpa)
     (pel-autoload-file exunit for:
