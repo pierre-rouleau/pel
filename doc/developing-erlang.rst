@@ -6,7 +6,7 @@ Developing Erlang Code with PEL
 :Project: `PEL Project home page`_
 :Created:  Thursday, June  3 2021.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2021-06-07 11:49:23, updated by Pierre Rouleau.
+:Modified: 2021-06-07 16:25:29, updated by Pierre Rouleau.
 :Copyright: © 2021, Pierre Rouleau
 
 
@@ -79,6 +79,7 @@ document includes the following sections:
   - `Using Erlang Man files within Emacs`_
   - `Using Specialized OS Shells for Erlang`_
   - `Using PEL with Specialized Shells for Erlang to Edit Erlang`_
+  - `The ~/.erlang startup file`_
 
 .. ---------------------------------------------------------------------------
 
@@ -96,6 +97,7 @@ document includes the following sections:
 .. _Using Erlang Man files within Emacs:                           https://github.com/pierre-rouleau/about-erlang/blob/master/doc/erlang-man-with-emacs.rst
 .. _Using Specialized OS Shells for Erlang:                        https://github.com/pierre-rouleau/about-erlang/blob/master/doc/specialized-shells.rst
 .. _Using PEL with Specialized Shells for Erlang to Edit Erlang:   https://github.com/pierre-rouleau/about-erlang/blob/master/doc/editing-erlang-with-pel.rst
+.. _The ~/.erlang startup file:                                    https://github.com/pierre-rouleau/about-erlang/blob/master/doc/file-erlang-startup.rst
 
 
 
