@@ -1,12 +1,12 @@
-==========================
-Developing Erlang with PEL
-==========================
+===============================
+Developing Erlang Code with PEL
+===============================
 
 :Home URL: https://github.com/pierre-rouleau/pel/blob/master/doc/developing-erlang.rst
 :Project: `PEL Project home page`_
 :Created:  Thursday, June  3 2021.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2021-06-07 11:44:15, updated by Pierre Rouleau.
+:Modified: 2021-06-07 11:49:23, updated by Pierre Rouleau.
 :Copyright: © 2021, Pierre Rouleau
 
 
