@@ -229,7 +229,7 @@ On error issue a warning describing the error and return nil."
          (format "version-erl failed with exit code: %S.
 Cannot detect Erlang version!" (car exit-code.version))
          :error)
-        nil)))
+`        nil)))
    ;;
    ((and (consp pel-erlang-version-detection-method)
          (eq (car pel-erlang-version-detection-method) 'by-envvar))
@@ -249,12 +249,17 @@ Can't detect Erlang version." pel-erlang-version-detection-method)
        :error)
       nil)))
 
+;;-pel-autoload
+(defun pel-show-erlang-version ()
+  "Display version of Erlang and erlang.el."
+  (interactive)
+  (message "Erlang version: %s, erlang.el version: %s"
+           (pel-erlang-version)
+           (if (and (require 'erlang nil :noerror)
+                    (fboundp 'erlang-version))
+               (erlang-version)
+             "Unknown - not loaded!")))
 
-(defun pel-erlang-otp-dirname ()
-  "Return the name of the directory that Erlang OTP man directory.
-The returned string does not end with a slash or back-slash.
-This value may be stored into the variable `erlang-root-dir'"
-  "AAA")
 ;; ---------------------------------------------------------------------------
 
 

@@ -2751,7 +2751,8 @@ d-mode not added to ac-modes!"
   (advice-add 'erlang-mode :before #'pel--erlang-mode-setup)
 
   ;; bind other erlang keys
-  (define-key pel:for-erlang      "?"         'erlang-version)
+  (define-key pel:for-erlang      "z"         'erlang-shell)
+  (define-key pel:for-erlang      "?"         'pel-show-erlang-version)
   (define-key pel:erlang-function "N"         'pel-beginning-of-next-defun)
   (define-key pel:erlang-function "P"         'beginning-of-defun)
   (define-key pel:erlang-function "n"         'pel-next-erl-function)
@@ -5841,7 +5842,7 @@ the ones defined from the buffer now."
 (when pel-use-python
   (define-key pel:execute  "p" #'run-python))
 (when pel-use-erlang
-  (define-key pel:execute  "r"  'erlang-shell))
+  (define-key pel:execute  "r"  'erlang-shell)) ; e (for Erlang) taken by eshell
 (when (and pel-use-elixir pel-use-alchemist)
   (define-key pel:execute  "x"  'alchemist-iex-run))
 (define-key pel:execute    "s" #'shell)
