@@ -503,15 +503,21 @@ previous section."
 ;;
 ;; Call hierarchy:
 ;;
-;; * pel-rst-set-ref-bookmark
-;; * pel-rst-goto-ref-bookmark
-;;   - pel--rst-bookmark-exists-p
-;;     - pel-rst-ref-bookmark-name
-;; * pel-rst-makelink
-;;   - pel-rst-anchor-escaped
-;;   - pel-goto-next-empty-line
-;;   - pel-rst-goto-ref-bookmark
-;;   - pel--rst-bookmark-exists-p
+;; * `pel-rst-set-ref-bookmark'
+;;   - `pel-rst-ref-bookmark-name'
+;;   - `pel--bookmark-exists-p'
+;;
+;; * `pel-rst-goto-ref-bookmark'
+;;   - `pel--rst-bookmark-exists-p'
+;;     - `pel-rst-ref-bookmark-name'
+;;
+;; * `pel-rst-makelink'
+;;   - `pel--rst-bookmark-exists-p'
+;;   - `pel--space-for-extra-link-p'
+;;     - `pel-forward-empty-line-p'
+;;   - `pel-rst-goto-ref-bookmark'
+;;   - `pel-goto-next-empty-line'
+;;   - `pel-rst-anchor-escaped'
 
 (defvar-local pel--rst-file-was-saved-once-p nil
   "Remember if the rst file was saved once when creating a bookmark.")
@@ -533,13 +539,25 @@ This bookmark identifies the location for the next reStructuredText reference."
   ;; Although the docs states that the bookmark file is loaded automatically
   ;; for some reason sometimes it's not.  So make sure it is because the file
   ;; may have a bookmark for the edited reStructuredText file.
+  ;; If it was loaded don't load it again as this would create duplicates.
   (unless pel--bookmark-file-loaded-p
     (when (and (require 'bookmark nil :no-error)
                (boundp 'bookmark-default-file)
-               (fboundp 'bookmark-load))
-      (bookmark-load bookmark-default-file)
+               (fboundp 'bookmark-load)
+               (fboundp 'bookmark-all-names))
+      ;; if there are bookmark names, its' already loaded.
+      (unless (bookmark-all-names)
+        (bookmark-load bookmark-default-file))
       (setq pel--bookmark-file-loaded-p t)))
   (format "RST-%s" (pel-current-buffer-filename)))
+
+(defun pel--bookmark-exists-p (bookmark-name)
+  "Return non-nil if BOOKMARK-NAME is already present in the bookmark file.
+Return nil otherwise."
+  (if (and (require 'bookmark ` nil :noerror)
+           (fboundp 'bookmark-all-names))
+      (member bookmark-name (bookmark-all-names))
+    (error "Cannot load bookmark.el to access bookmark-all-names!")))
 
 ;;-pel-autoload
 (defun pel-rst-set-ref-bookmark ()
@@ -555,7 +573,14 @@ beginning of the first of the 2 lines."
                (equal (pel-chars-at-point 4) ".. _"))
     (insert "\n\n")
     (forward-line -2))
-  (bookmark-set (pel-rst-ref-bookmark-name)))
+  ;; If the bookmark already exists, replace it,
+  ;; otherwise create a new one.
+  (let ((rst-bookmark-name (pel-rst-ref-bookmark-name)))
+    (when (pel--bookmark-exists-p rst-bookmark-name)
+      (bookmark-delete rst-bookmark-name))
+    (bookmark-set rst-bookmark-name)))
+
+;; --
 
 (defun pel--rst-bookmark-exists-p ()
   "Return non-nil if the RST bookmark exists, nil otherwise."
@@ -577,10 +602,7 @@ located."
     (user-error "The bookmark does not exists yet.  \
 Use pel-set-ref-bookmark to create it!")))
 
-(defun pel-forward-empty-line-p ()
-  "Return position right after next empty line below, nil otherwise."
-  (save-excursion
-    (search-forward "\n\n" nil :noerror)))
+;; --
 
 (defun pel-goto-next-empty-line (&optional no-error)
   "Move point to the beginning of the next empty line if there is one.
@@ -597,6 +619,11 @@ NO-ERROR is non-nil."
   "Return the TEXT escaped, ready to be used in a reStructuredText anchor.
 - Replaces each colon with a back-slash escaped colon."
   (replace-regexp-in-string ":" "\\:" text nil :literal))
+
+(defun pel-forward-empty-line-p ()
+  "Return position right after next empty line below, nil otherwise."
+  (save-excursion
+    (search-forward "\n\n" nil :noerror)))
 
 (defun pel--space-for-extra-link-p ()
   "Return t if there is space for an extra link, nil otherwise."
