@@ -2360,7 +2360,7 @@ d-mode not added to ac-modes!"
 (define-pel-global-prefix pel:for-elisp  (kbd "<f11> SPC l"))
 (define-pel-global-prefix pel:elisp-skel (kbd "<f11> SPC l <f12>"))
 
-(define-key pel:for-elisp "R"  'ielm)
+(define-key pel:for-elisp "z"  'ielm)
 (define-key pel:for-elisp "D"  'pel-add-dir-to-loadpath)
 (pel--lisp-languages-map-for pel:for-elisp)
 (define-key pel:for-elisp  (kbd "M-l")  'pel-toggle-lisp-modes)
