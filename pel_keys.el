@@ -3179,6 +3179,7 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 
   (define-pel-global-prefix pel:for-python (kbd "<f11> SPC p"))
   (define-key pel:for-python    "."        'pel-find-thing-at-point)
+  (define-key pel:for-python    "z"        'run-python)
   (define-key pel:for-python (kbd "M-9")  #'show-paren-mode)
   (define-key pel:for-python (kbd "M-p")  #'superword-mode)
   (when pel-use-plantuml
