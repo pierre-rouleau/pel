@@ -1107,7 +1107,8 @@ interactively."
   (define-key pel: (kbd "M--") 'smart-dash-mode)
 
   ;; when we can, activate a red lighter for Smart dash
-  (when pel-use-delight
+  (when (and pel-use-delight
+             (fboundp 'delight))
     (delight 'smart-dash-mode
              (propertize " Sm-" 'font-lock-face '(:foreground "red"))
              "smart-dash"))
