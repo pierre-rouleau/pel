@@ -4273,6 +4273,9 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:abbrev "r" #'read-abbrev-file)
 (define-key pel:abbrev "s" #'write-abbrev-file)
 (define-key pel:abbrev "u" #'unexpand-abbrev)
+(define-key pel:abbrev "$"  'pel-ispell-word-then-abbrev)
+(define-key pel: (kbd "M-$")  'pel-ispell-word-then-abbrev)
+
 
 (if pel--cached-abbrev-file-name
     ;; If PEL is informed to delay load the abbreviation file
