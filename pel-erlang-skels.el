@@ -393,8 +393,13 @@ line description if it was identified."
           "\n"))
 
 (defun pel-erlang-file-is-module ()
-  "Return t when current Erlang file is a module, nil if it's a header file."
+  "Return t when current Erlang file is a .erl file, nil otherwise."
   (string= (pel-current-buffer-file-extension) "erl"))
+
+(defun pel-erlang-file-is-header ()
+  "Return t when current Erlang file is a header file, nil otherwise."
+  (string= (pel-current-buffer-file-extension) "hrl"))
+
 
 (defvar pel-skel-large-header
   '(o (pel-erlang-skel-optional-separator)
@@ -412,6 +417,17 @@ line description if it was identified."
                                      "@copyright"))
       (pel-erlang-skel-separator)
       (pel-erlang-skel-file-doc)
+      (pel-tempo-include-when
+       (pel-erlang-file-is-header)
+       (let ((fbname (upcase (pel-current-buffer-filename :sans-directory
+                                                          :sans-extension))))
+         (list (format "-ifndef(__%s_HRL__).\n" fbname)
+               (format "-define(__%s_HRL__, 1).\n" fbname)
+               (pel-erlang-skel-optional-separator)
+               'n
+               'p 'n 'n
+               (pel-erlang-skel-optional-separator)
+               "-endif.\n")))
       (pel-tempo-include-when (pel-erlang-file-is-module)
                               erlang-skel-small-header))
   "*The template of a large header.
