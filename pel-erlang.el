@@ -33,7 +33,8 @@
 (require 'pel--options)         ; use: pel-erlang-version-detection-method
 (require 'pel-fs)               ; use: pel-exec-pel-bin
 
-
+;; newcomment is always available
+(require 'newcomment)           ; use: comment-dwim
 ;; -------
 ;; Erlang Shell Control
 
@@ -278,7 +279,6 @@ Can't detect Erlang version." pel-erlang-version-detection-method)
 
 ;; ---------------------------------------------------------------------------
 
-
 ;;-pel-autoload
 (defun pel-erlang-toggle-syntax-checker ()
   "Toggle the syntax checker mode on/off.
@@ -288,7 +288,47 @@ or flymake, as selected by the user-option variable
   (interactive)
   (pel-toggle-syntax-check-mode 'pel-use-erlang-syntax-check))
 
-;; -----------------------------------------------------------------------------
+
+;; ---------------------------------------------------------------------------
+;; Erlang Comments
+;; ---------------
+
+(defun pel--erlang-line-3%-comment-p ()
+  "Return t if the %%% style comment should be used at point, nil otherwise."
+  (save-excursion
+    (when (region-active-p)
+      (goto-char (region-beginning)))
+    (if (bobp)
+        t
+      (when (eq (current-column) 0)
+        (ignore-errors
+          (forward-line -1)
+          (string= "%%%"
+                   (buffer-substring-no-properties (point)
+                                                   (+ 3 (point)))))))))
+
+;;-pel-autoload
+(defun pel-erlang-comment-dwim (&optional arg)
+  "Insert comment like `comment-dwim' with ability to extend \"%%%\" comments.
+The \"%%%\" comment style is only placed at the beginning of a line,
+when the line is the first line of a buffer or a line that follows a line that
+starts with a \"%%%\" style comment.
+When commenting a region, if the region starts just below a line with \"%%%\"
+comment the new comment uses \"%%%\" comment as well.
+
+In all other cases the %% style comment is used at the beginning of a line
+and a single % is used after the beginning of a line."
+  ;; Erlang comments at beginning of line might use 2 or 3 percent characters.
+  ;; Check the style used on the preceding line and if it is using 3 percent
+  ;; characters, force the comment-add to 2 to ensure that we use "%%% " for
+  ;; comment.
+  (interactive "*P")
+  (if (pel--erlang-line-3%-comment-p)
+      (let ((comment-add 2))
+        (comment-dwim arg))
+    (comment-dwim arg)))
+
+;;; --------------------------------------------------------------------------
 (provide 'pel-erlang)
 
 ;;; pel-erlang.el ends here

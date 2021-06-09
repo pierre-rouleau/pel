@@ -260,7 +260,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-beginning-of-next-clause
     pel-previous-erl-function
     pel-next-erl-function
-    pel-erlang-toggle-syntax-checker)
+    pel-erlang-toggle-syntax-checker
+    pel-erlang-comment-dwim)
   (pel-autoload-function "pel-erlang" for:
     pel-erlang-shell-mode-init)
 

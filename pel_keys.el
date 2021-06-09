@@ -2779,6 +2779,9 @@ d-mode not added to ac-modes!"
     (define-key pel:for-erlang "u"     'pel-render-commented-plantuml))
 
   (pel-eval-after-load erlang
+    ;; Use pel-erlang-comment-dwim instead of comment-dwim
+    (when (boundp 'erlang-mode-map)
+      (define-key erlang-mode-map (kbd "M-;") 'pel-erlang-comment-dwim))
     ;; Set erlang-root-dir from the content of pel-erlang-man-parent-rootdir
     (if (boundp 'erlang-root-dir)
         (when pel-erlang-man-parent-rootdir
@@ -2793,7 +2796,7 @@ Invalid directory %s specified by pel-erlang-man-parent-rootdir"
                                :error)))
            ((consp pel-erlang-man-parent-rootdir)
             (let* ((envvar (cdr pel-erlang-man-parent-rootdir))
-                  (path  (getenv envvar)))
+                   (path  (getenv envvar)))
               (if (and path
                        (file-exists-p path))
                   (setq erlang-root-dir path)
@@ -2812,7 +2815,7 @@ via environment variable %s"
                (display-warning 'pel-use-erlang (format "\
 Invalid path specified by pel-erlang-exec-path: %s
 Ignored!"
-                                                  pel-erlang-exec-path)
+                                                        pel-erlang-exec-path)
                                 :error)))
             ((consp pel-erlang-exec-path)
              (let* ((envvar (cdr pel-erlang-exec-path))
