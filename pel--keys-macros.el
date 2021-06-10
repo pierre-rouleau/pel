@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-02 11:38:14, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-09 17:43:21, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -164,7 +164,9 @@
     ([f11 32 ?e]     "pl-erlang"        pel-pkg-for-erlang      (erlang
                                                                  erldoc
                                                                  edts
-                                                                 auto-highlight-symbol))
+                                                                 auto-highlight-symbol
+                                                                 lsp-mode
+                                                                 lsp-ui))
     ([f11 32 ?e f12] "pl-erlang"        pel-erlang-code-style)
     ([f11 32 ?f]     "pl-forth"         pel-pkg-for-forth)
     ([f11 32 ?g]     "pl-go"            pel-pkg-for-go          (go
@@ -355,8 +357,12 @@
     ;; For keys with Meta, make sure the Esc equivalent is also entered
     ;; to allow the F1, F2, F3 entries to be accessible via the Esc key.
     ;; Because: in Emacs ``M-a`` can also be typed ``Esc a``
-    (,(kbd "<f11> M-/")     "hide-show-code"   pel-pkg-for-hide-show  (hideshow hide-lines))
-    ([f11 27 ?/]            "hide-show-code"   pel-pkg-for-hide-show  (hideshow hide-lines))
+    (,(kbd "<f11> M-/")     "hide-show-code"   pel-pkg-for-hide-show  (hideshow
+                                                                       hide-lines
+                                                                       origami))
+    ([f11 27 ?/]            "hide-show-code"   pel-pkg-for-hide-show  (hideshow
+                                                                       hide-lines
+                                                                       origami))
     (,(kbd "<f11> M-c")     "completion-input" pel-pkg-for-completion (helm
                                                                        ido
                                                                        ido-completing-read-plus
@@ -1082,11 +1088,11 @@ major mode name without the -mode suffix.  Something like
 emacs-lisp, c, python, etc...
 
 The KEY-PREFIX argument is a PEL mode-specific key-prefix
-unquoted symbol.  Something like pel:for-c pel-for-make.  That
+unquoted symbol.  Something like pel:for-c and pel-for-make.  That
 symbol must already been defined prior to the macro invocation,
 and it should have been defined with a `define-pel-global-prefix'
-form.  If KEY-PREFIX is nil or :no-f12-keys no <f12> and <M-f12>
-PEL key prefix are created for the major mode.
+form.  If KEY-PREFIX is nil or has the value :no-f12-keys then
+no <f12> and <M-f12> PEL key prefixes are created for the major mode.
 
 The BODY is a set of forms to execute when the major mode hook
 executes, at the moment when a buffer with that major mode opens
@@ -1115,7 +1121,7 @@ and after the local variables have been loaded."
     ;; Add the code that activates the minor modes identified by the
     ;;`pel-<mode>-activates-minor-modes' user-option.
     (setq body (append body `((pel-turn-on-minor-modes-in ,gn-minor-modes))))
-    ;; return generated code
+    ;; return the following generated code:
     `(progn
        (defun ,gn-fct2 ()
          ,gn-docstring2

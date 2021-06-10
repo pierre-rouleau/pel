@@ -339,6 +339,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     *pel-use-helpful* user-option is turned on.  Its commands are bound to the
     ``<f1> <f2>`` key prefix.
 - Update: *Hide/Show*:
+  - New: add support for the **origami-mode** code folding package, activated
+    when the *pel-use-origami* is turned on (set to *t*) or indirectly when
+    *pel-use-erlang-ls* is set. Provides key bindings which also include
+    bindings for command that hide/show comments and docstrings.
   - New: add support for the *hide-lines* external package, activated when the
     *pel-use-hide-lines* user-option is turned on (set to *t*). It provides
     commands bound to the ``<f11> M-/`` PEL key prefix as well as the ``C-c

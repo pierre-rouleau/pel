@@ -1641,6 +1641,22 @@ store them inside a directory and identify that directory here."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-origami nil
+  "Control whether PEL uses the origami package.
+This is a text folding package that supports several major mode
+and is also supported by LSP servers."
+  :group 'pel-pkg-for-hide-show
+  :link '(url-link :tag "origami @ GitHub"
+                   "https://github.com/gregsexton/origami.el")
+  :link '(url-link :tag "My fork - until work is merged"
+                   "https://github.com/pierre-rouleau/origami.el")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-origami :package-is :in-utils)
+(pel-put 'pel-use-origami :requires-package '(quote ((elpa .dash)
+                                                     (elpa . s))))
+(pel-put 'pel-use-origami :also-required-when 'pel-use-erlang-ls)
+
 ;; ---------------------------------------------------------------------------
 ;; Highlight Support
 ;; -----------------
@@ -7365,6 +7381,9 @@ indexing system."
 
 (when pel-use-iflipb
   (setq pel-use-hydra t))
+
+(when pel-use-erlang-ls
+  (setq pel-use-origami t))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel--options)

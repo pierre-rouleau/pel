@@ -3843,10 +3843,10 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 (define-key pel:comment "m"            'pel-comment-middle)
 (define-key pel:comment "e"            'pel-comment-end)
 (define-key pel:comment "u"            'uncomment-region)
-(define-key pel:comment "d"            'pel-toggle-all-docstrings)
-(define-key pel:comment "D"            'pel-hide/show-all-docstrings)
-(define-key pel:comment "'"            'pel-toggle-docstring)
-(define-key pel:comment "\""           'pel-hide/show-docstring)
+(define-key pel:comment "D"            'pel-toggle-all-docstrings)
+(define-key pel:comment "\""           'pel-hide/show-all-docstrings)
+(define-key pel:comment "d"            'pel-toggle-docstring)
+(define-key pel:comment "'"            'pel-hide/show-docstring)
 (define-key pel:comment "?"            'pel-comment-show-variables)
 
 (when pel-use-hide-comnt
@@ -3876,6 +3876,50 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
   (define-key pel:hide-show (kbd "M-b") 'hide-blocks-matching)
   (define-key pel:hide-show (kbd "M-p") 'hide-blocks-not-matching))
 
+(when pel-use-origami
+  (pel-install-github-files "pierre-rouleau/origami.el/master"
+                            '("origami.el"
+                              "origami-parsers.el"))
+  (pel-autoload-file origami for:
+                     origami-mode
+                     global-origami-mode)
+
+  ;; TODO: find why using M-o for origami-mode prevents the F11 M-/ F1, F2 and F3
+  ;;       keys to work properly.
+  (define-key pel:hide-show "o" 'origami-mode)
+  (define-key pel:hide-show "O" 'global-origami-mode)
+  (defun pel--activate-origami ()
+    "Activate origami-mode key map bindings."
+    (when (boundp 'origami-mode-map)
+      (define-key origami-mode-map (kbd "M-/ M-o") 'origami-open-node)
+      (define-key origami-mode-map (kbd "M-/ O")   'origami-open-node-recursively)
+      (define-key origami-mode-map (kbd "M-/ M-s") 'origami-show-node)
+      (define-key origami-mode-map (kbd "M-/ M-c") 'origami-close-node)
+      (define-key origami-mode-map (kbd "M-/ C")   'origami-close-node-recursively)
+      (define-key origami-mode-map (kbd "M-/ M-t") 'origami-toggle-node)
+      (define-key origami-mode-map (kbd "M-/ M->") 'origami-forward-toggle-node)
+      (define-key origami-mode-map (kbd "M-/ TAB")  'origami-recursively-toggle-node)
+      (define-key origami-mode-map (kbd "M-/ M-O") 'origami-open-all-nodes)
+      (define-key origami-mode-map (kbd "M-/ M-C") 'origami-close-all-nodes)
+      (define-key origami-mode-map (kbd "M-/ M-T") 'origami-toggle-all-nodes)
+      (define-key origami-mode-map (kbd "M-/ M-.") 'origami-show-only-node)
+      (define-key origami-mode-map (kbd "M-/ M-p") 'origami-previous-fold)
+      (define-key origami-mode-map (kbd "M-/ M-n") 'origami-next-fold)
+      (define-key origami-mode-map (kbd "M-/ f")   'origami-forward-fold)
+      (define-key origami-mode-map (kbd "M-/ M-f") 'origami-forward-fold-same-level)
+      (define-key origami-mode-map (kbd "M-/ M-b") 'origami-backward-fold-same-level)
+      (define-key origami-mode-map (kbd "M-/ M-u") 'origami-undo)
+      (define-key origami-mode-map (kbd "M-/ M-U") 'origami-redo)
+      (define-key origami-mode-map (kbd "M-/ R")   'origami-reset)
+      (when pel-use-hippie-expand
+        (define-key origami-mode-map (kbd "M-/ M-/") 'hippie-expand))
+      (when pel-use-hide-comnt
+        (define-key origami-mode-map (kbd "M-/ M-;") 'hide/show-comments-toggle))
+      (define-key origami-mode-map (kbd "M-/ M-d")   'pel-toggle-docstring)
+      (define-key origami-mode-map (kbd "M-/ M-D")   'pel-toggle-all-docstrings))
+    (declare-function pel--activate-origami "pel_keys"))
+
+  (add-hook 'origami-mode-hook (function pel--activate-origami)))
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> ?`` : Help /apropos/info commands
 
