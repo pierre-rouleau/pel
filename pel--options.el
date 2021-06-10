@@ -5852,7 +5852,15 @@ of the value of the `pel-use-erlang-syntax-check' user-option."
          '(append (quote
                    ((elpa . lsp-mode )
                     (elpa . lsp-ui)
-                    (elpa . lsp-origami)))
+                    (elpa . lsp-origami)
+                    ;; lsp-origami requires origami but won't recognize
+                    ;; the version since it is in PEL utils.  To prevent
+                    ;; Emacs from complaining about lsp-origami missing
+                    ;; origami version 1.0 make sure the origami installed
+                    ;; in elpa is not removed by pel-cleanup.
+                    ;; TODO: remove all that once my PR in origami
+                    ;;       is merged.
+                    (elpa . origami)))
                   (when pel-use-helm
                     (quote
                      ((elpa . helm-lsp))))))
