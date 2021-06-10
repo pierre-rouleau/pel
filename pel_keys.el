@@ -3878,8 +3878,10 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 
 (when pel-use-origami
   (pel-install-github-files "pierre-rouleau/origami.el/master"
-                            '("origami.el"
-                              "origami-parsers.el"))
+                            ;; download/compile origami-parsers first because
+                            ;; it is required by origami.el.
+                            '("origami-parsers.el"
+                              "origami.el"))
   (pel-autoload-file origami for:
                      origami-mode
                      global-origami-mode)
