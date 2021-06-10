@@ -251,9 +251,9 @@ Done in this function to allow advising libraries that remap these keys."
 ;; -------------------------------
 (when pel-use-delight
   (pel-ensure-package delight from: melpa)
-  (when pel-delight-specs
-    (delight pel-delight-specs))
-  )
+  (when (and pel-delight-specs
+             (fboundp 'delight))
+    (delight pel-delight-specs)))
 
 ;; ---------------------------------------------------------------------------
 ;; ace-link
