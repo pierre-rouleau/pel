@@ -250,7 +250,10 @@ Done in this function to allow advising libraries that remap these keys."
 ;; delight - control mode lighters
 ;; -------------------------------
 (when pel-use-delight
-  (pel-ensure-package delight from: melpa))
+  (pel-ensure-package delight from: melpa)
+  (when pel-delight-specs
+    (delight pel-delight-specs))
+  )
 
 ;; ---------------------------------------------------------------------------
 ;; ace-link

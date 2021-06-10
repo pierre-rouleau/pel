@@ -2848,6 +2848,29 @@ This provides ability to control the lighter of major and minor modes."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-delight-specs
+  '((origami-mode "⋱⋯" "origami")
+    (abbrev-mode " Abv" abbrev)
+    (rainbow-mode)
+    (overwrite-mode " Ov" t)
+    (emacs-lisp-mode ("ELisp" (lexical-binding "" ":Dyn")) :major))
+  "Identify delight specifications to create/modify/disable lighters.
+
+Specify the mode-line lighters modifications you need here.
+
+The data stored in this user-option corresponds to the data type
+accepted by the function `delight'. See its documentation for
+more details.
+
+Some are provided by default to help show the possibilities of
+the supported syntax.
+
+PEL applies them when the `pel-use-delight' is turned on."
+  :group 'pel-pkg-for-modeline
+  :link '(url-link :tag "delight @ Emacs Wiki"
+                   "https://www.emacswiki.org/emacs/DelightedModes")
+  :type '(repeat sexp))
+
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-navigation
 ;; ----------------------
