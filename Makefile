@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-06-10 23:25:02, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-06-11 15:11:20, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -416,6 +416,7 @@ help:
 	@printf " * make clean_tar   - remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
 	@printf " * make clean_mypelpa - remove the directory $(PELPA_DIR)\n"
 	@printf " * make test        - Run the regression tests.\n"
+	@printf " * make timeit      - Check startup time of Emacs with and without packages\n"
 	@printf " * make local-pkg   - build local PEL melpa archive: make pkg mypelpa.\n"
 	@printf " * make pkg         - Build the tar file inside $(OUT_DIR).\n"
 	@printf " * make mypelpa     - Copy the tar file into a local package archive.\n"
@@ -660,6 +661,21 @@ test:
 	$(EMACS) --batch -L . -l ert -l test/pel-list-test.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-package-test.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l $(EMACS_INIT) -l pel-package.el -f pel-package-info
+
+# ----------------------------------------------------------------------------
+# Startup time measurement
+# ------------------------
+
+.PHONY:	timeit
+timeit:
+	@printf "***** Running Emasc startup time measurement tests\n"
+	@printf "** Report Configuration settings.\n"
+	$(EMACS) --batch -L . -l $(EMACS_INIT) -l pel-package.el -f pel-package-info
+	@printf "\n"
+	@printf "** Time mesaurement:\n"
+	time -p $(EMACS) -nw -Q -e kill-emacs
+	time -p $(EMACS) -nw -q -e kill-emacs
+	time -p $(EMACS) -nw -e kill-emacs
 
 # ----------------------------------------------------------------------------
 # Target to control file linting with the elisp-lint package.
