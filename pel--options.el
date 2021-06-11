@@ -891,7 +891,8 @@ You must also activate the user option variable  `pel-use-ivy' to use counsel."
                                          '((elpa . counsel))))
 ;; counsel uses the request package but does not identify it as part
 ;; of its dependencies. Therefore I add the dependency info here.
-(pel-put 'pel-use-counsel :requires-package '(quote ((elpa . request))))
+(pel-put 'pel-use-counsel :requires-package '(quote ((elpa . lv)
+                                                     (elpa . request))))
 
 (defcustom pel-use-counsel-osx-app nil
   "Control whether `counsel-osx-app' is used when counsel is used on macOS.
