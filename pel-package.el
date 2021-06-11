@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-28 14:10:47, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-11 15:04:29, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -576,9 +576,11 @@ of a restriction lock."
          (n-utils-locked    (- n-utils-all n-utils-bdeps))
          (user-options      (pel-user-options))
          (overview  (format "\
+size of load-path           : %d directories
 Number of PEL user-options  : %3d (%d are active)
 PEL activated elpa  packages: %3d (%3d dependants, %d imposed by restrictions)
 PEL Activated utils files   : %3d (%3d dependants, %d imposed by restrictions)"
+                            (length load-path)
                             (length user-options)
                             (length (seq-filter
                                      (lambda (x)
