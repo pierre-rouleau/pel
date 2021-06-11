@@ -917,7 +917,7 @@ selection package which provides a large number of commands you
 can execute on the completion list.
 The initial completion mode is set by `pel-initial-completion-mode'.
 
-Note that `pel-use-help-cscope' indirectly activates `pel-use-helm'."
+Note that `pel-use-helm-cscope' indirectly activates `pel-use-helm'."
   :link '(url-link :tag "Helm home page"
                    "https://emacs-helm.github.io/helm/")
   :link '(url-link :tag "A package in a league of its own: Helm"
@@ -925,7 +925,7 @@ Note that `pel-use-help-cscope' indirectly activates `pel-use-helm'."
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-helm :also-required-when '(or pel-use-help-cscope
+(pel-put 'pel-use-helm :also-required-when '(or pel-use-helm-cscope
                                                 pel-use-helm-xref))
 
 (defconst pel-USE-IDO     1 "Bitmask identifying Ido.      DON'T CHANGE!")
