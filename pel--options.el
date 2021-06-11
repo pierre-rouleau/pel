@@ -1652,7 +1652,8 @@ and is also supported by LSP servers."
                    "https://github.com/pierre-rouleau/origami.el")
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-origami :package-is :in-utils)
+(pel-put 'pel-use-origami :package-is '(quote ((utils . origami)
+                                               (utils . origami-parsers))))
 (pel-put 'pel-use-origami :requires-package '(quote ((elpa . dash)
                                                      (elpa . s))))
 (pel-put 'pel-use-origami :also-required-when 'pel-use-erlang-ls)
