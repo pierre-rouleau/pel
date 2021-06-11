@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-06-08 14:08:08, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-06-10 23:25:02, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -640,6 +640,7 @@ pel_keys.elc: pel_keys.el
 	$(EMACS) --batch -L . -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-list-test.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-package-test.el -f ert-run-tests-batch-and-exit
+	$(EMACS) --batch -L . -l $(EMACS_INIT) -l pel-package.el -f pel-package-info
 
 # NOTE: make sure the tests above are the same as the test target below!
 #             It's done this way so that if nothing has changed and `make`
@@ -658,6 +659,7 @@ test:
 	$(EMACS) --batch -L . -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-list-test.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-package-test.el -f ert-run-tests-batch-and-exit
+	$(EMACS) --batch -L . -l $(EMACS_INIT) -l pel-package.el -f pel-package-info
 
 # ----------------------------------------------------------------------------
 # Target to control file linting with the elisp-lint package.
