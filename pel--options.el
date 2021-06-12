@@ -72,6 +72,7 @@
 ;;       - pel-pkg-for-org-mode
 ;;       - pel-pkg-for-reST
 ;;         - pel-reST-style
+;;       - pel-pkg-for-xml
 ;;       - pel-pkg-for-yaml
 ;;     - pel-pkg-for-modeline
 ;;     - pel-pkg-for-navigation
@@ -2812,6 +2813,24 @@ itself is not available."
 ;; style - 3 : package names: not used for rst templates
 ;; style - 4 : file variable: not used for rst templates
 ;; style - 5 : doc section titles: not used for rst templates.
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; XML support
+;; -----------
+
+(defgroup pel-pkg-for-xml nil
+  "PEL XML and derivative support."
+  :group 'pel-pkg-for-markup)
+
+(defcustom pel-use-osx-plist nil
+  "Control whether PEL activates the osx-plist file to parse macOS plist files."
+  :group 'pel-pkg-fox-xml
+  :link '(url-link :tag "mac osxPlist @ Emacs Wiki"
+                   "https://www.emacswiki.org/emacs/MacOSXPlist")
+  :link '(url-link :tag "osx-plist @ GitHub"
+                   "https://github.com/gonewest818/osx-plist")
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; YAML support

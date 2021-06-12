@@ -3421,6 +3421,12 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
       (imenup-add-defs-to-menubar))))
 
 ;; ---------------------------------------------------------------------------
+;; XML Support
+;; -----------
+(when pel-use-osx-plist
+  ;; Early support - no major mode - TODO: investigate enhancement.
+  (pel-ensure-package osx-plist from: melpa))
+;; ---------------------------------------------------------------------------
 ;; YAML Support
 ;; ------------
 
