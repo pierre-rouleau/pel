@@ -269,10 +269,10 @@ Done in this function to allow advising libraries that remap these keys."
   (pel-require-after-init ace-link 1.5)
   (pel-eval-after-load    ace-link
     (if (fboundp 'ace-link-setup-default)
-        (ace-link-setup-default))
-    (display-warning 'pel-use-ace-link
-                     "ace-link-setup-default is void"
-                     :error)))
+        (ace-link-setup-default)
+      (display-warning 'pel-use-ace-link
+                       "ace-link-setup-default is void"
+                       :error))))
 
 ;; ---------------------------------------------------------------------------
 ;; avy: fast tree movement
