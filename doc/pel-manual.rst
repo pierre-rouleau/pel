@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-06-04 18:22:08, updated by Pierre Rouleau.
+:Modified: 2021-06-13 13:19:35, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -449,58 +449,79 @@ You can also use a copy of the file `example/init/init-1.el`_ :
 
 .. code:: elisp
 
-          ;; -*-no-byte-compile: t; -*-
-          ;;; ---Example init.el file ---------------- Step 1----------------------------
-          ;;
-          ;; 1: Setup additional package sources: MELPA, MELPA-STABLE.
-          ;;    By default Emacs only identifies the gnu archive located at
-          ;;    URL "https://elpa.gnu.org/packages/".
-          ;;    Add the MELPA archives as they provide more packages.
-          (when (>= emacs-major-version 24)
-            (require 'package)
-            (setq package-enable-at-startup nil)
-            (if (version=  emacs-version "26.2")
-                (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
-            (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                                (not (gnutls-available-p))))
-                   (proto (if no-ssl "http" "https")))
-              (add-to-list 'package-archives
-                           (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-              (add-to-list 'package-archives
-                           (cons "melpa-stable"
-                                 (concat proto "://stable.melpa.org/packages/")) t))
-            (package-initialize))
+        ;; -*-no-byte-compile: t; -*-
+        ;;; ---Example init.el file ---------------- Step 1----------------------------
+        ;;
+        ;; 1: Setup additional package sources: MELPA, MELPA-STABLE.
+        ;;    By default Emacs only identifies the gnu archive located at
+        ;;    URL "https://elpa.gnu.org/packages/".
+        ;;    Add the MELPA archives as they provide more packages.
+        (when (>= emacs-major-version 24)
+          (if (< emacs-major-version 27)
+              ;; Emacs prior to 27
+              (progn
+                (require 'package)
+                (setq package-enable-at-startup nil)
+                (if (version= emacs-version "26.2")
+                    (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
+                (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                                    (not (gnutls-available-p))))
+                       (proto (if no-ssl "http" "https")))
+                  (add-to-list 'package-archives
+                               (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+                  (add-to-list 'package-archives
+                               (cons "melpa-stable"
+                                     (concat proto "://stable.melpa.org/packages/")) t))
+                (package-initialize))
+            ;; Emacs 27 or later support the `package-quickstart' feature which
+            ;; speeds-ups Emacs startup time.  This is a user-option which must be
+            ;; activated manually. The package feature is already set at this point.
+            ;; When package-quickstart is customized to t, Emacs 27 support 2 initialization
+            ;; files in the user-emacs-directory (which often is ~/.emacs.d), these are:
+            ;;
+            ;; - early-init.el  : loaded very early in the startup process before
+            ;;                    graphical elements are initialized and before the
+            ;;                    package manager is initialized.  The following
+            ;;                    variables should be set in early-init.el:
+            ;;                    - `package-load-list'
+            ;;                    - `package-user-dir'
+            ;; When package-quickstart is t, there's no need to call package-initialize.
+            (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/") t)
+            (add-to-list 'package-archives (cons "melpa-stable" "https://stable.melpa.org/packages/") t)
+            (unless package-quickstart
+              (package-initialize))))
 
-          ;; 2: Delay loading of abbreviation definitions
-          ;;     Disable loading the abbreviation file during Emacs initialization.
-          ;;     To do this: save and replace the content of the variable that holds
-          ;;     the file name of the abbreviation list with the name of a file
-          ;;     that does not exists.
-          ;;     Pass the original name to pel-init later to initialize properly.
-          ;;
-          ;; (setq pel--abbrev-file-name abbrev-file-name)
-          ;; (setq abbrev-file-name "~/abbrev_defs-invalid") ; use non-existing file name
+        ;; 2: Delay loading of abbreviation definitions
+        ;;     Disable loading the abbreviation file during Emacs initialization.
+        ;;     To do this: save and replace the content of the variable that holds
+        ;;     the file name of the abbreviation list with the name of a file
+        ;;     that does not exists.
+        ;;     Pass the original name to pel-init later to initialize properly.
+        ;;
+        ;; (setq pel--abbrev-file-name abbrev-file-name)
+        ;; (setq abbrev-file-name "~/abbrev_defs-invalid") ; use non-existing file name
 
-          ;; 3: Add pel to Emacs load-path
-          ;;    Identify the directory where you stored pel.
-          (add-to-list 'load-path (expand-file-name "~/projects/pel"))
+        ;; 3: Add pel to Emacs load-path
+        ;;    Identify the directory where you stored pel.
+        (add-to-list 'load-path (expand-file-name "~/projects/pel"))
 
-          ;; 4: Add utils to Emacs load-path
-          (add-to-list 'load-path (expand-file-name "~/.emacs.d/utils"))
+        ;; 4: Add utils to Emacs load-path
+        (add-to-list 'load-path (expand-file-name "~/.emacs.d/utils"))
 
-          ;; 5: Store Emacs customization inside a separate file
-          ;;    If you already have a (custom-set-variables ...) form
-          ;;    in your init.el, move it into this new file.
-          (setq custom-file "~/.emacs.d/emacs-customization.el")
-          (load custom-file)
+        ;; 5: Store Emacs customization inside a separate file
+        ;;    If you already have a (custom-set-variables ...) form
+        ;;    in your init.el, move it into this new file.
+        (setq custom-file "~/.emacs.d/emacs-customization.el")
+        (load custom-file)
 
-          ;; 6: Start PEL
-          ;; - At first leave this commented out.
-          ;; - Activate the code Once you have successfully built PEL once
-          (require 'pel)
-          (pel-init)  ; or later->; (pel-init pel--abbrev-file-name)
+        ;; 6: Start PEL
+        ;; - At first leave this commented out.
+        ;; - Activate the code Once you have successfully built PEL once
+        (require 'pel)
+        (pel-init)  ; or later->; (pel-init pel--abbrev-file-name)
 
-          ;;; ---- end of init.el -------------------------------------------------------
+        ;;; ---- end of init.el -------------------------------------------------------
+
 
 **Description:**
 
@@ -540,6 +561,44 @@ Emacs settings, you could use several customization files and activate them
 for each project, reducing the load time further.
 That provides another degree of freedom, along with Emacs directory local
 and file local variables.
+
+
+For Emacs 27 and later: create early-init.el
+--------------------------------------------
+
+Emacs 27 introduced the **package-quickstart** user-option variable which
+improves Emacs startup speed.   To use this feature you must customize the
+Emacs user-option ``package-quickstart`` to **t**.
+
+That mechanism initializes the package library before init.el is executed and
+some variables like ``package-user-dir`` cannot be modified inside init.el,
+they must be modified inside a new file: the file called
+``~/.emacs.d/early-init.el``.
+
+If you use only one customization file and have nothing special to configure
+there then you're done and don't have to create this file.
+
+However, if you want, for example, to have 2 different customization settings,
+one when Emacs runs in terminal mode, and one when Emacs is running in
+graphics mode, and you want to maintain two sets of elpa directories, one for
+each configuration, then you have to write the logic inside the early-init.el
+file.
+
+Here's an example:
+
+.. code:: elisp
+
+          ;; -*- lexical-binding: t; -*-
+          ;; - Example early-init.el file ---------------------------------------------------
+          ;; Separate elpa directory for Emacs in graphics mode and Emacs in TTY mode.
+          ;; Use ~/.emacs.d/elpa in TTY mode, use ~/.emacs.d/elpa-graphics in graphics mode
+          ;; Inside early-init.el the function `display-graphic-p' does not return t for
+          ;; Emacs running in graphics mode, so instead I use a shell script to start Emacs in
+          ;; graphics mode and set the PEL_EMACS_IN_GRAPHICS environment variable to "1"
+          ;; inside that shell script.
+          (when (getenv "PEL_EMACS_IN_GRAPHICS")
+            (setq package-user-dir (locate-user-emacs-file "elpa-graphics"))
+            (setq custom-file      "~/.emacs.d/emacs-customization-graphics.el"))
 
 
 Byte Compile PEL Files
