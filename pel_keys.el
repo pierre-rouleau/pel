@@ -4547,8 +4547,8 @@ the ones defined from the buffer now."
 (define-key pel:ediff-files "r"  'ediff-revision)
 
 (define-pel-global-prefix pel:ediff-dirs (kbd "<f11> d e d"))
-(define-key pel:ediff-dirs "d"  'edirs)
-(define-key pel:ediff-dirs "3"  'edirs3)
+(define-key pel:ediff-dirs "d"  'ediff-directories)
+(define-key pel:ediff-dirs "3"  'ediff-directories3)
 (define-key pel:ediff-dirs "r"  'edir-revisions)
 
 (define-pel-global-prefix pel:ediff-windows (kbd "<f11> d e w"))
