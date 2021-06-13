@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-30 09:00:35, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-13 03:03:55, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -102,19 +102,22 @@
 ;;                    |
 ;;                    +---> * `pel-select-ido-geometry'
 ;;                             - `pel--ido-geometry-selection'
-;;                             - `pel--activated-ido-geometry-symbol'
 ;;                             - `pel-set-ido-geometry'
-;;                                - `pel--set-ido-grid'
-;;                                - `pel--set-ido-vertical'
+;;                                - `pel--set-ido-geometry'
+;;                                   - `pel--activate-ido-grid-mode'
+;;                                   - `pel--activate-ido-grid'
+;;                                   - `pel--activate-ido-vertical'
 ;;                                * `pel-show-active-completion-mode'
 ;;                                   - `pel-activated-completion-mode'
-;;                                   - `pel-activated-completion-mode-name'
-;;                                   - `pel-activated-ido-geometry'
-;;                                      - `pel--activated-ido-geometry-symbol'
+;;                                   - `pel-ido-completion-settings-string'
+;;                                     - `pel-activated-completion-mode-name'
 ;;                                   - `pel--ido-ubiquitous-state'
 ;;
 ;;      * `pel-show-active-completion-mode'
-;;
+;;        - `pel-activated-completion-mode'
+;;        - `pel-ido-completion-settings-string'
+;;          - `pel-activated-ido-geometry'
+;;        - `pel-activated-completion-mode-name'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -134,95 +137,112 @@
 ;; Ido Prompt Geometry Management
 ;; ------------------------------
 ;;
-;; * `pel-select-ido-geometry'                 - in pel-autoload.el
-;;    - `pel--ido-geometry-selection'
-;;    - `pel--activated-ido-geometry-symbol'
-;;    - `pel-set-ido-geometry'
-;;       - `pel--set-ido-grid'
-;;       - `pel--set-ido-vertical'
-;;       * `pel-show-active-completion-mode'   - in pel-autoload.el
-;;          - `pel-activated-completion-mode'
-;;          - `pel-activated-completion-mode-name'
-;;          - `pel-activated-ido-geometry'
-;;             - `pel--activated-ido-geometry-symbol'
-;;          - `pel--ido-ubiquitous-state'
 
-(defun pel--set-ido-grid (state)
-  "Set the ido-grid-mode to specified STATE.
+(defvar pel--ido-geometry nil
+  "Currently selected Ido geometry.
+When nil, indicating it has never been set, the user-option
+`pel-initial-ido-geometry' indicates what geometry should be used.")
+
+;; It's possible to detect the state of some ido-geometry by because they are
+;; implemented as mode, like ido-vertical.  But not all of them.
+
+;; The following are implemented as macro instead as functions so that code is
+;; expanded at their use point to prevent byte-compiler warnings.
+(defmacro pel--ido-vertical-p ()
+  "Return t when ido-vertical-mode is active, nil otherwise."
+  `(and pel-use-ido-vertical-mode
+        (featurep 'ido-vertical-mode)
+        (boundp  'ido-vertical-mode)
+        (fboundp 'ido-vertical-mode)
+        ido-vertical-mode))
+
+(defmacro pel-ido-grid-p ()
+  "Return t when ido-grid is active, nil otherwise.
+This is ido-grid, not ido-grid-mode, a different one."
+  `(and pel-use-ido-grid
+        (featurep 'ido-grid)
+        (fboundp 'ido-grid-disable)
+        (eq pel--ido-geometry 'ido-grid)))
+
+(defmacro pel--ido-grid-mode-p ()
+  "Return t when ido-grid-mode is active, nil otherwise."
+  (and (featurep 'ido-grid-mode)
+       (boundp 'ido-grid-mode)
+       ido-grid-mode))
+
+(defvar ido-grid-mode-start-collapsed)  ; allow setting value dynamically
+
+(defun pel--activate-ido-grid-mode (start-collapsed)
+  "Activate ido-grid-mode in state identified by START-COLLAPSED."
+  (if (and pel-use-ido-grid-mode
+           (require 'ido nil :no-error)
+           (require 'ido-grid-mode nil :no-error)
+           (featurep 'ido-grid-mode)
+           (fboundp 'ido-grid-mode))
+      (let ((ido-grid-mode-start-collapsed start-collapsed))
+        (ido-grid-mode 1))
+    (user-error "ido-grid-mode is not available!")))
+
+(defun pel--activate-ido-grid ()
+  "Activate ido-grid.
+Note that ido-grid is a different package than ido-grid-mode."
+  (if (and pel-use-ido-grid
+           (require 'ido nil :no-error)
+           (require 'ido-grid nil :no-error)
+           (featurep 'ido-grid)
+           (fboundp 'ido-grid-enable))
+      (ido-grid-enable)
+    (user-error "ido-grip is not available!")))
+
+(defun pel--activate-ido-vertical ()
+  "Activate the ido-vertical mode."
+  (if (and pel-use-ido-vertical-mode
+           (require 'ido nil :no-error)
+           (require 'ido-vertical-mode nil :no-error)
+           (featurep 'ido-vertical-mode)
+           (fboundp 'ido-vertical-mode))
+      (ido-vertical-mode 1)
+    (user-error "Can't activate ido-vertical-mode")))
+
+(defun pel--set-ido-geometry (geometry)
+  "Set the Ido GEOMETRY.
 State can be one of:
-- 'emacs-default : ido mode is used, but grid is off
+- 'off or 'emacs-default : ido mode is used, but grid is off
 - 'grid-collapsed
-- 'grid-expanded.
+- 'grid-expanded
+- 'ido-grid
 - 'vertical"
   (if (require 'ido nil :no-error)
       (progn
+        ;; 1- turn off any ido extension geometry and re-establish basic
+        ;; ido-mode.
+        (cond ((pel--ido-vertical-p)  (ido-vertical-mode -1))
+              ((pel--ido-grid-mode-p) (ido-grid-mode -1))
+              ((pel-ido-grid-p)       (ido-grid-disable)))
+        ;; 2- activate basic Ido-mode
         (pel-turn-mode-on-when-off ido-mode)
-        (when (and pel-use-ido-vertical-mode
-                   (featurep 'ido-vertical-mode)
-                   (boundp  'ido-vertical-mode)
-                   (fboundp 'ido-vertical-mode))
-          (pel-turn-mode-off-when-on ido-vertical-mode))
-        (when (and pel-use-ido-grid-mode
-                   (require 'ido-grid-mode nil :no-error)
-                   (featurep 'ido-grid-mode)
-                   (boundp  'ido-grid-mode)
-                   (fboundp 'ido-grid-mode)
-                   (boundp  'ido-grid-mode-start-collapsed))
-          (cond
-           ((eq state 'off)
-            (pel-turn-mode-off-when-on ido-grid-mode))
-           ;;
-           ((eq state 'grid-collapsed)
-            (pel-turn-mode-off-when-on ido-grid-mode)
-            (setq ido-grid-mode-start-collapsed t)
-            (ido-grid-mode 1))
-           ;;
-           ((eq state 'grid-expanded)
-            (pel-turn-mode-off-when-on ido-grid-mode)
-            (setq ido-grid-mode-start-collapsed nil)
-            (ido-grid-mode 1))
-           (t (user-error "Invalid ido grid state request: %S" state)))))
+        ;; 3- Activate extended geometry if one was requested
+        (cond ((eq geometry 'grid-collapsed) (pel--activate-ido-grid-mode t))
+              ((eq geometry 'grid-expanded)  (pel--activate-ido-grid-mode nil))
+              ((eq geometry 'ido-grid)       (pel--activate-ido-grid))
+              ((eq geometry 'vertical)       (pel--activate-ido-vertical))
+              ((memq geometry '(off emacs-default)) nil)
+              (t (error "unsupported Ido geometry requested: %s" geometry)))
+        (setq pel--ido-geometry geometry))
     (error "Cannot load required Ido mode!")))
 
-(defun pel--set-ido-vertical ()
-  "Set the ido-vertical mode on."
-  (if (require 'ido nil :no-error)
-      (progn
-        (pel-turn-mode-on-when-off ido-mode)
-        (when (and pel-use-ido-grid-mode
-                   (featurep 'ido-grid-mode)
-                   (boundp  'ido-grid-mode)
-                   (fboundp 'ido-grid-mode))
-          (pel-turn-mode-off-when-on ido-grid-mode))
-        (if (and pel-use-ido-vertical-mode
-                 (require 'ido-vertical-mode nil :no-error)
-                 (featurep 'ido-vertical-mode)
-                 (boundp  'ido-vertical-mode)
-                 (fboundp 'ido-vertical-mode))
-            (pel-turn-mode-on-when-off ido-vertical-mode)
-          (user-error "Cannot activate ido-vertical-mode")))
-    (error "Cannot load required Ido mode!")))
-
-(defun pel--activated-ido-geometry-symbol ()
-  "Return a symbol describing Ido currently used prompt geometry."
-    (if (and pel-use-ido-vertical-mode
-           (featurep 'ido-vertical-mode)
-           (boundp 'ido-vertical-mode)
-           ido-vertical-mode)
-        'vertical
-      (if (and pel-use-ido-grid-mode
-               (featurep 'ido-grid-mode)
-               (boundp  'ido-grid-mode)
-               ido-grid-mode
-               (boundp  'ido-grid-mode-start-collapsed))
-          (if ido-grid-mode-start-collapsed
-              'grid-collapsed
-            'grid-expanded)
-        'emacs-default)))
+(defun pel-set-ido-geometry (geometry &optional silent now)
+  "Set the Ido prompt GEOMETRY. Display description unless SILENT requested.
+Identify that its a change when NOW argument is specified.
+This assumes that Ido mode is currently activated."
+  (pel--set-ido-geometry geometry)
+  (unless silent
+    (pel-show-active-completion-mode now)))
 
 (defconst pel--ido-geometry-names-alist
   '((nil            . "default linear")
     (emacs-default  . "default-linear")
+    (ido-grid       . "ido-grid")
     (grid-collapsed . "grid mode, starts collapsed: expand with tab")
     (grid-expanded  . "grid mode, starts already expanded")
     (vertical       . "vertical mode"))
@@ -230,28 +250,13 @@ State can be one of:
 
 (defun pel-activated-ido-geometry ()
   "Return a string describing Ido currently used prompt geometry."
-  (cdr (assoc (pel--activated-ido-geometry-symbol)
-              pel--ido-geometry-names-alist)))
-
-(defvar pel--ido-geometry pel-initial-ido-geometry
-  "Currently selected Ido geometry.")
-
-(defun pel-set-ido-geometry (geometry &optional silent now)
-  "Set the Ido prompt GEOMETRY. Display description unless SILENT requested.
-Identify that its a change when NOW argument is specified.
-This assumes that Ido mode is currently activated."
-  (cond
-   ((eq geometry 'emacs-default)   (pel--set-ido-grid 'off))
-   ((eq geometry 'grid-collapsed)  (pel--set-ido-grid 'grid-collapsed))
-   ((eq geometry 'grid-expanded)   (pel--set-ido-grid 'grid-expanded))
-   ((eq geometry 'vertical)        (pel--set-ido-vertical))
-   (t (user-error "Non-supported Ido geometry selected: %S" geometry)))
-  (unless silent
-    (pel-show-active-completion-mode now)))
+  (cdr (assoc pel--ido-geometry pel--ido-geometry-names-alist)))
 
 (defun pel--ido-geometry-selection ()
   "Return a list of (char prompt symbol) of available Ido geometry choices."
   (let ((selection '((?e "Emacs default - linear" emacs-default))))
+    (when pel-use-ido-grid
+      (push '(?g "ido-grid" ido-grid) selection))
     (when pel-use-ido-grid-mode
       (push '(?c "grid - Collapsed" grid-collapsed) selection)
       (push '(?x "grid - eXpanded"  grid-expanded)  selection))
@@ -266,7 +271,7 @@ This assumes that Ido mode is currently activated."
   (let ((selected-geometry (pel-select-from
                             "Ido prompt geometry"
                             (pel--ido-geometry-selection)
-                            (pel--activated-ido-geometry-symbol)
+                            pel--ido-geometry
                             nil
                             "default - linear")))
     (when selected-geometry
@@ -473,7 +478,8 @@ Also activate/deactivate the IDO extensions:
           (when pel--use-ido-ubiquitous
             (pel-ido-ubiquitous 1 :silent))
           ;; - set ido geometry
-          (pel-set-ido-geometry pel--ido-geometry :silent))
+          (pel-set-ido-geometry (or pel--ido-geometry
+                                    pel-initial-ido-geometry) :silent))
          ;;
          ;; Deactivate
          ((eq action 'deactivate)

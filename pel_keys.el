@@ -1429,6 +1429,12 @@ can't bind negative-argument to C-_ and M-_"
     (pel-autoload-file ido-grid-mode for:
                        ido-grid-mode))
 
+  (when pel-use-ido-grid
+    (pel-install-github-file "pierre-rouleau/ido-grid.el/master" "ido-grid.el")
+    (pel-autoload-file ido-grid for:
+                       ido-grid-enable
+                       ido-grid-disable))
+
   (when pel-use-ido-vertical-mode
     (pel-ensure-package ido-vertical-mode from: melpa)
     (pel-autoload-file ido-vertical-mode for:

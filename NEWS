@@ -409,6 +409,13 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     the *pel-use-smex* user-option to *t*.
   - New: Add support for the *ido-grid-mode* external package.  Activate it by
     setting the *pel-use-ido-grid-mode* user-option to *t*.
+  - New: Add support for the *ido-grid* library, a different implementation of
+    an Ido grid, done by the same author but not yet supported on
+    Melpa. Activate it with *pel-use-grid-mode* user-option.  Note, however
+    that it is incompatible with the ido-grid-mode.  Therefore when
+    pel-use-grid is set it forces the pel-use-grid-mode to go off, regardless
+    of the user selection.  If you want ido-grid-mode, make sure you turn off
+    pel-use-grid.
   - New: Add and then disabled support for the *ido-vertical-mode* external
     package. Activate it by setting the *pel-use-ido-vertical-mode*
     user-option to *t*.

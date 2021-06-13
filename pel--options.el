@@ -692,9 +692,22 @@ Ido extensions include the following:
 
 - Ido prompt geometries:
 
-  - Ido Grid Mode: activate with `pel-use-ido-grid-mode'
+  - Ido default (linear)
+  - Ido Grid:
+    - Select between two incompatible grid mechanisms:
+      - `pel-use-ido-grid', which provides a simpler all-in-one ido-grid, or
+      - `pel-use-ido-grid-mode' which provides a ido-grid-mode that has two
+         sub-modes: ability to start collapsed or fully extended.
   - Ido Vertical mode: activate with `pel-use-ido-vertical-mode'
-  - Select initial Ido geometry with: `pel-initial-ido-geometry'
+
+  If `pel-use-ido-grid' is turned on, it forces `pel-use-ido-grid-mode' off
+  because these two packages are incompatible in such a way that starting
+  the `ido-grid-mode' feature prevents the `ido-grid' feature from working
+  properly.
+
+  - Select initial Ido geometry with: `pel-initial-ido-geometry'. If you set
+   `pel-use-ido-grid' then the modes related to `pel-use-ido-grid-mode' are
+   automatically replaced by the ido-grid value.
 
 - Ido 'flx' fuzzy matching: activate with `pel-use-flx'
 - Ido completion is multiple prompt commands: activate it
@@ -794,8 +807,25 @@ The initial Ido geometry is set by `pel-initial-ido-geometry'."
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-ido-grid-mode :requires 'pel-use-ido)
 
+(defcustom pel-use-ido-grid nil
+  "Control whether PEL uses the ido-grid package.
+
+The ido-grid is a re-implementation of ido-grid-mode made to go
+faster and easier to use.
+
+This modifies the presentation geometry of the Ido completion
+prompt: it shows candidates in multiple columns.
+
+To use this you must also have `pel-use-ido' set to t.
+The initial Ido geometry is set by `pel-initial-ido-geometry'."
+  :link '(url-link :tag "ido-grid @ GitHub"
+                   "https://github.com/larkery/ido-grid.el")
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-ido-grid :requires 'pel-use-ido)
+(pel-put 'pel-use-ido-grid :package-is :in-utils)
 
 (defcustom pel-use-ido-vertical-mode nil
   "Control whether PEL uses the ido-vertical-mode package.
@@ -941,17 +971,22 @@ PEL supports several Ido extension modes that modify the
 Ido prompt geometry. The following modes are available:
 
 - `emacs-default'  : standard, linear IDO
+- `ido-grid'       : show candidates in a grid, expanded. Uses ido-grid.
 - `grid-collapsed' : show candidates in a grid.  Collapsed on 1 line
                      at first.  Press tab to expand the grid on multiple
                      lines.
 - `grid-expanded'  : show candidates in a grid.  Expanded right away.
 - `vertical'       : show vertical list.
 
-Both grid modes require an activated `pel-use-ido-grid-mode'.
+The `ido-grid' mode requires an activated `pel-use-ido-grid'.
+The `grid-collapsed' and `grid-expanded' require that `pel-use-ido-grid' is off
+an `pel-use-ido-grid-mode' activated.  If you select one of them when
+`pel-use-ido-grid' is on, then PEL automatically selects `ido-grid' instead.
 The vertical mode requires an activated `pel-use-ido-vertical-mode'."
   :group 'pel-pkg-for-completion
   :type '(choice
           (const :tag "Use Emacs default" emacs-default)
+          (const :tag "Use grid (one state)" ido-grid)
           (const :tag "Use grid - collapsed" grid-collapsed)
           (const :tag "Use grid - expanded"  grid-expanded)
           (const :tag "Use vertical"         vertical)))
@@ -7392,6 +7427,23 @@ indexing system."
   :type 'boolean
   :safe #'booleanp)
 
+;; ---------------------------------------------------------------------------
+;; Incompatible selection Management
+;; ---------------------------------
+;; Some packages are incompatible with others.  The following logic catch
+;; those and modifies the values of the appropriate user-options to prevent
+;; these incompatibilities to show up during execution by turning some options
+;; off.
+
+;; ido-grid does not work properly when ido-grid-mode is also being used:
+;; as soon as ido-grid-mode runs the ido-grid key-map does not activate
+;; properly for a reason I have not identified yet. So make sure that only 1
+;; of the 2 is ever active: give priority to ido-grid.
+(when (and pel-use-ido-grid
+           pel-use-ido-grid-mode)
+  (setq pel-use-ido-grid-mode nil)
+  (when (memq pel-initial-ido-geometry '(grid-collapsed grid-expanded))
+    (setq pel-initial-ido-geometry 'ido-grid)))
 
 ;; ---------------------------------------------------------------------------
 ;; Process indirect activation
@@ -7408,7 +7460,7 @@ indexing system."
 ;;       `pel-use-' user-option of the package(s) that get activated indirectly.
 
 (when pel-use-projectile-speedbar
-  (setq pel-use-projectile t)  ; t:= activate projectile later by command
+  (setq pel-use-projectile t)       ; t:= activate projectile later by command
   (setq pel-use-speedbar t))
 
 (when pel-use-lispy

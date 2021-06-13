@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-09 17:43:21, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-13 02:46:28, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -366,6 +366,7 @@
     (,(kbd "<f11> M-c")     "completion-input" pel-pkg-for-completion (helm
                                                                        ido
                                                                        ido-completing-read-plus
+                                                                       ido-grid
                                                                        ido-grid-mode
                                                                        ivy
                                                                        counsel
@@ -374,6 +375,7 @@
     ([f11 27 99]            "completion-input" pel-pkg-for-completion (helm
                                                                        ido
                                                                        ido-completing-read-plus
+                                                                       ido-grid
                                                                        ido-grid-mode
                                                                        ivy
                                                                        counsel
