@@ -2,7 +2,7 @@
 
 ;; Original Authors : shjk, updated by Matt Keller and Vergard Oye
 ;; Evolution in PEL:  Pierre Rouleau
-;; Time-stamp: <2021-04-23 15:01:49, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-13 11:19:29, updated by Pierre Rouleau>
 
 ;; This file is an evolution of the single pel-goto-symbol function
 ;; taken from https://www.emacswiki.org/emacs/ImenuMode#h5o-14
@@ -82,8 +82,8 @@
 ;;                            ;      pel-use-ivy
 (require 'pel-prompt)         ; use: pel-select-symbol-from
 (require 'pel-completion)     ; use: pel--use-ido-ubiquitous
-;;                            ;    : pel-ido-completion-settings-string
-
+;;                            ;      pel--ido-ubiquitous-state
+;;                            ;      pel-ido-completion-settings-string
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -421,8 +421,10 @@ to the current buffer."
   "Display current settings used by the goto symbol commands."
   (interactive)
   (message "\
-pel-goto-symbol            UI is: %s
-pel-goto-symbol-any-buffer UI is: %s%s
+pel-goto-symbol            UI  (M-g <f4> h)   is: %s
+pel-goto-symbol-any-buffer UI  (M-g <f4> y)   is: %s%s
+- Ido requires: Ido Ubiquitous (M-g <f4> M-u) is: %s
+- flx-ido  (fuzzy matching)    (M-g <f4> M-f) is: %s
 - iMenu lists are %s.%s%s
 - iMenu+ support is: %s
 - Semantic mode  is: %s"
@@ -433,6 +435,8 @@ pel-goto-symbol-any-buffer UI is: %s%s
               (format "\n- iMenu UI is: %s" (if imenu-use-popup-menu
                                                 "pop-up menu"
                                               "completion buffer"))))
+           (pel--ido-ubiquitous-state)
+           (pel-on-off-string pel--use-flx-with-ido)
            (if (and (boundp 'flimenu-mode)
                     flimenu-mode)
                (format
