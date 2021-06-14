@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-13 03:03:55, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-14 11:42:11, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -436,6 +436,29 @@ Display new state unless SILENT."
 ;; - `pel--ido-mode-silently'
 ;;    * `pel-ido-mode'
 
+(defun pel-initial-ido-geometry--adjusted ()
+  "Adjust `pel-initial-ido-geometry' according to what is activated."
+  (cond
+   ;; ido-grid not available but requested as initial
+   ((and (eq pel-initial-ido-geometry 'ido-grid)
+         (not pel-use-ido-grid))
+    (if pel-use-ido-grid-mode
+        'grid-expanded
+      'emacs-default))
+   ;; ido-grid-mode not available but requested as initial
+   ((and (memq pel-initial-ido-geometry '(grid-collapsed
+                                          grid-expanded))
+         (not pel-use-ido-grid-mode))
+    (if pel-use-ido-grid
+        'ido-grid
+      'emacs-default))
+   ;; ido-vertical not available but requested as initial
+   ((and (eq pel-initial-ido-geometry 'vertical)
+         (not pel-use-ido-vertical-mode))
+    'emacs-default)
+   ;; otherwise all is OK, return what is selected
+   (t pel-initial-ido-geometry)))
+
 ;;-pel-autoload
 (defun pel-ido-mode (&optional activate silent)
   "Activate, deactivate or toggle use of the IDO mode.
@@ -479,7 +502,7 @@ Also activate/deactivate the IDO extensions:
             (pel-ido-ubiquitous 1 :silent))
           ;; - set ido geometry
           (pel-set-ido-geometry (or pel--ido-geometry
-                                    pel-initial-ido-geometry) :silent))
+                                    (pel-initial-ido-geometry--adjusted)) :silent))
          ;;
          ;; Deactivate
          ((eq action 'deactivate)

@@ -7439,11 +7439,12 @@ indexing system."
 ;; as soon as ido-grid-mode runs the ido-grid key-map does not activate
 ;; properly for a reason I have not identified yet. So make sure that only 1
 ;; of the 2 is ever active: give priority to ido-grid.
+;; Note: the `pel-initial-ido-geometry' is adjusted by the function
+;; `pel-initial-ido-geometry--adjusted' used by `pel-ido-mode', there's no
+;; need to adjust it here and the cost at startup.
 (when (and pel-use-ido-grid
            pel-use-ido-grid-mode)
-  (setq pel-use-ido-grid-mode nil)
-  (when (memq pel-initial-ido-geometry '(grid-collapsed grid-expanded))
-    (setq pel-initial-ido-geometry 'ido-grid)))
+  (setq pel-use-ido-grid-mode nil))
 
 ;; ---------------------------------------------------------------------------
 ;; Process indirect activation
