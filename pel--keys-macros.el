@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-13 02:46:28, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-13 23:14:58, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -257,7 +257,8 @@
 
     ([f11 ?c]        "counting"         nil)
     ([f11 ?d]        "diff-merge"       pel-pkg-for-ztree       (diff
-                                                                 ediff))
+                                                                 ediff
+                                                                 ztree))
     ([f11 ?d ?e]     "diff-merge"       nil                     ediff)
     ([f11 ?f ?v]     "file-variables"   nil)
     (,(kbd "<f11> SPC M-D") "mode-dired" pel-pkg-for-dired      (dired
@@ -280,7 +281,7 @@
     ;; no PDF for browse yet, the info is  in file-mngt.
     ([f11 ?B]        "file-mngt"        (pel-pkg-for-browse
                                          pel-pkg-for-ztree)     (treemacs
-                                         Ztree))
+                                                                 ztree))
     ([f11 ?B ?N]     "file-mngt"        pel-pkg-for-neotree      neotree)
     ([f11 ?f ?a]     "file-mngt"        nil                      ffap)
     ([f11 ?f ?p]     "file-mngt"        pel-pkg-for-project-mng  ffip)
