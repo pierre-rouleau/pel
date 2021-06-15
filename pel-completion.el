@@ -2,7 +2,7 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-14 11:42:11, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-15 16:05:16, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -545,7 +545,6 @@ Argument:
 ;;         - `pel--start/stop'
 ;;      * `pel-show-active-completion-mode'
 
-
 (defun pel--available-completion-mode-mask ()
   "Return bit mask corresponding to the encoding of completion modes available.
 The completion modes available is taken from the following user options:
@@ -637,7 +636,12 @@ When stopping, use the reverse order."
           ((eq mode 'helm)
            (setq chg-helm t)
            (if (fboundp 'helm-mode)
-               (pel--start/stop start 'helm-mode)
+               (progn
+                 (pel--start/stop start 'helm-mode)
+                 (when (and pel-use-helm-lsp
+                            (boundp 'lsp-mode-map))
+                   (declare-function helm-lsp-workspace-symbol "helm-lsp")
+                   (define-key lsp-mode-map [remap xref-find-apropos] #'helm-lsp-workspace-symbol)))
              (error "The helm-mode command is not bound!")))
           ;;
           ;; mode:= nil - do nothing

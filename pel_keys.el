@@ -1384,7 +1384,10 @@ can't bind negative-argument to C-_ and M-_"
     (defvar helm-map)                   ; prevent byte-compiler warning
     ;; <tab> or C-i are mapped to helm-select-action.  Use M-C-i to run
     ;; persistent action.
-    (define-key helm-map (kbd "M-C-i") 'helm-execute-persistent-action)))
+    (define-key helm-map (kbd "M-C-i") 'helm-execute-persistent-action)
+    ;;
+    (when pel-use-helm-lsp
+      (pel-ensure-package helm-lsp from: melpa))))
 
 ;; Ido
 ;; ---
@@ -1452,7 +1455,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; ivy
 ;; ---
 (when pel-use-ivy
-  (defvar ivy-use-virtual-buffers)       ; prevent byte-compiler warning
+  (defvar ivy-use-virtual-buffers)      ; prevent byte-compiler warning
   (defvar ivy-count-format)
   (defvar ivy-minibuffer-map)
   (pel-ensure-package ivy from: melpa)
@@ -1481,7 +1484,14 @@ can't bind negative-argument to C-_ and M-_"
     (when (and pel-system-is-macos-p pel-use-counsel-osx-app)
       (pel-ensure-package counsel-osx-app from: melpa)
       (pel-autoload-file counsel-osx-app for: counsel-osx-app)
-      (define-key pel: "A" 'counsel-osx-app))))
+      (define-key pel: "A" 'counsel-osx-app)))
+
+  (when pel-use-lsp-ivy
+    (pel-ensure-package lsp-ivy from: melpa)
+    ;; TODO: create key bindings for:
+    ;; lsp-ivy-workspace-symbol - workspace symbols for the current workspace
+    ;; lsp-ivy-global-workspace-symbol - workspace symbols from all of the active workspaces.
+    ))
 
 ;; flx-ido
 ;; -------
@@ -1561,7 +1571,10 @@ can't bind negative-argument to C-_ and M-_"
   ;; identified as the autoloading commands.  See both of these in the Grep
   ;; operation section below.
   (define-pel-global-prefix pel:projectile (kbd "<f11> <f8>"))
-  (define-key pel:projectile (kbd "<f8>") 'projectile-mode))
+  (define-key pel:projectile (kbd "<f8>") 'projectile-mode)
+  ;;
+  (when pel-use-treemacs-projectile
+    (pel-ensure-package treemacs-projectile from: melpa))  )
 
 ;; ---------------------------------------------------------------------------
 ;; Tempo skeleton - a powerful lisp-style templating system
@@ -4451,16 +4464,30 @@ the ones defined from the buffer now."
   (define-pel-global-prefix pel:browse (kbd "<f11> B"))
 
   (when pel-use-treemacs
+    ;; Prevent byte-compiler warnings with forward declarations
+    (defvar treemacs-mode-map)
+    (declare-function lsp-treemacs-sync-mode "lsp-treemacs")
+
+    (defun pel--setup-treemacs ()
+      "Setup treemacs."
+      (define-key treemacs-mode-map (kbd "M-?")
+        'treemacs-advanced-helpful-hydra)
+      (when pel-use-lsp-treemacs
+        (lsp-treemacs-sync-mode 1)))
+    (declare-function pel--setup-treemacs "pel_keys")
+
     (pel-ensure-package treemacs from: melpa)
     (pel-autoload-file treemacs for: treemacs)
+    (when pel-use-lsp-treemacs
+      (pel-ensure-package lsp-treemacs from: melpa))
+
     (define-key pel:browse  "T" 'treemacs)
-    (defvar treemacs-mode-map)          ;  to prevent byte compiler warnings
-    (add-hook 'treemacs-mode-hook
-              (lambda ()
-                (define-key treemacs-mode-map (kbd "M-?") 'treemacs-advanced-helpful-hydra)))
-    (with-eval-after-load 'winum
-      (when (boundp 'winum-keymap)
-        (define-key winum-keymap (kbd "<f9>") 'treemacs-select-window))))
+    (add-hook 'treemacs-mode-hook (function pel--setup-treemacs))
+    ;; TODO: either drop the following or provide support for emacs-winum
+    ;; (with-eval-after-load 'winum
+    ;;   (when (boundp 'winum-keymap)
+    ;;     (define-key winum-keymap (kbd "<f9>") 'treemacs-select-window)))
+    )
 
   (when pel-use-neotree
     (define-pel-global-prefix pel:neotree (kbd "<f11> B N"))
@@ -5647,7 +5674,10 @@ the ones defined from the buffer now."
   (pel-autoload-file magit for:
                      magit
                      magit-status)
-  (define-key pel:vcs "g"  'magit-status))
+  (define-key pel:vcs "g" 'magit-status)
+  ;;
+  (when pel-use-treemacs-magit
+    (pel-ensure-package treemacs-magit from: melpa)))
 
 (when pel-use-gitignore-mode
   (pel-ensure-package gitattributes-mode from: melpa)

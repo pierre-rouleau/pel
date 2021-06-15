@@ -902,7 +902,8 @@ The initial completion mode is set by `pel-initial-completion-mode'."
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-ivy :also-required-when 'pel-use-ivy-xref)
+(pel-put 'pel-use-ivy :also-required-when '(or pel-use-ivy-xref
+                                               pel-use-lsp-ivy))
 
 (defcustom pel-use-counsel nil
   "Control whether Counsel is used when Ivy is used.
@@ -957,7 +958,8 @@ Note that `pel-use-helm-cscope' indirectly activates `pel-use-helm'."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-helm :also-required-when '(or pel-use-helm-cscope
-                                                pel-use-helm-xref))
+                                                pel-use-helm-xref
+                                                pel-use-helm-lsp))
 
 (defconst pel-USE-IDO     1 "Bitmask identifying Ido.      DON'T CHANGE!")
 (defconst pel-USE-IVY     2 "Bitmask identifying Ivy.      DON'T CHANGE!")
@@ -1348,11 +1350,28 @@ Note that:
   :safe #'booleanp
   :link `(url-link :tag "treemacs @ GitHub"
                    "https://github.com/Alexander-Miller/treemacs"))
+(pel-put 'pel-use-treemacs :also-required-when '(or pel-use-lsp-treemacs
+                                                    pel-use-treemacs-projectile
+                                                    pel-use-treemacs-magit))
+
+(defcustom pel-use-treemacs-projectile nil
+  "Control whether PEL activates projectile extension for treemacs."
+  :group 'pel-pkg-for-file-browse
+  :group 'pel-pkg-for-project-mng
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-treemacs-magit nil
+  "Control whether PEL activates magit extension for treemacs."
+  :group 'pel-pkg-for-file-browse
+  :group 'pel-pkg-for-git
+  :type 'boolean
+  :safe #'booleanp)
 
 ;;   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-pkg-for-neotree nil
   "PEL extra configuration for NeoTree package."
-    :group 'pel-pkg-for-file-browse)
+  :group 'pel-pkg-for-file-browse)
 
 (defcustom pel-use-neotree nil
   "Control whether PEL uses the Emacs NeoTree search package."
@@ -3024,6 +3043,47 @@ This package provides the ability to hide comments."
 (defgroup pel-pkg-for-language-server nil
   "PEL support for language server protocol."
   :group  'pel-pkg-for-all-languages)
+
+
+(defgroup pel-pkg-for-lsp-mode nil
+  "PEL support for LSP Mode, a language server protocol."
+  :group  'pel-pkg-for-language-server)
+
+(defcustom pel-use-lsp-treemacs nil
+  "Control whether PEL activates the lsp extension for treemacs."
+  :group 'pel-pkg-for-lsp-mode
+  :link '(url-link :tag "lsp-treemacs @ GitHub"
+                   "https://github.com/emacs-lsp/lsp-treemacs")
+  :type 'boolean
+  :safe #'booleanp)
+
+;; TODO: add the following when I add support for Selectrum
+;; (defcustom pel-use-consult-lsp nil
+;;   "Control whether PEL activates the lsp extension for consult."
+;;   :group 'pel-pkg-for-lsp-mode
+;;   :group 'pel-pkg-for-completion
+;;   :link '(url-link :tag "consult-lsp @ GitHub"
+;;                    "https://github.com/gagbo/consult-lsp")
+;;   :type 'boolean
+;;   :safe #'booleanp)
+
+(defcustom pel-use-lsp-ivy nil
+  "Control whether PEL activates the lsp extension for ivy."
+  :group 'pel-pkg-for-lsp-mode
+  :group 'pel-pkg-for-completion
+  :link '(url-link :tag "lsp-ivy @ GitHub"
+                   "https://github.com/emacs-lsp/lsp-ivy/")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-helm-lsp nil
+  "Control whether PEL activates the lsp extension for helm."
+  :group 'pel-pkg-for-lsp-mode
+  :group 'pel-pkg-for-completion
+  :link '(url-link :tag "helm-lsp @ GitHub"
+                   "https://github.com/emacs-lsp/helm-lsp")
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; TODO:  FUTURE
 ;; (defcustom pel-use-eglot nil
@@ -5902,6 +5962,7 @@ of the value of the `pel-use-erlang-syntax-check' user-option."
   :link '(url-link :tag "erlang_ls @ GitHub"
                    "https://github.com/erlang-ls/erlang_ls")
   :group 'pel-erlang-ide
+  :group 'pel-pkg-for-lsp-mode
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-erlang-ls :requires 'pel-use-erlang)
@@ -6480,7 +6541,8 @@ CAUTION: This package needs major tuning!  It takes forever searching for a
           (const :tag "Do not use" nil)
           (const :tag "Use, activate later by command"  t)
           (const :tag "Use, activate when Emacs starts" use-from-start)))
-(pel-put 'pel-use-projectile :also-required-when 'pel-use-projectile-speedbar)
+(pel-put 'pel-use-projectile :also-required-when '(or pel-use-projectile-speedbar
+                                                      pel-use-treemacs-projectile))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-regexp
@@ -7040,6 +7102,7 @@ mode during an editing session."
   :group 'pel-pkg-for-git
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-magit :also-required-when 'pel-use-treemacs-magit)
 
 (defcustom pel-use-gitignore-mode nil
   "Control whether PEL provides access to the gitignore-mode package.
@@ -7478,7 +7541,8 @@ indexing system."
   (setq pel-use-xcscope t)
   (setq pel-use-helm t))
 
-(when pel-use-helm-xref
+(when (or pel-use-helm-xref
+          pel-use-helm-lsp)
   (setq pel-use-helm t))
 
 (when pel-use-ivy-xref
@@ -7493,6 +7557,21 @@ indexing system."
 
 (when pel-use-erlang-ls
   (setq pel-use-origami t))
+
+(when (or pel-use-lsp-treemacs
+          pel-use-treemacs-projectile
+          pel-use-treemacs-magit)
+  (setq pel-use-treemacs t))
+
+(when pel-use-treemacs-projectile
+  (setq pel-use-projectile t))
+
+(when pel-use-treemacs-magit
+  (setq pel-use-magit t))
+
+(when pel-use-lsp-ivy
+  (setq pel-use-ivy t))
+
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel--options)
