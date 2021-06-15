@@ -2922,9 +2922,13 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
     (when pel-use-erlang-ls
       ;; install lsp-mode clients
       (pel-ensure-package lsp-mode from: melpa)
-      ;; Customize prefix for key-bindings ; TODO may change
-      (when (boundp 'lsp-keymap-prefix)
-        (setq lsp-keymap-prefix "C-l"))
+      ;; Note: by default the lsp-keymap-prefix is s-l, which may not be available.
+      ;;       Instead of trying to control it in PEL, since this is a
+      ;;       customizable user-option, just customize it to what you need.
+      ;;       With PEL, any function key not used by PEL (such as F9) could
+      ;;       be used.  Also the C-l key binding is another good candidate
+      ;;       since PEL provides the `<f11> C-l` binding to what C-l is
+      ;;       normally bound.
       ;; Enable LSP for Erlang files
       (add-hook 'erlang-mode-hook 'lsp)
       ;; Enable logging for lsp-mode
