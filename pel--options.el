@@ -2411,7 +2411,8 @@ To activate it you must also activate `pel-use-log-support'"
   :group 'pel-pkg-for-keys
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-hydra :also-required-when 'pel-use-iflipb)
+(pel-put 'pel-use-hydra :also-required-when '(or pel-use-iflipb
+                                                 pel-use-treemacs))
 
 (defcustom pel-use-which-key t
   "Control whether PEL uses the which-key package."
@@ -7449,6 +7450,7 @@ indexing system."
 ;; ---------------------------------------------------------------------------
 ;; Process indirect activation
 ;; ---------------------------
+;;
 ;; When some of the pel-use- user-options are activated, they implicitly
 ;; activate another PEL user option.  Since logic below take actions based on
 ;; the values of the PEL user-options, check for those and set their
@@ -7458,7 +7460,8 @@ indexing system."
 ;;
 ;; Note: When adding such dependencies, ensure that these dependencies are
 ;;       also reflected by the `:also-required-when' property of the
-;;       `pel-use-' user-option of the package(s) that get activated indirectly.
+;;       `pel-use-' user-option of the package(s) that get activated
+;;       indirectly.
 
 (when pel-use-projectile-speedbar
   (setq pel-use-projectile t)       ; t:= activate projectile later by command
@@ -7484,7 +7487,8 @@ indexing system."
 (when pel-use-bison-mode
   (setq pel-use-c t))
 
-(when pel-use-iflipb
+(when (or pel-use-iflipb
+          pel-use-treemacs)
   (setq pel-use-hydra t))
 
 (when pel-use-erlang-ls

@@ -4454,9 +4454,13 @@ the ones defined from the buffer now."
     (pel-ensure-package treemacs from: melpa)
     (pel-autoload-file treemacs for: treemacs)
     (define-key pel:browse  "T" 'treemacs)
-      (with-eval-after-load 'winum
-        (when (boundp 'winum-keymap)
-          (define-key winum-keymap (kbd "<f9>") 'treemacs-select-window))))
+    (defvar treemacs-mode-map)          ;  to prevent byte compiler warnings
+    (add-hook 'treemacs-mode-hook
+              (lambda ()
+                (define-key treemacs-mode-map (kbd "M-?") 'treemacs-advanced-helpful-hydra)))
+    (with-eval-after-load 'winum
+      (when (boundp 'winum-keymap)
+        (define-key winum-keymap (kbd "<f9>") 'treemacs-select-window))))
 
   (when pel-use-neotree
     (define-pel-global-prefix pel:neotree (kbd "<f11> B N"))
