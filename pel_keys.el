@@ -2738,6 +2738,7 @@ d-mode not added to ac-modes!"
   (define-pel-global-prefix pel:erlang-analysis (kbd "<f11> SPC e a"))
   (define-pel-global-prefix pel:erlang-debug    (kbd "<f11> SPC e d"))
   (define-pel-global-prefix pel:erlang-skel     (kbd "<f11> SPC e <f12>"))
+  (define-pel-global-prefix pel:erlang-lsp-window (kbd "<f11> SPC e w"))
 
   (pel-ensure-package erlang from: melpa)
   (pel-autoload-file erlang for: erlang-mode)
@@ -2969,7 +2970,17 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
          (reusable-frames . visible)
          (window-height   . 0.33)))
       ;; Force the use of flycheck when LSP is used.
-      (setq pel-use-erlang-syntax-check 'with-flycheck))
+      (setq pel-use-erlang-syntax-check 'with-flycheck)
+
+      ;; Activate commands to open lsp-treemacs windows if it is available
+      (when (and pel-use-treemacs
+                 pel-use-lsp-treemacs)
+        (define-key pel:erlang-lsp-window "e" 'lsp-treemacs-errors-list)
+        (define-key pel:erlang-lsp-window "s" 'lsp-treemacs-symbols)
+        (define-key pel:erlang-lsp-window "x" 'lsp-treemacs-references)
+        (define-key pel:erlang-lsp-window "i" 'lsp-treemacs-implementations)
+        (define-key pel:erlang-lsp-window "c" 'lsp-treemacs-call-hierarchy)
+        (define-key pel:erlang-lsp-window "t" 'lsp-treemacs-type-hierarchy)))
 
     (when pel-use-erlang-syntax-check
       (cond
