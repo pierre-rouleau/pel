@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-13 23:14:58, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-16 08:28:21, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -166,8 +166,12 @@
                                                                  edts
                                                                  auto-highlight-symbol
                                                                  lsp-mode
-                                                                 lsp-ui))
+                                                                 lsp-ui
+                                                                 lsp-treemacs))
     ([f11 32 ?e f12] "pl-erlang"        pel-erlang-code-style)
+    ([f11 32 ?e ?w]  "pl-erlang"        pel-pkg-for-lsp-mode    (lsp-treemacs
+                                                                 lsp-mode
+                                                                 lsp-ui))
     ([f11 32 ?f]     "pl-forth"         pel-pkg-for-forth)
     ([f11 32 ?g]     "pl-go"            pel-pkg-for-go          (go
                                                                  go-cover
@@ -281,6 +285,7 @@
     ;; no PDF for browse yet, the info is  in file-mngt.
     ([f11 ?B]        "file-mngt"        (pel-pkg-for-browse
                                          pel-pkg-for-ztree)     (treemacs
+                                                                 lsp-treemacs
                                                                  ztree))
     ([f11 ?B ?N]     "file-mngt"        pel-pkg-for-neotree      neotree)
     ([f11 ?f ?a]     "file-mngt"        nil                      ffap)
