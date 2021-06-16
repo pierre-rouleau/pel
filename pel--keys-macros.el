@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-16 08:28:21, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-16 14:58:46, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -133,7 +133,8 @@
     ([f11 59]        "comments"         pel-pkg-for-programming comment)
     ([f11 ??]        "help"             pel-pkg-for-help        (command-log
                                                                  helpful))
-    ([f11 9]         "indentation"      nil                     indent)
+    ([f11 9]         "indentation"      pel-pkg-for-indentation (indent
+                                                                 smart-shift))
     ;; 2 different possible key sequences for speedbar,
     ;; because M-s can also be typed ``Esc s``
     (,(kbd "<f11> M-s") "speedbar"      pel-pkg-for-speedbar    (speedbar

@@ -372,6 +372,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       indentation whitespace.  They also automatically tabify or untabify the
       indentation whitespace, conforming to the mode identified by the
       ``indent-tabs-mode`` variable.
+  - New: Add support for *smart-shift* external package.  Activate by the
+    *pel-use-smart-shift* user-option. Also, the *pel-smart-shift-keybinding*
+    user-option can be used to add extra key bindings to the minor-mode line
+    shifting commands.
 - Update: *iMenu support*:
   - New: add support for the *imenu+* external package.  Activate by setting
     *pel-use-imenu+* user-option to *t*.  This activates the execution of

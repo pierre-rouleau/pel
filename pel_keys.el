@@ -4306,6 +4306,30 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 (global-set-key (kbd "<backtab>") 'pel-unindent-lines)
 
+(when pel-use-smart-shift
+  (pel-ensure-package smart-shift from: melpa)
+  (define-key pel:indent "s" 'smart-shift-mode)
+  (define-key pel:indent "S" 'global-smart-shift-mode)
+
+  (defun pel--setup-smart-shift ()
+    "Set key bindings for smart-shift."
+    (defvar smart-shift-mode-map)
+    (let ((map smart-shift-mode-map))
+      (when pel-smart-shift-keybinding
+        (cond
+         ((eq pel-smart-shift-keybinding 'control-cursor)
+          (define-key map (kbd "C-c <C-left>") 'smart-shift-left)
+          (define-key map (kbd "C-c <C-right>") 'smart-shift-right)
+          (define-key map (kbd "C-c <C-up>") 'smart-shift-up)
+          (define-key map (kbd "C-c <C-down>") 'smart-shift-down))
+         ((eq pel-smart-shift-keybinding 'f9)
+          (define-key map (kbd "<f9> <left>") 'smart-shift-left)
+          (define-key map (kbd "<f9> <right>") 'smart-shift-right)
+          (define-key map (kbd "<f9> <up>") 'smart-shift-up)
+          (define-key map (kbd "<f9> <down>") 'smart-shift-down))))))
+  (declare-function pel--setup-smart-shift "pel_keys")
+
+  (add-hook 'smart-shift-mode-hook (function pel--setup-smart-shift)))
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> |`` : Windows scroll lock commands
 ;;

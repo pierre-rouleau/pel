@@ -58,6 +58,7 @@
 ;;     - pel-pkg-for-highlight
 ;;       - pel-pkg-for-parens
 ;;     - pel-pkg-for-imenu
+;;     - pel-pkg-for-indentation
 ;;     - pel-pkg-for-insertions
 ;;     - pel-pkg-for-kbmacro
 ;;     - pel-pkg-for-key-chord
@@ -160,8 +161,8 @@
 ;; - pel-use-<package name>
 ;; - pel-modes-activating-<package name>
 ;; - pel-startup-<thing to activate at startup>
-
 ;; - pel-<mode>-activates-minor-modes
+
 ;;
 ;; The `pel-use-' user-options are either t/nil boolean types or tri-state
 ;; types that can be set to nil, t or 'use-from-start.  When set to t, they
@@ -1948,6 +1949,33 @@ Note: popup-switcher 2.14 has several bugs I fixed in my fork, which PEL
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-popup-switcher :package-is :in-utils)
+
+;; ---------------------------------------------------------------------------
+;; Indentation Control
+;; -------------------
+
+(defgroup pel-pkg-for-indentation nil
+  "List of packages that PEL can use to support indentation facilities."
+  :group 'pel-package-use
+  :link `(url-link :tag "Indentation PDF" ,(pel-pdf-file-url "indentation")))
+
+(defcustom pel-use-smart-shift nil
+  "Whether PEL activates the smart-shift external package."
+  :group 'pel-pkg-for-indentation
+  :link '(url-link :tag "smart-shift @ Github"
+                   "https://github.com/hbin/smart-shift")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-smart-shift-keybinding nil
+  "Control key binding of the smart-shift commands.
+By default the binding set up by smart-shift is used.
+You can select one of 2 alternatives."
+  :group 'pel-pkg-for-indentation
+  :type '(choice
+          (const :tag "smart-shift default" nil)
+          (const :tag "Use C-c C-<cursor>" control-cursor)
+          (const :tag "Use <f9> <cursor>"  f9)))
 
 ;; ---------------------------------------------------------------------------
 ;; Insertion of Text & Templates
