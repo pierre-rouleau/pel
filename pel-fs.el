@@ -1,6 +1,6 @@
 ;;; pel-fs.el --- File System Operations  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -49,10 +49,14 @@ file content was not modified.")
 (defun pel-exec-cmd (cmd &rest args)
   "Execute synchronous process CMD with ARGS.
 Return a cons cell with (exit-code . stdout-string).
+If an error occurred, return a list whose car is nil and cdr
+is the error description.
 The stdout-string trailing newline is removed if present."
-  (with-temp-buffer
-    (cons (apply 'call-process cmd nil (current-buffer) nil args)
-          (replace-regexp-in-string "\n\\'" "" (buffer-string)))))
+  (condition-case err
+      (with-temp-buffer
+        (cons (apply 'call-process cmd nil (current-buffer) nil args)
+              (replace-regexp-in-string "\n\\'" "" (buffer-string))))
+    (error (cons nil err))))
 
 
 (defun pel-bin-path (&optional file-name)
@@ -105,9 +109,10 @@ The `pel-exec-pel-bin' checks if the file exists and was not tempered
 with by checking its MD5 hash digest.  If the file is OK, make the file
 executable if it is not already executable, then run the command and
 return a cons cell with (exit-code . stdout-string).
+If an error occurred, return a list whose car is nil and cdr
+is the error description.
 The stdout-string trailing newline is removed if present."
   (when (pel-check-pel-bin-cmd cmd)
-    (message "ARGS: %s" args)
     (apply 'pel-exec-cmd (cons (pel-bin-path cmd) args))))
 
 ;; -----------------------------------------------------------------------------
