@@ -250,16 +250,26 @@ Can't detect Erlang version." pel-erlang-version-detection-method)
        :error)
       nil)))
 
+(defun pel-erlang-ls-version ()
+  "Return a string describing erlang_ls version or nil if not available."
+  (let ((exit-code.stdout (pel-exec-cmd "erlang_ls" "--version")))
+    (when (car exit-code.stdout)
+      (cadr (split-string (cdr exit-code.stdout))))))
+
 ;;-pel-autoload
 (defun pel-show-erlang-version ()
-  "Display version of Erlang and erlang.el."
+  "Display version of Erlang, erlang.el and erlang_ls if available."
   (interactive)
-  (message "Erlang version: %s, erlang.el version: %s"
-           (pel-erlang-version)
-           (if (and (require 'erlang nil :noerror)
-                    (fboundp 'erlang-version))
-               (erlang-version)
-             "Unknown - not loaded!")))
+  (let ((erlang-ls-version (pel-erlang-ls-version)))
+    (message "Erlang version: %s, erlang.el version: %s%s"
+             (pel-erlang-version)
+             (if (and (require 'erlang nil :noerror)
+                      (fboundp 'erlang-version))
+                 (erlang-version)
+               "Unknown - not loaded!")
+             (if erlang-ls-version
+                 (format ", erlang_ls: %s" erlang-ls-version)
+               ""))))
 
 ;; ---------------------------------------------------------------------------
 
