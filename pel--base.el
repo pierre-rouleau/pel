@@ -359,7 +359,6 @@ Return non-nil if it was added, nil otherwise."
                  "added.")))
     (= new-length original-length)))
 
-
 ;; ---------------------------------------------------------------------------
 ;; Base predicates
 ;; ---------------
