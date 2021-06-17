@@ -55,6 +55,17 @@
 ;; forms.  The logic must therefore be correct to ensure the existence of the
 ;; function at run-time.
 
+;;  Major Mode setup
+;; -----------------
+;;
+;; Each major mode supported by PEL is initialized when its corresponding
+;; `pel-use-<mode>' user-option is turned on.
+;;
+;; Each major mode has a `pel-<mode>-activates-minor-modes' user-option that
+;; identifies the minor-modes that must be automatically activated for the
+;; major mode. These user-options are accessed via the `pel-setup-major-mode'
+;; macro.
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
@@ -3092,7 +3103,7 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
   (define-key pel:for-lfe "z" 'run-lfe)
   (define-key pel:for-lfe (kbd "M-c") 'pel-lfe-eval-buffer)
 
-  ;; Activate LFE setup.
+  ;; Setup the LFE major mode
   (pel-setup-major-mode lfe pel:for-lfe
     (when pel-emacs-is-a-tty-p
       (if (boundp 'lfe-mode-map)
@@ -3103,7 +3114,7 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
  Function keys starting with F5 will no work!"
                          :error))))
 
-  ;; inferior-lfe-mode support
+  ;; Setup the inferior-lfe-mode support
   ;; Add <f12> keys to the LFE shell (no macro yet for that, spell it out)
   ;; TODO simplify this code, integrate the ability to add <f12> key setup
   ;;      to an inferior process mode to the macros I normally use.
@@ -3412,7 +3423,6 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
   (pel-ensure-package adoc-mode from: melpa)
   (pel-autoload-file adoc-mode for: adoc-mode)
   (pel-set-auto-mode adoc-mode for: "\\.adoc\\'")
-
   (pel-setup-major-mode adoc :no-f12-keys))
 
 ;; ---------------------------------------------------------------------------
@@ -3678,7 +3688,6 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
   (define-key pel:for-plantuml "p"          'plantuml-preview)
   (define-key pel:for-plantuml "/"          'plantuml-complete-symbol)
   (define-key pel:for-plantuml (kbd "TAB")  'plantuml-indent-line)
-
 
   (pel-setup-major-mode plantuml pel:for-plantuml
     ;; Configure plantuml default execution mode according to PEL's selection.
