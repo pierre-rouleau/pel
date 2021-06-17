@@ -348,7 +348,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-selective-display-column-inc
     pel-selective-display-column-dec
     pel-selective-display-indent-inc
-    pel-selective-display-indent-dec)
+    pel-selective-display-indent-dec
+    pel-toggle-hide-indent)
 
   (pel-autoload "pel-hide-docstring" for:
     pel-hide/show-docstring

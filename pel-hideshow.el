@@ -255,6 +255,18 @@ This hides text indented a the new value of variable `selective-display'."
       (set-selective-display sd-value)
       (pel--set-vline sd-value))))
 
+;; ---------------------------------------------------------------------------
+;; Hide indented lines only
+;; ------------------------
+
+;;-pel-autoload
+(defun pel-toggle-hide-indent ()
+  "Toggle hiding lines more indented than current line."
+  (interactive)
+  (save-excursion
+    (back-to-indentation)
+    (set-selective-display
+     (if selective-display nil (+ 1 (current-column))))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-hideshow)

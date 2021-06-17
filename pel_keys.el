@@ -3912,6 +3912,8 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 ;; - Function Keys - <f11> - Prefix ``<f11> M-/`` : Hide/Show commands
 (define-pel-global-prefix pel:hide-show (kbd "<f11> M-/"))
 
+(define-key pel:hide-show (kbd "M-/") 'pel-toggle-hide-indent)
+
 (when pel-use-hide-lines
   (pel-ensure-package hide-lines from: melpa)
   (global-set-key (kbd "C-c /") 'hide-lines)
