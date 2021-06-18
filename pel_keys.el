@@ -5109,7 +5109,11 @@ the ones defined from the buffer now."
 (when pel-use-smartparens
   (define-pel-global-prefix pel:smartparens (kbd "<f11> i ("))
 
-  (define-key pel:smartparens "(" 'smartparens-mode))
+  (define-key pel:smartparens "(" 'smartparens-mode)
+  (define-key pel:smartparens ")" 'smartparens-strict-mode)
+  (define-key pel:smartparens (kbd "M-(") 'smartparens-global-mode)
+  (define-key pel:smartparens (kbd "M-)") 'smartparens-global-strict-mode)
+  (define-key pel:smartparens "?" 'sp-cheat-sheet))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> k`` : Keyboard macro operations
