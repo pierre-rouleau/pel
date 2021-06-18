@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-16 14:58:46, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-18 11:00:08, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -201,18 +201,25 @@
                                                              ))
 
     ([f11 32 ?x]     "pl-elixir"        pel-pkg-for-elixir      elixir)
-    (,(kbd "<f11> SPC C-a") nil         pel-pkg-for-arc         arc)
-    (,(kbd "<f11> SPC C-g") "pl-scheme" pel-pkg-for-gerbil      gerbil-mode)
+    (,(kbd "<f11> SPC C-a") nil         pel-pkg-for-arc         (arc
+                                                                 lispy))
+    (,(kbd "<f11> SPC C-g") "pl-scheme" pel-pkg-for-gerbil      (gerbil-mode
+                                                                 lispy))
     (,(kbd "<f11> SPC C-h") "pl-hy"     pel-pkg-for-hy)
     (,(kbd "<f11> SPC C-j") "pl-clojure" pel-pkg-for-clojure    (clojure
                                                                  cider
-                                                                 cljr))
-    (,(kbd "<f11> SPC C-l") "pl-lfe"    pel-pkg-for-lfe         lfe)
-    (,(kbd "<f11> SPC SPC C-l") "pl-lfe" pel-pkg-for-lfe        lfe)
-    (,(kbd "<f11> SPC C-r") nil         pel-pkg-for-racket      racket)
+                                                                 cljr
+                                                                 lispy))
+    (,(kbd "<f11> SPC C-l") "pl-lfe"    pel-pkg-for-lfe         (lfe
+                                                                 lispy))
+    (,(kbd "<f11> SPC SPC C-l") "pl-lfe" pel-pkg-for-lfe        (lfe
+                                                                 lispy))
+    (,(kbd "<f11> SPC C-r") nil         pel-pkg-for-racket      (racket
+                                                                 lispy))
     (,(kbd "<f11> SPC C-s") "pl-scheme" pel-pkg-for-scheme      (scheme
                                                                  geiser
-                                                                 quack))
+                                                                 quack
+                                                                 lispy))
     ;; ([f11 ?C]
     ([f11 ?D]        "drawing"          pel-pkg-for-drawing-markup)
     ([f11 ?D ?u]     "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
@@ -248,6 +255,7 @@
     ([f11 ?h]
      "highlight"
      (pel-pkg-for-highlight
+      pel-pkg-for-modeline
       pel-pkg-for-parens)  ,(let ((items
                                    (list
                                     'auto-highlight-symbol
@@ -255,6 +263,7 @@
                                     'highlight-indentation
                                     'rainbow
                                     'rainbow-delimiters
+                                    'smartparens
                                     'vline)))
       (if (version< emacs-version "27.1")
           (append items (list 'fill-column-indicator))
@@ -264,7 +273,7 @@
     ([f11 ?d]        "diff-merge"       pel-pkg-for-ztree       (diff
                                                                  ediff
                                                                  ztree))
-    ([f11 ?d ?e]     "diff-merge"       nil                     ediff)
+    ([f11 ?d ?e]     "diff-merge"       nil                      ediff)
     ([f11 ?f ?v]     "file-variables"   nil)
     (,(kbd "<f11> SPC M-D") "mode-dired" pel-pkg-for-dired      (dired
                                                                  ls-lisp
@@ -301,6 +310,7 @@
                                                                  wgrep))
     ([f11 ?i]        "inserting-text"   pel-pkg-for-insertions  (lice
                                                                  smart-dash
+                                                                 smartparens
                                                                  tempo
                                                                  time-stamp
                                                                  yanippet))

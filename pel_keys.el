@@ -55,8 +55,8 @@
 ;; forms.  The logic must therefore be correct to ensure the existence of the
 ;; function at run-time.
 
-;;  Major Mode setup
-;; -----------------
+;; Major Mode setup
+;; ----------------
 ;;
 ;; Each major mode supported by PEL is initialized when its corresponding
 ;; `pel-use-<mode>' user-option is turned on.
@@ -65,6 +65,18 @@
 ;; identifies the minor-modes that must be automatically activated for the
 ;; major mode. These user-options are accessed via the `pel-setup-major-mode'
 ;; macro.
+
+;; Minor Modes
+;; -----------
+;;
+;; The definition of minor mode symbols must be done prior to the definition
+;; of any major mode, since the user may request the automatic activation of a
+;; minor mode for a given major mode and the `pel-setup-major-mode' macro checks
+;; the validity of the minor mode symbols by calling the function
+;; `pel--check-minor-modes-in'.  That issues a warning if the minor mode
+;; symbol is not loaded, it does not prevent Emacs from starting but the
+;; warning message will be annoying. This check is not absolutely necessary
+;; but it prevents undetected invalid entries in the customization.
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -1122,13 +1134,12 @@ interactively."
 (when pel-use-smart-dash
   (pel-ensure-package smart-dash from: melpa)
   (pel-autoload-file smart-dash for: smart-dash-mode)
-  (define-key pel: (kbd "M--") 'smart-dash-mode)
 
   ;; when we can, activate a red lighter for Smart dash
   (when (and pel-use-delight
              (fboundp 'delight))
     (delight 'smart-dash-mode
-             (propertize " Sm-" 'font-lock-face '(:foreground "red"))
+             (propertize "-" 'font-lock-face '(:foreground "green"))
              "smart-dash"))
 
   (pel-add-hook-for
@@ -1138,6 +1149,11 @@ interactively."
      ;; ensure that the keypad dash is used as pel-kp-subtract
      ;; which either cuts current line or inserts a normal dash.
      (fset 'smart-dash-insert-dash 'pel-kp-subtract))))
+
+;; - smartparens
+;; -------------
+(when pel-use-smartparens
+  (pel-ensure-package smartparens from: melpa))
 
 ;; ---------------------------------------------------------------------------
 ;; - Display of Regular Expression -- easy-escape
@@ -5064,6 +5080,7 @@ the ones defined from the buffer now."
 ;; - Function Keys - <f11> - Prefix ``<f11> i`` : Insert text operations
 
 ;; Used keys in <f11> i:
+;; -
 ;;   D   L
 ;; c d f l t
 ;; M-c
@@ -5086,6 +5103,13 @@ the ones defined from the buffer now."
   (pel-autoload-file lice for: lice)
   (define-key pel:insert "L" 'lice)
   (define-key pel:f6 "L" 'lice))
+
+(when pel-use-smart-dash
+  (define-key pel:insert "-" 'smart-dash-mode))
+(when pel-use-smartparens
+  (define-pel-global-prefix pel:smartparens (kbd "<f11> i ("))
+
+  (define-key pel:smartparens "(" 'smartparens-mode))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> k`` : Keyboard macro operations

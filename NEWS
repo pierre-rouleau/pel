@@ -936,6 +936,8 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       toggle of the easy-escape minor mode.
     - The command is described in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀ Search/Replace PDF]].
 - Update: *Text Insertion*:
+  - New: Add support for *smartparens* external package when the
+    *pel-use-smartparens* user-option is turned on (set to *t*).
   - Modified: key binding to *pel-toggle-update-copyright-on-save* from
     ``<f11> M-C`` to ``<f11> M-@``.
   - Modified: key bindings, using more lower case letters:

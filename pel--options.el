@@ -56,10 +56,11 @@
 ;;     - pel-pkg-for-help
 ;;     - pel-pkg-for-hide-show
 ;;     - pel-pkg-for-highlight
-;;       - pel-pkg-for-parens
+;;       - pel-pkg-for-modeline
 ;;     - pel-pkg-for-imenu
 ;;     - pel-pkg-for-indentation
 ;;     - pel-pkg-for-insertions
+;;       - pel-pkg-for-parens
 ;;     - pel-pkg-for-kbmacro
 ;;     - pel-pkg-for-key-chord
 ;;     - pel-pkg-for-keys
@@ -80,6 +81,7 @@
 ;;       - pel-pkg-for-xref
 ;;     - pel-pkg-for-programming
 ;;       - pel-pkg-for-all-languages
+;;         - pel-pkg-for-parens
 ;;         - pel-pkg-for-language-server
 ;;         - pel-pkg-generic-code-style
 ;;           - pel-shell-script-skeleton-control
@@ -445,7 +447,6 @@ Use the INS and DEL buttons to add associations:
     (list
      (string :tag "file pattern")
      (symbol :tag "major mode  "))))
-
 
 (defcustom pel-prompt-accept-y-n nil
   "Accept 'y' or 'n' instead of 'yes' or 'no' as answers to prompts."
@@ -1789,72 +1790,6 @@ PEL binds command `rainbow-mode' to ``<f11> b h c``."
   :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
-;; Parens block management
-;; -----------------------
-
-(defgroup pel-pkg-for-parens nil
-  "List of external packages that PEL can use to help deal with parens.
-
-The word \"parens\" is a generic term that describes the following
-grouping characters:
-- parenthesis:     '(' and ')',
-- braces:          '{' and '}'
-- square brackets: '[' and ']'
-- angle brackets:  '<' and '>'
-- and potentially the quote characters:
-  - single quote:    '
-  - double quote:    \""
-  :group 'pel-pkg-for-highlight
-  :group 'pel-pkg-for-all-languages
-  :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp"))
-  :link `(url-link :tag "Common Lisp PDF" ,(pel-pdf-file-url "pl-common-lisp"))
-  :link `(url-link :tag "Diff & Merge PDF" ,(pel-pdf-file-url "diff-merge")))
-
-(defcustom pel-use-parinfer nil
-  "Control whether PEL uses the parinfer package.
-
-Note that this package is obsolete, the author failed to complete a fast
-enough implementation using Emacs Lisp.  There is, however, a successor,
-implemented in Rust, parinfer-rust-mode that can be used instead.  Activate
-that with `pel-use-parinfer-rust-mode'.
-
-If you have an old installation of parinfer downloaded via Melpa, and you
-request a PEL cleanup, your copy will be stored inside your
-~/.emacs.d/elpa-attic directory.
-
-New installations will be done using the files from EmacsAttic.
-
-To activate this package select one of the options:
-- use-local-elpa-attic-copy  but only if you have an old copy in your elpa-attic.
-- use-emacs-attic for all other case."
-  :link '(url-link :tab "parinfer manual"
-                   "https://shaunlebron.github.io/parinfer/")
-  :link '(url-link :tab "parinfer @ EmacsAttic"
-                   "https://github.com/emacsattic/parinfer")
-  :link '(url-link :tab "parinfer @ GitHub, archived."
-                   "https://github.com/shaunlebron/parinfer")
-  :group 'pel-pkg-for-parens
-  :type '(choice
-          (const :tag "Don't use" nil)
-          (const :tag "Use emacsattic site files" t)
-          (const :tag "Use local Elpa attic copy" use-pel-elpa-attic-copy)))
-(pel-put 'pel-use-parinfer :package-is '(if (eq pel-use-parinfer
-                                                'use-pel-elpa-attic-copy)
-                                            '((elpa . parinfer))
-                                          '((utils . parinfer))))
-;; parinfer is no longer available in MELPA.
-;; If you have it in an attic directory it will be used.
-;; The dependencies are no longer retrievable trough MELPA,
-;; so they are identified here.
-(pel-put 'pel-use-parinfer :requires-package '(quote ((elpa . dash))))
-
-(defcustom pel-use-rainbow-delimiters nil
-  "Control whether PEL uses the rainbow-delimiters package."
-  :group 'pel-pkg-for-parens
-  :type 'boolean
-  :safe #'booleanp)
-
-;; ---------------------------------------------------------------------------
 ;; iMenu extension support
 ;; -----------------------
 ;;
@@ -2038,6 +1973,79 @@ PEL activates it only if variable `pel-use-yasnippet' is non-nil."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-yasnippet-snippets :requires 'pel-use-yasnippet)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Parens block management
+;; -----------------------
+
+(defgroup pel-pkg-for-parens nil
+  "List of external packages that PEL can use to help deal with parens.
+
+The word \"parens\" is a generic term that describes the following
+grouping characters:
+- parenthesis:     '(' and ')',
+- braces:          '{' and '}'
+- square brackets: '[' and ']'
+- angle brackets:  '<' and '>'
+- and potentially the quote characters:
+  - single quote:    '
+  - double quote:    \""
+  :group 'pel-pkg-for-insertions
+  :group 'pel-pkg-for-all-languages
+  :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp"))
+  :link `(url-link :tag "Common Lisp PDF" ,(pel-pdf-file-url "pl-common-lisp"))
+  :link `(url-link :tag "Diff & Merge PDF" ,(pel-pdf-file-url "diff-merge")))
+
+(defcustom pel-use-parinfer nil
+  "Control whether PEL uses the parinfer package.
+
+Note that this package is obsolete, the author failed to complete a fast
+enough implementation using Emacs Lisp.  There is, however, a successor,
+implemented in Rust, parinfer-rust-mode that can be used instead.  Activate
+that with `pel-use-parinfer-rust-mode'.
+
+If you have an old installation of parinfer downloaded via Melpa, and you
+request a PEL cleanup, your copy will be stored inside your
+~/.emacs.d/elpa-attic directory.
+
+New installations will be done using the files from EmacsAttic.
+
+To activate this package select one of the options:
+- use-local-elpa-attic-copy  but only if you have an old copy in your elpa-attic.
+- use-emacs-attic for all other case."
+  :link '(url-link :tab "parinfer manual"
+                   "https://shaunlebron.github.io/parinfer/")
+  :link '(url-link :tab "parinfer @ EmacsAttic"
+                   "https://github.com/emacsattic/parinfer")
+  :link '(url-link :tab "parinfer @ GitHub, archived."
+                   "https://github.com/shaunlebron/parinfer")
+  :group 'pel-pkg-for-parens
+  :type '(choice
+          (const :tag "Don't use" nil)
+          (const :tag "Use emacsattic site files" t)
+          (const :tag "Use local Elpa attic copy" use-pel-elpa-attic-copy)))
+(pel-put 'pel-use-parinfer :package-is '(if (eq pel-use-parinfer
+                                                'use-pel-elpa-attic-copy)
+                                            '((elpa . parinfer))
+                                          '((utils . parinfer))))
+;; parinfer is no longer available in MELPA.
+;; If you have it in an attic directory it will be used.
+;; The dependencies are no longer retrievable trough MELPA,
+;; so they are identified here.
+(pel-put 'pel-use-parinfer :requires-package '(quote ((elpa . dash))))
+
+(defcustom pel-use-rainbow-delimiters nil
+  "Control whether PEL uses the rainbow-delimiters package."
+  :group 'pel-pkg-for-highlight
+  :group 'pel-pkg-for-parens
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-smartparens nil
+  "Control whether PEL activates the smartparens package."
+  :group 'pel-pkg-for-parens
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-kbmacro
@@ -2941,7 +2949,8 @@ Do not enter lambda expressions."
 ;; --------------------
 (defgroup pel-pkg-for-modeline nil
   "List of external packages that PEL can use to control the modeline."
-  :group 'pel-package-use)
+  :group 'pel-package-use
+  :group 'pel-pkg-for-highlight)
 
 (defcustom pel-use-delight nil
   "Control whether PEL activates the delight external package.
