@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-18 15:10:37, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-19 00:20:42, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -411,7 +411,10 @@
     ([f11 32 27 ?o]         "mode-org-mode"    pel-pkg-for-org-mode    org)
 
     (,(kbd "<f11> SPC M-u") "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
-    ([f11 32 27 ?u]         "plantuml"         pel-pkg-for-plantuml    plantuml-mode))
+    ([f11 32 27 ?u]         "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
+
+    (,(kbd "<f11> SPC M-y") "yaml"             pel-pkg-for-yaml    yaml)
+    ([f11 32 27 ?y]         "yaml"             pel-pkg-for-yaml    yaml))
   "Map from key prefix array to topic string.
 The topic string correspond to the base name of the PDF file
 stored inside the doc/pdf directory.")
@@ -477,7 +480,8 @@ stored inside the doc/pdf directory.")
     ("scheme"          [f11 32 19])
     ("org"             [f11 32 27 ?o])
     ("graphviz-dot"    [f11 32 27 ?g])
-    ("plantuml"        [f11 32 27 ?u]))
+    ("plantuml"        [f11 32 27 ?u])
+    ("yaml"            [f11 32 27 ?y]))
   "Maps the name of a major mode (without the -mode suffix)
 to a symbol or key sequence array to use as map key inside
 `pel--prefix-to-topic-alist' table.")

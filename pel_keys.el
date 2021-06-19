@@ -1730,6 +1730,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-m - Markdown
 ;; M-o - OrgMode
 ;; M-r - reStructuredText
+;; M-y - YAML
 ;; M-s - SQL
 ;; M-u - PlantUML
 ;; M-A - Alpaca          -              BEAM Language, Functional/ML
@@ -3503,11 +3504,15 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 ;; ------------
 
 (when pel-use-yaml-mode
+  (define-pel-global-prefix pel:for-yaml (kbd "<f11> SPC M-y"))
   (pel-ensure-package yaml-mode from: melpa)
   (pel-autoload-file yaml-mode for: yaml-mode)
-  (pel-set-auto-mode yaml-mode for: "\\.yml\\'")
+  ;; .yml and .yaml for YAML
+  ;; .eyaml for encrypted (see hiera, puppet)
+  ;; .raml for RESTful API Modeling Language
+  (pel-set-auto-mode yaml-mode for: "\\.\\(e?ya?\\|ra\\)ml\\'")
 
-  (pel-setup-major-mode yaml :no-f12-keys))
+  (pel-setup-major-mode yaml pel:for-yaml))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-m`` : Markdown
