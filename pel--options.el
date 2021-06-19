@@ -1894,6 +1894,22 @@ Note: popup-switcher 2.14 has several bugs I fixed in my fork, which PEL
   :group 'pel-package-use
   :link `(url-link :tag "Indentation PDF" ,(pel-pdf-file-url "indentation")))
 
+(defcustom pel-use-indent-tools nil
+  "Whether PEL activates the indent-tools external package."
+  :group 'pel-pkg-for-indentation
+  :link '(url-link :tag "indent-tools @ GitLab"
+                   "https://gitlab.com/emacs-stuff/indent-tools/")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-indent-tools-key-bound nil
+  "If set `C-c >` is bound to `indent-tools-hydra/body' globally or for Python."
+  :group 'pel-pkg-for-indentation
+  :type '(choice
+          (const :tag "Not available" nil)
+          (const :tag "Available globally" globally)
+          (const :tag "Available in python-mode" python)))
+
 (defcustom pel-use-smart-shift nil
   "Whether PEL activates the smart-shift external package."
   :group 'pel-pkg-for-indentation
@@ -2466,7 +2482,8 @@ To activate it you must also activate `pel-use-log-support'"
   :group 'pel-pkg-for-keys
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-hydra :also-required-when '(or pel-use-iflipb
+(pel-put 'pel-use-hydra :also-required-when '(or pel-use-indent-tools
+                                                 pel-use-iflipb
                                                  pel-use-treemacs))
 
 (defcustom pel-use-which-key t
@@ -7588,7 +7605,8 @@ indexing system."
 (when pel-use-bison-mode
   (setq pel-use-c t))
 
-(when (or pel-use-iflipb
+(when (or pel-use-indent-tools
+          pel-use-iflipb
           pel-use-treemacs)
   (setq pel-use-hydra t))
 

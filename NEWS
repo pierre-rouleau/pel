@@ -372,6 +372,10 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       indentation whitespace.  They also automatically tabify or untabify the
       indentation whitespace, conforming to the mode identified by the
       ``indent-tabs-mode`` variable.
+  - New: Add support for *indent-tools* external package.  Activate by the
+    *pel-use-indent-tools* user-option. Provide the ``<f11> <tab> >``
+    key-binding to its key Hydra.  It's also possible to activate the binding
+    identified by indent-tool customization globally or only for Python files.
   - New: Add support for *smart-shift* external package.  Activate by the
     *pel-use-smart-shift* user-option. Also, the *pel-smart-shift-keybinding*
     user-option can be used to add extra key bindings to the minor-mode line

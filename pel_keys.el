@@ -1115,6 +1115,12 @@ interactively."
     (pel--check-flyspell-iedit-conflict)
     (pel--add-keys-to-iedit-mode)))
 
+;; - indent-tools
+;; --------------
+(when pel-use-indent-tools
+  (pel-ensure-package indent-tools from: melpa)
+  (pel-autoload-file indent-tools for: indent-tools-hydra/body))
+
 ;; - popup-kill-ring
 ;; -----------------
 ;; View all kill-ring deletions in a pop-up menu, when M-y is typed.
@@ -3268,7 +3274,13 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 
   ;; Activate python mode
   (pel-setup-major-mode python pel:for-python
-    (setq tab-width pel-python-tab-width)))
+    (setq tab-width pel-python-tab-width)
+    (when (and pel-use-indent-tools
+               (eq pel-indent-tools-key-bound 'python)
+               (require 'indent-tools nil :noerror)
+               (boundp 'indent-tools-keymap-prefix)
+               (boundp 'python-mode-map))
+      (define-key python-mode-map indent-tools-keymap-prefix 'indent-tools-hydra/body))))
 
 ;; (use-package jedi
 ;;   :ensure t
@@ -4332,6 +4344,20 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:indent (kbd "<RET>")   'pel-newline-and-indent-below)
 
 (global-set-key (kbd "<backtab>") 'pel-unindent-lines)
+
+(when pel-use-indent-tools
+  (define-key pel:indent ">" 'indent-tools-hydra/body)
+
+  (when (eq pel-indent-tools-key-bound 'globally)
+    ;; load indent-tools to map its key globally.  Delay it because we need
+    ;; it loaded to read the key prefix identified by customization.
+    (run-with-idle-timer
+     1 nil
+     (lambda ()
+       (when (and
+              (require 'indent-tools nil :noerror)
+              (boundp 'indent-tools-keymap-prefix))
+         (global-set-key indent-tools-keymap-prefix 'indent-tools-hydra/body))))))
 
 (when pel-use-smart-shift
   (pel-ensure-package smart-shift from: melpa)
