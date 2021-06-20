@@ -1747,7 +1747,11 @@ can't bind negative-argument to C-_ and M-_"
   (pel-ensure-package flycheck from: melpa)
   (pel-autoload-file flycheck for:
                      flycheck-mode
-                     flycheck-select-checker))
+                     flycheck-select-checker)
+
+  (define-pel-global-prefix pel:flycheck (kbd "<f11> !"))
+  (define-key pel:flycheck "!"         'flycheck-mode)
+  (define-key pel:flycheck (kbd "M-!") 'global-flycheck-mode))
 
 ;; ---------------------------------------------------------------------------
 ;; Software Build Tool Support
