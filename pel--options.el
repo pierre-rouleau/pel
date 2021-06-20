@@ -82,6 +82,7 @@
 ;;     - pel-pkg-for-programming
 ;;       - pel-pkg-for-all-languages
 ;;         - pel-pkg-for-parens
+;;         - pel-pkg-for-syntax-check
 ;;         - pel-pkg-for-language-server
 ;;         - pel-pkg-generic-code-style
 ;;           - pel-shell-script-skeleton-control
@@ -961,7 +962,8 @@ Note that `pel-use-helm-cscope' indirectly activates `pel-use-helm'."
   :safe #'booleanp)
 (pel-put 'pel-use-helm :also-required-when '(or pel-use-helm-cscope
                                                 pel-use-helm-xref
-                                                pel-use-helm-lsp))
+                                                pel-use-helm-lsp
+                                                pel-use-indent-tools))
 
 (defconst pel-USE-IDO     1 "Bitmask identifying Ido.      DON'T CHANGE!")
 (defconst pel-USE-IVY     2 "Bitmask identifying Ivy.      DON'T CHANGE!")
@@ -3089,6 +3091,34 @@ This package provides the ability to hide comments."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-hide-comnt :package-is :in-utils)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Syntax Checking
+;; ---------------
+
+(defgroup pel-pkg-for-syntax-check nil
+  "PEL support for syntax checking."
+  :group  'pel-pkg-for-all-languages)
+
+(defcustom pel-use-flycheck nil
+  "Whether PEL activates the flycheck external package.
+This may get activated indirectly by other user-options."
+  :group 'pel-pkg-for-syntax-check
+  :link '(url-link :tag "flycheck home"
+                   "https://www.flycheck.org/en/latest/")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-flycheck :also-required-when
+         '(or (and pel-use-erlang
+                   (or pel-use-flycheck-rebar3
+                       (eq pel-use-erlang-syntax-check 'with-flycheck)))
+              (and pel-use-go
+                   (or pel-use-flycheck-golangci-lint
+                       (eq pel-use-goflymake 'with-flycheck)))
+              (and pel-use-plantuml
+                   pel-use-flycheck-plantuml)
+              (and pel-use-rust
+                   pel-use-flycheck-rust)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Language Server Protocol (LSP) Support
@@ -6271,7 +6301,6 @@ Do not enter lambda expressions."
                                               pel-use-elixir
                                               pel-use-lfe
                                               pel-use-gleam))
-;; TODO : ad dependency on flycheck
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Forth support
@@ -7596,7 +7625,8 @@ indexing system."
   (setq pel-use-helm t))
 
 (when (or pel-use-helm-xref
-          pel-use-helm-lsp)
+          pel-use-helm-lsp
+          pel-use-indent-tools)
   (setq pel-use-helm t))
 
 (when pel-use-ivy-xref
@@ -7627,6 +7657,18 @@ indexing system."
 (when pel-use-lsp-ivy
   (setq pel-use-ivy t))
 
+(when (or (and pel-use-erlang
+               (or pel-use-flycheck-rebar3
+                   (eq pel-use-erlang-syntax-check 'with-flycheck)))
+          (and pel-use-go
+               (or pel-use-flycheck-golangci-lint
+                   (eq pel-use-goflymake 'with-flycheck)))
+          (and pel-use-plantuml
+               pel-use-flycheck-plantuml)
+          (and pel-use-rust
+               pel-use-flycheck-rust))
+
+  (setq pel-use-flycheck t))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel--options)

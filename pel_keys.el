@@ -1743,8 +1743,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; ---------------------------------------------------------------------------
 ;; Syntax Check with Flycheck (if requested)
 ;; -----------------------------------------
-(when (or (eq pel-use-erlang-syntax-check 'with-flycheck)
-          (eq pel-use-goflymake 'with-flycheck))
+(when pel-use-flycheck
   (pel-ensure-package flycheck from: melpa)
   (pel-autoload-file flycheck for:
                      flycheck-mode
