@@ -42,6 +42,7 @@ HTML/*
 # Emacs temporary files
 .#*
 *#
+\#*
 
 # Emacs desktop file
 .emacs.desktop
