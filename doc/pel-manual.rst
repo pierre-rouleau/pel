@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-06-13 13:19:35, updated by Pierre Rouleau.
+:Modified: 2021-06-21 16:06:32, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1038,7 +1038,8 @@ using.  I use this short symlink for its size. And you probably don't have to
 worry about a clash with the `1970s E editor`_.
 
 And ``ge`` is a script to launch the graphical Emacs, providing access to the
-current directory and the complete environment on macOS:
+current directory and the complete environment on macOS.  With that script I
+don't need any special Emacs setup code like `Steve Purcell's exec-path-from-shell`_:
 
 
 .. code:: shell
@@ -1053,13 +1054,29 @@ current directory and the complete environment on macOS:
           #     directory) and if you specify files that are not in that directory they
           #     will not be opened, another file file open which will most likely be
           #     in an empty buffer (if the file does not exists in the home directory).
-          #   - All script command line arguments.
+          #   - All script command line arguments
           #
           # Note: The current Emacs for macOS graphical dumps an error when it starts.
           #       This is annoying; it's noise on the shell.
           #       Just mask it by dumping it in the bit bucket.
           #
+          # Emacs 27+ support:
+          #    - To allow Emacs early-init.el code to distinguish whether Emacs is
+          #      running in terminal mode or in graphics mode.  When running
+          #           early-init.el Emacs does not know and the function
+          #           display-graphic-p does not work at that moment.  The only way I
+          #           have found is to use an environment variable.  So the following
+          #           code sets one up: PEL_EMACS_IN_GRAPHICS
+          # See: https://emacs.stackexchange.com/questions/66268/how-to-set-package-user-dir-with-emacs-27-with-package-quickstart-and-distinguis
+          #
+          #
+          export PEL_EMACS_IN_GRAPHICS=1
           /Applications/Emacs.app/Contents/MacOS/Emacs --chdir=$(pwd) "$@" 2>/dev/null &
+
+
+.. _Steve Purcell's exec-path-from-shell: https://github.com/purcell/exec-path-from-shell
+
+
 
 On Linux
 ^^^^^^^^
@@ -5802,7 +5819,7 @@ First PEL would not exists without `GNU Emacs`_.
 Most of the text in the PDF documentation comes from Emacs own documentation,
 both from the code docstrings and from the Emacs manuals.
 
-PEL uses the following libraries distributed with GNU Emacs:
+PEL uses the following libraries distributed with GNU Emacs and several others:
 
 #. `bookmark    <https://github.com/emacs-mirror/emacs/blob/master/lisp/bookmark.el>`_
 #. `cc-vars     <https://github.com/emacs-mirror/emacs/blob/master/lisp/progmodes/cc-vars.el>`_
@@ -5843,7 +5860,9 @@ PEL uses the following libraries distributed with GNU Emacs:
 
 
 It also provides access to the features of the libraries listed in the
-following table when the corresponding PEL user option is set to **t**:
+following table when the corresponding PEL user option is set to **t**.
+This table is currently incomplete.  The link to the original projects are
+available in the source code and inside the customization buffers.
 
 ============================= ==========================
 Package Name & Archive link   Archive Site
