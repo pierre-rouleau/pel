@@ -76,6 +76,7 @@
 ;;         - pel-reST-style
 ;;       - pel-pkg-for-xml
 ;;       - pel-pkg-for-yaml
+;;         - pel-pkg-for-cwl
 ;;     - pel-pkg-for-modeline
 ;;     - pel-pkg-for-navigation
 ;;       - pel-pkg-for-xref
@@ -2947,8 +2948,8 @@ itself is not available."
 ;; ------------
 (defgroup pel-pkg-for-yaml nil
   "PEL YAML support."
-  :group 'pel-pkg-for-markup)
-;;  :link `(url-link :tag "yaml PDF" ,(pel-pdf-file-url "yaml"))
+  :group 'pel-pkg-for-markup
+  :link `(url-link :tag "yaml PDF" ,(pel-pdf-file-url "yaml")))
 
 (defcustom pel-use-yaml-mode nil
   "Control whether PEL provides access to the yaml-mode external package."
@@ -2961,6 +2962,30 @@ itself is not available."
 Enter minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-yaml
+  :type '(repeat function))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Common Workflow Language support
+;; --------------------------------
+
+(defgroup pel-pkg-for-cwl nil
+  "PEL Common Workflow Language (CWL) support."
+  :group 'pel-pkg-for-yaml
+  :link `(url-link :tag "cwl PDF" ,(pel-pdf-file-url "cwl")))
+
+(defcustom pel-use-cwl-mode nil
+  "Control whether PEL activates the cwl-mode external package."
+  :group 'pel-pkg-for-cwl
+  :link '(url-link :tag "cwl-mode @ GitHub"
+                   "https://github.com/tom-tan/cwl-mode")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-cwl-activates-minor-modes nil
+  "List of minor-modes automatically activated for CWL buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-cwl
   :type '(repeat function))
 
 ;; ---------------------------------------------------------------------------

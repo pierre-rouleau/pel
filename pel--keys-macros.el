@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-20 23:55:33, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-21 09:37:30, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -83,6 +83,12 @@
                                  htmlize
                                  simple-httpd)
   "List of groups for packages used by markdown.")
+
+(defconst pel--yaml-groups '(yaml
+                             flycheck
+                             indent-tools
+                             smartparens)
+  "List of groups for YAML and CWL.")
 
 ;; TODO: add logic in the processing of that table to allow the first element
 ;;       of a row to be a list of key sequences.
@@ -415,8 +421,10 @@
     (,(kbd "<f11> SPC M-u") "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
     ([f11 32 27 ?u]         "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
 
-    (,(kbd "<f11> SPC M-y") "yaml"             pel-pkg-for-yaml    yaml)
-    ([f11 32 27 ?y]         "yaml"             pel-pkg-for-yaml    yaml))
+    (,(kbd "<f11> SPC M-c") "cwl"              pel-pkg-for-cwl     ,pel--yaml-groups)
+    ([f11 32 27 ?c]         "cwl"              pel-pkg-for-cwl     ,pel--yaml-groups)
+    (,(kbd "<f11> SPC M-y") "yaml"             pel-pkg-for-yaml    ,pel--yaml-groups)
+    ([f11 32 27 ?y]         "yaml"             pel-pkg-for-yaml    ,pel--yaml-groups))
   "Map from key prefix array to topic string.
 The topic string correspond to the base name of the PDF file
 stored inside the doc/pdf directory.")
@@ -480,6 +488,7 @@ stored inside the doc/pdf directory.")
     ("netrexx"         [f11 32 ?N])
     ("rst"             [f11 32 27 ?r])
     ("scheme"          [f11 32 19])
+    ("cwl"             [f11 32 27 ?c])
     ("org"             [f11 32 27 ?o])
     ("graphviz-dot"    [f11 32 27 ?g])
     ("plantuml"        [f11 32 27 ?u])

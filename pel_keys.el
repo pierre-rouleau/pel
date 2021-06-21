@@ -1726,6 +1726,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; C-s - Scheme          - Lisp Family
 ;; C-u - Raku
 ;; M-a - AsciiDoc
+;; M-c - Common Workspace Language (CWL)
 ;; M-g - GraphViz Dot
 ;; M-m - Markdown
 ;; M-o - OrgMode
@@ -3516,6 +3517,13 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
   (pel-set-auto-mode yaml-mode for: "\\.\\(e?ya?\\|ra\\)ml\\'")
 
   (pel-setup-major-mode yaml pel:for-yaml))
+
+(when pel-use-cwl-mode
+  (define-pel-global-prefix pel:for-cwl (kbd "<f11> SPC M-c"))
+  (pel-ensure-package cwl-mode from: melpa)
+  ;; .cwl files are associated with cwl-mode
+  (pel-set-auto-mode cwl-mode for: "\\.cwl\\'")
+  (pel-setup-major-mode cwl pel:for-cwl))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-m`` : Markdown
