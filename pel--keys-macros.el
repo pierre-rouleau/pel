@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-19 00:20:42, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-20 23:55:33, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -291,14 +291,14 @@
                                                                  ls-lisp))
     ([f11 ?f]        ("file-mngt"
                       "web")            pel-pkg-for-filemng     (files
-                                                                 recentf
-                                                                 popup-switcher))
+                      recentf
+                      popup-switcher))
 
     ;; no PDF for browse yet, the info is  in file-mngt.
     ([f11 ?B]        "file-mngt"        (pel-pkg-for-browse
                                          pel-pkg-for-ztree)     (treemacs
-                                                                 lsp-treemacs
-                                                                 ztree))
+                                         lsp-treemacs
+                                         ztree))
     ([f11 ?B ?N]     "file-mngt"        pel-pkg-for-neotree      neotree)
     ([f11 ?f ?a]     "file-mngt"        nil                      ffap)
     ([f11 ?f ?p]     "file-mngt"        pel-pkg-for-project-mng  ffip)
@@ -336,6 +336,8 @@
     ([f11 ?s ?x]     "search-replace"   pel-pkg-for-regexp    (rxt ; for pcre
                                                                re-builder
                                                                visual-regexp))
+    ([f11 ?!]        "syntax-checking"  pel-pkg-for-syntax-check (flymake
+                                                                  flycheck))
     ([f11 ?t]        ("case-conversion"
                       "input-method"
                       "text-modes")     pel-pkg-for-text-mode)
