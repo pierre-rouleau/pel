@@ -27,7 +27,7 @@ or `update it`_ [2]_ !
   and external Emacs Lisp libraries even if they are not even loaded.
 
 - PEL controls the download, installation, configuration and activation of
-  **over 190** *top-level* [3]_ external packages through the use of
+  **over 200** *top-level* [3]_ external packages through the use of
   easy-to-setup customization user-options that have a name that start with
   the "``pel-use-``" prefix.  See the manual `built-in and external Emacs
   packages`_ section.
@@ -61,7 +61,7 @@ or `update it`_ [2]_ !
 
 - PEL **extends Emacs documentation**:
 
-  - PEL provides **Over 100 PDF topics oriented reference sheets** with
+  - PEL provides **Over 110 PDF topics oriented reference sheets** with
     hyperlinks to Emacs manuals, external packages, articles and other
     references.
 
