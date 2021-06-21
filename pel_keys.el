@@ -3069,7 +3069,13 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
     ;; setup the Erlang-specific key bindings
     (pel--install-erlang-skel pel:erlang-skel)
     ;; Configure M-( to put parentheses after a function name.
-    (set (make-local-variable 'parens-require-spaces) nil)))
+    (set (make-local-variable 'parens-require-spaces) nil)
+    ;; Add key-bindings inside the lsp-keymap if erlang_ls is used
+    (when (and pel-use-erlang-ls
+               (boundp 'lsp-mode-map)
+               (boundp 'lsp-keymap-prefix))
+      (define-key lsp-mode-map (kbd (format "%s d" lsp-keymap-prefix)) 'lsp-doctor)
+      (define-key lsp-mode-map (kbd (format "%s L" lsp-keymap-prefix)) 'lsp-workspace-show-log))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC x`` : Elixir programming
