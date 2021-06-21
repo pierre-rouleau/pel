@@ -130,6 +130,7 @@
 ;;       - pel-pkg-for-julia
 ;;       - pel-pkg-for-python
 ;;       - pel-pkg-for-rexx
+;;       - pel-pkg-for-ruby
 ;;       - pel-pkg-for-rust
 ;;       - pel-pkg-for-v
 ;;     - pel-pkg-for-project-mng
@@ -6502,6 +6503,30 @@ Do not enter lambda expressions."
 Enter minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-rexx
+  :type '(repeat function))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Ruby Support
+;; ------------
+(defgroup pel-pkg-for-ruby nil
+  "PEL support for the Ruby programming language."
+  :group 'pel-pkg-for-programming
+  ;; :link `(url-link :tag "Ruby PDF" ,(pel-pdf-file-url "pl-ruby"))
+  )
+
+(defcustom pel-use-ruby nil
+  "Control whether PEL supports the Ruby programming language.
+
+When turned on the ruby-mode is associated with the PEL ``<f12>`` key."
+  :group 'pel-pkg-for-ruby
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-ruby-activates-minor-modes nil
+  "List of minor-modes automatically activated for Ruby buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-ruby
   :type '(repeat function))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

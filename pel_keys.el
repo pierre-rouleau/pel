@@ -3353,6 +3353,13 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
   (pel-setup-major-mode netrexx pel:for-netrexx))
 
 ;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC U`` : Ruby programming
+(when pel-use-ruby
+  (define-pel-global-prefix pel:for-ruby (kbd "<f11> SPC U"))
+  ;; the ruby-mode is part of Emacs
+  (pel-setup-major-mode ruby pel:for-ruby))
+
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC r`` : Rust programming
 (when pel-use-rust
   ;; TODO: only allow one of rust-mode or rustic and determine what

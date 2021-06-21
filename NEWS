@@ -808,6 +808,11 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     - New: *NetRexx*:
       - Add support for NetRexx programming language via
         [[https://github.com/pierre-rouleau/netrexx-mode][my forked netrexx-mode GitHub project]].
+  - New: **Ruby**
+    - New: add explicit support for Ruby via the *pel-use-ruby* user-option.
+      Also provide the *pel-ruby-activates-minor-modes* user-option to automatically
+      activate minor modes for Ruby major mode.  The key prefix is ``<f11> SPC U`` which becomes
+      ``<f12>`` in Ruby buffers.
   - Update: *Rust*:
     - Modified: ⚠️  *Customization affecting change*: customization setting, *pel-use-rust*,
       no longer automatically activates cargo and racer for Emacs.  These now

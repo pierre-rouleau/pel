@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-21 09:37:30, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-21 11:08:31, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -207,6 +207,7 @@
                                                              racer
                                                              cargo
                                                              ))
+    ([f11 32 ?U]     "pl-ruby"      pel-pkg-for-ruby         ruby)
 
     ([f11 32 ?x]     "pl-elixir"        pel-pkg-for-elixir      elixir)
     (,(kbd "<f11> SPC C-a") nil         pel-pkg-for-arc         (arc
@@ -483,6 +484,7 @@ stored inside the doc/pdf directory.")
     ("vc-dir"          [f11 32 32 ?v])
     ("racket"          [f11 32 18])
     ("rexx"            [f11 32 ?R])
+    ("ruby"            [f11 32 ?U])
     ("rust"            [f11 32 ?r])
     ("markdown"        [f11 32 27 ?m])
     ("netrexx"         [f11 32 ?N])
@@ -641,6 +643,7 @@ There should be no key binding!" keyseq))
     ("make"             . "pl-make")
     ("python"           . "pl-python")
     ("rexx"             . "pl-rexx")
+    ("ruby"             . "pl-ruby")
     ("rust"             . "pl-rust")
     ("netrexx"          . "pl-rexx")
     ("scheme"           . "pl-scheme")
