@@ -70,7 +70,10 @@ or `update it`_ [2]_ !
       (as opposed to downloading it) so you can use the links quickly.  Inside
       Emacs use ``<f11> <f1>`` to open the `PEL Index PDF`_ and then navigate
       from it, or use ``<f12> <f1>`` to open the PDF describing the major mode
-      of the current buffer and its key bindings.
+      of the current buffer and its key bindings.  All of these PDF files are
+      created from a macOS Number file.  It is located in a separate Git repo:
+      the `pel-pdf-spreadsheet repo`_.
+
 
   - `PEL's Manual`_ describes PEL features in more details. See:
 
@@ -150,6 +153,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _GNU Elpa:                   https://elpa.gnu.org
 .. _MELPA:                      https://melpa.org/#/
 .. _manual's table of contents: doc/pel-manual.rst
+.. _pel-pdf-spreadsheet repo:   https://github.com/pierre-rouleau/pel-pdf-spreadsheet#readme
 
 
 ..
