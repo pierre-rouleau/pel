@@ -3220,6 +3220,19 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 ;; TODO: test and complete dependency management of flycheck and rebar3
 
 ;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC h`` : Haskell programming
+(when pel-use-haskell
+  (define-pel-global-prefix pel:for-haskell (kbd "<f11> SPC h"))
+  (when pel-use-haskell-mode
+    (pel-ensure-package haskell-mode from: melpa))
+  (when pel-use-speedbar
+      (pel-add-speedbar-extension '(".hs"
+                                    ".hsc"
+                                    ".gs")))
+  ;; the haskell-mode is part of Emacs
+  (pel-setup-major-mode haskell pel:for-haskell))
+
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-h`` : Hy
 ;; Hy: A Lisp in Python
 (when pel-use-hy

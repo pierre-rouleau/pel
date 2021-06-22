@@ -796,6 +796,11 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       is very basic.  It provides early *gleam-mode* package when the
       *pel-use-gleam-mode* user-option is turned on.
     - New:  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-gleam][𝕻𝔩 - Gleam]] PDF.
+  - New: **Haskell**
+    - New: add explicit support for Haskell via the *pel-use-haskell* user-option.
+      Also provide the *pel-haskell-activates-minor-modes* user-option to automatically
+      activate minor modes for Haskell major mode.  The key prefix is ``<f11> SPC h`` which becomes
+      ``<f12>`` in Haskell buffers.
   - Update: *Python*
     - Modified: binding to rainbow-delimiters-mode to ``<f12> M-r`` like it is
       for other programming languages.

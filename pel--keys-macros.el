@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-21 23:21:26, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-22 09:28:40, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -189,6 +189,7 @@
                                                                  go-cover
                                                                  godoc
                                                                  go-dot-mod))
+    ([f11 32 ?h]     "pl-haskell"       pel-pkg-for-haskell     haskell)
     ([f11 32 ?j]     "pl-julia"         pel-pkg-for-julia       (julia
                                                                  julia-mode
                                                                  julia-snail))
@@ -481,6 +482,7 @@ stored inside the doc/pdf directory.")
     ("python"          [f11 32 ?p])
     ("arc"             [f11 32 1])
     ("gerbil"          [f11 32 7])
+    ("haskell"         [f11 32 ?h])
     ("hy"              [f11 32 8])
     ("lfe"             [f11 32 12])
     ("inferior-lfe"    [f11 32 32 12])
@@ -642,6 +644,7 @@ There should be no key binding!" keyseq))
     ("erlang"           . "pl-erlang")
     ("forth"            . "pl-forth")
     ("go"               . "pl-go")
+    ("haskell"          . "pl-haskell")
     ("hy"               . "pl-hy")
     ("julia"            . "pl-julia")
     ("lfe"              . "pl-lfe")

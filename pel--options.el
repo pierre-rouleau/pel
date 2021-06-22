@@ -104,6 +104,7 @@
 ;;           - pel-d-code-style
 ;;       - pel-pkg-for-javascript
 ;;       - pel-pkg-for-go
+;;       - pel-pkg-for-haskell
 ;;       - pel-pkg-for-lisp
 ;;         - pel-pkg-for-clisp
 ;;           - pel-clisp-code-style
@@ -4844,6 +4845,41 @@ Requires gocode."
 (pel-put 'pel-use-flycheck-golangci-lint :requires 'pel-use-go)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Haskell Support
+;; ---------------
+(defgroup pel-pkg-for-haskell nil
+  "PEL support for the Haskell programming language."
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "Haskell PDF" ,(pel-pdf-file-url "pl-haskell")))
+
+(defcustom pel-use-haskell nil
+  "Control whether PEL supports the Haskell programming language.
+
+When turned on the haskell-mode is associated with the PEL ``<f12>`` key."
+  :group 'pel-pkg-for-haskell
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-haskell :package-is :a-gate)
+
+(defcustom pel-use-haskell-mode nil
+  "Control whether PEL activates the haskell-mode external package."
+  :group 'pel-pkg-for-haskell
+  :link '(url-link :tag "haskell-mode @ GitHub"
+                   "https://github.com/haskell/haskell-mode")
+  :link '(url-link :tag "haskell mode manual"
+                   "https://haskell.github.io/haskell-mode/manual/latest/")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-haskell-mode :requires 'pel-use-haskell)
+
+(defcustom pel-haskell-activates-minor-modes nil
+  "List of minor-modes automatically activated for Haskell buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-haskell
+  :type '(repeat function))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Lisp-like language support
 ;; --------------------------
 ;;
@@ -6393,6 +6429,7 @@ When turned on the perl-mode is associated with the PEL ``<f12>`` key."
   :group 'pel-pkg-for-perl
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-perl :package-is :a-gate)
 
 (defcustom pel-perl-activates-minor-modes nil
   "List of minor-modes automatically activated for Perl buffers.
@@ -6544,6 +6581,7 @@ When turned on the ruby-mode is associated with the PEL ``<f12>`` key."
   :group 'pel-pkg-for-ruby
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-ruby :package-is :a-gate)
 
 (defcustom pel-ruby-activates-minor-modes nil
   "List of minor-modes automatically activated for Ruby buffers.
