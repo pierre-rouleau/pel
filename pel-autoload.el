@@ -320,6 +320,11 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-imenu-toggle-flatten
     pel-show-goto-symbol-settings)
 
+  (pel-autoload "pel-lsp" for:
+    pel-toggle-lsp-log-io
+    pel-toggle-lsp-ui-sideline
+    pel-toggle-lsp-ui-doc)
+
   (pel-autoload "pel-key-chord" for:
     pel-key-chord-describe)
 

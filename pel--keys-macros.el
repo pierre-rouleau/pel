@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-21 11:08:31, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-21 18:04:29, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -178,6 +178,9 @@
                                                                  lsp-ui
                                                                  lsp-treemacs))
     ([f11 32 ?e f12] "pl-erlang"        pel-erlang-code-style)
+    ([f11 32 ?e ?L]  "pl-erlang"        pel-pkg-for-lsp-mode    (lsp-treemacs
+                                                                 lsp-mode
+                                                                 lsp-ui))
     ([f11 32 ?e ?w]  "pl-erlang"        pel-pkg-for-lsp-mode    (lsp-treemacs
                                                                  lsp-mode
                                                                  lsp-ui))

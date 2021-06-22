@@ -1421,15 +1421,19 @@ The function issue an error if the argument is not a symbol."
       (set symbol (not (eval symbol)))
     (error "Nothing done: pel-toggle expects a symbol as argument")))
 
-(defun pel-toggle-and-show (symbol &optional on-string off-string)
+(defun pel-toggle-and-show (symbol &optional on-string off-string locally)
   "Toggle value of SYMBOL from nil to/from t, and show it's new value.
 If ON-STRING and OFF-STRING arguments are specified use them as the
 on/off value, otherwise use \"on\" and \"off\".
-For example, to toggle the value of a variable  named isok,
+By default the setting is considered global unless LOCALLY is set,
+which indicates that the setting is for the current buffer only.
+For example, to toggle the value of a variable named isok,
 the caller must pass it quoted.
 The function issue an error if the argument is not a symbol."
   (pel-toggle symbol)
-  (message (pel-symbol-text symbol on-string off-string)))
+  (message "%s%s"
+           (pel-symbol-text symbol on-string off-string)
+           (if locally " (in current buffer)" "")))
 
 (defun pel-toggle-and-show-user-option (user-option &optional globally on-string off-string)
   "Toggle the behaviour of USER-OPTION for current buffer or GLOBALLY.
@@ -1441,7 +1445,7 @@ USER-OPTION must be a variable symbol."
     (with-current-buffer (current-buffer)
       (unless (local-variable-p user-option)
         (make-local-variable user-option))))
-  (pel-toggle-and-show user-option on-string off-string))
+  (pel-toggle-and-show user-option on-string off-string (not globally)))
 
 (defun pel-val-or-default (val default)
   "Return VAL if not nil otherwise return DEFAULT."

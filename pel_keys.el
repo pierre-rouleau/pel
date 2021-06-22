@@ -2776,6 +2776,7 @@ d-mode not added to ac-modes!"
   (define-pel-global-prefix pel:erlang-analysis (kbd "<f11> SPC e a"))
   (define-pel-global-prefix pel:erlang-debug    (kbd "<f11> SPC e d"))
   (define-pel-global-prefix pel:erlang-skel     (kbd "<f11> SPC e <f12>"))
+  (define-pel-global-prefix pel:erlang-lsp        (kbd "<f11> SPC e L"))
   (define-pel-global-prefix pel:erlang-lsp-window (kbd "<f11> SPC e w"))
 
   (pel-ensure-package erlang from: melpa)
@@ -2983,13 +2984,14 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
       ;;       normally bound.
       ;; Enable LSP for Erlang files
       (add-hook 'erlang-mode-hook 'lsp)
-      ;; Enable logging for lsp-mode
-      (pel-setq lsp-log-io t)       ; TODO: add a command to toggle this?
       ;; Enable and configure the LSP UI Package
       (pel-ensure-package lsp-ui from: melpa)
-      (pel-setq lsp-ui-sideline-enable t) ; TODO: add a command to toggle this?
-      (pel-setq lsp-ui-doc-enable t)
-      (pel-setq lsp-ui-doc-position 'bottom)
+
+      ;; Add key bindings to toggle LSP specific settings
+      (define-key pel:erlang-lsp "I" 'pel-toggle-lsp-log-io)
+      (define-key pel:erlang-lsp "L" 'pel-toggle-lsp-ui-sideline)
+      (define-key pel:erlang-lsp "D" 'pel-toggle-lsp-ui-doc)
+
       ;; Enable LSP Origami Mode (for folding ranges)
       (pel-ensure-package lsp-origami from:  melpa)
       (add-hook 'origami-mode-hook 'lsp-origami-mode)
