@@ -3246,6 +3246,19 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
   (pel-setup-major-mode hy pel:for-hy))
 
 ;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC n`` : Nim programming
+(when pel-use-nim
+  (define-pel-global-prefix pel:for-nim (kbd "<f11> SPC n"))
+  (when pel-use-nim-mode
+    (pel-ensure-package nim-mode from: melpa))
+  (when pel-use-speedbar
+      (pel-add-speedbar-extension '(".nim"
+                                    ".nims"
+                                    ".nimble")))
+  ;; the nim-mode is part of Emacs
+  (pel-setup-major-mode nim pel:for-nim))
+
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC o`` : Ocaml programming
 (when pel-use-ocaml
   (define-pel-global-prefix pel:for-ocaml (kbd "<f11> SPC o"))

@@ -129,6 +129,7 @@
 ;;         - pel-pkg-for-gleam
 ;;       - pel-pkg-for-forth
 ;;       - pel-pkg-for-julia
+;;       - pel-pkg-for-nim
 ;;       - pel-pkg-for-ocaml
 ;;       - pel-pkg-for-perl
 ;;       - pel-pkg-for-python
@@ -6413,6 +6414,39 @@ IMPORTANT:
 Enter minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-julia
+  :type '(repeat function))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Nim Support
+;; ---------------
+(defgroup pel-pkg-for-nim nil
+  "PEL support for the Nim programming language."
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "Nim PDF" ,(pel-pdf-file-url "pl-nim")))
+
+(defcustom pel-use-nim nil
+  "Control whether PEL supports the Nim programming language.
+
+When turned on the nim-mode is associated with the PEL ``<f12>`` key."
+  :group 'pel-pkg-for-nim
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-nim :package-is :a-gate)
+
+(defcustom pel-use-nim-mode nil
+  "Control whether PEL activates the nim-mode external package."
+  :group 'pel-pkg-for-nim
+  :link '(url-link :tag "nim-mode @ GitHub"
+                   "https://github.com/nim-lang/nim-mode")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-nim-mode :requires 'pel-use-nim)
+
+(defcustom pel-nim-activates-minor-modes nil
+  "List of minor-modes automatically activated for Nim buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-nim
   :type '(repeat function))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

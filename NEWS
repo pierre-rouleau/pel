@@ -801,6 +801,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       Also provide the *pel-haskell-activates-minor-modes* user-option to automatically
       activate minor modes for Haskell major mode.  The key prefix is ``<f11> SPC h`` which becomes
       ``<f12>`` in Haskell buffers.
+  - New: **Nim**
+    - New: add explicit support for Nim via the *pel-use-nim* user-option.
+      Provides access to *nim-mode* when *pel-use-nim-mode* is turned on.
+      Also provide the *pel-nim-activates-minor-modes* user-option to automatically
+      activate minor modes for Nim major mode.  The key prefix is ``<f11> SPC h`` which becomes
+      ``<f12>`` in Nim buffers.
   - New: **OCaml**
     - New: add explicit support for OCaml via the *pel-use-ocaml* user-option.
       Supports installation of tuareg and merlin via the *pel-use-tuareg* and *pel-use-merlin* user-options.

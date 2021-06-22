@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-22 13:14:09, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-22 13:50:03, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -204,6 +204,7 @@
     ([f11 32 ?l ??]  "pl-emacs-lisp"    pel-pkg-for-all-languages (eldoc
                                                                    eldoc-box))
 
+    ([f11 32 ?n]     "pl-nim"       pel-pkg-for-nim         nim)
     ([f11 32 ?o]     "pl-ocaml"     pel-pkg-for-ocaml       (merlin
                                                              tuareg
                                                              tuareg-opam))
@@ -492,6 +493,7 @@ stored inside the doc/pdf directory.")
     ("inferior-lfe"    [f11 32 32 12])
     ("ibuffer"         [f11 32 32 ?b])
     ("vc-dir"          [f11 32 32 ?v])
+    ("nim"             [f11 32 ?n])
     ("ocaml"           [f11 32 ?o])
     ("tuareg"          [f11 32 ?o])
     ("perl"            [f11 32 ?P])
@@ -655,6 +657,7 @@ There should be no key binding!" keyseq))
     ("julia"            . "pl-julia")
     ("lfe"              . "pl-lfe")
     ("make"             . "pl-make")
+    ("nim"              . "pl-nim")
     ("ocaml"            . "pl-ocaml")
     ("perl"             . "pl-perl")
     ("python"           . "pl-python")
