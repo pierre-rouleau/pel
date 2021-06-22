@@ -801,6 +801,12 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       Also provide the *pel-haskell-activates-minor-modes* user-option to automatically
       activate minor modes for Haskell major mode.  The key prefix is ``<f11> SPC h`` which becomes
       ``<f12>`` in Haskell buffers.
+  - New: **OCaml**
+    - New: add explicit support for OCaml via the *pel-use-ocaml* user-option.
+      Supports installation of tuareg and merlin via the *pel-use-tuareg* and *pel-use-merlin* user-options.
+      Also provide the *pel-tuareg-activates-minor-modes* user-option to automatically
+      activate minor modes for OCaml major mode.  The key prefix is ``<f11> SPC o`` which becomes
+      ``<f12>`` in OCaml buffers.
   - Update: *Python*
     - Modified: binding to rainbow-delimiters-mode to ``<f12> M-r`` like it is
       for other programming languages.

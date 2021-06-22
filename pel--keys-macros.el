@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-22 09:28:40, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-22 13:14:09, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -204,6 +204,9 @@
     ([f11 32 ?l ??]  "pl-emacs-lisp"    pel-pkg-for-all-languages (eldoc
                                                                    eldoc-box))
 
+    ([f11 32 ?o]     "pl-ocaml"     pel-pkg-for-ocaml       (merlin
+                                                             tuareg
+                                                             tuareg-opam))
     ([f11 32 ?p]     "pl-python"    pel-pkg-for-python      (python
                                                              python-flymake))
     ([f11 32 ?r]     "pl-rust"      pel-pkg-for-rust        (rust-mode
@@ -211,7 +214,8 @@
                                                              racer
                                                              cargo
                                                              ))
-    ([f11 32 ?P]     "pl-perl"      pel-pkg-for-perl         perl)
+    ([f11 32 ?P]     "pl-perl"      pel-pkg-for-perl         (perl
+                                                              cperl))
     ([f11 32 ?U]     "pl-ruby"      pel-pkg-for-ruby         ruby)
 
     ([f11 32 ?x]     "pl-elixir"        pel-pkg-for-elixir      elixir)
@@ -488,6 +492,8 @@ stored inside the doc/pdf directory.")
     ("inferior-lfe"    [f11 32 32 12])
     ("ibuffer"         [f11 32 32 ?b])
     ("vc-dir"          [f11 32 32 ?v])
+    ("ocaml"           [f11 32 ?o])
+    ("tuareg"          [f11 32 ?o])
     ("perl"            [f11 32 ?P])
     ("racket"          [f11 32 18])
     ("rexx"            [f11 32 ?R])
@@ -649,6 +655,7 @@ There should be no key binding!" keyseq))
     ("julia"            . "pl-julia")
     ("lfe"              . "pl-lfe")
     ("make"             . "pl-make")
+    ("ocaml"            . "pl-ocaml")
     ("perl"             . "pl-perl")
     ("python"           . "pl-python")
     ("rexx"             . "pl-rexx")

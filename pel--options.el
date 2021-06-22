@@ -129,6 +129,7 @@
 ;;         - pel-pkg-for-gleam
 ;;       - pel-pkg-for-forth
 ;;       - pel-pkg-for-julia
+;;       - pel-pkg-for-ocaml
 ;;       - pel-pkg-for-perl
 ;;       - pel-pkg-for-python
 ;;       - pel-pkg-for-rexx
@@ -6412,6 +6413,59 @@ IMPORTANT:
 Enter minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-julia
+  :type '(repeat function))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Ocaml Support
+;; -------------
+(defgroup pel-pkg-for-ocaml nil
+  "PEL support for the Ocaml programming language."
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "Ocaml PDF" ,(pel-pdf-file-url "pl-ocaml")))
+
+(defcustom pel-use-ocaml nil
+  "Control whether PEL supports the Ocaml programming language.
+
+When turned on the ocaml-mode is associated with the PEL ``<f12>`` key."
+  :group 'pel-pkg-for-ocaml
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-ocaml :package-is :a-gate)
+
+(defcustom pel-use-caml-mode nil
+  "Control whether PEL activates the caml-mode external package."
+  :group 'pel-pkg-for-ocaml
+  :link '(url-link :tag "caml-mode @ GitHub"
+                   "https://github.com/ocaml/caml-mode")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-caml-mode :requires 'pel-use-ocaml)
+
+(defcustom pel-use-tuareg nil
+  "Control whether PEL activates the tuareg external package.
+This provides a major mode for OCaml files"
+  :group 'pel-pkg-for-ocaml
+  :link '(url-link :tag "tuareg @ GitHub"
+                   "https://github.com/ocaml/tuareg")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-tuareg :requires 'pel-use-ocaml)
+
+(defcustom pel-use-merlin nil
+  "Control whether PEL activates the merlin external package.
+This provides an assistant for OCaml."
+  :group 'pel-pkg-for-ocaml
+  :link '(url-link :tag "merlin @ GitHub"
+                   "https://github.com/ocaml/merlin")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-merlin :requires 'pel-use-ocaml)
+
+(defcustom pel-tuareg-activates-minor-modes nil
+  "List of minor-modes automatically activated for Ocaml buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-ocaml
   :type '(repeat function))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

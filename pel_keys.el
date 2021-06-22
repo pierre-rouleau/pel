@@ -3246,6 +3246,22 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
   (pel-setup-major-mode hy pel:for-hy))
 
 ;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC o`` : Ocaml programming
+(when pel-use-ocaml
+  (define-pel-global-prefix pel:for-ocaml (kbd "<f11> SPC o"))
+  (when pel-use-caml-mode
+    (pel-ensure-package caml from: melpa))
+  (when pel-use-merlin
+    (pel-ensure-package merlin from: melpa))
+  (when pel-use-tuareg
+    (pel-ensure-package tuareg from: melpa))
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension '(".ml"
+                                  ".mli")))
+  ;; the ocaml-mode is part of Emacs
+  (pel-setup-major-mode tuareg pel:for-ocaml))
+
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC p`` : Python programming
 (when pel-use-python
 
