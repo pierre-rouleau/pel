@@ -808,6 +808,11 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
     - New: *NetRexx*:
       - Add support for NetRexx programming language via
         [[https://github.com/pierre-rouleau/netrexx-mode][my forked netrexx-mode GitHub project]].
+  - New: **Perl**
+    - New: add explicit support for Perl via the *pel-use-perl* user-option.
+      Also provide the *pel-perl-activates-minor-modes* user-option to automatically
+      activate minor modes for Perl major mode.  The key prefix is ``<f11> SPC P`` which becomes
+      ``<f12>`` in Perl buffers.
   - New: **Ruby**
     - New: add explicit support for Ruby via the *pel-use-ruby* user-option.
       Also provide the *pel-ruby-activates-minor-modes* user-option to automatically

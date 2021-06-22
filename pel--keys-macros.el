@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-21 18:04:29, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-21 23:21:26, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -210,6 +210,7 @@
                                                              racer
                                                              cargo
                                                              ))
+    ([f11 32 ?P]     "pl-perl"      pel-pkg-for-perl         perl)
     ([f11 32 ?U]     "pl-ruby"      pel-pkg-for-ruby         ruby)
 
     ([f11 32 ?x]     "pl-elixir"        pel-pkg-for-elixir      elixir)
@@ -485,6 +486,7 @@ stored inside the doc/pdf directory.")
     ("inferior-lfe"    [f11 32 32 12])
     ("ibuffer"         [f11 32 32 ?b])
     ("vc-dir"          [f11 32 32 ?v])
+    ("perl"            [f11 32 ?P])
     ("racket"          [f11 32 18])
     ("rexx"            [f11 32 ?R])
     ("ruby"            [f11 32 ?U])
@@ -644,6 +646,7 @@ There should be no key binding!" keyseq))
     ("julia"            . "pl-julia")
     ("lfe"              . "pl-lfe")
     ("make"             . "pl-make")
+    ("perl"             . "pl-perl")
     ("python"           . "pl-python")
     ("rexx"             . "pl-rexx")
     ("ruby"             . "pl-ruby")

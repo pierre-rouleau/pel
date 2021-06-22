@@ -3361,6 +3361,13 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
   (pel-setup-major-mode netrexx pel:for-netrexx))
 
 ;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC P`` : Perl programming
+(when pel-use-perl
+  (define-pel-global-prefix pel:for-perl (kbd "<f11> SPC P"))
+  ;; the perl-mode is part of Emacs
+  (pel-setup-major-mode perl pel:for-perl))
+
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC U`` : Ruby programming
 (when pel-use-ruby
   (define-pel-global-prefix pel:for-ruby (kbd "<f11> SPC U"))
@@ -3408,8 +3415,7 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
       (add-hook 'rust-mode-hook 'racer-mode)
       (add-hook 'racer-mode-hook 'eldoc-mode)
       (when pel-use-company
-        (add-hook 'racer-mode-hook 'company-mode)))
-    )
+        (add-hook 'racer-mode-hook 'company-mode))))
 
   (define-pel-global-prefix pel:for-rust (kbd "<f11> SPC r"))
   (define-key pel:for-rust "c" 'rust-run)

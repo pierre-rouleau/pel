@@ -128,6 +128,7 @@
 ;;         - pel-pkg-for-gleam
 ;;       - pel-pkg-for-forth
 ;;       - pel-pkg-for-julia
+;;       - pel-pkg-for-perl
 ;;       - pel-pkg-for-python
 ;;       - pel-pkg-for-rexx
 ;;       - pel-pkg-for-ruby
@@ -6378,6 +6379,29 @@ Do not enter lambda expressions."
   :type '(repeat function))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Perl Support
+;; ------------
+(defgroup pel-pkg-for-perl nil
+  "PEL customization for Perl."
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "Perl PDF" ,(pel-pdf-file-url "pl-perl")))
+
+(defcustom pel-use-perl nil
+  "Control whether PEL supports the Perl programming language.
+
+When turned on the perl-mode is associated with the PEL ``<f12>`` key."
+  :group 'pel-pkg-for-perl
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-perl-activates-minor-modes nil
+  "List of minor-modes automatically activated for Perl buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-perl
+  :type '(repeat function))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Python Support
 ;; --------------
 (defgroup pel-pkg-for-python nil
@@ -6511,8 +6535,7 @@ Do not enter lambda expressions."
 (defgroup pel-pkg-for-ruby nil
   "PEL support for the Ruby programming language."
   :group 'pel-pkg-for-programming
-  ;; :link `(url-link :tag "Ruby PDF" ,(pel-pdf-file-url "pl-ruby"))
-  )
+  :link `(url-link :tag "Ruby PDF" ,(pel-pdf-file-url "pl-ruby")))
 
 (defcustom pel-use-ruby nil
   "Control whether PEL supports the Ruby programming language.
