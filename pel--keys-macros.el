@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-22 21:11:19, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-23 13:44:41, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -219,6 +219,9 @@
     ([f11 32 ?P]     "pl-perl"      pel-pkg-for-perl         (perl
                                                               cperl))
     ([f11 32 ?U]     "pl-ruby"      pel-pkg-for-ruby         ruby)
+    ([f11 32 ?H]     "pl-sh"        pel-pkg-for-sh           (sh
+                                                              sh-script
+                                                              sh-indentation))
 
     ([f11 32 ?x]     "pl-elixir"        pel-pkg-for-elixir      elixir)
     (,(kbd "<f11> SPC C-a") nil         pel-pkg-for-arc         (arc
@@ -502,6 +505,7 @@ stored inside the doc/pdf directory.")
     ("rexx"            [f11 32 ?R])
     ("ruby"            [f11 32 ?U])
     ("rust"            [f11 32 ?r])
+    ("sh"              [f11 32 ?H])
     ("markdown"        [f11 32 27 ?m])
     ("netrexx"         [f11 32 ?N])
     ("rst"             [f11 32 27 ?r])
@@ -668,6 +672,7 @@ There should be no key binding!" keyseq))
     ("netrexx"          . "pl-rexx")
     ("scheme"           . "pl-scheme")
     ("gerbil"           . "pl-scheme")
+    ("sh"               . "pl-sh")
     ;; repl
     ;; ("sly"              . "repl-cl-sly")
     ;; ("slime"            . "repl-cl-slime")

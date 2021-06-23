@@ -86,7 +86,7 @@
 ;;         - pel-pkg-for-syntax-check
 ;;         - pel-pkg-for-language-server
 ;;         - pel-pkg-generic-code-style
-;;           - pel-shell-script-skeleton-control
+;;           - pel-sh-script-skeleton-control
 ;;       - pel-pkg-for-applescript
 ;;       - pel-pkg-for-cc
 ;;         - pel-pkg-for-c
@@ -136,6 +136,8 @@
 ;;       - pel-pkg-for-rexx
 ;;       - pel-pkg-for-ruby
 ;;       - pel-pkg-for-rust
+;;       - pel-pkg-for-sh
+;;         - pel-sh-script-skeleton-control
 ;;       - pel-pkg-for-v
 ;;     - pel-pkg-for-project-mng
 ;;     - pel-pkg-for-regexp
@@ -145,7 +147,7 @@
 ;;     - pel-pkg-for-shells
 ;;     - pel-pkg-for-skeletons
 ;;       - pel-pkg-generic-code-style
-;;         - pel-shell-script-skeleton-control
+;;         - pel-sh-script-skeleton-control
 ;;       - pel-c-module-header-skeleton-control
 ;;         - pel-c-module-header-skeleton-control
 ;;         - pel-c-function-header-skeleton-control
@@ -1288,6 +1290,7 @@ Update copyright notice automatically when non-nil, don't otherwise."
   "Controls whether script files are automatically made executable when saved.
 make script files executable on save when non-nil, don't otherwise."
   :group 'pel-pkg-for-filemng
+  :group 'pel-pkg-for-sh
   :type 'boolean
   :safe #'booleanp)
 
@@ -3352,15 +3355,16 @@ with no text."
                      "Code")))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-(defgroup pel-shell-script-skeleton-control nil
+(defgroup pel-sh-script-skeleton-control nil
   "PEL generic shell-script skeleton style control.
 Controls what the ``<f6> h`` command does."
+  :group 'pel-pkg-for-sh
   :group 'pel-pkg-generic-code-style)
 
 (defcustom pel-shell-script-shebang-line "!/bin/sh"
   "Shebang file placed in Shell scripts by function `pel-generic-file-header'.
 Do not include the comment character '#' in the string."
-  :group 'pel-shell-script-skeleton-control
+  :group 'pel-sh-script-skeleton-control
   :type 'string)
 
 (defcustom pel-shell-sourced-script-first-line
@@ -3372,7 +3376,7 @@ bound to``<f6> h``.
 
 It *must* have ONE string argument in the form of \"%s\".
 The name of the file will be written in side it."
-  :group 'pel-shell-script-skeleton-control
+  :group 'pel-sh-script-skeleton-control
   :type 'string)
 
 (defcustom pel-shell-script-extensions '("sh" "bash")
@@ -3385,7 +3389,8 @@ has a name prefix identifiable by `pel-shell-sourced-script-file-name-prefix'.
 But you can force some files to have that prefix and still be regular shell
 script files by using a file extension that is one of the extensions given
 here."
-  :group 'pel-shell-script-skeleton-control
+  :group 'pel-sh-script-skeleton-control
+  :group 'pel-pkg-for-sh
   :type '(repeat string))
 
 (defcustom pel-shell-sourced-script-file-name-prefix nil
@@ -3395,7 +3400,8 @@ requirements as shell script mean to be sourced and adjusts the skeleton
 used by the ``<f6> h`` command accordingly.
 
 See also: `pel-shell-script-extensions'."
-  :group 'pel-shell-script-skeleton-control
+  :group 'pel-sh-script-skeleton-control
+  :group 'pel-pkg-for-sh
   :type '(choice
           (const :tag  "Not specified" nil)
           (regexp :tag "File name regexp" :var "\\`_")))
@@ -6765,10 +6771,33 @@ Requires the user-option variable `pel-use-rust' to be on (t)."
 (pel-put 'pel-use-cargo :requires 'pel-use-rust)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Unix Shell Scripting Support
+;; ----------------------------
+(defgroup pel-pkg-for-sh nil
+  "PEL support for Unix shell scripting."
+  :group 'pel-pkg-for-programming)
+
+(defcustom pel-use-sh nil
+  "Control whether PEL supports the Shell programming language.
+
+When turned on the shell-mode is associated with the PEL ``<f12>`` key."
+  :group 'pel-pkg-for-sh
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-sh :package-is :a-gate)
+
+(defcustom pel-sh-activates-minor-modes nil
+  "List of minor-modes automatically activated for Shell buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-sh
+  :type '(repeat function))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; V Language Support
 ;; ------------------
 (defgroup pel-pkg-for-v nil
-  "Pel V language support. Experimental."
+  "PEL V language support. Experimental."
   :group 'pel-pkg-for-programming
   :link '(url-link :tag "V Language home page" "https://vlang.io"))
 

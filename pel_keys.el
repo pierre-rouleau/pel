@@ -1681,6 +1681,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; E   - Elm
 ;; F   - FORTRAN
 ;; G   - Groovy
+;; H   - shell script modes
 ;; J   - Java            -              JVM
 ;; L   - Common Lisp     - Lisp Family
 ;; M   - Makefile
@@ -3474,6 +3475,13 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
         (display-warning 'pel-use-rust
                          "Unbound rust-mode-map!"
                          :error)))))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC H`` : Sh, Unix shell programming
+(when pel-use-sh
+  (define-pel-global-prefix pel:for-sh (kbd "<f11> SPC H"))
+  ;; Shell support, the sh-mode is part of Emacs
+  (pel-setup-major-mode sh pel:for-sh))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC v`` : V programming
