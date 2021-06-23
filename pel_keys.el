@@ -2993,14 +2993,15 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
       (define-key pel:erlang-lsp "D" 'pel-toggle-lsp-ui-doc)
 
       ;; Enable LSP Origami Mode (for folding ranges)
-      (pel-ensure-package lsp-origami from:  melpa)
-      (add-hook 'origami-mode-hook 'lsp-origami-mode)
-      (add-hook 'erlang-mode-hook 'origami-mode)
-      (when pel-use-helm
-        ;; Provide commands to list workspace symbols:
-        ;; - helm-lsp-workspace-symbol
-        ;; - helm-lsp-global-workspace-symbol
-        (pel-ensure-package helm-lsp from: melpa))
+      (when pel-use-lsp-origami
+        (add-hook 'lsp-after-open-hook 'lsp-origami-try-enable)
+        (add-hook 'origami-mode-hook 'lsp-origami-mode)
+        (add-hook 'erlang-mode-hook 'origami-mode))
+      ;; TODO (when pel-use-helm
+      ;;   ;; Provide commands to list workspace symbols:
+      ;;   ;; - helm-lsp-workspace-symbol
+      ;;   ;; - helm-lsp-global-workspace-symbol
+      ;;   )
       ;; Always show diagnostics at the bottom, using 1/3 of available space
       (add-to-list
        'display-buffer-alist
@@ -4051,8 +4052,11 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
                      origami-mode
                      global-origami-mode)
 
+  (when pel-use-lsp-origami
+    (pel-ensure-package lsp-origami from:  melpa))
+
   ;; TODO: find why using M-o for origami-mode prevents the F11 M-/ F1, F2 and F3
-  ;;       keys to work properly.
+  ;;       keys from working work properly.
   (define-key pel:hide-show "o" 'origami-mode)
   (define-key pel:hide-show "O" 'global-origami-mode)
   (defun pel--activate-origami ()

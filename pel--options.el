@@ -1722,7 +1722,7 @@ and is also supported by LSP servers."
                                                (utils . origami-parsers))))
 (pel-put 'pel-use-origami :requires-package '(quote ((elpa . dash)
                                                      (elpa . s))))
-(pel-put 'pel-use-origami :also-required-when 'pel-use-erlang-ls)
+(pel-put 'pel-use-origami :also-required-when 'pel-use-lsp-origami)
 
 ;; ---------------------------------------------------------------------------
 ;; Highlight Support
@@ -3190,12 +3190,22 @@ This may get activated indirectly by other user-options."
   :type 'boolean
   :safe #'booleanp)
 
+
 (defcustom pel-use-helm-lsp nil
   "Control whether PEL activates the lsp extension for helm."
   :group 'pel-pkg-for-lsp-mode
   :group 'pel-pkg-for-completion
   :link '(url-link :tag "helm-lsp @ GitHub"
                    "https://github.com/emacs-lsp/helm-lsp")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-lsp-origami nil
+  "Control whether PEL activates the lsp extension for origami."
+  :group 'pel-pkg-for-lsp-mode
+  :group 'pel-pkg-for-hide-show
+  :link '(url-link :tag "lsp-origami @ GitHub"
+                   "https://github.com/emacs-lsp/lsp-origami/")
   :type 'boolean
   :safe #'booleanp)
 
@@ -7828,7 +7838,8 @@ indexing system."
           pel-use-indent-tools)
   (setq pel-use-helm t))
 
-(when pel-use-ivy-xref
+(when (or pel-use-ivy-xref
+          pel-use-lsp-ivy)
   (setq pel-use-ivy t))
 
 (when pel-use-bison-mode
@@ -7839,7 +7850,7 @@ indexing system."
           pel-use-treemacs)
   (setq pel-use-hydra t))
 
-(when pel-use-erlang-ls
+(when pel-use-lsp-origami
   (setq pel-use-origami t))
 
 (when (or pel-use-lsp-treemacs
@@ -7852,9 +7863,6 @@ indexing system."
 
 (when pel-use-treemacs-magit
   (setq pel-use-magit t))
-
-(when pel-use-lsp-ivy
-  (setq pel-use-ivy t))
 
 (when (or (and pel-use-erlang
                (or pel-use-flycheck-rebar3

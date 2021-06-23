@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-22 13:50:03, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-22 21:11:19, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -90,6 +90,13 @@
                              smartparens)
   "List of groups for YAML and CWL.")
 
+(defconst pel--lsp-groups '(lsp-mode
+                            lsp-ui
+                            helm-lsp
+                            lsp-ivy
+                            lsp-origami
+                            lsp-treemacs))
+
 ;; TODO: add logic in the processing of that table to allow the first element
 ;;       of a row to be a list of key sequences.
 ;;       This will help reduce duplication when several key sequences lead
@@ -173,17 +180,11 @@
     ([f11 32 ?e]     "pl-erlang"        pel-pkg-for-erlang      (erlang
                                                                  erldoc
                                                                  edts
-                                                                 auto-highlight-symbol
-                                                                 lsp-mode
-                                                                 lsp-ui
-                                                                 lsp-treemacs))
+                                                                 auto-highlight-symbol))
     ([f11 32 ?e f12] "pl-erlang"        pel-erlang-code-style)
-    ([f11 32 ?e ?L]  "pl-erlang"        pel-pkg-for-lsp-mode    (lsp-treemacs
-                                                                 lsp-mode
-                                                                 lsp-ui))
-    ([f11 32 ?e ?w]  "pl-erlang"        pel-pkg-for-lsp-mode    (lsp-treemacs
-                                                                 lsp-mode
-                                                                 lsp-ui))
+    ([f11 32 ?e ?L]  "pl-erlang"        pel-pkg-for-lsp-mode    ,pel--lsp-groups)
+    ([f11 32 ?e ?w]  "pl-erlang"        pel-pkg-for-lsp-mode    (treemacs
+                                                                 lsp-treemacs))
     ([f11 32 ?f]     "pl-forth"         pel-pkg-for-forth)
     ([f11 32 ?g]     "pl-go"            pel-pkg-for-go          (go
                                                                  go-cover
