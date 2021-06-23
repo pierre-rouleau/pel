@@ -1655,7 +1655,7 @@ package is also required because `projectile` uses the `ripgrep` package."
 (pel-put 'pel-use-ripgrep :package-is '(if pel-use-projectile
                                            '((elpa . rg)
                                              (elpa . ripgrep))
-                                         '((elpa \.rg))))
+                                         '((elpa . rg))))
 
 ;; ---------------------------------------------------------------------------
 (defgroup pel-pkg-for-help nil
