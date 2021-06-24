@@ -96,4 +96,26 @@ Content of imenu-generic-expression::
 - Content of imenu-case-fold-search: nil
 - Content of imenu-syntax-alist: nil
 
+
+SQL
+---
+
+From: https://developpaper.com/exploiting-emacs-imenus-potential/
+
+.. code:: lisp
+
+    (setq sql-imenu-generic-expression
+           '(("Comments" "^-- \(.+\)" 1)
+         ("Function Definitions" "^\s-*\(function\|procedure\)[ \n\t]+\([a-z0-9_]+\)\
+     [ \n\t]*([a-z0-9 _,\n\t]*)[ \n\t]*\(return[ \n\t]+[a-z0-9_]+[ \n\t]+\)?[ai]s\b" 2)
+         ("Function Prototypes" "^\s-*\(function\|procedure\)[ \n\t]+\([a-z0-9_]+\)\
+     [ \n\t]*([a-z0-9 _,\n\t]*)[ \n\t]*\(return[ \n\t]+[a-z0-9_]+[ \n\t]*\)?;" 2)
+         ("Indexes" "^\s-*create\s-+index\s-+\(\w+\)" 1)
+         ("Tables" "^\s-*create\s-+table\s-+\(\w+\)" 1)))
+
+    (add-hook 'sql-mode-hook
+            (lambda ()
+               (setq imenu-generic-expression sql-imenu-generic-expression)))
+
+
 .. ---------------------------------------------------------------------------
