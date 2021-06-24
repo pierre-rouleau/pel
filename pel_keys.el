@@ -1675,6 +1675,7 @@ can't bind negative-argument to C-_ and M-_"
 ;;
 ;; SPC - prefix for sub keys
 ;; .   - APL
+;; 4   - M4
 ;; A   - Ada
 ;; C   - C++
 ;; D   - D
