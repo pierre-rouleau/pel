@@ -3394,10 +3394,14 @@ here."
   :type '(repeat string))
 
 (defcustom pel-shell-sourced-script-file-name-prefix nil
-  "Identifies names of shell files that are meant to be sourced.
+  "Identifies base names of shell files that are meant to be sourced.
 If non-nil PEL treats the files with no extensions that match the specified
 requirements as shell script mean to be sourced and adjusts the skeleton
 used by the ``<f6> h`` command accordingly.
+
+For example, if the shell files that are sourced all have a name that begin
+with an underscore, then enter \"\\`_\" as the regexp (without the double
+quotes).
 
 See also: `pel-shell-script-extensions'."
   :group 'pel-sh-script-skeleton-control
