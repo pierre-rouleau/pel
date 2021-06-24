@@ -1867,14 +1867,17 @@ Return the new `tab-width' or nil if unchanged."
 (defun pel-add-speedbar-extension (extension)
   "Add Speedbar support for the specified file EXTENSION.
 EXTENSION is either a string or a list of strings.
-Each string is the file extension staring with the period."
+Each string is either:
+-  a complete filename,
+- a the file extension starting with a (non-quoted) period,
+- a regular expression to express the above.
+
+`pel-add-speedbar-extension' is a direct proxy to
+`speedbar-add-supported-extension' with the ability to load the
+speedbar file."
   (pel-require 'speedbar)
   (declare-function speedbar-add-supported-extension "speedbar")
-  (let ((extensions (if (stringp extension)
-                        (list extension)
-                      extension)))
-    (dolist (ext extensions)
-      (speedbar-add-supported-extension ext))))
+  (speedbar-add-supported-extension extension))
 
 ;; ---------------------------------------------------------------------------
 ;; Byte-compilation
