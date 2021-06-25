@@ -92,6 +92,9 @@
 ;; Operations on sequences:
 ;;  - `pel-concat-strings-in-list'
 ;;
+;; Operation on auto-mode-alist
+;;  - `pel-delete-from-auto-mode-alist'
+;;
 ;; Lazy loading and package installation:
 ;; - `pel-require-at-load-deferred'
 ;; - `pel-require-at-load'
@@ -851,6 +854,18 @@ Usage Example:
               alist)
           (nconc alist (list (list key val)))))
     (error "Call to pel-cons-alist-at given an empty ALIST argument!")))
+
+;; ---------------------------------------------------------------------------
+;; Operation on auto-mode-alist
+;; ----------------------------
+
+(defun pel-delete-from-auto-mode-alist (mode)
+  "Delete MODE specific entries from `auto-mode-alist'.
+Modifies `auto-mode-alist'."
+  (while (rassoc mode auto-mode-alist)
+    (setq auto-mode-alist
+          (assq-delete-all (car (rassoc mode auto-mode-alist))
+                           auto-mode-alist))))
 
 ;; ---------------------------------------------------------------------------
 ;; Lazy loading and package installation:
