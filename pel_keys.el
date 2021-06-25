@@ -3255,9 +3255,9 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
   (when pel-use-nim-mode
     (pel-ensure-package nim-mode from: melpa))
   (when pel-use-speedbar
-      (pel-add-speedbar-extension '(".nim"
-                                    ".nims"
-                                    ".nimble")))
+    (pel-add-speedbar-extension '(".nim"
+                                  ".nims"
+                                  ".nimble")))
   ;; the nim-mode is part of Emacs
   (pel-setup-major-mode nim pel:for-nim))
 
