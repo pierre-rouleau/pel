@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-25 05:02:10, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-25 11:54:29, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -238,7 +238,7 @@
                                                                  lispy))
     (,(kbd "<f11> SPC SPC C-l") "pl-lfe" pel-pkg-for-lfe        (lfe
                                                                  lispy))
-    (,(kbd "<f11> SPC C-r") nil         pel-pkg-for-racket      (racket
+    (,(kbd "<f11> SPC C-r") "pl-racket" pel-pkg-for-racket      (racket
                                                                  lispy))
     (,(kbd "<f11> SPC C-s") "pl-scheme" pel-pkg-for-scheme      (scheme
                                                                  geiser

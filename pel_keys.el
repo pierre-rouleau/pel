@@ -2690,19 +2690,14 @@ d-mode not added to ac-modes!"
                          :error)))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC C-r`` : Racket
-(when pel-use-racket
-  (pel-ensure-package racket-mode from: melpa)
-  (pel-autoload-file racket-mode for: racket-mode)
-
-  (define-pel-global-prefix pel:for-racket (kbd "<f11> SPC C-r"))
-  (pel--lisp-languages-map-for pel:for-racket)
-
-  ;; activate the <f12> key binding for racket-mode
-  (pel-setup-major-mode racket pel:for-racket))
-
-;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s`` : Scheme
+;; IMPORTANT:
+;; From EMacs implementation point of view Scheme is a language family that
+;; includes Scheme, Racket, Gerbil and others.  The Scheme mode also support
+;; Racket.  Gerbil is a meta Scheme language and uses the same file extension
+;; as Scheme.  To ensure that the file association for racket is used when
+;; pel-use-racket is turned on, the processing for Racket must be done *after*
+;; the processing of Scheme.
 (when pel-use-scheme
   ;; Note: scheme-mode and its file associations are supported by Emacs.
 
@@ -2751,6 +2746,27 @@ d-mode not added to ac-modes!"
 
   ;; activate the <f12> key binding for scheme-mode
   (pel-setup-major-mode scheme pel:for-scheme))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-r`` : Racket
+;; IMPORTANT: This must be done *after* the processing of Scheme.  See note in
+;; the Scheme section.
+(when pel-use-racket
+  (pel-ensure-package racket-mode from: melpa)
+  (pel-autoload-file racket-mode for: racket-mode)
+
+  (define-pel-global-prefix pel:for-racket (kbd "<f11> SPC C-r"))
+  (pel--lisp-languages-map-for pel:for-racket)
+
+  ;; The racket-mode is already supported via scheme-mode and the associations
+  ;; are present in auto-mode-alist.  Remove them first to ensure proper support.
+  (pel-delete-from-auto-mode-alist 'racket-mode)
+  (add-to-list 'auto-mode-alist '("\\.rkt[dl]?\\'" . racket-mode))
+  ;; Activate Speedbar support
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension "\\.rkt[dl]?\\'"))
+  ;; activate the <f12> key binding for racket-mode
+  (pel-setup-major-mode racket pel:for-racket))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-g`` : Gerbil
