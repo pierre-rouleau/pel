@@ -1,8 +1,11 @@
 # Identifies files to be ignored by Git.
 # Also used by fd|fdfind  to identify directories and files to ignore
 
-# internald evelopment notes
+# internal development notes
 pel_doc.org
+
+#internal private tools
+publish-*.sh
 
 # Temporary holding directories
 tmp/*
@@ -19,9 +22,20 @@ tmp-bugs/*
 tmp-doc-future/*
 tmp-future/*
 doc/emacs-keys/*
+macos-terminal/*
+
+# Potentially future docs - private for now
+doc/pdf/repl-cl-sly.pdf
+doc/display-buffer.rst
+
+# Potentially future test code
+test/elisp-example-with-defun-in-strings.el
+test/pel-filedir-tests.el
+test/data/*
 
 # PEL Test output directory
 test-result/*
+compile-logs/*
 
 # GNU Global generated HTML rendering of code
 HTML/*
@@ -49,6 +63,12 @@ HTML/*
 
 # Emacs emacro directory
 .emacros
+
+# asdf-vm files
+\.tool-versions
+
+# Erlang output files
+*.beam
 
 # CScope files
 cscope.files
