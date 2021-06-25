@@ -2624,16 +2624,14 @@ d-mode not added to ac-modes!"
 (when pel-use-arc
   (pel-autoload-file arc for: arc-mode)
   (pel-autoload-file inferior-arc for: run-arc)
-  ;; Emacs support extracted from the anarki implementation from its
-  ;; Github project folder.  However, since the code there is old and
-  ;; has bugs, I used my fork until my fixes have been incorporated.
-  ;; See: https://github.com/arclanguage/anarki/pull/194
   (cl-eval-when 'load
-    (pel-install-github-files "pierre-rouleau/anarki/master/extras"
+    (pel-install-github-files "arclanguage/anarki/master/extras"
                               '("arc.el"
                                 "inferior-arc.el")))
   ;; associate .arc file with arc-mode
   (add-to-list 'auto-mode-alist '("\\.arc\\'" . arc-mode))
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".arc"))
 
   (define-pel-global-prefix pel:for-arc (kbd "<f11> SPC C-a"))
   (pel--lisp-languages-map-for pel:for-arc)

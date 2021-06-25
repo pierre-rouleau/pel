@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-24 21:52:22, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-25 05:02:10, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -649,6 +649,7 @@ There should be no key binding!" keyseq))
   '(
     ;; programming languages alias: all of their PDF files start with 'pl-'
     ("applescript"      . "pl-applescript")
+    ("arc"              . "pl-arc")
     ("c++"              . "pl-c++")
     ("c"                . "pl-c")
     ("common-lisp"      . "pl-common-lisp")
@@ -668,6 +669,7 @@ There should be no key binding!" keyseq))
     ("ocaml"            . "pl-ocaml")
     ("perl"             . "pl-perl")
     ("python"           . "pl-python")
+    ("racket"           . "pl-racket")
     ("rexx"             . "pl-rexx")
     ("ruby"             . "pl-ruby")
     ("rust"             . "pl-rust")

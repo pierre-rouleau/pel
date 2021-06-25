@@ -5349,8 +5349,6 @@ is set: it is used by the helpful package."
   When this is activated, PEL activates the packages that support Arc and
   provide arc-mode and Arc inferior mode."
   :group 'pel-pkg-for-arc
-  :link '(url-link :tag "Arc support via bug fix on anarki @ GitHub"
-                   "https://github.com/pierre-rouleau/anarki")
   :link '(url-link :tag "Arc anarki @ GitHub"
                    "https://github.com/arclanguage/anarki")
   :type 'boolean
