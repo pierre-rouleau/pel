@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-06-21 17:08:13, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-06-26 18:49:56, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -138,6 +138,7 @@ EL_FILES := pel--base.el \
 		pel-buffer.el \
 		pel-cc.el \
 		pel-ccp.el \
+		pel-comint.el \
 		pel-comment.el \
 		pel-comment-adorn.el \
 		pel-commonlisp.el \
@@ -196,6 +197,7 @@ EL_FILES := pel--base.el \
 		pel-register.el \
 		pel-regexp.el \
 		pel-rst.el \
+		pel-scheme.el \
 		pel-scroll.el \
 		pel-search.el \
 		pel-search-regexp.el \
@@ -586,6 +588,7 @@ pel-ppindent.elc:       pel--base.elc pel-prompt.elc
 pel-prompt.elc:         pel--base.elc
 pel-read.elc:           pel-navigate.elc
 pel-rst.elc:            pel--base.elc pel--options.elc pel-whitespace.elc pel--macros.elc pel-bookmark.elc pel-file.elc
+pel-scheme.elc:         pel-comint.elc
 pel-search-regexp.elc:  pel--options.elc
 pel-search.elc:         pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-read.elc pel-search-regexp.elc pel-window.elc
 pel-skels-c.elc:        pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-list.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc pel-uuid.elc
