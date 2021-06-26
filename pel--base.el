@@ -196,7 +196,10 @@
 ;;
 ;; Imenu Utilities
 ;; - `pel-add-imenu-sections-to'
-
+;;
+;; Tags support
+;; - `pel-visit-tags'
+;;
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;; subr (always loaded) ; use: called-interactively-p
@@ -1971,6 +1974,18 @@ Return the new value of LIST-VAR."
                                    "\\s-+\\(" symbol-regexp "\\)")
                                   group-n))))
   (symbol-value list-var))
+
+;; ---------------------------------------------------------------------------
+;; Tags support
+;; ------------
+(defun pel-visit-tags (tags-files)
+  "Visit the TAGS files identified in the TAGS-FILES list and the local one."
+  (let ((local-tags-fname (locate-dominating-file default-directory "TAGS")))
+    (when local-tags-fname
+      (visit-tags-table local-tags-fname)))
+  (dolist (fname tags-files)
+    (when (file-exists-p fname)
+      (visit-tags-table fname))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel--base)
