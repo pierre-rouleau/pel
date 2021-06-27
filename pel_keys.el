@@ -1673,76 +1673,93 @@ can't bind negative-argument to C-_ and M-_"
 ;; Not all of these are implemented yet, but I'm documented the currently
 ;; reserved character.  This is for reference and planning.
 ;;
-;; SPC - prefix for sub keys
-;; .   - APL
-;; 4   - M4
-;; A   - Ada
-;; C   - C++
-;; D   - D
-;; E   - Elm
-;; F   - FORTRAN
-;; G   - Groovy
-;; H   - shell script modes
-;; J   - Java            -              JVM
-;; L   - Common Lisp     - Lisp Family
-;; M   - Makefile
-;; N   - NetRexx
-;; P   - Perl
-;; R   - REXX
-;; S   - Scala           -              JVM
-;; U   - Ruby
-;; a   - AppleScript
-;; c   - C
-;; d   - Dart
-;; e   - Erlang          -              BEAM language
-;; f   - Forth
-;; g   - Go
-;; h   - Haskell
-;; i   - Javascript
-;; j   - Julia
-;; k   - Kotlin          -              JVM
-;; l   - Emacs Lisp      - Lisp Family
-;; n   - Nim
-;; o   - OCaml
-;; p   - Python
-;; r   - Rust
-;; s   - Swift
-;; t   - TCL
-;; u   - Lua
-;; v   - V
-;; x   - Elixir          -              BEAM Language
-;; z   - Zig
-;; C-a - Arc             - Lisp Family
-;; C-c - CMake
-;; C-e - Eiffel
-;; C-f - Fennel          - Lisp Family, Lua
-;; C-g - Prolog
-;; C-j - Clojure         - Lisp Family, JVM
-;; C-g - Gerbil          - Lisp & Scheme Families
-;; C-h - Hy              - Lisp Family, Python
-;; C-l - LFE             - Lisp Family, BEAM language
-;; C-m - ReasonML
-;; C-o - Objective-C
-;; C-p - Pike
-;; C-r - Racket          - Lisp Family
-;; C-s - Scheme          - Lisp Family
-;; C-u - Raku
-;; M-a - AsciiDoc
-;; M-c - Common Workspace Language (CWL)
-;; M-g - GraphViz Dot
-;; M-m - Markdown
-;; M-o - OrgMode
-;; M-r - reStructuredText
-;; M-y - YAML
-;; M-s - SQL
-;; M-u - PlantUML
-;; M-A - Alpaca          -              BEAM Language, Functional/ML
-;; M-D - Dired
-;; M-G - Gleam           -              BEAM Language
-;; M-H - Hamler          -              BEAM Language, Functional/ML/Haskell
-;; SPC b - ibuffer-mode
+;; Prefix keys:
+;; SPC     - prefix for sub keys
+;; C-s     - prefix for Scheme implementation
+;;
+;; .       - APL
+;; 4       - M4
+;; A       - Ada
+;; C       - C++
+;; D       - D
+;; E       - Elm
+;; F       - FORTRAN
+;; G       - Groovy
+;; H       - shell script modes
+;; J       - Java            -              JVM
+;; L       - Common Lisp     - Lisp Family
+;; M       - Makefile
+;; N       - NetRexx
+;; P       - Perl
+;; R       - REXX
+;; S       - Scala           -              JVM
+;; U       - Ruby
+;; W       - awk
+;; a       - AppleScript
+;; c       - C
+;; d       - Dart
+;; e       - Erlang          -              BEAM language
+;; f       - Forth
+;; g       - Go
+;; h       - Haskell
+;; i       - Javascript
+;; j       - Julia
+;; k       - Kotlin          -              JVM
+;; l       - Emacs Lisp      - Lisp Family
+;; n       - Nim
+;; o       - OCaml           - ML Family
+;; p       - Python
+;; r       - Rust
+;; s       - Swift
+;; t       - TCL
+;; u       - Lua
+;; v       - V
+;; x       - Elixir          -              BEAM Language
+;; y       - Pony
+;; z       - Zig
+;; C-a     - Arc             - Lisp Family
+;; C-c     - CMake
+;; C-e     - Eiffel
+;; C-f     - Fennel          - Lisp Family, Lua
+;; C-g
+;; C-h     - Hy              - Lisp Family, Python
+;; C-i     -
+;; C-j     - Clojure         - Lisp Family, JVM
+;; C-l     - LFE             - Lisp Family, BEAM language
+;; C-m
+;; C-o     - Objective-C
+;; C-p     - Pike
+;; C-r     - ReasonML        - ML Family
+;; C-s C-s - Scheme Family   - Lisp Family
+;; C-s C-b - Gambit          - Lisp & Scheme Family
+;; C-s C-c - Chicken         - Lisp & Scheme Family
+;; C-s C-e - Chibi           - Lisp & Scheme Family
+;; C-s C-i - Gerbil          - Lisp & Scheme Family
+;; C-s C-g - Guile           - Lisp & Scheme Family
+;; C-s C-m - MIT/GNU Scheme  - Lisp & Scheme Family
+;; C-s C-h - Scsh            - Lisp & Scheme Family
+;; C-s C-r - Racket          - Lisp & Scheme Family
+;; C-s C-z - Chez            - Lisp & Scheme Family
+;; C-u     - Raku
+;; M-a     - AsciiDoc
+;; M-c     - Common Workspace Language (CWL)
+;; M-g     - GraphViz Dot
+;; M-l     - Outline
+;; M-m     - Markdown
+;; M-o     - OrgMode
+;; M-r     - reStructuredText
+;; M-y     - YAML
+;; M-s     - SQL
+;; M-u     - PlantUML
+;; M-A     - Alpaca          -              BEAM Language, Functional/ML
+;; M-D     - Dired
+;; M-G     - Gleam           -              BEAM Language
+;; M-H     - Hamler          -              BEAM Language, Functional/ML/Haskell
+;; M-P     - Prolog
+;;
+;; SPC b   - ibuffer-mode
 ;; SPC C-l - inferior-lfe-mode
-;; SPC v - vc-dir-mode
+;; SPC v   - vc-dir-mode
 ;; ---------------------------------------------------------------------------
 ;; Syntax Check with Flycheck (if requested)
 ;; -----------------------------------------
@@ -2690,18 +2707,34 @@ d-mode not added to ac-modes!"
                          :error)))))
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s`` : Scheme
+;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-s`` : Scheme Family
 ;; IMPORTANT:
 ;; From EMacs implementation point of view Scheme is a language family that
-;; includes Scheme, Racket, Gerbil and others.  The Scheme mode also support
-;; Racket.  Gerbil is a meta Scheme language and uses the same file extension
-;; as Scheme.  To ensure that the file association for racket is used when
-;; pel-use-racket is turned on, the processing for Racket must be done *after*
-;; the processing of Scheme.
-(when pel-use-scheme
-  ;; Note: scheme-mode and its file associations are supported by Emacs.
+;; includes the following Scheme dialects:
+;;                                         - Chez Scheme
+;;                                         - Chicken Scheme
+;;                                         - Gambit Scheme
+;;                                         - Gerbil Scheme
+;;                                         - Guile Scheme
+;;                                         - Racket Scheme
+;;                                         - Scsh Scheme
+;; When any of these languages are activated by their corresponding PEL user
+;; option, then the pel-use-scheme user-option is also forced on by the logic
+;; at the end of pel--option.el.  These activate the ability to activate other
+;; packages that can be used with the Scheme dialects.
+;;
+;; The scheme-mode and its file associations are supported by Emacs. That also
+;; supports the Scheme dialects.  If the PEL user-option for the Scheme
+;; dialect is not activated but pel-use-scheme is activated, then only the
+;; default support provided by Emacs is available for that dialect.
+;;
+;; To ensure that the explicit Scheme dialect mode is associated with the
+;; files, then the logic for the Scheme dialects is done *after* the logic for
+;; default Scheme.
 
-  ;; Install requested options
+(when pel-use-scheme
+
+  ;; Install requested Scheme Family options
   (when pel-use-geiser
     (pel-ensure-package geiser from: melpa)
     (pel-autoload-file geiser for:
@@ -2741,46 +2774,97 @@ d-mode not added to ac-modes!"
                        quack-pltfile-quit))
 
   ;; Just activate the <f12> key for Scheme.
-  (define-pel-global-prefix pel:for-scheme (kbd "<f11> SPC C-s"))
+  (define-pel-global-prefix pel:for-scheme (kbd "<f11> SPC C-s C-s"))
   (pel--lisp-languages-map-for pel:for-scheme)
 
   ;; activate the <f12> key binding for scheme-mode
-  (pel-setup-major-mode scheme pel:for-scheme))
+  (pel-setup-major-mode scheme pel:for-scheme)
 
-;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC C-r`` : Racket
-;; IMPORTANT: This must be done *after* the processing of Scheme.  See note in
-;; the Scheme section.
-(when pel-use-racket
-  (pel-ensure-package racket-mode from: melpa)
-  (pel-autoload-file racket-mode for: racket-mode)
+  ;; ---------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-r`` : Racket
+  ;; IMPORTANT: This must be done *after* the processing of Scheme.  See note in
+  ;; the Scheme section.
+  (when pel-use-racket
+    (pel-ensure-package racket-mode from: melpa)
+    (pel-autoload-file racket-mode for: racket-mode)
 
-  (define-pel-global-prefix pel:for-racket (kbd "<f11> SPC C-r"))
-  (pel--lisp-languages-map-for pel:for-racket)
+    (define-pel-global-prefix pel:for-racket (kbd "<f11> SPC C-s C-r"))
+    (pel--lisp-languages-map-for pel:for-racket)
 
-  ;; The racket-mode is already supported via scheme-mode and the associations
-  ;; are present in auto-mode-alist.  Remove them first to ensure proper support.
-  (pel-delete-from-auto-mode-alist 'racket-mode)
-  (add-to-list 'auto-mode-alist '("\\.rkt[dl]?\\'" . racket-mode))
-  ;; Activate Speedbar support
-  (when pel-use-speedbar
-    (pel-add-speedbar-extension "\\.rkt[dl]?\\'"))
-  ;; activate the <f12> key binding for racket-mode
-  (pel-setup-major-mode racket pel:for-racket))
+    ;; The racket-mode is already supported via scheme-mode and the associations
+    ;; are present in auto-mode-alist.  Remove them first to ensure proper support.
+    (pel-delete-from-auto-mode-alist 'racket-mode)
+    (add-to-list 'auto-mode-alist '("\\.rkt[dl]?\\'" . racket-mode))
+    ;; Activate Speedbar support
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension "\\.rkt[dl]?\\'"))
+    ;; activate the <f12> key binding for racket-mode
+    (pel-setup-major-mode racket pel:for-racket))
 
-;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> SPC C-g`` : Gerbil
-(when pel-use-gerbil
-  ;; No package made for this.  Take the code directly from Github
-  (cl-eval-when 'load
-    (pel-install-github-file "vyzo/gerbil/master/etc/" "gerbil-mode.el"))
-  (pel-autoload-file gerbil-mode for: gerbil-mode)
+  ;; ---------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-b`` : Gambit
+  ;; Note: PEL ensures that pel-use-gambit is set when pel-use-gerbil is set.
+  (when pel-use-gambit
 
-  (define-pel-global-prefix pel:for-gerbil (kbd "<f11> SPC C-g"))
-  (pel--lisp-languages-map-for pel:for-gerbil)
+    (defun pel--set-scheme-repl (repl)
+      "Set the Scheme REPL program to specified REPL."
+      (if (boundp 'scheme-program-name)
+          (let ((repl-file-path-name (executable-find repl)))
+            (if repl-file-path-name
+                (setq scheme-program-name repl-file-path-name)
+              (display-warning 'pel--set-scheme-repl
+                               (format "Cannot find REPL at: %s" repl)
+                               :error)))))
 
-  ;; activate the <f12> key binding for gerbil-mode
-  (pel-setup-major-mode gerbil pel:for-gerbil))
+    ;; No package made for this.  Take the code directly from Github
+    (cl-eval-when 'load
+      (pel-install-github-file "pierre-rouleau/gambit/master/misc/" "gambit.el"))
+    (pel-autoload-file gambit for: gambit-mode gambit-inferior-mode)
+
+
+    (define-pel-global-prefix pel:for-gambit (kbd "<f11> SPC C-s C-b"))
+    (pel--lisp-languages-map-for pel:for-gambit)
+    (define-key pel:for-gambit "z" 'pel-gambit-repl)
+    (define-key pel:for-gambit (kbd "C-l") 'pel-clear-scheme-repl-buffer)
+
+    ;; activate the <f12> key binding for gambit-mode
+    (pel-setup-major-mode gambit pel:for-gambit
+      ;; Inside Gambit mode, ensure that the Scheme REPL is the Gambit REPL
+      ;; unless Gerbil is also used.
+      (unless pel-use-gerbil
+        (pel--set-scheme-repl pel-gambit-repl))))
+
+  ;; ---------------------------------------------------------------------------
+  ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-i`` : Gerbil
+  ;; IMPORTANT: this code must be located AFTER the code that supports Gambit.
+  (when pel-use-gerbil
+    (declare-function pel--set-scheme-repl "pel_keys")
+    ;; No package made for this.  Take the code directly from Github
+    (cl-eval-when 'load
+      (pel-install-github-file "vyzo/gerbil/master/etc/" "gerbil-mode.el"))
+    (pel-autoload-file gerbil-mode for: gerbil-mode)
+    ;; In pel--options the code forces pel-use-gambit on when pel-use-gerbil
+    ;; is on.
+
+    (add-hook 'inferior-scheme-mode-hook 'gambit-inferior-mode )
+    ;; Gerbil files use the same file extension as Scheme: .ss
+    ;; Use Emacs file variable to activate the Gerbil mode: place the following
+    ;; text on the first line:  ;; -*- Gerbil -*-
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension '("\\.ss\\'"
+                                    "\\.pkg\\'")))
+
+    (define-pel-global-prefix pel:for-gerbil (kbd "<f11> SPC C-s C-i"))
+    (pel--lisp-languages-map-for pel:for-gerbil)
+    (define-key pel:for-gerbil "z"         'pel-gerbil-repl)
+    (define-key pel:for-gerbil (kbd "C-l") 'pel-clear-scheme-repl-buffer)
+
+    ;; activate the <f12> key binding for gerbil-mode
+    (pel-setup-major-mode gerbil pel:for-gerbil
+      ;; Inside Gerbil mode, ensure that the Scheme REPL is the gerbil REPL.
+      (pel--set-scheme-repl pel-gerbil-repl)
+      ;; Visit identified TAGS files
+      (pel-visit-tags pel-gerbil-base-tags))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` : Erlang programming
@@ -6142,14 +6226,19 @@ the ones defined from the buffer now."
 ;; Used keys:
 ;; ? a e f i j l p r s t v x
 ;; L
+;; M-g M-l
 
 (declare-function eshell "eshell")
 
 (define-key pel:execute    "?" #'list-processes)
-(when pel-use-common-lisp
-  (define-key pel:execute  "L" #'pel-cl-repl))
+;; Terminals
 (define-key pel:execute    "a" #'ansi-term)
 (define-key pel:execute    "e" #'eshell)
+(define-key pel:execute    "s" #'shell)
+(define-key pel:execute    "t" #'term)
+;; REPLs
+(when pel-use-common-lisp
+  (define-key pel:execute  "L" #'pel-cl-repl))
 (when pel-use-forth
   (define-key pel:execute  "f" 'run-forth))
 (when pel-use-julia
@@ -6163,8 +6252,9 @@ the ones defined from the buffer now."
   (define-key pel:execute  "r"  'erlang-shell)) ; e (for Erlang) taken by eshell
 (when (and pel-use-elixir pel-use-alchemist)
   (define-key pel:execute  "x"  'alchemist-iex-run))
-(define-key pel:execute    "s" #'shell)
-(define-key pel:execute    "t" #'term)
+(when pel-use-gerbil
+  (define-key pel:execute (kbd "M-g") 'pel-gerbil-repl))
+
 
 ;; support for the extremely fast/nice libvterm-based vterm shell.
 (when pel-use-vterm

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-25 11:54:29, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-27 00:03:57, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -96,6 +96,11 @@
                             lsp-ivy
                             lsp-origami
                             lsp-treemacs))
+
+(defconst pel--scheme-groups '(scheme
+                               geiser
+                               quack
+                               lispy))
 
 ;; TODO: add logic in the processing of that table to allow the first element
 ;;       of a row to be a list of key sequences.
@@ -227,8 +232,6 @@
     ([f11 32 ?x]     "pl-elixir"        pel-pkg-for-elixir      elixir)
     (,(kbd "<f11> SPC C-a") nil         pel-pkg-for-arc         (arc
                                                                  lispy))
-    (,(kbd "<f11> SPC C-g") "pl-scheme" pel-pkg-for-gerbil      (gerbil-mode
-                                                                 lispy))
     (,(kbd "<f11> SPC C-h") "pl-hy"     pel-pkg-for-hy)
     (,(kbd "<f11> SPC C-j") "pl-clojure" pel-pkg-for-clojure    (clojure
                                                                  cider
@@ -238,12 +241,15 @@
                                                                  lispy))
     (,(kbd "<f11> SPC SPC C-l") "pl-lfe" pel-pkg-for-lfe        (lfe
                                                                  lispy))
-    (,(kbd "<f11> SPC C-r") "pl-racket" pel-pkg-for-racket      (racket
-                                                                 lispy))
-    (,(kbd "<f11> SPC C-s") "pl-scheme" pel-pkg-for-scheme      (scheme
-                                                                 geiser
-                                                                 quack
-                                                                 lispy))
+    ;; Scheme Languages
+    (,(kbd "<f11> SPC C-s C-s") "pl-scheme" pel-pkg-for-scheme  ,pel--scheme-groups)
+    (,(kbd "<f11> SPC C-s C-b") "pl-gambit" pel-pkg-for-gambit  ,(cons 'gambit
+                                                                       pel--scheme-groups))
+    (,(kbd "<f11> SPC C-s C-i") "pl-gerbil" pel-pkg-for-gerbil  ,(cons 'gerbil-mode
+                                                                       pel--scheme-groups))
+    (,(kbd "<f11> SPC C-s C-r") "pl-racket" pel-pkg-for-racket  ,(cons 'racket
+                                                                       pel--scheme-groups) )
+    ;;
     ;; ([f11 ?C]
     ([f11 ?D]        "drawing"          pel-pkg-for-drawing-markup)
     ([f11 ?D ?u]     "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
@@ -491,7 +497,7 @@ stored inside the doc/pdf directory.")
     ("makefile-nmake"  [f11 32 ?M])
     ("python"          [f11 32 ?p])
     ("arc"             [f11 32 1])
-    ("gerbil"          [f11 32 7])
+
     ("haskell"         [f11 32 ?h])
     ("hy"              [f11 32 8])
     ("lfe"             [f11 32 12])
@@ -502,16 +508,20 @@ stored inside the doc/pdf directory.")
     ("ocaml"           [f11 32 ?o])
     ("tuareg"          [f11 32 ?o])
     ("perl"            [f11 32 ?P])
-    ("racket"          [f11 32 18])
     ("rexx"            [f11 32 ?R])
     ("ruby"            [f11 32 ?U])
     ("rust"            [f11 32 ?r])
+    ;;
+    ("scheme"          [f11 32 19 19])
+    ("gambit"          [f11 32 19 2])
+    ("gerbil"          [f11 32 19 9])
+    ("racket"          [f11 32 19 18])
+    ;;
     ("sh"              [f11 32 ?H])
     ("v"               [f11 32 ?v])
     ("markdown"        [f11 32 27 ?m])
     ("netrexx"         [f11 32 ?N])
     ("rst"             [f11 32 27 ?r])
-    ("scheme"          [f11 32 19])
     ("cwl"             [f11 32 27 ?c])
     ("org"             [f11 32 27 ?o])
     ("graphviz-dot"    [f11 32 27 ?g])
@@ -669,13 +679,16 @@ There should be no key binding!" keyseq))
     ("ocaml"            . "pl-ocaml")
     ("perl"             . "pl-perl")
     ("python"           . "pl-python")
-    ("racket"           . "pl-racket")
     ("rexx"             . "pl-rexx")
     ("ruby"             . "pl-ruby")
     ("rust"             . "pl-rust")
     ("netrexx"          . "pl-rexx")
+    ;; Scheme
     ("scheme"           . "pl-scheme")
-    ("gerbil"           . "pl-scheme")
+    ("gambit"           . "pl-gambit")
+    ("gerbil"           . "pl-gerbil")
+    ("racket"           . "pl-racket")
+    ;;
     ("sh"               . "pl-sh")
     ("v"                . "pl-v")
     ;; repl

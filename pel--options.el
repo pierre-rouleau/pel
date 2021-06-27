@@ -116,8 +116,9 @@
 ;;         - pel-pkg-for-clojure
 ;;         - pel-pkg-for-hy
 ;;         - pel-pkg-for-scheme
-;;         - pel-pkg-for-racket
-;;         - pel-pkg-for-gerbil
+;;           - pel-pkg-for-racket
+;;           - pel-pkg-for-gambit
+;;           - pel-pkg-for-gerbil
 ;;       - pel-pkg-for-beam-vm
 ;;         - pel-pkg-for-elixir
 ;;         - pel-pkg-for-erlang
@@ -5445,7 +5446,7 @@ is set: it is used by the helpful package."
 ;; Scheme Support
 ;; --------------
 (defgroup pel-pkg-for-scheme nil
-  "PEL customization for the Scheme programming language support."
+  "PEL customization for the Scheme programming languages support."
   :link `(url-link :tag "Scheme PDF" ,(pel-pdf-file-url "pl-scheme"))
   :group 'pel-pkg-for-lisp)
 
@@ -5474,6 +5475,7 @@ is set: it is used by the helpful package."
   :link '(url-link :tag "Geiser source @ Gitlab"
                    "https://gitlab.com/jaor/geiser")
   :group 'pel-pkg-for-scheme
+  :group 'pel-pkg-for-gambit
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-geiser :requires 'pel-use-scheme)
@@ -5493,7 +5495,7 @@ is set: it is used by the helpful package."
 ;; --------------
 (defgroup pel-pkg-for-racket nil
   "PEL customization for the Racket programming language support."
-  :group 'pel-pkg-for-lisp)
+  :group 'pel-pkg-for-scheme)
 
 (defcustom pel-racket-activates-minor-modes nil
   "List of minor-modes automatically activated for Racket buffers.
@@ -5512,14 +5514,59 @@ is set: it is used by the helpful package."
                    "https://github.com/greghendershott/racket-mode")
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-racket :requires 'pel-use-scheme)
 (pel-put 'pel-use-racket :package-is 'racket-mode)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Gambit Scheme Support
+;; ---------------------
+(defgroup pel-pkg-for-gambit nil
+  "PEL customization for Gambit Scheme programming language support.
+Gambit is a Scheme implementation with its own tools."
+  :link '(url-link :tag "Gambit @ GitHub"
+                   "https://github.com/gambit/gambit")
+  :group 'pel-pkg-for-scheme)
+
+(defcustom pel-gambit-activates-minor-modes nil
+  "List of minor-modes automatically activated for Gambit buffers.
+  Enter minor-mode activating function symbols.
+  Do not enter lambda expressions."
+  :group 'pel-pkg-for-gambit
+  :type '(repeat function))
+
+(defcustom pel-use-gambit nil
+  "Control whether PEL provides supports Gambit Scheme and Emacs gambit-mode.
+Downloads gambit.el from the GitHub repo instead of relying on a
+local installation of Gambit.  This allows PEL to manage Gambit
+like its other packages."
+  :group 'pel-pkg-for-gambit
+  :link '(url-link :tag "gambit.el @ Github"
+                   "https://github.com/gambit/gambit/blob/master/misc/gambit.el")
+  :link '(url-link :tag "pierre-rouleau gambit.el fork @ Github"
+                    "https://github.com/pierre-rouleau/gambit/blob/master/misc/gambit.el")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-gambit :requires 'pel-use-scheme)
+(pel-put 'pel-use-gambit :package-is '(quote ((utils . gambit))))
+(pel-put 'pel-use-gambit :also-required-when 'pel-use-gerbil)
+
+(defcustom pel-gambit-repl "gsi"
+  "File or file path name of Gambit REPL executable.
+If the program is not in your PATH but located on your system
+then its best to identify the full absolute path to the executable.
+Use UNIX-style forward slash, even on Windows.
+The default specifies the gxi program without a path.
+If the program is available in your PATH that is good enough."
+  :group 'pel-pkg-for-gambit
+  :type 'string)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Gerbil Scheme Support
 ;; ---------------------
 (defgroup pel-pkg-for-gerbil nil
   "PEL customization for the Gerbil Scheme programming language support."
-  :group 'pel-pkg-for-lisp)
+  :link `(url-link :tag "Gerbil PDF" ,(pel-pdf-file-url "pel-gerbil"))
+  :group 'pel-pkg-for-scheme)
 
 (defcustom pel-gerbil-activates-minor-modes nil
   "List of minor-modes automatically activated for Gerbil buffers.
@@ -5529,7 +5576,8 @@ is set: it is used by the helpful package."
   :type '(repeat function))
 
 (defcustom pel-use-gerbil nil
-  "Control whether PEL supports the Gerbil Scheme-based programming language."
+  "Control whether PEL supports the Gerbil Scheme-based programming language.
+Note that activating Gerbil also activates Gambit support."
   :link '(url-link :tag "Gerbil Homepage"
                    "https://cons.io")
   :link '(url-link :tag "Gerbil @ Github"
@@ -5537,10 +5585,29 @@ is set: it is used by the helpful package."
   :link '(url-link :tag "gerbil-mode @ Github"
                    "https://github.com/vyzo/gerbil/blob/master/etc/gerbil-mode.el")
   :group 'pel-pkg-for-gerbil
-  :group 'pel-pkg-for-scheme
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-gerbil :requires 'pel-use-scheme)
 (pel-put 'pel-use-gerbil :package-is '(quote ((utils . gerbil-mode))))
+
+(defcustom pel-gerbil-repl "gxi"
+  "File or file path name of Gerbil REPL executable.
+If the program is not in your PATH but located on your system
+then its best to identify the full absolute path to the executable.
+Use UNIX-style forward slash, even on Windows.
+The default specifies the gxi program without a path.
+If the program is available in your PATH that is good enough."
+  :group 'pel-pkg-for-gerbil
+  :type 'string)
+
+(defcustom pel-gerbil-base-tags '("~/.gerbil/pkg/TAGS"
+                                  "~/gerbil/src/TAGS")
+  "List of TAGS files with Gerbil source tag table files.
+The default identifies the common location of Gerbil tag files.
+You can change, delete or add more.
+These file are visited upon entering the gerbil-mode."
+  :group 'pel-pkg-for-gerbil
+  :type '(repeat file))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Inter-S-Expression Navigation
@@ -7908,6 +7975,13 @@ indexing system."
 
   (setq pel-use-flycheck t))
 
+(when pel-use-gerbil
+  (setq pel-use-gambit t))
+
+(when (or pel-use-gambit
+          pel-use-gerbil
+          pel-use-racket)
+  (setq pel-use-scheme t))
 ;; ---------------------------------------------------------------------------
 (provide 'pel--options)
 
