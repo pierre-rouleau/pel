@@ -213,14 +213,24 @@ Exclude the minibuffer."
 ;; ------------------------
 
 ;;-pel-autoload
-(defun pel-move-to-window (direction)
+(defun pel-move-to-window (direction &optional direction-for-new)
   "Move point to the window identified by DIRECTION.
-DIRECTION may be: 'up, 'down, 'left or 'right.
-Raise an error if the DIRECTION is invalid."
+DIRECTION may be: 'other, 'up, 'down, 'left or 'right.
+Raise an error if the DIRECTION is invalid.
+If direction is 'new, create a new window in the DIRECTION-FOR_NEW,
+or down by default.
+See `pel-window-direction-for' to convert a prefix number to a direction."
   (cond ((eq direction 'down)  (windmove-down))
         ((eq direction 'up)    (windmove-up))
         ((eq direction 'left)  (windmove-left))
         ((eq direction 'right) (windmove-right))
+        ((eq direction 'other) (other-window 1))
+        ((eq direction 'new)
+         (let ((direction-for-new (or direction-for-new 'down)))
+           (cond ((eq direction-for-new 'down)  (pel-create-window-down))
+                 ((eq direction-for-new 'up  )  (pel-create-window-up))
+                 ((eq direction-for-new 'left)  (pel-create-window-left))
+                 ((eq direction-for-new 'right) (pel-create-window-right)))))
         (t (error "Invalid direction %S" direction))))
 
 ;; ---------------------------------------------------------------------------

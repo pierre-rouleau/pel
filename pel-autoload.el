@@ -532,6 +532,11 @@ Argument FOR: just a required separator keyword to make code look better."
       pel-rst-literal
       pel-rst-interpreted))
 
+  (pel-autoload "pel-scheme" for:
+    pel-clear-scheme-repl-buffer
+    pel-gambit-repl
+    pel-gerbil-repl)
+
   (pel-autoload "pel-scroll" for:
     pel-toggle-scroll-sync
     pel-add-window-to-scroll-sync

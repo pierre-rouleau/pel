@@ -31,7 +31,6 @@
 ;; * `pel-insert-line'
 ;;   - `pel-separator-line'
 ;; * `pel-insert-filename'
-;;   - `pel--direction-for'
 ;; * `pel-insert-current-date-time'
 ;; * `pel-insert-current-date'
 
@@ -111,16 +110,6 @@ The character used is identified by CHAR, otherwise '-' is used."
 ;; Inserting a filename
 ;; --------------------
 
-;; -- Direction conversion
-
-(defun pel--direction-for (n)
-  "Return a symbol indicating direction corresponding to integer N.
-Look at the location of keypad numbers to see the direction relationship."
-  (cond ((eq n 2) 'down)
-        ((eq n 8) 'up)
-        ((eq n 4) 'left)
-        ((eq n 6) 'right)
-        (t        'current)))
 
 ;;-pel-autoload
 (defun pel-insert-filename (&optional n)
@@ -140,7 +129,7 @@ If the argument is positive, `pel-insert-filename'  inserts a filename with full
 absolute path, if negative it omits the path."
   (interactive "*p")
   (let ((no-path (< n 0))
-        (direction (pel--direction-for (abs n))))
+        (direction (pel-window-direction-for (abs n))))
     (if (eq direction 'current)
         (insert (pel-current-buffer-filename no-path))
       (let ((original-window (selected-window))
