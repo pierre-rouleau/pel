@@ -42,7 +42,7 @@
 ;;                         ;      pel-ends-with-space-p
 ;;                         ;      pel-comment-prefix
 (require 'pel--macros)     ; use: pel-concat-to
-
+(require 'pel-window)      ; use: pel-window-direction-for
 ;; -----------------------------------------------------------------------------
 ;;; Code:
 
@@ -110,7 +110,6 @@ The character used is identified by CHAR, otherwise '-' is used."
 ;; Inserting a filename
 ;; --------------------
 
-
 ;;-pel-autoload
 (defun pel-insert-filename (&optional n)
   "Insert at point the name of a the file of the window identified by N.
@@ -134,14 +133,10 @@ absolute path, if negative it omits the path."
         (insert (pel-current-buffer-filename no-path))
       (let ((original-window (selected-window))
             fname)
-        (require 'pel-window nil :no-error)
         (save-excursion
-          (if (fboundp 'pel-move-to-window)
-              (progn
-                (pel-move-to-window direction)
-                (setq fname (pel-current-buffer-filename no-path))
-                (select-window original-window))
-            (error "Internal loading error: failed loading pel-window")))
+          (pel-move-to-window direction)
+          (setq fname (pel-current-buffer-filename no-path))
+          (select-window original-window))
         (insert fname)))))
 
 ;;-pel-autoload
