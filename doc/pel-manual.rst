@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-06-21 16:06:32, updated by Pierre Rouleau.
+:Modified: 2021-06-28 13:26:33, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4306,11 +4306,16 @@ PEL Shell Support
 
 :PDF Sheet: `Shells`_.
 :PEL Customization: ``pel-use-erlang``.
-:PEL Key Prefix: **pel:eXecute** : ``<f11> x``
+:PEL Key Prefix: **pel:execute** : ``<f11> z``
 
-PEL provides the **pel:eXecute** (``<f11> x``) key binding to provide access to
+PEL provides the **pel:execute** (``<f11> z``) key binding to provide access to
 various types of shells, terminals and REPL buffers from within Emacs as
 described in the `Shells`_ PDF table.
+
+PEL also provides  access to several the REPL of several programming
+languages, via the **pel:repl** key prefix, mapped to ``<f11> z r``.  The
+programming language REPLs are also accessible via the ``<f12> z`` key of
+their respective major mode.
 
 PEL Sorting Support
 -------------------
