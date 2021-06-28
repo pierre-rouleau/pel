@@ -2184,10 +2184,9 @@ d-mode not added to ac-modes!"
                      forth-mode
                      forth-block-mode
                      forth-interaction-mode)
-
   ;; the <f12> key provides access to help and customization
   (define-pel-global-prefix pel:for-forth (kbd "<f11> SPC f"))
-
+  (define-key pel:for-forth  "z" #'run-forth)
   ;; Activate Forth setup.
   (pel-setup-major-mode forth pel:for-forth))
 
@@ -2258,14 +2257,6 @@ d-mode not added to ac-modes!"
                  pel-use-goflymake)))))))
 
 ;; ---------------------------------------------------------------------------
-;; - Programming Style: Haskell Support
-;; ------------------------------------
-;;
-;; Using Intero to support Haskell programming language.
-;; Installed it via the list-packages.
-;; ; (add-hook 'haskell-mode-hook 'intero-mode)
-
-;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC i`` : Javascript programming
 (when pel-use-javascript
   (define-pel-global-prefix pel:for-javascript  (kbd "<f11> SPC i"))
@@ -2313,9 +2304,8 @@ d-mode not added to ac-modes!"
                      julia-mode
                      julia-snail
                      julia-snail-mode)
-
   (define-pel-global-prefix pel:for-julia (kbd "<f11> SPC j"))
-
+  (define-key pel:for-julia  "z" #'julia-snail)
   (pel-setup-major-mode julia pel:for-julia
     (if (fboundp 'julia-snail-mode)
         (julia-snail-mode 1)
@@ -3288,8 +3278,6 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-l `` : LFE programming
 ;; LFE := Lisp Flavoured Erlang
 ;; Programming Language Family: BEAM, Lisp
-
-;; Note: the pel:execute has the run-lfe (in the code below.)
 (when pel-use-lfe
   (pel-ensure-package lfe-mode from: melpa)
   (require 'lfe-start nil :no-error)    ; autoloads lfe commands
@@ -3390,13 +3378,17 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 (when pel-use-haskell
   (define-pel-global-prefix pel:for-haskell (kbd "<f11> SPC h"))
   (when pel-use-haskell-mode
-    (pel-ensure-package haskell-mode from: melpa))
+    (pel-ensure-package haskell-mode from: melpa)
+    (define-key pel:for-haskell "z"   'run-haskell))
   (when pel-use-speedbar
-      (pel-add-speedbar-extension '(".hs"
-                                    ".hsc"
-                                    ".gs")))
+    (pel-add-speedbar-extension '(".hs"
+                                  ".hsc"
+                                  ".gs")))
   ;; the haskell-mode is part of Emacs
   (pel-setup-major-mode haskell pel:for-haskell))
+
+;; Using Intero to support Haskell programming language.
+;; (add-hook 'haskell-mode-hook 'intero-mode)
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-h`` : Hy
@@ -6288,6 +6280,7 @@ the ones defined from the buffer now."
 ;; - Function Keys - <f11> - Prefix ``<f11> z`` : Process & shells execution
 ;;
 (define-pel-global-prefix pel:execute (kbd "<f11> z"))
+(define-pel-global-prefix pel:repl    (kbd "<f11> z r"))
 ;; Used keys:
 ;; ? a e f i j l p r s t v x
 ;; L
@@ -6301,53 +6294,40 @@ the ones defined from the buffer now."
 (define-key pel:execute    "e" #'eshell)
 (define-key pel:execute    "s" #'shell)
 (define-key pel:execute    "t" #'term)
-;; REPL
-;; - Lisp
 (define-key pel:execute    "l" #'ielm)
-(when pel-use-common-lisp
-  (define-key pel:execute  "L" #'pel-cl-repl))
-(when pel-use-arc
-  (define-key pel:execute  (kbd "C-a")  'run-arc))
-
-
-(when pel-use-forth
-  (define-key pel:execute  "f" 'run-forth))
-(when pel-use-haskell
-  (define-key pel:execute  "h" 'run-haskell))
-(when pel-use-julia
-  (define-key pel:execute  "j"  'julia-snail))
-
-(when pel-use-lfe
-  (define-key pel:execute  (kbd "C-l")  'run-lfe))
-(when pel-use-python
-  (define-key pel:execute  "p" #'run-python))
-(when pel-use-erlang
-  (define-key pel:execute  "r"  'erlang-shell)) ; e (for Erlang) taken by eshell
-(when (and pel-use-elixir pel-use-alchemist)
-  (define-key pel:execute  "x"  'alchemist-iex-run))
-(when (and pel-use-ocaml
-           pel-use-tuareg)
-  (define-key pel:execute  "o"  'run-ocaml))
-
-;; - Scheme dialects
-(when pel-use-chez
-  (define-key pel:execute (kbd "C-z") 'pel-chez-repl))
-(when pel-use-gambit
-  (define-key pel:execute (kbd "C-b") 'pel-gambit-repl))
-(when pel-use-gerbil
-  (define-key pel:execute (kbd "C-i") 'pel-gerbil-repl))
-(when pel-use-guile
-  (define-key pel:execute (kbd "C-g") 'pel-guile-repl))
-(when pel-use-racket
-  (define-key pel:execute (kbd "C-r") 'pel-racket-repl))
-
-
-
 ;; support for the extremely fast/nice libvterm-based vterm shell.
 (when pel-use-vterm
   (pel-ensure-package vterm from: melpa)
   (pel-autoload-file vterm for: vterm)
   (define-key pel:execute "v" 'vterm))
+
+;; Programming Language REPL.  Key used is the same as their f11 SPC key.
+(when pel-use-common-lisp  (define-key pel:repl  "L" #'pel-cl-repl))
+(when pel-use-forth        (define-key pel:repl  "f" #'run-forth))
+(when pel-use-haskell      (define-key pel:repl  "h" #'run-haskell))
+(when pel-use-julia        (define-key pel:repl  "j" #'julia-snail))
+
+(when pel-use-python       (define-key pel:repl  "p" #'run-python))
+(when pel-use-erlang       (define-key pel:repl  "e" #'erlang-shell))
+(when (and pel-use-elixir
+           pel-use-alchemist)
+  (define-key pel:repl  "x"  #'alchemist-iex-run))
+(when (and pel-use-ocaml
+           pel-use-tuareg)
+  (define-key pel:repl  "o"  #'run-ocaml))
+
+(when pel-use-arc          (define-key pel:repl (kbd "C-a") #'run-arc))
+(when pel-use-lfe          (define-key pel:repl (kbd "C-l") #'run-lfe))
+;; - Scheme dialects
+(when pel-use-chez         (define-key pel:repl (kbd "C-z") #'pel-chez-repl))
+(when pel-use-chibi        (define-key pel:repl (kbd "C-i") #'pel-chibi-repl))
+(when pel-use-chicken      (define-key pel:repl (kbd "C-k") #'pel-chicken-repl))
+(when pel-use-gambit       (define-key pel:repl (kbd "C-b") #'pel-gambit-repl))
+(when pel-use-gerbil       (define-key pel:repl (kbd "C-e") #'pel-gerbil-repl))
+(when pel-use-guile        (define-key pel:repl (kbd "C-g") #'pel-guile-repl))
+(when pel-use-mit-scheme   (define-key pel:repl (kbd "C-m") #'pel-mit-scheme-repl))
+(when pel-use-racket       (define-key pel:repl (kbd "C-r") #'pel-racket-repl))
+(when pel-use-scsh         (define-key pel:repl (kbd "C-h") #'pel-scsh-repl))
 
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> X`` : Xref utilities
