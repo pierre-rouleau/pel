@@ -5491,31 +5491,73 @@ is set: it is used by the helpful package."
 (pel-put 'pel-use-quack :package-is :in-utils)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; Racket Support
-;; --------------
-(defgroup pel-pkg-for-racket nil
-  "PEL customization for the Racket programming language support."
+;; Chez Scheme Support
+;; ---------------------
+(defgroup pel-pkg-for-chez nil
+  "PEL customization for the Chez Scheme programming language support."
+  :link `(url-link :tag "Chez PDF" ,(pel-pdf-file-url "pl-chez-scheme"))
   :group 'pel-pkg-for-scheme)
 
-(defcustom pel-racket-activates-minor-modes nil
-  "List of minor-modes automatically activated for Racket buffers.
+(defcustom pel-chez-activates-minor-modes nil
+  "List of minor-modes automatically activated for Chez buffers.
   Enter minor-mode activating function symbols.
   Do not enter lambda expressions."
-  :group 'pel-pkg-for-racket
+  :group 'pel-pkg-for-chez
   :type '(repeat function))
 
-(defcustom pel-use-racket nil
-  "Control whether PEL supports the Racket programming language.
-
-  When this is activated, PEL activates the racket-mode
-  package."
-  :group 'pel-pkg-for-racket
-  :link '(url-link :tag "racket-mode @ GitHub"
-                   "https://github.com/greghendershott/racket-mode")
+(defcustom pel-use-chez nil
+  "Control whether PEL supports the Chez Scheme-based programming language.
+Note that activating Chez also activates Scheme support."
+  :group 'pel-pkg-for-chez
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-racket :requires 'pel-use-scheme)
-(pel-put 'pel-use-racket :package-is 'racket-mode)
+(pel-put 'pel-use-chez :package-is :a-gate)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Chibi Scheme Support
+;; --------------------
+(defgroup pel-pkg-for-chibi nil
+  "PEL customization for the Chibi Scheme programming language support."
+  :link `(url-link :tag "Chibi PDF" ,(pel-pdf-file-url "pl-chibi-scheme"))
+  :group 'pel-pkg-for-scheme)
+
+(defcustom pel-chibi-activates-minor-modes nil
+  "List of minor-modes automatically activated for Chibi buffers.
+  Enter minor-mode activating function symbols.
+  Do not enter lambda expressions."
+  :group 'pel-pkg-for-chibi
+  :type '(repeat function))
+
+(defcustom pel-use-chibi nil
+  "Control whether PEL supports the Chibi Scheme-based programming language.
+Note that activating Chibi also activates Scheme support."
+  :group 'pel-pkg-for-chibi
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-chibi :package-is :a-gate)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Chicken Scheme Support
+;; ----------------------
+(defgroup pel-pkg-for-chicken nil
+  "PEL customization for the Chicken Scheme programming language support."
+  :link `(url-link :tag "Chicken PDF" ,(pel-pdf-file-url "pl-chicken-scheme"))
+  :group 'pel-pkg-for-scheme)
+
+(defcustom pel-chicken-activates-minor-modes nil
+  "List of minor-modes automatically activated for Chicken buffers.
+  Enter minor-mode activating function symbols.
+  Do not enter lambda expressions."
+  :group 'pel-pkg-for-chicken
+  :type '(repeat function))
+
+(defcustom pel-use-chicken nil
+  "Control whether PEL supports the Chicken Scheme-based programming language.
+Note that activating Chicken also activates Scheme support."
+  :group 'pel-pkg-for-chicken
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-chicken :package-is :a-gate)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Gambit Scheme Support
@@ -5523,6 +5565,7 @@ is set: it is used by the helpful package."
 (defgroup pel-pkg-for-gambit nil
   "PEL customization for Gambit Scheme programming language support.
 Gambit is a Scheme implementation with its own tools."
+  :link `(url-link :tag "Gambit PDF" ,(pel-pdf-file-url "pl-gambit-scheme"))
   :link '(url-link :tag "Gambit @ GitHub"
                    "https://github.com/gambit/gambit")
   :group 'pel-pkg-for-scheme)
@@ -5546,7 +5589,6 @@ like its other packages."
                     "https://github.com/pierre-rouleau/gambit/blob/master/misc/gambit.el")
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-gambit :requires 'pel-use-scheme)
 (pel-put 'pel-use-gambit :package-is '(quote ((utils . gambit))))
 (pel-put 'pel-use-gambit :also-required-when 'pel-use-gerbil)
 
@@ -5565,7 +5607,7 @@ If the program is available in your PATH that is good enough."
 ;; ---------------------
 (defgroup pel-pkg-for-gerbil nil
   "PEL customization for the Gerbil Scheme programming language support."
-  :link `(url-link :tag "Gerbil PDF" ,(pel-pdf-file-url "pel-gerbil"))
+  :link `(url-link :tag "Gerbil PDF" ,(pel-pdf-file-url "pl-gerbil-scheme"))
   :group 'pel-pkg-for-scheme)
 
 (defcustom pel-gerbil-activates-minor-modes nil
@@ -5587,7 +5629,6 @@ Note that activating Gerbil also activates Gambit support."
   :group 'pel-pkg-for-gerbil
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-gerbil :requires 'pel-use-scheme)
 (pel-put 'pel-use-gerbil :package-is '(quote ((utils . gerbil-mode))))
 
 (defcustom pel-gerbil-repl "gxi"
@@ -5608,6 +5649,101 @@ You can change, delete or add more.
 These file are visited upon entering the gerbil-mode."
   :group 'pel-pkg-for-gerbil
   :type '(repeat file))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Guile Scheme Support
+;; ---------------------
+(defgroup pel-pkg-for-guile nil
+  "PEL customization for the Guile Scheme programming language support."
+  :link `(url-link :tag "Guile PDF" ,(pel-pdf-file-url "pl-guile-scheme"))
+  :group 'pel-pkg-for-scheme)
+
+(defcustom pel-guile-activates-minor-modes nil
+  "List of minor-modes automatically activated for Guile buffers.
+  Enter minor-mode activating function symbols.
+  Do not enter lambda expressions."
+  :group 'pel-pkg-for-guile
+  :type '(repeat function))
+
+(defcustom pel-use-guile nil
+  "Control whether PEL supports the Guile Scheme-based programming language.
+Note that activating Guile also activates Gambit support."
+  :group 'pel-pkg-for-guile
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-guile :package-is :a-gate)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Mit-Scheme Scheme Support
+;; -------------------------
+(defgroup pel-pkg-for-mit-scheme nil
+  "PEL customization for the Mit-Scheme Scheme programming language support."
+  :link `(url-link :tag "Mit-Scheme PDF" ,(pel-pdf-file-url "pl-mit-scheme-scheme"))
+  :group 'pel-pkg-for-scheme)
+
+(defcustom pel-mit-scheme-activates-minor-modes nil
+  "List of minor-modes automatically activated for Mit-Scheme buffers.
+  Enter minor-mode activating function symbols.
+  Do not enter lambda expressions."
+  :group 'pel-pkg-for-mit-scheme
+  :type '(repeat function))
+
+(defcustom pel-use-mit-scheme nil
+  "Control whether PEL supports the Mit-Scheme Scheme-based programming language.
+Note that activating Mit-Scheme also activates Scheme support."
+  :group 'pel-pkg-for-mit-scheme
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-mit-scheme :package-is :a-gate)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Racket Support
+;; --------------
+(defgroup pel-pkg-for-racket nil
+  "PEL customization for the Racket programming language support."
+  :group 'pel-pkg-for-scheme)
+
+(defcustom pel-racket-activates-minor-modes nil
+  "List of minor-modes automatically activated for Racket buffers.
+  Enter minor-mode activating function symbols.
+  Do not enter lambda expressions."
+  :group 'pel-pkg-for-racket
+  :type '(repeat function))
+
+(defcustom pel-use-racket nil
+  "Control whether PEL supports the Racket programming language.
+
+  When this is activated, PEL activates the racket-mode
+  package."
+  :group 'pel-pkg-for-racket
+  :link '(url-link :tag "racket-mode @ GitHub"
+                   "https://github.com/greghendershott/racket-mode")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-racket :package-is 'racket-mode)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Scsh Scheme Support
+;; -------------------
+(defgroup pel-pkg-for-scsh nil
+  "PEL customization for the Scsh Scheme programming language support."
+  :link `(url-link :tag "Scsh PDF" ,(pel-pdf-file-url "pl-scsh-scheme"))
+  :group 'pel-pkg-for-scheme)
+
+(defcustom pel-scsh-activates-minor-modes nil
+  "List of minor-modes automatically activated for Scsh buffers.
+  Enter minor-mode activating function symbols.
+  Do not enter lambda expressions."
+  :group 'pel-pkg-for-scsh
+  :type '(repeat function))
+
+(defcustom pel-use-scsh nil
+  "Control whether PEL supports the Scsh Scheme-based programming language.
+Note that activating Scsh also activates Scheme support."
+  :group 'pel-pkg-for-scsh
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-scsh :package-is :a-gate)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Inter-S-Expression Navigation
@@ -6400,8 +6536,7 @@ Do not enter lambda expressions."
   "PEL customization for GLEAM - a BEAM programming language."
   :link `(url-link :tag "Gleam PDF" ,(pel-pdf-file-url "pl-gleam"))
   :link '(url-link :tag "Gleam Home" "https://gleam.run")
-  :group 'pel-pkg-for-beam-vm
-  :group 'pel-pkg-for-lisp)
+  :group 'pel-pkg-for-beam-vm)
 
 (defcustom pel-use-gleam nil
   "Control whether PEL supports Gleam development.
@@ -7978,9 +8113,15 @@ indexing system."
 (when pel-use-gerbil
   (setq pel-use-gambit t))
 
-(when (or pel-use-gambit
+(when (or pel-use-chez
+          pel-use-chibi
+          pel-use-chicken
+          pel-use-gambit
           pel-use-gerbil
-          pel-use-racket)
+          pel-use-guile
+          pel-use-mit-scheme
+          pel-use-racket
+          pel-use-scsh)
   (setq pel-use-scheme t))
 ;; ---------------------------------------------------------------------------
 (provide 'pel--options)

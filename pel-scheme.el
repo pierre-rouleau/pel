@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, June 26 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-27 13:26:58, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-28 10:44:30, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -46,8 +46,8 @@
   (pel-clear-comint-buffer "*scheme*"))
 
 ;;-pel-autoload
-(defun pel-gambit-repl (&optional n)
-  "Run the Gambit Scheme REPL in window specified by N.
+(defun pel-chez-repl (&optional n)
+  "Run the Chez REPL in window specified by N.
 By default use the other window. If a numeric argument is specified,
 its value correspond to the direction of a numeric keypad:
 .      8
@@ -60,6 +60,30 @@ That is:
  - 2: down
 
 0 and 5 identify the current window."
+  (interactive "p")
+  (pel-move-to-window (pel-window-direction-for n))
+  (run-scheme "chez"))
+
+;;-pel-autoload
+(defun pel-chibi-repl (&optional n)
+  "Run the Chibi REPL in window specified by N.
+See `pel-chez-repl' for complete description."
+  (interactive "p")
+  (pel-move-to-window (pel-window-direction-for n))
+  (run-scheme "chibi"))
+
+;;-pel-autoload
+(defun pel-chicken-repl (&optional n)
+  "Run the Chicken REPL in window specified by N.
+See `pel-chez-repl' for complete description."
+  (interactive "p")
+  (pel-move-to-window (pel-window-direction-for n))
+  (run-scheme "chicken"))
+
+;;-pel-autoload
+(defun pel-gambit-repl (&optional n)
+  "Run the Gambit Scheme REPL in window specified by N.
+See `pel-chez-repl' for complete description."
   (interactive "p")
   (pel-move-to-window (pel-window-direction-for n))
   (run-scheme "gsi"))
@@ -67,21 +91,42 @@ That is:
 ;;-pel-autoload
 (defun pel-gerbil-repl (&optional n)
   "Run the Gerbil REPL in window specified by N.
-By default use the other window. If a numeric argument is specified,
-its value correspond to the direction of a numeric keypad:
-.      8
-.   4     6
-.      2
-That is:
- - 8: up
- - 4: left
- - 6: right
- - 2: down
-
-0 and 5 identify the current window."
+See `pel-chez-repl' for complete description."
   (interactive "p")
   (pel-move-to-window (pel-window-direction-for n))
   (run-scheme "gxi"))
+
+;;-pel-autoload
+(defun pel-guile-repl (&optional n)
+  "Run the Guile REPL in window specified by N.
+See `pel-chez-repl' for complete description."
+  (interactive "p")
+  (pel-move-to-window (pel-window-direction-for n))
+  (run-scheme "guile"))
+
+;;-pel-autoload
+(defun pel-mit-scheme-repl (&optional n)
+  "Run the MIT/GNU Scheme REPL in window specified by N.
+See `pel-chez-repl' for complete description."
+  (interactive "p")
+  (pel-move-to-window (pel-window-direction-for n))
+  (run-scheme "mit-scheme"))
+
+;;-pel-autoload
+(defun pel-racket-repl (&optional n)
+  "Run the Racket REPL in window specified by N.
+See `pel-chez-repl' for complete description."
+  (interactive "p")
+  (pel-move-to-window (pel-window-direction-for n))
+  (run-scheme "racket"))
+
+;;-pel-autoload
+(defun pel-scsh-repl (&optional n)
+  "Run the Scsh REPL in window specified by N.
+See `pel-chez-repl' for complete description."
+  (interactive "p")
+  (pel-move-to-window (pel-window-direction-for n))
+  (run-scheme "scsh"))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-scheme)

@@ -534,8 +534,15 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-scheme" for:
     pel-clear-scheme-repl-buffer
+    pel-chez-repl
+    pel-chibi-repl
+    pel-chicken-repl
     pel-gambit-repl
-    pel-gerbil-repl)
+    pel-gerbil-repl
+    pel-guile-repl
+    pel-mit-scheme-repl
+    pel-racket-repl
+    pel-scsh-repl)
 
   (pel-autoload "pel-scroll" for:
     pel-toggle-scroll-sync

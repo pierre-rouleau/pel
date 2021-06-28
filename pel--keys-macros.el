@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-27 00:03:57, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-28 11:02:43, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -241,14 +241,20 @@
                                                                  lispy))
     (,(kbd "<f11> SPC SPC C-l") "pl-lfe" pel-pkg-for-lfe        (lfe
                                                                  lispy))
-    ;; Scheme Languages
-    (,(kbd "<f11> SPC C-s C-s") "pl-scheme" pel-pkg-for-scheme  ,pel--scheme-groups)
-    (,(kbd "<f11> SPC C-s C-b") "pl-gambit" pel-pkg-for-gambit  ,(cons 'gambit
+    ;; Scheme Dialect Languages
+    (,(kbd "<f11> SPC C-s C-s") "pl-scheme"        pel-pkg-for-scheme  ,pel--scheme-groups)
+    (,(kbd "<f11> SPC C-s C-z") "pl-chez-scheme"   pel-pkg-for-chez    ,pel--scheme-groups)
+    (,(kbd "<f11> SPC C-s C-i") "pl-chibi-scheme"  pel-pkg-for-chibi   ,pel--scheme-groups)
+    (,(kbd "<f11> SPC C-s C-k") "pl-chicken-scheme" pel-pkg-for-chicken ,pel--scheme-groups)
+    (,(kbd "<f11> SPC C-s C-b") "pl-gambit-scheme" pel-pkg-for-gambit  ,(cons 'gambit
                                                                        pel--scheme-groups))
-    (,(kbd "<f11> SPC C-s C-i") "pl-gerbil" pel-pkg-for-gerbil  ,(cons 'gerbil-mode
+    (,(kbd "<f11> SPC C-s C-e") "pl-gerbil-scheme" pel-pkg-for-gerbil  ,(cons 'gerbil-mode
                                                                        pel--scheme-groups))
+    (,(kbd "<f11> SPC C-s C-g") "pl-guile-scheme"  pel-pkg-for-guile   ,pel--scheme-groups)
+    (,(kbd "<f11> SPC C-s C-m") "pl-mit-scheme-scheme"   pel-pkg-for-mit-scheme  ,pel--scheme-groups)
     (,(kbd "<f11> SPC C-s C-r") "pl-racket" pel-pkg-for-racket  ,(cons 'racket
                                                                        pel--scheme-groups) )
+    (,(kbd "<f11> SPC C-s C-h") "pl-scsh-scheme"   pel-pkg-for-scsh    ,pel--scheme-groups)
     ;;
     ;; ([f11 ?C]
     ([f11 ?D]        "drawing"          pel-pkg-for-drawing-markup)
@@ -513,9 +519,15 @@ stored inside the doc/pdf directory.")
     ("rust"            [f11 32 ?r])
     ;;
     ("scheme"          [f11 32 19 19])
+    ("chez"            [f11 32 19 26])
+    ("chibi"           [f11 32 19 9])
+    ("chicken"         [f11 32 19 11])
     ("gambit"          [f11 32 19 2])
-    ("gerbil"          [f11 32 19 9])
+    ("gerbil"          [f11 32 19 5])
+    ("guile"           [f11 32 19 7])
+    ("mit-scheme"      [f11 32 19 13])
     ("racket"          [f11 32 19 18])
+    ("scsh"            [f11 32 19 8])
     ;;
     ("sh"              [f11 32 ?H])
     ("v"               [f11 32 ?v])
@@ -683,11 +695,17 @@ There should be no key binding!" keyseq))
     ("ruby"             . "pl-ruby")
     ("rust"             . "pl-rust")
     ("netrexx"          . "pl-rexx")
-    ;; Scheme
+    ;; Scheme dialects
     ("scheme"           . "pl-scheme")
-    ("gambit"           . "pl-gambit")
-    ("gerbil"           . "pl-gerbil")
+    ("chez"             . "pl-chez-scheme")
+    ("chibi"            . "pl-chibi-scheme")
+    ("chicken"          . "pl-chicken-scheme")
+    ("gambit"           . "pl-gambit-scheme")
+    ("gerbil"           . "pl-gerbil-scheme")
+    ("guile"            . "pl-guile-scheme")
+    ("mit-scheme"       . "pl-mit-scheme-scheme")
     ("racket"           . "pl-racket")
+    ("scsh"             . "pl-scsh-scheme")
     ;;
     ("sh"               . "pl-sh")
     ("v"                . "pl-v")
@@ -744,6 +762,7 @@ There should be no key binding!" keyseq))
     ("terminal-settings" . "macOS-terminal-settings")
     ("regxp"            . "search-replace")
     ("iedit"            . "search-replace")
+    ("order"            . "sorting")
     ("desktop"          . "sessions"))
   "List of alias for PEL PDF file names.")
 
