@@ -61,7 +61,7 @@ or `update it`_ [2]_ !
 
 - PEL **extends Emacs documentation**:
 
-  - PEL provides **Over 110 PDF topics oriented reference sheets** with
+  - PEL provides **Over 125 PDF topics oriented reference sheets** with
     hyperlinks to Emacs manuals, external packages, articles and other
     references.
 
