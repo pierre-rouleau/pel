@@ -71,7 +71,8 @@
 ;;         - pel-pkg-for-graphviz-dot
 ;;         - pel-pkg-for-plantuml
 ;;       - pel-pkg-for-markdown
-;;       - pel-pkg-for-org-mode
+;;       - pel-pkg-for-outline
+;;         - pel-pkg-for-org-mode
 ;;       - pel-pkg-for-reST
 ;;         - pel-reST-style
 ;;       - pel-pkg-for-xml
@@ -2820,12 +2821,28 @@ activate this package."
 (pel-put 'pel-use-remark-mode :requires 'pel-use-markdown)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Outline Mode Support
+;; --------------------
+
+(defgroup pel-pkg-for-outline nil
+  "PEL Outline Mode Support."
+  :group 'pel-pkg-for-markup
+  :link `(url-link :tag "Outline Mode PDF" ,(pel-pdf-file-url "outline")))
+
+(defcustom pel-outline-activates-minor-modes nil
+  "List of minor-modes automatically activated for Outline-Mode buffers.
+Enter minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-outline-mode
+  :type '(repeat function))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Org Mode Support
 ;; ----------------
 
 (defgroup pel-pkg-for-org-mode  nil
   "PEL Org Mode support."
-  :group 'pel-pkg-for-markup
+  :group 'pel-pkg-for-outline
   :link `(url-link :tag "Org Mode PDF" ,(pel-pdf-file-url "mode-org-mode")))
 
 (defcustom pel-use-org-mode nil

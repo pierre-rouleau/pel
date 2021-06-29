@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-28 22:05:27, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-28 22:41:33, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -155,6 +155,7 @@
     ([f11 9]         "indentation"      pel-pkg-for-indentation (indent
                                                                  indent-tools
                                                                  smart-shift))
+
     ;; 2 different possible key sequences for speedbar,
     ;; because M-s can also be typed ``Esc s``
     (,(kbd "<f11> M-s") "speedbar"      pel-pkg-for-speedbar    (speedbar
@@ -247,9 +248,9 @@
     (,(kbd "<f11> SPC C-s C-i") "pl-chibi-scheme"  pel-pkg-for-chibi   ,pel--scheme-groups)
     (,(kbd "<f11> SPC C-s C-k") "pl-chicken-scheme" pel-pkg-for-chicken ,pel--scheme-groups)
     (,(kbd "<f11> SPC C-s C-b") "pl-gambit-scheme" pel-pkg-for-gambit  ,(cons 'gambit
-                                                                       pel--scheme-groups))
+                                                                              pel--scheme-groups))
     (,(kbd "<f11> SPC C-s C-e") "pl-gerbil-scheme" pel-pkg-for-gerbil  ,(cons 'gerbil-mode
-                                                                       pel--scheme-groups))
+                                                                              pel--scheme-groups))
     (,(kbd "<f11> SPC C-s C-g") "pl-guile-scheme"  pel-pkg-for-guile   ,pel--scheme-groups)
     (,(kbd "<f11> SPC C-s C-m") "pl-mit-scheme-scheme"   pel-pkg-for-mit-scheme  ,pel--scheme-groups)
     (,(kbd "<f11> SPC C-s C-r") "pl-racket" pel-pkg-for-racket  ,(cons 'racket
@@ -444,6 +445,9 @@
     (,(kbd "<f11> SPC M-m") "mode-markdown"    pel-pkg-for-markdown   ,pel--markdown-groups)
     ([f11 32 27 ?m]         "mode-markdown"    pel-pkg-for-markdown   ,pel--markdown-groups)
 
+    (,(kbd "<f11> SPC M-l") "outline"          pel-pkg-for-outline     outlines)
+    ([f11 32 27 ?l]         "outline"          pel-pkg-for-outline     outlines)
+
     (,(kbd "<f11> SPC M-o") "mode-org-mode"    pel-pkg-for-org-mode    org)
     ([f11 32 27 ?o]         "mode-org-mode"    pel-pkg-for-org-mode    org)
 
@@ -536,6 +540,7 @@ stored inside the doc/pdf directory.")
     ("netrexx"         [f11 32 ?N])
     ("rst"             [f11 32 27 ?r])
     ("cwl"             [f11 32 27 ?c])
+    ("outline"         [f11 32 27 ?l])
     ("org"             [f11 32 27 ?o])
     ("graphviz-dot"    [f11 32 27 ?g])
     ("plantuml"        [f11 32 27 ?u])

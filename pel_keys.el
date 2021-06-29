@@ -3687,6 +3687,13 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
   (pel-setup-major-mode adoc :no-f12-keys))
 
 ;; ---------------------------------------------------------------------------
+;; Outline Mode
+;; ------------
+;; The following provides the F12 key in Outline mode.
+(define-pel-global-prefix pel:for-outline-mode (kbd "<f11> SPC M-l"))
+(pel-setup-major-mode outline pel:for-outline-mode)
+
+;; ---------------------------------------------------------------------------
 ;; Org-Mode Support
 ;; ----------------
 
