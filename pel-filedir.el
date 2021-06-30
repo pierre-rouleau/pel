@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-25 18:15:52, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-29 22:59:37, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -35,7 +35,8 @@
 ;; - `pel-file-in-dir-upwards'
 ;;    - `pel-dir-is-root'
 ;;    - `pel-parent-directory'
-;;
+;; - `pel-subdir-count'
+;;   - `pel--dirspec-for-dir-p'
 ;;
 ;; See Emacs conventions:
 ;;  https://www.gnu.org/software/emacs/manual/html_node/elisp/Directory-Names.html
@@ -108,6 +109,23 @@ If FILE is not found in DIRPATH, the parent of DIRPATH is searched."
       (setq filepath (expand-file-name filename dirpath)))
     (when file-found
       filepath)))
+
+;; --
+
+(defun pel--dirspec-for-dir-p (dirspec)
+  "Return dirname when DIRSPEC is for a Elpa package directory, nil otherwise.
+DIRSPEC is the data structure returned by `directory-files-and-attributes'.
+Exclude the directory entries that start with a period."
+  (when (and (cadr dirspec)                          ; is a directory
+             (not (eq (string-to-char (car dirspec)) ; but does not start with period
+                      ?.)))
+    (car dirspec)))
+
+(defun pel-subdir-count (dir-path-name)
+  "Return number of sub-directories of DIR-PATH-NAME directory."
+  (length (mapcar #'car (seq-filter
+                         (function pel--dirspec-for-dir-p)
+                         (directory-files-and-attributes dir-path-name)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-filedir)
