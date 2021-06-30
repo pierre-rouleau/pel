@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-06-30 13:59:08, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-06-30 15:12:49, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -150,6 +150,7 @@ EL_FILES := pel--base.el \
 		pel-elisp.el \
 		pel-elisp-analyze.el \
 		pel-emacs.el \
+		pel-elpa.el \
 		pel-erlang.el \
 		pel-erlang-skels.el \
 		pel-ert.el \
@@ -549,6 +550,7 @@ pel-custom.elc:         pel--base.elc
 pel-diff.elc:           pel--base.elc pel-window.elc
 pel-elisp-analyze.elc:  pel-lisp.elc
 pel-elisp.elc:          pel--base.elc pel--options.elc pel-prompt.elc pel-navigate.elc
+pel-elpa.elc:           pel-filedir.elc
 pel-emacs.elc:          pel--base.elc pel--options.elc
 pel-erlang-skels.elc:   pel--base.elc pel--options.elc pel--macros.elc pel-list.elc pel-tempo.elc pel-skels.elc
 pel-erlang.elc:         pel--base.elc pel--options.elc pel-fs.elc
@@ -673,7 +675,7 @@ test:
 
 .PHONY:	timeit
 timeit:
-	@printf "***** Running Emacs startup time measurement tests\n"
+	@printf "***** Running EmacsP startup time measurement tests\n"
 	@printf "** Report Configuration settings.\n"
 	$(EMACS) --batch -L . -l $(EMACS_INIT) -l pel-package.el -f pel-package-info
 	@printf "\n"
