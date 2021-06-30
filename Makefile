@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-06-30 15:12:49, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-06-30 16:51:50, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -679,7 +679,7 @@ timeit:
 	@printf "** Report Configuration settings.\n"
 	$(EMACS) --batch -L . -l $(EMACS_INIT) -l pel-package.el -f pel-package-info
 	@printf "\n"
-	@printf "** Time mesaurement:\n"
+	@printf "** Time measurement:\n"
 	time -p $(EMACS) -nw -Q -e kill-emacs
 	time -p $(EMACS) -nw -q -e kill-emacs
 	time -p $(EMACS) -nw -e kill-emacs
