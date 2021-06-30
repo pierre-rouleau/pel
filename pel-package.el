@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-11 15:04:29, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-30 16:38:17, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -147,13 +147,14 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)                    ; use: pel-as-string, pel-as-symbol
-;;                                      ;      pel-print-in-buffer
-(require 'pel--options)                 ; use: pel-elpa-packages-to-keep
-;;                                      ;      pel-utils-packages-to-keep
-;;                                      ;      pel-elpa-obsolete-packages
-(require 'pel-navigate)                 ; use: pel-backward-token-start
-
+(require 'pel--base)                    ; use: `pel-as-string', `pel-as-symbol'
+;;                                      ;      `pel-print-in-buffer'
+(require 'pel--options)                 ; use: `pel-elpa-packages-to-keep'
+;;                                      ;      `pel-utils-packages-to-keep'
+;;                                      ;      `pel-elpa-obsolete-packages'
+(require 'pel-navigate)                 ; use: `pel-backward-token-start'
+(require 'pel-elpa)                     ; use: `pel-elpa-package-directories'
+;;                                      ;      `pel-el-files-in'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -576,10 +577,16 @@ of a restriction lock."
          (n-utils-locked    (- n-utils-all n-utils-bdeps))
          (user-options      (pel-user-options))
          (overview  (format "\
-size of load-path           : %d directories
-Number of PEL user-options  : %3d (%d are active)
-PEL activated elpa  packages: %3d (%3d dependants, %d imposed by restrictions)
-PEL Activated utils files   : %3d (%3d dependants, %d imposed by restrictions)"
+- %3d Elpa packages stored in : %s
+- %3d Utils files   stored in : %s
+- size of load-path           : %d directories
+- Number of PEL user-options  : %3d (%d are active)
+- PEL activated elpa  packages: %3d (%3d dependants, %d imposed by restrictions)
+- PEL Activated utils files   : %3d (%3d dependants, %d imposed by restrictions)"
+                            (length (pel-elpa-package-directories pel-elpa-dirpath))
+                            pel-elpa-dirpath
+                            (length (pel-el-files-in pel-utils-dirpath))
+                            pel-utils-dirpath
                             (length load-path)
                             (length user-options)
                             (length (seq-filter
@@ -598,13 +605,8 @@ Elpa packages and Utils files are shown below.  The dependencies
 and lock restrictions are identified.  Note that a package
 required by PEL may also be a dependency of another package; the
 ones identified as dependencies may also be requested by PEL
-user-options.
-
-- The Elpa packages are stored in: %s
-- The Utils files   are stored in: %s\n"
-                           overview
-                           pel-elpa-dirpath
-                           pel-utils-dirpath))
+user-options.\n"
+                           overview))
            (pel--show-pkgs-for "Elpa" elpa-all elpa+lock elpa-bdeps
                                pel-elpa-packages-to-keep)
            (pel--show-pkgs-for "Utils" utils-all utils+lock utils-bdeps

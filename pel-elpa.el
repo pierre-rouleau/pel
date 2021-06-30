@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-30 16:13:59, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-30 16:29:23, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -35,6 +35,7 @@
 ;;   - `pel-elpa-one-level-packages'
 ;;     - `pel-elpa-package-directories'
 ;;       - `pel-elpa-package-dirspec-p'
+;; - `pel-el-files-in'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -46,10 +47,17 @@
 ;;; Code:
 ;;
 
+(defun pel-el-files-in (dir-path)
+  "Return the Emacs Lisp file names inside DIR-PATH."
+  (seq-filter (lambda (fn)
+                (string= (file-name-extension fn) "el"))
+
+              (directory-files dir-path)))
+
 (defun pel-elpa-package-dirspec-p (dirspec)
   "Return dirname when DIRSPEC is for a Elpa package directory, nil otherwise."
-  (when (and (cadr dirspec)    ; is a directory ...
-             ; ... that has a name that does not start with a period
+  (when (and (cadr dirspec)             ; is a directory ...
+                                        ; ... that has a name that does not start with a period
              (not (eq (string-to-char (car dirspec))
                       ?.)))
     (car dirspec)))
