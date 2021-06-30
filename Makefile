@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-06-27 13:31:47, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-06-30 13:59:08, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -673,7 +673,7 @@ test:
 
 .PHONY:	timeit
 timeit:
-	@printf "***** Running Emasc startup time measurement tests\n"
+	@printf "***** Running Emacs startup time measurement tests\n"
 	@printf "** Report Configuration settings.\n"
 	$(EMACS) --batch -L . -l $(EMACS_INIT) -l pel-package.el -f pel-package-info
 	@printf "\n"
