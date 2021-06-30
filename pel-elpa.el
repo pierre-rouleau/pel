@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-30 15:14:47, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-30 16:13:59, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,7 +33,8 @@
 ;; - `pel-elpa-remove-pure-subdirs'
 ;; - `pel-elpa-create-symlinks'
 ;;   - `pel-elpa-one-level-packages'
-;;     - `pel-elpa-package-dirspec-p'
+;;     - `pel-elpa-package-directories'
+;;       - `pel-elpa-package-dirspec-p'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -53,12 +54,15 @@
                       ?.)))
     (car dirspec)))
 
+(defun pel-elpa-package-directories (elpa-dirpath)
+  "Return a list of package directories inside the ELPA-DIRPATH directory."
+  (mapcar #'car
+          (seq-filter (function pel-elpa-package-dirspec-p)
+                      (directory-files-and-attributes elpa-dirpath))))
+
 (defun pel-elpa-one-level-packages (elpa-dirpath)
-  "Return a list of elpa-dir-path-name directories that have no sub-directories."
-  (let ((elpa-dirnames
-         (mapcar #'car
-                 (seq-filter (function pel-elpa-package-dirspec-p)
-                             (directory-files-and-attributes elpa-dirpath)))))
+  "Return a list of directories in ELPA-DIRPATH that have no sub-directories."
+  (let ((elpa-dirnames (pel-elpa-package-directories elpa-dirpath)))
     (seq-filter
      (lambda (dn)
        (when (eq (pel-subdir-count (format "%s/%s" elpa-dirpath dn))
