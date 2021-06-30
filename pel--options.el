@@ -1242,6 +1242,7 @@ The Hippie Expand can be used together with any."
   :group 'pel-pkg-for-expand
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-auto-complete :also-required-when 'pel-use-ac-geiser)
 
 (defcustom pel-use-company nil
   "Control whether PEL supports the company package."
@@ -5492,10 +5493,38 @@ is set: it is used by the helpful package."
   :link '(url-link :tag "Geiser source @ Gitlab"
                    "https://gitlab.com/jaor/geiser")
   :group 'pel-pkg-for-scheme
-  :group 'pel-pkg-for-gambit
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-geiser :requires 'pel-use-scheme)
+(pel-put 'pel-use-geiser :also-required-when '(and pel-use-scheme
+                                                   (or pel-use-macrostep-geiser
+                                                       pel-use-ac-geiser
+                                                       pel-use-geiser-chez
+                                                       pel-use-geiser-chibi
+                                                       pel-use-geiser-chicken
+                                                       pel-use-geiser-gambit
+                                                       pel-use-geiser-guile
+                                                       pel-use-geiser-mit
+                                                       pel-use-geiser-racket)))
+
+(defcustom pel-use-macrostep-geiser nil
+  "Control whether PEL activates the macrostep-geiser external package.
+Provides in-buffer macro expansion, using the macrostep package."
+  :link '(url-link :tag "macrostep-geiser @ GitHub"
+                   "https://github.com/nbfalcon/macrostep-geiser")
+  :group 'pel-pkg-for-scheme
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-macrostep-geiser :package-is :in-utils)
+
+(defcustom pel-use-ac-geiser nil
+  "Control whether PEL activates the ac-geiser external package.
+Provides auto-completion for Geiser using the auto-complete-mode. "
+  :link '(url-link :tag "ac-geiser @ GitHub"
+                   "https://github.com/xiaohanyu/ac-geiser/")
+  :group 'pel-pkg-for-scheme
+  :type 'boolean
+  :safe #'booleanp)
 
 (defcustom pel-use-quack nil
   "Control whether PEL supports the Quack Enhance Scheme editing package.
@@ -5530,6 +5559,14 @@ Note that activating Chez also activates Scheme support."
   :safe #'booleanp)
 (pel-put 'pel-use-chez :package-is :a-gate)
 
+(defcustom pel-use-geiser-chez nil
+  "Control whether PEL activates the geiser-chez external package."
+  :link '(url-link :tag "geiser-chez @ GitLab"
+                   "https://gitlab.com/emacs-geiser/chez")
+  :group 'pel-pkg-for-chez
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Chibi Scheme Support
 ;; --------------------
@@ -5553,6 +5590,14 @@ Note that activating Chibi also activates Scheme support."
   :safe #'booleanp)
 (pel-put 'pel-use-chibi :package-is :a-gate)
 
+(defcustom pel-use-geiser-chibi nil
+  "Control whether PEL activates the geiser-chibi external package."
+  :link '(url-link :tag "geiser-chibi @ GitLab"
+                   "https://gitlab.com/emacs-geiser/chibi")
+  :group 'pel-pkg-for-chibi
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Chicken Scheme Support
 ;; ----------------------
@@ -5575,6 +5620,14 @@ Note that activating Chicken also activates Scheme support."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-chicken :package-is :a-gate)
+
+(defcustom pel-use-geiser-chicken nil
+  "Control whether PEL activates the geiser-chicken external package."
+  :link '(url-link :tag "geiser-chicken @ GitLab"
+                   "https://gitlab.com/emacs-geiser/chicken")
+  :group 'pel-pkg-for-chicken
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Gambit Scheme Support
@@ -5618,6 +5671,14 @@ The default specifies the gxi program without a path.
 If the program is available in your PATH that is good enough."
   :group 'pel-pkg-for-gambit
   :type 'string)
+
+(defcustom pel-use-geiser-gambit nil
+  "Control whether PEL activates the geiser-gambit external package."
+  :link '(url-link :tag "geiser-gambit @ GitLab"
+                   "https://gitlab.com/emacs-geiser/gambit")
+  :group 'pel-pkg-for-gambit
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Gerbil Scheme Support
@@ -5690,6 +5751,14 @@ Note that activating Guile also activates Gambit support."
   :safe #'booleanp)
 (pel-put 'pel-use-guile :package-is :a-gate)
 
+(defcustom pel-use-geiser-guile nil
+  "Control whether PEL activates the geiser-guile external package."
+  :link '(url-link :tag "geiser-guile @ GitLab"
+                   "https://gitlab.com/emacs-geiser/guile")
+  :group 'pel-pkg-for-guile
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Mit-Scheme Scheme Support
 ;; -------------------------
@@ -5712,6 +5781,14 @@ Note that activating Mit-Scheme also activates Scheme support."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-mit-scheme :package-is :a-gate)
+
+(defcustom pel-use-geiser-mit nil
+  "Control whether PEL activates the geiser-mit external package."
+  :link '(url-link :tag "geiser-mit @ GitLab"
+                   "https://gitlab.com/emacs-geiser/mit")
+  :group 'pel-pkg-for-mit-scheme
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Racket Support
@@ -5738,6 +5815,14 @@ Note that activating Mit-Scheme also activates Scheme support."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-racket :package-is 'racket-mode)
+
+(defcustom pel-use-geiser-racket nil
+  "Control whether PEL activates the geiser-racket external package."
+  :link '(url-link :tag "geiser-racket @ GitLab"
+                   "https://gitlab.com/emacs-geiser/racket")
+  :group 'pel-pkg-for-racket
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Scsh Scheme Support
@@ -8124,7 +8209,6 @@ indexing system."
                pel-use-flycheck-plantuml)
           (and pel-use-rust
                pel-use-flycheck-rust))
-
   (setq pel-use-flycheck t))
 
 (when pel-use-gerbil
@@ -8139,7 +8223,20 @@ indexing system."
           pel-use-mit-scheme
           pel-use-racket
           pel-use-scsh)
-  (setq pel-use-scheme t))
+  (setq pel-use-scheme t)
+  (when (or pel-use-macrostep-geiser
+            pel-use-ac-geiser
+            pel-use-geiser-chez
+            pel-use-geiser-chibi
+            pel-use-geiser-chicken
+            pel-use-geiser-gambit
+            pel-use-geiser-guile
+            pel-use-geiser-mit
+            pel-use-geiser-racket)
+    (setq pel-use-geiser t))
+  (when pel-use-ac-geiser
+    (setq pel-use-auto-complete t)))
+
 ;; ---------------------------------------------------------------------------
 (provide 'pel--options)
 

@@ -2724,13 +2724,82 @@ d-mode not added to ac-modes!"
 ;; default Scheme.
 
 (when pel-use-scheme
-
   ;; Install requested Scheme Family options
   (when pel-use-geiser
     (pel-ensure-package geiser from: melpa)
     (pel-autoload-file geiser for:
                        geiser
-                       geiser-mode))
+                       geiser-mode)
+    ;; Geiser extensions
+    (when pel-use-macrostep-geiser
+      ;; (pel-ensure-package macrostep-geiser from: melpa)
+      ;; This has a bug for supporting Emacs prior to Emacs 27.  I submitted a
+      ;; fix: https://github.com/nbfalcon/macrostep-geiser/pull/1
+      ;; Using my implementation until author integrates my fix.
+      ;; TODO: change to melpa above once my fix is integrated?
+      (pel-install-github-file "pierre-rouleau/macrostep-geiser/master"
+                               "macrostep-geiser.el")
+      (pel-autoload-file macrostep-geiser for:
+                         macrostep-geiser-setup)
+      ;;
+      (eval-after-load 'geiser-mode
+        '(if (and (require 'macrostep-geiser nil :no-error)
+                  (fboundp 'macrostep-geiser-setup))
+             (add-hook 'geiser-mode-hook (function macrostep-geiser-setup))
+           (display-warning 'pel-use-macrostep-geiser
+                            "Can't load macrostep-geiser" :error)))
+      (eval-after-load 'geiser-repl
+        '(if (and (require 'macrostep-geiser nil :no-error)
+                  (fboundp 'macrostep-geiser-setup))
+             (add-hook 'geiser-repl-mode-hook (function
+                                               macrostep-geiser-setup))
+           (display-warning 'pel-use-macrostep-geiser
+                            "Can't load macrostep-geiser" :error))))
+    (when pel-use-ac-geiser
+      (pel-ensure-package ac-geiser from: melpa)
+      (add-hook 'geiser-mode-hook 'ac-geiser-setup)
+      (add-hook 'geiser-repl-mode-hook 'ac-geiser-setup)
+      (eval-after-load 'auto-complete
+        '(if (and (require 'geiser nil :no-error)
+                  (fboundp 'geiser-repl-mode)
+                  (boundp  'ac-modes))
+            (add-to-list 'ac-modes (function geiser-repl-mode))
+           (display-warning 'pel-use-ac-geiser
+                            (format "\
+Can't load ac-geiser: geiser-repl-mode: %S"
+                                    (if (fboundp 'geiser-repl-mode)
+                                        "bound"
+                                      "not bound!")
+                                    ) :error))))
+    ;; Geiser Scheme implementation extensions
+    (when pel-use-geiser-chez
+      (pel-ensure-package geiser-chez from: melpa)
+      (eval-after-load 'geiser-mode
+        '(require 'geiser-chez)))
+    (when pel-use-geiser-chibi
+      (pel-ensure-package geiser-chibi from: melpa)
+      (eval-after-load 'geiser-mode
+        '(require 'geiser-chibi)))
+    (when pel-use-geiser-chicken
+      (pel-ensure-package geiser-chicken from: melpa)
+      (eval-after-load 'geiser-mode
+        '(require 'geiser-chicken)))
+    (when pel-use-geiser-gambit
+      (pel-ensure-package geiser-gambit from: melpa)
+      (eval-after-load 'geiser-mode
+        '(require 'geiser-gambit)))
+    (when pel-use-geiser-guile
+      (pel-ensure-package geiser-guile from: melpa)
+      (eval-after-load 'geiser-mode
+        '(require 'geiser-guile)))
+    (when pel-use-geiser-mit
+      (pel-ensure-package geiser-mit from: melpa)
+      (eval-after-load 'geiser-mode
+        '(require 'geiser-mit)))
+    (when pel-use-geiser-racket
+      (pel-ensure-package geiser-racket from: melpa)
+      (eval-after-load 'geiser-mode
+        '(require 'geiser-racket))))
 
   (when pel-use-quack
     ;; I have fixed byte-compiler warnings in quack in a fork of emacsmirror/quack

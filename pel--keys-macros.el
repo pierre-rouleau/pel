@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-28 22:41:33, updated by Pierre Rouleau>
+;; Time-stamp: <2021-06-29 14:55:45, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -99,6 +99,7 @@
 
 (defconst pel--scheme-groups '(scheme
                                geiser
+                               macrostep-geiser
                                quack
                                lispy))
 
