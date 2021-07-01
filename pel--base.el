@@ -949,13 +949,15 @@ Please verify the validity of your package-archives setup!"
 (defun pel-package-installed-p (feature)
   "Return t if FEATURE is installed, nil otherwise.
 Load the package library if that's not already done."
-  (if (and (require 'package nil :no-error)
-           (fboundp 'package-installed-p))
-      (package-installed-p feature)
-    (display-warning 'pel--package-installed-p
-                     "Failed loading package.el to use package-installed-p!"
-                     :error)
-    nil))
+  feature
+  ;; (if (and (require 'package nil :no-error)
+  ;;          (fboundp 'package-installed-p))
+  ;;     (package-installed-p feature)
+  ;;   (display-warning 'pel--package-installed-p
+  ;;                    "Failed loading package.el to use package-installed-p!"
+  ;;                    :error)
+  ;;   nil)
+  )
 
 (defun pel-require (feature &optional package with-pel-install fname
                             url-fname)
