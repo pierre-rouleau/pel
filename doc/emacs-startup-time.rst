@@ -467,7 +467,9 @@ I tried that and Emacs **fails**!  Hum...
 
 Now instead of of using symlinks inside the ``~/.emacs.d/elpa-copy-link``
 directory I store a **copy** of the Emacs Lisp and their byte-compiled files
-inside ``~/.emacs.d/elpa-copy-link``.  Now Emacs runs file and the speedup is
+inside ``~/.emacs.d/elpa-copy-link``.
+
+Now Emacs runs file and the speedup is
 considerable: the `make timeit`` test shows 0.64 second instead of over 1.7
 seconds!  That shaved about 1 full second out of the process!!
 
@@ -539,76 +541,94 @@ seconds!  That shaved about 1 full second out of the process!!
 
 Also the **emacs-init-time** command now returns 0.2 second!!
 
-So with this setup, with Emacs able to access 192 packages (167 + 25) with 27
-Elpa packages stored in their original directories (these are the ones that
-have sub-directories) and 30 Emacs Lisp files stored in PEL Utils, I am
-getting Emacs 26.3 to start in 0.2 seconds!!  And this is **without using
-use-package** (even though PEL uses the same general techniques).
+But wait....  The auto-loading was not done and packages that depend on it
+do not work.
 
-In the `use-package introduction`_, John Wiegley writes:
-
- "*I created it because I have over 80 packages that I use in Emacs, and things
- were getting difficult to manage. Yet with this utility my total load time is
- around 2 seconds, with no loss of functionality!*"
-
-Now, with no loss of Emacs functionality, but with loss of PEL's ability to
-install software, I end up with a system that uses 192 external packages and
-starts in 0.2 second.  That's **24 times faster**! On Emacs 26.3.
-
-And If I use Emacs 27 or later, use gccemacs and use Emacs in daemon mode
-I'll benefit for these speedup as well.
-
-Notice also that for some reason I don't yet understand, using symlinks did
-not work.  That needs to be investigated.
+So the next step is to find a way to process the auto-loading of these files.
+Instead of leaving all of the auto-loading files the way they are, since a
+mechanism needs to be set in place to have the files located somewhere else,
+I'll see if I can write something that will process all auto-loading files and
+create a shorter piece of code that will run faster. I would probably
+eliminate the auto-loading of docstrings to speed things up a little more.
 
 
-What's Next?
-============
+Hopefully the resulting code will not take much time and we can keep the same
+type of execution speed as what is shown above.
 
-I need to learn package.el and Emacs startup mechanism to understand why it's
-much faster to use a smaller number of elpa sub-directories, why symlinks did
-not fail and how I can make PEL be able to support automatic detection and
-installation while starting real fast as it did in the last step of the
-experiment.   I also need to understand how to handle Emacs Lisp packages that
-have sub-directories and see if I can find a way to put all files inside a
-single directory that ideally would contain symlinks to the real location of
-the Emacs Lisp files.  This way I could design something that uses an existing
-package manager like package.el or also perhaps something like Borg or
-straight and provide a layer on top in a form of a single directory with
-symlinks to everything.  And while I'm at it why not also do this for all
-files in Utils and for the native Emacs Lisp packages and end up with **only
-one** directory in my load-path.  That should speed things up even more.
+..
 
-I always wondered why we use a large number of directories in the Emacs
-load-path. I understand that its good to keep un-related files inside their
-own, separate, directories.  That's a requirement for several things,
-including DVCS like Git.  But why not use a *small* number of directories in
-the load-path which contain symlinks to the location to real files?  We do
-that on Unix-like OS all the time.
+   So with this setup, with Emacs able to access 192 packages (167 + 25) with 27
+   Elpa packages stored in their original directories (these are the ones that
+   have sub-directories) and 30 Emacs Lisp files stored in PEL Utils, I am
+   getting Emacs 26.3 to start in 0.2 seconds!!  And this is **without using
+   use-package** (even though PEL uses the same general techniques).
 
-On the system where this was tested, the following directories are in PATH,
-The number before identifies the number of files.  Most of them are symlinks::
+   In the `use-package introduction`_, John Wiegley writes:
 
- 1518 files: /usr/local/bin
-  969 files: /usr/bin
-   35 files: /bin
-  235 files: /usr/sbin
-   62 files: /sbin
-  127 files: /opt/X11/bin
-    7 files: /usr/local/sbin
+    "*I created it because I have over 80 packages that I use in Emacs, and things
+    were getting difficult to manage. Yet with this utility my total load time is
+    around 2 seconds, with no loss of functionality!*"
 
-That is 2953 files.  Could you imagine having 1000 entries in your PATH?  Or
-even 100?
+   Now, with no loss of Emacs functionality, but with loss of PEL's ability to
+   install software, I end up with a system that uses 192 external packages and
+   starts in 0.2 second.  That's **24 times faster**! On Emacs 26.3.
 
-Having one directory per OS-level utility package identified on the system or
-a shell process PATH would rightly be considered insane. What people do is use
-symlinks and a small number of entries in the PATH.
-So why not use the same technique inside Emacs?
+   And If I use Emacs 27 or later, use gccemacs and use Emacs in daemon mode
+   I'll benefit for these speedup as well.
+
+   Notice also that for some reason I don't yet understand, using symlinks did
+   not work.  That needs to be investigated.
+
+..
+
+   What's Next?
+   ============
+
+   I need to learn package.el and Emacs startup mechanism to understand why it's
+   much faster to use a smaller number of elpa sub-directories, why symlinks did
+   not fail and how I can make PEL be able to support automatic detection and
+   installation while starting real fast as it did in the last step of the
+   experiment.   I also need to understand how to handle Emacs Lisp packages that
+   have sub-directories and see if I can find a way to put all files inside a
+   single directory that ideally would contain symlinks to the real location of
+   the Emacs Lisp files.  This way I could design something that uses an existing
+   package manager like package.el or also perhaps something like Borg or
+   straight and provide a layer on top in a form of a single directory with
+   symlinks to everything.  And while I'm at it why not also do this for all
+   files in Utils and for the native Emacs Lisp packages and end up with **only
+   one** directory in my load-path.  That should speed things up even more.
+
+   I always wondered why we use a large number of directories in the Emacs
+   load-path. I understand that its good to keep un-related files inside their
+   own, separate, directories.  That's a requirement for several things,
+   including DVCS like Git.  But why not use a *small* number of directories in
+   the load-path which contain symlinks to the location to real files?  We do
+   that on Unix-like OS all the time.
+
+   On the system where this was tested, the following directories are in PATH,
+   The number before identifies the number of files.  Most of them are symlinks::
+
+    1518 files: /usr/local/bin
+     969 files: /usr/bin
+      35 files: /bin
+     235 files: /usr/sbin
+      62 files: /sbin
+     127 files: /opt/X11/bin
+       7 files: /usr/local/sbin
+
+   That is 2953 files.  Could you imagine having 1000 entries in your PATH?  Or
+   even 100?
+
+   Having one directory per OS-level utility package identified on the system or
+   a shell process PATH would rightly be considered insane. What people do is use
+   symlinks and a small number of entries in the PATH.
+   So why not use the same technique inside Emacs?
 
 
-My next step will be to investigate this idea and ideally come up with code
-that integrates with PEL but with anything else, perhaps an independent
-package that anybody would be able to use.  Hopefully, that will be possible.
+   My next step will be to investigate this idea and ideally come up with code
+   that automatically handle the auto-loading and
+   integrates with PEL but with anything else, perhaps an independent
+   package that anybody would be able to use.  Hopefully, that will be possible.
 
 .. ---------------------------------------------------------------------------
 
