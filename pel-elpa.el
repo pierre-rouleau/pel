@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-30 18:36:44, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-02 10:25:26, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -78,50 +78,51 @@
          dn))
      elpa-dirnames)))
 
-(defun pel-elpa-create-copies (dir-path-name
-                               elpa-dir-path-name
-                               &optional with-symlink)
+(defun pel-elpa-create-copies (elpa-dir-path
+                               dest-dir-path
+                               &optional with-symlinks)
   "Copy all .el and .elc Elpa package files into a single directory.
 
-The single directory is DIR-PATH-NAME.  If WITH-SYMLINK is
+The single directory is DEST-DIR-PATH.  If WITH-SYMLINKS is
 non-nil, don't copy, create symlinks in DIR-PATH-NAME instead.
 The Elpa directory where packages are taken from is
-ELPA-DIR-PATH-NAME.
+ELPA-DIR-PATH.
 The function search the packages present in the
-ELPA-DIR-PATH-NAME directory.  It only considers Elpa packages
+ELPA-DIR-PATH directory.  It only considers Elpa packages
 that have no sub-directories and therefore have all their files
 inside one directory.
 
 When WITH-SYMLINK is non-nil, return a list of (file-path-1 . file-path-2)
 cons cells that identify the duplicated file names, or nil if there are none."
   (let ((duplicates nil)
-        (elpa-pure-dirnames (pel-elpa-one-level-packages elpa-dir-path-name)))
+        (elpa-pure-dirnames (pel-elpa-one-level-packages elpa-dir-path))
+        source-dir-path-name
+        source-fn
+        destination-fn)
     (dolist (dirname elpa-pure-dirnames)
-      (let ((source-dir-path-name (expand-file-name
+      (setq source-dir-path-name (expand-file-name
                                    dirname
-                                   (file-truename elpa-dir-path-name))))
-        (dolist (file-name (directory-files source-dir-path-name))
-          (when (member (file-name-extension file-name) '("el" "elc"))
-            (let ((source-fn (expand-file-name
-                              file-name source-dir-path-name))
-                  (detination-fn (expand-file-name
-                                  file-name dir-path-name)))
-              (if (file-exists-p detination-fn)
-                  ;; note: the destination will hold the name of the other
-                  ;; file when with-symlink is non-nil
-                  (push (cons source-fn (file-truename detination-fn))
-                        duplicates)
-                (if with-symlink
-                    (make-symbolic-link source-fn detination-fn)
-                  (copy-file source-fn detination-fn))))))))
-    (when with-symlink
+                                   (file-truename elpa-dir-path)))
+      (dolist (file-name (directory-files source-dir-path-name))
+        (when (member (file-name-extension file-name) '("el" "elc"))
+          (setq source-fn (expand-file-name file-name source-dir-path-name))
+          (setq destination-fn (expand-file-name file-name dest-dir-path))
+          (if (file-exists-p destination-fn)
+              ;; note: the destination will hold the name of the other
+              ;; file when with-symlinks is non-nil
+              (push (cons source-fn (file-truename destination-fn))
+                    duplicates)
+            (if with-symlinks
+                (make-symbolic-link source-fn destination-fn)
+              (copy-file source-fn destination-fn))))))
+    (when with-symlinks
       duplicates)))
 
-(defun pel-elpa-remove-pure-subdirs (elpa-dir-path-name)
-  "Remove all sub-directories of ELPA-DIR-PATH-NAME that only hold files."
-  (let ((elpa-pure-dir-names (pel-elpa-one-level-packages elpa-dir-path-name)))
+(defun pel-elpa-remove-pure-subdirs (elpa-dir-path)
+  "Remove all sub-directories of ELPA-DIR-PATH that only hold files."
+  (let ((elpa-pure-dir-names (pel-elpa-one-level-packages elpa-dir-path)))
     (dolist (dn elpa-pure-dir-names)
-      (delete-directory (expand-file-name dn elpa-dir-path-name) :recurse))))
+      (delete-directory (expand-file-name dn elpa-dir-path) :recurse))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-elpa)
