@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-29 22:59:37, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-02 10:24:17, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -35,6 +35,7 @@
 ;; - `pel-file-in-dir-upwards'
 ;;    - `pel-dir-is-root'
 ;;    - `pel-parent-directory'
+;; - `pel-duplicate-dir'
 ;; - `pel-subdir-count'
 ;;   - `pel--dirspec-for-dir-p'
 ;;
@@ -109,6 +110,21 @@ If FILE is not found in DIRPATH, the parent of DIRPATH is searched."
       (setq filepath (expand-file-name filename dirpath)))
     (when file-found
       filepath)))
+
+
+;; --
+
+(defun pel-duplicate-dir (source destination &optional with-symlinks)
+  "Copy all files of SOURCE directory into DESTINATION directory.
+If WITH-SYMLINKS is non-nil create symlinks in DESTINATION to the files
+in SOURCE."
+  (let (source-fn destination-fn)
+    (dolist (file-name (directory-files source))
+      (setq source-fn (expand-file-name file-name source))
+      (setq destination-fn (expand-file-name file-name destination))
+      (if with-symlinks
+          (make-symbolic-link source-fn destination-fn)
+        (copy-file source-fn destination-fn)))))
 
 ;; --
 
