@@ -555,80 +555,275 @@ eliminate the auto-loading of docstrings to speed things up a little more.
 Hopefully the resulting code will not take much time and we can keep the same
 type of execution speed as what is shown above.
 
-..
-..
-..    So with this setup, with Emacs able to access 192 packages (167 + 25) with 27
-..    Elpa packages stored in their original directories (these are the ones that
-..    have sub-directories) and 30 Emacs Lisp files stored in PEL Utils, I am
-..    getting Emacs 26.3 to start in 0.2 seconds!!  And this is **without using
-..    use-package** (even though PEL uses the same general techniques).
-..
-..    In the `use-package introduction`_, John Wiegley writes:
-..
-..     "*I created it because I have over 80 packages that I use in Emacs, and things
-..     were getting difficult to manage. Yet with this utility my total load time is
-..     around 2 seconds, with no loss of functionality!*"
-..
-..    Now, with no loss of Emacs functionality, but with loss of PEL's ability to
-..    install software, I end up with a system that uses 192 external packages and
-..    starts in 0.2 second.  That's **24 times faster**! On Emacs 26.3.
-..
-..    And If I use Emacs 27 or later, use gccemacs and use Emacs in daemon mode
-..    I'll benefit for these speedup as well.
-..
-..    Notice also that for some reason I don't yet understand, using symlinks did
-..    not work.  That needs to be investigated.
 
-..
-..
-..    What's Next?
-..    ============
-..
-..    I need to learn package.el and Emacs startup mechanism to understand why it's
-..    much faster to use a smaller number of elpa sub-directories, why symlinks did
-..    not fail and how I can make PEL be able to support automatic detection and
-..    installation while starting real fast as it did in the last step of the
-..    experiment.   I also need to understand how to handle Emacs Lisp packages that
-..    have sub-directories and see if I can find a way to put all files inside a
-..    single directory that ideally would contain symlinks to the real location of
-..    the Emacs Lisp files.  This way I could design something that uses an existing
-..    package manager like package.el or also perhaps something like Borg or
-..    straight and provide a layer on top in a form of a single directory with
-..    symlinks to everything.  And while I'm at it why not also do this for all
-..    files in Utils and for the native Emacs Lisp packages and end up with **only
-..    one** directory in my load-path.  That should speed things up even more.
-..
-..    I always wondered why we use a large number of directories in the Emacs
-..    load-path. I understand that its good to keep un-related files inside their
-..    own, separate, directories.  That's a requirement for several things,
-..    including DVCS like Git.  But why not use a *small* number of directories in
-..    the load-path which contain symlinks to the location to real files?  We do
-..    that on Unix-like OS all the time.
-..
-..    On the system where this was tested, the following directories are in PATH,
-..    The number before identifies the number of files.  Most of them are symlinks::
-..
-..     1518 files: /usr/local/bin
-..      969 files: /usr/bin
-..       35 files: /bin
-..      235 files: /usr/sbin
-..       62 files: /sbin
-..      127 files: /opt/X11/bin
-..        7 files: /usr/local/sbin
-..
-..    That is 2953 files.  Could you imagine having 1000 entries in your PATH?  Or
-..    even 100?
-..
-..    Having one directory per OS-level utility package identified on the system or
-..    a shell process PATH would rightly be considered insane. What people do is use
-..    symlinks and a small number of entries in the PATH.
-..    So why not use the same technique inside Emacs?
-..
-..
-..    My next step will be to investigate this idea and ideally come up with code
-..    that automatically handle the auto-loading and
-..    integrates with PEL but with anything else, perhaps an independent
-..    package that anybody would be able to use.  Hopefully, that will be possible.
+.. ---------------------------------------------------------------------------
+
+Ideas to Investigate
+====================
+
+Processing the autoload cookies of files stored inside elpa-copy directory
+--------------------------------------------------------------------------
+
+The final system will most probably have to identify all things that need to
+be auto-loaded by parsing the files in the ``~/.emacs.d/elpa-copy``
+directory. There is already a several functions from autoload.el that will
+help for that:
+
+- ``(update-autoloads-from-directories &rest DIRS)`` which writes the output
+  to the file identified by the ``generated-autoload-file`` variable.   It is
+  therefore possible to let-bind this variable to some specific file that we
+  could run.
+
+  - The generated autoload could be called ``pel-generated-autoload.el`` and
+    stored in some known location, then loaded by PEL when starting.
+  - The process of creating the ``pel-generated-autoload.el`` will take some
+    time.  It might be several seconds and will increase as the number of
+    files inside ``~/.emacs.d/elpa-copy`` will grow.  So this must be done
+    when new packages are installed, **not** when Emacs starts.
+
+I ran the following snippet of code on the files located in my
+``~/.emacs.d/elpa-copy`` directory:
+
+.. code:: lisp
+
+          (let ((generated-autoload-file "~/tmp/pel-generated-autoload.el"))
+            (update-autoloads-from-directories "~/.emacs.d/elpa-copy"))
+
+This generated the file ``~/tmp/pel-generated-autoload.el``.  That file has
+18,353 lines.  The file remembers that the source code files are inside the
+``elpa-copy`` directory, which is OK because this is where the code files are
+located.
+
+Unfortunately the content of the generated-autoload.el identifies the
+directory as ../.emacs.d/elpa-copy.  It should be absolute.  So for the moment
+I just replaced it manually, and I'll need to find out how to properly
+generate it.
+
+
+Quickly flip between the original elpa and a reduced elpa directory
+-------------------------------------------------------------------
+
+The Emacs package.el deals with the real, complete, Elpa-compliant directory,
+which normally is ``~/.emacs.d/elpa``.
+
+To speed things up it copied the source code files of all packages that have
+no sub-directories into the ``elpa-copy`` directory.  Then I created another
+directory, called ``~/.emacs.d/elpa-reduced`` which contains the other elpa
+packages, the ones that have sub-directories.
+
+For speedy startup, I want to use ``elpa-reduced`` and ``elpa-copy`` instead
+of ``elpa`` to reduce the overall number of sub-directories and therefore the
+number of entries inside the Emacs ``load-path``.
+
+And I want to be able to quickly flip between the 2 sets: I'll use elpa when
+interacting with the package.el commands (to allow the user to take advantage
+of package.el package management facilities) and will switch elpa-reduced
+otherwise.  I'll have to look into the details to see if that strategy will
+work.
+
+But for now, I just want to see if adding the loading of the autoload file
+will slow this too much.
+
+So what I can do is to is:
+
+- rename ``~/.emacs.d/elpa`` to ``~/emacs.d/elpa-complete``
+- create a ``~/.emacs.d/elpa`` symlink that points to either:
+
+  - ``~/emacs.d/elpa-complete``, or
+  - ``~/emacs.d/elpa-reduced``
+
+Then I modify my init file to load the file
+``~/tmp/pel-generated-autoload.el`` that I generated previously.
+
+I try Emacs, and.... it works! I can use all features as if everything was in
+the complete original elpa directory!
+
+And it **still** starts fast!  Same 0.2 seconds as before!
+
+Here's the ``make timeit`` report.  It's a little longer than before (most
+probably because of the loading of the autoloads) but still fast::
+
+    >Pierres-iMac@Fri Jul 02@22:07:52[~/dev/elisp/pel]
+    > make timeit
+    ***** Running Emacs startup time measurement tests
+    ** Report Configuration settings.
+    emacs --batch -L . -l "~/.emacs.d/init.el" -l pel-package.el -f pel-package-info
+    Loading /Users/roup/tmp/pel-generated-autoload.el (source)...
+    Loading /Users/roup/.emacs.d/emacs-customization.el (source)...
+    Loading pel_keys...
+    Loading /Users/roup/.emacs.d/recentf...
+    Cleaning up the recentf list...
+    Cleaning up the recentf list...done (0 removed)
+    PEL loaded, PEL keys binding in effect.
+    -  27 Elpa packages stored in : /Users/roup/.emacs.d/elpa/
+    -  30 Utils files   stored in : /Users/roup/.emacs.d/utils/
+    - size of load-path           : 36 directories
+    - Number of PEL user-options  : 250 (198 are active)
+    - PEL activated elpa  packages: 167 (  0 dependants, 5 imposed by restrictions)
+    - PEL Activated utils files   :  25 (  0 dependants, 0 imposed by restrictions)
+
+    ** Time measurement:
+    time -p emacs -nw -Q -e kill-emacs
+    real         0.15
+    user         0.03
+    sys          0.01
+    time -p emacs -nw -q -e kill-emacs
+    real         0.14
+    user         0.03
+    sys          0.01
+    time -p emacs -nw -e kill-emacs
+    real         0.78
+    user         0.58
+    sys          0.08
+    >Pierres-iMac@Fri Jul 02@22:07:57[~/dev/elisp/pel]
+    > make timeit
+    ***** Running Emacs startup time measurement tests
+    ** Report Configuration settings.
+    emacs --batch -L . -l "~/.emacs.d/init.el" -l pel-package.el -f pel-package-info
+    Loading /Users/roup/tmp/pel-generated-autoload.el (source)...
+    Loading /Users/roup/.emacs.d/emacs-customization.el (source)...
+    Loading pel_keys...
+    Loading /Users/roup/.emacs.d/recentf...
+    Cleaning up the recentf list...
+    Cleaning up the recentf list...done (0 removed)
+    PEL loaded, PEL keys binding in effect.
+    -  27 Elpa packages stored in : /Users/roup/.emacs.d/elpa/
+    -  30 Utils files   stored in : /Users/roup/.emacs.d/utils/
+    - size of load-path           : 36 directories
+    - Number of PEL user-options  : 250 (198 are active)
+    - PEL activated elpa  packages: 167 (  0 dependants, 5 imposed by restrictions)
+    - PEL Activated utils files   :  25 (  0 dependants, 0 imposed by restrictions)
+
+    ** Time measurement:
+    time -p emacs -nw -Q -e kill-emacs
+    real         0.13
+    user         0.02
+    sys          0.01
+    time -p emacs -nw -q -e kill-emacs
+    real         0.13
+    user         0.02
+    sys          0.01
+    time -p emacs -nw -e kill-emacs
+    real         0.77
+    user         0.58
+    sys          0.08
+    >Pierres-iMac@Fri Jul 02@22:16:23[~/dev/elisp/pel]
+    > make timeit
+    ***** Running Emacs startup time measurement tests
+    ** Report Configuration settings.
+    emacs --batch -L . -l "~/.emacs.d/init.el" -l pel-package.el -f pel-package-info
+    Loading /Users/roup/tmp/pel-generated-autoload.el (source)...
+    Loading /Users/roup/.emacs.d/emacs-customization.el (source)...
+    Loading pel_keys...
+    Loading /Users/roup/.emacs.d/recentf...
+    Cleaning up the recentf list...
+    Cleaning up the recentf list...done (0 removed)
+    PEL loaded, PEL keys binding in effect.
+    -  27 Elpa packages stored in : /Users/roup/.emacs.d/elpa/
+    -  30 Utils files   stored in : /Users/roup/.emacs.d/utils/
+    - size of load-path           : 36 directories
+    - Number of PEL user-options  : 250 (198 are active)
+    - PEL activated elpa  packages: 167 (  0 dependants, 5 imposed by restrictions)
+    - PEL Activated utils files   :  25 (  0 dependants, 0 imposed by restrictions)
+
+    ** Time measurement:
+    time -p emacs -nw -Q -e kill-emacs
+    real         0.13
+    user         0.02
+    sys          0.01
+    time -p emacs -nw -q -e kill-emacs
+    real         0.13
+    user         0.03
+    sys          0.01
+    time -p emacs -nw -e kill-emacs
+    real         0.75
+    user         0.56
+    sys          0.08
+    >
+
+
+The ``~/tmp/pel-generated-autoload.el`` has file variable that prevents byte
+compilation of this file.  I don't see yet why that could not be
+byte-compiled, so I'll have to do a little more research.  But perhaps it's
+possible to byte compile it and reduce time a little bit more.  We'll see...
+
+
+O.2 second Emacs startup with 192 external packages!
+----------------------------------------------------
+
+Elpa packages stored in their original directories (these are the ones that
+have sub-directories) and 30 Emacs Lisp files stored in PEL Utils, I am
+getting Emacs 26.3 to start in 0.2 seconds!!  And this is **without using
+use-package** (even though PEL uses the same general techniques).
+
+In the `use-package introduction`_, John Wiegley writes:
+
+ "*I created it because I have over 80 packages that I use in Emacs, and things
+ were getting difficult to manage. Yet with this utility my total load time is
+ around 2 seconds, with no loss of functionality!*"
+
+Now, with no loss of Emacs functionality, but with loss of PEL's ability to
+install software, I end up with a system that uses 192 external packages and
+starts in 0.2 second.  That's about **24 times faster**! On Emacs 26.3!
+
+And If I use Emacs 27 or later, use gccemacs and use Emacs in daemon mode
+I'll benefit for these speedup as well.
+
+Notice also that for some reason I don't yet understand, using symlinks did
+not work.  That needs to be investigated.
+
+
+
+What's Next?
+============
+
+I need to learn package.el and Emacs startup mechanism to understand why it's
+much faster to use a smaller number of elpa sub-directories, why symlinks did
+not fail and how I can make PEL be able to support automatic detection and
+installation while starting real fast as it did in the last step of the
+experiment.   I also need to understand how to handle Emacs Lisp packages that
+have sub-directories and see if I can find a way to put all files inside a
+single directory that ideally would contain symlinks to the real location of
+the Emacs Lisp files.  This way I could design something that uses an existing
+package manager like package.el or also perhaps something like Borg or
+straight and provide a layer on top in a form of a single directory with
+symlinks to everything.  And while I'm at it why not also do this for all
+files in Utils and for the native Emacs Lisp packages and end up with **only
+one** directory in my load-path.  That should speed things up even more.
+
+I always wondered why we use a large number of directories in the Emacs
+load-path. I understand that its good to keep un-related files inside their
+own, separate, directories.  That's a requirement for several things,
+including DVCS like Git.  But why not use a *small* number of directories in
+the load-path which contain symlinks to the location to real files?  We do
+that on Unix-like OS all the time.
+
+On the system where this was tested, the following directories are in PATH,
+The number before identifies the number of files.  Most of them are symlinks::
+
+ 1518 files: /usr/local/bin
+  969 files: /usr/bin
+   35 files: /bin
+  235 files: /usr/sbin
+   62 files: /sbin
+  127 files: /opt/X11/bin
+    7 files: /usr/local/sbin
+
+That is 2953 files.  Could you imagine having 1000 entries in your PATH?  Or
+even 100?
+
+Having one directory per OS-level utility package identified on the system or
+a shell process PATH would rightly be considered insane. What people do is use
+symlinks and a small number of entries in the PATH.
+So why not use the same technique inside Emacs?
+
+
+My next step will be to investigate this idea and ideally come up with code
+that automatically handle the auto-loading and
+integrates with PEL but with anything else, perhaps an independent
+package that anybody would be able to use.  Hopefully, that will be possible.
+
+
 
 .. ---------------------------------------------------------------------------
 
