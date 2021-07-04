@@ -913,8 +913,8 @@ The list of directories inside elpa-reduced is::
     vterm-20210313.1359
     yasnippet-snippets-20210105.1346
 
-The exact dependencies are not there but a development version for the
-following missing requirement is
+The exact dependencies are not there but a development version for some of the
+following missing requirement is located inside the elpa-reduced directory.
 
 And If I use Emacs 27 or later, use gccemacs and use Emacs in daemon mode
 I'll benefit for these speedup as well.
