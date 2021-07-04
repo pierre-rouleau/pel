@@ -762,15 +762,170 @@ In the `use-package introduction`_, John Wiegley writes:
  were getting difficult to manage. Yet with this utility my total load time is
  around 2 seconds, with no loss of functionality!*"
 
-Now, with no loss of Emacs functionality, but with loss of PEL's ability to
+Now,  with *almost* no loss of Emacs functionality, but with loss of PEL's ability to
 install software, I end up with a system that uses 192 external packages and
 starts in 0.2 second.  That's about **24 times faster**! On Emacs 26.3!
+
+Some problems remain:
+
+Problem 1 : unresolved dependencies of elpa-reduced packages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The packages that have multiple directories remained in the ``elpa-reduced``
+directory and remain managed by package.el as before.  That is not a problem
+in itself, however package.el fails to find the dependencies of those
+packages inside the Emacs Lisp files copied into ``~/.emacs.d/elpa-copy``
+files.
+
+When Emacs starts it displays the following messages::
+
+    Loading /Users/roup/tmp/pel-generated-autoload.el (source)...done
+    Loading /Users/roup/.emacs.d/emacs-customization.el (source)...done
+    Loading pel_keys...
+    Loading /Users/roup/.emacs.d/recentf...done
+    Cleaning up the recentf list...done (0 removed)
+    Loading pel_keys...done
+    PEL loaded, PEL keys binding in effect.
+    Unable to activate package ‘yasnippet-snippets’.
+    Required package ‘yasnippet-0.8.0’ is unavailable
+    Unable to activate package ‘treemacs’.
+    Required package ‘dash-2.11.0’ is unavailable
+    Unable to activate package ‘relint’.
+    Required package ‘xr-1.20’ is unavailable
+    Unable to activate package ‘racket-mode’.
+    Required package ‘faceup-0.0.2’ is unavailable
+    Unable to activate package ‘origami’.
+    Required package ‘s-1.9.0’ is unavailable
+    Unable to activate package ‘lsp-ui’.
+    Required package ‘dash-2.18.0’ is unavailable
+    Unable to activate package ‘lsp-treemacs’.
+    Required package ‘dash-2.18.0’ is unavailable
+    Unable to activate package ‘geiser-racket’.
+    Required package ‘geiser-0.16’ is unavailable
+    Unable to activate package ‘geiser-guile’.
+    Required package ‘geiser-0.16’ is unavailable
+    Unable to activate package ‘geiser-gambit’.
+    Required package ‘geiser-0.16’ is unavailable
+    Unable to activate package ‘geiser-chicken’.
+    Required package ‘geiser-0.16’ is unavailable
+    Unable to activate package ‘geiser-chibi’.
+    Required package ‘geiser-0.16’ is unavailable
+    Unable to activate package ‘geiser-chez’.
+    Required package ‘geiser-0.16’ is unavailable
+    Unable to activate package ‘clojure-snippets’.
+    Required package ‘yasnippet-0.10.0’ is unavailable
+    Unable to activate package ‘auto-complete’.
+    Required package ‘popup-0.5.0’ is unavailable
+    Unable to activate package ‘alchemist’.
+    Required package ‘elixir-mode-2.2.5’ is unavailable
+    Starting new Ispell process aspell with default dictionary...
+    Loading pel__hydra...done
+    Emacs startup time: 0.2 seconds
+    Updating buffer list...
+    Formats have changed, recompiling...done
+    Updating buffer list...done
+    Commands: m, u, t, RET, g, k, S, D, Q; q to quit; h for help
+    Mark set
+    Updating buffer list...done
+    Commands: m, u, t, RET, g, k, S, D, Q; q to quit; h for help
+
+
+
+The files for the reported missing code **is** located inside some of the
+directories that remained inside the ``~/.emacs.d/elpa-reduced`` directories
+but for some reason have not been integrated inside the Emacs load-path::
+
+   1 /Users/roup/.emacs.d/elpa/company-20210618.2105
+   2 /Users/roup/.emacs.d/elpa/forth-mode-20210123.900
+   3 /Users/roup/.emacs.d/elpa/lice-20200607.103
+   4 /Users/roup/.emacs.d/elpa/monky-20201226.1950
+   5 /Users/roup/.emacs.d/elpa/neotree-20200324.1946
+   6 /Users/roup/.emacs.d/elpa/package-lint-20210326.241
+   7 /Users/roup/.emacs.d/elpa/seq-2.22
+   8 /Users/roup/.emacs.d/elpa/sly-20210303.1148
+   9 /Users/roup/.emacs.d/elpa/vterm-20210313.1359
+  10 /Users/roup/dev/elisp/pel
+  11 /Users/roup/.emacs.d/utils
+  12 /Users/roup/.emacs.d/elpa-copy
+  13 /usr/local/share/emacs/site-lisp
+  14 /usr/local/share/emacs/site-lisp/autoconf
+  15 /usr/local/share/emacs/site-lisp/clisp
+  16 /usr/local/share/emacs/site-lisp/cmake
+  17 /usr/local/share/emacs/site-lisp/gerbil-scheme
+  18 /usr/local/share/emacs/site-lisp/gettext
+  19 /usr/local/share/emacs/site-lisp/git
+  20 /usr/local/share/emacs/site-lisp/lfe
+  21 /usr/local/share/emacs/site-lisp/libidn
+  22 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp
+  23 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/vc
+  24 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/url
+  25 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/textmodes
+  26 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/progmodes
+  27 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/play
+  28 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/org
+  29 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/nxml
+  30 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/net
+  31 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/mh-e
+  32 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/mail
+  33 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/leim
+  34 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/language
+  35 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/international
+  36 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/image
+  37 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/gnus
+  38 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/eshell
+  39 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/erc
+  40 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/emulation
+  41 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/emacs-lisp
+  42 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/cedet
+  43 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/calendar
+  44 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/calc
+  45 /usr/local/Cellar/emacs/26.3/share/emacs/26.3/lisp/obsolete
+
+
+
+The list of directories inside elpa-reduced is::
+
+    alchemist-20180312.1304
+    archives
+    auto-complete-20201213.1255
+    clojure-snippets-20180314.1308
+    company-20210618.2105
+    forth-mode-20210123.900
+    geiser-chez-20210421.120
+    geiser-chibi-20210421.123
+    geiser-chicken-20210421.127
+    geiser-gambit-20210421.124
+    geiser-guile-20210508.1838
+    geiser-racket-20210421.125
+    gnupg
+    lice-20200607.103
+    lsp-treemacs-20210502.1804
+    lsp-ui-20210604.1158
+    monky-20201226.1950
+    neotree-20200324.1946
+    origami-1.0
+    package-lint-20210326.241
+    racket-mode-20210629.2000
+    relint-1.19
+    seq-2.22
+    sly-20210303.1148
+    treemacs-20210606.1918
+    vterm-20210313.1359
+    yasnippet-snippets-20210105.1346
+
+The exact dependencies are not there but a development version for the
+following missing requirement is
 
 And If I use Emacs 27 or later, use gccemacs and use Emacs in daemon mode
 I'll benefit for these speedup as well.
 
 Notice also that for some reason I don't yet understand, using symlinks did
 not work.  That needs to be investigated.
+
+
+
+
+
 
 
 
