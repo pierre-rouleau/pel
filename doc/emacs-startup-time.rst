@@ -916,6 +916,32 @@ The list of directories inside elpa-reduced is::
 The exact dependencies are not there but a development version for some of the
 following missing requirement is located inside the elpa-reduced directory.
 
+The problem seems to be related to the fact that the packages that have
+sub-directories continue to be managed by ``package.el`` invoking the logic to
+control the ``package-alist`` variable, which end-up incomplete because a
+large set of the packages were merged into a single ``elpa-copy`` directory
+and are not controlled by ``package.el``.
+
+I see two possible work-around solutions:
+
+- I get rid of *all* packages including the ones that use multiple directories
+  and end-up with an empty ``package-alist`` value.
+- I complete the ``package-alist`` value with the package information of the
+  packages that were all merged into the ``elpa-copy`` directory.
+
+The first solution has the added benefit of reducing the load-path by one more
+directory but it may require modification of the package code.  The second
+solution may be simpler to implement, I don't know yet.  In both cases I need
+to learn more about the way ``package.el`` works and how ``package-alist``
+variable is used.
+
+
+
+
+If I can solve this problem, or find code where this was already solved (I
+can't believe nobody ever tried this), then I'll have an Emacs system that
+will start much faster.
+
 And If I use Emacs 27 or later, use gccemacs and use Emacs in daemon mode
 I'll benefit for these speedup as well.
 
