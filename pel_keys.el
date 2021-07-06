@@ -3439,7 +3439,8 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
   (define-pel-global-prefix pel:for-haskell (kbd "<f11> SPC h"))
   (when pel-use-haskell-mode
     (pel-ensure-package haskell-mode from: melpa)
-    (define-key pel:for-haskell "z"   'run-haskell))
+    (declare-function run-haskell "inf-haskell")
+    (define-key pel:for-haskell "z" #'run-haskell))
   (when pel-use-speedbar
     (pel-add-speedbar-extension '(".hs"
                                   ".hsc"
@@ -6371,16 +6372,19 @@ the ones defined from the buffer now."
 ;; Programming Language REPL.  Key used is the same as their f11 SPC key.
 (when pel-use-common-lisp  (define-key pel:repl  "L" #'pel-cl-repl))
 (when pel-use-forth        (define-key pel:repl  "f" #'run-forth))
-(when pel-use-haskell      (define-key pel:repl  "h" #'run-haskell))
+(when pel-use-haskell
+  (declare-function run-haskell "inf-haskell")
+  (define-key pel:repl  "h" #'run-haskell))
 (when pel-use-julia        (define-key pel:repl  "j" #'julia-snail))
 
 (when pel-use-python       (define-key pel:repl  "p" #'run-python))
 (when pel-use-erlang       (define-key pel:repl  "e" #'erlang-shell))
 (when (and pel-use-elixir
            pel-use-alchemist)
-  (define-key pel:repl  "x"  #'alchemist-iex-run))
+                           (define-key pel:repl  "x"  #'alchemist-iex-run))
 (when (and pel-use-ocaml
            pel-use-tuareg)
+  (declare-function run-ocaml "tuareg")
   (define-key pel:repl  "o"  #'run-ocaml))
 
 (when pel-use-arc          (define-key pel:repl (kbd "C-a") #'run-arc))
