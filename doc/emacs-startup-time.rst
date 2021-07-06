@@ -6,7 +6,7 @@ Speeding Up Emacs Startup
 :Project:
 :Created:  Friday, July  2 2021.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2021-07-02 10:30:28, by Pierre Rouleau.
+:Modified: 2021-07-06 09:48:35, updated by Pierre Rouleau.
 :Copyright: © 2021, Pierre Rouleau
 
 This document will contain information on speeding up Emacs startup further
@@ -551,10 +551,8 @@ I'll see if I can write something that will process all auto-loading files and
 create a shorter piece of code that will run faster. I would probably
 eliminate the auto-loading of docstrings to speed things up a little more.
 
-
 Hopefully the resulting code will not take much time and we can keep the same
 type of execution speed as what is shown above.
-
 
 .. ---------------------------------------------------------------------------
 
@@ -935,8 +933,7 @@ solution may be simpler to implement, I don't know yet.  In both cases I need
 to learn more about the way ``package.el`` works and how ``package-alist``
 variable is used.
 
-
-
+**More work is required here to identify how I can work-around this problem.**
 
 If I can solve this problem, or find code where this was already solved (I
 can't believe nobody ever tried this), then I'll have an Emacs system that
@@ -948,12 +945,11 @@ I'll benefit for these speedup as well.
 Notice also that for some reason I don't yet understand, using symlinks did
 not work.  That needs to be investigated.
 
-
-
-
-
-
-
+Other area of small speed improvements can also be done, at the expense of
+ease-of-use: byte compilation of the ``~/.emacs.d/emacs-customization.el``
+with a modification of the init.el file to load the a file where the extension
+is not specified, allowing it to load the byte compiled file.  The speedup is
+minimal though and will depend of the size of the customization.
 
 What's Next?
 ============
