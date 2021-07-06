@@ -1042,16 +1042,16 @@ time format returned by, e.g., ‘current-idle-time’."
 FEATURE is an unquoted symbol.
 Use this for the configuration phase, like the :config of use-package."
   (declare (indent 1))
-  `(eval-after-load (quote ,feature)
-     '(condition-case-unless-debug err
-          (progn
-            ,@body)
-        (error
-         (display-warning 'pel-eval-after-load
-                          (format "Failed configuring %s: %s"
-                                  (quote ,feature)
-                                  err)
-                          :error)))))
+  `(with-eval-after-load (quote ,feature)
+     (condition-case-unless-debug err
+         (progn
+           ,@body)
+       (error
+        (display-warning 'pel-eval-after-load
+                         (format "Failed configuring %s: %s"
+                                 (quote ,feature)
+                                 err)
+                         :error)))))
 
 (defmacro pel-set-auto-mode (mode for: &rest regexps)
   "Activate automatic MODE for the list of file REGXEPS.

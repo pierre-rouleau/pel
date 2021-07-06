@@ -1,6 +1,6 @@
 ;;; pel-key-chord.el --- PEL Key-Chord Support. -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -269,8 +269,8 @@ via loading of %s"
         ;; for deferral, just re-execute the complete interpretation of
         ;; pel-key-chords.  This way if a change occurred in it, it will
         ;; be activated as soon as possible.
-        (eval-after-load fname
-          '(pel--activate-deferred-key-chords))))))
+        (with-eval-after-load fname
+          (pel--activate-deferred-key-chords))))))
 
 ;; --
 

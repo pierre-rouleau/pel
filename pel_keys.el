@@ -385,16 +385,13 @@ Done in this function to allow advising libraries that remap these keys."
   (require 'ls-lisp)
   (setq ls-lisp-use-insert-directory-program nil))
 
-(defun pel--install-undo-in-dired ()
-  "Ensure that `dired-undo' is available in Dired buffer."
-  (when (boundp 'dired-mode-map)
-    (define-key dired-mode-map (kbd "M-u")   'dired-undo)
-    (define-key dired-mode-map (kbd "C-x u") 'dired-undo)
-    (define-key dired-mode-map (kbd "C-/")   'dired-undo)))
-
 (when pel-use-undo-tree
-    (eval-after-load "dired"
-      '(pel--install-undo-in-dired)))
+  (with-eval-after-load 'dired
+    ;; Ensure that `dired-undo' is available in Dired buffer.
+    (when (boundp 'dired-mode-map)
+      (define-key dired-mode-map (kbd "M-u")   'dired-undo)
+      (define-key dired-mode-map (kbd "C-x u") 'dired-undo)
+      (define-key dired-mode-map (kbd "C-/")   'dired-undo))))
 
 ;; Activate extra Dired-x features when requested.
 (when pel-use-dired-x
@@ -405,8 +402,8 @@ Done in this function to allow advising libraries that remap these keys."
 ;; Open files with OS-registered applications from Dired
 ;; -----------------------------------------------------
 (defvar dired-mode-map) ; forward declare - dired is loaded early in Emacs
-(eval-after-load "dired"
-  '(define-key dired-mode-map "z" 'pel-open-in-os-app))
+(with-eval-after-load 'dired
+  (define-key dired-mode-map "z" 'pel-open-in-os-app))
 
 ;; dired-narrow
 ;; ------------
@@ -429,15 +426,15 @@ Done in this function to allow advising libraries that remap these keys."
   (when (eq pel-use-dired-hide-dotfiles 'hide-dot-files-by-default)
     (declare-function dired-hide-dotfiles-mode "dired-hide-dotfiles")
     (add-hook 'dired-mode-hook (function dired-hide-dotfiles-mode)))
-  (eval-after-load "dired"
-    '(define-key dired-mode-map "/" 'dired-hide-dotfiles-mode)))
+  (with-eval-after-load 'dired
+    (define-key dired-mode-map "/" 'dired-hide-dotfiles-mode)))
 
 (when pel-use-dired-git-info
   (pel-ensure-package dired-git-info from: melpa)
   (when (eq pel-use-dired-git-info 'on-for-git-directories)
     (add-hook 'dired-after-readin-hook 'dired-git-info-auto-enable))
-  (eval-after-load "dired"
-    '(define-key dired-mode-map ")" 'dired-git-info-mode)))
+  (with-eval-after-load 'dired
+    (define-key dired-mode-map ")" 'dired-git-info-mode)))
 
 ;; ---------------------------------------------------------------------------
 ;; - PEL: Window Behaviour & operations
@@ -1272,7 +1269,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-b M-f M-F M-g M-P M-r
 
 ;; Initialize PEL special imenu handling
-(eval-after-load 'imenu
+(with-eval-after-load 'imenu
   (pel-imenu-init))
 
 (define-pel-global-prefix pel:menu (kbd "<f11> <f10>"))
@@ -2332,26 +2329,21 @@ d-mode not added to ac-modes!"
        :error)))
   (declare-function pel--activate-lispy "pel_keys")
 
-  (defun pel--update-lispy-keymap ()
-    "Update lispy key-map according to PEL user-options."
-    (if (boundp 'lispy-mode-map)
-        (unless pel-enable-lispy-meta-return
-          (define-key lispy-mode-map (kbd "M-RET") nil))
-      (display-warning
-       'pel-lispy
-       "The lispy-mode-map is not bound.
-  Cannot disable lispy-meta-return binding to M-RET!"
-       :error)))
-  (declare-function pel--update-lispy-keymap "pel_keys")
-
   ;; Setup activation of Lispy for specified major modes that are allowed.
   (pel-add-hook-for 'pel-modes-activating-lispy
                     #'pel--activate-lispy
                     pel-allowed-modes-for-lispy)
 
   ;; Control some keys in the Lispy keyboard map.
-  (eval-after-load 'lispy
-    '(pel--update-lispy-keymap))
+  (with-eval-after-load 'lispy
+    ;; Update lispy key-map according to PEL user-options.
+    (if (boundp 'lispy-mode-map)
+        (unless pel-enable-lispy-meta-return
+          (define-key lispy-mode-map (kbd "M-RET") nil))
+      (display-warning 'pel-lispy
+                       "The lispy-mode-map is not bound.
+  Cannot disable lispy-meta-return binding to M-RET!"
+                       :error)))
 
   ;; The pel-lispy file controls the loading of lispy.
   (pel-autoload-file lispy for: lispy-mode)
@@ -2742,64 +2734,63 @@ d-mode not added to ac-modes!"
       (pel-autoload-file macrostep-geiser for:
                          macrostep-geiser-setup)
       ;;
-      (eval-after-load 'geiser-mode
-        '(if (and (require 'macrostep-geiser nil :no-error)
-                  (fboundp 'macrostep-geiser-setup))
-             (add-hook 'geiser-mode-hook (function macrostep-geiser-setup))
-           (display-warning 'pel-use-macrostep-geiser
-                            "Can't load macrostep-geiser" :error)))
-      (eval-after-load 'geiser-repl
-        '(if (and (require 'macrostep-geiser nil :no-error)
-                  (fboundp 'macrostep-geiser-setup))
-             (add-hook 'geiser-repl-mode-hook (function
-                                               macrostep-geiser-setup))
-           (display-warning 'pel-use-macrostep-geiser
-                            "Can't load macrostep-geiser" :error))))
+      (with-eval-after-load 'geiser-mode
+        (if (and (require 'macrostep-geiser nil :no-error)
+                 (fboundp 'macrostep-geiser-setup))
+            (add-hook 'geiser-mode-hook (function macrostep-geiser-setup))
+          (display-warning 'pel-use-macrostep-geiser
+                           "Can't load macrostep-geiser" :error)))
+      (with-eval-after-load 'geiser-repl
+        (if (and (require 'macrostep-geiser nil :no-error)
+                 (fboundp 'macrostep-geiser-setup))
+            (add-hook 'geiser-repl-mode-hook (function
+                                              macrostep-geiser-setup))
+          (display-warning 'pel-use-macrostep-geiser
+                           "Can't load macrostep-geiser" :error))))
     (when pel-use-ac-geiser
       (pel-ensure-package ac-geiser from: melpa)
       (add-hook 'geiser-mode-hook 'ac-geiser-setup)
       (add-hook 'geiser-repl-mode-hook 'ac-geiser-setup)
-      (eval-after-load 'auto-complete
-        '(if (and (require 'geiser nil :no-error)
-                  (fboundp 'geiser-repl-mode)
-                  (boundp  'ac-modes))
+      (with-eval-after-load 'auto-complete
+        (if (and (require 'geiser nil :no-error)
+                 (fboundp 'geiser-repl-mode)
+                 (boundp 'ac-modes))
             (add-to-list 'ac-modes (function geiser-repl-mode))
-           (display-warning 'pel-use-ac-geiser
-                            (format "\
+          (display-warning 'pel-use-ac-geiser
+                           (format "\
 Can't load ac-geiser: geiser-repl-mode: %S"
-                                    (if (fboundp 'geiser-repl-mode)
-                                        "bound"
-                                      "not bound!")
-                                    ) :error))))
+                                   (if (fboundp 'geiser-repl-mode)
+                                       "bound"
+                                     "not bound!")) :error))))
     ;; Geiser Scheme implementation extensions
     (when pel-use-geiser-chez
       (pel-ensure-package geiser-chez from: melpa)
-      (eval-after-load 'geiser-mode
-        '(require 'geiser-chez)))
+      (with-eval-after-load 'geiser-mode
+        (require 'geiser-chez)))
     (when pel-use-geiser-chibi
       (pel-ensure-package geiser-chibi from: melpa)
-      (eval-after-load 'geiser-mode
-        '(require 'geiser-chibi)))
+      (with-eval-after-load 'geiser-mode
+        (require 'geiser-chibi)))
     (when pel-use-geiser-chicken
       (pel-ensure-package geiser-chicken from: melpa)
-      (eval-after-load 'geiser-mode
-        '(require 'geiser-chicken)))
+      (with-eval-after-load 'geiser-mode
+        (require 'geiser-chicken)))
     (when pel-use-geiser-gambit
       (pel-ensure-package geiser-gambit from: melpa)
-      (eval-after-load 'geiser-mode
-        '(require 'geiser-gambit)))
+      (with-eval-after-load 'geiser-mode
+        (require 'geiser-gambit)))
     (when pel-use-geiser-guile
       (pel-ensure-package geiser-guile from: melpa)
-      (eval-after-load 'geiser-mode
-        '(require 'geiser-guile)))
+      (with-eval-after-load 'geiser-mode
+        (require 'geiser-guile)))
     (when pel-use-geiser-mit
       (pel-ensure-package geiser-mit from: melpa)
-      (eval-after-load 'geiser-mode
-        '(require 'geiser-mit)))
+      (with-eval-after-load 'geiser-mode
+        (require 'geiser-mit)))
     (when pel-use-geiser-racket
       (pel-ensure-package geiser-racket from: melpa)
-      (eval-after-load 'geiser-mode
-        '(require 'geiser-racket))))
+      (with-eval-after-load 'geiser-mode
+        (require 'geiser-racket))))
 
   (when pel-use-quack
     ;; I have fixed byte-compiler warnings in quack in a fork of emacsmirror/quack
@@ -4522,7 +4513,7 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 (define-pel-global-prefix pel:spell (kbd "<f11> $"))
 ;;
 (autoload 'ispell-check-version "ispell")
-(eval-after-load "ispell" '(pel-spell-init-from-user-option))
+(with-eval-after-load 'ispell (pel-spell-init-from-user-option))
 
 (define-key pel:spell "." #'ispell)
 (define-key pel:spell ";" #'ispell-comments-and-strings)

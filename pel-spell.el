@@ -1,6 +1,6 @@
 ;;; pel-spell.el --- PEL Spelling Utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -165,10 +165,9 @@ to allow the flyspell pop-up menu to work in terminal mode."
                     base-menu)))
         (if (fboundp 'popup-menu*)
             (cadr (assoc (popup-menu* menu :scroll-bar t) base-menu)))))
-    (eval-after-load "flyspell"
-      '(progn
-         (fset 'flyspell-emacs-popup
-               'pel-spell-flyspell-emacs-popup-textual)))))
+    (with-eval-after-load 'flyspell
+      (fset 'flyspell-emacs-popup
+            'pel-spell-flyspell-emacs-popup-textual))))
 
 
 (defun pel--spell-select (program-name dict-path origin)
