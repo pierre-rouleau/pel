@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-30 16:38:17, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-07 13:47:23, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -547,6 +547,11 @@ Return the number of packages in excess."
         (insert (format "- %3d: %s\n" n pkg))))
     n))
 
+;; declare package.el variables  to prevent byte-compiler warnings
+(defvar package-selected-packages)
+(defvar package-alist)
+(defvar  package-activated-list)
+
 ;; pel-autoload
 (defun pel-package-info (&optional full-report)
   "Display information about packages required by PEL.
@@ -582,7 +587,12 @@ of a restriction lock."
 - size of load-path           : %d directories
 - Number of PEL user-options  : %3d (%d are active)
 - PEL activated elpa  packages: %3d (%3d dependants, %d imposed by restrictions)
-- PEL Activated utils files   : %3d (%3d dependants, %d imposed by restrictions)"
+- PEL Activated utils files   : %3d (%3d dependants, %d imposed by restrictions)
+- # loaded files              : %d
+- # features                  : %d
+- # package-alist             : %d
+- # packages activated        : %d
+- # packages selected         : %d"
                             (length (pel-elpa-package-directories pel-elpa-dirpath))
                             pel-elpa-dirpath
                             (length (pel-el-files-in pel-utils-dirpath))
@@ -593,7 +603,12 @@ of a restriction lock."
                                      (lambda (x)
                                        (symbol-value x)) user-options))
                             n-elpa-base n-elpa-deps n-elpa-locked
-                            n-utils-base n-utils-deps n-utils-locked)))
+                            n-utils-base n-utils-deps n-utils-locked
+                            (length load-history)
+                            (length features)
+                            (length package-alist)
+                            (length package-activated-list)
+                            (length package-selected-packages))))
     (if full-report
         (pel-print-in-buffer
          "*pel-user-options*"

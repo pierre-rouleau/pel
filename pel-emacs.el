@@ -114,17 +114,20 @@ With \\[universal-argument] \\[universal-argument] prefix, also print content of
   (interactive "P")
   (if (and (require 'package nil :no-error)
            (boundp  'package-selected-packages)
+           (boundp  'package-alist)
            (boundp  'package-activated-list))
       (let ((numeric-arg   (prefix-numeric-value with-details))
             (overview-msg  (format "\
 # loaded files      : %d
 # load-path length  : %d
 # features          : %d
+# package-alist     : %d
 # packages activated: %d
 # packages selected : %d"
                                    (length load-history)
                                    (length load-path)
                                    (length features)
+                                   (length package-alist)
                                    (length package-activated-list)
                                    (length package-selected-packages))))
         (if with-details
