@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, February 16 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-29 12:15:56, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-07 15:55:56, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -87,8 +87,8 @@
   (should (pel-lowercase-p "abcéèêëüïôûîç"))
   (should (pel-lowercase-p "a 0123456789-=+_!@#$%^&*()~`,.<>/?;:'"))
   (should (pel-lowercase-p "0123456789-=+_!@#$%^&*()~`,.<>/?;:'"))
-  (should (not (pel-lowercase-p "aAbcdefghijkl")))
-  (should (not (pel-lowercase-p "A"))))
+  (should-not (pel-lowercase-p "aAbcdefghijkl"))
+  (should-not (pel-lowercase-p "A")))
 
 (ert-deftest ert-test-uppercase-p ()
   "Test pel-uppercase-p."
@@ -97,8 +97,78 @@
   (should (pel-uppercase-p "ABCÉÈÊËÜÏÔÛÎÇ"))
   (should (pel-uppercase-p "A 0123456789-=+_!@#$%^&*()~`,.<>/?;:'"))
   (should (pel-uppercase-p "0123456789-=+_!@#$%^&*()~`,.<>/?;:'"))
-  (should (not (pel-uppercase-p "AaBCDEFGHIJKL")))
-  (should (not (pel-uppercase-p "a"))))
+  (should-not (pel-uppercase-p "AaBCDEFGHIJKL"))
+  (should-not (pel-uppercase-p "a")))
+
+(ert-deftest ert-test-pel-whitespace-in-str-p ()
+  "Test pel-whitespace-in-str-p."
+  (should (pel-whitespace-in-str-p " "))
+  (should-not (pel-whitespace-in-str-p ""))
+  (should (pel-whitespace-in-str-p "- -"))
+  (should (pel-whitespace-in-str-p " -"))
+  (should (pel-whitespace-in-str-p "- "))
+  (should-not (pel-whitespace-in-str-p "---"))
+
+  (should (pel-whitespace-in-str-p "-\n-"))
+  (should (pel-whitespace-in-str-p "\n-"))
+  (should (pel-whitespace-in-str-p "-\n"))
+
+  (should (pel-whitespace-in-str-p "-\r-"))
+  (should (pel-whitespace-in-str-p "\r-"))
+  (should (pel-whitespace-in-str-p "-\r"))
+
+  (should (pel-whitespace-in-str-p "-\t-"))
+  (should (pel-whitespace-in-str-p "\t-"))
+  (should (pel-whitespace-in-str-p "-\t"))
+
+  (should (pel-whitespace-in-str-p "Ce que l'on conçoit bien s'énonce clairement"))
+  (should (pel-whitespace-in-str-p "conçoit bien s'énonce clairement")))
+
+(ert-deftest ert-test-pel-ends-with-space-p ()
+  "Test pel-ends-with-space-p."
+  (should (pel-ends-with-space-p " "))
+  (should-not (pel-ends-with-space-p ""))
+  (should-not (pel-ends-with-space-p "- -"))
+  (should-not (pel-ends-with-space-p " -"))
+  (should (pel-ends-with-space-p "- "))
+  (should-not (pel-ends-with-space-p "---")))
+
+(ert-deftest ert-test-pel-starts-with-space-p ()
+  "Test pel-starts-with-space-p."
+  (should (pel-starts-with-space-p " "))
+  (should-not (pel-starts-with-space-p ""))
+  (should-not (pel-starts-with-space-p "- -"))
+  (should (pel-starts-with-space-p " -"))
+  (should-not (pel-starts-with-space-p "- "))
+  (should-not (pel-starts-with-space-p "---")))
+
+(ert-deftest ert-test-pel-string-starts-with-p ()
+  "Test pel-string-starts-with-p."
+  (should (pel-string-starts-with-p "" "")) ; Notice this special case! nothing starts with nothing!
+  (should (pel-string-starts-with-p " hello" " "))
+  (should-not (pel-string-starts-with-p "" " "))
+  (should (pel-string-starts-with-p "- -" "-"))
+  (should (pel-string-starts-with-p "- -" "- "))
+  (should (pel-string-starts-with-p " -" " "))
+  (should (pel-string-starts-with-p "- " "-"))
+  (should (pel-string-starts-with-p "---" "---"))
+  (should-not (pel-string-starts-with-p "---" "----"))
+  (should-not (pel-string-starts-with-p "-.-" "---")))
+
+(ert-deftest ert-test-pel-string-ends-with-p ()
+  "Test pel-string-ends-with-p."
+  (should (pel-string-ends-with-p "" "")) ; Notice this special case! nothing ends with nothing!
+  (should (pel-string-ends-with-p " hello" "llo"))
+  (should-not (pel-string-ends-with-p " hello" "llo la"))
+  (should-not (pel-string-ends-with-p "" " "))
+  (should (pel-string-ends-with-p "- -" "-"))
+  (should-not (pel-string-ends-with-p "- -" "- "))
+  (should-not (pel-string-ends-with-p " -" " "))
+  (should-not (pel-string-ends-with-p "- " "-"))
+  (should (pel-string-ends-with-p "---" "---"))
+  (should-not (pel-string-ends-with-p "---" "----"))
+  (should-not (pel-string-ends-with-p "-.-" "---")))
+
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-base-tests)
