@@ -54,6 +54,7 @@
 ;;  - `pel-whitespace-in-str-p'
 ;;  - `pel-ends-with-space-p'
 ;;  - `pel-starts-with-space-p'
+;;  - `pel-string-starts-with-p'
 ;;  - `pel-lowercase-p'
 ;;  - `pel-uppercase-p'
 ;;
@@ -429,7 +430,7 @@ The index of the first whitespace character is returned when one is present."
   (when (> (length text) 0)
     (string= (substring text 0 1) " ")))
 
-(defun pel-string-starts-with (text prefix &optional ignore-case)
+(defun pel-string-starts-with-p (text prefix &optional ignore-case)
   "Return t if TEXT string does start with PREFIX string, nil otherwise.
 Ignore case differences if IGNORE-CASE is non-nil."
   (eq t (compare-strings prefix nil nil
@@ -1775,7 +1776,7 @@ Example:
 (defun pel-url-location (url)
   "Return a description string for the URL.
 Either \"Local\" or \"Remote\"."
-  (if (pel-string-starts-with url "file:")
+  (if (pel-string-starts-with-p url "file:")
       "Local"
     "Remote"))
 

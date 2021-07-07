@@ -1,6 +1,6 @@
 ;;; pel-xref.el --- xref cross referencing utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -485,7 +485,7 @@ has been loaded.  Emacs customize buffers are not able to display
 information on symbols from files that have not been already
 loaded."
   (interactive)
-  (if (pel-string-starts-with (buffer-name) "*Customize ")
+  (if (pel-string-starts-with-p (buffer-name) "*Customize ")
       (let* ((custom-symbol-str (pel-customize-symbol-at-line))
              (symbol-str (when custom-symbol-str
                            (pel-title-case-to-dash-separated custom-symbol-str))))

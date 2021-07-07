@@ -136,7 +136,7 @@ variables."
                 (when (and (boundp symbol)
                            (or (not only-user-options)
                                (get symbol 'custom-type))
-                           (pel-string-starts-with
+                           (pel-string-starts-with-p
                             (symbol-name symbol) "comment-"))
                   (push symbol comment-symbols)
                   (push (cons symbol (symbol-value symbol))
