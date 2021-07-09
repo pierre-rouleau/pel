@@ -1,5 +1,11 @@
-;;; ---Example init.el file -- Used for first installation---------------------
+;;; -*-no-byte-compile: t; -*-
+;;; ---Example init.el file -- Used for first installation----Step 0-----------
 ;;
+;; 0: Identify where your PEL source code files are located.
+;;
+(defconst pel-home-dirpath (expand-file-name "~/projects/pel")
+  "Directory where PEL source files are stored.")
+
 ;; 1: Setup additional package sources: MELPA, MELPA-STABLE.
 ;;    By default Emacs only identifies the gnu archive located at
 ;;    URL "https://elpa.gnu.org/packages/".
@@ -51,7 +57,7 @@
 
 ;; 3: Add pel to Emacs load-path
 ;;    Identify the directory where you stored pel.
-(add-to-list 'load-path (expand-file-name "~/projects/pel"))
+(add-to-list 'load-path pel-home-dirpath)
 
 ;; 4: Add utils to Emacs load-path
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/utils"))

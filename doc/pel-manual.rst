@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-06-28 13:26:33, updated by Pierre Rouleau.
+:Modified: 2021-07-09 09:23:44, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -99,7 +99,12 @@ following Emacs Lisp code inside your `Emacs initialization file`_ :
 .. code:: elisp
 
       (require 'pel)
+      (defconst pel-home-dirpath (expand-file-name "~/projects/pel")
+       "Directory where PEL source files are stored.")
       (pel-init)
+
+The ``pel-home-dirpath`` defconst identifies the location of the PEL source
+code.
 
 You can place you own customization after the call to ``pel-init``.
 This way you can overwrite specific PEL's key bindings if needed.
@@ -452,6 +457,9 @@ You can also use a copy of the file `example/init/init-1.el`_ :
         ;; -*-no-byte-compile: t; -*-
         ;;; ---Example init.el file ---------------- Step 1----------------------------
         ;;
+        (defconst pel-home-dirpath (expand-file-name "~/projects/pel")
+          "Directory where PEL source files are stored.")
+
         ;; 1: Setup additional package sources: MELPA, MELPA-STABLE.
         ;;    By default Emacs only identifies the gnu archive located at
         ;;    URL "https://elpa.gnu.org/packages/".
@@ -503,7 +511,7 @@ You can also use a copy of the file `example/init/init-1.el`_ :
 
         ;; 3: Add pel to Emacs load-path
         ;;    Identify the directory where you stored pel.
-        (add-to-list 'load-path (expand-file-name "~/projects/pel"))
+        (add-to-list 'load-path pel-home-dirpath)
 
         ;; 4: Add utils to Emacs load-path
         (add-to-list 'load-path (expand-file-name "~/.emacs.d/utils"))
