@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-07-09 09:23:44, updated by Pierre Rouleau.
+:Modified: 2021-07-09 10:37:23, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -228,7 +228,7 @@ Before you can install PEL, you need to ensure that you have the
 required tools.  They are described in the following sections:
 
 #. `Install Emacs 26.1 or later`_. If you are new to Emacs, the easiest is to use
-   one of the the latest stable releases: Emacs 26.3, or 27.1.
+   one of the the latest stable releases: Emacs 26.3, or 27.2.
 #. `Install other required command line tools`_
 
 
