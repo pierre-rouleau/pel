@@ -14,8 +14,14 @@
 ;;      - Emacs starts without splash screen
 ;;
 ;; -----------------------------------------------------------------------------
-;; To speed up Emacs init, prevent checking for file handling association and
-;; prevent garbage collection.  The following 2 lines reduce by about .2
+;;
+;; 0: Identify where your PEL source code files are located.
+;;
+(defconst pel-home-dirpath (expand-file-name "~/projects/pel")
+  "Directory where PEL source files are stored.")
+
+;; 0.1: To speed up Emacs init, prevent checking for file handling association
+;; and prevent garbage collection.  The following 2 lines reduce by about .2
 ;; seconds loading time in terminal mode.
 (let ((file-name-handler-alist nil)
       (gc-cons-threshold most-positive-fixnum))
@@ -85,7 +91,7 @@
   ;; ---------------------------------------------------------------------------
   ;; 3: Add pel to Emacs load-path
   ;;    Identify the directory where you stored pel.
-  (add-to-list 'load-path (expand-file-name "~/projects/pel"))
+  (add-to-list 'load-path pel-home-dirpath)
 
   ;; ---------------------------------------------------------------------------
   ;; 4: Add utils to Emacs load-path
