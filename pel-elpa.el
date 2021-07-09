@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-08 14:34:44, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-09 07:49:04, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -160,7 +160,8 @@ The returned file name has no path, unless WITH-PATH is non-nil."
                                               result-alist-symbol)
   "Load and return package descriptor from file PKG-FILE.
 If a directory is identified in PKG-DIR set the dir slot of the returned
-package descriptor to that directory"
+package descriptor to that directory.
+If the RESULT-ALIST-SYMBOL is specified set its value with the result alist."
   ;; prevent package-process-define-package from updating package-alist
   (let (package-alist)
     (with-temp-buffer
