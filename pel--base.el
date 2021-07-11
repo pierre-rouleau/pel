@@ -175,6 +175,8 @@
 ;; - `pel-path-strip'
 ;; - `pel-url-join'
 ;; - `pel-url-location'
+;; - `pel-same-fname-p'
+;;   - `pel-normalize-fname'
 ;;
 ;; Insertion of text in current buffer
 ;; - `pel-insert-symbol-content'
@@ -1743,19 +1745,19 @@ current major mode."
 ;; File Path processing
 ;; --------------------
 
+(defun pel-normalize-fname (name)
+  "Normalize file (or directory) NAME.
+
+Normalize a directory or file name.  Ensure that the directory
+name does not end with a slash, that it uses the file true name
+and use Unix-style formatting.  The function replaces a symlink
+by the file it points to.  The function does *not* expand
+environment variables that may be in the string."
+  (file-truename (directory-file-name name)))
+
 (defsubst pel-parent-dirpath (pathname)
-  "Return parent directory of PATHNAME.
-
-For example:
-
-        ELISP> (pel-parent-dirpath \"/usr/local/Cellar/emacs/26.3/\")
-        \"/usr/local/Cellar/emacs/\"
-        ELISP> (pel-parent-dirpath \"/usr/local/Cellar/emacs/26.3\")
-        \"/usr/local/Cellar/emacs/\"
-        ELISP>
-
-which shows that the presence of a trailing slash has no impact."
-  (file-name-directory (directory-file-name pathname)))
+  "Return parent directory of PATHNAME true name."
+  (file-name-directory (pel-normalize-fname pathname)))
 
 
 (defun pel-expand-url-file-name (url)
@@ -1790,6 +1792,17 @@ Either \"Local\" or \"Remote\"."
   (if (pel-string-starts-with-p url "file:")
       "Local"
     "Remote"))
+
+
+(defun pel-same-fname-p (name1 name2)
+  "Return t when the file or directory names NAME1 and NAME2 are similar.
+
+The directory names are considered identical despite differences
+in slash separator or termination or use of the ~ , . or
+.. character sequences character to identify the home, current or
+above directory in one of them."
+  (string= (pel-normalize-fname name1)
+           (pel-normalize-fname name2)))
 
 ;; ---------------------------------------------------------------------------
 ;; Insertion of text in current buffer
