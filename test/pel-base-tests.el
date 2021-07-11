@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, February 16 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-07 15:55:56, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-11 18:51:41, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -169,6 +169,46 @@
   (should-not (pel-string-ends-with-p "---" "----"))
   (should-not (pel-string-ends-with-p "-.-" "---")))
 
+;; ---------------------------------------------------------------------------
+
+(ert-deftest ert-test-pel-normalize-fname ()
+  "Test pel-normalize-fname."
+  (should (string= (pel-normalize-fname "/abc/def/../ghi/") "/abc/ghi"))
+  (should (string= (pel-normalize-fname "~") (file-truename "~")))
+  (should (string= (pel-normalize-fname "~/..") (file-truename "~/..")))
+  (should (string= (pel-normalize-fname "~/abc/") (pel-normalize-fname "~/abc"))))
+
+(ert-deftest ert-test-pel-parent-dirpath ()
+  "Test pel-parent-dirpath."
+  (should (string= (pel-parent-dirpath "/abc/def/") "/abc/"))
+  (should (string= (pel-parent-dirpath "/abc/def")  "/abc/")))
+
+(ert-deftest ert-test-pel-expand-url-file-name ()
+  "Test pel-expand-url-file-name."
+  (should (string= (pel-expand-url-file-name "http://www.lispworks.com") "http://www.lispworks.com"))
+  (should (string= (pel-expand-url-file-name "file://~/somedir/somefile")
+                   (concat "file://" (pel-normalize-fname "~/somedir/somefile")))))
+
+(ert-deftest ert-test-pel-path-strip ()
+  "Test pel-path-strip."
+  (should (string= (pel-path-strip "  /abc") "abc"))
+  (should (string= (pel-path-strip "\t\r\n  /abc") "abc"))
+  (should (string= (pel-path-strip "  /abc ") "abc"))
+  (should (string= (pel-path-strip "\t\r\n  /abc\t\n\r ") "abc"))
+  ;; the function does not remove spaces *inside* paths
+  (should (string= (pel-path-strip "/ab c") "ab c"))
+  (should (string= (pel-path-strip "  /ab c  ") "ab c")))
+
+(ert-deftest ert-test-pel-url-location ()
+  "Test pel-url-location."
+  (should (string= (pel-url-location "file://~/docs/HyperSpec/") "Local"))
+  (should (string= (pel-url-location "http://www.lispworks.com") "Remote")))
+
+(ert-deftest ert-test-pel-same-fname-p ()
+  "Test pel-same-fname-p."
+  (should (pel-same-fname-p "~/abc/.." "~"))
+  (should (pel-same-fname-p "/abc/"    "/abc"))
+  (should (pel-same-fname-p "/abc/def/ghi/"  "/abc/22/../def/ghi")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-base-tests)

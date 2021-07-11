@@ -1775,7 +1775,6 @@ Example:
       (concat "file://" (expand-file-name (substring url 7)))
     url))
 
-
 (defun pel-path-strip (text)
   "Strip whitespace and forward slash(es) from beginning & end of TEXT."
   (string-trim text "[ \t\n\r/]+" "[ \t\n\r/]+"))
@@ -1792,7 +1791,6 @@ Either \"Local\" or \"Remote\"."
   (if (pel-string-starts-with-p url "file:")
       "Local"
     "Remote"))
-
 
 (defun pel-same-fname-p (name1 name2)
   "Return t when the file or directory names NAME1 and NAME2 are similar.
