@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-09 07:49:04, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-11 22:23:46, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -84,26 +84,24 @@
 ;; placed all inside a single directory (the "~/.emacs.d/elpa-copy"
 ;; directory).
 ;;
-;; We therefore need a mechanism to complete the content of the
-;; `package-alist' variable with the specification of the one-level packages
-;; but with the `dir' slot updated to point to "~/.emacs.d/elpa-copy".
+;; The code in `pel-unpackage' (from pel-unpackage.el) uses the logic here to
+;; prepare the directories and code that is then used by PEL startup to take
+;; advantage of storing most packages inside the same directory.
 ;;
-;; This is what `pel-elpa-prepend-with-one-level-packages' does.
 
 ;; TODO: I need to complete the experimentation and finalize this code.
 ;; Ideally all work is done when "*un-packaging elpa* in order to minimize
 ;; processing when Emacs starts.  I have not reached that point yet.
 
 ;; Function call hierarchy:
-
-;; - `pel-elpa-prepend-with-one-level-packages'
-;;   - `pel-elpa-one-level-package-alist'
-;;     - `pel-elpa-load-pkg-descriptor'
-;;     - `pel-elpa-one-level-package-files'
-;;       - `pel-elpa-pkg-filename'
-;;       - `pel-elpa-one-level-packages'
-;;         - `pel-elpa-package-directories'
-;;           - `pel-elpa-package-dirspec-p'
+;;
+;; - `pel-elpa-one-level-package-alist'
+;;   - `pel-elpa-load-pkg-descriptor'
+;;   - `pel-elpa-one-level-package-files'
+;;     - `pel-elpa-pkg-filename'
+;;     - `pel-elpa-one-level-packages'
+;;       - `pel-elpa-package-directories'
+;;         - `pel-elpa-package-dirspec-p'
 
 ;; Credits: Thanks to "phils" for mentioning the `package-load-descriptor'
 ;;  function from package.el as a reply to my question here:
@@ -189,40 +187,27 @@ directory specified by DEST-DIR."
       (push (list (package-desc-name desc) desc) alist))
     alist))
 
-(defun pel-elpa-prepend-with-one-level-packages (alist-symbol
-                                                 elpa-dirpath
-                                                 dest-dir)
-  "Update alist in ALIST-SYMBOL with package specs of one-level packages.
-Extract the package specs from the standard Elpa directory identified by
-the ELPA-DIRPATH argument.
-Update the dir slot of each package spec data structure to hold the directory
-path identified by the DEST-DIR argument.
-Return the new value of the ALIST-SYMBOL."
-  (set alist-symbol (append (pel-elpa-one-level-package-alist
-                             elpa-dirpath
-                             dest-dir)
-                            (symbol-value alist-symbol)))
-  (symbol-value alist-symbol))
-
 ;; ---------------------------------------------------------------------------
 
 
 (defun pel-elpa-create-copies (elpa-dir-path
                                dest-dir-path
                                &optional with-symlinks)
-  "Copy all .el and .elc Elpa package files into a single directory.
+  "Copy all .el Elpa package files into a single directory.
 
-The single directory is DEST-DIR-PATH.  If WITH-SYMLINKS is
-non-nil, don't copy, create symlinks in DIR-PATH-NAME instead.
-The Elpa directory where packages are taken from is
-ELPA-DIR-PATH.
-The function search the packages present in the
-ELPA-DIR-PATH directory.  It only considers Elpa packages
+The single directory is DEST-DIR-PATH.  This directory must already exist.
+If WITH-SYMLINKS is non-nil, ELPA-DIR-PATH files are not copied to
+DEST-DIR-PATH: instead the function creates symlinks in DEST-DIR-PATH to files
+inside ELPA-DIR-PATH.
+
+The files copied  are only the Emacs Lisp files from the Elpa packages
 that have no sub-directories and therefore have all their files
 inside one directory.
 
-When WITH-SYMLINK is non-nil, return a list of (file-path-1 . file-path-2)
-cons cells that identify the duplicated file names, or nil if there are none."
+When WITH-SYMLINK is non-nil, the function returns a list of
+(file-path-1 . file-path-2) cons cells that identify the duplicated file
+names, or nil if there are no duplicate. When WITH-SYMLINKS is nil the
+function does not attempt to detect duplicate and returns nil."
   (let ((duplicates nil)
         (elpa-pure-dirnames (pel-elpa-one-level-packages elpa-dir-path))
         source-dir-path-name
@@ -233,7 +218,9 @@ cons cells that identify the duplicated file names, or nil if there are none."
                                   dirname
                                   (file-truename elpa-dir-path)))
       (dolist (file-name (directory-files source-dir-path-name))
-        (when (member (file-name-extension file-name) '("el" "elc"))
+        (when (and (string= (file-name-extension file-name) "el")
+                   (not (pel-string-starts-with-p file-name "#"))
+                   (not (pel-string-starts-with-p file-name ".")))
           (setq source-fn (expand-file-name file-name source-dir-path-name))
           (setq destination-fn (expand-file-name file-name dest-dir-path))
           (if (file-exists-p destination-fn)

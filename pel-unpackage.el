@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-08 22:04:25, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-11 22:21:59, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -138,6 +138,9 @@
 ;;; Code:
 ;;
 
+(defconst pel-source-dirpath (file-name-directory (locate-library "pel"))
+  "Directory where PEL source files are stored.")
+
 (defun pel-unpackage-build-setup-code (elpa-dirpath dest-dir)
   "Write and byte compile code that extends package-alist with elpa-copy code.
 The ELPA-DIRPATH is the location of the Elpa directory containing all
@@ -145,7 +148,8 @@ packages installed by the package.el Package Manager.
 Store the code inside the DEST-DIR directory in pel-unpackage-init.el"
   (let ((one-level-package-alist (pel-elpa-one-level-package-alist
                                   elpa-dirpath dest-dir))
-        (out-file-name (expand-file-name "pel-unpackage-init.el" dest-dir)))
+        (out-file-name (expand-file-name "pel-unpackage-init.el"
+                                         pel-source-dirpath)))
     (with-temp-buffer
       (insert (format "\
 ;;; -*- lexical-binding: t; -*-
@@ -170,21 +174,76 @@ Store the code inside the DEST-DIR directory in pel-unpackage-init.el"
       (write-region (point-min) (point-max) out-file-name)
       (byte-compile-file out-file-name))))
 
-
-
 (defun pel--sibling-dir (parent dir)
   "Return path of sibling directory DIR or PARENT directory."
   (file-name-as-directory
    (expand-file-name dir (file-name-directory (directory-file-name parent)))))
 
-;; TODO: complete the following
+;; TODO: complete the following:
+;;       - build the automatic loading from the auto load cookies
+;;         and add the loading calls to `pel-unpackage-init'
+;;       Also add command to restore the package environment.
+
 (defun pel-unpackage ()
   "Prepare the elpa directories and code to speedup Emacs startup."
   (let* ((elpa-dirpath pel-elpa-dirpath)
-         (elpa-copy-dirpath     (pel--sibling-dir elpa-dirpath "elpa-copy"))
-         (elpa-reduced-dirpath  (pel--sibling-dir elpa-dirpath "elpa-reduced"))
-         (elpa-complete-dirpath (pel--sibling-dir elpa-dirpath "elpa-complete")))
-    (list elpa-dirpath elpa-copy-dirpath elpa-reduced-dirpath elpa-complete-dirpath)))
+         (elpa-copy-dirpath     (pel--sibling-dir elpa-dirpath
+                                                  "elpa-copy"))
+         (elpa-reduced-dirpath  (pel--sibling-dir elpa-dirpath
+                                                  "elpa-reduced"))
+         (elpa-complete-dirpath (pel--sibling-dir elpa-dirpath
+                                                  "elpa-complete"))
+         (elpa-is-link    (file-symlink-p (directory-file-name
+                                           elpa-dirpath))))
+    ;; Ensure that elpa is a directory or a symlink to elpa-complete
+    ;; otherwise abort.
+    (unless (or (pel-same-fname-p elpa-is-link elpa-complete-dirpath)
+                (and (not elpa-is-link)
+                     (file-directory-p pel-elpa-dirpath)))
+      (error (format "The Elpa directory (%s) differs from normal settings%s"
+                     pel-elpa-dirpath
+                     (if elpa-is-link
+                         (format ": it points to %s" elpa-is-link)
+                       ""))))
+    ;; Create the pel-unpackage-init.el source code and byte-compile it.
+    (pel-unpackage-build-setup-code pel-elpa-dirpath elpa-copy-dirpath)
+    ;; Delete old elpa-copy and elpa-reduced if they exist, to start clean
+    (dolist (dp (list elpa-copy-dirpath elpa-reduced-dirpath))
+      (when (file-exists-p dp)
+        (delete-directory dp :recursive)))
+    ;; Create elpa-copy directory to hold all one-level package .el files
+    (make-directory elpa-copy-dirpath)
+    (pel-elpa-create-copies pel-elpa-dirpath elpa-copy-dirpath)
+    ;; Byte compile all the elpa-copy .el files
+    (byte-recompile-directory elpa-copy-dirpath 0 :force)
+
+    ;; Duplicate elpa inside elpa-reduced then remove the one-level packages
+    ;; from it.
+    (copy-directory (directory-file-name pel-elpa-dirpath)
+                    (directory-file-name elpa-reduced-dirpath))
+    (pel-elpa-remove-pure-subdirs elpa-reduced-dirpath)
+    ;; Re-organize the elpa directory:
+    ;; If elpa is a directory and elpa-complete does not exist: then
+    ;; rename elpa to elpa-complete.
+    (when (and (file-directory-p elpa-dirpath)
+               (not (file-symlink-p (directory-file-name
+                                     elpa-dirpath))))
+      (when (file-exists-p elpa-complete-dirpath)
+        (delete-directory elpa-complete-dirpath :recursive))
+      (rename-file (directory-file-name elpa-dirpath)
+                   (directory-file-name elpa-complete-dirpath)))
+    ;; If there is a elpa symlink remove it and create a new one that points
+    ;; to elpa-reduced
+    (when (file-exists-p (directory-file-name elpa-dirpath))
+      (delete-file (directory-file-name elpa-dirpath)))
+    (make-symbolic-link (directory-file-name elpa-reduced-dirpath)
+                        (directory-file-name elpa-dirpath))
+
+    ;; Return the directory paths
+    (list elpa-dirpath
+          elpa-copy-dirpath
+          elpa-reduced-dirpath
+          elpa-complete-dirpath)))
 
 
 ;;; --------------------------------------------------------------------------

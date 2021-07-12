@@ -1,6 +1,9 @@
 # Identifies files to be ignored by Git.
 # Also used by fd|fdfind  to identify directories and files to ignore
 
+# generated code
+pel-unpackage-init.el
+
 # internal development notes
 pel_doc.org
 
