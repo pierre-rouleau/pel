@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, August 31 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-19 15:58:44, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-12 12:14:09, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -115,10 +115,14 @@ is done unless REFRESH is non-nil, in which case the function
 prompts for confirmation.
 
 The function returns t if the file was
-downloaded, nil otherwise.  Permission errors are raised."
-  (let ((github-rawfile-url (pel-url-join "https://raw.githubusercontent.com"
-                                          user-project-branch)))
-    (pel-install-files github-rawfile-url fnames refresh)))
+downloaded, nil otherwise.  Permission errors are raised.
+
+However, if the variable `pel-running-in-unpackage-mode' exists,
+the function does nothing."
+  (unless (boundp 'pel-running-in-unpackage-mode)
+    (let ((github-rawfile-url (pel-url-join "https://raw.githubusercontent.com"
+                                            user-project-branch)))
+      (pel-install-files github-rawfile-url fnames refresh))))
 
 (defun pel-install-github-file (user-project-branch
                                 fname &optional url-fname refresh)
@@ -137,13 +141,17 @@ is done unless REFRESH is non-nil, in which case the function
 prompts for confirmation.
 
 The function returns t if the file was
-downloaded, nil otherwise.  Permission errors are raised."
-  (pel-install-file
-   (pel-url-join "https://raw.githubusercontent.com"
-                 user-project-branch
-                 (or url-fname fname))
-   fname
-   refresh))
+downloaded, nil otherwise.  Permission errors are raised.
+
+However, if the variable `pel-running-in-unpackage-mode' exists,
+the function does nothing."
+  (unless (boundp 'pel-running-in-unpackage-mode)
+    (pel-install-file
+     (pel-url-join "https://raw.githubusercontent.com"
+                   user-project-branch
+                   (or url-fname fname))
+     fname
+     refresh)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-net)

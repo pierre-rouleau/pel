@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-11 22:21:59, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-12 13:24:17, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -163,6 +163,7 @@ Store the code inside the DEST-DIR directory in pel-unpackage-init.el"
 
 \(defun pel-unpackage-init ()
   \"Complete package-alist with the elpa-copy packages.\"
+  (setq pel-running-in-unpackage-mode t) ; inform PEL
   (setq package-alist (append pel-unpackage-elpa-copy-package-alist
                               package-alist)))
 
@@ -175,17 +176,44 @@ Store the code inside the DEST-DIR directory in pel-unpackage-init.el"
       (byte-compile-file out-file-name))))
 
 (defun pel--sibling-dir (parent dir)
-  "Return path of sibling directory DIR or PARENT directory."
+  "Return path of sibling directory DIR of PARENT directory."
   (file-name-as-directory
    (expand-file-name dir (file-name-directory (directory-file-name parent)))))
+
+
+(defun pel--switch-elpa-to (elpa-dirname destination-dirname)
+  "Switch elpa symlink to the elpa-complete sub-directory."
+  (when (file-exists-p elpa-dirname)
+    (delete-file elpa-dirname))
+  (make-symbolic-link destination-dirname elpa-dirname))
+
+;;-pel-autoload
+(defun pel-switch-to-elpa-complete ()
+  "Switch elpa symlink to the elpa-complete sub-directory."
+  (interactive)
+  (let* ((elpa-dirname           (directory-file-name pel-elpa-dirpath))
+         (elpa-complete-dirname  (directory-file-name
+                                  (pel--sibling-dir elpa-dirname
+                                                    "elpa-complete"))))
+    (pel--switch-elpa-to elpa-dirname elpa-complete-dirname)))
+
+(defun pel-switch-to-elpa-reduced ()
+  "Switch elpa symlink to the elpa-reduced sub-directory."
+  (let* ((elpa-dirname           (directory-file-name pel-elpa-dirpath))
+         (elpa-reduced-dirname  (directory-file-name
+                                  (pel--sibling-dir elpa-dirname
+                                                    "elpa-reduced"))))
+    (pel--switch-elpa-to elpa-dirname elpa-reduced-dirname)))
 
 ;; TODO: complete the following:
 ;;       - build the automatic loading from the auto load cookies
 ;;         and add the loading calls to `pel-unpackage-init'
 ;;       Also add command to restore the package environment.
 
+;;-pel-autoload
 (defun pel-unpackage ()
   "Prepare the elpa directories and code to speedup Emacs startup."
+  (interactive)
   (let* ((elpa-dirpath pel-elpa-dirpath)
          (elpa-copy-dirpath     (pel--sibling-dir elpa-dirpath
                                                   "elpa-copy"))
@@ -234,10 +262,8 @@ Store the code inside the DEST-DIR directory in pel-unpackage-init.el"
                    (directory-file-name elpa-complete-dirpath)))
     ;; If there is a elpa symlink remove it and create a new one that points
     ;; to elpa-reduced
-    (when (file-exists-p (directory-file-name elpa-dirpath))
-      (delete-file (directory-file-name elpa-dirpath)))
-    (make-symbolic-link (directory-file-name elpa-reduced-dirpath)
-                        (directory-file-name elpa-dirpath))
+    (pel-switch-to-elpa-reduced)
+
 
     ;; Return the directory paths
     (list elpa-dirpath

@@ -1153,7 +1153,7 @@ The ARCHIVE argument may be a string or a symbol."
           (when (string= archive (car pa-entry))
             (setq found 't)))
       (display-warning 'pel-archive-exists-p
-                       "package.el is not loaded: package-archive is void"
+                       "package.el is not loaded: package-archives is void"
                        :error))
     found))
 
@@ -1203,7 +1203,8 @@ Refreshing package list and trying again." package err)
   "Install specified Emacs Lisp PACKAGE.
 PACKAGE must be a symbol.
 
-DO NOT use this function directly.  Use function `pel-ensure-package' instead.
+DO NOT use this function directly inside your code.
+Instead, use the macro function `pel-ensure-package'.
 
 Issue an error when the installation fails."
   (if (and (require 'package nil :no-error)
@@ -1237,7 +1238,7 @@ Issue an error when the installation fails."
   "Install package PKG.
 PKG must be a symbol.
 If ELPA-SITE is non-nil it should be a string holding the name of one of the
-Elpa repositories identified in the variable `package-archive'."
+Elpa repositories identified in the variable `package-archives'."
   (when elpa-site
     (pel--pin-package pkg elpa-site))
   (pel--package-ensure-elpa pkg))
@@ -1246,18 +1247,22 @@ Elpa repositories identified in the variable `package-archive'."
   "Install package named PKG, optionally from specified PINNED-SITE.
 PKG must be an unquoted symbol.
 When PINNED-SITE (a unquoted symbol) is specified use this as the Elpa
-repository, which must be listed in the variable `package-archive'.
+repository, which must be listed in the variable `package-archives'.
 
 The FROM: argument must be present.  It is cosmetics only.
 
-The package list is refreshed before attempting installation to prevent
-trying to install an obsolete version of a package that is no longer present
-on the Elpa site."
+The package list is refreshed before attempting installation to
+prevent trying to install an obsolete version of a package that
+is no longer present on the Elpa site.
+
+However, if the variable `pel-running-in-unpackage-mode' exists,
+the macro does not attempt to load anything."
   (declare (indent 1))
   (ignore from:)
   (let* ((pin-site-name (when pinned-site (symbol-name pinned-site))))
-    `(unless (pel-package-installed-p (quote ,pkg))
-       (pel-ensure-pkg (quote ,pkg) ,pin-site-name))))
+    `(unless (boundp 'pel-running-in-unpackage-mode)
+       (unless (pel-package-installed-p (quote ,pkg))
+         (pel-ensure-pkg (quote ,pkg) ,pin-site-name)))))
 
 ;; ---------------------------------------------------------------------------
 ;; Mode argument interpretation

@@ -646,6 +646,10 @@ Argument FOR: just a required separator keyword to make code look better."
   ;; pel-undo loading is directly controlled by pel-init
   ;; by the logic inside pel_keys.el
 
+  (pel-autoload "pel-unpackage" for:
+    pel-switch-to-elpa-complete
+    pel-unpackage)
+
   (pel-autoload "pel-window" for:
     pel-show-window-previous-buffer
     pel-switch-to-last-used-buffer
