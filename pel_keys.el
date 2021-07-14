@@ -518,8 +518,7 @@ Done in this function to allow advising libraries that remap these keys."
     ;; frame.
     ;; download and byte-compile framemove if not already present.
     ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
-    (cl-eval-when 'load
-      (pel-install-github-file "emacsmirror/framemove/master" "framemove.el"))
+    (pel-install-github-file "emacsmirror/framemove/master" "framemove.el")
     (pel-autoload-file framemove for:
                        fm-up-frame
                        fm-down-frame
@@ -1284,9 +1283,8 @@ can't bind negative-argument to C-_ and M-_"
 (define-key pel:menu "R"      'pel-imenu-toggle-auto-rescan)
 
 (when pel-use-imenu+
-  (cl-eval-when 'load
-    (pel-install-github-file "emacsmirror/emacswiki.org/master"
-                             "imenu+.el" "imenu%2B.el"))
+  (pel-install-github-file "emacsmirror/emacswiki.org/master"
+                           "imenu+.el" "imenu%2B.el")
   (pel-autoload-file imenu+ for:
                      imenup-add-defs-to-menubar)
   (when (fboundp 'imenup-add-defs-to-menubar)
@@ -1300,9 +1298,8 @@ can't bind negative-argument to C-_ and M-_"
 ;; If you want to get a version of the file newer than the one you have, just
 ;; delete ~/.emacs.d/utils/imenu-extra.el and restart Emacs.
 (when pel-use-imenu-extra
-    (cl-eval-when 'load
-      (pel-install-github-file "redguardtoo/imenu-extra/master"
-                               "imenu-extra.el")))
+  (pel-install-github-file "redguardtoo/imenu-extra/master"
+                           "imenu-extra.el"))
 
 (when pel-use-flimenu
   (pel-ensure-package flimenu from: melpa)
@@ -1800,8 +1797,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; - Tup Built Tool Support
 ;; ------------------------
 (when pel-use-tup
-  (cl-eval-when 'load
-    (pel-install-github-file "pierre-rouleau/tup-mode/master" "tup-mode.el"))
+  (pel-install-github-file "pierre-rouleau/tup-mode/master" "tup-mode.el")
   (pel-autoload-file tup-mode for: tup-mode)
   (pel-set-auto-mode tup-mode for:
                      "\\.tup\\'"
@@ -1831,9 +1827,8 @@ can't bind negative-argument to C-_ and M-_"
 ;; - AppleScript support
 (when pel-use-applescript
   ;; the Melpa package does not seemed maintained. Use my copy instead.
-  (cl-eval-when 'load
-    (pel-install-github-file "pierre-rouleau/apples-mode/master"
-                             "apples-mode.el"))
+  (pel-install-github-file "pierre-rouleau/apples-mode/master"
+                           "apples-mode.el")
   (pel-autoload-file apples-mode for:
                      apples-mode
                      apples-open-scratch)
@@ -1879,9 +1874,7 @@ can't bind negative-argument to C-_ and M-_"
   ;; c-eldoc is an external package.
   ;; I am waiting for a fix to be incorporated, using my copy with the fix
   ;; incorporated for now.
-  (cl-eval-when 'load
-    (pel-install-github-file "pierre-rouleau/c-eldoc/master" "c-eldoc.el"))
-
+  (pel-install-github-file "pierre-rouleau/c-eldoc/master" "c-eldoc.el")
   (defun pel-toggle-c-eldoc-mode ()
     "Toggle c-eldoc mode on/off."
     (interactive)
@@ -2624,10 +2617,9 @@ d-mode not added to ac-modes!"
 (when pel-use-arc
   (pel-autoload-file arc for: arc-mode)
   (pel-autoload-file inferior-arc for: run-arc)
-  (cl-eval-when 'load
-    (pel-install-github-files "arclanguage/anarki/master/extras"
-                              '("arc.el"
-                                "inferior-arc.el")))
+  (pel-install-github-files "arclanguage/anarki/master/extras"
+                            '("arc.el"
+                              "inferior-arc.el"))
   ;; associate .arc file with arc-mode
   (add-to-list 'auto-mode-alist '("\\.arc\\'" . arc-mode))
   (when pel-use-speedbar
@@ -2796,8 +2788,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     ;; I have fixed byte-compiler warnings in quack in a fork of emacsmirror/quack
     ;; Since that repo is read-only I contacted the author and wait for his reply.
     ;; In the mean time, I use my fork.
-    (cl-eval-when 'load
-      (pel-install-github-file "pierre-rouleau/quack/master" "quack.el"))
+    (pel-install-github-file "pierre-rouleau/quack/master" "quack.el")
     (pel-autoload-file quack for:
                        quack-kill-current-buffer
                        quack-uncomment-region
@@ -2879,10 +2870,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
                                :error)))))
 
     ;; No package made for this.  Take the code directly from Github
-    (cl-eval-when 'load
-      (pel-install-github-file "pierre-rouleau/gambit/master/misc/" "gambit.el"))
+    (pel-install-github-file "pierre-rouleau/gambit/master/misc/" "gambit.el")
     (pel-autoload-file gambit for: gambit-mode gambit-inferior-mode)
-
 
     (define-pel-global-prefix pel:for-gambit (kbd "<f11> SPC C-s C-b"))
     (pel--lisp-languages-map-for pel:for-gambit)
@@ -2902,8 +2891,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (when pel-use-gerbil
     (declare-function pel--set-scheme-repl "pel_keys")
     ;; No package made for this.  Take the code directly from Github
-    (cl-eval-when 'load
-      (pel-install-github-file "vyzo/gerbil/master/etc/" "gerbil-mode.el"))
+    (pel-install-github-file "vyzo/gerbil/master/etc/" "gerbil-mode.el")
     (pel-autoload-file gerbil-mode for: gerbil-mode)
     ;; In pel--options the code forces pel-use-gambit on when pel-use-gerbil
     ;; is on.
@@ -3383,11 +3371,9 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 ;; Programming Language Family: BEAM
 (when pel-use-gleam
   (when pel-use-gleam-mode
-    (cl-eval-when 'load
-      (pel-install-github-files "pierre-rouleau/gleam-mode/master"
-                                "gleam-mode.el"))
-    (pel-autoload-file gleam-mode for:
-                       gleam-mode)
+    (pel-install-github-files "pierre-rouleau/gleam-mode/master"
+                              "gleam-mode.el")
+    (pel-autoload-file gleam-mode for: gleam-mode)
     (add-to-list 'auto-mode-alist '("\\.gleam\\'" . gleam-mode))
     (when pel-use-speedbar
       (pel-add-speedbar-extension ".gleam"))
@@ -3404,9 +3390,8 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 ;; Future: hamler-mode is not written yet
 ;;
 ;; (when pel-use-hamler
-;;   (cl-eval-when 'load
-;;     (pel-install-github-files "hamler-lang/hamler-mode/master"
-;;                               "hamler-mode.el"))
+;;   (pel-install-github-files "hamler-lang/hamler-mode/master"
+;;                             "hamler-mode.el")
 ;;   (pel-autoload-file hamler-mode for:
 ;;                      hamler-mode)
 ;;   (add-to-list 'auto-mode-alist '("\\.hm\\'" . hamler-mode))
@@ -3426,9 +3411,8 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
           pel-use-lfe
           pel-use-gleam)
   (when pel-use-flycheck-rebar3
-    (cl-eval-when 'load
-      (pel-install-github-files "joedevivo/flycheck-rebar3/master"
-                                "flycheck-rebar3.el"))
+    (pel-install-github-files "joedevivo/flycheck-rebar3/master"
+                              "flycheck-rebar3.el")
     (pel-autoload-file flycheck-rebar3 for:
                        flycheck-rebar3-setup)))
 ;; TODO: test and complete dependency management of flycheck and rebar3
@@ -3574,11 +3558,9 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
   ;; Download and byte-compile rexx-mode if not already present.
   ;; See home page: https://github.com/emacsattic/rexx-mode
   ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
-  (cl-eval-when 'load
-    (pel-install-github-files "pierre-rouleau/rexx-mode/master"
-                              '("rexx-mode.el"
-                                "rexx-debug.el")))
-
+  (pel-install-github-files "pierre-rouleau/rexx-mode/master"
+                            '("rexx-mode.el"
+                              "rexx-debug.el"))
   (pel-autoload-file rexx-mode for:
                      rexx-mode
                      rexx-goto-next-procedure
@@ -3600,10 +3582,8 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 (when pel-use-netrexx
   ;; Download netrexx.el directly from GitHub as there is no official support
   ;; by either GNU Elpa or MELPA
-  (cl-eval-when 'load
-    (pel-install-github-file "pierre-rouleau/netrexx-mode/master"
-                             "netrexx-mode.el"))
-
+  (pel-install-github-file "pierre-rouleau/netrexx-mode/master"
+                           "netrexx-mode.el")
   (pel-autoload-file netrexx-mode for: netrexx-mode)
   ;; Set the file extension for NetRexx: ".nrx"
   (pel-set-auto-mode netrexx-mode for: "\\.nrx\\'")
@@ -3729,9 +3709,8 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
    ((eq pel-use-v 'vlang-mode)
     ;; vlang-mode is experimental: only provides font-locking
     ;; use, not on MELPA: download directly from github.
-    (cl-eval-when 'load
-      (pel-install-github-file "pierre-rouleau/vlang-mode/master"
-                               "vlang-mode.el"))
+    (pel-install-github-file "pierre-rouleau/vlang-mode/master"
+                             "vlang-mode.el")
     (pel-autoload-file vlang-mode for: vlang-mode))))
 
 ;; ---------------------------------------------------------------------------
@@ -4248,9 +4227,7 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 (when pel-use-hide-comnt
   ;; Download and byte-compile hide-comnt.el if its not present
   ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
-  (cl-eval-when 'load
-    (pel-install-github-file "emacsmirror/hide-comnt/master" "hide-comnt.el"))
-
+  (pel-install-github-file "emacsmirror/hide-comnt/master" "hide-comnt.el")
   (pel-autoload-file hide-comnt for:
                      hide/show-comments
                      hide/show-comments-toggle)
@@ -4489,9 +4466,8 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 
 (when pel-use-command-log-mode
   (define-pel-global-prefix pel:command-log (kbd "<f11> ? k c"))
-  (cl-eval-when 'load
-    (pel-install-github-file "pierre-rouleau/command-log-mode/master"
-                             "command-log-mode.el"))
+  (pel-install-github-file "pierre-rouleau/command-log-mode/master"
+                           "command-log-mode.el")
   (pel-autoload-file command-log-mode for:
                      command-log-mode
                      global-command-log-mode)
@@ -5195,10 +5171,9 @@ the ones defined from the buffer now."
 (define-pel-global-prefix pel:ffip (kbd "<f11> f p"))
 
 (when pel-use-find-file-in-project
-  (cl-eval-when 'load
-    (pel-install-github-file "pierre-rouleau/find-file-in-project/master"
-                             "find-file-in-project.el")
-    (autoload 'find-file-in-project "find-file-in-project"))
+  (pel-install-github-file "pierre-rouleau/find-file-in-project/master"
+                           "find-file-in-project.el")
+  (autoload 'find-file-in-project "find-file-in-project")
   (define-key pel:ffip "p" 'find-file-in-project))
 
 ;; Use my fork of this project until my contribution to support Emacs Customization
@@ -5398,8 +5373,7 @@ the ones defined from the buffer now."
 (when pel-use-vline
   ;; download and byte-compile vline if not already present
   ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
-  (cl-eval-when 'load
-    (pel-install-github-file "emacsmirror/vline/master" "vline.el"))
+  (pel-install-github-file "emacsmirror/vline/master" "vline.el")
   (pel-autoload-file vline for: vline-mode)
   (define-key pel:highlight "|"  'vline-mode)
   (define-key pel:mode      "|"  'vline-mode)
@@ -5468,9 +5442,8 @@ the ones defined from the buffer now."
   ;; Until abo-abo integrates my pull-request that fixes the bugs
   ;; I'll support this package via my copy of the file from my fork
   ;; of the original project at https://github.com/abo-abo/centimacro
-  (cl-eval-when 'load
-    (pel-install-github-file "pierre-rouleau/centimacro/master"
-                             "centimacro.el"))
+  (pel-install-github-file "pierre-rouleau/centimacro/master"
+                           "centimacro.el")
   (pel-autoload-file centimacro for:
                      centi-assign
                      centi-summary
@@ -5498,8 +5471,7 @@ the ones defined from the buffer now."
 
 (when pel-use-emacros
   (define-pel-global-prefix pel:emacros (kbd "<f11> k e"))
-  (cl-eval-when 'load
-    (pel-install-github-file "pierre-rouleau/emacros/master" "emacros.el"))
+  (pel-install-github-file "pierre-rouleau/emacros/master" "emacros.el")
   (pel-autoload-file emacros for:
                      emacros-load-macros
                      emacros-show-macros
@@ -5674,8 +5646,7 @@ the ones defined from the buffer now."
 (when pel-use-cexp
   ;; download and byte-compile cexp if not already present
   ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
-  (cl-eval-when 'load
-    (pel-install-github-file "TobiasZawada/cexp/master" "cexp.el"))
+  (pel-install-github-file "TobiasZawada/cexp/master" "cexp.el")
   (pel-autoload-file cexp for: cexp-search-forward)
   (define-key pel:search-replace "c" 'cexp-search-forward))
 
@@ -5843,14 +5814,11 @@ the ones defined from the buffer now."
 ;; - Function Keys - <f11> - Prefix ``<f11> M-s`` : Speedbar/SR-Speedbar commands
 
 (when pel-use-speedbar
-
   ;; Install sr-speedbar from my GitHub depot instead of from Melpa,
   ;; because Melpa follows the older version in emacsmirror. I'm keeping
   ;; min closer to what's available in the emacswiki.
-  (cl-eval-when 'load
-    (pel-install-github-file "pierre-rouleau/sr-speedbar/master"
-                             "sr-speedbar.el"))
-
+  (pel-install-github-file "pierre-rouleau/sr-speedbar/master"
+                           "sr-speedbar.el")
   (pel-autoload-file sr-speedbar for:
                      sr-speedbar-toggle
                      sr-speedbar-window-p)

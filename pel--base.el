@@ -98,20 +98,32 @@
 ;;  - `pel-delete-from-auto-mode-alist'
 ;;
 ;; Lazy loading and package installation:
-;; - `pel-require-at-load-deferred'
 ;; - `pel-require-at-load'
-;; - `pel-require'
-;;   - `pel-package-installed-p'
-;;   - `pel-package-install'
+;;   - `pel--require-at-load'
 ;; - `pel-require-after-init'
+;;   - `pel--require-after-init'
 ;; - `pel-eval-after-load'
 ;; - `pel-set-auto-mode'
 ;; - `pel-autoload-file'
 ;; - `pel-declare-file'
+;;
+;; - `pel-install-github-file'
+;;   - `pel--install-github-file'
+;; - `pel-install-github-files'
+;;   - `pel--install-github-files'
+;;     - `pel-install-files'
+;;       - `pel-install-file'
+;;
+;; - `pel-require'
+;;   - `pel-package-installed-p'
+;;   - `pel-package-install'
+;;
 ;; - `pel-ensure-package'
 ;;   - `pel-ensure-pkg'
-;;     - `pel--package-ensure-elpa'
-;;       - `pel--package-install'
+;;     - `pel--pin-package'
+;;       - `pel-archive-exists-p'
+;;    - `pel--package-ensure-elpa'
+;;      - `pel--package-install'
 ;;
 ;; Mode argument interpretation
 ;; -  `pel-action-for'
@@ -887,19 +899,307 @@ Modifies `auto-mode-alist'."
 
 ;; ---------------------------------------------------------------------------
 ;; Lazy loading and package installation:
-;; - `pel-require-at-load-deferred'
-;; - `pel-require-at-load'
-;; - `pel-require'
-;;   - `pel-package-installed-p'
-;;   - `pel-package-install'
-;; - `pel-require-after-init'
-;; - `pel-eval-after-load'
-;; - `pel-set-auto-mode'
-;; - `pel-autoload-file'
-;; - `pel-declare-file'
-;; - `pel-ensure-package'
-;;   - `pel-ensure-pkg'
 
+;; The first set of functions and macros provide mechanism to require, load,
+;; autoload and byte-compiler declaration facilities.
+;;
+;; -> - `pel-require-at-load'
+;;      - `pel--require-at-load'
+;; -> - `pel-require-after-init'
+;;      - `pel--require-after-init'
+;; -> - `pel-eval-after-load'
+;; -> - `pel-set-auto-mode'
+;; -> - `pel-autoload-file'
+;; -> - `pel-declare-file'
+;;
+;; The second set of functions and macros in this group provide the logic to
+;; download and install Emacs Lisp files into PEL's "utils" utility directory
+;; stored in the directory identified by the variable `user-emacs-directory'.
+;; PEL uses these functions to get Emacs files not supported by Elpa compliant
+;; sites, but instead stored in secure and well established sites such as
+;; GitHub.
+;;
+;; - `pel-install-file'  downloads and installs one file.
+;; - `pel-install-files' downloads and installs one or several files from the
+;;   same web site.
+;; - `pel-install-github-files' downloads and installs one or several files
+;;    from GitHub specified user project branch.
+;; - `pel-install-github-file' downloads and installs one file.  That file
+;;   may have a name that differs from the URL used to download it.  This is
+;;   mostly used when a file name has a character that cannot be part of a URL
+;;   and must be encoded differently.
+
+;; -> - `pel-install-github-file'
+;;      - `pel--install-github-file'
+;;          `pel-install-file'
+;; -> - `pel-install-github-files'
+;;      - `pel--install-github-files'
+;;        - `pel-install-files'
+;;          - `pel-install-file'
+
+;; The third set of functions and macros provide logic ins install Elpa
+;; compliant packages and to require Emacs packages.
+;;
+;; -> - `pel-require'
+;;      - `pel-package-installed-p'
+;;      - `pel-package-install'
+;;        `pel-install-github-file'
+
+;; -> - `pel-ensure-package'
+;;      - `pel-ensure-pkg'
+;;        - `pel--pin-package'
+;;          - `pel-archive-exists-p'
+;;       - `pel--package-ensure-elpa'
+;;         - `pel--package-install'
+;;
+
+(defun pel--require-at-load (feature)
+  "Require specified FEATURE when loading only, not when compiling.
+FEATURE must be a quoted symbol.
+This is normally used by the macro `pel-require-at-load'."
+  (unless (require feature nil :no-error)
+    (display-warning 'pel-require-at-load
+                     (format "Failed loading %s" feature)
+                     :error)))
+
+(defmacro pel-require-at-load (feature)
+  "Require specified FEATURE when loading only, not when compiling.
+
+FEATURE must be an unquoted symbol representing the required
+feature."
+  `(cl-eval-when 'load
+     (pel--require-at-load (quote ,feature))))
+
+;; --
+(defun pel--require-after-init (feature secs)
+  "Require specified FEATURE some SECS after initializing Emacs.
+FEATURE must be a quoted symbol.
+This is normally used by the macro `pel-require-after-init'."
+  (run-with-idle-timer secs nil
+                       (function require)
+                       feature nil :no-error))
+
+(defmacro pel-require-after-init (feature secs)
+  "Require specified FEATURE some SECS after initializing Emacs.
+
+Don't require the feature when compiling.
+FEATURE must be an unquoted symbol representing the required
+feature.
+SECS may be an integer, a floating point number, or the internal
+time format returned by, e.g., ‘current-idle-time’."
+  `(cl-eval-when 'load
+     (pel--require-after-init (quote ,feature) ,secs)))
+
+;; --
+
+(defmacro pel-eval-after-load (feature &rest body)
+  "Evaluate BODY after the FEATURE has been loaded.
+FEATURE is an unquoted symbol.
+Use this for the configuration phase, like the :config of use-package."
+  (declare (indent 1))
+  `(with-eval-after-load (quote ,feature)
+     (condition-case-unless-debug err
+         (progn
+           ,@body)
+       (error
+        (display-warning 'pel-eval-after-load
+                         (format "Failed configuring %s: %s"
+                                 (quote ,feature)
+                                 err)
+                         :error)))))
+
+;; --
+(defmacro pel-set-auto-mode (mode for: &rest regexps)
+  "Activate automatic MODE for the list of file REGXEPS.
+MODE must be an un-quoted symbol.
+FOR: separator must be present.  It is cosmetic only.
+REGEXPS is on or several regular expression strings."
+  (declare (indent 0))
+  (ignore for:)
+  (let ((forms '()))
+    (setq forms
+          (dolist (regxp regexps (reverse forms))
+            (push `(add-to-list 'auto-mode-alist
+                                (quote (,regxp . ,mode)))
+                  forms)))
+    `(progn
+       ,@forms)))
+
+;; --
+(defmacro pel-autoload-file (fname for: &rest commands)
+  "Schedule the autoloading of FNAME for specified COMMANDS.
+FNAME is either a string or an unquoted symbol.
+The autoload is generated only when the command is not already bound.
+Argument FOR: just a required separator keyword to make code look better.
+
+The macro also generates a `declare-function' for each function in
+COMMANDS preventing byte-compiler warnings on code referencing these
+functions."
+  (declare (indent 0))
+  (ignore for:)
+  (let ((fname     (if (stringp fname) fname (symbol-name fname)))
+        (decl-fcts '()))
+    (dolist (fct commands)
+      (push `(declare-function ,fct ,fname) decl-fcts))
+    (if (> (length commands) 1)
+        `(progn
+           (dolist (fct (quote (,@commands)))
+             (unless (fboundp fct)
+               (autoload fct ,fname nil :interactive)))
+           ,@decl-fcts)
+      `(progn
+         (unless (fboundp (quote ,@commands))
+           (autoload (quote ,@commands) ,fname nil :interactive))
+         ,@decl-fcts))))
+
+;; --
+(defmacro pel-declare-file (fname defines: &rest commands)
+  "Declare one or several COMMANDS to be defined in specified FNAME.
+This does not generate any code.  It prevents byte-compiler warnings.
+DEFINES: is a cosmetic only argument that must be present."
+  (declare (indent 0))
+  (ignore defines:)
+  (let ((fname     (if (stringp fname) fname (symbol-name fname)))
+        (decl-fcts '()))
+    (dolist (fct commands)
+      (push `(declare-function ,fct ,fname) decl-fcts))
+    `(progn
+       ,@decl-fcts)))
+
+;; -------
+
+(defun pel-install-file (url fname &optional refresh)
+  "Download and install a file FNAME from URL into the PEL's utility directory.
+Also byte compile that file.
+This is the 'utils' sub-directory of the directory identified by
+the Emacs variable `user-emacs-directory'.
+If this directory does not exist, the function creates it.
+
+If the file already exists in the destination, no download
+is done unless REFRESH is non-nil, in which case the function
+prompts for confirmation.
+
+The function returns t if the file was
+downloaded, nil otherwise.  Permission errors are raised."
+  (let ((utils-dirname (expand-file-name "utils" user-emacs-directory)))
+    (unless (file-exists-p utils-dirname)
+      (make-directory utils-dirname :make-parents-if-needed))
+    (let ((target-fname (expand-file-name fname utils-dirname)))
+      (when (or (not (file-exists-p target-fname)) refresh)
+        (message "Downloading %s\n" url)
+        (when (url-copy-file url target-fname refresh)
+          (message "Byte compiling it to %s\n" target-fname)
+          (byte-compile-file target-fname))))))
+
+(defun pel-install-files (url-base fnames &optional refresh)
+  "Download & install files identified by their URL-BASE and FNAMES.
+
+The URL-BASE is the common URL for the location of all files.
+
+The FNAMES is a file name string or list of file name strings
+identifying the name of the file located at that URL-BASE and
+also the name of the file save locally into the PEL Emacs 'utils'
+directory.  See `pel-install-file' for more info.
+
+If a file already exists in the destination, no download
+is done unless REFRESH is non-nil, in which case the function
+prompts for confirmation.
+
+The function returns t if the file was
+downloaded, nil otherwise.  Permission errors are raised."
+  (let ((fnames (if (listp fnames)
+                    fnames
+                  (list fnames))))
+    (dolist (fname fnames)
+      (pel-install-file (pel-url-join url-base fname)
+                        fname
+                        refresh))))
+
+(defun pel--install-github-files (user-project-branch
+                                  fnames
+                                  &optional refresh)
+  "Download & install FNAMES from GitHub USER-PROJECT-BRANCH.
+REFRESH if required.
+
+The function returns t if the file was
+downloaded, nil otherwise.  Permission errors are raised.
+
+This is normally called by the `pel-install-github-files' macro."
+  (pel-install-files (pel-url-join "https://raw.githubusercontent.com"
+                                   user-project-branch)
+                     fnames
+                     refresh))
+
+(defmacro pel-install-github-files (user-project-branch
+                                    fnames
+                                    &optional refresh)
+  "Download & install FNAMES from GitHub USER-PROJECT-BRANCH.
+
+- USER-PROJECT-BRANCH is a GitHub user/project/branch name path
+  string.  Something like \"pierre-rouleau/pel/master\".
+  If a depot file is stored in a depot sub-directory, include the
+  path of depot directory inside USER-PROJECT-BRANCH.
+- FNAMES is a file name string or list of file names.
+
+If a file already exists in the destination, no download is done
+unless REFRESH is non-nil, in which case the function prompts for
+confirmation.
+
+The macro generates code that runs only at load time.  However,
+if the variable `pel-running-with-bundled-packages' exists and is
+non-nil, then the macro creates no code and expands to nil which
+will be optimized out by the byte compiler."
+  (unless (and (boundp 'pel-running-with-bundled-packages)
+               pel-running-with-bundled-packages)
+    `(cl-eval-when 'load
+       (pel--install-github-files ,user-project-branch
+                                  ,fnames
+                                  ,refresh))))
+
+(defun pel--install-github-file (user-project-branch
+                                 fname
+                                 &optional url-fname refresh)
+  "Download & install FNAME from GitHub USER-PROJECT-BRANCH/URL-FNAME.
+REFRESH if required.
+The function returns t if the file was
+downloaded, nil otherwise.  Permission errors are raised.
+This is normally called by the `pel-install-github-file' macro."
+  (pel-install-files (pel-url-join "https://raw.githubusercontent.com"
+                                   user-project-branch
+                                   (or url-fname fname))
+                     fname
+                     refresh))
+
+(defmacro pel-install-github-file (user-project-branch
+                                   fname
+                                   &optional url-fname refresh)
+  "Download & install FNAME from GitHub USER-PROJECT-BRANCH/URL-FNAME.
+
+- USER-PROJECT-BRANCH is a GitHub user/project/branch name path
+  string.  Something like \"pierre-rouleau/pel/master\".
+  If a depot file is stored in a depot sub-directory, include the
+  path of depot directory inside USER-PROJECT-BRANCH.
+- FNAME is the name of the file, with its .el extension.
+- URL-FNAME is the name of the file as it appears in the
+  URL. This argument is only required when it differs from FNAME.
+
+If a file already exists in the destination, no download
+is done unless REFRESH is non-nil, in which case the function
+prompts for confirmation.
+
+The macro generates code that runs only at load time.  However,
+if the variable `pel-running-with-bundled-packages' exists and is
+non-nil, then the macro creates no code and expands to nil which
+will be optimized out by the byte compiler."
+  (unless (and (boundp 'pel-running-with-bundled-packages)
+               pel-running-with-bundled-packages)
+    `(cl-eval-when 'load
+       (pel--install-github-file ,user-project-branch
+                                 ,fname
+                                 ,url-fname
+                                 ,refresh))))
+
+;; -------
 (defun pel-package-install (pkg)
   "Install package PKG, return t on success, nil otherwise.
 
@@ -1003,13 +1303,7 @@ Otherwise return the loading state of the FEATURE."
         (if package
             (if with-pel-install
                 ;; install using specified GitHub repository
-                (if (and (require 'pel-net nil :no-error)
-                         (fboundp 'pel-install-github-file))
-                    (pel-install-github-file with-pel-install fname url-fname)
-                  (display-warning 'pel-require
-                                   (format
-                                    "Failed loading pel-net to install %s"
-                                    with-pel-install)))
+                (pel-install-github-file with-pel-install fname url-fname)
               ;; install using Elpa package system
               (let ((package (if (eq package :install-when-missing)
                                  feature
@@ -1028,102 +1322,7 @@ Failed loading %s even after installing package %s!"
                            :error)))))
   (featurep feature))
 
-(defmacro pel-require-at-load (feature)
-  "Require specified FEATURE when loading only, not when compiling.
-
-FEATURE must be an unquoted symbol representing the required
-feature."
-  `(cl-eval-when 'load
-     (unless (require (quote ,feature) nil :no-error)
-       (display-warning 'pel-require-at-load
-                        (format "Failed loading %s" (quote ,feature))
-                        :error))))
-
-(defmacro pel-require-after-init (feature secs)
-  "Require specified FEATURE some SECS after initializing Emacs.
-
-Don't require the feature when compiling.
-FEATURE must be an unquoted symbol representing the required
-feature.
-SECS may be an integer, a floating point number, or the internal
-time format returned by, e.g., ‘current-idle-time’."
-  `(cl-eval-when 'load
-     (run-with-idle-timer ,secs nil
-                          (function require)
-                          (quote ,feature) nil :no-error)))
-
-(defmacro pel-eval-after-load (feature &rest body)
-  "Evaluate BODY after the FEATURE has been loaded.
-FEATURE is an unquoted symbol.
-Use this for the configuration phase, like the :config of use-package."
-  (declare (indent 1))
-  `(with-eval-after-load (quote ,feature)
-     (condition-case-unless-debug err
-         (progn
-           ,@body)
-       (error
-        (display-warning 'pel-eval-after-load
-                         (format "Failed configuring %s: %s"
-                                 (quote ,feature)
-                                 err)
-                         :error)))))
-
-(defmacro pel-set-auto-mode (mode for: &rest regexps)
-  "Activate automatic MODE for the list of file REGXEPS.
-MODE must be an un-quoted symbol.
-FOR: separator must be present.  It is cosmetic only.
-REGEXPS is on or several regular expression strings."
-  (declare (indent 0))
-  (ignore for:)
-  (let ((forms '()))
-    (setq forms
-          (dolist (regxp regexps (reverse forms))
-            (push `(add-to-list 'auto-mode-alist
-                                (quote (,regxp . ,mode)))
-                  forms)))
-    `(progn
-       ,@forms)))
-
-
-(defmacro pel-autoload-file (fname for: &rest commands)
-  "Schedule the autoloading of FNAME for specified COMMANDS.
-FNAME is either a string or an unquoted symbol.
-The autoload is generated only when the command is not already bound.
-Argument FOR: just a required separator keyword to make code look better.
-
-The macro also generates a `declare-function' for each function in
-COMMANDS preventing byte-compiler warnings on code referencing these
-functions."
-  (declare (indent 0))
-  (ignore for:)
-  (let ((fname     (if (stringp fname) fname (symbol-name fname)))
-        (decl-fcts '()))
-    (dolist (fct commands)
-      (push `(declare-function ,fct ,fname) decl-fcts))
-    (if (> (length commands) 1)
-        `(progn
-           (dolist (fct (quote (,@commands)))
-             (unless (fboundp fct)
-               (autoload fct ,fname nil :interactive)))
-           ,@decl-fcts)
-      `(progn
-         (unless (fboundp (quote ,@commands))
-           (autoload (quote ,@commands) ,fname nil :interactive))
-         ,@decl-fcts))))
-
-(defmacro pel-declare-file (fname defines: &rest commands)
-  "Declare one or several COMMANDS to be defined in specified FNAME.
-This does not generate any code.  It prevents byte-compiler warnings.
-DEFINES: is a cosmetic only argument that must be present."
-  (declare (indent 0))
-  (ignore defines:)
-  (let ((fname     (if (stringp fname) fname (symbol-name fname)))
-        (decl-fcts '()))
-    (dolist (fct commands)
-      (push `(declare-function ,fct ,fname) decl-fcts))
-    `(progn
-       ,@decl-fcts)))
-
+;; -------
 ;;
 ;; The following code defines the `pel-ensure-package' macro that is
 ;; used below as a replacement for the `use-package' ``:ensure t`` mechanism.
@@ -1256,11 +1455,12 @@ The package list is refreshed before attempting installation to
 prevent trying to install an obsolete version of a package that
 is no longer present on the Elpa site.
 
-However, if the variable `pel-running-in-unpackage-mode' exists,
-the macro creates code that does not attempt to load anything."
+However, if the variable `pel-running-with-bundled-packages'
+exists and is non-nil, then the macro creates no code."
   (declare (indent 1))
   (ignore from:)
-  (unless (boundp 'pel-running-in-unpackage-mode)
+  (unless (and (boundp 'pel-running-with-bundled-packages)
+               pel-running-with-bundled-packages)
     (let* ((pin-site-name (when pinned-site (symbol-name pinned-site))))
       `(unless (pel-package-installed-p (quote ,pkg))
          (pel-ensure-pkg (quote ,pkg) ,pin-site-name)))))
