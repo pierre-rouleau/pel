@@ -220,8 +220,9 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;; subr (always loaded) ; use: called-interactively-p
-(eval-when-compile (require 'subr-x))   ; use: split-string, string-join,
-;;                                      ;      string-trim
+(eval-when-compile
+  (require 'subr-x)    ; use: split-string, string-join, string-trim
+  (require 'cl-macs))  ; use: cl-eval-when
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
