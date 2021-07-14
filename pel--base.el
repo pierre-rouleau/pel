@@ -177,6 +177,7 @@
 ;; - `pel-url-location'
 ;; - `pel-same-fname-p'
 ;;   - `pel-normalize-fname'
+;; - `pel-symlink-points-to-p'
 ;;
 ;; Insertion of text in current buffer
 ;; - `pel-insert-symbol-content'
@@ -1256,12 +1257,12 @@ prevent trying to install an obsolete version of a package that
 is no longer present on the Elpa site.
 
 However, if the variable `pel-running-in-unpackage-mode' exists,
-the macro does not attempt to load anything."
+the macro creates code that does not attempt to load anything."
   (declare (indent 1))
   (ignore from:)
-  (let* ((pin-site-name (when pinned-site (symbol-name pinned-site))))
-    `(unless (boundp 'pel-running-in-unpackage-mode)
-       (unless (pel-package-installed-p (quote ,pkg))
+  (unless (boundp 'pel-running-in-unpackage-mode)
+    (let* ((pin-site-name (when pinned-site (symbol-name pinned-site))))
+      `(unless (pel-package-installed-p (quote ,pkg))
          (pel-ensure-pkg (quote ,pkg) ,pin-site-name)))))
 
 ;; ---------------------------------------------------------------------------
@@ -1806,6 +1807,24 @@ in slash separator or termination or use of the ~ , . or
 above directory in one of them."
   (string= (pel-normalize-fname name1)
            (pel-normalize-fname name2)))
+
+(defun pel-symlink-points-to-p (symlink target)
+  "Return t if SYMLINK points to TARGET, return nil otherwise.
+
+The SYMLINK argument should be the absolute file-path-name of the
+symlink file.  The TARGET should be the expected file-path or
+dir-path where for the symlink.
+
+Symlinks can be created with a link that is absolute or relative.
+This function handles both."
+  (let ((symlink-pointer (file-symlink-p symlink)))
+    (when symlink-pointer
+      (if (file-name-absolute-p symlink-pointer)
+          (pel-same-fname-p target symlink-pointer)
+        (pel-same-fname-p
+         target
+         (expand-file-name symlink-pointer
+                           (file-name-directory symlink)))))))
 
 ;; ---------------------------------------------------------------------------
 ;; Insertion of text in current buffer
