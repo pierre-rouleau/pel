@@ -4794,10 +4794,11 @@ the ones defined from the buffer now."
 ;;   M-a M-p
 ;;   ?
 ;;   I K R S U V X
-;;   b c f h i k l n p r s v x
+;;   a b c f h i k l n p r s v x
 
 (define-pel-global-prefix pel:buffer (kbd "<f11> b"))
 (define-key pel:buffer "-"  #'ruler-mode)
+(define-key pel:buffer "a"   'pel-show-all-buffers)
 (define-key pel:buffer "c"  #'clone-buffer)
 (define-key pel:buffer "k"  #'kill-current-buffer)
 (define-key pel:buffer "l"   'pel-switch-to-last-used-buffer)

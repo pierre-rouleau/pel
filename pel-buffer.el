@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, May 27 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-01 11:52:04, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-14 13:08:36, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -97,6 +97,16 @@
 ;; the list at index 0 handle the cases when new buffers of the same mode were
 ;; added or removed.  The functions also detect killed buffers and skip them.
 ;; The list refreshing removes the killed buffers.
+;;
+;;
+;; Display all buffers
+;; - - - - - - - - - -
+;;
+;; By default the commands to display buffers do not display the internal
+;; buffers; these are hidden because they are not meant to be manipulated by
+;; the user.  For development, however, it's useful to know which buffer is
+;; still opened.  The command function `pel-show-all-buffer' lists *all*
+;; currently opened buffer.  Use it carefully.
 
 ;; ---------------------------------------------------------------------------
 ;; Buffer Selection (bs) Extension
@@ -278,6 +288,22 @@ If the optional prefix argument is passed, REFRESH the list of buffers."
           (setq attempt-down-count (1- attempt-down-count))
           (and (null (pel--show-buffer (pel--to-previous-idx)))
                (> attempt-down-count 0))))))
+
+;; ---------------------------------------------------------------------------
+;; Display all buffers
+;; -------------------
+
+;;-pel-autoload
+(defun pel-show-all-buffers (&optional files-only)
+  "Display all buffers, including hidden internal buffers.
+They are listed inside a *Buffer List* buffer.
+If the optional FILES-ONLY argument is set then it displays only buffer
+associated with files."
+  (interactive "P")
+  (display-buffer (list-buffers-noselect files-only (buffer-list)))
+  (unless files-only
+    (message "CAUTION: internal buffers are shown.\
+ Do NOT modify their content if you don't understand the consequences.")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-buffer)

@@ -120,7 +120,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-bs-previous
     pel-bs-init
     pel-smb-next
-    pel-smb-previous)
+    pel-smb-previous
+    pel-show-all-buffers)
 
   (pel-autoload "pel-cc" for
     pel-cc-newline
