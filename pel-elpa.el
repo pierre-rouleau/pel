@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-11 22:23:46, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-13 09:45:13, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -66,10 +66,20 @@
 ;; call a "one-level package".
 ;;
 ;; To speed up Emacs startup, we can copy all files of one-level packages
-;; inside a single directory.  I name this directory: "~/.emacs.d/elpa-copy".
+;; inside a single directory.  And that directory is set-up in the same ways
+;; as if it was a normal package: the directory is a sub-directory of the elpa
+;; directory used in "PEL unpackage mode" and is called the "pel-bundle".
 ;;
-;; Then I create the "~/.emacs.d/elpa-reduced" directory which is the original
-;; elpa directory with all one-level package directories removed.
+;; That "pel-bundle" directory is organized in such a way as creating a
+;; pel-bundle package which contains all source files of the original
+;; one-level packages it replaces.  Once fully installed by the
+;; `pel-unpackage' function, it contains a file "pel-bundle-autoloads.el"
+;; which holds the auto-loading code of all the original one-level packages it
+;; replaces.
+;;
+;; The code creates the "~/.emacs.d/elpa-reduced" directory which is the original
+;; elpa directory with all one-level package directories removed.  The
+;; "pel-bundle" package is placed inside that directory.
 ;;
 ;; Emacs package loading mechanism depends on logic in the package.el
 ;; file. That uses the `package-alist' variable which holds a associative list
@@ -78,11 +88,15 @@
 ;; That structure has a `dir' slot identifying the directory where the package
 ;; is defined and a `reqs' slot identifying the other packages for that one.
 ;;
+;; TODO ROUP
 ;; By removing the one-level packages from the elpa directory we prevent Emacs
 ;; from populating the `package-alist' with the data from those one-level
 ;; packages since they were removed from elpa and their Emacs Lisp files were
 ;; placed all inside a single directory (the "~/.emacs.d/elpa-copy"
 ;; directory).
+;;
+;; IDEA: perhaps modify the dependencies identified in the pel-reduced
+;; to depend on pel-bundle instead??
 ;;
 ;; The code in `pel-unpackage' (from pel-unpackage.el) uses the logic here to
 ;; prepare the directories and code that is then used by PEL startup to take
@@ -193,16 +207,18 @@ directory specified by DEST-DIR."
 (defun pel-elpa-create-copies (elpa-dir-path
                                dest-dir-path
                                &optional with-symlinks)
-  "Copy all .el Elpa package files into a single directory.
+  "Copy all .el files of one-level Elpa packages into a single directory.
 
-The single directory is DEST-DIR-PATH.  This directory must already exist.
-If WITH-SYMLINKS is non-nil, ELPA-DIR-PATH files are not copied to
-DEST-DIR-PATH: instead the function creates symlinks in DEST-DIR-PATH to files
-inside ELPA-DIR-PATH.
+The single directory is DEST-DIR-PATH.  This directory must
+already exist.  If WITH-SYMLINKS is non-nil, ELPA-DIR-PATH files
+are not copied to DEST-DIR-PATH: instead the function creates
+symlinks in DEST-DIR-PATH to files inside ELPA-DIR-PATH.
 
-The files copied  are only the Emacs Lisp files from the Elpa packages
-that have no sub-directories and therefore have all their files
-inside one directory.
+The function only copies .el and .elc files from the Elpa packages that
+have no sub-directories (called one-level packages) and therefore
+have all their files inside one directory.  It does *not* copy
+the files *-autoloads.el? and *-pkg.el? nor any file that have a name that
+starts with a period of a # sign.
 
 When WITH-SYMLINK is non-nil, the function returns a list of
 (file-path-1 . file-path-2) cons cells that identify the duplicated file
@@ -212,15 +228,20 @@ function does not attempt to detect duplicate and returns nil."
         (elpa-pure-dirnames (pel-elpa-one-level-packages elpa-dir-path))
         source-dir-path-name
         source-fn
-        destination-fn)
+        destination-fn
+        fnse)
     (dolist (dirname elpa-pure-dirnames)
       (setq source-dir-path-name (expand-file-name
                                   dirname
                                   (file-truename elpa-dir-path)))
       (dolist (file-name (directory-files source-dir-path-name))
-        (when (and (string= (file-name-extension file-name) "el")
-                   (not (pel-string-starts-with-p file-name "#"))
-                   (not (pel-string-starts-with-p file-name ".")))
+        (when (and (not (member (substring file-name 0 1) '("." "#")))
+                   (member (file-name-extension file-name) '("el" "elc"))
+                   (not (pel-string-ends-with-p (setq fnse
+                                                      (file-name-sans-extension
+                                                       file-name))
+                                                "-pkg"))
+                   (not (pel-string-ends-with-p fnse "-autoloads")))
           (setq source-fn (expand-file-name file-name source-dir-path-name))
           (setq destination-fn (expand-file-name file-name dest-dir-path))
           (if (file-exists-p destination-fn)

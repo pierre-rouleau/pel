@@ -642,8 +642,8 @@ Argument FOR: just a required separator keyword to make code look better."
   ;; by the logic inside pel_keys.el
 
   (pel-autoload "pel-unpackage" for:
-    pel-switch-to-elpa-complete
-    pel-unpackage)
+    pel-setup-bundled-operation-mode
+    pel-restore-normal-operation-mode)
 
   (pel-autoload "pel-window" for:
     pel-show-window-previous-buffer
