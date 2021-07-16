@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-16 11:56:00, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-16 16:35:44, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -157,6 +157,12 @@
 (defconst pel-source-dirpath (file-name-directory (locate-library "pel"))
   "Directory where PEL source files are stored.")
 
+(defconst pel-fast-startup-setup-fname (expand-file-name
+                                        "pel-setup-package-builtin-versions.el"
+                                        user-emacs-directory)
+  "Name of code file that must be executed by fast-startup init/ early-init.
+When fast startup is not activated, this file must be deleted.")
+
 (defun pel--sibling-dir (parent dir)
   "Return path of sibling directory DIR of PARENT directory."
   (file-name-as-directory
@@ -232,13 +238,29 @@ Return a (activate . byte-compile result) cons cell."
                                      (locate-library "pel_keys"))
                                     ".el"))))
 
-;; TODO: complete the following:
-;;       - build the automatic loading from the auto load cookies
-;;         and add the loading calls to `pel-unpackage-init'
-;;       - Adjust dependencies of packages left in elpa-reduced so they no
-;;         longer declare dependencies from packages that were moved into the pel-bundle
-;;         artificial package.
-;;       Also add command to restore the package environment.
+(defun pel-setup-add-to-builtin-packages (pkg-versions fname)
+  "Write code in FNAME that adds the PKG-VERSIONS to the Emacs builtins.
+The code adds each entry to the `package--builtin-versions'."
+  (with-temp-file fname
+    (erase-buffer)
+    (goto-char (point-min))
+    (insert (format "\
+;;; Built automatically by PEL for fast Emacs startup.  -*- lexical-binding: t; -*-
+\(require 'package)
+
+(defvar pel-fast-startup-builtin-packages
+  '%S
+  \"List of packages dependencies to add to package--builtin-versions.\")
+
+\(defun pel-fast-startup-set-builtins ()
+  \"Prevent package from downloading a set of package dependencies.\"
+  (dolist (dep-ver pel-fast-startup-builtin-packages)
+    (add-to-list 'package--builtin-versions dep-ver))
+  pel-fast-startup-builtin-packages)
+
+" pkg-versions))))
+
+
 
 ;;-pel-autoload
 (defun pel-setup-bundled-operation-mode ()
@@ -273,7 +295,7 @@ Return a (activate . byte-compile result) cons cell."
     ;; message when the directory exists and delete it.
     (when (file-exists-p pel-bundle-dirpath)
       (delete-directory pel-bundle-dirpath :recursive)
-      (message (format "The %s directory already exists! It was deleted"
+      (message (format "The %s directory already exists! It was deleted!"
                        pel-bundle-dirpath)))
     ;;
     ;; Delete old elpa-reduced if it exists: it contains the old pel-bundle
@@ -303,8 +325,13 @@ Return a (activate . byte-compile result) cons cell."
                     (directory-file-name elpa-reduced-dirpath))
     (pel-elpa-remove-pure-subdirs elpa-reduced-dirpath)
     ;; Disable the dependencies of all (multi-directory) packages left in the
-    ;; elpa-reduced directory
-    (pel-elpa-disable-pkg-deps-in pel-elpa-dirpath)
+    ;; elpa-reduced directory.  This returns an alist of (package version)
+    ;; that should be added to the variable `package--builtin-versions' during
+    ;; init.el before the call to `package-activate-all' or
+    ;; `package-initialize'.  In Emacs ≥ 27 it must be set in early-init.el.
+    (pel-setup-add-to-builtin-packages
+     (pel-elpa-disable-pkg-deps-in pel-elpa-dirpath)
+     pel-fast-startup-setup-fname)
     ;;
     ;; Move the pel-bundle directory inside the elpa-reduced directory:
     ;; effectively creating a pel-bundle package "pel-bundle" that contains
@@ -351,6 +378,8 @@ Return a (activate . byte-compile result) cons cell."
   (pel-bundled-mode nil)
   ;;  Restore the normal, complete Elpa directory.
   (pel-switch-to-elpa-complete)
+  (when (file-exists-p pel-fast-startup-setup-fname)
+      (delete-file pel-fast-startup-setup-fname))
   (message "Restart Emacs to complete the process!"))
 
 

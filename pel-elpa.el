@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-16 09:30:56, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-16 16:27:58, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -218,20 +218,32 @@ directory specified by DEST-DIR."
           (pel-elpa-package-directories dirpath)))
 
 (defun pel-elpa-disable-pkg-deps-in (dirpath)
-  "Disable the dependencies of all -pkg.el files of packages in DIRPATH."
+  "Disable the dependencies of all -pkg.el files of packages in DIRPATH.
+Return an alist of (package versions) that should be added to the
+variable `package--builtin-versions'."
   ;; The package descriptor data structure is a cl-defstruct of type
   ;; `package-desc' defined in the package.el library file.
   ;; The slot `reqs' is what interests us here.
-  (let (pkg-spec)
+  (let (pkg-spec pkg-deps-versions dep vers)
     (dolist (pkg-fn (pel-elpa-pkg-files-in dirpath))
       (when pkg-fn
         ;; Read the package descriptor structure into the pkg-spec variable.
         (setq pkg-spec (pel-elpa-load-pkg-descriptor pkg-fn))
+        ;; Add the dependencies not already in `package--builtin-versions' to
+        ;; the pkg-deps-versions
+        (dolist (dep-ver (package-desc-reqs pkg-spec))
+          (setq dep (car dep-ver))
+          (unless (assoc dep package--builtin-versions)
+            (setq vers (cadr dep-ver))
+            (push dep vers)
+            (unless (assoc dep pkg-deps-versions)
+              (push vers pkg-deps-versions))))
         ;; Erase the `reqs' slot value from it, effectively erasing the
         ;; package dependants.
         (setf (package-desc-reqs pkg-spec) nil)
         ;; Write the modified structure back into its file.
-        (package-generate-description-file pkg-spec pkg-fn)))))
+        (package-generate-description-file pkg-spec pkg-fn)))
+    pkg-deps-versions))
 
 ;; ---------------------------------------------------------------------------
 
