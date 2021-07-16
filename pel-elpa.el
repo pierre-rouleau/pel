@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-13 09:45:13, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-16 09:30:56, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -26,16 +26,26 @@
 ;;; Commentary:
 ;;
 ;;  A set of utilities to deal with the ~/.emacs./elpa directory.
-;;  These are part of an experiment to see if it is possible to speed-up Emacs
-;;  start-up time by modifying the content of the elpa directory and using
-;;  symlinks.
+;;  The functions here are used by code that manage Elpa-compliant packages as
+;;  well as re-organize the Emacs directory to speed-up Emacs start-up time.
+;;
+;;
+;; *- `pel-el-files-in'
 
-;; - `pel-elpa-remove-pure-subdirs'
-;; - `pel-elpa-create-copies'
-;;   - `pel-elpa-one-level-packages'
-;;     - `pel-elpa-package-directories'
-;;       - `pel-elpa-package-dirspec-p'
-;; - `pel-el-files-in'
+;; *- `pel-elpa-one-level-package-alist'
+;; *  - `pel-elpa-load-pkg-descriptor'
+;; *  - `pel-elpa-one-level-package-files'
+;; *    - `pel-elpa-pkg-filename'
+;; &    - `pel-elpa-one-level-packages'
+;; &      - `pel-elpa-package-directories'
+;; &        - `pel-elpa-package-dirspec-p'
+
+;; *- `pel-elpa-remove-pure-subdirs'
+;; *- `pel-elpa-create-copies'
+;; *  - `pel-elpa-one-level-packages'
+;; *    - `pel-elpa-package-directories'
+;; *      - `pel-elpa-package-dirspec-p'
+
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -52,7 +62,6 @@
   "Return the Emacs Lisp file names inside DIR-PATH."
   (seq-filter (lambda (fn)
                 (string= (file-name-extension fn) "el"))
-
               (directory-files dir-path)))
 
 ;; ---------------------------------------------------------------------------
@@ -61,9 +70,9 @@
 ;;
 ;; The one-level packages are all Emacs packages that store all their files
 ;; inside a single directory.
-;; For example, the directory "~/.emacs.d/elpa/a-20201203.1927" holds all its
-;; files inside the single directory it has no sub-directories.  That's what I
-;; call a "one-level package".
+;; For example, the package made out of https://github.com/plexus/a.el is a
+;; directory like "~/.emacs.d/elpa/a-20201203.1927" which holds all its
+;; files inside the single directory; it has no sub-directories.
 ;;
 ;; To speed up Emacs startup, we can copy all files of one-level packages
 ;; inside a single directory.  And that directory is set-up in the same ways
@@ -72,10 +81,11 @@
 ;;
 ;; That "pel-bundle" directory is organized in such a way as creating a
 ;; pel-bundle package which contains all source files of the original
-;; one-level packages it replaces.  Once fully installed by the
-;; `pel-unpackage' function, it contains a file "pel-bundle-autoloads.el"
+;; one-level packages it replaces.  Once fully installed by the function
+;; `pel-setup-bundled-operation-mode', it contains a file "pel-bundle-autoloads.el"
 ;; which holds the auto-loading code of all the original one-level packages it
-;; replaces.
+;; replaces and a "pel-bundle-pkg.el" file that contains the specification of
+;; this fake package.
 ;;
 ;; The code creates the "~/.emacs.d/elpa-reduced" directory which is the original
 ;; elpa directory with all one-level package directories removed.  The
@@ -88,24 +98,18 @@
 ;; That structure has a `dir' slot identifying the directory where the package
 ;; is defined and a `reqs' slot identifying the other packages for that one.
 ;;
-;; TODO ROUP
 ;; By removing the one-level packages from the elpa directory we prevent Emacs
 ;; from populating the `package-alist' with the data from those one-level
 ;; packages since they were removed from elpa and their Emacs Lisp files were
 ;; placed all inside a single directory (the "~/.emacs.d/elpa-copy"
 ;; directory).
 ;;
-;; IDEA: perhaps modify the dependencies identified in the pel-reduced
-;; to depend on pel-bundle instead??
 ;;
-;; The code in `pel-unpackage' (from pel-unpackage.el) uses the logic here to
+;; The code in `pel-setup-bundled-operation-mode'  uses the logic here to
 ;; prepare the directories and code that is then used by PEL startup to take
 ;; advantage of storing most packages inside the same directory.
 ;;
 
-;; TODO: I need to complete the experimentation and finalize this code.
-;; Ideally all work is done when "*un-packaging elpa* in order to minimize
-;; processing when Emacs starts.  I have not reached that point yet.
 
 ;; Function call hierarchy:
 ;;
@@ -123,13 +127,18 @@
 ;; It saved me some time in searching for it inside package.el.
 
 (defun pel-elpa-package-dirspec-p (dirspec)
-  "Return dirname when DIRSPEC is for a Elpa package directory, nil otherwise."
-  (when (and (cadr dirspec)             ; is a directory ...
+  "Return dirname when DIRSPEC is for a Elpa package directory, nil
+otherwise.
+The DIRSPEC is the data structure returned by the function
+`directory-files-and-attributes'."
+  (let (dirname)
+    (when (and (cadr dirspec)           ; is a directory ...
                                         ; ... that has a name that does not
                                         ; start with a period
-             (not (eq (string-to-char (car dirspec))
-                      ?.)))
-    (car dirspec)))
+               (not (eq (string-to-char (setq dirname (car dirspec)))
+                        ?.))            ; and is not the archives directory
+               (not (member dirname '("archives" "gnupg"))))
+      dirname)))
 
 (defun pel-elpa-package-directories (elpa-dirpath)
   "Return a list of package directories inside the ELPA-DIRPATH directory."
@@ -137,13 +146,14 @@
           (seq-filter (function pel-elpa-package-dirspec-p)
                       (directory-files-and-attributes elpa-dirpath))))
 
+;; --
+
 (defun pel-elpa-one-level-packages (elpa-dirpath)
   "Return a list of directories in ELPA-DIRPATH that have no sub-directories."
   (let ((elpa-dirnames (pel-elpa-package-directories elpa-dirpath)))
     (seq-filter
      (lambda (dn)
-       (when (eq (pel-subdir-count (format "%s/%s" elpa-dirpath dn))
-                 0)
+       (when (eq (pel-subdir-count (expand-file-name dn elpa-dirpath)) 0)
          dn))
      elpa-dirnames)))
 
@@ -200,6 +210,28 @@ directory specified by DEST-DIR."
       (setq desc (pel-elpa-load-pkg-descriptor pfn dest-dir))
       (push (list (package-desc-name desc) desc) alist))
     alist))
+
+(defun pel-elpa-pkg-files-in (dirpath)
+  "Return the -pkg.el filenames of all Elpa packages in DIRPATH."
+  (mapcar (lambda (dn)
+            (pel-elpa-pkg-filename (expand-file-name dn dirpath) :with-path))
+          (pel-elpa-package-directories dirpath)))
+
+(defun pel-elpa-disable-pkg-deps-in (dirpath)
+  "Disable the dependencies of all -pkg.el files of packages in DIRPATH."
+  ;; The package descriptor data structure is a cl-defstruct of type
+  ;; `package-desc' defined in the package.el library file.
+  ;; The slot `reqs' is what interests us here.
+  (let (pkg-spec)
+    (dolist (pkg-fn (pel-elpa-pkg-files-in dirpath))
+      (when pkg-fn
+        ;; Read the package descriptor structure into the pkg-spec variable.
+        (setq pkg-spec (pel-elpa-load-pkg-descriptor pkg-fn))
+        ;; Erase the `reqs' slot value from it, effectively erasing the
+        ;; package dependants.
+        (setf (package-desc-reqs pkg-spec) nil)
+        ;; Write the modified structure back into its file.
+        (package-generate-description-file pkg-spec pkg-fn)))))
 
 ;; ---------------------------------------------------------------------------
 

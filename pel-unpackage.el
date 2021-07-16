@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-15 15:22:01, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-16 11:56:00, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -302,6 +302,9 @@ Return a (activate . byte-compile result) cons cell."
     (copy-directory (directory-file-name pel-elpa-dirpath)
                     (directory-file-name elpa-reduced-dirpath))
     (pel-elpa-remove-pure-subdirs elpa-reduced-dirpath)
+    ;; Disable the dependencies of all (multi-directory) packages left in the
+    ;; elpa-reduced directory
+    (pel-elpa-disable-pkg-deps-in pel-elpa-dirpath)
     ;;
     ;; Move the pel-bundle directory inside the elpa-reduced directory:
     ;; effectively creating a pel-bundle package "pel-bundle" that contains
