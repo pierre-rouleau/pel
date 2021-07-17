@@ -1,8 +1,8 @@
-;;; pel-unpackage.el --- Un-package elpa to speed up Emacs startup.  -*- lexical-binding: t; -*-
+;;; pel-setup.el --- Control PEL Emacs setup from normal to fast startup.  -*- lexical-binding: t; -*-
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-17 11:15:13, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-17 11:27:30, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -108,17 +108,17 @@
 ;; computer file-system but that's the cost of speeding up Emacs startup.
 ;;
 ;; Assuming the Elpa is stored inside "~/.emacs.d/elpa" directory,
-;; pel-setup-bundled-mode reorganizes it like this:
+;; `pel-setup-fast' reorganizes it like this:
 ;;
 ;; - "~/.emacs.d/elpa-complete" : The original "~/.emacs.d/elpa" directory
 ;;                                has been renamed (or duplicated) by
-;;                                pel-unpackage.
+;;                                `pel-setup-fast'.
 ;;
-;; - "~/.emacs.d/elpa-reduced" : Created by `pel-setup-bundled-mode'.  Holds all
+;; - "~/.emacs.d/elpa-reduced" : Created by `pel-setup-fast'.  Holds all
 ;;                               multi-directory packages; the ones that are
 ;;                               not "one-level packages".  It also contains
 ;;                               the "pel-bundle-yyyymmdd-001" directory, an
-;;                               artificial package created by `pel-setup-bundled-mode'
+;;                               artificial package created by `pel-setup-fast'
 ;;                               which holds the code of all one-level
 ;;                               packages removed from the original elpa
 ;;                               directory.  The tail end of the directory
@@ -127,13 +127,13 @@
 ;;
 ;; - "~/.emacs.d/elpa-reduced/pel-bundle-yyymmdd-001": Holds the content of
 ;;                               all one-level packages that it replaces. It
-;;                               is created by `pel-setup-bundled-mode' with the name
+;;                               is created by `pel-setup-fast' with the name
 ;;                               tail set to its creation date.  This
 ;;                               simulates a fictitious package, pel-bundle,
 ;;                               and aside of all files from the original
 ;;                               one-level it holds the 2 important package
 ;;                               required files that are also created by the
-;;                               function `pel-setup-bundled-mode':
+;;                               function `pel-setup-fast':
 ;;                               - pel-bundle-autoloads.el
 ;;                               - pel-bundle-pkg.el
 ;;
@@ -144,7 +144,6 @@
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
-;;
 ;;
 
 (require 'pel-package)                  ; use: pel-elpa-dirpath
@@ -263,7 +262,7 @@ The code adds each entry to the `package--builtin-versions'."
 
 
 ;;-pel-autoload
-(defun pel-setup-bundled-operation-mode ()
+(defun pel-setup-fast ()
   "Prepare the elpa directories and code to speedup Emacs startup."
   (interactive)
   (let* ((new-pel-bundle-dirpath nil)
@@ -300,7 +299,7 @@ The code adds each entry to the `package--builtin-versions'."
     ;;
     ;; Delete old elpa-reduced if it exists: it contains the old pel-bundle
     ;; and the multi-level packages that could not be bundled in the previous
-    ;; execution of `pel-setup-bundled-mode'.
+    ;; execution of `pel-setup-fast'.
     (when (file-exists-p elpa-reduced-dirpath)
       (delete-directory elpa-reduced-dirpath :recursive))
     ;;
@@ -371,7 +370,7 @@ The code adds each entry to the `package--builtin-versions'."
           elpa-reduced-dirpath
           elpa-complete-dirpath)))
 
-(defun pel-restore-normal-operation-mode ()
+(defun pel-setup-normal ()
   "Restore normal PEL/Emacs operation mode."
   (interactive)
   ;; Restore PEL's ability to download and install external packages
@@ -384,6 +383,6 @@ The code adds each entry to the `package--builtin-versions'."
 
 
 ;;; --------------------------------------------------------------------------
-(provide 'pel-unpackage)
+(provide 'pel-setup)
 
-;;; pel-unpackage.el ends here
+;;; pel-setup.el ends here
