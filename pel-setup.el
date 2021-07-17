@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-17 12:23:32, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-17 12:33:25, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -202,7 +202,9 @@ Return the complete name of the generated autoload file."
                                        "pel-bundle-autoloads.el"
                                        dir))
         (condition-case-unless-debug err
-            (update-directory-autoloads dir)
+            (progn
+              (update-directory-autoloads dir)
+              (kill-buffer "pel-bundle-autoloads.el"))
           (error
            (display-warning
             'pel-generate-autoload-file-for
