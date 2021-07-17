@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-16 16:35:44, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-17 11:15:13, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -330,7 +330,7 @@ The code adds each entry to the `package--builtin-versions'."
     ;; init.el before the call to `package-activate-all' or
     ;; `package-initialize'.  In Emacs ≥ 27 it must be set in early-init.el.
     (pel-setup-add-to-builtin-packages
-     (pel-elpa-disable-pkg-deps-in pel-elpa-dirpath)
+     (pel-elpa-disable-pkg-deps-in elpa-reduced-dirpath)
      pel-fast-startup-setup-fname)
     ;;
     ;; Move the pel-bundle directory inside the elpa-reduced directory:
@@ -384,6 +384,6 @@ The code adds each entry to the `package--builtin-versions'."
 
 
 ;;; --------------------------------------------------------------------------
-(provide 'pel-setup-bundled-mode)
+(provide 'pel-unpackage)
 
 ;;; pel-unpackage.el ends here
