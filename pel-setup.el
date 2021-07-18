@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-17 12:33:25, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-18 05:37:11, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -385,18 +385,26 @@ The code adds each entry to the `package--builtin-versions'."
       (error
        (display-warning 'pel-setup-fast
                         (format "Failed fast startup setup: %s" err))))
-    (cd cd-original)))
+    (cd cd-original))
+  (message "Restart Emacs to complete the process!"))
 
 (defun pel-setup-normal ()
   "Restore normal PEL/Emacs operation mode."
   (interactive)
-  ;; Restore PEL's ability to download and install external packages
-  (pel-bundled-mode nil)
-  ;;  Restore the normal, complete Elpa directory.
-  (pel-switch-to-elpa-complete)
-  (when (file-exists-p pel-fast-startup-setup-fname)
+  (let* ((elpa-dirpath pel-elpa-dirpath)
+         (elpa-reduced-dirpath  (pel--sibling-dir elpa-dirpath
+                                                  "elpa-reduced")))
+    ;; Restore PEL's ability to download and install external packages
+    (pel-bundled-mode nil)
+    ;;  Restore the normal, complete Elpa directory.
+    (pel-switch-to-elpa-complete)
+    ;; Remove files used in fast-start setup
+    (when (file-exists-p elpa-reduced-dirpath)
+      (delete-directory elpa-reduced-dirpath :recursive))
+    (when (file-exists-p pel-fast-startup-setup-fname)
       (delete-file pel-fast-startup-setup-fname))
-  (message "Restart Emacs to complete the process!"))
+    ;; inform user.
+    (message "Restart Emacs to complete the process!")))
 
 
 ;;; --------------------------------------------------------------------------
