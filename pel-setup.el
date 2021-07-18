@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-18 05:37:11, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-18 06:57:22, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -268,6 +268,12 @@ The code adds each entry to the `package--builtin-versions'."
     (add-to-list 'package--builtin-versions dep-ver))
   pel-fast-startup-builtin-packages)
 
+(defun pel--pct (_packages)
+  \"Filter packages to prevent downloads.\"
+  nil)
+
+(advice-add  'package-compute-transaction  :filter-return (function pel--pct))
+
 " pkg-versions))))
 
 
@@ -329,7 +335,6 @@ The code adds each entry to the `package--builtin-versions'."
           ;; Build a pel-bundle-autoloads.el inside the pel-bundle directory.
           (pel-generate-autoload-file-for pel-bundle-dirpath)
           (cd elpa-dirpath)
-
           ;;
           ;; Duplicate elpa inside elpa-reduced then remove the one-level packages
           ;; from it: they have been placed inside the pel-bundle directory before.
@@ -356,8 +361,6 @@ The code adds each entry to the `package--builtin-versions'."
                                         elpa-reduced-dirpath))
           (rename-file (directory-file-name pel-bundle-dirpath)
                        new-pel-bundle-dirpath)
-
-
           ;; Re-organize the elpa directory:
           ;; If elpa is a directory and elpa-complete does not exist: then
           ;; rename elpa to elpa-complete.
@@ -371,17 +374,10 @@ The code adds each entry to the `package--builtin-versions'."
           ;; If there is a elpa symlink remove it and create a new one that points
           ;; to elpa-reduced
           (pel-switch-to-elpa-reduced)
-
           ;; Re-compile pel_keys.el with `pel-running-with-bundled-packages'
           ;; bound to t to prevent PEL from downloading and installing
           ;; external packages while PEL runs in PEL bundled mode.
-          (pel-bundled-mode t)
-
-          ;; Return the directory paths
-          (list elpa-dirpath
-                pel-bundle-dirpath
-                elpa-reduced-dirpath
-                elpa-complete-dirpath))
+          (pel-bundled-mode t))
       (error
        (display-warning 'pel-setup-fast
                         (format "Failed fast startup setup: %s" err))))
