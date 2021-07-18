@@ -50,6 +50,9 @@
 ;; Bitwise Operations:
 ;;  - `pel-all-bitset-p'
 ;;
+;; File type predicates:
+;;  - `pel-unix-socket-p'
+;;
 ;; String predicates:
 ;;  - `pel-whitespace-in-str-p'
 ;;  - `pel-ends-with-space-p'
@@ -221,7 +224,7 @@
 ;;; Dependencies:
 ;; subr (always loaded) ; use: called-interactively-p
 (eval-when-compile
-  (require 'subr-x)    ; use: split-string, string-join, string-trim
+  (require 'subr-x)              ; use: split-string, string-join, string-trim
   (require 'cl-macs))  ; use: cl-eval-when
 
 ;;; --------------------------------------------------------------------------
@@ -426,6 +429,14 @@ code execution)."
     (dolist (bit bits bitmask)
       (setq bitmask (logior bitmask bit)))
     (equal 0 (logxor value bitmask))))
+
+;; ---------------------------------------------------------------------------
+;; File Type Predicates
+;; --------------------
+
+(defun pel-unix-socket-p (fname)
+  "Return t if FNAME is a Unix Socket, nil otherwise."
+  (eq (string-to-char (nth 8 (file-attributes fname))) ?s))
 
 ;; ---------------------------------------------------------------------------
 ;; String predicates
