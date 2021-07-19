@@ -28,6 +28,15 @@
   (if (< emacs-major-version 27)
       ;; Emacs prior to 27
       (progn
+        ;; Activate PEL's fast startup if environment was setup by `pel-setup-fast'.
+        (let ((fast-startup-setup-fname (expand-file-name "pel-setup-package-builtin-versions.el"
+                                                          user-emacs-directory)))
+          (when (file-exists-p fast-startup-setup-fname)
+            (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
+            (pel-fast-startup-set-builtins)
+            ;; Remember Emacs is running in PEL's fast startup mode.
+            (setq pel-running-with-bundled-packages t)))
+        ;;
         (require 'package)
         (setq package-enable-at-startup nil)
         (if (version= emacs-version "26.2")

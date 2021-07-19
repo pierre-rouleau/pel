@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-07-09 10:37:23, updated by Pierre Rouleau.
+:Modified: 2021-07-19 12:01:24, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -583,8 +583,25 @@ some variables like ``package-user-dir`` cannot be modified inside init.el,
 they must be modified inside a new file: the file called
 ``~/.emacs.d/early-init.el``.
 
+If you want to use the PEL fast startup mechanism with Emacs 27+, then you
+must include the following code inside the early-init.el file:
+
+.. code:: elisp
+
+          ;; -*- lexical-binding: t; -*-
+
+          ;; Activate PEL's fast startup if environment was setup by `pel-setup-fast'.
+          (let ((fast-startup-setup-fname (expand-file-name "pel-setup-package-builtin-versions.el"
+                                                            user-emacs-directory)))
+            (when (file-exists-p fast-startup-setup-fname)
+              (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
+              (pel-fast-startup-set-builtins)
+              ;; Remember Emacs is running in PEL's fast startup mode.
+              (setq pel-running-with-bundled-packages t))))
+
+
 If you use only one customization file and have nothing special to configure
-there then you're done and don't have to create this file.
+there then nothing else is needed in the file.
 
 However, if you want, for example, to have 2 different customization settings,
 one when Emacs runs in terminal mode, and one when Emacs is running in
@@ -592,12 +609,23 @@ graphics mode, and you want to maintain two sets of elpa directories, one for
 each configuration, then you have to write the logic inside the early-init.el
 file.
 
-Here's an example:
+Here's an example of early-init.el that supports PEL fast startup and ability
+to use a customization in terminal mode and another in graphics mode:
 
 .. code:: elisp
 
           ;; -*- lexical-binding: t; -*-
           ;; - Example early-init.el file ---------------------------------------------------
+
+          ;; Activate PEL's fast startup if environment was setup by `pel-setup-fast'.
+          (let ((fast-startup-setup-fname (expand-file-name "pel-setup-package-builtin-versions.el"
+                                                            user-emacs-directory)))
+            (when (file-exists-p fast-startup-setup-fname)
+              (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
+              (pel-fast-startup-set-builtins)
+              ;; Remember Emacs is running in PEL's fast startup mode.
+              (setq pel-running-with-bundled-packages t))))
+
           ;; Separate elpa directory for Emacs in graphics mode and Emacs in TTY mode.
           ;; Use ~/.emacs.d/elpa in TTY mode, use ~/.emacs.d/elpa-graphics in graphics mode
           ;; Inside early-init.el the function `display-graphic-p' does not return t for

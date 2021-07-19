@@ -16,15 +16,31 @@ PEL -- Pragmatic Environment Library for Emacs
 - Don't want to spend your time writing Emacs Lisp code? 😳
 - Need to quickly access help now and later on specific topic? 🤔
 - Want to learn Emacs and try several built-in and external packages? 😇
+- Want a fast startup even with a large number of external packages installed? 😃
 
 PEL might be for you!  Then go ahead, `install it`_ [1]_
 or `update it`_ [2]_ !
 
-- PEL provide **customization-driven package management** built on `Emacs easy
-  customization`_ to pick and chose packages and behaviours, all without
-  having to write Emacs Lisp code.  PEL enhances Emacs customization system:
-  PEL provides keys to quickly access customization groups of Emacs built-in
-  and external Emacs Lisp libraries even if they are not even loaded.
+- PEL operates in 2 different setup:
+
+  - The normal Emacs setup, using Emacs' standard package.el package manager
+    with PEL's extensions that provide **customization-driven package
+    management** built on `Emacs easy customization`_ to pick and chose
+    packages and behaviours, all without having to write Emacs Lisp code.  PEL
+    enhances Emacs customization system: PEL provides keys to quickly access
+    customization groups of Emacs built-in and external Emacs Lisp libraries
+    even if they are not even loaded.
+
+  - The faster Emacs startup setup.  Use it when you want a fast Emacs
+    startup.  It that mode you cannot install new packages but you have access
+    to all packages you have already installed and Emacs starts faster than
+    before.
+    - Use the **pel-setup-fast** command to bundle all external packages that
+      use only one directory together inside a single directory to reduce
+      Emacs ``load-path`` and setup your Elpa directory for a fast startup.
+    - Use the **pel-setup-normal** to restore the normal Emacs setup and allow
+      you to use Emacs package management and PEL's features of automatic
+      package installation via customization.
 
 - PEL controls the download, installation, configuration and activation of
   **over 200** *top-level* [3]_ external packages through the use of
@@ -74,17 +90,12 @@ or `update it`_ [2]_ !
       created from a macOS Number file.  It is located in a separate Git repo:
       the `pel-pdf-spreadsheet repo`_.
 
-
   - `PEL's Manual`_ describes PEL features in more details. See:
 
     - `How to install PEL`_,
     - `PEL convenience features`_ ,
     - `Key Bindings Documentation`_,
     - `PDF reference sheets`_.
-
-
-
-
 
 **Credits**
 
@@ -111,12 +122,14 @@ Drop me a note in the wiki_ or in the `discussion board`_!
        installed. PEL currently provides access to over 190 top-level
        packages. The actual number of packages is larger when counting their dependencies.
 
-.. [4] **Quick initialization**: On my system with 182 packages with benchmark-init on I get 0.3 to 0.4 seconds
+.. [4] **Quick initialization**: On my system with 182 packages with
+       benchmark-init on I get about 0.4 seconds
        on a 2014 iMac running macOS Mojave in terminal mode and 0.6 seconds in
        graphics mode, and get similar times on Linux running inside VMs.  I
        can reduce this further by reducing the number of features supported by
        turning them off and run **M-x pel-cleanup** to remove them from Emacs
-       path and internal processing.
+       path and internal processing.  It can go even faster when using PEL's
+       *fast-startup* setup!
 
 .. links
 

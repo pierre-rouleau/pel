@@ -2,6 +2,14 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
 
 * Changes since version 0.3.1:
 ** New Features and Improvements:
+- New: PEL now provides 2 operation modes: the normal Emacs mode of operation
+  and the new **fast-startup** setup.  In the fast-startup setup, Emacs init startup
+  time is reduced further by bundling all single directory external packages
+  inside a single directory.  Use the **pel-setup-fast** command to activate
+  the fast startup setup.  Use the **pel-setup-normal** command to restore
+  Emacs standard environment.  Use the fast startup setup when you want to use
+  a large number of external packages and want to reduce Emacs startup time
+  more than what can be done otherwise.
 - New: PEL now provides *customization-driven package management*.
   It installs packages identified by the ``pel-use-`` user-option when the
   *pel-init* command is issued and some of the requested packages are missing.
