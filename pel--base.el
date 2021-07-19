@@ -33,6 +33,7 @@
 ;; * `pel-version'
 ;;
 ;; Environment Querying functions:
+;;  - `pel-in-fast-startup-p'
 ;;  - `pel-buffers-in-mode'
 ;;    - `pel-major-mode-of'
 ;;  - `pel-current-buffer-filename'
@@ -312,6 +313,12 @@ Other uses risk returning non-nil value that point to the wrong file."
 ;; ------------------------------
 ;;
 ;; The following functions provide information about the Emacs environment.
+
+(eval-and-compile
+  (defun pel-in-fast-startup-p ()
+    "Return non-nil when PEL runs in fast startup operation."
+    (and (boundp 'pel-running-with-bundled-packages)
+         pel-running-with-bundled-packages)))
 
 (defun pel-major-mode-of (&optional buffer-or-name)
   "Return the major mode symbol of the specified BUFFER-OR-NAME.
@@ -1158,11 +1165,9 @@ unless REFRESH is non-nil, in which case the function prompts for
 confirmation.
 
 The macro generates code that runs only at load time.  However,
-if the variable `pel-running-with-bundled-packages' exists and is
-non-nil, then the macro creates no code and expands to nil which
-will be optimized out by the byte compiler."
-  (unless (and (boundp 'pel-running-with-bundled-packages)
-               pel-running-with-bundled-packages)
+when PEL runs in fast startup the macro creates no code and
+expands to nil which will be optimized out by the byte compiler."
+  (unless (pel-in-fast-startup-p)
     `(cl-eval-when 'load
        (pel--install-github-files ,user-project-branch
                                   ,fnames
@@ -1200,11 +1205,9 @@ is done unless REFRESH is non-nil, in which case the function
 prompts for confirmation.
 
 The macro generates code that runs only at load time.  However,
-if the variable `pel-running-with-bundled-packages' exists and is
-non-nil, then the macro creates no code and expands to nil which
-will be optimized out by the byte compiler."
-  (unless (and (boundp 'pel-running-with-bundled-packages)
-               pel-running-with-bundled-packages)
+when PEL operates in fast startup the macro creates no code and
+expands to nil which will be optimized out by the byte compiler."
+  (unless (pel-in-fast-startup-p)
     `(cl-eval-when 'load
        (pel--install-github-file ,user-project-branch
                                  ,fname
@@ -1452,10 +1455,8 @@ PKG must be a symbol.
 If ELPA-SITE is non-nil it should be a string holding the name of one of the
 Elpa repositories identified in the variable `package-archives'.
 
-However, if the variable `pel-running-with-bundled-packages'
-exists and is non-nil, then nothing is done."
-  (unless (and (boundp 'pel-running-with-bundled-packages)
-               pel-running-with-bundled-packages)
+However, when PEL operates in fast startup, nothing is done."
+  (unless (pel-in-fast-startup-p)
     (when elpa-site
       (pel--pin-package pkg elpa-site))
     (pel--package-ensure-elpa pkg)))
@@ -1472,12 +1473,10 @@ The package list is refreshed before attempting installation to
 prevent trying to install an obsolete version of a package that
 is no longer present on the Elpa site.
 
-However, if the variable `pel-running-with-bundled-packages'
-exists and is non-nil, then the macro creates no code."
+However, when PEL operates in fast startup, the macro creates no code."
   (declare (indent 1))
   (ignore from:)
-  (unless (and (boundp 'pel-running-with-bundled-packages)
-               pel-running-with-bundled-packages)
+  (unless (pel-in-fast-startup-p)
     (let* ((pin-site-name (when pinned-site (symbol-name pinned-site))))
       `(unless (pel-package-installed-p (quote ,pkg))
          (pel-ensure-pkg (quote ,pkg) ,pin-site-name)))))
