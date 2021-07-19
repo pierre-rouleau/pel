@@ -35,6 +35,7 @@ or `update it`_ [2]_ !
     startup.  It that mode you cannot install new packages but you have access
     to all packages you have already installed and Emacs starts faster than
     before.
+
     - Use the **pel-setup-fast** command to bundle all external packages that
       use only one directory together inside a single directory to reduce
       Emacs ``load-path`` and setup your Elpa directory for a fast startup.
