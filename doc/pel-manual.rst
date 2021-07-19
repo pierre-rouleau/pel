@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-07-19 12:01:24, updated by Pierre Rouleau.
+:Modified: 2021-07-19 17:15:21, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -467,6 +467,7 @@ You can also use a copy of the file `example/init/init-1.el`_ :
         (when (>= emacs-major-version 24)
           (if (< emacs-major-version 27)
               ;; Emacs prior to 27
+              ;; ----------------
               (progn
                 (require 'package)
                 (setq package-enable-at-startup nil)
@@ -481,9 +482,12 @@ You can also use a copy of the file `example/init/init-1.el`_ :
                                (cons "melpa-stable"
                                      (concat proto "://stable.melpa.org/packages/")) t))
                 (package-initialize))
-            ;; Emacs 27 or later support the `package-quickstart' feature which
+
+            ;; Emacs 27 or later.
+            ;; ------------------
+            ;; Emacs >= 27 support the `package-quickstart' feature which
             ;; speeds-ups Emacs startup time.  This is a user-option which must be
-            ;; activated manually. The package feature is already set at this point.
+            ;; activated manually.
             ;; When package-quickstart is customized to t, Emacs 27 support 2 initialization
             ;; files in the user-emacs-directory (which often is ~/.emacs.d), these are:
             ;;
@@ -493,11 +497,25 @@ You can also use a copy of the file `example/init/init-1.el`_ :
             ;;                    variables should be set in early-init.el:
             ;;                    - `package-load-list'
             ;;                    - `package-user-dir'
+            (unless (boundp 'package-quickstart)
+              (setq package-quickstart nil))
+            (unless package-quickstart
+              ;; Activate PEL's fast startup if environment was setup by `pel-setup-fast'.
+              (let ((fast-startup-setup-fname (expand-file-name "pel-setup-package-builtin-versions.el"
+                                                                user-emacs-directory)))
+                (when (file-exists-p fast-startup-setup-fname)
+                  (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
+                  (pel-fast-startup-set-builtins)
+                  ;; Remember Emacs is running in PEL's fast startup mode.
+                  (setq pel-running-with-bundled-packages t)))
+              ;;
+              (require 'package)
+              (package-initialize))
+
             ;; When package-quickstart is t, there's no need to call package-initialize.
             (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/") t)
-            (add-to-list 'package-archives (cons "melpa-stable" "https://stable.melpa.org/packages/") t)
-            (unless package-quickstart
-              (package-initialize))))
+            (add-to-list 'package-archives (cons "melpa-stable" "https://stable.melpa.org/packages/") t)))
+
 
         ;; 2: Delay loading of abbreviation definitions
         ;;     Disable loading the abbreviation file during Emacs initialization.
