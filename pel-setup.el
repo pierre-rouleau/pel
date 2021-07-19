@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-18 06:57:22, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-19 08:28:24, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -146,6 +146,7 @@
 ;;; Dependencies:
 ;;
 
+(require 'pel--base)                    ; use: pel-unix-socket-p
 (require 'pel-package)                  ; use: pel-elpa-dirpath
 (require 'pel-elpa)
 
@@ -277,6 +278,14 @@ The code adds each entry to the `package--builtin-versions'."
 " pkg-versions))))
 
 
+;; --
+
+(defun pel-copy-only-file (original-copy-file file &rest args)
+  "Copy files but not Unix sockets."
+  (unless (pel-unix-socket-p file)
+    (apply original-copy-file
+           file
+           args)))
 
 ;;-pel-autoload
 (defun pel-setup-fast ()
@@ -338,9 +347,18 @@ The code adds each entry to the `package--builtin-versions'."
           ;;
           ;; Duplicate elpa inside elpa-reduced then remove the one-level packages
           ;; from it: they have been placed inside the pel-bundle directory before.
+          ;; - Normally, copy-directory would fail when attempting to copy a
+          ;;   Unix socket file, like those in elpa/gnupg.  To prevent the
+          ;;   error, replace copy-file by pel-copy-only-file which does not attempt
+          ;;   to copy the Unix socket files.
+          (advice-add 'copy-file :around #'pel-copy-only-file)
           (copy-directory (directory-file-name pel-elpa-dirpath)
                           (directory-file-name elpa-reduced-dirpath))
+          (advice-remove 'copy-file #'pel-copy-only-file)
+          ;; - Remove the one-level package sub-directories from elpa-reduced,
+          ;;   only leaving the multi-directory packages in elpa-reduced.
           (pel-elpa-remove-pure-subdirs elpa-reduced-dirpath)
+          ;;
           ;; Disable the dependencies of all (multi-directory) packages left in the
           ;; elpa-reduced directory.  This returns an alist of (package version)
           ;; that should be added to the variable `package--builtin-versions' during
@@ -382,8 +400,9 @@ The code adds each entry to the `package--builtin-versions'."
        (display-warning 'pel-setup-fast
                         (format "Failed fast startup setup: %s" err))))
     (cd cd-original))
-  (message "Restart Emacs to complete the process!"))
+  (message "Restart Emacs to complete the fast startup PEL/Emacs operation mode!"))
 
+;; --
 (defun pel-setup-normal ()
   "Restore normal PEL/Emacs operation mode."
   (interactive)
@@ -400,8 +419,7 @@ The code adds each entry to the `package--builtin-versions'."
     (when (file-exists-p pel-fast-startup-setup-fname)
       (delete-file pel-fast-startup-setup-fname))
     ;; inform user.
-    (message "Restart Emacs to complete the process!")))
-
+    (message "Restart Emacs to complete the normal PEL/Emacs operation mode!")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-setup)
