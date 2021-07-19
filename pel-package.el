@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-12 12:51:15, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-18 23:54:46, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -149,6 +149,7 @@
 ;;
 (require 'pel--base)                    ; use: `pel-as-string', `pel-as-symbol'
 ;;                                      ;      `pel-print-in-buffer'
+;;                                      ;      `pel-in-fast-startup-p'
 (require 'pel--options)                 ; use: `pel-elpa-packages-to-keep'
 ;;                                      ;      `pel-utils-packages-to-keep'
 ;;                                      ;      `pel-elpa-obsolete-packages'
@@ -554,6 +555,15 @@ Return the number of packages in excess."
 (defvar package-alist)
 (defvar  package-activated-list)
 
+(defun pel--elpa-stats (base deps locked)
+  "Return formatted string for package BASE, DEPS and LOCKED counts.
+When running in fast startup setup, the counts are meaningless, so return
+a string that says so."
+  (if (pel-in-fast-startup-p)
+      "Not available in PEL fast startup setup."
+    (format "%3d (%3d dependants, %d imposed by restrictions)"
+            base deps locked)))
+
 ;; pel-autoload
 (defun pel-package-info (&optional full-report)
   "Display information about packages required by PEL.
@@ -563,9 +573,12 @@ argument is specified.  In that case, prints a complete report inside a special
 package is in elpa or utils and whether it is a dependency or included because
 of a restriction lock."
   (interactive "P")
-  (let* ((all-activated   (pel-activated-packages)) ; all (with dependencies & locks)
-         (activated+lock  (pel-activated-packages :without-deps))
-         (activated-bdeps (pel-activated-packages nil :without-locks))
+  (let* ((all-activated   (unless (pel-in-fast-startup-p)
+                            (pel-activated-packages))) ; all (with dependencies & locks)
+         (activated+lock  (unless (pel-in-fast-startup-p)
+                            (pel-activated-packages :without-deps)))
+         (activated-bdeps (unless (pel-in-fast-startup-p)
+                            (pel-activated-packages nil :without-locks)))
          (elpa-all          (car all-activated))
          (n-elpa-all        (length elpa-all))
          (elpa+lock         (car activated+lock))
@@ -588,14 +601,15 @@ of a restriction lock."
 - %3d Utils files   stored in : %s
 - size of load-path           : %d directories
 - Number of PEL user-options  : %3d (%d are active)
-- PEL activated elpa  packages: %3d (%3d dependants, %d imposed by restrictions)
-- PEL Activated utils files   : %3d (%3d dependants, %d imposed by restrictions)
+- PEL activated elpa  packages: %s
+- PEL Activated utils files   : %s
 - # loaded files              : %d
 - # features                  : %d
 - # package-alist             : %d
 - # packages activated        : %d
 - # packages selected         : %d"
-                            (length (pel-elpa-package-directories pel-elpa-dirpath))
+                            (length
+                             (pel-elpa-package-directories pel-elpa-dirpath))
                             pel-elpa-dirpath
                             (length (pel-el-files-in pel-utils-dirpath))
                             pel-utils-dirpath
@@ -603,9 +617,12 @@ of a restriction lock."
                             (length user-options)
                             (length (seq-filter
                                      (lambda (x)
-                                       (symbol-value x)) user-options))
-                            n-elpa-base n-elpa-deps n-elpa-locked
-                            n-utils-base n-utils-deps n-utils-locked
+                                       (symbol-value x))
+                                     user-options))
+                            (pel--elpa-stats n-elpa-base n-elpa-deps
+                                             n-elpa-locked)
+                            (pel--elpa-stats n-utils-base n-utils-deps
+                                             n-utils-locked)
                             (length load-history)
                             (length features)
                             (length package-alist)
@@ -925,31 +942,35 @@ Return a list of elpa directories moved or deleted."
 
 With optional argument DRY-RUN, do nothing just report what would
 be done.  Print a description of the operation in the
-*pel-cleanup* buffer."
+*pel-cleanup* buffer.
+This command is *not* available when PEL operates in fast startup."
   (interactive "P")
-  (when (or dry-run
-            (y-or-n-p "Proceed with removal of non-required packages? "))
-    (let* ((utils-results     (pel-clean-utils dry-run))
-           (removed-el-files  (car utils-results))
-           (removed-elc-files (cadr utils-results))
-           (moved-elpa-dirs   (pel-clean-elpa dry-run)))
-      (pel-print-in-buffer
-       "*pel-cleanup*"
-       (if dry-run "Dry-run of PEL Cleanup"
-         "PEL Cleanup")
-       (lambda ()
-         (let ((n 0)
-               verb-moved
-               verb-Moved
-               verb-Removed)
-           (if dry-run
-               (setq verb-moved "that would have been moved"
-                     verb-Moved "Would move"
-                     verb-Removed "Would remove")
-             (setq verb-moved "moved"
-                   verb-Moved "Moved"
-                   verb-Removed "Removed"))
-           (insert (format "
+  (if (pel-in-fast-startup-p)
+      (user-error "pel-cleanup is not available in fast startup operation!
+Use pel-setup-normal to return to normal operation.")
+    (when (or dry-run
+              (y-or-n-p "Proceed with removal of non-required packages? "))
+      (let* ((utils-results     (pel-clean-utils dry-run))
+             (removed-el-files  (car utils-results))
+             (removed-elc-files (cadr utils-results))
+             (moved-elpa-dirs   (pel-clean-elpa dry-run)))
+        (pel-print-in-buffer
+         "*pel-cleanup*"
+         (if dry-run "Dry-run of PEL Cleanup"
+           "PEL Cleanup")
+         (lambda ()
+           (let ((n 0)
+                 verb-moved
+                 verb-Moved
+                 verb-Removed)
+             (if dry-run
+                 (setq verb-moved "that would have been moved"
+                       verb-Moved "Would move"
+                       verb-Removed "Would remove")
+               (setq verb-moved "moved"
+                     verb-Moved "Moved"
+                     verb-Removed "Removed"))
+             (insert (format "
 The PEL cleanup removes packages that are not needed, based on
 the value of the `pel-use-' customization user-options.
 
@@ -977,8 +998,8 @@ PEL CLEANUP %s:
 
 " (if dry-run "DRY - RUN"
     "EXECUTION")))
-           (when dry-run
-             (insert "This is a dry-run ONLY.  NOTHING was done!
+             (when dry-run
+               (insert "This is a dry-run ONLY.  NOTHING was done!
 
 The remainder of the message shows what would have been done if
 you elected to perform a real cleanup by issuing the
@@ -986,39 +1007,39 @@ you elected to perform a real cleanup by issuing the
 intention by typing 'y' to its prompt.
 
 "))
-           (when (or removed-el-files removed-elc-files)
-             (insert (format "%s %d files,
+             (when (or removed-el-files removed-elc-files)
+               (insert (format "%s %d files,
 from: %s
 to  : %s
 %sThe files %s to utils-attic are:\n\n"
-                             verb-Moved
-                             (length removed-el-files)
-                             pel-utils-dirpath
-                             pel-utils-attic-dirpath
-                             (if removed-elc-files
-                                 (format "%s %d orphaned .elc files.\n"
-                                         verb-Removed
-                                         (length removed-elc-files))
-                               "")
-                             verb-moved))
-             (dolist (fn removed-el-files)
-               (setq n (1+ n ))
-               (insert (format "- %3d: %s\n" n fn))))
-           (when moved-elpa-dirs
-             (insert (format "\n\nElpa packages %s,
+                               verb-Moved
+                               (length removed-el-files)
+                               pel-utils-dirpath
+                               pel-utils-attic-dirpath
+                               (if removed-elc-files
+                                   (format "%s %d orphaned .elc files.\n"
+                                           verb-Removed
+                                           (length removed-elc-files))
+                                 "")
+                               verb-moved))
+               (dolist (fn removed-el-files)
+                 (setq n (1+ n ))
+                 (insert (format "- %3d: %s\n" n fn))))
+             (when moved-elpa-dirs
+               (insert (format "\n\nElpa packages %s,
 from: %s
 to  : %s :\n\n"
-                             verb-moved
-                             pel-elpa-dirpath
-                             pel-elpa-attic-dirpath))
-             (setq n 0)
-             (dolist (pkgdir moved-elpa-dirs)
-               (setq n (1+ n))
-               (insert (format "- %3d: %s\n" n pkgdir))))
-           (unless (or removed-el-files
-                       removed-elc-files
-                       moved-elpa-dirs)
-             (insert "Nothing to cleanup!!"))))))))
+                               verb-moved
+                               pel-elpa-dirpath
+                               pel-elpa-attic-dirpath))
+               (setq n 0)
+               (dolist (pkgdir moved-elpa-dirs)
+                 (setq n (1+ n))
+                 (insert (format "- %3d: %s\n" n pkgdir))))
+             (unless (or removed-el-files
+                         removed-elc-files
+                         moved-elpa-dirs)
+               (insert "Nothing to cleanup!!")))))))))
 
 ;; --
 
