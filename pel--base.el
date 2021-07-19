@@ -436,7 +436,7 @@ code execution)."
 
 (defun pel-unix-socket-p (fname)
   "Return t if FNAME is a Unix Socket, nil otherwise."
-  (eq (string-to-char (nth 8 (file-attributes fname))) ?s))
+  (eq (string-to-char (file-attribute-modes (file-attributes fname))) ?s))
 
 ;; ---------------------------------------------------------------------------
 ;; String predicates
@@ -1450,10 +1450,15 @@ Issue an error when the installation fails."
   "Install package PKG.
 PKG must be a symbol.
 If ELPA-SITE is non-nil it should be a string holding the name of one of the
-Elpa repositories identified in the variable `package-archives'."
-  (when elpa-site
-    (pel--pin-package pkg elpa-site))
-  (pel--package-ensure-elpa pkg))
+Elpa repositories identified in the variable `package-archives'.
+
+However, if the variable `pel-running-with-bundled-packages'
+exists and is non-nil, then nothing is done."
+  (unless (and (boundp 'pel-running-with-bundled-packages)
+               pel-running-with-bundled-packages)
+    (when elpa-site
+      (pel--pin-package pkg elpa-site))
+    (pel--package-ensure-elpa pkg)))
 
 (defmacro pel-ensure-package (pkg &optional from: pinned-site)
   "Install package named PKG, optionally from specified PINNED-SITE.
