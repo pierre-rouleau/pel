@@ -1345,6 +1345,7 @@ can't bind negative-argument to C-_ and M-_"
 (define-pel-global-prefix pel:cfg-pel-lang  (kbd "<f11> <f2> SPC"))
 (define-pel-global-prefix pel:cfg-emacs     (kbd "<f11> <f2> E"))
 (define-pel-global-prefix pel:cfg-pel       (kbd "<f11> <f2> P"))
+(define-pel-global-prefix pel:cfg-start     (kbd "<f11> <f2> S"))
 
 (define-key pel:cfg "c" 'customize)
 (define-key pel:cfg "g" 'customize-group)
@@ -1362,7 +1363,6 @@ can't bind negative-argument to C-_ and M-_"
 (when pel-emacs-is-graphic-p
   (define-key pel:cfg-emacs (kbd "C-c") 'pel-customize-cursor))
 
-
 (pel--cfg-pkg "navigation"  pel:cfg-pel "n" avy)
 (pel--cfg-pkg "project-mng" pel:cfg-pel (kbd "<f8>"))
 
@@ -1375,6 +1375,11 @@ can't bind negative-argument to C-_ and M-_"
 (pel--cfg-emacs pel:cfg-emacs "l" "locate")
 (pel--cfg-emacs pel:cfg-emacs "u" "browse-url")
 (pel--cfg-emacs pel:cfg-emacs "w" "woman")
+
+;; --
+(define-key pel:cfg-start "?" 'pel-setup-info)
+(define-key pel:cfg-start "f" 'pel-setup-fast)
+(define-key pel:cfg-start "n" 'pel-setup-normal)
 
 ;; ---------------------------------------------------------------------------
 ;; Input Completion Framework activation

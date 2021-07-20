@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-17 11:35:12, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-20 15:01:56, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -133,6 +133,7 @@
                                                                  popup-imenu
                                                                  popup-switcher))
     ([f11 f2]        "customize"        nil                     customize)
+    ([f11 f2 ?S]     "fast-startup")
     ([f11 f8]        "projectile"       pel-pkg-for-project-mng (projectile
                                                                  projectile-speedbar))
 
