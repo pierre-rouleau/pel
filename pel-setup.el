@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-19 19:09:07, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-20 12:56:57, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -149,6 +149,7 @@
 (require 'pel--base)                    ; use: pel-unix-socket-p
 (require 'pel-package)                  ; use: pel-elpa-dirpath
 (require 'pel-elpa)
+(eval-when-compile (require 'subr-x))   ; use: string-join
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -280,6 +281,39 @@ The code adds each entry to the `package--builtin-versions'."
 
 ;; --
 
+(defvar pel--setup-changed nil
+  "Identifies that PEL setup has changed.
+Only set by `pel-setup-fast' or `pel-setup-normal'. Never cleared.")
+
+(defun pel--fast-setup-met-criteria ()
+  "Return list of string describing met criteria for a fast setup.
+If the list is nil then PEL/Emacs operates in normal mode.
+If the list has 3 members, then PEL/Emacs operates in fast startup mode."
+  (let* ((met-criteria nil)
+         (elpa-dirpath pel-elpa-dirpath)
+         (elpa-reduced-dirpath  (pel--sibling-dir elpa-dirpath
+                                                  "elpa-reduced")))
+    (when (pel-in-fast-startup-p)
+      (push "Identified as fast startup by function `pel-in-fast-startup'"
+            met-criteria))
+    (when (file-exists-p pel-fast-startup-setup-fname)
+      (push (format "Fast startup setup file is present: %s"
+                    pel-fast-startup-setup-fname)
+            met-criteria))
+    (when (pel-symlink-points-to-p (directory-file-name elpa-dirpath)
+                                   elpa-reduced-dirpath)
+      (push "elpa symlink points to elpa-reduced" met-criteria))
+    met-criteria))
+
+(defun pel--operation-mode ()
+  "Return whether PEL/Emacs operates in fast setup mode.
+Returns: 'normal, 'fast or 'inconsistent."
+  (let ((count (length (pel--fast-setup-met-criteria))))
+    (cond ((eq count 0) 'normal)
+          ((eq count 3) 'fast)
+          (t 'inconsistent))))
+
+
 (defun pel-copy-only-file (original-copy-file file &rest args)
   "Copy files but not Unix sockets."
   (unless (pel-unix-socket-p file)
@@ -291,135 +325,173 @@ The code adds each entry to the `package--builtin-versions'."
 (defun pel-setup-fast ()
   "Prepare the elpa directories and code to speedup Emacs startup."
   (interactive)
-  (let ((cd-original (cd ".")))
-    (condition-case-unless-debug err
-        (let* ((new-pel-bundle-dirpath nil)
-               (elpa-dirpath pel-elpa-dirpath)
-               (pel-bundle-dirpath (pel--sibling-dir elpa-dirpath
-                                                     "pel-bundle"))
-               (elpa-reduced-dirpath  (pel--sibling-dir elpa-dirpath
-                                                        "elpa-reduced"))
-               (elpa-complete-dirpath (pel--sibling-dir elpa-dirpath
-                                                        "elpa-complete"))
-               (elpa-is-link    (file-symlink-p (directory-file-name
-                                                 elpa-dirpath)))
-               (time-stamp (format-time-string "%Y%m%d.%H%M")))
-          ;; Ensure that elpa is a directory or a symlink to elpa-complete
-          ;; otherwise abort.
-          (when (and elpa-is-link
-                     (not (pel-symlink-points-to-p (directory-file-name
-                                                    elpa-dirpath)
-                                                   elpa-complete-dirpath)))
-            (error "The elpa symlink (%s) should point to elpa-complete.\
+  (if (eq (pel--operation-mode) 'fast)
+      (error "PEL/Emacs is already setup for fast startup!")
+    (let ((cd-original (cd ".")))
+      (condition-case-unless-debug err
+          (let* ((new-pel-bundle-dirpath nil)
+                 (elpa-dirpath pel-elpa-dirpath)
+                 (pel-bundle-dirpath (pel--sibling-dir elpa-dirpath
+                                                       "pel-bundle"))
+                 (elpa-reduced-dirpath  (pel--sibling-dir elpa-dirpath
+                                                          "elpa-reduced"))
+                 (elpa-complete-dirpath (pel--sibling-dir elpa-dirpath
+                                                          "elpa-complete"))
+                 (elpa-is-link    (file-symlink-p (directory-file-name
+                                                   elpa-dirpath)))
+                 (time-stamp (format-time-string "%Y%m%d.%H%M")))
+            ;; Ensure that elpa is a directory or a symlink to elpa-complete
+            ;; otherwise abort.
+            (when (and elpa-is-link
+                       (not (pel-symlink-points-to-p (directory-file-name
+                                                      elpa-dirpath)
+                                                     elpa-complete-dirpath)))
+              (error "The elpa symlink (%s) should point to elpa-complete.\
  It point to %s instead! Aborting, fix the directory setting!"
-                   pel-elpa-dirpath
-                   elpa-is-link))
+                     pel-elpa-dirpath
+                     elpa-is-link))
 
-          ;; Ensure that pel-bundle directory does not exists.  That's a temporary
-          ;; directory where all one-level package files are stored and then used to
-          ;; create the -autoload.el and the -pkg.el file before it is moved into
-          ;; the elpa-reduced directory and renamed with a time stamp.  Issue a
-          ;; message when the directory exists and delete it.
-          (when (file-exists-p pel-bundle-dirpath)
-            (delete-directory pel-bundle-dirpath :recursive)
-            (message (format "The %s directory already exists! It was deleted!"
-                             pel-bundle-dirpath)))
-          ;;
-          ;; Delete old elpa-reduced if it exists: it contains the old pel-bundle
-          ;; and the multi-level packages that could not be bundled in the previous
-          ;; execution of `pel-setup-fast'.
-          (when (file-exists-p elpa-reduced-dirpath)
-            (delete-directory elpa-reduced-dirpath :recursive))
-          ;;
-          ;; Create pel-bundle temporary directory to hold all one-level package .el
-          ;; files.  At first create it the directory as a sibling of the elpa
-          ;; directory because elpa-reduced is not created yet.
-          (make-directory pel-bundle-dirpath)
-          (pel-elpa-create-copies pel-elpa-dirpath pel-bundle-dirpath :with-symlinks)
-          ;; Create the pel-bundle-pkg.el file inside it.
-          (pel-create-bundle-pkg-file pel-bundle-dirpath time-stamp)
-          ;;
-          ;; Create the pel-bundle-autoloads.el file inside it.
-          (cd pel-bundle-dirpath)
-          ;; Build a pel-bundle-autoloads.el inside the pel-bundle directory.
-          (pel-generate-autoload-file-for pel-bundle-dirpath)
-          (cd elpa-dirpath)
-          ;;
-          ;; Duplicate elpa inside elpa-reduced then remove the one-level packages
-          ;; from it: they have been placed inside the pel-bundle directory before.
-          ;; - Normally, copy-directory would fail when attempting to copy a
-          ;;   Unix socket file, like those in elpa/gnupg.  To prevent the
-          ;;   error, replace copy-file by pel-copy-only-file which does not attempt
-          ;;   to copy the Unix socket files.
-          (advice-add 'copy-file :around #'pel-copy-only-file)
-          (copy-directory (directory-file-name pel-elpa-dirpath)
-                          (directory-file-name elpa-reduced-dirpath))
-          (advice-remove 'copy-file #'pel-copy-only-file)
-          ;; - Remove the one-level package sub-directories from elpa-reduced,
-          ;;   only leaving the multi-directory packages in elpa-reduced.
-          (pel-elpa-remove-pure-subdirs elpa-reduced-dirpath)
-          ;;
-          ;; Disable the dependencies of all (multi-directory) packages left in the
-          ;; elpa-reduced directory.  This returns an alist of (package version)
-          ;; that should be added to the variable `package--builtin-versions' during
-          ;; init.el before the call to `package-activate-all' or
-          ;; `package-initialize'.  In Emacs ≥ 27 it must be set in early-init.el.
-          (pel-setup-add-to-builtin-packages
-           (pel-elpa-disable-pkg-deps-in elpa-reduced-dirpath)
-           pel-fast-startup-setup-fname)
-          ;;
-          ;; Move the pel-bundle directory inside the elpa-reduced directory:
-          ;; effectively creating a pel-bundle package "pel-bundle" that contains
-          ;; all the files of the one-level packages that were extracted from the
-          ;; original elpa directory (the elpa-complete directory).
-          ;; Give the pel-bundle directory a version number corresponding to today's
-          ;; date.
-          (setq new-pel-bundle-dirpath (expand-file-name
-                                        (format "pel-bundle-%s" time-stamp)
-                                        elpa-reduced-dirpath))
-          (rename-file (directory-file-name pel-bundle-dirpath)
-                       new-pel-bundle-dirpath)
-          ;; Re-organize the elpa directory:
-          ;; If elpa is a directory and elpa-complete does not exist: then
-          ;; rename elpa to elpa-complete.
-          (when (and (file-directory-p elpa-dirpath)
-                     (not (file-symlink-p (directory-file-name
-                                           elpa-dirpath))))
-            (when (file-exists-p elpa-complete-dirpath)
-              (delete-directory elpa-complete-dirpath :recursive))
-            (rename-file (directory-file-name elpa-dirpath)
-                         (directory-file-name elpa-complete-dirpath)))
-          ;; If there is a elpa symlink remove it and create a new one that points
-          ;; to elpa-reduced
-          (pel-switch-to-elpa-reduced)
-          ;; Re-compile pel_keys.el with `pel-running-with-bundled-packages'
-          ;; bound to t to prevent PEL from downloading and installing
-          ;; external packages while PEL runs in PEL bundled mode.
-          (pel-bundled-mode t))
-      (error
-       (display-warning 'pel-setup-fast
-                        (format "Failed fast startup setup: %s" err))))
-    (cd cd-original))
-  (message "Restart Emacs to complete the fast startup PEL/Emacs operation mode!"))
+            ;; Ensure that pel-bundle directory does not exists.  That's a temporary
+            ;; directory where all one-level package files are stored and then used to
+            ;; create the -autoload.el and the -pkg.el file before it is moved into
+            ;; the elpa-reduced directory and renamed with a time stamp.  Issue a
+            ;; message when the directory exists and delete it.
+            (when (file-exists-p pel-bundle-dirpath)
+              (delete-directory pel-bundle-dirpath :recursive)
+              (message (format "The %s directory already exists! It was deleted!"
+                               pel-bundle-dirpath)))
+            ;;
+            ;; Delete old elpa-reduced if it exists: it contains the old pel-bundle
+            ;; and the multi-level packages that could not be bundled in the previous
+            ;; execution of `pel-setup-fast'.
+            (when (file-exists-p elpa-reduced-dirpath)
+              (delete-directory elpa-reduced-dirpath :recursive))
+            ;;
+            ;; Create pel-bundle temporary directory to hold all one-level package .el
+            ;; files.  At first create it the directory as a sibling of the elpa
+            ;; directory because elpa-reduced is not created yet.
+            (make-directory pel-bundle-dirpath)
+            (pel-elpa-create-copies pel-elpa-dirpath pel-bundle-dirpath :with-symlinks)
+            ;; Create the pel-bundle-pkg.el file inside it.
+            (pel-create-bundle-pkg-file pel-bundle-dirpath time-stamp)
+            ;;
+            ;; Create the pel-bundle-autoloads.el file inside it.
+            (cd pel-bundle-dirpath)
+            ;; Build a pel-bundle-autoloads.el inside the pel-bundle directory.
+            (pel-generate-autoload-file-for pel-bundle-dirpath)
+            (cd elpa-dirpath)
+            ;;
+            ;; Duplicate elpa inside elpa-reduced then remove the one-level packages
+            ;; from it: they have been placed inside the pel-bundle directory before.
+            ;; - Normally, copy-directory would fail when attempting to copy a
+            ;;   Unix socket file, like those in elpa/gnupg.  To prevent the
+            ;;   error, replace copy-file by pel-copy-only-file which does not attempt
+            ;;   to copy the Unix socket files.
+            (advice-add 'copy-file :around #'pel-copy-only-file)
+            (copy-directory (directory-file-name pel-elpa-dirpath)
+                            (directory-file-name elpa-reduced-dirpath))
+            (advice-remove 'copy-file #'pel-copy-only-file)
+            ;; - Remove the one-level package sub-directories from elpa-reduced,
+            ;;   only leaving the multi-directory packages in elpa-reduced.
+            (pel-elpa-remove-pure-subdirs elpa-reduced-dirpath)
+            ;;
+            ;; Disable the dependencies of all (multi-directory) packages left in the
+            ;; elpa-reduced directory.  This returns an alist of (package version)
+            ;; that should be added to the variable `package--builtin-versions' during
+            ;; init.el before the call to `package-activate-all' or
+            ;; `package-initialize'.  In Emacs ≥ 27 it must be set in early-init.el.
+            (pel-setup-add-to-builtin-packages
+             (pel-elpa-disable-pkg-deps-in elpa-reduced-dirpath)
+             pel-fast-startup-setup-fname)
+            ;;
+            ;; Move the pel-bundle directory inside the elpa-reduced directory:
+            ;; effectively creating a pel-bundle package "pel-bundle" that contains
+            ;; all the files of the one-level packages that were extracted from the
+            ;; original elpa directory (the elpa-complete directory).
+            ;; Give the pel-bundle directory a version number corresponding to today's
+            ;; date.
+            (setq new-pel-bundle-dirpath (expand-file-name
+                                          (format "pel-bundle-%s" time-stamp)
+                                          elpa-reduced-dirpath))
+            (rename-file (directory-file-name pel-bundle-dirpath)
+                         new-pel-bundle-dirpath)
+            ;; Re-organize the elpa directory:
+            ;; If elpa is a directory and elpa-complete does not exist: then
+            ;; rename elpa to elpa-complete.
+            (when (and (file-directory-p elpa-dirpath)
+                       (not (file-symlink-p (directory-file-name
+                                             elpa-dirpath))))
+              (when (file-exists-p elpa-complete-dirpath)
+                (delete-directory elpa-complete-dirpath :recursive))
+              (rename-file (directory-file-name elpa-dirpath)
+                           (directory-file-name elpa-complete-dirpath)))
+            ;; If there is a elpa symlink remove it and create a new one that points
+            ;; to elpa-reduced
+            (pel-switch-to-elpa-reduced)
+            ;; Re-compile pel_keys.el with `pel-running-with-bundled-packages'
+            ;; bound to t to prevent PEL from downloading and installing
+            ;; external packages while PEL runs in PEL bundled mode.
+            (pel-bundled-mode t))
+        (error
+         (display-warning 'pel-setup-fast
+                          (format "Failed fast startup setup: %s" err))))
+      (cd cd-original)
+      (message "Restart Emacs to complete the fast startup PEL/Emacs operation mode!")
+      (setq pel--setup-changed t))))
 
 ;; --
 (defun pel-setup-normal ()
   "Restore normal PEL/Emacs operation mode."
   (interactive)
-  (let* ((elpa-dirpath pel-elpa-dirpath)
-         (elpa-reduced-dirpath  (pel--sibling-dir elpa-dirpath
-                                                  "elpa-reduced")))
-    ;; Restore PEL's ability to download and install external packages
-    (pel-bundled-mode nil)
-    ;;  Restore the normal, complete Elpa directory.
-    (pel-switch-to-elpa-complete)
-    ;; Remove files used in fast-start setup
-    (when (file-exists-p elpa-reduced-dirpath)
-      (delete-directory elpa-reduced-dirpath :recursive))
-    (when (file-exists-p pel-fast-startup-setup-fname)
-      (delete-file pel-fast-startup-setup-fname))
-    ;; inform user.
-    (message "Restart Emacs to complete the normal PEL/Emacs operation mode!")))
+  (if (eq (pel--operation-mode) 'normal)
+      (error "PEL/Emacs is already using the normal setup!")
+    (let* ((elpa-dirpath pel-elpa-dirpath)
+           (elpa-reduced-dirpath  (pel--sibling-dir elpa-dirpath
+                                                    "elpa-reduced")))
+      ;; Restore PEL's ability to download and install external packages
+      (pel-bundled-mode nil)
+      ;;  Restore the normal, complete Elpa directory.
+      (pel-switch-to-elpa-complete)
+      ;; Remove files used in fast-start setup
+      (when (file-exists-p elpa-reduced-dirpath)
+        (delete-directory elpa-reduced-dirpath :recursive))
+      (when (file-exists-p pel-fast-startup-setup-fname)
+        (delete-file pel-fast-startup-setup-fname))
+      ;; inform user.
+      (message "Restart Emacs to complete the normal PEL/Emacs operation mode!")
+      (setq pel--setup-changed t))))
+
+;; --
+(defun pel-setup-info ()
+  "Display current state of PEL setup: whether normal or in fast startup."
+  (interactive)
+  (let* ((mode (pel--operation-mode)))
+    (if pel--setup-changed
+        (message "You have already changed the setup to %s but did not stop Emacs!
+ You may experience inconsistent Emacs behaviour.  It's best to close and restart Emacs!"
+                 mode)
+      (cond ((eq mode 'fast)
+             (message "PEL/Emacs operates in fast startup mode.
+ Emacs starts faster because single directory packages are bundled inside
+ a single directory: %selpa-reduced/pel-bundle-YYYYMMDD.hhmm.
+ However, in this setup mode, PEL is not able to install any external package.
+ To install new package return to normal mode by executing pel-setup-normal."
+                      user-emacs-directory))
+            ((eq mode 'normal)
+             (message "PEL/Emacs operates in normal mode.
+ In this mode Emacs packages are setup the way Emacs normally organizes them.
+ You can install new packages and you can use PEL customization to add and
+ install new package, or use pel-cleanup to remove the unused ones.
+ With a large number of external packages Emacs normally starts slower
+ because of the larger number of directories inside %selpa
+ If you want to speed up Emacs startup execute pel-setup-fast."
+                      user-emacs-directory))
+            (t
+             (user-error "PEL/Emacs mode is inconsistent!
+ Check the elpa directory inside %s and restore normal setup.
+ Only some conditions of a fast startup setup are met:
+ - %s" user-emacs-directory (string-join (pel--fast-setup-met-criteria)
+                                         "\n - ")))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-setup)
