@@ -643,7 +643,8 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-setup" for:
     pel-setup-fast
-    pel-setup-normal)
+    pel-setup-normal
+    pel-setup-info)
 
   (pel-autoload "pel-window" for:
     pel-show-window-previous-buffer
