@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-19 08:28:24, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-19 19:09:07, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -335,7 +335,7 @@ The code adds each entry to the `package--builtin-versions'."
           ;; files.  At first create it the directory as a sibling of the elpa
           ;; directory because elpa-reduced is not created yet.
           (make-directory pel-bundle-dirpath)
-          (pel-elpa-create-copies pel-elpa-dirpath pel-bundle-dirpath)
+          (pel-elpa-create-copies pel-elpa-dirpath pel-bundle-dirpath :with-symlinks)
           ;; Create the pel-bundle-pkg.el file inside it.
           (pel-create-bundle-pkg-file pel-bundle-dirpath time-stamp)
           ;;
