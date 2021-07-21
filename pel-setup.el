@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-21 17:00:16, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-21 17:53:40, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -250,7 +250,7 @@ Return a (activate . byte-compile result) cons cell."
                                      (locate-library "pel_keys"))
                                     ".el"))))
 
-(defun pel-setup-add-to-builtin-packages (pkg-versions fname)
+(defun pel-setup-add-to-builtin-packages (pkg-versions fname pel-bundle-dirpath)
   "Write code in FNAME that adds the PKG-VERSIONS to the Emacs builtins.
 The code adds each entry to the `package--builtin-versions'."
   (with-temp-file fname
@@ -270,13 +270,18 @@ The code adds each entry to the `package--builtin-versions'."
     (add-to-list 'package--builtin-versions dep-ver))
   pel-fast-startup-builtin-packages)
 
-(defun pel--pct (_packages)
+\(defun pel--pct (_packages)
   \"Filter packages to prevent downloads.\"
   nil)
 
-(advice-add  'package-compute-transaction  :filter-return (function pel--pct))
+\(when (and (>= emacs-major-version 27)
+            (require 'package nil :no-error)
+            (boundp 'package-quickstart)
+            package-quickstart)
+   (add-to-list 'load-path \"%s\"))
+\(advice-add  'package-compute-transaction  :filter-return (function pel--pct))
 
-" pkg-versions))))
+" pkg-versions pel-bundle-dirpath))))
 
 
 ;; --
@@ -329,8 +334,7 @@ Returns: 'normal, 'fast or 'inconsistent."
       (error "PEL/Emacs is already setup for fast startup!")
     (let ((cd-original (cd ".")))
       (condition-case-unless-debug err
-          (let* ((new-pel-bundle-dirpath nil)
-                 (elpa-dirpath pel-elpa-dirpath)
+          (let* ((elpa-dirpath pel-elpa-dirpath)
                  (pel-bundle-dirpath (pel--sibling-dir elpa-dirpath
                                                        "pel-bundle"))
                  (elpa-reduced-dirpath (pel--sibling-dir elpa-dirpath
@@ -339,7 +343,10 @@ Returns: 'normal, 'fast or 'inconsistent."
                                                           "elpa-complete"))
                  (elpa-is-link (file-symlink-p (directory-file-name
                                                 elpa-dirpath)))
-                 (time-stamp (format-time-string "%Y%m%d.%H%M")))
+                 (time-stamp (format-time-string "%Y%m%d.%H%M"))
+                 (new-pel-bundle-dirpath (expand-file-name
+                                           (format "pel-bundle-%s" time-stamp)
+                                           elpa-reduced-dirpath)))
             ;; Ensure that elpa is a directory or a symlink to elpa-complete
             ;; otherwise abort.
             (when (and elpa-is-link
@@ -402,7 +409,8 @@ Returns: 'normal, 'fast or 'inconsistent."
             ;; `package-initialize'.  In Emacs ≥ 27 it must be set in early-init.el.
             (pel-setup-add-to-builtin-packages
              (pel-elpa-disable-pkg-deps-in elpa-reduced-dirpath)
-             pel-fast-startup-setup-fname)
+             pel-fast-startup-setup-fname
+             new-pel-bundle-dirpath)
             ;;
             ;; Move the pel-bundle directory inside the elpa-reduced directory:
             ;; effectively creating a pel-bundle package "pel-bundle" that contains
@@ -410,9 +418,6 @@ Returns: 'normal, 'fast or 'inconsistent."
             ;; original elpa directory (the elpa-complete directory).
             ;; Give the pel-bundle directory a version number corresponding to today's
             ;; date.
-            (setq new-pel-bundle-dirpath (expand-file-name
-                                          (format "pel-bundle-%s" time-stamp)
-                                          elpa-reduced-dirpath))
             (rename-file (directory-file-name pel-bundle-dirpath)
                          new-pel-bundle-dirpath)
             ;; Re-organize the elpa directory:
