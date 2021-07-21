@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-20 12:56:57, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-21 17:00:16, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -333,12 +333,12 @@ Returns: 'normal, 'fast or 'inconsistent."
                  (elpa-dirpath pel-elpa-dirpath)
                  (pel-bundle-dirpath (pel--sibling-dir elpa-dirpath
                                                        "pel-bundle"))
-                 (elpa-reduced-dirpath  (pel--sibling-dir elpa-dirpath
-                                                          "elpa-reduced"))
+                 (elpa-reduced-dirpath (pel--sibling-dir elpa-dirpath
+                                                         "elpa-reduced"))
                  (elpa-complete-dirpath (pel--sibling-dir elpa-dirpath
                                                           "elpa-complete"))
-                 (elpa-is-link    (file-symlink-p (directory-file-name
-                                                   elpa-dirpath)))
+                 (elpa-is-link (file-symlink-p (directory-file-name
+                                                elpa-dirpath)))
                  (time-stamp (format-time-string "%Y%m%d.%H%M")))
             ;; Ensure that elpa is a directory or a symlink to elpa-complete
             ;; otherwise abort.
@@ -431,7 +431,18 @@ Returns: 'normal, 'fast or 'inconsistent."
             ;; Re-compile pel_keys.el with `pel-running-with-bundled-packages'
             ;; bound to t to prevent PEL from downloading and installing
             ;; external packages while PEL runs in PEL bundled mode.
-            (pel-bundled-mode t))
+            (pel-bundled-mode t)
+            ;; With Emacs ≥ 27 if package-quickstart is used more work is required:
+            ;; package-quickstart-refresh must be done while package-alist
+            ;; includes all packages now in elpa (which is pel-reduced).
+            (when (and (>= emacs-major-version 27)
+                       (require 'package nil :no-error)
+                       (fboundp 'package-quickstart-refresh)
+                       (boundp 'package-quickstart)
+                       package-quickstart)
+              (let ((package-alist (pel-elpa-package-alist-of-dir
+                                    elpa-reduced-dirpath)))
+                (package-quickstart-refresh))))
         (error
          (display-warning 'pel-setup-fast
                           (format "Failed fast startup setup: %s" err))))
@@ -446,8 +457,8 @@ Returns: 'normal, 'fast or 'inconsistent."
   (if (eq (pel--operation-mode) 'normal)
       (error "PEL/Emacs is already using the normal setup!")
     (let* ((elpa-dirpath pel-elpa-dirpath)
-           (elpa-reduced-dirpath  (pel--sibling-dir elpa-dirpath
-                                                    "elpa-reduced")))
+           (elpa-reduced-dirpath (pel--sibling-dir elpa-dirpath
+                                                   "elpa-reduced")))
       ;; Restore PEL's ability to download and install external packages
       (pel-bundled-mode nil)
       ;;  Restore the normal, complete Elpa directory.
@@ -457,6 +468,17 @@ Returns: 'normal, 'fast or 'inconsistent."
         (delete-directory elpa-reduced-dirpath :recursive))
       (when (file-exists-p pel-fast-startup-setup-fname)
         (delete-file pel-fast-startup-setup-fname))
+      ;; With Emacs ≥ 27 if package-quickstart is used more work is required:
+      ;; package-quickstart-refresh must be done while package-alist
+      ;; includes all packages now in elpa (which is elpa and elpa-complete).
+      (when (and (>= emacs-major-version 27)
+                 (require 'package nil :no-error)
+                 (fboundp 'package-quickstart-refresh)
+                 (boundp 'package-quickstart)
+                 package-quickstart)
+        (let ((package-alist (pel-elpa-package-alist-of-dir
+                              elpa-dirpath)))
+          (package-quickstart-refresh)))
       ;; inform user.
       (message "Restart Emacs to complete the normal PEL/Emacs operation mode!")
       (setq pel--setup-changed t))))
