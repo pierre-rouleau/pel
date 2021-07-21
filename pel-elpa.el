@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-16 16:27:58, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-21 16:38:00, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -304,6 +304,35 @@ function does not attempt to detect duplicate and returns nil."
   (let ((elpa-pure-dir-names (pel-elpa-one-level-packages elpa-dir-path)))
     (dolist (dn elpa-pure-dir-names)
       (delete-directory (expand-file-name dn elpa-dir-path) :recurse))))
+
+
+
+;; -----
+
+(defun pel-elpa-package-name-for (dirname)
+  "Return the package name for the specific DIRNAME, return nil on error.
+The DIRNAME is expected to be a package-name.-version string.
+This only perform a string manipulation to extract the package name."
+  (save-match-data
+    (when (string-match "\\([a-zA-Z0-9-]+\\)-[0-9.]+" dirname))
+    (match-string 1 dirname)))
+
+(defun pel-elpa-package-alist-of-dir (dirpath)
+  "Return a package-alist format alist of packages inside DIRPATH."
+  (let (pkg-alist
+        pkg-name
+        pkg-fname
+        pkg-pathname
+        pkg-desc)
+    (dolist (pkg-dirname (pel-elpa-package-directories dirpath) pkg-alist)
+      (setq pkg-name (pel-elpa-package-name-for pkg-dirname))
+      (setq pkg-pathname (expand-file-name pkg-dirname dirpath))
+      (setq pkg-fname (expand-file-name (format "%s-pkg.el" pkg-name)
+                                        pkg-pathname))
+      (setq pkg-desc (pel-elpa-load-pkg-descriptor pkg-fname))
+      ;; the loaded value does not set the directory; set it here
+      (setf (package-desc-dir pkg-desc) pkg-pathname)
+      (push (list (intern pkg-name) pkg-desc) pkg-alist))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-elpa)
