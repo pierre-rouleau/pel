@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-21 18:39:51, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-21 18:50:00, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -410,7 +410,7 @@ Returns: 'normal, 'fast or 'inconsistent."
              (pel-string-when (and (>= emacs-major-version 27)
                                    (boundp 'package-quickstart)
                                    package-quickstart)
-                              (format "(add-to-list 'load-path %s)"
+                              (format "(add-to-list 'load-path \"%s\")"
                                       new-pel-bundle-dirpath)))
             ;;
             ;; Move the pel-bundle directory inside the elpa-reduced directory:
