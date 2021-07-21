@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-21 17:53:40, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-21 18:39:51, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -146,7 +146,8 @@
 ;;; Dependencies:
 ;;
 
-(require 'pel--base)                    ; use: pel-unix-socket-p
+(require 'pel--base)                    ; use: pel-unix-socket-p,
+;;                                      ;      pel-string-when
 (require 'pel-package)                  ; use: pel-elpa-dirpath
 (require 'pel-elpa)
 (eval-when-compile (require 'subr-x))   ; use: string-join
@@ -250,7 +251,7 @@ Return a (activate . byte-compile result) cons cell."
                                      (locate-library "pel_keys"))
                                     ".el"))))
 
-(defun pel-setup-add-to-builtin-packages (pkg-versions fname pel-bundle-dirpath)
+(defun pel-setup-add-to-builtin-packages (pkg-versions fname extra-code)
   "Write code in FNAME that adds the PKG-VERSIONS to the Emacs builtins.
 The code adds each entry to the `package--builtin-versions'."
   (with-temp-file fname
@@ -266,6 +267,7 @@ The code adds each entry to the `package--builtin-versions'."
 
 \(defun pel-fast-startup-set-builtins ()
   \"Prevent package from downloading a set of package dependencies.\"
+  %s
   (dolist (dep-ver pel-fast-startup-builtin-packages)
     (add-to-list 'package--builtin-versions dep-ver))
   pel-fast-startup-builtin-packages)
@@ -274,14 +276,9 @@ The code adds each entry to the `package--builtin-versions'."
   \"Filter packages to prevent downloads.\"
   nil)
 
-\(when (and (>= emacs-major-version 27)
-            (require 'package nil :no-error)
-            (boundp 'package-quickstart)
-            package-quickstart)
-   (add-to-list 'load-path \"%s\"))
 \(advice-add  'package-compute-transaction  :filter-return (function pel--pct))
 
-" pkg-versions pel-bundle-dirpath))))
+" pkg-versions extra-code))))
 
 
 ;; --
@@ -345,8 +342,8 @@ Returns: 'normal, 'fast or 'inconsistent."
                                                 elpa-dirpath)))
                  (time-stamp (format-time-string "%Y%m%d.%H%M"))
                  (new-pel-bundle-dirpath (expand-file-name
-                                           (format "pel-bundle-%s" time-stamp)
-                                           elpa-reduced-dirpath)))
+                                          (format "pel-bundle-%s" time-stamp)
+                                          elpa-reduced-dirpath)))
             ;; Ensure that elpa is a directory or a symlink to elpa-complete
             ;; otherwise abort.
             (when (and elpa-is-link
@@ -410,7 +407,11 @@ Returns: 'normal, 'fast or 'inconsistent."
             (pel-setup-add-to-builtin-packages
              (pel-elpa-disable-pkg-deps-in elpa-reduced-dirpath)
              pel-fast-startup-setup-fname
-             new-pel-bundle-dirpath)
+             (pel-string-when (and (>= emacs-major-version 27)
+                                   (boundp 'package-quickstart)
+                                   package-quickstart)
+                              (format "(add-to-list 'load-path %s)"
+                                      new-pel-bundle-dirpath)))
             ;;
             ;; Move the pel-bundle directory inside the elpa-reduced directory:
             ;; effectively creating a pel-bundle package "pel-bundle" that contains
