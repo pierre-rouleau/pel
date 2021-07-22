@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-21 16:38:00, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-21 21:33:34, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -314,7 +314,7 @@ function does not attempt to detect duplicate and returns nil."
 The DIRNAME is expected to be a package-name.-version string.
 This only perform a string manipulation to extract the package name."
   (save-match-data
-    (when (string-match "\\([a-zA-Z0-9-]+\\)-[0-9.]+" dirname))
+    (when (string-match "\\([a-zA-Z0-9-+_]+\\)-[0-9.]+" dirname))
     (match-string 1 dirname)))
 
 (defun pel-elpa-package-alist-of-dir (dirpath)
