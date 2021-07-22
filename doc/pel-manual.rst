@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-07-19 17:15:21, updated by Pierre Rouleau.
+:Modified: 2021-07-22 14:25:40, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -507,14 +507,11 @@ You can also use a copy of the file `example/init/init-1.el`_ :
                   (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
                   (pel-fast-startup-set-builtins)
                   ;; Remember Emacs is running in PEL's fast startup mode.
-                  (setq pel-running-with-bundled-packages t)))
-              ;;
-              (require 'package)
-              (package-initialize))
-
-            ;; When package-quickstart is t, there's no need to call package-initialize.
+                  (setq pel-running-with-bundled-packages t))))
+            (require 'package)
             (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/") t)
-            (add-to-list 'package-archives (cons "melpa-stable" "https://stable.melpa.org/packages/") t)))
+            (add-to-list 'package-archives (cons "melpa-stable" "https://stable.melpa.org/packages/") t)
+            (package-initialize)))
 
 
         ;; 2: Delay loading of abbreviation definitions

@@ -1,5 +1,8 @@
 ;; -*- lexical-binding: t; -*-
 ;;
+;; Inform later code that package quickstart is being used.
+(setq package-quickstart t)
+
 ;; Activate PEL's fast startup if environment was setup by `pel-setup-fast'.
 (let ((fast-startup-setup-fname (expand-file-name "pel-setup-package-builtin-versions.el"
                                                   user-emacs-directory)))

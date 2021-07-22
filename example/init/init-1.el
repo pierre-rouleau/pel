@@ -62,14 +62,11 @@
           (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
           (pel-fast-startup-set-builtins)
           ;; Remember Emacs is running in PEL's fast startup mode.
-          (setq pel-running-with-bundled-packages t)))
-      ;;
-      (require 'package)
-      (package-initialize))
-
-    ;; When package-quickstart is t, there's no need to call package-initialize.
+          (setq pel-running-with-bundled-packages t))))
+    (require 'package)
     (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/") t)
-    (add-to-list 'package-archives (cons "melpa-stable" "https://stable.melpa.org/packages/") t)))
+    (add-to-list 'package-archives (cons "melpa-stable" "https://stable.melpa.org/packages/") t)
+    (package-initialize)))
 
 ;; 2: Delay loading of abbreviation definitions
 ;;     Disable loading the abbreviation file during Emacs initialization.
