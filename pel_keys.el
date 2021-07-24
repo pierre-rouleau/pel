@@ -5646,7 +5646,10 @@ the ones defined from the buffer now."
   (pel-ensure-package anzu from: melpa)
   (pel-autoload-file anzu for: global-anzu-mode)
   (when (eq pel-initial-search-tool 'anzu)
-    (global-anzu-mode +1)))
+    (add-hook 'emacs-startup-hook
+              (lambda ()
+                (global-anzu-mode +1))
+              :append)))
 
 (when pel-use-cexp
   ;; download and byte-compile cexp if not already present
