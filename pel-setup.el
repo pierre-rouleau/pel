@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-21 18:50:00, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-25 14:18:22, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -261,13 +261,16 @@ The code adds each entry to the `package--builtin-versions'."
 ;;; Built automatically by PEL for fast Emacs startup.  -*- lexical-binding: t; -*-
 \(require 'package)
 
-(defvar pel-fast-startup-builtin-packages
+\(defvar pel-running-with-bundled-packages)  ; prevent warnings.  Should be defined in init.el
+
+\(defvar pel-fast-startup-builtin-packages
   '%S
   \"List of packages dependencies to add to package--builtin-versions.\")
 
 \(defun pel-fast-startup-set-builtins ()
   \"Prevent package from downloading a set of package dependencies.\"
   %s
+  (setq pel-running-with-bundled-packages t)
   (dolist (dep-ver pel-fast-startup-builtin-packages)
     (add-to-list 'package--builtin-versions dep-ver))
   pel-fast-startup-builtin-packages)
