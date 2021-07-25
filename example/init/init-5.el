@@ -1,4 +1,4 @@
-;; -*-no-byte-compile: t; -*-
+;; -*-lexical-binding: t; -*-
 ;;; ---Example init.el file ---------------------------------------------------
 ;;
 ;; With:
@@ -12,6 +12,10 @@
 ;;        - using adwaita theme
 ;;      - benchmark of emacs startup
 ;;      - Emacs starts without splash screen
+;;      - Byte-compilable, using lexical binding
+;;      - Support fast-startup.
+;;
+;; For a little speedup, byte-compile this file.
 ;;
 ;; -----------------------------------------------------------------------------
 ;;
@@ -20,54 +24,100 @@
 (defconst pel-home-dirpath (expand-file-name "~/projects/pel")
   "Directory where PEL source files are stored.")
 
-;; 0.1: To speed up Emacs init, prevent checking for file handling association
-;; and prevent garbage collection.  The following 2 lines reduce by about .2
-;; seconds loading time in terminal mode.
-(let ((file-name-handler-alist nil)
-      (gc-cons-threshold most-positive-fixnum))
+;; To speed up Emacs init, prevent checking for file handling association and
+;; prevent garbage collection.
+;;
+;; First, up until the complete initialization is done and until pel-init is
+;; completed, prevent file extension processing by setting the C source code
+;; defined variable `file-name-handler-alist' to nil.
+;;
+;; Then prevent garbage collection during startup by maxing-out the garbage
+;; collection control variables `gc-cons-threshold' and `gc-cons-percentage'.
+;; These are restored after handling the command line arguments (but not when
+;; batch mode is used) using the `emacs-startup-hook'.
 
-  ;; ---------------------------------------------------------------------------
+(let ((file-name-handler-alist nil)
+      (fast-startup-setup-fname nil))
+
+  (setq gc-cons-threshold most-positive-fixnum
+        gc-cons-percentage 0.6)
+
   ;; Setup Benchmark Measurement
   ;; ---------------------------
-  ;; Load benchmark right away using the file name explicitly so we can use it
-  ;; to benchmark the complete package loading mechanism.
-  ;; CAUTION: Modify the path when a new version is available.
+  ;; CAUTION:
+  ;;          - Copy the following files downloaded from MELPA into your PEL
+  ;;            utility directory which is normally  ~/.emacs.d/utils:
+  ;;                - benchmark-init-modes.el and .elc
+  ;;                - benchmark-init.el and .elc
+  ;;            - Do not copy the benchmark-init-autoloads.el and the
+  ;;              nor the benchmark-init-pkg.el file.
+  ;;              They are not needed for PEL.
+  ;;          - Use to measure startup time and development of your init,
+  ;;            comment this code once you'require ') happy and want to start
+  ;;            a little faster.
+  ;;
   (require 'benchmark-init
-           (expand-file-name
-            "~/.emacs.d/elpa/benchmark-init-20150905.938/benchmark-init"))
+           (expand-file-name "~/.emacs.d/utils/benchmark-init"))
   (add-hook 'after-init-hook 'benchmark-init/deactivate)
 
-  ;; ---------------------------------------------------------------------------
-  ;; 1: Setup additional package sources: MELPA, MELPA-STABLE.
-  ;;    By default Emacs only identifies the gnu archive located at
-  ;;    URL "https://elpa.gnu.org/packages/".
-  ;;    Add the MELPA archives as they provide more packages.
-  (when (>= emacs-major-version 24)
+  ;; Remember if Emacs is running in PEL's fast startup mode.
+  ;; --------------------------------------------------------
+  (setq fast-startup-setup-fname
+        (expand-file-name "pel-setup-package-builtin-versions.el"
+                          user-emacs-directory))
+  (setq pel-running-with-bundled-packages
+        (file-exists-p fast-startup-setup-fname))
+
+  ;; Define function to activate package.el Elpa-compliant Package Management
+  ;; ------------------------------------------------------------------------
+  (defun pel--init-package-support ()
+    "Configure package.el support."
     (if (< emacs-major-version 27)
         ;; Emacs prior to 27
         ;; -----------------
         (progn
-          ;; Activate PEL's fast startup if environment was setup by `pel-setup-fast'.
-          (let ((fast-startup-setup-fname (expand-file-name "pel-setup-package-builtin-versions.el"
-                                                            user-emacs-directory)))
-            (when (file-exists-p fast-startup-setup-fname)
-              (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
-              (pel-fast-startup-set-builtins)
-              ;; Remember Emacs is running in PEL's fast startup mode.
-              (setq pel-running-with-bundled-packages t)))
-          ;;
+          ;; Separate elpa directory for Emacs in graphics mode and Emacs
+          ;; in TTY mode.
+          ;; Use ~/.emacs.d/elpa in TTY mode,
+          ;; use ~/.emacs.d/elpa-graphics in graphics mode
+          (when (display-graphic-p)
+            (setq package-user-dir (locate-user-emacs-file "elpa-graphics")))
+
+          ;; Activate the MELPA package manager
+          ;;    (see http://melpa.org/#/getting-started)
           (require 'package)
+          ;; By default Emacs enable packages *after* init is loaded.
+          ;; The code later explicitly calls package-initialize to do it
+          ;; right away to allow installing packages.
+          ;; We need to set package-enable-at-startup to nil
+          ;; to prevent Emacs from doing it again at the end of init.
           (setq package-enable-at-startup nil)
+
+          ;; Emacs 26.2 has a bug ( https://debbugs.gnu.org/34341 ) that
+          ;; prevents gnutls downloads (such as the ones from GNU Elpa
+          ;; for packages). The following work-around solves the problem.
           (if (version= emacs-version "26.2")
               (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
+
           (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
                               (not (gnutls-available-p))))
                  (proto (if no-ssl "http" "https")))
+            ;; Add MELPA Stable before MELPA: some packages are only on MELPA
+            ;; but several store their stable packages on MELPA Stable and
+            ;; the unstable ones in MELPA.
             (add-to-list 'package-archives
-                         (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+                         (cons "melpa"
+                               (concat proto "://melpa.org/packages/"))
+                         t)
             (add-to-list 'package-archives
                          (cons "melpa-stable"
-                               (concat proto "://stable.melpa.org/packages/")) t))
+                               (concat proto "://stable.melpa.org/packages/"))
+                         t)
+            (when (< emacs-major-version 24)
+              ;; For important compatibility libraries like cl-lib
+              (add-to-list 'package-archives
+                           (cons "gnu"
+                                 (concat proto "://elpa.gnu.org/packages/")))))
           (package-initialize))
 
       ;; Emacs 27 or later.
@@ -75,8 +125,8 @@
       ;; Emacs >= 27 support the `package-quickstart' feature which
       ;; speeds-ups Emacs startup time.  This is a user-option which must be
       ;; activated manually.
-      ;; When package-quickstart is customized to t, Emacs 27 support 2 initialization
-      ;; files in the user-emacs-directory (which often is ~/.emacs.d), these are:
+      ;; When package-quickstart is non-nil, Emacs 27 supports the early-init
+      ;; initialization file in the user-emacs-directory (normally ~/.emacs.d).
       ;;
       ;; - early-init.el  : loaded very early in the startup process before
       ;;                    graphical elements are initialized and before the
@@ -99,6 +149,24 @@
       (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/") t)
       (add-to-list 'package-archives (cons "melpa-stable" "https://stable.melpa.org/packages/") t)
       (package-initialize)))
+  (declare-function 'pel--init-package-support "init")
+
+  ;; Either delay package.el (on fast startup) or initialize it now (for
+  ;; normal operation mode).  In both cases, schedule restoration of garbage
+  ;; collector to prevent Emacs from stalling/stuttering on large memory loads.
+
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              ;; set GC threshold to 16 MBytes as opposed to 800,000
+              (setq gc-cons-threshold 16777216
+                    gc-cons-percentage 0.1)))
+
+  (if pel-running-with-bundled-packages
+      (progn
+        (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
+        (pel-fast-startup-set-builtins)
+        (add-hook 'emacs-startup-hook (function pel--init-package-support)))
+    (pel--init-package-support))
 
   ;; ---------------------------------------------------------------------------
   ;; 2: Delay loading of abbreviation definitions
