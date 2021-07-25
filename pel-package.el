@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-18 23:54:46, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-24 23:53:31, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -616,8 +616,7 @@ of a restriction lock."
                             (length load-path)
                             (length user-options)
                             (length (seq-filter
-                                     (lambda (x)
-                                       (symbol-value x))
+                                     (lambda (x) (symbol-value x))
                                      user-options))
                             (pel--elpa-stats n-elpa-base n-elpa-deps
                                              n-elpa-locked)
@@ -656,6 +655,13 @@ user-options.\n"
                    (pel--show-pkgs-in-excess-for "Utils" utils-in-excess))
                (insert "\n\nNo package is in excess.")))))
       (message overview))))
+
+
+(defun pel-inactive-user-options ()
+  "Return a list of inactive PEL user-options symbols."
+  (seq-filter (lambda (usr-opt)
+                (not (symbol-value usr-opt)))
+              (pel-user-options)))
 
 ;; ----
 
