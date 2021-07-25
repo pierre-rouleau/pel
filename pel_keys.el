@@ -6676,9 +6676,14 @@ This call simulates a F7 prefix key unless DONT-SIMULATE is non-nil."
   (pel-autoload-file hydra for: defhydra)
 
   ;; Byte-compile pel__hydra.el if needed
-  (let* ((current-directory (file-name-directory load-file-name))
-         (el-filename (expand-file-name "pel__hydra.el" current-directory)))
-    (pel-byte-compile-if-needed el-filename)))
+  ;; TODO: in fast startup mode the elpa packages are not activated until
+  ;;       after processing of command line arguments, and is not done in batch mode.
+  ;;       This unfortunately means that hydra is not available for batch-mode byte-compilation
+  ;;       when PEL/Emacs is operating in fast startup mode.
+  (unless pel-running-with-bundled-packages
+    (let* ((current-directory (file-name-directory load-file-name))
+           (el-filename (expand-file-name "pel__hydra.el" current-directory)))
+      (pel-byte-compile-if-needed el-filename))))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel_keys)
