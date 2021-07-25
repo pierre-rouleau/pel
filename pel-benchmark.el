@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-25 08:33:41, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-25 08:47:31, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,12 +33,13 @@
 ;; This depends on some code being stored inside your init.el file.
 ;; See `pel-show-init-time' docstring.
 
+(require 'pel-window)
 ;;; ----------------------------------------------------------------------------
 ;;; Code:
 ;;
 
 (defun pel-show-init-time ()
-    "Display benchmark startup time.
+  "Display benchmark startup time.
 Display the benchmark initialization and duration tree in 2 buffers.
 Also display the Emacs startup time.
 
@@ -53,33 +54,44 @@ to the top of the file:
   ;; ---------------------------
   ;; Load benchmark right away using the file name explicitly so we can use it
   ;; to benchmark the complete package loading mechanism.
-  ;; CAUTION: Modify the path when a new version is available.
+  ;; CAUTION:
+  ;;          - Copy the following files downloaded from MELPA into your PEL
+  ;;            utility directory which is normally  ~/.emacs.d/utils:
+  ;;                - benchmark-init-modes.el and .elc
+  ;;                - benchmark-init.el and .elc
+  ;;            - Do not copy the benchmark-init-autoloads.el and the
+  ;;              nor the benchmark-init-pkg.el file.
+  ;;              They are not needed for PEL.
+  ;;          - Use to measure startup time and development of your init,
+  ;;            comment this code after your investigation and want to start
+  ;;            a little faster.
+  ;;
   (require 'benchmark-init
-           (expand-file-name
-            \"~/.emacs.d/elpa/benchmark-init-20150905.938/benchmark-init\"))
+           (expand-file-name \"~/.emacs.d/utils/benchmark-init\"))
   (add-hook 'after-init-hook 'benchmark-init/deactivate)
 
 Update the path if necessary.
 
 If the above lines are not written in your init.el this function only
 prints the Emacs init time on the echo area."
-    (interactive)
-    (when (and (fboundp 'benchmark-init/show-durations-tree)
-               (fboundp 'benchmark-init/show-durations-tabulated)
-               (member 'benchmark-init/deactivate after-init-hook))
-      (delete-other-windows)
-      (split-window-below)
-      ;; max-specpdl-size default is 1000.
-      ;; When there's a lot of packages installed benchmark hits a limit
-      ;; with 1000 and stops with a warning
-      ;; "Variable binding depth exceeds max-specpdl-size".
-      ;; Change the value for the duration of the benchmark dump.
-      (let ((max-specpdl-size 2000))
-        (ignore-errors
-            (benchmark-init/show-durations-tree)
-            (other-window 1)
-            (benchmark-init/show-durations-tabulated))))
-    (message "Emacs startup time: %s" (emacs-init-time)))
+  (interactive)
+  (when (and (fboundp 'benchmark-init/show-durations-tree)
+             (fboundp 'benchmark-init/show-durations-tabulated)
+             (memq 'benchmark-init/deactivate after-init-hook))
+    (delete-other-windows)
+    (split-window-below)
+    (pel-2-vertical-windows)
+    ;; max-specpdl-size default is 1000.
+    ;; When there's a lot of packages installed benchmark hits a limit
+    ;; with 1000 and stops with a warning
+    ;; "Variable binding depth exceeds max-specpdl-size".
+    ;; Change the value for the duration of the benchmark dump.
+    (let ((max-specpdl-size 2000))
+      (ignore-errors
+        (benchmark-init/show-durations-tree)
+        (other-window 1)
+        (benchmark-init/show-durations-tabulated))))
+  (message "Emacs startup time: %s" (emacs-init-time)))
 
 ;;; ----------------------------------------------------------------------------
 (provide 'pel-benchmark)
