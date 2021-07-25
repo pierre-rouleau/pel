@@ -53,7 +53,7 @@
   ;;              nor the benchmark-init-pkg.el file.
   ;;              They are not needed for PEL.
   ;;          - Use to measure startup time and development of your init,
-  ;;            comment this code once you'require ') happy and want to start
+  ;;            comment this code after your investigation and want to start
   ;;            a little faster.
   ;;
   (require 'benchmark-init
