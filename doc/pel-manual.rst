@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-07-25 13:53:57, updated by Pierre Rouleau.
+:Modified: 2021-07-25 14:27:10, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1393,13 +1393,20 @@ PEL provides the following 3 commands:
 
 These commands are described in the `Fast Startup PDF Sheet`_.
 
-The speedup you will experience depends on several factors.  One main factor
-is the number of Elpa-compliant packages that PEL can bundle.  PEL will be
-able to bundle all those packages that put all their files inside a single
-directory.  PEL will then build a single pel-bundle-autoloads.el file and one
-pel-bundle-pkg.el for all of these packages.  By doing so, and by adding extra
-code to make the whole thing work, by delaying package initialization in the
-init.el file, PEL reduces Emacs-load path and overall startup processing.
+The speedup you will experience depends on several factors:
+
+- One main factor is the number of Elpa-compliant packages that PEL can
+  bundle.  PEL will be able to bundle all those packages that put all their
+  files inside a single directory.  PEL will then build a single
+  pel-bundle-autoloads.el file and one pel-bundle-pkg.el for all of these
+  packages.  By doing so, and by adding extra code to make the whole thing
+  work, by delaying package initialization in the init.el file, PEL reduces
+  Emacs-load path and overall startup processing.
+
+- Another significant factor is the init.el code. The execution of
+  ``package-init`` must be delayed.  See the file `example/init/init-5.el`_
+  for a setup that properly supports PEL fast-startup.
+
 
 It's possible to reduce the startup time down such that benchmark-init report
 it to be 0.1 second, even with a relatively large number of external package.
