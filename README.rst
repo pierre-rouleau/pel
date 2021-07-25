@@ -128,9 +128,11 @@ Drop me a note in the wiki_ or in the `discussion board`_!
        terminal mode running Emacs 26.3 I get the following startup time:
 
        - with 182 packages, benchmark-init reports about 0.4 second startup-time,
-       - with 238 packages, benchmark-init reports about 0.6 second startup-time,
+       - with 238 packages, benchmark-init reports about 0.6 second
+         startup-time, see the `benchmark-init report for it <res/normal-startup-001.png>`_
        - with 238 packages, in **fast startup** operation mode, benchmark-init
-         reports about **0.1 second startup-time**.
+         reports about **0.1 second startup-time**, see the
+         `benchmark-init report for it <res/fast-startup-001.png>`_..
 
        It's possible to reduce this further by restricting the number of used
        package. This must be done in normal operation mode (as opposition to
