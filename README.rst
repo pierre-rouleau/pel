@@ -129,10 +129,10 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 
        - with 182 packages, benchmark-init reports about 0.4 second startup-time,
        - with 238 packages, benchmark-init reports about 0.6 second
-         startup-time, see the `benchmark-init report for it <res/normal-startup-001.png>`_
+         startup-time, see the `benchmark-init report for it <doc/res/normal-startup-001.png>`_
        - with 238 packages, in **fast startup** operation mode, benchmark-init
          reports about **0.1 second startup-time**, see the
-         `benchmark-init report for it <res/fast-startup-001.png>`_..
+         `benchmark-init report for it <doc/res/fast-startup-001.png>`_..
 
        It's possible to reduce this further by restricting the number of used
        package. This must be done in normal operation mode (as opposition to
