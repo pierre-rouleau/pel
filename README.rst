@@ -31,8 +31,9 @@ or `update it`_ [2]_ !
     customization groups of Emacs built-in and external Emacs Lisp libraries
     even if they are not even loaded.
 
-  - The faster Emacs startup setup.  Use it when you want a fast Emacs
-    startup.  It that mode you cannot install new packages but you have access
+  - The faster Emacs startup setup.  Use it when you want a **fast Emacs
+    startup** (achieve 0.1 second startup with over 230 external packages, see [4]_).
+    In that mode you cannot install new packages but you have access
     to all packages you have already installed and Emacs starts faster than
     before.
 
@@ -44,7 +45,7 @@ or `update it`_ [2]_ !
       package installation via customization.
 
 - PEL controls the download, installation, configuration and activation of
-  **over 200** *top-level* [3]_ external packages through the use of
+  **over 230** *top-level* [3]_ external packages through the use of
   easy-to-setup customization user-options that have a name that start with
   the "``pel-use-``" prefix.  See the manual `built-in and external Emacs
   packages`_ section.
@@ -123,15 +124,23 @@ Drop me a note in the wiki_ or in the `discussion board`_!
        installed. PEL currently provides access to over 190 top-level
        packages. The actual number of packages is larger when counting their dependencies.
 
-.. [4] **Quick initialization**: On my system with 182 packages with
-       benchmark-init on I get about 0.4 seconds
-       on a 2014 iMac running macOS Mojave in terminal mode and 0.6 seconds in
-       graphics mode, and get similar times on Linux running inside VMs.  I
-       can reduce this further by reducing the number of features supported by
-       turning them off and run **M-x pel-cleanup** to remove them from Emacs
-       path and internal processing.  It can go even faster when using PEL's
-       *fast-startup* setup!
+.. [4] **Quick initialization**: On my 2014 iMac running macOS Mojave in
+       terminal mode running Emacs 26.3 I get the following startup time:
 
+       - with 182 packages, benchmark-init reports about 0.4 second startup-time,
+       - with 238 packages, benchmark-init reports about 0.6 second startup-time,
+       - with 238 packages, in **fast startup** operation mode, benchmark-init
+         reports about **0.1 second startup-time**.
+
+       It's possible to reduce this further by restricting the number of used
+       package. This must be done in normal operation mode (as opposition to
+       the fast startup operation mode) by changing the PEL user-options and
+       then running the **M-x pel-cleanup** command.  Once done, return to
+       fast startup operation mode.
+
+       The time reduction of fast startup mode depends on the number of
+       packages that can be bundled by PEL.  Those that have all their files
+       in the same directory can be bundled.
 .. links
 
 .. _PEL Key Maps PDF:   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-pel-key-maps.pdf
