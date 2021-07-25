@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-25 13:38:31, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-25 08:33:41, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -65,7 +65,8 @@ If the above lines are not written in your init.el this function only
 prints the Emacs init time on the echo area."
     (interactive)
     (when (and (fboundp 'benchmark-init/show-durations-tree)
-               (fboundp 'benchmark-init/show-durations-tabulated))
+               (fboundp 'benchmark-init/show-durations-tabulated)
+               (member 'benchmark-init/deactivate after-init-hook))
       (delete-other-windows)
       (split-window-below)
       ;; max-specpdl-size default is 1000.
