@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-07-22 14:25:40, updated by Pierre Rouleau.
+:Modified: 2021-07-25 13:53:57, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -47,10 +47,42 @@ PEL is an hybrid package. It is:
     `PEL Customization`_ to selectively configure, enable and activate
     these features.
 
-    - This conforms to the
+    - conforms to the
       `Emacs easy customization`_ system and reduces your need
       to write custom Emacs Lisp configuration code.
 
+    - provides two modes of operation:
+
+      - the normal operation mode which corresponds to the normal way Emacs is
+        used where the package.el package manager is used by PEL and where it
+        is possible to:
+
+        - use PEL's Emacs customization to select features and
+          where the **pel-init** command downloads and installs the external
+          packages required for those features,
+        - disable features no longer needed and remove them by executing the
+          **pel-cleanup** command, reducing startup time accordingly.
+
+      - the **fast-startup operation mode** that does not allow installation
+        of any new package but provides a much faster Emacs init startup time,
+        even with Emacs 26.3.  In this mode, PEL bundles all external Elpa
+        packages that have files in a single directory, reducing the number of
+        elpa directories which reduces Emacs init startup time furthermore.
+        With it its possible to reduce Emacs startup time to 0.1 second even
+        when using over 230 external packages with no loss of functionality
+        (except ability to install new packages).
+
+        - PEL use techniques similar to those used by `use-package`_ but goes
+          further by providing the extra mode of operation. The use-package
+          describes being able to use over 80 packages with a start time of 2
+          seconds.  With PEL's fast startup of 0.15 second for 238 packages,
+          on Emacs 26.3, that's about 40 times faster!
+
+
+
+
+
+.. _use-package:               https://github.com/jwiegley/use-package#readme
 .. _Emacs easy customization:
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
 
@@ -93,25 +125,11 @@ PEL provides:
   external packages and PEL command descriptions and key bindings
   and links to related on-line documents.
 
-You can either start PEL during Emacs initialization by including the
-following Emacs Lisp code inside your `Emacs initialization file`_ :
+To use PEL you must set your `Emacs initialization file`_ appropriately, and
+if you are using Emacs ≥ 27 with quick-startup you must also setup your
+``early-init`` file appropriately.
+See the section titled `How to install PEL`_ below.
 
-.. code:: elisp
-
-      (require 'pel)
-      (defconst pel-home-dirpath (expand-file-name "~/projects/pel")
-       "Directory where PEL source files are stored.")
-      (pel-init)
-
-The ``pel-home-dirpath`` defconst identifies the location of the PEL source
-code.
-
-You can place you own customization after the call to ``pel-init``.
-This way you can overwrite specific PEL's key bindings if needed.
-
-You can also can start or re-start PEL interactively by typing::
-
-  M-x pel-init
 
 
 .. _Emacs initialization file: https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html#Init-File
@@ -1343,6 +1361,72 @@ user-full-name                           Your full name.
 user-mail-address                        Your email address.
                                          PEL uses it in various file skeletons.
 ======================================== ======================================
+
+
+.. ---------------------------------------------------------------------------
+
+Get Emacs To Startup FAST
+=========================
+
+Once you have installed and configured all external packages you need you may
+find that Emacs startup time has increased too much for your liking.  That
+will be the case if you use a large number of external Elpa-compliant packages
+because Emacs must process the autoloads package information inside each of
+the elpa directory and that takes time.  There are several techniques that can
+be used to speed this up and PEL uses a large number of these techniques when
+it operates in the normal operation mode.
+
+To experience a faster Emacs init startup you can use PEL's fast-startup
+operation mode.
+
+PEL provides the following 3 commands:
+
+- **pel-setup-info**, bound to ``<f11> <f2> S ?``.  It displays the current
+  operation mode.
+- **pel-setup-fast**, bound to ``<f11> <f2> S f``.  This commands reorganizes
+  the content of your ``user-emacs-directory`` to bundle the elpa external
+  packages to provide a faster Emacs init startup time.  In this mode you
+  cannot add new external packages though.
+- **pel-setup-normal**, bound to ``<f11> <f2> S n``.  This command restores
+  the content of your ``user-emacs-directory`` the way it was, allowing you to
+  use Emacs as before and with the ability to add or remove external packages.
+
+These commands are described in the `Fast Startup PDF Sheet`_.
+
+The speedup you will experience depends on several factors.  One main factor
+is the number of Elpa-compliant packages that PEL can bundle.  PEL will be
+able to bundle all those packages that put all their files inside a single
+directory.  PEL will then build a single pel-bundle-autoloads.el file and one
+pel-bundle-pkg.el for all of these packages.  By doing so, and by adding extra
+code to make the whole thing work, by delaying package initialization in the
+init.el file, PEL reduces Emacs-load path and overall startup processing.
+
+It's possible to reduce the startup time down such that benchmark-init report
+it to be 0.1 second, even with a relatively large number of external package.
+
+On my 2014 iMac computer with 4GHz Intel Core i7 and Flash storage memory,
+running macOs Mojave and Emacs 26.3 in terminal mode, I was able to get Emacs
+startup in 0.1 second with 238 external packages.
+
+In the following screen shots you can see the benchmark-init report for the
+same setup when normal mode is used and then when PEL fast-startup operation
+mode is used.
+
+Screen Shot #1: Emacs 26.3 in terminal mode using 238 external packages in
+normal mode exhibiting a 0.6 second startup:
+
+.. image::  res/normal-startup-001.png
+
+Screen Shot #2: With the same setup as above but now running under PEL's
+fast-startup operation mode: Emacs startup time is now around 0.1 second.
+
+.. image::  res/fast-startup-001.png
+
+
+
+
+
+.. _Fast Startup PDF Sheet: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/fast-startup.pdf
 
 
 .. -----------------------------------------------------------------------------
