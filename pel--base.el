@@ -1484,12 +1484,13 @@ However, when PEL operates in fast startup, the macro creates no code."
 ;; ---------------------------------------------------------------------------
 ;; Delay activation of Modes after processing of command line arguments
 ;; --------------------------------------------------------------------
-(defmacro pel-after-startup-do (&rest body)
-  "Schedule BODY execution after processing of command line arguments."
-  `(add-hook 'emacs-startup-hook
-             (lambda ()
-               ,body)
-             :append))
+(eval-and-compile
+  (defmacro pel-after-startup-do (&rest body)
+    "Schedule BODY execution after processing of command line arguments."
+    `(add-hook 'emacs-startup-hook
+               (lambda ()
+                 ,@body)
+               :append)))
 
 ;; ---------------------------------------------------------------------------
 ;; Mode argument interpretation
