@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-07-25 14:27:10, updated by Pierre Rouleau.
+:Modified: 2021-07-26 16:27:05, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -735,7 +735,7 @@ required tools are installed.  If you have not done that yet, go back to
    you should follow the detailed instructions.  If you want to use this
    fast-track then move your ``~/.emacs.d/init.el`` file somewhere else because it
    will be deleted by the following steps.  Or move your entire ``~/.emacs.d``
-   directory somewhere else.  Later you will need to merge the files.
+   directory somewhere else.  Later you can then merge the files.
 
 
 To install PEL, open a terminal shell and execute the following commands in
@@ -800,11 +800,12 @@ steps to increase the performance of Emacs and PEL:
    Use you system installation command to install ispell, aspell, or hunspell.
 
 
-#. Speed-up Emacs: hold garbage collection during startup
+#. Speed-up Emacs: hold garbage collection during startup, postpone as much as
+   possible and support PEL fast-startup.
 
    .. code:: shell
 
-          cp ~/projects/pel/example/init/init-3.el ~/.emacs.d/init.el
+          cp ~/projects/pel/example/init/init-5.el ~/.emacs.d/init.el
 
 
 At this point, continue to the next section:
@@ -1406,7 +1407,6 @@ The speedup you will experience depends on several factors:
 - Another significant factor is the init.el code. The execution of
   ``package-init`` must be delayed.  See the file `example/init/init-5.el`_
   for a setup that properly supports PEL fast-startup.
-
 
 It's possible to reduce the startup time down such that benchmark-init report
 it to be 0.1 second, even with a relatively large number of external package.
