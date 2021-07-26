@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-07-26 16:27:05, updated by Pierre Rouleau.
+:Modified: 2021-07-26 16:32:28, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -807,6 +807,8 @@ steps to increase the performance of Emacs and PEL:
 
           cp ~/projects/pel/example/init/init-5.el ~/.emacs.d/init.el
 
+#. Edit the ``~/.emacs.d/init.el``: search for the word ``OPTION`` and
+   update what is relevant for you.
 
 At this point, continue to the next section:
 `Activate PEL Features - Customize PEL`_.
