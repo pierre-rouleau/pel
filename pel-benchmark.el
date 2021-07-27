@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-27 00:24:28, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-27 07:25:37, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,6 +33,7 @@
 ;; This depends on some code being stored inside your init.el file.
 ;; See `pel-show-init-time' docstring.
 
+(require 'pel--base)
 (require 'pel-window)
 (require 'pel-setup)
 
@@ -91,11 +92,15 @@ prints the Emacs init time on the echo area."
           (when (file-exists-p filename)
             (insert-file-contents filename))
           (goto-char (point-max))
-          (insert (format "%-20s | %-20s | %-12s | Emacs %s on %s\n"
+          (insert (format "%-20s | %-20s | %-12s | Emacs %s%s on %s\n"
                           (emacs-init-time)
                           (if (display-graphic-p) "graphic mode" "terminal (TTY) mode")
                           (pel--operation-mode)
                           emacs-version
+                          (pel-string-when (and (>= emacs-major-version 27)
+                                                (boundp 'package-quickstart)
+                                                package-quickstart)
+                                           " using package-quickstart")
                           system-type))))
 
     (when (and (fboundp 'benchmark-init/show-durations-tree)
