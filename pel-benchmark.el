@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-27 00:17:19, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-27 00:24:28, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -115,6 +115,12 @@ prints the Emacs init time on the echo area."
           (other-window 1)
           (benchmark-init/show-durations-tabulated)))))
   (message "Emacs startup time: %s" (emacs-init-time)))
+
+
+(defun pel-log-init-time ()
+  "Log Emacs init time in pel-startup-time.log.txt."
+  (interactive)
+  (pel-show-init-time t))
 
 ;;; ----------------------------------------------------------------------------
 (provide 'pel-benchmark)
