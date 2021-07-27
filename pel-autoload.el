@@ -109,7 +109,9 @@ Argument FOR: just a required separator keyword to make code look better."
       pel-global-company-mode
       pel-company-mode))
 
-  (pel-autoload "pel-benchmark" for:  pel-show-init-time)
+  (pel-autoload "pel-benchmark" for:
+    pel-show-init-time
+    pel-log-init-time)
 
   (pel-autoload-function "pel-bookmark" for: pel-bookmark-in-current-file-p)
 
