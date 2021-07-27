@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-25 08:47:31, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-27 00:05:53, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -34,14 +34,22 @@
 ;; See `pel-show-init-time' docstring.
 
 (require 'pel-window)
+(require 'pel-setup)
+
 ;;; ----------------------------------------------------------------------------
 ;;; Code:
 ;;
 
-(defun pel-show-init-time ()
+(defun pel-show-init-time (&optional log-it)
   "Display benchmark startup time.
-Display the benchmark initialization and duration tree in 2 buffers.
-Also display the Emacs startup time.
+Display the benchmark initialization and duration tree in 2 buffers
+if the benchmark-init external package is installed and available.
+
+If the optional LOG-IT argument is non-nil then instead logs
+the Emacs startup time, process mode, operation mode and Emacs version
+into the pel-startup-time.log.txt file stored in the user-emacs-directory.
+
+In both cases, also display the Emacs startup time.
 
 Requires installation of the benchmark-init.
 Use M-x list-package, select benchmark-init and install it.
@@ -74,23 +82,37 @@ Update the path if necessary.
 
 If the above lines are not written in your init.el this function only
 prints the Emacs init time on the echo area."
-  (interactive)
-  (when (and (fboundp 'benchmark-init/show-durations-tree)
-             (fboundp 'benchmark-init/show-durations-tabulated)
-             (memq 'benchmark-init/deactivate after-init-hook))
-    (delete-other-windows)
-    (split-window-below)
-    (pel-2-vertical-windows)
-    ;; max-specpdl-size default is 1000.
-    ;; When there's a lot of packages installed benchmark hits a limit
-    ;; with 1000 and stops with a warning
-    ;; "Variable binding depth exceeds max-specpdl-size".
-    ;; Change the value for the duration of the benchmark dump.
-    (let ((max-specpdl-size 2000))
-      (ignore-errors
-        (benchmark-init/show-durations-tree)
-        (other-window 1)
-        (benchmark-init/show-durations-tabulated))))
+  (interactive "P")
+  (if log-it
+      (let ((filename (expand-file-name "pel-startup-time.log.txt"
+                                        user-emacs-directory)))
+        (with-temp-file filename
+          (auto-fill-mode -1)
+          (insert-file-contents filename)
+          (goto-char (point-max))
+          (insert (format "%s | %-20s | %-12s | Emacs %s on %s\n"
+                          (emacs-init-time)
+                          (if (display-graphic-p) "graphic mode" "terminal (TTY) mode")
+                          (pel--operation-mode)
+                          emacs-version
+                          system-type))))
+
+    (when (and (fboundp 'benchmark-init/show-durations-tree)
+               (fboundp 'benchmark-init/show-durations-tabulated)
+               (memq 'benchmark-init/deactivate after-init-hook))
+      (delete-other-windows)
+      (split-window-below)
+      (pel-2-vertical-windows)
+      ;; max-specpdl-size default is 1000.
+      ;; When there's a lot of packages installed benchmark hits a limit
+      ;; with 1000 and stops with a warning
+      ;; "Variable binding depth exceeds max-specpdl-size".
+      ;; Change the value for the duration of the benchmark dump.
+      (let ((max-specpdl-size 2000))
+        (ignore-errors
+          (benchmark-init/show-durations-tree)
+          (other-window 1)
+          (benchmark-init/show-durations-tabulated)))))
   (message "Emacs startup time: %s" (emacs-init-time)))
 
 ;;; ----------------------------------------------------------------------------
