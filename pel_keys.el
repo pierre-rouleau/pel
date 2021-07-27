@@ -4315,7 +4315,7 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 ;; To help keep track what keay are used, the list of key under the pel:help
 ;; prefix are shown below.
 ;;
-;;   Used `pel:help' keys:  . ? A a c d e f i k m p P s S w X
+;;   Used `pel:help' keys:  . ? A a b c d e f i k m p P s S w X
 
 (define-key pel:help "." 'pel-mark-ring-stats)
 (define-key pel:help "m"  #'man)
@@ -4363,6 +4363,24 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 (define-key pel:apropos "o"  #'apropos-user-option)
 (define-key pel:apropos "u"  #'apropos-value)
 (define-key pel:apropos "v"  #'apropos-variable)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - Function Keys - <f11> - Prefix ``<f11> ? b`` : Emacs Bug Db Browsing
+
+(when pel-use-debbugs
+  (define-pel-global-prefix pel:emacs-bugs (kbd "<f11> ? b"))
+  (pel-ensure-package debbugs from: gnu)
+  (define-key pel:emacs-bugs "a" 'debbugs-gnu)
+  (define-key pel:emacs-bugs "s" 'debbugs-gnu-search)
+  (define-key pel:emacs-bugs "u" 'debbugs-gnu-usertags)
+  (define-key pel:emacs-bugs "p" 'debbugs-gnu-patches)
+  (define-key pel:emacs-bugs "b" 'debbugs-gnu-bugs)
+  (define-key pel:emacs-bugs "t" 'debbugs-gnu-tagged)
+  (define-key pel:emacs-bugs "A" 'debbugs-org)
+  (define-key pel:emacs-bugs "S" 'debbugs-org-search)
+  (define-key pel:emacs-bugs "P" 'debbugs-org-patches)
+  (define-key pel:emacs-bugs "B" 'debbugs-org-bugs)
+  (define-key pel:emacs-bugs "T" 'debbugs-org-tagged))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? i`` : Help Info commands

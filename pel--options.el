@@ -1669,6 +1669,16 @@ package is also required because `projectile` uses the `ripgrep` package."
   :group 'pel-package-use
   :link `(url-link :tag "Help PDF" ,(pel-pdf-file-url "help")))
 
+(defcustom pel-use-debbugs nil
+  "Control whether PEL installs and activates debbugs external package.
+
+This package is used to browse the GNU Bug Tracker within Emacs."
+  :link '(url-link :tag "debbugs @ GNU Elpa"
+                   "https://elpa.gnu.org/packages/debbugs.html")
+  :group 'pel-pkg-for-help
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-helpful nil
   "Control whether PEL provides access to the helpful external package."
   :group 'pel-pkg-for-help

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-20 15:01:56, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-27 13:28:36, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -152,6 +152,7 @@
     ([f11 ?=]        "cut-paste"        pel-pkg-for-cut-and-paste)
     ([f11 59]        "comments"         pel-pkg-for-programming comment)
     ([f11 ??]        "help"             pel-pkg-for-help        (command-log
+                                                                 debbugs
                                                                  helpful
                                                                  which-func))
     ([f11 9]         "indentation"      pel-pkg-for-indentation (indent

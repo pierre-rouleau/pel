@@ -165,6 +165,11 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
       allowing selection of xref, ivy-xref or helm-xref display of multi-result
       searches.
   - Updated *help support*:
+    - New: add support for the *debbugs* external package when the
+      *pel-use-debbugs*  user option is turned on.  This provides commands to
+      browse the GNU Bug Tracker database within Emacs.  PEL binds the debbugs
+      commands under the ``<f11> ? b`` key prefix.  It also provides access to
+      the debbugs customization group via the ``<f11> ? <f3>`` key.
     - Update: pel-xref-show-status (key sequence <f11> X ?) displays more
       information: it now displays the state of ggtags, dumb-jump, gxref,
       rtags.
