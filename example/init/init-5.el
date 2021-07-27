@@ -17,19 +17,21 @@
 ;;        implemented in C.
 ;;      - Byte-compilable, using lexical binding. For a little speedup,
 ;;        byte-compile this file.  If you do make sure you byte compile it
-;;        after each modification!
+;;        after each modification otherwise you will experience a slow
+;;        startup!
 ;;
-;; NOTE: this code has OPTIONS you must identify.  See the following options:
+;; NOTE: this code has OPTIONS you must identify.  Search for the following
+;;       options in the file and update the code to your liking:
 ;;
-;; - Option A: whether you want to use one custom file for Emacs running in
+;; - OPTION A: whether you want to use one custom file for Emacs running in
 ;;             terminal (TTY) and graphic mode, or two independent custom
 ;;             file, one for each mode. By default only one is used.
 ;;
-;; - Option B: whether you want to activate the benchmark-init feature to
+;; - OPTION B: whether you want to activate the benchmark-init feature to
 ;;             measure time spent by various features during initialization.
 ;;
-;; - Option C: whether Emacs displays its startup message for current user.
-;; - Option D: whether Emacs toolbar is displayed or not.
+;; - OPTION C: whether Emacs displays its startup message for current user.
+;; - OPTION D: whether graphical Emacs toolbar is displayed or not.
 ;; -----------------------------------------------------------------------------
 ;;
 ;; Section 0: Constant definitions
@@ -48,6 +50,16 @@
 (defconst pel-use-graphic-specific-custom-file-p nil
   "When t PEL uses 2 custom files: one for TTY and one for graphic mode.")
 
+(defvar pel-package-user-dir-symlink nil
+  "When set, it is the dirpath of the `package-user-dir' symlink.
+
+When the the `package-user-dir` file is a symlink, the function
+`pel--init-package-support' stores the dirpath of that symlink
+here and updates the value of `package-user-dir' to the target of
+the symlink.  This is required to allow proper switching between
+the normal and fast-startup operation modes while keeping the
+ability to use multiple instances of Emacs that were started
+before a mode switch done by one of them.")
 
 ;; Section 1: Control package.el and garbage collection
 ;; ====================================================
@@ -168,7 +180,15 @@
       (add-to-list 'package-archives
                    (cons "melpa-stable" "https://stable.melpa.org/packages/")
                    t)
-      (package-initialize)))
+      (package-initialize))
+    ;; Remember package-user-dir real directory when it's a symlink.  This
+    ;; way, if it is changed by another process when the operation mode is
+    ;; switched, the current process will be able to continue using it
+    ;; unaffected by the operation mode switch done by the other process.
+    (let ((symlink-target (file-symlink-p package-user-dir)))
+      (when symlink-target
+        (setq pel-package-user-dir-symlink package-user-dir)
+        (setq package-user-dir symlink-target))))
   (declare-function 'pel--init-package-support "init")
 
   ;; Schedule restoration of garbage collector normal values once Emacs
@@ -201,9 +221,14 @@
         (when (or (< emacs-major-version 27)
                   (null (boundp 'package-quickstart))
                   (null package-quickstart)) ; ignore invalid warning here
-          (load (file-name-sans-extension pel-fast-startup-setup-fname)
-                :noerror)
-          (pel-fast-startup-set-builtins))
+          (if (and (load (file-name-sans-extension pel-fast-startup-setup-fname)
+                         :noerror)
+                   (fboundp 'pel-fast-startup-set-builtins))
+              (pel-fast-startup-set-builtins)
+            (display-warning 'pel-fast-startup-set-builtins
+                             "Failed loading pel-fast-startup-set-builtins\
+ from user-emacs-directory"
+                             :error)))
         (add-hook 'emacs-startup-hook (function pel--init-package-support)))
     (pel--init-package-support))
 

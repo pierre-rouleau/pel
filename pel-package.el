@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-24 23:53:31, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-27 09:52:32, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -176,14 +176,21 @@ file.
 It that variable is not set then the \"elpa\" sub-directory of
 the directory identified by the variable `user-emacs-directory'
 is used."
-  (file-name-as-directory (if (and (require 'package nil :no-error)
-                                   (boundp 'package-user-dir))
-                              (expand-file-name package-user-dir)
-                            (expand-file-name "elpa" user-emacs-directory))))
+  (file-name-as-directory (if (and (boundp 'pel-package-user-dir-symlink)
+                                   pel-package-user-dir-symlink)
+                              (expand-file-name pel-package-user-dir-symlink)
+                            (if (and (require 'package nil :no-error)
+                                     (boundp 'package-user-dir))
+                                (expand-file-name package-user-dir)
+                              (expand-file-name "elpa" user-emacs-directory)))))
 
 
 (defconst pel-elpa-dirpath  (pel-locate-elpa)
-  "Absolute path of the user elpa directory.
+  "Absolute path of the user elpa directory or symlink.
+This may differ from the value of `package-user-dir' when a symlink
+is used as PEL init files ensure that `package-user-dir' is set to the
+target of the elpa symlink while `pel-elpa-dirpath' is always set to the
+path of the elpa directory or symlink if it exists.
 Note that you can have several elpa directories if you set `package-user-dir'
 inside your init.el file.")
 
@@ -609,8 +616,8 @@ of a restriction lock."
 - # packages activated        : %d
 - # packages selected         : %d"
                             (length
-                             (pel-elpa-package-directories pel-elpa-dirpath))
-                            pel-elpa-dirpath
+                             (pel-elpa-package-directories package-user-dir))
+                            package-user-dir
                             (length (pel-el-files-in pel-utils-dirpath))
                             pel-utils-dirpath
                             (length load-path)
@@ -628,32 +635,34 @@ of a restriction lock."
                             (length package-activated-list)
                             (length package-selected-packages))))
     (if full-report
-        (pel-print-in-buffer
-         "*pel-user-options*"
-         "PEL User Option activated packages"
-         (lambda ()
-           "Print full report."
-           (insert (format "\n%s\n
+        (if (pel-in-fast-startup-p)
+            (user-error "PEL is running in fast-startup.  This is only available in normal mode!")
+          (pel-print-in-buffer
+           "*pel-user-options*"
+           "PEL User Option activated packages"
+           (lambda ()
+             "Print full report."
+             (insert (format "\n%s\n
 Elpa packages and Utils files are shown below.  The dependencies
 and lock restrictions are identified.  Note that a package
 required by PEL may also be a dependency of another package; the
 ones identified as dependencies may also be requested by PEL
 user-options.\n"
-                           overview))
-           (pel--show-pkgs-for "Elpa" elpa-all elpa+lock elpa-bdeps
-                               pel-elpa-packages-to-keep)
-           (pel--show-pkgs-for "Utils" utils-all utils+lock utils-bdeps
-                               pel-utils-packages-to-keep)
-           (let ((elpa-in-excess (pel-elpa-unrequired))
-                 (utils-in-excess (pel-utils-unrequired)))
-             (if (or elpa-in-excess
-                     utils-in-excess)
-                 (progn
-                   (insert "
+                             overview))
+             (pel--show-pkgs-for "Elpa" elpa-all elpa+lock elpa-bdeps
+                                 pel-elpa-packages-to-keep)
+             (pel--show-pkgs-for "Utils" utils-all utils+lock utils-bdeps
+                                 pel-utils-packages-to-keep)
+             (let ((elpa-in-excess (pel-elpa-unrequired))
+                   (utils-in-excess (pel-utils-unrequired)))
+               (if (or elpa-in-excess
+                       utils-in-excess)
+                   (progn
+                     (insert "
 \npel-cleanup would remove the following packages:\n")
-                   (pel--show-pkgs-in-excess-for "Elpa" elpa-in-excess)
-                   (pel--show-pkgs-in-excess-for "Utils" utils-in-excess))
-               (insert "\n\nNo package is in excess.")))))
+                     (pel--show-pkgs-in-excess-for "Elpa" elpa-in-excess)
+                     (pel--show-pkgs-in-excess-for "Utils" utils-in-excess))
+                 (insert "\n\nNo package is in excess."))))))
       (message overview))))
 
 
@@ -760,7 +769,7 @@ order.  For several versions of a given package the most recent
 is placed last."
   (directory-files (if in-attic
                        pel-elpa-attic-dirpath
-                     pel-elpa-dirpath)
+                     package-user-dir)
                    :full-path
                    (format "\\`%s-[0-9-.]+\\'"
                            (regexp-quote (pel-as-string pkg)))))

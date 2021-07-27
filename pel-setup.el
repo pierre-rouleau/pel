@@ -1,8 +1,8 @@
-;;; pel-setup.el --- Control PEL Emacs setup from normal to fast startup.  -*- lexical-binding: t; -*-
+;;; pel-setup.el --- Control PEL Emacs switch from normal to fast-startup mode and back.  -*- lexical-binding: t; -*-
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-25 14:18:22, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-27 10:35:29, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -334,15 +334,14 @@ Returns: 'normal, 'fast or 'inconsistent."
       (error "PEL/Emacs is already setup for fast startup!")
     (let ((cd-original (cd ".")))
       (condition-case-unless-debug err
-          (let* ((elpa-dirpath pel-elpa-dirpath)
-                 (pel-bundle-dirpath (pel--sibling-dir elpa-dirpath
+          (let* ((pel-bundle-dirpath (pel--sibling-dir pel-elpa-dirpath
                                                        "pel-bundle"))
-                 (elpa-reduced-dirpath (pel--sibling-dir elpa-dirpath
+                 (elpa-reduced-dirpath (pel--sibling-dir pel-elpa-dirpath
                                                          "elpa-reduced"))
-                 (elpa-complete-dirpath (pel--sibling-dir elpa-dirpath
+                 (elpa-complete-dirpath (pel--sibling-dir pel-elpa-dirpath
                                                           "elpa-complete"))
                  (elpa-is-link (file-symlink-p (directory-file-name
-                                                elpa-dirpath)))
+                                                pel-elpa-dirpath)))
                  (time-stamp (format-time-string "%Y%m%d.%H%M"))
                  (new-pel-bundle-dirpath (expand-file-name
                                           (format "pel-bundle-%s" time-stamp)
@@ -351,7 +350,7 @@ Returns: 'normal, 'fast or 'inconsistent."
             ;; otherwise abort.
             (when (and elpa-is-link
                        (not (pel-symlink-points-to-p (directory-file-name
-                                                      elpa-dirpath)
+                                                      pel-elpa-dirpath)
                                                      elpa-complete-dirpath)))
               (error "The elpa symlink (%s) should point to elpa-complete.\
  It point to %s instead! Aborting, fix the directory setting!"
@@ -386,7 +385,7 @@ Returns: 'normal, 'fast or 'inconsistent."
             (cd pel-bundle-dirpath)
             ;; Build a pel-bundle-autoloads.el inside the pel-bundle directory.
             (pel-generate-autoload-file-for pel-bundle-dirpath)
-            (cd elpa-dirpath)
+            (cd pel-elpa-dirpath)
             ;;
             ;; Duplicate elpa inside elpa-reduced then remove the one-level packages
             ;; from it: they have been placed inside the pel-bundle directory before.
@@ -427,12 +426,12 @@ Returns: 'normal, 'fast or 'inconsistent."
             ;; Re-organize the elpa directory:
             ;; If elpa is a directory and elpa-complete does not exist: then
             ;; rename elpa to elpa-complete.
-            (when (and (file-directory-p elpa-dirpath)
+            (when (and (file-directory-p pel-elpa-dirpath)
                        (not (file-symlink-p (directory-file-name
-                                             elpa-dirpath))))
+                                             pel-elpa-dirpath))))
               (when (file-exists-p elpa-complete-dirpath)
                 (delete-directory elpa-complete-dirpath :recursive))
-              (rename-file (directory-file-name elpa-dirpath)
+              (rename-file (directory-file-name pel-elpa-dirpath)
                            (directory-file-name elpa-complete-dirpath)))
             ;; If there is a elpa symlink remove it and create a new one that points
             ;; to elpa-reduced
@@ -465,32 +464,30 @@ Returns: 'normal, 'fast or 'inconsistent."
   (interactive)
   (if (eq (pel--operation-mode) 'normal)
       (error "PEL/Emacs is already using the normal setup!")
-    (let* ((elpa-dirpath pel-elpa-dirpath)
-           (elpa-reduced-dirpath (pel--sibling-dir elpa-dirpath
-                                                   "elpa-reduced")))
-      ;; Restore PEL's ability to download and install external packages
-      (pel-bundled-mode nil)
-      ;;  Restore the normal, complete Elpa directory.
-      (pel-switch-to-elpa-complete)
-      ;; Remove files used in fast-start setup
-      (when (file-exists-p elpa-reduced-dirpath)
-        (delete-directory elpa-reduced-dirpath :recursive))
-      (when (file-exists-p pel-fast-startup-setup-fname)
-        (delete-file pel-fast-startup-setup-fname))
-      ;; With Emacs ≥ 27 if package-quickstart is used more work is required:
-      ;; package-quickstart-refresh must be done while package-alist
-      ;; includes all packages now in elpa (which is elpa and elpa-complete).
-      (when (and (>= emacs-major-version 27)
-                 (require 'package nil :no-error)
-                 (fboundp 'package-quickstart-refresh)
-                 (boundp 'package-quickstart)
-                 package-quickstart)
-        (let ((package-alist (pel-elpa-package-alist-of-dir
-                              elpa-dirpath)))
-          (package-quickstart-refresh)))
-      ;; inform user.
-      (message "Restart Emacs to complete the normal PEL/Emacs operation mode!")
-      (setq pel--setup-changed t))))
+    ;; PEL is currently running in fast-startup mode. Switch back to normal.
+    ;; Restore PEL's ability to download and install external packages
+    (pel-bundled-mode nil)
+    ;;  Restore the normal, complete Elpa directory.
+    (pel-switch-to-elpa-complete)
+    ;; Remove the file that is used to identify using fast-startup
+    ;; but leave the elpa-reduced directory around in case some other
+    ;; Emacs process is currently running in fast-start operation mode.
+    (when (file-exists-p pel-fast-startup-setup-fname)
+      (delete-file pel-fast-startup-setup-fname))
+    ;; With Emacs ≥ 27 if package-quickstart is used more work is required:
+    ;; package-quickstart-refresh must be done while package-alist
+    ;; includes all packages now in elpa (which is elpa and elpa-complete).
+    (when (and (>= emacs-major-version 27)
+               (require 'package nil :no-error)
+               (fboundp 'package-quickstart-refresh)
+               (boundp 'package-quickstart)
+               package-quickstart)
+      (let ((package-alist (pel-elpa-package-alist-of-dir
+                            pel-elpa-dirpath)))
+        (package-quickstart-refresh)))
+    ;; inform user.
+    (message "Restart Emacs to complete the normal PEL/Emacs operation mode!")
+    (setq pel--setup-changed t)))
 
 ;; --
 (defun pel-setup-info ()
