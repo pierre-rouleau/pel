@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-27 13:28:36, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-28 12:24:51, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -746,6 +746,7 @@ There should be no key binding!" keyseq))
     ("lines"            . "display-lines")
     ("artist-mode"      . "drawing")
     ("picture-mode"     . "drawing")
+    ("fonts"            . "faces-fonts")
     ("ascii-table"      . "help")
     ("prefix-keys"      . "help")
     ("keycast"          . "help")
