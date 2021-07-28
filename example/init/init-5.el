@@ -161,18 +161,32 @@ before a mode switch done by one of them.")
 
       ;; Emacs 27 or later.
       ;; ------------------
-      ;; Emacs >= 27 support the `package-quickstart' feature which
-      ;; speeds-ups Emacs startup time.  This is a user-option which must be
-      ;; activated manually.
-      ;; When package-quickstart is non-nil, Emacs 27 supports the early-init
-      ;; initialization file in the user-emacs-directory (normally ~/.emacs.d).
+      ;; Emacs >= 27 support the `package-quickstart' feature which speeds-up
+      ;; Emacs startup time by building the autoloads for all elpa external
+      ;; packages ahead of time in a previous Emacs session.
+
+      ;; The Emacs quick start mechanism is activated by the presence of a
+      ;; early-init.el file in the user-emacs-directory.  The early-init.el
+      ;; file is loaded very early in the startup process, before graphical
+      ;; elements are initialized and before the package manager is
+      ;; initialized.
       ;;
-      ;; - early-init.el  : loaded very early in the startup process before
-      ;;                    graphical elements are initialized and before the
-      ;;                    package manager is initialized.  The following
-      ;;                    variables should be set in early-init.el:
-      ;;                    - `package-load-list'
-      ;;                    - `package-user-dir'
+      ;; The following variables must be initialized in early-init.el:
+      ;;
+      ;; - `package-quickstart' must be set to t to activate the package
+      ;;   quickstart mechanism.  Its documentation states that it can be
+      ;;   customized, but the customized value is read too late in the
+      ;;   process, therefore you should avoid modifying its value through
+      ;;   customization.
+      ;; - `package-user-dir': If you need to modify `package-user-dir' when
+      ;;   the package quickstart is used in normal startup mode, then the
+      ;;   value that differ from the default must be set inside early-init.el
+      ;;
+      ;; - `package-load-list': By default this is set to '(all) to specify
+      ;;    that `package-initialize' should load the latest installed version
+      ;;    of all packages. If you need to modify this behaviour when the
+      ;;    package quickstart is used, set the value inside the early-init.el
+      ;;
       (require 'package)
       (add-to-list 'package-archives
                    (cons "melpa" "https://melpa.org/packages/")
