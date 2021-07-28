@@ -1345,7 +1345,6 @@ can't bind negative-argument to C-_ and M-_"
 (define-pel-global-prefix pel:cfg-pel-lang  (kbd "<f11> <f2> SPC"))
 (define-pel-global-prefix pel:cfg-emacs     (kbd "<f11> <f2> E"))
 (define-pel-global-prefix pel:cfg-pel       (kbd "<f11> <f2> P"))
-(define-pel-global-prefix pel:cfg-start     (kbd "<f11> <f2> S"))
 
 (define-key pel:cfg "c" 'customize)
 (define-key pel:cfg "g" 'customize-group)
@@ -1376,10 +1375,13 @@ can't bind negative-argument to C-_ and M-_"
 (pel--cfg-emacs pel:cfg-emacs "u" "browse-url")
 (pel--cfg-emacs pel:cfg-emacs "w" "woman")
 
-;; --
-(define-key pel:cfg-start "?" 'pel-setup-info)
-(define-key pel:cfg-start "f" 'pel-setup-fast)
-(define-key pel:cfg-start "n" 'pel-setup-normal)
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> M-I`` : Startup Operation Mode
+
+(define-pel-global-prefix pel:startup     (kbd "<f11> M-S"))
+(define-key pel:startup "?" 'pel-setup-info)
+(define-key pel:startup "f" 'pel-setup-fast)
+(define-key pel:startup "n" 'pel-setup-normal)
 
 ;; ---------------------------------------------------------------------------
 ;; Input Completion Framework activation
@@ -4324,6 +4326,7 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 (define-key pel:help "f"  'which-function-mode)
 (define-key pel:help "p"  'pel-help-pdf-select)
 (define-key pel:help "P"  'pel-help-pdfs-dir)
+(define-key pel:help (kbd "M-S") 'pel-setup-info)
 
 (pel-autoload-file pel-help for:
                    pel-show-kill-ring

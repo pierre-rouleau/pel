@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-07-26 16:32:28, updated by Pierre Rouleau.
+:Modified: 2021-07-28 09:57:10, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1384,13 +1384,13 @@ operation mode.
 
 PEL provides the following 3 commands:
 
-- **pel-setup-info**, bound to ``<f11> <f2> S ?``.  It displays the current
+- **pel-setup-info**, bound to ``<f11> M-S ?``.  It displays the current
   operation mode.
-- **pel-setup-fast**, bound to ``<f11> <f2> S f``.  This commands reorganizes
+- **pel-setup-fast**, bound to ``<f11> M-S f``.  This commands reorganizes
   the content of your ``user-emacs-directory`` to bundle the elpa external
   packages to provide a faster Emacs init startup time.  In this mode you
   cannot add new external packages though.
-- **pel-setup-normal**, bound to ``<f11> <f2> S n``.  This command restores
+- **pel-setup-normal**, bound to ``<f11> M-S n``.  This command restores
   the content of your ``user-emacs-directory`` the way it was, allowing you to
   use Emacs as before and with the ability to add or remove external packages.
 

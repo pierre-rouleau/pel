@@ -142,8 +142,8 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 
        Use the following commands to switch operation modes and then restart Emacs:
 
-       - ``M-x pel-setup-fast`` (bound to ``<f11> <f2> S f``)
-       - ``M-x pel-setup-normal`` (bound to ``<f11> <f2> S n``)
+       - ``M-x pel-setup-fast`` (bound to ``<f11> M-S f``)
+       - ``M-x pel-setup-normal`` (bound to ``<f11> M-S n``)
 
        The time reduction of fast startup mode depends on the number of
        packages that can be bundled by PEL.  Those that have all their files
