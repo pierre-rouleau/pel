@@ -186,7 +186,6 @@
 ;; - `pel-line-has-only-whitespace-p'
 ;;
 ;; File Path processing
-;; - `pel-path-ends-with-slash-p'
 ;; - `pel-parent-dirpath'
 ;; - `pel-expand-url-file-name'
 ;; - `pel-path-strip'
@@ -1978,10 +1977,6 @@ current major mode."
 ;; ---------------------------------------------------------------------------
 ;; File Path processing
 ;; --------------------
-
-(defun pel-path-ends-with-slash-p (path)
-  "Return t if PATH ends with a directory separator slash, nil otherwise."
-  (not (string= path (directory-file-name path))))
 
 (defun pel-normalize-fname (name)
   "Normalize file (or directory) NAME.
