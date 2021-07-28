@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-28 09:54:41, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-28 10:22:57, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -261,7 +261,7 @@ The code adds each entry to the `package--builtin-versions'."
 ;;; Built automatically by PEL for fast Emacs startup.  -*- lexical-binding: t; -*-
 \(require 'package)
 
-\(defvar pel-running-with-bundled-packages)  ; prevent warnings.  Should be defined in init.el
+\(defvar pel-running-with-bundled-packages nil)
 
 \(defvar pel-fast-startup-builtin-packages
   '%S
@@ -358,55 +358,62 @@ Returns: 'normal, 'fast or 'inconsistent."
                        pel-elpa-dirpath
                        elpa-is-link))
 
-              ;; Ensure that pel-bundle directory does not exists.  That's a temporary
-              ;; directory where all one-level package files are stored and then used to
-              ;; create the -autoload.el and the -pkg.el file before it is moved into
-              ;; the elpa-reduced directory and renamed with a time stamp.  Issue a
-              ;; message when the directory exists and delete it.
+              ;; Ensure that pel-bundle directory does not exists.  That's a
+              ;; temporary directory where all one-level package files are
+              ;; stored and then used to create the -autoload.el and the
+              ;; -pkg.el file before it is moved into the elpa-reduced
+              ;; directory and renamed with a time stamp.  Issue a message
+              ;; when the directory exists and delete it.
               (when (file-exists-p pel-bundle-dirpath)
                 (delete-directory pel-bundle-dirpath :recursive)
-                (message (format "The %s directory already exists! It was deleted!"
+                (message (format "The %s directory existed: just deleted it."
                                  pel-bundle-dirpath)))
               ;;
-              ;; Delete old elpa-reduced if it exists: it contains the old pel-bundle
-              ;; and the multi-level packages that could not be bundled in the previous
-              ;; execution of `pel-setup-fast'.
+              ;; Delete old elpa-reduced if it exists: it contains the old
+              ;; pel-bundle and the multi-level packages that could not be
+              ;; bundled in the previous execution of `pel-setup-fast'.
               (when (file-exists-p elpa-reduced-dirpath)
                 (delete-directory elpa-reduced-dirpath :recursive))
               ;;
-              ;; Create pel-bundle temporary directory to hold all one-level package .el
-              ;; files.  At first create it the directory as a sibling of the elpa
-              ;; directory because elpa-reduced is not created yet.
+              ;; Create pel-bundle temporary directory to hold all one-level
+              ;; package .el files.  At first create it the directory as a
+              ;; sibling of the elpa directory because elpa-reduced is not
+              ;; created yet.
               (make-directory pel-bundle-dirpath)
-              (pel-elpa-create-copies pel-elpa-dirpath pel-bundle-dirpath :with-symlinks)
+              (pel-elpa-create-copies pel-elpa-dirpath pel-bundle-dirpath
+                                      :with-symlinks)
               ;; Create the pel-bundle-pkg.el file inside it.
               (pel-create-bundle-pkg-file pel-bundle-dirpath time-stamp)
               ;;
               ;; Create the pel-bundle-autoloads.el file inside it.
               (cd pel-bundle-dirpath)
-              ;; Build a pel-bundle-autoloads.el inside the pel-bundle directory.
+              ;; Build a pel-bundle-autoloads.el inside the pel-bundle
+              ;; directory.
               (pel-generate-autoload-file-for pel-bundle-dirpath)
               (cd pel-elpa-dirpath)
               ;;
-              ;; Duplicate elpa inside elpa-reduced then remove the one-level packages
-              ;; from it: they have been placed inside the pel-bundle directory before.
-              ;; - Normally, copy-directory would fail when attempting to copy a
-              ;;   Unix socket file, like those in elpa/gnupg.  To prevent the
-              ;;   error, replace copy-file by pel-copy-only-file which does not attempt
-              ;;   to copy the Unix socket files.
+              ;; Duplicate elpa inside elpa-reduced then remove the one-level
+              ;; packages from it: they have been placed inside the pel-bundle
+              ;; directory before.
+              ;; - Normally, copy-directory would fail when attempting to copy
+              ;;   a Unix socket file, like those in elpa/gnupg.  To prevent
+              ;;   the error, replace copy-file by pel-copy-only-file which
+              ;;   does not attempt to copy the Unix socket files.
               (advice-add 'copy-file :around #'pel-copy-only-file)
               (copy-directory (directory-file-name pel-elpa-dirpath)
                               (directory-file-name elpa-reduced-dirpath))
               (advice-remove 'copy-file #'pel-copy-only-file)
-              ;; - Remove the one-level package sub-directories from elpa-reduced,
-              ;;   only leaving the multi-directory packages in elpa-reduced.
+              ;; - Remove the one-level package sub-directories from
+              ;;   elpa-reduced, only leaving the multi-directory packages in
+              ;;   elpa-reduced.
               (pel-elpa-remove-pure-subdirs elpa-reduced-dirpath)
               ;;
-              ;; Disable the dependencies of all (multi-directory) packages left in the
-              ;; elpa-reduced directory.  This returns an alist of (package version)
-              ;; that should be added to the variable `package--builtin-versions' during
-              ;; init.el before the call to `package-activate-all' or
-              ;; `package-initialize'.  In Emacs ≥ 27 it must be set in early-init.el.
+              ;; Disable the dependencies of all (multi-directory) packages
+              ;; left in the elpa-reduced directory.  This returns an alist of
+              ;; (package version) that should be added to the variable
+              ;; `package--builtin-versions' during init.el before the call to
+              ;; `package-activate-all' or `package-initialize'.  In Emacs ≥
+              ;; 27 it must be set in early-init.el.
               (pel-setup-add-to-builtin-packages
                (pel-elpa-disable-pkg-deps-in elpa-reduced-dirpath)
                pel-fast-startup-setup-fname
@@ -416,12 +423,12 @@ Returns: 'normal, 'fast or 'inconsistent."
                                 (format "(add-to-list 'load-path \"%s\")"
                                         new-pel-bundle-dirpath)))
               ;;
-              ;; Move the pel-bundle directory inside the elpa-reduced directory:
-              ;; effectively creating a pel-bundle package "pel-bundle" that contains
-              ;; all the files of the one-level packages that were extracted from the
-              ;; original elpa directory (the elpa-complete directory).
-              ;; Give the pel-bundle directory a version number corresponding to today's
-              ;; date.
+              ;; Move the pel-bundle directory inside the elpa-reduced
+              ;; directory: effectively creating a pel-bundle package
+              ;; "pel-bundle" that contains all the files of the one-level
+              ;; packages that were extracted from the original elpa directory
+              ;; (the elpa-complete directory).  Give the pel-bundle directory
+              ;; a version number corresponding to today's date.
               (rename-file (directory-file-name pel-bundle-dirpath)
                            new-pel-bundle-dirpath)
               ;; Re-organize the elpa directory:
@@ -434,16 +441,18 @@ Returns: 'normal, 'fast or 'inconsistent."
                   (delete-directory elpa-complete-dirpath :recursive))
                 (rename-file (directory-file-name pel-elpa-dirpath)
                              (directory-file-name elpa-complete-dirpath)))
-              ;; If there is a elpa symlink remove it and create a new one that points
-              ;; to elpa-reduced
+              ;; If there is a elpa symlink remove it and create a new one
+              ;; that points to elpa-reduced
               (pel-switch-to-elpa-reduced)
-              ;; Re-compile pel_keys.el with `pel-running-with-bundled-packages'
-              ;; bound to t to prevent PEL from downloading and installing
-              ;; external packages while PEL runs in PEL bundled mode.
+              ;; Re-compile pel_keys.el with
+              ;; `pel-running-with-bundled-packages' bound to t to prevent PEL
+              ;; from downloading and installing external packages while PEL
+              ;; runs in PEL bundled mode.
               (pel-bundled-mode t)
-              ;; With Emacs ≥ 27 if package-quickstart is used more work is required:
-              ;; package-quickstart-refresh must be done while package-alist
-              ;; includes all packages now in elpa (which is pel-reduced).
+              ;; With Emacs ≥ 27 if package-quickstart is used more work is
+              ;; required: package-quickstart-refresh must be done while
+              ;; package-alist includes all packages now in elpa (which is
+              ;; pel-reduced).
               (when (and (>= emacs-major-version 27)
                          (require 'package nil :no-error)
                          (fboundp 'package-quickstart-refresh)
@@ -456,7 +465,7 @@ Returns: 'normal, 'fast or 'inconsistent."
            (display-warning 'pel-setup-fast
                             (format "Failed fast startup setup: %s" err))))
         (cd cd-original)
-        (message "Restart Emacs to complete the fast startup PEL/Emacs operation mode!")
+        (message "Restart Emacs to complete the switch to fast startup mode!")
         (setq pel--setup-changed t)))))
 
 ;; --
@@ -488,7 +497,7 @@ Returns: 'normal, 'fast or 'inconsistent."
                               pel-elpa-dirpath)))
           (package-quickstart-refresh)))
       ;; inform user.
-      (message "Restart Emacs to complete the normal PEL/Emacs operation mode!")
+      (message "Restart Emacs to complete switch to normal startup mode!")
       (setq pel--setup-changed t))))
 
 ;; --
@@ -497,8 +506,8 @@ Returns: 'normal, 'fast or 'inconsistent."
   (interactive)
   (let* ((mode (pel--operation-mode)))
     (if pel--setup-changed
-        (message "You have already changed the setup to %s but did not stop Emacs!
- You may experience inconsistent Emacs behaviour.  It's best to close and restart Emacs!"
+        (message "You already changed the setup to %s but did not stop Emacs!
+ You may experience inconsistent Emacs behaviour.  It's best to restart Emacs!"
                  mode)
       (cond ((eq mode 'fast)
              (message "PEL/Emacs operates in fast startup mode.
