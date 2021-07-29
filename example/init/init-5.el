@@ -199,10 +199,15 @@ before a mode switch done by one of them.")
     ;; way, if it is changed by another process when the operation mode is
     ;; switched, the current process will be able to continue using it
     ;; unaffected by the operation mode switch done by the other process.
+    ;; Ensure that the new value is an absolute path.
     (let ((symlink-target (file-symlink-p package-user-dir)))
       (when symlink-target
         (setq pel-package-user-dir-symlink package-user-dir)
-        (setq package-user-dir symlink-target))))
+        (setq package-user-dir
+              (if (file-name-absolute-p symlink-target)
+                  symlink-target
+                (expand-file-name
+                 symlink-target (file-name-directory package-user-dir)))))))
   (declare-function 'pel--init-package-support "init")
 
   ;; Schedule restoration of garbage collector normal values once Emacs

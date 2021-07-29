@@ -187,12 +187,14 @@
 ;;
 ;; File Path processing
 ;; - `pel-parent-dirpath'
+;; - `pel-sibling-dirpath'
 ;; - `pel-expand-url-file-name'
 ;; - `pel-path-strip'
 ;; - `pel-url-join'
 ;; - `pel-url-location'
 ;; - `pel-same-fname-p'
 ;;   - `pel-normalize-fname'
+;; - `pel-point-symlink-to'
 ;; - `pel-symlink-points-to-p'
 ;;
 ;; Insertion of text in current buffer
@@ -1992,6 +1994,11 @@ environment variables that may be in the string."
   "Return parent directory of PATHNAME true name."
   (file-name-directory (pel-normalize-fname pathname)))
 
+(defun pel-sibling-dirpath (dirpath sibling)
+  "Return directory path of SIBLING directory of DIRPATH directory."
+  (file-name-as-directory
+   (expand-file-name sibling
+                     (file-name-directory (directory-file-name dirpath)))))
 
 (defun pel-expand-url-file-name (url)
   "Expand and return file URL.
@@ -2034,6 +2041,13 @@ in slash separator or termination or use of the ~ , . or
 above directory in one of them."
   (string= (pel-normalize-fname name1)
            (pel-normalize-fname name2)))
+
+(defun pel-point-symlink-to (symlink target)
+  "Make SYMLINK point to specified TARGET.
+If the SYMLINK already exists, changes it."
+  (when (file-exists-p symlink)
+    (delete-file symlink))
+  (make-symbolic-link target symlink))
 
 (defun pel-symlink-points-to-p (symlink target)
   "Return t if SYMLINK points to TARGET, return nil otherwise.
