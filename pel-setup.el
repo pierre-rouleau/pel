@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-29 10:28:41, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-29 11:32:12, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -323,7 +323,7 @@ If the first list has 3 members, then PEL/Emacs operates in fast startup mode."
   (let* ((pel--adjust-path-for-graphics pel-emacs-is-graphic-p)
          (met-criteria nil)
          (problems nil)
-         (elpa-dirpath pel-elpa-dirpath)
+         (elpa-dirpath (pel--adjusted-path pel-elpa-dirpath))
          (elpa-reduced-dirpath  (pel--adjusted-path (pel-sibling-dirpath elpa-dirpath
                                                                          "elpa-reduced"))))
     (if (pel-in-fast-startup-p)
