@@ -89,7 +89,7 @@
 ;;; Dependencies:
 
 (require 'speedbar)
-(require 'pel--base)
+(require 'pel--base)         ; use: pel-emacs-is-graphic-p
 (require 'pel--macros)
 (require 'pel--options)      ; use: pel-prefer-sr-speedbar-in-terminal
 ;; sr-speedbar may not be installed.
@@ -115,11 +115,10 @@
 (defvar pel-speedbar-type-used
   (if (not (fboundp 'sr-speedbar-toggle))
       'speedbar
-    (if (display-graphic-p)
+    (if pel-emacs-is-graphic-p
         nil
-      (if pel-prefer-sr-speedbar-in-terminal
-          'sr-speedbar
-        nil)))
+      (when pel-prefer-sr-speedbar-in-terminal
+        'sr-speedbar)))
   "Identifies the type of Speedbar component used.
 The values are:
 - nil:          nothing used so far, prompt first time used.
@@ -142,7 +141,7 @@ Do *not* change its value manually.")
 (defun pel--speedbar-toggle ()
   "Open/close Speedbar appropriately, remember we're using it."
   (setq pel-speedbar-type-used 'speedbar)
-  (if (display-graphic-p)
+  (if pel-emacs-is-graphic-p
       (speedbar)
     (speedbar-get-focus)))
 
@@ -166,7 +165,7 @@ in subsequent calls of the Emacs session."
   (interactive)
   (cond ((not pel-speedbar-type-used)
          (if (yes-or-no-p
-              (if (display-graphic-p)
+              (if pel-emacs-is-graphic-p
                   "Use separate frame? "
                 "Use entire terminal frame instead of a dedicated window? "))
              (pel--speedbar-toggle)
@@ -278,7 +277,7 @@ Contract and re-expand parents to see the change.%s"
     (user-error "Open Speedbar first")))
 
 ;;-pel-autoload
-(when (display-graphic-p)
+(when pel-emacs-is-graphic-p
   (defun pel-speedbar-toggle-images ()
     "Execute `speedbar-toggle-images' if loaded, warn otherwise."
     (interactive)
