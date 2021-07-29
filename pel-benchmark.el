@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-27 07:25:37, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-29 11:27:00, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -86,7 +86,8 @@ prints the Emacs init time on the echo area."
   (interactive "P")
   (if log-it
       (let ((filename (expand-file-name "pel-startup-time.log.txt"
-                                        user-emacs-directory)))
+                                        user-emacs-directory))
+            (pel-operation-mode (pel--operation-mode)))
         (with-temp-file filename
           (auto-fill-mode -1)
           (when (file-exists-p filename)
@@ -94,14 +95,18 @@ prints the Emacs init time on the echo area."
           (goto-char (point-max))
           (insert (format "%-20s | %-20s | %-12s | Emacs %s%s on %s\n"
                           (emacs-init-time)
-                          (if (display-graphic-p) "graphic mode" "terminal (TTY) mode")
-                          (pel--operation-mode)
+                          (if pel-emacs-is-graphic-p "graphic mode" "terminal (TTY) mode")
+                          pel-operation-mode
                           emacs-version
                           (pel-string-when (and (>= emacs-major-version 27)
                                                 (boundp 'package-quickstart)
                                                 package-quickstart)
                                            " using package-quickstart")
-                          system-type))))
+                          system-type))
+          (when (eq pel-operation-mode 'inconsistent)
+            (insert (format "- %s\n"
+                            (string-join (cdr (pel--fast-setup-met-criteria))
+                                         "\n- "))))))
 
     (when (and (fboundp 'benchmark-init/show-durations-tree)
                (fboundp 'benchmark-init/show-durations-tabulated)
