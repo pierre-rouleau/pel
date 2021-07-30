@@ -1994,11 +1994,15 @@ environment variables that may be in the string."
   "Return parent directory of PATHNAME true name."
   (file-name-directory (pel-normalize-fname pathname)))
 
+
+(defun pel-sibling-dirname (dirpath sibling)
+  "Return directory path name of SIBLING directory of DIRPATH directory."
+  (expand-file-name sibling
+                    (file-name-directory (directory-file-name dirpath))))
+
 (defun pel-sibling-dirpath (dirpath sibling)
   "Return directory path of SIBLING directory of DIRPATH directory."
-  (file-name-as-directory
-   (expand-file-name sibling
-                     (file-name-directory (directory-file-name dirpath)))))
+  (file-name-as-directory (pel-sibling-dirname dirpath sibling)))
 
 (defun pel-expand-url-file-name (url)
   "Expand and return file URL.
@@ -2044,7 +2048,11 @@ above directory in one of them."
 
 (defun pel-point-symlink-to (symlink target)
   "Make SYMLINK point to specified TARGET.
-If the SYMLINK already exists, changes it."
+
+If the SYMLINK already exists, either as a link or a file,
+changes it to a link to the specified TARGET.
+The SYMLINK argument must be a file name format, it must not end
+with a directory separating slash."
   (when (file-exists-p symlink)
     (delete-file symlink))
   (make-symbolic-link target symlink))
