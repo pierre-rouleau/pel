@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-29 11:27:00, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-30 09:43:44, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -36,6 +36,7 @@
 (require 'pel--base)
 (require 'pel-window)
 (require 'pel-setup)
+(eval-when-compile (require 'subr-x))   ; use: `string-join'
 
 ;;; ----------------------------------------------------------------------------
 ;;; Code:
