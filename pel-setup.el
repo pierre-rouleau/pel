@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-30 11:54:46, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-30 13:28:27, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -322,25 +322,25 @@ independent environments for terminal and graphics mode."
                                                      :force :for-graphic))
          (problems nil))
     (unless (file-exists-p custom-fname)
-      (push (format "File missing: %s" custom-fname) problems))
+      (push (format "File      missing : %s" custom-fname) problems))
     (unless (file-exists-p g-custom-fname)
-      (push (format "File missing: %s" g-custom-fname) problems))
+      (push (format "File      missing : %s" g-custom-fname) problems))
     (if (file-exists-p elpa-dname)
         (unless (file-symlink-p elpa-dname)
-          (push (format "%s is not a symlink" elpa-dname) problems))
-      (push (format "%s is missing" elpa-dname) problems))
+          (push (format "Is not a symlink  : %s" elpa-dname) problems))
+      (push (format "Directory missing : %s" elpa-dname) problems))
     (if (file-exists-p g-elpa-dname)
         (unless (file-symlink-p g-elpa-dname)
-          (push (format "%s is not a symlink" g-elpa-dname) problems))
-      (push (format "%s is missing" g-elpa-dname) problems))
+          (push (format "Is not a symlink  : %s" g-elpa-dname) problems))
+      (push (format "Directory missing : %s" g-elpa-dname) problems))
     (if (file-exists-p elpa-complete-dname)
         (unless (file-directory-p elpa-complete-dname)
-          (push (format "%s is not a directory" elpa-complete-dname) problems))
-      (push (format "%s is missing" elpa-complete-dname) problems))
+          (push (format "Is not a directory: %s" elpa-complete-dname) problems))
+      (push (format "Directory missing : %s" elpa-complete-dname) problems))
     (if (file-exists-p g-elpa-complete-dname)
         (unless (file-directory-p g-elpa-complete-dname)
-          (push (format "%s is not a directory" g-elpa-complete-dname) problems))
-      (push (format "%s is missing" g-elpa-complete-dname) problems))
+          (push (format "Is not a directory: %s" g-elpa-complete-dname) problems))
+      (push (format "Directory missing : %s" g-elpa-complete-dname) problems))
     (reverse problems)))
 
 
