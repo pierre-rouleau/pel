@@ -1,0 +1,26 @@
+#!/bin/sh
+# SH FILE: e-log-time
+#
+# Purpose   : Log Emacs startup time.
+# Created   : Tuesday, July 27 2021.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2021-07-30 13:51:21, updated by Pierre Rouleau>
+# Copyright © 2021, Pierre Rouleau
+# License   : MIT
+# ----------------------------------------------------------------------------
+# Description
+# -----------
+#
+# Use Emacs PEL facilities to start Emacs in terminal mode, log its startup
+# time and then turn Emacs off.
+#
+# Requirements:  e :
+#                - a script or shell alias that starts Emacs in terminal mode.
+# ----------------------------------------------------------------------------
+# Script
+# ------
+#
+#
+e -e pel-log-init-time -e kill-emacs
+
+# ----------------------------------------------------------------------------
