@@ -21,9 +21,9 @@ PEL -- Pragmatic Environment Library for Emacs
 PEL might be for you!  Then go ahead, `install it`_ [1]_
 or `update it`_ [2]_ !
 
-- PEL operates in 2 different setup:
+- PEL operates in 2 different Emacs startup operation modes:
 
-  - The normal Emacs setup, using Emacs' standard package.el package manager
+  - The normal Emacs startup setup, using Emacs' standard package.el package manager
     with PEL's extensions that provide **customization-driven package
     management** built on `Emacs easy customization`_ to pick and chose
     packages and behaviours, all without having to write Emacs Lisp code.  PEL
@@ -49,6 +49,18 @@ or `update it`_ [2]_ !
   easy-to-setup customization user-options that have a name that start with
   the "``pel-use-``" prefix.  See the manual `built-in and external Emacs
   packages`_ section.
+
+  - If requested by the user, PEL also supports two independent customization
+    files along with two independent Elpa-compliant package directories: one
+    for Emacs operating in terminal (TTY) mode and another for Emacs operating
+    in graphical mode.  This allows you to take advantage of the strengths of
+    each mode using the packages you need for each and no more.
+
+    - Some modifications to your ``init.el`` file is required for this.
+      See OPTION A inside the `example/init/init-5.el`_ source for
+      additional instructions.
+    - Once your init file has been instrumented for PEL, you can then use
+      ``M-x pel-setup-dual-environment`` command to setup the environment.
 
 - PEL can install packages from `GNU Elpa`_, MELPA_, and simple GitHub or
   Gitlab repositories even when the files have not been setup as an
@@ -132,7 +144,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
          startup-time, see the `benchmark-init report for it <doc/res/normal-startup-001.png>`_
        - with 238 packages, in **fast startup** operation mode, benchmark-init
          reports about **0.1 second startup-time**, see the
-         `benchmark-init report for it <doc/res/fast-startup-001.png>`_..
+         `benchmark-init report for it <doc/res/fast-startup-001.png>`_.
 
        It's possible to reduce this further by restricting the number of used
        package. This must be done in normal operation mode (as opposition to
@@ -184,6 +196,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _MELPA:                      https://melpa.org/#/
 .. _manual's table of contents: doc/pel-manual.rst
 .. _pel-pdf-spreadsheet repo:   https://github.com/pierre-rouleau/pel-pdf-spreadsheet#readme
+.. _example/init/init-5.el:     example/init/init-5.el
 
 
 ..
