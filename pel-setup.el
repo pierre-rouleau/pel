@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-29 11:32:12, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-30 11:54:46, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,9 +25,57 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; The code in this file attempts to speed Emacs startup.
+;; This file provides the following PEL-specific facilities:
 ;;
-;; The strategy is to drastically reduce the length of Emacs `load-path'.
+;; Setup for Dual Customization Environment : terminal(TTY) / graphics
+;; -------------------------------------------------------------------
+;;
+;; - The ability to setup Emacs to support two independents environments: one
+;;   for Emacs running in terminal (TTY) mode and another for Emacs running in
+;;   graphics mode. Each of them have their own customization file, their
+;;   own set of Elpa directories to store the external Elpa-compliant
+;;   packages.  This  allows taking advantage of the strengths of the
+;;   terminal-based and graphics-based Emacs by customizing each environment
+;;   with the packages that are used in each.
+;;
+;;   - The command `pel-setup-dual-environment' sets up the required files
+;;     inside the `user-emacs-directory' if they are not already present.
+;;     This must be done once.
+;;
+;; This is quite useful on OS, like macOS, where the graphics Emacs is
+;; noticeably slower than its terminal counterpart.
+;;
+;;
+;; Dynamic control to switch to a fast-startup operation mode
+;; ----------------------------------------------------------
+;;
+;; This provides the ability to reduce the Emacs initialization startup time.
+;; Depending on what is used the speedup can be quite noticeable.
+;;
+;; For example, I have achieved a emacs-startup-time of about 0.15 seconds on
+;; Emacs 26.3 running in terminal mode on macOS 2014 4 GHz Intel Core i7
+;; computer with 240 installed external packages!
+;;
+;; This dynamic control of fast-startup also supports the dual
+;; terminal-mode/graphics-mode environments.  When these are used, both
+;; environments are switched together regardless of whether the switch was
+;; requested by the command running inside Emacs in terminal or graphics mode.
+;;
+;; When running multiple Emacs processes on a computer, switching to
+;; fast-startup or back to normal-startup mode from one Emacs instance does
+;; not affect the other instances.
+;;
+;; PEL uses the built-in Emacs package management provided by the package.el
+;; builtin library.  The fast-startup operation mode improves startup speed
+;; and does not prevent using package.el features to explicitly install
+;; packages in the current environment.  However, these packages will not be
+;; known to PEL.  In fast-startup mode PEL disables its internal automatic
+;; package management facilities and does not download, install nor remove
+;; packages based on modification of the customization.
+;;
+;; The strategy is to reduce the length of Emacs `load-path' to a minimum.
+;; This can therefore be used in conjunction of the Emacs 27+
+;; `package-quickstart' feature to reduce Emacs startup time further.
 ;;
 ;; The length of `load-path' increase each time a new Elpa-compliant package
 ;; is installed by the package.el Emacs package manager.  These packages
@@ -59,22 +107,23 @@
 ;;      :url "https://github.com/abo-abo/ace-link")
 ;;
 ;; A large number of Emacs packages, like ace-link, store all their files
-;; inside on directory, and have no sub-directories.   I call those: the
-;; "one-level package" in opposition of the other Emacs Lisp packages that use
-;; sub-directories to store other files.
+;; inside on directory; they have no sub-directories.  I call those "one-level
+;; packages" in opposition of the other Emacs Lisp packages that use
+;; sub-directories to store other files.  From what I have seen so far most
+;; Emacs external packages use only one directory.
 ;;
 ;; Emacs Lisp, a Lisp-2, has only one namespace for variables and one
 ;; namespace for functions.  Code in *all* packages, whether they're built-in
-;; Emacs or external must all share these 2 namespaces.  Most package file
-;; names, if not all, reflect their package name and differ from each
-;; other. The functions and variable names in them must all be unique
+;; Emacs or external must all share these namespaces (and some other).  Most
+;; package file names, if not all, reflect their package name and differ from
+;; each other. The functions and variable names in them must all be unique
 ;; otherwise they risk clashing with each other.
 ;;
 ;; Because the file names of all package have a unique name it becomes
-;; possible to place them all inside the same directory and place that unique
-;; directory inside Emacs `load-path', therefore eliminating relatively slow
-;; Emacs startup processing that iterates through each directory in its
-;; `load-path'.
+;; possible to place them all inside the same directory (a bundle) and place
+;; that unique directory inside Emacs `load-path', therefore eliminating
+;; relatively slow Emacs startup processing that iterates through each
+;; directory in its `load-path'.
 ;;
 ;; This can be done for the "one-level packages" but not the others, as their
 ;; code often relies on the relative position of their sub-directories.
@@ -94,73 +143,323 @@
 ;; directory.
 ;;
 ;; The code here re-organizes the location of the external packages, storing
-;; the code of "one-level packages" inside one directory (the "elpa-copy"
-;; directory) and leaving the other packages inside their original locations.
-;; The code also creates code to define a new value for `package-alist' where
-;; the specs for all one-level packages identify the "elpa-copy" directory.
-;; This way Emacs package.el logic can still detect the presence of these
-;; packages and still identify the package dependencies.
+;; the code of "one-level packages" inside one directory (the "pel-bundle"
+;; package directory) and leaving the other packages inside their original
+;; locations.  The code also creates a pel-bundle-package.el and a
+;; pel-bundle-autoloads.el file stored inside the pel-bundle directory
+;; creating a Elpa-compliant pel-bundle package that includes all files of
+;; one-level packages.
 ;;
-;; The package.el Package Manager does not expect this file re-organization;
-;; it expects the files the way they normally are organized. Therefore the
-;; code here provides a mechanism to change the directory layout back and
-;; forth.  Copies of directories are made.  That consumes more space in the
-;; computer file-system but that's the cost of speeding up Emacs startup.
+;; Special code must be run by init.el or early-init.el to prevent the
+;; package.el code from attempting to download the packages again.  The
+;; required code is described inside the following files:
 ;;
-;; Assuming the Elpa is stored inside "~/.emacs.d/elpa" directory,
-;; `pel-setup-fast' reorganizes it like this:
+;; - example/init/init-5.el and
+;; - example/init/early-init.el
+;;
+;; To provide ability quickly switch from a normal setup to a fast-startup
+;; setup and back, PEL uses a symlink to point to one of two Elpa directories
+;; inside the `user-emacs-directory'. Assuming that `user-emacs-directory' is
+;; "~/.emacs.d", these directories are:
 ;;
 ;; - "~/.emacs.d/elpa-complete" : The original "~/.emacs.d/elpa" directory
-;;                                has been renamed (or duplicated) by
-;;                                `pel-setup-fast'.
+;;                                renamed (or duplicated) by `pel-setup-fast'.
 ;;
 ;; - "~/.emacs.d/elpa-reduced" : Created by `pel-setup-fast'.  Holds all
 ;;                               multi-directory packages; the ones that are
 ;;                               not "one-level packages".  It also contains
-;;                               the "pel-bundle-yyyymmdd-001" directory, an
-;;                               artificial package created by `pel-setup-fast'
-;;                               which holds the code of all one-level
-;;                               packages removed from the original elpa
-;;                               directory.  The tail end of the directory
-;;                               name is the date of the creation of the
-;;                               directory.
+;;                               the "pel-bundle-yyyymmdd-hhmm" directory; the
+;;                               PEL bundle.
 ;;
-;; - "~/.emacs.d/elpa-reduced/pel-bundle-yyymmdd-001": Holds the content of
-;;                               all one-level packages that it replaces. It
-;;                               is created by `pel-setup-fast' with the name
-;;                               tail set to its creation date.  This
-;;                               simulates a fictitious package, pel-bundle,
-;;                               and aside of all files from the original
-;;                               one-level it holds the 2 important package
+;; The PEL bundle is created each time the command `pel-setup-fast' is
+;; executed to prepare Emacs for a fast startup.  Again, assuming that
+;; `user-emacs-directory' is "~/.emacs.d" the PEL bundle directory is:
+;;
+;; - "~/.emacs.d/elpa-reduced/pel-bundle-yyymmdd-hhmm": Simulates a fictitious
+;;                               Elpa-compliant pel-bundle package.  The
+;;                               directory holds symlinks to the .el and .elc
+;;                               files of all one-level packages that it
+;;                               replaces. It is created by `pel-setup-fast'
+;;                               with the name tail set to its creation date.
+;;                               It also holds the 2 important package
 ;;                               required files that are also created by the
 ;;                               function `pel-setup-fast':
 ;;                               - pel-bundle-autoloads.el
 ;;                               - pel-bundle-pkg.el
 ;;
-;; - "~/.emacs.d/elpa"          : symlink pointing to elpa-complete when
-;;                                package.el must be used, and pointing to
-;;                                elpa-reduced to speed Emacs startup.
+;; PEL also converts the original elpa directory into a symbolic link that
+;; points to either the following directories:
+;;
+;; - elpa-complete (in normal startup mode),
+;; - elpa-reduced  (in fast-startup mode).
+;;
+;; When the dual terminal(TTY)/graphics customization support is used, PEL
+;; uses one set of symlink and Elpa directories per environment: it
+;; creates the following extra symlinks and directories for Emacs independent
+;; graphics mode:
+;;
+;; - elpa-graphics symlink that points to one of the following directories:
+;; - elpa-complete-graphics (used in normal mode for the independent graphics
+;;   mode),
+;; - elpa-reduced-graphics (used in fast startup mode for the independent graphics
+;;   mode).
+;;
+;; *************
+;; **IMPORTANT**
+;; *************
+;;
+;; Again, for all of this to work properly you must instrument your init.el
+;; and, if you use it, your early-init.el.  See the code sample examples
+;; inside the following files:
+;;
+;; - example/init/init-5.el and
+;; - example/init/early-init.el
 ;;
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 
-(require 'pel--base)                    ; use: pel-unix-socket-p,
-;;                                      ;      pel-string-when,
-;;                                      ;      pel-sibling-dirpath,
-;;                                      ;      pel-point-symlink-to
-;;                                      ;      pel-emacs-is-graphic-p
-(require 'pel-package)                  ; use: pel-elpa-dirpath
-(require 'pel-elpa)
-(eval-when-compile (require 'subr-x))   ; use: string-join
+(require 'pel--base)                    ; use: `pel-unix-socket-p'
+;;                                      ;      `pel-string-when'
+;;                                      ;      `pel-sibling-dirpath'
+;;                                      ;      `pel-point-symlink-to'
+;;                                      ;      `pel-emacs-is-graphic-p'
+(require 'pel-package)                  ; use: `pel-elpa-dirpath'
+(require 'pel-elpa)                     ; use: `pel-elpa-create-copies'
+;;                                      ;      `pel-elpa-disable-pkg-deps-in'
+;;                                      ;      `pel-elpa-package-alist-of-dir'
+(eval-when-compile (require 'subr-x))   ; use: `string-join'
+(require 'cus-edit)                     ; use: `custom-file'`
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
 
-(defconst pel-source-dirpath (file-name-directory (locate-library "pel"))
-  "Directory where PEL source files are stored.")
+;; Local utilities
+
+(defvar pel--adjust-path-for-graphics nil
+  "Force `pel--adjusted-fname' to adjust the paths for graphics Emacs.")
+
+(defun pel--adjusted-fname (fname &optional force for-graphics)
+  "Adjust FNAME to one corresponding to active Emacs mode.
+
+The active Emacs mode is identified by the value of the variable
+`pel--adjust-path-for-graphics' unless the optional FORCE
+argument is non-nil, in which case it is identified by the value
+of the optional FOR-GRAPHICS argument.
+
+PATH may or may not end with a directory separator slash.  Append
+\"-graphics\" to the name when a graphic mode specific directory
+must be used, otherwise return a string that does not end with
+\"-graphics\"."
+  (let ((isa-dirpath (directory-name-p fname))
+        (file-ext    (file-name-extension fname))
+        (path-name (file-name-sans-extension (directory-file-name fname)))
+        (for-graphics-env (if force
+                              for-graphics
+                            pel--adjust-path-for-graphics)))
+    (if for-graphics-env
+        (unless (pel-string-ends-with-p path-name "-graphics")
+          (setq path-name (concat path-name "-graphics")))
+      (when (pel-string-ends-with-p path-name "-graphics")
+        (setq path-name (substring path-name 0 -9))))
+    (when file-ext
+      (setq path-name (format "%s.%s" path-name file-ext)))
+    (if isa-dirpath
+        (file-name-as-directory path-name)
+      path-name)))
+
+;; --
+(defun pel-copy-only-file (original-copy-file file &rest args)
+  "Copy files but not Unix sockets."
+  (unless (pel-unix-socket-p file)
+    (apply original-copy-file
+           file
+           args)))
+
+(defun pel-copy-directory (source dest)
+  "Copy SOURCE directory into DEST directory. Skip socket files.
+
+Both SOURCE and DIRECTORY may be in the directory name (with a terminating
+slash) or in file name (without the terminating slash) format."
+  ;; - Normally, copy-directory would fail when attempting to copy
+  ;;   a Unix socket file, like those in elpa/gnupg.  To prevent
+  ;;   the error, replace copy-file by pel-copy-only-file which
+  ;;   does not attempt to copy the Unix socket files.
+  (advice-add 'copy-file :around #'pel-copy-only-file)
+  (unwind-protect
+      (copy-directory (directory-file-name source)
+                      (directory-file-name dest))
+    (advice-remove 'copy-file #'pel-copy-only-file)))
+
+;; ---------------------------------------------------------------------------
+;; Support for dual terminal/graphics mode customization
+;; -----------------------------------------------------
+
+(defun pel--dir-exists-p (dname)
+  "Return t if DNAME exists and is a directory, nil if it does not exists.
+Raise a user-error if DNAME exists and is not a directory."
+  (when (file-exists-p dname)
+    (unless (file-directory-p dname)
+      (user-error "%s is not a directory!" dname))
+    t))
+
+(defun pel-dual-environment-problems ()
+  "Return list of string describing problems found in dual custom environment.
+Return nil if no problems were found and all is OK, ready to use Emacs in
+independent environments for terminal and graphics mode."
+  (let* ((custom-fname (pel--adjusted-fname custom-file :force nil))
+         (g-custom-fname (pel--adjusted-fname custom-file
+                                              :force :for-graphic))
+         (elpa-dpath (pel--adjusted-fname pel-elpa-dirpath :force nil))
+         (elpa-dname (directory-file-name elpa-dpath))
+         (g-elpa-dname (pel--adjusted-fname elpa-dname
+                                            :force :for-graphics))
+         (elpa-complete-dname (pel-sibling-dirname pel-elpa-dirpath
+                                                   "elpa-complete"))
+         (g-elpa-complete-dname (pel--adjusted-fname elpa-complete-dname
+                                                     :force :for-graphic))
+         (problems nil))
+    (unless (file-exists-p custom-fname)
+      (push (format "File missing: %s" custom-fname) problems))
+    (unless (file-exists-p g-custom-fname)
+      (push (format "File missing: %s" g-custom-fname) problems))
+    (if (file-exists-p elpa-dname)
+        (unless (file-symlink-p elpa-dname)
+          (push (format "%s is not a symlink" elpa-dname) problems))
+      (push (format "%s is missing" elpa-dname) problems))
+    (if (file-exists-p g-elpa-dname)
+        (unless (file-symlink-p g-elpa-dname)
+          (push (format "%s is not a symlink" g-elpa-dname) problems))
+      (push (format "%s is missing" g-elpa-dname) problems))
+    (if (file-exists-p elpa-complete-dname)
+        (unless (file-directory-p elpa-complete-dname)
+          (push (format "%s is not a directory" elpa-complete-dname) problems))
+      (push (format "%s is missing" elpa-complete-dname) problems))
+    (if (file-exists-p g-elpa-complete-dname)
+        (unless (file-directory-p g-elpa-complete-dname)
+          (push (format "%s is not a directory" g-elpa-complete-dname) problems))
+      (push (format "%s is missing" g-elpa-complete-dname) problems))
+    (reverse problems)))
+
+
+;;-pel-autoload
+(defun pel-setup-dual-environment ()
+  "Setup Emacs environment to support 2 independent customization.
+
+Provide support for a customization and the Elpa directories
+required for the following two modes Emacs operation:
+- terminal/TTY
+- graphics
+
+After trying to set everything for the use of dual environment it
+displays a message describing the state.  It lists the actions
+performed and any remaining problems which you will have to fix
+manually.  If all is now OK it will say so, or if all was already
+ok, it will also say so.
+
+Normally Emacs makes no distinction between those and uses the
+exact same set of customization files and Elpa packages for Emacs
+operating in those two different modes.  If you want to manage
+the customization and packages used when Emacs operates in
+terminal/TTY mode one way and when Emacs operates in graphics
+mode another way, with PEL, then use that command.
+
+See the comments at in the commentary section of pel-setup.el for
+more information."
+  (interactive)
+  (when (y-or-n-p "Activate independent customization for terminal & graphics\
+ mode? ")
+    (let* ((custom-fname (pel--adjusted-fname custom-file :force nil))
+           (g-custom-fname (pel--adjusted-fname custom-file
+                                                :force :for-graphic))
+           (elpa-dpath (pel--adjusted-fname pel-elpa-dirpath :force nil))
+           (elpa-dname (directory-file-name elpa-dpath))
+           (g-elpa-dname (pel--adjusted-fname elpa-dname
+                                              :force :for-graphics))
+           (elpa-complete-dname (pel-sibling-dirname pel-elpa-dirpath
+                                                     "elpa-complete"))
+           (g-elpa-complete-dname (pel--adjusted-fname elpa-complete-dname
+                                                       :force :for-graphic))
+           (completed-actions nil))
+      ;;
+      ;; Create a custom-file for graphics mode unless it already exists.
+      (unless (file-exists-p g-custom-fname)
+        (if (file-exists-p custom-fname)
+            (progn
+              (copy-file custom-fname g-custom-fname)
+              (push (format "Copied %s to %s " custom-fname g-custom-fname)
+                    completed-actions))
+          (user-error "Expected customization file %s does not exists!"
+                      custom-fname)))
+      ;;
+      ;; Create a elpa directory for graphics mode unless it already exists.
+      (unless (pel--dir-exists-p g-elpa-complete-dname)
+        (if (pel--dir-exists-p elpa-complete-dname)
+            (progn
+              (pel-copy-directory elpa-complete-dname g-elpa-complete-dname)
+              (push (format "Copied %s to %s"
+                            elpa-complete-dname g-elpa-complete-dname)
+                    completed-actions))
+          (if (pel--dir-exists-p elpa-dpath)
+              (progn
+                (pel-copy-directory elpa-dpath g-elpa-complete-dname)
+                (push (format "Copied %s to %s"
+                              elpa-dpath g-elpa-complete-dname)
+                      completed-actions))
+            (user-error "Can't find elpa directory.  Looked for:
+- %s
+- %s"
+                        elpa-complete-dname
+                        elpa-dpath))))
+      ;;
+      ;; Rename the elpa directory to elpa-complete unless it's already done
+      (when (and (file-exists-p elpa-dname)
+                 (not (file-symlink-p elpa-dname)))
+        (when (file-exists-p elpa-complete-dname)
+          (user-error "Both %s and %s exist! Manual cleanup required!"
+                      elpa-dpath elpa-complete-dname))
+        (rename-file (directory-file-name elpa-dpath) elpa-complete-dname)
+        (push (format "Renamed %s to %s" elpa-dpath elpa-complete-dname)
+              completed-actions))
+      ;;
+      ;; Create the main elpa directory into a symlink to the elpa-complete
+      ;; directory.
+      (unless (file-symlink-p elpa-dname)
+        (pel-point-symlink-to elpa-dname elpa-complete-dname)
+        (push (format "Created symlink %s pointing to %s"
+                      elpa-dname elpa-complete-dname)
+              completed-actions))
+      ;;
+      ;; Create the elpa-graphics symlink to the elpa-complete-graphics
+      (unless (file-symlink-p g-elpa-dname)
+        (pel-point-symlink-to g-elpa-dname g-elpa-complete-dname)
+        (push (format "Created symlink %s pointing to %s"
+                      g-elpa-dname g-elpa-complete-dname)
+              completed-actions))
+      ;;
+      ;; Display performed actions.
+      (let ((remaining-problems (pel-dual-environment-problems))
+            (done-text (when completed-actions
+                         (format "Completed the following:\n- %s"
+                                 (string-join
+                                  (reverse completed-actions) "\n- ")))))
+        (if remaining-problems
+            (let ((remaining-actions (format "some problems remain.\
+ Please fix them manually:\n- %s" (string-join remaining-problems "\n- "))))
+              (if completed-actions
+                  (user-error "%s\n Unfortunately %s"
+                              done-text
+                              remaining-actions)
+                (user-error "Nothing can be done since %s" remaining-actions)))
+          (if completed-actions
+              (message "%s\n All is now OK!" done-text)
+            (message "Nothing to do, it's already setup.")))))))
+
+;; ---------------------------------------------------------------------------
+;; Fast-Startup Support
+;; --------------------
 
 (defconst pel-fast-startup-setup-fname (expand-file-name
                                         "pel-setup-package-builtin-versions.el"
@@ -172,9 +471,6 @@ When fast startup is not activated, this file must be deleted.")
   "Identifies that PEL setup has changed.
 Only set by `pel-setup-fast' or `pel-setup-normal'. Never cleared.")
 
-(defvar pel--adjust-path-for-graphics nil
-  "Force `pel--adjusted-path' to adjust the paths for graphics Emacs.")
-
 ;; If you need independent customization for Emacs running in terminal (TTY)
 ;; mode and in graphics mode, set `pel-use-graphic-specific-custom-file-p'
 ;; inside your init.el file as described by file example/init-5.el .
@@ -185,31 +481,13 @@ Only set by `pel-setup-fast' or `pel-setup-normal'. Never cleared.")
 Set to nil if only one customization file is used.
 Code must NOT modify this value!")
 
-(defun pel--adjusted-path (path)
-  "Adjust PATH to one corresponding to active Emacs mode.
-
-PATH may or may not end with a directory separator slash.  Append
-\"-graphics\" to the name when a graphic mode specific directory
-must be used, otherwise return a string that does not end with
-\"-graphics\"."
-  (let ((isa-dirpath (directory-name-p path))
-        (path-name (directory-file-name path)))
-    (if pel--adjust-path-for-graphics
-        (unless (pel-string-ends-with-p path-name "-graphics")
-          (setq path-name (concat path-name "-graphics")))
-      (when (pel-string-ends-with-p path-name "-graphics")
-        (setq path-name (substring path-name 0 -9))))
-    (if isa-dirpath
-        (file-name-as-directory path-name)
-      path-name)))
-
 (defun pel-switch-to-elpa-complete ()
   "Switch elpa symlink to the elpa-complete sub-directory."
   (interactive)
   (let* ((elpa-dirname
-          (pel--adjusted-path (directory-file-name pel-elpa-dirpath)))
+          (pel--adjusted-fname (directory-file-name pel-elpa-dirpath)))
          (elpa-complete-dirname
-          (pel--adjusted-path (directory-file-name
+          (pel--adjusted-fname (directory-file-name
                                (pel-sibling-dirpath elpa-dirname
                                                     "elpa-complete")))))
     (pel-point-symlink-to elpa-dirname elpa-complete-dirname)))
@@ -217,9 +495,9 @@ must be used, otherwise return a string that does not end with
 (defun pel-switch-to-elpa-reduced ()
   "Switch elpa symlink to the elpa-reduced sub-directory."
   (let* ((elpa-dirname
-          (pel--adjusted-path (directory-file-name pel-elpa-dirpath)))
+          (pel--adjusted-fname (directory-file-name pel-elpa-dirpath)))
          (elpa-reduced-dirname
-          (pel--adjusted-path (directory-file-name
+          (pel--adjusted-fname (directory-file-name
                                (pel-sibling-dirpath elpa-dirname
                                                  "elpa-reduced")))))
     (pel-point-symlink-to elpa-dirname elpa-reduced-dirname)))
@@ -323,8 +601,8 @@ If the first list has 3 members, then PEL/Emacs operates in fast startup mode."
   (let* ((pel--adjust-path-for-graphics pel-emacs-is-graphic-p)
          (met-criteria nil)
          (problems nil)
-         (elpa-dirpath (pel--adjusted-path pel-elpa-dirpath))
-         (elpa-reduced-dirpath  (pel--adjusted-path (pel-sibling-dirpath elpa-dirpath
+         (elpa-dirpath (pel--adjusted-fname pel-elpa-dirpath))
+         (elpa-reduced-dirpath  (pel--adjusted-fname (pel-sibling-dirpath elpa-dirpath
                                                                          "elpa-reduced"))))
     (if (pel-in-fast-startup-p)
         (push "Identified as fast startup by function `pel-in-fast-startup'"
@@ -355,14 +633,6 @@ Returns: 'normal, 'fast or 'inconsistent."
           ((eq count 3) 'fast)
           (t 'inconsistent))))
 
-
-(defun pel-copy-only-file (original-copy-file file &rest args)
-  "Copy files but not Unix sockets."
-  (unless (pel-unix-socket-p file)
-    (apply original-copy-file
-           file
-           args)))
-
 (defun pel--setup-fast (for-graphics)
   "Prepare the elpa directories and code to speedup Emacs startup.
 
@@ -373,17 +643,17 @@ is only one or when its for the terminal (TTY) mode."
   (let ((pel--adjust-path-for-graphics for-graphics)
         (cd-original (cd ".")))
     (condition-case-unless-debug err
-        (let* ((pel-elpa-dirpath-adj (pel--adjusted-path
+        (let* ((pel-elpa-dirpath-adj (pel--adjusted-fname
                                       pel-elpa-dirpath))
                (pel-bundle-dirpath (pel-sibling-dirpath pel-elpa-dirpath
                                                         "pel-bundle"))
-               (elpa-reduced-dirpath (pel--adjusted-path
+               (elpa-reduced-dirpath (pel--adjusted-fname
                                       (pel-sibling-dirpath pel-elpa-dirpath
                                                            "elpa-reduced")))
-               (elpa-complete-dirpath (pel--adjusted-path
+               (elpa-complete-dirpath (pel--adjusted-fname
                                        (pel-sibling-dirpath pel-elpa-dirpath
                                                             "elpa-complete")))
-               (elpa-is-link (file-symlink-p (pel--adjusted-path
+               (elpa-is-link (file-symlink-p (pel--adjusted-fname
                                               (directory-file-name
                                                pel-elpa-dirpath))))
                (time-stamp (format-time-string "%Y%m%d.%H%M"))
@@ -394,7 +664,7 @@ is only one or when its for the terminal (TTY) mode."
           ;; elpa-complete ;; otherwise abort.
           (when (and elpa-is-link
                      (not (pel-symlink-points-to-p (directory-file-name
-                                                    (pel--adjusted-path
+                                                    (pel--adjusted-fname
                                                      pel-elpa-dirpath))
                                                    elpa-complete-dirpath)))
             (error "The %s symlink (%s) should point to the %s directory.
@@ -407,12 +677,12 @@ Compared: symlink %s to target %s.
 - elpa-reduced-dirpath  = %s
 - elpa-complete-dirpath = %s
 - elpa-is-link          = %s"
-                   (pel--adjusted-path "elpa")
+                   (pel--adjusted-fname "elpa")
                    pel-elpa-dirpath-adj
-                   (pel--adjusted-path "elpa-complete")
+                   (pel--adjusted-fname "elpa-complete")
                    elpa-is-link
                    (directory-file-name
-                    (pel--adjusted-path
+                    (pel--adjusted-fname
                      pel-elpa-dirpath))
                    elpa-complete-dirpath
                    for-graphics
@@ -460,15 +730,8 @@ Compared: symlink %s to target %s.
           ;; Duplicate elpa inside elpa-reduced then remove the one-level
           ;; packages from it: they have been placed inside the pel-bundle
           ;; directory before.
-          ;; - Normally, copy-directory would fail when attempting to copy
-          ;;   a Unix socket file, like those in elpa/gnupg.  To prevent
-          ;;   the error, replace copy-file by pel-copy-only-file which
-          ;;   does not attempt to copy the Unix socket files.
-          (advice-add 'copy-file :around #'pel-copy-only-file)
-          (unwind-protect
-              (copy-directory (directory-file-name pel-elpa-dirpath-adj)
-                              (directory-file-name elpa-reduced-dirpath))
-            (advice-remove 'copy-file #'pel-copy-only-file))
+          (pel-copy-directory pel-elpa-dirpath-adj elpa-reduced-dirpath)
+
           ;; - Remove the one-level package sub-directories from
           ;;   elpa-reduced, only leaving the multi-directory packages in
           ;;   elpa-reduced.
@@ -530,8 +793,7 @@ Compared: symlink %s to target %s.
       (error
        (display-warning 'pel-setup-fast
                         (format "Failed fast startup setup: %s" err))))
-    (cd cd-original)
-    ))
+    (cd cd-original)))
 
 
 ;;-pel-autoload
@@ -584,7 +846,7 @@ is only one or when its for the terminal (TTY) mode."
                (boundp 'package-quickstart)
                package-quickstart)
       (let ((package-alist (pel-elpa-package-alist-of-dir
-                            (pel--adjusted-path pel-elpa-dirpath))))
+                            (pel--adjusted-fname pel-elpa-dirpath))))
         (package-quickstart-refresh)))))
 
 ;;-pel-autoload
@@ -610,6 +872,7 @@ is only one or when its for the terminal (TTY) mode."
       (setq pel--setup-changed t))))
 
 ;; --
+;;-pel-autoload
 (defun pel-setup-info ()
   "Display current state of PEL setup: whether normal or in fast startup."
   (interactive)

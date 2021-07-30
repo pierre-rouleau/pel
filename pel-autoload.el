@@ -644,6 +644,7 @@ Argument FOR: just a required separator keyword to make code look better."
   ;; by the logic inside pel_keys.el
 
   (pel-autoload "pel-setup" for:
+    pel-setup-dual-environment
     pel-setup-fast
     pel-setup-normal
     pel-setup-info)
