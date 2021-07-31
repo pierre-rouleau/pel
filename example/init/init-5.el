@@ -231,25 +231,24 @@ before a mode switch done by one of them.")
   ;;   mode because in that mode it never attempts to install a missing
   ;;   external package.
   ;; When PEL is not in fast-startup mode then it is important to call
-  ;; `pel--init-package-support' immediately because PEL does need package.el
-  ;; features to download and install any missing external packages requested
-  ;; by PEL user options.
+  ;; `pel--init-package-support' before calling `pel-init' because PEL uses
+  ;; package.el ;; features to download and install any missing external
+  ;; packages requested by PEL user options.  That call is done right before
+  ;; `pel-init' below, after loading the customization file.
   ;;
-  (if pel-running-with-bundled-packages
-      (progn
-        (when (or (< emacs-major-version 27)
-                  (null (boundp 'package-quickstart))
-                  (null package-quickstart)) ; ignore invalid warning here
-          (if (and (load (file-name-sans-extension pel-fast-startup-setup-fname)
-                         :noerror)
-                   (fboundp 'pel-fast-startup-set-builtins))
-              (pel-fast-startup-set-builtins)
-            (display-warning 'pel-fast-startup-set-builtins
-                             "Failed loading pel-fast-startup-set-builtins\
+  (when pel-running-with-bundled-packages
+    (when (or (< emacs-major-version 27)
+              (null (boundp 'package-quickstart))
+              (null package-quickstart)) ; ignore invalid warning here
+      (if (and (load (file-name-sans-extension pel-fast-startup-setup-fname)
+                     :noerror)
+               (fboundp 'pel-fast-startup-set-builtins))
+          (pel-fast-startup-set-builtins)
+        (display-warning 'pel-fast-startup-set-builtins
+                         "Failed loading pel-fast-startup-set-builtins\
  from user-emacs-directory"
-                             :error)))
-        (add-hook 'emacs-startup-hook (function pel--init-package-support)))
-    (pel--init-package-support))
+                         :error)))
+    (add-hook 'emacs-startup-hook (function pel--init-package-support)))
 
 
   ;; -------------------------------------------------------------------------
@@ -267,23 +266,7 @@ before a mode switch done by one of them.")
 
 
   ;; -------------------------------------------------------------------------
-  ;; Section 3: Prepare load-path for PEL
-  ;; ====================================
-  ;;
-  ;; Add 2 directories to `load-path': the directory where PEL source code is
-  ;; located, and the directory where PEL stores the Elisp files taken from
-  ;; non-Elpa repo sites.  Ideally these would all be inside one directory but
-  ;; they are managed differently.  To help their management they are stored
-  ;; in 2 different directories.
-  ;;
-  ;; Use `push' instead of `add-to-list': it's a little faster.
-
-  (push (expand-file-name "utils" user-emacs-directory) load-path)
-  (push pel-home-dirpath-name load-path)
-
-
-  ;; -------------------------------------------------------------------------
-  ;; Section 4: Standard Emacs behaviour control
+  ;; Section 3: Standard Emacs behaviour control
   ;; ===========================================
   ;;
   ;; - Emacs startup behaviour
@@ -292,7 +275,7 @@ before a mode switch done by one of them.")
   ;; Do not display the splash screen.  Same as emacs -Q
   (setq inhibit-startup-screen t)
 
-  ;; OPTION C:  Don't display the start help in minibuffer, at least for me.
+  ;; OPTION C: Don't display Emacs startup help message, at least for me.
   ;; This variable is treated specially.  Don't group its setting with others.
   ;;   Replace YOUR_USER_NAME by your systems' login user name in the line
   ;;   below and un-comment it:
@@ -336,9 +319,18 @@ before a mode switch done by one of them.")
                   ;; - Display buffer (full filepath) on frame title bar.
                   frame-title-format         "%b (%f)"))
 
+  ;; - Tab Control
+  ;; -------------
+  ;; Set tabs to 4 space characters by default instead of the
+  ;; emacs 8 position using hard/literal tab.
+  ;; (setq-default tab-width 4)
+
+  ;; The fill-column should be set inside the directory inside
+  ;; a .dir-local.el file instead of init to provide the most flexible setup.
+  ;; (setq-default indent-tabs-mode nil)
 
   ;; ---------------------------------------------------------------------------
-  ;; Section 5: Load customization file
+  ;; Section 4: Load customization file
   ;; ==================================
   ;;
   ;; PEL does not let customization data go inside the init.el file, it uses
@@ -356,7 +348,7 @@ before a mode switch done by one of them.")
   ;;
   ;; If you already have a (custom-set-variables ...) form in your current
   ;; init.el, move it into this or these new files.
-
+  ;;
   (setq custom-file (expand-file-name
                      (if (and pel-use-graphic-specific-custom-file-p
                               (display-graphic-p)
@@ -368,7 +360,38 @@ before a mode switch done by one of them.")
   (load (file-name-sans-extension custom-file))
 
   ;; -------------------------------------------------------------------------
-  ;; Section 6: Start PEL
+  ;; Section 5: in normal startup mode initialize package
+  ;; ====================================================
+  ;;
+  ;; In normal startup mode initialize package.el before calling `pel-init'
+  ;; because `pel-init' uses package.el features.  This calls `package-init'
+  ;; which will process all local packages and will grow the `load-path'
+  ;; accordingly.
+  ;;
+  (unless pel-running-with-bundled-packages
+    (pel--init-package-support))
+
+  ;; -------------------------------------------------------------------------
+  ;; Section 6: Prepare load-path for PEL
+  ;; ====================================
+  ;;
+  ;; Add 2 directories to `load-path': the directory where PEL source code is
+  ;; located, and the directory where PEL stores the Elisp files taken from
+  ;; non-Elpa repo sites.  Ideally these would all be inside one directory but
+  ;; they are managed differently.  To help their management they are stored
+  ;; in 2 different directories.
+  ;;
+  ;; Use `push' instead of `add-to-list': it's a little faster.  However,
+  ;; in normal startup mode it must be done *after* the call to the function
+  ;; `pel--init-package-support' otherwise the startup will show down
+  ;; noticeably: PEL's code is used extensively in the startup, so it's better
+  ;; to have it at the beginning of a possibly very long `load-path'!
+  ;;
+  (push (expand-file-name "utils" user-emacs-directory) load-path)
+  (push pel-home-dirpath-name load-path)
+
+  ;; -------------------------------------------------------------------------
+  ;; Section 7: Start PEL
   ;; ====================
   ;; - Perform PEL initialization.
   ;;   Set PEL key bindings. In normal operation mode it will also install
