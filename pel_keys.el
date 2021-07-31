@@ -4307,6 +4307,7 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
     (declare-function pel--activate-origami "pel_keys"))
 
   (add-hook 'origami-mode-hook (function pel--activate-origami)))
+
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> ?`` : Help /apropos/info commands
 
@@ -6119,6 +6120,12 @@ the ones defined from the buffer now."
    'vc-dir-mode 'vc-dir-mode-hook)
 
 ;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> M-l`` : Mode line commands
+(define-pel-global-prefix pel:mode-line (kbd "<f11> M-l"))
+
+(define-key pel:mode-line "f"  'which-function-mode)
+
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> w`` : Windows operations
 ;; Use the global local winner-mode, but don't use its key bindings;
 ;; use some in the '<f11> w' group:
@@ -6161,6 +6168,7 @@ the ones defined from the buffer now."
   ;; but newer version obsoleted that and now use ace-delete-other-windows
   ;; If you do not have it, upgrade ace-window.
 
+  (define-key pel:mode-line "#" 'ace-window-display-mode)
   (define-key pel:window  "#"  'ace-window-display-mode)
   (define-key pel:window  "m"  'ace-delete-other-windows)
   (define-key pel:window  "x"  'ace-swap-window)

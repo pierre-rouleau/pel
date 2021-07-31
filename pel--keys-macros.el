@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-28 12:24:51, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-31 17:07:31, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -441,6 +441,10 @@
                                                                        counsel
                                                                        minibuffer
                                                                        smex))
+
+    ([f11 27 ?l]            "mode-line"        nil                     mode-line)
+    (,(kbd "<f11> M-l")     "mode-line"        nil                     mode-line)
+
     (,(kbd "<f11> SPC M-g") "graphviz-dot"     pel-pkg-for-graphviz-dot graphviz)
     ([f11 32 27 ?g]         "graphviz-dot"     pel-pkg-for-graphviz-dot graphviz)
     (,(kbd "<f11> SPC M-r") "mode-rst"         pel-pkg-for-reST        rst)
