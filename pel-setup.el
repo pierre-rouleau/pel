@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-30 13:28:27, updated by Pierre Rouleau>
+;; Time-stamp: <2021-07-31 09:23:31, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -633,6 +633,15 @@ Returns: 'normal, 'fast or 'inconsistent."
           ((eq count 3) 'fast)
           (t 'inconsistent))))
 
+(defun pel--setup-mode-description (for-graphics)
+  "Describe the mode context of a setup.
+The FOR-GRAPHICS argument identifies the setup forced for independent graphics."
+  (if for-graphics
+      "independent graphics mode"
+    (if pel-used-with-independent-graphics-customization
+        "independent terminal/tty mode"
+      "all modes")))
+
 (defun pel--setup-fast (for-graphics)
   "Prepare the elpa directories and code to speedup Emacs startup.
 
@@ -640,7 +649,8 @@ The FOR-GRAPHICS argument is t when changing the environment for the
 Emacs running in graphics mode and has a custom file that is independent from
 the file used by Emacs running in terminal (TTY) mode.  It is nil when there
 is only one or when its for the terminal (TTY) mode."
-  (let ((pel--adjust-path-for-graphics for-graphics)
+  (let ((step-count 0)
+        (pel--adjust-path-for-graphics for-graphics)
         (cd-original (cd ".")))
     (condition-case-unless-debug err
         (let* ((pel-elpa-dirpath-adj (pel--adjusted-fname
@@ -692,6 +702,7 @@ Compared: symlink %s to target %s.
                    elpa-reduced-dirpath
                    elpa-complete-dirpath
                    elpa-is-link))
+          (setq step-count (1+ step-count))
 
           ;; Ensure that pel-bundle directory does not exists.  That's a
           ;; temporary directory where all one-level package files are
@@ -703,39 +714,49 @@ Compared: symlink %s to target %s.
             (delete-directory pel-bundle-dirpath :recursive)
             (message (format "Directory %s existed already; deleted it."
                              pel-bundle-dirpath)))
+          (setq step-count (1+ step-count))
           ;;
           ;; Delete old elpa-reduced if it exists: it contains the old
           ;; pel-bundle and the multi-level packages that could not be
           ;; bundled in the previous execution of `pel-setup-fast'.
           (when (file-exists-p elpa-reduced-dirpath)
             (delete-directory elpa-reduced-dirpath :recursive))
+          (setq step-count (1+ step-count))
           ;;
           ;; Create pel-bundle temporary directory to hold all one-level
           ;; package .el files.  At first create it the directory as a
           ;; sibling of the elpa directory because elpa-reduced is not
           ;; created yet.
           (make-directory pel-bundle-dirpath)
+          (setq step-count (1+ step-count))
           (pel-elpa-create-copies pel-elpa-dirpath-adj pel-bundle-dirpath
                                   :with-symlinks)
+          (setq step-count (1+ step-count))
           ;; Create the pel-bundle-pkg.el file inside it.
           (pel-create-bundle-pkg-file pel-bundle-dirpath time-stamp)
+          (setq step-count (1+ step-count))
           ;;
           ;; Create the pel-bundle-autoloads.el file inside it.
           (cd pel-bundle-dirpath)
+          (setq step-count (1+ step-count))
           ;; Build a pel-bundle-autoloads.el inside the pel-bundle
           ;; directory.
           (pel-generate-autoload-file-for pel-bundle-dirpath)
+          (setq step-count (1+ step-count))
           (cd pel-elpa-dirpath-adj)
+          (setq step-count (1+ step-count))
           ;;
           ;; Duplicate elpa inside elpa-reduced then remove the one-level
           ;; packages from it: they have been placed inside the pel-bundle
           ;; directory before.
           (pel-copy-directory pel-elpa-dirpath-adj elpa-reduced-dirpath)
-
+          (setq step-count (1+ step-count))
+          ;;
           ;; - Remove the one-level package sub-directories from
           ;;   elpa-reduced, only leaving the multi-directory packages in
           ;;   elpa-reduced.
           (pel-elpa-remove-pure-subdirs elpa-reduced-dirpath)
+          (setq step-count (1+ step-count))
           ;;
           ;; Disable the dependencies of all (multi-directory) packages
           ;; left in the elpa-reduced directory.  This returns an alist of
@@ -751,6 +772,7 @@ Compared: symlink %s to target %s.
                                  package-quickstart)
                             (format "(add-to-list 'load-path \"%s\")"
                                     new-pel-bundle-dirpath)))
+          (setq step-count (1+ step-count))
           ;;
           ;; Move the pel-bundle directory inside the elpa-reduced
           ;; directory: effectively creating a pel-bundle package
@@ -760,6 +782,7 @@ Compared: symlink %s to target %s.
           ;; a version number corresponding to today's date.
           (rename-file (directory-file-name pel-bundle-dirpath)
                        new-pel-bundle-dirpath)
+          (setq step-count (1+ step-count))
           ;; Re-organize the elpa directory:
           ;; If elpa is a directory and elpa-complete does not exist: then
           ;; rename elpa to elpa-complete.
@@ -770,14 +793,17 @@ Compared: symlink %s to target %s.
               (delete-directory elpa-complete-dirpath :recursive))
             (rename-file (directory-file-name pel-elpa-dirpath-adj)
                          (directory-file-name elpa-complete-dirpath)))
+          (setq step-count (1+ step-count))
           ;; If there is a elpa symlink remove it and create a new one
           ;; that points to elpa-reduced
           (pel-switch-to-elpa-reduced)
+          (setq step-count (1+ step-count))
           ;; Re-compile pel_keys.el with
           ;; `pel-running-with-bundled-packages' bound to t to prevent PEL
           ;; from downloading and installing external packages while PEL
           ;; runs in PEL bundled mode.
           (pel-bundled-mode t)
+          (setq step-count (1+ step-count))
           ;; With Emacs ≥ 27 if package-quickstart is used more work is
           ;; required: package-quickstart-refresh must be done while
           ;; package-alist includes all packages now in elpa (which is
@@ -789,12 +815,19 @@ Compared: symlink %s to target %s.
                      package-quickstart)
             (let ((package-alist (pel-elpa-package-alist-of-dir
                                   elpa-reduced-dirpath)))
-              (package-quickstart-refresh))))
+              (package-quickstart-refresh)))
+          (setq step-count (1+ step-count)))
       (error
        (display-warning 'pel-setup-fast
-                        (format "Failed fast startup setup: %s" err))))
+                        (format "Failed fast startup setup for %s after %d of 17 steps: %s
+ Please inspect the %s directory to restore a valid setup.
+ See pel-setup.el commentary for further information.
+ Please also report the problem as a bug in the PEL Github project."
+                                (pel--setup-mode-description for-graphics)
+                                step-count
+                                err
+                                user-emacs-directory))))
     (cd cd-original)))
-
 
 ;;-pel-autoload
 (defun pel-setup-fast ()
