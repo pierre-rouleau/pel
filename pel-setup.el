@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-31 09:23:31, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-01 13:31:11, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -270,7 +270,10 @@ must be used, otherwise return a string that does not end with
         (file-name-as-directory path-name)
       path-name)))
 
-;; --
+;; ---------------------------------------------------------------------------
+;; pel-copy-directory : copies a directory, skipping Unix socket files
+;; -------------------------------------------------------------------
+
 (defun pel-copy-only-file (original-copy-file file &rest args)
   "Copy files but not Unix sockets."
   (unless (pel-unix-socket-p file)
@@ -481,6 +484,35 @@ Only set by `pel-setup-fast' or `pel-setup-normal'. Never cleared.")
 Set to nil if only one customization file is used.
 Code must NOT modify this value!")
 
+
+;; package-quickstart-refresh that support dual customization
+;;  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+(when (>= emacs-major-version 27)
+
+  (defvar pel--package-quickstart-forced-file-name nil
+    "Unless nil, forced name of package quickstart file.")
+
+  (defun pel-package-quickstart-refresh-replacement (original-package-quickstart-refresh)
+    "(Re)Generate the package quickstart file currently active."
+    (if pel--package-quickstart-forced-file-name
+        (if (boundp 'package-quickstart-file)
+            (let ((original-fname package-quickstart-file))
+              (setq package-quickstart-file
+                    pel--package-quickstart-forced-file-name)
+              (unwind-protect
+                  (funcall original-package-quickstart-refresh)
+                (setq package-quickstart-file original-fname)))
+          (message
+           "WARNING: The package-quickstart-file is unbound, preventing PEL\
+ from controlling which file package-quickstart-refresh (re)generates!")
+          (funcall original-package-quickstart-refresh))
+      (funcall original-package-quickstart-refresh)))
+  (declare-function pel-package-quickstart-refresh-replacement "pel-setup"))
+
+;; elpa symlink control
+;;  - - - - - - - - - -
+
 (defun pel-switch-to-elpa-complete ()
   "Switch elpa symlink to the elpa-complete sub-directory."
   (interactive)
@@ -488,8 +520,8 @@ Code must NOT modify this value!")
           (pel--adjusted-fname (directory-file-name pel-elpa-dirpath)))
          (elpa-complete-dirname
           (pel--adjusted-fname (directory-file-name
-                               (pel-sibling-dirpath elpa-dirname
-                                                    "elpa-complete")))))
+                                (pel-sibling-dirpath elpa-dirname
+                                                     "elpa-complete")))))
     (pel-point-symlink-to elpa-dirname elpa-complete-dirname)))
 
 (defun pel-switch-to-elpa-reduced ()
@@ -520,7 +552,8 @@ Return the complete name of the generated autoload file."
            (display-warning
             'pel-generate-autoload-file-for
             (format "Failed generating the %s/pel-bundle-autoloads.el: %s"
-                    dir err))))
+                    dir err)
+            :error)))
         (setq generated-autoload-file original-generated-autoload-file))
     (error "The autoload.el variable generated-autoload-file isn't bounded!")))
 
@@ -807,15 +840,27 @@ Compared: symlink %s to target %s.
           ;; With Emacs ≥ 27 if package-quickstart is used more work is
           ;; required: package-quickstart-refresh must be done while
           ;; package-alist includes all packages now in elpa (which is
-          ;; pel-reduced).
+          ;; pel-reduced). Support dual tty/graphics mode by processing
+          ;;  a file with modified name if required.
           (when (and (>= emacs-major-version 27)
                      (require 'package nil :no-error)
                      (fboundp 'package-quickstart-refresh)
                      (boundp 'package-quickstart)
+                     (boundp 'package-quickstart-file)
                      package-quickstart)
-            (let ((package-alist (pel-elpa-package-alist-of-dir
-                                  elpa-reduced-dirpath)))
-              (package-quickstart-refresh)))
+            (advice-add 'package-quickstart-refresh
+                        :around
+                        #'pel-package-quickstart-refresh-replacement)
+            (unwind-protect
+                (setq pel--package-quickstart-forced-file-name
+                      (pel--adjusted-fname package-quickstart-file))
+              (let ((package-alist (pel-elpa-package-alist-of-dir
+                                    elpa-reduced-dirpath)))
+                (package-quickstart-refresh))
+              (progn
+                (advice-remove 'package-quickstart-refresh
+                               #'pel-package-quickstart-refresh-replacement)
+                (setq pel--package-quickstart-forced-file-name nil))))
           (setq step-count (1+ step-count)))
       (error
        (display-warning 'pel-setup-fast

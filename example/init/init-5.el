@@ -1,5 +1,5 @@
 ;; -*-lexical-binding: t; -*-
-;;; ---Example init.el file ---------------------------------------------------
+;;; ---Example init.el file --------------------------------------------------
 ;;
 ;; With:
 ;;      - PEL,
@@ -32,7 +32,7 @@
 ;;
 ;; - OPTION C: whether Emacs displays its startup message for current user.
 ;; - OPTION D: whether graphical Emacs toolbar is displayed or not.
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;;
 ;; Section 0: Variable definitions
 ;; ===============================
@@ -61,7 +61,35 @@ the normal and fast-startup operation modes while keeping the
 ability to use multiple instances of Emacs that were started
 before a mode switch done by one of them.")
 
-;; Section 1: Control package.el and garbage collection
+;; Section 1 : Utility function definition
+;; =======================================
+;;
+;; The `pel--package-activate-all' function is used only in Emacs >= 27
+;; when package-quickstart is used and under some condition.  It should
+;; be defined only for those conditions but the byte compiler generates
+;; end-of file warning if that is done.  So for now it's defined here.
+;;
+(defun pel--package-activate-all (original-package-activate-all)
+  "Use a graphics specific file for `package-activate-all'."
+  (if (boundp 'package-quickstart-file)
+      (let ((original-fname package-quickstart-file)
+            (ext (substring package-quickstart-file -3)))
+        ;; use a fname that ends with '-graphics'
+        (setq package-quickstart-file
+              (cond ((string-equal ext ".el")
+                     (concat (substring original-fname 0 -3) "-graphics.el"))
+                    ((string-equal ext "elc")
+                     (concat (substring original-fname 0 -4) "-graphics.elc"))
+                    (t
+                     (concat original-fname "-graphics"))))
+        (unwind-protect
+            (funcall original-package-activate-all)
+          (setq package-quickstart-file original-fname)))
+    (message "WARNING: package-quickstart-file is unbound in\
+ advised function attempting to control its name.")))
+
+
+;; Section 2: Control package.el and garbage collection
 ;; ====================================================
 ;; To speed up Emacs init, prevent checking for file handling association and
 ;; prevent garbage collection.
@@ -195,7 +223,19 @@ before a mode switch done by one of them.")
       (add-to-list 'package-archives
                    (cons "melpa-stable" "https://stable.melpa.org/packages/")
                    t)
-      (package-initialize))
+      (if (and (display-graphic-p)
+               pel-use-graphic-specific-custom-file-p)
+          ;; Use a graphics mode specific package quickstart file.
+          (progn
+            (advice-add 'package-activate-all :around
+                        #'pel--package-activate-all)
+            (unwind-protect
+                (package-initialize)
+              (advice-remove 'package-activate-all
+                             #'pel--package-activate-all)))
+        ;; No change to `package-quickstart-file'
+        (package-initialize)))
+    ;;
     ;; Remember package-user-dir real directory when it's a symlink.  This
     ;; way, if it is changed by another process when the operation mode is
     ;; switched, the current process will be able to continue using it
@@ -245,15 +285,13 @@ before a mode switch done by one of them.")
                      :noerror)
                (fboundp 'pel-fast-startup-set-builtins))
           (pel-fast-startup-set-builtins)
-        (display-warning 'pel-fast-startup-set-builtins
-                         "Failed loading pel-fast-startup-set-builtins\
- from user-emacs-directory"
-                         :error)))
+        (message "WARNING: Failed loading pel-fast-startup-set-builtins\
+ from user-emacs-directory")))
     (add-hook 'emacs-startup-hook (function pel--init-package-support)))
 
 
   ;; -------------------------------------------------------------------------
-  ;; Section 2: Delay loading of abbreviation definitions
+  ;; Section 3: Delay loading of abbreviation definitions
   ;; ====================================================
   ;;
   ;; Disable the loading the abbreviation file during Emacs initialization
@@ -267,7 +305,7 @@ before a mode switch done by one of them.")
 
 
   ;; -------------------------------------------------------------------------
-  ;; Section 3: Standard Emacs behaviour control
+  ;; Section 4: Standard Emacs behaviour control
   ;; ===========================================
   ;;
   ;; - Emacs startup behaviour
@@ -330,8 +368,8 @@ before a mode switch done by one of them.")
   ;; a .dir-local.el file instead of init to provide the most flexible setup.
   ;; (setq-default indent-tabs-mode nil)
 
-  ;; ---------------------------------------------------------------------------
-  ;; Section 4: Load customization file
+  ;; -------------------------------------------------------------------------
+  ;; Section 5: Load customization file
   ;; ==================================
   ;;
   ;; PEL does not let customization data go inside the init.el file, it uses
@@ -361,7 +399,7 @@ before a mode switch done by one of them.")
   (load (file-name-sans-extension custom-file))
 
   ;; -------------------------------------------------------------------------
-  ;; Section 5: in normal startup mode initialize package
+  ;; Section 6: in normal startup mode initialize package
   ;; ====================================================
   ;;
   ;; In normal startup mode initialize package.el before calling `pel-init'
@@ -373,7 +411,7 @@ before a mode switch done by one of them.")
     (pel--init-package-support))
 
   ;; -------------------------------------------------------------------------
-  ;; Section 6: Prepare load-path for PEL
+  ;; Section 7: Prepare load-path for PEL
   ;; ====================================
   ;;
   ;; Add 2 directories to `load-path': the directory where PEL source code is
@@ -392,7 +430,7 @@ before a mode switch done by one of them.")
   (push pel-home-dirpath-name load-path)
 
   ;; -------------------------------------------------------------------------
-  ;; Section 7: Start PEL
+  ;; Section 8: Start PEL
   ;; ====================
   ;; - Perform PEL initialization.
   ;;   Set PEL key bindings. In normal operation mode it will also install
