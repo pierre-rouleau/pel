@@ -34,7 +34,7 @@
 ;; - OPTION D: whether graphical Emacs toolbar is displayed or not.
 ;; -----------------------------------------------------------------------------
 ;;
-;; Section 0: Constant definitions
+;; Section 0: Variable definitions
 ;; ===============================
 (defconst pel-home-dirpath-name (expand-file-name "~/projects/pel")
   "Directory where PEL source files are stored.")
@@ -135,6 +135,7 @@ before a mode switch done by one of them.")
           ;; prevents gnutls downloads (such as the ones from GNU Elpa
           ;; for packages). The following work-around solves the problem.
           ;; It causes a byte-compiler warning but you can ignore it.
+          (defvar gnutls-algorithm-priority) ; prevent byte-compiler
           (if (version= emacs-version "26.2")
               (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
 
@@ -236,10 +237,10 @@ before a mode switch done by one of them.")
   ;; packages requested by PEL user options.  That call is done right before
   ;; `pel-init' below, after loading the customization file.
   ;;
+  (defvar package-quickstart) ; declared only to prevent byte-compiler warning.
   (when pel-running-with-bundled-packages
     (when (or (< emacs-major-version 27)
-              (null (boundp 'package-quickstart))
-              (null package-quickstart)) ; ignore invalid warning here
+              (null (boundp 'package-quickstart)))
       (if (and (load (file-name-sans-extension pel-fast-startup-setup-fname)
                      :noerror)
                (fboundp 'pel-fast-startup-set-builtins))
