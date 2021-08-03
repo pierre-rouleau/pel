@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-03 14:42:32, updated by Pierre Rouleau.
+:Modified: 2021-08-03 15:16:50, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -363,7 +363,7 @@ Note:
      to use.
 
 The commands will create the "``~/projects/pel``" directory tree with all
-PEL's files inside it, including all `PDF document tables`_
+PEL's files inside it, including all `PDF topic-oriented reference sheets`_
 that document the key bindings of Emacs and the libraries you can activate with
 PEL.
 
@@ -5246,13 +5246,13 @@ PEL comes with a set of tables listing and describing:
 - the commands and key bindings for commands provided by external packages that
   PEL supports and can download and install.
 
-These tables are inside PDF documents.  They are listed in the `PDF Document
-Tables`_ below.
+These tables are inside PDF documents; the `PDF topic-oriented reference
+sheets`_.  They are listed in the `PEL Index PDF`_.
 
 Open PEL PDF files quickly from Emacs:
-   PEL provides a set of key bindings that open you local copy of
-   the file (or the Github-hosted copy) inside most key prefixes.
 
+   - PEL provides a set of key bindings that open you local copy of
+     the file (or the Github-hosted copy) inside most key prefixes.
    - For example to open your local copy of the `Search and Replace`_ PDF file
      that describes the search and replace features available under Emacs type
      ``<f11> s <f1>``.  To open the same file but from the Github site prefix
@@ -5301,160 +5301,11 @@ As PEL evolves, it will cover more topics, more
 programming languages, major modes and will integrate with more of the external
 Emacs packages and more tables will describe how to use them.
 
-PDF Document Tables
-~~~~~~~~~~~~~~~~~~~
 
-PEL provides **over 130 PDF topics oriented reference sheets** with
-hyperlinks to Emacs manuals, external packages, articles and other
-references.
-
-- The `PEL Index PDF`_ lists them all and provides a good starting
-  point.
-- For the best user experience, use a browser, like Firefox version 78 or later, that
-  can render the PDF file inline (as opposed to downloading it) so you can use
-  the links quickly.
-- The hyperlinks are not active when the files are viewed through the
-  Github PDF file rendering (for example, the `Github rendering of the Buffers PDF`_)
-  which can also be viewed inside PEL's `doc/pdf github directory`_.
-- Inside Emacs use ``<f11> <f1>`` to open the `PEL Index PDF`_ and then
-  navigate from it, or use ``<f12> <f1>`` to open the PDF describing the
-  major mode of the current buffer and its key bindings.
-- All of these PDF files are created from a macOS Number file.  It is located
-  in a separate Git repo: the `pel-pdf-spreadsheet repo`_.
 
 .. _doc/pdf github directory: https://github.com/pierre-rouleau/pel/tree/master/doc/pdf
 .. _pel-pdf-spreadsheet repo:   https://github.com/pierre-rouleau/pel-pdf-spreadsheet#readme
 
-
-- `Document Legend`_
-
-**Emacs Concepts**
-
-#. `PEL Key Maps`_
-#. `File and Directory Local Variables`_
-#. `Modifier Keys`_
-
-**Basic Emacs Operations:**
-
-#. `Abbreviations`_
-#. `Align`_
-#. `Auto-Completion`_
-#. `Autosave & Backups`_
-#. `Bookmarks`_
-#. `Buffers`_
-#. `Case Conversion`_
-#. `Closing and Suspending`_
-#. `Comments`_
-#. Completion: `Input Completion`_
-#. `Counting`_
-#. `CUA Mode Support`_
-#. `Cross-Referencing`_
-#. `Cursor`_
-#. `Customization <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf>`_.
-#. `Cut, Delete, Copy and Paste`_ (killing and yanking)
-#. `Diff and Merge`_
-#. `Dired`_ (Directory Editing)
-#. `Display Lines`_
-#. `Drawing`_
-#. `Enriched Text`_
-#. `Faces and Fonts`_
-#. `Fast Startup`_
-#. `File Management`_
-#. `File and Directory Local Variables`_
-#. `Filling and Justification`_
-#. `Frames`_
-#. `Grep`_
-#. `Help`_
-#. `Hide/Show Code Block`_
-#. `Highlight`_
-#. `ibuffer-mode`_
-#. `Indentation`_
-#. `Input Method`_
-#. `Inserting Text`_
-#. `Key Chords`_
-#. `Keyboard Macros`_
-#. `Lispy mode support`_
-#. `Marking`_
-#. `Menus`_
-#. `Mode Line PDF`_
-#. `Mouse`_
-#. `Narrowing`_
-#. `Navigation`_
-#. `Number Keypad`_
-#. `Outline`_
-#. `Packages`_
-#. `Projectile Project Interaction Manager`_
-#. `Rectangles`_
-#. `Registers`_
-#. `Scrolling`_
-#. `Search and Replace`_
-#. `Sessions`_
-#. `Shells`_
-#. `Sorting`_
-#. `Speedbar`_
-#. `Spell Checking`_
-#. `Syntax Check`_
-#. `Text-modes`_
-#. Templates_
-#. `Transpose`_
-#. Treemacs_
-#. `Undo, Redo, Repeat and Prefix Arguments`_
-#. `Web`_
-#. `Whitespaces`_
-#. `Windows`_
-
-**Emacs Lisp Concepts and Tools**
-
-#. `ERT`_
-#. `Hooks`_
-#. `Emacs Lisp Types`_
-
-
-**Text Markup Support:**
-
-#. `AsciiDoc <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/asciidoc.pdf>`_
-#. `Graphviz Dot`_
-#. `Org mode`_
-#. `PlantUML-Mode`_
-#. `reStructuredText mode`_
-
-**Programming Language Support:**
-
-#. `Apple-Script`_
-#. Curly-bracket Languages
-
-   - `C <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c.pdf>`_
-   - `C++ <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c++.pdf>`_
-   - `D <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-d.pdf>`_
-
-#. BEAM-VM Languages
-
-   - `Erlang <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf>`_
-   - `Elixir <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-elixir.pdf>`_
-   - LFE (🚧 under development)
-
-#. Lisp Languages
-
-   - `Common Lisp <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-common-lisp.pdf>`_
-   - `Emacs Lisp <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-emacs-lisp.pdf>`_
-
-     - `ERT`_ (Emacs Lisp Regression Testing system)
-
-#. `Forth <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth.pdf>`_
-#. `Julia <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-julia.pdf>`_
-#. `Python <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-python.pdf>`_
-#. `REXX <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rexx.pdf>`_
-
-
-**Version Control Systems:**
-
-#. `Mercurial`_
-
-**Miscellaneous**
-
-#. `Function Keys`_
-#. `F11 Keys`_
-#. `macOS Terminal settings`_
 
 .. _Abbreviations:                            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/abbreviations.pdf
 .. _Align:                                    https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/align.pdf
@@ -6130,7 +5981,9 @@ PDF Documentation
 -----------------
 
 The list of documentation files are currently published as
-several tables in `PDF files`_.
+several tables in `PDF topic-oriented reference sheets`_ with a top-level
+`PEL Index PDF`_ with links to all the PEL PDF files.
+
 Although this is not the best way since this is an output format file as opposed
 to the source of the document, these files were created in PDF format because I
 wanted to be able to pack a lot of information about Emacs as I was learning
@@ -6156,11 +6009,11 @@ producing those files if there is any interest, but I'd prefer to be able to
 publish the source of something that can generate the kind of output that's
 available in those PDF files.
 
-I am open to suggestions. And can provide the Numbers file on request.
+I am open to suggestions. In the mean-time, I push a copy of that Numbers file
+regularly in the `pel-pdf-spreadsheet repo`_.
 
 
 
-.. _PDF files: `PDF Document Tables`_
 
 
 Limitations & Bugs
