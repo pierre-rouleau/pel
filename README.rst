@@ -91,9 +91,10 @@ or `update it`_ [2]_ !
 
 - PEL **extends Emacs documentation**:
 
-  - PEL provides **over 125 PDF topics oriented reference sheets** with
-    hyperlinks to Emacs manuals, external packages, articles and other
-    references.
+  - PEL provides **over 130** `PDF topic-oriented reference sheets`_ packed
+    with symbol annotated, colour coded key bindings and command descriptions,
+    with hyperlinks to Emacs manuals, external packages, articles and other
+    useful references.
 
     - See the `PEL Index PDF`_ as a starting point.  For the best user
       experience, use a browser, like Firefox, that can render the PDF inline
@@ -162,6 +163,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
        in the same directory can be bundled.
 .. links
 
+
 .. _PEL Key Maps PDF:   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-pel-key-maps.pdf
 .. _PEL Index PDF:      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 .. _Emacs easy customization:
@@ -197,6 +199,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _manual's table of contents: doc/pel-manual.rst
 .. _pel-pdf-spreadsheet repo:   https://github.com/pierre-rouleau/pel-pdf-spreadsheet#readme
 .. _example/init/init-5.el:     example/init/init-5.el
+.. _PDF topic-oriented reference sheets: doc/pdf
 
 
 ..
