@@ -1,0 +1,64 @@
+#!/bin/sh
+# SH FILE: ge
+#
+# Purpose   : Start macOS Cocoa-based GUI Emacs in the background from the shell keeping context.
+# Created   : Tuesday, August  3 2021.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2021-08-03 15:53:29, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Description
+# -----------
+#
+# This launches the macOS graphics-based Emacs from a shell with all specified
+# command line arguments.
+#
+# It also:
+# - set the current working directory,
+# - set a PEL environment variable to identify the graphics mode:
+#   this is only required for Emacs 27+ using the early-init.el and
+#   independent customization files for terminal and graphics mode.
+# - Launching Emacs from a shell also provides Emacs access to the shell's environment.
+#
+#
+# Pass to emacs:
+#   - --chdir to the current working directory so we open the same files
+#     as what is specified on the command line. If we don't do that the GUI
+#     based Emacs might use a different directory (I saw that it uses the home
+#     directory) and if you specify files that are not in that directory they
+#     will not be opened, another file file open which will most likely be
+#     in an empty buffer (if the file does not exists in the home directory).
+#   - All script command line arguments
+#
+# Note: The current Emacs for macOS graphical dumps an error when it starts.
+#       This is annoying; it's noise on the shell.
+#       Just mask it by dumping it in the bit bucket.
+#
+# Emacs 27+ support:
+#    - To allow Emacs early-init.el code to distinguish whether Emacs is
+#      running in terminal mode or in graphics mode.  When running
+#           early-init.el Emacs does not know and the function
+#           display-graphic-p does not work at that moment.  The only way I
+#           have found is to use an environment variable.  So the following
+#           code sets one up: PEL_EMACS_IN_GRAPHICS
+# See: https://emacs.stackexchange.com/questions/66268/how-to-set-package-user-dir-with-emacs-27-with-package-quickstart-and-distinguis
+#
+#
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - Cocoa-based graphics Emacs:
+#   Something like what's available at https://emacsformacosx.com/
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+export PEL_EMACS_IN_GRAPHICS=1
+/Applications/Emacs.app/Contents/MacOS/Emacs --chdir=$(pwd) "$@" 2>/dev/null &
+
+
+# ----------------------------------------------------------------------------
