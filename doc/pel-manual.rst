@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-02 17:03:17, updated by Pierre Rouleau.
+:Modified: 2021-08-03 07:30:21, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -489,7 +489,7 @@ You can also use a copy of the file `example/init/init-1.el`_ :
               (progn
                 (require 'package)
                 (setq package-enable-at-startup nil)
-                (if (version= emacs-version "26.2")
+                (if (member emacs-version '("26.1" "26.2"))
                     (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
                 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
                                     (not (gnutls-available-p))))
