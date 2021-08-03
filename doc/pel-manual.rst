@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-03 11:38:46, updated by Pierre Rouleau.
+:Modified: 2021-08-03 11:58:48, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -41,7 +41,7 @@ PEL is an hybrid package. It is:
   - you can either you can access these PDF files directly from Emacs or via
     the `PEL Index PDF`_ that lists all the PEL PDF files and provides a good
     starting point.  For the best user experience use a good web browser like
-    Firefox version 78 or later that can render the PDF files.
+    Firefox [#firefox] version 78 or later that can render the PDF files.
   - see the section `Key Bindings Documentation`_ for more information.
 
 - a collection of `PEL convenience features`_ which:
@@ -120,6 +120,18 @@ process.
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
 .. _Emacs initialization file: https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html#Init-File
 .. _set of small Emacs Lisp files: https://github.com/pierre-rouleau/pel
+.. _Tech Radar:                https://www.techradar.com/best/browser
+.. _Top Ten Reviews:           https://www.toptenreviews.com/best-internet-browser-software
+.. _Mozilla's browser comparison: https://www.mozilla.org/en/firefox/browsers/compare/
+.. _PCMag:                     https://www.pcmag.com/picks/chrome-edge-firefox-opera-or-safari-which-browser-is-best
+
+.. [#firefox] In 2021 Firefox is a highly rated web browser.  See the
+              following articles:
+
+              - `Tech Radar`_ (Firefox is their best overall)
+              - `Top Ten Reviews`_  (Firefox is best for privacy)
+              - PCMag_ describes the main browsers
+              - It's also worth reading `Mozilla's browser comparison`_.
 
 
 The reason for PEL
