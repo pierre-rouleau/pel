@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-03 13:15:54, updated by Pierre Rouleau.
+:Modified: 2021-08-03 13:18:52, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -34,9 +34,10 @@ Overview
 
 PEL is an hybrid package. It is:
 
-- an Emacs key binding documentation project with **over 130**
-  `PDF topic-oriented reference sheets`_ with hyperlinks to Emacs manuals, external
-  packages, articles and other useful references.
+- an Emacs key binding documentation project with **over 130** `PDF
+  topic-oriented reference sheets`_ packed with symbol annotated, colour coded
+  key bindings and command descriptions, with hyperlinks to Emacs manuals,
+  external packages, articles and other useful references.
 
   - you can either you can access these PDF files directly from Emacs or via
     the `PEL Index PDF`_ that lists all the PEL PDF files and provides a good
