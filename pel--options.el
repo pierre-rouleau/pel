@@ -1463,6 +1463,7 @@ of the impact these user-option variable have."
 (defcustom pel-browser-used nil
   "Define which web browser to use when opening PEL PDF files."
   :group 'pel-pkg-for-web-browse
+  :group 'pel-pkg-for-help
   :type '(choice
           (const :tag "Use browser selected by `browse-url-browser-function'" nil)
           (const :tag "Use Firefox." firefox)
@@ -1479,6 +1480,7 @@ argument is passed, and the remote PDF file is opened when the
 argument is specified.  If `pel-flip-help-pdf-arg' is set it's the other way
 around."
   :group 'pel-pkg-for-web-browse
+  :group 'pel-pkg-for-help
   :type 'boolean
   :safe #'booleanp)
 
@@ -1492,6 +1494,7 @@ The main method is either:
 
 The alternate method is the other one."
   :group 'pel-pkg-for-web-browse
+  :group 'pel-pkg-for-help
   :type '(choice
           (const :tag "Open PEL PDF with PDF viewer." pdf-viewer)
           (const :tag "Open PEL PDF with web browser." web-browser)))
