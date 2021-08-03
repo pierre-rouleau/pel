@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-03 13:57:28, updated by Pierre Rouleau.
+:Modified: 2021-08-03 14:00:14, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -42,7 +42,8 @@ PEL is an hybrid package. It is:
   - access these PDF files directly from Emacs using the
     **pel-help-pdf-select** command bound to ``<f11> ? p``, or with the
     ``<f12> <f1>`` key sequence of supported major modes.  PEL can open the
-    local PDF file or open them in your default web browser.
+    local PDF file or open them in your default web browser. See the `Help PDF`_
+    for more details.
 
   - You can also open the `PEL Index PDF`_ that lists all the PEL PDF files
     and provides a good overview of what is available and a good starting
@@ -5487,6 +5488,7 @@ references.
 .. _Github rendering of the Buffers PDF:      pdf/buffers.pdf
 .. _Graphviz Dot:                             https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/graphviz-dot.pdf
 .. _Grep:                                     https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/grep.pdf
+.. _Help PDF:
 .. _Help:                                     https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf
 .. _Hide/Show Code Block:                     https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/hide-show-code.pdf
 .. _Highlight:                                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/highlight.pdf
