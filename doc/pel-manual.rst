@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-03 14:00:14, updated by Pierre Rouleau.
+:Modified: 2021-08-03 14:13:24, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -207,9 +207,7 @@ PEL Goals
   (but... no schedule yet!).
 
 **Note**:
-   This is the first release of PEL, and my first contribution to Emacs,
-   written as I learned Emacs.
-   It will grow with time, incorporating more documentation,
+   PEL will grow with time, incorporating more documentation,
    support for more Emacs packages related to editing and
    programming tasks.  Don't hesitate to report problems and
    recommend better ways!
@@ -222,8 +220,9 @@ If you prefer not using PEL's key bindings you can `override them`_.
 You can also just use the `PEL features`_ you want and create your own key
 bindings. In that case, don't call ``pel-init``, require the respective PEL
 source code file and create your own key bindings.
-The PEL files are listed in each of the corresponding
-`PEL Convenience Features`_ section.
+Most PEL files are listed in each of the corresponding
+`PEL Convenience Features`_ section but the manual is not yet complete and
+will also evolve over time.
 
 .. _override them: `To override or change PEL key bindings`_
 .. _PEL features:  `PEL Convenience Features`_
