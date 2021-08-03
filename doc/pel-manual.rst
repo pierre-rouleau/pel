@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-03 13:10:55, updated by Pierre Rouleau.
+:Modified: 2021-08-03 13:15:54, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -34,15 +34,14 @@ Overview
 
 PEL is an hybrid package. It is:
 
-- an Emacs key binding documentation project with **over 130 PDF topics
-  oriented reference sheets** with hyperlinks to Emacs manuals, external
+- an Emacs key binding documentation project with **over 130**
+  `PDF topic-oriented reference sheets`_ with hyperlinks to Emacs manuals, external
   packages, articles and other useful references.
 
   - you can either you can access these PDF files directly from Emacs or via
     the `PEL Index PDF`_ that lists all the PEL PDF files and provides a good
     starting point.  For the best user experience use a good web browser like
     Firefox [#firefox]_ version 78 or later that can render the PDF files.
-  - see the section `Key Bindings Documentation`_ for more information.
 
 - a collection of `PEL convenience features`_ which:
 
@@ -121,6 +120,7 @@ process.
 .. _Top Ten Reviews:           https://www.toptenreviews.com/best-internet-browser-software
 .. _Mozilla's browser comparison: https://www.mozilla.org/en/firefox/browsers/compare/
 .. _PCMag:                     https://www.pcmag.com/picks/chrome-edge-firefox-opera-or-safari-which-browser-is-best
+.. _PDF topic-oriented reference sheets: pdf
 
 .. [#firefox] In 2021 Firefox is a highly rated web browser.  See the
               following articles:
