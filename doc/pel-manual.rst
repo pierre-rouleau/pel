@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-03 14:39:43, updated by Pierre Rouleau.
+:Modified: 2021-08-03 14:42:32, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -171,7 +171,7 @@ third party packages.
 I also created a set of `PDF topic-oriented reference sheets`_
 that each list and describe a specific topic, the commands and key bindings
 related to that topic and a topic specific entry inside this manual that also
-refers to the corresponding PDF file.
+refers to the corresponding PDF file.  These are all accessible via the `PEL Index PDF`_.
 There are several topics; Emacs navigation, Emacs
 buffers, windows and frames, how to undo, redo, work with Emacs Lisp, etc...
 See the `Key Bindings Documentation`_ section.
