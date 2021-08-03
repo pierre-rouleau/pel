@@ -4,7 +4,7 @@
 # Purpose   : Start macOS Cocoa-based GUI Emacs in the background from the shell keeping context.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2021-08-03 16:01:43, updated by Pierre Rouleau>
+# Time-stamp: <2021-08-03 16:17:00, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -45,6 +45,13 @@
 # See: https://emacs.stackexchange.com/questions/66268/how-to-set-package-user-dir-with-emacs-27-with-package-quickstart-and-distinguis
 #
 #
+
+# To activate this script
+# -----------------------
+#
+# Copy it into a directory that is on the PATH of your shell.
+# This is often the ~/bin directory.
+
 
 # ----------------------------------------------------------------------------
 # Dependencies
