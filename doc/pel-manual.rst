@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-03 13:18:52, updated by Pierre Rouleau.
+:Modified: 2021-08-03 13:57:28, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -39,10 +39,15 @@ PEL is an hybrid package. It is:
   key bindings and command descriptions, with hyperlinks to Emacs manuals,
   external packages, articles and other useful references.
 
-  - you can either you can access these PDF files directly from Emacs or via
-    the `PEL Index PDF`_ that lists all the PEL PDF files and provides a good
-    starting point.  For the best user experience use a good web browser like
-    Firefox [#firefox]_ version 78 or later that can render the PDF files.
+  - access these PDF files directly from Emacs using the
+    **pel-help-pdf-select** command bound to ``<f11> ? p``, or with the
+    ``<f12> <f1>`` key sequence of supported major modes.  PEL can open the
+    local PDF file or open them in your default web browser.
+
+  - You can also open the `PEL Index PDF`_ that lists all the PEL PDF files
+    and provides a good overview of what is available and a good starting
+    point.  For the best user experience use a good web browser like Firefox
+    [#firefox]_ version 78 or later that can render the PDF files inline.
 
 - a collection of `PEL convenience features`_ which:
 
