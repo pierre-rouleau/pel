@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-03 07:30:21, updated by Pierre Rouleau.
+:Modified: 2021-08-03 09:49:18, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -267,6 +267,10 @@ The fully detailed instructions are described in the following sections:
 #. `Create the emacs-customization.el file`_.
 #. `Create or Update your Emacs init.el file`_.
 #. `Byte Compile PEL Files`_.
+#. Optional: `Add Support for Fast Startup`_.
+#. Optional: `Add Support for Independent Customization of Graphics and
+   Terminal based Emacs`_.
+#. Optional: `Add Support for Package Quickstart for Emacs 27 and later`_
 #. `Activate PEL Features - Customize PEL`_.
 
 
@@ -604,71 +608,6 @@ That provides another degree of freedom, along with Emacs directory local
 and file local variables.
 
 
-For Emacs 27 and later: create early-init.el
---------------------------------------------
-
-Emacs 27 introduced the **package-quickstart** user-option variable which
-improves Emacs startup speed.   To use this feature you must customize the
-Emacs user-option ``package-quickstart`` to **t**.
-
-That mechanism initializes the package library before init.el is executed and
-some variables like ``package-user-dir`` cannot be modified inside init.el,
-they must be modified inside a new file: the file called
-``~/.emacs.d/early-init.el``.
-
-If you want to use the PEL fast startup mechanism with Emacs 27+, then you
-must include the following code inside the early-init.el file:
-
-.. code:: elisp
-
-          ;; -*- lexical-binding: t; -*-
-
-          ;; Activate PEL's fast startup if environment was setup by `pel-setup-fast'.
-          (let ((fast-startup-setup-fname (expand-file-name "pel-setup-package-builtin-versions.el"
-                                                            user-emacs-directory)))
-            (when (file-exists-p fast-startup-setup-fname)
-              (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
-              (pel-fast-startup-set-builtins)
-              ;; Remember Emacs is running in PEL's fast startup mode.
-              (setq pel-running-with-bundled-packages t))))
-
-
-If you use only one customization file and have nothing special to configure
-there then nothing else is needed in the file.
-
-However, if you want, for example, to have 2 different customization settings,
-one when Emacs runs in terminal mode, and one when Emacs is running in
-graphics mode, and you want to maintain two sets of elpa directories, one for
-each configuration, then you have to write the logic inside the early-init.el
-file.
-
-Here's an example of early-init.el that supports PEL fast startup and ability
-to use a customization in terminal mode and another in graphics mode:
-
-.. code:: elisp
-
-          ;; -*- lexical-binding: t; -*-
-          ;; - Example early-init.el file ---------------------------------------------------
-
-          ;; Activate PEL's fast startup if environment was setup by `pel-setup-fast'.
-          (let ((fast-startup-setup-fname (expand-file-name "pel-setup-package-builtin-versions.el"
-                                                            user-emacs-directory)))
-            (when (file-exists-p fast-startup-setup-fname)
-              (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
-              (pel-fast-startup-set-builtins)
-              ;; Remember Emacs is running in PEL's fast startup mode.
-              (setq pel-running-with-bundled-packages t))))
-
-          ;; Separate elpa directory for Emacs in graphics mode and Emacs in TTY mode.
-          ;; Use ~/.emacs.d/elpa in TTY mode, use ~/.emacs.d/elpa-graphics in graphics mode
-          ;; Inside early-init.el the function `display-graphic-p' does not return t for
-          ;; Emacs running in graphics mode, so instead I use a shell script to start Emacs in
-          ;; graphics mode and set the PEL_EMACS_IN_GRAPHICS environment variable to "1"
-          ;; inside that shell script.
-          (when (getenv "PEL_EMACS_IN_GRAPHICS")
-            (setq package-user-dir (locate-user-emacs-file "elpa-graphics"))
-            (setq custom-file      "~/.emacs.d/emacs-customization-graphics.el"))
-
 
 Byte Compile PEL Files
 ----------------------
@@ -720,6 +659,264 @@ your environment and I will get to it.
 Skip the next section and read the section describing how to configure PEL:
 `Activate PEL Features - Customize PEL`_.
 
+.. ---------------------------------------------------------------------------
+
+Optional Steps
+--------------
+
+The following steps described in this section are optional:
+
+- With `Add Support for Fast Startup`_ you add more logic in your init.el file
+  to support a PEL-specific mode where Emacs starts faster than normally.  PEL
+  supports two startup modes: the *normal* startup mode and the *fast* startup
+  mode. When operating with the fast startup mode PEL does not support
+  automatic download and installation of external packages but it will start
+  faster than in the normal mode.  You can switch from one more to the other
+  with dedicated commands.
+- If you plan to use Emacs in both terminal (TTY) mode and in graphics mode
+  you may want to use different options in each.  PEL supports that.  You will
+  want to `Add Support for Independent Customization of Graphics and Terminal
+  based Emacs`_.
+- If you use Emacs 27 or later and want to take advantage of the Emacs
+  startup speedup provided by Emacs package quickstart mechanism, then
+  you will want to `Add Support for Package Quickstart for Emacs 27 and
+  Later`_.
+
+
+
+Add Support for Fast Startup
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Description:**
+
+To provide a much faster startup speed when using a large number of external
+packages PEL provides logic to bundle all single directory packages inside a
+single package directory.  This reduces the length of Emacs load-path list and
+improves the startup speed.  PEL provides commands to display the currently
+active startup mode and switch from one mode to the other.  See the `Fast
+Startup`_ PDF for more information.
+
+To take advantage of this mechanism you must also add logic inside your
+init.el file.  PEL provides an example of this code: the
+`example/init/init-5.el`_ file.  The file is fully commented and identifies a
+set of options you will need to edit.
+
+**Do this:**
+
+- Start an Emacs process that has been configured without fast startup.
+- Open a terminal shell.  Inside that shell type the following commands to
+  use `example/init/init-5.el`_ as your init.el file:
+
+.. code:: shell
+
+          cd ~/.emacs.d
+          mkdir tmp
+          cp init.el tmp
+          cp ~/projects/pel/example/init/init-5.el init.el
+
+
+- With the Emacs process you have already identified, use it to edit
+  your new ``~/.emacs.d/init.el`` file.
+
+  - To open the file type ``C-x f ~/.emacs.d/init.el``
+  - Read the instructions located inside the top of the file.
+  - Use ``C-s OPTION RET`` to search for the word "OPTION" and modify the code
+    according to what you need:
+
+    - **OPTION A**: if you want to use two independent custom files for terminal
+      (TTY) and graphics mode, set ``pel-use-graphic-specific-custom-file-p``
+      symbol to **t**.  See the next section,
+      `Add Support for Independent Customization of Graphics and Terminal
+      based Emacs`_ for more information.
+    - **OPTION B**: this is to measure time spent by code executed at startup.
+      Unless you know Emacs at this point, leave the code commented out.
+      Later, when you have a better understanding of Emacs and ecosystem you
+      can come back and activate it.
+    - **OPTION C**: By default Emacs displays generic information about GNU
+      and Emacs on startup.  After reading it once or twice you may want to
+      prevent this information from showing up.  For that un-comment the line
+      shown below the OPTION C text and replace the string YOUR_USER_NAME by
+      your OS user name.  On Unix-like OS, this is what the **who** command
+      displays.
+    - **OPTION D**: this is a small section of code that activates or
+      de-activates various global Emacs settings.  It starts with a commented
+      line that disables the tool bar of Emacs running in graphics mode.  If
+      you do not want to use that tool-bar un-comment the corresponding line
+      of code.  Read the code in that section.  You may want to modify some of
+      this.  However remember that PEL controls Emacs behaviour through
+      customization, not by code invoked through the init.el file: it's best
+      to minimize what you add the this section of code if you want to take
+      advantage of what PEL offers and to minimize Emacs startup time.
+
+  - Save your modifications back to the init.el file by typing ``C-x C-s``
+  - Keep Emacs opened on your init.el file.
+
+- Open a new terminal shell.
+
+  - Open Emacs in that new shell.  If all is OK, Emacs should start fine and
+    should not display any error message.  If it does display an error message
+    then something is probably wrong in your init.el file.  Modify it, save
+    the file and try again.
+
+- Once Emacs starts properly close all Emacs sessions.
+  You can type ``C-x C-c`` to save all buffers and terminate Emacs.
+
+
+
+Add Support for Independent Customization of Graphics and Terminal based Emacs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Emacs can run in terminal (TTY) mode inside your current shell.  You can also
+use Emacs in graphics mode, a GUI application that provides a graphical user
+interface and ability to display images.  Each mode has its advantages and
+disadvantages.  You may want to use both and activate features in a mode but
+not in the other to reduce their respective startup time and memory footprint.
+
+PEL controls activation of Emacs features through customization and stores the
+customization information inside a customization file.  By default Emacs
+stores the customization information as Emacs Lisp code inside the init.el
+file.  PEL prevents Emacs from doing that.  Instead it instructs Emacs to
+use a specific file for the customization data: the file
+``~/.emacs.d/emacs-customization.el``.
+
+In the **OPTION A** of the `example/init/init-5.el`_ file, that you should have
+now copied into your own init.el, set the value of the variable
+``pel-use-graphic-specific-custom-file-p`` to **t** to instruct PEL that you
+want to use two independent customization files.
+
+Then Emacs will use two files to store customization data:
+
+- ``~/.emacs.d/emacs-customization.el`` in terminal (TTY) mode,
+- ``~/.emacs.d/emacs-customization-graphics.el`` in graphics mode.
+
+When this is activates PEL also instruct Emacs to use a different directory to
+store Elpa-compliant packages: one directory will be used in terminal (TTY)
+mode and another will be used for Emacs running in graphics mode.   This way
+when activating an external package for one mode it will not affect the other
+mode.  If you need it in both modes then you will have to activate it in both
+modes.
+
+Over time you may find the process cumbersome.  You may then want to take
+advantage of Emacs built-in Ediff capabilities to show a diff of these two
+customization files and copy settings from one to the other.
+
+The easiest way to do this with PEL is to open the 2 files, each one in its
+own buffer window and show only these 2 windows.  Then execute the
+``pel-ediff-2files`` command by typing the PEL ``<f11> d 2`` key sequence.
+Type ``?`` to display ediff help and the commands to navigate through the
+files and their differences.  You can copy one set of changes from one file to
+the other this way.  It's a quick way to duplicate customization and also a
+good way to review the recent changes to your customization.
+
+
+Add Support for Package Quickstart for Emacs 27 and Later
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Emacs 27 introduced the **package-quickstart** user-option variable which
+improves Emacs startup speed.   To use this feature you must customize the
+Emacs user-option ``package-quickstart`` to **t**.
+
+That mechanism initializes the package library before init.el is executed and
+some variables like ``package-user-dir`` cannot be modified inside init.el,
+they must be modified inside a new file: the file called
+``~/.emacs.d/early-init.el``.
+
+If you want to use the PEL fast startup mechanism with Emacs 27+, then you
+must include the following code inside the early-init.el file:
+
+.. code:: elisp
+
+          ;; -*- lexical-binding: t; -*-
+
+          ;; Activate PEL's fast startup if environment was setup by `pel-setup-fast'.
+          (let ((fast-startup-setup-fname (expand-file-name "pel-setup-package-builtin-versions.el"
+                                                            user-emacs-directory)))
+            (when (file-exists-p fast-startup-setup-fname)
+              (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
+              (pel-fast-startup-set-builtins)
+              ;; Remember Emacs is running in PEL's fast startup mode.
+              (setq pel-running-with-bundled-packages t))))
+
+
+If you use only one customization file and have nothing special to configure
+there then nothing else is needed in the file.
+
+However, if you want, for example, to have 2 different customization settings,
+one when Emacs runs in terminal mode, and one when Emacs is running in
+graphics mode, and you want to maintain two sets of elpa directories, one for
+each configuration, then you have to write the logic inside the early-init.el
+file.
+
+Here's an example of early-init.el, the `example/init/early-init.el`_ that
+supports PEL fast startup and ability to use a customization in terminal mode
+and another in graphics mode:
+
+.. code:: elisp
+
+      ;; -*- lexical-binding: t; -*-
+      ;;
+      ;; Emacs >= 27 support the `package-quickstart' feature which speeds-up
+      ;; Emacs startup time by building the autoloads for all elpa external
+      ;; packages ahead of time in a previous Emacs session.
+
+      ;; The Emacs quick start mechanism is activated by the presence of a
+      ;; early-init.el file in the user-emacs-directory.  The early-init.el
+      ;; file is loaded very early in the startup process, before graphical
+      ;; elements are initialized and before the package manager is
+      ;; initialized.
+      ;;
+      ;; The following variables must be initialized in early-init.el:
+      ;;
+      ;; - `package-quickstart' must be set to t to activate the package
+      ;;   quickstart mechanism.  Its documentation states that it can be
+      ;;   customized, but the customized value is read too late in the
+      ;;   process, therefore you should avoid modifying its value through
+      ;;   customization.
+      ;; - `package-user-dir': If you need to modify `package-user-dir' when
+      ;;   the package quickstart is used in normal startup mode, then the
+      ;;   value that differ from the default must be set inside early-init.el
+      ;;
+      ;; - `package-load-list': By default this is set to '(all) to specify
+      ;;    that `package-initialize' should load the latest installed version
+      ;;    of all packages. If you need to modify this behaviour when the
+      ;;    package quickstart is used, set the value inside the early-init.el
+
+
+      ;; Inform later code that package quickstart is being used.
+      (setq package-quickstart t)
+
+      ;; Activate PEL's fast startup if environment was setup by `pel-setup-fast'.
+      (let ((fast-startup-setup-fname (expand-file-name "pel-setup-package-builtin-versions.el"
+                                                        user-emacs-directory)))
+        (when (file-exists-p fast-startup-setup-fname)
+          (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
+          (pel-fast-startup-set-builtins)
+          ;; Remember Emacs is running in PEL's fast startup mode.
+          (setq pel-running-with-bundled-packages t)))
+
+      ;; Init option A: independent customization for TTY & graphic modes.
+      ;; Separate elpa directory for Emacs in graphics mode and Emacs in TTY mode.
+      ;; Use ~/.emacs.d/elpa in TTY mode, use ~/.emacs.d/elpa-graphics in graphics mode
+      ;; Inside early-init.el the function `display-graphic-p' does not return t for
+      ;; Emacs running in graphics mode, so instead I use a shell script to start Emacs in
+      ;; graphics mode and set the PEL_EMACS_IN_GRAPHICS environment variable to "1"
+      ;; inside that shell script otherwise do not define the variable.
+      ;;
+      ;; To activate init option A for Emacs 27+ you must use a specialized shell
+      ;; that sets the PEL_EMACS_IN_GRAPHICS environment variable for Emacs used
+      ;; in graphics mode and don't set it for Emacs running in TTY mode.
+      (if (getenv "PEL_EMACS_IN_GRAPHICS")
+          (progn
+            (setq package-user-dir (locate-user-emacs-file "elpa-graphics"))
+            (setq custom-file      (expand-file-name "emacs-customization-graphics.el"
+                                                     user-emacs-directory)))
+        (setq custom-file (expand-file-name "emacs-customization.el"
+                                            user-emacs-directory)))
+
+      ;; ---------------------------------------------------------------------------
+
+.. _example/init/early-init.el:               ../example/init/early-init.el
 
 .. ---------------------------------------------------------------------------
 
@@ -809,6 +1006,12 @@ steps to increase the performance of Emacs and PEL:
 
 #. Edit the ``~/.emacs.d/init.el``: search for the word ``OPTION`` and
    update what is relevant for you.
+   For more information read the following sections:
+
+   - `Add Support for Fast Startup`_
+   - `Add Support for Independent Customization of Graphics and Terminal based
+     Emacs`_
+   - `Add Support for Package Quickstart for Emacs 27 and Later`_
 
 At this point, continue to the next section:
 `Activate PEL Features - Customize PEL`_.
