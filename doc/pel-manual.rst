@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-03 15:16:50, updated by Pierre Rouleau.
+:Modified: 2021-08-03 17:09:34, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -274,8 +274,8 @@ The fully detailed instructions are described in the following sections:
 #. Optional: `Add Support for Independent Customization of Graphics and
    Terminal based Emacs`_.
 #. Optional: `Add Support for Package Quickstart for Emacs 27 and later`_
+#. Optional: `Create command line shortcuts for Emacs`_
 #. `Activate PEL Features - Customize PEL`_.
-
 
 Detailed instructions for the above steps are written in the following sections.
 
@@ -921,6 +921,72 @@ and another in graphics mode:
 
 .. _example/init/early-init.el:               ../example/init/early-init.el
 
+Create command line shortcuts for Emacs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+New Emacs users may be interested by command line commands to start Emacs in
+terminal (TTY) mode or graphics mode from a shell.  If so, read on.
+
+**Start Emacs in Terminal/TTY mode**
+
+Use the ``-nw`` command line option to start Emacs in terminal/TTY mode.
+
+On Unix-like OS I often create create a single letter command ``e`` to start
+Emacs in terminal mode.  This is what I do:
+
+- I make sure that my ``~/bin`` directory is on the shell's PATH.  On many
+  Linux distributions (like Debian) all you have to do is to create the
+  directory, on others you have to explicitly pre-pend ``$(HOME)/bin`` to the
+  PATH environment variable and export it.  That' often done inside the
+  ``~/.bash_profile`` file.
+- I then create the symlink ``~/bin/e`` to point to the location of the emacs
+  executable.
+
+  - It might be /usr/bin/emacs on several Linux distributions.  In this case
+    the command would be:
+
+    .. code:: shell
+
+              ln -s ~/bin/e /usr/bin/emacs
+
+  - On macOS, /usr/bin/emacs may exist but it will most likely be an ancient
+    version of Emacs.  It is best to install Emacs with a good application
+    manager by Homebrew.  So you'd end up with the terminal-based Emacs
+    installed somewhere like ``/usr/local/Cellar/emacs/26.3/bin/emacs``. For
+    that, the command would be:
+
+    .. code:: shell
+
+              ln -s ~/bin/e /usr/local/Cellar/emacs/26.3/bin/emacs
+
+- Then I create an alias inside the ``~/.bashrc`` file that has the same name,
+  ``e`` to use the symlink.  The alias written inside the ``~/.bashrc`` file
+  is:
+
+    .. code:: shell
+
+              alias e='~/bin/e -nw'
+
+**Start Emacs in graphics mode**
+
+To start Emacs in graphics mode from a shell I provide two different example
+scripts located inside the `pel/bin directory`_:
+
+- `linux/ge`_
+- `macOS/ge`_
+
+Copy the appropriate one inside your ``~/bin`` directory.
+
+Then you can start the graphical version of Emacs from a shell by issuing the
+``ge`` command, optionally identifying the name of files to edit on the
+command line.
+
+
+.. _pel/bin directory: ../bin
+.. _linux/ge:          ../bin/linux/ge
+.. _macOS/ge:          ../bin/macOS/ge
+
+
 .. ---------------------------------------------------------------------------
 
 Fast Track Installation Steps
@@ -1015,6 +1081,10 @@ steps to increase the performance of Emacs and PEL:
    - `Add Support for Independent Customization of Graphics and Terminal based
      Emacs`_
    - `Add Support for Package Quickstart for Emacs 27 and Later`_
+
+#. Optionally add two command line commands to start Emacs in terminal or
+   graphics mode from a shell.  See examples in the section titled
+   `Create command line shortcuts for Emacs`_.
 
 At this point, continue to the next section:
 `Activate PEL Features - Customize PEL`_.
