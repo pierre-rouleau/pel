@@ -61,7 +61,7 @@
           ;;
           (require 'package)
           (setq package-enable-at-startup nil)
-          (if (version= emacs-version "26.2")
+          (if (member emacs-version '("26.1" "26.2"))
               (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
           (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
                               (not (gnutls-available-p))))

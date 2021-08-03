@@ -159,12 +159,12 @@ before a mode switch done by one of them.")
           ;; to prevent Emacs from doing it again at the end of init.
           (setq package-enable-at-startup nil)
 
-          ;; Emacs 26.2 has a bug ( https://debbugs.gnu.org/34341 ) that
-          ;; prevents gnutls downloads (such as the ones from GNU Elpa
-          ;; for packages). The following work-around solves the problem.
-          ;; It causes a byte-compiler warning but you can ignore it.
-          (defvar gnutls-algorithm-priority) ; prevent byte-compiler
-          (if (version= emacs-version "26.2")
+          ;; Emacs 26.1 and 26.2 have a bug (https://debbugs.gnu.org/34341)
+          ;; that prevents gnutls downloads (such as the ones from GNU Elpa
+          ;; for packages). The following work-around solves the problem.  It
+          ;; causes a byte-compiler warning but you can ignore it.
+          (defvar gnutls-algorithm-priority) ; prevent byte-compiler warning
+          (if (member emacs-version '("26.1" "26.2"))
               (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
 
           (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
