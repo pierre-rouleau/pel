@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-03 09:49:18, updated by Pierre Rouleau.
+:Modified: 2021-08-03 11:38:46, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -34,105 +34,92 @@ Overview
 
 PEL is an hybrid package. It is:
 
-- an Emacs key binding documentation project
-  (see `Key Bindings Documentation`_),
+- an Emacs key binding documentation project with **over 130 PDF topics
+  oriented reference sheets** with hyperlinks to Emacs manuals, external
+  packages, articles and other useful references.
+
+  - you can either you can access these PDF files directly from Emacs or via
+    the `PEL Index PDF`_ that lists all the PEL PDF files and provides a good
+    starting point.  For the best user experience use a good web browser like
+    Firefox version 78 or later that can render the PDF files.
+  - see the section `Key Bindings Documentation`_ for more information.
+
 - a collection of `PEL convenience features`_ which:
 
   - are implemented in several mostly independent files,
   - have key bindings mostly using the function keys to provide
     key map trees that do not interfere with standard Emacs key bindings,
-  - provide access to several other external Emacs packages
-    (see `Credits`_)
-    but via
-    `PEL Customization`_ to selectively configure, enable and activate
-    these features.
+  - provides access to over 230 external Emacs packages
+    via `PEL Customization`_.  You select what you want to use then let PEL
+    download, install and configure them, dealing with dependencies and key
+    binding activation.
 
-    - conforms to the
-      `Emacs easy customization`_ system and reduces your need
-      to write custom Emacs Lisp configuration code.
+    - PEL conforms to the `Emacs easy customization`_ system and reduces your
+      need to write custom Emacs Lisp configuration code.
 
-    - provides two modes of operation:
+  - makes extensive use of auto-loading and deferred loading techniques to speed
+    up Emacs initialization time.
+  - provides dynamic control of several packages and their commands.
+    For example, PEL support both `auto-complete`_ and `company`_ auto-completion
+    packages, providing commands to activate one mode in a buffer and
+    another mode inside another and while preventing dual use in a buffer.
+  - `PEL key bindings`_ avoid modification of most Emacs key bindings. Instead
+    PEL uses several function keys (**F2**, **F5**, **F6**, **F11** and
+    **F12**) as key prefixes as described in the section titled `PEL Function
+    Keys Bindings`_.  It also uses the **F9** key with some external packages.
+  - `PEL convenience features`_ include:
 
-      - the normal operation mode which corresponds to the normal way Emacs is
-        used where the package.el package manager is used by PEL and where it
-        is possible to:
+    - A `set of small Emacs Lisp files`_ that implement PEL's features that deal
+      with several aspects of Emacs like windows and frame, scrolling control,
+      buffer, navigation, opening files or web pages from file name or URL at
+      point, numeric keypad handling, etc...
 
-        - use PEL's Emacs customization to select features and
-          where the **pel-init** command downloads and installs the external
-          packages required for those features,
-        - disable features no longer needed and remove them by executing the
-          **pel-cleanup** command, reducing startup time accordingly.
+      - Note that these files can be used as *mostly*
+        independent Emacs Lisp *libraries* if you prefer to use a specific
+        PEL features without PEL's key bindings.
 
-      - the **fast-startup operation mode** that does not allow installation
-        of any new package but provides a much faster Emacs init startup time,
-        even with Emacs 26.3.  In this mode, PEL bundles all external Elpa
-        packages that have files in a single directory, reducing the number of
-        elpa directories which reduces Emacs init startup time furthermore.
-        With it its possible to reduce Emacs startup time to 0.1 second even
-        when using over 230 external packages with no loss of functionality
-        (except ability to install new packages).
+  - provides two Emacs startup modes:
 
-        - PEL use techniques similar to those used by `use-package`_ but goes
-          further by providing the extra mode of operation. The use-package
-          describes being able to use over 80 packages with a start time of 2
-          seconds.  With PEL's fast startup of 0.15 second for 238 packages,
-          on Emacs 26.3, that's about 40 times faster!
+    - the **normal startup operation mode** which corresponds to the normal
+      way Emacs is used where the package.el package manager is used by PEL
+      and where it is possible to:
 
+      - use PEL's Emacs customization to select features and
+        where the **pel-init** command downloads and installs the external
+        packages required for those features,
+      - disable features no longer needed and remove them by executing the
+        **pel-cleanup** command, reducing startup time accordingly.
 
+    - the **fast-startup operation mode** that does not allow installation
+      of any new package but provides a much faster Emacs init startup time,
+      even with Emacs 26.3.  In this mode, PEL bundles all external Elpa
+      packages that have files in a single directory, reducing the number of
+      elpa directories which reduces Emacs init startup time furthermore.
+      With it its possible to reduce Emacs startup time to 0.1 second even
+      when using over 230 external packages with no loss of functionality
+      (except ability to install new packages).
 
+      - PEL also supports the package quickstart mechanism for Emacs 27 and
+        later.
+      - PEL use techniques similar to those used by `use-package`_ but goes
+        further by providing the extra mode of operation. The use-package
+        describes being able to use over 80 packages with a start time of 2
+        seconds.  With PEL's fast startup of 0.15 second for 238 packages,
+        on Emacs 26.3, that's about 40 times faster!
+
+To use PEL you must set your `Emacs initialization file`_ appropriately.
+If you are using Emacs ≥ 27 with quick-startup you must also setup your
+``early-init`` file appropriately.
+
+The section titled `How to install PEL`_ below will guide you through the
+process.
 
 
 .. _use-package:               https://github.com/jwiegley/use-package#readme
 .. _Emacs easy customization:
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
-
-
-PEL provides:
-
-- A set of already-written configuration for fast loading of several
-  useful Emacs packages with:
-
-  - Package activation done through  `Emacs easy customization`_ system,
-    see `PEL customization`_.  No extra Emacs Lisp code needed.
-  - Extensive use of auto-loading and deferred loading techniques to speed
-    up Emacs initialization time.
-
-- Dynamic control of several packages and their commands.
-  For example, PEL support both `auto-complete`_ and `company`_ auto-completion
-  packages, providing commands to activate one mode in a buffer and
-  another mode inside another and while preventing dual use in a buffer.
-- `PEL key bindings`_ avoid modification of most Emacs keys, instead
-  PEL uses several function keys (**F2**, **F5**, **F6**, **F11** and **F12**)
-  as described in the section titled `PEL Function Keys Bindings`_.
-  It also uses the **F9** key with some external packages.
-- `PEL convenience features`_ include:
-
-  - The key-bindings under **F6**, **F11** and **F12** function keys.
-  - A set of small Emacs Lisp files that implement
-    PEL's features that deal with several
-    aspects of Emacs like windows and frame, scrolling control,  buffer,
-    navigation, opening files
-    or web pages from file name or URL at point, numeric keypad handling,
-    etc...
-
-    - Note that these files can be used as *mostly*
-      independent Emacs Lisp *libraries* if you prefer to use a specific
-      PEL features without PEL's key bindings.
-
-- Several `PDF Document Tables`_ that describe the key bindings for
-  specific topics.
-  Each table provides an overview, related Emacs,
-  external packages and PEL command descriptions and key bindings
-  and links to related on-line documents.
-
-To use PEL you must set your `Emacs initialization file`_ appropriately, and
-if you are using Emacs ≥ 27 with quick-startup you must also setup your
-``early-init`` file appropriately.
-See the section titled `How to install PEL`_ below.
-
-
-
 .. _Emacs initialization file: https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html#Init-File
+.. _set of small Emacs Lisp files: https://github.com/pierre-rouleau/pel
 
 
 The reason for PEL
@@ -5307,8 +5294,8 @@ references.
 
 - The `PEL Index PDF`_ lists them all and provides a good starting
   point.
-- For the best user experience, use a browser, like Firefox, that
-  can render the PDF inline (as opposed to downloading it) so you can use
+- For the best user experience, use a browser, like Firefox version 78 or later, that
+  can render the PDF file inline (as opposed to downloading it) so you can use
   the links quickly.
 - The hyperlinks are not active when the files are viewed through the
   Github PDF file rendering (for example, the `Github rendering of the Buffers PDF`_)
