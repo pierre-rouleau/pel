@@ -113,8 +113,11 @@ or `update it`_ [2]_ !
 
 **Credits**
 
-PEL would not exist without the great software available for Emacs listed in the
-`Credits`_ section of the manual_.
+PEL would not exist without the great software available for Emacs.  Some of
+them are listed in the `Credits`_ section of the manual_ but the list is
+unfortunately incomplete as it grows continuously when PEL supports new
+packages.  The external packages are identified in the PDF tables with the box
+symbol: 📦 with hyper-links to the author's project.
 
 **What's New**
 
