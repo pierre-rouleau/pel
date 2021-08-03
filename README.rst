@@ -109,8 +109,7 @@ or `update it`_ [2]_ !
 
     - `How to install PEL`_,
     - `PEL convenience features`_ ,
-    - `Key Bindings Documentation`_,
-    - `PDF reference sheets`_.
+    - `Key Bindings Documentation`_.
 
 **Credits**
 
@@ -173,13 +172,11 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _PEL manual:
 .. _PEL's Manual:               doc/pel-manual.rst
 .. _Key Bindings Documentation: doc/pel-manual.rst#key-bindings-documentation
-.. _PDF reference sheets:       doc/pel-manual.rst#pdf-document-tables
 .. _PEL convenience features:   doc/pel-manual.rst#pel-convenience-features
 .. _PEL Customization:          doc/pel-manual.rst#pel-customization
 .. _built-in and external Emacs packages:
 .. _Credits:                    doc/pel-manual.rst#credits
 .. _PEL key bindings:           doc/pel-manual.rst#pel-key-bindings
-.. _PDF Document tables:        doc/pel-manual.rst#pdf-document-tables
 .. _PEL Function Keys Bindings: doc/pel-manual.rst#pel-function-keys-bindings
 .. _auto-complete:              https://melpa.org/#/auto-complete
 .. _company:                    https://melpa.org/#/company
