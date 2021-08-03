@@ -1,0 +1,35 @@
+#!/bin/sh
+# SH FILE: ge
+#
+# Purpose   : Start Linux GUI Emacs in the background from the shell keeping context.
+# Created   : Tuesday, August  3 2021.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2021-08-03 16:02:52, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Description
+# -----------
+#
+# Launches emacs graphics mode in a detached process from the shell.
+# Pass all specified command line options to the process.
+# Identify the current working directory.
+# Sets a PEL environment variable to identify the graphics mode:
+#   this is only required for Emacs 27+ using the early-init.el and
+#   independent customization files for terminal and graphics mode,
+#   but does not hurt when older versions of Emacs are used.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# The emacs command line program.  Under Linux this launches the graphics
+# based mode of Emacs.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+export PEL_EMACS_IN_GRAPHICS=1
+emacs --chdir=$(pwd) "$@" 2>/dev/null &
+
+# ----------------------------------------------------------------------------
