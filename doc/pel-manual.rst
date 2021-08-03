@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-03 12:07:18, updated by Pierre Rouleau.
+:Modified: 2021-08-03 12:10:24, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -49,8 +49,8 @@ PEL is an hybrid package. It is:
   - are implemented in several mostly independent files,
   - have key bindings mostly using the function keys to provide
     key map trees that do not interfere with standard Emacs key bindings,
-  - provides access to over 230 external Emacs packages
-    via `PEL Customization`_.  You select what you want to use then let PEL
+  - provides access to over 230 external Emacs packages via `PEL
+    Customization`_.  You select what you want to use then let **pel-init**
     download, install and configure them, dealing with dependencies and key
     binding activation.
 
