@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-03 13:07:40, updated by Pierre Rouleau.
+:Modified: 2021-08-03 13:10:55, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -46,7 +46,8 @@ PEL is an hybrid package. It is:
 
 - a collection of `PEL convenience features`_ which:
 
-  - are implemented in several mostly independent files,
+  - are implemented in several mostly independent files (which can be used
+    independently if you want to use just a couple of PEL features),
   - have key bindings mostly using the function keys to provide
     key map trees that do not interfere with standard Emacs key bindings,
   - provides access to over 230 external Emacs packages via `PEL
@@ -73,10 +74,6 @@ PEL is an hybrid package. It is:
     with several aspects of Emacs like windows and frame, scrolling control,
     buffer, navigation, opening files or web pages from file name or URL at
     point, numeric keypad handling, etc...
-
-    - Note that these PEL files can be used as *mostly* independent Emacs Lisp
-      *libraries* if you prefer to use a specific PEL features without using PEL
-      key bindings.
 
 - a mechanism that provides two Emacs startup modes:
 
