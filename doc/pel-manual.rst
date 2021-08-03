@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-03 12:10:24, updated by Pierre Rouleau.
+:Modified: 2021-08-03 13:07:40, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -55,7 +55,9 @@ PEL is an hybrid package. It is:
     binding activation.
 
     - PEL conforms to the `Emacs easy customization`_ system and reduces your
-      need to write custom Emacs Lisp configuration code.
+      need to write custom Emacs Lisp configuration code,
+    - PEL optionally supports two customization files: one for Emacs running
+      in terminal/TTY mode and another one for Emacs running in graphics mode.
 
   - makes extensive use of auto-loading and deferred loading techniques to speed
     up Emacs initialization time.
@@ -67,45 +69,43 @@ PEL is an hybrid package. It is:
     PEL uses several function keys (**F2**, **F5**, **F6**, **F11** and
     **F12**) as key prefixes as described in the section titled `PEL Function
     Keys Bindings`_.  It also uses the **F9** key with some external packages.
-  - `PEL convenience features`_ include:
+    - are implemented by a `set of small Emacs Lisp files`_ and that deal
+    with several aspects of Emacs like windows and frame, scrolling control,
+    buffer, navigation, opening files or web pages from file name or URL at
+    point, numeric keypad handling, etc...
 
-    - A `set of small Emacs Lisp files`_ that implement PEL's features that deal
-      with several aspects of Emacs like windows and frame, scrolling control,
-      buffer, navigation, opening files or web pages from file name or URL at
-      point, numeric keypad handling, etc...
+    - Note that these PEL files can be used as *mostly* independent Emacs Lisp
+      *libraries* if you prefer to use a specific PEL features without using PEL
+      key bindings.
 
-      - Note that these files can be used as *mostly*
-        independent Emacs Lisp *libraries* if you prefer to use a specific
-        PEL features without PEL's key bindings.
+- a mechanism that provides two Emacs startup modes:
 
-  - provides two Emacs startup modes:
+  - the **normal startup operation mode** which corresponds to the normal
+    way Emacs is used where the package.el package manager is used by PEL
+    and where it is possible to:
 
-    - the **normal startup operation mode** which corresponds to the normal
-      way Emacs is used where the package.el package manager is used by PEL
-      and where it is possible to:
+    - use PEL's Emacs customization to select features and
+      where the **pel-init** command downloads and installs the external
+      packages required for those features,
+    - disable features no longer needed and remove them by executing the
+      **pel-cleanup** command, reducing startup time accordingly.
 
-      - use PEL's Emacs customization to select features and
-        where the **pel-init** command downloads and installs the external
-        packages required for those features,
-      - disable features no longer needed and remove them by executing the
-        **pel-cleanup** command, reducing startup time accordingly.
+  - the **fast-startup operation mode** that does not allow installation
+    of any new package but provides a much faster Emacs init startup time,
+    even with Emacs 26.3.  In this mode, PEL bundles all external Elpa
+    packages that have files in a single directory, reducing the number of
+    elpa directories which reduces Emacs init startup time furthermore.
+    With it its possible to reduce Emacs startup time to 0.1 second even
+    when using over 230 external packages with no loss of functionality
+    (except ability to install new packages).
 
-    - the **fast-startup operation mode** that does not allow installation
-      of any new package but provides a much faster Emacs init startup time,
-      even with Emacs 26.3.  In this mode, PEL bundles all external Elpa
-      packages that have files in a single directory, reducing the number of
-      elpa directories which reduces Emacs init startup time furthermore.
-      With it its possible to reduce Emacs startup time to 0.1 second even
-      when using over 230 external packages with no loss of functionality
-      (except ability to install new packages).
-
-      - PEL also supports the package quickstart mechanism for Emacs 27 and
-        later.
-      - PEL use techniques similar to those used by `use-package`_ but goes
-        further by providing the extra mode of operation. The use-package
-        describes being able to use over 80 packages with a start time of 2
-        seconds.  With PEL's fast startup of 0.15 second for 238 packages,
-        on Emacs 26.3, that's about 40 times faster!
+    - PEL also supports the package quickstart mechanism for Emacs 27 and
+      later.
+    - PEL use techniques similar to those used by `use-package`_ but goes
+      further by providing the extra mode of operation. The use-package
+      describes being able to use over 80 packages with a start time of 2
+      seconds.  With PEL's fast startup of 0.15 second for 238 packages,
+      on Emacs 26.3, that's about 40 times faster!
 
 To use PEL you must set your `Emacs initialization file`_ appropriately.
 If you are using Emacs ≥ 27 with quick-startup you must also setup your
