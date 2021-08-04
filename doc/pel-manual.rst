@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-04 15:59:04, updated by Pierre Rouleau.
+:Modified: 2021-08-04 16:02:35, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1681,7 +1681,8 @@ Then add the following code as close as possible to the top of your init.el file
            (expand-file-name "~/.emacs.d/utils/benchmark-init"))
   (add-hook 'after-init-hook 'benchmark-init/deactivate)
 
-This code is present but commented out inside the file `example/init/init-5.el`_.
+This code is present but commented out inside the file
+`example/init/init-5.el as OPTION B`_.
 
 With the above code in your init.el file, you can then execute the PEL command
 ``pel-show-init-time`` (or using the ``<M-S-f9>`` keystroke for it) Emacs will
@@ -1704,6 +1705,10 @@ The next time you run **pel-cleanup** while Emacs runs in normal startup mode,
 PEL will remove the benchmark-init files from ``~/.emacs.d/utils`` and place
 them into the ``~/.emacs.d/utils-attic`` where you can restore them when
 needed.
+
+
+
+.. _example/init/init-5.el as OPTION B: https://github.com/pierre-rouleau/pel/blob/master/example/init/init-5.el#L113
 
 .. ---------------------------------------------------------------------------
 
