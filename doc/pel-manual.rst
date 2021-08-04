@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-04 09:08:16, updated by Pierre Rouleau.
+:Modified: 2021-08-04 09:23:49, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1747,14 +1747,15 @@ Execute the following commands inside the pel directory.
      make
 
 If you want to force byte-recompilation of all PEL code do a ``make clean``
-before the ``make``.
+before issuing the ``make`` command.
 
-Then to use a new feature, set the PEL activation user variable through
-the relevant Emacs customization buffer, save the new customization data and run
-pel-init by using ``M-x pel-init`` or restart Emacs.  If new packages are
-identified by your new configuration they will be downloaded, installed and
-byte-compiled automatically.  You'll be able to activate them via the new
-``pel-use-`` user options.
+To use a new feature that was introduced in the new PEL code, set the
+corresponding PEL activation user-option variable through the relevant Emacs
+customization buffer, save the new customization data and run pel-init by
+using ``M-x pel-init`` or by restarting Emacs.
+
+As usual with PEL if new packages are identified by your new configuration
+they will be downloaded, installed, byte-compiled and configured automatically.
 
 .. -----------------------------------------------------------------------------
 
