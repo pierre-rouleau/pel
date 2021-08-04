@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-04 15:19:03, updated by Pierre Rouleau.
+:Modified: 2021-08-04 15:59:04, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -284,7 +284,6 @@ sections:
 
 - `Further PEL Customization`_
 - `Emacs and PEL Optimizations`_
-- `Generic Tips`_
 
 .. _Emacs Lisp Packages: https://www.gnu.org/software/emacs/manual/html_node/emacs/Packages.html#Packages
 
@@ -1228,14 +1227,37 @@ in the `PEL Spell Checking Support`_ section and the `Spell Checking`_ PDF sheet
 Emacs and PEL Optimizations
 ---------------------------
 
-The following sections describe optimizations you can use anywhere, with or
-without PEL.
+The following sections describe more optimizations and customization of PEL
+and Emacs.
 
-Convenience Tricks
-~~~~~~~~~~~~~~~~~~
+Disable Emacs Startup splash screen and echo area message
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+By default Emacs displays its splash screen on startup and displays a message on
+the echo area telling you about Emacs in general and the concept of free
+software. Once you have read this information, you can disable them with the
+following code:
+
+.. code:: elisp
+
+  ;; Do not display the splash screen.  Same as emacs -Q
+  (setq inhibit-startup-screen t)
+  ;; Don't display the start help in minibuffer, at least for me.
+  (setq inhibit-startup-echo-area-message "YOUR-USER_NAME_HERE")
+
+Replace "YOUR_USER_NAME_HERE" by a string containing your user name.
+Emacs was written to allow multiple users from having access to the same
+configuration, and this identifies the user that will not be reminded of Emacs
+concepts and principles every time Emacs starts.  So, to take advantage of that
+small speed up make sure you put your user name there.
+
+The file `example/init/init-5.el`_ contains the code that disables the splash
+screen. the code that disable the message is still commented out.
+
+.. _example/init/init-5.el: ../example/init/init-5.el
 
 Simpler Prompts
-^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~
 
 Emacs prompts that require you to type ``yes`` or ``no`` might be annoying.  If
 you would prefer being able to just type ``y`` or ``n`` instead, as most
@@ -1247,15 +1269,70 @@ several ways you can do this:
   Then apply and save it.
 - Use the PEL key sequence for the above: ``<f11> <f2> o`` and type the name.
 
+More Emacs Customization
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-Generic Tips
-------------
+If this is the first time you use Emacs you will also want to customize the
+following options.  Use ``<f11> <f2> o`` or ``M-x customize-option`` for each
+of those.
 
-The following sections contain information related to Emacs and the OS
-environment.
+======================================== ======================================
+Emacs user option                        Description
+======================================== ======================================
+bookmark-save-flag                       Set it to **1** to get Emacs to save
+                                         the bookmarks inside the bookmark
+                                         file every time a bookmark is set.
+
+bookmark-default-file                    Set the location of the bookmark
+                                         file. Something like
+                                         ``~/.emacs.d/bookmarks``
+
+column-number-mode                       Set it to **t** to activate the
+                                         display of the column number on the
+                                         mode line.
+
+comment-empty-lines                      Set it to **t** if you want to
+                                         comment empty lines when commenting
+                                         a region of lines.
+
+confirm-nonexistent-file-or-buffer       Set it to **nil** (never) to prevent
+                                         confirmation prompts every time you
+                                         want to edit a file that does not
+                                         exist to create it.
+
+fill-column                              Set the default maximum line length.
+                                         A good number is **78**.  For source
+                                         code, PEL provides another set of
+                                         user options for each programming
+                                         language, allowing you to control
+                                         that user option from the file type.
+
+hl-line-sticky-flag                      Set it to **nil** if you only want to
+                                         highlight the text in the current
+                                         window when the buffer shows in
+                                         multiple windows.
+
+imenu-max-items                          Set the maximum number of entries in
+                                         the imenu list if the default of 25
+                                         does not correspond to what you like.
+
+truncate-lines                           Set it to **t** if you want Emacs to
+                                         truncate long lines instead of
+                                         wrapping them.  You can change this
+                                         behaviour by using ``<f11> l t`` or
+                                         ``M-x toggle-truncate-line``.
+
+user-full-name                           Your full name.
+                                         PEL uses it in various file skeletons.
+
+user-mail-address                        Your email address.
+                                         PEL uses it in various file skeletons.
+======================================== ======================================
+
+.. ---------------------------------------------------------------------------
 
 Create command line shortcuts for Emacs
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------------------
 
 New Emacs users may be interested by command line commands to start Emacs in
 terminal (TTY) mode or graphics mode from a shell.  If so, read on.
@@ -1273,7 +1350,7 @@ worry about a clash with the `1970s E editor`_.
 .. _1970s E editor: https://en.wikipedia.org/wiki/E_(1970s_text_editor)
 
 Start Emacs in Terminal/TTY mode
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Emacs can run directly in a terminal emulator application window to take
 advantage of the fact that in general, Emacs starts faster when running in
@@ -1281,7 +1358,7 @@ terminal (TTY) mode than when it runs in graphics mode.
 
 
 Extend available keys to Emacs running under a terminal emulator
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 However, several key combinations and `Emacs Modifier Keys`_ may not be available
@@ -1299,7 +1376,7 @@ The following sub-sections provide more information.
 
 
 Prepare Keyboard Support for Emacs on macOS Terminal
-****************************************************
+++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 The macOS provides the `Terminal built-in application`_.
 Several important keys used by PEL are lacking from the default Terminal key
@@ -1315,7 +1392,7 @@ See the `macOS-terminal-settings PDF`_ for more information.
 
 
 Prepare Keyboard Shortcuts on Linux Distributions
-*************************************************
++++++++++++++++++++++++++++++++++++++++++++++++++
 
 In general Linux-based terminal applications provide a larger number of key
 sequences by default.  However, several function keys, such as the **F11** key
@@ -1330,7 +1407,7 @@ such as the Debian 10 Terminal Preference dialog shown below:
 
 
 Scripts to Launch Emacs in Terminal mode
-++++++++++++++++++++++++++++++++++++++++
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Use the Emacs ``-nw`` command line option to start Emacs in terminal/TTY mode.
 
@@ -1383,7 +1460,7 @@ line, doing something like this:
           e *.c
 
 Launching graphics mode Emacs from a shell
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Under Unix-like Operating Systems like Linux and macOS when you run Emacs in
 graphics mode, Emacs may not get the complete environment variables that you get
@@ -1442,7 +1519,7 @@ line, doing something like this:
 
 
 On macOS
-^^^^^^^^
+~~~~~~~~
 
 Here's the provided code. Only 2 lines are required, the other lines are comments.
 
@@ -1516,7 +1593,7 @@ Here's the provided code. Only 2 lines are required, the other lines are comment
       # ----------------------------------------------------------------------------
 
 On Linux
-^^^^^^^^
+~~~~~~~~
 
 The code is similar on Linux, except that it uses ``emacs`` as the executable
 name.  Change it if your system uses something else or if you want to place
@@ -1577,7 +1654,7 @@ the absolute path.
 .. _example/init/init-3.el: ../example/init/init-3.el
 
 Using benchmark-init
-~~~~~~~~~~~~~~~~~~~~
+--------------------
 
 If you want to know the time each loaded file takes during Emacs initialization
 time you can use the benchmark-init_ package. This is not controlled by PEL
@@ -1587,16 +1664,24 @@ To install it type ``M-x list-packages`` then hit the return key to get a list
 of all elpa-compliant packages. Search for ``benchmark-init``, select it and
 install it.  You can also type: ``M-x package-install benchmark-init``.
 
+After installing it, move the .el and .elc out of the ``benchmark-init-...``
+sub-directory of ``~/.emacs.d/elpa`` and copy them inside the
+``~/.emacs.d/utils`` directory.  Then remove the entire ``benchmark-init-...``
+directory from ``~/.emacs.d/elpa``.
+
+We don't want to add yet another package to the elpa directory.  That will
+slow down Emacs startup time.  By moving the code into PEL's utils directory
+Emacs will be able to find it faster and we don't add an extra directory.
+
 Then add the following code as close as possible to the top of your init.el file:
 
 .. code:: elisp
 
   (require 'benchmark-init
-           (expand-file-name
-            "~/.emacs.d/elpa/benchmark-init-20150905.938/benchmark-init"))
+           (expand-file-name "~/.emacs.d/utils/benchmark-init"))
   (add-hook 'after-init-hook 'benchmark-init/deactivate)
 
-This code is inside the file `example/init/init-4.el`_.
+This code is present but commented out inside the file `example/init/init-5.el`_.
 
 With the above code in your init.el file, you can then execute the PEL command
 ``pel-show-init-time`` (or using the ``<M-S-f9>`` keystroke for it) Emacs will
@@ -1615,38 +1700,15 @@ inside Parallels Desktop VM under macOS host:
 .. figure:: res/pel-benchmark-mint20.png
    :scale: 50 %
 
+The next time you run **pel-cleanup** while Emacs runs in normal startup mode,
+PEL will remove the benchmark-init files from ``~/.emacs.d/utils`` and place
+them into the ``~/.emacs.d/utils-attic`` where you can restore them when
+needed.
 
-.. _example/init/init-4.el: ../example/init/init-4.el
-
-
-Disable Emacs Startup splash screen and echo area message
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-By default Emacs displays its splash screen on startup and displays a message on
-the echo area telling you about Emacs in general and the concept of free
-software. Once you have read this information, you can disable them with the
-following code:
-
-.. code:: elisp
-
-  ;; Do not display the splash screen.  Same as emacs -Q
-  (setq inhibit-startup-screen t)
-  ;; Don't display the start help in minibuffer, at least for me.
-  (setq inhibit-startup-echo-area-message "YOUR-USER_NAME_HERE")
-
-Replace "YOUR_USER_NAME_HERE" by a string containing your user name.
-Emacs was written to allow multiple users from having access to the same
-configuration, and this identifies the user that will not be reminded of Emacs
-concepts and principles every time Emacs starts.  So, to take advantage of that
-small speed up make sure you put your user name there.
-
-The file `example/init/init-5.el`_ contains the code that disables the splash
-screen. the code that disable the message is still commented out.
-
-.. _example/init/init-5.el: ../example/init/init-5.el
+.. ---------------------------------------------------------------------------
 
 To override or change PEL key bindings
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------------
 
 As of this release PEL key bindings and key prefixes are hard coded.
 If you want to change a key binding that PEL uses, you can define your own
@@ -1670,68 +1732,6 @@ please describe your request on the `PEL wiki`_, I'll take a look and see what I
 
 .. _PEL wiki:                         https://github.com/pierre-rouleau/pel/wiki
 .. _Function Keys Mappings PDF table: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/keys-fn.pdf
-
-
-More Emacs Customization
-------------------------
-
-If this is the first time you use Emacs you will also want to customize the
-following options.  Use ``<f11> <f2> o`` or ``M-x customize-option`` for each
-of those.
-
-======================================== ======================================
-Emacs user option                        Description
-======================================== ======================================
-bookmark-save-flag                       Set it to **1** to get Emacs to save
-                                         the bookmarks inside the bookmark
-                                         file every time a bookmark is set.
-
-bookmark-default-file                    Set the location of the bookmark
-                                         file. Something like
-                                         ``~/.emacs.d/bookmarks``
-
-column-number-mode                       Set it to **t** to activate the
-                                         display of the column number on the
-                                         mode line.
-
-comment-empty-lines                      Set it to **t** if you want to
-                                         comment empty lines when commenting
-                                         a region of lines.
-
-confirm-nonexistent-file-or-buffer       Set it to **nil** (never) to prevent
-                                         confirmation prompts every time you
-                                         want to edit a file that does not
-                                         exist to create it.
-
-fill-column                              Set the default maximum line length.
-                                         A good number is **78**.  For source
-                                         code, PEL provides another set of
-                                         user options for each programming
-                                         language, allowing you to control
-                                         that user option from the file type.
-
-hl-line-sticky-flag                      Set it to **nil** if you only want to
-                                         highlight the text in the current
-                                         window when the buffer shows in
-                                         multiple windows.
-
-imenu-max-items                          Set the maximum number of entries in
-                                         the imenu list if the default of 25
-                                         does not correspond to what you like.
-
-truncate-lines                           Set it to **t** if you want Emacs to
-                                         truncate long lines instead of
-                                         wrapping them.  You can change this
-                                         behaviour by using ``<f11> l t`` or
-                                         ``M-x toggle-truncate-line``.
-
-user-full-name                           Your full name.
-                                         PEL uses it in various file skeletons.
-
-user-mail-address                        Your email address.
-                                         PEL uses it in various file skeletons.
-======================================== ======================================
-
 
 .. ---------------------------------------------------------------------------
 
