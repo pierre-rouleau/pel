@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-04 16:02:35, updated by Pierre Rouleau.
+:Modified: 2021-08-04 16:22:39, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -276,14 +276,10 @@ The fully detailed instructions are described in the following sections:
 #. Optional: `Add Support for Package Quickstart for Emacs 27 and later`_
 #. Optional: `Create command line shortcuts for Emacs`_
 #. `Activate PEL Features - Customize PEL`_.
+#. `Further PEL Customization`_
+#. `Create command line shortcuts for Emacs`_
 
 Detailed instructions for the above steps are written in the following sections.
-
-If you wish you can also customize PEL and Emacs further.  See the following
-sections:
-
-- `Further PEL Customization`_
-- `Emacs and PEL Optimizations`_
 
 .. _Emacs Lisp Packages: https://www.gnu.org/software/emacs/manual/html_node/emacs/Packages.html#Packages
 
@@ -1027,8 +1023,11 @@ Perform these extra steps to increase the performance of Emacs and PEL:
    graphics mode from a shell.  See examples in the section titled
    `Create command line shortcuts for Emacs`_.
 
-At this point, continue to the next section:
-`Activate PEL Features - Customize PEL`_.
+At this point, continue to the next sections:
+
+#. `Activate PEL Features - Customize PEL`_.
+#. `Further PEL Customization`_
+#. `Create command line shortcuts for Emacs`_
 
 .. ---------------------------------------------------------------------------
 
@@ -1223,12 +1222,6 @@ For the changes to take effect, save the changes and execute pel-init
 
 More information on PEL support of spell checking is available
 in the `PEL Spell Checking Support`_ section and the `Spell Checking`_ PDF sheet.
-
-Emacs and PEL Optimizations
----------------------------
-
-The following sections describe more optimizations and customization of PEL
-and Emacs.
 
 Disable Emacs Startup splash screen and echo area message
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1705,8 +1698,6 @@ The next time you run **pel-cleanup** while Emacs runs in normal startup mode,
 PEL will remove the benchmark-init files from ``~/.emacs.d/utils`` and place
 them into the ``~/.emacs.d/utils-attic`` where you can restore them when
 needed.
-
-
 
 .. _example/init/init-5.el as OPTION B: https://github.com/pierre-rouleau/pel/blob/master/example/init/init-5.el#L113
 
