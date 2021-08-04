@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-04 11:58:40, updated by Pierre Rouleau.
+:Modified: 2021-08-04 12:03:04, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1182,7 +1182,8 @@ Also note that PEL includes links to the PDF *reference* sheet files relevant
 to the PEL customization group.  You can open your local PDF file by clicking on
 the button to the right of the "*See also*" note as shown here:
 
-.. image:: res/pel-link-to-pdf.png
+.. figure:: res/pel-link-to-pdf.png
+   :scale: 50 %
 
 
 Further PEL Customization
