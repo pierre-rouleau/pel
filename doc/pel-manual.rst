@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-03 17:09:34, updated by Pierre Rouleau.
+:Modified: 2021-08-04 07:30:40, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -6081,25 +6081,6 @@ available in those PDF files.
 
 I am open to suggestions. In the mean-time, I push a copy of that Numbers file
 regularly in the `pel-pdf-spreadsheet repo`_.
-
-
-
-
-
-Limitations & Bugs
-------------------
-
-#. **Dual-stage autoloading limitation**.
-   PEL dual-stage autoloading currently will not show the PEL commands that are
-   part of currently not loaded PEL files when trying to execute them with the
-   ``M-x`` key or when attempting tab completion.  The command will be visible
-   via ``<f1> o`` and ``<f1> f`` (or their ``C-h`` equivalent) but you'll see
-   that their doc-strings are not loaded.  However, the PEL key-binding for the
-   command will work, that will load the corresponding PEL file and then the
-   ``M-x`` command and tab completion will work from then on.  Also before
-   loading the file, if `which-key`_ is activated the commands will all show
-   regardless of their load status.
-
 
 Planning and Future
 -------------------
