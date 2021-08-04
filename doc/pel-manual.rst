@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-04 09:23:49, updated by Pierre Rouleau.
+:Modified: 2021-08-04 11:58:40, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1119,7 +1119,8 @@ customization tree and go over all features that PEL can activate.
 Here's a screen capture of that activity:
 
 
-.. image:: res/pel-start-customizing.png
+.. figure:: res/pel-start-customizing.png
+   :scale: 50 %
 
 
 Access PEL Customization Root
@@ -1131,7 +1132,8 @@ execute the ``pel-cfg`` command by typing the ``<f11> <f2> P !`` key sequence.
 When running Emacs in graphics mode, you'll see something like this:
 
 
-.. image:: res/pel-cfg.png
+.. figure:: res/pel-cfg.png
+   :scale: 50 %
 
 Emacs opens a buffer in ``Custom-mode`` and shows the top level of PEL
 configuration.  PEL has a large tree of customization groups, each holding
@@ -1141,7 +1143,8 @@ All PEL package control user options have a name that starts with ``pel-use-``
 and they are part of the ``pel-package-use`` customization group.  If you select
 that group Emacs will open it and you will see something like this:
 
-.. image:: res/pel-cfg-package.png
+.. figure:: res/pel-cfg-package.png
+   :scale: 50 %
 
 It shows the top level group for different types of packages, grouped by
 functionality type.
@@ -1160,7 +1163,8 @@ might be automatically downloaded when required.
 Note:  In Emacs Lisp the value **t**, is the symbol for truth and **nil** is
 used for the empty list and represent falsehood.
 
-.. image:: res/pel-cfg-all-use.png
+.. figure:: res/pel-cfg-all-use.png
+   :scale: 50 %
 
 Now you are done! 😀
 
@@ -1513,7 +1517,8 @@ With the above code in your init.el file, you can then execute the PEL command
 ``pel-show-init-time`` (or using the ``<M-S-f9>`` keystroke for it) Emacs will
 open 2 buffers and will show something like this:
 
-.. image:: res/pel-benchmark.png
+.. figure:: res/pel-benchmark.png
+   :scale: 50 %
 
 This is a snapshot taken on GNU Emacs running in terminal mode on a 2014 macOS
 computer with PEL running with 96 packages selected by customization giving 156
@@ -1522,7 +1527,8 @@ lines inside the benchmark-init buffers.
 Here's another snapshot taken after installing PEL on Mint 20 Linux running
 inside Parallels Desktop VM under macOS host:
 
-.. image:: res/pel-benchmark-mint20.png
+.. figure:: res/pel-benchmark-mint20.png
+   :scale: 50 %
 
 
 .. _example/init/init-4.el: ../example/init/init-4.el
@@ -1763,25 +1769,116 @@ Key Binding Help
 ================
 
 
-By default, PEL configuration activates the which-key_ external package so that
-when you hit a key prefix, like **F11** the list of comments and their key
-bindings will show up at the bottom of the Emacs screen, in what is called the
-echo area.  This, like everything PEL uses, can be turned off by customization
-(in this case it's the user option called ``pel-use-which-key``.
+**Using the which-keys package**
 
-You can also see the list of commands without it. For example,
-you can see PEL's use of the **F11** function key by hitting in sequence the
-**F11** key quickly followed by the **F1** key.  Emacs will list PEL's **F11**
-key bindings inside the ``*Help*`` buffer.
+By default, PEL configuration activates the which-key_ external package.
+When ``which-key-mode`` is active Emacs displays a list of key bindings after
+you type a `prefix key`_.
 
-You can also open the local copy of the  PDF *reference* sheet file that
-describes the commands and key bindings accessible through a given key prefix by
-using the **F1** key inside that key prefix.
-For example, as described in section `PEL Help Support`_, the PEL key prefix
+For example, after typing the **F11** key, wait a little and Emacs should
+display something like the following at the bottom of your Emacs window,
+called the echo area:
+
+.. figure:: res/pel-which-key.png
+   :scale: 30 %
+
+This lists all keys and further key prefixes. If the list is long as it's the
+case here type ``C-h`` to show a menu of possible actions and then you will see
+you can type ``n`` to display the next set of key bindings.  As soon as you
+hit a key related to a command the which-key window is closed.
+
+If you type command keys fast enough the which-key window does not show up.
+You can control which-key parameters through Emacs customization.  Use one of
+the following commands to access which-key customization group:
+
+- ``M-x customization-group RET which-key RET``
+- ``<f11> <f2> g which-key RET``
+- ``<f11> ? <f3> 5``
+
+If the which-key_ package is not enabled, you can enable it by setting the
+`pel-use-which-key`` user-option to **t**.  You can access it by opening the
+customization buffer for help by typing the ``<f11> ? <f2>`` key sequence.
+
+Once set, it must be activated: execute ``pel-init`` by typing ``M-x pel-init
+RET`` to re-initialize PEL.
+
+
+**Displaying keys without the which-keys package**
+
+You can also see the list of commands without using the which-keys
+package. For example, you can see PEL's use of the **F11** function key by
+hitting in sequence the **F11** key quickly followed by the **C-h** key.  Emacs
+will list PEL's **F11** key bindings inside the ``*Help*`` buffer.
+
+**Open the PEL PDF reference sheet**
+
+Open the local copy of the PDF *reference* sheet file that describes the
+commands and key bindings accessible through a given key prefix by using the
+**F1** key inside that key prefix.
+
+The following table is a partial list of the key sequences you can use to open
+a specific PEL PDF file.
+
+============================= ===================== ==========================
+Context                       Key sequence           Opened PEL PDF
+============================= ===================== ==========================
+From any buffer               ``<f11> <f1>``        `PEL Index PDF`_
+From any buffer               ``<f11> ? <f1>``      `Help PDF`_
+From any buffer               ``<f11> ! <f1>``      `Syntax Check PDF`_
+From any buffer               ``<f11> M-c <f1>``    `Input Completion PDF`_
+From any buffer               ``<f11> SPC c <f1>``  `C language PDF`_
+From a C buffer               ``<f12> <f1>``        `C language PDF`_
+From any buffer               ``<f11> SPC e <f1>``  `Erlang language PDF`_
+From a Erlang buffer          ``<f12> <f1>``        `Erlang language PDF`_
+============================= ===================== ==========================
+
+
+As listed above and inside the `PEL Help Support`_, the PEL key prefix
 for help and information commands is **pel:help** bound to the ``<f11> ?`` key
 sequence.  To open the `HELP`_ PDF file, type ``<f11> ? <f1>``.
-Not all PEL key prefixes have this key, but most have.
 
+Most PEL key prefixes have a ``<f1>`` key that opens the PDF describing the
+commands accessible through that key prefix.  This includes the PDF that
+describe support for a major mode like support for programming languages.  To
+access the PDF when the current buffer is using that major mode the keys
+sequence is always ``<f12> <f1>``.  If you want to access the PDF from a
+buffer that is not in the specific major mode type ``<f11> SPC`` and wait for
+the list of major modes to appear.  Then select the key for the major mode and
+then complete it with the ``<f1>`` key.
+
+
+**Open the PEL PDF files in the browser**
+
+By default, PEL opens the PEL PDF files using the PDF reader application
+available on your operating system, for example Preview in macOS.
+
+The PDF files are filled with hyperlinks to other PEL PDF files and various
+topics.  Navigating through these hyperlinks with such an application may be
+cumbersome.
+
+This is why PEL provides the ability to open PEL PDF files directly in
+your local browser.  There are several ways to do that:
+
+- Type an argument key (like ``C-u`` or ``M--``) just before typing the key
+  sequence. For example typing ``C-u <f11> <f1>`` or ``M-- <f11> <f1>`` opens
+  the `PEL Index PDF`_ raw PDF from Github inside your browser.
+- You can invert the meaning of the argument key presence such that typing
+  ``<f11> <f1>`` opens the Github file in your browser and ``C-u <f11> <f1>``
+  opens your local PDF file.  For that set the ``pel-flip-help-pdf-arg``
+  user-option to **t**.
+  You can access its customization buffer with ``<f11> ? <f2>``.
+
+
+For the best user experience use a web browser that can render PDF
+files inline, like the excellent Mozilla Firefox [#firefox]_ browser version
+78 or later.
+
+To force PEL to use Firefox even if your default web browser is something
+else, set the ``pel-browser-used`` user-option to ``'firefox``.
+You can access its customization buffer with ``<f11> ? <f2>``.
+
+
+.. _prefix key: https://www.gnu.org/software/emacs/manual/html_node/elisp/Prefix-Keys.html
 
 .. -----------------------------------------------------------------------------
 
@@ -5431,6 +5528,7 @@ Emacs packages and more tables will describe how to use them.
 .. _Highlight:                                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/highlight.pdf
 .. _Hooks:                                    https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/hooks.pdf
 .. _Indentation:                              https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/indentation.pdf
+.. _Input Completion PDF:
 .. _Input Completion:                         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/completion-input.pdf
 .. _Input Method:                             https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/input-method.pdf
 .. _Inserting Text:                           https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/inserting-text.pdf
@@ -5458,6 +5556,7 @@ Emacs packages and more tables will describe how to use them.
 .. _Sorting:                                  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/sorting.pdf
 .. _Speedbar:                                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/speedbar.pdf
 .. _Spell Checking:                           https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/spell-checking.pdf
+.. _Syntax Check PDF:
 .. _Syntax Check:                             https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/syntax-checking.pdf
 .. _Templates:                                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/templates.pdf
 .. _Text-modes:                               https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/text-modes.pdf
@@ -5480,14 +5579,16 @@ Emacs packages and more tables will describe how to use them.
 .. _Modifier Keys:                            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/modifier-keys.pdf
 .. _Apple-Script:                             https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-applescript.pdf
 ..  C++
-..  C
+.. _C Language PDF:                           https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c.pdf
+
 ..  Common Lisp
 .. _Emacs Lisp Types:                         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/emacs-lisp-types.pdf
 .. _Lispy mode support:                       https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/plm-lispy.pdf
 ..  D
 ..  elixir
 ..  Emacs Lisp
-..  erlang
+..  _Erlang Language PDF:                     https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf
+
 ..  forth
 ..  python
 ..  REXX
@@ -6383,7 +6484,7 @@ when running Emacs 27.1 and later versions.
 .. _visual-regexp:             https://melpa.org/#/visual-regexp
 .. _visual-regexp-steroids:    https://melpa.org/#/visual-regexp-steroids
 .. _vterm:                     https://melpa.org/#/vterm
-.. _which-key:                 https://elpa.gnu.org/packages/which-key.html
+.. _which-key:                 https://github.com/justbur/emacs-which-key#readme
 .. _xr:                        https://elpa.gnu.org/packages/xr.html
 .. _yasnippet:                 https://melpa.org/#/yasnippet
 .. _yasnippet-snippets:        https://melpa.org/#/yasnippet-snippets
