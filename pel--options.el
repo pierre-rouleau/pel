@@ -2516,6 +2516,7 @@ To activate it you must also activate `pel-use-log-support'"
 (defcustom pel-use-which-key t
   "Control whether PEL uses the which-key package."
   :group 'pel-pkg-for-keys
+  :group 'pel-pkg-for-help              ; make it easy to access
   :type 'boolean
   :safe #'booleanp)
 
@@ -2531,6 +2532,7 @@ To activate it you must also activate `pel-use-log-support'"
  regardless of this setting if any of the following variables is set non-nil:
  - `set-use-bm`."
   :group 'pel-pkg-for-keys
+  :group 'pel-pkg-for-help              ; make it easy to access
   :type 'boolean
   :safe #'booleanp)
 
