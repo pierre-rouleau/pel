@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-04 08:52:22, updated by Pierre Rouleau.
+:Modified: 2021-08-04 09:08:16, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1683,7 +1683,7 @@ The speedup you will experience depends on several factors:
   pel-bundle-autoloads.el file and one pel-bundle-pkg.el for all of these
   packages.  By doing so, and by adding extra code to make the whole thing
   work, by delaying package initialization in the init.el file, PEL reduces
-  Emacs-load path and overall startup processing.
+  Emacs load-path and overall startup processing.
 
 - Another significant factor is the init.el code. The execution of
   ``package-init`` must be delayed.  See the file `example/init/init-5.el`_
@@ -1692,13 +1692,27 @@ The speedup you will experience depends on several factors:
 It's possible to reduce the startup time down such that benchmark-init report
 it to be 0.1 second, even with a relatively large number of external package.
 
-On my 2014 iMac computer with 4GHz Intel Core i7 and Flash storage memory,
-running macOs Mojave and Emacs 26.3 in terminal mode, I was able to get Emacs
-startup in 0.1 second with 238 external packages.
+Speedup Examples
+----------------
 
-In the following screen shots you can see the benchmark-init report for the
-same setup when normal mode is used and then when PEL fast-startup operation
-mode is used.
+
+238 external packages in about 0.1 second
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Startup time:
+
+  - with PEL in normal startup mode: about 0.6 second
+  - with PEL in fast startup mode:  about 0.1 second
+
+- Environment:
+
+  - 238 external packages.
+  - Computer: 2014 iMac computer with 4GHz Intel Core i7 CPU and Flash storage
+    memory running macOS Mojave.
+  - Emacs 26.3 running in terminal mode inside a macOS Terminal window running Bash.
+
+The following screen shots show the `benchmark-init`_ reports for Emacs
+running in this environment in normal startup mode and in fast-startup mode.
 
 Screen Shot #1: Emacs 26.3 in terminal mode using 238 external packages in
 normal mode exhibiting a 0.6 second startup:
