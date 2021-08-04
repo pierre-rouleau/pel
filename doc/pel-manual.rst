@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-04 07:30:40, updated by Pierre Rouleau.
+:Modified: 2021-08-04 08:52:22, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1651,14 +1651,17 @@ Once you have installed and configured all external packages you need you may
 find that Emacs startup time has increased too much for your liking.  That
 will be the case if you use a large number of external Elpa-compliant packages
 because Emacs must process the autoloads package information inside each of
-the elpa directory and that takes time.  There are several techniques that can
-be used to speed this up and PEL uses a large number of these techniques when
-it operates in the normal operation mode.
+the elpa directory and that takes time.  PEL uses several techniques to reduce
+Emacs startup time.  As the number of package used grows you these techniques
+may not be sufficient.
 
-To experience a faster Emacs init startup you can use PEL's fast-startup
-operation mode.
+To speed the startup further, PEL provides a fast-startup mode of operation.
+In that mode PEL bundles the Emacs Lisp code files of all single directory
+packages inside a single directory and calls this the pel-bundle *package*.
+Doing this reduces the number of packages Emacs see, reduces the length of
+Emacs load-path and reduces the startup time substantially.
 
-PEL provides the following 3 commands:
+PEL provides the following 3 commands to deal with this:
 
 - **pel-setup-info**, bound to ``<f11> M-S ?``.  It displays the current
   operation mode.
@@ -1700,16 +1703,14 @@ mode is used.
 Screen Shot #1: Emacs 26.3 in terminal mode using 238 external packages in
 normal mode exhibiting a 0.6 second startup:
 
-.. image::  res/normal-startup-001.png
+.. figure::  res/normal-startup-001.png
+   :scale: 50 %
 
 Screen Shot #2: With the same setup as above but now running under PEL's
 fast-startup operation mode: Emacs startup time is now around 0.1 second.
 
-.. image::  res/fast-startup-001.png
-
-
-
-
+.. figure::  res/fast-startup-001.png
+   :scale: 50 %
 
 .. _Fast Startup PDF Sheet: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/fast-startup.pdf
 
