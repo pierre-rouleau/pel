@@ -107,7 +107,7 @@ or `update it`_ [2]_ !
   - `PEL's Manual`_ describes PEL features in more details. See:
 
     - `How to install PEL`_,
-    - `PEL convenience features`_ ,
+    - `PEL convenience features`_,
     - `Key Bindings Documentation`_.
 
 **Credits**
