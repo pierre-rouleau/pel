@@ -47,8 +47,7 @@ or `update it`_ [2]_ !
 - PEL controls the download, installation, configuration and activation of
   **over 230** *top-level* [3]_ external packages through the use of
   easy-to-setup customization user-options that have a name that start with
-  the "``pel-use-``" prefix.  See the manual `built-in and external Emacs
-  packages`_ section.
+  the "``pel-use-``" prefix.
 
   - If requested by the user, PEL also supports two independent customization
     files along with two independent Elpa-compliant package directories: one
@@ -177,7 +176,6 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _Key Bindings Documentation: doc/pel-manual.rst#key-bindings-documentation
 .. _PEL convenience features:   doc/pel-manual.rst#pel-convenience-features
 .. _PEL Customization:          doc/pel-manual.rst#pel-customization
-.. _built-in and external Emacs packages:
 .. _Credits:                    doc/pel-manual.rst#credits
 .. _PEL key bindings:           doc/pel-manual.rst#pel-key-bindings
 .. _PEL Function Keys Bindings: doc/pel-manual.rst#pel-function-keys-bindings

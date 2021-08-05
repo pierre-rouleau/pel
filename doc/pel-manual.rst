@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-04 16:22:39, updated by Pierre Rouleau.
+:Modified: 2021-08-05 11:40:55, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1729,93 +1729,6 @@ please describe your request on the `PEL wiki`_, I'll take a look and see what I
 .. _PEL wiki:                         https://github.com/pierre-rouleau/pel/wiki
 .. _Function Keys Mappings PDF table: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/keys-fn.pdf
 
-.. ---------------------------------------------------------------------------
-
-Get Emacs To Startup FAST
-=========================
-
-Once you have installed and configured all external packages you need you may
-find that Emacs startup time has increased too much for your liking.  That
-will be the case if you use a large number of external Elpa-compliant packages
-because Emacs must process the autoloads package information inside each of
-the elpa directory and that takes time.  PEL uses several techniques to reduce
-Emacs startup time.  As the number of package used grows you these techniques
-may not be sufficient.
-
-To speed the startup further, PEL provides a fast-startup mode of operation.
-In that mode PEL bundles the Emacs Lisp code files of all single directory
-packages inside a single directory and calls this the pel-bundle *package*.
-Doing this reduces the number of packages Emacs see, reduces the length of
-Emacs load-path and reduces the startup time substantially.
-
-PEL provides the following 3 commands to deal with this:
-
-- **pel-setup-info**, bound to ``<f11> M-S ?``.  It displays the current
-  operation mode.
-- **pel-setup-fast**, bound to ``<f11> M-S f``.  This commands reorganizes
-  the content of your ``user-emacs-directory`` to bundle the elpa external
-  packages to provide a faster Emacs init startup time.  In this mode you
-  cannot add new external packages though.
-- **pel-setup-normal**, bound to ``<f11> M-S n``.  This command restores
-  the content of your ``user-emacs-directory`` the way it was, allowing you to
-  use Emacs as before and with the ability to add or remove external packages.
-
-These commands are described in the `Fast Startup PDF Sheet`_.
-
-The speedup you will experience depends on several factors:
-
-- One main factor is the number of Elpa-compliant packages that PEL can
-  bundle.  PEL will be able to bundle all those packages that put all their
-  files inside a single directory.  PEL will then build a single
-  pel-bundle-autoloads.el file and one pel-bundle-pkg.el for all of these
-  packages.  By doing so, and by adding extra code to make the whole thing
-  work, by delaying package initialization in the init.el file, PEL reduces
-  Emacs load-path and overall startup processing.
-
-- Another significant factor is the init.el code. The execution of
-  ``package-init`` must be delayed.  See the file `example/init/init-5.el`_
-  for a setup that properly supports PEL fast-startup.
-
-It's possible to reduce the startup time down such that benchmark-init report
-it to be 0.1 second, even with a relatively large number of external package.
-
-Speedup Examples
-----------------
-
-
-238 external packages in about 0.1 second
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-- Startup time:
-
-  - with PEL in normal startup mode: about 0.6 second
-  - with PEL in fast startup mode:  about 0.1 second
-
-- Environment:
-
-  - 238 external packages.
-  - Computer: 2014 iMac computer with 4GHz Intel Core i7 CPU and Flash storage
-    memory running macOS Mojave.
-  - Emacs 26.3 running in terminal mode inside a macOS Terminal window running Bash.
-
-The following screen shots show the `benchmark-init`_ reports for Emacs
-running in this environment in normal startup mode and in fast-startup mode.
-
-Screen Shot #1: Emacs 26.3 in terminal mode using 238 external packages in
-normal mode exhibiting a 0.6 second startup:
-
-.. figure::  res/normal-startup-001.png
-   :scale: 50 %
-
-Screen Shot #2: With the same setup as above but now running under PEL's
-fast-startup operation mode: Emacs startup time is now around 0.1 second.
-
-.. figure::  res/fast-startup-001.png
-   :scale: 50 %
-
-.. _Fast Startup PDF Sheet: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/fast-startup.pdf
-
-
 .. -----------------------------------------------------------------------------
 
 Updating PEL
@@ -1846,8 +1759,61 @@ they will be downloaded, installed, byte-compiled and configured automatically.
 
 .. -----------------------------------------------------------------------------
 
-Key Binding Help
+PEL Key Bindings
 ================
+
+Emacs makes extensive use of `key prefixes`_.
+
+PEL key bindings mostly use function keys as key prefixes:
+the **F2**, **F6**, **F7**, **F8**, **F11** and **F12** keys
+are all PEL prefix keys:
+
+- **F2** is used to jump to bookmarked locations when the ``pel-use-bm``
+  user-option is active.
+- **F6** is a prefix for some often used commands.
+- **F7** is used to access all PEL `Hydra heads`_.
+- **F8** is used as the prefix for the `Projectile Project Interaction
+  Manager`_ commands.  It is available when the ``pel-use-projectile`` user-option
+  is active and the key is made available after activating the projectile-mode
+  which can be done with the ``<f11> <f8> <f8>`` key sequence.
+- **F11** is PEL's main global prefix key.  It is always available and
+  provide access to most of the PEL key maps.
+- The **F12** key is also available in some major modes as described in the section titled
+  `PEL Mode Sensitive Key-maps`_.
+
+PEL also binds the **F5** key as the repeat key.
+
+All PEL key prefixes are used for PEL key maps.  These all have names that
+start with ``pel:``.
+
+More information on keys in Emacs with PEL include:
+
+- The `PEL Key Maps PDF file`_.  To open a local copy it from Emacs type
+  **F11** followed by **F1** (normally identified in this manual as ``<f11>
+  <f1>``).
+- The `⅀ ⌨︎ Modifier Keys PDF`_ which describes Emacs modifier keys.  Open the
+  local copy of that file in Emacs with ``<f11> ? p modifier-keys`` followed by
+  the return key.
+- The `⌨︎Keys - Fn PDF`_  that has a table that shows how function keys are
+  used by PEL.  From within Emacs use ``<f11> ? p keys-fn``  to open it.
+- The `⌨︎Keys - F11`_ which lists the key bindings under the **F11** key.
+- From Emacs you can list keys under a the prefix key (like **F11**) in the
+  ``*Help*`` buffer:  type that prefix key and then type **C-h** quickly.
+
+As described in the `Naming Conventions`_ section the names in the binding
+column that use the ``pel:`` prefix are sub key-maps.
+All PEL command functions have a name that starts with the ``pel-`` name prefix.
+
+.. _PEL Key Maps PDF file: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-pel-key-maps.pdf
+.. _key prefixes:          https://www.gnu.org/software/emacs/manual/html_node/emacs/Keys.html#Keys
+.. _⅀ ⌨︎ Modifier Keys PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/modifier-keys.pdf
+.. _⌨︎Keys - Fn PDF:        https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/keys-fn.pdf
+.. _⌨︎Keys - F11:           https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/keys-f11.pdf
+.. _Hydra heads:           https://github.com/abo-abo/hydra#readme
+
+
+Key Binding Help
+----------------
 
 
 **Using the which-keys package**
@@ -1961,7 +1927,269 @@ You can access its customization buffer with ``<f11> ? <f2>``.
 
 .. _prefix key: https://www.gnu.org/software/emacs/manual/html_node/elisp/Prefix-Keys.html
 
-.. -----------------------------------------------------------------------------
+
+PEL Mode Sensitive Key-maps
+---------------------------
+
+The first element of the table in the previous section lists
+the ``<f11> SPC`` special prefix.
+It's the top key-map of all PEL mode sensitive key-maps.
+It has several sub-maps, once for each of the major mode explicitly supported by
+PEL.  Some of them are shown in the following table:
+
+=============================== ===========================================
+key                             binding
+=============================== ===========================================
+``<f11> SPC C``                 pel:for-C++
+``<f11> SPC D``                 pel:for-D
+``<f11> SPC L``                 pel:for-lisp
+``<f11> SPC c``                 pel:for-C
+``<f11> SPC g``                 pel:for-graphviz-dot
+``<f11> SPC l``                 pel:for-elisp
+``<f11> SPC p``                 pel:for-python
+``<f11> SPC r``                 pel:for-reST
+=============================== ===========================================
+
+
+If you are editing a buffer in one of the mode explicitly supported by PEL,
+the **F12** key is bound to the mode-specific prefix.
+For example inside a buffer using the *elisp-mode* major mode,
+typing ``<f12>`` is the same
+as typing ``<f11> SPC l``.
+Inside a buffer containing Python source code,
+typing ``<f12>`` is the same
+as typing ``<f11> SPC p``.
+
+When the current buffer is using the ``rst-mode``
+for `editing reStructuredText files`_,
+the **F12** key has the following bindings and more.
+
+=============================== ===========================================
+key                             binding
+=============================== ===========================================
+``<f12> .``                     **pel-rst-makelink**
+``<f12> g``                     **pel-rst-goto-ref-bookmark**
+``<f12> s``                     **pel-rst-set-ref-bookmark**
+=============================== ===========================================
+
+
+However, when the current buffer uses Emacs-Lisp mode for working on Emacs Lisp
+code,
+the **F12** key has the following, different, bindings.
+
+
+=============================== ===========================================
+key                             binding
+=============================== ===========================================
+``<f12> .``                     **pel-find-thing-at-point**
+``<f12> D``                     **toggle-debug-on-error**
+``<f12> a``                     pel:elisp-analyze
+``<f12> c``                     pel:elisp-compile
+``<f12> d``                     pel:elisp-debug
+``<f12> e``                     pel:elisp-eval
+``<f12> f``                     pel:elisp-function
+``<f12> i``                     **parinfer-auto-fix**
+``<f12> l``                     pel:elisp-lib
+``<f12> m``                     pel:elisp-mode
+=============================== ===========================================
+
+If you edit a reStructuredText file and want to use one of the commands
+available in the Emacs-Lisp key-map, then you can use the longer PEL key-map
+that uses the ``<f11> SPC l`` prefix.
+
+
+.. _editing reStructuredText files: `PEL reStructuredText Support Utilities`_
+
+Key Bindings Documentation
+--------------------------
+
+PEL comes with a set of tables listing and describing:
+
+- the **standard GNU Emacs** commands and key bindings for a given
+  type of activity,
+- the commands and key bindings provided by PEL for the same type of activity,
+- the commands and key bindings for commands provided by external packages that
+  PEL supports and can download and install.
+
+These tables are inside PDF documents; the `PDF topic-oriented reference
+sheets`_.  They are listed in the `PEL Index PDF`_.
+
+Open PEL PDF files quickly from Emacs:
+
+   - PEL provides a set of key bindings that open you local copy of
+     the file (or the Github-hosted copy) inside most key prefixes.
+   - For example to open your local copy of the `Search and Replace`_ PDF file
+     that describes the search and replace features available under Emacs type
+     ``<f11> s <f1>``.  To open the same file but from the Github site prefix
+     these keys with ``C-u``.
+   - For topics such as `Narrowing`_ and `Navigation`_, that do not have a
+     specific PEL key map prefix, type ``<f11> ? p``
+     followed by the topic name or a portion of the name followed by tab to
+     activate Emacs completion, then hit return once you selected the topic.
+
+
+See the `PDF Documentation`_ section for more info on why these are PDF files.
+The format of these files makes them something between a set of quick-sheets and
+a full blown manual.
+
+Each PDF file holds a table that list commands related to a specific topic and
+holds overview above a list of rows on:
+
+#. The command name with several hyperlinks to the related section of the
+   GNU Emacs manuals or other appropriate resource.
+#. The key bindings for that command including:
+
+   - the standard Emacs key bindings,
+   - the bindings for integrated packages,
+   - the bindings specific to PEL.
+
+#. The Emacs Lisp function form for the command, with the function name in
+   bold and the arguments in Emacs help style.
+#. A description of the command, with lots of the text taken directly from
+   Emacs help for what relates to the interactive use of the function but also
+   with extra notes and references.
+
+Several of these documents also a list of reference table with relevant topics.
+These references include hyperlinks to the relevant GNU
+Emacs manuals but also to several sites devoted to Emacs including several
+demonstration videos hosted on various platforms.
+
+The tables are heavily marked up using colors and icons (actually Unicode
+character symbols) to highlight various concepts. For example key bindings that
+do not work when Emacs is running in terminal (TTY) mode are shown in
+orange, commands that require external Emacs package are shown in blue and use the
+package character (📦), etc...  The full list of conventions are listed in the
+`Document Legend`_ table.
+
+The list of tables follow below.
+As PEL evolves, it will cover more topics, more
+programming languages, major modes and will integrate with more of the external
+Emacs packages and more tables will describe how to use them.
+
+
+
+.. _doc/pdf github directory: https://github.com/pierre-rouleau/pel/tree/master/doc/pdf
+.. _pel-pdf-spreadsheet repo:   https://github.com/pierre-rouleau/pel-pdf-spreadsheet#readme
+
+.. ---------------------------------------------------------------------------
+
+PEL Setup Commands
+==================
+
+PEL provides several commands that control important aspect of Emacs
+behaviour.  They are described in the following sub-sections.
+
+
+Independent Customization for Terminal and Graphics Modes
+---------------------------------------------------------
+
+🚧 not written yet.  Coming Soon! 🚧
+
+Package Quickstart Mode for Emacs 27 and later
+----------------------------------------------
+
+🚧 not written yet.  Coming Soon! 🚧
+
+
+Normal Startup and Fast Startup Modes
+-------------------------------------
+
+Once you have installed and configured all external packages you need you may
+find that Emacs startup time has increased too much for your liking.  That
+will be the case if you use a large number of external Elpa-compliant packages
+because Emacs must process the autoloads package information inside each of
+the elpa directory and that takes time.  PEL uses several techniques to reduce
+Emacs startup time.  As the number of package used grows you these techniques
+may not be sufficient.
+
+To speed the startup further, PEL provides a fast-startup mode of operation.
+In that mode PEL bundles the Emacs Lisp code files of all single directory
+packages inside a single directory and calls this the pel-bundle *package*.
+Doing this reduces the number of packages Emacs see, reduces the length of
+Emacs load-path and reduces the startup time substantially.
+
+PEL provides the following 3 commands to deal with this:
+
+- **pel-setup-info**, bound to ``<f11> M-S ?``.  It displays the current
+  operation mode.
+- **pel-setup-fast**, bound to ``<f11> M-S f``.  This commands reorganizes
+  the content of your ``user-emacs-directory`` to bundle the elpa external
+  packages to provide a faster Emacs init startup time.  In this mode you
+  cannot add new external packages though.
+- **pel-setup-normal**, bound to ``<f11> M-S n``.  This command restores
+  the content of your ``user-emacs-directory`` the way it was, allowing you to
+  use Emacs as before and with the ability to add or remove external packages.
+
+These commands are described in the `Fast Startup PDF Sheet`_.
+
+The speedup you will experience depends on several factors:
+
+- One main factor is the number of Elpa-compliant packages that PEL can
+  bundle.  PEL will be able to bundle all those packages that put all their
+  files inside a single directory.  PEL will then build a single
+  pel-bundle-autoloads.el file and one pel-bundle-pkg.el for all of these
+  packages.  By doing so, and by adding extra code to make the whole thing
+  work, by delaying package initialization in the init.el file, PEL reduces
+  Emacs load-path and overall startup processing.
+
+- Another significant factor is the init.el code. The execution of
+  ``package-init`` must be delayed.  See the file `example/init/init-5.el`_
+  for a setup that properly supports PEL fast-startup.
+
+It's possible to reduce the startup time down such that benchmark-init report
+it to be 0.1 second, even with a relatively large number of external package.
+
+Speedup Examples
+~~~~~~~~~~~~~~~~
+
+
+238 external packages in about 0.1 second
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Startup time:
+
+  - with PEL in normal startup mode: about 0.6 second
+  - with PEL in fast startup mode:  about 0.1 second
+
+- Environment:
+
+  - 238 external packages.
+  - Computer: 2014 iMac computer with 4GHz Intel Core i7 CPU and Flash storage
+    memory running macOS Mojave.
+  - Emacs 26.3 running in terminal mode inside a macOS Terminal window running Bash.
+
+The following screen shots show the `benchmark-init`_ reports for Emacs
+running in this environment in normal startup mode and in fast-startup mode.
+
+Screen Shot #1: Emacs 26.3 in terminal mode using 238 external packages in
+normal mode exhibiting a 0.6 second startup:
+
+.. figure::  res/normal-startup-001.png
+   :scale: 50 %
+
+Screen Shot #2: With the same setup as above but now running under PEL's
+fast-startup operation mode: Emacs startup time is now around 0.1 second.
+
+.. figure::  res/fast-startup-001.png
+   :scale: 50 %
+
+.. _Fast Startup PDF Sheet: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/fast-startup.pdf
+
+.. ---------------------------------------------------------------------------
+
+PEL Initialization Command
+==========================
+
+🚧 not written yet.  Coming Soon! 🚧
+
+
+
+PEL Cleanup Command
+===================
+
+🚧 not written yet.  Coming Soon! 🚧
+
+.. ---------------------------------------------------------------------------
 
 PEL Convenience Features
 ========================
@@ -2746,7 +2974,7 @@ for ``pel-use-which-key``.  Set it to **t**.  The restart PEL by using
 ``M-x pel-init``.  PEL will download and install the `which-key`_ package
 and will activate it.
 
-.. _Hydra keys: https://github.com/abo-abo/hydra
+.. _Hydra keys: https://github.com/abo-abo/hydra#readme
 
 
 PEL Grep Support
@@ -5390,184 +5618,8 @@ The file provides the following features:
     window.
 
 
-..
-   -----------------------------------------------------------------------------
+.. ---------------------------------------------------------------------------
 
-
-PEL Key Bindings
-================
-
-PEL key bindings are mostly use function key prefixes.
-It currently uses the **F2**, **F6**, **F7**, **F8**, **F11** and **F12** keys
-as prefix keys.
-It also binds **F5** as the repeat key.
-
-PEL's main global prefix key is the **F11** key.  The **F12** key is also
-available in some major modes as described in the section titled
-`PEL Mode Sensitive Key-maps`_.
-
-All PEL key prefixes  are used for PEL key maps.  These all have names that
-start with ``pel:``.  The complete list of the prefixes is available inside the
-`PEL Key Maps PDF file`_.
-
-
-.. _PEL Key Maps PDF file: https://github.com/pierre-rouleau/pel/blob/master/doc/pdf/-pel-key-maps.pdf
-
-
-To see the list of PEL prefix keys inside Emacs, do one of the following:
-
-- Type the  prefix key (like **F11**) and then quickly **C-h**.  Emacs will open
-  a ``*Help*`` buffer and list the available keys under F11.
-- To open a local copy of the `PEL Key Maps PDF file`_ type **F11** followed by
-  **F1**.
-
-As described in the `Naming Conventions`_ section the names in the binding
-column that use the ``pel:`` prefix are sub key-maps.
-All PEL command functions use the prefix ``pel-``.
-
-
-PEL Mode Sensitive Key-maps
----------------------------
-
-The first element of the table in the previous section lists
-the ``<f11> SPC`` special prefix.
-It's the top key-map of all PEL mode sensitive key-maps.
-It has several sub-maps, once for each of the major mode explicitly supported by
-PEL.  Some of them are shown in the following table:
-
-=============================== ===========================================
-key                             binding
-=============================== ===========================================
-``<f11> SPC C``                 pel:for-C++
-``<f11> SPC D``                 pel:for-D
-``<f11> SPC L``                 pel:for-lisp
-``<f11> SPC c``                 pel:for-C
-``<f11> SPC g``                 pel:for-graphviz-dot
-``<f11> SPC l``                 pel:for-elisp
-``<f11> SPC p``                 pel:for-python
-``<f11> SPC r``                 pel:for-reST
-=============================== ===========================================
-
-
-If you are editing a buffer in one of the mode explicitly supported by PEL,
-the **F12** key is bound to the mode-specific prefix.
-For example inside a buffer using the *elisp-mode* major mode,
-typing ``<f12>`` is the same
-as typing ``<f11> SPC l``.
-Inside a buffer containing Python source code,
-typing ``<f12>`` is the same
-as typing ``<f11> SPC p``.
-
-When the current buffer is using the ``rst-mode``
-for `editing reStructuredText files`_,
-the **F12** key has the following bindings and more.
-
-=============================== ===========================================
-key                             binding
-=============================== ===========================================
-``<f12> .``                     **pel-rst-makelink**
-``<f12> g``                     **pel-rst-goto-ref-bookmark**
-``<f12> s``                     **pel-rst-set-ref-bookmark**
-=============================== ===========================================
-
-
-However, when the current buffer uses Emacs-Lisp mode for working on Emacs Lisp
-code,
-the **F12** key has the following, different, bindings.
-
-
-=============================== ===========================================
-key                             binding
-=============================== ===========================================
-``<f12> .``                     **pel-find-thing-at-point**
-``<f12> D``                     **toggle-debug-on-error**
-``<f12> a``                     pel:elisp-analyze
-``<f12> c``                     pel:elisp-compile
-``<f12> d``                     pel:elisp-debug
-``<f12> e``                     pel:elisp-eval
-``<f12> f``                     pel:elisp-function
-``<f12> i``                     **parinfer-auto-fix**
-``<f12> l``                     pel:elisp-lib
-``<f12> m``                     pel:elisp-mode
-=============================== ===========================================
-
-If you edit a reStructuredText file and want to use one of the commands
-available in the Emacs-Lisp key-map, then you can use the longer PEL key-map
-that uses the ``<f11> SPC l`` prefix.
-
-
-.. _editing reStructuredText files: `PEL reStructuredText Support Utilities`_
-
-Key Bindings Documentation
---------------------------
-
-PEL comes with a set of tables listing and describing:
-
-- the **standard GNU Emacs** commands and key bindings for a given
-  type of activity,
-- the commands and key bindings provided by PEL for the same type of activity,
-- the commands and key bindings for commands provided by external packages that
-  PEL supports and can download and install.
-
-These tables are inside PDF documents; the `PDF topic-oriented reference
-sheets`_.  They are listed in the `PEL Index PDF`_.
-
-Open PEL PDF files quickly from Emacs:
-
-   - PEL provides a set of key bindings that open you local copy of
-     the file (or the Github-hosted copy) inside most key prefixes.
-   - For example to open your local copy of the `Search and Replace`_ PDF file
-     that describes the search and replace features available under Emacs type
-     ``<f11> s <f1>``.  To open the same file but from the Github site prefix
-     these keys with ``C-u``.
-   - For topics such as `Narrowing`_ and `Navigation`_, that do not have a
-     specific PEL key map prefix, type ``<f11> ? p``
-     followed by the topic name or a portion of the name followed by tab to
-     activate Emacs completion, then hit return once you selected the topic.
-
-
-See the `PDF Documentation`_ section for more info on why these are PDF files.
-The format of these files makes them something between a set of quick-sheets and
-a full blown manual.
-
-Each PDF file holds a table that list commands related to a specific topic and
-holds overview above a list of rows on:
-
-#. The command name with several hyperlinks to the related section of the
-   GNU Emacs manuals or other appropriate resource.
-#. The key bindings for that command including:
-
-   - the standard Emacs key bindings,
-   - the bindings for integrated packages,
-   - the bindings specific to PEL.
-
-#. The Emacs Lisp function form for the command, with the function name in
-   bold and the arguments in Emacs help style.
-#. A description of the command, with lots of the text taken directly from
-   Emacs help for what relates to the interactive use of the function but also
-   with extra notes and references.
-
-Several of these documents also a list of reference table with relevant topics.
-These references include hyperlinks to the relevant GNU
-Emacs manuals but also to several sites devoted to Emacs including several
-demonstration videos hosted on various platforms.
-
-The tables are heavily marked up using colors and icons (actually Unicode
-character symbols) to highlight various concepts. For example key bindings that
-do not work when Emacs is running in terminal (TTY) mode are shown in
-orange, commands that require external Emacs package are shown in blue and use the
-package character (📦), etc...  The full list of conventions are listed in the
-`Document Legend`_ table.
-
-The list of tables follow below.
-As PEL evolves, it will cover more topics, more
-programming languages, major modes and will integrate with more of the external
-Emacs packages and more tables will describe how to use them.
-
-
-
-.. _doc/pdf github directory: https://github.com/pierre-rouleau/pel/tree/master/doc/pdf
-.. _pel-pdf-spreadsheet repo:   https://github.com/pierre-rouleau/pel-pdf-spreadsheet#readme
 
 
 .. _Abbreviations:                            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/abbreviations.pdf
@@ -6307,7 +6359,9 @@ First PEL would not exists without `GNU Emacs`_.
 Most of the text in the PDF documentation comes from Emacs own documentation,
 both from the code docstrings and from the Emacs manuals.
 
-PEL uses the following libraries distributed with GNU Emacs and several others:
+PEL uses the following libraries distributed with GNU Emacs and several others
+listed below.  The list is unfortunately incomplete as it grows continuously
+when PEL supports new packages.
 
 #. `bookmark    <https://github.com/emacs-mirror/emacs/blob/master/lisp/bookmark.el>`_
 #. `cc-vars     <https://github.com/emacs-mirror/emacs/blob/master/lisp/progmodes/cc-vars.el>`_
