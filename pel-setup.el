@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-05 14:31:34, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-05 15:34:45, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -368,7 +368,8 @@ are requested and if so check if they are setup properly.
 Report an error and list problems if there are any, otherwise display the
 current setup."
   (interactive)
-  (if pel-use-graphic-specific-custom-file-p
+  (if (and  (boundp 'pel-use-graphic-specific-custom-file-p)
+            pel-use-graphic-specific-custom-file-p)
       (let ((problems (pel-dual-environment-problems)))
         (if problems
             (user-error "\
