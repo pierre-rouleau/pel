@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-05 11:40:55, updated by Pierre Rouleau.
+:Modified: 2021-08-05 11:47:08, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1765,11 +1765,9 @@ PEL Key Bindings
 Emacs makes extensive use of `key prefixes`_.
 
 PEL key bindings mostly use function keys as key prefixes:
-the **F2**, **F6**, **F7**, **F8**, **F11** and **F12** keys
+the **F6**, **F7**, **F8**, **F11** and **F12** keys
 are all PEL prefix keys:
 
-- **F2** is used to jump to bookmarked locations when the ``pel-use-bm``
-  user-option is active.
 - **F6** is a prefix for some often used commands.
 - **F7** is used to access all PEL `Hydra heads`_.
 - **F8** is used as the prefix for the `Projectile Project Interaction
@@ -1781,7 +1779,11 @@ are all PEL prefix keys:
 - The **F12** key is also available in some major modes as described in the section titled
   `PEL Mode Sensitive Key-maps`_.
 
-PEL also binds the **F5** key as the repeat key.
+PEL also binds:
+
+- **F2**, used to jump to bookmarked locations when the ``pel-use-bm``
+  user-option is active.
+- **F5** as the repeat key.
 
 All PEL key prefixes are used for PEL key maps.  These all have names that
 start with ``pel:``.
