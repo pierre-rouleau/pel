@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-01 13:31:11, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-05 14:31:34, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -300,6 +300,16 @@ slash) or in file name (without the terminating slash) format."
 ;; Support for dual terminal/graphics mode customization
 ;; -----------------------------------------------------
 
+;; If you need independent customization for Emacs running in terminal (TTY)
+;; mode and in graphics mode, set `pel-use-graphic-specific-custom-file-p'
+;; inside your init.el file as described by file example/init-5.el .
+(defconst pel-used-with-independent-graphics-customization
+  (and (boundp 'pel-use-graphic-specific-custom-file-p)
+       pel-use-graphic-specific-custom-file-p)
+  "Set to t if PEL is used with terminal and graphics mode customization.
+Set to nil if only one customization file is used.
+Code must NOT modify this value!")
+
 (defun pel--dir-exists-p (dname)
   "Return t if DNAME exists and is a directory, nil if it does not exists.
 Raise a user-error if DNAME exists and is not a directory."
@@ -344,8 +354,34 @@ independent environments for terminal and graphics mode."
         (unless (file-directory-p g-elpa-complete-dname)
           (push (format "Is not a directory: %s" g-elpa-complete-dname) problems))
       (push (format "Directory missing : %s" g-elpa-complete-dname) problems))
+    (unless pel-used-with-independent-graphics-customization
+      (push (format "Please set pel-use-graphic-specific-custom-file-p to t \
+in OPTION A code inside the file %s" (locate-user-emacs-file "init.el"))
+            problems))
     (reverse problems)))
 
+;;-pel-autoload
+(defun pel-setup-info-dual-environment ()
+  "Display current PEL customization setup.
+Check two independent customization files for terminal/tty and graphics mode
+are requested and if so check if they are setup properly.
+Report an error and list problems if there are any, otherwise display the
+current setup."
+  (interactive)
+  (if pel-use-graphic-specific-custom-file-p
+      (let ((problems (pel-dual-environment-problems)))
+        (if problems
+            (user-error "\
+The file %s is requesting the use of dual tty/graphics customization.
+ However the following problem remain:\n - %s"
+                        (locate-user-emacs-file "init.el")
+                        (string-join problems "\n - "))
+          (message  "PEL is ready to use 2 independent customization files:
+ One for terminal/TTY: %s
+ One for graphics    : %s"
+                    (pel--adjusted-fname custom-file :force nil)
+                    (pel--adjusted-fname custom-file :force :for-graphic))))
+    (message "PEL is currently using a single customization file: %s" custom-file)))
 
 ;;-pel-autoload
 (defun pel-setup-dual-environment ()
@@ -473,17 +509,6 @@ When fast startup is not activated, this file must be deleted.")
 (defvar pel--setup-changed nil
   "Identifies that PEL setup has changed.
 Only set by `pel-setup-fast' or `pel-setup-normal'. Never cleared.")
-
-;; If you need independent customization for Emacs running in terminal (TTY)
-;; mode and in graphics mode, set `pel-use-graphic-specific-custom-file-p'
-;; inside your init.el file as described by file example/init-5.el .
-(defconst pel-used-with-independent-graphics-customization
-  (and (boundp 'pel-use-graphic-specific-custom-file-p)
-       pel-use-graphic-specific-custom-file-p)
-  "Set to t if PEL is used with terminal and graphics mode customization.
-Set to nil if only one customization file is used.
-Code must NOT modify this value!")
-
 
 ;; package-quickstart-refresh that support dual customization
 ;;  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

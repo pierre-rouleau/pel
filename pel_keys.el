@@ -1346,6 +1346,9 @@ can't bind negative-argument to C-_ and M-_"
 (define-pel-global-prefix pel:cfg-emacs     (kbd "<f11> <f2> E"))
 (define-pel-global-prefix pel:cfg-pel       (kbd "<f11> <f2> P"))
 
+(define-key pel:cfg "?" 'pel-setup-info-dual-environment)
+(define-key pel:cfg (kbd "M-d") 'pel-setup-dual-environment)
+
 (define-key pel:cfg "c" 'customize)
 (define-key pel:cfg "g" 'customize-group)
 (define-key pel:cfg "o" 'customize-option)
