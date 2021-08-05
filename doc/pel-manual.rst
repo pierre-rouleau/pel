@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-05 11:54:18, updated by Pierre Rouleau.
+:Modified: 2021-08-05 15:03:45, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1845,7 +1845,7 @@ the following commands to access which-key customization group:
 - ``<f11> ? <f3> 5``
 
 If the which-key_ package is not enabled, you can enable it by setting the
-`pel-use-which-key`` user-option to **t**.  You can access it by opening the
+``pel-use-which-key`` user-option to **t**.  You can access it by opening the
 customization buffer for help by typing the ``<f11> ? <f2>`` key sequence.
 
 Once set, it must be activated: execute ``pel-init`` by typing ``M-x pel-init
@@ -2018,16 +2018,16 @@ sheets`_.  They are listed in the `PEL Index PDF`_.
 
 Open PEL PDF files quickly from Emacs:
 
-   - PEL provides a set of key bindings that open you local copy of
-     the file (or the Github-hosted copy) inside most key prefixes.
-   - For example to open your local copy of the `Search and Replace`_ PDF file
-     that describes the search and replace features available under Emacs type
-     ``<f11> s <f1>``.  To open the same file but from the Github site prefix
-     these keys with ``C-u``.
-   - For topics such as `Narrowing`_ and `Navigation`_, that do not have a
-     specific PEL key map prefix, type ``<f11> ? p``
-     followed by the topic name or a portion of the name followed by tab to
-     activate Emacs completion, then hit return once you selected the topic.
+- PEL provides a set of key bindings that open you local copy of
+  the file (or the Github-hosted copy) inside most key prefixes.
+- For example to open your local copy of the `Search and Replace`_ PDF file
+  that describes the search and replace features available under Emacs type
+  ``<f11> s <f1>``.  To open the same file but from the Github site prefix
+  these keys with ``C-u``.
+- For topics such as `Narrowing`_ and `Navigation`_, that do not have a
+  specific PEL key map prefix, type ``<f11> ? p``
+  followed by the topic name or a portion of the name followed by tab to
+  activate Emacs completion, then hit return once you selected the topic.
 
 
 See the `PDF Documentation`_ section for more info on why these are PDF files.
