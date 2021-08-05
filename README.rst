@@ -173,7 +173,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _manual:
 .. _PEL manual:
 .. _PEL's Manual:               doc/pel-manual.rst
-.. _Key Bindings Documentation: doc/pel-manual.rst#key-bindings-documentation
+.. _Key Bindings Documentation: doc/pel-manual.rst#pel-key-bindings
 .. _PEL convenience features:   doc/pel-manual.rst#pel-convenience-features
 .. _PEL Customization:          doc/pel-manual.rst#pel-customization
 .. _Credits:                    doc/pel-manual.rst#credits
