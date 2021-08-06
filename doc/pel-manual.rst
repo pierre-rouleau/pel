@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-06 16:43:58, updated by Pierre Rouleau.
+:Modified: 2021-08-06 16:54:17, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1396,7 +1396,7 @@ But they can be modified easily using the terminal application preferences
 such as the Debian 10 Terminal Preference dialog shown below:
 
 .. figure:: res/debian-terminal-preference.png
-   :scale: 50 %
+   :scale: 25 %
 
 
 Scripts to Launch Emacs in Terminal mode
