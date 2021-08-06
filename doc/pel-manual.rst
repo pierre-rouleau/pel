@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-05 15:03:45, updated by Pierre Rouleau.
+:Modified: 2021-08-06 16:43:58, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2079,13 +2079,124 @@ PEL Setup Commands
 ==================
 
 PEL provides several commands that control important aspect of Emacs
-behaviour.  They are described in the following sub-sections.
+behaviour.  They are described in the following sub-sections and in the
+`Customization PDF`_.
 
 
 Independent Customization for Terminal and Graphics Modes
 ---------------------------------------------------------
 
-🚧 not written yet.  Coming Soon! 🚧
+Emacs can be used in terminal (TTY/termcap) mode and in graphics mode.
+Usually Emacs customization file is used in both modes.
+
+It may be quite useful to control the packages used by Emacs when it runs in
+terminal mode and use a different set of package when Emacs runs in graphics
+mode.  That way you use the mode most appropriate with the job and use only
+the packages required for each modes, reducing the Emacs startup time in each
+mode.
+
+PEL controls what is used by the Emacs customization file.
+The PEL installation instructions describe
+`how to create a file for Emacs' customization data`_ and
+`how to write a basic init.el file`_ that will support one custom file.
+
+PEL provides the ability to use 2 independent customization files and provides
+an example of important files that support dual customization:
+
+- `example/init/init-5.el`_ for all versions of Emacs, and
+- `example/init/early-init.el`_ that must be used for Emacs 27 and later when
+  its package quickstart feature is used.
+
+With those PEL can use two customization files:
+
+- One for terminal/TTY mode: ``~/.emacs.d/emacs-customization.el``
+- One for graphics mode: ``~/.emacs.d/emacs-customization-graphics.el``
+
+The name and location of these files can be modified; they can be controlled by
+the code in your init.el file, and if you are using Emacs 27 and later with
+the package quickstart feature you also need to set it in there as well.
+
+
+Check state of customization
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The command ``pel-setup-info-dual-environment``, bound to the ``<f11> <f2> ?``
+key sequence displays the name of the customization file or files used by PEL.
+If the symbol ``pel-use-graphic-specific-custom-file-p`` is set to **t**,
+requesting the use of two independent customization files it also checks if
+the environment is properly configured to support two independent
+customization files and reports all detected problems.
+
+
+Activate dual independent customization
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use the ``pel-setup-dual-environment`` command, bound to the ``<f11> <f2>
+M-d`` key sequence, to configure your Emacs environment to support two
+independent customization files.  The command will prepare all required files
+and directories.  It will then perform a final check and will report any
+remaining problem.
+
+Supporting two independent customization requires creating 2 sets files and
+directories for storing the Elpa-compliant packages, since PEL selects the
+active packages through customization: PEL uses the ``pel-use-...``
+user-options customization variable and their values are stored inside the
+customization files.
+
+PEL also support the fast-startup mode which also uses two directories to
+store the Elpa-compliant packages and a symlink to the one that is used.
+
+When properly setup for dual independent customization and for fast-startup
+support, the Emacs user directory (normally ``~/.emacs.d`` unless configured
+otherwise) contains the files and directories list in the following table.
+
+====================== =============================== =============================================
+For terminal/tty | all For graphics mode in dual mode  Description
+====================== =============================== =============================================
+emacs-customization.el emacs-customization-graphics.el Customization data file
+elpa                   elpa-graphics                   Symlink to complete or reduced directory
+elpa-complete/         elpa-complete-graphics/         Stores all Elpa packages in normal startup
+elpa-reduced/          elpa-reduced-graphics/          Stores reduced and pel-bundle in fast startup
+elpa-attic/            elpa-attic-graphics/            Stores Elpa-packages removed by pel-cleanup
+utils/                 utils-graphics/                 Stores non-Elpa external Emacs Lisp files
+utils-attic/           utils-attic-graphics/           Stores non-Elpa files removed by pel-cleanup
+====================== =============================== =============================================
+
+
+The first column identifies the file, symlink and directories used when Emacs
+operates normally (with no dual environment as it's normally the case for
+Emacs) or when it operates in terminal/TTY mode.
+
+The second column identifies the file, symlink and directories used when PEL
+is used in dual customization files and Emacs runs in graphics mode.
+
+When you first install PEL only some of what is identified in the first column
+is created, requested by the PEL installation instructions:
+
+- ``elpa``; the directory that stores the Elpa-compliant package directories.
+- ``utils``; the directory where single files from non-Elpa compliant packages are
+  stored.
+
+The ``pel-cleanup`` command creates the ``attic`` directories when it needs to
+remove packages from Emacs sight.
+
+If you want to use PEL fast startup mode, and execute the ``pel-setup-fast``
+command to activate it, PEL renames the ``elpa`` directory to
+``elpa-complete``, creates the ``elpa-reduced`` directory to hold the
+Elpa-compliant directories that have several sub-directories and the
+``pel-bundle`` sub-directory that holds the Emacs Lisp files of all  single
+directory packages.  Then PEL creates a symlink with the same ``elpa`` name
+and make it point to ``elpa-reduced``.  Later when the ``pel-setup-normal``
+command is used, the ``elpa`` symlink is made to point to the
+``elpa-complete`` directory.
+
+When dual independent customization is used the same set of file, symlink and
+directories are created for the graphics specific mode.  They all have the
+same name with the additional ``-graphics`` suffix.
+
+
+.. _how to create a file for Emacs' customization data: `Create a "~/.emacs.d/utils" directory`_
+.. _how to write a basic init.el file:                  `Create or Update your Emacs init.el file`_
 
 Package Quickstart Mode for Emacs 27 and later
 ----------------------------------------------
@@ -6615,6 +6726,8 @@ exhaustive list):
 .. _Transpose:                                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/transpose.pdf
 .. _Treemacs:                                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/treemacs.pdf
 .. _Undo, Redo, Repeat and Prefix Arguments:  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/undo-redo-repeat.pdf
+
+.. _Customization PDF:
 .. _User Option Customization:                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf
 .. _Web:                                      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/web.pdf
 .. _Whitespaces:                              https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/whitespaces.pdf
