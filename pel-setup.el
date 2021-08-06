@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-05 15:34:45, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-06 10:10:49, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -229,6 +229,8 @@
 (require 'pel-elpa)                     ; use: `pel-elpa-create-copies'
 ;;                                      ;      `pel-elpa-disable-pkg-deps-in'
 ;;                                      ;      `pel-elpa-package-alist-of-dir'
+;;                                      ;      `pel--adjust-path-for-graphics'
+;;                                      ;      `pel--adjusted-fname'
 (eval-when-compile (require 'subr-x))   ; use: `string-join'
 (require 'cus-edit)                     ; use: `custom-file'`
 
@@ -236,39 +238,6 @@
 ;;; Code:
 ;;
 
-;; Local utilities
-
-(defvar pel--adjust-path-for-graphics nil
-  "Force `pel--adjusted-fname' to adjust the paths for graphics Emacs.")
-
-(defun pel--adjusted-fname (fname &optional force for-graphics)
-  "Adjust FNAME to one corresponding to active Emacs mode.
-
-The active Emacs mode is identified by the value of the variable
-`pel--adjust-path-for-graphics' unless the optional FORCE
-argument is non-nil, in which case it is identified by the value
-of the optional FOR-GRAPHICS argument.
-
-PATH may or may not end with a directory separator slash.  Append
-\"-graphics\" to the name when a graphic mode specific directory
-must be used, otherwise return a string that does not end with
-\"-graphics\"."
-  (let ((isa-dirpath (directory-name-p fname))
-        (file-ext    (file-name-extension fname))
-        (path-name (file-name-sans-extension (directory-file-name fname)))
-        (for-graphics-env (if force
-                              for-graphics
-                            pel--adjust-path-for-graphics)))
-    (if for-graphics-env
-        (unless (pel-string-ends-with-p path-name "-graphics")
-          (setq path-name (concat path-name "-graphics")))
-      (when (pel-string-ends-with-p path-name "-graphics")
-        (setq path-name (substring path-name 0 -9))))
-    (when file-ext
-      (setq path-name (format "%s.%s" path-name file-ext)))
-    (if isa-dirpath
-        (file-name-as-directory path-name)
-      path-name)))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-copy-directory : copies a directory, skipping Unix socket files
