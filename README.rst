@@ -107,8 +107,11 @@ or `update it`_ [2]_ !
   - `PEL's Manual`_ describes PEL features in more details. See:
 
     - `How to install PEL`_,
-    - `PEL convenience features`_,
-    - `Key Bindings Documentation`_.
+    - `PEL setup commands`_ for `dual customization`_ and `fast startup mode`_,
+    - `PEL initialization command`_ and `PEL cleanup command`_,
+    - `PEL Customization`_,
+    - `PEL Key Bindings`_,
+    - `PEL convenience features`_.
 
 **Credits**
 
@@ -146,7 +149,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
          startup-time, see the `benchmark-init report for it <doc/res/normal-startup-001.png>`_
        - with 238 packages, in **fast startup** operation mode, benchmark-init
          reports about **0.1 second startup-time**, see the
-         `benchmark-init report for it <doc/res/fast-startup-001.png>`_.
+         `benchmark-init report for it faster one <doc/res/fast-startup-001.png>`_.
 
        It's possible to reduce this further by restricting the number of used
        package. This must be done in normal operation mode (as opposition to
@@ -173,7 +176,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _manual:
 .. _PEL manual:
 .. _PEL's Manual:               doc/pel-manual.rst
-.. _Key Bindings Documentation: doc/pel-manual.rst#pel-key-bindings
+.. _PEL Key Bindings:           doc/pel-manual.rst#pel-key-bindings
 .. _PEL convenience features:   doc/pel-manual.rst#pel-convenience-features
 .. _PEL Customization:          doc/pel-manual.rst#pel-customization
 .. _Credits:                    doc/pel-manual.rst#credits
@@ -198,6 +201,12 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _pel-pdf-spreadsheet repo:   https://github.com/pierre-rouleau/pel-pdf-spreadsheet#readme
 .. _example/init/init-5.el:     example/init/init-5.el
 .. _PDF topic-oriented reference sheets: doc/pdf
+.. _PEL setup commands:        doc/pel-manual.rst#pel-setup-commands
+.. _PEL initialization command: doc/pel-manual.rst#pel-initialization-command
+.. _PEL cleanup command:        doc/pel-manual.rst#pel-cleanup-command
+.. _PEL Customization:          doc/pel-manual.rst#pel-customization
+.. _dual customization:         doc/pel-manual.rst#independent-customization-for-terminal-and-graphics-modes
+.. _fast startup mode:          doc/pel-manual.rst#normal-startup-and-fast-startup-modes
 
 
 ..
