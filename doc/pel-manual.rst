@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-06 17:50:05, updated by Pierre Rouleau.
+:Modified: 2021-08-06 19:04:17, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2117,11 +2117,12 @@ the code in your init.el file, and if you are using Emacs 27 and later with
 the package quickstart feature you also need to set it in there as well.
 
 
-Check state of customization
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Check customization state
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The command ``pel-setup-info-dual-environment``, bound to the ``<f11> <f2> ?``
-key sequence displays the name of the customization file or files used by PEL.
+and to the ``<f11> ? e <f2>``
+key sequences, displays the name of the customization file or files used by PEL.
 If the symbol ``pel-use-graphic-specific-custom-file-p`` is set to **t**,
 requesting the use of two independent customization files it also checks if
 the environment is properly configured to support two independent
@@ -2223,7 +2224,7 @@ Emacs load-path and reduces the startup time substantially.
 
 PEL provides the following 3 commands to deal with this:
 
-- **pel-setup-info**, bound to ``<f11> M-S ?``.  It displays the current
+- **pel-setup-info**, bound to ``<f11> M-S ?`` and to ``<f11> ? e M-S`` key sequences.  It displays the current
   operation mode.
 - **pel-setup-fast**, bound to ``<f11> M-S f``.  This commands reorganizes
   the content of your ``user-emacs-directory`` to bundle the elpa external

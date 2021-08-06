@@ -4330,7 +4330,6 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 (define-key pel:help "f"  'which-function-mode)
 (define-key pel:help "p"  'pel-help-pdf-select)
 (define-key pel:help "P"  'pel-help-pdfs-dir)
-(define-key pel:help (kbd "M-S") 'pel-setup-info)
 
 (pel-autoload-file pel-help for:
                    pel-show-kill-ring
@@ -4421,6 +4420,8 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 ;; P
 ;; c l m p r s t u v x
 ;; C-p
+;; M-S
+;; <f2>
 
 (define-pel-global-prefix pel:emacs (kbd "<f11> ? e"))
 (define-key pel:emacs (kbd "C-p") #'list-processes)
@@ -4433,6 +4434,8 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
 (define-key pel:emacs "v" #'emacs-version)
 (define-key pel:emacs "x"  'pel-emacs-executable)
 (define-key pel:emacs "?"  'pel-package-info)
+(define-key pel:emacs (kbd "M-S") 'pel-setup-info)
+(define-key pel:emacs (kbd "<f2>") 'pel-setup-info-dual-environment)
 
 (global-set-key (kbd "<M-S-f9>")  'pel-show-init-time)
 
