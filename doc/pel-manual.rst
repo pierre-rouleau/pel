@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-06 19:04:17, updated by Pierre Rouleau.
+:Modified: 2021-08-06 19:40:02, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2331,9 +2331,14 @@ their corresponding `PEL use variable`_.  Then execute the
 
 If you want to get a report of what would be removed (and not remove anything)
 instead, then type something like ``C-u M-x pel-cleanup RET``.  This performs
-a ``pel-cleanup`` dry run. When you're OK
-with what is going to be remove, execute the real thing with``M-x pel-cleanup
-RET``.
+a ``pel-cleanup`` dry run and displays a report in the *pel-cleanup* buffer.
+Something like this:
+
+.. figure::  res/pel-cleanup-dry-run.png
+   :scale: 50 %
+
+When you're OK with what is going to be remove, execute the real thing with
+``M-x pel-cleanup RET``.
 
 Remember: no file is deleted, ``pel-cleanup`` moves them into the attic
 directory.  Later, you can copy them back into the elpa directory manually
