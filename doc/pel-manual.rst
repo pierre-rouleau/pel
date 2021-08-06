@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-06 16:54:17, updated by Pierre Rouleau.
+:Modified: 2021-08-06 17:30:11, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2293,14 +2293,65 @@ fast-startup operation mode: Emacs startup time is now around 0.1 second.
 PEL Initialization Command
 ==========================
 
-🚧 not written yet.  Coming Soon! 🚧
+When PEL is used, the init.el file calls the ``pel-init`` command after
+loading the Emacs customization file.  If PEL operates in normal startup mode
+the ``pel-init`` command downloads and installs any external package
+identified by one of the ``pel-use-`` user-option customize variable that is
+not yet installed.  It does not do it when PEL operates in fast startup mode.
 
+With PEL you add a supported package by setting the corresponding ``pel-use-``
+user-option customize variable, making sure the new value(s) is stored in the
+customization file, and then either:
+
+- execute ``pel-init`` by typing ``M-x pel-init RET``, or
+- restart Emacs.
+
+For more information on customization see:
+
+- `Customization PDF`_,
+- `PEL Configuration/Customization Support`_,
+- `PEL Customization`_.
 
 
 PEL Cleanup Command
 ===================
 
-🚧 not written yet.  Coming Soon! 🚧
+As you start using more and more external packages, you will notice that Emacs
+startup time increases.  PEL delays execution as much as possible, using the
+same techniques you will find in other packages such as the popular
+`use-package`_ and some other.  If these were not used Emacs startup time
+would be much longer.  But still, for a large number of packages Emacs startup
+time will still increase and that startup time might be noticeable.
+
+PEL provides the fast startup mode to help.  But you may also have installed
+several external packages you no longer need.  Identify those and reset to
+their corresponding ``pel-use-`` user-options.  Then execute the
+``pel-cleanup`` command to move the un-required packages out of the ``elpa`` and
+``utils`` directories and into their corresponding attic directories.
+
+If you want to get a report of what would be removed (and not remove anything)
+instead, then type something like ``C-u M-x pel-cleanup RET``.  This performs
+a ``pel-cleanup`` dry run. When you're OK
+with what is going to be remove, execute the real thing with``M-x pel-cleanup
+RET``.
+
+Remember: no file is deleted, ``pel-cleanup`` moves them into the attic
+directory.  Later, you can copy them back into the elpa directory manually
+before re-activating the corresponding ``pel-use-`` user-option and run
+``pel-init`` to activate them again.  Or just activate the ``pel-use-``
+user-option and run ``pel-init`` again to download a new copy.  This way you
+keep a copy of the old version of the package in the attic directory.  If
+something got broken you have the old one handy!
+
+When using the dual independent customization then you can reduce the number
+of packages used in terminal or graphics mode by identifying the ones used in
+each mode.
+
+See the list of important files in the section titled `Activate dual
+independent customization`_.
+
+It's also a good idea to place your customization file, the elpa and
+the attic directory under DVCS control.
 
 .. ---------------------------------------------------------------------------
 
