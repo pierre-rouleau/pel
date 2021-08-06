@@ -1,6 +1,6 @@
 ;;; pel-scroll.el --- PEL Window Scrolling Utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -156,17 +156,21 @@ Default N is 1 line."
 ;;-pel-autoload
 (defun pel-scroll-up (&optional n)
   "Scroll up 1 line: move text up (same direction as forward).
+
 Scrolling up is bringing text ahead into view.
 If N is specified it identifies a repetition count.
-If N is negative it means the other direction."
+If N is negative it means the other direction.
+This command prevents screen re-centering done by the low level
+scroll function."
   (interactive "P")
-  (let ((n (prefix-numeric-value n)))
+  (let ((n (prefix-numeric-value n))
+        ;; (scroll-conservatively 10000)
+        (scroll-step 1))    ; prevent screen re-centering by low level scroll
     (if (< n 0)
         (pel-scroll-down (abs n))
-      (if (not
-           (and pel-in-scroll-sync
-                (pel-scroll-up-all-insync :all n)))
-          (scroll-up n)))))
+      (unless (and pel-in-scroll-sync
+                   (pel-scroll-up-all-insync :all n))
+        (scroll-up n)))))
 
 ;; --
 
@@ -214,20 +218,32 @@ Default N is 1 line."
             (scroll-down n))))
       (select-window original-window))))
 
+;; TODO: in graphics mode on Emacs 26.3, I have seen the scroll-down and scroll-up by 1
+;;       do nothing, even after several calls.  I have never seen this behaviour on
+;;       Emacs in terminal mode (which I use much more often).
+;;       I tried to fix it by forcing scroll-conservatively but that did not
+;;       change anything.  I'd have to learn the low level Emacs scroll
+;;       control code, which is written in C to understand why it's sometimes
+;;       doing this.
+
 ;;-pel-autoload
 (defun pel-scroll-down (&optional n)
   "Scroll down 1 line: move text down (same direction as backwards).
+
 Scrolling down is bringing text behind into view.
 If N is specified it identifies a repetition count.
-If N is negative it means the other direction."
+If N is negative it means the other direction.
+This command prevents screen re-centering done by the low level
+scroll function."
   (interactive "P")
-  (let ((n (prefix-numeric-value n)))
+  (let ((n (prefix-numeric-value n))
+        ;; (scroll-conservatively 10000)
+        (scroll-step 1))     ; prevent screen re-centering by low level scroll
     (if (< n 0)
         (pel-scroll-up (abs n))
-      (if (not
-           (and pel-in-scroll-sync
-                (pel-scroll-down-all-insync :all n)))
-          (scroll-down n)))))
+      (unless (and pel-in-scroll-sync
+                   (pel-scroll-down-all-insync :all n))
+        (scroll-down n)))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-scroll)
