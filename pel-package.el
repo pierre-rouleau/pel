@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-27 09:52:32, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-06 14:27:08, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -195,23 +195,35 @@ Note that you can have several elpa directories if you set `package-user-dir'
 inside your init.el file.")
 
 (defconst pel-elpa-attic-dirpath  (file-name-as-directory
-                                   (expand-file-name "elpa-attic"
-                                                     user-emacs-directory))
+                                   (pel--adjusted-fname
+                                    (expand-file-name "elpa-attic"
+                                                      user-emacs-directory)
+                                    (and (boundp 'pel-use-graphic-specific-custom-file-p)
+                                         pel-use-graphic-specific-custom-file-p)
+                                    pel-emacs-is-graphic-p))
   "Absolute path of the user elpa-attic directory.
-PEL supports only ONE pel-attic directory, even when several Elpa
-directories are used.  This way all disabled package copies are
-stored in the same directory.
-You may want to put your elpa-attic directory under VCS control.")
+PEL supports a pel-attic directory for dual independent customization when
+it is requested as specified by the presence of `pel-use-graphic-specific-custom-file-p'
+symbol set to t.")
 
 (defconst pel-utils-dirpath (file-name-as-directory
-                             (expand-file-name pel-utils-dirname
-                                               user-emacs-directory))
-  "Absolute path of the PEL utils directory.")
+                             (pel--adjusted-fname
+                              (expand-file-name pel-utils-dirname
+                                                user-emacs-directory)
+                              (and (boundp 'pel-use-graphic-specific-custom-file-p)
+                                   pel-use-graphic-specific-custom-file-p)
+                              pel-emacs-is-graphic-p))
+  "Absolute path of the PEL utils directory.
+PEL supports a utils directory for dual independent customization when
+it is requested as specified by the presence of `pel-use-graphic-specific-custom-file-p'
+symbol set to t.")
 
 (defconst pel-utils-attic-dirpath
   (file-name-as-directory
-   (expand-file-name (concat pel-utils-dirname "-attic")
-                     user-emacs-directory))
+   (pel--adjusted-fname
+    (expand-file-name (concat pel-utils-dirname "-attic")
+                      user-emacs-directory)
+    :force pel-emacs-is-graphic-p))
   "Absolute path of the PEL utils-attic directory.")
 
 (defconst pel-required-packages '(popup)

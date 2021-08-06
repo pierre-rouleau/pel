@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-06 10:10:49, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-06 13:33:15, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -293,7 +293,7 @@ Return nil if no problems were found and all is OK, ready to use Emacs in
 independent environments for terminal and graphics mode."
   (let* ((custom-fname (pel--adjusted-fname custom-file :force nil))
          (g-custom-fname (pel--adjusted-fname custom-file
-                                              :force :for-graphic))
+                                              :force :for-graphics))
          (elpa-dpath (pel--adjusted-fname pel-elpa-dirpath :force nil))
          (elpa-dname (directory-file-name elpa-dpath))
          (g-elpa-dname (pel--adjusted-fname elpa-dname
@@ -301,7 +301,11 @@ independent environments for terminal and graphics mode."
          (elpa-complete-dname (pel-sibling-dirname pel-elpa-dirpath
                                                    "elpa-complete"))
          (g-elpa-complete-dname (pel--adjusted-fname elpa-complete-dname
-                                                     :force :for-graphic))
+                                                     :force :for-graphics))
+         (utils-dpath (pel--adjusted-fname pel-utils-dirpath
+                                           :force nil))
+         (g-utils-dpath (pel--adjusted-fname pel-utils-dirpath
+                                             :force :for-graphics))
          (problems nil))
     (unless (file-exists-p custom-fname)
       (push (format "File      missing : %s" custom-fname) problems))
@@ -323,11 +327,38 @@ independent environments for terminal and graphics mode."
         (unless (file-directory-p g-elpa-complete-dname)
           (push (format "Is not a directory: %s" g-elpa-complete-dname) problems))
       (push (format "Directory missing : %s" g-elpa-complete-dname) problems))
+    (if (file-exists-p utils-dpath)
+        (unless (file-directory-p utils-dpath)
+          (push (format "Is not a directory: %s" utils-dpath) problems))
+      (push (format "Directory missing : %s" utils-dpath) problems))
+    (if (file-exists-p g-utils-dpath)
+        (unless (file-directory-p g-utils-dpath)
+          (push (format "Is not a directory: %s" g-utils-dpath) problems))
+      (push (format "Directory missing : %s" g-utils-dpath) problems))
     (unless pel-used-with-independent-graphics-customization
       (push (format "Please set pel-use-graphic-specific-custom-file-p to t \
 in OPTION A code inside the file %s" (locate-user-emacs-file "init.el"))
             problems))
     (reverse problems)))
+
+(defun pel--create-dir (gdname dname name )
+  "Copy GDNAME to DNAME which abbreviates to NAME unless it exists.
+Return a list of performed actions."
+  (let ((completed-actions nil)
+        (dpath (file-name-as-directory dname)))
+    (unless (pel--dir-exists-p gdname)
+      (if (pel--dir-exists-p dname)
+          (progn
+            (pel-copy-directory dname gdname)
+            (push (format "Copied %s to %s" dname gdname) completed-actions))
+        (if (pel--dir-exists-p dpath)
+            (progn
+              (pel-copy-directory dpath gdname)
+              (push (format "Copied %s to %s" dpath gdname) completed-actions))
+          (user-error "Can't find %s directory.  Looked for:\n- %s\n- %s"
+                      name dname dpath))))
+    completed-actions))
+
 
 ;;-pel-autoload
 (defun pel-setup-info-dual-environment ()
@@ -341,16 +372,19 @@ current setup."
             pel-use-graphic-specific-custom-file-p)
       (let ((problems (pel-dual-environment-problems)))
         (if problems
-            (user-error "\
+            (let ((problem-count (length problems)))
+              (user-error "\
 The file %s is requesting the use of dual tty/graphics customization.
- However the following problem remain:\n - %s"
-                        (locate-user-emacs-file "init.el")
-                        (string-join problems "\n - "))
+ However the following %s %s:\n - %s"
+                          (locate-user-emacs-file "init.el")
+                          (pel-count-string problem-count "problem" nil :no-count-for-1)
+                          (pel-pluralize problem-count "remains" "remain")
+                          (string-join problems "\n - ")))
           (message  "PEL is ready to use 2 independent customization files:
  One for terminal/TTY: %s
  One for graphics    : %s"
                     (pel--adjusted-fname custom-file :force nil)
-                    (pel--adjusted-fname custom-file :force :for-graphic))))
+                    (pel--adjusted-fname custom-file :force :for-graphics))))
     (message "PEL is currently using a single customization file: %s" custom-file)))
 
 ;;-pel-autoload
@@ -382,7 +416,7 @@ more information."
  mode? ")
     (let* ((custom-fname (pel--adjusted-fname custom-file :force nil))
            (g-custom-fname (pel--adjusted-fname custom-file
-                                                :force :for-graphic))
+                                                :force :for-graphics))
            (elpa-dpath (pel--adjusted-fname pel-elpa-dirpath :force nil))
            (elpa-dname (directory-file-name elpa-dpath))
            (g-elpa-dname (pel--adjusted-fname elpa-dname
@@ -390,7 +424,11 @@ more information."
            (elpa-complete-dname (pel-sibling-dirname pel-elpa-dirpath
                                                      "elpa-complete"))
            (g-elpa-complete-dname (pel--adjusted-fname elpa-complete-dname
-                                                       :force :for-graphic))
+                                                       :force :for-graphics))
+           (utils-dname (pel--adjusted-fname (directory-file-name pel-utils-dirpath)
+                                             :force nil))
+           (g-utils-dname (pel--adjusted-fname (directory-file-name pel-utils-dirpath)
+                                               :force :for-graphics))
            (completed-actions nil))
       ;;
       ;; Create a custom-file for graphics mode unless it already exists.
@@ -404,24 +442,14 @@ more information."
                       custom-fname)))
       ;;
       ;; Create a elpa directory for graphics mode unless it already exists.
-      (unless (pel--dir-exists-p g-elpa-complete-dname)
-        (if (pel--dir-exists-p elpa-complete-dname)
-            (progn
-              (pel-copy-directory elpa-complete-dname g-elpa-complete-dname)
-              (push (format "Copied %s to %s"
-                            elpa-complete-dname g-elpa-complete-dname)
+      (setq completed-actions
+            (append (pel--create-dir g-elpa-complete-dname elpa-complete-dname "elpa")
                     completed-actions))
-          (if (pel--dir-exists-p elpa-dpath)
-              (progn
-                (pel-copy-directory elpa-dpath g-elpa-complete-dname)
-                (push (format "Copied %s to %s"
-                              elpa-dpath g-elpa-complete-dname)
-                      completed-actions))
-            (user-error "Can't find elpa directory.  Looked for:
-- %s
-- %s"
-                        elpa-complete-dname
-                        elpa-dpath))))
+      ;;
+      ;; Create the utils for graphics mode unless it already exists.
+      (setq completed-actions
+            (append (pel--create-dir g-utils-dname utils-dname "utils")
+                    completed-actions))
       ;;
       ;; Rename the elpa directory to elpa-complete unless it's already done
       (when (and (file-exists-p elpa-dname)
