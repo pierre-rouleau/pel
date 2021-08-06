@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-06 17:30:11, updated by Pierre Rouleau.
+:Modified: 2021-08-06 17:50:05, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2295,11 +2295,10 @@ PEL Initialization Command
 
 When PEL is used, the init.el file calls the ``pel-init`` command after
 loading the Emacs customization file.  If PEL operates in normal startup mode
-the ``pel-init`` command downloads and installs any external package
-identified by one of the ``pel-use-`` user-option customize variable that is
-not yet installed.  It does not do it when PEL operates in fast startup mode.
+the ``pel-init`` command downloads and installs any un-installed external package
+identified by the activated `PEL use variable`_ .
 
-With PEL you add a supported package by setting the corresponding ``pel-use-``
+With PEL you add a supported package by setting the corresponding `PEL use variable`_
 user-option customize variable, making sure the new value(s) is stored in the
 customization file, and then either:
 
@@ -2325,7 +2324,7 @@ time will still increase and that startup time might be noticeable.
 
 PEL provides the fast startup mode to help.  But you may also have installed
 several external packages you no longer need.  Identify those and reset to
-their corresponding ``pel-use-`` user-options.  Then execute the
+their corresponding `PEL use variable`_.  Then execute the
 ``pel-cleanup`` command to move the un-required packages out of the ``elpa`` and
 ``utils`` directories and into their corresponding attic directories.
 
@@ -2337,9 +2336,9 @@ RET``.
 
 Remember: no file is deleted, ``pel-cleanup`` moves them into the attic
 directory.  Later, you can copy them back into the elpa directory manually
-before re-activating the corresponding ``pel-use-`` user-option and run
-``pel-init`` to activate them again.  Or just activate the ``pel-use-``
-user-option and run ``pel-init`` again to download a new copy.  This way you
+before re-activating the corresponding `PEL use variable`_ and run
+``pel-init`` to activate them again.  Or just activate the `PEL use variable`_
+and run ``pel-init`` again to download a new copy.  This way you
 keep a copy of the old version of the package in the attic directory.  If
 something got broken you have the old one handy!
 
@@ -2352,6 +2351,149 @@ independent customization`_.
 
 It's also a good idea to place your customization file, the elpa and
 the attic directory under DVCS control.
+
+.. _PEL use variable: `PEL Use Variables`_
+
+.. ---------------------------------------------------------------------------
+
+PEL Customization
+=================
+
+PEL is customized by using the `Emacs easy customization`_ system.
+PEL controls the activation of external packages and their key bindings
+via a set of customize
+variables that have names that start with ``pel-use-``.  They are listed in the
+next section.
+
+To customize PEL:
+
+#. Decide where you want to store the persistent customization information.
+
+   - By default it is stored inside your Emacs init file.
+     If this is good for you, then continue to next step.
+   - You may want to store it inside a separate file, to decouple it from your
+     Emacs initialization if you use several environments or computers and
+     even allow the use of *several* customization files selected by your init.el
+     logic based on some criteria you may have, keeping these configurations
+     isolated from each other.
+
+     For example if your Emacs initialization file is
+     ``"~/.emacs.d/init.el"`` you may want to store the customization
+     inside the same directory and place it in
+     ``"~/.emacs.d/emacs-customization.el"``.
+     To do so add the following Emacs Lisp code inside your
+     init.el file:
+
+     .. code:: elisp
+
+               (setq custom-file "~/.emacs.d/emacs-customization.el")
+               (load custom-file)
+
+#. If you want PEL to start automatically when Emacs starts, then add
+   the following code, which must be located **after** the code
+   loading the customization data (if any):
+
+   .. code:: elisp
+
+             (require 'pel)
+             (pel-init)
+
+   - With the above code, PEL will start when Emacs starts and do the following:
+
+     - It will activate its main key bindings using the **F2**, **F5**, **F6**,
+       **F7** (if ``pel-use-hydra`` is set to **t**), **F11** and **F12** keys.
+       See the `PEL Key Bindings`_ section for more info.
+     - It will **not** download or activate any other package.
+
+       - It will only do that if you change PEL's customization and re-run
+         ``pel-init`` either manually or by restarting Emacs.
+
+#. Once the location of the customization information is identified,
+   that you have decided whether to have PEL started automatically
+   or not, just start Emacs.
+#. Customizing PEL depends on whether ``pel-init`` was run:
+
+   - If you ``pel-init`` was already executed, go to next step.
+   - If you want to play it safe and did not yet run ``pel-init``
+     then you must load pel-options:
+
+     - type the following: ``M-x load-library``.
+     - at the prompt, type: ``pel-options`` and hit the return key.
+
+#. Execute the Emacs customize command by typing: ``M-x customize``
+#. This will open the ``*Customize Apropos*`` buffer.
+#. Inside that buffer, move point to the search field and
+   search for the Pel group by typing ``Pel$`` inside the search
+   field and hitting the Search button.
+#. Emacs will show the *Pel Group*.
+
+   - Currently, the *Pel group* has the following subgroups:
+
+     - *Pel Identification*
+     - *Pel Kbmacro*
+     - *Pel Package Use*
+     - *Pel Text Insert*
+
+   To select the packages you want PEL to use select the *Pel Package Use*
+   subgroup.
+   This is the root of another set of subgroups, organized by topics.
+   These define a set of customization variables that activate the features either
+   provided by PEL code or provided by other packages which PEL uses.
+   All of these variables have a name that begin with the ``pel-use-`` prefix.
+   The list of these variables is available below in `PEL Use Variables`_.
+
+#. Select the *Pel Package Use* subgroup, then the subgroup that interests you
+   and activate the feature that you want to use by setting the corresponding
+   ``pel-use-`` variable to **t**.
+#. Save and apply you new settings.
+#. Restart PEL by either executing ``M-x pel-init`` or by restarting Emacs and
+   then executing ``M-x pel-init`` (unless it is already executed in you Emacs
+   init file).
+
+**A Faster Way**
+
+Once PEL is properly installed, there is a much quicker way to do all of this:
+
+- Use use the keys identified in the section
+  `PEL Configuration/Customization Support`_ to configure any
+  of the Emacs and PEL features.
+- Then execute ``pel-init`` or restart Emacs.
+
+PEL Use Variables
+-----------------
+
+PEL controls activation of packages via customization user option variables that
+have a name that starts with ``pel-use-``.  The number of these user option
+variables grows as PEL evolves.
+
+**Note**
+
+    If you prefer installing an external package yourself, instead of letting PEL
+    install it for you, install that package before setting the corresponding
+    ``pel--use-`` user option.
+
+To get the list of these user options, use Emacs completion when executing the
+``describe-symbol`` command: type ``<f1> o`` followed by ``pel-use-`` and the
+tab key.  Emacs will show the available list of user options that have a name
+that starts with ``pel-use-``.  It will look like this:
+
+The following table contains the list of the ``pel-use-`` user options
+currently available.
+
+.. image:: res/pel-use-completion.png
+
+If you search ``pel-use-`` in a customization buffer, Emacs will also list all
+corresponding user options in alphabetical order.
+
+.. image:: res/pel-use-cfg.png
+
+Also see the `Activate PEL Features - Customize PEL`_ section.
+
+
+.. _Elixir programming language: https://en.wikipedia.org/wiki/Elixir_(programming_language)
+.. _Julia Programming language:  https://en.wikipedia.org/wiki/Julia_(programming_language)
+.. _LFE (Lisp Flavored Erlang) programming language: https://en.wikipedia.org/wiki/LFE_(programming_language)
+.. _Emacs-libvterm vterm: https://github.com/akermu/emacs-libvterm
 
 .. ---------------------------------------------------------------------------
 
@@ -5783,148 +5925,6 @@ The file provides the following features:
 
 
 .. ---------------------------------------------------------------------------
-
-PEL Customization
-=================
-
-PEL is customized by using the `Emacs easy customization`_ system.
-PEL controls the activation of external packages and their key bindings
-via a set of customize
-variables that have names that start with ``pel-use-``.  They are listed in the
-next section.
-
-To customize PEL:
-
-#. Decide where you want to store the persistent customization information.
-
-   - By default it is stored inside your Emacs init file.
-     If this is good for you, then continue to next step.
-   - You may want to store it inside a separate file, to decouple it from your
-     Emacs initialization if you use several environments or computers and
-     even allow the use of *several* customization files selected by your init.el
-     logic based on some criteria you may have, keeping these configurations
-     isolated from each other.
-
-     For example if your Emacs initialization file is
-     ``"~/.emacs.d/init.el"`` you may want to store the customization
-     inside the same directory and place it in
-     ``"~/.emacs.d/emacs-customization.el"``.
-     To do so add the following Emacs Lisp code inside your
-     init.el file:
-
-     .. code:: elisp
-
-               (setq custom-file "~/.emacs.d/emacs-customization.el")
-               (load custom-file)
-
-#. If you want PEL to start automatically when Emacs starts, then add
-   the following code, which must be located **after** the code
-   loading the customization data (if any):
-
-   .. code:: elisp
-
-             (require 'pel)
-             (pel-init)
-
-   - With the above code, PEL will start when Emacs starts and do the following:
-
-     - It will activate its main key bindings using the **F2**, **F5**, **F6**,
-       **F7** (if ``pel-use-hydra`` is set to **t**), **F11** and **F12** keys.
-       See the `PEL Key Bindings`_ section for more info.
-     - It will **not** download or activate any other package.
-
-       - It will only do that if you change PEL's customization and re-run
-         ``pel-init`` either manually or by restarting Emacs.
-
-#. Once the location of the customization information is identified,
-   that you have decided whether to have PEL started automatically
-   or not, just start Emacs.
-#. Customizing PEL depends on whether ``pel-init`` was run:
-
-   - If you ``pel-init`` was already executed, go to next step.
-   - If you want to play it safe and did not yet run ``pel-init``
-     then you must load pel-options:
-
-     - type the following: ``M-x load-library``.
-     - at the prompt, type: ``pel-options`` and hit the return key.
-
-#. Execute the Emacs customize command by typing: ``M-x customize``
-#. This will open the ``*Customize Apropos*`` buffer.
-#. Inside that buffer, move point to the search field and
-   search for the Pel group by typing ``Pel$`` inside the search
-   field and hitting the Search button.
-#. Emacs will show the *Pel Group*.
-
-   - Currently, the *Pel group* has the following subgroups:
-
-     - *Pel Identification*
-     - *Pel Kbmacro*
-     - *Pel Package Use*
-     - *Pel Text Insert*
-
-   To select the packages you want PEL to use select the *Pel Package Use*
-   subgroup.
-   This is the root of another set of subgroups, organized by topics.
-   These define a set of customization variables that activate the features either
-   provided by PEL code or provided by other packages which PEL uses.
-   All of these variables have a name that begin with the ``pel-use-`` prefix.
-   The list of these variables is available below in `PEL Use Variables`_.
-
-#. Select the *Pel Package Use* subgroup, then the subgroup that interests you
-   and activate the feature that you want to use by setting the corresponding
-   ``pel-use-`` variable to **t**.
-#. Save and apply you new settings.
-#. Restart PEL by either executing ``M-x pel-init`` or by restarting Emacs and
-   then executing ``M-x pel-init`` (unless it is already executed in you Emacs
-   init file).
-
-**A Faster Way**
-
-Once PEL is properly installed, there is a much quicker way to do all of this:
-
-- Use use the keys identified in the section
-  `PEL Configuration/Customization Support`_ to configure any
-  of the Emacs and PEL features.
-- Then execute ``pel-init`` or restart Emacs.
-
-
-
-
-PEL Use Variables
------------------
-
-PEL controls activation of packages via customization user option variables that
-have a name that starts with ``pel-use-``.  The number of these user option
-variables grows as PEL evolves.
-
-**Note**
-
-    If you prefer installing an external package yourself, instead of letting PEL
-    install it for you, install that package before setting the corresponding
-    ``pel--use-`` user option.
-
-To get the list of these user options, use Emacs completion when executing the
-``describe-symbol`` command: type ``<f1> o`` followed by ``pel-use-`` and the
-tab key.  Emacs will show the available list of user options that have a name
-that starts with ``pel-use-``.  It will look like this:
-
-The following table contains the list of the ``pel-use-`` user options
-currently available.
-
-.. image:: res/pel-use-completion.png
-
-If you search ``pel-use-`` in a customization buffer, Emacs will also list all
-corresponding user options in alphabetical order.
-
-.. image:: res/pel-use-cfg.png
-
-Also see the `Activate PEL Features - Customize PEL`_ section.
-
-
-.. _Elixir programming language: https://en.wikipedia.org/wiki/Elixir_(programming_language)
-.. _Julia Programming language:  https://en.wikipedia.org/wiki/Julia_(programming_language)
-.. _LFE (Lisp Flavored Erlang) programming language: https://en.wikipedia.org/wiki/LFE_(programming_language)
-.. _Emacs-libvterm vterm: https://github.com/akermu/emacs-libvterm
 
 
 
