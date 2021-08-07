@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-07 18:02:28, updated by Pierre Rouleau.
+:Modified: 2021-08-07 18:21:02, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -281,11 +281,11 @@ The fully detailed instructions are described in the following sections:
 #. Optional: `Add Support for Fast Startup`_.
 #. Optional: `Add Support for Independent Customization of Graphics and
    Terminal based Emacs`_.
-#. Optional: `Add Support for Package Quickstart for Emacs 27 and later`_
-#. Optional: `Create command line shortcuts for Emacs`_
+#. Optional: `Add Support for Package Quickstart for Emacs 27 and later`_.
+#. Optional: `Create command line shortcuts for Emacs`_.
+#. `Further PEL Configuration`_.
 #. `Activate PEL Features - Customize PEL`_.
-#. `Further PEL Configuration`_
-#. `Create command line shortcuts for Emacs`_
+#. Optionally, `create command line shortcuts for Emacs`_.
 
 Detailed instructions for the above steps are written in the following sections.
 
@@ -1033,9 +1033,9 @@ Perform these extra steps to increase the performance of Emacs and PEL:
 
 At this point, continue to the next sections:
 
-#. `Further PEL Configuration`_
+#. `Further PEL Configuration`_.
 #. `Activate PEL Features - Customize PEL`_.
-#. `Create command line shortcuts for Emacs`_
+#. Optionally, `create command line shortcuts for Emacs`_.
 
 
 .. ---------------------------------------------------------------------------
