@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-06 19:40:02, updated by Pierre Rouleau.
+:Modified: 2021-08-07 15:25:01, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2368,8 +2368,8 @@ PEL Customization
 PEL is customized by using the `Emacs easy customization`_ system.
 PEL controls the activation of external packages and their key bindings
 via a set of customize
-variables that have names that start with ``pel-use-``.  They are listed in the
-next section.
+variables that have names that start with ``pel-use-``, the `PEL use variables`_.
+They are described in the next section.
 
 To customize PEL:
 
@@ -2489,7 +2489,8 @@ currently available.
 .. image:: res/pel-use-completion.png
 
 If you search ``pel-use-`` in a customization buffer, Emacs will also list all
-corresponding user options in alphabetical order.
+corresponding user options in alphabetical order. The following screen shot
+shows the buffer split in 2 windows synchronized with the follow-mode:
 
 .. image:: res/pel-use-cfg.png
 
