@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-07 15:25:01, updated by Pierre Rouleau.
+:Modified: 2021-08-07 18:02:28, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -128,8 +128,16 @@ process.
 .. _Mozilla's browser comparison: https://www.mozilla.org/en/firefox/browsers/compare/
 .. _PCMag:                     https://www.pcmag.com/picks/chrome-edge-firefox-opera-or-safari-which-browser-is-best
 .. _PDF topic-oriented reference sheets: pdf
+.. _Mozilla Firefox: https://en.wikipedia.org/wiki/Firefox
 
-.. [#firefox] In 2021 Firefox is a highly rated web browser.  See the
+.. [#firefox] I highly recommend the `Mozilla Firefox`_ browser.  Firefox
+              version 78 or later renders the PDF files in the browser window
+              by default, a *very* useful feature when browsing PEL PDF files.
+              PEL provides a user-option (``pel-browser-used``) to force the
+              use of Firefox to open PEL PDF files even when you use another
+              browser as your default browser for that reason.
+
+              In 2021 Firefox is a highly rated web browser.  See the
               following articles:
 
               - `Tech Radar`_ (Firefox is their best overall)
@@ -225,7 +233,7 @@ Most PEL files are listed in each of the corresponding
 `PEL Convenience Features`_ section but the manual is not yet complete and
 will also evolve over time.
 
-.. _override them: `To override or change PEL key bindings`_
+.. _override them: `Override or change PEL key bindings`_
 .. _PEL features:  `PEL Convenience Features`_
 
 
@@ -276,7 +284,7 @@ The fully detailed instructions are described in the following sections:
 #. Optional: `Add Support for Package Quickstart for Emacs 27 and later`_
 #. Optional: `Create command line shortcuts for Emacs`_
 #. `Activate PEL Features - Customize PEL`_.
-#. `Further PEL Customization`_
+#. `Further PEL Configuration`_
 #. `Create command line shortcuts for Emacs`_
 
 Detailed instructions for the above steps are written in the following sections.
@@ -1025,108 +1033,14 @@ Perform these extra steps to increase the performance of Emacs and PEL:
 
 At this point, continue to the next sections:
 
+#. `Further PEL Configuration`_
 #. `Activate PEL Features - Customize PEL`_.
-#. `Further PEL Customization`_
 #. `Create command line shortcuts for Emacs`_
+
 
 .. ---------------------------------------------------------------------------
 
-
-Activate PEL Features - Customize PEL
--------------------------------------
-
-Once PEL is built, you can run Emacs and select the packages you want to use by
-customizing Emacs and setting the PEL user options to activate the packages you
-want to use.
-
-There are several ways to customize PEL and key sequences to access the
-various customization buffers.
-
-The easiest way at first - use the PEL customization tree
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-At first, the easiest way to learn PEL customization of various features is to
-use the customization browser on PEL tree.  You can then inspect each group
-one by one and activate what you want to use.
-
-To do that, type ``<f11> <f2> P B`` or type ``M-x pel-browse-pel``.
-This will open the customization tree at to root of PEL.
-
-Open another window side by side with ``C-x 3`` and select one option to
-customize inside it.  You can continue to use the other window to browse the
-customization tree and go over all features that PEL can activate.
-
-Here's a screen capture of that activity:
-
-
-.. figure:: res/pel-start-customizing.png
-   :scale: 50 %
-
-
-Access PEL Customization Root
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Later you may want to access the PEL customization buffer from the top.
-One way to quickly gain access to PEL customization group inside Emacs is to
-execute the ``pel-cfg`` command by typing the ``<f11> <f2> P !`` key sequence.
-When running Emacs in graphics mode, you'll see something like this:
-
-
-.. figure:: res/pel-cfg.png
-   :scale: 50 %
-
-Emacs opens a buffer in ``Custom-mode`` and shows the top level of PEL
-configuration.  PEL has a large tree of customization groups, each holding
-several customization user options variables.
-
-All PEL package control user options have a name that starts with ``pel-use-``
-and they are part of the ``pel-package-use`` customization group.  If you select
-that group Emacs will open it and you will see something like this:
-
-.. figure:: res/pel-cfg-package.png
-   :scale: 50 %
-
-It shows the top level group for different types of packages, grouped by
-functionality type.
-
-If you want to see all ``pel-use-`` variables, you can also type ``pel-use-`` in
-the field to the right of the **Search** button and press that button.  Emacs
-will list all ``pel-use-`` user option variables by alphabetical order, as shown
-below.  Set the ones you want to activate.  Then save your configuration and
-restart Emacs.
-
-The following show a lot of options **on**.  Most of them are turned
-off by default when you first get PEL.  Turned them on, save the customization
-and restart Emacs to activate them.  When you restart Emacs, some more packages
-might be automatically downloaded when required.
-
-Note:  In Emacs Lisp the value **t**, is the symbol for truth and **nil** is
-used for the empty list and represent falsehood.
-
-.. figure:: res/pel-cfg-all-use.png
-   :scale: 50 %
-
-Now you are done! 😀
-
-You can repeat the operation several times.  If you saved the customization, you
-can exit Emacs: the new features will be available the next time you start it.
-
-You can also see the following sections for some extra customization and
-optimizations.
-
-See section `PEL Use Variables`_ for more info on quickly listing all
-``pel-use`` user option variables and `Key Binding Help`_ for a quick trick to
-see what's available at the keyboard.
-
-Also note that PEL includes links to the PDF *reference* sheet files relevant
-to the PEL customization group.  You can open your local PDF file by clicking on
-the button to the right of the "*See also*" note as shown here:
-
-.. figure:: res/pel-link-to-pdf.png
-   :scale: 30 %
-
-
-Further PEL Customization
+Further PEL Configuration
 -------------------------
 
 The following sections describe optional optimizations or modifications
@@ -1322,10 +1236,180 @@ user-mail-address                        Your email address.
                                          PEL uses it in various file skeletons.
 ======================================== ======================================
 
+
+.. ---------------------------------------------------------------------------
+
+PEL Customization
+=================
+
+With PEL installed and built, and with the `customization files identified`_ as
+described in the installation procedure above you can run Emacs and select the
+packages you want to use by customizing Emacs and setting the PEL user options
+to activate the packages you want to use.
+
+.. _customization files identified: `Create the emacs-customization.el file`_.
+
+
+Activate PEL Features - Customize PEL
+-------------------------------------
+
+You customize PEL by using the flexible `Emacs easy customization`_ system.  PEL
+controls the activation of external packages and their key bindings via a set
+of customize variables (also called *user options*) that have names that start
+with ``pel-use-``, the `PEL use variables`_.
+
+
+PEL Use Variables
+~~~~~~~~~~~~~~~~~
+
+PEL controls activation of packages via customization user option variables that
+have a name that starts with ``pel-use-``.  The number of these user option
+variables grows as PEL evolves.
+
+**Note**
+
+    If you prefer installing an external package yourself, instead of letting PEL
+    install it for you, install that package before setting the corresponding
+    ``pel--use-`` user option.
+
+To get the list of these user options, use Emacs completion when executing the
+``describe-symbol`` command: type ``<f1> o`` followed by ``pel-use-`` and the
+tab key.  Emacs will show the available list of user options that have a name
+that starts with ``pel-use-``.  It will look like this:
+
+The following table contains the list of the ``pel-use-`` user options
+currently available.
+
+.. figure:: res/pel-use-completion.png
+   :scale: 40 %
+
+If you search ``pel-use-`` in a customization buffer, Emacs will also list all
+corresponding user options in alphabetical order. The following screen shot
+shows the buffer split in 2 windows synchronized with the follow-mode:
+
+.. figure:: res/pel-use-cfg.png
+   :scale: 50 %
+
+.. _Elixir programming language: https://en.wikipedia.org/wiki/Elixir_(programming_language)
+.. _Julia Programming language:  https://en.wikipedia.org/wiki/Julia_(programming_language)
+.. _LFE (Lisp Flavored Erlang) programming language: https://en.wikipedia.org/wiki/LFE_(programming_language)
+.. _Emacs-libvterm vterm: https://github.com/akermu/emacs-libvterm
+
+There are several ways to customize PEL and key sequences to access the
+various customization buffers.
+
+With a global view - use the PEL customization tree
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+At first, the easiest way to learn PEL customization of various features is to
+use the customization browser on PEL tree.  You can then inspect each group
+one by one and activate what you want to use.
+
+To do that, type ``<f11> <f2> P B`` or type ``M-x pel-browse-pel``.
+This will open the customization tree at to root of PEL.  You can split the
+window into 4 vertical windows using ``C-x 3`` tree times, make them all the
+same size with the ``balance-window`` command bound to ``C-x +`` or with the
+PEL ``<f11> w s =`` key binding.  Use `Emacs follow-mode`_ on the 4 windows to
+make them all display the consecutive content of one buffer (the ``*Customize
+Browser*``).
+
+When you click on an option link, Emacs opens another buffer from where you
+can select the value for the customize variable (also called *user-option*).
+Make your selection and then click the **Apply and Save** button to register
+your selection inside the customization file.
+
+Here's a screen capture of that activity:
+
+
+.. figure:: res/pel-start-customizing.png
+   :scale: 25 %
+
+To learn more about Emacs customization, read the `Customization PDF`_ and the
+various documents identified by the links it contains.
+
+You can open that PDF via the ``<f11> ? p>`` key sequence.  This opens a
+prompt at the bottom of the Emacs window.  This prompt, like several other,
+supports tab-completion.  Type ``cust``, then the tab key which will complete
+it to ``customize`` then hit the return key to open the local copy of the PDF.
+Use the same key sequence with a `prefix command argument key`_ like ``C-u``
+or ``M--`` to open the PDF file inside your default or Firefox browser instead
+(see [#firefox]_).
+
+You can also open that specific PDF file with its dedicated PEL key sequence:
+``<f11> <f2> <f1>`` (and in the browser with something like ``C-u <f11> <f2>
+<f1>``.)
+
+
+.. _Emacs follow-mode: https://www.gnu.org/software/emacs/manual/html_node/emacs/Follow-Mode.html
+.. _prefix command argument key: https://www.gnu.org/software/emacs/manual/html_node/elisp/Prefix-Command-Arguments.html
+
+Access PEL Customization Root
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You may want to access the PEL customization buffer from the top.
+One way to quickly gain access to PEL customization group inside Emacs is to
+execute the ``pel-cfg`` command by typing the ``<f11> <f2> P !`` key sequence.
+When running Emacs in graphics mode, you'll see something like what is shown
+in the window in the top left corner of the following screen shot:
+
+
+.. figure:: res/pel-cfg.png
+   :scale: 25 %
+
+Emacs opens a buffer in ``Custom-mode`` and shows the top level of PEL
+configuration.  PEL has a large tree of customization groups, each holding
+several customization user options variables.
+
+All PEL package control user options have a name that starts with ``pel-use-``
+and they are part of the ``pel-package-use`` customization group.  If you select
+that group Emacs will open it and you will see something like this:
+
+.. figure:: res/pel-cfg-package.png
+   :scale: 50 %
+
+It shows the top level group for different types of packages, grouped by
+functionality type.
+
+If you want to see all ``pel-use-`` variables, you can also type ``pel-use-`` in
+the field to the right of the **Search** button and press that button.  Emacs
+will list all ``pel-use-`` user option variables by alphabetical order, as shown
+below.  Set the ones you want to activate.  Then save your configuration and
+restart Emacs.
+
+The following show a lot of options **on**.  Most of them are turned
+off by default when you first get PEL.  Turned them on, save the customization
+and restart Emacs to activate them.  When you restart Emacs, some more packages
+might be automatically downloaded when required.
+
+Note:  In Emacs Lisp the value **t**, is the symbol for truth and **nil** is
+used for the empty list and represent falsehood.
+
+.. figure:: res/pel-cfg-all-use.png
+   :scale: 50 %
+
+Now you are done! 😀
+
+You can repeat the operation several times.  If you saved the customization, you
+can exit Emacs: the new features will be available the next time you start it.
+
+You can also see the following sections for some extra customization and
+optimizations.
+
+See section `PEL Use Variables`_ for more info on quickly listing all
+``pel-use`` user option variables and `Key Binding Help`_ for a quick trick to
+see what's available at the keyboard.
+
+Also note that PEL includes links to the PDF *reference* sheet files relevant
+to the PEL customization group.  You can open your local PDF file by clicking on
+the button to the right of the "*See also*" note as shown here:
+
+.. figure:: res/pel-link-to-pdf.png
+   :scale: 30 %
+
 .. ---------------------------------------------------------------------------
 
 Create command line shortcuts for Emacs
----------------------------------------
+=======================================
 
 New Emacs users may be interested by command line commands to start Emacs in
 terminal (TTY) mode or graphics mode from a shell.  If so, read on.
@@ -1343,7 +1427,7 @@ worry about a clash with the `1970s E editor`_.
 .. _1970s E editor: https://en.wikipedia.org/wiki/E_(1970s_text_editor)
 
 Start Emacs in Terminal/TTY mode
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------
 
 Emacs can run directly in a terminal emulator application window to take
 advantage of the fact that in general, Emacs starts faster when running in
@@ -1351,7 +1435,7 @@ terminal (TTY) mode than when it runs in graphics mode.
 
 
 Extend available keys to Emacs running under a terminal emulator
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 However, several key combinations and `Emacs Modifier Keys`_ may not be available
@@ -1369,7 +1453,7 @@ The following sub-sections provide more information.
 
 
 Prepare Keyboard Support for Emacs on macOS Terminal
-++++++++++++++++++++++++++++++++++++++++++++++++++++
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The macOS provides the `Terminal built-in application`_.
 Several important keys used by PEL are lacking from the default Terminal key
@@ -1385,7 +1469,7 @@ See the `macOS-terminal-settings PDF`_ for more information.
 
 
 Prepare Keyboard Shortcuts on Linux Distributions
-+++++++++++++++++++++++++++++++++++++++++++++++++
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In general Linux-based terminal applications provide a larger number of key
 sequences by default.  However, several function keys, such as the **F11** key
@@ -1400,7 +1484,7 @@ such as the Debian 10 Terminal Preference dialog shown below:
 
 
 Scripts to Launch Emacs in Terminal mode
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Use the Emacs ``-nw`` command line option to start Emacs in terminal/TTY mode.
 
@@ -1453,7 +1537,7 @@ line, doing something like this:
           e *.c
 
 Launching graphics mode Emacs from a shell
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------------------------
 
 Under Unix-like Operating Systems like Linux and macOS when you run Emacs in
 graphics mode, Emacs may not get the complete environment variables that you get
@@ -1512,7 +1596,7 @@ line, doing something like this:
 
 
 On macOS
-~~~~~~~~
+--------
 
 Here's the provided code. Only 2 lines are required, the other lines are comments.
 
@@ -1586,7 +1670,7 @@ Here's the provided code. Only 2 lines are required, the other lines are comment
       # ----------------------------------------------------------------------------
 
 On Linux
-~~~~~~~~
+--------
 
 The code is similar on Linux, except that it uses ``emacs`` as the executable
 name.  Change it if your system uses something else or if you want to place
@@ -1645,89 +1729,6 @@ the absolute path.
       # ----------------------------------------------------------------------------
 
 .. _example/init/init-3.el: ../example/init/init-3.el
-
-Using benchmark-init
---------------------
-
-If you want to know the time each loaded file takes during Emacs initialization
-time you can use the benchmark-init_ package. This is not controlled by PEL
-because it must be launched as as early as possible inside your init.el file.
-
-To install it type ``M-x list-packages`` then hit the return key to get a list
-of all elpa-compliant packages. Search for ``benchmark-init``, select it and
-install it.  You can also type: ``M-x package-install benchmark-init``.
-
-After installing it, move the .el and .elc out of the ``benchmark-init-...``
-sub-directory of ``~/.emacs.d/elpa`` and copy them inside the
-``~/.emacs.d/utils`` directory.  Then remove the entire ``benchmark-init-...``
-directory from ``~/.emacs.d/elpa``.
-
-We don't want to add yet another package to the elpa directory.  That will
-slow down Emacs startup time.  By moving the code into PEL's utils directory
-Emacs will be able to find it faster and we don't add an extra directory.
-
-Then add the following code as close as possible to the top of your init.el file:
-
-.. code:: elisp
-
-  (require 'benchmark-init
-           (expand-file-name "~/.emacs.d/utils/benchmark-init"))
-  (add-hook 'after-init-hook 'benchmark-init/deactivate)
-
-This code is present but commented out inside the file
-`example/init/init-5.el as OPTION B`_.
-
-With the above code in your init.el file, you can then execute the PEL command
-``pel-show-init-time`` (or using the ``<M-S-f9>`` keystroke for it) Emacs will
-open 2 buffers and will show something like this:
-
-.. figure:: res/pel-benchmark.png
-   :scale: 50 %
-
-This is a snapshot taken on GNU Emacs running in terminal mode on a 2014 macOS
-computer with PEL running with 96 packages selected by customization giving 156
-lines inside the benchmark-init buffers.
-
-Here's another snapshot taken after installing PEL on Mint 20 Linux running
-inside Parallels Desktop VM under macOS host:
-
-.. figure:: res/pel-benchmark-mint20.png
-   :scale: 50 %
-
-The next time you run **pel-cleanup** while Emacs runs in normal startup mode,
-PEL will remove the benchmark-init files from ``~/.emacs.d/utils`` and place
-them into the ``~/.emacs.d/utils-attic`` where you can restore them when
-needed.
-
-.. _example/init/init-5.el as OPTION B: https://github.com/pierre-rouleau/pel/blob/master/example/init/init-5.el#L113
-
-.. ---------------------------------------------------------------------------
-
-To override or change PEL key bindings
---------------------------------------
-
-As of this release PEL key bindings and key prefixes are hard coded.
-If you want to change a key binding that PEL uses, you can define your own
-key bindings after the execution of ``pel-init``.  You can also change
-PEL prefix keys.
-
-The following code re-assign the **F6** key to ``undo`` and uses the **F9** key
-to be used as what PEL normally uses for **F6**:
-
-.. code:: elisp
-
-          (global-set-key (kbd "<f6>") 'undo)
-          (global-set-key (kbd ("<f9>") pel:f6)
-
-The `Function Keys Mappings PDF table`_ provides and overview of the way PEL uses
-the function keys.  See also the section titled `PEL Function Keys Bindings`_.
-
-Since PEL is using more keys over time, it might be difficult to change the
-bindings without affecting PEL's bindings.  If you have a specific request,
-please describe your request on the `PEL wiki`_, I'll take a look and see what I can do.
-
-.. _PEL wiki:                         https://github.com/pierre-rouleau/pel/wiki
-.. _Function Keys Mappings PDF table: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/keys-fn.pdf
 
 .. -----------------------------------------------------------------------------
 
@@ -2289,6 +2290,66 @@ fast-startup operation mode: Emacs startup time is now around 0.1 second.
 
 .. _Fast Startup PDF Sheet: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/fast-startup.pdf
 
+
+Measuring Emacs Startup Time
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Using benchmark-init
+^^^^^^^^^^^^^^^^^^^^
+
+If you want to know the time each loaded file takes during Emacs initialization
+time you can use the benchmark-init_ package. This is not controlled by PEL
+because it must be launched as as early as possible inside your init.el file.
+
+To install it type ``M-x list-packages`` then hit the return key to get a list
+of all elpa-compliant packages. Search for ``benchmark-init``, select it and
+install it.  You can also type: ``M-x package-install benchmark-init``.
+
+After installing it, move the .el and .elc out of the ``benchmark-init-...``
+sub-directory of ``~/.emacs.d/elpa`` and copy them inside the
+``~/.emacs.d/utils`` directory.  Then remove the entire ``benchmark-init-...``
+directory from ``~/.emacs.d/elpa``.
+
+We don't want to add yet another package to the elpa directory.  That will
+slow down Emacs startup time.  By moving the code into PEL's utils directory
+Emacs will be able to find it faster and we don't add an extra directory.
+
+Then add the following code as close as possible to the top of your init.el file:
+
+.. code:: elisp
+
+  (require 'benchmark-init
+           (expand-file-name "~/.emacs.d/utils/benchmark-init"))
+  (add-hook 'after-init-hook 'benchmark-init/deactivate)
+
+This code is present but commented out inside the file
+`example/init/init-5.el as OPTION B`_.
+
+With the above code in your init.el file, you can then execute the PEL command
+``pel-show-init-time`` (or using the ``<M-S-f9>`` keystroke for it) Emacs will
+open 2 buffers and will show something like this:
+
+.. figure:: res/pel-benchmark.png
+   :scale: 50 %
+
+This is a snapshot taken on GNU Emacs running in terminal mode on a 2014 macOS
+computer with PEL running with 96 packages selected by customization giving 156
+lines inside the benchmark-init buffers.
+
+Here's another snapshot taken after installing PEL on Mint 20 Linux running
+inside Parallels Desktop VM under macOS host:
+
+.. figure:: res/pel-benchmark-mint20.png
+   :scale: 50 %
+
+The next time you run **pel-cleanup** while Emacs runs in normal startup mode,
+PEL will remove the benchmark-init files from ``~/.emacs.d/utils`` and place
+them into the ``~/.emacs.d/utils-attic`` where you can restore them when
+needed.
+
+.. _example/init/init-5.el as OPTION B: https://github.com/pierre-rouleau/pel/blob/master/example/init/init-5.el#L113
+
 .. ---------------------------------------------------------------------------
 
 PEL Initialization Command
@@ -2359,148 +2420,6 @@ It's also a good idea to place your customization file, the elpa and
 the attic directory under DVCS control.
 
 .. _PEL use variable: `PEL Use Variables`_
-
-.. ---------------------------------------------------------------------------
-
-PEL Customization
-=================
-
-PEL is customized by using the `Emacs easy customization`_ system.
-PEL controls the activation of external packages and their key bindings
-via a set of customize
-variables that have names that start with ``pel-use-``, the `PEL use variables`_.
-They are described in the next section.
-
-To customize PEL:
-
-#. Decide where you want to store the persistent customization information.
-
-   - By default it is stored inside your Emacs init file.
-     If this is good for you, then continue to next step.
-   - You may want to store it inside a separate file, to decouple it from your
-     Emacs initialization if you use several environments or computers and
-     even allow the use of *several* customization files selected by your init.el
-     logic based on some criteria you may have, keeping these configurations
-     isolated from each other.
-
-     For example if your Emacs initialization file is
-     ``"~/.emacs.d/init.el"`` you may want to store the customization
-     inside the same directory and place it in
-     ``"~/.emacs.d/emacs-customization.el"``.
-     To do so add the following Emacs Lisp code inside your
-     init.el file:
-
-     .. code:: elisp
-
-               (setq custom-file "~/.emacs.d/emacs-customization.el")
-               (load custom-file)
-
-#. If you want PEL to start automatically when Emacs starts, then add
-   the following code, which must be located **after** the code
-   loading the customization data (if any):
-
-   .. code:: elisp
-
-             (require 'pel)
-             (pel-init)
-
-   - With the above code, PEL will start when Emacs starts and do the following:
-
-     - It will activate its main key bindings using the **F2**, **F5**, **F6**,
-       **F7** (if ``pel-use-hydra`` is set to **t**), **F11** and **F12** keys.
-       See the `PEL Key Bindings`_ section for more info.
-     - It will **not** download or activate any other package.
-
-       - It will only do that if you change PEL's customization and re-run
-         ``pel-init`` either manually or by restarting Emacs.
-
-#. Once the location of the customization information is identified,
-   that you have decided whether to have PEL started automatically
-   or not, just start Emacs.
-#. Customizing PEL depends on whether ``pel-init`` was run:
-
-   - If you ``pel-init`` was already executed, go to next step.
-   - If you want to play it safe and did not yet run ``pel-init``
-     then you must load pel-options:
-
-     - type the following: ``M-x load-library``.
-     - at the prompt, type: ``pel-options`` and hit the return key.
-
-#. Execute the Emacs customize command by typing: ``M-x customize``
-#. This will open the ``*Customize Apropos*`` buffer.
-#. Inside that buffer, move point to the search field and
-   search for the Pel group by typing ``Pel$`` inside the search
-   field and hitting the Search button.
-#. Emacs will show the *Pel Group*.
-
-   - Currently, the *Pel group* has the following subgroups:
-
-     - *Pel Identification*
-     - *Pel Kbmacro*
-     - *Pel Package Use*
-     - *Pel Text Insert*
-
-   To select the packages you want PEL to use select the *Pel Package Use*
-   subgroup.
-   This is the root of another set of subgroups, organized by topics.
-   These define a set of customization variables that activate the features either
-   provided by PEL code or provided by other packages which PEL uses.
-   All of these variables have a name that begin with the ``pel-use-`` prefix.
-   The list of these variables is available below in `PEL Use Variables`_.
-
-#. Select the *Pel Package Use* subgroup, then the subgroup that interests you
-   and activate the feature that you want to use by setting the corresponding
-   ``pel-use-`` variable to **t**.
-#. Save and apply you new settings.
-#. Restart PEL by either executing ``M-x pel-init`` or by restarting Emacs and
-   then executing ``M-x pel-init`` (unless it is already executed in you Emacs
-   init file).
-
-**A Faster Way**
-
-Once PEL is properly installed, there is a much quicker way to do all of this:
-
-- Use use the keys identified in the section
-  `PEL Configuration/Customization Support`_ to configure any
-  of the Emacs and PEL features.
-- Then execute ``pel-init`` or restart Emacs.
-
-PEL Use Variables
------------------
-
-PEL controls activation of packages via customization user option variables that
-have a name that starts with ``pel-use-``.  The number of these user option
-variables grows as PEL evolves.
-
-**Note**
-
-    If you prefer installing an external package yourself, instead of letting PEL
-    install it for you, install that package before setting the corresponding
-    ``pel--use-`` user option.
-
-To get the list of these user options, use Emacs completion when executing the
-``describe-symbol`` command: type ``<f1> o`` followed by ``pel-use-`` and the
-tab key.  Emacs will show the available list of user options that have a name
-that starts with ``pel-use-``.  It will look like this:
-
-The following table contains the list of the ``pel-use-`` user options
-currently available.
-
-.. image:: res/pel-use-completion.png
-
-If you search ``pel-use-`` in a customization buffer, Emacs will also list all
-corresponding user options in alphabetical order. The following screen shot
-shows the buffer split in 2 windows synchronized with the follow-mode:
-
-.. image:: res/pel-use-cfg.png
-
-Also see the `Activate PEL Features - Customize PEL`_ section.
-
-
-.. _Elixir programming language: https://en.wikipedia.org/wiki/Elixir_(programming_language)
-.. _Julia Programming language:  https://en.wikipedia.org/wiki/Julia_(programming_language)
-.. _LFE (Lisp Flavored Erlang) programming language: https://en.wikipedia.org/wiki/LFE_(programming_language)
-.. _Emacs-libvterm vterm: https://github.com/akermu/emacs-libvterm
 
 .. ---------------------------------------------------------------------------
 
@@ -6403,6 +6322,35 @@ I have mainly been writing this as a way for me to learn and remember Emacs as a
 tool and Emacs Lisp as a programming language.  But I am planning to use it for
 most of my upcoming work and will continue to document what I learn and what I
 use when developping in various programming languages and doing various tasks.
+
+
+Override or change PEL key bindings
+-----------------------------------
+
+As of this release PEL key bindings and key prefixes are hard coded.
+If you want to change a key binding that PEL uses, you can define your own
+key bindings after the execution of ``pel-init``.  You can also change
+PEL prefix keys.
+
+The following code re-assign the **F6** key to ``undo`` and uses the **F9** key
+to be used as what PEL normally uses for **F6**:
+
+.. code:: elisp
+
+          (global-set-key (kbd "<f6>") 'undo)
+          (global-set-key (kbd ("<f9>") pel:f6)
+
+The `Function Keys Mappings PDF table`_ provides and overview of the way PEL uses
+the function keys.  See also the section titled `PEL Function Keys Bindings`_.
+
+Since PEL is using more keys over time, it might be difficult to change the
+bindings without affecting PEL's bindings.  If you have a specific request,
+please describe your request on the `PEL wiki`_, I'll take a look and see what I can do.
+
+.. _PEL wiki:                         https://github.com/pierre-rouleau/pel/wiki
+.. _Function Keys Mappings PDF table: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/keys-fn.pdf
+
+
 
 
 ..
