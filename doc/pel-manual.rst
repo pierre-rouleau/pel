@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-08 00:23:52, updated by Pierre Rouleau.
+:Modified: 2021-08-08 09:26:51, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1393,6 +1393,79 @@ the button to the right of the "*See also*" note as shown here:
 
 .. figure:: res/pel-link-to-pdf.png
    :scale: 30 %
+
+
+Identify PEL User Option
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+PEL controls download, activation and configuration of Emacs external packages
+and features via PEL user options:  the main ones are the `PEL Use
+Variables`_, but PEL also defines other user-options for several of these
+features.
+
+The PEL user options are named after the package or feature they
+control and are members of customization group organized by topics and
+hierarchies.
+
+
+Identify PEL user option via PEL Topic PDF
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+PEL provides an extensive set of  `PDF topic-oriented reference sheets`_. All
+of these PDF files are identified inside the top-level `PEL Index PDF`_.  Each
+PDF file describes a specific topic:
+
+- an Emacs specific topic like navigation commands, Emacs buffers, Emacs
+  windows, etc..
+- support for specific programming language, markup language, etc...
+- PEL specific conventions.
+
+The PDF files identify the PEL user option that activate and control a
+specific feature.  External packages are marked with the 📦 icon and PEL user
+options with the 🛃 icon.
+
+For example, if you want to add or control a feature related to navigation start looking
+into the `⅀ Navigation PDF`_.  You can open it via the ``<f11> ? P`` key
+sequence and type navigation.  You can also open it by opening the `PEL Index
+PDF`_ with a browser that renders PDF files (see [#firefox]_) and click on the `⅀ Navigation`_
+link there.
+
+Identify PEL User Option by Name
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Once you know the name of the PEL user option or its customization group you
+can use Emacs commands to open the customization buffer where you can see the
+value of the user option and change it.  The following commands are useful:
+
+- Use the **customize-option** command via ``M-x customize-option`` or through the PEL
+  key binding ``<f11> <f2> o`` to open the
+  customize buffer for the corresponding user option variable.
+- Use the **customize-group** command via ``M-x customize-group`` or through the PEL
+  key binding ``<f11> <f2> g`` to open the
+  customize buffer for the corresponding group of user option variables.
+
+See the `⅀ Customize`_ PDF for more information on Emacs customization and all
+PEL commands that provide quick access to the customization buffers.
+
+
+Navigating PEL User Option Groups
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Emacs customization information is organized as a tree of customization
+group which is mainly organized by topic.  A group can be the child of more
+than one group.  A user option variable can be the member of several groups as
+well. PEL takes advantage of that capability to provide access the user
+options from different, related, topics.
+
+The PEL customization group is a child of Emacs Convenience customization
+group.  Browse Emacs customization tree from the top with the ``<f11> <f2> B``
+key sequence or from the top of the PEL customization group with
+``<f11> <f2> P B``.  Click on the ``[+]`` nodes to expand them down to the
+topic of interest.  This works with Emacs running in graphics mode as well as
+in terminal mode.
+
+See sections `With a global view - use the PEL customization tree`_ and
+`Access PEL Customization Root`_ for examples of the way this looks.
 
 .. ---------------------------------------------------------------------------
 
@@ -6697,6 +6770,9 @@ exhaustive list):
 .. _Mode Line PDF:                            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/mode-line.pdf
 .. _Mouse:                                    https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/mouse.pdf
 .. _Narrowing:                                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/narrowing.pdf
+
+.. _⅀ Navigation:
+.. _⅀ Navigation PDF:
 .. _Navigation:                               https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/navigation.pdf
 .. _Number Keypad:                            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/numkeypad.pdf
 .. _Outline:                                  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/outline.pdf
@@ -6721,6 +6797,7 @@ exhaustive list):
 .. _Treemacs:                                 https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/treemacs.pdf
 .. _Undo, Redo, Repeat and Prefix Arguments:  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/undo-redo-repeat.pdf
 
+.. _⅀ Customize:
 .. _Customization PDF:
 .. _User Option Customization:                https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf
 .. _Web:                                      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/web.pdf
