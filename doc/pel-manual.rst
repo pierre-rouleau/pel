@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-07 18:21:02, updated by Pierre Rouleau.
+:Modified: 2021-08-08 00:23:52, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1346,29 +1346,26 @@ You can also open that specific PDF file with its dedicated PEL key sequence:
 Access PEL Customization Root
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You may want to access the PEL customization buffer from the top.
-One way to quickly gain access to PEL customization group inside Emacs is to
-execute the ``pel-cfg`` command by typing the ``<f11> <f2> P !`` key sequence.
-When running Emacs in graphics mode, you'll see something like what is shown
-in the window in the top left corner of the following screen shot:
+You can access the same information from the customization buffer of the top
+level PEL group by executing the ``pel-cfg`` command by typing the ``<f11>
+<f2> P !`` key sequence.  When running Emacs in graphics mode, you'll see
+something like what is shown in the window in the top left corner of the
+following screen shot:
 
 
 .. figure:: res/pel-cfg.png
    :scale: 25 %
 
 Emacs opens a buffer in ``Custom-mode`` and shows the top level of PEL
-configuration.  PEL has a large tree of customization groups, each holding
-several customization user options variables.
+configuration.  Click on a subgroup link to open its customize buffer. The
+customize buffer for the ``Pel Package Use`` is shown above in the right hand
+side window.  The above screen shot also shows the entire PEL customize tree
+in a customize browser buffer in the middle window.
 
 All PEL package control user options have a name that starts with ``pel-use-``
 and they are part of the ``pel-package-use`` customization group.  If you select
-that group Emacs will open it and you will see something like this:
-
-.. figure:: res/pel-cfg-package.png
-   :scale: 50 %
-
-It shows the top level group for different types of packages, grouped by
-functionality type.
+that group Emacs will open it and you will see something like the buffer shown
+on the right hand side window above.
 
 If you want to see all ``pel-use-`` variables, you can also type ``pel-use-`` in
 the field to the right of the **Search** button and press that button.  Emacs
@@ -1376,31 +1373,22 @@ will list all ``pel-use-`` user option variables by alphabetical order, as shown
 below.  Set the ones you want to activate.  Then save your configuration and
 restart Emacs.
 
-The following show a lot of options **on**.  Most of them are turned
-off by default when you first get PEL.  Turned them on, save the customization
-and restart Emacs to activate them.  When you restart Emacs, some more packages
-might be automatically downloaded when required.
+The following show a lot of options **on**.  Most of them are turned off by
+default when you first get PEL.  Turn them on, save the customization and
+execute ``pel-init`` or restart Emacs to activate them.  When you restart
+Emacs, some more packages might be automatically downloaded when required.
 
 Note:  In Emacs Lisp the value **t**, is the symbol for truth and **nil** is
 used for the empty list and represent falsehood.
 
-.. figure:: res/pel-cfg-all-use.png
-   :scale: 50 %
-
-Now you are done! 😀
-
 You can repeat the operation several times.  If you saved the customization, you
 can exit Emacs: the new features will be available the next time you start it.
 
-You can also see the following sections for some extra customization and
-optimizations.
+**Links to PDF Documentation in Customization Buffers**
 
-See section `PEL Use Variables`_ for more info on quickly listing all
-``pel-use`` user option variables and `Key Binding Help`_ for a quick trick to
-see what's available at the keyboard.
-
-Also note that PEL includes links to the PDF *reference* sheet files relevant
-to the PEL customization group.  You can open your local PDF file by clicking on
+PEL includes links to the PDF *reference* sheet files relevant
+to the PEL customization group inside the customization buffer.
+You can open your local PDF file by clicking on
 the button to the right of the "*See also*" note as shown here:
 
 .. figure:: res/pel-link-to-pdf.png
