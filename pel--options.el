@@ -34,6 +34,7 @@
 ;;
 ;; - pel
 ;;   - pel-base-emacs
+;;   - pel-fast-startup
 ;;   - pel-package-use
 ;;     - pel-pkg-for-align
 ;;     - pel-pkg-for-bookmark
@@ -465,7 +466,6 @@ Use the INS and DEL buttons to add associations:
   :type 'boolean
   :safe #'booleanp)
 
-
 (defcustom pel-modes-activating-syntax-check  nil
   "List of major modes that automatically activate their syntax checker.
 
@@ -488,6 +488,23 @@ For example, to activate it in Erlang, add a line with
 `erlang-mode' without the quotes."
   :group 'pel-base-emacs
   :type '(repeat symbol))
+
+;; ---------------------------------------------------------------------------
+(defgroup pel-fast-startup nil
+  "PEL fast startup options."
+  :link `(url-link :tag "Fast Startup PDF" ,(pel-pdf-file-url "fast-startup"))
+  :group 'pel)
+
+(defcustom pel-compile-pel-bundle-autoload nil
+  "Whether pel-setup-fast byte compiles pel-bundle autoloads.el file.
+
+Set this to t to instruct `pel-setup-fast' to force the byte-compilation of the
+pel-bundle-autoloads.el file even though the autoloads.el files of Elpa
+packages are not byte compiled.  Byte compilation of that file may generate
+byte compiler warnings but that will also speed the Emacs startup a little."
+  :group 'pel-fast-startup
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 (defgroup pel-package-use nil

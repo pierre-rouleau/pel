@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-06 13:33:15, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-08 17:26:17, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -201,8 +201,8 @@
 ;; - elpa-graphics symlink that points to one of the following directories:
 ;; - elpa-complete-graphics (used in normal mode for the independent graphics
 ;;   mode),
-;; - elpa-reduced-graphics (used in fast startup mode for the independent graphics
-;;   mode).
+;; - elpa-reduced-graphics (used in fast startup mode for the independent
+;;   graphics mode).
 ;;
 ;; *************
 ;; **IMPORTANT**
@@ -220,19 +220,21 @@
 ;;; Dependencies:
 ;;
 
-(require 'pel--base)                    ; use: `pel-unix-socket-p'
-;;                                      ;      `pel-string-when'
-;;                                      ;      `pel-sibling-dirpath'
-;;                                      ;      `pel-point-symlink-to'
-;;                                      ;      `pel-emacs-is-graphic-p'
-(require 'pel-package)                  ; use: `pel-elpa-dirpath'
-(require 'pel-elpa)                     ; use: `pel-elpa-create-copies'
-;;                                      ;      `pel-elpa-disable-pkg-deps-in'
-;;                                      ;      `pel-elpa-package-alist-of-dir'
-;;                                      ;      `pel--adjust-path-for-graphics'
-;;                                      ;      `pel--adjusted-fname'
-(eval-when-compile (require 'subr-x))   ; use: `string-join'
-(require 'cus-edit)                     ; use: `custom-file'`
+(require 'pel--base)                  ; use: `pel-unix-socket-p'
+;;                                    ;      `pel-string-when'
+;;                                    ;      `pel-sibling-dirpath'
+;;                                    ;      `pel-point-symlink-to'
+;;                                    ;      `pel-emacs-is-graphic-p'
+(require 'pel--options)               ; use: `pel-compile-pel-bundle-autoload'
+(require 'pel-ccp)                    ; use: `pel-delete-whole-line'
+(require 'pel-package)                ; use: `pel-elpa-dirpath'
+(require 'pel-elpa)                   ; use: `pel-elpa-create-copies'
+;;                                    ;      `pel-elpa-disable-pkg-deps-in'
+;;                                    ;      `pel-elpa-package-alist-of-dir'
+;;                                    ;      `pel--adjust-path-for-graphics'
+;;                                    ;      `pel--adjusted-fname'
+(eval-when-compile (require 'subr-x)) ; use: `string-join'
+(require 'cus-edit)                   ; use: `custom-file'`
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -558,27 +560,42 @@ Only set by `pel-setup-fast' or `pel-setup-normal'. Never cleared.")
     (pel-point-symlink-to elpa-dirname elpa-reduced-dirname)))
 
 
+(defun pel-remove-no-byte-compile-in (filename)
+  "Remove the no-byte-compile file variable from FILENAME.
+Return t when done, nil otherwise."
+  (with-temp-file filename
+    (auto-fill-mode -1)
+    (when (file-exists-p filename)
+      (insert-file-contents filename))
+    (goto-char (point-min))
+    (when (re-search-forward "^;+ +no-byte-compile: +t *$" nil :noerror)
+      (pel-delete-whole-line)
+      t)))
+
 (defun pel-generate-autoload-file-for (dir)
   "Prepare (compile + autoload) all files in directory DIR.
 Return the complete name of the generated autoload file."
   (require 'autoload)
-  (if (boundp 'generated-autoload-file)
-      (let ((original-generated-autoload-file  generated-autoload-file))
-        (setq generated-autoload-file (expand-file-name
-                                       "pel-bundle-autoloads.el"
-                                       dir))
-        (condition-case-unless-debug err
-            (progn
-              (update-directory-autoloads dir)
-              (kill-buffer "pel-bundle-autoloads.el"))
-          (error
-           (display-warning
-            'pel-generate-autoload-file-for
-            (format "Failed generating the %s/pel-bundle-autoloads.el: %s"
-                    dir err)
-            :error)))
-        (setq generated-autoload-file original-generated-autoload-file))
-    (error "The autoload.el variable generated-autoload-file isn't bounded!")))
+  (let ((generated-fname nil))
+    (if (boundp 'generated-autoload-file)
+        (let ((original-generated-autoload-file  generated-autoload-file))
+          (setq generated-autoload-file (expand-file-name
+                                         "pel-bundle-autoloads.el"
+                                         dir))
+          (condition-case-unless-debug err
+              (progn
+                (update-directory-autoloads dir)
+                (setq generated-fname generated-autoload-file)
+                (kill-buffer "pel-bundle-autoloads.el"))
+            (error
+             (display-warning
+              'pel-generate-autoload-file-for
+              (format "Failed generating the %s/pel-bundle-autoloads.el: %s"
+                      dir err)
+              :error)))
+          (setq generated-autoload-file original-generated-autoload-file))
+      (error "The autoload.el variable generated-autoload-file isn't bounded!"))
+    generated-fname))
 
 
 (defun pel-create-bundle-pkg-file (dirname &optional time-stamp)
@@ -795,10 +812,19 @@ Compared: symlink %s to target %s.
           ;; Create the pel-bundle-autoloads.el file inside it.
           (cd pel-bundle-dirpath)
           (setq step-count (1+ step-count))
-          ;; Build a pel-bundle-autoloads.el inside the pel-bundle
-          ;; directory.
-          (pel-generate-autoload-file-for pel-bundle-dirpath)
-          (setq step-count (1+ step-count))
+          (when pel-compile-pel-bundle-autoload
+            ;; Build a pel-bundle-autoloads.el inside the pel-bundle
+            ;; directory.
+
+            (let ((autoload-fname (pel-generate-autoload-file-for
+                                   pel-bundle-dirpath)))
+              (setq step-count (1+ step-count))
+              ;; Make the file byte-compilable (by removing restriction)
+              (when (pel-remove-no-byte-compile-in autoload-fname)
+                ;; Then byte-compile it
+                (byte-compile-file autoload-fname)))
+            (setq step-count (1+ step-count)))
+
           (cd pel-elpa-dirpath-adj)
           (setq step-count (1+ step-count))
           ;;
@@ -864,7 +890,7 @@ Compared: symlink %s to target %s.
           ;; required: package-quickstart-refresh must be done while
           ;; package-alist includes all packages now in elpa (which is
           ;; pel-reduced). Support dual tty/graphics mode by processing
-          ;;  a file with modified name if required.
+          ;; a file with modified name if required.
           (when (and (>= emacs-major-version 27)
                      (require 'package nil :no-error)
                      (fboundp 'package-quickstart-refresh)
@@ -887,12 +913,14 @@ Compared: symlink %s to target %s.
           (setq step-count (1+ step-count)))
       (error
        (display-warning 'pel-setup-fast
-                        (format "Failed fast startup setup for %s after %d of 17 steps: %s
+                        (format "\
+Failed fast startup setup for %s after %d of %d steps: %s
  Please inspect the %s directory to restore a valid setup.
  See pel-setup.el commentary for further information.
  Please also report the problem as a bug in the PEL Github project."
                                 (pel--setup-mode-description for-graphics)
                                 step-count
+                                (if pel-compile-pel-bundle-autoload 19 17)
                                 err
                                 user-emacs-directory))))
     (cd cd-original)))

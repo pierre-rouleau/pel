@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-04 09:59:12, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-08 17:23:06, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -418,6 +418,8 @@
     ;; For keys with Meta, make sure the Esc equivalent is also entered
     ;; to allow the F1, F2, F3 entries to be accessible via the Esc key.
     ;; Because: in Emacs ``M-a`` can also be typed ``Esc a``
+    (,(kbd "<f11> M-S")     "fast-startup"     pel-fast-startup)
+    ([f11 27 ?S]            "fast-startup"     pel-fast-startup)
     (,(kbd "<f11> M-/")     "hide-show-code"   pel-pkg-for-hide-show  (hideshow
                                                                        hide-lines
                                                                        origami))
