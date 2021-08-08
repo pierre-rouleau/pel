@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-08 09:26:51, updated by Pierre Rouleau.
+:Modified: 2021-08-08 11:29:10, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -912,13 +912,8 @@ and another in graphics mode:
       ;; To activate init option A for Emacs 27+ you must use a specialized shell
       ;; that sets the PEL_EMACS_IN_GRAPHICS environment variable for Emacs used
       ;; in graphics mode and don't set it for Emacs running in TTY mode.
-      (if (getenv "PEL_EMACS_IN_GRAPHICS")
-          (progn
-            (setq package-user-dir (locate-user-emacs-file "elpa-graphics"))
-            (setq custom-file      (expand-file-name "emacs-customization-graphics.el"
-                                                     user-emacs-directory)))
-        (setq custom-file (expand-file-name "emacs-customization.el"
-                                            user-emacs-directory)))
+      (when (getenv "PEL_EMACS_IN_GRAPHICS")
+        (setq package-user-dir (locate-user-emacs-file "elpa-graphics")))
 
       ;; ---------------------------------------------------------------------------
 
