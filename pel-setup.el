@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-08 19:14:43, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-08 19:18:12, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -919,7 +919,7 @@ Failed fast startup setup for %s after %d of %d steps: %s
  Please also report the problem as a bug in the PEL Github project."
                                 (pel--setup-mode-description for-graphics)
                                 step-count
-                                (if pel-compile-pel-bundle-autoload 19 17)
+                                (if pel-compile-pel-bundle-autoload 19 18)
                                 err
                                 user-emacs-directory))))
     (cd cd-original)))
