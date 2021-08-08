@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-08 17:26:17, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-08 19:14:43, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -812,19 +812,18 @@ Compared: symlink %s to target %s.
           ;; Create the pel-bundle-autoloads.el file inside it.
           (cd pel-bundle-dirpath)
           (setq step-count (1+ step-count))
-          (when pel-compile-pel-bundle-autoload
-            ;; Build a pel-bundle-autoloads.el inside the pel-bundle
-            ;; directory.
-
-            (let ((autoload-fname (pel-generate-autoload-file-for
-                                   pel-bundle-dirpath)))
-              (setq step-count (1+ step-count))
-              ;; Make the file byte-compilable (by removing restriction)
-              (when (pel-remove-no-byte-compile-in autoload-fname)
-                ;; Then byte-compile it
-                (byte-compile-file autoload-fname)))
-            (setq step-count (1+ step-count)))
-
+          ;; Build a pel-bundle-autoloads.el inside the pel-bundle
+          ;; directory.
+          (let ((autoload-fname (pel-generate-autoload-file-for
+                                 pel-bundle-dirpath)))
+            (setq step-count (1+ step-count))
+            ;; Make the file byte-compilable (by removing restriction)
+            (when (and pel-compile-pel-bundle-autoload
+                       (pel-remove-no-byte-compile-in autoload-fname))
+              ;; Then byte-compile it
+              (byte-compile-file autoload-fname)))
+          (setq step-count (1+ step-count))
+          ;;
           (cd pel-elpa-dirpath-adj)
           (setq step-count (1+ step-count))
           ;;
