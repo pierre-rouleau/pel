@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-09 15:35:43, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-09 17:46:12, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -774,12 +774,15 @@ The code adds each entry to the `package--builtin-versions'."
   '%S
   \"List of packages dependencies to add to package--builtin-versions.\")
 
+;; pel-fast-startup-set-builtins must be called by either early-init
+;; (for Emacs >= 27) or by init.el for older versions of Emacs.
+;;
 \(defun pel-fast-startup-set-builtins ()
   \"Prevent package from downloading a set of package dependencies.\"
-  %s
   (setq pel-running-with-bundled-packages t)
   (dolist (dep-ver pel-fast-startup-builtin-packages)
     (add-to-list 'package--builtin-versions dep-ver))
+  %s
   pel-fast-startup-builtin-packages)
 
 \(defun pel--pct (_packages)
@@ -975,8 +978,9 @@ Compared: symlink %s to target %s.
            (pel-elpa-disable-pkg-deps-in elpa-reduced-dirpath)
            pel-fast-startup-setup-fname
            (pel-string-when (and (>= emacs-major-version 27)
-                                 (boundp 'package-quickstart)
-                                 package-quickstart)
+                                 ;; (boundp 'package-quickstart)
+                                 ;; package-quickstart
+                                 )
                             (format "(add-to-list 'load-path \"%s\")"
                                     new-pel-bundle-dirpath)))
           (setq step-count (1+ step-count))
