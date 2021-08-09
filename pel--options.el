@@ -496,7 +496,7 @@ For example, to activate it in Erlang, add a line with
   :group 'pel)
 
 (defcustom pel-compile-pel-bundle-autoload nil
-  "Whether pel-setup-fast byte compiles pel-bundle autoloads.el file.
+  "Whether `pel-setup-fast' byte compiles pel-bundle autoloads.el file.
 
 Set this to t to instruct `pel-setup-fast' to force the byte-compilation of the
 pel-bundle-autoloads.el file even though the autoloads.el files of Elpa
@@ -505,6 +505,48 @@ byte compiler warnings but that will also speed the Emacs startup a little."
   :group 'pel-fast-startup
   :type 'boolean
   :safe #'booleanp)
+
+(defcustom pel-compile-package-quickstart nil
+  "Whether `pel-activate-package-quickstart' compiles package-quickstart file.
+
+Set this to t to instruct `pel-activate-package-quickstart' to
+force the byte-compilation of the package-quickstart.el file even
+though these files are normally not byte compiled.  Byte
+compilation of that file may generate byte compiler warnings but
+that will also speed the Emacs startup a little.
+
+This is only used for Emacs 27 and later."
+  :group 'pel-fast-startup
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-early-init-with-package-quickstart
+  (expand-file-name "example/init/early-init.el"
+                    (file-name-directory load-file-name))
+  "Name of the early-init.el file used when package quickstart is activated.
+
+This file is taken as you early-init.el file when you execute the command
+`pel-activate-package-quickstart'.
+By default the file provided by PEL is used.  You may provide your own file
+but if you do, make sure that the content of example/init/early-init.el is
+part of your file.
+
+This is only used for Emacs 27 and later."
+  :group 'pel-fast-startup
+  :type '(file :must-match t))
+
+(defcustom pel-early-init-without-package-quickstart nil
+  "Name of the early-init.el file used when package quickstart is NOT activated.
+
+If this is specified it is copied over your early-init.el when you use the
+command `pel-deactivate-package-quickstart'. If the value is nil the command
+deletes the early-init.el file.
+
+This is only used for Emacs 27 and later."
+  :group 'pel-fast-startup
+  :type '(choice
+          (const :tag "No early-init when package quickstart is not used" nil)
+          (file :must-match t)))
 
 ;; ---------------------------------------------------------------------------
 (defgroup pel-package-use nil

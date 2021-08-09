@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-30 09:43:44, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-09 13:32:32, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -88,7 +88,7 @@ prints the Emacs init time on the echo area."
   (if log-it
       (let ((filename (expand-file-name "pel-startup-time.log.txt"
                                         user-emacs-directory))
-            (pel-operation-mode (pel--operation-mode)))
+            (pel-operation-mode (pel--startup-mode)))
         (with-temp-file filename
           (auto-fill-mode -1)
           (when (file-exists-p filename)
