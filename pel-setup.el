@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-09 14:19:45, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-09 15:27:54, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -553,23 +553,25 @@ the name of the package-quickstart.el using the function
 `pel--adjust-path-for-graphics' is set."
     (if (and (require 'package nil :no-error)
              (fboundp 'package-quickstart-refresh)
-             (boundp 'package-quickstart)
-             (boundp 'package-quickstart-file)
-             package-quickstart)
+             (boundp 'package-quickstart-file))
         (progn
           (advice-add 'package-quickstart-refresh :around #'pel--package-qs)
           (unwind-protect
               (let ((package-alist (pel-elpa-package-alist-of-dir dirpath)))
                 (setq pel--quickstart-forced-fname
                       (pel--adjusted-fname package-quickstart-file))
-                (package-quickstart-refresh))
+                (package-quickstart-refresh)
+                (when (and pel-compile-package-quickstart
+                           (pel-remove-no-byte-compile-in
+                            pel--quickstart-forced-fname))
+                  ;; Byte-Compile it if requested
+                  (byte-compile-file pel--quickstart-forced-fname)))
             (progn
               (advice-remove 'package-quickstart-refresh #'pel--package-qs)
               (setq pel--quickstart-forced-fname nil))))
       ;; report any error
       (error "Failed accessing package-quickstart")))
   (declare-function pel--build-package-quickstart "pel-setup")
-
 
   (defun pel--activate-package-quickstart (dirpath for-graphics)
     "Utility: activate package quickstart.
@@ -630,7 +632,6 @@ Support PEL startup modes and PEL dual independent customization files."
     (interactive)
     (if (and (require 'package nil :no-error)
              (boundp 'package-quickstart-file))
-
         (let ((early-init-fname (locate-user-emacs-file "early-init.el"))
               (fname))
           (unless (file-exists-p early-init-fname)
