@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-09 15:27:54, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-09 15:35:43, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -646,14 +646,16 @@ Support PEL startup modes and PEL dual independent customization files."
           ;; remove the package-quickstart.el file and the .elc file
           ;; if it exists.
           (setq fname (pel--adjusted-fname package-quickstart-file :force nil))
-          (delete-file fname)
+          (when (file-exists-p fname)
+            (delete-file fname))
           (setq fname (concat fname "c"))
           (when (file-exists-p fname)
             (delete-file fname))
           ;; when dual independent customization mode is used delete the
           ;; graphics specific files.
           (setq fname (pel--adjusted-fname package-quickstart-file :force t))
-          (delete-file fname)
+          (when (file-exists-p fname)
+            (delete-file fname))
           (setq fname (concat fname "c"))
           (when (file-exists-p fname)
             (delete-file fname))))))
