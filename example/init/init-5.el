@@ -279,8 +279,12 @@ before a mode switch done by one of them.")
   ;;
   (defvar package-quickstart) ; declared only to prevent byte-compiler warning.
   (when pel-running-with-bundled-packages
+    ;; Start fast startup for: - Emacs < 27
+    ;;                         - Emacs >= 27 when package quickstart is not used.
+    ;;                                       when used, early-init starts it.
     (when (or (< emacs-major-version 27)
-              (null (boundp 'package-quickstart)))
+              (null (boundp 'package-quickstart))
+              (not package-quickstart))
       (if (and (load (file-name-sans-extension pel-fast-startup-setup-fname)
                      :noerror)
                (fboundp 'pel-fast-startup-set-builtins))
