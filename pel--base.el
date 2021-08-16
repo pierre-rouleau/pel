@@ -319,8 +319,8 @@ Other uses risk returning non-nil value that point to the wrong file."
 (eval-and-compile
   (defun pel-in-fast-startup-p ()
     "Return non-nil when PEL runs in fast startup operation."
-    (and (boundp 'pel-running-with-bundled-packages)
-         pel-running-with-bundled-packages)))
+    (and (boundp 'pel-running-in-fast-startup-p)
+         pel-running-in-fast-startup-p)))
 
 (defun pel-major-mode-of (&optional buffer-or-name)
   "Return the major mode symbol of the specified BUFFER-OR-NAME.

@@ -36,13 +36,20 @@
 ;;
 ;; Section 0: Variable definitions
 ;; ===============================
+(defconst pel-emacs-is-graphic-p (display-graphic-p)
+  "Predicate: t when Emacs is running in graphics mode, nil otherwise.")
+
 (defconst pel-home-dirpath-name (expand-file-name "~/projects/pel")
   "Directory where PEL source files are stored.")
 
-(defconst pel-fast-startup-setup-fname (expand-file-name
-                                  "pel-setup-package-builtin-versions.el"
+(defconst pel-fast-startup-init-fname (expand-file-name
+                                  "pel-fast-startup-init.el"
                                   user-emacs-directory)
   "Elisp file whose presence indicates PEL must run in fast startup mode.")
+
+(defconst pel-running-in-fast-startup-p (file-exists-p
+                                       pel-fast-startup-init-fname)
+  "Non-nil when PEL runs in fast startup mode, nil otherwise.")
 
 ;; OPTION A: independent customization for TTY and graphic mode.
 ;; - Set to t if you want to use a different customization file for TTY
@@ -60,6 +67,7 @@ the symlink.  This is required to allow proper switching between
 the normal and fast-startup operation modes while keeping the
 ability to use multiple instances of Emacs that were started
 before a mode switch done by one of them.")
+
 
 ;; Section 1 : Utility function definition
 ;; =======================================
@@ -105,10 +113,7 @@ before a mode switch done by one of them.")
 ;;
 (let ((file-name-handler-alist nil))
   (setq gc-cons-threshold   most-positive-fixnum
-        gc-cons-percentage  0.6
-        ;; Remember if Emacs is running in PEL's fast startup mode.
-        pel-running-with-bundled-packages
-        (file-exists-p pel-fast-startup-setup-fname))
+        gc-cons-percentage  0.6)
 
   ;; OPTION B: Setup Benchmark Measurement
   ;; -------------------------------------
@@ -146,7 +151,7 @@ before a mode switch done by one of them.")
           ;; - Use ~/.emacs.d/elpa in TTY mode,
           ;; - use ~/.emacs.d/elpa-graphics in graphics mode
           (when (and pel-use-graphic-specific-custom-file-p
-                     (display-graphic-p))
+                     pel-emacs-is-graphic-p)
             (setq package-user-dir (locate-user-emacs-file "elpa-graphics")))
 
           ;; Activate the MELPA package manager
@@ -223,7 +228,7 @@ before a mode switch done by one of them.")
       (add-to-list 'package-archives
                    (cons "melpa-stable" "https://stable.melpa.org/packages/")
                    t)
-      (if (and (display-graphic-p)
+      (if (and pel-emacs-is-graphic-p
                pel-use-graphic-specific-custom-file-p)
           ;; Use a graphics mode specific package quickstart file.
           (progn
@@ -262,7 +267,7 @@ before a mode switch done by one of them.")
                     gc-cons-percentage 0.1)))
 
   ;; When PEL fast-start mode is requested:
-  ;; - the function `pel-fast-startup-set-builtins' must be called before
+  ;; - the function `pel-fast-startup-init' must be called before
   ;;   `pel--init-package-support' is called.
   ;;   - For Emacs 27+ using package-quickstart it was already called inside
   ;;     the early-init file, otherwise call it here.
@@ -278,18 +283,19 @@ before a mode switch done by one of them.")
   ;; `pel-init' below, after loading the customization file.
   ;;
   (defvar package-quickstart) ; declared only to prevent byte-compiler warning.
-  (when pel-running-with-bundled-packages
+  (when pel-running-in-fast-startup-p
     ;; Start fast startup for: - Emacs < 27
     ;;                         - Emacs >= 27 when package quickstart is not used.
     ;;                                       when used, early-init starts it.
     (when (or (< emacs-major-version 27)
               (null (boundp 'package-quickstart))
               (not package-quickstart))
-      (if (and (load (file-name-sans-extension pel-fast-startup-setup-fname)
+      (if (and (load (file-name-sans-extension pel-fast-startup-init-fname)
                      :noerror)
-               (fboundp 'pel-fast-startup-set-builtins))
-          (pel-fast-startup-set-builtins)
-        (message "WARNING: Failed loading pel-fast-startup-set-builtins\
+               (fboundp 'pel-fast-startup-init))
+          (pel-fast-startup-init (and pel-use-graphic-specific-custom-file-p
+                                      pel-emacs-is-graphic-p))
+        (message "WARNING: Failed loading pel-fast-startup-init\
  from user-emacs-directory")))
     (add-hook 'emacs-startup-hook (function pel--init-package-support)))
 
@@ -326,7 +332,7 @@ before a mode switch done by one of them.")
 
   ;; - Configure Graphics Mode Display
   ;; ---------------------------------
-  (when (display-graphic-p)
+  (when pel-emacs-is-graphic-p
     ;; OPTION D: Increase frame real-estate: no toolbar
     ;; (tool-bar-mode -1)
 
@@ -394,7 +400,7 @@ before a mode switch done by one of them.")
   ;;
   (setq custom-file (expand-file-name
                      (if (and pel-use-graphic-specific-custom-file-p
-                              (display-graphic-p)
+                              pel-emacs-is-graphic-p
                               (or (< emacs-major-version 27)
                                   (getenv "PEL_EMACS_IN_GRAPHICS")))
                          "emacs-customization-graphics.el"
@@ -411,7 +417,7 @@ before a mode switch done by one of them.")
   ;; which will process all local packages and will grow the `load-path'
   ;; accordingly.
   ;;
-  (unless pel-running-with-bundled-packages
+  (unless pel-running-in-fast-startup-p
     (pel--init-package-support))
 
   ;; -------------------------------------------------------------------------

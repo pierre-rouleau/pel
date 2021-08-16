@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-06 10:13:49, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-16 15:26:47, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -255,7 +255,8 @@ directory specified by DEST-DIR."
 (defun pel-elpa-disable-pkg-deps-in (dirpath)
   "Disable the dependencies of all -pkg.el files of packages in DIRPATH.
 Return an alist of (package versions) that should be added to the
-variable `package--builtin-versions'."
+variable `package--builtin-versions'.  This corresponds to all packages
+dependencies that are not already part of the 'package--builtin-versions'."
   ;; The package descriptor data structure is a cl-defstruct of type
   ;; `package-desc' defined in the package.el library file.
   ;; The slot `reqs' is what interests us here.

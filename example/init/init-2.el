@@ -30,13 +30,13 @@
       ;; -----------------
       (progn
         ;; Activate PEL's fast startup if environment was setup by `pel-setup-fast'.
-        (let ((fast-startup-setup-fname (expand-file-name "pel-setup-package-builtin-versions.el"
+        (let ((fast-startup-setup-fname (expand-file-name "pel-fast-startup-init.el"
                                                           user-emacs-directory)))
           (when (file-exists-p fast-startup-setup-fname)
             (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
-            (pel-fast-startup-set-builtins)
+            (pel-fast-startup-init)
             ;; Remember Emacs is running in PEL's fast startup mode.
-            (setq pel-running-with-bundled-packages t)))
+            (setq pel-running-in-fast-startup-p t)))
         ;;
         (require 'package)
         (setq package-enable-at-startup nil)
@@ -70,13 +70,13 @@
       (setq package-quickstart nil))
     (unless package-quickstart
       ;; Activate PEL's fast startup if environment was setup by `pel-setup-fast'.
-      (let ((fast-startup-setup-fname (expand-file-name "pel-setup-package-builtin-versions.el"
+      (let ((fast-startup-setup-fname (expand-file-name "pel-fast-startup-init.el"
                                                         user-emacs-directory)))
         (when (file-exists-p fast-startup-setup-fname)
           (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
-          (pel-fast-startup-set-builtins)
+          (pel-fast-startup-init)
           ;; Remember Emacs is running in PEL's fast startup mode.
-          (setq pel-running-with-bundled-packages t))))
+          (setq pel-running-in-fast-startup-p t))))
     (require 'package)
     (package-initialize)
     (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/") t)

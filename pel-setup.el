@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-09 17:46:12, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-16 17:41:54, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -500,9 +500,9 @@ more information."
 ;; Fast-Startup Support
 ;; --------------------
 
-(defconst pel-fast-startup-setup-fname (expand-file-name
-                                        "pel-setup-package-builtin-versions.el"
-                                        user-emacs-directory)
+(defconst pel-fast-startup-init-fname (expand-file-name
+                                       "pel-fast-startup-init.el"
+                                       user-emacs-directory)
   "Name of code file that must be executed by fast-startup in init/early-init.
 When fast startup is not activated, this file must be deleted.")
 
@@ -748,42 +748,77 @@ Return the complete file path name of the file written."
     file-path-name))
 
 
-(defvar pel-running-with-bundled-packages) ; prevent byte-compiler warnings
+(defvar pel-running-in-fast-startup-p) ; prevent byte-compiler warnings
 (defun pel-bundled-mode (activate)
   "When ACTIVATE is non-nil activate PEL bundled mode, de-activate it otherwise.
 Return a (activate . byte-compile result) cons cell."
-  (setq pel-running-with-bundled-packages activate)
-  (cons  pel-running-with-bundled-packages
+  (setq pel-running-in-fast-startup-p activate)
+  (cons  pel-running-in-fast-startup-p
          (byte-compile-file (concat (file-name-sans-extension
                                      (locate-library "pel_keys"))
                                     ".el"))))
 
-(defun pel-setup-add-to-builtin-packages (pkg-versions fname extra-code)
-  "Write code in FNAME that adds the PKG-VERSIONS to the Emacs builtins.
-The code adds each entry to the `package--builtin-versions'."
+(defun pel-setup-fast-startup-init (fname deps-pkg-versions-alist extra-code)
+  "Write code in FNAME that adds the DEPS-PKG-VERSIONS-ALIST to Emacs.
+
+The function writes the function pel-fast-startup-init.
+That function code adds each entry of DEPS-PKG-VERSIONS-ALIST to Emacs
+`package--builtin-versions'.  The DEPS-PKG-VERSIONS-ALIST list corresponds to
+the package dependencies gathered from the X-pkg.el for each package X whose
+code was placed in the elpa-reduced/pel-bundle *pseudo-package* that was not
+already part of the `package--builtin-versions' list.  By adding those
+package/version inside the `package--builtin-versions' list we ensure that
+Emacs package.el logic will not attempt to download these packages.  We don't
+need Emacs to download them because they have already been downloaded when
+Emacs was in normal startup mode.  The DEPS-PKG-VERSIONS-ALIST list was
+originally returned by `pel-elpa-disable-pkg-deps-in'."
   (with-temp-file fname
     (erase-buffer)
     (goto-char (point-min))
     (insert (format "\
-;;; Built automatically by PEL for fast Emacs startup.  -*- lexical-binding: t; -*-
+;;; Setup Emacs for PEL fast startup.  -*- lexical-binding: t; -*-
+;;; DO NOT EDIT! It will be overwritten next time pel-setup-fast is executed!
+
 \(require 'package)
 
-\(defvar pel-running-with-bundled-packages nil)
+\(defvar pel-running-in-fast-startup-p nil)
 
 \(defvar pel-fast-startup-builtin-packages
   '%S
-  \"List of packages dependencies to add to package--builtin-versions.\")
+  \"List of bundled package/versions to add to package--builtin-versions.\")
 
-;; pel-fast-startup-set-builtins must be called by either early-init
-;; (for Emacs >= 27) or by init.el for older versions of Emacs.
+;; pel-fast-startup-init must be called either inside early-init.el
+;; (for Emacs >= 27) or inside init.el for older versions of Emacs.
 ;;
-\(defun pel-fast-startup-set-builtins ()
-  \"Prevent package from downloading a set of package dependencies.\"
-  (setq pel-running-with-bundled-packages t)
+\(defun pel-fast-startup-init (&optional force-graphics)
+  \"Setup data to support the fast-startup mode.
+
+- #1: Add pkg/version of the dependencies of packages whose code has been been
+      bundled into elpa-reduced/pel-bundle *pseudo-package* to
+      `package--builtin-versions' to prevent their downloads.
+- #2: For Emacs >= 27, an extra step is required: add elpa-reduced/pel-bundle
+      package to load-path because for those versions of Emacs this must be
+      done during early-init (which calls pel-fast-startup-init).
+      For Emacs earlier than 27 this last step is not performed and its done
+      inside the init.el file.
+
+Return the pkg/version alist.\"
+  ;; step 1:
   (dolist (dep-ver pel-fast-startup-builtin-packages)
     (add-to-list 'package--builtin-versions dep-ver))
   %s
+  ;; Return the list of package/versions corresponding to the bundled packages
   pel-fast-startup-builtin-packages)
+
+
+;; ----
+;; Prevent Emacs package.el logic from adding more package to download
+;; by ensuring that `package-compute-transaction' returns an empty list.
+;;
+;; This is needed because in PEL fast-startup mode all external
+;; packages have already been downloaded but they are not visible to
+;; package.el logic at this point because the packages have been bundled
+;; together inside the elpa-reduce/pel-bundle *pseudo-package*.
 
 \(defun pel--pct (_packages)
   \"Filter packages to prevent downloads.\"
@@ -791,7 +826,9 @@ The code adds each entry to the `package--builtin-versions'."
 
 \(advice-add  'package-compute-transaction  :filter-return (function pel--pct))
 
-" pkg-versions extra-code))))
+;; ---------------------------------------------------------------------------
+
+" deps-pkg-versions-alist extra-code))))
 
 
 ;; --
@@ -811,12 +848,12 @@ If the first list has 3 members, then PEL/Emacs operates in fast startup mode."
               met-criteria)
       (push "The `pel-in-fast-startup' is not set." problems))
 
-    (if (file-exists-p pel-fast-startup-setup-fname)
+    (if (file-exists-p pel-fast-startup-init-fname)
         (push (format "Fast startup setup file is present: %s"
-                      pel-fast-startup-setup-fname)
+                      pel-fast-startup-init-fname)
               met-criteria)
       (push (format "The file %s indicating fast startup not found."
-                    pel-fast-startup-setup-fname)
+                    pel-fast-startup-init-fname)
             problems))
     (if (pel-symlink-points-to-p (directory-file-name elpa-dirpath)
                                  elpa-reduced-dirpath)
@@ -974,15 +1011,17 @@ Compared: symlink %s to target %s.
           ;; `package--builtin-versions' during init.el before the call to
           ;; `package-activate-all' or `package-initialize'.  In Emacs ≥
           ;; 27 it must be set in early-init.el.
-          (pel-setup-add-to-builtin-packages
+          (pel-setup-fast-startup-init
+           pel-fast-startup-init-fname
            (pel-elpa-disable-pkg-deps-in elpa-reduced-dirpath)
-           pel-fast-startup-setup-fname
-           (pel-string-when (and (>= emacs-major-version 27)
-                                 ;; (boundp 'package-quickstart)
-                                 ;; package-quickstart
-                                 )
-                            (format "(add-to-list 'load-path \"%s\")"
-                                    new-pel-bundle-dirpath)))
+           (pel-string-when (>= emacs-major-version 27)
+                            (format "\
+  ;; step 2: (only for Emacs >= 27)
+  (push (format \"%s\" (if force-graphics \"-graphics\" \"\")) load-path)"
+                                    (replace-regexp-in-string
+                                     "elpa-reduced"
+                                     "elpa-reduced%s"
+                                     new-pel-bundle-dirpath) )))
           (setq step-count (1+ step-count))
           ;;
           ;; Move the pel-bundle directory inside the elpa-reduced
@@ -1010,7 +1049,7 @@ Compared: symlink %s to target %s.
           (pel-switch-to-elpa-reduced)
           (setq step-count (1+ step-count))
           ;; Re-compile pel_keys.el with
-          ;; `pel-running-with-bundled-packages' bound to t to prevent PEL
+          ;; `pel-running-in-fast-startup-p' bound to t to prevent PEL
           ;; from downloading and installing external packages while PEL
           ;; runs in PEL bundled mode.
           (pel-bundled-mode t)
@@ -1077,8 +1116,8 @@ is only one or when its for the terminal (TTY) mode."
     ;; Remove the file that is used to identify using fast-startup
     ;; but leave the elpa-reduced directory around in case some other
     ;; Emacs process is currently running in fast-start operation mode.
-    (when (file-exists-p pel-fast-startup-setup-fname)
-      (delete-file pel-fast-startup-setup-fname))
+    (when (file-exists-p pel-fast-startup-init-fname)
+      (delete-file pel-fast-startup-init-fname))
     ;; With Emacs ≥ 27 if package-quickstart is used more work is required:
     ;; package-quickstart-refresh must be done while package-alist
     ;; includes all packages now in elpa (which is elpa and elpa-complete).
