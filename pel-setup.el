@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-17 11:05:46, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-17 12:12:29, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1102,13 +1102,24 @@ Failed fast startup setup for %s after %d of %d steps: %s
                                 user-emacs-directory))))
     (cd cd-original)))
 
+
+(defun pel--with-quickstart-state-msg (prompt)
+  "Augment PROMPT to ask about package-quickstart if necessary."
+  (if (>= emacs-major-version 27)
+      (format "%s %s package quickstart support"
+              prompt
+              (if pel-with-package-quickstart
+                  "with"
+                "without"))
+      prompt))
+
 ;;-pel-autoload
 (defun pel-setup-fast ()
   "Prepare the elpa directories and code to speedup Emacs startup."
   (interactive)
   (if (eq (pel--startup-mode) 'fast)
       (error "PEL/Emacs is already setup for fast startup!")
-    (when (y-or-n-p "Change to fast startup mode")
+    (when (y-or-n-p (pel--with-quickstart-state-msg "Change to fast startup mode"))
       ;; First setup the environment used by terminal (TTY) and graphics mode
       ;; when they both use the same
       (pel--setup-fast nil)
@@ -1164,7 +1175,7 @@ is only one or when its for the terminal (TTY) mode."
   (interactive)
   (if (eq (pel--startup-mode) 'normal)
       (error "PEL/Emacs is already using the normal setup!")
-    (when (y-or-n-p "Restore normal startup mode")
+    (when (y-or-n-p (pel--with-quickstart-state-msg "Restore normal startup mode"))
       ;; First setup the environment used by terminal (TTY) and graphics mode
       ;; when they both use the same
       (pel--setup-normal nil)
@@ -1191,20 +1202,22 @@ is only one or when its for the terminal (TTY) mode."
  You may experience inconsistent Emacs behaviour.  It's best to restart Emacs!"
                  mode)
       (cond ((eq mode 'fast)
-             (message "PEL/Emacs operates in fast startup mode.
+             (message "PEL/Emacs operates in fast startup mode%s.
  Emacs starts faster because single directory packages are bundled inside
  a single directory: %selpa-reduced/pel-bundle-YYYYMMDD.hhmm.
  However, in this setup mode, PEL is not able to install any external package.
  To install new package return to normal mode by executing pel-setup-normal."
+                      (pel--with-quickstart-state-msg "")
                       user-emacs-directory))
             ((eq mode 'normal)
-             (message "PEL/Emacs operates in normal mode.
+             (message "PEL/Emacs operates in normal mode%s.
  In this mode Emacs packages are setup the way Emacs normally organizes them.
  You can install new packages and you can use PEL customization to add and
  install new package, or use pel-cleanup to remove the unused ones.
  With a large number of external packages Emacs normally starts slower
  because of the larger number of directories inside %selpa
  If you want to speed up Emacs startup execute pel-setup-fast."
+                      (pel--with-quickstart-state-msg "")
                       user-emacs-directory))
             (t
              (let* ((met-criteria.problems (pel--fast-setup-met-criteria))
