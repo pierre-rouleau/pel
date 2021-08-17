@@ -4,7 +4,7 @@ PEL -- Pragmatic Environment Library for Emacs
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-16 16:42:42, updated by Pierre Rouleau.
+:Modified: 2021-08-17 16:31:18, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -6030,8 +6030,6 @@ The PEL Emacs Lisp files types are the following:
 #. The other Emacs Lisp files are not part of the PEL package itself.
    They are tools used to help automate installation of PEL:
 
-   - The file `build-pel.el`_ controls byte compilation of files in a specific
-     order.
    - The file `install-pel.el`_ controls the creation of a local Emacs package
      archive which is then used to install PEL on local computers from a cloned
      Git depot.
@@ -6068,7 +6066,6 @@ The list of external packages used by PEL is shown in the `Credits`_ section.
 
 
 
-.. _build-pel.el:           ../build-pel.el
 .. _install-pel.el:         ../install-pel.el
 .. _pel.el:                 ../pel.el
 .. _pel--options.el:        ../pel--options.el
@@ -6201,7 +6198,8 @@ Naming Conventions
   that have the "pel-" prefix and the "-test" suffix.
 
 - Other Emacs Lisp files are included in this repository,
-  such as `build-pel.el`_.
+  such as ``build-pel.el`` and ``install-pel.el``.   These file are not part of PEL
+  itself and may be removed in the future.
   These files contain code that is not part of PEL but are used to develop PEL.
   The names of these files do not start with "pel-" but they end with "-pel".
   That should be enough to prevent clash with other packages.
@@ -6321,32 +6319,22 @@ Building PEL
 ------------
 
 **Note:**
-         You do not need to build PEL for using it.
-         Most people will simply want to install and use PEL.
-         If you are interested on how I byte-compile all files and how I prepare
-         PEL to be distributed via an Emacs Lisp archive, then read on.
+         You **must** build PEL to use it.
+         PEL uses the byte-compiler and macros to activate specific parts
+         of the code and to speed it all up.  Building is easy with make: just
+         run ``make``.
 
 **Note 2:**
         At this moment, for this early version of PEL, I did not submit PEL
-        package into Emacs Lisp archives like MELPA_.  I will do this later,
-        once I've had time to add support for several programming languages and
-        that I have completed the customization.
+        package into Emacs Lisp archives like MELPA_.  I may do this later,
+        but the nature of PEL differs from a stand-alone package.
 
-To control command line build of the PEL distribution package, the byte
-compilation of all PEL Emacs Lisp source files, I wrote a GNU Makefile_ script
-and also the Emacs Lisp file build-pel.el_
+Use the Makefile_ to control command line build of the PEL distribution
+package, the byte compilation of all PEL Emacs Lisp source files.
 
 To see what you can do with the Makefile, move to the directory where it is
 located and issue the ``make help`` command which lists the available top-level
 targets and their purpose.
-
-**Current Limitations**:
-
-#. The current Makefile_ and build-pel.el_ assume that the files are
-   located in a specific location.
-#. Overall, this makefile is also a bit verbose and could be cleaned up.
-
-.. _Makefile:             ../Makefile
 
 
 PDF Documentation
