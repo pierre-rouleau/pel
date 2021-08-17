@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-17 14:05:38, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-17 14:51:50, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -592,15 +592,15 @@ is only one or when its for the terminal (TTY) mode."
   (defun pel--setup-early-init (&optional error-if-exists)
     "Ensure that a valid early-init.el file is available."
     (let ((early-init-fname (locate-user-emacs-file "early-init.el")))
-      (when (and error-if-exists
-                 (file-exists-p early-init-fname))
-        (user-error "The file %s already exists!
+      (if (file-exists-p early-init-fname)
+          (when error-if-exists
+            (user-error "The file %s already exists!
  If you want to keep it please see `pel-early-init-with-package-quickstart'
  and `pel-early-init-without-package-quickstart' for instructions."
-                    early-init-fname))
-      ;; All is fine: no early-init.el file yet.  Proceed.
-      (copy-file pel-early-init-with-package-quickstart
-                 (locate-user-emacs-file "early-init.el"))))
+                        early-init-fname))
+        ;; All is fine: no early-init.el file yet.  Proceed.
+        (copy-file pel-early-init-with-package-quickstart
+                   (locate-user-emacs-file "early-init.el")))))
   (declare-function pel--setup-early-init "pel-setup")
 
   ;;-pel-autoload
@@ -1097,7 +1097,7 @@ Failed fast startup setup for %s after %d of %d steps: %s
  Please also report the problem as a bug in the PEL Github project."
                                 (pel--setup-mode-description for-graphics)
                                 step-count
-                                (if pel-compile-pel-bundle-autoload 19 18)
+                                18
                                 err
                                 user-emacs-directory))))
     (cd cd-original)))
