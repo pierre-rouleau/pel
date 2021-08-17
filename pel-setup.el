@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-17 12:12:29, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-17 14:05:38, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1102,16 +1102,27 @@ Failed fast startup setup for %s after %d of %d steps: %s
                                 user-emacs-directory))))
     (cd cd-original)))
 
+(defun pel--with-package-quickstart-p ()
+  "Return t when package quickstart is currently used, nil otherwise."
+  (and (require 'package nil :no-error)
+       (boundp 'package-quickstart)
+       package-quickstart))
 
-(defun pel--with-quickstart-state-msg (prompt)
-  "Augment PROMPT to ask about package-quickstart if necessary."
-  (if (>= emacs-major-version 27)
-      (format "%s %s package quickstart support"
-              prompt
-              (if pel-with-package-quickstart
-                  "with"
-                "without"))
-      prompt))
+(defun pel--with-quickstart-state-msg (prompt &optional show-requested-status)
+  "Augment PROMPT to ask about package-quickstart if necessary.
+
+If SHOW-REQUESTED-STATUS is specified the message should also display
+the new requested status instead of the current state."
+  (let ((current-quickstart-status (if show-requested-status
+                                       pel-with-package-quickstart
+                                     (pel--with-package-quickstart-p))))
+    (if (>= emacs-major-version 27)
+        (format "%s %s package quickstart support"
+                prompt
+                (if current-quickstart-status
+                    "with"
+                  "without"))
+      prompt)))
 
 ;;-pel-autoload
 (defun pel-setup-fast ()
@@ -1119,7 +1130,9 @@ Failed fast startup setup for %s after %d of %d steps: %s
   (interactive)
   (if (eq (pel--startup-mode) 'fast)
       (error "PEL/Emacs is already setup for fast startup!")
-    (when (y-or-n-p (pel--with-quickstart-state-msg "Change to fast startup mode"))
+    (when (y-or-n-p (pel--with-quickstart-state-msg
+                     "Change to fast startup mode"
+                     :show-requested-quickstart))
       ;; First setup the environment used by terminal (TTY) and graphics mode
       ;; when they both use the same
       (pel--setup-fast nil)
@@ -1175,7 +1188,9 @@ is only one or when its for the terminal (TTY) mode."
   (interactive)
   (if (eq (pel--startup-mode) 'normal)
       (error "PEL/Emacs is already using the normal setup!")
-    (when (y-or-n-p (pel--with-quickstart-state-msg "Restore normal startup mode"))
+    (when (y-or-n-p (pel--with-quickstart-state-msg
+                     "Restore normal startup mode"
+                     :show-requested-quickstart))
       ;; First setup the environment used by terminal (TTY) and graphics mode
       ;; when they both use the same
       (pel--setup-normal nil)
