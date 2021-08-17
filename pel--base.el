@@ -65,6 +65,7 @@
 ;;
 ;; Pluralizer:
 ;;  - `pel-count-string'
+;;  - `pel-pluralize'
 ;;    - `pel-plural-of'
 ;;
 ;; Symbol value extraction
