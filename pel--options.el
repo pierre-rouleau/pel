@@ -508,7 +508,16 @@ byte compiler warnings but that will also speed the Emacs startup a little."
 
 (defcustom pel-with-package-quickstart nil
   "When non-nil: activate package-quickstart, otherwise don't activate it.
-This is only used in Emacs 27 and later. It's ignore in earlier Emacs version"
+
+When this is active the `pel-setup-fast' and `pel-setup-normal'
+commands create the early-init.el and the package-quickstart.el
+files required for Emacs package-quickstart to work.
+
+When it is not active, those commands remove the early-init.el (or replace it
+with the one identified by `pel-early-init-without-package-quickstart' if
+specified) and the package-quickstart ELisp files if they exist.
+
+This is only used in Emacs 27 and later."
   :group 'pel-fast-startup
   :type 'boolean
   :safe #'booleanp)
@@ -8323,4 +8332,4 @@ indexing system."
 
 ;;; pel--options.el ends here
 
-; LocalWords:  cscope xcscope CScope
+; LocalWords:  cscope xcscope CScope quickstart
