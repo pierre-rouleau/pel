@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-17 14:51:50, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-17 15:42:36, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -557,7 +557,8 @@ the name of the package-quickstart.el using the function
         (progn
           (advice-add 'package-quickstart-refresh :around #'pel--package-qs)
           (unwind-protect
-              (let ((package-alist (pel-elpa-package-alist-of-dir dirpath)))
+              (let ((package-user-dir dirpath) ; force new package-user-dir
+                    (package-alist (pel-elpa-package-alist-of-dir dirpath)))
                 (setq pel--quickstart-forced-fname
                       (pel--adjusted-fname package-quickstart-file))
                 (package-quickstart-refresh)
