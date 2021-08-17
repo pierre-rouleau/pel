@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-16 17:41:54, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-16 23:10:08, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -576,23 +576,32 @@ the name of the package-quickstart.el using the function
   (defun pel--activate-package-quickstart (dirpath for-graphics)
     "Utility: activate package quickstart.
 
+DIRPATH is the path of a Elpa-compliant directory used.
+Normally that's the elpa directory inside the user-emacs-directory but
+that can be the elpa-reduced directory for fast startup or then ones
+for graphics mode when the dual mode is used.
+
 The FOR-GRAPHICS argument is t when changing the environment for the
 Emacs running in graphics mode and has a custom file that is independent from
 the file used by Emacs running in terminal (TTY) mode.  It is nil when there
-is only one or when its for the terminal (TTY) mode.
-
-DIRPATH is the path of a ELpa-compliant directory used.
-Normally that's the elpa directory inside the user-emacs-directory but
-that can be the elpa-reduced directory for fast startup or then ones
-for graphics mode when the dual mode is used."
-    ;; there is only 1 early-init.el file: copy it for the generic mode
-    ;; of for the first of the 2 dual modes: when for-graphics is nil
-    (unless for-graphics
-      (copy-file pel-early-init-with-package-quickstart
-                 (locate-user-emacs-file "early-init.el")))
+is only one or when its for the terminal (TTY) mode."
     (let ((pel--adjust-path-for-graphics for-graphics))
       (pel--build-package-quickstart dirpath)))
   (declare-function pel--activate-package-quickstart "pel-setup")
+
+  (defun pel--setup-early-init (&optional error-if-exists)
+    "Ensure that a valid early-init.el file is available."
+    (let ((early-init-fname (locate-user-emacs-file "early-init.el")))
+      (when (and error-if-exists
+                 (file-exists-p early-init-fname))
+        (user-error "The file %s already exists!
+ If you want to keep it please see `pel-early-init-with-package-quickstart'
+ and `pel-early-init-without-package-quickstart' for instructions."
+                    early-init-fname))
+      ;; All is fine: no early-init.el file yet.  Proceed.
+      (copy-file pel-early-init-with-package-quickstart
+                 (locate-user-emacs-file "early-init.el"))))
+  (declare-function pel--setup-early-init "pel-setup")
 
   ;;-pel-autoload
   (defun pel-setup-package-quickstart ()
@@ -605,17 +614,12 @@ This function copies the file identified by the user-option variable
 `pel-early-init-with-package-quickstart' your early-init.el and creates
 or refreshes the package-quickstart.el file(s)."
     (interactive)
-    (let ((early-init-fname (locate-user-emacs-file "early-init.el"))
-          (startup-mode (pel--startup-mode)))
-      (when (file-exists-p early-init-fname)
-        (user-error "The file %s already exists!
- If you want to keep please see `pel-early-init-with-package-quickstart' and
- `pel-early-init-without-package-quickstart' for instructions."
-                    early-init-fname))
+    (let ((startup-mode (pel--startup-mode)))
       (when (eq startup-mode 'inconsistent)
         (user-error "PEL startup mode is inconsistent.
   Please check and fix before activating the package quickstart!"))
-      ;; All is fine: no early-init.el file yet.  Proceed.
+      ;; All is fine: proceed.
+      (pel--setup-early-init :error-if-exists)
       (let ((elpa-dpath (pel-sibling-dirpath
                          pel-elpa-dirpath
                          (if (eq startup-mode 'fast)
@@ -623,42 +627,51 @@ or refreshes the package-quickstart.el file(s)."
                            "elpa-complete"))))
         (pel--activate-package-quickstart elpa-dpath nil)
         (when pel-used-with-independent-graphics-customization
-          (pel--activate-package-quickstart elpa-dpath t)))))
+          (pel--activate-package-quickstart elpa-dpath t)))
+      ;; Remember user setting: in pel-with-package-quickstart user-option
+      ;; TODO save in current custom file
+      (setq pel-with-package-quickstart t)))
+
+  (defun pel--remove-package-quickstart-files (for-graphics)
+    "Remove package quickstart files identified by the FOR-GRAPHICS argument."
+    (if (and (require 'package nil :no-error)
+             (boundp 'package-quickstart-file))
+        (let ((early-init-fname (locate-user-emacs-file "early-init.el"))
+              (fname))
+          (unless for-graphics
+            (unless (file-exists-p early-init-fname)
+              (user-error "Package quickstart is not active.
+ Cannot find the %s file used to activate it"
+                          early-init-fname))
+            ;; replace or remove the early-init.el file
+            (if pel-early-init-without-package-quickstart
+                (copy-file pel-early-init-without-package-quickstart
+                           early-init-fname)
+              (delete-file early-init-fname)))
+          ;; remove the package-quickstart.el file and the .elc file
+          ;; if it exists.
+          (setq fname (pel--adjusted-fname package-quickstart-file
+                                           :force for-graphics))
+          (when (file-exists-p fname)
+            (delete-file fname))
+          (setq fname (concat fname "c"))
+          (when (file-exists-p fname)
+            (delete-file fname)))
+      (user-error "Cannot access package-quickstart-file variable!")))
+  (declare-function pel--remove-package-quickstart-files "pel-setup")
 
   ;;-pel-autoload
   (defun pel-setup-without-package-quickstart ()
     "Disable package quickstart.
 Support PEL startup modes and PEL dual independent customization files."
     (interactive)
-    (if (and (require 'package nil :no-error)
-             (boundp 'package-quickstart-file))
-        (let ((early-init-fname (locate-user-emacs-file "early-init.el"))
-              (fname))
-          (unless (file-exists-p early-init-fname)
-            (user-error "Package quickstart is not active.
- Cannot find the %s file used to activate it"
-                        early-init-fname))
-          ;; replace or remove the early-init.el file
-          (if pel-early-init-without-package-quickstart
-              (copy-file pel-early-init-without-package-quickstart
-                         early-init-fname)
-            (delete-file early-init-fname))
-          ;; remove the package-quickstart.el file and the .elc file
-          ;; if it exists.
-          (setq fname (pel--adjusted-fname package-quickstart-file :force nil))
-          (when (file-exists-p fname)
-            (delete-file fname))
-          (setq fname (concat fname "c"))
-          (when (file-exists-p fname)
-            (delete-file fname))
-          ;; when dual independent customization mode is used delete the
-          ;; graphics specific files.
-          (setq fname (pel--adjusted-fname package-quickstart-file :force t))
-          (when (file-exists-p fname)
-            (delete-file fname))
-          (setq fname (concat fname "c"))
-          (when (file-exists-p fname)
-            (delete-file fname))))))
+    (pel--remove-package-quickstart-files nil)
+    ;; when dual independent customization mode is used delete the
+    ;; graphics specific files.
+    (pel--remove-package-quickstart-files t)
+    ;; Remember user setting: in pel-with-package-quickstart user-option
+    ;; TODO save in current custom file
+    (setq pel-with-package-quickstart nil)))
 
 ;; ---------------------------------------------------------------------------
 ;; elpa symlink control
@@ -1060,8 +1073,17 @@ Compared: symlink %s to target %s.
           ;; pel-reduced). Support dual tty/graphics mode by processing
           ;; a file with modified name if required.
           (when (>= emacs-major-version 27)
-            (pel--build-package-quickstart
-             (pel--adjusted-fname elpa-reduced-dirpath)))
+            (if pel-with-package-quickstart
+                ;; package-quickstart is requested: create/update files
+                (progn
+                  ;; create early-init if it's missing
+                  (pel--setup-early-init)
+                  ;; create/update the package-quickstart
+                  (pel--activate-package-quickstart
+                   (pel--adjusted-fname elpa-reduced-dirpath)
+                   for-graphics))
+              ;; package-quickstart is not requested: delete files not needed
+              (pel--remove-package-quickstart-files for-graphics)))
           (setq step-count (1+ step-count)))
       (error
        (display-warning 'pel-setup-fast
@@ -1122,8 +1144,16 @@ is only one or when its for the terminal (TTY) mode."
     ;; package-quickstart-refresh must be done while package-alist
     ;; includes all packages now in elpa (which is elpa and elpa-complete).
     (when (>= emacs-major-version 27)
-      (pel--build-package-quickstart
-       (pel--adjusted-fname pel-elpa-dirpath)))))
+      (if pel-with-package-quickstart
+          ;; package-quickstart is requested: create/update files
+          (progn
+            ;; create early-init if it's missing
+            (pel--setup-early-init)
+            ;; create/update the package-quickstart
+            (pel--build-package-quickstart
+             (pel--adjusted-fname pel-elpa-dirpath)))
+        ;; package-quickstart is not requested: delete files not needed
+        (pel--remove-package-quickstart-files for-graphics)))))
 
 ;;-pel-autoload
 (defun pel-setup-normal ()

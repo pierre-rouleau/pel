@@ -506,6 +506,13 @@ byte compiler warnings but that will also speed the Emacs startup a little."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-with-package-quickstart nil
+  "When non-nil: activate package-quickstart, otherwise don't activate it.
+This is only used in Emacs 27 and later. It's ignore in earlier Emacs version"
+  :group 'pel-fast-startup
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-compile-package-quickstart nil
   "Whether `pel-activate-package-quickstart' compiles package-quickstart file.
 
