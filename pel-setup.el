@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-16 23:10:08, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-16 23:27:46, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1030,7 +1030,9 @@ Compared: symlink %s to target %s.
            (pel-string-when (>= emacs-major-version 27)
                             (format "\
   ;; step 2: (only for Emacs >= 27)
-  (push (format \"%s\" (if force-graphics \"-graphics\" \"\")) load-path)"
+  (push (format \"%s\"
+                (if force-graphics \"-graphics\" \"\"))
+        load-path)"
                                     (replace-regexp-in-string
                                      "elpa-reduced"
                                      "elpa-reduced%s"
