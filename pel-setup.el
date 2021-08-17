@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-16 23:27:46, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-17 11:05:46, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -632,18 +632,20 @@ or refreshes the package-quickstart.el file(s)."
       ;; TODO save in current custom file
       (setq pel-with-package-quickstart t)))
 
-  (defun pel--remove-package-quickstart-files (for-graphics)
+  (defun pel--remove-package-quickstart-files (for-graphics
+                                               &optional expect-early-init)
     "Remove package quickstart files identified by the FOR-GRAPHICS argument."
     (if (and (require 'package nil :no-error)
              (boundp 'package-quickstart-file))
         (let ((early-init-fname (locate-user-emacs-file "early-init.el"))
               (fname))
           (unless for-graphics
-            (unless (file-exists-p early-init-fname)
+            (when (and expect-early-init
+                       (not (file-exists-p early-init-fname)))
               (user-error "Package quickstart is not active.
- Cannot find the %s file used to activate it"
+ No %s file found to activate it."
                           early-init-fname))
-            ;; replace or remove the early-init.el file
+            ;; replace or remove early-init.el as requested by user-option
             (if pel-early-init-without-package-quickstart
                 (copy-file pel-early-init-without-package-quickstart
                            early-init-fname)
@@ -1028,8 +1030,7 @@ Compared: symlink %s to target %s.
            pel-fast-startup-init-fname
            (pel-elpa-disable-pkg-deps-in elpa-reduced-dirpath)
            (pel-string-when (>= emacs-major-version 27)
-                            (format "\
-  ;; step 2: (only for Emacs >= 27)
+                            (format ";; step 2: (only for Emacs >= 27)
   (push (format \"%s\"
                 (if force-graphics \"-graphics\" \"\"))
         load-path)"
