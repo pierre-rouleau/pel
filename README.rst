@@ -29,7 +29,7 @@ or `update it`_ [#update]_ !
   the commands **pel-setup-with-quickstart** and **pel-setup-no-quickstart**.
 
 - PEL also provides further startup speedup with PEL **fast startup mode**.
-  See `⅀ Fast Startup PDF`_ (see [#filefox]_).
+  See `⅀ Fast Startup PDF`_ (see [#firefox]_).
   PEL supports 2 different Emacs startup operation modes:
 
   - The **normal Emacs startup setup**, using Emacs' standard package.el
@@ -142,13 +142,24 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 *Notes*:
 
 .. [#install] The instructions for installing PEL are located inside `section 2`_ of `PEL manual`_.
-              The manual is large and some browser do not always move to the right location.
+              The manual is large and some browser do not always move to the
+              right location.
+
 .. [#update]  The instructions for updating PEL are located inside `section 3`_ of `PEL
               manual`_.  You can also use the `manual's table of contents`_ to move around.
-              The manual is large and some browser do not always move to the right location.
+              The manual is large and some browser do not always move to the
+              right location.
+
 .. [#externp] An external package may have dependencies.  The dependencies are also
               installed. PEL currently provides access to over 190 top-level
               packages. The actual number of packages is larger when counting their dependencies.
+
+.. [#firefox] All `PEL PDF files`_ have a large number of hyperlinks to other
+              PDF files, Emacs manual pages, external packages and articles.
+              Use a browser that is capable of rendering PDF files for the best user
+              experience.  The `Mozilla Firefox`_ browser does an excellent job
+              at it since its version 78, under all operating system and is
+              highly recommended.
 
 .. [#quick] **Quick initialization**: On my 2014 iMac running macOS Mojave in
             terminal mode running Emacs 26.3 I get the following startup time:
@@ -175,12 +186,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
             packages that can be bundled by PEL.  Those that have all their files
             in the same directory can be bundled.
 
-.. [#firefox] All `PEL PDF files`_ have a large number of hyperlinks to other
-              PDF files, Emacs manual pages, external packages and articles.
-              Use a browser that is capable of rendering PDF files for the best user
-              experience.  The `Mozilla Firefox`_ browser does an excellent job
-              at it since its version 78, under all operating system and is
-              highly recommended.
+
 
 .. links
 
