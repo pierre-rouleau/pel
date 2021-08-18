@@ -21,72 +21,80 @@ PEL -- Pragmatic Environment Library for Emacs
 PEL might be for you!  Then go ahead, `install it`_ [1]_
 or `update it`_ [2]_ !
 
-- PEL operates in 2 different Emacs startup operation modes:
 
-  - The normal Emacs startup setup, using Emacs' standard package.el package manager
-    with PEL's extensions that provide **customization-driven package
-    management** built on `Emacs easy customization`_ to pick and chose
-    packages and behaviours, all without having to write Emacs Lisp code.  PEL
-    enhances Emacs customization system: PEL provides keys to quickly access
-    customization groups of Emacs built-in and external Emacs Lisp libraries
-    even if they are not even loaded.
+- PEL supports the package quickstart feature available on Emacs version
+  27 and later. With it you can speed Emacs startup.  PEL provides
+  early-init.el file template and provides commands to create and refresh all
+  files to activate the package quickstart or disable it:
+  the commands **pel-setup-with-quickstart** and **pel-setup-no-quickstart**.
 
-  - The faster Emacs startup setup.  Use it when you want a **fast Emacs
-    startup** (achieve 0.1 second startup with over 230 external packages, see [4]_).
-    In that mode you cannot install new packages but you have access
-    to all packages you have already installed and Emacs starts faster than
-    before.
+- PEL also provides further startup speedup with PEL **fast startup mode**.
+  See `⅀ Fast Startup PDF`_. PEL supports 2 different Emacs startup operation modes:
 
-    - Use the **pel-setup-fast** command to bundle all external packages that
-      use only one directory together inside a single directory to reduce
-      Emacs ``load-path`` and setup your Elpa directory for a fast startup.
-    - Use the **pel-setup-normal** to restore the normal Emacs setup and allow
-      you to use Emacs package management and PEL's features of automatic
-      package installation via customization.
+  - The **normal Emacs startup setup**, using Emacs' standard package.el
+    package manager with PEL's extensions that provide **customization-driven
+    package management** built on `Emacs easy customization`_ to pick and
+    chose packages and behaviours, all without having to write Emacs Lisp
+    code.  PEL enhances Emacs customization system: PEL provides keys to
+    quickly access customization groups of Emacs built-in and external Emacs
+    Lisp libraries even if they are not even loaded.
 
-- PEL controls the download, installation, configuration and activation of
-  **over 230** *top-level* [3]_ external packages through the use of
-  easy-to-setup customization user-options that have a name that start with
-  the "``pel-use-``" prefix.
+  - The **fast startup** mode. With it you can (achieve 0.1 second startup
+    with over 230 external packages, see [4]_).  PEL does not support download
+    and installation of new external packages in that mode but you can use all
+    external packages you have already installed and Emacs starts faster.
+    PEL provides 2 commands to switch from one mode to the other.
 
-  - If requested by the user, PEL also supports two independent customization
-    files along with two independent Elpa-compliant package directories: one
-    for Emacs operating in terminal (TTY) mode and another for Emacs operating
-    in graphical mode.  This allows you to take advantage of the strengths of
-    each mode using the packages you need for each and no more.
+    - The **pel-setup-fast** activates the fast startup mode. It bundles all
+      external packages that use a single directory inside a single directory
+      to reduce Emacs ``load-path`` and sets up your Elpa directory for a fast
+      startup.
+    - The **pel-setup-normal** to restore the normal Emacs setup and restores
+      Emacs Emacs package management and PEL's automatic package installation
+      via customization.
 
-    - Some modifications to your ``init.el`` file is required for this.
-      See OPTION A inside the `example/init/init-5.el`_ source for
-      additional instructions.
-    - Once your init file has been instrumented for PEL, you can then use
-      ``M-x pel-setup-dual-environment`` command to setup the environment.
+- PEL saves your customization data inside a file separate from your
+  ``init.el`` file, providing an extra degree of freedom and control.
 
-- PEL can install packages from `GNU Elpa`_, MELPA_, and simple GitHub or
-  Gitlab repositories even when the files have not been setup as an
-  elpa-compliant package.
+- PEL supports the ability to have 2 independent customization files: one for
+  Emacs running in terminal mode and another for Emacs running in graphics
+  mode. PEL supports two sets of elpa directories to store the packages used
+  for each mode when this independent dual customization mode is used.  PEL
+  provides the **pel-setup-dual-environment** command to activate this.
+  See the `⅀ Customize PDF`_ for more details.
 
-- Use the **pel-cleanup** command to **remove** deactivated packages not
-  requested by PEL user-options, moving those packages from the ``elpa``
-  or ``utils`` directory to the corresponding *attic* directories for
-  backup and later re-activation.
+  - Some modifications to your ``init.el`` file is required for this.
+    See OPTION A inside the `example/init/init-5.el`_ source for
+    additional instructions.
+  - Once your init file has been instrumented for PEL, you can then use
+    ``M-x pel-setup-dual-environment`` command (or ``<f11> M-s q``) to
+    activate dual independent customization.
+
+- In normal mode, PEL controls the download, installation, configuration and
+  activation of **over 230** *top-level* [3]_ external packages through the
+  use of easy-to-setup customization user-options that have a name that start
+  with the "``pel-use-``" prefix.
+
+  - PEL can install packages from `GNU Elpa`_, MELPA_, and simple GitHub or
+    Gitlab repositories even when the files have not been setup as an
+    elpa-compliant package.
+
+  - Use the **pel-cleanup** command to **remove** deactivated packages not
+    requested by PEL user-options, moving those packages from the ``elpa``
+    or ``utils`` directory to the corresponding *attic* directories for
+    backup and later re-activation.
+
+  - PEL controls the activation and loading of selected packages, with
+    emphasis on:
+
+    - reducing Emacs initialization time to a minimum [4]_ in all modes,
+    - providing key bindings when Emacs is running in both graphics mode and
+      terminal mode,
+    - adding extra commands that complement Emacs and external packages.
 
 - PEL integrates these packages and adds a large number of key bindings
   **that mostly do not interfere with the standard Emacs key bindings**
   (except for a very small few documented ones).
-
-- PEL saves your customization data inside a file separate from your
-  ``init.el`` file, providing an extra degree of freedom and control when you
-  same these files in a (D)VCS. Save and restore your configurations from Git,
-  Mercurial or any VCS.
-
-- PEL controls the activation of the loading of the selected packages, with
-  emphasis on:
-
-  - reducing Emacs initialization time to a minimum [4]_ and,
-  - providing key bindings when Emacs is running in both graphics mode and
-    terminal mode,
-  - adding extra commands that complement Emacs commands and the commands of
-    external packages.
 
 - PEL **extends Emacs documentation**:
 
@@ -207,6 +215,8 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _PEL Customization:          doc/pel-manual.rst#pel-customization
 .. _dual customization:         doc/pel-manual.rst#independent-customization-for-terminal-and-graphics-modes
 .. _fast startup mode:          doc/pel-manual.rst#normal-startup-and-fast-startup-modes
+.. _⅀ Fast Startup PDF:         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/fast-startup.pdf
+.. _⅀ Customize PDF:            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf
 
 
 ..
