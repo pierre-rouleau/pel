@@ -41,7 +41,7 @@ or `update it`_ [#update]_ !
     Lisp libraries even if they are not even loaded.
 
   - The **fast startup** mode. With it you can (achieve 0.1 second startup
-    with over 230 external packages, see [4]_).  PEL does not support download
+    with over 230 external packages, see [#firefox]_).  PEL does not support download
     and installation of new external packages in that mode but you can use all
     external packages you have already installed and Emacs starts faster.
     PEL provides 2 commands to switch from one mode to the other.
@@ -104,7 +104,7 @@ or `update it`_ [#update]_ !
     with hyperlinks to Emacs manuals, external packages, articles and other
     useful references.
 
-    - See the `PEL Index PDF`_ [#firefox] as a starting point.  For the best
+    - See the `PEL Index PDF`_ [#firefox]_ as a starting point.  For the best
       user experience, use a browser, like Firefox, that can render the PDF
       inline (as opposed to downloading it) so you can use the links quickly.
       Inside Emacs use ``<f11> <f1>`` to open the `PEL Index PDF`_ and then
