@@ -651,8 +651,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-setup-info)
   (when (>= emacs-major-version 27)
     (pel-autoload "pel-setup" for:
-      pel-setup-package-quickstart
-      pel-setup-without-package-quickstart))
+      pel-setup-with-quickstart
+      pel-setup-no-quickstart))
 
   (pel-autoload "pel-window" for:
     pel-show-window-previous-buffer

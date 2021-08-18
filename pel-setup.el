@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-18 09:27:52, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-18 09:46:11, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -607,7 +607,7 @@ is only one or when its for the terminal (TTY) mode."
   (declare-function pel--setup-early-init "pel-setup")
 
   ;;-pel-autoload
-  (defun pel-setup-package-quickstart ()
+  (defun pel-setup-with-quickstart ()
     "Activate package quickstart for current context.
 
 The context includes the PEL startup mode and PEL's ability
@@ -667,7 +667,7 @@ or refreshes the package-quickstart.el file(s)."
   (declare-function pel--remove-package-quickstart-files "pel-setup")
 
   ;;-pel-autoload
-  (defun pel-setup-without-package-quickstart ()
+  (defun pel-setup-no-quickstart ()
     "Disable package quickstart.
 Support PEL startup modes and PEL dual independent customization files."
     (interactive)

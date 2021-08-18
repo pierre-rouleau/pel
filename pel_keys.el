@@ -1385,6 +1385,9 @@ can't bind negative-argument to C-_ and M-_"
 (define-key pel:startup "?" 'pel-setup-info)
 (define-key pel:startup "f" 'pel-setup-fast)
 (define-key pel:startup "n" 'pel-setup-normal)
+(when (>= emacs-major-version 27)
+  (define-key pel:startup "q" 'pel-setup-with-quickstart)
+  (define-key pel:startup (kbd "M-q") 'pel-setup-no-quickstart))
 
 ;; ---------------------------------------------------------------------------
 ;; Input Completion Framework activation

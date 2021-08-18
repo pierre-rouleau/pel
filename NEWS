@@ -10,6 +10,14 @@ PEL -- Pragmatic Environment Library --  NEWS         -*- org -*-
   Emacs standard environment.  Use the fast startup setup when you want to use
   a large number of external packages and want to reduce Emacs startup time
   more than what can be done otherwise.
+- New: explicit support for Emacs ≥ 27 package quickstart feature that is
+  aware of PEL fast-startup mode and PEL's ability to deal with 2 independent
+  customization files (one for Emacs in terminal mode and another for Emacs
+  running in graphics mode).  The *pel-setup-with-quickstart* command (bound
+  to ``<f11> M-S q``) activates package quickstart or refresh the
+  package-quickstart file(s) if already present.  The
+  *pel-setup-no-quickstart* (bound to ``<f11> M_S M-q``) disables package
+  quickstart.
 - New: PEL now provides *customization-driven package management*.
   It installs packages identified by the ``pel-use-`` user-option when the
   *pel-init* command is issued and some of the requested packages are missing.
