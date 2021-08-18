@@ -48,6 +48,29 @@
 ;; Inform later code that package quickstart is being used.
 (setq package-quickstart t)
 
+;; ----
+;; If Emacs is running in Graphics mode with dual independent customization
+;; then ensure that package quickstart activation uses the graphics-specific
+;; files.
+(when pel-force-graphics-specific-custom-file-p
+
+  (defun pel--package-activate-all-ei (original-fct)
+    "Force use of controlled package-user-dir during package initialize."
+    (let ((package-user-dir        (file-truename
+                                    (locate-user-emacs-file
+                                     "elpa-graphics")))
+          (package-quickstart-file (file-truename
+                                    (locate-user-emacs-file
+                                     "package-quickstart-graphics.el")))
+          (custom-file             (file-truename
+                                    (locate-user-emacs-file
+                                     "emacs-customization-graphics.el"))))
+      (funcall original-fct)))
+  (declare-function pel--package-activate-all-ei "early-init")
+
+  (advice-add 'package-activate-all :around #'pel--package-activate-all-ei))
+
+;; --
 ;; Activate PEL's fast startup if environment was setup by `pel-setup-fast'.
 (let ((fast-startup-setup-fname (expand-file-name "pel-fast-startup-init.el"
                                                   user-emacs-directory)))
@@ -58,7 +81,6 @@
     ;; Remember Emacs is running in PEL's fast startup mode.
     (setq pel-running-in-fast-startup-p t)))
 
-(when pel-force-graphics-specific-custom-file-p
-  (setq package-user-dir (locate-user-emacs-file "elpa-graphics")))
+
 
 ;; ---------------------------------------------------------------------------
