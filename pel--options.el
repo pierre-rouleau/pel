@@ -426,7 +426,7 @@ master/doc/pdf/%s.pdf" topic)
 ;; ---------------------------
 
 (defgroup pel nil
-  "Pragmatic Environment Library.
+  "Pragmatic Emacs Leap.
 A collection of facilities designed to integrate and complement a large
 set of Emacs libraries while providing key bindings that mainly use function
 keys as key prefixes, leaving the standard Emacs keys untouched.

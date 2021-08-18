@@ -1,6 +1,6 @@
-==============================================
-PEL -- Pragmatic Environment Library for Emacs
-==============================================
+===========================
+PEL -- Pragmatic Emacs Leap
+===========================
 
 .. image:: https://img.shields.io/:license-gpl3-blue.svg
    :alt: License

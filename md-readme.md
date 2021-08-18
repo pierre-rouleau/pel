@@ -1,1 +1,1 @@
-# pel -- Pragmatic Environment Library for Emacs
+# pel -- Pragmatic Emacs Leap
