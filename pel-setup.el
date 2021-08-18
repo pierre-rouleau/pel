@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-17 22:48:07, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-18 09:27:52, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -587,7 +587,9 @@ Emacs running in graphics mode and has a custom file that is independent from
 the file used by Emacs running in terminal (TTY) mode.  It is nil when there
 is only one or when its for the terminal (TTY) mode."
     (let ((pel--adjust-path-for-graphics for-graphics))
-      (pel--build-package-quickstart dirpath)))
+      (pel--build-package-quickstart (pel--adjusted-fname
+                                      dirpath
+                                      :force for-graphics))))
   (declare-function pel--activate-package-quickstart "pel-setup")
 
   (defun pel--setup-early-init (&optional error-if-exists)
@@ -631,7 +633,8 @@ or refreshes the package-quickstart.el file(s)."
           (pel--activate-package-quickstart elpa-dpath t)))
       ;; Remember user setting: in pel-with-package-quickstart user-option
       ;; TODO save in current custom file
-      (setq pel-with-package-quickstart t)))
+      (setq pel-with-package-quickstart t))
+    (pel-setup-info :now))
 
   (defun pel--remove-package-quickstart-files (for-graphics
                                                &optional expect-early-init)
@@ -674,7 +677,8 @@ Support PEL startup modes and PEL dual independent customization files."
     (pel--remove-package-quickstart-files t)
     ;; Remember user setting: in pel-with-package-quickstart user-option
     ;; TODO save in current custom file
-    (setq pel-with-package-quickstart nil)))
+    (setq pel-with-package-quickstart nil)
+    (pel-setup-info :now)))
 
 ;; ---------------------------------------------------------------------------
 ;; elpa symlink control
@@ -1129,7 +1133,11 @@ Failed fast startup setup for %s after %d of %d steps: %s
   "Return t when package quickstart is currently used, nil otherwise."
   (and (require 'package nil :no-error)
        (boundp 'package-quickstart)
-       package-quickstart))
+       package-quickstart
+       (file-exists-p (locate-user-emacs-file "early-init.el"))
+       (file-exists-p (locate-user-emacs-file
+                       (pel--adjusted-fname "package-quickstart.el"
+                                            :force pel-emacs-is-graphic-p)))))
 
 (defun pel--with-quickstart-state-msg (prompt &optional show-requested-status)
   "Augment PROMPT to ask about package-quickstart if necessary.
@@ -1231,30 +1239,33 @@ is only one or when its for the terminal (TTY) mode."
 
 ;; --
 ;;-pel-autoload
-(defun pel-setup-info ()
+(defun pel-setup-info (&optional with-now)
   "Display current state of PEL setup: whether normal or in fast startup."
   (interactive)
-  (let* ((mode (pel--startup-mode)))
+  (let ((mode (pel--startup-mode))
+        (now-msg (if with-now "now " "")))
     (if pel--setup-changed
         (message "You already changed the setup to %s but did not stop Emacs!
  You may experience inconsistent Emacs behaviour.  It's best to restart Emacs!"
                  mode)
       (cond ((eq mode 'fast)
-             (message "PEL/Emacs operates in fast startup mode%s.
+             (message "PEL/Emacs %soperates in fast startup mode%s.
  Emacs starts faster because single directory packages are bundled inside
  a single directory: %selpa-reduced/pel-bundle-YYYYMMDD.hhmm.
  However, in this setup mode, PEL is not able to install any external package.
  To install new package return to normal mode by executing pel-setup-normal."
+                      now-msg
                       (pel--with-quickstart-state-msg "")
                       user-emacs-directory))
             ((eq mode 'normal)
-             (message "PEL/Emacs operates in normal mode%s.
+             (message "PEL/Emacs %soperates in normal mode%s.
  In this mode Emacs packages are setup the way Emacs normally organizes them.
  You can install new packages and you can use PEL customization to add and
  install new package, or use pel-cleanup to remove the unused ones.
  With a large number of external packages Emacs normally starts slower
  because of the larger number of directories inside %selpa
  If you want to speed up Emacs startup execute pel-setup-fast."
+                      now-msg
                       (pel--with-quickstart-state-msg "")
                       user-emacs-directory))
             (t
