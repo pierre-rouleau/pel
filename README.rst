@@ -145,7 +145,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
               The manual is large and some browser do not always move to the
               right location.
 
-.. [#update]  The instructions for updating PEL are located inside `section 3`_ of `PEL
+.. [#update]  The instructions for updating PEL are located inside `section 5`_ of `PEL
               manual`_.  You can also use the `manual's table of contents`_ to move around.
               The manual is large and some browser do not always move to the
               right location.
@@ -214,7 +214,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _install it:
 .. _section 2:
 .. _How to install PEL:         doc/pel-manual.rst#how-to-install-pel
-.. _section 3:
+.. _section 5:
 .. _update it:                  doc/pel-manual.rst#updating-pel
 .. _NEWS file:                  NEWS
 .. _discussion board:           https://github.com/pierre-rouleau/pel/discussions
