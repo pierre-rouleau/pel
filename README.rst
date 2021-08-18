@@ -18,8 +18,8 @@ PEL -- Pragmatic Environment Library for Emacs
 - Want to learn Emacs and try several built-in and external packages? 😇
 - Want a fast startup even with a large number of external packages installed? 😃
 
-PEL might be for you!  Then go ahead, `install it`_ [1]_
-or `update it`_ [2]_ !
+PEL might be for you!  Then go ahead, `install it`_ [#install]_
+or `update it`_ [#update]_ !
 
 
 - PEL supports the package quickstart feature available on Emacs version
@@ -29,7 +29,8 @@ or `update it`_ [2]_ !
   the commands **pel-setup-with-quickstart** and **pel-setup-no-quickstart**.
 
 - PEL also provides further startup speedup with PEL **fast startup mode**.
-  See `⅀ Fast Startup PDF`_. PEL supports 2 different Emacs startup operation modes:
+  See `⅀ Fast Startup PDF`_ (see [#filefox]_).
+  PEL supports 2 different Emacs startup operation modes:
 
   - The **normal Emacs startup setup**, using Emacs' standard package.el
     package manager with PEL's extensions that provide **customization-driven
@@ -71,7 +72,7 @@ or `update it`_ [2]_ !
     activate dual independent customization.
 
 - In normal mode, PEL controls the download, installation, configuration and
-  activation of **over 230** *top-level* [3]_ external packages through the
+  activation of **over 230** *top-level* [#externp]_ external packages through the
   use of easy-to-setup customization user-options that have a name that start
   with the "``pel-use-``" prefix.
 
@@ -87,7 +88,7 @@ or `update it`_ [2]_ !
   - PEL controls the activation and loading of selected packages, with
     emphasis on:
 
-    - reducing Emacs initialization time to a minimum [4]_ in all modes,
+    - reducing Emacs initialization time to a minimum [#quick]_ in all modes,
     - providing key bindings when Emacs is running in both graphics mode and
       terminal mode,
     - adding extra commands that complement Emacs and external packages.
@@ -103,14 +104,14 @@ or `update it`_ [2]_ !
     with hyperlinks to Emacs manuals, external packages, articles and other
     useful references.
 
-    - See the `PEL Index PDF`_ as a starting point.  For the best user
-      experience, use a browser, like Firefox, that can render the PDF inline
-      (as opposed to downloading it) so you can use the links quickly.  Inside
-      Emacs use ``<f11> <f1>`` to open the `PEL Index PDF`_ and then navigate
-      from it, or use ``<f12> <f1>`` to open the PDF describing the major mode
-      of the current buffer and its key bindings.  All of these PDF files are
-      created from a macOS Number file.  It is located in a separate Git repo:
-      the `pel-pdf-spreadsheet repo`_.
+    - See the `PEL Index PDF`_ [#firefox] as a starting point.  For the best
+      user experience, use a browser, like Firefox, that can render the PDF
+      inline (as opposed to downloading it) so you can use the links quickly.
+      Inside Emacs use ``<f11> <f1>`` to open the `PEL Index PDF`_ and then
+      navigate from it, or use ``<f12> <f1>`` to open the PDF describing the
+      major mode of the current buffer and its key bindings.  All of these PDF
+      files are created from a macOS Number file.  It is located in a separate
+      Git repo: the `pel-pdf-spreadsheet repo`_.
 
   - `PEL's Manual`_ describes PEL features in more details. See:
 
@@ -140,39 +141,47 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 
 *Notes*:
 
-.. [1] The instructions for installing PEL are located inside `section 2`_ of `PEL manual`_.
-       The manual is large and some browser do not always move to the right location.
-.. [2] The instructions for updating PEL are located inside `section 3`_ of `PEL
-       manual`_.  You can also use the `manual's table of contents`_ to move around.
-       The manual is large and some browser do not always move to the right location.
-.. [3] An external package may have dependencies.  The dependencies are also
-       installed. PEL currently provides access to over 190 top-level
-       packages. The actual number of packages is larger when counting their dependencies.
+.. [#install] The instructions for installing PEL are located inside `section 2`_ of `PEL manual`_.
+              The manual is large and some browser do not always move to the right location.
+.. [#update]  The instructions for updating PEL are located inside `section 3`_ of `PEL
+              manual`_.  You can also use the `manual's table of contents`_ to move around.
+              The manual is large and some browser do not always move to the right location.
+.. [#externp] An external package may have dependencies.  The dependencies are also
+              installed. PEL currently provides access to over 190 top-level
+              packages. The actual number of packages is larger when counting their dependencies.
 
-.. [4] **Quick initialization**: On my 2014 iMac running macOS Mojave in
-       terminal mode running Emacs 26.3 I get the following startup time:
+.. [#quick] **Quick initialization**: On my 2014 iMac running macOS Mojave in
+            terminal mode running Emacs 26.3 I get the following startup time:
 
-       - with 182 packages, benchmark-init reports about 0.4 second startup-time,
-       - with 238 packages, benchmark-init reports about 0.6 second
-         startup-time, see the `benchmark-init report for it <doc/res/normal-startup-001.png>`_
-       - with 238 packages, in **fast startup** operation mode, benchmark-init
-         reports about **0.1 second startup-time**, see the
-         `benchmark-init report for it faster one <doc/res/fast-startup-001.png>`_.
+            - with 182 packages, benchmark-init reports about 0.4 second startup-time,
+            - with 238 packages, benchmark-init reports about 0.6 second
+              startup-time, see the `benchmark-init report for it <doc/res/normal-startup-001.png>`_
+            - with 238 packages, in **fast startup** operation mode, benchmark-init
+              reports about **0.1 second startup-time**, see the
+              `benchmark-init report for it faster one <doc/res/fast-startup-001.png>`_.
 
-       It's possible to reduce this further by restricting the number of used
-       package. This must be done in normal operation mode (as opposition to
-       the fast startup operation mode) by changing the PEL user-options and
-       then running the **M-x pel-cleanup** command.  Once done, return to
-       fast startup operation mode.
+            It's possible to reduce this further by restricting the number of used
+            package. This must be done in normal operation mode (as opposition to
+            the fast startup operation mode) by changing the PEL user-options and
+            then running the **M-x pel-cleanup** command.  Once done, return to
+            fast startup operation mode.
 
-       Use the following commands to switch operation modes and then restart Emacs:
+            Use the following commands to switch operation modes and then restart Emacs:
 
-       - ``M-x pel-setup-fast`` (bound to ``<f11> M-S f``)
-       - ``M-x pel-setup-normal`` (bound to ``<f11> M-S n``)
+            - ``M-x pel-setup-fast`` (bound to ``<f11> M-S f``)
+            - ``M-x pel-setup-normal`` (bound to ``<f11> M-S n``)
 
-       The time reduction of fast startup mode depends on the number of
-       packages that can be bundled by PEL.  Those that have all their files
-       in the same directory can be bundled.
+            The time reduction of fast startup mode depends on the number of
+            packages that can be bundled by PEL.  Those that have all their files
+            in the same directory can be bundled.
+
+.. [#firefox] All `PEL PDF files`_ have a large number of hyperlinks to other
+              PDF files, Emacs manual pages, external packages and articles.
+              Use a browser that is capable of rendering PDF files for the best user
+              experience.  The `Mozilla Firefox`_ browser does an excellent job
+              at it since its version 78, under all operating system and is
+              highly recommended.
+
 .. links
 
 
@@ -208,6 +217,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _manual's table of contents: doc/pel-manual.rst
 .. _pel-pdf-spreadsheet repo:   https://github.com/pierre-rouleau/pel-pdf-spreadsheet#readme
 .. _example/init/init-5.el:     example/init/init-5.el
+.. _PEL PDF files:
 .. _PDF topic-oriented reference sheets: doc/pdf
 .. _PEL setup commands:        doc/pel-manual.rst#pel-setup-commands
 .. _PEL initialization command: doc/pel-manual.rst#pel-initialization-command
@@ -217,6 +227,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _fast startup mode:          doc/pel-manual.rst#normal-startup-and-fast-startup-modes
 .. _⅀ Fast Startup PDF:         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/fast-startup.pdf
 .. _⅀ Customize PDF:            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf
+.. _Mozilla Firefox:            https://en.wikipedia.org/wiki/Firefox
 
 
 ..
