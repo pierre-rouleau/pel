@@ -30,17 +30,19 @@
 ;; ---------------------------------------------------------------------
 ;;
 ;; Separate elpa directory for Emacs in graphics mode and Emacs in TTY mode.
-;; Use ~/.emacs.d/elpa in TTY mode, and ~/.emacs.d/elpa-graphics in graphics mode.
-;; Inside early-init.el the function `display-graphic-p' does not return t for
-;; Emacs running in graphics mode, so instead use a shell script to start Emacs in
-;; graphics mode and set the PEL_EMACS_IN_GRAPHICS environment variable to "1"
-;; inside that shell script otherwise do not define the variable.
+;; Use ~/.emacs.d/elpa in TTY mode, and ~/.emacs.d/elpa-graphics in graphics
+;; mode.  Inside early-init.el the function `display-graphic-p' does not
+;; return t for Emacs running in graphics mode, so instead use a shell script
+;; to start Emacs in graphics mode and set the PEL_EMACS_IN_GRAPHICS
+;; environment variable to "1" inside that shell script otherwise do not
+;; define the variable.
 ;;
 ;; To activate init option A for Emacs 27+ you must use a specialized shell
 ;; that sets the PEL_EMACS_IN_GRAPHICS environment variable for Emacs used
 ;; in graphics mode and don't set it for Emacs running in TTY mode.
 
-(defvar pel-force-graphics-specific-custom-file-p (getenv "PEL_EMACS_IN_GRAPHICS")
+(defvar pel-force-graphics-specific-custom-file-p (getenv
+                                                   "PEL_EMACS_IN_GRAPHICS")
   "Force independent graphics mode customization.")
 
 ;; Inform later code that package quickstart is being used.
@@ -51,7 +53,8 @@
                                                   user-emacs-directory)))
   (when (file-exists-p fast-startup-setup-fname)
     (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
-    (pel-fast-startup-init pel-force-graphics-specific-custom-file-p)
+    (pel-fast-startup-init pel-force-graphics-specific-custom-file-p
+                           :from-early-init)
     ;; Remember Emacs is running in PEL's fast startup mode.
     (setq pel-running-in-fast-startup-p t)))
 

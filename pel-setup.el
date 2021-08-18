@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-17 15:42:36, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-17 22:48:07, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -806,17 +806,17 @@ originally returned by `pel-elpa-disable-pkg-deps-in'."
 ;; pel-fast-startup-init must be called either inside early-init.el
 ;; (for Emacs >= 27) or inside init.el for older versions of Emacs.
 ;;
-\(defun pel-fast-startup-init (&optional force-graphics)
+\(defun pel-fast-startup-init (&optional force-graphics from-early-init)
   \"Setup data to support the fast-startup mode.
 
 - #1: Add pkg/version of the dependencies of packages whose code has been been
       bundled into elpa-reduced/pel-bundle *pseudo-package* to
       `package--builtin-versions' to prevent their downloads.
 - #2: For Emacs >= 27, an extra step is required: add elpa-reduced/pel-bundle
-      package to load-path because for those versions of Emacs this must be
-      done during early-init (which calls pel-fast-startup-init).
-      For Emacs earlier than 27 this last step is not performed and its done
-      inside the init.el file.
+      package to `load-path' when the function is executed during early-init
+      because the `package-refresh' does not generate code to add the
+      pel-bundle to the `load-path'.  This code is not required when the
+      function is called from init or when Emacs is earlier than version 27.
 
 Return the pkg/version alist.\"
   ;; step 1:
@@ -857,8 +857,9 @@ If the first list has 3 members, then PEL/Emacs operates in fast startup mode."
          (met-criteria nil)
          (problems nil)
          (elpa-dirpath (pel--adjusted-fname pel-elpa-dirpath))
-         (elpa-reduced-dirpath  (pel--adjusted-fname (pel-sibling-dirpath elpa-dirpath
-                                                                         "elpa-reduced"))))
+         (elpa-reduced-dirpath  (pel--adjusted-fname
+                                 (pel-sibling-dirpath elpa-dirpath
+                                                      "elpa-reduced"))))
     (if (pel-in-fast-startup-p)
         (push "Identified as fast startup by function `pel-in-fast-startup'"
               met-criteria)
@@ -1022,23 +1023,44 @@ Compared: symlink %s to target %s.
           (setq step-count (1+ step-count))
           ;;
           ;; Disable the dependencies of all (multi-directory) packages
-          ;; left in the elpa-reduced directory.  This returns an alist of
-          ;; (package version) that should be added to the variable
-          ;; `package--builtin-versions' during init.el before the call to
-          ;; `package-activate-all' or `package-initialize'.  In Emacs ≥
-          ;; 27 it must be set in early-init.el.
-          (pel-setup-fast-startup-init
-           pel-fast-startup-init-fname
-           (pel-elpa-disable-pkg-deps-in elpa-reduced-dirpath)
-           (pel-string-when (>= emacs-major-version 27)
-                            (format ";; step 2: (only for Emacs >= 27)
-  (push (format \"%s\"
-                (if force-graphics \"-graphics\" \"\"))
-        load-path)"
-                                    (replace-regexp-in-string
-                                     "elpa-reduced"
-                                     "elpa-reduced%s"
-                                     new-pel-bundle-dirpath) )))
+          ;; left in the elpa-reduced directory, by calling the function
+          ;; `pel-elpa-disable-pkg-deps-in' which returns an alist of (package
+          ;; version) values identifying the dependencies of the packages left
+          ;; in the elpa-reduced. We don't want Emacs to attempt the download
+          ;; of these package since they have already been downloaded and
+          ;; placed into the pel-bundle *pseudo package*.  So create code that
+          ;; will run at init (or early-init) time in a Emacs lisp file that
+          ;; will be detected and loaded by both early-init.el and init.el.
+          ;; Call `pel-setup-fast-startup-init' to create the
+          ;; pel-fast-startup-init.el file that will be used as an indication
+          ;; to init and early-init that PEL fast-startup is requested.  These
+          ;; files will call its function: `pel-fast-startup-init' and will
+          ;; pass whether its invoked for graphics mode and whether it's
+          ;; called from early-init.
+          ;;
+          ;; It's called by early-init for Emacs ≥ 27, and called by init for
+          ;; earlier versions of Emacs, in both cases to add the (package
+          ;; version) dependencies to simulate builtins by adding them to the
+          ;; variable `package--builtin-versions' during init.el before the
+          ;; call to `package-activate-all' or `package-initialize'.
+          ;;
+          ;; Only one instance of that pel-fast-startup-init.el file needs to
+          ;; be created, even when dual independent customization is used.
+          ;; So do it when for-graphics is nil.
+          (unless for-graphics
+            (pel-setup-fast-startup-init
+             pel-fast-startup-init-fname
+             (pel-elpa-disable-pkg-deps-in elpa-reduced-dirpath)
+             (pel-string-when (>= emacs-major-version 27)
+                              (format ";; step 2: (only for Emacs >= 27)
+  (when from-early-init
+      (add-to-list 'load-path
+                   (format \"%s\"
+                           (if force-graphics \"-graphics\" \"\"))))"
+                                      (replace-regexp-in-string
+                                       "elpa-reduced"
+                                       "elpa-reduced%s"
+                                       new-pel-bundle-dirpath)))))
           (setq step-count (1+ step-count))
           ;;
           ;; Move the pel-bundle directory inside the elpa-reduced
