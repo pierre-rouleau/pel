@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Leap
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-19 15:07:26, updated by Pierre Rouleau.
+:Modified: 2021-08-19 16:18:18, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1613,13 +1613,18 @@ Launching graphics mode Emacs from a shell
 Under Unix-like Operating Systems like Linux and macOS when you run Emacs in
 graphics mode, Emacs may not get the complete environment variables that you get
 in your shell.  That happens quite often in macOS as explained by
-`Steve Purcel in the readme file of his exec-path-from-shell`_ package.
-His package provides a way to fix the problem.
+`Steve Purcell in the readme file of his exec-path-from-shell`_ package.
+His package provides a way to fix the problem.  PEL, however, does not
+integrate that library because it will show Emacs startup.
 
-Currently PEL does not integrate that package.
+There is another way for Emacs running under macOS that is not as flexible but
+runs faster and is described in the section titled `Control environment of
+macOS GUI Emacs`_.
 
-To avoid the problem, I instead recommend using a small script that allows you to start
-your graphics copy of Emacs from a shell.  There are several advantages:
+
+To avoid the problem altogether, I instead recommend using a small script that
+allows you to start your graphics copy of Emacs from a shell.  There are
+several advantages:
 
 - the graphical Emacs inherits the complete environment of the shell from which
   it is launched, without having to add yet another Emacs package (remember
@@ -1662,7 +1667,7 @@ line, doing something like this:
 .. _linux/ge:          ../bin/linux/ge
 .. _macOS/ge:          ../bin/macOS/ge
 
-.. _Steve Purcel in the readme file of his exec-path-from-shell: https://github.com/purcell/exec-path-from-shell#readme
+.. _Steve Purcell in the readme file of his exec-path-from-shell: https://github.com/purcell/exec-path-from-shell#readme
 .. _Steve Purcell's exec-path-from-shell:                        https://github.com/purcell/exec-path-from-shell
 
 
@@ -1800,6 +1805,82 @@ the absolute path.
       # ----------------------------------------------------------------------------
 
 .. _example/init/init-3.el: ../example/init/init-3.el
+
+
+.. ---------------------------------------------------------------------------
+
+Control environment of macOS GUI Emacs
+--------------------------------------
+
+You may want to start Emacs from a GUI macOS application like macOS Finder.
+This section presents an alternative to `Steve Purcell's
+exec-path-from-shell`_ which slows Emacs startup.
+
+This method consists in *hard-coding* environment variable values into the
+macOS ``Info.plist`` file located inside the GUI Emacs Application bundle.
+This file is an XML file and can easily be modified as described in the Emacs
+Wiki page titled `PATH set from Info.plist in app bundle`_.
+
+This method is quite useful to set ``PEL_EMACS_IN_GRAPHICS`` environment
+variable and inform the GUI Emacs early-init.el that Emacs runs in graphics
+mode [#early-init-graphics]_.
+
+**Do this:**
+
+Open your Emacs.app bundle Info.plist file, this is normally
+``/Applications/Emacs.app/Contents/Info.plist``.
+
+That file is an XML file.  You can edit it with Emacs using `nxml-mode`_ or
+another XML supporting mode.
+
+The file contains a top level dictionary.  Add the ``LSEnvironment`` key if
+not already present inside the file and then add as many key-value pairs as
+environment variables you want to add.
+
+As a minimum add setting ``PEL_EMACS_IN_GRAPHICS`` to the value ``"1"`` by
+adding the following data definition:
+
+.. code:: xml
+
+        <key>LSEnvironment</key>
+        <dict>
+          <key>PEL_EMACS_IN_GRAPHICS</key>
+          <string>1</string>
+        </dict>
+
+If you want to set something like the PATH, the value needs to be a string
+with the ``:`` path separator between each explicit directory name you want in
+the PATH seen by Emacs.  There's really no limit to what you can add.
+
+Save the file. Enter the following macOS Xcode
+command in a Terminal shell:
+
+.. code:: shell
+
+          /Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f /Applications/Emacs.app/
+
+
+Restart Emacs.
+
+
+.. _PATH set from Info.plist in app bundle: https://www.emacswiki.org/emacs/EmacsApp#h5o-8
+.. _nxml-mode: https://www.gnu.org/software/emacs/manual/html_node/nxml-mode/Introduction.html
+.. [#early-init-graphics] Emacs 27 and later support the package quickstart
+                          mechanism.  This requires setting information in the
+                          file ``early-init.el``.  At the moment Emacs process
+                          the content of ``early-init.el`` its graphics
+                          support code has not yet been initialized and Emacs
+                          Lisp code cannot detect whether it is running in
+                          terminal mode or in graphics mode by calling
+                          ``display-graphic-p``: that function is not
+                          available at that time.  One way around this is to
+                          use the ``getenv`` function to read the content of
+                          an environment variable. PEL uses the
+                          ``PEL_EMACS_IN_GRAPHICS`` environment variable to
+                          identify Emacs running in graphics mode.  See
+                          `Launching graphics mode Emacs from a shell`_
+                          sub-sections for example of shell scripts used to
+                          launch a graphics mode Emacs from a shell.
 
 .. -----------------------------------------------------------------------------
 
