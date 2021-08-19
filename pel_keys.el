@@ -5512,20 +5512,22 @@ the ones defined from the buffer now."
   (pel-autoload-file emacros for:
                      emacros-load-macros
                      emacros-show-macros
-                     emacros-show-macro-names)
+                     emacros-show-macro-names
+                     emacros-name-last-kbd-macro-add)
   (add-hook 'find-file-hook 'emacros-load-macros)
-  (global-set-key "\C-ce" 'emacros-execute-named-macro)
-  (global-set-key "\C-cx" 'emacros-auto-execute-named-macro)
-  (define-key pel:emacros "=" 'emacros-name-last-kbd-macro-add)
-  (define-key pel:emacros "e" 'emacros-execute-named-macro)
-  (define-key pel: (kbd "<f4>") 'emacros-execute-named-macro)
+  (define-key pel:emacros "L" 'emacros-load-macros)
   (define-key pel:emacros "?" 'emacros-show-macros)
   (define-key pel:emacros "/" 'emacros-show-macro-names)
-  (define-key pel:emacros "L" 'emacros-load-macros)
-  (define-key pel:emacros "R" 'emacros-refresh-macros)
-  (define-key pel:emacros "r" 'emacros-rename-macro)
-  (define-key pel:emacros "m" 'emacros-move-macro)
-  (define-key pel:emacros (kbd "DEL") 'emacros-remove-macro))
+  (define-key pel:emacros "=" 'emacros-name-last-kbd-macro-add)
+  (pel-eval-after-load emacros
+    (global-set-key "\C-ce" 'emacros-execute-named-macro)
+    (global-set-key "\C-cx" 'emacros-auto-execute-named-macro)
+    (define-key pel:emacros "e" 'emacros-execute-named-macro)
+    (define-key pel: (kbd "<f4>") 'emacros-execute-named-macro)
+    (define-key pel:emacros "R" 'emacros-refresh-macros)
+    (define-key pel:emacros "r" 'emacros-rename-macro)
+    (define-key pel:emacros "m" 'emacros-move-macro)
+    (define-key pel:emacros (kbd "DEL") 'emacros-remove-macro)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> l`` : Line control commands
