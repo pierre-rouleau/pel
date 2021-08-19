@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Leap
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-18 13:48:12, updated by Pierre Rouleau.
+:Modified: 2021-08-19 15:07:26, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1667,7 +1667,7 @@ line, doing something like this:
 
 
 On macOS
---------
+~~~~~~~~
 
 Here's the provided code. Only 2 lines are required, the other lines are comments.
 
@@ -1741,7 +1741,7 @@ Here's the provided code. Only 2 lines are required, the other lines are comment
       # ----------------------------------------------------------------------------
 
 On Linux
---------
+~~~~~~~~
 
 The code is similar on Linux, except that it uses ``emacs`` as the executable
 name.  Change it if your system uses something else or if you want to place
