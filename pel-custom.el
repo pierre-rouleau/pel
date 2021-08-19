@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, October 21 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-20 11:41:05, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-19 10:36:06, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,13 +33,16 @@
 ;; access to the PEL customization group and any group respectively.  This
 ;; last command complements the Emacs `customize-browse' command that
 ;; unfortunately does not accept any argument.
+;;
+;; The `pel-customize-save' function is used by PEL to store new values of
+;; user-options to the custom-file currently used or explicitly specified.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 ;;
 (require 'pel--base)
-
+(require 'cus-edit)                     ; use: customize-save-variable
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -76,6 +79,14 @@ Lazily load file `cus-edit' if needed."
   "Open `pel-base-emacs' customization group."
   (interactive "P")
   (customize-group 'pel-base-emacs other-window))
+
+;; --
+(defun pel-customize-save (user-option-symbol value &optional file)
+  "Save the VALUE of USER-OPTION-SYMBOL in customize file.
+If FILE is specified force saving to specified customization FILE
+otherwise save to the current custom-file."
+  (let ((custom-file (or file custom-file)))
+    (customize-save-variable user-option-symbol value)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-custom)
