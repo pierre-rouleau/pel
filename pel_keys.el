@@ -522,10 +522,6 @@ Done in this function to allow advising libraries that remap these keys."
     (pel-autoload-file framemove for:
                        fm-up-frame
                        fm-down-frame
-                       fm-right-frame
-                       fm-left-frame
-                       fm-down-frame
-                       fm-up-frame
                        fm-left-frame
                        fm-right-frame)
     (pel-eval-after-load framemove
