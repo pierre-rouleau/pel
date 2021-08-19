@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-19 09:02:01, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-19 11:30:57, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -227,6 +227,7 @@
 ;;                                    ;      `pel-emacs-is-graphic-p'
 (require 'pel--options)               ; use: `pel-compile-pel-bundle-autoload'
 (require 'pel-ccp)                    ; use: `pel-delete-whole-line'
+(require 'pel-custom)                 ; use: `pel-customize-save
 (require 'pel-package)                ; use: `pel-elpa-dirpath'
 (require 'pel-elpa)                   ; use: `pel-elpa-create-copies'
 ;;                                    ;      `pel-elpa-disable-pkg-deps-in'
@@ -606,6 +607,22 @@ is only one or when its for the terminal (TTY) mode."
                    (locate-user-emacs-file "early-init.el")))))
   (declare-function pel--setup-early-init "pel-setup")
 
+
+  (defun pel--set-with-package-quickstart (value)
+    "Set `pel-with-package-quickstart' to new VALUE globally and persistently.
+
+Store value in all relevant custom file(s)."
+    (setq pel-with-package-quickstart value)
+    ;; store in default custom-file
+    (pel-customize-save 'pel-with-package-quickstart value)
+    (when pel-used-with-independent-graphics-customization
+      ;; also store in the custom file of the other mode
+      (pel-customize-save 'pel-with-package-quickstart value
+                          (pel--adjusted-fname
+                           custom-file
+                           :force (not pel-emacs-is-graphic-p)))))
+  (declare-function pel--set-with-package-quickstart "pel-setup")
+
   ;;-pel-autoload
   (defun pel-setup-with-quickstart ()
     "Activate package quickstart for current context.
@@ -622,7 +639,8 @@ or refreshes the package-quickstart.el file(s)."
         (user-error "PEL startup mode is inconsistent.
   Please check and fix before activating the package quickstart!"))
       ;; All is fine: proceed.
-      (pel--setup-early-init :error-if-exists)
+      (message "Activating package quickstart...")
+      (pel--setup-early-init)
       (let ((elpa-dpath (pel-sibling-dirpath
                          pel-elpa-dirpath
                          (if (eq startup-mode 'fast)
@@ -632,8 +650,8 @@ or refreshes the package-quickstart.el file(s)."
         (when pel-used-with-independent-graphics-customization
           (pel--activate-package-quickstart elpa-dpath t)))
       ;; Remember user setting: in pel-with-package-quickstart user-option
-      ;; TODO save in current custom file
-      (setq pel-with-package-quickstart t))
+      (pel--set-with-package-quickstart t))
+    ;; display state
     (pel-setup-info :now))
 
   (defun pel--remove-package-quickstart-files (for-graphics
@@ -671,13 +689,14 @@ or refreshes the package-quickstart.el file(s)."
     "Disable package quickstart.
 Support PEL startup modes and PEL dual independent customization files."
     (interactive)
+    (message "Disabling package quickstart...")
     (pel--remove-package-quickstart-files nil)
     ;; when dual independent customization mode is used delete the
     ;; graphics specific files.
     (pel--remove-package-quickstart-files t)
     ;; Remember user setting: in pel-with-package-quickstart user-option
-    ;; TODO save in current custom file
-    (setq pel-with-package-quickstart nil)
+    (pel--set-with-package-quickstart nil)
+    ;; display state
     (pel-setup-info :now)))
 
 ;; ---------------------------------------------------------------------------
