@@ -1355,7 +1355,7 @@ can't bind negative-argument to C-_ and M-_"
 (define-key pel:cfg "B" 'customize-browse)
 (define-key pel:cfg "b" 'pel-browse-group)
 (define-key pel:cfg "p" 'pel-customize-pel-base-emacs-group)
-(define-key pel:cfg "v" 'pel-customize-save-variable)
+(define-key pel:cfg "v" 'customize-save-variable)
 ;;
 
 (define-key pel:cfg-pel "B" 'pel-browse-pel)
