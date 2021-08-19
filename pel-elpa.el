@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, June 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-16 15:26:47, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-19 10:00:09, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -294,10 +294,10 @@ already exist.  If WITH-SYMLINKS is non-nil, ELPA-DIR-PATH files
 are not copied to DEST-DIR-PATH: instead the function creates
 symlinks in DEST-DIR-PATH to files inside ELPA-DIR-PATH.
 
-The function only copies .el and .elc files from the Elpa packages that
-have no sub-directories (called one-level packages) and therefore
-have all their files inside one directory.  It does *not* copy
-the files *-autoloads.el? and *-pkg.el? nor any file that have a name that
+The function only copies .el and .elc files from the Elpa
+packages that have no sub-directories (called one-level packages)
+and therefore have all their files inside one directory.  It does
+*not* copy the *-pkg.el? files nor any file that have a name that
 starts with a period of a # sign.
 
 When WITH-SYMLINK is non-nil, the function returns a list of
@@ -308,8 +308,7 @@ function does not attempt to detect duplicate and returns nil."
         (elpa-pure-dirnames (pel-elpa-one-level-packages elpa-dir-path))
         source-dir-path-name
         source-fn
-        destination-fn
-        fnse)
+        destination-fn)
     (dolist (dirname elpa-pure-dirnames)
       (setq source-dir-path-name (expand-file-name
                                   dirname
@@ -317,11 +316,9 @@ function does not attempt to detect duplicate and returns nil."
       (dolist (file-name (directory-files source-dir-path-name))
         (when (and (not (member (substring file-name 0 1) '("." "#")))
                    (member (file-name-extension file-name) '("el" "elc"))
-                   (not (pel-string-ends-with-p (setq fnse
-                                                      (file-name-sans-extension
-                                                       file-name))
-                                                "-pkg"))
-                   (not (pel-string-ends-with-p fnse "-autoloads")))
+                   (not (pel-string-ends-with-p (file-name-sans-extension
+                                                 file-name)
+                                                "-pkg")))
           (setq source-fn (expand-file-name file-name source-dir-path-name))
           (setq destination-fn (expand-file-name file-name dest-dir-path))
           (if (file-exists-p destination-fn)
@@ -340,8 +337,6 @@ function does not attempt to detect duplicate and returns nil."
   (let ((elpa-pure-dir-names (pel-elpa-one-level-packages elpa-dir-path)))
     (dolist (dn elpa-pure-dir-names)
       (delete-directory (expand-file-name dn elpa-dir-path) :recurse))))
-
-
 
 ;; -----
 

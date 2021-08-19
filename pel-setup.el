@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-18 09:46:11, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-19 09:02:01, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -984,9 +984,8 @@ Compared: symlink %s to target %s.
           (setq step-count (1+ step-count))
           ;;
           ;; Create pel-bundle temporary directory to hold all one-level
-          ;; package .el files.  At first create it the directory as a
-          ;; sibling of the elpa directory because elpa-reduced is not
-          ;; created yet.
+          ;; package .el files.  At first create the directory as a sibling of
+          ;; the elpa directory because elpa-reduced is not created yet.
           (make-directory pel-bundle-dirpath)
           (setq step-count (1+ step-count))
           (pel-elpa-create-copies pel-elpa-dirpath-adj pel-bundle-dirpath
