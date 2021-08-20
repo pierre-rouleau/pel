@@ -734,9 +734,10 @@ Otherwise return nil."
   "Return TEXT if it's a string.  If nil return empty string."
   (if text text ""))
 
-(defun pel-string-when (condition text)
-  "Return TEXT when CONDITION is non-nil, empty string otherwise."
-  (if condition text ""))
+(defun pel-string-when (condition &optional text)
+  "Return TEXT (or CONDITION) when CONDITION is non-nil, empty string otherwise.
+TEXT is optional, if its nil CONDITION must be a string or nil."
+  (if condition (or text condition) ""))
 
 (defun pel-string-spread (string &optional separator)
   "Return STRING with characters separated by SEPARATOR.
