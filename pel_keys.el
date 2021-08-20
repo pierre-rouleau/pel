@@ -104,7 +104,18 @@
 ;;                      ; the options: pel-auto-complete-help
 
 ;; ---------------------------------------------------------------------------
+;; Setup GUI launched Emacs environment
+;; ------------------------------------
+(defvar pel--init-called-once nil
+  "Remembers that `pel-init' was called. DO NOT MODIFY!")
 
+(unless pel--init-called-once
+  (unless (getenv pel-shell-detection-envvar)
+    ;; A GUI Emacs is running! Set up its process environment from user-option.
+    (when (and (require 'pel-process nil :no-error)
+               (fboundp 'pel-process-update-environment-from))
+      (pel-process-update-environment-from pel-gui-process-environment)))
+    (setq pel--init-called-once t))
 
 ;; ---------------------------------------------------------------------------
 ;; Configure PEL-level autoloading

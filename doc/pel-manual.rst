@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Leap
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-19 16:18:18, updated by Pierre Rouleau.
+:Modified: 2021-08-20 19:01:05, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -286,6 +286,7 @@ The fully detailed instructions are described in the following sections:
 #. `Further PEL Configuration`_.
 #. `Activate PEL Features - Customize PEL`_.
 #. Optionally, `create command line shortcuts for Emacs`_.
+#. `Set GUI Emacs process environment`_.
 
 Detailed instructions for the above steps are written in the following sections.
 
@@ -1047,6 +1048,50 @@ At this point, continue to the next sections:
 #. `Activate PEL Features - Customize PEL`_.
 #. Optionally, `create command line shortcuts for Emacs`_.
 
+.. ---------------------------------------------------------------------------
+
+Set GUI Emacs process environment
+---------------------------------
+
+If you plan to use launch Emacs from a GUI application like Windows Explorer
+or macOS Finder you will find that Emacs process environment will not include
+everything you need to get everything working.  PEL provides a solution to
+this problem, a solution that does not slow down Emacs startup and requires
+you to set one or two PEL customization user-option variables:
+
+- ``pel-shell-detection-envvar`` to identify an environment variable whose
+  presence identifies that Emacs was launched by a shell and absence
+  identifies that Emacs was launched from a GUI application such as Windows
+  Explorer, macOS Finder or something like that.  The default is the specially
+  reserved "_" environment variable used by Bash. If you do not use Bash to
+  launch Emacs you will have to use something else.  In the worst case, use
+  ``PEL_SHELL`` and set that environment inside you shell startup script.
+- ``pel-gui-process-environment`` is where you define the environment
+  variables for the GUI Emacs.  You can define any environment variable name
+  and value and specify whether you want PEL to use the value as-is or to
+  prepend or append it to the value of variable if it exists.
+
+
+You will most likely need to specify an extra set of directories to prepend to
+your ``PATH`` to allow Emacs to execute some of the programs you want to use
+because the OS ``PATH` inherited by the GUI-launched Emacs is minimal and will
+probably not include the directory where several tools need such as the spell
+checker program (aspell, hunspell or ispell) or several compilers.
+
+- One trick you may want to use is to create a directory where you will store
+  several symlinks to the programs you need to use and put that single
+  directory in the ``PATH`` specified in ``pel-gui-process-environment`` user
+  option with the ``prepend`` action.
+- You can add any other environment variables this way.
+
+If you use the dual independent terminal/graphics mode customization file
+option, remember to set these user-options inside the customization file used
+by the graphics instance of Emacs.  It's simple to do: use Emacs in graphics
+mode to set these environment variables.
+
+Type the ``<f11> M-s <f2>`` key sequence to open the customization buffer
+where you can set these two user-option variables.  Set the values and save
+them. Restart Emacs for these to take effect.
 
 .. ---------------------------------------------------------------------------
 

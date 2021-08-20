@@ -495,6 +495,83 @@ For example, to activate it in Erlang, add a line with
   :link `(url-link :tag "Fast Startup PDF" ,(pel-pdf-file-url "fast-startup"))
   :group 'pel)
 
+(defcustom pel-shell-detection-envvar "_"
+  "Name of envvar used to detect that Emacs was launched by a shell.
+
+The default is \"_\", the environment variable that Bash uses to identify the
+name of the executable that launched it.  This environment variable is not
+part of the process environment when Emacs is launched from a GUI program such
+as macOS Finder.
+
+Change this value when using another shell or when running on
+other operating system such as Windows. If you cannot find a
+suitable environment variable that is defined when Emacs is
+launched, then define an environment variable that will be
+present in all instances of your shell but not inside the OS
+process environment. For instance you could use the environment
+name \"PEL_SHELL\"."
+  :group 'pel-fast-startup
+  :type 'string)
+
+(defcustom pel-gui-process-environment nil
+  "List of environment variables to set when for Emacs launched from GUI program.
+
+When Emacs is launched from a shell it inherit the environment
+variables from that shell parent process. It is then possible to
+create several specialized shells and set environment variables
+in the shell initialization script that will be used by Emacs.
+
+However you can also launch Emacs from a GUI program such as
+Window Explorer or macOS Finder.  These use a minimal environment
+set for the OS.  In many way that will not be sufficient for that
+Emacs process as you may want to add more directories to its PATH
+and define various environment variables.
+
+PEL provides the `pel-gui-process-environment' user-option to
+specify a set of environment variables that the GUI Emacs will
+then be able to use.
+
+That may not be as flexible as using multiple specialized shells
+but it will provide what is needed for the GUI Emacs.  For more
+flexibility use a shell launched Emacs as both terminal and
+graphics modes can be launched by shell scripts.
+
+For each variable you can use to use the variable as specified,
+which is always done when the variable does not exists.  But for
+some variables like PATH, MANPATH, LIBPATH and others you may
+want to replace, append or prepend the value to any existing
+value.  In that case, change the action specified for the
+variable.
+
+***************
+IMPORTANT NOTES
+***************
+
+These environment variables are only used for a GUI-launched
+Emacs session; an Emacs session that has not been launched by a
+shell.  PEL detects this type of Emacs session when it detects
+that the environment variable identified by
+`pel-shell-detection-envvar' is not present inside the process
+environment.
+
+PEL sets Emacs environment variable process **once** per process
+execution session, during the **first** call of function
+`pel-init'.  Therefore if you change this you **must** restart
+Emacs for the new values to take effect.
+
+The PATH environment variable is treated specially: setting,
+appending, prepending to it also sets the value of the variable
+`exec-path' and variable `eshell-path-env'."
+  :group 'pel-fast-startup
+  :type '(repeat
+          (list :tag "Environment variable"
+                (string :tag "name ")
+                (string :tag "value")
+                (choice :tag "use"
+                        (const :tag "as is, replacing exiting value if any." use-as-is)
+                        (const :tag "append to existing value if any."    append)
+                        (const :tag "prepend to existing value if any."   prepend)))))
+
 (defcustom pel-compile-pel-bundle-autoload nil
   "Whether `pel-setup-fast' byte compiles pel-bundle autoloads.el file.
 
