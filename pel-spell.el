@@ -20,7 +20,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;;  Spell checking utilities that detect and display what spell check mode is
@@ -29,7 +29,14 @@
 ;;
 ;;  One of the goal of this file is to avoid loading either Ispell or flyspell
 ;;  until they are actually required while providing a function that can
-;;  configure these utilities: `pel-spell-init'.  See the Use section below.
+;;  configure these utilities: `pel-spell-init'.
+;;
+;;  The other is to provide a command that can display how spell checking is
+;;  configured, even if there are things missing.  `pel-spell-show-use'
+;;  attempts to do that.  It handle several types of errors.  It should always
+;;  prints useful information and should never raise an error.  It's a bug if
+;;  it does.  In that case please report the situation that it does not
+;;  handle.
 ;;
 ;;  *Credits*:
 ;;      Code of pel-spell-flyspell-emacs-popup-textual was taken from
@@ -50,17 +57,21 @@
 ;;
 ;; *Use*:
 ;;
-;; To configure Ispell and Flyspell without forcing early loading of the Ispell
-;; and flyspell libraries you can write something like the following inside your
-;; init file:
+;; To configure Ispell and Flyspell without forcing early loading of the
+;; Ispell and flyspell libraries you can write something like the following
+;; inside your init file:
 ;;
 ;;    (eval-after-load "ispell"
 ;;       '(when (fboundp 'pel-spell-init)
 ;;          (pel-spell-init "aspell"
 ;;                          "~/.emacs.d/.ispell")))
+;;
+;; A simpler version of the code is used by PEL:
+;;
+;;     (with-eval-after-load 'ispell (pel-spell-init-from-user-option))
+;;
 
-
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 
 (require 'pel--base)
@@ -69,7 +80,7 @@
 
 (eval-when-compile
 
-  (require 'cl-lib)    ; use: cl-dolist and cl-return
+  (require 'cl-lib)                     ; use: cl-dolist and cl-return
 
   ;; both flyspell and ispell are loaded lazily if required, but their symbols
   ;; are needed at compilation. Same for popup.
@@ -79,35 +90,43 @@
   ;;                           ispell-local-dictionary, ispell-dictionary,
   ;;                           ispell-program-name, ispell-personal-dictionary
   (require 'ispell)
-  (require 'subr-x)     ; use: inlined: string-trim
+  (require 'subr-x)                     ; use: inlined: string-trim
 
   ;; The last is an external package.
-  ;; It might not be present on user's system: allow
-  ;; compilation anyhow to provide ability to activate lazily.
-  (require 'popup nil :no-error)  ; use: popup-menu*
-  )
+  ;; It might not be present on user's system: allow compilation anyhow to
+  ;; provide ability to activate lazily.
+  ;; from popup: use: popup-menu*
+  (require 'popup nil :no-error))
 
-;;; ----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 ;;; Code:
 
+(defconst pel--spell-error-info-msg
+  "See the spell-checking.pdf file for more info."
+  "Shows where to get information if you have problem setting Ispell support.")
+
+
+;; ---------------------------------------------------------------------------
 ;; - `pel-spell-init-from-user-option'
 ;;   - `pel--spell-select'
 ;;     * `pel-spell-init'
+
 
 ;;-pel-autoload
 (defun pel-spell-init (spell-program-name
                        &optional spell-path personal-dictionary)
   "Initialize spell checking.
+
 - Use specified SPELL-PROGRAM-NAME as the spell checking process.
   A string.  It must be a Ispell compatible program, like:
     \"ispell\", \"aspell\", \"hunspell\", \"enchant\".
 - Specify the directory where the program is found in SPELL-PATH
-  when that program is not already found in the `exec-path'.
+  when that program is not already found in variable `exec-path'.
   To be used, the value must be a string.
   If no path is needed use nil.
   Any other type raises an error.
 - Optionally identify the PERSONAL-DICTIONARY to use.
-.
+
 Activates flyspell-mode and fix issues in terminal mode.
 When running in terminal mode, the function modifies
 `flyspell-emacs-popup' with `pel-spell-flyspell-emacs-popup-textual'
@@ -170,34 +189,55 @@ to allow the flyspell pop-up menu to work in terminal mode."
             'pel-spell-flyspell-emacs-popup-textual))))
 
 
-(defun pel--spell-select (program-name dict-path origin)
-  "Use the PROGRAM-NAME spell checker, use the dictionary at DICT-PATH."
-  (let ((path           (file-name-directory program-name))
-        (personal-dict  (pel-string-or-nil dict-path)))
+(defun pel--spell-select (program dict-path)
+  "Use the spell checker PROGRAM, use the dictionary at DICT-PATH.
+
+PROGRAM must be a symbol: the variable that identifies the spell checker
+program."
+  (let* ((program-name   (symbol-value program))
+         (var-name       (symbol-name program))
+         (path           (file-name-directory program-name))
+         (personal-dict  (pel-string-or-nil dict-path)))
     (if (and (not path)
              (not (executable-find program-name)))
         (display-warning 'pel-spell
-                         (format "Variable %s requires %s.\n\
-Is %s customize value valid?
-The spell check program %s not found in your PATH!\n\
-You may need to install it.\n\
-See the spell-checking.pdf file for more info" origin program-name origin program-name)
+                         (format "\
+The %s user-option identifies %s as your spell checker program.
+ However, that program is not found on the PATH known to Emacs!
+ - Is `%s` customize value valid?%s
+ - PATH seen by Emacs is: %s
+ %s"
+                                 var-name program-name
+                                 var-name
+                                 (pel-string-when
+                                  (not (getenv "PEL-SHELL"))
+                                  "
+ - The PEL_SHELL environment variable is not set, indicating that a GUI Emacs
+   is used.  Extra environment variables can be set inside the user-option
+   `pel-gui-process-environment`. Identify the directory where your spell
+   checker program is located into the value of PATH inside that user-option.")
+                                 (getenv "PATH")
+                                 pel--spell-error-info-msg)
                          :error)
       (pel-spell-init program-name path personal-dict))))
 
 ;;-pel-autoload
 (defun pel-spell-init-from-user-option ()
   "Initialize Spell checking.
-Use the values taken from user option variable
-`pel-spell-check-tool' if specified.  If nothing is specified
-the spell checker is not selected."
-  (when pel-spell-check-tool
-    (pel--spell-select pel-spell-check-tool
-                       (or pel-spell-check-personal-dictionary
-                           "~/.ispell")
-                       "pel-spell-check-tool")))
 
-;; --
+Use values taken from user option variable `pel-spell-check-tool'
+if specified.  If nothing is specified the spell checker is not
+selected."
+  (when pel-spell-check-tool
+    (pel--spell-select 'pel-spell-check-tool
+                       (or pel-spell-check-personal-dictionary "~/.ispell"))))
+
+;; ---------------------------------------------------------------------------
+;; * `pel-spell-show-use'
+;;   - `pel-ispell-program-name'
+;;     - `pel-spell-program-version-string'
+;;   - `pel-ispell-main-dictionary'
+;;   - `pel-ispell-personal-dictionary'
 
 (defun pel-spell-program-version-string ()
   "Return the version string of the spell-check program used."
@@ -209,8 +249,6 @@ the spell checker is not selected."
           (end-of-line)
           (string-trim (buffer-substring-no-properties (point-min) (point))))
       (error "Unable to detect Ispell version"))))
-
-;; --
 
 (defun pel-ispell-program-name ()
   "Return string describing the Ispell program name if Ispell is loaded.
@@ -226,7 +264,7 @@ Return \"ispell not loaded\" instead."
 
 (defun pel-ispell-main-dictionary ()
   "Return string describing Ispell main dictionary if Ispell is loaded.
-Return \"ispell not loaded\" instead."
+Return \"?\" instead."
   (if (and (boundp 'ispell-local-dictionary)
            (boundp 'ispell-dictionary)
            (boundp 'ispell-program-name))
@@ -239,7 +277,7 @@ Return \"ispell not loaded\" instead."
 
 (defun pel-ispell-personal-dictionary ()
   "Return string describing Ispell personal dictionary if Ispell is loaded.
-Return \"ispell is not loaded\" instead."
+Return \"?\" instead."
   (if (and (boundp 'ispell-personal-dictionary)
            (boundp 'ispell-program-name))
       (or ispell-personal-dictionary
@@ -250,21 +288,33 @@ Return \"ispell is not loaded\" instead."
 (defun pel-spell-show-use ()
   "Display what spell checking program is being used."
   (interactive)
-  (require 'pel--base nil :no-error)         ; use: pel-symbol-on-off-string
-  (pel-when-fbound 'pel-symbol-on-off-string
-    (message "\
-ispell: %s, flyspell: %s.\n\
-Spell program used       : %s\n\
-Spell main dictionary    : %s\n\
+  (let ((spell-program-name (condition-case nil
+                                (pel-ispell-program-name)
+                              (error nil)))
+        (format-msg (format "%%s\
+ispell: %s, flyspell: %s.%%s
+Spell main dictionary    : %s
 Spell personal dictionary: %s"
-             (pel-symbol-on-off-string 'ispell-minor-mode)
-             (pel-symbol-on-off-string 'flyspell-mode)
-             (pel-ispell-program-name)
-             (pel-ispell-main-dictionary)
-             (pel-ispell-personal-dictionary)
-             )))
+                            (pel-symbol-on-off-string 'ispell-minor-mode)
+                            (pel-symbol-on-off-string 'flyspell-mode)
+                            (pel-ispell-main-dictionary)
+                            (pel-ispell-personal-dictionary)))
+        err-msg
+        name-msg)
+    (if spell-program-name
+        (setq name-msg (format "
+Spell check program used : %s"
+                               spell-program-name))
+      (setq err-msg (format "\
+No ispell program detected!  Check PATH and installation.
+ %s
+Other available information:\n"
+                            pel--spell-error-info-msg)))
+    (message format-msg
+             (pel-string-when err-msg)
+             (pel-string-when name-msg))))
 
-;; -----------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
 (provide 'pel-spell)
 
 ;;; pel-spell.el ends here
