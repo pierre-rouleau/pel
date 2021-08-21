@@ -239,7 +239,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _⅀ Fast Startup PDF:         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/fast-startup.pdf
 .. _⅀ Customize PDF:            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf
 .. _Mozilla Firefox:            https://en.wikipedia.org/wiki/Firefox
-.. _How to setup GUI Emacs environment: /master/doc/pel-manual.rst#set-gui-emacs-process-environment
+.. _How to setup GUI Emacs environment: doc/pel-manual.rst#control-environment-of-macos-gui-emacs
 
 
 ..
