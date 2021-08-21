@@ -24,11 +24,11 @@ or `update it`_ [#update]_ !
 - PEL supports GUI and terminal Emacs launched from a shell or from a
   GUI program like Windows Explorer, macOS Finder and others.
 
-- PEL supports the package quickstart feature available on Emacs version
-  27 and later. With it you can speed Emacs startup.  PEL provides
-  early-init.el file template and provides commands to create and refresh all
-  files to activate the package quickstart or disable it:
-  the commands **pel-setup-with-quickstart** and **pel-setup-no-quickstart**.
+- PEL supports the package quickstart feature available on Emacs version 27
+  and later. PEL provides early-init.el file template and provides commands to
+  create and refresh all files to activate the package quickstart or disable
+  it: the commands **pel-setup-with-quickstart** and
+  **pel-setup-no-quickstart**.
 
 - PEL also provides further startup speedup with PEL **fast startup mode**.
   See `⅀ Fast Startup PDF`_ (see [#firefox]_).  Easily speed up Emacs startup
@@ -53,9 +53,9 @@ or `update it`_ [#update]_ !
       external packages that use a single directory inside a single directory
       to reduce Emacs ``load-path`` and sets up your Elpa directory for a fast
       startup.
-    - The **pel-setup-normal** to restore the normal Emacs setup and restores
-      Emacs Emacs package management and PEL's automatic package installation
-      via customization.
+    - The **pel-setup-normal** restores the normal Emacs setup with package
+      management capabilities and PEL's automatic package installation via
+      customization.
 
 - PEL saves your customization data inside a file separate from your
   ``init.el`` file, providing an extra degree of freedom and control.
