@@ -32,7 +32,7 @@ or `update it`_ [#update]_ !
 - PEL supports the `package-quickstart feature`_ available on Emacs version 27
   and later. PEL provides `early-init.el file template`_ and provides the
   **pel-setup-with-quickstart** command (``<f11> M-S q``) to create and refresh
-  all files to activate the package quickstart and **pel-setup-no-quickstart**
+  all the package-quickstart files and **pel-setup-no-quickstart**
   (``<f11> M-S M-q``) to disable it.
 
 - PEL also provides further startup speedup with PEL **fast startup mode**.
