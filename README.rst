@@ -10,6 +10,10 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel/blob/master/NEWS#changes-since-version-031
 
+.. image:: https://img.shields.io/badge/Fast-startup-green
+   :alt: Version
+   :target: https://github.com/pierre-rouleau/pel#quick
+
 
 - Tired of writing Emacs configuration code? 🤯
 - Afraid of or ever declared `.emacs bankruptcy`_? 😰
