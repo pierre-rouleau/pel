@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-21 18:09:22, updated by Pierre Rouleau.
+:Modified: 2021-08-21 18:19:02, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1082,7 +1082,7 @@ PEL uses environment variables to distinguish the types of Emacs process during
 execution and to determine if PEL uses the same or different customization
 files for Emacs running terminal/TTY and graphics modes.  The environment
 variables are read by PEL's code but also by the code in the ``early-init.el``
-[#early-init-graphics]_ and ``init.el``files.
+[#early-init-graphics]_ and ``init.el`` files.
 
 Although this method requires an initial manual setup it runs quickly and does
 not slow Emacs startup [#purcell]_.
@@ -1106,7 +1106,7 @@ Set        Not set    Shell launched Emacs running in terminal mode.
   - The default value of the user-option is the specially reserved "_"
     environment variable used by Bash. If you do not use Bash to launch Emacs
     you will have to use something else.  In the worst case, use ``PEL_SHELL``
-    and set that environment inside you shell startup script.
+    and set that environment variable inside you shell startup script.
 
 - **Variable 2**: ``PEL_EMACS_IN_GRAPHICS`` environment variable.
   This variable must be set to ``"1"`` by the shell script that launches the
