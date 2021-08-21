@@ -21,6 +21,8 @@ PEL -- Pragmatic Emacs Library
 PEL might be for you!  Then go ahead, `install it`_ [#install]_
 or `update it`_ [#update]_ !
 
+- PEL supports GUI and terminal Emacs launched from a shell or from a
+  GUI program like Windows Explorer, macOS Finder and others.
 
 - PEL supports the package quickstart feature available on Emacs version
   27 and later. With it you can speed Emacs startup.  PEL provides
@@ -29,8 +31,9 @@ or `update it`_ [#update]_ !
   the commands **pel-setup-with-quickstart** and **pel-setup-no-quickstart**.
 
 - PEL also provides further startup speedup with PEL **fast startup mode**.
-  See `⅀ Fast Startup PDF`_ (see [#firefox]_).
-  PEL supports 2 different Emacs startup operation modes:
+  See `⅀ Fast Startup PDF`_ (see [#firefox]_).  Easily speed up Emacs startup
+  with a single command!  PEL supports 2 different Emacs startup operation
+  modes:
 
   - The **normal Emacs startup setup**, using Emacs' standard package.el
     package manager with PEL's extensions that provide **customization-driven
@@ -116,6 +119,8 @@ or `update it`_ [#update]_ !
   - `PEL's Manual`_ describes PEL features in more details. See:
 
     - `How to install PEL`_,
+    - `How to setup GUI Emacs environment`_ to control GUI launched Emacs PATH
+      and other environment variables easily with a fast starting Emacs,
     - `PEL setup commands`_ for `dual customization`_ and `fast startup mode`_,
     - `PEL initialization command`_ and `PEL cleanup command`_,
     - `PEL Customization`_,
@@ -234,6 +239,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _⅀ Fast Startup PDF:         https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/fast-startup.pdf
 .. _⅀ Customize PDF:            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf
 .. _Mozilla Firefox:            https://en.wikipedia.org/wiki/Firefox
+.. _How to setup GUI Emacs environment: /master/doc/pel-manual.rst#set-gui-emacs-process-environment
 
 
 ..
