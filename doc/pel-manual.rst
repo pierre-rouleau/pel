@@ -1,10 +1,10 @@
-===========================
-PEL -- Pragmatic Emacs Leap
-===========================
+==============================
+PEL -- Pragmatic Emacs Library
+==============================
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-20 19:01:05, updated by Pierre Rouleau.
+:Modified: 2021-08-21 14:25:51, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 

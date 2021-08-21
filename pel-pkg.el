@@ -1,5 +1,5 @@
 ;;; -*- no-byte-compile: t -*-
-(define-package "pel" "0.3.1" "Pragmatic Emacs Leap"
+(define-package "pel" "0.3.1" "Pragmatic Emacs Library"
   ;; The handling of Emacs package versions varies widely from package
   ;; to package.  Unfortunately, version numbers that appear somewhat
   ;; *stable* or sometimes very misleading.

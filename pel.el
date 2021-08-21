@@ -1,4 +1,4 @@
-;;; pel.el --- Pragmatic Emacs Leap -*-lexical-binding: t-*-
+;;; pel.el --- Pragmatic Emacs Library -*-lexical-binding: t-*-
 
 ;; Copyright (C) 2020, 2021  Pierre Rouleau
 

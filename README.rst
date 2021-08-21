@@ -1,6 +1,6 @@
-===========================
-PEL -- Pragmatic Emacs Leap
-===========================
+==============================
+PEL -- Pragmatic Emacs Library
+==============================
 
 .. image:: https://img.shields.io/:license-gpl3-blue.svg
    :alt: License
