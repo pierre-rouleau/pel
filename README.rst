@@ -25,8 +25,9 @@ PEL -- Pragmatic Emacs Library
 PEL might be for you!  Then go ahead, `install it`_ [#install]_
 or `update it`_ [#update]_ !
 
-- PEL supports GUI and terminal Emacs launched from a shell or from a
-  GUI program like Windows Explorer, macOS Finder and others.
+- PEL supports terminal Emacs launched from a shell and graphics Emacs
+  launched from a shell or a GUI program like Windows Explorer, macOS Finder
+  and others.
 
 - PEL supports the package quickstart feature available on Emacs version 27
   and later. PEL provides `early-init.el file template`_ and provides the
