@@ -80,8 +80,8 @@ or `update it`_ [#update]_ !
     - `example/init/init-5.el`_
     - `example/init/early-init.el`_ (for Emacs 27 and later only).
 
-  - Once your init files have been instrumented for PEL, you can then use
-    ``M-x pel-setup-dual-environment`` command (or ``<f11> M-s q``) to
+  - Once your init files have been instrumented for PEL, use the
+    **pel-setup-dual-environment** command (or ``<f11> M-s q``) to
     activate dual independent customization.  It will create the required
     customization files.
 
