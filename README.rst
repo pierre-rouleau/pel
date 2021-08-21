@@ -31,9 +31,9 @@ or `update it`_ [#update]_ !
 
 - PEL supports the `package-quickstart feature`_ available on Emacs version 27
   and later. PEL provides `early-init.el file template`_ and provides the
-  **pel-setup-with-quickstart** command to create and refresh all files to
-  activate the package quickstart and **pel-setup-no-quickstart** to
-  disable it.
+  **pel-setup-with-quickstart** command (``<f1> M-S q``) to create and refresh
+  all files to activate the package quickstart and **pel-setup-no-quickstart**
+  (``<f11> M-S M-q``) to disable it.
 
 - PEL also provides further startup speedup with PEL **fast startup mode**.
   See `⅀ Fast Startup PDF`_ (see [#firefox]_).  Easily speed up Emacs startup
@@ -55,13 +55,13 @@ or `update it`_ [#update]_ !
     download and installation of new external packages but just return to
     normal mode to do so.  PEL provides 2 commands to switch modes:
 
-    - The **pel-setup-fast** activates the fast startup mode. It bundles all
-      external packages that use a single directory inside a single directory
-      to reduce Emacs ``load-path`` and sets up your Elpa directory for a fast
-      startup.
-    - The **pel-setup-normal** restores the normal Emacs setup with package
-      management capabilities and PEL's automatic package installation via
-      customization.
+    - The **pel-setup-fast** (``<f11> M-S f``) activates the fast startup
+      mode. It bundles all external packages that use a single directory
+      inside a single directory to reduce Emacs ``load-path`` and sets up your
+      Elpa directory for a fast startup.
+    - The **pel-setup-normal** (``<f11> M-S n``) restores the normal Emacs
+      setup with package management capabilities and PEL's automatic package
+      installation via customization.
 
 - PEL saves your customization data inside a file separate from your
   ``init.el`` file, providing an extra degree of freedom and control.
@@ -81,7 +81,7 @@ or `update it`_ [#update]_ !
     - `example/init/early-init.el`_ (for Emacs 27 and later only).
 
   - Once your init files have been instrumented for PEL, use the
-    **pel-setup-dual-environment** command (or ``<f11> M-s q``) to
+    **pel-setup-dual-environment** command (or ``<f11> <f2> M-d``) to
     activate dual independent customization.  It will create the required
     customization files.
 
