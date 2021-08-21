@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-21 18:24:53, updated by Pierre Rouleau.
+:Modified: 2021-08-21 18:36:00, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1789,17 +1789,18 @@ graphics mode, Emacs may not get the complete environment variables that you get
 in your shell.  That happens quite often in macOS as explained by
 `Steve Purcell in the readme file of his exec-path-from-shell`_ package.
 His package provides a way to fix the problem.  PEL, however, does not
-integrate that library because it will show Emacs startup.
+integrate that library because it slows Emacs startup.
 
-There is another way for Emacs running under macOS that is not as flexible but
-runs faster and is described in the section titled `Control environment of
-macOS GUI Emacs`_.
+PEL uses another method based on environment variables and described in
+`Identify Types of Emacs Processes`_ and its sub-sections.
 
+The method promoted by PEL requires setting up a small shell (or Window
+command) script that sets up an environment variable identifying that Emacs
+runs in graphics mode.
 
-To avoid the problem altogether, I instead recommend using a small script that
-allows you to start your graphics copy of Emacs from a shell.  There are
-several advantages:
+There are several advantages to that method:
 
+- Emacs starts up faster,
 - the graphical Emacs inherits the complete environment of the shell from which
   it is launched, without having to add yet another Emacs package (remember
   that as the number of Emacs external packages increases so does Emacs startup time),
