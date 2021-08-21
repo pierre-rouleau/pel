@@ -430,7 +430,7 @@ master/doc/pdf/%s.pdf" topic)
 A collection of facilities designed to integrate and complement a large
 set of Emacs libraries while providing key bindings that mainly use function
 keys as key prefixes, leaving the standard Emacs keys untouched.
-PELcomes with a manual and a large set of PDF files, each documenting the
+PEL comes with a manual and a large set of PDF files, each documenting the
 commands and key bindings of a specific aspect of Emacs.  The PDF files document
 the standard Emacs key bindings as well as PEL's specific key bindings."
   :group 'convenience
@@ -498,10 +498,10 @@ For example, to activate it in Erlang, add a line with
 (defcustom pel-shell-detection-envvar "_"
   "Name of envvar used to detect that Emacs was launched by a shell.
 
-The default is \"_\", the environment variable that Bash uses to identify the
-name of the executable that launched it.  This environment variable is not
-part of the process environment when Emacs is launched from a GUI program such
-as macOS Finder.
+The default is \"_\", the environment variable that Bash uses to
+identify the name of the executable that launched it.  This
+environment variable is not part of the process environment when
+Emacs is launched from a GUI program such as macOS Finder.
 
 Change this value when using another shell or when running on
 other operating system such as Windows. If you cannot find a

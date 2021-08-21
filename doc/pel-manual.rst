@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-21 14:25:51, updated by Pierre Rouleau.
+:Modified: 2021-08-21 18:09:22, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -286,7 +286,9 @@ The fully detailed instructions are described in the following sections:
 #. `Further PEL Configuration`_.
 #. `Activate PEL Features - Customize PEL`_.
 #. Optionally, `create command line shortcuts for Emacs`_.
-#. `Set GUI Emacs process environment`_.
+#. `Prepare using GUI-launched Emacs running in graphics mode`_.
+#. `Prepare using shell-launched Emacs running in graphics mode`_.
+#. `Prepare using shell-launched Emacs running in terminal mode`_.
 
 Detailed instructions for the above steps are written in the following sections.
 
@@ -1044,33 +1046,116 @@ Perform these extra steps to increase the performance of Emacs and PEL:
 
 At this point, continue to the next sections:
 
+#. `Identify Types of Emacs Processes`_.
+#. `Prepare using GUI-launched Emacs running in graphics mode`_.
+#. `Prepare using shell-launched Emacs running in graphics mode`_.
+#. `Prepare using shell-launched Emacs running in terminal mode`_.
 #. `Further PEL Configuration`_.
 #. `Activate PEL Features - Customize PEL`_.
 #. Optionally, `create command line shortcuts for Emacs`_.
 
 .. ---------------------------------------------------------------------------
 
-Set GUI Emacs process environment
+Identify Types of Emacs Processes
 ---------------------------------
 
-If you plan to use launch Emacs from a GUI application like Windows Explorer
-or macOS Finder you will find that Emacs process environment will not include
-everything you need to get everything working.  PEL provides a solution to
-this problem, a solution that does not slow down Emacs startup and requires
-you to set one or two PEL customization user-option variables:
+PEL distinguish 3 types of Emacs process modes:
+
+#. GUI launched Emacs running in graphics mode.  Examples of this is Emacs
+   launched from Windows Explorer, macOS Finder or others.
+#. Shell launched Emacs running in graphics mode.  When a command typed in a
+   shell starts Emacs in graphics mode.
+#. Shell launched Emacs running in terminal mode.
+
+PEL also supports two ways of handling Emacs customization:
+
+- **Unique customization file**: the usual way where the same customization
+  file and external packages and their setup is used by Emacs running in
+  terminal/TTY mode and Emacs running in graphics mode.
+- **Dual customization files**: a mode where 2 independent customization files
+  and Elpa package directories are used: one for Emacs running in terminal/TTY
+  mode and a different one for Emacs running in graphics mode.
+
+These apply to the 3 types of Emacs processes listed above.
+
+PEL uses environment variables to distinguish the types of Emacs process during
+execution and to determine if PEL uses the same or different customization
+files for Emacs running terminal/TTY and graphics modes.  The environment
+variables are read by PEL's code but also by the code in the ``early-init.el``
+[#early-init-graphics]_ and ``init.el``files.
+
+Although this method requires an initial manual setup it runs quickly and does
+not slow Emacs startup [#purcell]_.
+
+PEL's method requires 2 environment variables and logic inside both
+early-init.el and inside init.el.
+
+The environment variables are used like this:
+
+========== ========== ==============================================
+Variable 1 Variable 2 Detected mode
+========== ========== ==============================================
+Not set    N/A        GUI launched Emacs running in graphics mode.
+Not set    Set to "1" Shell launched Emacs running in graphics mode.
+Set        Not set    Shell launched Emacs running in terminal mode.
+========== ========== ==============================================
+
+- **Variable 1**: identified by the ``pel-shell-detection-envvar`` user
+  option.
+
+  - The default value of the user-option is the specially reserved "_"
+    environment variable used by Bash. If you do not use Bash to launch Emacs
+    you will have to use something else.  In the worst case, use ``PEL_SHELL``
+    and set that environment inside you shell startup script.
+
+- **Variable 2**: ``PEL_EMACS_IN_GRAPHICS`` environment variable.
+  This variable must be set to ``"1"`` by the shell script that launches the
+  shell launched Emacs in graphics mode.  See the script examples in the
+  sub-sections of `Launching graphics mode Emacs from a shell`_.
+
+
+If you plan to use PEL support for package quickstart, you must use an
+``early-init.el`` file that identify whether Emacs is running in graphics mode
+or terminal mode using the environment variables.  PEL provides an example of
+early-init.el that provides the required logic: `example/init/early-init.el`_.
+
+.. [#early-init-graphics] Emacs 27 and later support the package quickstart
+                          mechanism.  This requires setting information in the
+                          file ``early-init.el``.  At the moment Emacs process
+                          the content of ``early-init.el`` its graphics
+                          support code has not yet been initialized and Emacs
+                          Lisp code cannot detect whether it is running in
+                          terminal mode or in graphics mode by calling
+                          ``display-graphic-p``: that function is not
+                          available at that time.  One way around this is to
+                          use the ``getenv`` function to read the content of
+                          an environment variables, a method PEL promotes
+                          in the use of early-init.el.
+
+.. [#purcell] PEL uses an alternative to `Steve Purcell's
+              exec-path-from-shell`_ method
+              which unfortunately slows Emacs startup.
+
+
+Prepare using GUI-launched Emacs running in graphics mode
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you plan to launch Emacs from a GUI application like Windows Explorer or
+macOS Finder you will find that Emacs process environment will not include
+everything you need to get everything working.  As described in the previous
+section PEL provides a solution to this problem, a solution that does not slow
+down Emacs startup and requires you to set one or two PEL customization
+user-option variables:
 
 - ``pel-shell-detection-envvar`` to identify an environment variable whose
   presence identifies that Emacs was launched by a shell and absence
   identifies that Emacs was launched from a GUI application such as Windows
-  Explorer, macOS Finder or something like that.  The default is the specially
-  reserved "_" environment variable used by Bash. If you do not use Bash to
-  launch Emacs you will have to use something else.  In the worst case, use
-  ``PEL_SHELL`` and set that environment inside you shell startup script.
+  Explorer, macOS Finder or something like that.
+
 - ``pel-gui-process-environment`` is where you define the environment
   variables for the GUI Emacs.  You can define any environment variable name
   and value and specify whether you want PEL to use the value as-is or to
   prepend or append it to the value of variable if it exists.
-
 
 You will most likely need to specify an extra set of directories to prepend to
 your ``PATH`` to allow Emacs to execute some of the programs you want to use
@@ -1084,14 +1169,57 @@ checker program (aspell, hunspell or ispell) or several compilers.
   option with the ``prepend`` action.
 - You can add any other environment variables this way.
 
-If you use the dual independent terminal/graphics mode customization file
-option, remember to set these user-options inside the customization file used
-by the graphics instance of Emacs.  It's simple to do: use Emacs in graphics
-mode to set these environment variables.
+**To support dual independent customization files do the following:**
 
-Type the ``<f11> M-s <f2>`` key sequence to open the customization buffer
-where you can set these two user-option variables.  Set the values and save
-them. Restart Emacs for these to take effect.
+- Make sure that your ``init.el`` file contains the logic identified in the
+  `example/init/init-5.el`_ file:
+
+  - Set OPTION A: set ``pel-use-graphic-specific-custom-file-p`` to **t**
+  - Set OPTION B: set ``pel-shell-detection-envvar`` to the name of the
+    environment variable your shell always set or the one you always set
+    inside your shell startup script (something like ``PEL_SHELL``).
+
+- For Emacs 27 and later, to support the package quickstart feature you must
+  also create an ``early-init.el`` file that has the logic shown inside the
+  `example/init/early-init.el`_ file:
+
+  - Set OPTION A: set ``pel-support-dual-independent-customization-p`` to
+    **t**.
+
+**To support GUI-launched GUI Emacs**
+
+If you want to use Emacs in graphics mode launched from a GUI application
+like Windows Explorer or macOS Finder you must also do the following:
+
+- Start Emacs with PEL support in graphics mode from a shell.
+- Type the ``<f11> M-s <f2>`` key sequence to open the customization buffer
+  where you can set these two user-option variables.
+
+  - Set the values of ``pel-shell-detection-envvar`` and ``environment``.
+    Save the customization file.
+
+- Restart Emacs for these to take effect.
+
+
+Prepare using shell-launched Emacs running in graphics mode
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you plan to launch Emacs from the shell and want to use two independent
+customization files, one for Emacs running in graphics and another for Emacs
+running in terminal mode, you need to create a shell script that will launch
+Emacs in graphics mode.  That script must set the ``PEL_EMACS_IN_GRAPHICS``
+environment variable to ``1`` ( a string value).  See the script examples in the
+sub-sections of `Launching graphics mode Emacs from a shell`_.
+
+
+Prepare using shell-launched Emacs running in terminal mode
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Aside from invoking Emacs with the ``-nw`` command line there is nothing
+special to do for  PEL to launch a terminal-mode Emacs from a shell.
+
+See example of scripts in the section titled `Scripts to Launch Emacs in
+Terminal mode`_.
 
 .. ---------------------------------------------------------------------------
 
@@ -1850,82 +1978,6 @@ the absolute path.
       # ----------------------------------------------------------------------------
 
 .. _example/init/init-3.el: ../example/init/init-3.el
-
-
-.. ---------------------------------------------------------------------------
-
-Control environment of macOS GUI Emacs
---------------------------------------
-
-You may want to start Emacs from a GUI macOS application like macOS Finder.
-This section presents an alternative to `Steve Purcell's
-exec-path-from-shell`_ which slows Emacs startup.
-
-This method consists in *hard-coding* environment variable values into the
-macOS ``Info.plist`` file located inside the GUI Emacs Application bundle.
-This file is an XML file and can easily be modified as described in the Emacs
-Wiki page titled `PATH set from Info.plist in app bundle`_.
-
-This method is quite useful to set ``PEL_EMACS_IN_GRAPHICS`` environment
-variable and inform the GUI Emacs early-init.el that Emacs runs in graphics
-mode [#early-init-graphics]_.
-
-**Do this:**
-
-Open your Emacs.app bundle Info.plist file, this is normally
-``/Applications/Emacs.app/Contents/Info.plist``.
-
-That file is an XML file.  You can edit it with Emacs using `nxml-mode`_ or
-another XML supporting mode.
-
-The file contains a top level dictionary.  Add the ``LSEnvironment`` key if
-not already present inside the file and then add as many key-value pairs as
-environment variables you want to add.
-
-As a minimum add setting ``PEL_EMACS_IN_GRAPHICS`` to the value ``"1"`` by
-adding the following data definition:
-
-.. code:: xml
-
-        <key>LSEnvironment</key>
-        <dict>
-          <key>PEL_EMACS_IN_GRAPHICS</key>
-          <string>1</string>
-        </dict>
-
-If you want to set something like the PATH, the value needs to be a string
-with the ``:`` path separator between each explicit directory name you want in
-the PATH seen by Emacs.  There's really no limit to what you can add.
-
-Save the file. Enter the following macOS Xcode
-command in a Terminal shell:
-
-.. code:: shell
-
-          /Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f /Applications/Emacs.app/
-
-
-Restart Emacs.
-
-
-.. _PATH set from Info.plist in app bundle: https://www.emacswiki.org/emacs/EmacsApp#h5o-8
-.. _nxml-mode: https://www.gnu.org/software/emacs/manual/html_node/nxml-mode/Introduction.html
-.. [#early-init-graphics] Emacs 27 and later support the package quickstart
-                          mechanism.  This requires setting information in the
-                          file ``early-init.el``.  At the moment Emacs process
-                          the content of ``early-init.el`` its graphics
-                          support code has not yet been initialized and Emacs
-                          Lisp code cannot detect whether it is running in
-                          terminal mode or in graphics mode by calling
-                          ``display-graphic-p``: that function is not
-                          available at that time.  One way around this is to
-                          use the ``getenv`` function to read the content of
-                          an environment variable. PEL uses the
-                          ``PEL_EMACS_IN_GRAPHICS`` environment variable to
-                          identify Emacs running in graphics mode.  See
-                          `Launching graphics mode Emacs from a shell`_
-                          sub-sections for example of shell scripts used to
-                          launch a graphics mode Emacs from a shell.
 
 .. -----------------------------------------------------------------------------
 

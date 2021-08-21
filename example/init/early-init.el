@@ -25,27 +25,63 @@
 ;;    that `package-initialize' should load the latest installed version
 ;;    of all packages. If you need to modify this behaviour when the
 ;;    package quickstart is used, set the value inside the early-init.el
-
-;; PEL Init option A: independent customization for TTY & graphic modes.
-;; ---------------------------------------------------------------------
 ;;
-;; Separate elpa directory for Emacs in graphics mode and Emacs in TTY mode.
-;; Use ~/.emacs.d/elpa in TTY mode, and ~/.emacs.d/elpa-graphics in graphics
-;; mode.  Inside early-init.el the function `display-graphic-p' does not
-;; return t for Emacs running in graphics mode, so instead use a shell script
-;; to start Emacs in graphics mode and set the PEL_EMACS_IN_GRAPHICS
-;; environment variable to "1" inside that shell script otherwise do not
-;; define the variable.
-;;
-;; To activate init option A for Emacs 27+ you must use a specialized shell
-;; that sets the PEL_EMACS_IN_GRAPHICS environment variable for Emacs used
-;; in graphics mode and don't set it for Emacs running in TTY mode.
+;; Note that inside early-init.el Emacs has not initialized its graphics
+;; support code and the function `display-graphic-p' is not yet available.
+;; This is why we must resort to environment variables to detect if Emacs is
+;; running in graphics mode or in terminal/TTY mode.
 
-(defvar pel-force-graphics-specific-custom-file-p (getenv
-                                                   "PEL_EMACS_IN_GRAPHICS")
+;; ---------------------------------------------------------------------------
+;; PEL OPTION A: independent customization for TTY & graphic modes.
+;; ----------------------------------------------------------------
+;;
+;; If you want to support independent customization of Emacs running in
+;; terminal/TTY and Emacs running in graphics mode you MUST set:
+;;
+;;  1) Set `pel-support-dual-independent-customization-p' to t below.
+;;  2) Set `PEL_EMACS_IN_GRAPHICS' environment variable to 1 in
+;;     a script that launch the graphics-mode Emacs from a shell.
+;;
+;; If you do not want to support independent customization of Emacs, leave
+;; `pel-support-dual-independent-customization-p' set to nil.
+;;
+(defconst pel-support-dual-independent-customization-p nil
+  "When t PEL uses 2 custom files: one for TTY and one for graphic mode.")
+
+;; ---------------------------------------------------------------------------
+;; PEL OPTION B: Detection of GUI-launched graphics Emacs.
+;; -------------------------------------------------------
+;;
+;; Identify an environment variable whose presence detects that Emacs is
+;; launched from a shell.  This should have the **SAME** value as what the
+;; `pel-shell-detection-envvar' user option defined in pel--options.el has.
+;;
+;; The default is "_", the environment variable that Bash uses to identify the
+;; name of the executable that launched it.  This environment variable is not
+;; part of the process environment when Emacs is launched from a GUI program
+;; such as macOS Finder.
+;;
+;; Change this value when using another shell or when running on other
+;; operating system such as Windows. If you cannot find a suitable environment
+;; variable that is defined when Emacs is launched, then define an environment
+;; variable that will be present in all instances of your shell but not inside
+;; the OS process environment. For instance you could use the environment name
+;; "PEL_SHELL".
+;;
+(defconst pel-shell-detection-envvar "_"
+  "Name of envvar used to detect that Emacs was launched by a shell.
+A temporary value for user-option defined in pel--options.el")
+
+;; ---------------------------------------------------------------------------
+;; The following code does not require editing.
+
+(defvar pel-force-graphics-specific-custom-file-p
+  (and pel-support-dual-independent-customization-p
+       (or (getenv "PEL_EMACS_IN_GRAPHICS")
+           (not (getenv pel-shell-detection-envvar))))
   "Force independent graphics mode customization.")
 
-;; Inform later code that package quickstart is being used.
+;; Request use of the package quickstart feature.
 (setq package-quickstart t)
 
 ;; ----
@@ -80,7 +116,5 @@
                            :from-early-init)
     ;; Remember Emacs is running in PEL's fast startup mode.
     (setq pel-running-in-fast-startup-p t)))
-
-
 
 ;; ---------------------------------------------------------------------------
