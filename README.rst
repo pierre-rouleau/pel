@@ -29,7 +29,7 @@ or `update it`_ [#update]_ !
   launched from a shell or a GUI program like Windows Explorer, macOS Finder
   and others.
 
-- PEL supports the package quickstart feature available on Emacs version 27
+- PEL supports the `package-quickstart feature`_ available on Emacs version 27
   and later. PEL provides `early-init.el file template`_ and provides the
   **pel-setup-with-quickstart** command to create and refresh all files to
   activate the package quickstart and **pel-setup-no-quickstart** to
@@ -253,6 +253,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _How to setup GUI Emacs environment: doc/pel-manual.rst#prepare-using-gui-launched-emacs-running-in-graphics-mode
 .. _early-init.el file template:
 .. _example/init/early-init.el: example/init/early-init.el
+.. _package-quickstart feature: https://git.savannah.gnu.org/cgit/emacs.git/commit/etc/NEWS?id=6dfdf0c9e8e4aca77b148db8d009c862389c64d3
 
 ..
    -----------------------------------------------------------------------------
