@@ -29,10 +29,10 @@ or `update it`_ [#update]_ !
   GUI program like Windows Explorer, macOS Finder and others.
 
 - PEL supports the package quickstart feature available on Emacs version 27
-  and later. PEL provides early-init.el file template and provides commands to
-  create and refresh all files to activate the package quickstart or disable
-  it: the commands **pel-setup-with-quickstart** and
-  **pel-setup-no-quickstart**.
+  and later. PEL provides `early-init.el file template`_ and provides the
+  **pel-setup-with-quickstart** command to create and refresh all files to
+  activate the package quickstart and and **pel-setup-no-quickstart** to
+  disable it.
 
 - PEL also provides further startup speedup with PEL **fast startup mode**.
   See `⅀ Fast Startup PDF`_ (see [#firefox]_).  Easily speed up Emacs startup
@@ -244,7 +244,8 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _⅀ Customize PDF:            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf
 .. _Mozilla Firefox:            https://en.wikipedia.org/wiki/Firefox
 .. _How to setup GUI Emacs environment: doc/pel-manual.rst#prepare-using-gui-launched-emacs-running-in-graphics-mode
-
+.. _early-init.el file template:
+.. _example/init/early-init.el: example/init/early-init.el
 
 ..
    -----------------------------------------------------------------------------
