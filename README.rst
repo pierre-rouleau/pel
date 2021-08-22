@@ -18,7 +18,7 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 
-.. image:: https://img.shields.io/badge/PEL-Manual-orange
+.. image:: https://img.shields.io/badge/PEL_Manual-Updates_needed-orange
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 
