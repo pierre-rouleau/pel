@@ -36,8 +36,8 @@ or `update it`_ [#update]_ !
 ➣ **Supports Launching Emacs from GUI and Shell**
 
 - PEL supports terminal Emacs launched from a shell and graphics Emacs
-  launched from a shell or a GUI program like Windows Explorer, macOS Finder
-  and others.
+  launched from a shell or a GUI program like Windows Explorer, macOS Finder,
+  Linux file managers, etc...
 
 ➣ **Emacs Fast Startup**
 

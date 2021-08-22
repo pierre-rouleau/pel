@@ -3,11 +3,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 * Changes since version 0.3.1:
 ** New Features and Improvements:
 - New: PEL supports configuring the process environment of Emacs launched from
-  a GUI program such as Windows Explorer or macOS Finder.  The method PEL use
-  is fast and does not need to launch a child shell process: only configure
-  two customization user-options variables: ``pel-shell-detection-envvar`` and
-  ``pel-gui-process-environment`` and possibly setting one environment
-  variable into your shell initialization script.
+  a GUI program such as Windows Explorer, macOS Finder, Linux file manager,
+  etc...  The method PEL use is fast and does not need to launch a child shell
+  process: only configure two customization user-options variables:
+  ``pel-shell-detection-envvar`` and ``pel-gui-process-environment`` and
+  possibly setting one environment variable into your shell initialization
+  script.
 - New: PEL now provides 2 operation modes: the normal Emacs mode of operation
   and the new **fast-startup** setup.  In the fast-startup setup, Emacs init startup
   time is reduced further by bundling all single directory external packages

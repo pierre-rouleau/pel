@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-21 18:36:00, updated by Pierre Rouleau.
+:Modified: 2021-08-22 13:36:19, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1062,7 +1062,7 @@ Identify Types of Emacs Processes
 PEL distinguish 3 types of Emacs process modes:
 
 #. GUI launched Emacs running in graphics mode.  Examples of this is Emacs
-   launched from Windows Explorer, macOS Finder or others.
+   launched from Windows Explorer, macOS Finder, Linux file managers, etc...
 #. Shell launched Emacs running in graphics mode.  When a command typed in a
    shell starts Emacs in graphics mode.
 #. Shell launched Emacs running in terminal mode.
