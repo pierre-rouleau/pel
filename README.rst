@@ -121,30 +121,30 @@ or `update it`_ [#update]_ !
 
 **Extends Emacs Documentation**:
 
-  - PEL provides **over 130** `PDF topic-oriented reference sheets`_ packed
-    with symbol annotated, colour coded key bindings and command descriptions,
-    with hyperlinks to Emacs manuals, external packages, articles and other
-    useful references.
+- PEL provides **over 130** `PDF topic-oriented reference sheets`_ packed
+  with symbol annotated, colour coded key bindings and command descriptions,
+  with hyperlinks to Emacs manuals, external packages, articles and other
+  useful references.
 
-    - See the `PEL Index PDF`_ [#firefox]_ as a starting point.  For the best
-      user experience, use a browser, like Firefox, that can render the PDF
-      inline (as opposed to downloading it) so you can use the links quickly.
-      Inside Emacs use ``<f11> <f1>`` to open the `PEL Index PDF`_ and then
-      navigate from it, or use ``<f12> <f1>`` to open the PDF describing the
-      major mode of the current buffer and its key bindings.  All of these PDF
-      files are created from a macOS Number file.  It is located in a separate
-      Git repo: the `pel-pdf-spreadsheet repo`_.
+  - See the `PEL Index PDF`_ [#firefox]_ as a starting point.  For the best
+    user experience, use a browser, like Firefox, that can render the PDF
+    inline (as opposed to downloading it) so you can use the links quickly.
+    Inside Emacs use ``<f11> <f1>`` to open the `PEL Index PDF`_ and then
+    navigate from it, or use ``<f12> <f1>`` to open the PDF describing the
+    major mode of the current buffer and its key bindings.  All of these PDF
+    files are created from a macOS Number file.  It is located in a separate
+    Git repo: the `pel-pdf-spreadsheet repo`_.
 
-  - `PEL's Manual`_ describes PEL features in more details. See:
+- `PEL's Manual`_ describes PEL features in more details. See:
 
-    - `How to install PEL`_,
-    - `How to setup GUI Emacs environment`_ to control GUI launched Emacs PATH
-      and other environment variables easily with a fast starting Emacs,
-    - `PEL setup commands`_ for `dual customization`_ and `fast startup mode`_,
-    - `PEL initialization command`_ and `PEL cleanup command`_,
-    - `PEL Customization`_,
-    - `PEL Key Bindings`_,
-    - `PEL convenience features`_.
+  - `How to install PEL`_,
+  - `How to setup GUI Emacs environment`_ to control GUI launched Emacs PATH
+    and other environment variables easily with a fast starting Emacs,
+  - `PEL setup commands`_ for `dual customization`_ and `fast startup mode`_,
+  - `PEL initialization command`_ and `PEL cleanup command`_,
+  - `PEL Customization`_,
+  - `PEL Key Bindings`_,
+  - `PEL convenience features`_.
 
 **Credits**
 
