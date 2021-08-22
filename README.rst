@@ -25,9 +25,13 @@ PEL -- Pragmatic Emacs Library
 PEL might be for you!  Then go ahead, `install it`_ [#install]_
 or `update it`_ [#update]_ !
 
+**Supports Launching Emacs from GUI and Shell**
+
 - PEL supports terminal Emacs launched from a shell and graphics Emacs
   launched from a shell or a GUI program like Windows Explorer, macOS Finder
   and others.
+
+**Emacs Fast Startup**
 
 - PEL supports the `package-quickstart feature`_ available on Emacs version 27
   and later. PEL provides `early-init.el file template`_ and provides the
@@ -63,6 +67,8 @@ or `update it`_ [#update]_ !
       setup with package management capabilities and PEL's automatic package
       installation via customization.
 
+**Customization Driven**
+
 - PEL saves your customization data inside a file separate from your
   ``init.el`` file, providing an extra degree of freedom and control.
 
@@ -84,6 +90,8 @@ or `update it`_ [#update]_ !
     **pel-setup-dual-environment** command (or ``<f11> <f2> M-d``) to
     activate dual independent customization.  It will create the required
     customization files.
+
+**Download, Installation and Setup of External Packages**
 
 - In normal mode, PEL controls the download, installation, configuration and
   activation of **over 230** *top-level* [#externp]_ external packages through the
@@ -111,7 +119,7 @@ or `update it`_ [#update]_ !
   **that mostly do not interfere with the standard Emacs key bindings**
   (except for a very small few documented ones).
 
-- PEL **extends Emacs documentation**:
+**Extends Emacs Documentation**:
 
   - PEL provides **over 130** `PDF topic-oriented reference sheets`_ packed
     with symbol annotated, colour coded key bindings and command descriptions,
