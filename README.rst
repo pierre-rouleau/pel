@@ -33,13 +33,13 @@ PEL -- Pragmatic Emacs Library
 PEL might be for you!  Then go ahead, `install it`_ [#install]_
 or `update it`_ [#update]_ !
 
-**Supports Launching Emacs from GUI and Shell**
+➣ **Supports Launching Emacs from GUI and Shell**
 
 - PEL supports terminal Emacs launched from a shell and graphics Emacs
   launched from a shell or a GUI program like Windows Explorer, macOS Finder
   and others.
 
-**Emacs Fast Startup**
+➣ **Emacs Fast Startup**
 
 - PEL supports the `package-quickstart feature`_ available on Emacs version 27
   and later. PEL provides `early-init.el file template`_ and provides the
@@ -75,7 +75,7 @@ or `update it`_ [#update]_ !
       setup with package management capabilities and PEL's automatic package
       installation via customization.
 
-**Customization Driven**
+➣ **Customization Driven**
 
 - PEL saves your customization data inside a file separate from your
   ``init.el`` file, providing an extra degree of freedom and control.
@@ -99,7 +99,7 @@ or `update it`_ [#update]_ !
     activate dual independent customization.  It will create the required
     customization files.
 
-**Download, Installation and Setup of External Packages**
+➣ **Download, Installation and Setup of External Packages**
 
 - In normal mode, PEL controls the download, installation, configuration and
   activation of **over 230** *top-level* [#externp]_ external packages through the
@@ -127,7 +127,7 @@ or `update it`_ [#update]_ !
   **that mostly do not interfere with the standard Emacs key bindings**
   (except for a very small few documented ones).
 
-**Extends Emacs Documentation**:
+➣ **Extends Emacs Documentation**:
 
 - PEL provides **over 130** `PDF topic-oriented reference sheets`_ packed
   with symbol annotated, colour coded key bindings and command descriptions,
@@ -154,7 +154,7 @@ or `update it`_ [#update]_ !
   - `PEL Key Bindings`_,
   - `PEL convenience features`_.
 
-**Credits**
+➣ **Credits**
 
 PEL would not exist without the great software available for Emacs.  Some of
 them are listed in the `Credits`_ section of the manual_ but the list is
@@ -162,7 +162,7 @@ unfortunately incomplete as it grows continuously when PEL supports new
 packages.  The external packages are identified in the PDF tables with the box
 symbol: 📦 with hyper-links to the author's project.
 
-**What's New**
+➣ **What's New**
 
 PEL is still evolving, with new packages being integrated, new documentation
 created and new features developed.  The evolution is described in the `NEWS file`_.
