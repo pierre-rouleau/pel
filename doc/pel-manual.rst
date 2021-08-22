@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-22 13:36:19, updated by Pierre Rouleau.
+:Modified: 2021-08-22 13:56:47, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -602,21 +602,11 @@ You can also use a copy of the file `example/init/init-1.el`_ :
 
 .. _cloned PEL: `Clone the PEL Git repository`_
 
-If you have cloned PEL inside ``~/projects/pel`` you are ready to go.
+If you have cloned PEL inside ``~/projects/pel`` you are ready to go to next step.
 Otherwise you **must update** the init.el to identify the location of the
 ``pel`` directory as shown below.
 
 .. image:: res/update-init.png
-
-**Note**
-
-If you work inside several projects and each project requires different
-Emacs settings, you could use several customization files and activate them
-for each project, reducing the load time further.
-That provides another degree of freedom, along with Emacs directory local
-and file local variables.
-
-
 
 Byte Compile PEL Files
 ----------------------
