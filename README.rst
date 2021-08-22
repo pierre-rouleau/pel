@@ -202,19 +202,21 @@ Drop me a note in the wiki_ or in the `discussion board`_!
             packages that can be bundled by PEL.  Those that have all their files
             in the same directory can be bundled.
 
-.. [#quickst] **Package Quickstart Support**: The **pel-setup-with-quickstart**
-              command creates the package quickstart files and the
-              early-init.el file if it's not already present.
+.. [#quickst] **Package Quickstart Support**:
+
+              The **pel-setup-with-quickstart** command creates the package
+              quickstart files and the early-init.el file if it's not already
+              present.
 
               The ``pel-early-init-with-package-quickstart`` user-option
               (which defaults to `example/init/early-init.el`_) allows you to
-              identify early-init.el file to use with package-quickstart
+              identify the early-init.el file to use with package-quickstart
               feature activated.
 
               The ``pel-early-init-without-package-quickstart`` user-option
               (which defaults to nil) allows you to identify whether one
-              early-init.el file is used when package quickstart feature is
-              disabled.
+              early-init.el file is used when the package quickstart feature
+              is disabled.
 
               Emacs ``package-quickstart-file`` user-option identifies the
               name of your package quickstart file.
