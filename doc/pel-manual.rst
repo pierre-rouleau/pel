@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-23 11:50:33, updated by Pierre Rouleau.
+:Modified: 2021-08-23 11:57:51, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2712,7 +2712,7 @@ utils                           PEL specific directory.  PEL stores Emacs Lisp
 **PEL Cleanup Attics**          The ``pel-cleanup`` command moves un-required
                                 packages out of their Elpa directory and into
                                 an *attic* directory where they can later be
-                                retrieved.
+                                retrieved.  See `PEL Cleanup Command`_.
 
 elpa-attic                      Directory that holds package
                                 directories moved out of the elpa directory
