@@ -195,8 +195,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 
 .. [#quick] **Fast initialization**:  PEL code uses all the techniques to
             improve initialization speed.  By default it starts quickly,
-            delaying code as much as possible to when it is absolutely
-            necessary.
+            delaying code as much as possible.
 
             On my 2014 iMac running macOS Mojave in terminal mode running
             Emacs 26.3 I get the following startup time in normal startup
