@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-23 14:39:12, updated by Pierre Rouleau.
+:Modified: 2021-08-23 14:59:11, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2407,14 +2407,9 @@ behaviour:
 They are described in the following sub-sections and in the
 `Customization PDF`_.
 
-
-
 .. _Independent customization for terminal/TTY and graphics mode:  `Independent Customization for Terminal and Graphics Modes`_
 .. _PEL fast-startup mode:     `Normal Startup and Fast Startup Modes`_
 .. _Emacs package quickstart:  `Package Quickstart Mode for Emacs 27 and later`_
-
-
-
 
 Independent Customization for Terminal and Graphics Modes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2681,15 +2676,65 @@ needed.
 Package Quickstart Mode for Emacs 27 and later
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-🚧 not written yet.  Coming Soon! 🚧
+Emacs 27 introduced the package quickstart feature.  When this feature is
+used, Emacs creates the file ``package-quickstart.el`` in the Emacs user
+directory.  This file holds the auto-load logic extracted from all package
+files.  When Emacs ≥ 27 detects the presence of this file it uses it instead
+of scanning the information from all elpa package directories.  This speeds
+Emacs startup.
+
+On Emacs ≥ 27 , PEL supports the 4 different combination of setups, listed
+below in decreasing order of startup time:
+
+- normal mode
+- normal mode with Emacs package quickstart
+- PEL fast startup
+- PEL fast startup with Emacs package quickstart
+
+To activate Emacs package quickstart you must create a early-init.el file and
+create the package-quickstart.el file using the package-quickstart-refresh
+command.  PEL provides logic that takes cares of this and can create all the
+files while also supporting the PEL fast startup mode and the dual independent
+terminal/graphics customization.
+
+- PEL provides a fully functional copy of early-init.el,
+  `example/init/early-init.el`_ that will work with PEL’s features example/init
+  directory.
+
+  - That file name is identified by the
+    ``pel-early-init-with-package-quickstart`` user-option.  If you want to
+    create your own copy of that file and add your content then update the
+    user-option with new file name.
+  - Since you may also want to use a early-init.el file for other purposes
+    when package-quickstart is not used, you may provide the name of that file
+    in the ``pel-early-init-without-package-quickstart`` user-option.  PEL
+    will use that file as the early-init.el when you request to disable
+    package quickstart feature.
+  - Use the ``<f11> M-S <f2>`` key sequence to open the appropriate
+    customization buffer.
 
 
+PEL provides the following 2 commands to
+setup Emacs ≥ 27 environment to support package quickstart or to remove it:
+
+- ``pel-setup-with-quickstart`` (bound to ``<f11> M-S q``) to activate
+  package-quickstart and create all necessary files.  You can also use it to
+  refresh package quickstart files after installing new packages (which you
+  can do in PEL normal startup mode),
+- ``pel-setup-no-quickstart`` (bound to ``<f11> M-S M-q``) to disable
+  package-quickstart.
+
+These commands handle the PEL fast-startup mode and the dual independent
+customization for terminal and graphics mode: pel-setup-with-quickstart
+activates the package quickstart mechanism and refreshes the files.
+pel-setup-no-quicstart disables the package quickstart mechanism.
+
+**Manual Setup Required**
 
 See the section titled
 `Add Support for Package Quickstart for Emacs 27 and Later`_ for a description
 of the manual setup required to allow PEL to activate and disable
 package-quickstart.
-
 
 .. ---------------------------------------------------------------------------
 
