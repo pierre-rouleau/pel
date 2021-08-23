@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-23 12:40:23, updated by Pierre Rouleau.
+:Modified: 2021-08-23 13:43:56, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1486,7 +1486,7 @@ user-option variables:
 
 You will most likely need to specify an extra set of directories to prepend to
 your ``PATH`` to allow Emacs to execute some of the programs you want to use
-because the OS ``PATH` inherited by the GUI-launched Emacs is minimal and will
+because the OS ``PATH`` inherited by the GUI-launched Emacs is minimal and will
 probably not include the directory where several tools need such as the spell
 checker program (aspell, hunspell or ispell) or several compilers.
 
@@ -2653,6 +2653,37 @@ the attic directory under DVCS control.
 
 Emacs and PEL Files and Directories
 ===================================
+
+PEL Directory
+-------------
+
+PEL is written in over 100 Emacs Lisp files stored inside the PEL directory.
+That directory must be identified in your init.el file in the
+``pel-home-dirpath-name`` variable.  All PEL Emacs Lisp files are
+byte-compiled using make with the `Makefile`_ script.
+
+The `pel_keys.el`_ file is byte-compiled by the `Makefile`_ script but also
+when you execute the commands ``pel-setup-fast`` and ``pel-setup-normal``.
+`pel_keys.el`_ is byte-compiled by these commands because these commands
+modify the behaviour of Lisp macros that control external package downloading
+and installation.  Normally the macros generate code that checks for the
+presence of external package required by the ``pel-use-`` user-options and
+force a download and installation if the package is not present. That
+behaviour is disabled when PEL operates in fast-startup mode speeding up the
+execution of ``pel-init`` since PEL knows that all packages required are
+present because it does not support automatic download and installation in
+fast-startup mode.  When returning in normal-startup mode, the macros have
+code that detect presence of external packages and automatic download and
+installation of external packages is re-enabled.
+
+The `pel__hydra.el`_ is also byte-compiled dynamically by ``pel-init`` to
+activate support of `Hydra`_ feature when ``pel-use-hydra`` is turned on.
+
+No other PEL Emacs Lisp file is byte-compiled outside of the `Makefile`_ script.
+
+.. _Makefile: ../Makefile
+.. _pel_keys.el:   ../pel_keys.el
+.. _pel__hydra.el:  ../pel__hydra.el
 
 User Emacs Directory
 --------------------
