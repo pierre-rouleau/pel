@@ -177,8 +177,9 @@ Drop me a note in the wiki_ or in the `discussion board`_!
               The manual is large and some browser do not always move to the
               right location.
 
-.. [#update]  The instructions for updating PEL are located inside `section 5`_ of `PEL
-              manual`_.  You can also use the `manual's table of contents`_ to move around.
+.. [#update]  The instructions for updating PEL are located inside the
+              `Updating PEL`_ section of the `PEL manual`_.
+              See `PEL manual table of contents`_ to move around.
               The manual is large and some browser do not always move to the
               right location.
 
@@ -281,13 +282,13 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _install it:
 .. _section 2:
 .. _How to install PEL:         doc/pel-manual.rst#how-to-install-pel
-.. _section 5:
+.. _Updating PEL:
 .. _update it:                  doc/pel-manual.rst#updating-pel
 .. _NEWS file:                  NEWS
 .. _discussion board:           https://github.com/pierre-rouleau/pel/discussions
 .. _GNU Elpa:                   https://elpa.gnu.org
 .. _MELPA:                      https://melpa.org/#/
-.. _manual's table of contents: doc/pel-manual.rst
+.. _PEL manual table of contents: doc/pel-manual.rst
 .. _pel-pdf-spreadsheet repo:   https://github.com/pierre-rouleau/pel-pdf-spreadsheet#readme
 .. _example/init/init-5.el:     example/init/init-5.el
 .. _PEL PDF files:

@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-23 11:59:45, updated by Pierre Rouleau.
+:Modified: 2021-08-23 12:12:07, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1982,34 +1982,6 @@ the absolute path.
 
 .. -----------------------------------------------------------------------------
 
-Updating PEL
-============
-
-After your first successful build of PEL, you can easily update PEL by pulling
-from the Git depot and running make to update the byte-compile code files used
-by PEL.
-
-Execute the following commands inside the pel directory.
-
-.. code:: shell
-
-     cd ~/projects/pel
-     git pull
-     make
-
-If you want to force byte-recompilation of all PEL code do a ``make clean``
-before issuing the ``make`` command.
-
-To use a new feature that was introduced in the new PEL code, set the
-corresponding PEL activation user-option variable through the relevant Emacs
-customization buffer, save the new customization data and run pel-init by
-using ``M-x pel-init`` or by restarting Emacs.
-
-As usual with PEL if new packages are identified by your new configuration
-they will be downloaded, installed, byte-compiled and configured automatically.
-
-.. -----------------------------------------------------------------------------
-
 PEL Key Bindings
 ================
 
@@ -2814,6 +2786,34 @@ Obsolete PEL Files
   ``elpa-graphics`` symlink to point to ``elpa-complete`` and
   ``elpa-complete-graphics`` directory respectively.
 
+
+.. ---------------------------------------------------------------------------
+
+Updating PEL
+============
+
+After your first successful build of PEL, you can easily update PEL by pulling
+from the Git depot and running make to update the byte-compile code files used
+by PEL.
+
+Execute the following commands inside the pel directory.
+
+.. code:: shell
+
+     cd ~/projects/pel
+     git pull
+     make
+
+If you want to force byte-recompilation of all PEL code do a ``make clean``
+before issuing the ``make`` command.
+
+To use a new feature that was introduced in the new PEL code, set the
+corresponding PEL activation user-option variable through the relevant Emacs
+customization buffer, save the new customization data and run pel-init by
+using ``M-x pel-init`` or by restarting Emacs.
+
+As usual with PEL if new packages are identified by your new configuration
+they will be downloaded, installed, byte-compiled and configured automatically.
 
 .. ---------------------------------------------------------------------------
 
