@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-23 15:35:07, updated by Pierre Rouleau.
+:Modified: 2021-08-23 15:36:58, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -6479,10 +6479,10 @@ loading with emphasis on delayed execution whenever possible.  These are all
 used in the code of `Pel_keys.el`_ which is loaded by the ``pel-init``
 command.
 
-PEL also auto-loads its code as much as possible but does not reply on the
+PEL also auto-loads its code as much as possible but does not rely on the
 package.el autoload cookies to do so because it does not support automatic
 installation.  Instead it provides auto-loading declarations inside the
-`pel_keys.el`_ and inside   loads `pel-autoload.el`_
+`pel_keys.el`_ and inside `pel-autoload.el`_
 
 - The ``pel-init`` command loads `pel_keys.el`_ explicitly.
 - The `pel_keys.el`_ code loads `pel-autoload.el`_ and then calls ``pel--autoload-init``.
