@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-22 13:56:47, updated by Pierre Rouleau.
+:Modified: 2021-08-23 11:50:33, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -646,17 +646,26 @@ features you want. That's described in the next section.
 
 **In case of Errors:**
 
-If the make script stopped at an error, just repeat the operation listed above.
+If the make script stopped at an error, check the following:
+
+- Check the content of your Emacs user directory.  Several files and
+  directories are required by Emacs, some are added by PEL and some are old
+  PEL files that should be removed.  Check the list of files and directories
+  in the section titles `Emacs and PEL Files and Directories`_.  Add missing
+  files, remove `obsolete PEL files`_.
+
+- Run make again.
 
 If the problem persists, or if you see an error or a warning during the build
 or when you start Emacs, please `create an issue`_ describing the problem and
 your environment and I will get to it.
 
-
-.. _create an issue: https://github.com/pierre-rouleau/pel/issues
+**Next Step**
 
 Skip the next section and read the section describing how to configure PEL:
 `Activate PEL Features - Customize PEL`_.
+
+.. _create an issue: https://github.com/pierre-rouleau/pel/issues
 
 .. ---------------------------------------------------------------------------
 
@@ -2447,6 +2456,13 @@ Package Quickstart Mode for Emacs 27 and later
 🚧 not written yet.  Coming Soon! 🚧
 
 
+
+See the section titled
+`Add Support for Package Quickstart for Emacs 27 and Later`_ for a description
+of the manual setup required to allow PEL to activate and disable
+package-quickstart.
+
+
 Normal Startup and Fast Startup Modes
 -------------------------------------
 
@@ -2454,15 +2470,16 @@ Once you have installed and configured all external packages you need you may
 find that Emacs startup time has increased too much for your liking.  That
 will be the case if you use a large number of external Elpa-compliant packages
 because Emacs must process the autoloads package information inside each of
-the elpa directory and that takes time.  PEL uses several techniques to reduce
-Emacs startup time.  As the number of package used grows you these techniques
-may not be sufficient.
+the elpa package directory and that takes time.  PEL uses several techniques
+to reduce Emacs startup time.  As the number of package used grows you these
+techniques may not be sufficient.
 
 To speed the startup further, PEL provides a fast-startup mode of operation.
 In that mode PEL bundles the Emacs Lisp code files of all single directory
-packages inside a single directory and calls this the pel-bundle *package*.
-Doing this reduces the number of packages Emacs see, reduces the length of
-Emacs load-path and reduces the startup time substantially.
+packages inside a single package directory (the pel-bundle *pseudo package*)
+and forces Emacs to use it as if it was a single package.  Doing this reduces
+the number of packages Emacs see, which reduces the length of Emacs load-path
+and reduces the startup time substantially.
 
 PEL provides the following 3 commands to deal with this:
 
@@ -2478,7 +2495,8 @@ PEL provides the following 3 commands to deal with this:
 
 These commands are described in the `Fast Startup PDF Sheet`_.
 
-The speedup you will experience depends on several factors:
+The Emacs initialization speedup you will experience depends on several
+factors:
 
 - One main factor is the number of Elpa-compliant packages that PEL can
   bundle.  PEL will be able to bundle all those packages that put all their
@@ -2661,6 +2679,138 @@ It's also a good idea to place your customization file, the elpa and
 the attic directory under DVCS control.
 
 .. _PEL use variable: `PEL Use Variables`_
+
+.. ---------------------------------------------------------------------------
+
+Emacs and PEL Files and Directories
+===================================
+
+User Emacs Directory
+--------------------
+
+The User Emacs Directory is normally ``~/.emacs.d``.
+With PEL that directory holds the following files and sub-directories.
+
+=============================== =========================================================
+Name                            Description
+=============================== =========================================================
+init.el                         Emacs initialization.  PEL installation uses the simple
+                                `example/init/init-1.el`.  But to use PEL fast startup
+                                feature the file should hold the content of
+                                `example/init/init-5.el`_.
+
+elpa                            The directory that holds Elpa-compliant Emacs
+                                external packages. When using PEL fast-startup
+                                feature this is replaced by a symlink to the
+                                elpa-complete directory or to elpa-reduced
+                                directory.
+
+utils                           PEL specific directory.  PEL stores Emacs Lisp
+                                files that are not Elpa-compliant packages
+                                here.
+
+**PEL Cleanup Attics**          The ``pel-cleanup`` command moves un-required
+                                packages out of their Elpa directory and into
+                                an *attic* directory where they can later be
+                                retrieved.
+
+elpa-attic                      Directory that holds package
+                                directories moved out of the elpa directory
+                                by ``pel-cleanup``.
+
+utils-attic                     Directory that holds files moved
+                                out of the utils directory by ``pel-cleanup``.
+
+
+**Package Quickstart**          The following files are used for the support
+                                of the package-quickstart feature.  This is
+                                only available for Emacs 27 and later.
+
+early-init.el                   Emacs early initialization file where package
+                                quickstart and some other PEL features must be
+                                activated.
+                                PEL provides the `example/init/early-init.el`_
+                                which it uses by default when it activates the
+                                package-quickstart feature.
+                                See the section titled
+                                `Package Quickstart Mode for Emacs 27 and
+                                later`_.
+
+package-quickstart.el           Emacs package quickstart file that holds the
+                                autoload logic of all packages.
+
+
+**PEL fast-startup**            The following files and directories are used
+                                by PEL for the fast-startup and normal startup
+                                modes.
+
+
+elpa-complete                   Directory used when PEL fast-startup
+                                feature has been initialized once.  In PEL normal
+                                startup mode this stores the Elpa-compliant
+                                packages that are were stored in the elpa
+                                directory, and elpa is turned into a symlink that
+                                points to elpa-complete.
+
+elpa-reduced                    Directory used when PEL fast-startup
+                                has been turned on.  It holds the pel-bundle
+                                pseudo package and all multi-directory Elpa
+                                packages.  The elpa symlink points to
+                                elpa-reduced when PEL operates in fast startup
+                                mode.
+
+pel-fast-startup-init.el        File created by ``pel-startup-fast`` that acts
+                                as a flag to early-init.el and init.el
+                                indicating request to use the fast startup
+                                mode and which identifies the name of the
+                                pel-bundle directory.
+
+**Dual Custom files**           The following files and directories are only used
+                                when the dual independent customization files for
+                                terminal/TTY and graphics mode is used.
+                                These are all PEL specific.
+
+emacs-customization-graphics.el Holds Emacs customization for Emacs running in
+                                graphics mode. PEL specific.
+
+elpa-graphics                   Symlink that points to elpa-complete-graphics
+                                in normal startup mode or to
+                                elpa-reduced-graphics in fast startup mode.
+
+utils-graphics                  Directory that holds Emacs Lisp files of non
+                                Elpa-compliant packages used in graphics mode.
+
+elpa-complete-graphics          Directory that holds graphics mode specific
+                                Elpa-compliant packages used when PEL operates
+                                in normal startup mode.
+
+elpa-reduced-graphics           PEL specific directory. Used when dual independent
+                                terminal/TTY and graphics mode is used. Holds
+                                terminal/TTY mode specific Elpa compliant
+                                packages used when PEL operates in normal startup
+                                mode.
+
+elpa-attic-graphics             PEL specific directory that holds package
+                                directories moved out of the elpa-graphic
+                                directory by ``pel-cleanup``.
+
+utils-attic-graphics            PEL specific directory that holds files moved
+                                out of the utils-graphic directory by
+                                ``pel-cleanup``.
+
+package-quickstart-graphics.el  Package quickstart file for Emacs running in
+                                graphics mode.
+=============================== =========================================================
+
+Obsolete PEL Files
+~~~~~~~~~~~~~~~~~~
+
+- The ``pel-setup-package-builtin-versions.el`` is the old name of the
+  ``pel-fast-startup-init.el`` file.   If you have that file in your Emacs
+  user directory, remove it and manually force the ``elpa`` and
+  ``elpa-graphics`` symlink to point to ``elpa-complete`` and
+  ``elpa-complete-graphics`` directory respectively.
+
 
 .. ---------------------------------------------------------------------------
 
