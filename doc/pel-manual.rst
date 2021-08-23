@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-23 14:24:17, updated by Pierre Rouleau.
+:Modified: 2021-08-23 14:36:58, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2398,7 +2398,13 @@ PEL Setup Commands
 ------------------
 
 PEL provides several commands that control important aspect of Emacs
-behaviour.  They are described in the following sub-sections and in the
+behaviour:
+
+- Independent customization for terminal/TTY and graphics mode,
+- PEL fast-startup mode,
+- Emacs package quickstart.
+
+They are described in the following sub-sections and in the
 `Customization PDF`_.
 
 
@@ -2517,19 +2523,6 @@ same name with the additional ``-graphics`` suffix.
 
 .. _how to create a file for Emacs' customization data: `Create a "~/.emacs.d/utils" directory`_
 .. _how to write a basic init.el file:                  `Create or Update your Emacs init.el file`_
-
-Package Quickstart Mode for Emacs 27 and later
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-🚧 not written yet.  Coming Soon! 🚧
-
-
-
-See the section titled
-`Add Support for Package Quickstart for Emacs 27 and Later`_ for a description
-of the manual setup required to allow PEL to activate and disable
-package-quickstart.
-
 
 Normal Startup and Fast Startup Modes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2676,6 +2669,18 @@ them into the ``~/.emacs.d/utils-attic`` where you can restore them when
 needed.
 
 .. _example/init/init-5.el as OPTION B: https://github.com/pierre-rouleau/pel/blob/master/example/init/init-5.el#L113
+
+Package Quickstart Mode for Emacs 27 and later
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+🚧 not written yet.  Coming Soon! 🚧
+
+
+
+See the section titled
+`Add Support for Package Quickstart for Emacs 27 and Later`_ for a description
+of the manual setup required to allow PEL to activate and disable
+package-quickstart.
 
 
 .. ---------------------------------------------------------------------------
