@@ -152,7 +152,7 @@ or `update it`_ [#update]_ !
   - `PEL Customization`_,
   - `PEL Key Bindings`_,
   - `PEL convenience features`_ with PEL commands that extend several aspects
-    of Emacs..
+    of Emacs.
 
 ➣ **Credits**
 
