@@ -193,30 +193,45 @@ Drop me a note in the wiki_ or in the `discussion board`_!
               at it since its version 78, under all operating system and is
               highly recommended.
 
-.. [#quick] **Quick initialization**: On my 2014 iMac running macOS Mojave in
-            terminal mode running Emacs 26.3 I get the following startup time:
+.. [#quick] **Fast initialization**:  PEL code uses all the techniques to
+            improve initialization speed.  By default it starts quickly,
+            delaying code as much as possible to when it is absolutely
+            necessary.
 
-            - with 182 packages, benchmark-init reports about 0.4 second startup-time,
+            On my 2014 iMac running macOS Mojave in terminal mode running
+            Emacs 26.3 I get the following startup time in normal startup
+            mode (and without package-quickstart):
+
+            - with 182 packages, `benchmark-init`_ reports about 0.4 second startup-time,
             - with 238 packages, benchmark-init reports about 0.6 second
-              startup-time, see the `benchmark-init report for it <doc/res/normal-startup-001.png>`_
+              startup-time, see the `benchmark-init report for it
+              <doc/res/normal-startup-001.png>`_
+
+            Activate PEL **fast startup mode** to experience **much faster**
+            initialization times:
+
             - with 238 packages, in **fast startup** operation mode, benchmark-init
               reports about **0.1 second startup-time**, see the
-              `benchmark-init report for that <doc/res/fast-startup-001.png>`_.
+              `benchmark-init report for that
+              <doc/res/fast-startup-001.png>`_.
+            - The time reduction of fast startup mode depends on the number of
+              packages that can be bundled by PEL.  Those that have all their files
+              in the same directory can be bundled.
 
-            It's possible to reduce this further by restricting the number of used
-            package. This must be done in normal operation mode (as opposition to
-            the fast startup operation mode) by changing the PEL user-options and
-            then running the **M-x pel-cleanup** command.  Once done, return to
-            fast startup operation mode.
+            With PEL it's possible to reduce this further by removing packages
+            you do not need, without loosing their configuration:
 
-            Use the following commands to switch operation modes and then restart Emacs:
+            - go to normal startup mode,
+            - disable un-required packages by setting their corresponding
+              ``pel-use-`` user-option to nil,
+            - run the `pel-cleanup command`_ (with ``M-x pel-cleanup``).  It
+              will disable those packages by putting their packages inside an
+              *attic* directory where you can retrieve them later.
 
-            - ``M-x pel-setup-fast`` (bound to ``<f11> M-S f``)
-            - ``M-x pel-setup-normal`` (bound to ``<f11> M-S n``)
-
-            The time reduction of fast startup mode depends on the number of
-            packages that can be bundled by PEL.  Those that have all their files
-            in the same directory can be bundled.
+              - If the removed packages are multi-directory package their
+                removal will speed-up initialization in normal and
+                fast-startup mode, otherwise it will only speed it up in
+                normal mode.
 
 .. [#quickst] **Package Quickstart Support**:
 
@@ -291,6 +306,8 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _early-init.el file template:
 .. _example/init/early-init.el: example/init/early-init.el
 .. _package-quickstart feature: https://git.savannah.gnu.org/cgit/emacs.git/commit/etc/NEWS?id=6dfdf0c9e8e4aca77b148db8d009c862389c64d3
+.. _benchmark-init:             https://github.com/dholm/benchmark-init-el#readme
+.. _pel-cleanup command:        doc/pel-manual.rst#pel-cleanup-command
 
 ..
    -----------------------------------------------------------------------------
