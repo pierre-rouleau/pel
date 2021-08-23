@@ -47,12 +47,11 @@ or `update it`_ [#update]_ !
   all the package-quickstart files [#quickst]_ and **pel-setup-no-quickstart**
   (``<f11> M-S M-q``) to disable it.
 
-- PEL also provides further startup speedup with PEL **fast startup mode**.
-  See `⅀ Fast Startup PDF`_ (see [#firefox]_).  Easily speed up Emacs startup
-  with a single command!  PEL supports 2 different Emacs startup operation
-  modes:
+- Speed Emacs startup further with PEL `fast startup mode`_ command
+  (see also `⅀ Fast Startup PDF`_ [#firefox]_).
+  PEL supports 2 different Emacs startup operation modes:
 
-  - The **normal Emacs startup setup**, using Emacs' standard package.el
+  - The **normal startup** mode, using Emacs' standard package.el
     package manager with PEL's extensions that provide **customization-driven
     package management** built on `Emacs easy customization`_ to pick and
     chose packages and behaviours, all without having to write Emacs Lisp
@@ -75,7 +74,7 @@ or `update it`_ [#update]_ !
       setup with package management capabilities and PEL's automatic package
       installation via customization.
 
-➣ **Customization Driven**
+➣ **Customization Driven Package Management & configuration**
 
 - PEL saves your customization data inside a file separate from your
   ``init.el`` file, providing an extra degree of freedom and control.
@@ -307,6 +306,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _package-quickstart feature: https://git.savannah.gnu.org/cgit/emacs.git/commit/etc/NEWS?id=6dfdf0c9e8e4aca77b148db8d009c862389c64d3
 .. _benchmark-init:             https://github.com/dholm/benchmark-init-el#readme
 .. _pel-cleanup command:        doc/pel-manual.rst#pel-cleanup-command
+.. _fast startup mode:          doc/pel-manual.rst#normal-startup-and-fast-startup-modes
 
 ..
    -----------------------------------------------------------------------------
