@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-23 13:43:56, updated by Pierre Rouleau.
+:Modified: 2021-08-23 14:24:17, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2295,8 +2295,107 @@ Emacs packages and more tables will describe how to use them.
 
 .. ---------------------------------------------------------------------------
 
+Control External Package Installation and Emacs Initialization Speed
+====================================================================
+
+PEL controls the download and installation of external Emacs files and
+packages as well as their configuration and key bindings in some cases.
+
+The value of the `PEL Use Variables`_ identify your configuration and the
+``pel-init`` command (which runs on Emacs startup) activates what you
+requested.
+
+You can disable packages you no longer need by using the ``pel-cleanup``
+command.  It moves the un-required packages off the elpa directory into the
+attic directory making them invisible to Emacs.
+
+In normal startup mode, all of this is available and works automatically.
+
+However, if you want to speed Emacs initialization more than what is normally
+possible, you can activate PEL fast startup mode.  In fast startup mode PEL
+package management controlled by ``pel-init`` and ``pel-cleanup`` is no longer
+available.
+
+On Emacs 27 or later you can also activate Emacs package quickstart.
+
+You can also decide to manage the configuration of Emacs running in terminal
+mode independently from the one used when Emacs runs in graphics mode.
+
+PEL provides commands to control these various setups.  The following
+sub-sections provide more information.
+
+PEL Initialization Command
+--------------------------
+
+When PEL is used, the init.el file calls the ``pel-init`` command after
+loading the Emacs customization file.  If PEL operates in normal startup mode
+the ``pel-init`` command downloads and installs any un-installed external package
+identified by the activated `PEL use variable`_ .
+
+With PEL you add a supported package by setting the corresponding `PEL use variable`_
+user-option customize variable, making sure the new value(s) is stored in the
+customization file, and then either:
+
+- execute ``pel-init`` by typing ``M-x pel-init RET``, or
+- restart Emacs.
+
+For more information on customization see:
+
+- `Customization PDF`_,
+- `PEL Configuration/Customization Support`_,
+- `PEL Customization`_.
+
+
+PEL Cleanup Command
+-------------------
+
+As you start using more and more external packages, you will notice that Emacs
+startup time increases.  PEL delays execution as much as possible, using the
+same techniques you will find in other packages such as the popular
+`use-package`_ and some other.  If these were not used Emacs startup time
+would be much longer.  But still, for a large number of packages Emacs startup
+time will still increase and that startup time might be noticeable.
+
+PEL provides the fast startup mode to help.  But you may also have installed
+several external packages you no longer need.  Identify those and reset to
+their corresponding `PEL use variable`_.  Then execute the
+``pel-cleanup`` command to move the un-required packages out of the ``elpa`` and
+``utils`` directories and into their corresponding attic directories.
+
+If you want to get a report of what would be removed (and not remove anything)
+instead, then type something like ``C-u M-x pel-cleanup RET``.  This performs
+a ``pel-cleanup`` dry run and displays a report in the *pel-cleanup* buffer.
+Something like this:
+
+.. figure::  res/pel-cleanup-dry-run.png
+   :scale: 50 %
+
+When you're OK with what is going to be remove, execute the real thing with
+``M-x pel-cleanup RET``.
+
+Remember: no file is deleted, ``pel-cleanup`` moves them into the attic
+directory.  Later, you can copy them back into the elpa directory manually
+before re-activating the corresponding `PEL use variable`_ and run
+``pel-init`` to activate them again.  Or just activate the `PEL use variable`_
+and run ``pel-init`` again to download a new copy.  This way you
+keep a copy of the old version of the package in the attic directory.  If
+something got broken you have the old one handy!
+
+When using the dual independent customization then you can reduce the number
+of packages used in terminal or graphics mode by identifying the ones used in
+each mode.
+
+See the list of important files in the section titled `Activate dual
+independent customization`_.
+
+It's also a good idea to place your customization file, the elpa and
+the attic directory under DVCS control.
+
+.. _PEL use variable: `PEL Use Variables`_
+
+
 PEL Setup Commands
-==================
+------------------
 
 PEL provides several commands that control important aspect of Emacs
 behaviour.  They are described in the following sub-sections and in the
@@ -2304,7 +2403,7 @@ behaviour.  They are described in the following sub-sections and in the
 
 
 Independent Customization for Terminal and Graphics Modes
----------------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Emacs can be used in terminal (TTY/termcap) mode and in graphics mode.
 Usually Emacs customization file is used in both modes.
@@ -2338,7 +2437,7 @@ the package quickstart feature you also need to set it in there as well.
 
 
 Check customization state
-~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The command ``pel-setup-info-dual-environment``, bound to the ``<f11> <f2> ?``
 and to the ``<f11> ? e <f2>``
@@ -2350,7 +2449,7 @@ customization files and reports all detected problems.
 
 
 Activate dual independent customization
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Use the ``pel-setup-dual-environment`` command, bound to the ``<f11> <f2>
 M-d`` key sequence, to configure your Emacs environment to support two
@@ -2420,7 +2519,7 @@ same name with the additional ``-graphics`` suffix.
 .. _how to write a basic init.el file:                  `Create or Update your Emacs init.el file`_
 
 Package Quickstart Mode for Emacs 27 and later
-----------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 🚧 not written yet.  Coming Soon! 🚧
 
@@ -2433,7 +2532,7 @@ package-quickstart.
 
 
 Normal Startup and Fast Startup Modes
--------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Once you have installed and configured all external packages you need you may
 find that Emacs startup time has increased too much for your liking.  That
@@ -2483,11 +2582,11 @@ It's possible to reduce the startup time down such that benchmark-init report
 it to be 0.1 second, even with a relatively large number of external package.
 
 Speedup Examples
-~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^
 
 
 238 external packages in about 0.1 second
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++++++++++++++++++++++++++++++++++++++++++
 
 - Startup time:
 
@@ -2520,11 +2619,11 @@ fast-startup operation mode: Emacs startup time is now around 0.1 second.
 
 
 Measuring Emacs Startup Time
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 Using benchmark-init
-^^^^^^^^^^^^^^^^^^^^
+++++++++++++++++++++
 
 If you want to know the time each loaded file takes during Emacs initialization
 time you can use the benchmark-init_ package. This is not controlled by PEL
@@ -2578,76 +2677,6 @@ needed.
 
 .. _example/init/init-5.el as OPTION B: https://github.com/pierre-rouleau/pel/blob/master/example/init/init-5.el#L113
 
-.. ---------------------------------------------------------------------------
-
-PEL Initialization Command
-==========================
-
-When PEL is used, the init.el file calls the ``pel-init`` command after
-loading the Emacs customization file.  If PEL operates in normal startup mode
-the ``pel-init`` command downloads and installs any un-installed external package
-identified by the activated `PEL use variable`_ .
-
-With PEL you add a supported package by setting the corresponding `PEL use variable`_
-user-option customize variable, making sure the new value(s) is stored in the
-customization file, and then either:
-
-- execute ``pel-init`` by typing ``M-x pel-init RET``, or
-- restart Emacs.
-
-For more information on customization see:
-
-- `Customization PDF`_,
-- `PEL Configuration/Customization Support`_,
-- `PEL Customization`_.
-
-
-PEL Cleanup Command
-===================
-
-As you start using more and more external packages, you will notice that Emacs
-startup time increases.  PEL delays execution as much as possible, using the
-same techniques you will find in other packages such as the popular
-`use-package`_ and some other.  If these were not used Emacs startup time
-would be much longer.  But still, for a large number of packages Emacs startup
-time will still increase and that startup time might be noticeable.
-
-PEL provides the fast startup mode to help.  But you may also have installed
-several external packages you no longer need.  Identify those and reset to
-their corresponding `PEL use variable`_.  Then execute the
-``pel-cleanup`` command to move the un-required packages out of the ``elpa`` and
-``utils`` directories and into their corresponding attic directories.
-
-If you want to get a report of what would be removed (and not remove anything)
-instead, then type something like ``C-u M-x pel-cleanup RET``.  This performs
-a ``pel-cleanup`` dry run and displays a report in the *pel-cleanup* buffer.
-Something like this:
-
-.. figure::  res/pel-cleanup-dry-run.png
-   :scale: 50 %
-
-When you're OK with what is going to be remove, execute the real thing with
-``M-x pel-cleanup RET``.
-
-Remember: no file is deleted, ``pel-cleanup`` moves them into the attic
-directory.  Later, you can copy them back into the elpa directory manually
-before re-activating the corresponding `PEL use variable`_ and run
-``pel-init`` to activate them again.  Or just activate the `PEL use variable`_
-and run ``pel-init`` again to download a new copy.  This way you
-keep a copy of the old version of the package in the attic directory.  If
-something got broken you have the old one handy!
-
-When using the dual independent customization then you can reduce the number
-of packages used in terminal or graphics mode by identifying the ones used in
-each mode.
-
-See the list of important files in the section titled `Activate dual
-independent customization`_.
-
-It's also a good idea to place your customization file, the elpa and
-the attic directory under DVCS control.
-
-.. _PEL use variable: `PEL Use Variables`_
 
 .. ---------------------------------------------------------------------------
 
