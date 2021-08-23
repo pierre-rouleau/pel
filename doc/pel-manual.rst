@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-23 15:36:58, updated by Pierre Rouleau.
+:Modified: 2021-08-23 15:39:13, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -6489,10 +6489,11 @@ installation.  Instead it provides auto-loading declarations inside the
   That function defines the auto-loading of all ``pel-``
   files, the PEL feature which are mostly independent from each other.
 
-Currently, PEL use its own logic on top of the built-in package library
+Currently, PEL uses its own logic on top of the built-in package library
 to control the installation of missing package if the corresponding feature
 is activated via `PEL customization`_ ``pel-use-`` customization variable.
-PEL mechanism is similar to what the `use-package library`_ uses but includes
+PEL mechanism to control external package is similar to what the `use-package
+library`_ provides but also provides support for non-Elpa packages and includes
 logic specific to PEL that is aware of PEL fast-startup mode.
 
 The list of external packages used by PEL is shown in the `Credits`_ section.
