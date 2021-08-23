@@ -74,7 +74,7 @@ or `update it`_ [#update]_ !
       setup with package management capabilities and PEL's automatic package
       installation via customization.
 
-➣ **Customization Driven Package Management & configuration**
+➣ **Customization Driven Package Management & Configuration**
 
 - PEL saves your customization data inside a file separate from your
   ``init.el`` file, providing an extra degree of freedom and control.
