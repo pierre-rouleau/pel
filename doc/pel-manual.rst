@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-23 15:22:56, updated by Pierre Rouleau.
+:Modified: 2021-08-23 15:35:07, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -118,6 +118,7 @@ The section titled `How to install PEL`_ below will guide you through the
 process.
 
 
+.. _use-package library:
 .. _use-package:               https://github.com/jwiegley/use-package#readme
 .. _Emacs easy customization:
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
@@ -6473,32 +6474,27 @@ The PEL Emacs Lisp files types are the following:
      Git depot.
 
 PEL loads only what is needed based on commands executed.
-It implements a 2-step auto-loading mechanism described here:
+It uses several Emacs Lisp macros to control package detection and package
+loading with emphasis on delayed execution whenever possible.  These are all
+used in the code of `Pel_keys.el`_ which is loaded by the ``pel-init``
+command.
 
-- At first the only PEL symbol defined is ``pel-init``: it is activated
-  by `pel-autoloads.el`_ which schedule the auto-loading of `pel.el`_ when the
-  ``pel-init`` command is issued (or when called by your Emacs initialization file.)
+PEL also auto-loads its code as much as possible but does not reply on the
+package.el autoload cookies to do so because it does not support automatic
+installation.  Instead it provides auto-loading declarations inside the
+`pel_keys.el`_ and inside   loads `pel-autoload.el`_
+
 - The ``pel-init`` command loads `pel_keys.el`_ explicitly.
-- The `pel_keys.el`_ code
-  loads `pel-autoload.el`_ and then calls ``pel--autoload-init``.
+- The `pel_keys.el`_ code loads `pel-autoload.el`_ and then calls ``pel--autoload-init``.
   That function defines the auto-loading of all ``pel-``
   files, the PEL feature which are mostly independent from each other.
 
 Currently, PEL use its own logic on top of the built-in package library
 to control the installation of missing package if the corresponding feature
 is activated via `PEL customization`_ ``pel-use-`` customization variable.
-However, when using `Emacs package-install`_ to install PEL, then all
-dependencies identified by the `pel-pkg.el`_ file will be installed as well.
-They will be located inside your Emacs load-path but will only be loaded if the
-corresponding ``pel-use-`` user option is set to **t**.
+PEL mechanism is similar to what the `use-package library`_ uses but includes
+logic specific to PEL that is aware of PEL fast-startup mode.
 
-Note that this mechanism only works for external packages that are available from an
-Elpa compatible Emacs package archive site (ELPA_, MELPA_, a local Elpa archive,
-etc...)
-Some of the packages PEL uses are not hosted on these sites (yet) but on site
-like EmacsWiki_ and Emacsmirror_.
-For the moment those packages must be installed manually.
-Sites hat are accessible securely are preferred.
 The list of external packages used by PEL is shown in the `Credits`_ section.
 
 
