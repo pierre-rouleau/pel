@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-23 14:36:58, updated by Pierre Rouleau.
+:Modified: 2021-08-23 14:39:12, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2400,12 +2400,20 @@ PEL Setup Commands
 PEL provides several commands that control important aspect of Emacs
 behaviour:
 
-- Independent customization for terminal/TTY and graphics mode,
-- PEL fast-startup mode,
-- Emacs package quickstart.
+- `Independent customization for terminal/TTY and graphics mode`_,
+- `PEL fast-startup mode`_,
+- `Emacs package quickstart`_.
 
 They are described in the following sub-sections and in the
 `Customization PDF`_.
+
+
+
+.. _Independent customization for terminal/TTY and graphics mode:  `Independent Customization for Terminal and Graphics Modes`_
+.. _PEL fast-startup mode:     `Normal Startup and Fast Startup Modes`_
+.. _Emacs package quickstart:  `Package Quickstart Mode for Emacs 27 and later`_
+
+
 
 
 Independent Customization for Terminal and Graphics Modes
