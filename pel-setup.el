@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-19 11:30:57, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-23 18:16:55, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -826,6 +826,9 @@ originally returned by `pel-elpa-disable-pkg-deps-in'."
   '%S
   \"List of bundled package/versions to add to package--builtin-versions.\")
 
+\(defvar pel-force-graphics-specific-files nil
+  \"Force graphics specific files when non-nil. Set by `pel-fast-startup-init'.\")
+
 ;; pel-fast-startup-init must be called either inside early-init.el
 ;; (for Emacs >= 27) or inside init.el for older versions of Emacs.
 ;;
@@ -842,6 +845,7 @@ originally returned by `pel-elpa-disable-pkg-deps-in'."
       function is called from init or when Emacs is earlier than version 27.
 
 Return the pkg/version alist.\"
+  (setq pel-force-graphics-specific-files force-graphics)
   ;; step 1:
   (dolist (dep-ver pel-fast-startup-builtin-packages)
     (add-to-list 'package--builtin-versions dep-ver))
@@ -864,6 +868,23 @@ Return the pkg/version alist.\"
   nil)
 
 \(advice-add  'package-compute-transaction  :filter-return (function pel--pct))
+
+;; ----
+;; Ensure that `package-load-all-descriptors' uses the graphics-specific
+;; directory when forcing use of graphics specific files.  This is the case
+;; when Emacs runs in graphics mode and PEL dual independent customization
+;; feature is enabled.
+
+\(defun pel--pkg-load-all-descriptors (original-fct)
+  \"Execute ORIGINAL-FCT with a controlled value of `package-user-dir'.\"
+  (let ((package-user-dir (locate-user-emacs-file
+                           (if pel-force-graphics-specific-files
+                               \"elpa-graphics\"
+                             \"elpa\"))))
+    (funcall original-fct)))
+
+\(advice-add
+ 'package-load-all-descriptors :around (function pel--pkg-load-all-descriptors))
 
 ;; ---------------------------------------------------------------------------
 
