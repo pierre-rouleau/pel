@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-23 15:03:27, updated by Pierre Rouleau.
+:Modified: 2021-08-23 15:22:56, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -6372,22 +6372,21 @@ Emacs Lisp Files
 PEL code is spread across several Emacs Lisp files.
 The file names have been selected with the following constraints:
 
-#. Conform to the `Emacs Lisp Packaging rules`_ and include the
-   following files:
-
-   - `pel-pkg.el`_ that identified the project name, URL, author,
-     version and dependencies.
-   - `pel-autoloads.el`_ identifies the command ``pel-init`` as the
-     only auto-loaded command.
+#. Conform to the `Emacs Lisp Packaging rules`_.  However, because of the
+   nature of PEL it is currently not distributed via an Elpa-compliant
+   repository.  It currently provides the files `pel-pkg.el`_ and
+   `pel-autoloads.el`_ but these are unused and may be removed in the future.
 
 #. Control byte-compilation under several scenarios, including the
    following:
 
-   - Installation with `Emacs package-install`_ where all files are byte-compiled
-     in order of their file names (in alphabetical order).
    - *Manual* installation by cloning the PEL Git Depot and then using
      the PEL Makefile_ to create a local package archive, and compile all files
      locally.
+   - Dynamic byte-compilation of `pel_keys.el`_, `pel__hydra.el`_ and some
+     files not normally byte-compiled like the autoloads.el file of the
+     pel-bundle *pseudo-package* used in fast startup mode as well as the
+     package-quickstart files on request.
 
 The PEL Emacs Lisp files types are the following:
 
@@ -6399,9 +6398,10 @@ The PEL Emacs Lisp files types are the following:
      session and will not generate any warning.
    - These include:
 
+     - `pel--base.el`_: defines low level utilities.
+     - `pel--keys-macros.el`_ : defines multiple key bindings via Elisp macros.
      - `pel--options.el`_: defines all PEL customization variables.
      - `pel--macros.el`_: defines macros used by other files.
-     - `pel--base.el`_: defines low level utilities.
 
 #. PEL feature files.
 
@@ -6508,6 +6508,7 @@ The list of external packages used by PEL is shown in the `Credits`_ section.
 .. _pel.el:                 ../pel.el
 .. _pel--options.el:        ../pel--options.el
 .. _pel--base.el:           ../pel--base.el
+.. _pel--keys-macros.el:    ../pel--keys-macros.el
 .. _pel--macros.el:         ../pel--macros.el
 .. _pel-applescript.el:     ../pel-applescript.el
 .. _pel-autocomplete:
