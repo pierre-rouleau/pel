@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-23 14:59:11, updated by Pierre Rouleau.
+:Modified: 2021-08-23 15:03:27, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2725,9 +2725,9 @@ setup Emacs ≥ 27 environment to support package quickstart or to remove it:
   package-quickstart.
 
 These commands handle the PEL fast-startup mode and the dual independent
-customization for terminal and graphics mode: pel-setup-with-quickstart
+customization for terminal and graphics mode: ``pel-setup-with-quickstart``
 activates the package quickstart mechanism and refreshes the files.
-pel-setup-no-quicstart disables the package quickstart mechanism.
+``pel-setup-no-quickstart`` disables the package quickstart mechanism.
 
 **Manual Setup Required**
 
