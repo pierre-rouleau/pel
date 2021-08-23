@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-23 12:12:07, updated by Pierre Rouleau.
+:Modified: 2021-08-23 12:22:35, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -669,6 +669,122 @@ Skip the next section and read the section describing how to configure PEL:
 
 .. ---------------------------------------------------------------------------
 
+
+Fast Track Installation Steps
+-----------------------------
+
+This section just lists the commands that must be used to install PEL once the
+required tools are installed.  If you have not done that yet, go back to
+`How to Install PEL`_.  Otherwise keep reading.
+
+**Important**:
+   If you have already used Emacs and have a ``~/.emacs.d`` and its ``init.el` file,
+   you should follow the detailed instructions.  If you want to use this
+   fast-track then move your ``~/.emacs.d/init.el`` file somewhere else because it
+   will be deleted by the following steps.  Or move your entire ``~/.emacs.d``
+   directory somewhere else.  Later you can then merge the files.
+
+
+To install PEL, open a terminal shell and execute the following commands in
+sequence:
+
+#. Clone PEL repository into ``~/projects/pel``:
+
+   .. code:: shell
+
+          cd
+          mkdir projects
+          cd projects
+          git clone https://github.com/pierre-rouleau/pel.git
+
+#. Create ~/.emacs.d directory, sub-directories and required files
+
+   .. code:: shell
+
+          mkdir -p ~/.emacs.d/utils
+          touch ~/.emacs.d/emacs-customization.el
+
+#. Create a simple ``~/.emacs.d/init.el`` using the provided example
+
+   .. code:: shell
+
+          cp ~/projects/pel/example/init/init-1.el ~/.emacs.d/init.el
+
+#. Build PEL: byte-compile all PEL source code files:
+
+   .. code:: shell
+
+          cd ~/projects/pel
+          make clean
+          make
+
+
+#. Open emacs to download packages like which-key_ activated by default:
+
+   .. code:: shell
+
+          emacs
+
+#. Once Emacs has completed the download, you can use Emacs with PEL.
+
+   - Type ``<f11> ? p`` and a topic to open one of the PEL PDF files.
+     Use tab to complete what you type.  Type tab at first to see a complete
+     list of PDF files.
+   - As usual in Emacs, type ``C-x C-c`` to close it.
+
+
+At this point PEL is installed and operational.
+
+**Extra Steps to Improve Performance:**
+
+Perform these extra steps to increase the performance of Emacs and PEL:
+
+#. Setup Delay Loading of Abbreviation Definition File:
+
+   .. code:: shell
+
+          cp ~/projects/pel/example/init/init-2.el ~/.emacs.d/init.el
+          touch ~/.emacs.d/abbrev_defs
+
+#. Install a spell-checker program.  It must be ispell-compatible.
+   Use you system installation command to install one of ispell, aspell,
+   or hunspell if none of them are installed.
+   See the `Configure Spell Checking`_ section for more information.
+
+
+#. Speed-up Emacs: hold garbage collection during startup, postpone as much as
+   possible and support PEL fast-startup.  Use `example/init/init-5.el`_ as
+   the basis for your init.el file:
+
+   .. code:: shell
+
+          cp ~/projects/pel/example/init/init-5.el ~/.emacs.d/init.el
+
+#. Edit the ``~/.emacs.d/init.el``: search for the word ``OPTION`` and
+   update them to fit your needs.
+   For more information read the following sections:
+
+   - `Add Support for Fast Startup`_
+   - `Add Support for Independent Customization of Graphics and Terminal based
+     Emacs`_
+   - `Add Support for Package Quickstart for Emacs 27 and Later`_
+
+#. Optionally add two command line scripts to start Emacs in terminal or
+   graphics mode from a shell.  See examples in the section titled
+   `Create command line shortcuts for Emacs`_.
+
+At this point, continue to the next sections:
+
+#. `Identify Types of Emacs Processes`_.
+#. `Prepare using GUI-launched Emacs running in graphics mode`_.
+#. `Prepare using shell-launched Emacs running in graphics mode`_.
+#. `Prepare using shell-launched Emacs running in terminal mode`_.
+#. `Further PEL Configuration`_.
+#. `Activate PEL Features - Customize PEL`_.
+#. Optionally, `create command line shortcuts for Emacs`_.
+
+.. ---------------------------------------------------------------------------
+
 Optional Steps
 --------------
 
@@ -937,121 +1053,6 @@ and another in graphics mode:
 .. _example/init/early-init.el:               ../example/init/early-init.el
 
 
-
-.. ---------------------------------------------------------------------------
-
-Fast Track Installation Steps
------------------------------
-
-This section just lists the commands that must be used to install PEL once the
-required tools are installed.  If you have not done that yet, go back to
-`How to Install PEL`_.  Otherwise keep reading.
-
-**Important**:
-   If you have already used Emacs and have a ``~/.emacs.d`` and its ``init.el` file,
-   you should follow the detailed instructions.  If you want to use this
-   fast-track then move your ``~/.emacs.d/init.el`` file somewhere else because it
-   will be deleted by the following steps.  Or move your entire ``~/.emacs.d``
-   directory somewhere else.  Later you can then merge the files.
-
-
-To install PEL, open a terminal shell and execute the following commands in
-sequence:
-
-#. Clone PEL repository into ``~/projects/pel``:
-
-   .. code:: shell
-
-          cd
-          mkdir projects
-          cd projects
-          git clone https://github.com/pierre-rouleau/pel.git
-
-#. Create ~/.emacs.d directory, sub-directories and required files
-
-   .. code:: shell
-
-          mkdir -p ~/.emacs.d/utils
-          touch ~/.emacs.d/emacs-customization.el
-
-#. Create a simple ``~/.emacs.d/init.el`` using the provided example
-
-   .. code:: shell
-
-          cp ~/projects/pel/example/init/init-1.el ~/.emacs.d/init.el
-
-#. Build PEL: byte-compile all PEL source code files:
-
-   .. code:: shell
-
-          cd ~/projects/pel
-          make clean
-          make
-
-
-#. Open emacs to download packages like which-key_ activated by default:
-
-   .. code:: shell
-
-          emacs
-
-#. Once Emacs has completed the download, you can use Emacs with PEL.
-
-   - Type ``<f11> ? p`` and a topic to open one of the PEL PDF files.
-     Use tab to complete what you type.  Type tab at first to see a complete
-     list of PDF files.
-   - As usual in Emacs, type ``C-x C-c`` to close it.
-
-
-At this point PEL is installed and operational.
-
-**Extra Steps to Improve Performance:**
-
-Perform these extra steps to increase the performance of Emacs and PEL:
-
-#. Setup Delay Loading of Abbreviation Definition File:
-
-   .. code:: shell
-
-          cp ~/projects/pel/example/init/init-2.el ~/.emacs.d/init.el
-          touch ~/.emacs.d/abbrev_defs
-
-#. Install a spell-checker program.  It must be ispell-compatible.
-   Use you system installation command to install one of ispell, aspell,
-   or hunspell if none of them are installed.
-   See the `Configure Spell Checking`_ section for more information.
-
-
-#. Speed-up Emacs: hold garbage collection during startup, postpone as much as
-   possible and support PEL fast-startup.  Use `example/init/init-5.el`_ as
-   the basis for your init.el file:
-
-   .. code:: shell
-
-          cp ~/projects/pel/example/init/init-5.el ~/.emacs.d/init.el
-
-#. Edit the ``~/.emacs.d/init.el``: search for the word ``OPTION`` and
-   update them to fit your needs.
-   For more information read the following sections:
-
-   - `Add Support for Fast Startup`_
-   - `Add Support for Independent Customization of Graphics and Terminal based
-     Emacs`_
-   - `Add Support for Package Quickstart for Emacs 27 and Later`_
-
-#. Optionally add two command line scripts to start Emacs in terminal or
-   graphics mode from a shell.  See examples in the section titled
-   `Create command line shortcuts for Emacs`_.
-
-At this point, continue to the next sections:
-
-#. `Identify Types of Emacs Processes`_.
-#. `Prepare using GUI-launched Emacs running in graphics mode`_.
-#. `Prepare using shell-launched Emacs running in graphics mode`_.
-#. `Prepare using shell-launched Emacs running in terminal mode`_.
-#. `Further PEL Configuration`_.
-#. `Activate PEL Features - Customize PEL`_.
-#. Optionally, `create command line shortcuts for Emacs`_.
 
 .. ---------------------------------------------------------------------------
 
