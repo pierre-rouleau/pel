@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-23 11:57:51, updated by Pierre Rouleau.
+:Modified: 2021-08-23 11:59:45, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2742,7 +2742,7 @@ package-quickstart.el           Emacs package quickstart file that holds the
 
 **PEL fast-startup**            The following files and directories are used
                                 by PEL for the fast-startup and normal startup
-                                modes.
+                                modes.  See `PEL Cleanup Command`_.
 
 
 elpa-complete                   Directory used when PEL fast-startup
@@ -2769,6 +2769,9 @@ pel-fast-startup-init.el        File created by ``pel-startup-fast`` that acts
                                 when the dual independent customization files for
                                 terminal/TTY and graphics mode is used.
                                 These are all PEL specific.
+                                See `Independent Customization for Terminal
+                                and Graphics Modes`_.
+
 
 emacs-customization-graphics.el Holds Emacs customization for Emacs running in
                                 graphics mode. PEL specific.
