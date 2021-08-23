@@ -151,7 +151,8 @@ or `update it`_ [#update]_ !
   - `PEL initialization command`_ and `PEL cleanup command`_,
   - `PEL Customization`_,
   - `PEL Key Bindings`_,
-  - `PEL convenience features`_.
+  - `PEL convenience features`_ with PEL commands that extend several aspects
+    of Emacs..
 
 ➣ **Credits**
 
