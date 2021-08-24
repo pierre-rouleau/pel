@@ -152,13 +152,11 @@ before a mode switch done by one of them.")
   ;; ------------------------------------------------------------------------
   (defun pel--init-package-support ()
     "Configure package.el support."
+    (require 'package)
     (if (< emacs-major-version 27)
         ;; Emacs prior to 27
         ;; -----------------
         (progn
-          ;; Activate the MELPA package manager
-          ;;    (see http://melpa.org/#/getting-started)
-          (require 'package)
           ;; If requested by option A, separate elpa directory for Emacs
           ;; in graphics mode and Emacs in TTY mode:
           ;; - Use ~/.emacs.d/elpa in TTY mode,
@@ -233,7 +231,6 @@ before a mode switch done by one of them.")
       ;;    of all packages. If you need to modify this behaviour when the
       ;;    package quickstart is used, set the value inside the early-init.el
       ;;
-      (require 'package)
       (add-to-list 'package-archives
                    (cons "melpa" "https://melpa.org/packages/")
                    t)
@@ -242,15 +239,19 @@ before a mode switch done by one of them.")
                    t)
       (if (and pel-emacs-is-graphic-p
                pel-use-graphic-specific-custom-file-p)
-          ;; Use a graphics mode specific package quickstart file.
+          ;; In forced graphics mode: use a graphics mode-specific Elpa
+          ;; directory and package quickstart file.
           (progn
+            (setq package-user-dir (pel--graphics-file-name package-user-dir))
             (advice-add 'package-activate-all :around #'pel--pkg-activate-all)
             (unwind-protect
                 (let ((package-user-dir
                        (pel--graphics-file-name package-user-dir)))
                   (package-initialize))
               (advice-remove 'package-activate-all #'pel--pkg-activate-all)))
-        ;; No change to `package-quickstart-file'
+        ;; In terminal/TTY or graphics mode that use the same customization
+        ;; file (the usual case for Emacs):
+        ;;    No change to Elpa directory nor to `package-quickstart-file'
         (package-initialize)))
     ;;
     ;; Remember package-user-dir real directory when it's a symlink.  This
