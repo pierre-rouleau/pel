@@ -36,12 +36,10 @@
 
   (defun pel--pkg-load-all-descriptors (original-fct)
     "Execute ORIGINAL-FCT with a controlled value of `package-user-dir'."
-    (let ((package-user-dir (if pel-force-graphics-specific-files
-                                (pel--graphics-file-name package-user-dir)
-                              package-user-dir)))
+    (let ((package-user-dir (pel--graphics-file-name package-user-dir)))
       (funcall original-fct)))
 
   (advice-add
-   'package-load-all-descriptors :around #'pel--pkg-load-all-descriptors))
+   'package-load-all-descriptors :around (function pel--pkg-load-all-descriptors)))
 
 ;; ---------------------------------------------------------------------------
