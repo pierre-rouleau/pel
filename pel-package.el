@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-06 14:27:08, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-24 13:34:06, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -616,6 +616,8 @@ of a restriction lock."
          (n-utils-locked    (- n-utils-all n-utils-bdeps))
          (user-options      (pel-user-options))
          (overview  (format "\
+- custom-file                 : %s
+- package-user-dir            : %s
 - %3d Elpa packages stored in : %s
 - %3d Utils files   stored in : %s
 - size of load-path           : %d directories
@@ -627,6 +629,8 @@ of a restriction lock."
 - # package-alist             : %d
 - # packages activated        : %d
 - # packages selected         : %d"
+                            custom-file
+                            package-user-dir
                             (length
                              (pel-elpa-package-directories package-user-dir))
                             package-user-dir
