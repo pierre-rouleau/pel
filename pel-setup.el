@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-23 18:16:55, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-24 13:50:24, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -875,12 +875,23 @@ Return the pkg/version alist.\"
 ;; when Emacs runs in graphics mode and PEL dual independent customization
 ;; feature is enabled.
 
+;; The pel--graphics-file-name translates a file name to the graphics
+;; specific name
+\(defun pel--graphics-file-name (fname)
+  \"Appends '-graphics' to the end of a .el, .elc or extension less FNAME.\"
+  ;; use only functions implemented in C
+  (let ((ext (substring fname -3)))
+    (cond
+     ((string-match \"-graphics\" fname) fname)
+     ((string-equal ext \".el\") (concat (substring fname 0 -3) \"-graphics.el\"))
+     ((string-equal ext \"elc\") (concat (substring fname 0 -4) \"-graphics.elc\"))
+     (t                        (concat fname \"-graphics\")))))
+
 \(defun pel--pkg-load-all-descriptors (original-fct)
   \"Execute ORIGINAL-FCT with a controlled value of `package-user-dir'.\"
-  (let ((package-user-dir (locate-user-emacs-file
-                           (if pel-force-graphics-specific-files
-                               \"elpa-graphics\"
-                             \"elpa\"))))
+  (let ((package-user-dir (if pel-force-graphics-specific-files
+                              (pel--graphics-file-name package-user-dir)
+                            package-user-dir)))
     (funcall original-fct)))
 
 \(advice-add

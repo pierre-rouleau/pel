@@ -48,7 +48,7 @@
   "Elisp file whose presence indicates PEL must run in fast startup mode.")
 
 (defconst pel-running-in-fast-startup-p (file-exists-p
-                                       pel-fast-startup-init-fname)
+                                         pel-fast-startup-init-fname)
   "Non-nil when PEL runs in fast startup mode, nil otherwise.")
 
 ;; OPTION A: independent customization for TTY and graphic mode.
@@ -72,27 +72,37 @@ before a mode switch done by one of them.")
 ;; Section 1 : Utility function definition
 ;; =======================================
 ;;
-;; The `pel--package-activate-all' function is used only in Emacs >= 27
+;; The pel--graphics-file-name translates a file name to the graphics
+;; specific name.  Implementation using on functions implemented in C
+;; to reduce requirements.  The code ONLY handle names ending .el or .elc
+;; or nothing.  It does not handle other extensions, but its unlikely that
+;; Emacs related directories have different extensions (in the context of this
+;; function calls).
+(defun pel--graphics-file-name (fname)
+  "Appends \"-graphics\" to the end of a .el, .elc or extension less FNAME."
+  (let ((ext (substring fname -3)))
+    (cond
+     ((string-match "-graphics" fname) fname)
+     ((string-equal ext ".el") (concat (substring fname 0 -3) "-graphics.el"))
+     ((string-equal ext "elc") (concat (substring fname 0 -4) "-graphics.elc"))
+     (t                        (concat fname "-graphics")))))
+
+;; The `pel--pkg-activate-all' function is used only in Emacs >= 27
 ;; when package-quickstart is used and under some condition.  It should
 ;; be defined only for those conditions but the byte compiler generates
 ;; end-of file warning if that is done.  So for now it's defined here.
 ;;
-(defun pel--package-activate-all (original-package-activate-all)
+;; pel--package-quickstart-file prevent byte-compiler warnings & help debug.
+(defvar pel--package-quickstart-file nil
+  "Copy of package-quickstart-file used in `pel--pkg-activate-all'.")
+
+(defun pel--pkg-activate-all (original-package-activate-all)
   "Use a graphics specific file for `package-activate-all'."
   (if (boundp 'package-quickstart-file)
-      (let ((original-fname package-quickstart-file)
-            (ext (substring package-quickstart-file -3)))
-        ;; use a fname that ends with '-graphics'
-        (setq package-quickstart-file
-              (cond ((string-equal ext ".el")
-                     (concat (substring original-fname 0 -3) "-graphics.el"))
-                    ((string-equal ext "elc")
-                     (concat (substring original-fname 0 -4) "-graphics.elc"))
-                    (t
-                     (concat original-fname "-graphics"))))
-        (unwind-protect
-            (funcall original-package-activate-all)
-          (setq package-quickstart-file original-fname)))
+      (let ((package-quickstart-file
+             (pel--graphics-file-name package-quickstart-file)))
+        (setq pel--package-quickstart-file package-quickstart-file)
+        (funcall original-package-activate-all))
     (message "WARNING: package-quickstart-file is unbound in\
  advised function attempting to control its name.")))
 
@@ -146,17 +156,19 @@ before a mode switch done by one of them.")
         ;; Emacs prior to 27
         ;; -----------------
         (progn
+          ;; Activate the MELPA package manager
+          ;;    (see http://melpa.org/#/getting-started)
+          (require 'package)
           ;; If requested by option A, separate elpa directory for Emacs
           ;; in graphics mode and Emacs in TTY mode:
           ;; - Use ~/.emacs.d/elpa in TTY mode,
           ;; - use ~/.emacs.d/elpa-graphics in graphics mode
+          ;; Use setq to ensure that package-user-dir stays like this after
+          ;; execution of package-init.
           (when (and pel-use-graphic-specific-custom-file-p
                      pel-emacs-is-graphic-p)
-            (setq package-user-dir (locate-user-emacs-file "elpa-graphics")))
+            (setq package-user-dir (pel--graphics-file-name package-user-dir)))
 
-          ;; Activate the MELPA package manager
-          ;;    (see http://melpa.org/#/getting-started)
-          (require 'package)
           ;; By default Emacs enable packages *after* init is loaded.
           ;; The code later explicitly calls package-initialize to do it
           ;; right away to allow installing packages.
@@ -232,12 +244,12 @@ before a mode switch done by one of them.")
                pel-use-graphic-specific-custom-file-p)
           ;; Use a graphics mode specific package quickstart file.
           (progn
-            (advice-add 'package-activate-all :around
-                        #'pel--package-activate-all)
+            (advice-add 'package-activate-all :around #'pel--pkg-activate-all)
             (unwind-protect
-                (package-initialize)
-              (advice-remove 'package-activate-all
-                             #'pel--package-activate-all)))
+                (let ((package-user-dir
+                       (pel--graphics-file-name package-user-dir)))
+                  (package-initialize))
+              (advice-remove 'package-activate-all #'pel--pkg-activate-all)))
         ;; No change to `package-quickstart-file'
         (package-initialize)))
     ;;
