@@ -415,7 +415,8 @@ before a mode switch done by one of them.")
                      (if (and pel-use-graphic-specific-custom-file-p
                               pel-emacs-is-graphic-p
                               (or (< emacs-major-version 27)
-                                  (getenv "PEL_EMACS_IN_GRAPHICS")))
+                                  (string-equal
+                                   (getenv "PEL_EMACS_IN_GRAPHICS") "1")))
                          "emacs-customization-graphics.el"
                        "emacs-customization.el")
                      user-emacs-directory))

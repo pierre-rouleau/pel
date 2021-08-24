@@ -4,7 +4,7 @@
 # Purpose   : Start Linux GUI Emacs in the background from the shell keeping context.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2021-08-03 16:20:08, updated by Pierre Rouleau>
+# Time-stamp: <2021-08-24 18:43:00, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -16,6 +16,15 @@
 #   this is only required for Emacs 27+ using the early-init.el and
 #   independent customization files for terminal and graphics mode,
 #   but does not hurt when older versions of Emacs are used.
+
+# NOTE:
+# On some shells, the export statement will set the environment
+# variable in the *parent* shell instead of the sub-shell.
+# That is the case for the latest version of Bash.
+# For those, instead of an export statement, use the following line:
+#
+# PEL_EMACS_IN_GRAPHICS=1 emacs --chdir=$(pwd) "$@" 2>/dev/null &
+
 
 # To activate this script
 # -----------------------

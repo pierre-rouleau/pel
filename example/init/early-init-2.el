@@ -14,9 +14,9 @@
 ;; When early-init.el is run, Emacs has not yet initialized its graphics
 ;; subsystem and the function `display-graphics-p' is not available.
 ;; Therefore the graphics mode must be detected by the presence of an
-;; environment variable: PEL_EMACS_IN_GRAPHICS.
+;; environment variable, PEL_EMACS_IN_GRAPHICS, set to "1".
 
-(when (getenv "PEL_EMACS_IN_GRAPHICS")
+(when (string-equal (getenv "PEL_EMACS_IN_GRAPHICS") "1")
   ;; Ensure that `package-load-all-descriptors' uses the graphics-specific
   ;; directory when forcing use of graphics specific files.  This is the case
   ;; when Emacs runs in graphics mode and PEL dual independent customization

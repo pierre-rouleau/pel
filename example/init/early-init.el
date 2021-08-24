@@ -77,7 +77,7 @@ A temporary value for user-option defined in pel--options.el")
 
 (defvar pel-force-graphics-specific-custom-file-p
   (and pel-support-dual-independent-customization-p
-       (or (getenv "PEL_EMACS_IN_GRAPHICS")
+       (or (string-equal (getenv "PEL_EMACS_IN_GRAPHICS") "1")
            (not (getenv pel-shell-detection-envvar))))
   "Force independent graphics mode customization.")
 
