@@ -245,9 +245,7 @@ before a mode switch done by one of them.")
             (setq package-user-dir (pel--graphics-file-name package-user-dir))
             (advice-add 'package-activate-all :around #'pel--pkg-activate-all)
             (unwind-protect
-                (let ((package-user-dir
-                       (pel--graphics-file-name package-user-dir)))
-                  (package-initialize))
+                (package-initialize)
               (advice-remove 'package-activate-all #'pel--pkg-activate-all)))
         ;; In terminal/TTY or graphics mode that use the same customization
         ;; file (the usual case for Emacs):
