@@ -117,8 +117,10 @@ via OLDFUN.  The original two arguments MENULIST and TITLE follow."
   (if (and (require 'imenu nil :no-error)
            (fboundp 'imenu--menubar-select)
            (boundp  'imenu--rescan-item))
-      (imenu--menubar-select imenu--rescan-item)
-    (user-error "Cannot rescan imenu: \
+      (progn
+        (imenu--menubar-select imenu--rescan-item)
+        (message "imenu re-scan done"))
+    (user-error "Cannot re-scan imenu: \
 imenu--menubar-select or imenu--rescan-item missing")))
 
 ;;-pel-autoload
