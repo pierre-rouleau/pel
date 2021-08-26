@@ -401,20 +401,12 @@ before a mode switch done by one of them.")
   ;; and potentially also emacs-customization-graphics.el.  If you prefer a
   ;; different name, change the names in the code below.
   ;;
-  ;; For Emacs 27 and later, an extra step is required if you decide to use 2
-  ;; different files: you must also ensure that the environment variable
-  ;; PEL_EMACS_IN_GRAPHICS is defined for the shell that launches Emacs in
-  ;; graphics mode.
-  ;;
   ;; If you already have a (custom-set-variables ...) form in your current
   ;; init.el, move it into this or these new files.
   ;;
   (setq custom-file (expand-file-name
                      (if (and pel-use-graphic-specific-custom-file-p
-                              pel-emacs-is-graphic-p
-                              (or (< emacs-major-version 27)
-                                  (string-equal
-                                   (getenv "PEL_EMACS_IN_GRAPHICS") "1")))
+                              pel-emacs-is-graphic-p)
                          "emacs-customization-graphics.el"
                        "emacs-customization.el")
                      user-emacs-directory))
