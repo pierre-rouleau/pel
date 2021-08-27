@@ -649,7 +649,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-setup-fast
     pel-setup-normal
     pel-setup-info)
-  (when pel-emacs-27-or-later-p
+  (when (>= emacs-major-version 27)
     (pel-autoload "pel-setup" for:
       pel-setup-with-quickstart
       pel-setup-no-quickstart))
