@@ -1377,10 +1377,13 @@ The choices are:
                  on-for-git-directories)))
 
 ;; ---------------------------------------------------------------------------
-;; Text and Code Completion and Expansion
-;; --------------------------------------
+;; Text Abbreviation, Code Completion and Expansion
+;; ------------------------------------------------
 (defgroup pel-pkg-for-expand nil
-  "List of external packages that PEL can use to complete code or expand text.
+  "Text abbreviation, code completion and expansion control
+
+- List of external packages that PEL can use to complete code or expand text.
+- Automatic activation of abbreviation mode.
 
 Note that auto-complete and company can both be activated.
 However, PEL only allow one of them to be used per buffer.
@@ -1408,6 +1411,11 @@ The Hippie Expand can be used together with any."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-hippie-expand :package-is :builtin-emacs)
+
+(defcustom pel-modes-activating-abbrev-mode nil
+  "List of major modes that automatically activate abbrev-mode."
+  :group 'pel-pkg-for-expand
+  :type '(repeat symbol))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-filemng

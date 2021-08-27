@@ -4769,33 +4769,14 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;; - Function Keys - <f11> - Prefix ``<f11> a`` : abbreviations
 
 (define-pel-global-prefix pel:abbrev (kbd "<f11> a"))
-(define-key pel:abbrev "D"  'pel-define-abbrevs)
-(define-key pel:       "/" #'expand-abbrev)
-(define-key pel:abbrev "e" #'expand-abbrev)
-(define-key pel:abbrev "E" #'expand-region-abbrevs)
-(define-key pel:abbrev "g" #'add-global-abbrev)
-(define-key pel:abbrev "i" #'insert-abbrevs)
-(define-key pel:abbrev "l" #'add-mode-abbrev)
-(define-key pel:abbrev "L" #'list-abbrevs)
-(define-key pel:abbrev "M" #'edit-abbrevs)
-(define-key pel:abbrev "r" #'read-abbrev-file)
-(define-key pel:abbrev "s" #'write-abbrev-file)
-(define-key pel:abbrev "u" #'unexpand-abbrev)
-(define-key pel:abbrev "$"  'pel-ispell-word-then-abbrev)
-(define-key pel: (kbd "M-$")  'pel-ispell-word-then-abbrev)
 
-
-(if pel--cached-abbrev-file-name
-    ;; If PEL is informed to delay load the abbreviation file
-    ;; do it silently 2 seconds of idle later.
-    (run-at-time "2 sec" nil
-                 (lambda ()
-                   (progn
-                     (define-key pel:abbrev "a" #'abbrev-mode)
-                     (setq abbrev-file-name pel--cached-abbrev-file-name)
-                     (quietly-read-abbrev-file nil))))
-  (define-key pel:abbrev "a" #'abbrev-mode))
-
+(defun pel--activate-abbrev-mode ()
+  "Activate abbrev-mode."
+  (define-key pel:abbrev "a" #'abbrev-mode)
+  (pel-add-hook-for 'pel-modes-activating-abbrev-mode 'abbrev-mode)
+  (when pel--cached-abbrev-file-name
+    (setq abbrev-file-name pel--cached-abbrev-file-name)
+    (quietly-read-abbrev-file nil)))
 
 (defun pel-define-abbrevs (&optional arg)
   "Read abbreviations from current buffer after confirming with user.
@@ -4805,6 +4786,28 @@ the ones defined from the buffer now."
   (if (yes-or-no-p "Read abbreviations from current buffer? ")
       (define-abbrevs arg)
     (message "Nothing done.")))
+
+(define-key pel:abbrev "D"  #'pel-define-abbrevs)
+(define-key pel:       "/"  #'expand-abbrev)
+(define-key pel:abbrev "e"  #'expand-abbrev)
+(define-key pel:abbrev "E"  #'expand-region-abbrevs)
+(define-key pel:abbrev "g"  #'add-global-abbrev)
+(define-key pel:abbrev "i"  #'insert-abbrevs)
+(define-key pel:abbrev "l"  #'add-mode-abbrev)
+(define-key pel:abbrev "L"  #'list-abbrevs)
+(define-key pel:abbrev "M"  #'edit-abbrevs)
+(define-key pel:abbrev "r"  #'read-abbrev-file)
+(define-key pel:abbrev "s"  #'write-abbrev-file)
+(define-key pel:abbrev "u"  #'unexpand-abbrev)
+(define-key pel:abbrev "$"   'pel-ispell-word-then-abbrev)
+(define-key pel: (kbd "M-$") 'pel-ispell-word-then-abbrev)
+
+(if pel--cached-abbrev-file-name
+    ;; If PEL is informed to delay load the abbreviation file
+    ;; do it silently 2 seconds of idle later.
+    (run-at-time "2 sec" nil (function pel--activate-abbrev-mode))
+  ;; Otherwise do it right away.
+  (pel--activate-abbrev-mode))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> b`` : buffer commands
