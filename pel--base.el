@@ -266,6 +266,9 @@
   "Predicate: t if Emacs can properly show Unicode characters like 👍 or 👎.")
 ;; TODO: add ability to install unicode fonts and take it into account.
 
+(defconst pel-emacs-27-or-later-p (>= emacs-major-version 27)
+  "Predicate: t when Emacs version 27 or later is running, nil otherwise.")
+
 ;; ---------------------------------------------------------------------------
 ;; Code Style Buffer Local Variables
 ;; ---------------------------------
