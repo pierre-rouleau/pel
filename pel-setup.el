@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-27 15:15:15, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-27 16:49:57, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -514,7 +514,7 @@ Only set by `pel-setup-fast' or `pel-setup-normal'. Never cleared.")
 ;; Emacs >= 27:" package quickstart with fast startup & dual customization
 ;; ----------------------------------------------------------------------
 
-(when pel-emacs-27-or-later
+(when pel-emacs-27-or-later-p
 
   (defvar pel--quickstart-forced-fname nil
     "Unless nil, forced name of package quickstart file.")
@@ -1105,7 +1105,7 @@ Compared: symlink %s to target %s.
             (pel-setup-fast-startup-init
              pel-fast-startup-init-fname
              (pel-elpa-disable-pkg-deps-in elpa-reduced-dirpath)
-             (pel-string-when pel-emacs-27-or-later
+             (pel-string-when pel-emacs-27-or-later-p
                               (format ";; step 2: (only for Emacs >= 27)
   (when from-early-init
       (add-to-list 'load-path
@@ -1197,7 +1197,7 @@ the new requested status instead of the current state."
   (let ((current-quickstart-status (if show-requested-status
                                        pel-with-package-quickstart
                                      (pel--with-package-quickstart-p))))
-    (if pel-emacs-27-or-later
+    (if pel-emacs-27-or-later-p
         (format "%s %s package quickstart support"
                 prompt
                 (if current-quickstart-status
