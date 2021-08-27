@@ -1393,7 +1393,7 @@ can't bind negative-argument to C-_ and M-_"
 (define-key pel:startup "?" 'pel-setup-info)
 (define-key pel:startup "f" 'pel-setup-fast)
 (define-key pel:startup "n" 'pel-setup-normal)
-(when (>= emacs-major-version 27)
+(when pel-emacs-27-or-later-p
   (define-key pel:startup "q" 'pel-setup-with-quickstart)
   (define-key pel:startup (kbd "M-q") 'pel-setup-no-quickstart))
 
@@ -6531,11 +6531,11 @@ the ones defined from the buffer now."
 ;; helm-xref
 (when pel-use-helm-xref
   (pel-ensure-package helm-xref from: melpa)
-  (if (< emacs-major-version 27)
-      (pel-autoload-file helm-xref for: helm-xref-show-xrefs)
-    (pel-autoload-file helm-xref for:
-                       helm-xref-show-xrefs-27
-                       helm-xref-show-defs-27)))
+  (if pel-emacs-27-or-later-p
+      (pel-autoload-file helm-xref for:
+                         helm-xref-show-xrefs-27
+                         helm-xref-show-defs-27)
+    (pel-autoload-file helm-xref for: helm-xref-show-xrefs)))
 
 (when (or pel-use-ivy-xref
           pel-use-helm-xref)

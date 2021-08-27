@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-24 13:34:06, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-27 15:08:21, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -460,7 +460,7 @@ PKG may be a symbol or a string."
                   (dependencies '()))
               ;; package--get-deps was modified on the October 6th 2019.
               ;; The argument for the new version is a list.
-              (when (>= emacs-major-version 27)
+              (when pel-emacs-27-or-later-p
                 (setq pkg-arg (list pkg-arg)))
               (setq dependencies (package--get-deps pkg-arg))
               ;; package--get-deps of October 6th 2019 leaves the searched

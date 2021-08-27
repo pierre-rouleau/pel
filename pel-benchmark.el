@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-09 13:32:32, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-27 14:27:26, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -99,7 +99,7 @@ prints the Emacs init time on the echo area."
                           (if pel-emacs-is-graphic-p "graphic mode" "terminal (TTY) mode")
                           pel-operation-mode
                           emacs-version
-                          (pel-string-when (and (>= emacs-major-version 27)
+                          (pel-string-when (and pel-emacs-27-or-later-p
                                                 (boundp 'package-quickstart)
                                                 package-quickstart)
                                            " using package-quickstart")

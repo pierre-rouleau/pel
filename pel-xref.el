@@ -246,9 +246,9 @@ where: nil := Emacs xref default (not initialized).")
   "Return the helm-xref state representation string."
   (if (featurep 'helm-xref)
       (pel-on-off-string
-       (eq xref-show-xrefs-function (if (< emacs-major-version 27)
-                                        'helm-xref-show-xrefs
-                                      'helm-xref-show-xrefs-27)))
+       (eq xref-show-xrefs-function (if pel-emacs-27-or-later-p
+                                        'helm-xref-show-xrefs-27
+                                      'helm-xref-show-xrefs)))
     (if pel-use-helm-xref
         "Available but off."
       "Not available. Activate pel-use-helm-xref first!")))
@@ -274,27 +274,26 @@ FRONT-END must be one of:
     (if (fboundp 'ivy-xref-show-xrefs)
         (progn
           (setq xref-show-xrefs-function 'ivy-xref-show-xrefs)
-          (when (>= emacs-major-version 27)
+          (when pel-emacs-27-or-later-p
             (setq xref-show-definitions-function 'ivy-xref-show-defs))
           (setq pel--xref-front-end-used-tool  'ivy-xref))
       (user-error "Despite trying, ivy-xref is not loaded!")))
    ;; helm-xref
    ((eq front-end 'helm-xref)
     (pel-require 'helm-xref)
-    (if (< emacs-major-version 27)
-        (if (fboundp 'helm-xref-show-xrefs)
-            (progn
-              (setq xref-show-xrefs-function 'helm-xref-show-xrefs)
-              (setq pel--xref-front-end-used-tool  'helm-xref))
-          (user-error "Despite trying, helm-xref is not loaded!"))
-      (progn
+    (if pel-emacs-27-or-later-p
         (if (and (fboundp 'helm-xref-show-xrefs-27)
                  (fboundp 'helm-xref-show-defs-27))
             (progn
               (setq xref-show-xrefs-function       'helm-xref-show-xrefs-27)
               (setq xref-show-definitions-function 'helm-xref-show-defs-27)
               (setq pel--xref-front-end-used-tool  'helm-xref))
-          (user-error "Despite trying, helm-xref is not loaded!")))))
+          (user-error "Despite trying, helm-xref is not loaded!"))
+      (if (fboundp 'helm-xref-show-xrefs)
+          (progn
+            (setq xref-show-xrefs-function      'helm-xref-show-xrefs)
+            (setq pel--xref-front-end-used-tool 'helm-xref))
+        (user-error "Despite trying, helm-xref is not loaded!"))))
    ;; Emacs default xref
    (t
     (if (and (require 'xref nil :noerror)
