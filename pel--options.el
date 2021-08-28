@@ -583,7 +583,50 @@ byte compiler warnings but that will also speed the Emacs startup a little."
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-with-package-quickstart nil
+(defcustom pel-support-dual-environment nil
+  "Whether independent environment for terminal/TTY and graphics is enabled.
+
+Turn it on if you want Emacs in terminal/TTY mode and Emacs in
+graphics mode to use independent sets of customization and
+packages.  By default this feature is turned off.
+
+It is best to turn it on by executing the function
+`pel-setup-dual-environment' because that will create all
+necessary files and will update the user-option in both
+customization files."
+  :group 'pel-fast-startup
+  :type 'boolean
+  :safe #'booleanp)
+
+;; ----
+(defcustom pel-compile-emacs-init nil
+  "Whether PEL setup commands that update init.el also byte-compile it.
+
+Note that this assumes that your init.el file does not prevent byte
+compilation.  If your file defines the `no-byte-compile' variable, remove that
+or force it nil if you want PEL to byte-compile it.
+
+Unlike the pel-bundle and package-quickstart files, PEL will not change the
+value of `no-byte-compile' file variable in your init.el file."
+  :group 'pel-fast-startup
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-compile-emacs-early-init nil
+  "Whether PEL setup commands that update early-init.el also byte-compile it.
+
+Note that this assumes that your early-init.el file does not prevent byte
+compilation.  If your file defines the `no-byte-compile' variable, remove that
+or force it nil if you want PEL to byte-compile it.
+
+Unlike the pel-bundle and package-quickstart files, PEL will not change the
+value of `no-byte-compile' file variable in your early-init.el file."
+  :group 'pel-fast-startup
+  :type 'boolean
+  :safe #'booleanp)
+
+;; ----
+(defcustom pel-support-package-quickstart nil
   "When non-nil: activate package-quickstart, otherwise don't activate it.
 
 When this is active the `pel-setup-fast' and `pel-setup-normal'
@@ -628,14 +671,24 @@ This is only used for Emacs 27 and later."
   :group 'pel-fast-startup
   :type '(file :must-match t))
 
-(defcustom pel-early-init-without-package-quickstart nil
+(defcustom pel-early-init-without-package-quickstart
+  (when pel-emacs-27-or-later-p
+    (expand-file-name "example/init/early-init-2.el"
+                      (file-name-directory load-file-name)))
   "Name of the early-init.el file used when package quickstart is NOT activated.
 
 If this is specified it is copied over your early-init.el when you use the
 command `pel-deactivate-package-quickstart'. If the value is nil the command
 deletes the early-init.el file.
 
-This is only used for Emacs 27 and later."
+This is only used for Emacs 27 and later.
+For Emacs 27, if you use the independent customization files for Emacs running
+terminal/TTY and graphics mode then you need to use a file that has the logic
+that is part of the file example/init/early-init-2.el provided as default.
+
+If you do not want to use this feature set the user-option to nil.
+If you want to set something else you can also select your own early-init.el
+file and put its full path name here."
   :group 'pel-fast-startup
   :type '(choice
           (const :tag "No early-init when package quickstart is not used" nil)
@@ -1377,10 +1430,13 @@ The choices are:
                  on-for-git-directories)))
 
 ;; ---------------------------------------------------------------------------
-;; Text and Code Completion and Expansion
-;; --------------------------------------
+;; Text Abbreviation, Code Completion and Expansion
+;; ------------------------------------------------
 (defgroup pel-pkg-for-expand nil
-  "List of external packages that PEL can use to complete code or expand text.
+  "Text abbreviation, code completion and expansion control
+
+- List of external packages that PEL can use to complete code or expand text.
+- Automatic activation of abbreviation mode.
 
 Note that auto-complete and company can both be activated.
 However, PEL only allow one of them to be used per buffer.
@@ -1408,6 +1464,11 @@ The Hippie Expand can be used together with any."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-hippie-expand :package-is :builtin-emacs)
+
+(defcustom pel-modes-activating-abbrev-mode nil
+  "List of major modes that automatically activate abbrev-mode."
+  :group 'pel-pkg-for-expand
+  :type '(repeat symbol))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-filemng

@@ -653,6 +653,8 @@ Argument FOR: just a required separator keyword to make code look better."
     (pel-autoload "pel-setup" for:
       pel-setup-with-quickstart
       pel-setup-no-quickstart))
+  (pel-autoload-function "pel-setup" for:
+    pel-setup-check-dual-environment)
 
   (pel-autoload "pel-window" for:
     pel-show-window-previous-buffer

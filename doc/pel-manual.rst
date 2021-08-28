@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-23 15:39:13, updated by Pierre Rouleau.
+:Modified: 2021-08-26 17:09:39, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -845,7 +845,7 @@ set of options you will need to edit.
     according to what you need:
 
     - **OPTION A**: if you want to use two independent custom files for terminal
-      (TTY) and graphics mode, set ``pel-use-graphic-specific-custom-file-p``
+      (TTY) and graphics mode, set ``pel-init-support-dual-environment-p``
       symbol to **t**.  See the next section,
       `Add Support for Independent Customization of Graphics and Terminal
       based Emacs`_ for more information.
@@ -903,7 +903,7 @@ use a specific file for the customization data: the file
 
 In the **OPTION A** of the `example/init/init-5.el`_ file, that you should have
 now copied into your own init.el, set the value of the variable
-``pel-use-graphic-specific-custom-file-p`` to **t** to instruct PEL that you
+``pel-init-support-dual-environment-p`` to **t** to instruct PEL that you
 want to use two independent customization files.
 
 Then Emacs will use two files to store customization data:
@@ -950,7 +950,7 @@ must include the following code inside the early-init.el file:
 
           ;; -*- lexical-binding: t; -*-
 
-          (defvar pel-force-graphics-specific-custom-file-p (getenv "PEL_EMACS_IN_GRAPHICS")
+          (defvar pel-force-graphic-specific-custom-file-p (getenv "PEL_EMACS_IN_GRAPHICS")
             "Force independent graphics mode customization.")
 
           ;; Inform later code that package quickstart is being used.
@@ -961,11 +961,11 @@ must include the following code inside the early-init.el file:
                                                             user-emacs-directory)))
             (when (file-exists-p fast-startup-setup-fname)
               (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
-              (pel-fast-startup-init pel-force-graphics-specific-custom-file-p)
+              (pel-fast-startup-init pel-force-graphic-specific-custom-file-p)
               ;; Remember Emacs is running in PEL's fast startup mode.
               (setq pel-running-in-fast-startup-p t)))
 
-          (when pel-force-graphics-specific-custom-file-p
+          (when pel-force-graphic-specific-custom-file-p
             (setq package-user-dir (locate-user-emacs-file "elpa-graphics")))
 
 
@@ -1027,7 +1027,7 @@ and another in graphics mode:
       ;; that sets the PEL_EMACS_IN_GRAPHICS environment variable for Emacs used
       ;; in graphics mode and don't set it for Emacs running in TTY mode.
 
-      (defvar pel-force-graphics-specific-custom-file-p (getenv "PEL_EMACS_IN_GRAPHICS")
+      (defvar pel-force-graphic-specific-custom-file-p (getenv "PEL_EMACS_IN_GRAPHICS")
         "Force independent graphics mode customization.")
 
       ;; Inform later code that package quickstart is being used.
@@ -1038,11 +1038,11 @@ and another in graphics mode:
                                                         user-emacs-directory)))
         (when (file-exists-p fast-startup-setup-fname)
           (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
-          (pel-fast-startup-init pel-force-graphics-specific-custom-file-p)
+          (pel-fast-startup-init pel-force-graphic-specific-custom-file-p)
           ;; Remember Emacs is running in PEL's fast startup mode.
           (setq pel-running-in-fast-startup-p t)))
 
-      (when pel-force-graphics-specific-custom-file-p
+      (when pel-force-graphic-specific-custom-file-p
         (setq package-user-dir (locate-user-emacs-file "elpa-graphics")))
 
       ;; ---------------------------------------------------------------------------
@@ -1502,16 +1502,18 @@ checker program (aspell, hunspell or ispell) or several compilers.
 - Make sure that your ``init.el`` file contains the logic identified in the
   `example/init/init-5.el`_ file:
 
-  - Set OPTION A: set ``pel-use-graphic-specific-custom-file-p`` to **t**
-  - Set OPTION B: set ``pel-shell-detection-envvar`` to the name of the
+  - Set OPTION A: set ``pel-init-support-dual-environment-p`` to **t**
+  - Set OPTION B: set ``pel-ei-shell-detection-envvar`` to the name of the
     environment variable your shell always set or the one you always set
     inside your shell startup script (something like ``PEL_SHELL``).
+    Its value should be the same as what is defined by the
+    ``pel-shell-detection-envvar`` user-option.
 
 - For Emacs 27 and later, to support the package quickstart feature you must
   also create an ``early-init.el`` file that has the logic shown inside the
   `example/init/early-init.el`_ file:
 
-  - Set OPTION A: set ``pel-support-dual-independent-customization-p`` to
+  - Set OPTION A: set ``pel-early-init-support-dual-environment-p`` to
     **t**.
 
 **To support GUI-launched GUI Emacs**
@@ -2452,7 +2454,7 @@ Check customization state
 The command ``pel-setup-info-dual-environment``, bound to the ``<f11> <f2> ?``
 and to the ``<f11> ? e <f2>``
 key sequences, displays the name of the customization file or files used by PEL.
-If the symbol ``pel-use-graphic-specific-custom-file-p`` is set to **t**,
+If the symbol ``pel-init-support-dual-environment-p`` is set to **t**,
 requesting the use of two independent customization files it also checks if
 the environment is properly configured to support two independent
 customization files and reports all detected problems.

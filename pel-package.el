@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-24 13:34:06, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-27 14:23:30, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -198,24 +198,24 @@ inside your init.el file.")
                                    (pel--adjusted-fname
                                     (expand-file-name "elpa-attic"
                                                       user-emacs-directory)
-                                    (and (boundp 'pel-use-graphic-specific-custom-file-p)
-                                         pel-use-graphic-specific-custom-file-p)
+                                    (and (boundp 'pel-init-support-dual-environment-p)
+                                         pel-init-support-dual-environment-p)
                                     pel-emacs-is-graphic-p))
   "Absolute path of the user elpa-attic directory.
 PEL supports a pel-attic directory for dual independent customization when
-it is requested as specified by the presence of `pel-use-graphic-specific-custom-file-p'
+it is requested as specified by the presence of `pel-init-support-dual-environment-p'
 symbol set to t.")
 
 (defconst pel-utils-dirpath (file-name-as-directory
                              (pel--adjusted-fname
                               (expand-file-name pel-utils-dirname
                                                 user-emacs-directory)
-                              (and (boundp 'pel-use-graphic-specific-custom-file-p)
-                                   pel-use-graphic-specific-custom-file-p)
+                              (and (boundp 'pel-init-support-dual-environment-p)
+                                   pel-init-support-dual-environment-p)
                               pel-emacs-is-graphic-p))
   "Absolute path of the PEL utils directory.
 PEL supports a utils directory for dual independent customization when
-it is requested as specified by the presence of `pel-use-graphic-specific-custom-file-p'
+it is requested as specified by the presence of `pel-init-support-dual-environment-p'
 symbol set to t.")
 
 (defconst pel-utils-attic-dirpath
@@ -460,7 +460,7 @@ PKG may be a symbol or a string."
                   (dependencies '()))
               ;; package--get-deps was modified on the October 6th 2019.
               ;; The argument for the new version is a list.
-              (when (>= emacs-major-version 27)
+              (when pel-emacs-27-or-later-p
                 (setq pkg-arg (list pkg-arg)))
               (setq dependencies (package--get-deps pkg-arg))
               ;; package--get-deps of October 6th 2019 leaves the searched

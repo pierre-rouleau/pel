@@ -135,6 +135,24 @@
   (fset 'yes-or-no-p 'y-or-n-p))
 
 ;; ---------------------------------------------------------------------------
+;; Dual Environment Check
+;; ----------------------
+;;
+;; When Emacs is running in graphic mode, verifies if the dual environment has
+;; been requested and if so if it is set properly, activating it if necessary
+;; and warning user on any remaining issue.  Don't do it in terminal mode
+;; because the terminal mode always uses the same files as Emacs usually does.
+;; Schedule this check for some time after the initialization to prevent
+;; slowing down Emacs startup.
+(when (and pel-emacs-is-graphic-p
+           (or pel-support-dual-environment
+               (bound-and-true-p pel-init-support-dual-environment-p)
+               (bound-and-true-p pel-early-init-support-dual-environment-p))
+           (require 'pel-setup nil :no-error)
+           (fboundp 'pel-setup-check-dual-environment))
+  (run-at-time "3 sec" nil (function pel-setup-check-dual-environment)))
+
+;; ---------------------------------------------------------------------------
 ;; - PEL Modifier keys on different OS
 ;; -----------------------------------
 ;;
@@ -1393,7 +1411,7 @@ can't bind negative-argument to C-_ and M-_"
 (define-key pel:startup "?" 'pel-setup-info)
 (define-key pel:startup "f" 'pel-setup-fast)
 (define-key pel:startup "n" 'pel-setup-normal)
-(when (>= emacs-major-version 27)
+(when pel-emacs-27-or-later-p
   (define-key pel:startup "q" 'pel-setup-with-quickstart)
   (define-key pel:startup (kbd "M-q") 'pel-setup-no-quickstart))
 
@@ -4769,33 +4787,21 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;; - Function Keys - <f11> - Prefix ``<f11> a`` : abbreviations
 
 (define-pel-global-prefix pel:abbrev (kbd "<f11> a"))
-(define-key pel:abbrev "D"  'pel-define-abbrevs)
-(define-key pel:       "/" #'expand-abbrev)
-(define-key pel:abbrev "e" #'expand-abbrev)
-(define-key pel:abbrev "E" #'expand-region-abbrevs)
-(define-key pel:abbrev "g" #'add-global-abbrev)
-(define-key pel:abbrev "i" #'insert-abbrevs)
-(define-key pel:abbrev "l" #'add-mode-abbrev)
-(define-key pel:abbrev "L" #'list-abbrevs)
-(define-key pel:abbrev "M" #'edit-abbrevs)
-(define-key pel:abbrev "r" #'read-abbrev-file)
-(define-key pel:abbrev "s" #'write-abbrev-file)
-(define-key pel:abbrev "u" #'unexpand-abbrev)
-(define-key pel:abbrev "$"  'pel-ispell-word-then-abbrev)
-(define-key pel: (kbd "M-$")  'pel-ispell-word-then-abbrev)
 
-
-(if pel--cached-abbrev-file-name
-    ;; If PEL is informed to delay load the abbreviation file
-    ;; do it silently 2 seconds of idle later.
-    (run-at-time "2 sec" nil
-                 (lambda ()
-                   (progn
-                     (define-key pel:abbrev "a" #'abbrev-mode)
-                     (setq abbrev-file-name pel--cached-abbrev-file-name)
-                     (quietly-read-abbrev-file nil))))
-  (define-key pel:abbrev "a" #'abbrev-mode))
-
+(defun pel--activate-abbrev-mode ()
+  "Activate abbrev-mode."
+  (define-key pel:abbrev "a" #'abbrev-mode)
+  (pel-add-hook-for 'pel-modes-activating-abbrev-mode 'abbrev-mode)
+  (when pel--cached-abbrev-file-name
+    (setq abbrev-file-name pel--cached-abbrev-file-name)
+    (quietly-read-abbrev-file nil))
+  ;; If files were on the command line when Emacs started buffers may
+  ;; have been opened before this function runs.  Make sure all opened
+  ;; buffers that should have abbrev-mode active have it active.
+  (dolist (buffer (buffer-list))
+    (with-current-buffer buffer
+      (when (memq major-mode pel-modes-activating-abbrev-mode)
+        (abbrev-mode 1)))))
 
 (defun pel-define-abbrevs (&optional arg)
   "Read abbreviations from current buffer after confirming with user.
@@ -4805,6 +4811,28 @@ the ones defined from the buffer now."
   (if (yes-or-no-p "Read abbreviations from current buffer? ")
       (define-abbrevs arg)
     (message "Nothing done.")))
+
+(define-key pel:abbrev "D"  #'pel-define-abbrevs)
+(define-key pel:       "/"  #'expand-abbrev)
+(define-key pel:abbrev "e"  #'expand-abbrev)
+(define-key pel:abbrev "E"  #'expand-region-abbrevs)
+(define-key pel:abbrev "g"  #'add-global-abbrev)
+(define-key pel:abbrev "i"  #'insert-abbrevs)
+(define-key pel:abbrev "l"  #'add-mode-abbrev)
+(define-key pel:abbrev "L"  #'list-abbrevs)
+(define-key pel:abbrev "M"  #'edit-abbrevs)
+(define-key pel:abbrev "r"  #'read-abbrev-file)
+(define-key pel:abbrev "s"  #'write-abbrev-file)
+(define-key pel:abbrev "u"  #'unexpand-abbrev)
+(define-key pel:abbrev "$"   'pel-ispell-word-then-abbrev)
+(define-key pel: (kbd "M-$") 'pel-ispell-word-then-abbrev)
+
+(if pel--cached-abbrev-file-name
+    ;; If PEL is informed to delay load the abbreviation file
+    ;; do it silently 2 seconds of idle later.
+    (run-at-time "2 sec" nil (function pel--activate-abbrev-mode))
+  ;; Otherwise do it right away.
+  (pel--activate-abbrev-mode))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> b`` : buffer commands
@@ -6528,11 +6556,11 @@ the ones defined from the buffer now."
 ;; helm-xref
 (when pel-use-helm-xref
   (pel-ensure-package helm-xref from: melpa)
-  (if (< emacs-major-version 27)
-      (pel-autoload-file helm-xref for: helm-xref-show-xrefs)
-    (pel-autoload-file helm-xref for:
-                       helm-xref-show-xrefs-27
-                       helm-xref-show-defs-27)))
+  (if pel-emacs-27-or-later-p
+      (pel-autoload-file helm-xref for:
+                         helm-xref-show-xrefs-27
+                         helm-xref-show-defs-27)
+    (pel-autoload-file helm-xref for: helm-xref-show-xrefs)))
 
 (when (or pel-use-ivy-xref
           pel-use-helm-xref)

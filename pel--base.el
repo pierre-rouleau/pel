@@ -97,7 +97,10 @@
 ;; - `pel-use-or'
 ;;
 ;; Operations on sequences:
-;;  - `pel-concat-strings-in-list'
+;; - `pel-concat-strings-in-list'
+;; - `pel-push-fmt'
+;; - `pel-prepend'
+;; - `pel-cons-alist-at'
 ;;
 ;; Operation on auto-mode-alist
 ;;  - `pel-delete-from-auto-mode-alist'
@@ -265,6 +268,9 @@
                                                 pel-emacs-is-a-tty-p)
   "Predicate: t if Emacs can properly show Unicode characters like 👍 or 👎.")
 ;; TODO: add ability to install unicode fonts and take it into account.
+
+(defconst pel-emacs-27-or-later-p (>= emacs-major-version 27)
+  "Predicate: t when Emacs version 27 or later is running, nil otherwise.")
 
 ;; ---------------------------------------------------------------------------
 ;; Code Style Buffer Local Variables
@@ -841,9 +847,14 @@ And with transformation functions:
       (setq acc (concat acc elem)))
     acc))
 
-;; Note: - another way would be:  (mapconcat 'identity list "")
-;;       - the advantage would be to be able to perform transformation if the
-;;       - elements of the list are not string, and to inject a separator.
+(defmacro pel-push-fmt (lst fmt &rest args)
+  "Push string FMT formatted with ARGS to the list LST."
+  (declare (indent 2))
+  `(push (format ,fmt ,@args) ,lst))
+
+(defmacro pel-prepend-to (elems the-list)
+  "Prepend the  to the beginning of THE-LIST."
+  `(setq ,the-list (append ,elems ,the-list)))
 
 (defun pel-cons-alist-at (alist key val)
   "Prepend VAL to ALIST of list members at KEY.

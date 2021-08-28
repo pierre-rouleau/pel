@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-24 13:50:24, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-28 16:21:06, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -63,21 +63,21 @@
 ;;
 ;; When running multiple Emacs processes on a computer, switching to
 ;; fast-startup or back to normal-startup mode from one Emacs instance does
-;; not affect the other instances.
+;; not affect the other instances because files are not deleted.
 ;;
 ;; PEL uses the built-in Emacs package management provided by the package.el
 ;; builtin library.  The fast-startup operation mode improves startup speed
 ;; and does not prevent using package.el features to explicitly install
 ;; packages in the current environment.  However, these packages will not be
 ;; known to PEL.  In fast-startup mode PEL disables its internal automatic
-;; package management facilities and does not download, install nor remove
+;; package management facilities and does not download, install or remove
 ;; packages based on modification of the customization.
 ;;
 ;; The strategy is to reduce the length of Emacs `load-path' to a minimum.
 ;; This can therefore be used in conjunction of the Emacs 27+
 ;; `package-quickstart' feature to reduce Emacs startup time further.
 ;;
-;; The length of `load-path' increase each time a new Elpa-compliant package
+;; The length of `load-path' increases each time a new Elpa-compliant package
 ;; is installed by the package.el Emacs package manager.  These packages
 ;; consists of Emacs Lisp files stored inside a sub-directory of the Emacs
 ;; "elpa" directory, which is often located at "~/.emacs.d/elpa".  Each
@@ -107,10 +107,10 @@
 ;;      :url "https://github.com/abo-abo/ace-link")
 ;;
 ;; A large number of Emacs packages, like ace-link, store all their files
-;; inside on directory; they have no sub-directories.  I call those "one-level
+;; inside one directory; they have no sub-directories.  I call those "one-level
 ;; packages" in opposition of the other Emacs Lisp packages that use
 ;; sub-directories to store other files.  From what I have seen so far most
-;; Emacs external packages use only one directory.
+;; Emacs external packages use only one directory but not all.
 ;;
 ;; Emacs Lisp, a Lisp-2, has only one namespace for variables and one
 ;; namespace for functions.  Code in *all* packages, whether they're built-in
@@ -156,6 +156,9 @@
 ;;
 ;; - example/init/init-5.el and
 ;; - example/init/early-init.el
+;;
+;; The PEL installation instructions require you to install init.el and
+;; early-init.el files that contain the code of these files.
 ;;
 ;; To provide ability quickly switch from a normal setup to a fast-startup
 ;; setup and back, PEL uses a symlink to point to one of two Elpa directories
@@ -215,6 +218,10 @@
 ;; - example/init/init-5.el and
 ;; - example/init/early-init.el
 ;;
+;; The code in pel-setup, specifically the function
+;; `pel--update-emacs-user-file' and its caller edit the init.el and
+;; early-init.el: they set the value of defcustom forms which control the
+;; Emacs package.el behaviour at startup.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -241,6 +248,35 @@
 ;;; Code:
 ;;
 
+(defconst pel-init-detected-dual-environment-p
+  (and (boundp 'pel-init-support-dual-environment-p)
+       pel-init-support-dual-environment-p)
+  "Identifies whether PEL uses dual environment -- as detected by init.el.
+
+When using the dual environment, PEL has 2 independent sets of
+customization files and package directories: one when Emacs runs
+in terminal/TTY mode and another when Emacs runs in graphic mode.
+
+Code must NOT modify this value as it represents the state seen
+by init.el when Emacs started!")
+
+;; ---------------------------------------------------------------------------
+;; Local utilities
+;; ---------------
+
+(defun pel--compile-file-if (el-fname byte-compile-it)
+  "Byte compile file EL-FNAME if BYTE-COMPILE-IT is set.
+Otherwise delete the .elc file if it exists."
+  (if byte-compile-it
+      (byte-compile-file el-fname)
+    ;; no compilation needed; remove any left-over .elc file
+    (let ((elc-fname (concat el-fname "c")))
+      (when (file-exists-p elc-fname)
+        (delete-file elc-fname)))))
+
+(defun pel--other-custom-file ()
+  "Return the name of the customization file used by the other mode."
+  (pel--adjusted-fname custom-file :force (not pel-emacs-is-graphic-p)))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-copy-directory : copies a directory, skipping Unix socket files
@@ -269,26 +305,133 @@ slash) or in file name (without the terminating slash) format."
     (advice-remove 'copy-file #'pel-copy-only-file)))
 
 ;; ---------------------------------------------------------------------------
-;; Support for dual terminal/graphics mode customization
-;; -----------------------------------------------------
+;; Utilities to edit Emacs init.el and early-init.el files
+;; -------------------------------------------------------
+;;
+;; This code can update Emacs init.el file that has the content specified
+;; by the example/init/init-5.el file.  You can write more logic inside your
+;; own init.el file of course, but to use PEL setup features, you *MUST* have
+;; the code present inside example/init/init-5.el.
+;;
+;; On Emacs 27 and later the same is true for the early-init.el file: you must
+;; use a file that contains what is inside the file example/init/early-init.el
+;;
+;; The following functions are used to edit it.
+
+;; - `pel--set-dual-environment-in-emacs-init'
+;;   - `pel--update-emacs-user-file'
+;;
+;; - `pel--set-dual-environment-in-emacs-early-init'
+;;   - `pel--update-emacs-user-file'
+;;
+;; Package quickstart management, available for supporting Emacs 27 and later
+;; also use the low level function to setup the early-init file in a code
+;; section below.
+;;
+;; - `pel--setup-early-init'
+;;   - `pel--update-emacs-user-file'
+
+
+(defun pel--update-emacs-user-file (fname symbol-values
+                                          &optional byte-compile-it)
+  "Update FNAME file: set symbol to value from the SYMBOL-VALUES alist.
+
+The FNAME is assumed to be located inside the user Emacs directory.
+FNAME can be init.el or early-init.el and must define the symbols
+inside defconst forms.
+
+Raise an error if the function does not find the `defconst' form
+defining a specified symbol."
+  (let (varname
+        new-value
+        re-pattern)
+    (with-temp-file fname
+      (insert-file-contents fname)
+      (dolist (symbol.value symbol-values)
+        (setq varname (symbol-name (nth 0 symbol.value)))
+        (setq new-value (format "%S" (nth 1 symbol.value)))
+        (goto-char (point-min))
+        (setq re-pattern (format "^(defconst +%s +\\(.+\\) *$" varname))
+        (if (re-search-forward re-pattern nil :noerror)
+            (replace-match new-value :fixedcase :literal nil 1)
+          (user-error "Can't find regexp %s in '%s'" re-pattern fname))))
+    (pel--compile-file-if fname byte-compile-it)))
+
+(defun pel--set-dual-environment-in-emacs-init (use)
+  "Update Emacs user init.el for dual environment when USE is non-nil.
+
+Set `pel-init-support-dual-environment-p' to t when use is
+non-nil, to nil otherwise.  Byte compile the result file if the
+`pel-compile-emacs-init' user-option is turned on."
+  (let ((init-fname (locate-user-emacs-file "init.el")))
+    ;; Make sure an init.el file is present.
+    (unless (file-exists-p init-fname)
+      (user-error "File %s is not found!" init-fname))
+    (pel--update-emacs-user-file
+     init-fname
+     (list
+      (list 'pel-init-support-dual-environment-p (not (null use))))
+     pel-compile-emacs-init)))
+
+(when pel-emacs-27-or-later-p
+  (defun pel--set-dual-environment-in-emacs-early-init (use)
+    "Update Emacs user early-init.el for dual environment when USE is non-nil."
+    (let ((early-init-fname (locate-user-emacs-file "early-init.el")))
+      ;; Make sure an early-init.el file is present.
+      (unless (file-exists-p early-init-fname)
+        (user-error "File %s is not found!" early-init-fname))
+      (pel--update-emacs-user-file
+       early-init-fname
+       (list
+        (list 'pel-early-init-support-dual-environment-p (not (null use))))
+       pel-compile-emacs-early-init)))
+  (declare-function pel--set-dual-environment-in-emacs-early-init "pel-setup"))
+
+;; ---------------------------------------------------------------------------
+;; Support for dual environments
+;; -----------------------------
+;;
+;; PEL supports a dual environment where the terminal/TTY mode uses one
+;; customization file and a set of package directories and the graphics mode
+;; use another, independent customization file and package directories.
+;;
+;; By default this mode is not activated.  The user can activate it by
+;; executing the `pel-setup-dual-environment' command.  That function creates
+;; all the necessary files and directories.
+;; - It also updates the init.el and the early-init.el (in Emacs 27 and later)
+;;    by setting the `pel-init-support-dual-environment-p' constant to t,
+;;    allowing logic in those initialization files to force Emacs to use the
+;;    graphic specific environment when Emacs is running in graphics mode.
+;; - It also updates the `pel-support-dual-environment' user-option in both
+;;   customization files.
+;;
+;; Later when Emacs starts, the code inside pel_keys.el executed by `pel-init'
+;; schedule the execution of `pel-setup-check-dual-environment' to check if
+;; everything is consistent, tries to fix the issues and report remaining
+;; issues to the user in case of inconsistencies.  This operation is delayed a
+;; little to ensure it does not slow the startup.
+;;
+;; * `pel-setup-check-dual-environment'
+;;
+;; * `pel-setup-dual-environment'
+;;   - `pel--create-dir'
+;;     - `pel--dir-exists-p'
+;;   - `pel-dual-environment-problems'
+;;   - `pel--other-custom-file'
+;;
+;; * `pel-setup-info-dual-environment'
+;;   - `pel-dual-environment-problems'
+;;
 
 ;; If you need independent customization for Emacs running in terminal (TTY)
-;; mode and in graphics mode, set `pel-use-graphic-specific-custom-file-p'
-;; inside your init.el file as described by file example/init-5.el .
-(defconst pel-used-with-independent-graphics-customization
-  (and (boundp 'pel-use-graphic-specific-custom-file-p)
-       pel-use-graphic-specific-custom-file-p)
-  "Set to t if PEL is used with terminal and graphics mode customization.
-Set to nil if only one customization file is used.
-Code must NOT modify this value!")
-
-(defun pel--dir-exists-p (dname)
-  "Return t if DNAME exists and is a directory, nil if it does not exists.
-Raise a user-error if DNAME exists and is not a directory."
-  (when (file-exists-p dname)
-    (unless (file-directory-p dname)
-      (user-error "%s is not a directory!" dname))
-    t))
+;; mode and in graphics mode, then do the following:
+;;
+;; - Execute `pel-setup-dual-environment' to create all necessary files and
+;;   directories. It duplicates your single custom file and your single elpa
+;;   and utils package directories.  It also updates the init.el and
+;;   early-init.el (on Emacs 27 and later) optionally byte compiling them if
+;;   requested by the current user options.
+;; - Restart Emacs.
 
 (defun pel-dual-environment-problems ()
   "Return list of string describing problems found in dual custom environment.
@@ -309,59 +452,39 @@ independent environments for terminal and graphics mode."
                                            :force nil))
          (g-utils-dpath (pel--adjusted-fname pel-utils-dirpath
                                              :force :for-graphics))
-         (problems nil))
+         (issues nil))
     (unless (file-exists-p custom-fname)
-      (push (format "File      missing : %s" custom-fname) problems))
+      (pel-push-fmt issues "File      missing : %s" custom-fname))
     (unless (file-exists-p g-custom-fname)
-      (push (format "File      missing : %s" g-custom-fname) problems))
+      (pel-push-fmt issues "File      missing : %s" g-custom-fname))
     (if (file-exists-p elpa-dname)
         (unless (file-symlink-p elpa-dname)
-          (push (format "Is not a symlink  : %s" elpa-dname) problems))
-      (push (format "Directory missing : %s" elpa-dname) problems))
+          (pel-push-fmt issues "Is not a symlink  : %s" elpa-dname))
+      (pel-push-fmt issues "Directory missing : %s" elpa-dname))
     (if (file-exists-p g-elpa-dname)
         (unless (file-symlink-p g-elpa-dname)
-          (push (format "Is not a symlink  : %s" g-elpa-dname) problems))
-      (push (format "Directory missing : %s" g-elpa-dname) problems))
+          (pel-push-fmt issues "Is not a symlink  : %s" g-elpa-dname))
+      (pel-push-fmt issues "Directory missing : %s" g-elpa-dname))
     (if (file-exists-p elpa-complete-dname)
         (unless (file-directory-p elpa-complete-dname)
-          (push (format "Is not a directory: %s" elpa-complete-dname) problems))
-      (push (format "Directory missing : %s" elpa-complete-dname) problems))
+          (pel-push-fmt issues "Is not a directory: %s" elpa-complete-dname))
+      (pel-push-fmt issues "Directory missing : %s" elpa-complete-dname))
     (if (file-exists-p g-elpa-complete-dname)
         (unless (file-directory-p g-elpa-complete-dname)
-          (push (format "Is not a directory: %s" g-elpa-complete-dname) problems))
-      (push (format "Directory missing : %s" g-elpa-complete-dname) problems))
+          (pel-push-fmt issues "Is not a directory: %s" g-elpa-complete-dname))
+      (pel-push-fmt issues "Directory missing : %s" g-elpa-complete-dname))
     (if (file-exists-p utils-dpath)
         (unless (file-directory-p utils-dpath)
-          (push (format "Is not a directory: %s" utils-dpath) problems))
-      (push (format "Directory missing : %s" utils-dpath) problems))
+          (pel-push-fmt issues "Is not a directory: %s" utils-dpath))
+      (pel-push-fmt issues "Directory missing : %s" utils-dpath))
     (if (file-exists-p g-utils-dpath)
         (unless (file-directory-p g-utils-dpath)
-          (push (format "Is not a directory: %s" g-utils-dpath) problems))
-      (push (format "Directory missing : %s" g-utils-dpath) problems))
-    (unless pel-used-with-independent-graphics-customization
-      (push (format "Please set pel-use-graphic-specific-custom-file-p to t \
-in OPTION A code inside the file %s" (locate-user-emacs-file "init.el"))
-            problems))
-    (reverse problems)))
-
-(defun pel--create-dir (gdname dname name )
-  "Copy GDNAME to DNAME which abbreviates to NAME unless it exists.
-Return a list of performed actions."
-  (let ((completed-actions nil)
-        (dpath (file-name-as-directory dname)))
-    (unless (pel--dir-exists-p gdname)
-      (if (pel--dir-exists-p dname)
-          (progn
-            (pel-copy-directory dname gdname)
-            (push (format "Copied %s to %s" dname gdname) completed-actions))
-        (if (pel--dir-exists-p dpath)
-            (progn
-              (pel-copy-directory dpath gdname)
-              (push (format "Copied %s to %s" dpath gdname) completed-actions))
-          (user-error "Can't find %s directory.  Looked for:\n- %s\n- %s"
-                      name dname dpath))))
-    completed-actions))
-
+          (pel-push-fmt issues "Is not a directory: %s" g-utils-dpath))
+      (pel-push-fmt issues "Directory missing : %s" g-utils-dpath))
+    (unless pel-init-detected-dual-environment-p
+      (pel-push-fmt issues "Please set pel-init-support-dual-environment-p to\
+ t in OPTION A code inside the file %s" (locate-user-emacs-file "init.el")))
+    (reverse issues)))
 
 ;;-pel-autoload
 (defun pel-setup-info-dual-environment ()
@@ -371,8 +494,8 @@ are requested and if so check if they are setup properly.
 Report an error and list problems if there are any, otherwise display the
 current setup."
   (interactive)
-  (if (and  (boundp 'pel-use-graphic-specific-custom-file-p)
-            pel-use-graphic-specific-custom-file-p)
+  (if (and  (boundp 'pel-init-support-dual-environment-p)
+            pel-init-support-dual-environment-p)
       (let ((problems (pel-dual-environment-problems)))
         (if problems
             (let ((problem-count (length problems)))
@@ -380,7 +503,8 @@ current setup."
 The file %s is requesting the use of dual tty/graphics customization.
  However the following %s %s:\n - %s"
                           (locate-user-emacs-file "init.el")
-                          (pel-count-string problem-count "problem" nil :no-count-for-1)
+                          (pel-count-string problem-count "problem"
+                                            nil :no-count-for-1)
                           (pel-pluralize problem-count "remains" "remain")
                           (string-join problems "\n - ")))
           (message  "PEL is ready to use 2 independent customization files:
@@ -388,7 +512,142 @@ The file %s is requesting the use of dual tty/graphics customization.
  One for graphics    : %s"
                     (pel--adjusted-fname custom-file :force nil)
                     (pel--adjusted-fname custom-file :force :for-graphics))))
-    (message "PEL is currently using a single customization file: %s" custom-file)))
+    (message "PEL is currently using a single customization file: %s"
+             custom-file)))
+
+;; --
+
+(defun pel--dir-exists-p (dname)
+  "Return t if DNAME exists and is a directory, nil if it does not exists.
+Raise a user-error if DNAME exists but is not a directory."
+  (when (file-exists-p dname)
+    (unless (file-directory-p dname)
+      (user-error "%s is not a directory!" dname))
+    t))
+
+(defun pel--create-dir (gdname dname name )
+  "Copy GDNAME to DNAME which abbreviates to NAME unless it exists.
+Return a list of performed actions (in reverse order of execution)."
+  (let ((actions nil)
+        (dpath (file-name-as-directory dname)))
+    (unless (pel--dir-exists-p gdname)
+      (if (pel--dir-exists-p dname)
+          (progn
+            (pel-copy-directory dname gdname)
+            (pel-push-fmt actions "Copied %s to %s" dname gdname))
+        (if (pel--dir-exists-p dpath)
+            (progn
+              (pel-copy-directory dpath gdname)
+              (pel-push-fmt actions "Copied %s to %s" dpath gdname))
+          (user-error "Can't find %s directory.  Looked for:\n- %s\n- %s"
+                      name dname dpath))))
+    actions))
+
+(defun pel--setup-dual-environment (&optional reason-msg)
+  "Setup Emacs environment to support 2 independent customization.
+
+Utility function. If REASON-MSG is specified include that message on error."
+  (let* ((custom-fname (pel--adjusted-fname custom-file :force nil))
+         (g-custom-fname (pel--adjusted-fname custom-file
+                                              :force :for-graphics))
+         (elpa-dpath (pel--adjusted-fname pel-elpa-dirpath :force nil))
+         (elpa-dname (directory-file-name elpa-dpath))
+         (g-elpa-dname (pel--adjusted-fname elpa-dname
+                                            :force :for-graphics))
+         (elpa-complete-dname (pel-sibling-dirname pel-elpa-dirpath
+                                                   "elpa-complete"))
+         (g-elpa-complete-dname (pel--adjusted-fname elpa-complete-dname
+                                                     :force :for-graphics))
+         (utils-dname (pel--adjusted-fname (directory-file-name pel-utils-dirpath)
+                                           :force nil))
+         (g-utils-dname (pel--adjusted-fname (directory-file-name pel-utils-dirpath)
+                                             :force :for-graphics))
+         (actions nil))
+    ;; 1:
+    ;; Create a custom-file for graphics mode unless it already exists.
+    (unless (file-exists-p g-custom-fname)
+      (if (file-exists-p custom-fname)
+          (progn
+            (copy-file custom-fname g-custom-fname)
+            (pel-push-fmt actions "Copied %s to %s "
+                       custom-fname g-custom-fname))
+        (user-error "Expected customization file %s does not exists!"
+                    custom-fname)))
+    ;; 2:
+    ;; Create a elpa directory for graphics mode unless it already exists.
+    (pel-prepend-to
+     (pel--create-dir g-elpa-complete-dname elpa-complete-dname "elpa")
+     actions)
+    ;; 3:
+    ;; Create the utils for graphics mode unless it already exists.
+    (pel-prepend-to
+     (pel--create-dir g-utils-dname utils-dname "utils")
+     actions)
+    ;; 4:
+    ;; Rename the elpa directory to elpa-complete unless it's already done
+    (when (and (file-exists-p elpa-dname)
+               (not (file-symlink-p elpa-dname)))
+      (when (file-exists-p elpa-complete-dname)
+        (user-error "Both %s and %s exist! Manual cleanup required!"
+                    elpa-dpath elpa-complete-dname))
+      (rename-file (directory-file-name elpa-dpath) elpa-complete-dname)
+      (pel-push-fmt actions "Renamed %s to %s"
+                 elpa-dpath elpa-complete-dname))
+    ;; 5:
+    ;; Create the main elpa directory into a symlink to the elpa-complete
+    ;; directory.
+    (unless (file-symlink-p elpa-dname)
+      (pel-point-symlink-to elpa-dname elpa-complete-dname)
+      (pel-push-fmt actions "Created symlink %s pointing to %s"
+                 elpa-dname elpa-complete-dname))
+    ;; 6:
+    ;; Create the elpa-graphics symlink to the elpa-complete-graphics
+    (unless (file-symlink-p g-elpa-dname)
+      (pel-point-symlink-to g-elpa-dname g-elpa-complete-dname)
+      (pel-push-fmt actions "Created symlink %s pointing to %s"
+                 g-elpa-dname g-elpa-complete-dname))
+    ;; 7:
+    ;; Update init.el: set pel-init-support-dual-environment-p
+    ;; to the value of pel-init-detected-dual-environment-p
+    (condition-case err
+        (progn
+          (pel--set-dual-environment-in-emacs-init t)
+          (when pel-emacs-27-or-later-p
+            (pel--set-dual-environment-in-emacs-early-init t))
+          (pel-push-fmt actions "Updated init.el%s. Please restart Emacs!"
+                     (pel-string-when pel-emacs-27-or-later-p
+                                      "and early-init.el")))
+      (error
+       (progn
+         (display-warning
+          'pel-setup-dual-environment
+          (format "Problem updating Emacs initialization file: \n %s" err)
+          :error))))
+    ;; 8:
+    ;; Remember this setting inside customization files
+    (pel-customize-save 'pel-support-dual-environment t)
+    (pel-customize-save 'pel-support-dual-envionment t
+                        (pel--other-custom-file))
+    ;; Display performed actions.
+    (let ((remaining-problems (pel-dual-environment-problems))
+          (done-text (when actions
+                       (format "Completed the following:\n- %s"
+                               (string-join
+                                (reverse actions) "\n- ")))))
+      (if remaining-problems
+          (let ((remaining-actions (format "some problems remain.\
+ Please fix them manually:\n- %s" (string-join remaining-problems "\n- "))))
+            (if actions
+                (user-error "%s%s\n Unfortunately %s"
+                            (pel-string-when reason-msg)
+                            done-text
+                            remaining-actions)
+              (user-error "%sNothing can be done since %s"
+                          (pel-string-when reason-msg)
+                          remaining-actions)))
+        (if actions
+            (message "%s\n All is now OK!" done-text)
+          (message "Nothing to do, it's already setup."))))))
 
 ;;-pel-autoload
 (defun pel-setup-dual-environment ()
@@ -415,87 +674,38 @@ mode another way, with PEL, then use that command.
 See the comments at in the commentary section of pel-setup.el for
 more information."
   (interactive)
-  (when (y-or-n-p "Activate independent customization for terminal & graphics\
+  (when (y-or-n-p "Activate independent customization & packages for terminal & graphics\
  mode? ")
-    (let* ((custom-fname (pel--adjusted-fname custom-file :force nil))
-           (g-custom-fname (pel--adjusted-fname custom-file
-                                                :force :for-graphics))
-           (elpa-dpath (pel--adjusted-fname pel-elpa-dirpath :force nil))
-           (elpa-dname (directory-file-name elpa-dpath))
-           (g-elpa-dname (pel--adjusted-fname elpa-dname
-                                              :force :for-graphics))
-           (elpa-complete-dname (pel-sibling-dirname pel-elpa-dirpath
-                                                     "elpa-complete"))
-           (g-elpa-complete-dname (pel--adjusted-fname elpa-complete-dname
-                                                       :force :for-graphics))
-           (utils-dname (pel--adjusted-fname (directory-file-name pel-utils-dirpath)
-                                             :force nil))
-           (g-utils-dname (pel--adjusted-fname (directory-file-name pel-utils-dirpath)
-                                               :force :for-graphics))
-           (completed-actions nil))
-      ;;
-      ;; Create a custom-file for graphics mode unless it already exists.
-      (unless (file-exists-p g-custom-fname)
-        (if (file-exists-p custom-fname)
-            (progn
-              (copy-file custom-fname g-custom-fname)
-              (push (format "Copied %s to %s " custom-fname g-custom-fname)
-                    completed-actions))
-          (user-error "Expected customization file %s does not exists!"
-                      custom-fname)))
-      ;;
-      ;; Create a elpa directory for graphics mode unless it already exists.
-      (setq completed-actions
-            (append (pel--create-dir g-elpa-complete-dname elpa-complete-dname "elpa")
-                    completed-actions))
-      ;;
-      ;; Create the utils for graphics mode unless it already exists.
-      (setq completed-actions
-            (append (pel--create-dir g-utils-dname utils-dname "utils")
-                    completed-actions))
-      ;;
-      ;; Rename the elpa directory to elpa-complete unless it's already done
-      (when (and (file-exists-p elpa-dname)
-                 (not (file-symlink-p elpa-dname)))
-        (when (file-exists-p elpa-complete-dname)
-          (user-error "Both %s and %s exist! Manual cleanup required!"
-                      elpa-dpath elpa-complete-dname))
-        (rename-file (directory-file-name elpa-dpath) elpa-complete-dname)
-        (push (format "Renamed %s to %s" elpa-dpath elpa-complete-dname)
-              completed-actions))
-      ;;
-      ;; Create the main elpa directory into a symlink to the elpa-complete
-      ;; directory.
-      (unless (file-symlink-p elpa-dname)
-        (pel-point-symlink-to elpa-dname elpa-complete-dname)
-        (push (format "Created symlink %s pointing to %s"
-                      elpa-dname elpa-complete-dname)
-              completed-actions))
-      ;;
-      ;; Create the elpa-graphics symlink to the elpa-complete-graphics
-      (unless (file-symlink-p g-elpa-dname)
-        (pel-point-symlink-to g-elpa-dname g-elpa-complete-dname)
-        (push (format "Created symlink %s pointing to %s"
-                      g-elpa-dname g-elpa-complete-dname)
-              completed-actions))
-      ;;
-      ;; Display performed actions.
-      (let ((remaining-problems (pel-dual-environment-problems))
-            (done-text (when completed-actions
-                         (format "Completed the following:\n- %s"
-                                 (string-join
-                                  (reverse completed-actions) "\n- ")))))
-        (if remaining-problems
-            (let ((remaining-actions (format "some problems remain.\
- Please fix them manually:\n- %s" (string-join remaining-problems "\n- "))))
-              (if completed-actions
-                  (user-error "%s\n Unfortunately %s"
-                              done-text
-                              remaining-actions)
-                (user-error "Nothing can be done since %s" remaining-actions)))
-          (if completed-actions
-              (message "%s\n All is now OK!" done-text)
-            (message "Nothing to do, it's already setup.")))))))
+    (pel--setup-dual-environment)))
+
+
+;;-pel-autoload
+(defun pel-setup-check-dual-environment ()
+  "Check dual environment status, activate it if needed, warn about issues."
+  (let ((symbols '(pel-init-support-dual-environment-p))
+        (is-ok t))
+    (when pel-emacs-27-or-later-p
+      (push 'pel-early-init-support-dual-environment-p symbols))
+    (dolist (symbol symbols)
+      (unless (eq pel-support-dual-environment (symbol-value symbol))
+        (setq is-ok nil)))
+    (unless is-ok
+      (if pel-support-dual-environment
+          (pel--setup-dual-environment
+           "Dual environment is requested by user-option, but not active!\n")
+        (display-warning
+         'pel-setup-check-dual-environment
+         (format "\
+There are inconsistencies in the PEL dual environment setup.
+ It is not requested by the `pel-setup-check-dual-environment' user-option
+ BUT the initialization %s %S identify a different request.
+ Please fix that.
+ Refer to PEL user Manual installation notes and read information about
+ 'Support for Independent Customization of Graphics and Terminal based\
+ Emacs'."
+                 (pel-pluralize (length symbols) "symbol")
+                 symbols)
+         :error)))))
 
 ;; ---------------------------------------------------------------------------
 ;; Fast-Startup Support
@@ -513,8 +723,51 @@ Only set by `pel-setup-fast' or `pel-setup-normal'. Never cleared.")
 
 ;; Emacs >= 27:" package quickstart with fast startup & dual customization
 ;; ----------------------------------------------------------------------
+;;
+;; For Emacs 27 and after, PEL must use the early-init.el file and must
+;; identify the state of the following features:
+;;
+;;   - Package quickstart
+;;   - Dual environment
+;;   - GUI launched Emacs
+;;
+;; The function `pel--setup-early-init' updates the content of the
+;; early-init.el file.  It is used by the commands `pel-setup-with-quickstart'
+;; and `pel-setup-no-quickstart'.
+;;
+;; The function `pel--setup-early-init' is also called by the commands that
+;; affects:
+;;
+;;   - use of dual environment: the `pel-setup-dual-environment' command,
+;;   - fast and normal startup (on Emacs >= 27, to ensure proper operation
+;;     there), by the commands `pel-setup-fast' and `pel-setup-normal'.
 
-(when (>= emacs-major-version 27)
+
+
+
+;; * `pel-setup-with-quickstart'
+;;   - `pel--setup-early-init'
+;;     - `pel--update-emacs-user-file'
+;;   - `pel--activate-package-quickstart'
+;;     - `pel--build-package-quickstart'
+;;       - `pel--package-qs'
+;;    - `pel--store-with-package-quickstart'
+;;
+;; * `pel-setup-no-quickstart'
+;;   - `pel--remove-package-quickstart-files'
+;;   - `pel--store-with-package-quickstart'
+;;   - `pel--setup-early-init'
+;;     - `pel--update-emacs-user-file'
+
+
+;; - Execute the `pel-setup-with-quickstart' command to set everything up: it
+;;   sets the user-option in the custom file(s) and edit the init.el and
+;;   early-init.el files.
+;; - Restart Emacs.
+
+
+;; ---------
+(when pel-emacs-27-or-later-p
 
   (defvar pel--quickstart-forced-fname nil
     "Unless nil, forced name of package quickstart file.")
@@ -563,11 +816,11 @@ the name of the package-quickstart.el using the function
                 (setq pel--quickstart-forced-fname
                       (pel--adjusted-fname package-quickstart-file))
                 (package-quickstart-refresh)
-                (when (and pel-compile-package-quickstart
-                           (pel-remove-no-byte-compile-in
-                            pel--quickstart-forced-fname))
-                  ;; Byte-Compile it if requested
-                  (byte-compile-file pel--quickstart-forced-fname)))
+                ;; Byte-compile it if requested, otherwise remove its .elc
+                (pel--compile-file-if pel--quickstart-forced-fname
+                                      (and pel-compile-package-quickstart
+                                           (pel-remove-no-byte-compile-in
+                                            pel--quickstart-forced-fname))))
             (progn
               (advice-remove 'package-quickstart-refresh #'pel--package-qs)
               (setq pel--quickstart-forced-fname nil))))
@@ -593,35 +846,45 @@ is only one or when its for the terminal (TTY) mode."
                                       :force for-graphics))))
   (declare-function pel--activate-package-quickstart "pel-setup")
 
-  (defun pel--setup-early-init (&optional error-if-exists)
-    "Ensure that a valid early-init.el file is available."
+  (defun pel--setup-early-init (pkg-quickstart)
+    "Create valid PEL early-init.el file and set its behaviour.
+
+The behaviour is controlled by:
+- PKG-QUICKSTART: t to activate package quickstart, nil to disable it.
+- The value of `pel-init-detected-dual-environment-p' determines
+  whether PEL is used with a dual environment for terminal/TTY and graphics
+  mode or just a single one as usual for Emacs.
+- The value of `pel-shell-detection-envvar' user-option determines what
+  environment variable absence is used to detect GUI launched Emacs."
     (let ((early-init-fname (locate-user-emacs-file "early-init.el")))
-      (if (file-exists-p early-init-fname)
-          (when error-if-exists
-            (user-error "The file %s already exists!
- If you want to keep it please see `pel-early-init-with-package-quickstart'
- and `pel-early-init-without-package-quickstart' for instructions."
-                        early-init-fname))
-        ;; All is fine: no early-init.el file yet.  Proceed.
+      ;; Make sure an early-init file is present.
+      (unless (file-exists-p early-init-fname)
         (copy-file pel-early-init-with-package-quickstart
-                   (locate-user-emacs-file "early-init.el")))))
+                   (locate-user-emacs-file "early-init.el")))
+      (pel--update-emacs-user-file
+       early-init-fname
+       (list
+        (cons 'pel-early-init-support-package-quickstart-p
+              pkg-quickstart)
+        (cons 'pel-early-init-support-dual-environment-p
+              pel-init-detected-dual-environment-p)
+        (cons 'pel-early-init-shell-detection-envvar
+              pel-shell-detection-envvar))
+       pel-compile-emacs-early-init)))
   (declare-function pel--setup-early-init "pel-setup")
 
-
-  (defun pel--set-with-package-quickstart (value)
-    "Set `pel-with-package-quickstart' to new VALUE globally and persistently.
+  (defun pel--store-with-package-quickstart (value)
+    "Set `pel-support-package-quickstart' to new VALUE globally and persistently.
 
 Store value in all relevant custom file(s)."
-    (setq pel-with-package-quickstart value)
+    (setq pel-support-package-quickstart value)
     ;; store in default custom-file
-    (pel-customize-save 'pel-with-package-quickstart value)
-    (when pel-used-with-independent-graphics-customization
-      ;; also store in the custom file of the other mode
-      (pel-customize-save 'pel-with-package-quickstart value
-                          (pel--adjusted-fname
-                           custom-file
-                           :force (not pel-emacs-is-graphic-p)))))
-  (declare-function pel--set-with-package-quickstart "pel-setup")
+    (pel-customize-save 'pel-support-package-quickstart value)
+    (when pel-init-detected-dual-environment-p
+      ;; store in the custom file of the other mode
+      (pel-customize-save 'pel-support-package-quickstart value
+                          (pel--other-custom-file))))
+  (declare-function pel--store-with-package-quickstart "pel-setup")
 
   ;;-pel-autoload
   (defun pel-setup-with-quickstart ()
@@ -640,17 +903,17 @@ or refreshes the package-quickstart.el file(s)."
   Please check and fix before activating the package quickstart!"))
       ;; All is fine: proceed.
       (message "Activating package quickstart...")
-      (pel--setup-early-init)
+      (pel--setup-early-init t )
       (let ((elpa-dpath (pel-sibling-dirpath
                          pel-elpa-dirpath
                          (if (eq startup-mode 'fast)
                              "elpa-reduced"
                            "elpa-complete"))))
         (pel--activate-package-quickstart elpa-dpath nil)
-        (when pel-used-with-independent-graphics-customization
+        (when pel-init-detected-dual-environment-p
           (pel--activate-package-quickstart elpa-dpath t)))
-      ;; Remember user setting: in pel-with-package-quickstart user-option
-      (pel--set-with-package-quickstart t))
+      ;; Remember user setting: in pel-support-package-quickstart user-option
+      (pel--store-with-package-quickstart t))
     ;; display state
     (pel-setup-info :now))
 
@@ -694,8 +957,12 @@ Support PEL startup modes and PEL dual independent customization files."
     ;; when dual independent customization mode is used delete the
     ;; graphics specific files.
     (pel--remove-package-quickstart-files t)
-    ;; Remember user setting: in pel-with-package-quickstart user-option
-    (pel--set-with-package-quickstart nil)
+    ;; Remember user setting:
+    ;; - in pel-support-package-quickstart user-option
+    (pel--store-with-package-quickstart nil)
+    ;; - and inside the early-init.el
+    (pel--setup-early-init nil)
+
     ;; display state
     (pel-setup-info :now)))
 
@@ -826,7 +1093,7 @@ originally returned by `pel-elpa-disable-pkg-deps-in'."
   '%S
   \"List of bundled package/versions to add to package--builtin-versions.\")
 
-\(defvar pel-force-graphics-specific-files nil
+\(defvar pel-force-graphic-specific-files nil
   \"Force graphics specific files when non-nil. Set by `pel-fast-startup-init'.\")
 
 ;; pel-fast-startup-init must be called either inside early-init.el
@@ -845,7 +1112,7 @@ originally returned by `pel-elpa-disable-pkg-deps-in'."
       function is called from init or when Emacs is earlier than version 27.
 
 Return the pkg/version alist.\"
-  (setq pel-force-graphics-specific-files force-graphics)
+  (setq pel-force-graphic-specific-files force-graphics)
   ;; step 1:
   (dolist (dep-ver pel-fast-startup-builtin-packages)
     (add-to-list 'package--builtin-versions dep-ver))
@@ -875,9 +1142,9 @@ Return the pkg/version alist.\"
 ;; when Emacs runs in graphics mode and PEL dual independent customization
 ;; feature is enabled.
 
-;; The pel--graphics-file-name translates a file name to the graphics
+;; The pel--graphic-file-name translates a file name to the graphics
 ;; specific name
-\(defun pel--graphics-file-name (fname)
+\(defun pel--graphic-file-name (fname)
   \"Appends '-graphics' to the end of a .el, .elc or extension less FNAME.\"
   ;; use only functions implemented in C
   (let ((ext (substring fname -3)))
@@ -889,8 +1156,8 @@ Return the pkg/version alist.\"
 
 \(defun pel--pkg-load-all-descriptors (original-fct)
   \"Execute ORIGINAL-FCT with a controlled value of `package-user-dir'.\"
-  (let ((package-user-dir (if pel-force-graphics-specific-files
-                              (pel--graphics-file-name package-user-dir)
+  (let ((package-user-dir (if pel-force-graphic-specific-files
+                              (pel--graphic-file-name package-user-dir)
                             package-user-dir)))
     (funcall original-fct)))
 
@@ -910,7 +1177,7 @@ If the first list is nil then PEL/Emacs operates in normal mode.
 If the first list has 3 members, then PEL/Emacs operates in fast startup mode."
   (let* ((pel--adjust-path-for-graphics pel-emacs-is-graphic-p)
          (met-criteria nil)
-         (problems nil)
+         (issues nil)
          (elpa-dirpath (pel--adjusted-fname pel-elpa-dirpath))
          (elpa-reduced-dirpath  (pel--adjusted-fname
                                  (pel-sibling-dirpath elpa-dirpath
@@ -918,23 +1185,20 @@ If the first list has 3 members, then PEL/Emacs operates in fast startup mode."
     (if (pel-in-fast-startup-p)
         (push "Identified as fast startup by function `pel-in-fast-startup'"
               met-criteria)
-      (push "The `pel-in-fast-startup' is not set." problems))
+      (pel-push-fmt issues "The `pel-in-fast-startup' is not set."))
 
     (if (file-exists-p pel-fast-startup-init-fname)
         (push (format "Fast startup setup file is present: %s"
                       pel-fast-startup-init-fname)
               met-criteria)
-      (push (format "The file %s indicating fast startup not found."
-                    pel-fast-startup-init-fname)
-            problems))
+      (pel-push-fmt issues "The file %s indicating fast startup not found."
+        pel-fast-startup-init-fname))
     (if (pel-symlink-points-to-p (directory-file-name elpa-dirpath)
                                  elpa-reduced-dirpath)
         (push "elpa symlink points to elpa-reduced" met-criteria)
-      (push (format "elpa symlink (%s) does not point to elpa-reduced (%s)"
-                    elpa-dirpath
-                    elpa-reduced-dirpath)
-            problems))
-    (cons met-criteria problems)))
+      (pel-push-fmt issues "elpa symlink (%s) does not point to elpa-reduced (%s)"
+        elpa-dirpath elpa-reduced-dirpath))
+    (cons met-criteria issues)))
 
 (defun pel--startup-mode ()
   "Return whether PEL/Emacs operates in fast startup mode.
@@ -949,7 +1213,7 @@ Returns: 'normal, 'fast or 'inconsistent."
 The FOR-GRAPHICS argument identifies the setup forced for independent graphics."
   (if for-graphics
       "independent graphics mode"
-    (if pel-used-with-independent-graphics-customization
+    (if pel-init-detected-dual-environment-p
         "independent terminal/tty mode"
       "all modes")))
 
@@ -1105,7 +1369,7 @@ Compared: symlink %s to target %s.
             (pel-setup-fast-startup-init
              pel-fast-startup-init-fname
              (pel-elpa-disable-pkg-deps-in elpa-reduced-dirpath)
-             (pel-string-when (>= emacs-major-version 27)
+             (pel-string-when pel-emacs-27-or-later-p
                               (format ";; step 2: (only for Emacs >= 27)
   (when from-early-init
       (add-to-list 'load-path
@@ -1152,8 +1416,8 @@ Compared: symlink %s to target %s.
           ;; package-alist includes all packages now in elpa (which is
           ;; pel-reduced). Support dual tty/graphics mode by processing
           ;; a file with modified name if required.
-          (when (>= emacs-major-version 27)
-            (if pel-with-package-quickstart
+          (when pel-emacs-27-or-later-p
+            (if pel-support-package-quickstart
                 ;; package-quickstart is requested: create/update files
                 (progn
                   ;; create early-init if it's missing
@@ -1195,9 +1459,9 @@ Failed fast startup setup for %s after %d of %d steps: %s
 If SHOW-REQUESTED-STATUS is specified the message should also display
 the new requested status instead of the current state."
   (let ((current-quickstart-status (if show-requested-status
-                                       pel-with-package-quickstart
+                                       pel-support-package-quickstart
                                      (pel--with-package-quickstart-p))))
-    (if (>= emacs-major-version 27)
+    (if pel-emacs-27-or-later-p
         (format "%s %s package quickstart support"
                 prompt
                 (if current-quickstart-status
@@ -1220,12 +1484,12 @@ the new requested status instead of the current state."
       ;; When graphics mode Emacs has its own customization, then also setup
       ;; the second environment; the one specific to Emacs running in graphics
       ;; mode.
-      (when pel-used-with-independent-graphics-customization
+      (when pel-init-detected-dual-environment-p
         (pel--setup-fast t))
       ;; inform user
       (message "Restart Emacs to complete switching to fast startup mode!%s"
                (pel-string-when
-                pel-used-with-independent-graphics-customization
+                pel-init-detected-dual-environment-p
                 "\n Affects Emacs running in terminal and graphics mode!"))
       (setq pel--setup-changed t))))
 
@@ -1251,8 +1515,8 @@ is only one or when its for the terminal (TTY) mode."
     ;; With Emacs ≥ 27 if package-quickstart is used more work is required:
     ;; package-quickstart-refresh must be done while package-alist
     ;; includes all packages now in elpa (which is elpa and elpa-complete).
-    (when (>= emacs-major-version 27)
-      (if pel-with-package-quickstart
+    (when pel-emacs-27-or-later-p
+      (if pel-support-package-quickstart
           ;; package-quickstart is requested: create/update files
           (progn
             ;; create early-init if it's missing
@@ -1278,12 +1542,12 @@ is only one or when its for the terminal (TTY) mode."
       ;; When graphics mode Emacs has its own customization, then also setup
       ;; the second environment; the one specific to Emacs running in graphics
       ;; mode.
-      (when pel-used-with-independent-graphics-customization
+      (when pel-init-detected-dual-environment-p
         (pel--setup-normal t))
       ;; inform user
       (message "Restart Emacs to complete switching back to normal startup mode!%s"
                (pel-string-when
-                pel-used-with-independent-graphics-customization
+                pel-init-detected-dual-environment-p
                 "\n Affects Emacs running in terminal and graphics mode!"))
       (setq pel--setup-changed t))))
 

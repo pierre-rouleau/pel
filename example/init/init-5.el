@@ -20,12 +20,17 @@
 ;;        after each modification otherwise you will experience a slow
 ;;        startup!
 ;;
-;; NOTE: this code has OPTIONS you must identify.  Search for the following
-;;       options in the file and update the code to your liking:
+;; NOTE: This file has Options that must be edited manually and some that
+;;       are edited automatically by PEL
+;;       - Option A is edited automatically by `pel--update-emacs-init',
+;;         when the user executes `pel-setup-dual-environment'.
+;;       - You must edit the other options manually.
 ;;
-;; - OPTION A: whether you want to use one custom file for Emacs running in
-;;             terminal (TTY) and graphic mode, or two independent custom
-;;             file, one for each mode. By default only one is used.
+;;
+;; - Option A: support for dual environment.  In dual environment, PEL forces
+;;             to use two independent customization files and two sets of
+;;             package directories: one for Emacs running in terminal/TTY mode
+;;             and another for Emacs running in graphics mode.
 ;;
 ;; - OPTION B: whether you want to activate the benchmark-init feature to
 ;;             measure time spent by various features during initialization.
@@ -34,8 +39,24 @@
 ;; - OPTION D: whether graphical Emacs toolbar is displayed or not.
 ;; ---------------------------------------------------------------------------
 ;;
-;; Section 0: Variable definitions
-;; ===============================
+;; Section 0: PEL Edited Variable Definitions
+;; ==========================================
+;;
+;; Option a: PEL controlled value -- updated by the function
+;;           `pel--set-dual-environment-in-emacs-init'.
+;;           Independent customization for TTY and graphic mode.
+;;           - When set to t PEL uses a different customization file and
+;;             package directory for Emacs running in terminal/TTY and
+;;             graphic mode.
+(defconst pel-init-support-dual-environment-p nil
+  "Whether PEL uses dual custom & package files for TTY and graphic mode.")
+
+;; ---------------------------------------------------------------------------
+;; Section 0.1: Fixed Function Definitions
+;; =======================================
+;;
+;; The following forms do not need editing.
+
 (defconst pel-emacs-is-graphic-p (display-graphic-p)
   "Predicate: t when Emacs is running in graphics mode, nil otherwise.")
 
@@ -50,12 +71,6 @@
 (defconst pel-running-in-fast-startup-p (file-exists-p
                                          pel-fast-startup-init-fname)
   "Non-nil when PEL runs in fast startup mode, nil otherwise.")
-
-;; OPTION A: independent customization for TTY and graphic mode.
-;; - Set to t if you want to use a different customization file for TTY
-;;   and graphic mode.
-(defconst pel-use-graphic-specific-custom-file-p nil
-  "When t PEL uses 2 custom files: one for TTY and one for graphic mode.")
 
 (defvar pel-package-user-dir-symlink nil
   "When set, it is the dirpath of the `package-user-dir' symlink.
@@ -72,13 +87,13 @@ before a mode switch done by one of them.")
 ;; Section 1 : Utility function definition
 ;; =======================================
 ;;
-;; The pel--graphics-file-name translates a file name to the graphics
+;; The pel--graphic-file-name translates a file name to the graphics
 ;; specific name.  Implementation using on functions implemented in C
 ;; to reduce requirements.  The code ONLY handle names ending .el or .elc
 ;; or nothing.  It does not handle other extensions, but its unlikely that
 ;; Emacs related directories have different extensions (in the context of this
 ;; function calls).
-(defun pel--graphics-file-name (fname)
+(defun pel--graphic-file-name (fname)
   "Appends \"-graphics\" to the end of a .el, .elc or extension less FNAME."
   (let ((ext (substring fname -3)))
     (cond
@@ -100,7 +115,7 @@ before a mode switch done by one of them.")
   "Use a graphics specific file for `package-activate-all'."
   (if (boundp 'package-quickstart-file)
       (let ((package-quickstart-file
-             (pel--graphics-file-name package-quickstart-file)))
+             (pel--graphic-file-name package-quickstart-file)))
         (setq pel--package-quickstart-file package-quickstart-file)
         (funcall original-package-activate-all))
     (message "WARNING: package-quickstart-file is unbound in\
@@ -163,9 +178,9 @@ before a mode switch done by one of them.")
           ;; - use ~/.emacs.d/elpa-graphics in graphics mode
           ;; Use setq to ensure that package-user-dir stays like this after
           ;; execution of package-init.
-          (when (and pel-use-graphic-specific-custom-file-p
+          (when (and pel-init-support-dual-environment-p
                      pel-emacs-is-graphic-p)
-            (setq package-user-dir (pel--graphics-file-name package-user-dir)))
+            (setq package-user-dir (pel--graphic-file-name package-user-dir)))
 
           ;; By default Emacs enable packages *after* init is loaded.
           ;; The code later explicitly calls package-initialize to do it
@@ -238,11 +253,11 @@ before a mode switch done by one of them.")
                    (cons "melpa-stable" "https://stable.melpa.org/packages/")
                    t)
       (if (and pel-emacs-is-graphic-p
-               pel-use-graphic-specific-custom-file-p)
+               pel-init-support-dual-environment-p)
           ;; In forced graphics mode: use a graphics mode-specific Elpa
           ;; directory and package quickstart file.
           (progn
-            (setq package-user-dir (pel--graphics-file-name package-user-dir))
+            (setq package-user-dir (pel--graphic-file-name package-user-dir))
             (advice-add 'package-activate-all :around #'pel--pkg-activate-all)
             (unwind-protect
                 (package-initialize)
@@ -304,7 +319,7 @@ before a mode switch done by one of them.")
       (if (and (load (file-name-sans-extension pel-fast-startup-init-fname)
                      :noerror)
                (fboundp 'pel-fast-startup-init))
-          (pel-fast-startup-init (and pel-use-graphic-specific-custom-file-p
+          (pel-fast-startup-init (and pel-init-support-dual-environment-p
                                       pel-emacs-is-graphic-p))
         (message "WARNING: Failed loading pel-fast-startup-init\
  from user-emacs-directory")))
@@ -405,7 +420,7 @@ before a mode switch done by one of them.")
   ;; init.el, move it into this or these new files.
   ;;
   (setq custom-file (expand-file-name
-                     (if (and pel-use-graphic-specific-custom-file-p
+                     (if (and pel-init-support-dual-environment-p
                               pel-emacs-is-graphic-p)
                          "emacs-customization-graphics.el"
                        "emacs-customization.el")

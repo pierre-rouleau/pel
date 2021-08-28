@@ -1,120 +1,186 @@
-;; -*- lexical-binding: t; -*-
+;;; early-init.el --- Early PEL feature control.  -*- lexical-binding: t; -*-
 ;;
-;; Emacs >= 27 support the `package-quickstart' feature which speeds-up
-;; Emacs startup time by building the autoloads for all elpa external
-;; packages ahead of time in a previous Emacs session.
 
-;; The Emacs quick start mechanism is activated by the presence of a
-;; early-init.el file in the user-emacs-directory.  The early-init.el
-;; file is loaded very early in the startup process, before graphical
-;; elements are initialized and before the package manager is
-;; initialized.
+;;; --------------------------------------------------------------------------
+;;; Commentary:
 ;;
-;; The following variables must be initialized in early-init.el:
+;; Emacs >= 27 supports the early-init.el file.  Emacs loads and executes the
+;; content of the early-init.el file early in its startup process at a moment
+;; where Emacs package manager and graphics support is not yet initialized. In
+;; early-init the function `display-graphic-p' is not available.
 ;;
-;; - `package-quickstart' must be set to t to activate the package
-;;   quickstart mechanism.  Its documentation states that it can be
-;;   customized, but the customized value is read too late in the
-;;   process, therefore you should avoid modifying its value through
-;;   customization.
-;; - `package-user-dir': If you need to modify `package-user-dir' when
-;;   the package quickstart is used in normal startup mode, then the
-;;   value that differ from the default must be set inside early-init.el
+;; On Emacs >= 27 the package manager controlled by package.el is initialized
+;; after the execution of early-init.el and before the execution of init.el.
 ;;
-;; - `package-load-list': By default this is set to '(all) to specify
-;;    that `package-initialize' should load the latest installed version
-;;    of all packages. If you need to modify this behaviour when the
-;;    package quickstart is used, set the value inside the early-init.el
+;; Therefore, on Emacs >= 27, PEL needs to execute code inside early-init.el
+;; to control some of its features (listed below).
 ;;
-;; Note that inside early-init.el Emacs has not initialized its graphics
-;; support code and the function `display-graphic-p' is not yet available.
-;; This is why we must resort to environment variables to detect if Emacs is
-;; running in graphics mode or in terminal/TTY mode.
+;; Since Emacs has not initialized its graphics support code and the function
+;; `display-graphic-p' is not yet available when early-init.el is executed,
+;; the code must resort to environment variables to detect if Emacs is
+;; running in graphics mode or in terminal/TTY mode.  The code uses the
+;; presence of the "PEL_EMACS_IN_GRAPHICS" environment variable set to "1 to
+;; identify the graphics mode when Emacs is launched from a shell and the
+;; absence of an environment variable identified by the
+;; `pel-early-init-shell-detection-envvar' when Emacs is launched from a GUI
+;; application launcher.
+;;
+;; The code of this file does not load any Emacs Lisp file, it only uses what
+;; is already available: the Emacs Lisp forms implemented in C and the ones
+;; that are normally bundled in the Emacs dump.  This includes the files
+;; subrl.el.
+;;
+;;
+;; PEL Feature Control
+;; -------------------
+;;
+;; 4 PEL features are controlled by early-init:
+;;
+;; - Package quickstart:
+;;     Package quickstart, available independently of the other features.
+;;     - Activated by `pel-early-init-support-package-quickstart-p' by PEL commands.
+;;     - Controls the following Emacs variables:
+;;       - `package-quickstart'
+;;
+;; - Dual environment:
+;;     Whether PEL uses and supports two independent environments: one for
+;;     Emacs running in terminal/TTY mode and the other running in graphics
+;;     mode. Each environment uses a customization file and a set of package
+;;     directories.  When the dual environment is not used only one
+;;     customization file and a package directory set is used for both modes.
+;;     When dual environment is used each mode uses its own set.
+;;     - Activated by `pel-early-init-support-dual-environment-p' by PEL commands.
+;;     - Controls the following Emacs variables:
+;;       - `package-quickstart-file'
+;;       - `package-user-dir'
+;;       - `custom-file'
+;;
+;; - GUI launched Emacs:
+;;     Defines the name of an environment variable whose absence indicates
+;;     that Emacs was launched from a GUI file manager application like
+;;     Windows Explorer, macOS Finder, or the ones available on Linux and
+;;     other operating systems.  By default the "_" environment variable used
+;;     by Bash is used, but another one must be used when other shells are
+;;     used.  If your shell does not have such environment variable, use
+;;     something like "PEL_SHELL" and define it inside your shell
+;;     initialization file (something like ~/.bashrc or ~/.bash_profile).
+;;     - Identified in early-init.el by `pel-early-init-shell-detection-envvar',
+;;       and set by PEL command to the same value as the
+;;       `pel-shell-detection-envvar' user-option.
+;;
+;; - PEL fast startup:
+;;   Whether PEL activates the fast startup mode.
+;;   - This is detected by the presence of the file "pel-fast-startup-init.el"
+;;     in the user Emacs directory.
+;;
 
-;; ---------------------------------------------------------------------------
-;; PEL OPTION A: independent customization for TTY & graphic modes.
-;; ----------------------------------------------------------------
+;;; --------------------------------------------------------------------------
+;;; Code:
 ;;
-;; If you want to support independent customization of Emacs running in
-;; terminal/TTY and Emacs running in graphics mode you MUST set:
-;;
-;;  1) Set `pel-support-dual-independent-customization-p' to t below.
-;;  2) Set `PEL_EMACS_IN_GRAPHICS' environment variable to 1 in
-;;     a script that launch the graphics-mode Emacs from a shell.
-;;
-;; If you do not want to support independent customization of Emacs, leave
-;; `pel-support-dual-independent-customization-p' set to nil.
-;;
-(defconst pel-support-dual-independent-customization-p nil
+
+;; The following 3 defconst forms are controlled by the function
+;; `pel--update-early-init' used by PEL commands code. Therefore you do not
+;; need to edit this file manually. The value MUST remain at the end of the
+;; line for each of these forms.  The docstring MUST start on the next line.
+
+(defconst pel-early-init-support-package-quickstart-p nil
+  "Whether PEL supports package quickstart.")
+
+(defconst pel-early-init-support-dual-environment-p nil
   "When t PEL uses 2 custom files: one for TTY and one for graphic mode.")
 
-;; ---------------------------------------------------------------------------
-;; PEL OPTION B: Detection of GUI-launched graphics Emacs.
-;; -------------------------------------------------------
-;;
-;; Identify an environment variable whose presence detects that Emacs is
-;; launched from a shell.  This should have the **SAME** value as what the
-;; `pel-shell-detection-envvar' user option defined in pel--options.el has.
-;;
-;; The default is "_", the environment variable that Bash uses to identify the
-;; name of the executable that launched it.  This environment variable is not
-;; part of the process environment when Emacs is launched from a GUI program
-;; such as macOS Finder.
-;;
-;; Change this value when using another shell or when running on other
-;; operating system such as Windows. If you cannot find a suitable environment
-;; variable that is defined when Emacs is launched, then define an environment
-;; variable that will be present in all instances of your shell but not inside
-;; the OS process environment. For instance you could use the environment name
-;; "PEL_SHELL".
-;;
-(defconst pel-shell-detection-envvar "_"
+(defconst pel-early-init-shell-detection-envvar "_"
   "Name of envvar used to detect that Emacs was launched by a shell.
-A temporary value for user-option defined in pel--options.el")
+The value should be the same as `pel-shell-detection-envvar' user-variable
+defined in pel--options.el")
 
 ;; ---------------------------------------------------------------------------
-;; The following code does not require editing.
+;; The code below this line does not require editing.
+;; ==================================================
 
-(defvar pel-force-graphics-specific-custom-file-p
-  (and pel-support-dual-independent-customization-p
+(defconst pel-force-graphic-specific-custom-file-p
+  (and pel-early-init-support-dual-environment-p
        (or (string-equal (getenv "PEL_EMACS_IN_GRAPHICS") "1")
-           (not (getenv pel-shell-detection-envvar))))
+           (not (getenv pel-early-init-shell-detection-envvar))))
   "Force independent graphics mode customization.")
 
-;; Request use of the package quickstart feature.
-(setq package-quickstart t)
-
 ;; ----
-;; If Emacs is running in Graphics mode with dual independent customization
-;; then ensure that package quickstart activation uses the graphics-specific
-;; files.
-(when pel-force-graphics-specific-custom-file-p
 
-  (defun pel--package-activate-all-ei (original-fct)
-    "Force use of controlled package-user-dir during package initialize."
-    (let ((package-user-dir        (file-truename
-                                    (locate-user-emacs-file
-                                     "elpa-graphics")))
-          (package-quickstart-file (file-truename
-                                    (locate-user-emacs-file
-                                     "package-quickstart-graphics.el")))
-          (custom-file             (file-truename
-                                    (locate-user-emacs-file
-                                     "emacs-customization-graphics.el"))))
+(defun pel--graphic-file-name (fname)
+  "Append '-graphics' to the end of a .el, .elc or extension less FNAME."
+  ;; use only functions implemented in C
+  (let ((ext (substring fname -3)))
+    (cond
+     ((string-match "-graphics" fname) fname)
+     ((string-equal ext ".el") (concat (substring fname 0 -3) "-graphics.el"))
+     ((string-equal ext "elc") (concat (substring fname 0 -4) "-graphics.elc"))
+     (t                        (concat fname "-graphics")))))
+
+;; If Emacs is running in Graphics mode with dual environment (independent
+;; customization and Elpa packages for terminal/TTY and graphics mode), then
+;; ensure that:
+;; - `package-user-dir' is adjusted to use the -graphics directory
+;;   so that `load-path' gets packages from the -graphics directory.
+;; -
+;; package quickstart activation uses the graphics-specific files.
+
+(when pel-force-graphic-specific-custom-file-p
+
+  (defvar pel--ei-package-quickstart-file nil
+    "Copy of `package-quickstart-file' used.  Set by `pel--ei-package-activate-all'.
+For debugging and to quiet byte-compiler warning.")
+
+  ;; - Ensure that `package-user-dir' is adjusted to the -graphics directory
+  ;;   so that `load-path' gets packages from the -graphics directory.
+  (defun pel--ei-pkg-load-all-descriptors (original-fct)
+    "Execute ORIGINAL-FCT with a controlled value of `package-user-dir'."
+    (let ((package-user-dir (pel--graphic-file-name package-user-dir)))
       (funcall original-fct)))
-  (declare-function pel--package-activate-all-ei "early-init")
+  (declare-function pel--ei-pkg-load-all-descriptors "early-init")
 
-  (advice-add 'package-activate-all :around #'pel--package-activate-all-ei))
+  (advice-add 'package-load-all-descriptors
+              :around (function pel--ei-pkg-load-all-descriptors))
 
-;; --
+  ;; Package Quickstart Support
+  ;; ==========================
+  ;; - When package quickstart is required:
+  ;;   - set `package-quickstart',
+  ;;   - set `package-user-dir', `package-quickstart-file' and `custom-file'
+  ;;     to their -graphics equivalent during execution of the function
+  ;;     `package-activate-all'
+  ;;
+  (defvar package-quickstart)           ; prevent byte-compiler warning
+  (when pel-early-init-support-package-quickstart-p
+    (setq package-quickstart t)
+
+    (defun pel--ei-package-activate-all (original-fct)
+      "Force use of controlled package-user-dir during package initialize."
+      (when (and (boundp 'package-user-dir)
+                 (boundp 'package-quickstart-file)
+                 (boundp 'custom-file))
+        (let ((package-user-dir        (pel--graphic-file-name package-user-dir))
+              (package-quickstart-file (pel--graphic-file-name package-quickstart-file))
+              (custom-file             (pel--graphic-file-name custom-file)))
+          (setq pel--ei-package-quickstart-file package-quickstart-file)
+          (funcall original-fct))))
+    (declare-function pel--ei-package-activate-all "early-init")
+
+    (advice-add 'package-activate-all
+                :around (function pel--ei-package-activate-all))))
+
+;; ---------------------------------------------------------------------------
+;; Fast Startup Support
+;; ====================
+;; No predicate is required for this as it checks for the presence of a file.
+;;
 ;; Activate PEL's fast startup if environment was setup by `pel-setup-fast'.
 (let ((fast-startup-setup-fname (expand-file-name "pel-fast-startup-init.el"
                                                   user-emacs-directory)))
   (when (file-exists-p fast-startup-setup-fname)
     (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
-    (pel-fast-startup-init pel-force-graphics-specific-custom-file-p
+    (pel-fast-startup-init pel-force-graphic-specific-custom-file-p
                            :from-early-init)
     ;; Remember Emacs is running in PEL's fast startup mode.
     (setq pel-running-in-fast-startup-p t)))
 
-;; ---------------------------------------------------------------------------
+;;; --------------------------------------------------------------------------
