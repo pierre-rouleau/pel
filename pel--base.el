@@ -856,6 +856,10 @@ And with transformation functions:
   "Prepend the  to the beginning of THE-LIST."
   `(setq ,the-list (append ,elems ,the-list)))
 
+(defmacro pel-prepend-to (elems the-list)
+  "Prepend the  to the beginning of THE-LIST."
+  `(setq ,the-list (append ,elems ,the-list)))
+
 (defun pel-cons-alist-at (alist key val)
   "Prepend VAL to ALIST of list members at KEY.
 If ALIST has no KEY, create an entry for KEY with (VAL) as KEY value.
