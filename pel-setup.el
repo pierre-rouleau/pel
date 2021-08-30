@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-30 09:05:35, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-30 12:14:59, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -754,7 +754,7 @@ Only set by `pel-setup-fast' or `pel-setup-normal'. Never cleared.")
 ;; * `pel-setup-with-quickstart'
 ;;   - `pel--setup-early-init'
 ;;     - `pel--update-emacs-user-file'
-;;   - `pel--activate-package-quickstart'
+;;   - `pel--set-package-quickstart'
 ;;     - `pel--build-package-quickstart'
 ;;       - `pel--package-qs'
 ;;    - `pel--store-with-package-quickstart'
@@ -834,23 +834,22 @@ the name of the package-quickstart.el using the function
       (error "Failed accessing package-quickstart")))
   (declare-function pel--build-package-quickstart "pel-setup")
 
-  (defun pel--activate-package-quickstart (dirpath for-graphics)
-    "Utility: activate package quickstart.
+  (defun pel--set-package-quickstart (dirpath for-graphics)
+    "Utility: activate package quickstart for DIRPATH.
 
 DIRPATH is the path of a Elpa-compliant directory used.
 Normally that's the elpa directory inside the user-emacs-directory but
 that can be the elpa-reduced directory for fast startup or then ones
 for graphics mode when the dual mode is used.
 
-The FOR-GRAPHICS argument is t when changing the environment for the
-Emacs running in graphics mode and has a custom file that is independent from
-the file used by Emacs running in terminal (TTY) mode.  It is nil when there
-is only one or when its for the terminal (TTY) mode."
-    (let ((pel--adjust-path-for-graphics for-graphics))
-      (pel--build-package-quickstart (pel--adjusted-fname
-                                      dirpath
-                                      :force for-graphics))))
-  (declare-function pel--activate-package-quickstart "pel-setup")
+FOR-GRAPHICS is:
+- t when setting package quickstart for Emacs running in graphics mode and
+  dual environment where graphic mode has a specific custom file,
+- nil when Emacs runs in terminal/TTY mode or in graphics mode without dual
+  environment set."
+    (pel--build-package-quickstart (pel--adjusted-fname dirpath
+                                                        :force for-graphics)))
+  (declare-function pel--set-package-quickstart "pel-setup")
 
   (defun pel--setup-early-init (pkg-quickstart)
     "Create valid PEL early-init.el file and set its behaviour.
@@ -865,13 +864,12 @@ The behaviour is controlled by:
     (let ((early-init-fname (locate-user-emacs-file "early-init.el")))
       ;; Make sure an early-init file is present.
       (unless (file-exists-p early-init-fname)
-        (copy-file pel-early-init-with-package-quickstart
+        (copy-file pel-early-init-template
                    (locate-user-emacs-file "early-init.el")))
       (pel--update-emacs-user-file
        early-init-fname
        (list
-        (cons 'pel-early-init-support-package-quickstart-p
-              pkg-quickstart)
+        (cons 'pel-early-init-support-package-quickstart-p pkg-quickstart)
         (cons 'pel-early-init-support-dual-environment-p
               pel-init-detected-dual-environment-p)
         (cons 'pel-early-init-shell-detection-envvar
@@ -899,9 +897,10 @@ Store value in all relevant custom file(s)."
 The context includes the PEL startup mode and PEL's ability
 to deal with independent customization for terminal and graphics mode.
 
-This function copies the file identified by the user-option variable
-`pel-early-init-with-package-quickstart' your early-init.el and creates
-or refreshes the package-quickstart.el file(s)."
+This function:
+- ensures that the early-init.el file identifies PEL activation
+  of package quickstart by editing the file.
+- creates or refreshes the package-quickstart.el file(s)."
     (interactive)
     (let ((startup-mode (pel--startup-mode)))
       (when (eq startup-mode 'inconsistent)
@@ -909,44 +908,30 @@ or refreshes the package-quickstart.el file(s)."
   Please check and fix before activating the package quickstart!"))
       ;; All is fine: proceed.
       (message "Activating package quickstart...")
-      (pel--setup-early-init t )
+      (pel--setup-early-init t)
       (let ((elpa-dpath (pel-sibling-dirpath
                          pel-elpa-dirpath
                          (if (eq startup-mode 'fast)
                              "elpa-reduced"
                            "elpa-complete"))))
-        (pel--activate-package-quickstart elpa-dpath nil)
+        (pel--set-package-quickstart elpa-dpath nil)
         (when pel-init-detected-dual-environment-p
-          (pel--activate-package-quickstart elpa-dpath t)))
+          (pel--set-package-quickstart elpa-dpath t)))
       ;; Remember user setting: in pel-support-package-quickstart user-option
       (pel--store-with-package-quickstart t))
     ;; display state
     (pel-setup-info :now))
 
-  (defun pel--remove-package-quickstart-files (for-graphics
-                                               &optional expect-early-init)
-    "Remove package quickstart files identified by the FOR-GRAPHICS argument."
+  (defun pel--remove-package-quickstart-files (for-graphics)
+    "Remove package quickstart file identified by the FOR-GRAPHICS argument."
     (if (and (require 'package nil :no-error)
              (boundp 'package-quickstart-file))
-        (let ((early-init-fname (locate-user-emacs-file "early-init.el"))
-              (fname))
-          (unless for-graphics
-            (when (and expect-early-init
-                       (not (file-exists-p early-init-fname)))
-              (user-error "Package quickstart is not active.
- No %s file found to activate it."
-                          early-init-fname))
-            ;; replace or remove early-init.el as requested by user-option
-            (if pel-early-init-without-package-quickstart
-                (copy-file pel-early-init-without-package-quickstart
-                           early-init-fname)
-              (delete-file early-init-fname)))
-          ;; remove the package-quickstart.el file and the .elc file
-          ;; if it exists.
-          (setq fname (pel--adjusted-fname package-quickstart-file
-                                           :force for-graphics))
+        (let ((fname (pel--adjusted-fname package-quickstart-file
+                                          :force for-graphics)))
+          ;; remove the package-quickstart.el file
           (when (file-exists-p fname)
             (delete-file fname))
+          ;; remove the corresponding .elc file if it exists.
           (setq fname (concat fname "c"))
           (when (file-exists-p fname)
             (delete-file fname)))
@@ -1234,8 +1219,7 @@ is only one or when its for the terminal (TTY) mode."
         (pel--adjust-path-for-graphics for-graphics)
         (cd-original (cd ".")))
     (condition-case-unless-debug err
-        (let* ((pel-elpa-dirpath-adj (pel--adjusted-fname
-                                      pel-elpa-dirpath))
+        (let* ((pel-elpa-dirpath-adj (pel--adjusted-fname pel-elpa-dirpath))
                (pel-bundle-dirpath (pel-sibling-dirpath pel-elpa-dirpath
                                                         "pel-bundle"))
                (elpa-reduced-dirpath (pel--adjusted-fname
@@ -1252,7 +1236,7 @@ is only one or when its for the terminal (TTY) mode."
                                         (format "pel-bundle-%s" time-stamp)
                                         elpa-reduced-dirpath)))
           ;; Ensure that elpa is a directory or a symlink to the required
-          ;; elpa-complete ;; otherwise abort.
+          ;; elpa-complete. Otherwise abort.
           (when (and elpa-is-link
                      (not (pel-symlink-points-to-p (directory-file-name
                                                     (pel--adjusted-fname
@@ -1283,7 +1267,7 @@ Compared: symlink %s to target %s.
                    elpa-reduced-dirpath
                    elpa-complete-dirpath
                    elpa-is-link))
-          (setq step-count (1+ step-count))
+          (setq step-count (1+ step-count)) ; STEP 1
 
           ;; Ensure that pel-bundle directory does not exists.  That's a
           ;; temporary directory where all one-level package files are
@@ -1295,56 +1279,56 @@ Compared: symlink %s to target %s.
             (delete-directory pel-bundle-dirpath :recursive)
             (message (format "Directory %s existed already; deleted it."
                              pel-bundle-dirpath)))
-          (setq step-count (1+ step-count))
+          (setq step-count (1+ step-count)) ; STEP 2
           ;;
           ;; Delete old elpa-reduced if it exists: it contains the old
           ;; pel-bundle and the multi-level packages that could not be
           ;; bundled in the previous execution of `pel-setup-fast'.
           (when (file-exists-p elpa-reduced-dirpath)
             (delete-directory elpa-reduced-dirpath :recursive))
-          (setq step-count (1+ step-count))
+          (setq step-count (1+ step-count)) ; STEP 3
           ;;
           ;; Create pel-bundle temporary directory to hold all one-level
           ;; package .el files.  At first create the directory as a sibling of
           ;; the elpa directory because elpa-reduced is not created yet.
           (make-directory pel-bundle-dirpath)
-          (setq step-count (1+ step-count))
+          (setq step-count (1+ step-count)) ; STEP 4
           (pel-elpa-create-copies pel-elpa-dirpath-adj pel-bundle-dirpath
                                   :with-symlinks)
-          (setq step-count (1+ step-count))
+          (setq step-count (1+ step-count)) ; STEP 5
           ;; Create the pel-bundle-pkg.el file inside it.
           (pel-create-bundle-pkg-file pel-bundle-dirpath time-stamp)
-          (setq step-count (1+ step-count))
+          (setq step-count (1+ step-count)) ; STEP 6
           ;;
           ;; Create the pel-bundle-autoloads.el file inside it.
           (cd pel-bundle-dirpath)
-          (setq step-count (1+ step-count))
+          (setq step-count (1+ step-count)) ; STEP 7
           ;; Build a pel-bundle-autoloads.el inside the pel-bundle
           ;; directory.
           (let ((autoload-fname (pel-generate-autoload-file-for
                                  pel-bundle-dirpath)))
-            (setq step-count (1+ step-count))
+            (setq step-count (1+ step-count)) ; STEP 8
             ;; Make the file byte-compilable (by removing restriction)
             (when (and pel-compile-pel-bundle-autoload
                        (pel-remove-no-byte-compile-in autoload-fname))
               ;; Then byte-compile it
               (byte-compile-file autoload-fname)))
-          (setq step-count (1+ step-count))
+          (setq step-count (1+ step-count)) ; STEP 9
           ;;
           (cd pel-elpa-dirpath-adj)
-          (setq step-count (1+ step-count))
+          (setq step-count (1+ step-count)) ; STEP 10
           ;;
           ;; Duplicate elpa inside elpa-reduced then remove the one-level
           ;; packages from it: they have been placed inside the pel-bundle
           ;; directory before.
           (pel-copy-directory pel-elpa-dirpath-adj elpa-reduced-dirpath)
-          (setq step-count (1+ step-count))
+          (setq step-count (1+ step-count)) ; STEP 11
           ;;
           ;; - Remove the one-level package sub-directories from
           ;;   elpa-reduced, only leaving the multi-directory packages in
           ;;   elpa-reduced.
           (pel-elpa-remove-pure-subdirs elpa-reduced-dirpath)
-          (setq step-count (1+ step-count))
+          (setq step-count (1+ step-count)) ; STEP 12
           ;;
           ;; Disable the dependencies of all (multi-directory) packages
           ;; left in the elpa-reduced directory, by calling the function
@@ -1385,7 +1369,7 @@ Compared: symlink %s to target %s.
                                        "elpa-reduced"
                                        "elpa-reduced%s"
                                        new-pel-bundle-dirpath)))))
-          (setq step-count (1+ step-count))
+          (setq step-count (1+ step-count)) ; STEP 13
           ;;
           ;; Move the pel-bundle directory inside the elpa-reduced
           ;; directory: effectively creating a pel-bundle package
@@ -1395,7 +1379,7 @@ Compared: symlink %s to target %s.
           ;; a version number corresponding to today's date.
           (rename-file (directory-file-name pel-bundle-dirpath)
                        new-pel-bundle-dirpath)
-          (setq step-count (1+ step-count))
+          (setq step-count (1+ step-count)) ; STEP 14
           ;; Re-organize the elpa directory:
           ;; If elpa is a directory and elpa-complete does not exist: then
           ;; rename elpa to elpa-complete.
@@ -1406,35 +1390,25 @@ Compared: symlink %s to target %s.
               (delete-directory elpa-complete-dirpath :recursive))
             (rename-file (directory-file-name pel-elpa-dirpath-adj)
                          (directory-file-name elpa-complete-dirpath)))
-          (setq step-count (1+ step-count))
+          (setq step-count (1+ step-count)) ; STEP 15
           ;; If there is a elpa symlink remove it and create a new one
           ;; that points to elpa-reduced
           (pel-switch-to-elpa-reduced)
-          (setq step-count (1+ step-count))
+          (setq step-count (1+ step-count)) ; STEP 16
           ;; Re-compile pel_keys.el with
           ;; `pel-running-in-fast-startup-p' bound to t to prevent PEL
           ;; from downloading and installing external packages while PEL
           ;; runs in PEL bundled mode.
           (pel-bundled-mode t)
-          (setq step-count (1+ step-count))
-          ;; With Emacs ≥ 27 if package-quickstart is used more work is
-          ;; required: package-quickstart-refresh must be done while
-          ;; package-alist includes all packages now in elpa (which is
-          ;; pel-reduced). Support dual tty/graphics mode by processing
-          ;; a file with modified name if required.
+          (setq step-count (1+ step-count)) ; STEP 17
+          ;; handle package quickstart
           (when pel-emacs-27-or-later-p
+            (pel--setup-early-init pel-support-package-quickstart)
+            (setq step-count (1+ step-count)) ; STEP 18 (Emacs >= 27)
             (if pel-support-package-quickstart
-                ;; package-quickstart is requested: create/update files
-                (progn
-                  ;; create early-init if it's missing
-                  (pel--setup-early-init)
-                  ;; create/update the package-quickstart
-                  (pel--activate-package-quickstart
-                   (pel--adjusted-fname elpa-reduced-dirpath)
-                   for-graphics))
-              ;; package-quickstart is not requested: delete files not needed
-              (pel--remove-package-quickstart-files for-graphics)))
-          (setq step-count (1+ step-count)))
+                (pel--set-package-quickstart elpa-reduced-dirpath for-graphics)
+              (pel--remove-package-quickstart-files for-graphics))
+            (setq step-count (1+ step-count)))) ; STEP 19 (Emacs >= 27)
       (error
        (display-warning 'pel-setup-fast
                         (format "\
@@ -1444,7 +1418,7 @@ Failed fast startup setup for %s after %d of %d steps: %s
  Please also report the problem as a bug in the PEL Github project."
                                 (pel--setup-mode-description for-graphics)
                                 step-count
-                                18
+                                (if pel-emacs-27-or-later-p 19 17)
                                 err
                                 user-emacs-directory))))
     (cd cd-original)))
@@ -1518,19 +1492,10 @@ is only one or when its for the terminal (TTY) mode."
     ;; Emacs process is currently running in fast-start operation mode.
     (when (file-exists-p pel-fast-startup-init-fname)
       (delete-file pel-fast-startup-init-fname))
-    ;; With Emacs ≥ 27 if package-quickstart is used more work is required:
-    ;; package-quickstart-refresh must be done while package-alist
-    ;; includes all packages now in elpa (which is elpa and elpa-complete).
     (when pel-emacs-27-or-later-p
+      (pel--setup-early-init pel-support-package-quickstart)
       (if pel-support-package-quickstart
-          ;; package-quickstart is requested: create/update files
-          (progn
-            ;; create early-init if it's missing
-            (pel--setup-early-init)
-            ;; create/update the package-quickstart
-            (pel--build-package-quickstart
-             (pel--adjusted-fname pel-elpa-dirpath)))
-        ;; package-quickstart is not requested: delete files not needed
+          (pel--set-package-quickstart pel-elpa-dirpath for-graphics)
         (pel--remove-package-quickstart-files for-graphics)))))
 
 ;;-pel-autoload

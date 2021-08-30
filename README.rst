@@ -41,12 +41,6 @@ or `update it`_ [#update]_ !
 
 ➣ **Emacs Fast Startup**
 
-- PEL supports the `package-quickstart feature`_ available on Emacs version 27
-  and later. PEL provides `early-init.el file template`_ and provides the
-  **pel-setup-with-quickstart** command (``<f11> M-S q``) to create and refresh
-  all the package-quickstart files [#quickst]_ and **pel-setup-no-quickstart**
-  (``<f11> M-S M-q``) to disable it.
-
 - Speed Emacs startup further with PEL `fast startup mode`_ command
   (see also `⅀ Fast Startup PDF`_ [#firefox]_).
   PEL supports 2 different Emacs startup operation modes:
@@ -73,6 +67,17 @@ or `update it`_ [#update]_ !
     - The **pel-setup-normal** (``<f11> M-S n``) restores the normal Emacs
       setup with package management capabilities and PEL's automatic package
       installation via customization.
+
+- PEL support Emacs 26 as well as Emacs 27 and later.
+
+  - For Emacs 27 and later the ``pel-early-init-template`` user-option (which
+    defaults to `example/init/early-init.el`_) allows you to identify a
+    PEL-compatible early-init.el file that PEL edits to control whether fast
+    startup and `package-quickstart feature`_ are used.
+
+    - PEL provides the **pel-setup-with-quickstart** command (``<f11> M-S q``)
+      to create and refresh all the package-quickstart files [#quickst]_ and
+      **pel-setup-no-quickstart** (``<f11> M-S M-q``) to disable it.
 
 ➣ **Customization Driven Package Management & Configuration**
 
@@ -239,15 +244,6 @@ Drop me a note in the wiki_ or in the `discussion board`_!
               quickstart files and the early-init.el file if it's not already
               present.
 
-              The ``pel-early-init-with-package-quickstart`` user-option
-              (which defaults to `example/init/early-init.el`_) allows you to
-              identify the early-init.el file to use with package-quickstart
-              feature activated.
-
-              The ``pel-early-init-without-package-quickstart`` user-option
-              (which defaults to nil) allows you to identify whether one
-              early-init.el file is used when the package quickstart feature
-              is disabled.
 
               Emacs ``package-quickstart-file`` user-option identifies the
               name of your package quickstart file.

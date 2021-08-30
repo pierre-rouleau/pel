@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-26 17:09:39, updated by Pierre Rouleau.
+:Modified: 2021-08-30 13:29:09, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2701,21 +2701,19 @@ files while also supporting the PEL fast startup mode and the dual independent
 terminal/graphics customization.
 
 - PEL provides a fully functional copy of early-init.el,
-  `example/init/early-init.el`_ that will work with PEL’s features example/init
-  directory.
+  `example/init/early-init.el`_ that will work with PEL’s features
+  example/init directory.  PEL modifies the values of some of the ``defconst``
+  variables inside the early-init.el file to control its behaviour.
 
-  - That file name is identified by the
-    ``pel-early-init-with-package-quickstart`` user-option.  If you want to
-    create your own copy of that file and add your content then update the
-    user-option with new file name.
-  - Since you may also want to use a early-init.el file for other purposes
-    when package-quickstart is not used, you may provide the name of that file
-    in the ``pel-early-init-without-package-quickstart`` user-option.  PEL
-    will use that file as the early-init.el when you request to disable
-    package quickstart feature.
+  - That file name is identified by the ``pel-early-init-template``
+    user-option.  If you want to create your own copy of that file and add
+    your content then update the user-option with new file name.  Your file
+    but you must include the code located in the file
+    `example/init/early-init.el`_.  If you do not need any extra logic, leave
+    the default and use the template file unmodified.
+
   - Use the ``<f11> M-S <f2>`` key sequence to open the appropriate
     customization buffer.
-
 
 PEL provides the following 2 commands to
 setup Emacs ≥ 27 environment to support package quickstart or to remove it:
