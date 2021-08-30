@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-30 16:39:39, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-30 17:21:46, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1207,18 +1207,19 @@ Return a (met-criteria . issues) cons cell."
           (pel-push-fmt issues "%s elpa symlink (%s) does not point\
  to elpa-reduced (%s)"
             mode-description elpa-dirpath elpa-reduced-dirpath))))
-    (cons met-criteria issues)))
+    (list met-criteria issues)))
 
 (defun pel--startup-mode ()
   "Return whether PEL/Emacs operates in fast startup mode.
 Returns: 'normal, 'fast or 'inconsistent."
   (let* ((met-criteria.issues (pel--fast-setup-met-criteria))
          (met-criteria (length (nth 0 met-criteria.issues)))
-         (issues       (length (nth 1 met-criteria.issues))))
+         (issues       (length (nth 1 met-criteria.issues)))
+         (expected-met (if pel-init-detected-dual-environment-p 4 3)))
     (cond
-     ((not (eq issues 0)) 'inconsistent)
-     ((eq met-criteria 0) 'normal)
-     (t 'fast))))
+     ((and (eq met-criteria 0) (eq issues expected-met)) 'normal)
+     ((and (eq met-criteria expected-met) (eq issues 0)) 'fast)
+     (t 'inconsistent))))
 
 (defun pel--setup-fast (for-graphics)
   "Prepare the elpa directories and code to speedup Emacs startup.
