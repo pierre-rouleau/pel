@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-30 12:14:59, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-30 14:51:32, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1162,43 +1162,6 @@ Return the pkg/version alist.\"
 
 ;; --
 
-(defun pel--fast-setup-met-criteria ()
-  "Return a cons of 2 lists of strings: met-criteria and problems.
-If the first list is nil then PEL/Emacs operates in normal mode.
-If the first list has 3 members, then PEL/Emacs operates in fast startup mode."
-  (let* ((pel--adjust-path-for-graphics pel-emacs-is-graphic-p)
-         (met-criteria nil)
-         (issues nil)
-         (elpa-dirpath (pel--adjusted-fname pel-elpa-dirpath))
-         (elpa-reduced-dirpath  (pel--adjusted-fname
-                                 (pel-sibling-dirpath elpa-dirpath
-                                                      "elpa-reduced"))))
-    (if (pel-in-fast-startup-p)
-        (push "Identified as fast startup by function `pel-in-fast-startup'"
-              met-criteria)
-      (pel-push-fmt issues "The `pel-in-fast-startup' is not set."))
-
-    (if (file-exists-p pel-fast-startup-init-fname)
-        (push (format "Fast startup setup file is present: %s"
-                      pel-fast-startup-init-fname)
-              met-criteria)
-      (pel-push-fmt issues "The file %s indicating fast startup not found."
-        pel-fast-startup-init-fname))
-    (if (pel-symlink-points-to-p (directory-file-name elpa-dirpath)
-                                 elpa-reduced-dirpath)
-        (push "elpa symlink points to elpa-reduced" met-criteria)
-      (pel-push-fmt issues "elpa symlink (%s) does not point to elpa-reduced (%s)"
-        elpa-dirpath elpa-reduced-dirpath))
-    (cons met-criteria issues)))
-
-(defun pel--startup-mode ()
-  "Return whether PEL/Emacs operates in fast startup mode.
-Returns: 'normal, 'fast or 'inconsistent."
-  (let ((count (length (car (pel--fast-setup-met-criteria)))))
-    (cond ((eq count 0) 'normal)
-          ((eq count 3) 'fast)
-          (t 'inconsistent))))
-
 (defun pel--setup-mode-description (for-graphics)
   "Describe the mode context of a setup.
 The FOR-GRAPHICS argument identifies the setup forced for independent graphics."
@@ -1207,6 +1170,55 @@ The FOR-GRAPHICS argument identifies the setup forced for independent graphics."
     (if pel-init-detected-dual-environment-p
         "independent terminal/tty mode"
       "all modes")))
+
+(defun pel--fast-setup-met-criteria ()
+  "Return a cons of 2 lists of strings: met-criteria and problems.
+If the first list is nil then PEL/Emacs operates in normal mode.
+If the first list has 3 members, then PEL/Emacs operates in fast startup mode.
+Return a (met-criteria . issues) cons cell."
+  (let ((met-criteria nil)
+        (issues nil))
+    ;;
+    (if (pel-in-fast-startup-p)
+        (pel-push-fmt met-criteria
+            "Identified as fast startup by function `pel-in-fast-startup'")
+      (pel-push-fmt issues "The `pel-in-fast-startup' is not set."))
+    ;;
+    (if (file-exists-p pel-fast-startup-init-fname)
+        (pel-push-fmt met-criteria "Fast startup setup file is present: %s"
+          pel-fast-startup-init-fname)
+      (pel-push-fmt issues "The file %s indicating fast startup not found."
+        pel-fast-startup-init-fname))
+    ;;
+    (dolist (for-graphic (if pel-init-detected-dual-environment-p
+                             '(nil t)
+                           '(nil)))
+      (let* ((mode-description (pel--setup-mode-description for-graphic))
+             (elpa-dirpath (pel--adjusted-fname pel-elpa-dirpath
+                                                :force for-graphic))
+             (elpa-reduced-dirpath (pel--adjusted-fname
+                                    (pel-sibling-dirpath elpa-dirpath
+                                                         "elpa-reduced")
+                                    :force for-graphic)))
+        (if (pel-symlink-points-to-p (directory-file-name elpa-dirpath)
+                                     elpa-reduced-dirpath)
+            (pel-push-fmt met-criteria "%s elpa symlink points to elpa-reduced"
+              mode-description)
+          (pel-push-fmt issues "%s elpa symlink (%s) does not point\
+ to elpa-reduced (%s)"
+            mode-description elpa-dirpath elpa-reduced-dirpath))))
+    (cons met-criteria issues)))
+
+(defun pel--startup-mode ()
+  "Return whether PEL/Emacs operates in fast startup mode.
+Returns: 'normal, 'fast or 'inconsistent."
+  (let* ((met-criteria.issues (pel--fast-setup-met-criteria))
+         (met-criteria (length (nth 0 met-criteria.issues)))
+         (issues       (length (nth 1 met-criteria.issues))))
+    (cond
+     ((not (eq issues 0)) 'inconsistent)
+     ((eq met-criteria 0) 'normal)
+     (t 'fast))))
 
 (defun pel--setup-fast (for-graphics)
   "Prepare the elpa directories and code to speedup Emacs startup.
