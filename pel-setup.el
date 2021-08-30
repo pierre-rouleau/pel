@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-28 16:40:25, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-30 09:05:35, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -481,9 +481,9 @@ independent environments for terminal and graphics mode."
         (unless (file-directory-p g-utils-dpath)
           (pel-push-fmt issues "Is not a directory: %s" g-utils-dpath))
       (pel-push-fmt issues "Directory missing : %s" g-utils-dpath))
-    (unless pel-init-detected-dual-environment-p
-      (pel-push-fmt issues "Please set pel-init-support-dual-environment-p to\
- t in OPTION A code inside the file %s" (locate-user-emacs-file "init.el")))
+    (unless pel-support-dual-environment
+      (pel-push-fmt issues
+          "pel-support-dual-environment user-options is not set"))
     (reverse issues)))
 
 ;;-pel-autoload
@@ -570,7 +570,7 @@ Utility function. If REASON-MSG is specified include that message on error."
           (progn
             (copy-file custom-fname g-custom-fname)
             (pel-push-fmt actions "Copied %s to %s "
-                       custom-fname g-custom-fname))
+              custom-fname g-custom-fname))
         (user-error "Expected customization file %s does not exists!"
                     custom-fname)))
     ;; 2:
@@ -592,20 +592,20 @@ Utility function. If REASON-MSG is specified include that message on error."
                     elpa-dpath elpa-complete-dname))
       (rename-file (directory-file-name elpa-dpath) elpa-complete-dname)
       (pel-push-fmt actions "Renamed %s to %s"
-                 elpa-dpath elpa-complete-dname))
+        elpa-dpath elpa-complete-dname))
     ;; 5:
     ;; Create the main elpa directory into a symlink to the elpa-complete
     ;; directory.
     (unless (file-symlink-p elpa-dname)
       (pel-point-symlink-to elpa-dname elpa-complete-dname)
       (pel-push-fmt actions "Created symlink %s pointing to %s"
-                 elpa-dname elpa-complete-dname))
+        elpa-dname elpa-complete-dname))
     ;; 6:
     ;; Create the elpa-graphics symlink to the elpa-complete-graphics
     (unless (file-symlink-p g-elpa-dname)
       (pel-point-symlink-to g-elpa-dname g-elpa-complete-dname)
       (pel-push-fmt actions "Created symlink %s pointing to %s"
-                 g-elpa-dname g-elpa-complete-dname))
+        g-elpa-dname g-elpa-complete-dname))
     ;; 7:
     ;; Update init.el: set pel-init-support-dual-environment-p
     ;; to the value of pel-init-detected-dual-environment-p
@@ -615,8 +615,8 @@ Utility function. If REASON-MSG is specified include that message on error."
           (when pel-emacs-27-or-later-p
             (pel--set-dual-environment-in-emacs-early-init t))
           (pel-push-fmt actions "Updated init.el%s. Please restart Emacs!"
-                     (pel-string-when pel-emacs-27-or-later-p
-                                      "and early-init.el")))
+            (pel-string-when pel-emacs-27-or-later-p
+                             " and early-init.el")))
       (error
        (progn
          (display-warning
@@ -628,6 +628,7 @@ Utility function. If REASON-MSG is specified include that message on error."
     (pel-customize-save 'pel-support-dual-environment t)
     (pel-customize-save 'pel-support-dual-envionment t
                         (pel--other-custom-file))
+    (setq pel-support-dual-environment t)
     ;; Display performed actions.
     (let ((remaining-problems (pel-dual-environment-problems))
           (done-text (when actions
@@ -674,14 +675,18 @@ mode another way, with PEL, then use that command.
 See the comments at in the commentary section of pel-setup.el for
 more information."
   (interactive)
-  (when (y-or-n-p "Activate independent customization & packages for terminal & graphics\
- mode? ")
+  (when (y-or-n-p "Activate independent customization & packages for terminal\
+ & graphic mode? ")
     (pel--setup-dual-environment)))
-
 
 ;;-pel-autoload
 (defun pel-setup-check-dual-environment ()
-  "Check dual environment status, activate it if needed, warn about issues."
+  "Check dual environment status, activate it if needed, warn about issues.
+
+This function is meant to be called by `pel-init' to check if the user-option
+correspond to what is identified inside the init.el and early-init.el files.
+
+Returns t if all is ok, nil otherwise."
   (let ((symbols '(pel-init-support-dual-environment-p))
         (is-ok t))
     (when pel-emacs-27-or-later-p
@@ -705,7 +710,8 @@ There are inconsistencies in the PEL dual environment setup.
  Emacs'."
                  (pel-pluralize (length symbols) "symbol")
                  symbols)
-         :error)))))
+         :error)))
+    is-ok))
 
 ;; ---------------------------------------------------------------------------
 ;; Fast-Startup Support
