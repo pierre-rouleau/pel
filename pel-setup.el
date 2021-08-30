@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-30 14:51:32, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-30 16:39:39, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -869,10 +869,10 @@ The behaviour is controlled by:
       (pel--update-emacs-user-file
        early-init-fname
        (list
-        (cons 'pel-early-init-support-package-quickstart-p pkg-quickstart)
-        (cons 'pel-early-init-support-dual-environment-p
+        (list 'pel-early-init-support-package-quickstart-p pkg-quickstart)
+        (list 'pel-early-init-support-dual-environment-p
               pel-init-detected-dual-environment-p)
-        (cons 'pel-early-init-shell-detection-envvar
+        (list 'pel-early-init-shell-detection-envvar
               pel-shell-detection-envvar))
        pel-compile-emacs-early-init)))
   (declare-function pel--setup-early-init "pel-setup")
