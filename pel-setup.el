@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-30 17:21:46, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-30 21:41:32, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1177,13 +1177,16 @@ If the first list is nil then PEL/Emacs operates in normal mode.
 If the first list has 3 members, then PEL/Emacs operates in fast startup mode.
 Return a (met-criteria . issues) cons cell."
   (let ((met-criteria nil)
-        (issues nil))
+        (issues nil)
+        (test-count 0))
     ;;
+    (setq test-count (1+ test-count))
     (if (pel-in-fast-startup-p)
         (pel-push-fmt met-criteria
             "Identified as fast startup by function `pel-in-fast-startup'")
       (pel-push-fmt issues "The `pel-in-fast-startup' is not set."))
     ;;
+    (setq test-count (1+ test-count))
     (if (file-exists-p pel-fast-startup-init-fname)
         (pel-push-fmt met-criteria "Fast startup setup file is present: %s"
           pel-fast-startup-init-fname)
@@ -1200,6 +1203,7 @@ Return a (met-criteria . issues) cons cell."
                                     (pel-sibling-dirpath elpa-dirpath
                                                          "elpa-reduced")
                                     :force for-graphic)))
+        (setq test-count (1+ test-count))
         (if (pel-symlink-points-to-p (directory-file-name elpa-dirpath)
                                      elpa-reduced-dirpath)
             (pel-push-fmt met-criteria "%s elpa symlink points to elpa-reduced"
@@ -1207,18 +1211,18 @@ Return a (met-criteria . issues) cons cell."
           (pel-push-fmt issues "%s elpa symlink (%s) does not point\
  to elpa-reduced (%s)"
             mode-description elpa-dirpath elpa-reduced-dirpath))))
-    (list met-criteria issues)))
+    (list test-count met-criteria issues)))
 
 (defun pel--startup-mode ()
   "Return whether PEL/Emacs operates in fast startup mode.
 Returns: 'normal, 'fast or 'inconsistent."
-  (let* ((met-criteria.issues (pel--fast-setup-met-criteria))
-         (met-criteria (length (nth 0 met-criteria.issues)))
-         (issues       (length (nth 1 met-criteria.issues)))
-         (expected-met (if pel-init-detected-dual-environment-p 4 3)))
+  (let* ((tc.met-criteria.issues (pel--fast-setup-met-criteria))
+         (test-count   (nth 0 tc.met-criteria.issues))
+         (met-criteria (length (nth 1 tc.met-criteria.issues)))
+         (issues       (length (nth 2 tc.met-criteria.issues))))
     (cond
-     ((and (eq met-criteria 0) (eq issues expected-met)) 'normal)
-     ((and (eq met-criteria expected-met) (eq issues 0)) 'fast)
+     ((and (eq met-criteria 0) (eq issues test-count)) 'normal)
+     ((and (eq met-criteria test-count) (eq issues 0)) 'fast)
      (t 'inconsistent))))
 
 (defun pel--setup-fast (for-graphics)
