@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-28 16:34:58, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-31 18:31:04, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -106,7 +106,7 @@ prints the Emacs init time on the echo area."
                           system-type))
           (when (eq pel-operation-mode 'inconsistent)
             (insert (format "- %s\n"
-                            (string-join (cdr (pel--fast-setup-met-criteria))
+                            (string-join (nth 2 (pel--fast-setup-met-criteria))
                                          "\n- "))))))
 
     (when (and (fboundp 'benchmark-init/show-durations-tree)

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-31 15:16:18, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-31 18:32:40, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -127,7 +127,7 @@ The FOR-GRAPHICS argument identifies the setup forced for independent graphics."
   "Return a cons of 2 lists of strings: met-criteria and problems.
 If the first list is nil then PEL/Emacs operates in normal mode.
 If the first list has 3 members, then PEL/Emacs operates in fast startup mode.
-Return a (met-criteria . issues) cons cell."
+Return a (test-count met-criteria issues) list."
   (let ((met-criteria nil)
         (issues nil)
         (test-count 0))
@@ -213,9 +213,9 @@ Optional arguments:
                       (pel--with-quickstart-state-msg "" nil pq-just-modified)
                       user-emacs-directory))
             (t
-             (let* ((met-criteria.problems (pel--fast-setup-met-criteria))
-                    (met-criteria (car met-criteria.problems))
-                    (problems (cdr met-criteria.problems)))
+             (let* ((tc.met-criteria.problems (pel--fast-setup-met-criteria))
+                    (met-criteria (nth 1 tc.met-criteria.problems))
+                    (problems (nth 2  tc.met-criteria.problems)))
                (user-error "PEL/Emacs mode is inconsistent!
  Check the elpa directory inside %s and restore normal setup.
  Only some conditions of a fast startup setup are met:
