@@ -647,14 +647,17 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-setup-dual-environment
     pel-setup-info-dual-environment
     pel-setup-fast
-    pel-setup-normal
-    pel-setup-info)
-  (when (>= emacs-major-version 27)
-    (pel-autoload "pel-setup" for:
-      pel-setup-with-quickstart
-      pel-setup-no-quickstart))
+    pel-setup-normal)
   (pel-autoload-function "pel-setup" for:
     pel-setup-check-dual-environment)
+
+  (when (>= emacs-major-version 27)
+    (pel-autoload "pel-setup-27" for:
+      pel-setup-with-quickstart
+      pel-setup-no-quickstart))
+
+  (pel-autoload "pel-setup-base" for:
+    pel-setup-info)
 
   (pel-autoload "pel-window" for:
     pel-show-window-previous-buffer

@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-08-20 17:15:18, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-08-31 14:12:25, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -204,7 +204,9 @@ EL_FILES := pel--base.el \
 		pel-search.el \
 		pel-search-regexp.el \
 		pel-seq.el \
+		pel-setup-base.el \
 		pel-setup.el \
+		pel-setup-27.el \
 		pel-skels.el \
 		pel-skels-generic.el \
 		pel-skels-c.el \
@@ -595,7 +597,9 @@ pel-rst.elc:            pel--base.elc pel--options.elc pel-whitespace.elc pel--m
 pel-scheme.elc:         pel-comint.elc pel-window.elc
 pel-search-regexp.elc:  pel--options.elc
 pel-search.elc:         pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-read.elc pel-search-regexp.elc pel-window.elc
-pel-setup.elc:          pel--base.elc pel--options.elc pel-ccp.elc pel-custom.elc pel-elpa.elc pel-package.elc
+pel-setup-base.elc:     pel--base.elc pel--options.elc pel-ccp.elc pel-custom.elc pel-elpa.elc pel-package.elc
+pel-setup.elc:          pel--base.elc pel--options.elc pel-custom.elc pel-elpa.elc pel-package.elc pel-setup-base.elc pel-setup-27.elc
+pel-setup-27.elc:       pel--options.elc pel-elpa.elc pel-setup-base.elc
 pel-skels-c.elc:        pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-list.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc pel-uuid.elc
 pel-skels-cpp.elc:      pel--base.elc pel--options.elc pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc pel-uuid.elc pel-skels-c.elc
 pel-skels-clisp.elc:    pel--options.elc pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc
