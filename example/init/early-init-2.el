@@ -25,9 +25,11 @@
   ;; The pel--graphic-file-name translates a file name to the graphics
   ;; specific name
   (defun pel--graphic-file-name (fname)
-    "Appends '-graphics' to the end of a .el, .elc or extension less FNAME."
-    ;; use only functions implemented in C
+    "Appends \"-graphics\" to the end of a .el, .elc or extension less FNAME.
+Also expands to the file true name, replacing symlinks by what they point to."
+    ;; use only functions implemented in C or elisp available early
     (let ((ext (substring fname -3)))
+      (file-truename)
       (cond
        ((string-match "-graphics" fname) fname)
        ((string-equal ext ".el") (concat (substring fname 0 -3) "-graphics.el"))

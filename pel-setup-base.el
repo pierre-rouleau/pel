@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-31 20:48:03, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-01 11:52:34, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -163,11 +163,11 @@ startup if all tests pass."
                                                          "elpa-reduced")
                                     :force for-graphic)))
         (setq test-count (1+ test-count))
-        (if (pel-symlink-points-to-p (directory-file-name elpa-dirpath)
-                                     elpa-reduced-dirpath)
-            (pel-push-fmt met-criteria "%s elpa symlink points to elpa-reduced"
+        (if (pel-same-fname-p (directory-file-name elpa-dirpath)
+                              elpa-reduced-dirpath)
+            (pel-push-fmt met-criteria "%s elpa is using elpa-reduced"
               mode-description)
-          (pel-push-fmt issues "%s elpa symlink (%s) does not point\
+          (pel-push-fmt issues "%s elpa (%s) is not equal and does not point\
  to elpa-reduced (%s)"
             mode-description elpa-dirpath elpa-reduced-dirpath))))
     (list test-count met-criteria issues)))

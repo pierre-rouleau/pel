@@ -24,7 +24,7 @@
 ;;       are edited automatically by PEL
 ;;       - Option A is edited automatically by `pel--update-emacs-init',
 ;;         when the user executes `pel-setup-dual-environment'.
-;;       - You must edit the other options manually.
+;;       - You must edit the other options manually (search for OPTION).
 ;;
 ;;
 ;; - Option A: support for dual environment.  In dual environment, PEL forces
@@ -88,19 +88,23 @@ before a mode switch done by one of them.")
 ;; =======================================
 ;;
 ;; The pel--graphic-file-name translates a file name to the graphics
-;; specific name.  Implementation using on functions implemented in C
-;; to reduce requirements.  The code ONLY handle names ending .el or .elc
-;; or nothing.  It does not handle other extensions, but its unlikely that
-;; Emacs related directories have different extensions (in the context of this
-;; function calls).
+;; specific name and expands any symlink to their target.  It is implemented
+;; using only functions implemented in C and Elisp always available early.
+;; The code ONLY handle names ending .el or .elc, or without extension.
+;; It does not handle other extensions, but its unlikely that Emacs related
+;; directories have different extensions (in the context of this function
+;; calls).
 (defun pel--graphic-file-name (fname)
-  "Appends \"-graphics\" to the end of a .el, .elc or extension less FNAME."
+  "Appends \"-graphics\" to the end of a .el, .elc or extension less FNAME.
+Also expands to the file true name, replacing symlinks by what they point to."
+  ;; use only functions implemented in C or elisp available early
   (let ((ext (substring fname -3)))
-    (cond
-     ((string-match "-graphics" fname) fname)
-     ((string-equal ext ".el") (concat (substring fname 0 -3) "-graphics.el"))
-     ((string-equal ext "elc") (concat (substring fname 0 -4) "-graphics.elc"))
-     (t                        (concat fname "-graphics")))))
+    (file-truename
+     (cond
+      ((string-match "-graphics" fname) fname)
+      ((string-equal ext ".el") (concat (substring fname 0 -3) "-graphics.el"))
+      ((string-equal ext "elc") (concat (substring fname 0 -4) "-graphics.elc"))
+      (t                        (concat fname "-graphics"))))))
 
 ;; The `pel--pkg-activate-all' function is used only in Emacs >= 27
 ;; when package-quickstart is used and under some condition.  It should
@@ -168,6 +172,29 @@ before a mode switch done by one of them.")
   (defun pel--init-package-support ()
     "Configure package.el support."
     (require 'package)
+    ;;
+    ;; When package-user-dir user-option is a symlink, remember the symlink
+    ;; with its absolute path into the `pel-package-user-dir-symlink'
+    ;; variable.  It will be used by the function `pel-locate-elpa' to set the
+    ;; value of `pel-elpa-dirpath'.  This allows an Emacs process to remember
+    ;; its link even if another process changes its own `package-user-dir'.
+    ;;
+    (let ((symlink-target (file-symlink-p package-user-dir)))
+      (when symlink-target
+        (setq pel-package-user-dir-symlink
+              (if (file-name-absolute-p symlink-target)
+                  symlink-target
+                (expand-file-name
+                 symlink-target (file-name-directory package-user-dir))))))
+    ;;
+    ;; In the code that follows, as well as inside early-init.el, PEL also
+    ;; sets the `package-user-dir' dynamic value (not the user-option value)
+    ;; to a true directory name, chasing all symbolic links to their target,
+    ;; before package functions like `package-initialize' is called. This that
+    ;; `load-path' entries are true directory names, fully expanded (to
+    ;; symlink target if any symlink is used) to ensure continued validity of
+    ;; a process `load-path' even if the "~/.emacs.d/elpa" is a symlink and
+    ;; its target is changed by another process.
     (if (< emacs-major-version 27)
         ;; Emacs prior to 27
         ;; -----------------
@@ -178,9 +205,12 @@ before a mode switch done by one of them.")
           ;; - use ~/.emacs.d/elpa-graphics in graphics mode
           ;; Use setq to ensure that package-user-dir stays like this after
           ;; execution of package-init.
-          (when (and pel-init-support-dual-environment-p
-                     pel-emacs-is-graphic-p)
-            (setq package-user-dir (pel--graphic-file-name package-user-dir)))
+          ;; Also ensure package-user-dir is expanded to true file names and
+          ;; not left to what could be a symlink.
+          (setq package-user-dir (if (and pel-init-support-dual-environment-p
+                                          pel-emacs-is-graphic-p)
+                                     (pel--graphic-file-name package-user-dir)
+                                   (file-truename package-user-dir)))
 
           ;; By default Emacs enable packages *after* init is loaded.
           ;; The code later explicitly calls package-initialize to do it
@@ -264,22 +294,14 @@ before a mode switch done by one of them.")
               (advice-remove 'package-activate-all #'pel--pkg-activate-all)))
         ;; In terminal/TTY or graphics mode that use the same customization
         ;; file (the usual case for Emacs):
-        ;;    No change to Elpa directory nor to `package-quickstart-file'
-        (package-initialize)))
-    ;;
-    ;; Remember package-user-dir real directory when it's a symlink.  This
-    ;; way, if it is changed by another process when the operation mode is
-    ;; switched, the current process will be able to continue using it
-    ;; unaffected by the operation mode switch done by the other process.
-    ;; Ensure that the new value is an absolute path.
-    (let ((symlink-target (file-symlink-p package-user-dir)))
-      (when symlink-target
-        (setq pel-package-user-dir-symlink package-user-dir)
-        (setq package-user-dir
-              (if (file-name-absolute-p symlink-target)
-                  symlink-target
-                (expand-file-name
-                 symlink-target (file-name-directory package-user-dir)))))))
+        ;;    No change to Elpa directory nor to `package-quickstart-file',
+        ;;    however ensure that the `load-path' uses the true names of
+        ;;    directories; expand potential symlinks to their target to
+        ;;    guarantee their validity if another Emacs/PEL process switches
+        ;;    the startup mode and modifies the target of the symlink.
+        (progn
+          (setq package-user-dir (file-truename package-user-dir))
+          (package-initialize)))))
   (declare-function 'pel--init-package-support "init")
 
   ;; Schedule restoration of garbage collector normal values once Emacs
@@ -410,7 +432,7 @@ before a mode switch done by one of them.")
   ;;
   ;; PEL does not let customization data go inside the init.el file, it uses
   ;; a separate customization file, or two if you elected to use two as
-  ;; specified in OPTION A (one for terminal mode and one for graphic mode).
+  ;; specified in Option A (one for terminal mode and one for graphic mode).
   ;;
   ;; PEL uses the names specified in the code below: emacs-customization.el
   ;; and potentially also emacs-customization-graphics.el.  If you prefer a

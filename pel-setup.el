@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-31 21:32:50, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-01 09:27:48, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -843,20 +843,22 @@ Return the pkg/version alist.\"
 ;; The pel--graphic-file-name translates a file name to the graphics
 ;; specific name
 \(defun pel--graphic-file-name (fname)
-  \"Appends '-graphics' to the end of a .el, .elc or extension less FNAME.\"
-  ;; use only functions implemented in C
+  \"Appends \\"-graphics\\" to the end of a .el, .elc or extension less FNAME.
+  Also expands to the file true name, replacing symlinks by what they point to.\"
+  ;; use only functions implemented in C or elisp available early.
   (let ((ext (substring fname -3)))
-    (cond
-     ((string-match \"-graphics\" fname) fname)
-     ((string-equal ext \".el\") (concat (substring fname 0 -3) \"-graphics.el\"))
-     ((string-equal ext \"elc\") (concat (substring fname 0 -4) \"-graphics.elc\"))
-     (t                        (concat fname \"-graphics\")))))
+    (file-truename
+     (cond
+      ((string-match \"-graphics\" fname) fname)
+      ((string-equal ext \".el\") (concat (substring fname 0 -3) \"-graphics.el\"))
+      ((string-equal ext \"elc\") (concat (substring fname 0 -4) \"-graphics.elc\"))
+      (t                        (concat fname \"-graphics\"))))))
 
 \(defun pel--pkg-load-all-descriptors (original-fct)
   \"Execute ORIGINAL-FCT with a controlled value of `package-user-dir'.\"
   (let ((package-user-dir (if pel-force-graphic-specific-files
                               (pel--graphic-file-name package-user-dir)
-                            package-user-dir)))
+                            (file-truename package-user-dir))))
     (funcall original-fct)))
 
 \(advice-add
