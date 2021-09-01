@@ -157,14 +157,22 @@ For debugging and to quiet byte-compiler warning.")
 
     (defun pel--ei-package-activate-all (original-fct)
       "Force use of controlled package-user-dir during package initialize."
-      (when (and (boundp 'package-user-dir)
-                 (boundp 'package-quickstart-file)
-                 (boundp 'custom-file))
-        (let ((package-user-dir        (pel--graphic-file-name package-user-dir))
-              (package-quickstart-file (pel--graphic-file-name package-quickstart-file))
-              (custom-file             (pel--graphic-file-name custom-file)))
-          (setq pel--ei-package-quickstart-file package-quickstart-file)
-          (funcall original-fct))))
+      (if (and (boundp 'package-user-dir)
+               (boundp 'package-quickstart-file)
+               (boundp 'custom-file))
+          (let ((package-user-dir (pel--graphic-file-name package-user-dir))
+                (package-quickstart-file (pel--graphic-file-name package-quickstart-file))
+                (custom-file (pel--graphic-file-name custom-file)))
+            (setq pel--ei-package-quickstart-file package-quickstart-file)
+            (funcall original-fct))
+        (message "Error in pel--ei-package-activate-all!
+ Not all required symbols are bound:
+ - package-user-dir       : %sbound
+ - package-quickstart-file: %sbound
+ - custom-file            : %sbound"
+                 (if (boundp 'package-user-dir)        "" "un")
+                 (if (boundp 'package-quickstart-file) "" "un")
+                 (if (boundp 'custom-file)             "" "un"))))
     (declare-function pel--ei-package-activate-all "early-init")
 
     (advice-add 'package-activate-all
