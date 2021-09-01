@@ -2164,6 +2164,7 @@ This helps inserting underscore characters by typing the dash key without
 having to hit the Shift key.
 See the author site at URL http://malsyned.net/smart-dash.html"
   :group 'pel-pkg-for-insertions
+  :group 'pel-pkg-for-text-mode
   :type 'boolean
   :safe #'booleanp)
 
@@ -2179,6 +2180,7 @@ See the author site at URL http://malsyned.net/smart-dash.html"
 Used when `pel-use-smart-dash' user option is t.
 To activate the changes for this you must 'Apply and Save' and restart Emacs."
   :group 'pel-pkg-for-insertions
+  :group 'pel-pkg-for-text-mode
   :type  '(repeat symbol))
 
 (defcustom pel-use-yasnippet nil
@@ -7886,6 +7888,11 @@ mode during an editing session."
 
 (defcustom pel-modes-activating-subword-mode nil
   "List of major modes that automatically activate the `subword-mode'."
+  :group 'pel-pkg-for-text-mode
+  :type '(repeat symbol))
+
+(defcustom pel-modes-activating-auto-fill-mode nil
+  "List of major modes that automatically activate the `auto-fill-mode'."
   :group 'pel-pkg-for-text-mode
   :type '(repeat symbol))
 

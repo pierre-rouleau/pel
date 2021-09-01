@@ -6082,14 +6082,15 @@ the ones defined from the buffer now."
 (define-key pel:textmodes "v" #'visible-mode)
 (define-key pel:textmodes "w" #'whitespace-mode)
 
-(pel-add-hook-for
- 'pel-modes-activating-superword-mode
- (lambda ()
-   (superword-mode 1)))
-(pel-add-hook-for
-     'pel-modes-activating-subword-mode
-     (lambda ()
-       (subword-mode 1)))
+(pel-add-hook-for 'pel-modes-activating-superword-mode
+                  (lambda ()
+                    (superword-mode 1)))
+(pel-add-hook-for 'pel-modes-activating-subword-mode
+                  (lambda ()
+                    (subword-mode 1)))
+(pel-add-hook-for 'pel-modes-activating-auto-fill-mode
+                  (lambda ()
+                    (auto-fill-mode 1)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Function Keys - <f11> - Prefix ``<f11> t t``: Text transpose commands
