@@ -179,7 +179,7 @@ For debugging and to quiet byte-compiler warning.")
   (when (file-exists-p fast-startup-setup-fname)
     (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
     (pel-fast-startup-init pel-force-graphic-specific-custom-file-p
-                           :from-early-init)
+                           pel-early-init-support-package-quickstart-p)
     ;; Remember Emacs is running in PEL's fast startup mode.
     (setq pel-running-in-fast-startup-p t)))
 

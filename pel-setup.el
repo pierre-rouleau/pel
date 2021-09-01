@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-31 14:10:24, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-31 21:32:50, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -795,17 +795,19 @@ originally returned by `pel-elpa-disable-pkg-deps-in'."
 ;; pel-fast-startup-init must be called either inside early-init.el
 ;; (for Emacs >= 27) or inside init.el for older versions of Emacs.
 ;;
-\(defun pel-fast-startup-init (&optional force-graphics from-early-init)
+\(defun pel-fast-startup-init (&optional force-graphics using-package-quickstart)
   \"Setup data to support the fast-startup mode.
 
 - #1: Add pkg/version of the dependencies of packages whose code has been been
       bundled into elpa-reduced/pel-bundle *pseudo-package* to
       `package--builtin-versions' to prevent their downloads.
-- #2: For Emacs >= 27, an extra step is required: add elpa-reduced/pel-bundle
-      package to `load-path' when the function is executed during early-init
-      because the `package-refresh' does not generate code to add the
-      pel-bundle to the `load-path'.  This code is not required when the
-      function is called from init or when Emacs is earlier than version 27.
+- #2: For Emacs >= 27, when package-quickstart is used,  an extra step is
+      required: add the elpa-reduced/pel-bundle-YYYMMMDD-hhmm package
+      to `load-path' when the function is executed during early-init.
+      This is needed because the package quickstart function `package-refresh'
+      does not generate code to add the pel-bundle to the `load-path'.
+      There's no need to add it when the function is called from init.el
+      or from early-init.el when package quickstart is not used.
 
 Return the pkg/version alist.\"
   (setq pel-force-graphic-specific-files force-graphics)
@@ -1019,7 +1021,7 @@ Compared: symlink %s to target %s.
              (pel-elpa-disable-pkg-deps-in elpa-reduced-dirpath)
              (pel-string-when pel-emacs-27-or-later-p
                               (format ";; step 2: (only for Emacs >= 27)
-  (when from-early-init
+  (when using-package-quickstart
       (add-to-list 'load-path
                    (format \"%s\"
                            (if force-graphics \"-graphics\" \"\"))))"

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-31 18:32:40, updated by Pierre Rouleau>
+;; Time-stamp: <2021-08-31 20:48:03, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -118,16 +118,23 @@ Only set by `pel-setup-fast' or `pel-setup-normal'. Never cleared.")
   "Describe the mode context of a setup.
 The FOR-GRAPHICS argument identifies the setup forced for independent graphics."
   (if for-graphics
-      "independent graphics mode"
+      "dual-environment graphics mode"
     (if pel--detected-dual-environment-in-init-p
-        "independent terminal/tty mode"
-      "all modes")))
+        "dual-environment terminal/tty mode"
+      "single custom-file modes")))
 
 (defun pel--fast-setup-met-criteria ()
-  "Return a cons of 2 lists of strings: met-criteria and problems.
-If the first list is nil then PEL/Emacs operates in normal mode.
-If the first list has 3 members, then PEL/Emacs operates in fast startup mode.
-Return a (test-count met-criteria issues) list."
+  "Check if the setup meets fast startup settings.
+
+Return a list of 3 elements:
+- test count, the number of tests, an integer.
+- list of met-criteria strings.
+- list of problem description strings.
+
+PEL is considered in normal mode if all tests fail: the
+met-criteria list is nil and the side of the problem list is
+equal to the number of tests.  The setup is considered valid fast
+startup if all tests pass."
   (let ((met-criteria nil)
         (issues nil)
         (test-count 0))
@@ -216,15 +223,17 @@ Optional arguments:
              (let* ((tc.met-criteria.problems (pel--fast-setup-met-criteria))
                     (met-criteria (nth 1 tc.met-criteria.problems))
                     (problems (nth 2  tc.met-criteria.problems)))
-               (user-error "PEL/Emacs mode is inconsistent!
- Check the elpa directory inside %s and restore normal setup.
+               (user-error "The PEL/Emacs startup mode is inconsistent!
  Only some conditions of a fast startup setup are met:
  - %s
  The following problem remain:
- - %s"
-                           user-emacs-directory
+ - %s
+ Check the elpa directory inside %s.
+ Restore normal setup: try: M-x pel-setup-normal
+ In the worst case restore normal setup manually."
                            (string-join met-criteria "\n - ")
-                           (string-join problems "\n - "))))))))
+                           (string-join problems "\n - ")
+                           user-emacs-directory)))))))
 
 ;; ---------------------------------------------------------------------------
 
