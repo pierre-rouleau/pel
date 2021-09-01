@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-01 09:27:48, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-01 12:02:07, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -843,7 +843,7 @@ Return the pkg/version alist.\"
 ;; The pel--graphic-file-name translates a file name to the graphics
 ;; specific name
 \(defun pel--graphic-file-name (fname)
-  \"Appends \\"-graphics\\" to the end of a .el, .elc or extension less FNAME.
+  \"Appends \\\"-graphics\\\" to the end of a .el, .elc or extension less FNAME.
   Also expands to the file true name, replacing symlinks by what they point to.\"
   ;; use only functions implemented in C or elisp available early.
   (let ((ext (substring fname -3)))
