@@ -39,6 +39,9 @@
 ;;  - `pel-current-buffer-filename'
 ;;  - `pel-current-buffer-file-extension'
 ;;
+;; Function alias
+;; - `λc'
+;;
 ;; Emacs Lisp Development support:
 ;; - `pel-add-dir-to-loadpath'
 ;;
@@ -380,6 +383,23 @@ file."
   (if buffer-file-truename
       (file-name-extension buffer-file-truename with-period)
     (user-error "No file in buffer %s" (buffer-name))))
+
+;; ---------------------------------------------------------------------------
+;; Function alias
+;; --------------
+;; - `λc'
+;;
+
+
+(defmacro λc (fct &rest args)
+  "Funcall lambda function FCT with ARGS.
+This is an alias for `funcall'.
+
+Note: this, so far, is the *only* PEL symbol whose name does not start with
+      the 'pel' prefix.  If this clashes with something you use, please
+      accept my apologies and please let me know.  Hopefully the use of
+      a Unicode symbol in the name will reduce this possibility."
+  `(funcall ,fct ,@args))
 
 ;; ---------------------------------------------------------------------------
 ;; Emacs Lisp Development Support
