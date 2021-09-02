@@ -81,6 +81,7 @@
 ;;  - `pel-yes-no-string'
 ;;
 ;; String transformation utilities:
+;; - `pel-as-string'
 ;; - `pel-capitalize-first-letter'
 ;; - `pel-end-text-with-period'
 ;; - `pel-hastext'
@@ -581,13 +582,6 @@ in which case return PLURAL."
       s
     (intern s)))
 
-(defun pel-as-string (s)
-  "Return the string for S, which can either be a string or a symbol.
-Caution: if a number is passed, the number is returned."
-  (if (symbolp s)
-      (symbol-name s)
-    s))
-
 ;; ---------------------------------------------------------------------------
 ;; String generation utilities
 ;; ---------------------------
@@ -692,6 +686,7 @@ is automatically activated; this is included in the description."
 
 ;; ---------------------------------------------------------------------------
 ;; String transformation utilities:
+;; - `pel-as-string'
 ;; - `pel-capitalize-first-letter'
 ;; - `pel-end-text-with-period'
 ;; - `pel-hastext'
@@ -703,6 +698,17 @@ is automatically activated; this is included in the description."
 ;; - `pel-list-str'
 ;; - `pel-title-case-to-dash-separated'
 ;; - `pel-grp-regex'
+
+(defun pel-as-string (val)
+  "Return a string for the simple object value VAL.
+VAL may a string, as symbol, a number or a character.
+Otherwise an error is raised."
+  (cond
+   ((stringp val) val)
+   ((symbolp val) (symbol-name val))
+   ((numberp val) (number-to-string val))
+   ((characterp val) (char-to-string val))
+   (t (error "pel-as-string does not support type of specified argument: %S" val))))
 
 (defun pel-capitalize-first-letter (text)
   "Return TEXT with first character up-cased, all other unchanged.
@@ -783,7 +789,6 @@ ELISP>"
   (string-join
    (mapcar (function downcase) (split-string text " "))
    "-"))
-
 
 (defun pel-grp-regex (text &optional tail)
   "Return string with TEXT inside regexp group.
