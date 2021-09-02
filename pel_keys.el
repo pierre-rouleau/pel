@@ -234,6 +234,61 @@ Done in this function to allow advising libraries that remap these keys."
 (global-set-key (kbd "M-L") 'pel-insert-line-above)
 
 ;; ---------------------------------------------------------------------------
+;; Optional <f9> key for Greek Letter
+;; ----------------------------------
+(when pel-activate-f9-for-greek
+  (define-key key-translation-map (kbd "<f9> a") "α")
+  (define-key key-translation-map (kbd "<f9> b") "β")
+  (define-key key-translation-map (kbd "<f9> c") "χ")
+  (define-key key-translation-map (kbd "<f9> d") "δ")
+  (define-key key-translation-map (kbd "<f9> e") "ε")
+  (define-key key-translation-map (kbd "<f9> f") "ϕ")
+  (define-key key-translation-map (kbd "<f9> g") "γ")
+  (define-key key-translation-map (kbd "<f9> h") "η")
+  (define-key key-translation-map (kbd "<f9> i") "ι")
+  (define-key key-translation-map (kbd "<f9> j") "φ")
+  (define-key key-translation-map (kbd "<f9> k") "κ")
+  (define-key key-translation-map (kbd "<f9> l") "λ")
+  (define-key key-translation-map (kbd "<f9> m") "μ")
+  (define-key key-translation-map (kbd "<f9> n") "ν")
+  (define-key key-translation-map (kbd "<f9> o") "ο")
+  (define-key key-translation-map (kbd "<f9> p") "π")
+  (define-key key-translation-map (kbd "<f9> q") "θ")
+  (define-key key-translation-map (kbd "<f9> r") "ρ")
+  (define-key key-translation-map (kbd "<f9> s") "σ")
+  (define-key key-translation-map (kbd "<f9> t") "τ")
+  (define-key key-translation-map (kbd "<f9> u") "υ")
+  (define-key key-translation-map (kbd "<f9> w") "ω")
+  (define-key key-translation-map (kbd "<f9> x") "ξ")
+  (define-key key-translation-map (kbd "<f9> y") "ψ")
+  (define-key key-translation-map (kbd "<f9> z") "ζ")
+  (define-key key-translation-map (kbd "<f9> A") "Α")
+  (define-key key-translation-map (kbd "<f9> B") "Β")
+  (define-key key-translation-map (kbd "<f9> C") "Χ")
+  (define-key key-translation-map (kbd "<f9> D") "Δ")
+  (define-key key-translation-map (kbd "<f9> E") "Ε")
+  (define-key key-translation-map (kbd "<f9> F") "Φ")
+  (define-key key-translation-map (kbd "<f9> G") "Γ")
+  (define-key key-translation-map (kbd "<f9> H") "Η")
+  (define-key key-translation-map (kbd "<f9> I") "Ι")
+  (define-key key-translation-map (kbd "<f9> J") "Φ")
+  (define-key key-translation-map (kbd "<f9> K") "Κ")
+  (define-key key-translation-map (kbd "<f9> L") "Λ")
+  (define-key key-translation-map (kbd "<f9> M") "Μ")
+  (define-key key-translation-map (kbd "<f9> N") "Ν")
+  (define-key key-translation-map (kbd "<f9> O") "Ο")
+  (define-key key-translation-map (kbd "<f9> P") "Π")
+  (define-key key-translation-map (kbd "<f9> Q") "Θ")
+  (define-key key-translation-map (kbd "<f9> R") "Ρ")
+  (define-key key-translation-map (kbd "<f9> S") "Σ")
+  (define-key key-translation-map (kbd "<f9> T") "Τ")
+  (define-key key-translation-map (kbd "<f9> U") "Υ")
+  (define-key key-translation-map (kbd "<f9> W") "Ω")
+  (define-key key-translation-map (kbd "<f9> X") "Ξ")
+  (define-key key-translation-map (kbd "<f9> Y") "Ψ")
+  (define-key key-translation-map (kbd "<f9> Z") "Ζ"))
+
+;; ---------------------------------------------------------------------------
 ;; - Font Control
 ;; --------------
 
@@ -255,7 +310,7 @@ Done in this function to allow advising libraries that remap these keys."
     (pel-ensure-package  all-the-icons-ibuffer)
     (pel-require-at-load all-the-icons-ibuffer)
     (pel-autoload-file   all-the-icons-ibuffer for:
-                          all-the-icons-ibuffer-mode)
+                         all-the-icons-ibuffer-mode)
     (all-the-icons-ibuffer-mode 1))
 
   (when pel-use-all-the-icons-dired

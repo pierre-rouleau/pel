@@ -2146,6 +2146,17 @@ You can select one of 2 alternatives."
   :link `(url-link :tag "Inserting Text PDF"
                    ,(pel-pdf-file-url "inserting-text")))
 
+(defcustom pel-activate-f9-for-greek nil
+  "Control whether <f9> key is used as key prefix to insert greek letters.
+This is a PEL built-in logic that is not activated by default, leaving the
+<f9> key unbound.  When turned on, the <f9> key is the key prefix to other
+keys that insert Greek letters, with correspondences between ASCII letters and
+Greek letters."
+  :group 'pel-pkg-for-insertions
+  :group 'pel-pkg-for-text-mode
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-lice nil
   "Control whether PEL uses the lice package to insert software license text.
 Note that the lice package is installed when its used in PEL tempo skeletons
