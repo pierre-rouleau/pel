@@ -97,6 +97,11 @@
 ;; - `pel-title-case-to-dash-separated'
 ;; - `pel-grp-regex'
 ;;
+;; Message List formatting
+;; - `pel-format-problem-messages'
+;;   - `pel--format-problem-messages'
+;; - `pel-message-for'
+;;
 ;; Value check:
 ;; - `pel-use-or'
 ;;
@@ -826,6 +831,64 @@ after the closing parenthesis."
         (concat str tail)
       str)))
 
+
+;; ---------------------------------------------------------------------------
+;; Message List formatting
+;; -----------------------
+;;
+;; - `pel-format-problem-messages'
+;;   - `pel--format-problem-messages'
+;; - `pel-message-for'
+;;
+
+(defun pel--format-problem-messages (problems intro &optional extra-intro)
+  "Return string describing problems.
+
+The generated string starts with an introduction created using the
+INTRO-FMT format string and its ARGS arguments if any.
+The next line starts with the EXTRA-INFO string if non-nil.
+Then it lists the provided PROBLEMS list.
+
+The function returns the formatted string.
+
+Don't use this function directly; use the
+`pel-format-problem-messages' macro instead: it simplifies
+caller's code."
+  (let ((problem-count (length problems)))
+    (format "%s\n %she following %s %s:\n - %s"
+            intro
+            (if extra-intro (format "%s t" extra-intro) "T")
+            (pel-count-string problem-count "problem" nil :no-count-for-1)
+            (pel-pluralize problem-count "remains" "remain")
+            (string-join problems "\n - "))))
+
+(defmacro pel-format-problem-messages (problems extra-intro
+                                                intro-fmt &rest args)
+  "Return string formatted with provided information.
+
+The generated string starts with an introduction created using the
+INTRO-FMT format string and its ARGS arguments if any.
+The next line starts with the EXTRA-INFO string if non-nil.
+Then it lists the provided PROBLEMS list.
+
+This macro uses the function `pel--format-problem-messages' which
+returns the formatted string."
+  `(pel--format-problem-messages
+    ,problems
+    (format ,intro-fmt ,@args) ,extra-intro ))
+
+;; --
+(defun pel-message-for (intro messages &optional separator)
+  "Print a message starting with the INTRO followed by all MESSAGES.
+
+Each of the MESSAGES is separated from the next by \"\\n - \" unless a
+separator is specified by the SEPARATOR argument."
+  (let ((separator (or separator "\n - ")))
+    (message "%s%s%s"
+             intro
+             separator
+             (string-join messages separator))))
+
 ;; ---------------------------------------------------------------------------
 ;; Value check
 ;; -----------
@@ -1042,10 +1105,13 @@ describing detected problems. Error descriptions can be padded if
           (pel-push-fmt issues (pel--problem-format "Is not a symlink") lname))
       (pel-push-fmt issues
           (pel--problem-format
-           (format "%symlink missing"
+           (format "%symlink %s"
                    (if target-type-name
                        (format "%s s" target-type-name)
-                     "S")))
+                     "S")
+                   (if (file-symlink-p lname)
+                       "target is missing"
+                     "missing")))
         lname))
     issues))
 
@@ -2193,7 +2259,7 @@ with a directory separating slash."
 
 The SYMLINK argument should be the absolute file-path-name of the
 symlink file.  The TARGET should be the expected file-path or
-dir-path where for the symlink.
+dir-path for the symlink.
 
 Symlinks can be created with a link that is absolute or relative.
 This function handles both."
