@@ -98,7 +98,7 @@
 ;; is identified.  If you want to use another file change the initialized
 ;; value.
 
-(defconst pel-early-init-custom--file "~/.emacs.d/emacs-customization.el"
+(defconst pel-early-init-custom-file "~/.emacs.d/emacs-customization.el"
   "Value of `custom-file' used by early-init.el code.
 If you want to use some other file, please modify the initialized value.")
 
@@ -191,9 +191,7 @@ For debugging and to quiet byte-compiler warning.")
       (setq package-user-dir (pel--graphic-file-name package-user-dir))
       (setq package-quickstart-file (pel--graphic-file-name
                                      package-quickstart-file))
-      (setq custom-file (pel--graphic-file-name (or
-                                                 (bound-and-true-p custom-file)
-                                                 pel-early-init-custom-file)))
+      (setq custom-file (pel--graphic-file-name pel-early-init-custom-file))
       (setq pel--ei-package-quickstart-file package-quickstart-file)
       (funcall original-fct))
     (declare-function pel--ei-package-activate-all "early-init")
