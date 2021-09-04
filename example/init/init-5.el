@@ -83,10 +83,10 @@
 (defvar pel-package-user-dir-original nil
   "When set, it is the dirpath of the `package-user-dir' symlink.
 
-When the the `package-user-dir' file is a symlink, the function
-`pel--init-package-support' stores the original value of dirpath
-of that symlink here and updates the value of `package-user-dir'
-into this variable.
+The function `pel--init-package-support' stores the original
+value of dirpath here and updates the value of `package-user-dir'
+to control the format of the entries placed inside the
+`load-path'.
 
 PEL logic transforms `package-user-dir' to make it point to the
 elpa-complete or elpa-reduced directory (or the graphics
@@ -186,23 +186,26 @@ Also expands to the file true name, replacing symlinks by what they point to."
     "Configure package.el support."
     (require 'package)
     ;;
-    ;; When package-user-dir user-option is a symlink, remember the symlink
-    ;; with its absolute path into the `pel-package-user-dir-original'
-    ;; variable.  It will be used by the function `pel-locate-elpa' to set the
-    ;; value of `pel-elpa-dirpath'.  This allows an Emacs process to remember
-    ;; its link even if another process changes its own `package-user-dir'.
+    ;; Remember the original `package-user-dir' user-option before we modify
+    ;; it.   PEL needs to know if the original one was a real directory or a
+    ;; symlink.  We need to remember it because the code below modifies
+    ;; `package-user-dir' to ensure that `load-path' entries are true
+    ;; directory names, not accessed via symlinks that can be changed by a
+    ;; separate Emacs process running PEL.
     ;;
-    (when (file-symlink-p package-user-dir)
-      (setq pel-package-user-dir-original package-user-dir))
+    (setq pel-package-user-dir-original package-user-dir)
+
     ;;
     ;; In the code that follows, as well as inside early-init.el, PEL also
-    ;; sets the `package-user-dir' dynamic value (not the user-option value)
-    ;; to a true directory name, chasing all symbolic links to their target,
-    ;; before package functions like `package-initialize' is called. This that
-    ;; `load-path' entries are true directory names, fully expanded (to
-    ;; symlink target if any symlink is used) to ensure continued validity of
-    ;; a process `load-path' even if the "~/.emacs.d/elpa" is a symlink and
-    ;; its target is changed by another process.
+    ;; sets the `package-user-dir' dynamic value (not the user-option value we
+    ;; see inside this function) to a true directory name, following all
+    ;; symbolic links to their target, before package functions like
+    ;; `package-initialize' is called. This that `load-path' entries are true
+    ;; directory names, fully expanded (to symlink target if any symlink is
+    ;; used) to ensure continued validity of a process `load-path' even if the
+    ;; "~/.emacs.d/elpa" is a symlink and its target is changed by another
+    ;; process.
+
     (if (< emacs-major-version 27)
         ;; Emacs prior to 27
         ;; -----------------
