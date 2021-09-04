@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-03 18:05:43, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-04 19:11:22, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -877,16 +877,22 @@ Return a list of performed action descriptions in reverse order."
                                              elpa-dp "elpa-complete")
                                             for-graphics))
              (actions nil))
-        (unless (file-symlink-p elpa-dp)
+        (unless (or (file-symlink-p elpa-dp)
+                    (bound-and-true-p package-quickstart))
           ;; the main elpa is a directory, not a symbolic link
           ;; make sure it does not already use the elpa-complete name;
-          ;; Complain if it does.
+          ;; Complain if it does.  However only perform this check when
+          ;; not using package quickstart because in package quickstart I have
+          ;; not found a way to identify the original package-user-dir which
+          ;; identifies the symlink when fast start is used and then elpa-dp
+          ;; ends up having the value of the symlink target.  TODO.
           (when (pel-same-fname-p elpa-dp elpa-dp-cmplt)
             (user-error "Invalid elpa directory in %s:
  The elpa directory name (%s) clash with PEL startup management strategy.
  PEL uses a symlink to points to either %s or %s.
  Please rename your elpa directory & update the package-user-dir user-option."
                         user-emacs-directory
+                        elpa-dp
                         (pel-elpa-name "elpa-complete" for-graphics)
                         (pel-elpa-name "elpa-reduced"  for-graphics)))
           ;; all ok, rename and/or create symlink
