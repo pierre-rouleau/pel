@@ -78,6 +78,34 @@
 ;;; Code:
 ;;
 
+;; ---------------------------------------------------------------------------
+;; User configuration
+;; ==================
+;;
+;; PEL uses Emacs configuration files identified in the Emacs `custom-file'
+;; user-option and appends the "-graphics" suffix to its name when dual
+;; environment is used and Emacs runs in graphics mode. PEL is able to
+;; automate this for almost all types of settings EXCEPT when dual environment
+;; is used with package quickstart enabled.
+;;
+;; When package quickstart is used, the name of the customization file *must*
+;; be known by this code, running in early-init.el.  However when
+;; early-init.el is running code does not have access to the customization
+;; user-options values; they are not yet loaded!
+;;
+;; To work around this limitation the value of the customization file is
+;; stored inside the `pel-early-init-custom-file' variable.  The PEL's default
+;; is identified.  If you want to use another file change the initialized
+;; value.
+
+(defconst pel-early-init-custom--file "~/.emacs.d/emacs-customization.el"
+  "Value of `custom-file' used by early-init.el code.
+If you want to use some other file, please modify the initialized value.")
+
+;; ---------------------------------------------------------------------------
+;; PEL Controlled values
+;; ---------------------
+;;
 ;; The following 3 defconst forms are controlled by the function
 ;; `pel--update-early-init' used by PEL commands code. Therefore you do not
 ;; need to edit this file manually. The value MUST remain at the end of the
@@ -160,22 +188,14 @@ For debugging and to quiet byte-compiler warning.")
 
     (defun pel--ei-package-activate-all (original-fct)
       "Force use of controlled package-user-dir during package initialize."
-      (if (and (boundp 'package-user-dir)
-               (boundp 'package-quickstart-file)
-               (boundp 'custom-file))
-          (let ((package-user-dir (pel--graphic-file-name package-user-dir))
-                (package-quickstart-file (pel--graphic-file-name package-quickstart-file))
-                (custom-file (pel--graphic-file-name custom-file)))
-            (setq pel--ei-package-quickstart-file package-quickstart-file)
-            (funcall original-fct))
-        (message "Error in pel--ei-package-activate-all!
- Not all required symbols are bound:
- - package-user-dir       : %sbound
- - package-quickstart-file: %sbound
- - custom-file            : %sbound"
-                 (if (boundp 'package-user-dir)        "" "un")
-                 (if (boundp 'package-quickstart-file) "" "un")
-                 (if (boundp 'custom-file)             "" "un"))))
+      (setq package-user-dir (pel--graphic-file-name package-user-dir))
+      (setq package-quickstart-file (pel--graphic-file-name
+                                     package-quickstart-file))
+      (setq custom-file (pel--graphic-file-name (or
+                                                 (bound-and-true-p custom-file)
+                                                 pel-early-init-custom-file)))
+      (setq pel--ei-package-quickstart-file package-quickstart-file)
+      (funcall original-fct))
     (declare-function pel--ei-package-activate-all "early-init")
 
     (advice-add 'package-activate-all
