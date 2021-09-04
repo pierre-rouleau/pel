@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-04 19:11:22, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-04 19:37:26, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -911,7 +911,7 @@ Return a list of performed action descriptions in reverse order."
   PEL cannot safely manage Emacs startup mode.
   Please update your init.el file; use pel/example/init/init-5.el template.")))
 
-(defun pel--elpa-symlink-problems (elpa-dirpath for-graphics )
+(defun pel--elpa-symlink-problems (elpa-dirpath for-graphics)
   "Check validity of ELPA_DIRPATH used FOR-GRAPHICS.
 
 - The ELPA-DIRPATH should be the same as what is returned by the
@@ -959,42 +959,47 @@ The directory (or symlink to the directory) that should hold
           (pel-elpa-name custom-file for-graphics)
           original-elpa-dirpath)
       ;;
-      ;; elpa exists, check its validity
-      (if elpa-symlink
-          (progn
-            (unless (pel-symlink-points-to-p elpa-dirname elpa-complete-dirpath)
-              (pel-push-fmt problems "The elpa symlink target is invalid.
+      ;; elpa exists, check its validity, but only do that
+      ;;  when package quickstart is disabled as PEL is not yet capable of
+      ;;  getting to the original package-user-dir when package quickstart is
+      ;;  used. TODO.
+      (unless (bound-and-true-p package-quickstart)
+        (if elpa-symlink
+            (progn
+              (unless (pel-symlink-points-to-p elpa-dirname
+                                               elpa-complete-dirpath)
+                (pel-push-fmt problems "The elpa symlink target is invalid.
    - Current symlink target : %s
    - Expected symlink target: %s"
-                elpa-symlink
-                elpa-complete-dirpath))
-            ;;
-            (unless (file-name-absolute-p elpa-symlink)
-              (pel-push-fmt problems
-                  "The %s symlink target is not an absolute path:
+                  elpa-symlink
+                  elpa-complete-dirpath))
+              ;;
+              (unless (file-name-absolute-p elpa-symlink)
+                (pel-push-fmt problems
+                    "The %s symlink target is not an absolute path:
    - Current symlink target : %s
    - Expected symlink target: %s
  Attempting a repair."
-                elpa-dirpath
-                elpa-symlink
-                elpa-complete-dirpath)
-              ;; try to repair it
-              (pel-point-symlink-to elpa-dirname elpa-complete-dirpath)
-              (setq elpa-symlink (file-symlink-p elpa-dirname)))
-            ;;
-            (unless (directory-name-p elpa-symlink)
-              (pel-push-fmt problems
-                  "\
+                  elpa-dirpath
+                  elpa-symlink
+                  elpa-complete-dirpath)
+                ;; try to repair it
+                (pel-point-symlink-to elpa-dirname elpa-complete-dirpath)
+                (setq elpa-symlink (file-symlink-p elpa-dirname)))
+              ;;
+              (unless (directory-name-p elpa-symlink)
+                (pel-push-fmt problems
+                    "\
 The elpa symlink target format does not use a directory name format:
    - Current symlink target : %s
    - Expected symlink target: %s
  Attempting a repair."
-                elpa-symlink
-                elpa-complete-dirpath)
-              ;; try to repair it.
-              (pel-point-symlink-to elpa-dirname elpa-complete-dirpath)))
-        (pel-push-fmt problems "The elpa is not a symlink  : %s"
-          elpa-dirname)))
+                  elpa-symlink
+                  elpa-complete-dirpath)
+                ;; try to repair it.
+                (pel-point-symlink-to elpa-dirname elpa-complete-dirpath)))
+          (pel-push-fmt problems "The elpa is not a symlink  : %s"
+            elpa-dirname))))
     (reverse problems)))
 
 (defun pel--validate-elpa-symlink (elpa-dirpath for-graphics )
