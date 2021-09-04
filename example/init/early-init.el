@@ -126,7 +126,7 @@ defined in pel--options.el")
 ;; The code below this line does not require editing.
 ;; ==================================================
 
-(defconst pel-early-init-file-version "0.1"
+(defconst pel-early-init-file-version "0.2"
   "Version of PEL early-init.el. Verified by pel-setup logic. Do NOT change.")
 
 (defconst pel-force-graphic-specific-custom-file-p
