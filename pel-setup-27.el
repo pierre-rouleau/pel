@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-31 13:21:22, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-03 12:09:45, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -39,7 +39,7 @@
 ;;                                    ;      `pel-compile-emacs-early-init'
 
 (require 'pel-elpa)                   ; use: `pel-elpa-package-alist-of-dir'
-;;                                    ;      `pel--adjusted-fname'
+;;                                    ;      `pel-elpa-name'
 
 (require 'pel-setup-base)             ; use: `pel--set-user-option'
 ;;                                    ;      `pel--compile-file-if'
@@ -113,8 +113,8 @@ FOR-GRAPHICS is:
   (if (and (require 'package nil :no-error)
            (fboundp 'package-quickstart-refresh)
            (boundp 'package-quickstart-file))
-      (let* ((package-user-dir        (pel--adjusted-fname dirpath :force for-graphics))
-             (package-quickstart-file (pel--adjusted-fname package-quickstart-file :force for-graphics))
+      (let* ((package-user-dir        (pel-elpa-name dirpath for-graphics))
+             (package-quickstart-file (pel-elpa-name package-quickstart-file for-graphics))
              (package-alist           (pel-elpa-package-alist-of-dir package-user-dir)))
         (package-quickstart-refresh)
         ;; Byte-compile it if requested, otherwise remove its .elc
@@ -177,6 +177,7 @@ This function:
 
 Available for Emacs 27 and later only."
   (interactive)
+  (pel-setup-validate-init-files :early-init-must-exist)
   (when (y-or-n-p "Activate Emacs package quickstart?")
     (let ((startup-mode (pel--startup-mode)))
       (when (eq startup-mode 'inconsistent)
@@ -205,8 +206,8 @@ Available for Emacs 27 and later only."
   "Remove package quickstart file identified by the FOR-GRAPHICS argument."
   (if (and (require 'package nil :no-error)
            (boundp 'package-quickstart-file))
-      (let ((fname (pel--adjusted-fname package-quickstart-file
-                                        :force for-graphics)))
+      (let ((fname (pel-elpa-name package-quickstart-file
+                                        for-graphics)))
         ;; remove the package-quickstart.el file
         (when (file-exists-p fname)
           (delete-file fname))
@@ -221,6 +222,7 @@ Available for Emacs 27 and later only."
   "Disable package quickstart.
 Support PEL startup modes and PEL dual independent customization files."
   (interactive)
+  (pel-setup-validate-init-files :early-init-must-exist)
   (when (y-or-n-p "Disable Emacs package quickstart?")
     (message "Disabling package quickstart...")
     (pel--remove-package-quickstart-files nil)

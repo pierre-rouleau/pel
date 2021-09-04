@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-01 11:52:34, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-03 18:48:58, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -36,7 +36,7 @@
 (require 'pel--options)        ; use: `pel-early-init-template'
 (require 'pel-ccp)             ; use: `pel-delete-whole-line'
 (require 'pel-custom)          ; use: `pel-customize-save'
-(require 'pel-elpa)            ; use: `pel--adjusted-fname'
+(require 'pel-elpa)            ; use: `pel-elpa-name'
 (require 'pel-package)         ; use: `pel-elpa-dirpath'
 
 (eval-when-compile (require 'subr-x)) ; use: `string-join'
@@ -58,6 +58,84 @@ Code can only modify this value after successfully changing
 early-init.el file (on Emacs >= 27).
 In the current code this is only done by `pel--setup-dual-environment'")
 
+;; ---------------------------------------------------------------------------
+;; Emacs Initialisation file validation
+;; ------------------------------------
+
+(defconst pel--expected-init-file-version "0.1"
+  "Must match what is in the example/init/init-5.el")
+
+(defconst pel--expected-early-init-file-version "0.1"
+  "Must match what is in the example/init/early-init.el")
+
+(defun pel--setup-init-file-problems (&optional early-init-must-exist)
+  "Return a list of problems in the initialization files if any.
+
+If EARLY-INIT-MUST-EXIST is non-nil the early-init.el file must exist for
+Emacs >= 27, otherwise it's not a hard requirement.
+
+Return nil if all is OK."
+  (let ((problems nil))
+    (if (boundp 'pel-init-file-version)
+        (unless (string= (pel-as-string pel-init-file-version)
+                         pel--expected-init-file-version)
+          (pel-push-fmt problems
+              "Invalid pel-init-file-version: %s instead of expected %s
+   Please update your init.el file.
+   Use the pel/example/init/init-5.el as template."
+            pel-init-file-version pel--expected-init-file-version))
+      (pel-push-fmt problems
+          "Invalid init.el file: not ready for PEL startup management.
+   Use the pel/example/init/init-5.el as template."))
+    (when pel-emacs-27-or-later-p
+     (if (file-exists-p (locate-user-emacs-file "early-init.el"))
+         (if (boundp 'pel-early-init-file-version)
+             (unless (string= (pel-as-string pel-early-init-file-version)
+                              pel--expected-early-init-file-version)
+               (pel-push-fmt problems
+                   "Invalid pel-early-init-file-version: %s instead of expected %s
+   Please update your early-init.el file.
+   Use the pel/example/init/early-init.el as template."
+                 pel-early-init-file-version
+                 pel--expected-early-init-file-version))
+           (pel-push-fmt problems
+               "Invalid early-init.el file: not ready for PEL startup management.
+   Use the pel/example/init/init-5.el as template."))
+       (when early-init-must-exist
+         (pel-push-fmt problems
+             "This feature requires a PEL compatible early-init.el file.
+   Use pel/example/init/early-init.el as template."))))
+    (if (boundp 'pel-package-user-dir-original)
+        (when (and (not (file-symlink-p pel-package-user-dir-original))
+                   (pel-same-fname-p
+                    pel-package-user-dir-original
+                    (pel-elpa-name (pel-sibling-dirpath
+                                          pel-package-user-dir-original
+                                          "elpa-complete")
+                                         pel-emacs-is-graphic-p)))
+          (pel-push-fmt problems
+              "Incompatible elpa directory : %s.
+   It clashes with PEL's logic to flip between -complete and -reduced."
+            pel-package-user-dir-original))
+      (pel-push-fmt problems
+          "The init.el file is incompatible with PEL startup management:
+ - `pel-package-user-dir-original' is not bound.  It should remember `package-user-dir'."))
+    (reverse problems)))
+
+
+(defun pel-setup-validate-init-files (&optional early-init-must-exist)
+  "Validate Emacs initialization files.
+
+If EARLY-INIT-MUST-EXIST is non-nil the early-init.el file must exist for
+Emacs >= 27, otherwise it's not a hard requirement.
+Raise error describing the problem if there is one."
+  (let ((problems (pel--setup-init-file-problems early-init-must-exist)))
+    (when problems
+      (user-error
+       (pel-format-problem-messages
+        problems nil
+        "Emacs user directory (%s) is incompatible with PEL startup management."
+        user-emacs-directory)))))
 
 ;; ---------------------------------------------------------------------------
 ;; Package Quickstart Support
@@ -71,10 +149,10 @@ In the current code this is only done by `pel--setup-dual-environment'")
        (file-exists-p (locate-user-emacs-file "early-init.el"))
        (file-exists-p
         (locate-user-emacs-file
-         (pel--adjusted-fname
+         (pel-elpa-name
           "package-quickstart.el"
-          :force (and pel--detected-dual-environment-in-init-p
-                      pel-emacs-is-graphic-p))))))
+          (and pel--detected-dual-environment-in-init-p
+               pel-emacs-is-graphic-p))))))
 
 (defun pel--with-quickstart-state-msg (prompt &optional show-requested-status
                                               just-changed)
@@ -156,12 +234,10 @@ startup if all tests pass."
                              '(nil t)
                            '(nil)))
       (let* ((mode-description (pel--setup-mode-description for-graphic))
-             (elpa-dirpath (pel--adjusted-fname pel-elpa-dirpath
-                                                :force for-graphic))
-             (elpa-reduced-dirpath (pel--adjusted-fname
-                                    (pel-sibling-dirpath elpa-dirpath
-                                                         "elpa-reduced")
-                                    :force for-graphic)))
+             (elpa-dirpath (pel-elpa-name pel-elpa-dirpath for-graphic))
+             (elpa-reduced-dirpath (pel-elpa-name (pel-sibling-dirpath
+                                                         elpa-dirpath "elpa-reduced")
+                                                        for-graphic)))
         (setq test-count (1+ test-count))
         (if (pel-same-fname-p (directory-file-name elpa-dirpath)
                               elpa-reduced-dirpath)
@@ -170,7 +246,7 @@ startup if all tests pass."
           (pel-push-fmt issues "%s elpa (%s) is not equal and does not point\
  to elpa-reduced (%s)"
             mode-description elpa-dirpath elpa-reduced-dirpath))))
-    (list test-count met-criteria issues)))
+    (list test-count (reverse met-criteria) (reverse issues))))
 
 (defun pel--startup-mode ()
   "Return whether PEL/Emacs operates in fast startup mode.
@@ -193,6 +269,7 @@ Optional arguments:
 - PQ-JUST_MODIFIED: set to t if package quickstart activation has been
                     modified in the Emacs session."
   (interactive)
+  (pel-setup-validate-init-files)
   (let ((mode (pel--startup-mode))
         (now-msg (if with-now "now " "")))
     (if pel--fast-startup-setup-changed
@@ -296,7 +373,7 @@ defining a specified symbol."
 
 (defun pel--other-custom-file ()
   "Return the name of the customization file used by the other mode."
-  (pel--adjusted-fname custom-file :force (not pel-emacs-is-graphic-p)))
+  (pel-elpa-name custom-file (not pel-emacs-is-graphic-p)))
 
 (defun pel--set-user-option (user-option value)
   "Set USER-OPTION symbol to specified VALUE.

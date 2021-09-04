@@ -98,6 +98,9 @@ defined in pel--options.el")
 ;; The code below this line does not require editing.
 ;; ==================================================
 
+(defconst pel-ealy-init-file-version "0.1"
+  "Version of PEL early-init.el. Verified by pel-setup logic. Do NOT change.")
+
 (defconst pel-force-graphic-specific-custom-file-p
   (and pel-early-init-support-dual-environment-p
        (or (string-equal (getenv "PEL_EMACS_IN_GRAPHICS") "1")

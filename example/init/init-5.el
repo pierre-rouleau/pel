@@ -32,11 +32,13 @@
 ;;             package directories: one for Emacs running in terminal/TTY mode
 ;;             and another for Emacs running in graphics mode.
 ;;
-;; - OPTION B: whether you want to activate the benchmark-init feature to
+;; - OPTION B: name of the PEL directory.
+;;
+;; - OPTION C: whether you want to activate the benchmark-init feature to
 ;;             measure time spent by various features during initialization.
 ;;
-;; - OPTION C: whether Emacs displays its startup message for current user.
-;; - OPTION D: whether graphical Emacs toolbar is displayed or not.
+;; - OPTION D: whether Emacs displays its startup message for current user.
+;; - OPTION E: whether graphical Emacs toolbar is displayed or not.
 ;; ---------------------------------------------------------------------------
 ;;
 ;; Section 0: PEL Edited Variable Definitions
@@ -55,13 +57,19 @@
 ;; Section 0.1: Fixed Function Definitions
 ;; =======================================
 ;;
-;; The following forms do not need editing.
+;; The following forms do not need editing, except the ones that are
+;; explicitly identified as being an option.
+
+;; OPTION B:  if PEL is stored somewhere else change the following value.
+(defconst pel-home-dirpath-name (expand-file-name "~/projects/pel")
+  "Directory where PEL Emacs Lisp source files are stored.")
+
+;; --
+(defconst pel-init-file-version "0.1"
+  "Version of PEL init.el. Verified by pel-setup logic. Do NOT change.")
 
 (defconst pel-emacs-is-graphic-p (display-graphic-p)
   "Predicate: t when Emacs is running in graphics mode, nil otherwise.")
-
-(defconst pel-home-dirpath-name (expand-file-name "~/projects/pel")
-  "Directory where PEL source files are stored.")
 
 (defconst pel-fast-startup-init-fname (expand-file-name
                                   "pel-fast-startup-init.el"
@@ -72,16 +80,21 @@
                                          pel-fast-startup-init-fname)
   "Non-nil when PEL runs in fast startup mode, nil otherwise.")
 
-(defvar pel-package-user-dir-symlink nil
+(defvar pel-package-user-dir-original nil
   "When set, it is the dirpath of the `package-user-dir' symlink.
 
-When the the `package-user-dir` file is a symlink, the function
-`pel--init-package-support' stores the dirpath of that symlink
-here and updates the value of `package-user-dir' to the target of
-the symlink.  This is required to allow proper switching between
-the normal and fast-startup operation modes while keeping the
-ability to use multiple instances of Emacs that were started
-before a mode switch done by one of them.")
+When the the `package-user-dir' file is a symlink, the function
+`pel--init-package-support' stores the original value of dirpath
+of that symlink here and updates the value of `package-user-dir'
+into this variable.
+
+PEL logic transforms `package-user-dir' to make it point to the
+elpa-complete or elpa-reduced directory (or the graphics
+equivalent in dual environment mode).  Having access to the
+original value will allow `pel-setup-fast' to create the symlink
+the very first time it is called when a user transforms its
+original Emacs directory into a directory that supports PEL
+startup mode management.")
 
 
 ;; Section 1 : Utility function definition
@@ -144,7 +157,7 @@ Also expands to the file true name, replacing symlinks by what they point to."
   (setq gc-cons-threshold   most-positive-fixnum
         gc-cons-percentage  0.6)
 
-  ;; OPTION B: Setup Benchmark Measurement
+  ;; OPTION C: Setup Benchmark Measurement
   ;; -------------------------------------
   ;; Load benchmark-init as early as possible using its file name explicitly
   ;; so it can be used to benchmark the complete package loading mechanism.
@@ -174,18 +187,13 @@ Also expands to the file true name, replacing symlinks by what they point to."
     (require 'package)
     ;;
     ;; When package-user-dir user-option is a symlink, remember the symlink
-    ;; with its absolute path into the `pel-package-user-dir-symlink'
+    ;; with its absolute path into the `pel-package-user-dir-original'
     ;; variable.  It will be used by the function `pel-locate-elpa' to set the
     ;; value of `pel-elpa-dirpath'.  This allows an Emacs process to remember
     ;; its link even if another process changes its own `package-user-dir'.
     ;;
-    (let ((symlink-target (file-symlink-p package-user-dir)))
-      (when symlink-target
-        (setq pel-package-user-dir-symlink
-              (if (file-name-absolute-p symlink-target)
-                  symlink-target
-                (expand-file-name
-                 symlink-target (file-name-directory package-user-dir))))))
+    (when (file-symlink-p package-user-dir)
+      (setq pel-package-user-dir-original package-user-dir))
     ;;
     ;; In the code that follows, as well as inside early-init.el, PEL also
     ;; sets the `package-user-dir' dynamic value (not the user-option value)
@@ -372,7 +380,7 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;; Do not display the splash screen.  Same as emacs -Q
   (setq inhibit-startup-screen t)
 
-  ;; OPTION C: Don't display Emacs startup help message, at least for me.
+  ;; OPTION D: Don't display Emacs startup help message, at least for me.
   ;; This variable is treated specially.  Don't group its setting with others.
   ;;   Replace YOUR_USER_NAME by your systems' login user name in the line
   ;;   below and un-comment it:
@@ -381,7 +389,7 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;; - Configure Graphics Mode Display
   ;; ---------------------------------
   (when pel-emacs-is-graphic-p
-    ;; OPTION D: Increase frame real-estate: no toolbar
+    ;; OPTION E: Increase frame real-estate: no toolbar
     ;; (tool-bar-mode -1)
 
     ;; - Visual bell in graphics mode:

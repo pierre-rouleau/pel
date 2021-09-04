@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-28 16:38:28, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-03 12:10:50, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -163,22 +163,30 @@
 (defun pel-locate-elpa ()
   "Return the absolute path of the local Elpa directory.
 
-Handle cases when the user's init file or its customization file
-has set `package-user-dir' defcustom variable to specify a
-directory that is not the standard elpa directory.
+PEL init.el file changes the value of `package-user-dir' to
+ensure that the value used by package.el is a true directory
+name, not a symlink.  That is done to ensure that the entries
+inside the `load-path' remain valid even if an external Emacs/PEL
+process switches the startup mode and changes the target of the
+elpa symlink.
 
-This can be used, for example to create a several elpa package
-directories for various purposes.  For example one for Emacs
-running in TTY, one for Emacs running in graphics mode, etc...
-For that you must set `package-user-dir' inside your init.el
-file.
+Before this is done, the code stores the original value of
+`package-user-dir', which corresponds to the user-option value
+stored in the custom file, into `pel-package-user-dir-original'.
 
-It that variable is not set then the \"elpa\" sub-directory of
-the directory identified by the variable `user-emacs-directory'
-is used."
-  (file-name-as-directory (if (and (boundp 'pel-package-user-dir-symlink)
-                                   pel-package-user-dir-symlink)
-                              (expand-file-name pel-package-user-dir-symlink)
+PEL will be able to use this value to transform the original elpa
+directory into a symlink that points to a directory named
+'elpa-complete'.
+
+It's possible that PEL is used with a init.el file that has not
+yet been populated with the proper code. In that case the
+`pel-package-user-dir-original' variable may not exist, so
+
+In the remote possibility that `package-user-dir' is not bound
+then the \"elpa\" sub-directory of the directory identified by
+the variable `user-emacs-directory' is used."
+  (file-name-as-directory (if (bound-and-true-p pel-package-user-dir-original)
+                              (expand-file-name pel-package-user-dir-original)
                             (if (and (require 'package nil :no-error)
                                      (boundp 'package-user-dir))
                                 (expand-file-name package-user-dir)
@@ -194,25 +202,21 @@ path of the elpa directory or symlink if it exists.
 Note that you can have several elpa directories if you set `package-user-dir'
 inside your init.el file.")
 
-(defconst pel-elpa-attic-dirpath  (file-name-as-directory
-                                   (pel--adjusted-fname
-                                    (expand-file-name "elpa-attic"
-                                                      user-emacs-directory)
-                                    (and (boundp 'pel-init-support-dual-environment-p)
-                                         pel-init-support-dual-environment-p)
-                                    pel-emacs-is-graphic-p))
+(defconst pel-elpa-attic-dirpath
+  (file-name-as-directory
+   (pel-elpa-name (expand-file-name "elpa-attic" user-emacs-directory)
+                  (and (bound-and-true-p pel-init-support-dual-environment-p)
+                       pel-emacs-is-graphic-p)))
   "Absolute path of the user elpa-attic directory.
 PEL supports a pel-attic directory for dual independent customization when
 it is requested as specified by the presence of `pel-init-support-dual-environment-p'
 symbol set to t.")
 
-(defconst pel-utils-dirpath (file-name-as-directory
-                             (pel--adjusted-fname
-                              (expand-file-name pel-utils-dirname
-                                                user-emacs-directory)
-                              (and (boundp 'pel-init-support-dual-environment-p)
-                                   pel-init-support-dual-environment-p)
-                              pel-emacs-is-graphic-p))
+(defconst pel-utils-dirpath
+  (file-name-as-directory
+   (pel-elpa-name (expand-file-name pel-utils-dirname user-emacs-directory)
+                  (and (bound-and-true-p pel-init-support-dual-environment-p)
+                       pel-emacs-is-graphic-p)))
   "Absolute path of the PEL utils directory.
 PEL supports a utils directory for dual independent customization when
 it is requested as specified by the presence of `pel-init-support-dual-environment-p'
@@ -220,10 +224,9 @@ symbol set to t.")
 
 (defconst pel-utils-attic-dirpath
   (file-name-as-directory
-   (pel--adjusted-fname
-    (expand-file-name (concat pel-utils-dirname "-attic")
-                      user-emacs-directory)
-    :force pel-emacs-is-graphic-p))
+   (pel-elpa-name (expand-file-name (concat pel-utils-dirname "-attic")
+                                    user-emacs-directory)
+                  pel-emacs-is-graphic-p))
   "Absolute path of the PEL utils-attic directory.")
 
 (defconst pel-required-packages '(popup)
