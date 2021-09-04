@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-08-31 14:12:25, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-09-02 14:34:45, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -652,6 +652,7 @@ pel_keys.elc: pel_keys.el
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -f batch-byte-compile pel_keys.el
 	@printf "\n\n***** Running Integration tests\n"
 	$(EMACS) --batch -L . -l ert -l test/pel-base-tests.el -f ert-run-tests-batch-and-exit
+	$(EMACS) --batch -L . -l ert -l test/pel-elpa-test.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-list-test.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-package-test.el -f ert-run-tests-batch-and-exit
@@ -671,6 +672,7 @@ pel_keys.elc: pel_keys.el
 test:
 	@printf "***** Running Integration tests\n"
 	$(EMACS) --batch -L . -l ert -l test/pel-base-tests.el -f ert-run-tests-batch-and-exit
+	$(EMACS) --batch -L . -l ert -l test/pel-elpa-test.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-list-test.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-package-test.el -f ert-run-tests-batch-and-exit
