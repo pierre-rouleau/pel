@@ -54,8 +54,9 @@
 ;; Bitwise Operations:
 ;;  - `pel-all-bitset-p'
 ;;
-;; File type predicates:
+;; File System Type:
 ;;  - `pel-unix-socket-p'
+;;  - `pel-file-type'
 ;;
 ;; String predicates:
 ;;  - `pel-whitespace-in-str-p'
@@ -478,12 +479,26 @@ code execution)."
     (equal 0 (logxor value bitmask))))
 
 ;; ---------------------------------------------------------------------------
-;; File Type Predicates
-;; --------------------
+;; File System Type
+;; ----------------
 
 (defun pel-unix-socket-p (fname)
-  "Return t if FNAME is a Unix Socket, nil otherwise."
+  "Return t if FNAME is a Unix Socket, nil otherwise.
+FNAME must exists otherwise an error is raised."
   (eq (string-to-char (file-attribute-modes (file-attributes fname))) ?s))
+
+(defun pel-file-type-str (path)
+  "Return a string describing the type of file system element at PATH.
+
+PATH must identify an existing file system object otherwise an
+error is raised."
+  (cond
+   ((file-symlink-p path)    "symbolic link")
+   ((file-directory-p path)  "directory")
+   ((file-regular-p path)    "file")
+   ((not (file-exists-p path)) (error "%s does not exists" path))
+   ((pel-unix-socket-p path) "UNIX socket")
+   (t "unknown file system object")))
 
 ;; ---------------------------------------------------------------------------
 ;; String predicates
@@ -2185,7 +2200,7 @@ name does not end with a slash, that it uses the file true name
 and use Unix-style formatting.  The function replaces a symlink
 by the file it points to.  The function does *not* expand
 environment variables that may be in the string."
-  (file-truename (directory-file-name name)))
+  (directory-file-name (file-truename name)))
 
 (defsubst pel-parent-dirpath (pathname)
   "Return parent directory of PATHNAME true name."
@@ -2243,16 +2258,62 @@ above directory in one of them."
   (string= (pel-normalize-fname name1)
            (pel-normalize-fname name2)))
 
-(defun pel-point-symlink-to (symlink target)
-  "Make SYMLINK point to specified TARGET.
+(defun pel-point-symlink-to (source target
+                                    &optional dont-follow-symlink-target)
+  "Set or turn SOURCE into a symbolic link that points to specified TARGET.
 
-If the SYMLINK already exists, either as a link or a file,
-changes it to a link to the specified TARGET.
-The SYMLINK argument must be a file name format, it must not end
-with a directory separating slash."
-  (when (file-exists-p symlink)
-    (delete-file symlink))
-  (make-symbolic-link target symlink))
+The true name of the TARGET is used: if TARGET is a symbolic link
+its final target is used unless DONT-FOLLOW-SYMLINK-TARGET is set.
+
+If the TARGET is a directory the function ensures that the link
+uses the directory format; it ensures the path ends with a
+directory separator character (forward slash in Unix).
+
+The SOURCE argument may identify an existing symlink which may
+point to a file or a directory.  The SOURCE symlink is not
+followed and is the one modified if it exists.
+
+If the SOURCE already exists, either as a symbolic link to a file or
+directory, the function changes its target to the specified TARGET.
+If SOURCE does not already exist the function creates a new
+symbolic link there that points to the specified TARGET.
+
+SOURCE may not identify existing real file, directory or other
+file system object, if it does the function will raise an error
+describing the problem.
+
+Returns the true name of the target."
+  ;; Note: file-symlink-p only works when the path passed
+  ;;       does NOT end with a slash separator.
+  ;;       Otherwise it always returns nil.
+  (when (and (not (file-symlink-p (directory-file-name source)))
+             (file-exists-p source))
+    (error
+     "(pel-point-symlink-to %S %S) arguments are invalid.
+  Cannot turn the %s %s into a symlink!"
+     source target (pel-file-type-str source) source))
+  ;;
+  ;; remove existing symlink; it will be re-created
+  (when (file-exists-p source)
+    (delete-file (directory-file-name source)))
+  ;; adjust target to ensure its validity: use fully expanded
+  ;; and absolute path for target except if the target is already a symlink
+  ;; and dont-follow-symlink-target is set. In this case, however ensure that a
+  ;; target that starts with "~" is expanded because symlinks that have a
+  ;; target that starts with "~" do not work (at least on some systems).
+  (setq target (if (file-symlink-p (directory-file-name target))
+                   (if dont-follow-symlink-target
+                       (if (pel-string-starts-with-p target "~")
+                           (expand-file-name target)
+                         target)
+                     ;; symlink but must follow it
+                     (file-truename target))
+                 ;; not a symlink
+                 (file-truename target)))
+  ;; Use the directory syntax for directory targets.
+  (when (file-directory-p target)
+    (setq target (file-name-as-directory target)))
+  (make-symbolic-link target source))
 
 (defun pel-symlink-points-to-p (symlink target)
   "Return t if SYMLINK points to TARGET, return nil otherwise.
