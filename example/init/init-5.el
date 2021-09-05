@@ -19,26 +19,34 @@
 ;;        byte-compile this file.  If you do make sure you byte compile it
 ;;        after each modification otherwise you will experience a slow
 ;;        startup!
+
+;; ---------------------------------------------------------------------------
+;; User configuration
+;; ==================
 ;;
-;; NOTE: This file has Options that must be edited manually and some that
-;;       are edited automatically by PEL
-;;       - Option A is edited automatically by `pel--update-emacs-init',
-;;         when the user executes `pel-setup-dual-environment'.
+;; This file has Options that must be edited manually and some that
+;; are edited automatically by PEL.  Do not edit the value of the variables
+;; edited automatically, PEL commands will do it.  Just edit the values of the
+;; variables identified for manual editing.
+;;
+;;
+;; - Edited automatically by PEL:
+;;
+;;   - Option a is edited automatically by `pel--update-emacs-init',
+;;     when the user executes `pel-setup-dual-environment'.
 ;;       - You must edit the other options manually (search for OPTION).
 ;;
+;; - Variables that must be edited manually:
 ;;
-;; - Option A: support for dual environment.  In dual environment, PEL forces
-;;             to use two independent customization files and two sets of
-;;             package directories: one for Emacs running in terminal/TTY mode
-;;             and another for Emacs running in graphics mode.
+;;   - OPTION B: name of the PEL directory.
 ;;
-;; - OPTION B: name of the PEL directory.
+;;   - OPTION C: whether you want to activate the benchmark-init feature to
+;;               measure time spent by various features during initialization.
 ;;
-;; - OPTION C: whether you want to activate the benchmark-init feature to
-;;             measure time spent by various features during initialization.
+;;   - OPTION D: whether Emacs displays its startup message for current user.
+;;   - OPTION E: whether graphical Emacs toolbar is displayed or not.
 ;;
-;; - OPTION D: whether Emacs displays its startup message for current user.
-;; - OPTION E: whether graphical Emacs toolbar is displayed or not.
+;;   Locate these manually edited variable by searching for "OPTION".
 ;; ---------------------------------------------------------------------------
 ;;
 ;; Section 0: PEL Edited Variable Definitions
@@ -46,10 +54,10 @@
 ;;
 ;; Option a: PEL controlled value -- updated by the function
 ;;           `pel--set-dual-environment-in-emacs-init'.
-;;           Independent customization for TTY and graphic mode.
-;;           - When set to t PEL uses a different customization file and
-;;             package directory for Emacs running in terminal/TTY and
-;;             graphic mode.
+;;           Support for dual environment with Independent customization and
+;;           package directories for Emacs running in terminal/TTY and graphic
+;;           mode.
+
 (defconst pel-init-support-dual-environment-p nil
   "Whether PEL uses dual custom & package files for TTY and graphic mode.")
 
