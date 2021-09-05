@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-04 19:54:20, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-05 11:35:02, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -580,7 +580,12 @@ Utility function. If REASON-MSG is specified include that message on error."
                           (pel-string-when reason-msg)
                           remaining-actions)))
         (if actions
-            (message "%s\n All is now OK!" done-text)
+            (message "%s\n All is now OK!%s"
+                     done-text
+                     (pel-string-when
+                      pel-emacs-is-graphic-p
+                      "
+Please restart Emacs to pick up the graphics-mode specific environment."))
           (message "Nothing to do, it's already setup."))))))
 
 ;;-pel-autoload
