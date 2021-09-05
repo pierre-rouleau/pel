@@ -478,8 +478,9 @@ Also expands to the file true name, replacing symlinks by what they point to."
         'init
         (format "ERROR loading customization file %s.
  Detected error: %S
- Created an empty customization instead to allow execution.
- Ignore this warning if you never created %s, otherwise investigate."
+ Created an empty customization instead to allow Emacs and PEL to start
+ and install the few packages that it always installs: popup and which-key.
+ - It's normal and expected if you never created %s, otherwise investigate."
                 custom-file err custom-file)
         :error)
        (unless (file-exists-p custom-file)
