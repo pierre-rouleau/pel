@@ -193,7 +193,8 @@ Also expands to the file true name, replacing symlinks by what they point to."
     ;; directory names, not accessed via symlinks that can be changed by a
     ;; separate Emacs process running PEL.
     ;;
-    (setq pel-package-user-dir-original package-user-dir)
+    (unless pel-package-user-dir-original
+      (setq pel-package-user-dir-original package-user-dir))
 
     ;;
     ;; In the code that follows, as well as inside early-init.el, PEL also
