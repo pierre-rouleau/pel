@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 31 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-04 18:49:47, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-05 17:52:26, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -62,7 +62,7 @@ In the current code this is only done by `pel--setup-dual-environment'")
 ;; Emacs Initialisation file validation
 ;; ------------------------------------
 
-(defconst pel--expected-init-file-version "0.1"
+(defconst pel--expected-init-file-version "0.2"
   "Must match what is in the example/init/init-5.el")
 
 (defconst pel--expected-early-init-file-version "0.2"

@@ -73,7 +73,7 @@
   "Directory where PEL Emacs Lisp source files are stored.")
 
 ;; --
-(defconst pel-init-file-version "0.1"
+(defconst pel-init-file-version "0.2"
   "Version of PEL init.el. Verified by pel-setup logic. Do NOT change.")
 
 (defconst pel-emacs-is-graphic-p (display-graphic-p)
@@ -467,7 +467,23 @@ Also expands to the file true name, replacing symlinks by what they point to."
                          "emacs-customization-graphics.el"
                        "emacs-customization.el")
                      user-emacs-directory))
-  (load (file-name-sans-extension custom-file))
+  ;; Attempt to load the selected customization file.  If not found, create an
+  ;; empty one to allow Emacs to start, but display a warning message
+  ;; describing the error.
+  (condition-case err
+      (load (file-name-sans-extension custom-file))
+    (file-missing
+     (progn
+       (display-warning
+        'init
+        (format "ERROR loading customization file %s.
+ Detected error: %S
+ Created an empty customization instead to allow execution.
+ Ignore this warning if you never created %s, otherwise investigate."
+                custom-file err custom-file)
+        :error)
+       (unless (file-exists-p custom-file)
+         (with-temp-buffer (write-file custom-file))))))
 
   ;; -------------------------------------------------------------------------
   ;; Section 6: in normal startup mode initialize package
