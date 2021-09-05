@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-03 12:10:50, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-05 17:24:23, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -631,7 +631,8 @@ of a restriction lock."
 - # features                  : %d
 - # package-alist             : %d
 - # packages activated        : %d
-- # packages selected         : %d"
+- # packages selected         : %d
+- Emacs init-time             : %s"
                             custom-file
                             package-user-dir
                             (length
@@ -652,7 +653,11 @@ of a restriction lock."
                             (length features)
                             (length package-alist)
                             (length package-activated-list)
-                            (length package-selected-packages))))
+                            (length package-selected-packages)
+                            (if (and (require 'time nil :no-error)
+                                     (fboundp 'emacs-init-time))
+                                (emacs-init-time)
+                              "?"))))
     (if full-report
         (if (pel-in-fast-startup-p)
             (user-error "PEL is running in fast-startup.  This is only available in normal mode!")
