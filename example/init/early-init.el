@@ -95,8 +95,16 @@
 ;;
 ;; To work around this limitation the value of the customization file is
 ;; stored inside the `pel-early-init-custom-file' variable.  The PEL's default
-;; is identified.  If you want to use another file change the initialized
-;; value.
+;; is identified.  If you want to use another customization file you must do
+;; the following:
+;;
+;; - Make a copy of PEL's example/init/early-init.el somewhere.
+;; - Identify the name of that file inside the `pel-early-init-template'
+;;   user-option and save the customization inside the customization file you
+;;   want to use.
+;; - Open your copy of this early-init.el file and modify the value of the
+;;   `pel-early-init-custom-file' variable to reflect the name of your Emacs
+;;   customization file.
 
 (defconst pel-early-init-custom-file "~/.emacs.d/emacs-customization.el"
   "Value of `custom-file' used by early-init.el code.
