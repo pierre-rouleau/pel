@@ -486,9 +486,13 @@ Also expands to the file true name, replacing symlinks by what they point to."
  - It's normal and expected if you never created %s, otherwise investigate."
                 custom-file err custom-file)
         :error)
-       (unless (file-exists-p custom-file)
-         (with-temp-buffer (write-file custom-file)))
-       (let ((utils-dirpath (expand-file-name "utils" user-emacs-directory)))
+       (let ((utils-dirpath (expand-file-name "utils" user-emacs-directory))
+             (abbrev-defs   (expand-file-name "abbrev_defs"
+                                              user-emacs-directory)))
+         (unless (file-exists-p custom-file)
+           (with-temp-buffer (write-file custom-file)))
+         (unless (file-exists-p abbrev-defs)
+           (with-temp-buffer (write-file abbrev-defs)))
          (unless (file-exists-p utils-dirpath)
            (make-directory utils-dirpath))))))
 
