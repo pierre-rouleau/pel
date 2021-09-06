@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-08-30 13:29:09, updated by Pierre Rouleau.
+:Modified: 2021-09-06 18:05:55, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -75,7 +75,8 @@ PEL is an hybrid package. It is:
   - `PEL key bindings`_ avoid modification of most Emacs key bindings. Instead
     PEL uses several function keys (**F2**, **F5**, **F6**, **F11** and
     **F12**) as key prefixes as described in the section titled `PEL Function
-    Keys Bindings`_.  It also uses the **F9** key with some external packages.
+    Keys Bindings`_.  It also uses the **F9** key as a prefix to enter Greek
+    letters when ``pel-activate-f9-for-greek`` is activated and for  some external packages.
   - PEL features are implemented by a `set of small Emacs Lisp files`_ and
     that deal with several aspects of Emacs like windows and frame, scrolling
     control, buffer, navigation, opening files or web pages from file name or
@@ -262,27 +263,14 @@ required tools.  They are described in the following sections:
 #. `Install other required command line tools`_
 
 
-**Fast Track**
-
-If you don't want to read the full detailed description of the installation
-steps, you can skip to the section titled `Fast Track Installation Steps`_.
-
-**Detailed Track**
+**Installation Instructions**
 
 The fully detailed instructions are described in the following sections:
 
 #. `Clone the PEL Git repository`_ on your computer.
-#. `Prepare Emacs Initialization directory`_ where lots of Emacs files will go.
-#. `Create a "~/.emacs.d/utils" directory`_ for files from the EmacsAttics_ and
-   EmacsMirror_ that PEL uses and for files hosted on GitHub and Gitlab that are not
-   supported by Elpa packaging mechanism.
-#. `Create the emacs-customization.el file`_.
-#. `Create or Update your Emacs init.el file`_.
+#. `Prepare Emacs Initialization directory`_ where lots of Emacs files will
+   go.
 #. `Byte Compile PEL Files`_.
-#. Optional: `Add Support for Fast Startup`_.
-#. Optional: `Add Support for Independent Customization of Graphics and
-   Terminal based Emacs`_.
-#. Optional: `Add Support for Package Quickstart for Emacs 27 and later`_.
 #. Optional: `Create command line shortcuts for Emacs`_.
 #. `Further PEL Configuration`_.
 #. `Activate PEL Features - Customize PEL`_.
@@ -378,6 +366,9 @@ PEL.
 
 **Do this:**
 
+Open a terminal shell or command line window and execute the following
+commands:
+
 .. code:: shell
 
           cd
@@ -397,217 +388,93 @@ There are several ways to set up `Emacs initialization file`_.
 You will have to store several Emacs-related files in your system:
 
 - PEL itself,
-- Emacs init file,
+- Emacs init file, ``init.el``.
 - Emacs customization file,
 - Emacs bookmarks file,
 - Emacs abbreviation files,
 - External Emacs Lisp libraries downloaded from Elpa-compliant sites like
   ELPA_, MELPA_ or MELPA-STABLE_,
 - External Emacs Lisp libraries from the EmacsAttics_ or EmacsMirror_ that are
-  not Elpa-protocol compliant and must be stored into a *utils* directory,
+  not Elpa-protocol compliant are supported by PEL and must be stored into the
+  *utils* directory.
 - etc...
 
+It is best to use the "``~/.emacs.d``" directory where all of these files will
+be stored.
 
-It is best to  create the "``~/.emacs.d``" directory and store
-Emacs configuration file inside "``~/.emacs.d/init.el``".
-
-The following instructions assume that your Emacs initialization file is
-"``~/.emacs.d/init.el``".
-
-
-Windows users:
+**Windows users**:
   Under Windows, your ".emacs.d" directory should be stored inside your HOME
   directory. See `Emacs Windows init location FAQ`_ for more information.
 
+**Do this:**
+
+- Open a terminal shell or command line window and execute the following
+  command:
+
+.. code:: shell
+
+          emacs
+
+This should open a graphical version of Emacs.  If that does not work check
+your Emacs installation.  You may also want to try to execute Emacs in
+terminal mode:
+
+.. code:: shell
+
+          emacs -nw
+
+- Close Emacs:  type ``C-x C-c``.  That is hold the ``control`` key and type ``x``
+  followed by ``c`` and then release the control key.
+
+- If it did not already exist, this should have created the ``~/.emacs.d``
+  directory.  If not create it using the ``mkdir ~/.emacs.d`` command.
+
+- Copy PEL's example/init/init.el into your ``~/.emacs.d`` using the following
+  shell commands (assuming you stored PEL inside ``~/projects/pel``:
+
+
+.. code:: shell
+
+          cd ~/project/pel
+          cp example/init/init.el ~/.emacs.d/init.el
+
+- Run emacs again:
+
+.. code:: shell
+
+          emacs
+
+
+This time PEL initialization file should have taken over.
+
+- PEL  will create missing files and will access MELPA to install the popup and
+  which-key_ packages.
+- PEL will then display a warning message to inform you about the fact that
+  Emacs customization file did not originally exists before PEL created it.
+  This message is expected when installing PEL and should not show up later.
+  You should see something like this:
+
+.. figure:: res/pel-install-01.png
+   :scale: 50 %
+
+- Close Emacs (with ``C-x C-c``).  Open it again.  Now you should see no
+  warnings, just the standard Emacs screen:
+
+.. figure:: res/pel-install-02.png
+   :scale: 50 %
+
+- Hit the **F11** key.  That's PEL main key prefix. After one or two seconds
+  the which-key_ package should display the keys that can be typed after F11
+  like this:
+
+.. figure:: res/pel-install-03.png
+   :scale: 50 %
+
+- Make sure your environment provide access to that key.  In terminal mode you
+  may have to configure your terminal application to prevent it from using the
+  F11 key.
+
 .. _Emacs Windows init location FAQ: https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html
-
-Create a "~/.emacs.d/utils" directory
--------------------------------------
-
-**Description:**
-
-The name of the directory could be anything, *utils* is what this example uses.
-Create the "~/.emacs.d/utils"  directory.  This is where you need to store the
-single file external packages that PEL uses and which are not supported by the
-Elpa-compliant sites.
-
-An easy way to do this from a shell is shown below.
-
-**Do this:**
-
-.. code:: shell
-
-          mkdir -p ~/.emacs.d/utils
-
-
-Create the emacs-customization.el file
---------------------------------------
-
-**Description:**
-
-Emacs stores customization information inside your ``init.el`` file by default.
-It is best to store it somewhere else, as written in section 4 of the
-section `Create or Update your Emacs init.el file`_.
-
-By storing it inside "``~/.emacs.d/emacs-customization.el``" you can control
-your Emacs customization independently from your Emacs initialization and you
-can also copy and distribute the customization file across several computers to
-use the same tools the same way.  Since PEL controls activation and download of
-the external Emacs Lisp libraries by the PEL user options (with ``pel-use-``
-names), the customization will also control the external libraries installed.
-
-Before the next step you must therefore create an empty
-"``~/.emacs.d/emacs-customization.el``" file.
-This can be done from a terminal shell, as described below.
-
-**Do this:**
-
-.. code:: shell
-
-         touch ~/.emacs.d/emacs-customization.el
-
-**You might also have to do this:**
-
-If you already had a ``custom-set-variables`` form inside your init.el file,
-move it inside the "``~/.emacs.d/emacs-customization.el``" file, otherwise the
-file can stay empty.  It will be filled by Emacs in the next step.
-
-
-Create or Update your Emacs init.el file
-----------------------------------------
-
-**Do this:**
-
-Add the following code inside your "``~/.emacs.d/init.el``" file.
-You can also use a copy of the file `example/init/init-1.el`_ :
-
-
-.. _example/init/init-1.el: ../example/init/init-1.el
-
-.. code:: elisp
-
-        ;; -*-no-byte-compile: t; -*-
-        ;;; ---Example init.el file ---------------- Step 1----------------------------
-        ;;
-        (defconst pel-home-dirpath (expand-file-name "~/projects/pel")
-          "Directory where PEL source files are stored.")
-
-        ;; 1: Setup additional package sources: MELPA, MELPA-STABLE.
-        ;;    By default Emacs only identifies the gnu archive located at
-        ;;    URL "https://elpa.gnu.org/packages/".
-        ;;    Add the MELPA archives as they provide more packages.
-        (when (>= emacs-major-version 24)
-          (if (< emacs-major-version 27)
-              ;; Emacs prior to 27
-              ;; ----------------
-              (progn
-                (require 'package)
-                (setq package-enable-at-startup nil)
-                (if (member emacs-version '("26.1" "26.2"))
-                    (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
-                (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                                    (not (gnutls-available-p))))
-                       (proto (if no-ssl "http" "https")))
-                  (add-to-list 'package-archives
-                               (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-                  (add-to-list 'package-archives
-                               (cons "melpa-stable"
-                                     (concat proto "://stable.melpa.org/packages/")) t))
-                (package-initialize))
-
-            ;; Emacs 27 or later.
-            ;; ------------------
-            ;; Emacs >= 27 support the `package-quickstart' feature which
-            ;; speeds-ups Emacs startup time.  This is a user-option which must be
-            ;; activated manually.
-            ;; When package-quickstart is customized to t, Emacs 27 support 2 initialization
-            ;; files in the user-emacs-directory (which often is ~/.emacs.d), these are:
-            ;;
-            ;; - early-init.el  : loaded very early in the startup process before
-            ;;                    graphical elements are initialized and before the
-            ;;                    package manager is initialized.  The following
-            ;;                    variables should be set in early-init.el:
-            ;;                    - `package-load-list'
-            ;;                    - `package-user-dir'
-            (unless (boundp 'package-quickstart)
-              (setq package-quickstart nil))
-            (unless package-quickstart
-              ;; Activate PEL's fast startup if environment was setup by `pel-setup-fast'.
-              (let ((fast-startup-setup-fname (expand-file-name "pel-fast-startup-init.el"
-                                                                user-emacs-directory)))
-                (when (file-exists-p fast-startup-setup-fname)
-                  (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
-                  (pel-fast-startup-init)
-                  ;; Remember Emacs is running in PEL's fast startup mode.
-                  (setq pel-running-in-fast-startup-p t))))
-            (require 'package)
-            (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/") t)
-            (add-to-list 'package-archives (cons "melpa-stable" "https://stable.melpa.org/packages/") t)
-            (package-initialize)))
-
-
-        ;; 2: Delay loading of abbreviation definitions
-        ;;     Disable loading the abbreviation file during Emacs initialization.
-        ;;     To do this: save and replace the content of the variable that holds
-        ;;     the file name of the abbreviation list with the name of a file
-        ;;     that does not exists.
-        ;;     Pass the original name to pel-init later to initialize properly.
-        ;;
-        ;; (setq pel--abbrev-file-name abbrev-file-name)
-        ;; (setq abbrev-file-name "~/abbrev_defs-invalid") ; use non-existing file name
-
-        ;; 3: Add pel to Emacs load-path
-        ;;    Identify the directory where you stored pel.
-        (add-to-list 'load-path pel-home-dirpath)
-
-        ;; 4: Add utils to Emacs load-path
-        (add-to-list 'load-path (expand-file-name "~/.emacs.d/utils"))
-
-        ;; 5: Store Emacs customization inside a separate file
-        ;;    If you already have a (custom-set-variables ...) form
-        ;;    in your init.el, move it into this new file.
-        (setq custom-file "~/.emacs.d/emacs-customization.el")
-        (load custom-file)
-
-        ;; 6: Start PEL
-        ;; - At first leave this commented out.
-        ;; - Activate the code Once you have successfully built PEL once
-        (require 'pel)
-        (pel-init)  ; or later->; (pel-init pel--abbrev-file-name)
-
-        ;;; ---- end of init.el -------------------------------------------------------
-
-
-**Description:**
-
-- Section 1 of the code adds the following URLs of Elpa-compliant Emacs package
-  archives:
-
-  - MELPA_
-  - MELPA-STABLE_
-
-- Section 2 delays the loading of the abbreviation lists to after PEL is
-  loaded.  This mechanism is described in the section titled
-  `Delay Loading of Abbreviation Definition File`_.
-- Section 3 adds the location of the *pel* directory to Emacs ``load-path``
-  to allow Emacs to find all PEL Emacs Lisp files.  This should be the
-  directory where you downloaded PEL.
-- Section 4 adds the location of the *utils* directory to Emacs ``load-path`` to
-  allow Emacs to find the single file Emacs libraries PEL uses.
-- Section 5 tells Emacs to store its customization form inside a file called
-  "``~/.emacs.d/emacs-customization.el``".  If you already have Emacs customization
-  inside your current init.el file, copy it inside that new file.
-  Emacs customization is the full content of the ``(custom-set-variables ...)`` form.
-- Section 6 load and initializes PEL by evaluating the ``pel-init`` function that
-  is located inside the file ``pel.el``.
-
-.. _cloned PEL: `Clone the PEL Git repository`_
-
-If you have cloned PEL inside ``~/projects/pel`` you are ready to go to next step.
-Otherwise you **must update** the init.el to identify the location of the
-``pel`` directory as shown below.
-
-.. image:: res/update-init.png
 
 Byte Compile PEL Files
 ----------------------
@@ -633,17 +500,24 @@ and you should see no error or warning.
 
 **At this point you can use Emacs with PEL**
 
-You should have a working version of PEL with all
-files byte-compiled for efficiency 😅!
-
-If you start Emacs now, PEL will start and will download and install the
-following Emacs packages if you don't already have them:
-
-- which-key_ (because ``pel-use-which-key`` is turned on by default)
+- You should have a working version of PEL with all
+  files byte-compiled for efficiency 😅!
+- The key keys following key prefixes will be shown at the bottom of the Emacs
+  screen by which-key_ (because ``pel-use-which-key`` is turned on by default)
   and any package(s) which-key_ may require.
+- Type ``<f11> ? p`` and a topic to open one of the PEL PDF files.
+   Use tab to complete what you type.  Type tab at first to see a complete
+   list of PDF files.
+- As usual in Emacs, type ``C-x C-c`` to close it.
 
-The *only* thing left is to use Emacs customization system to activate the
-features you want. That's described in the next section.
+The *only* thing left is to:
+
+- `Update any option in PEL init.el file`_ if required.
+- Learn `PEL Customization`_ mechanism you will use to configure Emacs.
+- Improve your Emacs user experience by selecting Emacs behaviour and packages
+  that suits your needs with the `Optional Installation Steps`_.
+
+That's described in the next sections.
 
 **In case of Errors:**
 
@@ -661,216 +535,64 @@ If the problem persists, or if you see an error or a warning during the build
 or when you start Emacs, please `create an issue`_ describing the problem and
 your environment and I will get to it.
 
-**Next Step**
-
-Skip the next section and read the section describing how to configure PEL:
-`Activate PEL Features - Customize PEL`_.  Once you understand PEL's
-customization you should perform the `Optional Installation Steps`_ to take
-advantage of all PEL features.
-
 .. _create an issue: https://github.com/pierre-rouleau/pel/issues
+.. _Update any option in PEL init.el file: `Further Configure the init.el File`_
 
 .. ---------------------------------------------------------------------------
 
+Further Configure the init.el File
+----------------------------------
 
-Fast Track Installation Steps
------------------------------
+PEL's ``init.el`` file contain the code required to run PEL with Emacs.  There
+are values set in that file you may want to change.  These are described in
+this section.
 
-This section just lists the commands that must be used to install PEL once the
-required tools are installed.  If you have not done that yet, go back to
-`How to Install PEL`_.  Otherwise keep reading.
+Use Emacs to edit the ``~/.emacs.d/init.el`` file.
 
-**Important**:
-   If you have already used Emacs and have a ``~/.emacs.d`` and its ``init.el` file,
-   you should follow the detailed instructions.  If you want to use this
-   fast-track then move your ``~/.emacs.d/init.el`` file somewhere else because it
-   will be deleted by the following steps.  Or move your entire ``~/.emacs.d``
-   directory somewhere else.  Later you can then merge the files.
+- Start Emacs.
+- To open the file type ``C-x f ~/.emacs.d/init.el``
+- Read the instructions located inside the ``User Configuration`` section on
+  top of the file.
+- Use ``C-s OPTION RET`` to search for the word "OPTION" and modify the code
+  according to what you need:
 
+  - **OPTION B**: If you want to store PEL's source code somewhere else than
+    ``~/projects/pel`` change the name of the directory at that option.
 
-To install PEL, open a terminal shell and execute the following commands in
-sequence:
+  - **OPTION C**: is where you control the use of the benchmark-init package
+    to identify what code takes time during Emacs startup.  You should do this
+    only once you feel comfortable with Emacs.
 
-#. Clone PEL repository into ``~/projects/pel``:
+  - **OPTION D**: By default Emacs displays generic information about GNU
+    and Emacs on startup.  After reading it once or twice you may want to
+    prevent this information from showing up.  For that un-comment the line
+    shown below the OPTION C text and replace the string YOUR_USER_NAME by
+    your OS user name.  On Unix-like OS, this is what the **who** command
+    displays.
 
-   .. code:: shell
+  - **OPTION E**: this is a small section of code that activates or
+    de-activates various global Emacs settings.  It starts with a commented
+    line that disables the tool bar of Emacs running in graphics mode.  If
+    you do not want to use that tool-bar un-comment the corresponding line
+    of code.  Read the code in that section.  You may want to modify some of
+    this.  However remember that PEL controls Emacs behaviour through
+    customization, not by code invoked through the init.el file: it's best
+    to minimize what you add the this section of code if you want to take
+    advantage of what PEL offers and to minimize Emacs startup time.
 
-          cd
-          mkdir projects
-          cd projects
-          git clone https://github.com/pierre-rouleau/pel.git
+  - **OPTION F**: is where you will want to store the code that used to be
+    inside your old init.el file if you had one.  However if that code was
+    selecting Emacs behaviour and configuring packages that are already under
+    control from PEL, its best to keep this code out of init.el and leave PEL
+    manage it.  If you want PEL to support a feature it does not please write
+    a ticket to report it and I'll try to accommodate the request quickly.
 
-#. Create ~/.emacs.d directory, sub-directories and required files
+  - **OPTION G** identifies a set of Emacs functions that are normally
+    disabled because they tend to confuse new Emacs users.  You can activate
+    them here.
 
-   .. code:: shell
-
-          mkdir -p ~/.emacs.d/utils
-          touch ~/.emacs.d/emacs-customization.el
-
-#. Create a simple ``~/.emacs.d/init.el`` using the provided example
-
-   .. code:: shell
-
-          cp ~/projects/pel/example/init/init-1.el ~/.emacs.d/init.el
-
-#. Build PEL: byte-compile all PEL source code files:
-
-   .. code:: shell
-
-          cd ~/projects/pel
-          make clean
-          make
-
-
-#. Open emacs to download packages like which-key_ activated by default:
-
-   .. code:: shell
-
-          emacs
-
-#. Once Emacs has completed the download, you can use Emacs with PEL.
-
-   - Type ``<f11> ? p`` and a topic to open one of the PEL PDF files.
-     Use tab to complete what you type.  Type tab at first to see a complete
-     list of PDF files.
-   - As usual in Emacs, type ``C-x C-c`` to close it.
-
-
-At this point PEL is installed and operational.
-
-**Extra Steps to Improve Performance:**
-
-Perform these extra steps to increase the performance of Emacs and PEL:
-
-#. Setup Delay Loading of Abbreviation Definition File:
-
-   .. code:: shell
-
-          cp ~/projects/pel/example/init/init-2.el ~/.emacs.d/init.el
-          touch ~/.emacs.d/abbrev_defs
-
-#. Install a spell-checker program.  It must be ispell-compatible.
-   Use you system installation command to install one of ispell, aspell,
-   or hunspell if none of them are installed.
-   See the `Configure Spell Checking`_ section for more information.
-
-
-#. Speed-up Emacs: hold garbage collection during startup, postpone as much as
-   possible and support PEL fast-startup.  Use `example/init/init-5.el`_ as
-   the basis for your init.el file:
-
-   .. code:: shell
-
-          cp ~/projects/pel/example/init/init-5.el ~/.emacs.d/init.el
-
-#. Edit the ``~/.emacs.d/init.el``: search for the word ``OPTION`` and
-   update them to fit your needs.
-   For more information read the following sections:
-
-   - `Add Support for Fast Startup`_
-   - `Add Support for Independent Customization of Graphics and Terminal based
-     Emacs`_
-   - `Add Support for Package Quickstart for Emacs 27 and Later`_
-
-#. Optionally add two command line scripts to start Emacs in terminal or
-   graphics mode from a shell.  See examples in the section titled
-   `Create command line shortcuts for Emacs`_.
-
-At this point, continue to the next sections:
-
-#. `Identify Types of Emacs Processes`_.
-#. `Prepare using GUI-launched Emacs running in graphics mode`_.
-#. `Prepare using shell-launched Emacs running in graphics mode`_.
-#. `Prepare using shell-launched Emacs running in terminal mode`_.
-#. `Further PEL Configuration`_.
-#. `Activate PEL Features - Customize PEL`_.
-#. Optionally, `create command line shortcuts for Emacs`_.
-
-.. ---------------------------------------------------------------------------
-
-Optional Installation Steps
----------------------------
-
-The following steps described in this section are optional but strongly
-recommended if you want to take advantage of:
-
-- PEL fast-startup (see `Add Support for Fast Startup`_),
-- dual independent customization files (see `Add Support for Independent
-  Customization of Graphics and Terminal based Emacs`_),
-- ability to launch Emacs from a GUI program (see
-  `Prepare using GUI-launched Emacs running in graphics mode`_),
-- want to support package-quickstart on Emacs 27 and later
-  (see `Add Support for Package Quickstart for Emacs 27 and
-  Later`_),
-- and other improvements.
-
-
-Add Support for Fast Startup
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-**Description:**
-
-To provide a much faster startup speed when using a large number of external
-packages PEL provides logic to bundle all single directory packages inside a
-single package directory.  This reduces the length of Emacs load-path list and
-improves the startup speed.  PEL provides commands to display the currently
-active startup mode and switch from one mode to the other.  See the `Fast
-Startup`_ PDF for more information.
-
-To take advantage of this mechanism you must also add logic inside your
-init.el file.  PEL provides an example of this code: the
-`example/init/init-5.el`_ file.  The file is fully commented and identifies a
-set of options you will need to edit.
-
-**Do this:**
-
-- Start an Emacs process that has been configured without fast startup.
-- Open a terminal shell.  Inside that shell type the following commands to
-  use `example/init/init-5.el`_ as your init.el file:
-
-.. code:: shell
-
-          cd ~/.emacs.d
-          mkdir tmp
-          cp init.el tmp
-          cp ~/projects/pel/example/init/init-5.el init.el
-
-
-- With the Emacs process you have already identified, use it to edit
-  your new ``~/.emacs.d/init.el`` file.
-
-  - To open the file type ``C-x f ~/.emacs.d/init.el``
-  - Read the instructions located inside the top of the file.
-  - Use ``C-s OPTION RET`` to search for the word "OPTION" and modify the code
-    according to what you need:
-
-    - **OPTION A**: if you want to use two independent custom files for terminal
-      (TTY) and graphics mode, set ``pel-init-support-dual-environment-p``
-      symbol to **t**.  See the next section,
-      `Add Support for Independent Customization of Graphics and Terminal
-      based Emacs`_ for more information.
-    - **OPTION B**: this is to measure time spent by code executed at startup.
-      Unless you know Emacs at this point, leave the code commented out.
-      Later, when you have a better understanding of Emacs and ecosystem you
-      can come back and activate it.
-    - **OPTION C**: By default Emacs displays generic information about GNU
-      and Emacs on startup.  After reading it once or twice you may want to
-      prevent this information from showing up.  For that un-comment the line
-      shown below the OPTION C text and replace the string YOUR_USER_NAME by
-      your OS user name.  On Unix-like OS, this is what the **who** command
-      displays.
-    - **OPTION D**: this is a small section of code that activates or
-      de-activates various global Emacs settings.  It starts with a commented
-      line that disables the tool bar of Emacs running in graphics mode.  If
-      you do not want to use that tool-bar un-comment the corresponding line
-      of code.  Read the code in that section.  You may want to modify some of
-      this.  However remember that PEL controls Emacs behaviour through
-      customization, not by code invoked through the init.el file: it's best
-      to minimize what you add the this section of code if you want to take
-      advantage of what PEL offers and to minimize Emacs startup time.
-
-  - Save your modifications back to the init.el file by typing ``C-x C-s``
-  - Keep Emacs opened on your init.el file.
+- Save your modifications back to the init.el file by typing ``C-x C-s``
+- Keep Emacs opened on your init.el file.
 
 - Open a new terminal shell.
 
@@ -880,176 +602,161 @@ set of options you will need to edit.
     the file and try again.
 
 - Once Emacs starts properly close all Emacs sessions.
-  You can type ``C-x C-c`` to save all buffers and terminate Emacs.
+  You can type ``C-x C-c`` to save all buffers and terminate all Emacs
+  sessions.
 
 
+.. ---------------------------------------------------------------------------
 
-Add Support for Independent Customization of Graphics and Terminal based Emacs
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Optional Installation Steps
+---------------------------
 
+The following steps described in this section are optional but strongly
+recommended if you want to take advantage of:
 
-Emacs can run in terminal (TTY) mode inside your current shell.  You can also
-use Emacs in graphics mode, a GUI application that provides a graphical user
-interface and ability to display images.  Each mode has its advantages and
-disadvantages.  You may want to use both and activate features in a mode but
-not in the other to reduce their respective startup time and memory footprint.
-
-PEL controls activation of Emacs features through customization and stores the
-customization information inside a customization file.  By default Emacs
-stores the customization information as Emacs Lisp code inside the init.el
-file.  PEL prevents Emacs from doing that.  Instead it instructs Emacs to
-use a specific file for the customization data: the file
-``~/.emacs.d/emacs-customization.el``.
-
-In the **OPTION A** of the `example/init/init-5.el`_ file, that you should have
-now copied into your own init.el, set the value of the variable
-``pel-init-support-dual-environment-p`` to **t** to instruct PEL that you
-want to use two independent customization files.
-
-Then Emacs will use two files to store customization data:
-
-- ``~/.emacs.d/emacs-customization.el`` in terminal (TTY) mode,
-- ``~/.emacs.d/emacs-customization-graphics.el`` in graphics mode.
-
-When this is activates PEL also instruct Emacs to use a different directory to
-store Elpa-compliant packages: one directory will be used in terminal (TTY)
-mode and another will be used for Emacs running in graphics mode.   This way
-when activating an external package for one mode it will not affect the other
-mode.  If you need it in both modes then you will have to activate it in both
-modes.
-
-Over time you may find the process cumbersome.  You may then want to take
-advantage of Emacs built-in Ediff capabilities to show a diff of these two
-customization files and copy settings from one to the other.
-
-The easiest way to do this with PEL is to open the 2 files, each one in its
-own buffer window and show only these 2 windows.  Then execute the
-``pel-ediff-2files`` command by typing the PEL ``<f11> d 2`` key sequence.
-Type ``?`` to display ediff help and the commands to navigate through the
-files and their differences.  You can copy one set of changes from one file to
-the other this way.  It's a quick way to duplicate customization and also a
-good way to review the recent changes to your customization.
+- ability to launch Emacs from a GUI program (see
+  `Prepare using GUI-launched Emacs running in graphics mode`_),
+- and other improvements.
 
 
-Add Support for Package Quickstart for Emacs 27 and Later
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Further PEL Configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Emacs 27 introduced the **package-quickstart** user-option variable which
-improves Emacs startup speed.   To use this feature you must customize the
-Emacs user-option ``package-quickstart`` to **t**.
+The following sections describe optional optimizations or modifications
+that can be done after the first complete and successful installation of PEL.
 
-That mechanism initializes the package library before init.el is executed and
-some variables like ``package-user-dir`` cannot be modified inside init.el,
-they must be modified inside a new file: the file called
-``~/.emacs.d/early-init.el``.
+Configure Spell Checking
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you want to use the PEL fast startup mechanism with Emacs 27+, then you
-must include the following code inside the early-init.el file:
+To use spell checking features in Emacs, you must use a spell
+checking program available from the command line.  Emacs Ispell and Flyspell can
+use a Ispell-compatible program like:
 
-.. code:: elisp
-
-          ;; -*- lexical-binding: t; -*-
-
-          (defvar pel-force-graphic-specific-custom-file-p (getenv "PEL_EMACS_IN_GRAPHICS")
-            "Force independent graphics mode customization.")
-
-          ;; Inform later code that package quickstart is being used.
-          (setq package-quickstart t)
-
-          ;; Activate PEL's fast startup if environment was setup by `pel-setup-fast'.
-          (let ((fast-startup-setup-fname (expand-file-name "pel-fast-startup-init.el"
-                                                            user-emacs-directory)))
-            (when (file-exists-p fast-startup-setup-fname)
-              (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
-              (pel-fast-startup-init pel-force-graphic-specific-custom-file-p)
-              ;; Remember Emacs is running in PEL's fast startup mode.
-              (setq pel-running-in-fast-startup-p t)))
-
-          (when pel-force-graphic-specific-custom-file-p
-            (setq package-user-dir (locate-user-emacs-file "elpa-graphics")))
+- `ispell <https://en.wikipedia.org/wiki/Ispell>`_,
+- aspell_,
+- hunspell_, or
+- enchant_.
 
 
+.. _aspell:    https://en.wikipedia.org/wiki/GNU_Aspell
+.. _hunspell:  https://en.wikipedia.org/wiki/Hunspell
+.. _enchant:   https://en.wikipedia.org/wiki/Enchant_(software)
 
-If you use only one customization file and have nothing special to configure
-there then nothing else is needed in the file.
+If none is available on your system you will have to install it manually.
 
-However, if you want, for example, to have 2 different customization settings,
-one when Emacs runs in terminal mode, and one when Emacs is running in
-graphics mode, and you want to maintain two sets of elpa directories, one for
-each configuration, then you have to write the logic inside the early-init.el
-file.
+Identify the program to use in PEL customization user option variable
+``pel-spell-check-tools``. This user option allow you to define one program per
+Operating System.  You can also identify the location of your personal
+dictionary file.
 
-Here's an example of early-init.el, the `example/init/early-init.el`_ that
-supports PEL fast startup and ability to use a customization in terminal mode
-and another in graphics mode:
+To quickly gain access to the customization buffer for the
+``pel-pkg-for-spelling`` group where that user option is located type
+the ``<f11> <f2> $`` key sequence.
+
+For the changes to take effect, save the changes and execute pel-init
+(with ``M-x pel-init``) or restart Emacs.
+
+More information on PEL support of spell checking is available
+in the `PEL Spell Checking Support`_ section and the `Spell Checking`_ PDF sheet.
+
+Disable Emacs Startup splash screen and echo area message
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+By default Emacs displays its splash screen on startup and displays a message on
+the echo area telling you about Emacs in general and the concept of free
+software. Once you have read this information, you can disable them with the
+following code:
 
 .. code:: elisp
 
-      ;; -*- lexical-binding: t; -*-
-      ;;
-      ;; Emacs >= 27 support the `package-quickstart' feature which speeds-up
-      ;; Emacs startup time by building the autoloads for all elpa external
-      ;; packages ahead of time in a previous Emacs session.
+  ;; Do not display the splash screen.  Same as emacs -Q
+  (setq inhibit-startup-screen t)
+  ;; Don't display the start help in minibuffer, at least for me.
+  (setq inhibit-startup-echo-area-message "YOUR-USER_NAME_HERE")
 
-      ;; The Emacs quick start mechanism is activated by the presence of a
-      ;; early-init.el file in the user-emacs-directory.  The early-init.el
-      ;; file is loaded very early in the startup process, before graphical
-      ;; elements are initialized and before the package manager is
-      ;; initialized.
-      ;;
-      ;; The following variables must be initialized in early-init.el:
-      ;;
-      ;; - `package-quickstart' must be set to t to activate the package
-      ;;   quickstart mechanism.  Its documentation states that it can be
-      ;;   customized, but the customized value is read too late in the
-      ;;   process, therefore you should avoid modifying its value through
-      ;;   customization.
-      ;; - `package-user-dir': If you need to modify `package-user-dir' when
-      ;;   the package quickstart is used in normal startup mode, then the
-      ;;   value that differ from the default must be set inside early-init.el
-      ;;
-      ;; - `package-load-list': By default this is set to '(all) to specify
-      ;;    that `package-initialize' should load the latest installed version
-      ;;    of all packages. If you need to modify this behaviour when the
-      ;;    package quickstart is used, set the value inside the early-init.el
+Replace "YOUR_USER_NAME_HERE" by a string containing your user name.
+Emacs was written to allow multiple users from having access to the same
+configuration, and this identifies the user that will not be reminded of Emacs
+concepts and principles every time Emacs starts.  So, to take advantage of that
+small speed up make sure you put your user name there.
 
-      ;; PEL Init option A: independent customization for TTY & graphic modes.
-      ;; ---------------------------------------------------------------------
-      ;;
-      ;; Separate elpa directory for Emacs in graphics mode and Emacs in TTY mode.
-      ;; Use ~/.emacs.d/elpa in TTY mode, and ~/.emacs.d/elpa-graphics in graphics mode.
-      ;; Inside early-init.el the function `display-graphic-p' does not return t for
-      ;; Emacs running in graphics mode, so instead use a shell script to start Emacs in
-      ;; graphics mode and set the PEL_EMACS_IN_GRAPHICS environment variable to "1"
-      ;; inside that shell script otherwise do not define the variable.
-      ;;
-      ;; To activate init option A for Emacs 27+ you must use a specialized shell
-      ;; that sets the PEL_EMACS_IN_GRAPHICS environment variable for Emacs used
-      ;; in graphics mode and don't set it for Emacs running in TTY mode.
+The file `example/init/init.el`_ contains the code that disables the splash
+screen. the code that disable the message is still commented out.
 
-      (defvar pel-force-graphic-specific-custom-file-p (getenv "PEL_EMACS_IN_GRAPHICS")
-        "Force independent graphics mode customization.")
+.. _example/init/init.el: ../example/init/init.el
 
-      ;; Inform later code that package quickstart is being used.
-      (setq package-quickstart t)
+Simpler Prompts
+^^^^^^^^^^^^^^^
 
-      ;; Activate PEL's fast startup if environment was setup by `pel-setup-fast'.
-      (let ((fast-startup-setup-fname (expand-file-name "pel-fast-startup-init.el"
-                                                        user-emacs-directory)))
-        (when (file-exists-p fast-startup-setup-fname)
-          (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
-          (pel-fast-startup-init pel-force-graphic-specific-custom-file-p)
-          ;; Remember Emacs is running in PEL's fast startup mode.
-          (setq pel-running-in-fast-startup-p t)))
+Emacs prompts that require you to type ``yes`` or ``no`` might be annoying.  If
+you would prefer being able to just type ``y`` or ``n`` instead, as most
+people do, set the ``pel-prompt-accept-y-n`` user option to **t**.  There are
+several ways you can do this:
 
-      (when pel-force-graphic-specific-custom-file-p
-        (setq package-user-dir (locate-user-emacs-file "elpa-graphics")))
+- Execute:  ``M-x customize-option`` then type ``pel-prompt-accept-y-n``, hit
+  return to open the customization buffer and change the user option value.
+  Then apply and save it.
+- Use the PEL key sequence for the above: ``<f11> <f2> o`` and type the name.
 
-      ;; ---------------------------------------------------------------------------
+More Emacs Customization
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. _example/init/early-init.el:               ../example/init/early-init.el
+If this is the first time you use Emacs you will also want to customize the
+following options.  Use ``<f11> <f2> o`` or ``M-x customize-option`` for each
+of those.
 
+======================================== ======================================
+Emacs user option                        Description
+======================================== ======================================
+bookmark-save-flag                       Set it to **1** to get Emacs to save
+                                         the bookmarks inside the bookmark
+                                         file every time a bookmark is set.
 
+bookmark-default-file                    Set the location of the bookmark
+                                         file. Something like
+                                         ``~/.emacs.d/bookmarks``
+
+column-number-mode                       Set it to **t** to activate the
+                                         display of the column number on the
+                                         mode line.
+
+comment-empty-lines                      Set it to **t** if you want to
+                                         comment empty lines when commenting
+                                         a region of lines.
+
+confirm-nonexistent-file-or-buffer       Set it to **nil** (never) to prevent
+                                         confirmation prompts every time you
+                                         want to edit a file that does not
+                                         exist to create it.
+
+fill-column                              Set the default maximum line length.
+                                         A good number is **78**.  For source
+                                         code, PEL provides another set of
+                                         user options for each programming
+                                         language, allowing you to control
+                                         that user option from the file type.
+
+hl-line-sticky-flag                      Set it to **nil** if you only want to
+                                         highlight the text in the current
+                                         window when the buffer shows in
+                                         multiple windows.
+
+imenu-max-items                          Set the maximum number of entries in
+                                         the imenu list if the default of 25
+                                         does not correspond to what you like.
+
+truncate-lines                           Set it to **t** if you want Emacs to
+                                         truncate long lines instead of
+                                         wrapping them.  You can change this
+                                         behaviour by using ``<f11> l t`` or
+                                         ``M-x toggle-truncate-line``.
+
+user-full-name                           Your full name.
+                                         PEL uses it in various file skeletons.
+
+user-mail-address                        Your email address.
+                                         PEL uses it in various file skeletons.
+======================================== ======================================
 
 .. ---------------------------------------------------------------------------
 
@@ -1379,7 +1086,6 @@ the absolute path.
 
       # ----------------------------------------------------------------------------
 
-.. _example/init/init-3.el: ../example/init/init-3.el
 
 .. ---------------------------------------------------------------------------
 
@@ -1500,7 +1206,7 @@ checker program (aspell, hunspell or ispell) or several compilers.
 **To support dual independent customization files do the following:**
 
 - Make sure that your ``init.el`` file contains the logic identified in the
-  `example/init/init-5.el`_ file:
+  `example/init/init.el`_ file:
 
   - Set OPTION A: set ``pel-init-support-dual-environment-p`` to **t**
   - Set OPTION B: set ``pel-ei-shell-detection-envvar`` to the name of the
@@ -1553,214 +1259,16 @@ Terminal mode`_.
 
 .. ---------------------------------------------------------------------------
 
-Further PEL Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The following sections describe optional optimizations or modifications
-that can be done after the first complete and successful installation of PEL.
-
-
-Delay Loading of Abbreviation Definition File
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-**Description**
-
-Emacs automatic abbreviation control provided by the ``abbrev-mode`` described
-in `PEL Abbreviation Management Support`_ store all abbreviations in a file
-identified by the ``abbrev-file-name`` user option variable.  By default
-its value is ``~/.emacs.d/abbrev_defs``.  Emacs load the content of this file
-during its initialization time.  When the file contains a large number of
-abbreviations, the loading time can become annoyingly significant.
-
-PEL provides a mechanism to delay the loading to speed up the Emacs
-initialization time.  A change in the init.el file is required: read and cache
-the content of ``abbrev-file-name`` user option variable and then set it to the name
-of an non-existing file as early as possible in your init.el file.  Then pass
-the cached value to ``pel-init`` optional argument.  By doing this you prevent
-Emacs from reading the abbreviation file and let PEL load it later silently when
-there is some idle time.
-
-This code is included but commented-out in the init.el sample described in the
-PEL installation section titled `Create or Update your Emacs init.el file`_.
-You can also use the `example/init/init-2.el`_ file which contains the code as it
-should be.  Edit your init.el file to activate the code.
-
-
-**Do this:**
-
-- Create an empty file: ``~/.emacs.d/abbrev_defs``:
-
-  .. code:: shell
-
-            touch ~/.emacs.d/abbrev_defs
-
-
-- Modify your init.el file such that it contains the same code as the
-  `example/init/init-2.el`_:
-
-  - Write code similar to the following early at the beginning of your init.el file:
-
-    .. code:: elisp
-
-        (setq pel--abbrev-file-name abbrev-file-name)
-        (setq abbrev-file-name "~/abbrev_defs-invalid") ; use a non-existing file name
-
-  - Then pass the information when you call ``pel-init``:
-
-    .. code:: elisp
-
-        (pel-init pel--abbrev-file-name)
-
-
-
-.. _example/init/init-2.el: ../example/init/init-2.el
-
-
-Configure Spell Checking
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-To use spell checking features in Emacs, you must use a spell
-checking program available from the command line.  Emacs Ispell and Flyspell can
-use a Ispell-compatible program like:
-
-- `ispell <https://en.wikipedia.org/wiki/Ispell>`_,
-- aspell_,
-- hunspell_, or
-- enchant_.
-
-
-.. _aspell:    https://en.wikipedia.org/wiki/GNU_Aspell
-.. _hunspell:  https://en.wikipedia.org/wiki/Hunspell
-.. _enchant:   https://en.wikipedia.org/wiki/Enchant_(software)
-
-If none is available on your system you will have to install it manually.
-
-Identify the program to use in PEL customization user option variable
-``pel-spell-check-tools``. This user option allow you to define one program per
-Operating System.  You can also identify the location of your personal
-dictionary file.
-
-To quickly gain access to the customization buffer for the
-``pel-pkg-for-spelling`` group where that user option is located type
-the ``<f11> <f2> $`` key sequence.
-
-For the changes to take effect, save the changes and execute pel-init
-(with ``M-x pel-init``) or restart Emacs.
-
-More information on PEL support of spell checking is available
-in the `PEL Spell Checking Support`_ section and the `Spell Checking`_ PDF sheet.
-
-Disable Emacs Startup splash screen and echo area message
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-By default Emacs displays its splash screen on startup and displays a message on
-the echo area telling you about Emacs in general and the concept of free
-software. Once you have read this information, you can disable them with the
-following code:
-
-.. code:: elisp
-
-  ;; Do not display the splash screen.  Same as emacs -Q
-  (setq inhibit-startup-screen t)
-  ;; Don't display the start help in minibuffer, at least for me.
-  (setq inhibit-startup-echo-area-message "YOUR-USER_NAME_HERE")
-
-Replace "YOUR_USER_NAME_HERE" by a string containing your user name.
-Emacs was written to allow multiple users from having access to the same
-configuration, and this identifies the user that will not be reminded of Emacs
-concepts and principles every time Emacs starts.  So, to take advantage of that
-small speed up make sure you put your user name there.
-
-The file `example/init/init-5.el`_ contains the code that disables the splash
-screen. the code that disable the message is still commented out.
-
-.. _example/init/init-5.el: ../example/init/init-5.el
-
-Simpler Prompts
-^^^^^^^^^^^^^^^
-
-Emacs prompts that require you to type ``yes`` or ``no`` might be annoying.  If
-you would prefer being able to just type ``y`` or ``n`` instead, as most
-people do, set the ``pel-prompt-accept-y-n`` user option to **t**.  There are
-several ways you can do this:
-
-- Execute:  ``M-x customize-option`` then type ``pel-prompt-accept-y-n``, hit
-  return to open the customization buffer and change the user option value.
-  Then apply and save it.
-- Use the PEL key sequence for the above: ``<f11> <f2> o`` and type the name.
-
-More Emacs Customization
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-If this is the first time you use Emacs you will also want to customize the
-following options.  Use ``<f11> <f2> o`` or ``M-x customize-option`` for each
-of those.
-
-======================================== ======================================
-Emacs user option                        Description
-======================================== ======================================
-bookmark-save-flag                       Set it to **1** to get Emacs to save
-                                         the bookmarks inside the bookmark
-                                         file every time a bookmark is set.
-
-bookmark-default-file                    Set the location of the bookmark
-                                         file. Something like
-                                         ``~/.emacs.d/bookmarks``
-
-column-number-mode                       Set it to **t** to activate the
-                                         display of the column number on the
-                                         mode line.
-
-comment-empty-lines                      Set it to **t** if you want to
-                                         comment empty lines when commenting
-                                         a region of lines.
-
-confirm-nonexistent-file-or-buffer       Set it to **nil** (never) to prevent
-                                         confirmation prompts every time you
-                                         want to edit a file that does not
-                                         exist to create it.
-
-fill-column                              Set the default maximum line length.
-                                         A good number is **78**.  For source
-                                         code, PEL provides another set of
-                                         user options for each programming
-                                         language, allowing you to control
-                                         that user option from the file type.
-
-hl-line-sticky-flag                      Set it to **nil** if you only want to
-                                         highlight the text in the current
-                                         window when the buffer shows in
-                                         multiple windows.
-
-imenu-max-items                          Set the maximum number of entries in
-                                         the imenu list if the default of 25
-                                         does not correspond to what you like.
-
-truncate-lines                           Set it to **t** if you want Emacs to
-                                         truncate long lines instead of
-                                         wrapping them.  You can change this
-                                         behaviour by using ``<f11> l t`` or
-                                         ``M-x toggle-truncate-line``.
-
-user-full-name                           Your full name.
-                                         PEL uses it in various file skeletons.
-
-user-mail-address                        Your email address.
-                                         PEL uses it in various file skeletons.
-======================================== ======================================
-
 
 .. ---------------------------------------------------------------------------
 
 PEL Customization
 =================
 
-With PEL installed and built, and with the `customization files identified`_ as
+With PEL installed and built, as
 described in the installation procedure above you can run Emacs and select the
 packages you want to use by customizing Emacs and setting the PEL user options
 to activate the packages you want to use.
-
-.. _customization files identified: `Create the emacs-customization.el file`_.
 
 
 Activate PEL Features - Customize PEL
@@ -2426,27 +1934,58 @@ mode.  That way you use the mode most appropriate with the job and use only
 the packages required for each modes, reducing the Emacs startup time in each
 mode.
 
-PEL controls what is used by the Emacs customization file.
-The PEL installation instructions describe
-`how to create a file for Emacs' customization data`_ and
-`how to write a basic init.el file`_ that will support one custom file.
+PEL controls the name of Emacs customization file and the directories where
+Elpa-compliant packages and packages that are not Elpa compliant are stored:
 
-PEL provides the ability to use 2 independent customization files and provides
-an example of important files that support dual customization:
+PEL expects these files and directories to be located in the
+``user-emacs-directory`` which is ``~/.emacs.d`` by default for Unix-like
+operating systems.  PEL uses:
 
-- `example/init/init-5.el`_ for all versions of Emacs, and
-- `example/init/early-init.el`_ that must be used for Emacs 27 and later when
-  its package quickstart feature is used.
+- The ``elpa`` directory (or symlink when using fast startup) to sore the
+  Elpa-compliant packages,
+- The ``utils`` directory to store the Emacs Lisp files that are not part of
+  Elpa-compliant packages.
 
-With those PEL can use two customization files:
+The PEL installation instructions requires installing a PEL-compatible init.el
+file which will create the necessary files and directories for normal startup
+in a standard, single environment, Emacs setup.
 
-- One for terminal/TTY mode: ``~/.emacs.d/emacs-customization.el``
-- One for graphics mode: ``~/.emacs.d/emacs-customization-graphics.el``
+PEL provides the extra ability to use 2 independent environment.   One
+environment for Emacs running in terminal/TTY mode and another running in
+graphics mode.  Each have access to its own Emacs customization file and
+package directories.  This feature is called the **PEL dual environment**.
 
-The name and location of these files can be modified; they can be controlled by
-the code in your init.el file, and if you are using Emacs 27 and later with
-the package quickstart feature you also need to set it in there as well.
+In this, PEL uses the following files and directories, located inside the user-emacs-directory:
 
+====================== =============================== =============================================
+For terminal/tty | all For graphics mode in dual mode  Description
+====================== =============================== =============================================
+emacs-customization.el emacs-customization-graphics.el Customization data file
+elpa                   elpa-graphics                   Symlink to complete or reduced directory
+elpa-complete/         elpa-complete-graphics/         Stores all Elpa packages in normal startup
+elpa-reduced/          elpa-reduced-graphics/          Stores reduced and pel-bundle in fast startup
+elpa-attic/            elpa-attic-graphics/            Stores Elpa-packages removed by pel-cleanup
+utils/                 utils-graphics/                 Stores non-Elpa external Emacs Lisp files
+utils-attic/           utils-attic-graphics/           Stores non-Elpa files removed by pel-cleanup
+====================== =============================== =============================================
+
+PEL commands create the files and directories when they are required.
+
+Comparing the two customization files wit Emacs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The easiest way to compare the terminal/TTY customization file
+(``emacs-customization/.el``) from the one used in graphics mode when the dual
+environment is used (``emacs-customization-graphics.el``) is to open the 2
+files, each one in its own buffer window and show only these 2 windows.
+
+Then execute the ``pel-ediff-2files`` command by typing the PEL ``<f11> d 2``
+key sequence.
+
+Type ``?`` to display ediff help and the commands to navigate through the
+files and their differences.  You can copy one set of changes from one file to
+the other this way.  It's a quick way to duplicate customization and also a
+good way to review the recent changes to your customization.
 
 Check customization state
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2526,10 +2065,6 @@ When dual independent customization is used the same set of file, symlink and
 directories are created for the graphics specific mode.  They all have the
 same name with the additional ``-graphics`` suffix.
 
-
-.. _how to create a file for Emacs' customization data: `Create a "~/.emacs.d/utils" directory`_
-.. _how to write a basic init.el file:                  `Create or Update your Emacs init.el file`_
-
 Normal Startup and Fast Startup Modes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -2574,7 +2109,7 @@ factors:
   Emacs load-path and overall startup processing.
 
 - Another significant factor is the init.el code. The execution of
-  ``package-init`` must be delayed.  See the file `example/init/init-5.el`_
+  ``package-init`` must be delayed.  See the file `example/init/init.el`_
   for a setup that properly supports PEL fast-startup.
 
 It's possible to reduce the startup time down such that benchmark-init report
@@ -2650,7 +2185,7 @@ Then add the following code as close as possible to the top of your init.el file
   (add-hook 'after-init-hook 'benchmark-init/deactivate)
 
 This code is present but commented out inside the file
-`example/init/init-5.el as OPTION B`_.
+`example/init/init.el`_.
 
 With the above code in your init.el file, you can then execute the PEL command
 ``pel-show-init-time`` (or using the ``<M-S-f9>`` keystroke for it) Emacs will
@@ -2674,7 +2209,6 @@ PEL will remove the benchmark-init files from ``~/.emacs.d/utils`` and place
 them into the ``~/.emacs.d/utils-attic`` where you can restore them when
 needed.
 
-.. _example/init/init-5.el as OPTION B: https://github.com/pierre-rouleau/pel/blob/master/example/init/init-5.el#L113
 
 Package Quickstart Mode for Emacs 27 and later
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2730,12 +2264,17 @@ customization for terminal and graphics mode: ``pel-setup-with-quickstart``
 activates the package quickstart mechanism and refreshes the files.
 ``pel-setup-no-quickstart`` disables the package quickstart mechanism.
 
-**Manual Setup Required**
+**Manual Setup May be Required**
 
-See the section titled
-`Add Support for Package Quickstart for Emacs 27 and Later`_ for a description
-of the manual setup required to allow PEL to activate and disable
-package-quickstart.
+If your Emacs customization file is not what PEL normally uses,
+``emacs-customization.el`` then you will have to create your modified copy of
+PEL's `example/init/early-init.el`_ and modify the value of
+``pel-early-init-custom-file`` inside that file.  See the complete
+instructions inside the ``User configuration`` section of the file
+`example/init/early-init.el`_.
+
+
+.. _example/init/early-init.el:               ../example/init/early-init.el
 
 .. ---------------------------------------------------------------------------
 
@@ -2782,10 +2321,8 @@ With PEL that directory holds the following files and sub-directories.
 =============================== =========================================================
 Name                            Description
 =============================== =========================================================
-init.el                         Emacs initialization.  PEL installation uses the simple
-                                `example/init/init-1.el`.  But to use PEL fast startup
-                                feature the file should hold the content of
-                                `example/init/init-5.el`_.
+init.el                         Emacs initialization required for PEL.
+                                Use a copy of `example/init/init.el`_.
 
 elpa                            The directory that holds Elpa-compliant Emacs
                                 external packages. When using PEL fast-startup
@@ -3944,9 +3481,8 @@ change a setting that refer to a symbol that is not known when you open Emacs's
 customize UI, Emacs customize UI will report a mismatch error and you will not
 be able to make any modification.  If this happens to you, edit your
 customization file and delete the entry for ``pel-key-chords`` from the file,
-save the file back and restart Emacs.  If you followed the instructions in
-section titled `Create the emacs-customization.el file`_, this name of this file
-is "``~/.emacs.d/emacs-customization.el``".
+save the file back and restart Emacs.  If you followed the installation instructions
+the name of this file is "``~/.emacs.d/emacs-customization.el``".
 
 The logic for managing key-chord definitions stored in customization user option
 is stored in the file `pel-key-chord.el`_.  The default values for the
