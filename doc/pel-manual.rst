@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-09-06 18:16:37, updated by Pierre Rouleau.
+:Modified: 2021-09-06 18:29:20, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -271,15 +271,24 @@ The fully detailed instructions are described in the following sections:
 #. `Prepare Emacs Initialization directory`_ where lots of Emacs files will
    go.
 #. `Byte Compile PEL Files`_.  PEL features require byte-compilation.
-#. Optional: `Create command line shortcuts for Emacs`_.
-#. `Further PEL Configuration`_.
-#. `Activate PEL Features - Customize PEL`_.
-#. Optionally, `create command line shortcuts for Emacs`_.
-#. `Prepare using GUI-launched Emacs running in graphics mode`_.
-#. `Prepare using shell-launched Emacs running in graphics mode`_.
-#. `Prepare using shell-launched Emacs running in terminal mode`_.
+#. `Further Configure the init.el File`_
+#. Learn `PEL Customization`_ mechanism you will use to configure Emacs.
+#. `Optional Installation Steps`_ you may want to do now or later
 
-Detailed instructions for the above steps are written in the following sections.
+   - `Further PEL Configuration`_.
+
+     - `Configure Spell Checking`_
+     - `Disable Emacs Startup splash screen and echo area message`_
+     - `Simpler Prompts`_
+     - `More Emacs Customization`_
+
+   -  Optionally, `create command line shortcuts for Emacs`_.
+   -  Optionally, to launch a graphics Emacs process from a GUI app like Linux
+      file manager, macOS Finder or Windows Explorer:
+      `Prepare using GUI-launched Emacs running in graphics mode`_.
+   - And also, `Prepare using shell-launched Emacs running in graphics mode`_,
+   - And finally `Prepare using shell-launched Emacs running in terminal mode`_.
+
 
 .. _Emacs Lisp Packages: https://www.gnu.org/software/emacs/manual/html_node/emacs/Packages.html#Packages
 
