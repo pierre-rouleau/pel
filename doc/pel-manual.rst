@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-09-06 18:34:17, updated by Pierre Rouleau.
+:Modified: 2021-09-06 18:35:36, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -511,6 +511,22 @@ Nothing will be downloaded during this byte compilation.
 The make script should terminate with an exit code of 0
 and you should see no error or warning.
 
+**In case of Errors:**
+
+  If the make script stopped at an error, check the following:
+
+  - Check the content of your Emacs user directory.  Several files and
+    directories are required by Emacs, some are added by PEL and some are old
+    PEL files that should be removed.  Check the list of files and directories
+    in the section titles `Emacs and PEL Files and Directories`_.  Add missing
+    files, remove `obsolete PEL files`_.
+
+  - Run make again.
+
+  If the problem persists, or if you see an error or a warning during the build
+  or when you start Emacs, please `create an issue`_ describing the problem and
+  your environment and I will get to it.
+
 **At this point you can use Emacs with PEL**
 
 - You should have a working version of PEL with all
@@ -532,21 +548,6 @@ The *only* thing left is to:
 
 That's described in the next sections.
 
-**In case of Errors:**
-
-If the make script stopped at an error, check the following:
-
-- Check the content of your Emacs user directory.  Several files and
-  directories are required by Emacs, some are added by PEL and some are old
-  PEL files that should be removed.  Check the list of files and directories
-  in the section titles `Emacs and PEL Files and Directories`_.  Add missing
-  files, remove `obsolete PEL files`_.
-
-- Run make again.
-
-If the problem persists, or if you see an error or a warning during the build
-or when you start Emacs, please `create an issue`_ describing the problem and
-your environment and I will get to it.
 
 .. _create an issue: https://github.com/pierre-rouleau/pel/issues
 .. _Update any option in PEL init.el file: `Further Configure the init.el File`_
