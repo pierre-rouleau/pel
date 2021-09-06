@@ -487,7 +487,10 @@ Also expands to the file true name, replacing symlinks by what they point to."
                 custom-file err custom-file)
         :error)
        (unless (file-exists-p custom-file)
-         (with-temp-buffer (write-file custom-file))))))
+         (with-temp-buffer (write-file custom-file)))
+       (let ((utils-dirpath (expand-file-name "utils" user-emacs-directory)))
+         (unless (file-exists-p utils-dirpath)
+           (make-directory utils-dirpath))))))
 
   ;; -------------------------------------------------------------------------
   ;; Section 6: in normal startup mode initialize package
