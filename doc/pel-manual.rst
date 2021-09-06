@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-09-06 18:29:20, updated by Pierre Rouleau.
+:Modified: 2021-09-06 18:34:17, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -519,8 +519,8 @@ and you should see no error or warning.
   screen by which-key_ (because ``pel-use-which-key`` is turned on by default)
   and any package(s) which-key_ may require.
 - Type ``<f11> ? p`` and a topic to open one of the PEL PDF files.
-   Use tab to complete what you type.  Type tab at first to see a complete
-   list of PDF files.
+  Use tab to complete what you type.  Type tab at first to see a complete
+  list of PDF files.
 - As usual in Emacs, type ``C-x C-c`` to close it.
 
 The *only* thing left is to:
