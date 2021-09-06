@@ -1,5 +1,5 @@
 ;; -*-lexical-binding: t; -*-
-;;; ---Example init.el file --------------------------------------------------
+;;; ---Example of PEL-compatible init.el file --------------------------------
 ;;
 ;; With:
 ;;      - PEL,
@@ -44,7 +44,10 @@
 ;;               measure time spent by various features during initialization.
 ;;
 ;;   - OPTION D: whether Emacs displays its startup message for current user.
-;;   - OPTION E: whether graphical Emacs toolbar is displayed or not.
+;;   - OPTION E: whether graphical Emacs toolbar is displayed or not and
+;;               other options.
+;;   - OPTION F: Extra user-code.
+;;   - OPTION G: Activate commands that may be confusing for new Emacs users.
 ;;
 ;;   Locate these manually edited variable by searching for "OPTION".
 ;; ---------------------------------------------------------------------------
@@ -517,8 +520,21 @@ Also expands to the file true name, replacing symlinks by what they point to."
   (push (expand-file-name "utils" user-emacs-directory) load-path)
   (push pel-home-dirpath-name load-path)
 
+  ;; ------------------------------------------------------------------------
+  ;; Section 8: Extra User-Specific Logic
+  ;; ====================================
+  ;;
+  ;; If you absolutely need to define values or run some code at
+  ;; initialization time that PEL does not already handle and that you cannot
+  ;; control via Emacs customization system, write your code here before the
+  ;; code in section 9 where PEL is initialized.
+  ;;
+  ;; OPTION F: Write extra code here if absolutely needed.
+  ;;           Keep it short and fast.
+  ;;           Make sure it byte-compiles without warnings.
+
   ;; -------------------------------------------------------------------------
-  ;; Section 8: Start PEL
+  ;; Section 9: Start PEL
   ;; ====================
   ;; - Perform PEL initialization.
   ;;   Set PEL key bindings. In normal operation mode it will also install
@@ -528,6 +544,38 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;;   in the (custom-set-variables) form, this code *must* be done after the
   ;;   identification of the `custom-file' and after the loading of that file.
   (require 'pel)
-  (pel-init pel--abbrev-file-name))
+  (pel-init pel--abbrev-file-name)
+
+  ;; -------------------------------------------------------------------------
+  ;; Section 10: Activate some of the *confusing* commands
+  ;; =====================================================
+  ;;
+  ;; Some of Emacs commands are disabled by default because they are
+  ;; considered confusing for new users.  The following comments contain code
+  ;; that activate some of them.
+  ;;
+  ;; Emacs will add code after the form when you get Emacs to activate some,
+  ;; put that code inside the form to take advantage of the extra little bit
+  ;; of speed.
+  ;;
+  ;; OPTION G:
+  ;;
+  ;; - In Dired-mode, when selecting a directory with e, f or RET, Emacs
+  ;;   creates a new buffer.  It also has a binding for a which opens inside
+  ;;   the same buffer.
+  ;; (put 'dired-find-alternate-file 'disabled nil)
+
+  ;; - C-x n n : narrows the rest of the buffer.
+  ;; (put 'narrow-to-region 'disabled nil)
+
+  ;; - C-x C-l: downcases a complete region
+  ;; (put 'downcase-region  'disabled nil)
+
+  ;; - C-x C-n: set-goal-column
+  ;; (put 'set-goal-column 'disabled nil)
+
+  ;; - C-x < : scroll-left
+  ;; (put 'scroll-left 'disabled nil)
+  )
 
 ;;; ---- end of init.el ------------------------------------------------------
