@@ -477,15 +477,6 @@ Also expands to the file true name, replacing symlinks by what they point to."
       (load (file-name-sans-extension custom-file))
     (file-missing
      (progn
-       (display-warning
-        'init
-        (format "ERROR loading customization file %s.
- Detected error: %S
- Created an empty customization instead to allow Emacs and PEL to start
- and install the few packages that it always installs: popup and which-key.
- - It's normal and expected if you never created %s, otherwise investigate."
-                custom-file err custom-file)
-        :error)
        (let ((utils-dirpath (expand-file-name "utils" user-emacs-directory))
              (abbrev-defs   (expand-file-name "abbrev_defs"
                                               user-emacs-directory)))
@@ -494,7 +485,16 @@ Also expands to the file true name, replacing symlinks by what they point to."
          (unless (file-exists-p abbrev-defs)
            (with-temp-buffer (write-file abbrev-defs)))
          (unless (file-exists-p utils-dirpath)
-           (make-directory utils-dirpath))))))
+           (make-directory utils-dirpath)))
+       (display-warning
+        'init
+        (format "ERROR loading customization file %s.
+ Detected error: %S
+ Created an empty customization instead to allow Emacs and PEL to start
+ and install the few packages that it always installs: popup and which-key.
+ - It's normal and expected if you never created %s, otherwise investigate."
+                custom-file err custom-file)
+        :error))))
 
   ;; -------------------------------------------------------------------------
   ;; Section 6: in normal startup mode initialize package
