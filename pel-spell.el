@@ -103,7 +103,7 @@
 
 (defconst pel--spell-error-info-msg
   "See the spell-checking.pdf file for more info."
-  "Shows where to get information if you have problem setting Ispell support.")
+  "It shows where to get information if you have problem setting Ispell support.")
 
 
 ;; ---------------------------------------------------------------------------
@@ -192,10 +192,17 @@ to allow the flyspell pop-up menu to work in terminal mode."
 (defun pel--spell-select (program dict-path)
   "Use the spell checker PROGRAM, use the dictionary at DICT-PATH.
 
-PROGRAM must be a symbol: the variable that identifies the spell checker
-program."
-  (let* ((program-name   (symbol-value program))
-         (var-name       (symbol-name program))
+PROGRAM is the symbol of a variable that holds one of 2 things:
+
+- the name of a ispell-compatible program that must be on the
+  PATH available to Emacs when Emacs run, or
+
+- a string representing the absolute file path of the
+  ispell-compatible program to use.  This second form is useful
+  in Windows when the ispell program is not available on the PATH
+  of programs."
+  (let* ((var-name       (symbol-name program))
+         (program-name   (symbol-value program))
          (path           (file-name-directory program-name))
          (personal-dict  (pel-string-or-nil dict-path)))
     (if (and (not path)
@@ -210,12 +217,18 @@ The %s user-option identifies %s as your spell checker program.
                                  var-name program-name
                                  var-name
                                  (pel-string-when
-                                  (not (getenv "PEL-SHELL"))
-                                  "
- - The PEL_SHELL environment variable is not set, indicating that a GUI Emacs
-   is used.  Extra environment variables can be set inside the user-option
-   `pel-gui-process-environment`. Identify the directory where your spell
-   checker program is located into the value of PATH inside that user-option.")
+                                  (not (getenv pel-shell-detection-envvar))
+                                  (format "
+ - The '%s' environment variable, selected by `pel-shell-detection-envvar' to
+   detect a shell launching of Emacs, is not set in the environment.
+   That indicates that Emacs was launched from a GUI application instead
+   of a shell.  For this environment you will need to do one of the following:
+   - Identify the complete path of the ispell-compatible in
+     `pel-spell-check-tool',  or
+   - Update the PATH used by Emacs by specifying an extension of PATH
+     inside the `pel-gui-process-environment' user-option that includes
+     the directory where your ispell-compatible program is located."
+                                          pel-shell-detection-envvar))
                                  (getenv "PATH")
                                  pel--spell-error-info-msg)
                          :error)

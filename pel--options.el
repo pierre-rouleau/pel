@@ -7758,29 +7758,40 @@ Setting this non-nil also sets up the use of speedbar and projectile."
                    ,(pel-pdf-file-url "spell-checking")))
 
 (defcustom pel-spell-check-tool nil
-  "Spell Checking tool and local dictionary.
-The spell-checking tool must be an ispell-compatible
-command line tool.  This includes:
+  "Spell Checking tool program.
+
+The spell-checking tool must be an ispell-compatible program.
+
+On Unix-like OS you normally identify that program by its name, as the
+program's executable file will normally be available on the PATH available
+when Emacs runs.  Then select the second option and identify just the name
+of the ispell-compatible program.  Something like:
 
 - ispell
 - aspell
 - hunspell
 - enchant
 
-The second line identifies the file where the local dictionary
-will be stored.  Often stored in ~/.emacs.d/.ispell"
+If the program will not be available on PATH available to Emacs, as it may
+happen on Windows, then use the last option and identify the complete absolute
+path of the ispell-compatible program.  That file must exist when you make the
+selection."
   :group 'pel-pkg-for-spelling
   :type '(choice
           (const :tag "No spell check" nil)
-          (string :tag "ispell-compatible program name")))
+          (string :tag "ispell-compatible program name")
+          (file   :tag "Use executable file specified by this absolute path"
+                  :must-match t)))
 
 (defcustom  pel-spell-check-personal-dictionary nil
-  "Location of you personal dictionary file.
+  "Location of your ispell-compatible personal dictionary file.
 
 If not specified, the location selected is \"~/.ispell\".
+However the recommend location is to put the .ispell file inside
+the `user-emacs-directory', which is ~/.emacs.d by default.
 
-However the recommend location is: \"~/.emacs.d/.ispell\" if your init.el
-file is located in the \"~/.emacs.d\" directory."
+On Windows you may want to identify the directory used by the tool,
+something not located inside Emacs user directory."
   :group 'pel-pkg-for-spelling
   :type '(choice
           (const  :tag "Use default: ~/.ispell" nil)
