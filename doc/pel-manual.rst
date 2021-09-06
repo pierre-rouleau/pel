@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-09-06 18:05:55, updated by Pierre Rouleau.
+:Modified: 2021-09-06 18:16:37, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -270,7 +270,7 @@ The fully detailed instructions are described in the following sections:
 #. `Clone the PEL Git repository`_ on your computer.
 #. `Prepare Emacs Initialization directory`_ where lots of Emacs files will
    go.
-#. `Byte Compile PEL Files`_.
+#. `Byte Compile PEL Files`_.  PEL features require byte-compilation.
 #. Optional: `Create command line shortcuts for Emacs`_.
 #. `Further PEL Configuration`_.
 #. `Activate PEL Features - Customize PEL`_.
@@ -481,7 +481,11 @@ Byte Compile PEL Files
 
 **Description:**
 
-Use the provide Makefile script to byte-compile all required PEL Emacs Lisp
+PEL features require byte compilation of PEL's Emacs Lisp files.  Not only it
+provides faster execution but byte compilation allows PEL Emacs Lisp macros to
+properly setup the environment.
+
+Use the provided Makefile script to byte-compile all required PEL Emacs Lisp
 source code files located in the ``pel`` directory.
 It will also run some regression tests.
 Nothing will be downloaded during this byte compilation.
