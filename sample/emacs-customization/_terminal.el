@@ -167,8 +167,6 @@
  '(pel-spell-check-personal-dictionary "~/.emacs.d/.ispell")
  '(pel-spell-check-tool "aspell")
  '(pel-startup-xref-front-end (quote xref))
- '(pel-support-dual-envionment t t)
- '(pel-support-dual-environment t)
  '(pel-use-ac-geiser nil)
  '(pel-use-ace-link t)
  '(pel-use-ace-window t)
