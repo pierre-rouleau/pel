@@ -1363,7 +1363,7 @@ can't bind negative-argument to C-_ and M-_"
 (define-key pel:menu "R"      'pel-imenu-toggle-auto-rescan)
 
 (when pel-use-imenu+
-  (pel-install-github-file "emacsmirror/emacswiki.org/master"
+  (pel-install-github-file "emacsmirror/imenu-plus/master"
                            "imenu+.el" "imenu%2B.el")
   (pel-autoload-file imenu+ for:
                      imenup-add-defs-to-menubar)
@@ -1921,8 +1921,26 @@ can't bind negative-argument to C-_ and M-_"
 ;; - AppleScript support
 (when pel-use-applescript
   ;; the Melpa package does not seemed maintained. Use my copy instead.
-  (pel-install-github-file "pierre-rouleau/apples-mode/master"
-                           "apples-mode.el")
+  (pel-install-github-files "pierre-rouleau/apples-mode/master"
+                            '("apples-mode.el"
+                              "apples-mode/comment"
+                              "apples-mode/considering"
+                              "apples-mode/considering-application-responses"
+                              "apples-mode/display-dialog"
+                              "apples-mode/if"
+                              "apples-mode/ignoring"
+                              "apples-mode/ignoring-application-responses"
+                              "apples-mode/on"
+                              "apples-mode/repeat"
+                              "apples-mode/repeat-until"
+                              "apples-mode/repeat-while"
+                              "apples-mode/repeat-with"
+                              "apples-mode/tell-application"
+                              "apples-mode/tell-application-to-activate"
+                              "apples-mode/try"
+                              "apples-mode/using-terms-from-application"
+                              "apples-mode/with-timeout-of-seconds"
+                              "apples-mode/with-transaction"))
   (pel-autoload-file apples-mode for:
                      apples-mode
                      apples-open-scratch)
@@ -5775,7 +5793,8 @@ the ones defined from the buffer now."
 (when pel-use-cexp
   ;; download and byte-compile cexp if not already present
   ;; Do it after compiling pel_keys.el, when pel-init load pel_keys.
-  (pel-install-github-file "TobiasZawada/cexp/master" "cexp.el")
+  (pel-install-github-files "TobiasZawada/cexp/master" '("cexp.el"
+                                                         "cexp-test.el"))
   (pel-autoload-file cexp for: cexp-search-forward)
   (define-key pel:search-replace "c" 'cexp-search-forward))
 
