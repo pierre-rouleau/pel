@@ -1314,8 +1314,10 @@ Raise an error if the request generates a HTTP 404 error."
             (err-car nil)
             (err-cdr nil))
         (condition-case err
-            (when (url-copy-file url tmp-fname ok-if-already-exists)
-              ;; Check that the downloaded file is not a "404: Not Found" error.
+            (when (url-copy-file url tmp-fname t)
+              ;; Check that the file was properly downloaded.downloaded file
+              ;; url-copy-file places "404: Not Found" in the file when the
+              ;; URL pointed to an invalid location of a valid server.
               (with-temp-buffer
                 (insert-file-contents tmp-fname)
                 (when (string= (buffer-substring-no-properties 1 4) "404")
