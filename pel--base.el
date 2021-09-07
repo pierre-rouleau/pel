@@ -1313,7 +1313,7 @@ Raise an error if the request generates a 404 error."
         (with-temp-buffer
           (insert-file-contents newname)
           (when (string= (buffer-substring-no-properties 1 4) "404")
-            (user-error "Requested URL does not exist: %s") url)))
+            (user-error "Requested URL does not exist: %s" url))))
     (error "url-handlers is not properly loaded.")))
 
 (defun pel-install-file (url fname &optional refresh)
