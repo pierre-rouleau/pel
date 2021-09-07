@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-09-06 18:35:36, updated by Pierre Rouleau.
+:Modified: 2021-09-07 06:21:00, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -678,24 +678,33 @@ Disable Emacs Startup splash screen and echo area message
 
 By default Emacs displays its splash screen on startup and displays a message on
 the echo area telling you about Emacs in general and the concept of free
-software. Once you have read this information, you can disable them with the
-following code:
+software. Once you have read this information, you may want to prevent Emacs
+from showing it again.
+
+The file `example/init/init.el`_ contains the code that disables the splash
+screen. the code that disable the message is still commented out.
+
+To disable it, edit your init.el file, which contain the same code.
+Look for ``OPTION D``.  You can search by typing ``C-s`` then the string you
+search for.  You should see the following comment:
 
 .. code:: elisp
 
-  ;; Do not display the splash screen.  Same as emacs -Q
-  (setq inhibit-startup-screen t)
-  ;; Don't display the start help in minibuffer, at least for me.
-  (setq inhibit-startup-echo-area-message "YOUR-USER_NAME_HERE")
+          ;; OPTION D: Don't display Emacs startup help message, at least for me.
+          ;; This variable is treated specially.  Don't group its setting with others.
+          ;;   Replace YOUR_USER_NAME by your systems' login user name in the line
+          ;;   below and un-comment it:
+          ;; (eval '(setq inhibit-startup-echo-area-message "YOUR_USER_NAME"))
 
-Replace "YOUR_USER_NAME_HERE" by a string containing your user name.
+Remove the ``;;`` to un-comment the last line and
+replace ``YOUR_USER_NAME_HERE`` by your user name.  The same user name
+displayed by the ``who`` utility on a Unix-like operating system.
+
 Emacs was written to allow multiple users from having access to the same
 configuration, and this identifies the user that will not be reminded of Emacs
 concepts and principles every time Emacs starts.  So, to take advantage of that
 small speed up make sure you put your user name there.
 
-The file `example/init/init.el`_ contains the code that disables the splash
-screen. the code that disable the message is still commented out.
 
 .. _example/init/init.el: ../example/init/init.el
 
@@ -717,19 +726,11 @@ More Emacs Customization
 
 If this is the first time you use Emacs you will also want to customize the
 following options.  Use ``<f11> <f2> o`` or ``M-x customize-option`` for each
-of those.
+of those because their corresponding file should already been loaded in Emacs.
 
 ======================================== ======================================
 Emacs user option                        Description
 ======================================== ======================================
-bookmark-save-flag                       Set it to **1** to get Emacs to save
-                                         the bookmarks inside the bookmark
-                                         file every time a bookmark is set.
-
-bookmark-default-file                    Set the location of the bookmark
-                                         file. Something like
-                                         ``~/.emacs.d/bookmarks``
-
 column-number-mode                       Set it to **t** to activate the
                                          display of the column number on the
                                          mode line.
@@ -755,9 +756,6 @@ hl-line-sticky-flag                      Set it to **nil** if you only want to
                                          window when the buffer shows in
                                          multiple windows.
 
-imenu-max-items                          Set the maximum number of entries in
-                                         the imenu list if the default of 25
-                                         does not correspond to what you like.
 
 truncate-lines                           Set it to **t** if you want Emacs to
                                          truncate long lines instead of
@@ -771,6 +769,56 @@ user-full-name                           Your full name.
 user-mail-address                        Your email address.
                                          PEL uses it in various file skeletons.
 ======================================== ======================================
+
+
+You will probably want to configure some other behaviour.  Since PEL promotes
+the use of the Emacs customization we'll do it through that.  You need to know
+that some Emacs packages are loaded by default and they can be customized
+right away. Others define auto-loaded customization variables.  Yet others do
+not autoload their customizable variables.
+
+With PEL you activate packages via PEL customization variables that are always
+loaded.  And you can customize variables of installed packages that are not
+yet loaded and have not been auto-loaded by using PEL commands.
+
+The imenu package is built-in but its customization variables are not
+auto-loaded. To modify the following user-option (the other name for
+customization variables) you can type ``<f11> <f10> <f3> 2``.  That will load
+the imenu package and open the customization buffer for imenu where you can
+edit the following user-option.
+
+
+======================================== ======================================
+Emacs user option                        Description
+======================================== ======================================
+imenu-max-items                          Set the maximum number of entries in
+                                         the imenu list if the default of 25
+                                         does not correspond to what you like.
+======================================== ======================================
+
+Make sure to save the values in a file by pressing the ``Apply and Save``
+button at the top of the buffer window.  You may also have to confirm at a
+prompt shown at the bottom of the screen.
+
+
+To modify bookmark specific user options, you can type ``<f11> ' <f3> 1`` to
+open the bookmark customize buffer and then modify the following user-options:
+
+
+======================================== ======================================
+Emacs user option                        Description
+======================================== ======================================
+bookmark-save-flag                       Set it to **1** to get Emacs to save
+                                         the bookmarks inside the bookmark
+                                         file every time a bookmark is set.
+
+bookmark-default-file                    Set the location of the bookmark
+                                         file. The default is
+                                         ``~/.emacs.d/bookmarks``
+======================================== ======================================
+
+If a package is not installed you can't customize it. Set the PEL ``pel-use-``
+user-option, restart Emacs to install the package and then you can customize it.
 
 .. ---------------------------------------------------------------------------
 
