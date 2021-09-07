@@ -92,13 +92,21 @@ or `update it`_ [#update]_ !
   Follow the installation instructions and see the `⅀ Customize PDF`_ for more
   details.
 
-  - Some modifications to your ``init.el`` file and to ``early-init.el``
-    is required for this as described by OPTION A in:
-
-    - `example/init/init-5.el`_
-    - `example/init/early-init.el`_ (for Emacs 27 and later only).
-
-  - Once your init files have been instrumented for PEL, use the
+  - A `PEL compatible Emacs init.el`_ is available for you to use right from the
+    beginning.  Instructions are inside.  You can use it as is or modify some
+    of the options.
+  - For Emacs ≥ 27, PEL also provides a `PEL compatible early-init.el`_.
+    Instructions are inside.  PEL will automatically install it if you want to
+    use Emacs package quickstart feature available on Emacs ≥ 27.  You can
+    also modify it and add your own code.  Instructions are located in the
+    file.
+  - PEL comes with `samples of Emacs custom files`_ you can use with PEL to
+    quickly activate features.  After following the PEL installation steps,
+    Copy one of these files into your ``~/.emacs.d/emacs-customization.el``
+    file then start Emacs and watch PEL download, install and activates the
+    packages identified in the file you selected.
+  - If you want to manage 2 set of customization files and package directory,
+    one for Emacs in terminal mode and another for Emacs in graphics mode, use the
     **pel-setup-dual-environment** command (or ``<f11> <f2> M-d``) to
     activate dual independent customization.  It will create the required
     customization files.
@@ -286,7 +294,6 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _MELPA:                      https://melpa.org/#/
 .. _PEL manual table of contents: doc/pel-manual.rst
 .. _pel-pdf-spreadsheet repo:   https://github.com/pierre-rouleau/pel-pdf-spreadsheet#readme
-.. _example/init/init-5.el:     example/init/init-5.el
 .. _PEL PDF files:
 .. _PDF topic-oriented reference sheets: doc/pdf
 .. _PEL setup commands:        doc/pel-manual.rst#pel-setup-commands
@@ -299,12 +306,15 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 .. _⅀ Customize PDF:            https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/customize.pdf
 .. _Mozilla Firefox:            https://en.wikipedia.org/wiki/Firefox
 .. _How to setup GUI Emacs environment: doc/pel-manual.rst#prepare-using-gui-launched-emacs-running-in-graphics-mode
+.. _PEL compatible Emacs init.el: example/init/init.el
+.. _PEL compatible early-init.el:
 .. _early-init.el file template:
 .. _example/init/early-init.el: example/init/early-init.el
 .. _package-quickstart feature: https://git.savannah.gnu.org/cgit/emacs.git/commit/etc/NEWS?id=6dfdf0c9e8e4aca77b148db8d009c862389c64d3
 .. _benchmark-init:             https://github.com/dholm/benchmark-init-el#readme
 .. _pel-cleanup command:        doc/pel-manual.rst#pel-cleanup-command
 .. _fast startup mode:          doc/pel-manual.rst#normal-startup-and-fast-startup-modes
+.. _samples of Emacs custom files: sample/emacs-customization
 
 ..
    -----------------------------------------------------------------------------
