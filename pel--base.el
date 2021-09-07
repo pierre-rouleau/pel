@@ -1303,7 +1303,8 @@ DEFINES: is a cosmetic only argument that must be present."
 
 (defun pel-url-copy-file (url newname &optional ok-if-already-exists)
   "Same as url-copy-file but detects URL to non-existing file.
-Raise an error if the request generates a HTTP 404 error."
+Raise an error if the request generates a HTTP 404 error.
+Returns t if all is OK."
   (require 'url-handlers nil :no-error)
   (if (fboundp 'url-copy-file)
       ;; Try to download the file identified by the URL.
@@ -1332,8 +1333,9 @@ Raise an error if the request generates a HTTP 404 error."
             (setq err-car (car err))
             (setq err-cdr (cdr err))
             (signal err-car err-cdr)))
-        (when error-msg
-          (error error-msg)))
+        (if error-msg
+            (error error-msg)
+          t))
     (error "url-handlers file is not loaded!")))
 
 (defun pel-install-file (url fname &optional refresh)
@@ -1359,9 +1361,10 @@ downloaded, nil otherwise.  Permission errors are raised."
           (make-directory subdir :make-parents-if-needed))))
     (let ((target-fname (expand-file-name fname utils-dirname)))
       (when (or (not (file-exists-p target-fname)) refresh)
-        (message "Downloading %s\n" url)
-        (when (pel-url-copy-file url target-fname refresh)
-          (message "Byte compiling it to %s\n" target-fname)
+        (message "Downloading %s" url)
+        (when (and (pel-url-copy-file url target-fname refresh)
+                   (string= (file-name-extension target-fname) "el"))
+          (message "Byte compiling it to %s" target-fname)
           (byte-compile-file target-fname))))))
 
 (defun pel-install-files (url-base fnames &optional refresh)
@@ -1435,7 +1438,7 @@ REFRESH if required.
 The function returns t if the file was
 downloaded, nil otherwise.  Permission errors are raised.
 This is normally called by the `pel-install-github-file' macro."
-  (pel-install-files (pel-url-join "https://raw.githubusercontent.com"
+  (pel-install-file (pel-url-join "https://raw.githubusercontent.com"
                                    user-project-branch
                                    (or url-fname fname))
                      fname
