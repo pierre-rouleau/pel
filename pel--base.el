@@ -247,7 +247,7 @@
 ;;; Dependencies:
 ;; subr (always loaded) ; use: called-interactively-p
 (eval-when-compile
-  (require 'subr-x)              ; use: split-string, string-join, string-trim
+  (require 'subr-x)    ; use: split-string, string-join, string-trim
   (require 'cl-macs))  ; use: cl-eval-when
 
 ;;; --------------------------------------------------------------------------
@@ -1301,6 +1301,21 @@ DEFINES: is a cosmetic only argument that must be present."
 
 ;; -------
 
+(defun pel-url-copy-file (url newname &optional ok-if-already-exists)
+  "Same as url-copy-file but detects URL to non-existing file.
+Raise an error if the request generates a 404 error."
+  (require 'url-handlers nil :no-error)
+  (if (fboundp 'url-copy-file)
+      ;; Try to download the file identified by the URL.
+      ;; That function does not detect invalid URLS so we could get a "404: Not Found"
+      (when (url-copy-file url newname ok-if-already-exists)
+        ;; Check that the downloaded file is not a "404: Not Found" error.
+        (with-temp-buffer
+          (insert-file-contents newname)
+          (when (string= (buffer-substring-no-properties 1 4) "404")
+            (user-error "Requested URL does not exist: %s") url)))
+    (error "url-handlers is not properly loaded.")))
+
 (defun pel-install-file (url fname &optional refresh)
   "Download and install a file FNAME from URL into the PEL's utility directory.
 Also byte compile that file.
@@ -1320,7 +1335,7 @@ downloaded, nil otherwise.  Permission errors are raised."
     (let ((target-fname (expand-file-name fname utils-dirname)))
       (when (or (not (file-exists-p target-fname)) refresh)
         (message "Downloading %s\n" url)
-        (when (url-copy-file url target-fname refresh)
+        (when (pel-url-copy-file url target-fname refresh)
           (message "Byte compiling it to %s\n" target-fname)
           (byte-compile-file target-fname))))))
 
