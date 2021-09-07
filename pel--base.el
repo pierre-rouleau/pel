@@ -1352,6 +1352,11 @@ downloaded, nil otherwise.  Permission errors are raised."
   (let ((utils-dirname (expand-file-name "utils" user-emacs-directory)))
     (unless (file-exists-p utils-dirname)
       (make-directory utils-dirname :make-parents-if-needed))
+    (let ((subdir (file-name-directory fname)))
+      (when subdir
+        (setq subdir (expand-file-name subdir utils-dirname))
+        (unless (file-exists-p subdir)
+          (make-directory subdir :make-parents-if-needed))))
     (let ((target-fname (expand-file-name fname utils-dirname)))
       (when (or (not (file-exists-p target-fname)) refresh)
         (message "Downloading %s\n" url)
