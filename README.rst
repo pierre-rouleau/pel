@@ -14,11 +14,15 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#quick
 
+.. image:: https://img.shields.io/badge/package_quicstart-Compatible-green
+   :alt: Version
+   :target: https://github.com/pierre-rouleau/pel#quickst
+
 .. image:: https://img.shields.io/badge/PDF_Files-133-blue
    :alt: Version
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 
-.. image:: https://img.shields.io/badge/PEL_Manual-Updates_needed-orange
+.. image:: https://img.shields.io/badge/PEL_Manual-α_ready-blue
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 
