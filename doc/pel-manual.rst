@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-09-07 18:28:40, updated by Pierre Rouleau.
+:Modified: 2021-09-07 19:13:56, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -548,12 +548,17 @@ PEL uses the **F11** key extensively.
   and any package(s) which-key_ may require.
 - Type ``<f11> ? p`` and a topic to open one of the PEL PDF files.
   Use tab to complete what you type.  Type tab at first to see a complete
-  list of PDF files.
+  list of PDF files.  Or type ``<f11> <f1>`` to open the local copy of the
+  `PEL Index PDF`_.
+  This file has lots of hyperlinks.  They all lead to the
+  Github-hosted raw PDF you can quickly navigate with a browser that renders
+  PDF inline, like Firefox [#firefox]_ version 78 or later.  That's a quick
+  way to navigate PEL's key documentation and access relevant information.
 - As usual in Emacs, type ``C-x C-c`` to close it.
 
 **Next Steps**
 
-The *only* thing left is to:
+To fully take advantage of PEL continue with the following steps:
 
 - `Update any option in PEL init.el file`_ if required.
 - Learn `PEL Customization`_ mechanism you will use to configure Emacs.
@@ -579,6 +584,7 @@ More information about PEL configuration is in the next section.
 .. _create an issue: https://github.com/pierre-rouleau/pel/issues
 .. _Update any option in PEL init.el file: `Further Configure the init.el File`_
 .. _sample/emacs-customization: ../sample/emacs-customization
+.. _PEL Index PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 
 .. ---------------------------------------------------------------------------
 
