@@ -2270,7 +2270,7 @@ d-mode not added to ac-modes!"
                      forth-interaction-mode)
   ;; the <f12> key provides access to help and customization
   (define-pel-global-prefix pel:for-forth (kbd "<f11> SPC f"))
-  (define-key pel:for-forth  "z" #'run-forth)
+  (define-key pel:for-forth  "z"  'run-forth)
   ;; Activate Forth setup.
   (pel-config-major-mode forth pel:for-forth))
 
@@ -6477,14 +6477,14 @@ the ones defined from the buffer now."
 
 ;; Programming Language REPL.  Key used is the same as their f11 SPC key.
 (when pel-use-common-lisp  (define-key pel:repl  "L" #'pel-cl-repl))
-(when pel-use-forth        (define-key pel:repl  "f" #'run-forth))
+(when pel-use-forth        (define-key pel:repl  "f"  'run-forth))
 (when pel-use-haskell
   (declare-function run-haskell "inf-haskell")
   (define-key pel:repl  "h" #'run-haskell))
 (when pel-use-julia        (define-key pel:repl  "j" #'julia-snail))
 
 (when pel-use-python       (define-key pel:repl  "p" #'run-python))
-(when pel-use-erlang       (define-key pel:repl  "e" #'erlang-shell))
+(when pel-use-erlang       (define-key pel:repl  "e"  'erlang-shell))
 (when (and pel-use-elixir
            pel-use-alchemist)
                            (define-key pel:repl  "x"  #'alchemist-iex-run))
@@ -6494,7 +6494,7 @@ the ones defined from the buffer now."
   (define-key pel:repl  "o"  #'run-ocaml))
 
 (when pel-use-arc          (define-key pel:repl (kbd "C-a") #'run-arc))
-(when pel-use-lfe          (define-key pel:repl (kbd "C-l") #'run-lfe))
+(when pel-use-lfe          (define-key pel:repl (kbd "C-l")  'run-lfe))
 ;; - Scheme dialects
 (when pel-use-chez         (define-key pel:repl (kbd "C-z") #'pel-chez-repl))
 (when pel-use-chibi        (define-key pel:repl (kbd "C-i") #'pel-chibi-repl))
