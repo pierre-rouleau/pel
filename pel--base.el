@@ -1303,18 +1303,36 @@ DEFINES: is a cosmetic only argument that must be present."
 
 (defun pel-url-copy-file (url newname &optional ok-if-already-exists)
   "Same as url-copy-file but detects URL to non-existing file.
-Raise an error if the request generates a 404 error."
+Raise an error if the request generates a HTTP 404 error."
   (require 'url-handlers nil :no-error)
   (if (fboundp 'url-copy-file)
       ;; Try to download the file identified by the URL.
-      ;; That function does not detect invalid URLS so we could get a "404: Not Found"
-      (when (url-copy-file url newname ok-if-already-exists)
-        ;; Check that the downloaded file is not a "404: Not Found" error.
-        (with-temp-buffer
-          (insert-file-contents newname)
-          (when (string= (buffer-substring-no-properties 1 4) "404")
-            (user-error "Requested URL does not exist: %s" url))))
-    (error "url-handlers is not properly loaded.")))
+      ;; That function does not detect invalid URLS so we could get a "404:
+      ;; Not Found"
+      (let ((tmp-fname (make-temp-file "pel-url-copy-file"))
+            (error-msg nil)
+            (err-car nil)
+            (err-cdr nil))
+        (condition-case err
+            (when (url-copy-file url tmp-fname ok-if-already-exists)
+              ;; Check that the downloaded file is not a "404: Not Found" error.
+              (with-temp-buffer
+                (insert-file-contents tmp-fname)
+                (when (string= (buffer-substring-no-properties 1 4) "404")
+                  (setq error-msg (format "Requested URL does not exist: %s"
+                                          url))))
+              (unless error-msg
+                (copy-file tmp-fname newname ok-if-already-exists))
+              (delete-file tmp-fname))
+          (progn
+            ;; this block is here to prevent byte compiler warning on
+            ;;   (signal (car err) (cdr err))
+            (setq err-car (car err))
+            (setq err-cdr (cdr err))
+            (signal err-car err-cdr)))
+        (when error-msg
+          (error error-msg)))
+    (error "url-handlers file is not loaded!")))
 
 (defun pel-install-file (url fname &optional refresh)
   "Download and install a file FNAME from URL into the PEL's utility directory.
