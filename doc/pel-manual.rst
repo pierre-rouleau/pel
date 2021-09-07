@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-09-07 06:21:00, updated by Pierre Rouleau.
+:Modified: 2021-09-07 18:28:40, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -472,16 +472,8 @@ This time PEL initialization file should have taken over.
 .. figure:: res/pel-install-02.png
    :scale: 50 %
 
-- Hit the **F11** key.  That's PEL main key prefix. After one or two seconds
-  the which-key_ package should display the keys that can be typed after F11
-  like this:
-
-.. figure:: res/pel-install-03.png
-   :scale: 50 %
-
-- Make sure your environment provide access to that key.  In terminal mode you
-  may have to configure your terminal application to prevent it from using the
-  F11 key.
+To activate PEL you must byte-compile all PEL Emacs Lisp source code.
+This is described in the next section.
 
 .. _Emacs Windows init location FAQ: https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html
 
@@ -529,8 +521,28 @@ and you should see no error or warning.
 
 **At this point you can use Emacs with PEL**
 
-- You should have a working version of PEL with all
-  files byte-compiled for efficiency 😅!
+You should have a working version of PEL with all PEL
+files byte-compiled for efficiency 😅!
+
+**Quick Test PEL**
+
+PEL download and activates the which-key_ external package by default.
+PEL uses the **F11** key extensively.
+
+- Make sure your environment provide access to that key.  In terminal mode you
+  may have to configure your terminal application to prevent it from using the
+  F11 key.
+
+- Once that's done open Emacs in terminal mode with ``emacs -nw`` from a
+  shell, or open Emacs in graphics mode with ``emacs``, then:
+
+- Hit the **F11** key.  That's PEL main key prefix. After one or two seconds
+  the which-key_ package should display the keys that can be typed after F11
+  like this:
+
+.. figure:: res/pel-install-03.png
+   :scale: 50 %
+
 - The key keys following key prefixes will be shown at the bottom of the Emacs
   screen by which-key_ (because ``pel-use-which-key`` is turned on by default)
   and any package(s) which-key_ may require.
@@ -539,6 +551,8 @@ and you should see no error or warning.
   list of PDF files.
 - As usual in Emacs, type ``C-x C-c`` to close it.
 
+**Next Steps**
+
 The *only* thing left is to:
 
 - `Update any option in PEL init.el file`_ if required.
@@ -546,11 +560,25 @@ The *only* thing left is to:
 - Improve your Emacs user experience by selecting Emacs behaviour and packages
   that suits your needs with the `Optional Installation Steps`_.
 
-That's described in the next sections.
+  - Note that PEL comes with a set of already-made Emacs customization files
+    that you can copy into your ``~/.emacs.d/emacs-customization.el`` file to
+    quickly get a taste of working with PEL.  These files activate a set of
+    user-options including several ``pel-use-`` user-options that identify
+    packages that PEL must download, install, configure and activate.
+
+    - If you copy one of the files from the `sample/emacs-customization`_
+      directory into your ``~/.emacs.d/emacs-customization.el``, the next time
+      you start Emacs with PEL-supporting init file, PEL will download the
+      associated files, byte compile them and activate the key bindings
+      associated with them.
+
+
+More information about PEL configuration is in the next section.
 
 
 .. _create an issue: https://github.com/pierre-rouleau/pel/issues
 .. _Update any option in PEL init.el file: `Further Configure the init.el File`_
+.. _sample/emacs-customization: ../sample/emacs-customization
 
 .. ---------------------------------------------------------------------------
 
