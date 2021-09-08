@@ -303,7 +303,7 @@
   "Display and return PEL package version string.
 Optionally insert it at point if INSERT is non-nil."
   (interactive "P")
-  (let ((version "0.3.1"))
+  (let ((version "0.4.0"))
     (if insert
         (insert version))
     (message "PEL version: %s" version)

@@ -1,6 +1,6 @@
 PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
-* Changes since version 0.3.1:
+* Version 0.4.0:
 ** New Features and Improvements:
 - New: Simplified installation. PEL now provides the init.el and the early-init.el file
   that support PEL features.  There's also a set of canned Emacs customization files
