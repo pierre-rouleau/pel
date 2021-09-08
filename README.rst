@@ -22,7 +22,7 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 
-.. image:: https://img.shields.io/badge/PEL_Manual-α_ready-blue
+.. image:: https://img.shields.io/badge/PEL_Manual-Αlpha_state-blue
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 
@@ -145,7 +145,7 @@ or `update it`_ [#update]_ !
 
 ➣ **Extends Emacs Documentation**:
 
-- PEL provides **over 130** `PDF topic-oriented reference sheets`_ packed
+- PEL provides **over 130** `PDF topic-oriented reference sheets`_ [#doc]_ packed
   with symbol annotated, colour coded key bindings and command descriptions,
   with hyperlinks to Emacs manuals, external packages, articles and other
   useful references.
@@ -155,9 +155,7 @@ or `update it`_ [#update]_ !
     inline (as opposed to downloading it) so you can use the links quickly.
     Inside Emacs use ``<f11> <f1>`` to open the `PEL Index PDF`_ and then
     navigate from it, or use ``<f12> <f1>`` to open the PDF describing the
-    major mode of the current buffer and its key bindings.  All of these PDF
-    files are created from a macOS Number file.  It is located in a separate
-    Git repo: the `pel-pdf-spreadsheet repo`_.
+    major mode of the current buffer and its key bindings.
 
 - `PEL's Manual`_ describes PEL features in more details. See:
 
@@ -210,6 +208,12 @@ Drop me a note in the wiki_ or in the `discussion board`_!
               experience.  The `Mozilla Firefox`_ browser does an excellent job
               at it since its version 78, under all operating system and is
               highly recommended.
+
+.. [#doc]     The source of the `PEL PDF files`_ is a single macOS Number
+              spreadsheet file.  It's also available in the Git
+              `pel-pdf-spreadsheet repo`_.  I would have liked  to find a way
+              to create this with a markup flexible enough but I did not find
+              one. Let me know if you know one that can build the same output.
 
 .. [#quick] **Fast initialization**:  PEL code uses all the techniques to
             improve initialization speed.  By default it starts quickly,
