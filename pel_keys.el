@@ -6203,11 +6203,22 @@ the ones defined from the buffer now."
 
 ;; Git support
 (when pel-use-magit
+  ;; Magit delays its key bindings after Emacs initialization to avoid adding
+  ;; bindings to commands that already have one.  PEL circumvents this to add
+  ;; one key binding under pel:vcs so that familiar Magit key bindings are
+  ;; available while also providing a PEL VCS binding indicating that Magit is
+  ;; available: it also delays it using the after-init-hook *and* appends to
+  ;; ensure that this hook will be executed after Magit bind its keys.
+  (defun pel--cfg-magit-keys ()
+    "Delayed Magit configuration - add extra key bindings to Magit."
+    (define-key pel:vcs "g" 'magit-status))
+
   (pel-ensure-package magit from: melpa)
   (pel-autoload-file magit for:
                      magit
                      magit-status)
-  (define-key pel:vcs "g" 'magit-status)
+  (add-hook 'after-init-hook 'pel--cfg-magit-keys :append)
+
   ;;
   (when pel-use-treemacs-magit
     (pel-ensure-package treemacs-magit from: melpa)))
