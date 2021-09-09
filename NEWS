@@ -1,5 +1,9 @@
 PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
+* Changed Since Version 0.4.0:
+- New: The ``C-x g`` key binding for Magit is no longer replaced by PEL's
+  ``<f11> v g`` key binding for the *magit-status* command: both bindings are
+  active when Magit is available.
 * Version 0.4.0:
 ** New Features and Improvements:
 - New: Simplified installation. PEL now provides the init.el and the early-init.el file
