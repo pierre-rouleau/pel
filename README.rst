@@ -76,7 +76,7 @@ or `update it`_ [#update]_ !
       setup with package management capabilities and PEL's automatic package
       installation via customization.
 
-- PEL support Emacs 26 as well as Emacs 27 and later.
+- PEL supports Emacs 26 and later.
 
   - For Emacs 27 and later the ``pel-early-init-template`` user-option (which
     defaults to `example/init/early-init.el`_) allows you to identify a
