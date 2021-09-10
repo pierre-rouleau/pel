@@ -178,7 +178,7 @@ or `update it`_ [#update]_ !
 - PEL provides over 440 extra commands.  PEL commands extend the packages
   it supports and provides some of its own features.
 - PEL provides 7 Hydra key bindings when the ``pel-use-hydra`` and the topic
-  specific user-option is activated.
+  specific user-options are activated.
 
 
 ➣ **Credits**
