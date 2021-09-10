@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, February 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-02 10:24:17, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-09 18:30:43, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -110,7 +110,6 @@ If FILE is not found in DIRPATH, the parent of DIRPATH is searched."
       (setq filepath (expand-file-name filename dirpath)))
     (when file-found
       filepath)))
-
 
 ;; --
 

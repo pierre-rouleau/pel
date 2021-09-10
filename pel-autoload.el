@@ -659,6 +659,9 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-setup-base" for:
     pel-setup-info)
 
+  (pel-autoload "pel-vcs" for:
+    pel-vcs-switch-backend)
+
   (pel-autoload "pel-window" for:
     pel-show-window-previous-buffer
     pel-switch-to-last-used-buffer
