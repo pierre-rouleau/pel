@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  9 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-09 20:54:41, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-10 07:35:08, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -50,7 +50,7 @@
 (defun pel-vcs-backends-for (filepath)
   "Return a list of VCS back-ends available for the specified FILEPATH.
 Return nil if there are no VCS back-end.
-The list identify VCS back-end with the symbols used in vc-=handled-backend'."
+The list identify VCS back-end with the symbols used in `vc-handled-backend'."
   (let ((detected-backends nil)
         (filepath (if (file-directory-p filepath)
                       (file-name-as-directory filepath)

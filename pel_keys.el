@@ -6204,6 +6204,8 @@ the ones defined from the buffer now."
 
 ;; Git support
 (when pel-use-magit
+  (define-pel-global-prefix pel:vcs-magit (kbd "<f11> v g"))
+
   ;; Magit delays its key bindings after Emacs initialization to avoid adding
   ;; bindings to commands that already have one.  PEL circumvents this to add
   ;; one key binding under pel:vcs so that familiar Magit key bindings are
@@ -6212,7 +6214,7 @@ the ones defined from the buffer now."
   ;; ensure that this hook will be executed after Magit bind its keys.
   (defun pel--cfg-magit-keys ()
     "Delayed Magit configuration - add extra key bindings to Magit."
-    (define-key pel:vcs "g" 'magit-status))
+    (define-key pel:vcs-magit "s" 'magit-status))
 
   (pel-ensure-package magit from: melpa)
   (pel-autoload-file magit for:
@@ -6231,9 +6233,11 @@ the ones defined from the buffer now."
 
 ;; Mercurial Support
 (when pel-use-monky
+  (define-pel-global-prefix pel:vcs-monky (kbd "<f11> v m"))
   (pel-ensure-package monky from: melpa)
   (pel-autoload-file monky for: monky-status)
-  (define-key pel:vcs "m"  'monky-status))
+  (define-key pel:vcs-monky "s"  'monky-status)
+  (define-key pel:vcs-monky "b"  'monky-blame-current-file))
 
 (when pel-use-hgignore-mode
   ;; Install & compile hgignore-mode if requested.  No key assignment;
