@@ -2,7 +2,7 @@
 PEL -- Pragmatic Emacs Library
 ==============================
 
-.. image:: https://img.shields.io/:license-gpl3-blue.svg
+.. image:: https://img.shields.io/:License-gpl3-blue.svg
    :alt: License
    :target: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -17,6 +17,10 @@ PEL -- Pragmatic Emacs Library
 .. image:: https://img.shields.io/badge/package_quicstart-Compatible-green
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#quickst
+
+.. image:: https://img.shields.io/badge/PEL_Commands-448-teal
+   :alt: Version
+   :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 
 .. image:: https://img.shields.io/badge/PDF_Files-133-blue
    :alt: Version
@@ -168,6 +172,14 @@ or `update it`_ [#update]_ !
   - `PEL Key Bindings`_,
   - `PEL convenience features`_ with PEL commands that extend several aspects
     of Emacs.
+
+➣ **PEL Convenience Commands**
+
+- PEL provides over 440 extra commands.  PEL commands extend the packages
+  it supports and provides some of its own features.
+- PEL provides 7 Hydra key bindings when the ``pel-use-hydra`` and the topic
+  specific user-option is activated.
+
 
 ➣ **Credits**
 
