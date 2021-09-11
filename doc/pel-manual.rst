@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-09-11 16:56:08, updated by Pierre Rouleau.
+:Modified: 2021-09-11 17:06:55, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -3114,7 +3114,7 @@ The following example shows the merging of two different versions of the file
   prompt.
 - When running Emacs in terminal mode the ``ediff-merge`` will show its menu
   at the end or a message stating that you can type **?** to show it. In
-  graphics mode the``ediff-merge`` menu may show up inside a different,
+  graphics mode the ``ediff-merge`` menu may show up inside a different,
   floating frame.
 - The command shows 2 windows at the top, with file A on the left side and
   file B on the right side.  The ``*ediff-merge*`` buffer that will hold the
