@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-09-07 19:13:56, updated by Pierre Rouleau.
+:Modified: 2021-09-11 15:44:42, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -3074,7 +3074,7 @@ PEL Diff and Merge
 ------------------
 
 :PDF Sheet: `Diff and Merge`_.
-:PEL Customization: *none*
+:PEL Customization: ``pel-use-ztree``
 :PEL Key Prefix: - **pel:diff** : ``<f11> d``
                  - **pel:ediff** : ``<f11> e``
 
@@ -3085,7 +3085,72 @@ PEL Diff and Merge
                    - **pel:ediff-patch**   : ``<f11> e p``
                    - **pel:ediff-regions** : ``<f11> e r``
 
-PEL provides key bindings to Emacs diff end ediff commands.
+PEL provides key bindings to the following software packages that you may use
+for compare 2 files, and perform a 2-way merge (comparing 2 files and moving
+text from one file to the other) and a `3-way merge`_ (such as what's used
+when merging with your preferred DVCS):
+
+- Emacs built-in diff_ package that supports simple diff,
+- Emacs built-in ediff_ package, a more powerful package capable of performing
+  interactive 2-way and 3-way merge operations.
+
+
+
+.. _diff:        https://www.gnu.org/software/emacs/manual/html_node/emacs/Comparing-Files.html
+.. _ediff:       https://www.gnu.org/software/emacs/manual/html_node/ediff/index.html
+.. _3-way merge: https://en.wikipedia.org/wiki/Merge_(version_control)#Three-way_merge
+
+
+Merging Files with ediff-merge
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Merge the content of two different files inside a ``*ediff-merge*`` buffer
+with the **ediff-merge** command (bound to ``<f11> d e m f`` command.
+
+The following example shows the merging of two different versions of the file
+``pel--base.el`` stored into 2 different directories.
+
+- First issue the command and identify the 2 different files to the command
+  prompt.
+- When running Emacs in terminal mode the ``ediff-merge`` will show its menu
+  at the end or a message stating that you can type **?** to show it. In
+  graphics mode the``ediff-merge`` menu may show up inside a different,
+  floating frame.
+- The command shows 2 windows at the top, with file A on the left side and
+  file B on the right side.  The ``*ediff-merge*`` buffer that will hold the
+  result of the merge is show under these two windows, above the
+  ``ediff-merge`` ``*Ediff Control Panel*`` window.
+
+.. figure:: res/ediff-merge-00.png
+   :scale: 50 %
+
+- Type **n** or Space to move to the next difference.  The select which of the
+  text to use in the merged: type **a** to take text from A or **b** to take
+  text from the B file.
+
+The snapshot shows the first difference.  The merge buffer shows the content
+of file A as ``variant A`` and the content of B as ``variant B`` in the
+yellow highlighted area.
+
+.. figure:: res/ediff-merge-01.png
+   :scale: 50 %
+
+After typing **b**, the content of file B is copied into the merge, as shown here:
+
+.. figure:: res/ediff-merge-02.png
+   :scale: 50 %
+
+Type **n** to move to the next difference.
+
+.. figure:: res/ediff-merge-03.png
+   :scale: 50 %
+
+Continue until you reach the end of the files. When you're done, type **q** to
+terminate the ``ediff-merge`` session.  The result of the merge is inside the
+``*ediff-merge*`` buffer.  You can then save the content of the buffer into a
+file.
+
+
 
 PEL Drawing Support
 -------------------
