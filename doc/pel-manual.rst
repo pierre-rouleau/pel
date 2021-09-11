@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-09-11 15:44:42, updated by Pierre Rouleau.
+:Modified: 2021-09-11 16:56:08, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -3150,6 +3150,76 @@ terminate the ``ediff-merge`` session.  The result of the merge is inside the
 ``*ediff-merge*`` buffer.  You can then save the content of the buffer into a
 file.
 
+During the merge session you can decide to go back to a previously merged area
+and make a different choice.  Emacs will prompt to confirm and will merge in
+you new test selection.
+
+Merge Files with ediff-merge-with-ancestor
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``ediff-merge-with-ancestor`` prompts for the name of 3 files, file A and
+B and then file C, the ancestor of those files.  It opens four windows showing
+file A and B at the top, and then showing the result of the merge inside the
+``*ediff-merge*`` buffer on the right and the content of the ancestor file on
+the right.
+
+The process is very similar to the use of ``ediff-merge`` described in the
+previous section.
+
+After issuing the ``ediff-merge-with-ancestor`` command
+(bound to ``<f11> e d m F``), Emacs shows the 4 buffers: file A, File B on the
+top and the ``*ediff-merge*`` buffer and the ancestor file at the bottom.  The
+``Ediff Control Panel*`` buffer is the current buffer.
+
+.. figure:: res/ediff-merge-wa-00.png
+   :scale: 50 %
+
+Press **?** to bring the help menu.
+
+.. figure:: res/ediff-merge-wa-01.png
+   :scale: 50 %
+
+Press **n** to move to the next difference to merge.  Emacs highlights the
+areas in all buffers.  Press **a** or **b** to select the change from file A
+or B.
+
+.. figure:: res/ediff-merge-wa-02.png
+   :scale: 50 %
+
+Press **n** to go to the next change.
+
+.. figure:: res/ediff-merge-wa-03.png
+   :scale: 50 %
+
+Next is the result shown after pressing **b** once. Notice that the content of
+file B was placed inside the ``*ediff-merge*`` buffer on the left while the
+ancestor shows the original text.
+
+.. figure:: res/ediff-merge-wa-04.png
+   :scale: 50 %
+
+Next is the result after pressing **b** again, completing the merge.  The
+original file still shows its original text.
+
+.. figure:: res/ediff-merge-wa-05.png
+   :scale: 50 %
+
+Press **q** to complete the merge session and answer the prompt.  The result
+is inside the ``*ediff-merge*`` buffer.
+
+.. figure:: res/ediff-merge-wa-06.png
+   :scale: 50 %
+
+The changes are merged inside the ``*ediff-merge*`` buffer.  The buffer
+showing the ancestor file is in read-only mode and cannot be modified.  Once
+you compete the merge you can save the content of the ``*ediff-merge*`` buffer
+into a file with the usual ``C-x C-s``.  Emacs will prompt for the file
+destination which defaults to the name of file A, which would normally be the
+local file in a DVCS merge operation.
+
+
+.. figure:: res/ediff-merge-wa-07.png
+   :scale: 50 %
 
 
 PEL Drawing Support
