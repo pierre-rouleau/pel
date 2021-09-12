@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-26 16:09:29, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-12 11:35:38, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -311,10 +311,13 @@
         items)))
 
     ([f11 ?c]        "counting"         nil)
-    ([f11 ?d]        "diff-merge"       pel-pkg-for-ztree       (diff
+    ([f11 ?d]        "diff-merge"       pel-pkg-for-diff-merge  (diff
                                                                  ediff
+                                                                 emerge
+                                                                 smerge
                                                                  ztree))
-    ([f11 ?d ?e]     "diff-merge"       nil                      ediff)
+    ([f11 ?d ?e]     "diff-merge"       pel-pkg-for-diff-merge   ediff)
+    ([f11 ?d ?s]     "diff-merge"       pel-pkg-for-diff-merge   smerge)
     ([f11 ?f ?v]     "file-variables"   nil)
     (,(kbd "<f11> SPC M-D") "mode-dired" pel-pkg-for-dired      (dired
                                                                  ls-lisp

@@ -42,6 +42,7 @@
 ;;     - pel-pkg-for-completion
 ;;     - pel-pkg-for-cursor
 ;;     - pel-pkg-for-cut-and-paste
+;;     - pel-pkg-for-diff-merge
 ;;     - pel-pkg-for-dired
 ;;     - pel-pkg-for-expand
 ;;     - pel-pkg-for-filemng
@@ -1342,6 +1343,26 @@ command to change it either for the local buffer or globally."
   :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
+;; pel-pkg-for-diff-merge
+;; ----------------------
+(defgroup pel-pkg-for-diff-merge nil
+  "List of packages activated to diff and merge buffer, files, directories."
+  :group 'pel-package-use
+  :link `(url-link :tag "Diff/Merge PDF" ,(pel-pdf-file-url "diff-merge")))
+
+(defcustom pel-use-smerge nil
+  "Whether PEL activates bindings for the built-in smerge package.
+
+The smerge package provides simple 3-way merge commands dealing with the
+standard diff annotated files."
+  :group 'pel-pkg-for-diff-merge
+  :type '(choice
+          (const :tag "Don't use smerge" nil)
+          (const :tag "Use smerge" t)
+          (const :tag "Use smerge-mode automatically on diff annotated files"
+                 auto)))
+
+;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-dired
 ;; -----------------
 (defgroup pel-pkg-for-dired nil
@@ -1601,7 +1622,8 @@ The Icons choice uses the icons from the package all-the-icons."
 ;;   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-pkg-for-ztree nil
   "PEL extra configuration for ztree packages."
-    :group 'pel-pkg-for-file-browse)
+  :group 'pel-pkg-for-diff-merge
+  :group 'pel-pkg-for-file-browse)
 
 (defcustom pel-use-ztree nil
   "Control whether the ztree package is used."

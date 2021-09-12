@@ -4,6 +4,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - New: The ``C-x g`` key binding for Magit is no longer replaced by PEL's
   ``<f11> v g`` key binding for the *magit-status* command: both bindings are
   active when Magit is available.
+- New: key prefix ``<f11> d e R`` for the ediff-registry commands.
+- New: support for the built-in ``smerge-mode`` activated by the new *pel-use-smerge*
+  user-option. If its value is set to ``auto`` then ``smerge-mode`` is
+  activated automatically in files that are annotated with diff strings.
+  PEL maps the smerge-mode keys to ``<f11> d s`` key prefix.  These keys are
+  in addition to the native key bindings.  The ``pel-use-smerge`` user-option
+  is located inside a new group: ``pel-pkg-for-diff-merge``.
+
 * Version 0.4.0:
 ** New Features and Improvements:
 - New: Simplified installation. PEL now provides the init.el and the early-init.el file

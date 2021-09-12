@@ -5093,7 +5093,6 @@ the ones defined from the buffer now."
 ;; - Function Keys - <f11> - Prefix ``<f11> d e`` : ediff commands
 (define-pel-global-prefix pel:ediff (kbd "<f11> d e"))
 (define-key pel:ediff "?"  'ediff-documentation)
-(define-key pel:ediff "R"  'eregistry)
 
 (define-pel-global-prefix pel:ediff-buffer (kbd "<f11> d e b"))
 (define-key pel:ediff-buffer "f"  'ediff-current-file)
@@ -5134,6 +5133,52 @@ the ones defined from the buffer now."
 (define-key pel:ediff-merge "C"  'edirs-merge-with-ancestor)
 (define-key pel:ediff-merge "r"  'ediff-merge-revisions)
 (define-key pel:ediff-merge "R"  'ediff-merge-revisions-with-ancestor)
+
+(define-pel-global-prefix pel:ediff-registry (kbd "<f11> d e R"))
+
+(define-key pel:ediff-registry "R"  'eregistry)
+(define-key pel:ediff-registry "s"  'ediff-show-registry)
+(define-key pel:ediff-registry "f"  'ediff-toggle-multiframe)
+(when pel-emacs-is-graphic-p
+  (define-key pel:ediff-registry "t"  'ediff-toggle-use-tollbar))
+(define-key pel:ediff-registry "v"  'ediff-revert-buffers-then-recompute-diffs)
+
+(when pel-use-smerge
+  (when (eq pel-use-smerge 'auto)
+    ;; Following function taken from smerge-mode.el
+    (defun sm-try-smerge ()
+      "Activate smerge-mode automatically when file is diff3-annotated."
+      (save-excursion
+        (goto-char (point-min))
+        (when (re-search-forward "^<<<<<<< " nil t)
+          (smerge-mode 1))))
+    (add-hook 'find-file-hook 'sm-try-smerge t))
+  (define-pel-global-prefix pel:smerge (kbd "<f11> d s"))
+
+  (define-key pel:smerge "s" 'smerge-start-session)
+  (define-key pel:smerge "n" 'smerge-next)
+  (define-key pel:smerge "p" 'smerge-prev)
+
+  (define-key pel:smerge (kbd "M-c") 'smerge-auto-combine)
+  (define-key pel:smerge "C"         'smerge-combine-with-next)
+  (define-key pel:smerge ">"         'smerge-diff-base-lower)
+  (define-key pel:smerge "<"         'smerge-diff-base-upper)
+  (define-key pel:smerge "="         'smerge-diff-upper-lower)
+  (define-key pel:smerge "e"         'smerge-ediff)
+
+  (define-key pel:smerge "a"         'smerge-keep-all)
+  (define-key pel:smerge "b"         'smerge-keep-base)
+  (define-key pel:smerge "\C-m"      'smerge-keep-current)
+  (define-key pel:smerge "l"         'smerge-keep-lower)
+  (define-key pel:smerge "u"         'smerge-keep-upper)
+
+  (define-key pel:smerge (kbd "M-k") 'smerge-kill-current)
+  (define-key pel:smerge (kbd "M-C") 'smerge-makeup-conflict)
+  (define-key pel:smerge "m"         'smerge-popup-context-menu)
+  (define-key pel:smerge "R"         'smerge-refine)
+  (define-key pel:smerge "r"         'smerge-resolve)
+  (define-key pel:smerge (kbd "M-r") 'smerge-resolve-all)
+  (define-key pel:smerge (kbd "M-s") 'smerge-swap))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> D`` : draw commands
