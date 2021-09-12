@@ -4613,6 +4613,22 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
     (define-key pel:command-log "." 'clm/close-command-log-buffer)
     (define-key pel:command-log "/" 'clm/toggle-log-all)))
 
+(when pel-use-interaction-log-mode
+  (define-pel-global-prefix pel:interaction-log (kbd "<f11> ? k i"))
+  (pel-ensure-package interaction-log from: melpa)
+  (defun pel-interaction-log-buffer ()
+    "Show interaction log buffer."
+    (interactive)
+    (when (boundp 'ilog-buffer-name)
+      (display-buffer ilog-buffer-name)))
+  (pel-autoload-file interaction-log for:
+                     interaction-log-mode)
+  (define-key pel:interaction-log "i" 'interaction-log-mode)
+  (define-key pel:interaction-log "b" 'pel-interaction-log-buffer)
+  (define-key pel:interaction-log "f" 'ilog-show-in-new-frame)
+  (define-key pel:interaction-log "n" 'ilog-toggle-display-buffer-names)
+  (define-key pel:interaction-log "v" 'ilog-toggle-view))
+
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> $`` : Spell Check
 

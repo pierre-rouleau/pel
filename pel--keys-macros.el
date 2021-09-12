@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-12 11:35:38, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-12 15:11:20, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -154,6 +154,15 @@
     ([f11 ??]        "help"             pel-pkg-for-help        (command-log
                                                                  debbugs
                                                                  helpful
+                                                                 hydra
+                                                                 keycast
+                                                                 interaction-log
+                                                                 which-func
+                                                                 which-key))
+    ([f11 ?? ?k]     "help"             pel-pkg-for-keys        (command-log
+                                                                 interaction-log
+                                                                 hydra
+                                                                 keycast
                                                                  which-func
                                                                  which-key))
     ([f11 9]         "indentation"      pel-pkg-for-indentation (indent

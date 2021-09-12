@@ -11,6 +11,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   PEL maps the smerge-mode keys to ``<f11> d s`` key prefix.  These keys are
   in addition to the native key bindings.  The ``pel-use-smerge`` user-option
   is located inside a new group: ``pel-pkg-for-diff-merge``.
+- New: Add support for [[https://github.com/michael-heerdegen/interaction-log.el][interaction-log]] external package, when the
+  *pel-use-interaction-log-mode* is turned on.  The key bindings use the
+  ``<f11> ? k i`` key prefix.
 
 * Version 0.4.0:
 ** New Features and Improvements:

@@ -2773,6 +2773,16 @@ waiting for activity to resume in the lewang's repo."
                    "https://github.com/pierre-rouleau/command-log-mode"))
 (pel-put 'pel-use-command-log-mode :package-is :in-utils)
 
+(defcustom pel-use-interaction-log-mode nil
+  "Control whether PEL uses the interaction-log-mode package.
+This package  logs all keys typed in a buffer, showing the command name and
+using colored fonts.  Similar to command-log-mode but with more colors."
+  :group 'pel-pkg-for-keys
+  :type 'boolean
+  :safe #'booleanp
+  :link '(url-link :tag "interaction-log-mode @ Github"
+                   https://github.com/michael-heerdegen/interaction-log.el))
+
 ;; ---------------------------------------------------------------------------
 ;; Marking Management
 ;; ------------------
