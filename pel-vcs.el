@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, September  9 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-10 18:22:28, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-13 09:06:14, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -88,6 +88,37 @@ This uses the function `vc-switch-backend' to perform the switch."
           (vc-switch-backend current-filename
                              (pel-select-symbol-from "VCS" vcs-backends)))
       (user-error "Found no VCS back-end for the file %s" current-filename))))
+
+
+;; ---------------------------------------------------------------------------
+;; Log VC Commands
+;; ---------------
+
+
+
+(defun pel--vcs-log-vc (command files flags)
+  "Log VC command."
+  (let ((outbuf (get-buffer-create "*pel-vc-log*")))
+    (with-current-buffer outbuf
+      (goto-char (point-max))
+      (insert (format "%s %s %s\n" command files flags)))))
+
+;;-pel-autoload
+(defun pel-vcs-toggle-vc-log ()
+  "Start/stop logging VC commands in the *pel-vc-log* buffer.
+When starting, the command does not create the buffer.
+It is created on the first VC event."
+  (interactive)
+  (unless (boundp 'vc-post-command-functions)
+    (require 'vc-dispatcher nil :no-error))
+  (when (boundp 'vc-post-command-functions)
+    (if (and vc-post-command-functions
+             (member 'pel--vcs-log-vc vc-post-command-functions))
+        (progn
+          (remove-hook 'vc-post-command-functions 'pel--vcs-log-vc)
+          (message "VC Logging stopped."))
+      (add-hook 'vc-post-command-functions 'pel--vcs-log-vc)
+      (message "Start VC logging in the *pel-vc-log* buffer."))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-vcs)

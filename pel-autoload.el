@@ -660,7 +660,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-setup-info)
 
   (pel-autoload "pel-vcs" for:
-    pel-vcs-switch-backend)
+    pel-vcs-switch-backend
+    pel-vcs-toggle-vc-log)
 
   (pel-autoload "pel-window" for:
     pel-show-window-previous-buffer

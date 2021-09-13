@@ -6262,6 +6262,7 @@ the ones defined from the buffer now."
 (define-pel-global-prefix pel:vcs (kbd "<f11> v"))
 (define-key pel:vcs "v"  'vc-dir)
 (define-key pel:vcs "s"  'pel-vcs-switch-backend)
+(define-key pel:vcs "l"  'pel-vcs-toggle-vc-log)
 
 ;; Git support
 (when pel-use-magit

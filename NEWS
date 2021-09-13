@@ -4,6 +4,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - New: The ``C-x g`` key binding for Magit is no longer replaced by PEL's
   ``<f11> v g`` key binding for the *magit-status* command: both bindings are
   active when Magit is available.
+- New: *pel-vcs-toggle-vc-log* command, bound to ``<f11> v l``.
+  Toggle the logging of VC back-end commands in the `*pel-vc-log*` buffer.
+- New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/vcs-git.pdf][⅀ VCS-Git 𝔛Magit PDF]]
 - New: key prefix ``<f11> d e R`` for the ediff-registry commands.
 - New: support for the built-in ``smerge-mode`` activated by the new *pel-use-smerge*
   user-option. If its value is set to ``auto`` then ``smerge-mode`` is
