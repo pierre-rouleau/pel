@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-12 15:11:20, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-13 09:24:16, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -742,6 +742,7 @@ There should be no key binding!" keyseq))
     ;; ("sly"              . "repl-cl-sly")
     ;; ("slime"            . "repl-cl-slime")
     ;; mode names aliases
+    ("git"              . "vcs-git")
     ("mercurial"        . "vcs-mercurial")
     ("lispy"            . "plm-lispy")
     ("dired"            . "mode-dired")
