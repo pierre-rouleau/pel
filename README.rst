@@ -14,7 +14,7 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#quick
 
-.. image:: https://img.shields.io/badge/package_quicstart-Compatible-green
+.. image:: https://img.shields.io/badge/package_quickstart-Compatible-green
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#quickst
 
