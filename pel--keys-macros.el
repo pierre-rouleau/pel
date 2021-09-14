@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-13 09:24:16, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-14 09:44:10, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -201,7 +201,7 @@
                                                                  edts
                                                                  auto-highlight-symbol))
     ([f11 32 ?e f12] "pl-erlang"        pel-erlang-code-style)
-    ([f11 32 ?e ?L]  "pl-erlang"        pel-pkg-for-lsp-mode    ,pel--lsp-groups)
+    ([f11 32 ?e ?L]  "pl-erlang"        pel-pkg-for-lsp-mode    ,(cons 'lsp-erlang pel--lsp-groups))
     ([f11 32 ?e ?w]  "pl-erlang"        pel-pkg-for-lsp-mode    (treemacs
                                                                  lsp-treemacs))
     ([f11 32 ?f]     "pl-forth"         pel-pkg-for-forth)

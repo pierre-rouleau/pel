@@ -207,6 +207,80 @@ Returning the values stored locally which may be out-of date!"
         versions)
     pel--downloaded-erlang-man-versions))
 
+
+;; ---------------------------------------------------------------------------
+;; Extract value of pel-erlang-man-parent-rootdir
+;; ----------------------------------------------
+
+(defun pel--erlang-dirpath (dirpath-user-option)
+  "Extract and return value of DIRPATH-USER-OPTION.
+Return a (value . error) cons cell where value is a string and error is
+nil when all is OK or a message describing the detected error if any.
+Return nil if it is not defined."
+  (when dirpath-user-option
+    (let (dirpath source envvar)
+      (cond
+       ((stringp dirpath-user-option)
+        (setq dirpath pel-erlang-man-parent-rootdir)
+        (setq source 'user-option))
+       ;;
+       ((consp dirpath-user-option)
+        (setq envvar (cdr pel-erlang-man-parent-rootdir))
+        (setq dirpath (getenv envvar))
+        (setq source 'envvar)))
+      ;; return result
+      (cond
+       ((null dirpath)
+        (cons nil (if (eq source 'user-option)
+                      "Nil user option"
+                    (format "Defined by absent environment variable %s"
+                            envvar))))
+       ;; all is OK: return a cell with only the dirpath
+       ((file-exists-p dirpath)
+        (list dirpath))
+       ;; directory does not exists
+       (t (cons dirpath
+                (format "Directory %s, specified by %s, does not exist"
+                        dirpath
+                        (if (eq source 'user-option)
+                            "user-option"
+                          (format "environment variable %s"
+                                  envvar)))))))))
+
+;;-pel-autoload
+(defun pel-erlang-man-parent-rootdir ()
+  "Extract and return value of `pel-erlang-man-parent-rootdir' user-option.
+Return a (value . error) cons cell where value is a string and error is
+nil when all is OK or a message describing the detected error if any.
+Return nil if it is not defined."
+  (pel--erlang-dirpath pel-erlang-man-parent-rootdir))
+
+;;-pel-autoload
+(defun pel-erlang-exec-path ()
+  "Extract and return value of `pel-erlang-exec-path' user-option.
+Return a (value . error) cons cell where value is a string and error is
+nil when all is OK or a message describing the detected error if any.
+Return nil if it is not defined."
+  (pel--erlang-dirpath pel-erlang-exec-path))
+
+;;-pel-autoload
+(defun pel-erlang-set-dirpath (user-option action)
+  "Extract the USER-OPTION value and perform specified ACTION when non-nil.
+The USER-OPTION must be a function that has the same name as the user-option
+it extracts.
+The ACTION is a function that takes one argument: a dirpath extracted from the
+user option."
+  (let* ((erl-dirpath.error-msg (funcall user-option))
+         (erl-dirpath (car erl-dirpath.error-msg))
+         (error-msg (cdr erl-dirpath.error-msg)))
+    (when erl-dirpath
+      (if error-msg
+          (display-warning
+           'pel-erlang-set
+           (format "Invalid %s: %s" (symbol-name user-option) error-msg)
+           :error)
+        (funcall action erl-dirpath)))))
+
 ;; ---------------------------------------------------------------------------
 ;; Read Erlang Version
 ;; -------------------
@@ -229,8 +303,7 @@ On error issue a warning describing the error and return nil."
          'pel-erlang-version
          (format "version-erl failed with exit code: %S.
 Cannot detect Erlang version!" (car exit-code.version))
-         :error)
-`        nil)))
+         :error))))
    ;;
    ((and (consp pel-erlang-version-detection-method)
          (eq (car pel-erlang-version-detection-method) 'by-envvar))
@@ -258,10 +331,13 @@ Can't detect Erlang version." pel-erlang-version-detection-method)
 
 ;;-pel-autoload
 (defun pel-show-erlang-version ()
-  "Display version of Erlang, erlang.el and erlang_ls if available."
+  "Display version of Erlang, erlang.el and erlang_ls if available.
+Also displays `erlang-root-dir' and `pel-erlang-man-parent-rootdir'"
   (interactive)
   (let ((erlang-ls-version (pel-erlang-ls-version)))
-    (message "Erlang version: %s, erlang.el version: %s%s"
+    (message "Erlang version: %s, erlang.el version: %s%s
+erlang-root-dir              : %s
+pel-erlang-man-parent-rootdir: %s"
              (pel-erlang-version)
              (if (and (require 'erlang nil :noerror)
                       (fboundp 'erlang-version))
@@ -269,7 +345,11 @@ Can't detect Erlang version." pel-erlang-version-detection-method)
                "Unknown - not loaded!")
              (if erlang-ls-version
                  (format ", erlang_ls: %s" erlang-ls-version)
-               ""))))
+               "")
+             (bound-and-true-p erlang-root-dir)
+             (let ((value.error (pel-erlang-man-parent-rootdir)))
+               (or (cdr value.error)
+                   (car value.error))))))
 
 ;; ---------------------------------------------------------------------------
 

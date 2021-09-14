@@ -266,6 +266,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-erlang-toggle-syntax-checker
     pel-erlang-comment-dwim)
   (pel-autoload-function "pel-erlang" for:
+    pel-erlang-set-dirpath
+    pel-erlang-man-parent-rootdir
+    pel-erlang-exec-path
     pel-erlang-shell-mode-init)
 
   (pel-autoload-function "pel-erlang-skels" for:

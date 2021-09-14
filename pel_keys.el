@@ -3165,51 +3165,12 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (define-key erlang-mode-map (kbd "M-;") 'pel-erlang-comment-dwim))
     ;; Set erlang-root-dir from the content of pel-erlang-man-parent-rootdir
     (if (boundp 'erlang-root-dir)
-        (when pel-erlang-man-parent-rootdir
-          (cond
-           ((stringp pel-erlang-man-parent-rootdir)
-            (if (file-exists-p pel-erlang-man-parent-rootdir)
-                (setq erlang-root-dir pel-erlang-man-parent-rootdir)
-              (display-warning 'pel-use-erlang
-                               (format "\
-Invalid directory %s specified by pel-erlang-man-parent-rootdir"
-                                       pel-erlang-man-parent-rootdir)
-                               :error)))
-           ((consp pel-erlang-man-parent-rootdir)
-            (let* ((envvar (cdr pel-erlang-man-parent-rootdir))
-                   (path  (getenv envvar)))
-              (if (and path
-                       (file-exists-p path))
-                  (setq erlang-root-dir path)
-                (display-warning 'pel-use-erlang
-                                 (format "\
-Invalid directory %s specified by pel-erlang-man-parent-rootdir \
-via environment variable %s"
-                                         path
-                                         envvar)
-                                 :error)))))))
+        (pel-erlang-set-dirpath (function pel-erlang-man-parent-rootdir)
+                        (lambda (dirpath) (setq erlang-root-dir dirpath)))
+      (display-warning 'pel-use-erlang "erlang-root-dir is unbound" :error))
     ;; Optionally add a Erlang Bin directory to the exec-path
-    (when pel-erlang-exec-path
-      (cond ((stringp pel-erlang-exec-path)
-             (if (file-exists-p pel-erlang-exec-path)
-                 (add-to-list 'exec-path pel-erlang-exec-path)
-               (display-warning 'pel-use-erlang (format "\
-Invalid path specified by pel-erlang-exec-path: %s
-Ignored!"
-                                                        pel-erlang-exec-path)
-                                :error)))
-            ((consp pel-erlang-exec-path)
-             (let* ((envvar (cdr pel-erlang-exec-path))
-                    (path (getenv envvar)))
-               (if (and path
-                        (file-exists-p path))
-                   (add-to-list 'exec-path path)
-                 (display-warning 'pel-use-erlang
-                                  (format "\
-Invalid path %s from %s as specified by pel-erlang-exec-path"
-                                          path envvar)
-                                  :error))))))
-
+    (pel-erlang-set-dirpath (function pel-erlang-exec-path)
+                    (lambda (dirpath) (add-to-list 'exec-path dirpath)))
     ;;
     (require 'erlang-start)
     (when pel-use-edts
@@ -3236,10 +3197,9 @@ Invalid path %s from %s as specified by pel-erlang-exec-path"
                             (error-message-string err))
                     :error)
                    (edts-mode -1))))
-            (display-warning
-             'pel-use-edts
-             "edts-mode is void.  Is it installed?"
-             :error))))
+            (display-warning 'pel-use-edts
+                             "edts-mode is void.  Is it installed?"
+                             :error))))
 
       ;; Key to start EDTS
       (define-key pel:for-erlang      (kbd "M-SPC")   'edts-mode)

@@ -6580,7 +6580,7 @@ Erlang man files.
 
 Available choices:
 
-- nil : do not set it, leave control in the variable `erlang-rootdir'.
+- nil : do not set it, leave control in the variable `erlang-root-dir'.
 - Enter a string, such as /usr/local/otp, that holds the man directory which
   holds man1, man3, man4 and man6.
 - Use an environment variable, such as PEL_ERLANG_MAN_PARENT_DIR, that
@@ -6662,6 +6662,7 @@ EDTS := Erlang Development Tool Suite."
   :group 'pel-erlang-ide
   :link '(url-link "edts @ GitHub"
                    "https://github.com/sebastiw/edts")
+  :link '(custom-group-link :tag "edts group (when loaded)" "edts")
   :type '(choice
           (const :tag "Do not use" nil)
           (const :tag "Use, activate manually" t)
@@ -6675,6 +6676,7 @@ Note that when set this activates the flycheck-mode, regardless
 of the value of the `pel-use-erlang-syntax-check' user-option."
   :link '(url-link :tag "erlang_ls @ GitHub"
                    "https://github.com/erlang-ls/erlang_ls")
+  :link '(custom-group-link :tag "lsp-erlang group (when loaded)" "lsp-erlang")
   :group 'pel-erlang-ide
   :group 'pel-pkg-for-lsp-mode
   :type 'boolean
