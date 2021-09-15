@@ -1924,9 +1924,10 @@ MINOR-MODES must be a symbol. In PEL that should be
 `pel-activates-global-minor-modes'.
 
 The function generates a warning describing the problem if a
-local  minor mode is specified instead of a local minor mode."
+local minor mode is specified instead of a local minor mode."
   (dolist (minor-mode (symbol-value minor-modes))
-    (when (local-variable-p minor-mode)
+    (when (and (boundp minor-mode)
+               (local-variable-if-set-p minor-mode))
       (display-warning
        'pel-turn-on-global-minor-modes-in
        (format
@@ -1951,14 +1952,17 @@ where we want to activate the local minor mode.
 The function generates a warning describing the problem if a
 global minor mode is specified instead of a local minor mode."
   (dolist (minor-mode (symbol-value minor-modes))
-    (unless (local-variable-p minor-mode)
+    (when (and (boundp minor-mode)
+               (not (local-variable-if-set-p minor-mode)))
       (display-warning
        'pel-turn-on-local-minor-modes-in
        (format
-        "Problem detected in your customization data:
+        "Problem detected in your customization data in buffer %s:
  User-option `%s' requests activation of *global* minor-mode %s in %s buffers.
  The minor-mode is instead activated globally for all buffers.
- Please remove `%s' from `%s'.  Instead add it to `pel-activates-global-minor-modes'."
+ Please remove `%s' from `%s'.
+ Instead add it to `pel-activates-global-minor-modes'."
+        (current-buffer)
         (symbol-name minor-modes) minor-mode major-mode
         minor-mode (symbol-name minor-modes))
        :warning))
