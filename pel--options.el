@@ -491,7 +491,7 @@ For example, to activate it in Erlang, add a line with
   :type '(repeat symbol))
 
 
-(defcustom pel-activates-minor-modes nil
+(defcustom pel-activates-global-minor-modes nil
   "List of *global* minor-modes automatically activated for all buffers.
 Enter *global* minor-mode activating function symbols.
 Do not enter lambda expressions."

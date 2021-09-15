@@ -1921,7 +1921,7 @@ The MINOR-MODES argument must be an unquoted symbol."
   "Turn all *global* MINOR-MODES on for all buffers.
 
 MINOR-MODES must be a symbol. In PEL that should be
-`pel-activates-minor-modes'.
+`pel-activates-global-minor-modes'.
 
 The function generates a warning describing the problem if a
 local  minor mode is specified instead of a local minor mode."
@@ -1958,7 +1958,7 @@ global minor mode is specified instead of a local minor mode."
         "Problem detected in your customization data:
  User-option `%s' requests activation of *global* minor-mode %s in %s buffers.
  The minor-mode is instead activated globally for all buffers.
- Please remove `%s' from `%s'.  Instead add it to `pel-activates-minor-modes'."
+ Please remove `%s' from `%s'.  Instead add it to `pel-activates-global-minor-modes'."
         (symbol-name minor-modes) minor-mode major-mode
         minor-mode (symbol-name minor-modes))
        :warning))

@@ -6797,8 +6797,8 @@ the ones defined from the buffer now."
 
 (defun pel--cfg-global-minor-modes ()
   "Activate global minor modes."
-  (pel-check-minor-modes-in           pel-activates-minor-modes)
-  (pel-turn-on-global-minor-modes-in 'pel-activates-minor-modes))
+  (pel-check-minor-modes-in           pel-activates-global-minor-modes)
+  (pel-turn-on-global-minor-modes-in 'pel-activates-global-minor-modes))
 
 (add-hook 'after-init-hook 'pel--cfg-global-minor-modes :append)
 
