@@ -3085,12 +3085,13 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC e`` : Erlang programming
 ;; Programming Language Family: BEAM
 (when pel-use-erlang
-  (define-pel-global-prefix pel:for-erlang (kbd "<f11> SPC e"))
-  (define-pel-global-prefix pel:erlang-function (kbd "<f11> SPC e f"))
-  (define-pel-global-prefix pel:erlang-clause   (kbd "<f11> SPC e c"))
-  (define-pel-global-prefix pel:erlang-analysis (kbd "<f11> SPC e a"))
-  (define-pel-global-prefix pel:erlang-debug    (kbd "<f11> SPC e d"))
-  (define-pel-global-prefix pel:erlang-skel     (kbd "<f11> SPC e <f12>"))
+  (define-pel-global-prefix pel:for-erlang        (kbd "<f11> SPC e"))
+  (define-pel-global-prefix pel:erlang-function   (kbd "<f11> SPC e f"))
+  (define-pel-global-prefix pel:erlang-clause     (kbd "<f11> SPC e c"))
+  (define-pel-global-prefix pel:erlang-statement  (kbd "<f11> SPC e s"))
+  (define-pel-global-prefix pel:erlang-analysis   (kbd "<f11> SPC e a"))
+  (define-pel-global-prefix pel:erlang-debug      (kbd "<f11> SPC e d"))
+  (define-pel-global-prefix pel:erlang-skel       (kbd "<f11> SPC e <f12>"))
   (define-pel-global-prefix pel:erlang-lsp        (kbd "<f11> SPC e L"))
   (define-pel-global-prefix pel:erlang-lsp-window (kbd "<f11> SPC e w"))
 
@@ -3151,8 +3152,10 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (define-key pel:for-erlang (kbd "<M-right>") 'erlang-end-of-clause)
   (define-key pel:erlang-function "m"         'erlang-mark-function)
   (define-key pel:erlang-clause   "m"         'erlang-mark-clause)
-  (define-key pel:for-erlang (kbd "M-p")      #'superword-mode)
-  (define-key pel:for-erlang (kbd "M-9")      #'show-paren-mode)
+  (define-key pel:erlang-statement "a"        'bsckward-sentence)
+  (define-key pel:erlang-statement "e"        'forward-sentence)
+  (define-key pel:for-erlang (kbd "M-p")     #'superword-mode)
+  (define-key pel:for-erlang (kbd "M-9")     #'show-paren-mode)
   (define-key pel:for-erlang (kbd "M-c")      'erlang-compile)
   (when pel-use-rainbow-delimiters
     (define-key pel:for-erlang (kbd "M-r")    'rainbow-delimiters-mode))
@@ -3166,11 +3169,11 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     ;; Set erlang-root-dir from the content of pel-erlang-man-parent-rootdir
     (if (boundp 'erlang-root-dir)
         (pel-erlang-set-dirpath (function pel-erlang-man-parent-rootdir)
-                        (lambda (dirpath) (setq erlang-root-dir dirpath)))
+                                (lambda (dirpath) (setq erlang-root-dir dirpath)))
       (display-warning 'pel-use-erlang "erlang-root-dir is unbound" :error))
     ;; Optionally add a Erlang Bin directory to the exec-path
     (pel-erlang-set-dirpath (function pel-erlang-exec-path)
-                    (lambda (dirpath) (add-to-list 'exec-path dirpath)))
+                            (lambda (dirpath) (add-to-list 'exec-path dirpath)))
     ;;
     (require 'erlang-start)
     (when pel-use-edts
