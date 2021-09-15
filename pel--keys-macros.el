@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-14 09:44:10, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-15 13:59:01, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1252,7 +1252,8 @@ and after the local variables have been loaded."
       (push `(pel-local-set-f12-M-f12 (quote ,key-prefix)) body))
     ;; Add the code that activates the minor modes identified by the
     ;;`pel-<mode>-activates-minor-modes' user-option.
-    (setq body (append body `((pel-turn-on-minor-modes-in ,gn-minor-modes))))
+    (setq body (append body `((pel-turn-on-local-minor-modes-in
+                               (quote ,gn-minor-modes)))))
     ;; return the following generated code:
     `(progn
        (defun ,gn-fct2 ()

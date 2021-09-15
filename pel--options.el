@@ -174,8 +174,8 @@
 ;;
 ;; - pel-pkg-for-<package-name or topic>
 ;; - pel-use-<package name>
-;; - pel-modes-activating-<package name>
 ;; - pel-startup-<thing to activate at startup>
+;; - pel-modes-activating-<package name>
 ;; - pel-<mode>-activates-minor-modes
 
 ;;
@@ -489,6 +489,14 @@ For example, to activate it in Erlang, add a line with
 `erlang-mode' without the quotes."
   :group 'pel-base-emacs
   :type '(repeat symbol))
+
+
+(defcustom pel-activates-minor-modes nil
+  "List of *global* minor-modes automatically activated for all buffers.
+Enter *global* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-base-emacs
+  :type '(repeat function))
 
 ;; ---------------------------------------------------------------------------
 (defgroup pel-fast-startup nil
@@ -2827,8 +2835,8 @@ using colored fonts.  Similar to command-log-mode but with more colors."
 (pel-put 'pel-use-asciidoc :package-is 'adoc-mode)
 
 (defcustom pel-adoc-activates-minor-modes nil
-  "List of minor-modes automatically activated for AsciiDoc buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for AsciiDoc buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-asciidoc
   :type '(repeat function))
@@ -2865,8 +2873,8 @@ images from their Graphviz Dot files."
 (pel-put 'pel-use-graphviz-dot :package-is 'graphviz-dot-mode)
 
 (defcustom pel-graphviz-dot-activates-minor-modes nil
-  "List of minor-modes automatically activated for Graphviz Dot buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Graphviz Dot buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-graphviz-dot
   :type '(repeat function))
@@ -2908,8 +2916,8 @@ Note that this value overrides the value selected by the
 (pel-put 'pel-use-plantuml :package-is 'plantuml-mode)
 
 (defcustom pel-plantuml-activates-minor-modes nil
-  "List of minor-modes automatically activated for PlantUML buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for PlantUML buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-plantuml
   :type '(repeat function))
@@ -2939,8 +2947,8 @@ Do not enter lambda expressions."
 (pel-put 'pel-use-markdown :package-is :a-gate)
 
 (defcustom pel-markdown-activates-minor-modes nil
-  "List of minor-modes automatically activated for markdown buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for markdown buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-markdown
   :type '(repeat function))
@@ -3073,8 +3081,8 @@ activate this package."
   :link `(url-link :tag "Outline Mode PDF" ,(pel-pdf-file-url "outline")))
 
 (defcustom pel-outline-activates-minor-modes nil
-  "List of minor-modes automatically activated for Outline-Mode buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Outline-Mode buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-outline-mode
   :type '(repeat function))
@@ -3096,8 +3104,8 @@ Do not enter lambda expressions."
 (pel-put 'pel-use-org-mode :package-is :builtin-emacs)
 
 (defcustom pel-org-activates-minor-modes nil
-  "List of minor-modes automatically activated for Org-Mode buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Org-Mode buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-org-mode
   :type '(repeat function))
@@ -3118,8 +3126,8 @@ Do not enter lambda expressions."
 (pel-put 'pel-use-rst-mode :package-is :builtin-emacs)
 
 (defcustom pel-rst-activates-minor-modes nil
-  "List of minor-modes automatically activated for reStructuredText buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for reStructuredText buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-reST
   :type '(repeat function))
@@ -3227,8 +3235,8 @@ itself is not available."
   :safe #'booleanp)
 
 (defcustom pel-yaml-activates-minor-modes nil
-  "List of minor-modes automatically activated for YAML buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for YAML buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-yaml
   :type '(repeat function))
@@ -3251,8 +3259,8 @@ Do not enter lambda expressions."
   :safe #'booleanp)
 
 (defcustom pel-cwl-activates-minor-modes nil
-  "List of minor-modes automatically activated for CWL buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for CWL buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-cwl
   :type '(repeat function))
@@ -3735,8 +3743,8 @@ of auto-newline while editing."
 (pel-put 'pel-use-c :also-required-when 'pel-use-bison-mode)
 
 (defcustom pel-c-activates-minor-modes nil
-  "List of minor-modes automatically activated for C buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for C buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-c
   :type '(repeat function))
@@ -4242,8 +4250,8 @@ taking over the default association with c-mode."
 (pel-put 'pel-use-c++ :package-is :builtin-emacs)
 
 (defcustom pel-c++-activates-minor-modes nil
-  "List of minor-modes automatically activated for C++ buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for C++ buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-c++
   :type '(repeat function))
@@ -4781,8 +4789,8 @@ Adjust it to your needs."
 (pel-put 'pel-use-d :package-is 'd-mode)
 
 (defcustom pel-d-activates-minor-modes nil
-  "List of minor-modes automatically activated for D buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for D buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-d
   :type '(repeat function))
@@ -4932,15 +4940,15 @@ PEL additions using built-in js-mode." js-mode)
                                             '((elpa . js2-mode))))
 
 (defcustom pel-javascript-activates-minor-modes nil
-  "List of minor-modes automatically activated for javascript-mode buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for javascript-mode buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-javascript
   :type '(repeat function))
 
 (defcustom pel-js-activates-minor-modes nil
-  "List of minor-modes automatically activated for js-mode buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for js-mode buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-javascript
   :type '(repeat function))
@@ -4964,8 +4972,8 @@ This *must* be activated to allow any other package for Go."
 (pel-put 'pel-use-go :package-is :a-gate)
 
 (defcustom pel-go-activates-minor-modes nil
-  "List of minor-modes automatically activated for Go buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Go buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-go
   :type '(repeat function))
@@ -5156,8 +5164,8 @@ When turned on the haskell-mode is associated with the PEL ``<f12>`` key."
 (pel-put 'pel-use-haskell-mode :requires 'pel-use-haskell)
 
 (defcustom pel-haskell-activates-minor-modes nil
-  "List of minor-modes automatically activated for Haskell buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Haskell buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-haskell
   :type '(repeat function))
@@ -5277,8 +5285,8 @@ In any case, you can override it by setting the name here."
   :type 'string)
 
 (defcustom pel-lisp-activates-minor-modes nil
-  "List of minor-modes automatically activated for Common Lisp buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Common Lisp buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-clisp
   :type '(repeat function))
@@ -5517,8 +5525,8 @@ The string is placed between the two -*- tags."
   :link `(url-link :tag "Emacs Lisp PDF" ,(pel-pdf-file-url "pl-emacs-lisp")))
 
 (defcustom pel-elisp-activates-minor-modes nil
-  "List of minor-modes automatically activated for Emacs Lisp buffers.
-  Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Emacs Lisp buffers.
+  Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-elisp
   :type '(repeat function))
@@ -5598,8 +5606,8 @@ is set: it is used by the helpful package."
   :group 'pel-pkg-for-lisp)
 
 (defcustom pel-arc-activates-minor-modes nil
-  "List of minor-modes automatically activated for Arc buffers.
-  Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Arc buffers.
+  Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-arc
   :type '(repeat function))
@@ -5624,8 +5632,8 @@ is set: it is used by the helpful package."
   :group 'pel-pkg-for-lisp)
 
 (defcustom pel-clojure-activates-minor-modes nil
-  "List of minor-modes automatically activated for Clojure buffers.
-  Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Clojure buffers.
+  Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-clojure
   :type '(repeat function))
@@ -5684,8 +5692,8 @@ is set: it is used by the helpful package."
   :group 'pel-pkg-for-lisp)
 
 (defcustom pel-hy-activates-minor-modes nil
-  "List of minor-modes automatically activated for Hy  buffers.
-  Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Hy  buffers.
+  Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-hy
   :type '(repeat function))
@@ -5711,8 +5719,8 @@ is set: it is used by the helpful package."
   :group 'pel-pkg-for-lisp)
 
 (defcustom pel-scheme-activates-minor-modes nil
-  "List of minor-modes automatically activated for Scheme buffers.
-  Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Scheme buffers.
+  Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-scheme
   :type '(repeat function))
@@ -5787,8 +5795,8 @@ Provides auto-completion for Geiser using the auto-complete-mode. "
   :group 'pel-pkg-for-scheme)
 
 (defcustom pel-chez-activates-minor-modes nil
-  "List of minor-modes automatically activated for Chez buffers.
-  Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Chez buffers.
+  Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-chez
   :type '(repeat function))
@@ -5818,8 +5826,8 @@ Note that activating Chez also activates Scheme support."
   :group 'pel-pkg-for-scheme)
 
 (defcustom pel-chibi-activates-minor-modes nil
-  "List of minor-modes automatically activated for Chibi buffers.
-  Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Chibi buffers.
+  Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-chibi
   :type '(repeat function))
@@ -5849,8 +5857,8 @@ Note that activating Chibi also activates Scheme support."
   :group 'pel-pkg-for-scheme)
 
 (defcustom pel-chicken-activates-minor-modes nil
-  "List of minor-modes automatically activated for Chicken buffers.
-  Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Chicken buffers.
+  Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-chicken
   :type '(repeat function))
@@ -5883,8 +5891,8 @@ Gambit is a Scheme implementation with its own tools."
   :group 'pel-pkg-for-scheme)
 
 (defcustom pel-gambit-activates-minor-modes nil
-  "List of minor-modes automatically activated for Gambit buffers.
-  Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Gambit buffers.
+  Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-gambit
   :type '(repeat function))
@@ -5931,8 +5939,8 @@ If the program is available in your PATH that is good enough."
   :group 'pel-pkg-for-scheme)
 
 (defcustom pel-gerbil-activates-minor-modes nil
-  "List of minor-modes automatically activated for Gerbil buffers.
-  Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Gerbil buffers.
+  Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-gerbil
   :type '(repeat function))
@@ -5979,8 +5987,8 @@ These file are visited upon entering the gerbil-mode."
   :group 'pel-pkg-for-scheme)
 
 (defcustom pel-guile-activates-minor-modes nil
-  "List of minor-modes automatically activated for Guile buffers.
-  Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Guile buffers.
+  Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-guile
   :type '(repeat function))
@@ -6010,8 +6018,8 @@ Note that activating Guile also activates Gambit support."
   :group 'pel-pkg-for-scheme)
 
 (defcustom pel-mit-scheme-activates-minor-modes nil
-  "List of minor-modes automatically activated for Mit-Scheme buffers.
-  Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Mit-Scheme buffers.
+  Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-mit-scheme
   :type '(repeat function))
@@ -6040,8 +6048,8 @@ Note that activating Mit-Scheme also activates Scheme support."
   :group 'pel-pkg-for-scheme)
 
 (defcustom pel-racket-activates-minor-modes nil
-  "List of minor-modes automatically activated for Racket buffers.
-  Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Racket buffers.
+  Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-racket
   :type '(repeat function))
@@ -6075,8 +6083,8 @@ Note that activating Mit-Scheme also activates Scheme support."
   :group 'pel-pkg-for-scheme)
 
 (defcustom pel-scsh-activates-minor-modes nil
-  "List of minor-modes automatically activated for Scsh buffers.
-  Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Scsh buffers.
+  Enter *local* minor-mode activating function symbols.
   Do not enter lambda expressions."
   :group 'pel-pkg-for-scsh
   :type '(repeat function))
@@ -6410,8 +6418,8 @@ specified as a string."
 (pel-put 'pel-use-elixir :package-is 'elixir-mode)
 
 (defcustom pel-elixir-activates-minor-modes nil
-  "List of minor-modes automatically activated for Elixir buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Elixir buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-elixir
   :type '(repeat function))
@@ -6463,8 +6471,8 @@ package which provides the client/library for LSP."
   :safe #'booleanp)
 
 (defcustom pel-erlang-activates-minor-modes nil
-  "List of minor-modes automatically activated for Erlang buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Erlang buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-erlang
   :type '(repeat function))
@@ -6862,15 +6870,15 @@ LFE is Lisp Flavored Erlang, a Lisp language for the BEAM."
 (pel-put 'pel-use-lfe :package-is 'lfe-mode)
 
 (defcustom pel-lfe-activates-minor-modes nil
-  "List of minor-modes automatically activated for LFE buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for LFE buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-lfe
   :type '(repeat function))
 
 (defcustom pel-inferior-lfe-activates-minor-modes nil
-  "List of minor-modes automatically activated for LFE shell buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for LFE shell buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-lfe
   :type '(repeat function))
@@ -6904,8 +6912,8 @@ This is an early version of Gleam support for Emacs."
 (pel-put 'pel-use-gleam-mode :requires 'pel-use-gleam)
 
 (defcustom pel-gleam-activates-minor-modes nil
-  "List of minor-modes automatically activated for GLEAM buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for GLEAM buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-gleam
   :type '(repeat function))
@@ -6949,8 +6957,8 @@ Do not enter lambda expressions."
 (pel-put 'pel-use-forth :package-is 'forth-mode)
 
 (defcustom pel-forth-activates-minor-modes nil
-  "List of minor-modes automatically activated for Forth buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Forth buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-forth
   :type '(repeat function))
@@ -6976,8 +6984,8 @@ IMPORTANT:
 (pel-put 'pel-use-julia :requires 'pel-use-vterm)
 
 (defcustom pel-julia-activates-minor-modes nil
-  "List of minor-modes automatically activated for Julia buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Julia buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-julia
   :type '(repeat function))
@@ -7009,8 +7017,8 @@ When turned on the nim-mode is associated with the PEL ``<f12>`` key."
 (pel-put 'pel-use-nim-mode :requires 'pel-use-nim)
 
 (defcustom pel-nim-activates-minor-modes nil
-  "List of minor-modes automatically activated for Nim buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Nim buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-nim
   :type '(repeat function))
@@ -7062,8 +7070,8 @@ This provides an assistant for OCaml."
 (pel-put 'pel-use-merlin :requires 'pel-use-ocaml)
 
 (defcustom pel-tuareg-activates-minor-modes nil
-  "List of minor-modes automatically activated for Ocaml buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Ocaml buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-ocaml
   :type '(repeat function))
@@ -7086,8 +7094,8 @@ When turned on the perl-mode is associated with the PEL ``<f12>`` key."
 (pel-put 'pel-use-perl :package-is :a-gate)
 
 (defcustom pel-perl-activates-minor-modes nil
-  "List of minor-modes automatically activated for Perl buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Perl buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-perl
   :type '(repeat function))
@@ -7108,8 +7116,8 @@ Do not enter lambda expressions."
 (pel-put 'pel-use-python :package-is :builtin-emacs)
 
 (defcustom pel-python-activates-minor-modes nil
-  "List of minor-modes automatically activated for Python buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Python buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-python
   :type '(repeat function))
@@ -7193,8 +7201,8 @@ Note: `pel-use-python' must be t for this to be effective."
                                             (utils . rexx-debug))))
 
 (defcustom pel-rexx-activates-minor-modes nil
-  "List of minor-modes automatically activated for REXX buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for REXX buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-rexx
   :type '(repeat function))
@@ -7214,8 +7222,8 @@ Do not enter lambda expressions."
 (pel-put 'pel-use-netrexx :package-is '(quote ((utils . netrexx-mode))))
 
 (defcustom pel-netrexx-activates-minor-modes nil
-  "List of minor-modes automatically activated for Net-Rexx buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Net-Rexx buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-rexx
   :type '(repeat function))
@@ -7238,8 +7246,8 @@ When turned on the ruby-mode is associated with the PEL ``<f12>`` key."
 (pel-put 'pel-use-ruby :package-is :a-gate)
 
 (defcustom pel-ruby-activates-minor-modes nil
-  "List of minor-modes automatically activated for Ruby buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Ruby buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-ruby
   :type '(repeat function))
@@ -7272,8 +7280,8 @@ Requires the user-option variable `pel-use-rust' to be on (t)."
 (pel-put 'pel-use-rust-mode :requires 'pel-use-rust)
 
 (defcustom pel-rust-activates-minor-modes nil
-  "List of minor-modes automatically activated for Rust buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Rust buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-rust
   :type '(repeat function))
@@ -7337,8 +7345,8 @@ When turned on the shell-mode is associated with the PEL ``<f12>`` key."
 (pel-put 'pel-use-sh :package-is :a-gate)
 
 (defcustom pel-sh-activates-minor-modes nil
-  "List of minor-modes automatically activated for Shell buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for Shell buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-sh
   :type '(repeat function))
@@ -7379,8 +7387,8 @@ NOTE:
                                         '((utils . vlang-mode)))))
 
 (defcustom pel-v-activates-minor-modes nil
-  "List of minor-modes automatically activated for V buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for V buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-v
   :type '(repeat function))
@@ -7880,8 +7888,8 @@ To activate the changes for this you must 'Apply and Save' and restart Emacs."
 (pel-put 'pel-use-tup :package-is '(quote ((utils . tup-mode))))
 
 (defcustom pel-tup-activates-minor-modes nil
-  "List of minor-modes automatically activated for tup buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for tup buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-sw-build
   :type '(repeat function))
@@ -7895,8 +7903,8 @@ On by default. Turn it off if you don't need it."
 (pel-put 'pel-use-makefile :package-is :builtin-emacs)
 
 (defcustom pel-makefile-activates-minor-modes nil
-  "List of minor-modes automatically activated for makefile buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for makefile buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-sw-build
   :type '(repeat function))
@@ -7910,8 +7918,8 @@ Do not enter lambda expressions."
   :safe #'booleanp)
 
 (defcustom pel-nix-activates-minor-modes nil
-  "List of minor-modes automatically activated for nix buffers.
-Enter minor-mode activating function symbols.
+  "List of *local* minor-modes automatically activated for nix buffers.
+Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-sw-build
   :type '(repeat function))

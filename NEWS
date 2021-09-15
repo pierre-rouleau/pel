@@ -17,6 +17,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - New: Add support for [[https://github.com/michael-heerdegen/interaction-log.el][interaction-log]] external package, when the
   *pel-use-interaction-log-mode* is turned on.  The key bindings use the
   ``<f11> ? k i`` key prefix.
+- New: Add *pel-activates-minor-modes* user-option to activate global minor-modes.
+- New: PEL now generates warnings when a global minor mode is requested by one
+  of the user-options that should only request the activation of /local/
+  minor-mode globally.  It also generates warnings when activation of /global/
+  minor-mode for a specific major-mode.
 
 * Version 0.4.0:
 ** New Features and Improvements:

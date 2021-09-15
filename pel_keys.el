@@ -2623,7 +2623,7 @@ d-mode not added to ac-modes!"
    (pel-local-set-f12-M-f12 'pel:elisp-function "f")
    (pel-local-set-f12-M-f12 'pel:elisp-lib      "l")
    (pel--install-elisp-skel pel:elisp-skel)
-   (pel-turn-on-minor-modes-in pel-elisp-activates-minor-modes))
+   (pel-turn-on-local-minor-modes-in 'pel-elisp-activates-minor-modes))
  'emacs-lisp-mode 'emacs-lisp-mode-hook :append)
 
 (when (or pel-use-elisp-refs       ; it will be set if pel-use-helpful
@@ -3435,7 +3435,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (defun pel--setup-for-inferior-lfe ()
     "Activate inferior-lfe setup, take local variables into account."
     (pel-local-set-f12-M-f12 'pel:for-inferior-lfe)
-    (pel-turn-on-minor-modes-in pel-inferior-lfe-activates-minor-modes))
+    (pel-turn-on-local-minor-modes-in 'pel-inferior-lfe-activates-minor-modes))
   (declare-function pel--setup-for-inferior-lfe "pel_keys")
   (pel-check-minor-modes-in pel-inferior-lfe-activates-minor-modes)
   (pel--mode-hook-maybe-call
@@ -6787,6 +6787,20 @@ the ones defined from the buffer now."
       To edit the user option, type:   <f11> <f2> o pel-auto-mode-alist RET"
                pattern mode mode)
        :error))))
+
+;; ---------------------------------------------------------------------------
+;; Activate global minor modes
+;; ---------------------------
+;;
+;; Once initialization is completed, activate the requested global minor
+;; modes.
+
+(defun pel--cfg-global-minor-modes ()
+  "Activate global minor modes."
+  (pel-check-minor-modes-in           pel-activates-minor-modes)
+  (pel-turn-on-global-minor-modes-in 'pel-activates-minor-modes))
+
+(add-hook 'after-init-hook 'pel--cfg-global-minor-modes :append)
 
 ;; ---------------------------------------------------------------------------
 ;; PEL Hydras Control
