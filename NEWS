@@ -22,6 +22,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   of the user-options that should only request the activation of /local/
   minor-mode globally.  It also generates warnings when activation of /global/
   minor-mode for a specific major-mode.
+- Fix: typo describing character class in the Emacs regexp syntax of the
+  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀  Search/Replace PDF]].
+  Also better described *pel-replace-regexp*.
 
 * Version 0.4.0:
 ** New Features and Improvements:

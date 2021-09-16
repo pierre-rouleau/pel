@@ -1235,6 +1235,12 @@ interactively."
 ;; - smartparens
 ;; -------------
 (when pel-use-smartparens
+  ;; TODO: - advice smartparens-mode to do (require 'smartparens-config)
+  ;;         once and then remove the advice.  This way it will be done once
+  ;;         the first time a mode force its loading.
+  ;;      - Learn smartparens key binding strategy.  See if I should
+  ;;        add the ``<f11> p`` prefix for smartparens and bind its navigation
+  ;;        and editing commands inside it.
   (pel-ensure-package smartparens from: melpa))
 
 ;; ---------------------------------------------------------------------------
