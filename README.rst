@@ -22,7 +22,7 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 
-.. image:: https://img.shields.io/badge/PDF_Files-133-blue
+.. image:: https://img.shields.io/badge/PDF_Files-134-blue
    :alt: Version
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 
@@ -200,15 +200,27 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 
 *Notes*:
 
-.. [#install] The instructions for installing PEL are located inside `section 2`_ of `PEL manual`_.
-              The manual is large and some browser do not always move to the
-              right location.
+.. [#install] Unfortunately PEL installation is manual but it's not difficult.
+              Detailed instructions for installing PEL are located inside `section
+              2`_ of `PEL manual`_.
+
+              - You essentially have to clone PEL's repo,
+                start with a fresh ``~/.emacs.d`` directory, open Emacs twice
+                and run make in the PEL directory to byte compile PEL's
+                files.  You will have to update the init.el and early-init.el
+                if you want to modify some options.  And you may want to use
+                some canned customization files.  PEL installs and configure
+                what you activate through customization.
+
+              - See `PEL manual table of contents`_ to move around the manual.
+
 
 .. [#update]  The instructions for updating PEL are located inside the
               `Updating PEL`_ section of the `PEL manual`_.
-              See `PEL manual table of contents`_ to move around.
-              The manual is large and some browser do not always move to the
-              right location.
+
+              - Essentially what's required is to get the latest changes using
+                Git (with ``git pull``) and then run ``make`` again.
+
 
 .. [#externp] An external package may have dependencies.  The dependencies are also
               installed. PEL currently provides access to over 190 top-level
