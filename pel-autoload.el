@@ -662,6 +662,10 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-setup-base" for:
     pel-setup-info)
 
+  (pel-autoload "pel-smartparens" for:
+    pel-sp-next-sexp
+    pel-sp-previous-sexp)
+
   (pel-autoload "pel-vcs" for:
     pel-vcs-switch-backend
     pel-vcs-toggle-vc-log)
