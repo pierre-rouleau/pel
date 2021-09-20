@@ -5607,25 +5607,51 @@ the ones defined from the buffer now."
   (define-key pel:smartparens "?"         'sp-cheat-sheet)
   (define-key pel:smartparens "M-?"       'sp-describe-system)
 
+  ;; Bindings recommended by smartparens author for navigation.  These mostly
+  ;; match the behaviour of standard Emacs navigation command bindings.
+  ;; However the author uses C-S- combination which is not available in
+  ;; terminal mode.  PEL changes some of these bindings to ensure that all
+  ;; bindings are available in terminal mode.
+  ;;
+  ;; sp-forward-sexp (&optional arg)                 ;; C-M-f
+  ;; sp-backward-sexp (&optional arg)                ;; C-M-b
+  ;; sp-down-sexp (&optional arg)                    ;; C-M-d
+  ;; sp-backward-down-sexp (&optional arg)           ;; C-M-a --> C-M-z
+  ;; sp-up-sexp (&optional arg)                      ;; C-M-e
+  ;; sp-backward-up-sexp (&optional arg)             ;; C-M-u
+  ;; sp-next-sexp (&optional arg)                    ;; C-M-n
+  ;; sp-previous-sexp (&optional arg)                ;; C-M-p
+  ;; sp-beginning-of-sexp (&optional arg)            ;; C-S-d --> C-M-a
+  ;; sp-end-of-sexp (&optional arg)                  ;; C-S-a --> C-M-]
   (with-eval-after-load 'smartparens
     (defvar smartparens-mode-map)       ; quiet byte-compiler
     (define-key smartparens-mode-map (kbd "<M-f7> M-n")   'sp-narrow-to-sexp)
     (define-key smartparens-mode-map (kbd "<M-f7> f")     'sp-forward-sexp)
-    (define-key smartparens-mode-map (kbd "<M-f7> k")     'sp-backward-sexp)
-    (define-key smartparens-mode-map (kbd "<M-f7> j")     'sp-next-sexp)
-    (define-key smartparens-mode-map (kbd "<M-f7> b")     'sp-previous-sexp)
+    (define-key smartparens-mode-map (kbd "C-M-f")        'sp-forward-sexp)
+    (define-key smartparens-mode-map (kbd "<M-f7> b")     'sp-backward-sexp)
+    (define-key smartparens-mode-map (kbd "C-M-b")        'sp-backward-sexp)
+    (define-key smartparens-mode-map (kbd "<M-f7> n")     'sp-next-sexp)
+    (define-key smartparens-mode-map (kbd "C-M-n")        'sp-next-sexp)
+    (define-key smartparens-mode-map (kbd "<M-f7> p")     'sp-previous-sexp)
+    (define-key smartparens-mode-map (kbd "C-M-p")        'sp-previous-sexp)
     (define-key smartparens-mode-map (kbd "<M-f7> F")     'sp-forward-parallel-sexp)
     (define-key smartparens-mode-map (kbd "<M-f7> B")     'sp-backward-paallel-sexp)
     (define-key smartparens-mode-map (kbd "<M-f7> d")     'sp-down-sexp)
-    (define-key smartparens-mode-map (kbd "<M-f7> m")     'sp-backward-down-sexp)
+    (define-key smartparens-mode-map (kbd "C-M-d")        'sp-down-sexp)
+    (define-key smartparens-mode-map (kbd "<M-f7> z")     'sp-backward-down-sexp)
+    (define-key smartparens-mode-map (kbd "C-M-z")        'sp-backward-down-sexp)
     (define-key smartparens-mode-map (kbd "<M-f7> a")     'sp-beginning-of-sexp)
-    (define-key smartparens-mode-map (kbd "<M-f7> e")     'sp-end-of-sexp)
-    (define-key smartparens-mode-map (kbd "<M-f7> n")     'sp-beginning-of-next-sexp)
-    (define-key smartparens-mode-map (kbd "<M-f7> p")     'sp-beginning-of-previous-sexp)
+    (define-key smartparens-mode-map (kbd "C-M-a")        'sp-beginning-of-sexp)
+    (define-key smartparens-mode-map (kbd "<M-f7> ]")     'sp-end-of-sexp)
+    (define-key smartparens-mode-map (kbd "C-M-]")        'sp-end-of-sexp)
+    (define-key smartparens-mode-map (kbd "<M-f7> j")     'sp-beginning-of-next-sexp)
+    (define-key smartparens-mode-map (kbd "<M-f7> k")     'sp-beginning-of-previous-sexp)
     (define-key smartparens-mode-map (kbd "<M-f7> N")     'sp-end-of-next-sexp)
-    (define-key smartparens-mode-map (kbd "<M-f7> P")     'sp-end-of-previous-sexp)
-    (define-key smartparens-mode-map (kbd "<M-f7> u")     'sp-up-sexp)
-    (define-key smartparens-mode-map (kbd "<M-f7> h")     'sp-backward-up-sexp)
+    (define-key smartparens-mode-map (kbd "<M-f7> K")     'sp-end-of-previous-sexp)
+    (define-key smartparens-mode-map (kbd "<M-f7> e")     'sp-up-sexp)
+    (define-key smartparens-mode-map (kbd "C-M-e")        'sp-up-sexp)
+    (define-key smartparens-mode-map (kbd "<M-f7> u")     'sp-backward-up-sexp)
+    (define-key smartparens-mode-map (kbd "C-M-u")        'sp-backward-up-sexp)
     (define-key smartparens-mode-map (kbd "<M-f7> SPC n") 'sp-skip-forward-to-symbol)
     (define-key smartparens-mode-map (kbd "<M-f7> SPC m") 'sp-forward-symbol)
     (define-key smartparens-mode-map (kbd "<M-f7> SPC p") 'sp-backward-symbol)
