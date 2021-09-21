@@ -5598,14 +5598,16 @@ the ones defined from the buffer now."
 (when pel-use-smart-dash
   (define-key pel:insert "-" 'smart-dash-mode))
 (when pel-use-smartparens
-  (define-pel-global-prefix pel:smartparens (kbd "<f11> i ("))
+  (define-pel-global-prefix pel:smartparens (kbd "<f11> ("))
+  ;; sp-describe-system is not autoloaded by smartparens.
+  (pel-autoload-file smartparens for: sp-describe-system)
 
   (define-key pel:smartparens "("         'smartparens-mode)
   (define-key pel:smartparens ")"         'smartparens-strict-mode)
   (define-key pel:smartparens (kbd "M-(") 'smartparens-global-mode)
   (define-key pel:smartparens (kbd "M-)") 'smartparens-global-strict-mode)
   (define-key pel:smartparens "?"         'sp-cheat-sheet)
-  (define-key pel:smartparens "M-?"       'sp-describe-system)
+  (define-key pel:smartparens (kbd "M-?") 'sp-describe-system)
 
   ;; Bindings recommended by smartparens author for navigation.  These mostly
   ;; match the behaviour of standard Emacs navigation command bindings.

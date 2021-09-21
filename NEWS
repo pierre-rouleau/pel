@@ -25,6 +25,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Fix: typo describing character class in the Emacs regexp syntax of the
   [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀  Search/Replace PDF]].
   Also better described *pel-replace-regexp*.
+- Change: The key prefix for smartparens startup commands changed from
+  ``<f11> i (`` to ``<f11> (``.
 
 * Version 0.4.0:
 ** New Features and Improvements:

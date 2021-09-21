@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-15 13:59:01, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-21 17:45:30, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -362,6 +362,8 @@
                                                                  rg
                                                                  ripgrep
                                                                  wgrep))
+    ([f11 ?\(]       "smartparens"      pel-pkg-for-parens      (rainbow-delimiters
+                                                                 smartparens))
     ([f11 ?i]        "inserting-text"   pel-pkg-for-insertions  (lice
                                                                  smart-dash
                                                                  smartparens
