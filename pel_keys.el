@@ -5625,6 +5625,7 @@ the ones defined from the buffer now."
   ;; sp-end-of-sexp (&optional arg)                  ;; C-S-a --> C-M-]
   (with-eval-after-load 'smartparens
     (defvar smartparens-mode-map)       ; quiet byte-compiler
+    (declare-function sp-local-pair "smartparens")
     (unless (eq major-mode 'erlang-mode)
       (define-key smartparens-mode-map (kbd "C-M-a")      'sp-beginning-of-sexp)
       (define-key smartparens-mode-map (kbd "C-M-e")      'sp-end-of-sexp)
@@ -5633,6 +5634,7 @@ the ones defined from the buffer now."
       (define-key smartparens-mode-map (kbd "<M-f7> n")   'sp-next-sexp)
       (define-key smartparens-mode-map (kbd "<M-f7> p")   'sp-previous-sexp))
     (when (eq major-mode 'erlang-mode)
+      (sp-local-pair 'erlang-mode "<<" ">>")
       (define-key smartparens-mode-map (kbd "<M-f7> n")   'pel-sp-next-sexp)
       (define-key smartparens-mode-map (kbd "<M-f7> p")   'pel-sp-previous-sexp))
 
