@@ -5661,7 +5661,7 @@ the ones defined from the buffer now."
     (define-key smartparens-mode-map (kbd "<M-f7> SPC n") 'sp-skip-forward-to-symbol)
     (define-key smartparens-mode-map (kbd "<M-f7> SPC m") 'sp-forward-symbol)
     (define-key smartparens-mode-map (kbd "<M-f7> SPC p") 'sp-backward-symbol)
-    (define-key smartparens-mode-map (kbd "<M-f7> SPC .") 'sp-foward-whitespace)
+    (define-key smartparens-mode-map (kbd "<M-f7> SPC .") 'sp-forward-whitespace)
     (define-key smartparens-mode-map (kbd "<M-f7> SPC ,") 'sp-backward-whitespace)
     (define-key smartparens-mode-map (kbd "<M-f7> =")     'sp-copy-sexp)
     (define-key smartparens-mode-map (kbd "<M-f7> M-=")   'sp-backward-copy-sexp)
