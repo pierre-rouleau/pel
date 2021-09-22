@@ -69,7 +69,6 @@ Show the OP-NAME and the content of the kill ring at top."
              op-name
              (substring-no-properties (or (car kill-ring)
                                           "")))))
-
 (defun pel--show-copied ()
   "Display what was copied."
   (pel--show-kill-ring-top "Copy"))
@@ -87,10 +86,9 @@ Use this function as an :after advice to show what was just copied."
   "Display what was killed.
 
 Use this function as an :after advice to show what was just killed."
-  (let ((op-name (if pel--isa-delete-operation
-                     "Delete"
-                   "Kill")))
-    (pel--show-kill-ring-top op-name)))
+  (pel--show-kill-ring-top (if pel--isa-delete-operation
+                               "Delete"
+                             "Kill")))
 
 (defun pel-show-killed (&rest _ignored)
   "Display what was killed.  Ignore arguments."
