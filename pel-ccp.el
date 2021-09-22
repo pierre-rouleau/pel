@@ -74,16 +74,27 @@ Show the OP-NAME and the content of the kill ring at top."
   "Display what was copied."
   (pel--show-kill-ring-top "Copy"))
 
+(defun pel-show-copied (&rest _ignored)
+  "Display what was copied.  Ignore arguments.
+
+Use this function as an :after advice to show what was just copied."
+  (pel--show-copied))
 
 (defvar-local pel--isa-delete-operation nil
   "Used to identify a delete operation. Don't change.")
 
 (defun pel--show-killed ()
-  "Display what was killed."
+  "Display what was killed.
+
+Use this function as an :after advice to show what was just killed."
   (let ((op-name (if pel--isa-delete-operation
                      "Delete"
                    "Kill")))
     (pel--show-kill-ring-top op-name)))
+
+(defun pel-show-killed (&rest _ignored)
+  "Display what was killed.  Ignore arguments."
+  (pel--show-killed))
 
 ;; Copy Commands.
 ;; --------------

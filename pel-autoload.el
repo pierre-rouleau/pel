@@ -129,6 +129,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-cc-newline
     pel-cc-mode-info)
 
+  (pel-autoload-function "pel-ccp" for:
+    pel-show-copied
+    pel-show-killed)
+
   (pel-autoload "pel-ccp" for:
     pel-toggle-show-copy-cut-text
     pel-copy-word-at-point
