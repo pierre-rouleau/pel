@@ -1350,6 +1350,16 @@ command to change it either for the local buffer or globally."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-browse-kill-ring nil
+  "Whether PEL uses the `browse-kill-ring' package.
+
+This adds the `browse-kill-ring' command to easily see the kill ring content."
+  :group 'pel-pkg-for-cut-and-paste
+  :type 'boolean
+  :safe #'booleanp
+  :link '(url-link :tag "@Github"
+                   "https://github.com/browse-kill-ring/browse-kill-ring"))
+
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-diff-merge
 ;; ----------------------

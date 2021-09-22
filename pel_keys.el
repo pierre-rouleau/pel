@@ -1211,6 +1211,12 @@ interactively."
   (pel-autoload-file popup-kill-ring for: popup-kill-ring)
   (define-key pel: (kbd "M-y") 'popup-kill-ring))
 
+;; - browse-kill-ring
+;; ------------------
+(when pel-use-browse-kill-ring
+  (pel-ensure-package browse-kill-ring from: melpa)
+  (global-set-key "\C-cy" 'browse-kill-ring))
+
 ;; - smart-dash
 ;; ------------
 (when pel-use-smart-dash

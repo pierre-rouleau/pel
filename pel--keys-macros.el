@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-21 17:45:30, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-22 11:39:03, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -145,7 +145,8 @@
     ([f11 ?,]        "auto-completion"  pel-pkg-for-expand   (auto-complete
                                                               company
                                                               hippie-expand))
-    ([f11 ?-]        "cut-paste"  pel-pkg-for-cut-and-paste (cua-mode
+    ([f11 ?-]        "cut-paste"  pel-pkg-for-cut-and-paste (browse-kill-ring
+                                                             cua-mode
                                                              killing
                                                              popup-kill-ring))
     ([f11 ?.]        "marking"          pel-pkg-for-marking  expand-region)
