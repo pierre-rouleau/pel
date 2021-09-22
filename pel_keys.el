@@ -5058,11 +5058,11 @@ the ones defined from the buffer now."
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> C`` : clipboard commands
-
-(define-pel-global-prefix pel:clipboard (kbd "<f11> C"))
-(define-key pel:clipboard "c" #'clipboard-kill-ring-save)
-(define-key pel:clipboard "x" #'clipboard-kill-region)
-(define-key pel:clipboard "v" #'clipboard-yank)
+(when pel-emacs-is-graphic-p
+  (define-pel-global-prefix pel:clipboard (kbd "<f11> C"))
+  (define-key pel:clipboard "c" #'clipboard-kill-ring-save)
+  (define-key pel:clipboard "x" #'clipboard-kill-region)
+  (define-key pel:clipboard "v" #'clipboard-yank))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> d`` : diff commands
