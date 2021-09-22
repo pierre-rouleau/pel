@@ -1234,14 +1234,7 @@ interactively."
 
 ;; - smartparens
 ;; -------------
-(when pel-use-smartparens
-  ;; TODO: - advice smartparens-mode to do (require 'smartparens-config)
-  ;;         once and then remove the advice.  This way it will be done once
-  ;;         the first time a mode force its loading.
-  ;;      - Learn smartparens key binding strategy.  See if I should
-  ;;        add the ``<f11> p`` prefix for smartparens and bind its navigation
-  ;;        and editing commands inside it.
-  (pel-ensure-package smartparens from: melpa))
+;; See code below.
 
 ;; ---------------------------------------------------------------------------
 ;; - Display of Regular Expression -- easy-escape
@@ -5598,16 +5591,14 @@ the ones defined from the buffer now."
 (when pel-use-smart-dash
   (define-key pel:insert "-" 'smart-dash-mode))
 (when pel-use-smartparens
+  (pel-ensure-package smartparens from: melpa)
   (define-pel-global-prefix pel:smartparens (kbd "<f11> ("))
-  ;; sp-describe-system is not autoloaded by smartparens.
-  (pel-autoload-file smartparens for: sp-describe-system)
 
   (define-key pel:smartparens "("         'smartparens-mode)
   (define-key pel:smartparens ")"         'smartparens-strict-mode)
   (define-key pel:smartparens (kbd "M-(") 'smartparens-global-mode)
   (define-key pel:smartparens (kbd "M-)") 'smartparens-global-strict-mode)
   (define-key pel:smartparens "?"         'sp-cheat-sheet)
-  (define-key pel:smartparens (kbd "M-?") 'sp-describe-system)
 
   ;; Bindings recommended by smartparens author for navigation.  These mostly
   ;; match the behaviour of standard Emacs navigation command bindings.
@@ -5619,13 +5610,20 @@ the ones defined from the buffer now."
   ;; sp-backward-sexp (&optional arg)                ;; C-M-b
   ;; sp-down-sexp (&optional arg)                    ;; C-M-d
   ;; sp-backward-down-sexp (&optional arg)           ;; C-M-a --> C-M-z
-  ;; sp-up-sexp (&optional arg)                      ;; C-M-e
+  ;; sp-up-sexp (&optional arg)                      ;; C-M-e --> C-M-]
   ;; sp-backward-up-sexp (&optional arg)             ;; C-M-u
   ;; sp-next-sexp (&optional arg)                    ;; C-M-n
   ;; sp-previous-sexp (&optional arg)                ;; C-M-p
   ;; sp-beginning-of-sexp (&optional arg)            ;; C-S-d --> C-M-a
-  ;; sp-end-of-sexp (&optional arg)                  ;; C-S-a --> C-M-]
+  ;; sp-end-of-sexp (&optional arg)                  ;; C-S-a --> C-M-e
   (with-eval-after-load 'smartparens
+    ;; Augment functionality of smartparens with PEL support to display
+    ;; string just copied or killed.
+    (pel-smartparens-augment)
+
+    ;; bind keys that are not autoloaded
+    (define-key pel:smartparens (kbd "M-?") 'sp-describe-system)
+
     (defvar smartparens-mode-map)       ; quiet byte-compiler
     (declare-function sp-local-pair "smartparens")
     (unless (eq major-mode 'erlang-mode)
@@ -5691,8 +5689,9 @@ the ones defined from the buffer now."
     ;; (define-key smartparens-mode-map (kbd "<M-f7> ")     'sp-extract-after-sexp)
     (define-key smartparens-mode-map (kbd "<M-f7> |")     'sp-split-sexp)
     (define-key smartparens-mode-map (kbd "<M-f7> J")     'sp-join-sexp)
-    (define-key smartparens-mode-map (kbd "<M-f7> C-\\")  'sp-change-inner)
-    (define-key smartparens-mode-map (kbd "<M-f7> <deletechar>") 'sp-change-enclosing)
+    (define-key smartparens-mode-map (kbd "<M-f7> <deletechar>")  'sp-change-inner)
+    (define-key smartparens-mode-map (kbd "<M-f7> - n")   'sp-change-inner)
+    (define-key smartparens-mode-map (kbd "<M-f7> - .")   'sp-change-enclosing)
     (define-key smartparens-mode-map (kbd "<M-f7> l l")   'sp-splice-sexp)
     (define-key smartparens-mode-map (kbd "<M-f7> l [")   'sp-splice-sexp-killing-backward)
     (define-key smartparens-mode-map (kbd "<M-f7> l ]")   'sp-splice-sexp-killing-forward)

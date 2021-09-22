@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, September 20 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-20 16:45:02, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-22 11:07:22, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -62,6 +62,31 @@
     (let ((sp-navigate-consider-symbols nil))
       (sp-previous-sexp arg)
       (setq pel--sp-op-last sp-navigate-consider-symbols))))
+
+;; ---------------------------------------------------------------------------
+
+
+;;-pel-autoload
+(defun pel-smartparens-augment ()
+  "Augment the functionality of smartparens commands.
+
+Advice several commands to add ability to display the
+string copied or killed."
+  ;; The following 2 pel-ccp functions are autoloaded.
+  ;; Declare them to prevent byte compiler warnings.
+  (declare-function pel-show-copied "pel-ccp")
+  (declare-function pel-show-killed "pel-ccp")
+  (dolist (fct '(sp-copy-sexp
+                 sp-backward-copy-sexp))
+    (advice-add fct :after (function pel-show-copied)))
+
+  ;; TODO: add sp-kill-whole-line once there is a way of identifying exactly
+  ;;       what has been killed by the last command.
+  (dolist (fct '(sp-change-inner
+                 sp-change-enclosing
+                 sp-kill-sexp
+                 sp-backward-kill-sexp))
+    (advice-add fct :after (function pel-show-killed))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-smartparens)
