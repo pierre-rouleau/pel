@@ -117,6 +117,7 @@
 ;;           - pel-sexp-form-navigation
 ;;         - pel-pkg-for-arc
 ;;         - pel-pkg-for-clojure
+;;         - pel-pkg-for-janet
 ;;         - pel-pkg-for-hy
 ;;         - pel-pkg-for-scheme
 ;;           - pel-pkg-for-racket
@@ -4969,7 +4970,8 @@ Do not enter lambda expressions."
 
 (defgroup pel-pkg-for-go nil
   "PEL customization for tools supporting the Go programming language."
-  :group 'pel-pkg-for-programming)
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "Go PDF" ,(pel-pdf-file-url "pl-go"))  )
 
 (defcustom pel-use-go nil
   "Controls whether PEL supports the Go programming language.
@@ -5613,7 +5615,8 @@ is set: it is used by the helpful package."
 ;; -----------
 (defgroup pel-pkg-for-arc nil
   "PEL customization for the Arc programming language support."
-  :group 'pel-pkg-for-lisp)
+  :group 'pel-pkg-for-lisp
+  :link `(url-link :tag "Arc PDF" ,(pel-pdf-file-url "pl-arc")))
 
 (defcustom pel-arc-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Arc buffers.
@@ -5639,7 +5642,8 @@ is set: it is used by the helpful package."
 ;; ---------------
 (defgroup pel-pkg-for-clojure nil
   "PEL customization for the Clojure programming language support."
-  :group 'pel-pkg-for-lisp)
+  :group 'pel-pkg-for-lisp
+  :link `(url-link :tag "Clojure PDF" ,(pel-pdf-file-url "pl-clojure")))
 
 (defcustom pel-clojure-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Clojure buffers.
@@ -5694,12 +5698,74 @@ is set: it is used by the helpful package."
 (pel-put 'pel-use-clojure-snippets :requires 'pel-use-clojure)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Janet Support
+;; -------------
+
+(defgroup pel-pkg-for-janet nil
+  "PEL customization for the Janet programming language support.
+
+Janet is a Lisp-like language implemented in C, embeddable,
+relatively small footprint with several interesting features."
+  :group 'pel-pkg-for-lisp
+  :link `(url-link :tag "Janet PDF" ,(pel-pdf-file-url "pl-janet")))
+
+(defcustom pel-use-janet nil
+  "Control whether PEL provides support for the Janet programming language."
+  :group 'pel-pkg-for-janet
+  :link '(url-link :tag "Janet homepage" "https://janet-lang.org")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-janet :package-is :a-gate)
+
+(defcustom pel-use-janet-mode nil
+  "Control whether PEL uses janet-mode external package.
+
+Provides access to the major mode `janet-mode'.
+Activating this automatically turns `pel-use-janet' on."
+  :group 'pel-pkg-for-janet
+    :link '(url-link :tag "My janet-mode @ GitHub"
+                   "https://github.com/pierre-rouleau/janet-mode")
+  :link '(url-link :tag "janet-mode @ GitHub"
+                   "https://github.com/ALSchwalm/janet-mode")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-janet-mode :package-is :in-utils)
+(pel-put 'pel-use-janet-mode :requires 'pel-use-janet)
+
+
+(defcustom pel-use-ijanet-mode nil
+  "Control whether PEL uses ijanet-mode external package.
+
+Activating this automatically turns `pel-use-janet' on."
+  :group 'pel-pkg-for-janet
+  :link '(url-link :tag "ijanet-mode @Github"
+                   "https://github.com/SerialDev/ijanet-mode")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-ijanet-mode :package-is '(quote ((utils . ijanet))))
+(pel-put 'pel-use-ijanet-mode :requires 'pel-use-janet)
+
+(defcustom pel-use-inf-janet nil
+  "Control whether PEL uses ijanet-mode external package.
+
+Activating this automatically turns `pel-use-janet' on."
+  :group 'pel-pkg-for-janet
+  :link '(url-link :tag "inf-janet @Github"
+                   "https://github.com/velkyel/inf-janet")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-inf-janet :package-is :in-utils)
+(pel-put 'pel-use-inf-janet :requires 'pel-use-janet)
+
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Hy Support
 ;; -----------
 (defgroup pel-pkg-for-hy nil
   "PEL customization for the Hy programming language support.
   Hy is a Lisp in Python."
-  :group 'pel-pkg-for-lisp)
+  :group 'pel-pkg-for-lisp
+  :link `(url-link :tag "HyPDF" ,(pel-pdf-file-url "pl-hy")))
 
 (defcustom pel-hy-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Hy  buffers.
@@ -6055,7 +6121,8 @@ Note that activating Mit-Scheme also activates Scheme support."
 ;; --------------
 (defgroup pel-pkg-for-racket nil
   "PEL customization for the Racket programming language support."
-  :group 'pel-pkg-for-scheme)
+  :group 'pel-pkg-for-scheme
+  :link `(url-link :tag "Racket PDF" ,(pel-pdf-file-url "pl-racket")))
 
 (defcustom pel-racket-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Racket buffers.
@@ -6868,7 +6935,8 @@ not in file header." in-function-only)))
 (defgroup pel-pkg-for-lfe nil
   "PEL customization for LFE (Lisp Flavoured Erlang)."
   :group 'pel-pkg-for-beam-vm
-  :group 'pel-pkg-for-lisp)
+  :group 'pel-pkg-for-lisp
+  :link `(url-link :tag "LFE PDF" ,(pel-pdf-file-url "pl-lfe")))
 
 (defcustom pel-use-lfe nil
   "Control whether PEL supports LFE development.
@@ -7267,7 +7335,8 @@ Do not enter lambda expressions."
 ;; ------------
 (defgroup pel-pkg-for-rust nil
   "PEL customization for Rust."
-  :group 'pel-pkg-for-programming)
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "Rust PDF" ,(pel-pdf-file-url "pl-rust")))
 
 (defcustom pel-use-rust  nil
   "Control whether PEL supports Rust development.
@@ -8488,6 +8557,11 @@ indexing system."
           (and pel-use-rust
                pel-use-flycheck-rust))
   (setq pel-use-flycheck t))
+
+(when (or pel-use-janet-mode
+          pel-use-ijanet-mode
+          pel-use-inf-janet)
+  (setq pel-use-janet t))
 
 (when pel-use-gerbil
   (setq pel-use-gambit t))

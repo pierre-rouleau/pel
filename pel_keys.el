@@ -1787,6 +1787,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; P       - Perl
 ;; R       - REXX
 ;; S       - Scala           -              JVM
+;; T       - Janet           - Lisp Family
 ;; U       - Ruby
 ;; W       - awk
 ;; a       - AppleScript
@@ -2747,6 +2748,48 @@ d-mode not added to ac-modes!"
 
   ;; activate the <f12> key binding for arc-mode
   (pel-config-major-mode arc pel:for-arc))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC T`` : Janet
+(when pel-use-janet
+
+  ;; Installation
+  (when pel-use-janet-mode
+    ;; (pel-ensure-package janet-mode from: melpa)
+    ;; Use my version of janet-mode: it's ahead of the MELPA available one.
+    (pel-install-github-file "pierre-rouleau/janet-mode/master/"
+                             "janet-mode.el")
+    (pel-autoload-file janet-mode for:
+                       janet-mode)
+    (add-to-list 'auto-mode-alist '("\\.janet\\'" . janet-mode))
+    (add-to-list 'interpreter-mode-alist '("janet" . janet-mode)))
+
+  (when pel-use-ijanet-mode
+    (pel-install-github-file "SerialDev/ijanet-mode/master/"
+                             "ijanet.el")
+    (pel-autoload-file ijanet for:
+                       ijanet))
+  (when pel-use-inf-janet
+    (pel-install-github-file "velkyel/inf-janet/master"
+                             "inf-janet.el")
+    (pel-autoload-file inf-janet for:
+                       inf-janet-mode
+                       inf-janet))
+  ;; Speedbar support
+  ;; TODO: add imenu support to allow detection of forms
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".janet")
+    )
+
+  ;; Key Bindings
+  (define-pel-global-prefix pel:for-janet (kbd "<f11> SPC T"))
+  (pel--lisp-languages-map-for pel:for-janet)
+  (pel--mode-hook-maybe-call
+   (lambda ()
+     ;; Activate the F12 key for janet buffers
+     (pel-local-set-f12-M-f12 pel:for-janet))
+   'janet-mode 'janet-mode-hook)
+  )
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-j`` : Clojure

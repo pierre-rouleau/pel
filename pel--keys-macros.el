@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-22 11:39:03, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-23 11:19:56, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -211,6 +211,9 @@
                                                                  godoc
                                                                  go-dot-mod))
     ([f11 32 ?h]     "pl-haskell"       pel-pkg-for-haskell     haskell)
+    ([f11 32 ?T]     "pl-janet"         pel-pkg-for-janet       (janet
+                                                                 ijanet
+                                                                 inf-janet))
     ([f11 32 ?j]     "pl-julia"         pel-pkg-for-julia       (julia
                                                                  julia-mode
                                                                  julia-snail))
@@ -524,6 +527,7 @@ stored inside the doc/pdf directory.")
     ("erlang"          [f11 32 ?e])
     ("forth"           [f11 32 ?f])
     ("go"              [f11 32 ?g])
+    ("janet"           [f11 32 ?T])
     ("julia"           [f11 32 ?j])
     ("makefile"        [f11 32 ?M])
     ("makefile-bsdmake" [f11 32 ?M])
@@ -716,6 +720,7 @@ There should be no key binding!" keyseq))
     ("go"               . "pl-go")
     ("haskell"          . "pl-haskell")
     ("hy"               . "pl-hy")
+    ("janet"            . "pl-janet")
     ("julia"            . "pl-julia")
     ("lfe"              . "pl-lfe")
     ("make"             . "pl-make")
@@ -888,6 +893,7 @@ Return nil if nothing found."
     ("clojure"     . "clojure-mode")
     ("cljr"        . "clj-refactor")
     ("grip"        . "grip-mode")
+    ("janet"       . "janet-mode")
     ("lfe"         . ("lfe-indent"
                       "lfe-mode"))   ; several files - defgroup is in lfe-mode
     ("markdown"    . "markdown-mode")

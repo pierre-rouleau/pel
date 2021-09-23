@@ -24,6 +24,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   minor-mode for a specific major-mode.
 - New: Add support for the [[https://github.com/browse-kill-ring/browse-kill-ring#readme][browse-kill-ring]]
   external package when the ``pel-use-browse-kill-ring`` user-option is set to t.
+- New: Experimental support for the [[https://janet-lang.org][Janet Programming language]] when
+  ``pel-use-janet`` and other PEL user-options are turned on
+  (``pel-use-janet-mode``, ``pel-use-ijanet`` and ``pel-use-inf-janet``).
+  The ``pel:for-janet`` prefix is bound to ``<f11> SPC T`` which maps to
+  ``<f12>`` inside ``.janet`` files.  Includes support for iMenu and Speedbar.
+  - Add a [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-janet.pdf][𝕻𝔩 - Janet PDF]].
 - Fix: typo describing character class in the Emacs regexp syntax of the
   [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀  Search/Replace PDF]].
   Also better described *pel-replace-regexp*.
