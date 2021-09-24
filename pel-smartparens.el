@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, September 20 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-24 16:53:29, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-24 18:48:09, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -119,8 +119,53 @@ https://smartparens.readthedocs.io/en/latest/automatic-escaping.html"
        (insert "\n\n➣ ")
        (pel-insert-url-link "Smartparens pairs" "\
 https://github.com/Fuco1/smartparens/wiki/Pair-management" ":")
-       (λc show 'sp-max-pair-length)
+       (λc show '(sp-autodelete-opening-pair
+                  sp-autodelete-pair
+                  sp-autodelete-wrap
+                  sp-autoinsert-pair
+                  sp-autoinsert-quote-if-followed-by-closing-pair
+                  sp-autoskip-closing-pair
+                  sp-autoskip-opening-pair
+                  sp-autowrap-region
+                  sp-cancel-autoskip-on-backward-movement
+                  sp-echo-match-when-invisible
+                  sp-escape-quotes-after-insert
+                  sp-escape-wrapped-region
+                  sp-highlight-wrap-overlay
+                  sp-hybrid-kill-entire-symbol
+                  sp-hybrid-kill-excessive-whitespace
+                  sp-max-pair-length
+                  sp-message-width
+                  sp-navigate-close-if-unbalanced
+                  sp-navigate-comments-as-sexps
+                  sp-navigate-consider-sgml-tags
+                  sp-navigate-consider-symbols
+                  sp-navigate-interactive-always-progress-point
+                  ;; sp-navigate-reindent-after-up
+                  sp-navigate-reindent-after-up-in-string
+                  ;; sp-navigate-skip-match
+                  sp-navigate-use-textmode-stringlike-parser
+                  sp-no-reindent-after-kill-indent-line-functions
+                  ;; sp-no-reindent-after-kill-modes
+                  sp-split-sexp-always-split-as-string
+                  sp-successive-kill-preserve-whitespace
+                  sp-undo-pairs-separately
+                  sp-use-subword
+                  sp-wrap-entire-symbol
+                  sp-wrap-from-point
+                  sp-wrap-repeat-last
+                  sp-wrap-respect-direction
+                  sp-wrap-show-possible-pairs
+                  ))
+                  ;; sp-ignore-modes-list
+                  ;; sp-c-modes
+                  ;; sp-clojure-modes
+                  ;; sp-lisp-modes
        (pel-insert-list-content 'sp-pairs buffer)
+       (pel-insert-list-content 'sp-comment-string buffer)
+       (pel-insert-list-content 'sp-coverride-key-bindings buffer)
+       (pel-insert-list-content 'sp-sexp-prefix buffer)
+       (pel-insert-list-content 'sp-sexp-suffix buffer) ; ?? for erlang?
        ))))
 
 ;;; --------------------------------------------------------------------------
