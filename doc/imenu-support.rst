@@ -12,7 +12,8 @@ the ``prog-mode``.
 
 Also see the `How to add iMenu and Speedbar support for a major mode PDF`_.
 
-.. _How to add iMenu and Speedbar support for a major mode PDF: pdf/imenu-speedbar-support.pdf
+.. _How to add iMenu and Speedbar support for a major mode PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/imenu-speedbar-support.pdf
+
 
 Support for Major Modes
 =======================
