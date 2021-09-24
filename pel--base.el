@@ -2427,31 +2427,52 @@ This function handles both."
 ;; Insertion of text in current buffer
 ;; -----------------------------------
 
-(defun pel-insert-symbol-content (symbol &optional buffer on-same-line)
+(defun pel-insert-symbol (symbol &optional no-button)
+  "Insert the SYMBOL name at point.
+
+Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil."
+  (let ((name (symbol-name symbol)))
+    (if no-button
+        (insert name)
+      (require 'button nil :no-error)
+      (if (fboundp 'insert-button)
+          (insert-button name 'action (lambda (_s)
+                                        (describe-symbol symbol)))
+        (insert name)))))
+
+(defun pel-insert-symbol-content (symbol
+                                  &optional buffer on-same-line no-button)
   "Insert the name followed by the content of the specified SYMBOL.
 
+Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil.
 By default SYMBOL must be a global symbol as its value is read in the scope
 of the output buffer.  If the SYMBOL is a buffer local symbol, specify the
 buffer in the optional BUFFER argument.
 By default, the value is printed on the line after the variable name, unless
 ON-SAME-LINE is set."
-  (let ((value (pel-symbol-value symbol buffer)))
-    (insert (format "\n- %-40s:%s%S"
-                    (symbol-name symbol)
+  (let ((value (pel-symbol-value symbol buffer))
+        (name  (symbol-name symbol)))
+    (insert "\n- ")
+    (pel-insert-symbol symbol no-button)
+    (insert (format "%s:%s%S"
+                    (make-string (- 40 (length name)) ?\s)
                     (if on-same-line " " "\n")
                     value))))
 
-(defun pel-insert-list-content (symbol &optional buffer without-index)
+(defun pel-insert-list-content (symbol
+                                &optional buffer without-index no-button)
   "Insert a description of the content of the list identified by its SYMBOL.
 
+Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil.
 By default SYMBOL must be a global symbol as its value is read in the scope
 of the output buffer.  If the SYMBOL is a buffer local symbol, specify the
 buffer in the optional BUFFER argument.
 
 By default, each element of the list is printed on a new line preceded by an
 element index number unless WITHOUT-INDEX is non-nil."
-  (insert (format "\n- %s:\n"
-                  (symbol-name symbol)))
+  (insert "\n- ")
+  (pel-insert-symbol symbol no-button)
+  (insert ":\n")
   (let ((idx 0)
         (list-value (pel-symbol-value symbol buffer)))
     (if list-value
