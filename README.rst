@@ -33,7 +33,7 @@ PEL -- Pragmatic Emacs Library
 
 - Tired of writing Emacs configuration code? 🤯
 - Afraid of or ever declared `.emacs bankruptcy`_? 😰
-- Don't want to spend your time writing Emacs Lisp code? 😳 _[#elispfun]_
+- Don't want to spend your time writing Emacs Lisp code? 😳 [#elispfun]_
 - Need to quickly access help now and later on specific topic? 🤔
 - Want to learn Emacs and try several built-in and external packages? 😇
 - Want a fast startup even with a large number of external packages installed? 😃
