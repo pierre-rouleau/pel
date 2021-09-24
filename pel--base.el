@@ -2468,7 +2468,7 @@ ON-SAME-LINE is set."
     (insert "\n- ")
     (pel-insert-symbol symbol no-button)
     (insert (format "%s:%s%S"
-                    (make-string (- 40 (length name)) ?\s)
+                    (make-string (max 0 (- 40 (length name))) ?\s)
                     (if on-same-line " " "\n")
                     value))))
 
