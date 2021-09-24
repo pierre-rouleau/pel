@@ -1238,10 +1238,6 @@ interactively."
      ;; which either cuts current line or inserts a normal dash.
      (fset 'smart-dash-insert-dash 'pel-kp-subtract))))
 
-;; - smartparens
-;; -------------
-;; See code below.
-
 ;; ---------------------------------------------------------------------------
 ;; - Display of Regular Expression -- easy-escape
 ;; ----------------------------------------------
@@ -5672,6 +5668,7 @@ the ones defined from the buffer now."
 
     ;; bind keys that are not autoloaded
     (define-key pel:smartparens (kbd "M-?") 'sp-describe-system)
+    (define-key pel:smartparens "i"         'pel-smartparens-info)
 
     (defvar smartparens-mode-map)       ; quiet byte-compiler
     (declare-function sp-local-pair "smartparens")

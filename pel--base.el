@@ -2427,6 +2427,19 @@ This function handles both."
 ;; Insertion of text in current buffer
 ;; -----------------------------------
 
+(defun pel-insert-url-link (title url &optional extra-text)
+  "Insert a TITLE hyperlink button to specified URL."
+  (if (and (require 'button nil :no-error)
+           (fboundp 'insert-button)
+           (fboundp 'browse-url)
+           (fboundp 'button-get))
+      (insert-button title 'action
+                     (lambda (x)  (browse-url (button-get x 'url)))
+                     'url url)
+    (insert title))
+  (when extra-text
+    (insert extra-text)))
+
 (defun pel-insert-symbol (symbol &optional no-button)
   "Insert the SYMBOL name at point.
 
@@ -2459,6 +2472,21 @@ ON-SAME-LINE is set."
                     (if on-same-line " " "\n")
                     value))))
 
+(defun pel-line-prefixed-with (text prefix)
+  "Return TEXT with each line prefixed with PREFIX string."
+  (mapconcat (lambda (line) (concat prefix line))
+             (split-string text "\n")
+             "\n"))
+
+(defun pel--pp (object &optional stream prefix)
+  "Pretty-print OBJECT on STREAM or standard-output."
+  (if (and (require 'pp nil :no-error)
+           (fboundp 'pp-to-string))
+      (let ((text (string-trim (pp-to-string object))))
+        (princ (pel-line-prefixed-with text (or prefix ""))
+               stream))
+    (princ object stream)))
+
 (defun pel-insert-list-content (symbol
                                 &optional buffer without-index no-button)
   "Insert a description of the content of the list identified by its SYMBOL.
@@ -2470,18 +2498,18 @@ buffer in the optional BUFFER argument.
 
 By default, each element of the list is printed on a new line preceded by an
 element index number unless WITHOUT-INDEX is non-nil."
-  (insert "\n- ")
-  (pel-insert-symbol symbol no-button)
-  (insert ":\n")
-  (let ((idx 0)
-        (list-value (pel-symbol-value symbol buffer)))
-    (if list-value
+  (let ((list-value (pel-symbol-value symbol buffer)))
+    (if (null list-value)
+        (pel-insert-symbol-content symbol buffer :on-same-line no-button)
+      (insert "\n- ")
+      (pel-insert-symbol symbol no-button)
+      (insert ":")
+      (let ((idx 0))
         (dolist (elem list-value)
           (setq idx (1+ idx))
-          (if without-index
-              (insert (format "%S\n" elem))
-            (insert (format "%3d - %S\n" idx elem))))
-      (insert "nil\n"))))
+          (unless without-index
+            (insert (format "\n%3d -\n" idx)))
+          (pel--pp elem (current-buffer) "   "))))))
 
 ;; ---------------------------------------------------------------------------
 ;; Print in dedicated buffer

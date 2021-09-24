@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, September 20 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-22 11:07:22, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-24 16:53:29, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -34,7 +34,8 @@
 ;;; Dependencies:
 ;;
 ;;
-
+(require 'pel--base)                    ; use: pel-print-in-buffer,
+;;                                      ;      pel-insert-symbol-content
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -64,8 +65,6 @@
       (setq pel--sp-op-last sp-navigate-consider-symbols))))
 
 ;; ---------------------------------------------------------------------------
-
-
 ;;-pel-autoload
 (defun pel-smartparens-augment ()
   "Augment the functionality of smartparens commands.
@@ -87,6 +86,42 @@ string copied or killed."
                  sp-kill-sexp
                  sp-backward-kill-sexp))
     (advice-add fct :after (function pel-show-killed))))
+
+
+;; ---------------------------------------------------------------------------
+;;-pel-autoload
+
+(defun pel-smartparens-info ()
+  "Print smartparens setup info in *pel-smartparens-info*."
+  (interactive)
+  (let* ((buffer (current-buffer))
+         (show (lambda (symbols)
+                 (dolist (symb (if (symbolp symbols)
+                                   (list symbols)
+                                 symbols))
+                   (pel-insert-symbol-content symb buffer :on-same-line)))))
+
+
+    (pel-print-in-buffer
+     "*pel-smartparens-info*"
+     "smartparens control variables"
+     (lambda ()
+       "Print smartparens variables."
+       ;;
+       (insert "➣ ")
+       (pel-insert-url-link "Smartparens Automatic Escaping"
+                            "\
+https://smartparens.readthedocs.io/en/latest/automatic-escaping.html"
+                            ":")
+       (λc show '(sp-escape-wrapped-region
+                  sp-escape-quotes-after-insert))
+       ;;
+       (insert "\n\n➣ ")
+       (pel-insert-url-link "Smartparens pairs" "\
+https://github.com/Fuco1/smartparens/wiki/Pair-management" ":")
+       (λc show 'sp-max-pair-length)
+       (pel-insert-list-content 'sp-pairs buffer)
+       ))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-smartparens)
