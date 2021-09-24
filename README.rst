@@ -33,7 +33,7 @@ PEL -- Pragmatic Emacs Library
 
 - Tired of writing Emacs configuration code? 🤯
 - Afraid of or ever declared `.emacs bankruptcy`_? 😰
-- Don't want to spend your time writing Emacs Lisp code? 😳
+- Don't want to spend your time writing Emacs Lisp code? 😳 _[#elispfun]_
 - Need to quickly access help now and later on specific topic? 🤔
 - Want to learn Emacs and try several built-in and external packages? 😇
 - Want a fast startup even with a large number of external packages installed? 😃
@@ -199,6 +199,14 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 
 
 *Notes*:
+
+.. [#elispfun] Writing Emacs Lisp code is actually quite fun.  Lisp is a
+               powerful programming language and Emacs opens up the door to
+               that world if it's foreign to you.  PEL should ease the
+               introduction and you may decide to go your own way later.
+               For those that prefer to stay away from Emacs Lisp and
+               concemntrate on other tasks you can
+               use PEL and configure Emacs using the customization system.
 
 .. [#install] Unfortunately PEL installation is manual but it's not difficult.
               Detailed instructions for installing PEL are located inside `section
