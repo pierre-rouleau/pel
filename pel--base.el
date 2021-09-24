@@ -2434,8 +2434,8 @@ Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil."
   (let ((name (symbol-name symbol)))
     (if no-button
         (insert name)
-      (require 'button nil :no-error)
-      (if (fboundp 'insert-button)
+      (if (and (require 'button nil :no-error)
+               (fboundp 'insert-button))
           (insert-button name 'action (lambda (_s)
                                         (describe-symbol symbol)))
         (insert name)))))
