@@ -6,6 +6,13 @@ iMenu Support Description
 Introduction
 ============
 
+imenu support for a major mode provides useful functionality that is normally
+expected from several major modes including all major modes that derive from
+the ``prog-mode``.
+
+Also see the `How to add iMenu and Speedbar support for a major mode PDF`_.
+
+.. _How to add iMenu and Speedbar support for a major mode PDF: pdf/imenu-speedbar-support.pdf
 
 Support for Major Modes
 =======================
