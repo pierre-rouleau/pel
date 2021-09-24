@@ -206,7 +206,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
                introduction and you may decide to go your own way later.
                For those that prefer to stay away from Emacs Lisp and
                concentrate on other tasks you can use PEL and configure Emacs
-               using the customization system.
+               using its powerful customization system.
 
 .. [#install] Unfortunately PEL installation is manual but it's not difficult.
               Detailed instructions for installing PEL are located inside `section
