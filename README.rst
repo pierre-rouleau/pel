@@ -200,13 +200,13 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 
 *Notes*:
 
-.. [#elispfun] Writing Emacs Lisp code is actually quite fun.  Lisp is a
-               powerful programming language and Emacs opens up the door to
+.. [#elispfun] Writing Emacs Lisp code is actually quite fun and rewarding.
+               Lisp is a powerful programming language and Emacs opens up the door to
                that world if it's foreign to you.  PEL should ease the
                introduction and you may decide to go your own way later.
                For those that prefer to stay away from Emacs Lisp and
-               concemntrate on other tasks you can
-               use PEL and configure Emacs using the customization system.
+               concentrate on other tasks you can use PEL and configure Emacs
+               using the customization system.
 
 .. [#install] Unfortunately PEL installation is manual but it's not difficult.
               Detailed instructions for installing PEL are located inside `section
