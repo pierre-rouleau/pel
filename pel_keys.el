@@ -3178,14 +3178,17 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (advice-add 'erlang-mode :before #'pel--erlang-mode-setup)
 
   ;; bind other erlang keys
+  (define-key pel:for-erlang      (kbd "TAB") 'erlang-indent-current-buffer)
   (define-key pel:for-erlang      "z"         'erlang-shell)
   (define-key pel:for-erlang      "?"         'pel-show-erlang-version)
+  (define-key pel:erlang-function (kbd "TAB") 'erlang-indent-function)
   (define-key pel:erlang-function "N"         'pel-beginning-of-next-defun)
   (define-key pel:erlang-function "P"         'beginning-of-defun)
   (define-key pel:erlang-function "n"         'pel-next-erl-function)
   (define-key pel:for-erlang (kbd "<down>")   'pel-next-erl-function)
   (define-key pel:erlang-function "p"         'pel-previous-erl-function)
   (define-key pel:for-erlang (kbd "<up>")     'pel-previous-erl-function)
+  (define-key pel:erlang-clause   (kbd "TAB") 'erlang-indent-clause)
   (define-key pel:erlang-clause   "a"         'erlang-beginning-of-clause)
   (define-key pel:for-erlang (kbd "<M-up>")   'erlang-beginning-of-clause)
   (define-key pel:erlang-clause   "p"         'pel-end-of-previous-clause)
@@ -5681,6 +5684,9 @@ the ones defined from the buffer now."
       (define-key smartparens-mode-map (kbd "<M-f7> p")   'sp-previous-sexp)
       (define-key smartparens-mode-map (kbd "<M-f7> T")   'sp-transpose-hybrid-sexp))
     (when (eq major-mode 'erlang-mode)
+      (define-key smartparens-mode-map [remap delete-forward-char] 'sp-delete-char)
+      (define-key smartparens-mode-map [remap backward-delete-char-untabify] 'sp-backward-delete-char)
+
       (sp-local-pair 'erlang-mode "<<" ">>")
       (define-key smartparens-mode-map (kbd "<M-f7> n")   'pel-sp-next-sexp)
       (define-key smartparens-mode-map (kbd "<M-f7> p")   'pel-sp-previous-sexp))
