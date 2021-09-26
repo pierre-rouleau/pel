@@ -3130,6 +3130,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 ;; Programming Language Family: BEAM
 (when pel-use-erlang
   (define-pel-global-prefix pel:for-erlang        (kbd "<f11> SPC e"))
+  (define-pel-global-prefix pel:erlang-electric   (kbd "<f11> SPC e ~"))
   (define-pel-global-prefix pel:erlang-function   (kbd "<f11> SPC e f"))
   (define-pel-global-prefix pel:erlang-clause     (kbd "<f11> SPC e c"))
   (define-pel-global-prefix pel:erlang-statement  (kbd "<f11> SPC e s"))
@@ -3178,6 +3179,10 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (advice-add 'erlang-mode :before #'pel--erlang-mode-setup)
 
   ;; bind other erlang keys
+  (define-key pel:erlang-electric ","         'pel-erlang-comma)
+  (define-key pel:erlang-electric ">"         'pel-erlang-gt)
+  (define-key pel:erlang-electric (kbd "RET") 'pel-erlang-newline)
+  (define-key pel:erlang-electric ";"         'pel-erlang-semicolon)
   (define-key pel:for-erlang      (kbd "TAB") 'erlang-indent-current-buffer)
   (define-key pel:for-erlang      "z"         'erlang-shell)
   (define-key pel:for-erlang      "?"         'pel-show-erlang-version)
@@ -3387,7 +3392,11 @@ Can't load ac-geiser: geiser-repl-mode: %S"
           (add-hook 'erlang-mode-hook #'pel--erlang-setup-for-flycheck))))
 
       ;; When any syntax checker is used with Erlang add a key to toggle it
-      (define-key pel:for-erlang "!" 'pel-erlang-toggle-syntax-checker)))
+      (define-key pel:for-erlang "!" 'pel-erlang-toggle-syntax-checker))
+
+    ;; Activate Electric key behaviour selected by PEL user-option
+    (defvar erlang-electric-commands)
+    (setq erlang-electric-commands pel-erlang-electric-keys))
 
   (pel-config-major-mode erlang pel:for-erlang
     ;; "Activate Erlang setup."

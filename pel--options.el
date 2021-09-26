@@ -6554,6 +6554,29 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-erlang
   :type '(repeat function))
 
+;; Note: the symbol names used in the following defcustom MUST
+;;       correspond to the ones used by erlang.el.
+;;       See code in pel_keys.el and pel-erlang.el manipulating
+;;       `erlang-electric-commands'.
+(defcustom pel-erlang-electric-keys  '(erlang-electric-comma
+                                       erlang-electric-gt
+                                       erlang-electric-newline
+                                       erlang-electric-semicolon)
+  "List of keys that should have electric behaviour for Erlang buffers.
+
+By default PEL activates the electric behaviour of the 4 characters controlled
+by the erlang.el package:  comma, gt, newline and semicolon.  To disable
+the electric behaviour of a character un-check the corresponding box.
+
+PEL also supports dynamically toggling the electric behaviour of a key with
+the ``<f12> ~`` prefix followed by the specific key."
+  :group 'pel-pkg-for-erlang
+  :type '(set
+          (const :tag "comma    : ,"   erlang-electric-comma)
+          (const :tag "gt       : >"   erlang-electric-gt)
+          (const :tag "newline  : RET" erlang-electric-newline)
+          (const :tag "semicolon: ;"   erlang-electric-semicolon)))
+
 (defcustom pel-erlang-shell-prevent-echo nil
   "Set to t if the `erlang-shell-mode' shell echoes back commands.
 When set to t PEL activates code that prevent echo of the typed commands."

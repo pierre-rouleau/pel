@@ -26,8 +26,8 @@
 ;;  The content of this file provides code that help using and programming with
 ;;  Erlang.
 
-
-;;; Code:
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
 (require 'comint)
 (require 'pel--base)            ; use: pel-toggle-syntax-check-mode
 (require 'pel--options)         ; use: pel-erlang-version-detection-method
@@ -35,7 +35,63 @@
 
 ;; newcomment is always available
 (require 'newcomment)           ; use: comment-dwim
-;; -------
+
+
+;;; --------------------------------------------------------------------------
+;;; Code:
+
+;; Toggle electric behaviour of keys
+
+(defvar erlang-electric-commands)
+
+(defconst pel--electric-key-name
+  (list
+   (cons 'erlang-electric-comma      "comma")
+   (cons 'erlang-electric-gt         "greater-than")
+   (cons 'erlang-electric-newline    "newline")
+   (cons 'erlang-electric-semicolon  "semicolon"))
+  "Maps erlang.el symbol to name of key.")
+
+(defun pel--erlang-toggle-electric-of (key)
+  "Toggle Erlang electric behaviour of KEY."
+  (unless (memq key '(erlang-electric-comma
+                      erlang-electric-gt
+                      erlang-electric-newline
+                      erlang-electric-semicolon))
+    (error "Erlang %S is not supported for electric behaviour" key))
+  (if (memq key erlang-electric-commands)
+      (setq erlang-electric-commands (delete key erlang-electric-commands))
+    (setq erlang-electric-commands (cons key erlang-electric-commands)))
+  (message "%s key electric behaviour is now %s"
+           (cdr (assoc key pel--electric-key-name))
+           (pel-on-off-string (memq key erlang-electric-commands))))
+
+;;-pel-autoload
+(defun pel-erlang-comma ()
+  "Toggle Erlang electric behaviour of the comma key."
+  (interactive)
+  (pel--erlang-toggle-electric-of 'erlang-electric-comma))
+
+;;-pel-autoload
+(defun pel-erlang-gt ()
+  "Toggle Erlang electric behaviour of the gt key."
+  (interactive)
+  (pel--erlang-toggle-electric-of 'erlang-electric-gt))
+
+;;-pel-autoload
+(defun pel-erlang-newline ()
+  "Toggle Erlang electric behaviour of the newline key."
+  (interactive)
+  (pel--erlang-toggle-electric-of 'erlang-electric-newline))
+
+;;-pel-autoload
+(defun pel-erlang-semicolon ()
+  "Toggle Erlang electric behaviour of the semicolon key."
+  (interactive)
+  (pel--erlang-toggle-electric-of 'erlang-electric-semicolon))
+
+
+;; ---------------------------------------------------------------------------
 ;; Erlang Shell Control
 
 ;;-pel-autoload
@@ -44,7 +100,7 @@
   ;; Prevent Erlang shell mode echo
   (setq comint-process-echoes t))
 
-;; -------
+;; ---------------------------------------------------------------------------
 ;; Navigation in Erlang source code
 
 ;;-pel-autoload

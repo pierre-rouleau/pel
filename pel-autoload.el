@@ -261,6 +261,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-emacs-command-stats)
 
   (pel-autoload "pel-erlang" for:
+    pel-erlang-comma
+    pel-erlang-gt
+    pel-erlang-newline
+    pel-erlang-semicolon
     pel-erlang-version
     pel-show-erlang-version
     pel-end-of-previous-clause

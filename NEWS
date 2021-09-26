@@ -24,6 +24,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   minor-mode for a specific major-mode.
 - New: Add support for the [[https://github.com/browse-kill-ring/browse-kill-ring#readme][browse-kill-ring]]
   external package when the ``pel-use-browse-kill-ring`` user-option is set to t.
+- New: Better control over the electric behaviour of newline, colon, semicolon
+  and greater-than key for Erlang.  PEL now provides the
+  *pel-erlang-electric-keys* user-option which controls the electric behaviour
+  of these keys.  The default activates the electric behaviour of the 4 keys
+  (which includes the newline, which by erlang.el does not activate by default).
+  PEL also provides 4 commands that can be used to dynamically toggle the
+  electric behaviour of these keys.  The commands are mapped under the
+  ``<f12> ~`` key prefix.
 - New: Experimental support for the [[https://janet-lang.org][Janet Programming language]] when
   ``pel-use-janet`` and other PEL user-options are turned on
   (``pel-use-janet-mode``, ``pel-use-ijanet`` and ``pel-use-inf-janet``).
