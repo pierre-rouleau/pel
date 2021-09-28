@@ -1369,7 +1369,7 @@ the beginning of the buffer instead of at point, the default.")
   "Provide extra functionality to the Erlang mode.
 Add extra tempo templates.
 This function is meant to be used as an `advice-add'
-to execute *before* `erlang-mode'."
+to execute just *before* `erlang-mode'."
   (pel--update-erlang-skel))
 
 ;; --
