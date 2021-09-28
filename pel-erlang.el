@@ -474,6 +474,102 @@ and a single % is used after the beginning of a line."
         (comment-dwim arg))
     (comment-dwim arg)))
 
+;; ---------------------------------------------------------------------------
+;; Erlang-compatible forward-sexp-function
+;; ---------------------------------------
+;;
+;; Non-complete code.  Checked in to remember it.  It will be removed
+;; because I was able to fix the problem with a simplemmodification of the
+;; syntax table.
+
+(defconst pel-erlang-forward-matching-chars '( ?\(
+                                               ?\[
+                                               ?\{
+                                               ?\"
+                                               ?')
+  "List of characters that begin a matching pair in erlang-mode.")
+
+(defconst pel-erlang-backward-matching-chars '( ?\)
+                                                ?\]
+                                                ?\}
+                                                ?\"
+                                                ?')
+  "List of characters that terminate a matching pair in erlang-mode.")
+
+
+(defun pel--previous-char ()
+  ""
+  (char-after (- (point) 1)))
+
+
+(defun pel--erlang-forward-sexp (&optional arg)
+  ""
+  (let ((nesting 1)
+        (previous-char nil)
+        (found-pos nil)
+        (continue t))
+    (save-excursion
+      (right-char 1)
+      (while continue
+        (if (re-search-forward "[<>]" nil :noerror)
+            (progn
+              (setq previous-char (char-after (- (point) 1)))
+              (cond
+               ((eq previous-char ?<)
+                (setq nesting (1+ nesting)))
+               ((eq previous-char ?>)
+                (setq nesting (1- nesting))
+                (when (eq nesting 0)
+                  (setq found-pos (point))
+                  (setq continue nil))))))))
+    (when found-pos
+      (goto-char found-pos))))
+
+(defun pel--erlang-backward-sexp (&optional arg)
+  ""
+  (let ((nesting 1)
+        (current-char nil)
+        (found-pos nil)
+        (continue t))
+    (save-excursion
+      (left-char 1)
+      (while continue
+        (if (re-search-backward "[<>]" nil :noerror)
+            (progn
+              (setq current-char (char-after (point)))
+              (cond
+               ((eq current-char ?>)
+                (setq nesting (1+ nesting)))
+               ((eq current-char ?<)
+                (setq nesting (1- nesting))
+                (when (eq nesting 0)
+                  (setq found-pos (point))
+                  (setq continue nil))))))))
+    (when found-pos
+      (goto-char found-pos))))
+
+(defun pel--erlang-sexp (&optional arg)
+  ""
+  (if (eq (char-after (point)) ?<)
+      (if (>= arg 0)
+          (pel--erlang-forward-sexp arg)
+        (pel--erlang-backward-sexp (- arg)))
+    (if (>= arg 0)
+        (pel--erlang-backward-sexp arg)
+      (pel--erlang-forward-sexp (- arg)))))
+
+;;-pel-autoload
+(defun pel-erlang-forward-sexp (&optional arg)
+  ""
+  (interactive "^p")
+  (or arg (setq arg 1))
+  (if (and (eq major-mode 'erlang-mode)
+           (memq (char-after (point)) '(?< ?>)))
+      (pel--erlang-sexp arg)
+    ;; normally use default code
+    (goto-char (or (scan-sexps (point) arg) (buffer-end arg)))
+    (if (< arg 0) (backward-prefix-chars))))
+
 ;;; --------------------------------------------------------------------------
 (provide 'pel-erlang)
 
