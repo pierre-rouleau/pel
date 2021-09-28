@@ -3408,22 +3408,19 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (pel--install-erlang-skel pel:erlang-skel)
     ;; Configure M-( to put parentheses after a function name.
     (set (make-local-variable 'parens-require-spaces) nil)
+
+    ;; Add < > pairing navigation and marking.
+    (defvar erlang-mode-syntax-table)
+    (modify-syntax-entry ?< "(>" erlang-mode-syntax-table)
+    (modify-syntax-entry ?> ")<" erlang-mode-syntax-table)
+
     ;; Add key-bindings inside the lsp-keymap if erlang_ls is used
     (when (and pel-use-erlang-ls
                (boundp 'lsp-mode-map)
                (boundp 'lsp-keymap-prefix))
       (define-key lsp-mode-map (kbd (format "%s d" lsp-keymap-prefix)) 'lsp-doctor)
       (define-key lsp-mode-map (kbd (format "%s L" lsp-keymap-prefix))
-        'lsp-workspace-show-log)))
-
-  (defvar erlang-mode-syntax-table)     ; prevent byte-compiler warning
-  (defun pel--erlang-mode-enhance ()
-    "Enhance erlang-mode."
-    ;; Add < > pairing navigation and marking.
-    (modify-syntax-entry ?< "(>" erlang-mode-syntax-table)
-    (modify-syntax-entry ?> ")<" erlang-mode-syntax-table))
-  (declare-function pel--erlang-mode-enhance "pel_keys")
-  (add-hook 'erlang-mode-hook  #'pel--erlang-mode-enhance))
+        'lsp-workspace-show-log))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC x`` : Elixir programming
