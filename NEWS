@@ -33,6 +33,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   electric behaviour of these keys.  The commands are mapped under the
   ``<f12> ~`` key prefix.
 - New: Add `M-R` global key binding to *re-search-backward*.
+- New: Add access to the electricity custom group to the ``<f12> <f3>`` key
+  sequence  of several programming languages as it allows selecting the block
+  character that trigger the insertion of the matching pair controlled by the
+  *electric-pair-local-mode* which can be activated automatically by adding it
+  to the PEL language-specific mode ``MMM`` in  ``pel-MMM-activates-minor-modes``.
+  PEL does not, however yet explicitly support the mode.
 - New: Experimental support for the [[https://janet-lang.org][Janet Programming language]] when
   ``pel-use-janet`` and other PEL user-options are turned on
   (``pel-use-janet-mode``, ``pel-use-ijanet`` and ``pel-use-inf-janet``).

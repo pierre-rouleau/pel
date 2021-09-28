@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-23 11:19:56, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-28 13:32:56, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -179,10 +179,12 @@
                                                                  sr-speedbar
                                                                  projectile-speedbar))
     ([f11 32 ?C]     "pl-c++"           pel-pkg-for-c++         (cpp
-                                                                 c-macro))
+                                                                 c-macro
+                                                                 electricity))
     ([f11 32 ?C f12] "pl-c++"           pel-c++-skeleton-control)
     ([f11 32 ?C ?#]  "pl-c++"           pel-pkg-for-c++         hide-ifdef)
-    ([f11 32 ?D]     "pl-d"             pel-pkg-for-d           d-mode)
+    ([f11 32 ?D]     "pl-d"             pel-pkg-for-d           (d-mode
+                                                                 electricity))
     ([f11 32 ?L]     "pl-common-lisp"   pel-pkg-for-clisp       (lisp
                                                                  lispy
                                                                  slime
@@ -194,13 +196,16 @@
     ([f11 32 ?a]     "pl-applescript"   pel-pkg-for-applescript apples)
     ([f11 32 ?c]     "pl-c"             pel-pkg-for-c           (c
                                                                  c-macro
-                                                                 bison-mode))
+                                                                 bison-mode
+                                                                 electricity))
     ([f11 32 ?c f12] "pl-c"             pel-c-skeleton-control)
     ([f11 32 ?c ?#]  "pl-c"             pel-pkg-for-c           hide-ifdef)
     ([f11 32 ?e]     "pl-erlang"        pel-pkg-for-erlang      (erlang
                                                                  erldoc
                                                                  edts
-                                                                 auto-highlight-symbol))
+                                                                 auto-highlight-symbol
+                                                                 electricity
+                                                                 smartparens))
     ([f11 32 ?e f12] "pl-erlang"        pel-erlang-code-style)
     ([f11 32 ?e ?L]  "pl-erlang"        pel-pkg-for-lsp-mode    ,(cons 'lsp-erlang pel--lsp-groups))
     ([f11 32 ?e ?w]  "pl-erlang"        pel-pkg-for-lsp-mode    (treemacs
@@ -209,14 +214,16 @@
     ([f11 32 ?g]     "pl-go"            pel-pkg-for-go          (go
                                                                  go-cover
                                                                  godoc
-                                                                 go-dot-mod))
+                                                                 go-dot-mod
+                                                                 electricity))
     ([f11 32 ?h]     "pl-haskell"       pel-pkg-for-haskell     haskell)
     ([f11 32 ?T]     "pl-janet"         pel-pkg-for-janet       (janet
                                                                  ijanet
                                                                  inf-janet))
     ([f11 32 ?j]     "pl-julia"         pel-pkg-for-julia       (julia
                                                                  julia-mode
-                                                                 julia-snail))
+                                                                 julia-snail
+                                                                 electricity))
     ([f11 32 ?l]     "pl-emacs-lisp"    pel-pkg-for-elisp       (checkdoc
                                                                  editing-basics
                                                                  elint
@@ -228,26 +235,33 @@
     ([f11 32 ?l ??]  "pl-emacs-lisp"    pel-pkg-for-all-languages (eldoc
                                                                    eldoc-box))
 
-    ([f11 32 ?n]     "pl-nim"       pel-pkg-for-nim         nim)
+    ([f11 32 ?n]     "pl-nim"       pel-pkg-for-nim         (nim
+                                                             electricity))
     ([f11 32 ?o]     "pl-ocaml"     pel-pkg-for-ocaml       (merlin
                                                              tuareg
                                                              tuareg-opam))
     ([f11 32 ?p]     "pl-python"    pel-pkg-for-python      (python
-                                                             python-flymake))
+                                                             python-flymake
+                                                             electricity))
     ([f11 32 ?r]     "pl-rust"      pel-pkg-for-rust        (rust-mode
                                                              rustic
                                                              racer
                                                              cargo
-                                                             ))
+                                                             electricity))
     ([f11 32 ?P]     "pl-perl"      pel-pkg-for-perl         (perl
-                                                              cperl))
-    ([f11 32 ?U]     "pl-ruby"      pel-pkg-for-ruby         ruby)
+                                                              cperl
+                                                              electricity))
+    ([f11 32 ?U]     "pl-ruby"      pel-pkg-for-ruby         (ruby
+                                                              electricity))
     ([f11 32 ?H]     "pl-sh"        pel-pkg-for-sh           (sh
                                                               sh-script
-                                                              sh-indentation))
-    ([f11 32 ?v]     "pl-v"          pel-pkg-for-v              v-mode)
+                                                              sh-indentation
+                                                              electricity))
+    ([f11 32 ?v]     "pl-v"          pel-pkg-for-v              (v-mode
+                                                                 electricity))
 
-    ([f11 32 ?x]     "pl-elixir"        pel-pkg-for-elixir      elixir)
+    ([f11 32 ?x]     "pl-elixir"        pel-pkg-for-elixir      (elixir
+                                                                 electricity))
     (,(kbd "<f11> SPC C-a") nil         pel-pkg-for-arc         (arc
                                                                  lispy))
     (,(kbd "<f11> SPC C-h") "pl-hy"     pel-pkg-for-hy)
@@ -313,6 +327,7 @@
       pel-pkg-for-parens)  ,(let ((items
                                    (list
                                     'auto-highlight-symbol
+                                    'electricity
                                     'iedit
                                     'highlight-indentation
                                     'rainbow
@@ -366,9 +381,11 @@
                                                                  rg
                                                                  ripgrep
                                                                  wgrep))
-    ([f11 ?\(]       "smartparens"      pel-pkg-for-parens      (rainbow-delimiters
+    ([f11 ?\(]       "smartparens"      pel-pkg-for-parens      (electricity
+                                                                 rainbow-delimiters
                                                                  smartparens))
-    ([f11 ?i]        "inserting-text"   pel-pkg-for-insertions  (lice
+    ([f11 ?i]        "inserting-text"   pel-pkg-for-insertions  (electricity
+                                                                 lice
                                                                  smart-dash
                                                                  smartparens
                                                                  tempo
@@ -892,6 +909,7 @@ Return nil if nothing found."
     ("command-log" . "command-log-mode")
     ("clojure"     . "clojure-mode")
     ("cljr"        . "clj-refactor")
+    ("electricity" . "electric")
     ("grip"        . "grip-mode")
     ("janet"       . "janet-mode")
     ("lfe"         . ("lfe-indent"
