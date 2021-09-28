@@ -6048,6 +6048,7 @@ the ones defined from the buffer now."
 (define-pel-global-prefix pel:regexp (kbd "<f11> s x"))
 (define-key pel:regexp      " "   'pel-insert-regexp)
 (define-key pel:regexp      "b"  #'re-search-backward)
+(global-set-key      (kbd "M-R") #'re-search-backward)
 (define-key pel:regexp      "f"  #'re-search-forward)
 (define-key pel:regexp      "q"  #'query-replace-regexp) ; maybe replaced below
 (define-key pel:regexp      "r"  #'replace-regexp)       ; maybe replaced below

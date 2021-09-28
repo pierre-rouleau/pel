@@ -32,6 +32,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   PEL also provides 4 commands that can be used to dynamically toggle the
   electric behaviour of these keys.  The commands are mapped under the
   ``<f12> ~`` key prefix.
+- New: Add `M-R` global key binding to *re-search-backward*.
 - New: Experimental support for the [[https://janet-lang.org][Janet Programming language]] when
   ``pel-use-janet`` and other PEL user-options are turned on
   (``pel-use-janet-mode``, ``pel-use-ijanet`` and ``pel-use-inf-janet``).
