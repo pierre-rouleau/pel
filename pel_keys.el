@@ -3396,7 +3396,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 
     ;; Activate Electric key behaviour selected by PEL user-option
     (defvar erlang-electric-commands)
-    (setq erlang-electric-commands pel-erlang-electric-keys))
+    (setq erlang-electric-commands pel-erlang-electric-keys)
+    )
 
   (pel-config-major-mode erlang pel:for-erlang
     ;; "Activate Erlang setup."
@@ -3412,7 +3413,17 @@ Can't load ac-geiser: geiser-repl-mode: %S"
                (boundp 'lsp-mode-map)
                (boundp 'lsp-keymap-prefix))
       (define-key lsp-mode-map (kbd (format "%s d" lsp-keymap-prefix)) 'lsp-doctor)
-      (define-key lsp-mode-map (kbd (format "%s L" lsp-keymap-prefix)) 'lsp-workspace-show-log))))
+      (define-key lsp-mode-map (kbd (format "%s L" lsp-keymap-prefix))
+        'lsp-workspace-show-log)))
+
+  (defvar erlang-mode-syntax-table)     ; prevent byte-compiler warning
+  (defun pel--erlang-mode-enhance ()
+    "Enhance erlang-mode."
+    ;; Add < > pairing navigation and marking.
+    (modify-syntax-entry ?< "(>" erlang-mode-syntax-table)
+    (modify-syntax-entry ?> ")<" erlang-mode-syntax-table))
+  (declare-function pel--erlang-mode-enhance "pel_keys")
+  (add-hook 'erlang-mode-hook  #'pel--erlang-mode-enhance))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC x`` : Elixir programming
