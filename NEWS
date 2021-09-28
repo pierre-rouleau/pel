@@ -38,6 +38,21 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   The ``pel:for-janet`` prefix is bound to ``<f11> SPC T`` which maps to
   ``<f12>`` inside ``.janet`` files.  Includes support for iMenu and Speedbar.
   - Add a [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-janet.pdf][𝕻𝔩 - Janet PDF]].
+- Improve: Erlang support:
+  - Added support for the `< >` matching pair in the
+    erlang-mode syntax table.  This provides match pair navigation with
+    `forward-sexp` and `backward-sexp` commands and selection of the entire
+    bitstring text with `M-=`.
+  - Added smartparens support when *pel-use-smartparens* is turned on.
+    Automatically activate smartparens support for Erlang by adding
+    `smartparens-mode` to the list of *pel-erlang-activates-minor-modes*.
+    - Add automatic pairing of `<< >>` to smartparens-mode used in erlang-mode
+      buffers.
+  - Enhance [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf][𝕻𝔩 - Erlang PDF]]:
+    - Add description of the electric behaviour of keys in erlang-mode
+      buffers.
+    - Describe behaviour of the smartparens navigation and code transformation
+      commands in erlang-mode buffers.
 - Fix: typo describing character class in the Emacs regexp syntax of the
   [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀  Search/Replace PDF]].
   Also better described *pel-replace-regexp*.
