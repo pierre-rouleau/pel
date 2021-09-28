@@ -3392,35 +3392,37 @@ Can't load ac-geiser: geiser-repl-mode: %S"
           (add-hook 'erlang-mode-hook #'pel--erlang-setup-for-flycheck))))
 
       ;; When any syntax checker is used with Erlang add a key to toggle it
-      (define-key pel:for-erlang "!" 'pel-erlang-toggle-syntax-checker))
-
-    ;; Activate Electric key behaviour selected by PEL user-option
-    (defvar erlang-electric-commands)
-    (setq erlang-electric-commands pel-erlang-electric-keys)
-    )
+      (define-key pel:for-erlang "!" 'pel-erlang-toggle-syntax-checker)))
 
   (pel-config-major-mode erlang pel:for-erlang
-    ;; "Activate Erlang setup."
+    ;; Activate Erlang setup.
     ;; set fill-column to Erlang's default if specified
     (when pel-erlang-fill-column
       (setq fill-column pel-erlang-fill-column))
+    ;;
     ;; setup the Erlang-specific key bindings
     (pel--install-erlang-skel pel:erlang-skel)
+    ;;
     ;; Configure M-( to put parentheses after a function name.
     (set (make-local-variable 'parens-require-spaces) nil)
-
+    ;;
+    ;; Activate Electric key behaviour selected by PEL user-option
+    (defvar erlang-electric-commands)
+    (setq erlang-electric-commands pel-erlang-electric-keys)
+    ;;
     ;; Add < > pairing navigation and marking.
     (defvar erlang-mode-syntax-table)
     (modify-syntax-entry ?< "(>" erlang-mode-syntax-table)
     (modify-syntax-entry ?> ")<" erlang-mode-syntax-table)
-
+    ;;
     ;; Add key-bindings inside the lsp-keymap if erlang_ls is used
     (when (and pel-use-erlang-ls
                (boundp 'lsp-mode-map)
                (boundp 'lsp-keymap-prefix))
-      (define-key lsp-mode-map (kbd (format "%s d" lsp-keymap-prefix)) 'lsp-doctor)
-      (define-key lsp-mode-map (kbd (format "%s L" lsp-keymap-prefix))
-        'lsp-workspace-show-log))))
+      (define-key lsp-mode-map
+        (kbd (format "%s d" lsp-keymap-prefix)) 'lsp-doctor)
+      (define-key lsp-mode-map
+        (kbd (format "%s L" lsp-keymap-prefix)) 'lsp-workspace-show-log))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC x`` : Elixir programming
