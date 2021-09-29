@@ -29,20 +29,36 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 (require 'comint)
-(require 'pel--base)            ; use: pel-toggle-syntax-check-mode
-(require 'pel--options)         ; use: pel-erlang-version-detection-method
-(require 'pel-fs)               ; use: pel-exec-pel-bin
+(require 'pel--base)            ; use: `pel-toggle-syntax-check-mode'
+(require 'pel--options)         ; use: `pel-erlang-version-detection-method'
+;;                              ;      `pel-erlang-electric-keys'
+(require 'pel-fs)               ; use: `pel-exec-pel-bin'
+(require 'pel-syntax)           ; use: `pel-insert-space-in-enclosing-block'
 
 ;; newcomment is always available
-(require 'newcomment)           ; use: comment-dwim
+(require 'newcomment)           ; use: `comment-dwim'
 
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
-;; Toggle electric behaviour of keys
+;; ---------------------------------------------------------------------------
+;; Manage Electric Key
+;; -------------------
 
-(defvar erlang-electric-commands)
+;; Toggle electric behaviour of keys.
+;;
+;; The code below dynamically add or remove a symbol corresponding to a key
+;; into the `erlang-electric-command' variable to enable or disable the
+;; electricity of the corresponding key.
+
+(defvar erlang-electric-commands)       ; erlang.el variable identifying
+                                        ; electric keys.  It's a list that can
+                                        ; hold one or several of the following
+                                        ; symbols: erlang-electric-comma,
+                                        ; erlang-electric-gt,
+                                        ; erlang-electric-newline and
+                                        ; erlang-electric-semicolon.
 
 (defconst pel--electric-key-name
   (list
@@ -90,6 +106,43 @@
   (interactive)
   (pel--erlang-toggle-electric-of 'erlang-electric-semicolon))
 
+;; ------------------------------
+;; Enhance Electric Key Behaviour
+;; ------------------------------
+
+(defun pel--enhanced-electric-comma (&rest _args)
+  "Post handler for electric-comma: insert space inside parens blocks."
+  (when (memq 'erlang-electric-comma erlang-electric-commands)
+    (pel-insert-space-in-enclosing-block)))
+
+(defun pel-erlang-enhance-electric-keys ()
+  "Enhance electric behaviour of Erlang electric keys as per PEL options.
+
+The following options are observed:
+- `pel-erlang-space-after-comma-in-blocks': when set the
+  `erlang-electric-comma' inserts a space after the comma inside blocks."
+  (when pel-erlang-space-after-comma-in-blocks
+    (advice-add 'erlang-electric-comma
+                :after (function pel--enhanced-electric-comma))))
+
+;; --------------------------------
+;; Configure Electric Key Behaviour
+;; --------------------------------
+
+(defvar erlang-mode-syntax-table)       ; prevent byte-compilation warning
+;;                                      ; This is defined in erlang.el
+
+;;-pel-autoload
+(defun pel-erlang-setup-electric-key-behaviour ()
+  "Setup Erlang behaviour of electric keys."
+
+  ;; Activate Electric key behaviour selected by PEL user-option
+  (setq erlang-electric-commands pel-erlang-electric-keys)
+  (pel-erlang-enhance-electric-keys)
+  ;;
+  ;; Add < > pairing navigation and marking.
+  (modify-syntax-entry ?< "(>" erlang-mode-syntax-table)
+  (modify-syntax-entry ?> ")<" erlang-mode-syntax-table))
 
 ;; ---------------------------------------------------------------------------
 ;; Erlang Shell Control

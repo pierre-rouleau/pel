@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-28 13:32:56, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-29 14:27:33, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -205,6 +205,7 @@
                                                                  edts
                                                                  auto-highlight-symbol
                                                                  electricity
+                                                                 smart-dash
                                                                  smartparens))
     ([f11 32 ?e f12] "pl-erlang"        pel-erlang-code-style)
     ([f11 32 ?e ?L]  "pl-erlang"        pel-pkg-for-lsp-mode    ,(cons 'lsp-erlang pel--lsp-groups))

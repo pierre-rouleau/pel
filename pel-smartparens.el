@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, September 20 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-24 18:48:09, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-29 14:36:14, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -36,6 +36,17 @@
 ;;
 (require 'pel--base)                    ; use: pel-print-in-buffer,
 ;;                                      ;      pel-insert-symbol-content
+
+(defvar pel--has-smartparens (require 'smartparens nil :noerror)
+  "Non-nil when smartparens is available.")
+
+
+(declare-function sp-next-sexp                 "smartparens")
+(declare-function sp-previous-sexp             "smartparens")
+(declare-function sp-navigate-consider-symbols "smartparens")
+(declare-function sp-in-code-p                 "smartparens")
+(declare-function sp-get-enclosing-sexp        "smartparens")
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -46,9 +57,7 @@
 (defun pel-sp-next-sexp (&optional arg)
   "Same as `sp-next-sexp' with `sp-navigate-consider-symbols' forced nil."
   (interactive "^p")
-  (when (and (require 'smartparens nil :no-error)
-             (fboundp 'sp-next-sexp)
-             (boundp 'sp-navigate-consider-symbols))
+  (when pel--has-smartparens
     (let ((sp-navigate-consider-symbols nil))
       (sp-next-sexp arg)
       (setq pel--sp-op-last sp-navigate-consider-symbols))))
@@ -57,9 +66,7 @@
 (defun pel-sp-previous-sexp (&optional arg)
   "Same as `sp-previous-sexp' with `sp-navigate-consider-symbols' forced nil."
   (interactive "^p")
-  (when (and (require 'smartparens nil :no-error)
-             (fboundp 'sp-previous-sexp)
-             (boundp 'sp-navigate-consider-symbols))
+  (when pel--has-smartparens
     (let ((sp-navigate-consider-symbols nil))
       (sp-previous-sexp arg)
       (setq pel--sp-op-last sp-navigate-consider-symbols))))
@@ -87,10 +94,8 @@ string copied or killed."
                  sp-backward-kill-sexp))
     (advice-add fct :after (function pel-show-killed))))
 
-
 ;; ---------------------------------------------------------------------------
 ;;-pel-autoload
-
 (defun pel-smartparens-info ()
   "Print smartparens setup info in *pel-smartparens-info*."
   (interactive)
@@ -167,6 +172,12 @@ https://github.com/Fuco1/smartparens/wiki/Pair-management" ":")
        (pel-insert-list-content 'sp-sexp-prefix buffer)
        (pel-insert-list-content 'sp-sexp-suffix buffer) ; ?? for erlang?
        ))))
+
+;; ---------------------------------------------------------------------------
+;;-pel-autoload
+(defun pel-sp-show-handler (id action context)
+  "Display handler info message for ID, ACTION and CONTEXT."
+  (message "----> sp handler: %S %S %S" id action context))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-smartparens)

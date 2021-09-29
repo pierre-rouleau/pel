@@ -283,7 +283,7 @@
 ;;
 ;; In most case the name of the package that is controlled by the `pel-use-'
 ;; variables is the string that follows the "pel-use-" prefix in the symbol
-;; name.  But this is not always the case. There are the  other possibilities
+;; name.  But this is not always the case.  There are the other possibilities
 ;; that are identified by the `:package-is' property:
 ;;
 ;;  - the `:a-gate' property value means that this user-option acts as a
@@ -300,21 +300,21 @@
 ;;    from an Elpa-compliant package management site and managed trough Emacs
 ;;    `package' library.
 ;;  - a consp form that must be evaluated dynamically to compute the symbol or
-;;    list of symbols representing the Elpa packages that are used. The result
+;;    list of symbols representing the Elpa packages that are used.  The result
 ;;    must be a cons cell or a list of cons cell where the car is a symbol that
 ;;    identifies the packaging mechanism and the cdr is the package name
-;;    symbol. The package mechanisms supported are 'elpa and 'utils.  The
+;;    symbol.  The package mechanisms supported are 'elpa and 'utils.  The
 ;;    'elpa symbol identifies a package that is downloaded and managed by the
 ;;     Emacs package library and comes from an Elpa-compliant repository.  The
 ;;     'utils symbol identifies a file that is downloaded from a web-site and
-;;     stored into PEL's utils directory. See `pel-use-ripgrep' for an example.
+;;     stored into PEL's utils directory.  See `pel-use-ripgrep' for an example.
 ;;  - In the absence of the `:package-is' property, the name of the package is
 ;;    extracted from the name of the `pel-use-' symbol.
 
 ;; `:restricted-to'
 ;; ----------------
 ;;
-;; Some packages are restricted to a specific mode of Emacs operation. The
+;; Some packages are restricted to a specific mode of Emacs operation.  The
 ;; value of this property is a variable symbol that identifies when this
 ;; package is used.
 ;;
@@ -372,7 +372,7 @@
 
 (defmacro pel-put (symbol propname value)
   "Store SYMBOL's PROPNAME property with value VALUE.
-Validate at byte-compile time."
+Validate at `byte-compile' time."
   (if (cond
        ((eq propname :also-required-when)
         (and (consp value)
@@ -473,8 +473,8 @@ Use the INS and DEL buttons to add associations:
 
 PEL controls what syntax checker is used for each major mode.
 This includes flymake and flycheck and if others exist they will
-also be added to the support. A user may want to use flymake with
-one language and flycheck with another. PEL supports that.  By
+also be added to the support.  A user may want to use flymake with
+one language and flycheck with another.  PEL supports that.  By
 default PEL does not activate a syntax checker when the file is
 opened, allowing Emacs to run a little faster.  PEL provides a
 command (bound to the ``<f12> !`` key of that mode) for each
@@ -514,20 +514,20 @@ environment variable is not part of the process environment when
 Emacs is launched from a GUI program such as macOS Finder.
 
 Change this value when using another shell or when running on
-other operating system such as Windows. If you cannot find a
+other operating system such as Windows.  If you cannot find a
 suitable environment variable that is defined when Emacs is
 launched, then define an environment variable that will be
 present in all instances of your shell but not inside the OS
-process environment. For instance you could use the environment
+process environment.  For instance you could use the environment
 name \"PEL_SHELL\"."
   :group 'pel-fast-startup
   :type 'string)
 
 (defcustom pel-gui-process-environment nil
-  "List of environment variables to set when for Emacs launched from GUI program.
+  "Environment variables to set when for Emacs launched from GUI program.
 
 When Emacs is launched from a shell it inherit the environment
-variables from that shell parent process. It is then possible to
+variables from that shell parent process.  It is then possible to
 create several specialized shells and set environment variables
 in the shell initialization script that will be used by Emacs.
 
@@ -610,11 +610,11 @@ customization files."
 
 ;; ----
 (defcustom pel-compile-emacs-init nil
-  "Whether PEL setup commands that update init.el also byte-compile it.
+  "Whether PEL setup commands that update init.el also `byte-compile' it.
 
 Note that this assumes that your init.el file does not prevent byte
 compilation.  If your file defines the `no-byte-compile' variable, remove that
-or force it nil if you want PEL to byte-compile it.
+or force it nil if you want PEL to `byte-compile' it.
 
 Unlike the pel-bundle and package-quickstart files, PEL will not change the
 value of `no-byte-compile' file variable in your init.el file."
@@ -623,11 +623,11 @@ value of `no-byte-compile' file variable in your init.el file."
   :safe #'booleanp)
 
 (defcustom pel-compile-emacs-early-init nil
-  "Whether PEL setup commands that update early-init.el also byte-compile it.
+  "Whether PEL setup commands that update early-init.el also `byte-compile' it.
 
 Note that this assumes that your early-init.el file does not prevent byte
 compilation.  If your file defines the `no-byte-compile' variable, remove that
-or force it nil if you want PEL to byte-compile it.
+or force it nil if you want PEL to `byte-compile' it.
 
 Unlike the pel-bundle and package-quickstart files, PEL will not change the
 value of `no-byte-compile' file variable in your early-init.el file."
@@ -689,7 +689,7 @@ Put the names of the packages you install manually in this list.
 PEL will not remove them when it performs a cleanup.
 By default, PEL identifies the following packages:
 - benchmark-init: use this to measure your initialization time.
-- elisp-lint:     check your Emacs Lisp code. PEL's ``make lint`` uses it.
+- elisp-lint:     check your Emacs Lisp code.  PEL's ``make lint`` uses it.
                   elisp-lint requires package-lint and dash, which are also
                   in the default list."
   :group 'pel-package-use
@@ -836,9 +836,9 @@ open the ASCII table in the current buffer."
   "Control whether PEL uses the package and function `nhexl-mode'.
 This mode supports editing a file in hexadecimal dump mode.
 When set, PEL activates the following key sequences:
-- <f11> t O  : nhexl-overwrite-only-mode
-- <f11> b x  : nhexl-mode
-- <f11> b X  : nhexl-nibble-edit-mode"
+- <f11> t O  : `nhexl-overwrite-only-mode'
+- <f11> b x  : `nhexl-mode'
+- <f11> b X  : `nhexl-nibble-edit-mode'"
   :group 'pel-pkg-for-buffer
   :type 'boolean
   :safe #'booleanp
@@ -979,8 +979,8 @@ completion mechanism that is preferred by many people."
 (defcustom pel-use-smex nil
   "Control whether PEL uses the smex package.
 
-The smex package adds Ido completion to the M-x command and
-provides the M-X which does completion commands related to active
+The smex package adds Ido completion to the `execute-extended-command'
+and provides the \"M-X\" which does completion commands related to active
 for major mode only.
 
 To use this you must also have `pel-use-ido' set to t."
@@ -992,7 +992,7 @@ To use this you must also have `pel-use-ido' set to t."
 (pel-put 'pel-use-smex :requires 'pel-use-ido)
 
 (defcustom pel-use-ido-grid-mode nil
-  "Control whether PEL uses the ido-grid-mode package.
+  "Control whether PEL uses the `ido-grid-mode' package.
 
 This modifies the presentation geometry of the Ido completion
 prompt: it shows candidates in multiple columns.
@@ -1008,7 +1008,7 @@ The initial Ido geometry is set by `pel-initial-ido-geometry'."
 (defcustom pel-use-ido-grid nil
   "Control whether PEL uses the ido-grid package.
 
-The ido-grid is a re-implementation of ido-grid-mode made to go
+The ido-grid is a re-implementation of `ido-grid-mode' made to go
 faster and easier to use.
 
 This modifies the presentation geometry of the Ido completion
@@ -1025,7 +1025,7 @@ The initial Ido geometry is set by `pel-initial-ido-geometry'."
 (pel-put 'pel-use-ido-grid :package-is :in-utils)
 
 (defcustom pel-use-ido-vertical-mode nil
-  "Control whether PEL uses the ido-vertical-mode package.
+  "Control whether PEL uses the `ido-vertical-mode' package.
 
 This modifies the presentation geometry of the Ido completion
 prompt: it shows candidates in multiple lines, like ivy does.
@@ -1168,10 +1168,10 @@ Note that `pel-use-helm-cscope' indirectly activates `pel-use-helm'."
   "Select Ido prompt geometry used when Emacs starts.
 
 PEL supports several Ido extension modes that modify the
-Ido prompt geometry. The following modes are available:
+Ido prompt geometry.  The following modes are available:
 
 - `emacs-default'  : standard, linear IDO
-- `ido-grid'       : show candidates in a grid, expanded. Uses ido-grid.
+- `ido-grid'       : show candidates in a grid, expanded.  Uses ido-grid.
 - `grid-collapsed' : show candidates in a grid.  Collapsed on 1 line
                      at first.  Press tab to expand the grid on multiple
                      lines.
@@ -1230,7 +1230,7 @@ Further customization is available for several selections:
 - For Ido:
   - you can add Ido flx fuzzy matching by activating: `pel-use-flx'.
 
-Warning: both popup-imenu and popup-switcher seem to be affected by
+Warning: both `popup-imenu' and popup-switcher seem to be affected by
          bugs that prevent them to show the complete list of items
          reliably."
   :group 'pel-pkg-for-completion
@@ -2217,6 +2217,15 @@ having to hit the Shift key.
 See the author site at URL http://malsyned.net/smart-dash.html"
   :group 'pel-pkg-for-insertions
   :group 'pel-pkg-for-text-mode
+  :group 'pel-pkg-for-c
+  :group 'pel-pkg-for-c++
+  :group 'pel-pkg-for-d
+  :group 'pel-pkg-for-go
+  :group 'pel-pkg-for-erlang
+  :group 'pel-pkg-for-elixir
+  :group 'pel-pkg-for-python
+  :group 'pel-pkg-for-rust
+  :group 'pel-pkg-for-sh
   :type 'boolean
   :safe #'booleanp)
 
@@ -2225,12 +2234,13 @@ See the author site at URL http://malsyned.net/smart-dash.html"
     c++-mode
     d-mode
     elixir-mode
-    erlang-mode
     python-mode
     shell-script-mode)
   "List of major modes that automatically activate the smart dash mode.
-Used when `pel-use-smart-dash' user option is t.
-To activate the changes for this you must 'Apply and Save' and restart Emacs."
+Use this only when the major mode is not supported by PEL.  For modes
+supported by PEL use the appropriate pel-<mode>-activates-minor-modes
+user-option instead.
+Used when `pel-use-smart-dash' user option is t."
   :group 'pel-pkg-for-insertions
   :group 'pel-pkg-for-text-mode
   :type  '(repeat symbol))
@@ -6828,6 +6838,15 @@ Standards & Guidelines."
   :link '(url-link :tag "Inka Erlang Guideline"
                    "https://github.com/inaka/erlang_guidelines#\
 100-column-per-line"))
+
+(defcustom pel-erlang-space-after-comma-in-blocks nil
+  "When set the `erlang-electric-comma' inserts a space after comma in blocks.
+
+You can also dynamically toggle the electric behaviour of the comma key by
+using the \\[pel-gt-comma] key, mapped to \"<f12> ~ ,\" in Erlang buffers."
+  :group 'pel-erlang-code-style
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; style - 0
 (defcustom pel-erlang-skel-use-separators t

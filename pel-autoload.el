@@ -277,7 +277,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-erlang-set-dirpath
     pel-erlang-man-parent-rootdir
     pel-erlang-exec-path
-    pel-erlang-shell-mode-init)
+    pel-erlang-shell-mode-init
+    pel-erlang-setup-electric-key-behaviour)
 
   (pel-autoload-function "pel-erlang-skels" for:
     pel--erlang-mode-setup
@@ -674,7 +675,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-sp-next-sexp
     pel-sp-previous-sexp
     pel-smartparens-augment
-    pel-smartparens-info)
+    pel-smartparens-info
+    pel-sp-show-handler)
 
   (pel-autoload "pel-vcs" for:
     pel-vcs-switch-backend

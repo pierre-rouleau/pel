@@ -55,6 +55,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     `smartparens-mode` to the list of *pel-erlang-activates-minor-modes*.
     - Add automatic pairing of `<< >>` to smartparens-mode used in erlang-mode
       buffers.
+    - When the *pel-erlang-space-after-comma-in-blocks* user-option is turned on,
+      and when the comma electric behaviour is active, a space is
+      automatically inserted after a comma typed inside a "parens" block.
+    - Electric behaviour of newline, >, comma and semicolon can be dynamically
+      toggled by using the ``<f12> ~`` prefix followed by the specific key.
   - Enhance [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf][𝕻𝔩 - Erlang PDF]]:
     - Add description of the electric behaviour of keys in erlang-mode
       buffers.
