@@ -3168,10 +3168,6 @@ Can't load ac-geiser: geiser-repl-mode: %S"
                                   ".hrl"
                                   ".escript")))
 
-  (when pel-erlang-shell-prevent-echo
-    ;; Prevent erlang shell to echo back commands.
-    (add-hook 'erlang-shell-mode-hook 'pel-erlang-shell-mode-init))
-
   ;; Bind keys that can be used *before* the erlang.el file is loaded
   ;; and that essentially start the use of Erlang withing Emacs.
   ;; The remaining keys will be mapped after erlang.el is loaded.
@@ -3196,7 +3192,13 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (display-warning 'pel-use-erlang "erlang-root-dir is unbound" :error))
     ;; Optionally add a Erlang Bin directory to the exec-path
     (pel-erlang-set-dirpath (function pel-erlang-exec-path)
-                            (lambda (dirpath) (add-to-list 'exec-path dirpath)))
+                            (lambda (dirpath) (add-to-list 'exec-path
+                                                           dirpath)))
+
+    ;; Prevent erlang shell to echo back commands on request.
+    (when pel-erlang-shell-prevent-echo
+      (add-hook 'erlang-shell-mode-hook 'pel-erlang-shell-mode-init))
+
     ;;
     (require 'erlang-start)
 
