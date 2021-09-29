@@ -1222,6 +1222,23 @@ interactively."
 (when pel-use-smart-dash
   (pel-ensure-package smart-dash from: melpa)
   (pel-autoload-file smart-dash for: smart-dash-mode)
+  (autoload 'smart-dash-insert-or-overwrite "smart-dash")
+
+  ;; Prevent smart-dash-mode from preventing the <kp-subtract> from being
+  ;; able to invoke pel-kp-subtract when an area is marked, retaining the
+  ;; capability to copy marked text with <kp-subtract> without loosing
+  ;; ability to insert a dash with it (even when the area is marked: just
+  ;; toggle the numlock on)
+  (declare-function smart-dash-insert-or-overwrite "smart-dash")
+  (defun pel--smart-dash-insert-dash-or-kp-subtract ()
+    "Insert dash or invoke pel-kp-subtract when area marked."
+    (interactive)
+    (if (use-region-p)
+        (pel-kp-subtract 1)
+      (smart-dash-insert-or-overwrite ?-)))
+  (declare-function pel--smart-dash-insert-dash-or-kp-subtract "pel_keys")
+  (advice-add 'smart-dash-insert-dash
+              :override (function pel--smart-dash-insert-dash-or-kp-subtract))
 
   ;; when we can, activate a red lighter for Smart dash
   (when (and pel-use-delight
@@ -3214,14 +3231,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       ;; Configure M-( to put parentheses after a function name.
       (set (make-local-variable 'parens-require-spaces) nil)
       ;;
-      ;; Activate Electric key behaviour selected by PEL user-option
-      (defvar erlang-electric-commands)
-      (setq erlang-electric-commands pel-erlang-electric-keys)
-      ;;
-      ;; Add < > pairing navigation and marking.
-      (defvar erlang-mode-syntax-table)
-      (modify-syntax-entry ?< "(>" erlang-mode-syntax-table)
-      (modify-syntax-entry ?> ")<" erlang-mode-syntax-table)
+      ;; Setup requested electric key behaviour
+      (pel-erlang-setup-electric-key-behaviour)
       ;;
       ;; Bind keys for the Erlang mode.
       ;; Use pel-erlang-comment-dwim instead of comment-dwim
@@ -5718,6 +5729,7 @@ the ones defined from the buffer now."
       (define-key smartparens-mode-map [remap backward-delete-char-untabify] 'sp-backward-delete-char)
 
       (sp-local-pair 'erlang-mode "<<" ">>")
+
       (define-key smartparens-mode-map (kbd "<M-f7> n")   'pel-sp-next-sexp)
       (define-key smartparens-mode-map (kbd "<M-f7> p")   'pel-sp-previous-sexp))
 

@@ -39,6 +39,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   *electric-pair-local-mode* which can be activated automatically by adding it
   to the PEL language-specific mode ``MMM`` in  ``pel-MMM-activates-minor-modes``.
   PEL does not, however yet explicitly support the mode.
+- Improve: smart-dash support: when used, the smart-dash-mode no longer
+  prevents the ``<kp-subtract>`` key from being used for *pel-kp-subtract*
+  allowing that key to insert hyphen when the keypad NumLock is on and
+  act dash insertion when no area is marked ans as a marked-area kill otherwise.
 - New: Experimental support for the [[https://janet-lang.org][Janet Programming language]] when
   ``pel-use-janet`` and other PEL user-options are turned on
   (``pel-use-janet-mode``, ``pel-use-ijanet`` and ``pel-use-inf-janet``).
