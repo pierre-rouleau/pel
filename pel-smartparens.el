@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, September 20 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-29 14:36:14, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-29 22:48:12, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -41,8 +41,11 @@
   "Non-nil when smartparens is available.")
 
 
+(declare-function sp-local-pair                "smartparens")
 (declare-function sp-next-sexp                 "smartparens")
 (declare-function sp-previous-sexp             "smartparens")
+(declare-function sp-delete-char               "smartparens")
+(declare-function sp-backward-delete-char      "smartparens")
 (declare-function sp-navigate-consider-symbols "smartparens")
 (declare-function sp-in-code-p                 "smartparens")
 (declare-function sp-get-enclosing-sexp        "smartparens")
@@ -70,6 +73,30 @@
     (let ((sp-navigate-consider-symbols nil))
       (sp-previous-sexp arg)
       (setq pel--sp-op-last sp-navigate-consider-symbols))))
+
+;; ---------------------------------------------------------------------------
+;; Better smartparens delete
+;; -------------------------
+;;
+;; Both smartparens sp-delete-char and sp-backward-delete-char do not delete
+;; a marked area.  These function do.
+
+;;-pel-autoload
+(defun pel-sp-delete-char (&optional arg)
+  "Execute `sp-delete-char' if no area marked, otherwise delete marked area."
+  (interactive "P*")
+  (if (use-region-p)
+      (delete-char 1)
+    (sp-delete-char arg)))
+
+;;-pel-autoload
+(defun pel-sp-backward-delete-char (&optional arg)
+  "Execute `sp-delete-char' if no area marked, otherwise delete marked area."
+  (interactive "P*")
+  (if (use-region-p)
+      (backward-delete-char-untabify 1)
+    (sp-backward-delete-char arg)))
+
 
 ;; ---------------------------------------------------------------------------
 ;;-pel-autoload
@@ -174,10 +201,31 @@ https://github.com/Fuco1/smartparens/wiki/Pair-management" ":")
        ))))
 
 ;; ---------------------------------------------------------------------------
+;; Erlang Support for SmartParens
+;; ------------------------------
+;;
+;; TODO:
+;; Once complete the following code will probably be migrated into
+;; smartparens itself.
+
 ;;-pel-autoload
-(defun pel-sp-show-handler (id action context)
+(defun pel-sp-erlang-handler (id action context)
   "Display handler info message for ID, ACTION and CONTEXT."
-  (message "----> sp handler: %S %S %S" id action context))
+  (message "pel-sp-erlang-handler: %S %S %S" id action context))
+
+
+;;-pel-autoload
+(defun pel-smartparens-setup-erlang ()
+  "Configure smartparens for Erlang.
+
+This must be called within the scope of a erlang-mode buffer."
+  (sp-local-pair 'erlang-mode "<<" ">>")
+
+  ;; TODO: fix behaviour of smartparens commands that don't work properly for Erlang.
+  ;; (sp-local-pair 'erlang-mode "[" "]"
+  ;;                :actions '(insert wrap autoskip navigate)
+  ;;                :post-handlers '(pel-sp-erlang-handler))
+  )
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-smartparens)

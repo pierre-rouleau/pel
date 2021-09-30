@@ -5725,11 +5725,12 @@ the ones defined from the buffer now."
       (define-key smartparens-mode-map (kbd "<M-f7> p")   'sp-previous-sexp)
       (define-key smartparens-mode-map (kbd "<M-f7> T")   'sp-transpose-hybrid-sexp))
     (when (eq major-mode 'erlang-mode)
-      (define-key smartparens-mode-map [remap delete-forward-char] 'sp-delete-char)
-      (define-key smartparens-mode-map [remap backward-delete-char-untabify] 'sp-backward-delete-char)
+      ;; Activate Erlang-specific support
+      (pel-smartparens-setup-erlang)
 
-      (sp-local-pair 'erlang-mode "<<" ">>")
-
+      ;; and Erlang specific key bindings
+      (define-key smartparens-mode-map [remap delete-forward-char] 'pel-sp-delete-char)
+      (define-key smartparens-mode-map [remap backward-delete-char-untabify] 'pel-sp-backward-delete-char)
       (define-key smartparens-mode-map (kbd "<M-f7> n")   'pel-sp-next-sexp)
       (define-key smartparens-mode-map (kbd "<M-f7> p")   'pel-sp-previous-sexp))
 

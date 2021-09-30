@@ -674,9 +674,13 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-smartparens" for:
     pel-sp-next-sexp
     pel-sp-previous-sexp
+    pel-sp-delete-char
+    pel-sp-backward-delete-char
     pel-smartparens-augment
-    pel-smartparens-info
-    pel-sp-show-handler)
+    pel-smartparens-info)
+  (pel-autoload-function "pel-smartparens" for:
+    pel-sp-erlang-handler
+    pel-smartparens-setup-erlang)
 
   (pel-autoload "pel-vcs" for:
     pel-vcs-switch-backend
