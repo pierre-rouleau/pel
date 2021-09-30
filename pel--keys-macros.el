@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-29 14:27:33, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-30 07:44:31, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -72,6 +72,13 @@
 ;; groups. For those define their list first and inject them inside the
 ;; `pel--prefix-to-topic-alist' below.  Specially those that have duplicated
 ;; entries.
+
+(defconst pel--dired-groups '(dired
+                              dired-git-info
+                              dired-hide-dotfiles
+                              ls-lisp
+                              wdired)
+  "List of groups used related to dired.")
 
 (defconst pel--markdown-groups '(markdown
                                  grip
@@ -348,18 +355,9 @@
     ([f11 ?d ?e]     "diff-merge"       pel-pkg-for-diff-merge   ediff)
     ([f11 ?d ?s]     "diff-merge"       pel-pkg-for-diff-merge   smerge)
     ([f11 ?f ?v]     "file-variables"   nil)
-    (,(kbd "<f11> SPC M-D") "mode-dired" pel-pkg-for-dired      (dired
-                                                                 ls-lisp
-                                                                 dired-git-info
-                                                                 dired-hide-dotfiles))
-    ([f11 32 27 ?D]  "mode-dired"       pel-pkg-for-dired       (dired
-                                                                 dired-git-info
-                                                                 dired-hide-dotfiles
-                                                                 ls-lisp))
-    ([dired]         "mode-dired"       pel-pkg-for-dired       (dired
-                                                                 dired-git-info
-                                                                 dired-hide-dotfiles
-                                                                 ls-lisp))
+    (,(kbd "<f11> SPC M-D") "mode-dired" pel-pkg-for-dired      ,pel--dired-groups)
+    ([f11 32 27 ?D]  "mode-dired"       pel-pkg-for-dired       ,pel--dired-groups)
+    ([dired]         "mode-dired"       pel-pkg-for-dired       ,pel--dired-groups)
     ([f11 ?f]        ("file-mngt"
                       "web")            pel-pkg-for-filemng     (files
                       recentf
