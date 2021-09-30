@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, September 20 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-29 22:48:12, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-30 11:30:06, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -34,14 +34,18 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)                    ; use: pel-print-in-buffer,
-;;                                      ;      pel-insert-symbol-content
+(require 'pel--base)                    ; use: `pel-print-in-buffer',
+;;                                      ;      `pel-insert-symbol-content'
+(require 'pel-syntax)                   ; use: `pel-inside-comment-p'
 
+;; Allow this code to compile when smartparens is not available
 (defvar pel--has-smartparens (require 'smartparens nil :noerror)
   "Non-nil when smartparens is available.")
 
 
 (declare-function sp-local-pair                "smartparens")
+(declare-function sp-backward-symbol           "smartparens")
+(declare-function sp-forward-symbol            "smartparens")
 (declare-function sp-next-sexp                 "smartparens")
 (declare-function sp-previous-sexp             "smartparens")
 (declare-function sp-delete-char               "smartparens")
@@ -97,6 +101,37 @@
       (backward-delete-char-untabify 1)
     (sp-backward-delete-char arg)))
 
+;; ---------------------------------------------------------------------------
+;; Better smartparens navigation that skips over comment
+;; -----------------------------------------------------
+
+;;-pel-autoload
+(defun pel-sp-forward-symbol (&optional n)
+  "Execute `sp-forward-symbol' N times, skipping comments."
+  (interactive "^p")
+  (setq n (or n 1))
+  (if (< n 0)
+      (pel-sp-backward-symbol (abs n))
+    (while (> n 0)
+      (while (progn
+               (sp-forward-symbol 1)
+               (and (not (eobp))
+                    (pel-inside-comment-p))))
+      (setq n (1- n)))))
+
+;;-pel-autoload
+(defun pel-sp-backward-symbol (&optional n)
+  "Execute `sp-backward-symbol' N times, skipping comments."
+  (interactive "^p")
+  (setq n (or n 1))
+  (if (< n 0)
+      (pel-sp-forward-symbol (abs n))
+    (while (> n 0)
+      (while (progn
+               (sp-backward-symbol 1)
+               (and (not (bobp))
+                    (pel-inside-comment-p))))
+      (setq n (1- n)))))
 
 ;; ---------------------------------------------------------------------------
 ;;-pel-autoload

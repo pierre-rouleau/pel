@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-29 14:39:30, updated by Pierre Rouleau>
+;; Time-stamp: <2021-09-30 09:43:27, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -59,6 +59,14 @@ Return nil otherwise.  Return nil when point is inside string or comment."
   (let ((syntax (syntax-ppss pos)))
     (unless (pel--inside-string syntax)
       (pel--inside-block syntax))))
+
+(defun pel-inside-comment-p (&optional pos)
+  "Return non-nil if point ins inside a comment, nil otherwise.
+
+When inside comment, return t if inside non-nestable comment,
+otherwise return an integer indicating the current comment nesting."
+  (let ((syntax (syntax-ppss pos)))
+    (nth 4 syntax)))
 
 
 ;; Electric keys helper functions
