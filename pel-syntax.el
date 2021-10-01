@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-01 09:15:26, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-01 09:30:54, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -206,7 +206,7 @@ Returns the number of text modifications performed."
                                               (match-string 2))))
           ;;
           ;; -> remove spaces between word, closing parens or quotes and the
-          ;     following comma
+                                        ;     following comma
           (pel+= changes (pel-replace "\\(\\w\\|\\s)\\|\\\"\\|'\\) +,"
                                       (format "%s," (match-string 1))))
           ;;
@@ -231,6 +231,12 @@ Returns the number of text modifications performed."
           ;;
           ;; -> remove isolated commas not separating anything
           (pel+= changes (pel-replace ", +," ","))
+          ;;
+          ;; -> In erlang buffers move period after closing parens
+          ;;    if it is before
+          (when (eq major-mode 'erlang-mode)
+            (pel+= changes (pel-replace "\\.\\(\\s)\\)"
+                                        (format "%s." (match-string 1)))))
           ;;
           (pel+= total-changes changes)
           ;; (message "%d changes" changes)
