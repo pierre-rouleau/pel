@@ -174,8 +174,12 @@
 ;;  - `pel-multiplier'
 ;;
 ;; Iteration helpers:
-;;  - `pel-dec'
-;;  - `pel-inc'
+;; - `pel-dec'
+;; - `pel-inc'
+;;
+;; Assignment operators:
+;; - `pel+='
+;; - `pel-='
 ;;
 ;; Swap 2 values:
 ;; - `pel-swap'
@@ -247,7 +251,7 @@
 ;;; Dependencies:
 ;; subr (always loaded) ; use: called-interactively-p
 (eval-when-compile
-  (require 'subr-x)    ; use: split-string, string-join, string-trim
+  (require 'subr-x)              ; use: split-string, string-join, string-trim
   (require 'cl-macs))  ; use: cl-eval-when
 
 ;;; --------------------------------------------------------------------------
@@ -2078,6 +2082,22 @@ Return nil if symbol N value is CEILING or larger."
   (let ((oldvalue (eval n)))
     (if (< oldvalue (or ceiling most-positive-fixnum))
         (set n (1+ oldvalue)))))
+
+;; ---------------------------------------------------------------------------
+;; Assignment operators
+;; --------------------
+;;
+;; Just the 2 mostly used ones.  May add the others on need basis.
+
+(defmacro pel+= (var value)
+  "Increment variable VAR by VALUE."
+  `(setq ,var
+         (+ ,var ,value)))
+
+(defmacro pel-= (var value)
+  "Decrement variable VAR by VALUE."
+  `(setq ,var
+         (- ,var ,value)))
 
 ;; ---------------------------------------------------------------------------
 ;; Swap 2 values
