@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, September 20 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-30 11:30:06, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-01 17:11:04, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -47,6 +47,7 @@
 (declare-function sp-backward-symbol           "smartparens")
 (declare-function sp-forward-symbol            "smartparens")
 (declare-function sp-next-sexp                 "smartparens")
+(declare-function sp-add-to-previous-sexp      "smartparens")
 (declare-function sp-previous-sexp             "smartparens")
 (declare-function sp-delete-char               "smartparens")
 (declare-function sp-backward-delete-char      "smartparens")
@@ -132,6 +133,28 @@
                (and (not (bobp))
                     (pel-inside-comment-p))))
       (setq n (1- n)))))
+
+;; ---------------------------------------------------------------------------
+;; Fix for sp-add-to-previous-sexp
+;; -------------------------------
+;;
+;; See reported bug: https://github.com/Fuco1/smartparens/issues/1106
+;;
+;; Some problems are handled by the post-handler executing
+;; `pel-syntax-fix-block-content' but that does not fix everything: when
+;; multiple operations are requested, `sp-add-to-previous-sexp' misbehaves,
+;; but it's OK if its called several time, so that's what this code does.
+
+(defun pel-sp-add-to-previous-sexp (&optional arg)
+  "Execute `sp-add-to-previous-sexp' as many times as required by ARG.
+
+This fixes behaviour of `sp-add-to-previous-sexp' for Erlang at least."
+  (interactive "*P")
+  (let ((n (abs (prefix-numeric-value arg))))
+    (if (eq n 16)
+        (sp-add-to-previous-sexp arg)
+      (dotimes (_i n)
+        (sp-add-to-previous-sexp)))))
 
 ;; ---------------------------------------------------------------------------
 ;;-pel-autoload
@@ -241,12 +264,20 @@ https://github.com/Fuco1/smartparens/wiki/Pair-management" ":")
 ;;
 ;; TODO:
 ;; Once complete the following code will probably be migrated into
-;; smartparens itself.
+;; smartparens itself if there is some movement there.
+
 
 ;;-pel-autoload
 (defun pel-sp-erlang-handler (id action context)
   "Display handler info message for ID, ACTION and CONTEXT."
-  (message "pel-sp-erlang-handler: %S %S %S" id action context))
+  (message "pel-sp-erlang-handler: %S %S %S, point=%s" id action context
+           (point))
+  (when (memq action '(slup-forward
+                       barf-forward
+                       split-sexp))
+    (pel-syntax-fix-block-content (- (point) 2))
+    (forward-char 2)))
+
 
 
 ;;-pel-autoload
@@ -254,13 +285,18 @@ https://github.com/Fuco1/smartparens/wiki/Pair-management" ":")
   "Configure smartparens for Erlang.
 
 This must be called within the scope of a erlang-mode buffer."
-  (sp-local-pair 'erlang-mode "<<" ">>")
-
-  ;; TODO: fix behaviour of smartparens commands that don't work properly for Erlang.
-  ;; (sp-local-pair 'erlang-mode "[" "]"
-  ;;                :actions '(insert wrap autoskip navigate)
-  ;;                :post-handlers '(pel-sp-erlang-handler))
-  )
+  (sp-local-pair 'erlang-mode "(" ")"
+                 :actions '(insert wrap autoskip navigate)
+                 :post-handlers '(pel-sp-erlang-handler))
+  (sp-local-pair 'erlang-mode "[" "]"
+                 :actions '(insert wrap autoskip navigate)
+                 :post-handlers '(pel-sp-erlang-handler))
+  (sp-local-pair 'erlang-mode "{" "}"
+                 :actions '(insert wrap autoskip navigate)
+                 :post-handlers '(pel-sp-erlang-handler))
+  (sp-local-pair 'erlang-mode "<<" ">>"
+                 :actions '(insert wrap autoskip navigate)
+                 :post-handlers '(pel-sp-erlang-handler)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-smartparens)

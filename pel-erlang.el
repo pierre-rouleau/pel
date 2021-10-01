@@ -141,8 +141,10 @@ The following options are observed:
   (pel-erlang-enhance-electric-keys)
   ;;
   ;; Add < > pairing navigation and marking.
-  (modify-syntax-entry ?< "(>" erlang-mode-syntax-table)
-  (modify-syntax-entry ?> ")<" erlang-mode-syntax-table))
+  ;; But that screws up other uses of < and > !!
+  ;; (modify-syntax-entry ?< "(>" erlang-mode-syntax-table)
+  ;; (modify-syntax-entry ?> ")<" erlang-mode-syntax-table)
+  )
 
 ;; ---------------------------------------------------------------------------
 ;; Erlang Shell Control

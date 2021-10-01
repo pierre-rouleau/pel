@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-01 16:12:47, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-01 16:16:23, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -193,7 +193,7 @@ Returns the number of text modifications performed."
         ;; TODO: I'm not sure I need the multi checks loop, for the moment
         ;;       it's there for safety but it might not be needed and will
         ;;       only slow down operation.
-        ;; (message "%d, %d: %s" open-pos close-pos  (nth 2 open.close.text))
+        (message "%d, %d: %s" open-pos close-pos  (nth 2 open.close.text))
         (narrow-to-region open-pos (1+ close-pos))
         (while (> changes 0)
           (setq changes 0)
@@ -239,7 +239,7 @@ Returns the number of text modifications performed."
                                         (format "%s." (match-string 1)))))
           ;;
           (pel+= total-changes changes)
-          ;; (message "%d changes" changes)
+          (message "%d changes" changes)
           )
         total-changes))))
 

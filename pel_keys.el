@@ -5723,7 +5723,10 @@ the ones defined from the buffer now."
       (define-key smartparens-mode-map (kbd "C-M-p")      'sp-previous-sexp)
       (define-key smartparens-mode-map (kbd "<M-f7> n")   'sp-next-sexp)
       (define-key smartparens-mode-map (kbd "<M-f7> p")   'sp-previous-sexp)
-      (define-key smartparens-mode-map (kbd "<M-f7> T")   'sp-transpose-hybrid-sexp))
+      (define-key smartparens-mode-map (kbd "<M-f7> T")   'sp-transpose-hybrid-sexp)
+      (define-key smartparens-mode-map (kbd "<M-f7> }")   'sp-add-to-previous-sexp)
+      (define-key smartparens-mode-map (kbd "<M-f7> M->") 'sp-slurp-hybrid-sexp))
+
     (when (eq major-mode 'erlang-mode)
       ;; Activate Erlang-specific support
       (pel-smartparens-setup-erlang)
@@ -5732,7 +5735,8 @@ the ones defined from the buffer now."
       (define-key smartparens-mode-map [remap delete-forward-char] 'pel-sp-delete-char)
       (define-key smartparens-mode-map [remap backward-delete-char-untabify] 'pel-sp-backward-delete-char)
       (define-key smartparens-mode-map (kbd "<M-f7> n")   'pel-sp-next-sexp)
-      (define-key smartparens-mode-map (kbd "<M-f7> p")   'pel-sp-previous-sexp))
+      (define-key smartparens-mode-map (kbd "<M-f7> p")   'pel-sp-previous-sexp)
+      (define-key smartparens-mode-map (kbd "<M-f7> }")   'pel-sp-add-to-previous-sexp))
 
     (define-key smartparens-mode-map (kbd "<M-f7> M-n")   'sp-narrow-to-sexp)
     (define-key smartparens-mode-map (kbd "<M-f7> f")     'sp-forward-sexp)
@@ -5767,10 +5771,8 @@ the ones defined from the buffer now."
     (define-key smartparens-mode-map (kbd "<M-f7> t")     'sp-transpose-sexp)
     (define-key smartparens-mode-map (kbd "<M-f7> s")     'sp-push-hybrid-sexp)
     (define-key smartparens-mode-map (kbd "<M-f7> >")     'sp-forward-slurp-sexp)
-    (define-key smartparens-mode-map (kbd "<M-f7> M->")   'sp-slurp-hybrid-sexp)
     (define-key smartparens-mode-map (kbd "<M-f7> <")     'sp-backward-slurp-sexp)
-    (define-key smartparens-mode-map (kbd "<M-f7> ]")     'sp-add-to-previous-sexp)
-    (define-key smartparens-mode-map (kbd "<M-f7> [")     'sp-add-to-next-sexp)
+    (define-key smartparens-mode-map (kbd "<M-f7> {")     'sp-add-to-next-sexp)
     (define-key smartparens-mode-map (kbd "<M-f7> /")     'sp-forward-barf-sexp)
     (define-key smartparens-mode-map (kbd "<M-f7> M-/")   'sp-backward-barf-sexp)
     (define-key smartparens-mode-map (kbd "<M-f7> r")     'sp-rewrap-sexp)
