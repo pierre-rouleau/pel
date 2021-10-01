@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-01 18:00:45, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-01 18:35:01, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -76,13 +76,11 @@ Return nil otherwise.  Return nil when point is inside string or comment."
 
 When inside comment, return t if inside non-nestable comment,
 otherwise return an integer indicating the current comment nesting."
-  (let ((syntax (syntax-ppss pos)))
-    (pel--inside-comment syntax)))
+  (pel--inside-comment (syntax-ppss pos)))
 
 (defun pel-inside-string-p (&optional pos)
   "Return non-nil if POS, or point, is inside a string, nil otherwise."
-  (let ((syntax (syntax-ppss pos)))
-    (pel--inside-string syntax)))
+  (pel--inside-string (syntax-ppss pos)))
 
 ;; Utilities
 ;; ---------
@@ -206,7 +204,7 @@ Returns the number of text modifications performed."
                                               (match-string 2))))
           ;;
           ;; -> remove spaces between word, closing parens or quotes and the
-                                        ;     following comma
+          ;;    following comma
           (pel+= changes (pel-replace "\\(\\w\\|\\s)\\|\\\"\\|'\\) +,"
                                       (format "%s," (match-string 1))))
           ;;
