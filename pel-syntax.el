@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-01 09:30:54, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-01 16:12:47, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -214,9 +214,9 @@ Returns the number of text modifications performed."
           (pel+= changes (pel-replace "\\(\\w\\),,+ "
                                       (format "%s, " (match-string 1))))
           ;;
-          ;; -> add a comma after separate words and closing parens if they do
-          ;;    not have one
-          (pel+= changes (pel-replace "\\(\\w\\|\\s)\\) +\\(\\w\\)"
+          ;; -> add a comma after word or closing parens if there is none
+          ;;    before the next word or opening parens
+          (pel+= changes (pel-replace "\\(\\w\\|\\s)\\) +\\(\\w\\|\\s(\\)"
                                       (format "%s, %s"
                                               (match-string 1)
                                               (match-string 2))))
