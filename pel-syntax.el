@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-30 09:43:27, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-01 07:52:43, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -48,12 +48,22 @@
   "Return non-nil if point is inside matching pair block according to SYNTAX."
   `(>= (nth 0 ,syntax) 0))
 
+(defmacro pel--inside-comment (syntax)
+  "Return non-nil if point is inside comment according to SYNTAX."
+  `(nth 4 ,syntax))
+
+(defmacro pel--open-parens-pos (syntax)
+  "Return list of position of open parens according to SYNTAX.
+
+Each integer in the list is the position of the open parens,
+starting with the outermost one.  Return nil if not outside parens."
+  `(nth 9 ,syntax))
 
 ;; Predicates
 ;; ----------
 
 (defun pel-inside-block-p (&optional pos)
-  "Return non-nil if point is between a code matched-pair block of characters.
+  "Return non-nil if POS, or point, is between a code matched-pair block.
 
 Return nil otherwise.  Return nil when point is inside string or comment."
   (let ((syntax (syntax-ppss pos)))
@@ -61,12 +71,42 @@ Return nil otherwise.  Return nil when point is inside string or comment."
       (pel--inside-block syntax))))
 
 (defun pel-inside-comment-p (&optional pos)
-  "Return non-nil if point ins inside a comment, nil otherwise.
+  "Return non-nil if POS, or point, is inside a comment, nil otherwise.
 
 When inside comment, return t if inside non-nestable comment,
 otherwise return an integer indicating the current comment nesting."
   (let ((syntax (syntax-ppss pos)))
-    (nth 4 syntax)))
+    (pel--inside-comment syntax)))
+
+(defun pel-inside-string-p (&optional pos)
+  "Return non-nil if POS, or point, is inside a string, nil otherwise."
+  (let ((syntax (syntax-ppss pos)))
+    (pel--inside-string syntax)))
+
+;; Utilities
+;; ---------
+
+(defun pel-syntax-at (&optional pos)
+  "Return the syntax information for the character at POS or point."
+  (list
+   (char-to-string (char-syntax (char-after (or pos (point)))))
+   (syntax-after (or pos (point)))))
+
+(defun pel-syntax-matching-parens-position (&optional parens-pos)
+  "Return the parens position that match PARENS-POS."
+  (setq parens-pos (or parens-pos (point)))
+  (save-excursion
+    (let ((parens-char (char-after (goto-char parens-pos))))
+      (if (memq parens-char '(?\( ?\[ ?\{ ?<))
+          (progn
+            (forward-sexp)
+            (backward-char))
+        (if (memq parens-char '(?\) ?\] ?\} ?>))
+            (progn
+              (forward-char)
+              (backward-sexp))
+          (error "Invalid sexp character: %S" parens-char)))
+      (point))))
 
 
 ;; Electric keys helper functions
@@ -76,6 +116,137 @@ otherwise return an integer indicating the current comment nesting."
   "Insert a space if point is in between a block pair."
   (when (pel-inside-block-p)
     (insert " ")))
+
+;; Block syntax fixer
+;; ------------------
+;;
+
+(defun pel-syntax-block-text-at (&optional pos)
+  "Return text of block at POS or current point.
+Return a list of (open-position close-position text)."
+  (setq pos (or pos (point)))
+  (let* ((syntax       (syntax-ppss pos))
+         (open-p-pos  (car (pel--open-parens-pos syntax)))
+         (close-p-pos (pel-syntax-matching-parens-position open-p-pos)))
+    (list open-p-pos
+          close-p-pos
+          (buffer-substring-no-properties open-p-pos (+ 1 close-p-pos)))))
+
+(defun pel-syntax-skip-string (&optional pos)
+  "Move point to character just after end of string.
+Start from POS or current point."
+  (goto-char (or pos (point)))
+  (while (and (pel-inside-string-p)
+              (not (eobp)))
+    (forward-char)))
+
+(defun pel---replace-with (from replacer)
+  "Replace text in current buffer.
+FROM is the regex identifying the text to change.
+REPLACER is a closure that identifies the new text, the
+REPLACER has access to the information from a `re-search-forward'
+such as the result of `match-string'.
+
+The function returns the number of replacements done."
+  (let ((found-pos nil)
+        (change-count 0))
+    (while
+        (progn
+          (goto-char (point-min))
+          (setq found-pos (re-search-forward from nil :noerror))
+          ;; if found item is in string, skip the string and search again:
+          ;; do not transform the content of strings.
+          (while (and found-pos
+                      (pel-inside-string-p found-pos))
+            (pel-syntax-skip-string found-pos)
+            (setq found-pos (re-search-forward from nil :noerror)))
+          (when found-pos
+            (replace-match (funcall replacer) :fixedcase :literal)
+            (setq change-count (1+ change-count))
+            t)))
+    change-count))
+
+(defmacro pel-replace (from &rest to)
+  "Replace text in buffer.
+
+FROM must be a regex string.
+TO must be a form that produces a replacement string.
+That form runs in the context of the string replacement code performed
+by the function `re-search-forward'."
+  `(pel---replace-with ,from (lambda () ,@to)))
+
+(defun pel-syntax-fix-block-content (&optional pos)
+  "Comma-separate all expressions inside the block-pair at POS or point.
+
+Does not transform text inside any string located inside the matched-pair
+block, but it may transform other text.
+
+Returns the number of text modifications performed."
+  (save-excursion
+    (save-restriction
+      (let* ((open.close.text (pel-syntax-block-text-at pos))
+             (open-pos  (nth 0 open.close.text))
+             (close-pos (nth 1 open.close.text))
+             (total-changes 0)
+             (changes 1))
+        ;; TODO: I'm not sure I need the multi checks loop, for the moment
+        ;;       it's there for safety but it might not be needed and will
+        ;;       only slow down operation.
+        ;; (message "%d, %d: %s" open-pos close-pos  (nth 2 open.close.text))
+        (narrow-to-region open-pos (1+ close-pos))
+        (while (> changes 0)
+          (setq changes 0)
+          ;;
+          ;; -> ensure one space between comma and next element.
+          ;;    Also eliminate multiple commas between 2 symbols.
+          (setq changes
+                (+ changes (pel-replace "\\(\\w\\),+\\(\\w\\)"
+                                        (format "%s, %s"
+                                                (match-string 1)
+                                                (match-string 2)))))
+          ;;
+          ;; -> remove spaces between word or closing parens & following comma
+          (setq changes
+                (+ changes
+                   (pel-replace "\\(\\w\\|\\s)\\) +,"
+                                (format "%s," (match-string 1)))))
+          ;;
+          ;; -> replace multiple commas by a single one
+          (setq changes
+                (+ changes
+                   (pel-replace "\\(\\w\\),,+ "
+                                (format "%s, " (match-string 1)))))
+          ;;
+          ;; -> add a comma after separate words and closing parens if they do
+          ;;    not have one
+          (setq changes
+                (+ changes
+                   (pel-replace "\\(\\w\\|\\s)\\) +\\(\\w\\)"
+                                (format "%s, %s"
+                                        (match-string 1)
+                                        (match-string 2)))))
+          ;;
+          ;; -> remove trailing commas placed just before the closing parens
+          (setq changes
+                (+ changes
+                   (pel-replace ",\\s-*\\(\\s)\\)"
+                                (match-string 1))))
+          ;;
+          ;; -> replace multiple spaces after a comma by 1 space after comma
+          (setq changes
+                (+ changes
+                   (pel-replace ",  +\\([^ ]\\)"
+                                (format ", %s" (match-string 1)))))
+          ;;
+          ;; -> remove isolated commas not separating anything
+          (setq changes
+                (+ changes
+                   (pel-replace ", +," ",")))
+          ;;
+          (setq total-changes (+ total-changes changes))
+          ;; (message "%d changes" changes)
+          )
+        total-changes))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-syntax)
