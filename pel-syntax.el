@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-01 07:52:43, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-01 08:54:50, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,6 +33,7 @@
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel--base)               ; use: `pel+='
 (require 'syntax)     ; syntax always available, even in emacs -Q
 
 ;;; --------------------------------------------------------------------------
@@ -199,51 +200,38 @@ Returns the number of text modifications performed."
           ;;
           ;; -> ensure one space between comma and next element.
           ;;    Also eliminate multiple commas between 2 symbols.
-          (setq changes
-                (+ changes (pel-replace "\\(\\w\\),+\\(\\w\\)"
-                                        (format "%s, %s"
-                                                (match-string 1)
-                                                (match-string 2)))))
+          (pel+= changes (pel-replace "\\(\\w\\),+\\(\\w\\)"
+                                      (format "%s, %s"
+                                              (match-string 1)
+                                              (match-string 2))))
           ;;
           ;; -> remove spaces between word or closing parens & following comma
-          (setq changes
-                (+ changes
-                   (pel-replace "\\(\\w\\|\\s)\\) +,"
-                                (format "%s," (match-string 1)))))
+          (pel+= changes (pel-replace "\\(\\w\\|\\s)\\) +,"
+                                      (format "%s," (match-string 1))))
           ;;
           ;; -> replace multiple commas by a single one
-          (setq changes
-                (+ changes
-                   (pel-replace "\\(\\w\\),,+ "
-                                (format "%s, " (match-string 1)))))
+          (pel+= changes (pel-replace "\\(\\w\\),,+ "
+                                      (format "%s, " (match-string 1))))
           ;;
           ;; -> add a comma after separate words and closing parens if they do
           ;;    not have one
-          (setq changes
-                (+ changes
-                   (pel-replace "\\(\\w\\|\\s)\\) +\\(\\w\\)"
-                                (format "%s, %s"
-                                        (match-string 1)
-                                        (match-string 2)))))
+          (pel+= changes (pel-replace "\\(\\w\\|\\s)\\) +\\(\\w\\)"
+                                      (format "%s, %s"
+                                              (match-string 1)
+                                              (match-string 2))))
           ;;
           ;; -> remove trailing commas placed just before the closing parens
-          (setq changes
-                (+ changes
-                   (pel-replace ",\\s-*\\(\\s)\\)"
-                                (match-string 1))))
+          (pel+= changes (pel-replace ",\\s-*\\(\\s)\\)"
+                                      (match-string 1)))
           ;;
           ;; -> replace multiple spaces after a comma by 1 space after comma
-          (setq changes
-                (+ changes
-                   (pel-replace ",  +\\([^ ]\\)"
-                                (format ", %s" (match-string 1)))))
+          (pel+= changes (pel-replace ",  +\\([^ ]\\)"
+                                      (format ", %s" (match-string 1))))
           ;;
           ;; -> remove isolated commas not separating anything
-          (setq changes
-                (+ changes
-                   (pel-replace ", +," ",")))
+          (pel+= changes (pel-replace ", +," ","))
           ;;
-          (setq total-changes (+ total-changes changes))
+          (pel+= total-changes changes)
           ;; (message "%d changes" changes)
           )
         total-changes))))
