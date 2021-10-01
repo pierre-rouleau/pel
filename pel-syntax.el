@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-01 08:54:50, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-01 09:15:26, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -205,8 +205,9 @@ Returns the number of text modifications performed."
                                               (match-string 1)
                                               (match-string 2))))
           ;;
-          ;; -> remove spaces between word or closing parens & following comma
-          (pel+= changes (pel-replace "\\(\\w\\|\\s)\\) +,"
+          ;; -> remove spaces between word, closing parens or quotes and the
+          ;     following comma
+          (pel+= changes (pel-replace "\\(\\w\\|\\s)\\|\\\"\\|'\\) +,"
                                       (format "%s," (match-string 1))))
           ;;
           ;; -> replace multiple commas by a single one
