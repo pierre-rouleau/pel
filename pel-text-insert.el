@@ -58,7 +58,7 @@ The character used is identified by CHAR, otherwise '-' is used.
 The string starts with the string specified by:
 - COMMENT-PREFIX, if not nil, or
 - the buffer-local variable `pel-comment-prefix' if not nil, or
-- `comment-start' otherwise.
+- `comment-start otherwise.
 The string ends (if applicable) with the comment character(s).
 The string does not end with a newline."
   (pel-require 'newcomment)
@@ -78,7 +78,7 @@ The string does not end with a newline."
                                cmt-start))
          (len-comment-start (length line-comment-start))
          (len-comment-end (length comment-end))
-         (has-comment-end (> len-comment-end 1))
+         (has-comment-end (>= len-comment-end 1))
          (comment-start-ends-with-space (pel-ends-with-space-p cmt-start))
          (line line-comment-start))
     (unless comment-start-ends-with-space

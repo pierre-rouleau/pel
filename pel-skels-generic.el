@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-24 18:08:32, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-02 19:25:57, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -148,7 +148,7 @@ variable `pel-generic-skel-module-header-block-style'."
                            cb " " mtitle 'n
                            cc " " (make-string (length mtitle) ?-) 'n
                            cc 'n
-                           cc " " 'p 'n (pel-when-text-in ce 'n)
+                           cc " " 'p 'n (pel-when-text-in ce (format "%s\n" ce))
                            'n 'n
                            (pel-skels-generic-separator-line))))
          (pel-append-to sk (list

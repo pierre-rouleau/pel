@@ -1,6 +1,7 @@
 PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changed Since Version 0.4.0:
+** New Features and Improvements:
 - New: key binding to the *pel-help-pdf-select* command used to access PEL
   local or web-based PDF help pages: ``<f11> M-?``.
 - New: The ``C-x g`` key binding for Magit is no longer replaced by PEL's
@@ -76,7 +77,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   Also better described *pel-replace-regexp*.
 - Change: The key prefix for smartparens startup commands changed from
   ``<f11> i (`` to ``<f11> (``.
-
+** Bug Fixes:
+- Fixed generic skeletons for programming languages that use end comment
+  strings such as C, Pascal and several others.  For those the *generic*
+  templates creating comments, such as the header template bound to ``<f6> h``
+  and the command to insert a single commented separating line, bound to
+  ``<f6> l`` were not terminating the comments.  The language specific
+  templates for C, C++ (when using the C-style comment style) were not affected.
 * Version 0.4.0:
 ** New Features and Improvements:
 - New: Simplified installation. PEL now provides the init.el and the early-init.el file
