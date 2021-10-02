@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-01 18:35:01, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-02 15:13:20, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -81,6 +81,22 @@ otherwise return an integer indicating the current comment nesting."
 (defun pel-inside-string-p (&optional pos)
   "Return non-nil if POS, or point, is inside a string, nil otherwise."
   (pel--inside-string (syntax-ppss pos)))
+
+;; Development Tools
+;; -----------------
+
+(defun pel-get-text-property (property &optional pos)
+  "Return specific text PROPERTY of character at POS or point."
+  (get-text-property (or pos (point)) property))
+
+(defun pel-get-syntax-prop (&optional pos)
+  "Return syntax property of character at POS of point."
+  (get-text-property (or pos (point)) 'syntax-table))
+
+(defun pel-get-face (&optional pos)
+  "Return syntax property of character at POS of point."
+  (get-text-property (or pos (point)) 'face))
+
 
 ;; Utilities
 ;; ---------
