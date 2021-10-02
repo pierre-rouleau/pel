@@ -1,6 +1,8 @@
 PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changed Since Version 0.4.0:
+- New: key binding to the *pel-help-pdf-select* command used to access PEL
+  local or web-based PDF help pages: ``<f11> M-?``.
 - New: The ``C-x g`` key binding for Magit is no longer replaced by PEL's
   ``<f11> v g`` key binding for the *magit-status* command: both bindings are
   active when Magit is available.

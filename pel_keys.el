@@ -4482,6 +4482,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 (define-key pel:help "?"  'pel-show-major-mode)
 (define-key pel:help "f"  'which-function-mode)
 (define-key pel:help "p"  'pel-help-pdf-select)
+(define-key pel: (kbd "M-?") 'pel-help-pdf-select) ; faster key for help
+
 (define-key pel:help "P"  'pel-help-pdfs-dir)
 
 (pel-autoload-file pel-help for:
