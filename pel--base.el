@@ -1994,7 +1994,7 @@ The function issue an error if the argument is not a symbol."
       (set symbol (not (eval symbol)))
     (error "Nothing done: pel-toggle expects a symbol as argument")))
 
-(defun pel-toggle-and-show (symbol &optional on-string off-string locally)
+(defun pel-toggle-and-show (symbol &optional on-string off-string locally name)
   "Toggle value of SYMBOL from nil to/from t, and show it's new value.
 If ON-STRING and OFF-STRING arguments are specified use them as the
 on/off value, otherwise use \"on\" and \"off\".
@@ -2002,23 +2002,34 @@ By default the setting is considered global unless LOCALLY is set,
 which indicates that the setting is for the current buffer only.
 For example, to toggle the value of a variable named isok,
 the caller must pass it quoted.
+Use NAME instead symbol name in the message if specified.
 The function issue an error if the argument is not a symbol."
   (pel-toggle symbol)
   (message "%s%s"
-           (pel-symbol-text symbol on-string off-string)
+           (if name
+               (format "%s is now: %s" name
+                       (pel-symbol-on-off-string symbol
+                                                 on-string off-string))
+
+               (pel-symbol-text symbol on-string off-string))
            (if locally " (in current buffer)" "")))
 
-(defun pel-toggle-and-show-user-option (user-option &optional globally on-string off-string)
+(defun pel-toggle-and-show-user-option (user-option
+                                        &optional globally
+                                        on-string off-string name)
   "Toggle the behaviour of USER-OPTION for current buffer or GLOBALLY.
+
 Display the new state.
 If ON-STRING and OFF-STRING arguments are specified use them as the
 on/off value, otherwise use \"on\" and \"off\".
-USER-OPTION must be a variable symbol."
+USER-OPTION must be a variable symbol.
+Note that USER-OPTION is misnamed.  It can be the symbol of any variable.
+Use NAME instead symbol name in the message if specified."
   (unless globally
     (with-current-buffer (current-buffer)
       (unless (local-variable-p user-option)
         (make-local-variable user-option))))
-  (pel-toggle-and-show user-option on-string off-string (not globally)))
+  (pel-toggle-and-show user-option on-string off-string (not globally) name))
 
 (defun pel-val-or-default (val default)
   "Return VAL if not nil otherwise return DEFAULT."
