@@ -623,6 +623,9 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-spell" for:
     pel-spell-show-use)
 
+  (pel-autoload "pel-syntax" for:
+    pel-syntax-at-point)
+
   (pel-autoload "pel-xref" for:
     pel-xref-toggle-dumb-jump-mode
     pel-xref-toggle-gxref

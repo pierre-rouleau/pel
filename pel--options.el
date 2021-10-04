@@ -34,6 +34,7 @@
 ;;
 ;; - pel
 ;;   - pel-base-emacs
+;;   - pel-syntax-tools
 ;;   - pel-fast-startup
 ;;   - pel-package-use
 ;;     - pel-pkg-for-align
@@ -498,6 +499,22 @@ Enter *global* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-base-emacs
   :type '(repeat function))
+
+;; ---------------------------------------------------------------------------
+(defgroup pel-syntax-tools nil
+  "PEL syntax investigation tools."
+  :group 'pel)
+
+(defcustom pel-syntax-text-properties '(category ; used by erlang.el
+                                        syntax-table)
+  "List of text properties used for syntax definitions.
+
+The text properties listed here are included in the message displayed by the
+`pel-syntax-at-point' command.
+
+Use this is a tool to help debug syntax processing of major modes."
+  :group 'pel-syntax-tools
+  :type '(repeat symbol))
 
 ;; ---------------------------------------------------------------------------
 (defgroup pel-fast-startup nil

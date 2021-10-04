@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-04 09:49:44, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-04 18:00:34, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -34,6 +34,7 @@
 ;;
 ;;
 (require 'pel--base)               ; use: `pel+='
+(require 'pel--options)            ; use: `pel-syntax-text-properties'
 (require 'syntax)     ; syntax always available, even in emacs -Q
 
 ;;; --------------------------------------------------------------------------
@@ -255,6 +256,27 @@ Returns the number of text modifications performed."
           ;; (message "%d changes" changes)
           )
         total-changes))))
+
+;; ---------------------------------------------------------------------------
+;; Tools
+;; -----
+
+(defvar-local pel--syntax-text-properties pel-syntax-text-properties
+  "List of syntax text properties that `pel-syntax-check' will list.
+Defaults to the value identified by the `pel-syntax-text-properties'
+user-option.")
+
+
+;;-pel-autoload
+(defun pel-syntax-at-point ()
+  "Display complete information for character at point."
+  (interactive)
+  (what-cursor-position t)
+  (message "\
+property: syntax-table: %S
+property: category:     %s"
+           (get-text-property (point) 'syntax-table)
+           (get-text-property (point) 'category)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-syntax)

@@ -1036,6 +1036,8 @@ Then save your changes."
 ;; - Function Keys - <f11> top-level prefix keys
 
 
+(define-key pel: (kbd      "M-.")          'pel-syntax-at-point)
+
 (defun pel--global-windmove-on (prefix)
   "Bind windmove commands on PREFIX key followed by cursor."
   (global-set-key (kbd (format "%s <up>"        prefix)) 'windmove-up)
