@@ -36,18 +36,22 @@ PEL -- Pragmatic Emacs Library
 - Don't want to spend your time writing Emacs Lisp code? 😳 [#elispfun]_
 - Need to quickly access help now and later on specific topic? `🤔`_
 - Want to learn Emacs and try several built-in and external packages? 😇
-- Want a fast startup even with a large number of external packages installed? 😃
+- Want a fast startup even with a large number of external packages installed?
+  😃 [#quickst]_
 
 PEL might be for you!  Then go ahead, `install it`_ [#install]_
 or `update it`_ [#update]_ !
 
-➣ **Supports Launching Emacs from GUI and Shell**
+➣ Supports Launching Emacs from GUI and Shell
+---------------------------------------------
 
 - PEL supports terminal Emacs launched from a shell and graphics Emacs
   launched from a shell or a GUI program like Windows Explorer, macOS Finder,
   Linux file managers, etc...
 
-➣ **Emacs Fast Startup**
+➣ Emacs Fast Startup
+--------------------
+
 
 - Speed Emacs startup further with PEL `fast startup mode`_ command
   (see also `⅀ Fast Startup PDF`_ [#firefox]_).
@@ -87,7 +91,9 @@ or `update it`_ [#update]_ !
       to create and refresh all the package-quickstart files [#quickst]_ and
       **pel-setup-no-quickstart** (``<f11> M-S M-q``) to disable it.
 
-➣ **Customization Driven Package Management & Configuration**
+➣ Customization Driven Package Management & Configuration
+---------------------------------------------------------
+
 
 - PEL saves your customization data inside a file separate from your
   ``init.el`` file, providing an extra degree of freedom and control.
@@ -119,7 +125,9 @@ or `update it`_ [#update]_ !
     activate dual independent customization.  It will create the required
     customization files.
 
-➣ **Download, Installation and Setup of External Packages**
+➣ Download, Installation and Setup of External Packages
+-------------------------------------------------------
+
 
 - In normal mode, PEL controls the download, installation, configuration and
   activation of **over 230** *top-level* [#externp]_ external packages through the
@@ -147,7 +155,9 @@ or `update it`_ [#update]_ !
   **that mostly do not interfere with the standard Emacs key bindings**
   (except for a very small few documented ones).
 
-➣ **Extends Emacs Documentation**:
+➣ Extends Emacs Documentation
+-----------------------------
+
 
 - PEL provides **over 130** `PDF topic-oriented reference sheets`_ [#doc]_ packed
   with symbol annotated, colour coded key bindings and command descriptions,
@@ -173,7 +183,9 @@ or `update it`_ [#update]_ !
   - `PEL convenience features`_ with PEL commands that extend several aspects
     of Emacs.
 
-➣ **PEL Convenience Commands**
+➣ PEL Convenience Commands
+--------------------------
+
 
 - PEL provides over 440 extra commands.  PEL commands extend the packages
   it supports and provides some of its own features.
@@ -181,7 +193,9 @@ or `update it`_ [#update]_ !
   specific user-options are activated.
 
 
-➣ **Credits**
+➣ Credits
+---------
+
 
 PEL would not exist without the great software available for Emacs.  Some of
 them are listed in the `Credits`_ section of the manual_ but the list is
@@ -189,7 +203,9 @@ unfortunately incomplete as it grows continuously when PEL supports new
 packages.  The external packages are identified in the PDF tables with the box
 symbol: 📦 with hyper-links to the author's project.
 
-➣ **What's New**
+➣ What's New
+------------
+
 
 PEL is still evolving, with new packages being integrated, new documentation
 created and new features developed.  The evolution is described in the `NEWS file`_.
@@ -198,7 +214,9 @@ Questions, comments, constructive criticism, suggestions and requests are always
 Drop me a note in the wiki_ or in the `discussion board`_!
 
 
-*Notes*:
+Notes
+-----
+
 
 .. [#elispfun] Writing Emacs Lisp code is actually quite fun and rewarding.
                Lisp is a powerful programming language and Emacs opens up the door to
