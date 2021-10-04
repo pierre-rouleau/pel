@@ -31,16 +31,17 @@ PEL -- Pragmatic Emacs Library
    :target: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 
 
-- Tired of writing Emacs configuration code? 🤯
+- Tired of writing Emacs configuration code? `🤯`_
 - Afraid of or ever declared `.emacs bankruptcy`_? 😰
 - Don't want to spend your time writing Emacs Lisp code? 😳 [#elispfun]_
 - Need to quickly access help now and later on specific topic? `🤔`_
 - Want to learn Emacs and try several built-in and external packages? 😇
 - Want a fast startup even with a large number of external packages installed?
-  😃 [#quickst]_
+  `😃`_
 
 PEL might be for you!  Then go ahead, `install it`_ [#install]_
 or `update it`_ [#update]_ !
+
 
 ➣ Supports Launching Emacs from GUI and Shell
 ---------------------------------------------
@@ -51,7 +52,6 @@ or `update it`_ [#update]_ !
 
 ➣ Emacs Fast Startup
 --------------------
-
 
 - Speed Emacs startup further with PEL `fast startup mode`_ command
   (see also `⅀ Fast Startup PDF`_ [#firefox]_).
@@ -94,9 +94,33 @@ or `update it`_ [#update]_ !
 ➣ Customization Driven Package Management & Configuration
 ---------------------------------------------------------
 
+- PEL uses Emacs customization facility to control everything: the selection,
+  installation and configuration of packages, the activation of various major
+  and minor modes, the improvement of behaviour of various major and minor
+  modes, the use of various features provided by PEL.
 
 - PEL saves your customization data inside a file separate from your
-  ``init.el`` file, providing an extra degree of freedom and control.
+  ``init.el`` file, providing an extra degree of freedom and control. This
+  also gives you the ability to easily revision and clone your Emacs
+  environment to other computers.
+
+- PEL provides enhanced and easy access to relevant customization buffers for
+  your specific context.  Each supported topic or major mode context has a PEL
+  prefix key and each supported major mode uses the ``<f12>`` key as the main
+  prefix key.  For instance in a C buffer, use ``<f12> <f1>`` to access the
+  C-specific PEL PDF, ``<f12> <f2>`` to access the PEL customization buffer to
+  activate C features, and ``f12> <f3>`` to the customization buffers
+  controlling the major mode and related features.  If they are not loaded PEL
+  will load them for you after prompting.  Even if the code was not written to
+  support auto-loading of customization variables.
+
+- The classical way to control Emacs behaviour has been to write Emacs Lisp
+  code to set variables.  Although you can still do it with PEL you will
+  benefit from PEL's integration better if you control all via the
+  customization buffers and customization files.
+  You can modify the behaviour by applying
+  customization modification to test your changes and then save them to a file
+  once you are happy with it.
 
 - PEL supports the ability to have 2 independent customization files: one for
   Emacs running in terminal mode and another for Emacs running in graphics
@@ -107,7 +131,7 @@ or `update it`_ [#update]_ !
   details.
 
   - A `PEL compatible Emacs init.el`_ is available for you to use right from the
-    beginning.  Instructions are inside.  You can use it as is or modify some
+    beginning.  `Instructions are inside`_.  You can use it as is or modify some
     of the options.
   - For Emacs ≥ 27, PEL also provides a `PEL compatible early-init.el`_.
     Instructions are inside.  PEL will automatically install it if you want to
@@ -320,7 +344,8 @@ Notes
 
 .. links
 
-
+.. _🤯: `➣ Customization Driven Package Management & Configuration`_
+.. _😃: `➣ Emacs Fast Startup`_
 .. _PEL Key Maps PDF:   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-pel-key-maps.pdf
 .. _🤔:
 .. _PEL Index PDF:      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
@@ -374,6 +399,7 @@ Notes
 .. _pel-cleanup command:        doc/pel-manual.rst#pel-cleanup-command
 .. _fast startup mode:          doc/pel-manual.rst#normal-startup-and-fast-startup-modes
 .. _samples of Emacs custom files: sample/emacs-customization
+.. _Instructions are inside:   doc/pel-manual.rst#further-configure-the-init-el-file
 
 ..
    -----------------------------------------------------------------------------
