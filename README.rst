@@ -34,7 +34,7 @@ PEL -- Pragmatic Emacs Library
 - Tired of writing Emacs configuration code? 🤯
 - Afraid of or ever declared `.emacs bankruptcy`_? 😰
 - Don't want to spend your time writing Emacs Lisp code? 😳 [#elispfun]_
-- Need to quickly access help now and later on specific topic? 🤔
+- Need to quickly access help now and later on specific topic? 🤔_
 - Want to learn Emacs and try several built-in and external packages? 😇
 - Want a fast startup even with a large number of external packages installed? 😃
 
@@ -304,6 +304,7 @@ Drop me a note in the wiki_ or in the `discussion board`_!
 
 
 .. _PEL Key Maps PDF:   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-pel-key-maps.pdf
+.. _🤔:
 .. _PEL Index PDF:      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 .. _Emacs easy customization:
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
