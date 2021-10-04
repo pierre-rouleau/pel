@@ -6564,29 +6564,6 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-erlang
   :type '(repeat function))
 
-;; Note: the symbol names used in the following defcustom MUST
-;;       correspond to the ones used by erlang.el.
-;;       See code in pel_keys.el and pel-erlang.el manipulating
-;;       `erlang-electric-commands'.
-(defcustom pel-erlang-electric-keys  '(erlang-electric-comma
-                                       erlang-electric-gt
-                                       erlang-electric-newline
-                                       erlang-electric-semicolon)
-  "List of keys that should have electric behaviour for Erlang buffers.
-
-By default PEL activates the electric behaviour of the 4 characters controlled
-by the erlang.el package:  comma, gt, newline and semicolon.  To disable
-the electric behaviour of a character un-check the corresponding box.
-
-PEL also supports dynamically toggling the electric behaviour of a key with
-the ``<f12> ~`` prefix followed by the specific key."
-  :group 'pel-pkg-for-erlang
-  :type '(set
-          (const :tag "comma    : ,"   erlang-electric-comma)
-          (const :tag "gt       : >"   erlang-electric-gt)
-          (const :tag "newline  : RET" erlang-electric-newline)
-          (const :tag "semicolon: ;"   erlang-electric-semicolon)))
-
 (defcustom pel-erlang-shell-prevent-echo nil
   "Set to t if the `erlang-shell-mode' shell echoes back commands.
 When set to t PEL activates code that prevent echo of the typed commands."
@@ -6839,11 +6816,53 @@ Standards & Guidelines."
                    "https://github.com/inaka/erlang_guidelines#\
 100-column-per-line"))
 
+
+;; Note: the symbol names used in the following defcustom MUST
+;;       correspond to the ones used by erlang.el.
+;;       See code in pel_keys.el and pel-erlang.el manipulating
+;;       `erlang-electric-commands'.
+(defcustom pel-erlang-electric-keys  '(erlang-electric-comma
+                                       erlang-electric-gt
+                                       erlang-electric-newline
+                                       pel-erlang-electric-period
+                                       erlang-electric-semicolon)
+  "List of keys that should have electric behaviour for Erlang buffers.
+
+By default PEL activates the electric behaviour of the 4 characters controlled
+by the erlang.el package:  comma, gt, newline and semicolon.  PEL also
+provides electric behaviour to the period, allowing typing '->' in code with
+
+To disable the electric behaviour of a character un-check the
+corresponding box.
+
+PEL also supports dynamically toggling the electric behaviour of
+a key with the ``<f12> ~`` prefix followed by the specific key.
+
+Additionally PEL activates another electric behaviour to the comma,
+by automatically inserting a space after a colon typed inside blocks.
+This is controlled by `pel-erlang-space-after-comma-in-blocks'."
+  :group 'pel-pkg-for-erlang
+  :group 'pel-erlang-code-style
+  :type '(set
+          (const :tag "comma    : ,"   erlang-electric-comma)
+          (const :tag "gt       : >"   erlang-electric-gt)
+          (const :tag "newline  : RET" erlang-electric-newline)
+          (const :tag "period   : ."   pel-erlang-electric-period)
+          (const :tag "semicolon: ;"   erlang-electric-semicolon)))
+
 (defcustom pel-erlang-space-after-comma-in-blocks nil
   "When set the `erlang-electric-comma' inserts a space after comma in blocks.
 
+The `pel-erlang-electric-keys' must activate the electric comma.
+
 You can also dynamically toggle the electric behaviour of the comma key by
-using the \\[pel-gt-comma] key, mapped to \"<f12> ~ ,\" in Erlang buffers."
+using the \\[pel-gt-comma] key, mapped to \"<f12> ~ ,\" in Erlang buffers.
+
+If you want to keep the electric behaviour of the comma key, but temporary
+want to disable adding spaces after a comma inside the current Erlang buffer,
+use the \"<f12> ~ M,\" to toggle this behaviour off and on.  This affects the
+current Erlang buffer, not the other ones."
+  :group 'pel-pkg-for-erlang
   :group 'pel-erlang-code-style
   :type 'boolean
   :safe #'booleanp)

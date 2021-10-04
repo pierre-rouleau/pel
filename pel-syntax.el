@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-02 15:13:20, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-04 09:49:44, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -47,7 +47,7 @@
 
 (defmacro pel--inside-block (syntax)
   "Return non-nil if point is inside matching pair block according to SYNTAX."
-  `(>= (nth 0 ,syntax) 0))
+  `(> (nth 0 ,syntax) 0))
 
 (defmacro pel--inside-comment (syntax)
   "Return non-nil if point is inside comment according to SYNTAX."
@@ -96,7 +96,6 @@ otherwise return an integer indicating the current comment nesting."
 (defun pel-get-face (&optional pos)
   "Return syntax property of character at POS of point."
   (get-text-property (or pos (point)) 'face))
-
 
 ;; Utilities
 ;; ---------

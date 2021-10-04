@@ -265,6 +265,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-erlang-gt
     pel-erlang-newline
     pel-erlang-semicolon
+    pel-erlang-period
+    pel-erlang-toggle-space-after-comma
     pel-erlang-version
     pel-show-erlang-version
     pel-end-of-previous-clause

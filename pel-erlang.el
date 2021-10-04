@@ -68,52 +68,87 @@
    (cons 'erlang-electric-semicolon  "semicolon"))
   "Maps erlang.el symbol to name of key.")
 
-(defun pel--erlang-toggle-electric-of (key)
+(defun pel--erlang-toggle-electric-of (key globally)
   "Toggle Erlang electric behaviour of KEY."
   (unless (memq key '(erlang-electric-comma
                       erlang-electric-gt
                       erlang-electric-newline
-                      erlang-electric-semicolon))
+                      erlang-electric-semicolon
+                      pel-erlang-electric-period))
     (error "Erlang %S is not supported for electric behaviour" key))
+  (unless globally
+    (with-current-buffer (current-buffer)
+      (unless (local-variable-p 'erlang-electric-commands)
+        (make-local-variable 'erlang-electric-commands))))
   (if (memq key erlang-electric-commands)
       (setq erlang-electric-commands (delete key erlang-electric-commands))
     (setq erlang-electric-commands (cons key erlang-electric-commands)))
-  (message "%s key electric behaviour is now %s"
+  (message "%s key electric behaviour is now %s for the current session %s"
            (cdr (assoc key pel--electric-key-name))
-           (pel-on-off-string (memq key erlang-electric-commands))))
+           (pel-on-off-string (memq key erlang-electric-commands))
+           (if globally
+               "in all Erlang buffers"
+             "for the current buffer")))
 
 ;;-pel-autoload
-(defun pel-erlang-comma ()
-  "Toggle Erlang electric behaviour of the comma key."
-  (interactive)
-  (pel--erlang-toggle-electric-of 'erlang-electric-comma))
+(defun pel-erlang-comma (&optional globally)
+  "Toggle Erlang electric behaviour of the comma key.
+Affects current erlang buffer unless GLOBALLY is set."
+  (interactive "*P")
+  (pel--erlang-toggle-electric-of 'erlang-electric-comma globally))
 
 ;;-pel-autoload
-(defun pel-erlang-gt ()
-  "Toggle Erlang electric behaviour of the gt key."
-  (interactive)
-  (pel--erlang-toggle-electric-of 'erlang-electric-gt))
+(defun pel-erlang-gt (&optional globally)
+  "Toggle Erlang electric behaviour of the gt key.
+Affects current erlang buffer unless GLOBALLY is set."
+  (interactive "*P")
+  (pel--erlang-toggle-electric-of 'erlang-electric-gt globally))
 
 ;;-pel-autoload
-(defun pel-erlang-newline ()
-  "Toggle Erlang electric behaviour of the newline key."
-  (interactive)
-  (pel--erlang-toggle-electric-of 'erlang-electric-newline))
+(defun pel-erlang-newline (&optional globally)
+  "Toggle Erlang electric behaviour of the newline key.
+Affects current erlang buffer unless GLOBALLY is set."
+  (interactive "*P")
+  (pel--erlang-toggle-electric-of 'erlang-electric-newline globally))
 
 ;;-pel-autoload
-(defun pel-erlang-semicolon ()
-  "Toggle Erlang electric behaviour of the semicolon key."
-  (interactive)
-  (pel--erlang-toggle-electric-of 'erlang-electric-semicolon))
+(defun pel-erlang-semicolon (&optional globally)
+  "Toggle Erlang electric behaviour of the semicolon key.
+Affects current erlang buffer unless GLOBALLY is set."
+  (interactive "*P")
+  (pel--erlang-toggle-electric-of 'erlang-electric-semicolon globally))
+
+;;-pel-autoload
+(defun pel-erlang-period (&optional globally)
+  "Toggle Erlang electric behaviour of the semicolon key.
+Affects current erlang buffer unless GLOBALLY is set."
+  (interactive "*P")
+  (pel--erlang-toggle-electric-of 'pel-erlang-electric-period globally))
 
 ;; ------------------------------
 ;; Enhance Electric Key Behaviour
 ;; ------------------------------
 
+(defvar pel--erlang-space-after-comma-in-blocks
+  pel-erlang-space-after-comma-in-blocks
+  "Activates automatic insertion of space after comma.
+Can be toggled by the \\[pel-erlang-toggle-space-after-comma] command.")
+
+;;-pel-autoload
+(defun pel-erlang-toggle-space-after-comma (&optional globally)
+  "Toggle automatic insertion of space after comma.
+Affects current erlang buffer unless GLOBALLY is set."
+  (interactive "*P")
+  (pel-toggle-and-show-user-option 'pel--erlang-space-after-comma-in-blocks
+                                   globally nil nil "Spaces after comma in blocks"))
+
 (defun pel--enhanced-electric-comma (&rest _args)
   "Post handler for electric-comma: insert space inside parens blocks."
-  (when (memq 'erlang-electric-comma erlang-electric-commands)
-    (pel-insert-space-in-enclosing-block)))
+  (when (and (memq 'erlang-electric-comma erlang-electric-commands)
+             pel--erlang-space-after-comma-in-blocks
+             (not current-prefix-arg))
+    (when (pel-inside-block-p)
+      (pel-insert-space-in-enclosing-block))))
 
 (defun pel-erlang-enhance-electric-keys ()
   "Enhance electric behaviour of Erlang electric keys as per PEL options.
@@ -125,12 +160,56 @@ The following options are observed:
     (advice-add 'erlang-electric-comma
                 :after (function pel--enhanced-electric-comma))))
 
+
+;; Period Character Electric behaviour
+;; -----------------------------------
+;;
+;; The erlang.el does not provide any electric behaviour for the period
+;; character.  This code uses it to act as a > character when typed just after
+;; a - but not after $- and not inside a comment or string.  Allowing to type
+;; -> as -. which is easier to type on many keyboards and allows selecting the
+;; non-electric behaviour of the > key indirectly but easily.
+
+(defun pel--after-dash ()
+  "Return the true if point is after a dash and not after $- characters."
+  (and (>= (point) 3)
+       (save-excursion
+         ;; (backward-char 2)
+         (and (eq (char-before (point)) ?-)
+              (not (progn
+                     (backward-char)
+                     (eq (char-before (point)) ?$)))))))
+
+(defun pel-erlang-electric-period (&optional arg)
+  "Insert > after - but not after $- nor in string or comment or with ARG."
+  (interactive "*p")
+  (if (and (memq 'pel-erlang-electric-period erlang-electric-commands)
+           (pel--after-dash)
+           (not (or current-prefix-arg
+                    (pel-inside-comment-p)
+                    (pel-inside-string-p))))
+      (insert ">")
+    (self-insert-command arg)))
+
+
 ;; --------------------------------
 ;; Configure Electric Key Behaviour
 ;; --------------------------------
 
-(defvar erlang-mode-syntax-table)       ; prevent byte-compilation warning
-;;                                      ; This is defined in erlang.el
+;; The following variables are defined inside erlang.el.
+;; They are re-declared here to prevent byte-compiler warnings.
+(defvar erlang-mode-map)
+(defvar erlang-mode-syntax-table)
+(defvar erlang-electric-arrow-criteria)
+
+
+
+(defun erlang-stop-when-arg-used-p ()
+  "Return `stop' when invoking command invoked with arguments, nil otherwise."
+  (if current-prefix-arg
+      'stop
+    t))
+
 
 ;;-pel-autoload
 (defun pel-erlang-setup-electric-key-behaviour ()
@@ -139,12 +218,55 @@ The following options are observed:
   ;; Activate Electric key behaviour selected by PEL user-option
   (setq erlang-electric-commands pel-erlang-electric-keys)
   (pel-erlang-enhance-electric-keys)
+
+  ;; Change behaviour of the > electric behaviour:
+  ;; The erlang.el sets erlang-electric-arrow-criteria to:
+  ;;    '(erlang-stop-when-in-type-spec
+  ;;      erlang-next-lines-empty-p
+  ;;      erlang-at-end-of-function-p)
   ;;
-  ;; Add < > pairing navigation and marking.
-  ;; But that screws up other uses of < and > !!
-  ;; (modify-syntax-entry ?< "(>" erlang-mode-syntax-table)
-  ;; (modify-syntax-entry ?> ")<" erlang-mode-syntax-table)
-  )
+  ;; But this means an empty line activates the  electric behaviour.  This
+  ;; prevents the electric behaviour when the next line has code.
+  ;; It would be better to be able to allow electric behaviour with and
+  ;; without empty following lines while allowing the user to prevent electric
+  ;; behaviour when typing the character.  This is now done setting the
+  ;; erlang-electric-arrow-criteria to this instead:
+  ;;
+  (setq erlang-electric-arrow-criteria '(erlang-stop-when-in-type-spec
+                                         erlang-stop-when-arg-used-p))
+
+  ;; This way just type ``M-1 >`` to insert just one > and prevent electric
+  ;; behaviour.  Using a larger number to insert several > one after another,
+  ;; with another prefix also disable electric behaviour as should be
+  ;; expected.
+  ;;
+  ;; Note that it is also possible to disable electric behaviour of the > key
+  ;; for a longer stretch of time by using ``<f12> ~ >``.
+
+  ;; To ease the typing of '->' with no electric behaviour, give the '.' key
+  ;; electric behaviour to transform '.-' into '->' when appropriate, ie: as
+  ;; long as it's not in string or comment or not following a '$-'.
+  (define-key erlang-mode-map "." 'pel-erlang-electric-period)
+
+  ;; TODO: fix erlang.el code that prevents the following to work.
+  ;;
+  ;; Add << >> pairing navigation and marking, without pairing < > because
+  ;; that would cause problems in comparison operators < and > and with the ->
+  ;; the <- the => and the <= operators.
+  ;;
+  ;; So instead of using the following:
+  ;;     (modify-syntax-entry ?< "(>" erlang-mode-syntax-table)
+  ;;     (modify-syntax-entry ?> ")<" erlang-mode-syntax-table)
+  ;;
+  ;; The code uses the syntax-propertize-function to activate the pairing:
+  (defconst erlang-mode-syntax-propertize-function
+    (syntax-propertize-rules
+     ("\\(<\\)<" (1 "(>"))
+     (">\\(>\\)" (2 ")<")))
+    "Syntax properties to activate << >> pairing.")
+  (setq-local parse-sexp-lookup-properties t)
+  (setq-local syntax-propertize-function
+              erlang-mode-syntax-propertize-function))
 
 ;; ---------------------------------------------------------------------------
 ;; Erlang Shell Control

@@ -62,11 +62,45 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       the current limitations of smartparens pre-handlers and post-handlers.
     - Add automatic pairing of `<< >>` to smartparens-mode used in erlang-mode
       buffers.
-    - When the *pel-erlang-space-after-comma-in-blocks* user-option is turned on,
-      and when the comma electric behaviour is active, a space is
-      automatically inserted after a comma typed inside a "parens" block.
-    - Electric behaviour of newline, >, comma and semicolon can be dynamically
-      toggled by using the ``<f12> ~`` prefix followed by the specific key.
+    - Improved electric key behaviour for Erlang:
+      - Selection of which key gets electric behaviour is controlled by the
+        *pel-erlang-electric-keys* user-option which includes comma, >,
+        newline, period and semicolon by default. The period electric
+        behaviour is a PEL feature.
+      - Electric behaviour of the '>' character is modified.  The erlang-mode
+        prevents its electric behaviour of automatic insertion of a indented
+        newline after insertion of '->' when the next line has code.  PEL
+        removes this restriction and adds the ability to insert '->' without
+        electric behaviour by simply typing '-.' when the electric behaviour
+        of the period is activated in the current erlang buffer.  This allows
+        very effective selection of non-electric or electric behaviour by
+        either typing '-.' or '->' to insert just '->' or '->' followed by
+        indented line. Other mechanism to disable the electric behaviour of
+        the key are provided by PEL:
+        - Type ``M-`` before the key inhibits its electric behaviour of the
+          next typed key.
+        - Toggle electric behaviour of '>'` or '.' in the current erlang
+          buffer or all erlang buffers for the current session of a key as
+          described below.
+      - Electric behaviour of newline, >, comma, period and semicolon can be dynamically
+        toggled by using the ``<M-f12> M-``` prefix followed by the specific
+        key.  That toggles the electric behaviour in the current erlang buffer
+        for the current editing session.
+        To toggle the electric behaviour for all erlang buffers for the current
+        editing session type ``M-- <M-f12> M-`` followed by the key.
+      - When the *pel-erlang-space-after-comma-in-blocks* user-option is turned on,
+        and when the comma electric behaviour is active, a space is
+        automatically inserted after a comma typed inside a "parens" block.
+        - The automatic insertion of space after of comma can be toggled:
+          - just for the current insertion by typing ``M-1 ,``
+          - for the editing session by turning off the automatic insertion of
+            space after a comma in parens:
+            - in the current erlang buffer by typing ``<M-f12> M-` M-,``
+            - for all erlang buffers by typing ``M-- <M-12> M-` M-,``
+          - for the editing session by turning the electric behaviour of the
+            comma key for the current erlang buffer by typing ``<M-f12> M-` ,``,
+            or for all erlang buffers by typing ``M-- <M-f12> M-` ,``.
+
     - Enhance [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf][𝕻𝔩 - Erlang PDF]]:
       - Add description of the electric behaviour of keys in erlang-mode
         buffers.
