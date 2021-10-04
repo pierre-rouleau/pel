@@ -35,7 +35,7 @@ PEL -- Pragmatic Emacs Library
 - Afraid of or ever declared `.emacs bankruptcy`_? 😰
 - Don't want to spend your time writing Emacs Lisp code? 😳 [#elispfun]_
 - Need to quickly access help now and later on specific topic? `🤔`_
-- Want to learn Emacs and try several built-in and external packages? 😇
+- Want to learn Emacs and try several built-in and external packages? `😇``_
 - Want a fast startup even with a large number of external packages installed?
   `😃`_
 
@@ -149,9 +149,36 @@ or `update it`_ [#update]_ !
     activate dual independent customization.  It will create the required
     customization files.
 
-➣ Download, Installation and Setup of External Packages
--------------------------------------------------------
+➣ PEL Package Integration and Enhancements
+------------------------------------------
 
+Emacs gets its power from the large set of built-in and external packages
+available for it.  A large number of external packages are available from
+package repositories like `GNU Elpa`_, MELPA_.  There are also Emacs Lisp
+files available on Github and Gitlab.  PEL provides access to a growing number
+of these packages as described in the next section.
+
+One of PEL's goals is to enhance the cohesion and the integration of these
+packages to provide a more pleasant and customizable user experience.  PEL
+implements various convenience commands, easy-to-remember key bindings and
+glue control code to enhance several minor and major modes, allowing behaviour
+selection through customization and PEL use-option variables.
+
+Some of the improvements created for PEL are fed back to the original project(s)
+but it's available inside PEL if the code has not yet been merged in the
+original project.
+
+PEL also implements various template-driven text insertion for various
+programming and markup languages.
+
+As PEL evolves the goal is to support for programming languages will increase
+and each fully supported programming language will come with a topic-oriented
+help PDF, enhanced electric key behaviours, enhanced navigation integrating
+various packages, etc...
+
+
+➣ Automatic Download, Installation and Setup of External Packages
+-----------------------------------------------------------------
 
 - In normal mode, PEL controls the download, installation, configuration and
   activation of **over 230** *top-level* [#externp]_ external packages through the
@@ -182,7 +209,6 @@ or `update it`_ [#update]_ !
 ➣ Extends Emacs Documentation
 -----------------------------
 
-
 - PEL provides **over 130** `PDF topic-oriented reference sheets`_ [#doc]_ packed
   with symbol annotated, colour coded key bindings and command descriptions,
   with hyperlinks to Emacs manuals, external packages, articles and other
@@ -206,6 +232,8 @@ or `update it`_ [#update]_ !
   - `PEL Key Bindings`_,
   - `PEL convenience features`_ with PEL commands that extend several aspects
     of Emacs.
+
+
 
 ➣ PEL Convenience Commands
 --------------------------
@@ -344,10 +372,11 @@ Notes
 
 .. links
 
+.. _😇: `➣ PEL Package Integration and Enhancements`_
 .. _🤯: `➣ Customization Driven Package Management & Configuration`_
 .. _😃: `➣ Emacs Fast Startup`_
 .. _PEL Key Maps PDF:   https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-pel-key-maps.pdf
-.. _🤔:
+.. _🤔: `➣ Extends Emacs Documentation`_
 .. _PEL Index PDF:      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 .. _Emacs easy customization:
 .. _Emacs customization:       https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization
