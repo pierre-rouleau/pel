@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-04 21:18:38, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-05 11:27:06, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -28,6 +28,37 @@
 ;;  This provides a set of utilities to provide syntax-table based utilities
 ;;  which may be used to enhance features such as electric behaviour of keys.
 
+;; Internal Macros for self documenting code:
+;; - `pel--inside-string'
+;; - `pel--inside-block'
+;; - `pel--inside-comment'
+;; - `pel--open-parens-pos'
+
+;; Predicate utilities:
+;; - `pel-inside-block-p'
+;; - `pel-inside-comment-p'
+;; - `pel-inside-string-p'
+
+;; Development Tools
+;; - `pel-get-text-property'
+;; - `pel-get-syntax-prop'
+;; - `pel-get-face'
+;;
+;; * `pel-syntax-at-point'
+
+;; Syntax Utilities:
+;; - `pel-syntax-at'
+;; - `pel-syntax-matching-parens-position'
+
+;; Electric keys helper:
+;; - `pel-insert-space-in-enclosing-block'
+
+;; Block syntax fixer:
+;; - `pel-syntax-fix-block-content'
+;;   - `pel-syntax-block-text-at'
+;;   - `pel-replace'
+;;     - `pel---replace-with'
+;;       - `pel-syntax-skip-string'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -42,7 +73,10 @@
 ;;; Code:
 ;;
 
-;; Macros to write self-documenting code.
+;; Internal Macros for self documenting code
+;; -----------------------------------------
+;; Not meant to be used outside this file.
+
 (defmacro pel--inside-string (syntax)
   "Return non-nil if point is inside string according to SYNTAX list."
   `(nth 3 ,syntax))
@@ -62,8 +96,8 @@ Each integer in the list is the position of the open parens,
 starting with the outermost one.  Return nil if not outside parens."
   `(nth 9 ,syntax))
 
-;; Predicates
-;; ----------
+;; Predicate utilities
+;; -------------------
 
 (defun pel-inside-block-p (&optional pos)
   "Return non-nil if POS, or point, is between a code matched-pair block.
@@ -99,8 +133,27 @@ otherwise return an integer indicating the current comment nesting."
   "Return syntax property of character at POS of point."
   (get-text-property (or pos (point)) 'face))
 
-;; Utilities
-;; ---------
+;;-pel-autoload
+(defun pel-syntax-at-point ()
+  "Display complete information for character at point.
+If `pel-syntax-text-properties' is nil list all properties,
+otherwise list only the ones specified by it."
+  (interactive)
+  (what-cursor-position t)
+  (if pel-syntax-text-properties
+      (let ((prop-msgs nil))
+        (setq prop-msgs
+              (dolist (prop pel-syntax-text-properties (reverse prop-msgs))
+                (push (format "%-20s: %S"
+                              prop
+                              (get-text-property (point) prop))
+                      prop-msgs)))
+        (message (string-join prop-msgs "\n")))
+    (message "%S" (text-properties-at (point)))))
+
+
+;; Syntax Utilities
+;; ----------------
 
 (defun pel-syntax-at (&optional pos)
   "Return the syntax information for the character at POS or point."
@@ -109,7 +162,11 @@ otherwise return an integer indicating the current comment nesting."
    (syntax-after (or pos (point)))))
 
 (defun pel-syntax-matching-parens-position (&optional parens-pos)
-  "Return the parens position that match PARENS-POS."
+  "Return the parens position that match PARENS-POS.
+
+Caution: this function uses `forward-sexp' and `backward-sexp'
+and therefore assumes that they handle the block pairing of the
+current major mode properly."
   (setq parens-pos (or parens-pos (point)))
   (save-excursion
     (let ((parens-char (char-after (goto-char parens-pos))))
@@ -125,8 +182,8 @@ otherwise return an integer indicating the current comment nesting."
       (point))))
 
 
-;; Electric keys helper functions
-;; ------------------------------
+;; Electric keys helper
+;; --------------------
 
 (defun pel-insert-space-in-enclosing-block ()
   "Insert a space if point is in between a block pair."
@@ -257,28 +314,6 @@ Returns the number of text modifications performed."
           ;; (message "%d changes" changes)
           )
         total-changes))))
-
-;; ---------------------------------------------------------------------------
-;; Tools
-;; -----
-
-;;-pel-autoload
-(defun pel-syntax-at-point ()
-  "Display complete information for character at point.
-If `pel-syntax-text-properties' is nil list all properties,
-otherwise list only the ones specified by it."
-  (interactive)
-  (what-cursor-position t)
-  (if pel-syntax-text-properties
-      (let ((prop-msgs nil))
-        (setq prop-msgs
-              (dolist (prop pel-syntax-text-properties (reverse prop-msgs))
-                (push (format "%-20s: %S"
-                              prop
-                              (get-text-property (point) prop))
-                      prop-msgs)))
-        (message (string-join prop-msgs "\n")))
-    (message "%S" (text-properties-at (point)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-syntax)
