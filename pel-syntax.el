@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-05 11:27:06, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-05 17:50:03, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -29,9 +29,9 @@
 ;;  which may be used to enhance features such as electric behaviour of keys.
 
 ;; Internal Macros for self documenting code:
-;; - `pel--inside-string'
-;; - `pel--inside-block'
-;; - `pel--inside-comment'
+;; - `pel--inside-string-p'
+;; - `pel--inside-block-p'
+;; - `pel--inside-comment-p'
 ;; - `pel--open-parens-pos'
 
 ;; Predicate utilities:
@@ -53,12 +53,17 @@
 ;; Electric keys helper:
 ;; - `pel-insert-space-in-enclosing-block'
 
+;; Syntax skipping utilities
+;; - `pel-syntax-skip-string-forward'
+;; - `pel-syntax-skip-string-backward'
+;; - `pel-syntax-skip-string-and-comment-forward'
+;; - `pel-syntax-skip-string-and-comment-backward'
+
 ;; Block syntax fixer:
 ;; - `pel-syntax-fix-block-content'
 ;;   - `pel-syntax-block-text-at'
 ;;   - `pel-replace'
 ;;     - `pel---replace-with'
-;;       - `pel-syntax-skip-string'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -73,19 +78,21 @@
 ;;; Code:
 ;;
 
-;; Internal Macros for self documenting code
-;; -----------------------------------------
-;; Not meant to be used outside this file.
+;; Macros for self documenting code
+;; --------------------------------
+;;
+;; These macros are useful to reduce the need to call functions that create a
+;; let-bound variable while providing meaningful names.
 
-(defmacro pel--inside-string (syntax)
+(defmacro pel--inside-string-p (syntax)
   "Return non-nil if point is inside string according to SYNTAX list."
   `(nth 3 ,syntax))
 
-(defmacro pel--inside-block (syntax)
+(defmacro pel--inside-block-p (syntax)
   "Return non-nil if point is inside matching pair block according to SYNTAX."
   `(> (nth 0 ,syntax) 0))
 
-(defmacro pel--inside-comment (syntax)
+(defmacro pel--inside-comment-p (syntax)
   "Return non-nil if point is inside comment according to SYNTAX."
   `(nth 4 ,syntax))
 
@@ -104,19 +111,19 @@ starting with the outermost one.  Return nil if not outside parens."
 
 Return nil otherwise.  Return nil when point is inside string or comment."
   (let ((syntax (syntax-ppss pos)))
-    (unless (pel--inside-string syntax)
-      (pel--inside-block syntax))))
+    (unless (pel--inside-string-p syntax)
+      (pel--inside-block-p syntax))))
 
 (defun pel-inside-comment-p (&optional pos)
   "Return non-nil if POS, or point, is inside a comment, nil otherwise.
 
 When inside comment, return t if inside non-nestable comment,
 otherwise return an integer indicating the current comment nesting."
-  (pel--inside-comment (syntax-ppss pos)))
+  (pel--inside-comment-p (syntax-ppss pos)))
 
 (defun pel-inside-string-p (&optional pos)
   "Return non-nil if POS, or point, is inside a string, nil otherwise."
-  (pel--inside-string (syntax-ppss pos)))
+  (pel--inside-string-p (syntax-ppss pos)))
 
 ;; Development Tools
 ;; -----------------
@@ -190,6 +197,69 @@ current major mode properly."
   (when (pel-inside-block-p)
     (insert " ")))
 
+
+;; Syntax skipping utilities
+;; -------------------------
+
+(defun pel-syntax-skip-string-forward (&optional pos syntax)
+  "Move point to character just after end of string.
+Start from POS or current point.
+The SYNTAX argument may be specified to re-use a caller syntax object,
+reducing the need to create a new one."
+  (setq pos (or pos (point)))
+  (goto-char pos)
+  (setq syntax (or syntax (syntax-ppss pos)))
+  (while (and (pel--inside-string-p syntax)
+              (not (eobp)))
+    (forward-char)
+    (setq pos (1+ pos))
+    (setq syntax (syntax-ppss pos))))
+
+(defun pel-syntax-skip-string-backward (&optional pos syntax)
+  "Move point to character just before beginning of string.
+Start from POS or current point.
+The SYNTAX argument may be specified to re-use a caller syntax object,
+reducing the need to create a new one."
+  (setq pos (or pos (point)))
+  (goto-char pos)
+  (setq syntax (or syntax (syntax-ppss pos)))
+  (while (and (pel--inside-string-p syntax)
+              (not (bobp)))
+    (backward-char)
+    (setq pos (1- pos))
+    (setq syntax (syntax-ppss pos))))
+
+(defun pel-syntax-skip-string-and-comment-forward (&optional pos syntax)
+  "Move point to character just after end of string or comment.
+Start from POS or current point.
+The SYNTAX argument may be specified to re-use a caller syntax object,
+reducing the need to create a new one."
+  (setq pos (or pos (point)))
+  (goto-char pos)
+  (setq syntax (or syntax (syntax-ppss pos)))
+  (while (and (or (pel--inside-string-p syntax)
+                  (pel--inside-comment-p syntax))
+              (not (eobp)))
+    (forward-char)
+    (setq pos (1+ pos))
+    (setq syntax (syntax-ppss pos))))
+
+(defun pel-syntax-skip-string-and-comment-backward (&optional pos syntax)
+  "Move point to character just before beginning of string or comment.
+Start from POS or current point.
+The SYNTAX argument may be specified to re-use a caller syntax object,
+reducing the need to create a new one."
+  (setq pos (or pos (point)))
+  (goto-char pos)
+  (setq syntax (or syntax (syntax-ppss pos)))
+  (while (and (or (pel--inside-string-p syntax)
+                  (pel--inside-comment-p syntax))
+              (not (bobp)))
+    (backward-char)
+    (setq pos (1- pos))
+    (setq syntax (syntax-ppss pos))))
+
+
 ;; Block syntax fixer
 ;; ------------------
 ;;
@@ -205,14 +275,6 @@ Return a list of (open-position close-position text)."
           close-p-pos
           (buffer-substring-no-properties open-p-pos (+ 1 close-p-pos)))))
 
-(defun pel-syntax-skip-string (&optional pos)
-  "Move point to character just after end of string.
-Start from POS or current point."
-  (goto-char (or pos (point)))
-  (while (and (pel-inside-string-p)
-              (not (eobp)))
-    (forward-char)))
-
 (defun pel---replace-with (from replacer)
   "Replace text in current buffer.
 FROM is the regex identifying the text to change.
@@ -222,7 +284,8 @@ such as the result of `match-string'.
 
 The function returns the number of replacements done."
   (let ((found-pos nil)
-        (change-count 0))
+        (change-count 0)
+        (syntax nil))
     (while
         (progn
           (goto-char (point-min))
@@ -230,8 +293,11 @@ The function returns the number of replacements done."
           ;; if found item is in string, skip the string and search again:
           ;; do not transform the content of strings.
           (while (and found-pos
-                      (pel-inside-string-p found-pos))
-            (pel-syntax-skip-string found-pos)
+                      (progn
+                        (setq syntax (syntax-ppss found-pos))
+                        (or (pel--inside-string-p syntax)
+                            (pel--inside-comment-p syntax))))
+            (pel-syntax-skip-string-and-comment-forward found-pos syntax)
             (setq found-pos (re-search-forward from nil :noerror)))
           (when found-pos
             (replace-match (funcall replacer) :fixedcase :literal)
