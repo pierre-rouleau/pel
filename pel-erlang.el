@@ -319,7 +319,7 @@ The following options are observed:
   ;; (defconst erlang-mode-syntax-propertize-function
   ;;   (syntax-propertize-rules
   ;;    ("\\(<\\)<" (1 "(>"))
-  ;;    (">\\(>\\)" (2 ")<")))
+  ;;    (">\\(>\\)" (1 ")<")))
   ;;   "Syntax properties to activate << >> pairing.")
   ;; (setq-local parse-sexp-lookup-properties t)
   ;; (setq-local syntax-propertize-function
@@ -406,6 +406,98 @@ Skip over all compiler directives.
 Stop at end of buffer."
   (interactive "^p")
   (pel--moveto-function t (or n 1)))
+
+
+(defun pel-erlang-before-binary (&optional pos)
+  "Return non-nil if POS or point is just before \"<<\", nil otherwise."
+  (setq pos (or pos (point)))
+  (and (eq (char-after (point)) ?<)
+       (save-excursion
+         (forward-char)
+         (eq (char-after (point)) ?<))))
+
+(defun pel-erlang-after-binary (&optional pos)
+  "Return non-nil if POS or point is just before \"<<\", nil otherwise."
+  (setq pos (or pos (point)))
+  (save-excursion
+    (backward-char)
+    (and (eq (char-after (point)) ?>)
+         (progn
+          (backward-char)
+          (eq (char-after (point)) ?>)))))
+
+
+(defun pel-erlang-forward-binary (&optional pos)
+  "Move forward to match closing >> binary block."
+  (setq pos (or pos (point)))
+  (if (pel-erlang-before-binary pos)
+      (let ((nesting-level 0)
+            (found-pos nil)
+            (syntax nil)
+            (saved-match-data nil))
+        (while
+            (progn
+              (setq found-pos
+                    (re-search-forward "\\(<<\\)\\|\\(>>\\)" nil :noerror))
+              (setq saved-match-data (match-data))
+              ;; if found something in a string or comment, skip past it
+              (when (and found-pos
+                         (progn
+                           (setq syntax (syntax-ppss found-pos))
+                           (or (pel--inside-string-p syntax)
+                               (pel--inside-comment-p syntax))))
+                (pel-syntax-skip-string-and-comment-forward found-pos syntax)
+                (setq found-pos
+                      (re-search-forward "\\(<<\\)\\|\\(>>\\)" nil :noerror))
+                (setq saved-match-data (match-data)))
+              ;; now over comment or string. Search match data is in saved-match-data
+              (when found-pos
+                (cond
+                 ((nth 3 saved-match-data) ; found <<
+                  (setq nesting-level (1+ nesting-level)))
+                 ((nth 5 saved-match-data) ; found >>
+                  (setq nesting-level (1- nesting-level)))
+                 (t
+                  (error "logic error"))))
+              (and found-pos
+                   (/= nesting-level 0)))))
+    (user-error "Point not located before <<")))
+
+(defun pel-erlang-backward-binary (&optional pos)
+  "Move to match backward to opening << binary block."
+  (setq pos (or pos (point)))
+  (if (pel-erlang-after-binary pos)
+      (let ((nesting-level 0)
+            (found-pos nil)
+            (syntax nil)
+            (saved-match-data nil))
+        (while
+            (progn
+              (setq found-pos
+                    (re-search-backward "\\(<<\\)\\|\\(>>\\)" nil :noerror))
+              (setq saved-match-data (match-data))
+              ;; if found something in a string or comment, skip past it
+              (when (and found-pos
+                         (progn
+                           (setq syntax (syntax-ppss found-pos))
+                           (or (pel--inside-string-p syntax)
+                               (pel--inside-comment-p syntax))))
+                (pel-syntax-skip-string-and-comment-backward found-pos syntax)
+                (setq found-pos
+                      (re-search-backward "\\(<<\\)\\|\\(>>\\)" nil :noerror))
+                (setq saved-match-data (match-data)))
+              ;; now over comment or string. Search match data is in saved-match-data
+              (when found-pos
+                (cond
+                 ((nth 3 saved-match-data) ; found <<
+                  (setq nesting-level (1- nesting-level)))
+                 ((nth 5 saved-match-data) ; found >>
+                  (setq nesting-level (1+ nesting-level)))
+                 (t
+                  (error "logic error"))))
+              (and found-pos
+                   (/= nesting-level 0)))))
+    (user-error "Point not located after >>")))
 
 ;; -----------------------------------------------------------------------------
 ;; Detecting Erlang Versions and Controlling Erlang Man Pages to Use
