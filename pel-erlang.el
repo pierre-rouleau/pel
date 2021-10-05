@@ -23,8 +23,63 @@
 ;; -----------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;;  The content of this file provides code that help using and programming with
-;;  Erlang.
+;;  This file file provides code that help using and programming with Erlang.
+;;  It enhances what is already available in the erlang.el file which provides
+;;  the `erlang-mode'.  The features provided by the file are listed below.
+;;  The functions identified with a '*' are commands.
+
+;; Toggle electric behaviour of keys:
+;; * `pel-erlang-period'
+;; * `pel-erlang-semicolon'
+;; * `pel-erlang-newline'
+;; * `pel-erlang-gt'
+;; * `pel-erlang-comma'
+;;   - `pel--erlang-toggle-electric-of'
+
+;; Space after Comma electric behaviour:
+;; - `pel-erlang-enhance-electric-keys'
+;;   - `pel--enhanced-electric-comma'
+;; * `pel-erlang-toggle-space-after-comma'
+
+;; Period electric behaviour:
+;; * `pel-erlang-electric-period'
+;;   - `pel--after-dash'
+
+;; Modify erlang.el electric key behaviour:
+;; - `pel-erlang-setup-electric-key-behaviour'
+;;   - `pel-erlang-stop-when-arg-used-p'
+
+;; Erlang Shell Control:
+;; - `pel-erlang-shell-mode-init'
+
+;; Navigation in Erlang source code:
+;; * `pel-end-of-previous-clause'
+;; * `pel-beginning-of-next-clause'
+;;
+;; * `pel-next-erl-function'
+;; * `pel-previous-erl-function'
+;;   - `pel--moveto-function'
+
+;; Erlang Version and Man Page access management:
+;; - `pel-read-available-erlang-man-versions'
+;;
+;; - `pel-erlang-set-dirpath'
+;;
+;; - `pel-erlang-exec-path'
+;; - `pel-erlang-man-parent-rootdir'
+;;   - `pel--erlang-dirpath'
+
+;; Read/Show Erlang Version:
+;; * `pel-show-erlang-version'
+;;   - `pel-erlang-ls-version'
+;;   - `pel-erlang-version'
+
+;; Erlang Syntax Checking Control:
+;; - `pel-erlang-toggle-syntax-checker'
+
+;; Insertion of Erlang Comments:
+;; * `pel-erlang-comment-dwim'
+;;   - `pel--erlang-line-3%-comment-p'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -42,9 +97,10 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
-;; ---------------------------------------------------------------------------
-;; Manage Electric Key
-;; -------------------
+
+;; ---------------------------------
+;; Electric Key Behaviour Management
+;; ---------------------------------
 
 ;; Toggle electric behaviour of keys.
 ;;
@@ -160,7 +216,7 @@ The following options are observed:
     (advice-add 'erlang-electric-comma
                 :after (function pel--enhanced-electric-comma))))
 
-
+;; -----------------------------------
 ;; Period Character Electric behaviour
 ;; -----------------------------------
 ;;
@@ -191,10 +247,9 @@ The following options are observed:
       (insert ">")
     (self-insert-command arg)))
 
-
-;; --------------------------------
-;; Configure Electric Key Behaviour
-;; --------------------------------
+;; ---------------------------------------
+;; Modify erlang.el electric key behaviour
+;; ---------------------------------------
 
 ;; The following variables are defined inside erlang.el.
 ;; They are re-declared here to prevent byte-compiler warnings.
@@ -202,14 +257,11 @@ The following options are observed:
 (defvar erlang-mode-syntax-table)
 (defvar erlang-electric-arrow-criteria)
 
-
-
 (defun pel-erlang-stop-when-arg-used-p ()
   "Return `stop' when invoking command invoked with arguments, nil otherwise."
   (if current-prefix-arg
       'stop
     t))
-
 
 ;;-pel-autoload
 (defun pel-erlang-setup-electric-key-behaviour ()
@@ -277,6 +329,7 @@ The following options are observed:
 
 ;; ---------------------------------------------------------------------------
 ;; Erlang Shell Control
+;; --------------------
 
 ;;-pel-autoload
 (defun pel-erlang-shell-mode-init ()
@@ -286,6 +339,7 @@ The following options are observed:
 
 ;; ---------------------------------------------------------------------------
 ;; Navigation in Erlang source code
+;; --------------------------------
 
 ;;-pel-autoload
 (defun pel-end-of-previous-clause ()
@@ -522,8 +576,8 @@ user option."
         (funcall action erl-dirpath)))))
 
 ;; ---------------------------------------------------------------------------
-;; Read Erlang Version
-;; -------------------
+;; Read/Show Erlang Version
+;; ------------------------
 
 ;;-pel-autoload
 (defun pel-erlang-version ()
@@ -593,7 +647,6 @@ pel-erlang-man-parent-rootdir: %s"
 
 ;; ---------------------------------------------------------------------------
 
-
 ;; (defun pel-erlang-organize-fs ()
 ;;   "Organize the file system for Erlang.
 ;; Set it up to support both erlang.el and EDTS.
@@ -605,9 +658,9 @@ pel-erlang-man-parent-rootdir: %s"
 ;;     ;;
 ;;     (setq edts-man-download "https://erlang.org/download"))) ; use secure HTTP
 
-
-
 ;; ---------------------------------------------------------------------------
+;; Erlang Syntax Checking Control
+;; ------------------------------
 
 ;;-pel-autoload
 (defun pel-erlang-toggle-syntax-checker ()
@@ -618,10 +671,9 @@ or flymake, as selected by the user-option variable
   (interactive)
   (pel-toggle-syntax-check-mode 'pel-use-erlang-syntax-check))
 
-
 ;; ---------------------------------------------------------------------------
-;; Erlang Comments
-;; ---------------
+;; Insertion of Erlang Comments
+;; ----------------------------
 
 (defun pel--erlang-line-3%-comment-p ()
   "Return t if the %%% style comment should be used at point, nil otherwise."
@@ -640,14 +692,15 @@ or flymake, as selected by the user-option variable
 ;;-pel-autoload
 (defun pel-erlang-comment-dwim (&optional arg)
   "Insert comment like `comment-dwim' with ability to extend \"%%%\" comments.
-The \"%%%\" comment style is only placed at the beginning of a line,
-when the line is the first line of a buffer or a line that follows a line that
-starts with a \"%%%\" style comment.
-When commenting a region, if the region starts just below a line with \"%%%\"
-comment the new comment uses \"%%%\" comment as well.
 
-In all other cases the %% style comment is used at the beginning of a line
-and a single % is used after the beginning of a line."
+The \"%%%\" comment style is only placed at the beginning of a
+line, when the line is the first line of a buffer or a line that
+follows a line that starts with a \"%%%\" style comment.  When
+commenting a region, if the region starts just below a line with
+\"%%%\" comment the new comment uses \"%%%\" comment as well.
+
+In all other cases the %% style comment is used at the beginning
+of a line and a single % is used after the beginning of a line."
   ;; Erlang comments at beginning of line might use 2 or 3 percent characters.
   ;; Check the style used on the preceding line and if it is using 3 percent
   ;; characters, force the comment-add to 2 to ensure that we use "%%% " for
