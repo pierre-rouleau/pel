@@ -204,7 +204,7 @@ The following options are observed:
 
 
 
-(defun erlang-stop-when-arg-used-p ()
+(defun pel-erlang-stop-when-arg-used-p ()
   "Return `stop' when invoking command invoked with arguments, nil otherwise."
   (if current-prefix-arg
       'stop
@@ -233,7 +233,7 @@ The following options are observed:
   ;; erlang-electric-arrow-criteria to this instead:
   ;;
   (setq erlang-electric-arrow-criteria '(erlang-stop-when-in-type-spec
-                                         erlang-stop-when-arg-used-p))
+                                         pel-erlang-stop-when-arg-used-p))
 
   ;; This way just type ``M-1 >`` to insert just one > and prevent electric
   ;; behaviour.  Using a larger number to insert several > one after another,
@@ -241,7 +241,7 @@ The following options are observed:
   ;; expected.
   ;;
   ;; Note that it is also possible to disable electric behaviour of the > key
-  ;; for a longer stretch of time by using ``<f12> ~ >``.
+  ;; for a longer stretch of time by using ``<f12> M-` >``.
 
   ;; To ease the typing of '->' with no electric behaviour, give the '.' key
   ;; electric behaviour to transform '.-' into '->' when appropriate, ie: as
@@ -249,6 +249,9 @@ The following options are observed:
   (define-key erlang-mode-map "." 'pel-erlang-electric-period)
 
   ;; TODO: fix erlang.el code that prevents the following to work.
+  ;;       I have tried to get the syntax-propertize-function to help
+  ;;       but I can't get it to work.  I don't understand this mechanism yet.
+
   ;;
   ;; Add << >> pairing navigation and marking, without pairing < > because
   ;; that would cause problems in comparison operators < and > and with the ->
@@ -258,15 +261,19 @@ The following options are observed:
   ;;     (modify-syntax-entry ?< "(>" erlang-mode-syntax-table)
   ;;     (modify-syntax-entry ?> ")<" erlang-mode-syntax-table)
   ;;
-  ;; The code uses the syntax-propertize-function to activate the pairing:
-  (defconst erlang-mode-syntax-propertize-function
-    (syntax-propertize-rules
-     ("\\(<\\)<" (1 "(>"))
-     (">\\(>\\)" (2 ")<")))
-    "Syntax properties to activate << >> pairing.")
-  (setq-local parse-sexp-lookup-properties t)
-  (setq-local syntax-propertize-function
-              erlang-mode-syntax-propertize-function))
+  ;; The code could perhaps use the syntax-propertize-function to activate the
+  ;; pairing:
+
+  ;; (defconst erlang-mode-syntax-propertize-function
+  ;;   (syntax-propertize-rules
+  ;;    ("\\(<\\)<" (1 "(>"))
+  ;;    (">\\(>\\)" (2 ")<")))
+  ;;   "Syntax properties to activate << >> pairing.")
+  ;; (setq-local parse-sexp-lookup-properties t)
+  ;; (setq-local syntax-propertize-function
+  ;;             erlang-mode-syntax-propertize-function)
+
+  )
 
 ;; ---------------------------------------------------------------------------
 ;; Erlang Shell Control
