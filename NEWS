@@ -1125,8 +1125,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       toggle of the easy-escape minor mode.
     - The command is described in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀ Search/Replace PDF]].
 - Update: *Text Insertion*:
-  - New: Add ability to insert Greek letters with the ``<f9>`` key prefix when the
-    *pel-activate-f9-for-greek* user-option is turned on (set to t).
+  - New: Add ability to insert Greek letters:
+    -  If the *pel-activate-f9-for-greek* user-option is turned on (set to t),
+       then typing ``<f9>`` followed by a letter inserts the corresponding Greek letter.
+    - The same is always available with the ``<f6> g`` key prefix.
+    - To see the latin to greek equivalent type the key prefix and wait for *which-key*
+      to show the available bindings, or type the key prefix followed by ``C-h``.
+  - New: add more PEL insertion commands under the ``<f6>`` key prefix for convenience.
   - New: Add support for *smartparens* external package when the
     *pel-use-smartparens* user-option is turned on (set to *t*).
   - Modified: key binding to *pel-toggle-update-copyright-on-save* from

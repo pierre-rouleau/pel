@@ -234,59 +234,77 @@ Done in this function to allow advising libraries that remap these keys."
 (global-set-key (kbd "M-L") 'pel-insert-line-above)
 
 ;; ---------------------------------------------------------------------------
-;; Optional <f9> key for Greek Letter
-;; ----------------------------------
+;; Binding for Greek Letter
+;; ------------------------
+
+(defconst pel-latin-to-greek
+  '(
+    ("a" . "α")
+    ("b" . "β")
+    ("c" . "χ")
+    ("d" . "δ")
+    ("e" . "ε")
+    ("f" . "ϕ")
+    ("g" . "γ")
+    ("h" . "η")
+    ("i" . "ι")
+    ("j" . "φ")
+    ("k" . "κ")
+    ("l" . "λ")
+    ("m" . "μ")
+    ("n" . "ν")
+    ("o" . "ο")
+    ("p" . "π")
+    ("q" . "θ")
+    ("r" . "ρ")
+    ("s" . "σ")
+    ("t" . "τ")
+    ("u" . "υ")
+    ("w" . "ω")
+    ("x" . "ξ")
+    ("y" . "ψ")
+    ("z" . "ζ")
+    ("A" . "Α")
+    ("B" . "Β")
+    ("C" . "Χ")
+    ("D" . "Δ")
+    ("E" . "Ε")
+    ("F" . "Φ")
+    ("G" . "Γ")
+    ("H" . "Η")
+    ("I" . "Ι")
+    ("J" . "Φ")
+    ("K" . "Κ")
+    ("L" . "Λ")
+    ("M" . "Μ")
+    ("N" . "Ν")
+    ("O" . "Ο")
+    ("P" . "Π")
+    ("Q" . "Θ")
+    ("R" . "Ρ")
+    ("S" . "Σ")
+    ("T" . "Τ")
+    ("U" . "Υ")
+    ("W" . "Ω")
+    ("X" . "Ξ")
+    ("Y" . "Ψ")
+    ("Z" . "Ζ"))
+  "Maps latin ASCII letter to the Greek equivalent")
+
+(defun pel-bind-greek-to (prefix)
+  "Add bindings for Greek letters under specified PREFIX."
+  (dolist (latin.greek pel-latin-to-greek)
+    (define-key
+      key-translation-map
+      (kbd
+       (format "%s %s"
+               prefix (car latin.greek)))
+      (cdr latin.greek))))
+
+(pel-bind-greek-to "<f6> g")
 (when pel-activate-f9-for-greek
-  (define-key key-translation-map (kbd "<f9> a") "α")
-  (define-key key-translation-map (kbd "<f9> b") "β")
-  (define-key key-translation-map (kbd "<f9> c") "χ")
-  (define-key key-translation-map (kbd "<f9> d") "δ")
-  (define-key key-translation-map (kbd "<f9> e") "ε")
-  (define-key key-translation-map (kbd "<f9> f") "ϕ")
-  (define-key key-translation-map (kbd "<f9> g") "γ")
-  (define-key key-translation-map (kbd "<f9> h") "η")
-  (define-key key-translation-map (kbd "<f9> i") "ι")
-  (define-key key-translation-map (kbd "<f9> j") "φ")
-  (define-key key-translation-map (kbd "<f9> k") "κ")
-  (define-key key-translation-map (kbd "<f9> l") "λ")
-  (define-key key-translation-map (kbd "<f9> m") "μ")
-  (define-key key-translation-map (kbd "<f9> n") "ν")
-  (define-key key-translation-map (kbd "<f9> o") "ο")
-  (define-key key-translation-map (kbd "<f9> p") "π")
-  (define-key key-translation-map (kbd "<f9> q") "θ")
-  (define-key key-translation-map (kbd "<f9> r") "ρ")
-  (define-key key-translation-map (kbd "<f9> s") "σ")
-  (define-key key-translation-map (kbd "<f9> t") "τ")
-  (define-key key-translation-map (kbd "<f9> u") "υ")
-  (define-key key-translation-map (kbd "<f9> w") "ω")
-  (define-key key-translation-map (kbd "<f9> x") "ξ")
-  (define-key key-translation-map (kbd "<f9> y") "ψ")
-  (define-key key-translation-map (kbd "<f9> z") "ζ")
-  (define-key key-translation-map (kbd "<f9> A") "Α")
-  (define-key key-translation-map (kbd "<f9> B") "Β")
-  (define-key key-translation-map (kbd "<f9> C") "Χ")
-  (define-key key-translation-map (kbd "<f9> D") "Δ")
-  (define-key key-translation-map (kbd "<f9> E") "Ε")
-  (define-key key-translation-map (kbd "<f9> F") "Φ")
-  (define-key key-translation-map (kbd "<f9> G") "Γ")
-  (define-key key-translation-map (kbd "<f9> H") "Η")
-  (define-key key-translation-map (kbd "<f9> I") "Ι")
-  (define-key key-translation-map (kbd "<f9> J") "Φ")
-  (define-key key-translation-map (kbd "<f9> K") "Κ")
-  (define-key key-translation-map (kbd "<f9> L") "Λ")
-  (define-key key-translation-map (kbd "<f9> M") "Μ")
-  (define-key key-translation-map (kbd "<f9> N") "Ν")
-  (define-key key-translation-map (kbd "<f9> O") "Ο")
-  (define-key key-translation-map (kbd "<f9> P") "Π")
-  (define-key key-translation-map (kbd "<f9> Q") "Θ")
-  (define-key key-translation-map (kbd "<f9> R") "Ρ")
-  (define-key key-translation-map (kbd "<f9> S") "Σ")
-  (define-key key-translation-map (kbd "<f9> T") "Τ")
-  (define-key key-translation-map (kbd "<f9> U") "Υ")
-  (define-key key-translation-map (kbd "<f9> W") "Ω")
-  (define-key key-translation-map (kbd "<f9> X") "Ξ")
-  (define-key key-translation-map (kbd "<f9> Y") "Ψ")
-  (define-key key-translation-map (kbd "<f9> Z") "Ζ"))
+  (pel-bind-greek-to "<f9>"))
+
 
 ;; ---------------------------------------------------------------------------
 ;; - Font Control
@@ -1002,8 +1020,12 @@ Then save your changes."
 ;;  <f12>
 
 (define-pel-global-prefix pel:f6 (kbd "<f6>"))
-(define-key pel:f6 "l"  'pel-insert-line)
+(define-key pel:f6 "d"  'pel-insert-current-date)
+(define-key pel:f6 "D"  'pel-insert-current-date-time)
 (define-key pel:f6 "f"  'pel-insert-filename)
+(define-key pel:f6 "l"  'pel-insert-line)
+(define-key pel:f6 "t"  'pel-insert-iso8601-timestamp)
+
 
 ;; Move to the beginning of next function definition (while moving forward)
 ;;  complements C-M-e and C-M-a
