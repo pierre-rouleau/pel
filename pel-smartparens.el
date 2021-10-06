@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, September 20 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-01 17:11:04, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-05 23:39:46, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -268,17 +268,18 @@ https://github.com/Fuco1/smartparens/wiki/Pair-management" ":")
 
 
 ;;-pel-autoload
-(defun pel-sp-erlang-handler (id action context)
-  "Display handler info message for ID, ACTION and CONTEXT."
-  (message "pel-sp-erlang-handler: %S %S %S, point=%s" id action context
-           (point))
-  (when (memq action '(slup-forward
+(defun pel-sp-erlang-handler (_id action _context)
+  "Check validity of block and fix it if it was broken by smartparens.
+
+This is a smartparens post-handler and receives 3 arguments:
+ID, ACTION and CONTEXT."
+  ;; (message "pel-sp-erlang-handler: %S %S %S, point=%s" _id action _context
+  ;;          (point))
+  (when (memq action '(slurp-forward
                        barf-forward
                        split-sexp))
     (pel-syntax-fix-block-content (- (point) 2))
     (forward-char 2)))
-
-
 
 ;;-pel-autoload
 (defun pel-smartparens-setup-erlang ()
