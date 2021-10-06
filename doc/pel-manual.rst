@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-06 14:24:26, updated by Pierre Rouleau.
+:Modified: 2021-10-06 16:54:39, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4271,6 +4271,10 @@ PEL Support for Common Lisp
 
                       - Activation:    ``pel-use-common-lisp``.
 
+                      - Configuration:
+
+                        - ``pel-lisp-activates-minor-modes``
+
 :PEL Key Prefix: - Globally: **pel:for-lisp** : ``<f11> SPC L``
                  - From a buffer in lisp-mode: ``<f12>`` and ``<M-f12>``
 
@@ -4303,6 +4307,10 @@ PEL Support for Emacs Lisp
                         - ``pel-use-re-builder``
                         - ``pel-use-highlight-defined``
 
+                      - Configuration:
+
+                        - ``pel-elisp-activates-minor-modes``
+
 :PEL Key Prefix: - Globally: **pel:for-elisp** : ``<f11> SPC l``
                  - From a buffer in elisp-mode: ``<f12>`` and ``<M-f12>``
 
@@ -4320,18 +4328,44 @@ code.  Some of them can also be used for other types of Lisp as well.
 PEL Support for BEAM-VM Programming Languages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Note:**
-   🚧  This file is under early development.
-
-PEL will support several BEAM programming languages, starting with:
+PEL supports several BEAM programming languages, including:
 
 - Erlang
 - Elixir
 - LFE (Lisp Flavoured Erlang)
+- Gleam
 
-For the moment support for Erlang is the most evolved of those but more work is
-required..  Support for the others is minimal for the moment.
+For the moment support for Erlang and LFE are the most evolved.
+Erlang support is very evolved.  LFE support also because it inhiret the
+capabilities of Lisp-based languages.
 
+Support for Elixir and Gleam is experimental.
+
+PEL Support for Elixir
+^^^^^^^^^^^^^^^^^^^^^^
+
+:PDF Sheet: `Elixir <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-elixir.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-elixir``
+
+                      - Activation:
+
+                        - ``pel-use-elixir``
+                        - ``pel-use-alchemist``
+                        - ``pel-use-elixir-exunit``
+                        - ``pel-use-elixir-lsp``
+
+                      - Configuration:
+
+                        - ``pel-elixir-activates-minor-modes``
+
+:PEL Key Prefix: - Globally: **pel:for-elixir** : ``<f11> SPC x``
+                 - From a buffer in elixir-mode: ``<f12>`` and ``<M-f12>``
+
+PEL provides basic support for the `Elixir programming language`_ via the
+elixir-mode_ package.  With it the file extensions ``.exs``, ``.ex``, and
+``.elixir`` are automatically recognized as being Elixir files.
+
+.. _Elixir programming language: https://en.wikipedia.org/wiki/Elixir_(programming_language)
 
 PEL Support for Erlang
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -4345,6 +4379,10 @@ PEL Support for Erlang
                         - ``pel-use-edts``
                         - ``pel-use-erlang-flycheck``
                         - ``pel-use-erlang-flymake``
+
+                      - Configuration:
+
+                        - ``pel-erlang-activates-minor-modes``
 
 :PEL Key Prefix: - Globally: **pel:for-erlang** : ``<f11> SPC e``
                  - From a buffer in erlang-mode: ``<f12>`` and ``<M-f12>``
@@ -4361,22 +4399,44 @@ Refer to the `PEL Erlang PDF`_ document for more information.
 
 .. _PEL Erlang PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf
 
-PEL Support for Elixir
-^^^^^^^^^^^^^^^^^^^^^^
 
-:PDF Sheet: `Elixir <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-elixir.pdf>`_
-:PEL Customization: - Group: ``pel-pkg-for-elixir``
+PEL Support for Gleam
+^^^^^^^^^^^^^^^^^^^^^
 
-                      - Activation: ``pel-use-elixir``
+:PDF Sheet: `Gleam <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-gleam.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-gleam``
 
-:PEL Key Prefix: - Globally: **pel:for-elixir** : ``<f11> SPC x``
-                 - From a buffer in elixir-mode: ``<f12>`` and ``<M-f12>``
+                      - Activation: ``pel-use-gleam``
+                      - Configuration:
 
-PEL provides basic support for the `Elixir programming language`_ via the
-elixir-mode_ package.  With it the file extensions ``.exs``, ``.ex``, and
-``.elixir`` are automatically recognized as being Elixir files.
+                        - ``pel-gleam-activates-minor-modes``
 
-.. _Elixir programming language: https://en.wikipedia.org/wiki/Elixir_(programming_language)
+:PEL Key Prefix: - Globally: **pel:for-gleam** : ``<f11> SPC M-G``
+                 - From a buffer in gleam-mode: ``<f12>`` and ``<M-f12>``
+
+PEL support for Gleam is experimental.
+See the `Gleam PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-gleam.pdf>`_
+for more information.
+
+PEL Support for LFE
+^^^^^^^^^^^^^^^^^^^
+
+:PDF Sheet: `LFE <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-lfe.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-lfe``
+
+                      - Activation: ``pel-use-lfe``
+                      - Configuration:
+
+                        - ``pel-lfe-activates-minor-modes``
+
+:PEL Key Prefix: - Globally: **pel:for-lfe** : ``<f11> SPC C-l``
+                 - From a buffer in lfe-mode: ``<f12>`` and ``<M-f12>``
+
+PEL support for LFE inherits from Emacs Lisp support and some extra feature
+supported by PEL.
+See the `LFE PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-lfe.pdf>`_
+for more information.
+
 
 PEL Support for Curly-Bracket Programming Languages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -4387,6 +4447,12 @@ PEL provides explicit support for the following
 - `C  <https://en.wikipedia.org/wiki/C_(programming_language)>`_
 - `C++ <https://en.wikipedia.org/wiki/C%2B%2B>`_
 - `D <https://en.wikipedia.org/wiki/D_(programming_language)>`_
+
+It also provides experimental support for:
+
+- `Go <https://en.wikipedia.org/wiki/Go_(programming_language)>`_
+- `Rust <https://en.wikipedia.org/wiki/Rust_(programming_language)>`_
+- `V <https://vlang.io>`_
 
 .. _curly-bracket programming languages: https://en.wikipedia.org/wiki/List_of_programming_languages_by_type#Curly-bracket_languages
 
@@ -4403,6 +4469,7 @@ PEL Support For C
                         - ``pel-c-tab-width``
                         - ``pel-c-use-tabs``
                         - ``pel-c-bracket-style``
+                        - ``pel-c-activates-minor-modes``
 
 :PEL Key Prefix: - Globally: **pel:for-c** : ``<f11> SPC c``
                  - From a buffer in c-mode: ``<f12>`` and ``<M-f12>``
@@ -5356,6 +5423,7 @@ PEL Support For C++
                         - ``pel-c++-tab-width``
                         - ``pel-c++-use-tabs``
                         - ``pel-c++-bracket-style``
+                        - ``pel-c++-activates-minor-modes``
 
 :PEL Key Prefix: - Globally: **pel:for-c++** : ``<f11> SPC C``
                  - From a buffer in c++-mode: ``<f12>`` and ``<M-f12>``
@@ -5386,6 +5454,7 @@ PEL Support For D
                         - ``pel-d-tab-width``
                         - ``pel-d-use-tabs``
                         - ``pel-d-bracket-style``
+                        - ``pel-d-activates-minor-modes``
 
 :PEL Key Prefix: - Globally: **pel:for-d** : ``<f11> SPC D``
                  - From a buffer in d-mode: ``<f12>`` and ``<M-f12>``
@@ -5407,6 +5476,78 @@ on which the d-mode is based via the **pel:for-d** key-map, bounded to the
 .. _D Style code guideline: https://dlang.org/dstyle.html
 .. _PEL PDF document for D: pdf/pl_d.pdf
 
+PEL Support for Go
+^^^^^^^^^^^^^^^^^^
+
+:PDF Sheet: `Go <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-go.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-go``
+
+                      - Activation: ``pel-use-go``
+                      - Configuration:
+
+                        - ``pel-go-tab-width``
+                        - ``pel-go-activates-minor-modes``
+
+:PEL Key Prefix: - Globally: **pel:for-go** : ``<f11> SPC g``
+                 - From a buffer in go-mode: ``<f12>`` and ``<M-f12>``
+
+PEL support for Go is experimental using the go-mode, go-flymake and
+go-flycheck.
+See the `Go PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-go.pdf>`_
+for more information.
+
+
+PEL Support for Rust
+^^^^^^^^^^^^^^^^^^^^
+
+:PDF Sheet: `Rust <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rust.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-rust``
+
+                      - Activation:
+
+                        - ``pel-use-rust``
+                        - ``pel-use-rust-mode``
+                        - ``pel-use-rustic``
+                        - ``pel-use-flycheck-rust``
+                        - ``pel-use-emacs-racer``
+                        - ``pel-use-cargo``
+
+                      - Configuration:
+
+                        - ``pel-rust-activates-minor-modes``
+
+:PEL Key Prefix: - Globally: **pel:for-rust** : ``<f11> SPC r``
+                 - From a buffer in rust-mode: ``<f12>`` and ``<M-f12>``
+
+PEL support for Rust is experimental using the rust-mode, rustic,
+flycheck-rust, emacs-racer and cargo.
+
+See the `Rust PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rust.pdf>`_
+for more information.
+
+
+PEL Support for V
+^^^^^^^^^^^^^^^^^
+
+:PDF Sheet: `V <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-v.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-v``
+
+                      - Activation: ``pel-use-v``
+
+                      - Configuration:
+
+                        - ``pel-v-activates-minor-modes``
+
+:PEL Key Prefix: - Globally: **pel:for-v** : ``<f11> SPC v``
+                 - From a buffer in v-mode: ``<f12>`` and ``<M-f12>``
+
+PEL support for the emerging V language is experimental using the v-mode.
+
+See the `V PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-v.pdf>`_
+for more information.
+
+
+
 PEL Support for Forth
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -5414,6 +5555,10 @@ PEL Support for Forth
 :PEL Customization: - Group: ``pel-pkg-for-forth``
 
                       - Activation: ``pel-use-forth``
+
+                      - Configuration:
+
+                        - ``pel-forth-activates-minor-modes``
 
 :PEL Key Prefix: - Globally: **pel:for-forth** : ``<f11> SPC f``
                  - From a buffer in forth-mode: ``<f12>`` and ``<M-f12>``
@@ -5424,6 +5569,31 @@ forth-mode_ package.  With it the file extensions ``.f``, ``.fs``, ``.fth``, and
 
 .. _Forth programming language: https://en.wikipedia.org/wiki/Forth_(programming_language)
 
+
+PEL Support for Janet
+~~~~~~~~~~~~~~~~~~~~~
+
+:PDF Sheet: `Janet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-janet.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-janet``
+
+                      - Activation:
+
+                        - ``pel-use-janet-mode``
+                        - ``pel-use-ijanet-mode``
+                        - ``pel-use-inf-janet``
+
+                      - Configuration:
+
+                        - ``pel-janet-activates-minor-modes``
+
+:PEL Key Prefix: - Globally: **pel:for-janet** : ``<f11> SPC T``
+                 - From a buffer in janet-mode: ``<f12>`` and ``<M-f12>``
+
+PEL support for Janet is experimental.
+See the `Janet PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-janet.pdf>`_
+for more information.
+
+
 PEL Support for Julia
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -5431,6 +5601,10 @@ PEL Support for Julia
 :PEL Customization: - Group: ``pel-pkg-for-julia``
 
                       - Activation: ``pel-use-julia``
+
+                      - Configuration:
+
+                        - ``pel-julia-activates-minor-modes``
 
 :PEL Key Prefix: - Globally: **pel:for-julia** : ``<f11> SPC j``
                  - From a buffer in julia-mode: ``<f12>`` and ``<M-f12>``
@@ -5441,6 +5615,83 @@ are automatically recognized as being Julia files.
 
 .. Julia programming language: https://en.wikipedia.org/wiki/Julia_(programming_language)
 
+PEL Support for NetRexx
+~~~~~~~~~~~~~~~~~~~~~~~
+
+:PDF Sheet: `NetRexx <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-netrexx.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-netrexx``
+
+                      - Activation: ``pel-use-netrexx``
+                      - Configuration:
+
+                        - ``pel-netrexx-activates-minor-modes``
+
+:PEL Key Prefix: - Globally: **pel:for-netrexx** : ``<f11> SPC N``
+                 - From a buffer in netrexx-mode: ``<f12>`` and ``<M-f12>``
+
+PEL support for NetRexx is experimental.
+See the `NetRexx PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-netrexx.pdf>`_
+for more information.
+
+PEL Support for Nim
+~~~~~~~~~~~~~~~~~~~
+
+:PDF Sheet: `Nim <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-nim.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-nim``
+
+                      - Activation: ``pel-use-nim``
+                      - Configuration:
+
+                        - ``pel-nim-activates-minor-modes``
+
+:PEL Key Prefix: - Globally: **pel:for-nim** : ``<f11> SPC n``
+                 - From a buffer in nim-mode: ``<f12>`` and ``<M-f12>``
+
+PEL support for Nim is experimental.
+See the `Nim PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-nim.pdf>`_
+for more information.
+
+
+PEL Support for OCaml
+~~~~~~~~~~~~~~~~~~~~~
+
+:PDF Sheet: `OCaml <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-ocaml.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-ocaml``
+
+                      - Activation:
+
+                        - ``pel-use-ocaml``
+                        - ``pel-use-caml-mode``
+                        - ``pel-use-tuareg``
+                        - ``pel-use-merlin``
+
+:PEL Key Prefix: - Globally: **pel:for-ocaml** : ``<f11> SPC o``
+                 - From a buffer in caml-mode: ``<f12>`` and ``<M-f12>``
+
+PEL support for OCaml is experimental.
+See the `OCaml PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-ocaml.pdf>`_
+for more information.
+
+
+PEL Support for Perl
+~~~~~~~~~~~~~~~~~~~~
+
+:PDF Sheet: `Perl <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-perl.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-perl``
+
+                      - Activation: ``pel-use-perl``
+                      - Configuration:
+
+                        - ``pel-perl-activates-minor-modes``
+
+:PEL Key Prefix: - Globally: **pel:for-perl** : ``<f11> SPC P``
+                 - From a buffer in perl-mode: ``<f12>`` and ``<M-f12>``
+
+PEL support for Perl is experimental.
+See the `Perl PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-perl.pdf>`_
+for more information.
+
+
 PEL Support for Python
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -5448,6 +5699,10 @@ PEL Support for Python
 :PEL Customization: - Group: ``pel-pkg-for-python``
 
                       - Activation: ``pel-use-python``
+
+                      - Configuration:
+
+                        - ``pel-python-activates-minor-modes``
 
 :PEL Key Prefix: - Globally: **pel:for-python** : ``<f11> SPC p``
                  - From a buffer in python-mode: ``<f12>`` and ``<M-f12>``
@@ -5467,7 +5722,11 @@ PEL Support for REXX
 
                       - Activation: ``pel-use-rexx``
 
-:PEL Key Prefix: - Globally: **pel:for-forth** : ``<f11> SPC R``
+                      - Configuration:
+
+                        - ``pel-rexx-activates-minor-modes``
+
+:PEL Key Prefix: - Globally: **pel:for-rexx** : ``<f11> SPC R``
                  - From a buffer in rexx-mode: ``<f12>`` and ``<M-f12>``
 
 PEL provides basic support for the `REXX programming language`_ via the
@@ -5475,6 +5734,49 @@ forth-mode_ package.  With it the file extensions ``.rexx``, ``.elx``, ``.ncomm`
 ``.cpr`` are automatically recognized as being REXX files.
 
 .. _REXX programming language: https://en.wikipedia.org/wiki/Rexx
+
+
+PEL Support for Ruby
+~~~~~~~~~~~~~~~~~~~~
+
+:PDF Sheet: `Ruby <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-ruby.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-ruby``
+
+                      - Activation: ``pel-use-ruby``
+                      - Configuration:
+
+                        - ``pel-ruby-activates-minor-modes``
+
+:PEL Key Prefix: - Globally: **pel:for-ruby** : ``<f11> SPC U``
+                 - From a buffer in ruby-mode: ``<f12>`` and ``<M-f12>``
+
+PEL support for Ruby is experimental.
+See the `Ruby PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-ruby.pdf>`_
+for more information.
+
+
+PEL Support for Unix Shell
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:PDF Sheet: `Unix Shell <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-sh.pdf>`_
+:PEL Customization: - Group: ``pel-pkg-for-sh``
+
+                      - Activation: ``pel-use-sh``
+                      - Configuration:
+
+                        - ``pel-make-script-executable``
+                        - ``pel-shell-sourced-script-file-name-prefix``
+                        - ``pel-shell-script-extensions``
+                        - ``pel-sh-activates-minor-modes``
+
+:PEL Key Prefix: - Globally: **pel:for-sh** : ``<f11> SPC g``
+                 - From a buffer in sh-mode: ``<f12>`` and ``<M-f12>``
+
+PEL support several Unix Shell using Emacs built-in support for them and
+extending it with some extra code.
+
+See the `Unix Shell PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-sh.pdf>`_
+for more information.
 
 
 PEL Prompt Utilities
