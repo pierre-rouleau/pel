@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-05 17:50:03, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-06 00:06:57, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -206,9 +206,9 @@ current major mode properly."
 Start from POS or current point.
 The SYNTAX argument may be specified to re-use a caller syntax object,
 reducing the need to create a new one."
-  (setq pos (or pos (point)))
+  (or pos (setq pos (point)))
   (goto-char pos)
-  (setq syntax (or syntax (syntax-ppss pos)))
+  (or syntax (setq syntax (syntax-ppss pos)))
   (while (and (pel--inside-string-p syntax)
               (not (eobp)))
     (forward-char)
@@ -220,9 +220,9 @@ reducing the need to create a new one."
 Start from POS or current point.
 The SYNTAX argument may be specified to re-use a caller syntax object,
 reducing the need to create a new one."
-  (setq pos (or pos (point)))
+  (or pos (setq pos (point)))
   (goto-char pos)
-  (setq syntax (or syntax (syntax-ppss pos)))
+  (or syntax (setq syntax (syntax-ppss pos)))
   (while (and (pel--inside-string-p syntax)
               (not (bobp)))
     (backward-char)
