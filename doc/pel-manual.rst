@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-09-11 17:06:55, updated by Pierre Rouleau.
+:Modified: 2021-10-06 14:24:26, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5833,20 +5833,30 @@ PEL Text Insertion Utilities
 :PDF Sheet: `Inserting Text`_.
 :PEL Customization: - ``pel-use-lice``.
                     - ``pel-use-smart-dash``
+                    - ``pel-use-smartparens``
                     - ``pel-use-yasnippet``
                     - ``pel-use-yasnippet-snippets``
-                    - **pel-c-code-style-group**
-                    - **pel-elisp-code-style-group**
-                    - **pel-erlang-code-style-group**
+                    - **pel-c-code-style-group** : ``<f11> i <f2>``
+                    - **pel-pkg-generic-code-style** : ``<f6> <f2>``
+                    - Also available in the style/skeleton groups of several
+                      programming languages.
 
-:PEL Key Prefix: **pel:insert** : ``<f11> i``
+:PEL Key Prefix: **pel:f6**:  ``<f6>``
+                 **pel:insert** : ``<f11> i``
                  **pel:yasnippet** : ``<f11> y``
 
+PEL provides a set of generic and specialized insertion commands as well as
+access to several external packages as described by the `Inserting Text`_
+table.
 
-The file `pel-text-insert.el`_ provides a few commands to insert some text
-quickly.  PEL does not yet integrate the support of one or several of the great
-template systems that are available for Emacs, for now it just provides the
-following commands:
+For example, PEL provides the following commands:
+
+- ``pel-generic-file-header``, bound to ``<f6> h``, prompts the user for the
+  purpose of the file and then inserts a file header at
+  the top of the buffer with that information and some other as specified by
+  the user-options in the **pel-pkg-generic-code-style**.  See examples below
+  in the section titled `Example of Generic File Header Generation`_ below.
+
 
 - ``pel-insert-line`` inserts a (commented) line.  The length of the line is
   controlled by the ``pel-linelen`` customization variable, which defaults to 77.
@@ -5860,12 +5870,23 @@ following commands:
   - ``pel-insert-iso8601-timestamp`` inserts a ISO 8601 conforming date and time
     string.
 
+Commands like ``pel-generic-file-header`` and ``pel-insert-line`` are
+*generic* commands in the sense that they can be used in several major modes
+and adapts to them by using the comment style of the major mode to
+respectively produce a commented-out file header or line.  It works for all
+major modes that identify a command style.  PEL does not have to explicitly
+support the major mode for this to work.
+
 Another **very useful** feature is the use of the ``smart-dash-mode`` provided
 by the smart-dash_ external package.  PEL provides the ``<f11> M--`` binding to
 toggle this useful mode on and off. When the ``smart-dash-mode`` is activated,
 you can insert underscore characters by hitting the dash (``'-'``) key without
 having to press the Shift key.   And for programming languages identified by the
 ``smart-dash-c-modes`` user option you can insert ``--`` and ``->`` normally.
+
+The ``smartparens-mode`` allows inserting balanced block pairs in various
+major modes. PEL specialized ``smartparens`` for some major mode to extend its
+usefulness.
 
 The PEL binding include more commands, some are Emacs standard commands, other
 are from other packages.  All are listed in the `Inserting Text`_ PDF
@@ -5877,12 +5898,254 @@ Template Text Insertion
 PEL supports two different template mechanisms: the Emacs built-in tempo skeleton
 system and the popular yasnippet_ external library.
 
+Generic Tempo-based Templates
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+PEL supports insertion of generic templates that take advantage of the
+comment style of the current major mode and the identification of various
+template elements selected from the user-options in the
+**pel-pkg-generic-code-style** group accessible via:
+
+- ``<f11> i <f2>`` and selection of the group button at the bottom of the
+  buffer,
+- more directly from ``M-x customize-group pel-pkg-generic-code-style RET``,
+- or its equivalent ``<f11> <f2> g pel-pkg-generic-code-style RET``.
+
+The group allows activation of various template elements:
+
+- header block style:
+
+  - a default provided by PEL
+  - a customized one provided by a tempo-skeleton file created by the user
+    (see more information in the docstring of the user-option),
+
+- insertion of file time-stamp,
+- Insertion of open source software license,
+- insertion of section titles identified by the user-option,
+- insertion of section separators.
+
+The templates identify locations where more information must be typed.
+After inserting the template use ``C-c .`` to move point to the next location
+and ``C-c ,`` to the previous one.  If the user types RET on the file purpose
+prompt, the location for the file purpose is a target accessible with these keys.
+
+See examples in the next sub-section.
+
+Example of Generic File Header Generation
++++++++++++++++++++++++++++++++++++++++++
+
+Generic file header in C
+************************
+
+The following is the generic template for C created with  the defaults
+along with the sentence ``This is where the purpose goes`` typed as purpose.
+
+
+..  code:: C
+
+    /* C FILE: example.c
+    **
+    ** Purpose   : This is where the purpose goes.
+    ** Created   : Wednesday, October  6 2021.
+    ** Author    : Pierre Rouleau <prouleau001@gmail.com>
+    ** Time-stamp: <2021-10-06 11:49:17, by Pierre Rouleau>
+    */
+    /* -------------------------------------------------------------------------- */
+    /* Module Description
+    ** ------------------
+    **
+    **
+    */
+
+
+    /* -------------------------------------------------------------------------- */
+    /* Dependencies
+    ** ------------
+    **
+    **
+    */
+
+
+    /* -------------------------------------------------------------------------- */
+    /* Code
+    ** ----
+    **
+    **
+    */
+
+
+    /* -------------------------------------------------------------------------- */
+
+
+Note that PEL also provides specialized templates for C described
+in the section titled `Controlling PEL Tempo Skeletons for C`_.
+
+For C the comment style can be selected by customization.  For instance, the
+``pel-c-skel-comment-with-2stars`` identifies whether one or two start
+characters will be used in the C continuation comment.  That setting is also
+affecting the generic templates, making it possible to generate this instead:
+
+
+.. code:: c
+
+    /* C FILE: another_style.c
+     *
+     * Purpose   :
+     * Created   : Wednesday, October  6 2021.
+     * Author    : Pierre Rouleau <prouleau001@gmail.com>
+     * Time-stamp: <2021-10-06 14:10:02, by Pierre Rouleau>
+     */
+    /* -------------------------------------------------------------------------- */
+    /* Module Description
+     * ------------------
+     *
+     *
+     */
+
+
+    /* -------------------------------------------------------------------------- */
+    /* Dependencies
+     * ------------
+     *
+     *
+     */
+
+
+    /* -------------------------------------------------------------------------- */
+    /* Code
+     * ----
+     *
+     *
+     */
+
+
+    /* -------------------------------------------------------------------------- */
+
+
+
+
+Generic file header in FORTRAN
+******************************
+
+PEL does not support FORTRAN explicitly but Emacs identifies the comment style
+of FORTRAN code.
+
+.. code:: fortran
+
+    C FORTRAN FILE: example.for
+    C
+    C Purpose   : This is where the purpose goes.
+    C Created   : Wednesday, October  6 2021.
+    C Author    : Pierre Rouleau <prouleau001@gmail.com>
+    C Time-stamp: <2021-10-06 13:46:49, by Pierre Rouleau>
+    C ----------------------------------------------------------------------
+    C Module Description
+    C ------------------
+    C
+    C
+
+
+    C ----------------------------------------------------------------------
+    C Dependencies
+    C ------------
+    C
+    C
+
+
+    C ----------------------------------------------------------------------
+    C Code
+    C ----
+    C
+    C
+
+
+    C ----------------------------------------------------------------------
+
+
+Generic file header in Pascal
+*****************************
+
+.. code:: pascal
+
+    { PASCAL FILE: example.pas
+    |
+    | Purpose   :
+    | Created   : Wednesday, October  6 2021.
+    | Author    : Pierre Rouleau <prouleau001@gmail.com>
+    | Time-stamp: <2021-10-06 13:53:10, by Pierre Rouleau>
+    }
+    { ---------------------------------------------------------------------------}
+    { Module Description
+    | ------------------
+    |
+    |
+    }
+
+
+    { ---------------------------------------------------------------------------}
+    { Dependencies
+    | ------------
+    |
+    |
+    }
+
+
+    { ---------------------------------------------------------------------------}
+    { Code
+    | ----
+    |
+    |
+    }
+
+
+    { ---------------------------------------------------------------------------}
+
+
+Generic file header in Ruby
+***************************
+
+.. code:: ruby
+
+    # RUBY FILE: example.rb
+    #
+    # Purpose   :
+    # Created   : Wednesday, October  6 2021.
+    # Author    : Pierre Rouleau <prouleau001@gmail.com>
+    # Time-stamp: <2021-10-06 13:58:03, by Pierre Rouleau>
+    # ----------------------------------------------------------------------------
+    # Module Description
+    # ------------------
+    #
+    #
+
+
+    # ----------------------------------------------------------------------------
+    # Dependencies
+    # ------------
+    #
+    #
+
+
+    # ----------------------------------------------------------------------------
+    # Code
+    # ----
+    #
+    #
+
+
+    # ----------------------------------------------------------------------------
+
+
+
 Using Tempo Skeleton
 ^^^^^^^^^^^^^^^^^^^^
 
-PEL implements tempo skeletons for several major modes:
 
-- c,
+To complement the generic tempo templates, PEL also implements specialized
+tempo skeletons for several major modes, including:
+
+- C,
+- C++
 - erlang,
 - emacs lisp,
 - reStructuredText.
