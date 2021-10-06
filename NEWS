@@ -64,7 +64,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       definition mechanism but also by creating function wrappers to overcome
       the current limitations of smartparens pre-handlers and post-handlers.
     - Add automatic pairing of `<< >>` to smartparens-mode used in erlang-mode
-      buffers.
+      buffers. Also add navigation across these pairs by replacing *forward-sexp*
+      by *pel-erlang-forward-sexp* and *backward-sexp* by
+      *pel-erlang-backward-sexp*.  The PEL commands use the same bindings and
+      handle the Erlang ``<< >>`` bit syntax pairs, something the erlang-mode
+      does not do by itself.
     - Improved electric key behaviour for Erlang:
       - Selection of which key gets electric behaviour is controlled by the
         *pel-erlang-electric-keys* user-option which includes comma, >,

@@ -267,12 +267,14 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-erlang-semicolon
     pel-erlang-period
     pel-erlang-toggle-space-after-comma
-    pel-erlang-version
-    pel-show-erlang-version
     pel-end-of-previous-clause
     pel-beginning-of-next-clause
     pel-previous-erl-function
     pel-next-erl-function
+    pel-erlang-backward-sexp
+    pel-erlang-forward-sexp
+    pel-erlang-version
+    pel-show-erlang-version
     pel-erlang-toggle-syntax-checker
     pel-erlang-comment-dwim)
   (pel-autoload-function "pel-erlang" for:

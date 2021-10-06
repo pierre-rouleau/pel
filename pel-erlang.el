@@ -45,10 +45,6 @@
 ;; * `pel-erlang-electric-period'
 ;;   - `pel--after-dash'
 
-;; Modify erlang.el electric key behaviour:
-;; - `pel-erlang-setup-electric-key-behaviour'
-;;   - `pel-erlang-stop-when-arg-used-p'
-
 ;; Erlang Shell Control:
 ;; - `pel-erlang-shell-mode-init'
 
@@ -59,6 +55,14 @@
 ;; * `pel-next-erl-function'
 ;; * `pel-previous-erl-function'
 ;;   - `pel--moveto-function'
+
+;; Erlang specialized forward-sexp/backward-sexp:
+;; * `pel-erlang-backward-sexp'
+;;   - `pel-erlang-backward-binary'
+;;     - `pel-erlang-after-binary'
+;; * `pel-erlang-forward-sexp'
+;;   - `pel-erlang-forward-binary'
+;;     - `pel-erlang-before-binary'
 
 ;; Erlang Version and Man Page access management:
 ;; - `pel-read-available-erlang-man-versions'
@@ -80,6 +84,10 @@
 ;; Insertion of Erlang Comments:
 ;; * `pel-erlang-comment-dwim'
 ;;   - `pel--erlang-line-3%-comment-p'
+
+;; Modify erlang.el electric key behaviour and key bindings:
+;; - `pel-erlang-setup-electric-key-behaviour'
+;;   - `pel-erlang-stop-when-arg-used-p'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -247,86 +255,6 @@ The following options are observed:
       (insert ">")
     (self-insert-command arg)))
 
-;; ---------------------------------------
-;; Modify erlang.el electric key behaviour
-;; ---------------------------------------
-
-;; The following variables are defined inside erlang.el.
-;; They are re-declared here to prevent byte-compiler warnings.
-(defvar erlang-mode-map)
-(defvar erlang-mode-syntax-table)
-(defvar erlang-electric-arrow-criteria)
-
-(defun pel-erlang-stop-when-arg-used-p ()
-  "Return `stop' when invoking command invoked with arguments, nil otherwise."
-  (if current-prefix-arg
-      'stop
-    t))
-
-;;-pel-autoload
-(defun pel-erlang-setup-electric-key-behaviour ()
-  "Setup Erlang behaviour of electric keys."
-
-  ;; Activate Electric key behaviour selected by PEL user-option
-  (setq erlang-electric-commands pel-erlang-electric-keys)
-  (pel-erlang-enhance-electric-keys)
-
-  ;; Change behaviour of the > electric behaviour:
-  ;; The erlang.el sets erlang-electric-arrow-criteria to:
-  ;;    '(erlang-stop-when-in-type-spec
-  ;;      erlang-next-lines-empty-p
-  ;;      erlang-at-end-of-function-p)
-  ;;
-  ;; But this means an empty line activates the  electric behaviour.  This
-  ;; prevents the electric behaviour when the next line has code.
-  ;; It would be better to be able to allow electric behaviour with and
-  ;; without empty following lines while allowing the user to prevent electric
-  ;; behaviour when typing the character.  This is now done setting the
-  ;; erlang-electric-arrow-criteria to this instead:
-  ;;
-  (setq erlang-electric-arrow-criteria '(erlang-stop-when-in-type-spec
-                                         pel-erlang-stop-when-arg-used-p))
-
-  ;; This way just type ``M-1 >`` to insert just one > and prevent electric
-  ;; behaviour.  Using a larger number to insert several > one after another,
-  ;; with another prefix also disable electric behaviour as should be
-  ;; expected.
-  ;;
-  ;; Note that it is also possible to disable electric behaviour of the > key
-  ;; for a longer stretch of time by using ``<f12> M-` >``.
-
-  ;; To ease the typing of '->' with no electric behaviour, give the '.' key
-  ;; electric behaviour to transform '.-' into '->' when appropriate, ie: as
-  ;; long as it's not in string or comment or not following a '$-'.
-  (define-key erlang-mode-map "." 'pel-erlang-electric-period)
-
-  ;; TODO: fix erlang.el code that prevents the following to work.
-  ;;       I have tried to get the syntax-propertize-function to help
-  ;;       but I can't get it to work.  I don't understand this mechanism yet.
-
-  ;;
-  ;; Add << >> pairing navigation and marking, without pairing < > because
-  ;; that would cause problems in comparison operators < and > and with the ->
-  ;; the <- the => and the <= operators.
-  ;;
-  ;; So instead of using the following:
-  ;;     (modify-syntax-entry ?< "(>" erlang-mode-syntax-table)
-  ;;     (modify-syntax-entry ?> ")<" erlang-mode-syntax-table)
-  ;;
-  ;; The code could perhaps use the syntax-propertize-function to activate the
-  ;; pairing:
-
-  ;; (defconst erlang-mode-syntax-propertize-function
-  ;;   (syntax-propertize-rules
-  ;;    ("\\(<\\)<" (1 "(>"))
-  ;;    (">\\(>\\)" (1 ")<")))
-  ;;   "Syntax properties to activate << >> pairing.")
-  ;; (setq-local parse-sexp-lookup-properties t)
-  ;; (setq-local syntax-propertize-function
-  ;;             erlang-mode-syntax-propertize-function)
-
-  )
-
 ;; ---------------------------------------------------------------------------
 ;; Erlang Shell Control
 ;; --------------------
@@ -408,9 +336,12 @@ Stop at end of buffer."
   (pel--moveto-function t (or n 1)))
 
 
+;; Erlang specialized forward-sexp/backward-sexp
+;; ---------------------------------------------
+
 (defun pel-erlang-before-binary (&optional pos)
   "Return non-nil if POS or point is just before \"<<\", nil otherwise."
-  (setq pos (or pos (point)))
+  (or pos (setq pos (point)))
   (and (eq (char-after (point)) ?<)
        (save-excursion
          (forward-char)
@@ -418,7 +349,7 @@ Stop at end of buffer."
 
 (defun pel-erlang-after-binary (&optional pos)
   "Return non-nil if POS or point is just before \"<<\", nil otherwise."
-  (setq pos (or pos (point)))
+  (or pos (setq pos (point)))
   (save-excursion
     (backward-char)
     (and (eq (char-after (point)) ?>)
@@ -426,10 +357,9 @@ Stop at end of buffer."
           (backward-char)
           (eq (char-after (point)) ?>)))))
 
-
 (defun pel-erlang-forward-binary (&optional pos)
   "Move forward to match closing >> binary block."
-  (setq pos (or pos (point)))
+  (or pos (setq pos (point)))
   (if (pel-erlang-before-binary pos)
       (let ((nesting-level 0)
             (found-pos nil)
@@ -465,7 +395,7 @@ Stop at end of buffer."
 
 (defun pel-erlang-backward-binary (&optional pos)
   "Move to match backward to opening << binary block."
-  (setq pos (or pos (point)))
+  (or pos (setq pos (point)))
   (if (pel-erlang-after-binary pos)
       (let ((nesting-level 0)
             (found-pos nil)
@@ -498,6 +428,34 @@ Stop at end of buffer."
               (and found-pos
                    (/= nesting-level 0)))))
     (user-error "Point not located after >>")))
+
+;;-pel-autoload
+(defun pel-erlang-forward-sexp (&optional arg)
+  "Erlang compatible `forward-sexp' replacement.
+
+Supports bit syntax expressions."
+  (interactive "^p")
+  (or arg (setq arg 1))
+  (if (< arg 0)
+      (pel-erlang-backward-sexp (abs arg))
+    (if (pel-erlang-before-binary)
+        (dotimes (_i arg)
+          (pel-erlang-forward-binary))
+      (forward-sexp arg))))
+
+;;-pel-autoload
+(defun pel-erlang-backward-sexp (&optional arg)
+  "Erlang compatible `backward-sexp' replacement.
+
+Supports bit syntax expressions."
+  (interactive "^p")
+  (or arg (setq arg 1))
+  (if (< arg 0)
+      (pel-erlang-forward-sexp (abs arg))
+    (if (pel-erlang-after-binary)
+        (dotimes (_i arg)
+          (pel-erlang-backward-binary))
+      (backward-sexp arg))))
 
 ;; -----------------------------------------------------------------------------
 ;; Detecting Erlang Versions and Controlling Erlang Man Pages to Use
@@ -802,6 +760,90 @@ of a line and a single % is used after the beginning of a line."
       (let ((comment-add 2))
         (comment-dwim arg))
     (comment-dwim arg)))
+
+;; ---------------------------------------------------------------------------
+;; Modify erlang.el electric key behaviour and key bindings
+;; --------------------------------------------------------
+
+;; The following variables are defined inside erlang.el.
+;; They are re-declared here to prevent byte-compiler warnings.
+(defvar erlang-mode-map)
+(defvar erlang-mode-syntax-table)
+(defvar erlang-electric-arrow-criteria)
+
+(defun pel-erlang-stop-when-arg-used-p ()
+  "Return `stop' when invoking command invoked with arguments, nil otherwise."
+  (if current-prefix-arg
+      'stop
+    t))
+
+;;-pel-autoload
+(defun pel-erlang-setup-electric-key-behaviour ()
+  "Setup Erlang behaviour of electric keys."
+
+  ;; Activate Electric key behaviour selected by PEL user-option
+  (setq erlang-electric-commands pel-erlang-electric-keys)
+  (pel-erlang-enhance-electric-keys)
+
+  ;; Change behaviour of the > electric behaviour:
+  ;; The erlang.el sets erlang-electric-arrow-criteria to:
+  ;;    '(erlang-stop-when-in-type-spec
+  ;;      erlang-next-lines-empty-p
+  ;;      erlang-at-end-of-function-p)
+  ;;
+  ;; But this means an empty line activates the  electric behaviour.  This
+  ;; prevents the electric behaviour when the next line has code.
+  ;; It would be better to be able to allow electric behaviour with and
+  ;; without empty following lines while allowing the user to prevent electric
+  ;; behaviour when typing the character.  This is now done setting the
+  ;; erlang-electric-arrow-criteria to this instead:
+  ;;
+  (setq erlang-electric-arrow-criteria '(erlang-stop-when-in-type-spec
+                                         pel-erlang-stop-when-arg-used-p))
+
+  ;; This way just type ``M-1 >`` to insert just one > and prevent electric
+  ;; behaviour.  Using a larger number to insert several > one after another,
+  ;; with another prefix also disable electric behaviour as should be
+  ;; expected.
+  ;;
+  ;; Note that it is also possible to disable electric behaviour of the > key
+  ;; for a longer stretch of time by using ``<f12> M-` >``.
+
+  ;; To ease the typing of '->' with no electric behaviour, give the '.' key
+  ;; electric behaviour to transform '.-' into '->' when appropriate, ie: as
+  ;; long as it's not in string or comment or not following a '$-'.
+  (define-key erlang-mode-map "." 'pel-erlang-electric-period)
+
+  ;; TODO: fix erlang.el code that prevents the following to work.
+  ;;       I have tried to get the syntax-propertize-function to help
+  ;;       but I can't get it to work.  I don't understand this mechanism yet.
+
+  ;;
+  ;; Add << >> pairing navigation and marking, without pairing < > because
+  ;; that would cause problems in comparison operators < and > and with the ->
+  ;; the <- the => and the <= operators.
+  ;;
+  ;; So instead of using the following:
+  ;;     (modify-syntax-entry ?< "(>" erlang-mode-syntax-table)
+  ;;     (modify-syntax-entry ?> ")<" erlang-mode-syntax-table)
+  ;;
+  ;; The code could perhaps use the syntax-propertize-function to activate the
+  ;; pairing:
+
+  ;; (defconst erlang-mode-syntax-propertize-function
+  ;;   (syntax-propertize-rules
+  ;;    ("\\(<\\)<" (1 "(>"))
+  ;;    (">\\(>\\)" (1 ")<")))
+  ;;   "Syntax properties to activate << >> pairing.")
+  ;; (setq-local parse-sexp-lookup-properties t)
+  ;; (setq-local syntax-propertize-function
+  ;;             erlang-mode-syntax-propertize-function)
+
+  ;; Until I'm able to fix the behaviour of forward-sexp and backward-sexp  to
+  ;; support Erlang bit syntax I'll remap the keys used for those to the
+  ;; specialized command I wrote that support Erlang bit syntax.
+  (define-key erlang-mode-map [remap forward-sexp]  'pel-erlang-forward-sexp)
+  (define-key erlang-mode-map [remap backward-sexp] 'pel-erlang-backward-sexp))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-erlang)
