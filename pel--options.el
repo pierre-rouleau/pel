@@ -6768,6 +6768,30 @@ The choices are:
   "PEL customization of the IDE for Erlang."
   :group 'pel-pkg-for-erlang)
 
+;; TODO: add support for Distel and Wrangler.
+
+(defcustom pel-use-erlstack-mode nil
+  "Control whether PEL uses erlstack-mode.
+
+To use it, `pel-use-erlang' must be on (t)."
+  :group 'pel-erlang-ide
+  :link '(url-link "erlstack-mode @ GitHub"
+                   "https://github.com/k32/erlstack-mode")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-erlstack-mode :requires 'pel-use-erlang)
+
+(defcustom pel-use-ivy-erlang-complete nil
+  "Control whether PEL uses ivy-erlang-complete.
+
+To use it, `pel-use-erlang' must be on (t)."
+  :group 'pel-erlang-ide
+  :link '(url-link "ivy-erlang-complete @ GitHub"
+                   "https://github.com/s-kostyaev/ivy-erlang-complete")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-ivy-erlang-complete :requires 'pel-use-erlang)
+
 (defcustom pel-use-edts nil
   "Control whether PEL uses EDTS when `pel-use-erlang' is t.
 EDTS := Erlang Development Tool Suite."

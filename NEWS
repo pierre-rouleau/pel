@@ -56,20 +56,24 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   ``<f12>`` inside ``.janet`` files.  Includes support for iMenu and Speedbar.
   - Add a [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-janet.pdf][𝕻𝔩 - Janet PDF]].
 - Improve: Erlang support:
-  - Added smartparens support when *pel-use-smartparens* is turned on.
+  - New: add support for ivy-erlang-complete when **pel-use-ivy-erlang-complete**
+    user-option is turned on (t).
+  - New: add support for erlstack-mode when **pel-use-erlstack-mode** user-option
+    is turned on.
+  - New: Add smartparens support when *pel-use-smartparens* is turned on.
     Automatically activate smartparens support for Erlang by adding
     `smartparens-mode` to the list of *pel-erlang-activates-minor-modes*.
-    - Fixed behaviour of some of the smartparens code transformation functions
+    - New: Fixed behaviour of some of the smartparens code transformation functions
       by using the post processing capability provided by smartparens sp-pair
       definition mechanism but also by creating function wrappers to overcome
       the current limitations of smartparens pre-handlers and post-handlers.
-    - Add automatic pairing of `<< >>` to smartparens-mode used in erlang-mode
+    - New: Add automatic pairing of `<< >>` to smartparens-mode used in erlang-mode
       buffers. Also add navigation across these pairs by replacing *forward-sexp*
       by *pel-erlang-forward-sexp* and *backward-sexp* by
       *pel-erlang-backward-sexp*.  The PEL commands use the same bindings and
       handle the Erlang ``<< >>`` bit syntax pairs, something the erlang-mode
       does not do by itself.
-    - Improved electric key behaviour for Erlang:
+    - New: Improved electric key behaviour for Erlang:
       - Selection of which key gets electric behaviour is controlled by the
         *pel-erlang-electric-keys* user-option which includes comma, >,
         newline, period and semicolon by default. The period electric

@@ -3173,6 +3173,31 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   ;; Installation control
   (pel-ensure-package erlang from: melpa)
   (pel-autoload-file erlang for: erlang-mode)
+  (when pel-use-erlstack-mode
+    (pel-ensure-package erlstack-mode from: melpa))
+  (when pel-use-ivy-erlang-complete
+    ;; TODO: update once my PR is merged in and propagated.
+    ;; Use my copy until the bugs fixed by my PR in the official repo
+    ;; are integrated and the package goes on MELPA.
+    ;; (pel-ensure-package ivy-erlang-complete from: melpa)
+    (cl-eval-when 'load
+      (pel-install-github-file "pierre-rouleau/ivy-erlang-complete/master"
+                               "ivy-erlang-complete.el")
+      (pel-ensure-package async   from: melpa)
+      (pel-ensure-package ivy     from: melpa)
+      (pel-ensure-package counsel from: melpa)
+      (pel-autoload-file ivy-erlang-complete for:
+                         ivy-erlang-complete-autosetup-project-root
+                         ivy-erlang-complete-init
+                         ivy-erlang-complete-show-doc-at-point
+                         ivy-erlang-complete-reparse
+                         ivy-erlang-complete-set-project-root
+                         ivy-erlang-complete
+                         ivy-erlang-complete--find-definition
+                         ivy-erlang-complete-find-spec
+                         ivy-erlang-complete-find-definition
+                         ivy-erlang-complete-find-references
+                         ivy-erlang-complete-find-file)))
   (when pel-use-edts
     (pel-ensure-package edts from: melpa)
     (pel-autoload-file edts for: edts-mode))

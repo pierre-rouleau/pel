@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-04 18:29:03, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-06 18:42:38, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -210,7 +210,9 @@
     ([f11 32 ?c ?#]  "pl-c"             pel-pkg-for-c           hide-ifdef)
     ([f11 32 ?e]     "pl-erlang"        pel-pkg-for-erlang      (erlang
                                                                  erldoc
+                                                                 erlstack
                                                                  edts
+                                                                 ivy-erlang-complete
                                                                  auto-highlight-symbol
                                                                  electricity
                                                                  smart-dash
@@ -910,6 +912,7 @@ Return nil if nothing found."
     ("clojure"     . "clojure-mode")
     ("cljr"        . "clj-refactor")
     ("electricity" . "electric")
+    ("erlstack"    . "erlstack-mode")
     ("grip"        . "grip-mode")
     ("janet"       . "janet-mode")
     ("lfe"         . ("lfe-indent"
