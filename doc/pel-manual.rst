@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-06 16:54:39, updated by Pierre Rouleau.
+:Modified: 2021-10-06 18:28:17, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4387,9 +4387,14 @@ PEL Support for Erlang
 :PEL Key Prefix: - Globally: **pel:for-erlang** : ``<f11> SPC e``
                  - From a buffer in erlang-mode: ``<f12>`` and ``<M-f12>``
 
-PEL provides support for the Erlang Programming Language via the Erlang official
-Emacs support, the integration of several Emacs library supporting Erlang and
-some PEL code.  PEL provides access to the Tempo skeleton and yasnippet_
+PEL provides extensive support for the `Erlang Programming Language`_ via the
+`Erlang official Emacs support`_, the `erlang-mode`_ from `erlang.el`_ along
+with the integration of several Emacs packages supporting Erlang, and PEL code
+to enhance them in various ways and some extra PEL code that is Erlang
+specific.
+
+
+PEL provides access to the Tempo skeleton and yasnippet_
 template text insertion systems.  PEL adds functionality to several of the
 Erlang skeletons, provides the ability to select several commenting styles via
 user option variables that can be customized (use the ``<f12> <f2>`` key from a
@@ -4397,7 +4402,12 @@ buffer in erlang major mode to quickly gain access to the buffer to see and/or
 change those variables).
 Refer to the `PEL Erlang PDF`_ document for more information.
 
+
 .. _PEL Erlang PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf
+.. _Erlang Programming Language: https://en.wikipedia.org/wiki/Erlang_(programming_language)
+.. _Erlang official Emacs support: https://melpa.org/#/erlang
+.. _erlang-mode: https://github.com/erlang/otp/tree/master/lib/tools/emacs
+.. _erlang.el: https://github.com/erlang/otp/blob/master/lib/tools/emacs/erlang.el
 
 
 PEL Support for Gleam
@@ -4432,10 +4442,13 @@ PEL Support for LFE
 :PEL Key Prefix: - Globally: **pel:for-lfe** : ``<f11> SPC C-l``
                  - From a buffer in lfe-mode: ``<f12>`` and ``<M-f12>``
 
-PEL support for LFE inherits from Emacs Lisp support and some extra feature
+PEL support for LFE, `Lisp Flavored Erlang`_, inherits from Emacs Lisp support and some extra feature
 supported by PEL.
 See the `LFE PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-lfe.pdf>`_
 for more information.
+
+
+.. _Lisp Flavored Erlang: https://en.wikipedia.org/wiki/LFE_(programming_language)
 
 
 PEL Support for Curly-Bracket Programming Languages
