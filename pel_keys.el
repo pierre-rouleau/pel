@@ -5105,7 +5105,8 @@ the ones defined from the buffer now."
 
 (when (or pel-use-neotree
           pel-use-ztree
-          pel-use-treemacs)
+          pel-use-treemacs
+          pel-use-rfc-mode)
   (define-pel-global-prefix pel:browse (kbd "<f11> B"))
 
   (when pel-use-treemacs
@@ -5181,7 +5182,12 @@ the ones defined from the buffer now."
                       (append pel-ztree-dir-filter-list
                               ztree-dir-filter-list)))
       (setq-default ztree-dir-show-filtered-files
-                    pel-ztree-dir-show-filtered-files))))
+                    pel-ztree-dir-show-filtered-files)))
+
+  (when pel-use-rfc-mode
+    (pel-ensure-package rfc-mode from: melpa)
+    (define-key pel:browse  "r" 'rfc-mode-read)
+    (define-key pel:browse  "R" 'rfc-mode-browse)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> c`` : count things
@@ -5311,9 +5317,6 @@ the ones defined from the buffer now."
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> f`` : File operations
-
-(when pel-use-rfc-mode
-  (pel-ensure-package rfc-mode from: melpa))
 
 (defun pel-auto-revert-set-timer ()
   "Execute `auto-revert-set-timer' if the auto-revert  mode is active."
