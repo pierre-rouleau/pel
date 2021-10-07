@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-06 18:42:38, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-06 22:25:05, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -158,7 +158,7 @@
                                                              popup-kill-ring))
     ([f11 ?.]        "marking"          pel-pkg-for-marking  expand-region)
     ([f11 ?=]        "cut-paste"        pel-pkg-for-cut-and-paste)
-    ([f11 59]        "comments"         pel-pkg-for-programming comment)
+    ([f11 ?\;]       "comments"         pel-pkg-for-programming comment)
     ([f11 ??]        "help"             (pel-pkg-for-help pel-syntax-tools)
                                                                 (command-log
                                                                  debbugs
@@ -368,9 +368,11 @@
 
     ;; no PDF for browse yet, the info is  in file-mngt.
     ([f11 ?B]        "file-mngt"        (pel-pkg-for-browse
-                                         pel-pkg-for-ztree)     (treemacs
+                                         pel-pkg-for-ztree)
+                                         (treemacs
                                          lsp-treemacs
-                                         ztree))
+                                         ztree
+                                         rfc-mode-group))
     ([f11 ?B ?N]     "file-mngt"        pel-pkg-for-neotree      neotree)
     ([f11 ?f ?a]     "file-mngt"        nil                      ffap)
     ([f11 ?f ?p]     "file-mngt"        pel-pkg-for-project-mng  ffip)
@@ -921,6 +923,7 @@ Return nil if nothing found."
     ("netrexx"     . "netrexx-mode")
     ("racket"      . "racket-custom")
     ("rainbow"     . "rainbow-mode")
+    ("rfc-mode-group" . "rfc-mode")
     ("ffip"        . "find-file-in-project"))
   "Maps a group name for the library that defines it.
 This is only required for the libraries that cannot be found

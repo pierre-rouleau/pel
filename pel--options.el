@@ -1598,12 +1598,20 @@ Note that:
   "PEL Local File And Directory Tree Browsing and Management."
   :group 'pel-pkg-for-browse)
 
+(defcustom pel-use-rfc-mode nil
+  "Control whether PEL provides access to rfc-mode external package."
+  :group 'pel-pkg-for-file-browse
+  :type 'boolean
+  :safe #'booleanp
+  :link '(url-link :tag "rfc-mode @ Github"
+                   "https://github.com/galdor/rfc-mode"))
+
 (defcustom pel-use-treemacs nil
   "Control whether PEL uses the treemacs package."
   :group 'pel-pkg-for-file-browse
   :type 'boolean
   :safe #'booleanp
-  :link `(url-link :tag "treemacs @ GitHub"
+  :link '(url-link :tag "treemacs @ GitHub"
                    "https://github.com/Alexander-Miller/treemacs"))
 (pel-put 'pel-use-treemacs :also-required-when '(or pel-use-lsp-treemacs
                                                     pel-use-treemacs-projectile
@@ -6790,7 +6798,10 @@ To use it, `pel-use-erlang' must be on (t)."
                    "https://github.com/s-kostyaev/ivy-erlang-complete")
   :type 'boolean
   :safe #'booleanp)
+(pel-put 'pel-use-ivy-erlang-complete :package-is :in-utils)
 (pel-put 'pel-use-ivy-erlang-complete :requires 'pel-use-erlang)
+(pel-put 'pel-use-ivy-erlang-complete :requires 'pel-use-ivy)
+(pel-put 'pel-use-ivy-erlang-complete :requires 'pel-use-counsel)
 
 (defcustom pel-use-edts nil
   "Control whether PEL uses EDTS when `pel-use-erlang' is t.
@@ -8607,15 +8618,15 @@ indexing system."
   (setq pel-use-speedbar t))
 
 (when pel-use-lispy
-  (setq pel-use-iedit t)
-  (setq pel-use-multiple-cursors t))
+  (setq pel-use-iedit t
+        pel-use-multiple-cursors t))
 
 (when pel-use-visual-regexp-steroids
   (setq pel-use-visual-regexp t))
 
 (when pel-use-helm-cscope
-  (setq pel-use-xcscope t)
-  (setq pel-use-helm t))
+  (setq pel-use-xcscope t
+        pel-use-helm t))
 
 (when (or pel-use-helm-xref
           pel-use-helm-lsp
@@ -8625,6 +8636,10 @@ indexing system."
 (when (or pel-use-ivy-xref
           pel-use-lsp-ivy)
   (setq pel-use-ivy t))
+
+(when pel-use-ivy-erlang-complete
+  (setq pel-use-ivy t
+        pel-use-counsel t))
 
 (when pel-use-bison-mode
   (setq pel-use-c t))

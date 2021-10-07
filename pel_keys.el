@@ -5312,6 +5312,9 @@ the ones defined from the buffer now."
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> f`` : File operations
 
+(when pel-use-rfc-mode
+  (pel-ensure-package rfc-mode from: melpa))
+
 (defun pel-auto-revert-set-timer ()
   "Execute `auto-revert-set-timer' if the auto-revert  mode is active."
   (interactive)
