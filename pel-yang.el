@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, October  7 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-07 23:13:43, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-08 08:12:18, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -57,8 +57,8 @@
   (local-set-key (kbd "M-*")        'outline-show-subtree)
   (local-set-key (kbd "M-#")        'outline-hide-body)
 
-  (local-set-key (kbd "<C-left>")   'outline-hide-subtree)
-  (local-set-key (kbd "<C-right>") #'pel-yang-show-onelevel)
+  (local-set-key (kbd "M-(")   'outline-hide-subtree)
+  (local-set-key (kbd "M-)") #'pel-yang-show-onelevel)
 
   (local-set-key (kbd "<C-M-up>")   'outline-backward-same-level)
   (local-set-key (kbd "<C-M-down>") 'outline-forward-same-level)
