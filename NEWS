@@ -1,7 +1,15 @@
 PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changed Since Version 0.4.0:
+** Modifications:
+- Modified: modeline commands key binding:
+  - changed the *pel:modeline* prefix from ``<f11> M-l`` to ``<f11> M-d``
+    to make room for outline commands. The ``<f11> M-l`` is now bound to the
+    outline-minor-mode command. Modified the key binding s to access the PEL
+    PDF, the customization buffers accordingly.
 ** New Features and Improvements:
+- New key bindings for outline:  the ``<f11> M-l`` key sequence is now bound
+  to *outline-minor-mode* and ``<f11> M-L`` is bound to *outline-mode*.
 - New: add support for rfc-mode when the *pel-use-rfc-mode* user-option is
   turned on.  Provides ``<f11> B r`` binding to ``rfc-mode-read`` and
   ``<f11> B R`` to ``rfc-mode-browse``.

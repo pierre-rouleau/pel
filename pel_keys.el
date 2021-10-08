@@ -1900,9 +1900,9 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-P     - Prolog
 ;; M-Y     - YANG            - Specification definition language
 ;;
-;; SPC b   - ibuffer-mode
-;; SPC C-l - inferior-lfe-mode
-;; SPC v   - vc-dir-mode
+;; SPC SPC b   - ibuffer-mode
+;; SPC SPC C-l - inferior-lfe-mode
+;; SPC SPC v   - vc-dir-mode
 ;; ---------------------------------------------------------------------------
 ;; Syntax Check with Flycheck (if requested)
 ;; -----------------------------------------
@@ -3954,9 +3954,13 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 ;; ---------------------------------------------------------------------------
 ;; Outline Mode
 ;; ------------
-;; The following provides the F12 key in Outline mode.
 (define-pel-global-prefix pel:for-outline-mode (kbd "<f11> SPC M-l"))
-(pel-config-major-mode outline pel:for-outline-mode)
+(define-key pel: (kbd      "M-l")          'outline-minor-mode)
+(define-key pel: (kbd      "M-L")          'outline-mode)
+;; The following provides the F12 key in Outline mode.
+(pel-eval-after-load outline
+
+  (pel-config-major-mode outline pel:for-outline-mode))
 
 ;; ---------------------------------------------------------------------------
 ;; Org-Mode Support
@@ -6598,8 +6602,8 @@ the ones defined from the buffer now."
    'vc-dir-mode 'vc-dir-mode-hook)
 
 ;; ---------------------------------------------------------------------------
-;; - Function Keys - <f11> - Prefix ``<f11> M-l`` : Mode line commands
-(define-pel-global-prefix pel:mode-line (kbd "<f11> M-l"))
+;; - Function Keys - <f11> - Prefix ``<f11> M-d`` : Mode line commands
+(define-pel-global-prefix pel:mode-line (kbd "<f11> M-d"))
 
 (define-key pel:mode-line "f"  'which-function-mode)
 
