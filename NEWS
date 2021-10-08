@@ -7,9 +7,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     to make room for outline commands. The ``<f11> M-l`` is now bound to the
     outline-minor-mode command. Modified the key binding s to access the PEL
     PDF, the customization buffers accordingly.
+- Removed global key bindings ``<f6> n`` and <f6> p`` to
+  ``pel-beginning-of-next-defun`` and ``beginning-of-defun``.  Kept the other
+  bindings for these commands including in the ``<f6>`` key prefix.
 ** New Features and Improvements:
-- New key bindings for outline:  the ``<f11> M-l`` key sequence is now bound
+- New key bindings for activating outline modes:  the ``<f11> M-l`` key sequence is now bound
   to *outline-minor-mode* and ``<f11> M-L`` is bound to *outline-mode*.
+- New: key bindings for the outline minor mode under the ``<f6>`` key
+  prefix. These key bindings use only an extra key that does not require modifier.
 - New: add support for rfc-mode when the *pel-use-rfc-mode* user-option is
   turned on.  Provides ``<f11> B r`` binding to ``rfc-mode-read`` and
   ``<f11> B R`` to ``rfc-mode-browse``.

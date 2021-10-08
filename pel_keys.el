@@ -1013,7 +1013,7 @@ Then save your changes."
 ;; ----------------------
 ;;
 ;; pel:f6 keys:
-;;  d f l n p L
+;;  d f l L
 ;;  SPC
 ;;  C-i <backtab> C-n C-p
 ;;  <down> <up> <left> <right>
@@ -1030,9 +1030,7 @@ Then save your changes."
 ;; Move to the beginning of next function definition (while moving forward)
 ;;  complements C-M-e and C-M-a
 (define-key pel:f6 "d"            'pel-duplicate-line)
-(define-key pel:f6 "n"            'pel-beginning-of-next-defun)
 (define-key pel:f6 (kbd "<down>") 'pel-beginning-of-next-defun)
-(define-key pel:f6 "p"            'beginning-of-defun)
 (define-key pel:f6 (kbd "<up>")   'beginning-of-defun)
 (define-key pel:f6 (kbd "<left>") 'pel-end-of-previous-defun)
 (define-key pel:f6 (kbd "<right>")'end-of-defun)
@@ -1903,6 +1901,9 @@ can't bind negative-argument to C-_ and M-_"
 ;; SPC SPC b   - ibuffer-mode
 ;; SPC SPC C-l - inferior-lfe-mode
 ;; SPC SPC v   - vc-dir-mode
+
+;;          - SNMP MIP
+;;          - ANS.1
 ;; ---------------------------------------------------------------------------
 ;; Syntax Check with Flycheck (if requested)
 ;; -----------------------------------------
@@ -3960,7 +3961,39 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 ;; The following provides the F12 key in Outline mode.
 (pel-eval-after-load outline
 
-  (pel-config-major-mode outline pel:for-outline-mode))
+  (defvar outline-minor-mode-map)
+
+  (defun pel--setup-outline-minor-mode ()
+    "Add PEL <f6> key bindings for outline minor mode."
+    (define-key outline-minor-mode-map (kbd "<f6> a") 'outline-show-all)
+    (define-key outline-minor-mode-map (kbd "<f6> k") 'outline-show-branches)
+    (define-key outline-minor-mode-map (kbd "<f6> i") 'outline-show-children)
+    (define-key outline-minor-mode-map (kbd "<f6> e") 'outline-show-entry)
+    (define-key outline-minor-mode-map (kbd "<f6> s") 'outline-show-subtree)
+
+    (define-key outline-minor-mode-map (kbd "<f6> t") 'outline-hide-body)
+    (define-key outline-minor-mode-map (kbd "<f6> c") 'outline-hide-entry)
+    (define-key outline-minor-mode-map (kbd "<f6> d") 'outline-hide-subtree)
+    (define-key outline-minor-mode-map (kbd "<f6> l") 'outline-hide-leaves)
+    (define-key outline-minor-mode-map (kbd "<f6> q") 'outline-hide-sublevels)
+    (define-key outline-minor-mode-map (kbd "<f6> o") 'outline-hide-other)
+
+    (define-key outline-minor-mode-map (kbd "<f6> b") 'outline-backward-same-level)
+    (define-key outline-minor-mode-map (kbd "<f6> f") 'outline-forward-same-level)
+    (define-key outline-minor-mode-map (kbd "<f6> p") 'outline-previous-visible-heading)
+    (define-key outline-minor-mode-map (kbd "<f6> n") 'outline-next-visible-heading)
+    (define-key outline-minor-mode-map (kbd "<f6> u") 'outline-up-heading)
+
+    (define-key outline-minor-mode-map (kbd "<f6> .") 'outline-mark-subtree)
+    (define-key outline-minor-mode-map (kbd "<f6> RET") 'outline-insert-heading)
+
+    (define-key outline-minor-mode-map (kbd "<f6> v") 'outline-move-subtree-down)
+    (define-key outline-minor-mode-map (kbd "<f6> ^") 'outline-move-subtree-up)
+    (define-key outline-minor-mode-map (kbd "<f6> [") 'outline-promote)
+    (define-key outline-minor-mode-map (kbd "<f6> ]") 'outline-demote))
+  (declare-function pel--setup-outline-minor-mode "pel_keys")
+
+  (add-hook 'outline-minor-mode-hook (function pel--setup-outline-minor-mode)))
 
 ;; ---------------------------------------------------------------------------
 ;; Org-Mode Support
