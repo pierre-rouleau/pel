@@ -732,7 +732,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-xr-regxp
     pel-xr-at-point
     pel-xr-lint
-    pel-xr-lint-at-point))
+    pel-xr-lint-at-point)
+
+  (pel-autoload-function "pel-yang" for:
+    pel-yang-setup-support))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-autoload)

@@ -1409,8 +1409,18 @@ can't bind negative-argument to C-_ and M-_"
                            "imenu+.el" "imenu%2B.el")
   (pel-autoload-file imenu+ for:
                      imenup-add-defs-to-menubar)
+
+  (declare-function imenup-add-defs-to-menubar "ext:imenu+")
+  (defun pel--setup-imenu+ ()
+    "Activate imenu+ support, protecting against error."
+    ;; imenu+ will signal an error if a mode that derives from prog-mode
+    ;; does not support imenu.  Prevent this error.
+    (ignore-errors
+      (imenup-add-defs-to-menubar)))
+  (declare-function pel--setup-imenu+ "pel_keys")
+
   (when (fboundp 'imenup-add-defs-to-menubar)
-    (add-hook 'prog-mode-hook 'imenup-add-defs-to-menubar)))
+    (add-hook 'prog-mode-hook 'pel--setup-imenu+)))
 
 ;; Although imenu-extra is available through MELPA, that package just provide
 ;; tools that may be used by other PEL code to incorporate symbol generated
@@ -1888,6 +1898,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-G     - Gleam           -              BEAM Language
 ;; M-H     - Hamler          -              BEAM Language, Functional/ML/Haskell
 ;; M-P     - Prolog
+;; M-Y     - YANG            - Specification definition language
 ;;
 ;; SPC b   - ibuffer-mode
 ;; SPC C-l - inferior-lfe-mode
@@ -4235,6 +4246,32 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (require 'flycheck-plantuml)
       (declare-function flycheck-plantuml-setup "flycheck-plantuml")
       (flycheck-plantuml-setup))))
+
+;; ---------------------------------------------------------------------------
+;; Specification/Interface definition languages support
+;; ----------------------------------------------------
+;;
+;; Early support.  No PDF nor major-mode specific key additional bindings yet.
+
+(when pel-use-asn1-mode
+  (pel-ensure-package asn1-mode from: melpa))
+
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-Y`` : YANG
+
+(when pel-use-yang-mode
+  ;; Installation control
+  (pel-ensure-package yang-mode from: melpa)
+
+  (define-pel-global-prefix pel:for-yang (kbd "<f11> SPC M-Y"))
+
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".yang"))
+
+  (pel-eval-after-load yang-mode
+    (pel-config-major-mode yang pel:for-yang
+      (pel-yang-setup-support))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> =`` : Copy commands

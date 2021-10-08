@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-06 22:25:05, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-07 23:19:04, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -507,7 +507,10 @@
     (,(kbd "<f11> SPC M-c") "cwl"              pel-pkg-for-cwl     ,pel--yaml-groups)
     ([f11 32 27 ?c]         "cwl"              pel-pkg-for-cwl     ,pel--yaml-groups)
     (,(kbd "<f11> SPC M-y") "yaml"             pel-pkg-for-yaml    ,pel--yaml-groups)
-    ([f11 32 27 ?y]         "yaml"             pel-pkg-for-yaml    ,pel--yaml-groups))
+    ([f11 32 27 ?y]         "yaml"             pel-pkg-for-yaml    ,pel--yaml-groups)
+
+    (,(kbd "<f11> SPC M-Y") "yang"      pel-pkg-for-spec-definition)
+    ([f11 32 27 ?Y]         "yang"      pel-pkg-for-spec-definition))
   "Map from key prefix array to topic string.
 The topic string correspond to the base name of the PDF file
 stored inside the doc/pdf directory.")
@@ -595,7 +598,8 @@ stored inside the doc/pdf directory.")
     ("org"             [f11 32 27 ?o])
     ("graphviz-dot"    [f11 32 27 ?g])
     ("plantuml"        [f11 32 27 ?u])
-    ("yaml"            [f11 32 27 ?y]))
+    ("yaml"            [f11 32 27 ?y])
+    ("yang"            [f11 32 27 ?Y]))
   "Maps the name of a major mode (without the -mode suffix)
 to a symbol or key sequence array to use as map key inside
 `pel--prefix-to-topic-alist' table.")

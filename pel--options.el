@@ -158,6 +158,7 @@
 ;;         - pel-c-module-header-skeleton-control
 ;;         - pel-c-function-header-skeleton-control
 ;;       - pel-erlang-skeleton-control
+;;     - pel-pkg-for-spec-definition
 ;;     - pel-pkg-for-speedbar
 ;;     - pel-pkg-for-spelling
 ;;     - pel-pkg-for-sw-build
@@ -7910,6 +7911,43 @@ and usable shell for Emacs."
 ;; markup language code sections. Keep this group here: a group may have
 ;; several parent groups and all skeleton control groups refer to this one as
 ;; their parent.
+
+;; ---------------------------------------------------------------------------
+;; pel-pkg-for-spec-definition
+;; ---------------------------
+(defgroup pel-pkg-for-spec-definition nil
+  "PEL Specification Definition Languages."
+  :group 'pel-package-use)
+
+(defcustom pel-use-asn1-mode nil
+  "Whether PEL provides access to the asn1-mode external package."
+  :group 'pel-pkg-for-spec-definition
+  :type 'boolean
+  :safe #'booleanp
+  :link '(url-link :tag "asn1-mode @ Github"
+                   "https://github.com/kawabata/asn1-mode"))
+
+(defcustom pel-asn1-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for ASN.1 buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-spec-definition
+  :type '(repeat function))
+
+(defcustom pel-use-yang-mode nil
+  "Whether PEL provides access to the yang-mode external package."
+  :group 'pel-pkg-for-spec-definition
+  :type 'boolean
+  :safe #'booleanp
+  :link '(url-link :tag "yang-mode @ Github"
+                   "https://github.com/mbj4668/yang-mode"))
+
+(defcustom pel-yang-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Yang buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-spec-definition
+  :type '(repeat function))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-speedbar
