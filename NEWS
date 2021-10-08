@@ -60,6 +60,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   prevents the ``<kp-subtract>`` key from being used for *pel-kp-subtract*
   allowing that key to insert hyphen when the keypad NumLock is on and
   act dash insertion when no area is marked ans as a marked-area kill otherwise.
+- New: experimental support for the [[https://en.wikipedia.org/wiki/YANG][YANG modelling language file]] using yang-mode
+  and outline mode.  Add the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/yang.pdf][Ⓢ YANG PDF]].
 - New: Experimental support for the [[https://janet-lang.org][Janet Programming language]] when
   ``pel-use-janet`` and other PEL user-options are turned on
   (``pel-use-janet-mode``, ``pel-use-ijanet`` and ``pel-use-inf-janet``).
