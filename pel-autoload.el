@@ -328,7 +328,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-imenu-init)
 
   (pel-autoload "pel-imenu-dbg" for:
-    pel-imenu-dbg-print-vars)
+    pel-imenu-print-vars)
 
   (pel-autoload "pel-imenu-ido" for:
     pel-select-goto-symbol-UI
@@ -353,7 +353,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-customize-pel
     pel-customize-library
     pel-help-pdfs-dir
-    pel-help-on-completion-input)
+    pel-help-on-completion-input
+    pel-help-on-outline)
 
   (pel-autoload "pel-hideshow" for:
     pel-show-hide-state
@@ -479,6 +480,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-open-at-point
     pel-browse-filename-at-point
     pel-open-url-at-point)
+
+  (pel-autoload "pel-outline" for:
+    pel-outline-print-vars)
 
   (pel-autoload "pel-package" for:
     pel-package-info

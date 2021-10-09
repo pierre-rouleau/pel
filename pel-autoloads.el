@@ -385,7 +385,7 @@ re-execute `pel-init' again to activate them.
 ;;;### (autoloads nil "pel-imenu-dbg" "pel-imenu-dbg.el" (0 0 0 0))
 ;;; Generated autoloads from pel-imenu-dbg.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-imenu-dbg" '("pel-imenu-dbg-print-vars")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-imenu-dbg" '("pel-imenu-print-vars")))
 
 ;;;***
 

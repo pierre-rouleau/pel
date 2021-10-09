@@ -14,11 +14,15 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   now ``<f2> <f2>``. It is not difficult to remember and type and restore
   access to Emacs default key bindings to the 2C-two-columns,
   2C-associate-buffer and 2C-split commands.
+- Renamed: ``pel-imenu-dbg-print-vars`` to ``pel-imenu-print-vars`` for consistency.
 ** New Features and Improvements:
 - New key bindings for activating outline modes:  the ``<f11> M-l`` key sequence is now bound
   to *outline-minor-mode* and ``<f11> M-L`` is bound to *outline-mode*.
 - New: key bindings for the outline minor mode under the ``<f2>`` key
   prefix. These key bindings use only an extra key that does not require modifier.
+  Also added binding to the *pel-outline-print-vars* command to
+  ``<f2> ?`` and   ``<f11> ? e o``.  The info shown describes how the outline mode
+  extracts the information for outlining purpose.
 - New: add support for rfc-mode when the *pel-use-rfc-mode* user-option is
   turned on.  Provides ``<f11> B r`` binding to ``rfc-mode-read`` and
   ``<f11> B R`` to ``rfc-mode-browse``.

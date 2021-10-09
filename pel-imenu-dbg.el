@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, February 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-14 20:50:31, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-09 11:39:17, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -39,7 +39,8 @@
 ;;; Code:
 ;;
 
-(defun pel-imenu-dbg-print-vars ()
+;;-pel-autoload
+(defun pel-imenu-print-vars ()
   "Print imenu controlling variables for current major mode in *imenu-dbg*."
   (interactive)
   (let ((buffer (current-buffer)))

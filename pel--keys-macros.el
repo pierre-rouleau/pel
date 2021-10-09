@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-07 23:19:04, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-09 11:15:31, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -693,8 +693,8 @@ allowed the command to be invoked."
 By default the function opens the local PDF file unless the
 OPEN-GITHUB-PAGE is specified, in which case it opens the GitHub
 hosted raw PDF file.  However, if the user-option variable
-`pel-flip-help-pdf-arg' is set, it's the other way around: the GitHub remote
-file is opened by default.
+`pel-flip-help-pdf-arg' is set, it's the other way around: the
+GitHub remote file is opened by default.
 
 The function uses Emacs default browse mechanism specified by the
 user-option variable `browse-url-browser-function' unless the
@@ -847,9 +847,31 @@ There should be no key binding!" keyseq))
 
 ;;-pel-autoload
 (defun pel-help-on-completion-input (&optional open-github-page)
-  "Open the input completion help PDF, in a browser if arg OPEN-WEB-PAGE set."
+  "Open the input completion help PDF, in a browser if arg OPEN-WEB-PAGE set.
+
+By default the function opens the local PDF file unless the
+OPEN-GITHUB-PAGE is specified, in which case it opens the GitHub
+hosted raw PDF file.  However, if the user-option variable
+`pel-flip-help-pdf-arg' is set, it's the other way around: the
+GitHub remote file is opened by default."
   (interactive "P")
-  (pel-help-open-pdf "completion-input" open-github-page))
+  (pel-help-open-pdf "completion-input" (if pel-flip-help-pdf-arg
+                                            (not open-github-page)
+                                          open-github-page)))
+
+;;-pel-autoload
+(defun pel-help-on-outline (&optional open-github-page)
+  "Open the outline help PDF, in a browser if arg OPEN-WEB-PAGE set.
+
+By default the function opens the local PDF file unless the
+OPEN-GITHUB-PAGE is specified, in which case it opens the GitHub
+hosted raw PDF file.  However, if the user-option variable
+`pel-flip-help-pdf-arg' is set, it's the other way around: the
+GitHub remote file is opened by default."
+  (interactive "P")
+  (pel-help-open-pdf "outline" (if pel-flip-help-pdf-arg
+                                   (not open-github-page)
+                                 open-github-page)))
 
 ;;-pel-autoload
 (defun pel-help-pdf-select (&optional open-github-page)

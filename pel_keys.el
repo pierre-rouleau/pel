@@ -3965,6 +3965,10 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 
   (defun pel--setup-outline-minor-mode ()
     "Add PEL <f2> key bindings for outline minor mode."
+
+    (define-key outline-minor-mode-map (kbd "<f2> <f1>") 'pel-help-on-outline)
+    (define-key outline-minor-mode-map (kbd "<f2> ?")    'pel-outline-print-vars)
+
     (define-key outline-minor-mode-map (kbd "<f2> a") 'outline-show-all)
     (define-key outline-minor-mode-map (kbd "<f2> k") 'outline-show-branches)
     (define-key outline-minor-mode-map (kbd "<f2> i") 'outline-show-children)
@@ -4706,7 +4710,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 (define-pel-global-prefix pel:emacs (kbd "<f11> ? e"))
 (define-key pel:emacs (kbd "C-p") #'list-processes)
 (define-key pel:emacs "c"  'pel-emacs-command-stats)
-(define-key pel:emacs "i"  'pel-imenu-dbg-print-vars)
+(define-key pel:emacs "i"  'pel-imenu--print-vars)
+(define-key pel:emacs "o"  'pel-outline-print-vars)
 (define-key pel:emacs "r"  'pel-open-emacs-refcard)
 (define-key pel:emacs "s" #'list-load-path-shadows)
 (define-key pel:emacs "t"  'pel-show-init-time)
