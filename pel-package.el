@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-05 17:24:23, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-09 13:49:03, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -239,7 +239,24 @@ symbol set to t.")
      (lambda (symbol)
        (when (pel-user-option-p symbol)
          (push symbol symbols))))
-    symbols))
+    (reverse symbols)))
+
+(defun pel-commands ()
+  "Return a list of PEL command symbols."
+  (let ((symbols '())
+        (cmd-name nil))
+  (mapatoms
+   (lambda (symbol)
+     (when (and (commandp symbol)
+                (progn
+                  (setq cmd-name (symbol-name symbol))
+                  (and (eq t (compare-strings "pel-" nil nil
+                                              cmd-name 0 4))
+                       (not (pel-string-starts-with-p cmd-name "pel-∑"))
+                       (not (pel-string-starts-with-p cmd-name "pel-⅀")))))
+       (push symbol symbols))))
+  (reverse symbols)))
+
 
 (defun pel--assert-valid-user-option  (symbol)
   "Assert that the SYMBOL argument is a valid PEL user-option symbol.
@@ -632,6 +649,7 @@ of a restriction lock."
 - # package-alist             : %d
 - # packages activated        : %d
 - # packages selected         : %d
+- # PEL commands              : %d
 - Emacs init-time             : %s"
                             custom-file
                             package-user-dir
@@ -654,6 +672,7 @@ of a restriction lock."
                             (length package-alist)
                             (length package-activated-list)
                             (length package-selected-packages)
+                            (length (pel-commands))
                             (if (and (require 'time nil :no-error)
                                      (fboundp 'emacs-init-time))
                                 (emacs-init-time)

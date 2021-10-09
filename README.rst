@@ -18,11 +18,11 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#quickst
 
-.. image:: https://img.shields.io/badge/PEL_Commands-448-teal
+.. image:: https://img.shields.io/badge/PEL_Commands-469-teal
    :alt: Version
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 
-.. image:: https://img.shields.io/badge/PDF_Files-135-blue
+.. image:: https://img.shields.io/badge/PDF_Files-136-blue
    :alt: Version
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 
@@ -209,7 +209,7 @@ various packages, etc...
 ➣ Extends Emacs Documentation
 -----------------------------
 
-- PEL provides **over 130** `PDF topic-oriented reference sheets`_ [#doc]_ packed
+- PEL provides **over 135** `PDF topic-oriented reference sheets`_ [#doc]_ packed
   with symbol annotated, colour coded key bindings and command descriptions,
   with hyperlinks to Emacs manuals, external packages, articles and other
   useful references.
@@ -239,7 +239,7 @@ various packages, etc...
 --------------------------
 
 
-- PEL provides over 440 extra commands.  PEL commands extend the packages
+- PEL provides over 465 extra commands.  PEL commands extend the packages
   it supports and provides some of its own features.
 - PEL provides 7 Hydra key bindings when the ``pel-use-hydra`` and the topic
   specific user-options are activated.
