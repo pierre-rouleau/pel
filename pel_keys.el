@@ -3964,33 +3964,33 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (defvar outline-minor-mode-map)
 
   (defun pel--setup-outline-minor-mode ()
-    "Add PEL <f6> key bindings for outline minor mode."
-    (define-key outline-minor-mode-map (kbd "<f6> a") 'outline-show-all)
-    (define-key outline-minor-mode-map (kbd "<f6> k") 'outline-show-branches)
-    (define-key outline-minor-mode-map (kbd "<f6> i") 'outline-show-children)
-    (define-key outline-minor-mode-map (kbd "<f6> e") 'outline-show-entry)
-    (define-key outline-minor-mode-map (kbd "<f6> s") 'outline-show-subtree)
+    "Add PEL <f2> key bindings for outline minor mode."
+    (define-key outline-minor-mode-map (kbd "<f2> a") 'outline-show-all)
+    (define-key outline-minor-mode-map (kbd "<f2> k") 'outline-show-branches)
+    (define-key outline-minor-mode-map (kbd "<f2> i") 'outline-show-children)
+    (define-key outline-minor-mode-map (kbd "<f2> e") 'outline-show-entry)
+    (define-key outline-minor-mode-map (kbd "<f2> s") 'outline-show-subtree)
 
-    (define-key outline-minor-mode-map (kbd "<f6> t") 'outline-hide-body)
-    (define-key outline-minor-mode-map (kbd "<f6> c") 'outline-hide-entry)
-    (define-key outline-minor-mode-map (kbd "<f6> d") 'outline-hide-subtree)
-    (define-key outline-minor-mode-map (kbd "<f6> l") 'outline-hide-leaves)
-    (define-key outline-minor-mode-map (kbd "<f6> q") 'outline-hide-sublevels)
-    (define-key outline-minor-mode-map (kbd "<f6> o") 'outline-hide-other)
+    (define-key outline-minor-mode-map (kbd "<f2> t") 'outline-hide-body)
+    (define-key outline-minor-mode-map (kbd "<f2> c") 'outline-hide-entry)
+    (define-key outline-minor-mode-map (kbd "<f2> d") 'outline-hide-subtree)
+    (define-key outline-minor-mode-map (kbd "<f2> l") 'outline-hide-leaves)
+    (define-key outline-minor-mode-map (kbd "<f2> q") 'outline-hide-sublevels)
+    (define-key outline-minor-mode-map (kbd "<f2> o") 'outline-hide-other)
 
-    (define-key outline-minor-mode-map (kbd "<f6> b") 'outline-backward-same-level)
-    (define-key outline-minor-mode-map (kbd "<f6> f") 'outline-forward-same-level)
-    (define-key outline-minor-mode-map (kbd "<f6> p") 'outline-previous-visible-heading)
-    (define-key outline-minor-mode-map (kbd "<f6> n") 'outline-next-visible-heading)
-    (define-key outline-minor-mode-map (kbd "<f6> u") 'outline-up-heading)
+    (define-key outline-minor-mode-map (kbd "<f2> b") 'outline-backward-same-level)
+    (define-key outline-minor-mode-map (kbd "<f2> f") 'outline-forward-same-level)
+    (define-key outline-minor-mode-map (kbd "<f2> p") 'outline-previous-visible-heading)
+    (define-key outline-minor-mode-map (kbd "<f2> n") 'outline-next-visible-heading)
+    (define-key outline-minor-mode-map (kbd "<f2> u") 'outline-up-heading)
 
-    (define-key outline-minor-mode-map (kbd "<f6> .") 'outline-mark-subtree)
-    (define-key outline-minor-mode-map (kbd "<f6> RET") 'outline-insert-heading)
+    (define-key outline-minor-mode-map (kbd "<f2> .") 'outline-mark-subtree)
+    (define-key outline-minor-mode-map (kbd "<f2> RET") 'outline-insert-heading)
 
-    (define-key outline-minor-mode-map (kbd "<f6> v") 'outline-move-subtree-down)
-    (define-key outline-minor-mode-map (kbd "<f6> ^") 'outline-move-subtree-up)
-    (define-key outline-minor-mode-map (kbd "<f6> [") 'outline-promote)
-    (define-key outline-minor-mode-map (kbd "<f6> ]") 'outline-demote))
+    (define-key outline-minor-mode-map (kbd "<f2> v") 'outline-move-subtree-down)
+    (define-key outline-minor-mode-map (kbd "<f2> ^") 'outline-move-subtree-up)
+    (define-key outline-minor-mode-map (kbd "<f2> [") 'outline-promote)
+    (define-key outline-minor-mode-map (kbd "<f2> ]") 'outline-demote))
   (declare-function pel--setup-outline-minor-mode "pel_keys")
 
   (add-hook 'outline-minor-mode-hook (function pel--setup-outline-minor-mode)))
@@ -4887,7 +4887,7 @@ See `flyspell-auto-correct-previous-word' for more info."
                      bm-toggle
                      bm-buffer-save
                      bm-buffer-restore)
-  (global-set-key (kbd "<f2>")  'bm-next)
+  (global-set-key (kbd "<f2> <f2>")  'bm-next)
   (define-key pel:bookMark "'"  'bm-toggle) ; toggle visible bookmark
   (define-key pel:bookMark "n"  'bm-next)
   (define-key pel:bookMark "p"  'bm-previous)
