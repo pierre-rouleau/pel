@@ -3134,6 +3134,17 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-outline-mode
   :type '(repeat function))
 
+(defcustom pel-use-outshine nil
+  "Control whether PEL provides access to the outshine package.
+
+Outshine improves upon the outline minor mode to provide outlining for
+programming language files."
+  :link '(url-link :tag "outshine @ GitHub"
+                   "https://github.com/alphapapa/outshine")
+  :group 'pel-pkg-for-outline
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Org Mode Support
 ;; ----------------

@@ -18,6 +18,10 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#quickst
 
+.. image:: https://img.shields.io/badge/Installable_Packages-240-teal
+   :alt: Version
+   :target: `➣ Automatic Download, Installation and Setup of External Packages`_
+
 .. image:: https://img.shields.io/badge/PEL_Commands-469-teal
    :alt: Version
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
@@ -181,7 +185,7 @@ various packages, etc...
 -----------------------------------------------------------------
 
 - In normal mode, PEL controls the download, installation, configuration and
-  activation of **over 230** *top-level* [#externp]_ external packages through the
+  activation of **240** *top-level* [#externp]_ external packages through the
   use of easy-to-setup customization user-options that have a name that start
   with the "``pel-use-``" prefix.
 
@@ -301,8 +305,12 @@ Notes
 
 
 .. [#externp] An external package may have dependencies.  The dependencies are also
-              installed. PEL currently provides access to over 190 top-level
-              packages. The actual number of packages is larger when counting their dependencies.
+              installed. PEL currently provides access to 240 top-level external packages.
+              The actual number of packages is larger when counting their
+              dependencies.  From within PEL execute the **pel-package-info**
+              command with prefix argument to get a full report (or just type
+              ``C-u <f11> ? e ?``).  Also notice the short report printed at
+              the end the make-driven build of PEL.
 
 .. [#firefox] All `PEL PDF files`_ have a large number of hyperlinks to other
               PDF files, Emacs manual pages, external packages and articles.

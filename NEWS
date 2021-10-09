@@ -16,6 +16,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   2C-associate-buffer and 2C-split commands.
 - Renamed: ``pel-imenu-dbg-print-vars`` to ``pel-imenu-print-vars`` for consistency.
 ** New Features and Improvements:
+- Improved: the *pel-package-info* command identifies and prints the number of Elpa-compliant
+  and other packages PEL is able to download and install.
 - New key bindings for activating outline modes:  the ``<f11> M-l`` key sequence is now bound
   to *outline-minor-mode* and ``<f11> M-L`` is bound to *outline-mode*.
 - New: key bindings for the outline minor mode under the ``<f2>`` key
@@ -23,6 +25,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   Also added binding to the *pel-outline-print-vars* command to
   ``<f2> ?`` and   ``<f11> ? e o``.  The info shown describes how the outline mode
   extracts the information for outlining purpose.
+- New: add support for outshine-mode when the *pel-use-outshine* user-option is turned on.
+  Currently experimental and not fully integrated: outshine generates several
+  byte compiler warnings that need to be resolved.  Its code is relatively old
+  (2019) and probably requires attention.  It also needs integration documentation
+  inside PEL which is not done yet.
 - New: add support for rfc-mode when the *pel-use-rfc-mode* user-option is
   turned on.  Provides ``<f11> B r`` binding to ``rfc-mode-read`` and
   ``<f11> B R`` to ``rfc-mode-browse``.

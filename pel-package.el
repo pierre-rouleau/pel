@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-09 13:49:03, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-09 17:49:40, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -257,7 +257,6 @@ symbol set to t.")
        (push symbol symbols))))
   (reverse symbols)))
 
-
 (defun pel--assert-valid-user-option  (symbol)
   "Assert that the SYMBOL argument is a valid PEL user-option symbol.
 Return t if it is, issue an error otherwise."
@@ -277,6 +276,60 @@ EXPR is not an expression."
            (if context
                (format " : %s" context)
              ""))))
+
+;; --
+
+(defconst pel--regxp-pel-ensure
+  "^ *(pel-ensure-package +\\(\\(\\s_\\|\\sw\\)+\\)"
+  "Regexp to find & extract package name installed by `pel-ensure-package'.")
+
+(defconst pel--regxp-froml-github
+  "^ *(pel-install-github-files* +\\(\\\"\\([-[:alnum:]\\./]+\\)\\\"\\)"
+  "Regexp to find & extra dir names of github extracted packages.")
+
+(defun pel--pkg-installed-by-pel (regexp &optional group extracter)
+  "Return list of package names PEL can install from Elpa compliant sites."
+  (or group (setq group 1))
+  (let ((pkg-names nil)
+        found
+        found-text)
+    (with-temp-buffer
+      (insert-file-contents (locate-library "pel_keys.el"))
+      (goto-char (point-min))
+      (while
+          (progn
+            (setq found
+                  (re-search-forward regexp nil :noerror))
+            (when found
+              (setq found-text (match-string group))
+              (when extracter
+                (setq found-text (λc extracter found-text)))
+              (push found-text pkg-names)))))
+    (reverse pkg-names)))
+
+(defconst pel--regexp-github-pkg-path
+  "[-[:alnum:]\\.]+/\\([-[:alnum:]\\.]+\\)/master"
+  "Regexp to extract package name from a Github master path.")
+
+(defun pel--extract-pkg-name (github-pkg-path)
+  "Extract package name from a Github package path used in pel_keys."
+  (with-temp-buffer
+    (insert github-pkg-path)
+    (goto-char (point-min))
+    (when (re-search-forward pel--regexp-github-pkg-path nil :noerror)
+      (match-string 1))))
+
+(defun pel-installable-packages ()
+  "Return a list of packages PEL can install."
+  (let ((pkgs-from-elpa (sort (pel--pkg-installed-by-pel pel--regxp-pel-ensure
+                                                         1)
+                              (function string<)))
+        (pkgs-others (sort (pel--pkg-installed-by-pel
+                            pel--regxp-froml-github
+                            2 (function pel--extract-pkg-name))
+                           (function string<))))
+    (list pkgs-from-elpa pkgs-others)))
+
 ;; --
 
 (defun pel-restricted-active-user-option-p (symbol)
@@ -635,6 +688,7 @@ of a restriction lock."
          (n-utils-deps      (- n-utils-all n-utils-base))
          (n-utils-locked    (- n-utils-all n-utils-bdeps))
          (user-options      (pel-user-options))
+         (installable-pkgs  (pel-installable-packages))
          (overview  (format "\
 - custom-file                 : %s
 - package-user-dir            : %s
@@ -642,6 +696,7 @@ of a restriction lock."
 - %3d Utils files   stored in : %s
 - size of load-path           : %d directories
 - Number of PEL user-options  : %3d (%d are active)
+- # packages PEL can install  : %d Elpa-compliant, %d others
 - PEL activated elpa  packages: %s
 - PEL Activated utils files   : %s
 - # loaded files              : %d
@@ -663,6 +718,8 @@ of a restriction lock."
                             (length (seq-filter
                                      (lambda (x) (symbol-value x))
                                      user-options))
+                            (length (car installable-pkgs))
+                            (length (cadr installable-pkgs))
                             (pel--elpa-stats n-elpa-base n-elpa-deps
                                              n-elpa-locked)
                             (pel--elpa-stats n-utils-base n-utils-deps
@@ -678,34 +735,46 @@ of a restriction lock."
                                 (emacs-init-time)
                               "?"))))
     (if full-report
-        (if (pel-in-fast-startup-p)
-            (user-error "PEL is running in fast-startup.  This is only available in normal mode!")
-          (pel-print-in-buffer
-           "*pel-user-options*"
-           "PEL User Option activated packages"
-           (lambda ()
-             "Print full report."
-             (insert (format "\n%s\n
-Elpa packages and Utils files are shown below.  The dependencies
-and lock restrictions are identified.  Note that a package
-required by PEL may also be a dependency of another package; the
-ones identified as dependencies may also be requested by PEL
-user-options.\n"
-                             overview))
-             (pel--show-pkgs-for "Elpa" elpa-all elpa+lock elpa-bdeps
-                                 pel-elpa-packages-to-keep)
-             (pel--show-pkgs-for "Utils" utils-all utils+lock utils-bdeps
-                                 pel-utils-packages-to-keep)
-             (let ((elpa-in-excess (pel-elpa-unrequired))
-                   (utils-in-excess (pel-utils-unrequired)))
-               (if (or elpa-in-excess
-                       utils-in-excess)
-                   (progn
-                     (insert "
+        (progn
+          (when (pel-in-fast-startup-p)
+            (user-error "PEL is running in fast-startup. \
+ This is only available in normal mode!"))
+          (let ((count 0))
+            (pel-print-in-buffer
+             "*pel-user-options*"
+             "PEL User Option activated packages"
+             (lambda ()
+               "Print full report."
+               (insert (format "\n\n%s\n
+Elpa packages and Utils files are shown below.
+The dependencies and lock restrictions are identified.
+Note that a package required by PEL may also be a dependency
+of another package; the ones identified as dependencies may
+also be requested by PEL user-options.\n"
+                               overview))
+               (pel--show-pkgs-for "Elpa" elpa-all elpa+lock elpa-bdeps
+                                   pel-elpa-packages-to-keep)
+               (pel--show-pkgs-for "Utils" utils-all utils+lock utils-bdeps
+                                   pel-utils-packages-to-keep)
+               (let ((elpa-in-excess (pel-elpa-unrequired))
+                     (utils-in-excess (pel-utils-unrequired)))
+                 (if (or elpa-in-excess
+                         utils-in-excess)
+                     (progn
+                       (insert "
 \npel-cleanup would remove the following packages:\n")
-                     (pel--show-pkgs-in-excess-for "Elpa" elpa-in-excess)
-                     (pel--show-pkgs-in-excess-for "Utils" utils-in-excess))
-                 (insert "\n\nNo package is in excess."))))))
+                       (pel--show-pkgs-in-excess-for "Elpa" elpa-in-excess)
+                       (pel--show-pkgs-in-excess-for "Utils" utils-in-excess))
+                   (insert "\n\nNo package is in excess.")))
+               (insert "\n\nList of Elpa-compliant packages PEL can install:\n")
+               (dolist (pkg (car installable-pkgs))
+                 (pel+= count 1)
+                 (insert (format "- %3d: %s\n" count pkg)))
+               (insert "\n\nList of other packages PEL can install:\n")
+               (setq count 0)
+               (dolist (pkg (cadr installable-pkgs))
+                 (pel+= count 1)
+                 (insert (format "- %3d: %s\n" count pkg)))))))
       (message overview))))
 
 

@@ -3999,6 +3999,9 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 
   (add-hook 'outline-minor-mode-hook (function pel--setup-outline-minor-mode)))
 
+(when pel-use-outshine
+  (pel-ensure-package outshine from: melpa))
+
 ;; ---------------------------------------------------------------------------
 ;; Org-Mode Support
 ;; ----------------
@@ -4710,7 +4713,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 (define-pel-global-prefix pel:emacs (kbd "<f11> ? e"))
 (define-key pel:emacs (kbd "C-p") #'list-processes)
 (define-key pel:emacs "c"  'pel-emacs-command-stats)
-(define-key pel:emacs "i"  'pel-imenu--print-vars)
+(define-key pel:emacs "i"  'pel-imenu-print-vars)
 (define-key pel:emacs "o"  'pel-outline-print-vars)
 (define-key pel:emacs "r"  'pel-open-emacs-refcard)
 (define-key pel:emacs "s" #'list-load-path-shadows)
