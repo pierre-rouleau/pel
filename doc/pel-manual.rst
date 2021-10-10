@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-06 18:28:17, updated by Pierre Rouleau.
+:Modified: 2021-10-10 09:59:18, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4377,8 +4377,17 @@ PEL Support for Erlang
 
                         - ``pel-use-erlang``
                         - ``pel-use-edts``
-                        - ``pel-use-erlang-flycheck``
-                        - ``pel-use-erlang-flymake``
+                        - ``pel-use-erlang-ls``
+                        - ``pel-use-helm-lsp``
+                        - ``pel-use-lsp-ivy``
+                        - ``pel-use-treemacs``
+                        - ``pel-use-lsp-treemacs``
+                        - ``pel-use-lsp-origami``
+                        - ``pel-use-erlang-syntax-check``
+                        - ``pel-use-hide-comnt``
+                        - ``pel-use-iedit``
+                        - ``pel-use-smart-dash``
+                        - ``pel-use-smartparens``
 
                       - Configuration:
 
@@ -4393,6 +4402,17 @@ with the integration of several Emacs packages supporting Erlang, and PEL code
 to enhance them in various ways and some extra PEL code that is Erlang
 specific.
 
+PEL extends the facilities of the erlang-mode provided by the `erlang.el file`_.
+It also integrates the features of several other packages to provide better
+overall Erlang support.
+
+PEL provides:
+
+- `enhanced Erlang-specialized electric key behaviour`_
+
+
+
+
 
 PEL provides access to the Tempo skeleton and yasnippet_
 template text insertion systems.  PEL adds functionality to several of the
@@ -4403,11 +4423,83 @@ change those variables).
 Refer to the `PEL Erlang PDF`_ document for more information.
 
 
+Enhanced Erlang-specialized Electric Key Behaviour
+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+PEL integrates and enhances the electric key behaviour provided by erlang.el,
+smartparens and start-dash, adds electric behaviour to some keys and provides
+the ability to configure the electric behaviour of the various electric keys
+by customization but also dynamically during an editing session.  The electric
+keys are:
+
+**RET**:
+  Electric newline: inserts a new line and indents. Activated by default.
+
+**<**:
+  When smartparens-mode is active a ``<<`` automatically inserts the closing
+  ``>>`` and leaves the point in between.
+
+**>**
+  When following a dash in ``->`` automatically inserts a new line and
+  indents.  You can dynamically disable the electric behaviour for the
+  instance of this character by typing ``M-1 >`` after the dash.  Use this for
+  writing code where the returned value is short.
+
+**.**
+  If a period is typed following a dash, as in ``-.`` then ``->`` is inserted
+  in code (but not in comment or a string).
+  This is another way from typing ``->`` without automatically
+  inserting an indented new line.   This behaviour is disabled when the dash
+  follows a ``$`` so you can type ``$-.`` and it will not be converted.
+
+**,**
+  - A comma typed at the end of an Erlang expression automatically inserts a
+    new indented line.
+  - A comma inserted after an opening *parens* character (any of ``(``, ``[``,
+    ``{`` or ``<``) or inside a balanced pair of these characters can trigger
+    the automatic insertion of a space when the
+    **pel-erlang-space-after-comma-in-block** uer-option is turned one.
+    If the behaviour is enabled by user-option it is possible to disable it
+    for the next inserted comma by typing ``M-1 ,``.
+
+**;**
+  - Insert a semicolon character and possibly a function clause head prototype
+    on the next line.
+
+    - Inserts a function clause head prototype when the selection criteria
+      identified by **erlang-electric-comma-criteria** indicates that it
+      should be done.
+
+  - Behaves like the normal semicolon when supplied with a numerical arg,
+    point is inside string or comment, or when there are non-whitespace
+    characters following the point on the current line.
+
+**-**
+
+  When the smart-dash mode is active, typing a dash inserts an underscore
+  following any letter, digit or underscore. Inserts a dash otherwise.
+
+
+With PEL, you can temporary toggle the electric behaviour of one of the above
+characters for the current Emacs editing session, either for the current
+Erlang buffer or for all Erlang buffers.
+
+- To toggle the electric behaviour of one of these characters in the current
+  buffer only, type ``<M-f12> M-``` followed by the character.
+- To toggle the electric behaviour for all Erlang buffers, type an argument
+  prefix before that key sequence.  For example, to disable the electric
+  behaviour of the semicolon in all Erlang buffers,
+  type ``M-- <M-f12> M-```.
+- You can also toggle the automatic insertion of spaces after comma inside
+  blocks by typing ``<M-f12> M-` M-,`` or in all Erlang buffers with
+  ``M-- <M-f12> M-` M-,``.
+
+
 .. _PEL Erlang PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf
 .. _Erlang Programming Language: https://en.wikipedia.org/wiki/Erlang_(programming_language)
 .. _Erlang official Emacs support: https://melpa.org/#/erlang
 .. _erlang-mode: https://github.com/erlang/otp/tree/master/lib/tools/emacs
-.. _erlang.el: https://github.com/erlang/otp/blob/master/lib/tools/emacs/erlang.el
+.. _erlang.el file: https://github.com/erlang/otp/blob/master/lib/tools/emacs/erlang.el
 
 
 PEL Support for Gleam
