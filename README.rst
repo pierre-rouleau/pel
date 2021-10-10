@@ -8,7 +8,7 @@ PEL -- Pragmatic Emacs Library
 
 .. image:: https://img.shields.io/badge/Version->V0.4.0-teal
    :alt: Version
-   :target: https://github.com/pierre-rouleau/pel/blob/master/NEWS
+   :target: https://github.com/pierre-rouleau/pel/blob/master/NEWS#changes-since-version-040
 
 .. image:: https://img.shields.io/badge/Fast-startup-green
    :alt: Version

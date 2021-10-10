@@ -1,6 +1,6 @@
 PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
-* Changed Since Version 0.4.0:
+* Changes Since Version 0.4.0:
 ** Modifications:
 - Modified: modeline commands key binding:
   - changed the *pel:modeline* prefix from ``<f11> M-l`` to ``<f11> M-d``
