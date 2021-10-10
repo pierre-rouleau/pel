@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-10 12:03:24, updated by Pierre Rouleau.
+:Modified: 2021-10-10 12:09:32, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5432,6 +5432,7 @@ code.  Some of them can also be used for other types of Lisp as well.
 - ``pel-lint-elisp-file`` runs Emacs Lisp lint on the current file.
 
 
+---------------------------------------------------------------------------
 
 
 PEL Support for Erlang
@@ -5514,7 +5515,7 @@ keys are:
 **RET**:
   Electric newline: inserts a new line and indents. Activated by default.
 
-**<**:
+**<**
   When smartparens-mode is active a ``<<`` automatically inserts the closing
   ``>>`` and leaves the point in between.
 
