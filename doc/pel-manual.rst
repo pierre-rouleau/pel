@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-10 09:59:18, updated by Pierre Rouleau.
+:Modified: 2021-10-10 10:52:13, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4217,6 +4217,57 @@ Note:
   version of PEL.
   It will be enhanced with upcoming versions.
 
+Language Families
+~~~~~~~~~~~~~~~~~
+
+PEL Support for BEAM-VM Programming Languages
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+PEL supports several BEAM programming languages, including:
+
+- Erlang
+- Elixir
+- LFE (Lisp Flavoured Erlang)
+- Gleam
+
+For the moment support for Erlang and LFE are the most evolved.
+Erlang support is very evolved.  LFE support also because it inhiret the
+capabilities of Lisp-based languages.
+
+Support for Elixir and Gleam is experimental.
+
+PEL Support for Curly-Bracket Programming Languages
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+PEL provides explicit support for the following
+`curly-bracket programming languages`_:
+
+- `C  <https://en.wikipedia.org/wiki/C_(programming_language)>`_
+- `C++ <https://en.wikipedia.org/wiki/C%2B%2B>`_
+- `D <https://en.wikipedia.org/wiki/D_(programming_language)>`_
+
+It also provides experimental support for:
+
+- `Go <https://en.wikipedia.org/wiki/Go_(programming_language)>`_
+- `Rust <https://en.wikipedia.org/wiki/Rust_(programming_language)>`_
+- `V <https://vlang.io>`_
+
+.. _curly-bracket programming languages: https://en.wikipedia.org/wiki/List_of_programming_languages_by_type#Curly-bracket_languages
+
+
+PEL Support For LISP-based Languages
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+PEL provides explicit support for the following
+`LISP-based programming languages`_:
+
+- `Common Lisp <https://en.wikipedia.org/wiki/Common_Lisp>`_
+- `Emacs Lisp  <https://en.wikipedia.org/wiki/Emacs_Lisp>`_
+
+.. _LISP-based programming languages: https://en.wikipedia.org/wiki/Lisp_(programming_language)
+
+
+
 PEL Apple-Script and Audio Narration Support
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4252,19 +4303,10 @@ A couple of other functions are provided to issue Apple-Script commands from Ema
 More information is available in the `Apple-Script`_ PDF table.
 
 
-PEL Support For LISP-based Languages
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-PEL provides explicit support for the following
-`LISP-based programming languages`_:
-
-- `Common Lisp <https://en.wikipedia.org/wiki/Common_Lisp>`_
-- `Emacs Lisp  <https://en.wikipedia.org/wiki/Emacs_Lisp>`_
-
-.. _LISP-based programming languages: https://en.wikipedia.org/wiki/Lisp_(programming_language)
 
 PEL Support for Common Lisp
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :PDF Sheet: `Common Lisp <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-common-lisp.pdf>`_.
 :PEL Customization: - Group: ``pel-pkg-for-clisp``
@@ -4294,7 +4336,7 @@ inside this directory and Emacs can access them locally.
 
 
 PEL Support for Emacs Lisp
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :PDF Sheet: `Emacs Lisp <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-emacs-lisp.pdf>`_, `ERT`_ .
 :PEL Customization: - Group: ``pel-pkg-for-elisp``
@@ -4325,24 +4367,9 @@ code.  Some of them can also be used for other types of Lisp as well.
 - ``pel-lint-elisp-file`` runs Emacs Lisp lint on the current file.
 
 
-PEL Support for BEAM-VM Programming Languages
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-PEL supports several BEAM programming languages, including:
-
-- Erlang
-- Elixir
-- LFE (Lisp Flavoured Erlang)
-- Gleam
-
-For the moment support for Erlang and LFE are the most evolved.
-Erlang support is very evolved.  LFE support also because it inhiret the
-capabilities of Lisp-based languages.
-
-Support for Elixir and Gleam is experimental.
 
 PEL Support for Elixir
-^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~
 
 :PDF Sheet: `Elixir <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-elixir.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-elixir``
@@ -4368,10 +4395,10 @@ elixir-mode_ package.  With it the file extensions ``.exs``, ``.ex``, and
 .. _Elixir programming language: https://en.wikipedia.org/wiki/Elixir_(programming_language)
 
 PEL Support for Erlang
-^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~
 
 :PDF Sheet: `Erlang <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf>`_
-:PEL Customization: - Group: ``pel-pkg-for-erlang``.  Use ``<f21> <f1>`` from and erlang mode buffer.
+:PEL Customization: - Group: ``pel-pkg-for-erlang``.  Use ``<f12> <f1>`` from and erlang mode buffer.
 
                       - Activation:
 
@@ -4396,15 +4423,20 @@ PEL Support for Erlang
 :PEL Key Prefix: - Globally: **pel:for-erlang** : ``<f11> SPC e``
                  - From a buffer in erlang-mode: ``<f12>`` and ``<M-f12>``
 
-PEL provides extensive support for the `Erlang Programming Language`_ via the
-`Erlang official Emacs support`_, the `erlang-mode`_ from `erlang.el`_ along
-with the integration of several Emacs packages supporting Erlang, and PEL code
-to enhance them in various ways and some extra PEL code that is Erlang
-specific.
+PEL provides extensive support for the `Erlang Programming Language`_ using
+and integrating the following:
 
-PEL extends the facilities of the erlang-mode provided by the `erlang.el file`_.
-It also integrates the features of several other packages to provide better
-overall Erlang support.
+- From `Erlang official Emacs support`_ it uses `erlang-mode`_ provided by the
+  `erlang.el file`_,
+
+  - PEL extends the facilities of the erlang-mode provided by the `erlang.el
+    file`_.
+
+- The `smartparens external package`_ provides extra electrical keys and block
+  character pairing control.  PEL code improves its Erlang support.
+- The `smart-dash external package`_ provides the ability to easily type
+  underscore characters in Erlang terms by typing a dash instead.
+
 
 PEL provides:
 
@@ -4423,7 +4455,15 @@ change those variables).
 Refer to the `PEL Erlang PDF`_ document for more information.
 
 
+
+
+.. _smartparens external package: https://github.com/Fuco1/smartparens#readme
+.. _smart-dash external package: https://melpa.org/#/smart-dash
+
+
+
 Enhanced Erlang-specialized Electric Key Behaviour
+
 ++++++++++++++++++++++++++++++++++++++++++++++++++
 
 PEL integrates and enhances the electric key behaviour provided by erlang.el,
@@ -4475,7 +4515,6 @@ keys are:
     characters following the point on the current line.
 
 **-**
-
   When the smart-dash mode is active, typing a dash inserts an underscore
   following any letter, digit or underscore. Inserts a dash otherwise.
 
@@ -4503,7 +4542,7 @@ Erlang buffer or for all Erlang buffers.
 
 
 PEL Support for Gleam
-^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~
 
 :PDF Sheet: `Gleam <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-gleam.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-gleam``
@@ -4521,7 +4560,7 @@ See the `Gleam PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/m
 for more information.
 
 PEL Support for LFE
-^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~
 
 :PDF Sheet: `LFE <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-lfe.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-lfe``
@@ -4543,26 +4582,10 @@ for more information.
 .. _Lisp Flavored Erlang: https://en.wikipedia.org/wiki/LFE_(programming_language)
 
 
-PEL Support for Curly-Bracket Programming Languages
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-PEL provides explicit support for the following
-`curly-bracket programming languages`_:
-
-- `C  <https://en.wikipedia.org/wiki/C_(programming_language)>`_
-- `C++ <https://en.wikipedia.org/wiki/C%2B%2B>`_
-- `D <https://en.wikipedia.org/wiki/D_(programming_language)>`_
-
-It also provides experimental support for:
-
-- `Go <https://en.wikipedia.org/wiki/Go_(programming_language)>`_
-- `Rust <https://en.wikipedia.org/wiki/Rust_(programming_language)>`_
-- `V <https://vlang.io>`_
-
-.. _curly-bracket programming languages: https://en.wikipedia.org/wiki/List_of_programming_languages_by_type#Curly-bracket_languages
 
 PEL Support For C
-^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~
 
 :PDF Sheet: `C <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-c``
@@ -4593,7 +4616,7 @@ on which the c-mode is based via the **pel:for-c** key-map, bounded to the
 
 
 C Style Control
-+++++++++++++++
+^^^^^^^^^^^^^^^
 
 Ideally the editor should support various indentation styles for the C
 preprocessor directives.  A selection of styles is shown in the next section.
@@ -4604,7 +4627,7 @@ I will update this section once this work is done.
 
 
 Indentation of C pre-processor statements
-*****************************************
++++++++++++++++++++++++++++++++++++++++++
 
 All examples are using the bsd indentation style.
 
@@ -4696,7 +4719,7 @@ All examples are using the bsd indentation style.
 
 
 C Code Templates
-++++++++++++++++
+^^^^^^^^^^^^^^^^
 
 PEL supports yasnippet_ for your basic templating needs.
 It also supports the built-in tempo skeleton system which provides a powerful
@@ -4710,7 +4733,7 @@ See the
 and related tables for more information on the various key sequences available.
 
 PEL Tempo Skeleton Templates Flexibility
-****************************************
+++++++++++++++++++++++++++++++++++++++++
 
 Most PEL tempo skeleton based templates use formats that are controlled by Emacs
 user option variables.
@@ -4726,7 +4749,7 @@ special settings for some files.
 This is extremely flexible.
 
 Controlling PEL Tempo Skeletons for C
-*************************************
++++++++++++++++++++++++++++++++++++++
 
 The PEL tempo skeletons used to generate source code come in two major groups:
 
@@ -4755,7 +4778,7 @@ showing these 2 groups within their context.
 
 
 C file module/header block template
-***********************************
++++++++++++++++++++++++++++++++++++
 
 To insert a C file module/header block inside a C file, use
 the ``<f12> <f12> h`` key sequence.  It will prompt for the purpose of the
@@ -4764,7 +4787,7 @@ beginning of the C file according to the user options that are part of the
 ``pel-c-code-style`` customization group.  See the example in the next section.
 
 In a .c C file
->>>>>>>>>>>>>>
+**************
 
 For this example, the CC mode variables and user option variables are all set
 to their default values except the first 4 listed in the following table:
@@ -4928,7 +4951,7 @@ section with the "Module Description" title.  The following section names
 
 
 In a C header file
->>>>>>>>>>>>>>>>>>
+******************
 
 If you use the exact same command inside a C header (``.h``) file, but with
 ``pel-c-skel-with-license`` set to nil to prevent the inclusion of license
@@ -5013,7 +5036,7 @@ or:
 
 
 Using user-specified module/header skeleton
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+*******************************************
 
 The default module/header skeleton with all the user options PEL provides
 might still not generate exactly what you need.  In that case, you can write
@@ -5141,7 +5164,7 @@ there and hit return again to open PEL's file where the function is defined.
 .. _local variables: https://www.gnu.org/software/emacs/manual/html_node/elisp/Local-Variables.html#Local-Variables
 
 C function template
-*******************
++++++++++++++++++++
 
 Insert a C function definition block with the ``<f12> <f12> f`` key sequence.
 
@@ -5180,7 +5203,7 @@ stored in a file that you identify in the user option.
 The following sections provide examples of the supported styles.
 
 Function name and purpose prompts
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+*********************************
 
 All function definition template commands prompt for the function name and the
 purpose of the function.  The prompt maintain an history of the accepted values
@@ -5207,7 +5230,7 @@ the text with a period if it is not already present.
 You can cancel any prompt with the usual ``C-g`` key.
 
 C function definition with no comment block
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+*******************************************
 
 This is the simplest style.
 The ``<f12> <f12> f`` command prompts for the
@@ -5279,7 +5302,7 @@ it is set to an integer value, otherwise it is controlled by the Emacs global
 change the value for the current buffer with the ``C-x f`` command.
 
 C function definition with basic comment block
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+**********************************************
 
 This styles adds a comment block with the function purpose.
 The ``<f12> <f12> f`` command prompts for the
@@ -5304,7 +5327,7 @@ whether the return type is placed on the same line as the function name or just
 above.
 
 C function definition with Man-page style comment block
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+*******************************************************
 
 With C-style comments, ``pel-c-skel-function-name-on-first-column`` set to nil
 (the default), ``pel-c-skel-function-section-titles`` identifying the list
@@ -5384,7 +5407,7 @@ With C++ style comments and ``pel-c-skel-function-name-on-first-column`` set to
 
 
 User selected template for C function definition
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+************************************************
 
 The default function definition header skeleton with all the user options PEL
 provides might still not generate exactly what you need.  In that case, you
@@ -5516,7 +5539,7 @@ You can toggle the **pel-tempo-mode** minor mode with the ``<f12> <f12>
 
 
 PEL Support For C++
-^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~
 
 :PDF Sheet: `C++ <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c++.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-c++``
@@ -5547,7 +5570,7 @@ on which the c++-mode is based via the **pel:for-c++** key-map, bounded to the
 .. _C++ Programming Language: https://en.wikipedia.org/wiki/C%2B%2B
 
 PEL Support For D
-^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~
 
 :PDF Sheet: `D <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-d.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-d``
@@ -5582,7 +5605,7 @@ on which the d-mode is based via the **pel:for-d** key-map, bounded to the
 .. _PEL PDF document for D: pdf/pl_d.pdf
 
 PEL Support for Go
-^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~
 
 :PDF Sheet: `Go <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-go.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-go``
@@ -5603,7 +5626,7 @@ for more information.
 
 
 PEL Support for Rust
-^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~
 
 :PDF Sheet: `Rust <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rust.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-rust``
@@ -5632,7 +5655,7 @@ for more information.
 
 
 PEL Support for V
-^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~
 
 :PDF Sheet: `V <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-v.pdf>`_
 :PEL Customization: - Group: ``pel-pkg-for-v``
@@ -5883,6 +5906,8 @@ extending it with some extra code.
 See the `Unix Shell PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-sh.pdf>`_
 for more information.
 
+
+.. ---------------------------------------------------------------------------
 
 PEL Prompt Utilities
 --------------------
