@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-10 12:01:24, updated by Pierre Rouleau.
+:Modified: 2021-10-10 12:03:24, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5503,8 +5503,7 @@ Refer to the `PEL Erlang PDF`_ document for more information.
 
 
 Enhanced Erlang-specialized Electric Key Behaviour
-
-++++++++++++++++++++++++++++++++++++++++++++++++++
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 PEL integrates and enhances the electric key behaviour provided by erlang.el,
 smartparens and start-dash, adds electric behaviour to some keys and provides
