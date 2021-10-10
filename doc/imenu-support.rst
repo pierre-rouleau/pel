@@ -37,7 +37,7 @@ imenu-generic-expression
 Python
 ------
 
-The imenu variables are not bound at first: the are all nil.
+The imenu variables are not bound at first: they are all nil.
 
 However, the variable ``py-imenu-generic-expression`` is set by the Emacs distributed
 copy of python-mode.el:
