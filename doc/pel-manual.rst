@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-10 12:13:25, updated by Pierre Rouleau.
+:Modified: 2021-10-10 12:24:51, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5586,6 +5586,10 @@ Erlang buffer or for all Erlang buffers.
   blocks by typing ``<M-f12> M-` M-,`` or in all Erlang buffers with
   ``M-- <M-f12> M-` M-,``.
 
+All Electric key behaviour is controlled by customization: The
+**pel-erlang-electric-keys** and **pel-erlang-space-after-comma-in-block**
+user-options must be enabled to activate the electric behaviour.  By default,
+everything is enabled except the automatic space after comma in block.
 
 .. _PEL Erlang PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf
 .. _Erlang Programming Language: https://en.wikipedia.org/wiki/Erlang_(programming_language)
