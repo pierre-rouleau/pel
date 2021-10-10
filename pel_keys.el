@@ -3313,6 +3313,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (define-key pel:erlang-electric (kbd "RET") 'pel-erlang-newline)
       (define-key pel:erlang-electric ";"         'pel-erlang-semicolon)
       (define-key pel:erlang-electric "."         'pel-erlang-period)
+      (when pel-use-smart-dash
+        (define-key pel:erlang-electric "-"       'smart-dash-mode))
       (define-key pel:for-erlang      (kbd "TAB") 'erlang-indent-current-buffer)
       (define-key pel:erlang-function (kbd "TAB") 'erlang-indent-function)
       (define-key pel:erlang-function "N"         'pel-beginning-of-next-defun)
