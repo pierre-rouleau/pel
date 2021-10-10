@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-10 12:09:32, updated by Pierre Rouleau.
+:Modified: 2021-10-10 12:12:14, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4204,6 +4204,8 @@ PEL Package Management Documentation
 PEL provides the  `Packages`_ PDF table listing Emacs commands dealing with
 Emacs package management.
 
+---------------------------------------------------------------------------
+
 PEL Programming Language Support
 --------------------------------
 
@@ -4267,8 +4269,7 @@ PEL provides explicit support for the following
 
 
 
-
-
+---------------------------------------------------------------------------
 
 PEL Apple-Script and Audio Narration Support
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -4307,6 +4308,7 @@ More information is available in the `Apple-Script`_ PDF table.
 
 
 
+---------------------------------------------------------------------------
 
 
 PEL Support For C
@@ -4340,6 +4342,7 @@ on which the c-mode is based via the **pel:for-c** key-map, bounded to the
 **F12** key for each buffer in c-mode.
 
 .. _C Programming Language: https://en.wikipedia.org/wiki/C_(programming_language)
+
 
 
 C Style Control
@@ -5265,6 +5268,8 @@ You can toggle the **pel-tempo-mode** minor mode with the ``<f12> <f12>
 
 
 
+---------------------------------------------------------------------------
+
 PEL Support For C++
 ~~~~~~~~~~~~~~~~~~~
 
@@ -5298,6 +5303,8 @@ on which the c++-mode is based via the **pel:for-c++** key-map, bounded to the
 
 .. _C++ Programming Language: https://en.wikipedia.org/wiki/C%2B%2B
 
+---------------------------------------------------------------------------
+
 PEL Support for Common Lisp
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -5329,6 +5336,8 @@ inside this directory and Emacs can access them locally.
 
 .. _HyperSpec: http://www.lispworks.com/documentation/HyperSpec/Front/index.htm
 
+
+---------------------------------------------------------------------------
 
 PEL Support For D
 ~~~~~~~~~~~~~~~~~
@@ -5368,6 +5377,8 @@ on which the d-mode is based via the **pel:for-d** key-map, bounded to the
 .. _PEL PDF document for D: pdf/pl_d.pdf
 
 
+---------------------------------------------------------------------------
+
 PEL Support for Elixir
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -5397,6 +5408,8 @@ elixir-mode_ package.  With it the file extensions ``.exs``, ``.ex``, and
 
 .. _Elixir programming language: https://en.wikipedia.org/wiki/Elixir_(programming_language)
 
+
+---------------------------------------------------------------------------
 
 PEL Support for Emacs Lisp
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -5581,6 +5594,8 @@ Erlang buffer or for all Erlang buffers.
 .. _erlang.el file: https://github.com/erlang/otp/blob/master/lib/tools/emacs/erlang.el
 
 
+---------------------------------------------------------------------------
+
 PEL Support for Forth
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -5605,6 +5620,8 @@ forth-mode_ package.  With it the file extensions ``.f``, ``.fs``, ``.fth``, and
 .. _Forth programming language: https://en.wikipedia.org/wiki/Forth_(programming_language)
 
 
+---------------------------------------------------------------------------
+
 PEL Support for Gleam
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -5624,6 +5641,8 @@ PEL Support for Gleam
 PEL support for Gleam is experimental.
 See the `Gleam PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-gleam.pdf>`_
 for more information.
+
+---------------------------------------------------------------------------
 
 PEL Support for Go
 ~~~~~~~~~~~~~~~~~~
@@ -5646,6 +5665,8 @@ PEL support for Go is experimental using the go-mode, go-flymake and
 go-flycheck.
 See the `Go PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-go.pdf>`_
 for more information.
+
+---------------------------------------------------------------------------
 
 PEL Support for Janet
 ~~~~~~~~~~~~~~~~~~~~~
@@ -5673,6 +5694,8 @@ See the `Janet PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/m
 for more information.
 
 
+---------------------------------------------------------------------------
+
 PEL Support for Julia
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -5698,7 +5721,9 @@ are automatically recognized as being Julia files.
 
 
 
-PEL Support for LFE
+---------------------------------------------------------------------------
+
+   PEL Support for LFE
 ~~~~~~~~~~~~~~~~~~~
 
 
@@ -5724,6 +5749,7 @@ for more information.
 .. _Lisp Flavored Erlang: https://en.wikipedia.org/wiki/LFE_(programming_language)
 
 
+---------------------------------------------------------------------------
 
 PEL Support for NetRexx
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -5745,6 +5771,8 @@ PEL support for NetRexx is experimental.
 See the `NetRexx PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-netrexx.pdf>`_
 for more information.
 
+---------------------------------------------------------------------------
+
 PEL Support for Nim
 ~~~~~~~~~~~~~~~~~~~
 
@@ -5765,6 +5793,8 @@ PEL support for Nim is experimental.
 See the `Nim PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-nim.pdf>`_
 for more information.
 
+
+---------------------------------------------------------------------------
 
 PEL Support for OCaml
 ~~~~~~~~~~~~~~~~~~~~~
@@ -5789,6 +5819,8 @@ See the `OCaml PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/m
 for more information.
 
 
+---------------------------------------------------------------------------
+
 PEL Support for Perl
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -5809,6 +5841,8 @@ PEL support for Perl is experimental.
 See the `Perl PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-perl.pdf>`_
 for more information.
 
+
+---------------------------------------------------------------------------
 
 PEL Support for Python
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -5834,6 +5868,8 @@ are automatically recognized as being Python files.
 .. _Python programming language: https://en.wikipedia.org/wiki/Python_(programming_language)
 
 
+---------------------------------------------------------------------------
+
 PEL Support for REXX
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -5858,6 +5894,8 @@ forth-mode_ package.  With it the file extensions ``.rexx``, ``.elx``, ``.ncomm`
 .. _REXX programming language: https://en.wikipedia.org/wiki/Rexx
 
 
+---------------------------------------------------------------------------
+
 PEL Support for Ruby
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -5878,6 +5916,8 @@ PEL support for Ruby is experimental.
 See the `Ruby PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-ruby.pdf>`_
 for more information.
 
+
+---------------------------------------------------------------------------
 
 PEL Support for Rust
 ~~~~~~~~~~~~~~~~~~~~
@@ -5912,6 +5952,8 @@ for more information.
 
 
 
+---------------------------------------------------------------------------
+
 PEL Support for Unix Shell
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -5937,6 +5979,8 @@ extending it with some extra code.
 See the `Unix Shell PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-sh.pdf>`_
 for more information.
 
+---------------------------------------------------------------------------
+
 PEL Support for V
 ~~~~~~~~~~~~~~~~~
 
@@ -5959,6 +6003,8 @@ PEL support for the emerging V language is experimental using the v-mode.
 See the `V PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-v.pdf>`_
 for more information.
 
+
+---------------------------------------------------------------------------
 
 .. ---------------------------------------------------------------------------
 
