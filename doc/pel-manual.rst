@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-10 12:12:14, updated by Pierre Rouleau.
+:Modified: 2021-10-10 12:13:25, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4314,9 +4314,9 @@ More information is available in the `Apple-Script`_ PDF table.
 PEL Support For C
 ~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩C: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c.pdf
+.. _𝕻𝔩 - C: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c.pdf
 
-:PDF Sheet: `𝕻𝔩C`_
+:PDF Sheet: `𝕻𝔩 - C`_
 :PEL Customization: - Group: ``pel-pkg-for-c``
 
                       - Activation: *none*
