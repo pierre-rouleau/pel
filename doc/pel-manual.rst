@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-10 11:45:29, updated by Pierre Rouleau.
+:Modified: 2021-10-10 12:01:24, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5268,9 +5268,9 @@ You can toggle the **pel-tempo-mode** minor mode with the ``<f12> <f12>
 PEL Support For C++
 ~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩C++: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c++.pdf
+.. _𝕻𝔩- C++: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c++.pdf
 
-PDF Sheet: `𝕻𝔩C++`_
+:PDF Sheet: `𝕻𝔩- C++`_
 :PEL Customization: - Group: ``pel-pkg-for-c++``
 
                       - Activation: *none*
@@ -5301,9 +5301,9 @@ on which the c++-mode is based via the **pel:for-c++** key-map, bounded to the
 PEL Support for Common Lisp
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩Common Lisp: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-common-lisp.pdf>
+.. _𝕻𝔩 - Common Lisp: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-common-lisp.pdf>
 
-:PDF Sheet: `𝕻𝔩Common Lisp`_
+:PDF Sheet: `𝕻𝔩 - Common Lisp`_
 :PEL Customization: - Group: ``pel-pkg-for-clisp``
 
                       - Activation:    ``pel-use-common-lisp``.
@@ -5333,9 +5333,9 @@ inside this directory and Emacs can access them locally.
 PEL Support For D
 ~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩D: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-d.pdf
+.. _𝕻𝔩 - D: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-d.pdf
 
-:PDF Sheet: `𝕻𝔩D`_
+:PDF Sheet: `𝕻𝔩 - D`_
 :PEL Customization: - Group: ``pel-pkg-for-d``
 
                       - Activation: ``pel-use-d``
@@ -5371,9 +5371,9 @@ on which the d-mode is based via the **pel:for-d** key-map, bounded to the
 PEL Support for Elixir
 ~~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 Elixir: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-elixir.pdf
+.. _𝕻𝔩 - Elixir: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-elixir.pdf
 
-:PDF Sheet: `𝕻𝔩 Elixir`_
+:PDF Sheet: `𝕻𝔩 - Elixir`_
 :PEL Customization: - Group: ``pel-pkg-for-elixir``
 
                       - Activation:
@@ -5401,9 +5401,9 @@ elixir-mode_ package.  With it the file extensions ``.exs``, ``.ex``, and
 PEL Support for Emacs Lisp
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _⨋𝕻𝔩 Emacs Lisp: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-emacs-lisp.pdf
+.. _⨋𝕻𝔩 - Emacs Lisp: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-emacs-lisp.pdf
 
-:PDF Sheet: `⨋𝕻𝔩 Emacs Lisp`_ , `ERT`_ .
+:PDF Sheet: `⨋𝕻𝔩 - Emacs Lisp`_ , `ERT`_ .
 :PEL Customization: - Group: ``pel-pkg-for-elisp``
 
                       - Activation: (*none* to use Emacs Lisp), but there are
@@ -5584,9 +5584,9 @@ Erlang buffer or for all Erlang buffers.
 PEL Support for Forth
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩Forth: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth.pdf
+.. _𝕻𝔩- Forth: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth.pdf
 
-:PDF Sheet: `𝕻𝔩Forth`_
+:PDF Sheet: `𝕻𝔩- Forth`_
 :PEL Customization: - Group: ``pel-pkg-for-forth``
 
                       - Activation: ``pel-use-forth``
@@ -5608,9 +5608,9 @@ forth-mode_ package.  With it the file extensions ``.f``, ``.fs``, ``.fth``, and
 PEL Support for Gleam
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩 Gleam: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-gleam.pdf
+.. _𝕻𝔩 - Gleam: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-gleam.pdf
 
-:PDF Sheet: `𝕻𝔩 Gleam`_
+:PDF Sheet: `𝕻𝔩 - Gleam`_
 :PEL Customization: - Group: ``pel-pkg-for-gleam``
 
                       - Activation: ``pel-use-gleam``
@@ -5628,9 +5628,9 @@ for more information.
 PEL Support for Go
 ~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩Go: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-go.pdf
+.. _𝕻𝔩 - Go: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-go.pdf
 
-:PDF Sheet: `𝕻𝔩Go`_
+:PDF Sheet: `𝕻𝔩 - Go`_
 :PEL Customization: - Group: ``pel-pkg-for-go``
 
                       - Activation: ``pel-use-go``
@@ -5650,9 +5650,9 @@ for more information.
 PEL Support for Janet
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩Janet: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-janet.pdf
+.. _𝕻𝔩 - Janet: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-janet.pdf
 
-:PDF Sheet: `𝕻𝔩Janet`_
+:PDF Sheet: `𝕻𝔩 - Janet`_
 :PEL Customization: - Group: ``pel-pkg-for-janet``
 
                       - Activation:
@@ -5676,9 +5676,9 @@ for more information.
 PEL Support for Julia
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩Julia: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-julia.pdf
+.. _𝕻𝔩 - Julia: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-julia.pdf
 
-:PDF Sheet: `𝕻𝔩Julia`_
+:PDF Sheet: `𝕻𝔩 - Julia`_
 :PEL Customization: - Group: ``pel-pkg-for-julia``
 
                       - Activation: ``pel-use-julia``
@@ -5702,9 +5702,9 @@ PEL Support for LFE
 ~~~~~~~~~~~~~~~~~~~
 
 
-.. _𝕻𝔩LFE: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-lfe.pdf
+.. _𝕻𝔩 - LFE: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-lfe.pdf
 
-:PDF Sheet: `𝕻𝔩LFE`_
+:PDF Sheet: `𝕻𝔩 - LFE`_
 :PEL Customization: - Group: ``pel-pkg-for-lfe``
 
                       - Activation: ``pel-use-lfe``
@@ -5728,9 +5728,9 @@ for more information.
 PEL Support for NetRexx
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩NetRexx: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-netrexx.pdf
+.. _𝕻𝔩 - NetRexx: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-netrexx.pdf
 
-:PDF Sheet: `𝕻𝔩NetRexx`_
+:PDF Sheet: `𝕻𝔩 - NetRexx`_
 :PEL Customization: - Group: ``pel-pkg-for-netrexx``
 
                       - Activation: ``pel-use-netrexx``
@@ -5748,9 +5748,9 @@ for more information.
 PEL Support for Nim
 ~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩Nim: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-nim.pdf
+.. _𝕻𝔩 - Nim: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-nim.pdf
 
-:PDF Sheet: `𝕻𝔩Nim`_
+:PDF Sheet: `𝕻𝔩 - Nim`_
 :PEL Customization: - Group: ``pel-pkg-for-nim``
 
                       - Activation: ``pel-use-nim``
@@ -5769,9 +5769,9 @@ for more information.
 PEL Support for OCaml
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩OCaml: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-ocaml.pdf
+.. _𝕻𝔩 - OCaml: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-ocaml.pdf
 
-:PDF Sheet: `𝕻𝔩OCaml`_
+:PDF Sheet: `𝕻𝔩 - OCaml`_
 :PEL Customization: - Group: ``pel-pkg-for-ocaml``
 
                       - Activation:
@@ -5792,9 +5792,9 @@ for more information.
 PEL Support for Perl
 ~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩Perl: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-perl.pdf
+.. _𝕻𝔩 - Perl: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-perl.pdf
 
-:PDF Sheet: `𝕻𝔩Perl`_
+:PDF Sheet: `𝕻𝔩 - Perl`_
 :PEL Customization: - Group: ``pel-pkg-for-perl``
 
                       - Activation: ``pel-use-perl``
@@ -5813,9 +5813,9 @@ for more information.
 PEL Support for Python
 ~~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩Python: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-python.pdf
+.. _𝕻𝔩 - Python: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-python.pdf
 
-:PDF Sheet: `𝕻𝔩Python`_
+:PDF Sheet: `𝕻𝔩 - Python`_
 :PEL Customization: - Group: ``pel-pkg-for-python``
 
                       - Activation: ``pel-use-python``
@@ -5837,9 +5837,9 @@ are automatically recognized as being Python files.
 PEL Support for REXX
 ~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩REXX: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rexx.pdf
+.. _𝕻𝔩 - REXX: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rexx.pdf
 
-:PDF Sheet: `𝕻𝔩REXX`_
+:PDF Sheet: `𝕻𝔩 - REXX`_
 :PEL Customization: - Group: ``pel-pkg-for-rexx``
 
                       - Activation: ``pel-use-rexx``
@@ -5861,9 +5861,9 @@ forth-mode_ package.  With it the file extensions ``.rexx``, ``.elx``, ``.ncomm`
 PEL Support for Ruby
 ~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩Ruby: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-ruby.pdf
+.. _𝕻𝔩 - Ruby: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-ruby.pdf
 
-:PDF Sheet: `𝕻𝔩Ruby`_
+:PDF Sheet: `𝕻𝔩 - Ruby`_
 :PEL Customization: - Group: ``pel-pkg-for-ruby``
 
                       - Activation: ``pel-use-ruby``
@@ -5882,9 +5882,9 @@ for more information.
 PEL Support for Rust
 ~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩Rust: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rust.pdf
+.. _𝕻𝔩 - Rust: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rust.pdf
 
-:PDF Sheet: `𝕻𝔩Rust`_
+:PDF Sheet: `𝕻𝔩 - Rust`_
 :PEL Customization: - Group: ``pel-pkg-for-rust``
 
                       - Activation:
@@ -5915,9 +5915,9 @@ for more information.
 PEL Support for Unix Shell
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩Unix Shell: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-sh.pdf
+.. _𝕻𝔩 - Unix Shell: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-sh.pdf
 
-:PDF Sheet: `𝕻𝔩Unix Shell`_
+:PDF Sheet: `𝕻𝔩 - Unix Shell`_
 :PEL Customization: - Group: ``pel-pkg-for-sh``
 
                       - Activation: ``pel-use-sh``
@@ -5940,9 +5940,9 @@ for more information.
 PEL Support for V
 ~~~~~~~~~~~~~~~~~
 
-.. _𝕻𝔩V: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-v.pdf
+.. _𝕻𝔩 - V: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-v.pdf
 
-:PDF Sheet: `𝕻𝔩V`_
+:PDF Sheet: `𝕻𝔩 - V`_
 :PEL Customization: - Group: ``pel-pkg-for-v``
 
                       - Activation: ``pel-use-v``
