@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-10 12:24:51, updated by Pierre Rouleau.
+:Modified: 2021-10-11 09:35:06, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5496,7 +5496,13 @@ and integrating the following:
 
 PEL provides:
 
-- `enhanced Erlang-specialized electric key behaviour`_
+- `enhanced Erlang-specialized electric key behaviour`_,
+- `block sensitive deletion`_,
+- `enhanced comment insertion`_,
+- `comments hiding control`_,
+- `outlining support`_
+
+
 
 
 
@@ -5586,7 +5592,7 @@ Erlang buffer or for all Erlang buffers.
   blocks by typing ``<M-f12> M-` M-,`` or in all Erlang buffers with
   ``M-- <M-f12> M-` M-,``.
 
-All Electric key behaviour is controlled by customization: The
+All Electric key behaviour is controlled by customization: the
 **pel-erlang-electric-keys** and **pel-erlang-space-after-comma-in-block**
 user-options must be enabled to activate the electric behaviour.  By default,
 everything is enabled except the automatic space after comma in block.
@@ -5596,6 +5602,67 @@ everything is enabled except the automatic space after comma in block.
 .. _Erlang official Emacs support: https://melpa.org/#/erlang
 .. _erlang-mode: https://github.com/erlang/otp/tree/master/lib/tools/emacs
 .. _erlang.el file: https://github.com/erlang/otp/blob/master/lib/tools/emacs/erlang.el
+
+
+Block Sensitive Deletion
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+When ``smartparens-mode`` is active the forward and backward delete keys do
+not delete a block delimiter character that is part of balanced block
+expression until the content of block is empty.  Once the block is empty the
+delete key deletes the entire empty block.
+
+
+Enhanced Comment Insertion
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+PEL improves the ability to control the number of '%' characters placed at the
+beginning of a comment based on the position into the buffer, the previous
+line and also provides the ability to force a fixed number of '%' characters.
+
+The usual command comments a line or a region with ``%`` or ``%%`` depending
+on the location inside the buffer.
+PEL provides its own command, **pel-erlang-comment-dwim**, bound to the usual
+``M-;`` key, that does the same and provides the supplemental behaviour:
+
+- Insert ``%%%`` comments on the very first line of a buffer and lines that
+  follow a line that starts with ``%%%`` comments.
+- Accepts prefix argument to explicitly identify the number of '%' characters
+  to use.  For example, use ``M-3 M-;`` to use ``%%%`` comment style
+  regardless of the position inside the buffer.
+
+Comments Hiding Control
+^^^^^^^^^^^^^^^^^^^^^^^
+
+When the **pel-use-hide-comnt** user-option is turned on PEL activates the
+hide-comnt library and provides the ``<f11 ; ;`` key binding to toggle the
+display of all comments in the active region or the complete buffer.
+
+
+Outlining Support
+^^^^^^^^^^^^^^^^^
+
+The erlang.el library supports simple outlining is supported by the
+outline-minor-mode provided by Emacs built-in outline library. No IDE-like
+package is required to use it; it's always available for the erlang-mode.
+
+To us it in Erlang buffers you must first activate the **outline-minor-mode**.
+PEL provides the ``<f11> M-l`` key binding for that.  Then you can use any of
+the outline commands to hide or expand the body of the Erlang functions and
+navigate through them easily. The default key binding for the key is under the
+``C-c @`` key prefix.  PEL adds the ``<f2>`` key prefix for the same commands.
+
+You can also modify the default key binding and select something else than
+``C-c @`` by modifying the **outline-mode-minor-prefix** user option.  PEL
+provides the ``<f11> SPC M-l <f3>`` key binding to access the outline
+customization buffer.
+
+More information on outline is available in the `⅀ Outline PDF`_.
+
+
+
+
+.. _⅀ Outline PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/outline.pdf
 
 
 ---------------------------------------------------------------------------
@@ -5727,7 +5794,7 @@ are automatically recognized as being Julia files.
 
 ---------------------------------------------------------------------------
 
-   PEL Support for LFE
+PEL Support for LFE
 ~~~~~~~~~~~~~~~~~~~
 
 
