@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-11 09:35:06, updated by Pierre Rouleau.
+:Modified: 2021-10-11 11:11:57, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5497,10 +5497,11 @@ and integrating the following:
 PEL provides:
 
 - `enhanced Erlang-specialized electric key behaviour`_,
-- `block sensitive deletion`_,
-- `enhanced comment insertion`_,
-- `comments hiding control`_,
-- `outlining support`_
+- `block sensitive deletion for Erlang`_,
+- `enhanced Erlang comment insertion`_,
+- `Erlang comments hiding control`_,
+- `outlining support for erlang`_,
+- `enhanced navigation in Erlang code`_,
 
 
 
@@ -5604,8 +5605,8 @@ everything is enabled except the automatic space after comma in block.
 .. _erlang.el file: https://github.com/erlang/otp/blob/master/lib/tools/emacs/erlang.el
 
 
-Block Sensitive Deletion
-^^^^^^^^^^^^^^^^^^^^^^^^
+Block Sensitive Deletion for Erlang
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When ``smartparens-mode`` is active the forward and backward delete keys do
 not delete a block delimiter character that is part of balanced block
@@ -5613,8 +5614,8 @@ expression until the content of block is empty.  Once the block is empty the
 delete key deletes the entire empty block.
 
 
-Enhanced Comment Insertion
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Enhanced Erlang Comment Insertion
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 PEL improves the ability to control the number of '%' characters placed at the
 beginning of a comment based on the position into the buffer, the previous
@@ -5631,16 +5632,16 @@ PEL provides its own command, **pel-erlang-comment-dwim**, bound to the usual
   to use.  For example, use ``M-3 M-;`` to use ``%%%`` comment style
   regardless of the position inside the buffer.
 
-Comments Hiding Control
-^^^^^^^^^^^^^^^^^^^^^^^
+Erlang Comments Hiding Control
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When the **pel-use-hide-comnt** user-option is turned on PEL activates the
 hide-comnt library and provides the ``<f11 ; ;`` key binding to toggle the
 display of all comments in the active region or the complete buffer.
 
 
-Outlining Support
-^^^^^^^^^^^^^^^^^
+Outlining Support for Erlang
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The erlang.el library supports simple outlining is supported by the
 outline-minor-mode provided by Emacs built-in outline library. No IDE-like
@@ -5659,11 +5660,15 @@ customization buffer.
 
 More information on outline is available in the `⅀ Outline PDF`_.
 
-
-
-
 .. _⅀ Outline PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/outline.pdf
 
+
+
+Enhanced Navigation in Erlang Code
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+PEL provides specialized navigation commands extending what erlang.el
+and smartparens provide.
 
 ---------------------------------------------------------------------------
 
