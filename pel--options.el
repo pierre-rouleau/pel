@@ -3209,10 +3209,13 @@ Identifies the number of levels supported and their adornment.
 
 (defcustom pel-rst-tab-width 2
   "Distance between tab stop for reStructuredText buffers.
+
 PEL stores this in `tab-width' when opening reStructuredText buffers.
-This does *NOT* control the indentation in reStructuredText files,
-only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB characters."
+
+This does *NOT* control the indentation in reStructuredText
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
   :group 'pel-pkg-for-reST
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -3910,12 +3913,19 @@ Values in the [2, 8] range are accepted."
 
 (defcustom pel-c-tab-width 4
   "Distance between tab stop for C source code.
+
 PEL stores this in `tab-width' when editing buffer with C source.
-This does *NOT* control the indentation in C source code, it is used
-only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB characters.
-It is often the same value as `pel-c-indent-width', if it is different
-it should probably be a multiple of `pel-c-indent-width'.
+
+This does *NOT* control the indentation in C source code.
+It is used, however, to control the display rendering of hard tab
+characters inserted inside source code and by commands that move
+point to tab stop positions such as `tab-to-tab-stop', and the
+display of hard TAB characters.
+
+It is often the same value as `pel-c-indent-width', if it is
+different it should probably be a multiple of
+`pel-c-indent-width'.
+
 Values in the [2, 8] range are accepted."
   :group 'pel-c-code-style
   :type 'integer
@@ -4386,12 +4396,17 @@ Values in the [2, 8] range are accepted."
 
 (defcustom pel-c++-tab-width 3
   "Distance between tab stop for C++ source code.
+
 PEL stores this in `tab-width' when editing buffer with C++ source.
-This does *NOT* control the indentation in C++ source code, it is used
-only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB characters.
-It is often the same value as `pel-c++-indent-width', if it is different
-it should probably be a multiple of `pel-c++-indent-width'.
+It is used, however, to control the display rendering of hard tab
+characters inserted inside source code and by commands that move
+point to tab stop positions such as `tab-to-tab-stop', and the
+display of hard TAB characters.
+
+It is often the same value as `pel-c++-indent-width', if it is
+different it should probably be a multiple of
+`pel-c++-indent-width'.
+
 Values in the [2, 8] range are accepted."
   :group 'pel-c++-code-style
   :type 'integer
@@ -4921,12 +4936,18 @@ Values in the [2, 8] range are accepted."
 
 (defcustom pel-d-tab-width 4
   "Distance between tab stop for D source code.
+
 PEL stores this in `tab-width' when editing buffer in `d-mode'.
-This does *NOT* control the indentation in D source code, it is used
-only for commands that mode point to tab stop positions and the
+
+This does *NOT* control the indentation in D source code.
+It is used, however, to control the display rendering of hard tab
+characters inserted inside source code and by commands that move
+point to tab stop positions such as `tab-to-tab-stop', and the
 display of hard TAB characters.
-It is often the same value as `pel-d-indent-width', if it is different
-it should probably be a multiple of `pel-d-indent-width'."
+
+It is often the same value as `pel-d-indent-width', if it is
+different it should probably be a multiple of
+`pel-d-indent-width'."
   :group 'pel-d-code-style
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -5040,12 +5061,13 @@ Do not enter lambda expressions."
 (defcustom pel-go-tab-width 8
   "Hard-tab display width used for Go source code.
 
-The Go programming language requires that Go source code file be processed by
-the gofmt utility which re-formats the file according to official Go style.
-That style requires that hard tab be used for indentation.  By default,
-a hard-tab is displayed with a width of 8 columns. You can safely change
-it to any number between 2 and 8.  It changes the way the code looks inside
-an Emacs Go buffer, but does not change the content of the file."
+The Go programming language requires that Go source code file be
+processed by the gofmt utility which re-formats the file
+according to official Go style. That style requires that hard tab
+be used for indentation. By default, a hard-tab is displayed with
+a width of 8 columns. You can safely change it to any number
+between 2 and 8. It changes the way the code looks inside an
+Emacs Go buffer, but does not change the content of the file."
   :group 'pel-pkg-for-go
   :type 'integer
   :safe 'pel-indent-valid-p)
@@ -6866,12 +6888,17 @@ of the value of the `pel-use-erlang-syntax-check' user-option."
 
 (defcustom pel-erlang-fill-column 100
   "Column beyond which automatic line-wrapping should happen in Erlang code.
+
 Can either be nil or an integer value.
+
 When set to nil, Emacs user option variable `fill-column' value
-is used for `erlang-mode' buffers, otherwise the integer value specified by
-this value is stored in `fill-column' for Erlang source code files.
-The default is 100, a value recommended by the Inaka's Erlang Coding
-Standards & Guidelines."
+is used for `erlang-mode' buffers, otherwise the integer value
+specified by this value is stored in `fill-column' for Erlang
+source code files.
+
+The default is 100, a value recommended by the Inaka's Erlang
+Coding Standards & Guidelines."
+  :group 'pel-pkg-for-erlang
   :group 'pel-erlang-code-style
   :type '(choice
           (const   :tag "Use the default fill-column value." nil)
@@ -6879,6 +6906,38 @@ Standards & Guidelines."
   :link '(url-link :tag "Inka Erlang Guideline"
                    "https://github.com/inaka/erlang_guidelines#\
 100-column-per-line"))
+
+
+(defcustom pel-erlang-tab-width 8
+  "Distance between tab stop for Erlang source code.
+
+PEL stores this in `tab-width' when editing buffer with Erlang source.
+
+This does *NOT* control the indentation in Erlang source code.
+It is used, however, to control the display rendering of hard tab
+characters inserted inside source code and by commands that move
+point to tab stop positions such as `tab-to-tab-stop', and the
+display of hard TAB characters.
+
+The indentation of Erlang code is mostly controlled by
+`erlang-indent-level'. If `pel-erlang-tab-width' differs
+`erlang-indent-level' then `pel-erlang-tab-width' should be a
+multiple of `erlang-indent-level' in case hard tabs have been
+inserted inside the source code.
+
+Values in the [2, 8] range are accepted."
+  :group 'pel-erlang-code-style
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-erlang-use-tabs nil
+  "Value of `indent-tabs-mode' for editing Erlang source code.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-erlang
+  :group 'pel-erlang-code-style
+  :type 'boolean
+  :safe #'booleanp)
 
 
 ;; Note: the symbol names used in the following defcustom MUST
@@ -7327,10 +7386,16 @@ Do not enter lambda expressions."
 
 (defcustom pel-python-tab-width 4
   "Distance between tab stop for buffers in `python-mode'.
+
 PEL stores this in `tab-width' when opening Python buffers.
-This does *NOT* control the indentation in Python files,
-only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB characters."
+
+This does *NOT* control the indentation in Python files.
+It is used, however, to control the display rendering of hard tab
+characters inserted inside source code and by commands that move
+point to tab stop positions such as `tab-to-tab-stop', and the
+display of hard TAB characters.
+
+Values in the [2, 8] range are accepted."
   :group 'pel-pkg-for-python
   :type 'integer
   :safe 'pel-indent-valid-p)
