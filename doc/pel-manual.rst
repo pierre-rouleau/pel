@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-11 20:51:47, updated by Pierre Rouleau.
+:Modified: 2021-10-12 16:15:10, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5494,14 +5494,17 @@ and integrating the following:
   underscore characters in Erlang terms by typing a dash instead.
 
 
-PEL provides:
+For Erlang, PEL provides several enhancements to the default behaviour
+provided by the erlang.el code, including the following:
 
 - `enhanced Erlang-specialized electric key behaviour`_,
 - `block sensitive deletion for Erlang`_,
 - `enhanced Erlang comment insertion`_,
 - `Erlang comments hiding control`_,
-- `outlining support for erlang`_,
-- `Indentation in Erlang`_
+- `outlining support for Erlang`_,
+- `Erlang-specific display rendering of hard tabs`_,
+- `Erlang-specific insertion of hard tabs for indentation`_,
+- `Erlang-specific Indentation control`_,
 - `enhanced navigation in Erlang code`_,
 
 
@@ -5738,18 +5741,175 @@ More information on outline is available in the `⅀ Outline PDF`_.
 .. _⅀ Outline PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/outline.pdf
 
 
-Indentation in Erlang
-^^^^^^^^^^^^^^^^^^^^^
+Erlang-specific Display Rendering of hard tabs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The visual horizontal rendering of hard tab present in the Erlang source code
+is controlled by the value of the **tab-width** variable as seen by Emacs for
+an Erlang buffer.  Emacs provides the **tab-width** global user-option for
+this and PEL provides the Erlang-specific **pel-erlang-tab-width**
+user-option and sets tab-width to the value of pel-erlang-tab-with in each
+erlang-mode buffer to control the display rendering of hard tab characters in
+Erlang source code.
+
+**Group: editing-basics**
+
+tab-with:
+   Distance between tab stops (for display of tab characters), in columns.
+
+   - This controls the display width of a TAB character, and not
+     the size of an indentation step.
+     This should be an integer greater than zero.
+   - PEL overrides this value with the value of **pel-erlang-tab-width** for
+     all buffers using the erlang-mode.
+
+**Group: pel-erlang-code-style**
+
+pel-erlang-tab-width:
+   Distance between tab stop for Erlang source code.
+
+   - PEL stores this in ``tab-width`` when editing buffer with Erlang source.
+   - This does *NOT* control the indentation in Erlang source code.
+     It is used, however, to control the display rendering of hard tab
+     characters inserted inside source code and by commands that move
+     point to tab stop positions such as ``tab-to-tab-stop``, and the
+     display of hard TAB characters.
+   - The indentation of Erlang code is mostly controlled by
+     ``erlang-indent-level``. If ``pel-erlang-tab-width`` differs
+     ``erlang-indent-level`` then ``pel-erlang-tab-width`` should be a
+     multiple of ``erlang-indent-level`` in case hard tabs have been
+     inserted inside the source code.
+   - Values in the [2, 8] range are accepted.
 
 
-- tab-width
-- erlang-tab-always-indent
-- erlang-argument-indent
-- erlang-icr-indent
-- erlang-indent-guard
-- erlang-indent-level
+Erlang-specific Insertion of hard tabs for indentation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- pel-erlang-fill-column
+The insertion of hard tab characters (ASCII Horizontal Tab, 0x09) when
+horizontal indentation space is inserted inside the Erlang source code file is
+controlled by the value of **indent-tab-mode** variable in the current
+buffer.   The default value is normally controlled by the customizable value
+it has globally.  However, PEL provides the **pel-erlang-use-tabs**
+user-option and sets the value of ``indent-tab-mode`` with the value of
+``pel-erlang-use-tabs`` in all erlang-mode buffers to explicitly control this
+behaviour in Erlang source code.
+
+**Group: indent**
+
+indent-tabs-mode:
+  Indentation can insert tabs if this is non-nil.
+
+**Group: pel-erlang-code-style**
+
+pel-erlang-use-tabs:
+  Value of ‘indent-tabs-mode’ for editing Erlang source code.
+
+  - If set to nil: only spaces are used for indentation.
+  - If set to t: hard tabs are used when possible.
+
+Erlang-Specific Indentation Control
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Indentation of Erlang source code is controlled by several user-options,
+listed below.
+
+PEL provides an additional control for the Emacs
+**fill-column** which identifies the column where automatic wrapping is done:
+the **pel-erlang-fill-column** set the ``fill-column`` value from the
+``pel-erlang-fill-column`` in erlang-mode buffers.
+
+NOTE for new Emacs users:
+  New Emacs users may find the behaviour of the TAB key puzzling.
+  Pressing the TAB key does not insert spaces to the location of the
+  indentation level the way several editors handle it.
+
+  Instead, pressing TAB will adjust the horizontal indentation of the current
+  line if the line indentation must be adjusted and will do nothing otherwise.
+  However, you can press the TAB key *anywhere* on the line to adjust its
+  indentation!  You can also select a larger text section and hit TAB to
+  adjust the indentation of all the lines!
+
+  It takes some time to get used to this behaviour but soon you will find it
+  invaluable. Emacs automatically adjusts the indentation of the code using
+  its knowledge of the Erlang syntax and the various user-options described
+  below.
+
+
+**Group: erlang**
+
+erlang-argument-indent:
+  Indentation of the first argument in a function call.
+
+  - When nil, indent to the column after the ‘(’ of the
+    function.
+  - Default: 2
+
+erlang-icr-indent:
+  Indentation of Erlang if/case/receive patterns.
+
+  - nil means keeping default behaviour.
+  - When non-nil, indent to the column of if/case/receive.
+  - Default: nil
+
+erlang-indent-guard:
+  Indentation of Erlang guards.
+
+  - Default: 2
+
+erlang-indent-level:
+  Indentation of Erlang calls/clauses within blocks.
+
+  - Default: 4
+
+erlang-tab-always-indent:
+  Non-nil means the TAB key in Erlang mode should always re-indent the current line,
+  regardless of where in the line point is when the TAB key is pressed.
+
+  - Default: t
+
+**Group: pel-erlang-code-style**
+
+pel-erlang-fill-column:
+  Column beyond which automatic line-wrapping should happen in Erlang code.
+
+  - Can either be nil or an integer value.
+  - When set to nil, Emacs user option variable ‘fill-column’ value
+    is used for ‘erlang-mode’ buffers, otherwise the integer value specified by
+    this value is stored in ‘fill-column’ for Erlang source code files.
+  - The default is 100, a value recommended by the
+    `Inaka’s Erlang Coding Standards & Guidelines`_.
+
+
+
+
+**Group: indent**
+
+indent-line-function:
+  Function to indent the current line.
+
+  - This function will be called with no arguments.
+  - If it is called somewhere where auto-indentation cannot be done
+    (e.g. inside a string), the function should simply return ‘noindent’.
+  - Setting this function is all you need to make TAB indent appropriately.
+    Don’t rebind TAB unless you really need to.
+
+  - Default for Erlang buffers: ``erlang-indent-command``
+
+indent-tab-mode:
+  Indentation can insert tabs if this is non-nil.
+
+tab-always-indent:
+tab-stop-list:
+tab-width:
+
+c-default-style:
+
+c-basic-offset:
+
+c-set-offset:
+
+.. _Inaka’s Erlang Coding Standards & Guidelines: https://github.com/inaka/erlang_guidelines#100-column-per-line
+
 
 Enhanced Navigation in Erlang Code
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
