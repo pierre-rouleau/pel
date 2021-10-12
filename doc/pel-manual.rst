@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-12 18:04:32, updated by Pierre Rouleau.
+:Modified: 2021-10-12 18:49:09, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5506,7 +5506,8 @@ provided by the erlang.el code, including the following:
 #. `Erlang-specific insertion of hard tabs for indentation`_,
 #. `Erlang-specific Indentation control`_,
 #. `enhanced navigation in Erlang code`_,
-
+#. `Erlang-specific code transformation commands`_,
+#. `enhanced Erlang symbol identification with superword-mode`_,
 
 
 
@@ -5605,9 +5606,19 @@ everything is enabled except the automatic space after comma in block.
 User-Options for Erlang Electric Key Behaviour
 ++++++++++++++++++++++++++++++++++++++++++++++
 
+
+:Group: pel-pkg-for-parens
+:Key:   ``<f11> i <f2>``, select Pel Pkg For Parens.
+
+Activate **pel-use-smartparens** to add the ``<< >>`` pair management as
+well as other behaviours described in the navigation and code transformation
+sections below.
+
+
 :Group: erlang
 :Key:   - Globally: ``<f11> SPC e <f3>``
         - From erlang-mode buffer: ``<f12> <f3>``
+
 
 erlang-electric-semicolon-insert-blank-lines:
   This variable controls the behaviour of ‘erlang-electric-semicolon’
@@ -5953,8 +5964,71 @@ indent-line-function:
 Enhanced Navigation in Erlang Code
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+:Group: pel-pkg-for-parens
+:Key:   ``<f11> i <f2>``, select Pel Pkg For Parens.
+
 PEL provides specialized navigation commands extending what erlang.el
-and smartparens provide.
+and smartparens provide when the **pel-use-smartparens** user-option is turned
+on.  The extra commands include:
+
+- move backward and forward to blocks jumping over strings and comments,
+- move down and up a block *tree* (in and out of nested lists).
+
+
+See the `𝕻𝔩 - Erlang`_ PDF for more information and examples.
+
+
+Erlang-specific Code Transformation Commands
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+:Group: pel-pkg-for-parens
+:Key:   ``<f11> i <f2>``, select Pel Pkg For Parens.
+
+PEL provides enhanced specialized code transformation commands for Erlang
+that smartparens provide.  PEL enhances the smartparens code;  smartparens by
+itself does not deal properly with comma separated blocks of values such as
+Erlang lists or function argument lists.
+
+The additional commands operate on balanced pair blocks of ``( )``, ``[ ]``,
+``{ }`` and ``<< >>`` for some of them.  The commands include:
+
+- transpose
+- slurp and barf
+- wrap, re-wrap and unwrap blocks,
+- split and join blocks.
+
+See the `𝕻𝔩 - Erlang`_ PDF for more information and examples.
+
+
+:Group: pel-pkg-for-highlight
+:Key:   ``<f11> h <f2> 1``
+
+
+PEL also provides access to the iedit-mode; a very-useful minor mode you can
+use to search and modify various names inside a buffer.  Activate iedit by
+setting the **pel-use-iedit** user-option on.
+
+
+Enhanced Erlang Symbol Identification With superword-mode
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+:Group: pel-pkg-for-text-modes
+:Key: ``<f11> t <f2>``
+
+As Erlang uses `snake-case`_, PEL automatically activates the `superword-mode`_
+for Erlang by including the erlang-mode in the
+**pel-modes-activating-superword-mode** user variable default.  PEL also
+provides key-bindings to the command that dynamically toggles the mode.
+Inside any erlang-mode buffer you can type ``<f12> M-p`` or the ``<M-f12>
+M-p`` key sequences to toggle the mode on and off.
+
+Using the superword-mode helps searching for Erlang terms.  It also helps
+selecting them when using the extremely useful er/expand-region command which
+is bound to the ``M-=`` key (and also the ``<f11> . =`` key sequence).
+
+.. _snake-case: https://en.wikipedia.org/wiki/Snake_case
+.. _superword-mode:  https://www.gnu.org/software/emacs/manual/html_node/emacs/Misc-for-Programs.html#Misc-for-Programs
+
 
 ---------------------------------------------------------------------------
 
