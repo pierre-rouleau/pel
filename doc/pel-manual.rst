@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-12 16:26:06, updated by Pierre Rouleau.
+:Modified: 2021-10-12 16:53:41, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5497,15 +5497,15 @@ and integrating the following:
 For Erlang, PEL provides several enhancements to the default behaviour
 provided by the erlang.el code, including the following:
 
-- `enhanced Erlang-specialized electric key behaviour`_,
-- `block sensitive deletion for Erlang`_,
-- `enhanced Erlang comment insertion`_,
-- `Erlang comments hiding control`_,
-- `outlining support for Erlang`_,
-- `Erlang-specific display rendering of hard tabs`_,
-- `Erlang-specific insertion of hard tabs for indentation`_,
-- `Erlang-specific Indentation control`_,
-- `enhanced navigation in Erlang code`_,
+#. `enhanced Erlang-specialized electric key behaviour`_,
+#. `block sensitive deletion for Erlang`_,
+#. `enhanced Erlang comment insertion`_,
+#. `Erlang comments hiding control`_,
+#. `outlining support for Erlang`_,
+#. `Erlang-specific display rendering of hard tabs`_,
+#. `Erlang-specific insertion of hard tabs for indentation`_,
+#. `Erlang-specific Indentation control`_,
+#. `enhanced navigation in Erlang code`_,
 
 
 
@@ -5863,7 +5863,9 @@ erlang-indent-level:
 
 erlang-tab-always-indent:
   Non-nil means the TAB key in Erlang mode should always re-indent the current line,
-  regardless of where in the line point is when the TAB key is pressed.
+  regardless of where in the line point is when the TAB key is pressed.  This
+  is stored into the global ``tab-always-indent``.
+
 
   - Default: t
 
@@ -5898,15 +5900,25 @@ indent-line-function:
 indent-tab-mode:
   Indentation can insert tabs if this is non-nil.
 
-tab-always-indent:
+
 tab-stop-list:
-tab-width:
+  List of tab stop positions used by ‘tab-to-tab-stop’.
 
-c-default-style:
+  - This should be nil, or a list of integers, ordered from smallest to largest.
+  - It implicitly extends to infinity through repetition of the last step.
+    For example, (1 2 5) is equivalent to (1 2 5 8 11 ...).  If the list has
+    fewer than 2 elements, ‘tab-width’ is used as the "last step".
+    A value of nil means a tab stop every ‘tab-width’ columns.
+  - For Erlang this is nil by default.
 
-c-basic-offset:
 
-c-set-offset:
+
+..
+   c-default-style:
+
+   c-basic-offset:
+
+   c-set-offset:
 
 .. _Inaka’s Erlang Coding Standards & Guidelines: https://github.com/inaka/erlang_guidelines#100-column-per-line
 
