@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-04 18:45:13, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-12 10:41:52, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -207,6 +207,14 @@ See `pel-turn-mode-on-when-off' for more info."
      (defvar ,sym)
      ;; now set the symbol to the specified value
      (setq ,sym ,val)))
+
+(defmacro pel-setq-local (sym val)
+  "Set a symbol SYM to specified value VAL in local buffer and prevent warning."
+  `(progn
+     ;; declare the symbol to prevent lint warning
+     (defvar ,sym)
+     ;; now set the symbol to the specified value
+     (setq-local ,sym ,val)))
 
 (defmacro pel-setq-default (sym val)
   "Set a symbol SYM to specified default value VAL and prevent warning."
