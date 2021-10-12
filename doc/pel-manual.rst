@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-12 18:02:12, updated by Pierre Rouleau.
+:Modified: 2021-10-12 18:04:32, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5661,7 +5661,7 @@ pel-erlang-electric-keys:
   - To disable the electric behaviour of a character un-check the
     corresponding box.
   - PEL also supports dynamically toggling the electric behaviour of
-    a key with the ``<M-f12> ~M-``` prefix followed by the specific key.
+    a key with the ``<M-f12> M-``` prefix followed by the specific key.
   - Additionally PEL activates another electric behaviour to the comma,
     by automatically inserting a space after a colon typed inside blocks.
     This is controlled by ‘pel-erlang-space-after-comma-in-blocks’.
@@ -5672,11 +5672,11 @@ pel-erlang-space-after-comma-in-blocks:
   - For this to work, the ``pel-erlang-electric-keys`` must activate the
     electric comma.
   - You can also dynamically toggle the electric behaviour of the comma key by
-    using the ``pel-erlang-comma`` command,  mapped to "<M-f12> M-` ," in
+    using the ``pel-erlang-comma`` command,  mapped to ``<M-f12> M-` ,`` in
     Erlang buffers.
   - If you want to keep the electric behaviour of the comma key, but temporary
     want to disable adding spaces after a comma inside the current Erlang buffer,
-    use the "<M-f12> M-` M," to toggle this behaviour off and on.
+    use the ``<M-f12> M-` M-,`` to toggle this behaviour off and on.
 
 
 
