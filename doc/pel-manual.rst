@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-12 16:15:10, updated by Pierre Rouleau.
+:Modified: 2021-10-12 16:26:06, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5754,7 +5754,7 @@ Erlang source code.
 
 **Group: editing-basics**
 
-tab-with:
+tab-width:
    Distance between tab stops (for display of tab characters), in columns.
 
    - This controls the display width of a TAB character, and not
