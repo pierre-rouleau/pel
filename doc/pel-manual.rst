@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-12 17:59:18, updated by Pierre Rouleau.
+:Modified: 2021-10-12 18:02:12, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5691,7 +5691,7 @@ Block Sensitive Deletion for Erlang
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 :Group: pel-pkg-for-parens
-:Key:   ``<f11> i <f2>``, select ``Pel Pkg For Parens``.
+:Key:   ``<f11> i <f2>``, select Pel Pkg For Parens.
 
 When ``smartparens-mode`` is active (as selected by the
 **pel-use-smartparens** user-option), the forward and backward delete keys do
