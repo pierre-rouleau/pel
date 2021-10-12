@@ -1056,7 +1056,8 @@ Then save your changes."
 ;; - Function Keys - <f11> top-level prefix keys
 
 
-(define-key pel: (kbd      "M-.")          'pel-syntax-at-point)
+(define-key pel: (kbd "M-.") 'pel-syntax-at-point)
+(define-key pel: (kbd "M-t") 'pel-set-tab-width)
 
 (defun pel--global-windmove-on (prefix)
   "Bind windmove commands on PREFIX key followed by cursor."
@@ -2194,29 +2195,30 @@ MODE must be a symbol."
                                     ".l"
                                     ".jison"))))
 
-  (pel-config-major-mode c pel:for-c
-    ;; Configure the CC Mode style for C from PEL custom variables
-    ;; 1) set the style: it identifies everything
-    (pel--set-cc-style 'c-mode pel-c-bracket-style pel-c-newline-mode)
-    ;; 2) apply modifications requested by PEL user options.
-    ;; 2a) set variables always available in Emacs
-    (setq tab-width          pel-c-tab-width
-          indent-tabs-mode   pel-c-use-tabs)
-    ;; 2b) set variables only available in a CC mode - prevent warnings
-    (pel-setq c-basic-offset pel-c-indent-width)
-    ;; 3) set fill-column to PEL specified C's default if specified
-    (when pel-c-fill-column
-      (setq fill-column pel-c-fill-column))
-    ;; 4) Set default auto-newline mode as identified by PEL user option
-    (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
-    ;; 5) Configure M-( to put parentheses after a function name.
-    (set (make-local-variable 'parens-require-spaces) nil)
-    ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
-    (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
-    ;; 7) Install language-specific skeletons
-    (pel--install-c-skel pel:c-skel)
-    ;; 8) extra setup
-    (pel--setup-for-cc)))
+  (pel-eval-after-load cc-mode
+    (pel-config-major-mode c pel:for-c
+      ;; Configure the CC Mode style for C from PEL custom variables
+      ;; 1) set the style: it identifies everything
+      (pel--set-cc-style 'c-mode pel-c-bracket-style pel-c-newline-mode)
+      ;; 2) apply modifications requested by PEL user options.
+      ;; 2a) set variables always available in Emacs
+      (setq-local tab-width pel-c-tab-width)
+      (setq-local indent-tabs-mode pel-c-use-tabs)
+      ;; 2b) set variables only available in a CC mode - prevent warnings
+      (pel-setq-local c-basic-offset pel-c-indent-width)
+      ;; 3) set fill-column to PEL specified C's default if specified
+      (when pel-c-fill-column
+        (setq-local fill-column pel-c-fill-column))
+      ;; 4) Set default auto-newline mode as identified by PEL user option
+      (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+      ;; 5) Configure M-( to put parentheses after a function name.
+      (set (make-local-variable 'parens-require-spaces) nil)
+      ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
+      (pel-local-set-f12-M-f12 'pel:for-c-preproc "#")
+      ;; 7) Install language-specific skeletons
+      (pel--install-c-skel pel:c-skel)
+      ;; 8) extra setup
+      (pel--setup-for-cc))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C`` : C++ programming utilities
@@ -2246,30 +2248,31 @@ MODE must be a symbol."
     (define-key pel:for-c++ "u" 'pel-render-commented-plantuml))
   (pel--map-cc-for pel:for-c++ pel:for-c++-preproc)
 
-  (pel-config-major-mode c++ pel:for-c++
-    ;; "Set the environment for editing C++ files."
-    ;; Configure the CC Mode style for C++ from PEL custom variables
-    ;; 1) set the style: it identifies everything
-    (pel--set-cc-style 'c++-mode pel-c++-bracket-style pel-c++-newline-mode)
-    ;; 2)  apply modifications requested by PEL user options.
-    ;; 2a) set variables always available in Emacs
-    (setq tab-width          pel-c++-tab-width
-          indent-tabs-mode   pel-c++-use-tabs)
-    ;; 2b) set variables only available in a CC mode - prevent warnings
-    (pel-setq c-basic-offset pel-c++-indent-width)
-    ;; 3) set fill-column to PEL specified C++'s default if specified
-    (when pel-c++-fill-column
-      (setq fill-column pel-c++-fill-column))
-    ;; 4) Set default auto-newline mode as identified by PEL user option
-    (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
-    ;; 5) Configure M-( to put parentheses after a function name.
-    (set (make-local-variable 'parens-require-spaces) nil)
-    ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
-    (pel-local-set-f12-M-f12 'pel:for-c++-preproc "#")
-    ;; 7) Install language-specific skeletons
-    (pel--install-c++-skel pel:c++-skel)
-    ;; 8) extra setup
-    (pel--setup-for-cc)))
+  (pel-eval-after-load cc-mode
+    (pel-config-major-mode c++ pel:for-c++
+      ;; "Set the environment for editing C++ files."
+      ;; Configure the CC Mode style for C++ from PEL custom variables
+      ;; 1) set the style: it identifies everything
+      (pel--set-cc-style 'c++-mode pel-c++-bracket-style pel-c++-newline-mode)
+      ;; 2)  apply modifications requested by PEL user options.
+      ;; 2a) set variables always available in Emacs
+      (setq-local tab-width          pel-c++-tab-width)
+      (setq-local indent-tabs-mode pel-c++-use-tabs)
+      ;; 2b) set variables only available in a CC mode - prevent warnings
+      (pel-setq c-basic-offset pel-c++-indent-width)
+      ;; 3) set fill-column to PEL specified C++'s default if specified
+      (when pel-c++-fill-column
+        (setq fill-column pel-c++-fill-column))
+      ;; 4) Set default auto-newline mode as identified by PEL user option
+      (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+      ;; 5) Configure M-( to put parentheses after a function name.
+      (set (make-local-variable 'parens-require-spaces) nil)
+      ;; 6) activate mode specific sub-key prefixes in <f12> and <M-f12>
+      (pel-local-set-f12-M-f12 'pel:for-c++-preproc "#")
+      ;; 7) Install language-specific skeletons
+      (pel--install-c++-skel pel:c++-skel)
+      ;; 8) extra setup
+      (pel--setup-for-cc))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC D`` : D programming utilities
@@ -2311,27 +2314,28 @@ d-mode not added to ac-modes!"
     (pel-autoload-file company-dcd for: company-dcd-mode)
     (add-hook 'd-mode-hook 'company-dcd-mode))
 
-  (pel-config-major-mode d pel:for-d
-    ;; "Set the environment for editing D files."
-    ;; Configure the CC Mode style for C++ from PEL custom variables
-    ;; 1) set the style: it identifies everything
-    (pel--set-cc-style 'd-mode pel-d-bracket-style pel-d-newline-mode)
-    ;; 2)  apply modifications requested by PEL user options.
-    ;; 2a) set variables always available in Emacs
-    (setq tab-width          pel-d-tab-width
-          indent-tabs-mode   pel-d-use-tabs)
-    ;; 2b) set variables only available in a CC mode - prevent warnings
-    (pel-setq c-basic-offset pel-d-indent-width)
-    ;; 3) set fill-column to PEL specified D's default if specified
-    (when pel-d-fill-column
-      (setq fill-column pel-d-fill-column))
-    ;; 4) Set default auto-newline mode as identified by PEL user option
-    (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
-    ;; Configure M-( to put parentheses after a function name.
-    (set (make-local-variable 'parens-require-spaces) nil)
-    ;; 7) Install language-specific skeletons
-    ;; TODO
-    ))
+  (pel-eval-after-load d-mode
+    (pel-config-major-mode d pel:for-d
+      ;; "Set the environment for editing D files."
+      ;; Configure the CC Mode style for C++ from PEL custom variables
+      ;; 1) set the style: it identifies everything
+      (pel--set-cc-style 'd-mode pel-d-bracket-style pel-d-newline-mode)
+      ;; 2)  apply modifications requested by PEL user options.
+      ;; 2a) set variables always available in Emacs
+      (setq-local tab-width        pel-d-tab-width)
+      (setq-local indent-tabs-mode pel-d-use-tabs)
+      ;; 2b) set variables only available in a CC mode - prevent warnings
+      (pel-setq-local c-basic-offset pel-d-indent-width)
+      ;; 3) set fill-column to PEL specified D's default if specified
+      (when pel-d-fill-column
+        (setq-local fill-column pel-d-fill-column))
+      ;; 4) Set default auto-newline mode as identified by PEL user option
+      (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
+      ;; Configure M-( to put parentheses after a function name.
+      (set (make-local-variable 'parens-require-spaces) nil)
+      ;; 7) Install language-specific skeletons
+      ;; TODO
+      )))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC f`` : Forth programming
@@ -2389,29 +2393,29 @@ d-mode not added to ac-modes!"
       (pel-add-speedbar-extension ".go"))
 
     (define-pel-global-prefix pel:for-go (kbd "<f11> SPC g"))
-    (define-key pel:for-go (kbd "M-t") 'pel-go-set-tab-width)
     (define-key pel:for-go (kbd "M-s") 'pel-go-toggle-gofmt-on-buffer-save)
     (define-key pel:for-go "?"         'pel-go-setup-info)
     (when pel-use-goflymake
       (define-key pel:for-go "!"       'pel-go-toggle-syntax-checker))
 
-    ;; Set environment for Go programming using go-mode.
-    (pel-config-major-mode go pel:for-go
-      ;; ensure gofmt is executed before saving file if
-      ;; configured to do so
-      (when pel-go-run-gofmt-on-buffer-save
-        (add-hook 'before-save-hook  'pel-go-gofmt-on-buffer-save))
-      ;; Set the display width of hard tabs used in Go source
-      ;; as controlled by the user-option
-      (setq tab-width pel-go-tab-width)
-      (when pel-use-goflymake
-        ;; Activate flycheck or flymake if requested
-        (cond
-         ((eq pel-use-goflymake 'with-flycheck) (pel-require 'go-flycheck))
-         ((eq pel-use-goflymake 'with-flymake)  (pel-require 'go-flymake))
-         (t
-          (error "Unsupported pel-use-goflymake value: %S"
-                 pel-use-goflymake)))))))
+    (pel-eval-after-load go-mode
+      ;; Set environment for Go programming using go-mode.
+      (pel-config-major-mode go pel:for-go
+        ;; ensure gofmt is executed before saving file if
+        ;; configured to do so
+        (when pel-go-run-gofmt-on-buffer-save
+          (add-hook 'before-save-hook  'pel-go-gofmt-on-buffer-save))
+        ;; Set the display width of hard tabs used in Go source
+        ;; as controlled by the user-option
+        (setq-local tab-width pel-go-tab-width)
+        (when pel-use-goflymake
+          ;; Activate flycheck or flymake if requested
+          (cond
+           ((eq pel-use-goflymake 'with-flycheck) (pel-require 'go-flycheck))
+           ((eq pel-use-goflymake 'with-flymake)  (pel-require 'go-flymake))
+           (t
+            (error "Unsupported pel-use-goflymake value: %S"
+                   pel-use-goflymake))))))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC i`` : Javascript programming
@@ -3282,9 +3286,12 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 
     (pel-config-major-mode erlang pel:for-erlang
       ;; Activate Erlang setup.
-      ;; set fill-column to Erlang's default if specified
+      ;; Set fill-column to Erlang's default if specified
       (when pel-erlang-fill-column
-        (setq fill-column pel-erlang-fill-column))
+        (setq-local fill-column pel-erlang-fill-column))
+      ;; Set tab behaviour for Erlang as defined by PEL user-options.
+      (setq-local tab-width pel-erlang-tab-width)
+      (setq-local indent-tabs-mode pel-erlang-use-tabs)
       ;;
       ;; setup the Erlang-specific key bindings
       (pel--install-erlang-skel pel:erlang-skel)
@@ -3313,6 +3320,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (define-key pel:erlang-electric (kbd "RET") 'pel-erlang-newline)
       (define-key pel:erlang-electric ";"         'pel-erlang-semicolon)
       (define-key pel:erlang-electric "."         'pel-erlang-period)
+
       (when pel-use-smart-dash
         (define-key pel:erlang-electric "-"       'smart-dash-mode))
       (define-key pel:for-erlang      (kbd "TAB") 'erlang-indent-current-buffer)
@@ -3759,14 +3767,16 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (define-key pel:for-python "2"         'lispy-arglist-inline))
 
   ;; Activate python mode
-  (pel-config-major-mode python pel:for-python
-    (setq tab-width pel-python-tab-width)
-    (when (and pel-use-indent-tools
-               (eq pel-indent-tools-key-bound 'python)
-               (require 'indent-tools nil :noerror)
-               (boundp 'indent-tools-keymap-prefix)
-               (boundp 'python-mode-map))
-      (define-key python-mode-map indent-tools-keymap-prefix 'indent-tools-hydra/body))))
+  (pel-eval-after-load python
+    (pel-config-major-mode python pel:for-python
+      (setq-local tab-width pel-python-tab-width)
+      (when (and pel-use-indent-tools
+                 (eq pel-indent-tools-key-bound 'python)
+                 (require 'indent-tools nil :noerror)
+                 (boundp 'indent-tools-keymap-prefix)
+                 (boundp 'python-mode-map))
+        (define-key python-mode-map indent-tools-keymap-prefix
+          'indent-tools-hydra/body)))))
 
 ;; (use-package jedi
 ;;   :ensure t
@@ -4223,12 +4233,13 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (define-key pel:rst-adorn-style "S" 'pel-rst-adorn-Sphinx-Python)
   (define-key pel:rst-adorn-style "C" 'pel-rst-adorn-CRiSPer)
 
-  (pel-config-major-mode rst pel:for-reST
-    (setq tab-width    pel-rst-tab-width)
-    (pel--install-rst-skel pel:rst-skel)
-    (when (and pel-use-imenu+
-               (fboundp 'imenup-add-defs-to-menubar))
-      (imenup-add-defs-to-menubar))))
+  (pel-eval-after-load rst
+    (pel-config-major-mode rst pel:for-reST
+      (setq-local tab-width    pel-rst-tab-width)
+      (pel--install-rst-skel pel:rst-skel)
+      (when (and pel-use-imenu+
+                 (fboundp 'imenup-add-defs-to-menubar))
+        (imenup-add-defs-to-menubar)))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-g`` : Graphviz Dot

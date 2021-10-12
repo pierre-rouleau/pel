@@ -15,7 +15,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   access to Emacs default key bindings to the 2C-two-columns,
   2C-associate-buffer and 2C-split commands.
 - Renamed: ``pel-imenu-dbg-print-vars`` to ``pel-imenu-print-vars`` for consistency.
+- Modified: Removed the ``<f12> M-t`` key binding to Go-specific command
+  *pel-go-set-tab-width*.  It was replaced by a globally available ``<f11>
+  M-t`` key binding to the *pel-set-tab-width* that has the same behaviour
+  but can be used to modify the display rendering of hard tabs in all major modes.
 ** New Features and Improvements:
+- New: the *pel-set-tab-width* command is now available through the ``<f11>
+  M-t`` key sequence to modify the display rendering of hard tabs in text for
+  all major modes in the editing session.
 - Improved: the *pel-package-info* command identifies and prints the number of Elpa-compliant
   and other packages PEL is able to download and install.
 - New key bindings for activating outline modes:  the ``<f11> M-l`` key sequence is now bound
@@ -106,6 +113,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       *pel-erlang-backward-sexp*.  The PEL commands use the same bindings and
       handle the Erlang ``<< >>`` bit syntax pairs, something the erlang-mode
       does not do by itself.
+    - New: Improved management of display rendering of hard tab characters and
+      control of hard tab insertion:  the new *pel-erlang-tab-width*
+      user-option controls the display rendering of hard tabs located inside
+      Erlang source code, and the *pel-erlang-use-tabs* user-option controls
+      whether indentation inserts hard-tabs in Erlang source code.
     - New: Improved electric key behaviour for Erlang:
       - Selection of which key gets electric behaviour is controlled by the
         *pel-erlang-electric-keys* user-option which includes comma, >,

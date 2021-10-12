@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-26 15:35:55, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-12 13:32:16, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -36,17 +36,6 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
-
-;;-pel-autoload
-(defun pel-go-set-tab-width (n)
-  "Change the tab width used in current buffer.
-
-The change is temporary and affects the current buffer only.
-To change the tab width used for all Go source code files, change
-the `pel-go-tag-width' user-option variable instead.
-Return the new tab-width or nil if unchanged."
-  (interactive "nNew tab-width: ")
-  (pel-set-tab-width n))
 
 ;; --
 
