@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-12 17:46:04, updated by Pierre Rouleau.
+:Modified: 2021-10-12 17:59:18, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5605,7 +5605,9 @@ everything is enabled except the automatic space after comma in block.
 User-Options for Erlang Electric Key Behaviour
 ++++++++++++++++++++++++++++++++++++++++++++++
 
-**Group: erlang**
+:Group: erlang
+:Key:   - Globally: ``<f11> SPC e <f3>``
+        - From erlang-mode buffer: ``<f12> <f3>``
 
 erlang-electric-semicolon-insert-blank-lines:
   This variable controls the behaviour of ‘erlang-electric-semicolon’
@@ -5645,7 +5647,9 @@ erlang-next-lines-empty-threshold:
   - Note that even if ‘erlang-next-lines-empty-p’ should not trigger an
     electric command, other functions in the criteria list could.
 
-**Group: pel-erlang-code-style**
+:Group: pel-erlang-code-style
+:Key:   - Globally: ``<f11> SPC e <f2>``, select Pel Erlang Code Style.
+        - From erlang-mode buffer: ``<f12> <f2>``, select Pel Erlang Code Style.
 
 pel-erlang-electric-keys:
   List of keys that should have electric behaviour for Erlang buffers.
@@ -5686,7 +5690,11 @@ pel-erlang-space-after-comma-in-blocks:
 Block Sensitive Deletion for Erlang
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-When ``smartparens-mode`` is active the forward and backward delete keys do
+:Group: pel-pkg-for-parens
+:Key:   ``<f11> i <f2>``, select ``Pel Pkg For Parens``.
+
+When ``smartparens-mode`` is active (as selected by the
+**pel-use-smartparens** user-option), the forward and backward delete keys do
 not delete a block delimiter character that is part of balanced block
 expression until the content of block is empty.  Once the block is empty the
 delete key deletes the entire empty block.
@@ -5712,6 +5720,9 @@ PEL provides its own command, **pel-erlang-comment-dwim**, bound to the usual
 
 Erlang Comments Hiding Control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+:Group: pel-pkg-for-hide-show
+:Key: ``<f11> M-/ <f2>``
 
 When the **pel-use-hide-comnt** user-option is turned on PEL activates the
 hide-comnt library and provides the ``<f11 ; ;`` key binding to toggle the
