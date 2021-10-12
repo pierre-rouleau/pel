@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-12 16:58:38, updated by Pierre Rouleau.
+:Modified: 2021-10-12 17:46:04, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5752,7 +5752,8 @@ user-option and sets tab-width to the value of pel-erlang-tab-with in each
 erlang-mode buffer to control the display rendering of hard tab characters in
 Erlang source code.
 
-**Group: editing-basics**
+:Group: editing-basics
+:Key:   ``<f11> <f2> g editing-basics RET``
 
 tab-width:
    Distance between tab stops (for display of tab characters), in columns.
@@ -5763,7 +5764,9 @@ tab-width:
    - PEL overrides this value with the value of **pel-erlang-tab-width** for
      all buffers using the erlang-mode.
 
-**Group: pel-erlang-code-style**
+:Group: pel-pkg-for-erlang, pel-erlang-code-style
+:Key:   - Globally: ``<f11> SPC e <f2>``
+        - From erlang-mode buffer: ``<f12> <f2>``
 
 pel-erlang-tab-width:
    Distance between tab stop for Erlang source code.
@@ -5794,12 +5797,16 @@ user-option and sets the value of ``indent-tab-mode`` with the value of
 ``pel-erlang-use-tabs`` in all erlang-mode buffers to explicitly control this
 behaviour in Erlang source code.
 
-**Group: indent**
+:Group: indent
+:Key:   ``<f11> TAB <f3> 1``
 
 indent-tabs-mode:
   Indentation can insert tabs if this is non-nil.
 
-**Group: pel-erlang-code-style**
+:Group: pel-pkg-for-erlang, pel-erlang-code-style
+:Key:   - Globally: ``<f11> SPC e <f2>``
+        - From erlang-mode buffer: ``<f12> <f2>``
+
 
 pel-erlang-use-tabs:
   Value of ‘indent-tabs-mode’ for editing Erlang source code.
@@ -5835,7 +5842,9 @@ NOTE for new Emacs users:
   below.
 
 
-**Group: erlang**
+:Group: erlang
+:Key:   - Globally: ``<f11> SPC e <f3>``
+        - From erlang-mode buffer: ``<f12> <f3>``
 
 erlang-argument-indent:
   Indentation of the first argument in a function call.
@@ -5869,7 +5878,9 @@ erlang-tab-always-indent:
 
   - Default: t
 
-**Group: pel-erlang-code-style**
+:Group: pel-pkg-for-erlang, pel-erlang-code-style
+:Key:   - Globally: ``<f11> SPC e <f2>``
+        - From erlang-mode buffer: ``<f12> <f2>``
 
 pel-erlang-fill-column:
   Column beyond which automatic line-wrapping should happen in Erlang code.
@@ -5884,18 +5895,9 @@ pel-erlang-fill-column:
 
 
 
-**Group: indent**
+:Group: indent
+:Key:   ``<f11> TAB <f3> 1``
 
-indent-line-function:
-  Function to indent the current line.
-
-  - This function will be called with no arguments.
-  - If it is called somewhere where auto-indentation cannot be done
-    (e.g. inside a string), the function should simply return ‘noindent’.
-  - Setting this function is all you need to make TAB indent appropriately.
-    Don’t rebind TAB unless you really need to.
-
-  - Default for Erlang buffers: ``erlang-indent-command``
 
 indent-tab-mode:
   Indentation can insert tabs if this is non-nil.
@@ -5911,6 +5913,20 @@ tab-stop-list:
     A value of nil means a tab stop every ‘tab-width’ columns.
   - For Erlang this is nil by default.
 
+
+Additionally, the following non-customizable variable is used and set by
+erlang.el:
+
+indent-line-function:
+  Function to indent the current line.
+
+  - This function will be called with no arguments.
+  - If it is called somewhere where auto-indentation cannot be done
+    (e.g. inside a string), the function should simply return ‘noindent’.
+  - Setting this function is all you need to make TAB indent appropriately.
+    Don’t rebind TAB unless you really need to.
+
+  - Default for Erlang buffers: ``erlang-indent-command``
 
 
 ..
