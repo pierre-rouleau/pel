@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-12 16:53:41, updated by Pierre Rouleau.
+:Modified: 2021-10-12 16:58:38, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -5815,8 +5815,8 @@ listed below.
 
 PEL provides an additional control for the Emacs
 **fill-column** which identifies the column where automatic wrapping is done:
-the **pel-erlang-fill-column** set the ``fill-column`` value from the
-``pel-erlang-fill-column`` in erlang-mode buffers.
+the **pel-erlang-fill-column** value is used for ``fill-column``
+in erlang-mode buffers.
 
 NOTE for new Emacs users:
   New Emacs users may find the behaviour of the TAB key puzzling.
