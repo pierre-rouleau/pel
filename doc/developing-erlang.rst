@@ -6,7 +6,7 @@ Developing Erlang Code with PEL
 :Project: `PEL Project home page`_
 :Created:  Thursday, June  3 2021.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2021-06-07 16:25:29, updated by Pierre Rouleau.
+:Modified: 2021-10-12 16:43:11, updated by Pierre Rouleau.
 :Copyright: © 2021, Pierre Rouleau
 
 
@@ -15,7 +15,7 @@ in Erlang.
 
 🚧 This is an early version of a work-in-progress document while I complete
 Erlang support in PEL.  My goal is to complete this document sometime in
-June 2021.  I need to deepen  my understanding of the erlang.el library along
+fall of 2021.  I need to deepen  my understanding of the erlang.el library along
 with the various external packages that support Erlang.  If you read this and
 have ideas as to what you would like to see don't hesitate to enter a message
 in form or an issue_ or in the discussions_.
