@@ -6894,13 +6894,14 @@ Standards & Guidelines."
 
 By default PEL activates the electric behaviour of the 4 characters controlled
 by the erlang.el package:  comma, gt, newline and semicolon.  PEL also
-provides electric behaviour to the period, allowing typing '->' in code with
+provides electric behaviour to the period, allowing typing '->' in code by
+typing '-.'.
 
 To disable the electric behaviour of a character un-check the
 corresponding box.
 
 PEL also supports dynamically toggling the electric behaviour of
-a key with the ``<f12> ~`` prefix followed by the specific key.
+a key with the ``<M-f12> M-``` prefix followed by the specific key.
 
 Additionally PEL activates another electric behaviour to the comma,
 by automatically inserting a space after a colon typed inside blocks.
@@ -6920,12 +6921,11 @@ This is controlled by `pel-erlang-space-after-comma-in-blocks'."
 The `pel-erlang-electric-keys' must activate the electric comma.
 
 You can also dynamically toggle the electric behaviour of the comma key by
-using the \\[pel-gt-comma] key, mapped to \"<f12> ~ ,\" in Erlang buffers.
+using the \\[pel-erlang-comma] command, mapped to \"<M-f12> M-` ,\" in Erlang buffers.
 
 If you want to keep the electric behaviour of the comma key, but temporary
 want to disable adding spaces after a comma inside the current Erlang buffer,
-use the \"<f12> ~ M,\" to toggle this behaviour off and on.  This affects the
-current Erlang buffer, not the other ones."
+use the \"<M-f12> M-` M,\" to toggle this behaviour off and on."
   :group 'pel-pkg-for-erlang
   :group 'pel-erlang-code-style
   :type 'boolean
