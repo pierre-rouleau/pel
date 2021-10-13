@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-12 23:22:16, updated by Pierre Rouleau.
+:Modified: 2021-10-12 23:23:15, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4448,7 +4448,7 @@ All examples are using the bsd indentation style.
 
 
 
-oC Code Templates
+C Code Templates
 ^^^^^^^^^^^^^^^^
 
 PEL supports yasnippet_ for your basic templating needs.
