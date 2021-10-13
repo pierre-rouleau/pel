@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-12 18:49:09, updated by Pierre Rouleau.
+:Modified: 2021-10-12 23:22:16, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4448,7 +4448,7 @@ All examples are using the bsd indentation style.
 
 
 
-C Code Templates
+oC Code Templates
 ^^^^^^^^^^^^^^^^
 
 PEL supports yasnippet_ for your basic templating needs.
@@ -5508,6 +5508,7 @@ provided by the erlang.el code, including the following:
 #. `enhanced navigation in Erlang code`_,
 #. `Erlang-specific code transformation commands`_,
 #. `enhanced Erlang symbol identification with superword-mode`_,
+#. `enhanced tempo-based skeleton code templates`_.
 
 
 
@@ -6029,6 +6030,58 @@ is bound to the ``M-=`` key (and also the ``<f11> . =`` key sequence).
 .. _snake-case: https://en.wikipedia.org/wiki/Snake_case
 .. _superword-mode:  https://www.gnu.org/software/emacs/manual/html_node/emacs/Misc-for-Programs.html#Misc-for-Programs
 
+
+Enhanced Tempo-based Skeleton Code Templates
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+PEL enhances the Emacs Tempo-based skeletons code templates and provides
+a large set of specialized and customizable code templates for different types
+of Erlang source code files.
+
+PEL provides a large set of customizable user-options, available inside two
+different customization groups:
+
+:Group: - pel-erlang-code-style
+        - pel-erlang-skeleton-control
+:Keys: - globally: ``<f11> SPC e <f2>``,  select Pel Erlang Code Style
+       - from erlang-mode buffer: ``<f12> <f2>``, select Pel Erlang Code Style
+
+If you have not already set your full name and email address in Emacs
+customization you will also want to set the following user-options as they are
+used in all PEL Tempo Skeleton templates for files.  Use ``<f11> <f2> o`` and
+type the user-option name at the prompt to quickly access those user-options.
+
+==================================== ======= =====================================
+Variable                             Value   Description
+==================================== ======= =====================================
+user-full-name                       ➽       Set your full name.
+user-mail-address                    ➽       Set you email address in this
+                                             variable.  Emacs tries to infer it
+                                             but it may only contain your user
+                                             name and your computer name.
+==================================== ======= =====================================
+
+
+The commands to insert the Erlang code template are available via the Erlang
+section of Emacs menu (accessible via ``<f10>`` under PEL).  It looks like
+this:
+
+.. figure:: res/erlang-templates-menu.png
+
+PEL also provide key bindings for all of the templates.  They are all bound
+under the ``<f12> <f12>`` key prefix and listed inside the `𝕻𝔩 - Erlang`_ PDF.
+
+Examples of some of the possible templates for Erlang are available in the
+`example/templates/erlang repo directory`_.  For a complete description on how
+to work with PEL tempo skeleton templates see the description of the templates
+for the C language in the section titled `C Code Templates`_.  The same
+control mechanism are available for Erlang with Erlang specific code generated
+for various type of Erlang files.
+
+
+
+
+.. _example/templates/erlang repo directory: ../example/templates/erlang
 
 ---------------------------------------------------------------------------
 
