@@ -640,7 +640,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-xref-show-status
     pel-xref-find-custom-definition-at-line)
   (pel-autoload-function "pel-xref" for:
-    pel-xref-dumb-jump-activate
+    pel-xref-dumb-jump-activate-locally
     pel-xref-gxref-activate
     pel-xref-rtags-activate
     pel-xref-set-front-end

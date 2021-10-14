@@ -7012,7 +7012,7 @@ the ones defined from the buffer now."
   (define-key pel:xref-backend "D" 'pel-xref-toggle-dumb-jump-mode)
   ;; schedule activation for requested major modes.
   (pel-add-hook-for 'pel-modes-activating-dumb-jump
-                    'pel-xref-dumb-jump-activate))
+                    'pel-xref-dumb-jump-activate-locally))
 
 ;; gxref
 (when pel-use-gxref

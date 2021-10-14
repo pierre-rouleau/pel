@@ -97,16 +97,46 @@
 ;; ------------------------
 
 ;;-pel-autoload
-(defun pel-xref-dumb-jump-activate ()
-  "Activate dumb-jump."
+(defun pel-xref-dumb-jump-activate-locally ()
+  "Activate dumb-jump for the current buffer."
   (pel-require 'xref)
   (pel-require 'dumb-jump)
-  ;; In some major modes the hooks are done locally
-  ;; in others they are done globally: update the proper one.
+  ;; Activate xref dumb-jump locally: for the current buffer only.
   (add-hook 'xref-backend-functions
             'dumb-jump-xref-activate
             nil
-            (pel-xref-function-hook-local-p xref-backend-functions)))
+            t))
+
+(defun pel-xref-dumb-jump-activate (&optional locally)
+  "Activate dumb-jump xref backend."
+  (pel-xref-dumb-jump-activate-locally)
+  (unless locally
+    ;; not locally means ensure all buffers of the same mode will
+    ;; use the xref dumb-jump backend
+    (add-hook (pel-hook-symbol-for major-mode)
+              (function pel-xref-dumb-jump-activate-locally))))
+
+
+(defun pel-xref-dumb-jump--deactivate-locally ()
+  "Deactivate dumb-jump for the current buffer."
+  (remove-hook 'xref-backend-functions
+               'dumb-jump-xref-activate
+               t))
+
+(defun pel-xref-dumb-jump-deactivate (locally)
+  "De-activate dumb-jump xref backend."
+  (pel-xref-dumb-jump--deactivate-locally)
+  (unless locally
+    (remove-hook (pel-hook-symbol-for major-mode)
+                 (function pel-xref-dumb-jump-activate-locally))))
+
+(defun pel-xref-dumb-jump-activated-in (&optional mode)
+  "Return t if dumb-jump is locally activated for specific major MODE.
+Return nil otherwise.
+If MODE is nil, use the current major-mode."
+  (memq (function pel-xref-dumb-jump-activate-locally)
+        (pel-symbol-value (pel-hook-symbol-for
+                           (or mode (setq mode major-mode))))))
 
 (defun pel-xref-dumb-jump-active-p ()
   "Return non-nil when dumb-jump is active, nil otherwise."
@@ -117,25 +147,37 @@
 (defun pel-xref-dumb-jump-mode-state-str ()
   "Return a string describing the dumb-jump mode status."
   (pel-require 'xref)
-  (let ((state-str (if (featurep 'dumb-jump)
-                       (pel-on-off-string (pel-xref-dumb-jump-active-p))
-                     (if pel-use-dumb-jump
-                         "Available but off."
-                       "Not available. Activate pel-use-dumb-jump first!"))))
-    (format "%s%s"
+  (let ((state-str
+         (if pel-use-dumb-jump
+             (if (featurep 'dumb-jump)
+                 (if (pel-xref-dumb-jump-active-p)
+                     (format "on - %s."
+                             (if (pel-xref-function-hook-local-p
+                                  xref-backend-functions)
+                                 (if (pel-xref-dumb-jump-activated-in)
+                                     (format "in all %s buffers" major-mode)
+                                   "locally, in current buffer")
+                               "globally, in all buffers"))
+                   "Available but not active.")
+               "Available but off.")
+           "Not available. Activate pel-use-dumb-jump first!")))
+    (format "%s %s"
             state-str
             (pel-activated-in-str pel-modes-activating-dumb-jump))))
 
 ;;-pel-autoload
-(defun pel-xref-toggle-dumb-jump-mode ()
-  "Activate/deactivate dumb-jump mode."
-  (interactive)
+(defun pel-xref-toggle-dumb-jump-mode (&optional locally)
+  "Activate/deactivate dumb-jump mode.
+
+Normally apply the requested change to all buffer of the same
+major mode by adding (or removing) dumb-jump activation in the
+specific major-mode hook. However, when argument is specified, only apply the
+change for the current buffer only."
+  (interactive "P")
   (pel-require 'xref)
   (if (pel-xref-dumb-jump-active-p)
-      (remove-hook 'xref-backend-functions
-                   'dumb-jump-xref-activate
-                   (pel-xref-function-hook-local-p xref-backend-functions))
-    (pel-xref-dumb-jump-activate))
+      (pel-xref-dumb-jump-deactivate locally)
+    (pel-xref-dumb-jump-activate locally))
   (message "dumb-jump now: %s" (pel-xref-dumb-jump-mode-state-str)))
 
 
