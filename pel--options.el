@@ -6882,6 +6882,16 @@ of the value of the `pel-use-erlang-syntax-check' user-option."
                     (quote
                      ((elpa . helm-lsp))))))
 
+(defcustom pel-erlang-ls-with-separate-session nil
+  "If nil join existing session server if it exists.
+
+If t, create new Language Server for each new Emacs instance
+editing Erlang code."
+  :group 'pel-erlang-ide
+  :group 'pel-pkg-for-lsp-mode
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-erlang-code-style nil
   "Erlang Source Code Style options."

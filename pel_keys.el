@@ -3192,28 +3192,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (when pel-use-erlstack-mode
     (pel-ensure-package erlstack-mode from: melpa))
   (when pel-use-ivy-erlang-complete
-    ;; TODO: update once my PR is merged in and propagated.
-    ;; Use my copy until the bugs fixed by my PR in the official repo
-    ;; are integrated and the package goes on MELPA.
-    ;; (pel-ensure-package ivy-erlang-complete from: melpa)
-    (cl-eval-when 'load
-      (pel-install-github-file "pierre-rouleau/ivy-erlang-complete/master"
-                               "ivy-erlang-complete.el")
-      (pel-ensure-package async   from: melpa)
-      (pel-ensure-package ivy     from: melpa)
-      (pel-ensure-package counsel from: melpa)
-      (pel-autoload-file ivy-erlang-complete for:
-                         ivy-erlang-complete-autosetup-project-root
-                         ivy-erlang-complete-init
-                         ivy-erlang-complete-show-doc-at-point
-                         ivy-erlang-complete-reparse
-                         ivy-erlang-complete-set-project-root
-                         ivy-erlang-complete
-                         ivy-erlang-complete--find-definition
-                         ivy-erlang-complete-find-spec
-                         ivy-erlang-complete-find-definition
-                         ivy-erlang-complete-find-references
-                         ivy-erlang-complete-find-file)))
+    (pel-ensure-package ivy-erlang-complete from: melpa))
   (when pel-use-edts
     (pel-ensure-package edts from: melpa)
     (pel-autoload-file edts for: edts-mode))
@@ -3266,6 +3245,18 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   ;; before the erlang-mode executes.
   (advice-add 'erlang-mode :before #'pel--erlang-mode-setup)
 
+  (when (and pel-use-erlang-syntax-check
+             (eq pel-use-erlang-syntax-check 'with-flymake))
+    ;; When using flymake with Erlang:
+    ;; - Remove hook unless user wants to automatically activate
+    ;;   flymake on Erlang buffers.
+    ;;   - The erlang-flymake.el code hooks flymake-mode to erlang-mode
+    ;;     forcing flymake-mode on all Erlang files. Leave it if erlang-mode
+    ;;     was identified as a mode to automatically activate syntax checking,
+    ;;     otherwise remove the hook.
+    (unless (memq 'erlang-mode pel-modes-activating-syntax-check)
+      (remove-hook 'erlang-mode-hook #'flymake-mode)))
+
   (pel-eval-after-load erlang
     ;; Set erlang-root-dir from the content of pel-erlang-man-parent-rootdir
     (if (boundp 'erlang-root-dir)
@@ -3303,9 +3294,9 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (pel-erlang-setup-electric-key-behaviour)
       ;;
       ;; Bind keys for the Erlang mode.
+      (defvar erlang-mode-map)          ; prevent byte-compiler warnings
       ;; Use pel-erlang-comment-dwim instead of comment-dwim
-      (when (boundp 'erlang-mode-map)
-        (define-key erlang-mode-map (kbd "M-;") 'pel-erlang-comment-dwim))
+      (define-key erlang-mode-map (kbd "M-;") 'pel-erlang-comment-dwim)
 
       (define-pel-global-prefix pel:erlang-electric   (kbd "<f11> SPC e M-`"))
       (define-pel-global-prefix pel:erlang-analysis   (kbd "<f11> SPC e a"))
@@ -3320,9 +3311,13 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (define-key pel:erlang-electric (kbd "RET") 'pel-erlang-newline)
       (define-key pel:erlang-electric ";"         'pel-erlang-semicolon)
       (define-key pel:erlang-electric "."         'pel-erlang-period)
-
       (when pel-use-smart-dash
         (define-key pel:erlang-electric "-"       'smart-dash-mode))
+
+      (when pel-use-plantuml
+        (define-key pel:for-erlang "u"     'pel-render-commented-plantuml))
+      (when pel-use-rainbow-delimiters
+        (define-key pel:for-erlang (kbd "M-r")    'rainbow-delimiters-mode))
       (define-key pel:for-erlang      (kbd "TAB") 'erlang-indent-current-buffer)
       (define-key pel:erlang-function (kbd "TAB") 'erlang-indent-function)
       (define-key pel:erlang-function "N"         'pel-beginning-of-next-defun)
@@ -3347,10 +3342,25 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (define-key pel:for-erlang (kbd "M-p")     #'superword-mode)
       (define-key pel:for-erlang (kbd "M-9")     #'show-paren-mode)
       (define-key pel:for-erlang (kbd "M-c")      'erlang-compile)
-      (when pel-use-rainbow-delimiters
-        (define-key pel:for-erlang (kbd "M-r")    'rainbow-delimiters-mode))
-      (when pel-use-plantuml
-        (define-key pel:for-erlang "u"     'pel-render-commented-plantuml))
+      (define-key pel:for-erlang (kbd "M-d")      'erlang-man-function-no-prompt)
+      (when pel-use-ivy-erlang-complete
+        (require 'ivy-erlang-complete)
+        (ivy-erlang-complete-init)
+        ;; automatic update completion data after save
+        (add-hook 'after-save-hook #'ivy-erlang-complete-reparse)
+
+        (define-key pel:for-erlang "."          'ivy-erlang-complete)
+        (define-key pel:for-erlang (kbd "M-h")  'ivy-erlang-complete-show-doc-at-point)
+        (define-key pel:for-erlang (kbd "M-e")  'ivy-erlang-set-project-root)
+        (define-key pel:for-erlang (kbd "M-.")  'ivy-erlang-complete-find-definition)
+        (define-key pel:for-erlang (kbd "M-?")  'ivy-erlang-complete-find-references)
+        (define-key pel:for-erlang (kbd "M-f")  'ivy-erlang-complete-find-spec)
+        (define-key pel:for-erlang (kbd "M-o")  'ivy-erlang-complete-find-file)
+
+        ;; Restore the tags-based M-. to allow xref-based cross-reference
+        ;; searching in Erlang.  Use PEL binding <f12> M-. for explicitly
+        ;; use `ivy-erlang-complete'
+        (define-key erlang-mode-map (kbd "M-.") nil))
 
       ;; Erlang Syntax Checking
       (when pel-use-erlang-syntax-check
@@ -3358,38 +3368,20 @@ Can't load ac-geiser: geiser-repl-mode: %S"
          ;; when using flymake with Erlang
          ((eq pel-use-erlang-syntax-check 'with-flymake)
           (pel-require 'erlang-flymake :install-when-missing)
-          ;; The erlang-flymake.el code hooks flymake-mode to erlang-mode
-          ;; forcing flymake-mode on all Erlang files. Leave it if erlang-mode
-          ;; was identified as a mode to automatically activate syntax checking,
-          ;; otherwise remove the hook.
-          (unless (memq 'erlang-mode pel-modes-activating-syntax-check)
-            (remove-hook 'erlang-mode-hook #'flymake-mode))
+          ;; TODO: activate flymake when (memq 'erlang-mode pel-modes-activating-syntax-check)
           (when (boundp 'flymake-mode-map)
             (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
             (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)))
-
+         ;;
          ;; when using flycheck with Erlang
          ((eq pel-use-erlang-syntax-check 'with-flycheck)
-          (defun pel--erlang-setup-for-flycheck ()
-            "Setup flycheck."
-            ;; Note that both flycheck-select-checker and flycheck-mode
-            ;; are autoloaded.  See section: 'Syntax Check with Flycheck'
-            (flycheck-select-checker 'erlang-otp)
-            (flycheck-mode))
-          (declare-function pel--erlang-setup-for-flycheck "pel_keys")
-
-          ;; (flycheck-define-checker erlang-otp
-          ;;   "An Erlang syntax checker using the Erlang interpreter."
-          ;;   :command ("erlc" "-o" temporary-directory "-Wall"
-          ;;             "-I" "../include" "-I" "../../include"
-          ;;             "-I" "../../../include" source)
-          ;;   :error-patterns
-          ;;   ((warning line-start (file-name) ":" line ": Warning:"
-          ;;             (message) line-end)
-          ;;    (error line-start (file-name) ":" line ": " (message) line-end)))
-
           (when (memq 'erlang-mode pel-modes-activating-syntax-check)
-            (add-hook 'erlang-mode-hook #'pel--erlang-setup-for-flycheck))))
+            ;; Setup flycheck.
+            ;; - Note that both flycheck-select-checker and flycheck-mode
+            ;;   are autoloaded.  See section: 'Syntax Check with Flycheck'
+            (flycheck-select-checker 'erlang-otp)
+            (flycheck-mode))))
+        ;;
         ;; When any syntax checker is used with Erlang add a key to toggle it
         (define-key pel:for-erlang "!" 'pel-erlang-toggle-syntax-checker))
 
@@ -3475,7 +3467,11 @@ Can't load ac-geiser: geiser-repl-mode: %S"
         ;;       since PEL provides the `<f11> C-l` binding to what C-l is
         ;;       normally bound.
         ;; Enable LSP for Erlang files
-        (add-hook 'erlang-mode-hook 'lsp)
+        (if (fboundp 'lsp)
+            (lsp pel-erlang-ls-with-separate-session)
+          (display-warning 'pel-use-erlang-ls
+                           "lsp is not bound, can't start LS for Erlang!"
+                           :error))
 
         ;; Add key bindings to toggle LSP specific settings
         (define-key pel:erlang-lsp "I" 'pel-toggle-lsp-log-io)
@@ -3490,10 +3486,11 @@ Can't load ac-geiser: geiser-repl-mode: %S"
             (kbd (format "%s L" lsp-keymap-prefix)) 'lsp-workspace-show-log))
 
         ;; Enable LSP Origami Mode (for folding ranges)
+        ;; TODO: this is not Erlang specific but LSP specific: move
+        ;;       it to a LSP section once I have set one up.
         (when pel-use-lsp-origami
           (add-hook 'lsp-after-open-hook 'lsp-origami-try-enable)
-          (add-hook 'origami-mode-hook 'lsp-origami-mode)
-          (add-hook 'erlang-mode-hook 'origami-mode))
+          (add-hook 'origami-mode-hook 'lsp-origami-mode))
         ;; TODO (when pel-use-helm
         ;;   ;; Provide commands to list workspace symbols:
         ;;   ;; - helm-lsp-workspace-symbol
