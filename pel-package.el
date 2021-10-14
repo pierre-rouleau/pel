@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-09 17:49:40, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-14 11:33:21, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -304,7 +304,9 @@ EXPR is not an expression."
               (setq found-text (match-string group))
               (when extracter
                 (setq found-text (λc extracter found-text)))
-              (push found-text pkg-names)))))
+              (unless (member found-text pkg-names)
+                (push found-text pkg-names))
+              found))))
     (reverse pkg-names)))
 
 (defconst pel--regexp-github-pkg-path
