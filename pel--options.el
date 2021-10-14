@@ -6826,6 +6826,8 @@ To use it, `pel-use-erlang' must be on (t)."
 (defcustom pel-use-ivy-erlang-complete nil
   "Control whether PEL uses ivy-erlang-complete.
 
+Provides context sensitive completion for Erlang without
+connecting to Erlang nodes.
 To use it, `pel-use-erlang' must be on (t)."
   :group 'pel-erlang-ide
   :link '(url-link "ivy-erlang-complete @ GitHub"
@@ -8435,8 +8437,10 @@ If it set to nil, these keys are not bound."
   "If set, the M-.  key is bound to special xref find in Custom buffers.
 
 When this is set to t, the M-.  key is bound to the
-function `pel-xref-find-custom-definition-at-line' to
-find the source of the displayed user option variables.
+function `pel-xref-find-custom-definition-at-line' when point is
+in a custom-mode buffer.  This way you can find the source of
+a user-option variable by moving point over the name of a user-option
+and type the M-. key.
 This is the default.  To prevent this binding, set it to nil."
   :group 'pel-pkg-for-xref
   :type 'boolean
