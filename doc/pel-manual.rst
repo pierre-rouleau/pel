@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-12 23:23:15, updated by Pierre Rouleau.
+:Modified: 2021-10-13 09:08:03, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4239,6 +4239,9 @@ Erlang support is very evolved.  LFE support also because it inherit the
 capabilities of Lisp-based languages.
 Support for Elixir and Gleam is experimental.
 
+
+.. _BEAM VM Programming Language:  https://en.wikipedia.org/wiki/BEAM_(Erlang_virtual_machine)
+
 **Curly-Bracket Programming Languages:**
 
 PEL provides explicit support for the following
@@ -4254,6 +4257,7 @@ It also provides experimental support for:
 - `Rust <https://en.wikipedia.org/wiki/Rust_(programming_language)>`_
 - `V <https://vlang.io>`_
 
+.. _Curly-Bracket Programming Language:
 .. _curly-bracket programming languages: https://en.wikipedia.org/wiki/List_of_programming_languages_by_type#Curly-bracket_languages
 
 
@@ -4265,6 +4269,7 @@ PEL provides explicit support for the following
 - `Common Lisp <https://en.wikipedia.org/wiki/Common_Lisp>`_
 - `Emacs Lisp  <https://en.wikipedia.org/wiki/Emacs_Lisp>`_
 
+.. _LISP Programming Language Family:
 .. _LISP-based programming languages: https://en.wikipedia.org/wiki/Lisp_(programming_language)
 
 
@@ -4316,6 +4321,7 @@ PEL Support For C
 
 .. _𝕻𝔩 - C: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c.pdf
 
+:Language Family: `Curly-Bracket Programming Language`_
 :PDF Sheet: `𝕻𝔩 - C`_
 :PEL Customization: - Group: ``pel-pkg-for-c``
 
@@ -5275,6 +5281,7 @@ PEL Support For C++
 
 .. _𝕻𝔩- C++: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c++.pdf
 
+:Language Family: `Curly-Bracket Programming Language`_
 :PDF Sheet: `𝕻𝔩- C++`_
 :PEL Customization: - Group: ``pel-pkg-for-c++``
 
@@ -5310,6 +5317,7 @@ PEL Support for Common Lisp
 
 .. _𝕻𝔩 - Common Lisp: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-common-lisp.pdf>
 
+:Language Family: `LISP Programming Language Family`_
 :PDF Sheet: `𝕻𝔩 - Common Lisp`_
 :PEL Customization: - Group: ``pel-pkg-for-clisp``
 
@@ -5344,6 +5352,7 @@ PEL Support For D
 
 .. _𝕻𝔩 - D: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-d.pdf
 
+:Language Family: `Curly-Bracket Programming Language`_
 :PDF Sheet: `𝕻𝔩 - D`_
 :PEL Customization: - Group: ``pel-pkg-for-d``
 
@@ -5384,6 +5393,7 @@ PEL Support for Elixir
 
 .. _𝕻𝔩 - Elixir: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-elixir.pdf
 
+:Language Family: `BEAM VM Programming Language`_
 :PDF Sheet: `𝕻𝔩 - Elixir`_
 :PEL Customization: - Group: ``pel-pkg-for-elixir``
 
@@ -5416,6 +5426,8 @@ PEL Support for Emacs Lisp
 
 .. _⨋𝕻𝔩 - Emacs Lisp: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-emacs-lisp.pdf
 
+
+:Language Family: `LISP Programming Language Family`_
 :PDF Sheet: `⨋𝕻𝔩 - Emacs Lisp`_ , `ERT`_ .
 :PEL Customization: - Group: ``pel-pkg-for-elisp``
 
@@ -5453,6 +5465,7 @@ PEL Support for Erlang
 
 .. _𝕻𝔩 - Erlang:                  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf
 
+:Language Family: `BEAM VM Programming Language`_
 :PDF Sheet: `𝕻𝔩 - Erlang`_
 :PEL Customization: - Group: ``pel-pkg-for-erlang``.  Use ``<f12> <f1>`` from and erlang mode buffer.
 
@@ -6089,7 +6102,9 @@ PEL Support for Forth
 ~~~~~~~~~~~~~~~~~~~~~
 
 .. _𝕻𝔩- Forth: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth.pdf
+.. _Concatenative Programming Language: https://en.wikipedia.org/wiki/Concatenative_programming_language
 
+:Language Family: Stack-Based, `Concatenative Programming Language`_
 :PDF Sheet: `𝕻𝔩- Forth`_
 :PEL Customization: - Group: ``pel-pkg-for-forth``
 
@@ -6116,6 +6131,7 @@ PEL Support for Gleam
 
 .. _𝕻𝔩 - Gleam: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-gleam.pdf
 
+:Language Family: `BEAM VM Programming Language`_
 :PDF Sheet: `𝕻𝔩 - Gleam`_
 :PEL Customization: - Group: ``pel-pkg-for-gleam``
 
@@ -6138,6 +6154,7 @@ PEL Support for Go
 
 .. _𝕻𝔩 - Go: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-go.pdf
 
+:Language Family: `Curly-Bracket Programming Language`_
 :PDF Sheet: `𝕻𝔩 - Go`_
 :PEL Customization: - Group: ``pel-pkg-for-go``
 
@@ -6162,6 +6179,7 @@ PEL Support for Janet
 
 .. _𝕻𝔩 - Janet: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-janet.pdf
 
+:Language Family: LISP-like Programming Language
 :PDF Sheet: `𝕻𝔩 - Janet`_
 :PEL Customization: - Group: ``pel-pkg-for-janet``
 
@@ -6218,6 +6236,9 @@ PEL Support for LFE
 
 .. _𝕻𝔩 - LFE: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-lfe.pdf
 
+:Language Family: - `BEAM VM Programming Language`_
+                  - `LISP Programming Language Family`_
+
 :PDF Sheet: `𝕻𝔩 - LFE`_
 :PEL Customization: - Group: ``pel-pkg-for-lfe``
 
@@ -6244,6 +6265,7 @@ PEL Support for NetRexx
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 .. _𝕻𝔩 - NetRexx: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-netrexx.pdf
+
 
 :PDF Sheet: `𝕻𝔩 - NetRexx`_
 :PEL Customization: - Group: ``pel-pkg-for-netrexx``
@@ -6290,6 +6312,7 @@ PEL Support for OCaml
 
 .. _𝕻𝔩 - OCaml: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-ocaml.pdf
 
+:Language Family: ML
 :PDF Sheet: `𝕻𝔩 - OCaml`_
 :PEL Customization: - Group: ``pel-pkg-for-ocaml``
 
@@ -6437,9 +6460,6 @@ flycheck-rust, emacs-racer and cargo.
 
 See the `Rust PDF Sheet <https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rust.pdf>`_
 for more information.
-
-
-
 
 ---------------------------------------------------------------------------
 
