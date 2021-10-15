@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-09 11:15:31, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-15 09:42:34, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -79,6 +79,20 @@
                               ls-lisp
                               wdired)
   "List of groups used related to dired.")
+
+
+(defconst pel--highligh-groups (let ((items '(auto-highlight-symbol
+                                              electricity
+                                              iedit
+                                              highlight-indentation
+                                              paren-showing
+                                              rainbow
+                                              rainbow-delimiters
+                                              smartparens
+                                              vline)))
+                                 (if (version< emacs-version "27.1")
+                                     (append items '(fill-column-indicator))
+                                   items)))
 
 (defconst pel--markdown-groups '(markdown
                                  grip
@@ -331,23 +345,10 @@
                                                                  nhexl
                                                                  popup-switcher))
     ;; ([f11 ?b ?I]
-    ([f11 ?h]
-     "highlight"
-     (pel-pkg-for-highlight
-      pel-pkg-for-modeline
-      pel-pkg-for-parens)  ,(let ((items
-                                   (list
-                                    'auto-highlight-symbol
-                                    'electricity
-                                    'iedit
-                                    'highlight-indentation
-                                    'rainbow
-                                    'rainbow-delimiters
-                                    'smartparens
-                                    'vline)))
-      (if (version< emacs-version "27.1")
-          (append items (list 'fill-column-indicator))
-        items)))
+    ([f11 ?h]       "highlight"  (pel-pkg-for-highlight
+                                  pel-pkg-for-modeline
+                                  pel-pkg-for-parens)
+                                                                ,pel--highligh-groups)
 
     ([f11 ?c]        "counting"         nil)
     ([f11 ?d]        "diff-merge"       pel-pkg-for-diff-merge  (diff
