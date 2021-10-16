@@ -102,7 +102,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   ``<f12>`` inside ``.janet`` files.  Includes support for iMenu and Speedbar.
   - Add a [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-janet.pdf][𝕻𝔩 - Janet PDF]].
 - Improve: Erlang support:
-  - New: [[bin/erlang-root-path][bin/erlang-root-path]] Erlang script detects and returns Erlang’s root directory.
+  - New: [[bin/erlang-root-dir][bin/erlang-root-dir]] Erlang script detects and returns Erlang’s root directory.
   - Improved: [[bin/version-erl][bin/version-erl]] script longer prints SASL progress information when
     older versions of Erlang are used.
   - New: add support for ivy-erlang-complete when **pel-use-ivy-erlang-complete**
