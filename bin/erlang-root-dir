@@ -1,0 +1,28 @@
+#!/bin/sh
+# SH FILE: erlang-root-dir
+#
+# Purpose   : Print the Erlang root directory path. No trailing slash, no newline.
+# Created   : Thursday, October 14 2021.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2021-10-15 21:38:12, updated by Pierre Rouleau>
+# Copyright © 2021, Pierre Rouleau
+# ----------------------------------------------------------------------------
+# Description
+# -----------
+#
+# Purpose: Called from within Emacs to identify the Erlang Root Directory.
+#
+# Usage: erlang-root-dir
+#
+#  This uses an inline Erlang statement passed to the Erlang interpreter.
+
+# ----------------------------------------------------------------------------
+# Script
+# ------
+#
+# Note: the `-sasl errlog_type error` prevents printing PROGRESS REPORT
+#       on some versions of Erlang.
+#
+erl -sasl errlog_type error -eval 'io:format("~ts", [code:root_dir()]),  halt().' -noshell
+
+# ----------------------------------------------------------------------------

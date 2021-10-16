@@ -3,7 +3,21 @@
 # Abstract: Print version of currently available Erlang on stdout.
 # Requires: Accessible Erlang binaries: uses erl.
 # Used by : PEL Emacs support for Erlang to auto-detect available Erlang version.
-# Last Modified Time-stamp: <2020-07-22 17:08:27, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-10-15 21:16:08, updated by Pierre Rouleau>
 # -----------------------------------------------------------------------------
-erl -eval '{ok, Version} = file:read_file(filename:join([code:root_dir(), "releases", erlang:system_info(otp_release), "OTP_VERSION"])), io:fwrite(Version), halt().' -noshell
+# Description
+# -----------
+#
+# Usage:  version-erl
+#
+#  This uses an inline Erlang statement passed to the Erlang interpreter.
+
+# ----------------------------------------------------------------------------
+# Script
+# ------
+#
+# Note: the `-sasl errlog_type error` prevents printing PROGRESS REPORT
+#       on some versions of Erlang.
+#
+erl -sasl errlog_type error  -eval '{ok, Version} = file:read_file(filename:join([code:root_dir(), "releases", erlang:system_info(otp_release), "OTP_VERSION"])), io:fwrite(Version), halt().' -noshell
 # -----------------------------------------------------------------------------
