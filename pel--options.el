@@ -6676,12 +6676,31 @@ regardless of the value of this user-option."
 ;; and I want to simplify the identification of the various Erlang files for
 ;; several Erlang versions and for these tools.  The concepts controlled are:
 ;;
-;; - The location of Erlang man page files:
+;; - The location of Erlang root directory:
+;;   - Erlang directory tree includes:
+;;     - Erlang libraries in erlang-root-dir/lib/[library] with:
+;;       - beam files in     erlang-root-dir/lib/[library]/ebin
+;;       - Erlang source in  erlang-root-dir/lib/[library]/src
+;;                           erlang-root-dir/lib/[library]/include
+;;       - Doc files in      erlang-root-dir/lib/[library]/doc/...
+;;     - Erlang man files:   erlang-root-dir/man/man[13467]
+;;
+;;     The library files are used by the ivy-erlang-complete package
+;;     to identify the functions and types of each Erlang libraries
+;;     and to open documentation about a given function.
+;;
+;;     The man files are used by erlang.el package to open the man files
+;;     when a Emacs man command is issued.
+;;
+;; Note, however, that the man files are not always present inside the Erlang
+;; root directory; some distributions do not install the man files.  Erlang
+;; for Windows also normally does not install the man files.
+;;
 ;;   - erlang.el:
 ;;     - Supports only one version of Erlang at a time in Emacs.
-;;     - Uses the user-option variable `erlang-root-dir' which, despite its
-;;       name, identifies the directory where the man directory holding the
-;;       man1, man3 directories that contain Erlang man files.  If it is nil,
+;;     - Uses the user-option variable `erlang-root-dir' to
+;;       name, identifies the directory where the man[13] directory holding
+;;       the various man files are located.  If `erlang-root-dir' is nil,
 ;;       then erlang.el uses the man files inside
 ;;       ~/.emacs.d/cache/erlang_mode_man_pages
 ;;
@@ -6693,9 +6712,27 @@ regardless of the value of this user-option."
 ;;      ~/.emacs.d/edts/doc/V
 ;;
 ;; PEL:
-;;  - Supports multiple versions of Erlang, supports both erlang.el and EDTS
+;;  - Supports multiple versions of Erlang, supports erlang.el and EDTS
 ;;    models, supports the use of MANPATH in the parent shell to identify the
-;;    path where the man files are stored.
+;;    path where the man files are stored and also supports the
+;;    ivy-erlang-complete  package.
+;;
+;;    PEL provides independent management of the Erlang root directory for man
+;;    files used by erlang.el and the use of Erlang root directory for
+;;    everything else so it is possible to request man pages for a version of
+;;    Erlang different than what is currently being used.  This is useful when
+;;    checking for backward or forward compatibility.
+;;
+;;    PEL provides two user-options to identify the Erlang root directory:
+;;    - `pel-erlang-man-parent-rootdir' which identifies the Erlang root
+;;      directory or how to detect it, for the value that is used by the
+;;      erlang.el logic to open Erlang Man files: the function
+;;      `erlang-man-dir'.  PEL implements the `pel-erlang-man-dir' wrapper
+;;      that sets the `erlang-root-dir' to the value identified by
+;;      `pel-erlang-man-parent-rootdir' user-option.
+
+
+;;    `pel-erlang-version-detection-method'
 ;;  - If `pel-erlang-man-parent-rootdir' is non-nil it either identifies the
 ;;    parent directory of the Erlang man directory or an environment variable
 ;;    that identifies it. When the identified directory exists PEL sets the
@@ -6732,11 +6769,20 @@ path of the directory that holds Erlang/OTP man directory.  That
 man directory should hold a man1, man3, man4 and man6 holding
 Erlang man files.
 
+The directory identified by `pel-erlang-man-parent-rootdir'
+can differ from the real Erlang root directory.  PEL wraps
+erlang.el `erlang-man-dir' with a function that sets the
+value of `erlang-root-dir' to the value identified by
+`pel-erlang-man-parent-rootdir' user-option as returned by
+the function `pel-erlang-man-parent-rootdir'.
+
 Available choices:
 
-- nil : do not set it, leave control in the variable `erlang-root-dir'.
-- Enter a string, such as /usr/local/otp, that holds the man directory which
-  holds man1, man3, man4 and man6.
+- nil : do not set it, use the value in `erlang-root-dir' user-option,
+  which in turn is set according to the method selected by the
+  `pel-erlang-path-detection-method' user-option.
+- Enter a string, such as \"/usr/local/otp\", that holds the man
+  directory which holds man1, man3, man4 and man6.
 - Use an environment variable, such as PEL_ERLANG_MAN_PARENT_DIR, that
   contains the name of the directory to use.  This is more flexible, as it
   allows several OS shells to be defined with different values of that
@@ -6744,7 +6790,7 @@ Available choices:
   for the version of Erlang each shell activates."
   :group 'pel-erlang-environment
   :type '(radio
-          (const  :tag "Use path defined in `erlang-rootdir'" nil)
+          (const  :tag "Use path stored in `erlang-root-dir'" nil)
           (string :tag "Use this absolute directory path"
                   :value "/usr/local/otp")
           (cons
@@ -6790,19 +6836,52 @@ The choices are:
 - auto-detect : PEL extracts the version of Erlang by running the
                 bin/version-erl Erlang script.  This is the default.
 - by-envvar   : A string that is the name of en OS environment variable that
-                holds the version of Erlang.
-- specified by a string that represents the Erlang version number.
-  Use this to impose a specific version. Useful for storing in a
-  .dir-locals.el file. Something like \"22.3.4.2\" or \"23.0\" or \"R16B03\"."
+                holds the version of Erlang.  The default environment
+                variable name is PEL_ERLANG_VERSION, you can select another one.
+- Fixed string  that represents the Erlang version number.
+                Use this to impose a specific version.
+                Useful for storing in a .dir-locals.el file.
+                Something like \"22.3.4.2\" or \"23.0\" or \"R16B03\"."
   :group 'pel-erlang-environment
   :type '(radio
           (const :tag "Automatic detection using PEL's bin/version-erl script."
                  auto-detect)
           (cons
-           (const :tag "Version set by content of environment variable"
+           (const :tag "Version set by content of environment variable."
                   by-envvar)
            (string :tag "Use this environment variable"
                    :value "PEL_ERLANG_VERSION"))
+          (string :tag "Set Erlang version to")))
+
+(defcustom pel-erlang-path-detection-method 'auto-detect
+  "Identifies the method PEL uses to determine Erlang's version available.
+
+This value is used by the function `pel-erlang-root-path' which attempts to
+identify the available version of Erlang to set the user-options of various
+packages, including:
+- `erlang-root-dir'                 from erlang.el
+- `ivy-erlang-complete-erlang-root' from ivy-erlang-complete.el
+
+The choices are:
+
+- auto-detect : PEL extracts Erlang root directory by running the
+                bin/erlang-root-dir Erlang script.  This is the default.
+- by-envvar   : A string that is the name of en OS environment variable that
+                holds the version of Erlang.  The default environment
+                variable is PEL_ERLANG_ROOT_DIR, you can select another one.
+- Fixed string  that represents the Erlang root path.
+                Use this to impose a specific version.
+                Useful for storing in a .dir-locals.el file.
+                Something like \"~/.asdf/installs/erlang/21.3\"."
+  :group 'pel-erlang-environment
+  :type '(radio
+          (const :tag "Automatic detection using PEL's bin/erlang-root-dir script."
+                 auto-detect)
+          (cons
+           (const :tag "PATH set by content of environment variable."
+                  by-envvar)
+           (string :tag "Use this environment variable"
+                   :value "PEL_ERLANG_ROOT_DIR"))
           (string :tag "Set Erlang version to")))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

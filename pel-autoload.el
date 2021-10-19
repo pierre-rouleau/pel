@@ -273,16 +273,18 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-next-erl-function
     pel-erlang-backward-sexp
     pel-erlang-forward-sexp
-    pel-erlang-version
     pel-show-erlang-version
     pel-erlang-toggle-syntax-checker
     pel-erlang-comment-dwim)
   (pel-autoload-function "pel-erlang" for:
+    pel-erlang-root-path
+    pel-erlang-version
     pel-erlang-set-dirpath
     pel-erlang-man-parent-rootdir
     pel-erlang-exec-path
     pel-erlang-shell-mode-init
-    pel-erlang-setup-electric-key-behaviour)
+    pel-erlang-setup-electric-key-behaviour
+    pel-erlang-setup-erlang-man-dir-root)
 
   (pel-autoload-function "pel-erlang-skels" for:
     pel--erlang-mode-setup

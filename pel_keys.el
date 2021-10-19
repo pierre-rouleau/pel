@@ -3257,11 +3257,23 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     (unless (memq 'erlang-mode pel-modes-activating-syntax-check)
       (remove-hook 'erlang-mode-hook #'flymake-mode)))
 
+
+  ;; BEFORE loading erlang.el
+  ;; Set up a wrapper function for erlang.el `erlang-man-dir', allowing it
+  ;; to use the Erlang Man directory identified by the
+  ;; `pel-erlang-man-parent-rootdir' user-option.  This way it's possible
+  ;; to force a different location for the Erlang Man files.
+  (defvar pel---detected-erlang-root-dir nil
+    "Short-lived temporary variable.")
+  (setq pel---detected-erlang-root-dir (pel-erlang-root-path))
+  (pel-erlang-setup-erlang-man-dir-root pel---detected-erlang-root-dir)
+
   (pel-eval-after-load erlang
-    ;; Set erlang-root-dir from the content of pel-erlang-man-parent-rootdir
+    ;; Set erlang-root-dir from the method identified by the
+    ;; `pel-erlang-version-detection-method' user-option
     (if (boundp 'erlang-root-dir)
-        (pel-erlang-set-dirpath (function pel-erlang-man-parent-rootdir)
-                                (lambda (dirpath) (setq erlang-root-dir dirpath)))
+        (when pel---detected-erlang-root-dir
+          (setq erlang-root-dir pel---detected-erlang-root-dir))
       (display-warning 'pel-use-erlang "erlang-root-dir is unbound" :error))
     ;; Optionally add a Erlang Bin directory to the exec-path
     (pel-erlang-set-dirpath (function pel-erlang-exec-path)
