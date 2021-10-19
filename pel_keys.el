@@ -3356,27 +3356,35 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (define-key pel:for-erlang (kbd "M-c")      'erlang-compile)
       (define-key pel:for-erlang (kbd "M-d")      'erlang-man-function-no-prompt)
       (when pel-use-ivy-erlang-complete
-        (require 'ivy-erlang-complete)
-        (ivy-erlang-complete-init)
-        ;; Ensure same Erlang is used by ivy-erlang-complete
-        (when (and (boundp 'erlang-root-dir)
-                   (boundp 'ivy-erlang-complete-erlang-root))
-          (setq ivy-erlang-complete-erlang-root (file-name-as-directory erlang-root-dir)))
-        ;; automatic update completion data after save
-        (add-hook 'after-save-hook #'ivy-erlang-complete-reparse)
+        (if (require 'ivy-erlang-complete nil :noerror)
+            (progn
+              (ivy-erlang-complete-init)
+              ;; Ensure same Erlang is used by ivy-erlang-complete
+              (if (and (boundp 'erlang-root-dir)
+                       (boundp 'ivy-erlang-complete-erlang-root))
+                  (setq ivy-erlang-complete-erlang-root
+                        (file-name-as-directory erlang-root-dir))
+                (display-warning 'pel-use-ivy-erlang-complete
+                                 "Can't access ivy-erlang-complete-erlang-root"
+                                 :error))
+              ;; automatic update completion data after save
+              (add-hook 'after-save-hook #'ivy-erlang-complete-reparse)
+              ;; Extra key bindings
+              (define-key pel:for-erlang "."          'ivy-erlang-complete)
+              (define-key pel:for-erlang (kbd "M-h")  'ivy-erlang-complete-show-doc-at-point)
+              (define-key pel:for-erlang (kbd "M-e")  'ivy-erlang-set-project-root)
+              (define-key pel:for-erlang (kbd "M-.")  'ivy-erlang-complete-find-definition)
+              (define-key pel:for-erlang (kbd "M-?")  'ivy-erlang-complete-find-references)
+              (define-key pel:for-erlang (kbd "M-f")  'ivy-erlang-complete-find-spec)
+              (define-key pel:for-erlang (kbd "M-o")  'ivy-erlang-complete-find-file)
 
-        (define-key pel:for-erlang "."          'ivy-erlang-complete)
-        (define-key pel:for-erlang (kbd "M-h")  'ivy-erlang-complete-show-doc-at-point)
-        (define-key pel:for-erlang (kbd "M-e")  'ivy-erlang-set-project-root)
-        (define-key pel:for-erlang (kbd "M-.")  'ivy-erlang-complete-find-definition)
-        (define-key pel:for-erlang (kbd "M-?")  'ivy-erlang-complete-find-references)
-        (define-key pel:for-erlang (kbd "M-f")  'ivy-erlang-complete-find-spec)
-        (define-key pel:for-erlang (kbd "M-o")  'ivy-erlang-complete-find-file)
-
-        ;; Restore the tags-based M-. to allow xref-based cross-reference
-        ;; searching in Erlang.  Use PEL binding <f12> M-. for explicitly
-        ;; use `ivy-erlang-complete'
-        (define-key erlang-mode-map (kbd "M-.") nil))
+              ;; Restore the tags-based M-. to allow xref-based cross-reference
+              ;; searching in Erlang.  Use PEL binding <f12> M-. for explicitly
+              ;; use `ivy-erlang-complete-find-definition'
+              (define-key erlang-mode-map (kbd "M-.") nil))
+          (display-warning 'pel-use-ivy-erlang-complete
+                           "Failed loading ivy-erlang-complete"
+                           :error)))
 
       ;; Erlang Syntax Checking
       (when pel-use-erlang-syntax-check
