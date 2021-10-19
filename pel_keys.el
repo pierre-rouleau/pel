@@ -1056,7 +1056,6 @@ Then save your changes."
 ;; - Function Keys - <f11> top-level prefix keys
 
 
-(define-key pel: (kbd "M-.") 'pel-syntax-at-point)
 (define-key pel: (kbd "M-t") 'pel-set-tab-width)
 
 (defun pel--global-windmove-on (prefix)
@@ -4756,6 +4755,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 (define-key pel:emacs "v" #'emacs-version)
 (define-key pel:emacs "x"  'pel-emacs-executable)
 (define-key pel:emacs "?"  'pel-package-info)
+(define-key pel:emacs "."  'pel-syntax-at-point)
 (define-key pel:emacs (kbd "M-S") 'pel-setup-info)
 (define-key pel:emacs (kbd "<f2>") 'pel-setup-info-dual-environment)
 
@@ -4777,7 +4777,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (pel-autoload-file esup for: esup)
   (define-key pel:emacs "P"  'esup))
 
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? k`` : Info on Keys
 
 (define-pel-global-prefix pel:keys (kbd "<f11> ? k"))
