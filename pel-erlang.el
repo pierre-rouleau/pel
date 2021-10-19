@@ -778,7 +778,7 @@ Also displays `erlang-root-dir' and `pel-erlang-man-parent-rootdir'"
 pel-erlang-version-detection-method : %s
 pel-erlang-path-detection-method    : %s
 Detected erlang-root-dir            : %s
-pel-erlang-man-parent-rootdir       : %s%s"
+pel-erlang-man-parent-rootdir       : %s%s%s"
              (pel-erlang-version)
              (if (fboundp 'erlang-version)
                  (erlang-version)
@@ -805,7 +805,13 @@ pel-erlang-man-parent-rootdir       : %s%s"
 ⚠️  Automatic detection of Erlang Root Directory done by the script
    pel/bin/erlang-root-dir returns a path that differs from what is stored
    in the erlang-root-dir user-option. Some Erlang features may fail.
-   You may want to set pel-erlang-path-detection-method user-option to auto-detect."))))
+   You may want to set pel-erlang-path-detection-method user-option to
+auto-detect.")
+             (if (and pel-use-ivy-erlang-complete
+                      (boundp 'ivy-erlang-complete-erlang-root))
+                 (format "
+ivy-erlang-complete-erlang-root     : %s" ivy-erlang-complete-erlang-root)
+               ""))))
 
 ;; ---------------------------------------------------------------------------
 

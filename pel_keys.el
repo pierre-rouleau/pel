@@ -3358,6 +3358,10 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (when pel-use-ivy-erlang-complete
         (require 'ivy-erlang-complete)
         (ivy-erlang-complete-init)
+        ;; Ensure same Erlang is used by ivy-erlang-complete
+        (when (and (boundp 'erlang-root-dir)
+                   (boundp 'ivy-erlang-complete-erlang-root))
+          (setq ivy-erlang-complete-erlang-root (file-name-as-directory erlang-root-dir)))
         ;; automatic update completion data after save
         (add-hook 'after-save-hook #'ivy-erlang-complete-reparse)
 
