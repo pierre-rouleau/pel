@@ -4054,24 +4054,35 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (global-set-key "\C-ca" 'org-agenda)
   (global-set-key "\C-cc" 'org-capture)
   (global-set-key "\C-cb" 'org-switchb)
-  ;; Activate specialized C-a and C-e in Org-Mode.
-  (pel-setq org-special-ctrl-a/e t)
-  ;; Activate timestamp log for DONE tasks
-  (pel-setq org-log-done 'time)
-  ;; Add the "IN-PROGRESS" in the list of TODO states
-  (pel-setq org-todo-keywords
-            (quote ((sequence "TODO" "IN-PROGRESS" "DONE"))))
 
-  (pel-config-major-mode org pel:for-org-mode
-    ;; Use the cleaner outline view mode.
-    (if (fboundp 'org-indent-mode)
-        (org-indent-mode 1)
-      (display-warning 'pel-use-org-mode
-                       "Unbound org-indent-mode"
-                       :error))
-    (when (and pel-use-imenu+
-               (fboundp 'imenup-add-defs-to-menubar))
-      (imenup-add-defs-to-menubar))))
+  (pel-eval-after-load org
+    ;; Activate specialized C-a and C-e in Org-Mode.
+    (pel-setq org-special-ctrl-a/e t)
+    ;; Activate timestamp log for DONE tasks
+    (pel-setq org-log-done 'time)
+    ;; Add the "IN-PROGRESS" in the list of TODO states
+    (pel-setq org-todo-keywords
+              (quote ((sequence "TODO" "IN-PROGRESS" "DONE"))))
+    ;;
+    (when pel-windmove-on-esc-cursor
+        ;; Remove Esc down/up/left/right mapping to org-meta...
+        ;; to allow the key bindings to be used for windmove operations.
+        (when (boundp 'org-mode-map)
+          (define-key org-mode-map (kbd "ESC <up>") nil)
+          (define-key org-mode-map (kbd "ESC <down>") nil)
+          (define-key org-mode-map (kbd "ESC <right>") nil)
+          (define-key org-mode-map (kbd "ESC <left>") nil)))
+
+    (pel-config-major-mode org pel:for-org-mode
+      ;; Use the cleaner outline view mode.
+      (if (fboundp 'org-indent-mode)
+          (org-indent-mode 1)
+        (display-warning 'pel-use-org-mode
+                         "Unbound org-indent-mode"
+                         :error))
+      (when (and pel-use-imenu+
+                 (fboundp 'imenup-add-defs-to-menubar))
+        (imenup-add-defs-to-menubar)))))
 
 ;; ---------------------------------------------------------------------------
 ;; XML Support

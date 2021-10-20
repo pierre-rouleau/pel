@@ -20,6 +20,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   M-t`` key binding to the *pel-set-tab-width* that has the same behaviour
   but can be used to modify the display rendering of hard tabs in all major modes.
 ** New Features and Improvements:
+- New: When *pel-move-window-on-esc-cursor* user-option is t, the four ``ESC <CURSOR>`` keys
+  are bound to windmove commands instead of org-meta commands inside the org buffer.
+  Previously they were bound to the org-meta commands making navigation out of org buffer
+  different than from the other buffers, a surprising behaviour.
 - Modified: The *pel-xref-toggle-dumb-jump-mode* command, bound to ``<f11> X B D``,
   now toggle the activation of dumb-jump as a xref back-end inside all buffers
   using the same major-mode instead of only the current buffer as it was doing before.
