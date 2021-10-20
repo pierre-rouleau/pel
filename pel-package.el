@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-14 11:33:21, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-20 09:32:19, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -287,6 +287,14 @@ EXPR is not an expression."
   "^ *(pel-install-github-files* +\\(\\\"\\([-[:alnum:]\\./]+\\)\\\"\\)"
   "Regexp to find & extra dir names of github extracted packages.")
 
+(defconst pel--regexp-pel-install-file
+  "(pel-install-file +\"[-[:alnum:]:/\\.
+ ]+\"[
+ \\t]+\"\\(.+\\)\""
+  "Regexp to extract package name from a pel-install-file form.
+
+Name of package is in group 1.")
+
 (defun pel--pkg-installed-by-pel (regexp &optional group extracter)
   "Return list of package names PEL can install from Elpa compliant sites."
   (or group (setq group 1))
@@ -326,10 +334,14 @@ EXPR is not an expression."
   (let ((pkgs-from-elpa (sort (pel--pkg-installed-by-pel pel--regxp-pel-ensure
                                                          1)
                               (function string<)))
-        (pkgs-others (sort (pel--pkg-installed-by-pel
-                            pel--regxp-froml-github
-                            2 (function pel--extract-pkg-name))
-                           (function string<))))
+        (pkgs-others (sort (append
+                            (pel--pkg-installed-by-pel
+                             pel--regxp-froml-github
+                             2 (function pel--extract-pkg-name))
+                            (pel--pkg-installed-by-pel
+                             pel--regexp-pel-install-file
+                             1))
+                      (function string<))))
     (list pkgs-from-elpa pkgs-others)))
 
 ;; --
