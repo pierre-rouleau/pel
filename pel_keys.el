@@ -6639,6 +6639,32 @@ the ones defined from the buffer now."
 (define-key pel:text-whitespace (kbd "M-W") 'pel-toggle-delete-trailing-space-on-save)
 
 ;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> T`` : Time-Tracking
+(define-pel-global-prefix pel:time (kbd "<f11> T"))
+(when pel-use-timeclock
+  ;; add standard key bindings.
+  (define-key ctl-x-map "ti" 'timeclock-in)
+  (define-key ctl-x-map "to" 'timeclock-out)
+  (define-key ctl-x-map "tc" 'timeclock-change)
+  (define-key ctl-x-map "tr" 'timeclock-reread-log)
+  (define-key ctl-x-map "tu" 'timeclock-update-mode-line)
+  (define-key ctl-x-map "tw" 'timeclock-when-to-leave-string)
+
+  (when pel-use-timeclock-timelog
+    (pel-install-github-file "pierre-rouleau/timelog/master" "timelog.el")
+    (pel-autoload-file timelog for:
+                       timelog-summarize-day
+                       timelog-summarize-today
+                       timelog-summarize-month
+                       timelog-summarize-range
+                       timelog-summarize-each-day-in-range
+                       timelog-current-project
+                       timelog-workday-elapsed)))
+
+;; (when pel-use-chronometrist
+;;   (pel-ensure-package chronometrist from: melpa-stable))
+
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> v`` : VCS operations
 ;;
 (define-pel-global-prefix pel:vcs (kbd "<f11> v"))

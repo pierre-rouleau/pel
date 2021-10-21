@@ -163,6 +163,7 @@
 ;;     - pel-pkg-for-spelling
 ;;     - pel-pkg-for-sw-build
 ;;     - pel-pkg-for-text-mode
+;;     - pel-pkg-for-time-tracking
 ;;     - pel-pkg-for-undo
 ;;     - pel-pkg-for-vcs
 ;;       - pel-pkg-for-git
@@ -8358,6 +8359,44 @@ mode during an editing session."
   :type '(repeat symbol))
 
 ;; ---------------------------------------------------------------------------
+;; Time Tracking
+;; -------------
+(defgroup pel-pkg-for-time-tracking nil
+  "PEL support for time tracking."
+  :group 'pel-package-use
+  :link `(url-link :tag "Time Tracking PDF" ,(pel-pdf-file-url
+                                              "time-tracking")))
+
+(defcustom pel-use-timeclock nil
+  "Control whether PEL activates builtin timeclock package for time tracking."
+  :group 'pel-pkg-for-time-tracking
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-timeclock :package-is :builtin-emacs)
+(pel-put 'pel-use-timeclock :also-required-when 'pel-use-timeclock-timelog)
+
+(defcustom pel-use-timeclock-timelog nil
+  "Control whether PEL activates the timelog extension to timeclock."
+  :group 'pel-pkg-for-time-tracking
+  :link '(url-link :tag "flambard/timelog @ Github Gist"
+                   "https://gist.github.com/flambard/419770#file-timelog-el")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-timeclock-timelog :package-is :in-utils)
+(pel-put 'pel-use-timeclock-timelog :requires 'pel-use-timeclock)
+
+;; TODO: add chronometrist when it's stable enough and compiles cleanly.
+;; For now it does not identify the spark dependency, fails to compile
+;; cleanly, depends on tildegit.org which is difficult to register.
+;; (defcustom pel-use-chronometrist nil
+;;   "Control whether PEL activates the external chronometrist package for time tracking."
+;;   :group 'pel-pkg-for-time-tracking
+;;   :link '(url-link :tag "chronometrist @ tildegit"
+;;                    "https://tildegit.org/contrapunctus/chronometrist")
+;;   :type 'boolean
+;;   :safe #'booleanp)
+
+;; ---------------------------------------------------------------------------
 ;; Undo Mechanism Management
 ;; -------------------------
 (defgroup pel-pkg-for-undo nil
@@ -8932,6 +8971,9 @@ indexing system."
     (setq pel-use-geiser t))
   (when pel-use-ac-geiser
     (setq pel-use-auto-complete t)))
+
+(when pel-use-timeclock-timelog
+  (setq pel-use-timeclock t))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel--options)
