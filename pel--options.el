@@ -8483,6 +8483,8 @@ When set to t, PEL activates the following four key bindings:
 If it set to nil, these keys are not bound.
 When using Org-mode often it's probably best to set this off (nil)."
   :group 'pel-pkg-for-window
+  :group 'pel-base-emacs
+  :group 'pel-pkg-for-keys
   :type 'boolean
   :safe #'booleanp)
 
@@ -8498,6 +8500,24 @@ When set to t, PEL activates the following four key bindings:
 
 If it set to nil, these keys are not bound."
   :group 'pel-pkg-for-window
+  :group 'pel-base-emacs
+  :group 'pel-pkg-for-keys
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-map-meta-left-right-to-Y-Z t
+  "If set <M-left> and <M-right> are mapped to M-Y and M-Z in terminal mode.
+
+When set to t, PEL assumes that Emacs running in terminal (TTY/termcap) mode
+receives the following key sequence for the following typed keys:
+
+- M-Y   : when <M-right> is typed.
+- M-Z   : when <M-left> is typed.
+
+If it set to nil, no such assumptions are made."
+  :group 'pel-pkg-for-window
+  :group 'pel-base-emacs
+  :group 'pel-pkg-for-keys
   :type 'boolean
   :safe #'booleanp)
 

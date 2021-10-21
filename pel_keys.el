@@ -852,8 +852,15 @@ Done in this function to allow advising libraries that remap these keys."
 ;; and python shells from outside Emacs so we leave it to get the same
 ;; behaviour in these shells inside Emacs. These leave cursor at end of a
 ;; word.
-(global-set-key (kbd "<M-right>") #'forward-word)
 (global-set-key (kbd "<M-left>")  #'backward-word)
+(global-set-key (kbd "<M-right>") #'forward-word)
+(when (and pel-emacs-is-a-tty-p
+           pel-map-meta-left-right-to-Y-Z)
+  ;; On a TTY:
+  ;; map <M-left>  to the ANSI key sequence for M-Y: "\033Y"
+  ;; map <M-right> to the ANSI key sequence for M-Z: "\033Z"
+  (define-key esc-map "Y" #'backward-word)
+  (define-key esc-map "Z" #'forward-word))
 
 ;; Control left/right to forward/backward-word but leave point to the
 ;; beginning of the word instead.
@@ -4065,13 +4072,20 @@ Can't load ac-geiser: geiser-repl-mode: %S"
               (quote ((sequence "TODO" "IN-PROGRESS" "DONE"))))
     ;;
     (when pel-windmove-on-esc-cursor
-        ;; Remove Esc down/up/left/right mapping to org-meta...
-        ;; to allow the key bindings to be used for windmove operations.
-        (when (boundp 'org-mode-map)
-          (define-key org-mode-map (kbd "ESC <up>") nil)
-          (define-key org-mode-map (kbd "ESC <down>") nil)
-          (define-key org-mode-map (kbd "ESC <right>") nil)
-          (define-key org-mode-map (kbd "ESC <left>") nil)))
+      ;; Remove Esc down/up/left/right mapping to org-meta...
+      ;; to allow the key bindings to be used for windmove operations.
+      (when (boundp 'org-mode-map)
+        (define-key org-mode-map (kbd "ESC <up>") nil)
+        (define-key org-mode-map (kbd "ESC <down>") nil)
+        (define-key org-mode-map (kbd "ESC <right>") nil)
+        (define-key org-mode-map (kbd "ESC <left>") nil)
+        (when (and pel-emacs-is-a-tty-p
+                   pel-map-meta-left-right-to-Y-Z)
+          ;; On a TTY:
+          ;; map <M-left>  to the ANSI key sequence for M-Y: "\033Y"
+          ;; map <M-right> to the ANSI key sequence for M-Z: "\033Z"
+          (define-key org-mode-map (kbd "M-Y") 'org-metaleft)
+          (define-key org-mode-map (kbd "M-Z") 'org-metaright))))
 
     (pel-config-major-mode org pel:for-org-mode
       ;; Use the cleaner outline view mode.

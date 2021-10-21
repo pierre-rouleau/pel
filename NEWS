@@ -20,6 +20,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   M-t`` key binding to the *pel-set-tab-width* that has the same behaviour
   but can be used to modify the display rendering of hard tabs in all major modes.
 ** New Features and Improvements:
+- New: Add ability to differentiate ``M-b`` from ``<M-left>`` and ``m-f`` from ``<M-right>`` on
+  Emacs running in terminal mode on a macOS Terminal.app application: the
+  Terminal.app must be setup to issue the ``Esc Y`` when Option-left is typed
+  and ``Esc Z`` when Option-right is typed.  Then the
+  *pel-map-meta-left-right-to-Y-Z* user-option must be set to t.  That forces
+  PEL to bind ``M-Y`` to what should be bound to ``<M-left>`` and ``M-Z`` to
+  what should be bound to ``<M-right>`` simulating the keys.
 - New: When *pel-move-window-on-esc-cursor* user-option is t, the four ``ESC <CURSOR>`` keys
   are bound to windmove commands instead of org-meta commands inside the org buffer.
   Previously they were bound to the org-meta commands making navigation out of org buffer
