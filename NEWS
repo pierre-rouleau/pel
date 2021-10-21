@@ -25,6 +25,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     are bound to the ``C-x t`` key prefix.
     - New: When the *pel-use-timeclock-timelog* is also turned on,an updated
       version of timelog.el is installed.
+  - New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/time-tracking.pdf][⅀ Time Tracking PDF]]
 - New: Add ability to differentiate ``M-b`` from ``<M-left>`` and ``m-f`` from ``<M-right>`` on
   Emacs running in terminal mode on a macOS Terminal.app application: the
   Terminal.app must be setup to issue the ``Esc Y`` when Option-left is typed

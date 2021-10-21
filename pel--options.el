@@ -8378,6 +8378,8 @@ mode during an editing session."
 (defcustom pel-use-timeclock-timelog nil
   "Control whether PEL activates the timelog extension to timeclock."
   :group 'pel-pkg-for-time-tracking
+  :link '(url-link :tag "timelog @ GitHub"
+                   "https://github.com/pierre-rouleau/timelog")
   :link '(url-link :tag "flambard/timelog @ Github Gist"
                    "https://gist.github.com/flambard/419770#file-timelog-el")
   :type 'boolean

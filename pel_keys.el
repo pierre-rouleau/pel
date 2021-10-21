@@ -6655,7 +6655,14 @@ the ones defined from the buffer now."
                        timelog-summarize-range
                        timelog-summarize-each-day-in-range
                        timelog-current-project
-                       timelog-workday-elapsed)))
+                       timelog-workday-elapsed)
+    (define-key ctl-x-map "tld" 'timelog-summarize-day)
+    (define-key ctl-x-map "tlt" 'timelog-summarize-today)
+    (define-key ctl-x-map "tlm" 'timelog-summarize-month)
+    (define-key ctl-x-map "tlr" 'timelog-summarize-range)
+    (define-key ctl-x-map "tlD" 'timelog-summarize-each-day-in-range)
+    (define-key ctl-x-map "tlp" 'timelog-current-project)
+    (define-key ctl-x-map "tle" 'timelog-workday-elapsed)))
 
 ;; (when pel-use-chronometrist
 ;;   (pel-ensure-package chronometrist from: melpa-stable))
