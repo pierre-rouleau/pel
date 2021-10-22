@@ -3335,6 +3335,12 @@ Do not enter lambda expressions."
   :group 'pel-package-use
   :group 'pel-pkg-for-highlight)
 
+(defcustom pel-modeline-display-time nil
+  "Activate time display on modeline when set to t."
+  :group 'pel-pkg-for-modeline
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-delight nil
   "Control whether PEL activates the delight external package.
 This provides ability to control the lighter of major and minor modes."

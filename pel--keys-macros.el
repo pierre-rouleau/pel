@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-22 00:07:47, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-22 08:26:53, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -490,8 +490,10 @@
                                                                        minibuffer
                                                                        smex))
 
-    ([f11 27 ?l]            "mode-line"        pel-pkg-for-modeline    mode-line)
-    (,(kbd "<f11> M-l")     "mode-line"        pel-pkg-for-modeline    mode-line)
+    ([f11 27 ?d]            "mode-line"        pel-pkg-for-modeline   (display-time
+                                                                       mode-line))
+    (,(kbd "<f11> M-d")     "mode-line"        pel-pkg-for-modeline   (display-time
+                                                                       mode-line))
 
     (,(kbd "<f11> SPC M-g") "graphviz-dot"     pel-pkg-for-graphviz-dot graphviz)
     ([f11 32 27 ?g]         "graphviz-dot"     pel-pkg-for-graphviz-dot graphviz)

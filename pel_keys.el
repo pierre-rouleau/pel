@@ -6734,7 +6734,17 @@ the ones defined from the buffer now."
 ;; - Function Keys - <f11> - Prefix ``<f11> M-d`` : Mode line commands
 (define-pel-global-prefix pel:mode-line (kbd "<f11> M-d"))
 
+(when pel-modeline-display-time
+  (run-at-time "2 sec" nil (function display-time)))
+
+(defun pel-toggle-time-display ()
+  "Toggle display of time on the mode line."
+  (interactive)
+  (declare-function display-time-mode "time")
+  (call-interactively (function display-time-mode)))
+
 (define-key pel:mode-line "f"  'which-function-mode)
+(define-key pel:mode-line "t" #'pel-toggle-time-display)
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> w`` : Windows operations
