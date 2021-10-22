@@ -6638,6 +6638,7 @@ the ones defined from the buffer now."
 ;; - Function Keys - <f11> - Prefix ``<f11> T`` : Time-Tracking
 (define-pel-global-prefix pel:time (kbd "<f11> T"))
 (when pel-use-timeclock
+  (define-key pel:time (kbd "M-d") 'timeclock-mode-line-display)
   ;; add standard key bindings.
   (define-key ctl-x-map "ti" 'timeclock-in)
   (define-key ctl-x-map "to" 'timeclock-out)
