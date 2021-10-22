@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-21 15:47:19, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-22 00:07:47, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -319,7 +319,8 @@
     ([f11 ?D ?u]     "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
     ([f11 ?F]        "frames"           pel-pkg-for-frame       frames)
     ([f11 ?T]        "time-tracking"    pel-pkg-for-time-tracking (display-time
-                                                                   timeclock))
+                                                                   timeclock
+                                                                   timelog))
     ([f11 ?S]        "sessions"         pel-pkg-for-sessions    desktop)
     ;; ([f11 ?S ?R]
     ([f11 ?X]        "xref"             pel-pkg-for-xref        (cscope
