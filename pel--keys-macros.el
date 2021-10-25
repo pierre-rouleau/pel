@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-22 08:26:53, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-25 15:54:55, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -946,6 +946,7 @@ Return nil if nothing found."
     ("command-log" . "command-log-mode")
     ("clojure"     . "clojure-mode")
     ("cljr"        . "clj-refactor")
+    ("edts"        . "edts-mode")
     ("electricity" . "electric")
     ("erlstack"    . "erlstack-mode")
     ("grip"        . "grip-mode")
