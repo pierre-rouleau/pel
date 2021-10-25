@@ -20,6 +20,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   M-t`` key binding to the *pel-set-tab-width* that has the same behaviour
   but can be used to modify the display rendering of hard tabs in all major modes.
 ** New Features and Improvements:
+- New: The ``<M-f11>`` key is now used as the ``pel2:`` key prefix.  Generic
+  commands that have corresponding major-mode specialized commands are bound
+  to the same key sequence into the ``<M-f12>`` key prefix making it easier to
+  remember both set of command bindings.  The generic commands are also often
+  available under the ``<f11>`` (``pel:``) prefix.
 - New: explicit support for time tracking:
   - New: When the *pel-use-timeclock* user-option is t, the timeclock commands
     are bound to the ``C-x t`` key prefix.
