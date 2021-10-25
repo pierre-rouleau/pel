@@ -464,6 +464,7 @@ Done in this function to allow advising libraries that remap these keys."
 
 ;; <f11> Global key prefixes used for multiple packages:
 (define-pel-global-prefix pel:     (kbd "<f11>"))
+(define-pel-global-prefix pel2:    (kbd "<M-f11>"))
 (define-pel-global-prefix pel:help (kbd "<f11> ?"))
 (define-pel-global-prefix pel:mode (kbd "<f11> <f5>"))
 
@@ -5476,13 +5477,15 @@ the ones defined from the buffer now."
 
 (declare-function find-grep "grep")
 (define-pel-global-prefix pel:file (kbd "<f11> f"))
+(define-pel-global-prefix pel2:file (kbd "<M-f11> M-f"))
 ;; Used keys in <f11> f:
 ;; . / ?
 ;; F I L O W
 ;; a d f g h i j l n o p r t u v w
 ;; C-f
 ;; M-. M-/ M-l M-t M-u M-x
-(define-key pel: (kbd "C-f") 'find-file)
+(define-key pel:file "f" #'find-file)
+(define-key pel2:file (kbd "M-f") #'find-file)
 (define-key pel:file "I" #'insert-file-literally)
 (define-key pel:file "O" #'find-file-read-only-other-window)
 (define-key pel:file "L" #'locate)
@@ -5502,7 +5505,7 @@ the ones defined from the buffer now."
 (define-key pel:file (kbd "M-l") 'find-file-literally)
 (define-key pel:file "?" #'pel-show-buffer-file-encoding)
 (when pel-use-popup-switcher
-  (define-key pel:file "f" 'psw-navigate-files))
+  (define-key pel:file (kbd "M-f") 'pel-psw-navigate-files))
 
 ;; - Open recent file
 ;; ------------------
@@ -5530,6 +5533,7 @@ the ones defined from the buffer now."
 ;; --------------------
 (global-set-key (kbd "C-^") 'pel-open-at-point)
 (define-key pel:file "."    'pel-open-at-point)
+(define-key pel2:file (kbd "M-.")    'pel-open-at-point)
 (define-key pel:file (kbd "M-.") 'pel-set-ido-use-fname-at-point)
 (define-key pel:file "/"    'pel-browse-filename-at-point)
 (define-key pel:file (kbd "M-/") 'browse-url-at-point)

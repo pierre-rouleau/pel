@@ -504,6 +504,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-y-n-e-or-l-p
     pel-select-from)
 
+  (pel-autoload-function "pel-psw" for:
+    pel-psw-navigate-files)
+
   (pel-autoload "pel-register" for:
     pel-filename-to-register
     pel-point-to-register
