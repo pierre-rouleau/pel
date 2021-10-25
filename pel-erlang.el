@@ -788,7 +788,7 @@ Also displays `erlang-root-dir' and `pel-erlang-man-parent-rootdir'"
 pel-erlang-version-detection-method : %s
 pel-erlang-path-detection-method    : %s
 Detected erlang-root-dir            : %s
-pel-erlang-man-parent-rootdir       : %s%s%s"
+pel-erlang-man-parent-rootdir       : %s%s%s%s"
              (pel-erlang-version)
              (if (fboundp 'erlang-version)
                  (erlang-version)
@@ -821,6 +821,10 @@ auto-detect.")
                       (boundp 'ivy-erlang-complete-erlang-root))
                  (format "
 ivy-erlang-complete-erlang-root     : %s" ivy-erlang-complete-erlang-root)
+               "")
+             (if (boundp 'ivy-erlang-complete-project-root)
+                 (format "
+ivy-erlang-complete-project-root    : %s" ivy-erlang-complete-project-root)
                ""))))
 
 ;; ---------------------------------------------------------------------------
