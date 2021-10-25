@@ -1565,7 +1565,7 @@ The specified package is specified by the PACKAGE argument.  It can be either:
 - Another symbol that identifies the name of the required package.
 
 If WITH-PEL-INSTALL is non-nil it should be a user-project-branch
-of the format used by `pel-install-github-file' that we be used
+of the format used by `pel-install-github-file' that will be used
 to perform the installation with FNAME and URL-FNAME argument
 passed to that function.
 
