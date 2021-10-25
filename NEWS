@@ -210,6 +210,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - New: Simplified installation. PEL now provides the init.el and the early-init.el file
   that support PEL features.  There's also a set of canned Emacs customization files
   ready to use.
+- Modified: the key binding to find-file/id-find-file from ``<f11> C-f`` to ``<f11> f f``
+  and to ``<M-f11> M-f M-f``.  Also modified the binding to psw-navigate-file from
+  ``<f11> f M-f`` to <f11> f M-f``.
 - New: PEL supports configuring the process environment of Emacs launched from
   a GUI program such as Windows Explorer, macOS Finder, Linux file manager,
   etc...  The method PEL use is fast and does not need to launch a child shell
