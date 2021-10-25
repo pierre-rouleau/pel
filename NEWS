@@ -20,6 +20,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   M-t`` key binding to the *pel-set-tab-width* that has the same behaviour
   but can be used to modify the display rendering of hard tabs in all major modes.
 ** New Features and Improvements:
+- The ``<f12>`` and ``<M-f12>`` key prefixes are now available in Custom-mode buffers.
 - New: The ``<M-f11>`` key is now used as the ``pel2:`` key prefix.  Generic
   commands that have corresponding major-mode specialized commands are bound
   to the same key sequence into the ``<M-f12>`` key prefix making it easier to
@@ -199,6 +200,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Change: The key prefix for smartparens startup commands changed from
   ``<f11> i (`` to ``<f11> (``.
 ** Bug Fixes:
+- Fixed invalid description in the Customize PDF first page rows 3, 4 and 5
+  duplicating information correctly provided in later rows about dual
+  configuration.  That section now describes how to customize the
+  customization as it should have been.
 - Fixed generic skeletons for programming languages that use end comment
   strings such as C, Pascal and several others.  For those the *generic*
   templates creating comments, such as the header template bound to ``<f6> h``

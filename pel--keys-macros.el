@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-25 15:54:55, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-25 18:19:48, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -543,7 +543,8 @@ stored inside the doc/pdf directory.")
 ;; --
 
 (defconst pel--mode-letter-alist
-  '(("dired"           [dired])
+  '(("Custom"          [f11 f2])
+    ("dired"           [dired])
     ("apples"          [f11 32 ?a])
     ("c++"             [f11 32 ?C])
     ("c"               [f11 32 ?c])

@@ -1494,6 +1494,7 @@ can't bind negative-argument to C-_ and M-_"
 (define-key pel:cfg "b" 'pel-browse-group)
 (define-key pel:cfg "p" 'pel-customize-pel-base-emacs-group)
 (define-key pel:cfg "v" 'customize-save-variable)
+(define-key pel:cfg "." 'pel-xref-find-custom-definition-at-line)
 ;;
 
 (define-key pel:cfg-pel "B" 'pel-browse-pel)
@@ -1516,6 +1517,14 @@ can't bind negative-argument to C-_ and M-_"
 (pel--cfg-emacs pel:cfg-emacs "l" "locate")
 (pel--cfg-emacs pel:cfg-emacs "u" "browse-url")
 (pel--cfg-emacs pel:cfg-emacs "w" "woman")
+
+(defun pel--setup-for-custom ()
+  "PEL setup for Custom-mode."
+  (pel-local-set-f12-M-f12 'pel:cfg)
+  (when pel-bind-m-dot-to-xref-find-custom-definition
+    (local-set-key (kbd "M-.") 'pel-xref-find-custom-definition-at-line))
+  (local-set-key (kbd "<f11> X .") 'pel-xref-find-custom-definition-at-line))
+(add-hook 'Custom-mode-hook 'pel--setup-for-custom)
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> M-I`` : Startup Operation Mode
@@ -7052,20 +7061,15 @@ the ones defined from the buffer now."
 
 (define-key pel:xref-backend "T"  'xref-etags-mode)
 
+;; See Customization section for the key binding of the function
+;; `pel-xref-find-custom-definition-at-line' .
+
 ;; Installation of work around for Emacs bug 44494
 ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=44494
 ;; TODO: qualify this with emacs version as soon as a version of Emacs fixes
 ;; the bug.
 (add-hook 'xref-etags-mode-hook (function
                                  (lambda () (load "pel-etags" :no-error))))
-
-
-(defun pel--setup-for-custom ()
-  "PEL setup for Custom-mode."
-  (when pel-bind-m-dot-to-xref-find-custom-definition
-    (local-set-key (kbd "M-.") 'pel-xref-find-custom-definition-at-line))
-  (local-set-key (kbd "<f11> X .") 'pel-xref-find-custom-definition-at-line))
-(add-hook 'Custom-mode-hook 'pel--setup-for-custom)
 
 ;; ggtags
 (when pel-use-ggtags
