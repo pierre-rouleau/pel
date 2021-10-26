@@ -2214,6 +2214,18 @@ You can select one of 2 alternatives."
   :link `(url-link :tag "Inserting Text PDF"
                    ,(pel-pdf-file-url "inserting-text")))
 
+(defcustom pel-activate-hydra-for-greek nil
+  "Control whether PEL activates the Hydra for Greek letters.
+
+When activated, the Greek Hydra is started with ``<f7> <f6> <f6>``.
+
+If you activate that feature, the `pel-use-hydra' user-option will
+automatically turned on."
+  :group 'pel-pkg-for-insertions
+  :group 'pel-pkg-for-text-mode
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-activate-f9-for-greek nil
   "Control whether <f9> key is used as key prefix to insert greek letters.
 This is a PEL built-in logic that is not activated by default, leaving the
@@ -2784,7 +2796,8 @@ To activate it you must also activate `pel-use-log-support'"
   :safe #'booleanp)
 (pel-put 'pel-use-hydra :also-required-when '(or pel-use-indent-tools
                                                  pel-use-iflipb
-                                                 pel-use-treemacs))
+                                                 pel-use-treemacs
+                                                 pel-activate-hydra-for-greek))
 
 (defcustom pel-use-which-key t
   "Control whether PEL uses the which-key package."
@@ -8920,7 +8933,8 @@ indexing system."
 
 (when (or pel-use-indent-tools
           pel-use-iflipb
-          pel-use-treemacs)
+          pel-use-treemacs
+          pel-activate-hydra-for-greek)
   (setq pel-use-hydra t))
 
 (when pel-use-lsp-origami

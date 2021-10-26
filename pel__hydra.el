@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-31 19:16:01, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-26 13:37:35, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -98,7 +98,72 @@
              "Hiding Hint")))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; PEL HYDRA: Narrate
+;; PEL Hydra: Greek Letters : activated with <f7> <f6> <f6>
+(when pel-activate-hydra-for-greek
+
+  ;; Uses the single Greek letter commands defined in pel__keys.el.
+  ;; These commands should be defined here but it causes byte compiler
+  ;; warnings that are avoided when the commands are defined inside
+  ;; pel__key.el
+
+  (defhydra pel-∑greek (global-map "<f7> <f6> <f6>"
+                                   :base-map (make-sparse-keymap)
+                                   :foreign-keys run)
+    ""
+    ("M-a"  α "α")
+    ("M-b"  β "β")
+    ("M-c"  χ "χ")
+    ("M-d"  δ "δ")
+    ("M-e"  ε "ε")
+    ("M-f"  ϕ "ϕ")
+    ("M-g"  γ "γ")
+    ("M-h"  η "η")
+    ("M-i"  ι "ι")
+    ("M-j"  φ "φ")
+    ("M-k"  κ "κ")
+    ("M-l"  λ "λ")
+    ("M-m"  μ "μ")
+    ("M-n"  ν "ν")
+    ("M-o"  ο "ο")
+    ("M-p"  π "π")
+    ("M-q"  θ "θ")
+    ("M-r"  ρ "ρ")
+    ("M-s"  σ "σ")
+    ("M-t"  τ "τ")
+    ("M-u"  υ "υ")
+    ("M-w"  ω "ω")
+    ("M-x"  ξ "ξ")
+    ("M-y"  ψ "ψ")
+    ("M-z"  ζ "ζ")
+    ("M-A"  Α "Α")
+    ("M-B"  Β "Β")
+    ("M-C"  Χ "Χ")
+    ("M-D"  Δ "Δ")
+    ("M-E"  Ε "Ε")
+    ("M-F"  Φ "Φ")
+    ("M-G"  Γ "Γ")
+    ("M-H"  Η "Η")
+    ("M-I"  Ι "Ι")
+    ("M-J"  Φ "Φ")
+    ("M-K"  Κ "Κ")
+    ("M-L"  Λ "Λ")
+    ("M-M"  Μ "Μ")
+    ("M-N"  Ν "Ν")
+    ("M-O"  Ο "Ο")
+    ("M-P"  Π "Π")
+    ("M-Q"  Θ "Θ")
+    ("M-R"  Ρ "Ρ")
+    ("M-S"  Σ "Σ")
+    ("M-T"  Τ "Τ")
+    ("M-U"  Υ "Υ")
+    ("M-W"  Ω "Ω")
+    ("M-X"  Ξ "Ξ")
+    ("M-Y"  Ψ "Ψ")
+    ("M-Z"  Ζ "Ζ")
+    ("<f7>" nil "cancel" )))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; PEL HYDRA: Narrate : activated with <f7> <f8>
 (when (and pel-use-applescript pel-system-is-macos-p)
   (pel-declare-file pel-applescript defines:
                     pel-say-word
