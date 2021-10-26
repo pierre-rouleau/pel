@@ -19,6 +19,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   *pel-go-set-tab-width*.  It was replaced by a globally available ``<f11>
   M-t`` key binding to the *pel-set-tab-width* that has the same behaviour
   but can be used to modify the display rendering of hard tabs in all major modes.
+- Modified: key bindings to start Erlang EDTS: it was ``<f12> M-SPC`` and is now ``<f12> M-E``.
 ** New Features and Improvements:
 - The ``<f12>`` and ``<M-f12>`` key prefixes are now available in Custom-mode buffers.
 - New: The ``<M-f11>`` key is now used as the ``pel2:`` key prefix.  Generic
