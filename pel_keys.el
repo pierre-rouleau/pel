@@ -305,76 +305,6 @@ Done in this function to allow advising libraries that remap these keys."
 (when pel-activate-f9-for-greek
   (pel-bind-greek-to "<f9>"))
 
-(when pel-activate-hydra-for-greek
-  ;; Define Greek letter commands used by the pel-∑greek Hydra defined inside
-  ;; pel__hydra.el.  Code should really be located in there, but placing it
-  ;; here prevents byte compiler warnings.
-  ;; Note: pel--options.el ensures that `pel-use-hydra' is t when
-  ;;       `pel-activate-hydra-for-greek' is t.
-  ;; TODO: mode the code in pel__hydra.el once I find a way to also prevent
-  ;;       byte compiler warnings when moving it there.
-
-  (defmacro pel--define-greek-command (greek)
-    "Define a command with a GREEK name that insert that GREEK letter."
-    (let ((function-name (intern greek))
-          (docstring (format "Insert %s." greek)))
-      `(defun ,function-name nil
-         ,docstring
-         (interactive)
-         (insert ,greek))))
-
-  (when pel-activate-hydra-for-greek
-    (pel--define-greek-command "α")
-    (pel--define-greek-command "β")
-    (pel--define-greek-command "χ")
-    (pel--define-greek-command "δ")
-    (pel--define-greek-command "ε")
-    (pel--define-greek-command "ϕ")
-    (pel--define-greek-command "γ")
-    (pel--define-greek-command "η")
-    (pel--define-greek-command "ι")
-    (pel--define-greek-command "φ")
-    (pel--define-greek-command "κ")
-    (pel--define-greek-command "λ")
-    (pel--define-greek-command "μ")
-    (pel--define-greek-command "ν")
-    (pel--define-greek-command "ο")
-    (pel--define-greek-command "π")
-    (pel--define-greek-command "θ")
-    (pel--define-greek-command "ρ")
-    (pel--define-greek-command "σ")
-    (pel--define-greek-command "τ")
-    (pel--define-greek-command "υ")
-    (pel--define-greek-command "ω")
-    (pel--define-greek-command "ξ")
-    (pel--define-greek-command "ψ")
-    (pel--define-greek-command "ζ")
-    (pel--define-greek-command "Α")
-    (pel--define-greek-command "Β")
-    (pel--define-greek-command "Χ")
-    (pel--define-greek-command "Δ")
-    (pel--define-greek-command "Ε")
-    (pel--define-greek-command "Φ")
-    (pel--define-greek-command "Γ")
-    (pel--define-greek-command "Η")
-    (pel--define-greek-command "Ι")
-    (pel--define-greek-command "Φ")
-    (pel--define-greek-command "Κ")
-    (pel--define-greek-command "Λ")
-    (pel--define-greek-command "Μ")
-    (pel--define-greek-command "Ν")
-    (pel--define-greek-command "Ο")
-    (pel--define-greek-command "Π")
-    (pel--define-greek-command "Θ")
-    (pel--define-greek-command "Ρ")
-    (pel--define-greek-command "Σ")
-    (pel--define-greek-command "Τ")
-    (pel--define-greek-command "Υ")
-    (pel--define-greek-command "Ω")
-    (pel--define-greek-command "Ξ")
-    (pel--define-greek-command "Ψ")
-    (pel--define-greek-command "Ζ")))
-
 ;; ---------------------------------------------------------------------------
 ;; - Font Control
 ;; --------------
@@ -3517,7 +3447,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
                                :error))))
 
         ;; Key to start EDTS
-        (define-key pel:for-erlang      (kbd "M-SPC")   'edts-mode)
+        (define-key pel:for-erlang      (kbd "M-E")   'edts-mode)
         (when (eq pel-use-edts 'start-automatically)
           (require 'edts-start))
         (pel-eval-after-load edts

@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-26 13:37:35, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-26 15:28:58, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -101,10 +101,72 @@
 ;; PEL Hydra: Greek Letters : activated with <f7> <f6> <f6>
 (when pel-activate-hydra-for-greek
 
-  ;; Uses the single Greek letter commands defined in pel__keys.el.
-  ;; These commands should be defined here but it causes byte compiler
-  ;; warnings that are avoided when the commands are defined inside
-  ;; pel__key.el
+  ;; Define Greek letter commands used by the pel-∑greek Hydra defined inside
+  ;; pel__hydra.el.  Code should really be located in there, but placing it
+  ;; here prevents byte compiler warnings.
+  ;; Note: pel--options.el ensures that `pel-use-hydra' is t when
+  ;;       `pel-activate-hydra-for-greek' is t.
+
+  (defmacro pel--define-greek-command (greek)
+    "Define a command with a GREEK name that insert that GREEK letter."
+    (let ((function-name (intern greek))
+          (docstring (format "Insert %s." greek)))
+      `(defun ,function-name nil
+         ,docstring
+         (interactive)
+         (insert ,greek))))
+  (declare-function pel--define-greek-command "pel_keys")
+
+  (pel--define-greek-command "α") (declare-function α "pel_keys")
+  (pel--define-greek-command "β") (declare-function β "pel_keys")
+  (pel--define-greek-command "χ") (declare-function χ "pel_keys")
+  (pel--define-greek-command "δ") (declare-function δ "pel_keys")
+  (pel--define-greek-command "ε") (declare-function ε "pel_keys")
+  (pel--define-greek-command "ϕ") (declare-function ϕ "pel_keys")
+  (pel--define-greek-command "γ") (declare-function γ "pel_keys")
+  (pel--define-greek-command "η") (declare-function η "pel_keys")
+  (pel--define-greek-command "ι") (declare-function ι "pel_keys")
+  (pel--define-greek-command "φ") (declare-function φ "pel_keys")
+  (pel--define-greek-command "κ") (declare-function κ "pel_keys")
+  (pel--define-greek-command "λ") (declare-function λ "pel_keys")
+  (pel--define-greek-command "μ") (declare-function μ "pel_keys")
+  (pel--define-greek-command "ν") (declare-function ν "pel_keys")
+  (pel--define-greek-command "ο") (declare-function ο "pel_keys")
+  (pel--define-greek-command "π") (declare-function π "pel_keys")
+  (pel--define-greek-command "θ") (declare-function θ "pel_keys")
+  (pel--define-greek-command "ρ") (declare-function ρ "pel_keys")
+  (pel--define-greek-command "σ") (declare-function σ "pel_keys")
+  (pel--define-greek-command "τ") (declare-function τ "pel_keys")
+  (pel--define-greek-command "υ") (declare-function υ "pel_keys")
+  (pel--define-greek-command "ω") (declare-function ω "pel_keys")
+  (pel--define-greek-command "ξ") (declare-function ξ "pel_keys")
+  (pel--define-greek-command "ψ") (declare-function ψ "pel_keys")
+  (pel--define-greek-command "ζ") (declare-function ζ "pel_keys")
+  (pel--define-greek-command "Α") (declare-function Α "pel_keys")
+  (pel--define-greek-command "Β") (declare-function Β "pel_keys")
+  (pel--define-greek-command "Χ") (declare-function Χ "pel_keys")
+  (pel--define-greek-command "Δ") (declare-function Δ "pel_keys")
+  (pel--define-greek-command "Ε") (declare-function Ε "pel_keys")
+  (pel--define-greek-command "Φ") (declare-function Φ "pel_keys")
+  (pel--define-greek-command "Γ") (declare-function Γ "pel_keys")
+  (pel--define-greek-command "Η") (declare-function Η "pel_keys")
+  (pel--define-greek-command "Ι") (declare-function Ι "pel_keys")
+  (pel--define-greek-command "Φ") (declare-function Φ "pel_keys")
+  (pel--define-greek-command "Κ") (declare-function Κ "pel_keys")
+  (pel--define-greek-command "Λ") (declare-function Λ "pel_keys")
+  (pel--define-greek-command "Μ") (declare-function Μ "pel_keys")
+  (pel--define-greek-command "Ν") (declare-function Ν "pel_keys")
+  (pel--define-greek-command "Ο") (declare-function Ο "pel_keys")
+  (pel--define-greek-command "Π") (declare-function Π "pel_keys")
+  (pel--define-greek-command "Θ") (declare-function Θ "pel_keys")
+  (pel--define-greek-command "Ρ") (declare-function Ρ "pel_keys")
+  (pel--define-greek-command "Σ") (declare-function Σ "pel_keys")
+  (pel--define-greek-command "Τ") (declare-function Τ "pel_keys")
+  (pel--define-greek-command "Υ") (declare-function Υ "pel_keys")
+  (pel--define-greek-command "Ω") (declare-function Ω "pel_keys")
+  (pel--define-greek-command "Ξ") (declare-function Ξ "pel_keys")
+  (pel--define-greek-command "Ψ") (declare-function Ψ "pel_keys")
+  (pel--define-greek-command "Ζ") (declare-function Ζ "pel_keys")
 
   (defhydra pel-∑greek (global-map "<f7> <f6> <f6>"
                                    :base-map (make-sparse-keymap)
