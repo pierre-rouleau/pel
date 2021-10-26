@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes Since Version 0.4.0:
 ** Modifications:
+- Fix: The File Management PDF now describes PEL's ability to select the
+  function used opening the recently opened files and properly describes the
+  key bindings that are inside the `<f11> f M-r`` key prefix.
 - Modified: modeline commands key binding:
   - changed the *pel:modeline* prefix from ``<f11> M-l`` to ``<f11> M-d``
     to make room for outline commands. The ``<f11> M-l`` is now bound to the

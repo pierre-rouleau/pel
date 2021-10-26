@@ -1559,12 +1559,13 @@ make script files executable on save when non-nil, don't otherwise."
   "Control whether PEL activates the recentf built-in package.
 This activates the \"Open Recent\" File menu.
 
-When the `pel-use-ido' is also activated, PEL maps ``<f11> f f``
-to the function `ido-recentf-open'.
+PEL supports several functions that can be used with PEL's
+`pel-find-recent-file' command and are selected by the
+`pel-initial-recentf-function' user-option.
 
 Note that activating that feature imposes a small impact on Emacs
-init time.  The feature cannot be delayed without impacting its
-ability to detect files opened on startup."
+init time because the recentf-mode must be activated during Emacs
+initialization time."
   :group 'pel-pkg-for-filemng
   :type 'boolean
   :safe #'booleanp)
