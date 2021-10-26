@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-26 15:28:58, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-26 15:39:49, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -99,15 +99,8 @@
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; PEL Hydra: Greek Letters : activated with <f7> <f6> <f6>
-(when pel-activate-hydra-for-greek
 
-  ;; Define Greek letter commands used by the pel-∑greek Hydra defined inside
-  ;; pel__hydra.el.  Code should really be located in there, but placing it
-  ;; here prevents byte compiler warnings.
-  ;; Note: pel--options.el ensures that `pel-use-hydra' is t when
-  ;;       `pel-activate-hydra-for-greek' is t.
-
-  (defmacro pel--define-greek-command (greek)
+(defmacro pel--define-greek-command (greek)
     "Define a command with a GREEK name that insert that GREEK letter."
     (let ((function-name (intern greek))
           (docstring (format "Insert %s." greek)))
@@ -115,7 +108,14 @@
          ,docstring
          (interactive)
          (insert ,greek))))
-  (declare-function pel--define-greek-command "pel_keys")
+
+(when pel-activate-hydra-for-greek
+
+  ;; Define Greek letter commands used by the pel-∑greek Hydra defined inside
+  ;; pel__hydra.el.  Code should really be located in there, but placing it
+  ;; here prevents byte compiler warnings.
+  ;; Note: pel--options.el ensures that `pel-use-hydra' is t when
+  ;;       `pel-activate-hydra-for-greek' is t.
 
   (pel--define-greek-command "α") (declare-function α "pel_keys")
   (pel--define-greek-command "β") (declare-function β "pel_keys")
