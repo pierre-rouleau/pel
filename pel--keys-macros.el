@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-25 18:19:48, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-27 10:50:49, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -228,6 +228,8 @@
                                                                  erlstack
                                                                  edts
                                                                  ivy-erlang-complete
+                                                                 lsp-erlang
+                                                                 lsp-mode
                                                                  auto-highlight-symbol
                                                                  electricity
                                                                  smart-dash
