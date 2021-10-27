@@ -2232,7 +2232,8 @@ automatically turned on."
 This is a PEL built-in logic that is not activated by default, leaving the
 <f9> key unbound.  When turned on, the <f9> key is the key prefix to other
 keys that insert Greek letters, with correspondences between ASCII letters and
-Greek letters."
+Greek letters.
+Note that PEL also provides the ``<f6> g`` key binding for Greek letters."
   :group 'pel-pkg-for-insertions
   :group 'pel-pkg-for-text-mode
   :type 'boolean

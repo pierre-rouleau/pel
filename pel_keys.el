@@ -3501,6 +3501,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
         ;;       be used.  Also the C-l key binding is another good candidate
         ;;       since PEL provides the `<f11> C-l` binding to what C-l is
         ;;       normally bound.
+
         ;; Enable LSP for Erlang files
         (if (fboundp 'lsp)
             (lsp pel-erlang-ls-with-separate-session)
@@ -3515,6 +3516,14 @@ Can't load ac-geiser: geiser-repl-mode: %S"
         ;; Add key-bindings inside the lsp-keymap if erlang_ls is used
         (when (and (boundp 'lsp-mode-map)
                    (boundp 'lsp-keymap-prefix))
+          ;; The F9 key be used for Greek letters and for the
+          ;; lsp-keymap-prefix. Check if there is a conflict and report it.
+          (when (and pel-activate-f9-for-greek
+                     (string= lsp-keymap-prefix "<f9>"))
+            (display-warning 'pel-use-erlang-ls
+                             "Key prefix conflict detected!
+The F9 key is used for 2 prefixes: LSP and Greek letters. Change one.
+See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
           (define-key lsp-mode-map
             (kbd (format "%s d" lsp-keymap-prefix)) 'lsp-doctor)
           (define-key lsp-mode-map
