@@ -6018,7 +6018,6 @@ the ones defined from the buffer now."
     (define-key smartparens-mode-map (kbd "<M-f7> - l")   'sp-kill-whole-line)
     (define-key smartparens-mode-map (kbd "<M-f7> DEL -") 'sp-delete-region)
     (define-key smartparens-mode-map (kbd "<M-f7> - -")   'sp-kill-region)
-    (define-key smartparens-mode-map (kbd "<M-f7> - r")   'sp--kill-or-copy-region)
     (define-key smartparens-mode-map (kbd "<M-f7> DEL n") 'sp-delete-char)
     (define-key smartparens-mode-map (kbd "<M-f7> DEL p") 'sp-backward-delete-char)
     (define-key smartparens-mode-map (kbd "<M-f7> DEL v") 'sp-backward-delete-word)
