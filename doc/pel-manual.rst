@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-13 09:08:03, updated by Pierre Rouleau.
+:Modified: 2021-10-28 08:07:24, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2067,8 +2067,8 @@ utils-attic/           utils-attic-graphics/           Stores non-Elpa files rem
 
 PEL commands create the files and directories when they are required.
 
-Comparing the two customization files wit Emacs
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Comparing the two customization files with Emacs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The easiest way to compare the terminal/TTY customization file
 (``emacs-customization/.el``) from the one used in graphics mode when the dual
@@ -2371,6 +2371,54 @@ instructions inside the ``User configuration`` section of the file
 
 
 .. _example/init/early-init.el:               ../example/init/early-init.el
+
+
+Update Packages and Keep Older Versions
+---------------------------------------
+
+To get a later version of package already installed do the following:
+
+- Make sure PEL is running in normal startup mode.  Type ``<f11> M-S ?`` to
+  check and ``<f11> M-S n`` to activate the normal startup mode if necessary.
+- Move the package directory out of the elpa or utils directory where it resides to the
+  corresponding elpa-attic or utils-attic directory.
+
+  - These directories are located in the directory identified by
+    ``user-emacs-directory`` which is often ``~/.emacs.d`` on Unix-like OS.
+  - If you use independent customization for terminal and graphics mode, do
+    the same for both set if the package is used in both sets.
+  - After a while the elpa-attic directories will contain several older version
+    of the various packages as you move them in since each Elpa-compliant
+    package directory name identifies its version.
+
+    - These older versions can later be restored by placing them back into
+      their corresponding elpa directory.
+    - The files in the utils directories have no version identified.  Only one
+      copy is available for backup unless you use a versioning scheme when
+      copying them into the attic.
+  - See the table below for the list of directories.
+
+- Exit Emacs and restart it.  It will download and install the new version of
+  the packages you just moved out of the elpa and utils directories.
+
+For upgrading external packages you do not need to perform a
+pel-cleanup/pel-init cycle which would require you to modify your PEL
+user-options twice.  It's faster and more convenient to simply move the
+package directories as described above.
+
+
+The various directories (and symlinks) you will find inside your
+``user-emacs-directory`` are listed here:
+
+====================== =============================== =============================================
+For terminal/tty | all For graphics mode in dual mode  Description
+====================== =============================== =============================================
+elpa                   elpa-graphics                   Symlink to complete or reduced directory
+elpa-complete/         elpa-complete-graphics/         Stores all Elpa packages in normal startup
+elpa-attic/            elpa-attic-graphics/            Stores Elpa-packages removed by pel-cleanup
+utils/                 utils-graphics/                 Stores non-Elpa external Emacs Lisp files
+utils-attic/           utils-attic-graphics/           Stores non-Elpa files removed by pel-cleanup
+====================== =============================== =============================================
 
 .. ---------------------------------------------------------------------------
 
