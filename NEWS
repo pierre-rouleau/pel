@@ -216,6 +216,16 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   templates for C, C++ (when using the C-style comment style) were not affected.
 * Version 0.4.0:
 ** New Features and Improvements:
+- New: unified cross reference commands for Erlang.  The ``M-.`` ``M-,`` keys
+  are bound to PEL commands that dispatch the cross reference command to find
+  the definition of Erlang identifier at point and go back using the cross
+  reference back end currently active.   The **pel-erlang-xref-engine**
+  user-option identifies the cross reference back-end to use.  The user can
+  change the cross reference engine back-end dynamically using the new
+  **pel-erlang-select-xref** command and see which one is active with the
+  **pel-erlang-show-xref** command.  These are bound to ``<M-f12> M-. M-.``
+  and ``<M-f12> M-. M-?`` key sequence respectively.  PEL supports etags,
+  dumb-jump, ggtags, ivy-erlang-complete, edts and erlang-ls back-ends.
 - New: Simplified installation. PEL now provides the init.el and the early-init.el file
   that support PEL features.  There's also a set of canned Emacs customization files
   ready to use.

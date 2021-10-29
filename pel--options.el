@@ -6687,6 +6687,23 @@ regardless of the value of this user-option."
                     (eq pel-use-erlang-syntax-check 'with-flycheck))
             '((elpa . flycheck))))
 
+
+(defcustom pel-erlang-xref-engine 'etag
+  "Cross Reference Back-End Engine to use for M-. command.
+
+Except for 'etags, all other choices require activation of a PEL
+user option.  If you select one of those PEL will automatically activate the
+corresponding user option to activate that package. If you select 'edts, then
+EDTS will be activated automatically when an Erlang buffer is opened."
+  :group 'pel-pkg-for-erlang
+  :type '(choice
+          (const :tag "Use built-in etag system" etag)
+          (const :tag "Use dumb-jump"            dumb-jump)
+          (const :tag "Use Gnu Global ggtags"    ggtags)
+          (const :tag "Use ivy-erlang-complete"  ivy-erlang-complete)
+          (const :tag "Use EDTS"                 edts)
+          (const :tag "Use erlang-ls/LSP"        erlang-ls)))
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-erlang-environment nil
   "PEL specific environment to support Erlang development."
@@ -8901,6 +8918,13 @@ indexing system."
 ;;       also reflected by the `:also-required-when' property of the
 ;;       `pel-use-' user-option of the package(s) that get activated
 ;;       indirectly.
+
+(cl-case pel-erlang-xref-engine
+  (ivy-erlang-complete (setq pel-use-ivy-erlang-complete t))
+  (dumb-jump           (setq pel-use-dumb-jump t))
+  (ggtags              (setq pel-use-ggtags t))
+  (edts                (setq pel-use-edts 'start-automatically))
+  (erlang-ls           (setq pel-use-erlang-ls t)))
 
 (when pel-use-projectile-speedbar
   (setq pel-use-projectile t)       ; t:= activate projectile later by command

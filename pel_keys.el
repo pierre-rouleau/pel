@@ -702,7 +702,7 @@ Done in this function to allow advising libraries that remap these keys."
 ;;
 ;; The numeric keypad keys behave differently when Emacs is running in
 ;; graphics mode and when it is running in Terminal mode.  Another difference
-;; is between the PC-keyaboard and the macOS keyboards.  The PC-keyboard has a
+;; is between the PC-keyboard and the macOS keyboards.  The PC-keyboard has a
 ;; numlock key, but the macOS keyboards do not: the Numlock is a clear key.
 ;;
 ;; PEL attempts to provide the exact same behaviour for these keys in both
@@ -3298,6 +3298,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 
     ;;
     (require 'erlang-start)
+    (defvar erlang-mode-map) ; declare dynamic: prevent byte-compiler warnings
 
     (pel-config-major-mode erlang pel:for-erlang
       ;; Activate Erlang setup.
@@ -3317,10 +3318,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       ;; Setup requested electric key behaviour
       (pel-erlang-setup-electric-key-behaviour)
       ;;
-      ;; Bind keys for the Erlang mode.
-      (defvar erlang-mode-map)          ; prevent byte-compiler warnings
-      ;; Use pel-erlang-comment-dwim instead of comment-dwim
-      (define-key erlang-mode-map (kbd "M-;") 'pel-erlang-comment-dwim)
+
 
       (define-pel-global-prefix pel:erlang-electric   (kbd "<f11> SPC e M-`"))
       (define-pel-global-prefix pel:erlang-analysis   (kbd "<f11> SPC e a"))
@@ -3386,15 +3384,18 @@ Can't load ac-geiser: geiser-repl-mode: %S"
               (define-key pel:for-erlang "."          'ivy-erlang-complete)
               (define-key pel:for-erlang (kbd "M-h")  'ivy-erlang-complete-show-doc-at-point)
               (define-key pel:for-erlang (kbd "M-e")  'ivy-erlang-set-project-root)
-              (define-key pel:for-erlang (kbd "M-.")  'ivy-erlang-complete-find-definition)
               (define-key pel:for-erlang (kbd "M-?")  'ivy-erlang-complete-find-references)
               (define-key pel:for-erlang (kbd "M-f")  'ivy-erlang-complete-find-spec)
               (define-key pel:for-erlang (kbd "M-o")  'ivy-erlang-complete-find-file)
 
-              ;; Restore the tags-based M-. to allow xref-based cross-reference
-              ;; searching in Erlang.  Use PEL binding <f12> M-. for explicitly
-              ;; use `ivy-erlang-complete-find-definition'
-              (define-key erlang-mode-map (kbd "M-.") nil))
+              ;; Restore the tags-based M-. and M-? to allow PEL controlled
+              ;; selection of behaviour for these key bindings in Erlang mode.
+              ;; and remap them under C-c prefix to provide direct access to
+              ;; the ivy-erlang-complete commands.
+              (define-key erlang-mode-map (kbd "M-.") nil)
+              (define-key erlang-mode-map (kbd "M-?") nil)
+              (define-key erlang-mode-map (kbd "C-c M-.") 'ivy-erlang-complete-find-definition)
+              (define-key erlang-mode-map (kbd "C-c M-?") 'ivy-erlang-complete-find-references))
           (display-warning 'pel-use-ivy-erlang-complete
                            "Failed loading ivy-erlang-complete"
                            :error)))
@@ -3424,6 +3425,18 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 
       ;; Activate EDTS when required.
       (when pel-use-edts
+        (defun pel--setup-edts ()
+          "Set EDTS to work within PEL."
+          ;; In PEL M-. and M-, are bound to a PEL command that determine
+          ;; what back-end to use.  Prevent EDTS to unbind PEL keys.
+          (defvar edts-mode-map)
+          (define-key edts-mode-map (kbd "M-.") nil)
+          (define-key edts-mode-map (kbd "M-,") nil)
+          (define-key edts-mode-map (kbd "C-c C-d M-.") 'edts-find-source-under-point)
+          (define-key edts-mode-map (kbd "C-c C-d M-,") 'edts-find-source-unwind))
+        (declare-function pel--setup-edts "pel_keys")
+        (add-hook 'edts-mode-hook (function pel--setup-edts))
+
         (defun edts-mode-desktop-restore  (&rest args)
           "Restore EDTS mode desktop with specified ARGS.
         Prevent edts errors from stopping desktop restoration."
@@ -3560,7 +3573,20 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
           (define-key pel:erlang-lsp-window "x" 'lsp-treemacs-references)
           (define-key pel:erlang-lsp-window "i" 'lsp-treemacs-implementations)
           (define-key pel:erlang-lsp-window "c" 'lsp-treemacs-call-hierarchy)
-          (define-key pel:erlang-lsp-window "t" 'lsp-treemacs-type-hierarchy))))))
+          (define-key pel:erlang-lsp-window "t" 'lsp-treemacs-type-hierarchy)))
+
+      ;; Override global keys with PEL specific ones in Erlang mode.
+      ;; Use pel-erlang-comment-dwim instead of comment-dwim
+      (define-key erlang-mode-map (kbd "M-;") 'pel-erlang-comment-dwim)
+      (define-key erlang-mode-map (kbd "M-.") 'pel-erlang-find-definitions)
+      (define-key erlang-mode-map (kbd "M-,") 'pel-erlang-unwind))
+
+    ;; Bind Erlang-specific meta-selector commands
+    (define-pel-simple-global-prefix pel:erlang-xref-settings (kbd "<f11> SPC e M-."))
+
+    (define-key pel:erlang-xref-settings (kbd "M-.") 'pel-erlang-select-xref)
+    (define-key pel:erlang-xref-settings (kbd "M-?") 'pel-erlang-show-xref)
+    ))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC x`` : Elixir programming

@@ -275,7 +275,11 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-erlang-forward-sexp
     pel-show-erlang-version
     pel-erlang-toggle-syntax-checker
-    pel-erlang-comment-dwim)
+    pel-erlang-comment-dwim
+    pel-erlang-show-xref
+    pel-erlang-select-xref
+    pel-erlang-find-definitions
+    pel-erlang-unwind)
   (pel-autoload-function "pel-erlang" for:
     pel-erlang-root-path
     pel-erlang-version

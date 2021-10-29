@@ -76,6 +76,10 @@
 ;; - `pel-erlang-man-parent-rootdir'
 ;;   - `pel--erlang-dirpath'
 
+;; Detect Erlang Root Directory:
+;; - `pel-erlang-root-path'
+;;   - `pel--read-erlang-root-dir'
+
 ;; Read/Show Erlang Version:
 ;; * `pel-show-erlang-version'
 ;;   - `pel-erlang-ls-version'
@@ -92,6 +96,9 @@
 ;; - `pel-erlang-setup-electric-key-behaviour'
 ;;   - `pel-erlang-stop-when-arg-used-p'
 
+;; Erlang Cross Reference Command Control:
+
+
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 (require 'comint)
@@ -101,10 +108,11 @@
 ;;                              ;      `pel-erlang-electric-keys'
 (require 'pel-fs)               ; use: `pel-exec-pel-bin'
 (require 'pel-syntax)           ; use: `pel-insert-space-in-enclosing-block'
+(require 'pel-xref)             ; use: `pel-xref-find-definitions'
 
 ;; newcomment is always available
 (require 'newcomment)           ; use: `comment-dwim'
-
+(require 'xref)
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -669,8 +677,8 @@ user option."
     (setq pel--erlang-man-dir--setup t)))
 
 ;; ---------------------------------------------------------------------------
-;; Read/Show Erlang Version
-;; ------------------------
+;; Detect Erlang Root Directory
+;; ----------------------------
 
 (defvar pel---extracted-erlang-root-dir nil
   "Cached value of the Erlang root dir  extracted by pel/bin/erlang-root-dir.")
@@ -729,6 +737,10 @@ On error issue a warning describing the error and return nil."
 Can't detect Erlang root path." pel-erlang-path-detection-method)
        :error)
       nil)))
+
+;; ---------------------------------------------------------------------------
+;; Read/Show Erlang Version
+;; ------------------------
 
 ;;-pel-autoload
 (defun pel-erlang-version ()
@@ -981,6 +993,157 @@ of a line and a single % is used after the beginning of a line."
   ;; specialized command I wrote that support Erlang bit syntax.
   (define-key erlang-mode-map [remap forward-sexp]  'pel-erlang-forward-sexp)
   (define-key erlang-mode-map [remap backward-sexp] 'pel-erlang-backward-sexp))
+
+
+;; ---------------------------------------------------------------------------
+;; Erlang Cross Reference Command Control
+;; --------------------------------------
+
+
+(defvar pel--erlang-xref-engine pel-erlang-xref-engine
+  "Currently active cross reference engine for Erlang code.
+
+The `pel-erlang-xref-engine' user-option identifies the persistent selection.
+During an editing session use the `pel-erlang-select-xref' command to
+dynamically select another engine for the current editing session.")
+
+;;-pel-autoload
+(defun pel-erlang-show-xref ()
+  "Show Erlang cross reference engine selection."
+  (interactive)
+  (message "Erlang XRef Engine:
+- Selected by pel-erlang-xref-engine user-option: %s
+- Currently active                              : %s"
+           pel-erlang-xref-engine
+           pel--erlang-xref-engine))
+
+
+(defun pel--erlang-xref-choices ()
+  "Return available Erlang xref engine choice list."
+  (let ((choices (list (list ?T "etag" 'etag))))
+    (when pel-use-ivy-erlang-complete
+      (push (list ?i "ivy-erlang-complete" 'ivy-erlang-complete) choices))
+    (when pel-use-dumb-jump
+      (push (list ?D "dumb-jump" 'dumb-jump) choices))
+    (when pel-use-ggtags
+      (push (list ?G "ggtags" 'ggtags) choices))
+    (when pel-use-edts
+      (push (list ?e "edts" 'edts) choices))
+    (when pel-use-erlang-ls
+      (push (list ?l "erlang-ls" 'erlang-ls) choices))
+    (reverse choices)))
+
+;;-pel-autoload
+(defun pel-erlang-select-xref ()
+  "Select another Erlang cross reference engine.
+
+The selection remains active for the current editing session.
+The `pel-erlang-xref-engine' user-option identifies the persistent selection."
+  (interactive)
+  (setq pel--erlang-xref-engine
+        (pel-select-from "Erlang XRef Engine"
+                         (pel--erlang-xref-choices)
+                         (or pel--erlang-xref-engine pel-erlang-xref-engine)))
+  (pel-erlang-show-xref))
+
+(defun pel--erlang-disable-xref-engines ()
+  "Disable all Xref Engines."
+  (when xref-etags-mode
+    (xref-etags-mode -1))
+  (when (pel-xref-dumb-jump-active-p)
+    (pel-xref-dumb-jump-deactivate nil))
+  (when (pel-xref-gxref-active-p)
+    (pel-xref-toggle-gxref :quiet))
+  (when (and (bound-and-true-p ggtags-mode)
+             (fboundp 'ggtags-mode))
+    (ggtags-mode -1)))
+
+
+;;-pel-autoload
+(defun pel-erlang-find-definitions ()
+  "Find definition of identifier at point using the active back-end."
+  (interactive)
+  (cl-case pel--erlang-xref-engine
+    ((nil)
+     (pel-erlang-select-xref))
+    ;;
+    (etag
+     (progn
+       (when (pel-xref-dumb-jump-active-p)
+         (pel-xref-dumb-jump-deactivate nil))
+       (when (pel-xref-gxref-active-p)
+         (pel-xref-toggle-gxref :quiet))
+       (when (and (bound-and-true-p ggtags-mode)
+                  (fboundp 'ggtags-mode))
+         (ggtags-mode -1))
+       (unless xref-etags-mode
+         (xref-etags-mode 11))
+       (pel-xref-find-definitions)))
+    ;;
+    (ivy-erlang-complete
+     (progn
+       ;; (pel--erlang-disable-xref-engines)
+       (call-interactively 'ivy-erlang-complete-find-definition)))
+    ;;
+    (dumb-jump
+     (progn
+       (when xref-etags-mode
+         (xref-etags-mode -1))
+       (when (pel-xref-gxref-active-p)
+         (pel-xref-toggle-gxref :quiet))
+       (when (and (bound-and-true-p ggtags-mode)
+                  (fboundp 'ggtags-mode))
+         (ggtags-mode -1))
+       (unless (pel-xref-dumb-jump-active-p)
+         (pel-xref-dumb-jump-activate nil))
+       (pel-xref-find-definitions)))
+    ;;
+    (ggtags
+     (progn
+       (when xref-etags-mode
+         (xref-etags-mode -1))
+       (when (pel-xref-dumb-jump-active-p)
+         (pel-xref-dumb-jump-deactivate nil))
+       (unless (pel-xref-gxref-active-p)
+         (pel-xref-gxref-activate))
+       (unless (bound-and-true-p ggtags-mode)
+         (if (and (require 'ggtags nil :noerror)
+                  (fboundp 'ggtags-mode))
+             (ggtags-mode 1)
+           (user-error "ggtags is not available!")))
+       ;;
+       (pel-xref-find-definitions)))
+    ;;
+    (edts
+     (progn
+       (unless (bound-and-true-p edts-mode)
+         (if (and (require 'edts-start nil :no-error)
+                  (fboundp 'edts-mode))
+             (edts-mode 1)))
+       (call-interactively 'edts-find-source-under-point)))
+    ;;
+    (erlang-ls
+     (call-interactively 'lsp-ui-peek-find-implementation))))
+
+
+;;-pel-autoload
+(defun pel-erlang-unwind ()
+  "Unwind back to point position."
+  (interactive)
+  (cond
+   ((memq pel--erlang-xref-engine '(etag
+                                    ivy-erlang-complete
+                                    dumb-jump
+                                    ggtags
+                                    erlang-ls))
+    (if (fboundp 'xref-pop-marker-stack)
+        (xref-pop-marker-stack)
+      (user-error "xref-pop-marker-stack is void.")))
+   ;;
+   ((eq pel--erlang-xref-engine 'edts)
+    (if (fboundp 'edts-find-source-unwind)
+        (edts-find-source-unwind)
+      (user-error "edts-find-source-unwind is void.")))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-erlang)

@@ -49,6 +49,10 @@
 ;; The available commands (*) and functions (-) are listed in call hierarchy
 ;; order:
 
+;; xref utilities:
+;; - `pel-xref-find-definitions'
+
+;; xref back-end control:
 ;; * `pel-xref-show-status'
 ;;    - `pel-xref-functions-hook-str'
 ;;    - `pel-xref-helm-xref-state-str'
@@ -88,6 +92,21 @@
 (defsubst pel-xref-function-hook-local-p (function-hook)
   "Return non-nil if the FUNCTION-HOOK list is a local hook, nil if global."
   (memq t function-hook))
+
+;; ---------------------------------------------------------------------------
+;; xref utilities
+;; --------------
+
+(defvar xref-prompt-for-identifier)     ; declare dynamic.
+
+(defun pel-xref-find-definitions ()
+  "Move point to definition of identifier at point.
+
+Meant to be called by Emacs Lisp code, without causing a prompt if an
+identifier can be found at point. It calls `xref-find-definitions'."
+  (require 'xref)
+  (let ((xref-prompt-for-identifier nil))
+    (call-interactively 'xref-find-definitions)))
 
 ;; ---------------------------------------------------------------------------
 ;; xref back-ends
@@ -214,7 +233,7 @@ change for the current buffer only."
             (pel-activated-in-str pel-modes-activating-gxref))))
 
 ;;-pel-autoload
-(defun pel-xref-toggle-gxref ()
+(defun pel-xref-toggle-gxref (&optional quiet)
   "Toggle activation of the gxref xref-back-end for the current major mode."
   (interactive)
   (pel-require 'xref)
@@ -223,7 +242,8 @@ change for the current buffer only."
                    'gxref-xref-backend
                    (pel-xref-function-hook-local-p xref-backend-functions))
     (pel-xref-gxref-activate))
-  (message "gxref xref back-end now: %s" (pel-xref-gxref-state-str)))
+  (unless quiet
+    (message "gxref xref back-end now: %s" (pel-xref-gxref-state-str))))
 
 ;; xref back-end: rtags
 ;; --------------------
