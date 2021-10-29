@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-27 10:50:49, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-29 14:49:19, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -230,10 +230,12 @@
                                                                  ivy-erlang-complete
                                                                  lsp-erlang
                                                                  lsp-mode
+                                                                 lsp-treemacs
                                                                  auto-highlight-symbol
                                                                  electricity
                                                                  smart-dash
-                                                                 smartparens))
+                                                                 smartparens
+                                                                 treemacs))
     ([f11 32 ?e f12] "pl-erlang"        pel-erlang-code-style)
     ([f11 32 ?e ?L]  "pl-erlang"        pel-pkg-for-lsp-mode    ,(cons 'lsp-erlang pel--lsp-groups))
     ([f11 32 ?e ?w]  "pl-erlang"        pel-pkg-for-lsp-mode    (treemacs
