@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-29 14:49:19, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-29 14:50:43, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1234,6 +1234,17 @@ display in other window." group)))
        (define-key ,prefix ,key (quote ,fct)))))
 
 ;; --
+
+(defmacro define-pel-simple-global-prefix (prefix key)
+  "Define a simple PREFIX key name for KEY sequence on the global key map.
+
+No special keys are bound in this map by the macro."
+  `(progn
+     ;; declare the prefix variable to avoid compiler warnings.
+     (defvar ,prefix)
+     ;; define the prefix key as a global prefix
+     (define-prefix-command (quote ,prefix))
+     (global-set-key ,key (quote ,prefix))))
 
 (defmacro define-pel-global-prefix (prefix key)
   "Define a PREFIX key name for KEY sequence on the global key map.
