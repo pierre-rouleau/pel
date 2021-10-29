@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-20 09:32:19, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-29 19:08:41, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -718,7 +718,7 @@ of a restriction lock."
 - # package-alist             : %d
 - # packages activated        : %d
 - # packages selected         : %d
-- # PEL commands              : %d
+- # PEL loaded commands       : %d
 - Emacs init-time             : %s"
                             custom-file
                             package-user-dir
