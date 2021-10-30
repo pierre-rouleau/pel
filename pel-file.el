@@ -254,17 +254,13 @@ where: - filename:= string or nil: the  filename to act upon if not nil.
        - action  := 'edit | 'create | message-string
          where the message string is returned with nil to describe why
          we do not edit or create the file."
-  (let (action)
-    (if (file-exists-p filename)
-        (setq action 'edit)
-      (let* ((filename-action    (pel--lib-filename filename))
-             (selected-filename  (car filename-action))
-             (selected-action    (cdr filename-action)))
-        (when selected-filename
-          (setq filename selected-filename))
-        (setq action selected-action)))
-    (cons filename action)))
-
+  (if (file-exists-p filename)
+      (cons filename 'edit)
+    (let* ((filename.action    (pel--lib-filename filename))
+           (selected-filename  (car filename.action))
+           (selected-action    (cdr filename.action)))
+      (cons (or selected-filename filename)
+            selected-action))))
 
 (defun pel--show-edit-action (action filename &optional line column)
     "Display message showing ACTION done on FILENAME at LINE and COLUMN.
@@ -284,12 +280,12 @@ COLUMN   := integer | nil"
 *Window selection:*
 - Only effective for opening file.  Ignored when opening a URL.
 - If no argument is provided,
-  - If file is already open in an existing window, select that window
+  - If file is already open in an existing window, select that window.
   - If file is not already opened in a window, select the window
     according to the number number of windows in the current frame:
    - 2 windows in frame: open in *other* window
    - 1 window  in frame: split window sensibly and open in new  window.
-   - otherwise, open in current window
+   - otherwise, open in current window.
 - If a prefix numeric argument N is supplied, it identifies the location
   of the target window:
   - N < 0 := 'new
