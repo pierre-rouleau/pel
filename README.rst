@@ -385,6 +385,13 @@ Notes
               PEL supports and also provide a layer that unifies mechanisms
               implemented by several built-in and external packages.
 
+              Some PEL commands act according to the key sequences that
+              invoked them.  For example, the **pel-help-pdf** command is
+              bound to  ``<f11> a <f1>``, ``<f11> b <f1>`` and several others
+              and the ``<f12> <f1>`` key sequences of several major modes.
+              The command detects the key sequence and the context to
+              identify which PEL PDF to open.
+
               PEL currently implements 486 interactive commands.  Some are
               always loaded.  Several are auto-loaded when needed.  This count
               exclude the template commands that are dynamically constructed
