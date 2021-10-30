@@ -1588,6 +1588,17 @@ Note that:
           (const :tag "psw-switch-recentf - Using popup-switcher"
                  psw-switch-recentf)))
 
+(defcustom pel-ffind-executable 'find
+  "Name of the file finding executable that pel-ffind uses.
+
+Select one of:
+- find : the Unix ubiquitous find utility.
+- fd   : the faster fd utility from https://github.com/sharkdp/fd."
+  :group 'pel-pkg-for-filemng
+  :type '(choice
+          (const :tag "Use Unix find" find)
+          (const :tag "Use fd" fd)))
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Directory Tree Browsing and Management
 ;; --------------------------------------
