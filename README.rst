@@ -22,9 +22,9 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
-.. image:: https://img.shields.io/badge/PEL_Commands-469-teal
+.. image:: https://img.shields.io/badge/PEL_Commands-486-teal
    :alt: Version
-   :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
+   :target: https://github.com/pierre-rouleau/pel#commands
 
 .. image:: https://img.shields.io/badge/PDF_Files-137-blue
    :alt: Version
@@ -378,6 +378,24 @@ Notes
               Emacs PEL manages 2 package quickstart files: one for the
               terminal/TTY mode with that name and one for the graphics mode
               which has "-graphics" appended to its name.
+
+.. [#commands] **PEL Commands**:
+
+              PEL implements its own commands.  These complements the packages
+              PEL supports and also provide a layer that unifies mechanisms
+              implemented by several built-in and external packages.
+
+              PEL currently implements 486 interactive commands.  Some are
+              always loaded.  Several are auto-loaded when needed.  This count
+              exclude the template commands that are dynamically constructed
+              and loaded only for major modes, such as Erlang, that support
+              extensive tempo skeleton templates.  The total count of commands
+              including the skeleton command is 519.
+
+              Navigate the PDF files starting from the `PEL Index PDF`_ to get more
+              information.
+
+
 
 .. links
 
