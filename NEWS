@@ -163,9 +163,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - New: [[bin/erlang-root-dir][bin/erlang-root-dir]] Erlang script detects and returns Erlang’s root directory.
   - Improved: [[bin/version-erl][bin/version-erl]] script longer prints SASL progress information when
     older versions of Erlang are used.
-  - New: add support for ivy-erlang-complete when **pel-use-ivy-erlang-complete**
+  - New: add support for ivy-erlang-complete when *pel-use-ivy-erlang-complete*
     user-option is turned on (t).
-  - New: add support for erlstack-mode when **pel-use-erlstack-mode** user-option
+  - New: add support for erlstack-mode when *pel-use-erlstack-mode* user-option
     is turned on.
   - New: Add smartparens support when *pel-use-smartparens* is turned on.
     Automatically activate smartparens support for Erlang by adding
