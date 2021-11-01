@@ -409,11 +409,6 @@ were specified."
            (browse-url (cdr fileparts))
            (pel--show-edit-action "browse" (cdr fileparts)))
 
-          ;; It's a file, not a URL but forced to use a browser.
-          (use-browser
-           (browse-url (format "file:///%s" (expand-file-name (cadr fileparts))))
-           (pel--show-edit-action "browse" (cdr fileparts)))
-
           ;; nothing found
           ((not file-kind)
            (user-error "No valid filename/URL at point!"))
@@ -426,41 +421,48 @@ were specified."
           (t
            (let* ((filename (cadr fileparts))
                   (fn-action (pel--complete-filename-for filename))
-                  (filename  (expand-file-name (car fn-action)))
-                  (action    (cdr fn-action))
-                  (buffer   (find-buffer-visiting filename))
-                  (window   (when buffer (get-buffer-window buffer)))
-                  (line     (caddr fileparts))
-                  (column   (cadddr fileparts)))
-             (if (and window (null n))
-                 ;; file is already in a buffer and window and position
-                 ;; is not imposed by argument n: use that existing
-                 ;; window and move point to where specified if any.
+                  (filename  (expand-file-name (car fn-action))))
+             (if use-browser
+                 ;; It's a file, not a URL, but user requested opening the
+                 ;; file inside the the default browser or the OS default
+                 ;; application for this type of file: use browse-url for that.
                  (progn
-                   (select-window window)
-                   (pel-goto-position line column)
-                   (pel--show-edit-action "show" filename line column))
-               ;; the file is not inside a existing window,
-               ;; but a buffer may hold the file.
-               ;; Since find-file will open that buffer then
-               ;; what is needed now is to determine what window to use
-               ;; and open the file inside that window.
-               ;; The filename might be absolute, relative, incomplete.
-               (let ((direction (pel-window-direction-for
-                             (prefix-numeric-value n) nil :for-editing)))
-                 (cond ((eq action 'edit) (progn  ; progn just to indent
-                                            (pel-window-select direction)
-                                            (find-file filename)
-                                            (pel-goto-position line column)
-                                            (pel--show-edit-action action
-                                                                   filename line column)))
-                       ((eq action 'create) (progn
-                                              (pel-window-select direction)
-                                              (find-file filename)
-                                              (pel--show-edit-action action
-                                                                   filename line column)))
-                       ((stringp action)   (message "%s" action))
-                       (t (error "Internal error condition detected!"))))))))))
+                   (browse-url (format "file:///%s" filename))
+                   (pel--show-edit-action "browse" filename))
+                 (let* ((action    (cdr fn-action))
+                        (buffer   (find-buffer-visiting filename))
+                        (window   (when buffer (get-buffer-window buffer)))
+                        (line     (caddr fileparts))
+                        (column   (cadddr fileparts)))
+                   (if (and window (null n))
+                       ;; file is already in a buffer and window and position
+                       ;; is not imposed by argument n: use that existing
+                       ;; window and move point to where specified if any.
+                       (progn
+                         (select-window window)
+                         (pel-goto-position line column)
+                         (pel--show-edit-action "show" filename line column))
+                     ;; the file is not inside a existing window,
+                     ;; but a buffer may hold the file.
+                     ;; Since find-file will open that buffer then
+                     ;; what is needed now is to determine what window to use
+                     ;; and open the file inside that window.
+                     ;; The filename might be absolute, relative, incomplete.
+                     (let ((direction (pel-window-direction-for
+                                       (prefix-numeric-value n) nil :for-editing)))
+                       (cond ((eq action 'edit) (progn ; progn just to indent
+                                                  (pel-window-select direction)
+                                                  (find-file filename)
+                                                  (pel-goto-position line column)
+                                                  (pel--show-edit-action action
+                                                                         filename line column)))
+                             ((eq action 'create) (progn
+                                                    (pel-window-select direction)
+                                                    (find-file filename)
+                                                    (pel--show-edit-action action
+                                                                           filename line column)))
+                             ((stringp action)   (message "%s" action))
+                             (t (error "Internal error condition detected!"))))))))))))
 
 ;; --
 
