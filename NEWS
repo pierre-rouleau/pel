@@ -24,6 +24,33 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   but can be used to modify the display rendering of hard tabs in all major modes.
 - Modified: key bindings to start Erlang EDTS: it was ``<f12> M-SPC`` and is now ``<f12> M-E``.
 ** New Features and Improvements:
+- Improved: *pel-open-at-point* is now able to search for files inside the
+  current project, and can be specialized to have different searching
+  capabilities for different major modes.  It also supports processing a
+  glob-style file name. When finding more than one file it prompts for the
+  file to open. The various new capabilities are controlled by the following
+  user-options and dynamically bound variables:
+  - User-options:
+    - *pel-project-root-identifiers*: lists the name of files used to identify
+      the root of the project of the file in the current buffer: the default
+      is the files ``.git``, ``.hg`` and ``.pel-project``.
+    - *pel-ffind-executable*: the command line program used to search for
+      files: either find or fd.
+    - *pel-prompt-read-method*: the prompt mechanism used to prompt user when
+      more than one file found.  PEL currently supports a crude prompt
+      mechanism by default, but also support the *ivy-read* vertical prompting
+      function.
+  - Dynamically bound local buffer variable:
+    - *pel-filename-at-point-finders*: A list of functions used to find files
+      using whatever criteria deemed necessary.  PEL sets this globally to the
+      function *pel-generic-find-file* which finds file in the current project
+      according to the files identified by *pel-project-root-identifiers*.
+      - PEL supports specialization of the file finding mechanism for major-mode:
+        simply set *pel-filename-at-point-finders* to another file finding
+        function, or append or add a new file function function to that list.
+        - For example, PEL sets *pel-filename-at-point-finders* to
+          ``(pel-erlang-find-file)``. That function searches the file in the
+          Erlang root directory tree as well as inside the current project.
 - The ``<f12>`` and ``<M-f12>`` key prefixes are now available in Custom-mode buffers.
 - New: The ``<M-f11>`` key is now used as the ``pel2:`` key prefix.  Generic
   commands that have corresponding major-mode specialized commands are bound

@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-11-01 11:14:20, updated by Pierre Rouleau>
+;; Time-stamp: <2021-11-01 14:44:33, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -150,6 +150,28 @@ Return a directory name expanded and without trailing slash."
           (setq directory found-dir))))
     ;; Return a directory name expanded and without trailing slash.
     (expand-file-name (directory-file-name directory))))
+
+;;-pel-autoload
+(defun pel-generic-find-file (filename &optional directories)
+  "Find a file FILENAME from the project holding the current buffer file.
+
+If DIRECTORIES argument is specified it may be a single directory
+path string or a list of directory path strings to search on top
+of the current project directory.
+
+The `pel-generic-find-file' is the most generic method to search
+for files, can be set as the default value for the global value
+of the `pel-filename-at-point-finders' buffer local variable used
+by `pel--find-by-finders'.
+
+However, that may not be sufficient for some programming
+languages.  In that case you should be using a language specific function.
+There is one implemented for Erlang: `pel-erlang-find-file'."
+
+  (pel-ffind filename (cons (pel-ffind-project-directory)
+                            (if  (listp directories)
+                                directories
+                              (list directories)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-ffind)

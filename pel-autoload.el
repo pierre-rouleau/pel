@@ -298,7 +298,8 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-face-ut" for: pel-show-face-at-point)
 
   (pel-autoload-function "pel-ffind" for:
-    pel-ffind)
+    pel-ffind
+    pel-generic-find-file)
 
   (pel-autoload "pel-file" for:
     pel-show-filename-at-point

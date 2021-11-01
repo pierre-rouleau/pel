@@ -3323,7 +3323,6 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (pel-erlang-setup-electric-key-behaviour)
       ;;
 
-
       (define-pel-global-prefix pel:erlang-electric   (kbd "<f11> SPC e M-`"))
       (define-pel-global-prefix pel:erlang-analysis   (kbd "<f11> SPC e a"))
       (define-pel-global-prefix pel:erlang-clause     (kbd "<f11> SPC e c"))
@@ -5589,6 +5588,9 @@ the ones defined from the buffer now."
 (define-key pel:file (kbd "M-u") 'pel-open-url-at-point)
 (global-set-key "\C-cj"    'webjump)
 (define-key pel:file "j"   'webjump)
+;; By default, `pel-open-at-point' searches file in the current project
+;; if it does not find the file from its name.
+(setq pel-filename-at-point-finders '(pel-generic-find-file))
 
 ;; - Revert
 ;; -------
