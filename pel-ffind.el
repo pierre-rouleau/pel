@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-11-01 09:49:22, updated by Pierre Rouleau>
+;; Time-stamp: <2021-11-01 11:14:20, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -55,14 +55,17 @@
 FILENAME may be a glob pattern.
 It may contain a partial directory path.
 The command returned will produce a list of files sorted in lexicographic
-order."
+order.
+
+The VCS ignore capability of fd is not used, so all files are found
+whether the VCS is told to ignore them or not."
   (cond
    ((eq pel-ffind-executable 'fd)
     (unless (or pel--ffind-fd-path
                 (setq pel--ffind-fd-path (executable-find "fd")))
       (user-error "pel-ffind-executable is fd, but can't find it!"))
     ;; fd sorts by default.
-    (format "%s --type f --color never -g '%s' %s"
+    (format "%s --type f --color never --no-ignore-vcs -g '%s' %s"
             pel--ffind-fd-path
             (file-name-nondirectory filename)
             (string-join (mapcar (function pel--ffind-dirname-quoted)
@@ -93,8 +96,8 @@ The function searches in the director trees identified by:
 Returns a list of string, each string is the path of a file found.
 
 Uses shell command identified by `pel-ffind-executable'.
-Note that fd ignore files identified in the .gitignore, .fdignore
-or .ignore file but find does not ignore them."
+The VCS ignore capability of fd is not used, so all files are found
+whether the VCS is told to ignore them or not."
   (unless directories
     (setq directories (list default-directory)))
   (let ((found-files
@@ -106,15 +109,14 @@ or .ignore file but find does not ignore them."
     ;; command created by pel-ffind-command otherwise the find or fd search
     ;; fails.  The result might include files that are not inside the
     ;; specified  directory then.  Remove these files from the result.
-    (when (file-name-directory filename)
+    (when (and found-files
+               (file-name-directory filename))
       (let ((dir-portion (file-name-directory filename)))
         (setq found-files
               (seq-filter (lambda (fname)
                             (string-match dir-portion fname))
                           found-files))))
     found-files))
-
-
 
 ;; ---------------------------------------------------------------------------
 
