@@ -444,7 +444,7 @@ the standard Emacs key bindings as well as PEL's specific key bindings."
   :link `(file-link :tag "Directory of PDF table files" ,(pel-pdf-directory))
   :link `(url-link  :tag "PEL key maps PDF" ,(pel-pdf-file-url "-pel-key-maps"))
   :link `(file-link :tag "PEL @ GitHub" "https://github.com/pierre-rouleau/pel")
-  :package-version '(pel . "0.4.0"))
+  :package-version '(pel . "0.4.1"))
 
 ;; ---------------------------------------------------------------------------
 (defgroup pel-base-emacs nil

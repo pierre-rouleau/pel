@@ -4,7 +4,7 @@
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 ;; URL: https://github.com/pierre-rouleau/pel
-;; Version: 0.4.0
+;; Version: 0.4.1
 ;; Package-Requires: ((emacs "26.1") (use-package "2.4"))
 ;; Keywords: convenience
 
