@@ -3209,7 +3209,9 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (when pel-use-erlstack-mode
     (pel-ensure-package erlstack-mode from: melpa))
   (when pel-use-ivy-erlang-complete
-    (pel-ensure-package ivy-erlang-complete from: melpa))
+    (pel-ensure-package ivy-erlang-complete from: melpa)
+    (when pel-use-company-erlang
+      (pel-ensure-package company-erlang from: melpa)))
   (when pel-use-edts
     (pel-ensure-package edts from: melpa)
     (pel-autoload-file edts for: edts-mode))
@@ -3401,7 +3403,11 @@ Can't load ac-geiser: geiser-repl-mode: %S"
               (define-key erlang-mode-map (kbd "C-c M-?") 'ivy-erlang-complete-find-references))
           (display-warning 'pel-use-ivy-erlang-complete
                            "Failed loading ivy-erlang-complete"
-                           :error)))
+                           :error))
+        (when (and pel-use-company-erlang
+                   (require 'company-erlang nil :noerror)
+                   (fboundp 'company-erlang-init))
+          (company-erlang-init)))
 
       ;; Erlang Syntax Checking
       (when pel-use-erlang-syntax-check

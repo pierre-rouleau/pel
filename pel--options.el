@@ -6981,10 +6981,20 @@ To use it, `pel-use-erlang' must be on (t)."
                    "https://github.com/s-kostyaev/ivy-erlang-complete")
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-ivy-erlang-complete :package-is :in-utils)
 (pel-put 'pel-use-ivy-erlang-complete :requires 'pel-use-erlang)
 (pel-put 'pel-use-ivy-erlang-complete :requires 'pel-use-ivy)
 (pel-put 'pel-use-ivy-erlang-complete :requires 'pel-use-counsel)
+
+(defcustom pel-use-company-erlang nil
+  "Control whether PEL uses company-erlang."
+  :group 'pel-erlang-ide
+  :link '(url-link "company-erlang @ GitHub"
+                   "https://github.com/s-kostyaev/company-erlang")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-company-erlang :requires 'pel-use-ivy-erlang-complete)
+(pel-put 'pel-use-company-erlang :requires 'pel-use-company)
+
 
 (defcustom pel-use-edts nil
   "Control whether PEL uses EDTS when `pel-use-erlang' is t.
@@ -8962,6 +8972,10 @@ indexing system."
 
 (when (eq pel-prompt-read-method 'ivy)
   (setq pel-use-ivy t))
+
+(when pel-use-company-erlang
+  (setq pel-use-ivy-erlang-complete t
+        pel-use-company             t))
 
 (when pel-use-projectile-speedbar
   (setq pel-use-projectile t)       ; t:= activate projectile later by command
