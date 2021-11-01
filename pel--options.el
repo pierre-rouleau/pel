@@ -6941,11 +6941,14 @@ The choices are:
                    :value "PEL_ERLANG_ROOT_DIR"))
           (string :tag "Set Erlang version to")))
 
-(defcustom pel-erlang-project-root-identifiers '("rebar.config" ".git" ".hg")
+(defcustom pel-erlang-project-root-identifiers '("rebar.config")
   "File names that identify the root of an Erlang project directory tree.
 
 This is used by the function `pel-erlang-source-directories' which in turn is
-used by several functions that look for Erlang source code files."
+used by several functions that look for Erlang source code files.
+
+These files are added to the files identified by the generic
+`pel-project-root-identifiers'."
   :group 'pel-erlang-environment
   :type '(repeat string))
 
@@ -7847,6 +7850,11 @@ CAUTION: This package needs major tuning!  It takes forever searching for a
           (const :tag "Use, activate when Emacs starts" use-from-start)))
 (pel-put 'pel-use-projectile :also-required-when '(or pel-use-projectile-speedbar
                                                       pel-use-treemacs-projectile))
+
+(defcustom pel-project-root-identifiers '(".git" ".hg" ".pel-project")
+  "File names that identify the root of a project directory tree."
+  :group 'pel-pkg-for-project-mng
+  :type '(repeat string))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-regexp

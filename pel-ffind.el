@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-31 16:19:53, updated by Pierre Rouleau>
+;; Time-stamp: <2021-11-01 09:49:22, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -113,6 +113,41 @@ or .ignore file but find does not ignore them."
                             (string-match dir-portion fname))
                           found-files))))
     found-files))
+
+
+
+;; ---------------------------------------------------------------------------
+
+(defun pel-ffind-project-directory (&optional project-root-identifiers)
+  "Find and return the project root directory of file in current buffer.
+
+Search project root directory using the identifier files specified in the
+`pel-project-root-identifiers' user-option and the ones in
+PROJECT-ROOT-IDENTIFIERS list if specified.
+
+Return a directory name expanded and without trailing slash."
+  (let ((identifiers pel-project-root-identifiers)
+        (directory nil)
+        (found-dir nil))
+    ;; make a list of all project root identifiers
+    (dolist (fname project-root-identifiers)
+      (unless (member fname identifiers)
+        (push fname identifiers)))
+    ;; search project root from current directory up looking for a
+    ;; project root identifier file.  Retain the shortest directory path found
+    ;; to allow nested projects and keep the more encompassing one, broadening
+    ;; the file search: anyway if more than 1 file found the user will be
+    ;; prompted.
+    ;;
+    (dolist (fname identifiers)
+      (setq found-dir (locate-dominating-file default-directory fname))
+      (when found-dir
+        (if directory
+            (when (< (length found-dir) (length directory))
+              (setq directory found-dir))
+          (setq directory found-dir))))
+    ;; Return a directory name expanded and without trailing slash.
+    (expand-file-name (directory-file-name directory))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-ffind)

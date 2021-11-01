@@ -1157,10 +1157,8 @@ This is used by `pel-erlang-source-directories'.")
 
 The list includes the Erlang root directory and the current project.
 The project directory tree is the root of the directory that contains
-the current directory and holds one of the following files:
-- rebar.config
-- .git
-- .hg
+the current directory and holds one of the files identified by the
+`pel-erlang-project-root-identifiers' user-option.
 
 If DIRECTORIES is specified , then the list also includes these directories.
 You can also specify extra directories in the `pel-erlang-extra-directories'
@@ -1171,13 +1169,11 @@ with a slash.  There are no duplicates and the list is sorted."
   (let ((dir-list (list (directory-file-name pel---extracted-erlang-root-dir)))
         (directory nil))
     ;; Add project directory looking for each possible project root identifier
-    (dolist (fname pel-erlang-project-root-identifiers)
-      (setq directory (locate-dominating-file default-directory fname))
-      (when (and directory
-                 (setq directory (expand-file-name
-                                  (directory-file-name directory)))
-                 (not (member directory  dir-list)))
-        (push (directory-file-name directory) dir-list)))
+    (setq directory
+          (pel-ffind-project-directory pel-erlang-project-root-identifiers))
+    (when (and directory
+               (not (member directory  dir-list)))
+      (push directory dir-list))
     ;; Add extra directories potentially identified by argument and let
     ;; binding
     (dolist (extra-dirlist (list directories pel-erlang-extra-directories))
