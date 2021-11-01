@@ -1192,8 +1192,7 @@ with a slash.  There are no duplicates and the list is sorted."
   "Find a file FILENAME from and Erlang library.
 
 Search in the Erlang root and the project directories by default.
-If DIRECTORIES is specified also search in these extra directories.
-"
+If DIRECTORIES is specified also search in these extra directories."
   (pel-ffind filename (pel-erlang-source-directories directories)))
 
 ;;; --------------------------------------------------------------------------
