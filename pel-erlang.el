@@ -106,6 +106,7 @@
 (require 'pel--options)         ; use: `pel-erlang-version-detection-method'
 ;;                              ;      `pel-erlang-path-detection-method'
 ;;                              ;      `pel-erlang-electric-keys'
+(require 'pel-ffind)            ; use: `pel-ffind'
 (require 'pel-fs)               ; use: `pel-exec-pel-bin'
 (require 'pel-syntax)           ; use: `pel-insert-space-in-enclosing-block'
 (require 'pel-xref)             ; use: `pel-xref-find-definitions'
@@ -1144,6 +1145,60 @@ The `pel-erlang-xref-engine' user-option identifies the persistent selection."
     (if (fboundp 'edts-find-source-unwind)
         (edts-find-source-unwind)
       (user-error "edts-find-source-unwind is void.")))))
+
+;; ---------------------------------------------------------------------------
+
+(defvar pel-erlang-extra-directories nil
+  "List of directories where to search Erlang files.
+This is used by `pel-erlang-source-directories'.")
+
+(defun pel-erlang-source-directories (&optional directories)
+  "Return a list of directories that contain Erlang source code files.
+
+The list includes the Erlang root directory and the current project.
+The project directory tree is the root of the directory that contains
+the current directory and holds one of the following files:
+- rebar.config
+- .git
+- .hg
+
+If DIRECTORIES is specified , then the list also includes these directories.
+You can also specify extra directories in the `pel-erlang-extra-directories'
+variable by dynamically binding it in the caller of the function.
+
+The returned list contains a list of expanded directory names that do not end
+with a slash.  There are no duplicates and the list is sorted."
+  (let ((dir-list (list (directory-file-name pel---extracted-erlang-root-dir)))
+        (directory nil))
+    ;; Add project directory looking for each possible project root identifier
+    (dolist (fname pel-erlang-project-root-identifiers)
+      (setq directory (locate-dominating-file default-directory fname))
+      (when (and directory
+                 (setq directory (expand-file-name
+                                  (directory-file-name directory)))
+                 (not (member directory  dir-list)))
+        (push (directory-file-name directory) dir-list)))
+    ;; Add extra directories potentially identified by argument and let
+    ;; binding
+    (dolist (extra-dirlist (list directories pel-erlang-extra-directories))
+      (when extra-dirlist
+        (dolist (directory extra-dirlist)
+          (when (and directory
+                     (setq directory (expand-file-name
+                                      (directory-file-name directory)))
+                     (not (member directory dir-list)))
+            (push (directory-file-name directory ) dir-list)))))
+    ;; Return the list of directories sorted.
+    (sort dir-list 'string<)))
+
+
+(defun pel-erlang-find-file (filename &optional directories)
+  "Find a file FILENAME from and Erlang library.
+
+Search in the Erlang root and the project directories by default.
+If DIRECTORIES is specified also search in these extra directories.
+"
+  (pel-ffind filename (pel-erlang-source-directories directories)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-erlang)

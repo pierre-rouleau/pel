@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-30 19:35:30, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-31 16:19:53, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -45,10 +45,15 @@
 (defvar pel--ffind-find-path nil
   "Full path of find executable if found.")
 
+(defun pel--ffind-dirname-quoted (dirname)
+  "Return DIRNAME in quote and without trailing slash."
+  (format "'%s'" (directory-file-name dirname)))
+
 (defun pel-ffind-command (filename directories)
   "Return a ffind command searching for FILENAME in DIRECTORIES.
 
 FILENAME may be a glob pattern.
+It may contain a partial directory path.
 The command returned will produce a list of files sorted in lexicographic
 order."
   (cond
@@ -57,10 +62,10 @@ order."
                 (setq pel--ffind-fd-path (executable-find "fd")))
       (user-error "pel-ffind-executable is fd, but can't find it!"))
     ;; fd sorts by default.
-    (format "%s --type f --color never -g '%s' '%s'"
+    (format "%s --type f --color never -g '%s' %s"
             pel--ffind-fd-path
-            filename
-            (string-join (mapcar (function directory-file-name)
+            (file-name-nondirectory filename)
+            (string-join (mapcar (function pel--ffind-dirname-quoted)
                                  directories)
                          " ")))
    ((eq pel-ffind-executable 'find)
@@ -68,13 +73,14 @@ order."
                 (setq pel--ffind-find-path (executable-find "find")))
       (user-error "pel-ffind-executable is find, but can't find it!"))
     ;; find requires the -s option to sort.
-    (format "%s -s '%s' -name '%s' -type f"
+    (format "%s -s %s -name '%s' -type f"
             pel--ffind-find-path
-            (string-join (mapcar (function directory-file-name)
+            (string-join (mapcar (function pel--ffind-dirname-quoted)
                                  directories)
                          " ")
-            filename))))
+            (file-name-nondirectory filename)))))
 
+;;-pel-autoload
 (defun pel-ffind (filename &optional directories)
   "Search for FILENAME in current directory tree or in DIRECTORIES.
 
@@ -91,9 +97,22 @@ Note that fd ignore files identified in the .gitignore, .fdignore
 or .ignore file but find does not ignore them."
   (unless directories
     (setq directories (list default-directory)))
-  (split-string
-   (string-trim
-    (shell-command-to-string (pel-ffind-command filename directories)))))
+  (let ((found-files
+         (split-string
+          (string-trim
+           (shell-command-to-string (pel-ffind-command filename
+                                                       directories))))))
+    ;; When filename has a directory portion it is ignored in the search
+    ;; command created by pel-ffind-command otherwise the find or fd search
+    ;; fails.  The result might include files that are not inside the
+    ;; specified  directory then.  Remove these files from the result.
+    (when (file-name-directory filename)
+      (let ((dir-portion (file-name-directory filename)))
+        (setq found-files
+              (seq-filter (lambda (fname)
+                            (string-match dir-portion fname))
+                          found-files))))
+    found-files))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-ffind)

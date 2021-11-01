@@ -1286,6 +1286,13 @@ Select the completion method you want as default when activating this package."
           (const :tag "Use Ivy.  Requires `pel-use-ivy'."  ivy)
           (const :tag "Use Helm. Requires `pel-use-helm'." helm)))
 
+(defcustom pel-prompt-read-method nil
+  "Method used by PEL prompts listing file names and other lists."
+  :group 'pel-pkg-for-completion
+  :type '(choice
+          (const :tag "Built-in (default)" nil)
+          (const :tag "Use ivy vertical completion" ivy)))
+
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-cursor
 ;; ------------------
@@ -6934,6 +6941,14 @@ The choices are:
                    :value "PEL_ERLANG_ROOT_DIR"))
           (string :tag "Set Erlang version to")))
 
+(defcustom pel-erlang-project-root-identifiers '("rebar.config" ".git" ".hg")
+  "File names that identify the root of an Erlang project directory tree.
+
+This is used by the function `pel-erlang-source-directories' which in turn is
+used by several functions that look for Erlang source code files."
+  :group 'pel-erlang-environment
+  :type '(repeat string))
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-erlang-ide nil
   "PEL customization of the IDE for Erlang."
@@ -8936,6 +8951,9 @@ indexing system."
   (ggtags              (setq pel-use-ggtags t))
   (edts                (setq pel-use-edts 'start-automatically))
   (erlang-ls           (setq pel-use-erlang-ls t)))
+
+(when (eq pel-prompt-read-method 'ivy)
+  (setq pel-use-ivy t))
 
 (when pel-use-projectile-speedbar
   (setq pel-use-projectile t)       ; t:= activate projectile later by command

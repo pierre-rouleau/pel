@@ -3309,6 +3309,10 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (setq-local tab-width pel-erlang-tab-width)
       (setq-local indent-tabs-mode pel-erlang-use-tabs)
       ;;
+      (when (and (require 'pel-file nil :noerror)
+                 (boundp 'pel-filename-at-point-finders))
+        (setq pel-filename-at-point-finders '(pel-erlang-find-file)))
+      ;;
       ;; setup the Erlang-specific key bindings
       (pel--install-erlang-skel pel:erlang-skel)
       ;;

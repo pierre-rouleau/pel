@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-28 17:24:11, updated by Pierre Rouleau>
+;; Time-stamp: <2021-10-31 21:25:43, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -305,6 +305,22 @@ STRINGS := a list of strings."
     ;; clear echo area and return choice
     (message nil)
     choice))
+
+(defun pel-prompt-select-read (prompt strings)
+  "Display PROMPT to request selection of one of the STRINGS.
+
+Return the selected string or nil on escape.
+
+The prompt mechanism is using the back-end selected by
+`pel-prompt-read-method' user-option."
+  (cl-case pel-prompt-read-method
+    ((nil)
+     (pel-select-string-from prompt strings ?0))
+    ((ivy)
+     (if  (and (require 'ivy nil :noerror)
+               (fboundp 'ivy-read))
+         (ivy-read prompt strings)
+       (user-error "Can't load ivy")))))
 
 ;; ---------------------------------------------------------------------------
 ;; Set user-option from selected choices

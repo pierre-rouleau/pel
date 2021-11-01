@@ -288,13 +288,17 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-erlang-exec-path
     pel-erlang-shell-mode-init
     pel-erlang-setup-electric-key-behaviour
-    pel-erlang-setup-erlang-man-dir-root)
+    pel-erlang-setup-erlang-man-dir-root
+    pel-erlang-find-file)
 
   (pel-autoload-function "pel-erlang-skels" for:
     pel--erlang-mode-setup
     pel--install-erlang-skel)
 
   (pel-autoload "pel-face-ut" for: pel-show-face-at-point)
+
+  (pel-autoload-function "pel-ffind" for:
+    pel-ffind)
 
   (pel-autoload "pel-file" for:
     pel-show-filename-at-point

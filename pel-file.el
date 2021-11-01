@@ -48,6 +48,7 @@
 (require 'pel--base)     ; use: pel-val-or-default,
                          ;      pel-goto-position,
                          ;      pel-system-is-windows-p
+(require 'pel-prompt)    ; use: `pel-prompt-select-read'
 (require 'pel-read)      ; use: pel-string-at-point
 (require 'pel-window)    ; use pel-window-direction-for
 ;;                       ;     pel-window-valid-for-editing-p
@@ -244,6 +245,39 @@ File「%s」not found.   Create it, edit name or find Library file? "
     (error "Function pel-prompt not loaded")))
 
 
+(defvar-local pel-filename-at-point-finders nil
+  "List of functions to use to find file from name.
+
+Each function in the list must:
+- Accept an optional argument: a string representing the file name.
+  If the argument is nil it must read the file name from the current point
+  location.
+- Return a string with the complete file name with path if found, nil
+  otherwise.
+
+These functions should prompt the user if multiple files have been
+found to get the user to select the one to use.  The function should allow
+escaping with a quit.
+
+When several functions are provided, each function is tried in turn.  The
+first function that returns a file name wins: the search stops and the file
+name is used.")
+
+(defun pel--find-by-finders (filename)
+  "Find complete path of FILENAME using file finders if any.
+
+File finders functions are identified by `pel-filename-at-point-finders'.
+Return the path string of then file found if one is found, otherwise return
+nil."
+  (when pel-filename-at-point-finders
+    (let ((found nil)
+          (finders pel-filename-at-point-finders))
+      (while (and finders
+                  (not found))
+        (setq found
+              (funcall (car finders) filename))
+        (setq finders (cdr finders)))
+      found)))
 
 (defun pel--complete-filename-for (filename)
   "Identify the complete file name for a potentially incomplete FILENAME.
@@ -256,11 +290,17 @@ where: - filename:= string or nil: the  filename to act upon if not nil.
          we do not edit or create the file."
   (if (file-exists-p filename)
       (cons filename 'edit)
-    (let* ((filename.action    (pel--lib-filename filename))
-           (selected-filename  (car filename.action))
-           (selected-action    (cdr filename.action)))
-      (cons (or selected-filename filename)
-            selected-action))))
+    (let ((found-filenames (pel--find-by-finders filename)))
+      (if found-filenames
+          (if (> (length found-filenames) 1)
+              (cons (pel-prompt-select-read "Select file" found-filenames)
+                    'edit)
+            (cons (car found-filenames) 'edit))
+        (let* ((filename.action    (pel--lib-filename filename))
+               (selected-filename  (car filename.action))
+               (selected-action    (cdr filename.action)))
+          (cons (or selected-filename filename)
+                selected-action))))))
 
 (defun pel--show-edit-action (action filename &optional line column)
     "Display message showing ACTION done on FILENAME at LINE and COLUMN.
