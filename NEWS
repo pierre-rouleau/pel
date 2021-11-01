@@ -49,7 +49,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
         simply set *pel-filename-at-point-finders* to another file finding
         function, or append or add a new file function function to that list.
         - For example, PEL sets *pel-filename-at-point-finders* to
-          ``(pel-erlang-find-file)``. That function searches the file in the
+          "`(pel-erlang-find-file)". That function searches the file in the
           Erlang root directory tree as well as inside the current project.
 - The ``<f12>`` and ``<M-f12>`` key prefixes are now available in Custom-mode buffers.
 - New: The ``<M-f11>`` key is now used as the ``pel2:`` key prefix.  Generic
