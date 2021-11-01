@@ -155,7 +155,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   The ``pel:for-janet`` prefix is bound to ``<f11> SPC T`` which maps to
   ``<f12>`` inside ``.janet`` files.  Includes support for iMenu and Speedbar.
   - Add a [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-janet.pdf][𝕻𝔩 - Janet PDF]].
-- Improve: Erlang support:
+- Improve: *Erlang support*:
+  - Improved: *pel-open-at-point* is now able to search for files inside the
+    current Erlang project and inside the Erlang root directory (the Erlang
+    library).  PEL detects the location of the Erlang root directory with the
+    provided erlang-root-dir Erlang script (see next).
   - New: [[bin/erlang-root-dir][bin/erlang-root-dir]] Erlang script detects and returns Erlang’s root directory.
   - Improved: [[bin/version-erl][bin/version-erl]] script longer prints SASL progress information when
     older versions of Erlang are used.
