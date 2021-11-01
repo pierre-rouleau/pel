@@ -115,6 +115,9 @@
 (require 'newcomment)           ; use: `comment-dwim'
 (require 'xref)
 
+(eval-when-compile
+  (require 'cl-macs))           ; use: `cl-case'.
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 

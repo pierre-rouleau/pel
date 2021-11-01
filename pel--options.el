@@ -345,8 +345,10 @@
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependency
-(require 'pel--base)                    ; use: pel-expression-p
-;;                                      ;      pel-user-option-p
+(require 'pel--base)                    ; use: `pel-expression-p'
+;;                                      ;      `pel-user-option-p'
+(eval-when-compile
+  (require 'cl-macs))                   ; use: `cl-case'.
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:

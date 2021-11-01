@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-11-01 15:51:56, updated by Pierre Rouleau>
+;; Time-stamp: <2021-11-01 16:22:34, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -71,7 +71,9 @@
 (require 'pel--options)               ; use `pel-prompt-read-method'
 (eval-when-compile (require 'subr-x)) ; use: `string-trim'
 (eval-when-compile
-  (require 'cl-lib))    ; use: cl-dolist and cl-return
+  (require 'cl-lib)                   ; use: `cl-dolist' and `cl-return'
+  (require 'cl-macs))                 ; use: `cl-case'.
+
 
 ;;; Code:
 
