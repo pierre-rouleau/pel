@@ -15,6 +15,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   Erlang shell and help inside their topic specific area of the file instead
   of leaving them inside the EDTS-specific area.  Also added information on
   limitations of some of the help commands.
+** New Features:
+- The latest version of timelog supports the *timelog-open-file* command.  It
+  opens the file identified by the *timeclock-file* user-option.  PEL binds
+  this command to ``C-x t l f`` key sequence.
 * Version 0.4.1:
 ** Modifications:
 - Fix: The File Management PDF now describes PEL's ability to select the
