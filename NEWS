@@ -1,5 +1,7 @@
 PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
+* Changes since Version 0.4.1:
+
 * Version 0.4.1:
 ** Modifications:
 - Fix: The File Management PDF now describes PEL's ability to select the
