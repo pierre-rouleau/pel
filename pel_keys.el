@@ -3370,6 +3370,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (define-key pel:for-erlang (kbd "M-9")     #'show-paren-mode)
       (define-key pel:for-erlang (kbd "M-c")      'erlang-compile)
       (define-key pel:for-erlang (kbd "M-d")      'erlang-man-function-no-prompt)
+      (define-key pel:for-erlang (kbd "M-D")      'erlang-man-function)
       (when pel-use-ivy-erlang-complete
         (if (and (require 'ivy-erlang-complete nil :noerror)
                  (fboundp 'ivy-erlang-complete-init))
@@ -3434,6 +3435,34 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 
       ;; Activate EDTS when required.
       (when pel-use-edts
+        ;; EDTS does not seem to autoload various commands.  Do it here.
+        (pel-autoload "edts-code" for:
+          edts-code-compile-and-display
+          edts-code-eunit
+          edts-code-next-issue
+          edts-code-previous-issue)
+        (pel-autoload "edts-debug" for:
+          edts-debug-sync
+          edts-debug-toggle-interpreted
+          edts-debug-toggle-breakpoint
+          edts-debug-finish
+          edts-debug-step-into
+          edts-debug-step-over)
+        (pel-autoload "edts-debug-list-breakpoint-mode" for:
+          edts-debug-list-breakpoints
+          edts-debug-list-breakpoint-find-breakpoint
+          edts-debug-list-breakpoint-delete-breakpoint)
+        (pel-autoload "edts-debug-list-processes-mode" for:
+          edts-debug-list-processes
+          edts-debug-list-processes-find-processes
+          edts-debug-list-processes-attach
+          edts-debug-list-processes-continue
+          edts-debug-list-processes-finish
+          edts-debug-list-processes-step-into
+          edts-debug-list-processes-step-over)
+        (pel-autoload "edts-dialyzer" for:
+          edts-dialyzer-analyze)
+
         (defun pel--setup-edts ()
           "Set EDTS to work within PEL."
           ;; In PEL M-. and M-, are bound to a PEL command that determine
@@ -3471,7 +3500,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
                                :error))))
 
         ;; Key to start EDTS
-        (define-key pel:for-erlang      (kbd "M-E")   'edts-mode)
+        (define-pel-global-prefix pel:erlang-edts  (kbd "<f11> SPC e M-E"))
+        (define-key pel:erlang-edts (kbd "M-E")   'edts-mode)
         (when (eq pel-use-edts 'start-automatically)
           (require 'edts-start))
         (pel-eval-after-load edts
@@ -3484,6 +3514,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
           ;; (define-key pel:for-erlang      ">"     'ahs-forward-definition)
           ;; (define-key pel:for-erlang      "<"     'ahs-backward-definition)
           ;;  edts cross reference command keys
+          (define-key pel:erlang-edts (kbd "M-m")   'edts-man-setup)
           (define-key pel:for-erlang "w" 'edts-xref-who-calls)
           (define-key pel:for-erlang "W" 'edts-xref-last-who-calls)
           ;;  edts cross reference
@@ -3492,7 +3523,6 @@ Can't load ac-geiser: geiser-repl-mode: %S"
           ;; edts refactoring
           (define-key pel:for-erlang "r" 'edts-refactor-extract-function)
           ;; edts man page use
-          (define-key pel:for-erlang "`" 'edts-man-setup)
           (define-key pel:for-erlang "h" 'edts-show-doc-under-point)
           (define-key pel:for-erlang "H" 'edts-find-doc)
           ;; edts code analysis
@@ -3506,9 +3536,9 @@ Can't load ac-geiser: geiser-repl-mode: %S"
           (define-key pel:erlang-debug "i" 'edts-debug-toggle-interpreted)
           (define-key pel:erlang-debug "I" 'edts-debug-list-interpreted)
           ;; edts node
-          (define-key pel:for-erlang "N" 'edts-buffer-node-name)
-          (define-key pel:for-erlang "x" 'edts-shell)
-          (define-key pel:for-erlang "X" 'edts-api-start-server)
+          (define-key pel:erlang-edts "N" 'edts-buffer-node-name)
+          (define-key pel:erlang-edts "z" 'edts-shell)
+          (define-key pel:erlang-edts "x" 'edts-api-start-server)
           ;; EDTS/(automatic highlight symbol)  features
           (define-key pel:for-erlang "e" 'edts-ahs-edit-current-function)
           (define-key pel:for-erlang "E" 'edts-ahs-edit-buffer)

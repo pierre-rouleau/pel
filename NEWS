@@ -1,7 +1,20 @@
 PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
-
+** Modifications, Fixes and Improvements:
+- Fix: Several EDTS commands were not autoloaded by EDTS code.  PEL code now
+  autoloads them when EDTS is requested.  This includes the EDTS debug, eunit
+  and dialyzer commands.
+- Modified: key bindings to toggle EDTS: it was bound to ``<f12> M-E`` (or its
+  equivalent ``<M-f12> M-E``).  It is now bound to ``<f12> M-E M-E`` (and its
+  equivalent and easier to type ``<M-f12> M-E M-E``).
+- Modified: key bindings for other EDTS commands, which are now in the
+  ``<f12> M-E`` key prefix: *edts-buffer-node-name*, *edts-api-start-server*,
+  *edts-shell*.
+- Improved:  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf][𝕻𝔩 - Erlang PDF]] by moving EDTS-specific commands related to
+  Erlang shell and help inside their topic specific area of the file instead
+  of leaving them inside the EDTS-specific area.  Also added information on
+  limitations of some of the help commands.
 * Version 0.4.1:
 ** Modifications:
 - Fix: The File Management PDF now describes PEL's ability to select the
