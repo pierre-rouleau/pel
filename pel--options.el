@@ -164,6 +164,7 @@
 ;;     - pel-pkg-for-sw-build
 ;;     - pel-pkg-for-text-mode
 ;;     - pel-pkg-for-time-tracking
+;;     - pel-pkg-for-text-translation
 ;;     - pel-pkg-for-undo
 ;;     - pel-pkg-for-vcs
 ;;       - pel-pkg-for-git
@@ -8483,6 +8484,26 @@ mode during an editing session."
 ;;   :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
+;; Text Translation
+;; ----------------
+(defgroup pel-pkg-for-text-translation nil
+  "List of packages that PEL can use to perform natural text translation."
+  :group 'pel-package-use)
+
+
+(defcustom pel-use-go-translate nil
+  "Control whether PEL activates the go-translate external package.
+
+This requires Emacs 27.1 or later.  On previous versions PEL automatically
+turns it off."
+  :group 'pel-pkg-for-text-translation
+  :group 'pel-pkg-for-spelling
+  :link '(url-link :tag "Go-Translate @ GitHub"
+                   "https://github.com/lorniu/go-translate")
+  :type 'boolean
+  :safe #'booleanp)
+
+;; ---------------------------------------------------------------------------
 ;; Undo Mechanism Management
 ;; -------------------------
 (defgroup pel-pkg-for-undo nil
@@ -9075,6 +9096,10 @@ indexing system."
 
 (when pel-use-timeclock-timelog
   (setq pel-use-timeclock t))
+
+;; De-activate any requests that cannot be honoured based on Emacs version.
+(when (version< emacs-version "27.1")
+  (setq pel-use-go-translate nil))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel--options)

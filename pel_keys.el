@@ -5006,6 +5006,11 @@ See `flyspell-auto-correct-previous-word' for more info."
    (flyspell-prog-mode)
    (pel--check-flyspell-iedit-conflict)))
 
+;; Text Translation
+(when (and pel-use-go-translate
+           pel-emacs-27-or-later-p)
+  (pel-ensure-package go-translate from: melpa))
+
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> '`` : bookmark commands
 

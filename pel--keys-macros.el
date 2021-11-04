@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-29 14:50:43, updated by Pierre Rouleau>
+;; Time-stamp: <2021-11-04 08:06:02, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -123,6 +123,12 @@
                                macrostep-geiser
                                quack
                                lispy))
+(defconst pel--spell-group (if (version< emacs-version "27.1")
+                               '(ispell
+                                 flyspell)
+                             '(ispell
+                               flyspell
+                               go-translate)))
 
 ;; TODO: add logic in the processing of that table to allow the first element
 ;;       of a row to be a list of key sequences.
@@ -159,8 +165,7 @@
                                                                  projectile-speedbar))
 
     ([f11 f5 ?k]     "key-chords"        pel-pkg-for-key-chord   key-chord)
-    ([f11 ?$]        "spell-checking"   pel-pkg-for-spelling    (ispell
-                                                                 flyspell))
+    ([f11 ?$]        "spell-checking"   pel-pkg-for-spelling    ,pel--spell-group)
     ([f11 ?']        "bookmarks"        pel-pkg-for-bookmark    (bookmark
                                                                  bm))
     ([f11 ?,]        "auto-completion"  pel-pkg-for-expand   (auto-complete
