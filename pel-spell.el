@@ -347,7 +347,6 @@ Return \"?\" instead."
 
 ;; Declare variable and function used in flyspell.el which control flyspell
 ;; prog mode.
-(defvar flyspell-generic-check-word-predicate)
 (declare-function flyspell-generic-progmode-verify "flyspell")
 
 (defun pel--spell-flyspell-prog-mode-state ()
@@ -356,9 +355,10 @@ Return \"?\" instead."
   ;; not a minor mode function that takes an argument with a variable that has
   ;; the same name.  To detect if it is on, code must check the sate of a
   ;; variable it uses: see flyspell.el
-  (eq
-   flyspell-generic-check-word-predicate
-   (function flyspell-generic-progmode-verify)))
+  (and (boundp 'flyspell-generic-check-word-predicate)
+       (eq
+        flyspell-generic-check-word-predicate
+        (function flyspell-generic-progmode-verify))))
 
 
 ;;-pel-autoload
