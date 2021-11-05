@@ -18,11 +18,11 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#quickst
 
-.. image:: https://img.shields.io/badge/Direct_Installable_Packages-225-teal
+.. image:: https://img.shields.io/badge/Direct_Installable_Packages-226-teal
    :alt: Version
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
-.. image:: https://img.shields.io/badge/PEL_Commands-486-teal
+.. image:: https://img.shields.io/badge/PEL_Commands-487-teal
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#commands
 
@@ -185,7 +185,7 @@ various packages, etc...
 -----------------------------------------------------------------
 
 - In normal mode, PEL controls the download, installation, configuration and
-  activation of **225** *top-level* [#externp]_ external packages through the
+  activation of **226** *top-level* [#externp]_ external packages through the
   use of easy-to-setup customization user-options that have a name that start
   with the "``pel-use-``" prefix.
 
@@ -305,7 +305,7 @@ Notes
 
 
 .. [#externp] An external package may have dependencies.  The dependencies are also
-              installed. PEL currently provides access to 225 top-level external packages.
+              installed. PEL currently provides access to 226 top-level external packages.
               The actual number of packages is larger when counting their
               dependencies (currently 48 extra packages installed as dependencies).
               From within PEL execute the **pel-package-info**
@@ -392,7 +392,7 @@ Notes
               The command detects the key sequence and the context to
               identify which PEL PDF to open.
 
-              PEL currently implements 486 interactive commands.  Some are
+              PEL currently implements 487 interactive commands.  Some are
               always loaded.  Several are auto-loaded when needed.  This count
               exclude the template commands that are dynamically constructed
               and loaded only for major modes, such as Erlang, that support
