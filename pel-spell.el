@@ -38,6 +38,15 @@
 ;;  it does.  In that case please report the situation that it does not
 ;;  handle.
 ;;
+;;  Another feature of this file is to provide the ability to ease spell
+;;  checking code debugging by temporary preventing hooks from activating
+;;  flyspell-mode or flyspell-prog-mode by providing the
+;;  `pel-spell-maybe-activate-flyspell' and
+;;  `pel-spell-maybe-activate-flyspell-prog' functions used as hooks.  These
+;;  check the state of the variable `pel-spell-prevent-flyspell' which can be
+;;  toggled by the `pel-spell-toggle-prevent-flyspell' command.
+;;
+;;
 ;;  *Credits*:
 ;;      Code of pel-spell-flyspell-emacs-popup-textual was taken from
 ;;      `https://www.emacswiki.org/emacs/FlySpell'.  I renamed it
@@ -74,7 +83,7 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 
-(require 'pel--base)
+(require 'pel--base)                    ; use: `pel-toggle-and-show'
 (require 'pel--macros)
 (require 'pel--options)
 
@@ -101,16 +110,42 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
+;; Global de-activation of flyspell-mode and flyspell-prog-mode
+;; ------------------------------------------------------------
+
+(declare-function pel-spell-iedit-check-conflict "pel-spell-iedit")
+
+;;-pel-autoload
+(defun pel-spell-maybe-activate-flyspell ()
+  "Activator for flyspell-mode.  Used as a hook function."
+  (unless pel-spell-prevent-flyspell
+    (flyspell-mode 1)
+    (pel-spell-iedit-check-conflict)))
+
+;;-pel-autoload
+(defun pel-spell-maybe-activate-flyspell-prog ()
+  "Activator for flyspell-prog-mode.  Used as a hook function."
+  (unless pel-spell-prevent-flyspell
+    (flyspell-prog-mode)
+    (pel-spell-iedit-check-conflict)))
+
+;;-pel-autoload
+(defun pel-spell-toggle-prevent-flyspell ()
+  (interactive)
+  "Toggle lock preventing flyspell-mode and flyspell-prog-mode activation."
+  (pel-toggle-and-show 'pel-spell-prevent-flyspell))
+
+;; ---------------------------------------------------------------------------
+;; General error message
+
 (defconst pel--spell-error-info-msg
   "See the spell-checking.pdf file for more info."
   "It shows where to get information if you have problem setting Ispell support.")
-
 
 ;; ---------------------------------------------------------------------------
 ;; - `pel-spell-init-from-user-option'
 ;;   - `pel--spell-select'
 ;;     * `pel-spell-init'
-
 
 ;;-pel-autoload
 (defun pel-spell-init (spell-program-name
@@ -139,10 +174,18 @@ to allow the flyspell pop-up menu to work in terminal mode."
   (setq ispell-program-name spell-program-name)
   (if personal-dictionary
       (setq ispell-personal-dictionary personal-dictionary))
-  ;; Activate Flyspell spell-checking in text modes
-  (add-hook 'text-mode-hook 'flyspell-mode)
-  ;; Activate spell-checking in comments of programming modes
-  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+  ;; Activate Flyspell spell-checking in text modes but under full
+  ;; control of PEL: `text-mode-hook' normally includes `turn-on-flyspell'
+  ;; which activates flyspell in all modes derived from text-mode.  Remove
+  ;; that and replace it by `pel-spell-maybe-activate-flyspell' instead.
+  (remove-hook 'text-mode-hook 'turn-on-flyspell)
+  (add-hook    'text-mode-hook 'pel-spell-maybe-activate-flyspell)
+  ;; Same thing for programming modes: Activate spell-checking in comments of
+  ;; programming modes but keep control using
+  ;; `pel-spell-maybe-activate-flyspell-prog' instead of using
+  ;; `flyspell-prog-mode' directory as prog-mode.el does.
+  (remove-hook 'text-mode-hook 'flyspell-prog-mode)
+  (add-hook 'prog-mode-hook 'pel-spell-maybe-activate-flyspell-prog)
   ;;
   ;; In Terminal mode, Flyspell pop-up menu does not work.
   ;; The following code make it work, but only if the popup
@@ -297,21 +340,44 @@ Return \"?\" instead."
           (format "%s default personal dictionary" ispell-program-name))
     "?"))
 
+
+
+;; Declare variable and function used in flyspell.el which control flyspell
+;; prog mode.
+(defvar flyspell-generic-check-word-predicate)
+(declare-function flyspell-generic-progmode-verify "flyspell")
+
+(defun pel--spell-flyspell-prog-mode-state ()
+  "Return t if flyspell-prog-mode is on, nil otherwise."
+  ;; `flyspell-prog-mode' is just a normal function that takes no argument,
+  ;; not a minor mode function that takes an argument with a variable that has
+  ;; the same name.  To detect if it is on, code must check the sate of a
+  ;; variable it uses: see flyspell.el
+  (eq
+   flyspell-generic-check-word-predicate
+   (function flyspell-generic-progmode-verify)))
+
+
 ;;-pel-autoload
 (defun pel-spell-show-use ()
-  "Display what spell checking program is being used."
+  "Display spell checking programs used and current status."
   (interactive)
   (let ((spell-program-name (condition-case nil
                                 (pel-ispell-program-name)
                               (error nil)))
         (format-msg (format "%%s\
-ispell: %s, flyspell: %s.%%s
+ispell: %s, flyspell: %s, flyspell-prog: %s. %%s
 Spell main dictionary    : %s
-Spell personal dictionary: %s"
+Spell personal dictionary: %s
+Flyspell prevention lock : %s"
                             (pel-symbol-on-off-string 'ispell-minor-mode)
                             (pel-symbol-on-off-string 'flyspell-mode)
+                            (pel-on-off-string
+                             (pel--spell-flyspell-prog-mode-state))
                             (pel-ispell-main-dictionary)
-                            (pel-ispell-personal-dictionary)))
+                            (pel-ispell-personal-dictionary)
+                            (pel-symbol-on-off-string
+                             'pel-spell-prevent-flyspell)))
         err-msg
         name-msg)
     (if spell-program-name

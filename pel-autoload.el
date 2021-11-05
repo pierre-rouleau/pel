@@ -638,9 +638,15 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload-function "pel-spell" for:
     pel-spell-init
-    pel-spell-init-from-user-option)
+    pel-spell-init-from-user-option
+    pel-spell-maybe-activate-flyspell
+    pel-spell-maybe-activate-flyspell-prog)
   (pel-autoload "pel-spell" for:
-    pel-spell-show-use)
+    pel-spell-show-use
+    pel-spell-toggle-prevent-flyspell)
+
+  (pel-autoload-function "pel-spell-iedit" for:
+    pel-spell-iedit-check-conflict)
 
   (pel-autoload "pel-syntax" for:
     pel-syntax-at-point)

@@ -8282,6 +8282,29 @@ Setting this non-nil also sets up the use of speedbar and projectile."
   :link `(url-link :tag "Spell Checking PDF"
                    ,(pel-pdf-file-url "spell-checking")))
 
+
+(defcustom pel-spell-prevent-flyspell nil
+  "Prevent automatic activation of flyspell-mode and flyspell-prog-mode.
+
+When this is non-nil, it prevents the automatic activation of
+flyspell-mode and flyspell-prog-mode in the major modes where
+they would be automatically activated by hooks set to
+`pel-spell-maybe-activate-flyspell' and
+`pel-spell-maybe-activate-flyspell-prog'.
+
+If the value is nil (the default), then activation of automated
+spell checking is allowed.
+
+This mechanism helps when you want to reduce the CPU load and also when you
+want to debug spell checking mechanism and don't want it to be triggered
+every time you open a new buffer.
+
+Toggled this dynamically with the `pel-spell-toggle-prevent-flyspell'
+command."
+  :group 'pel-pkg-for-spelling
+  :type  'boolean
+  :safe  #'booleanp)
+
 (defcustom pel-spell-check-tool nil
   "Spell Checking tool program.
 

@@ -15,10 +15,28 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   Erlang shell and help inside their topic specific area of the file instead
   of leaving them inside the EDTS-specific area.  Also added information on
   limitations of some of the help commands.
+- Fix: activation of *flyspell-prog-mode*: the old code was invoking the
+  flyspell-prog-mode with 1 argument but the function takes none.
+  - Key binding conflict between flyspell and iedit is now done by a function
+    stored inside the pel-ispell-iedit.el as opposed to being inside
+    the pel_keys.el file.
+- Improved: support for *flyspell-mode* and *flyspell-prog-mode*:
+  - Add ability to prevent automatic activation of flyspell-mode and
+    flyspell-prog-mode: the *pel-spell-prevent-flyspell* user-option can be
+    set to prevent activation of the automatic spell checking.  This is useful
+    if someone wants to reduce CPU load and also when debugging the spell
+    checking mechanism when you don't want automatic activation of the modes
+    when opening a new buffer.
+  - The *pel-spell-show-use* now display whether flyspell-prog-mode is active.
+    It also shows whether the flyspell-mode and flyspell-prog-mode automatic
+    activation is prevented.
 ** New Features:
 - The latest version of timelog supports the *timelog-open-file* command.  It
   opens the file identified by the *timeclock-file* user-option.  PEL binds
   this command to ``C-x t l f`` key sequence.
+- Add preliminary support for the *go-translate* package when
+  *pel-use-go-translate* user option is turned on.  No key binding or
+  activation done yet. This is only available for Emacs 27.1 and later.
 * Version 0.4.1:
 ** Modifications:
 - Fix: The File Management PDF now describes PEL's ability to select the

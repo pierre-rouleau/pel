@@ -882,49 +882,6 @@ Done in this function to allow advising libraries that remap these keys."
 (global-set-key (kbd "C-M-]") 'up-list)
 
 ;; ---------------------------------------------------------------------------
-;; Conflict Checking
-;; -----------------
-
-;; - Flyspell and iedit
-;;   -----------------
-;;
-;; flyspell binds the key identified by the user option
-;; `flyspell-auto-correct-binding' to the command
-;; `flyspell-auto-correct-previous-word' .
-;; By default the key is (kbd "C-;").
-;; There's 2 problems:
-;; 1) that key is not available in terminal mode for such a useful command,
-;; 2) iedit-mode default key is also (kbd "C-;") as identified by its user
-;;    option `iedit-toggle-key-default'.  iedit-mode checks if something else
-;;    is mapping it but flyspell is activated lazily per mode, so iedit check
-;;    never detects the conflicting binding.  There's no easy automatic
-;;    solution for this, aside from checking for the conflict here and
-;;    changing one of the user options.  Remember that user option variables
-;;    are only available when their relative feature (file) has been loaded,
-;;    which means that the check must be done when flyspell-mode is activated.
-;;    The code below perform the check when the modes are activated.
-
-(defvar flyspell-auto-correct-binding)  ; prevent lint warnings
-
-(defun pel--check-flyspell-iedit-conflict ()
-  "Check for key binding conflict between flyspell and iedit.
-Warn user if necessary."
-  (when (and (boundp 'iedit-toggle-key-default)
-             (boundp 'flyspell-auto-correct-binding)
-             (string= (key-description iedit-toggle-key-default)
-                      (key-description flyspell-auto-correct-binding)))
-    (display-warning
-     'pel-keys
-     (format "Both iedit and flyspell bind functions to \"%s\"!\n\
-To use this key, change the key selected in one of the following \n\
-user options:\n\
-- `iedit-toggle-key-default'
-- `flyspell-auto-correct-binding'
-
-Then save your changes."
-             (key-description flyspell-auto-correct-binding)))))
-
-;; ---------------------------------------------------------------------------
 ;; - Cursor Keys
 ;; -------------
 
@@ -1217,7 +1174,8 @@ interactively."
   (define-key ctl-x-r-map "\r" 'iedit-rectangle-mode)
   ;; More iedit config - always required.
   (pel-eval-after-load iedit-mode
-    (pel--check-flyspell-iedit-conflict)
+    (declare-function pel-spell-iedit-check-conflict "pel-spell-iedit")
+    (pel-spell-iedit-check-conflict)
     (pel--add-keys-to-iedit-mode)))
 
 ;; - indent-tools
@@ -4980,6 +4938,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (define-key pel:spell "m" #'ispell-message)
 (define-key pel:spell "r" #'ispell-region)
 (define-key pel:spell "v" #'ispell-check-version)
+(define-key pel:spell (kbd "M-f") 'pel-spell-toggle-prevent-flyspell)
 
 (defun pel-flyspell-auto-correct-previous-word (position)
   "Flyspell previous word from POSITION if flyspell mode is active.
@@ -4994,17 +4953,15 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;;Activate Flyspell for modes identified by PEL customization
 ;;
+(declare-function pel-spell-maybe-activate-flyspell "pel-spell")
 (pel-add-hook-for
  'pel-modes-activating-flyspell-mode
- (lambda ()
-   (flyspell-mode 1)
-   (pel--check-flyspell-iedit-conflict)))
+ (function pel-spell-maybe-activate-flyspell))
 
+(declare-function pel-spell-maybe-activate-flyspell-prog "pel-spell")
 (pel-add-hook-for
  'pel-modes-activating-flyspell-prog-mode
- (lambda ()
-   (flyspell-prog-mode)
-   (pel--check-flyspell-iedit-conflict)))
+ (function pel-spell-maybe-activate-flyspell-prog))
 
 ;; Text Translation
 (when (and pel-use-go-translate
