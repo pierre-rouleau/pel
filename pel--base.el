@@ -48,6 +48,9 @@
 ;; Base predicates:
 ;; - `pel-expression-p'
 ;;
+;; Conditional variable set:
+;; - `pel-set-if-non-nil'
+;;
 ;; Check for Zero:
 ;;  - `pel-!0'
 ;;
@@ -461,6 +464,16 @@ code execution)."
   (and (custom-variable-p symbol)
        (eq t (compare-strings "pel-use-" nil nil
                               (symbol-name symbol) 0 8))))
+
+;; ---------------------------------------------------------------------------
+;; Conditional variable set
+;; ------------------------
+(defun pel-set-if-non-nil (symbol value)
+  "Set SYMBOL to VALUE only if VALUE is non-nil.
+
+If VALUE is nil do nothing."
+  (when value
+    (set symbol value)))
 
 ;; ---------------------------------------------------------------------------
 ;; Check for Zero
