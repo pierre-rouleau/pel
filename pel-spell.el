@@ -154,7 +154,9 @@
 
 - Use specified SPELL-PROGRAM-NAME as the spell checking process.
   A string.  It must be a Ispell compatible program, like:
-    \"ispell\", \"aspell\", \"hunspell\", \"enchant\".
+    \"ispell\", \"aspell\", \"hunspell\", \"enchant\" and the program
+  must be found in PATH.   If it is not found, `ispell-program-name'
+  is not changed.
 - Specify the directory where the program is found in SPELL-PATH
   when that program is not already found in variable `exec-path'.
   To be used, the value must be a string.
@@ -171,7 +173,8 @@ to allow the flyspell pop-up menu to work in terminal mode."
       (error "In pel-spell-init, spell-path non-nil argument is not a string"))
   (if spell-path
       (add-to-list 'exec-path spell-path))
-  (setq ispell-program-name spell-program-name)
+
+  (pel-set-if-non-nil 'ispell-program-name (executable-find spell-program-name))
   (if personal-dictionary
       (setq ispell-personal-dictionary personal-dictionary))
   ;; Activate Flyspell spell-checking in text modes but under full
