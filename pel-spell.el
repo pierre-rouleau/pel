@@ -373,7 +373,7 @@ Return \"ispell not loaded\" instead."
       (format "%s (using: %s)"
               ispell-program-name
               (or (ispell-check-version nil)
-                  (pel-spell-program-version-string)
+                  (car (split-string (pel-spell-program-version-string) "\n"))
                   "?"))
     "ispell is not loaded!"))
 
@@ -401,8 +401,6 @@ Return \"?\" instead."
           (format "%s default personal dictionary" ispell-program-name))
     "? - ispell is not loaded yet."))
 
-
-
 ;; Declare variable and function used in flyspell.el which control flyspell
 ;; prog mode.
 (declare-function flyspell-generic-progmode-verify "flyspell")
@@ -417,7 +415,6 @@ Return \"?\" instead."
        (eq
         flyspell-generic-check-word-predicate
         (function flyspell-generic-progmode-verify))))
-
 
 ;;-pel-autoload
 (defun pel-spell-show-use ()

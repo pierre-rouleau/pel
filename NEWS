@@ -45,6 +45,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   personal dictionary files are stored.  Each of them has a name that
   identifies the 2 or 3 letter language code and has the ".ispell" file
   extension.
+- Fix: *pel-spell-show-use* no longer display more than 1 line of the spell
+  checker identification text.
 ** New Features:
 - The latest version of timelog supports the *timelog-open-file* command.  It
   opens the file identified by the *timeclock-file* user-option.  PEL binds
