@@ -33,7 +33,6 @@
      (global "" key-chord "7u" pel-kc-browse-url-at-point)
      (global "" key-chord ".;" pel-kc-search-word-from-top))))
  '(pel-prompt-accept-y-n t)
- '(pel-spell-check-personal-dictionary "~/.emacs.d/.ispell")
  '(pel-spell-check-tool "aspell")
  '(pel-use-ascii-table t)
  '(pel-use-bind-key t)

@@ -80,15 +80,41 @@
 ;;     (with-eval-after-load 'ispell (pel-spell-init-from-user-option))
 ;;
 
+;; Table of Content
+;; ================
+;;
+;; - Activation of flyspell-mode and flyspell-prog-mode:
+;;   - `pel-spell-maybe-activate-flyspell'
+;;   - `pel-spell-maybe-activate-flyspell-prog'
+;;   - `pel-spell-toggle-prevent-flyspell'
+;;
+;; - Initialization:
+;;   - `pel-spell-init-from-user-option'
+;;     - `pel-spell-pers-dict-name'
+;;       - `pel-spell-language-code-for'
+;;     - `pel--spell-select'
+;;       * `pel-spell-init'
+;;
+;; - Show Status:
+;;   * `pel-spell-show-use'
+;;     - `pel-ispell-program-name'
+;;       - `pel-spell-program-version-string'
+;;     - `pel-ispell-main-dictionary'
+;;     - `pel-ispell-personal-dictionary'
+;;
+;; - Selection of Dictionary:
+;;   * `pel-spell-change-dictionary'
+;;
+
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 
 (require 'pel--base)                    ; use: `pel-toggle-and-show'
 (require 'pel--macros)
 (require 'pel--options)
+(require 'pel-prompt)                   ; use: `pel-prompt'
 
 (eval-when-compile
-
   (require 'cl-lib)                     ; use: cl-dolist and cl-return
 
   ;; both flyspell and ispell are loaded lazily if required, but their symbols
@@ -110,8 +136,13 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
-;; Global de-activation of flyspell-mode and flyspell-prog-mode
-;; ------------------------------------------------------------
+;; Activation of flyspell-mode and flyspell-prog-mode
+;; --------------------------------------------------
+;;
+;; The first 2 functions are meant to be used as hooks to activate
+;; flyspell-mode and flyspell-prog-mode.    The last one,
+;; `pel-spell-toggle-prevent-flyspell' toggles the variable that prevents
+;; activation of these minor modes.
 
 (declare-function pel-spell-iedit-check-conflict "pel-spell-iedit")
 
@@ -143,9 +174,8 @@
   "It shows where to get information if you have problem setting Ispell support.")
 
 ;; ---------------------------------------------------------------------------
-;; - `pel-spell-init-from-user-option'
-;;   - `pel--spell-select'
-;;     * `pel-spell-init'
+;; Initialization:
+;; ---------------
 
 ;;-pel-autoload
 (defun pel-spell-init (spell-program-name
@@ -280,6 +310,29 @@ The %s user-option identifies %s as your spell checker program.
                          :error)
       (pel-spell-init program-name path personal-dict))))
 
+
+(defun pel-spell-language-code-for (text)
+  "Extract and return a 2 or 3 letter language code from TEXT.
+
+TEXT should be something like \"en_ca.UTF-8\" or another LANG value."
+  (when (string-match "\\([a-z]+\\)_" text)
+    (match-string 1 text)))
+
+(defun pel-spell-pers-dict-name (&optional dict)
+  "Return complete name of the PEL personnal dictionary.
+
+If DICT is specified it must be a string that identifies the name of the
+currently used dictionary: normally a ISO 639 letter code like \"en\" or
+\"fr\": the code that identifies the natural language of the dictionary.
+
+If it is not specified the name of the currently used `ispell-dictionary' is
+used.  If this is nil , then the language code identified by the LANG
+environment variable is used. If noything is found \"en\" is used."
+  (or dict
+      ispell-dictionary
+      (pel-spell-language-code-for (getenv "LANG"))
+      "en"))
+
 ;;-pel-autoload
 (defun pel-spell-init-from-user-option ()
   "Initialize Spell checking.
@@ -287,16 +340,19 @@ The %s user-option identifies %s as your spell checker program.
 Use values taken from user option variable `pel-spell-check-tool'
 if specified.  If nothing is specified the spell checker is not
 selected."
+  (unless pel-spell-personal-dictionary-directory
+    (setq pel-spell-personal-dictionary-directory (expand-file-name
+                                                   "ispell-personal-dictionary"
+                                                   user-emacs-directory)))
   (when pel-spell-check-tool
     (pel--spell-select 'pel-spell-check-tool
-                       (or pel-spell-check-personal-dictionary "~/.ispell"))))
+                       (expand-file-name
+                        (format "%s.ispell" (pel-spell-pers-dict-name))
+                        pel-spell-personal-dictionary-directory))))
 
 ;; ---------------------------------------------------------------------------
-;; * `pel-spell-show-use'
-;;   - `pel-ispell-program-name'
-;;     - `pel-spell-program-version-string'
-;;   - `pel-ispell-main-dictionary'
-;;   - `pel-ispell-personal-dictionary'
+;; Show Status
+;; -----------
 
 (defun pel-spell-program-version-string ()
   "Return the version string of the spell-check program used."
@@ -330,18 +386,20 @@ Return \"?\" instead."
       (or ispell-local-dictionary
           ispell-dictionary
           (format "%s default dictionary. (using LANG: %s)"
-                  ispell-program-name
+                  (file-name-nondirectory ispell-program-name)
                   (getenv "LANG")))
-    "?"))
+    "? - ispell is not loaded yet."))
 
 (defun pel-ispell-personal-dictionary ()
   "Return string describing Ispell personal dictionary if Ispell is loaded.
 Return \"?\" instead."
-  (if (and (boundp 'ispell-personal-dictionary)
+  (if (and (boundp 'ispell-current-personal-dictionary)
+           (boundp 'ispell-personal-dictionary)
            (boundp 'ispell-program-name))
-      (or ispell-personal-dictionary
+      (or ispell-current-personal-dictionary
+          ispell-personal-dictionary
           (format "%s default personal dictionary" ispell-program-name))
-    "?"))
+    "? - ispell is not loaded yet."))
 
 
 
@@ -395,6 +453,65 @@ Other available information:\n"
     (message format-msg
              (pel-string-when err-msg)
              (pel-string-when name-msg))))
+
+;; ---------------------------------------------------------------------------
+;; Selection of Dictionary
+;; -----------------------
+
+(declare-function ispell-internal-change-dictionary "ispell")
+(defvar ispell-local-dictionary)
+(defvar ispell-current-personal-dictionary)
+
+;;-pel-autoload
+(defun pel-spell-change-dictionary (dict &optional globally)
+  "Change base and personal spelling dictionary.
+
+By default the change is applied to the current buffer only.
+If GLOBALLY argument specified, it is applied for all buffers.
+
+Type RET to display currently used dictionary and change nothing.
+Type SPC at prompt to list all available dictionary names."
+  ;; prompt like `ispell-change-dictionary'
+  (interactive
+   (list
+    (completing-read
+     "Use new dictionary (RET for current, SPC to complete): "
+     (and
+      (require 'ispell nil :noerror)
+      (fboundp 'ispell-valid-dictionary-list)
+      (mapcar #'list (ispell-valid-dictionary-list)))
+     nil t)
+    current-prefix-arg))
+  (unless (equal dict "")
+    ;; Execute `ispell-change-dictionary' with the information extracted from the prompt
+    (ispell-change-dictionary dict globally)
+    ;; Then prompt for an equivalent personal dictionary
+    (let ((pers-dict-lang
+           (pel-prompt (format "Language name of personal dictionary (for %s) "
+                               dict))))
+      (when pers-dict-lang
+        (setq ispell-personal-dictionary
+              (expand-file-name
+               (format "%s.ispell" pers-dict-lang)
+               pel-spell-personal-dictionary-directory))
+        ;; For some reason the call to `ispell-change-dictionary' does not
+        ;; properly set the personal dictionary variables.  So the spell
+        ;; checking sub-process is not passed to correct dictionary file
+        ;; name.  This causes a failure inside aspell which stops and prevents
+        ;; spell checking to work.
+        ;; To solve that I'm setting the following ispell variables
+        ;; directly. I'm also calling `ispell-internal-change-dictionary'
+        ;; below, to ensure ispell is setup properly.
+        ;; I'm not sure why this is necessary; the ispell code should work
+        ;; without this but it does not (at least in Emacs 26.3).
+        ;; TODO: complete investigation to ensure all is correct.  If this
+        ;; code is indeed required that should be reported as a bug in ispell.
+        (setq ispell-local-pdict                 ispell-personal-dictionary
+              ispell-current-personal-dictionary ispell-personal-dictionary)))
+    ;;
+    (ispell-internal-change-dictionary)
+    ;; Display what was selected.
+    (pel-spell-show-use)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-spell)

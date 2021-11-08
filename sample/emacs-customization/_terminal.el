@@ -164,7 +164,6 @@
  '(pel-rst-skel-with-license (quote only-copyright))
  '(pel-shell-sourced-script-file-name-prefix "\\`envfor-")
  '(pel-smart-shift-keybinding (quote f9))
- '(pel-spell-check-personal-dictionary "~/.emacs.d/.ispell")
  '(pel-spell-check-tool "aspell")
  '(pel-startup-xref-front-end (quote xref))
  '(pel-use-ac-geiser nil)

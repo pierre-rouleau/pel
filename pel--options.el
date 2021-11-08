@@ -8331,19 +8331,26 @@ selection."
           (file   :tag "Use executable file specified by this absolute path"
                   :must-match t)))
 
-(defcustom  pel-spell-check-personal-dictionary nil
-  "Location of your ispell-compatible personal dictionary file.
+(defcustom  pel-spell-personal-dictionary-directory nil
+  "Directory that hold your ispell-compatible personal dictionary files.
 
-If not specified, the location selected is \"~/.ispell\".
-However the recommend location is to put the .ispell file inside
-the `user-emacs-directory', which is ~/.emacs.d by default.
+The personal directory files should be stored inside that directory and
+should have a name that corresponds to the name of the natural language
+used by the base dictionary/ies that you use with this personal dictionary.
+
+The Aspell program accepts a personal dictionnary as long as it is identified
+using the same natural language as the base language specifeid by emacs ispell
+logic.
+
+The default location is inside the ispell-personal-dictionary located inside
+the `user-emacs-directory', which is \"~/.emacs.d\" by default.
 
 On Windows you may want to identify the directory used by the tool,
 something not located inside Emacs user directory."
   :group 'pel-pkg-for-spelling
   :type '(choice
-          (const  :tag "Use default: ~/.ispell" nil)
-          (string :tag "Use specified file")))
+          (const  :tag "Use default: ispell-personal-dictionary inside user-emacs-directory" nil)
+          (directory :tag "Use specified directory")))
 
 (defcustom pel-modes-activating-flyspell-mode
   '(log-edit-mode

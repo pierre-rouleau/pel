@@ -12,7 +12,6 @@
  '(imenu-max-items 50)
  '(package-selected-packages (quote (bm popup which-key)))
  '(pel-prompt-accept-y-n t)
- '(pel-spell-check-personal-dictionary "~/.emacs.d/.ispell")
  '(pel-spell-check-tool "aspell")
  '(pel-use-bm t)
  '(pel-use-hippie-expand t)

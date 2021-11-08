@@ -30,6 +30,21 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - The *pel-spell-show-use* now display whether flyspell-prog-mode is active.
     It also shows whether the flyspell-mode and flyspell-prog-mode automatic
     activation is prevented.
+- Improved: spell checking dictionary management to prevent failures in
+  aspell: the ``<f11> $ D`` key sequence is now bound to the new command
+  *pel-spell-change-dictionary*.  The command changes the base dictionary but
+  also prompts for and change the personal dictionary to ensure both use the
+  same natural language.   Emacs ispell.el identifies both dictionaries in its
+  aspell command and they must both use the same natural language otherwise
+  aspell fails.
+- Improved: the *pel-spell-show-use* command display the file name of the
+  personal dictionary.
+- Modified: Replaced *pel-spell-check-personal-dictionary* by
+  *pel-spell-personal-dictionary-directory*.  Instead of defining the name of
+  the personal dictionary, PEL now only identifies the directory where all
+  personal dictionary files are stored.  Each of them has a name that
+  identifies the 2 or 3 letter language code and has the ".ispell" file
+  extension.
 ** New Features:
 - The latest version of timelog supports the *timelog-open-file* command.  It
   opens the file identified by the *timeclock-file* user-option.  PEL binds
