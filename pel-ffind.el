@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-11-01 14:44:33, updated by Pierre Rouleau>
+;; Time-stamp: <2021-11-09 23:07:40, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -68,9 +68,11 @@ whether the VCS is told to ignore them or not."
     (format "%s --type f --color never --no-ignore-vcs -g '%s' %s"
             pel--ffind-fd-path
             (file-name-nondirectory filename)
-            (string-join (mapcar (function pel--ffind-dirname-quoted)
-                                 directories)
-                         " ")))
+            (if (>  (length directories) 1)
+                (string-join (mapcar (function pel--ffind-dirname-quoted)
+                                     directories)
+                             " ")
+                (car directories))))
    ((eq pel-ffind-executable 'find)
     (unless (or pel--ffind-find-path
                 (setq pel--ffind-find-path (executable-find "find")))
@@ -127,7 +129,8 @@ Search project root directory using the identifier files specified in the
 `pel-project-root-identifiers' user-option and the ones in
 PROJECT-ROOT-IDENTIFIERS list if specified.
 
-Return a directory name expanded and without trailing slash."
+Return a directory name expanded and without trailing slash if found,
+nil otherwise."
   (let ((identifiers pel-project-root-identifiers)
         (directory nil)
         (found-dir nil))
@@ -149,11 +152,14 @@ Return a directory name expanded and without trailing slash."
               (setq directory found-dir))
           (setq directory found-dir))))
     ;; Return a directory name expanded and without trailing slash.
-    (expand-file-name (directory-file-name directory))))
+    (when directory
+      (expand-file-name (directory-file-name directory)))))
 
 ;;-pel-autoload
 (defun pel-generic-find-file (filename &optional directories)
   "Find a file FILENAME from the project holding the current buffer file.
+
+Return a file or a list or found files.  Return nil if nothing found.
 
 If DIRECTORIES argument is specified it may be a single directory
 path string or a list of directory path strings to search on top
@@ -167,11 +173,12 @@ by `pel--find-by-finders'.
 However, that may not be sufficient for some programming
 languages.  In that case you should be using a language specific function.
 There is one implemented for Erlang: `pel-erlang-find-file'."
-
-  (pel-ffind filename (cons (pel-ffind-project-directory)
-                            (if  (listp directories)
-                                directories
-                              (list directories)))))
+  (let ((candidate-dir (pel-ffind-project-directory)))
+    (condition-case nil
+        (pel-ffind filename (if candidate-dir
+                                (cons candidate-dir directories)
+                              directories))
+      (user-error nil))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-ffind)
