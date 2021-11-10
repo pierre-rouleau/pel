@@ -7864,7 +7864,7 @@ CAUTION: This package needs major tuning!  It takes forever searching for a
 (pel-put 'pel-use-projectile :also-required-when '(or pel-use-projectile-speedbar
                                                       pel-use-treemacs-projectile))
 
-(defcustom pel-project-root-identifiers '(".git" ".hg" ".pel-project")
+(defcustom pel-project-root-identifiers '(".git" ".hg" ".projectile" ".pel-project")
   "File names that identify the root of a project directory tree."
   :group 'pel-pkg-for-project-mng
   :type '(repeat string))
