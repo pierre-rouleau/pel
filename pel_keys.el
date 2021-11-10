@@ -2072,8 +2072,10 @@ bind it again after this call."
     (define-key prefix      "F"      'c-fill-paragraph)
     (define-key prefix      "f"      'c-display-defun-name)
     ;;
-    (define-key prefix (kbd "<down>")   'pel-beginning-of-next-defun)
-    (define-key prefix (kbd "<up>")     'beginning-of-defun)
+    (define-key prefix (kbd "<down>")  'pel-beginning-of-next-defun)
+    (define-key prefix (kbd "<up>")    'beginning-of-defun)
+    (define-key prefix (kbd "<left>")  'pel-end-of-previous-defun)
+    (define-key prefix (kbd "<right>") 'end-of-defun)
     ;;
     (define-key prefix (kbd "M-9")  #'show-paren-mode)
     ;; reserve "." for a command that find the thing at point in C (via CTags?)
