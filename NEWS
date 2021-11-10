@@ -47,6 +47,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   extension.
 - Fix: *pel-spell-show-use* no longer display more than 1 line of the spell
   checker identification text.
+- Fix: *pel-insert-filename* with no prefix argument or with prefix argument
+  of 1, identifies the current window.
 ** New Features:
 - The latest version of timelog supports the *timelog-open-file* command.  It
   opens the file identified by the *timeclock-file* user-option.  PEL binds

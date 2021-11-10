@@ -114,7 +114,10 @@ The character used is identified by CHAR, otherwise '-' is used."
 (defun pel-insert-filename (&optional n)
   "Insert at point the name of a the file of the window identified by N.
 N is a numeric argument that identifies the window that holds the file.
-The numeric values correspond to the directions of the numeric keypad numbers:
+
+If N is not specified or is 1, use the current window.
+Otherwise, the numeric values correspond to the directions of the
+numeric keypad numbers:
 .      8
 .   4     6
 .      2
@@ -128,7 +131,9 @@ If the argument is positive, `pel-insert-filename'  inserts a filename with full
 absolute path, if negative it omits the path."
   (interactive "*p")
   (let ((no-path (< n 0))
-        (direction (pel-window-direction-for (abs n))))
+        (direction (if (eq (abs n) 1)
+                       'current
+                     (pel-window-direction-for (abs n)))))
     (if (eq direction 'current)
         (insert (pel-current-buffer-filename no-path))
       (let ((original-window (selected-window))
