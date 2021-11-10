@@ -49,6 +49,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   checker identification text.
 - Fix: *pel-insert-filename* with no prefix argument or with prefix argument
   of 1, identifies the current window.
+- Improved: key bindings for the navigation commands in C, C++ and D: they now
+  all have access to the ``<f12> <CURSOR>`` key bindings to move point to
+  beginning/end next/previous function.
 ** New Features:
 - The latest version of timelog supports the *timelog-open-file* command.  It
   opens the file identified by the *timeclock-file* user-option.  PEL binds
