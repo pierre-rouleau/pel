@@ -4944,6 +4944,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (define-key pel:spell "m" #'ispell-message)
 (define-key pel:spell "r" #'ispell-region)
 (define-key pel:spell "v" #'ispell-check-version)
+(define-key pel:spell "$" 'flyspell-correct-word-before-point)
 (define-key pel:spell (kbd "M-f") 'pel-spell-toggle-prevent-flyspell)
 
 (defun pel-flyspell-auto-correct-previous-word (position)
