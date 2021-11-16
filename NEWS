@@ -30,6 +30,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - The *pel-spell-show-use* now display whether flyspell-prog-mode is active.
     It also shows whether the flyspell-mode and flyspell-prog-mode automatic
     activation is prevented.
+- Improved: accessibility to correct word at point: the ``<f11> $ $ `` key
+  sequence is now bound to *flyspell-correct-word-before-point*.
 - Improved: spell checking dictionary management to prevent failures in
   aspell: the ``<f11> $ D`` key sequence is now bound to the new command
   *pel-spell-change-dictionary*.  The command changes the base dictionary but
