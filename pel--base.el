@@ -200,6 +200,9 @@
 ;;  - `pel-goto-position'
 ;;  - `pel-goto-line'
 ;;
+;; Line position:
+;; - `pel-same-line-p'
+;;
 ;; Identifying region:
 ;; - `pel-region-for'
 ;;
@@ -2252,6 +2255,19 @@ Return nil."
         (pel-goto-line line))
     (if column
         (move-to-column column))))
+
+;; ---------------------------------------------------------------------------
+;; Line position
+
+(defun  pel-same-line-p (p1 p2)
+  "Return t if P1 and P2 positions are on the same line, nil otherwise."
+  (save-excursion
+    (eq (progn (goto-char p1)
+               (forward-line 0)
+               (point))
+        (progn (goto-char p2)
+               (forward-line 0)
+               (point)))))
 
 ;; ---------------------------------------------------------------------------
 ;; Identifying region:
