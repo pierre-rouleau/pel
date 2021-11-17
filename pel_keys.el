@@ -5191,24 +5191,27 @@ See `flyspell-auto-correct-previous-word' for more info."
       (when (memq major-mode pel-modes-activating-abbrev-mode)
         (abbrev-mode 1)))))
 
-(defun pel-define-abbrevs (&optional arg)
-  "Read abbreviations from current buffer after confirming with user.
+(defun pel-extract-abbrev-definitions (&optional arg)
+  "Read abbreviations/expansion data from current abbrev definition buffer.
+First prompt user to confirm.
 With argument ARG , eliminate all abbrev definitions except
 the ones defined from the buffer now."
   (interactive "P")
-  (if (yes-or-no-p "Read abbreviations from current buffer? ")
+  (if (yes-or-no-p "Read abbreviations/expansion definition data from current buffer? ")
       (define-abbrevs arg)
     (message "Nothing done.")))
 
-(define-key pel:abbrev "D"  #'pel-define-abbrevs)
+(define-key pel:abbrev "X"  #'pel-extract-abbrev-definitions)
 (define-key pel:       "/"  #'expand-abbrev)
 (define-key pel:abbrev "e"  #'expand-abbrev)
 (define-key pel:abbrev "E"  #'expand-region-abbrevs)
 (define-key pel:abbrev "g"  #'add-global-abbrev)
+(define-key pel:abbrev "G"  #'define-global-abbrev)
+(define-key pel:abbrev "L"  #'define-mode-abbrev)
 (define-key pel:abbrev "i"  #'insert-abbrevs)
 (define-key pel:abbrev "l"  #'add-mode-abbrev)
-(define-key pel:abbrev "L"  #'list-abbrevs)
-(define-key pel:abbrev "M"  #'edit-abbrevs)
+(define-key pel:abbrev (kbd "M-l")  #'list-abbrevs)
+(define-key pel:abbrev (kbd "M-e")  #'edit-abbrevs)
 (define-key pel:abbrev "r"  #'read-abbrev-file)
 (define-key pel:abbrev "s"  #'write-abbrev-file)
 (define-key pel:abbrev "u"  #'unexpand-abbrev)
