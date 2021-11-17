@@ -63,7 +63,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   activation done yet. This is only available for Emacs 27.1 and later.
 - New command for C buffers: the *pel-c-comment-dwim* command, bound to the
   standard ``M-;`` key,  extends the standard comment-dwim command: it is able
-  to create multi-line C comments using the 1 or 2 style continuation comment
+  to create multi-line C comments using the 1 or 2 stars continuation comment
   style.  The behaviour is selected by the new *pel-c-multiline-comments*
   user-option, which defaults to the standard behaviour and creates one
   comment per line.  Change that value to create multi-line comments instead.
