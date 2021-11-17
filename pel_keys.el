@@ -2175,8 +2175,12 @@ MODE must be a symbol."
                                     ".l"
                                     ".jison"))))
 
+  (defvar c-mode-map) ; declare dynamic: prevent byte-compiler warnings
   (pel-eval-after-load cc-mode
     (pel-config-major-mode c pel:for-c
+
+      (define-key c-mode-map (kbd "M-;") 'pel-c-comment-dwim)
+
       ;; Configure the CC Mode style for C from PEL custom variables
       ;; 1) set the style: it identifies everything
       (pel--set-cc-style 'c-mode pel-c-bracket-style pel-c-newline-mode)

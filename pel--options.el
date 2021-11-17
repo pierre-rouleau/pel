@@ -3982,6 +3982,31 @@ Values in the [2, 8] range are accepted."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-c-multiline-comments nil
+  "If non-nil, single multi-line comments are created by `pel-c-comment-dwim'.
+
+If nil, `comment-dwim' is always used for comment control.
+If non-nil `pel-c-comment-dwim' is used.  That command is able to create
+multi-line comments on any column.  The style of comment is one of the
+following:
+
+- 2-stars  /* Two stars
+           ** continuation
+           ** comment.
+           */
+
+- 1-star   /* One star
+            * continuation
+            * comment.
+            */
+
+"
+  :group 'pel-c-code-style
+  :type '(choice
+          (const :tag "No multi-line comments" nil)
+          (const :tag "One star continuation multi-line comments"  1)
+          (const :tag "Two stars continuation multi-line comments" 2)))
+
 ;;    -       -       -       -       -       -       -       -       -       -
 (defgroup pel-c-skeleton-control nil
   "Control Skeleton that generate C source code."

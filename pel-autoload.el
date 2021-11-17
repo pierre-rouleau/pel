@@ -202,6 +202,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-kill-all-comments
     pel-comment-show-variables)
 
+  (pel-autoload "pel-c-comment" for:
+    pel-c-comment-dwim)
+
   ;; pel-comment-adorn
   ;; Nothing specified here: the control is inside pel_keys.el
   ;; only.
