@@ -54,6 +54,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Improved: key bindings for the navigation commands in C, C++ and D: they now
   all have access to the ``<f12> <CURSOR>`` key bindings to move point to
   beginning/end next/previous function.
+- Improved: the key bindings of the abbreviation commands: add bindings for
+  the *define-global-abbrev* and *define-mode-abbrev* commands.   Also
+  modified the bindings for *list-abbrevs* and *edit-abbrevs* and renamed
+  *pel-define-abbrevs* to *pel-extract-abbrev-definitions*.
+
 ** New Features:
 - The latest version of timelog supports the *timelog-open-file* command.  It
   opens the file identified by the *timeclock-file* user-option.  PEL binds
