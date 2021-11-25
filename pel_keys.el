@@ -1937,6 +1937,17 @@ can't bind negative-argument to C-_ and M-_"
   (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode))
   (pel-config-major-mode nix :no-f12-keys))
 
+
+;; Intel-Hex object file format support
+;; ------------------------------------
+(when pel-use-intel-hex-mode
+  (pel-ensure-package intel-hex-mode from: melpa)
+  (add-to-list 'auto-mode-alist '("\\.hex\\'" . intel-hex-mode))
+  (add-to-list 'auto-mode-alist '("\\.a90\\'" . intel-hex-mode))
+  (add-to-list 'auto-mode-alist '("\\.a43\\'" . intel-hex-mode))
+  (add-to-list 'auto-mode-alist '("\\.ihx\\'" . intel-hex-mode))
+  (pel-config-major-mode intel-hex :no-f12-keys))
+
 ;; ---------------------------------------------------------------------------
 ;; - Programming Language Support
 ;; ==============================

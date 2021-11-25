@@ -67,6 +67,7 @@
 ;;     - pel-pkg-for-kbmacro
 ;;     - pel-pkg-for-key-chord
 ;;     - pel-pkg-for-keys
+;;     - pel-pkg-for-object-file
 ;;     - pel-pkg-for-marking
 ;;     - pel-pkg-for-markup
 ;;       - pel-pkg-for-asciidoc
@@ -2874,6 +2875,30 @@ using colored fonts.  Similar to command-log-mode but with more colors."
   :safe #'booleanp
   :link '(url-link :tag "interaction-log-mode @ Github"
                    https://github.com/michael-heerdegen/interaction-log.el))
+
+;; ---------------------------------------------------------------------------
+;; Object File Format Support
+;; --------------------------
+(defgroup pel-pkg-for-object-file nil
+  "Packages that support object file formats."
+  :group 'pel-package-use)
+
+(defcustom pel-use-intel-hex-mode nil
+  "Control whether PEL uses the external intel-hex-mode package.
+
+This package allows easy editing of Intel HEX object files."
+  :group 'pel-pkg-for-object-file
+  :link '(usr-link :tag "intel-hex-mode @ Github"
+                   "https://github.com/mschuldt/intel-hex-mode")
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-intel-hex-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for intel-hex buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-object-file
+  :type '(repeat function))
 
 ;; ---------------------------------------------------------------------------
 ;; Marking Management
