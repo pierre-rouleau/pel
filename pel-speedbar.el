@@ -1,4 +1,4 @@
-;;; pel-speedbar.el --- PEL (Sr-)Speedbar support -*-lexical-binding: t-*-
+;;; pel-speedbar.el --- PEL (Sr-)Speedbar support -*-lexical-binding: t; -*-
 
 ;; Copyright (C) 2020, 2021  Pierre Rouleau
 

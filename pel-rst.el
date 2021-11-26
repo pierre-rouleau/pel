@@ -1,4 +1,4 @@
-;;; pel-rst.el --- PEL reStructuredText support -*-lexical-binding: t-*-
+;;; pel-rst.el --- PEL reStructuredText support -*-lexical-binding: t; -*-
 
 ;; Copyright (C) 2020, 2021  Pierre Rouleau
 

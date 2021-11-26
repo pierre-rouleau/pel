@@ -1,6 +1,6 @@
-;;; pel-plantuml.el --- PlantUML additional utilities
+;;; pel-plantuml.el --- PlantUML additional utilities.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 

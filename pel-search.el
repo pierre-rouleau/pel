@@ -1,8 +1,8 @@
-;;; pel-search.el --- PEL Search Utilities -*-lexical-binding: t-*-
+;;; pel-search.el --- PEL Search Utilities -*-lexical-binding: t; -*-
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-05 09:54:43, updated by Pierre Rouleau>
+;; Time-stamp: <2021-11-26 13:51:25, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.

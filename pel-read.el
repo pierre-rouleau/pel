@@ -1,13 +1,13 @@
-;;; pel-read.el --- Read text from buffer -*-lexical-binding: t-*-
+;;; pel-read.el --- Read text from buffer -*- lexical-binding: t; -*-
 
 ;; Created   : Tuesday, May 25 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-11-25 15:58:02, updated by Pierre Rouleau>
+;; Time-stamp: <2021-11-26 13:50:34, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2021  Pierre Rouleau
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

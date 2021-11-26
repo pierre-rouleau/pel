@@ -1,4 +1,4 @@
-;;; pel-text-transform.el --- PEL Text Transformation -*-lexical-binding: t-*-
+;;; pel-text-transform.el --- PEL Text Transformation -*-lexical-binding: t; -*-
 
 ;; Copyright (C) 2020, 2021  Pierre Rouleau
 

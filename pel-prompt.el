@@ -1,8 +1,8 @@
-;;; pel-prompt.el --- PEL Prompt Utilities -*-lexical-binding: t-*-
+;;; pel-prompt.el --- PEL Prompt Utilities -*- lexical-binding: t; -*-
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-11-01 16:22:34, updated by Pierre Rouleau>
+;; Time-stamp: <2021-11-26 13:50:19, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.

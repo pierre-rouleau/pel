@@ -1,4 +1,4 @@
-;;; pel-xref.el --- xref cross referencing utilities -*-lexical-binding: t-*-
+;;; pel-xref.el --- xref cross referencing utilities -*-lexical-binding: t; -*-
 
 ;; Copyright (C) 2020, 2021  Pierre Rouleau
 
