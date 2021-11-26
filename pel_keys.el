@@ -2070,6 +2070,7 @@ assigned to something different for the programming language just
 bind it again after this call."
     ;; electric mode control
     (define-key prefix (kbd "M-?")   'pel-cc-mode-info)
+    (define-key prefix (kbd "C-i")   'pel-cc-set-indent-width)
     (define-key prefix (kbd "M-s")   'c-set-style) ; interactively select style
     (define-key prefix (kbd "M-;")   'c-toggle-comment-style)
     (define-key prefix (kbd "M-e")   'c-toggle-electric-state)

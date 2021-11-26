@@ -127,7 +127,8 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-cc" for
     pel-cc-newline
-    pel-cc-mode-info)
+    pel-cc-mode-info
+    pel-cc-set-indent-width)
 
   (pel-autoload-function "pel-ccp" for:
     pel-show-copied

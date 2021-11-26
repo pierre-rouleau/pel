@@ -58,7 +58,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   the *define-global-abbrev* and *define-mode-abbrev* commands.   Also
   modified the bindings for *list-abbrevs* and *edit-abbrevs* and renamed
   *pel-define-abbrevs* to *pel-extract-abbrev-definitions*.
-
+- Improved indentation control and diagnostic for CC mode buffers: C, C++ D:
+  - Add the *pel-cc-set-indent-width* command, bound to the mode's `<f12> TAB` key sequence.
+    This command changes the indentation for the current buffer, overriding the value set
+    by *pel-c-indent-width* in C, *pel-c++-indent-width* in C++ and *pel-d-indent-width* in D buffer.
 ** New Features:
 - The latest version of timelog supports the *timelog-open-file* command.  It
   opens the file identified by the *timeclock-file* user-option.  PEL binds
