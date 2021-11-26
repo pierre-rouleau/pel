@@ -1,4 +1,4 @@
-;;; pel-spell.el --- PEL Spelling Utilities -*-lexical-binding: t-*-
+;;; pel-spell.el --- PEL Spelling Utilities -*-lexical-binding: t; -*-
 
 ;; Copyright (C) 2020, 2021  Pierre Rouleau
 
@@ -427,6 +427,7 @@ Return \"?\" instead."
 ispell: %s, flyspell: %s, flyspell-prog: %s. %%s
 Spell main dictionary    : %s
 Spell personal dictionary: %s
+Abbreviation file        : %s
 Flyspell prevention lock : %s"
                             (pel-symbol-on-off-string 'ispell-minor-mode)
                             (pel-symbol-on-off-string 'flyspell-mode)
@@ -434,6 +435,9 @@ Flyspell prevention lock : %s"
                              (pel--spell-flyspell-prog-mode-state))
                             (pel-ispell-main-dictionary)
                             (pel-ispell-personal-dictionary)
+                            (if (boundp 'abbrev-file-name)
+                                abbrev-file-name
+                              "? - not yet loaded")
                             (pel-symbol-on-off-string
                              'pel-spell-prevent-flyspell)))
         err-msg
@@ -482,10 +486,14 @@ Type SPC at prompt to list all available dictionary names."
   (unless (equal dict "")
     ;; Execute `ispell-change-dictionary' with the information extracted from the prompt
     (ispell-change-dictionary dict globally)
-    ;; Then prompt for an equivalent personal dictionary
-    (let ((pers-dict-lang
-           (pel-prompt (format "Language name of personal dictionary (for %s) "
-                               dict))))
+    ;; Then prompt for an equivalent personal dictionary and abbreviation list file
+    (let* ((pers-dict-lang
+            (pel-prompt (format "Language name of personal dictionary (for %s) "
+                                dict)))
+           (abbrev-file (when pers-dict-lang
+                          (pel-prompt
+                           (format "Abbreviation definition file for %s: [%s] "
+                                   dict abbrev-file-name)))))
       (when pers-dict-lang
         (setq ispell-personal-dictionary
               (expand-file-name
@@ -504,7 +512,10 @@ Type SPC at prompt to list all available dictionary names."
         ;; TODO: complete investigation to ensure all is correct.  If this
         ;; code is indeed required that should be reported as a bug in ispell.
         (setq ispell-local-pdict                 ispell-personal-dictionary
-              ispell-current-personal-dictionary ispell-personal-dictionary)))
+              ispell-current-personal-dictionary ispell-personal-dictionary)
+        (when (not (string= abbrev-file-name abbrev-file))
+          (make-local-variable 'abbrev-file-name)
+          (setq abbrev-file-name abbrev-file))))
     ;;
     (ispell-internal-change-dictionary)
     ;; Display what was selected.
