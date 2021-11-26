@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-11-04 08:06:02, updated by Pierre Rouleau>
+;; Time-stamp: <2021-11-26 14:24:34, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -434,7 +434,9 @@
                                                                   flycheck))
     ([f11 ?t]        ("case-conversion"
                       "input-method"
-                      "text-modes")     pel-pkg-for-text-mode)
+                      "text-modes")
+                                       pel-pkg-for-text-mode  (glasses
+                                                               whitespace))
     ([f11 ?t ?a]     "align"            pel-pkg-for-align       align)
     ([f11 ?t ?e]     "enriched-text"    nil                     enriched)
     ([f11 ?t ?f]     "filling-justification" nil               fill)
