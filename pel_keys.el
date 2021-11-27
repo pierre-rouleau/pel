@@ -2070,9 +2070,10 @@ assigned to something different for the programming language just
 bind it again after this call."
     ;; guess style
     (define-key guess-prefix "g" 'c-guess-buffer-no-install)
-    (define-key guess-prefix "b" 'c-guess-buffer)
+    (define-key guess-prefix "B" 'c-guess-buffer)
     (define-key guess-prefix "G" 'c-guess)
-    (define-key guess-prefix "r" 'c-guess-region)
+    (define-key guess-prefix "I" 'c-guess-install)
+    (define-key guess-prefix "R" 'c-guess-region)
     (define-key guess-prefix "?" 'c-guess-view)
 
     ;; setup - electric mode control
