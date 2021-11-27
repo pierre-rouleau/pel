@@ -62,6 +62,18 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Add the *pel-cc-set-indent-width* command, bound to the mode's `<f12> TAB` key sequence.
     This command changes the indentation for the current buffer, overriding the value set
     by *pel-c-indent-width* in C, *pel-c++-indent-width* in C++ and *pel-d-indent-width* in D buffer.
+- Improved support for C/C++/D style guessing by adding key bindings for those commands.
+  They are accessible under the `<f12> <f4> g` key prefix.
+  These commands are quite useful when editing code that was originally
+  written by someone that does not use the same style of C/C++/D code you have
+  identified in your defaults.  You can use a command to parse the code and
+  set the style to what is used in the file and then the commands use that
+  style.
+- Modified the key binding for the commands that change the style behaviour of
+  for C, C++ and D.  These commands are now bound under the `<f12> <f4>` key
+  prefix.  This frees more keys under the `<f12>` key prefix for future
+  editing commands while regrouping the dynamic configuration commands under the
+  `<f12> <f4>` prefix; it will be used more often in other major modes.
 ** New Features:
 - The latest version of timelog supports the *timelog-open-file* command.  It
   opens the file identified by the *timeclock-file* user-option.  PEL binds

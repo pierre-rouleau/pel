@@ -2062,24 +2062,33 @@ can't bind negative-argument to C-_ and M-_"
                      c-toggle-hungry-state
                      c-toggle-syntactic-indentation)
 
-  (defun pel--map-cc-for (prefix &optional c-preproc-prefix)
+  (defun pel--map-cc-for (prefix setup-prefix guess-prefix &optional c-preproc-prefix)
     "Map in the PEL keys for CC Mode in the global keymap specified by PREFIX.
 If C-PREPROC-PREFIX also bind the keys for C preprocessor related
 commands and sub-keys inside that prefix.  If a key must be
 assigned to something different for the programming language just
 bind it again after this call."
+    ;; guess style
+    (define-key guess-prefix "g" 'c-guess-buffer-no-install)
+    (define-key guess-prefix "b" 'c-guess-buffer)
+    (define-key guess-prefix "G" 'c-guess)
+    (define-key guess-prefix "r" 'c-guess-region)
+    (define-key guess-prefix "?" 'c-guess-view)
+
+    ;; setup - electric mode control
+    (define-key setup-prefix "?"         'pel-cc-mode-info)
+    (define-key setup-prefix (kbd "C-i") 'pel-cc-set-indent-width)
+    (define-key setup-prefix "e"         'c-toggle-electric-state)
+    (define-key setup-prefix "s"         'c-set-style) ; interactively select style
+    (define-key setup-prefix "i"         'c-toggle-syntactic-indentation)
+    (define-key setup-prefix (kbd "M-;") 'c-toggle-comment-style)
+    (define-key setup-prefix (kbd "DEL") 'c-toggle-hungry-state)
+    (define-key setup-prefix (kbd "M-RET") 'c-toggle-auto-newline)
+    (define-key setup-prefix (kbd "RET")   'pel-cc-change-newline-mode)
+
     ;; electric mode control
-    (define-key prefix (kbd "M-?")   'pel-cc-mode-info)
-    (define-key prefix (kbd "C-i")   'pel-cc-set-indent-width)
-    (define-key prefix (kbd "M-s")   'c-set-style) ; interactively select style
-    (define-key prefix (kbd "M-;")   'c-toggle-comment-style)
-    (define-key prefix (kbd "M-e")   'c-toggle-electric-state)
-    (define-key prefix (kbd "RET")   'pel-cc-change-newline-mode)
-    (define-key prefix (kbd "M-RET") 'c-toggle-auto-newline)
-    (define-key prefix (kbd "M-DEL") 'c-toggle-hungry-state)
     (define-key prefix (kbd "M-b")  #'subword-mode)
     (define-key prefix (kbd "M-p")  #'superword-mode)
-    (define-key prefix (kbd "M-i")   'c-toggle-syntactic-indentation)
     (define-key prefix (kbd "C-o")   'open-line)
     (define-key prefix      "F"      'c-fill-paragraph)
     (define-key prefix      "f"      'c-display-defun-name)
@@ -2161,6 +2170,8 @@ MODE must be a symbol."
 
 (when pel-use-c
   (define-pel-global-prefix pel:for-c         (kbd "<f11> SPC c"))
+  (define-pel-global-prefix pel:c-setup       (kbd "<f11> SPC c <f4>"))
+  (define-pel-global-prefix pel:c-guess       (kbd "<f11> SPC c <f4> g"))
   (define-pel-global-prefix pel:for-c-preproc (kbd "<f11> SPC c #"))
   (define-pel-global-prefix pel:c-skel        (kbd "<f11> SPC c <f12>"))
 
@@ -2169,7 +2180,7 @@ MODE must be a symbol."
   (when pel-use-c-eldoc
     (define-pel-global-prefix pel:c-help (kbd "<f11> SPC c ?"))
     (define-key pel:c-help "e" 'pel-toggle-c-eldoc-mode))
-  (pel--map-cc-for pel:for-c pel:for-c-preproc)
+  (pel--map-cc-for pel:for-c pel:c-setup pel:c-guess pel:for-c-preproc)
 
   (when pel-use-bison-mode
     (pel-ensure-package bison-mode from: melpa)
@@ -2226,6 +2237,8 @@ MODE must be a symbol."
 
 (when pel-use-c++
   (define-pel-global-prefix pel:for-c++         (kbd "<f11> SPC C"))
+  (define-pel-global-prefix pel:c++-setup       (kbd "<f11> SPC C <f4>"))
+  (define-pel-global-prefix pel:c++-guess       (kbd "<f11> SPC C <f4> g"))
   (define-pel-global-prefix pel:for-c++-preproc (kbd "<f11> SPC C #"))
   (define-pel-global-prefix pel:c++-skel        (kbd "<f11> SPC C <f12>"))
 
@@ -2242,7 +2255,7 @@ MODE must be a symbol."
 
   (when pel-use-plantuml
     (define-key pel:for-c++ "u" 'pel-render-commented-plantuml))
-  (pel--map-cc-for pel:for-c++ pel:for-c++-preproc)
+  (pel--map-cc-for pel:for-c++ pel:c++-setup pel:c++-guess pel:for-c++-preproc)
 
   (pel-eval-after-load cc-mode
     (pel-config-major-mode c++ pel:for-c++
@@ -2274,7 +2287,9 @@ MODE must be a symbol."
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC D`` : D programming utilities
 
 (when pel-use-d
-  (define-pel-global-prefix pel:for-d (kbd "<f11> SPC D"))
+  (define-pel-global-prefix pel:for-d     (kbd "<f11> SPC D"))
+  (define-pel-global-prefix pel:d-setup   (kbd "<f11> SPC D <f4>"))
+  (define-pel-global-prefix pel:d-guess   (kbd "<f11> SPC D <f4> g"))
 
   (pel-ensure-package d-mode from: melpa)
   (pel-autoload-file d-mode for: d-mode)
@@ -2288,7 +2303,7 @@ MODE must be a symbol."
   ;; Configure commands available on the D key-map.
   (when pel-use-plantuml
     (define-key pel:for-d "u" 'pel-render-commented-plantuml))
-  (pel--map-cc-for pel:for-d)
+  (pel--map-cc-for pel:for-d pel:d-setup pel:d-guess)
 
   ;; Configure auto-completion based on selection
   ;; There are 2 possibilities
