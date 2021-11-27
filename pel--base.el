@@ -34,6 +34,9 @@
 ;;
 ;; Environment Querying functions:
 ;;  - `pel-in-fast-startup-p'
+;;  - `pel-major-mode-symbol-value'
+;;    - `pel-string-with-major-mode'
+;;      - `pel-major-mode-of'
 ;;  - `pel-buffers-in-mode'
 ;;    - `pel-major-mode-of'
 ;;  - `pel-current-buffer-filename'
@@ -361,6 +364,27 @@ If not specified (or nil) return the major mode of the current buffer."
       (with-current-buffer buffer-or-name
         major-mode)
     major-mode))
+
+(defun pel-string-with-major-mode (format-string &optional buffer-or-name)
+  "Return a string formatted with the single %s replaced by the major mode.
+
+The %s in the FORMAT-STRING is replaced by the prefix string
+before the \"-mode\" of the major mode of the current buffer or the one
+specified by BUFFER-OR-NAME."
+  (format format-string
+          (substring (symbol-name (pel-major-mode-of buffer-or-name))
+                     0 -5)))
+
+(defun pel-major-mode-symbol-value (format-string &optional buffer-or-name)
+  "Return the value of major-mode specific symbol for specified buffer.
+
+The symbol name is identified by the FORMAT-STRING which must
+contain one \"%s\" that is replaced by the by the prefix string
+before the \"-mode\" of the major mode of the the current buffer
+or the one specified by BUFFER-OR-NAME."
+  (symbol-value
+   (intern
+    (pel-string-with-major-mode format-string buffer-or-name))))
 
 (defun pel-buffers-in-mode (wanted-major-mode)
   "Return a list of buffers with specified WANTED-MAJOR-MODE, nil if none open.
