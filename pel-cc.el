@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-11-26 17:44:06, updated by Pierre Rouleau>
+;; Time-stamp: <2021-11-27 10:51:37, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -165,8 +165,8 @@ return \"void\"."
 - Electric characters : %s
 - Auto newline        : %s
 - fill column         : %s%s
-- Tab width           : %-19s Set via: pel-c-tab-width(%s)      ==> tab-width(%s)          when %s buffer is opened.
-- Indentation chars   : %-19s Set via: pel-c-use-tabs(%3s)     ==> indent-tabs-mode(%3s) when %s buffer is opened.
+- Tab width           : %-19s Set via: %s(%s)    ==> tab-width(%s)          when %s buffer is opened.
+- Indentation chars   : %-19s Set via: %s(%3s)   ==> indent-tabs-mode(%3s) when %s buffer is opened.
 - Indent width        : %-19s Set via: %s
 - Syntactic indent    : %s
 - c-indentation-style : %s
@@ -199,49 +199,39 @@ return \"void\"."
                                   (format ", auto-fill active: done by %S."
                                           auto-filling)
                                 ", auto-filling: off."))))
-
-     tab-width                              ; 10
-     (pel-symbol-value-or 'pel-c-tab-width) ; 11
-     (pel-symbol-value-or 'tab-width)       ; 12
-     major-mode                             ; 13
-     (pel-on-off-string indent-tabs-mode ; 14
+     ;; --
+     tab-width                                       ; 10
+     (pel-string-with-major-mode "pel-%s-tab-width") ; 11
+     (pel-symbol-value-or 'pel-c-tab-width)          ; 12
+     (pel-symbol-value-or 'tab-width)                ; 13
+     major-mode                                      ; 14
+     ;; --
+     (pel-on-off-string indent-tabs-mode ; 15
                         "hard-tabs & spaces"
                         "spaces only")
-     (pel-symbol-value-or 'pel-c-use-tabs)   ; 15
-     (pel-symbol-value-or 'indent-tabs-mode) ; 16
-     major-mode                              ; 17
-     (pel-symbol-value-or 'c-basic-offset) ; 18
-     ;; TODO: simplify the following to ease maintenance.
-     (cond
-      ((eq major-mode 'c-mode)
-       (if (eq pel-c-indent-width (pel-symbol-value-or 'c-basic-offset)) ; 19
-           (format "pel-c-indent-width(%s)   ==> c-basic-offset(%s)     when c-mode buffer is opened."
-                   (pel-symbol-value-or 'pel-c-indent-width)
-                   (pel-symbol-value-or 'c-basic-offset))
-         (format
-          "c-basic-offset(%s) overridden in buffer (by pel-cc-set-indent-width ?)."
-          (pel-symbol-value-or 'c-basic-offset))))
-      ((eq major-mode 'c++-mode)
-       (if (eq pel-c++-indent-width (pel-symbol-value-or 'c-basic-offset)) ; 19
-           (format "pel-c++-indent-width(%s) ==> c-basic-offset(%s)     when c++-mode buffer is opened."
-                   (pel-symbol-value-or 'pel-c++-indent-width)
-                   (pel-symbol-value-or 'c-basic-offset))
-         (format
-          "c-basic-offset(%s) overridden in buffer (by pel-cc-set-indent-width ?)."
-          (pel-symbol-value-or 'c-basic-offset))))
-      ((eq major-mode 'd-mode)
-       (if (eq pel-d-indent-width (pel-symbol-value-or 'c-basic-offset)) ; 19
-           (format "pel-d-indent-width(%s)   ==> c-basic-offset(%s)     when d-mode buffer is opened."
-                   (pel-symbol-value-or 'pel-d-indent-width)
-                   (pel-symbol-value-or 'c-basic-offset))
-         (format
-          "c-basic-offset(%s) overridden in buffer (by pel-cc-set-indent-width ?)."
-          (pel-symbol-value-or 'c-basic-offset)))))
-     (pel-symbol-on-off-string          ; 20
+     (pel-string-with-major-mode "pel-%s-use-tabs") ; 16
+     (pel-symbol-value-or 'pel-c-use-tabs)          ; 17
+     (pel-symbol-value-or 'indent-tabs-mode)        ; 18
+     major-mode                                     ; 19
+     ;; --
+     (pel-symbol-value-or 'c-basic-offset) ; 20
+     ;; --
+     (if (eq (pel-major-mode-symbol-value "pel-%s-indent-width")
+             (pel-symbol-value-or 'c-basic-offset)) ; 21
+         (format "%s(%s) ==> c-basic-offset(%s)     when %s buffer is opened."
+                 (pel-string-with-major-mode "pel-%s-indent-width")
+                 (pel-major-mode-symbol-value "pel-%s-indent-width")
+                 (pel-symbol-value-or 'c-basic-offset)
+                 major-mode)
+       (format
+        "c-basic-offset(%s) overridden in buffer (by pel-cc-set-indent-width ?)."
+        (pel-symbol-value-or 'c-basic-offset)))
+     ;; --
+     (pel-symbol-on-off-string          ; 22
       'c-syntactic-indentation nil nil not-avail-msg)
-     (pel-symbol-value-or 'c-indentation-style) ; 21
-     (pel-cc-bracket-style-for major-mode)      ; 22
-     (if (and (boundp 'c-block-comment-flag)    ; 23
+     (pel-symbol-value-or 'c-indentation-style) ; 23
+     (pel-cc-bracket-style-for major-mode)      ; 24
+     (if (and (boundp 'c-block-comment-flag)    ; 25
               (boundp 'c-block-comment-starter)
               (boundp 'c-block-comment-ender)
               (boundp 'c-block-comment-prefix))
@@ -254,7 +244,7 @@ return \"void\"."
            (format "Line comments: %s" (pel-symbol-value-or
                                         'c-line-comment-starter)))
        not-avail-msg)
-     (pel-symbol-on-off-string 'c-hungry-delete-key ; 24
+     (pel-symbol-on-off-string 'c-hungry-delete-key ; 26
                                nil
                                "off, but the \
 F11-⌦  and F11-⌫  keys are available."
