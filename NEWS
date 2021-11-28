@@ -70,8 +70,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   set the style to what is used in the file and then the commands use that
   style.
 - Modified the key binding for the commands that change the style behaviour of
-  for C, C++ and D.  These commands are now bound under the `<f12> <f4>` key
-  prefix.  This frees more keys under the `<f12>` key prefix for future
+  for C, C++ and D.  These commands are now bound under the ~<f12> <f4>~ key
+  prefix.  This frees more keys under the =<f12>= key prefix for future
   editing commands while regrouping the dynamic configuration commands under the
   `<f12> <f4>` prefix; it will be used more often in other major modes.
 ** New Features:
