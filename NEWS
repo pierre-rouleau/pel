@@ -1,15 +1,15 @@
-PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
+EL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
 - Fix: Several EDTS commands were not autoloaded by EDTS code.  PEL code now
   autoloads them when EDTS is requested.  This includes the EDTS debug, eunit
   and dialyzer commands.
-- Modified: key bindings to toggle EDTS: it was bound to ``<f12> M-E`` (or its
-  equivalent ``<M-f12> M-E``).  It is now bound to ``<f12> M-E M-E`` (and its
-  equivalent and easier to type ``<M-f12> M-E M-E``).
+- Modified: key bindings to toggle EDTS: it was bound to ~<f12> M-E~ (or its
+  equivalent ~<M-f12> M-E~).  It is now bound to ~<f12> M-E M-E~ (and its
+  equivalent and easier to type ~<M-f12> M-E M-E~).
 - Modified: key bindings for other EDTS commands, which are now in the
-  ``<f12> M-E`` key prefix: *edts-buffer-node-name*, *edts-api-start-server*,
+  ~<f12> M-E~ key prefix: *edts-buffer-node-name*, *edts-api-start-server*,
   *edts-shell*.
 - Improved:  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf][𝕻𝔩 - Erlang PDF]] by moving EDTS-specific commands related to
   Erlang shell and help inside their topic specific area of the file instead
@@ -30,10 +30,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - The *pel-spell-show-use* now display whether flyspell-prog-mode is active.
     It also shows whether the flyspell-mode and flyspell-prog-mode automatic
     activation is prevented.
-- Improved: accessibility to correct word at point: the ``<f11> $ $ `` key
+- Improved: accessibility to correct word at point: the ~<f11> $ $~ key
   sequence is now bound to *flyspell-correct-word-before-point*.
 - Improved: spell checking dictionary management to prevent failures in
-  aspell: the ``<f11> $ D`` key sequence is now bound to the new command
+  aspell: the ~<f11> $ D~ key sequence is now bound to the new command
   *pel-spell-change-dictionary*.  The command changes the base dictionary but
   also prompts for and change the personal dictionary to ensure both use the
   same natural language.   Emacs ispell.el identifies both dictionaries in its
@@ -52,18 +52,18 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Fix: *pel-insert-filename* with no prefix argument or with prefix argument
   of 1, identifies the current window.
 - Improved: key bindings for the navigation commands in C, C++ and D: they now
-  all have access to the ``<f12> <CURSOR>`` key bindings to move point to
+  all have access to the ~<f12> <CURSOR>~ key bindings to move point to
   beginning/end next/previous function.
 - Improved: the key bindings of the abbreviation commands: add bindings for
   the *define-global-abbrev* and *define-mode-abbrev* commands.   Also
   modified the bindings for *list-abbrevs* and *edit-abbrevs* and renamed
   *pel-define-abbrevs* to *pel-extract-abbrev-definitions*.
 - Improved indentation control and diagnostic for CC mode buffers: C, C++ D:
-  - Add the *pel-cc-set-indent-width* command, bound to the mode's `<f12> TAB` key sequence.
+  - Add the *pel-cc-set-indent-width* command, bound to the mode's ~<f12> TAB~ key sequence.
     This command changes the indentation for the current buffer, overriding the value set
     by *pel-c-indent-width* in C, *pel-c++-indent-width* in C++ and *pel-d-indent-width* in D buffer.
 - Improved support for C/C++/D style guessing by adding key bindings for those commands.
-  They are accessible under the `<f12> <f4> g` key prefix.
+  They are accessible under the ~<f12> <f4> g~ key prefix.
   These commands are quite useful when editing code that was originally
   written by someone that does not use the same style of C/C++/D code you have
   identified in your defaults.  You can use a command to parse the code and
@@ -71,18 +71,18 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   style.
 - Modified the key binding for the commands that change the style behaviour of
   for C, C++ and D.  These commands are now bound under the ~<f12> <f4>~ key
-  prefix.  This frees more keys under the =<f12>= key prefix for future
+  prefix.  This frees more keys under the ~<f12>~ key prefix for future
   editing commands while regrouping the dynamic configuration commands under the
-  `<f12> <f4>` prefix; it will be used more often in other major modes.
+  ~<f12> <f4>~ prefix; it will be used more often in other major modes.
 ** New Features:
 - The latest version of timelog supports the *timelog-open-file* command.  It
   opens the file identified by the *timeclock-file* user-option.  PEL binds
-  this command to ``C-x t l f`` key sequence.
+  this command to ~C-x t l f~ key sequence.
 - Add preliminary support for the *go-translate* package when
   *pel-use-go-translate* user option is turned on.  No key binding or
   activation done yet. This is only available for Emacs 27.1 and later.
 - New command for C buffers: the *pel-c-comment-dwim* command, bound to the
-  standard ``M-;`` key,  extends the standard comment-dwim command: it is able
+  standard ~M-;~ key,  extends the standard comment-dwim command: it is able
   to create multi-line C comments using the 1 or 2 stars continuation comment
   style.  The behaviour is selected by the new *pel-c-multiline-comments*
   user-option, which defaults to the standard behaviour and creates one
@@ -91,25 +91,25 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 ** Modifications:
 - Fix: The File Management PDF now describes PEL's ability to select the
   function used opening the recently opened files and properly describes the
-  key bindings that are inside the `<f11> f M-r`` key prefix.
+  key bindings that are inside the ~<f11> f M-r~ key prefix.
 - Modified: modeline commands key binding:
-  - changed the *pel:modeline* prefix from ``<f11> M-l`` to ``<f11> M-d``
-    to make room for outline commands. The ``<f11> M-l`` is now bound to the
+  - changed the *pel:modeline* prefix from ~<f11> M-l~ to ~<f11> M-d~
+    to make room for outline commands. The ~<f11> M-l~ is now bound to the
     outline-minor-mode command. Modified the key binding s to access the PEL
     PDF, the customization buffers accordingly.
-- Removed global key bindings ``<f6> n`` and <f6> p`` to
-  ``pel-beginning-of-next-defun`` and ``beginning-of-defun``.  Kept the other
-  bindings for these commands including in the ``<f6>`` key prefix.
-- Modified: key binding for the ``bm-next`` command: instead of ``<f2>`` it is
-  now ``<f2> <f2>``. It is not difficult to remember and type and restore
+- Removed global key bindings ~<f6> n~ and ~<f6> p~ to
+  *pel-beginning-of-next-defun* and *beginning-of-defun*.  Kept the other
+  bindings for these commands including in the ~<f6>~ key prefix.
+- Modified: key binding for the *bm-next* command: instead of ~<f2>~ it is
+  now ~<f2> <f2>~. It is not difficult to remember and type and restore
   access to Emacs default key bindings to the 2C-two-columns,
   2C-associate-buffer and 2C-split commands.
-- Renamed: ``pel-imenu-dbg-print-vars`` to ``pel-imenu-print-vars`` for consistency.
-- Modified: Removed the ``<f12> M-t`` key binding to Go-specific command
-  *pel-go-set-tab-width*.  It was replaced by a globally available ``<f11>
-  M-t`` key binding to the *pel-set-tab-width* that has the same behaviour
+- Renamed: pel-imenu-dbg-print-vars to pel-imenu-print-vars for consistency.
+- Modified: Removed the ~<f12> M-t~ key binding to Go-specific command
+  *pel-go-set-tab-width*.  It was replaced by a globally available
+  ~<f11> M-t~ key binding to the *pel-set-tab-width* that has the same behaviour
   but can be used to modify the display rendering of hard tabs in all major modes.
-- Modified: key bindings to start Erlang EDTS: it was ``<f12> M-SPC`` and is now ``<f12> M-E``.
+- Modified: key bindings to start Erlang EDTS: it was ~<f12> M-SPC~ and is now ~<f12> M-E~.
 ** New Features and Improvements:
 - Improved: *pel-open-at-point* is now able to search for files inside the
   current project, and can be specialized to have different searching
@@ -120,7 +120,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - User-options:
     - *pel-project-root-identifiers*: lists the name of files used to identify
       the root of the project of the file in the current buffer: the default
-      is the files ``.git``, ``.hg`` and ``.pel-project``.
+      is the files /.git/, /.hg/ and /.pel-project/.
     - *pel-ffind-executable*: the command line program used to search for
       files: either find or fd.
     - *pel-prompt-read-method*: the prompt mechanism used to prompt user when
@@ -136,48 +136,48 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
         simply set *pel-filename-at-point-finders* to another file finding
         function, or append or add a new file function function to that list.
         - For example, PEL sets *pel-filename-at-point-finders* to
-          "`(pel-erlang-find-file)". That function searches the file in the
+          =`(pel-erlang-find-file)=. That function searches the file in the
           Erlang root directory tree as well as inside the current project.
-- The ``<f12>`` and ``<M-f12>`` key prefixes are now available in Custom-mode buffers.
-- New: The ``<M-f11>`` key is now used as the ``pel2:`` key prefix.  Generic
+- The ~<f12>~ and ~<M-f12>~ key prefixes are now available in Custom-mode buffers.
+- New: The ~<M-f11>~ key is now used as the =pel2:= key prefix.  Generic
   commands that have corresponding major-mode specialized commands are bound
-  to the same key sequence into the ``<M-f12>`` key prefix making it easier to
+  to the same key sequence into the ~<M-f12>~ key prefix making it easier to
   remember both set of command bindings.  The generic commands are also often
-  available under the ``<f11>`` (``pel:``) prefix.
+  available under the ~<f11>~ (=pel:=) prefix.
 - New: explicit support for time tracking:
   - New: When the *pel-use-timeclock* user-option is t, the timeclock commands
-    are bound to the ``C-x t`` key prefix.
+    are bound to the ~C-x t~ key prefix.
     - New: When the *pel-use-timeclock-timelog* is also turned on,an updated
       version of timelog.el is installed.
   - New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/time-tracking.pdf][⅀ Time Tracking PDF]]
-- New: Add ability to differentiate ``M-b`` from ``<M-left>`` and ``m-f`` from ``<M-right>`` on
+- New: Add ability to differentiate ~M-b~ from ~<M-left>~ and ~m-f~ from ~<M-right>~ on
   Emacs running in terminal mode on a macOS Terminal.app application: the
-  Terminal.app must be setup to issue the ``Esc Y`` when Option-left is typed
-  and ``Esc Z`` when Option-right is typed.  Then the
+  Terminal.app must be setup to issue the ~Esc Y~ when Option-left is typed
+  and ~Esc Z~ when Option-right is typed.  Then the
   *pel-map-meta-left-right-to-Y-Z* user-option must be set to t.  That forces
-  PEL to bind ``M-Y`` to what should be bound to ``<M-left>`` and ``M-Z`` to
-  what should be bound to ``<M-right>`` simulating the keys.
-- New: When *pel-move-window-on-esc-cursor* user-option is t, the four ``ESC <CURSOR>`` keys
+  PEL to bind ~M-Y~ to what should be bound to ~<M-left>~ and ~M-Z~ to
+  what should be bound to ~<M-right>~ simulating the keys.
+- New: When *pel-move-window-on-esc-cursor* user-option is t, the four ~ESC <CURSOR>~ keys
   are bound to windmove commands instead of org-meta commands inside the org buffer.
   Previously they were bound to the org-meta commands making navigation out of org buffer
   different than from the other buffers, a surprising behaviour.
-- Modified: The *pel-xref-toggle-dumb-jump-mode* command, bound to ``<f11> X B D``,
+- Modified: The *pel-xref-toggle-dumb-jump-mode* command, bound to ~<f11> X B D~,
   now toggle the activation of dumb-jump as a xref back-end inside all buffers
   using the same major-mode instead of only the current buffer as it was doing before.
   The command now accepts a prefix argument; if the command is issued with a prefix
   argument then only the use of dumb-jump as a xref back-end is only toggled
   for the current buffer.
-- New: the *pel-set-tab-width* command is now available through the ``<f11>
-  M-t`` key sequence to modify the display rendering of hard tabs in text for
+- New: the *pel-set-tab-width* command is now available through the
+  ~<f11> M-t~ key sequence to modify the display rendering of hard tabs in text for
   all major modes in the editing session.
 - Improved: the *pel-package-info* command identifies and prints the number of Elpa-compliant
   and other packages PEL is able to download and install.
-- New key bindings for activating outline modes:  the ``<f11> M-l`` key sequence is now bound
-  to *outline-minor-mode* and ``<f11> M-L`` is bound to *outline-mode*.
-- New: key bindings for the outline minor mode under the ``<f2>`` key
+- New key bindings for activating outline modes:  the ~<f11> M-l~ key sequence is now bound
+  to *outline-minor-mode* and ~<f11> M-L~ is bound to *outline-mode*.
+- New: key bindings for the outline minor mode under the ~<f2>~ key
   prefix. These key bindings use only an extra key that does not require modifier.
   Also added binding to the *pel-outline-print-vars* command to
-  ``<f2> ?`` and   ``<f11> ? e o``.  The info shown describes how the outline mode
+  ~<f2> ?~ and   ~<f11> ? e o~.  The info shown describes how the outline mode
   extracts the information for outlining purpose.
 - New: add support for outshine-mode when the *pel-use-outshine* user-option is turned on.
   Currently experimental and not fully integrated: outshine generates several
@@ -185,36 +185,36 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   (2019) and probably requires attention.  It also needs integration documentation
   inside PEL which is not done yet.
 - New: add support for rfc-mode when the *pel-use-rfc-mode* user-option is
-  turned on.  Provides ``<f11> B r`` binding to ``rfc-mode-read`` and
-  ``<f11> B R`` to ``rfc-mode-browse``.
+  turned on.  Provides ~<f11> B r~ binding to *rfc-mode-read* and
+  ~<f11> B R~ to *rfc-mode-browse*.
 - New: key binding to the *pel-help-pdf-select* command used to access PEL
-  local or web-based PDF help pages: ``<f11> p``.
-- New: key binding ``<f11> ? e .`` to *pel-syntax-at-point* command that also
+  local or web-based PDF help pages: ~<f11> p~.
+- New: key binding ~<f11> ? e .~ to *pel-syntax-at-point* command that also
   list the text properties of the character at point identified by the new
   *pel-syntax-text-properties* user-option.
-- New: The ``C-x g`` key binding for Magit is no longer replaced by PEL's
-  ``<f11> v g`` key binding for the *magit-status* command: both bindings are
+- New: The ~C-x g~ key binding for Magit is no longer replaced by PEL's
+  ~<f11> v g~ key binding for the *magit-status* command: both bindings are
   active when Magit is available.
-- New: *pel-vcs-toggle-vc-log* command, bound to ``<f11> v l``.
+- New: *pel-vcs-toggle-vc-log* command, bound to ~<f11> v l~.
   Toggle the logging of VC back-end commands in the `*pel-vc-log*` buffer.
 - New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/vcs-git.pdf][⅀ VCS-Git 𝔛Magit PDF]]
-- New: key prefix ``<f11> d e R`` for the ediff-registry commands.
-- New: support for the built-in ``smerge-mode`` activated by the new *pel-use-smerge*
-  user-option. If its value is set to ``auto`` then ``smerge-mode`` is
+- New: key prefix ~<f11> d e R~ for the ediff-registry commands.
+- New: support for the built-in *smerge-mode* activated by the new *pel-use-smerge*
+  user-option. If its value is set to /auto/ then /smerge-mode/ is
   activated automatically in files that are annotated with diff strings.
-  PEL maps the smerge-mode keys to ``<f11> d s`` key prefix.  These keys are
-  in addition to the native key bindings.  The ``pel-use-smerge`` user-option
-  is located inside a new group: ``pel-pkg-for-diff-merge``.
+  PEL maps the smerge-mode keys to ~<f11> d s~ key prefix.  These keys are
+  in addition to the native key bindings.  The *pel-use-smerge* user-option
+  is located inside a new group: *pel-pkg-for-diff-merge*.
+- New: Add *pel-activates-global-minor-modes* user-option to activate global minor-modes.
 - New: Add support for [[https://github.com/michael-heerdegen/interaction-log.el][interaction-log]] external package, when the
   *pel-use-interaction-log-mode* is turned on.  The key bindings use the
-  ``<f11> ? k i`` key prefix.
-- New: Add *pel-activates-global-minor-modes* user-option to activate global minor-modes.
+  ~<f11> ? k i~ key prefix.
 - New: PEL now generates warnings when a global minor mode is requested by one
   of the user-options that should only request the activation of /local/
   minor-mode globally.  It also generates warnings when activation of /global/
   minor-mode for a specific major-mode.
 - New: Add support for the [[https://github.com/browse-kill-ring/browse-kill-ring#readme][browse-kill-ring]]
-  external package when the ``pel-use-browse-kill-ring`` user-option is set to t.
+  external package when the *pel-use-browse-kill-ring* user-option is set to t.
 - New: Better control over the electric behaviour of newline, colon, semicolon
   and greater-than key for Erlang.  PEL now provides the
   *pel-erlang-electric-keys* user-option which controls the electric behaviour
@@ -222,16 +222,16 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   (which includes the newline, which by erlang.el does not activate by default).
   PEL also provides 4 commands that can be used to dynamically toggle the
   electric behaviour of these keys.  The commands are mapped under the
-  ``<f12> ~`` key prefix.
+  ~<f12> ~~ key prefix.
 - New: Add `M-R` global key binding to *re-search-backward*.
-- New: Add access to the electricity custom group to the ``<f12> <f3>`` key
+- New: Add access to the electricity custom group to the ~<f12> <f3>~ key
   sequence  of several programming languages as it allows selecting the block
   character that trigger the insertion of the matching pair controlled by the
   *electric-pair-local-mode* which can be activated automatically by adding it
-  to the PEL language-specific mode ``MMM`` in  ``pel-MMM-activates-minor-modes``.
+  to the PEL language-specific mode ``MMM`` in *pel-MMM-activates-minor-modes*.
   PEL does not, however yet explicitly support the mode.
 - Improve: smart-dash support: when used, the smart-dash-mode no longer
-  prevents the ``<kp-subtract>`` key from being used for *pel-kp-subtract*
+  prevents the ~<kp-subtract>~ key from being used for *pel-kp-subtract*
   allowing that key to insert hyphen when the keypad NumLock is on and
   act dash insertion when no area is marked ans as a marked-area kill otherwise.
 - New: experimental support for the [[https://en.wikipedia.org/wiki/YANG][YANG modelling language file]] using yang-mode
@@ -239,8 +239,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - New: Experimental support for the [[https://janet-lang.org][Janet Programming language]] when
   ``pel-use-janet`` and other PEL user-options are turned on
   (``pel-use-janet-mode``, ``pel-use-ijanet`` and ``pel-use-inf-janet``).
-  The ``pel:for-janet`` prefix is bound to ``<f11> SPC T`` which maps to
-  ``<f12>`` inside ``.janet`` files.  Includes support for iMenu and Speedbar.
+  The ``pel:for-janet`` prefix is bound to ~<f11> SPC T~ which maps to
+  ~<f12>~ inside /.janet/ files.  Includes support for iMenu and Speedbar.
   - Add a [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-janet.pdf][𝕻𝔩 - Janet PDF]].
 - Improve: *Erlang support*:
   - Improved: *pel-open-at-point* is now able to search for files inside the
@@ -269,7 +269,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       buffers. Also add navigation across these pairs by replacing *forward-sexp*
       by *pel-erlang-forward-sexp* and *backward-sexp* by
       *pel-erlang-backward-sexp*.  The PEL commands use the same bindings and
-      handle the Erlang ``<< >>`` bit syntax pairs, something the erlang-mode
+      handle the Erlang ~<< >>~ bit syntax pairs, something the erlang-mode
       does not do by itself.
     - New: Improved management of display rendering of hard tab characters and
       control of hard tab insertion:  the new *pel-erlang-tab-width*
@@ -291,29 +291,29 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
         either typing '-.' or '->' to insert just '->' or '->' followed by
         indented line. Other mechanism to disable the electric behaviour of
         the key are provided by PEL:
-        - Type ``M-`` before the key inhibits its electric behaviour of the
+        - Type ~M-~ before the key inhibits its electric behaviour of the
           next typed key.
         - Toggle electric behaviour of '>'` or '.' in the current erlang
           buffer or all erlang buffers for the current session of a key as
           described below.
       - Electric behaviour of newline, >, comma, period and semicolon can be dynamically
-        toggled by using the ``<M-f12> M-``` prefix followed by the specific
+        toggled by using the ~<M-f12> M-`~ prefix followed by the specific
         key.  That toggles the electric behaviour in the current erlang buffer
         for the current editing session.
         To toggle the electric behaviour for all erlang buffers for the current
-        editing session type ``M-- <M-f12> M-`` followed by the key.
+        editing session type ~M-- <M-f12> M-~ followed by the key.
       - When the *pel-erlang-space-after-comma-in-blocks* user-option is turned on,
         and when the comma electric behaviour is active, a space is
         automatically inserted after a comma typed inside a "parens" block.
         - The automatic insertion of space after of comma can be toggled:
-          - just for the current insertion by typing ``M-1 ,``
+          - just for the current insertion by typing ~M-1 ,~
           - for the editing session by turning off the automatic insertion of
             space after a comma in parens:
-            - in the current erlang buffer by typing ``<M-f12> M-` M-,``
-            - for all erlang buffers by typing ``M-- <M-12> M-` M-,``
+            - in the current erlang buffer by typing ~<M-f12> M-` M-,~
+            - for all erlang buffers by typing ~M-- <M-12> M-` M-,~
           - for the editing session by turning the electric behaviour of the
-            comma key for the current erlang buffer by typing ``<M-f12> M-` ,``,
-            or for all erlang buffers by typing ``M-- <M-f12> M-` ,``.
+            comma key for the current erlang buffer by typing ~<M-f12> M-` ,~,
+            or for all erlang buffers by typing ~M-- <M-f12> M-` ,~.
 
     - Enhance [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf][𝕻𝔩 - Erlang PDF]]:
       - Add description of the electric behaviour of keys in erlang-mode
@@ -324,7 +324,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀  Search/Replace PDF]].
   Also better described *pel-replace-regexp*.
 - Change: The key prefix for smartparens startup commands changed from
-  ``<f11> i (`` to ``<f11> (``.
+  ~<f11> i (~ to ~<f11> (~.
 ** Bug Fixes:
 - Fixed invalid description in the Customize PDF first page rows 3, 4 and 5
   duplicating information correctly provided in later rows about dual
@@ -332,28 +332,28 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   customization as it should have been.
 - Fixed generic skeletons for programming languages that use end comment
   strings such as C, Pascal and several others.  For those the *generic*
-  templates creating comments, such as the header template bound to ``<f6> h``
+  templates creating comments, such as the header template bound to ~<f6> h~
   and the command to insert a single commented separating line, bound to
-  ``<f6> l`` were not terminating the comments.  The language specific
+  ~<f6> l~ were not terminating the comments.  The language specific
   templates for C, C++ (when using the C-style comment style) were not affected.
 * Version 0.4.0:
 ** New Features and Improvements:
-- New: unified cross reference commands for Erlang.  The ``M-.`` ``M-,`` keys
+- New: unified cross reference commands for Erlang.  The ~M-.~ ~M-,~ keys
   are bound to PEL commands that dispatch the cross reference command to find
   the definition of Erlang identifier at point and go back using the cross
   reference back end currently active.   The **pel-erlang-xref-engine**
   user-option identifies the cross reference back-end to use.  The user can
   change the cross reference engine back-end dynamically using the new
   **pel-erlang-select-xref** command and see which one is active with the
-  **pel-erlang-show-xref** command.  These are bound to ``<M-f12> M-. M-.``
-  and ``<M-f12> M-. M-?`` key sequence respectively.  PEL supports etags,
+  **pel-erlang-show-xref** command.  These are bound to ~<M-f12> M-. M-.~
+  and ~<M-f12> M-. M-?~ key sequence respectively.  PEL supports etags,
   dumb-jump, ggtags, ivy-erlang-complete, edts and erlang-ls back-ends.
 - New: Simplified installation. PEL now provides the init.el and the early-init.el file
   that support PEL features.  There's also a set of canned Emacs customization files
   ready to use.
-- Modified: the key binding to find-file/id-find-file from ``<f11> C-f`` to ``<f11> f f``
-  and to ``<M-f11> M-f M-f``.  Also modified the binding to psw-navigate-file from
-  ``<f11> f M-f`` to <f11> f M-f``.
+- Modified: the key binding to find-file/id-find-file from ~<f11> C-f~ to ~<f11> f f~
+  and to ~<M-f11> M-f M-f~.  Also modified the binding to psw-navigate-file from
+  ~<f11> f M-f~ to ~<f11> f M-f~.
 - New: PEL supports configuring the process environment of Emacs launched from
   a GUI program such as Windows Explorer, macOS Finder, Linux file manager,
   etc...  The method PEL use is fast and does not need to launch a child shell
@@ -373,9 +373,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   aware of PEL fast-startup mode and PEL's ability to deal with 2 independent
   customization files (one for Emacs in terminal mode and another for Emacs
   running in graphics mode).  The *pel-setup-with-quickstart* command (bound
-  to ``<f11> M-S q``) activates package quickstart or refresh the
+  to ~<f11> M-S q~) activates package quickstart or refresh the
   package-quickstart file(s) if already present.  The
-  *pel-setup-no-quickstart* (bound to ``<f11> M_S M-q``) disables package
+  *pel-setup-no-quickstart* (bound to ~<f11> M_S M-q~) disables package
   quickstart.
 - New: PEL now provides *customization-driven package management*.
   It installs packages identified by the ``pel-use-`` user-option when the
@@ -400,11 +400,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - New: The ``pel-package-info`` command generates a report of the used
     packages.  By default it prints a short report on the echo area. When
     invoked with any prefix key it produces a detailed report in a special buffer.
-- New: the new command *pel-insert-line-above* (bound to ``M-L``) inserts a
+- New: the new command *pel-insert-line-above* (bound to ~M-L~) inserts a
   new line above current line and indents it. Optional numeric argument is
   accepted, adding that many lines.  If the argument is negative, point is not
   moved.
-- New: integrated [[https://github.com/nflath/c-eldoc][c-eldoc]].  In C buffers, the ``<f12> ? e`` key sequence
+- New: integrated [[https://github.com/nflath/c-eldoc][c-eldoc]].  In C buffers, the ~<f12> ? e~ key sequence
   toggles c-eldoc mode on/off. I am currently investigating c-eldoc various
   versions trying to improve its performances.  For systems that do not have
   access to a LSP for C/C++ c-eldoc might provide some help even though it is
@@ -412,19 +412,19 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Update: improved  messages printed by commands that describe state of modes
   such as completion modes, etc...
 - Update: *Application Launching*:
-  - New: The ``<f11> A`` key sequence is bound to counsel-linux-app on Linux
+  - New: The ~<f11> A~ key sequence is bound to counsel-linux-app on Linux
     systems and to counsel-osx-app on macOS system.  This allows selecting an
     OS application by name to launch it.  The first one is available when
     pel-use-counsel is on and the second when pel-use-counsel-osx-app is on.
 - Update: *Buffer Support*:
   - New: support for the *iflipb* external package is activated by the
-    *pel-use-iflipb* user-option.  When active the ``<f9>`` key flip to the
-    next buffer and ``<S-f9>`` to the previous buffer in the stack.
+    *pel-use-iflipb* user-option.  When active the ~<f9>~ key flip to the
+    next buffer and ~<S-f9>~ to the previous buffer in the stack.
   - New: support for Buffer Selection mode. The command *bs-show* is mapped to
-    ``<f11> b s`` and the *bs-customize* command is mapped to ``<f11> b S``.
+    ~<f11> b s~ and the *bs-customize* command is mapped to ~<f11> b S~.
     - Extensions to Buffer Selection mode:
-      - The commands *pel-bs-next* (bound to ``<f11> b .``) and the *pel-bs-previous*
-        (bound to ``<f11> b ,``) changes the buffer of the current window to
+      - The commands *pel-bs-next* (bound to ~<f11> b .~) and the *pel-bs-previous*
+        (bound to ~<f11> b ,~) changes the buffer of the current window to
         the next and previous buffer identified from the Buffer Selection
         list.
       - A new key binding (".")  in the Buffer Selection mode creates a mode
@@ -434,8 +434,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
         major mode.
   - New: provide commands to cycle through the buffers of the same major mode
     as the current buffer without the use of the Buffer Selection mode:
-    - The commands *pel-smb-next* (bound to ``<f11> b ]``) and
-      *pel-smb-previous* (bound to ``<f11> b [`` ) can be used to cycles
+    - The commands *pel-smb-next* (bound to ~<f11> b ]~) and
+      *pel-smb-previous* (bound to ~<f11> b [~ ) can be used to cycles
       through all  buffers of the same major mode in the current window
       without any prior setup.
   - New: a new pel-∑buffer Hydra provides quick access to these commands.
@@ -447,17 +447,17 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
         provided by Emacs built-in make file support.
     - New: PEL provides two commands to navigate across make file macro
       definition statements (they can also be used to count them):
-      - *pel-make-previous-macro*, bound to ``<f12> <M-up>`` and ``<M-f12>
-        <M-up>``.
-      - *pel-make-next-macro*, bound to ``<f12> <M-down>`` and ``<M-f12>
-        <M-down>`.
+      - *pel-make-previous-macro*, bound to ~<f12> <M-up>~ and
+        ~<M-f12> <M-up>~.
+      - *pel-make-next-macro*, bound to ~<f12> <M-down>~
+        and <M-f12> <M-down>`.
   - New: *Nix package Manager support:
     - Support is activated by the *pel-use-nix-mode* user-option.
       It installs the nix-mode package.
   - New: *Tup file editing support*:
     - Support for *Tup* files activated by the *pel-use-tup* user-option.
 - Update: *Comments*:
-  - New: command *pel-comment-show-variables* (bound to ``<f11> ; ?``) opens a
+  - New: command *pel-comment-show-variables* (bound to ~<f11> ; ?~) opens a
     special "\*comment-vars\*" buffer and prints the names and values of all
     Emacs variables used to control the behaviour of comment generation. If a
     prefix is specified it only prints the user option variables (the ones
@@ -468,33 +468,33 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     PEL user option, it is possible to activate its mode or turn it off using
     one of the commands PEL provide.
     - PEL provides the *pel-xref-show-status* command to display the state of
-      the indexing/cross-referencing modes.  It is bound to ``<f11> X ?``.  By
+      the indexing/cross-referencing modes.  It is bound to ~<f11> X ?~.  By
       default it prints a message at the bottom of the screen.  When invoked
       with any prefix argument it prints the information inside a
-      ``*xref-status*`` buffer.
+      *xref-status* buffer.
       - It becomes easy to try different indexing systems; these systems are
         often complementary and often viable alternatives to active Language
         Server systems.  Note that PEL will also support Language Servers and
         will identify good set of tools for each of the programming languages
         it will support.
   - Modified: PEL key binding for *xref-find-apropos*: the new key sequence is
-    ``<f11> X a`` instead of ``<f11> X .`` which is now reserved for major mode
+    ~<f11> X a~ instead of ~<f11> X .~ which is now reserved for major mode
     specific specialized cross reference operations.  The 'a' for apropos is
     used in other PEL key sequences, so it's more appropriate even though the
-    command is also bound to C-M-. by Emacs.
+    command is also bound to ~C-M-.~ by Emacs.
   - New *xref search of Customization buffer user option variables*:
     - PEL provides the command *pel-xref-find-custom-definition-at-line*.
       This command finds the source of a user-option variable for the symbol
       listed on the current line of a Customize buffer.  The user variable may
       have its name spread like in "Kill Ring Max" or its real variable name
       like "kill-ring-max".  It has several key bindings:
-      - It is globally bound to the ``<f11> X c`` key sequence.  However it
+      - It is globally bound to the ~<f11> X c~ key sequence.  However it
         can only be used inside a Customize buffer; if used inside another
         buffer it will report an error.
       - In Customize buffers (buffers in Custom-Mode) the following keys are
         activated:
-        - ``<f11> X .``
-        - ``M-.`` when the PEL user option
+        - ~<f11> X .~
+        - ~M-.~ when the PEL user option
           *pel-bind-m-dot-to-xref-find-custom-definition* is set to *(t*
           (which is its default).
   - Non-xref cross-reference/code indexing packages:
@@ -502,21 +502,21 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       [[https://github.com/alpha22jp/helm-cscope.el][helm-cscope]] Emacs packages.
       - The xcscope package is enabled when the *pel-use-xcscope* user option
         is on (non-nil).
-      - When enabled, the ``<f11> X C C`` key sequence toggles the
+      - When enabled, the ~<f11> X C C~ key sequence toggles the
         xcscope-minor-mode. Automatic activation of xcscope-minor-mode can be
         specified with the *pel-modes-activating-cscope*.  This could be done
         for c-mode, c++-mode and dired-mode.
       - The *pel-use-helm-cscope* user option enables the use of the helm-cscope
         external Emacs package that uses Helm to display CScope matches. It
-        also enables the ``<f11> X C H`` key binding to toggle the use of
+        also enables the ~<f11> X C H~ key binding to toggle the use of
         helm-cscope-mode and the extra key bindings this mode activates.
     - New: Added support for eopengrok front end to [[https://en.wikipedia.org/wiki/OpenGrok][OpenGrok]], a Java-based
       source code indexing server.
     - New: Added support for elisp-refs package, activated by *pel-use-elisp-refs*
       as well as from *pel-use-helpful* user-options.  The commands have key
-      bindings under the ``<f12> r`` key prefix of Emacs Lisp Mode.
+      bindings under the ~<f12> r~ key prefix of Emacs Lisp Mode.
   - New *xref back-end support*:
-    - New: Added support for [[https://github.com/jacktasia/dumb-jump][dump-jump]]. The pel-use-dumb-jump activates it for M-.
+    - New: Added support for [[https://github.com/jacktasia/dumb-jump][dump-jump]]. The pel-use-dumb-jump activates it for ~M-~.
     - New: Added support for [[https://www.gnu.org/software/global/][GNU GLOBAL]] gtags-based [[https://github.com/leoliu/ggtags][ggtags]]. This includes support
       for [[https://ctags.io][Universal-Ctags]] and [[https://pygments.org][Pygments]] plugins.  Several things must be done
       properly to get this working, a descrption of the required installation
@@ -524,8 +524,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     - New: added support for gxref xref back-end using GNU GLOBAL.
     - In progress: adding support for RTags xref back-end for C/C++ code.
     - New: PEL command to dynamically modify the list of xref back-end functions
-      (mapped to the <f11> X B prefix) and to select the xref front-end function
-      (mapped to <f11> X F key sequence).  The supported xref back-end include:
+      (mapped to the ~<f11> X B~ prefix) and to select the xref front-end function
+      (mapped to ~<f11> X F~ key sequence).  The supported xref back-end include:
       etags, rtags, ggtags,  gxref, xref and dumb-jump.
   - New *xref front-end support* and selection mechanism:
     - New: added support for ivy-xref and helm-xref front-end for xref search,
@@ -535,19 +535,19 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     - New: add support for the *debbugs* external package when the
       *pel-use-debbugs*  user option is turned on.  This provides commands to
       browse the GNU Bug Tracker database within Emacs.  PEL binds the debbugs
-      commands under the ``<f11> ? b`` key prefix.  It also provides access to
-      the debbugs customization group via the ``<f11> ? <f3>`` key.
-    - Update: pel-xref-show-status (key sequence <f11> X ?) displays more
+      commands under the ~<f11> ? b~ key prefix.  It also provides access to
+      the debbugs customization group via the ~<f11> ? <f3>~ key.
+    - Update: pel-xref-show-status (key sequence ~<f11> X ?~) displays more
       information: it now displays the state of ggtags, dumb-jump, gxref,
       rtags.
     - New: *command log mode* from [[https://github.com/pierre-rouleau/command-log-mode][my forked command-log-mode repo]] is now
       available when the *pel-use-command-log-mode* user option is set to t.
       The commands are bound to the keys following the pel:command-log prefix
-      bound to the ``<f11> ? k c`` key sequence.  These commands provide the
+      bound to the ~<f11> ? k c~ key sequence.  These commands provide the
       ability to log all key and mouse events in a dedicated window buffer
       showing the key sequence and the executed command by its name.
   - Updated *customization support*:
-    - Update: the <f11> X <f3> key sequence provides access to the customization
+    - Update: the ~<f11> X <f3>~ key sequence provides access to the customization
       buffer of more cross referencing packages. It provides access to dumb-jump,
       eopengrok, etags, eopengrok, ggtags, gxref, xref, ivy-xref, helm-xref,
       ivy, helm, projectile and speedbar.
@@ -577,9 +577,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Update: *Cursor/Multiple-Cursors*:
   - Update: completed the key bindings required to use the *multiple-cursors*
     package efficiently:
-    - Add ``<f11> m n`` key sequence binding to *mc/mark-next-like-this*
-    - Add ``<f11> m p`` key sequence binding to *mc/mark-previous-like-this*
-    - Add ``<f11> m a`` key sequence binding to *mc/mark-all-like-this*
+    - Add ~<f11> m n~ key sequence binding to *mc/mark-next-like-this*
+    - Add ~<f11> m p~ key sequence binding to *mc/mark-previous-like-this*
+    - Add ~<f11> m a~ key sequence binding to *mc/mark-all-like-this*
     - ... and several other commands: there's a total of 35 of them,
       all documented in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/cursor.pdf][⅀ Cursor PDF]].
 - Update: *Customization*:
@@ -600,12 +600,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     customize-browse which unfortunately does not prompt.
   - New: added several links to package home pages, user manuals and relevant
     Emacs manuals and sections.
-  - New: The ``<f11> - <f3>`` key sequence provides access to the
+  - New: The ~<f11> - <f3>~ key sequence provides access to the
     customization of the following groups: cua-mode, killing, popup-kill-ring.
   - Modification: new customization group *pel-pkg-for-cut-and-paste* which
     holds pel-use-popup-kill-ring that was previously under the undo group.
 - Update: *Cut & Paste*:
-  - New: *pel-duplicate-line* command (bound to ``<f6> d``) that duplicates
+  - New: *pel-duplicate-line* command (bound to ~<f6> d~) that duplicates
     the current line N times, with N defaulting to 1 and taken from a
     numerical argument. If some text on the original line is marked, the
     function prompts and uses a replacement for each duplicated line.
@@ -616,24 +616,23 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     that can display the copied, killed or deleted text. The new
     *pel-show-copy-cut-text* user option controls it.  It is set *t* by
     default, mimicking previous behaviour.  Setting it to nil will prevent the
-    display. The new command *pel-toggle-show-copy-cut-text* (bound to ``<f11>
-    M-=``) can be used to override this setting in the current Emacs session
+    display. The new command *pel-toggle-show-copy-cut-text* (bound to
+    ~<f11> M-=~) can be used to override this setting in the current Emacs session
     either globally or for the current buffer.  the customize buffer is a
     persistent setting that can be overridden
   - New: added commands that delete elements, similar to the kill commands.
-    These are bound to the pel:delete key prefix, bound to the ``<f11> DEL``
+    These are bound to the pel:delete key prefix, bound to the ~<f11> DEL~
     key sequence.  There is now a delete command equivalent to the kill
     commands.
   - New: added commands to kill and delete the beginning or end of the word at
-    point, bound to `<f11> - q`` (for kill) and to ``<f11> DEL q`` (for
-    delete).  Same for symbol, using ``,`` instead of ``q``.
+    point, bound to ~<f11> - q~ (for kill) and to ~<f11> DEL q~ (for
+    delete).  Same for symbol, using ~,~ instead of ~q~.
   - Update: the command to delete duplicated lines is now bound inside the
     pel:delete key prefix instead of the pel:kill key prefix.
   - New: added command *pel-delete-line* to delete text from point to end
-    of line without copying it to the kill ring.  It is bound to ``C-K`` (in
-    graphics mode only) and to ``<f11> DEL e`` key sequence.
-  - New: added command *pel-delete-from-beginning-of-line* bound to ``<f11>
-    DEL a``.
+    of line without copying it to the kill ring.  It is bound to ~C-K~ (in
+    graphics mode only) and to ~<f11> DEL e~ key sequence.
+  - New: added command *pel-delete-from-beginning-of-line* bound to ~<f11> DEL a~.
   - Update: the kill and delete commands are no longer allowed in read-only
     buffer.
 - Update: *Dired*:
@@ -652,16 +651,16 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     inequality functions to pass extra arguments whose values will be shown in
     the ERT failure report when the test fails, providing extra information.
     Pass test control variables to these extra arguments.
-  - New: *pel-run-ert* command, bound to ``<f12> t`` in Emacs Lisp buffers,
+  - New: *pel-run-ert* command, bound to ~<f12> t~ in Emacs Lisp buffers,
     that byte-compile the file and runs *ert* to on the file visited by the
     current buffer.
 - Update: *File Diff*:
-  - New: command *pel-ediff-2files*, bound to ``<f11> d 2``, runs the EDiff
+  - New: command *pel-ediff-2files*, bound to ~<f11> d 2~, runs the EDiff
     command on the files in the current window and the other window, allowing
     to quickly set up an EDiff session to compare the content of the 2 edited
     files. With numerical argument another window can be selected from the
     direction of the corresponding cursor on a numeric keypad.
-  - New: command *pel-ediff-revision*, bound to ``<f11> d r``, runs the Ediff
+  - New: command *pel-ediff-revision*, bound to ~<f11> d r~, runs the Ediff
     command to compare revisions of the file in the current window, defaulting
     to the current copy and the last committed revision.
 - Update: *File Management*:
@@ -669,12 +668,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     name at point with the new command *pel-set-ido-use-fname-at-point*.  By
     default it sets the behaviour for the current buffer.  With a command
     prefix it sets it globally.
-  - New: command *pel-open-url-at-point* bound to ``<f11> f M-u`` copies the
+  - New: command *pel-open-url-at-point* bound to ~<f11> f M-u~ copies the
     file identified by the URL at point into a temporary file and visit that
-    file. This command is also bound to ``C-c C-f`` when the goto-address-mode
+    file. This command is also bound to ~C-c C-f~ when the goto-address-mode
     minor mode is active and point is over a URL.
-  - New: key binding ``<f11> f M-l`` to find-file-literally``.
-  - New: command *pel-show-buffer-file-encoding*, bound to ``<f11> f ?`` that
+  - New: key binding ~<f11> f M-l~ to find-file-literally.
+  - New: command *pel-show-buffer-file-encoding*, bound to ~<f11> f ?~ that
     shows the encoding of the file in current buffer by opening the *Help*
     buffer showing the value of Emacs variable buffer-file-coding-system.
   - Improved: *pel-open-at-point* is now able to open a file when its name is
@@ -686,11 +685,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     user-option.  What is new is that new commands are available to
     dynamically activate or deactivate the action either globally or each
     buffer independently. The actions are:
-    - Update copyright notice on save: use ``<f11> M-C`` to toggle action
+    - Update copyright notice on save: use ~<f11> M-C~ to toggle action
       activation.
-    - Update time stamp on save: use ``<f11> M-T`` to toggle action
+    - Update time stamp on save: use ~<f11> M-T~ to toggle action
       activation.
-    - Delete trailing space and lines on save: use ``<f11> M-W`` to toggle
+    - Delete trailing space and lines on save: use ~<f11> M-W~ to toggle
       action activation.
 - Update: *Grep*:
   - New: Added key bindings for [[https://github.com/ggreer/the_silver_searcher][ag]] (the silver searcher) based grep-style
@@ -698,8 +697,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Modified: key bindings in pel:grep to better organize commands for [[https://github.com/ggreer/the_silver_searcher][ag]] and
     for better regularity.
   - New: add support for [[https://github.com/Wilfred/deadgrep][deadgrep]] package, activated by the
-    *pel-use-deadgrep* user-option.  When it is turned on, the ``deadgrep`` command is bound
-    to ``<f11> g d``.
+    *pel-use-deadgrep* user-option.  When it is turned on, the *deadgrep* command is bound
+    to ~<f11> g d~.
 - Update: *Help*:
   - New: Added a command (<f11> ? e c) to open a local copy of
     one of the [[https://www.gnu.org/software/emacs/refcards/index.html][Emacs PDF reference cards]]. The new *pel-emacs-refcard-dirpath*
@@ -711,13 +710,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     attempt to build or render the .tex files, so its often best to download
     the PDF files, store them in a directory and identify that location in the
     user option.
-  - New: key binding to a command to display Emacs executable path: <f11> ? e x.
-  - New: key binding to display Emacs up-time (<f11> ? e u).
+  - New: key binding to a command to display Emacs executable path: ~<f11> ? e x~.
+  - New: key binding to display Emacs up-time (~<f11> ? e u~).
   - New: added several alias for various PDF tables when using the
-    *pel-help-pdf-select* (which is bound to the  ``<f11> ? p`` key.
+    *pel-help-pdf-select* (which is bound to the  ~<f11> ? p~ key.
   - New: Add support for the *helpful* package.  Activated when the
     *pel-use-helpful* user-option is turned on.  Its commands are bound to the
-    ``<f1> <f2>`` key prefix.
+    ~<f1> <f2>~ key prefix.
 - Update: *Hide/Show*:
   - New: add support for the **origami-mode** code folding package, activated
     when the *pel-use-origami* is turned on (set to *t*) or indirectly when
@@ -725,35 +724,34 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     bindings for command that hide/show comments and docstrings.
   - New: add support for the *hide-lines* external package, activated when the
     *pel-use-hide-lines* user-option is turned on (set to *t*). It provides
-    commands bound to the ``<f11> M-/`` PEL key prefix as well as the ``C-c
-    /`` global binding.
+    commands bound to the ~<f11> M-/~ PEL key prefix as well as the ~C-c /~ global binding.
 - Update: *Highlighting*:
-  - Modified: the pel:highlight prefix key sequence changed from ``<f11> b h``
-    to the simpler ``<f11> h``.
+  - Modified: the pel:highlight prefix key sequence changed from ~<f11> b h~
+    to the simpler ~<f11> h~.
   - New: add support for *rainbow-mode* to highlight color code strings in
-    source code. The ``<f11> h c`` key sequence is bound to the command
+    source code. The ~<f11> h c~ key sequence is bound to the command
     *rainbow-mode* to toggle activation of the mode.
   - New: Add support for *auto-highlight-symbol*, activated by the
     *pel-use-auto-highlight-symbol* user-option.  The
-    *auto-highlight-symbol-mode* command is bound to the ``<f11> h a`` key
+    *auto-highlight-symbol-mode* command is bound to the ~<f11> h a~ key
     sequence.
   - New: Add support for the *highlight-indentation* package activated by
     *pel-use-highlight-indentation* user-option.  This provides the
-    *highlight-indentation-mode* command (bound to ``<f11> h M-i`` key
+    *highlight-indentation-mode* command (bound to ~<f11> h M-i~ key
     sequence) and to the *highlight-indentation-current-column-mode* command
-    bound to ``<f11> h M-c``.
+    bound to ~<f11> h M-c~.
 - Update: *Indentation*:
-  - Improvement: to the commands bound to ``<f6> <tab>`` (now
-    ``pel-indent-lines``) and ``<S-tab>`` (now ``pel-unindent-lines``):
+  - Improvement: to the commands bound to ~<f6> <tab>~ (now
+    *pel-indent-lines*) and ~<S-tab>~ (now *pel-unindent-lines*):
     - The commands now handle a marked region like a region marking all
       touched lines and now longer suffers from a degradation of the marked
       area on subsequent commands.
     - The commands now properly handle the presence of hard tabs in the
       indentation whitespace.  They also automatically tabify or untabify the
       indentation whitespace, conforming to the mode identified by the
-      ``indent-tabs-mode`` variable.
+      /indent-tabs-mode/ variable.
   - New: Add support for *indent-tools* external package.  Activate by the
-    *pel-use-indent-tools* user-option. Provide the ``<f11> <tab> >``
+    *pel-use-indent-tools* user-option. Provide the ~<f11> <tab> >~
     key-binding to its key Hydra.  It's also possible to activate the binding
     identified by indent-tool customization globally or only for Python files.
   - New: Add support for *smart-shift* external package.  Activate by the
@@ -770,8 +768,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     various file types.
   - New: add support for the *imenu-extra* external package.  Make it available by
     setting the *pel-use-imenu-extra* user-option to *t*.
-  - New: add *pel-imenu-rescan*, bound to ``<f11> <f10> r``.
-  - New: add *pel-popup-imenu*, bound to ``<f11> <f10> <f10>``.  It opens a pop-up
+  - New: add *pel-imenu-rescan*, bound to ~<f11> <f10> r~.
+  - New: add *pel-popup-imenu*, bound to ~<f11> <f10> <f10>~.  It opens a pop-up
     menu of items detected by imenu.
   - New: add support for the *idomenu* external package. Make it available
     by setting the *pel-use-idomenu* user-option to *t*.
@@ -782,7 +780,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     - The *pel-initial-ido-geometry* user-option allows you to select the
       initial Ido prompt geometry from : 1) Emacs default linear prompt, 2)
       grid mode that starts collapsed or 3) grid mode that starts expanded.
-    - The *pel-select-ido-geometry* command (bound to ``<f11> M-c M-g``)
+    - The *pel-select-ido-geometry* command (bound to ~<f11> M-c M-g~)
       allows you to change this during an Emacs session.  It does not persist
       across Emacs session the way the customize user-option does.
     - The *pel-show-active-completion-mode* displays the currently active
@@ -791,7 +789,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - New: Add support for *flx* and *flx-ido* external packages. Activate both
     by setting the *pel-use-flx* user-option to *t*.  Set the initial state in
     the *pel-initial-ido-flx-state*.  Use the new command
-    *pel-toggle-flx-ido*, bound the ``<f11> M-c M-f`` key sequence, to stop or
+    *pel-toggle-flx-ido*, bound the ~<f11> M-c M-f~ key sequence, to stop or
     start its use during an editing session.
   - New: Add support for the *smex* external package.  Activate it by setting
     the *pel-use-smex* user-option to *t*.
@@ -811,12 +809,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     ido-completing-read+ package.
     - It is activated via the
       *pel-use-completing-read+* user-option.
-    - When active the *pel-toggle-ido-ubiquitous* command is mapped to ``<f11>
-      M-C``.
+    - When active the *pel-toggle-ido-ubiquitous* command is mapped to ~<f11> M-C~.
   - New: *pel-cl-hyperspec-lookup* command that uses Slime, SLY or PEL's own
     implementation of Common Lisp Hyperspec symbol lookup.  It's bound to the
-    Common Lisp specific ``<f12> ?`` key sequence.
-  - New: During Ido input completion, the ``<f1>`` key opens the
+    Common Lisp specific ~<f12> ?~ key sequence.
+  - New: During Ido input completion, the ~<f1>~ key opens the
     [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/completion-input.pdf][⅀Input Completion PDF]] which now describes all key bindings available for
     the Ido prompts.  the same key is available in Ivy prompts.
   - New: Add support for ivy-avy.  It is activated when both *pel-use-ivy* and
@@ -826,37 +823,37 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     in terminal mode.
 - Update: *Key Chords*:
   - New: a new key prefix is used to access key-chord commands:
-    *pel:mode-key-chord*, mapped to ``<f11> <f5> k``.  It holds the following
+    *pel:mode-key-chord*, mapped to ~<f11> <f5> k~.  It holds the following
     commands:
-    - Command *key-chord-mode*, mapped to ``<f11> <f5> k k``.
-    - Command *pel-key-chord-describe* (bound to ``<f11> <f5> k ?``)
+    - Command *key-chord-mode*, mapped to ~<f11> <f5> k k~.
+    - Command *pel-key-chord-describe* (bound to ~<f11> <f5> k ?~)
       displays the state of key-chord/key-seq and the key bindings if
       key-chord-mode is active.
-    - ``<f11> <f5> k <f1>`` opens the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/key-chords.pdf][⅀ Key-Chords PDF]].
-    - ``<f11> <f5> k <f2>`` opens the PEL key-chords customization buffer.
-    - ``<f11> <f5> k <f3>`` opens the key-chords package customization buffer.
+    - ~<f11> <f5> k <f1>~ opens the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/key-chords.pdf][⅀ Key-Chords PDF]].
+    - ~<f11> <f5> k <f2>~ opens the PEL key-chords customization buffer.
+    - ~<f11> <f5> k <f3>~ opens the key-chords package customization buffer.
 - Update: *Markup Language Support*
   - New: Add support for Markdown, via the *markdown-mode* and several other
     external packages: *grip-mode*, *impatient-showdown*,
     *markdown-preview-eww*, *markdown-preview-mode*, *markdown-toc*,
     *vmd-mode* and *remark-mode*.
-  - The ``<f11> SPC M-m`` key prefix gives access to the Markdown specific
-    PEL keys which becomes the ``<f12>`` key when the markdown-mode is active.
+  - The ~<f11> SPC M-m~ key prefix gives access to the Markdown specific
+    PEL keys which becomes the ~<f12>~ key when the markdown-mode is active.
     Currently this key prefix has only 3 sub-keys:
-    - ``<f1>`` opens the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/mode-markdown.pdf][Ɱ Markdown PDF]].
-    - ``<f2>`` opens the *pel-pkg-for-markdown* customization group where various markdown
+    - ~<f1>~ opens the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/mode-markdown.pdf][Ɱ Markdown PDF]].
+    - ~<f2>~ opens the *pel-pkg-for-markdown* customization group where various markdown
       support packages can be enabled with the PEL user-options.
-    - ``<f3>`` provides access to the customization group for the
+    - ~<f3>~ provides access to the customization group for the
       markdown-mode and other markdown support packages.  As for all other
-      ``<f3>`` keys in PEL, the package does not have to be loaded for the key
+      ~<f3>~ keys in PEL, the package does not have to be loaded for the key
       to be able to access the customization group.  PEL will load the package
       first if necessary.
-    - The ``<f12> M-t`` key prefix to commands that generate, refresh or delete a
+    - The ~<f12> M-t~ key prefix to commands that generate, refresh or delete a
       table of contents are available when the *pel-use-markdown-toc*
-      user-option is set.  And if it is set to ``update-toc-on-save`` the
+      user-option is set.  And if it is set to /update-toc-on-save/ the
       table of content is updated on buffer save if it is present.
     - The markdown extension packages that provide other mechanisms to
-      generate a HTML rendering have commands mapped to the ``<f12> M-p`` key
+      generate a HTML rendering have commands mapped to the ~<f12> M-p~ key
       prefix.
   - New: Add support for YAML with *yaml-mode*.
     Activate it with the *pel-use-yaml-mode* user option.
@@ -864,18 +861,18 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     Activate it with the *pel-use-cwl-mode* user-option.
 - Update: *Navigation*
   - New: New commands to navigate across URLs in the current buffer:
-    - *pel-goto-next-url*, bound to ``<f6> C-n`` globally and to ``C-c C-n``
+    - *pel-goto-next-url*, bound to ~<f6> C-n~ globally and to ~C-c C-n~
       when the goto-address-mode minor mode is active and point is over a URL,
-    - *pel-goto-previous-url*, bound to ``<f6> C-p`` globally and to ``C-c C-p``
+    - *pel-goto-previous-url*, bound to ~<f6> C-p~ globally and to ~C-c C-p~
       when the goto-address-mode minor mode is active and point is over a URL.
-  - New: ``M-g h`` and ``M-g M-h`` key sequences mapped to *pel-goto-symbol*,
+  - New: ~M-g h~ and ~M-g M-h~ key sequences mapped to *pel-goto-symbol*,
     a command that uses imenu to extract all symbols from the buffer to
     provide an efficient way to jump to the definition of any symbol in the
     current buffer.
     - The command provides several user interface methods selected by
       the *pel-initial-goto-symbol-UI* which defaults to Emacs default: imenu.
-      You can use the command *pel-select-goto-symbol-UI*, bound to ``M-g <f4>
-      h``, to change the user interface method used in the current Emacs
+      You can use the command *pel-select-goto-symbol-UI*, bound to ~M-g <f4> h~,
+      to change the user interface method used in the current Emacs
       session. The available completion methods are:
       - Ido,
       - Ivy,
@@ -887,34 +884,34 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     buffers:
     - Activated with the *pel-use-imenu-anywhere* that is set to identify the
       default user interface method, one of: emacs-default, ido, ivy or helm.
-    - The *pel-select-goto-symbol-any-buffer-UI* command (bound to ``M-g
-      <f4> y``) can be used to change the completion method used in an Emacs
+    - The *pel-select-goto-symbol-any-buffer-UI* command (bound to ~M-g <f4> y~)
+      can be used to change the completion method used in an Emacs
       editing session.
     - The *pel-goto-symbol-any-buffer* prompts using the selected completion method
       and move point to the buffer and location where the symbol is
-      defined. The command is bound to ``M-g y`` and ``M-g M-y`` key
+      defined. The command is bound to ~M-g y~ and ~M-g M-y~ key
       sequences.
-  - New: ``<f11 M-f>`` binding for pel-forward-syntaxchange-start and
-    ``<f11 M-b>`` binding for pel-backward-syntaxchange-start.
+  - New: ~<f11 M-f>~ binding for pel-forward-syntaxchange-start and
+    ~<f11 M-b>~ binding for pel-backward-syntaxchange-start.
   - New: when the new *pel-windmove-on-f1-cursor* user option is set to t, PEL
-    activates several key bindings for windows management using the <f1>
+    activates several key bindings for windows management using the ~<f1>~
     prefix followed by cursor keys sequences:
-    - <f1> <cursor> : to move to pointed window.
-    - <f1> <C-cursor> : to create window in pointed direction.
-    - <f1> <C-S-cursor> : to close window in pointed direction.
-    - <f1> <M-cursor> : to resize current window according to the cursor used.
-    - <f1> <kp-5> : to balance the size of all windows in current frame.
+    - ~<f1> <cursor>~ : to move to pointed window.
+    - ~<f1> <C-cursor>~ : to create window in pointed direction.
+    - ~<f1> <C-S-cursor>~ : to close window in pointed direction.
+    - ~<f1> <M-cursor>~ : to resize current window according to the cursor used.
+    - ~<f1> <kp-5>~ : to balance the size of all windows in current frame.
   - New: when the new *pel-windmove-on-esc-cursor* user option is set to t, PEL
     activates several key bindings for windows management using the *Esc*
     prefix followed by cursor keys sequences:
-    - Esc <cursor> : to move to pointed window.
-    - Esc <C-cursor> : to create window in pointed direction.
-    - Esc <C-S-cursor> : to close window in pointed direction.
-    - Esc <M-cursor> : to resize current window according to the cursor used.
-    - Esc <kp-5> : to balance the size of all windows in current frame.
-  - Update: removed the ``<C-f11>`` binding to pel-previous-visible and
-    ``<C-F12>`` to pel-next-visible.  Instead use ``<C-left>`` and
-    ``<C-right>``, respectively bound to pel-backward-token-start and
+    - ~Esc <cursor>~ : to move to pointed window.
+    - ~Esc <C-cursor>~ : to create window in pointed direction.
+    - ~Esc <C-S-cursor>~ : to close window in pointed direction.
+    - ~Esc <M-cursor>~ : to resize current window according to the cursor used.
+    - ~Esc <kp-5>~ : to balance the size of all windows in current frame.
+  - Update: removed the ~<C-f11>~ binding to pel-previous-visible and
+    ~<C-F12>~ to pel-next-visible.  Instead use ~<C-left>~ and
+    ~<C-right>~, respectively bound to pel-backward-token-start and
     pel-forward-token-start.  This frees another 2 valuable quick access keys.
 - Update: *Programming Language Support*:
   - Update: *CC Mode Utilities*
@@ -943,14 +940,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
         *pel-c++-newline-mode* and *pel-d-newline-mode* for the respective major
         modes.  The behaviour can also be dynamically changed in the current
         buffer by the new *pel-cc-change-newline-mode** command (bound to
-        ``<f12> M-RET``).
+        ~<f12> M-RET~).
       - *pel-cc-newline* command also aligns comments
         and assignments in the above code block is controlled by the variable
         *pel-newline-does-align*.  That variable is turned on (set to t) for modes
         identified in the *pel-modes-activating-align-on-return* user option.
         It can also be modified dynamically by the command
-        *pel-toggle-newline-indent-align  which is bound to ``<f11> M-RET``.
-    - New: for C and C++ modes, the ``<f12> <f7>`` key sequence opens the list
+        *pel-toggle-newline-indent-align  which is bound to ~<f11> M-RET~.
+    - New: for C and C++ modes, the ~<f12> <f7>~ key sequence opens the list
       of C preprocessor Hydra keys that help navigate across C preprocessor
       directives, hide and how them, etc...
   - New: **Bison, Lex, YACC*:
@@ -962,10 +959,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     - New: PEL support for C is now activated with the *pel-use-c*
       user-option.  This allows turning it off to reduce Emacs init time when
       you do not need to edit C files.
-    - New: ``<f12> <f12> d`` insert a C pre-processor #define statement.
-    - New: ``<f12> <f12> i`` insert a C pre-processor #include statement for
+    - New: ~<f12> <f12> d~ insert a C pre-processor #define statement.
+    - New: ~<f12> <f12> i~ insert a C pre-processor #include statement for
       library files.
-    - New: ``<f12> <f12> I`` insert a C pre-processor #include statement for
+    - New: ~<f12> <f12> I~ insert a C pre-processor #include statement for
       local files.
   - Update: *C++*
     - New: PEL support for C++ is now activated with the *pel-use-c++*
@@ -974,26 +971,26 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Update: *Lisp Languages Family*:
     - Update: *Modes for all Lisp Languages*:
       - Update: *Lispy mode*:
-        - The ``M-RET`` binding to *lispy-meta-return* is now controlled by
+        - The ~M-RET~ binding to *lispy-meta-return* is now controlled by
           the *pel-enable-lispy-meta-return*, which is off by default because
           it conflicts with PEL's global binding for M-RET, useful in Lisp
           editing major modes.
     - Update: *Common Lisp*
       - New: Navigation keys:
-        - ``<f12> <down>``   binding to ``pel-beginning-of-next-defun``,
-        - ``<f12> <M-down>`` binding to ``pel-elisp-beginning-of-next-defun``,
-        - ``<f12> f n``      binding to ``pel-elisp-beginning-of-next-defun``,
-        - ``<f12> <up>``     binding to ``beginning-of-defun``
-        - ``<f12> <M-up>``   binding to ``pel-elisp-beginning-of-previous-defun``,
-        - ``<f12> f p``      binding to ``pel-elisp-beginning-of-previous-defun``,
-        - ``<f12> <left>``   binding to ``pel-end-of-previous-defun``
-        - ``<f12> <right>``  binding to ``end-of-defun``
-      - New: *pel-cl-add-symbol-to-imenu* command, bound to ``M-g <f4> .`` in
+        - ~<f12> <down>~   binding to *pel-beginning-of-next-defun*,
+        - ~<f12> <M-down>~ binding to *pel-elisp-beginning-of-next-defun*,
+        - ~<f12> f n~      binding to *pel-elisp-beginning-of-next-defun*,
+        - ~<f12> <up>~     binding to *beginning-of-defun*
+        - ~<f12> <M-up>~   binding to *pel-elisp-beginning-of-previous-defun*,
+        - ~<f12> f p~      binding to *pel-elisp-beginning-of-previous-defun*,
+        - ~<f12> <left>~   binding to *pel-end-of-previous-defun*
+        - ~<f12> <right>~  binding to *end-of-defun*
+      - New: *pel-cl-add-symbol-to-imenu* command, bound to ~M-g <f4> .~ in
         lisp-mode buffers.  Use this command to add a form defining macro
         symbol to the imenu list of detected symbols.
       - New: user option *pel-clisp-hyperspec-root* to identify the location of
         the LispWorks Common Lisp HyperSpec HTML documentation.
-      - New: The ``<f12> <f3>`` key sequence provides access to slime
+      - New: The ~<f12> <f3>~ key sequence provides access to slime
         customization buffer.
       - New: Add the *pel-clisp-define-forms* user-option that allows you to identify
         Common Lisp definition form keywords to include in the imenu list.
@@ -1001,7 +998,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
         selection: slime or SLY.
       - New: the *pel-cl-repl* opens a buffer with the Common Lisp REPL
         selected by the PEL user-options *pel-use-sly*, *pel-use-slime* and
-        *pel-clisp-ide*.  This is bound to the ``<f12> z`` key sequence.
+        *pel-clisp-ide*.  This is bound to the ~<f12> z~ key sequence.
       - New: Common Lisp code style customization group *pel-clisp-code-style*
         which holds the following user-options:
         - *pel-clisp-fill-column* which identifies the column beyond which
@@ -1018,34 +1015,34 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
         set of forms by their name.  All of these can take effect globally but can
         also be overridden on each buffer or globally.  The local selection is
         done with a new command (*pel-elisp-set-navigate-target-form* bound to
-        ``<f12> M-n`` while *pel-toggle-paren-in-column-0-is-defun-start* which
+        ~<f12> M-n~ while *pel-toggle-paren-in-column-0-is-defun-start* which
         selects how the standard Emacs form navigation commands operate, is bound
-        to  ``<f12> M-N``).
+        to  ~<f12> M-N~).
         - New Navigation keys:
-          - ``<f12> <down>``     binding to ``pel-elisp-beginning-of-next-form``,
-          - ``<f12> <C-down>``   binding to ``pel-elisp-to-name-of-next-form``,
-          - ``<f12> <M-down>``   binding to ``pel-elisp-beginning-of-next-defun``,
-          - ``<f12> <C-M-down>`` binding to ``pel-elisp-to-name-of-next-defun``,
-          - ``<f12> f n``        binding to ``pel-elisp-beginning-of-next-defun``,
-          - ``<f12> <up>``       binding to ``pel-elisp-beginning-of-previous-form``,
-          - ``<f12> <C-up>``     binding to ``pel-elisp-to-name-of-previous-form``,
-          - ``<f12> <M-up>``     binding to ``pel-elisp-beginning-of-previous-defun``,
-          - ``<f12> <C-M-up>``   binding to ``pel-elisp-to-name-of-previous-defun``,
-          - ``<f12> f p``        binding to ``pel-elisp-beginning-of-previous-defun``,
-          - ``<f12> <left>``     binding to ``pel-end-of-previous-defun``,
-          - ``<f12> <right>``    binding to ``end-of-defun``
-        - The ``<f12> <down`` and ``<f12> <up>`` keys sequences are bound to the
+          - ~<f12> <down>~     binding to *pel-elisp-beginning-of-next-form*,
+          - ~<f12> <C-down>~   binding to *pel-elisp-to-name-of-next-form*,
+          - ~<f12> <M-down>~   binding to *pel-elisp-beginning-of-next-defun*,
+          - ~<f12> <C-M-down>~ binding to *pel-elisp-to-name-of-next-defun*,
+          - ~<f12> f n~        binding to *pel-elisp-beginning-of-next-defun*,
+          - ~<f12> <up>~       binding to *pel-elisp-beginning-of-previous-form*,
+          - ~<f12> <C-up>~     binding to *pel-elisp-to-name-of-previous-form*,
+          - ~<f12> <M-up>~     binding to *pel-elisp-beginning-of-previous-defun*,
+          - ~<f12> <C-M-up>~   binding to *pel-elisp-to-name-of-previous-defun*,
+          - ~<f12> f p~        binding to *pel-elisp-beginning-of-previous-defun*,
+          - ~<f12> <left>~     binding to *pel-end-of-previous-defun*,
+          - ~<f12> <right>~    binding to *end-of-defun*
+        - The ~<f12> <down~ and ~<f12> <up>~ keys sequences are bound to the
           most flexible commands: you can configure them to move to top-level
           form, or top-level defun, any defun, etc...
-      - New: ``<f12> l v`` binding to ``pel-load-visited-file`` to load the file
+      - New: ~<f12> l v~ binding to *pel-load-visited-file* to load the file
         visited in current buffer either by source or its byte-compiled instance.
-      - Modification: of the key binding of ``load-file``: changed its key binding
-        from ``<f12> e f` to ``<f12> l f``.`
-      - New: ``<f12> D`` binding to new command ``pel-add-dir-to-loadpath`` which
+      - Modification: of the key binding of *load-file*: changed its key binding
+        from ~<f12> e f~ to ~<f12> l f~.`
+      - New: ~<f12> D~ binding to new command *pel-add-dir-to-loadpath* which
         adds a directory to Emacs load-path.
-      - New: key binding ``<f12> c a`` to *disassemble*.
+      - New: key binding ~<f12> c a~ to *disassemble*.
         *open-paren-in-column-0-is-defun-start*.  This controls the behaviour of
-        ``beginning-of-defun`` and ``end-of-defun`` functions: whether a paren in
+        *beginning-of-defun* and *end-of-defun** functions: whether a paren in
         the first column is always interpreted as a start of defun, even inside
         strings.
         - **Use this first implementation with care**: it prevents checkdoc from
@@ -1055,38 +1052,38 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
         provides overlay display of the result of evaluations done by
         *eval-last-sexp*:
         - Set the *pel-use-eros* user-option to *t* to download and activate it.
-        - From emacs-lisp-mode, the ``<f12> E`` key sequence is bound to the
+        - From emacs-lisp-mode, the ~<f12> E~ key sequence is bound to the
           *eros-mode* command which toggles this mode.
-        - From emacs-lisp-mode, the ``<f12> <f3>`` key sequence brings a menu
+        - From emacs-lisp-mode, the ~<f12> <f3>~ key sequence brings a menu
           from which you can select eros to bring the customization buffer to
           configure eros, even if eros is not currently loaded.
       - New: added support for *suggest.el* which provides *Development by
         Example* capabilities for Emacs Lisp!
         - Set the *pel-use-suggest* user-option to *t* to download and activate
           it.
-        - Once activated, the ``<f12> S`` key sequence is bound to suggest in
+        - Once activated, the ~<f12> S~ key sequence is bound to suggest in
           emacs-lisp-mode and opens a suggest buffer where you can enter input
           data, output data to query for functions that can provide this data
-          transformation. The <f11> SPC l S`` keys sequence is also available
+          transformation. The ~<f11> SPC l S~ keys sequence is also available
           globally.
-        - Use ``<f12> <f3>`` from emacs-lisp-mode to open suggest customzation
-         buffer and ``<f12> <f2>`` to open PEL emacs-lisp customization buffer
+        - Use ~<f12> <f3>~ from emacs-lisp-mode to open suggest customzation
+         buffer and ~<f12> <f2>~ to open PEL emacs-lisp customization buffer
          where you can activate *pel-use-suggest*.
       - New: added support for relint: regular expression lint checker.
         - Set the *pel-use-relint* user-option to *t* to activate it.
-        - The commands are available via the ``<f11> s x M-l`` search/regular
-          expression prefix and from the Emacs-Lisp specific ``<f12> a l``
+        - The commands are available via the ~<f11> s x M-l~ search/regular
+          expression prefix and from the Emacs-Lisp specific ~<f12> a l~
           analyze prefix.  Commands to lint the current buffer, file  and
           directory tree are bound.
     - New: *Clojure*:
       - New: Add preliminary support for the Clojure programming language.
         - The user-option variable *pel-use-clojure* activates PEL
           support for Clojure with the clojure-mode package..
-          - The PEL ``<f12>`` Lisp hot key is available in that mode, along with
+          - The PEL ~<f12>~ Lisp hot key is available in that mode, along with
             what is available to Emacs Lisp and Common Lisp, including *lispy*.
-            - It's ``<f12> <f1>`` key opens the preliminary  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-clojure.pdf][𝕻𝔩 - Clojure PDF]]
-            - It's ``<f12> <f2>`` key opens PEL clojure customization buffer.
-            - It's ``<f12> <f3>`` key opens the clojure customization buffer.
+            - It's ~<f12> <f1>~ key opens the preliminary  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-clojure.pdf][𝕻𝔩 - Clojure PDF]]
+            - It's ~<f12> <f2>~ key opens PEL clojure customization buffer.
+            - It's ~<f12> <f3>~ key opens the clojure customization buffer.
         - The user-option variable *pel-use-cider* activates Cider.
         - The user-option variable *pel-use-clj-refactor* activates the
           clj-refactor package.
@@ -1096,55 +1093,55 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       - New: Add preliminary support for the Racket programming language.
         - The user-option variable *pel-use-racket* activates it, using the
           *racket-mode* external package.
-          - The PEL ``<f12>`` Lisp hot key is available in that mode, along with
+          - The PEL ~<f12>~ Lisp hot key is available in that mode, along with
             what is available to Emacs Lisp and Common Lisp, including *lispy*.
-            - It's ``<f12> <f2>`` key opens PEL racket customization buffer.
-            - It's ``<f12> <f3>`` key opens the racket-mode customization buffer.
+            - It's ~<f12> <f2>~ key opens PEL racket customization buffer.
+            - It's ~<f12> <f3>~ key opens the racket-mode customization buffer.
     - New: *Scheme*:
       - New: Add preliminary support for the Scheme programming language.
         - The user-option variable *pel-use-scheme* activates PEL extra
           support for Scheme.
-          - The PEL ``<f12>`` Lisp hot key is available in that mode, along with
+          - The PEL ~<f12>~ Lisp hot key is available in that mode, along with
             what is available to Emacs Lisp and Common Lisp, including *lispy*.
-            - It's ``<f12> <f1>`` key opens the preliminary  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-scheme.pdf][𝕻𝔩 - Scheme PDF]]
-            - It's ``<f12> <f2>`` key opens PEL scheme customization buffer.
-            - It's ``<f12> <f3>`` key opens the scheme customization buffer.
+            - It's ~<f12> <f1>~ key opens the preliminary  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-scheme.pdf][𝕻𝔩 - Scheme PDF]]
+            - It's ~<f12> <f2>~ key opens PEL scheme customization buffer.
+            - It's ~<f12> <f3>~ key opens the scheme customization buffer.
     - New: *Gerbil Scheme*:
       - New: Add preliminary support for the Gerbil Scheme programming language.
         - The user-option variable *pel-use-gerbil* activates PEL extra
           support for Gerbil.
-          - The PEL ``<f12>`` Lisp hot key is available in that mode, along with
+          - The PEL ~<f12>~ Lisp hot key is available in that mode, along with
             what is available to Emacs Lisp and Common Lisp, including *lispy*.
-            - It's ``<f12> <f1>`` key opens the preliminary [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-scheme.pdf][𝕻𝔩 - Scheme PDF]]. In
+            - It's ~<f12> <f1>~ key opens the preliminary [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-scheme.pdf][𝕻𝔩 - Scheme PDF]]. In
               the future it may have its own PDF since the language is quite
               interesting but since the Scheme PDF is currently in a very early
               stage it uses the same.
-            - It's ``<f12> <f2>`` key opens PEL scheme customization buffer.
-            - It's ``<f12> <f3>`` key opens the scheme customization buffer.
+            - It's ~<f12> <f2>~ key opens PEL scheme customization buffer.
+            - It's ~<f12> <f3>~ key opens the scheme customization buffer.
     - New: *Arc*:
       - New: Add preliminary support for the Arc programming language.
         - The user-option variable *pel-use-arc* activates it, using
           the *arc.el* and *inferior-arc.el* files from the
           [[https://github.com/arclanguage/anarki][GitHub arclanguage/anarki repository]].
-          - The PEL ``<f12>`` Lisp hot key is available in that mode, along with
+          - The PEL ~<f12>~ Lisp hot key is available in that mode, along with
             what is available to Emacs Lisp and Common Lisp, including *lispy*.
-            - It's ``<f12> <f2>`` key opens PEL arc customization buffer.
-            - It's ``<f12> <f3>`` key opens the arc-mode customization buffer.
+            - It's ~<f12> <f2>~ key opens PEL arc customization buffer.
+            - It's ~<f12> <f3>~ key opens the arc-mode customization buffer.
     - New: *Hy*:
       - New: Add preliminary support for the Hy programming language.
         - The user-option variable *pel-use-hy* activates it.
-          - The PEL ``<f12>`` Lisp hot key is available in that mode, along with
+          - The PEL ~<f12>~ Lisp hot key is available in that mode, along with
             what is available to Emacs Lisp and Common Lisp, including *lispy*.
-            - It's ``<f12> <f1>`` key opens the preliminary  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-hy.pdf][𝕻𝔩 - Hy PDF]].
-            - It's ``<f12> <f2>`` key opens PEL hy customization buffer.
+            - It's ~<f12> <f1>~ key opens the preliminary  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-hy.pdf][𝕻𝔩 - Hy PDF]].
+            - It's ~<f12> <f2>~ key opens PEL hy customization buffer.
     - Update: *LFE - Lisp Flavored Erlang*:
-      - New: Added PEL ``<f12>`` Lisp hot key with all Lisp-available features.
+      - New: Added PEL ~<f12>~ Lisp hot key with all Lisp-available features.
            what is available to Emacs Lisp and Common Lisp, including *lispy*.
-        - It's ``<f12> <f1>`` key opens PEL LFE documentation PDF (currently
+        - It's ~<f12> <f1>~ key opens PEL LFE documentation PDF (currently
           a very early version).
-        - It's ``<f12> <f2>`` key opens PEL arc customization buffer.
-        - The ``M-[`` key is unbound in terminal mode, as it prevent access
-          to function keys above F4. The ``<f12> [`` key binding is provided
+        - It's ~<f12> <f2>~ key opens PEL arc customization buffer.
+        - The ~M-[~ key is unbound in terminal mode, as it prevent access
+          to function keys above F4. The ~<f12> [~ key binding is provided
           in terminal and graphics mode.
   - Update: *Erlang*:
     - New: Add Speedbar support for Erlang, showing the functions in the .erl,
@@ -1154,19 +1151,19 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       *pel-use-erlang-flymake* and *pel-use-erlang-flycheck*.  These last two
       are no longer supported.  The new user-option is used to select one of
       the 2 supported checkers.
-    - The previously used ``<f12> F`` key sequence to toggle flymake is
-      replaced by ``<f12> !`` which is bound to *pel-erlang-toggle-syntax-check*.
+    - The previously used ~<f12> F~ key sequence to toggle flymake is
+      replaced by ~<f12> !~ which is bound to *pel-erlang-toggle-syntax-check*.
   - New: *Forth*:
     - New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-forth][𝕻𝔩 - Forth]] PDF that describes the commands available for the Forth
       programming language.
-    - New: the ``<f11> x f`` key sequences opens a Forth interpreter window.
+    - New: the ~<f11> x f~ key sequences opens a Forth interpreter window.
   - New: *Go*:
     - New: Added support for the Go programming language when the *pel-use-go*
       user option is set to *t*.  It allows the following mode activation:
       - When the *pel-use-go-mode* user-option is set to *t*, editing a Go
         file activates the *go-mode* major mode.
         - The *pel-use-goflymake* user-option identifies whether flymake or
-          flycheck is used with Go files.  The ``<f12> !`` key can be used to
+          flycheck is used with Go files.  The ~<f12> !~ key can be used to
           toggle the activated mode.
     - New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-go][𝕻𝔩 - Go]] PDF that describes the commands available for the Go
      programming language.
@@ -1179,22 +1176,22 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - New: **Haskell**
     - New: add explicit support for Haskell via the *pel-use-haskell* user-option.
       Also provide the *pel-haskell-activates-minor-modes* user-option to automatically
-      activate minor modes for Haskell major mode.  The key prefix is ``<f11> SPC h`` which becomes
-      ``<f12>`` in Haskell buffers.
+      activate minor modes for Haskell major mode.  The key prefix is ~<f11> SPC h~ which becomes
+      ~<f12>~ in Haskell buffers.
   - New: **Nim**
     - New: add explicit support for Nim via the *pel-use-nim* user-option.
       Provides access to *nim-mode* when *pel-use-nim-mode* is turned on.
       Also provide the *pel-nim-activates-minor-modes* user-option to automatically
-      activate minor modes for Nim major mode.  The key prefix is ``<f11> SPC h`` which becomes
-      ``<f12>`` in Nim buffers.
+      activate minor modes for Nim major mode.  The key prefix is ~<f11> SPC h~ which becomes
+      ~<f12>~ in Nim buffers.
   - New: **OCaml**
     - New: add explicit support for OCaml via the *pel-use-ocaml* user-option.
       Supports installation of tuareg and merlin via the *pel-use-tuareg* and *pel-use-merlin* user-options.
       Also provide the *pel-tuareg-activates-minor-modes* user-option to automatically
-      activate minor modes for OCaml major mode.  The key prefix is ``<f11> SPC o`` which becomes
-      ``<f12>`` in OCaml buffers.
+      activate minor modes for OCaml major mode.  The key prefix is ~<f11> SPC o~ which becomes
+      ~<f12>~ in OCaml buffers.
   - Update: *Python*
-    - Modified: binding to rainbow-delimiters-mode to ``<f12> M-r`` like it is
+    - Modified: binding to rainbow-delimiters-mode to ~<f12> M-r~ like it is
       for other programming languages.
   - New: *REXX*:
     - Add support for REXX programming language via a [[https://github.com/pierre-rouleau/rexx-mode][my forked rexx-mode
@@ -1208,13 +1205,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - New: **Perl**
     - New: add explicit support for Perl via the *pel-use-perl* user-option.
       Also provide the *pel-perl-activates-minor-modes* user-option to automatically
-      activate minor modes for Perl major mode.  The key prefix is ``<f11> SPC P`` which becomes
-      ``<f12>`` in Perl buffers.
+      activate minor modes for Perl major mode.  The key prefix is ~<f11> SPC P~ which becomes
+      ~<f12>~ in Perl buffers.
   - New: **Ruby**
     - New: add explicit support for Ruby via the *pel-use-ruby* user-option.
       Also provide the *pel-ruby-activates-minor-modes* user-option to automatically
-      activate minor modes for Ruby major mode.  The key prefix is ``<f11> SPC U`` which becomes
-      ``<f12>`` in Ruby buffers.
+      activate minor modes for Ruby major mode.  The key prefix is ~<f11> SPC U~ which becomes
+      ~<f12>~ in Ruby buffers.
   - Update: *Rust*:
     - Modified: ⚠️  *Customization affecting change*: customization setting, *pel-use-rust*,
       no longer automatically activates cargo and racer for Emacs.  These now
@@ -1227,21 +1224,21 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       - *pel-use-flycheck-rust*: activates flycheck for Rust code.
       - *pel-use-emacs-racer*: activates Emacs Racer for Rust.
       - *pel-use-cargo*: activates Emacs Cargo for Rust.
-    - New: Added a Rust-specific key prefix (``pel:for-rust``) accessible
-      globally  via ``<f11> SPC r`` and inside a Rust mode via ``<f12>``.
+    - New: Added a Rust-specific key prefix (=pel:for-rust=) accessible
+      globally  via ~<f11> SPC r~ and inside a Rust mode via ~<f12>~.
       This prefix key provides access to Rust specific commands, which include:
-      - The ``<f12> <f1>`` key opens the preliminary  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rust.pdf][𝕻𝔩 - Rust PDF]].
-      - The ``<f12> <f2>`` key opens PEL Rust customization buffer.
-      - The ``<f12> <f3>`` key opens the Rust customization buffer.
-      - The ``<f12> c`` key builds the Rust file using ``rust-run``.
-      - The ``<f12> d`` key is bound to ``rust-dbg-wrap-or-unwrap``.
-      - The ``<f12> l`` key is bound to ``rust-run-clippy``, Rust's Lint checker.
+      - The ~<f12> <f1>~ key opens the preliminary  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-rust.pdf][𝕻𝔩 - Rust PDF]].
+      - The ~<f12> <f2>~ key opens PEL Rust customization buffer.
+      - The ~<f12> <f3>~ key opens the Rust customization buffer.
+      - The ~<f12> c~ key builds the Rust file using *rust-run*.
+      - The ~<f12> d~ key is bound to *rust-dbg-wrap-or-unwrap*.
+      - The ~<f12> l~ key is bound to *rust-run-clippy*, Rust's Lint checker.
 - Update: *Process execution*:
-  - New: the list-processes command is now bound to ``<f11> z ?`` key
+  - New: the list-processes command is now bound to ~<f11> z ?~ key
     sequence.
 - Update: *Rectangles*:
-  - New: the *iedit-rectangle-mode* is accessible directly with the ``C-x r
-    RET`` key binding.  There is no need to use the iedit-mode first.
+  - New: the *iedit-rectangle-mode* is accessible directly with the ~C-x r RET~
+    key binding.  There is no need to use the iedit-mode first.
   - New: the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/rectangles.pdf][⅀ Rectangles PDF]]describes the *iedit-rectangle-mode* and available
     commands.
 - Update: *Searching*:
@@ -1249,19 +1246,19 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     [[https://github.com/TobiasZawada/cexp][cexp external package]]:
     - PEL downloads and activates the cexp package when the *pel-use-cexp*
       user-option is set to *t*.
-    - PEL binds ``<f11> s c`` to *cexp-search-forward* command used to perform
+    - PEL binds ~<f11> s c~ to *cexp-search-forward* command used to perform
       a combined expression search.  Quite useful to search strings inside a
       balanced/matching pair of parentheses for example.
-  - New: command *pel-show-search-status* bound to ``<f11> s ?`` that displays
+  - New: command *pel-show-search-status* bound to ~<f11> s ?~ that displays
     all search settings in the echo area.  Use any prefix argument to display
     extra information after the first time it is used.
   - Improved: *pel-search-word-from-top* :
-    - New: mapped *pel-search-word-from-top* to ``<f11> s .`` key sequence and
-           to the ``.;`` key chord.
+    - New: mapped *pel-search-word-from-top* to ~<f11> s .~ key sequence and
+           to the ~.;~ key chord.
     - New: *pel-search-word-from-top* can now search for the title format of a
       user-option when searching into a buffer in Custom-mode.  Use the
       numeric prefix in the range 30 to 38 for that. For example if you issue
-      the command when point is over "pel-use-ido", the command searches for
+      the command when point is over *pel-use-ido*, the command searches for
       the title "Pel Use Ido: ".
     - New: the *pel-search-from-top-in-other* user option controls how
       *pel-search-word-from-top* operates when there is only 2 non-dedicated windows.
@@ -1294,17 +1291,17 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Improved *iedit-mode support*:
     - New: added key bindings for the iedit-mode commands that are not
       accessible in terminal mode:
-      - ``<f1> <f1>`` is bound to iedit-help-for-help.
-      - ``<f1> <f2>`` is bound to iedit-help-for-occurrences.
-      - ``<f1> C-o`` is bound to iedit-show/hide-occurrence-lines.
-      - ``<f1> C-a`` is bound to iedit-show/hide-context-lines.
+      - ~<f1> <f1>~ is bound to iedit-help-for-help.
+      - ~<f1> <f2>~ is bound to iedit-help-for-occurrences.
+      - ~<f1> C-o~ is bound to iedit-show/hide-occurrence-lines.
+      - ~<f1> C-a~ is bound to iedit-show/hide-context-lines.
     - New: modified some iedit-mode command bindings for commands that
      clashed with major command PEL bindings:
-      - ``M-C`` is bound to iedit-upcase-occurences instead of ``M-U`` which
+      - ~M-C~ is bound to iedit-upcase-occurences instead of ~M-U~ which
         remains bound to pel-redo.
-      - ``<f1> M-c`` is bound to iedit-toggle-case-sensitive instead of
-        ``M-C``.
-      - Use ``M-c`` to change occurrence to lower case and ``M-C`` to change
+      - ~<f1> M-c~ is bound to iedit-toggle-case-sensitive instead of
+        ~M-C~.
+      - Use ~M-c~ to change occurrence to lower case and ~M-C~ to change
         occurrences to upper case. Similar to what is available under PEL.
 - Update: *Sessions*:
   - New: added a desktop restoration handler for edts-mode: it protects
@@ -1313,8 +1310,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     This is done to prevent a failed edts-mode from showing it is activated
     when it is not.
 - Update: *Shells*:
-  - *Change*: the key prefix changed from ``<f11> x`` to ``<f11> z``.
-    The letter ``z`` is normally used in Emacs for commands related to shells.
+  - *Change*: the key prefix changed from ~<f11> x~ to ~<f11> z~.
+    The letter ~z~ is normally used in Emacs for commands related to shells.
 - Update: *Skeletons*:
   - Modified: Improved the handling of C-like modes for file header blocks:
     - prevent insertions of empty lines when a file header is inserted in
@@ -1328,54 +1325,54 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       - Keep point inside SR-Speedbar window after opening the selected target
         into a (possibly new) window.  sr-speedbar only offers this behaviour.
     - The new *pel-sr-speedbar-toggle-select-behaviour* command, mapped to
-      ``<f11> M-s M-b`` key sequence, allowing you to choose the SR-Speedbar
+      ~<f11> M-s M-b~ key sequence, allowing you to choose the SR-Speedbar
       selection behaviour that suits you best and change it dynamically when the
       need occurs.
-  - Update: Changed key bindings for easier typing: All ``pel:speedbar`` keys
+  - Update: Changed key bindings for easier typing: All =pel:speedbar= keys
     use the Meta key.
   - New: the *pel-speedbar-focus-current-file* command updates the SR-Speedbar
     to show the list of items for the current file at the top of the speedbar.
   - New: Added support for [[https://github.com/anshulverma/projectile-speedbar][projectile-speedbar]] activated by the
     *pel-use-projectile-speedbar* user-option..  Once projectile is activated
     and a speedbar is opened, set the speedbar to encompass all current
-    project directories and files with it.  The key binding is ``<f8> M-s``.
+    project directories and files with it.  The key binding is ~<f8> M-s~.
 - New: *Text Display Control*:
   - New: add support for the [[https://github.com/cpitclaudel/easy-escape][easy-escape]] external package to simplify the
     display of regular expression strings:
     - Activated by *pel-use-easy-escape* user-option.
     - The *pel-modes-activating-easy-escape* user-option identifies the major
       modes where the easy-escape minor mode is automatically activated.
-    - The new ``<f11> "`` key binding to *easy-escape-minor-mode* allows quick
+    - The new ~<f11> "~ key binding to *easy-escape-minor-mode* allows quick
       toggle of the easy-escape minor mode.
     - The command is described in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/search-replace.pdf][⅀ Search/Replace PDF]].
 - Update: *Text Insertion*:
   - New: Add ability to insert Greek letters:
     -  If the *pel-activate-f9-for-greek* user-option is turned on (set to t),
-       then typing ``<f9>`` followed by a letter inserts the corresponding Greek letter.
-    - The same is always available with the ``<f6> g`` key prefix.
+       then typing ~<f9>~ followed by a letter inserts the corresponding Greek letter.
+    - The same is always available with the ~<f6> g~ key prefix.
     - To see the latin to greek equivalent type the key prefix and wait for *which-key*
-      to show the available bindings, or type the key prefix followed by ``C-h``.
-  - New: add more PEL insertion commands under the ``<f6>`` key prefix for convenience.
+      to show the available bindings, or type the key prefix followed by ~C-h~.
+  - New: add more PEL insertion commands under the ~<f6>~ key prefix for convenience.
   - New: Add support for *smartparens* external package when the
     *pel-use-smartparens* user-option is turned on (set to *t*).
   - Modified: key binding to *pel-toggle-update-copyright-on-save* from
-    ``<f11> M-C`` to ``<f11> M-@``.
+    ~<f11> M-C~ to ~<f11> M-@~.
   - Modified: key bindings, using more lower case letters:
-    - ``<f6> f`` and ``f11> i f`` are now used instead of ``<f6> F`` and
-      ``<f11>> i F`` for **pel-insert-filename*,
-    - ``<f11> i c`` is used instead of ``<f11> i C`` for *copyright*.
+    - ~<f6> f~ and ~f11> i f~ are now used instead of ~<f6> F~ and
+      ~<f11>> i F~ for **pel-insert-filename*,
+    - ~<f11> i c~ is used instead of ~<f11> i C~ for *copyright*.
   - New: key bindings:
-    - ``<f11> i M-t`` bound to *time-stamp-toggle-active*,
-    - ``<f11> i M-c`` bound to *copyright-update*.
-  - Improved: generic file mode/header template insetion (``<f6>
-    h``) and separator line insertion (``<f6> l``) now get comment style from
+    - ~<f11> i M-t~ bound to *time-stamp-toggle-active*,
+    - ~<f11> i M-c~ bound to *copyright-update*.
+  - Improved: generic file mode/header template insertion (~<f6> h~)
+    and separator line insertion (~<f6> l~) now get comment style from
     user if they are not already defined.
 - Update: *Text Modes*:
-  - New: *glasses-mode* is now bound to ``<f11> t m g`` key sequence.  The
-    *pel-show-text-modes* command (bound to ``<f11 t m ?``) now also display
+  - New: *glasses-mode* is now bound to ~<f11> t m g~ key sequence.  The
+    *pel-show-text-modes* command (bound to ~<f11 t m ?~) now also display
     the state of glasses-mode.
-  - New: overwrite-mode is also bound to the <Esc><kp-0> key sequence.  This
-    makes it very similar to the default <insert> key which is not available
+  - New: overwrite-mode is also bound to the ~<Esc><kp-0>~ key sequence.  This
+    makes it very similar to the default ~<insert>~ key which is not available
     in macOS keyboards.
 - Update: *VCS*:
   - New: The *pel-use-gitignore-mode* user-option activates support for the
@@ -1385,11 +1382,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     the Mercurial .hgignore files.
 - Update: *Windows Management*:
   - The Windows Hydra now provides quick access to the
-    ``pel-toggle-window-dedicated`` command which toggles the dedicated state
+    *pel-toggle-window-dedicated* command which toggles the dedicated state
     of a window.
   - Add support for the *windresize* external package:
     - Activate it by setting *pel-use-windresize* to *t*.
-    - The windresize command is bound to the ``<f11> w r`` key sequence.
+    - The windresize command is bound to the ~<f11> w r~ key sequence.
 ** Other Modifications:
 - The customization group pel-pkg-for-xref is now a child of
   pel-pkg-for-navigation and holds tags based cross-reference build control as
@@ -1405,20 +1402,20 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 + New: added background colours to key sequence cells to highlight the fact
   that some key sequences are only available for specific major or minor modes
   or when point is over text that has been turned into a button.
-+ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/align.pdf][⅀ Align]] better describes handling of indentation on ``M-RET``.
++ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/align.pdf][⅀ Align]] better describes handling of indentation on ~M-RET~.
 + New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf][➢Index]] PDF which holds links to all other PDF tables.
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/grep.pdf][⅀ Grep PDF]] describes ag and ripgrep menu.  Also references projectile-based
  search commands.
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/help.pdf][⅀ Help PDF]] better introduces reader to getting help from Emacs and
   PEL.
-+ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/input-method.pdf][⅀ Input Method]] also includes information about encoding. The ``<f11>
-  ? p`` key binding completion allows "encoding" to open that PDF.
++ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/input-method.pdf][⅀ Input Method]] also includes information about encoding.
+  The ~<f11> ? p~ key binding completion allows "encoding" to open that PDF.
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/completion-input.pdf][⅀ Input Completion PDF]] table better describes Ido, Ivy and Helm and the
   commands that PEL supports to change mode dynamically.
 + New:  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/completion-input-availability.pdf][🚦Input Completion Availability PDF]] table describes the feature
   availability of the various input-completion methods supported by PEL.
 + New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/treemacs.pdf][⅀𝔛 Treemacs PDF]]
-+ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/indentation.pdf][⅀ Indentation]better describes handling of indentation on ``M-RET``.
++ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/indentation.pdf][⅀ Indentation]] better describes handling of indentation on ~M-RET~.
 + Update: C, C++ and D programming language support tables.
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-python.pdf][𝕻𝔩 - Python]] programming language : listed more commands.
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/rectangles.pdf][⅀ Rectangles PDF]] better describes how to mark rectangle areas.
@@ -1426,11 +1423,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   includes description of the projectile commands.  It also describes all
   iedit-mode commands.
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/text-modes.pdf][⅀ Text Modes PDF]] describes the superword-mode, subword-mode better, and new
-  key binding to overwrite-mode (<Esc><kp-0>).
+  key binding to overwrite-mode (~<Esc><kp-0>~).
 + Renamed ⅀ Tags to [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/xref.pdf][⅀ Xref]]; the PDF will describe several cross-referencing
   mechanisms, not just the tags-based mechanisms.
 + Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/undo-redo-repeat.pdf][⅀ Undo/Redo/Repeat/Arg]] better describes how to repeat commands.
-+ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/windows.pdf][⅀ Windows]] now describes the new Esc and <f1> cursor keys to manage
++ Update: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/windows.pdf][⅀ Windows]] now describes the new Esc and ~<f1>~ cursor keys to manage
   and navigate across windows.
 + Updates to the Buffer, CUA, Cut & Paste, Marking, Undo PDF reference tables.
 + New: [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-make.pdf][𝕻𝔩 - Make]] PDF that describes make file editing support.
@@ -1450,7 +1447,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Better description of how to write customize tempo skeletons.
 ** Bug Fixes:
 - Fix: Inside Common Lisp buffers, PEL's mechanism to access help and
-  customization through the ``<f12> <f1>``, ``<f12> <f2>`` and ``<f12> <f3>``
+  customization through the ~<f12> <f1>~, ~<f12> <f2>~ and ~<f12> <f3>~
   failed to open the file or buffer.
   - Root cause: a missing format specifier prevented the error detection
     mechanism to detect a missing entry in the look up table: support for
@@ -1500,7 +1497,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   line un-indenting commands.  The region is kept and no longer grows or shrink
   in some scenarios as before.
 - Fix: typos in names of *goto-address-mode* and *goto-address-prog-mode* that
-  prevented their ``<f11> f`` key bindings from working.
+  prevented their ~<f11> f~ key bindings from working.
 ** Work-Around for Emacs Bugs:
 - Emacs 26.3 and 27.1 suffer from [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=44494][bug 44494]] where etags.el
   xref-location-marker does not handle TAGS references to  .el.gz compressed
@@ -1721,10 +1718,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 * Version: 0.1.1
 ** new features:
   - rst support: added commands for text emphasis (bold, italic, literal, interpreted).
-  - modified keymap: draw is now ``<f11> D``.
-  - added support and documentation for diff/ediff (with keymaps ``<f11> d`` and ``<f11> e``.
-  - Added support for Magit and Monky and ``<f11> v`` keymap for (D)VCS.
-  - Added ``pel-end-of-line`` which helps move before trailing spaces.
+  - modified keymap: draw is now ~<f11> D~.
+  - added support and documentation for diff/ediff (with keymaps ~<f11> d~ and ~<f11> e~.
+  - Added support for Magit and Monky and ~<f11> v~ keymap for (D)VCS.
+  - Added *pel-end-of-line* which helps move before trailing spaces.
   - Documentation: documented autoave & backup
   - Documentation: described limitations in the dual-stage autoloading.
 ** fixes:
