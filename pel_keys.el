@@ -378,6 +378,9 @@ Done in this function to allow advising libraries that remap these keys."
   (when (and pel-delight-specs
              (fboundp 'delight))
     (delight pel-delight-specs)))
+(unless (string= pel-electric-pair-lighter "")
+  (add-to-list 'minor-mode-alist
+               (list 'electric-pair-mode pel-electric-pair-lighter)))
 
 ;; ---------------------------------------------------------------------------
 ;; ace-link
@@ -1070,6 +1073,8 @@ Done in this function to allow advising libraries that remap these keys."
 ;; as a prefix key and this feature is quite useful.
 (define-key pel: (kbd      "C-l")          'recenter-top-bottom)
 
+;; Electric-pair-mode control
+(define-key pel: (kbd      "M-e")          'electric-pair-local-mode)
 
 ;; ---------------------------------------------------------------------------
 ;; EditorConfig Support
@@ -4146,6 +4151,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     ;; Add the "IN-PROGRESS" in the list of TODO states
     (pel-setq org-todo-keywords
               (quote ((sequence "TODO" "IN-PROGRESS" "DONE"))))
+
     ;;
     (when pel-windmove-on-esc-cursor
       ;; Remove Esc down/up/left/right mapping to org-meta...

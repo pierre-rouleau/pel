@@ -3428,11 +3428,21 @@ more details.
 Some are provided by default to help show the possibilities of
 the supported syntax.
 
-PEL applies them when the `pel-use-delight' is turned on."
+PEL applies them when the `pel-use-delight' is turned on.
+
+NOTE: lighter for electric-pair-mode must be activated separately
+      by the `pel-electric-pair-lighter'."
   :group 'pel-pkg-for-modeline
   :link '(url-link :tag "delight @ Emacs Wiki"
                    "https://www.emacswiki.org/emacs/DelightedModes")
   :type '(repeat sexp))
+
+(defcustom pel-electric-pair-lighter " ℇ⒧ "
+  "Mode-line lighter for the electric-pair-mode.
+
+To disable it replace it by an empty string."
+  :group 'pel-pkg-for-modeline
+  :type 'string)
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-navigation

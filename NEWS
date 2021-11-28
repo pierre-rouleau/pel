@@ -87,6 +87,13 @@ EL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   style.  The behaviour is selected by the new *pel-c-multiline-comments*
   user-option, which defaults to the standard behaviour and creates one
   comment per line.  Change that value to create multi-line comments instead.
+- Explicit support for the *electric-pair-mode*:
+  - Add key binding ~<f11> M-e~ to *electric-pair-local-mode*.  This allows quickly
+    toggling the *electric-pair-mode* for the current buffer activating the ability
+    to type in the pair of characters activated by the mode.  In CC modes and several
+    programming modes that's all the /parens/ characters.
+  - Also add the *pel-electric-pair-lighter* user-option(which defaults to " ℇ⒧ ")
+    to specify a mode-line lighter for the *electric-pair-mode*.
 * Version 0.4.1:
 ** Modifications:
 - Fix: The File Management PDF now describes PEL's ability to select the
