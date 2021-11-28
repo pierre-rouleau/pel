@@ -4144,6 +4144,14 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (global-set-key "\C-cb" 'org-switchb)
 
   (pel-eval-after-load org
+    (defvar pel-org-electric-pairs '((?\* . ?\*)
+                                     (?/ . ?/)
+                                     (?= . ?=)
+                                     (?\_ . ?\_)
+                                     (?~ . ?~)
+                                     (?+ . ?+))
+      "Electric pairs for org-mode markup.")
+
     ;; Activate specialized C-a and C-e in Org-Mode.
     (pel-setq org-special-ctrl-a/e t)
     ;; Activate timestamp log for DONE tasks
@@ -4151,7 +4159,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     ;; Add the "IN-PROGRESS" in the list of TODO states
     (pel-setq org-todo-keywords
               (quote ((sequence "TODO" "IN-PROGRESS" "DONE"))))
-
     ;;
     (when pel-windmove-on-esc-cursor
       ;; Remove Esc down/up/left/right mapping to org-meta...
@@ -4178,7 +4185,15 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                          :error))
       (when (and pel-use-imenu+
                  (fboundp 'imenup-add-defs-to-menubar))
-        (imenup-add-defs-to-menubar)))))
+        (imenup-add-defs-to-menubar))
+      ;; Activate Electric markup keys if requisted
+      (when pel-org-use-electric-markup
+        (defvar electric-pair-pairs)      ; defined in elec-pair
+        (defvar electric-pair-text-pairs) ; defined in elec-pair
+        (electric-pair-local-mode 1)
+        (setq-local electric-pair-pairs
+                    (append electric-pair-pairs pel-org-electric-pairs))
+        (setq-local electric-pair-text-pairs electric-pair-pairs)))))
 
 ;; ---------------------------------------------------------------------------
 ;; XML Support

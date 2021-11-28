@@ -3230,6 +3230,16 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-org-mode
   :type '(repeat function))
 
+(defcustom pel-org-use-electric-markup nil
+  "Whether org markup keys are electric.
+
+When turned on, the *, /, =, _, ~ and + keys are electric in org-mode.
+- Typing one of these keys inserts the other after the cursor.
+- Typing a key when an area is marked inserts the keys around the area."
+  :group 'pel-pkg-for-org-mode
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; reStructuredText support
 ;; ------------------------

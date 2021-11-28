@@ -1,4 +1,4 @@
-EL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
+PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
@@ -94,6 +94,15 @@ EL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     programming modes that's all the /parens/ characters.
   - Also add the *pel-electric-pair-lighter* user-option(which defaults to " ℇ⒧ ")
     to specify a mode-line lighter for the *electric-pair-mode*.
+- In Org-Mode markup text-emphasis electric keys via an extended *electric-pair-mode* is now activated
+  when the *pel-org-use-electric-markup* user-option is turned on.  When this
+  is activated the ~*~, ~/~, ~_~, ~=~, ~~~ and ~+~ keys are electric and are
+  inserted in pair and added at both end of a marked area.
+  - This behaviour can be toggled with the ~<f11> M-e~ key to execute the
+    *electric-pair-local-mode* command which disables the electric behaviour
+    of the keys in the local buffer.  Also note that when the electric
+    behaviour is active the mode-line lighter specified by
+    *pel-electric-pair-lighter* (defaulting to " ℇ⒧ ") is shown.
 * Version 0.4.1:
 ** Modifications:
 - Fix: The File Management PDF now describes PEL's ability to select the
