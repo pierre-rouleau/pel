@@ -4127,7 +4127,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; ----------------
 
 (when pel-use-org-mode
-  (define-pel-global-prefix pel:for-org-mode (kbd "<f11> SPC M-o"))
+  (define-pel-global-prefix pel:for-org-mode   (kbd "<f11> SPC M-o"))
+  ;; (define-pel-global-prefix pel:org-mode-setup (kbd "<f11> SPC M-o <f4>"))
 
   ;; Org-Mode activation, as suggested by
   ;; https://orgmode.org/manual/Activation.html#Activation :
@@ -4142,6 +4143,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (global-set-key "\C-ca" 'org-agenda)
   (global-set-key "\C-cc" 'org-capture)
   (global-set-key "\C-cb" 'org-switchb)
+
+  (define-key pel:for-org-mode (kbd "TAB") 'org-indent-mode)
 
   (pel-eval-after-load org
     (defvar pel-org-electric-pairs '((?\* . ?\*)
