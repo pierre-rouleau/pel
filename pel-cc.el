@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-11-27 10:51:37, updated by Pierre Rouleau>
+;; Time-stamp: <2021-11-29 11:55:03, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -263,15 +263,8 @@ Prompt if not specified."
          ((> new-width 0)
           (setq-local c-basic-offset new-width))
          ((= new-width 0)
-          ;; TODO: simplify the following to ease maintenance.
           (setq-local c-basic-offset
-                      (cond
-                       ((eq major-mode 'c-mode)
-                        pel-c-indent-width)
-                       ((eq major-mode 'c++-mode)
-                        pel-c++-indent-width)
-                       ((eq major-mode 'd-mode)
-                        pel-d-indent-width))))
+                      (pel-major-mode-symbol-value "pel-%s-indent-width")))
          (t (user-error "Enter 0 or positive value!")))
         (message "indentation is now %s" c-basic-offset))
     (error "c-basic-offset is not loaded!")))
