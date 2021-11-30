@@ -46,6 +46,7 @@
 ;;     - pel-pkg-for-diff-merge
 ;;     - pel-pkg-for-dired
 ;;     - pel-pkg-for-expand
+;;     - pel-pkg-for-conf-file
 ;;     - pel-pkg-for-filemng
 ;;       - pel-pkg-for-browse
 ;;         - pel-pkg-for-file-browse
@@ -1508,6 +1509,23 @@ The Hippie Expand can be used together with any."
   "List of major modes that automatically activate abbrev-mode."
   :group 'pel-pkg-for-expand
   :type '(repeat symbol))
+
+;; ---------------------------------------------------------------------------
+;; pel-pkg-for-conf-file
+;; ---------------------
+(defgroup pel-pkg-for-conf-file nil
+  "List of external packages that manage configuration files."
+  :group 'pel-package-use
+  :group 'files)
+
+(defcustom pel-use-ini nil
+  "Whether PEL support the ini package that support .ini file read/write."
+  :group 'pel-pkg-for-conf-file
+  :link '(url-link :tag "ini @ Github"
+                   "https://github.com/daniel-ness/ini.el")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-ini :package-is :in-utils)
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-filemng

@@ -114,6 +114,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   the directories specified by 2 explicit lists: one for the project and on
   for the tools and libraries.  The directories in these lists can also refer
   to environment variables using the $VARNAME syntax.
+- When *pel-use-ini* user -option is on, the ini.el package written by Daniel
+  Ness is installed in the utils directory.
+- Add the *pel-ini* file which provides the *pel-ini-load* and *pel-ini-store*
+  functions that load a .INI file into a alist and vice versa.  This is
+  currently limited to simple single-line values.
 * Version 0.4.1:
 ** Modifications:
 - Fix: The File Management PDF now describes PEL's ability to select the

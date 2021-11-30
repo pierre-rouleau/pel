@@ -306,6 +306,13 @@ Done in this function to allow advising libraries that remap these keys."
   (pel-bind-greek-to "<f9>"))
 
 ;; ---------------------------------------------------------------------------
+;; File format parsing support
+;; ---------------------------
+(when pel-use-ini
+  (cl-eval-when 'load
+    (pel-install-github-file "daniel-ness/ini.el/master" "ini.el")))
+
+;; ---------------------------------------------------------------------------
 ;; - Font Control
 ;; --------------
 

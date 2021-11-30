@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-11-29 18:03:51, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2021-11-30 13:59:42, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -178,6 +178,7 @@ EL_FILES := pel--base.el \
 		pel-imenu.el \
 		pel-imenu-dbg.el \
 		pel-imenu-ido.el \
+		pel-ini.el \
 		pel-indent.el \
 		pel-key-chord.el \
 		pel-kbmacros.el \
