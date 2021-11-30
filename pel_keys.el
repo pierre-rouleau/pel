@@ -310,7 +310,7 @@ Done in this function to allow advising libraries that remap these keys."
 ;; ---------------------------
 (when pel-use-ini
   (cl-eval-when 'load
-    (pel-install-github-file "daniel-ness/ini.el/master" "ini.el")))
+    (pel-install-github-file "pierre-rouleau/ini.el/master" "ini.el")))
 
 ;; ---------------------------------------------------------------------------
 ;; - Font Control
