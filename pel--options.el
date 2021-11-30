@@ -3918,6 +3918,52 @@ via the ``<f12> ? e`` sequence."
 (pel-put 'pel-use-c-eldoc :package-is :in-utils)
 (pel-put 'pel-use-c-eldoc :requires '(pel-use-c pel-use-c++))
 
+
+(defcustom pel-c-file-finder-method 'generic
+  "Specify method used by `pel-open-at-point' to search C header files.
+
+The following methods are supported:
+
+- generic (the default):
+
+   The parent directory tree of the current file is searched.
+   The parent directory root is first identified and the file is searched
+   in all its sub-directories.  The root is identified by the presence
+   of one of the files identified by the `pel-project-root-identifiers'
+   user option.
+
+- Environment variable string:
+
+  The name of an environment variable (such as \"INCLUDE\") that identifies
+  the directories to search.  Use this when your OS environment set up
+  environment variables that inform the C compiler where header files are
+  located.
+
+- Two lists of directories: one for the project and one for the compiler tool:
+
+  This specifies two lists of directories. The first list identifies the
+  project directories and the second list identifies the directories where the
+  compiler and libraries headers are stored.
+
+  Each string in the lists can use environment variables as part of the
+  path-name and MUST use the $VARNAME syntax.  That can be quite useful
+  when the location of the project of the tools may vary from user to user
+  or computers.  For example \"$HOME/foo\" will be expanded to the foo
+  sub-directory under the user's home directory.
+
+You may want to store this value inside a .dir-local.el directory
+local-variable file with your C source code to control the behaviour
+of the file search based on your project."
+  :group 'pel-pkg-for-c
+  :safe 't
+  :type '(choice
+          (const :tag "Generic tree search" generic)
+          (string :tag "Name of environment variable that identify directories"
+                  :value "INCLUDE")
+          (list :tag "Explicit lists of directories for project and tool"
+                (repeat :tag "Project directories" (string :tag "Project directory"))
+                (repeat :tag "Tool directories"    (string :tag "Tool directory")))))
+
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-c-code-style nil
   "C Source Code Style options."
@@ -4436,6 +4482,20 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-c++
   :type '(repeat function))
+
+(defcustom pel-c++-file-finder-method 'generic
+  "Specify method used by `pel-open-at-point' to search C/C++ header files.
+
+See `pel-c-file-finder-method' docstring for more information."
+  :group 'pel-pkg-for-c++
+  :safe 't
+  :type '(choice
+          (const :tag "Generic tree search" generic)
+          (string :tag "Name of environment variable that identify directories"
+                  :value "INCLUDE")
+          (list :tag "Explicit lists of directories for project and tool"
+                (repeat :tag "Project directories" (string :tag "Project directory"))
+                (repeat :tag "Tool directories"    (string :tag "Tool directory")))))
 
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-c++-code-style nil

@@ -104,6 +104,16 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     behaviour is active the mode-line lighter specified by
     *pel-electric-pair-lighter* (defaulting to " ℇ⒧ ") is shown.
 - New key binding in *Org-mode*: ~<f12> TAB~ is now bound to *org-indent-mode.*
+- New C and C++ support for open file at point: in C and C++ it is now
+  possible to specify a new method to find C/C++ header file search.
+  The new *pel-c-file-finder-method* and *pel-c++-file-finder-method*
+  user-options specify the file search method used by the command
+  *pel-open-at-point*.  With these you can specify to search generically in
+  the directory tree which is the default method, or search in the directories
+  identified by the content of an environment variable (such as INCLUDE) or in
+  the directories specified by 2 explicit lists: one for the project and on
+  for the tools and libraries.  The directories in these lists can also refer
+  to environment variables using the $VARNAME syntax.
 * Version 0.4.1:
 ** Modifications:
 - Fix: The File Management PDF now describes PEL's ability to select the

@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-11-09 23:07:40, updated by Pierre Rouleau>
+;; Time-stamp: <2021-11-29 18:05:26, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,9 +25,21 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This provides the `pel-ffind' function that find files using either the
-;; find or fd command line utilities, as identified by the
-;; `pel-ffind-executable' user-option.
+;; This provides the functions that find files.
+;;
+;;  - `pel-generic-find-file' searches a file inside one or several directory
+;;    trees.
+;;  - `pel-ffind' function that find files using either the
+;;    find or fd command line utilities, as identified by the
+;;    `pel-ffind-executable' user-option.
+
+;; * `pel-ffind'
+;;   - `pel-ffind-command'
+;;     - `pel--ffind-dirname-quoted'
+;;
+;; * `pel-generic-find-file'
+;;   - `pel-ffind-project-directory'
+;;   - `pel-ffind'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -98,7 +110,7 @@ The function searches in the director trees identified by:
 Returns a list of string, each string is the path of a file found.
 
 Uses shell command identified by `pel-ffind-executable'.
-The VCS ignore capability of fd is not used, so all files are found
+The 'VCS ignore capability' of fd is not used, so all files are found
 whether the VCS is told to ignore them or not."
   (unless directories
     (setq directories (list default-directory)))
@@ -159,7 +171,8 @@ nil otherwise."
 (defun pel-generic-find-file (filename &optional directories)
   "Find a file FILENAME from the project holding the current buffer file.
 
-Return a file or a list or found files.  Return nil if nothing found.
+Return a list of found file names with complete absolute path.
+Return nil if nothing found.
 
 If DIRECTORIES argument is specified it may be a single directory
 path string or a list of directory path strings to search on top

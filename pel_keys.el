@@ -2210,6 +2210,11 @@ MODE must be a symbol."
 
       (define-key c-mode-map (kbd "M-;") 'pel-c-comment-dwim)
 
+      ;; Configure how to search for a file name from the user-option
+      ;; `pel-c-file-finder-method' which may be specified in a
+      ;; .dir-local.el file.
+      (pel-cc-find-activate-finder-method pel-c-file-finder-method)
+
       ;; Configure the CC Mode style for C from PEL custom variables
       ;; 1) set the style: it identifies everything
       (pel--set-cc-style 'c-mode pel-c-bracket-style pel-c-newline-mode)
@@ -2265,6 +2270,12 @@ MODE must be a symbol."
 
   (pel-eval-after-load cc-mode
     (pel-config-major-mode c++ pel:for-c++
+
+      ;; Configure how to search for a file name from the user-option
+      ;; `pel-c++-file-finder-method' which may be specified in a
+      ;; .dir-local.el file.
+      (pel-cc-find-activate-finder-method pel-c++-file-finder-method)
+
       ;; "Set the environment for editing C++ files."
       ;; Configure the CC Mode style for C++ from PEL custom variables
       ;; 1) set the style: it identifies everything

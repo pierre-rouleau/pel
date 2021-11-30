@@ -125,6 +125,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-smb-previous
     pel-show-all-buffers)
 
+  (pel-autoload-function "pel-cc-find" for:
+    pel-cc-find-activate-finder-method)
+
   (pel-autoload "pel-cc" for
     pel-cc-newline
     pel-cc-mode-info

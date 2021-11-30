@@ -1194,6 +1194,9 @@ with a slash.  There are no duplicates and the list is sorted."
 (defun pel-erlang-find-file (filename &optional directories)
   "Find a file FILENAME from and Erlang library.
 
+Return a list of found file names with complete absolute path.
+Return nil if nothing found.
+
 Search in the Erlang root and the project directories by default.
 If DIRECTORIES is specified also search in these extra directories."
   (pel-ffind filename (pel-erlang-source-directories directories)))

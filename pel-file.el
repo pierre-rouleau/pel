@@ -249,25 +249,26 @@ File「%s」not found.   Create it, edit name or find Library file? "
   "List of functions to use to find file from name.
 
 Each function in the list must:
-- Accept an optional argument: a string representing the file name.
-  If the argument is nil it must read the file name from the current point
-  location.
-- Return a string with the complete file name with path if found, nil
-  otherwise.
+- Accept one argument: a string representing the file name.
+- Return a list of strings; each one must be the complete
+  absolute path of a found file.
+  If nothing is found the function must return nil.
 
-These functions should prompt the user if multiple files have been
-found to get the user to select the one to use.  The function should allow
-escaping with a quit.
+The `pel-generic-find-file' is a good example of such a function.
+The `pel-erlang-find-file' is another example, specific to the Erlang
+programming language.
 
-When several functions are provided, each function is tried in turn.  The
-first function that returns a file name wins: the search stops and the file
-name is used.")
+When several functions are provided, each function is tried in
+turn.  The first function that returns a list of string wins: the
+search stops.  If several files are listed the
+caller (`pel--complete-filename-for') prompts the user for the
+file to select.")
 
 (defun pel--find-by-finders (filename)
   "Find complete path of FILENAME using file finders if any.
 
 File finders functions are identified by `pel-filename-at-point-finders'.
-Return the path string of then file found if one is found, otherwise return
+Return a list of path string of file found if any is found, otherwise return
 nil."
   (when pel-filename-at-point-finders
     (let ((found nil)
