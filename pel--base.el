@@ -1618,8 +1618,12 @@ Otherwise return the loading state of the FEATURE."
         ;; when not already present
         (if package
             (if with-pel-install
-                ;; install using specified GitHub repository
-                (pel-install-github-file with-pel-install fname url-fname)
+                (progn
+                  ;; install using specified GitHub repository
+                  (pel--install-github-file with-pel-install fname url-fname
+                                            nil)
+                  ;; try to load it again
+                  (require feature nil :noerror))
               ;; install using Elpa package system
               (let ((package (if (eq package :install-when-missing)
                                  feature

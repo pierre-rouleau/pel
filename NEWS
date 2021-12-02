@@ -5,6 +5,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Fix: Several EDTS commands were not autoloaded by EDTS code.  PEL code now
   autoloads them when EDTS is requested.  This includes the EDTS debug, eunit
   and dialyzer commands.
+- Fix: *pel-require* can now install and load at run time, not only load-time,
+  allowing to write code that use external packages to install them only when
+  required.  There is still one issue left: the package installed this way
+  will be removed by *pel-cleanup*: will need to add a mechanism to take this
+  type of installation into account.
 - Modified: key bindings to toggle EDTS: it was bound to ~<f12> M-E~ (or its
   equivalent ~<M-f12> M-E~).  It is now bound to ~<f12> M-E M-E~ (and its
   equivalent and easier to type ~<M-f12> M-E M-E~).
