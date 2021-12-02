@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-11-29 18:00:08, updated by Pierre Rouleau>
+;; Time-stamp: <2021-12-02 18:03:09, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -43,31 +43,107 @@
 ;;
 ;;
 (require 'pel--base)             ; use: `pel-major-mode-symbol-value'
+(require 'pel--options)          ; use: `pel-c-file-finder-ini-tool-name'
+;;                               ;      `pel-c++-file-finder-ini-tool-name'
 (require 'pel-file)              ; use: `pel-filename-at-point-finders'
+(require 'pel-ffind)             ; use: `pel-ffind-project-directory'
 (require 'pel-ffind-inpath)      ; use: `pel-ffind-inpath-include'
-
+(require 'pel-ini)               ; use: `pel-ini-load'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
+
+(defvar pel--c-file-finder-ini-tool-name pel-c-file-finder-ini-tool-name
+  "Identifies the name of an extra list of directories to use in C.")
+
+(defvar pel--c++-file-finder-ini-tool-name pel-c++-file-finder-ini-tool-name
+  "Identifies the name of an extra list of directories to use in C.")
+
+;;-pel-autoload
+(defun pel-cc-set-file-finder-ini-tool-name (&optional tool-name)
+  "Select a new value for `pel-CC-file-finder-ini-tool-name'.
+
+CC is 'c' for C files, 'c++' for C++ files."
+  (interactive "sTool name: ")
+  (cond
+   ((eq major-mode 'c-mode)
+    (setq pel--c-file-finder-ini-tool-name tool-name)
+    (message "\
+ pel-open-at-point executed in a C file
+ now search the project-path directories and the ones identified by the %s pel.ini key"
+             tool-name))
+   ((eq major-mode 'c++-mode)
+    (setq pel--c++-file-finder-ini-tool-name tool-name)
+    (message "\
+ pel-open-at-point executed in a C++ file
+ now search the project-path directories and the ones identified by the %s pel.ini key"
+             tool-name))
+   (t (user-error "This is for C and C++ files only!"))))
+
+
+;;-pel-autoload
+(defun pel-cc-find-via-pel-ini (filename)
+  "Search FILENAME in directories defined by pel.ini [file-finder] section.
+
+Return a list of found file path names."
+  (let ((tool-name (pel-major-mode-symbol-value
+                    "pel--%s-file-finder-ini-tool-name"))
+        (pel-ini-filename (car (pel-generic-find-file "pel.ini")))
+        (pel-ini-alist nil)
+        (section nil)
+        (project-path nil))
+    (unless pel-ini-filename
+      (user-error "No pel.ini file found in directory tree."))
+
+    (setq pel-ini-alist (pel-ini-load pel-ini-filename))
+    (unless pel-ini-alist
+      (user-error "File %s is not a valid .INI file"
+                  pel-ini-filename))
+
+    (setq section (cdr (assoc "file-finder" pel-ini-alist)))
+    (unless section
+      (user-error "The INI file %s is missing section [file-finder]"
+                  pel-ini-filename))
+
+    (setq project-path (cdr (assoc "project-path" section)))
+    (unless project-path
+      (user-error "The INI file %s is missing the project-path key"
+                  pel-ini-filename))
+    ;; Extend path with optional tool-specific directories if one is specified
+    ;; and the corresponding key is in the INI file.
+    (when tool-name
+      (setq project-path
+            (delete-dups (append project-path
+                                 (cdr (assoc tool-name section))))))
+    ;; perform file search inside identified directories
+    (pel-ffind filename (mapcar (function expand-file-name)
+                                project-path))))
 
 ;;-pel-autoload
 (defun pel-cc-find-activate-finder-method (&optional file-finder-method)
   "Activate the file finder method for buffers of current major-mode."
   (unless file-finder-method
     (setq file-finder-method
-         (pel-major-mode-symbol-value "pel-%s-file-finder-method")))
+          (pel-major-mode-symbol-value "pel-%s-file-finder-method")))
   ;; Set pel-filename-at-point-finders according to what specified in the
   ;; file-finder-method variable for the current major-mode.
   (cond
+   ;; --
    ;; Use a generic file tree search
    ((eq file-finder-method 'generic)
     (setq pel-filename-at-point-finders '(pel-generic-find-file)))
+   ;; --
+   ;; Use directories identified by pel.ini file [file-finder] section
+   ((eq file-finder-method 'pel-ini-file)
+    (setq pel-filename-at-point-finders (list (function pel-cc-find-via-pel-ini))))
+   ;; --
    ;; Search in the directories identified in specified environment variable
    ((stringp file-finder-method)
     (setq pel-filename-at-point-finders
           (list
            (lambda (fn)
              (pel-ffind-inpath-include fn file-finder-method)))))
+   ;; --
    ;; Search in explicit list of project and tools directories
    ((and (listp file-finder-method)
          (eq (length file-finder-method) 2))
@@ -78,6 +154,7 @@
             (list
              (lambda (fn)
                (pel-ffind-inpath fn path-list))))))
+   ;; --
    ;; no other method currently supported
    (t (error (format "invalid file-finder-method: %S for %s"
                      file-finder-method

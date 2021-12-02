@@ -1526,6 +1526,8 @@ The Hippie Expand can be used together with any."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-ini :package-is :in-utils)
+(pel-put 'pel-use-ini :also-required-when '(eq pel-c-file-finder-method
+                                               (quote pel-ini-file)))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-filemng
@@ -3950,6 +3952,27 @@ The following methods are supported:
    of one of the files identified by the `pel-project-root-identifiers'
    user option.
 
+- Use the [file-finder] section of pel.ini file:
+
+  Use a file named 'pel.ini' inside the project's directory tree.
+  The function `pel-open-at-point' searches for that file in the parent
+  directory tree identified by the same method as above.
+  The 'pel.ini' file is a .INI file using the format described
+  in https://en.wikipedia.org/wiki/INI_file.  It must have the following
+  elements:
+
+  - section: '[file-finder]'
+  - key:     'project-path' : a list of directories where files are searched
+                              for the current project.
+
+  - extra tool-specific path key(s): There can be several other keys that have
+    the name of a tool or some convention and define a set of directories to
+    add to the 'project-path' list when the value of the
+    `pel-c-file-finder-ini-tool-name' user-option match the name of that extra
+    key.  The command `pel-cc-set-file-finder-ini-tool-name' can be used to
+    modify the `pel-c-file-finder-ini-tool-name' value at run time and allow
+    dynamic change of the searched directories.
+
 - Environment variable string:
 
   The name of an environment variable (such as \"INCLUDE\") that identifies
@@ -3976,11 +3999,24 @@ of the file search based on your project."
   :safe 't
   :type '(choice
           (const :tag "Generic tree search" generic)
+          (const :tag "Use [file-finder] section in pel.ini" pel-ini-file)
           (string :tag "Name of environment variable that identify directories"
                   :value "INCLUDE")
           (list :tag "Explicit lists of directories for project and tool"
                 (repeat :tag "Project directories" (string :tag "Project directory"))
                 (repeat :tag "Tool directories"    (string :tag "Tool directory")))))
+
+(defcustom pel-c-file-finder-ini-tool-name nil
+  "Default file-finder tool name used by C projects.
+
+This name, if specified, must correspond to one of the tool names specified by
+the 'tool-names' key in the [file-finder] section of the pel.ini file.
+It must represent the name of a tool used for C++ files.
+
+See `pel-c-file-finder-method' for more information."
+  :group 'pel-pkg-for-c
+  :safe 't
+  :type 'string)
 
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-c-code-style nil
@@ -4509,11 +4545,24 @@ See `pel-c-file-finder-method' docstring for more information."
   :safe 't
   :type '(choice
           (const :tag "Generic tree search" generic)
+          (const :tag "Use [file-finder] section in pel.ini" pel-ini-file)
           (string :tag "Name of environment variable that identify directories"
                   :value "INCLUDE")
           (list :tag "Explicit lists of directories for project and tool"
                 (repeat :tag "Project directories" (string :tag "Project directory"))
                 (repeat :tag "Tool directories"    (string :tag "Tool directory")))))
+
+(defcustom pel-c++-file-finder-ini-tool-name nil
+  "Default file-finder tool name used by C projects.
+
+This name, if specified, must correspond to one of the tool names specified by
+the 'tool-names' key in the [file-finder] section of the pel.ini file.
+It must represent the name of a tool used for C files.
+
+See `pel-c-file-finder-method' for more information."
+  :group 'pel-pkg-for-c++
+  :safe 't
+  :type 'string)
 
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-c++-code-style nil
@@ -9170,6 +9219,9 @@ indexing system."
   (ggtags              (setq pel-use-ggtags t))
   (edts                (setq pel-use-edts 'start-automatically))
   (erlang-ls           (setq pel-use-erlang-ls t)))
+
+(when (eq pel-c-file-finder-method 'pel-ini-file)
+  (setq pel-use-ini t))
 
 (when (eq pel-prompt-read-method 'ivy)
   (setq pel-use-ivy t))

@@ -2188,6 +2188,8 @@ MODE must be a symbol."
   (define-pel-global-prefix pel:for-c-preproc (kbd "<f11> SPC c #"))
   (define-pel-global-prefix pel:c-skel        (kbd "<f11> SPC c <f12>"))
 
+  (when pel-use-ini
+      (define-key pel:c-setup (kbd "C-^") 'pel-cc-set-file-finder-ini-tool-name))
   (when pel-use-plantuml
     (define-key pel:for-c "u" 'pel-render-commented-plantuml))
   (when pel-use-c-eldoc
@@ -2211,7 +2213,7 @@ MODE must be a symbol."
                                     ".l"
                                     ".jison"))))
 
-  (defvar c-mode-map) ; declare dynamic: prevent byte-compiler warnings
+  (defvar c-mode-map)        ; declare dynamic: prevent byte-compiler warnings
   (pel-eval-after-load cc-mode
     (pel-config-major-mode c pel:for-c
 
@@ -2271,6 +2273,8 @@ MODE must be a symbol."
                                   ".inl")))
   (pel-set-auto-mode c++-mode for: "\\.inl\\'") ; not supported by default
 
+  (when pel-use-ini
+      (define-key pel:c++-setup (kbd "C-^") 'pel-cc-set-file-finder-ini-tool-name))
   (when pel-use-plantuml
     (define-key pel:for-c++ "u" 'pel-render-commented-plantuml))
   (pel--map-cc-for pel:for-c++ pel:c++-setup pel:c++-guess pel:for-c++-preproc)

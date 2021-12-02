@@ -126,7 +126,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-show-all-buffers)
 
   (pel-autoload-function "pel-cc-find" for:
+    pel-cc-find-via-pel-ini
     pel-cc-find-activate-finder-method)
+  (pel-autoload "pel-cc-find" for:
+    pel-cc-set-file-finder-ini-tool-name)
 
   (pel-autoload "pel-cc" for
     pel-cc-newline

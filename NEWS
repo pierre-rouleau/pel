@@ -110,17 +110,45 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     *pel-electric-pair-lighter* (defaulting to " ℇ⒧ ") is shown.
 - New key binding in *Org-mode*: ~<f12> TAB~ is now bound to *org-indent-mode.*
 - New C and C++ support for open file at point: in C and C++ it is now
-  possible to specify a new method to find C/C++ header file search.
-  The new *pel-c-file-finder-method* and *pel-c++-file-finder-method*
-  user-options specify the file search method used by the command
-  *pel-open-at-point*.  With these you can specify to search generically in
-  the directory tree which is the default method, or search in the directories
-  identified by the content of an environment variable (such as INCLUDE) or in
-  the directories specified by 2 explicit lists: one for the project and on
-  for the tools and libraries.  The directories in these lists can also refer
-  to environment variables using the $VARNAME syntax.
-- When *pel-use-ini* user -option is on, the ini.el package written by Daniel
-  Ness is installed in the utils directory.
+  possible to specify a new method to find C/C++ header file search:
+  - The new *pel-c-file-finder-method* and *pel-c++-file-finder-method*
+    user-options specify the file search method used by the command
+    *pel-open-at-point*. These provide the following file search methods
+    specialized for C and C++ projects.  You can select from the following:
+    - A /generic project tree  file search/ method.  This is the default and
+      corresponds to the default search mechanism where the parent root directory is
+      first identified from the presence of a parent identified file, one of
+      the files specified in the *pel-project-root-identifies* user-option.
+      The file is searched inside that directory tree.
+    - The /pel.ini file/ method.  The file named ~pel.ini~ is searched into
+      the project directory tree.  This file must be a .INI configuration file
+      and must contain the =[file-finder]= section.  The section must contain
+      the /project-path/ key that holds a list of directories.  It may also
+      define another key for extra directories to search when the name of the
+      key is set inside the *pel-c-file-finder-ini-tool-name* (for C files)
+      and the *pel-c++-file-finder-ini-tool-name* (for C++ files).  This
+      allows you to select extra directories specific to a compiler tool
+      chain and/or extra libraries.  You can use the new
+      *pel-cc-set-file-finder-ini-tool-name* command to change the value of
+      the *pel-CC-file-finder-ini-tool-name* (where CC is either 'c' or 'c++
+      depending of the major mode where you issue the command).  This allows
+      you to find the file a compiler/library setup would use and try another
+      one, without having to set the compilation environment.
+      The directories in the ~pel.ini~ file defined lists can also refer to
+      environment variables using the =$VARNAME= syntax extending the
+      portability of the configuration.
+    - With the /environment variable/ method you identify the name of an
+      environment variable that holds the list of directories to search. Use
+      this method when editing from a shell which uses an environment variable
+      like =INCLUDE= or =INCLUDE_PATH= that defines the list of directories to search.
+      The directories in these lists can also refer to environment variables
+      using the =$VARNAME= syntax.
+    - The last method is an explicit list of directories stored inside the
+      user-option.
+- When *pel-use-ini* user -option is on, the ini.el package forked from a
+  smaller package written by Daniel Ness is installed in the utils directory.
+  It is also installed when the ~pel.ini~ method of identifying searched C/C++
+  files is used.
 - Add the *pel-ini* file which provides the *pel-ini-load* and *pel-ini-store*
   functions that load a .INI file into a alist and vice versa.  The functions
   install the required *ini* external package if missing.  The external
