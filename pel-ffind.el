@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-11-29 18:05:26, updated by Pierre Rouleau>
+;; Time-stamp: <2021-12-02 15:43:43, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -188,9 +188,11 @@ languages.  In that case you should be using a language specific function.
 There is one implemented for Erlang: `pel-erlang-find-file'."
   (let ((candidate-dir (pel-ffind-project-directory)))
     (condition-case nil
-        (pel-ffind filename (if candidate-dir
-                                (cons candidate-dir directories)
-                              directories))
+        (let* ((searched-directories (if candidate-dir
+                                         (cons candidate-dir directories)
+                                       directories))
+               (uniq-searched-dirs (delete-dups searched-directories)))
+          (pel-ffind filename uniq-searched-dirs))
       (user-error nil))))
 
 ;;; --------------------------------------------------------------------------
