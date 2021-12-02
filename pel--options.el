@@ -1522,7 +1522,7 @@ The Hippie Expand can be used together with any."
   "Whether PEL support the ini package that support .ini file read/write."
   :group 'pel-pkg-for-conf-file
   :link '(url-link :tag "ini @ Github"
-                   "https://github.com/daniel-ness/ini.el")
+                   "https://github.com/pierre-rouleau/ini.el")
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-ini :package-is :in-utils)

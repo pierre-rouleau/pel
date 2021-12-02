@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, November 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-11-30 14:14:20, updated by Pierre Rouleau>
+;; Time-stamp: <2021-12-02 13:45:19, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -35,10 +35,7 @@
 ;;; Dependencies:
 ;;
 ;;
-;; allow compilation with emacs -Q
-(require 'ini nil :noerror)
-(declare-function ini-decode "ini")
-(declare-function ini-encode "ini")
+(require 'pel--base)                    ; use: `pel-require'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -46,16 +43,21 @@
 
 (defun pel-ini-load (filename)
   "Load a .INI file FILENAME and return corresponding alist."
-  (ini-decode
-   (with-temp-buffer
-     (insert-file-contents filename)
-     (buffer-string))))
+  (if (and (pel-require 'ini :install-when-missing
+                        "pierre-rouleau/ini.el/master" "ini.el")
+           (fboundp 'ini-decode))
+      (ini-decode filename)
+    (error "The ini package is not installed: ini-decode is void.\
+  Set pel-use-ini to t.")))
 
-(defun pel-ini-store (alist filename)
+(defun pel-ini-store (alist filename &optional header overwrite)
   "Store the ALIST object into the FILENAME as .INI file format."
-  (with-temp-buffer
-    (insert (ini-encode alist))
-    (append-to-file (point-min) (point-max) filename)))
+  (if (and (pel-require 'ini :install-when-missing
+                        "pierre-rouleau/ini.el/master" "ini.el")
+           (fboundp 'ini-store))
+      (ini-store alist filename header overwrite)
+    (error "The ini package is not installed: ini-store is void.\
+  Set pel-use-ini to t.")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-ini)

@@ -122,8 +122,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - When *pel-use-ini* user -option is on, the ini.el package written by Daniel
   Ness is installed in the utils directory.
 - Add the *pel-ini* file which provides the *pel-ini-load* and *pel-ini-store*
-  functions that load a .INI file into a alist and vice versa.  This is
-  currently limited to simple single-line values.
+  functions that load a .INI file into a alist and vice versa.  The functions
+  install the required *ini* external package if missing.  The external
+  package used is a fork of the original ini package: the fork supports a
+  wider .INI file syntax and support multi-line (list) values.
 * Version 0.4.1:
 ** Modifications:
 - Fix: The File Management PDF now describes PEL's ability to select the
