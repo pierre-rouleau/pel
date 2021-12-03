@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-12-02 18:03:09, updated by Pierre Rouleau>
+;; Time-stamp: <2021-12-02 23:12:34, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -116,8 +116,11 @@ Return a list of found file path names."
             (delete-dups (append project-path
                                  (cdr (assoc tool-name section))))))
     ;; perform file search inside identified directories
-    (pel-ffind filename (mapcar (function expand-file-name)
-                                project-path))))
+    ;; for each path in the list expand "~" and any environment variable using
+    ;; the "$VARNAME" form.
+    (pel-ffind filename (mapcar (function substitute-in-file-name)
+                                (mapcar (function expand-file-name)
+                                        project-path)))))
 
 ;;-pel-autoload
 (defun pel-cc-find-activate-finder-method (&optional file-finder-method)
