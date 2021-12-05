@@ -1519,7 +1519,7 @@ The Hippie Expand can be used together with any."
   :group 'files)
 
 (defcustom pel-use-ini nil
-  "Whether PEL support the ini package that support .ini file read/write."
+  "Whether PEL supports the ini package to read/write .ini files."
   :group 'pel-pkg-for-conf-file
   :link '(url-link :tag "ini @ Github"
                    "https://github.com/pierre-rouleau/ini.el")
@@ -1528,6 +1528,18 @@ The Hippie Expand can be used together with any."
 (pel-put 'pel-use-ini :package-is :in-utils)
 (pel-put 'pel-use-ini :also-required-when '(eq pel-c-file-finder-method
                                                (quote pel-ini-file)))
+
+(defcustom pel-use-emacs-toml nil
+  "Whether PEL supports the emacs-toml to read/write .toml files."
+  :group 'pel-pkg-for-conf-file
+  :link '(url-link :tag "emacs-toml @ Github"
+                   "https://github.com/gongo/emacs-toml")
+  :link '(url-link :tag "TOML @ Github"
+                   "https://github.com/toml-lang/toml")
+  :link '(url-link :tag "TOML manual"
+                   "https://toml.io/en/")
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-filemng

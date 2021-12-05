@@ -311,6 +311,8 @@ Done in this function to allow advising libraries that remap these keys."
 (when pel-use-ini
   (cl-eval-when 'load
     (pel-install-github-file "pierre-rouleau/ini.el/master" "ini.el")))
+(when pel-use-emacs-toml
+  (pel-ensure-package toml from: melpa))
 
 ;; ---------------------------------------------------------------------------
 ;; - Font Control
