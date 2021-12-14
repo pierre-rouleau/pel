@@ -79,6 +79,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   prefix.  This frees more keys under the ~<f12>~ key prefix for future
   editing commands while regrouping the dynamic configuration commands under the
   ~<f12> <f4>~ prefix; it will be used more often in other major modes.
+- Improved *pel-toggle-scroll-sync* command: it now accepts the numeric arguments 2, 4, 6 and 8
+  which can be used to identify the window below, at the left, at the top or
+  at the right, respectively, of the current window.  This provides more
+  flexibility on the selection of the /other/ window.
 ** New Features:
 - The latest version of timelog supports the *timelog-open-file* command.  It
   opens the file identified by the *timeclock-file* user-option.  PEL binds

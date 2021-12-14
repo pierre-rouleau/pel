@@ -76,14 +76,29 @@
 (defvar pel-in-scroll-sync nil  "If non-nil, hold a list of windows to scroll.")
 
 ;;-pel-autoload
-(defun pel-toggle-scroll-sync ()
-  "Toggle window scroll sync mode.
-Tie the current window and next window in the scroll."
-  (interactive)
+(defun pel-toggle-scroll-sync (&optional n)
+  "Toggle window scroll sync mode between current and other window.
+
+Tie scroll of the current window and next window or the one selected by the
+optional N argument.
+
+N can be:
+
+    -             8 := 'up
+    - 4 := 'left                 6 := 'right
+    -             2 := 'down
+
+"
+  (interactive "P")
   (if (null pel-in-scroll-sync)
       (let ((window1 (selected-window))
             (window2 (progn
-                       (other-window 1)
+                       (if n
+                           (pel-move-to-window
+                            (pel-window-direction-for
+                             (prefix-numeric-value n)
+                             'other))
+                         (other-window 1))
                        (selected-window))))
         (setq pel-in-scroll-sync (list window1 window2))
         (select-window window1)
