@@ -1,6 +1,6 @@
 ;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4362,6 +4362,11 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; Add .stxt to the accepted file extensions for rst-mode
   ;; to the ones that are normally used: .rst and .rest
   (add-to-list 'auto-mode-alist '("\\.stxt\\'"  . rst-mode))
+  ;; Also add .rst.txt to the accepted extensions for rst-mode.
+  ;; This allows reStructuredText files to be rendered by tools
+  ;; that can read normal text files.
+  (add-to-list 'auto-mode-alist '("\\.rst.txt\\'"  . rst-mode))
+
 
   (define-key pel:for-reST "." 'pel-rst-makelink)
   (define-key pel:for-reST "g" 'pel-rst-goto-ref-bookmark)
