@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, August 20 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-08-20 18:39:21, updated by Pierre Rouleau>
+;; Time-stamp: <2022-01-10 17:11:21, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -70,7 +70,10 @@ on Windows."
     (setq-default eshell-path-env value)))
 
 (defun pel-process--envvar-append (var-name value)
-  "Append VALUE to VAR-NAME if it exists otherwise just set it."
+  "Append VALUE to VAR-NAME if it exists otherwise just set it.
+
+VAR_NAME is a string; the name of an environment variable that
+holds a path-separator separated list of strings, like PATH."
   (let ((new-value (concat (or (getenv var-name) "")
                            path-separator value)))
     (pel-process--envvar-set var-name new-value)))
