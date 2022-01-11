@@ -1,6 +1,6 @@
 ;;; pel-fs.el --- File System Operations  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -49,14 +49,33 @@ file content was not modified.")
 
 (defun pel-exec-cmd (cmd &rest args)
   "Execute synchronous process CMD with ARGS.
-Return a cons cell with (exit-code . stdout-string).
-If an error occurred, return a list whose car is nil and cdr
-is the error description.
-The stdout-string trailing newline is removed if present."
+
+Return the list (exit-code stdout-string stderr-string).
+- The stdout-string and stderr-string trailing newline are removed if present.
+- If stdout or stderr is empty, an empty string is placed in the list."
   (condition-case err
-      (with-temp-buffer
-        (cons (apply 'call-process cmd nil (current-buffer) nil args)
-              (replace-regexp-in-string "\n\\'" "" (buffer-string))))
+      (let ((tmp-fname (make-temp-file "pel-exec-cmd"))
+            exit-code
+            stdout-string
+            stderr-string)
+        (unwind-protect
+            (with-temp-buffer
+              (setq exit-code
+                    (apply 'call-process cmd nil
+                           (list (current-buffer) tmp-fname) ; store stderr in tmp-fname
+                           nil args))
+              (setq stdout-string
+                    (replace-regexp-in-string "\n\\'" "" (buffer-string)))
+              (when (file-exists-p tmp-fname)
+                (with-temp-buffer
+                  (insert-file-contents tmp-fname)
+                  (setq stderr-string
+                        (replace-regexp-in-string "\n\\'" "" (buffer-string)))))
+              (list exit-code
+                    stdout-string
+                    stderr-string))
+          (and (file-exists-p tmp-fname)
+               (delete-file tmp-fname))))
     (error (cons nil err))))
 
 
@@ -105,14 +124,17 @@ Return t if it's OK, issue a user-error otherwise."
 
 (defun pel-exec-pel-bin (cmd &rest args)
   "Execute a PEL bin executable CMD with ARGS.
-CMD must not have any path.
+
+CMD must not have any path an must be one of the commands provided in the PEL
+bin directory.
+located in the
 The `pel-exec-pel-bin' checks if the file exists and was not tempered
-with by checking its MD5 hash digest.  If the file is OK, make the file
-executable if it is not already executable, then run the command and
-return a cons cell with (exit-code . stdout-string).
-If an error occurred, return a list whose car is nil and cdr
-is the error description.
-The stdout-string trailing newline is removed if present."
+with by checking its MD5 hash digest.
+If the command file is invalid or does not exist, raise an error.
+If the file is OK, make the file executable if it is not already executable,
+then run the command and return the list (exit-code stdout-string stderr-string).
+- The stdout-string and stderr-string trailing newline are removed if present.
+- If stdout or stderr is empty, an empty string is placed in the list."
   (when (pel-check-pel-bin-cmd cmd)
     (apply 'pel-exec-cmd (cons (pel-bin-path cmd) args))))
 
