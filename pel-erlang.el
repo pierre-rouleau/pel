@@ -1,6 +1,6 @@
 ;;; pel-erlang.el --- Erlang programming Language support  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -107,7 +107,7 @@
 ;;                              ;      `pel-erlang-path-detection-method'
 ;;                              ;      `pel-erlang-electric-keys'
 (require 'pel-ffind)            ; use: `pel-ffind'
-(require 'pel-fs)               ; use: `pel-exec-pel-bin'
+(require 'pel-fs)               ; use: `pel-exec-pel-bin', `pel-exec-cmd'
 (require 'pel-syntax)           ; use: `pel-insert-space-in-enclosing-block'
 (require 'pel-xref)             ; use: `pel-xref-find-definitions'
 
@@ -130,10 +130,10 @@
 
 Use the pel/bin/erlang-root-dir script to Extract the information directly
 from Erlang."
-  (let ((exit-code.path (pel-exec-pel-bin "erlang-root-dir")))
-    (unless (eq 0 (car exit-code.path))
-      (error "Failed extracting Erlang root path: %S" exit-code.path))
-    (cdr exit-code.path)))
+  (let ((exit-code.path.stderr (pel-exec-pel-bin "erlang-root-dir")))
+    (unless (eq 0 (car exit-code.path.stderr))
+      (error "Failed extracting Erlang root path: %S" exit-code.path.stderr))
+    (cadr exit-code.path.stderr)))
 
 ;; ---------------------------------
 ;; Electric Key Behaviour Management
@@ -693,16 +693,18 @@ user option."
 (defun pel--read-erlang-root-dir ()
   "Return Erlang root directory extracted from pel/bin/erlang-root-dir."
   (or pel---extracted-erlang-root-dir
-      (let* ((exit-code.version (pel-exec-pel-bin "erlang-root-dir"))
-             (exit-code (car exit-code.version)))
+      (let* ((exit-code.version.stderr (pel-exec-pel-bin "erlang-root-dir"))
+             (exit-code (car exit-code.version.stderr)))
         (if (eq exit-code 0)
-            (setq pel---extracted-erlang-root-dir (cdr exit-code.version))
+            (setq pel---extracted-erlang-root-dir (cadr exit-code.version.stderr))
           (progn
             (unless pel--read-erlang-root-dir-reported-error
               (display-warning
                'pel-erlang-root-path
                (format "pel/bin/erlang-root-dir failed with exit code: %S.
-Cannot detect Erlang root path!" (car exit-code.version))
+Cannot detect Erlang root path: %s"
+                       (car exit-code.version.stderr)
+                       (nth 2 exit-code.version.stderr))
                :error)
               (setq pel--read-erlang-root-dir-reported-error t))
             nil)))))
@@ -756,14 +758,16 @@ On error issue a warning describing the error and return nil."
     pel-erlang-version-detection-method)
    ;;
    ((eq pel-erlang-version-detection-method 'auto-detect)
-    (let* ((exit-code.version (pel-exec-pel-bin "version-erl"))
-           (exit-code (car exit-code.version)))
+    (let* ((exit-code.version.stderr (pel-exec-pel-bin "version-erl"))
+           (exit-code (car exit-code.version.stderr)))
       (if (eq exit-code 0)
-          (cdr exit-code.version)
+          (cdr exit-code.version.stderr)
         (display-warning
          'pel-erlang-version
          (format "pel/bin/version-erl failed with exit code: %S.
-Cannot detect Erlang version!" (car exit-code.version))
+Cannot detect Erlang version: %s"
+                 (car exit-code.version.stderr)
+                 (nth 2 exit-code.version.stderr))
          :error))))
    ;;
    ((and (consp pel-erlang-version-detection-method)
@@ -786,9 +790,9 @@ Can't detect Erlang version." pel-erlang-version-detection-method)
 
 (defun pel-erlang-ls-version ()
   "Return a string describing erlang_ls version or nil if not available."
-  (let ((exit-code.stdout (pel-exec-cmd "erlang_ls" "--version")))
-    (when (car exit-code.stdout)
-      (cadr (split-string (cdr exit-code.stdout))))))
+  (let ((exit-code.stdout.stderr (pel-exec-cmd "erlang_ls" "--version")))
+    (when (car exit-code.stdout.stderr)
+      (cadr (split-string (cadr exit-code.stdout.stderr))))))
 
 ;;-pel-autoload
 (defun pel-show-erlang-version ()
