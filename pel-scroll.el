@@ -1,6 +1,6 @@
 ;;; pel-scroll.el --- PEL Window Scrolling Utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -66,7 +66,13 @@
 ;;     point the the beginning or end of current field, line, window or buffer.
 ;;
 
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
 
+(require 'pel-window)                   ; use: `pel-move-to-window'
+;;                                      ;      `pel-window-direction-for'
+
+;;; --------------------------------------------------------------------------
 ;;; Code:
 
 ;; Uses scroll-other-window and scroll-other-window-down from window.el, which is

@@ -1,9 +1,9 @@
 # Makefile --- GNU Make to build the PEL distributable package  -*- mode: makefile-gmake; -*-
 #
-# Copyright (C) 2020, 2021 by Pierre Rouleau
+# Copyright (C) 2020, 2021, 2022 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2021-12-02 17:55:24, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2022-01-11 14:00:55, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -612,6 +612,7 @@ pel-prompt.elc:         pel--base.elc pel--options.elc
 pel-read.elc:           pel-navigate.elc
 pel-rst.elc:            pel--base.elc pel--options.elc pel-whitespace.elc pel--macros.elc pel-bookmark.elc pel-file.elc
 pel-scheme.elc:         pel-comint.elc pel-window.elc
+pel-scroll.elc:         pel-window.elc
 pel-search-regexp.elc:  pel--options.elc
 pel-search.elc:         pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-read.elc pel-search-regexp.elc pel-window.elc
 pel-setup-base.elc:     pel--base.elc pel--options.elc pel-ccp.elc pel-custom.elc pel-elpa.elc pel-package.elc
