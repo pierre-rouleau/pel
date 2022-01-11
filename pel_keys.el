@@ -3415,8 +3415,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
               (define-key pel:for-erlang (kbd "M-h")  'ivy-erlang-complete-show-doc-at-point)
               (define-key pel:for-erlang (kbd "M-e")  'ivy-erlang-set-project-root)
               (define-key pel:for-erlang (kbd "M-?")  'ivy-erlang-complete-find-references)
-              (define-key pel:for-erlang (kbd "M-f")  'ivy-erlang-complete-find-spec)
-              (define-key pel:for-erlang (kbd "M-o")  'ivy-erlang-complete-find-file)
+              (define-key pel:for-erlang (kbd "C-f")  'ivy-erlang-complete-find-spec)
+              (define-key pel:for-erlang (kbd "C-o")  'ivy-erlang-complete-find-file)
 
               ;; Restore the tags-based M-. and M-? to allow PEL controlled
               ;; selection of behaviour for these key bindings in Erlang mode.
