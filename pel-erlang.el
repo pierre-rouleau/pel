@@ -808,7 +808,9 @@ Also displays `erlang-root-dir' and `pel-erlang-man-parent-rootdir'"
 pel-erlang-version-detection-method : %s
 pel-erlang-path-detection-method    : %s
 Detected erlang-root-dir            : %s
-pel-erlang-man-parent-rootdir       : %s%s%s%s%s"
+pel-erlang-man-parent-rootdir       : %s%s%s%s%s
+EDTS                                : %s
+Erlang_ls (LSP for Erlang)          : %s"
              (pel-erlang-version)
              (if (fboundp 'erlang-version)
                  (erlang-version)
@@ -850,7 +852,19 @@ ivy-erlang-complete-project-root    : %s" ivy-erlang-complete-project-root)
                       (boundp 'lsp-keymap-prefix))
                  (format "
 lsp-keymap-prefix                   : %s" lsp-keymap-prefix)
-               ""))))
+               "")
+             (cond
+              ((null pel-use-edts)
+               "Not available: to activate, customize pel-use-edts.")
+              ((eq pel-use-edts 'start-automatically)
+               (format "Activated automatically, currently %s."
+                       (pel-symbol-on-off-string 'edts-mode)))
+              (t (format "Activated manually, currently %s."
+                         (pel-symbol-on-off-string 'edts-mode))))
+             (if pel-use-erlang-ls
+                 (format "Available, currently %s."
+                         (pel-symbol-on-off-string 'lsp-mode))
+               "Not available: to activate, customize pel-use-erlang-ls."))))
 
 ;; ---------------------------------------------------------------------------
 
