@@ -1205,6 +1205,40 @@ Search in the Erlang root and the project directories by default.
 If DIRECTORIES is specified also search in these extra directories."
   (pel-ffind filename (pel-erlang-source-directories directories)))
 
+;; ---------------------------------------------------------------------------
+;; Erlang Code Formatter
+;; ---------------------
+
+(defun pel-erlang-format-code ()
+  "Format the Erlang code in the current buffer."
+  (interactive)
+  (let ((tmp-fname (make-temp-file "pel-erlang-format-code" nil ".erl"))
+        exit-code
+        tmp-buffer
+        (original-buffer (current-buffer)))
+    (unwind-protect
+        (progn
+          (write-region nil nil tmp-fname)
+          (let ((exit-code.stdout.stderr
+                 (pel-exec-cmd "erlfmt" "-w" tmp-fname)))
+            (setq exit-code (car exit-code.stdout.stderr))
+            (if (eq exit-code 0)
+                (progn
+                  (message "Reformatted with erlfmt")
+                  ;; replace current buffer with reformatted code
+                  (setq tmp-buffer (generate-new-buffer "*pel-erlfmt*"))
+                  (when tmp-buffer
+                    (set-buffer tmp-buffer)
+                    (insert-file-contents tmp-fname)
+                    (set-buffer original-buffer)
+                    (replace-buffer-contents tmp-buffer)
+                    (kill-buffer tmp-buffer)))
+              (user-error "Failed reformatting: exit-code=%s: %s"
+                          (car exit-code.stdout.stderr)
+                          (nth 2 exit-code.stdout.stderr)))))
+      (and (file-exists-p tmp-fname)
+           (delete-file tmp-fname)))))
+
 ;;; --------------------------------------------------------------------------
 (provide 'pel-erlang)
 
