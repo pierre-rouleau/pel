@@ -1224,7 +1224,10 @@ If DIRECTORIES is specified also search in these extra directories."
 ;; ---------------------
 
 (defun pel-erlang-format-code ()
-  "Format the Erlang code in the current buffer."
+  "Reformat the Erlang code in the current buffer.
+
+Use the Erlang formatter command specified by the
+`pel-erlang-code-formatter-command' user-option."
   (interactive)
   (let ((tmp-fname (make-temp-file "pel-erlang-format-code" nil ".erl"))
         exit-code
@@ -1233,12 +1236,20 @@ If DIRECTORIES is specified also search in these extra directories."
     (unwind-protect
         (progn
           (write-region nil nil tmp-fname)
-          (let ((exit-code.stdout.stderr
-                 (pel-exec-cmd "erlfmt" "-w" tmp-fname)))
+          (let* ((cmd-args
+                  (cond
+                   ((eq pel-erlang-code-formatter-command 'erlfmt)
+                    (list "erlfmt" "-w" tmp-fname))
+                   (t
+                    (split-string
+                     (format
+                      pel-erlang-code-formatter-command tmp-fname)))))
+                 (exit-code.stdout.stderr
+                  (apply 'pel-exec-cmd cmd-args)))
             (setq exit-code (car exit-code.stdout.stderr))
             (if (eq exit-code 0)
                 (progn
-                  (message "Reformatted with erlfmt")
+                  (message "Reformatted with %s" cmd-args)
                   ;; replace current buffer with reformatted code
                   (setq tmp-buffer (generate-new-buffer "*pel-erlfmt*"))
                   (when tmp-buffer

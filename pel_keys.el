@@ -3365,6 +3365,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (when pel-use-smart-dash
         (define-key pel:erlang-electric "-"       'smart-dash-mode))
 
+      (when pel-erlang-code-formatter-command
+        (define-key pel:for-erlang "R"     'pel-erlang-format-code))
       (when pel-use-plantuml
         (define-key pel:for-erlang "u"     'pel-render-commented-plantuml))
       (when pel-use-rainbow-delimiters

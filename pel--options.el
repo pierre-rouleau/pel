@@ -1,6 +1,6 @@
 ;;; pel--options.el --- PEL Customization Options -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -6933,6 +6933,22 @@ EDTS will be activated automatically when an Erlang buffer is opened."
           (const :tag "Use ivy-erlang-complete"  ivy-erlang-complete)
           (const :tag "Use EDTS"                 edts)
           (const :tag "Use erlang-ls/LSP"        erlang-ls)))
+
+(defcustom pel-erlang-code-formatter-command nil
+  "Erlang code formatter command.
+
+Identify the command line PEL uses to reformat Erlang code.
+By default none is used.
+If you select erlfmt, the \"erlfmt -w\" command is used to reformat a file in
+place.  You can also specify a command line expression by writing it as a
+string.  That command should specify all its arguments including one that
+is \"%s\" to hold the name of the temporary file where the Erlang code is
+stored for processing."
+  :group 'pel-pkg-for-erlang
+  :type '(choice
+          (const :tag "None used." nil)
+          (const :tag "Use erlfmt"  erlfmt)
+          (string :tag "Use specified command")))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-erlang-environment nil

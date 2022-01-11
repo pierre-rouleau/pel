@@ -84,6 +84,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   at the right, respectively, of the current window.  This provides more
   flexibility on the selection of the /other/ window.
 ** New Features:
+- Added support for Erlang code formatters. The new
+  *pel-erlang-code-formatter-command* user-option specifies the Erlang code
+  formatter to use.  The Erlang code formatter can be specified by a command
+  line format string or by name.  Currently the only Erlang Code formatter
+  supported by name is [[https://github.com/WhatsApp/erlfmt#readme][erlfmt]].  Others can be used but the command line must
+  be written explicitly.  The ~<f12> R~ key is bound to the
+  *pel-erlang-format-code* command that invokes the specified Erlang code formatter.
 - The latest version of timelog supports the *timelog-open-file* command.  It
   opens the file identified by the *timeclock-file* user-option.  PEL binds
   this command to ~C-x t l f~ key sequence.
