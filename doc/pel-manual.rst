@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2022-01-18 15:45:41, updated by Pierre Rouleau.
+:Modified: 2022-01-18 15:55:25, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -8001,14 +8001,9 @@ Modify GNOME Terminal Shortcut Keys
 -----------------------------------
 
 Configure the `GNOME Terminal`_ keyboard shortcuts by opening its Preference
-dialog:
+dialog, and select the *Shortcut* tab:
 
-.. figure:: res/gnome-terminal-01.png
-   :scale: 30 %
-
-Select the *Shortcut* tab:
-
-.. figure:: res/gnome-terminal-02.png
+.. figure:: res/gnome-terminal-01-02.png
    :scale: 30 %
 
 You will probably want to modify the F1, F11 and some other keys.
