@@ -4,9 +4,9 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2021-10-28 08:07:24, updated by Pierre Rouleau.
+:Modified: 2022-01-18 15:45:41, updated by Pierre Rouleau.
 :License:
-    Copyright (c) 2020, 2021 Pierre Rouleau <prouleau001@gmail.com>
+    Copyright (c) 2020, 2021, 2022 Pierre Rouleau <prouleau001@gmail.com>
 
 
     You can redistribute this document and/or modify it under the terms of the GNU
@@ -1633,12 +1633,23 @@ As described in the `Naming Conventions`_ section the names in the binding
 column that use the ``pel:`` prefix are sub key-maps.
 All PEL command functions have a name that starts with the ``pel-`` name prefix.
 
+
+**Note: for Emacs running in terminal (termcap) mode**
+
+If you are using Emacs inside a terminal emulator program such as Linux `GNOME
+Terminal`_ you may have to update your terminal keyboard shortcuts to free the
+function keys and some other keys that PEL uses.
+The section titled `How to Modify the Terminal Keyboard Shortcut Keys`_
+describes how to do that under some environments.
+
+
 .. _PEL Key Maps PDF file: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-pel-key-maps.pdf
 .. _key prefixes:          https://www.gnu.org/software/emacs/manual/html_node/emacs/Keys.html#Keys
 .. _⅀ ⌨︎ Modifier Keys PDF: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/modifier-keys.pdf
 .. _⌨︎Keys - Fn PDF:        https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/keys-fn.pdf
 .. _⌨︎Keys - F11:           https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/keys-f11.pdf
 .. _Hydra heads:           https://github.com/abo-abo/hydra#readme
+.. _GNOME Terminal:        https://en.wikipedia.org/wiki/GNOME_Terminal
 
 
 Key Binding Help
@@ -7964,6 +7975,49 @@ please describe your request on the `PEL wiki`_, I'll take a look and see what I
 .. _Function Keys Mappings PDF table: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/keys-fn.pdf
 
 
+How to Modify the Terminal Keyboard Shortcut Keys
+=================================================
+
+PEL makes extensive use of function keys such as F11 but some other function
+keys too.  In some environment these keys are used by the terminal emulator
+programs you may want to use to run Emacs in terminal (termcap) mode.
+Fortunately most environments provide ways to change the shortcut keys used by
+their terminal.
+
+When running in terminal mode, there are several key modifier combinations
+that PEL never uses because they are normally not accessible to programs
+running under a terminal.  These combinations are, however, accessible to
+top-level programs such as the terminal emulator themselves and therefore good
+candidate for shortcut replacements.  The following modifier key combinations
+are never used by PEL:
+
+- Control-Function key
+- Shift-Control-Function key
+- Super-Function key
+- Shift-Super-Function key
+
+
+Modify GNOME Terminal Shortcut Keys
+-----------------------------------
+
+Configure the `GNOME Terminal`_ keyboard shortcuts by opening its Preference
+dialog:
+
+.. figure:: res/gnome-terminal-01.png
+   :scale: 30 %
+
+Select the *Shortcut* tab:
+
+.. figure:: res/gnome-terminal-02.png
+   :scale: 30 %
+
+You will probably want to modify the F1, F11 and some other keys.
+Select the *Action* that is assigned to the key shortcut that you want to free
+and double click on the *Shortcut Key* column for it.  Then hit the key
+modified combination that PEL does not use and that you want to use.
+
+.. figure:: res/gnome-terminal-03.png
+   :scale: 30 %
 
 
 ..
