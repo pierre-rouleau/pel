@@ -1,6 +1,6 @@
 ;;; pel-seq.el --- Sequence manipulation utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -31,7 +31,8 @@
 
 ;;; Code:
 
-(require 'seq)
+(require 'pel--base)                      ; use: `pel-require'
+(pel-require 'seq :install-when-missing)  ; use: `seq-reduce'
 
 ;;-pel-autoload
 (defun pel-all-fboundp (&rest funs)
@@ -39,8 +40,6 @@
   (seq-reduce (lambda (b1 b2) (and b1 b2))
               (mapcar #'fboundp funs)
               t))
-
-
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-seq)

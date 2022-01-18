@@ -1,6 +1,6 @@
 ;;; pel-list.el --- List utilities  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -36,7 +36,8 @@
 ;;; Dependencies:
 (eval-when-compile
   (require 'cl-macs))                      ; use: cl-dolist and cl-return
-(require 'seq)                             ; use: seq-subseq
+(require 'pel--base)                      ; use: `pel-require'
+(pel-require 'seq :install-when-missing)   ; use: seq-subseq
 ;; ---------------------------------------------------------------------------
 ;;; Code:
 

@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2022-01-11 14:00:55, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2022-01-18 10:27:51, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -433,6 +433,7 @@ help:
 	@printf " * make all-dirs    - create all output and temporary directories.\n"
 	@printf " * make clean       - remove $(PELPA_DIR) and all output files\n"
 	@printf "                      including $(PEL_TAR_FILE)\n"
+	@printf " * make clean-build - make clean & make\n"
 	@printf " * make clean_tar   - remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
 	@printf " * make clean_mypelpa - remove the directory $(PELPA_DIR)\n"
 	@printf " * make test        - Run the regression tests.\n"
@@ -596,6 +597,7 @@ pel-kbmacros.elc:       pel--options.elc
 pel-key-chord.elc:      pel--base.elc pel--options.elc
 pel-lisp.elc:           pel--base.elc
 pel-lispy.elc:          pel--base.elc pel--options.elc
+pel-list.elc:           pel--base.elc
 pel-lsp.elc:		pel--base.elc
 pel-make.elc:           pel--base.elc
 pel-mark.elc:           pel--base.elc
@@ -615,6 +617,7 @@ pel-scheme.elc:         pel-comint.elc pel-window.elc
 pel-scroll.elc:         pel-window.elc
 pel-search-regexp.elc:  pel--options.elc
 pel-search.elc:         pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-read.elc pel-search-regexp.elc pel-window.elc
+pel-seq.elc:            pel--base.elc
 pel-setup-base.elc:     pel--base.elc pel--options.elc pel-ccp.elc pel-custom.elc pel-elpa.elc pel-package.elc
 pel-setup.elc:          pel--base.elc pel--options.elc pel-custom.elc pel-elpa.elc pel-package.elc pel-setup-base.elc pel-setup-27.elc
 pel-setup-27.elc:       pel--options.elc pel-elpa.elc pel-setup-base.elc
@@ -807,5 +810,7 @@ clean: clean-tar clean-mypelpa
 	-rm *.elc
 	-rm -rf $(OUT_DIR)
 	-rm -rf $(TMP_DIR)
+
+clean-build: clean all
 
 # -----------------------------------------------------------------------------
