@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2022-01-18 15:55:25, updated by Pierre Rouleau.
+:Modified: 2022-01-18 18:08:30, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -7995,6 +7995,34 @@ are never used by PEL:
 - Shift-Control-Function key
 - Super-Function key
 - Shift-Super-Function key
+
+Disable Ubuntu HUD use of the Alt Key
+-------------------------------------
+
+The Ubuntu Linux distributions that use the Unity_ user interface also support
+the HUD_ (which stands for Heads-up display) which unfortunately uses the Alt
+key as a hotkey.  This is *very* annoying with Emacs (and several other
+applications) as it forces you to type the Alt key twice for Emacs Meta key
+modifiers.
+
+To disable the HUD shortcut key:
+
+- Open Ubuntu **System Settings** application
+- Select the **Keyboard** settings
+- Open the **Launchers** tab
+- Select the **Key to show the HUD** line, double click on the shortcut (which
+  is Alt-L by default), then press backspace to disable the shortcut.
+
+The Alt key will then become available inside Emacs as the Meta key.
+
+
+See the popular AskUbuntu question
+"`How do I modify or disable the HUD's use of the Alt key?`_" for snapshots
+and more information.
+
+.. _Unity: https://en.wikipedia.org/wiki/Unity_(user_interface)
+.. _HUD: https://wiki.ubuntu.com/Unity/HUD
+.. _How do I modify or disable the HUD's use of the Alt key?: https://askubuntu.com/questions/122209/how-do-i-modify-or-disable-the-huds-use-of-the-alt-key
 
 
 Modify GNOME Terminal Shortcut Keys
