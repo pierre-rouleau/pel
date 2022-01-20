@@ -1,6 +1,6 @@
 ;;; pel-numkpad.el --- PEL Numeric Keypad Key Control -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -26,14 +26,11 @@
 ;; Dynamic control of the keypad keys to allow both numlocking and non
 ;; numlocking use.
 
-;; BUG:  this work fine in graphics mode, and *sometimes* it works fine
-;; in the macOS Terminal.app, but not always.  It seems to be affected
-;; by other processes.  I still have not been able to identify the trigger
-;; and the fix for this to be able to use useful bindings to the keypad
-;; when running Emacs in terminal mode reliably.  It seems that Emacs looses
-;; access to low-level information to distinguish the keypad keys from normal
-;; keyboard keys.
-
+;; Note: when using Emacs inside a macOS Terminal application, running
+;; `emacs -nw`, the key labelled 'clear' which is labelled 'Numlock' in my
+;; keypad layout below will effectively behave as a numlock key, but does not
+;; register as a key inside Emacs.
+;;
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 (require 'pel--base)      ; use pel-toggle
