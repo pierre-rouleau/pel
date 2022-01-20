@@ -29,11 +29,15 @@
 ;; - `pel-all-fboundp' checks that all function symbols passed as argument are
 ;;   bounded.
 
-;;; Code:
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
 
 (require 'pel--base)                      ; use: `pel-require'
 (pel-require 'seq :install-when-missing)  ; use: `seq-reduce'
+(declare-function seq-reduce "seq")
 
+;; ---------------------------------------------------------------------------
+;;; Code:
 ;;-pel-autoload
 (defun pel-all-fboundp (&rest funs)
   "Return t if all function symbols in FUNS list are bounded, nil otherwise."

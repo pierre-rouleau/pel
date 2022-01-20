@@ -38,6 +38,7 @@
   (require 'cl-macs))                      ; use: cl-dolist and cl-return
 (require 'pel--base)                      ; use: `pel-require'
 (pel-require 'seq :install-when-missing)   ; use: seq-subseq
+(declare-function seq-subseq "seq")
 ;; ---------------------------------------------------------------------------
 ;;; Code:
 
