@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Fix: On Linux and Windows the ~<insert>~ key is now mapped to yank, as
+  it's already done for macOS.
 - Fix: Several EDTS commands were not autoloaded by EDTS code.  PEL code now
   autoloads them when EDTS is requested.  This includes the EDTS debug, eunit
   and dialyzer commands.
