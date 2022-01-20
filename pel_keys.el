@@ -747,7 +747,11 @@ Done in this function to allow advising libraries that remap these keys."
 ;; On graphics mode Emacs is able to generate M-<kp-8> when the Meta key is
 ;; pressed while the keypad 8 is pressed.  That does not work in Terminal mode.
 
-(global-set-key [kp-0] 'pel-0)
+;; On macOS the keypad 0 key registers as kp-0, but on Linux and Windows it
+;; registers as <insertchar> when numlock is off.
+(if pel-system-is-macos-p
+    (global-set-key [kp-0] 'pel-0)
+  (global-set-key (kbd "<insertchar>") 'pel-0))
 (global-set-key [kp-1] 'pel-1)
 (global-set-key [kp-2] 'pel-2)
 (global-set-key [kp-3] 'pel-3)
@@ -1069,7 +1073,9 @@ Done in this function to allow advising libraries that remap these keys."
 
 (define-key pel:           "#"             'pel-toggle-mac-numlock)
 (define-key pel:           "`"            #'overwrite-mode)
-(global-set-key  (kbd "ESC <kp-0>")       #'overwrite-mode)
+(if pel-system-is-macos-p
+    (global-set-key  (kbd "ESC <kp-0>")       #'overwrite-mode)
+  (global-set-key  (kbd "ESC <insertchar>")   #'overwrite-mode))
 (define-key pel: (kbd      "RET")         #'auto-fill-mode)
 (define-key pel: (kbd      "<deletechar>") 'c-hungry-delete-forward)
 (define-key pel: (kbd      "M-f")          'pel-forward-syntaxchange-start)
