@@ -18,6 +18,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Modified: key bindings for other EDTS commands, which are now in the
   ~<f12> M-E~ key prefix: *edts-buffer-node-name*, *edts-api-start-server*,
   *edts-shell*.
+- Improved: key binding for the *pel-copy-marked-or-whole-line* by adding the
+  ~<f11> = =~ key, which is easier to type than the other ~<f11>~ keys
+  sequences.  It's best to use ~<kp-separator>~ but this is unfortunately not
+  available under some Linux environments.
 - Improved:  [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-erlang.pdf][𝕻𝔩 - Erlang PDF]] by moving EDTS-specific commands related to
   Erlang shell and help inside their topic specific area of the file instead
   of leaving them inside the EDTS-specific area.  Also added information on
