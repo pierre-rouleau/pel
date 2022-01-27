@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, November 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-12-02 13:45:19, updated by Pierre Rouleau>
+;; Time-stamp: <2022-01-27 18:03:00, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -25,11 +25,12 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This is a thin layer over the `ini.el' package file written by Daniel Ness.
-;;  See https://github.com/daniel-ness/ini.el
-
-;; CAUTION: this does not yet support values that are spread across several
-;; lines.
+;; This is a thin layer over the `ini.el' package located in GitHub at:
+;; https://github.com/pierre-rouleau/ini.el , an extension of what was
+;; originally written by Daniel Ness in https://github.com/daniel-ness/ini.el
+;;
+;; The modifications I made allow processing of multi-line entries used by the
+;; code here.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
