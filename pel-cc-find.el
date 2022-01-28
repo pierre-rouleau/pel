@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-01-27 19:16:17, updated by Pierre Rouleau>
+;; Time-stamp: <2022-01-27 21:52:00, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -108,7 +108,8 @@ unknown"
   ;; variable inside the filename string
   (dolist (varname (pel-envar-in-string filename))
     (unless (getenv varname)
-      (user-error "The environment variable %s is unknown!" varname)))
+      (user-error "In \"%s\", the environment variable %s is unknown!"
+                  filename varname)))
   ;; then return the string with  everything substituted.
   (substitute-in-file-name filename))
 
@@ -159,7 +160,10 @@ Return a list of found file path names."
                                     project-path)
                           (error
                            (user-error
-                            "Can't find location of %s using INI: %s::\n %s"
+                            "\
+Can't find location of %s using include path spec identified in:
+ %s::
+    %s"
                             filename pel-ini-filename (cadr err)))))))))
 
 ;;-pel-autoload
