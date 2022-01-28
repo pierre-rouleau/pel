@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-12-03 14:49:01, updated by Pierre Rouleau>
+;; Time-stamp: <2022-01-27 19:16:17, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -80,6 +80,39 @@ CC is 'c' for C files, 'c++' for C++ files."
              tool-name))
    (t (user-error "This is for C and C++ files only!"))))
 
+;; ---------------------------------------------------------------------------
+(defun pel-envar-in-string (string)
+  "Return names of environment variables extracted from the string.
+
+The variables must be prefixed with a '$' character and must end
+with a non alphanumeric or underscore character."
+
+  (let ((varnames nil)
+        (idx 0)
+        (new-idx nil)
+        varname)
+    (while (setq new-idx
+                 (string-match "\\$\\([[:alnum:]_]*\\)"
+                               (substring string idx)))
+      (setq varname (match-string 1 (substring string idx)))
+      (push varname varnames)
+      (setq idx (+ idx new-idx 1 (length varname))))
+    (reverse varnames)))
+
+(defun pel-substitute-in-file-name (filename)
+  "Substitute environment variables referred to in FILENAME.
+
+Does the same as `substitute-in-file-name' but when an environment variable is
+unknown"
+  ;; First check and raise a user error if there is any unknown environment
+  ;; variable inside the filename string
+  (dolist (varname (pel-envar-in-string filename))
+    (unless (getenv varname)
+      (user-error "The environment variable %s is unknown!" varname)))
+  ;; then return the string with  everything substituted.
+  (substitute-in-file-name filename))
+
+;; ---------------------------------------------------------------------------
 
 ;;-pel-autoload
 (defun pel-cc-find-via-pel-ini (filename)
@@ -118,9 +151,16 @@ Return a list of found file path names."
     ;; perform file search inside identified directories
     ;; for each path in the list expand "~" and any environment variable using
     ;; the "$VARNAME" form.
-    (delete-dups (pel-ffind filename (mapcar (function substitute-in-file-name)
-                                             (mapcar (function expand-file-name)
-                                                     project-path))))))
+    (delete-dups
+     (pel-ffind filename
+                (mapcar (function expand-file-name)
+                        (condition-case err
+                            (mapcar (function pel-substitute-in-file-name)
+                                    project-path)
+                          (error
+                           (user-error
+                            "Can't find location of %s using INI: %s::\n %s"
+                            filename pel-ini-filename (cadr err)))))))))
 
 ;;-pel-autoload
 (defun pel-cc-find-activate-finder-method (&optional file-finder-method)
