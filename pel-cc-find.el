@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-01-27 21:52:00, updated by Pierre Rouleau>
+;; Time-stamp: <2022-01-29 16:29:47, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -161,10 +161,17 @@ Return a list of found file path names."
                           (error
                            (user-error
                             "\
-Can't find location of %s using include path spec identified in:
+File search using method %s as defined in %s user-option,
+cannot find location of %s using include path spec identified in:
  %s::
     %s"
-                            filename pel-ini-filename (cadr err)))))))))
+                            (pel-major-mode-symbol-value
+                             "pel-%s-file-finder-method")
+                            (pel-string-with-major-mode
+                             "pel-%s-file-finder-method")
+                            filename
+                            pel-ini-filename
+                            (cadr err)))))))))
 
 ;;-pel-autoload
 (defun pel-cc-find-activate-finder-method (&optional file-finder-method)
