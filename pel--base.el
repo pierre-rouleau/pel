@@ -1,6 +1,6 @@
 ;;; pel--base.el --- PEL base utilities. -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -34,13 +34,20 @@
 ;;
 ;; Environment Querying functions:
 ;;  - `pel-in-fast-startup-p'
-;;  - `pel-major-mode-symbol-value'
-;;    - `pel-string-with-major-mode'
-;;      - `pel-major-mode-of'
+;;  - `pel-string-with-major-mode'
+;;    - `pel-major-mode-of'
 ;;  - `pel-buffers-in-mode'
 ;;    - `pel-major-mode-of'
 ;;  - `pel-current-buffer-filename'
 ;;  - `pel-current-buffer-file-extension'
+;;
+;; Read/Set variable with a formatted name derived from major mode:
+;;  - `pel-major-mode-symbol-value'
+;;    - `pel-string-with-major-mode'
+;;      - `pel-major-mode-of'
+;; - `pel-set-major-mode-symbol'
+;;    - `pel-string-with-major-mode'
+;;      - `pel-major-mode-of'
 ;;
 ;; Function alias
 ;; - `λc'
@@ -365,26 +372,16 @@ If not specified (or nil) return the major mode of the current buffer."
         major-mode)
     major-mode))
 
-(defun pel-string-with-major-mode (format-string &optional buffer-or-name)
+(defun pel-string-with-major-mode (symbol-format-string
+                                   &optional buffer-or-name)
   "Return a string formatted with the single %s replaced by the major mode.
 
 The %s in the FORMAT-STRING is replaced by the prefix string
 before the \"-mode\" of the major mode of the current buffer or the one
 specified by BUFFER-OR-NAME."
-  (format format-string
+  (format symbol-format-string
           (substring (symbol-name (pel-major-mode-of buffer-or-name))
                      0 -5)))
-
-(defun pel-major-mode-symbol-value (format-string &optional buffer-or-name)
-  "Return the value of major-mode specific symbol for specified buffer.
-
-The symbol name is identified by the FORMAT-STRING which must
-contain one \"%s\" that is replaced by the by the prefix string
-before the \"-mode\" of the major mode of the the current buffer
-or the one specified by BUFFER-OR-NAME."
-  (symbol-value
-   (intern
-    (pel-string-with-major-mode format-string buffer-or-name))))
 
 (defun pel-buffers-in-mode (wanted-major-mode)
   "Return a list of buffers with specified WANTED-MAJOR-MODE, nil if none open.
@@ -430,11 +427,39 @@ file."
     (user-error "No file in buffer %s" (buffer-name))))
 
 ;; ---------------------------------------------------------------------------
+;; Read/Set variable with a formatted name derived from major mode
+;; ---------------------------------------------------------------
+
+(defun pel-major-mode-symbol-value (symbol-format-string
+                                    &optional buffer-or-name)
+  "Return the value of major-mode specific symbol for specified buffer.
+
+The symbol name is identified by the FORMAT-STRING which must
+contain one \"%s\" that is replaced by the by the prefix string
+before the \"-mode\" of the major mode of the the current buffer
+or the one specified by BUFFER-OR-NAME."
+  (symbol-value
+   (intern
+    (pel-string-with-major-mode symbol-format-string buffer-or-name))))
+
+(defun pel-set-major-mode-symbol (symbol-format-string
+                                  value
+                                  &optional buffer-or-name)
+  "Set symbol identified by SYMBOL-FORMAT-STRING to specified VALUE.
+
+The symbol name is identified by the FORMAT-STRING which must
+contain one \"%s\" that is replaced by the by the prefix string
+before the \"-mode\" of the major mode of the the current buffer
+or the one specified by BUFFER-OR-NAME."
+  (let ((symbol (intern (pel-string-with-major-mode symbol-format-string
+                                                    buffer-or-name))))
+    (set symbol value)))
+
+;; ---------------------------------------------------------------------------
 ;; Function alias
 ;; --------------
 ;; - `λc'
 ;;
-
 
 (defmacro λc (fct &rest args)
   "Funcall lambda function FCT with ARGS.
