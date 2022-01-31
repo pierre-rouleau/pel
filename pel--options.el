@@ -3951,6 +3951,7 @@ via the ``<f12> ? e`` sequence."
 (pel-put 'pel-use-c-eldoc :requires '(pel-use-c pel-use-c++))
 
 
+
 (defcustom pel-c-file-finder-method 'generic
   "Specify method used by `pel-open-at-point' to search C header files.
 
@@ -3977,13 +3978,38 @@ The following methods are supported:
   - key:     'project-path' : a list of directories where files are searched
                               for the current project.
 
-  - extra tool-specific path key(s): There can be several other keys that have
-    the name of a tool or some convention and define a set of directories to
-    add to the 'project-path' list when the value of the
-    `pel-c-file-finder-ini-tool-name' user-option match the name of that extra
-    key.  The command `pel-cc-set-file-finder-ini-tool-name' can be used to
-    modify the `pel-c-file-finder-ini-tool-name' value at run time and allow
-    dynamic change of the searched directories.
+  - extra tool-specific path key(s):
+
+    There can be several other keys with a name made of
+    - the tool chain name
+    - the file type
+    - the suffix string \"-path\"
+
+    Something like \"IAR-c-path\", \"gcc-c-path\", \"vs-c++-path\", etc...
+
+    These keys identify a set of directories that contain header files that
+    are specific to the specified tool chain for the specific programming
+    language.
+
+    The function `pel-open-at-point' will search these extra
+    directories when one of the following condition is met:
+
+    - The PEL_CC_FIND_TOOLCHAIN environment variable is set and holds the name
+      of the tool chain of one of these keys (like \"IAR\", \"gcc\", \"vs\" in
+      the example above).
+    - The user-option corresponding to the name of the programming language of
+      the file in the current buffer identifies a tool name.  Currently PEL
+      has support for C and C++ and has the following user-options:
+
+      - `pel-c-file-finder-ini-tool-name' for searching headers from C files
+      - `pel-c++-file-finder-ini-tool-name' for searching headers from C++
+         files
+
+    The command `pel-cc-set-file-finder-ini-tool-name' can be used to
+    modify the value of `pel-c-file-finder-ini-tool-name' and
+    `pel-c++-file-finder-ini-tool-name' dynamic value of the variable
+    (but not the persistent value of the user-option which must be modified by
+    the customization mechanism).
 
 - Environment variable string:
 
@@ -4021,9 +4047,29 @@ of the file search based on your project."
 (defcustom pel-c-file-finder-ini-tool-name nil
   "Default file-finder tool name used by C projects.
 
-This name, if specified, must correspond to one of the tool names specified by
-the 'tool-names' key in the [file-finder] section of the pel.ini file.
-It must represent the name of a tool used for C++ files.
+This name, if specified, represent the name of a tool used for
+C files.  It is used if a pel.ini file has a key inside the
+[file-finder] section that has a name corresponding to the
+selected tool name and the programming language of the current
+file when the `pel-open-at-point' command is issued to search for
+a header file.
+
+This value is used to override the name of the tool-chain
+identified by the PEL_CC_FIND_TOOLCHAIN environment variable,
+when the environment variable is either not defined or when you
+want to dynamically override the tool chain during an Emacs
+editing session.
+
+When the tool chain name is identified this way, PEL looks for a
+list of directories that are compiler-specific and that are
+identified in the value of a [file-finder] key named after the
+tool chain name and the file type.
+
+  For example, for a C file, if the tool chain name identified by
+  the PEL_CC_FIND_TOOLCHAIN environment variable or the
+  `pel-c-file-finder-ini-tool-name' user-option is \"IAR\", PEL
+  looks for the key named `IAR-c-path' for a list of extra
+  directory names to search into.
 
 See `pel-c-file-finder-method' for more information."
   :group 'pel-pkg-for-c
@@ -4565,11 +4611,31 @@ See `pel-c-file-finder-method' docstring for more information."
                 (repeat :tag "Tool directories"    (string :tag "Tool directory")))))
 
 (defcustom pel-c++-file-finder-ini-tool-name nil
-  "Default file-finder tool name used by C projects.
+  "Default file-finder tool name used by C++ projects.
 
-This name, if specified, must correspond to one of the tool names specified by
-the 'tool-names' key in the [file-finder] section of the pel.ini file.
-It must represent the name of a tool used for C files.
+This name, if specified, represent the name of a tool used for
+C++ files.  It is used if a pel.ini file has a key inside the
+[file-finder] section that has a name corresponding to the
+selected tool name and the programming language of the current
+file when the `pel-open-at-point' command is issued to search for
+a header file.
+
+This value is used to override the name of the tool-chain
+identified by the PEL_CC_FIND_TOOLCHAIN environment variable,
+when the environment variable is either not defined or when you
+want to dynamically override the tool chain during an Emacs
+editing session.
+
+When the tool chain name is identified this way, PEL looks for a
+list of directories that are compiler-specific and that are
+identified in the value of a [file-finder] key named after the
+tool chain name and the file type.
+
+  For example, for a C++ file, if the tool chain name identified by
+  the PEL_CC_FIND_TOOLCHAIN environment variable or the
+  `pel-c-file-finder-ini-tool-name' user-option is \"IAR\", PEL
+  looks for the key named `IAR-c++-path' for a list of extra
+  directory names to search into.
 
 See `pel-c-file-finder-method' for more information."
   :group 'pel-pkg-for-c++

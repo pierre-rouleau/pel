@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-01-29 16:29:47, updated by Pierre Rouleau>
+;; Time-stamp: <2022-01-30 18:32:27, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -49,36 +49,50 @@
 (require 'pel-ffind)             ; use: `pel-ffind-project-directory'
 (require 'pel-ffind-inpath)      ; use: `pel-ffind-inpath-include'
 (require 'pel-ini)               ; use: `pel-ini-load'
+(eval-when-compile
+  (require 'subr-x))             ; use: `string-join'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
+
+(defconst pel--c-file-finder-supported-modes '(c-mode c++-mode)
+  "List of major modes supported by the header file searching mechanism.")
 
 (defvar pel--c-file-finder-ini-tool-name pel-c-file-finder-ini-tool-name
   "Identifies the name of an extra list of directories to use in C.")
 
 (defvar pel--c++-file-finder-ini-tool-name pel-c++-file-finder-ini-tool-name
-  "Identifies the name of an extra list of directories to use in C.")
+  "Identifies the name of an extra list of directories to use in C++.")
 
 ;;-pel-autoload
-(defun pel-cc-set-file-finder-ini-tool-name (&optional tool-name)
+(defun pel-cc-set-file-finder-ini-tool-name (tool-name)
   "Select a new value for `pel-CC-file-finder-ini-tool-name'.
 
 CC is 'c' for C files, 'c++' for C++ files."
-  (interactive "sTool name: ")
-  (cond
-   ((eq major-mode 'c-mode)
-    (setq pel--c-file-finder-ini-tool-name tool-name)
-    (message "\
- pel-open-at-point executed in a C file
- now search the project-path directories and the ones identified by the %s pel.ini key"
-             tool-name))
-   ((eq major-mode 'c++-mode)
-    (setq pel--c++-file-finder-ini-tool-name tool-name)
-    (message "\
- pel-open-at-point executed in a C++ file
- now search the project-path directories and the ones identified by the %s pel.ini key"
-             tool-name))
-   (t (user-error "This is for C and C++ files only!"))))
+  (interactive (list (read-string
+                      (format "\
+To search into tool-chain directories, use what tool chain name (%s): "
+                              (or (getenv "PEL_CC_FIND_TOOLCHAIN")
+                                  (pel-major-mode-symbol-value
+                                   "pel--%s-file-finder-ini-tool-name"))))))
+  (if (memq major-mode pel--c-file-finder-supported-modes)
+      (progn
+        (pel-set-major-mode-symbol "pel--%s-file-finder-ini-tool-name" tool-name)
+        (message "\
+ pel-open-at-point executed in a %s file now searches
+ the project-path directories identified by the 'project-path' key
+ *and* the ones identified by the %s key of the pel.ini configuration file.
+ This overrides the tool chain name identified by the environment variable
+ PEL_CC_FIND_TOOLCHAIN."
+                 (pel-file-type-for major-mode)
+                 (format (pel-string-with-major-mode "%%s-%s-path")
+                         tool-name)))
+    (user-error "\
+This is only supported following file types: %s"
+                (string-join
+                 (mapcar (function pel-file-type-for)
+                         pel--c-file-finder-supported-modes)
+                 ", "))))
 
 ;; ---------------------------------------------------------------------------
 (defun pel-envar-in-string (string)
@@ -146,9 +160,17 @@ Return a list of found file path names."
     ;; Extend path with optional tool-specific directories if one is specified
     ;; and the corresponding key is in the INI file.
     (when tool-name
-      (setq project-path
-            (delete-dups (append project-path
-                                 (cdr (assoc tool-name section))))))
+      (let ((extra-paths (cdr (assoc
+                              (format
+                               (pel-string-with-major-mode
+                                "%%s-%s-path")
+                               (or tool-name
+                                   (getenv "PEL_CC_FIND_TOOLCHAIN")))
+                              section))))
+        (unless (listp extra-paths)
+          (setq extra-paths (list extra-paths)))
+        (setq project-path
+              (delete-dups (append project-path extra-paths)))))
     ;; perform file search inside identified directories
     ;; for each path in the list expand "~" and any environment variable using
     ;; the "$VARNAME" form.

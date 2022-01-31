@@ -141,16 +141,22 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       the project directory tree.  This file must be a .INI configuration file
       and must contain the =[file-finder]= section.  The section must contain
       the /project-path/ key that holds a list of directories.  It may also
-      define another key for extra directories to search when the name of the
-      key is set inside the *pel-c-file-finder-ini-tool-name* (for C files)
-      and the *pel-c++-file-finder-ini-tool-name* (for C++ files).  This
+      define another key that has a name patterned after the /TTT-CC-path/
+      pattern (where TTT is the tool chain name and CC is either c or c++, identifying
+      if it is used in a search done from within a C or C++ file).
+      The extra key allows the identification of extra tool-chain specific directories
+      to search when the name of the tool chain is identified by the PEL_CC_FIND_TOOLCHAIN
+      environment variable or specified by the *pel-c-file-finder-ini-tool-name* (for C files)
+      or the *pel-c++-file-finder-ini-tool-name* (for C++ files) user-options.  This
       allows you to select extra directories specific to a compiler tool
       chain and/or extra libraries.  You can use the new
       *pel-cc-set-file-finder-ini-tool-name* command to change the value of
       the *pel-CC-file-finder-ini-tool-name* (where CC is either 'c' or 'c++
       depending of the major mode where you issue the command).  This allows
       you to find the file a compiler/library setup would use and try another
-      one, without having to set the compilation environment.
+      one, without having to set the compilation environment.  However, it is
+      also possible to set the tool chain name by using the PEL_CC_FIND_TOOLCHAIN
+      environment variable.  The user options override the value extracted from the environment variable.
       The directories in the ~pel.ini~ file defined lists can also refer to
       environment variables using the =$VARNAME= syntax extending the
       portability of the configuration.
