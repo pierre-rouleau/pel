@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, January 31 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-01-31 22:15:21, updated by Pierre Rouleau>
+;; Time-stamp: <2022-02-01 08:24:45, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -90,6 +90,21 @@ the returned value."
 (defun pel-sum-hms-strings (&rest hms-strings)
   "Return the (hour minutes second) sum of the specified H:M:S HMS-STRINGS."
   (apply (function pel-sum-hms)
+         (mapcar
+          (function pel-hms-string-to-hms)
+          hms-strings)))
+
+(defun pel-subtract-hms (hms &rest hms-elems)
+  "Subtract HMS or subtract HMS_ELEMS and return (hour minute second) triple."
+  (let ((result (pel-hms-to-sec hms)))
+    (dolist (h-m-s hms-elems)
+      (pel-= result (pel-hms-to-sec h-m-s)))
+    (pel-seconds-to-hms result)))
+
+(defun pel-subtract-hms-strings (hms &rest hms-strings)
+  "Return the (hour minutes second) sum of the specified H:M:S HMS-STRINGS."
+  (apply (function pel-subtract-hms)
+         (pel-hms-string-to-hms hms)
          (mapcar
           (function pel-hms-string-to-hms)
           hms-strings)))
