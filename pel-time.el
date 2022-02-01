@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, January 31 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-01-31 21:58:20, updated by Pierre Rouleau>
+;; Time-stamp: <2022-01-31 22:15:21, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -84,7 +84,7 @@ the returned value."
   "Return the (hour minute second) sum of the specified HMS elements."
   (let ((total-seconds 0))
     (dolist (h-m-s hms-elems)
-      (setq total-seconds (+ total-seconds (pel-hms-to-sec h-m-s))))
+      (pel+= total-seconds (pel-hms-to-sec h-m-s)))
     (pel-seconds-to-hms total-seconds)))
 
 (defun pel-sum-hms-strings (&rest hms-strings)
