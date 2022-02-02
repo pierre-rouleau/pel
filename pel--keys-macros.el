@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-11-26 14:24:34, updated by Pierre Rouleau>
+;; Time-stamp: <2022-02-02 13:41:57, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -802,6 +802,8 @@ There should be no key binding!" keyseq))
     ("markdown"         . "mode-markdown")
     ("rst"              . "mode-rst")
     ;; topic related aliases, ordered by file names
+    ("repeat"           . "undo-redo-repeat")
+    ("redo"             . "undo-redo-repeat")
     ("hippie-expand"    . "abbreviations")
     ("dabbrev-expand"   . "abbreviations")
     ("text-align"       . "align")
