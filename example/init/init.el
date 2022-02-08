@@ -353,6 +353,9 @@ Also expands to the file true name, replacing symlinks by what they point to."
   ;; packages requested by PEL user options.  That call is done right before
   ;; `pel-init' below, after loading the customization file.
   ;;
+  ;; NOTE: remove the :nomessage argument to load to help debug a startup
+  ;; problem if one occurs.
+  ;;
   (defvar package-quickstart) ; declared only to prevent byte-compiler warning.
   (when pel-running-in-fast-startup-p
     ;; Start fast startup for: - Emacs < 27
@@ -362,7 +365,7 @@ Also expands to the file true name, replacing symlinks by what they point to."
               (null (boundp 'package-quickstart))
               (not package-quickstart))
       (if (and (load (file-name-sans-extension pel-fast-startup-init-fname)
-                     :noerror)
+                     :noerror :nomessage)
                (fboundp 'pel-fast-startup-init))
           (pel-fast-startup-init (and pel-init-support-dual-environment-p
                                       pel-emacs-is-graphic-p))

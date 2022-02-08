@@ -213,10 +213,14 @@ For debugging and to quiet byte-compiler warning.")
 ;; No predicate is required for this as it checks for the presence of a file.
 ;;
 ;; Activate PEL's fast startup if environment was setup by `pel-setup-fast'.
+;;
+;; NOTE: for debugging startup if there is a problem, you probably will
+;;       want to remove the :nomessage argument in the call to load.
+;;
 (let ((fast-startup-setup-fname (expand-file-name "pel-fast-startup-init.el"
                                                   user-emacs-directory)))
   (when (file-exists-p fast-startup-setup-fname)
-    (load (file-name-sans-extension fast-startup-setup-fname) :noerror)
+    (load (file-name-sans-extension fast-startup-setup-fname) :noerror :nomessage)
     (pel-fast-startup-init pel-force-graphic-specific-custom-file-p
                            pel-early-init-support-package-quickstart-p)
     ;; Remember Emacs is running in PEL's fast startup mode.
