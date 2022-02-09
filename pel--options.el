@@ -2838,7 +2838,7 @@ To activate it you must also activate `pel-use-log-support'"
 ;; Keys & Prompts
 ;; --------------
 (defgroup pel-pkg-for-keys nil
-  "List of external packages that PEL can use to help deal keys and prompts."
+  "List of external packages that PEL can use to help with keys and prompts."
   :group 'pel-package-use
   :link `(url-link :tag "AppleScript PDF" ,(pel-pdf-file-url "pl-applescript"))
   :link `(url-link :tag "Function Keys PDF" ,(pel-pdf-file-url "keys-fn"))
@@ -2907,6 +2907,23 @@ using colored fonts.  Similar to command-log-mode but with more colors."
   :safe #'booleanp
   :link '(url-link :tag "interaction-log-mode @ Github"
                    https://github.com/michael-heerdegen/interaction-log.el))
+
+;; ---------------------------------------------------------------------------
+(defgroup pel-keypad-keys nil
+  "Keypad key control."
+  :group 'pel-base-emacs
+  :group 'pel-pkg-for-keys)
+
+(defcustom pel-keypad-+-is-kp-add nil
+  "Whether Keypad + is seen as <kp-add> or not.
+
+Set it t on system where the key is seen as <kp-add>.  This is
+not the case on macOS but is the case on some Linux
+distributions.  It allows using the keypad + key to execute the
+`pel-copy-marked-or-whole-line' command."
+  :group 'pel-keypad-keys
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; Object File Format Support

@@ -89,7 +89,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   which can be used to identify the window below, at the left, at the top or
   at the right, respectively, of the current window.  This provides more
   flexibility on the selection of the /other/ window.
-** New Features:
+- Improved handling of the ~<kp-add>~ key for platform where the '+' keypad key
+  is seen as ~<kp-add~ on some terminals seen on some Linux distributions
+  (like Ubuntu 16.04 LTS).  The new *pel-keypad-+-is-kp-add* user-option can
+  now be turned on (set to t) to provide access to the
+  *pel-copy-marked-or-whole-linepel-copy-marked-or-whole-line* command through
+  that single key-stroke, allowing a single key-stroke for copying the current
+  line or currently marked area on platform where this was not already possible.
+ ** New Features:
 - Added support for Erlang code formatters. The new
   *pel-erlang-code-formatter-command* user-option specifies the Erlang code
   formatter to use.  The Erlang code formatter can be specified by a command

@@ -791,7 +791,7 @@ Done in this function to allow advising libraries that remap these keys."
 ;; So PEL binds the appropriate key to pel-kp-add which selects the action
 ;; according to the state of num-locking controlled by pel-numkpad.el
 
-(if pel-emacs-is-graphic-p
+(if (or pel-emacs-is-graphic-p pel-keypad-+-is-kp-add)
     (global-set-key [kp-add] 'pel-kp-add)
   (global-set-key [kp-separator] 'pel-kp-add))
 
@@ -4536,6 +4536,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (define-key pel:copy "x"  'pel-copy-sexp-at-point)
 ;;
 (global-set-key (kbd "<f11> +") 'pel-copy-marked-or-whole-line)
+(global-set-key (kbd "<f11> <kp-add>") 'pel-copy-marked-or-whole-line)
 (global-set-key (kbd "M-w") 'pel-copy-marked-or-whole-line)
                                         ; replaces kill-ring-save
 
