@@ -1,6 +1,6 @@
 ;;; pel-rst.el --- PEL reStructuredText support -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -808,6 +808,32 @@ Return non-nil if found, nil otherwise."
         ;; if that's found move to the first complete reference line
         (re-search-forward ": +.+$" nil :noerror)))))
 
+(defun pel-html-to-rst (filename)
+  "Transform the extension of a FILENAME to the non HTML source.
+
+The function removes the FILENAME extension if the extension is \"html\".
+If the resulting FILENAME has an extension it tries to  use that file name.
+Otherwise it tries to append the \"rst\", \"txt\" or \"stxt\" extension and
+uses the first one it finds. If it finds nothing it returns the FILENAME
+unchanged.  If FILENAME extension is not \"html\" it also returns FILENAME
+unchanged."
+  (let ((ext (file-name-extension filename)))
+    (if (string= ext "html")
+        (let ((fn  (file-name-sans-extension filename)))
+          (if (file-exists-p fn)
+              fn
+            (let ((fn-ext nil)
+                  (found-fn nil))
+              (dolist (new-ext '(".rst" ".txt" ".stxt"))
+                (unless found-fn
+                  (setq fn-ext (concat fn new-ext))
+                  (when (file-exists-p fn-ext)
+                    (setq found-fn fn-ext))))
+              (if found-fn
+                  found-fn
+                filename))))
+      filename)))
+
 (defun pel-rst-open-target (&optional n noerror)
   "Open the target of rst-reference at point.
 If there is no target issue a `user-error' unless NOERROR is non-nil.
@@ -819,7 +845,7 @@ See `pel-find-file-at-point-in-window' for more information."
     (if (pel--move-to-rst-target (pel--rst-reference-target))
         (if (and (require 'pel-file nil :noerror)
                  (fboundp 'pel-find-file-at-point-in-window))
-            (pel-find-file-at-point-in-window n)
+            (pel-find-file-at-point-in-window n (function pel-html-to-rst))
           (user-error "Cannot load pel-file!"))
       (unless noerror
         (user-error "No reference target found!")))))

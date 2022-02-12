@@ -184,6 +184,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     behaviour is active the mode-line lighter specified by
     *pel-electric-pair-lighter* (defaulting to " ℇ⒧ ") is shown.
 - New key binding in *Org-mode*: ~<f12> TAB~ is now bound to *org-indent-mode.*
+- Improved file search mechanism in reStructuredText files: the
+  *pel-open-at-point* command issued while point is inside an hyperlink to a
+  HTML file that is the rendering of another local reStructuredText file, the
+  command opens that reStructuredText file instead of the local HTML file.
 * Version 0.4.1:
 ** Modifications:
 - Fix: The File Management PDF now describes PEL's ability to select the

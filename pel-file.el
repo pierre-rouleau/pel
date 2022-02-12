@@ -1,6 +1,6 @@
 ;;; pel-file.el --- File Management utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -315,9 +315,13 @@ COLUMN   := integer | nil"
              (if column (format "col:%d" column) "")))
 
 ;;-pel-autoload
-(defun pel-find-file-at-point-in-window (&optional n)
+(defun pel-find-file-at-point-in-window (&optional n filename-filter)
   "Open file/URL of name located at/around point in specified window.
 .
+Optional arguments:
+  - N identifies target window,
+  - FILENAME-FILTER, if specified, is a function that takes the extracted
+    filename and returns a potentially modified filename to use.
 *Window selection:*
 - Only effective for opening file.  Ignored when opening a URL.
 - If no argument is provided,
@@ -422,6 +426,8 @@ were specified."
       (let* ((filename (cadr fileparts))
              (fn-action (pel--complete-filename-for filename))
              (filename  (expand-file-name (car fn-action))))
+        (when filename-filter
+          (setq filename (funcall filename-filter filename)))
         (if use-browser
             ;; It's a file, not a URL, but user requested opening the
             ;; file inside the the default browser or the OS default
