@@ -123,16 +123,6 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     programming modes that's all the /parens/ characters.
   - Also add the *pel-electric-pair-lighter* user-option(which defaults to " ℇ⒧ ")
     to specify a mode-line lighter for the *electric-pair-mode*.
-- In *Org-Mode* markup text-emphasis electric keys via an extended *electric-pair-mode* is now activated
-  when the *pel-org-use-electric-markup* user-option is turned on.  When this
-  is activated the ~*~, ~/~, ~_~, ~=~, ~~~ and ~+~ keys are electric and are
-  inserted in pair and added at both end of a marked area.
-  - This behaviour can be toggled with the ~<f11> M-e~ key to execute the
-    *electric-pair-local-mode* command which disables the electric behaviour
-    of the keys in the local buffer.  Also note that when the electric
-    behaviour is active the mode-line lighter specified by
-    *pel-electric-pair-lighter* (defaulting to " ℇ⒧ ") is shown.
-- New key binding in *Org-mode*: ~<f12> TAB~ is now bound to *org-indent-mode.*
 - New C and C++ support for open file at point: in C and C++ it is now
   possible to specify a new method to find C/C++ header file search:
   - The new *pel-c-file-finder-method* and *pel-c++-file-finder-method*
@@ -179,6 +169,16 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   smaller package written by Daniel Ness is installed in the utils directory.
   It is also installed when the ~pel.ini~ method of identifying searched C/C++
   files is used.
+- In *Org-Mode* markup text-emphasis electric keys via an extended *electric-pair-mode* is now activated
+  when the *pel-org-use-electric-markup* user-option is turned on.  When this
+  is activated the ~*~, ~/~, ~_~, ~=~, ~~~ and ~+~ keys are electric and are
+  inserted in pair and added at both end of a marked area.
+  - This behaviour can be toggled with the ~<f11> M-e~ key to execute the
+    *electric-pair-local-mode* command which disables the electric behaviour
+    of the keys in the local buffer.  Also note that when the electric
+    behaviour is active the mode-line lighter specified by
+    *pel-electric-pair-lighter* (defaulting to " ℇ⒧ ") is shown.
+- New key binding in *Org-mode*: ~<f12> TAB~ is now bound to *org-indent-mode.*
 - Add the *pel-ini* file which provides the *pel-ini-load* and *pel-ini-store*
   functions that load a .INI file into a alist and vice versa.  The functions
   install the required *ini* external package if missing.  The external
