@@ -188,6 +188,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   *pel-open-at-point* command issued while point is inside an hyperlink to a
   HTML file that is the rendering of another local reStructuredText file, the
   command opens that reStructuredText file instead of the local HTML file.
+  Also, if point is over the hyperlink of a section within the same
+  reStructuredText file, the command simply moves point to the title of that
+  section inside the file.
 * Version 0.4.1:
 ** Modifications:
 - Fix: The File Management PDF now describes PEL's ability to select the

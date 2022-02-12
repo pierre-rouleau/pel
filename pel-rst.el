@@ -796,7 +796,10 @@ in that case return nil instead."
 
 (defun pel--move-to-rst-target (target)
   "Move point to the rst definition link for TARGET.
-Return non-nil if found, nil otherwise."
+
+Return a list ('rst-title (point)) if the TARGET is a section title
+hyperlink, non-nil if it is another hyperlink with a found target.
+Return nil if no hyperlink target found."
   (goto-char (point-min))
   (let ((regexp (format "^\\.\\. _%s:" (pel-rst-anchor-escaped target))))
     ;; search for a complete reference (target and URL on the same line) first
@@ -804,9 +807,16 @@ Return non-nil if found, nil otherwise."
         t
       ;; if that fails search for a line that only has the target)
       (goto-char (point-min))
-      (when (re-search-forward regexp nil :noerror)
-        ;; if that's found move to the first complete reference line
-        (re-search-forward ": +.+$" nil :noerror)))))
+      (if (re-search-forward regexp nil :noerror)
+          ;; if that's found move to the first complete reference line
+          (re-search-forward ": +.+$" nil :noerror)
+        ;; otherwise try to find a line that begins with the target
+        ;; that might be a title
+        (goto-char (point-min))
+        (when (re-search-forward (format "^%s$" target)  nil :noerror)
+          ;; It's a title target! Not a file target!
+          ;; Just move point there and leave it there!
+          (list 'rst-title (point)))))))
 
 (defun pel-html-to-rst (filename)
   "Transform the extension of a FILENAME to the non HTML source.
@@ -841,14 +851,24 @@ In that case just return nil.
 Optionally identify a window to open a file reference with the argument N.
 See `pel-find-file-at-point-in-window' for more information."
   (interactive "P")
-  (save-excursion
-    (if (pel--move-to-rst-target (pel--rst-reference-target))
-        (if (and (require 'pel-file nil :noerror)
-                 (fboundp 'pel-find-file-at-point-in-window))
-            (pel-find-file-at-point-in-window n (function pel-html-to-rst))
-          (user-error "Cannot load pel-file!"))
-      (unless noerror
-        (user-error "No reference target found!")))))
+  (let ((new-position nil))
+    (save-excursion
+      (let ((result (pel--move-to-rst-target (pel--rst-reference-target))))
+        (cond
+         ;; if found a ref to a title jump to it
+         ((and (listp result) (eq (car result) 'rst-title))
+          (setq new-position (cadr result)))
+         ;; otherwise it's a link to a file: try to find it
+         (t
+          (if result
+              (if (and (require 'pel-file nil :noerror)
+                       (fboundp 'pel-find-file-at-point-in-window))
+                  (pel-find-file-at-point-in-window n (function pel-html-to-rst))
+                (user-error "Cannot load pel-file!"))
+            (unless noerror
+              (user-error "No reference target found!")))))))
+    (when new-position
+      (goto-char new-position))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-rst)
