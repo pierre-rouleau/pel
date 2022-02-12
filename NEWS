@@ -165,10 +165,15 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       using the =$VARNAME= syntax.
     - The last method is an explicit list of directories stored inside the
       user-option.
-- When *pel-use-ini* user -option is on, the ini.el package forked from a
+- When *pel-use-ini* user-option is on, the ini.el package forked from a
   smaller package written by Daniel Ness is installed in the utils directory.
   It is also installed when the ~pel.ini~ method of identifying searched C/C++
   files is used.
+- Add the *pel-ini* file which provides the *pel-ini-load* and *pel-ini-store*
+  functions that load a .INI file into a alist and vice versa.  The functions
+  install the required *ini* external package if missing.  The external
+  package used is a fork of the original ini package: the fork supports a
+  wider .INI file syntax and support multi-line (list) values.
 - In *Org-Mode* markup text-emphasis electric keys via an extended *electric-pair-mode* is now activated
   when the *pel-org-use-electric-markup* user-option is turned on.  When this
   is activated the ~*~, ~/~, ~_~, ~=~, ~~~ and ~+~ keys are electric and are
@@ -179,11 +184,6 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     behaviour is active the mode-line lighter specified by
     *pel-electric-pair-lighter* (defaulting to " ℇ⒧ ") is shown.
 - New key binding in *Org-mode*: ~<f12> TAB~ is now bound to *org-indent-mode.*
-- Add the *pel-ini* file which provides the *pel-ini-load* and *pel-ini-store*
-  functions that load a .INI file into a alist and vice versa.  The functions
-  install the required *ini* external package if missing.  The external
-  package used is a fork of the original ini package: the fork supports a
-  wider .INI file syntax and support multi-line (list) values.
 * Version 0.4.1:
 ** Modifications:
 - Fix: The File Management PDF now describes PEL's ability to select the
