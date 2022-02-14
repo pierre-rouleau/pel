@@ -4364,7 +4364,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; Nothing to install, rst-mode is built in Emacs
 
   (when pel-use-speedbar
-    (pel-add-speedbar-extension '(".rst" ".stxt")))
+    (pel-add-speedbar-extension '(".rst" ".stxt" ".rst.txt")))
 
   (define-pel-global-prefix pel:for-reST (kbd "<f11> SPC M-r"))
   (define-pel-global-prefix pel:rst-skel (kbd "<f11> SPC M-r <f12>"))
