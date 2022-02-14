@@ -2601,7 +2601,7 @@ ON-SAME-LINE is set."
     (princ object stream)))
 
 (defun pel-insert-list-content (symbol
-                                &optional buffer without-index no-button)
+                                &optional buffer without-index no-button on-same-line)
   "Insert a description of the content of the list identified by its SYMBOL.
 
 Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil.
@@ -2610,7 +2610,9 @@ of the output buffer.  If the SYMBOL is a buffer local symbol, specify the
 buffer in the optional BUFFER argument.
 
 By default, each element of the list is printed on a new line preceded by an
-element index number unless WITHOUT-INDEX is non-nil."
+element index number unless WITHOUT-INDEX is non-nil.
+By default, the index is printed on a line above the value, unless
+ON-SAME-LINE is non-nil"
   (let ((list-value (pel-symbol-value symbol buffer)))
     (if (null list-value)
         (pel-insert-symbol-content symbol buffer :on-same-line no-button)
@@ -2621,7 +2623,7 @@ element index number unless WITHOUT-INDEX is non-nil."
         (dolist (elem list-value)
           (setq idx (1+ idx))
           (unless without-index
-            (insert (format "\n%3d -\n" idx)))
+            (insert (format "\n%3d -%s" idx (if on-same-line "" "\n"))))
           (pel--pp elem (current-buffer) "   "))))))
 
 ;; ---------------------------------------------------------------------------
