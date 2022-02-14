@@ -12,7 +12,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   required.  There is still one issue left: the package installed this way
   will be removed by *pel-cleanup*: will need to add a mechanism to take this
   type of installation into account.
-- Add: new key binding: ~<f6><f6>~ is now bound to *pel-jump-to-mark*.  This
+- New: key binding ~<f6> 6~ to *complete-symbol* and ~<f6> 7~ to
+  *info-complete-symbol* to provide more flexible access to the completion
+  commands with bindings available in all environments.  These position of the
+  keys in the sequences should make them easy to type.
+- New: key binding: ~<f6><f6>~ is now bound to *pel-jump-to-mark*.  This
   helps on many Linux systems where the ~M-`~ key is used by the desktop to
   switch from similar windows.
 - Modified: key bindings to toggle EDTS: it was bound to ~<f12> M-E~ (or its

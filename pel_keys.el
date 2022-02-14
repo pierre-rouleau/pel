@@ -1006,6 +1006,8 @@ Done in this function to allow advising libraries that remap these keys."
 (define-key pel:f6 "l"  'pel-insert-line)
 (define-key pel:f6 "t"  'pel-insert-iso8601-timestamp)
 (define-key pel:f6 (kbd "<f6>") 'pel-jump-to-mark)
+(define-key pel:f6 "6" 'complete-symbol)
+(define-key pel:f6 "7" 'info-complete-symbol)
 
 ;; Move to the beginning of next function definition (while moving forward)
 ;;  complements C-M-e and C-M-a
