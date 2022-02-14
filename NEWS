@@ -191,13 +191,21 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     behaviour is active the mode-line lighter specified by
     *pel-electric-pair-lighter* (defaulting to " ℇ⒧ ") is shown.
 - New key binding in *Org-mode*: ~<f12> TAB~ is now bound to *org-indent-mode.*
-- Improved file search mechanism in reStructuredText files: the
+- Improve file search mechanism in reStructuredText files: the
   *pel-open-at-point* command issued while point is inside an hyperlink to a
   HTML file that is the rendering of another local reStructuredText file, the
   command opens that reStructuredText file instead of the local HTML file.
   Also, if point is over the hyperlink of a section within the same
   reStructuredText file, the command simply moves point to the title of that
   section inside the file.
+- Improve Speedbar support of reStructuredText files:
+  - The '.rst.txt' file extension is now recognized for Speedbar. This file
+    extension allows Emacs to recognize reStructuredText files while other
+    applications recognize it as a normal text file.
+- New: *pel-speedbar-info* command, bound to ~<f11> M-s ?~, which prints the
+  values of variables that control the behaviour of the Speedbar inside the
+  /*speedbar-dbg*/ buffer.
+
 * Version 0.4.1:
 ** Modifications:
 - Fix: The File Management PDF now describes PEL's ability to select the

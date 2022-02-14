@@ -1,6 +1,6 @@
 ;;; pel-speedbar.el --- PEL (Sr-)Speedbar support -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -420,6 +420,23 @@ speedbar, otherwise don't move it."
             (user-error "This command only supports SR-speedbar!")
           (user-error "Please open a SR-Speedbar first!")))
     (error "Cannot load speedbar!")))
+
+(defun pel-speedbar-info ()
+  "Display Speedbar control variables inside a *speedbar-dbg* buffer."
+  (interactive)
+  (let ((buffer (current-buffer)))
+    (pel-print-in-buffer
+     "*speedbar-dbg*"
+     "Speedbar control variables"
+     (lambda ()
+       "Print Speedbar control variables."
+       (insert "Variables that impact Speedbar behaviour.\n")
+       (insert "You may also want to check iMenu control variables:\n")
+       (insert " Use: <f11> ? e i\n\n")
+       (pel-insert-list-content 'auto-mode-alist
+                                buffer nil nil :on-same-line)
+       (pel-insert-list-content 'speedbar-supported-extension-expressions
+                                buffer nil nil :on-same-line)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-speedbar)

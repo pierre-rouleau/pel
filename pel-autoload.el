@@ -1,6 +1,6 @@
 ;;; pel-autoload.el --- Autoloads PEL -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -641,7 +641,8 @@ Argument FOR: just a required separator keyword to make code look better."
       pel-speedbar-toggle-show-all-files
       pel-speedbar-toggle-sorting
       pel-sr-speedbar-toggle-select-behaviour
-      pel-speedbar-focus-current-file)
+      pel-speedbar-focus-current-file
+      pel-speedbar-info)
     (when (display-graphic-p)
       (pel-autoload "pel-speedbar" for:
         pel-speedbar-toggle-images)))

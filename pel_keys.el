@@ -4377,7 +4377,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; that can read normal text files.
   (add-to-list 'auto-mode-alist '("\\.rst.txt\\'"  . rst-mode))
 
-
   (define-key pel:for-reST "." 'pel-rst-makelink)
   (define-key pel:for-reST "g" 'pel-rst-goto-ref-bookmark)
   (define-key pel:for-reST "s" 'pel-rst-set-ref-bookmark)
@@ -6569,6 +6568,7 @@ the ones defined from the buffer now."
                      sr-speedbar-toggle
                      sr-speedbar-window-p)
   (define-pel-global-prefix pel:speedbar (kbd "<f11> M-s"))
+  (define-key pel:speedbar "?"          'pel-speedbar-info)
   (define-key pel:speedbar (kbd "M-s")  'pel-open-close-speedbar)
   (define-key pel:speedbar (kbd "M-b")  'pel-sr-speedbar-toggle-select-behaviour)
   (define-key pel:speedbar (kbd "M-t")  'pel-toggle-to-speedbar)
