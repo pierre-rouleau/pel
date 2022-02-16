@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-02-16 15:31:48, updated by Pierre Rouleau>
+;; Time-stamp: <2022-02-16 16:41:52, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,6 +33,7 @@
 ;;
 (require 'pel--base)
 (require 'pel--options)
+(require 'pel-ffind)                    ; use: `pel-ffind-project-directory'
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -157,7 +158,9 @@ return \"void\"."
 (defun pel-cc-mode-info ()
   "Display information about current CC mode derivative."
   (interactive)
-  (let ((not-avail-msg "not available for this mode"))
+  (let ((not-avail-msg "not available for this mode")
+        (file-finder-method (pel-major-mode-symbol-value-or ;27
+                             "pel-%s-file-finder-method" "(not supported)")))
     (message
      "%s state:
 - active style        : %s. c-default-style: %s
@@ -173,8 +176,9 @@ return \"void\"."
 - PEL Bracket style   : %s
 - Comment style       : %s
 - Hungry delete       : %s
+- Project root        : %s
 - File finder method  : %s
-- File finder tool    : %s"
+- %s"
      major-mode                         ; 1
      (if (boundp 'c-default-style)      ; 2
          (alist-get major-mode c-default-style)
@@ -251,10 +255,31 @@ return \"void\"."
                                "off, but the \
 F11-⌦  and F11-⌫  keys are available."
                                not-avail-msg)
-     (pel-major-mode-symbol-value-or    ;27
-      "pel-%s-file-finder-method" "(not supported)")
-     (pel-major-mode-symbol-value-or    ; 28
-      "pel--%s-file-finder-ini-tool-name" "(not supported)"))))
+     ;; TODO: move following code close to file finder logic
+     (or (pel-ffind-project-directory)  ; 27
+         (format
+          "None found, searching for one of the following files: %s"
+          pel-project-root-identifiers))
+     file-finder-method                 ; 28
+     (cond                              ; 29
+      ((eq file-finder-method 'generic)
+       (format "%-20s: %s"
+               " pel-ffind-executable"
+               pel-ffind-executable))
+      ((eq file-finder-method 'pel-ini-file)
+       (format "%-20s: %s"
+               " tool chain"
+               (or (pel-major-mode-symbol-value-or
+                    "pel--%s-file-finder-ini-tool-name" "(not supported)")
+                   "none specified")))
+      ((stringp file-finder-method)
+       (format
+        " Search in path listed in environment variable %s"
+        file-finder-method))
+      ((listp file-finder-method)
+       (format
+        " Search in specific directories: %s" file-finder-method))
+      (t "No file finder supported.")))))
 
 ;; --
 

@@ -172,6 +172,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       using the =$VARNAME= syntax.
     - The last method is an explicit list of directories stored inside the
       user-option.
+  - The *pel-cc-info* command (bound to ~<f12> <f4> ?~ now displays
+    information related to the way the *pel-open-at-point* searches for header
+    files and the current project root it uses.)
 - When *pel-use-ini* user-option is on, the ini.el package forked from a
   smaller package written by Daniel Ness is installed in the utils directory.
   It is also installed when the ~pel.ini~ method of identifying searched C/C++
