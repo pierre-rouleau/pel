@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-02-16 16:41:52, updated by Pierre Rouleau>
+;; Time-stamp: <2022-02-16 17:09:45, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -258,7 +258,7 @@ F11-⌦  and F11-⌫  keys are available."
      ;; TODO: move following code close to file finder logic
      (or (pel-ffind-project-directory)  ; 27
          (format
-          "None found, searching for one of the following files: %s"
+          "None found, searching for files identified in pel-project-root-identifiers: %s"
           pel-project-root-identifiers))
      file-finder-method                 ; 28
      (cond                              ; 29
