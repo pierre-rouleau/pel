@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-01-30 18:32:27, updated by Pierre Rouleau>
+;; Time-stamp: <2022-02-16 13:12:09, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -141,7 +141,8 @@ Return a list of found file path names."
         (section nil)
         (project-path nil))
     (unless pel-ini-filename
-      (user-error "No pel.ini file found in directory tree."))
+      (user-error "No pel.ini file found in directory tree.
+ Check the `pel-project-root-identifiers' user-option."))
 
     (setq pel-ini-alist (pel-ini-load pel-ini-filename))
     (unless pel-ini-alist
@@ -161,12 +162,12 @@ Return a list of found file path names."
     ;; and the corresponding key is in the INI file.
     (when tool-name
       (let ((extra-paths (cdr (assoc
-                              (format
-                               (pel-string-with-major-mode
-                                "%%s-%s-path")
-                               (or tool-name
-                                   (getenv "PEL_CC_FIND_TOOLCHAIN")))
-                              section))))
+                               (format
+                                (pel-string-with-major-mode
+                                 "%%s-%s-path")
+                                (or tool-name
+                                    (getenv "PEL_CC_FIND_TOOLCHAIN")))
+                               section))))
         (unless (listp extra-paths)
           (setq extra-paths (list extra-paths)))
         (setq project-path
