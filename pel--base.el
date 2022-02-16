@@ -43,7 +43,8 @@
 ;;  - `pel-current-buffer-file-extension'
 ;;
 ;; Read/Set variable with a formatted name derived from major mode:
-;;  - `pel-major-mode-symbol-value'
+;;  - `pel-major-mode-symbol-value-or'
+;;    - `pel-major-mode-symbol-value'
 ;;  - `pel-set-major-mode-symbol'
 ;;
 ;; Function alias
@@ -441,6 +442,22 @@ or the one specified by BUFFER-OR-NAME."
   (symbol-value
    (intern
     (pel-string-with-major-mode symbol-format-string buffer-or-name))))
+
+(defun pel-major-mode-symbol-value-or (symbol-format-string
+                                       default-value
+                                       &optional buffer-or-name)
+  "Return the value or default of major-mode specific symbol for specified buffer.
+
+The symbol name is identified by the FORMAT-STRING which must
+contain one \"%s\" that is replaced by the by the prefix string
+before the \"-mode\" of the major mode of the the current buffer
+or the one specified by BUFFER-OR-NAME.
+
+If the symbol name does not exists for the specified SYMBOL-FORMAT-STRING
+for the current major mode, then return the specified DEFAULT-VALUE."
+  (condition-case nil
+      (pel-major-mode-symbol-value symbol-format-string buffer-or-name)
+    (error default-value)))
 
 (defun pel-set-major-mode-symbol (symbol-format-string
                                   value
