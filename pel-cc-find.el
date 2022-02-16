@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-02-16 13:12:09, updated by Pierre Rouleau>
+;; Time-stamp: <2022-02-16 14:14:13, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -158,6 +158,9 @@ Return a list of found file path names."
     (unless project-path
       (user-error "The INI file %s is missing the project-path key"
                   pel-ini-filename))
+    ;; Make sure a path is a list of directories
+    (unless (listp project-path)
+      (setq project-path (list project-path)))
     ;; Extend path with optional tool-specific directories if one is specified
     ;; and the corresponding key is in the INI file.
     (when tool-name
