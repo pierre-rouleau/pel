@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-11-29 11:55:03, updated by Pierre Rouleau>
+;; Time-stamp: <2022-02-16 15:31:48, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -172,7 +172,9 @@ return \"void\"."
 - c-indentation-style : %s
 - PEL Bracket style   : %s
 - Comment style       : %s
-- Hungry delete       : %s"
+- Hungry delete       : %s
+- File finder method  : %s
+- File finder tool    : %s"
      major-mode                         ; 1
      (if (boundp 'c-default-style)      ; 2
          (alist-get major-mode c-default-style)
@@ -248,7 +250,11 @@ return \"void\"."
                                nil
                                "off, but the \
 F11-⌦  and F11-⌫  keys are available."
-                               not-avail-msg))))
+                               not-avail-msg)
+     (pel-major-mode-symbol-value-or    ;27
+      "pel-%s-file-finder-method" "(not supported)")
+     (pel-major-mode-symbol-value-or    ; 28
+      "pel--%s-file-finder-ini-tool-name" "(not supported)"))))
 
 ;; --
 
