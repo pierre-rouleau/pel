@@ -8190,7 +8190,8 @@ CAUTION: This package needs major tuning!  It takes forever searching for a
   "If set to t, PEL binds several keys in the C-c prefix.
 It binds:
 - 'C-c r' : to replace-regexp or pel-replace-regexp
-- 'C-c q' : to query-replace-regexp or pel-query-replace-regexp"
+- 'C-c q' : to query-replace-regexp or pel-query-replace-regexp
+- 'C-c Q' : to isearch-query-replace-regexp"
   :group 'pel-pkg-for-regexp
   :type 'boolean
   :safe #'booleanp)

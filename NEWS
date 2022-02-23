@@ -215,6 +215,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   *pel-show-active-search-engine* (previously bound to ~<f11> ? S~).  This
   last key binding is now free and could be re-used later for desktop commands
   (which uses the ~<f11> S~ key prefix).  The new key setting is simpler.
+- Improve access to incremental and non-incremental query replace regexp by adding
+  key bindings to incremental query replace regexp command
+  *isearch-query-replace-regexp*: the ~<f11> s x i~ is always available and
+  the ~C-c Q~ key binding is available if the *pel-bind-keys-for-regexp*
+  user-option is turned on (set to t).
 
 * Version 0.4.1:
 ** Modifications:

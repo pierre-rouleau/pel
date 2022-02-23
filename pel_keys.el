@@ -6428,15 +6428,16 @@ the ones defined from the buffer now."
 (define-key pel:regexp      "b"  #'re-search-backward)
 (global-set-key      (kbd "M-R") #'re-search-backward)
 (define-key pel:regexp      "f"  #'re-search-forward)
-(define-key pel:regexp      "q"  #'query-replace-regexp) ; maybe replaced below
-(define-key pel:regexp      "r"  #'replace-regexp)       ; maybe replaced below
+(define-key pel:regexp      "q"  #'query-replace-regexp)
+(define-key pel:regexp      "r"  #'replace-regexp)
+(define-key pel:regexp      "i"  #'isearch-query-replace-regexp)
 (define-key pel:regexp      "B"  #'re-builder)
 ;; add it here because C-M-% cannot be typed in terminal mode
 (define-key pel:regexp  (kbd "M-B")  'pel-reb-re-syntax)
 (when pel-bind-keys-for-regexp
-  ; both maybe replaced below
   (define-key global-map (kbd "C-c r") 'replace-regexp)
-  (define-key global-map (kbd "C-c q") 'query-replace-regexp))
+  (define-key global-map (kbd "C-c q") 'query-replace-regexp)
+  (define-key global-map (kbd "C-c Q") 'isearch-query-replace-regexp))
 ;;
 
 ;; --
