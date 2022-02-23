@@ -6411,10 +6411,9 @@ the ones defined from the buffer now."
 
 (when (> (pel-number-of-available-search-tools) 1)
   (pel-autoload-file pel-search for:
-                     pel-select-search-tool
-                     pel-show-active-search-tool)
+                     pel-select-search-tool)
   (define-key pel:search-replace "s" 'pel-select-search-tool)
-  (define-key pel:help           "s" 'pel-show-active-search-tool))
+  (define-key pel:help           "s" 'pel-show-search-status))
 
 ;; --
 ;; Regular Expression Builder
@@ -6479,11 +6478,9 @@ the ones defined from the buffer now."
 
   (pel-autoload-file pel-search-regexp for:
                      pel-select-search-regexp-engine
-                     pel-show-active-search-regexp-engine
                      pel-replace-regexp
                      pel-query-replace-regexp)
   (define-key pel:search-replace "S" 'pel-select-search-regexp-engine)
-  (define-key pel:help   "S" 'pel-show-active-search-regexp-engine)
   ;; replace some already bound keys
   (define-key pel:regexp "r" 'pel-replace-regexp)
   (define-key pel:regexp "q" 'pel-query-replace-regexp)

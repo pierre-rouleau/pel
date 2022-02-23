@@ -2,12 +2,12 @@
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-11-26 13:51:25, updated by Pierre Rouleau>
+;; Time-stamp: <2022-02-23 16:48:47, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -44,9 +44,9 @@
 ;;
 ;; Search Tool Management:
 ;;
-;; * `pel-show-active-search-tool'
-;;   - `pel-active-search-tool-str'
 ;; * `pel-select-search-tool'
+;;   - `pel-active-search-tool-str'
+;;   - `pel--active-search-regexp-engine'
 ;;   - `pel--search-tools-selection'
 ;;   - `pel--activated-search-tool'
 ;;   - `pel-set-search-tool'
@@ -62,16 +62,18 @@
 ;;
 ;;                       ; isearch is part of standard Emacs distribution and
 ;;                       ; is loaded even by emacs -Q (in emacs 26).
-(require 'pel--base)     ; use: pel-symbol-on-off-string
-;;                       ;      pel-capitalize-first-letter
-(require 'pel--options)  ; use: pel-use-ansu, pel-use-swiper,
-;;                       ;      pel-initial-search-tool
+(require 'pel--base)     ; use: `pel-symbol-on-off-string'
+;;                       ;      `pel-capitalize-first-letter'
+(require 'pel--options)  ; use: `pel-use-ansu' `pel-use-swiper'
+;;                       ;      `pel-initial-search-tool'
 (require 'pel--macros)
 (require 'pel-prompt)
-(require 'pel-read)      ; use: pel-word-at-point
-(require 'pel-search-regexp)  ; use: pel-active-search-regexp-engine
-(require 'pel-window)    ; use: pel-window-direction-for,
-;;                       ;      pel-count-non-dedicated-windows
+(require 'pel-read)      ; use: `pel-word-at-point'
+(require 'pel-search-regexp)  ; use: `pel-active-search-regexp-engine'
+;;                            ;      `pel--search-regexp-initialized'
+;;                            ;      `pel-set-search-regexp-engine'
+(require 'pel-window)    ; use: `pel-window-direction-for'
+;;                       ;      `pel-count-non-dedicated-windows'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -403,19 +405,6 @@ The nil value means that Emacs default is used."
                    #'pel-set-search-tool))
 
 ;; --
-
-;;-pel-autoload
-(defun pel-show-active-search-tool ()
-  "Display the currently used search tool."
-  (interactive)
-  (unless pel--search-initialized
-    ;; select the initial search tool from user option.
-    (pel-set-search-tool pel-initial-search-tool)
-    (setq pel--search-initialized 1))
-  ;;
-  (message "Searching with %s" (pel-active-search-tool-str)))
-
-;; --
 ;;-pel-autoload
 (defun pel-show-search-status (&optional with-details)
   "Display search status.
@@ -426,7 +415,15 @@ Display:
 
 With non-nil WITH-DETAILS or any prefix argument, displays
 more information about available choices."
- (interactive "P")
+  (interactive "P")
+  (unless pel--search-initialized
+    ;; select the initial search tool from user option.
+    (pel-set-search-tool pel-initial-search-tool)
+    (setq pel--search-initialized 1))
+  (unless pel--search-regexp-initialized
+    ;; select the initial search regexp engine
+    (pel-set-search-regexp-engine pel-initial-regexp-engine)
+    (setq pel--search-regexp-initialized 1))
   (message "\
 - Searching with %s
 - %s

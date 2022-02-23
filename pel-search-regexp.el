@@ -1,6 +1,6 @@
 ;;; pel-search-regexp.el --- Search regxp selection control  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -26,9 +26,6 @@
 
 ;; Control Search Commands used
 ;; ----------------------------
-;;
-;; * pel-show-active-search-regexp-engine
-;;   - pel--active-search-regexp-engine
 ;;
 ;; * pel-select-search-regexp-engine
 ;;   - pel--prompt-for-search-regexp-engine
@@ -198,20 +195,6 @@ Return the new value if changed, nil if not changed."
                                 ""))))
     (setq pel--active-search-regexp-engine-shown-already t)
     text))
-
-;;-pel-autoload
-(defun pel-show-active-search-regexp-engine (&optional with-details)
-  "Display the currently used search regexp engine.
-Display a detailed message describing what is available the first time run
-and when WITH-DETAILS argument is non-nil.
-"
-  (interactive "P")
-  (unless pel--search-regexp-initialized
-    ;; select the initial search regexp engine
-    (pel-set-search-regexp-engine pel-initial-regexp-engine)
-    (setq pel--search-regexp-initialized 1))
-  ;;
-  (message "%s" (pel-active-search-regexp-engine-str with-details)))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-search-regexp)

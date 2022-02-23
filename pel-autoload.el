@@ -598,7 +598,6 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-toggle-search-upper-case
     pel-show-search-case-state
     pel-search-word-from-top
-    pel-show-active-search-tool
     pel-select-search-tool
     pel-show-search-status)
   (pel-autoload-function "pel-search" for:

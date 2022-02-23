@@ -208,6 +208,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - New: *pel-speedbar-info* command, bound to ~<f11> M-s ?~, which prints the
   values of variables that control the behaviour of the Speedbar inside the
   /*speedbar-dbg*/ buffer.
+- Improved search help: by consolidation: the *pel-show-search-status* command
+  is now bound to ~<f11> ? s~ as well as the original ~<f11> s ?~.  It
+  provides the information that was printed by 2 functions that have been
+  removed: *pel-show-active-search-tool* (previously bound to ~<f11> ? s~) and
+  *pel-show-active-search-engine* (previously bound to ~<f11> ? S~).  This
+  last key binding is now free and could be re-used later for desktop commands
+  (which uses the ~<f11> S~ key prefix).  The new key setting is simpler.
 
 * Version 0.4.1:
 ** Modifications:
