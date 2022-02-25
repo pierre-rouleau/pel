@@ -1,6 +1,6 @@
 ;;; pel-text-transform.el --- PEL Text Transformation -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -230,17 +230,23 @@ When N is 0, perform the operation once on the beginning of the current word."
 (defun pel-show-text-modes ()
   "Show the status of the various text modes in the mini buffer."
   (interactive)
-  (message "State of various modes:
+  (message "Modes status:
+- Local indent-tab-mode    : %s.  Tab width = %d
 - Local electric-quote-mode: %s.
-- delete-selection-mode: %s.
-- enriched-mode:  %s.
-- overwrite mode: %s.
+- delete-selection-mode    : %s.
+- enriched-mode            : %s.
+- overwrite mode           : %s.
 - case-fold-search: %s, sort-fold-case: %s.
 - subword mode: %s,  superword mode: %s, glass-mode: %s.
 - visible-mode: %s,  smart-dash-mode: %s.
 - Sentences end with %s.
 - paragraph-start   : %S
 - paragraph-separate: %S"
+           (pel-symbol-on-off-string 'indent-tab-mode
+                                     "on: use hard-tab"
+                                     "off: use spaces"
+                                     "void: use spaces")
+           tab-width
            (pel-symbol-on-off-string 'electric-quote-mode)
            (pel-symbol-on-off-string 'delete-selection-mode)
            (pel-symbol-on-off-string 'enriched-mode nil nil "not loaded")

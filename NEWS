@@ -110,6 +110,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   PEL provides another key binding identified by the *pel-keypad-meta+-special-sequence*
   user-option (that PEL sets to ~M-O 3 k~ for Linux by default).  If your environment
   requires another key sequence change the user-option value.
+- Improved *pel-show-text-modes* (bound to ~<f11> t m ?~): it now displays the state of the
+  *indent-tab-mode* and the *tab-width* variables.
 ** New Features:
 - Added support for Erlang code formatters. The new
   *pel-erlang-code-formatter-command* user-option specifies the Erlang code
