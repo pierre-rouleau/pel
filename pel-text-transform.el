@@ -231,7 +231,7 @@ When N is 0, perform the operation once on the beginning of the current word."
   "Show the status of the various text modes in the mini buffer."
   (interactive)
   (message "Modes status:
-- Local indent-tab-mode    : %s.  Tab width = %d
+- Local indent-tabs-mode   : %s.  Tab width = %d
 - Local electric-quote-mode: %s.
 - delete-selection-mode    : %s.
 - enriched-mode            : %s.
@@ -242,7 +242,7 @@ When N is 0, perform the operation once on the beginning of the current word."
 - Sentences end with %s.
 - paragraph-start   : %S
 - paragraph-separate: %S"
-           (pel-symbol-on-off-string 'indent-tab-mode
+           (pel-symbol-on-off-string 'indent-tabs-mode
                                      "on: use hard-tab"
                                      "off: use spaces"
                                      "void: use spaces")
