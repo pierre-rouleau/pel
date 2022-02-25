@@ -794,6 +794,11 @@ Done in this function to allow advising libraries that remap these keys."
 (if (or pel-emacs-is-graphic-p pel-keypad-+-is-kp-add)
     (global-set-key [kp-add] 'pel-kp-add)
   (global-set-key [kp-separator] 'pel-kp-add))
+;; Check for the Meta Keypad+ in terminal mode
+(unless pel-emacs-is-graphic-p
+  (when pel-keypad-meta+-special-sequence
+    (global-set-key (kbd pel-keypad-meta+-special-sequence)
+                    'pel-copy-symbol-at-point)))
 
 ;; -- The - key on the numeric keypad
 ;;

@@ -68,6 +68,7 @@
 ;;     - pel-pkg-for-kbmacro
 ;;     - pel-pkg-for-key-chord
 ;;     - pel-pkg-for-keys
+;;     - pel-keypad-keys
 ;;     - pel-pkg-for-object-file
 ;;     - pel-pkg-for-marking
 ;;     - pel-pkg-for-markup
@@ -2917,13 +2918,37 @@ using colored fonts.  Similar to command-log-mode but with more colors."
 (defcustom pel-keypad-+-is-kp-add nil
   "Whether Keypad + is seen as <kp-add> or not.
 
-Set it t on system where the key is seen as <kp-add>.  This is
-not the case on macOS but is the case on some Linux
+Set it t on system where the key is seen as <kp-add>.
+This is not the case on macOS but is the case on some Linux
 distributions.  It allows using the keypad + key to execute the
 `pel-copy-marked-or-whole-line' command."
   :group 'pel-keypad-keys
   :type 'boolean
   :safe #'booleanp)
+
+(defcustom pel-keypad-meta+-special-sequence (when pel-system-is-linux-p
+                                               "M-O 3 k")
+  "Key sequence for system where Meta Keypad + is not seen as <M-kp-add>.
+
+A string that is passed to the `kbd' function to generate the key sequence, or
+nil when this is not needed (like on macOS).
+
+Special key mapping assigned to the `pel-copy-symbol-at-point' command
+for Emacs running in terminal mode on systems that do not recognize the
+`Meta Keypad+' key sequence as <M-kp-add>.
+
+On macOS, the Meta Keypad + is seen as <M-kp-add>.
+This is not the case for Emacs running in terminal mode in several
+environments, such as several Linux distributions.
+
+PEL tries to set the value of this user-option to the key binding
+value required for the key sequence in this user-option when not
+running on macOS.  If this value does not work for Emacs in
+terminal mode for your environment, change the value."
+  :group 'pel-keypad-keys
+  :type '(choice
+          (const :tag "No special key needed: <M-kp-add> is recognized." nil)
+          (string :tag "Special key sequence string to use in TTY mode.")))
 
 ;; ---------------------------------------------------------------------------
 ;; Object File Format Support
