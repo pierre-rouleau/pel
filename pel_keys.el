@@ -4424,6 +4424,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-eval-after-load rst
     (pel-config-major-mode rst pel:for-reST
       (setq-local tab-width    pel-rst-tab-width)
+      (setq-local indent-tabs-mode pel-rst-use-tabs)
       (pel--install-rst-skel pel:rst-skel)
       (when (and pel-use-imenu+
                  (fboundp 'imenup-add-defs-to-menubar))

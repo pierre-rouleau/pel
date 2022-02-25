@@ -3366,6 +3366,14 @@ characters."
   :type 'integer
   :safe 'pel-indent-valid-p)
 
+(defcustom pel-rst-use-tabs nil
+  "Value of `indent-tabs-mode' for editing reStructuredText files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-reST
+  :type 'boolean
+  :safe #'booleanp)
+
 ;;   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 (defgroup pel-reST-style nil
   "PEL reStructuredText skeleton format control."

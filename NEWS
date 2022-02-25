@@ -112,6 +112,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   requires another key sequence change the user-option value.
 - Improved *pel-show-text-modes* (bound to ~<f11> t m ?~): it now displays the state of the
   *indent-tab-mode* and the *tab-width* variables.
+- Improved indentation control for reStructuredText files: the new *pel-rst-use-tabs*
+  user-option, which defaults to nil, controls the initial value of the *indent-tabs-mode*
+  for buffers in rst-mode, effectively ensuring that indentation is done with spaces by default.
+  You can customize it to t if required (although you will probably want to use space in reStructuredText markup.)
 ** New Features:
 - Added support for Erlang code formatters. The new
   *pel-erlang-code-formatter-command* user-option specifies the Erlang code
