@@ -545,6 +545,7 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (when (and (boundp 'pel-use-rst-mode) pel-use-rst-mode)
     (pel-autoload "pel-rst" for:
+      pel-rst-set-underscore-syntax
       pel-rst-set-ref-bookmark
       pel-rst-goto-ref-bookmark
       pel-rst-makelink

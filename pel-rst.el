@@ -110,6 +110,41 @@
                (fboundp 'bounds-of-thing-at-point))
     (user-error "Failed loading thingatpt!")))
 
+;; ---------------------------------------------------------------------------
+;; rst-mode character syntax control
+;; ---------------------------------
+;;
+;; The following is experimental: to allow investigation into the ability to
+;; use superword-mode in rst-mode.
+
+(defun pel--rst-set-underscore-as-symbol ()
+  "Set syntax of underscore character as symbol."
+  (modify-syntax-entry ?_ "_" rst-mode-syntax-table))
+
+(defun pel--rst-restore-underscore-syntax ()
+  "Restore syntax of underscore character to punctuation."
+  (modify-syntax-entry ?_ "." rst-mode-syntax-table))
+
+;;-pel-autoload
+(defun pel-rst-set-underscore-syntax ()
+  "Set syntax of underscore to punctuation or symbol according to superword-mode.
+
+By default the syntax of an underscore in rst-mode is a
+punctuation.  To use the superword-mode the syntax of the
+underscore must be symbol instead.
+
+This function checks if the superword-mode is active and changes the syntax of
+the underscore character to symbol if superword-mode is on, otherwise sets it
+to the default: symbol."
+  (interactive)
+  (if (bound-and-true-p superword-mode)
+      (progn
+        (pel--rst-set-underscore-as-symbol)
+        (message "Underscore syntax is now: symbol"))
+    (pel--rst-restore-underscore-syntax)
+    (message "Underscore syntax is now: punctuation")))
+
+;; ---------------------------------------------------------------------------
 ;; Section Adornment Control
 ;; -------------------------
 
