@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, January 31 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-02-01 08:24:45, updated by Pierre Rouleau>
+;; Time-stamp: <2022-03-01 09:45:05, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,8 +32,34 @@
 ;;
 ;; The function `pel-sum-hms' can sum (hour minute second) triple and the
 ;; function `pel-sum-hms-strings' can sum "hh:mm:ss" strings.   Both return a
-;; (hour minute second) triple.
+;; (hour minute second) triple.  The functions `pel-subtract-hms' and
+;; `pel-subtract-hms-strings' perform similar subtraction operations.
 ;;
+;; The functions operate on the following types identified by the argument
+;; names:
+;;
+;; - `seconds'    : integer number of seconds
+;; - `hms'        : a (hours minutes seconds) triple of integers
+;; - `hms-elems'  : a sequence of `hms'
+;; - `hms-string' : a "hh:mm:ss" string representing hours:minutes:seconds
+;; - `hms-strings': a sequence of `hms-string'
+;;
+;;
+;; The following conversion function are provided:
+;;
+;; - `pel-seconds-to-hms'
+;; - `pel-hms-to-sec'
+;;
+;; - `pel-sum-hms-strings'
+;; - `pel-sum-hms'
+;;
+;; - `pel-hms-string-to-hms'
+;;
+;;
+;; The last 2 functions are used to normalize and validate the time elements:
+;;
+;; - `pel-normalize-hms'
+;; - `pel-validate-hms'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -101,10 +127,10 @@ the returned value."
       (pel-= result (pel-hms-to-sec h-m-s)))
     (pel-seconds-to-hms result)))
 
-(defun pel-subtract-hms-strings (hms &rest hms-strings)
-  "Return the (hour minutes second) sum of the specified H:M:S HMS-STRINGS."
+(defun pel-subtract-hms-strings (hms-string &rest hms-strings)
+  "Return the (hour minutes second) difference of the specified H:M:S HMS-STRINGS."
   (apply (function pel-subtract-hms)
-         (pel-hms-string-to-hms hms)
+         (pel-hms-string-to-hms hms-string)
          (mapcar
           (function pel-hms-string-to-hms)
           hms-strings)))
