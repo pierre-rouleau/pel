@@ -116,6 +116,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   user-option, which defaults to nil, controls the initial value of the *indent-tabs-mode*
   for buffers in rst-mode, effectively ensuring that indentation is done with spaces by default.
   You can customize it to t if required (although you will probably want to use space in reStructuredText markup.)
+- Improved the multi-window sync-scrolling mechanism: added two commands that
+  can be used to scroll only the current window while a sync-scroll group of
+  windows is currently activated.  The two commands are
+  *pel-scroll-up-only-this* (bound to ~<f11> | <donw>~) and
+  *pel-scroll-down-only-this* (bound to ~<f11> | <up>~).
 ** New Features:
 - Added support for Erlang code formatters. The new
   *pel-erlang-code-formatter-command* user-option specifies the Erlang code

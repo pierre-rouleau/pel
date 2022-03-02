@@ -266,6 +266,30 @@ scroll function."
                    (pel-scroll-down-all-insync :all n))
         (scroll-down n)))))
 
+;; --
+
+;;-pel-autoload
+(defun pel-scroll-down-only-this (&optional n)
+  "Scroll down by N only this window during a scroll sync session."
+  (interactive "P")
+  (unless pel-in-scroll-sync
+    (user-error "Use this command only while sync scrolling!"))
+  (let ((orig-scroll-set pel-in-scroll-sync))
+    (setq pel-in-scroll-sync nil)
+    (pel-scroll-down n)
+    (setq pel-in-scroll-sync orig-scroll-set)))
+
+;;-pel-autoload
+(defun pel-scroll-up-only-this (&optional n)
+  "Scroll up by N only this window during a scroll sync session."
+  (interactive "P")
+  (unless pel-in-scroll-sync
+    (user-error "Use this command only while sync scrolling!"))
+  (let ((orig-scroll-set pel-in-scroll-sync))
+    (setq pel-in-scroll-sync nil)
+    (pel-scroll-up n)
+    (setq pel-in-scroll-sync orig-scroll-set)))
+
 ;; -----------------------------------------------------------------------------
 (provide 'pel-scroll)
 

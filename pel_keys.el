@@ -5265,6 +5265,9 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-key pel:scroll "|"  'pel-toggle-scroll-sync)
 (define-key pel:scroll "+"  'pel-add-window-to-scroll-sync)
 (define-key pel:scroll "-"  'pel-remove-window-from-scroll-sync)
+(define-key pel:scroll (kbd "<up>")   'pel-scroll-down-only-this)
+(define-key pel:scroll (kbd "<down>") 'pel-scroll-up-only-this)
+
 (define-key pel:scroll "a" #'scroll-all-mode)
 (define-key pel:scroll "f" #'follow-mode)
 (define-key pel:scroll "l" #'scroll-lock-mode)

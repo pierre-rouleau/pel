@@ -592,7 +592,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-scroll-up
     pel-scroll-down
     pel-scroll-down-other
-    pel-scroll-up-other)
+    pel-scroll-up-other
+    pel-scroll-down-only-this
+    pel-scroll-up-only-this)
 
   (pel-autoload "pel-search" for:
     pel-toggle-case-fold-search
