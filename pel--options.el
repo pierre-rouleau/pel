@@ -8590,10 +8590,10 @@ Do not enter lambda expressions."
 
 PEL stores this in `tab-width' when opening sh  buffers.
 
-This does *NOT* control the indentation in sh
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
+This controls the number of space characters used in for
+indentation level in sh files when the `pel-sh-use-tabs' is set
+to nil. It also controls the number of columns shown to render a
+hard tab when one `pel-sh-use-tabs' is set to t."
   :group 'pel-pkg-for-sh
   :type 'integer
   :safe 'pel-indent-valid-p)
