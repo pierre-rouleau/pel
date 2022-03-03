@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-02-02 13:41:57, updated by Pierre Rouleau>
+;; Time-stamp: <2022-03-03 14:17:08, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1304,6 +1304,20 @@ optional argument APPEND is non-nil, in which case it is added at the end."
   (if (eq major-mode mode)
       (funcall fct)))
 
+(defconst pel--tab-controlling-major-modes '(makefile tup nix
+                                                      intel-hex go
+                                                      lisp arc clojure
+                                                      scheme chez chibi
+                                                      chicken gambit gerbil
+                                                      guile mit-scheme racket
+                                                      scsh
+                                                      lfe inferior-lfe
+                                                      cwl)
+  "List of major mode that fully control the tab behaviour and width.
+
+These modes do not have both `pel-<mode>-tab-width' and a `pel-<mode>-use-tabs'
+user-options variables.")
+
 (defmacro pel-config-major-mode (target-mode &optional key-prefix &rest body)
   "Setup the major mode identified by TARGET-MODE.
 
@@ -1334,6 +1348,10 @@ and after the local variables have been loaded."
         (gn-mode-hook (intern (format "%s-mode-hook" target-mode)))
         (gn-minor-modes (intern (format "pel-%s-activates-minor-modes"
                                         target-mode)))
+        (gn-use-tabs (intern (format "pel-%s-use-tabs"
+                                     target-mode)))
+        (gn-tab-width (intern (format "pel-%s-tab-width"
+                                      target-mode)))
         (gn-fname       (file-name-base (macroexp-file-name))))
     ;; When the <f12> key prefixes are defined, set them up first
     ;; in the function body to ensure they are available and will not shadow
@@ -1346,6 +1364,12 @@ and after the local variables have been loaded."
     ;;`pel-<mode>-activates-minor-modes' user-option.
     (setq body (append body `((pel-turn-on-local-minor-modes-in
                                (quote ,gn-minor-modes)))))
+    ;; If the major mode is not one of the modes that do not need
+    ;; to support hard-tab control and width create code that set them
+    (unless (memq target-mode pel--tab-controlling-major-modes)
+      (setq body (append body
+                         `((setq-local tab-width ,gn-tab-width)
+                           (setq-local indent-tabs-mode ,gn-use-tabs)))))
     ;; return the following generated code:
     `(progn
        (defun ,gn-fct2 ()

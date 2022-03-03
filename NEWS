@@ -121,6 +121,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   windows is currently activated.  The two commands are
   *pel-scroll-up-only-this* (bound to ~<f11> | <donw>~) and
   *pel-scroll-down-only-this* (bound to ~<f11> | <up>~).
+- New: better indention control with the **pel-<mode>-use-tab** and the
+  **pel-<mode>-tab-width* user-options for several major modes: adoc,
+  graphviz-dot, plantuml, markdown org, yaml, javascript, haskell,
+  hy, elixir, gleam, forth, julia, nim, tuareg (OCaml), perl, python, rexx,
+  netrexx, ruby, rust, sh, v and yang.
+
 ** New Features:
 - Added support for Erlang code formatters. The new
   *pel-erlang-code-formatter-command* user-option specifies the Erlang code

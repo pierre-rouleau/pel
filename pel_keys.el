@@ -2243,10 +2243,7 @@ MODE must be a symbol."
       ;; 1) set the style: it identifies everything
       (pel--set-cc-style 'c-mode pel-c-bracket-style pel-c-newline-mode)
       ;; 2) apply modifications requested by PEL user options.
-      ;; 2a) set variables always available in Emacs
-      (setq-local tab-width pel-c-tab-width)
-      (setq-local indent-tabs-mode pel-c-use-tabs)
-      ;; 2b) set variables only available in a CC mode - prevent warnings
+      ;;    set variables only available in a CC mode - prevent warnings
       (pel-setq-local c-basic-offset pel-c-indent-width)
       ;; 3) set fill-column to PEL specified C's default if specified
       (when pel-c-fill-column
@@ -2307,10 +2304,7 @@ MODE must be a symbol."
       ;; 1) set the style: it identifies everything
       (pel--set-cc-style 'c++-mode pel-c++-bracket-style pel-c++-newline-mode)
       ;; 2)  apply modifications requested by PEL user options.
-      ;; 2a) set variables always available in Emacs
-      (setq-local tab-width          pel-c++-tab-width)
-      (setq-local indent-tabs-mode pel-c++-use-tabs)
-      ;; 2b) set variables only available in a CC mode - prevent warnings
+      ;;     set variables only available in a CC mode - prevent warnings
       (pel-setq c-basic-offset pel-c++-indent-width)
       ;; 3) set fill-column to PEL specified C++'s default if specified
       (when pel-c++-fill-column
@@ -2375,10 +2369,7 @@ d-mode not added to ac-modes!"
       ;; 1) set the style: it identifies everything
       (pel--set-cc-style 'd-mode pel-d-bracket-style pel-d-newline-mode)
       ;; 2)  apply modifications requested by PEL user options.
-      ;; 2a) set variables always available in Emacs
-      (setq-local tab-width        pel-d-tab-width)
-      (setq-local indent-tabs-mode pel-d-use-tabs)
-      ;; 2b) set variables only available in a CC mode - prevent warnings
+      ;;     set variables only available in a CC mode - prevent warnings
       (pel-setq-local c-basic-offset pel-d-indent-width)
       ;; 3) set fill-column to PEL specified D's default if specified
       (when pel-d-fill-column
@@ -3344,9 +3335,6 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       ;; Set fill-column to Erlang's default if specified
       (when pel-erlang-fill-column
         (setq-local fill-column pel-erlang-fill-column))
-      ;; Set tab behaviour for Erlang as defined by PEL user-options.
-      (setq-local tab-width pel-erlang-tab-width)
-      (setq-local indent-tabs-mode pel-erlang-use-tabs)
       ;;
       (when (and (require 'pel-file nil :noerror)
                  (boundp 'pel-filename-at-point-finders))
@@ -3916,7 +3904,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; Activate python mode
   (pel-eval-after-load python
     (pel-config-major-mode python pel:for-python
-      (setq-local tab-width pel-python-tab-width)
       (when (and pel-use-indent-tools
                  (eq pel-indent-tools-key-bound 'python)
                  (require 'indent-tools nil :noerror)
@@ -4432,8 +4419,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
   (pel-eval-after-load rst
     (pel-config-major-mode rst pel:for-reST
-      (setq-local tab-width    pel-rst-tab-width)
-      (setq-local indent-tabs-mode pel-rst-use-tabs)
       (pel--install-rst-skel pel:rst-skel)
       (when (and pel-use-imenu+
                  (fboundp 'imenup-add-defs-to-menubar))

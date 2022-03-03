@@ -185,6 +185,9 @@
 ;; - pel-startup-<thing to activate at startup>
 ;; - pel-modes-activating-<package name>
 ;; - pel-<mode>-activates-minor-modes
+;; - pel-<mode>-use-tabs
+;; - pel-<mode>-tab-width
+
 
 ;;
 ;; The `pel-use-' user-options are either t/nil boolean types or tri-state
@@ -3024,6 +3027,27 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-asciidoc
   :type '(repeat function))
 
+(defcustom pel-adoc-tab-width 2
+  "Distance between tab stop for asciidoc buffers.
+
+PEL stores this in `tab-width' when opening asciidoc  buffers.
+
+This does *NOT* control the indentation in asciidoc
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-asciidoc
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-adoc-use-tabs nil
+  "Value of `indent-tabs-mode' for editing asciidoc files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-asciidoc
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; pel-pkg-for-draw-markup
 ;; -----------------------
@@ -3061,6 +3085,27 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-graphviz-dot
   :type '(repeat function))
+
+(defcustom pel-graphviz-dot-tab-width 2
+  "Distance between tab stop for graphviz-dot buffers.
+
+PEL stores this in `tab-width' when opening graphviz-dot  buffers.
+
+This does *NOT* control the indentation in graphviz-dot
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-graphviz-dot
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-graphviz-dot-use-tabs nil
+  "Value of `indent-tabs-mode' for editing graphviz-dot files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-graphviz-dot
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; PlantUML Support
@@ -3113,6 +3158,27 @@ Do not enter lambda expressions."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-flycheck-plantuml :requires 'pel-use-plantuml)
+
+(defcustom pel-plantuml-tab-width 2
+  "Distance between tab stop for plantuml buffers.
+
+PEL stores this in `tab-width' when opening plantuml  buffers.
+
+This does *NOT* control the indentation in plantuml
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-plantuml
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-plantuml-use-tabs nil
+  "Value of `indent-tabs-mode' for editing plantuml files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-plantuml
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Markdown support
@@ -3254,6 +3320,27 @@ activate this package."
   :safe #'booleanp)
 (pel-put 'pel-use-remark-mode :requires 'pel-use-markdown)
 
+(defcustom pel-markdown-tab-width 2
+  "Distance between tab stop for markdown buffers.
+
+PEL stores this in `tab-width' when opening markdown  buffers.
+
+This does *NOT* control the indentation in markdown
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-markdown
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-markdown-use-tabs nil
+  "Value of `indent-tabs-mode' for editing markdown files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-markdown
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Outline Mode Support
 ;; --------------------
@@ -3311,6 +3398,27 @@ When turned on, the *, /, =, _, ~ and + keys are electric in org-mode.
 - Typing one of these keys inserts the other after the cursor.
 - Typing a key when an area is marked inserts the keys around the area."
   :group 'pel-pkg-for-org-mode
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-org-tab-width 2
+  "Distance between tab stop for org buffers.
+
+PEL stores this in `tab-width' when opening org  buffers.
+
+This does *NOT* control the indentation in org
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-org
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-org-use-tabs nil
+  "Value of `indent-tabs-mode' for editing org files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-org
   :type 'boolean
   :safe #'booleanp)
 
@@ -3455,6 +3563,27 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-yaml
   :type '(repeat function))
+
+(defcustom pel-yaml-tab-width 2
+  "Distance between tab stop for yaml buffers.
+
+PEL stores this in `tab-width' when opening yaml  buffers.
+
+This does *NOT* control the indentation in yaml
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-yaml
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-yaml-use-tabs nil
+  "Value of `indent-tabs-mode' for editing yaml files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-yaml
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Common Workflow Language support
@@ -5400,6 +5529,48 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-javascript
   :type '(repeat function))
 
+(defcustom pel-javascript-tab-width 4
+  "Distance between tab stop for javascript buffers.
+
+PEL stores this in `tab-width' when opening javascript  buffers.
+
+This does *NOT* control the indentation in javascript
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-javascript
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-javascript-use-tabs nil
+  "Value of `indent-tabs-mode' for editing javascript files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-javascript
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-js-tab-width 4
+  "Distance between tab stop for javascript buffers.
+
+PEL stores this in `tab-width' when opening javascript  buffers.
+
+This does *NOT* control the indentation in javascript
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-javascript
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-js-use-tabs nil
+  "Value of `indent-tabs-mode' for editing javascript files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-javascript
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Go language support
 ;; -------------------
@@ -5618,6 +5789,27 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-haskell
   :type '(repeat function))
+
+(defcustom pel-haskell-tab-width 2
+  "Distance between tab stop for haskell buffers.
+
+PEL stores this in `tab-width' when opening haskell  buffers.
+
+This does *NOT* control the indentation in haskell
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-haskell
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-haskell-use-tabs nil
+  "Value of `indent-tabs-mode' for editing haskell files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-haskell
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Lisp-like language support
@@ -6222,6 +6414,27 @@ Activating this automatically turns `pel-use-janet' on."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-hy :package-is 'hy-mode)
+
+(defcustom pel-hy-tab-width 4
+  "Distance between tab stop for hy buffers.
+
+PEL stores this in `tab-width' when opening hy  buffers.
+
+This does *NOT* control the indentation in hy
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-hy
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-hy-use-tabs nil
+  "Value of `indent-tabs-mode' for editing hy files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-hy
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Scheme Support
@@ -6967,6 +7180,27 @@ package which provides the client/library for LSP."
 (pel-put 'pel-use-elixir-lsp :package-is 'lsp-elixir)
 (pel-put 'pel-use-elixir-lsp :requires 'pel-use-elixir)
 
+(defcustom pel-elixir-tab-width 4
+  "Distance between tab stop for elixir buffers.
+
+PEL stores this in `tab-width' when opening elixir  buffers.
+
+This does *NOT* control the indentation in elixir
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-elixir
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-elixir-use-tabs nil
+  "Value of `indent-tabs-mode' for editing elixir files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-elixir
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Erlang Support
 ;; --------------
@@ -7693,6 +7927,27 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-gleam
   :type '(repeat function))
 
+(defcustom pel-gleam-tab-width 2
+  "Distance between tab stop for gleam buffers.
+
+PEL stores this in `tab-width' when opening gleam  buffers.
+
+This does *NOT* control the indentation in gleam
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-gleam
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-gleam-use-tabs nil
+  "Value of `indent-tabs-mode' for editing gleam files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-gleam
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Emacs Tools for BEAM languages
 ;; ------------------------------
@@ -7738,6 +7993,27 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-forth
   :type '(repeat function))
 
+(defcustom pel-forth-tab-width 4
+  "Distance between tab stop for forth buffers.
+
+PEL stores this in `tab-width' when opening forth  buffers.
+
+This does *NOT* control the indentation in forth
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-forth
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-forth-use-tabs nil
+  "Value of `indent-tabs-mode' for editing forth files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-forth
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Julia Support
 ;; --------------
@@ -7764,6 +8040,27 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-julia
   :type '(repeat function))
+
+(defcustom pel-julia-tab-width 4
+  "Distance between tab stop for julia buffers.
+
+PEL stores this in `tab-width' when opening julia  buffers.
+
+This does *NOT* control the indentation in julia
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-julia
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-julia-use-tabs nil
+  "Value of `indent-tabs-mode' for editing julia files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-julia
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Nim Support
@@ -7797,6 +8094,27 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-nim
   :type '(repeat function))
+
+(defcustom pel-nim-tab-width 4
+  "Distance between tab stop for nim buffers.
+
+PEL stores this in `tab-width' when opening nim  buffers.
+
+This does *NOT* control the indentation in nim
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-nim
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-nim-use-tabs nil
+  "Value of `indent-tabs-mode' for editing nim files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-nim
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Ocaml Support
@@ -7851,6 +8169,27 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-ocaml
   :type '(repeat function))
 
+(defcustom pel-tuareg-tab-width 4
+  "Distance between tab stop for ocaml buffers.
+
+PEL stores this in `tab-width' when opening ocaml  buffers.
+
+This does *NOT* control the indentation in ocaml
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-ocaml
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-tuareg-use-tabs nil
+  "Value of `indent-tabs-mode' for editing ocaml files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-ocaml
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Perl Support
 ;; ------------
@@ -7874,6 +8213,27 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-perl
   :type '(repeat function))
+
+(defcustom pel-perl-tab-width 4
+  "Distance between tab stop for perl buffers.
+
+PEL stores this in `tab-width' when opening perl  buffers.
+
+This does *NOT* control the indentation in perl
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-perl
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-perl-use-tabs nil
+  "Value of `indent-tabs-mode' for editing perl files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-perl
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Python Support
@@ -7912,6 +8272,14 @@ Values in the [2, 8] range are accepted."
   :group 'pel-pkg-for-python
   :type 'integer
   :safe 'pel-indent-valid-p)
+
+(defcustom pel-python-use-tabs nil
+  "Value of `indent-tabs-mode' for editing python files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-python
+  :type 'boolean
+  :safe #'booleanp)
 
 (defcustom pel-use-external-python-mode nil
   "Control whether PEL uses this external python-mode package is used.
@@ -7988,6 +8356,27 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-rexx
   :type '(repeat function))
 
+(defcustom pel-rexx-tab-width 2
+  "Distance between tab stop for rexx buffers.
+
+PEL stores this in `tab-width' when opening rexx  buffers.
+
+This does *NOT* control the indentation in rexx
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-rexx
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-rexx-use-tabs nil
+  "Value of `indent-tabs-mode' for editing rexx files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-rexx
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-netrexx nil
   "Control whether PEL supports Net-Rexx development."
   :group 'pel-pkg-for-rexx
@@ -8008,6 +8397,27 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-rexx
   :type '(repeat function))
+
+(defcustom pel-netrexx-tab-width 2
+  "Distance between tab stop for netrexx buffers.
+
+PEL stores this in `tab-width' when opening netrexx  buffers.
+
+This does *NOT* control the indentation in netrexx
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-rexx
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-netrexx-use-tabs nil
+  "Value of `indent-tabs-mode' for editing netrexx files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-rexx
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Ruby Support
@@ -8032,6 +8442,27 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-ruby
   :type '(repeat function))
+
+(defcustom pel-ruby-tab-width 4
+  "Distance between tab stop for ruby buffers.
+
+PEL stores this in `tab-width' when opening ruby  buffers.
+
+This does *NOT* control the indentation in ruby
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-ruby
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-ruby-use-tabs nil
+  "Value of `indent-tabs-mode' for editing ruby files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-ruby
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Rust Support
@@ -8067,6 +8498,27 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-rust
   :type '(repeat function))
+
+(defcustom pel-rust-tab-width 4
+  "Distance between tab stop for rust buffers.
+
+PEL stores this in `tab-width' when opening rust  buffers.
+
+This does *NOT* control the indentation in rust
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-rust
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-rust-use-tabs nil
+  "Value of `indent-tabs-mode' for editing rust files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-rust
+  :type 'boolean
+  :safe #'booleanp)
 
 (defcustom pel-use-rustic nil
   "Control whether rustic is activated.
@@ -8133,6 +8585,27 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-sh
   :type '(repeat function))
 
+(defcustom pel-sh-tab-width 2
+  "Distance between tab stop for sh buffers.
+
+PEL stores this in `tab-width' when opening sh  buffers.
+
+This does *NOT* control the indentation in sh
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-sh
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-sh-use-tabs nil
+  "Value of `indent-tabs-mode' for editing sh files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-sh
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; V Language Support
 ;; ------------------
@@ -8174,6 +8647,27 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-v
   :type '(repeat function))
+
+(defcustom pel-v-tab-width 4
+  "Distance between tab stop for v buffers.
+
+PEL stores this in `tab-width' when opening v  buffers.
+
+This does *NOT* control the indentation in v
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-v
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-v-use-tabs nil
+  "Value of `indent-tabs-mode' for editing v files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-v
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; Project Manager Support
@@ -8543,6 +9037,27 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-spec-definition
   :type '(repeat function))
+
+(defcustom pel-yang-tab-width 2
+  "Distance between tab stop for yang buffers.
+
+PEL stores this in `tab-width' when opening yang  buffers.
+
+This does *NOT* control the indentation in yang
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-yang
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-yang-use-tabs nil
+  "Value of `indent-tabs-mode' for editing yang files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-yang
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-speedbar
