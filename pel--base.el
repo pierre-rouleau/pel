@@ -1981,7 +1981,7 @@ and activate the mode manually with M-x lispy-mode."
 (defun pel--check-minor-modes-in (list-var minor-modes)
   "Check validity of all MINOR-MODES specified in the LIST-VAR.
 LIST-VAR is the symbol of the variable holding MINOR-MODES.
-MINOR-MODES is he list of minor modes symbols.
+MINOR-MODES is the list of minor modes symbols.
 Generate a warning if any symbol in the MINOR-MODES list is not a valid
 mode switching symbol."
   (let ((error-count 0))
