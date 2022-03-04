@@ -4038,7 +4038,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-config-major-mode rust pel:for-rust
 
     (setq indent-tabs-mode nil)
-    (setq-local tab-width rust-indent-offset)
+    (when (boundp 'rust-indent-offset)
+      (setq-local tab-width rust-indent-offset))
     (setq-local indent-tabs-mode pel-rust-use-tabs)
     (when pel-use-cargo
       (if (boundp 'rust-mode-map)
