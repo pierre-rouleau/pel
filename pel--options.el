@@ -8499,19 +8499,6 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-rust
   :type '(repeat function))
 
-(defcustom pel-rust-tab-width 4
-  "Distance between tab stop for rust buffers.
-
-PEL stores this in `tab-width' when opening rust  buffers.
-
-This does *NOT* control the indentation in rust
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
-  :group 'pel-pkg-for-rust
-  :type 'integer
-  :safe 'pel-indent-valid-p)
-
 (defcustom pel-rust-use-tabs nil
   "Value of `indent-tabs-mode' for editing rust files.
 - If set to nil: only spaces are used for indentation.
