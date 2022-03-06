@@ -8214,19 +8214,6 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-perl
   :type '(repeat function))
 
-(defcustom pel-perl-tab-width 4
-  "Distance between tab stop for perl buffers.
-
-PEL stores this in `tab-width' when opening perl  buffers.
-
-This does *NOT* control the indentation in perl
-files, only for commands that mode point to tab stop positions
-such as `tab-to-tab-stop', and the display of hard TAB
-characters."
-  :group 'pel-pkg-for-perl
-  :type 'integer
-  :safe 'pel-indent-valid-p)
-
 (defcustom pel-perl-use-tabs nil
   "Value of `indent-tabs-mode' for editing perl files.
 - If set to nil: only spaces are used for indentation.

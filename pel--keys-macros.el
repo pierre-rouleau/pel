@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-03-03 22:14:56, updated by Pierre Rouleau>
+;; Time-stamp: <2022-03-06 18:07:03, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1312,7 +1312,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
                                                       guile mit-scheme racket
                                                       scsh
                                                       lfe inferior-lfe
-                                                      rust
+                                                      perl rust
                                                       cwl)
   "List of major mode that fully control the tab behaviour and width.
 

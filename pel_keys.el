@@ -3978,7 +3978,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (when pel-use-perl
   (define-pel-global-prefix pel:for-perl (kbd "<f11> SPC P"))
   ;; the perl-mode is part of Emacs
-  (pel-config-major-mode perl pel:for-perl))
+  (pel-config-major-mode perl pel:for-perl
+    (when (boundp 'perl-indent-level)
+      (setq-local tab-width perl-indent-level))
+    (setq-local indent-tabs-mode pel-perl-use-tabs)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC U`` : Ruby programming

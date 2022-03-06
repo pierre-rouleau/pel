@@ -124,8 +124,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - New: better indention control with the **pel-<mode>-use-tab** and the
   **pel-<mode>-tab-width* user-options for several major modes: adoc,
   graphviz-dot, plantuml, markdown org, yaml, javascript, haskell,
-  hy, elixir, gleam, forth, julia, nim, tuareg (OCaml), perl, python, rexx,
+  hy, elixir, gleam, forth, julia, nim, tuareg (OCaml), python, rexx,
   netrexx, ruby, rust, sh, v and yang.
+- New: in PEL, perl indentation is now controlled by the *perl-indent-level*
+  user-option, while the use of hard tab is controlled by *pel-perl-use-tabs.*
 
 ** New Features:
 - Added support for Erlang code formatters. The new
