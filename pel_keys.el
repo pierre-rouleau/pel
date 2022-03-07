@@ -1935,9 +1935,9 @@ can't bind negative-argument to C-_ and M-_"
 (when pel-use-makefile
   (define-pel-global-prefix pel:for-make (kbd "<f11> SPC M"))
 
-  ;; Support for nmake - additions to what is supported by make-mode
-  (declare-function makefile-nmake-mode "pel-make")
-  (add-to-list 'auto-mode-alist '("\\.mak\\'" . makefile-nmake-mode))
+  ;; Add support for the make file modes specified by customization
+  (dolist (pattern-mode pel-make-mode-alist)
+    (add-to-list 'auto-mode-alist pattern-mode))
 
   (pel-config-major-mode makefile pel:for-make
     (define-key pel:for-make (kbd "<up>")      'makefile-previous-dependency)
