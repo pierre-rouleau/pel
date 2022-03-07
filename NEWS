@@ -128,7 +128,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   netrexx, ruby, rust, sh, v and yang.
 - New: in PEL, perl indentation is now controlled by the *perl-indent-level*
   user-option, while the use of hard tab is controlled by *pel-perl-use-tabs.*
-
+- New: Add *pel-pkg-for-make* customization group with the new
+  *pel-make-mode-alist* user-option that can be used to identify more file
+  name patterns to associate with one of the make file major modes.  Previous
+  code only associated the ".mak" with  nmake-mode.  It is now more flexible
+  and is inside the scope of make file support.
+  - Also added the ability to open the customization group with  the ~<f12>
+    <f2>~ key sequence.
 ** New Features:
 - Added support for Erlang code formatters. The new
   *pel-erlang-code-formatter-command* user-option specifies the Erlang code

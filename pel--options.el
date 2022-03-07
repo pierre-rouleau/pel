@@ -165,6 +165,7 @@
 ;;     - pel-pkg-for-speedbar
 ;;     - pel-pkg-for-spelling
 ;;     - pel-pkg-for-sw-build
+;;       - pel-pkg-for-make
 ;;     - pel-pkg-for-text-mode
 ;;     - pel-pkg-for-time-tracking
 ;;     - pel-pkg-for-text-translation
@@ -471,8 +472,8 @@ Use the INS and DEL buttons to add associations:
   :type
   '(repeat
     (list
-     (string :tag "file pattern")
-     (symbol :tag "major mode  "))))
+     (string :tag "file pattern regex")
+     (symbol :tag "major mode        "))))
 
 (defcustom pel-prompt-accept-y-n nil
   "Accept 'y' or 'n' instead of 'yes' or 'no' as answers to prompts."
@@ -9238,21 +9239,6 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-sw-build
   :type '(repeat function))
 
-(defcustom pel-use-makefile t
-  "Control whether PEL provides extra support for makefile.
-On by default. Turn it off if you don't need it."
-  :group 'pel-pkg-for-sw-build
-  :type 'boolean
-  :safe #'booleanp)
-(pel-put 'pel-use-makefile :package-is :builtin-emacs)
-
-(defcustom pel-makefile-activates-minor-modes nil
-  "List of *local* minor-modes automatically activated for makefile buffers.
-Enter *local* minor-mode activating function symbols.
-Do not enter lambda expressions."
-  :group 'pel-pkg-for-sw-build
-  :type '(repeat function))
-
 (defcustom pel-use-nix-mode nil
   "Control whether PEL activates support for the Nix package manager files."
   :link '(url-link :tag "nix-mode @ Github"
@@ -9267,6 +9253,37 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-sw-build
   :type '(repeat function))
+
+;; ---------------------------------------------------------------------------
+;; Make file Modes
+;; ---------------
+(defgroup pel-pkg-for-make nil
+  "PEL support for software build systems."
+  :group 'pel-pkg-for-sw-build)
+
+(defcustom pel-use-makefile t
+  "Control whether PEL provides extra support for makefile.
+On by default. Turn it off if you don't need it."
+  :group 'pel-pkg-for-make
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-makefile :package-is :builtin-emacs)
+
+(defcustom pel-makefile-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for makefile buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-make
+  :type '(repeat function))
+
+(defcustom pel-make-mode-alist '(("\\.mak\\'" . makefile-nmake-mode))
+  "Alist of file name regexp to make major modes."
+  :group 'pel-pkg-for-make
+  :type
+  '(repeat
+    (cons
+     (string :tag "file pattern regex")
+     (symbol :tag "major mode        "))))
 
 ;; ---------------------------------------------------------------------------
 ;; Text Mode support

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-03-06 18:07:03, updated by Pierre Rouleau>
+;; Time-stamp: <2022-03-07 12:43:32, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -218,7 +218,7 @@
                                                                  slime
                                                                  sly))
     ([f11 32 ?L f12] "pl-common-lisp"   pel-clisp-code-style)
-    ([f11 32 ?M]     "pl-make"          nil                     makefile)
+    ([f11 32 ?M]     "pl-make"          pel-pkg-for-make        makefile)
     ([f11 32 ?R]     "pl-rexx"          pel-pkg-for-rexx        rexx-mode)
     ([f11 32 ?N]     "pl-rexx"          pel-pkg-for-rexx        netrexx)
     ([f11 32 ?a]     "pl-applescript"   pel-pkg-for-applescript apples)
