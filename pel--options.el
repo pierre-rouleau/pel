@@ -8964,6 +8964,23 @@ and usable shell for Emacs."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-shell-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for *shell* buffers.
+
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-shells
+  :type '(repeat function))
+
+(defcustom pel-term-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for *term* buffers.
+
+Also used for *ansi-term* buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-shells
+  :type '(repeat function))
+
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-skeletons
 ;; ---------------------

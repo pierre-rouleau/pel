@@ -1901,9 +1901,12 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-P     - Prolog
 ;; M-Y     - YANG            - Specification definition language
 ;;
-;; SPC SPC b   - ibuffer-mode
-;; SPC SPC C-l - inferior-lfe-mode
-;; SPC SPC v   - vc-dir-mode
+;; SPC b   - ibuffer-mode
+;; SPC C-l - inferior-lfe-mode
+;; SPC v   - vc-dir-mode
+;; SPC s   - shell-mode
+;; SPC t   - term-mode
+;; SPC z   - shell and terminals
 
 ;;          - SNMP MIP
 ;;          - ANS.1
@@ -4091,6 +4094,49 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-install-github-file "pierre-rouleau/vlang-mode/master"
                              "vlang-mode.el")
     (pel-autoload-file vlang-mode for: vlang-mode))))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC SPC z`` : shells and terminals
+(define-pel-global-prefix pel:for-shell-terminals (kbd "<f11> SPC SPC z"))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC SPC s`` : shell-mode
+(define-pel-global-prefix pel:for-shell (kbd "<f11> SPC SPC s"))
+
+(pel-eval-after-load shell
+  ;; TODO: pel-config-major-mode does not work properly with shell-mode
+  ;;       so I'm putting the code manually until pel-config-major-mode
+  ;;       is fixed.
+  (defun pel--setup-for-shell ()
+    "Activate PEL setup for shell-mode."
+    (pel-local-set-f12-M-f12 'pel:for-shell)
+    (define-key pel:for-shell "r" 'shell-resync-dirs)
+    (pel-turn-on-local-minor-modes-in 'pel-shell-activates-minor-modes))
+  (declare-function pel--setup-for-shell "pel_keys")
+
+  (pel-check-minor-modes-in pel-shell-activates-minor-modes)
+  (pel--mode-hook-maybe-call
+   (function pel--setup-for-shell)
+   'shell-mode 'shell-mode-hook))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC SPC t`` : term-mode
+(define-pel-global-prefix pel:for-term (kbd "<f11> SPC SPC t"))
+
+(pel-eval-after-load term
+  ;; TODO: pel-config-major-mode does not work properly with term-mode
+  ;;       so I'm putting the code manually until pel-config-major-mode
+  ;;       is fixed.
+  (defun pel--setup-for-term ()
+    "Activate PEL setup for term-mode."
+    (pel-local-set-f12-M-f12 'pel:for-term)
+    (pel-turn-on-local-minor-modes-in 'pel-term-activates-minor-modes))
+  (declare-function pel--setup-for-term "pel_keys")
+
+  (pel-check-minor-modes-in pel-term-activates-minor-modes)
+  (pel--mode-hook-maybe-call
+   (function pel--setup-for-term)
+   'term-mode 'term-mode-hook))
 
 ;; ---------------------------------------------------------------------------
 ;; Markup Language Support

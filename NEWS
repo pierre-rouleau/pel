@@ -135,6 +135,21 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   and is inside the scope of make file support.
   - Also added the ability to open the customization group with  the ~<f12>
     <f2>~ key sequence.
+- Modified the ~<f11>~ key binding to access the shell-specific the ~<f1>~,
+  ~<f2>~ and the ~<f3>~ keys to access the help and customization buffers. The
+  shell-mode and term-mode also have their mode-specific ~<f11> SPC~ key
+  prefixes and have their ~<f12>~ mode-specific prefix key.
+  - Add ability to specify minor-modes automatically activated in the
+    shell-mode and term-mode buffers through the new
+    *pel-shell-activates-minor-modes* and *pel-term-activates-minor-modes*
+    user-options.
+  - Add ~<f12> r~ key binding to the *shell-resync-dirs* command in shell-mode
+    buffers, to (re)-activate tab completion in the shell if it stops working.
+  - Improved description of the dual input modes in place for the term,
+    ansi-term and vterm buffers and the keys to switch between the char and
+    line input mode in these buffers.
+  - The new code speeds Emacs startup a little.
+
 ** New Features:
 - Added support for Erlang code formatters. The new
   *pel-erlang-code-formatter-command* user-option specifies the Erlang code

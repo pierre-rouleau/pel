@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-03-07 12:43:32, updated by Pierre Rouleau>
+;; Time-stamp: <2022-03-08 12:00:22, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -129,6 +129,10 @@
                              '(ispell
                                flyspell
                                go-translate)))
+(defconst pel--shell-terminal-groups '(shell
+                                       term
+                                       terminals
+                                       vter))
 
 ;; TODO: add logic in the processing of that table to allow the first element
 ;;       of a row to be a list of key sequences.
@@ -179,15 +183,15 @@
     ([f11 ?=]        "cut-paste"        pel-pkg-for-cut-and-paste)
     ([f11 ?\;]       "comments"         pel-pkg-for-programming comment)
     ([f11 ??]        "help"             (pel-pkg-for-help pel-syntax-tools)
-                                                                (command-log
-                                                                 debbugs
-                                                                 helpful
-                                                                 hydra
-                                                                 keycast
-                                                                 interaction-log
-                                                                 man
-                                                                 which-func
-                                                                 which-key))
+     (command-log
+      debbugs
+      helpful
+      hydra
+      keycast
+      interaction-log
+      man
+      which-func
+      which-key))
     ([f11 ?? ?k]     "help"             pel-pkg-for-keys        (command-log
                                                                  interaction-log
                                                                  hydra
@@ -361,7 +365,7 @@
     ([f11 ?h]       "highlight"  (pel-pkg-for-highlight
                                   pel-pkg-for-modeline
                                   pel-pkg-for-parens)
-                                                                ,pel--highligh-groups)
+     ,pel--highligh-groups)
 
     ([f11 ?c]        "counting"         nil)
     ([f11 ?d]        "diff-merge"       pel-pkg-for-diff-merge  (diff
@@ -383,10 +387,10 @@
     ;; no PDF for browse yet, the info is  in file-mngt.
     ([f11 ?B]        "file-mngt"        (pel-pkg-for-browse
                                          pel-pkg-for-ztree)
-                                         (treemacs
-                                         lsp-treemacs
-                                         ztree
-                                         rfc-mode-group))
+     (treemacs
+      lsp-treemacs
+      ztree
+      rfc-mode-group))
     ([f11 ?B ?N]     "file-mngt"        pel-pkg-for-neotree      neotree)
     ([f11 ?f ?a]     "file-mngt"        nil                      ffap)
     ([f11 ?f ?p]     "file-mngt"        pel-pkg-for-project-mng  ffip)
@@ -435,8 +439,8 @@
     ([f11 ?t]        ("case-conversion"
                       "input-method"
                       "text-modes")
-                                       pel-pkg-for-text-mode  (glasses
-                                                               whitespace))
+     pel-pkg-for-text-mode  (glasses
+                             whitespace))
     ([f11 ?t ?a]     "align"            pel-pkg-for-align       align)
     ([f11 ?t ?e]     "enriched-text"    nil                     enriched)
     ([f11 ?t ?f]     "filling-justification" nil               fill)
@@ -462,12 +466,17 @@
                                                            windresize))
     ([f11 ?w ?d]     "windows"          pel-pkg-for-window)
     ([f11 ?w ?s]     "windows"          pel-pkg-for-window)
-    ([f11 ?z]        "shells"           pel-pkg-for-shells      (term
-                                                                 terminals
-                                                                 vterm))
     ([f11 ?y]  "inserting-text"   pel-pkg-for-insertions  (yasnippet
                                                            yasnippet-snippets
                                                            yas-minor))
+
+    (,(kbd "<f11> SPC SPC z") "shells"  pel-pkg-for-shells ,pel--shell-terminal-groups)
+    ([f11 32 32 ?z]           "shells"  pel-pkg-for-shells ,pel--shell-terminal-groups)
+    (,(kbd "<f11> SPC SPC s") "shells"  pel-pkg-for-shells      shell)
+    ([f11 32 32 ?s]           "shells"  pel-pkg-for-shells      shell)
+    (,(kbd "<f11> SPC SPC t") "shells"  pel-pkg-for-shells      term)
+    ([f11 32 32 ?t]           "shells"  pel-pkg-for-shells      term)
+
     ([f11 ?|]        "scrolling"  pel-pkg-for-scrolling   (follow
                                                            smooth-scrolling))
 
@@ -618,7 +627,11 @@ stored inside the doc/pdf directory.")
     ("graphviz-dot"    [f11 32 27 ?g])
     ("plantuml"        [f11 32 27 ?u])
     ("yaml"            [f11 32 27 ?y])
-    ("yang"            [f11 32 27 ?Y]))
+    ("yang"            [f11 32 27 ?Y])
+    ;; shells and terminals
+    ("shell"           [f11 32 32 ?s])
+    ("term"            [f11 32 32 ?t])
+    )
   "Maps the name of a major mode (without the -mode suffix)
 to a symbol or key sequence array to use as map key inside
 `pel--prefix-to-topic-alist' table.")
@@ -1312,12 +1325,16 @@ optional argument APPEND is non-nil, in which case it is added at the end."
                                                       guile mit-scheme racket
                                                       scsh
                                                       lfe inferior-lfe
+                                                      shell term
                                                       perl rust
                                                       cwl)
   "List of major mode that fully control the tab behaviour and width.
 
 These modes do not have both `pel-<mode>-tab-width' and a `pel-<mode>-use-tabs'
 user-options variables.")
+
+;; TODO: pel-config-major-mode does not seem to support shell-mode and
+;;       term-mode properly.  Investigate and fix.
 
 (defmacro pel-config-major-mode (target-mode &optional key-prefix &rest body)
   "Setup the major mode identified by TARGET-MODE.
