@@ -36,9 +36,9 @@
 ;; - `pel-skel-time-stamp'
 ;;   - `pel-time-stamp'
 ;; - `pel-skel-purpose-for'
-;;   >  `pel--skel-last-purpose'
+;;   > `pel--skel-last-purpose'
 ;; - `pel-skel-author-comment'
-;;   > `pel-skel-email-address'
+;;   - `pel-skel-email-address'
 ;; - `pel-skel-created-comment'
 ;; - `pel-skel-insert-license-when'
 ;;   - `pel-license-text'
@@ -181,14 +181,14 @@ The tag uses TITLE if specified otherwise it uses ITEM capitalized."
 ;; --
 ;; Author
 
-(defconst pel-skel-email-address
+(defun pel-skel-email-address ()
+  "Return user email address string - allows overriding from dir-local.el file."
   (if (or (not user-mail-address) (string-match "(" user-mail-address))
       (concat (user-login-name) "@"
               (or (and (boundp 'mail-host-address)
                        mail-host-address)
                   (system-name)))
-    user-mail-address)
-  "Mail address of the user.")
+    user-mail-address))
 
 ;;-pel-autoload
 (defun pel-skel-author-comment (&optional comment-prefix author-word on-this-line)
@@ -214,7 +214,7 @@ The returned string ends with a newline."
               " ")
             auth-word
             (user-full-name)
-            pel-skel-email-address)))
+            (pel-skel-email-address))))
 
 ;; --
 ;; Created
