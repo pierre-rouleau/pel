@@ -4110,6 +4110,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (defun pel--setup-for-shell ()
     "Activate PEL setup for shell-mode."
     (pel-local-set-f12-M-f12 'pel:for-shell)
+    (define-key pel:for-shell "c" 'comint-clear-buffer)
     (define-key pel:for-shell "r" 'shell-resync-dirs)
     (pel-turn-on-local-minor-modes-in 'pel-shell-activates-minor-modes))
   (declare-function pel--setup-for-shell "pel_keys")
