@@ -149,6 +149,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     ansi-term and vterm buffers and the keys to switch between the char and
     line input mode in these buffers.
   - The new code speeds Emacs startup a little.
+- New: key binding ~<f11> | t~ to *auto-revert-tail-mode* for convenience.
 
 ** New Features:
 - Added support for Erlang code formatters. The new
