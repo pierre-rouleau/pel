@@ -4111,7 +4111,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     "Activate PEL setup for shell-mode."
     (pel-local-set-f12-M-f12 'pel:for-shell)
     (local-set-key (kbd "C-c M-o") 'pel-comint-clear-buffer-and-get-prompt)
-    (define-key pel:for-shell "c"  'pel-comint-clear-buffer-and-get-prompt)
+    (define-key pel:for-shell "c" 'pel-comint-clear-buffer-and-get-prompt)
     (define-key pel:for-shell "r" 'shell-resync-dirs)
     (pel-turn-on-local-minor-modes-in 'pel-shell-activates-minor-modes))
   (declare-function pel--setup-for-shell "pel_keys")
@@ -7202,7 +7202,7 @@ the ones defined from the buffer now."
 ;; Terminals
 (define-key pel:execute    "a" #'ansi-term)
 (define-key pel:execute    "e" #'eshell)
-(define-key pel:execute    "s" #'shell)
+(define-key pel:execute    "s" 'pel-shell)
 (define-key pel:execute    "t" #'term)
 (define-key pel:execute    "l" #'ielm)
 ;; support for the extremely fast/nice libvterm-based vterm shell.

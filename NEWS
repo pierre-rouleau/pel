@@ -135,6 +135,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   and is inside the scope of make file support.
   - Also added the ability to open the customization group with  the ~<f12>
     <f2>~ key sequence.
+- Improve: behaviour of the command that opens a *shell* buffer: the ~<f11> z
+  s~ key sequence is now bound to the *pel-shell* command instead of the Emacs
+  built-in *shell*.  The *pel-shell* command opens the buffer in the /current/
+  window as opposed to the /other/ window which is what *shell* does and is
+  surprising since none of the other terminal commands do that. *pel-shell*
+  will move point to an existing =*shell*= buffer if one is shown in the currently
+  opened windows.
 - Modified the ~<f11>~ key binding to access the shell-specific the ~<f1>~,
   ~<f2>~ and the ~<f3>~ keys to access the help and customization buffers. The
   shell-mode and term-mode also have their mode-specific ~<f11> SPC~ key
