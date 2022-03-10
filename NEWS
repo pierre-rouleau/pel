@@ -145,9 +145,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     user-options.
   - Add ~<f12> r~ key binding to the *shell-resync-dirs* command in shell-mode
     buffers, to (re)-activate tab completion in the shell if it stops working.
-  - Add ~<f12> c~ key binding to *comint-clear-buffer* (also bound to ~C-c
-    M-o~ by default) to clear the shell-mode buffer since using the clear shell
-    command does not work in the shell-mode buffer.
+  - Add ~<f12> c~ key binding to *pel-comint-clear-buffer-and-get-prompt*
+    (also bound to ~C-c M-o~, replacing its default binding to *comint-clear-buffer*)
+     to clear the shell-mode buffer since using the clear shell command does not work
+     in the shell-mode buffer.  It also ensures the shell is ready to take user input
+     at the shell prompt.
   - Improved description of the dual input modes in place for the term,
     ansi-term and vterm buffers and the keys to switch between the char and
     line input mode in these buffers.

@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, June 26 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-28 10:44:30, updated by Pierre Rouleau>
+;; Time-stamp: <2022-03-10 14:06:43, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@
 (defun pel-clear-scheme-repl-buffer ()
   "Erase content of the Scheme REPL running under Emacs."
   (interactive)
-  (pel-clear-comint-buffer "*scheme*"))
+  (pel-comint-clear-buffer "*scheme*"))
 
 ;;-pel-autoload
 (defun pel-chez-repl (&optional n)

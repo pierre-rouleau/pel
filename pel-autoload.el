@@ -212,6 +212,10 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-c-comment" for:
     pel-c-comment-dwim)
 
+  (pel-autoload "pel-comint" for:
+    pel-comint-clear-buffer
+    pel-comint-clear-buffer-and-get-prompt)
+
   ;; pel-comment-adorn
   ;; Nothing specified here: the control is inside pel_keys.el
   ;; only.

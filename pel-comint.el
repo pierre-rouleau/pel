@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, June 26 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-26 18:47:33, updated by Pierre Rouleau>
+;; Time-stamp: <2022-03-10 14:20:31, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 ;;; Commentary:
 ;;
 ;;  Utilities to deal with comint buffers: mainly REPLs for various
-;;  programming languages.
+;;  programming languages and interactive shells.
 
 
 ;;; --------------------------------------------------------------------------
@@ -38,11 +38,28 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
-(defun pel-clear-comint-buffer (buffer-or-name)
-  "Clear the content of the comint-compliant BUFFER-OR-NAME."
-  (with-current-buffer buffer-or-name
+;;-pel-autoload
+(defun pel-comint-clear-buffer (&optional buffer-or-name get-prompt)
+  "Clear the content of the comint-compliant BUFFER-OR-NAME.
+
+If BUFFER-OR-NAME is not provided (or nil) the current buffer is
+used.  If GET-PROMPT is non-nil send input to force getting a
+prompt ready for input."
+  (interactive "P")
+  (with-current-buffer (or buffer-or-name (current-buffer))
     (let ((comint-buffer-maximum-size 0))
-      (comint-truncate-buffer))))
+      (comint-truncate-buffer))
+    (when get-prompt
+      (comint-send-input))))
+
+;;-pel-autoload
+(defun pel-comint-clear-buffer-and-get-prompt (&optional buffer-or-name)
+  "Clear the content of the comint-compliant BUFFER-OR_NAME.
+
+If BUFFER-OR-NAME is not provided (or nil) the current buffer is
+used.  Send input to force getting a prompt ready for input."
+  (interactive "P")
+  (pel-comint-clear-buffer buffer-or-name :get-prompt))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-comint)
