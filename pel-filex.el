@@ -2,12 +2,12 @@
 
 ;; Created   : Wednesday, September  2 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-09-02 13:11:32, updated by Pierre Rouleau>
+;; Time-stamp: <2022-03-12 14:51:11, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -95,6 +95,21 @@ If you need support for another OS, please contact me."
           (user-error
            "Sorry, your OS is not supported. Please request it!"))))))
 
+;;-pel-autoload
+(defun pel-open-buffer-file-in-os-app (&optional buffer)
+  "Open the file associated with BUFFER in default OS application.
+
+If BUFFER is not specified use current buffer.
+If the current buffer is a F=Dired buffer; open all marked files."
+  (interactive)
+  (setq buffer (or buffer (current-buffer)))
+  ;; check if buffer is modified and prompt to save
+  (unless (eq major-mode 'dired-mode)
+    (when (buffer-modified-p buffer)
+      (when (y-or-n-p (format "Save modified %S first? " buffer))
+        (save-buffer))))
+  (pel-open-in-os-app (unless (eq major-mode 'dired-mode)
+                        (pel-current-buffer-filename))))
 ;;; ----------------------------------------------------------------------------
 (provide 'pel-filex)
 

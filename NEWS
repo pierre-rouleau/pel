@@ -162,6 +162,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     line input mode in these buffers.
   - The new code speeds Emacs startup a little.
 - New: key binding ~<f11> | t~ to *auto-revert-tail-mode* for convenience.
+- Modified: key sequence ~<f11> f F~ is now bound to
+  *pel-open-buffer-file-in-os-app* instead of pel-open-in-os-app.  The new
+  function will prompt to save buffer if it is modified.
 
 ** New Features:
 - Added support for Erlang code formatters. The new

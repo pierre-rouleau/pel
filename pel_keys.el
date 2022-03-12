@@ -5701,7 +5701,7 @@ the ones defined from the buffer now."
 (define-key pel:file "L" #'locate)
 (define-key pel:file "W" #'append-to-file)
 (define-key pel:file "d" #'find-dired)
-(define-key pel:file "F"  'pel-open-in-os-app)
+(define-key pel:file "F"  'pel-open-buffer-file-in-os-app)
 (define-key pel:file "g" #'find-grep)
 (define-key pel:file "h" #'find-grep-dired)
 (define-key pel:file "i" #'insert-file)

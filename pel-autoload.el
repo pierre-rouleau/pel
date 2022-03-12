@@ -321,7 +321,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-find-file-at-point-in-window
     pel-load-visited-file)
 
-  (pel-autoload "pel-filex" for: pel-open-in-os-app)
+  (pel-autoload "pel-filex" for:
+    pel-open-in-os-app
+    pel-open-buffer-file-in-os-app)
 
   (pel-autoload "pel-fill" for:
     pel-auto-fill-only-comments
