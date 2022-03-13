@@ -4424,6 +4424,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   ;; that can read normal text files.
   (add-to-list 'auto-mode-alist '("\\.rst.txt\\'"  . rst-mode))
 
+  (define-key pel:for-reST (kbd "M--") 'pel-itemize-lines)
   (define-key pel:for-reST "." 'pel-rst-makelink)
   (define-key pel:for-reST "g" 'pel-rst-goto-ref-bookmark)
   (define-key pel:for-reST "s" 'pel-rst-set-ref-bookmark)

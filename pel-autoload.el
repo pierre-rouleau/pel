@@ -366,6 +366,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-imenu-toggle-flatten
     pel-show-goto-symbol-settings)
 
+  (pel-autoload "pel-itemize" for:
+    pel-itemize-lines)
+
   (pel-autoload "pel-lsp" for:
     pel-toggle-lsp-log-io
     pel-toggle-lsp-ui-sideline

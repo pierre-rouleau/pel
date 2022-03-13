@@ -283,6 +283,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   *isearch-query-replace-regexp*: the ~<f11> s x i~ is always available and
   the ~C-c Q~ key binding is available if the *pel-bind-keys-for-regexp*
   user-option is turned on (set to t).
+- New: *pel-itemize-lines* command, bound to ~<M-f12> M--~ in *rst-mode* to
+  ease itemizing all previous lines of reStructuredText buffer that are at
+  the same indentation level.
 
 * Version 0.4.1:
 ** Modifications:
