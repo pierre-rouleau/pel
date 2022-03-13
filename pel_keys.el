@@ -4341,6 +4341,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-ensure-package remark-mode from: melpa)
     (define-key pel:for-markdown-preview "r" 'remark-mode))
 
+  (define-key pel:for-markdown (kbd "M--") 'pel-itemize-lines)
   (define-key pel:for-markdown "}" 'markdown-forward-block)
   (define-key pel:for-markdown "{" 'markdown-backward-block)
   (define-key pel:for-markdown (kbd "<right>") 'end-of-defun)

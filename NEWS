@@ -285,7 +285,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   user-option is turned on (set to t).
 - New: *pel-itemize-lines* command, bound to ~<M-f12> M--~ in *rst-mode* to
   ease itemizing all previous lines of reStructuredText buffer that are at
-  the same indentation level.
+  the same indentation level.  The same key binding is available in
+  *markdown-mode*.
 
 * Version 0.4.1:
 ** Modifications:
