@@ -153,7 +153,7 @@ With \\[universal-argument] \\[universal-argument] prefix, also print content of
 (defvar float-consed)
 (defvar vector-cells-consed)
 (defvar string-chars-consed)
-(defvar misc-objects-consed)
+;; (defvar misc-objects-consed)
 (defvar intervals-consed)
 (defvar strings-consed)
 
