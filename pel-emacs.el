@@ -180,10 +180,10 @@ On %s:
                                string-chars-consed
                                intervals-consed
                                strings-consed
-                               (pel-string-when
-                                (boundp 'misc-objects-consed)
-                                (format "
- - misc-objects-consed: %19d" misc-objects-consed)))))
+                               (if (boundp 'misc-objects-consed)
+                                   (format "
+ - misc-objects-consed: %19d" misc-objects-consed)
+                                 ""))))
 
 
 
