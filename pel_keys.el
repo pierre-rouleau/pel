@@ -1000,7 +1000,9 @@ Done in this function to allow advising libraries that remap these keys."
 ;; pel:f6 keys:
 ;;  d f l L
 ;;  SPC
-;;  C-i <backtab> C-n C-p
+;;  C-f C-i <backtab> C-n C-p
+;;  M-f
+;;  C-M-f
 ;;  <down> <up> <left> <right>
 ;;  <f12>
 
@@ -1008,6 +1010,9 @@ Done in this function to allow advising libraries that remap these keys."
 (define-key pel:f6 "d"  'pel-insert-current-date)
 (define-key pel:f6 "D"  'pel-insert-current-date-time)
 (define-key pel:f6 "f"  'pel-insert-filename)
+(define-key pel:f6 (kbd "C-f")  'pel-insert-dirname)
+(define-key pel:f6 (kbd "M-f")  'pel-insert-filename-wtilde)
+(define-key pel:f6 (kbd "C-M-f")  'pel-insert-dirname-wtilde)
 (define-key pel:f6 "l"  'pel-insert-line)
 (define-key pel:f6 "t"  'pel-insert-iso8601-timestamp)
 (define-key pel:f6 (kbd "<f6>") 'pel-jump-to-mark)
@@ -6069,15 +6074,19 @@ the ones defined from the buffer now."
 
 ;; Used keys in <f11> i:
 ;; -
-;;   D   L
-;; c d f l t
-;; M-c
+;;   D       L
+;; c d f     l t
+;; M-c M-f
+;;     C-M-f
 (define-pel-global-prefix pel:insert (kbd "<f11> i"))
 (define-key pel:insert   "c" 'copyright)
 (define-key pel:insert (kbd "M-c") 'copyright-update)
 (define-key pel:insert   "d" 'pel-insert-current-date)
 (define-key pel:insert   "D" 'pel-insert-current-date-time)
 (define-key pel:insert   "f" 'pel-insert-filename)
+(define-key pel:insert (kbd "C-f")  'pel-insert-dirname)
+(define-key pel:insert (kbd "M-f")  'pel-insert-filename-wtilde)
+(define-key pel:insert (kbd "C-M-f")  'pel-insert-dirname-wtilde)
 (define-key pel:insert   "l" 'pel-insert-line)
 (define-key pel:insert   "t" 'pel-insert-iso8601-timestamp)
 

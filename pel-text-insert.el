@@ -1,6 +1,6 @@
 ;;; pel-text-insert.el --- PEL Text Insertion Utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -110,8 +110,16 @@ The character used is identified by CHAR, otherwise '-' is used."
 ;; Inserting a filename
 ;; --------------------
 
+(defun pel-tilde-file-name (filename)
+  "Replace user home directory by ~ in FILENAME."
+  (let ((tilde-expanded (expand-file-name "~")))
+    (if (string= filename tilde-expanded)
+        "~"
+      (replace-regexp-in-string (format "^%s/" tilde-expanded) "~/"
+                                filename))))
+
 ;;-pel-autoload
-(defun pel-insert-filename (&optional n)
+(defun pel-insert-filename (&optional n use-tilde dir-only)
   "Insert at point the name of a the file of the window identified by N.
 N is a numeric argument that identifies the window that holds the file.
 
@@ -128,21 +136,67 @@ That is:
  - 2: down
 Every other value, or no argument identifies the current window.
 If the argument is positive, `pel-insert-filename'  inserts a filename with full
-absolute path, if negative it omits the path."
+absolute path, if negative it omits the path.
+
+If USE-TILDE, the user home address is replaced by the single character ~.
+If DIR-ONLY, only insert the directory (negative argument has no impact when
+DIR-ONLY is non nil)."
   (interactive "*p")
-  (let ((no-path (< n 0))
+  (let ((no-path (and (< n 0) (not dir-only)))
         (direction (if (eq (abs n) 1)
                        'current
-                     (pel-window-direction-for (abs n)))))
+                     (pel-window-direction-for (abs n))))
+        fname)
     (if (eq direction 'current)
-        (insert (pel-current-buffer-filename no-path))
-      (let ((original-window (selected-window))
-            fname)
+        (setq fname (pel-current-buffer-filename no-path))
+      (let ((original-window (selected-window)))
         (save-excursion
           (pel-move-to-window direction)
           (setq fname (pel-current-buffer-filename no-path))
-          (select-window original-window))
-        (insert fname)))))
+          (select-window original-window))))
+    (when use-tilde
+      (setq fname (pel-tilde-file-name fname)))
+    (when dir-only
+      (setq fname (file-name-directory fname)))
+    (insert fname)))
+
+;;-pel-autoload
+(defun pel-insert-filename-wtilde (&optional n)
+  "Insert directory name with ~ if user home is identified.
+Use N the same way as `pel-insert-dirname'."
+  (interactive "*p")
+  (pel-insert-filename n :use-tilde))
+
+;;-pel-autoload
+(defun pel-insert-dirname (&optional n use-tilde)
+  "Insert at point the name of a the file of the window identified by N.
+N is a numeric argument that identifies the window that holds the file.
+
+If N is not specified or is 1, use the current window.
+Otherwise, the numeric values correspond to the directions of the
+numeric keypad numbers:
+.      8
+.   4     6
+.      2
+That is:
+ - 8: up
+ - 4: left
+ - 6: right
+ - 2: down
+Every other value, or no argument identifies the current window.
+If the argument is positive, `pel-insert-filename'  inserts a filename with full
+absolute path, if negative it omits the path.
+
+If USE-TILDE, the user home address is replaced by the single character ~."
+  (interactive "*p")
+  (pel-insert-filename n use-tilde :dir-only))
+
+;;-pel-autoload
+(defun pel-insert-dirname-wtilde (&optional n)
+  "Insert directory name with ~ if user home is identified.
+Use N the same way as `pel-insert-dirname'."
+  (interactive "*p")
+  (pel-insert-dirname n :use-tilde))
 
 ;;-pel-autoload
 (defun pel-insert-current-date-time (&optional utc)

@@ -165,6 +165,17 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Modified: key sequence ~<f11> f F~ is now bound to
   *pel-open-buffer-file-in-os-app* instead of pel-open-in-os-app.  The new
   function will prompt to save buffer if it is modified.
+- New: text insertion commands that enhance ability to insert the file name at point
+  of the file in the current buffer or inside a window specified by a numeric
+  argument:
+  - *pel-insert-filename-wtilde* (bound to ~<f6> M-f~ and ~<f11> i M-f~)
+    which inserts the file name but replaces the beginning of the path by a
+    Unix-style tilde if its inside the user home directory.
+  - *pel-insert-dirname* (bound to ~<f6> C-f~ and ~<f11> i C-f~) which inserts
+    the directory name.
+  - *pelinsert-dirname-wtilde* (bound to ~<f6> C-M-f~ and ~<f11> i C-M-f~)
+    which insets the directory name but replaces the beginning of the path by a
+    Unix-style tilde if its inside the user home directory.
 
 ** New Features:
 - Added support for Erlang code formatters. The new

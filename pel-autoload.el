@@ -695,6 +695,9 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-text-insert" for:
     pel-insert-line
     pel-insert-filename
+    pel-insert-filename-wtilde
+    pel-insert-dirname
+    pel-insert-dirname-wtilde
     pel-insert-current-date-time
     pel-insert-current-date
     pel-insert-iso8601-timestamp)
