@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Fix: The *pel-emacs-mem-stats* command no longer attempts to print the value
+  of misc-objects-consed which is not bound in Linux.
 - Fix: On Linux and Windows the ~<insert>~ key is now mapped to yank, as
   it's already done for macOS.
 - Fix: Several EDTS commands were not autoloaded by EDTS code.  PEL code now

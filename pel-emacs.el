@@ -1,6 +1,6 @@
 ;;; pel-emacs.el --- Emacs stats utilities -*- lexical-binding: t -*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -170,18 +170,22 @@ On %s:
  - vector-cells-consed: %19d
  - symbols-consed     : %19d
  - string-chars-consed: %19d
- - misc-objects-consed: %19d
  - intervals-consed   : %19d
- - strings-consed     : %19d"
-               (format-time-string "%A, %B %d, %Y @ %T")
-               cons-cells-consed
-               floats-consed
-               vector-cells-consed
-               symbols-consed
-               string-chars-consed
-               misc-objects-consed
-               intervals-consed
-               strings-consed)))
+ - strings-consed     : %19d%s"
+                               (format-time-string "%A, %B %d, %Y @ %T")
+                               cons-cells-consed
+                               floats-consed
+                               vector-cells-consed
+                               symbols-consed
+                               string-chars-consed
+                               intervals-consed
+                               strings-consed
+                               (pel-string-when
+                                (boundp 'misc-objects-consed)
+                                (format "
+ - misc-objects-consed: %19d" misc-objects-consed)))))
+
+
 
 (defun pel--emacs-command-binding (command)
   "Return the first key bound to the COMMAND.
