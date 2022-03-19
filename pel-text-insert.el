@@ -30,7 +30,11 @@
 ;;
 ;; * `pel-insert-line'
 ;;   - `pel-separator-line'
-;; * `pel-insert-filename'
+;; * `pel-insert-dirname-wtilde'
+;;   * `pel-insert-dirname'
+;;   * `pel-insert-filename-wtilde'
+;;     * `pel-insert-filename'
+;;       - `pel-tilde-file-name'
 ;; * `pel-insert-current-date-time'
 ;; * `pel-insert-current-date'
 
@@ -198,6 +202,7 @@ Use N the same way as `pel-insert-dirname'."
   (interactive "*p")
   (pel-insert-dirname n :use-tilde))
 
+;; ----
 ;;-pel-autoload
 (defun pel-insert-current-date-time (&optional utc)
   "Insert current date and time at point.
