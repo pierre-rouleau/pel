@@ -37,6 +37,10 @@
 ;;       - `pel-tilde-file-name'
 ;; * `pel-insert-current-date-time'
 ;; * `pel-insert-current-date'
+;; * `pel-insert-todo-note'
+;;
+;;   - `pel-insert-commented'
+;;     - `pel-comment-specs'
 
 ;; -----------------------------------------------------------------------------
 ;;; Dependencies:
@@ -47,6 +51,7 @@
 ;;                         ;      pel-comment-prefix
 (require 'pel--macros)     ; use: pel-concat-to
 (require 'pel-window)      ; use: pel-window-direction-for
+(require 'pel-syntax)      ; use: pel-inside-comment-p
 ;; -----------------------------------------------------------------------------
 ;;; Code:
 
@@ -80,19 +85,24 @@ the second element is nil."
 (defun pel-insert-commented (text)
   "Insert the commented TEXT at point.
 
-Return position of the last inserted TEXT character inside the comment."
-  (let* ((comment-start.comment-end (pel-comment-specs))
-         (cmt-start (car comment-start.comment-end))
-         (cmt-end (cdr comment-start.comment-end))
-         pos)
-    (insert cmt-start)
-    (unless (pel-string-ends-with-p cmt-start " ")
-      (insert " "))
-    (insert text)
-    (setq pos (point))
-    (when cmt-end
-      (insert cmt-end))
-    pos))
+Return position of the last inserted TEXT character inside the comment.
+If point is already inside a comment, just insert TEXT and return point."
+  (if (pel-inside-comment-p)
+      (progn
+        (insert text)
+        (point))
+    (let* ((comment-start.comment-end (pel-comment-specs))
+           (cmt-start (car comment-start.comment-end))
+           (cmt-end (cdr comment-start.comment-end))
+           pos)
+      (insert cmt-start)
+      (unless (pel-string-ends-with-p cmt-start " ")
+        (insert " "))
+      (insert text)
+      (setq pos (point))
+      (when cmt-end
+        (insert cmt-end))
+      pos)))
 
 ;; ---------------------------------------------------------------------------
 ;; Separator line
