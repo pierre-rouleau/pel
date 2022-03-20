@@ -300,6 +300,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   ease itemizing all previous lines of reStructuredText buffer that are at
   the same indentation level.  The same key binding is available in
   *markdown-mode*.
+- New: *pel-insert-todo-note* command (bound to ~<f6> T~ and ~<f11> i T~) that
+  inserts a commented-out todo note template.  The template contains the date
+  and the author's name.
 
 * Version 0.4.1:
 ** Modifications:

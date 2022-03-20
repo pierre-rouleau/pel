@@ -700,7 +700,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-insert-dirname-wtilde
     pel-insert-current-date-time
     pel-insert-current-date
-    pel-insert-iso8601-timestamp)
+    pel-insert-iso8601-timestamp
+    pel-insert-todo-note)
   (pel-autoload-function "pel-text-insert" for:
     pel-separator-line)
 

@@ -1018,6 +1018,7 @@ Done in this function to allow advising libraries that remap these keys."
 (define-key pel:f6 (kbd "<f6>") 'pel-jump-to-mark)
 (define-key pel:f6 "6" 'complete-symbol)
 (define-key pel:f6 "7" 'info-complete-symbol)
+(define-key pel:f6 "T" 'pel-insert-todo-note)
 
 ;; Move to the beginning of next function definition (while moving forward)
 ;;  complements C-M-e and C-M-a
@@ -6089,6 +6090,7 @@ the ones defined from the buffer now."
 (define-key pel:insert (kbd "C-M-f")  'pel-insert-dirname-wtilde)
 (define-key pel:insert   "l" 'pel-insert-line)
 (define-key pel:insert   "t" 'pel-insert-iso8601-timestamp)
+(define-key pel:insert   "T" 'pel-insert-todo-note)
 
 (when (or pel-use-lice
           (eq pel-c-skel-with-license t)
