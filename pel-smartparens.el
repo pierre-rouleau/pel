@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, September 20 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-05 23:39:46, updated by Pierre Rouleau>
+;; Time-stamp: <2022-03-20 11:56:46, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -25,11 +25,71 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This provides specialized commands for moving across blocks with the
-;; guarantee that point will not stop at symbols.  These allow controlling the
-;; behaviour of other smartparens commands with `sp-navigate-consider-symbols'
-;; while ensuring the behaviour of those commands is stable.
-
+;; This provides several commands to improve the behaviour of several
+;; smartparens commands.
+;;
+;;
+;; Better next/previous sexp
+;; -------------------------
+;;
+;; The behaviour of smartparens navigation is controlled by its
+;; `sp-navigate-consider-symbols' variable. While this is useful in several
+;; situations, the following commands ignore its value and behave as if it is
+;; nil to ignore the symbols, providing behaviour that is independent of the
+;; variable value:
+;;
+;; * `pel-sp-next-sexp'
+;; * `pel-sp-previous-sexp'
+;;
+;;
+;; Better smartparens delete
+;; -------------------------
+;;
+;; Both smartparens `sp-delete-char' and `sp-backward-delete-char' do not
+;; delete a marked area.  These function do.
+;;
+;; * `pel-sp-delete-char'
+;; * `pel-sp-backward-delete-char'
+;;
+;;
+;; Better smartparens navigation that skips over comment
+;; -----------------------------------------------------
+;;
+;; The smartparens `ep-forward-symbol' and `sp-backward-symbol' stop at
+;; comments. The corresponding PEL functions skip comments:
+;;
+;; * `pel-sp-forward-symbol'
+;; * `pel-sp-backward-symbol'
+;;
+;;
+;; Fix for sp-add-to-previous-sexp
+;; -------------------------------
+;;
+;; * `pel-sp-add-to-previous-sexp'
+;;
+;;
+;; Augment the functionality of some smartparens commands
+;; ------------------------------------------------------
+;;
+;; - `pel-smartparens-augment' advices some smartparens commands: it adds the
+;;   ability to display what was copied or deleted.
+;;
+;;
+;; Smartparens information dump
+;; ----------------------------
+;;
+;; * `pel-smartparens-info' prints smartparens status information that is
+;;   useful when extending its functionality.
+;;
+;;
+;; Erlang Support for Smartparens
+;; ------------------------------
+;;
+;; Additional functions to add Erlang support.
+;;
+;; - `pel-sp-erlang-handler'
+;; - `pel-smartparens-setup-erlang'
+;;
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
@@ -59,8 +119,12 @@
 ;;; Code:
 ;;
 
+;; Better next/previous sexp
+;; -------------------------
+
 (defvar pel--sp-op-last nil
   "Remember last value of `sp-navigate-consider-symbols'.") ; prevents warnings
+
 ;;-pel-autoload
 (defun pel-sp-next-sexp (&optional arg)
   "Same as `sp-next-sexp' with `sp-navigate-consider-symbols' forced nil."
@@ -82,9 +146,6 @@
 ;; ---------------------------------------------------------------------------
 ;; Better smartparens delete
 ;; -------------------------
-;;
-;; Both smartparens sp-delete-char and sp-backward-delete-char do not delete
-;; a marked area.  These function do.
 
 ;;-pel-autoload
 (defun pel-sp-delete-char (&optional arg)
@@ -171,8 +232,9 @@ string copied or killed."
                  sp-backward-copy-sexp))
     (advice-add fct :after (function pel-show-copied)))
 
-  ;; TODO: add sp-kill-whole-line once there is a way of identifying exactly
-  ;;       what has been killed by the last command.
+  ;; [:todo 2022-03-20, by Pierre Rouleau: add sp-kill-whole-line once there
+  ;; is a way of identifying exactly what has been killed by the last
+  ;; command.]
   (dolist (fct '(sp-change-inner
                  sp-change-enclosing
                  sp-kill-sexp
@@ -180,6 +242,9 @@ string copied or killed."
     (advice-add fct :after (function pel-show-killed))))
 
 ;; ---------------------------------------------------------------------------
+;; Smartparens information dump
+;; ----------------------------
+
 ;;-pel-autoload
 (defun pel-smartparens-info ()
   "Print smartparens setup info in *pel-smartparens-info*."
@@ -247,10 +312,10 @@ https://github.com/Fuco1/smartparens/wiki/Pair-management" ":")
                   sp-wrap-respect-direction
                   sp-wrap-show-possible-pairs
                   ))
-                  ;; sp-ignore-modes-list
-                  ;; sp-c-modes
-                  ;; sp-clojure-modes
-                  ;; sp-lisp-modes
+       ;; sp-ignore-modes-list
+       ;; sp-c-modes
+       ;; sp-clojure-modes
+       ;; sp-lisp-modes
        (pel-insert-list-content 'sp-pairs buffer)
        (pel-insert-list-content 'sp-comment-string buffer)
        (pel-insert-list-content 'sp-coverride-key-bindings buffer)
@@ -262,7 +327,9 @@ https://github.com/Fuco1/smartparens/wiki/Pair-management" ":")
 ;; Erlang Support for SmartParens
 ;; ------------------------------
 ;;
-;; TODO:
+;; [:todo 2022-03-20, by Pierre Rouleau: provide Erlang support to
+;; smartparens.]
+;;
 ;; Once complete the following code will probably be migrated into
 ;; smartparens itself if there is some movement there.
 
