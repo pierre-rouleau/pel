@@ -173,6 +173,7 @@
 ;;     - pel-pkg-for-vcs
 ;;       - pel-pkg-for-git
 ;;       - pel-pkg-for-mercurial
+;;       - pel-pkg-for-perforce
 ;;     - pel-pkg-for-window
 ;;       - pel-pkg-for-scrolling
 ;;       - pel-pkg-for-session
@@ -9426,6 +9427,8 @@ turns it off."
   "List of external packages that PEL can use to support use of (D)VCS."
   :group 'pel-package-use)
 
+;; ------------------------------
+;; Git
 (defgroup pel-pkg-for-git nil
   "PEL customization group for Git."
   :group 'pel-pkg-for-vcs)
@@ -9448,7 +9451,8 @@ It also provides access to the gitattributes-mode and top the gitconfig-mode."
 (pel-put 'pel-use-gitignore-mode :requires-package '(quote
                                                      ((elpa . gitattributes-mode)
                                                       (elpa . gitconfig-mode))))
-
+;; ------------------------------
+;; Mercurial
 (defgroup pel-pkg-for-mercurial nil
   "PEL customization group for Mercurial."
   :group 'pel-pkg-for-vcs
@@ -9467,6 +9471,40 @@ It also provides access to the gitattributes-mode and top the gitconfig-mode."
   :group 'pel-pkg-for-mercurial
   :type 'boolean
   :safe #'booleanp)
+
+;; ------------------------------
+;; Perforce
+(defgroup pel-pkg-for-perforce nil
+  "PEL customization group for Perforce support."
+  :group 'pel-pkg-for-vcs)
+
+(defcustom pel-use-perforce nil
+  "Determines whether PEL provides Perforce support and what it uses.
+
+Two packages can be used to provide Perforce support:
+
+- vc-p4.el: provides Perforce support through Emacs VC mode.
+            Useful if you know VC and want to use it with Perforce.
+- p4.el   : An independent implementation. Provides more Perforce
+            commands.
+
+PEL provides the ability to use one or the other and also to use a mix of
+them, where vc-p4 commands are used for operation on the current buffer but
+other Perforce commands are available through p4.el
+
+The selection is made by what you select here:
+
+- Do not use.    The default.  nil.
+- Use vc-p4.el:  Use Perforce back-end to VC.  vc-p4.
+- Use p4.el:     Use p4.el support directly.  p4.
+- Use both:      Use Perforce back-end to VC for buffer interaction.
+                 Access other Perforce commands through p4.el"
+  :group 'pel-pkg-for-perforce
+  :type '(choice
+          (const :tag "Do not use"    nil)
+          (const :tag "Use vc-p4.el"  vc-p4)
+          (const :tag "Use p4.el"     p4)
+          (const :tag "Use both"      both)))
 
 ;; ---------------------------------------------------------------------------
 ;; Windows Management

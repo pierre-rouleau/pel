@@ -6906,6 +6906,7 @@ the ones defined from the buffer now."
 (define-key pel:vcs "s"  'pel-vcs-switch-backend)
 (define-key pel:vcs "l"  'pel-vcs-toggle-vc-log)
 
+;; ----------------
 ;; Git support
 (when pel-use-magit
   (define-pel-global-prefix pel:vcs-magit (kbd "<f11> v g"))
@@ -6935,6 +6936,7 @@ the ones defined from the buffer now."
   (pel-ensure-package gitconfig-mode from: melpa)
   (pel-ensure-package gitignore-mode from: melpa))
 
+;; ----------------
 ;; Mercurial Support
 (when pel-use-monky
   (define-pel-global-prefix pel:vcs-monky (kbd "<f11> v m"))
@@ -6949,6 +6951,27 @@ the ones defined from the buffer now."
   ;; and the auto-loading.
   (pel-ensure-package hgignore-mode from: melpa))
 
+;; ----------------
+;; Perforce Support
+;; [:todo 2022-03-22, by Pierre Rouleau: Complete Perforce support, delay
+;; load, add F11 and F12 key support, ensure that both work together, document.]
+(when pel-use-perforce
+  (when (memq pel-use-perforce '(both vc-p4))
+    (pel-install-file
+     "https://swarm.workshop.perforce.com/downloads/guest/magnus_henoch/vc-p4/p4-lowlevel.el"
+     "p4-lowlevel.el")
+    (pel-install-file
+     "https://swarm.workshop.perforce.com/downloads/guest/magnus_henoch/vc-p4/vc-p4.el"
+     "vc-p4.el")
+    (require 'vc-p4))
+  (when (memq pel-use-perforce '(both p4))
+    (pel-ensure-package p4 from: melpa)
+    (require 'p4))
+  (when (and (eq pel-use-perforce 'both)
+             (boundp 'p4-do-find-file))
+    (setq p4-do-find-file nil)))
+
+;; ----------------
 ;; vc-dir-mode support
 ;; Provide <f12> <f1>, <f12><f2> and <f12><f3> in vc-dir-mode
 ;; TODO simplify this code
