@@ -303,6 +303,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - New: *pel-insert-todo-note* command (bound to ~<f6> T~ and ~<f11> i T~) that
   inserts a commented-out todo note template.  The template contains the date
   and the author's name.
+- New: *column-number-mode* command is now bound to ~<f11> M-d c~.  Use it to
+  toggle the display of the current column in the mode line.
 
 * Version 0.4.1:
 ** Modifications:

@@ -6999,6 +6999,7 @@ the ones defined from the buffer now."
 
 (define-key pel:mode-line "f"  'which-function-mode)
 (define-key pel:mode-line "t" #'pel-toggle-time-display)
+(define-key pel:mode-line "c"  'column-number-mode)
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> w`` : Windows operations
