@@ -277,6 +277,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   Also, if point is over the hyperlink of a section within the same
   reStructuredText file, the command simply moves point to the title of that
   section inside the file.
+- New: *pel-open-at-point* command will now open the /directory/ instead of
+  the file when the absolute value of numeric argument specified is equal or
+  greater than 20.  In that case the function adjusts the numeric argument by
+  removing the value 20 from it and interprets the result as the value that
+  specifies the target window.  So for example use a N or 22 to open the
+  directory of the specified pat name in a window below the current window.
+  Use 28 to open the directory in the window above.  Use -20 to create a new
+  window to show the directory.
 - Improve Speedbar support of reStructuredText files:
   - The '.rst.txt' file extension is now recognized for Speedbar. This file
     extension allows Emacs to recognize reStructuredText files while other

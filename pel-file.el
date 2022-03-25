@@ -78,8 +78,19 @@
 ;; pel-find-file-at-point-in-window
 ;; --------------------------------
 
-(defun pel-filename-parts-at-point (&optional keep-file-url)
+(defun pel--dir-name-if (path-name directory-only)
+  "Return PATH-NAME complete unless DIRECTORY-ONLY is non-nil.
+In that case return the directory part of PATH-NAME."
+  (if directory-only
+      (file-name-directory path-name)
+    path-name))
+
+(defun pel-filename-parts-at-point (&optional keep-file-url directory-only)
   "Extract and return (filename line column) from string at point.
+
+A file URL is stripped from the string unless KEEP-FILE-URL is non-nil.
+If DIRECTORY-ONLY is non-nil the directory name is extracted instead of the
+complete file name.
 .
 Return:
 - nil if no valid file name found at point.
@@ -89,7 +100,7 @@ Return:
   - name-type := symbol : fname | fname-w-ddrv | http
                  : 'fname := normal file name, with/without Unix-style path
                  : 'fname-w-ddrv := filename with disk drive letter
-  - filename : filename string.
+  - filename : filename string (or its directory if DIRECTORY-ONLY is non-nil).
   - line     : integer, or nil for missing number.  Starts at 1.
   - column   : integer, or nil for missing number.  Starts at 0.
 
@@ -97,9 +108,7 @@ The function accepts Unix and Windows style file names and path.
 It accepts ':' and '@' as separators between the elements.
 Spaces are accepted within the file name and between the separators
 but *only* when the complete string is enclosed in double quotes
-*and* when point is located at the first quote.
-
-A file URL is stripped from the string unless KEEP-FILE-URL is non-nil."
+*and* when point is located at the first quote."
   (let ((str (pel-filename-at-point)))
     (unless keep-file-url
       (setq str (replace-regexp-in-string "^file:////?/?" "/" str)))
@@ -160,7 +169,9 @@ A file URL is stripped from the string unless KEEP-FILE-URL is non-nil."
                    (col_num   (when (and match6 match9)
                                 (string-to-number match9))))
               (list (if ddrv_str 'fname-w-ddrv 'fname)
-                    fpath_str line_num col_num))
+                    (pel--dir-name-if fpath_str directory-only)
+                    line_num
+                    col_num))
           ;; For reasons I don't yet understand, the above regexp does not work
           ;; if only one separator; with line number follows the file name.
           ;; So, I try again, with a different regexp, not looking
@@ -177,8 +188,10 @@ A file URL is stripped from the string unless KEEP-FILE-URL is non-nil."
                                                    (match-string 4 str) "")))
                      ;; but change line 0 to line 1
                      (line_num  (if (equal line_num 0) 1 line_num)))
-                (list
-                 (if ddrv_str 'fname-w-ddrv 'fname) fpath_str line_num nil))))))))
+                (list (if ddrv_str 'fname-w-ddrv 'fname)
+                      (pel--dir-name-if fpath_str directory-only)
+                      line_num
+                      nil))))))))
 
 (defun pel-prompt-for-filename (default-filename)
   "Prompt for a file name, with DEFAULT-FILENAME shown.
@@ -347,6 +360,8 @@ Optional arguments:
     - 4 := 'left  5 := 'current  6 := 'right
     -             2 := 'down
   - For N=9  := open the file in the system's browser.
+  - For N>= 20 or N<=-20, open the directory identified by the path
+    inside the window or browser identified by the (abs N) - 20.
 - Explicitly selecting the minibuffer window, a dedicated window
   or a non-existing window is not allowed.  Instead the command creates
   a new window for the file.
@@ -407,8 +422,17 @@ were specified."
   ;;   - if N is nil and a buffer holds the file, check if a window is
   ;;     currently displaying the buffer that holds the file.  If so, use that
   ;;     window.  Otherwise, search for a window the normal way.
-  (let* ((use-browser (eq 9 (prefix-numeric-value n)))
-         (fileparts (pel-filename-parts-at-point use-browser))
+  (let* ((n-value (prefix-numeric-value n))
+         (directory-only (cond
+                          ((>= n-value 20)
+                           (setq n-value (- n-value 20))
+                           t)
+                          ((<= n-value -20)
+                           (setq n-value (+ n-value 20))
+                           t)
+                          (t nil)))
+         (use-browser (eq 9 n-value))
+         (fileparts (pel-filename-parts-at-point use-browser directory-only))
          (file-kind (car fileparts)))
     (cond
      ((eq file-kind 'http)
@@ -455,7 +479,7 @@ were specified."
               ;; and open the file inside that window.
               ;; The filename might be absolute, relative, incomplete.
               (let ((direction (pel-window-direction-for
-                                (prefix-numeric-value n) nil :for-editing)))
+                                n-value nil :for-editing)))
                 (cond ((eq action 'edit) (progn ; progn just to indent
                                            (pel-window-select direction)
                                            (find-file filename)
