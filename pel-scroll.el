@@ -290,6 +290,25 @@ scroll function."
     (pel-scroll-up n)
     (setq pel-in-scroll-sync orig-scroll-set)))
 
+;; --
+;; Simple Horizontal scroll entire window
+;;-pel-autoload
+(defun pel-scroll-left (&optional n)
+  "Simple horizontal scroll of 1 column left the entire window.
+
+If N is specified, repeat N times."
+  (interactive "P")
+  (dotimes (_i (abs (or n 1)))
+          (scroll-left 1)))
+
+(defun pel-scroll-right (&optional n)
+  "Simple horizontal scroll of 1 column left the entire window.
+
+If N is specified, repeat N times."
+  (interactive "P")
+  (dotimes (_i (abs (or n 1)))
+          (scroll-right 1)))
+
 ;; -----------------------------------------------------------------------------
 (provide 'pel-scroll)
 

@@ -600,6 +600,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-remove-window-from-scroll-sync
     pel-scroll-up
     pel-scroll-down
+    pel-scroll-left
+    pel-scroll-right
     pel-scroll-down-other
     pel-scroll-up-other
     pel-scroll-down-only-this

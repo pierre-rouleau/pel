@@ -313,6 +313,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   and the author's name.
 - New: *column-number-mode* command is now bound to ~<f11> M-d c~.  Use it to
   toggle the display of the current column in the mode line.
+- New: simple full window horizontal scroll by 1 column (numeric argument allow to specify a larger count):
+  - *pel-scroll-left*  bound to ~<f11> | }~ and ~<f11> | <right>~
+  - *pel-scroll-right* bound to ~<f11> | {~ and ~<f11> | <left>~
 
 * Version 0.4.1:
 ** Modifications:
