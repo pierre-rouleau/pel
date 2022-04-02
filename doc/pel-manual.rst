@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2022-01-18 18:08:30, updated by Pierre Rouleau.
+:Modified: 2022-04-02 09:59:56, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -8024,7 +8024,6 @@ and more information.
 .. _HUD: https://wiki.ubuntu.com/Unity/HUD
 .. _How do I modify or disable the HUD's use of the Alt key?: https://askubuntu.com/questions/122209/how-do-i-modify-or-disable-the-huds-use-of-the-alt-key
 
-
 Modify GNOME Terminal Shortcut Keys
 -----------------------------------
 
@@ -8042,6 +8041,10 @@ modified combination that PEL does not use and that you want to use.
 .. figure:: res/gnome-terminal-03.png
    :scale: 30 %
 
+
+You also might want to configure the several key shortcuts to prevent clashes
+with Emacs.  The pdf titled `Ubuntu 16.04 Linux Desktop Keys on macOS Host`_
+lists a set of key shortcuts that might be useful.
 
 ..
    -----------------------------------------------------------------------------
@@ -8432,6 +8435,7 @@ exhaustive list):
 .. _Web:                                      https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/web.pdf
 .. _Whitespaces:                              https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/whitespaces.pdf
 .. _Windows:                                  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/windows.pdf
+.. _Ubuntu 16.04 Linux Desktop Keys on macOS Host:  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/ubuntu-16-04-desktop-keys.pdf
 
 
 
