@@ -853,8 +853,24 @@ Return nil if no hyperlink target found."
           ;; Just move point there and leave it there!
           (list 'rst-title (point)))))))
 
+
+(defun pel--rst-target-regxp (target)
+  "Transform TARGET string into a regular expression string to search for it."
+  ;; In a reStructuredText section target, spaces, dashes and underscores are
+  ;; replaced by a single dash.  So to search for the original section text
+  ;; search for the string that begins at the beginning of the line and
+  ;; expand the dashes with an expression that searches for any of the
+  ;; possible original characters.
+  (format "^%s$" (replace-regexp-in-string "-" "[ _-]+" target)))
+
 (defun pel-html-to-rst (filename)
-  "Transform the extension of a FILENAME to the non HTML source.
+  "Extract source filename and potential target from HTML FILENAME.
+
+Return a cons of (source-filename . target-regexp) where the
+source-filename is the name of the file to visit, and target-regexp is a
+regexp use to search the location of the target to move point to.  It is set
+to nil if there is no target specification in the FILENAME.  A target
+specification in FILENAME is the text that follows the '#' character.
 
 The function removes the FILENAME extension if the extension is \"html\".
 If the resulting FILENAME has an extension it tries to  use that file name.
@@ -862,22 +878,28 @@ Otherwise it tries to append the \"rst\", \"txt\" or \"stxt\" extension and
 uses the first one it finds. If it finds nothing it returns the FILENAME
 unchanged.  If FILENAME extension is not \"html\" it also returns FILENAME
 unchanged."
-  (let ((ext (file-name-extension filename)))
-    (if (string= ext "html")
-        (let ((fn  (file-name-sans-extension filename)))
-          (if (file-exists-p fn)
-              fn
-            (let ((fn-ext nil)
-                  (found-fn nil))
-              (dolist (new-ext '(".rst" ".txt" ".stxt"))
-                (unless found-fn
-                  (setq fn-ext (concat fn new-ext))
-                  (when (file-exists-p fn-ext)
-                    (setq found-fn fn-ext))))
-              (if found-fn
-                  found-fn
-                filename))))
-      filename)))
+  (let* ((filename.target  (split-string filename "#"))
+         (filename (car filename.target))
+         (target (cadr filename.target))
+         (ext (file-name-extension filename)))
+    (when target
+      (setq target (pel--rst-target-regxp target)))
+    (cons (if (string= ext "html")
+              (let ((fn (file-name-sans-extension filename)))
+                (if (file-exists-p fn)
+                    fn
+                  (let ((fn-ext nil)
+                        (found-fn nil))
+                    (dolist (new-ext '(".rst" ".txt" ".stxt"))
+                      (unless found-fn
+                        (setq fn-ext (concat fn new-ext))
+                        (when (file-exists-p fn-ext)
+                          (setq found-fn fn-ext))))
+                    (if found-fn
+                        found-fn
+                      filename))))
+            filename)
+          target)))
 
 (defun pel-rst-open-target (&optional n noerror)
   "Open the target of rst-reference at point.

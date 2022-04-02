@@ -316,16 +316,21 @@ where: - filename:= string or nil: the  filename to act upon if not nil.
           (cons (or selected-filename filename)
                 selected-action))))))
 
-(defun pel--show-edit-action (action filename &optional line column)
-    "Display message showing ACTION done on FILENAME at LINE and COLUMN.
+(defun pel--show-edit-action (action filename &optional line column target)
+  "Display message showing ACTION done on FILENAME at LINE/COLUMN or TARGET.
 ACTION   := symbol | string
 FILENAME := string
 LINE     := integer | nil
-COLUMN   := integer | nil"
-    (message "%s %s%s%s%s" action filename
-             (if (or line column) " at " "")
-             (if line   (format "line:%d" line) "")
-             (if column (format "col:%d" column) "")))
+COLUMN   := integer | nil
+TARGET   := string  | nil"
+  (message "%s %s%s%s" action
+           filename
+           (if (or line column target) " at " "")
+           (if target
+               (format "target: %s" target)
+             (format "%s%s"
+                     (format "line:%d" (or line 1))
+                     (if column (format "col:%d" column) "")))))
 
 ;;-pel-autoload
 (defun pel-find-file-at-point-in-window (&optional n filename-filter)
@@ -447,11 +452,15 @@ were specified."
      ;; and if that buffer is in a window already.
      ;; At this point:  fileparts := (kind filename line column)
      (t
-      (let* ((filename (cadr fileparts))
-             (fn-action (pel--complete-filename-for filename))
-             (filename  (expand-file-name (car fn-action))))
+      (let ((filename (cadr fileparts))
+            fn-action
+            target-regxp)
         (when filename-filter
-          (setq filename (funcall filename-filter filename)))
+          (let ((fname.target (funcall filename-filter filename)))
+            (setq filename (car fname.target))
+            (setq target-regxp (cdr fname.target))))
+        (setq fn-action (pel--complete-filename-for filename))
+        (setq filename  (expand-file-name (car fn-action)))
         (if use-browser
             ;; It's a file, not a URL, but user requested opening the
             ;; file inside the the default browser or the OS default
@@ -470,8 +479,13 @@ were specified."
                 ;; window and move point to where specified if any.
                 (progn
                   (select-window window)
-                  (pel-goto-position line column)
-                  (pel--show-edit-action "show" filename line column))
+                  (if target-regxp
+                      (progn
+                        (goto-char (point-min))
+                        (re-search-forward target-regxp))
+                      (pel-goto-position line column))
+                  (pel--show-edit-action "show" filename
+                                         line column target-regxp))
               ;; the file is not inside a existing window,
               ;; but a buffer may hold the file.
               ;; Since find-file will open that buffer then
@@ -480,24 +494,27 @@ were specified."
               ;; The filename might be absolute, relative, incomplete.
               (let ((direction (pel-window-direction-for
                                 n-value nil :for-editing)))
-                (cond ((eq action 'edit) (progn ; progn just to indent
-                                           (pel-window-select direction)
-                                           (find-file filename)
-                                           (pel-goto-position line column)
-                                           (pel--show-edit-action action
-                                                                  filename
-                                                                  line
-                                                                  column)))
-                      ((eq action 'create) (progn
-                                             (pel-window-select direction)
-                                             (find-file filename)
-                                             (pel--show-edit-action action
-                                                                    filename
-                                                                    line
-                                                                    column)))
-                      ((stringp action)   (message "%s" action))
-                      (t
-                       (error "Internal error condition detected!"))))))))))))
+                (cond
+                 ((eq action 'edit)
+                  (progn
+                    (pel-window-select direction)
+                    (find-file filename)
+                    (if target-regxp
+                        (progn
+                          (goto-char (point-min))
+                          (re-search-forward target-regxp))
+                      (pel-goto-position line column))
+                    (pel--show-edit-action action filename
+                                           line column
+                                           target-regxp)))
+                 ((eq action 'create)
+                  (progn
+                    (pel-window-select direction)
+                    (find-file filename)
+                    (pel--show-edit-action action filename)))
+                 ((stringp action)   (message "%s" action))
+                 (t
+                  (error "Internal error condition detected!"))))))))))))
 
 ;; --
 

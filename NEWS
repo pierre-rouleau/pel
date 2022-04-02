@@ -274,6 +274,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   *pel-open-at-point* command issued while point is inside an hyperlink to a
   HTML file that is the rendering of another local reStructuredText file, the
   command opens that reStructuredText file instead of the local HTML file.
+  If the URL has a URI fragment that identifies a title in the file the command
+  moves the point to that section inside the file.
   Also, if point is over the hyperlink of a section within the same
   reStructuredText file, the command simply moves point to the title of that
   section inside the file.
