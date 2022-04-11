@@ -114,8 +114,9 @@
 ;; rst-mode character syntax control
 ;; ---------------------------------
 ;;
-;; The following is experimental: to allow investigation into the ability to
-;; use superword-mode in rst-mode.
+
+(defvar pel--rst-underscore-as-symbol nil
+  "Remember if the underscore syntax is a symbol or not.")
 
 (defun pel--rst-set-underscore-as-symbol ()
   "Set syntax of underscore character as symbol."
@@ -126,8 +127,17 @@
   (modify-syntax-entry ?_ "." rst-mode-syntax-table))
 
 ;;-pel-autoload
-(defun pel-rst-set-underscore-syntax ()
+(defun pel-rst-set-underscore-syntax (&optional action)
   "Set syntax of underscore to punctuation or symbol according to superword-mode.
+
+If superword-mode is active then the function can be used to change the
+syntax of the underscore character.
+
+The optional ACTION  argument controls whether the underscore syntax is
+toggled, activated or de-activated:
+- ACTION not set or nil : toggles the underscore syntax.
+- ACTION set positive:  activates underscore syntax.
+- ACTIVATES set negative: de-activates underscore syntax.
 
 By default the syntax of an underscore in rst-mode is a
 punctuation.  To use the superword-mode the syntax of the
@@ -136,13 +146,31 @@ underscore must be symbol instead.
 This function checks if the superword-mode is active and changes the syntax of
 the underscore character to symbol if superword-mode is on, otherwise sets it
 to the default: symbol."
-  (interactive)
+  (interactive "P")
   (if (bound-and-true-p superword-mode)
-      (progn
+      (cond
+       ((not action)
+        ;; Toggle
+        (if (not pel--rst-underscore-as-symbol)
+            (progn
+              (pel--rst-set-underscore-as-symbol)
+              (setq pel--rst-underscore-as-symbol t)
+              (message "Underscore syntax is now: symbol"))
+          (pel--rst-restore-underscore-syntax)
+          (setq pel--rst-underscore-as-symbol nil)
+          (message "Underscore syntax is now: punctuation")))
+       ((> (prefix-numeric-value action) 0)
+        ;; Activate underscore syntax
         (pel--rst-set-underscore-as-symbol)
+        (setq pel--rst-underscore-as-symbol t)
         (message "Underscore syntax is now: symbol"))
-    (pel--rst-restore-underscore-syntax)
-    (message "Underscore syntax is now: punctuation")))
+       ((<= (prefix-numeric-value action) 0)
+        ;; De-activate underscore syntax
+        (pel--rst-restore-underscore-syntax)
+        (setq pel--rst-underscore-as-symbol nil)
+        (message "Underscore syntax is now: punctuation")))
+    ;; superword-mode is off
+    (user-error "superword-mode is turned off.  First turn it on!")))
 
 ;; ---------------------------------------------------------------------------
 ;; Section Adornment Control
