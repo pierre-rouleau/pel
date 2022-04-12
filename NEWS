@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Fix: **pel-replace-regexp** and **pel-query-replace-regexp** commands:
+  they now call the proper regexp replacement function when using the Emacs
+  default regular expression syntax instead of the non-regexp string replacement
+  function.  Also clarified the PDF documentation for these commands.
 - Fix: The *pel-emacs-mem-stats* command no longer attempts to print the value
   of misc-objects-consed which is not bound in Linux.
 - Fix: On Linux and Windows the ~<insert>~ key is now mapped to yank, as

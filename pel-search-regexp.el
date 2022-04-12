@@ -69,7 +69,7 @@ Change it with function `pel-select-search-regexp-engine'.")
   "Unconditional regexp replace - use active search regexp engine."
   (interactive)
   (cl-case pel--search-regexp-engine
-    (emacs (call-interactively 'replace-string))
+    (emacs (call-interactively 'replace-regexp))
     (vr    (call-interactively 'vr/replace))
     (t     (call-interactively 'vr/select-replace))))
 
@@ -78,7 +78,7 @@ Change it with function `pel-select-search-regexp-engine'.")
   "Query regexp replace - use active search regexp engine."
   (interactive)
   (cl-case pel--search-regexp-engine
-    (emacs (call-interactively 'query-replace))
+    (emacs (call-interactively 'query-replace-regexp))
     (vr    (call-interactively 'vr/query-replace))
     (t     (call-interactively 'vr/select-query-replace))))
 
