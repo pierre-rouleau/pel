@@ -6871,6 +6871,7 @@ the ones defined from the buffer now."
 ;; - Function Keys - <f11> - Prefix ``<f11> T`` : Time-Tracking
 (define-pel-global-prefix pel:time (kbd "<f11> T"))
 (when pel-use-timeclock
+  (define-key pel:time "W"         'display-time-world)
   (define-key pel:time (kbd "M-d") 'timeclock-mode-line-display)
   ;; add standard key bindings.
   (define-key ctl-x-map "ti" 'timeclock-in)
@@ -6902,6 +6903,11 @@ the ones defined from the buffer now."
 
 ;; (when pel-use-chronometrist
 ;;   (pel-ensure-package chronometrist from: melpa-stable))
+
+;; ---------------------
+;; Time Management tools
+(when pel-use-tzc
+  (pel-ensure-package tzc from melpa))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> v`` : VCS operations

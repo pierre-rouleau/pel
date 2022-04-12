@@ -9379,6 +9379,17 @@ mode during an editing session."
 ;;   :type 'boolean
 ;;   :safe #'booleanp)
 
+(defcustom pel-use-tzc nil
+  "Control whether PEL activates the tzc time zone tool.
+
+Currently this tool does not work properly.
+This requires Emacs 27.1 or later."
+  :group 'pel-pkg-for-time-tracking
+  :link '(url-link :tag "tzc @ GitHub"
+                   "https://github.com/md-arif-shaikh/tzc")
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; ---------------------------------------------------------------------------
 ;; Text Translation
 ;; ----------------
@@ -10035,7 +10046,8 @@ indexing system."
 
 ;; De-activate any requests that cannot be honoured based on Emacs version.
 (when (version< emacs-version "27.1")
-  (setq pel-use-go-translate nil))
+  (setq pel-use-go-translate nil)
+  (setq pel-use-tzc nil))
 
 ;; ---------------------------------------------------------------------------
 (provide 'pel--options)
