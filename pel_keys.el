@@ -1206,7 +1206,7 @@ interactively."
   (define-key pel: "e" 'iedit-mode)
   (define-key ctl-x-r-map "\r" 'iedit-rectangle-mode)
   ;; More iedit config - always required.
-  (pel-eval-after-load iedit-mode
+  (pel-eval-after-load iedit
     (declare-function pel-spell-iedit-check-conflict "pel-spell-iedit")
     (pel-spell-iedit-check-conflict)
     (pel--add-keys-to-iedit-mode)))
