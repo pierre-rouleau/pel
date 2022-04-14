@@ -184,6 +184,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - *pelinsert-dirname-wtilde* (bound to ~<f6> C-M-f~ and ~<f11> i C-M-f~)
     which insets the directory name but replaces the beginning of the path by a
     Unix-style tilde if its inside the user home directory.
+- Add key binding to the *enriched-mode* command: ~<f11> t m e~.
+- Changed the PEL key binding to the *set-justification-node* to ~<f11> t j u~
+  to mimic the ~M-j u~ key binding.
 
 ** New Features:
 - Added support for Erlang code formatters. The new

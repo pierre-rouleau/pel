@@ -6811,7 +6811,7 @@ the ones defined from the buffer now."
 (define-key pel:justification "b" #'set-justification-full) ;'b' for "both-side"
 (define-key pel:justification "c" #'set-justification-center)
 (define-key pel:justification "l" #'set-justification-left)
-(define-key pel:justification "n" #'set-justification-none)
+(define-key pel:justification "u" #'set-justification-none) ; un-justify
 (define-key pel:justification "r" #'set-justification-right)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -6827,6 +6827,7 @@ the ones defined from the buffer now."
 (define-key pel:textmodes "s"  'pel-toggle-sentence-end)
 (define-key pel:textmodes "v" #'visible-mode)
 (define-key pel:textmodes "w" #'whitespace-mode)
+(define-key pel:textmodes "e" #'enriched-mode)
 
 (pel-add-hook-for 'pel-modes-activating-superword-mode
                   (lambda ()
