@@ -194,6 +194,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   *pel-modes-activating-electric-quote-local-mode*.
 - Improved *pel-show-text-modes*: it can also show the value of
   *delete-selection-mode* and *electric-quote-local-mode* status.
+- Improved *iedit-mode support*:
+  - Modified the following key bindings to make they easier to type:
+    - ~C-c C-o~ is bound to *iedit-show/hide-occurrence-lines*.
+    - ~C-c C-a~ is bound to *iedit-show/hide-context-lines*.
 
 ** New Features:
 - Added support for Erlang code formatters. The new
@@ -1541,8 +1545,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
       accessible in terminal mode:
       - ~<f1> <f1>~ is bound to *iedit-help-for-help*.
       - ~<f1> <f2>~ is bound to *iedit-help-for-occurrences*.
-      - ~C-c C-o~ is bound to *iedit-show/hide-occurrence-lines*.
-      - ~C-c C-a~ is bound to *iedit-show/hide-context-lines*.
+      - ~<f1> C-o~ is bound to *iedit-show/hide-occurrence-lines*.
+      - ~<f1> C-a~ is bound to *iedit-show/hide-context-lines*.
     - New: modified some iedit-mode command bindings for commands that
      clashed with major command PEL bindings:
       - ~M-C~ is bound to iedit-upcase-occurences instead of ~M-U~ which
