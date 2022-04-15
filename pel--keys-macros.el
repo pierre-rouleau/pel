@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-03-08 12:00:22, updated by Pierre Rouleau>
+;; Time-stamp: <2022-04-15 12:09:08, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -381,8 +381,8 @@
     ([dired]         "mode-dired"       pel-pkg-for-dired       ,pel--dired-groups)
     ([f11 ?f]        ("file-mngt"
                       "web")            pel-pkg-for-filemng     (files
-                      recentf
-                      popup-switcher))
+                                                                 recentf
+                                                                 popup-switcher))
 
     ;; no PDF for browse yet, the info is  in file-mngt.
     ([f11 ?B]        "file-mngt"        (pel-pkg-for-browse
@@ -438,14 +438,16 @@
                                                                   flycheck))
     ([f11 ?t]        ("case-conversion"
                       "input-method"
-                      "text-modes")
-     pel-pkg-for-text-mode  (glasses
-                             whitespace))
+                      "text-modes")     pel-pkg-for-text-mode  (editing-basics
+                                                                glasses
+                                                                whitespace))
     ([f11 ?t ?a]     "align"            pel-pkg-for-align       align)
     ([f11 ?t ?e]     "enriched-text"    nil                     enriched)
     ([f11 ?t ?f]     "filling-justification" nil               fill)
     ([f11 ?t ?j]     "filling-justification" nil               fill)
-    ([f11 ?t ?m]     "text-modes"       pel-pkg-for-text-mode  glasses)
+    ([f11 ?t ?m]     "text-modes"       pel-pkg-for-text-mode  (editing-basics
+                                                                glasses
+                                                                whitespace))
     ([f11 ?t ?t]     "transpose"        nil)
     ([f11 ?t ?w]     "whitespaces"      nil                     whitespace)
     ([f11 ?u]        "undo-redo-repeat" pel-pkg-for-undo        (undo

@@ -6835,9 +6835,18 @@ the ones defined from the buffer now."
 (pel-add-hook-for 'pel-modes-activating-subword-mode
                   (lambda ()
                     (subword-mode 1)))
+(pel-add-hook-for 'pel-modes-activating-glasses-mode
+                  (lambda ()
+                    (glasses-mode 1)))
 (pel-add-hook-for 'pel-modes-activating-auto-fill-mode
                   (lambda ()
                     (auto-fill-mode 1)))
+(pel-add-hook-for 'pel-modes-activating-whitespace-mode
+                  (lambda ()
+                    (whitespace-mode 1)))
+(pel-add-hook-for 'pel-modes-activating-electric-quote-local-mode
+                  (lambda ()
+                    (electric-quote-local-mode 1)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Function Keys - <f11> - Prefix ``<f11> t t``: Text transpose commands

@@ -9334,8 +9334,26 @@ mode during an editing session."
   :group 'pel-pkg-for-text-mode
   :type '(repeat symbol))
 
+(defcustom pel-modes-activating-glasses-mode nil
+  "List of major modes that automatically activate the `glasses-mode'."
+  :group 'pel-pkg-for-text-mode
+  :type '(repeat symbol))
 (defcustom pel-modes-activating-auto-fill-mode nil
   "List of major modes that automatically activate the `auto-fill-mode'."
+  :group 'pel-pkg-for-text-mode
+  :type '(repeat symbol))
+
+(defcustom pel-modes-activating-whitespace-mode nil
+  "List of major modes that automatically activate the `whitespace-mode'.
+
+Good candidates:
+- diff-mode     To show whitespace differences (tabs vs. spaces),
+                as well as trailing whitespace."
+  :group 'pel-pkg-for-text-mode
+  :type '(repeat symbol))
+
+(defcustom pel-modes-activating-electric-quote-local-mode nil
+  "List of major modes that automatically activate the `electric-quote-local-mode'."
   :group 'pel-pkg-for-text-mode
   :type '(repeat symbol))
 

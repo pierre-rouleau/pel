@@ -188,6 +188,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add key binding to the *enriched-mode* command: ~<f11> t m e~.
 - Changed the PEL key binding to the *set-justification-node* to ~<f11> t j u~
   to mimic the ~M-j u~ key binding.
+- Add user-options that allow automatic activation of minor modes for specific
+  major modes: *pel-modes-activating-glasses-mode*,
+  *pel-modes-activating-whitespace-mode*,
+  *pel-modes-activating-electric-quote-local-mode*.
+- Improved *pel-show-text-modes*: it can also show the value of
+  *delete-selection-mode* and *electric-quote-local-mode* status.
 
 ** New Features:
 - Added support for Erlang code formatters. The new
