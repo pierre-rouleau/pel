@@ -1954,8 +1954,9 @@ If the value is 'with-flycheck then flycheck is toggled."
 
 (defun pel-add-hook-for (modes-list-symbol func &optional allowed-modes)
   "Add the FUNC hook to all modes listed in the MODES-LIST-SYMBOL.
+
 When ALLOWED-MODES is specified the accepted mode list symbols in
-MODES-LIST-SYMBOL is restricted the ones in ALLOWED-MODES.
+MODES-LIST-SYMBOL is restricted to the ones in ALLOWED-MODES.
 If another mode is included in MODES-LIST-SYMBOL a warning is issued."
   (dolist (mode (eval modes-list-symbol))
     (if (and mode                       ; make sure the mode is a valid symbol
@@ -1966,12 +1967,14 @@ If another mode is included in MODES-LIST-SYMBOL a warning is issued."
                   func)
       (display-warning
        'pel-mode-hooks
-       (format "Invalid mode %s in the list %s?
-Should the mode be added to the `pel-allowed-modes-for-lispy'?
-If this mode should be allowed please report the issue.
-For now change its customized value with ``M-x customize %s``
-and activate the mode manually with M-x lispy-mode."
+       (format "\
+The mode %s identified in the list %s is not allowed,
+according to the list of allowed-modes (%s) identified.
+Please update the content of the %s user-option.
+You can do it with 'M-x customize %s'."
                mode
+               modes-list-symbol
+               allowed-modes
                modes-list-symbol
                modes-list-symbol)
        :error))))
