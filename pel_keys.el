@@ -1190,8 +1190,8 @@ interactively."
   (defun pel--add-keys-to-iedit-mode ()
     "Add keys that work in terminal mode to iedit-mode key maps."
     (when (boundp 'iedit-lib-keymap)
-      (define-key iedit-lib-keymap (kbd "<f1> C-a") 'iedit-show/hide-context-lines)
-      (define-key iedit-lib-keymap (kbd "<f1> C-o") 'iedit-show/hide-occurrence-lines))
+      (define-key iedit-lib-keymap (kbd "C-c C-a") 'iedit-show/hide-context-lines)
+      (define-key iedit-lib-keymap (kbd "C-c C-o") 'iedit-show/hide-occurrence-lines))
     (when (boundp 'iedit-mode-occurrence-keymap)
       (let ((map iedit-mode-occurrence-keymap))
         (define-key map (kbd "<f1> <f2>") 'iedit-help-for-occurrences)

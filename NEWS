@@ -1539,15 +1539,15 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Improved *iedit-mode support*:
     - New: added key bindings for the iedit-mode commands that are not
       accessible in terminal mode:
-      - ~<f1> <f1>~ is bound to iedit-help-for-help.
-      - ~<f1> <f2>~ is bound to iedit-help-for-occurrences.
-      - ~<f1> C-o~ is bound to iedit-show/hide-occurrence-lines.
-      - ~<f1> C-a~ is bound to iedit-show/hide-context-lines.
+      - ~<f1> <f1>~ is bound to *iedit-help-for-help*.
+      - ~<f1> <f2>~ is bound to *iedit-help-for-occurrences*.
+      - ~C-c C-o~ is bound to *iedit-show/hide-occurrence-lines*.
+      - ~C-c C-a~ is bound to *iedit-show/hide-context-lines*.
     - New: modified some iedit-mode command bindings for commands that
      clashed with major command PEL bindings:
       - ~M-C~ is bound to iedit-upcase-occurences instead of ~M-U~ which
         remains bound to pel-redo.
-      - ~<f1> M-c~ is bound to iedit-toggle-case-sensitive instead of
+      - ~<f1> M-c~ is bound to *iedit-toggle-case-sensitive* instead of
         ~M-C~.
       - Use ~M-c~ to change occurrence to lower case and ~M-C~ to change
         occurrences to upper case. Similar to what is available under PEL.
