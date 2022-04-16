@@ -6388,6 +6388,12 @@ Activating this automatically turns `pel-use-janet' on."
 (pel-put 'pel-use-inf-janet :package-is :in-utils)
 (pel-put 'pel-use-inf-janet :requires 'pel-use-janet)
 
+(defcustom pel-janet-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Janet buffers.
+  Enter *local* minor-mode activating function symbols.
+  Do not enter lambda expressions."
+  :group 'pel-pkg-for-janet
+  :type '(repeat function))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Hy Support

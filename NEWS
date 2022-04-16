@@ -198,6 +198,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - Modified the following key bindings to make they easier to type:
     - ~C-c C-o~ is bound to *iedit-show/hide-occurrence-lines*.
     - ~C-c C-a~ is bound to *iedit-show/hide-context-lines*.
+- Improved Janet support: add *pel-janet-activates-minor-modes* user-option which can be
+  used to automatically activate minor modes in janet buffer.
 
 ** New Features:
 - Added support for Erlang code formatters. The new

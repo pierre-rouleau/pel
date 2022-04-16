@@ -2891,12 +2891,7 @@ d-mode not added to ac-modes!"
   ;; Key Bindings
   (define-pel-global-prefix pel:for-janet (kbd "<f11> SPC T"))
   (pel--lisp-languages-map-for pel:for-janet)
-  (pel--mode-hook-maybe-call
-   (lambda ()
-     ;; Activate the F12 key for janet buffers
-     (pel-local-set-f12-M-f12 pel:for-janet))
-   'janet-mode 'janet-mode-hook)
-  )
+  (pel-config-major-mode janet pel:for-janet))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-j`` : Clojure

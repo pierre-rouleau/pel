@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-04-15 12:09:08, updated by Pierre Rouleau>
+;; Time-stamp: <2022-04-16 17:20:40, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1321,7 +1321,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
 
 (defconst pel--tab-controlling-major-modes '(makefile tup nix
                                                       intel-hex go
-                                                      lisp arc clojure
+                                                      lisp arc clojure janet
                                                       scheme chez chibi
                                                       chicken gambit gerbil
                                                       guile mit-scheme racket
