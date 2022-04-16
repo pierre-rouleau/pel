@@ -9803,7 +9803,7 @@ The gxref package is a xref backend using GNU GLOBAL  cross referencing
 system.
 
 As an alternative you can quickly toggle the use of gxref xref backend
-with gxref-mode with the <f11> X R key sequence."
+with gxref-mode with the <f11> X B g key sequence."
   :group 'pel-pkg-for-xref
   :type '(repeat symbol)
   :link '(url-link :tag "gxref @ GitHub"
