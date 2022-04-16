@@ -9774,7 +9774,7 @@ Automatic loading of ggtags-mode will incur processing time and will
 mask the M-= key binding of er/expand-region (but the <f11> . = binding
 remains available).
 
-As an alternative you can quickly toggle ggtags-mode with the <f11> X G
+As an alternative you can quickly toggle ggtags-mode with the <f11> X B G
 key sequence."
   :group 'pel-pkg-for-xref
   :type '(repeat symbol)
