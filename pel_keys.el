@@ -5922,6 +5922,15 @@ the ones defined from the buffer now."
 (define-key pel:grep      "z"         #'zrgrep)
 (define-key pel:grep      "1"          'first-error)
 
+(when pel-use-wgrep
+  (pel-ensure-package wgrep from: melpa)
+  (eval-after-load 'grep
+    '(define-key grep-mode-map  (kbd "C-x C-q") 'wgrep-change-to-wgrep-mode))
+  (pel-eval-after-load wgrep
+    (when (boundp 'wgrep-mode-map)
+      (define-key wgrep-mode-map (kbd "C-c C-c") 'wgrep-finish-edit)
+      (define-key wgrep-mode-map (kbd "C-c C-s") 'wgrep-save-all-buffers))))
+
 ;; ripgrep - a faster grep easier to use than grep.
 ;; 2 packages support ripgrep: rg.el and ripgrep.el
 ;; Install rg.el and install ripgrep.el if projectile is used.
@@ -5986,6 +5995,7 @@ the ones defined from the buffer now."
 (when pel-use-deadgrep
   (pel-ensure-package deadgrep from: melpa)
   (define-key pel:grep  "d"     'deadgrep))
+
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> h`` : highlight commands

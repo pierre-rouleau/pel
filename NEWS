@@ -202,6 +202,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   used to automatically activate minor modes in janet buffer.
 
 ** New Features:
+- Add explicit support for the *wgrep* external package via the *pel-use-wgrep*
+  user-option.  Add a couple of key bindings in the mgrep key map.
+  Describe these in the Grep PDF.
 - Added support for Erlang code formatters. The new
   *pel-erlang-code-formatter-command* user-option specifies the Erlang code
   formatter to use.  The Erlang code formatter can be specified by a command

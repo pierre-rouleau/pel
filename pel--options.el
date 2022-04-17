@@ -1977,6 +1977,14 @@ package is also required because `projectile` uses the `ripgrep` package."
                                              (elpa . ripgrep))
                                          '((elpa . rg))))
 
+(defcustom pel-use-wgrep nil
+  "Control whether PEL uses the wgrep external package."
+  :link '(url-link :tag "wgrep @ Github"
+                   "https://github.com/mhayashi1120/Emacs-wgrep")
+  :group 'pel-pkg-for-grep
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; ---------------------------------------------------------------------------
 (defgroup pel-pkg-for-help nil
   "PEL help/documentation control support."
@@ -10067,6 +10075,11 @@ indexing system."
 
 (when pel-use-timeclock-timelog
   (setq pel-use-timeclock t))
+
+(when (or pel-use-ripgrep
+          pel-use-ivy)
+  (setq pel-use-wgrep t))
+
 
 ;; De-activate any requests that cannot be honoured based on Emacs version.
 (when (version< emacs-version "27.1")
