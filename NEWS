@@ -204,6 +204,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 ** New Features:
 - Add explicit support for the *wgrep* external package via the *pel-use-wgrep*
   user-option.  Add a couple of key bindings in the mgrep key map.
+  Also add keys to activate wgrep mode in the *rg-mode* and *ag-mode* buffers.
   Describe these in the Grep PDF.
 - Added support for Erlang code formatters. The new
   *pel-erlang-code-formatter-command* user-option specifies the Erlang code
