@@ -5926,8 +5926,9 @@ the ones defined from the buffer now."
   ;; autoload wgrep-change-to-wgrep-mode in case its requested by ag-mode
   (autoload 'wgrep-change-to-wgrep-mode "wgrep" nil :interactive)
   (pel-ensure-package wgrep from: melpa)
-  (eval-after-load 'grep
-    '(define-key grep-mode-map  (kbd "C-x C-q") 'wgrep-change-to-wgrep-mode))
+  (pel-eval-after-load grep
+    (when (boundp 'grep-mode-map)
+      (define-key grep-mode-map  (kbd "C-x C-q") 'wgrep-change-to-wgrep-mode)))
   (pel-eval-after-load wgrep
     (when (boundp 'wgrep-mode-map)
       (define-key wgrep-mode-map (kbd "C-c C-c") 'wgrep-finish-edit)
@@ -5957,8 +5958,9 @@ the ones defined from the buffer now."
     (pel-autoload-file ripgrep for: ripgrep-regexp))
   ;; wgrep support
   (when pel-use-wgrep
-    (eval-after-load 'rg
-      '(define-key rg-mode-map  (kbd "C-x C-q") 'wgrep-change-to-wgrep-mode))))
+    (pel-eval-after-load rg
+      (when (boundp 'rg-mode-map)
+        '(define-key rg-mode-map  (kbd "C-x C-q") 'wgrep-change-to-wgrep-mode)))))
 
 ;; ag
 ;; --
@@ -5999,8 +6001,9 @@ the ones defined from the buffer now."
   (define-key pel:ag-kill  "p"   'ag/kill-process)
   ;; wgrep support
   (when pel-use-wgrep
-    (eval-after-load 'ag
-      '(define-key ag-mode-map  (kbd "C-x C-q") 'wgrep-change-to-wgrep-mode))))
+    (pel-eval-after-load ag
+      (when (boundp 'ag-mode-map)
+        '(define-key ag-mode-map  (kbd "C-x C-q") 'wgrep-change-to-wgrep-mode)))))
 
 (when pel-use-deadgrep
   (pel-ensure-package deadgrep from: melpa)
