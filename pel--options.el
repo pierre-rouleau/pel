@@ -174,6 +174,7 @@
 ;;       - pel-pkg-for-git
 ;;       - pel-pkg-for-mercurial
 ;;       - pel-pkg-for-perforce
+;;       - pel-pkg-for-subversion
 ;;     - pel-pkg-for-window
 ;;       - pel-pkg-for-scrolling
 ;;       - pel-pkg-for-session
@@ -9548,6 +9549,30 @@ The selection is made by what you select here:
           (const :tag "Use vc-p4.el"  vc-p4)
           (const :tag "Use p4.el"     p4)
           (const :tag "Use both"      both)))
+
+;; Subversion
+(defgroup pel-pkg-for-subversion nil
+  "PEL customization group for Subversion support."
+  :group 'pel-pkg-for-vcs)
+
+(defcustom pel-use-dsvn nil
+  "Determines whether PEL provides support for the dsvn external package"
+  :link '(url-link :tag "dsvm @ EmacsMirror"
+                   "https://github.com/emacsmirror/dsvn")
+  :group 'pel-pkg-for-subversion
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-psvn nil
+  "Determines whether PEL provides support for the psvn external package"
+  :link '(url-link :tag "psvn @ Emacs Wiki"
+                   "https://www.emacswiki.org/emacs/SvnStatusMode")
+  :link '(url-link :tag "psvn @ Github"
+                   "https://github.com/pierre-rouleau/psvn")
+  :group 'pel-pkg-for-subversion
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-psvn :package-is :in-utils)
 
 ;; ---------------------------------------------------------------------------
 ;; Windows Management

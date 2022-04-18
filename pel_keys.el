@@ -7011,6 +7011,16 @@ the ones defined from the buffer now."
     (setq p4-do-find-file nil)))
 
 ;; ----------------
+;; Subversion Support
+(when pel-use-dsvn
+  (pel-ensure-package dsvn from: melpa))
+
+(when pel-use-psvn
+  (pel-install-file
+   "https://raw.githubusercontent.com/pierre-rouleau/psvn/main/psvn.el"
+   "psvn.el"))
+
+;; ----------------
 ;; vc-dir-mode support
 ;; Provide <f12> <f1>, <f12><f2> and <f12><f3> in vc-dir-mode
 ;; TODO simplify this code
