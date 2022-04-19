@@ -1209,7 +1209,10 @@ interactively."
   (pel-eval-after-load iedit
     (declare-function pel-spell-iedit-check-conflict "pel-spell-iedit")
     (pel-spell-iedit-check-conflict)
-    (pel--add-keys-to-iedit-mode)))
+    (pel--add-keys-to-iedit-mode))
+  (pel-eval-after-load sh-script
+    (require 'pel-sh-iedit)
+    (add-hook 'sh-mode-hook 'pel-sh-iedit-enhance)))
 
 ;; - indent-tools
 ;; --------------

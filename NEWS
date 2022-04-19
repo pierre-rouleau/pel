@@ -202,6 +202,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   used to automatically activate minor modes in janet buffer.
 
 ** New Features:
+- Add ability for iedit to handle $variable de-reference between 2 slash character
+  inside sh-mode buffer. Correction code is in the new pel-sh-iedit.el file along
+  with hook activation in pel_keys.el.
 - Add explicit support for the *wgrep* external package via the *pel-use-wgrep*
   user-option.  Add a couple of key bindings in the mgrep key map.
   Also add keys to activate wgrep mode in the *rg-mode* and *ag-mode* buffers.
