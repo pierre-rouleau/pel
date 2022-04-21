@@ -5727,6 +5727,10 @@ the ones defined from the buffer now."
 (define-key pel:file "?" #'pel-show-buffer-file-encoding)
 (when pel-use-popup-switcher
   (define-key pel:file (kbd "M-f") 'pel-psw-navigate-files))
+(unless pel-system-is-windows-p
+  (pel-autoload-file pel-sudo-edit for: pel-edit-as-root)
+  (define-key pel:file "R" 'pel-edit-as-root))
+
 
 ;; - Open recent file
 ;; ------------------

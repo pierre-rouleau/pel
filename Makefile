@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2022-04-18 22:53:09, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2022-04-20 22:45:36, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -229,6 +229,7 @@ EL_FILES := pel--base.el \
 		pel-spell.el \
 		pel-spell-iedit.el \
 		pel-syntax.el \
+		pel-sudo-edit.el \
 		pel-time.el \
 		pel-xref.el \
 		pel-tempo.el \

@@ -202,6 +202,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   used to automatically activate minor modes in janet buffer.
 
 ** New Features:
+- Add *pel-edit-as-root*, bound to ~<f11> f R~, which allows editing a file that is write
+  protected for users but can be edited as root.
 - Add ability for iedit to handle $variable de-reference between 2 slash character
   inside sh-mode buffer. Correction code is in the new pel-sh-iedit.el file along
   with hook activation in pel_keys.el.
