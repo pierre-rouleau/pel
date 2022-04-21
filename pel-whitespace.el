@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, May 10 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-14 17:47:54, updated by Pierre Rouleau>
+;; Time-stamp: <2022-04-21 14:39:33, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -45,7 +45,8 @@
 ;;
 ;;
 (require 'pel--base)
-(require 'pel--options)
+(require 'pel--options)      ; use `pel-delete-trailing-whitespace'
+;;                           ;     `pel-modes-preventing-detele-trailing-whitespace'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -77,7 +78,9 @@ via the `pel-pkg-for-filemng' group customize buffer."
   "Delete trailing whitespace if currently active.
 Delete trailing whitespace in complete buffer or in the region identified
 by the START and END positions if specified."
-  (when pel-delete-trailing-whitespace
+  (when (and pel-delete-trailing-whitespace
+             (not (memq major-mode
+                        pel-modes-preventing-delete-trailing-whitespace)))
     (delete-trailing-whitespace start end)))
 
 ;;; --------------------------------------------------------------------------

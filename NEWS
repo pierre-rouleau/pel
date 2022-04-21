@@ -202,6 +202,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   used to automatically activate minor modes in janet buffer.
 
 ** New Features:
+- Add the *pel-modes-preventing-delete-trailing-whitespace* user-option to
+  identify major-modes were trailing whitespaces will *not* be removed when
+  the buffer is saved to a file.  By default the *diff-mode* is in this list
+  preventing removal of trailing spaces from patch files you may want to
+  manually edit.  The function *pel-delete-trailing-whitespace-if-activated*
+  honours this list and wont delete trailing whitespace from files using the
+  specified major modes.
 - Add *pel-edit-as-root*, bound to ~<f11> f R~, which allows editing a file that is write
   protected for users but can be edited as root.
 - Add ability for iedit to handle $variable de-reference between 2 slash character

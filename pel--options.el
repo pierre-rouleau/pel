@@ -1559,10 +1559,24 @@ The Hippie Expand can be used together with any."
 
 (defcustom pel-delete-trailing-whitespace t
   "Controls whether whitespaces are automatically deleted when file is saved.
-Deleted automatically when non-nil, don't otherwise."
+Deleted automatically when non-nil, don't otherwise or when the current
+major-mode is one identified by the value of the
+`pel-modes-preventing-delete-trailing-whitespace' user option."
   :group 'pel-pkg-for-filemng
   :type 'boolean
   :safe #'booleanp)
+
+(defcustom  pel-modes-preventing-delete-trailing-whitespace '(diff-mode)
+  "List of major modes that prevent automatic deletion of trailing whitespace.
+
+Identify the major modes where you do *NOT* want automatic deletion of
+trailing whitespace when the file is saved when the
+`pel-delete-trailing-whitespace' user-option is turned on.
+By default the `diff-mode' is in this list: it prevents removing the trailing
+whitespace from diff files identifying differences between a file that had
+trailing whitespace and one that does not have them."
+  :group 'pel-pkg-for-filemng
+  :type '(repeat symbol))
 
 (defcustom pel-update-time-stamp t
   "Controls whether file timestamp is updated automatically on file save.
