@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, April 18 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-04-18 23:00:38, updated by Pierre Rouleau>
+;; Time-stamp: <2022-04-22 09:15:59, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -32,7 +32,7 @@
 ;;
 ;;
 ;; As identified by the issue 148 referenced above, iedit is normally not able
-;; to select the instnce of someroot or somepath in a sh-mode buffer when the
+;; to select the instance of someroot or somepath in a sh-mode buffer when the
 ;; variable is referenced with a $ following a slash as in:
 ;;
 ;;       # sh-mode buffer:
@@ -41,6 +41,11 @@
 ;;       somefile=ghi
 ;;       export DIRPATH=/$someroot/$somedir/$somefile
 ;;
+;; A similar issue exists with the ':' character.  In sh-mode the ':'
+;; character is identified as part of the '_' syntax preventing detection of
+;; symbols in strings that are prefixed or followed by the ':' character.
+
+
 ;;
 ;; To correct the issue, call `pel-sh-iedit-enhance' when sh-mode starts when
 ;; iedit is available.
@@ -57,12 +62,14 @@
 (defun pel-sh-iedit-start ()
   "Activate iedit extension for the sh-mode."
   (when (boundp 'sh-mode-syntax-table)
-    (modify-syntax-entry ?/ "." sh-mode-syntax-table)))
+    (modify-syntax-entry ?/ "." sh-mode-syntax-table)
+    (modify-syntax-entry ?: "." sh-mode-syntax-table)))
 
 (defun pel-sh-iedit-end ()
   "Deactivate iedit extension for the sh-mode."
   (when (boundp 'sh-mode-syntax-table)
-    (modify-syntax-entry ?/ "_" sh-mode-syntax-table)))
+    (modify-syntax-entry ?/ "_" sh-mode-syntax-table)
+    (modify-syntax-entry ?: "_" sh-mode-syntax-table)))
 
 (defun pel-sh-iedit-enhance ()
   "Enable automatic activation of iedit extension for sh-mode."

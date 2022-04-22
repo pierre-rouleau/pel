@@ -213,7 +213,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   protected for users but can be edited as root.
 - Add ability for iedit to handle $variable de-reference between 2 slash character
   inside sh-mode buffer. Correction code is in the new pel-sh-iedit.el file along
-  with hook activation in pel_keys.el.
+  with hook activation in pel_keys.el.  Also add ability to identify a
+  variable name that is preceded or followed by a ':'.
 - Add explicit support for the *wgrep* external package via the *pel-use-wgrep*
   user-option.  Add a couple of key bindings in the mgrep key map.
   Also add keys to activate wgrep mode in the *rg-mode* and *ag-mode* buffers.
