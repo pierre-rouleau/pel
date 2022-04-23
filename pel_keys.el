@@ -5665,6 +5665,13 @@ the ones defined from the buffer now."
   (define-key pel:smerge (kbd "M-r") 'smerge-resolve-all)
   (define-key pel:smerge (kbd "M-s") 'smerge-swap))
 
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; - Function Keys - <f11> - Prefix ``<f11> d p`` : patch commands
+(define-pel-global-prefix pel:patch (kbd "<f11> d p"))
+(define-key pel:patch "f"  'epatch)
+(define-key pel:patch "b"  'epatch-buffer)
+
+
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> D`` : draw commands
 

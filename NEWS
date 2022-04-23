@@ -200,7 +200,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
     - ~C-c C-a~ is bound to *iedit-show/hide-context-lines*.
 - Improved Janet support: add *pel-janet-activates-minor-modes* user-option which can be
   used to automatically activate minor modes in janet buffer.
-
+- Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 ** New Features:
 - Add the *pel-modes-preventing-delete-trailing-whitespace* user-option to
   identify major-modes were trailing whitespaces will *not* be removed when
