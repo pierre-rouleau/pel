@@ -202,6 +202,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   used to automatically activate minor modes in janet buffer.
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 ** New Features:
+- Add single key accessible commands in *vc-dir* mode: the ~H~ key allows you to specify
+  file status to hide and the ~!~ key is used to ignore all marked files.
+  These are implemented respectively as *pel-vc-dir-hide-state* and *pel-vc-ignore-marked*
+  located in the new vc-dir.el file.
 - Add the *pel-modes-preventing-delete-trailing-whitespace* user-option to
   identify major-modes were trailing whitespaces will *not* be removed when
   the buffer is saved to a file.  By default the *diff-mode* is in this list

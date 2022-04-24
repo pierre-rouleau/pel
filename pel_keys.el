@@ -7040,9 +7040,17 @@ the ones defined from the buffer now."
 ;; TODO simplify this code
 (define-pel-global-prefix pel:for-vc-dir (kbd "<f11> SPC SPC v"))
 (defun pel--setup-for-vc-dir ()
-    "Activate vc-dir setup, take local variables into account."
-    (pel-local-set-f12-M-f12 'pel:for-vc-dir))
-  (declare-function pel--setup-for-vc-dir "pel_keys")
+  "Activate vc-dir setup, take local variables into account."
+  (pel-local-set-f12-M-f12 'pel:for-vc-dir)
+
+  (when (boundp 'vc-dir-mode-map)
+    (pel-autoload-file pel-vc for:
+                       pel-vc-ignore-marked
+                       pel-vc-dir-hide-state)
+    (define-key vc-dir-mode-map "!" 'pel-vc-ignore-marked)
+    (define-key vc-dir-mode-map "H" 'pel-vc-dir-hide-state)))
+
+(declare-function pel--setup-for-vc-dir "pel_keys")
   (pel--mode-hook-maybe-call
    (function pel--setup-for-vc-dir)
    'vc-dir-mode 'vc-dir-mode-hook)
