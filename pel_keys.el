@@ -2221,6 +2221,7 @@ MODE must be a symbol."
     (define-key pel:for-c "u" 'pel-render-commented-plantuml))
   (when pel-use-c-eldoc
     (define-pel-global-prefix pel:c-help (kbd "<f11> SPC c ?"))
+    (define-key pel:c-help "?" #'man)
     (define-key pel:c-help "e" 'pel-toggle-c-eldoc-mode))
   (pel--map-cc-for pel:for-c pel:c-setup pel:c-guess pel:for-c-preproc)
 

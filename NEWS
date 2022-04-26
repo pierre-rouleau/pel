@@ -201,6 +201,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Improved Janet support: add *pel-janet-activates-minor-modes* user-option which can be
   used to automatically activate minor modes in janet buffer.
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
+- In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
 - Add single key accessible commands in *vc-dir* mode: the ~H~ key allows you to specify
   file status to hide and the ~!~ key is used to ignore all marked files.
