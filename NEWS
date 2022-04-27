@@ -362,7 +362,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - New: simple full window horizontal scroll by 1 column (numeric argument allow to specify a larger count):
   - *pel-scroll-left*  bound to ~<f11> | }~ and ~<f11> | <right>~
   - *pel-scroll-right* bound to ~<f11> | {~ and ~<f11> | <left>~
-
+- New: *pel-shell-next-prompt* and *pel-shell-previous-prompt* commands respectively bound to ~<f12> <down>~
+  and ~<f12> <up>~ key sequence to move to the next and previous prompt line in the shell.  These commands use
+  the new *pel-shell-prompt-line-regexp* user-option to identify the regexp used for searching for the prompt.
 * Version 0.4.1:
 ** Modifications:
 - Fix: The File Management PDF now describes PEL's ability to select the

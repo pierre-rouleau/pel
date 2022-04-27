@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 10 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-03-10 17:45:54, updated by Pierre Rouleau>
+;; Time-stamp: <2022-04-26 22:16:43, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -25,16 +25,28 @@
 ;;; --------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This improves upon the built-in shell interactive command, making it behave
-;; in a less surprising way: it opens in the current window unless an existing
-;; '*shell*' buffer already exists.  The other inferior process commands
-;; provided with Emacs (term, ansi-term and ielm) already do that so this
-;; provides a less surprising behaviour.
+;; This file provides commands to improve upon the built-in shell command and
+;; provide extra commands for the shell-mode.
+;;
+;; The `pel-shell' improves upon the built-in shell interactive command,
+;; making it behave in a less surprising way: it opens in the current window
+;; unless an existing '*shell*' buffer already exists.  The other inferior
+;; process commands provided with Emacs (term, ansi-term and ielm) already do
+;; that so this provides a less surprising behaviour.
+;;
+;; The `pel-shell-previous-prompt' and `pel-shell-next-prompt' commands move
+;; point to the previous and next prompt line respectively.  They both use the
+;; value of the `pel-shell-prompt-line-regexp' user-option to perform the
+;; regular expression search that identifies the beginning of a prompt line.
+;;
+;; I might improve this in the future by adding the ability to detect the
+;; prompt regexp, but for now that will do.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel--options)                ; use: `pel-shell-prompt-line-regexp'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -58,6 +70,31 @@ commands like term, ansi-term and ielm."
       (setq shell-buffer (generate-new-buffer "*shell*"))
       (switch-to-buffer shell-buffer))
     (shell shell-buffer)))
+
+;;-pel-autoload
+(defun pel-shell-previous-prompt ()
+  "Move point to the previous prompt line.
+
+It uses the `pel-shell-prompt-line-regexp' user-option to perform
+the search."
+  (interactive)
+  (if (re-search-backward pel-shell-prompt-line-regexp nil :noerror)
+      (move-beginning-of-line 1)
+    (user-error "No prompt found above point. Searching for %s" pel-shell-prompt-line-regexp)))
+
+;;-pel-autoload
+(defun pel-shell-next-prompt ()
+  "Move point to the previous prompt line.
+
+It uses the `pel-shell-prompt-line-regexp' user-option to perform
+the search."
+  (interactive)
+  (right-char 1)
+  (if (re-search-forward pel-shell-prompt-line-regexp nil :noerror)
+      (move-beginning-of-line 1)
+    (left-char 1)
+    (user-error "No prompt found below point. Searching for %s" pel-shell-prompt-line-regexp)))
+
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-shell)

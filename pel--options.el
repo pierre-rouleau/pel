@@ -9011,6 +9011,12 @@ Do not enter lambda expressions."
   :group 'pel-pkg-for-shells
   :type '(repeat function))
 
+
+(defcustom pel-shell-prompt-line-regexp "^>"
+  "A regexp used to search for the shell prompt."
+  :group 'pel-pkg-for-shells
+  :type 'string)
+
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-skeletons
 ;; ---------------------

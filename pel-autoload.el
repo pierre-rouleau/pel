@@ -620,7 +620,9 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload-function "pel-seq" for: pel-all-fboundp)
 
   (pel-autoload "pel-shell" for:
-    pel-shell)
+    pel-shell
+    pel-shell-previous-prompt
+    pel-shell-next-prompt)
 
   (pel-autoload-function "pel-skels" for:
     pel-date

@@ -4118,6 +4118,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (local-set-key (kbd "C-c M-o") 'pel-comint-clear-buffer-and-get-prompt)
     (define-key pel:for-shell "c" 'pel-comint-clear-buffer-and-get-prompt)
     (define-key pel:for-shell "r" 'shell-resync-dirs)
+    (define-key pel:for-shell (kbd "<up>")   'pel-shell-previous-prompt)
+    (define-key pel:for-shell (kbd "<down>") 'pel-shell-next-prompt)
+
     (pel-turn-on-local-minor-modes-in 'pel-shell-activates-minor-modes))
   (declare-function pel--setup-for-shell "pel_keys")
 
