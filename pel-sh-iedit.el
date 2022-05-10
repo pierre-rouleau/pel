@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, April 18 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-04-22 09:15:59, updated by Pierre Rouleau>
+;; Time-stamp: <2022-05-10 11:57:49 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -63,13 +63,15 @@
   "Activate iedit extension for the sh-mode."
   (when (boundp 'sh-mode-syntax-table)
     (modify-syntax-entry ?/ "." sh-mode-syntax-table)
-    (modify-syntax-entry ?: "." sh-mode-syntax-table)))
+    (modify-syntax-entry ?: "." sh-mode-syntax-table)
+    (modify-syntax-entry ?. "." sh-mode-syntax-table)))
 
 (defun pel-sh-iedit-end ()
   "Deactivate iedit extension for the sh-mode."
   (when (boundp 'sh-mode-syntax-table)
     (modify-syntax-entry ?/ "_" sh-mode-syntax-table)
-    (modify-syntax-entry ?: "_" sh-mode-syntax-table)))
+    (modify-syntax-entry ?: "_" sh-mode-syntax-table)
+    (modify-syntax-entry ?. "_" sh-mode-syntax-table)))
 
 (defun pel-sh-iedit-enhance ()
   "Enable automatic activation of iedit extension for sh-mode."
