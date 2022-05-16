@@ -230,16 +230,14 @@ When N is 0, perform the operation once on the beginning of the current word."
 (defun pel-show-text-modes ()
   "Show the status of the various text modes in the mini buffer."
   (interactive)
-  (message "Modes status:
-- Local indent-tabs-mode   : %s.  Tab width = %d
-- Local electric-quote-mode: %s.
-- delete-selection-mode    : %s.
-- enriched-mode            : %s.
-- overwrite mode: %s, delete-selection-mode: %s.
-- case-fold-search: %s, sort-fold-case: %s.
-- subword mode: %s,  superword mode: %s, glass-mode: %s.
-- visible-mode: %s,  smart-dash-mode: %s.
-- electric-quote-local-mode: %s.
+  (message "Text Modes Status:
+- Local indent-tabs-mode   : %-10s, Tab width = %d
+- Local electric-quote-mode: %-10s, electric-quote-local-mode: %s.
+- whitespace-mode          : %-10s, enriched-mode        : %s.
+- overwrite mode           : %-10s, delete-selection-mode: %s.
+- case-fold-search         : %-10s, sort-fold-case       : %s.
+- subword mode             : %-10s, superword mode       : %-10s, glass-mode: %s.
+- visible-mode             : %-10s, smart-dash-mode      : %s.
 - Sentences end with %s.
 - paragraph-start   : %S
 - paragraph-separate: %S"
@@ -249,7 +247,8 @@ When N is 0, perform the operation once on the beginning of the current word."
                                      "void: use spaces")
            tab-width
            (pel-symbol-on-off-string 'electric-quote-mode)
-           (pel-symbol-on-off-string 'delete-selection-mode)
+           (pel-symbol-on-off-string 'electric-quote-local-mode nil nil "not loaded")
+           (pel-symbol-on-off-string 'whitespace-mode nil nil "not loaded")
            (pel-symbol-on-off-string 'enriched-mode nil nil "not loaded")
            (pel-symbol-on-off-string 'overwrite-mode)
            (pel-symbol-on-off-string 'delete-selection-mode nil nil "not loaded")
@@ -260,7 +259,6 @@ When N is 0, perform the operation once on the beginning of the current word."
            (pel-symbol-on-off-string 'glasses-mode nil nil "not loaded")
            (pel-symbol-on-off-string 'visible-mode)
            (pel-symbol-on-off-string 'smart-dash-mode nil nil "not loaded")
-           (pel-symbol-on-off-string 'electric-quote-local-mode nil nil "not loaded")
            (pel--sentence-end-description)
            paragraph-start
            paragraph-separate))
