@@ -346,6 +346,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-show-kill-ring
     pel-show-major-mode)
 
+  (pel-autoload-function "pel-hex" for:
+    pel-bibyte)
+
   (pel-autoload "pel-ido" for:
     pel-set-ido-use-fname-at-point)
 
