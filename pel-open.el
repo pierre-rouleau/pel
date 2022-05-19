@@ -1,6 +1,6 @@
 ;;; pel-open.el --- Open file dispatcher  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -29,6 +29,12 @@
 ;; incorporate more functionality in various modes, allowing a multi-purpose
 ;; function to be bound globally to a single key sequence or key-chord.
 
+;; -----------------------------------------------------------------------------
+;;; Dependencies:
+
+(require 'pel--base)        ; uses: pel-current-buffer-filename
+
+;; -----------------------------------------------------------------------------
 ;;; Code:
 
 (defun pel-open-at-point (&optional n noerror)
@@ -38,17 +44,28 @@ In that case just return nil.
 Optionally identify a window to open a file reference with the argument N.
 See `pel-find-file-at-point-in-window' for more information."
   (interactive "P")
-  (if (and (eq major-mode 'rst-mode)
-           (require 'pel-rst nil :noerror)
-           (fboundp 'pel-at-rst-reference-p)
-           (fboundp 'pel-rst-open-target)
-           (pel-at-rst-reference-p))
-      (pel-rst-open-target n)
-    (if (and (require 'pel-file nil :noerror)
-             (fboundp 'pel-find-file-at-point-in-window))
-        (pel-find-file-at-point-in-window n)
-      (unless noerror
-        (user-error "Cannot load pel-file!")))))
+  ;; It's possible the file visited by the current buffer is located in a
+  ;; directory that is not the current directory; the user might have
+  ;; forcibly changed the current working directory for example.
+  ;; Temporary force the current working directory to the directory holding
+  ;; the file visited by the current buffer to ensure we can access the proper
+  ;; relative file path.
+  (let ((original-cwd default-directory))
+    (unwind-protect
+        (progn
+          (cd (file-name-directory (pel-current-buffer-filename)))
+          (if (and (eq major-mode 'rst-mode)
+                   (require 'pel-rst nil :noerror)
+                   (fboundp 'pel-at-rst-reference-p)
+                   (fboundp 'pel-rst-open-target)
+                   (pel-at-rst-reference-p))
+              (pel-rst-open-target n)
+            (if (and (require 'pel-file nil :noerror)
+                     (fboundp 'pel-find-file-at-point-in-window))
+                (pel-find-file-at-point-in-window n)
+              (unless noerror
+                (user-error "Cannot load pel-file!")))))
+      (cd original-cwd))))
 
 ;;-pel-autoload
 (defun pel-browse-filename-at-point ()
