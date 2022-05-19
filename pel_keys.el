@@ -4062,6 +4062,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC H`` : Sh, Unix shell programming
+;;  This is for shell programming support: editing shell script files.
+;;  For shell/terminal commend line support, see below.
 (when pel-use-sh
   (define-pel-global-prefix pel:for-sh (kbd "<f11> SPC H"))
   ;; Shell support, the sh-mode is part of Emacs
@@ -4106,6 +4108,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC SPC s`` : shell-mode
+;;   This is for shell/terminal support.  For editing shell script file see above.
 (define-pel-global-prefix pel:for-shell (kbd "<f11> SPC SPC s"))
 
 (pel-eval-after-load shell
@@ -4128,6 +4131,12 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel--mode-hook-maybe-call
    (function pel--setup-for-shell)
    'shell-mode 'shell-mode-hook))
+
+;; ------------------------------
+;; Telnet support
+(pel-eval-after-load telnet
+  (when (boundp 'telnet-mode-map)
+    (define-key telnet-mode-map "\t" 'completion-at-point)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC SPC t`` : term-mode
