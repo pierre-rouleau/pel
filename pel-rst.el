@@ -936,22 +936,37 @@ In that case just return nil.
 Optionally identify a window to open a file reference with the argument N.
 See `pel-find-file-at-point-in-window' for more information."
   (interactive "P")
-  (let ((new-position nil))
+  ;; It's possible the file visited by the current buffer is located in a
+  ;; directory that is not the current directory. The links in the
+  ;; reStructuredText file may refer to other files, with paths relative to
+  ;; the location of the file in the buffer.  Therefore to process this
+  ;; request we temporary change the current directory to the directory of the
+  ;; file in the current buffer.
+  (let ((original-cwd default-directory)
+        (new-position nil))
     (save-excursion
-      (let ((result (pel--move-to-rst-target (pel--rst-reference-target))))
-        (cond
-         ;; if found a ref to a title jump to it
-         ((and (listp result) (eq (car result) 'rst-title))
-          (setq new-position (cadr result)))
-         ;; otherwise it's a link to a file: try to find it
-         (t
-          (if result
-              (if (and (require 'pel-file nil :noerror)
-                       (fboundp 'pel-find-file-at-point-in-window))
-                  (pel-find-file-at-point-in-window n (function pel-html-to-rst))
-                (user-error "Cannot load pel-file!"))
-            (unless noerror
-              (user-error "No reference target found!")))))))
+      (unwind-protect
+          (cd (file-name-directory (pel-current-buffer-filename)))
+        ;; A reStructuredText link may have to be escaped in the reference,
+        ;; therefore search for the potentially escaped reference target to
+        ;; ensure we're able to handle all types of links.
+        (let ((result (pel--move-to-rst-target
+                       (pel-rst-anchor-escaped
+                        (pel--rst-reference-target)))))
+          (cond
+           ;; if found a ref to a title jump to it
+           ((and (listp result) (eq (car result) 'rst-title))
+            (setq new-position (cadr result)))
+           ;; otherwise it's a link to a file: try to find it
+           (t
+            (if result
+                (if (and (require 'pel-file nil :noerror)
+                         (fboundp 'pel-find-file-at-point-in-window))
+                    (pel-find-file-at-point-in-window n (function pel-html-to-rst))
+                  (user-error "Cannot load pel-file!"))
+              (unless noerror
+                (user-error "No reference target found!"))))))
+        (cd original-cwd)))
     (when new-position
       (goto-char new-position))))
 
