@@ -2,12 +2,12 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-05 11:35:02, updated by Pierre Rouleau>
+;; Time-stamp: <2022-05-19 11:12:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -1032,7 +1032,7 @@ is only one or when its for the terminal (TTY) mode."
         (adj (lambda (fn) (pel-elpa-name fn for-graphics)))
         (elpa-sibling (lambda (dp) (pel-sibling-dirpath pel-elpa-dirpath dp)))
         (step-count 0)
-        (cd-original (cd ".")))
+        (cd-original default-directory))
     (condition-case-unless-debug err
         (let* ((elpa-dp-adj      (λc adj pel-elpa-dirpath))
                (elpa-reduced-dp  (λc adj (λc elpa-sibling "elpa-reduced")))

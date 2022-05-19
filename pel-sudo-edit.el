@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 20 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-04-20 22:41:53, updated by Pierre Rouleau>
+;; Time-stamp: <2022-05-19 11:12:15 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -53,7 +53,7 @@ then edit currently visited file as root."
   ;; seems to interfere with Tramp.  To prevent this, change the directory to
   ;; user's home for the duration of the command since that directory is
   ;; unlikely to be under control of some VCS.
-  (let ((original-cwd (cd ".")))
+  (let ((original-cwd default-directory))
     (unwind-protect
      (progn
        (cd "~")
