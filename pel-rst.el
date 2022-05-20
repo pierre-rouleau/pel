@@ -833,27 +833,45 @@ Leave point after to the next character."
   (setq pos (or pos (point)))
   (eq (get-text-property pos 'face) 'rst-reference))
 
+(defun pel-at-rst-valid-ref-char-p (&optional pos)
+  "Return t if character at POS is a valid reST reference character.
+
+Return nil otherwise.  The '<' and '>' are invalid."
+  (not (memq (char-after pos) '(?< ?>))))
 
 (defun pel--rst-reference-target (&optional pos noerror)
   "Return the target string of the current reference if any.
 Search at specified POS or at current point location.
 If there is no reference issue a `user-error' unless NOERROR is non-nil,
-in that case return nil instead."
+in that case return nil instead.
+
+Return a cons of 2 elements: ref-type and string.
+- ref-type is either 'target or 'path.  It describes what the string
+represents."
   (setq pos (or pos (point)))
   (if (pel-at-rst-reference-p pos)
       ;; find boundaries of this reference, go back to first char then to the
       ;; end
       (let ((beg pos)
-            (end (1+ pos)))
-        (while (pel-at-rst-reference-p (1- beg))
+            (end (1+ pos))
+            (ref-type nil))
+        (while (and (pel-at-rst-reference-p (1- beg))
+                    (pel-at-rst-valid-ref-char-p (1- beg)))
           (setq beg (1- beg)))
         (when (equal (char-after beg) ?`)
           (setq beg (1+ beg)))
-        (while (pel-at-rst-reference-p (1+ end))
+        (while (and (pel-at-rst-reference-p (1+ end))
+                    (pel-at-rst-valid-ref-char-p (1+ end)))
           (setq end (1+ end)))
-        (when (equal (char-before end) ?`)
-          (setq end (1- end)))
-        (buffer-substring-no-properties beg end))
+        (cond
+         ((equal (char-before end) ?`)
+          (setq end (1- end))
+          (setq ref-type 'target))
+         ((equal (char-after (1+ end)) ?>)
+          (setq end (1+ end))
+          (setq ref-type 'path)))
+        (cons ref-type
+              (buffer-substring-no-properties beg end)))
     (unless noerror
       (user-error "Point is not located over a rst-reference!"))))
 
@@ -901,10 +919,10 @@ to nil if there is no target specification in the FILENAME.  A target
 specification in FILENAME is the text that follows the '#' character.
 
 The function removes the FILENAME extension if the extension is \"html\".
-If the resulting FILENAME has an extension it tries to  use that file name.
+If the resulting FILENAME has an extension it tries to use that file name.
 Otherwise it tries to append the \"rst\", \"txt\" or \"stxt\" extension and
 uses the first one it finds. If it finds nothing it returns the FILENAME
-unchanged.  If FILENAME extension is not \"html\" it also returns FILENAME
+unchanged.  If FILENAME extension is not \"html\" it returns FILENAME
 unchanged."
   (let* ((filename.target  (split-string filename "#"))
          (filename (car filename.target))
@@ -950,22 +968,32 @@ See `pel-find-file-at-point-in-window' for more information."
         ;; A reStructuredText link may have to be escaped in the reference,
         ;; therefore search for the potentially escaped reference target to
         ;; ensure we're able to handle all types of links.
-        (let ((result (pel--move-to-rst-target
-                       (pel-rst-anchor-escaped
-                        (pel--rst-reference-target)))))
-          (cond
-           ;; if found a ref to a title jump to it
-           ((and (listp result) (eq (car result) 'rst-title))
-            (setq new-position (cadr result)))
-           ;; otherwise it's a link to a file: try to find it
-           (t
-            (if result
-                (if (and (require 'pel-file nil :noerror)
-                         (fboundp 'pel-find-file-at-point-in-window))
-                    (pel-find-file-at-point-in-window n (function pel-html-to-rst))
-                  (user-error "Cannot load pel-file!"))
-              (unless noerror
-                (user-error "No reference target found!"))))))
+        (let* ((reftype.string (pel--rst-reference-target))
+               (reftype (car reftype.string))
+               (result (if (eq reftype 'target)
+                           (pel--move-to-rst-target
+                            (pel-rst-anchor-escaped
+                             (cdr reftype.string)))
+                         (cdr reftype.string))))
+          (if (eq reftype 'target)
+              (cond
+               ;; if found a ref to a title jump to it
+               ((and (listp result) (eq (car result) 'rst-title))
+                (setq new-position (cadr result)))
+               ;; otherwise it's a link to a file: try to find it
+               (t
+                (if result
+                    (if (and (require 'pel-file nil :noerror)
+                             (fboundp 'pel-find-file-at-point-in-window))
+                        (pel-find-file-at-point-in-window n (function pel-html-to-rst))
+                      (user-error "Cannot load pel-file!"))
+                  (unless noerror
+                    (user-error "No reference target found!")))))
+            ;; reftype is a path: use that path directly
+            (if (and (require 'pel-file nil :noerror)
+                     (fboundp 'pel-find-file-at-point-in-window))
+                (pel-find-file-at-point-in-window n (function pel-html-to-rst))
+              (user-error "Cannot load pel-file!"))))
         (cd original-cwd)))
     (when new-position
       (goto-char new-position))))
