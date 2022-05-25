@@ -1914,6 +1914,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; SPC C-l - inferior-lfe-mode
 ;; SPC v   - vc-dir-mode
 ;; SPC s   - shell-mode
+;; SPC M-s - smerge-mode
 ;; SPC t   - term-mode
 ;; SPC z   - shell and terminals
 
@@ -5650,34 +5651,62 @@ the ones defined from the buffer now."
         (goto-char (point-min))
         (when (re-search-forward "^<<<<<<< " nil t)
           (smerge-mode 1)
+          (define-pel-global-prefix pel:for-smerge (kbd "<f11> SPC SPC M-s"))
+          (pel-local-set-f12-M-f12 'pel:for-smerge)
+          (define-key pel:for-smerge "s" 'smerge-start-session)
+          (define-key pel:for-smerge "n" 'smerge-next)
+          (define-key pel:for-smerge "p" 'smerge-prev)
+
+          (define-key pel:for-smerge (kbd "M-c") 'smerge-auto-combine)
+          (define-key pel:for-smerge "C" 'smerge-combine-with-next)
+          (define-key pel:for-smerge ">" 'smerge-diff-base-lower)
+          (define-key pel:for-smerge "<" 'smerge-diff-base-upper)
+          (define-key pel:for-smerge "=" 'smerge-diff-upper-lower)
+          (define-key pel:for-smerge "e" 'smerge-ediff)
+
+          (define-key pel:for-smerge "a" 'smerge-keep-all)
+          (define-key pel:for-smerge "b" 'smerge-keep-base)
+          (define-key pel:for-smerge "\C-m" 'smerge-keep-current)
+          (define-key pel:for-smerge "l" 'smerge-keep-lower)
+          (define-key pel:for-smerge "u" 'smerge-keep-upper)
+
+          (define-key pel:for-smerge (kbd "M-k") 'smerge-kill-current)
+          (define-key pel:for-smerge (kbd "M-C") 'smerge-makeup-conflict)
+          (define-key pel:for-smerge "m" 'smerge-popup-context-menu)
+          (define-key pel:for-smerge "R" 'smerge-refine)
+          (define-key pel:for-smerge "r" 'smerge-resolve)
+          (define-key pel:for-smerge (kbd "M-r") 'smerge-resolve-all)
+          (define-key pel:for-smerge (kbd "M-s") 'smerge-swap)
           (whitespace-mode 1))))
     (add-hook 'find-file-hook 'sm-try-smerge t))
-  (define-pel-global-prefix pel:smerge (kbd "<f11> d s"))
 
+  (define-pel-global-prefix pel:smerge (kbd "<f11> d s"))
   (define-key pel:smerge "s" 'smerge-start-session)
   (define-key pel:smerge "n" 'smerge-next)
   (define-key pel:smerge "p" 'smerge-prev)
 
   (define-key pel:smerge (kbd "M-c") 'smerge-auto-combine)
-  (define-key pel:smerge "C"         'smerge-combine-with-next)
-  (define-key pel:smerge ">"         'smerge-diff-base-lower)
-  (define-key pel:smerge "<"         'smerge-diff-base-upper)
-  (define-key pel:smerge "="         'smerge-diff-upper-lower)
-  (define-key pel:smerge "e"         'smerge-ediff)
+  (define-key pel:smerge "C" 'smerge-combine-with-next)
+  (define-key pel:smerge ">" 'smerge-diff-base-lower)
+  (define-key pel:smerge "<" 'smerge-diff-base-upper)
+  (define-key pel:smerge "=" 'smerge-diff-upper-lower)
+  (define-key pel:smerge "e" 'smerge-ediff)
 
-  (define-key pel:smerge "a"         'smerge-keep-all)
-  (define-key pel:smerge "b"         'smerge-keep-base)
-  (define-key pel:smerge "\C-m"      'smerge-keep-current)
-  (define-key pel:smerge "l"         'smerge-keep-lower)
-  (define-key pel:smerge "u"         'smerge-keep-upper)
+  (define-key pel:smerge "a" 'smerge-keep-all)
+  (define-key pel:smerge "b" 'smerge-keep-base)
+  (define-key pel:smerge "\C-m" 'smerge-keep-current)
+  (define-key pel:smerge "l" 'smerge-keep-lower)
+  (define-key pel:smerge "u" 'smerge-keep-upper)
 
   (define-key pel:smerge (kbd "M-k") 'smerge-kill-current)
   (define-key pel:smerge (kbd "M-C") 'smerge-makeup-conflict)
-  (define-key pel:smerge "m"         'smerge-popup-context-menu)
-  (define-key pel:smerge "R"         'smerge-refine)
-  (define-key pel:smerge "r"         'smerge-resolve)
+  (define-key pel:smerge "m" 'smerge-popup-context-menu)
+  (define-key pel:smerge "R" 'smerge-refine)
+  (define-key pel:smerge "r" 'smerge-resolve)
   (define-key pel:smerge (kbd "M-r") 'smerge-resolve-all)
   (define-key pel:smerge (kbd "M-s") 'smerge-swap))
+
+
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> d p`` : patch commands

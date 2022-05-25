@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-05-20 12:16:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-05-25 14:17:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -375,6 +375,9 @@
                                                                  ztree))
     ([f11 ?d ?e]     "diff-merge"       pel-pkg-for-diff-merge   ediff)
     ([f11 ?d ?s]     "diff-merge"       pel-pkg-for-diff-merge   smerge)
+    ;; ([f11 32 32 27 115] "diff-smerge"  pel-pkg-for-diff-merge   smerge)
+    ;; (,(kbd "<f11> SPC SPC M-s") "diff-smerge"  pel-pkg-for-diff-merge   smerge)
+
     ([f11 ?f ?v]     "file-variables"   nil)
     (,(kbd "<f11> SPC M-D") "mode-dired" pel-pkg-for-dired      ,pel--dired-groups)
     ([f11 32 27 ?D]  "mode-dired"       pel-pkg-for-dired       ,pel--dired-groups)
@@ -633,6 +636,8 @@ stored inside the doc/pdf directory.")
     ;; shells and terminals
     ("shell"           [f11 32 32 ?s])
     ("term"            [f11 32 32 ?t])
+    ;; diff modes
+    ("diff"            ,(kbd "<f11> SPC SPC M-s"))
     )
   "Maps the name of a major mode (without the -mode suffix)
 to a symbol or key sequence array to use as map key inside
@@ -864,7 +869,8 @@ There should be no key binding!" keyseq))
     ("regxp"            . "search-replace")
     ("iedit"            . "search-replace")
     ("order"            . "sorting")
-    ("desktop"          . "sessions"))
+    ("desktop"          . "sessions")
+    ("diff"             . "diff-merge"))
   "List of alias for PEL PDF file names.")
 
 (defvar pel--prompt-history-for-help-pdf nil
