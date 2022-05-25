@@ -5649,7 +5649,8 @@ the ones defined from the buffer now."
       (save-excursion
         (goto-char (point-min))
         (when (re-search-forward "^<<<<<<< " nil t)
-          (smerge-mode 1))))
+          (smerge-mode 1)
+          (whitespace-mode 1))))
     (add-hook 'find-file-hook 'sm-try-smerge t))
   (define-pel-global-prefix pel:smerge (kbd "<f11> d s"))
 
