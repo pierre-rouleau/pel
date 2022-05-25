@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-04-16 17:20:40, updated by Pierre Rouleau>
+;; Time-stamp: <2022-05-20 12:16:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -811,6 +811,7 @@ There should be no key binding!" keyseq))
     ;; mode names aliases
     ("git"              . "vcs-git")
     ("mercurial"        . "vcs-mercurial")
+    ("subversion"       . "vcs-subversion")
     ("lispy"            . "plm-lispy")
     ("dired"            . "mode-dired")
     ("org-mode"         . "mode-org-mode")
