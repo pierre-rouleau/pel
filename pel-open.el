@@ -53,7 +53,8 @@ See `pel-find-file-at-point-in-window' for more information."
   (let ((original-cwd default-directory))
     (unwind-protect
         (progn
-          (cd (file-name-directory (pel-current-buffer-filename)))
+          (when (buffer-file-name)
+            (cd (file-name-directory (pel-current-buffer-filename))))
           (if (and (eq major-mode 'rst-mode)
                    (require 'pel-rst nil :noerror)
                    (fboundp 'pel-at-rst-reference-p)

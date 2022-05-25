@@ -964,36 +964,38 @@ See `pel-find-file-at-point-in-window' for more information."
         (new-position nil))
     (save-excursion
       (unwind-protect
-          (cd (file-name-directory (pel-current-buffer-filename)))
-        ;; A reStructuredText link may have to be escaped in the reference,
-        ;; therefore search for the potentially escaped reference target to
-        ;; ensure we're able to handle all types of links.
-        (let* ((reftype.string (pel--rst-reference-target))
-               (reftype (car reftype.string))
-               (result (if (eq reftype 'target)
-                           (pel--move-to-rst-target
-                            (pel-rst-anchor-escaped
-                             (cdr reftype.string)))
-                         (cdr reftype.string))))
-          (if (eq reftype 'target)
-              (cond
-               ;; if found a ref to a title jump to it
-               ((and (listp result) (eq (car result) 'rst-title))
-                (setq new-position (cadr result)))
-               ;; otherwise it's a link to a file: try to find it
-               (t
-                (if result
-                    (if (and (require 'pel-file nil :noerror)
-                             (fboundp 'pel-find-file-at-point-in-window))
-                        (pel-find-file-at-point-in-window n (function pel-html-to-rst))
-                      (user-error "Cannot load pel-file!"))
-                  (unless noerror
-                    (user-error "No reference target found!")))))
-            ;; reftype is a path: use that path directly
-            (if (and (require 'pel-file nil :noerror)
-                     (fboundp 'pel-find-file-at-point-in-window))
-                (pel-find-file-at-point-in-window n (function pel-html-to-rst))
-              (user-error "Cannot load pel-file!"))))
+          (progn
+            (when (buffer-file-name)
+              (cd (file-name-directory (pel-current-buffer-filename))))
+            ;; A reStructuredText link may have to be escaped in the reference,
+            ;; therefore search for the potentially escaped reference target to
+            ;; ensure we're able to handle all types of links.
+            (let* ((reftype.string (pel--rst-reference-target))
+                   (reftype (car reftype.string))
+                   (result (if (eq reftype 'target)
+                               (pel--move-to-rst-target
+                                (pel-rst-anchor-escaped
+                                 (cdr reftype.string)))
+                             (cdr reftype.string))))
+              (if (eq reftype 'target)
+                  (cond
+                   ;; if found a ref to a title jump to it
+                   ((and (listp result) (eq (car result) 'rst-title))
+                    (setq new-position (cadr result)))
+                   ;; otherwise it's a link to a file: try to find it
+                   (t
+                    (if result
+                        (if (and (require 'pel-file nil :noerror)
+                                 (fboundp 'pel-find-file-at-point-in-window))
+                            (pel-find-file-at-point-in-window n (function pel-html-to-rst))
+                          (user-error "Cannot load pel-file!"))
+                      (unless noerror
+                        (user-error "No reference target found!")))))
+                ;; reftype is a path: use that path directly
+                (if (and (require 'pel-file nil :noerror)
+                         (fboundp 'pel-find-file-at-point-in-window))
+                    (pel-find-file-at-point-in-window n (function pel-html-to-rst))
+                  (user-error "Cannot load pel-file!")))))
         (cd original-cwd)))
     (when new-position
       (goto-char new-position))))
