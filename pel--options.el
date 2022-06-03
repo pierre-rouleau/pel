@@ -8588,6 +8588,17 @@ When turned on the shell-mode is associated with the PEL ``<f12>`` key."
   :safe #'booleanp)
 (pel-put 'pel-use-sh :package-is :a-gate)
 
+(defcustom pel-use-flymake-shellcheck nil
+  "Control whether flymake-shellcheck is activated.
+The flymake-shellcheck package provides interactive checking of shell script
+code using the flymake backend."
+  :group 'pel-pkg-for-sh
+  :link '(url-link :tag "flymake-shellcheck @Github"
+                   https://github.com/federicotdn/flymake-shellcheck)
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-flymake-shellcheck :requires 'pel-use-sh)
+
 (defcustom pel-sh-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Shell buffers.
 Enter *local* minor-mode activating function symbols.
@@ -9015,7 +9026,6 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-shells
   :type '(repeat function))
-
 
 (defcustom pel-shell-prompt-line-regexp "^>"
   "A regexp used to search for the shell prompt."

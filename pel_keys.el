@@ -4068,7 +4068,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (when pel-use-sh
   (define-pel-global-prefix pel:for-sh (kbd "<f11> SPC H"))
   ;; Shell support, the sh-mode is part of Emacs
-  (pel-config-major-mode sh pel:for-sh))
+  (pel-config-major-mode sh pel:for-sh)
+  (when pel-use-flymake-shellcheck
+    (pel-ensure-package flymake-shellcheck from: melpa)
+    (add-hook 'sh-mode-hook 'flymake-shellcheck-load)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC v`` : V programming
