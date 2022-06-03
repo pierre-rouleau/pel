@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-11-26 13:50:19, updated by Pierre Rouleau>
+;; Time-stamp: <2022-06-03 10:29:32 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -39,6 +39,8 @@
 ;; - `pel-prompt-purpose-for'
 ;; - `pel-prompt-function'
 ;; - `pel-prompt-args'
+;; - `pel-prompt'
+;; - `pel-prompt-with-completion'
 ;; - `pel-prompt-title'
 ;;
 ;; The `pel-y-n-e-or-l-p' function is a minor modification of the Emacs'
@@ -62,7 +64,12 @@
 ;; The `pel-prompt-args' prompts for function arguments.  It maintains a prompt
 ;; history for the function arguments created in each major mode.
 ;; These prompt histories do not persist when Emacs is stopped.
-
+;;
+;; The `pel-prompt' is a generic prompt with history.
+;; `pel-prompt-with-completion' is also generic, with prompt history but also
+;; provides a completion from the choices given in a collection list.
+;;
+;; The `pel-prompt-title' is a specialized prompt for a title string.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies
@@ -459,6 +466,21 @@ Return entered string, optionally capitalized if CAPITALIZE is non-nil."
     (if capitalize
         (pel-capitalize-first-letter text)
       text)))
+
+
+(defun pel-prompt-with-completion (prompt collection &optional scope)
+  "Generic PROMPT for string with tab-completion from COLLECTION.
+
+Optionally identify a SCOPE symbol for the prompt history.
+If it is specified the prompt has its own history for each major mode,
+otherwise it has no history."
+  (completing-read prompt collection
+                   nil nil
+                   (when scope
+                     (intern (format
+                              "pel-prompt-%s-%s"
+                              scope
+                              major-mode)))))
 
 ;; ---------------------------------------------------------------------------
 ;; Title prompt

@@ -1,6 +1,6 @@
 ;;; pel-highlight.el --- PEL highlight support. -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -27,7 +27,7 @@
 ;;; Code:
 (require 'hl-line)
 (require 'pel--base)
-
+(require 'pel-prompt)                   ; uses: `pel-prompt-with-completion'
 ;; -----------------------------------------------------------------------------
 ;; highlight control
 ;; -----------------
@@ -104,6 +104,52 @@ Beep on each change to warn user of the change and display new value."
           (setq indent-tabs-mode nil)
         (setq indent-tabs-mode t))
       (message "%s" (pel-symbol-text indent-tabs-mode on-string off-string)))))
+
+;; ---------------------------------------------------------------------------
+;; Highlight Lines
+;; ---------------
+;;
+;; Credit: PascalIVKooten wrote the original version of the code
+
+(defvar pel--highlight-color pel-highlight-color-default)
+
+(defun pel--find-overlays-specifying (prop pos)
+  (let ((overlays (overlays-at pos))
+        found)
+    (while overlays
+      (let ((overlay (car overlays)))
+        (if (overlay-get overlay prop)
+            (setq found (cons overlay found))))
+      (setq overlays (cdr overlays)))
+    found))
+
+(defun pel-highlight-line (&optional change-color)
+  "Toggle current line highlight.  With CHANGE-COLOR prompt for the new color.
+
+The prompt has a buffer-specific history and supports tab completion."
+  (interactive "P")
+  (when change-color
+    (let ((color-requested (pel-prompt-with-completion "Color: " (defined-colors))))
+      (if (color-supported-p color-requested)
+          (setq pel--highlight-color color-requested)
+        (user-error "%s is not a supported color" color-requested))))
+  (if (pel--find-overlays-specifying
+       'line-highlight-overlay-marker
+       (line-beginning-position))
+      (remove-overlays (line-beginning-position) (+ 1 (line-end-position)))
+    (let ((overlay-highlight (make-overlay
+                              (line-beginning-position)
+                              (+ 1 (line-end-position)))))
+      (overlay-put overlay-highlight 'face (list :background pel--highlight-color))
+      (overlay-put overlay-highlight 'line-highlight-overlay-marker t))))
+
+(defun pel-remove-line-highlight ()
+  "Prompt.  If proceeds, remove all active line highlighting.
+
+Caution: also removes bm bookmarks!"
+  (interactive)
+  (when (y-or-n-p "Will also remove all bm bookmarks.  Proceed? ")
+    (remove-overlays (point-min) (point-max))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-highlight)

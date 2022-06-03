@@ -28,6 +28,16 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   required.  There is still one issue left: the package installed this way
   will be removed by *pel-cleanup*: will need to add a mechanism to take this
   type of installation into account.
+- Modified: Key binding in the *pel:highlight* prefix, moving several mode
+  toggling commands to key that use the Meta key to make room for new
+  specialized highlighting commands.
+- New: Add the new *pel-highlight-line* command, bound to ~<f11> h h~.
+  The default color is set by the *pel-highlight-color-default* persistent
+  user-option.  The current color can be overridden for the current editing
+  session by using any prefix key to the command which then prompt to select a
+  new color (and keep buffer-specific history of the selected color names).
+  Previously this key binding was used by *pel-set-highlight-color* command
+  which is now bound to ~<f11> h M-c~.
 - New: key binding ~<f6> 6~ to *complete-symbol* and ~<f6> 7~ to
   *info-complete-symbol* to provide more flexible access to the completion
   commands with bindings available in all environments.  These position of the

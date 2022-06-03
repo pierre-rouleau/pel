@@ -430,7 +430,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-toggle-hl-line-sticky
     pel-toggle-show-trailing-whitespace
     pel-toggle-indicate-empty-lines
-    pel-toggle-indent-tabs-mode)
+    pel-toggle-indent-tabs-mode
+    pel-highlight-line
+    pel-remove-line-highlight)
 
   (pel-autoload "pel-imenu" for:
     pel-imenu-rescan)

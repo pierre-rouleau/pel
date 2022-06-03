@@ -2150,6 +2150,11 @@ PEL binds command `rainbow-mode' to ``<f11> b h c``."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-highlight-color-default "lightgreen"
+  "Default color used by `pel-highlight-line'."
+  :group 'pel-pkg-for-highlight
+  :type 'string)
+
 ;; ---------------------------------------------------------------------------
 ;; iMenu extension support
 ;; -----------------------

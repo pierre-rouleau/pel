@@ -6088,7 +6088,7 @@ the ones defined from the buffer now."
 (when pel-use-rainbow-mode
   (pel-ensure-package rainbow-mode from: melpa)
   (pel-autoload-file rainbow-mode for: rainbow-mode)
-  (define-key pel:highlight "c" 'rainbow-mode)) ; use c for color
+  (define-key pel:highlight (kbd "M-r") 'rainbow-mode))
 
 (defun pel-hi-lock-find-patterns ()
   "Execute hi-lock-find-patterns when `hi-lock-mode' is active."
@@ -6098,24 +6098,27 @@ the ones defined from the buffer now."
       (hi-lock-find-patterns)
     (user-error "Turn hi-lock-mode on first")))
 
-(define-key pel:highlight      "-" #'hl-line-mode)
+(define-key pel:highlight      "0" #'hl-line-mode)
 (define-key pel:highlight      "(" #'show-paren-mode)
-(define-key pel:highlight      "."  #'highlight-symbol-at-point)
-(define-key pel:highlight      "C"  #'highlight-changes-mode)
-(define-key pel:highlight      "h"   'pel-set-highlight-color)
-(define-key pel:highlight      "H"   'pel-customize-highlight)
+(define-key pel:highlight      "."  #'highlight-symbol-at-point)         ; M-s h .
+(define-key pel:highlight (kbd "M-c") #'highlight-changes-mode)
+(define-key pel:highlight      "c"   'pel-set-highlight-color)
+(define-key pel:highlight (kbd "<f4>") 'pel-customize-highlight)
 (define-key pel:highlight      "F"  #'font-lock-mode)
 (define-key pel:highlight      "f"   'pel-hi-lock-find-patterns)
-(define-key pel:highlight      "G"  #'global-hi-lock-mode)
+(define-key pel:highlight (kbd "M-L") #'global-hi-lock-mode)
 (define-key pel:highlight      "L"  #'hi-lock-mode)
-(define-key pel:highlight      "l"  #'highlight-lines-matching-regexp)
-(define-key pel:highlight      "p"  #'highlight-phrase)
+(define-key pel:highlight      "l"  #'highlight-lines-matching-regexp)   ; M-s h l
+(define-key pel:highlight      "p"  #'highlight-phrase)                  ; M-s h p
 (when pel-use-rainbow-delimiters
-  (define-key pel:highlight    "R"  'rainbow-delimiters-mode))
-(define-key pel:highlight      "r"  #'highlight-regexp)
+  (define-key pel:highlight (kbd "M-(")  'rainbow-delimiters-mode))
+(define-key pel:highlight      "r"  #'highlight-regexp)                  ; M-s h r
 (define-key pel:highlight      "s"   'pel-toggle-hl-line-sticky)
-(define-key pel:highlight      "u"  #'unhighlight-regexp)
+(define-key pel:highlight      "u"  #'unhighlight-regexp)                ; M-s h u
 (define-key pel:highlight      "w"  #'hi-lock-write-interactive-patterns)
+(define-key pel:highlight      "h" 'pel-highlight-line)
+(define-key pel:highlight (kbd "M-H") 'pel-remove-line-highlight)
+
 ;;
 (when pel-use-highlight-indentation
   (pel-ensure-package highlight-indentation from: melpa)
