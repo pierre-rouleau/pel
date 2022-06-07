@@ -3810,7 +3810,10 @@ This may get activated indirectly by other user-options."
               (and pel-use-plantuml
                    pel-use-flycheck-plantuml)
               (and pel-use-rust
-                   pel-use-flycheck-rust)))
+                   pel-use-flycheck-rust)
+              (and pel-use-sh
+                   (or (memq pel-use-shellcheck
+                             '(flycheck-manual flycheck-automatic))))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Language Server Protocol (LSP) Support
@@ -8591,13 +8594,31 @@ When turned on the shell-mode is associated with the PEL ``<f12>`` key."
 (defcustom pel-use-flymake-shellcheck nil
   "Control whether flymake-shellcheck is activated.
 The flymake-shellcheck package provides interactive checking of shell script
-code using the flymake backend."
+code using the flymake backend.
+
+NOTE: THIS IS OBSOLETE and will be removed eventually.
+      Please use `pel-use-shellcheck'."
   :group 'pel-pkg-for-sh
   :link '(url-link :tag "flymake-shellcheck @Github"
                    https://github.com/federicotdn/flymake-shellcheck)
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-flymake-shellcheck :requires 'pel-use-sh)
+
+(defcustom pel-use-shellcheck nil
+  "Control whether PEL use shellcheck for shell script syntax checking.
+
+This can be set to one of the following values:"
+  :group 'pel-pkg-for-sh
+  :link '(url-link :tag "flymake-shellcheck @Github"
+                   https://github.com/federicotdn/flymake-shellcheck)
+  :type
+  '(choice
+    (const :tag "No shellcheck support." nil)
+    (const :tag "Use flymake-shellcheck. Manually activated." flymake-manual)
+    (const :tag "Use flymake-shellcheck automatically." flymake-automatic)
+    (const :tag "Use flycheck-shellcheck. Manually activated." flycheck-manual)
+    (const :tag "Use flycheck-shellcheck automatically." flycheck-automatic)))
 
 (defcustom pel-sh-activates-minor-modes nil
   "List of *local* minor-modes automatically activated for Shell buffers.

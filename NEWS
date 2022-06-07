@@ -220,6 +220,19 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- Enhanced shellcheck support for shell scripting: the new
+  *pel-use-shellcheck* user-option controls whether flymake or flycheck is
+  used in *sh-mode* buffers and whether it is activated automatically.
+- The *superword-mode* is now automatically activated in *sh-mode*.
+- Add key ~<f12>~ prefixed bindings for *sh-mode* buffers to help quoting and
+  working with shellcheck-based flycheck:
+  - ~<f12> "~ bound to *pel-sh-double-quote-word*
+  - ~<f12> '~ bound to *pel-sh-single-quote-word*
+  - ~<f12> `~ bound to *pel-sh-backtick-quote-word*
+  - ~<f12 e~ bound to *flycheck-list-errors* when flycheck is active.
+  - ~<f12 /~ bound to *flycheck-explain-error-at-point* when flycheck is active.
+  - ~M-n~ bound to *flycheck-next-error* when flycheck is active.
+  - ~M-p~ bound to *flycheck-previous-error* when flycheck is active.
 - Add single key accessible commands in *vc-dir* mode: the ~H~ key allows you to specify
   file status to hide and the ~!~ key is used to ignore all marked files.
   These are implemented respectively as *pel-vc-dir-hide-state* and *pel-vc-ignore-marked*

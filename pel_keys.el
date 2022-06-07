@@ -78,6 +78,21 @@
 ;; warning message will be annoying. This check is not absolutely necessary
 ;; but it prevents undetected invalid entries in the customization.
 
+;; Delayed evaluation
+;; ------------------
+;;
+;; The code uses the following functions to delay execution:
+;;
+;; - `pel-eval-after-load' : macro that evaluates its BODY after the
+;;                           specified FEATURE was loaded.  Useful to
+;;                           extend or configure a major or minor mode.
+;;                           This macro extends `with-eval-after-load' with
+;;                           protection against error and formatted error
+;;                           messages.
+;;
+;; - `with-eval-after-load' does the same with less error handling; it is used
+;;                          in cases where less code is part of its BODY.
+;;
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 
@@ -500,7 +515,7 @@ Done in this function to allow advising libraries that remap these keys."
   (setq ls-lisp-use-insert-directory-program nil))
 
 (when pel-use-undo-tree
-  (with-eval-after-load 'dired
+  (pel-eval-after-load dired
     ;; Ensure that `dired-undo' is available in Dired buffer.
     (when (boundp 'dired-mode-map)
       (define-key dired-mode-map (kbd "M-u")   'dired-undo)
@@ -1389,7 +1404,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-b M-f M-F M-g M-P M-r
 
 ;; Initialize PEL special imenu handling
-(with-eval-after-load 'imenu
+(pel-eval-after-load imenu
   (pel-imenu-init))
 
 (define-pel-global-prefix pel:menu (kbd "<f11> <f10>"))
@@ -1813,6 +1828,24 @@ can't bind negative-argument to C-_ and M-_"
   (when (and (not pel-use-yasnippet-snippets)
              (eq pel-use-yasnippet 'use-from-start))
     (run-with-idle-timer 4 nil (function pel--start-yasnippet))))
+;; ---------------------------------------------------------------------------
+;; Mode Setting Helper Functions
+;; -----------------------------
+(defun pel--extend-flymake ()
+  "Extend the flymake mode."
+  (when (boundp 'flymake-mode-map)
+    (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
+    (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)))
+
+(defun pel--extend-flycheck ()
+  "Extend the flycheck mode."
+  (when (boundp 'flycheck-mode-map)
+    (define-key flycheck-mode-map (kbd "M-n") 'flycheck-next-error)
+    (define-key flycheck-mode-map (kbd "M-p") 'flycheck-previous-error)
+    (define-key flycheck-mode-map (kbd "<f12> e") 'flycheck-list-errors)
+    ; '/' is same key as '?' without having to hit Shift
+    (define-key flycheck-mode-map (kbd "<f12> /") 'flycheck-explain-error-at-point)))
+
 
 ;; ---------------------------------------------------------------------------
 ;; Global prefixes to specialized prefixes
@@ -1931,7 +1964,9 @@ can't bind negative-argument to C-_ and M-_"
 
   (define-pel-global-prefix pel:flycheck (kbd "<f11> !"))
   (define-key pel:flycheck "!"         'flycheck-mode)
-  (define-key pel:flycheck (kbd "M-!") 'global-flycheck-mode))
+  (define-key pel:flycheck (kbd "M-!") 'global-flycheck-mode)
+  (pel-eval-after-load flycheck
+    (pel--extend-flycheck)))
 
 ;; ---------------------------------------------------------------------------
 ;; Software Build Tool Support
@@ -2558,7 +2593,7 @@ d-mode not added to ac-modes!"
                     pel-allowed-modes-for-lispy)
 
   ;; Control some keys in the Lispy keyboard map.
-  (with-eval-after-load 'lispy
+  (pel-eval-after-load lispy
     ;; Update lispy key-map according to PEL user-options.
     (if (boundp 'lispy-mode-map)
         (unless pel-enable-lispy-meta-return
@@ -2993,13 +3028,13 @@ d-mode not added to ac-modes!"
       (pel-autoload-file macrostep-geiser for:
                          macrostep-geiser-setup)
       ;;
-      (with-eval-after-load 'geiser-mode
+      (pel-eval-after-load geiser-mode
         (if (and (require 'macrostep-geiser nil :no-error)
                  (fboundp 'macrostep-geiser-setup))
             (add-hook 'geiser-mode-hook (function macrostep-geiser-setup))
           (display-warning 'pel-use-macrostep-geiser
                            "Can't load macrostep-geiser" :error)))
-      (with-eval-after-load 'geiser-repl
+      (pel-eval-after-load geiser-repl
         (if (and (require 'macrostep-geiser nil :no-error)
                  (fboundp 'macrostep-geiser-setup))
             (add-hook 'geiser-repl-mode-hook (function
@@ -3010,7 +3045,7 @@ d-mode not added to ac-modes!"
       (pel-ensure-package ac-geiser from: melpa)
       (add-hook 'geiser-mode-hook 'ac-geiser-setup)
       (add-hook 'geiser-repl-mode-hook 'ac-geiser-setup)
-      (with-eval-after-load 'auto-complete
+      (pel-eval-after-load auto-complete
         (if (and (require 'geiser nil :no-error)
                  (fboundp 'geiser-repl-mode)
                  (boundp 'ac-modes))
@@ -3453,9 +3488,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
          ((eq pel-use-erlang-syntax-check 'with-flymake)
           (pel-require 'erlang-flymake :install-when-missing)
           ;; TODO: activate flymake when (memq 'erlang-mode pel-modes-activating-syntax-check)
-          (when (boundp 'flymake-mode-map)
-            (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
-            (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)))
+          (pel--extend-flymake))
          ;;
          ;; when using flycheck with Erlang
          ((eq pel-use-erlang-syntax-check 'with-flycheck)
@@ -4068,10 +4101,25 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (when pel-use-sh
   (define-pel-global-prefix pel:for-sh (kbd "<f11> SPC H"))
   ;; Shell support, the sh-mode is part of Emacs
-  (pel-config-major-mode sh pel:for-sh)
-  (when pel-use-flymake-shellcheck
+  (pel-config-major-mode sh pel:for-sh
+    (superword-mode 1)
+    (define-key pel:for-sh "\"" 'pel-sh-double-quote-word)
+    (define-key pel:for-sh "'"  'pel-sh-single-quote-word)
+    (define-key pel:for-sh "`"  'pel-sh-backtick-quote-word))
+  (cond
+   ;; using flymake
+   ((memq pel-use-shellcheck '(flymake-manual
+                               flymake-automatic))
     (pel-ensure-package flymake-shellcheck from: melpa)
-    (add-hook 'sh-mode-hook 'flymake-shellcheck-load)))
+    (when (eq pel-use-shellcheck 'flymake-automatic)
+      (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
+    (pel-eval-after-load flymake
+      (pel--extend-flymake)))
+   ;; using flycheck
+   ;; - flycheck support is already extended by default.
+   ;; - start it automatically if it was requested by user-option
+   ((eq pel-use-shellcheck 'flycheck-automatic)
+    (add-hook 'sh-mode-hook 'flycheck-mode))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC v`` : V programming
@@ -4560,7 +4608,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (display-warning 'pel-use-plantuml
                        "Unbound plantuml-default-exec-mode!"
                        :error))
-    (with-eval-after-load 'flycheck
+    (pel-eval-after-load flycheck
       (require 'flycheck-plantuml)
       (declare-function flycheck-plantuml-setup "flycheck-plantuml")
       (flycheck-plantuml-setup))))
@@ -5105,7 +5153,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (define-pel-global-prefix pel:spell (kbd "<f11> $"))
 ;;
 (autoload 'ispell-check-version "ispell")
-(with-eval-after-load 'ispell (pel-spell-init-from-user-option))
+(pel-eval-after-load ispell (pel-spell-init-from-user-option))
 
 (define-key pel:spell "." #'ispell)
 (define-key pel:spell ";" #'ispell-comments-and-strings)
@@ -6749,7 +6797,7 @@ the ones defined from the buffer now."
               'pel-sr-speedbar-visiting-control t))
   (declare-function pel--sr-speedbar-setup "pel_keys")
 
-  (with-eval-after-load 'sr-speedbar
+  (pel-eval-after-load sr-speedbar
     (advice-add 'sr-speedbar-open :after (function pel--sr-speedbar-setup)))
 
   ;; Note: when pel-use-projectile-speedbar is active
@@ -6760,7 +6808,7 @@ the ones defined from the buffer now."
     (pel-autoload-file projectile-speedbar for:
                        projectile-speedbar-open-current-buffer-in-tree
                        projectile-speedbar-toggle)
-    (with-eval-after-load 'projectile
+    (pel-eval-after-load projectile
       (define-key projectile-command-map (kbd "M-s")
         'projectile-speedbar-open-current-buffer-in-tree))))
 
