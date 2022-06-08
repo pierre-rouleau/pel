@@ -75,6 +75,7 @@
 ;;       - pel-pkg-for-asciidoc
 ;;       - pel-pkg-for-drawing-markup
 ;;         - pel-pkg-for-graphviz-dot
+;;         - pel-pkg-for-mscgen
 ;;         - pel-pkg-for-plantuml
 ;;       - pel-pkg-for-markdown
 ;;       - pel-pkg-for-outline
@@ -3134,6 +3135,54 @@ characters."
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
   :group 'pel-pkg-for-graphviz-dot
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; MscGen Support
+;; --------------
+
+(defgroup pel-pkg-for-mscgen nil
+  "PEL MscGen Support."
+  :group 'pel-pkg-for-drawing-markup
+  :link `(url-link :tag "MscGen PDF" ,(pel-pdf-file-url "mscgen"))
+  :link '(url-link :tag "MscGen @ Wikipedia"
+                   "https://en.wikipedia.org/wiki/MscGen")
+  :link '(url-link :tag "mscgen-mode @ Github"
+                   "https://github.com/thomsten/mscgen-mode#readme"))
+
+(defcustom pel-use-mscgen-mode nil
+  "Control whether PEL activates support for mscgen-mode."
+  :group 'pel-pkg-for-mscgen
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-mscgen-mode :package-is :in-utils)
+
+(defcustom pel-mscgen-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Mscgen buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-mscgen
+  :type '(repeat function))
+
+(defcustom pel-mscgen-tab-width 2
+  "Distance between tab stop for mscgen buffers.
+
+PEL stores this in `tab-width' when opening mscgen  buffers.
+
+This does *NOT* control the indentation in mscgen
+files, only for commands that mode point to tab stop positions
+such as `tab-to-tab-stop', and the display of hard TAB
+characters."
+  :group 'pel-pkg-for-mscgen
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-mscgen-use-tabs nil
+  "Value of `indent-tabs-mode' for editing mscgen files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-mscgen
   :type 'boolean
   :safe #'booleanp)
 

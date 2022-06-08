@@ -78,6 +78,25 @@
 ;; warning message will be annoying. This check is not absolutely necessary
 ;; but it prevents undetected invalid entries in the customization.
 
+;; Package Installation
+;; --------------------
+;;
+;; The code uses the following macros to control package installation:
+;;
+;; - `pel-ensure-package'       Installs an elpa-compliant package.
+;;
+;; - `pel-install-github-file'  Installs a file from source stored in Github.
+;;                              Used to install a file that is not an elpa
+;;                              complaint package.  The file is stored in the
+;;                              PEL utils directory.
+;;
+;; - `pel-install-github-files' Installs multiple files from source stored in
+;;                              Github.  Used to install several files from a
+;;                              *package* stored in GitHub that is not
+;;                              elpa-compliant.  The files are stored in the
+;;                              PEL utils directory.
+
+
 ;; Delayed evaluation
 ;; ------------------
 ;;
@@ -1940,6 +1959,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-D     - Dired
 ;; M-G     - Gleam           -              BEAM Language
 ;; M-H     - Hamler          -              BEAM Language, Functional/ML/Haskell
+;; M-M     - MscGen
 ;; M-P     - Prolog
 ;; M-Y     - YANG            - Specification definition language
 ;;
@@ -2925,8 +2945,7 @@ d-mode not added to ac-modes!"
   ;; Speedbar support
   ;; TODO: add imenu support to allow detection of forms
   (when pel-use-speedbar
-    (pel-add-speedbar-extension ".janet")
-    )
+    (pel-add-speedbar-extension ".janet"))
 
   ;; Key Bindings
   (define-pel-global-prefix pel:for-janet (kbd "<f11> SPC T"))
@@ -4567,6 +4586,28 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (define-key pel:for-graphviz-dot (kbd "TAB") 'graphviz-dot-indent-graph)
 
   (pel-config-major-mode graphviz-dot pel:for-graphviz-dot))
+
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-M`` : MscGen
+(when pel-use-mscgen-mode
+  (pel-install-github-file "thomsten/mscgen-mode/master"
+                           "mscgen-mode.el")
+  (pel-autoload-file mscgen-mode for:
+                     mscgen-mode)
+  ;; set the file extensions
+  (pel-set-auto-mode mscgen-mode for:
+                     "\\.\\(msc?\\|msc.txt\\)\\'")
+  ;; Add speedbar support
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension '(".msc" ".msc.txt")))
+
+  ;; Add Key bindings
+  (define-pel-global-prefix pel:for-mscgen (kbd "<f11> SPC M-M"))
+  (define-key pel:for-mscgen "c" 'mscgen-compile)
+  (define-key pel:for-mscgen "l" 'mscgen-insert-label-at-point)
+
+  (pel-eval-after-load mscgen-mode
+    (pel-config-major-mode mscgen pel:for-mscgen)))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-u`` : PlantUML

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-05-25 14:17:23 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-06-08 18:35:09 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -384,8 +384,8 @@
     ([dired]         "mode-dired"       pel-pkg-for-dired       ,pel--dired-groups)
     ([f11 ?f]        ("file-mngt"
                       "web")            pel-pkg-for-filemng     (files
-                                                                 recentf
-                                                                 popup-switcher))
+                      recentf
+                      popup-switcher))
 
     ;; no PDF for browse yet, the info is  in file-mngt.
     ([f11 ?B]        "file-mngt"        (pel-pkg-for-browse
@@ -442,8 +442,8 @@
     ([f11 ?t]        ("case-conversion"
                       "input-method"
                       "text-modes")     pel-pkg-for-text-mode  (editing-basics
-                                                                glasses
-                                                                whitespace))
+                      glasses
+                      whitespace))
     ([f11 ?t ?a]     "align"            pel-pkg-for-align       align)
     ([f11 ?t ?e]     "enriched-text"    nil                     enriched)
     ([f11 ?t ?f]     "filling-justification" nil               fill)
@@ -533,8 +533,11 @@
     (,(kbd "<f11> SPC M-o") "mode-org-mode"    pel-pkg-for-org-mode    org)
     ([f11 32 27 ?o]         "mode-org-mode"    pel-pkg-for-org-mode    org)
 
-    (,(kbd "<f11> SPC M-u") "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
-    ([f11 32 27 ?u]         "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
+    (,(kbd "<f11> SPC M-u") "plantuml" pel-pkg-for-plantuml    plantuml-mode)
+    ([f11 32 27 ?u]         "plantuml" pel-pkg-for-plantuml    plantuml-mode)
+
+    (,(kbd "<f11> SPC M-M") "mscgen" pel-pkg-for-mscgen    mscgen)
+    ([f11 32 27 ?M]         "mscgen" pel-pkg-for-mscgen    mscgen)
 
     (,(kbd "<f11> SPC M-c") "cwl"              pel-pkg-for-cwl     ,pel--yaml-groups)
     ([f11 32 27 ?c]         "cwl"              pel-pkg-for-cwl     ,pel--yaml-groups)
@@ -630,6 +633,7 @@ stored inside the doc/pdf directory.")
     ("outline"         [f11 32 27 ?l])
     ("org"             [f11 32 27 ?o])
     ("graphviz-dot"    [f11 32 27 ?g])
+    ("mscgen"          [f11 32 27 ?M])
     ("plantuml"        [f11 32 27 ?u])
     ("yaml"            [f11 32 27 ?y])
     ("yang"            [f11 32 27 ?Y])
