@@ -4057,8 +4057,8 @@ here."
 
 (defcustom pel-shell-sourced-script-file-name-prefix nil
   "Identifies base names of shell files that are meant to be sourced.
-If non-nil PEL treats the files with no extensions that match the specified
-requirements as shell script mean to be sourced and adjusts the skeleton
+If non-nil, PEL treats the files with no extensions that match the specified
+requirements as shell script meant to be sourced and adjusts the skeleton
 used by the ``<f6> h`` command accordingly.
 
 For example, if the shell files that are sourced all have a name that begin
