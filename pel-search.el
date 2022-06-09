@@ -2,7 +2,7 @@
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-02-23 16:48:47, updated by Pierre Rouleau>
+;; Time-stamp: <2022-06-09 15:49:09 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -318,6 +318,19 @@ failure."
             ;; searches on the same word
             (isearch-yank-string searched-text))
         (user-error "No valid word at point to search")))))
+
+
+(defun pel-search-word-from-top-noerr (n)
+  "Function to perform search from top of specified window.
+
+Always return a status value: t on success, nil on error.
+Useful to write ELisp code that uses `pel-search-word-from-top'
+non interactively."
+  (condition-case nil
+      (progn
+        (pel-search-word-from-top n)
+        t)
+    (error nil)))
 
 ;; ---------------------------------------------------------------------------
 ;; PEL Search Tool Control
