@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, May 25 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-11-26 13:50:34, updated by Pierre Rouleau>
+;; Time-stamp: <2022-06-09 15:47:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -46,7 +46,6 @@
 (defun pel-thing-at-point (thing)
   "Read and return the string of THING at point.
 See `bounds-of-thing-at-point' for a list of possible THING symbols."
-  (message "pel-thing-at-point")
   ;; thingatpt: use: bounds-of-thing-at-point
   (unless (and (require 'thingatpt nil :noerror)
                (fboundp 'bounds-of-thing-at-point))
