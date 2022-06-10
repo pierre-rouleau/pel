@@ -907,7 +907,12 @@ Return nil if no hyperlink target found."
   ;; search for the string that begins at the beginning of the line and
   ;; expand the dashes with an expression that searches for any of the
   ;; possible original characters.
-  (format "^%s$" (replace-regexp-in-string "-" "[ _-]+" target)))
+  ;; NOTE: to allow a double quote to surround a word inside a title we
+  ;;       need to escape it for the Emacs Lisp read syntax. That would
+  ;;       be \\\"  but then `replace-regexp-in-string' processes it
+  ;;       so the first 2 backslash must also be escaped, therefore
+  ;;       we have to use \\\\\" inside the string below.
+  (format "^%s$" (replace-regexp-in-string "-" "[ \\\\\"'`*_-]+" target)))
 
 (defun pel-html-to-rst (filename)
   "Extract source filename and potential target from HTML FILENAME.
