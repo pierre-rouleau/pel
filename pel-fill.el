@@ -1,6 +1,6 @@
 ;;; pel-fill.el --- PEL Source code management -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -45,20 +45,22 @@ Activate/de-activate automatic filling in source code comments only."
 (defun pel-show-fill-columns ()
   "Display value of relevant fill columns for current buffer."
   (interactive)
-  (if (memq (pel-major-mode-of)
-            '(emacs-lisp-mode lisp-interaction-mode lisp-mode))
-      (message "Lisp fill columns:
+  (message "auto-fill-mode: %s\n%s"
+           (if auto-fill-function "on" "off")
+           (if (memq (pel-major-mode-of)
+                     '(emacs-lisp-mode lisp-interaction-mode lisp-mode))
+               (format "Lisp fill columns:
 - comment  : %S
 - docstring: %S
 - code     : %S"
-               (or comment-fill-column fill-column)
-               emacs-lisp-docstring-fill-column
-               (current-fill-column))
-    (message "Fill column:
+                       (or comment-fill-column fill-column)
+                       emacs-lisp-docstring-fill-column
+                       (current-fill-column))
+             (format "Fill column:
 - comment  : %S
 - text     : %S"
-             (or comment-fill-column fill-column)
-             (current-fill-column))))
+                     (or comment-fill-column fill-column)
+                     (current-fill-column)))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-fill)
