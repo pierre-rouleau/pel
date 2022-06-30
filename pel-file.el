@@ -328,7 +328,7 @@ TARGET   := string  | nil"
            (if (or line column target) " at " "")
            (if target
                (format "target: %s" target)
-             (format "%s%s"
+             (format " %s%s"
                      (format "line:%d" (or line 1))
                      (if column (format "col:%d" column) "")))))
 

@@ -5839,8 +5839,6 @@ the ones defined from the buffer now."
     (user-error
      "Activate auto-revert-mode before attempting to set/cancel its timer")))
 
-
-
 (declare-function find-grep "grep")
 (define-pel-global-prefix pel:file (kbd "<f11> f"))
 (define-pel-global-prefix pel2:file (kbd "<M-f11> M-f"))
@@ -5904,6 +5902,7 @@ the ones defined from the buffer now."
 (global-set-key (kbd "C-^") 'pel-open-at-point)
 (define-key pel:file "."    'pel-open-at-point)
 (define-key pel2:file (kbd "M-.")    'pel-open-at-point)
+(define-key pel:file ";"    'pel-set-open-at-point-dir)
 (define-key pel:file (kbd "M-.") 'pel-set-ido-use-fname-at-point)
 (define-key pel:file "/"    'pel-browse-filename-at-point)
 (define-key pel:file (kbd "M-/") 'browse-url-at-point)

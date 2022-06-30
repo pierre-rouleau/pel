@@ -1560,6 +1560,22 @@ The Hippie Expand can be used together with any."
   :group 'files
   :link `(url-link :tag "File Management PDF" ,(pel-pdf-file-url "file-mngt")))
 
+(defcustom pel-open-file-at-point-dir  nil
+  "Root directory from where `pel-open-file-at-point' opens file.
+This user-option acts as the default for a buffer.  You can change
+the buffer's local value with `pel-set-open-file-at-point-dir'
+Can be one of the following:
+- nil     : use parent directory of currently visited file, the default.
+            If buffer is not visiting a file, then use the buffer's current
+            working directory.
+- 'cwd    : use buffer's current working directory
+- a string: the name of a specific directory."
+  :group 'pel-pkg-for-filemng
+  :type '(choice
+          (const :tag "Use visited file's parent directory"  nil)
+          (const :tag "Use buffer's current working directory" cwd)
+          (directory :tag "Specific directory")))
+
 (defcustom pel-delete-trailing-whitespace t
   "Controls whether whitespaces are automatically deleted when file is saved.
 Deleted automatically when non-nil, don't otherwise or when the current

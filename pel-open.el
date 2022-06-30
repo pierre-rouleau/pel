@@ -32,11 +32,48 @@
 ;; -----------------------------------------------------------------------------
 ;;; Dependencies:
 
-(require 'pel--base)        ; uses: pel-current-buffer-filename
-
+(require 'pel--base)        ; uses: `pel-current-buffer-filename'
+(require 'pel--options)     ; uses: `pel-open-file-at-point-dir'
+(require 'pel-prompt)       ; uses: `pel-select-from'
 ;; -----------------------------------------------------------------------------
 ;;; Code:
 
+(defvar-local pel--open-file-at-point-dir pel-open-file-at-point-dir
+  "Root directory from where `pel-open-file-at-point' opens file.
+You can change buffer's local value with `pel-set-open-file-at-point-dir'
+Can be one of the following:
+- nil     : use parent directory of currently visited file, the default.
+            If buffer is not visiting a file, then use the buffer's current
+            working directory.
+- 'cwd    : use buffer's current working directory
+- a string: the name of a specific directory.")
+
+
+;;-pel-autoload
+(defun pel-set-open-at-point-dir ()
+  "Set the behaviour of `pel-open-at-point' in current buffer.
+
+Select how it determines the directory from which a relative file
+name is built. Select one of the following methods:
+
+- Use visited file parent directory (the default).
+- Use buffer's current working directory.
+- Use a specified directory."
+  (interactive)
+  (let ((choice
+         (pel-select-from "pel-open-at-point base directory"
+                          '((?f "File's parent directory" nil)
+                            (?b "Buffer's current working directory" cwd)
+                            (?s "Specific directory" str)))))
+    (when (eq choice 'str)
+      (setq choice (expand-file-name
+                    (read-directory-name "pel-open-at-point base directory:"
+                                         nil
+                                         nil
+                                         t))))
+    (setq pel--open-file-at-point-dir choice)))
+
+;;-pel-autoload
 (defun pel-open-at-point (&optional n noerror)
   "Open the file or mode-specific reference at point.
 If there is no target issue a `user-error' unless NOERROR is non-nil.
@@ -52,18 +89,23 @@ See `pel-find-file-at-point-in-window' for more information."
   ;; relative file path. In some modes we are more prone to want to keep that
   ;; original working directory (like in reST mode); in that case restore it.
   ;;
-  ;; Potential to-do: It's possible that logic must be evolved or a
-  ;;                  mechanism put in place to better control whether the
-  ;;                  function must return to the original current working
-  ;;                  directory or not.
   (let ((original-cwd default-directory)
         (restore-original-cwd nil))
     (unwind-protect
         (progn
-          (when (buffer-file-name)
-            ;; when visiting a file, set current working directory
-            ;; to the directory of that file
+          (cond
+           ;; If requested to use file's parent directory and visiting a
+           ;; file, then set the working directory to the file's parent
+           ;; directory
+           ((and (not pel--open-file-at-point-dir)
+                 (buffer-file-name))
             (cd (file-name-directory (pel-current-buffer-filename))))
+           ;; if a directory is forced by name and it exists, use it
+           ((and (stringp pel--open-file-at-point-dir)
+                 (file-exists-p pel--open-file-at-point-dir))
+            (cd pel--open-file-at-point-dir))
+           ;; otherwise use current working directory as base.
+           )
           (if (and (eq major-mode 'rst-mode)
                    (require 'pel-rst nil :noerror)
                    (fboundp 'pel-at-rst-reference-p)
