@@ -4,7 +4,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 ** Modifications, Fixes and Improvements:
 - Fix: The *pel-open-at-point* command now handles links properly when the
   user has forcibly changed the current directory to something other than the
-  parent of the buffer's visited file.
+  parent of the buffer's visited file.  It's restored in reST mode but not
+  in other major-mode to allow changing current directory when opening header
+  files in C/C++ or other major modes.  A better heuristic or control might
+  need to be implemented in the future.
 - Fix: The *pel-rst-open-target* function, used by *pel-open-at-point* in
   reStructuredText buffers, now properly handle target links that include
   characters that must be escaped.  It now also works when the directory of

@@ -49,24 +49,35 @@ See `pel-find-file-at-point-in-window' for more information."
   ;; forcibly changed the current working directory for example.
   ;; Temporary force the current working directory to the directory holding
   ;; the file visited by the current buffer to ensure we can access the proper
-  ;; relative file path.
-  (let ((original-cwd default-directory))
+  ;; relative file path. In some modes we are more prone to want to keep that
+  ;; original working directory (like in reST mode); in that case restore it.
+  ;;
+  ;; Potential to-do: It's possible that logic must be evolved or a
+  ;;                  mechanism put in place to better control whether the
+  ;;                  function must return to the original current working
+  ;;                  directory or not.
+  (let ((original-cwd default-directory)
+        (restore-original-cwd nil))
     (unwind-protect
         (progn
           (when (buffer-file-name)
+            ;; when visiting a file, set current working directory
+            ;; to the directory of that file
             (cd (file-name-directory (pel-current-buffer-filename))))
           (if (and (eq major-mode 'rst-mode)
                    (require 'pel-rst nil :noerror)
                    (fboundp 'pel-at-rst-reference-p)
                    (fboundp 'pel-rst-open-target)
-                   (pel-at-rst-reference-p))
+                   (pel-at-rst-reference-p)
+                   (setq restore-original-cwd t))
               (pel-rst-open-target n)
             (if (and (require 'pel-file nil :noerror)
                      (fboundp 'pel-find-file-at-point-in-window))
                 (pel-find-file-at-point-in-window n)
               (unless noerror
                 (user-error "Cannot load pel-file!")))))
-      (cd original-cwd))))
+      (when restore-original-cwd
+        (cd original-cwd)))))
 
 ;;-pel-autoload
 (defun pel-browse-filename-at-point ()
