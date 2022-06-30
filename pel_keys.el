@@ -5052,10 +5052,16 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> ? d`` : Describe
 
+(defun pel-show-buffer-file-encoding ()
+  "Show coding system of file in current buffer."
+  (interactive)
+  (describe-symbol 'buffer-file-coding-system))
+
 (define-pel-global-prefix pel:describe (kbd "<f11> ? d"))
 (define-key pel:describe "$"  'pel-spell-show-use)
 (define-key pel:describe "a"  'pel-show-face-at-point)
 (define-key pel:describe "c" #'list-colors-display)
+(define-key pel:describe "e" #'pel-show-buffer-file-encoding)
 (define-key pel:describe "C" #'describe-coding-system)
 (define-key pel:describe "F" #'list-faces-display)
 (define-key pel:describe "f"  'pel-show-window-filename-or-buffer-name)
@@ -5833,10 +5839,7 @@ the ones defined from the buffer now."
     (user-error
      "Activate auto-revert-mode before attempting to set/cancel its timer")))
 
-(defun pel-show-buffer-file-encoding ()
-  "Show coding system of file in current buffer."
-  (interactive)
-  (describe-symbol 'buffer-file-coding-system))
+
 
 (declare-function find-grep "grep")
 (define-pel-global-prefix pel:file (kbd "<f11> f"))
@@ -5866,7 +5869,7 @@ the ones defined from the buffer now."
 (define-key pel:file "w" #'write-region)
 (define-key pel:file (kbd "M-x") 'hexl-find-file)
 (define-key pel:file (kbd "M-l") 'find-file-literally)
-(define-key pel:file "?" #'pel-show-buffer-file-encoding)
+;; (define-key pel:file "?" #'pel-show-buffer-file-encoding)
 (when pel-use-popup-switcher
   (define-key pel:file (kbd "M-f") 'pel-psw-navigate-files))
 (unless pel-system-is-windows-p
