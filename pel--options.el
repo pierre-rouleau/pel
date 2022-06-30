@@ -1534,8 +1534,10 @@ The Hippie Expand can be used together with any."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-ini :package-is :in-utils)
-(pel-put 'pel-use-ini :also-required-when '(eq pel-c-file-finder-method
-                                               (quote pel-ini-file)))
+(pel-put 'pel-use-ini :also-required-when '(or (eq pel-c-file-finder-method
+                                                   (quote pel-ini-file))
+                                               (eq pel-c++-file-finder-method
+                                                   (quote pel-ini-file))))
 
 (defcustom pel-use-emacs-toml nil
   "Whether PEL supports the emacs-toml to read/write .toml files."
@@ -4293,7 +4295,12 @@ The following methods are supported:
 
 You may want to store this value inside a .dir-local.el directory
 local-variable file with your C source code to control the behaviour
-of the file search based on your project."
+of the file search based on your project.
+
+CAUTION: when changing this user-option, you may have to restart Emacs to
+         activate the new behaviour in various commands like when opening
+         file at point in various major modes. Executing pel-init may not
+         be sufficient."
   :group 'pel-pkg-for-c
   :safe 't
   :type '(choice
@@ -10100,6 +10107,8 @@ indexing system."
   (erlang-ls           (setq pel-use-erlang-ls t)))
 
 (when (eq pel-c-file-finder-method 'pel-ini-file)
+  (setq pel-use-ini t))
+(when (eq pel-c++-file-finder-method 'pel-ini-file)
   (setq pel-use-ini t))
 
 (when (eq pel-prompt-read-method 'ivy)
