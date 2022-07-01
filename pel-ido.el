@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, February  9 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-02-09 14:46:13, updated by Pierre Rouleau>
+;; Time-stamp: <2022-07-01 17:54:03 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-(require 'pel-prompt)
+(require 'pel-prompt)                   ; use: `pel-set-user-option'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -48,6 +48,14 @@
                          (?g "Guess file name"        guess)
                          (?l "Use literal file name"  t))
                        (not globally)))
+
+(defun pel-ido-use-fname-at-point-string-for (value)
+  "Return description of `ido-use-filename-at-point' VALUE."
+  (cond
+   ((not value) "disabled")
+   ((eq value 'guess) "guess file name")
+   ((eq value t) "use literal file name")
+   (t "Invalid")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-ido)

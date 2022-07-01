@@ -2,12 +2,12 @@
 
 ;; Created   Wednesday, May 20 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-15 16:05:16, updated by Pierre Rouleau>
+;; Time-stamp: <2022-07-01 17:56:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -127,8 +127,9 @@
 (require 'pel--options)
 (require 'pel-prompt)
 (require 'pel-seq)
+(require 'pel-ido)                      ; use: `pel-ido-use-fname-at-point-string-for'
 (eval-when-compile
-  (require 'cl-macs))                   ; use: cl-case.
+  (require 'cl-macs))                   ; use: `cl-case'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -781,12 +782,20 @@ otherwise it starts with \"Currently\"."
   (interactive)
   (let ((current-mode      (pel-activated-completion-mode))
         (current-mode-name (pel-activated-completion-mode-name)))
-    (message "%s using:\n- %s completion mode%s.\nChange it by typing: <f11> M-c <f4>"
-             (if now "Now" "Currently")
+    (message "\
+Completion %s using:
+  - %s completion mode%s.
+Change it by typing: <f11> M-c <f4>
+- ido-use-filename-at-point: %s"
+             (if now "now" "currently")
              current-mode-name
              (if (memq current-mode '(ido ido/helm))
                  (concat "\n" (pel-ido-completion-settings-string "  - "))
-               ""))))
+               "")
+             (if (boundp 'ido-use-filename-at-point)
+                 (pel-ido-use-fname-at-point-string-for
+                  ido-use-filename-at-point)
+               "Not loaded"))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-completion)

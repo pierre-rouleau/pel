@@ -20,23 +20,24 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;;; Commentary:
 ;;
-;; This file defines functions that perform operations that depend on the buffer
-;; major mode, the face at point and other criteria and which invoke functions
-;; in other PEL files.  These functions will evolve over time and will
-;; incorporate more functionality in various modes, allowing a multi-purpose
-;; function to be bound globally to a single key sequence or key-chord.
+;; This file defines functions that perform operations that depend on the
+;; buffer major mode, the face at point and other criteria and which invoke
+;; functions in other PEL files.  These functions will evolve over time and
+;; will incorporate more functionality in various modes, allowing a
+;; multi-purpose function to be bound globally to a single key sequence or
+;; key-chord.
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;;; Dependencies:
 
-(require 'pel--base)        ; uses: `pel-current-buffer-filename'
-(require 'pel--options)     ; uses: `pel-open-file-at-point-dir'
-(require 'pel-prompt)       ; uses: `pel-select-from'
-
-;; -----------------------------------------------------------------------------
+(require 'pel--base)        ; use: `pel-current-buffer-filename'
+(require 'pel--options)     ; use: `pel-open-file-at-point-dir'
+(require 'pel-prompt)       ; use: `pel-select-from'
+(require 'pel-ido)          ; use: `pel-ido-use-fname-at-point-string-for'
+;; ---------------------------------------------------------------------------
 ;;; Code:
 
 (defvar-local pel--open-file-at-point-dir pel-open-file-at-point-dir
@@ -169,13 +170,18 @@ Copy the content of the URL into a temporary file, then open that file."
   "Display status of various file management controls."
   (interactive)
   (message "\
-- File encoding: %s
-- pel-open-at-point relative path resolution: %s"
+- File encoding                             : %s
+- pel-open-at-point relative path resolution: %s
+- ido-use-filename-at-point                 : %s"
            buffer-file-coding-system
            (pel--open-file-at-point-dir-string-for
-            pel--open-file-at-point-dir)))
+            pel--open-file-at-point-dir)
+           (if (boundp 'ido-use-filename-at-point)
+               (pel-ido-use-fname-at-point-string-for
+                ido-use-filename-at-point)
+             "Not loaded")))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 (provide 'pel-open)
 
 ;;; pel-open.el ends here
