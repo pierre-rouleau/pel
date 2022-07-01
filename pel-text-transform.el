@@ -233,11 +233,12 @@ When N is 0, perform the operation once on the beginning of the current word."
   (message "Text Modes Status:
 - Local indent-tabs-mode   : %-10s, Tab width = %d
 - Local electric-quote-mode: %-10s, electric-quote-local-mode: %s.
-- whitespace-mode          : %-10s, enriched-mode        : %s.
-- overwrite mode           : %-10s, delete-selection-mode: %s.
-- case-fold-search         : %-10s, sort-fold-case       : %s.
-- subword mode             : %-10s, superword mode       : %-10s, glass-mode: %s.
-- visible-mode             : %-10s, smart-dash-mode      : %s.
+- whitespace-mode          : %-10s, show-trailing-whitespace : %-10s, indicate-empty-lines: %s.
+- enriched-mode            : %-10s.
+- overwrite mode           : %-10s, delete-selection-mode    : %s.
+- case-fold-search         : %-10s, sort-fold-case           : %s.
+- subword mode             : %-10s, superword mode           : %-10s, glass-mode: %s.
+- visible-mode             : %-10s, smart-dash-mode          : %s.
 - Sentences end with %s.
 - paragraph-start   : %S
 - paragraph-separate: %S"
@@ -249,6 +250,8 @@ When N is 0, perform the operation once on the beginning of the current word."
            (pel-symbol-on-off-string 'electric-quote-mode)
            (pel-symbol-on-off-string 'electric-quote-local-mode nil nil "not loaded")
            (pel-symbol-on-off-string 'whitespace-mode nil nil "not loaded")
+           (pel-symbol-on-off-string 'show-trailing-whitespace nil nil "not loaded")
+           (pel-symbol-on-off-string 'indicate-empty-lines nil nil "not loaded")
            (pel-symbol-on-off-string 'enriched-mode nil nil "not loaded")
            (pel-symbol-on-off-string 'overwrite-mode)
            (pel-symbol-on-off-string 'delete-selection-mode nil nil "not loaded")
