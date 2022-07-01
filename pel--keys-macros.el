@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-06-08 18:35:09 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-07-01 16:37:21 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -182,9 +182,12 @@
     ([f11 ?.]        "marking"          pel-pkg-for-marking  expand-region)
     ([f11 ?=]        "cut-paste"        pel-pkg-for-cut-and-paste)
     ([f11 ?\;]       "comments"         pel-pkg-for-programming comment)
-    ([f11 ??]        "help"             (pel-pkg-for-help pel-syntax-tools)
-     (command-log
+    ([f11 ??]        "help"             (pel-pkg-for-help
+                                         pel-syntax-tools)
+     (apropos
+      command-log
       debbugs
+      help
       helpful
       hydra
       keycast
