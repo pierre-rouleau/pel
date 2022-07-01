@@ -5867,7 +5867,7 @@ the ones defined from the buffer now."
 (define-key pel:file "w" #'write-region)
 (define-key pel:file (kbd "M-x") 'hexl-find-file)
 (define-key pel:file (kbd "M-l") 'find-file-literally)
-;; (define-key pel:file "?" #'pel-show-buffer-file-encoding)
+(define-key pel:file "?" #'pel-show-filemng-status)
 (when pel-use-popup-switcher
   (define-key pel:file (kbd "M-f") 'pel-psw-navigate-files))
 (unless pel-system-is-windows-p

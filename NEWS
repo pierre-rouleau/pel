@@ -4,9 +4,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 ** Modifications, Fixes and Improvements:
 - Fix: The *pel-open-at-point* command now handles links properly when the
   user has forcibly changed the current directory to something other than the
-  parent of the buffer's visited file.  It's restored in reST mode but not
-  in other major-mode to allow changing current directory when opening header
-  files in C/C++ or other major modes.  By default, the command builds an
+  parent of the buffer's visited file.  By default, the command builds an
   absolute path from a relative file name path by using the parent directory
   of the visited file or the current working directory of the current buffer
   not visiting a file.  You can change this behaviour for a given buffer by
@@ -230,6 +228,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New *pel-show-filemng-status* command (bound to ~<f11> f ?~ that shows the
+  status of several file management related status: file encoding, the way
+  pel-open-at-point resolves relative file paths.
 - Preliminary support for MscGen markup files when *pel-use-mscgen-mode* is
   set to t.  File extensions supported are =.msc= and =.msc.txt= .
   Support provided by the [[https://github.com/thomsten/mscgen-mode#readme][mscgen-mode]] GitHub project.

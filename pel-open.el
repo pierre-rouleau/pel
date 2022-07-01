@@ -35,6 +35,7 @@
 (require 'pel--base)        ; uses: `pel-current-buffer-filename'
 (require 'pel--options)     ; uses: `pel-open-file-at-point-dir'
 (require 'pel-prompt)       ; uses: `pel-select-from'
+
 ;; -----------------------------------------------------------------------------
 ;;; Code:
 
@@ -48,6 +49,25 @@ Can be one of the following:
 - 'cwd    : use buffer's current working directory
 - a string: the name of a specific directory.")
 
+(defun pel--open-file-at-point-dir-string-for (value)
+  "Return description of a `pel--open-file-at-point-dir' value.
+It can also be a `pel-open-file-at-point-dir'."
+  (cond
+   ((not value)
+    (if (buffer-file-name)
+        (format
+         "use file's parent directory: %s"
+         (file-name-directory (pel-current-buffer-filename)))
+      (format "use buffer's current working directory: %s"
+              default-directory)))
+   ((eq value 'cwd)
+    (format
+     "use current working directory: %s"
+     default-directory))
+   ((stringp value)
+    (format "use: %s" value))
+   (t
+    "INVALID!")))
 
 ;;-pel-autoload
 (defun pel-set-open-at-point-dir ()
@@ -89,9 +109,8 @@ See `pel-find-file-at-point-in-window' for more information."
   ;; relative file path. In some modes we are more prone to want to keep that
   ;; original working directory (like in reST mode); in that case restore it.
   ;;
-  (let ((original-cwd default-directory)
-        (restore-original-cwd nil))
-    (unwind-protect
+  (let ((original-cwd default-directory))
+    (condition-case nil
         (progn
           (cond
            ;; If requested to use file's parent directory and visiting a
@@ -110,16 +129,14 @@ See `pel-find-file-at-point-in-window' for more information."
                    (require 'pel-rst nil :noerror)
                    (fboundp 'pel-at-rst-reference-p)
                    (fboundp 'pel-rst-open-target)
-                   (pel-at-rst-reference-p)
-                   (setq restore-original-cwd t))
+                   (pel-at-rst-reference-p))
               (pel-rst-open-target n)
             (if (and (require 'pel-file nil :noerror)
                      (fboundp 'pel-find-file-at-point-in-window))
                 (pel-find-file-at-point-in-window n)
               (unless noerror
                 (user-error "Cannot load pel-file!")))))
-      (when restore-original-cwd
-        (cd original-cwd)))))
+      (error (cd original-cwd)))))
 
 ;;-pel-autoload
 (defun pel-browse-filename-at-point ()
@@ -145,6 +162,18 @@ Copy the content of the URL into a temporary file, then open that file."
               (error "Can't load url-handler!"))
           (user-error "No valid URL at point!")))
     (error "Can't load pel-file!")))
+
+
+;;-pel-autoload
+(defun pel-show-filemng-status ()
+  "Display status of various file management controls."
+  (interactive)
+  (message "\
+- File encoding: %s
+- pel-open-at-point relative path resolution: %s"
+           buffer-file-coding-system
+           (pel--open-file-at-point-dir-string-for
+            pel--open-file-at-point-dir)))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-open)

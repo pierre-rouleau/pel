@@ -514,7 +514,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-open-at-point
     pel-set-open-at-point-dir
     pel-browse-filename-at-point
-    pel-open-url-at-point)
+    pel-open-url-at-point
+    pel-show-filemng-status)
 
   (pel-autoload "pel-outline" for:
     pel-outline-print-vars)
