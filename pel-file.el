@@ -44,19 +44,6 @@
 ;;          function at his web site:
 ;;          `http://ergoemacs.org/emacs/emacs_open_file_path_fast.html'.
 
-
-(require 'pel--base)     ; use: pel-val-or-default,
-                         ;      pel-goto-position,
-                         ;      pel-system-is-windows-p
-(require 'pel-prompt)    ; use: `pel-prompt-select-read'
-(require 'pel-read)      ; use: pel-string-at-point
-(require 'pel-window)    ; use pel-window-direction-for
-;;                       ;     pel-window-valid-for-editing-p
-
-(eval-when-compile (require 'subr-x))  ; use: inlined: string-trim
-
-;;; Code:
-
 ;; Implementation call hierarchy
 ;; -----------------------------
 ;;
@@ -74,7 +61,23 @@
 ;;  - pel--show-edit-action
 ;;
 
-;; ---------------------------------------------------------------------------
+;; -----------------------------------------------------------------------------
+;;; Dependencies:
+
+(require 'pel--base)     ; use: pel-val-or-default,
+                         ;      pel-goto-position,
+                         ;      pel-system-is-windows-p
+(require 'pel-prompt)    ; use: `pel-prompt-select-read'
+(require 'pel-read)      ; use: pel-string-at-point
+(require 'pel-window)    ; use pel-window-direction-for
+;;                       ;     pel-window-valid-for-editing-p
+
+(eval-when-compile (require 'subr-x))  ; use: inlined: string-trim
+
+;; -----------------------------------------------------------------------------
+;;; Code:
+
+
 ;; pel-find-file-at-point-in-window
 ;; --------------------------------
 
@@ -577,7 +580,6 @@ Interactively use any prefix argument."
       (user-error "Cannot load %s.  It is not an Emacs Lisp file!" fn))))
 
 ;; -----------------------------------------------------------------------------
-
 (provide 'pel-file)
 
 ;;; pel-file.el ends here
