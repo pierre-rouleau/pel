@@ -2,12 +2,12 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-06 00:06:57, updated by Pierre Rouleau>
+;; Time-stamp: <2022-07-03 10:31:13 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -233,7 +233,8 @@ reducing the need to create a new one."
   "Move point to character just after end of string or comment.
 Start from POS or current point.
 The SYNTAX argument may be specified to re-use a caller syntax object,
-reducing the need to create a new one."
+reducing the need to create a new one.
+Return the new position."
   (setq pos (or pos (point)))
   (goto-char pos)
   (setq syntax (or syntax (syntax-ppss pos)))
@@ -242,13 +243,15 @@ reducing the need to create a new one."
               (not (eobp)))
     (forward-char)
     (setq pos (1+ pos))
-    (setq syntax (syntax-ppss pos))))
+    (setq syntax (syntax-ppss pos)))
+  pos)
 
 (defun pel-syntax-skip-string-and-comment-backward (&optional pos syntax)
   "Move point to character just before beginning of string or comment.
 Start from POS or current point.
 The SYNTAX argument may be specified to re-use a caller syntax object,
-reducing the need to create a new one."
+reducing the need to create a new one.
+Return the new position"
   (setq pos (or pos (point)))
   (goto-char pos)
   (setq syntax (or syntax (syntax-ppss pos)))
@@ -257,7 +260,8 @@ reducing the need to create a new one."
               (not (bobp)))
     (backward-char)
     (setq pos (1- pos))
-    (setq syntax (syntax-ppss pos))))
+    (setq syntax (syntax-ppss pos)))
+  pos)
 
 
 ;; Block syntax fixer
