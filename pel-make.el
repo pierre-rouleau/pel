@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, January 15 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-04-13 11:19:35, updated by Pierre Rouleau>
+;; Time-stamp: <2022-07-03 20:04:10 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -40,8 +40,10 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)                    ; use: pel-count-string
-(require 'make-mode)                    ; for nmake support @ end of file
+(require 'pel--base)     ; use: `pel-count-string'
+(require 'pel-syntax)    ; use: `pel-syntax-conditional-forward'
+;;                       ;      `pel-syntax-conditional-backward'
+(require 'make-mode)     ; for nmake support @ end of file
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -128,6 +130,54 @@ The command support shift-marking."
                        count
                        (pel-count-string n "macro definition statement")
                        err)))))))
+
+;; ---------------------------------------------------------------------------
+(defconst pel-make-if-regexp "^[ \\t]*\\(ifdef\\)\\|\\(ifn??eq\\)[ \\t]"
+  "Regexp to find the next conditional statement.")
+
+(defconst pel--make-end-regexp "^[ \\t]*endif"
+  "Regexp to find the end of a conditional statement.")
+
+;;G1---------------------------------------------------------------------------------------------|
+;;                G2----------------------------------------------------------------------------|
+;;                   g3------|
+;;                                 G4--------------------------------------------------------|
+;;                                    G5---------------------------------------|
+;;                                       g6-----|      g7----|      g8------|
+;;                (                                                                             )
+;;                   (       )     (                                                         )
+;;                                    (                                        )
+;;                                       (       )     (      )     (       )
+(defconst pel--make-conditional-regexp
+  "^[[:blank:]]*\\(\\(endif\\)\\|\\(\\(\\(ifdef\\)\\|\\(ifeq\\)\\|\\(ifneq\\)\\)[[:blank:]]\\)\\)"
+  "Regexp to find make conditionals")
+
+(defconst pel--make-conditional-group-forward 3
+  "Significant matching group when searching end of make conditional.")
+
+(defconst pel--make-conditional-group-backward 4
+  "Significant matching group when searching beginning of make conditional.")
+
+
+;;-pel-autoload
+(defun pel-make-forward-conditional ()
+  "Move point forward to matching end of make conditional.
+On success, push the original position on the mark ring and
+return the new position. On error, issue user error on mismatch."
+  (interactive)
+  (pel-syntax-conditional-forward
+   pel--make-conditional-regexp
+   pel--make-conditional-group-forward))
+
+
+(defun pel-make-backward-conditional ()
+  "Move point backward to matching beginning of make conditional.
+On success, push the original position on the mark ring and
+return the new position. On error, issue user error on mismatch."
+  (interactive)
+  (pel-syntax-conditional-backward
+   pel--make-conditional-regexp
+   pel--make-conditional-group-backward))
 
 ;; ---------------------------------------------------------------------------
 ;; NMake format support

@@ -2012,7 +2012,13 @@ can't bind negative-argument to C-_ and M-_"
     (define-key pel:for-make (kbd "<down>")    'makefile-next-dependency)
     (define-key pel:for-make (kbd "<M-up>")   #'pel-make-previous-macro)
     (define-key pel:for-make (kbd "<M-down>") #'pel-make-next-macro)
-    (define-key pel:for-make "."               'completion-at-point)))
+    (define-key pel:for-make "."               'completion-at-point)
+    (when (boundp 'makefile-mode-map)
+      (let ((map makefile-mode-map))
+        (define-key map (kbd "<C-M-right>") 'pel-make-forward-conditional)
+        (define-key map (kbd "C-M-f")       'pel-make-forward-conditional)
+        (define-key map (kbd "<C-M-left>")  'pel-make-backward-conditional)
+        (define-key map (kbd "C-M-b")       'pel-make-backward-conditional)))))
 
 ;; - Tup Built Tool Support
 ;; ------------------------
