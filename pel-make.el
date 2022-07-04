@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 15 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-07-03 20:04:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-07-03 20:19:35 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -164,7 +164,7 @@ The command support shift-marking."
   "Move point forward to matching end of make conditional.
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
-  (interactive)
+  (interactive "^")
   (pel-syntax-conditional-forward
    pel--make-conditional-regexp
    pel--make-conditional-group-forward))
@@ -174,7 +174,7 @@ return the new position. On error, issue user error on mismatch."
   "Move point backward to matching beginning of make conditional.
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
-  (interactive)
+  (interactive "^")
   (pel-syntax-conditional-backward
    pel--make-conditional-regexp
    pel--make-conditional-group-backward))
