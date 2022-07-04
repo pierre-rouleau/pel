@@ -229,8 +229,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
 - New: *pel-make-forward-conditional* and *pel-make-backward-conditional*
-  bound to ~C-M-f~ and ~C-M-b~ respectively as well as  ~C-M-<right>~ and
-  ~C-M-<left>~ in make files allowing to navigate across if-endif statements.
+  bound to ~<f6> <right>~ and ~<f6> <left>~ respectively
+  in make files allowing to navigate across if-endif statements.
 - New *pel-show-filemng-status* command (bound to ~<f11> f ?~ that shows the
   status of several file management related status: file encoding, the way
   pel-open-at-point resolves relative file paths.

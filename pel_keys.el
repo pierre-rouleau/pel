@@ -2015,10 +2015,8 @@ can't bind negative-argument to C-_ and M-_"
     (define-key pel:for-make "."               'completion-at-point)
     (when (boundp 'makefile-mode-map)
       (let ((map makefile-mode-map))
-        (define-key map (kbd "<C-M-right>") 'pel-make-forward-conditional)
-        (define-key map (kbd "C-M-f")       'pel-make-forward-conditional)
-        (define-key map (kbd "<C-M-left>")  'pel-make-backward-conditional)
-        (define-key map (kbd "C-M-b")       'pel-make-backward-conditional)))))
+        (define-key map (kbd "<f6> <right>")   'pel-make-forward-conditional)
+        (define-key map (kbd "<f6> <left>")    'pel-make-backward-conditional)))))
 
 ;; - Tup Built Tool Support
 ;; ------------------------
