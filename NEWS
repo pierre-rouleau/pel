@@ -34,6 +34,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   required.  There is still one issue left: the package installed this way
   will be removed by *pel-cleanup*: will need to add a mechanism to take this
   type of installation into account.
+- Modified: The ~<M-f5>~ and ~<M-f6>~ key bindings to *pel-scroll-up* and
+  *pel-scroll-down* is removed, freeing these keys for potential new key
+  prefix.  These were created to help scrolling in org-mode.  Instead,
+  the window Hydra, pel-∑wnd, now has a ~<M-down>~ and ~<M-up>~ bindings to
+  these functions.  So in org-mode: use the ~<f7>~ prefix key to access these
+  scroll commands as the ~<M-down>~ and ~<M-up>~ keys are already used.
 - Modified: key binding for the *pel-show-buffer-file-encoding* from
   ~<f11> f ?~ to a less surprising ~<f11> ? d e~ .
 - Modified: Key binding in the *pel:highlight* prefix, moving several mode

@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-26 15:39:49, updated by Pierre Rouleau>
+;; Time-stamp: <2022-07-05 09:32:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -330,7 +330,7 @@
   ("H"           enlarge-window-horizontally "wider"       :column "Resize")
   ("h"           shrink-window-horizontally  "narrower"    :column "Resize")
   ("|"           split-window-right          "vertically"   :column "Split")
-   ("3"           split-window-right          "vertically"   :column "Split")
+  ("3"           split-window-right          "vertically"   :column "Split")
   ("_"           split-window-below          "horizontally" :column "Split")
   ("2"           split-window-below          "horizontally" :column "Split")
   ("C-<up>"      pel-create-window-up        "above"     :column "Split.")
@@ -352,6 +352,8 @@
   ("C-S-<down>"  pel-close-window-down       "below"      :column "Close.")
   ("C-S-<left>"  pel-close-window-left       "left"       :column "Close.")
   ("C-S-<right>" pel-close-window-right      "right"      :column "Close.")
+  ("<M-up>"      pel-scroll-down             "scroll down"  :column "Other")
+  ("<M-down>"    pel-scroll-up               "scroll up"    :column "Other")
   ("d"           pel-toggle-window-dedicated "un/dedicate"  :column "Other")
   ("?"           pel-toggle-hydra-hint       "hint"         :column "Other")
   ("<f7>"        nil                         "cancel"       :column "Other"))

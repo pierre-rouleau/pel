@@ -5410,11 +5410,9 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;; scroll text up: toward small line number
 (global-set-key (kbd "<M-down>")   'pel-scroll-up)
-(global-set-key (kbd "<M-f5>")     'pel-scroll-up)
 (global-set-key (kbd "<M-S-f5>")   'pel-scroll-up-other)
 ;; scroll text down: toward large line number
 (global-set-key (kbd "<M-up>")    'pel-scroll-down)
-(global-set-key (kbd "<M-f6>")    'pel-scroll-down)
 (global-set-key (kbd "<M-S-f6>")  'pel-scroll-down-other)
 ;; and with the mouse in terminal mode
 (when pel-emacs-is-a-tty-p
