@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 15 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-07-03 20:19:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-07-06 12:06:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -132,11 +132,6 @@ The command support shift-marking."
                        err)))))))
 
 ;; ---------------------------------------------------------------------------
-(defconst pel-make-if-regexp "^[ \\t]*\\(ifdef\\)\\|\\(ifn??eq\\)[ \\t]"
-  "Regexp to find the next conditional statement.")
-
-(defconst pel--make-end-regexp "^[ \\t]*endif"
-  "Regexp to find the end of a conditional statement.")
 
 ;;G1---------------------------------------------------------------------------------------------|
 ;;                G2----------------------------------------------------------------------------|
@@ -148,8 +143,8 @@ The command support shift-marking."
 ;;                   (       )     (                                                         )
 ;;                                    (                                        )
 ;;                                       (       )     (      )     (       )
-(defconst pel--make-conditional-regexp
-  "^[[:blank:]]*\\(\\(endif\\)\\|\\(\\(\\(ifdef\\)\\|\\(ifeq\\)\\|\\(ifneq\\)\\)[[:blank:]]\\)\\)"
+(defconst pel--make-conditional-regexp-format
+  "^[[:blank:]]*\\(\\(%s\\)\\|\\(\\(\\(ifdef\\)\\|\\(ifeq\\)\\|\\(ifneq\\)\\)[[:blank:]]\\)\\)"
   "Regexp to find make conditionals")
 
 (defconst pel--make-conditional-group-forward 3
@@ -160,23 +155,30 @@ The command support shift-marking."
 
 
 ;;-pel-autoload
-(defun pel-make-forward-conditional ()
+(defun pel-make-forward-conditional (&optional to-else)
   "Move point forward to matching end of make conditional.
+
+If a command prefix TO-ELSE is specified, move point to the matching
+else statement instead.
+
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
-  (interactive "^")
+  (interactive "^P")
   (pel-syntax-conditional-forward
-   pel--make-conditional-regexp
+   (format pel--make-conditional-regexp-format (if to-else
+                                                   "else"
+                                                 "endif"))
    pel--make-conditional-group-forward))
 
-
-(defun pel-make-backward-conditional ()
+(defun pel-make-backward-conditional (&optional to-else)
   "Move point backward to matching beginning of make conditional.
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
-  (interactive "^")
+  (interactive "^P")
   (pel-syntax-conditional-backward
-   pel--make-conditional-regexp
+   (format pel--make-conditional-regexp-format (if to-else
+                                                   "else"
+                                                 "endif"))
    pel--make-conditional-group-backward))
 
 ;; ---------------------------------------------------------------------------
