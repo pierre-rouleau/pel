@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 15 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-07-06 16:03:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-07-06 16:28:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -185,12 +185,14 @@ The command support shift-marking."
 
 If a command prefix TO-ELSE is specified, move point forward
 after the matching else statement instead.
+CAUTION: the move to else does not yet support nested statements!
 
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
   (interactive "^P")
   (when (pel--after-else-p)
     (beginning-of-line nil)
+    (pel-make-backward-conditional)
     (setq to-else nil))
 
   (pel-syntax-conditional-forward
@@ -209,6 +211,7 @@ return the new position. On error, issue user error on mismatch."
 
 If a command prefix TO-ELSE is specified, move point backward
 after the matching else statement instead.
+CAUTION: the move to else does not yet support nested statements!
 
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
