@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 15 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-07-06 12:06:29 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-07-06 15:32:40 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -133,19 +133,26 @@ The command support shift-marking."
 
 ;; ---------------------------------------------------------------------------
 
-;;G1---------------------------------------------------------------------------------------------|
-;;                G2----------------------------------------------------------------------------|
-;;                   g3------|
-;;                                 G4--------------------------------------------------------|
-;;                                    G5---------------------------------------|
-;;                                       g6-----|      g7----|      g8------|
-;;                (                                                                             )
-;;                   (       )     (                                                         )
-;;                                    (                                        )
-;;                                       (       )     (      )     (       )
+;; G1---------------------------------------------------------------------------------------------|
+;;                 G2----------------------------------------------------------------------------|
+;;                    g3------|
+;;                                  G4--------------------------------------------------------|
+;;                                     G5---------------------------------------|
+;;                                        g6-----|      g7----|      g8------|
+;;                 (                                                                             )
+;;                    (       )     (                                                         )
+;;                                     (                                        )
+;;                                        (       )     (      )     (       )
+;; "^[[:blank:]]*\\(\\(endif\\)\\|\\(\\(\\(ifdef\\)\\|\\(ifeq\\)\\|\\(ifneq\\)\\)[[:blank:]]\\)\\)"
+;;                    |%s     |        |%s                                      |
+;;                                  |                                                         |
 (defconst pel--make-conditional-regexp-format
-  "^[[:blank:]]*\\(\\(%s\\)\\|\\(\\(\\(ifdef\\)\\|\\(ifeq\\)\\|\\(ifneq\\)\\)[[:blank:]]\\)\\)"
+  "^[[:blank:]]*\\(\\(%s\\)\\|\\(%s\\)\\)"
   "Regexp to find make conditionals")
+
+(defconst pel--make-if-regexp
+  "\\(\\(ifdef\\)\\|\\(ifeq\\)\\|\\(ifneq\\)\\)[[:blank:]]"
+  "The Make if statements.")
 
 (defconst pel--make-conditional-group-forward 3
   "Significant matching group when searching end of make conditional.")
@@ -158,28 +165,74 @@ The command support shift-marking."
 (defun pel-make-forward-conditional (&optional to-else)
   "Move point forward to matching end of make conditional.
 
-If a command prefix TO-ELSE is specified, move point to the matching
-else statement instead.
+If a command prefix TO-ELSE is specified, move point forward
+after the matching else statement instead.
 
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
   (interactive "^P")
   (pel-syntax-conditional-forward
-   (format pel--make-conditional-regexp-format (if to-else
-                                                   "else"
-                                                 "endif"))
-   pel--make-conditional-group-forward))
+   (format pel--make-conditional-regexp-format
+           (if to-else
+               "else"
+             "endif")
+           pel--make-if-regexp)
+   pel--make-conditional-group-forward
+   (if to-else
+       "else statement"
+     "end statement")))
+
+
+(defun pel--after-else-p ()
+  "Return t if point is on the same line and after a `else'."
+  (let ((original-pos (point))
+        (else-pos nil))
+    (save-excursion
+      (let ((eol-pos (progn
+                       (end-of-line nil)
+                       (point))))
+        (beginning-of-line nil)
+        (when (re-search-forward
+               "[[:blank:]]?\\(else\\)\\([#[:blank:]].*\\)?$"
+               eol-pos
+               :no-error)
+          ;; store position of the end of `else' in else-pos
+          (setq else-pos (nth 3 (match-data))))))
+    (and else-pos
+         (>= original-pos else-pos))))
 
 (defun pel-make-backward-conditional (&optional to-else)
   "Move point backward to matching beginning of make conditional.
+
+If a command prefix TO-ELSE is specified, move point backward
+after the matching else statement instead.
+
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
   (interactive "^P")
+  ;; When point is on the same line and after a `else' statement keyword, then
+  ;; to move backward to its matching `if' statement will not work directly
+  ;; because point is inside the scope: to handle this situation move to the
+  ;; matching `endif' and then move back to it's matching `if'.
+  (when (pel--after-else-p)
+    (pel-make-forward-conditional)
+    (setq to-else nil))
+
   (pel-syntax-conditional-backward
-   (format pel--make-conditional-regexp-format (if to-else
-                                                   "else"
-                                                 "endif"))
-   pel--make-conditional-group-backward))
+   (format pel--make-conditional-regexp-format
+           "endif"
+           (if to-else
+               "else"
+             pel--make-if-regexp))
+   pel--make-conditional-group-backward
+   (if to-else
+       "else statement"
+     "beginning of if statement"))
+  ;; When moving back to an else statement, place point after the else
+  ;; statement to allow moving backward to the matching if in the next
+  ;; command.
+  (when to-else
+    (end-of-line nil)))
 
 ;; ---------------------------------------------------------------------------
 ;; NMake format support

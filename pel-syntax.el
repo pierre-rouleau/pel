@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-07-03 20:05:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-07-06 15:22:19 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -398,7 +398,7 @@ Returns the number of text modifications performed."
 ;; programming languages, try to combine the 2 functions into a single one
 ;; since their code is almost the same.
 
-(defun pel-syntax-conditional-forward (regexp significant-end-group)
+(defun pel-syntax-conditional-forward (regexp significant-end-group conditional)
   "Move point forward to matching end of conditional.
 
 Search using specified REGEXP which should identify several groups:
@@ -409,6 +409,9 @@ all (or the only one) end conditional keyword expression to search.
 
 If the REGEXP identifies an expression that searches from the beginning
 of a line, set FROM-BOL to indicate it.
+
+CONDITIONAL is a string message used to describe the target searched.
+
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
   (let ((significant-match-elem (- (* 2 significant-end-group) 1))
@@ -455,14 +458,14 @@ return the new position. On error, issue user error on mismatch."
     (if (> nesting-level 0)
         (progn
           (goto-char original-pos)
-          (user-error "Can't find matching end of conditional: \
-missing %d nested levels" nesting-level))
+          (user-error "Can't find matching conditional %s: \
+missing %d nested levels" conditional nesting-level))
       (when (and found-pos (/= found-pos original-pos))
         (push-mark original-pos)))
     found-pos))
 
 
-(defun pel-syntax-conditional-backward (regexp significant-begin-group)
+(defun pel-syntax-conditional-backward (regexp significant-begin-group conditional)
   "Move point backward to matching beginning of conditional.
 
 Search using specified REGEXP which should identify several groups:
@@ -470,6 +473,8 @@ all beginning, middle and end syntax keywords.
 
 The significant-end-group must identify the regexp group that identifies
 all (or the only one) end conditional keyword expression to search.
+
+CONDITIONAL is a string message used to describe the target searched.
 
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
@@ -481,41 +486,41 @@ return the new position. On error, issue user error on mismatch."
         (searching t)
         (original-pos (point)))
     (while
-      (progn
-        ;; (message "-----Searching: nesting=%d" nesting-level)
-        (setq found-pos
-              (re-search-backward regexp nil t))
-        (setq saved-match-data (match-data))
-        ;; (message "found-pos: %S\n match-data:%S" found-pos saved-match-data)
-        (if found-pos
-            (if (progn
-                  (setq syntax (syntax-ppss found-pos))
-                  (or (pel--inside-string-p syntax)
-                      (pel--inside-comment-p syntax)))
-                ;; if found something inside a string or comment, skip past it
-                (setq found-pos
-                      (pel-syntax-skip-string-and-comment-backward found-pos
-                                                                   syntax))
-              ;; Otherwise check if we found the conditional end (group 1) or a
-              ;; nested if (group2)
-              (if (nth significant-match-elem saved-match-data)
-                  ;; Found a condition end marker. If nesting is 1 or 0 we reached
-                  ;; the end, otherwise decrease the nesting & continue searching.
-                  (progn
-                    (if (< nesting-level 1)
-                        (setq searching nil)
-                      (pel-= nesting-level 1)))
-                ;; Found something else: conditional end; increase nesting
-                ;; and continue searching
-                (pel+= nesting-level 1)))
-          (setq searching nil))
-        ;; (message "nesting-level: %d" nesting-level)
-        (and searching found-pos (> nesting-level 0))))
+        (progn
+          ;; (message "-----Searching: nesting=%d" nesting-level)
+          (setq found-pos
+                (re-search-backward regexp nil t))
+          (setq saved-match-data (match-data))
+          ;; (message "found-pos: %S\n match-data:%S" found-pos saved-match-data)
+          (if found-pos
+              (if (progn
+                    (setq syntax (syntax-ppss found-pos))
+                    (or (pel--inside-string-p syntax)
+                        (pel--inside-comment-p syntax)))
+                  ;; if found something inside a string or comment, skip past it
+                  (setq found-pos
+                        (pel-syntax-skip-string-and-comment-backward found-pos
+                                                                     syntax))
+                ;; Otherwise check if we found the conditional end (group 1) or a
+                ;; nested if (group2)
+                (if (nth significant-match-elem saved-match-data)
+                    ;; Found a condition end marker. If nesting is 1 or 0 we reached
+                    ;; the end, otherwise decrease the nesting & continue searching.
+                    (progn
+                      (if (< nesting-level 1)
+                          (setq searching nil)
+                        (pel-= nesting-level 1)))
+                  ;; Found something else: conditional end; increase nesting
+                  ;; and continue searching
+                  (pel+= nesting-level 1)))
+            (setq searching nil))
+          ;; (message "nesting-level: %d" nesting-level)
+          (and searching found-pos (> nesting-level 0))))
     (if (> nesting-level 0)
         (progn
           (goto-char original-pos)
-          (user-error "Can't find matching beginning of conditional: \
-missing %d nested levels" nesting-level))
+          (user-error "Can't find matching conditional %s: \
+missing %d nested levels" conditional nesting-level))
       (when (and found-pos (/= found-pos original-pos))
         (push-mark original-pos)))
     found-pos))
