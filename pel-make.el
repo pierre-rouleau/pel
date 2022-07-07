@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 15 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-07-06 16:28:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-07-07 08:31:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -132,34 +132,61 @@ The command support shift-marking."
                        err)))))))
 
 ;; ---------------------------------------------------------------------------
+;; Navigate across if/else/endif
+;; -----------------------------
 
-;; G1---------------------------------------------------------------------------------------------|
-;;                 G2----------------------------------------------------------------------------|
-;;                    g3------|
-;;                                  G4--------------------------------------------------------|
-;;                                     G5---------------------------------------|
-;;                                        g6-----|      g7----|      g8------|
-;;                 (                                                                             )
-;;                    (       )     (                                                         )
-;;                                     (                                        )
-;;                                        (       )     (      )     (       )
-;; "^[[:blank:]]*\\(\\(endif\\)\\|\\(\\(\\(ifdef\\)\\|\\(ifeq\\)\\|\\(ifneq\\)\\)[[:blank:]]\\)\\)"
-;;                    |%s     |        |%s                                      |
-;;                                  |                                                         |
+;;               G1-------------------------------------------------------------------------------------------------------------------|
+;;                 G2---------------------------------------------------------------------------------------------------------------|
+;;   end--->          g3------------------------|
+;;                           c4--------------|
+;;   else-->                                       g5------------------------|
+;;                                                       c6---------------|
+;;                                                                              G7------------------------------------------------|
+;;   if*--->                                                                      G8-------------------------------|
+;;                                                                                   g9-----|  g10----|  g11-----|
+;; "^[[:blank:]]*\(\(\(endif\([#[:blank:]].*\)?\)\|\(else\([#[:blank:]].*\)?\)\|\(\(\(ifdef\)\|\(ifeq\)\|\(ifneq\)\)[[:blank:]].*\)\)\)$"
+
 (defconst pel--make-conditional-regexp-format
-  "^[[:blank:]]*\\(\\(%s\\)\\|\\(%s\\)\\)"
+  "^[[:blank:]]*\\(\\(\\(endif\\([#[:blank:]].*\\)?\\)\\|\\(else\\([#[:blank:]].*\\)?\\)\\|\\(\\(\\(ifdef\\)\\|\\(ifeq\\)\\|\\(ifneq\\)\\)[[:blank:]].*\\)\\)\\)$"
   "Regexp to find make conditionals")
 
-(defconst pel--make-if-regexp
-  "\\(\\(ifdef\\)\\|\\(ifeq\\)\\|\\(ifneq\\)\\)[[:blank:]]"
-  "The Make if statements.")
-
-(defconst pel--make-conditional-group-forward 3
-  "Significant matching group when searching end of make conditional.")
-
-(defconst pel--make-conditional-group-backward 4
+(defconst pel--make-conditional-group-if 8
   "Significant matching group when searching beginning of make conditional.")
 
+(defconst pel--make-conditional-else 5
+  "Significant matching group when searching else of make conditional.")
+
+(defconst pel--make-conditional-end 3
+  "Significant matching group when searching end of make conditional.")
+
+(defun pel--make-token-from-match (match-result)
+  "Return a if, else, end token from search MATCH-RRESULT."
+  (cond
+   ((nth 15 match-result) 'if)
+   ((nth 11 match-result) 'else)
+   ((nth 7 match-result)  'end)
+   (t (error "Invalid search result"))))
+
+(defun pel--make-token-pos-from-match (match-result)
+  "Return token position from search MATCH-RESULT."
+  (cond
+   ((nth 15 match-result) (or
+                           (nth 16 match-result)   ; ifdef
+                           (nth 18 match-result)   ; ifeq
+                           (nth 20 match-result))) ; ifneq
+   ((nth 11 match-result) (nth 10 match-result))   ; else
+   ((nth 7 match-result)  (nth 4 match-result))    ; endif
+   (t (error "Invalid search result"))))
+
+;; (defun roup ()
+;;   ""
+;;   (interactive)
+;;   (let ((msg-data nil))
+;;     (re-search-forward pel--make-conditional-regexp-format nil :noerror)
+;;     (setq msg-data (match-data))
+;;     (message "%s  at %S"
+;;              (pel--make-token-from-match msg-data)
+;;              (pel--make-token-pos-from-match msg-data))))
 
 (defun pel--after-else-p ()
   "Return t if point is on the same line and after a `else'."
@@ -190,21 +217,15 @@ CAUTION: the move to else does not yet support nested statements!
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
   (interactive "^P")
-  (when (pel--after-else-p)
-    (beginning-of-line nil)
-    (pel-make-backward-conditional)
-    (setq to-else nil))
-
   (pel-syntax-conditional-forward
-   (format pel--make-conditional-regexp-format
-           (if to-else
-               "else"
-             "endif")
-           pel--make-if-regexp)
-   pel--make-conditional-group-forward
+   pel--make-conditional-regexp-format
+   (function pel--make-token-from-match)
+   (function pel--make-token-pos-from-match)
+   to-else
    (if to-else
-       "else statement"
-     "end statement")))
+       "else"
+     "end statement"))
+  (forward-word 1))
 
 (defun pel-make-backward-conditional (&optional to-else)
   "Move point backward to matching beginning of make conditional.
@@ -216,29 +237,14 @@ CAUTION: the move to else does not yet support nested statements!
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
   (interactive "^P")
-  ;; When point is on the same line and after a `else' statement keyword, then
-  ;; to move backward to its matching `if' statement will not work directly
-  ;; because point is inside the scope: to handle this situation move to the
-  ;; matching `endif' and then move back to it's matching `if'.
-  (when (pel--after-else-p)
-    (pel-make-forward-conditional)
-    (setq to-else nil))
-
   (pel-syntax-conditional-backward
-   (format pel--make-conditional-regexp-format
-           "endif"
-           (if to-else
-               "else"
-             pel--make-if-regexp))
-   pel--make-conditional-group-backward
+   pel--make-conditional-regexp-format
+   (function pel--make-token-from-match)
+   (function pel--make-token-pos-from-match)
+   to-else
    (if to-else
        "else statement"
-     "beginning of if statement"))
-  ;; When moving back to an else statement, place point after the else
-  ;; statement to allow moving backward to the matching if in the next
-  ;; command.
-  (when to-else
-    (end-of-line nil)))
+     "beginning of if statement")))
 
 ;; ---------------------------------------------------------------------------
 ;; NMake format support

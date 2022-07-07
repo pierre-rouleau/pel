@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-07-06 15:22:19 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-07-07 08:27:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -398,29 +398,41 @@ Returns the number of text modifications performed."
 ;; programming languages, try to combine the 2 functions into a single one
 ;; since their code is almost the same.
 
-(defun pel-syntax-conditional-forward (regexp significant-end-group conditional)
+(defun pel-syntax-conditional-forward (regexp
+                                       match-to-token-f
+                                       match-to-pos-f
+                                       to-else
+                                       conditional)
   "Move point forward to matching end of conditional.
 
-Search using specified REGEXP which should identify several groups:
-all beginning, middle and end syntax keywords.
+Search using specified REGEXP which should identify several
+groups: if token, else token (if at all possible for the syntax),
+and end token.
 
-The significant-end-group must identify the regexp group that identifies
-all (or the only one) end conditional keyword expression to search.
+The MATCH-TO-TOKEN-F argument must be a function that takes the
+match-data result of a successful REGEXP search and returns one
+of the following symbols that identifies the token found: if,
+else or end.
 
-If the REGEXP identifies an expression that searches from the beginning
-of a line, set FROM-BOL to indicate it.
+The MATCH-TO-POS-F argument must be a function that takes the
+match -data result of a successful REGEXP search and returns the
+position of the beginning of the token found.
+
+Search for end statement unless TO-ELSE is non-nil: in that case search for
+else statement.
 
 CONDITIONAL is a string message used to describe the target searched.
 
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
-  (let ((significant-match-elem (- (* 2 significant-end-group) 1))
-        (nesting-level 0)
+  (let ((nesting-level 0)
         (found-pos nil)
         (syntax nil)
-        (saved-match-data nil)
+        (mdata nil)
+        (token nil)
         (searching t)
         (original-pos (point)))
+    ;; (message "pel-syntax-conditional-forward %s ---------------" to-else)
     (when (pel-string-starts-with-p regexp "^")
       (beginning-of-line nil))
     (while
@@ -428,32 +440,31 @@ return the new position. On error, issue user error on mismatch."
           ;; (message "-----Searching: nesting=%d" nesting-level)
           (setq found-pos
                 (re-search-forward regexp nil t))
-          (setq saved-match-data (match-data))
-          ;; (message "found-pos: %S\n match-data:%S" found-pos saved-match-data)
+          (setq mdata (match-data))
           (if found-pos
-              (if (progn
-                    (setq syntax (syntax-ppss found-pos))
-                    (or (pel--inside-string-p syntax)
-                        (pel--inside-comment-p syntax)))
-                  ;; if found something inside a string or comment, skip past it
-                  (setq found-pos
-                        (pel-syntax-skip-string-and-comment-forward found-pos
-                                                                    syntax))
-                ;; Otherwise check if we found the conditional end (group 1) or a
-                ;; nested if (group2)
-                (if (nth significant-match-elem saved-match-data)
-                    ;; Found a condition end marker. If nesting is 1 or 0 we reached
-                    ;; the end, otherwise decrease the nesting & continue
-                    ;; searching.
-                    (progn
-                      (if (< nesting-level 1)
-                          (setq searching nil)
-                        (pel-= nesting-level 1)))
-                  ;; found something else: conditional beginning; increase nesting
-                  ;; and continue searching
-                  (pel+= nesting-level 1)))
+              ;; get syntax of the beginning of the token found
+              ;; skip over token found inside string or comment
+              (unless (progn
+                        (setq syntax (syntax-ppss (funcall match-to-pos-f mdata)))
+                        (or (pel--inside-string-p syntax)
+                            (pel--inside-comment-p syntax)))
+                (setq token (funcall match-to-token-f mdata))
+                ;; (message "%s found at %s" token found-pos)
+                (cond
+                 ((eq token 'if)
+                  (pel+= nesting-level 1))
+                 ((eq token 'else)
+                  (when (and to-else
+                             (<= nesting-level 1))
+                    (setq nesting-level 0)
+                    (setq searching nil)))
+                 ((eq token 'end)
+                  (pel-= nesting-level 1)
+                  (unless to-else
+                    (when (eq nesting-level 0)
+                      (setq searching nil)))))
+                (right-char 1))
             (setq searching nil))
-          ;; (message "nesting-level: %d" nesting-level)
           (and searching found-pos (> nesting-level 0))))
     (if (> nesting-level 0)
         (progn
@@ -461,60 +472,76 @@ return the new position. On error, issue user error on mismatch."
           (user-error "Can't find matching conditional %s: \
 missing %d nested levels" conditional nesting-level))
       (when (and found-pos (/= found-pos original-pos))
+        (left-char 1)
         (push-mark original-pos)))
     found-pos))
 
 
-(defun pel-syntax-conditional-backward (regexp significant-begin-group conditional)
+(defun pel-syntax-conditional-backward (regexp
+                                        match-to-token-f
+                                        match-to-pos-f
+                                        to-else
+                                        conditional)
   "Move point backward to matching beginning of conditional.
 
-Search using specified REGEXP which should identify several groups:
-all beginning, middle and end syntax keywords.
+Search using specified REGEXP which should identify several
+groups: if token, else token (if at all possible for the syntax),
+and end token.
 
-The significant-end-group must identify the regexp group that identifies
-all (or the only one) end conditional keyword expression to search.
+The MATCH-TO-TOKEN-F argument must be a function that takes the
+match-data result of a successful REGEXP search and returns one
+of the following symbols that identifies the token found: if,
+else or end.
+
+The MATCH-TO-POS-F argument must be a function that takes the
+match -data result of a successful REGEXP search and returns the
+position of the beginning of the token found.
+
+Search for end statement unless TO-ELSE is non-nil: in that case search for
+else statement.
 
 CONDITIONAL is a string message used to describe the target searched.
 
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
-  (let ((significant-match-elem (- (* 2 significant-begin-group) 1))
-        (nesting-level 0)
+  (let ((nesting-level 0)
         (found-pos nil)
         (syntax nil)
-        (saved-match-data nil)
+        (mdata nil)
+        (token nil)
         (searching t)
         (original-pos (point)))
+    ;; (message "<<<<<<--pel-syntax-conditional-backward %s---------------" to-else)
     (while
         (progn
           ;; (message "-----Searching: nesting=%d" nesting-level)
           (setq found-pos
                 (re-search-backward regexp nil t))
-          (setq saved-match-data (match-data))
-          ;; (message "found-pos: %S\n match-data:%S" found-pos saved-match-data)
+          (setq mdata (match-data))
           (if found-pos
-              (if (progn
-                    (setq syntax (syntax-ppss found-pos))
-                    (or (pel--inside-string-p syntax)
-                        (pel--inside-comment-p syntax)))
-                  ;; if found something inside a string or comment, skip past it
-                  (setq found-pos
-                        (pel-syntax-skip-string-and-comment-backward found-pos
-                                                                     syntax))
-                ;; Otherwise check if we found the conditional end (group 1) or a
-                ;; nested if (group2)
-                (if (nth significant-match-elem saved-match-data)
-                    ;; Found a condition end marker. If nesting is 1 or 0 we reached
-                    ;; the end, otherwise decrease the nesting & continue searching.
-                    (progn
-                      (if (< nesting-level 1)
-                          (setq searching nil)
-                        (pel-= nesting-level 1)))
-                  ;; Found something else: conditional end; increase nesting
-                  ;; and continue searching
+              ;; get syntax of the beginning of the token found
+              ;; skip over token found in string or comment
+              (unless (progn
+                        (setq syntax (syntax-ppss (funcall match-to-pos-f mdata)))
+                        (or (pel--inside-string-p syntax)
+                            (pel--inside-comment-p syntax)))
+                (setq token (funcall match-to-token-f mdata))
+                ;; (message "%s found at %s" token found-pos)
+                (cond
+                 ((eq token 'if)
+                  (pel-= nesting-level 1)
+                  (unless to-else
+                    (when (eq nesting-level 0)
+                      (setq searching nil))))
+                 ((eq token 'else)
+                  (when (and to-else
+                             (<= nesting-level 1))
+                    (setq nesting-level 0)
+                    (setq searching nil)))
+                 ((eq token 'end)
                   (pel+= nesting-level 1)))
+                (left-char 1))
             (setq searching nil))
-          ;; (message "nesting-level: %d" nesting-level)
           (and searching found-pos (> nesting-level 0))))
     (if (> nesting-level 0)
         (progn
@@ -522,6 +549,7 @@ return the new position. On error, issue user error on mismatch."
           (user-error "Can't find matching conditional %s: \
 missing %d nested levels" conditional nesting-level))
       (when (and found-pos (/= found-pos original-pos))
+        (right-char 1)
         (push-mark original-pos)))
     found-pos))
 
