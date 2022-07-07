@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-07-07 08:56:24 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-07-07 09:51:11 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -444,11 +444,14 @@ return the new position. On error, issue user error on mismatch."
           (setq mdata (match-data))
           (if found-pos
               ;; get syntax of the beginning of the token found
-              ;; skip over token found inside string or comment
-              (unless (progn
-                        (setq syntax (syntax-ppss (funcall match-to-pos-f mdata)))
-                        (or (pel--inside-string-p syntax)
-                            (pel--inside-comment-p syntax)))
+              (if (progn
+                    (setq syntax (syntax-ppss (funcall match-to-pos-f mdata)))
+                    (or (pel--inside-string-p syntax)
+                        (pel--inside-comment-p syntax)))
+                  ;; skip over token found inside string or comment
+                  (setq found-pos (pel-syntax-skip-string-and-comment-forward
+                                   found-pos syntax))
+                ;; not in string or comment: process token
                 (setq token (funcall match-to-token-f mdata))
                 ;; (message "%s found at %s" token found-pos)
                 (cond
@@ -523,11 +526,14 @@ return the new position. On error, issue user error on mismatch."
           (setq mdata (match-data))
           (if found-pos
               ;; get syntax of the beginning of the token found
-              ;; skip over token found in string or comment
-              (unless (progn
-                        (setq syntax (syntax-ppss (funcall match-to-pos-f mdata)))
-                        (or (pel--inside-string-p syntax)
-                            (pel--inside-comment-p syntax)))
+              (if (progn
+                    (setq syntax (syntax-ppss (funcall match-to-pos-f mdata)))
+                    (or (pel--inside-string-p syntax)
+                        (pel--inside-comment-p syntax)))
+                  ;; skip over token found in string or comment
+                  (setq found-pos (pel-syntax-skip-string-and-comment-backward
+                                   found-pos syntax))
+                ;; not in string or comment: process token
                 (setq token (funcall match-to-token-f mdata))
                 ;; (message "%s found at %s" token found-pos)
                 (cond
