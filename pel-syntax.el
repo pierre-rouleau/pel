@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-07-07 08:27:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-07-07 08:56:24 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -75,6 +75,7 @@
 ;;
 (require 'pel--base)               ; use: `pel-=', `pel+=',
 ;;                                 ;      `pel-string-starts-with-p'
+;;                                 ;      `pel-string-ends-with-p'
 (require 'pel--options)            ; use: `pel-syntax-text-properties'
 (require 'syntax)     ; syntax always available, even in emacs -Q
 (eval-when-compile (require 'subr-x))   ; use: `string-join'
@@ -512,6 +513,8 @@ return the new position. On error, issue user error on mismatch."
         (searching t)
         (original-pos (point)))
     ;; (message "<<<<<<--pel-syntax-conditional-backward %s---------------" to-else)
+    (when (pel-string-ends-with-p regexp "$")
+      (end-of-line nil))
     (while
         (progn
           ;; (message "-----Searching: nesting=%d" nesting-level)
