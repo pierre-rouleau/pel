@@ -236,7 +236,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 ** New Features:
 - New: *pel-make-forward-conditional* and *pel-make-backward-conditional*
   bound to ~<f6> <right>~ and ~<f6> <left>~ respectively
-  in make files allowing to navigate across if-endif statements.
+  in make files allow navigation across if-endif statements.
+  Also, the *pel-make-outward-forward-conditional* and
+  *pel-make-outward-backward-conditional* bound to ~<f6> <down>~ and ~<f6>
+  <up>~ respectively in make files allow navigation outward of if-endif
+  statements.
+  These commands are built on flexible syntax parsing functions in the
+  pel-syntax.el file and regular expressions. It's possible to build other
+  conditional navigation for other languages using these pel-syntax functions.
 - New *pel-show-filemng-status* command (bound to ~<f11> f ?~ that shows the
   status of several file management related status: file encoding, the way
   pel-open-at-point resolves relative file paths.

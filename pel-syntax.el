@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-07-07 09:51:11 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-07-12 16:02:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -402,6 +402,7 @@ Returns the number of text modifications performed."
 (defun pel-syntax-conditional-forward (regexp
                                        match-to-token-f
                                        match-to-pos-f
+                                       current-nesting
                                        to-else
                                        conditional)
   "Move point forward to matching end of conditional.
@@ -409,6 +410,12 @@ Returns the number of text modifications performed."
 Search using specified REGEXP which should identify several
 groups: if token, else token (if at all possible for the syntax),
 and end token.
+
+Search from nesting-level specified by CURRENT-NESTING.
+Use 0 to search forward to the matching end (or else) when point
+is outside of the if statement.  Use 1 to move outward forward to
+the end of the if statement where point is in.  Use higher value
+to move outward several statement nesting levels.
 
 The MATCH-TO-TOKEN-F argument must be a function that takes the
 match-data result of a successful REGEXP search and returns one
@@ -426,7 +433,7 @@ CONDITIONAL is a string message used to describe the target searched.
 
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
-  (let ((nesting-level 0)
+  (let ((nesting-level current-nesting)
         (found-pos nil)
         (syntax nil)
         (mdata nil)
@@ -434,6 +441,8 @@ return the new position. On error, issue user error on mismatch."
         (searching t)
         (original-pos (point)))
     ;; (message "pel-syntax-conditional-forward %s ---------------" to-else)
+    (when (< nesting-level 0)
+      (error "Invalid current-nesting value of %d specified" current-nesting))
     (when (pel-string-starts-with-p regexp "^")
       (beginning-of-line nil))
     (while
@@ -484,6 +493,7 @@ missing %d nested levels" conditional nesting-level))
 (defun pel-syntax-conditional-backward (regexp
                                         match-to-token-f
                                         match-to-pos-f
+                                        current-nesting
                                         to-else
                                         conditional)
   "Move point backward to matching beginning of conditional.
@@ -491,6 +501,12 @@ missing %d nested levels" conditional nesting-level))
 Search using specified REGEXP which should identify several
 groups: if token, else token (if at all possible for the syntax),
 and end token.
+
+Search from nesting-level specified by CURRENT-NESTING.
+Use 0 to search backward to the matching if (or else) when point
+is outside of the if statement.  Use 1 to move outward backward
+to the beginning of the if statement where point is in.  Use
+higher value to move outward several statement nesting levels.
 
 The MATCH-TO-TOKEN-F argument must be a function that takes the
 match-data result of a successful REGEXP search and returns one
@@ -508,7 +524,7 @@ CONDITIONAL is a string message used to describe the target searched.
 
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
-  (let ((nesting-level 0)
+  (let ((nesting-level current-nesting)
         (found-pos nil)
         (syntax nil)
         (mdata nil)
@@ -516,6 +532,8 @@ return the new position. On error, issue user error on mismatch."
         (searching t)
         (original-pos (point)))
     ;; (message "<<<<<<--pel-syntax-conditional-backward %s---------------" to-else)
+    (when (< nesting-level 0)
+      (error "Invalid current-nesting value of %d specified" current-nesting))
     (when (pel-string-ends-with-p regexp "$")
       (end-of-line nil))
     (while

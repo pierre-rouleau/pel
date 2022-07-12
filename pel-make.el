@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 15 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-07-07 08:31:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-07-12 16:16:05 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -221,10 +221,11 @@ return the new position. On error, issue user error on mismatch."
    pel--make-conditional-regexp-format
    (function pel--make-token-from-match)
    (function pel--make-token-pos-from-match)
+   0
    to-else
    (if to-else
        "else"
-     "end statement"))
+     "endif statement"))
   (forward-word 1))
 
 (defun pel-make-backward-conditional (&optional to-else)
@@ -241,10 +242,42 @@ return the new position. On error, issue user error on mismatch."
    pel--make-conditional-regexp-format
    (function pel--make-token-from-match)
    (function pel--make-token-pos-from-match)
+   0
    to-else
    (if to-else
        "else statement"
      "beginning of if statement")))
+
+
+;;-pel-autoload
+(defun pel-make-outward-forward-conditional ()
+  "Move point forward, outward to end of current if statement.
+
+On success, push the original position on the mark ring and
+return the new position. On error, issue user error on mismatch."
+  (interactive "^")
+  (pel-syntax-conditional-forward
+   pel--make-conditional-regexp-format
+   (function pel--make-token-from-match)
+   (function pel--make-token-pos-from-match)
+   1
+   nil
+   "endif statement")
+  (forward-word 1))
+
+(defun pel-make-outward-backward-conditional ()
+  "Move point backward, outward to beginning of current if statement.
+
+On success, push the original position on the mark ring and
+return the new position. On error, issue user error on mismatch."
+  (interactive "^")
+  (pel-syntax-conditional-backward
+   pel--make-conditional-regexp-format
+   (function pel--make-token-from-match)
+   (function pel--make-token-pos-from-match)
+   1
+   nil
+   "beginning of if statement"))
 
 ;; ---------------------------------------------------------------------------
 ;; NMake format support

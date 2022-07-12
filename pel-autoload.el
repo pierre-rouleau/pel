@@ -463,6 +463,8 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-make" for:
     pel-make-forward-conditional
     pel-make-backward-conditional
+    pel-make-outward-forward-conditional
+    pel-make-outward-backward-conditional
     pel-make-next-macro
     pel-make-previous-macro
     makefile-nmake-mode)
