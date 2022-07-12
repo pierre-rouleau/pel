@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 15 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-07-12 16:16:05 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-07-12 18:38:34 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -250,32 +250,38 @@ return the new position. On error, issue user error on mismatch."
 
 
 ;;-pel-autoload
-(defun pel-make-outward-forward-conditional ()
+(defun pel-make-outward-forward-conditional (&optional nest-count)
   "Move point forward, outward to end of current if statement.
+
+By default move 1 nest level outward.  A larger count can be
+specified with optional NEST-COUNT numeric argument.
 
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
-  (interactive "^")
+  (interactive "^p")
   (pel-syntax-conditional-forward
    pel--make-conditional-regexp-format
    (function pel--make-token-from-match)
    (function pel--make-token-pos-from-match)
-   1
+   (abs nest-count)
    nil
    "endif statement")
   (forward-word 1))
 
-(defun pel-make-outward-backward-conditional ()
+(defun pel-make-outward-backward-conditional (&optional nest-count)
   "Move point backward, outward to beginning of current if statement.
+
+By default move 1 nest level outward.  A larger count can be
+specified with optional NEST-COUNT numeric argument.
 
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
-  (interactive "^")
+  (interactive "^p")
   (pel-syntax-conditional-backward
    pel--make-conditional-regexp-format
    (function pel--make-token-from-match)
    (function pel--make-token-pos-from-match)
-   1
+   (abs nest-count)
    nil
    "beginning of if statement"))
 
