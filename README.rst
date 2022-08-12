@@ -18,11 +18,11 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#quickst
 
-.. image:: https://img.shields.io/badge/Direct_Installable_Packages-229-teal
+.. image:: https://img.shields.io/badge/Direct_Installable_Packages-236-teal
    :alt: Version
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
-.. image:: https://img.shields.io/badge/PEL_Commands-503-teal
+.. image:: https://img.shields.io/badge/PEL_Commands-505-teal
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#commands
 
