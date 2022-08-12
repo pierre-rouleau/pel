@@ -948,6 +948,7 @@ There is also a set of extension packages for Ivy. PEL supports:
   prompting commands, then activate Counsel with `pel-use-counsel'.
 - Counsel OSX App on macOS to launch macOS application via en Emacs prompt
   with Ivy completion: activate with `pel-use-counsel-osx-app'.
+- Ivy-hydra is activated when `pel-use-ivy-hydra' is set.
 
 Select the input completion mode used at startup with:
 `pel-initial-completion-mode'.
@@ -1166,6 +1167,16 @@ On Linux, the `counsel-linux-app` is bound to the same key if user option
 variable `pel-use-counsel' is set to t."
   :link '(url-link :tag "counsel-osx-app @ GitHub"
                    "https://github.com/d12frosted/counsel-osx-app")
+  :group 'pel-pkg-for-completion
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-ivy-hydra nil
+  "Control whether `ivy-hydra' is used when counsel is used.
+
+Using this also activates `pel-use-hydra'."
+  :link '(url-link :tag "ivy-hydra @ MELPA"
+                   "https://melpa.org/#/ivy-hydra")
   :group 'pel-pkg-for-completion
   :type 'boolean
   :safe #'booleanp)
@@ -2906,7 +2917,8 @@ To activate it you must also activate `pel-use-log-support'"
 (pel-put 'pel-use-hydra :also-required-when '(or pel-use-indent-tools
                                                  pel-use-iflipb
                                                  pel-use-treemacs
-                                                 pel-activate-hydra-for-greek))
+                                                 pel-activate-hydra-for-greek
+                                                 pel-use-ivy-hydra))
 
 (defcustom pel-use-which-key t
   "Control whether PEL uses the which-key package."
@@ -10168,7 +10180,8 @@ indexing system."
 (when (or pel-use-indent-tools
           pel-use-iflipb
           pel-use-treemacs
-          pel-activate-hydra-for-greek)
+          pel-activate-hydra-for-greek
+          pel-use-ivy-hydra)
   (setq pel-use-hydra t))
 
 (when pel-use-lsp-origami

@@ -234,6 +234,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: support the *ivy-hydra* package installation via the *pel-use-ivy-hydra* user-option.
 - New: when *pel-use-counsel* user-option is set, the ~<f11> f L~  key
   sequence is bound to *counsel-locate* instead to the plain *locate* command.
 - New: *pel-make-forward-conditional* and *pel-make-backward-conditional*

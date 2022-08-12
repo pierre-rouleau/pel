@@ -1697,6 +1697,8 @@ can't bind negative-argument to C-_ and M-_"
     (pel-eval-after-load counsel
       (when pel-system-is-linux-p
         (define-key pel: "A" 'counsel-linux-app)))
+    (when (and pel-use-ivy-hydra pel-use-hydra)
+      (pel-ensure-package ivy-hydra from: melpa))
     ;;
     (when (and pel-system-is-macos-p pel-use-counsel-osx-app)
       (pel-ensure-package counsel-osx-app from: melpa)
