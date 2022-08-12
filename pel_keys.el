@@ -5856,7 +5856,7 @@ the ones defined from the buffer now."
 (define-key pel2:file (kbd "M-f") #'find-file)
 (define-key pel:file "I" #'insert-file-literally)
 (define-key pel:file "O" #'find-file-read-only-other-window)
-(define-key pel:file "L" #'locate)
+(define-key pel:file "L" (if pel-use-counsel #'counsel-locate #'locate))
 (define-key pel:file "W" #'append-to-file)
 (define-key pel:file "d" #'find-dired)
 (define-key pel:file "F"  'pel-open-buffer-file-in-os-app)
