@@ -2054,6 +2054,7 @@ can't bind negative-argument to C-_ and M-_"
 (when pel-use-elf-mode
   (if (executable-find "readelf")
       (progn
+        (pel-ensure-package elf-mode from: melpa)
         (add-to-list 'auto-mode-alist '("\\.\\(?:a\\|so\\|elf\\)\\'"
                                         . elf-mode))
         (pel-autoload-file elf-mode for:
