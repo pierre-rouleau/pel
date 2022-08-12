@@ -2051,6 +2051,16 @@ can't bind negative-argument to C-_ and M-_"
   (add-to-list 'auto-mode-alist '("\\.ihx\\'" . intel-hex-mode))
   (pel-config-major-mode intel-hex :no-f12-keys))
 
+(when pel-use-elf-mode
+  (if (executable-find "readelf")
+      (progn
+        (add-to-list 'auto-mode-alist '("\\.\\(?:a\\|so\\|elf\\)\\'"
+                                        . elf-mode))
+        (pel-autoload-file elf-mode for:
+                           elf-mode))
+    (display-warning :warning
+                     "pel-use-elf-mode is on, but readelf executable is not available!")))
+
 ;; ---------------------------------------------------------------------------
 ;; - Programming Language Support
 ;; ==============================
