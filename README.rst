@@ -394,7 +394,7 @@ Notes
 
               PEL currently implements 520 interactive commands.  Some are
               always loaded.  Several are auto-loaded when needed.  This count
-              exclude the template commands that are dynamically constructed
+              excludes the number of template commands that are dynamically constructed
               and loaded only for major modes, such as Erlang, that support
               extensive tempo skeleton templates.
 
