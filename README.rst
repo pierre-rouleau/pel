@@ -392,12 +392,11 @@ Notes
               The command detects the key sequence and the context to
               identify which PEL PDF to open.
 
-              PEL currently implements 503 interactive commands.  Some are
+              PEL currently implements 520 interactive commands.  Some are
               always loaded.  Several are auto-loaded when needed.  This count
               exclude the template commands that are dynamically constructed
               and loaded only for major modes, such as Erlang, that support
-              extensive tempo skeleton templates.  The total count of commands
-              including the skeleton command is 519.
+              extensive tempo skeleton templates.
 
               Navigate the PDF files starting from the `PEL Index PDF`_ to get more
               information.
