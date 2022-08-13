@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-10-29 19:08:41, updated by Pierre Rouleau>
+;; Time-stamp: <2022-08-13 11:13:26 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -99,14 +99,16 @@
 
 ;; The function call trees are shown here:
 ;;
-;; * `pel-package-info'
-;;   - `pel-activated-packages'
-;;   - `pel-user-options'
-;;     - `pel-user-option-p'
-;;   - `pel--show-pkgs-for'
-;;   - `pel-elpa-unrequired'            (see its call tree below)
-;;   - `pel-utils-unrequired'           (see its call tree below)
-;;   - `pel--show-pkgs-in-excess-for'
+;; * `pel-package-info-all'
+;;    - `pel-load-all'
+;;    * `pel-package-info'
+;;      - `pel-activated-packages'
+;;      - `pel-user-options'
+;;        - `pel-user-option-p'
+;;      - `pel--show-pkgs-for'
+;;      - `pel-elpa-unrequired'            (see its call tree below)
+;;      - `pel-utils-unrequired'           (see its call tree below)
+;;      - `pel--show-pkgs-in-excess-for'
 ;;
 ;;
 ;; * `pel-cleanup'
@@ -791,6 +793,148 @@ also be requested by PEL user-options.\n"
                  (insert (format "- %3d: %s\n" count pkg)))))))
       (message overview))))
 
+(defvar loaded-file-name load-file-name)
+
+(defun pel-load-all ()
+  "Load *all* PEL files.
+
+Use this to compute statistics."
+  (interactive)
+  (let ((current-directory (file-name-directory loaded-file-name))
+        (files (list
+                "pel--keys-macros.el"
+                "pel--options.el"
+                "pel--macros.el"
+                "pel-abbrev.el"
+                "pel-applescript.el"
+                "pel-align.el"
+                "pel-autocomplete.el"
+                "pel-autoload.el"
+                "pel-benchmark.el"
+                "pel-bookmark.el"
+                "pel-browse.el"
+                "pel-buffer.el"
+                "pel-c-comment.el"
+                "pel-cc.el"
+                "pel-cc-find.el"
+                "pel-ccp.el"
+                "pel-comint.el"
+                "pel-comment.el"
+                "pel-comment-adorn.el"
+                "pel-commonlisp.el"
+                "pel-completion.el"
+                "pel-cua.el"
+                "pel-cursor.el"
+                "pel-custom.el"
+                "pel-diff.el"
+                "pel-elisp.el"
+                "pel-elisp-analyze.el"
+                "pel-emacs.el"
+                "pel-elpa.el"
+                "pel-erlang.el"
+                "pel-erlang-skels.el"
+                "pel-ert.el"
+                "pel-face-ut.el"
+                "pel-ffind.el"
+                "pel-ffind-inpath.el"
+                "pel-file.el"
+                "pel-filedir.el"
+                "pel-filex.el"
+                "pel-file-recent.el"
+                "pel-fill.el"
+                "pel-font.el"
+                "pel-frame-control.el"
+                "pel-fs.el"
+                "pel-go.el"
+                "pel-goto-addr.el"
+                "pel-graphviz-dot.el"
+                "pel-help.el"
+                "pel-hex.el"
+                "pel-hideshow.el"
+                "pel-hide-docstring.el"
+                "pel-highlight.el"
+                "pel-ido.el"
+                "pel-imenu.el"
+                "pel-imenu-dbg.el"
+                "pel-imenu-ido.el"
+                "pel-ini.el"
+                "pel-indent.el"
+                "pel-itemize.el"
+                "pel-key-chord.el"
+                "pel-kbmacros.el"
+                "pel-lfe.el"
+                "pel-line-control.el"
+                "pel-lisp.el"
+                "pel-lispy.el"
+                "pel-list.el"
+                "pel-lsp.el"
+                "pel-make.el"
+                "pel-mark.el"
+                "pel-navigate.el"
+                "pel-net.el"
+                "pel-numkpad.el"
+                "pel-open.el"
+                "pel-outline.el"
+                "pel-package.el"
+                "pel-pathmng.el"
+                "pel-plantuml.el"
+                "pel-pp.el"
+                "pel-process.el"
+                "pel-prompt.el"
+                "pel-psw.el"
+                "pel-read.el"
+                "pel-register.el"
+                "pel-regexp.el"
+                "pel-rst.el"
+                "pel-scheme.el"
+                "pel-scroll.el"
+                "pel-search.el"
+                "pel-search-regexp.el"
+                "pel-seq.el"
+                "pel-setup-base.el"
+                "pel-setup.el"
+                "pel-setup-27.el"
+                "pel-sh.el"
+                "pel-shell.el"
+                "pel-sh-iedit.el"
+                "pel-skels.el"
+                "pel-skels-generic.el"
+                "pel-skels-c.el"
+                "pel-skels-cpp.el"
+                "pel-skels-clisp.el"
+                "pel-skels-elisp.el"
+                "pel-skels-rst.el"
+                "pel-smartparens.el"
+                "pel-speedbar.el"
+                "pel-spell.el"
+                "pel-spell-iedit.el"
+                "pel-syntax.el"
+                "pel-sudo-edit.el"
+                "pel-time.el"
+                "pel-xref.el"
+                "pel-tempo.el"
+                "pel-text-insert.el"
+                "pel-text-transform.el"
+                "pel-undo.el"
+                "pel-uuid.el"
+                "pel-vc.el"
+                "pel-vcs.el"
+                "pel-whitespace.el"
+                "pel-window.el"
+                "pel-xr.el"
+                "pel-yang.el")))
+    (dolist (file files)
+      (load-file (expand-file-name file current-directory)))))
+
+(defun pel-package-info-all ()
+  "Generate statistics with all PEL files loaded.
+
+Use only for computing statistics!! It loads all of PEL."
+  (interactive)
+  (pel-load-all)
+  (pel-package-info))
+
+;; ---------------------------------------------------------------------------
 
 (defun pel-inactive-user-options ()
   "Return a list of inactive PEL user-options symbols."

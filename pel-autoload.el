@@ -526,6 +526,7 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-package" for:
     pel-package-info
+    pel-package-info-all
     pel-cleanup)
   (pel-autoload-function "pel-package" for:
     pel-install-from-elpa-attic)

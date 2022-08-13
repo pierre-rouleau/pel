@@ -434,6 +434,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - New: *pel-shell-next-prompt* and *pel-shell-previous-prompt* commands respectively bound to ~<f12> <down>~
   and ~<f12> <up>~ key sequence to move to the next and previous prompt line in the shell.  These commands use
   the new *pel-shell-prompt-line-regexp* user-option to identify the regexp used for searching for the prompt.
+- New: The Makefile runs a new test, loading all PEL files, computing the number of PEL commands, using the
+  new *pel-package-info-all* command written for that purpose only.
 * Version 0.4.1:
 ** Modifications:
 - Fix: The File Management PDF now describes PEL's ability to select the

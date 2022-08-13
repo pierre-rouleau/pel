@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2022-07-03 14:41:30 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2022-08-13 11:38:21 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -682,36 +682,30 @@ compile: pel
 pel: $(ELC_FILES)
 
 # Remove pel_keys.elc to ensure we always run the very latest.
-pel_keys.elc: pel_keys.el
+pel_keys.elc: pel_keys.el pel-ran-tests.tag
 	-rm pel_keys.elc
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -f batch-byte-compile pel_keys.el
-	@printf "\n\n***** Running Integration tests\n"
-	$(EMACS) --batch -L . -l ert -l test/pel-base-tests.el -f ert-run-tests-batch-and-exit
-	$(EMACS) --batch -L . -l ert -l test/pel-elpa-test.el -f ert-run-tests-batch-and-exit
-	$(EMACS) --batch -L . -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
-	$(EMACS) --batch -L . -l ert -l test/pel-list-test.el -f ert-run-tests-batch-and-exit
-	$(EMACS) --batch -L . -l ert -l test/pel-package-test.el -f ert-run-tests-batch-and-exit
-	$(EMACS) --batch -L . -l $(EMACS_INIT) -l pel-package.el -f pel-package-info
 
-# NOTE: make sure the tests above are the same as the test target below!
-#             It's done this way so that if nothing has changed and `make`
-#             is the issued command, nothing will be executed.
-#       TODO: find a way to eliminate this duplication.
 # -----------------------------------------------------------------------------
 # Integration test rules
 #
 # PEL uses the ERT package to run tests.
+# The logic uses a 0-byte tag file, pel-ran-tests.tag, that remembers the
+# completed execution of PEL tests and prevents running them again if they
+# were executed.
 
+test:	pel-ran-tests.tag
+	@echo "To run tests again, remove the file pel-ran-tests.tag"
 
-.PHONY: test
-test:
+pel-ran-tests.tag:
 	@printf "***** Running Integration tests\n"
 	$(EMACS) --batch -L . -l ert -l test/pel-base-tests.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-elpa-test.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-file-test.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-list-test.el -f ert-run-tests-batch-and-exit
 	$(EMACS) --batch -L . -l ert -l test/pel-package-test.el -f ert-run-tests-batch-and-exit
-	$(EMACS) --batch -L . -l $(EMACS_INIT) -l pel-package.el -f pel-package-info
+	$(EMACS) --batch -L . -l $(EMACS_INIT) -l pel-package.el -f pel-package-info-all
+	touch pel-ran-tests.tag
 
 # ----------------------------------------------------------------------------
 # Startup time measurement
@@ -818,6 +812,7 @@ clean-mypelpa:
 
 clean: clean-tar clean-mypelpa
 	-rm *.elc
+	-rm pel-ran-tests.tag
 	-rm -rf $(OUT_DIR)
 	-rm -rf $(TMP_DIR)
 
