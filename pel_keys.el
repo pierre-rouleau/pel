@@ -347,6 +347,10 @@ Done in this function to allow advising libraries that remap these keys."
     (pel-install-github-file "pierre-rouleau/ini.el/master" "ini.el")))
 (when pel-use-emacs-toml
   (pel-ensure-package toml from: melpa))
+(when pel-use-kconfig-mode
+  (pel-install-github-file "delaanthonio/kconfig-mode/master" "kconfig-mode.el")
+  (add-to-list 'auto-mode-alist '("\\Kconfig\\'" . kconfig-mode))
+  (pel-autoload-file kconfig-mode for: kconfig-mode))
 
 ;; ---------------------------------------------------------------------------
 ;; - Font Control

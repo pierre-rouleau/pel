@@ -1562,6 +1562,15 @@ The Hippie Expand can be used together with any."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-kconfig-mode nil
+  "Whether PEL supports kconfig-mode for the Linux kernel Konfig files."
+  :group 'pel-pkg-for-conf-file
+  :link '(url-link :tag "kconfig-mode @ Github"
+                   "https://github.com/delaanthonio/kconfig-mode#readme")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-kconfig-mode :package-is :in-utils)
+
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-filemng
 ;; -------------------
@@ -3013,6 +3022,8 @@ terminal mode for your environment, change the value."
   :type '(choice
           (const :tag "No special key needed: <M-kp-add> is recognized." nil)
           (string :tag "Special key sequence string to use in TTY mode.")))
+
+;; ---------------------------------------------------------------------------
 
 ;; ---------------------------------------------------------------------------
 ;; Object File Format Support

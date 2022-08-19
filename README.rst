@@ -18,7 +18,7 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#quickst
 
-.. image:: https://img.shields.io/badge/Direct_Installable_Packages-237-teal
+.. image:: https://img.shields.io/badge/Direct_Installable_Packages-238-teal
    :alt: Version
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
