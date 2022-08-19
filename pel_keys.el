@@ -2055,8 +2055,8 @@ can't bind negative-argument to C-_ and M-_"
   (if (executable-find "readelf")
       (progn
         (pel-install-github-file "pierre-rouleau/elf-mode/master" "elf-mode.el")
-        ;; (add-to-list 'auto-mode-alist '("\\.\\(?:a\\|so\\|elf\\)\\'"
-        ;;                                 . elf-mode))
+        ;; Activate elf-mode from file content, not file name:
+        ;; for files that begin with 0x7f followed by 'ELF'.
         (add-to-list 'magic-mode-alist (cons "ELF" 'elf-mode))
         (pel-autoload-file elf-mode for: elf-mode))
     (display-warning :warning
