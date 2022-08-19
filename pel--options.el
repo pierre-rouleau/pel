@@ -885,16 +885,6 @@ When set, PEL activates the following key sequences:
   :type 'boolean
   :safe #'booleanp)
 
-(defcustom pel-use-elf-mode nil
-  "Control whether ELF files are opened in elf-mode buffer showing symbols."
-  :link '(url-link :tag "ELF files @ Wikipedia"
-                   "https://en.wikipedia.org/wiki/Executable_and_Linkable_Format")
-  :link '(url-link :tag "elf-mode @ MELPA"
-                   "https://melpa.org/#/elf-mode")
-  :group 'pel-pkg-for-buffer
-  :type 'boolean
-  :safe #'booleanp)
-
 ;; ---------------------------------------------------------------------------
 ;; Completion Support
 ;; ------------------
@@ -3047,6 +3037,17 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-object-file
   :type '(repeat function))
+
+
+(defcustom pel-use-elf-mode nil
+  "Control whether ELF files are opened in elf-mode buffer showing symbols."
+  :link '(url-link :tag "ELF files @ Wikipedia"
+                   "https://en.wikipedia.org/wiki/Executable_and_Linkable_Format")
+  :link '(url-link :tag "elf-mode @ MELPA"
+                   "https://melpa.org/#/elf-mode")
+  :group 'pel-pkg-for-object-file
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; Marking Management
