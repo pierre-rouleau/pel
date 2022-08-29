@@ -634,7 +634,8 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-sh" for:
     pel-sh-double-quote-word
     pel-sh-single-quote-word
-    pel-sh-backtick-quote-word)
+    pel-sh-backtick-quote-word
+    pel-sh-fix-sc2006)
 
   (pel-autoload "pel-shell" for:
     pel-shell

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June  7 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-06-07 18:40:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-08-26 11:18:00 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -42,7 +42,7 @@
             (end-pos (region-end)))
         (goto-char begin-pos)
         (insert quote-char)
-        (goto-char end-pos)
+        (goto-char (+ end-pos 1))
         (insert quote-char))
     (insert quote-char)
     (forward-word)
@@ -65,6 +65,19 @@
   "Surround word at point or selected area with backtick characters."
   (interactive "*")
   (pel--quote-word ?`))
+
+;; ---------------------------------------------------------------------------
+;; Source Code Translation functions
+;; ---------------------------------
+
+
+;;-pel-autoload
+(defun pel-sh-fix-sc2006 ()
+  "Replace a back-ticked string with $() as requested by shellcheck SC2006."
+  (interactive "*")
+  (let ((found-pos (re-search-forward "`\\(.+\\)`" )))
+    (when found-pos
+      (replace-match "$(\\1)" :fixedcase))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-sh)
