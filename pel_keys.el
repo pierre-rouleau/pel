@@ -1954,6 +1954,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-a     - AsciiDoc
 ;; M-c     - Common Workspace Language (CWL)
 ;; M-g     - GraphViz Dot
+;; M-k     - Kconfig
 ;; M-l     - Outline
 ;; M-m     - Markdown
 ;; M-o     - OrgMode
@@ -7607,7 +7608,8 @@ the ones defined from the buffer now."
 ;; ivy-xref
 (when pel-use-ivy-xref
   (pel-ensure-package ivy-xref from: melpa)
-  (pel-autoload-file ivy-xref for: ivy-xref-show-xrefs))
+  (pel-autoload-file ivy-xref for: ivy-xref-show-xrefs)
+  (define-key pel:xref-backend "I" 'pel-xref-backend-to-ivy-xref))
 
 ;; helm-xref
 (when pel-use-helm-xref
@@ -7616,7 +7618,8 @@ the ones defined from the buffer now."
       (pel-autoload-file helm-xref for:
                          helm-xref-show-xrefs-27
                          helm-xref-show-defs-27)
-    (pel-autoload-file helm-xref for: helm-xref-show-xrefs)))
+    (pel-autoload-file helm-xref for: helm-xref-show-xrefs))
+  (define-key pel:xref-backend "H" 'pel-xref-backend-to-helm-xref))
 
 (when (or pel-use-ivy-xref
           pel-use-helm-xref)

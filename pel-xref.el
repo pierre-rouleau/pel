@@ -1,6 +1,6 @@
 ;;; pel-xref.el --- xref cross referencing utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -295,6 +295,24 @@ where: nil := Emacs xref default (not initialized).")
 ;; forward references to prevent warnings
 (defvar xref-show-xrefs-function)
 (defvar xref-show-definitions-function) ;only in Emacs >= 27
+
+;;-pel-autoload
+(defun pel-xref-backend-to-helm-xref ()
+  "Select helm-xref back-end for xref."
+  (interactive)
+  (if pel-use-helm-xref
+    (setq xref-show-xrefs-function (if pel-emacs-27-or-later-p
+                                       'helm-xref-show-xrefs-27
+                                     'helm-xref-show-xrefs))
+    (user-error "Install helm-xref first by setting pel-use-helm-xref to t")))
+
+;;-pel-autoload
+(defun pel-xref-backend-to-ivy-xref ()
+  "Select ivy-xref back-end for xref."
+  (interactive)
+  (if pel-use-ivy-xref
+      (setq xref-show-xrefs-function 'ivy-xref-show-xrefs)
+    (user-error "Install ivy-xref first by setting pel-use-ivy-xref to t")))
 
 (defun pel-xref-ivy-xref-state-str ()
   "Return the ivy-xref state representation string."

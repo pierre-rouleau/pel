@@ -700,6 +700,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-syntax-at-point)
 
   (pel-autoload "pel-xref" for:
+    pel-xref-backend-to-helm-xref
+    pel-xref-backend-to-ivy-xref
     pel-xref-toggle-dumb-jump-mode
     pel-xref-toggle-gxref
     pel-xref-toggle-rtags
