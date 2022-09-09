@@ -294,25 +294,7 @@ where: nil := Emacs xref default (not initialized).")
 
 ;; forward references to prevent warnings
 (defvar xref-show-xrefs-function)
-(defvar xref-show-definitions-function) ;only in Emacs >= 27
-
-;;-pel-autoload
-(defun pel-xref-backend-to-helm-xref ()
-  "Select helm-xref back-end for xref."
-  (interactive)
-  (if pel-use-helm-xref
-    (setq xref-show-xrefs-function (if pel-emacs-27-or-later-p
-                                       'helm-xref-show-xrefs-27
-                                     'helm-xref-show-xrefs))
-    (user-error "Install helm-xref first by setting pel-use-helm-xref to t")))
-
-;;-pel-autoload
-(defun pel-xref-backend-to-ivy-xref ()
-  "Select ivy-xref back-end for xref."
-  (interactive)
-  (if pel-use-ivy-xref
-      (setq xref-show-xrefs-function 'ivy-xref-show-xrefs)
-    (user-error "Install ivy-xref first by setting pel-use-ivy-xref to t")))
+(defvar xref-show-definitions-function) ;only in Emacs >= 2
 
 (defun pel-xref-ivy-xref-state-str ()
   "Return the ivy-xref state representation string."
@@ -340,13 +322,23 @@ where: nil := Emacs xref default (not initialized).")
     (when pel-use-helm-xref  (push '(?h "helm-xref" helm-xref) selection))
     (reverse selection)))
 
+
 ;;-pel-autoload
 (defun pel-xref-set-front-end (front-end)
   "Activate the xref FRONT-END specified.
 FRONT-END must be one of:
+- 'select-from-customization : activate what is selected when available else
+  select default.
 - nil | 'xref : Emacs default xref front end
 - 'ivy-xref   : use ivy-xref front end
 - 'helm-xref  : use helm-xref front end."
+  (when (eq front-end 'select-from-customization)
+    (if (or (and (eq pel-startup-xref-front-end 'ivy-xref)
+		 (not pel-use-ivy-xref))
+	    (and (eq pel-startup-xref-front-end 'helm-xref)
+		 (not pel-use-helm-xref)))
+	(setq front-end 'xref))
+    (setq front-end pel-startup-xref-front-end))
   (cond
    ;; ivy-xref
    ((eq front-end 'ivy-xref)
@@ -380,6 +372,8 @@ FRONT-END must be one of:
              (fboundp 'xref--show-xref-buffer))
         (progn
           (setq xref-show-xrefs-function 'xref--show-xref-buffer)
+	  (when pel-emacs-27-or-later-p
+            (setq xref-show-definitions-function 'xref--show-xref-buffer))
           (setq pel--xref-front-end-used-tool 'xref))
       (user-error "Cannot load xref!")))))
 

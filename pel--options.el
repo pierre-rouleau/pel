@@ -1189,7 +1189,12 @@ selection package which provides a large number of commands you
 can execute on the completion list.
 The initial completion mode is set by `pel-initial-completion-mode'.
 
-Note that `pel-use-helm-cscope' indirectly activates `pel-use-helm'."
+Note that the following user options indirectly activates `pel-use-helm':
+- `pel-use-helm-cscope',
+- `pel-use-helm-lsp',
+- `pel-use-helm-xref',
+- `pel-use-indent-tools'`."
+
   :link '(url-link :tag "Helm home page"
                    "https://emacs-helm.github.io/helm/")
   :link '(url-link :tag "A package in a league of its own: Helm"
