@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Work-round to tramp problem with the P4 VC back-end implemented in
+  *pel-edit-as-root* to prevent that command to hang when the P4, the VC
+  back-end for Perforce, is active.
 - Fix: The *pel-open-at-point* command now handles links properly when the
   user has forcibly changed the current directory to something other than the
   parent of the buffer's visited file.  By default, the command builds an

@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, April 20 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-05-19 11:12:15 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-09-18 14:24:38 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -27,6 +27,9 @@
 ;;
 ;; This file provides the `pel-edit-as-root' function that opens a file as root,
 ;; enabling the editing of files such as Linux /etc/fstab.
+;;
+;; The current implementation provide a work-around to problem affecting tramp
+;; causing it to hang when P4 VC backend is enabled.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -48,21 +51,33 @@
 If already visiting a file and a prefix ARG is specified
 then edit currently visited file as root."
   (interactive "P")
-  ;; Tramp gets used to access file via sudo.  And in some cases, if the
-  ;; current working directory is under VCS control, the Emacs VC support
-  ;; seems to interfere with Tramp.  To prevent this, change the directory to
-  ;; user's home for the duration of the command since that directory is
-  ;; unlikely to be under control of some VCS.
-  (let ((original-cwd default-directory))
+  ;; Tramp is used to access file via sudo.
+  ;;
+  ;; Work-round to tramp hanging issue(s):
+  ;; - I noticed that when the Perforce VC backend is active the operation
+  ;;   fails, hanging with ''Checking ‘vc-registered’ for ...''
+  ;; - I also noticed that if I remove P4 from the `vc-handled-backends' list
+  ;;   the problem disappears.
+  ;; So for now: temporary disable P4 backend during the
+  ;; execution of the command.
+  ;; - I have also seen reports that it's best to change current directory
+  ;;   when executing otherwise interaction with the VC backend might also hit.
+  ;;   I have not recently seen that problem but for the moment I continue to
+  ;;   change current directory when executing the command just in case.
+  (let ((original-vc-handled-backends vc-handled-backends)
+	(original-cwd default-directory))
     (unwind-protect
-     (progn
-       (cd "~")
-       (if (and buffer-file-name
-                arg)
-           (find-alternate-file (pel--sudo-filename buffer-file-name))
-         (find-file (pel--sudo-filename
-                     (ido-read-file-name "Find file(as root): ")))))
-     (cd original-cwd))))
+	(progn
+	  (cd "~")
+	  (when (memq 'P4 vc-handled-backends)
+	    (setq vc-handled-backends (remove 'P4 vc-handled-backends)))
+	  (if (and buffer-file-name
+		   arg)
+	      (find-alternate-file (pel--sudo-filename buffer-file-name))
+	    (find-file (pel--sudo-filename
+			(ido-read-file-name "Find file(as root): ")))))
+      (cd original-cwd)
+      (setq vc-handled-backends original-vc-handled-backends))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-edit-as-root)
