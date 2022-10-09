@@ -2181,7 +2181,7 @@ can't bind negative-argument to C-_ and M-_"
                      c-toggle-hungry-state
                      c-toggle-syntactic-indentation)
 
-  (defun pel--map-cc-for (prefix setup-prefix guess-prefix &optional c-preproc-prefix)
+  (defun pel--map-cc-for (prefix setup-prefix guess-prefix &optional c-preproc-prefix c-search-replace-prefix)
     "Map in the PEL keys for CC Mode in the global keymap specified by PREFIX.
 If C-PREPROC-PREFIX also bind the keys for C preprocessor related
 commands and sub-keys inside that prefix.  If a key must be
@@ -2240,7 +2240,17 @@ bind it again after this call."
       (define-key c-preproc-prefix "e" 'hif-evaluate-macro)
       (define-key c-preproc-prefix "n" 'pel-pp-next-directive)
       (define-key c-preproc-prefix "p" 'pel-pp-prev-directive)
-      (define-key c-preproc-prefix "?" 'pel-pp-show-state)))
+      (define-key c-preproc-prefix "?" 'pel-pp-show-state))
+    ;; C/C++ specific commands (not provide to D)
+    (when c-search-replace-prefix
+      (define-key c-search-replace-prefix "n" 'pel-c-search-equal-NULL)
+      (define-key c-search-replace-prefix "N" 'pel-c-search-not-equal-NULL)
+      (define-key c-search-replace-prefix "f" 'pel-c-search-equal-false)
+      (define-key c-search-replace-prefix "F" 'pel-c-search-not-equal-false)
+      (define-key c-search-replace-prefix "t" 'pel-c-search-equal-true)
+      (define-key c-search-replace-prefix "T" 'pel-c-search-not-equal-true)
+      (define-key c-search-replace-prefix "*" 'pel-c-search-any-comparison-problem)
+      (define-key c-search-replace-prefix (kbd "C-f") 'pel-c-fix-comparison-problems)))
   (declare-function pel--map-cc-for "pel_keys")
 
   (defun pel--setup-for-cc ()
@@ -2294,6 +2304,7 @@ MODE must be a symbol."
   (define-pel-global-prefix pel:c-guess       (kbd "<f11> SPC c <f4> g"))
   (define-pel-global-prefix pel:for-c-preproc (kbd "<f11> SPC c #"))
   (define-pel-global-prefix pel:c-skel        (kbd "<f11> SPC c <f12>"))
+  (define-pel-global-prefix pel:c-search-replace (kbd "<f11> SPC c s"))
 
   (when pel-use-ini
       (define-key pel:c-setup (kbd "C-^") 'pel-cc-set-file-finder-ini-tool-name))
@@ -2303,7 +2314,7 @@ MODE must be a symbol."
     (define-pel-global-prefix pel:c-help (kbd "<f11> SPC c ?"))
     (define-key pel:c-help "?" #'man)
     (define-key pel:c-help "e" 'pel-toggle-c-eldoc-mode))
-  (pel--map-cc-for pel:for-c pel:c-setup pel:c-guess pel:for-c-preproc)
+  (pel--map-cc-for pel:for-c pel:c-setup pel:c-guess pel:for-c-preproc pel:c-search-replace)
 
   (when pel-use-bison-mode
     (pel-ensure-package bison-mode from: melpa)
@@ -2366,6 +2377,7 @@ MODE must be a symbol."
   (define-pel-global-prefix pel:c++-guess       (kbd "<f11> SPC C <f4> g"))
   (define-pel-global-prefix pel:for-c++-preproc (kbd "<f11> SPC C #"))
   (define-pel-global-prefix pel:c++-skel        (kbd "<f11> SPC C <f12>"))
+  (define-pel-global-prefix pel:c++-search-replace (kbd "<f11> SPC C s"))
 
   (when pel-use-speedbar
     ;; Add extensions not already covered by default Emacs code
@@ -2379,10 +2391,10 @@ MODE must be a symbol."
   (pel-set-auto-mode c++-mode for: "\\.inl\\'") ; not supported by default
 
   (when pel-use-ini
-      (define-key pel:c++-setup (kbd "C-^") 'pel-cc-set-file-finder-ini-tool-name))
+    (define-key pel:c++-setup (kbd "C-^") 'pel-cc-set-file-finder-ini-tool-name))
   (when pel-use-plantuml
     (define-key pel:for-c++ "u" 'pel-render-commented-plantuml))
-  (pel--map-cc-for pel:for-c++ pel:c++-setup pel:c++-guess pel:for-c++-preproc)
+  (pel--map-cc-for pel:for-c++ pel:c++-setup pel:c++-guess pel:for-c++-preproc pel:c++-search-replace)
 
   (pel-eval-after-load cc-mode
     (pel-config-major-mode c++ pel:for-c++

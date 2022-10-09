@@ -125,6 +125,16 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-smb-previous
     pel-show-all-buffers)
 
+  (pel-autoload "pel-c-utils" for:
+    pel-c-search-equal-NULL
+    pel-c-search-not-equal-NULL
+    pel-c-search-equal-true
+    pel-c-search-not-equal-true
+    pel-c-search-equal-false
+    pel-c-search-not-equal-false
+    pel-c-search-any-comparison-problem
+    pel-c-fix-comparison-problems)
+
   (pel-autoload-function "pel-cc-find" for:
     pel-cc-find-via-pel-ini
     pel-cc-find-activate-finder-method)

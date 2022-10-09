@@ -237,6 +237,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: In C and C++ buffers, the ~<f12> s~ key prefix provides access to new
+  commands that can be used to search for C and C++ poor styled code that
+  explicitly compare pointers against NULL or boolean values against TRUE,
+  true, FALSE and false.  It also provides a command to improve the code by
+  removing the explicit comparison against these keywords.  All is implemented
+  by the new pel-c-utils.el file.
 - New: support for *kconfig-mode* is activated when *pel-use-kconfig-mode* is turned on.
   This supports the Linux kernel Kconfig configuration files.
 - New: support the *ivy-hydra* package installation via the *pel-use-ivy-hydra* user-option.
