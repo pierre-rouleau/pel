@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October  9 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-10 08:53:31 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-10-10 10:55:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -109,9 +109,8 @@ Return number of expression replaced."
     (dolist (keyword keywords)
       (while (progn
                (goto-char (point-min))
-               (re-search-forward
-                (format format-regexp keyword)
-                nil :noerror))
+               (re-search-forward (format format-regexp keyword)
+                                  nil :noerror))
         (replace-match rep-regexp :fixedcase)
         (setq change-count (1+ change-count))))
     change-count))
@@ -121,7 +120,7 @@ Return number of expression replaced."
 
 Replace the %s  by what is required for C++ class support.
 Return adjusted regexp."
-  (format regex (if (eq major-mode 'cpp-mode)
+  (format regex (if (eq major-mode 'c++-mode)
                     "\\([_[:alpha:]][_[:alnum:]]*::\\)*"
                   "")))
 
