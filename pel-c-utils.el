@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October  9 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-09 19:02:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-10-09 23:11:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -90,7 +90,7 @@
                   "\\(NULL *!=\\)\\|\\(!= *NULL\\)"
                   "\\(true *==\\)\\|\\(== *true\\)"
                   "\\(TRUE *==\\)\\|\\(== *TRUE\\)"
-                  "\\(true *!=\\)\\|\\(!= *true\\)"+
+                  "\\(true *!=\\)\\|\\(!= *true\\)"
                   "\\(TRUE *!=\\)\\|\\(!= *TRUE\\)"
                   "\\(false *==\\)\\|\\(== *false\\)"
                   "\\(FALSE *==\\)\\|\\(== *FALSE\\)"
