@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October  9 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-09 23:11:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-10-10 08:53:31 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -116,6 +116,15 @@ Return number of expression replaced."
         (setq change-count (1+ change-count))))
     change-count))
 
+(defun pel--c-adjusted (regex)
+  "Return adjusted regex.
+
+Replace the %s  by what is required for C++ class support.
+Return adjusted regexp."
+  (format regex (if (eq major-mode 'cpp-mode)
+                    "\\([_[:alpha:]][_[:alnum:]]*::\\)*"
+                  "")))
+
 (defun pel-c-fix-comparison-problems ()
   "Fix C/C++ code that compares pointer explicitly to NULL, false and true.
 
@@ -136,7 +145,6 @@ Also always compare with  the original code to ensure everything is fine!"
         (not-equal-false-count 0)
         (equal-true-count 0)
         (not-equal-true-count 0))
-
     ;; 1 ------------------------------------------------
     ;; Replace `if (ptr != NULL)' by `if (ptr)'
     (while (progn
@@ -149,69 +157,79 @@ Also always compare with  the original code to ensure everything is fine!"
     ;; Replace `if (ptr == NULL)' by `if (!ptr)'
     (setq equal-NULL-count
           (pel--c-replace '("NULL")
-                          "\\([_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*?\\) *== *%s"
+                          (pel--c-adjusted
+                           "\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*?\\) *== *NULL")
                           "!\\1"))
     ;; 3 ------------------------------------------------
     ;; Replace `if (NULL == ptr)' by `if (!ptr)'
     (pel+= equal-NULL-count
-          (pel--c-replace '("NULL")
-                          "%s *== *\\([_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*\\)"
-                          "!\\1"))
+           (pel--c-replace '("NULL")
+                           (pel--c-adjusted
+                            "%%s *== *\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*\\)")
+                           "!\\1"))
     ;; 1 ------------------------------------------------
     ;; Replace `if (boolean != false)' by `if (boolean)'
     ;; Replace `if (boolean != False)' by `if (boolean)'
     (setq not-equal-false-count
           (pel--c-replace '("false" "FALSE")
-                          "\\([_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*?\\) *!= *%s"
+                          (pel--c-adjusted
+                           "\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*?\\) *!= *%%s")
                           "\\1"))
     ;; 2 ------------------------------------------------
     ;; Replace `if (false != boolean)' by `if (boolean)'
     ;; Replace `if (FALSE != boolean)' by `if (boolean)'
     (pel+= not-equal-false-count
            (pel--c-replace '("false" "FALSE")
-                           "%s *!= *\\([_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*\\)"
+                           (pel--c-adjusted
+                            "%%s *!= *\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*\\)")
                            "\\1"))
     ;; 3 ------------------------------------------------
     ;; Replace `if (boolean == false)' by `if (!boolean)'
     ;; Replace `if (boolean == FALSE)' by `if (!boolean)'
     (setq equal-false-count
           (pel--c-replace '("false" "FALSE")
-                          "\\([_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*?\\) *== *%s"
+                          (pel--c-adjusted
+                           "\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*?\\) *== *%%s")
                           "!\\1"))
     ;; 4 ------------------------------------------------
     ;; Replace `if (false == boolean)' by `if (!boolean)'
     ;; Replace `if (FALSE == boolean)' by `if (!boolean)'
     (pel+= equal-false-count
            (pel--c-replace '("false" "FALSE")
-                           "%s *== *\\([_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*\\)"
+                           (pel--c-adjusted
+                            "%%s *== *\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*\\)")
                            "!\\1"))
     ;; 1  ------------------------------------------------
     ;; Replace `if (boolean != true)' by `if (!boolean)'
     ;; Replace `if (boolean != TRUE)' by `if (!boolean)'
     (setq not-equal-true-count
           (pel--c-replace '("true" "TRUE")
-                          "\\([_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*?\\) *!= *%s"
+                          (pel--c-adjusted
+                           "\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*?\\) *!= *%%s")
                           "!\\1"))
     ;; 2 ------------------------------------------------
     ;; Replace `if (true != boolean)' by `if (!boolean)'
     ;; Replace `if (TRUE != boolean)' by `if (!boolean)'
     (pel+= not-equal-true-count
            (pel--c-replace '("true" "TRUE")
-                           "%s *!= *\\([_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*\\)"
+                           (pel--c-adjusted
+                            "%%s *!= *\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*\\)")
                            "!\\1"))
     ;; 3 ------------------------------------------------
     ;; Replace `if (boolean == true)' by `if (boolean)'
     ;; Replace `if (boolean == TRUE)' by `if (boolean)'
     (setq equal-true-count
           (pel--c-replace '("true" "TRUE")
-                          "\\([_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*?\\) *== *%s"
+                          (pel--c-adjusted
+                           "\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*?\\) *== *%%s")
                           "\\1"))
     ;; 4 ------------------------------------------------
     ;; Replace `if (true == boolean)' by `if (boolean)'
     ;; Replace `if (TRUE == boolean)' by `if (boolean)'
     (pel+= equal-true-count
            (pel--c-replace '("true" "TRUE")
-                           "%s *== *\\([_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*\\)"
+                           (pel--c-adjusted
+                            "%%s *== *\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*\\)")
                            "\\1"))
     ;; ------------------------------------------------
     ;; Print report of operation
