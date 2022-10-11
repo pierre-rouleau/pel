@@ -2241,7 +2241,7 @@ bind it again after this call."
       (define-key c-preproc-prefix "n" 'pel-pp-next-directive)
       (define-key c-preproc-prefix "p" 'pel-pp-prev-directive)
       (define-key c-preproc-prefix "?" 'pel-pp-show-state))
-    ;; C/C++ specific commands (not provide to D)
+    ;; C/C++ specific commands (not provided to D)
     (when c-search-replace-prefix
       (define-key c-search-replace-prefix "n" 'pel-c-search-equal-NULL)
       (define-key c-search-replace-prefix "N" 'pel-c-search-not-equal-NULL)
@@ -2254,7 +2254,7 @@ bind it again after this call."
   (declare-function pel--map-cc-for "pel_keys")
 
   (defun pel--setup-for-cc ()
-    "More setup for CC modes: add c preprocessor hydra."
+    "More setup for CC modes: add c preprocessor hydra and navigation."
     ;; The pel-⅀c-preproc requires Hydra: load it via the `pel--load-hydra'.
     ;; Note that `pel--load-hydra' removes itself and its presence is used as an
     ;; indication.  So we must check for it being bound and we must NOT use a
@@ -2262,7 +2262,17 @@ bind it again after this call."
     ;; currently is not the case anyway).
     (when (and pel-use-hydra
                (fboundp 'pel--load-hydra))
-      (pel--load-hydra :no-request)))
+      (pel--load-hydra :no-request))
+    (let ((map (if (eq major-mode 'c-mode)
+                   (when (boundp 'c-mode-map) c-mode-map)
+                 (when (boundp 'c++-mode-map) c++-mode-map))))
+      (when map
+        (message "Mapping F6 for %s" map)
+        (define-key map (kbd "<f6> <right>") 'pel-c-preproc-forward-conditional)
+        (define-key map (kbd "<f6> <left>")  'pel-c-preproc-backward-conditional)
+        (define-key map (kbd "<f6> <down>")  'pel-c-preproc-outward-forward-conditional)
+        (define-key map (kbd "<f6> <up>")    'pel-c-preproc-outward-backward-conditional))))
+
   (declare-function pel--setup-for-cc "pel_keys")
 
   (defun pel--set-cc-style (mode bracket-style newline-mode)

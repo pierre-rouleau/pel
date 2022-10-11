@@ -237,6 +237,16 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: In C and C++ buffers, the ~<f6>~ prefix followed by a cursor key are mapped
+  to C navigation across preprocessor conditional inclusion statements.
+  The ~<f6><right>~ maps to a command that moves point forward to the matching
+  =#endif= while the ~<f6><right>~ maps to a command that moves point backward
+  to the matching =#if=, =#ifdef= or =#ifndef=.  The ~<f6><up>~ and
+  ~<f6><down>~ keys map to command that move downward and backward out nested
+  levels.  This is implemented by the new *pel-c-preproc.el* file.  The key
+  mappings are the same as what are used in equivalent make file conditional
+  logic.  This first implementation does not yet support the C++23 =#elifdef=
+  and =#elifndef= statements and will ignore them.
 - New: In C and C++ buffers, the ~<f12> s~ key prefix provides access to new
   commands that can be used to search for C and C++ poor styled code that
   explicitly compare pointers against NULL or boolean values against TRUE,

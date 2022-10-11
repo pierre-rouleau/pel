@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 15 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-07-12 18:38:34 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-10-11 13:19:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -146,9 +146,9 @@ The command support shift-marking."
 ;;                                                                                   g9-----|  g10----|  g11-----|
 ;; "^[[:blank:]]*\(\(\(endif\([#[:blank:]].*\)?\)\|\(else\([#[:blank:]].*\)?\)\|\(\(\(ifdef\)\|\(ifeq\)\|\(ifneq\)\)[[:blank:]].*\)\)\)$"
 
-(defconst pel--make-conditional-regexp-format
+(defconst pel--make-conditional-regexp
   "^[[:blank:]]*\\(\\(\\(endif\\([#[:blank:]].*\\)?\\)\\|\\(else\\([#[:blank:]].*\\)?\\)\\|\\(\\(\\(ifdef\\)\\|\\(ifeq\\)\\|\\(ifneq\\)\\)[[:blank:]].*\\)\\)\\)$"
-  "Regexp to find make conditionals")
+  "Regexp to find make conditionals.")
 
 (defconst pel--make-conditional-group-if 8
   "Significant matching group when searching beginning of make conditional.")
@@ -182,7 +182,7 @@ The command support shift-marking."
 ;;   ""
 ;;   (interactive)
 ;;   (let ((msg-data nil))
-;;     (re-search-forward pel--make-conditional-regexp-format nil :noerror)
+;;     (re-search-forward pel--make-conditional-regexp nil :noerror)
 ;;     (setq msg-data (match-data))
 ;;     (message "%s  at %S"
 ;;              (pel--make-token-from-match msg-data)
@@ -212,13 +212,13 @@ The command support shift-marking."
 
 If a command prefix TO-ELSE is specified, move point forward
 after the matching else statement instead.
-CAUTION: the move to else does not yet support nested statements!
 
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
   (interactive "^P")
+  (beginning-of-line nil)
   (pel-syntax-conditional-forward
-   pel--make-conditional-regexp-format
+   pel--make-conditional-regexp
    (function pel--make-token-from-match)
    (function pel--make-token-pos-from-match)
    0
@@ -233,13 +233,12 @@ return the new position. On error, issue user error on mismatch."
 
 If a command prefix TO-ELSE is specified, move point backward
 after the matching else statement instead.
-CAUTION: the move to else does not yet support nested statements!
 
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
   (interactive "^P")
   (pel-syntax-conditional-backward
-   pel--make-conditional-regexp-format
+   pel--make-conditional-regexp
    (function pel--make-token-from-match)
    (function pel--make-token-pos-from-match)
    0
@@ -260,7 +259,7 @@ On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
   (interactive "^p")
   (pel-syntax-conditional-forward
-   pel--make-conditional-regexp-format
+   pel--make-conditional-regexp
    (function pel--make-token-from-match)
    (function pel--make-token-pos-from-match)
    (abs nest-count)
@@ -278,7 +277,7 @@ On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
   (interactive "^p")
   (pel-syntax-conditional-backward
-   pel--make-conditional-regexp-format
+   pel--make-conditional-regexp
    (function pel--make-token-from-match)
    (function pel--make-token-pos-from-match)
    (abs nest-count)

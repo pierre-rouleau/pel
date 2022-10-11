@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-07-12 16:02:07 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-10-11 13:13:09 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -440,17 +440,16 @@ return the new position. On error, issue user error on mismatch."
         (token nil)
         (searching t)
         (original-pos (point)))
-    ;; (message "pel-syntax-conditional-forward %s ---------------" to-else)
+    ;; (message "===================pel-syntax-conditional-forward %s: point=%S ================" to-else (point))
     (when (< nesting-level 0)
       (error "Invalid current-nesting value of %d specified" current-nesting))
-    (when (pel-string-starts-with-p regexp "^")
-      (beginning-of-line nil))
     (while
         (progn
-          ;; (message "-----Searching: nesting=%d" nesting-level)
+          ;; (message "-----At: %S --------------" (point))
           (setq found-pos
                 (re-search-forward regexp nil t))
           (setq mdata (match-data))
+          ;; (message "-----Searching: nesting=%d, found-pos=%S, point=%S" nesting-level found-pos (point))
           (if found-pos
               ;; get syntax of the beginning of the token found
               (if (progn
@@ -538,10 +537,11 @@ return the new position. On error, issue user error on mismatch."
       (end-of-line nil))
     (while
         (progn
-          ;; (message "-----Searching: nesting=%d" nesting-level)
+          ;; (message "-----At: %S --------------" (point))
           (setq found-pos
                 (re-search-backward regexp nil t))
           (setq mdata (match-data))
+          ;; (message "-----Searching: nesting=%d, found-pos=%S" nesting-level found-pos)
           (if found-pos
               ;; get syntax of the beginning of the token found
               (if (progn
