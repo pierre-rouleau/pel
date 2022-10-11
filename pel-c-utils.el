@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October  9 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-10 10:55:23 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-10-10 22:38:14 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -43,59 +43,59 @@
 (defun pel-c-search-equal-NULL ()
   "Search for code comparing '== NULL'"
   (interactive)
-  (re-search-forward "\\(NULL *==\\)\\|\\(== *NULL\\)"))
+  (re-search-forward "\\(NULL[[:blank:]]*==\\)\\|\\(==[[:blank:]]*NULL\\)"))
 
 (defun pel-c-search-not-equal-NULL ()
   "Search for code comparing '!= NULL'"
   (interactive)
-  (re-search-forward "\\(NULL *!=\\)\\|\\(!= *NULL\\)"))
+  (re-search-forward "\\(NULL[[:blank:]]*!=\\)\\|\\(!=[[:blank:]]*NULL\\)"))
 
 (defun pel-c-search-equal-true ()
   "Search for code comparing '== true'"
   (interactive)
   (re-search-forward
-   (string-join '("\\(true *==\\)\\|\\(== *true\\)"
-                  "\\(TRUE *==\\)\\|\\(== *TRUE\\)")
+   (string-join '("\\(true[[:blank:]]*==\\)\\|\\(==[[:blank:]]*true\\)"
+                  "\\(TRUE[[:blank:]]*==\\)\\|\\(==[[:blank:]]*TRUE\\)")
                 "\\|")))
 
 (defun pel-c-search-not-equal-true ()
   "Search for code comparing '!= true'"
   (interactive)
   (re-search-forward
-   (string-join '("\\(true *!=\\)\\|\\(!= *true\\)"
-                  "\\(TRUE *!=\\)\\|\\(!= *TRUE\\)")
+   (string-join '("\\(true[[:blank:]]*!=\\)\\|\\(!=[[:blank:]]*true\\)"
+                  "\\(TRUE[[:blank:]]*!=\\)\\|\\(!=[[:blank:]]*TRUE\\)")
                 "\\|")))
 
 (defun pel-c-search-equal-false ()
   "Search for code comparing '== false'"
   (interactive)
   (re-search-forward
-   (string-join '("\\(false *==\\)\\|\\(== *false\\)"
-                  "\\(FALSE *==\\)\\|\\(== *FALSE\\)")
+   (string-join '("\\(false[[:blank:]]*==\\)\\|\\(==[[:blank:]]*false\\)"
+                  "\\(FALSE[[:blank:]]*==\\)\\|\\(==[[:blank:]]*FALSE\\)")
                 "\\|")))
 
 (defun pel-c-search-not-equal-false ()
   "Search for code comparing '!= false'"
   (interactive)
   (re-search-forward
-   (string-join '("\\(false *!=\\)\\|\\(!= *false\\)"
-                  "\\(FALSE *!=\\)\\|\\(!= *FALSE\\)")
+   (string-join '("\\(false[[:blank:]]*!=\\)\\|\\(!=[[:blank:]]*false\\)"
+                  "\\(FALSE[[:blank:]]*!=\\)\\|\\(!=[[:blank:]]*FALSE\\)")
                 "\\|")))
 
 (defun pel-c-search-any-comparison-problem ()
   "Search for any problematic comparing code."
   (interactive)
   (re-search-forward
-   (string-join '("\\(NULL *==\\)\\|\\(== *NULL\\)"
-                  "\\(NULL *!=\\)\\|\\(!= *NULL\\)"
-                  "\\(true *==\\)\\|\\(== *true\\)"
-                  "\\(TRUE *==\\)\\|\\(== *TRUE\\)"
-                  "\\(true *!=\\)\\|\\(!= *true\\)"
-                  "\\(TRUE *!=\\)\\|\\(!= *TRUE\\)"
-                  "\\(false *==\\)\\|\\(== *false\\)"
-                  "\\(FALSE *==\\)\\|\\(== *FALSE\\)"
-                  "\\(false *!=\\)\\|\\(!= *false\\)"
-                  "\\(FALSE *!=\\)\\|\\(!= *FALSE\\)")
+   (string-join '("\\(NULL[[:blank:]]*==\\)\\|\\(==[[:blank:]]*NULL\\)"
+                  "\\(NULL[[:blank:]]*!=\\)\\|\\(!=[[:blank:]]*NULL\\)"
+                  "\\(true[[:blank:]]*==\\)\\|\\(==[[:blank:]]*true\\)"
+                  "\\(TRUE[[:blank:]]*==\\)\\|\\(==[[:blank:]]*TRUE\\)"
+                  "\\(true[[:blank:]]*!=\\)\\|\\(!=[[:blank:]]*true\\)"
+                  "\\(TRUE[[:blank:]]*!=\\)\\|\\(!=[[:blank:]]*TRUE\\)"
+                  "\\(false[[:blank:]]*==\\)\\|\\(==[[:blank:]]*false\\)"
+                  "\\(FALSE[[:blank:]]*==\\)\\|\\(==[[:blank:]]*FALSE\\)"
+                  "\\(false[[:blank:]]*!=\\)\\|\\(!=[[:blank:]]*false\\)"
+                  "\\(FALSE[[:blank:]]*!=\\)\\|\\(!=[[:blank:]]*FALSE\\)")
                 "\\|")))
 
 ;; ---------------------------------------------------------------------------
@@ -148,7 +148,7 @@ Also always compare with  the original code to ensure everything is fine!"
     ;; Replace `if (ptr != NULL)' by `if (ptr)'
     (while (progn
              (goto-char (point-min))
-             (re-search-forward "\\(NULL *!= *\\)\\|\\( *!= *NULL\\)"
+             (re-search-forward "\\(NULL[[:blank:]]*!=[[:blank:]]*\\)\\|\\([[:blank:]]*!=[[:blank:]]*NULL\\)"
                                 nil :noerror))
       (replace-match "" nil :literal)
       (setq not-equal-NULL-count (1+ not-equal-NULL-count)))
@@ -157,14 +157,14 @@ Also always compare with  the original code to ensure everything is fine!"
     (setq equal-NULL-count
           (pel--c-replace '("NULL")
                           (pel--c-adjusted
-                           "\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*?\\) *== *NULL")
+                           "\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:][[:blank:]],+*>.-]*)\\)*?\\)[[:blank:]]*==[[:blank:]]*NULL")
                           "!\\1"))
     ;; 3 ------------------------------------------------
     ;; Replace `if (NULL == ptr)' by `if (!ptr)'
     (pel+= equal-NULL-count
            (pel--c-replace '("NULL")
                            (pel--c-adjusted
-                            "%%s *== *\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*\\)")
+                            "%%s[[:blank:]]*==[[:blank:]]*\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:][[:blank:]],+*>.-]*)\\)*\\)")
                            "!\\1"))
     ;; 1 ------------------------------------------------
     ;; Replace `if (boolean != false)' by `if (boolean)'
@@ -172,7 +172,7 @@ Also always compare with  the original code to ensure everything is fine!"
     (setq not-equal-false-count
           (pel--c-replace '("false" "FALSE")
                           (pel--c-adjusted
-                           "\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*?\\) *!= *%%s")
+                           "\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:][[:blank:]],+*>.-]*)\\)*?\\)[[:blank:]]*!=[[:blank:]]*%%s")
                           "\\1"))
     ;; 2 ------------------------------------------------
     ;; Replace `if (false != boolean)' by `if (boolean)'
@@ -180,7 +180,7 @@ Also always compare with  the original code to ensure everything is fine!"
     (pel+= not-equal-false-count
            (pel--c-replace '("false" "FALSE")
                            (pel--c-adjusted
-                            "%%s *!= *\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*\\)")
+                            "%%s[[:blank:]]*!=[[:blank:]]*\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:][[:blank:]],+*>.-]*)\\)*\\)")
                            "\\1"))
     ;; 3 ------------------------------------------------
     ;; Replace `if (boolean == false)' by `if (!boolean)'
@@ -188,7 +188,7 @@ Also always compare with  the original code to ensure everything is fine!"
     (setq equal-false-count
           (pel--c-replace '("false" "FALSE")
                           (pel--c-adjusted
-                           "\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*?\\) *== *%%s")
+                           "\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:][[:blank:]],+*>.-]*)\\)*?\\)[[:blank:]]*==[[:blank:]]*%%s")
                           "!\\1"))
     ;; 4 ------------------------------------------------
     ;; Replace `if (false == boolean)' by `if (!boolean)'
@@ -196,7 +196,7 @@ Also always compare with  the original code to ensure everything is fine!"
     (pel+= equal-false-count
            (pel--c-replace '("false" "FALSE")
                            (pel--c-adjusted
-                            "%%s *== *\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*\\)")
+                            "%%s[[:blank:]]*==[[:blank:]]*\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:][[:blank:]],+*>.-]*)\\)*\\)")
                            "!\\1"))
     ;; 1  ------------------------------------------------
     ;; Replace `if (boolean != true)' by `if (!boolean)'
@@ -204,7 +204,7 @@ Also always compare with  the original code to ensure everything is fine!"
     (setq not-equal-true-count
           (pel--c-replace '("true" "TRUE")
                           (pel--c-adjusted
-                           "\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*?\\) *!= *%%s")
+                           "\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:][[:blank:]],+*>.-]*)\\)*?\\)[[:blank:]]*!=[[:blank:]]*%%s")
                           "!\\1"))
     ;; 2 ------------------------------------------------
     ;; Replace `if (true != boolean)' by `if (!boolean)'
@@ -212,7 +212,7 @@ Also always compare with  the original code to ensure everything is fine!"
     (pel+= not-equal-true-count
            (pel--c-replace '("true" "TRUE")
                            (pel--c-adjusted
-                            "%%s *!= *\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*\\)")
+                            "%%s[[:blank:]]*!=[[:blank:]]*\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:][[:blank:]],+*>.-]*)\\)*\\)")
                            "!\\1"))
     ;; 3 ------------------------------------------------
     ;; Replace `if (boolean == true)' by `if (boolean)'
@@ -220,7 +220,7 @@ Also always compare with  the original code to ensure everything is fine!"
     (setq equal-true-count
           (pel--c-replace '("true" "TRUE")
                           (pel--c-adjusted
-                           "\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*?\\) *== *%%s")
+                           "\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:][[:blank:]],+*>.-]*)\\)*?\\)[[:blank:]]*==[[:blank:]]*%%s")
                           "\\1"))
     ;; 4 ------------------------------------------------
     ;; Replace `if (true == boolean)' by `if (boolean)'
@@ -228,7 +228,7 @@ Also always compare with  the original code to ensure everything is fine!"
     (pel+= equal-true-count
            (pel--c-replace '("true" "TRUE")
                            (pel--c-adjusted
-                            "%%s *== *\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:] ,+*>.-]*)\\)*\\)")
+                            "%%s[[:blank:]]*==[[:blank:]]*\\(%s[_[:alpha:]][_[:alnum:]+*>.-]*\\(([_[:alnum:][[:blank:]],+*>.-]*)\\)*\\)")
                            "\\1"))
     ;; ------------------------------------------------
     ;; Print report of operation
