@@ -237,6 +237,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: Added support for *show-point-mode* when *pel-use-show-point-mode* is set.
+  Maps the *show-point-mode* command to the ~<f11> M-d p~ key.
 - New: In C and C++ buffers, the ~<f6>~ prefix followed by a cursor key are mapped
   to C navigation across preprocessor conditional inclusion statements.
   The ~<f6><right>~ maps to a command that moves point forward to the matching

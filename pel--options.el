@@ -3801,6 +3801,17 @@ To disable it replace it by an empty string."
   :group 'pel-pkg-for-modeline
   :type 'string)
 
+(defcustom pel-use-show-point-mode nil
+  "Control whether PEL activates the show-point-mode.
+
+That mode prints the current point value on the mode line."
+  :group 'pel-pkg-for-modeline
+  :link '(url-link :tag "Show Point Mode @ Emacs Wiki"
+                   "https://www.emacswiki.org/emacs/ShowPointMode")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-show-point-mode :package-is :in-utils)
+
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-navigation
 ;; ----------------------
