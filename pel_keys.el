@@ -2267,7 +2267,6 @@ bind it again after this call."
                    (when (boundp 'c-mode-map) c-mode-map)
                  (when (boundp 'c++-mode-map) c++-mode-map))))
       (when map
-        (message "Mapping F6 for %s" map)
         (define-key map (kbd "<f6> <right>") 'pel-c-preproc-forward-conditional)
         (define-key map (kbd "<f6> <left>")  'pel-c-preproc-backward-conditional)
         (define-key map (kbd "<f6> <down>")  'pel-c-preproc-outward-forward-conditional)
