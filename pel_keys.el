@@ -7245,11 +7245,6 @@ the ones defined from the buffer now."
 (when pel-modeline-display-time
   (run-at-time "2 sec" nil (function display-time)))
 
-(when pel-use-show-point-mode
-  (cl-eval-when 'load
-    (pel-install-github-file "dmgerman/predictive/master"
-                             "show-point-mode.el")
-    (pel-autoload "show-point-mode" for: show-point-mode)))
 
 (defun pel-toggle-time-display ()
   "Toggle display of time on the mode line."
@@ -7258,9 +7253,15 @@ the ones defined from the buffer now."
   (call-interactively (function display-time-mode)))
 
 (define-key pel:mode-line "f"  'which-function-mode)
-(define-key pel:mode-line "p"  'show-point-mode)
 (define-key pel:mode-line "t" #'pel-toggle-time-display)
 (define-key pel:mode-line "c"  'column-number-mode)
+
+(when pel-use-show-point-mode
+  (cl-eval-when 'load
+    (pel-install-github-file "dmgerman/predictive/master"
+                             "show-point-mode.el")
+    (pel-autoload "show-point-mode" for: show-point-mode))
+  (define-key pel:mode-line "p"  'show-point-mode))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> w`` : Windows operations
