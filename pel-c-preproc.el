@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October 10 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-11 13:57:51 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-10-12 09:08:50 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -139,6 +139,7 @@ after the matching else statement instead.
 On success, push the original position on the mark ring and
 return the new position. On error, issue user error on mismatch."
   (interactive "^P")
+  (end-of-line nil)
   (pel-syntax-conditional-backward
    pel--c-preproc-conditional-regexp
    (function pel--c-preproc-token-from-match)
