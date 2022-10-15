@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October  9 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-15 12:14:30 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-10-15 14:20:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -83,7 +83,7 @@
    (string-join '("\\(false[[:blank:]]*!=\\)\\|\\(!=[[:blank:]]*false\\)"
                   "\\(FALSE[[:blank:]]*!=\\)\\|\\(!=[[:blank:]]*FALSE\\)")
                 "\\|")))
-`
+
 (defun pel-c-search-any-comparison-problem ()
   "Search for any problematic comparing code."
   (interactive)
