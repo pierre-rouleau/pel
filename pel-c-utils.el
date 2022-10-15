@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October  9 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-15 00:14:25 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-10-15 12:01:10 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -110,26 +110,54 @@
 
 ;; ---------------------------------------------------------------------------
 
+(defun pel--c-reformat-cond ()
+  "Reformat if statement on current line for 'if(...)' to if (...)'.
+
+Also reformat:
+ 'for(...)'   to 'for (...)'
+ 'while(...)' to 'while (...)'."
+  (save-excursion
+    (let ((end-pos (progn (end-of-line) (point)))
+          (start-pos (progn (beginning-of-line) (point))))
+      (narrow-to-region start-pos end-pos)
+      (dolist (pair '(("if("    "if (")
+                      ("while(" "while (")
+                      ("for("   "for (")))
+        (beginning-of-line)
+        (when (re-search-forward (car pair) nil :noerror)
+          (replace-match (cadr pair)) :fixedcase :literally))
+      (widen))))
+
 (defun pel--c-replace (keywords format-regexp rep-regexp)
   "Replace text identified by FORMAT-REGEXP by REP_REGEXP for all KEYWORDS.
 
 Return number of expression replaced."
 
   (let ((change-count 0)
-        (syntax nil))
+        (syntax nil)
+        (orig-pos nil))
     (dolist (keyword keywords)
       (goto-char (point-min))
       (while (progn
+               (setq orig-pos (point))
                (re-search-forward (format format-regexp keyword)
                                   nil :noerror))
-        ;; Re-write fiund expression unless it's in comment or string
+        ;; Re-write found expression unless it's in comment or string
         (if (progn
               (setq syntax (syntax-ppss))
               (or (pel--inside-string-p syntax)
                   (pel--inside-comment-p syntax)))
+            ;; skip expressions found in comment or string
             (right-char 1)
-          (replace-match rep-regexp :fixedcase)
-          (setq change-count (1+ change-count)))))
+          ;; Found one spot to fix: because the regex does not catch
+          ;; everything: fix the line if that needs to be fixed, go
+          ;; back and do the search again to now match properly.
+          (pel--c-reformat-cond)
+          (goto-char orig-pos)
+          (when (re-search-forward (format format-regexp keyword)
+                                   nil :noerror)
+            (replace-match rep-regexp :fixedcase)
+            (setq change-count (1+ change-count))))))
     change-count))
 
 (defun pel--c-adjusted (regex)
@@ -164,6 +192,7 @@ object code file to generate the assembler file."
   ;; First implementation: naive/repetitive implementation.
   ;; todo: reduce code repetition by generating the regexp for each of the
   ;; keywords
+  (message "Reformatting C/C++ code...")
   (save-excursion
     (let ((equal-NULL-count 0)
           (not-equal-NULL-count 0)
