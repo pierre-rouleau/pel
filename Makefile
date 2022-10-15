@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2022-10-11 00:04:55 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2022-10-15 12:16:06 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -569,7 +569,7 @@ pel-browse.elc:         pel--base.elc pel--options.elc
 pel-buffer.elc:         pel--base.elc pel-list.elc
 pel-c-comment.elc:      pel--base.elc pel--options.elc
 pel-c-preproc.elc:      pel-syntax.elc
-pel-c-utils.elc:        pel--base.elc
+pel-c-utils.elc:        pel--base.elc pel--syntax-macros.elc
 pel-cc.elc:             pel--base.elc pel--options.elc pel-ffind.elc
 pel-cc-find.elc:        pel--base.elc pel--options.elc pel-file.elc pel-ffind.elc pel-ffind-inpath.elc pel-ini.elc
 pel-ccp.elc:            pel--base.elc pel--options.elc pel-navigate.elc
@@ -644,7 +644,7 @@ pel-skels.elc:          pel--base.elc pel--options.elc pel-prompt.elc
 pel-smartparens.elc:    pel--base.elc pel-syntax.elc
 pel-speedbar.elc:       pel--base.elc pel--macros.elc pel--options.elc
 pel-spell.elc:          pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc
-pel-syntax.elc:         pel--base.elc pel--options.elc
+pel-syntax.elc:         pel--base.elc pel--options.elc pel--syntax-macros.elc
 pel-text-insert.elc:    pel--base.elc pel--macros.elc pel-window.elc pel-syntax.elc
 pel-text-transform.elc: pel--base.elc
 pel-time.elc:           pel--base.elc

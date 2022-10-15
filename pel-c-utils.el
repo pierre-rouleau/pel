@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October  9 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-15 12:01:10 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-10-15 12:14:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,6 +33,7 @@
 ;;; Dependencies:
 ;;
 (require 'pel--base)
+(require 'pel--syntax-macros)
 (eval-when-compile
   (require 'subr-x))   ; use: string-join
 (require 'syntax)     ; syntax always available, even in emacs -Q
@@ -40,15 +41,6 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
-
-(defmacro pel--inside-string-p (syntax)
-  "Return non-nil if point is inside string according to SYNTAX list."
-  `(nth 3 ,syntax))
-
-(defmacro pel--inside-comment-p (syntax)
-  "Return non-nil if point is inside comment according to SYNTAX."
-  `(nth 4 ,syntax))
-
 
 (defun pel-c-search-equal-NULL ()
   "Search for code comparing '== NULL'"

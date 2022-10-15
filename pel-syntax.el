@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, September 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-11 13:13:09 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-10-15 12:14:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -28,16 +28,6 @@
 ;;  This provides a set of utilities to provide syntax-table based utilities
 ;;  which may be used to enhance features such as electric behaviour of keys.
 
-;; Internal Macros for self documenting code:
-;; - `pel--inside-string-p'
-;; - `pel--inside-block-p'
-;; - `pel--inside-comment-p'
-;; - `pel--open-parens-pos'
-
-;; Predicate utilities:
-;; - `pel-inside-block-p'
-;; - `pel-inside-comment-p'
-;; - `pel-inside-string-p'
 
 ;; Development Tools
 ;; - `pel-get-text-property'
@@ -77,6 +67,7 @@
 ;;                                 ;      `pel-string-starts-with-p'
 ;;                                 ;      `pel-string-ends-with-p'
 (require 'pel--options)            ; use: `pel-syntax-text-properties'
+(require 'pel--syntax-macros)
 (require 'syntax)     ; syntax always available, even in emacs -Q
 (eval-when-compile (require 'subr-x))   ; use: `string-join'
 
@@ -84,52 +75,6 @@
 ;;; Code:
 ;;
 
-;; Macros for self documenting code
-;; --------------------------------
-;;
-;; These macros are useful to reduce the need to call functions that create a
-;; let-bound variable while providing meaningful names.
-
-(defmacro pel--inside-string-p (syntax)
-  "Return non-nil if point is inside string according to SYNTAX list."
-  `(nth 3 ,syntax))
-
-(defmacro pel--inside-block-p (syntax)
-  "Return non-nil if point is inside matching pair block according to SYNTAX."
-  `(> (nth 0 ,syntax) 0))
-
-(defmacro pel--inside-comment-p (syntax)
-  "Return non-nil if point is inside comment according to SYNTAX."
-  `(nth 4 ,syntax))
-
-(defmacro pel--open-parens-pos (syntax)
-  "Return list of position of open parens according to SYNTAX.
-
-Each integer in the list is the position of the open parens,
-starting with the outermost one.  Return nil if not outside parens."
-  `(nth 9 ,syntax))
-
-;; Predicate utilities
-;; -------------------
-
-(defun pel-inside-block-p (&optional pos)
-  "Return non-nil if POS, or point, is between a code matched-pair block.
-
-Return nil otherwise.  Return nil when point is inside string or comment."
-  (let ((syntax (syntax-ppss pos)))
-    (unless (pel--inside-string-p syntax)
-      (pel--inside-block-p syntax))))
-
-(defun pel-inside-comment-p (&optional pos)
-  "Return non-nil if POS, or point, is inside a comment, nil otherwise.
-
-When inside comment, return t if inside non-nestable comment,
-otherwise return an integer indicating the current comment nesting."
-  (pel--inside-comment-p (syntax-ppss pos)))
-
-(defun pel-inside-string-p (&optional pos)
-  "Return non-nil if POS, or point, is inside a string, nil otherwise."
-  (pel--inside-string-p (syntax-ppss pos)))
 
 ;; Development Tools
 ;; -----------------
