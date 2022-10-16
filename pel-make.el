@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 15 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-11 13:19:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-10-16 15:38:38 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -147,7 +147,7 @@ The command support shift-marking."
 ;; "^[[:blank:]]*\(\(\(endif\([#[:blank:]].*\)?\)\|\(else\([#[:blank:]].*\)?\)\|\(\(\(ifdef\)\|\(ifeq\)\|\(ifneq\)\)[[:blank:]].*\)\)\)$"
 
 (defconst pel--make-conditional-regexp
-  "^[[:blank:]]*\\(\\(\\(endif\\([#[:blank:]].*\\)?\\)\\|\\(else\\([#[:blank:]].*\\)?\\)\\|\\(\\(\\(ifdef\\)\\|\\(ifeq\\)\\|\\(ifneq\\)\\)[[:blank:]].*\\)\\)\\)$"
+  "^[[:blank:]]*\\(\\(\\(endif\\([#[:blank:]].*\\)?\\)\\|\\(else\\([#[:blank:]].*\\)?\\)\\|\\(\\(\\(ifn*def\\)\\|\\(ifeq\\)\\|\\(ifneq\\)\\)[[:blank:]].*\\)\\)\\)$"
   "Regexp to find make conditionals.")
 
 (defconst pel--make-conditional-group-if 8
