@@ -469,10 +469,11 @@ The keys are:
 
 ;;-pel-autoload
 (defun pel-xref-show-status (&optional print-in-buffer)
-  "Show the mode status of Xref back-ends in current buffer."
+  "Show the mode status of Xref back-ends in current buffer.
+
+With argument print the information in a dedicated buffer."
   (interactive "P")
-  (let ((msg (format
-   "\
+  (let ((msg (format "\
 - dumb-jump-mode           : %s
 - ggtags-mode              : %s
 - xref-backend-functions   : %s
@@ -487,22 +488,22 @@ The keys are:
 - cscope-minor-mode        : %s
   - helm-cscope-mode       : %s
   - helm-scope key bindings: %s"
-   (pel-xref-dumb-jump-mode-state-str)
-   (pel-option-mode-state 'ggtags-mode 'pel-use-ggtags)
-   (pel-xref-functions-hook-str xref-backend-functions)
-   (pel-symbol-on-off-string 'xref-etags-mode)
-   tags-file-name
-   tags-table-list
-   (pel-xref-gxref-state-str)
-   (pel-xref-rtags-state-str)
-   xref-show-xrefs-function
-   (pel-xref-ivy-xref-state-str)
-   (pel-xref-helm-xref-state-str)
-   (pel-option-mode-state 'cscope-minor-mode
-                          'pel-use-xcscope
-                          pel-modes-activating-cscope)
-   (pel-symbol-on-off-string 'helm-cscope-mode nil nil "not loaded")
-   (pel-on-off-string pel--helm-cscope-keys-active))))
+                     (pel-xref-dumb-jump-mode-state-str)
+                     (pel-option-mode-state 'ggtags-mode 'pel-use-ggtags)
+                     (pel-xref-functions-hook-str xref-backend-functions)
+                     (pel-symbol-on-off-string 'xref-etags-mode)
+                     tags-file-name
+                     tags-table-list
+                     (pel-xref-gxref-state-str)
+                     (pel-xref-rtags-state-str)
+                     xref-show-xrefs-function
+                     (pel-xref-ivy-xref-state-str)
+                     (pel-xref-helm-xref-state-str)
+                     (pel-option-mode-state 'cscope-minor-mode
+                                            'pel-use-xcscope
+                                            pel-modes-activating-cscope)
+                     (pel-symbol-on-off-string 'helm-cscope-mode nil nil "not loaded")
+                     (pel-on-off-string pel--helm-cscope-keys-active))))
     (if print-in-buffer
         (pel-print-in-buffer "*xref-status*" "Xref Status" msg)
       (message msg))))
