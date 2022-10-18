@@ -2,6 +2,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- In a *diff-mode* buffer you can now type the ~<f12><f4>?~ key sequence to
+  get information about the diff-mode setup.
+- I'm planning to use the same key sequence using the ~<f4>~ key to get
+  information or dynamically modify the setup of a mode and re-map some of the
+  key that are currently used.  This should make it more regular across all
+  major modes and under all prefixes.
 - The ~<f12><f1>~, ~<f12><f2>~ and ~<f12><f3>~ key bindings are now available
   in *diff-mode*, *ediff-mode* and *smerge-mode* (when *pel-use-smerge*
   is active).  The ~<f12><f3>~ key open the customization page specific to the

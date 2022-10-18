@@ -5608,7 +5608,10 @@ the ones defined from the buffer now."
 
 ;; diff-mode support
 ;; Provide <f12> <f1>, <f12> <f2> and <f12><f3> keys for diff-mode
-(define-pel-global-prefix pel:for-diff-mode (kbd "<f11> SPC SPC d d"))
+(define-pel-global-prefix pel:for-diff-mode       (kbd "<f11> SPC SPC d d"))
+(define-pel-global-prefix pel:for-diff-mode-setup (kbd "<f11> SPC SPC d d <f4>"))
+(define-key pel:for-diff-mode-setup "?" 'pel-diff-show-status)
+
 (defun pel--setup-for-diff-mode ()
   "Activate diff-mode setup, take local variables into account."
   (pel-local-set-f12-M-f12 'pel:for-diff-mode))

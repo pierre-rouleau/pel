@@ -266,7 +266,8 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-diff" for:
     pel-ediff-2files
-    pel-ediff-revision)
+    pel-ediff-revision
+    pel-diff-show-status)
 
   (pel-autoload "pel-elisp" for:
     pel-toggle-paren-in-column-0-is-defun-start

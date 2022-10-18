@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 12 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-18 16:24:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-10-18 17:42:03 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -85,6 +85,17 @@ the window in the direction corresponding to the cursor numeric keypad:
   (interactive)
   (ediff-revision (pel-current-buffer-filename)
                   (list (function pel--setup-for-ediff-mode))))
+
+;;-pel-autoload
+(defun pel-diff-show-status ()
+  "Display diff-mode status information."
+  (interactive)
+  (message "diff-jump-to-old-file: %s => operate on %s file."
+           (pel-symbol-on-off-string
+            'diff-jump-to-old-file nil nil "not loaded")
+           (if (bound-and-true-p diff-jump-to-old-file)
+               "OLD"
+             "new")))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-diff)
