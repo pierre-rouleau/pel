@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, March 12 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-03-15 15:37:17, updated by Pierre Rouleau>
+;; Time-stamp: <2022-10-18 16:24:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -34,9 +34,28 @@
 (require 'pel--base)                    ; use: pel-current-buffer-filename
 (require 'pel-window)                   ; use: pel-window-direction-for
 ;;                                      ;      pel-window-select
+(require 'pel--keys-macros)
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
+
+;; Key setup - that would normally be placed in pel_keys.el
+;; But in case of ediff it must be done here because the hook is
+;; passed directly to the ediff commands.
+
+
+(define-pel-global-prefix pel:for-ediff-mode (kbd "<f11> SPC SPC d e"))
+
+(defun pel--setup-for-ediff-mode ()
+  "Activate ediff-mode setup, take local variables into account."
+  (pel-local-set-f12-M-f12 'pel:for-ediff-mode))
+(declare-function pel--setup-for-ediff-mode "pel_keys")
+(pel--mode-hook-maybe-call
+ (function pel--setup-for-ediff-mode)
+ 'ediff-mode 'ediff-mode-hook)
+
+;; ---------------------------------------------------------------------------
 
 ;;-pel-autoload
 (defun pel-ediff-2files (&optional n)
@@ -56,14 +75,16 @@ the window in the direction corresponding to the cursor numeric keypad:
                      (abs (prefix-numeric-value n))
                      'other))
                    (pel-current-buffer-filename))))
-    (ediff-files fname-a fname-b )))
+    (ediff-files fname-a fname-b
+                 (list (function pel--setup-for-ediff-mode)))))
 
 ;;-pel-autoload
 (defun pel-ediff-revision ()
   "Run ediff-revision for current file against its last commit version."
   ;; Note: ediff-revision is available in Emacs -Q
   (interactive)
-  (ediff-revision (pel-current-buffer-filename)))
+  (ediff-revision (pel-current-buffer-filename)
+                  (list (function pel--setup-for-ediff-mode))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-diff)

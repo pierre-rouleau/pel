@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- The ~<f12><f1>~, ~<f12><f2>~ and ~<f12><f3>~ key bindings are now available
+  in *diff-mode*, *ediff-mode* and *smerge-mode* (when *pel-use-smerge*
+  is active).  The ~<f12><f3>~ key open the customization page specific to the
+  diff mode currently used.
 - Work-round to tramp problem with the P4 VC back-end implemented in
   *pel-edit-as-root* to prevent that command to hang when the P4, the VC
   back-end for Perforce, is active.

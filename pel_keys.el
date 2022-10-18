@@ -1970,11 +1970,13 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-P     - Prolog
 ;; M-Y     - YANG            - Specification definition language
 ;;
-;; SPC b   - ibuffer-mode
 ;; SPC C-l - inferior-lfe-mode
+;; SPC b   - ibuffer-mode
+;; SPC d d - diff-mode
+;; SPC d e - ediff-mode
+;; SPC d s - smerge-mode
 ;; SPC v   - vc-dir-mode
 ;; SPC s   - shell-mode
-;; SPC M-s - smerge-mode
 ;; SPC t   - term-mode
 ;; SPC z   - shell and terminals
 
@@ -5593,7 +5595,7 @@ the ones defined from the buffer now."
   (pel-ensure-package iflipb from: melpa))
 
 ;; ibuffer-mode support
-;; Provide <f12> <f1>, <f12><f2> and <f12><f3> in ibuffer-mode
+;; Provide <f12> <f1> and <f12><f3> in ibuffer-mode
 ;; TODO simplify this code
 (define-pel-global-prefix pel:for-ibuffer (kbd "<f11> SPC SPC b"))
 (defun pel--setup-for-ibuffer ()
@@ -5603,6 +5605,23 @@ the ones defined from the buffer now."
 (pel--mode-hook-maybe-call
  (function pel--setup-for-ibuffer)
  'ibuffer-mode 'ibuffer-mode-hook)
+
+;; diff-mode support
+;; Provide <f12> <f1>, <f12> <f2> and <f12><f3> keys for diff-mode
+(define-pel-global-prefix pel:for-diff-mode (kbd "<f11> SPC SPC d d"))
+(defun pel--setup-for-diff-mode ()
+  "Activate diff-mode setup, take local variables into account."
+  (pel-local-set-f12-M-f12 'pel:for-diff-mode))
+(declare-function pel--setup-for-diff-mode "pel_keys")
+(pel--mode-hook-maybe-call
+ (function pel--setup-for-diff-mode)
+ 'diff-mode 'diff-mode-hook)
+
+;; ediff-mode support
+;; Provide <f12> <f1>, <f12> <f2> and <f12><f3> keys for ediff-mode
+;; NOTE: the required code is inside the pel-diff.el file because
+;;       the hook needs to be passed to the ediff-files function,
+;;       which is a good thing: it helps speed up Emacs startup.
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> b I`` : Indirect buffer commands
@@ -5792,7 +5811,7 @@ the ones defined from the buffer now."
         (goto-char (point-min))
         (when (re-search-forward "^<<<<<<< " nil t)
           (smerge-mode 1)
-          (define-pel-global-prefix pel:for-smerge (kbd "<f11> SPC SPC M-s"))
+          (define-pel-global-prefix pel:for-smerge (kbd "<f11> SPC SPC d s"))
           (pel-local-set-f12-M-f12 'pel:for-smerge)
           (define-key pel:for-smerge "s" 'smerge-start-session)
           (define-key pel:for-smerge "n" 'smerge-next)
@@ -5846,8 +5865,6 @@ the ones defined from the buffer now."
   (define-key pel:smerge "r" 'smerge-resolve)
   (define-key pel:smerge (kbd "M-r") 'smerge-resolve-all)
   (define-key pel:smerge (kbd "M-s") 'smerge-swap))
-
-
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> d p`` : patch commands

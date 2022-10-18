@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-07-01 16:37:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-10-18 15:51:13 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -355,6 +355,7 @@
                                                                  xref))
     ([f11 ?_]        "inserting-text")
     ([f11 ?a]        "abbreviations"    pel-pkg-for-expand      abbrev)
+
     (,(kbd "<f11> SPC SPC b") "ibuffer-mode"  nil               ibuffer)
     ([f11 ?b]        "buffers"          pel-pkg-for-buffer      (Buffer-menu
                                                                  bs
@@ -371,15 +372,17 @@
      ,pel--highligh-groups)
 
     ([f11 ?c]        "counting"         nil)
+
+    (,(kbd "<f11> SPC SPC d d") "diff-merge" pel-pkg-for-diff-merge  diff)
     ([f11 ?d]        "diff-merge"       pel-pkg-for-diff-merge  (diff
                                                                  ediff
                                                                  emerge
                                                                  smerge
                                                                  ztree))
     ([f11 ?d ?e]     "diff-merge"       pel-pkg-for-diff-merge   ediff)
+    (,(kbd "<f11> SPC SPC d e") "diff-smerge"  pel-pkg-for-diff-merge   ediff)
     ([f11 ?d ?s]     "diff-merge"       pel-pkg-for-diff-merge   smerge)
-    ;; ([f11 32 32 27 115] "diff-smerge"  pel-pkg-for-diff-merge   smerge)
-    ;; (,(kbd "<f11> SPC SPC M-s") "diff-smerge"  pel-pkg-for-diff-merge   smerge)
+    (,(kbd "<f11> SPC SPC d s") "diff-smerge"  pel-pkg-for-diff-merge   smerge)
 
     ([f11 ?f ?v]     "file-variables"   nil)
     (,(kbd "<f11> SPC M-D") "mode-dired" pel-pkg-for-dired      ,pel--dired-groups)
@@ -601,7 +604,6 @@ stored inside the doc/pdf directory.")
     ("makefile-nmake"  [f11 32 ?M])
     ("python"          [f11 32 ?p])
     ("arc"             [f11 32 1])
-
     ("haskell"         [f11 32 ?h])
     ("hy"              [f11 32 8])
     ("lfe"             [f11 32 12])
@@ -644,7 +646,9 @@ stored inside the doc/pdf directory.")
     ("shell"           [f11 32 32 ?s])
     ("term"            [f11 32 32 ?t])
     ;; diff modes
-    ("diff"            ,(kbd "<f11> SPC SPC M-s"))
+    ("diff"            [f11 32 32 ?d ?d])
+    ("ediff"           [f11 32 32 ?d ?e])
+    ("smerge"          [f11 32 32 ?d ?s])
     )
   "Maps the name of a major mode (without the -mode suffix)
 to a symbol or key sequence array to use as map key inside
