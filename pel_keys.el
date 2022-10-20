@@ -7423,6 +7423,13 @@ the ones defined from the buffer now."
 (when pel-use-desktop
   (define-pel-global-prefix pel:session (kbd "<f11> S"))
   ;;
+  (defun pel-desktop-show ()
+    "Display name of currently used desktop if any."
+    (interactive)
+    (if (boundp 'desktop-dirname)
+        (message "Last loaded desktop: %s" desktop-dirname)
+      (user-error "No desktop is currently loaded.")))
+
   (pel-autoload-file desktop for:
                      desktop-save
                      desktop-read
@@ -7430,7 +7437,8 @@ the ones defined from the buffer now."
                      desktop-change-dir
                      desktop-revert
                      desktop-clear)
-  (unless (eq pel-use-desktop 'with-desktop+)
+  (if (eq pel-use-desktop 'with-desktop+)
+      (define-key pel:session "?" 'pel-desktop-show)
     (define-key pel:session (kbd "M-s") 'desktop-save-mode)
     (define-key pel:session "S"         'desktop-save)
     (define-key pel:session "L"         'desktop-read)
