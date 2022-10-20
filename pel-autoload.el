@@ -226,7 +226,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-c-preproc-forward-conditional
     pel-c-preproc-backward-conditional
     pel-c-preproc-outward-forward-conditional
-    pel-c-preproc-outward-backward-conditional)
+    pel-c-preproc-outward-backward-conditional
+    pel-c-preproc-conditionals-occur)
 
   (pel-autoload "pel-comint" for:
     pel-comint-clear-buffer
@@ -484,7 +485,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-make-outward-backward-conditional
     pel-make-next-macro
     pel-make-previous-macro
-    makefile-nmake-mode)
+    makefile-nmake-mode
+    pel-make-conditionals-occur)
 
   (pel-autoload "pel-mark" for:
     pel-mark-ring-stats

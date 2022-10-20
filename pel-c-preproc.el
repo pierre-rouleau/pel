@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October 10 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-12 09:08:50 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-10-20 16:01:54 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -185,6 +185,22 @@ return the new position. On error, issue user error on mismatch."
    (abs nest-count)
    nil
    "#if|#ifdef|#ifndef"))
+
+;; ---------------------------------------------------------------------------
+
+;;-pel-autoload
+(defun pel-c-preproc-conditionals-occur (&optional nlines)
+  "Show C preprocessor conditional statements inside an occur buffer.
+
+Each line is displayed with NLINES before and after, or -NLINES
+before if NLINES is negative.
+NLINES defaults to `list-matching-lines-default-context-lines'.
+If a region is defined the search is restricted to the region."
+  (interactive "^p")
+  (occur pel--c-preproc-conditional-regexp
+         nlines
+         (when (use-region-p)
+           (region-bounds))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-c-preproc)

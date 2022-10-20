@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, January 15 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-16 15:38:38 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-10-20 15:45:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -283,6 +283,22 @@ return the new position. On error, issue user error on mismatch."
    (abs nest-count)
    nil
    "beginning of if statement"))
+
+;; ---------------------------------------------------------------------------
+
+;;-pel-autoload
+(defun pel-make-conditionals-occur (&optional nlines)
+  "Show make conditional statements inside an occur buffer.
+
+Each line is displayed with NLINES before and after, or -NLINES
+before if NLINES is negative.
+NLINES defaults to `list-matching-lines-default-context-lines'.
+If a region is defined the search is restricted to the region."
+  (interactive "^p")
+  (occur pel--make-conditional-regexp
+         nlines
+         (when (use-region-p)
+           (region-bounds))))
 
 ;; ---------------------------------------------------------------------------
 ;; NMake format support

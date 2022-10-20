@@ -249,6 +249,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 ** New Features:
 - New: Added support for *show-point-mode* when *pel-use-show-point-mode* is set.
   Maps the *show-point-mode* command to the ~<f11> M-d p~ key.
+- New: In C and C++ buffers the ~<f6> c~ key sequence performs an occur search
+  for C preprocessor conditional statements and display them inside an occur
+  buffer.
+- New: in Make buffers the ~<f6> c~ key sequence performs an occur search
+  for Make conditional statements and display them inside an occur buffer.
 - New: In C and C++ buffers, the ~<f6>~ prefix followed by a cursor key are mapped
   to C navigation across preprocessor conditional inclusion statements.
   The ~<f6><right>~ maps to a command that moves point forward to the matching
