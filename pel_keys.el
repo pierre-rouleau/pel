@@ -2028,7 +2028,7 @@ can't bind negative-argument to C-_ and M-_"
         (define-key map (kbd "<f6> <left>")  'pel-make-backward-conditional)
         (define-key map (kbd "<f6> <down>")  'pel-make-outward-forward-conditional)
         (define-key map (kbd "<f6> <up>")    'pel-make-outward-backward-conditional)
-        (define-key map (kbd "<f6> c")       'pel-make-conditionals-occur)))))
+        (define-key map (kbd "<f6> o")       'pel-make-conditionals-occur)))))
 
 ;; - Tup Built Tool Support
 ;; ------------------------
@@ -2274,7 +2274,7 @@ bind it again after this call."
         (define-key map (kbd "<f6> <left>")  'pel-c-preproc-backward-conditional)
         (define-key map (kbd "<f6> <down>")  'pel-c-preproc-outward-forward-conditional)
         (define-key map (kbd "<f6> <up>")    'pel-c-preproc-outward-backward-conditional)
-        (define-key map (kbd "<f6> c")       'pel-c-preproc-conditionals-occur))))
+        (define-key map (kbd "<f6> o")       'pel-c-preproc-conditionals-occur))))
 
   (declare-function pel--setup-for-cc "pel_keys")
 
@@ -5616,7 +5616,12 @@ the ones defined from the buffer now."
 
 (defun pel--setup-for-diff-mode ()
   "Activate diff-mode setup, take local variables into account."
-  (pel-local-set-f12-M-f12 'pel:for-diff-mode))
+  (pel-local-set-f12-M-f12 'pel:for-diff-mode)
+  (when (boundp 'diff-mode-map)
+      (let ((map diff-mode-map))
+        (define-key map (kbd "<f6> <down>") 'diff-file-next)
+        (define-key map (kbd "<f6> <up>")   'diff-file-prev)
+        (define-key map (kbd "<f6> o")      'pel-diff-hunk-files-occur))))
 (declare-function pel--setup-for-diff-mode "pel_keys")
 (pel--mode-hook-maybe-call
  (function pel--setup-for-diff-mode)

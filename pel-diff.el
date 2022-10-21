@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 12 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-18 17:42:03 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-10-21 09:23:50 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -96,6 +96,31 @@ the window in the direction corresponding to the cursor numeric keypad:
            (if (bound-and-true-p diff-jump-to-old-file)
                "OLD"
              "new")))
+
+
+;; ---------------------------------------------------------------------------
+
+;;-pel-autoload
+(defun pel-diff-hunk-files-occur (&optional nlines)
+  "Show hunk files of current path patch inside an occur buffer.
+
+Each line is displayed with NLINES before and after, or -NLINES
+before if NLINES is negative.
+NLINES defaults to 0 regardless of the current value of
+`list-matching-lines-default-context-lines'.
+If a region is defined the search is restricted to the region."
+  (interactive "^P")
+  (let* ((list-matching-lines-default-context-lines 0)
+         (boundary (when (use-region-p)
+                     (region-bounds)))
+         (has-index (save-excursion
+                      (goto-char (point-min))
+                      (re-search-forward "^Index: " boundary :noerror))))
+    (occur (if has-index
+               "^Index: "
+             "^\\+\\+\\+ ")
+           (or nlines 0)
+           boundary)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-diff)
