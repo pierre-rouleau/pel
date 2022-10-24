@@ -5813,68 +5813,58 @@ the ones defined from the buffer now."
 (define-key pel:ediff-registry "v"  'ediff-revert-buffers-then-recompute-diffs)
 
 (when pel-use-smerge
+  (define-key pel:diff "s" 'smerge-start-session)
+
+  (defun pel--smerge-setup ()
+    "Activate PEL setup in smerge-mode when entering smerge-mode."
+    (when (boundp 'smerge-mode-map)
+      ;; Activate the special PEL key bindings under the <f6> key
+      (let ((map smerge-mode-map))
+        ;; TO-DO : define a prefix name that is available in the
+        ;;        `smerge-mode-map' only to help describe the prefix in
+        ;;        which-key display of prefix.
+        ;; (define-prefix-command 'pel:for-smerge map)
+        ;; (local-set-key (kbd "<f6> s") 'pel:for-smerge)
+
+        (define-key map (kbd "<f6> s s")    'smerge-start-session)
+        (define-key map (kbd "<f6> s n")    'smerge-next)
+        (define-key map (kbd "<f6> s p")    'smerge-prev)
+
+        (define-key map (kbd "<f6> s M-c")  'smerge-auto-combine)
+        (define-key map (kbd "<f6> s C")    'smerge-combine-with-next)
+        (define-key map (kbd "<f6> s >")    'smerge-diff-base-lower)
+        (define-key map (kbd "<f6> s <")    'smerge-diff-base-upper)
+        (define-key map (kbd "<f6> s =")    'smerge-diff-upper-lower)
+        (define-key map (kbd "<f6> s e")    'smerge-ediff)
+
+        (define-key map (kbd "<f6> s a")    'smerge-keep-all)
+        (define-key map (kbd "<f6> s b")    'smerge-keep-base)
+        (define-key map (kbd "<f6> s \C-m") 'smerge-keep-current)
+        (define-key map (kbd "<f6> s l")    'smerge-keep-lower)
+        (define-key map (kbd "<f6> s u")    'smerge-keep-upper)
+
+        (define-key map (kbd "<f6> s M-k")  'smerge-kill-current)
+        (define-key map (kbd "<f6> s M-C")  'smerge-makeup-conflict)
+        (define-key map (kbd "<f6> s m")    'smerge-popup-context-menu)
+        (define-key map (kbd "<f6> s R")    'smerge-refine)
+        (define-key map (kbd "<f6> s r")    'smerge-resolve)
+        (define-key map (kbd "<f6> s M-r")  'smerge-resolve-all)
+        (define-key map (kbd "<f6> s M-s")  'smerge-swap))))
+
+  ;; Activate PEL smerge setup when smerge-mode starts on a buffer.
+  (add-hook 'smerge-mode-hook
+            (function pel--smerge-setup))
+
   (when (eq pel-use-smerge 'auto)
-    ;; Following function taken from smerge-mode.el
+    ;; Following function originally taken from smerge-mode.el
+    ;; and then modified for PEL key bindings.
     (defun sm-try-smerge ()
       "Activate smerge-mode automatically when file is diff3-annotated."
       (save-excursion
         (goto-char (point-min))
         (when (re-search-forward "^<<<<<<< " nil t)
-          (smerge-mode 1)
-          (define-pel-global-prefix pel:for-smerge (kbd "<f11> SPC SPC d s"))
-          (pel-local-set-f12-M-f12 'pel:for-smerge)
-          (define-key pel:for-smerge "s" 'smerge-start-session)
-          (define-key pel:for-smerge "n" 'smerge-next)
-          (define-key pel:for-smerge "p" 'smerge-prev)
-
-          (define-key pel:for-smerge (kbd "M-c") 'smerge-auto-combine)
-          (define-key pel:for-smerge "C" 'smerge-combine-with-next)
-          (define-key pel:for-smerge ">" 'smerge-diff-base-lower)
-          (define-key pel:for-smerge "<" 'smerge-diff-base-upper)
-          (define-key pel:for-smerge "=" 'smerge-diff-upper-lower)
-          (define-key pel:for-smerge "e" 'smerge-ediff)
-
-          (define-key pel:for-smerge "a" 'smerge-keep-all)
-          (define-key pel:for-smerge "b" 'smerge-keep-base)
-          (define-key pel:for-smerge "\C-m" 'smerge-keep-current)
-          (define-key pel:for-smerge "l" 'smerge-keep-lower)
-          (define-key pel:for-smerge "u" 'smerge-keep-upper)
-
-          (define-key pel:for-smerge (kbd "M-k") 'smerge-kill-current)
-          (define-key pel:for-smerge (kbd "M-C") 'smerge-makeup-conflict)
-          (define-key pel:for-smerge "m" 'smerge-popup-context-menu)
-          (define-key pel:for-smerge "R" 'smerge-refine)
-          (define-key pel:for-smerge "r" 'smerge-resolve)
-          (define-key pel:for-smerge (kbd "M-r") 'smerge-resolve-all)
-          (define-key pel:for-smerge (kbd "M-s") 'smerge-swap)
-          (whitespace-mode 1))))
-    (add-hook 'find-file-hook 'sm-try-smerge t))
-
-  (define-pel-global-prefix pel:smerge (kbd "<f11> d s"))
-  (define-key pel:smerge "s" 'smerge-start-session)
-  (define-key pel:smerge "n" 'smerge-next)
-  (define-key pel:smerge "p" 'smerge-prev)
-
-  (define-key pel:smerge (kbd "M-c") 'smerge-auto-combine)
-  (define-key pel:smerge "C" 'smerge-combine-with-next)
-  (define-key pel:smerge ">" 'smerge-diff-base-lower)
-  (define-key pel:smerge "<" 'smerge-diff-base-upper)
-  (define-key pel:smerge "=" 'smerge-diff-upper-lower)
-  (define-key pel:smerge "e" 'smerge-ediff)
-
-  (define-key pel:smerge "a" 'smerge-keep-all)
-  (define-key pel:smerge "b" 'smerge-keep-base)
-  (define-key pel:smerge "\C-m" 'smerge-keep-current)
-  (define-key pel:smerge "l" 'smerge-keep-lower)
-  (define-key pel:smerge "u" 'smerge-keep-upper)
-
-  (define-key pel:smerge (kbd "M-k") 'smerge-kill-current)
-  (define-key pel:smerge (kbd "M-C") 'smerge-makeup-conflict)
-  (define-key pel:smerge "m" 'smerge-popup-context-menu)
-  (define-key pel:smerge "R" 'smerge-refine)
-  (define-key pel:smerge "r" 'smerge-resolve)
-  (define-key pel:smerge (kbd "M-r") 'smerge-resolve-all)
-  (define-key pel:smerge (kbd "M-s") 'smerge-swap))
+          (smerge-mode 1))))
+    (add-hook 'find-file-hook 'sm-try-smerge t)))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> d p`` : patch commands
@@ -5882,15 +5872,12 @@ the ones defined from the buffer now."
 (define-key pel:patch "f"  'epatch)
 (define-key pel:patch "b"  'epatch-buffer)
 
-
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> D`` : draw commands
 
 (define-pel-global-prefix pel:draw (kbd "<f11> D"))
 (define-key pel:draw "a"  'artist-mode)       ; toggle artist-mode
 (define-key pel:draw "p"  'picture-mode)      ; activate picture-mode
-
-
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> f`` : File operations

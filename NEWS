@@ -2,6 +2,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Better key binding for activating *smerge-mode* manually: ~<f11> d s~
+  instead of ~<f11> s s~.
+  The other key bindings for the smerge commands are now available under the
+  ~<f6> s~ key prefix which is only available *smerge-mode* is active.  The
+  documentation also describes the default Emacs ~C-c ^~ key prefix for
+  *smerge-mode*.
 - In a *diff-mode* buffer you can now type the ~<f12><f4>?~ key sequence to
   get information about the diff-mode setup.
 - I'm planning to use the same key sequence using the ~<f4>~ key to get
