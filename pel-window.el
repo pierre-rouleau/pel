@@ -1,6 +1,6 @@
 ;;; pel-window.el --- PEL Window Management Utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -268,6 +268,15 @@ Ensure that point remains in the window from where the function was called."
   "Close the window right of the current one if there is one."
   (interactive)
   (pel--close-window 'right))
+
+;;-pel-autoload
+(defun pel-close-other-window ()
+  "Close the other window.
+Hide its buffer, does not kill it."
+  (interactive)
+  (let ((original_window (selected-window)))
+    (delete-window (other-window 1))
+    (select-window original_window)))
 
 ;; ---------------------------------------------------------------------------
 ;; Split Current Window More Sensibly

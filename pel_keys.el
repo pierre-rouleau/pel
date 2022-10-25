@@ -7285,6 +7285,7 @@ the ones defined from the buffer now."
 ;; Used: # B O S b d f h k m n o p r s v x
 ;;
 (define-pel-global-prefix pel:window (kbd "<f11> w"))
+(define-key pel:window    "w"   'pel-close-other-window)
 (define-key pel:window    "B"  #'switch-to-buffer-other-window)
 (define-key pel:window    "O"   'pel-other-window-backward)
 (define-key pel:window    "b"  #'display-buffer)

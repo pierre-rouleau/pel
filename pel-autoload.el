@@ -804,6 +804,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-close-window-up
     pel-close-window-left
     pel-close-window-right
+    pel-close-other-window
     pel-2-vertical-windows
     pel-2-horizontal-windows
     pel-other-window

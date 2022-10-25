@@ -253,6 +253,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- Add: *pel-close-other-window* command bound to ~<f11> w w~ and to ~<f7> o~.
+  Use it to quickly close the other window often opened to show a temporary window
+  such as the help window.  The command does not kill the buffer, it just hides it.
 - Add: *pel-desktop-show*, bound to ~<f11 S ?~, display the name of the last loaded desktop.
 - New: Added support for *show-point-mode* when *pel-use-show-point-mode* is set.
   Maps the *show-point-mode* command to the ~<f11> M-d p~ key.
