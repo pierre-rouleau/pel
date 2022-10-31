@@ -7601,9 +7601,22 @@ the ones defined from the buffer now."
 (when pel-use-ggtags
   (pel-ensure-package ggtags from: melpa)
   (pel-autoload-file ggtags for: ggtags-mode)
-  ;; ggtags has its own key map which has all we need.
-  ;; just provide a key to quickly enable or disable ggtags-mode.
+
+  ;; Provide a key to quickly enable or disable ggtags-mode.
   (define-key pel:xref-backend "G" 'ggtags-mode)
+
+  ;; ggtags has its own key map to which we need to add a key binding.
+  (defun pel--ggtags-setup ()
+    "Activate PEL extra key bindings for ggtags."
+    (when (boundp 'ggtags-mode-map)
+      (let ((map ggtags-mode-map))
+        (define-key map (kbd "C-c M-.") 'ggtags-find-tag-regexp))))
+
+  ;; Activate PEL ggtags setup when ggatgs-mode starts on a buffer.
+  (add-hook 'ggtags-mode-hook
+            (function pel--ggtags-setup))
+
+  ;; Activate ggtags mode automatically on modes requested by user customization
   (pel-add-hook-for
    'pel-modes-activating-ggtags
    (lambda ()

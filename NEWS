@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- When ggtags-mode is active the ~C-c M-.~ key binding is now available
+  to the *ggtags-find-tag-regexp* command, allowing quick access to this
+  command for Emacs running in terminal mode.
 - Better key binding for activating *smerge-mode* manually: ~<f11> d s~
   instead of ~<f11> s s~.
   The other key bindings for the smerge commands are now available under the
