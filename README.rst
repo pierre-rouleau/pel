@@ -18,15 +18,15 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#quickst
 
-.. image:: https://img.shields.io/badge/Direct_Installable_Packages-238-teal
+.. image:: https://img.shields.io/badge/Direct_Installable_Packages-239-teal
    :alt: Version
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
-.. image:: https://img.shields.io/badge/PEL_Commands-520-teal
+.. image:: https://img.shields.io/badge/PEL_Commands-540-teal
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#commands
 
-.. image:: https://img.shields.io/badge/PDF_Files-138-blue
+.. image:: https://img.shields.io/badge/PDF_Files-141-blue
    :alt: Version
    :target: https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/-index.pdf
 
@@ -213,7 +213,7 @@ various packages, etc...
 ➣ Extends Emacs Documentation
 -----------------------------
 
-- PEL provides **over 135** `PDF topic-oriented reference sheets`_ [#doc]_ packed
+- PEL provides **over 140** `PDF topic-oriented reference sheets`_ [#doc]_ packed
   with symbol annotated, colour coded key bindings and command descriptions,
   with hyperlinks to Emacs manuals, external packages, articles and other
   useful references.
@@ -335,14 +335,14 @@ Notes
             mode (and without package-quickstart):
 
             - with 182 packages, `benchmark-init`_ reports about 0.4 second startup-time,
-            - with 238 packages, benchmark-init reports about 0.6 second
+            - with 239 packages, benchmark-init reports about 0.6 second
               startup-time, see the `benchmark-init report for it
               <doc/res/normal-startup-001.png>`_
 
             Activate PEL **fast startup mode** to experience **much faster**
             initialization times:
 
-            - with 238 packages, in **fast startup** operation mode, benchmark-init
+            - with 239 packages, in **fast startup** operation mode, benchmark-init
               reports about **0.1 second startup-time**, see the
               `benchmark-init report for that
               <doc/res/fast-startup-001.png>`_.
@@ -392,7 +392,7 @@ Notes
               The command detects the key sequence and the context to
               identify which PEL PDF to open.
 
-              PEL currently implements 520 interactive commands.  Some are
+              PEL currently implements 540 interactive commands.  Some are
               always loaded.  Several are auto-loaded when needed.  This count
               excludes the number of template commands that are dynamically constructed
               and loaded only for major modes, such as Erlang, that support
