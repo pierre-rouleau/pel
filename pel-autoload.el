@@ -338,7 +338,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-show-filename-at-point
     pel-show-filename-parts-at-point
     pel-find-file-at-point-in-window
-    pel-load-visited-file)
+    pel-load-visited-file
+    pel-open-file-in-other-dir)
 
   (pel-autoload "pel-filex" for:
     pel-open-in-os-app

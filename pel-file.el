@@ -579,6 +579,34 @@ Interactively use any prefix argument."
             (load-file (concat fn ".el"))))
       (user-error "Cannot load %s.  It is not an Emacs Lisp file!" fn))))
 
+
+
+;;-pel-autoload
+(defun pel-open-file-in-other-dir ()
+  "Open file of same name as current one present in another directory.
+
+First prompt with the name of the directory of currently visited
+file using the default completion mechanism (`ido' by
+default). Use the prompt to select the name of the other
+directory (which must already exist).  Use C-f to edit the
+directory path without completion. Once the directory name is
+selected hit Return to open the same file in the selected other
+directory."
+  (interactive)
+  (let* ((filename (pel-current-buffer-filename))
+         (file-basename (file-name-nondirectory filename))
+         (file-dirname  (file-name-directory filename))
+         (new-dirname
+          (expand-file-name
+           (read-file-name
+            "Other dir? (C-g to quit, C-f to edit: "
+            file-dirname
+            nil
+            'confirm
+            nil
+            'file-directory-p))))
+    (find-file (format "%s/%s" new-dirname file-basename))))
+
 ;; -----------------------------------------------------------------------------
 (provide 'pel-file)
 

@@ -5903,8 +5903,9 @@ the ones defined from the buffer now."
 ;; . / ?
 ;; F I L O W
 ;; a d f g h i j l n o p r t u v w
-;; C-f
-;; M-. M-/ M-l M-t M-u M-x
+;; M-. M-/ M-d M-l M-t M-u M-x
+(define-key pel:file  (kbd "M-d") 'pel-open-file-in-other-dir)
+(define-key pel2:file (kbd "M-d") 'pel-open-file-in-other-dir)
 (define-key pel:file "f" #'find-file)
 (define-key pel2:file (kbd "M-f") #'find-file)
 (define-key pel:file "I" #'insert-file-literally)
