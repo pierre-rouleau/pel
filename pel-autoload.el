@@ -738,6 +738,7 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-text-insert" for:
     pel-insert-line
     pel-insert-filename
+    pel-insert-filename-and-line
     pel-insert-filename-wtilde
     pel-insert-dirname
     pel-insert-dirname-wtilde

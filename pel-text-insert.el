@@ -168,7 +168,7 @@ The character used is identified by CHAR, otherwise '-' is used."
                                 filename))))
 
 ;;-pel-autoload
-(defun pel-insert-filename (&optional n use-tilde dir-only)
+(defun pel-insert-filename (&optional n use-tilde dir-only with-line-number)
   "Insert at point the name of a the file of the window identified by N.
 N is a numeric argument that identifies the window that holds the file.
 
@@ -189,7 +189,9 @@ absolute path, if negative it omits the path.
 
 If USE-TILDE, the user home address is replaced by the single character ~.
 If DIR-ONLY, only insert the directory (negative argument has no impact when
-DIR-ONLY is non nil)."
+DIR-ONLY is non nil).
+If WITH_LINE_NUMBER is non-nil, the line number is inserted after the file
+name, prefixed with a separating colon."
   (interactive "*p")
   (let ((no-path (and (< n 0) (not dir-only)))
         (direction (if (eq (abs n) 1)
@@ -197,17 +199,31 @@ DIR-ONLY is non nil)."
                      (pel-window-direction-for (abs n))))
         fname)
     (if (eq direction 'current)
-        (setq fname (pel-current-buffer-filename no-path))
+        (progn
+          (setq fname (pel-current-buffer-filename no-path))
+          (when with-line-number
+            (setq with-line-number (line-number-at-pos))))
       (let ((original-window (selected-window)))
         (save-excursion
           (pel-move-to-window direction)
           (setq fname (pel-current-buffer-filename no-path))
+          (when with-line-number
+            (setq with-line-number (line-number-at-pos)))
           (select-window original-window))))
     (when use-tilde
       (setq fname (pel-tilde-file-name fname)))
     (when dir-only
       (setq fname (file-name-directory fname)))
-    (insert fname)))
+    (insert fname)
+    (when with-line-number
+      (insert (format ":%d\n" with-line-number)))))
+
+;;-pel-autoload
+(defun pel-insert-filename-and-line (&optional n)
+  "Insert file name followed by the line number of point in that file.
+Use N the same way as `pel-insert-dirname'."
+  (interactive "*p")
+  (pel-insert-filename n nil nil :with-line-number))
 
 ;;-pel-autoload
 (defun pel-insert-filename-wtilde (&optional n)

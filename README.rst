@@ -22,7 +22,7 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
-.. image:: https://img.shields.io/badge/PEL_Commands-540-teal
+.. image:: https://img.shields.io/badge/PEL_Commands-541-teal
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#commands
 
@@ -392,7 +392,7 @@ Notes
               The command detects the key sequence and the context to
               identify which PEL PDF to open.
 
-              PEL currently implements 540 interactive commands.  Some are
+              PEL currently implements 541 interactive commands.  Some are
               always loaded.  Several are auto-loaded when needed.  This count
               excludes the number of template commands that are dynamically constructed
               and loaded only for major modes, such as Erlang, that support
