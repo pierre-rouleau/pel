@@ -256,6 +256,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: single key bindings for *man* (~<M-f8>~) and *woman* (~<M-S-f8>~) to
+  quickly get access to man-based help.
 - New: key binding ~<f11> ' ?~ for *bm-show-all* to show all visible bookmarks
 - New: The *pel-insert-filename-and-line* command, bound to ~<f11> i F~ and to ~<f6> F~
   insert the name of visited file followed by a line number.  Useful to manually create a
