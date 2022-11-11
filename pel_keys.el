@@ -5320,11 +5320,13 @@ See `flyspell-auto-correct-previous-word' for more info."
   (pel-autoload-file bm for:
                      bm-next
                      bm-previous
+                     bm-show-all
                      bm-toggle
                      bm-buffer-save
                      bm-buffer-restore)
   (global-set-key (kbd "<f2> <f2>")  'bm-next)
   (define-key pel:bookMark "'"  'bm-toggle) ; toggle visible bookmark
+  (define-key pel:bookMark "?"  'bm-show-all)
   (define-key pel:bookMark "n"  'bm-next)
   (define-key pel:bookMark "p"  'bm-previous)
 
@@ -5853,8 +5855,7 @@ the ones defined from the buffer now."
         (define-key map (kbd "<f6> s M-s")  'smerge-swap))))
 
   ;; Activate PEL smerge setup when smerge-mode starts on a buffer.
-  (add-hook 'smerge-mode-hook
-            (function pel--smerge-setup))
+  (add-hook 'smerge-mode-hook 'pel--smerge-setup)
 
   (when (eq pel-use-smerge 'auto)
     ;; Following function originally taken from smerge-mode.el
