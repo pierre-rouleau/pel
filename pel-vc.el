@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, April 23 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-11-12 17:31:56 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2022-11-12 17:41:13 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -86,17 +86,9 @@ Supports tab completion of the available states."
   (if (and pel-vcs-svn-verbose-log
            (string= (vc-backend (pel-current-buffer-filename)) "SVN")
            (boundp 'vc-svn-global-switches))
-      (progn
-        ;; (message "Before: vc-svn-global-switches := %S" vc-svn-global-switches)
-        (let* (;; (orig-vc-svn-global-switches vc-svn-global-switches)
-               (vc-svn-global-switches
-                (append vc-svn-global-switches '("--verbose"))))
-          ;; (message "After fixing, before running : vc-svn-global-switches := %S" vc-svn-global-switches)
-          (funcall oldfun working-revision limit))
-        ;; (message "After: vc-svn-global-switches := %S"
-        ;;          vc-svn-global-switches)
-        )
-    ;; (message "No modification to the function")
+      (let ((vc-svn-global-switches (append vc-svn-global-switches '("--verbose"))))
+        (funcall oldfun working-revision limit))
+    ;; normally just execute the function unchanged.
     (funcall oldfun working-revision limit)))
 
 
