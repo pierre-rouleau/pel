@@ -9752,6 +9752,20 @@ The selection is made by what you select here:
   :safe #'booleanp)
 (pel-put 'pel-use-psvn :package-is :in-utils)
 
+
+(defcustom pel-vcs-svn-verbose-log nil
+  "Set to activate --verbose switch for the svn log commands.
+
+The `vc-svn-global-switches' user option allows you to add the --version
+switch, unfortunately some svn commands do not accept the --verbose switch and
+the related command will fail. If it is the case for the version of Subversion
+you use, then set `pel-vcs-svn-verbose-log' to non-nil.  PEL will dynamically
+append the --verbose switch when the svn log commands are executed, but will
+not modify other commands."
+  :group 'pel-pkg-for-subversion
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; ---------------------------------------------------------------------------
 ;; Windows Management
 ;; ------------------

@@ -7237,6 +7237,14 @@ the ones defined from the buffer now."
    "https://raw.githubusercontent.com/pierre-rouleau/psvn/main/psvn.el"
    "psvn.el"))
 
+;; PEL extends the vc package for subversion by dynamically adding the
+;; the --verbose switch to `vc-svn-global-switches' when
+;; `pel-vcs-svn-verbose-log' is turned on.  This is activated right after the
+;; vc-svn package is loaded
+
+(pel-eval-after-load vc-svn
+  (pel-vc-svn-init))
+
 ;; ----------------
 ;; vc-dir-mode support
 ;; Provide <f12> <f1>, <f12><f2> and <f12><f3> in vc-dir-mode
