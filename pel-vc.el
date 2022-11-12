@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, April 23 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-11-12 17:14:06 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2022-11-12 17:31:56 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -79,6 +79,7 @@ Supports tab completion of the available states."
                    (not (memq (vc-dir-fileinfo->state file) states))))))
 
 
+(defvar vc-svn-global-switches)         ; declaration to prevent warning
 
 (defun pel-vc-svn-print-log-verbose (oldfun &optional working-revision limit)
   "Wrapper for `vc-print-log' that forces --verbose switch for Subversion."

@@ -788,10 +788,12 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-sp-erlang-handler
     pel-smartparens-setup-erlang)
 
+  (pel-autoload "pel-vc" for:
+    pel-vc-svn-init)
+
   (pel-autoload "pel-vcs" for:
     pel-vcs-switch-backend
-    pel-vcs-toggle-vc-log
-    pel-vc-svn-init)
+    pel-vcs-toggle-vc-log)
 
   (pel-autoload "pel-window" for:
     pel-show-window-previous-buffer
