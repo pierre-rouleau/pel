@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, April 23 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-11-12 17:41:13 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2022-11-12 18:05:27 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -78,6 +78,9 @@ Supports tab completion of the available states."
                  (lambda (file)
                    (not (memq (vc-dir-fileinfo->state file) states))))))
 
+;; ----------------------------
+;; Add ability to use the --verbose option on svn log without affecting other
+;; Subversion commands.
 
 (defvar vc-svn-global-switches)         ; declaration to prevent warning
 
@@ -91,12 +94,22 @@ Supports tab completion of the available states."
     ;; normally just execute the function unchanged.
     (funcall oldfun working-revision limit)))
 
+(defun pel-vc-svn-print-root-log-verbose (oldfun &optional limit)
+  "Wrapper for `vc-print-log' that forces --verbose switch for Subversion."
+  (if (and pel-vcs-svn-verbose-log
+           (string= (vc-backend (pel-current-buffer-filename)) "SVN")
+           (boundp 'vc-svn-global-switches))
+      (let ((vc-svn-global-switches (append vc-svn-global-switches '("--verbose"))))
+        (funcall oldfun limit))
+    ;; normally just execute the function unchanged.
+    (funcall oldfun limit)))
+
 
 ;;-pel-autoload
 (defun pel-vc-svn-init ()
   "Initialize extra VC support."
-  (message "===> pel-vc-svn-init ")
-  (advice-add 'vc-print-log :around #'pel-vc-svn-print-log-verbose))
+  (advice-add 'vc-print-log      :around #'pel-vc-svn-print-log-verbose)
+  (advice-add 'vc-print-root-log :around #'pel-vc-svn-print-root-log-verbose))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-vc)

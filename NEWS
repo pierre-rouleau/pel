@@ -257,11 +257,12 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
 - New: Additional support for Subversion vc back-end: add the
-  *pel-vcs-svn-verbose-log* user-option to allow using the --verbose switch
-  on the *vc-print-log* command with Subversion in order to list all files
-  affected by a Subversion commit without affecting the switches used for the
-  other Subversion commands.  This is useful with version of Subversion where
-  the --verbose switch is not accepted by some commands.
+  *pel-vcs-svn-verbose-log* user-option to allow using the --verbose switch on
+  the *vc-print-log* and *vc-print-root-log* commands with Subversion back-end
+  in order to list all files affected by a Subversion commit without affecting
+  the switches used for the other Subversion commands.  This is useful with
+  version of Subversion where the --verbose switch is not accepted by some
+  commands.
 - New: single key bindings for *man* (~<M-f8>~) and *woman* (~<M-S-f8>~) to
   quickly get access to man-based help.
 - New: key binding ~<f11> ' ?~ for *bm-show-all* to show all visible bookmarks
