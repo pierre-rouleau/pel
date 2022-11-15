@@ -882,7 +882,8 @@ Return a list ('rst-title (point)) if the TARGET is a section title
 hyperlink, non-nil if it is another hyperlink with a found target.
 Return nil if no hyperlink target found."
   (goto-char (point-min))
-  (let ((regexp (format "^\\.\\. _%s:" (pel-rst-anchor-escaped target))))
+  (let ((regexp (format "^\\.\\. _%s:"
+                        (regexp-quote (pel-rst-anchor-escaped target)))))
     ;; search for a complete reference (target and URL on the same line) first
     (if (re-search-forward (concat regexp " +") nil :noerror)
         t
@@ -894,7 +895,7 @@ Return nil if no hyperlink target found."
         ;; otherwise try to find a line that begins with the target
         ;; that might be a title
         (goto-char (point-min))
-        (when (re-search-forward (format "^%s$" target)  nil :noerror)
+        (when (re-search-forward (format "^%s$" target) nil :noerror)
           ;; It's a title target! Not a file target!
           ;; Just move point there and leave it there!
           (list 'rst-title (point)))))))
