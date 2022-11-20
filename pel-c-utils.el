@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October  9 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-15 14:20:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-11-20 16:59:51 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -120,42 +120,53 @@ Also reformat:
           (replace-match (cadr pair)) :fixedcase :literally))
       (widen))))
 
+
+(defun pel---c-replace (regexp rep-regexp)
+  "Replace text identified by REGEXP by REP_REGEXP in all buffer.
+
+Return number of changes."
+  (let ((change-count 0)
+        (orig-pos nil)
+        (syntax nil))
+    (goto-char (point-min))
+    (while (progn
+             (setq orig-pos (point))
+             (re-search-forward regexp
+                                nil :noerror))
+      ;; Re-write found expression unless it's in comment or string
+      (if (progn
+            (setq syntax (syntax-ppss))
+            (or (pel--inside-string-p syntax)
+                (pel--inside-comment-p syntax)))
+          ;; skip expressions found in comment or string
+          (right-char 1)
+        ;; Found one spot to fix: because the regex does not catch
+        ;; everything: fix the line if that needs to be fixed, go
+        ;; back and do the search again to now match properly.
+        (pel--c-reformat-cond)
+        (goto-char orig-pos)
+        (when (re-search-forward regexp
+                                 nil :noerror)
+          (replace-match rep-regexp :fixedcase)
+          (setq change-count (1+ change-count)))))
+    change-count))
+
 (defun pel--c-replace (keywords format-regexp rep-regexp)
   "Replace text identified by FORMAT-REGEXP by REP_REGEXP for all KEYWORDS.
 
 Return number of expression replaced."
 
-  (let ((change-count 0)
-        (syntax nil)
-        (orig-pos nil))
+  (let ((change-count 0))
     (dolist (keyword keywords)
-      (goto-char (point-min))
-      (while (progn
-               (setq orig-pos (point))
-               (re-search-forward (format format-regexp keyword)
-                                  nil :noerror))
-        ;; Re-write found expression unless it's in comment or string
-        (if (progn
-              (setq syntax (syntax-ppss))
-              (or (pel--inside-string-p syntax)
-                  (pel--inside-comment-p syntax)))
-            ;; skip expressions found in comment or string
-            (right-char 1)
-          ;; Found one spot to fix: because the regex does not catch
-          ;; everything: fix the line if that needs to be fixed, go
-          ;; back and do the search again to now match properly.
-          (pel--c-reformat-cond)
-          (goto-char orig-pos)
-          (when (re-search-forward (format format-regexp keyword)
-                                   nil :noerror)
-            (replace-match rep-regexp :fixedcase)
-            (setq change-count (1+ change-count))))))
+      (pel+= change-count
+             (pel---c-replace (format format-regexp keyword)
+                              rep-regexp)))
     change-count))
 
 (defun pel--c-adjusted (regex)
   "Return adjusted regex.
 
-Replace the %s  by what is required for C++ class support.
+Replace the '%s' by what is required for C++ class support.
 Return adjusted regexp."
   (format regex (if (eq major-mode 'c++-mode)
                     "\\([_[:alpha:]][_[:alnum:]]*::\\)*"
@@ -180,7 +191,6 @@ code.  There should be NO difference in the generated assembler
 code.  With GCC use 'objdump --disassemble' on the generate
 object code file to generate the assembler file."
   (interactive "*")
-
   ;; First implementation: naive/repetitive implementation.
   ;; todo: reduce code repetition by generating the regexp for each of the
   ;; keywords
@@ -296,7 +306,56 @@ object code file to generate the assembler file."
             equal-true-count
             not-equal-true-count))))
 
+;; ---------------------------------------------------------------------------
+(defconst pel-preproc-if-regexp
+  ;;  1                  2                               3    <<-- group numbers
+  "^\\([[:blank:]]*\\)#\\([[:blank:]]*\\)if[[:blank:]]+\\([[:alpha:]_][[:alnum:]_]+\\)[[:blank:]]*$"
+  "Regxp to locate '#if VAR'.")
+
+(defconst pel-preproc-if-eq-regexp-format
+  ;;  1                  2                               3    <<-- group numbers
+  "^\\([[:blank:]]*\\)#\\([[:blank:]]*\\)if[[:blank:]]+\\([[:alpha:]_][[:alnum:]_]+\\)[[:blank:]]*\\(==\\)[[:blank:]]*\\(%s\\)[[:blank:]]*$"
+  "Regexp to locate '#if VAR == 0', '#if VAR == 1'")
+
+(defun pel-c-search-preproc-if ()
+  "Search for pre-processor '#if VAR' statement."
+  (interactive)
+  (re-search-forward pel-preproc-if-regexp))
+
+(defun pel-c-search-preproc-if-set ()
+  "Search for pre-processor '#if VAR == 0', '#if VAR ==1' or '!' equivalent."
+  (interactive)
+  (re-search-forward (format pel-preproc-if-eq-regexp-format "[01]")))
+
+(defun pel-c-fix-preproc-if-problems ()
+  "Fix the C/C++ pre-processor #if statements not checking for defined var."
+  (interactive "*")
+  (message "Reformatting C/C++ C-pre-processing code...")
+  (save-excursion
+    (let ((changed-count-if 0)
+          (changed-count-if-set 0))
+      ;; 1: Change '#if VAR' --> '#if (defined(VAR) && (VAR != 0))'
+      ;;    keep indentation style
+      (pel+= changed-count-if
+             (pel---c-replace pel-preproc-if-regexp
+                              "\\1#\\2if (defined(\\3) && (\\3 != 0))"))
+      ;; 2: Change '#if VAR==0' --> '#if (!defined(VAR) || (VAR==0))'
+      ;;    keep indentation style
+      (pel+= changed-count-if-set
+             (pel---c-replace (format pel-preproc-if-eq-regexp-format "0")
+                              "\\1#\\2if (!defined(\\3) || (\\3 == 0))"))
+      ;; 3: Change '#if VAR==1' --> '#if (defined(VAR) && (VAR==1))'
+      ;;    keep indentation style
+      (pel+= changed-count-if-set
+             (pel---c-replace (format pel-preproc-if-eq-regexp-format "1")
+                              "\\1#\\2if (defined(\\3) && (\\3 == 1))"))
+      (message "Fixed: %d '#if VAR', %d '#if VAR == [01]'"
+               changed-count-if
+               changed-count-if-set)
+      ;; return list of change count
+      (list changed-count-if changed-count-if-set))))
+
 ;;; --------------------------------------------------------------------------
-  (provide 'pel-c-utils)
+(provide 'pel-c-utils)
 
 ;;; pel-c-utils.el ends here

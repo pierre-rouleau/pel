@@ -133,7 +133,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-c-search-equal-false
     pel-c-search-not-equal-false
     pel-c-search-any-comparison-problem
-    pel-c-fix-comparison-problems)
+    pel-c-fix-comparison-problems
+    pel-c-search-preproc-if
+    pel-c-search-preproc-if-set
+    pel-c-fix-preproc-if-problems)
 
   (pel-autoload-function "pel-cc-find" for:
     pel-cc-find-via-pel-ini

@@ -256,6 +256,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: In C and C++ modes, PEL provides a set of commands to search for
+  problematic code statements and also provides commands that can refactor the
+  C and C++ code replacing problematic code by corresponding safer code
+  constructs.  For more details look at the end of the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c.pdf][𝕻𝔩 - C]] and [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/pl-c++.pdf][𝕻𝔩 - C++]] PDF pages.
 - New: Additional support for Subversion vc back-end: add the
   *pel-vcs-svn-verbose-log* user-option to allow using the --verbose switch on
   the *vc-print-log* and *vc-print-root-log* commands with Subversion back-end

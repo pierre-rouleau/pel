@@ -2254,7 +2254,10 @@ bind it again after this call."
       (define-key c-search-replace-prefix "t" 'pel-c-search-equal-true)
       (define-key c-search-replace-prefix "T" 'pel-c-search-not-equal-true)
       (define-key c-search-replace-prefix "*" 'pel-c-search-any-comparison-problem)
-      (define-key c-search-replace-prefix (kbd "C-f") 'pel-c-fix-comparison-problems)))
+      (define-key c-search-replace-prefix (kbd "C-f") 'pel-c-fix-comparison-problems)
+      (define-key c-search-replace-prefix "#" 'pel-c-search-preproc-if)
+      (define-key c-search-replace-prefix "0" 'pel-c-search-preproc-if-set)
+      (define-key c-search-replace-prefix (kbd "C-p") 'pel-c-fix-preproc-if-problems)))
   (declare-function pel--map-cc-for "pel_keys")
 
   (defun pel--setup-for-cc ()
