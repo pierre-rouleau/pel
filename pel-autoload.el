@@ -654,6 +654,9 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload-function "pel-search" for:
     pel-set-search-tool)
 
+  (pel-autoload "pel-server" for:
+    pel-shutdown-server)
+
   (pel-autoload-function "pel-seq" for: pel-all-fboundp)
 
   (pel-autoload "pel-sh" for:
