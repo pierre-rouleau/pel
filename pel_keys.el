@@ -7003,10 +7003,13 @@ the ones defined from the buffer now."
 (define-key pel:align "c" #'align-current)
 (define-key pel:align "e" #'align-entire)
 (define-key pel:align "l" #'align-newline-and-indent)
+(define-key pel2: (kbd "M-a")  #'align-regexp)
+(define-key pel2: (kbd "M-A")  'pel-multi-align-regexp)
 (define-key pel:align "r" #'align-regexp)
 (define-key pel:align "h" #'align-highlight-rule)
 (define-key pel:align "H" #'align-unhighlight-rule)
 (define-key pel:align "?"  'pel-show-if-newline-aligns)
+
 
 ;; - Alias for align-regexp: ar
 ;; ----------------------------

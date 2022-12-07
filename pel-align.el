@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, October 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-10-24 23:21:26, updated by Pierre Rouleau>
+;; Time-stamp: <2022-12-06 23:43:07 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -80,6 +80,39 @@ operates."
   (interactive "*")
   (pel-toggle 'pel-newline-does-align)
   (pel-show-if-newline-aligns))
+
+;; ---------------------------------------------------------------------------
+;; pel-autoload
+(defun pel-multi-align-regexp ()
+  "Align marked area with consecutive regexp.
+
+Use this to align a marked area one several column, each with its own regexp,
+starting on the left and going toward the right.
+
+The command prompts for a regexp and then another and it will use as many
+regex as provided.  To stop providing regexp, just hit RET without entering
+text."
+  (interactive "*")
+  (unless (use-region-p)
+    (user-error "No marked area"))
+  (let ((pos-beg (region-beginning))
+        (pos-end (region-end))
+        (regexps nil)
+        (new-regexp nil))
+    (while (progn
+             (setq new-regexp (read-string
+                               (if regexps
+                                   "Next align regexp (RET to stop): "
+                                 "First align regexp: ")))
+             (unless (string= "" new-regexp)
+               (push new-regexp regexps))))
+    (save-restriction
+      (narrow-to-region pos-beg pos-end)
+      (dolist (regexp (reverse regexps))
+        (align-regexp (point-min)
+                      (point-max)
+                      (concat "\\(\\s-*\\)" regexp)
+                      1 1 nil)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-align)
