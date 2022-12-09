@@ -937,6 +937,12 @@ Done in this function to allow advising libraries that remap these keys."
 (global-set-key [(home)] 'pel-home)
 (global-set-key [(end)]  'pel-end)
 
+;; If you run Emacs under GNU Screen you may experience a change of behaviour
+;; of the <end> key that now registers as <select>.  Set
+;; `pel-select-key-is-end'  to t to circumvent the problem.
+(when pel-select-key-is-end
+  (global-set-key (kbd "<select>") 'pel-end))
+
 ;; Navigating through Sexp/blocks (not normally bound by Emacs)
 (global-set-key (kbd "C-M-]") 'up-list)
 

@@ -2987,6 +2987,17 @@ using colored fonts.  Similar to command-log-mode but with more colors."
   :link '(url-link :tag "interaction-log-mode @ Github"
                    https://github.com/michael-heerdegen/interaction-log.el))
 
+(defcustom pel-select-key-is-end nil
+  "When set the <select> key is bound as the <end> key.
+
+This is useful in systems where Emacs runs under a GNU Screen
+session which modifies the behaviour of the <end> key to register as <select>.
+For those system, set `pel-select-key-is-end' to t and PEL will bind the
+<select> key to the `pel-end' command to circumvent the problem."
+  :group 'pel-pkg-for-keys
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; ---------------------------------------------------------------------------
 (defgroup pel-keypad-keys nil
   "Keypad key control."
