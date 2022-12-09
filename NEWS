@@ -261,6 +261,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: set the *pel-select-key-is-end* when using Emacs under GNU Screen makes
+  the END key register as ~<select>~ instead of ~<end>~ to re-establish the
+  ability to use that key to execute the *pel-end* command.
 - New: *pel-shutdown-server* command, used to shut Emacs server and all it's clients.
   The command confirms first and will not shut down Emacs if not running in server/client mode.
   It always confirms before shutting down the server.  There is no key binding
