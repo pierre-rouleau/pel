@@ -2324,7 +2324,7 @@ MODE must be a symbol."
   (define-pel-global-prefix pel:c-search-replace (kbd "<f11> SPC c s"))
 
   (when pel-use-ini
-      (define-key pel:c-setup (kbd "C-^") 'pel-cc-set-file-finder-ini-tool-name))
+      (define-key pel:c-setup (kbd "<M-f6>") 'pel-cc-set-file-finder-ini-tool-name))
   (when pel-use-plantuml
     (define-key pel:for-c "u" 'pel-render-commented-plantuml))
   (when pel-use-c-eldoc
@@ -2408,7 +2408,7 @@ MODE must be a symbol."
   (pel-set-auto-mode c++-mode for: "\\.inl\\'") ; not supported by default
 
   (when pel-use-ini
-    (define-key pel:c++-setup (kbd "C-^") 'pel-cc-set-file-finder-ini-tool-name))
+    (define-key pel:c++-setup (kbd "<M-f6>") 'pel-cc-set-file-finder-ini-tool-name))
   (when pel-use-plantuml
     (define-key pel:for-c++ "u" 'pel-render-commented-plantuml))
   (pel--map-cc-for pel:for-c++ pel:c++-setup pel:c++-guess pel:for-c++-preproc pel:c++-search-replace)
@@ -5964,9 +5964,8 @@ the ones defined from the buffer now."
 
 ;; - Open file at point
 ;; --------------------
-(global-set-key (kbd "C-^") 'pel-open-at-point)
+(global-set-key (kbd "<M-f6>") 'pel-open-at-point)
 (define-key pel:file "."    'pel-open-at-point)
-(define-key pel2:file (kbd "M-.")    'pel-open-at-point)
 (define-key pel:file ";"    'pel-set-open-at-point-dir)
 (define-key pel:file (kbd "M-.") 'pel-set-ido-use-fname-at-point)
 (define-key pel:file "/"    'pel-browse-filename-at-point)
