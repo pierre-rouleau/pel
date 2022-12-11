@@ -766,6 +766,9 @@ Argument FOR: just a required separator keyword to make code look better."
   ;; pel-undo loading is directly controlled by pel-init
   ;; by the logic inside pel_keys.el
 
+  (pel-autoload "pel-screen" for:
+    pel-screen-log-fix-rendering)
+
   (pel-autoload "pel-setup" for:
     pel-setup-dual-environment
     pel-setup-info-dual-environment

@@ -6943,6 +6943,7 @@ the ones defined from the buffer now."
 (define-key pel:text "o"  #'overwrite-mode)
 ;; RESERVED          "O"  #'nhexl-overwrite-only-mode)
 (define-key pel:text "p"  #'picture-mode)
+(define-key pel:text "s"   'pel-screen-log-fix-rendering)
 ;;
 
 ;; TODO: investigate the following:

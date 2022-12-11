@@ -69,6 +69,7 @@
 ;;     - pel-pkg-for-key-chord
 ;;     - pel-pkg-for-keys
 ;;     - pel-keypad-keys
+;;     - pel-pkg-for-log-file
 ;;     - pel-pkg-for-object-file
 ;;     - pel-pkg-for-marking
 ;;     - pel-pkg-for-markup
@@ -3040,6 +3041,48 @@ terminal mode for your environment, change the value."
           (string :tag "Special key sequence string to use in TTY mode.")))
 
 ;; ---------------------------------------------------------------------------
+(defgroup pel-pkg-for-log-file nil
+  "Log File control options."
+  :group 'pel-package-use)
+
+(defgroup pel-pkg-for-gnu-screen nil
+  "GNU Screen log file support."
+  :group 'pel-pkg-for-log-file)
+
+(defcustom pel-screen-log-delete-all-consecutive-blank-lines nil
+  "Remove all consecutive blank lines from GNU Screen log files.
+
+Activate this to remove the extra empty line applied to each line of the log
+file created by GNU Screen."
+  :group 'pel-pkg-for-gnu-screen
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-screen-log-fix-regexp-pairs nil
+  "Pairs of regexps to fix content of GNU Screen log file.
+
+Used by the `pel-screenlog-fix' function to replace all instances of the
+first pair element by the second.
+Use this when log files created by GNU Screen leaves artifacts not properly
+handled by the ANSI Escape sequences rendering performed by
+`pel-screenlog-fix'.
+The string replacement supports the same regexp expressions
+supported by `replace-regexp' including the expressions in its
+TO-STRING argument:
+  In TO-STRING, ‘\\&’ stands for whatever matched the whole of REGEXP,
+  and ‘\\N’ (where N is a digit) stands for whatever matched
+  the Nth ‘\\(...\\)’ (1-based) in REGEXP.
+  ‘\\?’ lets you edit the replacement text in the minibuffer
+  at the given position for each replacement."
+  :group 'pel-pkg-for-gnu-screen
+  :link '(url-link :tag "GNU Screen @ Wikipedia"
+                   "https://en.wikipedia.org/wiki/GNU_Screen")
+  :link '(url-link :tag "GNU Screen Log Command in its HTML Manual"
+                   "https://www.gnu.org/software/screen/manual/screen.html#Log")
+  :type '(repeat
+          (list
+           (regexp :tag "From regexp")
+           (string :tag "Replacement"))))
 
 ;; ---------------------------------------------------------------------------
 ;; Object File Format Support
