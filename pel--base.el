@@ -41,6 +41,7 @@
 ;;    - `pel-major-mode-of'
 ;;  - `pel-current-buffer-filename'
 ;;  - `pel-current-buffer-file-extension'
+;;  - `pel-current-buffer-eol-type'
 ;;
 ;; Read/Set variable with a formatted name derived from major mode:
 ;;  - `pel-major-mode-symbol-value-or'
@@ -426,6 +427,21 @@ file."
   (if buffer-file-truename
       (file-name-extension buffer-file-truename with-period)
     (user-error "No file in buffer %s" (buffer-name))))
+
+(defconst pel-eol-mode-name '((0 . Unix)
+                              (1 . Dos)
+                              (2 . Mac)
+                              (t . nil))
+  "Association list of buffer-file-coding-system value to its symbolic name.")
+
+(defun pel-current-buffer-eol-type ()
+  "Return line ending of current buffer content: 'Unix, 'Dos, 'Mac or nil.
+
+The nil value means that the type is unknown."
+  (let ((eol-type (coding-system-eol-type buffer-file-coding-system)))
+    (when (vectorp eol-type)
+      (setq eol-type (coding-system-eol-type (aref eol-type 0))))
+    (cdr (assoc eol-type pel-eol-mode-name))))
 
 ;; ---------------------------------------------------------------------------
 ;; Read/Set variable with a formatted name derived from major mode
