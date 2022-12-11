@@ -428,14 +428,14 @@ file."
       (file-name-extension buffer-file-truename with-period)
     (user-error "No file in buffer %s" (buffer-name))))
 
-(defconst pel-eol-mode-name '((0 . Unix)
-                              (1 . Dos)
-                              (2 . Mac)
+(defconst pel-eol-mode-name '((0 . unix)
+                              (1 . dos)
+                              (2 . mac)
                               (t . nil))
   "Association list of buffer-file-coding-system value to its symbolic name.")
 
 (defun pel-current-buffer-eol-type ()
-  "Return line ending of current buffer content: 'Unix, 'Dos, 'Mac or nil.
+  "Return line ending of current buffer content: 'unix, 'dos, 'mac or nil.
 
 The nil value means that the type is unknown."
   (let ((eol-type (coding-system-eol-type buffer-file-coding-system)))
