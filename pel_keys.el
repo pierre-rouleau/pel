@@ -7113,6 +7113,7 @@ the ones defined from the buffer now."
 (define-pel-global-prefix pel:text-whitespace (kbd "<f11> t w"))
 (define-key pel:text-whitespace " "         #'untabify)
 (define-key pel:text-whitespace (kbd "TAB") #'tabify)
+(define-key pel:text-whitespace (kbd "RET")  'pel-delete-all-dual-consecutive-blank-lines)
 (define-key pel:text-whitespace "I"          'pel-toggle-indent-tabs-mode)
 (define-key pel:text-whitespace "."         #'cycle-spacing)
 (define-key pel:text-whitespace "c"         #'whitespace-cleanup)

@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, May 10 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-04-21 14:39:33, updated by Pierre Rouleau>
+;; Time-stamp: <2022-12-11 15:39:13 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -82,6 +82,18 @@ by the START and END positions if specified."
              (not (memq major-mode
                         pel-modes-preventing-delete-trailing-whitespace)))
     (delete-trailing-whitespace start end)))
+
+
+(defun pel-delete-all-dual-consecutive-blank-lines ()
+  "Remove all second empty line out of consecutive blank lines in buffer."
+  (interactive "*")
+  (while (progn
+           (goto-char (point-min))
+           (re-search-forward "
+
+" nil :noerror))
+    (replace-match "
+" :fixedcase)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-whitespace)

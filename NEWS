@@ -261,6 +261,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: *pel-delete-all-dual-consecutive-blank-lines*, bound to ~<f11> t w RET~
+  removes all consecutive dual empty lines in the buffer.  Useful when an
+  empty line was added between each line of text.
 - New: set the *pel-select-key-is-end* when using Emacs under GNU Screen makes
   the END key register as ~<select>~ instead of ~<end>~ to re-establish the
   ability to use that key to execute the *pel-end* command.
