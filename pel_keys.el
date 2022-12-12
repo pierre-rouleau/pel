@@ -7640,6 +7640,7 @@ the ones defined from the buffer now."
         (define-key map (kbd "C-c M-.") 'ggtags-find-tag-regexp))))
 
   ;; Activate PEL ggtags setup when ggatgs-mode starts on a buffer.
+  (declare-function pel--ggtags-setup "pel_keys") ; prevent compiler warning
   (add-hook 'ggtags-mode-hook
             (function pel--ggtags-setup))
 
