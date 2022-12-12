@@ -42,6 +42,7 @@
 ;;  - `pel-current-buffer-filename'
 ;;  - `pel-current-buffer-file-extension'
 ;;  - `pel-current-buffer-eol-type'
+;;  - `pel-running-under-ssh-p'
 ;;
 ;; Read/Set variable with a formatted name derived from major mode:
 ;;  - `pel-major-mode-symbol-value-or'
@@ -442,6 +443,11 @@ The nil value means that the type is unknown."
     (when (vectorp eol-type)
       (setq eol-type (coding-system-eol-type (aref eol-type 0))))
     (cdr (assoc eol-type pel-eol-mode-name))))
+
+(defun pel-running-under-ssh-p ()
+  "Return t if Emacs is invoked through SSH, nil otherwise."
+  (when (getenv "SSH_CLIENT")
+    t))
 
 ;; ---------------------------------------------------------------------------
 ;; Read/Set variable with a formatted name derived from major mode

@@ -261,6 +261,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: When PEL detects that Emacs is running inside an SSH session it will
+  prevent opening a local or web-based PDF since you won't normally be able to
+  see the file on the computer GUI desktop. If want to still allow opening the
+  file because you do have access to the computer desktop somehow, then set
+  the new *pel-help-under-ssh* user-option to t.
 - New: *pel-screen-log-fix-rendering* command, bound to ~<f11> t s~ that can
   fix the rendering of log files created by the GNU Screen utility. Also added
   the *pel-screen-log-delete-all-consecutive-blank-lines* and

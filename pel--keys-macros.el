@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-18 15:51:13 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2022-12-12 17:01:31 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -889,11 +889,14 @@ There should be no key binding!" keyseq))
 
 (defun pel--help-browse (url)
   "Browse the specified URL using the method selected by user-options."
-  (if (and (require 'pel-browse nil :no-error)
-           (fboundp 'pel-browse-url))
-      (pel-browse-url url)
-    (browse-url url)
-    (user-error "Failed loading pel-browse, used Emacs browse-url instead!")))
+  (if (and (pel-running-under-ssh-p)
+           (not pel-help-under-ssh))
+      (user-error "When running under SSH, external help is not available")
+    (if (and (require 'pel-browse nil :no-error)
+             (fboundp 'pel-browse-url))
+        (pel-browse-url url)
+      (browse-url url)
+      (user-error "Failed loading pel-browse, used Emacs browse-url instead!"))))
 
 (defun pel-help-open-pdf (topic &optional open-github-page)
   "Open PDF help for TOPIC string potentially OPEN-WEB-PAGE."
@@ -934,24 +937,27 @@ By default it opens the local PDF file, but if the OPEN-WEB-PAGE argument
 is non-nil it opens the web-based PDF copy hosted on Github.
 Supports completion and history.  The presented list includes
 some aliases to the file names.
-If enter is typed with no entry it defaults to the PEL key maps pdf."
+If enter is typed with no entry it defaults to the PEL key maps pdf.
+If Emacs runs under SSH, and `pel-help-under-ssh' is set,
+it issues an error instead to prevent you from opening a file you
+won't be able to see anyway"
   (interactive "P")
   (let* ((topics (mapcar
                   (lambda (fn)
                     (substring fn 0 -4))
                   (directory-files (pel-pdf-directory) nil  "\\.pdf\\'")))
          (topic  (completing-read
-                  "PEL topic: " ; prompt
-                  (sort         ; collection including aliases
+                  "PEL topic: "       ; prompt
+                  (sort               ; collection including aliases
                    (append topics
                            (mapcar (function car) pel--topic-alias))
                    (function string<))
 
-                  nil           ; predicate
-                  t             ; require-match
-                  nil           ; initial
+                  nil                             ; predicate
+                  t                               ; require-match
+                  nil                             ; initial
                   'pel--prompt-history-for-help-pdf ; history
-                  '("-pel-key-maps")))             ; default
+                  '("-pel-key-maps")))              ; default
          ;; since aliases are included in the list presented to user,
          ;; translate a selected alias back to its real file name
          (topic (alist-get topic pel--topic-alias topic nil (function equal))))

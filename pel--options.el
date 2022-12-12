@@ -508,7 +508,6 @@ For example, to activate it in Erlang, add a line with
   :group 'pel-base-emacs
   :type '(repeat symbol))
 
-
 (defcustom pel-activates-global-minor-modes nil
   "List of *global* minor-modes automatically activated for all buffers.
 Enter *global* minor-mode activating function symbols.
@@ -2050,6 +2049,18 @@ package is also required because `projectile` uses the `ripgrep` package."
   "PEL help/documentation control support."
   :group 'pel-package-use
   :link `(url-link :tag "Help PDF" ,(pel-pdf-file-url "help")))
+
+(defcustom pel-help-under-ssh nil
+  "Control whether PEL opens PDF or web Help when running under SSH.
+
+By default PEL won't open a local PDF or Web-based PEL help PDF
+when running under SSH, since most of the time you won't be able to see it.
+If you can still see it because you have access to your host through another
+mechanism and still want to allow Emacs to open these PEL help PDF file, then
+turn this on (set to t)."
+  :group 'pel-pkg-for-help
+  :type 'boolean
+  :safe #'booleanp)
 
 (defcustom pel-use-debbugs nil
   "Control whether PEL installs and activates debbugs external package.
