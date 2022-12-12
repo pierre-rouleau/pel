@@ -7,7 +7,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   PEL will no longer bind the ~C-^~ key.  It's left alone to allow using that
   key as the control key for the useful [[https://en.wikipedia.org/wiki/GNU_Screen][GNU screen]] utility, allowing the use
   of Emacs inside a GNU screen session.
-.- When ggtags-mode is active the ~C-c M-.~ key binding is now available
+- When ggtags-mode is active the ~C-c M-.~ key binding is now available
   to the *ggtags-find-tag-regexp* command, allowing quick access to this
   command for Emacs running in terminal mode.
 - Better key binding for activating *smerge-mode* manually: ~<f11> d s~
