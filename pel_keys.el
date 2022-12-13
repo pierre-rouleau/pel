@@ -7201,9 +7201,7 @@ the ones defined from the buffer now."
     (pel-ensure-package treemacs-magit from: melpa)))
 
 (when pel-use-gitignore-mode
-  (pel-ensure-package gitattributes-mode from: melpa)
-  (pel-ensure-package gitconfig-mode from: melpa)
-  (pel-ensure-package gitignore-mode from: melpa))
+  (pel-ensure-package git-modes from: melpa))
 
 ;; ----------------
 ;; Mercurial Support

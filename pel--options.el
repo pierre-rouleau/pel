@@ -9735,9 +9735,7 @@ It also provides access to the gitattributes-mode and top the gitconfig-mode."
   :group 'pel-pkg-for-git
   :type 'boolean
   :safe #'booleanp)
-(pel-put 'pel-use-gitignore-mode :requires-package '(quote
-                                                     ((elpa . gitattributes-mode)
-                                                      (elpa . gitconfig-mode))))
+
 ;; ------------------------------
 ;; Mercurial
 (defgroup pel-pkg-for-mercurial nil
