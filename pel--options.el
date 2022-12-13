@@ -9728,9 +9728,9 @@ turns it off."
 (pel-put 'pel-use-magit :also-required-when 'pel-use-treemacs-magit)
 
 (defcustom pel-use-gitignore-mode nil
-  "Control whether PEL provides access to the gitignore-mode package.
-It also provides access to the gitattributes-mode and top the gitconfig-mode."
-  :link '(url-link :tag "gitignore-mode @ GitHub"
+  "Control whether PEL provides access to the git-modes package.
+It provides access to gitignore-mode, gitconfig-mode and gitattributes-mode."
+  :link '(url-link :tag "git-modes @ GitHub"
                    "https://github.com/magit/git-modes")
   :group 'pel-pkg-for-git
   :type 'boolean
