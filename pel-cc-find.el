@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-02-16 14:14:13, updated by Pierre Rouleau>
+;; Time-stamp: <2022-12-20 12:19:14 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -46,7 +46,8 @@
 (require 'pel--options)          ; use: `pel-c-file-finder-ini-tool-name'
 ;;                               ;      `pel-c++-file-finder-ini-tool-name'
 (require 'pel-file)              ; use: `pel-filename-at-point-finders'
-(require 'pel-ffind)             ; use: `pel-ffind-project-directory'
+(require 'pel-ffind)             ; use: `pel-ffind-project-directory',
+;;                               ;      `pel-generic-find-file'
 (require 'pel-ffind-inpath)      ; use: `pel-ffind-inpath-include'
 (require 'pel-ini)               ; use: `pel-ini-load'
 (eval-when-compile
@@ -200,8 +201,16 @@ cannot find location of %s using include path spec identified in:
                             (cadr err)))))))))
 
 ;;-pel-autoload
-(defun pel-cc-find-activate-finder-method (&optional file-finder-method)
-  "Activate the file finder method for buffers of current major-mode."
+(defun pel-cc-find-activate-finder-method (&optional file-finder-method extra-seached-directory-trees)
+  "Activate the file finder method for buffers of current major-mode.
+
+Set the search method to FILE-FINDER-METHOD if specified,
+otherwise set it to the value held by the user-option that has a
+name 'pel-MODE-file-finder-method' where MODE is replaced by the
+major mode name ('c', 'c++', 'd', etc...).
+
+If EXTRA-SEACHED-DIRECTORY-TREES is non-nil the finder is set to also search
+in the list of directory trees identified by the list."
   (unless file-finder-method
     (setq file-finder-method
           (pel-major-mode-symbol-value "pel-%s-file-finder-method")))
@@ -238,7 +247,14 @@ cannot find location of %s using include path spec identified in:
    ;; no other method currently supported
    (t (error (format "invalid file-finder-method: %S for %s"
                      file-finder-method
-                     major-mode)))))
+                     major-mode))))
+  (when extra-seached-directory-trees
+    ;; Append a function that searches into all extra directory trees.
+    (setq pel-filename-at-point-finders
+          (reverse
+           (cons (lambda (fn)
+                   (pel-generic-find-file fn extra-seached-directory-trees))
+                 (reverse pel-filename-at-point-finders))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-cc-find)

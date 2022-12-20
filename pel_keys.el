@@ -2364,7 +2364,8 @@ MODE must be a symbol."
       ;; Configure how to search for a file name from the user-option
       ;; `pel-c-file-finder-method' which may be specified in a
       ;; .dir-local.el file.
-      (pel-cc-find-activate-finder-method pel-c-file-finder-method)
+      (pel-cc-find-activate-finder-method pel-c-file-finder-method
+                                          pel-c-extra-searched-directory-trees)
 
       ;; Configure the CC Mode style for C from PEL custom variables
       ;; 1) set the style: it identifies everything
@@ -2425,7 +2426,8 @@ MODE must be a symbol."
       ;; Configure how to search for a file name from the user-option
       ;; `pel-c++-file-finder-method' which may be specified in a
       ;; .dir-local.el file.
-      (pel-cc-find-activate-finder-method pel-c++-file-finder-method)
+      (pel-cc-find-activate-finder-method pel-c++-file-finder-method
+                                          pel-c++-extra-searched-directory-trees)
 
       ;; "Set the environment for editing C++ files."
       ;; Configure the CC Mode style for C++ from PEL custom variables

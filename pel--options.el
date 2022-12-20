@@ -4345,13 +4345,24 @@ via the ``<f12> ? e`` sequence."
 (pel-put 'pel-use-c-eldoc :requires '(pel-use-c pel-use-c++))
 
 
+(defcustom pel-c-extra-searched-directory-trees nil
+  "List of directory trees also searched by the C header file search.
+
+This complements the header search method identified by the
+`pel-c-file-finder-method' user-option."
+  :group 'pel-pkg-for-c
+  :type '(repeat string))
 
 (defcustom pel-c-file-finder-method 'generic
   "Specify method used by `pel-open-at-point' to search C header files.
 
-The following methods are supported:
+The following 4 methods listed below are supported, with the ability to
+also identify an extra list of directory trees to search in the
+`pel-c-extra-searched-directory-trees' user-option.
 
-- generic (the default):
+The 4 methods are:
+
+1: generic (the default):
 
    The parent directory tree of the current file is searched.
    The parent directory root is first identified and the file is searched
@@ -4359,7 +4370,7 @@ The following methods are supported:
    of one of the files identified by the `pel-project-root-identifiers'
    user option.
 
-- Use the [file-finder] section of pel.ini file:
+2: Use the [file-finder] section of pel.ini file:
 
   Use a file named 'pel.ini' inside the project's directory tree.
   The function `pel-open-at-point' searches for that file in the parent
@@ -4405,18 +4416,23 @@ The following methods are supported:
     (but not the persistent value of the user-option which must be modified by
     the customization mechanism).
 
-- Environment variable string:
+3: Environment variable string:
 
   The name of an environment variable (such as \"INCLUDE\") that identifies
   the directories to search.  Use this when your OS environment set up
   environment variables that inform the C compiler where header files are
-  located.
+  located.  The directories identified this way are searched locally, not
+  recursively into their sub-directories.
 
-- Two lists of directories: one for the project and one for the compiler tool:
+4: Two lists of directories: one for the project and one for the compiler tool:
 
   This specifies two lists of directories. The first list identifies the
   project directories and the second list identifies the directories where the
   compiler and libraries headers are stored.
+
+  Note that for this option, the files are searched inside the directories,
+  but are *not* searched in their sub-directories.  Each directory searched
+  must be identified explicitly in the list.
 
   Each string in the lists can use environment variables as part of the
   path-name and MUST use the $VARNAME syntax.  That can be quite useful
@@ -4993,6 +5009,15 @@ Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-c++
   :type '(repeat function))
+
+
+(defcustom pel-c++-extra-searched-directory-trees nil
+  "List of directory trees also searched by the C++ header file search.
+
+This complements the header search method identified by the
+`pel-c-file-finder-method' user-option."
+  :group 'pel-pkg-for-c++
+  :type '(repeat string))
 
 (defcustom pel-c++-file-finder-method 'generic
   "Specify method used by `pel-open-at-point' to search C/C++ header files.

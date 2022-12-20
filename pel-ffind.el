@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-12-02 15:43:43, updated by Pierre Rouleau>
+;; Time-stamp: <2022-12-20 09:59:52 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2022  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -99,7 +99,7 @@ whether the VCS is told to ignore them or not."
 
 ;;-pel-autoload
 (defun pel-ffind (filename &optional directories)
-  "Search for FILENAME in current directory tree or in DIRECTORIES.
+  "Search for FILENAME in current or specified DIRECTORIES trees.
 
 The function searches in the director trees identified by:
 
@@ -173,6 +173,9 @@ nil otherwise."
 
 Return a list of found file names with complete absolute path.
 Return nil if nothing found.
+
+All file searches are done in directory *trees* identified by the current
+project and optionally by the extra DIRECTORIES.
 
 If DIRECTORIES argument is specified it may be a single directory
 path string or a list of directory path strings to search on top
