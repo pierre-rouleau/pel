@@ -3,7 +3,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
 - The *pel-open-at-point* command is now able to search for C and C++ header files in more locations: the
-  *pel-c-extra-searched-directory-trees* and *pel-c++-extra-searched-directory-trees*
+  *pel-c-file-searched-extra-dir-trees* and *pel-c++-file-searched-extra-dir-trees*
   user-options can be used to identify lists of directory trees to search recursively
   for C and C++ in addition to the search method already identified.
 - PEL no longer uses the ~C-^~ key binding for the *pel-open-at-point* command.

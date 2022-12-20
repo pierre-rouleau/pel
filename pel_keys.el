@@ -2330,7 +2330,8 @@ MODE must be a symbol."
   (define-pel-global-prefix pel:c-search-replace (kbd "<f11> SPC c s"))
 
   (when pel-use-ini
-      (define-key pel:c-setup (kbd "<M-f6>") 'pel-cc-set-file-finder-ini-tool-name))
+      (define-key pel:c-setup (kbd "<M-f6>") 'pel-cc-set-file-finder-ini-tool-name)
+      (define-key pel:c-setup (kbd "<f54>") 'pel-cc-set-file-finder-ini-tool-name))
   (when pel-use-plantuml
     (define-key pel:for-c "u" 'pel-render-commented-plantuml))
   (when pel-use-c-eldoc
@@ -2365,7 +2366,7 @@ MODE must be a symbol."
       ;; `pel-c-file-finder-method' which may be specified in a
       ;; .dir-local.el file.
       (pel-cc-find-activate-finder-method pel-c-file-finder-method
-                                          pel-c-extra-searched-directory-trees)
+                                          pel-c-file-searched-extra-dir-trees)
 
       ;; Configure the CC Mode style for C from PEL custom variables
       ;; 1) set the style: it identifies everything
@@ -2427,7 +2428,7 @@ MODE must be a symbol."
       ;; `pel-c++-file-finder-method' which may be specified in a
       ;; .dir-local.el file.
       (pel-cc-find-activate-finder-method pel-c++-file-finder-method
-                                          pel-c++-extra-searched-directory-trees)
+                                          pel-c++-file-searched-extra-dir-trees)
 
       ;; "Set the environment for editing C++ files."
       ;; Configure the CC Mode style for C++ from PEL custom variables
