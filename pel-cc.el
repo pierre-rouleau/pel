@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-02-16 17:09:45, updated by Pierre Rouleau>
+;; Time-stamp: <2022-12-20 17:42:13 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -178,7 +178,8 @@ return \"void\"."
 - Hungry delete       : %s
 - Project root        : %s
 - File finder method  : %s
-- %s"
+- %s
+- Extra Searched dirs : %s"
      major-mode                         ; 1
      (if (boundp 'c-default-style)      ; 2
          (alist-get major-mode c-default-style)
@@ -279,7 +280,10 @@ F11-⌦  and F11-⌫  keys are available."
       ((listp file-finder-method)
        (format
         " Search in specific directories: %s" file-finder-method))
-      (t "No file finder supported.")))))
+      (t "No file finder supported."))
+     (or (pel-major-mode-symbol-value
+          "pel-%s-file-searched-extra-dir-trees")
+         ""))))
 
 ;; --
 
