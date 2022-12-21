@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, November 29 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-12-20 12:19:14 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2022-12-21 13:58:35 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -56,26 +56,49 @@
 ;;; Code:
 ;;
 
+;; At the moment PEL supports a header file search mechanism based on the
+;; content of the pel.ini file for the following major modes.  Others might be
+;; added in the future.
 (defconst pel--c-file-finder-supported-modes '(c-mode c++-mode)
   "List of major modes supported by the header file searching mechanism.")
 
-(defvar pel--c-file-finder-ini-tool-name pel-c-file-finder-ini-tool-name
+;; We want to support searching in tool-chain specific directories and allow
+;; the selection of the tool chain inside Emacs customization but also from
+;; the PEL_CC_FIND_TOOLCHAIN shell environment variable, allowing multiple
+;; Emacs sessions from different shells using different environment variable
+;; values which identify different tool-chain specific directories.
+;;
+;; - If the environment variable exists its content should be used at startup.
+;;   The user can override that by executing the
+;;   `pel-cc-set-file-finder-ini-tool-name' command to set and use the
+;;   tool-chain name of the current major-mode.
+;; - If the environment variable does not exist then user-option specific to
+;;   major-mode is used.
+
+(defvar pel--c-file-finder-ini-tool-name (or
+                                          (getenv "PEL_CC_FIND_TOOLCHAIN")
+                                          pel-c-file-finder-ini-tool-name)
   "Identifies the name of an extra list of directories to use in C.")
 
-(defvar pel--c++-file-finder-ini-tool-name pel-c++-file-finder-ini-tool-name
+(defvar pel--c++-file-finder-ini-tool-name (or
+                                            (getenv "PEL_CC_FIND_TOOLCHAIN")
+                                            pel-c++-file-finder-ini-tool-name)
   "Identifies the name of an extra list of directories to use in C++.")
 
 ;;-pel-autoload
 (defun pel-cc-set-file-finder-ini-tool-name (tool-name)
-  "Select a new value for `pel-CC-file-finder-ini-tool-name'.
+  "Prompt/select a new key name for `pel-CC-file-finder-ini-tool-name'.
 
-CC is 'c' for C files, 'c++' for C++ files."
+This is major-mode specific.  The CC in the variable name is selected by
+the current major mode: is 'c' for C files, 'c++' for C++ files.
+
+If PEL_CC_FIND_TOOLCHAIN environment variable exists, its value is used
+automatically on startup, overriding the value of the user-option."
   (interactive (list (read-string
                       (format "\
-To search into tool-chain directories, use what tool chain name (%s): "
-                              (or (getenv "PEL_CC_FIND_TOOLCHAIN")
-                                  (pel-major-mode-symbol-value
-                                   "pel--%s-file-finder-ini-tool-name"))))))
+Select pel.ini used tool chain name (%s): "
+                              (pel-major-mode-symbol-value
+                               "pel--%s-file-finder-ini-tool-name")))))
   (if (memq major-mode pel--c-file-finder-supported-modes)
       (progn
         (pel-set-major-mode-symbol "pel--%s-file-finder-ini-tool-name" tool-name)
@@ -84,12 +107,12 @@ To search into tool-chain directories, use what tool chain name (%s): "
  the project-path directories identified by the 'project-path' key
  *and* the ones identified by the %s key of the pel.ini configuration file.
  This overrides the tool chain name identified by the environment variable
- PEL_CC_FIND_TOOLCHAIN."
+ PEL_CC_FIND_TOOLCHAIN and does not change the value of the user-option."
                  (pel-file-type-for major-mode)
                  (format (pel-string-with-major-mode "%%s-%s-path")
                          tool-name)))
     (user-error "\
-This is only supported following file types: %s"
+This is only supported for the following file types: %s"
                 (string-join
                  (mapcar (function pel-file-type-for)
                          pel--c-file-finder-supported-modes)
