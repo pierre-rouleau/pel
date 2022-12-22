@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-12-12 17:01:31 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2022-12-22 12:21:30 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -277,6 +277,7 @@
     ([f11 32 ?l ??]  "pl-emacs-lisp"    pel-pkg-for-all-languages (eldoc
                                                                    eldoc-box))
 
+    ([f11 32 ?4]     "pl-m4"        pel-pkg-for-m4          m4)
     ([f11 32 ?n]     "pl-nim"       pel-pkg-for-nim         (nim
                                                              electricity))
     ([f11 32 ?o]     "pl-ocaml"     pel-pkg-for-ocaml       (merlin
@@ -595,6 +596,7 @@ stored inside the doc/pdf directory.")
     ("go"              [f11 32 ?g])
     ("janet"           [f11 32 ?T])
     ("julia"           [f11 32 ?j])
+    ("m4"              [f11 32 ?4])
     ("makefile"        [f11 32 ?M])
     ("makefile-bsdmake" [f11 32 ?M])
     ("makefile-gmake"  [f11 32 ?M])
@@ -798,6 +800,7 @@ There should be no key binding!" keyseq))
     ("janet"            . "pl-janet")
     ("julia"            . "pl-julia")
     ("lfe"              . "pl-lfe")
+    ("m4"               . "pl-m4")
     ("make"             . "pl-make")
     ("nim"              . "pl-nim")
     ("ocaml"            . "pl-ocaml")

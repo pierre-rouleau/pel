@@ -140,6 +140,7 @@
 ;;         - pel-pkg-for-gleam
 ;;       - pel-pkg-for-forth
 ;;       - pel-pkg-for-julia
+;;       - pel-pkg-for-m4
 ;;       - pel-pkg-for-nim
 ;;       - pel-pkg-for-ocaml
 ;;       - pel-pkg-for-perl
@@ -8342,8 +8343,54 @@ characters."
   :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; M4 Support
+;; ----------
+(defgroup pel-pkg-for-m4 nil
+  "PEL support for the M4 preprocessor programming language."
+  :group 'pel-pkg-for-programming
+  :link `(url-link :tag "M4 PDF" ,(pel-pdf-file-url "pl-m4")))
+
+(defcustom pel-use-m4 nil
+  "Control whether PEL supports the M4 programming language.
+
+When turned on the m4b-mode is associated with the PEL ``<f12>`` key."
+  :group 'pel-pkg-for-m4
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-m4 :package-is :a-gate)
+
+(defcustom pel-m4-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for M4 buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-m4
+  :type '(repeat function))
+
+(defcustom pel-m4-tab-width 4
+  "Distance between tab stop for M4 source code.
+
+PEL stores this in `tab-width' when editing buffer with M4 source.
+
+This only controls the indentation in M4 source code when the
+`pel-m4-use-tabs` is nil.
+
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-m4
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-m4-use-tabs nil
+  "Value of `indent-tabs-mode' for editing M4 source code.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-m4
+  :type 'boolean
+  :safe #'booleanp)
+`
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Nim Support
-;; ---------------
+;; -----------
+
 (defgroup pel-pkg-for-nim nil
   "PEL support for the Nim programming language."
   :group 'pel-pkg-for-programming

@@ -1880,6 +1880,97 @@ can't bind negative-argument to C-_ and M-_"
 
 
 ;; ---------------------------------------------------------------------------
+;; How to add major-mode support to PEL
+;; ====================================
+;;
+;; - Identify the name of the major-mode used and select the prefix name as
+;;   the identifier for the major mode.  Later in this instruction set it is
+;;   referred to as 'xxx'.  For example, for D the major-mode name is `d-mode'
+;;   and the 'xxx' prefix used by PEL is 'd'.
+;;
+;; - Select a <f11> prefix key in the list shown below.  These are mostly for
+;;   programming languages but also include markup files and others.  For
+;;   example, the <f11> prefix for the D language is 'D' and for Clojure is
+;;   'C-j'.  Add the name to the list below; ensure there is no duplication.
+;;
+;; - Create a section for the major mode, mostly in alphabetical order, where
+;;   the key sequences for the major mode will be defined.
+;;
+;; - Inside the pel--options.el file:
+;;
+;;   - Look at the index of `pel-pkg-for' symbols at top of the file that list
+;;     the hierarchy of PEL customization groups and add the new one inside
+;;     that list under the appropriate parent.  Create one for the major mode
+;;     with the name `pel-pkg-for-xxx' where 'xxx' is the major mode name.
+;;
+;;   - Create a `pel-use-xxx' defcustom user-option that will be used to
+;;     activate support for that major mode.  Most PEL features are activated
+;;     by this but if a feature is already built-in Emacs and no extra
+;;     packages are required for handling it, then the support may not
+;;     required optional activation and the user-option is not required.
+;;     Place `pel-use-xxx' defcustom inside the group of `pel-pkg-for-xxx'.
+;;
+;;     - Check for the use of properties for similar `pel-use-xxx' entries and
+;;       add the appropriate properties.  Refer to the property documentation
+;;       at the top of the pel--options.el file.
+;;
+;;   - Add a `pel-xxx-activates-minor-modes' for the 'xxx' major mode.
+;;     Initialize it to a list of minor modes that should be activated
+;;     automatically for the major mode if there are any.  This is often left
+;;     to nil to allow the end-user to select them later.
+;;
+;;
+;; - In the section for the major-mode, add a `define-pel-global-prefix' call
+;;   selecting a `pel:for-xxx' prefix for the 'xxx' major-mode and mapping it
+;;   to a key sequence that starts with '<f11> SPC' followed by the prefix
+;;   key identified in the first step.   This will be mapped to the <f12>
+;;   prefix key in buffer with that major-mode.
+;;
+;; - In the pel--keys-macros.el file, add:
+;;
+;;   - A list entry inside the `pel--prefix-to-topic-alist' constant that
+;;     holds the following values:
+;;
+;;    - The PEL key sequence used for the major mode
+;;    - The base name string of the PEL help PDF file for the major mode.
+;;    - The symbol name of the `pel-pkg-for-xxx' user-option customization group if
+;;      there is one for this major-mode, nil otherwise.
+;;    - The symbol name of the major-mode customization group if one exists.
+;;      There can also be a list of customization groups related to the major
+;;      mode when several packages are used for that mode.
+;;
+;;   - An entry for the major mode inside the `pel--mode-letter-alist'
+;;     constant. The entry is a list that holds the following elements:
+;;
+;;     - The major mode prefix name as a string.  For example, if the
+;;       major-mode symbol name is `emacs-lisp-mode' then the string is
+;;      "emacs-lisp".  As described at the beginning of this instruction set,
+;;      this should correspond to the name 'xxx' you use everywhere else in PEL
+;;      for this major-mode.
+;;     - The PEL key prefix sequence for that major mode.  That should be the
+;;       same as what was identified inside the `pel--prefix-to-topic-alist'
+;;       entry for that major-mode.
+;;
+;;   - Add a cons cell entry for the major-mode inside the `pel--topic-alias' to map the
+;;     simple name of the major mode to the real base name of the PEL PDF file
+;;     for that major mode.  For example, for D the cons cell is ("d" . "pl-d")
+;;     because PEL PDF files for programming languages have a name that starts
+;;     with 'pl-' (for programming language).
+;;
+;;   - Determine if the major mode supports indentation and whether it's
+;;     indentation style is completely controlled by the code of the
+;;     major-mode (like go, for instance).
+;;
+;;     - If this is the case add the major mode name in the
+;;       `pel--tab-controlling-major-modes' defconst list.
+;;     - If it is not the case, then you need to add 2 defcustom entries
+;;       inside the pel--options.el for the xxx mode:
+;;
+;;       - pel-xxx-tab-width
+;;       - pel-xxx-use-tabs
+
+
+;; ---------------------------------------------------------------------------
 ;; Global prefixes to specialized prefixes
 ;; =======================================
 ;;
@@ -2089,6 +2180,17 @@ can't bind negative-argument to C-_ and M-_"
                      eldoc-box-hover-at-point-mode))
 
 ;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC 4`` : M4 programming utilities
+
+(when pel-use-m4
+  (define-pel-global-prefix pel:for-m4     (kbd "<f11> SPC 4"))
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension ".m4"))
+
+  ;; m4 is part of Emacs
+  (pel-config-major-mode m4 pel:for-m4))
+
+;; ---------------------------------------------------------------------------
 ;; - AppleScript support
 (when pel-use-applescript
   ;; the Melpa package does not seemed maintained. Use my copy instead.
@@ -2139,12 +2241,12 @@ can't bind negative-argument to C-_ and M-_"
                        pel-say-paragraph
                        pel-say-region)
     (when (not pel-use-hydra)
-        (define-pel-global-prefix pel:narrate (kbd "<f7> <f8>"))
-        (define-key pel:narrate "t" 'pel-say)
-        (define-key pel:narrate "R" 'pel-say-region)
-        (define-key pel:narrate "w" 'pel-say-word)
-        (define-key pel:narrate "s" 'pel-say-sentence)
-        (define-key pel:narrate "p" 'pel-say-paragraph))))
+      (define-pel-global-prefix pel:narrate (kbd "<f7> <f8>"))
+      (define-key pel:narrate "t" 'pel-say)
+      (define-key pel:narrate "R" 'pel-say-region)
+      (define-key pel:narrate "w" 'pel-say-word)
+      (define-key pel:narrate "s" 'pel-say-sentence)
+      (define-key pel:narrate "p" 'pel-say-paragraph))))
 
 ;; ---------------------------------------------------------------------------
 ;; C-like programming languages: C, C++

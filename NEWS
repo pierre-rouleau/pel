@@ -265,6 +265,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: The *pel-use-m4* activates the ~<f12>~ keys for M4 source code files.
+  Added a new PDF file for M4.
 - New: When PEL detects that Emacs is running inside an SSH session it will
   prevent opening a local or web-based PDF since you won't normally be able to
   see the file on the computer GUI desktop. If want to still allow opening the
