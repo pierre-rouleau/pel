@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-12-22 12:21:30 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-01-01 22:01:42 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -1187,7 +1187,8 @@ There should be no key binding!" keyseq))
 
 (defun pel--customize-groups (pel-group group-list other-window)
   "Customize one of the group in PEL-GROUP or groups named in the GROUP-LIST.
-If OTHER-WINDOW is non-nil (use \\[universal-argument]), \
+If OTHER-WINDOW is non-nil \
+(use \\[universal-argument]), \
 display in other window and open the related group(s) that exist.
 If a group is unknown, check if the group is defined in
 a library file with the same name and if so prompt the
