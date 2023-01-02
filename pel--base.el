@@ -1,6 +1,6 @@
 ;;; pel--base.el --- PEL base utilities. -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -307,6 +307,9 @@
 
 (defconst pel-emacs-27-or-later-p (>= emacs-major-version 27)
   "Predicate: t when Emacs version 27 or later is running, nil otherwise.")
+
+(defconst pel-emacs-28-or-later-p (>= emacs-major-version 28)
+  "Predicate: t when Emacs version 28 or later is running, nil otherwise.")
 
 ;; ---------------------------------------------------------------------------
 ;; Code Style Buffer Local Variables

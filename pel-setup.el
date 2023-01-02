@@ -2,12 +2,12 @@
 
 ;; Created   : Thursday, July  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-05-19 11:12:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2023-01-01 22:29:47 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2023  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -686,7 +686,10 @@ Return the complete name of the generated autoload file."
                                          dir))
           (condition-case-unless-debug err
               (progn
-                (update-directory-autoloads dir)
+                (if (and pel-emacs-28-or-later-p
+                         (fboundp 'make-directory-autoloads))
+                    (make-directory-autoloads dir)
+                  (update-directory-autoloads dir))
                 (setq generated-fname generated-autoload-file)
                 (kill-buffer "pel-bundle-autoloads.el"))
             (error
