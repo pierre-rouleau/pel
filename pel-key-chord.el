@@ -1,6 +1,6 @@
 ;;; pel-key-chord.el --- PEL Key-Chord Support. -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -226,7 +226,8 @@ KEY-CHORDS-SPEC is a list of the following 5 elements:
         typed chord.
       - A lambda function.  The code to execute in place of the typed chord.
 
-Return a list of (mode fname key-type key-string) for which the activation must be deferred."
+Return a list of (mode fname key-type key-string) for which the
+activation must be deferred."
   (let ((deferred-modes ())) ; alist of (mode . fname) that must be deferred
     (dolist (spec key-chords-spec (reverse deferred-modes))
       (let ((activation-result (pel-activate-key-chord-from-spec spec)))
@@ -263,8 +264,8 @@ Otherwise leave it nil to minimize printing over messages from major modes.")
             (key-string (nth 3 mode-fname)))
         (when pel--print-key-chord-activation-messages-p
           (message
-           "pel-activate-all-key-chords: deferring activation of %s %S for %s, \
-via loading of %s"
+           "pel-activate-all-key-chords: deferring activation of %s %S for %s,\
+ via loading of %s"
            key-string key-type mode fname))
         ;; for deferral, just re-execute the complete interpretation of
         ;; pel-key-chords.  This way if a change occurred in it, it will

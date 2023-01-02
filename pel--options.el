@@ -1,6 +1,6 @@
 ;;; pel--options.el --- PEL Customization Options -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -2488,7 +2488,8 @@ request a PEL cleanup, your copy will be stored inside your
 New installations will be done using the files from EmacsAttic.
 
 To activate this package select one of the options:
-- use-local-elpa-attic-copy  but only if you have an old copy in your elpa-attic.
+- use-local-elpa-attic-copy but only if you have an old copy in your
+  elpa-attic.
 - use-emacs-attic for all other case."
   :link '(url-link :tab "parinfer manual"
                    "https://shaunlebron.github.io/parinfer/")
@@ -3642,7 +3643,10 @@ characters."
 (pel-put 'pel-use-rst-mode :package-is :builtin-emacs)
 
 (defcustom pel-rst-activates-minor-modes nil
-  "List of *local* minor-modes automatically activated for reStructuredText buffers.
+  "List of *local* minor-modes automatically activated for rst buffers.
+
+Note: rst := reStructuredText
+
 Enter *local* minor-mode activating function symbols.
 Do not enter lambda expressions."
   :group 'pel-pkg-for-reST

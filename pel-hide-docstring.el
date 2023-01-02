@@ -1,6 +1,6 @@
 ;;; pel-hide-docstring.el --- Hide docstrings.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -202,7 +202,8 @@ Return cons cell of (start . end) positions if found, nil otherwise."
 (defun pel-hide/show-docstring (&optional show silent)
   "Hide or show the docstring of current or previous definition.
 Hide the docstring by default.  If SHOW is non-nil show it instead.
-Return (beg.end) on success.  If no docstring detected issue a user-error by default.
+Return (beg.end) on success.
+If no docstring detected issue a user-error by default.
 But if SILENT is non-nil, instead of issuing an error return nil instead."
   (interactive "P")
   ;; (let ((start-point (if (region-active-p) (region-beginning) (point-min)))

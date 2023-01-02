@@ -1,6 +1,6 @@
 ;;; pel-spell.el --- PEL Spelling Utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -240,7 +240,7 @@ to allow the flyspell pop-up menu to work in terminal mode."
                                    corrects)
                          '()))
              (affix (car (cdr (cdr (cdr poss)))))
-             show-affix-info
+             (show-affix-info nil)
              (base-menu  (let ((save (if (and (consp affix) show-affix-info)
                                          (list
                                           (list

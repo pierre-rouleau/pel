@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-09-13 11:37:34, updated by Pierre Rouleau>
+;; Time-stamp: <2023-01-01 21:43:46 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -56,10 +56,10 @@ In both cases, also display the Emacs startup time.
 Requires installation of the benchmark-init.
 Use M-x list-package, select benchmark-init and install it.
 
-Then update your init.el file and place the following lines as close as possible
-to the top of the file:
+Then update your init.el file and place the following lines as
+close as possible to the top of the file:
 
-  ;; -----------------------------------------------------------------------------
+  ;; -------------------------------------------------------------------------
   ;; Setup Benchmark Measurement
   ;; ---------------------------
   ;; Load benchmark right away using the file name explicitly so we can use it

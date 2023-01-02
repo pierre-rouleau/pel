@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October 10 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-20 16:01:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2023-01-01 21:46:04 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -52,7 +52,7 @@
   "Regexp to find C preprocessor conditionals.")
 
 (defconst pel--c-preproc-conditional-group-if 2
-  "Significant matching group when searching beginning of #if|#ifdef|#ifndef conditional.")
+  "Significant matching group when searching beginning of #if|#ifdef|#ifndef.")
 
 (defconst pel--c-preproc-conditional-else 6
   "Significant matching group when searching #else|#elif conditional.")

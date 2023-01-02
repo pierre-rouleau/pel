@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-08-13 11:13:26 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2023-01-01 21:42:01 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2023  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -210,9 +210,9 @@ inside your init.el file.")
                   (and (bound-and-true-p pel-init-support-dual-environment-p)
                        pel-emacs-is-graphic-p)))
   "Absolute path of the user elpa-attic directory.
-PEL supports a pel-attic directory for dual independent customization when
-it is requested as specified by the presence of `pel-init-support-dual-environment-p'
-symbol set to t.")
+PEL supports a pel-attic directory for dual independent
+customization when it is requested as specified by the presence
+of `pel-init-support-dual-environment-p' symbol set to t.")
 
 (defconst pel-utils-dirpath
   (file-name-as-directory
@@ -220,9 +220,9 @@ symbol set to t.")
                   (and (bound-and-true-p pel-init-support-dual-environment-p)
                        pel-emacs-is-graphic-p)))
   "Absolute path of the PEL utils directory.
-PEL supports a utils directory for dual independent customization when
-it is requested as specified by the presence of `pel-init-support-dual-environment-p'
-symbol set to t.")
+PEL supports a utils directory for dual independent customization
+when it is requested as specified by the presence of
+`pel-init-support-dual-environment-p' symbol set to t.")
 
 (defconst pel-utils-attic-dirpath
   (file-name-as-directory
@@ -407,7 +407,9 @@ Where:
              attribute-value)))))
 
 (defun pel-package-also-required-p (symbol)
-  "Return evaluated form associated with :also-required-when property of pel-use- SYMBOL.
+  "Return eval'ed form associated with :also-required-when property of SYMBOL.
+
+The SYMBOL is expected to be a pel-use SYMBOL.
 Return nil otherwise.
 Raise issue if SYMBOL is not a pel-use- symbol or when the value of the
 :also-required-when property is not a form to evaluate."
