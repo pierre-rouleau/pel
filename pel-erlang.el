@@ -1,6 +1,6 @@
 ;;; pel-erlang.el --- Erlang programming Language support  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -663,7 +663,8 @@ user option."
   "Copied value for debugging purpose.")
 
 (defun pel--erlang-man-dir (erlang-man-dir subdir &optional no-download)
-  "Replace erlang-man-dir with Erlang root directory specified by `pel-erlang-man-parent-rootdir'."
+  "Replace erlang-man-dir with specified Erlang root directory.
+The directory is specified by `pel-erlang-man-parent-rootdir'."
   ;; erlang-man-dir arguments: (subdir &optional no-download)
   (let ((erlang-root-dir (pel-erlang-root-path)))
     (setq pel---detected-erlang-root-dir erlang-root-dir)
