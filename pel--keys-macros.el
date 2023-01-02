@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-01-01 22:01:42 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-01-01 22:03:05 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1187,8 +1187,7 @@ There should be no key binding!" keyseq))
 
 (defun pel--customize-groups (pel-group group-list other-window)
   "Customize one of the group in PEL-GROUP or groups named in the GROUP-LIST.
-If OTHER-WINDOW is non-nil \
-(use \\[universal-argument]), \
+If OTHER-WINDOW is non-nil (use \\[universal-argument]),
 display in other window and open the related group(s) that exist.
 If a group is unknown, check if the group is defined in
 a library file with the same name and if so prompt the
