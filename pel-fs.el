@@ -1,6 +1,6 @@
 ;;; pel-fs.el --- File System Operations  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -131,8 +131,9 @@ located in the
 The `pel-exec-pel-bin' checks if the file exists and was not tempered
 with by checking its MD5 hash digest.
 If the command file is invalid or does not exist, raise an error.
-If the file is OK, make the file executable if it is not already executable,
-then run the command and return the list (exit-code stdout-string stderr-string).
+If the file is OK, make the file executable if it is not already
+executable, then run the command and return the list (exit-code
+stdout-string stderr-string).
 - The stdout-string and stderr-string trailing newline are removed if present.
 - If stdout or stderr is empty, an empty string is placed in the list."
   (when (pel-check-pel-bin-cmd cmd)
