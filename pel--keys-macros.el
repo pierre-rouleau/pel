@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-01-01 22:03:05 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-01-01 22:06:43 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1204,8 +1204,8 @@ is one or several other customization groups that will also be
 opened when the command is invoked with a prefix argument."
   (let ((fct (intern (format "pel-cfg-pkg-%s" pel-group)))
         (group (intern (format "pel-pkg-for-%s" pel-group)))
-        (docstring (format "Customize PEL %s support.\n\
-If OTHER-WINDOW is non-nil (use \\[universal-argument]), \
+        (docstring (format "Customize PEL %s support.
+If OTHER-WINDOW is non-nil (use \\[universal-argument]),
 display in other window and open the related group(s) that exist."
                            (capitalize pel-group))))
     `(progn
