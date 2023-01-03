@@ -1,6 +1,6 @@
 ;;; pel-lisp.el --- PEL Lisp Editing Utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -26,8 +26,8 @@
 
 ;;; Code:
 
-(require 'pel--base)                    ; use: (pel-current-buffer-filename)
-
+(require 'pel--base)                ; use: `pel-current-buffer-filename'
+(require 'elisp-mode)               ; use: `emacs-lisp-byte-compile-and-load'
 
 ;;-pel-autoload
 (defun pel-toggle-lisp-modes ()
@@ -41,11 +41,16 @@
 ;;-pel-autoload
 (defun pel-byte-compile-file-and-load ()
   "Byte compile and load the current elisp file.
-Return non-nil if there were no error, nil if errors."
+
+Prompt if applied to an unsaved buffer to save to a file.
+Issue an error if applied on a buffer not visiting a file.
+Returns:
+- nil if errors detected (listed in the *Compile-log* buffer)
+- non-nil if there were no error:
+  - no-byte-compile : if file was current and there was no need to compile it.
+  - t               : if file was compiled and no error were detected."
   (interactive)
-  (byte-compile-file
-   (pel-current-buffer-filename)
-   t))
+  (call-interactively (function emacs-lisp-byte-compile-and-load)))
 
 ;;-pel-autoload
 (defun pel-lint-elisp-file ()
