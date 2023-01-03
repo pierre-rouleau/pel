@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-01-01 22:06:43 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-01-03 09:49:13 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -884,7 +884,12 @@ There should be no key binding!" keyseq))
     ("iedit"            . "search-replace")
     ("order"            . "sorting")
     ("desktop"          . "sessions")
-    ("diff"             . "diff-merge"))
+    ("diff"             . "diff-merge")
+    ;; OS keys
+    ("macOS"            . "macOS-keys")
+    ("mint"             . "linux-mint-20-desktop-keys")
+    ("ubuntu"           . "ubuntu-16-04-desktop-keys" )
+    )
   "List of alias for PEL PDF file names.")
 
 (defvar pel--prompt-history-for-help-pdf nil
