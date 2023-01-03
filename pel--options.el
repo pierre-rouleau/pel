@@ -5860,7 +5860,8 @@ characters."
 
 (defcustom pel-use-go nil
   "Controls whether PEL supports the Go programming language.
-This *must* be activated to allow any other package for Go."
+This *must* be activated to allow any other package for Go.
+However it is automatically activated when `pel-use-go-mode' is activated."
   :link '(url-link :tag "Go @ wikipedia"
                    "https://en.wikipedia.org/wiki/Go_(programming_language)")
   :group 'pel-pkg-for-go
@@ -10352,6 +10353,9 @@ indexing system."
   (ggtags              (setq pel-use-ggtags t))
   (edts                (setq pel-use-edts 'start-automatically))
   (erlang-ls           (setq pel-use-erlang-ls t)))
+
+(when pel-use-go-mode
+  (setq pel-use-go t))
 
 (when (eq pel-c-file-finder-method 'pel-ini-file)
   (setq pel-use-ini t))
