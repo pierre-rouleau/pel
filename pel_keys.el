@@ -6108,7 +6108,13 @@ the ones defined from the buffer now."
 ;; -----------------------
 (when pel-use-fzf
   (cl-eval-when 'load
-    (pel-install-github-file "pierre-rouleau/fzf.el/master" "fzf.el")))
+    (pel-install-github-file "pierre-rouleau/fzf.el/master" "fzf.el"))
+  (define-pel-global-prefix pel:file-fzf (kbd "<f11> Z"))
+  (pel-autoload-file fzf for:
+                     fzf
+                     fzf-directory)
+  (define-key pel:file-fzf "Z" 'fzf)
+  (define-key pel:file-fzf "D" 'fzf-directory))
 
 
 (defun pel--augment-goto-addr-map ()
