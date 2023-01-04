@@ -1710,6 +1710,18 @@ Select one of:
           (const :tag "Use Unix find" find)
           (const :tag "Use fd" fd)))
 
+
+(defcustom pel-use-fzf nil
+  "Control whether PEL activates the fzf.el package for fast fuzzy search."
+  :group 'pel-pkg-for-filemng
+  :link '(url-link :tag "fzf.el @ Github"
+                   "https://github.com/bling/fzf.el")
+  :link '(url-link :tag "my fzf fork @ Github, used by PEL"
+                   "https://github.com/pierre-rouleau/fzf.el")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put 'pel-use-fzf :package-is :in-utils)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Directory Tree Browsing and Management
 ;; --------------------------------------

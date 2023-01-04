@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-01-03 09:49:13 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-01-03 21:35:32 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -389,10 +389,13 @@
     (,(kbd "<f11> SPC M-D") "mode-dired" pel-pkg-for-dired      ,pel--dired-groups)
     ([f11 32 27 ?D]  "mode-dired"       pel-pkg-for-dired       ,pel--dired-groups)
     ([dired]         "mode-dired"       pel-pkg-for-dired       ,pel--dired-groups)
-    ([f11 ?f]        ("file-mngt"
-                      "web")            pel-pkg-for-filemng     (files
-                      recentf
-                      popup-switcher))
+    ([f11 ?f]
+     ("file-mngt"
+      "web")
+     pel-pkg-for-filemng     (files
+                              fzf
+                              recentf
+                              popup-switcher))
 
     ;; no PDF for browse yet, the info is  in file-mngt.
     ([f11 ?B]        "file-mngt"        (pel-pkg-for-browse

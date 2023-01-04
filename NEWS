@@ -265,6 +265,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: the *pel-use-fzf* activates the fzf-based fast fuzzy finder.  Two
+  commands are bound to key sequences: *fzf* is bound to ~<f11> Z Z~ and
+  *fzf-directory* to ~<f11> Z D~.
 - New: The *pel-use-m4* activates the ~<f12>~ keys for M4 source code files.
   Added a new PDF file for M4.
 - New: When PEL detects that Emacs is running inside an SSH session it will

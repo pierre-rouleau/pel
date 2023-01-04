@@ -1,6 +1,6 @@
 ;;; pel_keys.el --- PEL key binding definitions -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -6103,6 +6103,12 @@ the ones defined from the buffer now."
 ;; binding PEL activates.
 (define-key pel:file "u" 'goto-address-mode)
 (define-key pel:file "U" 'goto-address-prog-mode)
+
+;; - fzf : fast fuzzy find
+;; -----------------------
+(when pel-use-fzf
+  (cl-eval-when 'load
+    (pel-install-github-file "pierre-rouleau/fzf.el/master" "fzf.el")))
 
 
 (defun pel--augment-goto-addr-map ()
