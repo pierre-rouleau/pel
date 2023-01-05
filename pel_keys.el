@@ -6025,20 +6025,16 @@ the ones defined from the buffer now."
 ;; M-. M-/ M-d M-l M-t M-u M-x
 (define-key pel:file  (kbd "M-d") 'pel-open-file-in-other-dir)
 (define-key pel2:file (kbd "M-d") 'pel-open-file-in-other-dir)
-(define-key pel:file "f" #'find-file)
 (define-key pel2:file (kbd "M-f") #'find-file)
 (define-key pel:file "I" #'insert-file-literally)
 (define-key pel:file "O" #'find-file-read-only-other-window)
 (define-key pel:file "L" (if pel-use-counsel 'counsel-locate #'locate))
 (define-key pel:file "W" #'append-to-file)
-(define-key pel:file "d" #'find-dired)
-(define-key pel:file "F"  'pel-open-buffer-file-in-os-app)
-(define-key pel:file "g" #'find-grep)
-(define-key pel:file "h" #'find-grep-dired)
+(define-key pel:file "\C-o"  'pel-open-buffer-file-in-os-app)
+(define-key pel:file "f" #'find-file)
 (define-key pel:file "i" #'insert-file)
-(define-key pel:file "l" #'find-lisp-find-dired)
-(define-key pel:file "n" #'find-name-dired)
 (define-key pel:file "o" #'find-file-other-window)
+
 (define-key pel:file "t" #'time-stamp)
 (define-key pel:file (kbd "M-t") #'time-stamp-toggle-active)
 (define-key pel:file "w" #'write-region)
@@ -6050,7 +6046,15 @@ the ones defined from the buffer now."
 (unless pel-system-is-windows-p
   (pel-autoload-file pel-sudo-edit for: pel-edit-as-root)
   (define-key pel:file "R" 'pel-edit-as-root))
+(when pel-use-counsel
+  (define-key pel:file "c" 'counsel-fzf))
 
+(define-pel-global-prefix pel:find (kbd "<f11> f F"))
+(define-key pel:find "d" #'find-dired)
+(define-key pel:find "g" #'find-grep)
+(define-key pel:find "h" #'find-grep-dired)
+(define-key pel:find "l" #'find-lisp-find-dired)
+(define-key pel:find "n" #'find-name-dired)
 
 ;; - Open recent file
 ;; ------------------
@@ -6110,12 +6114,37 @@ the ones defined from the buffer now."
 (when pel-use-fzf
   (cl-eval-when 'load
     (pel-install-github-file "pierre-rouleau/fzf.el/master" "fzf.el"))
-  (define-pel-global-prefix pel:file-fzf (kbd "<f11> Z"))
+  (define-pel-global-prefix pel:file-fzf (kbd "<f11> M-z"))
   (pel-autoload-file fzf for:
                      fzf
-                     fzf-directory)
-  (define-key pel:file-fzf "Z" 'fzf)
-  (define-key pel:file-fzf "D" 'fzf-directory))
+                     fzf-directory
+                     fzf-switch-buffer
+                     fzf-git
+                     fzf-git-files
+                     fzf-hg
+                     fzf-projectile
+                     fzf-recentf
+                     fzf-git-grep
+                     fzf-grep
+                     fzf-grep-with-narrowing
+                     fzf-grep-in-dir
+                     fzf-grep-in-dir-with-narrowing
+                     fzf-grep-dwim
+                     fzf-grep-dwim-with-narrowing)
+  (define-key pel:file     "z"          'fzf)
+  (define-key pel:file-fzf (kbd "M-z")  'fzf)
+  (define-key pel:file     "d"          'fzf-directory)
+  (define-key pel:file-fzf (kbd "M-d")  'fzf-directory)
+  (define-key pel:file     "g"          'fzf-git-files)
+  (define-key pel:file     "G"          'fzf-git)
+  (define-key pel:file     "H"          'fzf-hg)
+  ;;
+  (when pel-use-projectile
+    (define-key pel:file (kbd "<f8>") 'fzf-projectile))
+  (when pel-use-recentf
+    (define-key pel:recent-file (kbd "M-z") 'fzf-recentf))
+  ;;
+  (define-key pel:buffer   "z"         'fzf-switch-buffer))
 
 
 (defun pel--augment-goto-addr-map ()
@@ -6348,6 +6377,14 @@ the ones defined from the buffer now."
   (pel-ensure-package deadgrep from: melpa)
   (define-key pel:grep  "d"     'deadgrep))
 
+(when pel-use-fzf
+  (define-key pel:grep     "s"          'fzf-grep)
+  ;; (define-key pel:grep (kbd "M-s")      'fzf-grep-with-narrowing)
+  (define-key pel:grep     "S"          'fzf-grep-in-dir)
+  ;; (define-key pel:grep (kbd "M-S")      'fzf-grep-in-dir-with-narrowing)
+  ;; (define-key pel:grep     "."          'fzf-grep-dwim)
+  ;; (define-key pel:grep (kbd "M-.")      'fzf-grep-dwi-with-narrowing)
+  (define-key pel:grep     "G"          'fzf-git-grep))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> h`` : highlight commands

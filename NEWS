@@ -2,6 +2,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Update: key bindings for file management, find and grep to make space for
+  more key bindings using fast fuzzy file search based on the fzf utility:
+  - moved all find-based command under the new *pel:find* prefix bound to
+    ~<f11 f F~,
+  - remapped some commands in the *pel:file* prefix and added others.
 - The *pel-open-at-point* command is now able to search for C and C++ header files in more locations: the
   *pel-c-file-searched-extra-dir-trees* and *pel-c++-file-searched-extra-dir-trees*
   user-options can be used to identify lists of directory trees to search recursively
@@ -265,6 +270,15 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: add support for the *fzf.el* package that provides a quick raw terminal
+  interface to the fzf utility to quickly search for file, recently opened
+  files, buffers and also perform fussy search on grep operation results, all
+  of the above can be done on the current directory, a specific directory, a
+  projectile project tree, a set of files in a Git or Mercurial repository.
+  The *fzf-* commands are bound in the *pel:file* prefix (~<f11> f~) as well
+  as in *pel:recent-file* (~<f11> f M-r~)and *pel:grep* (~<f11> g~).  Other
+  access to *fzf* and *fzf-directory* are respectively bound in the
+  *pel:file-fzf* to ~<f11> M-z M-z~ and ~<f11> M-z M-d~.
 - New: the *pel-use-fzf* activates the fzf-based fast fuzzy finder.  Two
   commands are bound to key sequences: *fzf* is bound to ~<f11> Z Z~ and
   *fzf-directory* to ~<f11> Z D~.
