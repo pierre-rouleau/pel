@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-01-03 21:35:32 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-01-05 22:34:49 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -888,6 +888,7 @@ There should be no key binding!" keyseq))
     ("order"            . "sorting")
     ("desktop"          . "sessions")
     ("diff"             . "diff-merge")
+    ("execute"          . "pl-emacs-lisp")
     ;; OS keys
     ("macOS"            . "macOS-keys")
     ("mint"             . "linux-mint-20-desktop-keys")

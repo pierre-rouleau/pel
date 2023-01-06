@@ -1149,6 +1149,9 @@ Done in this function to allow advising libraries that remap these keys."
 ;; Electric-pair-mode control
 (define-key pel: (kbd      "M-e")          'electric-pair-local-mode)
 
+;; Command Execution (Emacs 28.1 and later)
+(when pel-emacs-28-or-later-p
+  (define-key pel: (kbd "M-X") 'execute-extended-command-for-buffer))
 ;; ---------------------------------------------------------------------------
 ;; EditorConfig Support
 ;; --------------------
