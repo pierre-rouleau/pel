@@ -1,6 +1,6 @@
 ;;; pel-autoload.el --- Autoloads PEL -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -650,7 +650,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-show-search-case-state
     pel-search-word-from-top
     pel-select-search-tool
-    pel-show-search-status)
+    pel-show-search-status
+    pel-multi-occur-in-this-mode)
   (pel-autoload-function "pel-search" for:
     pel-set-search-tool)
 

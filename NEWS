@@ -270,6 +270,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: Add *pel-multi-occur-in-this-mode* bound to ~<f11> s M-o~.  This was taken
+  from Mickey Petersen's excellent web site. See code for credits information.
 - New: add ~<f11> M-X~ binding to *execute-extended-command-for-buffer* command
   when running Emacs 28 or later.
 - New: add support for the *fzf.el* package that provides a quick raw terminal

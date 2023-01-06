@@ -2,12 +2,15 @@
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-06-09 15:49:09 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2023-01-06 10:39:25 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau with some code derived
+;;                                 from Mickey Petersen's work
+;;                                 (see CREDITS below).
+;;
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -444,6 +447,30 @@ more information about available choices."
            (pel-active-search-tool-str)
            (pel-active-search-regexp-engine-str with-details)
            (pel-search-case-state-str)))
+
+;; ---------------------------------------------------------------------------
+;; CREDITS : the following code is derived almost verbatim from Mickey
+;;           Petersen's excellent set of Emacs articles on
+;;           https://www.masteringemacs.org
+;; Source: https://www.masteringemacs.org/article/searching-buffers-occur-mode
+
+(defun pel-buffers-matching-mode (mode)
+  "Returns a list of buffers where their major-mode is equal to MODE"
+  (let ((buffer-mode-matches '()))
+    (dolist (buf (buffer-list))
+      (with-current-buffer buf
+        (when (eq mode major-mode)
+          (push buf buffer-mode-matches))))
+    buffer-mode-matches))
+
+
+;;-pel-autoload
+(defun pel-multi-occur-in-this-mode ()
+  "Show all lines matching REGEXP in buffers with this major mode."
+  (interactive)
+  (multi-occur
+   (pel-buffers-matching-mode major-mode)
+   (car (occur-read-primary-args))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-search)
