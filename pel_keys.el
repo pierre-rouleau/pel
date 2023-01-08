@@ -6125,6 +6125,7 @@ the ones defined from the buffer now."
                      fzf-git
                      fzf-git-files
                      fzf-hg
+                     fzf-hg-files
                      fzf-projectile
                      fzf-recentf
                      fzf-git-grep
@@ -6140,6 +6141,7 @@ the ones defined from the buffer now."
   (define-key pel:file-fzf (kbd "M-d")  'fzf-directory)
   (define-key pel:file     "g"          'fzf-git-files)
   (define-key pel:file     "G"          'fzf-git)
+  (define-key pel:file     "h"          'fzf-hg-files)
   (define-key pel:file     "H"          'fzf-hg)
   ;;
   (when pel-use-projectile
