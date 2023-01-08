@@ -367,6 +367,32 @@ Other uses risk returning non-nil value that point to the wrong file."
     "Return non-nil when PEL runs in fast startup operation."
     (bound-and-true-p pel-running-in-fast-startup-p)))
 
+
+;; ---------------------------------------------------------------------------
+;; Functions checking Major Mode
+;; -----------------------------
+
+(defun pel-derived-mode-p (buffer-or-name &rest modes)
+  "Non-nil if major mode of BUFFER-OR-NAME is derived from one of MODES.
+If BUFFER-OR-NAME is nil, use current buffer."
+  (if buffer-or-name
+      (with-current-buffer buffer-or-name
+        (apply (function derived-mode-p) modes)))
+  (apply (function derived-mode-p) modes))
+
+(defun pel-dired-buffer-p (&optional buffer-or-name strict)
+  "Return mode if mode of BUFFER-OR-NAME is a dired buffer, nil otherwise.
+
+Accepts mode derived from dired-mode unless STRICT is non-nil."
+  (if buffer-or-name
+      (with-current-buffer buffer-or-name
+        (or (eq major-mode 'dired-mode)
+            (unless strict
+              (derived-mode-p 'dired-mode))))
+    (or (eq major-mode 'dired-mode)
+            (unless strict
+              (derived-mode-p 'dired-mode)))))
+
 (defun pel-major-mode-of (&optional buffer-or-name)
   "Return the major mode symbol of the specified BUFFER-OR-NAME.
 If not specified (or nil) return the major mode of the current buffer."
