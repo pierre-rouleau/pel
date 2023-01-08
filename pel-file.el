@@ -1,6 +1,6 @@
 ;;; pel-file.el --- File Management utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -473,7 +473,8 @@ were specified."
               (pel--show-edit-action "browse" filename))
           (let* ((action    (cdr fn-action))
                  (buffer   (or (find-buffer-visiting filename)
-                               (car (dired-buffers-for-dir filename))))
+                               (when (fboundp 'dired-buffers-for-dir)
+                                 (car (dired-buffers-for-dir filename)))))
                  (window   (when buffer (get-buffer-window buffer)))
                  (line     (caddr fileparts))
                  (column   (cadddr fileparts)))
