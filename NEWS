@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Improved: *pel-find-file-at-point-in-window* such that if a dired buffer is
+  already opened point moves into it. This improves behaviour of
+  *pel-open-at-point* in the same way.
 - Update: key bindings for file management, find and grep to make space for
   more key bindings using fast fuzzy file search based on the fzf utility:
   - moved all find-based command under the new *pel:find* prefix bound to
