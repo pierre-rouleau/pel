@@ -6124,11 +6124,12 @@ the ones defined from the buffer now."
                      fzf-switch-buffer
                      fzf-git
                      fzf-git-files
+                     fzf-git-grep
                      fzf-hg
                      fzf-hg-files
+                     fzf-hg-grep
                      fzf-projectile
                      fzf-recentf
-                     fzf-git-grep
                      fzf-grep
                      fzf-grep-with-narrowing
                      fzf-grep-in-dir
@@ -6292,7 +6293,7 @@ the ones defined from the buffer now."
 (define-key pel:grep      "k"         #'kill-grep)
 (define-key pel:grep      "l"         #'lgrep)
 (define-key pel:grep      "r"         #'rgrep)  ; execute recursive grep
-(define-key pel:grep      "z"         #'zrgrep)
+(define-key pel:grep      "R"         #'zrgrep)
 (define-key pel:grep      "1"          'first-error)
 
 (when pel-use-wgrep
@@ -6383,13 +6384,14 @@ the ones defined from the buffer now."
   (define-key pel:grep  "d"     'deadgrep))
 
 (when pel-use-fzf
-  (define-key pel:grep     "s"          'fzf-grep)
+  (define-key pel:grep     "z"          'fzf-grep)
   ;; (define-key pel:grep (kbd "M-s")      'fzf-grep-with-narrowing)
-  (define-key pel:grep     "S"          'fzf-grep-in-dir)
+  (define-key pel:grep     "Z"          'fzf-grep-in-dir)
   ;; (define-key pel:grep (kbd "M-S")      'fzf-grep-in-dir-with-narrowing)
   ;; (define-key pel:grep     "."          'fzf-grep-dwim)
   ;; (define-key pel:grep (kbd "M-.")      'fzf-grep-dwi-with-narrowing)
-  (define-key pel:grep     "G"          'fzf-git-grep))
+  (define-key pel:grep     "G"          'fzf-git-grep)
+  (define-key pel:grep     "H"          'fzf-hg-grep))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> h`` : highlight commands

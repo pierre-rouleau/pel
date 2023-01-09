@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Modified: *zrgrep* key binding from ~<f11> g z~ to ~<f11> g R~ to make space
+  for the fast fuzzy search based on fzf: *fzf-grep*, bound to ~<f11> g z~ and
+  *fzf-grep-in-dir*  bound to ~<f11> g Z~.
 - Improved: *pel-find-file-at-point-in-window* such that if a dired buffer is
   already opened point moves into it. This improves behaviour of
   *pel-open-at-point* in the same way.
@@ -285,7 +288,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   The *fzf-* commands are bound in the *pel:file* prefix (~<f11> f~) as well
   as in *pel:recent-file* (~<f11> f M-r~)and *pel:grep* (~<f11> g~).  Other
   access to *fzf* and *fzf-directory* are respectively bound in the
-  *pel:file-fzf* to ~<f11> M-z M-z~ and ~<f11> M-z M-d~.
+  *pel:file-fzf* to ~<f11> M-z M-z~ and ~<f11> M-z M-d~.  This also includes
+  the *fzf-hg-grep*, bound to ~<f11> g H~.
 - New: the *pel-use-fzf* activates the fzf-based fast fuzzy finder.  Two
   commands are bound to key sequences: *fzf* is bound to ~<f11> Z Z~ and
   *fzf-directory* to ~<f11> Z D~.
