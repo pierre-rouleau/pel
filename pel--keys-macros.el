@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-01-05 22:34:49 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-01-09 16:36:20 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -413,6 +413,7 @@
     ([f11 ?g]        "grep"             pel-pkg-for-grep        (grep
                                                                  ag
                                                                  deadgrep
+                                                                 fzf
                                                                  rg
                                                                  ripgrep
                                                                  wgrep))
