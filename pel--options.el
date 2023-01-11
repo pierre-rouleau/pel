@@ -1714,6 +1714,8 @@ Select one of:
 (defcustom pel-use-fzf nil
   "Control whether PEL activates the fzf.el package for fast fuzzy search."
   :group 'pel-pkg-for-filemng
+  :group 'pel-pkg-for-grep
+  :group 'pel-pkg-for-search
   :link '(url-link :tag "fzf.el @ Github"
                    "https://github.com/bling/fzf.el")
   :link '(url-link :tag "my fzf fork @ Github, used by PEL"

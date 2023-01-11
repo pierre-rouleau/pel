@@ -285,6 +285,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   files, buffers and also perform fussy search on grep operation results, all
   of the above can be done on the current directory, a specific directory, a
   projectile project tree, a set of files in a Git or Mercurial repository.
+  There's also commands to perform narrowed fzf searches controlling grep or
+  Ripgrep, or even performing a fuzzy grep inside a buffer visiting a file.
   The *fzf-* commands are bound in the *pel:file* prefix (~<f11> f~) as well
   as in *pel:recent-file* (~<f11> f M-r~)and *pel:grep* (~<f11> g~).  Other
   access to *fzf* and *fzf-directory* are respectively bound in the

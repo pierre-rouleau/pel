@@ -6135,7 +6135,8 @@ the ones defined from the buffer now."
                      fzf-grep-in-dir
                      fzf-grep-in-dir-with-narrowing
                      fzf-grep-dwim
-                     fzf-grep-dwim-with-narrowing)
+                     fzf-grep-dwim-with-narrowing
+                     fzf-find-in-buffer)
   (define-key pel:file     "z"          'fzf)
   (define-key pel:file-fzf (kbd "M-z")  'fzf)
   (define-key pel:file     "d"          'fzf-directory)
@@ -6385,11 +6386,11 @@ the ones defined from the buffer now."
 
 (when pel-use-fzf
   (define-key pel:grep     "z"          'fzf-grep)
-  ;; (define-key pel:grep (kbd "M-s")      'fzf-grep-with-narrowing)
+  (define-key pel:grep (kbd "M-z")      'fzf-grep-with-narrowing)
   (define-key pel:grep     "Z"          'fzf-grep-in-dir)
-  ;; (define-key pel:grep (kbd "M-S")      'fzf-grep-in-dir-with-narrowing)
-  ;; (define-key pel:grep     "."          'fzf-grep-dwim)
-  ;; (define-key pel:grep (kbd "M-.")      'fzf-grep-dwi-with-narrowing)
+  (define-key pel:grep (kbd "M-Z")      'fzf-grep-in-dir-with-narrowing)
+  (define-key pel:grep     "."          'fzf-grep-dwim)
+  (define-key pel:grep (kbd "M-.")      'fzf-grep-dwim-with-narrowing)
   (define-key pel:grep     "G"          'fzf-git-grep)
   (define-key pel:grep     "H"          'fzf-hg-grep))
 
@@ -6844,6 +6845,8 @@ the ones defined from the buffer now."
 (define-key pel:search-replace (kbd "M-o") 'pel-multi-occur-in-this-mode)
 (define-key pel:search-replace "r" #'replace-string)
 (define-key pel:search-replace "?"  'pel-show-search-status)
+(when pel-use-fzf
+  (define-key pel:search-replace "z" 'fzf-find-in-buffer))
 ;; "S" reserved
 
 (define-pel-global-prefix pel:search-word (kbd "<f11> s w"))

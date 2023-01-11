@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-01-09 16:36:20 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-01-11 13:55:59 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -440,9 +440,10 @@
     ([f11 ?r]        "registers"        nil)
     ([f11 ?s]        "search-replace"   pel-pkg-for-search      (isearch
                                                                  anzu
-                                                                 swiper
                                                                  iedit
-                                                                 easy-escape))
+                                                                 easy-escape
+                                                                 fzf
+                                                                 swiper))
     ([f11 ?s ?m]     "search-replace"   nil)
     ([f11 ?s ?w]     "search-replace"   nil)
     ([f11 ?s ?x]     "search-replace"   pel-pkg-for-regexp    (rxt ; for pcre
