@@ -43,6 +43,7 @@
 ;;  - `pel-current-buffer-file-extension'
 ;;  - `pel-current-buffer-eol-type'
 ;;  - `pel-running-under-ssh-p'
+;;  - `pel-cd-to-current'
 ;;
 ;; Read/Set variable with a formatted name derived from major mode:
 ;;  - `pel-major-mode-symbol-value-or'
@@ -477,6 +478,18 @@ The nil value means that the type is unknown."
   "Return t if Emacs is invoked through SSH, nil otherwise."
   (when (getenv "SSH_CLIENT")
     t))
+
+(defun pel-cd-to-current (&optional silent)
+  "Change current directory to the directory holding visited file.
+
+Print message showing the new current working directory if it changed unless
+SILENT is non-nil (can be requested by prefix argument)."
+  (interactive "P")
+  (let* ((original-cwd (cd "."))
+         (new-cwd (cd (file-name-directory (pel-current-buffer-filename)))))
+    (unless (string= new-cwd original-cwd)
+      (unless silent
+        (message "Current directory back to: %s" new-cwd)))))
 
 ;; ---------------------------------------------------------------------------
 ;; Read/Set variable with a formatted name derived from major mode
