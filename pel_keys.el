@@ -6119,7 +6119,7 @@ the ones defined from the buffer now."
 ;; -----------------------
 (when pel-use-fzf
   (cl-eval-when 'load
-    (pel-install-github-file "pierre-rouleau/fzf.el/master" "fzf.el"))
+    (pel-install-github-file "pierre-rouleau/fzf.el/publish" "fzf.el"))
   (define-pel-global-prefix pel:file-fzf (kbd "<f11> M-z"))
   (pel-autoload-file fzf for:
                      fzf
