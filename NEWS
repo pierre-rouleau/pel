@@ -2,6 +2,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Fix: In *emacs-lisp-mode*, activating the *flycheck-mode* used to override
+  the ~<f12> c~ key prefix. This is no longer the case; instead the
+  *flycheck-list-errors* is bound to ~<f12> c l~,
+  *flycheck-display-error-at-point* is bound to ~<f12> c .~ and
+  *flycheck-explain-error-at-point* is bound to ~<f12> c /~.
 - Modified: *zrgrep* key binding from ~<f11> g z~ to ~<f11> g R~ to make space
   for the fast fuzzy search based on fzf: *fzf-grep*, bound to ~<f11> g z~ and
   *fzf-grep-in-dir*  bound to ~<f11> g Z~.

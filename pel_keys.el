@@ -51,7 +51,7 @@
 ;; Some of the defun forms in this file are not top-level forms and are
 ;; declared inside a conditional form.  For those, the byte-compiler would
 ;; generate a warning since it cannot guarantee the existence of the
-;; functions. Therefore these defun forms are followed by `declare-function'
+;; functions.  Therefore these defun forms are followed by `declare-function'
 ;; forms.  The logic must therefore be correct to ensure the existence of the
 ;; function at run-time.
 
@@ -63,7 +63,7 @@
 ;;
 ;; Each major mode has a `pel-<mode>-activates-minor-modes' user-option that
 ;; identifies the minor-modes that must be automatically activated for the
-;; major mode. These user-options are accessed via the `pel-config-major-mode'
+;; major mode.  These user-options are accessed via the `pel-config-major-mode'
 ;; macro.
 
 ;; Minor Modes
@@ -75,7 +75,7 @@
 ;; the validity of the minor mode symbols by calling the function
 ;; `pel--check-minor-modes-in'.  That issues a warning if the minor mode
 ;; symbol is not loaded, it does not prevent Emacs from starting but the
-;; warning message will be annoying. This check is not absolutely necessary
+;; warning message will be annoying.  This check is not absolutely necessary
 ;; but it prevents undetected invalid entries in the customization.
 
 ;; Package Installation
@@ -141,7 +141,7 @@
 ;; Setup GUI launched Emacs environment
 ;; ------------------------------------
 (defvar pel--init-called-once nil
-  "Remembers that `pel-init' was called. DO NOT MODIFY!")
+  "Remembers that `pel-init' was called.  DO NOT MODIFY!")
 
 (unless pel--init-called-once
   (unless (getenv pel-shell-detection-envvar)
@@ -323,7 +323,7 @@ Done in this function to allow advising libraries that remap these keys."
     ("X" . "Ξ")
     ("Y" . "Ψ")
     ("Z" . "Ζ"))
-  "Maps latin ASCII letter to the Greek equivalent")
+  "Maps latin ASCII letter to the Greek equivalent.")
 
 (defun pel-bind-greek-to (prefix)
   "Add bindings for Greek letters under specified PREFIX."
@@ -1179,7 +1179,7 @@ Done in this function to allow advising libraries that remap these keys."
 ;; -- update time stamp
 
 (defun pel-toggle-update-time-stamp-on-save (&optional globally)
-  "Toggle time-stamp update on file save and display current state.
+  "Toggle 'time-stamp' update on file save and display current state.
 By default change behaviour for local buffer only.
 When GLOBALLY argument is non-nil, change it for all buffers for the current
 Emacs editing session (the change does not persist across Emacs sessions).
@@ -1866,24 +1866,6 @@ can't bind negative-argument to C-_ and M-_"
   (when (and (not pel-use-yasnippet-snippets)
              (eq pel-use-yasnippet 'use-from-start))
     (run-with-idle-timer 4 nil (function pel--start-yasnippet))))
-;; ---------------------------------------------------------------------------
-;; Mode Setting Helper Functions
-;; -----------------------------
-(defun pel--extend-flymake ()
-  "Extend the flymake mode."
-  (when (boundp 'flymake-mode-map)
-    (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
-    (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)))
-
-(defun pel--extend-flycheck ()
-  "Extend the flycheck mode."
-  (when (boundp 'flycheck-mode-map)
-    (define-key flycheck-mode-map (kbd "M-n") 'flycheck-next-error)
-    (define-key flycheck-mode-map (kbd "M-p") 'flycheck-previous-error)
-    (define-key flycheck-mode-map (kbd "<f12> e") 'flycheck-list-errors)
-    ; '/' is same key as '?' without having to hit Shift
-    (define-key flycheck-mode-map (kbd "<f12> /") 'flycheck-explain-error-at-point)))
-
 
 ;; ---------------------------------------------------------------------------
 ;; How to add major-mode support to PEL
@@ -4852,6 +4834,29 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (pel-yang-setup-support))))
 
 ;; ---------------------------------------------------------------------------
+;; Mode Setting Helper Functions
+;; -----------------------------
+(defun pel--extend-flymake ()
+  "Extend the flymake mode."
+  (when (boundp 'flymake-mode-map)
+    (define-key flymake-mode-map (kbd "M-n") 'flymake-goto-next-error)
+    (define-key flymake-mode-map (kbd "M-p") 'flymake-goto-prev-error)))
+
+(defun pel--extend-flycheck ()
+  "Extend the flycheck mode."
+  (when (boundp 'flycheck-mode-map)
+    (define-key flycheck-mode-map (kbd "M-n") 'flycheck-next-error)
+    (define-key flycheck-mode-map (kbd "M-p") 'flycheck-previous-error)
+    (if (eq major-mode 'emacs-lisp-mode)
+        (progn
+          (define-key pel:elisp-compile "l" 'flycheck-list-errors)
+          (define-key pel:elisp-compile "." 'flycheck-display-error-at-point)
+          (define-key pel:elisp-compile "/" 'flycheck-explain-error-at-point))
+      (define-key flycheck-mode-map (kbd "<f12> e") 'flycheck-list-errors)
+                                        ; '/' is same key as '?' without having to hit Shift
+      (define-key flycheck-mode-map (kbd "<f12> /") 'flycheck-explain-error-at-point))))
+
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> =`` : Copy commands
 
 (define-pel-global-prefix pel:copy (kbd "<f11> ="))
@@ -5623,7 +5628,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-pel-global-prefix pel:abbrev (kbd "<f11> a"))
 
 (defun pel--activate-abbrev-mode ()
-  "Activate abbrev-mode."
+  "Activate `abbrev-mode'."
   (define-key pel:abbrev "a" #'abbrev-mode)
   (pel-add-hook-for 'pel-modes-activating-abbrev-mode 'abbrev-mode)
   (when pel--cached-abbrev-file-name
@@ -5741,7 +5746,7 @@ the ones defined from the buffer now."
 (define-key pel:for-diff-mode-setup "?" 'pel-diff-show-status)
 
 (defun pel--setup-for-diff-mode ()
-  "Activate diff-mode setup, take local variables into account."
+  "Activate `diff-mode setup', take local variables into account."
   (pel-local-set-f12-M-f12 'pel:for-diff-mode)
   (when (boundp 'diff-mode-map)
       (let ((map diff-mode-map))
@@ -7431,7 +7436,7 @@ the ones defined from the buffer now."
 ;; TODO simplify this code
 (define-pel-global-prefix pel:for-vc-dir (kbd "<f11> SPC SPC v"))
 (defun pel--setup-for-vc-dir ()
-  "Activate vc-dir setup, take local variables into account."
+  "Activate `vc-dir setup', take local variables into account."
   (pel-local-set-f12-M-f12 'pel:for-vc-dir)
 
   (when (boundp 'vc-dir-mode-map)
@@ -7615,7 +7620,7 @@ the ones defined from the buffer now."
     (interactive)
     (if (boundp 'desktop-dirname)
         (message "Last loaded desktop: %s" desktop-dirname)
-      (user-error "No desktop is currently loaded.")))
+      (user-error "No desktop is currently loaded!")))
 
   (pel-autoload-file desktop for:
                      desktop-save
