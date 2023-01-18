@@ -758,11 +758,16 @@ in which case return PLURAL."
 ;; Symbol value extraction
 ;; -----------------------
 
-(defun pel--symbol-value (symbol)
-  "Return SYMBOL value or a list with the symbol and a string if not bound."
+(defun pel--symbol-value (symbol &optional quiet)
+  "Return SYMBOL value if it is bound.
+
+If it is not bound, then return a list with the symbol and a
+string describing that it is not bound, unless QUIET is non-nil.  If QUIET is
+non-nil, just return nil when SYMBOL is not bound."
   (if (boundp symbol)
       (symbol-value symbol)
-    (list symbol "**is currently unbound!**")))
+    (unless quiet
+      (list symbol "**is currently unbound!**"))))
 
 (defun pel-symbol-value (symbol &optional buffer)
   "Return SYMBOL value in current or specified BUFFER."
@@ -845,6 +850,10 @@ By default or when these arguments are nil:
       (or true-string "yes")
     (or false-string "no")))
 
+;; ---------------------------------------------------------------------------
+;; Automated Mode Activation Check functions
+;; -----------------------------------------
+
 (defun pel-activated-in-str (activated-in)
   "Return a string describing ACTIVATED-IN list.
 Return an empty string if ACTIVATED-IN is nil.
@@ -854,6 +863,73 @@ followed by the elements of ACTIVATED-IN separated by commas."
       (format " Auto-loaded in: %s"
               (pel-list-str activated-in))
     ""))
+
+
+(defun pel-minor-mode-auto-activated-by (minor-mode &optional
+                                                    maj-mode
+                                                    nil-return
+                                                    show-all)
+  "Check if the minor mode is auto-activated for specified major mode.
+
+Return a string describing what PEL option, if any, forces
+automatic activation of the MINOR_MODE in the major mode
+specified by the MAJ-MODE, or the current major mode.  Also check
+if the MINOR_MODE is activated globally via
+`pel-activates-global-minor-modes'.
+
+if SHOW-ALL optional argument is non-nil, also list all major modes that
+automatically activates this minor-mode.
+
+If nothing automatically activates this minor mode, then return
+nil or the value specified by NIL-RETURN if it is specified."
+  (let* ((maj-mode (or maj-mode major-mode))
+         (activating-it-option-symbol (intern
+                                       (format
+                                        "pel-modes-activating-%s"
+                                        minor-mode)))
+         (major-modes-activating-it (pel--symbol-value
+                                     activating-it-option-symbol :quiet))
+         (maj-mode-activates-minor-option-symbol (intern
+                                                  (format
+                                                   "pel-%s-activates-minor-modes"
+                                                   (pel-file-type-for maj-mode))))
+         (major-mode-activates (pel--symbol-value
+                                maj-mode-activates-minor-option-symbol :quiet))
+         (description ""))
+    (when (and major-modes-activating-it
+               (memq maj-mode major-modes-activating-it))
+      (setq description
+            (format "Activated by: %s%s"
+                    activating-it-option-symbol
+                    (if show-all
+                        (format " : %s" major-modes-activating-it)
+                      ""))))
+    (when (and major-mode-activates
+               (memq minor-mode major-mode-activates))
+      (setq description (concat description
+                                (format "%s%s%s."
+                                        (if (string= description "")
+                                            "Activated by: "
+                                          " and: ")
+                                        maj-mode-activates-minor-option-symbol
+                                        (if show-all
+                                            (format " : %s" major-mode-activates)
+                                          "")))))
+    (when (memq minor-mode pel-activates-global-minor-modes)
+      (let* ((empty-description (string= description ""))
+             (new-text
+              (format
+               "%s globally activated by pel-activates-global-minor-modes%s."
+               (if empty-description
+                   "Is"
+                 "and is")
+               (if show-all
+                   (format " : %s" pel-activates-global-minor-modes)
+                 ""))))
+        (setq description (concat description new-text))))
+    (or (unless (string= description "")
+          description)
+        nil-return)))
 
 (defun pel-option-mode-state (mode user-option &optional activated-in)
   "Return description of MODE status controlled by USER_OPTION.
