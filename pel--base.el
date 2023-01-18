@@ -402,9 +402,14 @@ If not specified (or nil) return the major mode of the current buffer."
         major-mode)
     major-mode))
 
-(defun pel-file-type-for (major-mode-symbol)
-  "Return the file type name string for the specified MAJOR-MODE_SYMBOL."
-  (substring (symbol-name major-mode-symbol) 0 -5))
+(defun pel-file-type-for (major-mode-symbol &optional suffix)
+  "Return the file type name string for the specified MAJOR-MODE-SYMBOL.
+
+By default that's the symbol name stripped off the '-mode' suffix unless
+SUFFIX is specified (like \"-minor-mode\")."
+  (substring (symbol-name major-mode-symbol)
+             0
+             (- (length (or suffix "-mode")))))
 
 (defun pel-string-with-major-mode (symbol-format-string
                                    &optional buffer-or-name)
@@ -887,7 +892,16 @@ not exists."
                                      (pel-file-type-for minor-mode)))))
         (if (boundp partial-symbol)
             partial-symbol
-          (error "No PEL user-option controls activation of %s" minor-mode))))))
+          (progn
+            (setq partial-symbol (intern
+                                  (format "pel-modes-activating-%s"
+                                          (pel-file-type-for minor-mode
+                                                             "-minor-mode"))))
+            (if (boundp partial-symbol)
+                partial-symbol
+              (error "\
+CODE ERROR!! There's no PEL user-option that controls activation of %s!"
+                     minor-mode))))))))
 
 
 (defun pel-minor-mode-auto-activated-by (minor-mode &optional
