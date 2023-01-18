@@ -473,10 +473,13 @@ The keys are:
 (defun pel-xref-show-status (&optional print-in-buffer)
   "Show the mode status of Xref back-ends in current buffer.
 
+Also show the name of the PEL user-option(s) that activate a
+specific backend automatically.
+
 With PRINT-IN-BUFFER argument, print the information in a
 dedicated buffer."
   (interactive "P")
-  (let ((msg (format "\
+  (let ((msg (format "Xref Front-end: %s. Xref Back-ends:
 - dumb-jump-mode           : %s %s
 - ggtags-mode              : %s %s
 - xref-backend-functions   : %s
@@ -491,6 +494,7 @@ dedicated buffer."
 - cscope-minor-mode        : %s %s
   - helm-cscope-mode       : %s
   - helm-scope key bindings: %s"
+                     pel--xref-front-end-used-tool
                      (pel-xref-dumb-jump-mode-state-str)
                      (pel-minor-mode-auto-activated-by 'dumb-jump-mode nil "" :show-all)
                      (pel-option-mode-state 'ggtags-mode 'pel-use-ggtags)
