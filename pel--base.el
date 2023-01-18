@@ -865,6 +865,31 @@ followed by the elements of ACTIVATED-IN separated by commas."
     ""))
 
 
+(defun pel-modes-activating-symbol-name-for (minor-mode)
+  "Return user-option symbol that sets which major mode activates MINOR-MODE.
+
+This is typically a symbol like:
+
+- 'pel-modes-activating-subword-mode   : controls subword-mode
+- 'pel-modes-activating-dumb-jump      : controls dumb-jump-mode
+- 'pel-modes-activating-ggtags         : controls ggtags-mode
+
+Ideally all minor-mode controlling PEL user-options would have a name that
+ends with '-mode' but it's unfortunately not the case.
+Use this function to return the appropriate symbol if one exists, otherwise
+raise an error because the caller is trying to retrieve information that does
+not exists."
+  (let ((full-symbol (intern (format "pel-modes-activating-%s" minor-mode))))
+    (if (boundp full-symbol)
+        full-symbol
+      (let ((partial-symbol (intern
+                             (format "pel-modes-activating-%s"
+                                     (pel-file-type-for minor-mode)))))
+        (if (boundp partial-symbol)
+            partial-symbol
+          (error "No PEL user-option controls activation of %s" minor-mode))))))
+
+
 (defun pel-minor-mode-auto-activated-by (minor-mode &optional
                                                     maj-mode
                                                     nil-return
@@ -877,16 +902,17 @@ specified by the MAJ-MODE, or the current major mode.  Also check
 if the MINOR_MODE is activated globally via
 `pel-activates-global-minor-modes'.
 
+Note: the MINOR-MODE and MAJOR-MODE must evaluate to a valid mode
+symbols. These are normally symbols that have a name that ends with '-mode'.
+
 if SHOW-ALL optional argument is non-nil, also list all major modes that
 automatically activates this minor-mode.
 
 If nothing automatically activates this minor mode, then return
 nil or the value specified by NIL-RETURN if it is specified."
   (let* ((maj-mode (or maj-mode major-mode))
-         (activating-it-option-symbol (intern
-                                       (format
-                                        "pel-modes-activating-%s"
-                                        minor-mode)))
+         (activating-it-option-symbol
+          (pel-modes-activating-symbol-name-for minor-mode))
          (major-modes-activating-it (pel--symbol-value
                                      activating-it-option-symbol :quiet))
          (maj-mode-activates-minor-option-symbol (intern
