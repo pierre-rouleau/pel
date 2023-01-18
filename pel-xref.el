@@ -474,7 +474,7 @@ The keys are:
 
 Return an empty string otherwise."
   (if (memq major-mode (symbol-value symbol))
-      (format "activated by: %s" (symbol-name symbol))
+      (format " Activated by: %s" (symbol-name symbol))
     ""))
 
 ;;-pel-autoload
