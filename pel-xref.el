@@ -1,6 +1,6 @@
 ;;; pel-xref.el --- xref cross referencing utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -127,7 +127,7 @@ identifier can be found at point. It calls `xref-find-definitions'."
             t))
 
 (defun pel-xref-dumb-jump-activate (&optional locally)
-  "Activate dumb-jump xref backend."
+  "Activate dumb-jump xref backend globally unless LOCALLY is required."
   (pel-xref-dumb-jump-activate-locally)
   (unless locally
     ;; not locally means ensure all buffers of the same mode will
@@ -143,7 +143,7 @@ identifier can be found at point. It calls `xref-find-definitions'."
                t))
 
 (defun pel-xref-dumb-jump-deactivate (locally)
-  "De-activate dumb-jump xref backend."
+  "De-activate dumb-jump xref backend globally unless LOCALLY is required."
   (pel-xref-dumb-jump--deactivate-locally)
   (unless locally
     (remove-hook (pel-hook-symbol-for major-mode)
@@ -186,12 +186,12 @@ If MODE is nil, use the current major-mode."
 
 ;;-pel-autoload
 (defun pel-xref-toggle-dumb-jump-mode (&optional locally)
-  "Activate/deactivate dumb-jump mode.
+  "Activate/deactivate dumb-jump mode globally unless LOCALLY is required.
 
 Normally apply the requested change to all buffer of the same
 major mode by adding (or removing) dumb-jump activation in the
-specific major-mode hook. However, when argument is specified, only apply the
-change for the current buffer only."
+specific `major-mode' hook. However, when argument is specified,
+only apply the change for the current buffer only."
   (interactive "P")
   (pel-require 'xref)
   (if (pel-xref-dumb-jump-active-p)
@@ -234,7 +234,9 @@ change for the current buffer only."
 
 ;;-pel-autoload
 (defun pel-xref-toggle-gxref (&optional quiet)
-  "Toggle activation of the gxref xref-back-end for the current major mode."
+  "Toggle activation of the gxref xref-back-end for the current major mode.
+
+Print a message unless QUIET is requested."
   (interactive)
   (pel-require 'xref)
   (if (pel-xref-gxref-active-p)
@@ -467,34 +469,46 @@ The keys are:
                                        "local"
                                      "global")))
 
+(defun pel--autoactivated-by (symbol)
+  "Return notice if current `major-mode' is in the list named SYMBOL.
+
+Return an empty string otherwise."
+  (if (memq major-mode (symbol-value symbol))
+      (format "activated by: %s" (symbol-name symbol))
+    ""))
+
 ;;-pel-autoload
 (defun pel-xref-show-status (&optional print-in-buffer)
   "Show the mode status of Xref back-ends in current buffer.
 
-With argument print the information in a dedicated buffer."
+With PRINT-IN-BUFFER argument, print the information in a
+dedicated buffer."
   (interactive "P")
   (let ((msg (format "\
-- dumb-jump-mode           : %s
-- ggtags-mode              : %s
+- dumb-jump-mode           : %s %s
+- ggtags-mode              : %s %s
 - xref-backend-functions   : %s
  - xref-etags mode         : %s
   - tags-file-name         : %s
   - tags-table-list        : %S
- - gxref                   : %s
+ - gxref                   : %s %s
  - rtags-xref (for C/C++)  : %s
 - xref-show-xrefs-function : %s
   - ivy-xref               : %s
   - helm-xref              : %s
-- cscope-minor-mode        : %s
+- cscope-minor-mode        : %s %s
   - helm-cscope-mode       : %s
   - helm-scope key bindings: %s"
                      (pel-xref-dumb-jump-mode-state-str)
+                     (pel--autoactivated-by 'pel-modes-activating-dumb-jump)
                      (pel-option-mode-state 'ggtags-mode 'pel-use-ggtags)
+                     (pel--autoactivated-by 'pel-modes-activating-ggtags)
                      (pel-xref-functions-hook-str xref-backend-functions)
                      (pel-symbol-on-off-string 'xref-etags-mode)
                      tags-file-name
                      tags-table-list
                      (pel-xref-gxref-state-str)
+                     (pel--autoactivated-by 'pel-modes-activating-gxref)
                      (pel-xref-rtags-state-str)
                      xref-show-xrefs-function
                      (pel-xref-ivy-xref-state-str)
@@ -502,6 +516,7 @@ With argument print the information in a dedicated buffer."
                      (pel-option-mode-state 'cscope-minor-mode
                                             'pel-use-xcscope
                                             pel-modes-activating-cscope)
+                     (pel--autoactivated-by 'pel-modes-activating-cscope)
                      (pel-symbol-on-off-string 'helm-cscope-mode nil nil "not loaded")
                      (pel-on-off-string pel--helm-cscope-keys-active))))
     (if print-in-buffer
