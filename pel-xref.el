@@ -469,14 +469,6 @@ The keys are:
                                        "local"
                                      "global")))
 
-(defun pel--autoactivated-by (symbol)
-  "Return notice if current `major-mode' is in the list named SYMBOL.
-
-Return an empty string otherwise."
-  (if (memq major-mode (symbol-value symbol))
-      (format " Activated by: %s" (symbol-name symbol))
-    ""))
-
 ;;-pel-autoload
 (defun pel-xref-show-status (&optional print-in-buffer)
   "Show the mode status of Xref back-ends in current buffer.
@@ -500,15 +492,15 @@ dedicated buffer."
   - helm-cscope-mode       : %s
   - helm-scope key bindings: %s"
                      (pel-xref-dumb-jump-mode-state-str)
-                     (pel--autoactivated-by 'pel-modes-activating-dumb-jump)
+                     (pel-minor-mode-auto-activated-by 'dumb-jump-mode nil "" :show-all)
                      (pel-option-mode-state 'ggtags-mode 'pel-use-ggtags)
-                     (pel--autoactivated-by 'pel-modes-activating-ggtags)
+                     (pel-minor-mode-auto-activated-by 'ggtags-mode  nil "" :show-all)
                      (pel-xref-functions-hook-str xref-backend-functions)
                      (pel-symbol-on-off-string 'xref-etags-mode)
                      tags-file-name
                      tags-table-list
                      (pel-xref-gxref-state-str)
-                     (pel--autoactivated-by 'pel-modes-activating-gxref)
+                     (pel-minor-mode-auto-activated-by 'gxref-mode  nil "" :show-all)
                      (pel-xref-rtags-state-str)
                      xref-show-xrefs-function
                      (pel-xref-ivy-xref-state-str)
@@ -516,7 +508,7 @@ dedicated buffer."
                      (pel-option-mode-state 'cscope-minor-mode
                                             'pel-use-xcscope
                                             pel-modes-activating-cscope)
-                     (pel--autoactivated-by 'pel-modes-activating-cscope)
+                     (pel-minor-mode-auto-activated-by 'cscope-minor-mode  nil "" :show-all)
                      (pel-symbol-on-off-string 'helm-cscope-mode nil nil "not loaded")
                      (pel-on-off-string pel--helm-cscope-keys-active))))
     (if print-in-buffer
