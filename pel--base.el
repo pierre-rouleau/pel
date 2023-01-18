@@ -904,6 +904,12 @@ CODE ERROR!! There's no PEL user-option that controls activation of %s!"
                      minor-mode))))))))
 
 
+;; Note: `pel-activates-global-minor-modes' is a defcustom variable
+;;       defined inside pel--options.el which requires pel--base.el (this
+;;       file).  To prevent byte-compiler warnings the symbol is declared in a
+;;       defvar form here.
+(defvar pel-activates-global-minor-modes) ; forward declaration of user-option
+
 (defun pel-minor-mode-auto-activated-by (minor-mode &optional
                                                     maj-mode
                                                     nil-return
