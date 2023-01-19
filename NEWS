@@ -2,6 +2,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Modified: key binding of the *centi-assign*, *centi-summary* and
+  *centi-restore-all*; their key sequence  now all use the meta key to make
+  space of other key sequences.
+- Add: the *pel-kmacro-ring-show-status* bound to ~<f11> k ?~.  It shows
+  information about the keyboard macro ring.
 - Fix: In *emacs-lisp-mode*, activating the *flycheck-mode* used to override
   the ~<f12> c~ key prefix. This is no longer the case; instead the
   *flycheck-list-errors* is bound to ~<f12> c l~,

@@ -468,7 +468,8 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-kbmacros" for:
     pel-kmacro-start-macro-or-insert-counter
-    pel-forget-recorded-keyboard-macro)
+    pel-forget-recorded-keyboard-macro
+    pel-kmacro-ring-show-status)
 
   (pel-autoload "pel-lfe" for:
     pel-lfe-eval-buffer)

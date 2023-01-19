@@ -1,6 +1,6 @@
 ;;; pel-kbmacros.el --- PEL Keyboard Macro Utilities. -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -69,6 +69,35 @@ Does not delete the macro from the keyboard macro ring.
 Reset `pel--keyboard-macro-defined'."
   (interactive)
   (setq pel--keyboard-macro-defined nil))
+
+;; prevention of byte-compiler warning with defvar declaration
+(defvar kmacro-ring)
+(defvar last-kb-macro)
+(defvar kmacro-counter)
+(defvar kmacro-counter-format)
+;;-pel-autoload
+(defun pel-kmacro-ring-show-status (&optional print-in-buffer)
+  "Show the `kmacro-ring' status information.
+
+Print a message unless PRINT-IN-BUFFER is non-nil in which case
+it prints the information in a dedicated buffer."
+  (interactive "P")
+  (require 'kmacro)
+  (let ((msg (format "kmacro-ring:
+
+- kbmacro-ring size    : %d
+- kbmacro-ring content : %S
+- last-kbd-macro       : %S
+- kmacro-counter       : %s
+- kmacro-counter-format: %S"
+                     (length kmacro-ring)
+                     kmacro-ring
+                     last-kbd-macro
+                     kmacro-counter
+                     (replace-regexp-in-string "%" "%%" kmacro-counter-format))))
+    (if print-in-buffer
+        (pel-print-in-buffer "*kmacro-ring Status*" "Keyboard Macro Status" msg)
+      (message msg))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-kbmacros)

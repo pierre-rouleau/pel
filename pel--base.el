@@ -2852,7 +2852,10 @@ to insert the strings into the buffer."
                        (format-time-string "%A, %B %d, %Y @ %T"))
                'face 'bold))
       (cond ((stringp text)
-             (insert (format "%s\n\n"text)))
+             ;; using format twice because it prints an escaped % ("%%")
+             ;; with 2 percent characters instead of only one if it is not
+             ;; processed by another format call.
+             (insert (format (format "%s\n\n" text))))
             ((functionp text)
              (funcall text))
             (t (error "Invalid type for text: %S" text)))

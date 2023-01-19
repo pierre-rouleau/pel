@@ -6668,6 +6668,7 @@ the ones defined from the buffer now."
 (define-pel-global-prefix pel:kbmacro (kbd "<f11> k"))
 (define-key pel:kbmacro "k"   'pel-forget-recorded-keyboard-macro)
 (define-key pel:kbmacro "i"  #'insert-kbd-macro)
+(define-key pel:kbmacro "?"   'pel-kmacro-ring-show-status)
 
 (when pel-use-centimacro
   ;; Until abo-abo integrates my pull-request that fixes the bugs
@@ -6680,9 +6681,9 @@ the ones defined from the buffer now."
                      centi-summary
                      centi-restore-all)
   (global-set-key (kbd pel-centi-assign-key) 'centi-assign)
-  (define-key pel:kbmacro "="          'centi-assign)
-  (define-key pel:kbmacro "?"          'centi-summary)
-  (define-key pel:kbmacro (kbd "DEL")  'centi-restore-all)
+  (define-key pel:kbmacro (kbd "M-=")   'centi-assign)
+  (define-key pel:kbmacro (kbd "M-?")   'centi-summary)
+  (define-key pel:kbmacro (kbd "M-DEL") 'centi-restore-all)
   (pel-eval-after-load centimacro
     ;; Restore PEL's binding of <f5> to `repeat' despite centimacro's default
     ;; customization which binds <f5> to centi-assign.  PEL provides the
