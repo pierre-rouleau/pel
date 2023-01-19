@@ -36,7 +36,8 @@
 
 ;; -----------------------------------------------------------------------------
 ;;; Code:
-(require 'pel--options)     ; use: pel-kbmacro-prompts
+(require 'pel--options)     ; use: `pel-kbmacro-prompts'
+(require 'pel-list)         ; use: `pel-mapmapcar'
 
 (defvar pel--keyboard-macro-defined
   nil
@@ -91,12 +92,21 @@ it prints the information in a dedicated buffer."
 - kmacro-counter       : %s
 - kmacro-counter-format: %S"
                      (length kmacro-ring)
-                     kmacro-ring
-                     last-kbd-macro
+                     (pel-mapmapcar (lambda (e)
+                                      (if (stringp e)
+                                          (replace-regexp-in-string "%" "%%" e)
+                                        e))
+                                 kmacro-ring)
+                     (if (stringp last-kbd-macro)
+                         (replace-regexp-in-string "%" "%%" last-kbd-macro)
+                       last-kbd-macro)
                      kmacro-counter
-                     (replace-regexp-in-string "%" "%%" kmacro-counter-format))))
+                     (replace-regexp-in-string "%" "%%"
+                                               kmacro-counter-format))))
     (if print-in-buffer
-        (pel-print-in-buffer "*kmacro-ring Status*" "Keyboard Macro Status" msg)
+        (pel-print-in-buffer "*kmacro-ring Status*"
+                             "Keyboard Macro Status"
+                             msg)
       (message msg))))
 
 ;; -----------------------------------------------------------------------------

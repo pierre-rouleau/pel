@@ -1,9 +1,9 @@
 # Makefile --- GNU Make to build the PEL distributable package  -*- mode: makefile-gmake; -*-
 #
-# Copyright (C) 2020, 2021, 2022 by Pierre Rouleau
+# Copyright (C) 2020, 2021, 2022, 2023 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2022-12-11 17:34:23 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2023-01-19 14:23:48 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -607,7 +607,7 @@ pel-imenu-ido.elc:      pel--base.elc pel--options.elc pel-prompt.elc pel-comple
 pel-imenu.elc:          pel--base.elc pel--options.elc
 pel-ini.elc:		pel--base.elc
 pel-indent.elc:         pel-ccp.elc pel-mark.elc
-pel-kbmacros.elc:       pel--options.elc
+pel-kbmacros.elc:       pel--options.elc pel-list.elc
 pel-key-chord.elc:      pel--base.elc pel--options.elc
 pel-lisp.elc:           pel--base.elc
 pel-lispy.elc:          pel--base.elc pel--options.elc

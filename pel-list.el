@@ -1,6 +1,6 @@
 ;;; pel-list.el --- List utilities  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -30,7 +30,7 @@
 ;; - `pel-join'
 ;; - `pel-list-split'
 ;;   - `pel-list-index'
-;;
+;; - `pel-mapmapcar'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -107,6 +107,15 @@ list or at the first element of the second list, respectively."
                               split-idx
                             (+ 1 split-idx))))
       (list list nil))))
+
+(defun pel-mapmapcar (func list-of-list)
+  "Apply function FUNC one each element of LIST-OF-LIST.
+
+Return list of list with each element processed by FUNC.
+CAUTION: does NOT work with more complicated data structures (eg. tree)."
+  (mapcar (lambda (inner-list)
+            (mapcar func inner-list))
+          list-of-list))
 
 ;; ---------------------------------------------------------------------------
 ;;
