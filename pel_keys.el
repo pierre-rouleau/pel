@@ -2374,7 +2374,10 @@ bind it again after this call."
         (define-key map (kbd "<f6> <left>")  'pel-c-preproc-backward-conditional)
         (define-key map (kbd "<f6> <down>")  'pel-c-preproc-outward-forward-conditional)
         (define-key map (kbd "<f6> <up>")    'pel-c-preproc-outward-backward-conditional)
-        (define-key map (kbd "<f6> o")       'pel-c-preproc-conditionals-occur))))
+        (define-key map (kbd "<f6> o")       'pel-c-preproc-conditionals-occur)))
+    ;; Set tab-width for the buffer as specified by the PEL user option for
+    ;; the major mode.
+    (setq-local tab-width (pel-major-mode-symbol-value "pel-%s-tab-width")))
 
   (declare-function pel--setup-for-cc "pel_keys")
 
