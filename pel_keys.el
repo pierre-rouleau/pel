@@ -2505,8 +2505,12 @@ MODE must be a symbol."
                                   ".hh"
                                   ".HH"
                                   ".ii"
-                                  ".inl")))
-  (pel-set-auto-mode c++-mode for: "\\.inl\\'") ; not supported by default
+                                  ".inl"
+                                  ".icc")))
+  ; Add auto support for extensions not supported by default
+  (pel-set-auto-mode c++-mode for:
+                     "\\.inl\\'"
+                     "\\.icc\\'")
 
   (when pel-use-ini
     (define-key pel:c++-setup (kbd "<M-f6>") 'pel-cc-set-file-finder-ini-tool-name))
@@ -2602,6 +2606,9 @@ d-mode not added to ac-modes!"
       (c-toggle-auto-newline (pel-mode-toggle-arg pel-cc-auto-newline))
       ;; Configure M-( to put parentheses after a function name.
       (set (make-local-variable 'parens-require-spaces) nil)
+      ;; 5) Set tab-width for the buffer as specified by the PEL user option
+      ;; for the major mode.
+      (setq-local tab-width pel-d-tab-width)
       ;; 7) Install language-specific skeletons
       ;; TODO
       )))
@@ -2618,7 +2625,11 @@ d-mode not added to ac-modes!"
   (define-pel-global-prefix pel:for-forth (kbd "<f11> SPC f"))
   (define-key pel:for-forth  "z"  'run-forth)
   ;; Activate Forth setup.
-  (pel-config-major-mode forth pel:for-forth))
+  (pel-eval-after-load forth-mode
+    (pel-config-major-mode forth pel:for-forth
+      ;; 5) Set tab-width for the buffer as specified by the PEL user option
+      ;; for the major mode.
+      (setq-local tab-width pel-forth-tab-width))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC F`` : FORTRAN programming
@@ -2720,7 +2731,11 @@ d-mode not added to ac-modes!"
    ((eq pel-use-javascript 'js-mode)
     ;; Use the built-in js.el
     (pel-autoload-file js for: js-mode)
-    (pel-config-major-mode js pel:for-javascript))))
+    (pel-eval-after-load js-mode
+      (pel-config-major-mode js pel:for-javascript
+        ;; 5) Set tab-width for the buffer as specified by the PEL user option
+      ;; for the major mode.
+      (setq-local tab-width pel-js-tab-width))))))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC j`` : Julia programming
@@ -2741,7 +2756,10 @@ d-mode not added to ac-modes!"
         (julia-snail-mode 1)
       (display-warning 'pel-use-julia
                        "Cannot load julia-nail-mode"
-                       :error))))
+                       :error))
+    ;; 5) Set tab-width for the buffer as specified by the PEL user option
+    ;; for the major mode.
+    (setq-local tab-width pel-julia-tab-width)))
 
 ;; ---------------------------------------------------------------------------
 ;; Lisp-style programming Languages

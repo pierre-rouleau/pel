@@ -2,12 +2,12 @@
 
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-28 11:28:23, updated by Pierre Rouleau>
+;; Time-stamp: <2023-01-20 10:16:17 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -213,7 +213,8 @@ to be the customization user-option variables of C or C++:
 
 - CC-HEADER-EXTENSIONS         : a list of extension strings."
   (let* ((fname        (pel-current-buffer-filename :sans-directory))
-         (is-a-header  (member (file-name-extension fname) cc-header-extensions))
+         (f-extension  (file-name-extension fname))
+         (is-a-header  (car (member f-extension cc-header-extensions)))
          (cmt-style    (pel-skel-comments-strings))
          (cb           (nth 0 cmt-style))
          (cc           (nth 1 cmt-style))
@@ -238,7 +239,10 @@ to be the customization user-option variables of C or C++:
                         cc-header-module-block/custom
                         fname is-a-header
                         cmt-style)
-       (funcall cc-header-module-block-fct fname is-a-header cmt-style))
+       (funcall cc-header-module-block-fct
+                fname
+                (or is-a-header nil)    ; pass extension string if header
+                cmt-style))
      ;; 2- Add the remainder for either a header file or code file.
      (if is-a-header
          ;; A: for a header file

@@ -2,6 +2,15 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Improved: The C++ tempo templates now describe C++ files better.  They can
+  now distinguish the various types of implementation and header files from
+  the file extension and insert a better description inside the comment at the
+  top of the file.
+- Improved: The ~.ii~ file extensions are now recognized as C++ implementation
+  file, not header and explicitly identified as GCC pre-processed files.
+- Fix: The *pel-X-tab-width* user-options for C, C++, D, Forth and Julia were
+  not activated in their respective buffers.  Now they are used to set the
+  *tab-width* value for the current buffer.
 - Modified: key binding of the *centi-assign*, *centi-summary* and
   *centi-restore-all*; their key sequence  now all use the meta key to make
   space of other key sequences.

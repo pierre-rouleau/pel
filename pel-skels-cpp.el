@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, May 25 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-05-29 17:29:26, updated by Pierre Rouleau>
+;; Time-stamp: <2023-01-20 10:25:16 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2023  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -62,21 +62,52 @@ Otherwise return a string that ends with a newline."
 ;; ---------------------------------------------------------------------------
 ;; File/Module header block
 
+(defconst pel-c++-header-extensions '("h"
+                                      "hh"
+                                      "HH"
+                                      "hpp"
+                                      "hxx"
+                                      "h++"
+                                      "inl"
+                                      "icc")
+  "List of C++ file extensions seen when in c++-mode.")
+
+(defconst pel-c++-module-special-name-alist
+  '(("ii" . "GCC Pre-Processed File"))
+  "Describes special implementation extensions.")
+
+(defconst pel-c++-header-special-name-alist
+  '(("inl" . "INLINE DEFINITION HEADER")
+    ("icc" . "INLINE DEFINITION HEADER"))
+  "Describes special header extensions.")
+
+(defun pel-c++-typename (extension alist default)
+  "Return name of C++ header type for the C++ EXTENSION string."
+  (or
+   (cdr (assoc extension alist))
+   default))
+
 (defun pel-skels-c++-header-module-block (fname is-a-header cmt-style)
-  "Return a tempo list for the comment block inserted at the top of the C++ file.
+  "Return a tempo list for the comment block inserted at top of the C++ file.
 The arguments are:
 - FNAME := string.  the name of the current file without path.
-- IS-A-HEADER := boolean.  non-nil if the file is a C++ header file, nil
-  otherwise.
+- IS-A-HEADER := boolean.  header string if C++ header,  nil otherwise.
 - CMT-STYLE := a list of 3 strings: (cb cc ce)
             - cb : comment begin string
             - cc : comment continuation string
             - ce : comment end string."
   (let ((purpose  (pel-prompt-purpose-for "File" 'p))
-        (cc       (nth 1 cmt-style)))
+        (cc       (nth 1 cmt-style))
+        (file-type (if is-a-header
+                       (pel-c++-typename is-a-header
+                                         pel-c++-header-special-name-alist
+                                         "HEADER")
+                     (pel-c++-typename (file-name-extension fname)
+                                       pel-c++-module-special-name-alist
+                                       "MODULE"))))
     (list
      'l
-     "// C++ " (if is-a-header "HEADER" "MODULE") ": "  fname 'n
+     "// C++ " file-type ": "  fname 'n
      "//\n"
      "// Purpose   : " purpose 'n
      (pel-skel-created-comment cc)
@@ -85,15 +116,6 @@ The arguments are:
      (pel-skel-copyright-comment pel-c++-skel-with-license cc)
      "//\n")))
 
-(defconst pel-c++-header-extensions '("h"
-                                      "hh"
-                                      "HH"
-                                      "hpp"
-                                      "hxx"
-                                      "h++"
-                                      "ii"
-                                      "inl")
-  "List of C++ file extensions seen when in c++-mode.")
 
 (defun pel-skels-c++-file-header-block ()
   "Return a tempo list for a C++ file header block.
