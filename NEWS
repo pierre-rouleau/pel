@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Improved: Commands that insert emphasis markup for reSTructuredText: they
+  now insert the necessary escaped space when doing the emphasis inside a word.
 - Improved: The C++ tempo templates now describe C++ files better.  They can
   now distinguish the various types of implementation and header files from
   the file extension and insert a better description inside the comment at the

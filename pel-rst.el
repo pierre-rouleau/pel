@@ -1,6 +1,6 @@
 ;;; pel-rst.el --- PEL reStructuredText support -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -777,24 +777,43 @@ Move there with pel-rst-goto-ref-bookmark then add lines!"))))))))
 ;; Emphasis markup support
 ;; -----------------------
 
+(defconst pel--rst-whitespace-chars  '(?\s ?\t ?\n ?\r)
+  "Supported whitespace surrounding characters.")
+
+(defun pel--rst-emphasize-escape-for (point)
+  "Return string used to provide escaping for emphasis if necessary.
+
+Return an empty string otherwise."
+
+  (if (memq (char-after point) pel--rst-whitespace-chars)
+      ""
+    "\\ "))
+
 (defun pel--rst-emphasize-with (str)
   "Emphasize the current word or marked area using STR.
-Leave point right after the emphasized text."
+Leave point right after the emphasized text.
+
+The function supports emphasis of text inside of a word, which
+must, in that case, be surrounded by an escaped space
+character. "
   (pel--rst-require-thingatpt)
   (let* ((p-begin (if (region-active-p)
                       (region-beginning)
                     (car (bounds-of-thing-at-point 'word))))
          (p-end (if (region-active-p)
                     (region-end)
-                  (cdr (bounds-of-thing-at-point 'word)))))
+                  (cdr (bounds-of-thing-at-point 'word))))
+         (prefix (pel--rst-emphasize-escape-for (1- p-begin)))
+         (suffix (pel--rst-emphasize-escape-for p-end)))
     (deactivate-mark)
     (goto-char p-end)
     (insert str)
+    (insert suffix)
     (goto-char p-begin)
+    (insert prefix)
     (insert str)
     (goto-char p-end)
     (forward-char (* 2 (length str)))))
-
 
 (defun pel-rst-bold ()
   "Mark current word or marked region bold.
