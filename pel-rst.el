@@ -791,7 +791,7 @@ Return an empty string if no escaping is required.
 Supported separators are white-space characters and OTHER-SEPARATOR-CHARS."
 
   (if (or (memq (char-after point) pel--rst-whitespace-chars)
-          (memq (char-after point other-separator-chars)))
+          (memq (char-after point) other-separator-chars))
       ""
     "\\ "))
 
@@ -811,14 +811,14 @@ character. "
                   (cdr (bounds-of-thing-at-point 'word))))
          (prefix (pel--rst-emphasize-escape-for (1- p-begin)
                                                 '(?\( ?\[ ?\{ ?\<
-                                                      ?: ?/ ?-
-                                                      ?' ?\")))
+                                                      ?\: ?\/ ?\-
+                                                      ?\' ?\")))
          (suffix (pel--rst-emphasize-escape-for p-end
                                                 '(?\) ?\} ?\] ?\>
-                                                      ?: ?/ ?-
-                                                      ?' ?\"
-                                                      ?. ?, ?\;
-                                                      ?? ?!)))))
+                                                      ?\: ?\/ ?\-
+                                                      ?\' ?\"
+                                                      ?\. ?\, ?\;
+                                                      ?\? ?\!))))
     (deactivate-mark)
     (goto-char p-end)
     (insert str)
