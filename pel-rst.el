@@ -20,7 +20,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;;; Commentary:
 ;;
 ;; This file contains defintions to extend the support of reStructuredText
@@ -88,7 +88,7 @@
 ;;     - `pel--rst-reference-target'
 ;;       - `pel-at-rst-reference-p'
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;;; Dependencies:
 
 (require 'pel--base)        ; uses: pel-whitespace-in-str-p
@@ -98,7 +98,7 @@
 (require 'pel--macros)
 (require 'rst)              ; rst-mode code. Use rst-backward-section
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;;; Code:
 
 ;; Utility
@@ -128,7 +128,7 @@
 
 ;;-pel-autoload
 (defun pel-rst-set-underscore-syntax (&optional action)
-  "Set syntax of underscore to punctuation or symbol according to superword-mode.
+  "Set underscore syntax to punctuation or symbol according to superword-mode.
 
 If superword-mode is active then the function can be used to change the
 syntax of the underscore character.
@@ -560,7 +560,7 @@ previous section."
       (pel--rst-adorn-change -1)
     (pel--rst-adorn-same-as-previous -1)))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Link/reference location bookmark management
 ;; -------------------------------------------
 ;;
@@ -592,9 +592,9 @@ previous section."
   "Return the bookmark name string used for the current file.
 This bookmark identifies the location for the next reStructuredText reference."
   ;; Make sure the file has been saved once when creating a RST bookmark for
-  ;; it, otherwise trying to create a hyperlink will prompt to rename the bookmark.
-  ;; Also on the very first call, force loading the bookmarks to ensure that an old
-  ;; bookmark for that file will be known.
+  ;; it, otherwise trying to create a hyperlink will prompt to rename the
+  ;; bookmark.  Also on the very first call, force loading the bookmarks to
+  ;; ensure that an old bookmark for that file will be known.
   (when (and (buffer-modified-p)
              (not pel--rst-file-was-saved-once-p))
     (save-buffer)
@@ -625,11 +625,12 @@ Return nil otherwise."
 ;;-pel-autoload
 (defun pel-rst-set-ref-bookmark ()
   "Set the reference bookmark for the currently edited file at point.
-Used to identify the location where the next invocation of \\[pel-rst-makelink]
-inserts fully expanded links.
-Ensures the bookmark is at the beginning of an empty line which is followed
-by another empty line, by inserting 2 lines and placing the point at the
-beginning of the first of the 2 lines."
+
+Used to identify the location where the next invocation of
+\\[pel-rst-makelink] inserts fully expanded links.  Ensures the
+bookmark is at the beginning of an empty line which is followed
+by another empty line, by inserting 2 lines and placing the point
+at the beginning of the first of the 2 lines."
   (interactive "*")
   (move-beginning-of-line nil)
   (unless  (or (equal (pel-chars-at-point 2) "\n\n")
@@ -700,17 +701,19 @@ NO-ERROR is non-nil."
 ;;-pel-autoload
 (defun pel-rst-makelink (&optional arg)
   "Create reStructuredText hyperlink prefix for word at point or region's text.
-- If a region is active, use the text of the region to make the link, otherwise
-  use the word at point.
-- If an argument (ARG, which can be a \\[universal-argument]) is specified,
-  use the embedded URI format.
+
+- If a region is active, use the text of the region to make the
+  link, otherwise use the word at point.
+- If an argument (ARG, which can be a \\[universal-argument]) is
+  specified, use the embedded URI format.
 - If no argument is specified, use the named hyperlink format:
-  - if the region is a single word, just append an underscore to make the link
-  - if the region is several words, surround the region with the \"`\" start
-    string and the \"`_\" end string.
-- The named link is placed in the location of bookmark named \"RST\" if it
-  exists and points to same file, otherwise the link is placed at the
-  beginning of the next empty line.
+  - if the region is a single word, just append an underscore to
+    make the link
+  - if the region is several words, surround the region with the
+    \"`\" start string and the \"`_\" end string.
+- The named link is placed in the location of bookmark named
+  \"RST\" if it exists and points to same file, otherwise the
+  link is placed at the beginning of the next empty line.
 - The cursor is placed where the URL is to be written.
 - You can return to the location of the link by typing \\[pel-jump-to-mark].
 
@@ -756,36 +759,39 @@ with pel-rst-set-ref-bookmark!")
                     (goto-char p_end)
                     (right-char 1)
                     (insert "`_"))
-                  ;; place references starting at the bookmark, one after the
+                  ;; Place references starting at the bookmark, one after the
                   ;; other, with first reference created at the top.  All
                   ;; references are placed after the bookmark so that the
                   ;; bookmark never moves, making it easier to undo editing
-                  ;; without damaging the bookmark location.  The bookmark must
-                  ;; be set to an area in the buffer with 2 empty lines, with
-                  ;; the bookmark at the beginning of the first one.
+                  ;; without damaging the bookmark location.  The bookmark
+                  ;; must be set to an area in the buffer with 2 empty lines,
+                  ;; with the bookmark at the beginning of the first one.
                   (pel-rst-goto-ref-bookmark)
                   (forward-line 1)
                   (if (not (eq (char-after) 10))
                       (pel-goto-next-empty-line))
-                  (insert (format ".. _%s: \n" (pel-rst-anchor-escaped anchor)))
+                  (insert (format ".. _%s: \n"
+                                  (pel-rst-anchor-escaped anchor)))
                   (move-end-of-line 0))
               (user-error "Bookmarked reference link area has no \
 space for new entry!
 Move there with pel-rst-goto-ref-bookmark then add lines!"))))))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Emphasis markup support
 ;; -----------------------
 
 (defconst pel--rst-whitespace-chars  '(?\s ?\t ?\n ?\r)
   "Supported whitespace surrounding characters.")
 
-(defun pel--rst-emphasize-escape-for (point)
-  "Return string used to provide escaping for emphasis if necessary.
+(defun pel--rst-emphasize-escape-for (point &optional other-separator-chars)
+  "Return string to provide escaping for emphasis around POINT if necessary.
 
-Return an empty string otherwise."
+Return an empty string if no escaping is required.
+Supported separators are white-space characters and OTHER-SEPARATOR-CHARS."
 
-  (if (memq (char-after point) pel--rst-whitespace-chars)
+  (if (or (memq (char-after point) pel--rst-whitespace-chars)
+          (memq (char-after point other-separator-chars)))
       ""
     "\\ "))
 
@@ -803,8 +809,16 @@ character. "
          (p-end (if (region-active-p)
                     (region-end)
                   (cdr (bounds-of-thing-at-point 'word))))
-         (prefix (pel--rst-emphasize-escape-for (1- p-begin)))
-         (suffix (pel--rst-emphasize-escape-for p-end)))
+         (prefix (pel--rst-emphasize-escape-for (1- p-begin)
+                                                '(?\( ?\[ ?\{ ?\<
+                                                      ?: ?/ ?-
+                                                      ?' ?\")))
+         (suffix (pel--rst-emphasize-escape-for p-end
+                                                '(?\) ?\} ?\] ?\>
+                                                      ?: ?/ ?-
+                                                      ?' ?\"
+                                                      ?. ?, ?\;
+                                                      ?? ?!)))))
     (deactivate-mark)
     (goto-char p-end)
     (insert str)
@@ -839,13 +853,13 @@ Leave point after to the next character."
   (interactive "*")
   (pel--rst-emphasize-with "`"))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 ;; Open Link URL
 ;; -------------
 ;;
 ;; Open the URL identified by the reStucturedText link.
-;; This way, user does not have to move point to the URL: the URL can be opened
-;; right from the link.
+;; This way, user does not have to move point to the URL: the URL can be
+;; opened right from the link.
 
 (defun pel-at-rst-reference-p (&optional pos)
   "Return t if POS (or point) is at a rst-reference character, nil otherwise."
@@ -992,9 +1006,10 @@ See `pel-find-file-at-point-in-window' for more information."
           (progn
             (when (buffer-file-name)
               (cd (file-name-directory (pel-current-buffer-filename))))
-            ;; A reStructuredText link may have to be escaped in the reference,
-            ;; therefore search for the potentially escaped reference target to
-            ;; ensure we're able to handle all types of links.
+            ;; A reStructuredText link may have to be escaped in the
+            ;; reference, therefore search for the potentially escaped
+            ;; reference target to ensure we're able to handle all types of
+            ;; links.
             (let* ((reftype.string (pel--rst-reference-target))
                    (reftype (car reftype.string))
                    (result (if (eq reftype 'target)
@@ -1012,20 +1027,22 @@ See `pel-find-file-at-point-in-window' for more information."
                     (if result
                         (if (and (require 'pel-file nil :noerror)
                                  (fboundp 'pel-find-file-at-point-in-window))
-                            (pel-find-file-at-point-in-window n (function pel-html-to-rst))
+                            (pel-find-file-at-point-in-window
+                             n (function pel-html-to-rst))
                           (user-error "Cannot load pel-file!"))
                       (unless noerror
                         (user-error "No reference target found!")))))
                 ;; reftype is a path: use that path directly
                 (if (and (require 'pel-file nil :noerror)
                          (fboundp 'pel-find-file-at-point-in-window))
-                    (pel-find-file-at-point-in-window n (function pel-html-to-rst))
+                    (pel-find-file-at-point-in-window
+                     n (function pel-html-to-rst))
                   (user-error "Cannot load pel-file!")))))
         (cd original-cwd)))
     (when new-position
       (goto-char new-position))))
 
-;; -----------------------------------------------------------------------------
+;; ---------------------------------------------------------------------------
 (provide 'pel-rst)
 
 ;;; pel-rst.el ends here
