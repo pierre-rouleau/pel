@@ -539,30 +539,37 @@ were specified."
 
 (defun pel-filename-at-point ()
   "Return the file name at point (or marked region).
-.
-Spaces inside the filename are accepted *only* when point
-is located before a double quote to the left of the filename.
-Spaces between the quote and the first character and
-last character or the filename are accepted but removed.
-When executed from with a buffer in sh-mode, the shell variables
-found in the string are expanded and the delimiters include the
-'=' and ':' characters.  This helps extracting file names in shell scripts."
+
+Spaces inside the filename are accepted *only* when point is
+located before a double quote to the left of the filename.
+Spaces between the quote and the first character and last
+character or the filename are accepted but removed.  When
+executed from with a buffer in sh-mode, the shell variables found
+in the string are expanded and the delimiters include the '=' and
+':' characters.  This helps extracting file names in shell
+scripts.
+
+Limitation: the file name delimiters currently used are
+relatively safe but not sufficient for all cases. These will
+probably have to be modified to be a user option in a future version. "
   (if (use-region-p)
       (buffer-substring-no-properties (region-beginning) (region-end))
     (save-excursion
       (let ((delimiters
-             "\t\n\"`'‘’“”|()[]{}「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。"))
+             "\t\n\"`'‘’“”|「」<>〔〕〈〉《》【】〖〗«»‹›❮❯❬❭〘〙·。"))
         ;; In shell modes, allow delimiting the filenames by path separators
         ;; and equal sign used in various statements.
         (when (eq major-mode 'sh-mode)
           (setq delimiters (concat "=:" delimiters)))
+        (unless (memq major-mode '(rst-mode markdown-mode))
+          (setq delimiters (concat "()[]{}" delimiters)))
         (let ((fname (string-trim (pel-string-at-point delimiters))))
           (when (eq major-mode 'sh-mode)
             (require 'env nil :noerror)
             (setq fname (substitute-env-vars fname)))
           (if (string= (substring fname -1) ":")
-            (substring fname 0 -1)
-          fname))))))
+              (substring fname 0 -1)
+            fname))))))
 
 ;;-pel-autoload
 (defun pel-show-filename-at-point ()
