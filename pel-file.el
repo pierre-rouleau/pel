@@ -468,16 +468,20 @@ were specified."
             ;; It's a file, not a URL, but user requested opening the
             ;; file inside the the default browser or the OS default
             ;; application for this type of file: use browse-url for that.
-            (progn
-              (browse-url (format "file:///%s" filename))
+            ;; TO-DO: enhance this to support all types of files and all OS.
+            ;;        the current logic is to limited in scope.
+            (let ((ext (file-name-extension filename)))
+              (if (member ext '("html"))
+                  (browse-url (format "file:///%s" filename))
+                (browse-url filename))
               (pel--show-edit-action "browse" filename))
-          (let* ((action    (cdr fn-action))
-                 (buffer   (or (find-buffer-visiting filename)
-                               (when (fboundp 'dired-buffers-for-dir)
-                                 (car (dired-buffers-for-dir filename)))))
-                 (window   (when buffer (get-buffer-window buffer)))
-                 (line     (caddr fileparts))
-                 (column   (cadddr fileparts)))
+          (let* ((action (cdr fn-action))
+                 (buffer (or (find-buffer-visiting filename)
+                             (when (fboundp 'dired-buffers-for-dir)
+                               (car (dired-buffers-for-dir filename)))))
+                 (window (when buffer (get-buffer-window buffer)))
+                 (line (caddr fileparts))
+                 (column (cadddr fileparts)))
             (if (and window (null n))
                 ;; file is already in a buffer and window and position
                 ;; is not imposed by argument n: use that existing
@@ -488,7 +492,7 @@ were specified."
                       (progn
                         (goto-char (point-min))
                         (re-search-forward target-regxp))
-                      (pel-goto-position line column))
+                    (pel-goto-position line column))
                   (pel--show-edit-action "show" filename
                                          line column target-regxp))
               ;; the file is not inside a existing window,
@@ -517,7 +521,7 @@ were specified."
                     (pel-window-select direction)
                     (find-file filename)
                     (pel--show-edit-action action filename)))
-                 ((stringp action)   (message "%s" action))
+                 ((stringp action) (message "%s" action))
                  (t
                   (error "Internal error condition detected!"))))))))))))
 
