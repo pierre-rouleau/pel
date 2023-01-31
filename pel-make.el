@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, January 15 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-20 15:45:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2023-01-31 10:10:16 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2023  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -294,7 +294,7 @@ Each line is displayed with NLINES before and after, or -NLINES
 before if NLINES is negative.
 NLINES defaults to `list-matching-lines-default-context-lines'.
 If a region is defined the search is restricted to the region."
-  (interactive "^p")
+  (interactive "^P")
   (occur pel--make-conditional-regexp
          nlines
          (when (use-region-p)
