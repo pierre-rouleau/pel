@@ -173,7 +173,8 @@ but *only* when the complete string is enclosed in double quotes
                    (col_num   (when (and match6 match9)
                                 (string-to-number match9))))
               (list (if ddrv_str 'fname-w-ddrv 'fname)
-                    (pel--dir-name-if fpath_str directory-only)
+                    (or (pel--dir-name-if fpath_str directory-only)
+                        default-directory)
                     line_num
                     col_num))
           ;; For reasons I don't yet understand, the above regexp does not work
