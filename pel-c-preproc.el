@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October 10 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-01-31 10:18:41 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-01-31 11:35:07 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -188,19 +188,58 @@ return the new position. On error, issue user error on mismatch."
 
 ;; ---------------------------------------------------------------------------
 
+(defun pel--projectile-multi-occur (regexp &optional nlines)
+  "Do a `multi-occur' in the project's buffers for specified REGEXP.
+
+Show NLINES of context if specified, otherwise default to
+`list-matching-lines-default-context-lines' user-option."
+  (if (and pel-use-projectile
+           (fboundp 'projectile-acquire-root)
+           (fboundp 'projectile-project-buffers))
+      (let ((project (projectile-acquire-root)))
+        (multi-occur (projectile-project-buffers project)
+                     regexp
+                     nlines))
+    (user-error "Projectile is not available.
+Activate projectile first with F11 F8 F8")))
+
 ;;-pel-autoload
-(defun pel-c-preproc-conditionals-occur (&optional nlines)
+(defun pel-c-preproc-conditionals-occur (&optional nlines use-projectile)
   "Show C preprocessor conditional statements inside an occur buffer.
 
 Each line is displayed with NLINES before and after, or -NLINES
 before if NLINES is negative.
 NLINES defaults to `list-matching-lines-default-context-lines'.
-If a region is defined the search is restricted to the region."
+If a region is defined the search is restricted to the region.
+
+If USE-PROJECTILE is not nil and projectile is available (via
+`pel-use-projectile'), then perform the search using the
+`projectile-multi-occur' function. "
   (interactive "^P")
-  (occur pel--c-preproc-conditional-regexp
-         nlines
-         (when (use-region-p)
-           (region-bounds))))
+  (if (and use-projectile
+           pel-use-projectile
+           (fboundp 'projectile-multi-occur))
+      (message "Using PROJECTILE")
+      (pel--projectile-multi-occur
+       pel--c-preproc-conditional-regexp
+       nlines)
+    (occur pel--c-preproc-conditional-regexp
+           nlines
+           (when (use-region-p)
+             (region-bounds)))))
+
+;;-pel-autoload
+(defun pel-c-preproc-conditionals-multi-occur (&optional nlines)
+  "Show C preprocessor conditional statements of project files in occur buffer.
+
+Each line is displayed with NLINES before and after, or -NLINES
+before if NLINES is negative.
+NLINES defaults to `list-matching-lines-default-context-lines'.
+If a region is defined the search is restricted to the region.
+
+If projectile is not available, just search in current buffer."
+  (interactive "P")
+  (pel-c-preproc-conditionals-occur nlines :use-projectile))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-c-preproc)

@@ -297,6 +297,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: Add *pel-c-preproc-conditionals-multi-occur*, bound to ~<f6> <f8> o~ in
+  C and C++ buffers to search C-preprocessor statements inside all project
+  *buffers*.  It uses projectile to identify the project files.
 - New: Add *pel-cd-to-current*, bound to ~<f11> M-.~ to re-establish the
   current working directory to the directory holding the file visited by the
   current buffer, if any.

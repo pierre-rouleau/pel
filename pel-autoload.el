@@ -231,7 +231,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-c-preproc-backward-conditional
     pel-c-preproc-outward-forward-conditional
     pel-c-preproc-outward-backward-conditional
-    pel-c-preproc-conditionals-occur)
+    pel-c-preproc-conditionals-occur
+    pel-c-preproc-conditionals-multi-occur)
 
   (pel-autoload "pel-comint" for:
     pel-comint-clear-buffer
