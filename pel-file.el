@@ -71,6 +71,7 @@
 (require 'pel-read)      ; use: pel-string-at-point
 (require 'pel-window)    ; use pel-window-direction-for
 ;;                       ;     pel-window-valid-for-editing-p
+(require 'pel-filex)     ; use: `pel-open-in-os-app'
 
 (eval-when-compile (require 'subr-x))  ; use: inlined: string-trim
 
@@ -465,16 +466,10 @@ were specified."
         (setq fn-action (pel--complete-filename-for filename))
         (setq filename  (expand-file-name (car fn-action)))
         (if use-browser
-            ;; It's a file, not a URL, but user requested opening the
-            ;; file inside the the default browser or the OS default
-            ;; application for this type of file: use browse-url for that.
-            ;; TO-DO: enhance this to support all types of files and all OS.
-            ;;        the current logic is to limited in scope.
-            (let ((ext (file-name-extension filename)))
-              (if (member ext '("html"))
-                  (browse-url (format "file:///%s" filename))
-                (browse-url filename))
-              (pel--show-edit-action "browse" filename))
+            ;; It's a file, not a URL, but user requested opening the file
+            ;; inside the the default browser or the OS default application
+            ;; for this type of file: use pel-open-in-os-app for that.
+            (pel-open-in-os-app filename)
           (let* ((action (cdr fn-action))
                  (buffer (or (find-buffer-visiting filename)
                              (when (fboundp 'dired-buffers-for-dir)
