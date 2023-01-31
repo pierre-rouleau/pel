@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, October 10 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-01-31 11:35:07 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-01-31 12:23:36 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -219,7 +219,6 @@ If USE-PROJECTILE is not nil and projectile is available (via
   (if (and use-projectile
            pel-use-projectile
            (fboundp 'projectile-multi-occur))
-      (message "Using PROJECTILE")
       (pel--projectile-multi-occur
        pel--c-preproc-conditional-regexp
        nlines)
