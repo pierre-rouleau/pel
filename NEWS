@@ -297,11 +297,17 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- Modified: Renamed *pel-show-if-newline-aligns* to *pel-align-info*.  The new
+  function prints more information about user-options that control the
+  vertical alignment of text and it prints it inside a help-mode buffer in the
+  same way that *pel-abbrev-info* does it.
 - New: Add *pel-abbrev-info*, bound to ~<f11> a ?~.  This command prints the values
  of all user-options variables that control the behaviour of abbreviation
   inside a buffer where each name is a button that can be used to show the
   help about it and access its customization buffer. The buffer is placed in
-  *help-mode* to help navigation across buttons.
+  *help-mode* to help navigation across buttons. With optional prefix key,
+  (C-u or numerical prefix key) the command appends text to the buffer
+  allowing creation of report on several buffers over time.
 - New: Add *pel-c-preproc-conditionals-multi-occur*, bound to ~<f6> <f8> o~ in
   C and C++ buffers to search C-preprocessor statements inside all project
   *buffers*.  It uses projectile to identify the project files.

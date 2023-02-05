@@ -7213,7 +7213,7 @@ the ones defined from the buffer now."
 (define-key pel:align "r" #'align-regexp)
 (define-key pel:align "h" #'align-highlight-rule)
 (define-key pel:align "H" #'align-unhighlight-rule)
-(define-key pel:align "?"  'pel-show-if-newline-aligns)
+(define-key pel:align "?"  'pel-align-info)
 
 
 ;; - Alias for align-regexp: ar

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-02-05 11:41:56 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-02-05 12:40:27 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -86,13 +86,13 @@ abort completely with `C-g'."
       (user-error "No typo at or before point"))))
 
 ;;-pel-autoload
-(defun pel-abbrev-info ()
+(defun pel-abbrev-info (&optional append)
   "Display current status of abbreviation control."
-  (interactive)
+  (interactive "P")
   (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
     (pel-print-in-buffer
      "*pel-abbrev-info*"
-     "Abbreviation control"
+     "Abbreviation Control"
      (lambda ()
        "Print abbreviation control variables."
        (pel-insert-symbol-content-line 'abbrev-mode)
@@ -118,7 +118,7 @@ abort completely with `C-g'."
        (pel-insert-symbol-content-line 'flyspell-auto-correct-word)
        (pel-insert-symbol-content-line 'flyspell-abbrev-p)
        (pel-insert-symbol-content-line 'flyspell-use-global-abbrev-table-p))
-     :clear-buffer
+     (unless append :clear-buffer)
      :use-help-mode)))
 ;;; --------------------------------------------------------------------------
 (provide 'pel-abbrev)

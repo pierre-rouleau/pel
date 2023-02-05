@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, October 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-12-06 23:43:07 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-02-05 12:38:43 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2022, 2023  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 ;;    also aligns text based on the previous contiguous lines and then inserts
 ;;    new line and indents.  If the variable is nil then it only inserts a new line
 ;;    and indent. Use the function `pel-toggle-newline-indent-align' to toggle
-;;    the value of the variable and `pel-show-if-newline-aligns' to show its
+;;    the value of the variable and `pel-align-info' to show its
 ;;    current state.
 
 ;;; --------------------------------------------------------------------------
@@ -65,12 +65,27 @@ the statements on the current line with the above contiguous lines."
   (newline-and-indent)))
 
 ;; pel-autoload
-(defun pel-show-if-newline-aligns ()
+(defun pel-align-info (&optional append)
   "Display the behaviour of M-RET in the current buffer."
-  (interactive)
-  (message (pel-symbol-text 'pel-newline-does-align
-                            "on : M-RET aligns, adds newline and indents."
-                            "off: M-RET does not align, but adds newline and indents.")))
+  (interactive "P")
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+    (pel-print-in-buffer
+     "*pel-align-info*"
+     "Vertical Alignment Control"
+     (lambda ()
+       (pel-insert-symbol-content-line 'pel-newline-does-align)
+       (insert
+        (format "\n  -> %s"
+                (pel-symbol-text
+                 'pel-newline-does-align
+                 "on : M-RET aligns, adds newline and indents."
+                 "off: M-RET does not align, but adds newline and indents.")))
+
+       (pel-insert-symbol-content-line 'pel-newline-does-align)
+       (pel-insert-symbol-content-line 'pel-modes-activating-align-on-return)
+       )
+     (unless append :clear-buffer)
+     :use-help-mode)))
 
 ;; pel-autoload
 (defun pel-toggle-newline-indent-align ()
@@ -79,7 +94,7 @@ This toggles the way function `pel-newline-and-indent-below'
 operates."
   (interactive "*")
   (pel-toggle 'pel-newline-does-align)
-  (pel-show-if-newline-aligns))
+  (pel-align-info))
 
 ;; ---------------------------------------------------------------------------
 ;; pel-autoload
