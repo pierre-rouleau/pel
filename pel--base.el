@@ -2855,16 +2855,25 @@ ON-SAME-LINE is non-nil"
 ;; Print in dedicated buffer
 ;; -------------------------
 
-(defun pel-print-in-buffer (bufname title text &optional clear-buffer)
+(defun pel-print-in-buffer (bufname title text &optional clear-buffer use-help-mode)
   "Print TITLE than TEXT inside specified buffer BUFNAME.
 
-TEXT is either a string or a function that calls insert
-to insert the strings into the buffer.
-Append the text in buffer unless CLEAR-BUFFER is non-nil, in which case,
-previous buffer content is first erased."
+TEXT is either a string or a function that calls insert to insert
+the strings into the buffer.  Append the text in buffer unless
+CLEAR-BUFFER is non-nil, in which case, previous buffer content
+is first erased.  When USE-HELP-MODE is non-nil, activate the
+`help-mode' in the buffer, otherwise use the
+`fundamental-mode'. Activating the `help-mode' in the buffer
+allows quick navigation to the variable buttons, a very useful
+feature."
   (let ((current-buffer-name (buffer-name))
         (outbuf (get-buffer-create bufname)))
     (with-current-buffer outbuf
+      (when (and use-help-mode
+                 (eq major-mode 'help-mode))
+        (fundamental-mode)
+        (when buffer-read-only
+          (read-only-mode -1)))
       (when clear-buffer
         (erase-buffer))
       (goto-char (point-max))
@@ -2882,7 +2891,9 @@ previous buffer content is first erased."
             ((functionp text)
              (funcall text))
             (t (error "Invalid type for text: %S" text)))
-      (insert "\n"))
+      (insert "\n")
+      (when use-help-mode
+        (help-mode)))
     ;; display the end part of the buffer showing comment variables
     ;; move the last line of text to the bottom line of the window
     (with-selected-window (display-buffer outbuf)

@@ -300,7 +300,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - New: Add *pel-abbrev-info*, bound to ~<f11> a ?~.  This command prints the values
  of all user-options variables that control the behaviour of abbreviation
   inside a buffer where each name is a button that can be used to show the
-  help about it and access its customization buffer.
+  help about it and access its customization buffer. The buffer is placed in
+  *help-mode* to help navigation across buttons.
 - New: Add *pel-c-preproc-conditionals-multi-occur*, bound to ~<f6> <f8> o~ in
   C and C++ buffers to search C-preprocessor statements inside all project
   *buffers*.  It uses projectile to identify the project files.
