@@ -78,7 +78,9 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (require 'pel--options)
 
-  (pel-autoload "pel-abbrev" for: pel-ispell-word-then-abbrev)
+  (pel-autoload "pel-abbrev" for:
+    pel-ispell-word-then-abbrev
+    pel-abbrev-info)
 
   (pel-autoload "pel-align" for:
     pel-newline-and-indent-below

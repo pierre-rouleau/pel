@@ -2,12 +2,12 @@
 
 ;; Created   : Tuesday, June  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-06-08 14:59:26, updated by Pierre Rouleau>
+;; Time-stamp: <2023-02-04 21:33:42 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2023  Pierre Rouleau
 ;;
 ;; Credits: The content of this file is heavily based on © work
 ;;          by Artur Malabarba, available at the following location:
@@ -33,6 +33,7 @@
 ;;
 ;;
 
+(require 'pel--base)
 (require 'ispell)                       ; use: ispell-get-word, ispell-word
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -52,7 +53,7 @@ Create an `abbrev' abbreviation for it.
 Store the abbreviation globally unless the LOCALLY argument is non-nil.
 
 If there's nothing wrong with the word at point, keep
-looking for a typo until the beginning of buffer.  You can
+looking for a typo until the beginning of.  You can
 skip typos you don't want to fix with `SPC', and you can
 abort completely with `C-g'."
   (interactive "P")
@@ -61,10 +62,10 @@ abort completely with `C-g'."
       (while (if (setq original-word (pel-current-or-previous--word))
                  (if (ispell-word nil 'quiet)
                      nil    ; stop loop when word was corrected or user quits.
-                   ;; Also stop at beginning of buffer
+                   ;; Also stop at beginning of
                    (not (bobp)))
                ;; If there's no word at point, keep looking
-               ;; until beginning of buffer.
+               ;; until beginning of.
                (not (bobp)))
         ;; move point before previous word
         (backward-word)
@@ -84,7 +85,40 @@ abort completely with `C-g'."
                    original-word corrected-word (if locally "loc" "glob")))
       (user-error "No typo at or before point"))))
 
-
+;;-pel-autoload
+(defun pel-abbrev-info ()
+  "Display current status of abbreviation control."
+  (interactive)
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+    (pel-print-in-buffer
+     "*pel-abbrev-info*"
+     "Abbreviation control"
+     (lambda ()
+       "Print abbreviation control variables."
+       (pel-insert-symbol-content-line 'abbrev-mode)
+       (pel-insert-symbol-content-line 'save-abbrevs)
+       (insert (format "\n\n* Dynamic abbreviation done with %s as specified by:"
+                       (if (bound-and-true-p pel-use-hippie-expand)
+                           "Hippie Expand"
+                         "DAbbrev Mode")))
+       (pel-insert-symbol-content-line 'pel-use-hippie-expand)
+       (pel-insert-symbol-content-line 'pel-modes-activating-abbrev-mode)
+       (pel-insert-symbol-content-line 'pel-use-origami)
+       (when (bound-and-true-p pel-use-origami)
+         (insert "
+   - NOTE: When origami-mode is active PEL binds
+           the abbreviation command to ")
+         (insert (propertize "M-/ M-/" 'face 'bold))
+         (insert " instead of the standard ")
+         (insert (propertize "M-/" 'face 'bold)))
+       (insert "\n\n* Abbreviations are stored in the file specified by:")
+       (pel-insert-symbol-content-line 'abbrev-file-name)
+       (pel-insert-symbol-content-line 'abbrev-table-name-list)
+       (insert "\n\n* Spell Checking:")
+       (pel-insert-symbol-content-line 'flyspell-auto-correct-word)
+       (pel-insert-symbol-content-line 'flyspell-abbrev-p)
+       (pel-insert-symbol-content-line 'flyspell-use-global-abbrev-table-p))
+     :clear-buffer)))
 ;;; --------------------------------------------------------------------------
 (provide 'pel-abbrev)
 

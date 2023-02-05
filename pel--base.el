@@ -2772,6 +2772,13 @@ Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil."
                                         (describe-symbol symbol)))
         (insert name)))))
 
+(defvar pel-insert-symbol-content-context-buffer nil
+  "Contextual value for the buffer argument of `pel-insert-symbol-content'.
+
+Let-bind this variable in functions that need to call
+`pel-insert-symbol-content' repetitively always passing the same value for its
+buffer argument.")
+
 (defun pel-insert-symbol-content (symbol
                                   &optional buffer on-same-line no-button)
   "Insert the name followed by the content of the specified SYMBOL.
@@ -2779,10 +2786,11 @@ Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil."
 Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil.
 By default SYMBOL must be a global symbol as its value is read in the scope
 of the output buffer.  If the SYMBOL is a buffer local symbol, specify the
-buffer in the optional BUFFER argument.
+buffer in the optional BUFFER argument.  You can also let-bind the variable
+`pel-insert-symbol-content-context-buffer' to the value of the buffer you need.
 By default, the value is printed on the line after the variable name, unless
 ON-SAME-LINE is set."
-  (let ((value (pel-symbol-value symbol buffer))
+  (let ((value (pel-symbol-value symbol (or pel-insert-symbol-content-context-buffer buffer)))
         (name  (symbol-name symbol)))
     (insert "\n- ")
     (pel-insert-symbol symbol no-button)
@@ -2790,6 +2798,17 @@ ON-SAME-LINE is set."
                     (make-string (max 0 (- 40 (length name))) ?\s)
                     (if on-same-line " " "\n")
                     value))))
+
+(defun pel-insert-symbol-content-line (symbol &optional buffer)
+  "Insert the name followed by the content of the specified SYMBOL.
+
+Insert the SYMBOL name as a clickable button inside current buffer.
+By default SYMBOL must be a global symbol as its value is read in the scope
+of the output buffer.  If the SYMBOL is a buffer local symbol, specify the
+buffer in the optional BUFFER argument. You can also let-bind the variable
+`pel-insert-symbol-content-context-buffer' to the value of the buffer you
+need."
+  (pel-insert-symbol-content symbol buffer :on-same-line))
 
 (defun pel-line-prefixed-with (text prefix)
   "Return TEXT with each line prefixed with PREFIX string."
@@ -2836,14 +2855,18 @@ ON-SAME-LINE is non-nil"
 ;; Print in dedicated buffer
 ;; -------------------------
 
-(defun pel-print-in-buffer (bufname title text)
+(defun pel-print-in-buffer (bufname title text &optional clear-buffer)
   "Print TITLE than TEXT inside specified buffer BUFNAME.
 
 TEXT is either a string or a function that calls insert
-to insert the strings into the buffer."
+to insert the strings into the buffer.
+Append the text in buffer unless CLEAR-BUFFER is non-nil, in which case,
+previous buffer content is first erased."
   (let ((current-buffer-name (buffer-name))
         (outbuf (get-buffer-create bufname)))
     (with-current-buffer outbuf
+      (when clear-buffer
+        (erase-buffer))
       (goto-char (point-max))
       (insert (propertize
                (format "----%s from %s --- %s -----\n"
@@ -2863,7 +2886,7 @@ to insert the strings into the buffer."
     ;; display the end part of the buffer showing comment variables
     ;; move the last line of text to the bottom line of the window
     (with-selected-window (display-buffer outbuf)
-      (goto-char (- (point-max) 2))  ; last 2 chars are '\n'
+      (goto-char (- (point-max) 2))     ; last 2 chars are '\n'
       (recenter -1))))
 
 ;; ---------------------------------------------------------------------------

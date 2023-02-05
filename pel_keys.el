@@ -5652,6 +5652,8 @@ See `flyspell-auto-correct-previous-word' for more info."
 (defun pel--activate-abbrev-mode ()
   "Activate `abbrev-mode'."
   (define-key pel:abbrev "a" #'abbrev-mode)
+  (define-key pel:abbrev "?"  'pel-abbrev-info)
+
   (pel-add-hook-for 'pel-modes-activating-abbrev-mode 'abbrev-mode)
   (when pel--cached-abbrev-file-name
     (setq abbrev-file-name pel--cached-abbrev-file-name)
