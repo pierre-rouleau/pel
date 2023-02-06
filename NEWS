@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Improved support for Asciidoc *adoc-mode*: the ~<f12>~ key is now supported
+  with access to the PDF help (~<f12><f1>~, PEL customization (~<f12><f2>~),
+  adoc-mode customization (~<f12><f3>~) and over 70 tempo template commands
+  bound to key sequences under the ~<f12>~  key prefix.)
 - Improved: Commands that insert emphasis markup for reSTructuredText: they
   now insert the necessary escaped space when doing the emphasis inside a word.
 - Improved: The C++ tempo templates now describe C++ files better.  They can
