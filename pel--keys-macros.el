@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-02-05 17:44:41 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-02-06 09:44:22 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1462,12 +1462,13 @@ and after the local variables have been loaded."
 
 (defun pel-local-set-f12-M-f12 (prefix &optional key)
   "Assign the <f12>/<M-f12> or <f12>/<M-f12> KEY to PREFIX."
+  ;; Bind the M-F12 first and F12 last so F12 shows up in menu.
   (if key
       (progn
-        (local-set-key (kbd (format "<f12> %s" key))   prefix)
-        (local-set-key (kbd (format "<M-f12> %s" key)) prefix))
-    (local-set-key (kbd "<f12>")   prefix)
-    (local-set-key (kbd "<M-f12>") prefix)))
+        (local-set-key (kbd (format "<M-f12> %s" key)) prefix)
+        (local-set-key (kbd (format "<f12> %s" key))   prefix))
+    (local-set-key (kbd "<M-f12>") prefix)
+    (local-set-key (kbd "<f12>")   prefix)))
 
 ;; --
 
