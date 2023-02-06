@@ -4570,6 +4570,68 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-config-major-mode cwl pel:for-cwl))
 
 ;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC M-a`` : AsciiDoc
+(when pel-use-asciidoc
+  (define-pel-global-prefix pel:for-asciidoc (kbd "<f11> SPC M-a"))
+
+  ;; AsciiDoc files are either .adoc or .txt. For the .txt files, use .adoc.txt
+  ;; which is unambiguous and allows .txt behaviour.
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension '("adoc" ".adoc.txt")))
+  (pel-set-auto-mode adoc-mode for:
+                     "\\.adoc\\'"
+                     "\\.adoc.txt\\'")
+  (pel-eval-after-load adoc-mode
+    (pel-config-major-mode adoc pel:for-asciidoc
+      (define-key pel:for-asciidoc "i" 'tempo-template-adoc-emphasis)
+      (define-key pel:for-asciidoc "b" 'tempo-template-adoc-strong)
+      (define-key pel:for-asciidoc "l" 'tempo-template-adoc-monospace)
+      (define-key pel:for-asciidoc "`" 'tempo-template-adoc-monospace-literal)
+      (define-key pel:for-asciidoc "'" 'tempo-template-adoc-single-quote)
+      (define-key pel:for-asciidoc "\"" 'tempo-template-adoc-double-quote)
+      (define-key pel:for-asciidoc "[" 'tempo-template-adoc-attributed)
+      (define-key pel:for-asciidoc "^" 'tempo-template-adoc-superscript)
+      (define-key pel:for-asciidoc "s" 'tempo-template-adoc-subscript)
+      (define-key pel:for-asciidoc "I" 'tempo-template-adoc-emphasis-uc)
+      (define-key pel:for-asciidoc "B" 'tempo-template-adoc-strong-uc)
+      (define-key pel:for-asciidoc "L" 'tempo-template-adoc-monospace-uc)
+      (define-key pel:for-asciidoc "{" 'tempo-template-adoc-attributed-uc)
+      (define-key pel:for-asciidoc (kbd "RET") 'tempo-template-adoc-line-break)
+      (define-key pel:for-asciidoc (kbd "<next>") 'tempo-template-adoc-page-break)
+      (define-key pel:for-asciidoc (kbd "M--") 'tempo-template-adoc-ruler-line)
+      (define-key pel:for-asciidoc "C" 'tempo-template-adoc-copyright)
+      (define-key pel:for-asciidoc "T" 'tempo-template-adoc-trademark)
+      (define-key pel:for-asciidoc "R" 'tempo-template-adoc-registered-trademark)
+      (define-key pel:for-asciidoc "-" 'tempo-template-adoc-dash)
+      (define-key pel:for-asciidoc "." 'tempo-template-adoc-ellipsis)
+      (define-key pel:for-asciidoc (kbd "M->") 'tempo-template-adoc-right-arrow)
+      (define-key pel:for-asciidoc (kbd "M-<") 'tempo-template-adoc-left-arrow)
+      (define-key pel:for-asciidoc (kbd "M-}") 'tempo-template-adoc-right-double-arrow)
+      (define-key pel:for-asciidoc (kbd "M-{") 'tempo-template-adoc-left-double-arrow)
+      (define-key pel:for-asciidoc (kbd "M-r") 'tempo-template-adoc-entity-reference)
+      (define-key pel:for-asciidoc "1" 'tempo-template-adoc-title-1)
+      (define-key pel:for-asciidoc "2" 'tempo-template-adoc-title-2)
+      (define-key pel:for-asciidoc "3" 'tempo-template-adoc-title-3)
+      (define-key pel:for-asciidoc "4" 'tempo-template-adoc-title-4)
+      (define-key pel:for-asciidoc "5" 'tempo-template-adoc-title-5)
+      (define-key pel:for-asciidoc "t" 'tempo-template-adoc-block-title)
+      (define-key pel:for-asciidoc "P" 'tempo-template-adoc-literal-paragraph)
+      (define-key pel:for-asciidoc (kbd "M-t") 'tempo-template-adoc-paragraph-tip)
+      (define-key pel:for-asciidoc (kbd "M-n") 'tempo-template-adoc-paragraph-note)
+      (define-key pel:for-asciidoc (kbd "M-i") 'tempo-template-adoc-paragraph-important)
+      (define-key pel:for-asciidoc (kbd "M-w") 'tempo-template-adoc-paragraph-warning)
+      (define-key pel:for-asciidoc (kbd "M-c") 'tempo-template-adoc-paragraph-caution)
+      (define-key pel:for-asciidoc ";" 'tempo-template-adoc-delimited-block-comment)
+      (define-key pel:for-asciidoc (kbd "C-p") 'tempo-template-adoc-delimited-block-passthrough)
+      (define-key pel:for-asciidoc (kbd "C-l") 'tempo-template-adoc-delimited-block-listing)
+      (define-key pel:for-asciidoc (kbd "C-t") 'tempo-template-adoc-delimited-block-literal)
+      (define-key pel:for-asciidoc (kbd "C-q") 'tempo-template-adoc-delimited-block-quote)
+      (define-key pel:for-asciidoc (kbd "C-e") 'tempo-template-adoc-delimited-block-example)
+      (define-key pel:for-asciidoc (kbd "C-s") 'tempo-template-adoc-delimited-block-sidebar)
+      (define-key pel:for-asciidoc (kbd "C-o") 'tempo-template-adoc-delimited-block-open-block))
+    ;; There are more. May add them later.
+    ))
+;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC M-m`` : Markdown
 (when pel-use-markdown
   (define-pel-global-prefix pel:for-markdown (kbd "<f11> SPC M-m"))
@@ -4682,11 +4744,12 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
   ;; Add .stxt to the accepted file extensions for rst-mode
   ;; to the ones that are normally used: .rst and .rest
-  (add-to-list 'auto-mode-alist '("\\.stxt\\'"  . rst-mode))
   ;; Also add .rst.txt to the accepted extensions for rst-mode.
   ;; This allows reStructuredText files to be rendered by tools
   ;; that can read normal text files.
-  (add-to-list 'auto-mode-alist '("\\.rst.txt\\'"  . rst-mode))
+  (pel-set-auto-mode rst-mode for:
+                     "\\.stxt\\'"
+                     "\\.rst.txt\\'")
 
   (define-key pel:for-reST (kbd "M--") 'pel-itemize-lines)
   (define-key pel:for-reST "." 'pel-rst-makelink)

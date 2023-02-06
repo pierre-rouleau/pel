@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-01-11 13:55:59 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-02-05 17:44:41 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -534,6 +534,10 @@
 
     (,(kbd "<f11> SPC M-g") "graphviz-dot"     pel-pkg-for-graphviz-dot graphviz)
     ([f11 32 27 ?g]         "graphviz-dot"     pel-pkg-for-graphviz-dot graphviz)
+
+    (,(kbd "<f11> SPC M-a") "asciidoc"         pel-pkg-for-asciidoc    adoc)
+    ([f11 32 27 ?a]         "asciidoc"         pel-pkg-for-asciidoc    adoc)
+
     (,(kbd "<f11> SPC M-r") "mode-rst"         pel-pkg-for-reST        rst)
     ([f11 32 27 ?r]         "mode-rst"         pel-pkg-for-reST        rst)
     (,(kbd "<f11> SPC M-m") "mode-markdown"    pel-pkg-for-markdown   ,pel--markdown-groups)
@@ -638,6 +642,7 @@ stored inside the doc/pdf directory.")
     ;;
     ("sh"              [f11 32 ?H])
     ("v"               [f11 32 ?v])
+    ("adoc"            [f11 32 27 ?a])
     ("markdown"        [f11 32 27 ?m])
     ("netrexx"         [f11 32 ?N])
     ("rst"             [f11 32 27 ?r])
@@ -839,6 +844,7 @@ There should be no key binding!" keyseq))
     ("lispy"            . "plm-lispy")
     ("dired"            . "mode-dired")
     ("org-mode"         . "mode-org-mode")
+    ("adoc"             . "asciidoc")
     ("markdown"         . "mode-markdown")
     ("rst"              . "mode-rst")
     ;; topic related aliases, ordered by file names
