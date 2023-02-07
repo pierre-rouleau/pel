@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-bookmark-info* bound to ~<f11> ' M-?~.  It prints information about
+  bookmark control in a specialized help buffer.
 - Improved auto-completion introspection report done by ~<f11> , ?~.
   Renamed the *pel-completion-help* to *pel-completion-info* for name
   consistency with other similar functions.  The function now prints more

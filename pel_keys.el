@@ -5540,6 +5540,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;; - Function Keys - <f11> - Prefix ``<f11> '`` : bookmark commands
 
 (define-pel-global-prefix pel:bookMark (kbd "<f11> '"))
+(define-key pel:bookMark (kbd "M-?")  'pel-bookmark-info)
 (define-key pel:bookMark "b" #'bookmark-jump)
 (define-key pel:bookMark "B" #'bookmark-jump-other-window)
 (define-key pel:bookMark "d" #'bookmark-delete)

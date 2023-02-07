@@ -1,6 +1,6 @@
 ;;; pel-bookmark.el --- PEL bookmark utilities -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -39,6 +39,23 @@ Return nil otherwise."
     (and bookmark_filename (equal (file-truename bookmark_filename)
                                   (pel-current-buffer-filename)))))
 
+;;-pel-autoload
+(defun pel-bookmark-info (&optional append)
+  "Display information about bookmark control in specialized buffer.
+
+Clear previous buffer content unless optional APPEND argument is
+non-nil, in which case it appends to the previous report."
+  (interactive "P")
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+    (pel-print-in-buffer
+     "*pel-bookmark-info*"
+     "Baookmark Control"
+     (lambda ()
+       (pel-insert-symbol-content-line 'pel-use-bm)
+       (insert "\n")
+       (pel-insert-symbol-content-line 'bookmark-default-file))
+     (unless append :clear-buffer)
+     :use-help-mode)))
 ;; -----------------------------------------------------------------------------
 (provide 'pel-bookmark)
 
