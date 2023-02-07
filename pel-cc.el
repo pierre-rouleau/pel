@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-12-20 17:42:13 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-02-07 15:54:24 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -155,14 +155,19 @@ return \"void\"."
       (format "unknown - %s is void" symbol-name))))
 
 ;;-pel-autoload
-(defun pel-cc-mode-info ()
-  "Display information about current CC mode derivative."
-  (interactive)
-  (let ((not-avail-msg "not available for this mode")
-        (file-finder-method (pel-major-mode-symbol-value-or ;27
-                             "pel-%s-file-finder-method" "(not supported)")))
-    (message
-     "%s state:
+(defun pel-cc-mode-info (&optional append)
+  "Display information about current CC mode derivative in specialized buffer.
+
+Clear previous buffer content unless optional APPEND argument is non-nil,
+in which case it appends to the previous report."
+  (interactive "P")
+  (let* ((pel-insert-symbol-content-context-buffer (current-buffer))
+         (not-avail-msg "not available for this mode")
+         (file-finder-method (pel-major-mode-symbol-value-or ;27
+                              "pel-%s-file-finder-method" "(not supported)"))
+         (info
+          (format
+           "%s state:
 - active style        : %s. c-default-style: %s
 - RET mode            : %S%s
 - Electric characters : %s
@@ -180,110 +185,150 @@ return \"void\"."
 - File finder method  : %s
 - %s
 - Extra Searched dirs : %s"
-     major-mode                         ; 1
-     (if (boundp 'c-default-style)      ; 2
-         (alist-get major-mode c-default-style)
-       "Unknown - c-default-style not loaded")
-     (pel-cc-c-default-style-for major-mode) ; 3
-     pel-cc-newline-mode                     ; 4
-     (pel-symbol-on-off-string 'pel-newline-does-align
-                               ", and aligns (comments, assignments, etc...)"
-                               ""
-                               "")              ; 5
-     (pel-symbol-on-off-string 'c-electric-flag ; 6
-                               (format "active on: %s"
-                                       (pel-concat-strings-in-list
-                                        (pel-cc-electric-keys)))
-                               "inactive"
-                               not-avail-msg)
-     (pel-symbol-on-off-string 'c-auto-newline nil nil not-avail-msg) ; 7
-     fill-column                                                      ; 8
-     (pel-symbol-value-or 'auto-fill-function
-                          ""
-                          (lambda (aff-symbol)
-                            (let ((auto-filling (symbol-value aff-symbol)))
-                              (if auto-filling
-                                  (format ", auto-fill active: done by %S."
-                                          auto-filling)
-                                ", auto-filling: off."))))
-     ;; --
-     tab-width                                       ; 10
-     (pel-string-with-major-mode "pel-%s-tab-width") ; 11
-     (pel-symbol-value-or 'pel-c-tab-width)          ; 12
-     (pel-symbol-value-or 'tab-width)                ; 13
-     major-mode                                      ; 14
-     ;; --
-     (pel-on-off-string indent-tabs-mode ; 15
-                        "hard-tabs & spaces"
-                        "spaces only")
-     (pel-string-with-major-mode "pel-%s-use-tabs") ; 16
-     (pel-symbol-value-or 'pel-c-use-tabs)          ; 17
-     (pel-symbol-value-or 'indent-tabs-mode)        ; 18
-     major-mode                                     ; 19
-     ;; --
-     (pel-symbol-value-or 'c-basic-offset) ; 20
-     ;; --
-     (if (eq (pel-major-mode-symbol-value "pel-%s-indent-width")
-             (pel-symbol-value-or 'c-basic-offset)) ; 21
-         (format "%s(%s) ==> c-basic-offset(%s)     when %s buffer is opened."
-                 (pel-string-with-major-mode "pel-%s-indent-width")
-                 (pel-major-mode-symbol-value "pel-%s-indent-width")
-                 (pel-symbol-value-or 'c-basic-offset)
-                 major-mode)
-       (format
-        "c-basic-offset(%s) overridden in buffer (by pel-cc-set-indent-width ?)."
-        (pel-symbol-value-or 'c-basic-offset)))
-     ;; --
-     (pel-symbol-on-off-string          ; 22
-      'c-syntactic-indentation nil nil not-avail-msg)
-     (pel-symbol-value-or 'c-indentation-style) ; 23
-     (pel-cc-bracket-style-for major-mode)      ; 24
-     (if (and (boundp 'c-block-comment-flag)    ; 25
-              (boundp 'c-block-comment-starter)
-              (boundp 'c-block-comment-ender)
-              (boundp 'c-block-comment-prefix))
-         (if c-block-comment-flag
+           major-mode                   ; 1
+           (if (boundp 'c-default-style) ; 2
+               (alist-get major-mode c-default-style)
+             "Unknown - c-default-style not loaded")
+           (pel-cc-c-default-style-for major-mode) ; 3
+           pel-cc-newline-mode                     ; 4
+           (pel-symbol-on-off-string 'pel-newline-does-align
+                                     ", and aligns (comments, assignments, etc...)"
+                                     ""
+                                     "")            ; 5
+           (pel-symbol-on-off-string 'c-electric-flag ; 6
+                                     (format "active on: %s"
+                                             (pel-concat-strings-in-list
+                                              (pel-cc-electric-keys)))
+                                     "inactive"
+                                     not-avail-msg)
+           (pel-symbol-on-off-string 'c-auto-newline nil nil not-avail-msg) ; 7
+           fill-column                  ; 8
+           (pel-symbol-value-or 'auto-fill-function
+                                ""
+                                (lambda (aff-symbol)
+                                  (let ((auto-filling (symbol-value aff-symbol)))
+                                    (if auto-filling
+                                        (format ", auto-fill active: done by %S."
+                                                auto-filling)
+                                      ", auto-filling: off."))))
+           ;; --
+           tab-width                                     ; 10
+           (pel-string-with-major-mode "pel-%s-tab-width") ; 11
+           (pel-symbol-value-or 'pel-c-tab-width)          ; 12
+           (pel-symbol-value-or 'tab-width)                ; 13
+           major-mode                                      ; 14
+           ;; --
+           (pel-on-off-string indent-tabs-mode ; 15
+                              "hard-tabs & spaces"
+                              "spaces only")
+           (pel-string-with-major-mode "pel-%s-use-tabs") ; 16
+           (pel-symbol-value-or 'pel-c-use-tabs)          ; 17
+           (pel-symbol-value-or 'indent-tabs-mode)        ; 18
+           major-mode                                     ; 19
+           ;; --
+           (pel-symbol-value-or 'c-basic-offset) ; 20
+           ;; --
+           (if (eq (pel-major-mode-symbol-value "pel-%s-indent-width")
+                   (pel-symbol-value-or 'c-basic-offset)) ; 21
+               (format "%s(%s) ==> c-basic-offset(%s)     when %s buffer is opened."
+                       (pel-string-with-major-mode "pel-%s-indent-width")
+                       (pel-major-mode-symbol-value "pel-%s-indent-width")
+                       (pel-symbol-value-or 'c-basic-offset)
+                       major-mode)
              (format
-              "Block comments: %s %s , continued line start with %s"
-              c-block-comment-starter
-              c-block-comment-ender
-              c-block-comment-prefix)
-           (format "Line comments: %s" (pel-symbol-value-or
-                                        'c-line-comment-starter)))
-       not-avail-msg)
-     (pel-symbol-on-off-string 'c-hungry-delete-key ; 26
-                               nil
-                               "off, but the \
+              "c-basic-offset(%s) overridden in buffer (by pel-cc-set-indent-width ?)."
+              (pel-symbol-value-or 'c-basic-offset)))
+           ;; --
+           (pel-symbol-on-off-string    ; 22
+            'c-syntactic-indentation nil nil not-avail-msg)
+           (pel-symbol-value-or 'c-indentation-style) ; 23
+           (pel-cc-bracket-style-for major-mode)      ; 24
+           (if (and (boundp 'c-block-comment-flag)    ; 25
+                    (boundp 'c-block-comment-starter)
+                    (boundp 'c-block-comment-ender)
+                    (boundp 'c-block-comment-prefix))
+               (if c-block-comment-flag
+                   (format
+                    "Block comments: %s %s , continued line start with %s"
+                    c-block-comment-starter
+                    c-block-comment-ender
+                    c-block-comment-prefix)
+                 (format "Line comments: %s" (pel-symbol-value-or
+                                              'c-line-comment-starter)))
+             not-avail-msg)
+           (pel-symbol-on-off-string 'c-hungry-delete-key ; 26
+                                     nil
+                                     "off, but the \
 F11-⌦  and F11-⌫  keys are available."
-                               not-avail-msg)
-     ;; TODO: move following code close to file finder logic
-     (or (pel-ffind-project-directory)  ; 27
-         (format
-          "None found, searching for files identified in pel-project-root-identifiers: %s"
-          pel-project-root-identifiers))
-     file-finder-method                 ; 28
-     (cond                              ; 29
-      ((eq file-finder-method 'generic)
-       (format "%-20s: %s"
-               " pel-ffind-executable"
-               pel-ffind-executable))
-      ((eq file-finder-method 'pel-ini-file)
-       (format "%-20s: %s"
-               " tool chain"
-               (or (pel-major-mode-symbol-value-or
-                    "pel--%s-file-finder-ini-tool-name" "(not supported)")
-                   "none specified")))
-      ((stringp file-finder-method)
-       (format
-        " Search in path listed in environment variable %s"
-        file-finder-method))
-      ((listp file-finder-method)
-       (format
-        " Search in specific directories: %s" file-finder-method))
-      (t "No file finder supported."))
-     (or (pel-major-mode-symbol-value
-          "pel-%s-file-searched-extra-dir-trees")
-         ""))))
+                                     not-avail-msg)
+           ;; TODO: move following code close to file finder logic
+           (or (pel-ffind-project-directory) ; 27
+               (format
+                "None found, searching for files identified in pel-project-root-identifiers: %s"
+                pel-project-root-identifiers))
+           file-finder-method           ; 28
+           (cond                        ; 29
+            ((eq file-finder-method 'generic)
+             (format "%-20s: %s"
+                     " pel-ffind-executable"
+                     pel-ffind-executable))
+            ((eq file-finder-method 'pel-ini-file)
+             (format "%-20s: %s"
+                     " tool chain"
+                     (or (pel-major-mode-symbol-value-or
+                          "pel--%s-file-finder-ini-tool-name" "(not supported)")
+                         "none specified")))
+            ((stringp file-finder-method)
+             (format
+              " Search in path listed in environment variable %s"
+              file-finder-method))
+            ((listp file-finder-method)
+             (format
+              " Search in specific directories: %s" file-finder-method))
+            (t "No file finder supported."))
+           (or (pel-major-mode-symbol-value
+                "pel-%s-file-searched-extra-dir-trees")
+               ""))))
+    (pel-print-in-buffer
+     (pel-string-with-major-mode "*pel-%s-info*")
+     (pel-string-with-major-mode "*%s Control")
+     (lambda ()
+       "Print abbreviation control variables."
+       (insert info)
+       ;; provide control access
+       (insert "\n")
+
+       (pel-insert-symbol-content-line (pel-major-mode-symbol-for
+                                        "pel-%s-activates-minor-modes"))
+       (pel-insert-symbol-content-line 'pel-cc-newline-mode)
+       (pel-insert-symbol-content-line 'pel-modes-activating-align-on-return)
+       ;; (pel-insert-symbol-content-line 'pel-newline-does-align)
+       (pel-insert-symbol-content-line (pel-major-mode-symbol-for
+                                        "pel-%s-indent-width"))
+       (pel-insert-symbol-content-line (pel-major-mode-symbol-for
+                                        "pel-%s-tab-width"))
+       (pel-insert-symbol-content-line (pel-major-mode-symbol-for
+                                        "pel-%s-use-tabs"))
+       (unless (string= file-finder-method "(not supported)")
+         (pel-insert-symbol-content-line (pel-major-mode-symbol-for
+                                          "pel-%s-file-finder-method")))
+       (pel-insert-symbol-content-line (pel-major-mode-symbol-for
+                                        "pel--%s-file-finder-ini-tool-name"))
+       (pel-insert-symbol-content-line (pel-major-mode-symbol-for
+                                        "pel-%s-file-searched-extra-dir-trees"))
+       (pel-insert-symbol-content-line 'pel-ffind-executable)
+       (pel-insert-symbol-content-line 'pel-use-smart-dash)
+
+       (pel-insert-symbol-content-line 'c-default-style)
+       (pel-insert-symbol-content-line 'c-electric-flag)
+       (pel-insert-symbol-content-line 'auto-fill-function)
+       (pel-insert-symbol-content-line 'c-line-comment-starter)
+       (pel-insert-symbol-content-line 'c-block-comment-flag)
+       (pel-insert-symbol-content-line 'c-block-comment-starter)
+       (pel-insert-symbol-content-line 'c-block-comment-ender)
+       (pel-insert-symbol-content-line 'c-block-comment-prefix))
+     (unless append :clear-buffer)
+     :use-help-mode)))
 
 ;; --
 

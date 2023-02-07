@@ -48,6 +48,7 @@
 ;; Read/Set variable with a formatted name derived from major mode:
 ;;  - `pel-major-mode-symbol-value-or'
 ;;    - `pel-major-mode-symbol-value'
+;;      - `pel-major-mode-symbol-for'
 ;;  - `pel-set-major-mode-symbol'
 ;;
 ;; Function alias
@@ -499,6 +500,24 @@ SILENT is non-nil (can be requested by prefix argument)."
 ;; ---------------------------------------------------------------------------
 ;; Read/Set variable with a formatted name derived from major mode
 ;; ---------------------------------------------------------------
+(defvar pel-insert-symbol-content-context-buffer nil
+  "Contextual value for the buffer argument of `pel-insert-symbol-content'.
+
+Let-bind this variable in functions that need to call
+`pel-insert-symbol-content' repetitively always passing the same value for its
+buffer argument.")
+
+(defun pel-major-mode-symbol-for (symbol-format-string
+                                  &optional buffer-or-name)
+  "Return the major-mode specific symbol for specified buffer.
+
+The symbol name is identified by the FORMAT-STRING which must
+contain one \"%s\" that is replaced by the by the prefix string
+before the \"-mode\" of the major mode of the the current buffer
+or the one specified by BUFFER-OR-NAME."
+  (intern
+   (pel-string-with-major-mode symbol-format-string
+                               (or buffer-or-name pel-insert-symbol-content-context-buffer))))
 
 (defun pel-major-mode-symbol-value (symbol-format-string
                                     &optional buffer-or-name)
@@ -509,8 +528,9 @@ contain one \"%s\" that is replaced by the by the prefix string
 before the \"-mode\" of the major mode of the the current buffer
 or the one specified by BUFFER-OR-NAME."
   (symbol-value
-   (intern
-    (pel-string-with-major-mode symbol-format-string buffer-or-name))))
+   (pel-major-mode-symbol-for
+    symbol-format-string
+    (or buffer-or-name pel-insert-symbol-content-context-buffer))))
 
 (defun pel-major-mode-symbol-value-or (symbol-format-string
                                        default-value
@@ -525,7 +545,9 @@ or the one specified by BUFFER-OR-NAME.
 If the symbol name does not exists for the specified SYMBOL-FORMAT-STRING
 for the current major mode, then return the specified DEFAULT-VALUE."
   (condition-case nil
-      (pel-major-mode-symbol-value symbol-format-string buffer-or-name)
+      (pel-major-mode-symbol-value
+       symbol-format-string
+       (or buffer-or-name pel-insert-symbol-content-context-buffer))
     (error default-value)))
 
 (defun pel-set-major-mode-symbol (symbol-format-string
@@ -2772,12 +2794,7 @@ Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil."
                                         (describe-symbol symbol)))
         (insert name)))))
 
-(defvar pel-insert-symbol-content-context-buffer nil
-  "Contextual value for the buffer argument of `pel-insert-symbol-content'.
 
-Let-bind this variable in functions that need to call
-`pel-insert-symbol-content' repetitively always passing the same value for its
-buffer argument.")
 
 (defun pel-insert-symbol-content (symbol
                                   &optional buffer on-same-line no-button)
@@ -2790,7 +2807,7 @@ buffer in the optional BUFFER argument.  You can also let-bind the variable
 `pel-insert-symbol-content-context-buffer' to the value of the buffer you need.
 By default, the value is printed on the line after the variable name, unless
 ON-SAME-LINE is set."
-  (let ((value (pel-symbol-value symbol (or pel-insert-symbol-content-context-buffer buffer)))
+  (let ((value (pel-symbol-value symbol (or buffer pel-insert-symbol-content-context-buffer)))
         (name  (symbol-name symbol)))
     (insert "\n- ")
     (pel-insert-symbol symbol no-button)
@@ -2808,7 +2825,10 @@ of the output buffer.  If the SYMBOL is a buffer local symbol, specify the
 buffer in the optional BUFFER argument. You can also let-bind the variable
 `pel-insert-symbol-content-context-buffer' to the value of the buffer you
 need."
-  (pel-insert-symbol-content symbol buffer :on-same-line))
+  (pel-insert-symbol-content
+   symbol
+   (or buffer pel-insert-symbol-content-context-buffer)
+   :on-same-line))
 
 (defun pel-line-prefixed-with (text prefix)
   "Return TEXT with each line prefixed with PREFIX string."
