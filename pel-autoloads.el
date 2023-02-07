@@ -230,11 +230,11 @@ re-execute `pel-init' again to activate them.
 
 ;;;***
 
-;;;### (autoloads nil "pel-erlang-skels" "pel-erlang-skels.el" (0
+;;;### (autoloads nil "pel-skels-erlang" "pel-skels-erlang.el" (0
 ;;;;;;  0 0 0))
-;;; Generated autoloads from pel-erlang-skels.el
+;;; Generated autoloads from pel-skels-erlang.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-erlang-skels" '("pel-")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pel-skels-erlang" '("pel-")))
 
 ;;;***
 

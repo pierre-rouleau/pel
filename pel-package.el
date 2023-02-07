@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 22 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-01-01 21:42:01 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-02-07 13:47:24 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -834,7 +834,7 @@ Use this to compute statistics."
                 "pel-emacs.el"
                 "pel-elpa.el"
                 "pel-erlang.el"
-                "pel-erlang-skels.el"
+                "pel-skels-erlang.el"
                 "pel-ert.el"
                 "pel-face-ut.el"
                 "pel-ffind.el"

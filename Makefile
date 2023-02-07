@@ -3,7 +3,7 @@
 # Copyright (C) 2020, 2021, 2022, 2023 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2023-02-04 18:48:46 EST, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2023-02-07 13:55:18 EST, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -156,7 +156,7 @@ EL_FILES := pel--base.el \
 		pel-emacs.el \
 		pel-elpa.el \
 		pel-erlang.el \
-		pel-erlang-skels.el \
+		pel-skels-erlang.el \
 		pel-ert.el \
 		pel-face-ut.el \
 		pel-ffind.el \
@@ -587,7 +587,6 @@ pel-elisp-analyze.elc:  pel-lisp.elc
 pel-elisp.elc:          pel--base.elc pel--options.elc pel-prompt.elc pel-navigate.elc
 pel-elpa.elc:           pel-filedir.elc
 pel-emacs.elc:          pel--base.elc pel--options.elc
-pel-erlang-skels.elc:   pel--base.elc pel--options.elc pel--macros.elc pel-list.elc pel-tempo.elc pel-skels.elc
 pel-erlang.elc:         pel--base.elc pel--options.elc pel-ffind.elc pel-fs.elc pel-syntax.elc pel-xref.elc
 pel-ffind.elc:          pel--options.elc
 pel-file-recent.elc:    pel--options.elc pel-prompt.elc
@@ -642,6 +641,7 @@ pel-skels-c.elc:        pel--base.elc pel--options.elc pel--macros.elc pel-promp
 pel-skels-cpp.elc:      pel--base.elc pel--options.elc pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc pel-uuid.elc pel-skels-c.elc
 pel-skels-clisp.elc:    pel--options.elc pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc
 pel-skels-elisp.elc:    pel--base.elc pel--options.elc pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc
+pel-skels-erlang.elc:   pel--base.elc pel--options.elc pel--macros.elc pel-list.elc pel-tempo.elc pel-skels.elc
 pel-skels-generic.elc:  pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc
 pel-skels-rst.elc:      pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc
 pel-skels.elc:          pel--base.elc pel--options.elc pel-prompt.elc

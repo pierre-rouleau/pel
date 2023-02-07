@@ -332,7 +332,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-erlang-setup-erlang-man-dir-root
     pel-erlang-find-file)
 
-  (pel-autoload-function "pel-erlang-skels" for:
+  (pel-autoload-function "pel-skels-erlang" for:
     pel--erlang-mode-setup
     pel--install-erlang-skel)
 

@@ -1,6 +1,6 @@
-;;; pel-erlang-skels.el --- Erlang specific tempo skeletons  -*- lexical-binding: t; -*-
+;;; pel-skels-erlang.el --- Erlang specific tempo skeletons  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -1385,6 +1385,6 @@ This function is meant to be called by the function `pel-init' only."
     (user-error "The erlang.el package is not loaded!")))
 
 ;; -----------------------------------------------------------------------------
-(provide 'pel-erlang-skels)
+(provide 'pel-skels-erlang)
 
-;;; pel-erlang-skels.el ends here
+;;; pel-skels-erlang.el ends here
