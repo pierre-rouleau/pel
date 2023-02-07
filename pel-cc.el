@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-02-07 15:54:24 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-02-07 16:58:21 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -297,7 +297,6 @@ F11-⌦  and F11-⌫  keys are available."
        (insert info)
        ;; provide control access
        (insert "\n")
-
        (pel-insert-symbol-content-line (pel-major-mode-symbol-for
                                         "pel-%s-activates-minor-modes"))
        (pel-insert-symbol-content-line 'pel-cc-newline-mode)
@@ -326,7 +325,13 @@ F11-⌦  and F11-⌫  keys are available."
        (pel-insert-symbol-content-line 'c-block-comment-flag)
        (pel-insert-symbol-content-line 'c-block-comment-starter)
        (pel-insert-symbol-content-line 'c-block-comment-ender)
-       (pel-insert-symbol-content-line 'c-block-comment-prefix))
+       (pel-insert-symbol-content-line 'c-block-comment-prefix)
+       (insert "\n\n*File extension association:")
+       (pel-insert-symbol-content-line 'pel-auto-mode-alist)
+       ;; (pel-insert-symbol-content-line 'auto-mode-alist)
+       (insert "\n\n See Also:\n- ")
+       (pel-insert-symbol 'auto-mode-alist)
+       )
      (unless append :clear-buffer)
      :use-help-mode)))
 

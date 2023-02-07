@@ -514,7 +514,12 @@ buffer argument.")
 The symbol name is identified by the FORMAT-STRING which must
 contain one \"%s\" that is replaced by the by the prefix string
 before the \"-mode\" of the major mode of the the current buffer
-or the one specified by BUFFER-OR-NAME."
+or of the buffer specified by the BUFFER argument or the variable
+`pel-insert-symbol-content-context-buffer'.  The BUFFER argument
+value takes precedence to the value of the variable
+`pel-insert-symbol-content-context-buffer'. If both are nil, then
+the value is read from the context of the current buffer, which
+may be a local or global."
   (intern
    (pel-string-with-major-mode symbol-format-string
                                (or buffer-or-name pel-insert-symbol-content-context-buffer))))
@@ -526,7 +531,12 @@ or the one specified by BUFFER-OR-NAME."
 The symbol name is identified by the FORMAT-STRING which must
 contain one \"%s\" that is replaced by the by the prefix string
 before the \"-mode\" of the major mode of the the current buffer
-or the one specified by BUFFER-OR-NAME."
+or of the buffer specified by the BUFFER argument or the variable
+`pel-insert-symbol-content-context-buffer'.  The BUFFER argument
+value takes precedence to the value of the variable
+`pel-insert-symbol-content-context-buffer'. If both are nil, then
+the value is read from the context of the current buffer, which
+may be a local or global."
   (symbol-value
    (pel-major-mode-symbol-for
     symbol-format-string
@@ -540,7 +550,12 @@ or the one specified by BUFFER-OR-NAME."
 The symbol name is identified by the FORMAT-STRING which must
 contain one \"%s\" that is replaced by the by the prefix string
 before the \"-mode\" of the major mode of the the current buffer
-or the one specified by BUFFER-OR-NAME.
+or of the buffer specified by the BUFFER argument or the variable
+`pel-insert-symbol-content-context-buffer'.  The BUFFER argument
+value takes precedence to the value of the variable
+`pel-insert-symbol-content-context-buffer'. If both are nil, then
+the value is read from the context of the current buffer, which
+may be a local or global.
 
 If the symbol name does not exists for the specified SYMBOL-FORMAT-STRING
 for the current major mode, then return the specified DEFAULT-VALUE."
@@ -2801,13 +2816,22 @@ Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil."
   "Insert the name followed by the content of the specified SYMBOL.
 
 Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil.
-By default SYMBOL must be a global symbol as its value is read in the scope
-of the output buffer.  If the SYMBOL is a buffer local symbol, specify the
-buffer in the optional BUFFER argument.  You can also let-bind the variable
-`pel-insert-symbol-content-context-buffer' to the value of the buffer you need.
+
+By default SYMBOL must be a global symbol as its value is read in
+the scope of the output buffer.  If the SYMBOL is a buffer local
+symbol, specify the buffer in the optional BUFFER argument or
+let-bind the variable `pel-insert-symbol-content-context-buffer'
+to the value of the buffer you need. The BUFFER argument value
+takes precedence to the value of the variable
+`pel-insert-symbol-content-context-buffer'. If both are nil, then
+the value is read from the context of the current buffer, which
+may be a local or global.
+
 By default, the value is printed on the line after the variable name, unless
 ON-SAME-LINE is set."
-  (let ((value (pel-symbol-value symbol (or buffer pel-insert-symbol-content-context-buffer)))
+  (let ((value (pel-symbol-value
+                symbol
+                (or buffer pel-insert-symbol-content-context-buffer)))
         (name  (symbol-name symbol)))
     (insert "\n- ")
     (pel-insert-symbol symbol no-button)
@@ -2845,8 +2869,9 @@ need."
                stream))
     (princ object stream)))
 
-(defun pel-insert-list-content (symbol
-                                &optional buffer without-index no-button on-same-line)
+(defun pel-insert-list-content
+    (symbol
+     &optional buffer without-index no-button on-same-line)
   "Insert a description of the content of the list identified by its SYMBOL.
 
 Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil.
@@ -2858,9 +2883,17 @@ By default, each element of the list is printed on a new line preceded by an
 element index number unless WITHOUT-INDEX is non-nil.
 By default, the index is printed on a line above the value, unless
 ON-SAME-LINE is non-nil"
-  (let ((list-value (pel-symbol-value symbol buffer)))
+  (let ((list-value (pel-symbol-value
+                     symbol
+                     (or buffer
+                         pel-insert-symbol-content-context-buffer))))
     (if (null list-value)
-        (pel-insert-symbol-content symbol buffer :on-same-line no-button)
+        (pel-insert-symbol-content
+         symbol
+         (or buffer
+             pel-insert-symbol-content-context-buffer)
+         :on-same-line
+         no-button)
       (insert "\n- ")
       (pel-insert-symbol symbol no-button)
       (insert ":")
