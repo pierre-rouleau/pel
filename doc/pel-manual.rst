@@ -4,9 +4,9 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2022-04-02 09:59:56, updated by Pierre Rouleau.
+:Modified: 2023-02-06 22:33:15 EST, updated by Pierre Rouleau.
 :License:
-    Copyright (c) 2020, 2021, 2022 Pierre Rouleau <prouleau001@gmail.com>
+    Copyright (c) 2020, 2021, 2022, 2023 Pierre Rouleau <prouleau001@gmail.com>
 
 
     You can redistribute this document and/or modify it under the terms of the GNU
@@ -2692,7 +2692,7 @@ It provides the following commands:
 - ``pel-company-mode`` toggles the Company mode on/off for the current buffer if
   it can.  Activation is not allowed when Auto Complete mode is active for the
   current buffer.
-- ``pel-completion-help`` shows the state of the auto completion global and
+- ``pel-completion-info`` shows the state of the auto completion global and
   buffer specific modes.  It displays if the packages are available and whether
   they are enabled on not.
 - ``pel-complete`` performs an explicit completion using the completion mode

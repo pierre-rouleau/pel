@@ -1,6 +1,6 @@
 ;;; pel-autocomplete.el --- PEL auto-completion support -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -300,21 +300,48 @@ If ARG is positive: activate it, otherwise de-activate it."
 ;; PEL Generic Automatic Completion Commands
 
 ;;-pel-autoload
-(defun pel-completion-help ()
-  "Display information about available auto-completion.
-Show which one is enabled via customization,
-and show current activation state."
-  (interactive)
-  (message "\
+(defun pel-completion-info (&optional append)
+  "Display information about available auto-completion in specialized buffer.
+
+Show which one is enabled via customization, and show current
+activation state.
+
+Clear previous buffer content unless optional APPEND argument is
+non-nil, in which case it appends to the previous report."
+  (interactive "P")
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+    (pel-print-in-buffer
+     "*pel-autocomplete-info*"
+     "Auto-Completion Control"
+     (lambda ()
+       (insert
+        (format "\
 Auto-completion package state:
 - auto-complete-mode       : %s
 - global-auto-complete-mode: %s
 - company-mode             : %s
 - global-company-mode      : %s"
-           (pel-option-mode-state 'auto-complete-mode 'pel-use-auto-complete)
-           (pel-symbol-on-off-string 'global-auto-complete-mode)
-           (pel-option-mode-state 'company-mode 'pel-use-company)
-           (pel-symbol-on-off-string 'global-company-mode)))
+                (pel-option-mode-state 'auto-complete-mode 'pel-use-auto-complete)
+                (pel-symbol-on-off-string 'global-auto-complete-mode)
+                (pel-option-mode-state 'company-mode 'pel-use-company)
+                (pel-symbol-on-off-string 'global-company-mode)))
+       (insert "\n")
+       (pel-insert-symbol-content-line 'pel-use-auto-complete)
+       (pel-insert-symbol-content-line 'pel-use-company)
+       (insert "\n")
+       (pel-insert-symbol-content-line 'auto-complete-mode)
+       (pel-insert-symbol-content-line 'global-auto-complete-mode)
+       (pel-insert-symbol-content-line 'company-mode)
+       (pel-insert-symbol-content-line 'global-company-mode)
+
+       (insert "\n\nEmacs Built-in completion:")
+       (pel-insert-symbol-content-line 'completion-at-point-functions)
+       (pel-insert-symbol-content-line 'completion-styles)
+       (pel-insert-symbol-content-line 'completion-category-overrides)
+       (pel-insert-symbol-content-line 'completion-extra-properties)
+       (pel-insert-symbol-content-line 'completion-styles-alist))
+     (unless append :clear-buffer)
+     :use-help-mode)))
 
 ;;-pel-autoload
 (defun pel-complete ()

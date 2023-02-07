@@ -101,7 +101,7 @@ Argument FOR: just a required separator keyword to make code look better."
 
 
   (pel-autoload "pel-autocomplete" for:
-    pel-completion-help
+    pel-completion-info
     pel-complete)
   (when (and (boundp 'pel-use-auto-complete) pel-use-auto-complete)
     (pel-autoload "pel-autocomplete" for:

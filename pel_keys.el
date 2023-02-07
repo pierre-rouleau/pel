@@ -5095,7 +5095,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                      global-company-mode))
 
 (define-pel-global-prefix pel:auto-completion (kbd "<f11> ,"))
-(define-key pel:auto-completion   "?"   'pel-completion-help)
+(define-key pel:auto-completion   "?"   'pel-completion-info)
 (when pel-use-auto-complete
   (define-key pel:auto-completion "A"  'pel-global-auto-complete-mode)
   (define-key pel:auto-completion "a"  'pel-auto-complete-mode))

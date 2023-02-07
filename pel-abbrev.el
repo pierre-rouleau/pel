@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, June  8 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-02-05 12:40:27 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-02-06 22:28:25 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -87,7 +87,10 @@ abort completely with `C-g'."
 
 ;;-pel-autoload
 (defun pel-abbrev-info (&optional append)
-  "Display current status of abbreviation control."
+  "Display current status of abbreviation control in specialized buffer.
+
+Clear previous buffer content unless optional APPEND argument is non-nil,
+in which case it appends to the previous report."
   (interactive "P")
   (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
     (pel-print-in-buffer
