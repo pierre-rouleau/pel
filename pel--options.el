@@ -8567,6 +8567,36 @@ Do not enter lambda expressions."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-perl-mode 'HaraldJoerg/cperl-mode
+  "Selects the major-mode used for Perl files.
+
+3 different major-modes are supported:
+
+- The `perl-mode' distributed with Emacs.  The simplest
+  mode. Emacs (but not PEL's) default.
+- The `cperl-mode' distributed with Emacs. More powerful, with
+  more features than `perl-mode'.
+- A newer `cperl-mode' implementation from Harald Jörg which
+  supports new Perl features, and is better than Emacs own
+  `cperl-mode'.  This one is PEL's default because it provides
+  better Perl support.
+
+When using HaraldJoerg/cperl mode, PEL stores it cperl.el file
+inside PEL utils directory, and since PEL places that directory
+at the beginning of Emacs `load-path' it is used instead of Emacs
+own cperl.el file.
+
+If later you change your mind and want to use Emacs own cperl.el,
+then you must first delete cperl.el and cperl.elc files from the
+PEL utils directory."
+  :group 'pel-pkg-for-perl
+  :link '(url-link :tag "Harald Jörg cperl-mode"
+                   "https://github.com/HaraldJoerg/cperl-mode")
+  :type '(choice
+          (const :tag "Use perl-mode" nil)
+          (const :tag "Use cperl-mode" cperl-mode)
+          (const :tag "Use HaraldJoerg/cperl-mode" HaraldJoerg/cperl-mode)))
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Python Support
 ;; --------------

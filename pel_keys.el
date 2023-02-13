@@ -343,8 +343,7 @@ Done in this function to allow advising libraries that remap these keys."
 ;; File format parsing support
 ;; ---------------------------
 (when pel-use-ini
-  (cl-eval-when 'load
-    (pel-install-github-file "pierre-rouleau/ini.el/master" "ini.el")))
+  (pel-install-github-file "pierre-rouleau/ini.el/master" "ini.el"))
 (when pel-use-emacs-toml
   (pel-ensure-package toml from: melpa))
 (when pel-use-kconfig-mode
@@ -1491,7 +1490,8 @@ can't bind negative-argument to C-_ and M-_"
 (when pel-use-popup-imenu
   ;; No key binding - its used by pel-goto-symbol.
   (cl-eval-when 'load
-    (pel-install-github-file "pierre-rouleau/popup-imenu/master" "popup-imenu.el")
+    (pel--install-github-file "pierre-rouleau/popup-imenu/master"
+                              "popup-imenu.el")
     ;; install it's external mandatory dependencies
     (pel-ensure-package dash from: melpa)
     (pel-ensure-package popup from: melpa)
@@ -1504,7 +1504,8 @@ can't bind negative-argument to C-_ and M-_"
   ;; https://github.com/kostafey/popup-switcher/pull/20
   ;; Until this is integrated, we'll use my fork.
   (cl-eval-when 'load
-    (pel-install-github-file "pierre-rouleau/popup-switcher/master" "popup-switcher.el")
+    (pel--install-github-file "pierre-rouleau/popup-switcher/master"
+                              "popup-switcher.el")
     ;; install it's mandatory external dependencies
     (pel-ensure-package dash from: melpa)
     (pel-ensure-package popup from: melpa))
@@ -2656,10 +2657,10 @@ d-mode not added to ac-modes!"
         ;; TODO: restore dougm URL once he has accepted by pull-request. In the
         ;;       mean-time I'm using my fork that has code fixes.
         (if (memq pel-use-goflymake '(with-flycheck with-flymake))
-            (pel-install-github-file "pierre-rouleau/goflymake/master"
-                                     (if (eq pel-use-goflymake 'with-flycheck)
-                                         "go-flycheck.el"
-                                       "go-flymake.el"))
+            (pel--install-github-file "pierre-rouleau/goflymake/master"
+                                      (if (eq pel-use-goflymake 'with-flycheck)
+                                          "go-flycheck.el"
+                                        "go-flymake.el"))
           (display-warning
            'pel-use-goflymake
            (format "Unsupported pel-use-goflymake value: %S"
@@ -2853,9 +2854,10 @@ d-mode not added to ac-modes!"
   (cl-eval-when 'load
     (or (and (eq pel-use-parinfer 'use-pel-elpa-attic-copy)
              (pel-install-from-elpa-attic "parinfer"))
-        (pel-install-github-files "emacsattic/parinfer/master" '("parinfer.el"
-                                                                 "parinferlib.el"
-                                                                 "parinfer-ext.el"))))
+        (pel--install-github-files "emacsattic/parinfer/master"
+                                   '("parinfer.el"
+                                     "parinferlib.el"
+                                     "parinfer-ext.el"))))
   (pel-autoload-file parinfer for:
                      parinfer-mode
                      parinfer-toggle-mode
@@ -4210,6 +4212,25 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC P`` : Perl programming
 (when pel-use-perl
+  ;; Perl file extension - associations for buffer and speedbar
+  (defconst pel-perl-fext-regex "\\.\\([pP]\\([Llm]\\|erl\\|od\\)\\|al\\)\\'")
+  (when pel-perl-mode
+    ;; pel-per-mode is nil when perl-mode is requested, non-nil for cperl-mode
+    (setq auto-mode-alist (rassq-delete-all 'perl-mode auto-mode-alist))
+    (add-to-list 'auto-mode-alist (cons pel-perl-fext-regex  'cperl-mode))
+    (setq interpreter-mode-alist
+          (rassq-delete-all 'perl-mode interpreter-mode-alist))
+    (add-to-list 'interpreter-mode-alist '("\\(mini\\)?perl5?" . cperl-mode))
+    ;; Limitation: once HaraldJoerg/cperl-mode is installed in utils, the only
+    ;; way to use the built-in cperl-mode is to delete HaraldJoerg/cperl-mode
+    ;; from the utils directory. That could be automated but it would need
+    ;; code from the pel-package that I don't want to load here just yet.
+    (when (eq pel-perl-mode 'HaraldJoerg/cperl-mode)
+      (pel-install-github-file "HaraldJoerg/cperl-mode/master"
+                               "cperl-mode.el")))
+  (when pel-use-speedbar
+    (pel-add-speedbar-extension pel-perl-fext-regex))
+
   (define-pel-global-prefix pel:for-perl (kbd "<f11> SPC P"))
   ;; the perl-mode is part of Emacs
   (pel-config-major-mode perl pel:for-perl
@@ -6239,8 +6260,7 @@ the ones defined from the buffer now."
 ;; - fzf : fast fuzzy find
 ;; -----------------------
 (when pel-use-fzf
-  (cl-eval-when 'load
-    (pel-install-github-file "pierre-rouleau/fzf.el/publish" "fzf.el"))
+  (pel-install-github-file "pierre-rouleau/fzf.el/publish" "fzf.el")
   (define-pel-global-prefix pel:file-fzf (kbd "<f11> M-z"))
   (pel-autoload-file fzf for:
                      fzf
@@ -7588,8 +7608,8 @@ the ones defined from the buffer now."
 
 (when pel-use-show-point-mode
   (cl-eval-when 'load
-    (pel-install-github-file "dmgerman/predictive/master"
-                             "show-point-mode.el")
+    (pel--install-github-file "dmgerman/predictive/master"
+                              "show-point-mode.el")
     (pel-autoload "show-point-mode" for: show-point-mode))
   (define-key pel:mode-line "p"  'show-point-mode))
 
