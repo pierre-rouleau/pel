@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, April 18 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-05-10 11:57:49 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2023-02-18 16:15:00 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -77,6 +77,22 @@
   "Enable automatic activation of iedit extension for sh-mode."
   (add-hook 'iedit-mode-hook 'pel-sh-iedit-start)
   (add-hook 'iedit-mode-hook 'pel-sh-iedit-end))
+
+
+(defun pel-tcl-iedit-start ()
+  "Activate iedit extension for the tcl-mode."
+  (when (boundp 'tcl-mode-syntax-table)
+    (modify-syntax-entry ?$ "." tcl-mode-syntax-table)))
+
+(defun pel-tcl-iedit-end ()
+  "Deactivate iedit extension for the tcl-mode."
+  (when (boundp 'tcl-mode-syntax-table)
+    (modify-syntax-entry ?$ "_" tcl-mode-syntax-table)))
+
+(defun pel-tcl-iedit-enhance ()
+  "Enable automatic activation of iedit extension for sh-mode."
+  (add-hook 'iedit-mode-hook 'pel-tcl-iedit-start)
+  (add-hook 'iedit-mode-hook 'pel-tcl-iedit-end))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-sh-iedit)

@@ -1262,7 +1262,10 @@ interactively."
     (pel--add-keys-to-iedit-mode))
   (pel-eval-after-load sh-script
     (require 'pel-sh-iedit)
-    (add-hook 'sh-mode-hook 'pel-sh-iedit-enhance)))
+    (add-hook 'sh-mode-hook 'pel-sh-iedit-enhance))
+  (pel-eval-after-load tcl
+    (require 'pel-sh-iedit)
+    (add-hook 'tcl-mode-hook 'pel-tcl-iedit-enhance)))
 
 ;; - indent-tools
 ;; --------------
