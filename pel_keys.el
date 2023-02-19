@@ -7631,6 +7631,7 @@ the ones defined from the buffer now."
 (define-key pel:window    "f"  #'follow-mode)
 (define-key pel:window    "v"   'pel-2-vertical-windows)
 (define-key pel:window    "h"   'pel-2-horizontal-windows)
+(define-key pel:window    "="  #'balance-windows)
 ;; reserved:
 ;; - S: session
 ;; - d: dedicated windows

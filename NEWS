@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add ~<f11> w =~ binding to balance-windows, while keeping the original ~<f11> w s =~
 - Better iedit support for tcl $variable notation.
 - Add *pel-bookmark-info* bound to ~<f11> ' M-?~.  It prints information about
   bookmark control in a specialized help buffer.
