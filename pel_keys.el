@@ -2011,7 +2011,7 @@ can't bind negative-argument to C-_ and M-_"
 ;; p       - Python
 ;; r       - Rust
 ;; s       - Swift
-;; t       - TCL
+;; t       - Tcl
 ;; u       - Lua
 ;; v       - V
 ;; x       - Elixir          -              BEAM Language
@@ -4310,6 +4310,17 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                          "Unbound rust-mode-map!"
                          :error)))))
 
+;; ---------------------------------------------------------------------------
+;; - Function Keys - <f11> - Prefix ``<f11> SPC t`` : Tcl  programming
+(when pel-use-tcl
+  (define-pel-global-prefix pel:for-tcl (kbd "<f11> SPC t"))
+
+      (pel-config-major-mode tcl pel:for-tcl
+      ;; 5) Set tab-width for the buffer as specified by the PEL user option
+      ;; for the major mode.
+      ;; (setq-local tab-width pel-tcl-tab-width)
+        )
+)
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC H`` : Sh, Unix shell programming
 ;;  This is for shell programming support: editing shell script files.

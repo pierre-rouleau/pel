@@ -8966,7 +8966,7 @@ Do not enter lambda expressions."
 (defcustom pel-sh-tab-width 2
   "Distance between tab stop for sh buffers.
 
-PEL stores this in `tab-width' when opening sh  buffers.
+PEL stores this in `tab-width' when opening sh buffers.
 
 This controls the number of space characters used in for
 indentation level in sh files when the `pel-sh-use-tabs' is set
@@ -8981,6 +8981,55 @@ hard tab when one `pel-sh-use-tabs' is set to t."
 - If set to nil: only spaces are used for indentation.
 - If set to t: hard tabs are used when possible."
   :group 'pel-pkg-for-sh
+  :type 'boolean
+  :safe #'booleanp)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defgroup pel-pkg-for-tcl nil
+  "PEL Tcl language support."
+  :group 'pel-pkg-for-programming)
+
+(defcustom pel-use-tcl nil
+  "Control whether PEL supports the Tcl programming language."
+  :group 'pel-pkg-for-tcl
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-tcl-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Tcl buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-tcl
+  :type '(repeat function))
+
+(defcustom pel-tcl-indent-width 4
+  "Number of columns for Tcl source code indentation.
+PEL stores this in `c-basic-offset' when editing buffers with Tcl code.
+Values in the [2, 8] range are accepted.
+
+EXPERIMENTAL: this may be removed once I know more about Tcl support."
+  :group 'pel-pkg-for-tcl
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+
+(defcustom pel-tcl-tab-width 4
+  "Distance between tab stop for Tcl buffers.
+
+PEL stores this in `tab-width' when opening Tcl buffers.
+
+This does *NOT* control the indentation in Tcl files, only for
+commands that mode point to tab stop positions such as
+`tab-to-tab-stop', and the display of hard TAB characters."
+  :group 'pel-pkg-for-tcl
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-tcl-use-tabs nil
+  "Value of `indent-tabs-mode' for editing Tcl files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-tcl
   :type 'boolean
   :safe #'booleanp)
 

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-02-06 09:44:22 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-02-19 18:28:52 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -300,6 +300,7 @@
                                                               sh-script
                                                               sh-indentation
                                                               electricity))
+    ([f11 32 ?t]     "pl-tcl"       pel-pkg-for-tcl           tcl)
     ([f11 32 ?v]     "pl-v"          pel-pkg-for-v              (v-mode
                                                                  electricity))
 
@@ -641,6 +642,7 @@ stored inside the doc/pdf directory.")
     ("scsh"            [f11 32 19 8])
     ;;
     ("sh"              [f11 32 ?H])
+    ("tcl"             [f11 32 ?t])
     ("v"               [f11 32 ?v])
     ("adoc"            [f11 32 27 ?a])
     ("markdown"        [f11 32 27 ?m])
@@ -833,6 +835,7 @@ There should be no key binding!" keyseq))
     ("scsh"             . "pl-scsh-scheme")
     ;;
     ("sh"               . "pl-sh")
+    ("tcl"              . "pl-tcl")
     ("v"                . "pl-v")
     ;; repl
     ;; ("sly"              . "repl-cl-sly")
