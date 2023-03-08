@@ -6538,9 +6538,15 @@ the ones defined from the buffer now."
       (when (boundp 'ag-mode-map)
         '(define-key ag-mode-map  (kbd "C-x C-q") 'wgrep-change-to-wgrep-mode)))))
 
+
 (when pel-use-deadgrep
   (pel-ensure-package deadgrep from: melpa)
-  (define-key pel:grep  "d"     'deadgrep))
+  (define-key pel:grep  "d"     'deadgrep)
+  (pel-eval-after-load deadgrep
+    (when (boundp 'deadgrep-mode-map)
+      (define-key deadgrep-mode-map (kbd "C-c C-p") 'deadgrep-edit-mode))
+    (when (boundp 'deadgrep-edit-mode-map)
+      (define-key deadgrep-edit-mode-map (kbd "C-x C-s") 'deadgrep-mode))))
 
 (when pel-use-fzf
   (define-key pel:grep     "z"          'fzf-grep)
