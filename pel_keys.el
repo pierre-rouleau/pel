@@ -5308,7 +5308,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (define-key pel:     "p"  'pel-help-pdf-select) ; faster key for help
 
 (global-set-key (kbd "<M-f8>")   #'man)
-(global-set-key (kbd "<M-S-f8>") #'woman)
+(global-set-key (kbd "<M-S-f8>") 'pel-man-at-point)
+(global-set-key (kbd "<C-f8>") #'woman)
 
 (pel-autoload-file pel-help for:
                    pel-show-kill-ring

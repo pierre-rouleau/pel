@@ -1887,6 +1887,13 @@ The alternate method is the other one."
           (const :tag "Open PEL PDF with PDF viewer." pdf-viewer)
           (const :tag "Open PEL PDF with web browser." web-browser)))
 
+
+;; TODO: once PEL explicitly supports TCL, move the next user option into it.
+(defcustom pel-tcl-man-section (if pel-system-is-linux-p "3tcl" "n")
+  "Section of the Man pages for tcl major mode"
+  :group 'pel-pkg-for-help
+  :type 'string)
+
 ;; ---------------------------------------------------------------------------
 ;; Frame Control
 ;; -------------
@@ -3935,20 +3942,6 @@ That mode prints the current point value on the mode line."
   "PEL customization for programming languages."
   :group 'pel-package-use
   :link `(url-link :tag "Comments PDF" ,(pel-pdf-file-url "comments")))
-
-
-(defcustom pel-tcl-man-section (if pel-system-is-linux-p "3tcl" "n")
-  "Section of the Man pages for tcl.
-
-This is the string in parenthesis after a Man page topic name,
-which identifies the originating section of the Man page.  For
-Tcl, this is often \"3tcl\" or Linux system and \"n\" on macOS,
-and that's the default PEL provides.  The `pel-man-at-point'
-command prepends this string to the requested topic name when
-point is inside a Tcl buffer.  Note that the parenthesis must not
-be included. "
-  :group 'pel-pkg-for-programming
-  :type 'string)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Generic Programming Support

@@ -499,6 +499,8 @@ Argument FOR: just a required separator keyword to make code look better."
     makefile-nmake-mode
     pel-make-conditionals-occur)
 
+  (pel-autoload "pel-man" for:
+    pel-man-at-point)
   (pel-autoload "pel-mark" for:
     pel-mark-ring-stats
     pel-popoff-mark-ring
