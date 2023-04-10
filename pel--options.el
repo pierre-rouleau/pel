@@ -150,6 +150,7 @@
 ;;       - pel-pkg-for-rust
 ;;       - pel-pkg-for-sh
 ;;         - pel-sh-script-skeleton-control
+;;       - pel-pkg-for-tcl
 ;;       - pel-pkg-for-v
 ;;     - pel-pkg-for-project-mng
 ;;     - pel-pkg-for-regexp
@@ -3934,6 +3935,20 @@ That mode prints the current point value on the mode line."
   "PEL customization for programming languages."
   :group 'pel-package-use
   :link `(url-link :tag "Comments PDF" ,(pel-pdf-file-url "comments")))
+
+
+(defcustom pel-tcl-man-section (if pel-system-is-linux-p "3tcl" "n")
+  "Section of the Man pages for tcl.
+
+This is the string in parenthesis after a Man page topic name,
+which identifies the originating section of the Man page.  For
+Tcl, this is often \"3tcl\" or Linux system and \"n\" on macOS,
+and that's the default PEL provides.  The `pel-man-at-point'
+command prepends this string to the requested topic name when
+point is inside a Tcl buffer.  Note that the parenthesis must not
+be included. "
+  :group 'pel-pkg-for-programming
+  :type 'string)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Generic Programming Support
@@ -9012,7 +9027,6 @@ EXPERIMENTAL: this may be removed once I know more about Tcl support."
   :type 'integer
   :safe 'pel-indent-valid-p)
 
-
 (defcustom pel-tcl-tab-width 4
   "Distance between tab stop for Tcl buffers.
 
@@ -9032,6 +9046,7 @@ commands that mode point to tab stop positions such as
   :group 'pel-pkg-for-tcl
   :type 'boolean
   :safe #'booleanp)
+
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; V Language Support
