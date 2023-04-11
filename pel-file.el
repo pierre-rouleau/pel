@@ -616,6 +616,44 @@ directory."
             'file-directory-p))))
     (find-file (format "%s/%s" new-dirname file-basename))))
 
+;; ---------------------------------------------------------------------------
+
+(defconst pel-alternate-extension-alist '(("c" . "h")
+                                          ("h" . "c")
+                                          ("cc" . "hh")
+                                          ("hh" . "cc")
+                                          ("cpp" . "hpp")
+                                          ("hpp" . "cpp")
+                                          ("cxx" . "hxx")
+                                          ("hxx" . "cxx"))
+  "Alternate file extensions for C and C++.")
+
+(defun pel--alternate-extension-for (ext)
+  "Return alternate extension for EXT extension, a string.
+Return a string if one is found, nil otherwise."
+  (cdr (assoc ext pel-alternate-extension-alist)))
+
+;;-pel-autoload
+(defun pel-open-file-alternate ()
+  "Open a file with same name but an alternate extension.
+
+The new extension depends on the current file extension.
+The list of alternate extensions is currently very limited
+and restricted to C and C++.
+
+This is very limited as it is.  It will be improved later."
+  (interactive)
+  (let* ((fname (pel-current-buffer-filename))
+         (ext   (pel-current-buffer-file-extension))
+         (bname (file-name-sans-extension fname))
+         (alt-ext (pel--alternate-extension-for ext)))
+    (if alt-ext
+        (let ((alt-fname (format "%s.%s" bname alt-ext)))
+          (if (file-exists-p alt-fname)
+              (find-file alt-fname)
+            (user-error "File %s not found!" alt-fname)))
+      (user-error "No alternate extension for %s" ext))))
+
 ;; -----------------------------------------------------------------------------
 (provide 'pel-file)
 

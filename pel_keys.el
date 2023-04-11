@@ -2325,6 +2325,9 @@ bind it again after this call."
     (define-key prefix (kbd "M-9")  #'show-paren-mode)
     ;; reserve "." for a command that find the thing at point in C (via CTags?)
     (define-key prefix      ")"      #'check-parens)
+    ;; Alternate file
+    (define-key prefix (kbd "M-f") 'pel-open-file-alternate)
+
     (when pel-use-rainbow-delimiters
       (define-key prefix (kbd "M-r")  'rainbow-delimiters-mode))
     (when c-preproc-prefix
