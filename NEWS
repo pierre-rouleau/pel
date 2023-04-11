@@ -312,6 +312,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: Add support for diffview-mode when *pel-use-diffview-mode* is set to t.
+  This activates the ~<f11> d |~ binding to *diffview-current* and ~<f11> d M-|~
+  binding to *diffview-region*, giving the ability to see diffs in side-by-side windows.
 - Enhance: Perl support: the *pel-perl-mode* now select the major-mode for
   Perl files: *perl-mode*, Emacs *cperl-mode* and HaraldJoerg/cperl-mode,
   which PEL defaults to since it has better Perl support.

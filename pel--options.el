@@ -1438,6 +1438,12 @@ standard diff annotated files."
           (const :tag "Use smerge-mode automatically on diff annotated files"
                  auto)))
 
+(defcustom pel-use-diffview-mode nil
+  "Whether PEL activates diffview-mode package."
+  :group 'pel-pkg-for-diff-merge
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-dired
 ;; -----------------

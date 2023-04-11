@@ -6041,6 +6041,11 @@ the ones defined from the buffer now."
 (define-key pel:diff "2"  'pel-ediff-2files)
 (define-key pel:diff "r"  'pel-ediff-revision)
 
+(when pel-use-diffview-mode
+  (pel-ensure-package diffview from: melpa)
+  (define-key pel:diff "|"          'diffview-current)
+  (define-key pel:diff (kbd "M-|")  'diffview-region))
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; - Function Keys - <f11> - Prefix ``<f11> d e`` : ediff commands
 (define-pel-global-prefix pel:ediff (kbd "<f11> d e"))
