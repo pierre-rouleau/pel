@@ -641,6 +641,9 @@ The new extension depends on the current file extension.
 The list of alternate extensions is currently very limited
 and restricted to C and C++.
 
+If the alternate file is not found, save the file basename in the
+kill ring and prompt for the file name to open.
+
 This is very limited as it is.  It will be improved later."
   (interactive)
   (let* ((fname (pel-current-buffer-filename))
@@ -651,7 +654,10 @@ This is very limited as it is.  It will be improved later."
         (let ((alt-fname (format "%s.%s" bname alt-ext)))
           (if (file-exists-p alt-fname)
               (find-file alt-fname)
-            (user-error "File %s not found!" alt-fname)))
+            ;; On failure remember base name of file (without path) in kill
+            ;; ring and prompt for the file.
+            (kill-new (file-name-nondirectory bname))
+            (ido-find-file)))
       (user-error "No alternate extension for %s" ext))))
 
 ;; -----------------------------------------------------------------------------
