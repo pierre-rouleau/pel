@@ -657,7 +657,10 @@ This is very limited as it is.  It will be improved later."
             ;; On failure remember base name of file (without path) in kill
             ;; ring and prompt for the file.
             (kill-new (file-name-nondirectory bname))
-            (ido-find-file)))
+            (ido-find-file)
+            ;; remove that entry from kill ring (naive, should probably check
+            ;; for the value and remove that: todo later)
+            (setq kill-ring (cdr kill-ring))))
       (user-error "No alternate extension for %s" ext))))
 
 ;; -----------------------------------------------------------------------------
