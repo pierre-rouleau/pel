@@ -5093,8 +5093,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (when pel-emacs-is-graphic-p
   (global-set-key (kbd "s-x") 'pel-kill-or-delete-marked-or-whole-line)
   (global-set-key (kbd "C-K") 'pel-delete-line))
-(global-set-key (kbd "C-w")     'pel-kill-or-delete-marked-or-whole-line)
-;; Note: also assigned via pel-kp-subtact
+(global-set-key (kbd "C-w")   'pel-kill-or-delete-marked-or-whole-line)
+;; Note: also assigned via pel-kp-subtract
+;; (global-set-key (kbd "C-M-y") 'pel-replace-with-kill)  ; future
 
 (global-set-key "\C-\\"         'pel-kill-from-beginning-of-line)
 
@@ -5907,7 +5908,8 @@ the ones defined from the buffer now."
       (let ((map diff-mode-map))
         (define-key map (kbd "<f6> <down>") 'diff-file-next)
         (define-key map (kbd "<f6> <up>")   'diff-file-prev)
-        (define-key map (kbd "<f6> o")      'pel-diff-hunk-files-occur))))
+        (define-key map (kbd "<f6> o")      'pel-diff-hunk-files-occur)
+        (define-key map (kbd "<f6> w")      'pel-diff-ignore-whitespace-in-hunks))))
 (declare-function pel--setup-for-diff-mode "pel_keys")
 (pel--mode-hook-maybe-call
  (function pel--setup-for-diff-mode)

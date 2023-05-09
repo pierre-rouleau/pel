@@ -208,6 +208,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-delete-rectangle
     pel-delete-whole-line
     pel-kill-or-delete-marked-or-whole-line
+    ;; pel-replace-with-kill  ;; future
     pel-mark-whole-line
     pel-copy-marked-or-whole-line
     pel-kill-from-beginning-of-line
@@ -277,7 +278,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-ediff-2files
     pel-ediff-revision
     pel-diff-show-status
-    pel-diff-hunk-files-occur)
+    pel-diff-hunk-files-occur
+    pel-diff-ignore-whitespace-in-hunks)
 
   (pel-autoload "pel-elisp" for:
     pel-toggle-paren-in-column-0-is-defun-start

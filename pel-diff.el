@@ -2,12 +2,12 @@
 
 ;; Created   : Friday, March 12 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-21 09:23:50 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2023-05-08 21:47:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2021, 2022, 2023  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -121,6 +121,21 @@ If a region is defined the search is restricted to the region."
              "^\\+\\+\\+ ")
            (or nlines 0)
            boundary)))
+
+;; ---------------------------------------------------------------------------
+
+(declare-function diff-ignore-whitespace-hunk "diff-mode")
+
+;;-pel-autoload
+(defun pel-diff-ignore-whitespace-in-hunks ()
+  "Re-diff all hunks, ignoring whitespace differences in all."
+  (interactive)
+  (require 'diff-mode)
+  (save-excursion
+    (goto-char (point-min))
+    (while (not (eobp))
+      (progn
+        (call-interactively (function diff-ignore-whitespace-hunk))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-diff)
