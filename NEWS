@@ -312,6 +312,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: When *pel-with-cua-paste* user-option is set, ~C-v~ is bound to *yank* instead of being used for scroll operation.
 - New: Add *pel-diff-ignore-whitespace-in-hunks*, mapped to ~<f6> w~ in diff-mode,
   to re-diff all hunks, ignoring whitespace differences.
 - New: Add support for diffview-mode when *pel-use-diffview-mode* is set to t.

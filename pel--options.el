@@ -1375,6 +1375,14 @@ Activating the `pel-use-lispy' user-option indirectly activates
   :link `(url-link :tag "Cut & Paste -- Copy/Delete/Kill/Yank PDF"
                    ,(pel-pdf-file-url "cut-paste")))
 
+(defcustom pel-with-cua-paste nil
+  "Activate CUA-compliant C-v: bind C-v to yank.
+
+When this set set to t, C-v is bound to yank instead of the default."
+  :group 'pel-pkg-for-cut-and-paste
+  :type 'boolean
+  :safe #'booleanp)
+
 (defcustom pel-use-popup-kill-ring nil
   "Control whether PEL uses the `popup-kill-ring' package.
 With this package selective yanking can be done with the

@@ -5190,6 +5190,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (global-set-key (kbd "<f11> R") #'cua-rectangle-mark-mode)
 (global-set-key (kbd "<f11> [")  'pel-cua-move-rectangle-left)
 (global-set-key (kbd "<f11> ]")  'pel-cua-move-rectangle-right)
+(when pel-with-cua-paste
+  (global-set-key (kbd "C-v")  #'yank))
 
 ;; ---------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> ;`` : comment commands
