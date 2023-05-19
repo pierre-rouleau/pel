@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-02-19 18:28:52 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-05-19 14:42:04 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -92,7 +92,7 @@
                                               vline)))
                                  (if (version< emacs-version "27.1")
                                      (append items '(fill-column-indicator))
-                                   items)))
+                                   (append items '(beacon)))))
 
 (defconst pel--markdown-groups '(markdown
                                  grip
