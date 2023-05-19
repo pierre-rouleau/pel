@@ -312,6 +312,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: On Emacs 27 and later, *pel-use-beacon-mode* allows installing and activating the beacon-mode
+  to highlight the cursor area when switching windows or in other navigation events.
+  When active the ~<f11> h M-b~ key sequence is boud to beacon-mode to allow toggling it manually.
 - New: When *pel-with-cua-paste* user-option is set, ~C-v~ is bound to *yank* instead of being used for scroll operation.
 - New: Add *pel-diff-ignore-whitespace-in-hunks*, mapped to ~<f6> w~ in diff-mode,
   to re-diff all hunks, ignoring whitespace differences.

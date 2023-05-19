@@ -6624,6 +6624,15 @@ the ones defined from the buffer now."
 (define-key pel:highlight (kbd "M-H") 'pel-remove-line-highlight)
 
 ;;
+(when (and pel-emacs-27-or-later-p pel-use-beacon-mode)
+  (pel-ensure-package beacon from: melpa)
+  (pel-autoload-file beacon for:
+                     beacon-mode)
+  (when (eq pel-use-beacon-mode 'use-from-start)
+    (beacon-mode 1))
+  (define-key pel:highlight (kbd "M-b")  'beacon-mode))
+
+;;
 (when pel-use-highlight-indentation
   (pel-ensure-package highlight-indentation from: melpa)
   (pel-autoload-file highlight-indentation for:

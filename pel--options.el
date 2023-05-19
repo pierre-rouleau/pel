@@ -2181,6 +2181,19 @@ and is also supported by LSP servers."
   :group 'pel-package-use
   :link `(url-link :tag "Highlighting PDF" ,(pel-pdf-file-url "highlight")))
 
+(defcustom pel-use-beacon-mode nil
+  "Control whether PEL uses and activates the beacon-mode.
+
+PEL currently restricts it to Emacs 27 and later."
+  :group 'pel-pkg-for-highlight
+  :link '(url-link :tag "beacon-mode @ GitHub"
+                   "https://github.com/Malabarba/beacon")
+  :type '(choice
+          (const :tag "Do not use" nil)
+          (const :tag "Use, activate later by command"  t)
+          (const :tag "Use, activate globally when Emacs starts"
+                 use-from-start)))
+
 (defcustom pel-use-fill-column-indicator nil
   "Control whether PEL uses fill-column-indicator package.
 
