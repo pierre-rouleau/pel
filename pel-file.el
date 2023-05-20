@@ -545,6 +545,11 @@ in the string are expanded and the delimiters include the '=' and
 ':' characters.  This helps extracting file names in shell
 scripts.
 
+Variable name expansion:
+- In shell and TCL mode buffers, perform $VAR
+  variable substitution in the file name.
+  That's useful for environment variables in file names.
+
 Limitation: the file name delimiters currently used are
 relatively safe but not sufficient for all cases. These will
 probably have to be modified to be a user option in a future version. "
@@ -560,7 +565,7 @@ probably have to be modified to be a user option in a future version. "
         (unless (memq major-mode '(rst-mode markdown-mode))
           (setq delimiters (concat "()[]{}" delimiters)))
         (let ((fname (string-trim (pel-string-at-point delimiters))))
-          (when (eq major-mode 'sh-mode)
+          (when (memq major-mode '(sh-mode tcl-mode))
             (require 'env nil :noerror)
             (setq fname (substitute-env-vars fname)))
           (if (string= (substring fname -1) ":")
