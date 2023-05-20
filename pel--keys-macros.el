@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-05-19 14:42:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2023-05-19 18:53:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -72,6 +72,19 @@
 ;; groups. For those define their list first and inject them inside the
 ;; `pel--prefix-to-topic-alist' below.  Specially those that have duplicated
 ;; entries.
+
+(defconst pel--c-groups (let ((items '(c
+                                       c-macro
+                                       bison-mode
+                                       electricity)))
+                          (when pel-use-call-graph
+                            (append items '(call-graph)))))
+
+(defconst pel--c++-groups (let ((items '(cpp
+                                         c-macro
+                                         electricity)))
+                            (when pel-use-call-graph
+                              (append items '(call-graph)))))
 
 (defconst pel--dired-groups '(dired
                               dired-git-info
@@ -213,9 +226,7 @@
     ([f11 27 ?s]     "speedbar"         pel-pkg-for-speedbar    (speedbar
                                                                  sr-speedbar
                                                                  projectile-speedbar))
-    ([f11 32 ?C]     "pl-c++"           pel-pkg-for-c++         (cpp
-                                                                 c-macro
-                                                                 electricity))
+    ([f11 32 ?C]     "pl-c++"           pel-pkg-for-c++         ,pel--c++-groups)
     ([f11 32 ?C f12] "pl-c++"           pel-c++-skeleton-control)
     ([f11 32 ?C ?#]  "pl-c++"           pel-pkg-for-c++         hide-ifdef)
     ([f11 32 ?D]     "pl-d"             pel-pkg-for-d           (d-mode
@@ -229,10 +240,7 @@
     ([f11 32 ?R]     "pl-rexx"          pel-pkg-for-rexx        rexx-mode)
     ([f11 32 ?N]     "pl-rexx"          pel-pkg-for-rexx        netrexx)
     ([f11 32 ?a]     "pl-applescript"   pel-pkg-for-applescript apples)
-    ([f11 32 ?c]     "pl-c"             pel-pkg-for-c           (c
-                                                                 c-macro
-                                                                 bison-mode
-                                                                 electricity))
+    ([f11 32 ?c]     "pl-c"             pel-pkg-for-c           ,pel--c-groups)
     ([f11 32 ?c f12] "pl-c"             pel-c-skeleton-control)
     ([f11 32 ?c ?#]  "pl-c"             pel-pkg-for-c           hide-ifdef)
     ([f11 32 ?e]     "pl-erlang"        pel-pkg-for-erlang      (erlang

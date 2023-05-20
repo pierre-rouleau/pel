@@ -312,6 +312,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: Add support for the call-graph package, installed and the *call-graph* command mapped to the ~<f12> M-g~ key sequence in C and C++
+  modes when the *pel-use-call-graph* user option is set to t.
 - New: On Emacs 27 and later, *pel-use-beacon-mode* allows installing and activating the beacon-mode
   to highlight the cursor area when switching windows or in other navigation events.
   When active the ~<f11> h M-b~ key sequence is boud to beacon-mode to allow toggling it manually.

@@ -4355,6 +4355,14 @@ of auto-newline while editing."
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-call-graph nil
+  "Control whether PEL activates the call-graph package."
+  :link '(url-link :tag "call-graph @ GitHub"
+                   "https://github.com/beacoder/call-graph")
+  :group 'pel-pkg-for-cc
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; C Language Support
 ;; ------------------
@@ -10282,6 +10290,7 @@ to \\[pel-xref-toggle-dumb-jump-mode], regardless of the initial state."
                    "https://github.com/pierre-rouleau/pel/blob/master\
 /doc/pel-manual.rst#51111gnu-global-source-code-tagging-system---gtags")
   :group 'pel-pkg-for-xref
+  :group 'pel-pkg-for-cc
   :type 'boolean
   :safe #'booleanp)
 
@@ -10304,6 +10313,7 @@ remains available).
 As an alternative you can quickly toggle ggtags-mode with the <f11> X B G
 key sequence."
   :group 'pel-pkg-for-xref
+  :group 'pel-pkg-for-cc
   :type '(repeat symbol)
   :link '(url-link :tag "ggtags @ GitHub"
                    "https://github.com/leoliu/ggtags")

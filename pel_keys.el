@@ -2265,6 +2265,11 @@ can't bind negative-argument to C-_ and M-_"
   (pel-autoload-file c-eldoc for: c-turn-on-eldoc-mode)
   (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode))
 
+(when pel-use-call-graph
+  (pel-ensure-package call-graph from: melpa)
+  (pel-autoload-file call-graph for:
+                     call-graph))
+
 ;; ---------------------------------------------------------------------------
 ;; Utility function for mapping CC Mode keys : used by C, C++ and D
 (when (or pel-use-c
@@ -2430,15 +2435,23 @@ MODE must be a symbol."
   (define-pel-global-prefix pel:c-skel        (kbd "<f11> SPC c <f12>"))
   (define-pel-global-prefix pel:c-search-replace (kbd "<f11> SPC c s"))
 
+  ;; Add extra key bindings specific to the C mode
   (when pel-use-ini
-      (define-key pel:c-setup (kbd "<M-f6>") 'pel-cc-set-file-finder-ini-tool-name)
-      (define-key pel:c-setup (kbd "<f54>") 'pel-cc-set-file-finder-ini-tool-name))
+    (define-key pel:c-setup (kbd "<M-f6>") 'pel-cc-set-file-finder-ini-tool-name)
+    (define-key pel:c-setup (kbd "<f54>") 'pel-cc-set-file-finder-ini-tool-name))
   (when pel-use-plantuml
     (define-key pel:for-c "u" 'pel-render-commented-plantuml))
   (when pel-use-c-eldoc
     (define-pel-global-prefix pel:c-help (kbd "<f11> SPC c ?"))
     (define-key pel:c-help "e" 'pel-toggle-c-eldoc-mode))
-  (pel--map-cc-for pel:for-c pel:c-setup pel:c-guess pel:for-c-preproc pel:c-search-replace)
+  (when pel-use-call-graph
+    (define-key pel:for-c (kbd "M-g") 'call-graph))
+
+  (pel--map-cc-for pel:for-c
+                   pel:c-setup
+                   pel:c-guess
+                   pel:for-c-preproc
+                   pel:c-search-replace)
 
   (when pel-use-bison-mode
     (pel-ensure-package bison-mode from: melpa)
@@ -2455,6 +2468,8 @@ MODE must be a symbol."
                                     ".lex"
                                     ".l"
                                     ".jison"))))
+
+
 
   (defvar c-mode-map)        ; declare dynamic: prevent byte-compiler warnings
   (pel-eval-after-load cc-mode
@@ -2514,16 +2529,24 @@ MODE must be a symbol."
                                   ".ii"
                                   ".inl"
                                   ".icc")))
-  ; Add auto support for extensions not supported by default
+                                        ; Add auto support for extensions not supported by default
   (pel-set-auto-mode c++-mode for:
                      "\\.inl\\'"
                      "\\.icc\\'")
 
+  ;; Add extra key bindings specific to the C++ mode
   (when pel-use-ini
     (define-key pel:c++-setup (kbd "<M-f6>") 'pel-cc-set-file-finder-ini-tool-name))
   (when pel-use-plantuml
     (define-key pel:for-c++ "u" 'pel-render-commented-plantuml))
-  (pel--map-cc-for pel:for-c++ pel:c++-setup pel:c++-guess pel:for-c++-preproc pel:c++-search-replace)
+  (when pel-use-call-graph
+    (define-key pel:for-c++ (kbd "M-g") 'call-graph))
+
+  (pel--map-cc-for pel:for-c++
+                   pel:c++-setup
+                   pel:c++-guess
+                   pel:for-c++-preproc
+                   pel:c++-search-replace)
 
   (pel-eval-after-load cc-mode
     (pel-config-major-mode c++ pel:for-c++
