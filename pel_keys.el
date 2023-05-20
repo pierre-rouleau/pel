@@ -6653,7 +6653,8 @@ the ones defined from the buffer now."
                      beacon-mode)
   (when (eq pel-use-beacon-mode 'use-from-start)
     (beacon-mode 1))
-  (define-key pel:highlight (kbd "M-b")  'beacon-mode))
+  (define-key pel:highlight (kbd "M-b")  'beacon-mode)
+  (define-key pel:highlight "b"          'beacon-blink))
 
 ;;
 (when pel-use-highlight-indentation
