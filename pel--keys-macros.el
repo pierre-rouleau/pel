@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-05-19 18:53:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2023-05-24 10:04:05 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -98,6 +98,7 @@
                                               electricity
                                               iedit
                                               highlight-indentation
+                                              hl-line
                                               paren-showing
                                               rainbow
                                               rainbow-delimiters
