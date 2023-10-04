@@ -5893,6 +5893,7 @@ the ones defined from the buffer now."
 (define-key pel:buffer ","  'pel-bs-previous)
 (define-key pel:buffer "]"  'pel-smb-next)
 (define-key pel:buffer "["  'pel-smb-previous)
+(define-key pel:buffer "L"  'emacs-lock-mode)
 
 ;; Add key bindings inside the Buffer Selection Mode.
 (add-hook 'bs-mode-hook 'pel-bs-init)
