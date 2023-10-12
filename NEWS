@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add key binding ~M-<f5>~ to *pel-search-word-from-top*, it's easier to type with a numeric prefix
+  than the ~M-<f11> s .~ key sequence (which is retained) and is a very useful command to be able to
+  quickly access it.
+- Add key binding ~<f11> b L~ to *emacs-lock-mode*.
 - Add key bindings to *deadgrep-mode*: activate *deadgred-edit-mode* with ~C-c C-p~ and get out of it with ~C-x C-s~
 - Add ~<f11> w =~ binding to balance-windows, while keeping the original ~<f11> w s =~
 - Better iedit support for tcl $variable notation.

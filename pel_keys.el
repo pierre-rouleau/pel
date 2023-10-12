@@ -7048,6 +7048,8 @@ the ones defined from the buffer now."
 ;; -----------------------------------------------------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> s`` : Search/Replace  commands
 
+(global-set-key (kbd "M-<f5>") 'pel-search-word-from-top)
+
 (define-pel-global-prefix pel:search-replace (kbd "<f11> s"))
 (define-key pel:search-replace "."  'pel-search-word-from-top)
 (define-key pel:search-replace "b" #'search-backward)
