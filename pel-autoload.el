@@ -661,7 +661,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-search-word-from-top
     pel-select-search-tool
     pel-show-search-status
-    pel-multi-occur-in-this-mode)
+    pel-multi-occur-in-this-mode
+    pel-search-two-spaces
+    pel-search-empty-line)
   (pel-autoload-function "pel-search" for:
     pel-set-search-tool)
 

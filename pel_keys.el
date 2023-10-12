@@ -487,6 +487,8 @@ Done in this function to allow advising libraries that remap these keys."
 
 (global-set-key (kbd "M-g ?")   'pel-show-goto-symbol-settings)
 
+(global-set-key (kbd "M-g M-SPC") 'pel-search-two-spaces)
+(global-set-key (kbd "M-g M-RET") 'pel-search-empty-line)
 (global-set-key (kbd "M-g i")   'imenu)
 (global-set-key (kbd "M-g M-i") 'imenu)
 (global-set-key (kbd "M-g h")   'pel-goto-symbol)
@@ -7059,6 +7061,8 @@ the ones defined from the buffer now."
 (define-key pel:search-replace (kbd "M-o") 'pel-multi-occur-in-this-mode)
 (define-key pel:search-replace "r" #'replace-string)
 (define-key pel:search-replace "?"  'pel-show-search-status)
+(define-key pel:search-replace " "  'pel-search-two-spaces)
+(define-key pel:search-replace (kbd "RET") 'pel-search-empty-line)
 (when pel-use-fzf
   (define-key pel:search-replace "z" 'fzf-find-in-buffer))
 ;; "S" reserved

@@ -2,7 +2,7 @@
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-01-06 10:39:25 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-10-12 15:14:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -43,7 +43,8 @@
 ;;
 ;; Search utility
 ;;
-;; * `pel-search-word-from-top'
+;; - `pel-search-word-from-top-noerr'
+;;   * `pel-search-word-from-top'
 ;;
 ;; Search Tool Management:
 ;;
@@ -334,6 +335,30 @@ non interactively."
         (pel-search-word-from-top n)
         t)
     (error nil)))
+
+;;-pel-autoload
+(defun pel-search-two-spaces (backwards)
+  "Move point forward to next location of 2 consecutive space characters.
+
+With any argument: move backward to previous location of 2 consecutive spaces."
+  (interactive "P")
+  (message "backwards: %s" backwards)
+  (if (not backwards)
+      (search-forward "  ")
+    (search-backward "  ")))
+
+;;-pel-autoload
+(defun pel-search-empty-line (backwards)
+  "Move point forward to the next empty line.
+
+With any argument: move backward to previous empty line."
+  (interactive "P")
+  (if (not backwards)
+      (progn
+        (search-forward "\n\n")
+        (forward-line -1))
+    (search-backward "\n\n")
+    (forward-line 1)))
 
 ;; ---------------------------------------------------------------------------
 ;; PEL Search Tool Control

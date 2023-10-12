@@ -646,6 +646,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   the new *pel-shell-prompt-line-regexp* user-option to identify the regexp used for searching for the prompt.
 - New: The Makefile runs a new test, loading all PEL files, computing the number of PEL commands, using the
   new *pel-package-info-all* command written for that purpose only.
+- New: Add 2 new navigation/search commands:
+  - *pel-search-two-spaces* (bound to ~<f11> s SPC~ and to ~M-g M-SPC~)
+    which moves forward (or backward with argument) to the next/previous/ location of 2 consecutive space characters.
+  - *pel-search-empty-line* (bound to ~<f11> s RET~ and to ~M-g M-RET~)
+    which moves forward (or backward with argument) to the next/previous/ empty line.
 * Version 0.4.1:
 ** Modifications:
 - Fix: The File Management PDF now describes PEL's ability to select the
