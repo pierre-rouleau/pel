@@ -1,6 +1,6 @@
 ;;; pel-frame-control.el --- PEL process frame support -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -78,12 +78,16 @@ use your OS supported command to toggle fullscreen mode"))))
 ;;-pel-autoload
 (defun pel-next-frame (arg)
   "Make next frame visible.
+
+The next frame is the one with the next larger frame number.
 In text terminal mode: iterate through all frames.
 In graphics mode:
  - with no/nil argument (the default): iterate through visible frames,
  - with ARG non nil: iterate through all frames (included iconified frames)."
   (interactive "p")
-  (raise-frame (next-frame
+  ;; use previous-frame as it's the command that opens the frame with the next
+  ;; larger frame number...
+  (raise-frame (previous-frame
                 nil
                 (if (and pel-emacs-is-graphic-p arg)
                     0
@@ -92,12 +96,16 @@ In graphics mode:
 ;;-pel-autoload
 (defun pel-previous-frame (arg)
   "Make previous frame visible.
+
+The previous frame is the one with the next smaller frame number.
 In text terminal mode: iterate through all frames.
 In graphics mode:
  - with no/nil argument (the default): iterate through visible frames,
  - with ARG non nil: iterate through all frames (included iconified frames)."
   (interactive "p")
-  (raise-frame (previous-frame
+  ;; use next-frame as it's the command that opens the frame with the next
+  ;; smaller frame number...
+  (raise-frame (next-frame
                 nil
                 (if (and pel-emacs-is-graphic-p arg)
                     0

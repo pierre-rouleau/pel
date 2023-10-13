@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- The *pel-next-frame* (bound to ~<f11> F n~) and *pel-previous-frame* (bound to ~<f11> F p~) now honour the frame numbers:
+  the *pel-next-frame* changes to the frame that has a larger number than the current frame and the *pel-previous-frame* changes
+  the frame to the one that has a lower frame number.  The used Emacs functions behave in the reverse direction; the PEL commands
+  now use the more conventional order.
 - The *pel-duplicate-line* command (bound to ~<f6> d~) now supports value 0 for the argument: with numeric argument value 0
   the command creates a single duplicate but does not move point: it keeps the point on the original line.
 - Add key binding ~M-<f5>~ to *pel-search-word-from-top*, it's easier to type with a numeric prefix
