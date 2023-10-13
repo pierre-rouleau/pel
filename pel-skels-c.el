@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-01-20 10:16:17 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-10-13 17:46:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -167,12 +167,25 @@ SECTION-TITLES may be nil.  In that case the function returns nil."
       (dolist (mtitle section-titles)
         (pel-append-to
          sk
-         (list
-          (funcall line-separator-fct)
-          cb (pel-skel-space-for cb) mtitle 'n
-          cc (pel-skel-space-for cc) (make-string (length mtitle) ?-) 'n
-          ce 'n (pel-when-text-in ce 'n)
-          'p 'n 'n)))
+         (cond
+          ;; titles that start with a . are inserted as string (skipping the
+          ;; first character)is after a separator line
+          ((string= (substring mtitle 0 1) ".")
+           (list
+            (funcall line-separator-fct)
+            (substring mtitle 1)))
+          ;; titles that start with a "," are inserted as string (skipping
+          ;; first character) without a separator line.
+          ((string= (substring mtitle 0 1) ",")
+           (list
+            (substring mtitle 1)))
+          ;; insert normal title section
+          (t (list
+              (funcall line-separator-fct)
+              cb (pel-skel-space-for cb) mtitle 'n
+              cc (pel-skel-space-for cc) (make-string (length mtitle) ?-) 'n
+              ce 'n (pel-when-text-in ce 'n)
+              'p 'n 'n)))))
       sk)))
 
 (defun pel-skel-cc-file-header-block (cc-module-header-block-style
@@ -225,6 +238,7 @@ to be the customization user-option variables of C or C++:
          (titles-a-and-b (pel-list-split "." section-titles))
          (section-titles-before-incguard (car titles-a-and-b))
          (section-titles-after-incguard (cadr titles-a-and-b)))
+
     ;; if there's no split, all sections should be after the include guard.
     (unless section-titles-after-incguard
       (pel-swap section-titles-before-incguard section-titles-after-incguard))
@@ -264,6 +278,7 @@ to be the customization user-option variables of C or C++:
           ;; Insert the selected include guard and the remaining code.
           (list
            'l
+           ;; Insert the include guard - of type specified by `cc-skel-use-include-guards'
            (cond
             ;; pragma-once
             ((eq cc-skel-use-include-guards 'pragma-once)
@@ -273,11 +288,14 @@ to be the customization user-option variables of C or C++:
               'p 'n))
             ;; a #ifdef #define include guard - just the beginning
             ((memq cc-skel-use-include-guards '(t with-uuid))
-             (pel-c-include-guard (eq cc-skel-use-include-guards 'with-uuid))))
+             (pel-c-include-guard (eq cc-skel-use-include-guards
+                                      'with-uuid))))
+
            ;; Insert the remaining section list if any
            (when (and (not section-titles-after-incguard)
                       (memq cc-skel-use-include-guards '(t with-uuid)))
              (funcall cc-separator-line-fct))
+
            (pel-skel-section-titles section-titles-after-incguard
                                     cb cc ce
                                     cc-separator-line-fct)

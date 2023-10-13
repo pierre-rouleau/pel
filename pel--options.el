@@ -4826,21 +4826,33 @@ Empty strings can be used to specify section with a tempo marker with no text."
 (defcustom pel-c-skel-hfile-section-titles '("Description"
                                              "."
                                              "Header Inclusion"
-                                             "Types"
-                                             "Constants"
-                                             "Inline Functions")
+                                             ".#if defined(__cplusplus)\nextern \"C\" {\n#endif\n"
+                                             "Public Types"
+                                             "Public Constants"
+                                             "Inline Functions"
+                                             ".#if defined(__cplusplus)\n}\n#endif\n")
   "Specifies whether code sections are inserted inside C file comment block.
 
 The choices are:
 - nil: no section titles are inserted.
 - a list of sections.
 
-When section titles are identified a special section string \".\"
-identifies where the include guard code must be inserted.
+When section titles are identified, the first character of the string
+may be '.' or ',' to identify special cases:
+
+- A special section string \".\" identifies where the include guard
+  code must be inserted.
+- A string that starts with '.' is inserted verbatim, skipping the
+  first character and preceded by a separator line.
+- A string that starts with ',' is inserted verbatim, skipping
+  the first character (and not preceded by a separator).
 
 The default includes fives sections and the position of the
 include guard is located between the first and the second
-section.  You can add, replace and remove them.
+section.  It also insert support for C++ 'extern \"C\"' code.
+
+You can customize the sections to generate what you prefer.
+You can change, add, replace and remove the pre-defined sections.
 
 These section titles are placed inside the module documentation
 block in the order of appearance in the list with the string as
