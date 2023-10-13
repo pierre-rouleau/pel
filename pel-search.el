@@ -2,7 +2,7 @@
 
 ;; Created   Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-10-12 15:14:55 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2023-10-13 13:47:06 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -337,7 +337,7 @@ non interactively."
     (error nil)))
 
 ;;-pel-autoload
-(defun pel-search-two-spaces (backwards)
+(defun pel-search-two-spaces (&optional backwards)
   "Move point forward to next location of 2 consecutive space characters.
 
 With any argument: move backward to previous location of 2 consecutive spaces."
@@ -348,7 +348,7 @@ With any argument: move backward to previous location of 2 consecutive spaces."
     (search-backward "  ")))
 
 ;;-pel-autoload
-(defun pel-search-empty-line (backwards)
+(defun pel-search-empty-line (&optional backwards)
   "Move point forward to the next empty line.
 
 With any argument: move backward to previous empty line."
