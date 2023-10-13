@@ -774,7 +774,9 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-upcase-word-or-region
     pel-downcase-word-or-region
     pel-toggle-sentence-end
-    pel-show-text-modes)
+    pel-show-text-modes
+    pel-upcase-letter
+    pel-downcase-letter)
 
   ;; pel-undo loading is directly controlled by pel-init
   ;; by the logic inside pel_keys.el

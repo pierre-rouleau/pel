@@ -1,6 +1,6 @@
 ;;; pel-text-transform.el --- PEL Text Transformation -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -49,7 +49,8 @@
 ;; * pel-upcase-word-or-region
 ;; * pel-downcase-word-or-region
 ;;   - pel-casechg-word-or-region
-;;
+;; * pel-upcase-letter
+;; * pel-downcase-letter
 
 (defun pel-capitalize-first-letter (text)
   "Return TEXT string with first letter capitalized."
@@ -202,6 +203,40 @@ When N is 0, perform the operation once on the beginning of the current word."
   (pel-casechg-word-or-region
    'downcase
    (prefix-numeric-value n)))
+
+;; --------------------------
+;; single letter case control
+
+;;-pel-autoload
+(defun pel-upcase-letter (&optional n)
+  "upcase n letters at point or all region.
+
+n defaults to 1 unless a region already exists, in which case
+all region is up-cased.
+With negative N: convert that many letters before point."
+  (interactive "P")
+  (if (use-region-p)
+      (upcase-region (region-beginning) (region-end))
+    (let ((beg (point)))
+      (right-char (prefix-numeric-value n))
+      (upcase-region beg (point)))))
+
+;;-pel-autoload
+(defun pel-downcase-letter (&optional n)
+  "Down-case N letters at point or all region.
+
+N defaults to 1 unless a region already exists, in which case
+all region is down-cased.
+With negative N: convert that many letters before point."
+  (interactive "P")
+  (if (use-region-p)
+      (downcase-region (region-beginning) (region-end))
+    (let ((beg (point)))
+      (right-char (prefix-numeric-value n))
+      (downcase-region beg (point)))))
+
+;; Potential future improvement: when N is negative and no are is marked,
+;; toggle the case of the letters.
 
 ;; -----------------------------------------------------------------------------
 ;; Control the meaning of a sentence

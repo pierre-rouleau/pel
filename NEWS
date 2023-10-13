@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add ability to convert the case of one or several letters to standard key bindings which now behave as before when an
+  area is marked but can also operate with no marked area, converting N letters from point (with N defaulting to 1):
+  - The ~C-x C-l~ key sequence is not bound to the new *pel-downcase-letter* command.
+  - The ~C-x C-u~ key sequence is not bound to the new *pel-upcase-letter* command.
 - The *pel-next-frame* (bound to ~<f11> F n~) and *pel-previous-frame* (bound to ~<f11> F p~) now honour the frame numbers:
   the *pel-next-frame* changes to the frame that has a larger number than the current frame and the *pel-previous-frame* changes
   the frame to the one that has a lower frame number.  The used Emacs functions behave in the reverse direction; the PEL commands

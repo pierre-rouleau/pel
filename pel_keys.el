@@ -7369,9 +7369,13 @@ the ones defined from the buffer now."
 ;; since the original Emacs commands break the visible region anyway
 ;; so we don't have to worry about stealing the Shift key when we want
 ;; to use one of the case conversion command.
-(global-set-key (kbd "M-c")   'pel-downcase-word-or-region)
-(global-set-key (kbd "M-C")   'pel-upcase-word-or-region)
-(global-set-key (kbd "M-T")   'pel-capitalize-word-or-region)
+(global-set-key (kbd "M-c")     'pel-downcase-word-or-region)
+(global-set-key (kbd "M-C")     'pel-upcase-word-or-region)
+(global-set-key (kbd "M-T")     'pel-capitalize-word-or-region)
+;; Also extend the original functionality of the Emacs upcase-region and
+;; downcase-region with the ability to work on single or consecutive letters.
+(global-set-key (kbd "C-x C-u") 'pel-upcase-letter)
+(global-set-key (kbd "C-x C-l") 'pel-downcase-letter)
 
 ;; The following does not work and I don;t know why
 ;; (defun pel-toggle-overwrite ()
