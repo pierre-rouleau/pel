@@ -1,6 +1,6 @@
 ;;; pel-ccp.el --- PEL cut & paste, etc... -*-lexical-binding: t-*-
 
-;; Copyright (C) 2020, 2021  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -31,12 +31,11 @@
 ;; specific entities.
 ;;
 
-;;; Code:
-
-
 ;;; Dependencies:
 (require 'pel--base)
 (require 'pel--options)
+
+;;; Code:
 ;; ---------------------------------------------------------------------------
 ;; Utility
 ;; -------
@@ -642,6 +641,13 @@ the filtering and `kill-ring' appending capabilities."
           (pel--delete-whole-lines (abs n)))))
     (pel--show-killed)))
 
+;; ;;-pel-autoload
+;; (defun pel-replace-with-kill ()
+;;   ""
+;;   (interactive)
+;;   (yank)
+;;   (pel-kill-or-delete-marked-or-whole-line -1))
+
 ;; Copy current marked region or whole current line
 ;; ------------------------------------------------
 
@@ -744,17 +750,23 @@ With argument ARG, kill that many words then the whitespace following them."
 Insert new line(s) below and move point to the last one entered,
 at the same relative position inside the line.
 
-If some text on the original line is marked, the function prompts
-for a replacement, and replace each instance of that text in the duplicated
-line. If N is negative the replacement is only done for the marked area.
+When N is 0, one copy is made but the cursor stays on the
+original line.
 
-When (abs N) is larger than 1 the function inserts that many duplicated lines,
-and prompts for a new replacement for each new line.
-The command maintains a prompt history, accessible with 'M-n' and 'M-p'.
+If some text on the original line is marked, the function prompts
+for a replacement, and replace each instance of that text in the
+duplicated line. If N is negative the replacement is only done
+for the marked area.
+
+When (abs N) is larger than 1 the function inserts that many
+duplicated lines, and prompts for a new replacement for each new
+line.  The command maintains a prompt history, accessible with
+'M-n' and 'M-p'.
 
 Nothing is copied to the kill ring."
   (interactive "*p")
-  (let* ((replace-once (< n 0))
+  (let* ((keep-original-position nil)
+         (replace-once (< n 0))
          (n (abs n))
          (original-pos (point))
          (original-bol (line-beginning-position))
@@ -765,6 +777,9 @@ Nothing is copied to the kill ring."
                                                             (region-end))))
          text-before
          text-after)
+    (when (eq n 0)
+      (setq n 1)
+      (setq keep-original-position t))
     (when (use-region-p)
       (setq text-before (buffer-substring-no-properties
                          original-bol
@@ -789,7 +804,9 @@ Nothing is copied to the kill ring."
                      "\n")
              (forward-line -1)
              (right-char (- original-pos original-bol))
-             (> (setq n (1- n)) 0)))))
+             (> (setq n (1- n)) 0)))
+    (when keep-original-position
+      (goto-char original-pos))))
 
 ;;; --------------------------------------------------------------------------
 

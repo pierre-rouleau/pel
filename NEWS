@@ -2,6 +2,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- The *pel-duplicate-line* command (bound to ~<f6> d~) now supports value 0 for the argument: with numeric argument value 0
+  the command creates a single duplicate but does not move point: it keeps the point on the original line.
 - Add key binding ~M-<f5>~ to *pel-search-word-from-top*, it's easier to type with a numeric prefix
   than the ~M-<f11> s .~ key sequence (which is retained) and is a very useful command to be able to
   quickly access it.
