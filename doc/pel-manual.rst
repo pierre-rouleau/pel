@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2023-02-06 22:33:15 EST, updated by Pierre Rouleau.
+:Modified: 2023-10-13 16:38:16 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -4642,9 +4642,13 @@ pel-c-skel-module-header-block-style nil     The selected style for the module
 
 pel-c-skel-module-section-titles     ➽       Use the module sections
                                              identified by PEL's default:
-                                             "Module Description"
-                                             "Header Inclusion", "Local Types",
-                                             "Local Variables" and "Code".
+
+                                             - "Module Description",
+                                             - "Header Inclusion",
+                                             - "Local Types",
+                                             - "Local Variables", and
+                                             - "Code".
+
                                              The value can also be set to nil
                                              to prevent insertion of the sections.
 ==================================== ======= =====================================
