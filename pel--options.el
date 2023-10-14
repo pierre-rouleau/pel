@@ -5539,7 +5539,6 @@ The choices are:
           (const :tag "Man-page style documentation block above function \
 definition." man-style)
           (string :tag "Use your own custom definition\n inside file")))
-(pel-put pel-c++-skel-function-define-style :choices
 
 (defcustom pel-c++-skel-function-name-on-first-column nil
   "Set whether defined function name is on the beginning of the line.
