@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-02-07 16:58:21 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-10-14 07:52:33 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -161,7 +161,8 @@ return \"void\"."
 Clear previous buffer content unless optional APPEND argument is non-nil,
 in which case it appends to the previous report."
   (interactive "P")
-  (let* ((pel-insert-symbol-content-context-buffer (current-buffer))
+  (let* ((is-c (eq major-mode 'c-mode))
+         (pel-insert-symbol-content-context-buffer (current-buffer))
          (not-avail-msg "not available for this mode")
          (file-finder-method (pel-major-mode-symbol-value-or ;27
                               "pel-%s-file-finder-method" "(not supported)"))
@@ -185,7 +186,7 @@ in which case it appends to the previous report."
 - File finder method  : %s
 - %s
 - Extra Searched dirs : %s"
-           major-mode                   ; 1
+           major-mode                    ; 1
            (if (boundp 'c-default-style) ; 2
                (alist-get major-mode c-default-style)
              "Unknown - c-default-style not loaded")
@@ -194,7 +195,7 @@ in which case it appends to the previous report."
            (pel-symbol-on-off-string 'pel-newline-does-align
                                      ", and aligns (comments, assignments, etc...)"
                                      ""
-                                     "")            ; 5
+                                     "")              ; 5
            (pel-symbol-on-off-string 'c-electric-flag ; 6
                                      (format "active on: %s"
                                              (pel-concat-strings-in-list
@@ -212,7 +213,7 @@ in which case it appends to the previous report."
                                                 auto-filling)
                                       ", auto-filling: off."))))
            ;; --
-           tab-width                                     ; 10
+           tab-width                                       ; 10
            (pel-string-with-major-mode "pel-%s-tab-width") ; 11
            (pel-symbol-value-or 'pel-c-tab-width)          ; 12
            (pel-symbol-value-or 'tab-width)                ; 13
@@ -328,6 +329,28 @@ F11-⌦  and F11-⌫  keys are available."
        (pel-insert-symbol-content-line 'c-block-comment-prefix)
        (insert "\n\n*File extension association:")
        (pel-insert-symbol-content-line 'pel-auto-mode-alist)
+       (insert "\n\n*File skeleton control:")
+       (pel-insert-symbol-content-line (pel-major-mode-symbol-for "pel-%s-skel-use-separators"))
+       (pel-insert-symbol-content-line (pel-major-mode-symbol-for "pel-%s-skel-insert-file-timestamp"))
+       (pel-insert-symbol-content-line (pel-major-mode-symbol-for "pel-%s-skel-with-license"))
+       (pel-insert-symbol-content-line (pel-major-mode-symbol-for (format
+                                                                   "pel-%%s-skel-c%sfile-section-titles"
+                                                                   (if is-c "" "pp"))))
+       (pel-insert-symbol-content-line (pel-major-mode-symbol-for (format
+                                                                   "pel-%%s-skel-h%sfile-section-titles"
+                                                                   (if is-c "" "pp"))))
+       (pel-insert-symbol-content-line (pel-major-mode-symbol-for "pel-%s-skel-doc-markup"))
+       (when is-c (pel-insert-symbol-content-line 'pel-c-skel-comment-with-2stars))
+       (pel-insert-symbol-content-line (pel-major-mode-symbol-for "pel-%s-skel-use-include-guards"))
+       (pel-insert-symbol-content-line (pel-major-mode-symbol-for "pel-%s-skel-module-header-block-style"))
+       (pel-insert-symbol-content-line (pel-major-mode-symbol-for "pel-%s-skel-insert-function-sections"))
+       (pel-insert-symbol-content-line (pel-major-mode-symbol-for "pel-%s-skel-function-section-titles"))
+       (pel-insert-symbol-content-line (pel-major-mode-symbol-for "pel-%s-skel-function-define-style"))
+       (pel-insert-symbol-content-line (pel-major-mode-symbol-for "pel-%s-skel-function-name-on-first-column"))
+       (unless is-c
+         (pel-insert-symbol-content-line 'pel-c++-class-has-doc-block)
+         (pel-insert-symbol-content-line 'pel-c++-class-doc-section-titles)
+         (pel-insert-symbol-content-line 'pel-c++-class-members-sections))
        ;; (pel-insert-symbol-content-line 'auto-mode-alist)
        (insert "\n\n See Also:\n- ")
        (pel-insert-symbol 'auto-mode-alist)

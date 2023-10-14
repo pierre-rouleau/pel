@@ -5517,10 +5517,10 @@ a separately provided skeleton file.
 
 The choices are:
 
-- No documentation comment inserted.
-- Basic documentation comment just above the function definition.
-  This includes a function purpose.
-- Man-page style documentation above the function definition.
+- nil: No documentation comment inserted.
+- basic-style: Basic documentation comment just above the
+  function definition. This includes a function purpose.
+- man-page: Man-page style documentation above the function definition.
   If variable `pel-c++-skel-insert-function-sections' is t, the comment also
   include a DESCRIPTION section and other sections as defined by the
   value of the variable `pel-c++-skel-function-section-titles'.
@@ -5539,6 +5539,7 @@ The choices are:
           (const :tag "Man-page style documentation block above function \
 definition." man-style)
           (string :tag "Use your own custom definition\n inside file")))
+(pel-put pel-c++-skel-function-define-style :choices
 
 (defcustom pel-c++-skel-function-name-on-first-column nil
   "Set whether defined function name is on the beginning of the line.
