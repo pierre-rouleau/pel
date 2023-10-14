@@ -6,7 +6,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   of customization variables controlling the code generation skeletons and their values, in the opened
   info buffer.  The variable names are links that can be used to change their values.
 - Enhanced the code template skeleton ability to create section titles.  A title string that begins
-  with the character *.* is inserted verbatim following a separator line.  A title that starts with the *,* character
+  with the character '.' is inserted verbatim following a separator line.  A title that starts with the ',' character
   is inserted verbatim.
   - The default value of the *pel-c-skel-hfile-section-titles* customized variable uses this new feature to insert the
     C++ support ~extern "C"~ pre-processor code in C header files templates.
