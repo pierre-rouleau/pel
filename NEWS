@@ -16,7 +16,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - The new *pel-customize-insert-date-time* command (bound to ~<f11> i <f4>~) opens the customize buffer that holds
     the relevant custom variables.
   - The ~<f6> d~ and ~<f6> D~ bindings to insert dates and ~<f6> t~ to insert date/time were removed.
-  - The *pel-insert-todo-note* command was rebound to ~<f6> n~ for consistency.
+  - The *pel-insert-todo-note* command was rebound to ~<f6> n~ (instead of the old ~<f6> T~) for consistency and ease of access.
 - In C and C++ buffers, the *pel-cc-mode-info* command (bound to ~<f12> <f4> ?~) now prints the list
   of customization variables controlling the code generation skeletons and their values, in the opened
   info buffer.  The variable names are links that can be used to change their values.
