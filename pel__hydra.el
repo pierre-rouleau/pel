@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2022-10-25 17:25:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2023-10-15 17:08:18 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -358,6 +358,18 @@
   ("d"           pel-toggle-window-dedicated "un/dedicate"  :column "Other")
   ("?"           pel-toggle-hydra-hint       "hint"         :column "Other")
   ("<f7>"        nil                         "cancel"       :column "Other"))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; PEL HYDRA: Scroll
+(defhydra pel-∑scroll (global-map "C-<f7>"
+                                  :foreign-keys run)
+  "Scroll toward"
+  ("C-<up>"      pel-scroll-down             "up"     :column "scroll")
+  ("C-<down>"    pel-scroll-up               "down"   :column "scroll")
+  ("C-<left>"    pel-scroll-right            "left"   :column "scroll")
+  ("C-<right>"   pel-scroll-left             "right"  :column "scroll")
+  ("?"           pel-toggle-hydra-hint       "hint"   :column "Other")
+  ("<C-f7>"      nil                         "cancel" :column "Other"))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; PEL HYDRA: Hide/Show

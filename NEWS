@@ -349,6 +349,8 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: Add pel-∑scroll Hydra to scroll a window in any cardinal direction with the any or the four ~C-<cursor>~ keys.
+  This Hydra is invoked with ~C-<f7>~.  This helps scrolling windows in any of the four directions.
 - New: Add support for the call-graph package, installed and the *call-graph* command mapped to the ~<f12> M-g~ key sequence in C and C++
   modes when the *pel-use-call-graph* user option is set to t.
 - New: On Emacs 27 and later, *pel-use-beacon-mode* allows installing and activating the beacon-mode
