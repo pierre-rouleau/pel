@@ -274,54 +274,62 @@ Use N the same way as `pel-insert-dirname'."
 ;;-pel-autoload
 (defun pel-insert-date (&optional utc)
   "Insert current date at point.
-Local by default, UTC if \\[universal-argument] prefix used."
+Local by default, UTC if \\[universal-argument] prefix used.
+The `format-time-string' format used is controlled by the `pel-date-only-format' custom variable."
   (interactive "*P")
   (insert (format-time-string pel-date-only-format nil (not (null utc)))))
 
 ;;-pel-autoload
 (defun pel-insert-date-wkd (&optional utc)
   "Insert current date & week-day at point.
-Local by default, UTC if \\[universal-argument] prefix used."
+Local by default, UTC if \\[universal-argument] prefix used.
+The `format-time-string' format used is controlled by the `pel-date-wkd-format' custom variable."
   (interactive "*P")
   (insert (format-time-string pel-date-wkd-format nil (not (null utc)))))
 
 (defun pel-insert-date-time (&optional utc)
   "Insert current date and time at point.
-Local by default, UTC if \\[universal-argument] prefix used."
+Local by default, UTC if \\[universal-argument] prefix used.
+The `format-time-string' format used is controlled by the `pel-date-time-format' custom variable."
   (interactive "*P")
   (insert (format-time-string pel-date-time-format nil (not (null utc)))))
 
 ;;-pel-autoload
 (defun pel-insert-date-wkd-time (&optional utc)
   "Insert current date & week-day at point.
-Local by default, UTC if \\[universal-argument] prefix used."
+Local by default, UTC if \\[universal-argument] prefix used.
+The `format-time-string' format used is controlled by the `pel-date-wkd-time-format' custom variable."
   (interactive "*P")
   (insert (format-time-string pel-date-wkd-time-format nil (not (null utc)))))
 
 ;;-pel-autoload
 (defun pel-insert-iso-date (&optional utc)
   "Insert current date at point.
-Local by default, UTC if \\[universal-argument] prefix used."
+Local by default, UTC if \\[universal-argument] prefix used.
+The `format-time-string' format used is controlled by the `pel-date-only-iso-format' custom variable."
   (interactive "*P")
   (insert (format-time-string pel-date-only-iso-format nil (not (null utc)))))
 
 ;;-pel-autoload
 (defun pel-insert-iso-date-wkd (&optional utc)
   "Insert current date & week-day at point.
-Local by default, UTC if \\[universal-argument] prefix used."
+Local by default, UTC if \\[universal-argument] prefix used.
+The `format-time-string' format used is controlled by the `pel-date-wkd-iso-format' custom variable."
   (interactive "*P")
   (insert (format-time-string pel-date-wkd-iso-format nil (not (null utc)))))
 
 (defun pel-insert-iso-date-time (&optional utc)
   "Insert current date and time at point.
-Local by default, UTC if \\[universal-argument] prefix used."
+Local by default, UTC if \\[universal-argument] prefix used.
+The `format-time-string' format used is controlled by the `pel-date-time-iso-format' custom variable."
   (interactive "*P")
   (insert (format-time-string pel-date-time-iso-format nil (not (null utc)))))
 
 ;;-pel-autoload
 (defun pel-insert-iso-date-wkd-time (&optional utc)
   "Insert current date & week-day at point.
-Local by default, UTC if \\[universal-argument] prefix used."
+Local by default, UTC if \\[universal-argument] prefix used.
+The `format-time-string' format used is controlled by the `pel-date-wkd-time-format' custom variable."
   (interactive "*P")
   (insert (format-time-string pel-date-wkd-time-iso-format nil (not (null utc)))))
 
