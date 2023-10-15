@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-10-15 17:08:18 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2023-10-15 17:54:04 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -362,6 +362,8 @@
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; PEL HYDRA: Scroll
 (defhydra pel-∑scroll (global-map "C-<f7>"
+                                  :pre  (pel--cache-hydra-is-helpful)
+                                  :post (pel--restore-hydra-is-helpful)
                                   :foreign-keys run)
   "Scroll toward"
   ("C-<up>"      pel-scroll-down             "up"     :column "scroll")
