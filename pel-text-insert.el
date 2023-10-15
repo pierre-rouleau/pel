@@ -1,6 +1,6 @@
 ;;; pel-text-insert.el --- PEL Text Insertion Utilities -*-lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2022  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2022, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -35,8 +35,14 @@
 ;;   * `pel-insert-filename-wtilde'
 ;;     * `pel-insert-filename'
 ;;       - `pel-tilde-file-name'
-;; * `pel-insert-current-date-time'
-;; * `pel-insert-current-date'
+;; * `pel-insert-date'
+;; * `pel-insert-date-wkd'
+;; * `pel-insert-date-time'
+;; * `pel-insert-date-wkd-time'
+;; * `pel-insert-iso-date'
+;; * `pel-insert-iso-date-wkd'
+;; * `pel-insert-iso-date-time'
+;; * `pel-insert-iso-date-wkd-time'
 ;; * `pel-insert-todo-note'
 ;;
 ;;   - `pel-insert-commented'
@@ -264,35 +270,73 @@ Use N the same way as `pel-insert-dirname'."
   (pel-insert-dirname n :use-tilde))
 
 ;; ----
+
 ;;-pel-autoload
-(defun pel-insert-current-date-time (&optional utc)
+(defun pel-insert-date (&optional utc)
+  "Insert current date at point.
+Local by default, UTC if \\[universal-argument] prefix used."
+  (interactive "*P")
+  (insert (format-time-string pel-date-only-format nil (not (null utc)))))
+
+;;-pel-autoload
+(defun pel-insert-date-wkd (&optional utc)
+  "Insert current date & week-day at point.
+Local by default, UTC if \\[universal-argument] prefix used."
+  (interactive "*P")
+  (insert (format-time-string pel-date-wkd-format nil (not (null utc)))))
+
+(defun pel-insert-date-time (&optional utc)
   "Insert current date and time at point.
 Local by default, UTC if \\[universal-argument] prefix used."
   (interactive "*P")
-  (insert
-   (if utc
-       (format-time-string "%A, %B %d, %Y @ %T (UTC)" nil t)
-     (format-time-string "%A, %B %d, %Y @ %T"))))
+  (insert (format-time-string pel-date-time-format nil (not (null utc)))))
 
 ;;-pel-autoload
-(defun pel-insert-current-date (&optional utc)
-  "Insert current date (only, no time) at point.
+(defun pel-insert-date-wkd-time (&optional utc)
+  "Insert current date & week-day at point.
 Local by default, UTC if \\[universal-argument] prefix used."
   (interactive "*P")
-  (insert
-   (if utc
-       (format-time-string "%A, %B %d, %Y (UTC)" nil t)
-     (format-time-string "%A, %B %d, %Y"))))
+  (insert (format-time-string pel-date-wkd-time-format nil (not (null utc)))))
 
 ;;-pel-autoload
-(defun pel-insert-iso8601-timestamp (&optional utc)
-  "Insert ISO 8601 conforming abbreviated YYYY-MM-DD hh:mm:ss format timestamp.
-Local by default, UTC if \\[universal-argument] prefix is used."
+(defun pel-insert-iso-date (&optional utc)
+  "Insert current date at point.
+Local by default, UTC if \\[universal-argument] prefix used."
   (interactive "*P")
-  (insert
-   (if utc
-       (format-time-string "%F %T (UTC)" nil t)
-     (format-time-string "%F %T"))))
+  (insert (format-time-string pel-date-only-iso-format nil (not (null utc)))))
+
+;;-pel-autoload
+(defun pel-insert-iso-date-wkd (&optional utc)
+  "Insert current date & week-day at point.
+Local by default, UTC if \\[universal-argument] prefix used."
+  (interactive "*P")
+  (insert (format-time-string pel-date-wkd-iso-format nil (not (null utc)))))
+
+(defun pel-insert-iso-date-time (&optional utc)
+  "Insert current date and time at point.
+Local by default, UTC if \\[universal-argument] prefix used."
+  (interactive "*P")
+  (insert (format-time-string pel-date-time-iso-format nil (not (null utc)))))
+
+;;-pel-autoload
+(defun pel-insert-iso-date-wkd-time (&optional utc)
+  "Insert current date & week-day at point.
+Local by default, UTC if \\[universal-argument] prefix used."
+  (interactive "*P")
+  (insert (format-time-string pel-date-wkd-time-iso-format nil (not (null utc)))))
+
+
+;; Names of old commands are now deprecated.  They remain as aliases.
+(defalias  'pel-insert-current-date      'pel-insert-date)
+(defalias  'pel-insert-current-date-time 'pel-insert-date-time)
+(defalias  'pel-insert-iso8601-timestamp 'pel-insert-iso-date-time)
+
+
+;;-pel-autoload
+(defun pel-customize-insert-date-time ()
+  "Open the customize buffer to change the date/time insertion."
+  (interactive)
+  (customize-group 'pel-date-time-insertion))
 
 ;; ----
 

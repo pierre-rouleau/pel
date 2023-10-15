@@ -64,6 +64,7 @@
 ;;     - pel-pkg-for-imenu
 ;;     - pel-pkg-for-indentation
 ;;     - pel-pkg-for-insertions
+;;       - pel-date-time-insertion
 ;;       - pel-pkg-for-parens
 ;;     - pel-pkg-for-kbmacro
 ;;     - pel-pkg-for-key-chord
@@ -2499,6 +2500,91 @@ PEL activates it only if variable `pel-use-yasnippet' is non-nil."
   :type 'boolean
   :safe #'booleanp)
 (pel-put 'pel-use-yasnippet-snippets :requires 'pel-use-yasnippet)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Date/time insertion format selection
+;; ------------------------------------
+;;
+;; There are 8 date/time insertion commands. Each of these commands support
+;; user-specified text format and the ISO-8601 text format.  The user-selected
+;; format are specified by the following customization variables.
+
+;; Format               |  Date only  | Date & Week-day | Date & Time    | Date, Week-day & Time
+;; ————————————————-————|-——————————-—|————————————————-|————————————————|——————————————————————
+;; User-selected format | <f11> i d   | <f11> i D       | <f11> i t      | <f11> i T
+;; ISO-8601 format      | <f11> i M-d | <f11> i M-D     | <f11> i M-t    | <f11> i M-T
+
+(defgroup pel-date-time-insertion nil
+  "Customization of date and time insertion.
+
+All strings must be compatible with the `format-time-string'
+format strings.  The iso format strings are meant to generate
+ISO-8601 compliant date/time format strings."
+
+  :group 'pel-pkg-for-insertions
+  :link '(url-link :tag "ISO-8601 @ Wikipedia"
+                   "https://en.wikipedia.org/wiki/ISO_8601"))
+
+(defun pel--date-time-doc (fmt doc)
+  (format
+   "%s
+
+The current default was: '%s'.
+ which generated the following text at the time this was built:
+ - for local time: %s
+ - for UTC time:   %s"
+   doc
+   fmt
+   (format-time-string fmt)
+   (format-time-string fmt nil t)))
+
+(defcustom pel-date-only-format "%F"
+  (pel--date-time-doc "%F"
+                      "Date-only `format-time-string' used by the `pel-insert-date' command.")
+  :group 'pel-date-time-insertion
+  :type 'string)
+
+(defcustom pel-date-wkd-format "%A, %B %d %Y"
+  (pel--date-time-doc "%A, %B %d %Y"
+                      "Date & Week-day `format-time-string' used by the `pel-insert-date-wkd' command.")
+  :group 'pel-date-time-insertion
+  :type 'string)
+
+(defcustom pel-date-time-format "%F %T %Z"
+  (pel--date-time-doc "%F %T %Z"
+                      "Date & Time `format-time-string' used by the `pel-insert-date-time' command.")
+  :group 'pel-date-time-insertion
+  :type 'string)
+
+(defcustom pel-date-wkd-time-format "%A, %B %d %Y at %T %Z"
+  (pel--date-time-doc "%A, %B %d %Y at %T %Z"
+                      "Date-only `format-time-string' used by the `pel-insert-date-wkd-time' command.")
+  :group 'pel-date-time-insertion
+  :type 'string)
+
+(defcustom pel-date-only-iso-format "%F"
+  (pel--date-time-doc "%F"
+                      "Date-only `format-time-string' used by the `pel-insert-iso-date' command.")
+  :group 'pel-date-time-insertion
+  :type 'string)
+
+(defcustom pel-date-wkd-iso-format "%F-W%V-%u"
+  (pel--date-time-doc "%F-W%V-%u"
+                      "Date & Week-day `format-time-string' used by the `pel-insert-iso-date-wkd' command.")
+  :group 'pel-date-time-insertion
+  :type 'string)
+
+(defcustom pel-date-time-iso-format "%FT%T%z"
+  (pel--date-time-doc "%FT%T%z"
+                      "Date & Time `format-time-string' used by the `pel-insert-iso-date-time' command.")
+  :group 'pel-date-time-insertion
+  :type 'string)
+
+(defcustom pel-date-wkd-time-iso-format "%FT%T%z W%V-%u"
+  (pel--date-time-doc "%FT%T%z W%V-%u"
+                      "Date-only `format-time-string' used by the `pel-insert-iso-date-wkd-time' command.")
+  :group 'pel-date-time-insertion
+  :type 'string)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Parens block management

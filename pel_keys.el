@@ -1053,18 +1053,16 @@ Done in this function to allow advising libraries that remap these keys."
 
 (define-pel-global-prefix pel:f6 (kbd "<f6>"))
 (define-key pel:f6 "d"  'pel-insert-current-date)
-(define-key pel:f6 "D"  'pel-insert-current-date-time)
 (define-key pel:f6 "f"  'pel-insert-filename)
 (define-key pel:f6 "F"  'pel-insert-filename-and-line)
 (define-key pel:f6 (kbd "C-f")  'pel-insert-dirname)
 (define-key pel:f6 (kbd "M-f")  'pel-insert-filename-wtilde)
 (define-key pel:f6 (kbd "C-M-f")  'pel-insert-dirname-wtilde)
 (define-key pel:f6 "l"  'pel-insert-line)
-(define-key pel:f6 "t"  'pel-insert-iso8601-timestamp)
 (define-key pel:f6 (kbd "<f6>") 'pel-jump-to-mark)
 (define-key pel:f6 "6" 'complete-symbol)
 (define-key pel:f6 "7" 'info-complete-symbol)
-(define-key pel:f6 "T" 'pel-insert-todo-note)
+(define-key pel:f6 "n" 'pel-insert-todo-note)
 
 ;; Move to the beginning of next function definition (while moving forward)
 ;;  complements C-M-e and C-M-a
@@ -6703,18 +6701,28 @@ the ones defined from the buffer now."
 ;; M-c M-f
 ;;     C-M-f
 (define-pel-global-prefix pel:insert (kbd "<f11> i"))
-(define-key pel:insert   "c" 'copyright)
-(define-key pel:insert (kbd "M-c") 'copyright-update)
-(define-key pel:insert   "d" 'pel-insert-current-date)
-(define-key pel:insert   "D" 'pel-insert-current-date-time)
-(define-key pel:insert   "f" 'pel-insert-filename)
-(define-key pel:insert   "F" 'pel-insert-filename-and-line)
-(define-key pel:insert (kbd "C-f")  'pel-insert-dirname)
-(define-key pel:insert (kbd "M-f")  'pel-insert-filename-wtilde)
-(define-key pel:insert (kbd "C-M-f")  'pel-insert-dirname-wtilde)
-(define-key pel:insert   "l" 'pel-insert-line)
-(define-key pel:insert   "t" 'pel-insert-iso8601-timestamp)
-(define-key pel:insert   "T" 'pel-insert-todo-note)
+(define-key pel:insert        "c"    'copyright)
+(define-key pel:insert (kbd "M-c")   'copyright-update)
+
+(define-key pel:insert        "d"    'pel-insert-date)
+(define-key pel:insert        "D"    'pel-insert-date-wkd)
+(define-key pel:insert        "t"    'pel-insert-date-time)
+(define-key pel:insert        "T"    'pel-insert-date-wkd-time)
+
+(define-key pel:insert (kbd "M-d")   'pel-insert-iso-date)
+(define-key pel:insert (kbd "M-D")   'pel-insert-iso-date-wkd)
+(define-key pel:insert (kbd "M-t")   'pel-insert-iso-date-time)
+(define-key pel:insert (kbd "M-T")   'pel-insert-iso-date-wkd-time)
+
+(define-key pel:insert        "f"    'pel-insert-filename)
+(define-key pel:insert        "F"    'pel-insert-filename-and-line)
+(define-key pel:insert (kbd "C-f")   'pel-insert-dirname)
+(define-key pel:insert (kbd "M-f")   'pel-insert-filename-wtilde)
+(define-key pel:insert (kbd "C-M-f") 'pel-insert-dirname-wtilde)
+
+(define-key pel:insert        "l"    'pel-insert-line)
+(define-key pel:insert        "n"    'pel-insert-todo-note)
+(define-key pel:insert (kbd "<f4>")  'pel-customize-insert-date-time)
 
 (when (or pel-use-lice
           (eq pel-c-skel-with-license t)

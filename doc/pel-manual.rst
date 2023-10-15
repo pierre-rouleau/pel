@@ -4,7 +4,7 @@ PEL -- Pragmatic Emacs Library
 
 :URL: https://github.com/pierre-rouleau/pel/blob/master/doc/pel-manual.rst
 :Project:  `PEL Project home page`_
-:Modified: 2023-10-13 16:38:16 EDT, updated by Pierre Rouleau.
+:Modified: 2023-10-15 13:05:11 EDT, updated by Pierre Rouleau.
 :License:
     Copyright (c) 2020, 2021, 2022, 2023 Pierre Rouleau <prouleau001@gmail.com>
 
@@ -6965,13 +6965,6 @@ For example, PEL provides the following commands:
   controlled by the ``pel-linelen`` customization variable, which defaults to 77.
 - ``pel-insert-filename`` inserts the name of the file in the current or
   specified window.
-- The following 3 commands insert time/date format for the local or the UTC
-  time:
-
-  - ``pel-insert-current-date-time`` inserts the current date and time at point.
-  - ``pel-insert-current-date`` inserts the current date at point.
-  - ``pel-insert-iso8601-timestamp`` inserts a ISO 8601 conforming date and time
-    string.
 
 Commands like ``pel-generic-file-header`` and ``pel-insert-line`` are
 *generic* commands in the sense that they can be used in several major modes
@@ -6994,6 +6987,28 @@ usefulness.
 The PEL binding include more commands, some are Emacs standard commands, other
 are from other packages.  All are listed in the `Inserting Text`_ PDF
 documentation.
+
+Date & Time Text Insertion
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- The following 8  commands insert time/date format for the local or the UTC
+  time:
+
+  - ``pel-insert-date`` inserts the current date at point.
+  - ``pel-insert-date-wkd`` inserts the current date and week-day at point.
+  - ``pel-insert-date-time`` inserts the current date and time at point.
+  - ``pel-insert-date-wkd-time`` inserts the current date, week day and time at point.
+  - ``pel-insert-iso-date`` inserts the current date at point.
+  - ``pel-insert-iso-date-wkd`` inserts the current date and week-day at point.
+  - ``pel-insert-iso-date-time`` inserts the current date and time at point.
+  - ``pel-insert-iso-date-wkd-time`` inserts the current date, week day and time at point.
+
+The format of the inserted strings are controlled by customized variables
+in the ``pel-date-time-insertion`` group.  The default format for the
+first four commands correspond to free-standing formats you can change.
+The second group of fours commands are also configurable but they should
+correspond to valid `ISO-8601 standard format`_ strings.
+
 
 Template Text Insertion
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -8440,6 +8455,7 @@ exhaustive list):
 .. _Whitespaces:                              https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/whitespaces.pdf
 .. _Windows:                                  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/windows.pdf
 .. _Ubuntu 16.04 Linux Desktop Keys on macOS Host:  https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/ubuntu-16-04-desktop-keys.pdf
+.. _ISO-8601 standard format:                 https://en.wikipedia.org/wiki/ISO_8601
 
 
 

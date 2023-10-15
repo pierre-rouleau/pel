@@ -2,6 +2,21 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Modified the date & time insertion commands and key sequence bindings to provide the ability to insert
+  various date and time formats that are now all controlled by customizable format strings.  There are now
+  eight commands that insert the local date/time by default and the UTC is an argument is used:
+  - *pel-insert-date*, bound to ~<f11> i d~: inserts the current date at point.
+  - *pel-insert-date-wkd*, bound to ~<f11> i D~: inserts the current date and week-day at point.
+  - *pel-insert-date-time*, bound to ~<f11> i t~: inserts the current date and time at point.
+  - *pel-insert-date-wkd-time*, bound to ~<f11> i T~: inserts the current date, week day and time at point.
+  - *pel-insert-iso-date*, bound to ~<f11> i M-d~: inserts the current date at point.
+  - *pel-insert-iso-date-wkd*, bound to ~<f11> i M-D~: inserts the current date and week-day at point.
+  - *pel-insert-iso-date-time*, bound to ~<f11> i M-t~: inserts the current date and time at point.
+  - *pel-insert-iso-date-wkd-time*, bound to ~<f11> i M-T~: inserts the current date, week day and time at point.
+  - The new *pel-customize-insert-date-time* command (bound to ~<f11> i <f4>~) opens the customize buffer that holds
+    the relevant custom variables.
+  - The ~<f6> d~ and ~<f6> D~ bindings to insert dates and ~<f6> t~ to insert date/time were removed.
+  - The *pel-insert-todo-note* command was rebound to ~<f6> n~ for consistency.
 - In C and C++ buffers, the *pel-cc-mode-info* command (bound to ~<f12> <f4> ?~) now prints the list
   of customization variables controlling the code generation skeletons and their values, in the opened
   info buffer.  The variable names are links that can be used to change their values.

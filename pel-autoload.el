@@ -762,9 +762,15 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-insert-filename-wtilde
     pel-insert-dirname
     pel-insert-dirname-wtilde
-    pel-insert-current-date-time
-    pel-insert-current-date
-    pel-insert-iso8601-timestamp
+    pel-insert-date
+    pel-insert-date-wkd
+    pel-insert-date-time
+    pel-insert-date-wkd-time
+    pel-insert-iso-date
+    pel-insert-iso-date-wkd
+    pel-insert-iso-date-time
+    pel-insert-iso-date-wkd-time
+    pel-customize-insert-date-time
     pel-insert-todo-note)
   (pel-autoload-function "pel-text-insert" for:
     pel-separator-line)
