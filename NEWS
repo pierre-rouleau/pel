@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Modified the key bound to *iedit-toggle-selection* in the *iedit-mode*: replaced ~M-;~ by ~M-<f6>~ to allow
+  the use of comment-dwim when iedit-mode is being used. The ~M-<f6>~ is globally bound to pel-open-at-point
+  but that's not its only binding and the probability to use that command while using the iedit-mode is low.
 - Modified the date & time insertion commands and key sequence bindings to provide the ability to insert
   various date and time formats that are now all controlled by customizable format strings.  There are now
   eight commands that insert the local date/time by default and the UTC is an argument is used:
