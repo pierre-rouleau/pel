@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- The format of the to-do note inserted by the *pel-insert-todo-note* command is now controlled by two user option variables:
+  *pel-todo-note-text* and *pel-todo-note-date-format*. It supports the automatic replacement of "(DATE)" and "(USER)" strings
+  with the current date and user name respectively. Use the new *pel-customize-todo-note* command (bound to ~<f11> i <f4> n~)
+  to access the relevant customization buffer quickly.
 - Modified the key bound to *iedit-toggle-selection* in the *iedit-mode*: replaced ~M-;~ by ~M-<f6>~ to allow
   the use of comment-dwim when iedit-mode is being used. The ~M-<f6>~ is globally bound to pel-open-at-point
   but that's not its only binding and the probability to use that command while using the iedit-mode is low.
@@ -16,7 +20,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
   - *pel-insert-iso-date-wkd*, bound to ~<f11> i M-D~: inserts the current date and week-day at point.
   - *pel-insert-iso-date-time*, bound to ~<f11> i M-t~: inserts the current date and time at point.
   - *pel-insert-iso-date-wkd-time*, bound to ~<f11> i M-T~: inserts the current date, week day and time at point.
-  - The new *pel-customize-insert-date-time* command (bound to ~<f11> i <f4>~) opens the customize buffer that holds
+  - The new *pel-customize-insert-date-time* command (bound to ~<f11> i <f4> d~) opens the customize buffer that holds
     the relevant custom variables.
   - The ~<f6> d~ and ~<f6> D~ bindings to insert dates and ~<f6> t~ to insert date/time were removed.
   - The *pel-insert-todo-note* command was rebound to ~<f6> n~ (instead of the old ~<f6> T~) for consistency and ease of access.

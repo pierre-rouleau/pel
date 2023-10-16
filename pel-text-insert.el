@@ -348,14 +348,39 @@ The `format-time-string' format used is controlled by the `pel-date-wkd-time-for
 
 ;; ----
 
+
 ;;-pel-autoload
-(defun pel-insert-todo-note ()
-  "Insert a to-do note template with the creation date and author's name."
-  (interactive)
-  (goto-char (pel-insert-commented (format "[:todo %s, by %s: ]"
-                                           (format-time-string "%F")
-                                           user-full-name)))
+(defun pel-insert-todo-note (&optional utc)
+  "Insert a to-do note template with the creation date and author's name.
+
+The format of the note inserted is controlled by the following user options:
+
+- `pel-todo-note-text'        : specifies the format.
+- `pel-todo-note-date-format' : specifies the date format used to expand
+                                a \"(DATE)\" string if present inside
+                                `pel-todo-note-text' value. By default the
+                                date inserted is local.  To insert a UTC
+                                date use the \\[universal-argument] prefix.
+
+If \"(USER)\" is present in the `pel-todo-note-text' value it is replaced
+by the value of `user-full-name'.
+
+Point is placed one character *before* the end of the inserted text."
+  (interactive "*P")
+  (let ((fmt pel-todo-note-text))
+    (when (string-match "(DATE)" fmt)
+      (setq fmt  (replace-match (format-time-string pel-todo-note-date-format nil (not (null utc)))
+                                :fixedcase :literal fmt)))
+    (when (string-match "(USER)" fmt)
+      (setq fmt  (replace-match user-full-name :fixedcase :literal fmt)))
+    (goto-char (pel-insert-commented fmt)))
   (left-char))
+
+;;-pel-autoload
+(defun pel-customize-todo-note ()
+  "Open the customize buffer to change the todo-note insertion."
+  (interactive)
+  (customize-group 'pel-text-insertions))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-text-insert)

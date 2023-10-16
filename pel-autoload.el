@@ -771,7 +771,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-insert-iso-date-time
     pel-insert-iso-date-wkd-time
     pel-customize-insert-date-time
-    pel-insert-todo-note)
+    pel-insert-todo-note
+    pel-customize-todo-note)
   (pel-autoload-function "pel-text-insert" for:
     pel-separator-line)
 

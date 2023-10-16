@@ -64,7 +64,8 @@
 ;;     - pel-pkg-for-imenu
 ;;     - pel-pkg-for-indentation
 ;;     - pel-pkg-for-insertions
-;;       - pel-date-time-insertion
+;;       - pel-text-insertions
+;;         - pel-date-time-insertion
 ;;       - pel-pkg-for-parens
 ;;     - pel-pkg-for-kbmacro
 ;;     - pel-pkg-for-key-chord
@@ -2502,6 +2503,46 @@ PEL activates it only if variable `pel-use-yasnippet' is non-nil."
 (pel-put 'pel-use-yasnippet-snippets :requires 'pel-use-yasnippet)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defgroup pel-text-insertions nil
+  "Customization of text insertions."
+
+  :group 'pel-pkg-for-insertions)
+
+(defcustom pel-todo-note-text "[:todo (DATE), by (USER): ]"
+  "Format string for to-do notes.
+
+The string may contain the following 2 replacement string codes
+that are expanded when the note is inserted:
+
+- \"(DATE)\" : replaced by a UTC date using the format specified by `pel-todo-note-date-format',
+- \"(USER)\" : replaced by the value of `user-full-name'.
+"
+  :group 'pel-text-insertions
+  :type 'string)
+
+
+(defun pel--date-time-doc (fmt doc)
+  (format
+   "%s
+
+The current default was: '%s'.
+ which generated the following text at the time this was built:
+ - for local time: %s
+ - for UTC time:   %s"
+   doc
+   fmt
+   (format-time-string fmt)
+   (format-time-string fmt nil t)))
+
+(defcustom pel-todo-note-date-format "%F"
+  (pel--date-time-doc "%F"
+                      "Date format inserted by `pel-insert-todo-note' command.
+
+Used as specified in `pel-todo-note-text'")
+  :group 'pel-text-insertions
+  :type 'string)
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Date/time insertion format selection
 ;; ------------------------------------
 ;;
@@ -2521,22 +2562,10 @@ All strings must be compatible with the `format-time-string'
 format strings.  The iso format strings are meant to generate
 ISO-8601 compliant date/time format strings."
 
-  :group 'pel-pkg-for-insertions
+  :group 'pel-text-insertions
   :link '(url-link :tag "ISO-8601 @ Wikipedia"
                    "https://en.wikipedia.org/wiki/ISO_8601"))
 
-(defun pel--date-time-doc (fmt doc)
-  (format
-   "%s
-
-The current default was: '%s'.
- which generated the following text at the time this was built:
- - for local time: %s
- - for UTC time:   %s"
-   doc
-   fmt
-   (format-time-string fmt)
-   (format-time-string fmt nil t)))
 
 (defcustom pel-date-only-format "%F"
   (pel--date-time-doc "%F"

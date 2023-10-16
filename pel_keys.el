@@ -6726,7 +6726,8 @@ the ones defined from the buffer now."
 
 (define-key pel:insert        "l"    'pel-insert-line)
 (define-key pel:insert        "n"    'pel-insert-todo-note)
-(define-key pel:insert (kbd "<f4>")  'pel-customize-insert-date-time)
+(define-key pel:insert (kbd "<f4> d")  'pel-customize-insert-date-time)
+(define-key pel:insert (kbd "<f4> n")  'pel-customize-todo-note)
 
 (when (or pel-use-lice
           (eq pel-c-skel-with-license t)
