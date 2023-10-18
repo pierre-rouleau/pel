@@ -2,12 +2,12 @@
 
 ;; Created   : Thursday, May 27 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2021-07-14 13:08:36, updated by Pierre Rouleau>
+;; Time-stamp: <2023-10-17 22:19:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2021  Pierre Rouleau
+;; Copyright (C) 2021, 2023  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -304,6 +304,15 @@ associated with files."
   (unless files-only
     (message "CAUTION: internal buffers are shown.\
  Do NOT modify their content if you don't understand the consequences.")))
+
+;; ---------------------------------------------------------------------------
+;; Kill current buffer
+
+;;-pel-autoload
+(defun pel-kill-current-buffer ()
+  "Kill current buffer without prompting unless it is modified."
+  (interactive)
+  (kill-buffer (current-buffer)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-buffer)

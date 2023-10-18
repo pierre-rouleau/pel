@@ -127,7 +127,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-bs-init
     pel-smb-next
     pel-smb-previous
-    pel-show-all-buffers)
+    pel-show-all-buffers
+    pel-kill-current-buffer)
 
   (pel-autoload "pel-c-utils" for:
     pel-c-search-equal-NULL

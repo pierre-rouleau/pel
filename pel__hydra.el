@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-10-17 17:43:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2023-10-17 22:20:50 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -345,7 +345,7 @@
   ("0"           delete-window               "this window"  :column "Close/Buffer")
   ("1"           delete-other-windows        "all others"   :column "Close/Buffer")
   ("K"           kill-buffer-and-window      "kill buf/win" :column "Close/Buffer")
-  ("k"           kill-buffer                 "kill buffer" :column "Close/Buffer")
+  ("k"           pel-kill-current-buffer     "kill buffer" :column "Close/Buffer")
   ("b"           next-buffer                 "next buffer"  :column "Close/Buffer")
   ("B"           previous-buffer             "prev buffer"  :column "Close/Buffer")
   ("o"           pel-close-other-window      "other"        :column "Close")
