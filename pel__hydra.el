@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-10-15 17:54:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2023-10-17 17:43:43 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -343,16 +343,17 @@
   ("M-v"         pel-2-vertical-windows      "flip vert."  :column "Layout")
   ("M-h"         pel-2-horizontal-windows    "flip horiz." :column "Layout")
   ("0"           delete-window               "this window"  :column "Close/Buffer")
-  ("k"           kill-buffer-and-window      "&kill buffer" :column "Close/Buffer")
   ("1"           delete-other-windows        "all others"   :column "Close/Buffer")
-  ("q"           quit-window                 "quit window"  :column "Close/Buffer")
+  ("K"           kill-buffer-and-window      "kill buf/win" :column "Close/Buffer")
+  ("k"           kill-buffer                 "kill buffer" :column "Close/Buffer")
   ("b"           next-buffer                 "next buffer"  :column "Close/Buffer")
   ("B"           previous-buffer             "prev buffer"  :column "Close/Buffer")
-  ("C-S-<up>"    pel-close-window-up         "above"      :column "Close.")
-  ("C-S-<down>"  pel-close-window-down       "below"      :column "Close.")
-  ("C-S-<left>"  pel-close-window-left       "left"       :column "Close.")
-  ("C-S-<right>" pel-close-window-right      "right"      :column "Close.")
-  ("o"           pel-close-other-window      "other"        :column "Close.")
+  ("o"           pel-close-other-window      "other"        :column "Close")
+  ("C-S-<up>"    pel-close-window-up         "above"      :column "Close")
+  ("C-S-<down>"  pel-close-window-down       "below"      :column "Close")
+  ("C-S-<left>"  pel-close-window-left       "left"       :column "Close")
+  ("C-S-<right>" pel-close-window-right      "right"      :column "Close")
+  ("q"           quit-window                 "quit"       :column "Close")
   ("<M-up>"      pel-scroll-down             "scroll down"  :column "Other")
   ("<M-down>"    pel-scroll-up               "scroll up"    :column "Other")
   ("d"           pel-toggle-window-dedicated "un/dedicate"  :column "Other")

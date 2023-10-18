@@ -2,6 +2,7 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *kill-buffer*, bound to ~k~ to the window Hydra, pel-∑wnd, and now *kill-buffer-and-window* is now bound to ~K~ in the window hydra.
 - The format of the to-do note inserted by the *pel-insert-todo-note* command is now controlled by two user option variables:
   *pel-todo-note-text* and *pel-todo-note-date-format*. It supports the automatic replacement of "(DATE)" and "(USER)" strings
   with the current date and user name respectively. Use the new *pel-customize-todo-note* command (bound to ~<f11> i <f4> n~)
