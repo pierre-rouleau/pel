@@ -5336,6 +5336,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 (define-key pel:help "?"  'pel-show-major-mode)
 (define-key pel:help "$"  'pel-spell-show-use)
 (define-key pel:help "f"  'which-function-mode)
+(define-key pel:help "F"  'pel-show-function)
 (define-key pel:help "P"  'pel-help-pdfs-dir)
 (define-key pel:help "p"  'pel-help-pdf-select)
 (define-key pel:     "p"  'pel-help-pdf-select) ; faster key for help

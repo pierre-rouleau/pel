@@ -1,6 +1,6 @@
 ;;; pel-help.el --- PEL extra help utilities  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2023  Pierre Rouleau
 
 ;; Author: Pierre Rouleau (concat "prouleau" "001" "@" "gmail" ".com")
 
@@ -28,7 +28,7 @@
 
 ;; -----------------------------------------------------------------------------
 ;;; Dependency
-(require 'pel--options)       ; use: pel-pdf-fire-url
+(require 'which-func)         ; use: `which-function'  -- part of Emacs.
 
 ;;; Code:
 
@@ -44,6 +44,13 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
   (interactive)
   "Display the symbol of the current major mode."
   (message "Major mode: %S" major-mode))
+
+
+;;-pel-autoload
+(defun pel-show-function ()
+  (interactive)
+  "Display the name of the current function at point in mini-buffer."
+  (message "%s" (or (which-function) "Point is not inside a function definition.")))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-help)

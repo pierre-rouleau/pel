@@ -376,7 +376,8 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-help" for:
     pel-show-kill-ring
-    pel-show-major-mode)
+    pel-show-major-mode
+    pel-show-function)
 
   (pel-autoload-function "pel-hex" for:
     pel-bibyte)

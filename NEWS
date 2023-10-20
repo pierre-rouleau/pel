@@ -2,6 +2,10 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-show-function* command, bound to ~<f11> ? F~, that prints the name of the current function at point
+  in the mini-buffer.  Even though you can use the which-func mode to display the current function at point in
+  the mode line of a buffer, the buffer window is sometimes too narrow.  Using the new command is therefore quite
+  useful in those situations when you don't want to use the mouse (like me).
 - Add *pel-kill-current-buffer* command which is only bound to the ~k~ key inside the window hydra pel-∑wnd.
 - The *kill-buffer-and-window* is now bound to ~K~ in the window hydra.
 - The format of the to-do note inserted by the *pel-insert-todo-note* command is now controlled by two user option variables:
