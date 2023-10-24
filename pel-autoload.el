@@ -217,7 +217,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-delete-to-next-visible
     pel-kill-word-and-whitespace
     pel-delete-to-eol
-    pel-duplicate-line)
+    pel-duplicate-line
+    pel-join-next-line)
 
   (pel-autoload "pel-comment" for:
     pel-comment-start

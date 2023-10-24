@@ -2,6 +2,13 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add new ~<f6>~ key binding to join lines:
+  - ~<f6> 6~ and ~<f11> ⌫  7~ are now bound to *delete-indentation* which join current line with previous one,
+    and is close to the ~M-^~ key.
+  - The ~<f6> 7~  and ~<f11> ⌫  7~ are  now bound to the new pel command *pel-join-next-line*.
+- Changed ~<f6>~ key binding of *complete-symbol*: instead of ~<f6> 6~ it is now bound to ~<f6> ,~.
+  Also changed key binding of *info-complete-symbol*: instead of ~<f6> 7~ it is now bound to ~<f6> .~.
+  The new bindings are more consistent with their intent.
 - Add *pel-show-function* command, bound to ~<f11> ? F~, that prints the name of the current function at point
   in the mini-buffer.  Even though you can use the which-func mode to display the current function at point in
   the mode line of a buffer, the buffer window is sometimes too narrow.  Using the new command is therefore quite

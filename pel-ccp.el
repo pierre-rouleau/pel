@@ -808,6 +808,16 @@ Nothing is copied to the kill ring."
     (when keep-original-position
       (goto-char original-pos))))
 
+;; ---------------------------------------------------------------------------
+;; Join with next line
+;; -------------------
+
+;;-pel-autoload
+(defun pel-join-next-line ()
+  "Join this line to the following line."
+  (interactive)
+  (delete-indentation 1))
+
 ;;; --------------------------------------------------------------------------
 
 (provide 'pel-ccp)
