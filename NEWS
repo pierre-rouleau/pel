@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Fix following commands that now insert markup prefix and suffix around point when nothing is marked or
+  point is now over or after a word instead of failing: *pel-rst-bold*, *pel-rst-italic*, *pel-rst-literal*, and
+ *pel-rst-interpreted*.
 - Add new ~<f6>~ key binding to join lines:
   - ~<f6> 6~ and ~<f11> ⌫  7~ are now bound to *delete-indentation* which join current line with previous one,
     and is close to the ~M-^~ key.

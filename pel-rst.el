@@ -809,47 +809,60 @@ character. "
          (p-end (if (region-active-p)
                     (region-end)
                   (cdr (bounds-of-thing-at-point 'word))))
-         (prefix (pel--rst-emphasize-escape-for (1- p-begin)
-                                                '(?\( ?\[ ?\{ ?\<
-                                                      ?\: ?\/ ?\-
-                                                      ?\' ?\")))
-         (suffix (pel--rst-emphasize-escape-for p-end
-                                                '(?\) ?\} ?\] ?\>
-                                                      ?\: ?\/ ?\-
-                                                      ?\' ?\"
-                                                      ?\. ?\, ?\;
-                                                      ?\? ?\!))))
+         (prefix (when p-begin (pel--rst-emphasize-escape-for (1- p-begin)
+                                                              '(?\( ?\[ ?\{ ?\<
+                                                                    ?\: ?\/ ?\-
+                                                                    ?\' ?\"))))
+         (suffix (when p-end (pel--rst-emphasize-escape-for p-end
+                                                            '(?\) ?\} ?\] ?\>
+                                                                  ?\: ?\/ ?\-
+                                                                  ?\' ?\"
+                                                                  ?\. ?\, ?\;
+                                                                  ?\? ?\!)))))
     (deactivate-mark)
-    (goto-char p-end)
+    (when p-end
+      (goto-char p-end))
     (insert str)
-    (insert suffix)
-    (goto-char p-begin)
-    (insert prefix)
+    (when suffix
+      (insert suffix)
+      (goto-char p-begin)
+      (insert prefix))
     (insert str)
-    (goto-char p-end)
-    (forward-char (* 2 (length str)))))
+    (when p-end
+      (goto-char p-end))
+    (if (or suffix prefix)
+        (forward-char (* 2 (length str)))
+      (backward-char (length str)))))
 
 (defun pel-rst-bold ()
   "Mark current word or marked region bold.
-Leave point after to the next character."
+Leave point after to the next character.
+If nothing marked or not in or after a word insert markup
+and leave point inside it."
   (interactive "*")
   (pel--rst-emphasize-with "**"))
 
 (defun pel-rst-italic ()
   "Mark current word or marked region italic.
-Leave point after to the next character."
+Leave point after to the next character.
+If nothing marked or not in or after a word insert markup
+and leave point inside it."
   (interactive "*")
   (pel--rst-emphasize-with "*"))
 
 (defun pel-rst-literal ()
-    "Mark current word or marked region literal.
-Leave point after to the next character."
+  "Mark current word or marked region literal.
+Leave point after to the next character.
+If nothing marked or not in or after a word insert markup
+and leave point inside it."
   (interactive "*")
   (pel--rst-emphasize-with "``"))
 
 (defun pel-rst-interpreted ()
-    "Mark current word or marked region interpreted.
-Leave point after to the next character."
+  "Mark current word or marked region interpreted.
+Leave point after to the next character.
+If nothing marked or not in or after a word insert markup
+and leave point inside it."
   (interactive "*")
   (pel--rst-emphasize-with "`"))
 
