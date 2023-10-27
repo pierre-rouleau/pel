@@ -474,7 +474,8 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload "pel-indent" for:
     pel-indent-lines
     pel-unindent-lines
-    pel-indent-rigidly)
+    pel-indent-rigidly
+    pel-show-indent)
 
   (pel-autoload "pel-kbmacros" for:
     pel-kmacro-start-macro-or-insert-counter

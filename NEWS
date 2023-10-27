@@ -2,6 +2,14 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-show-indent* command, bound to ~<f11> <tab> ?~ that opens a buffer showing the values and meaning
+  of the user-options controlling indentation and tab rendering.  The buffer shows the user option and
+  commands names as clickable buttons that opens help and provide ability to gain access to the customization
+  buffer used to change their values.   IT shows major-mode specific customization variable uses when the
+ major mode of the current buffer uses them.
+- Improve the description and the content shown by the *pel-align-info*.
+- Change PEL-specific binding to *indent-tools-hydra/body* from ~<f11> <tab> >~ to ~<f11> <tab> <f7>~ .
+- Fix: *pel-align-info* no longer shows 2 instances of the *pel-new-line-does-align*
 - Fix following commands that now insert markup prefix and suffix around point when nothing is marked or
   point is now over or after a word instead of failing: *pel-rst-bold*, *pel-rst-italic*, *pel-rst-literal*, and
  *pel-rst-interpreted*.

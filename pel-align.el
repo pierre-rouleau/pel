@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-02-05 12:38:43 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2023-10-27 12:14:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -66,7 +66,7 @@ the statements on the current line with the above contiguous lines."
 
 ;; pel-autoload
 (defun pel-align-info (&optional append)
-  "Display the behaviour of M-RET in the current buffer."
+  "Display current buffer's vertical alignment behaviour."
   (interactive "P")
   (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
     (pel-print-in-buffer
@@ -80,10 +80,10 @@ the statements on the current line with the above contiguous lines."
                  'pel-newline-does-align
                  "on : M-RET aligns, adds newline and indents."
                  "off: M-RET does not align, but adds newline and indents.")))
-
-       (pel-insert-symbol-content-line 'pel-newline-does-align)
-       (pel-insert-symbol-content-line 'pel-modes-activating-align-on-return)
-       )
+       (insert "\n  -> Use ")
+       (pel-insert-symbol 'pel-toggle-newline-indent-align)
+       (insert " command to toggle it.")
+       (pel-insert-symbol-content-line 'pel-modes-activating-align-on-return))
      (unless append :clear-buffer)
      :use-help-mode)))
 

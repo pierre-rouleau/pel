@@ -856,14 +856,14 @@ When it is bound, return:
       (pel-on-off-string (eval symbol) on-string off-string)
     (or void-string "void")))
 
-(defun pel-symbol-text (symbol &optional on-string off-string)
+(defun pel-symbol-text (symbol &optional on-string off-string void-string)
   "Return a string with an interpretation of SYMBOL value.
 If symbol is not bound: show \"void\".
 If symbol is set to t: show ON-STRING if defined, \"t\" otherwise.
 If symbol is nil: show OFF-STRING if defined, \"nil\" otherwise."
   (format "%s is now: %s"
           symbol
-          (pel-symbol-on-off-string symbol on-string off-string)))
+          (pel-symbol-on-off-string symbol on-string off-string void-string)))
 
 (defun pel-symbol-value-or (symbol &optional replacement formatter)
   "Return SYMBOL value if non void, otherwise its REPLACEMENT.

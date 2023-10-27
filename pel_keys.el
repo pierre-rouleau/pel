@@ -5711,6 +5711,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;; See ``<f11> t a ?`` to show the state.
 
 (define-pel-global-prefix pel:indent (kbd "<f11> TAB"))
+(define-key pel:indent "?"             'pel-show-indent)
 (define-key pel:indent "r"            #'indent-relative)
 (define-key pel:indent "c"             'pel-indent-lines)
 (define-key pel:indent "C"             'pel-unindent-lines)
@@ -5720,7 +5721,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 (global-set-key (kbd "<backtab>") 'pel-unindent-lines)
 
 (when pel-use-indent-tools
-  (define-key pel:indent ">" 'indent-tools-hydra/body)
+  (define-key pel:indent (kbd "<f7>") 'indent-tools-hydra/body)
 
   (when (eq pel-indent-tools-key-bound 'globally)
     ;; load indent-tools to map its key globally.  Delay it because we need

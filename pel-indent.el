@@ -2,12 +2,12 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2020-11-06 11:43:25, updated by Pierre Rouleau>
+;; Time-stamp: <2023-10-27 13:16:42 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020  Pierre Rouleau
+;; Copyright (C) 2020, 2023  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -62,12 +62,10 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-;;  No dependencies - what's needed is loaded dynamically, with ability to
-;;  deal with load failures.
 
+(require 'pel--base)
 ;;; --------------------------------------------------------------------------
 ;;; Code:
-
 ;; ---------------------------------------------------------------------------
 
 (defun pel-indent-current-line-positions ()
@@ -334,6 +332,39 @@ by the numeric argument N (or if not specified N=1):
             (pel-mark-line-down n))
         (error "The pel-mark functions are not loaded")))
     (indent-rigidly (region-beginning) (region-end) nil t)))
+
+;;-pel-autoload
+(defun pel-show-indent (&optional append)
+  "Display current buffer's indentation behaviour controlling variable state."
+  (interactive "P")
+  (let ((pel-insert-symbol-content-context-buffer (current-buffer)))
+    (pel-print-in-buffer
+     "*pel-indent-info*"
+     "Indentation Control"
+     (lambda ()
+       (let ((some-major-mode-specific nil))
+         (dolist (fmt '("pel-%s-indent-width"
+                        "pel-%s-tab-width"
+                        "pel-%s-use-tabs"))
+           (let ((symbol (pel-major-mode-symbol-value-or fmt 'not-defined)))
+             (unless (eq symbol 'not-defined)
+               (setq some-major-mode-specific t)
+               (pel-insert-symbol-content-line (pel-major-mode-symbol-for
+                                                fmt)))))
+         (when some-major-mode-specific
+           (insert "\n----
+The above major-mode specific user options take precedence
+over the following global ones:"))
+         (pel-insert-symbol-content-line 'tab-width)
+         (insert "\n  -> Use ")
+         (pel-insert-symbol 'pel-set-tab-width)
+         (insert " to change locally and have tabs rendered with a different width.")
+         (pel-insert-symbol-content-line 'indent-tabs-mode)
+         (pel-insert-symbol-content-line 'standard-indent)
+         (pel-insert-symbol-content-line 'tab-always-indent)
+         (pel-insert-symbol-content-line 'tab-stop-list)))
+     (unless append :clear-buffer)
+     :use-help-mode)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-indent)
