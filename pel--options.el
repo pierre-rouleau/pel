@@ -2514,7 +2514,8 @@ PEL activates it only if variable `pel-use-yasnippet' is non-nil."
 The string may contain the following 2 replacement string codes
 that are expanded when the note is inserted:
 
-- \"(DATE)\" : replaced by a UTC date using the format specified by `pel-todo-note-date-format',
+- \"(DATE)\" : replaced by a UTC date using the format specified
+  by `pel-todo-note-date-format',
 - \"(USER)\" : replaced by the value of `user-full-name'.
 "
   :group 'pel-text-insertions
