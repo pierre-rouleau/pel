@@ -22,7 +22,7 @@ PEL -- Pragmatic Emacs Library
    :alt: Version
    :target: `➣ Automatic Download, Installation and Setup of External Packages`_
 
-.. image:: https://img.shields.io/badge/PEL_Commands-541-teal
+.. image:: https://img.shields.io/badge/PEL_Commands-574-teal
    :alt: Version
    :target: https://github.com/pierre-rouleau/pel#commands
 
