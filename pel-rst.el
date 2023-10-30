@@ -1004,6 +1004,9 @@ unchanged."
 If there is no target issue a `user-error' unless NOERROR is non-nil.
 In that case just return nil.
 Optionally identify a window to open a file reference with the argument N.
+When the point is located at a reStructuredText link, follow the link
+and open what it points to, unless N>= 100.  In that case use N-100 as the
+window number and don't interpret the link, just use it as a normal path.
 See `pel-find-file-at-point-in-window' for more information."
   (interactive "P")
   ;; It's possible the file visited by the current buffer is located in a
@@ -1012,12 +1015,18 @@ See `pel-find-file-at-point-in-window' for more information."
   ;; the location of the file in the buffer.  Therefore to process this
   ;; request we temporary change the current directory to the directory of the
   ;; file in the current buffer.
-  (let ((original-cwd default-directory)
-        (new-position nil))
+  (let* ((original-cwd default-directory)
+         (new-position nil)
+         (n-value (prefix-numeric-value n))
+         (ignore-rest-link (when (> n-value 99)
+                             (progn
+                               (setq n-value (- n-value 100))
+                               t))))
     (save-excursion
       (unwind-protect
           (progn
-            (when (buffer-file-name)
+            (when (and (buffer-file-name)
+                       (not ignore-rest-link))
               (cd (file-name-directory (pel-current-buffer-filename))))
             ;; A reStructuredText link may have to be escaped in the
             ;; reference, therefore search for the potentially escaped
@@ -1025,12 +1034,14 @@ See `pel-find-file-at-point-in-window' for more information."
             ;; links.
             (let* ((reftype.string (pel--rst-reference-target))
                    (reftype (car reftype.string))
-                   (result (if (eq reftype 'target)
+                   (result (if (and (eq reftype 'target)
+                                    (not ignore-rest-link))
                                (pel--move-to-rst-target
                                 (pel-rst-anchor-escaped
                                  (cdr reftype.string)))
                              (cdr reftype.string))))
-              (if (eq reftype 'target)
+              (if (and (eq reftype 'target)
+                       (not ignore-rest-link))
                   (cond
                    ;; if found a ref to a title jump to it
                    ((and (listp result) (eq (car result) 'rst-title))
@@ -1041,7 +1052,7 @@ See `pel-find-file-at-point-in-window' for more information."
                         (if (and (require 'pel-file nil :noerror)
                                  (fboundp 'pel-find-file-at-point-in-window))
                             (pel-find-file-at-point-in-window
-                             n (function pel-html-to-rst))
+                             n-value (function pel-html-to-rst))
                           (user-error "Cannot load pel-file!"))
                       (unless noerror
                         (user-error "No reference target found!")))))
@@ -1049,7 +1060,7 @@ See `pel-find-file-at-point-in-window' for more information."
                 (if (and (require 'pel-file nil :noerror)
                          (fboundp 'pel-find-file-at-point-in-window))
                     (pel-find-file-at-point-in-window
-                     n (function pel-html-to-rst))
+                     n-value (function pel-html-to-rst))
                   (user-error "Cannot load pel-file!")))))
         (cd original-cwd)))
     (when new-position
