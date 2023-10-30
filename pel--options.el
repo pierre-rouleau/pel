@@ -3139,6 +3139,20 @@ To activate it you must also activate `pel-use-log-support'"
   :type 'boolean
   :safe #'booleanp)
 
+(defcustom pel-use-helm_descbinds nil
+  "Control whether PEL uses the help-descbinds package.
+
+When selecting 'dont-bind-to-F1-b, activate
+help-descbind-mode to invoke it via C-h b or <f1> b"
+  :link '(url-link :tag "helm-descbinds @ GitHub"
+                   "https://github.com/emacs-helm/helm-descbinds")
+  :group 'pel-pkg-for-keys
+  :group 'pel-pkg-for-help              ; make it easy to access
+  :type '(choice
+          (const :tag "Do not use." nil)
+          (const :tag "Use and bind to C-h b and <f1> b" bind-to-F1-b)
+          (const :tag "Use without specific key binding" dont-bind-to-F1-b)))
+
 (defcustom pel-use-free-keys nil
   "Control whether PEL uses the {free-keys} package."
   :group 'pel-pkg-for-keys
@@ -3502,10 +3516,10 @@ characters."
   "PEL UML support."
   :group 'pel-pkg-for-drawing-markup
   :link `(url-link :tag "PlantUML PDF" ,(pel-pdf-file-url "plantuml"))
-  :link `(url-link :tag "PlantUML @ GitHub"
+  :link '(url-link :tag "PlantUML @ GitHub"
                    "https://github.com/skuro/plantuml-mode.")
-  :link `(url-link :tag "PlantUML home page" "https://plantuml.com")
-  :link `(url-link :tag "PlantUML @ wikipedia"
+  :link '(url-link :tag "PlantUML home page" "https://plantuml.com")
+  :link '(url-link :tag "PlantUML @ wikipedia"
                    "https://en.wikipedia.org/wiki/PlantUML"))
 
 (defcustom pel-use-plantuml nil
@@ -4076,7 +4090,7 @@ That mode prints the current point value on the mode line."
 
 (defcustom pel-use-ace-link nil
   "Control activation of the ace link package."
-  :link `(url-link :tag "ace-link @ GitHub"
+  :link '(url-link :tag "ace-link @ GitHub"
                    "https://github.com/abo-abo/ace-link")
   :group 'pel-pkg-for-navigation
   :type 'boolean
@@ -4084,7 +4098,7 @@ That mode prints the current point value on the mode line."
 
 (defcustom pel-use-avy nil
   "Control activation of the avy package."
-  :link `(url-link :tag "avy @ GitHub" "https://github.com/abo-abo/avy")
+  :link '(url-link :tag "avy @ GitHub" "https://github.com/abo-abo/avy")
   :group 'pel-pkg-for-navigation
   :type 'boolean
   :safe #'booleanp)
@@ -4730,11 +4744,11 @@ CC Mode Built-in Styles, which include the following:
 - user"
   :link '(custom-group-link "C")
   :link '(custom-manual "(ccmode)Built-in Styles")
-  :link `(url-link
+  :link '(url-link
           :tag "Bracket styles @ Emacs Manual"
           "https://www.gnu.org/software/emacs/manual/html_node/\
 ccmode/Built_002din-Styles.html#Built_002din-Styles")
-  :link `(url-link :tag "Indentation styles @ wikipedia"
+  :link '(url-link :tag "Indentation styles @ wikipedia"
                    "https://en.wikipedia.org/wiki/Indentation_style")
   :group 'pel-c-code-style
   :type 'string
@@ -6317,7 +6331,7 @@ amount of time to search for a project (even with fd)."
   :type 'boolean
   :safe #'booleanp
   :link `(url-link :tag "Lispy PDF" ,(pel-pdf-file-url "plm-lispy"))
-  :link `(url-link :tag "abo-abo lispy" "https://github.com/abo-abo/lispy"))
+  :link '(url-link :tag "abo-abo lispy" "https://github.com/abo-abo/lispy"))
 
 (defconst pel-allowed-modes-for-lispy
   '(emacs-lisp-mode                     ; Emacs Lisp  - Lisp 2 for Emacs
@@ -6360,7 +6374,7 @@ PEL will ignore other modes."
 It is off by default, since it conflicts with PEL global binding to the M-RET
 key."
   :group 'pel-pkg-for-lisp
-  :link `(url-link :tag "Lispy meta-return @ Lispy manual"
+  :link '(url-link :tag "Lispy meta-return @ Lispy manual"
                    "http://oremacs.com/lispy/#lispy-shifttab")
   :type 'boolean
   :safe #'booleanp)
@@ -9365,7 +9379,7 @@ or pel-use-regexp-steroids is t (for the others)."
 
 (defcustom pel-use-regex-tool nil
   "Control whether PEL uses the external `regex-tool' library."
-  :link `(url-link :tag "regex-tool @ GitHub"
+  :link '(url-link :tag "regex-tool @ GitHub"
                    "https://github.com/jwiegley/regex-tool")
   :group 'pel-pkg-for-regexp
   :type 'boolean
@@ -9373,7 +9387,7 @@ or pel-use-regexp-steroids is t (for the others)."
 
 (defcustom pel-use-pcre2el nil
   "Control whether PEL uses the external pcre2el library."
-  :link `(url-link :tag "pcre2el @ GitHub" "https://github.com/joddie/pcre2el")
+  :link '(url-link :tag "pcre2el @ GitHub" "https://github.com/joddie/pcre2el")
   :group 'pel-pkg-for-regexp
   :type 'boolean
   :safe #'booleanp)
@@ -9382,7 +9396,7 @@ or pel-use-regexp-steroids is t (for the others)."
   "Control whether PEL uses the external visual-regexp library.
 
 This is indirectly activated by `pel-use-visual-regexp-steroids' user-option."
-  :link `(url-link :tag "visual-regexp @ GitHub"
+  :link '(url-link :tag "visual-regexp @ GitHub"
                    "https://github.com/benma/visual-regexp.el")
   :group 'pel-pkg-for-regexp
   :type 'boolean
@@ -9392,7 +9406,7 @@ This is indirectly activated by `pel-use-visual-regexp-steroids' user-option."
 
 (defcustom pel-use-visual-regexp-steroids nil
   "Control whether PEL uses the external visual-regexp-steroids library."
-  :link `(url-link :tag "visual-regexp-steroids @ GitHub"
+  :link '(url-link :tag "visual-regexp-steroids @ GitHub"
                    "https://github.com/benma/visual-regexp-steroids.el")
   :group 'pel-pkg-for-regexp
   :type 'boolean
@@ -9404,7 +9418,7 @@ This is indirectly activated by `pel-use-visual-regexp-steroids' user-option."
 xr : Emacs regexp parser and analyser.
 Use it to describe regular expressions using lisp forms.
 PEL provide xr commands bound to the ``<f11> s x`` key prefix."
-  :link `(url-link :tag "xr @ elpa" "https://elpa.gnu.org/packages/xr.html")
+  :link '(url-link :tag "xr @ elpa" "https://elpa.gnu.org/packages/xr.html")
   :group 'pel-pkg-for-regexp
   :type 'boolean
   :safe #'booleanp)
@@ -9491,15 +9505,15 @@ the window by its position with the other numbers)."
 (defcustom pel-use-anzu nil
   "Control whether PEL uses the Anzu."
   :group 'pel-pkg-for-search
-  :link `(url-link :tag "Anzu" "https://melpa.org/#/anzu'")
+  :link '(url-link :tag "Anzu" "https://melpa.org/#/anzu'")
   :type 'boolean
   :safe #'booleanp)
 
 (defcustom pel-use-cexp nil
   "Control whether PEL uses cexp, combined expression search."
   :group 'pel-pkg-for-search
-  :link `(url-link :tag "cexp" "https://github.com/TobiasZawada/cexp")
-  :link `(url-link :tag "emacs regex to match balanced parenthesis"
+  :link '(url-link :tag "cexp" "https://github.com/TobiasZawada/cexp")
+  :link '(url-link :tag "emacs regex to match balanced parenthesis"
                    "https://emacs.stackexchange.com/questions/45387/\
 emacs-regex-to-match-balanced-parenthesis")
   :type 'boolean
@@ -9509,7 +9523,7 @@ emacs-regex-to-match-balanced-parenthesis")
 (defcustom pel-use-swiper nil
   "Control whether PEL uses the Swiper search package."
   :group 'pel-pkg-for-search
-  :link `(url-link :tag "Swiper" "https://github.com/abo-abo/swiper#swiper")
+  :link '(url-link :tag "Swiper" "https://github.com/abo-abo/swiper#swiper")
   :type 'boolean
   :safe #'booleanp)
 
@@ -10662,6 +10676,9 @@ indexing system."
 
 (when pel-use-visual-regexp-steroids
   (setq pel-use-visual-regexp t))
+
+(when pel-use-helm_descbinds
+  (setq pel-use-helm t))
 
 (when pel-use-helm-cscope
   (setq pel-use-xcscope t

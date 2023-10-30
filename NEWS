@@ -383,6 +383,11 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 - Add extra key binding for the patch commands in the ~<f11> d p~ prefix.
 - In c-mode add the ~<f12> ? ?~ key binding to man.  Use to open a man page on a C topic.
 ** New Features:
+- New: add support for *helm-descbinds*.  It's activated by the new *pel-use-helm-descbinds*
+  user-option.  It can be explicitly bound to ~C-h b~ and ~<f1> b~ if needed.
+  The *helm-descbinds-mode* command is bound to ~<f11> ? k B~ allowing quick activation and de-activation.
+  When activated this way the ~C-h b~ and ~<f1> b~ can be dynamically set to use it or to use
+  Emacs *describe-bindings* default.
 - New: Add pel-∑scroll Hydra to scroll a window in any cardinal direction with the any or the four ~C-<cursor>~ keys.
   This Hydra is invoked with ~C-<f7>~.  This helps scrolling windows in any of the four directions.
 - New: Add support for the call-graph package, installed and the *call-graph* command mapped to the ~<f12> M-g~ key sequence in C and C++

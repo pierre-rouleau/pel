@@ -5520,6 +5520,12 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-eval-after-load which-key
     (which-key-mode 1)))
 
+(when pel-use-helm_descbinds
+  (pel-ensure-package helm-descbinds from: melpa)
+  (when (eq pel-use-helm_descbinds 'bind-to-F1-b)
+    (global-set-key (kbd "C-h b") 'helm-descbinds))
+  (define-key pel:keys "B" 'helm-descbinds-mode))
+
 ;; ---------------------------------------------------------------------------
 ;; Keycast and logging
 ;; -------------------
