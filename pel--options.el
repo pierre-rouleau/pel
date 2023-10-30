@@ -1428,6 +1428,23 @@ This adds the `browse-kill-ring' command to easily see the kill ring content."
   :link '(url-link :tag "@Github"
                    "https://github.com/browse-kill-ring/browse-kill-ring"))
 
+(defcustom pel-kill-symbol-at-point-terminal-binding nil
+  "Optional key binding in terminal mode for pel-kill-symbol-at-point.
+
+On most terminals the [M-kp-subtract] binding does not work.
+You can define another key binding for the command, ideally one
+that will describe the same physical key as (kbd \"M-O 3 m\")
+does on the the Ubuntu terminal configured as described for PEL.
+If not are available you may also select something else that is
+convenient.
+
+When entering a string, that string is passed to the kbd function
+to create the binding."
+  :group 'pel-pkg-for-cut-and-paste
+  :type '(choice
+          (const  :tag "Default binding" nil)
+          (string :tag "Use following kbd string argument")))
+
 ;; ---------------------------------------------------------------------------
 ;; pel-pkg-for-diff-merge
 ;; ----------------------

@@ -866,7 +866,12 @@ Done in this function to allow advising libraries that remap these keys."
 (global-set-key (kbd "M-+") 'pel-copy-symbol-at-point)
 
 (global-set-key [C-kp-subtract] 'pel-kill-word-at-point)
-(global-set-key [M-kp-subtract] 'pel-kill-symbol-at-point)
+;; The pel-kill-symbol-at-point-terminal-binding user option can be used to
+;; specify an alternate key binding.
+(if (and (not pel-emacs-is-graphic-p)
+         pel-kill-symbol-at-point-terminal-binding)
+    (global-set-key (kbd pel-kill-symbol-at-point-terminal-binding) 'pel-kill-symbol-at-point)
+  (global-set-key [M-kp-subtract] 'pel-kill-symbol-at-point))
 
 ;; -- Numerical Keypad keys with modifier keys : navigate sexp/code nesting
 ;; Cursor-Keys:

@@ -2,6 +2,9 @@ PEL -- Pragmatic Emacs Library --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Add *pel-kill-symbol-at-point-terminal-binding* user-option which provides ability to select an alternative
+  key binding for *pel-kill-symbol-at-point* when Emacs is running in terminal mode.  This helps when using
+  a terminal  like Ubuntu terminal, which can access the ~M-<kp-subtract>~ key with another key sequence.
 - Add *pel-show-indent* command, bound to ~<f11> <tab> ?~ that opens a buffer showing the values and meaning
   of the user-options controlling indentation and tab rendering.  The buffer shows the user option and
   commands names as clickable buttons that opens help and provide ability to gain access to the customization
