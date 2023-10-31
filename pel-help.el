@@ -47,10 +47,15 @@ Simple shortcut to invoke `describe-variable' on the `kill-ring' variable."
 
 
 ;;-pel-autoload
-(defun pel-show-function ()
-  (interactive)
-  "Display the name of the current function at point in mini-buffer."
-  (message "%s" (or (which-function) "Point is not inside a function definition.")))
+(defun pel-show-function (&optional insert-it)
+  (interactive "P")
+  "Display the name of the current function at point in mini-buffer.
+
+Also insert it at point when optional INSERT-IT argument is non-nil."
+  (let ((fct-name (which-function)))
+    (when (and fct-name insert-it)
+      (insert fct-name))
+    (message "%s" (or fct-name "Point is not inside a function definition."))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-help)
