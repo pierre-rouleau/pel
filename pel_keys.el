@@ -1063,6 +1063,7 @@ Done in this function to allow advising libraries that remap these keys."
 (define-key pel:f6 (kbd "C-M-f") 'pel-insert-dirname-wtilde)
 (define-key pel:f6 "," 'complete-symbol)
 (define-key pel:f6 "." 'info-complete-symbol)
+(define-key pel:f6 ";" #'comment-line)
 (define-key pel:f6 "6" 'delete-indentation)
 (define-key pel:f6 "7" 'pel-join-next-line)
 (define-key pel:f6 "F" 'pel-insert-filename-and-line)
