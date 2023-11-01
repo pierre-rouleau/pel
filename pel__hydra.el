@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, March 19 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2023-10-17 22:20:50 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2023-10-20 16:32:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -97,17 +97,28 @@
                "Showing Hydra Hint"
              "Hiding Hint")))
 
+;; (defun pel-customize-hydra-is-helpful ()
+;;   (interactive)
+;;   (let ((help-key-fct-name (symbol-name (key-binding "?"))))
+;;     (message "help-key-fct-name: %s" help-key-fct-name)
+;;     (when (pel-string-starts-with-p help-key-fct-name "pel-∑")
+;;       (let* ((the-hydra-name (substring help-key-fct-name 9))
+;;              (the-hydra-exit-fct-name (format "pel-∑%s/nil" the-hydra-name)))
+;;         (message "Would need to execute %s" the-hydra-exit-fct-name))))
+;;   ;; (customize-option 'hydra-is-helpful)
+;;   )
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; PEL Hydra: Greek Letters : activated with <f7> <f6> <f6>
 
 (defmacro pel--define-greek-command (greek)
-    "Define a command with a GREEK name that insert that GREEK letter."
-    (let ((function-name (intern greek))
-          (docstring (format "Insert %s." greek)))
-      `(defun ,function-name nil
-         ,docstring
-         (interactive)
-         (insert ,greek))))
+  "Define a command with a GREEK name that insert that GREEK letter."
+  (let ((function-name (intern greek))
+        (docstring (format "Insert %s." greek)))
+    `(defun ,function-name nil
+       ,docstring
+       (interactive)
+       (insert ,greek))))
 
 (when pel-activate-hydra-for-greek
 
@@ -314,9 +325,18 @@
     (user-error "Unavailable - set pel-ace-window to t to activate!"))
   (declare-function ace-swap-window "pel__hydra"))
 
+(defun pel-∑-customize-hint ()
+  "Customize hydra from the window hydra.
+
+CAUTION: the hydra is still active!"
+  (interactive)
+  (customize-option 'hydra-is-helpful)
+  (message "Turn hydra off to use standard keys!"))
+
 (defhydra pel-∑wnd (global-map "<f7>"
                                :pre  (pel--cache-hydra-is-helpful)
-                               :post (pel--restore-hydra-is-helpful))
+                               :post (pel--restore-hydra-is-helpful)
+                               :foreign-keys run)
   ""
 
   ("<up>"        windmove-up                 "up"           :column "Move")
@@ -357,6 +377,7 @@
   ("<M-up>"      pel-scroll-down             "scroll down"  :column "Other")
   ("<M-down>"    pel-scroll-up               "scroll up"    :column "Other")
   ("d"           pel-toggle-window-dedicated "un/dedicate"  :column "Other")
+  ("M-?"         pel-∑-customize-hint      "hint cfg"  :column "Other")
   ("?"           pel-toggle-hydra-hint       "hint"         :column "Other")
   ("<f7>"        nil                         "cancel"       :column "Other"))
 
@@ -366,11 +387,12 @@
                                   :pre  (pel--cache-hydra-is-helpful)
                                   :post (pel--restore-hydra-is-helpful)
                                   :foreign-keys run)
-  "Scroll toward"
+  ""
   ("C-<up>"      pel-scroll-down             "up"     :column "scroll")
   ("C-<down>"    pel-scroll-up               "down"   :column "scroll")
   ("C-<left>"    pel-scroll-right            "left"   :column "scroll")
   ("C-<right>"   pel-scroll-left             "right"  :column "scroll")
+  ("M-?"         pel-∑-customize-hint        "hint cfg"  :column "Other")
   ("?"           pel-toggle-hydra-hint       "hint"   :column "Other")
   ("<C-f7>"      nil                         "cancel" :column "Other"))
 
